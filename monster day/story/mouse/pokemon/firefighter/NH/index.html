@@ -1883,21 +1883,22 @@
     </div>
   </div>
 
-  <!-- Floating Multi-Select Action Bar -->
-  <div id="floating-multiselect-bar" class="floating-multiselect-bar" style="display:none;">
-    <div class="multiselect-count"><span id="multiselect-count-badge">0</span> selected</div>
-    <div class="multiselect-actions">
-      <button type="button" class="btn-multiselect-action" onclick="openGiveFeedbackForSelected()" style="background:#f59e0b; color:#fff; font-weight:800;">⭐ Give Feedback</button>
-      <button type="button" class="btn-multiselect-action" onclick="selectAllClassStudents()">☑ Select All (<span id="multiselect-total-class-count">19</span>)</button>
-      <button type="button" class="btn-multiselect-action" onclick="openAssignModalForSelected()">📝 Assign Activity</button>
-      <button type="button" class="btn-multiselect-action" onclick="openAttendanceForSelected()">✓ Take Attendance</button>
-      <button type="button" class="btn-multiselect-action" onclick="openAddSelectedToGroup()">👥 Add to Group</button>
-      <button type="button" class="btn-multiselect-action" onclick="clearSelectedStudents()">✕ Clear</button>
-    </div>
-  </div>
-
-  <!-- Consolidated Sleek Floating Glassmorphic Classroom Utility Dock -->
+  <!-- Consolidated Sleek Floating Glassmorphic Classroom Utility Dock (Merged Single Action Bar) -->
   <div id="classroom-floating-toolkit" class="classroom-unified-dock classroom-toolkit-dock" style="display:none;" role="toolbar" aria-label="Classroom Command Dock">
+    <!-- Integrated Contextual Multi-Select Cluster -->
+    <div id="floating-multiselect-bar" class="dock-multiselect-cluster" style="display:none;">
+      <div class="multiselect-count"><span id="multiselect-count-badge">0</span> selected</div>
+      <div class="multiselect-actions">
+        <button type="button" class="btn-multiselect-action" onclick="openGiveFeedbackForSelected()" style="background:#f59e0b; color:#fff; font-weight:800;">⭐ Give Feedback</button>
+        <button type="button" class="btn-multiselect-action" onclick="selectAllClassStudents()">☑ Select All (<span id="multiselect-total-class-count">19</span>)</button>
+        <button type="button" class="btn-multiselect-action" onclick="openAssignModalForSelected()">📝 Assign Activity</button>
+        <button type="button" class="btn-multiselect-action" onclick="openAttendanceForSelected()">✓ Take Attendance</button>
+        <button type="button" class="btn-multiselect-action" onclick="openAddSelectedToGroup()">👥 Add to Group</button>
+        <button type="button" class="btn-multiselect-action" onclick="clearSelectedStudents()">✕ Clear</button>
+      </div>
+      <div class="dock-divider" aria-hidden="true"></div>
+    </div>
+
     <!-- Tools Cluster -->
     <div class="dock-cluster">
       <button type="button" class="dock-pill-btn dock-btn-primary" onclick="openClassroomToolkitModal()" title="Open Teacher Classroom Toolkit (Games, Worksheets, Evidence)">
@@ -2729,11 +2730,11 @@
               <!-- 6. Face Accessories & Glasses (z-50) -->
               <div id="layer-glasses" class="layer-item" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;"></div>
 
-              <!-- 7. Horns & Crests (z-60) -->
-              <div id="layer-horns" class="layer-item" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;"></div>
+              <!-- 7. Horns & Crests (z-55) -->
+              <div id="layer-horns" class="layer-item" style="position: absolute; inset: 0; z-index: 55; pointer-events: none;"></div>
 
-              <!-- 8. Headwear (Hats, Caps, Crowns) (z-70) -->
-              <div id="layer-headwear" class="layer-item" style="position: absolute; inset: 0; z-index: 70; pointer-events: none;"></div>
+              <!-- 8. Headwear (Hats, Caps, Crowns) (z-60) -->
+              <div id="layer-headwear" class="layer-item" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;"></div>
             </div>
             <div class="pedestal-disk" id="preview-pedestal"></div>
           </div>
@@ -3106,6 +3107,9 @@
   <!-- 3. Application Controller & Router -->
   <script src="js/monster-renderer.js?v=3.0"></script>
   <script src="js/progress-check.js?v=3.0"></script>
+  <script src="js/gamification-milestones.js?v=3.0"></script>
+  <!-- 4-Track Curriculum Library Architecture & 3-Element Card System -->
+  <script src="js/library.js?v=3.0"></script>
   <script src="js/school-app.js?v=3.0"></script>
   <script src="js/simon-says-game.js?v=3.0"></script>
   <script src="js/classroom-sounds.js"></script>

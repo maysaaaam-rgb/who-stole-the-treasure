@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Adventure Academy Engine: Eco-Rover Mission Passport &amp; Diploma</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      padding: 20px;
+    }
+
+    /* Screen Control Action Bar (Hidden when printed) */
+    .screen-control-bar {
+      max-width: 1050px;
+      margin: 0 auto 20px auto;
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .screen-control-bar h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .action-btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+      background: #334155;
+      color: #fff;
+    }
+
+    .action-btn.secondary:hover {
+      background: #475569;
+    }
+
+    /* A4 Document Container */
+    .passport-document {
+      max-width: 1050px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .passport-page {
+      background: #fff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .student-id-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 15px;
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+    }
+
+    .id-field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .id-field .blank-line {
+      display: block;
+      border-bottom: 1.5px solid #0f172a;
+      height: 24px;
+    }
+
+    .exercise-section {
+      margin-bottom: 24px;
+    }
+
+    .exercise-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subsystems-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .subsystem-item-box {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fafafa;
+    }
+
+    .subsystem-item-box h4 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .sentence-completion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sentence-item {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      background: #f8fafc;
+      border-left: 3px solid #38bdf8;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .write-slot {
+      display: inline-block;
+      min-width: 140px;
+      border-bottom: 1.5px solid #0f172a;
+      text-align: center;
+      font-weight: 700;
+      color: #0369a1;
+      padding: 0 6px;
+    }
+
+    /* Page 2: Certified Diploma */
+    .diploma-frame {
+      border: 6px double #0284c7;
+      border-radius: 16px;
+      padding: 35px 25px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f0f9ff 100%);
+      position: relative;
+    }
+
+    .diploma-seal {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 15px auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: 3px solid #fef08a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4);
+    }
+
+    .diploma-title {
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #0c4a6e;
+      letter-spacing: -0.02em;
+    }
+
+    .diploma-subtitle {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    .diploma-body {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #334155;
+      max-width: 720px;
+      margin: 20px auto;
+    }
+
+    .diploma-signature-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 35px;
+      padding-top: 20px;
+    }
+
+    .sig-block {
+      text-align: center;
+      width: 200px;
+    }
+
+    .sig-line {
+      border-top: 1.5px solid #0f172a;
+      margin-bottom: 6px;
+      height: 2px;
+    }
+
+    .sig-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    /* Print Formatting */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .screen-control-bar {
+        display: none !important;
+      }
+      .passport-document {
+        gap: 0;
+      }
+      .passport-page {
+        border: none;
+        box-shadow: none;
+        page-break-after: always;
+        padding: 20mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- On-Screen Control Bar -->
+  <aside class="screen-control-bar">
+    <h1><span>⚡</span> Eco-Rover Mission Passport &amp; Diploma</h1>
+    <div class="action-btn-group">
+      <button type="button" class="action-btn" onclick="window.print()">
+        <span>🖨️</span> Print A4 Passport
+      </button>
+      <a href="index.html" class="action-btn secondary">
+        <span>🎮</span> Return to Game
+      </a>
+    </div>
+  </aside>
+
+  <main class="passport-document">
+    <!-- PAGE 1: MISSION PASSPORT -->
+    <article class="passport-page">
+      <header class="page-header">
+        <div>
+          <h2 style="font-size:1.3rem; font-weight:900; color:#0369a1;">ADVENTURE ACADEMY MISSION PASSPORT</h2>
+          <p style="font-size:0.85rem; color:#64748b;">CLIL Science &amp; Clean Energy &bull; Eco-Rover Expedition</p>
+        </div>
+        <div style="font-size:2rem;">⚡</div>
+      </header>
+
+      <!-- Student Identification Box -->
+      <section class="student-id-row">
+        <div class="id-field">
+          <label>Explorer Name</label>
+          <span class="blank-line"></span>
+        </div>
+        <div class="id-field">
+          <label>Date</label>
+          <span class="blank-line"></span>
+        </div>
+        <div class="id-field">
+          <label>Academy Grade</label>
+          <span class="blank-line"></span>
+        </div>
+      </section>
+
+      <!-- Station 1: Subsystems -->
+      <section class="exercise-section">
+        <h3 class="exercise-title"><span>1.</span> Subsystem Functions &bull; Complete the Language Formula</h3>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:12px;">Fill in the target verbs: <em>recharge</em>, <em>detect</em>, <em>climb</em>, <em>protect</em>.</p>
+        <div class="subsystems-grid">
+          <div class="subsystem-item-box">
+            <h4>☀️ Solar Canopy</h4>
+            <p style="font-size:0.85rem;">The solar canopy uses sunlight to <span class="write-slot"></span> the battery.</p>
+          </div>
+          <div class="subsystem-item-box">
+            <h4>⚙️ Kinetic Treads</h4>
+            <p style="font-size:0.85rem;">The kinetic treads use mechanical power to <span class="write-slot"></span> rocky terrain.</p>
+          </div>
+          <div class="subsystem-item-box">
+            <h4>📡 Synapse Radar</h4>
+            <p style="font-size:0.85rem;">The synapse radar uses electromagnetic waves to <span class="write-slot"></span> obstacles.</p>
+          </div>
+          <div class="subsystem-item-box">
+            <h4>🛡️ Shield Matrix</h4>
+            <p style="font-size:0.85rem;">The shield matrix uses magnetic plasma to <span class="write-slot"></span> the explorer crew.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Station 2: Oral Debrief Sentences -->
+      <section class="exercise-section">
+        <h3 class="exercise-title"><span>2.</span> Expedition Debrief &bull; Teleprompter Speech Log</h3>
+        <div class="sentence-completion-list">
+          <div class="sentence-item">
+            <strong>Line 1:</strong> Our Adventure Rover explores alien worlds with <span class="write-slot"></span> and science.
+          </div>
+          <div class="sentence-item">
+            <strong>Line 2:</strong> We use the solar canopy and quantum core to collect <span class="write-slot"></span> energy.
+          </div>
+          <div class="sentence-item">
+            <strong>Line 3:</strong> When danger appears, the shields and radar <span class="write-slot"></span> the team.
+          </div>
+          <div class="sentence-item">
+            <strong>Line 4:</strong> Curiosity powers discovery and <span class="write-slot"></span> powers adventure!
+          </div>
+        </div>
+      </section>
+    </article>
+
+    <!-- PAGE 2: CERTIFIED MASTER EXPLORER DIPLOMA -->
+    <article class="passport-page">
+      <div class="diploma-frame">
+        <div class="diploma-seal">🏆</div>
+        <h2 class="diploma-title">ADVENTURE ACADEMY CERTIFICATE OF EXCELLENCE</h2>
+        <div class="diploma-subtitle">Certified Master Eco-Rover Explorer</div>
+
+        <p class="diploma-body">
+          This certifies that Explorer <strong style="border-bottom: 2px solid #0284c7; display:inline-block; min-width:240px;"></strong> has successfully calibrated the 4 core subsystems of the Eco-Rover, cleared the planetary speed hazards, and broadcast the mission report to Earth!
+        </p>
+
+        <div style="display:flex; justify-content:center; gap:20px; margin: 25px 0;">
+          <span style="border:1.5px solid #0284c7; padding:6px 14px; border-radius:20px; font-weight:800; font-size:0.85rem; color:#0369a1;">☀️ Clean Energy Certified</span>
+          <span style="border:1.5px solid #0284c7; padding:6px 14px; border-radius:20px; font-weight:800; font-size:0.85rem; color:#0369a1;">⚡ 100% Supercharged</span>
+          <span style="border:1.5px solid #0284c7; padding:6px 14px; border-radius:20px; font-weight:800; font-size:0.85rem; color:#0369a1;">🎙️ Lead Broadcaster</span>
+        </div>
+
+        <div class="diploma-signature-row">
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <span class="sig-label">Expedition Commander</span>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <span class="sig-label">Adventure Academy Director</span>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <span class="sig-label">Date of Mission</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+</body>
+</html>

@@ -2062,40 +2062,100 @@
   };
 
   // =========================================================================
-  // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS
+  // MONSTER EVOLUTION SYSTEM — STANDARDIZED EVOLUTION & THRESHOLDS (7 STAGES)
+  // Single Source of Truth: Evaluated strictly from student.xp
   // =========================================================================
+
+  const EVOLUTION_TIERS = [
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+  ];
+
+  function getStageFromXP(rawXP) {
+    const xp = Math.max(0, Number(rawXP) || 0);
+    for (let i = EVOLUTION_TIERS.length - 1; i >= 0; i--) {
+      if (xp >= EVOLUTION_TIERS[i].minXP) {
+        const tier = EVOLUTION_TIERS[i];
+        const nextThreshold = tier.maxXP === Infinity ? tier.minXP : tier.maxXP + 1;
+        const progressInTier = tier.maxXP === Infinity 
+          ? 100 
+          : Math.min(100, Math.round(((xp - tier.minXP) / (nextThreshold - tier.minXP)) * 100));
+        return {
+          level: tier.level,
+          levelName: tier.name,
+          isEgg: tier.isEgg,
+          spriteType: tier.spriteType,
+          progressPct: progressInTier,
+          xpToNext: tier.maxXP === Infinity ? 0 : (nextThreshold - xp)
+        };
+      }
+    }
+    return EVOLUTION_TIERS[0];
+  }
+
+  // =========================================================================
+  // 4 DISTINCT SPECIES ARCHETYPES (SINGLE SOURCE OF TRUTH)
+  // 1. Ignis (Dragon/Flame): Pointed horns, dragon snout, warm ember underglow (#f97316)
+  // 2. Flora (Fox/Forest): Fluffy fox ears, leaf tail, emerald nature glow (#10b981)
+  // 3. Volt (Pikachu/Electric): Lightning-bolt ears, cheek pouches, electric amber glow (#eab308)
+  // 4. Astral (Owl/Cosmic): Feathered crest, star eyes, violet celestial glow (#8b5cf6)
+  // =========================================================================
+  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+
+  function getStudentArchetype(student) {
+    if (!student) return SPECIES_ARCHETYPES[0];
+    const s = (typeof student === 'object') ? student : { id: String(student) };
+    if (s.archetype) return s.archetype;
+    // Deterministic assignment based on student ID / name
+    const code = (s.id || s.name || "").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    return SPECIES_ARCHETYPES[code % SPECIES_ARCHETYPES.length];
+  }
+
+  function resolveLedgerType(type, category, source, reason) {
+    const validTypes = ['homework', 'quiz', 'participation', 'badge', 'behavior'];
+    if (type && validTypes.includes(String(type).toLowerCase())) {
+      return String(type).toLowerCase();
+    }
+    const text = `${category || ''} ${source || ''} ${reason || ''}`.toLowerCase();
+    if (text.includes('homework') || text.includes('assignment') || text.includes('worksheet')) return 'homework';
+    if (text.includes('quiz') || text.includes('test') || text.includes('assessment') || text.includes('exam')) return 'quiz';
+    if (text.includes('badge') || text.includes('award') || text.includes('ceremony') || text.includes('trophy')) return 'badge';
+    if (text.includes('behavior') || text.includes('needs_work') || text.includes('correction') || text.includes('focus') || text.includes('rule')) return 'behavior';
+    return 'participation';
+  }
 
   function evaluateMonsterStage(student) {
     if (!student) return student;
-    const xp = Number(student.xp) || 0;
+    const rawXP = (student.xp !== undefined && student.xp !== null) ? student.xp : 0;
+    const stage = getStageFromXP(rawXP);
 
-    // Set Level 3 hatch milestone higher so 170 XP remains a Cracking Egg
-    if (xp >= 500) {
-      student.level = 4;
-      student.stageName = "Level 4 - Growing Monster";
-      student.isEgg = false;
-      student.progress = Math.min(100, Math.round(((xp - 500) / 500) * 100));
-      student.crackProgress = 100;
-    } else if (xp >= 200) { // Hatch threshold
-      student.level = 3;
-      student.stageName = "Level 3 - Baby Monster";
-      student.isEgg = false;
-      student.progress = Math.min(100, Math.round(((xp - 200) / 300) * 100));
-      student.crackProgress = 100;
-    } else if (xp >= 30) {
-      student.level = 2;
-      student.stageName = "Level 2 - Cracking Egg";
-      student.avatar = "cracked-egg.png"; // Standard cracked egg sprite
-      student.isEgg = true;
-      student.crackProgress = Math.min(100, Math.round(((xp - 30) / (200 - 30)) * 100));
-      student.progress = student.crackProgress;
+    if (!Array.isArray(student.xpHistory)) student.xpHistory = [];
+
+    student.level = stage.level;
+    student.levelName = stage.levelName;
+    student.stageName = stage.levelName;
+    student.stageKey = stage.spriteType;
+    student.isEgg = stage.isEgg;
+    student.archetype = getStudentArchetype(student);
+    student.progressPct = stage.progressPct;
+    student.progressToNext = stage.progressPct;
+    student.progress = stage.progressPct;
+    student.remainingXP = stage.xpToNext;
+    student.xpToNext = stage.xpToNext;
+    student.crackProgress = stage.level === 1 ? Math.min(95, Math.round((Number(rawXP) / 30) * 100)) : (stage.level === 2 ? Math.min(100, Math.round(((Number(rawXP) - 30) / (200 - 30)) * 100)) : 100);
+    student.nextThreshold = stage.level === 7 ? 5000 : (EVOLUTION_TIERS[stage.level] ? EVOLUTION_TIERS[stage.level].minXP : 5000);
+
+    if (stage.isEgg) {
+      student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
+      student.avatar = stage.level === 1 ? 'mystery-egg.png' : 'cracked-egg.png';
     } else {
-      student.level = 1;
-      student.stageName = "Level 1 - Mystery Egg";
-      student.avatar = "mystery-egg.png";
-      student.isEgg = true;
-      student.crackProgress = Math.min(100, Math.round((xp / 30) * 100));
-      student.progress = student.crackProgress;
+      const cleanName = stage.levelName.replace(/^Level \d+\s*•\s*/, '');
+      student.equippedMonster = cleanName;
     }
 
     return student;
@@ -2103,6 +2163,161 @@
 
   function updateStudentEvolution(student) {
     return evaluateMonsterStage(student);
+  }
+
+  function syncAllStudentLevels() {
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.getStudents?.()) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    
+    const updatedStudents = students.map(student => {
+      evaluateMonsterStage(student);
+      return student;
+    });
+
+    if (typeof window !== 'undefined' && window.AdventureAcademy?.saveStudents) {
+      window.AdventureAcademy.saveStudents(updatedStudents);
+    } else if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(updatedStudents));
+    }
+    
+    if (typeof renderStudentRoster === 'function') {
+      renderStudentRoster();
+    } else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') {
+      window.renderStudentRoster();
+    }
+
+    return updatedStudents;
+  }
+
+  function recalculateAllStudents() {
+    if (typeof localStorage === 'undefined') return;
+    const storageKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'];
+    
+    storageKeys.forEach(key => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      try {
+        const list = JSON.parse(raw);
+        if (Array.isArray(list)) {
+          const updated = list.map(student => {
+            const evalStage = getStageFromXP(student.xp);
+            student.level = evalStage.level;
+            student.levelName = evalStage.levelName;
+            student.stageName = evalStage.levelName;
+            student.isEgg = evalStage.isEgg;
+            student.progressPct = evalStage.progressPct;
+            student.remainingXP = evalStage.xpToNext;
+            student.xpToNext = evalStage.xpToNext;
+            return student;
+          });
+          localStorage.setItem(key, JSON.stringify(updated));
+        }
+      } catch (e) {
+        console.error("Migration error on " + key, e);
+      }
+    });
+
+    // Also update master school store if present
+    try {
+      const masterRaw = localStorage.getItem('eaa_master_school_v6');
+      if (masterRaw) {
+        const masterData = JSON.parse(masterRaw);
+        if (masterData && Array.isArray(masterData.students)) {
+          masterData.students.forEach(student => {
+            const evalStage = getStageFromXP(student.xp);
+            student.level = evalStage.level;
+            student.levelName = evalStage.levelName;
+            student.stageName = evalStage.levelName;
+            student.isEgg = evalStage.isEgg;
+            student.progressPct = evalStage.progressPct;
+            student.remainingXP = evalStage.xpToNext;
+            student.xpToNext = evalStage.xpToNext;
+          });
+          localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterData));
+        }
+      }
+    } catch (e) {}
+
+    // Also update in-memory active store
+    if (typeof window !== 'undefined' && window.AdventureAcademy?.students) {
+      window.AdventureAcademy.students.forEach(s => {
+        Object.assign(s, getStageFromXP(s.xp));
+      });
+    }
+
+    if (typeof window !== 'undefined' && window.schoolStore?.state?.students) {
+      window.schoolStore.state.students.forEach(s => {
+        const evalStage = getStageFromXP(s.xp);
+        s.level = evalStage.level;
+        s.levelName = evalStage.levelName;
+        s.stageName = evalStage.levelName;
+        s.isEgg = evalStage.isEgg;
+        s.progressPct = evalStage.progressPct;
+        s.remainingXP = evalStage.xpToNext;
+        s.xpToNext = evalStage.xpToNext;
+      });
+    }
+  }
+
+  if (typeof localStorage !== 'undefined') {
+    recalculateAllStudents();
+  }
+
+  // Global AdventureAcademy Hub & Store Bridge
+  if (typeof root !== 'undefined') {
+    root.AdventureAcademy = root.AdventureAcademy || {};
+    root.recalculateAllStudents = recalculateAllStudents;
+    root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
+    root.getStudentArchetype = getStudentArchetype;
+    if (typeof window !== 'undefined') {
+      window.recalculateAllStudents = recalculateAllStudents;
+      window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
+      window.getStudentArchetype = getStudentArchetype;
+    }
+    root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
+    root.AdventureAcademy.getStudentArchetype = getStudentArchetype;
+    if (!root.AdventureAcademy.getStudents) {
+      root.AdventureAcademy.getStudents = function() {
+        const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
+        if (activeStore && activeStore.state && Array.isArray(activeStore.state.students) && activeStore.state.students.length > 0) {
+          return activeStore.state.students;
+        }
+        if (typeof localStorage !== 'undefined') {
+          const raw = localStorage.getItem('adventure_students');
+          if (raw) {
+            try { return JSON.parse(raw); } catch (e) {}
+          }
+          const master = localStorage.getItem(STORAGE_KEY);
+          if (master) {
+            try {
+              const parsed = JSON.parse(master);
+              if (parsed && Array.isArray(parsed.students) && parsed.students.length > 0) {
+                return parsed.students;
+              }
+            } catch (e) {}
+          }
+        }
+        return [];
+      };
+    }
+    if (!root.AdventureAcademy.saveStudents) {
+      root.AdventureAcademy.saveStudents = function(updatedStudents) {
+        const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
+        if (activeStore && activeStore.state && Array.isArray(updatedStudents)) {
+          activeStore.state.students = updatedStudents;
+          if (typeof activeStore.saveState === 'function') {
+            activeStore.saveState();
+          }
+        }
+        if (typeof localStorage !== 'undefined') {
+          try {
+            localStorage.setItem('adventure_students', JSON.stringify(updatedStudents));
+          } catch (e) {}
+        }
+      };
+    }
+    root.AdventureAcademy.syncAllStudentLevels = syncAllStudentLevels;
+    root.AdventureAcademy.recalculateAllStudents = recalculateAllStudents;
   }
 
   const DEFAULT_PROGRESSION_LEVELS = [
@@ -9444,19 +9659,37 @@
         this.state.students.forEach(s => {
           if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
         });
-        const ipek = this.state.students.find(s => {
-          const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
-          return name.includes("ipek") || name.includes("i̇pek");
-        });
-        if (ipek) {
-          ipek.level = 2;
-          ipek.stageName = "Level 2 - Cracking Egg";
-          ipek.avatar = "cracked-egg.png";
-          ipek.crackProgress = 100;
-        }
       }
+      this.syncAllStudentLevels();
       this.listeners = [];
       try { this.saveState(); } catch (e) {}
+    }
+
+    syncAllStudentLevels() {
+      if (!this.state || !Array.isArray(this.state.students)) return [];
+      const updated = this.state.students.map(student => {
+        const txTotal = this.getStudentTotalXP(student.id);
+        student.xp = Math.max(Number(student.xp) || 0, txTotal);
+        evaluateMonsterStage(student);
+        const profile = this.getMonsterProfile(student.id);
+        if (profile) {
+          profile.highestUnlockedLevel = student.level;
+          profile.isHatched = (student.level >= 3);
+        }
+        return student;
+      });
+      this.saveState();
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+        }
+      } catch (e) {}
+      if (typeof renderStudentRoster === 'function') {
+        renderStudentRoster();
+      } else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') {
+        window.renderStudentRoster();
+      }
+      return updated;
     }
 
     loadState() {
@@ -9712,6 +9945,38 @@
 
                 // Canonical link: student.monsterProfile is the single source of truth
                 st.monsterProfile = merged.monsterProfiles[st.id];
+
+                // Authoritative student.xpHistory ledger initialization & sync
+                if (!Array.isArray(st.xpHistory) || st.xpHistory.length === 0) {
+                  const studentTxs = (merged.xpTransactions || []).filter(tx => tx.studentId === st.id || tx.studentId === st.studentIdNumber);
+                  if (studentTxs.length > 0) {
+                    let running = 0;
+                    st.xpHistory = studentTxs.map(tx => {
+                      const amt = Number(tx.amount) || 0;
+                      if (tx.status !== 'voided') running += amt;
+                      return {
+                        id: tx.id || ('tx_' + Date.now()),
+                        amount: amt,
+                        type: tx.type || resolveLedgerType(tx.type, tx.category, tx.source, tx.reason),
+                        reason: tx.reason || 'Classroom XP Award',
+                        timestamp: tx.timestamp || new Date().toISOString(),
+                        balanceAfter: tx.balanceAfter !== undefined ? tx.balanceAfter : Math.max(0, running),
+                        status: tx.status || 'active'
+                      };
+                    });
+                  } else if ((Number(st.xp) || 0) > 0) {
+                    st.xpHistory = [{
+                      id: 'tx_' + Date.now() + '_' + (st.id || 'init'),
+                      amount: Number(st.xp) || 0,
+                      type: 'participation',
+                      reason: 'Initial Adventure XP Baseline',
+                      timestamp: new Date().toISOString(),
+                      balanceAfter: Number(st.xp) || 0
+                    }];
+                  } else {
+                    st.xpHistory = [];
+                  }
+                }
 
                 // Deprecate old legacy avatar field
                 delete st.avatar;
@@ -9999,18 +10264,11 @@
                 if (!tx.timestamp) tx.timestamp = new Date(tx.date || Date.now()).toISOString();
               });
             }
-            // Apply standardized stage for İpek
+            // Auto-sync all student levels and progression stages
             if (Array.isArray(merged.students)) {
-              const ipek = merged.students.find(s => {
-                const name = (((s.name || '') + ' ' + (s.firstName || '') + ' ' + (s.lastName || ''))).toLowerCase();
-                return name.includes("ipek") || name.includes("i̇pek");
+              merged.students.forEach(s => {
+                evaluateMonsterStage(s);
               });
-              if (ipek) {
-                ipek.level = 2;
-                ipek.stageName = "Level 2 - Cracking Egg";
-                ipek.avatar = "cracked-egg.png";
-                ipek.crackProgress = 100;
-              }
             }
 
             return merged;
@@ -10026,6 +10284,9 @@
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+          if (this.state && Array.isArray(this.state.students)) {
+            localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+          }
         }
       } catch (e) {
         console.warn('MasterSchoolStore: Failed to save state to localStorage', e);
@@ -10121,6 +10382,7 @@
       if (classId) list = list.filter(s => s.classId === classId);
       list.forEach(s => {
         if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+        evaluateMonsterStage(s);
         if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       });
       return list;
@@ -10134,8 +10396,10 @@
       if (!this.state.students || !id) return null;
       const strId = String(id).trim();
       const s = this.state.students.find(s => s.id === strId || (s.studentIdNumber && String(s.studentIdNumber).trim() === strId));
-      if (s && !s.monsterProfile) {
-        s.monsterProfile = this.getMonsterProfile(s.id);
+      if (s) {
+        if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+        evaluateMonsterStage(s);
+        if (!s.monsterProfile) s.monsterProfile = this.getMonsterProfile(s.id);
       }
       return s;
     }
@@ -10266,12 +10530,16 @@
     // TRANSACTION-BASED XP ARCHITECTURE & AUDIT LEDGER
     // =========================================================================
     getStudentTotalXP(studentId) {
-      if (!this.state.xpTransactions || !studentId) return 0;
-      const s = this.getStudent(studentId);
+      if (!studentId) return 0;
+      const s = (this.state && this.state.students) ? this.state.students.find(std => std.id === studentId || std.studentIdNumber === studentId) : null;
+      const sXP = s ? (Number(s.xp) || 0) : 0;
+      if (!this.state || !this.state.xpTransactions || !this.state.xpTransactions.length) {
+        return sXP;
+      }
       const resolvedId = s ? s.id : studentId;
-      // Strictly recalculate from active transactions only
       const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
-      return txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      const txSum = txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
+      return Math.max(sXP, txSum);
     }
 
     getXPTransactions(studentId, includeVoided = false) {
@@ -10284,8 +10552,23 @@
         .reverse();
     }
 
-    getStudentXPTransactions(studentId, includeVoided = false) {
+    getStudentXPTransactions(studentId, includeVoided = true) {
       return this.getXPTransactions(studentId, includeVoided);
+    }
+
+    getStudentXPHistory(studentId) {
+      const s = this.getStudent(studentId);
+      if (s && Array.isArray(s.xpHistory) && s.xpHistory.length > 0) {
+        const first = s.xpHistory[0];
+        const last = s.xpHistory[s.xpHistory.length - 1];
+        const firstTime = new Date(first.timestamp || first.date || 0).getTime();
+        const lastTime = new Date(last.timestamp || last.date || 0).getTime();
+        if (firstTime < lastTime) {
+          s.xpHistory.reverse();
+        }
+        return s.xpHistory.slice();
+      }
+      return this.getStudentXPTransactions(studentId, true);
     }
 
     getAllXPTransactions(studentId) {
@@ -10305,19 +10588,22 @@
       const points = numAmount;
       const xpVal = numAmount;
       const category = options.category || (points < 0 ? 'needs_work' : 'positive');
+      const resolvedType = resolveLedgerType(options.type, category, source, reason);
+      const txId = options.id || ('tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4));
       const tx = {
-        id: 'xp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        id: txId,
         studentId,
         skillId: options.skillId || null,
         amount: points,
         points: points,
         xpAmount: points,
         xp: xpVal,
+        type: resolvedType,
         reason: reason || (points >= 0 ? 'Positive Classroom Contribution' : 'Needs Focus'),
         category,
         icon: options.icon || (points > 0 ? '⭐' : '💭'),
         date: options.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        timestamp: new Date().toISOString(),
+        timestamp: options.timestamp || new Date().toISOString(),
         teacherId: options.teacherId || options.createdBy || 'Teacher',
         createdBy: options.createdBy || options.teacherId || source || 'Teacher',
         source: options.source || source || 'teacher_feedback',
@@ -10365,11 +10651,31 @@
       if (s) {
         s.xp = newTotalXP;
         s.totalXP = newTotalXP;
+        tx.balanceAfter = s.xp;
+        if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
+        const now = new Date();
+        const ledgerItem = {
+          id: tx.id,
+          amount: points,
+          type: resolvedType,
+          reason: tx.reason,
+          date: now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+          time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          timestamp: tx.timestamp,
+          balanceAfter: s.xp
+        };
+        s.xpHistory.unshift(ledgerItem);
       }
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
       if (s) {
         s.level = newLevel;
+        evaluateMonsterStage(s);
+        try {
+          if (typeof localStorage !== 'undefined' && this.state.students) {
+            localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+          }
+        } catch (e) {}
       }
 
       let evolutionEvent = null;
@@ -10453,8 +10759,32 @@
       };
     }
 
-    awardXP(studentId, amount, reason, teacher, options) {
-      return this.giveXP(studentId, amount, reason, teacher, options);
+    getStudentById(studentId) {
+      return this.getStudent(studentId);
+    }
+
+    awardXP(arg1, amountArg, typeArg, reasonArg) {
+      let studentId, amount, type, reason;
+      if (typeof arg1 === 'object' && arg1 !== null) {
+        studentId = arg1.studentId;
+        amount = arg1.amount;
+        type = arg1.type || "participation";
+        reason = arg1.reason || "Classroom Activity";
+      } else {
+        studentId = arg1;
+        amount = amountArg;
+        type = typeArg || "participation";
+        reason = reasonArg || "Classroom Activity";
+      }
+      return this.giveXP(studentId, amount, reason, 'Teacher', { type });
+    }
+
+    awardStudentXP(studentId, amount, reason, options = {}) {
+      if (typeof reason === 'object' && !options) {
+        options = reason;
+        reason = options.reason || 'Classroom Award';
+      }
+      return this.giveXP(studentId, amount, reason, 'Teacher', options);
     }
 
     giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
@@ -10578,8 +10908,26 @@
       const tx = this.state.xpTransactions.find(t => t.id === txId);
       if (!tx) return false;
       tx.status = 'voided';
+      tx.isVoided = true;
       tx.voidReason = voidReason;
       tx.voidedAt = new Date().toISOString();
+
+      const s = this.getStudent(tx.studentId);
+      if (s) {
+        if (Array.isArray(s.xpHistory)) {
+          const hEntry = s.xpHistory.find(e => e.id === txId);
+          if (hEntry) {
+            hEntry.status = 'voided';
+            hEntry.isVoided = true;
+            hEntry.voidReason = voidReason;
+            hEntry.voidedAt = tx.voidedAt;
+          }
+        }
+        s.xp = Math.max(0, (Number(s.xp) || 0) - (Number(tx.amount) || 0));
+        s.totalXP = s.xp;
+        evaluateMonsterStage(s);
+      }
+
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
       return true;
@@ -10590,8 +10938,26 @@
       const tx = this.state.xpTransactions.find(t => t.id === txId);
       if (!tx) return false;
       tx.status = 'active';
+      tx.isVoided = false;
       delete tx.voidReason;
       delete tx.voidedAt;
+
+      const s = this.getStudent(tx.studentId);
+      if (s) {
+        if (Array.isArray(s.xpHistory)) {
+          const hEntry = s.xpHistory.find(e => e.id === txId);
+          if (hEntry) {
+            hEntry.status = 'active';
+            hEntry.isVoided = false;
+            delete hEntry.voidReason;
+            delete hEntry.voidedAt;
+          }
+        }
+        s.xp = Math.max(0, (Number(s.xp) || 0) + (Number(tx.amount) || 0));
+        s.totalXP = s.xp;
+        evaluateMonsterStage(s);
+      }
+
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
       return true;
@@ -12537,44 +12903,30 @@
 
     calculateMonsterState(studentId) {
       const totalXP = this.getStudentTotalXP(studentId);
-      const levels = this.getProgressionLevels().slice().sort((a, b) => a.xpRequired - b.xpRequired);
-      const profile = this.getMonsterProfile(studentId);
+      const stage = getStageFromXP(totalXP);
+      const profile = this.getMonsterProfile(studentId) || {};
 
-      let levelFromXP = 1;
-      for (let i = 0; i < levels.length; i++) {
-        if (totalXP >= levels[i].xpRequired) {
-          levelFromXP = levels[i].level;
-        } else {
-          break;
-        }
+      // Permanent Evolution Rule & Dynamic XP Single Source of Truth:
+      // Synchronize profile level and hatch state strictly to XP stage
+      profile.highestUnlockedLevel = stage.level;
+      if (stage.level >= 3) {
+        profile.isHatched = true;
       }
 
-      // Permanent Evolution Rule: highestUnlockedLevel never downgrades even if XP decreases
-      const highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, levelFromXP);
-      if (highestUnlockedLevel > (profile.highestUnlockedLevel || 1)) {
-        profile.highestUnlockedLevel = highestUnlockedLevel;
-        if (highestUnlockedLevel >= 3) profile.isHatched = true;
-        this.saveState();
-      }
+      const currentDisplayedLevel = stage.level;
+      const currentLevelTier = EVOLUTION_TIERS[stage.level - 1] || EVOLUTION_TIERS[0];
+      const nextLevelTier = EVOLUTION_TIERS[stage.level] || null;
 
-      const currentDisplayedLevel = highestUnlockedLevel;
-      const currentLevelObj = levels.find(l => l.level === currentDisplayedLevel) || levels[0];
-      const nextLevelObj = levels.find(l => l.level === currentDisplayedLevel + 1) || null;
+      const currentLevel = stage.level;
+      const stageKey = stage.spriteType;
+      const stageName = stage.levelName;
+      const stageDescription = `Level ${stage.level} monster companion.`;
+      const levelXP = currentLevelTier.minXP;
+      const nextLevelXP = nextLevelTier ? nextLevelTier.minXP : levelXP;
+      const xpToNext = stage.xpToNext;
+      const progressPct = stage.progressPct;
 
-      const currentLevel = currentLevelObj.level;
-      const stageKey = currentLevelObj.stageKey;
-      const stageName = currentLevelObj.name;
-      const stageDescription = currentLevelObj.description || 'Companion in English Adventure Academy.';
-      const levelXP = currentLevelObj.xpRequired;
-      const nextLevelXP = nextLevelObj ? nextLevelObj.xpRequired : levelXP;
-      const xpToNext = nextLevelObj ? Math.max(0, nextLevelObj.xpRequired - totalXP) : 0;
-      
-      let progressPct = 100;
-      if (nextLevelObj && nextLevelXP > levelXP) {
-        progressPct = Math.min(100, Math.max(0, Math.round(((totalXP - levelXP) / (nextLevelXP - levelXP)) * 100)));
-      }
-
-      const isHatched = (currentDisplayedLevel >= 3) || !!profile.isHatched;
+      const isHatched = !stage.isEgg;
 
       let eggCrackPct = 0;
       if (currentDisplayedLevel === 1) {
@@ -12584,6 +12936,20 @@
       } else {
         eggCrackPct = 100;
       }
+
+      const currentLevelObj = {
+        level: stage.level,
+        name: stage.levelName,
+        stageKey: stage.spriteType,
+        xpRequired: levelXP,
+        description: stageDescription
+      };
+      const nextLevelObj = nextLevelTier ? {
+        level: nextLevelTier.level,
+        name: nextLevelTier.name,
+        stageKey: nextLevelTier.spriteType,
+        xpRequired: nextLevelTier.minXP
+      } : null;
 
       const allItems = this.getMonsterItems(null, true);
       const unlockedItemIds = new Set(profile.unlockedItems || []);
@@ -12604,8 +12970,12 @@
         }
       });
 
+      const st = (this.state && this.state.students) ? this.state.students.find(s => s.id === studentId || s.studentIdNumber === studentId) : null;
+      const archetype = getStudentArchetype(st || { id: studentId });
+
       return {
         studentId,
+        archetype,
         totalXP,
         currentLevel,
         stageKey,
@@ -12618,7 +12988,7 @@
         progressPct,
         progressPctToNextLevel: progressPct,
         isHatched,
-        isEgg: currentDisplayedLevel < 3,
+        isEgg: stage.isEgg,
         avatar: currentDisplayedLevel === 1 ? "mystery-egg.png" : (currentDisplayedLevel === 2 ? "cracked-egg.png" : null),
         crackProgress: eggCrackPct,
         eggCrackPct,
@@ -12626,7 +12996,7 @@
         unlockedItemIds,
         currentLevelObj,
         nextLevelObj,
-        highestUnlockedLevel,
+        highestUnlockedLevel: stage.level,
         profile
       };
     }
@@ -15532,11 +15902,13 @@
 
   MasterSchoolStore.prototype.evaluateMonsterStage = evaluateMonsterStage;
   MasterSchoolStore.prototype.updateStudentEvolution = updateStudentEvolution;
+  MasterSchoolStore.prototype.syncAllStudentLevels = syncAllStudentLevels;
 
   // Export singleton instance
   const schoolStore = new MasterSchoolStore();
   schoolStore.evaluateMonsterStage = evaluateMonsterStage;
   schoolStore.updateStudentEvolution = updateStudentEvolution;
+  schoolStore.syncAllStudentLevels = syncAllStudentLevels;
   schoolStore.awardBadge = schoolStore.awardBadgeToStudent.bind(schoolStore);
   schoolStore.addGame = schoolStore.addResource.bind(schoolStore);
   schoolStore.updateGame = schoolStore.updateResource.bind(schoolStore);
@@ -15545,10 +15917,12 @@
 
   root.evaluateMonsterStage = evaluateMonsterStage;
   root.updateStudentEvolution = updateStudentEvolution;
+  root.syncAllStudentLevels = syncAllStudentLevels;
 
   if (typeof window !== 'undefined') {
     window.evaluateMonsterStage = evaluateMonsterStage;
     window.updateStudentEvolution = updateStudentEvolution;
+    window.syncAllStudentLevels = syncAllStudentLevels;
     window.SchoolStore = MasterSchoolStore;
     window.schoolStore = schoolStore;
     window.store = schoolStore;
@@ -15557,13 +15931,20 @@
     window.GLOBAL_READINGS_3_PAGES = GLOBAL_READINGS_3_PAGES;
     window.GLOBAL_READINGS_3_DATA = GLOBAL_READINGS_3_DATA;
 
+    // Run immediate synchronization across active database/localStorage
+    try {
+      syncAllStudentLevels();
+    } catch (e) {
+      console.warn('[SchoolStore] Auto-sync student levels on startup:', e);
+    }
+
     // Initialize continuous background cloud sync & cross-device auto-sync
     if (window.SchoolCloudSync) {
       window.SchoolCloudSync.setupAutoSync(schoolStore);
     }
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, evaluateMonsterStage, updateStudentEvolution, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
+    module.exports = { MasterSchoolStore, SchoolStore: MasterSchoolStore, schoolStore, evaluateMonsterStage, updateStudentEvolution, syncAllStudentLevels, GLOBAL_READINGS_2_PAGES, GLOBAL_READINGS_2_DATA, GLOBAL_READINGS_3_PAGES, GLOBAL_READINGS_3_DATA };
   }
 
 })(typeof window !== 'undefined' ? window : global);

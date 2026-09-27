@@ -59,6 +59,25 @@ class AcademySoundEngine {
     this.playChord([220, 277.18, 329.63], "triangle", 0.4, 0.18);
   }
 
+  // Mechanical micro-click for active button presses
+  playSnap() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.03);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.035);
+  }
+
   // Soft Fail / Try Again
   playSoftFail() {
     this.playChord([246.94, 220.00], "sine", 0.28, 0.2);

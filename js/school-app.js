@@ -1109,6 +1109,9 @@
       ? (profile.monsterName || profile.element).toLowerCase().replace(/\s+/g, '')
       : (element === 'ember' ? 'emberwing' : 'monster');
 
+    const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+    const archetypeClass = 'archetype-' + archetype;
+
     let avatarMarkup = '';
     const customImg = options.image || s.monsterAvatar;
     if (customImg) {
@@ -1118,6 +1121,8 @@
         stage: mState.stageKey || 'baby',
         color: (profile && profile.baseColor) || 'blue',
         equipped: (profile && profile.equipped) || {},
+        archetype: archetype,
+        studentId: studentId,
         size: 120,
         animated: true,
         isAvatar: true
@@ -1127,16 +1132,17 @@
       avatarMarkup = '<img src="' + assetUrl + '" class="monster-avatar" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
     }
 
-    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, ''));
+    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
     const streak = s.streakDays || 0;
 
     return '' +
-      '<div class="student-card ' + elementClass + '" data-student-id="' + studentId + '">' +
+      '<div class="student-card ' + elementClass + ' ' + archetypeClass + '" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
         // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
         '<div class="card-overlay-top">' +
           '<div class="card-overlay-left">' +
             '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
             '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+            '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
           '</div>' +
           '<div class="card-overlay-right">' +
             '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -1170,12 +1176,11 @@
             '<h3 class="student-name">' + studentName + '</h3>' +
             '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + '</span>' +
           '</div>' +
-          '<p class="student-grade">' + gradeLabel + '</p>' +
           '<div class="student-xp-progress-bar" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
             '<div class="student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%;"></div>' +
           '</div>' +
           '<div class="student-card-action-bar">' +
-            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
+            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
               '⚡ +10 XP' +
             '</button>' +
           '</div>' +
@@ -2198,9 +2203,134 @@
     renderCurrentView();
   };
 
+  /* =========================================================================
+     STUDENT XP AUDIT LEDGER TIMELINE FEED & FILTERS
+     ========================================================================= */
+  window.currentLedgerFilter = 'all';
+
+  window.renderLedgerTimelineFeed = function(studentId, filterType = 'all') {
+    const s = store.getStudent(studentId);
+    if (!s) return '<div style="padding:24px; text-align:center; color:#94a3b8;">No student record found.</div>';
+
+    let txs = (Array.isArray(s.xpHistory) && s.xpHistory.length > 0)
+      ? s.xpHistory.slice().reverse()
+      : store.getStudentXPTransactions(studentId, true);
+
+    if (filterType === 'homework') {
+      txs = txs.filter(t => t.type === 'homework' || (t.category && String(t.category).includes('homework')));
+    } else if (filterType === 'quiz') {
+      txs = txs.filter(t => t.type === 'quiz' || (t.category && (String(t.category).includes('quiz') || String(t.category).includes('assessment'))));
+    } else if (filterType === 'live') {
+      txs = txs.filter(t => ['participation', 'behavior', 'badge', 'live', 'positive'].includes(t.type) || ['participation', 'behavior', 'badge', 'live', 'positive'].includes(t.category));
+    }
+
+    if (!txs || txs.length === 0) {
+      return '<div style="padding:32px; text-align:center; color:#94a3b8; font-size:0.86rem; background:#0f172a; border-radius:10px; border:1px solid #1e293b;">No transactions recorded for "' + filterType + '".</div>';
+    }
+
+    const typeIcons = {
+      homework: '📝',
+      quiz: '🧠',
+      participation: '✋',
+      badge: '🎖️',
+      behavior: '⭐'
+    };
+
+    const typePills = {
+      homework: { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe', label: 'HOMEWORK' },
+      quiz: { bg: '#fef3c7', color: '#b45309', border: '#fde68a', label: 'QUIZ' },
+      participation: { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0', label: 'CLASSROOM' },
+      badge: { bg: '#faf5ff', color: '#6d28d9', border: '#ddd6fe', label: 'BADGE' },
+      behavior: { bg: '#fdf2f8', color: '#be185d', border: '#fbcfe8', label: 'BEHAVIOR' }
+    };
+
+    return txs.map(tx => {
+      const isVoided = !!tx.isVoided || tx.status === 'voided';
+      const numAmt = parseInt(tx.amount, 10) || 0;
+      const isPos = numAmt >= 0;
+      const amtColor = isVoided ? '#94a3b8' : (isPos ? '#10b981' : '#ef4444');
+      const amtSign = isPos ? '+' : '';
+      const dateStr = tx.timestamp 
+        ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }) 
+        : (tx.date || '—');
+      const tType = (tx.type || 'participation').toLowerCase();
+      const icon = tx.icon || typeIcons[tType] || '⭐';
+      const pill = typePills[tType] || typePills.participation;
+      const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : null;
+
+      return '' +
+        '<div class="xp-timeline-card ' + (isVoided ? 'is-voided' : '') + '" style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; border:1px solid #334155; border-radius:10px; padding:10px 14px; transition:transform 0.18s ease;' + (isVoided ? ' opacity:0.45; text-decoration:line-through;' : '') + '">' +
+          '<div style="display:flex; align-items:center; gap:12px; min-width:0;">' +
+            '<div style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#0f172a; color:#f8fafc; font-size:1.1rem; border:1px solid #334155; flex-shrink:0;">' +
+              icon +
+            '</div>' +
+            '<div style="min-width:0;">' +
+              '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                '<span style="font-size:0.88rem; font-weight:800; color:#f8fafc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (tx.reason || 'XP transaction') + '</span>' +
+                '<span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:6px; background:' + pill.bg + '; color:' + pill.color + '; border:1px solid ' + pill.border + ';">' + pill.label + '</span>' +
+                (isVoided ? '<span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:6px; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5;">VOIDED</span>' : '') +
+              '</div>' +
+              '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">' +
+                '<span>' + dateStr + '</span>' +
+                (balanceStr ? ('<span style="margin: 0 6px;">•</span><span style="color:#cbd5e1;">Balance: <strong style="color:#f59e0b;">' + balanceStr + '</strong></span>') : '') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:10px; margin-left:12px; flex-shrink:0;">' +
+            '<span style="font-size:1.1rem; font-weight:900; color:' + amtColor + ';">' +
+              amtSign + numAmt + ' XP' +
+            '</span>' +
+            (!isVoided ?
+              '<button type="button" class="btn-sm-secondary" onclick="handleVoidStudentXPTransaction(\'' + tx.id + '\', \'' + studentId + '\')" title="Void this transaction" style="padding:2px 6px; font-size:0.7rem; color:var(--color-danger); border-color:#dc262644; background:transparent;">Void</button>' :
+              '<button type="button" class="btn-sm-secondary" onclick="handleRestoreStudentXPTransaction(\'' + tx.id + '\', \'' + studentId + '\')" title="Restore this transaction" style="padding:2px 6px; font-size:0.7rem; color:#10b981; border-color:#10b98144; background:transparent;">Restore</button>'
+            ) +
+          '</div>' +
+        '</div>';
+    }).join('');
+  };
+
+  window.filterLedger = function(type) {
+    window.currentLedgerFilter = type;
+    const studentId = window.currentProfileStudentId || window.currentLedgerStudentId;
+    const feed = document.getElementById('xp-history-feed');
+    if (feed && studentId) {
+      feed.innerHTML = window.renderLedgerTimelineFeed(studentId, type);
+    }
+    const container = document.getElementById('student-xp-history-tab') || document.getElementById('xp-history-modal') || document.getElementById('student-profile-modal') || document.getElementById('modal-student-profile');
+    if (container) {
+      const pills = container.querySelectorAll('.filter-pill');
+      pills.forEach(p => {
+        const onclickAttr = p.getAttribute('onclick') || '';
+        if (onclickAttr.includes("'" + type + "'") || onclickAttr.includes('"' + type + '"')) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+    }
+  };
+
+  window.handleRestoreStudentXPTransaction = function(txId, studentId) {
+    if (store.restoreXPTransaction) {
+      store.restoreXPTransaction(txId);
+      if (typeof showNotification === 'function') showNotification('Transaction restored and XP balance updated.');
+      const updatedTotal = store.getStudentTotalXP(studentId);
+      const lifetimeEl = document.getElementById('ledger-lifetime-xp');
+      if (lifetimeEl) lifetimeEl.innerText = '⭐ ' + updatedTotal.toLocaleString() + ' XP';
+      const feed = document.getElementById('xp-history-feed');
+      if (feed) feed.innerHTML = window.renderLedgerTimelineFeed(studentId, window.currentLedgerFilter || 'all');
+      if (document.getElementById('modal-student-xp-history')?.classList.contains('is-open')) {
+        window.openStudentXPHistoryModal(studentId);
+      }
+      if (typeof renderCurrentView === 'function') renderCurrentView();
+    }
+  };
+
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
-  // =========================================================================
+  window.openStudentProfile = function(studentIdOrNumber, activeTab = 'overview') {
+    return window.openStudentDetail(studentIdOrNumber, activeTab);
+  };
   window.openStudentDetail = function(studentIdOrNumber, activeTab = 'overview') {
     const student = store.getStudent(studentIdOrNumber);
     if (!student) return;
@@ -2208,7 +2338,7 @@
     currentProfileStudentId = studentId;
     window.currentProfileStudentId = studentId;
     studentProfileActiveTab = activeTab;
-    const modal = document.getElementById('modal-student-profile');
+    const modal = document.getElementById('student-profile-modal') || document.getElementById('modal-student-profile');
     if (!modal) return;
 
     const totalXP = store.getStudentTotalXP(studentId);
@@ -2728,103 +2858,58 @@
 
       case 'xp':
         const xpReport = store.getXPReport(student.id);
-        const allTxs = store.getAllXPTransactions(student.id);
+        const currentLifetimeXP = store.getStudentTotalXP(student.id);
+        window.currentLedgerStudentId = student.id;
+        window.currentLedgerFilter = window.currentLedgerFilter || 'all';
+
         return '' +
-          '<!-- Top XP KPI Cards -->' +
-          '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:16px;">' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center; cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
-              '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted); font-weight:700;">' +
-                '<span>TOTAL ACTIVE XP</span>' +
-                '<span style="color:var(--color-primary); font-size:0.7rem;">✏️ Edit</span>' +
+          '<div id="student-xp-history-tab" class="profile-tab-content">' +
+            '<!-- Ledger Summary Bar -->' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:12px 18px; border-radius:12px; margin-bottom:14px; border:1px solid #1e293b;">' +
+              '<div>' +
+                '<span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Lifetime Total</span>' +
+                '<h3 style="margin:0; font-size:1.4rem; color:#f59e0b; font-weight:900;" id="ledger-lifetime-xp">⭐ ' + currentLifetimeXP.toLocaleString() + ' XP</h3>' +
               '</div>' +
-              '<div style="font-size:1.35rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + xpReport.totalXP.toLocaleString() + '</div>' +
-            '</div>' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center;">' +
-              '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">PAST 7 DAYS</div>' +
-              '<div style="font-size:1.35rem; font-weight:900; color:#059669; margin-top:2px;">+' + xpReport.xpThisWeek.toLocaleString() + '</div>' +
-            '</div>' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center;">' +
-              '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">PAST 30 DAYS</div>' +
-              '<div style="font-size:1.35rem; font-weight:900; color:#2563eb; margin-top:2px;">+' + xpReport.xpThisMonth.toLocaleString() + '</div>' +
-            '</div>' +
-            '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px; text-align:center;">' +
-              '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">AUDIT TRAIL</div>' +
-              '<div style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin-top:2px;">' + xpReport.activeCount + ' <span style="font-size:0.75rem; font-weight:500; color:var(--text-muted);">(' + xpReport.voidedCount + ' voided)</span></div>' +
-            '</div>' +
-          '</div>' +
-
-          '<!-- Points Report Breakdown Banner -->' +
-          '<div style="background:var(--bg-muted); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-            '<div>' +
-              '<div style="font-size:0.82rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">Points Breakdown by Category</div>' +
-              '<div style="display:flex; gap:12px; font-size:0.78rem; flex-wrap:wrap;">' +
-                '<span style="color:#7c3aed; font-weight:700;">📊 Assessments: +' + (xpReport.categoryBreakdown.assessment || 0) + '</span>' +
-                '<span style="color:#059669; font-weight:700;">⭐ Positive Skills: +' + xpReport.categoryBreakdown.positive + '</span>' +
-                '<span style="color:#2563eb; font-weight:700;">🎮 Quests: +' + xpReport.categoryBreakdown.activity + '</span>' +
-                '<span style="color:#b45309; font-weight:700;">🏆 Badges: +' + (xpReport.categoryBreakdown.badge || 0) + '</span>' +
-                '<span style="color:#0284c7; font-weight:700;">📅 Attendance: +' + (xpReport.categoryBreakdown.attendance || 0) + '</span>' +
-                '<span style="color:#dc2626; font-weight:700;">💭 Needs Work: -' + xpReport.categoryBreakdown.needs_work + '</span>' +
-                '<span style="color:#6b7280; font-weight:700;">🎁 Redeemed: -' + xpReport.categoryBreakdown.redeemed + '</span>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button class="filter-pill ' + (window.currentLedgerFilter === 'all' ? 'active' : '') + '" onclick="filterLedger(\'all\')">All</button>' +
+                '<button class="filter-pill ' + (window.currentLedgerFilter === 'homework' ? 'active' : '') + '" onclick="filterLedger(\'homework\')">Homework</button>' +
+                '<button class="filter-pill ' + (window.currentLedgerFilter === 'quiz' ? 'active' : '') + '" onclick="filterLedger(\'quiz\')">Quizzes</button>' +
+                '<button class="filter-pill ' + (window.currentLedgerFilter === 'live' ? 'active' : '') + '" onclick="filterLedger(\'live\')">Classroom</button>' +
               '</div>' +
             '</div>' +
-            '<div style="display:flex; gap:8px;">' +
-              '<button class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px; font-weight:700;">✏️ Adjust Total XP</button>' +
-              '<button class="btn-primary-action" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.8rem; padding:6px 12px;">+ Award Points</button>' +
+
+            '<!-- Top XP Quick Metrics & Controls -->' +
+            '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:14px;">' +
+              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center; cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
+                '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">TOTAL ACTIVE XP</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + currentLifetimeXP.toLocaleString() + '</div>' +
+              '</div>' +
+              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
+                '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">PAST 7 DAYS</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:#059669; margin-top:2px;">+' + xpReport.xpThisWeek.toLocaleString() + '</div>' +
+              '</div>' +
+              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
+                '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">PAST 30 DAYS</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:#2563eb; margin-top:2px;">+' + xpReport.xpThisMonth.toLocaleString() + '</div>' +
+              '</div>' +
+              '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
+                '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">AUDIT TRAIL</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:var(--text-main); margin-top:2px;">' + xpReport.activeCount + ' <span style="font-size:0.7rem; color:var(--text-muted);">(' + xpReport.voidedCount + ' voided)</span></div>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
 
-          '<!-- Top Behaviors Pills -->' +
-          (xpReport.topSkills.length ? 
-            '<div style="margin-bottom:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-              '<span style="font-size:0.78rem; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Top Behaviors:</span>' +
-              xpReport.topSkills.map(ts => '<span style="font-size:0.78rem; background:var(--bg-canvas); border:1px solid var(--border-light); padding:3px 8px; border-radius:12px; font-weight:600;">' + ts.skill + ' <strong style="color:var(--color-primary);">(' + ts.count + 'x)</strong></span>').join('') +
-            '</div>' : ''
-          ) +
+            '<!-- Timeline Feed -->' +
+            '<div class="xp-timeline-list" id="xp-history-feed" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">' +
+              window.renderLedgerTimelineFeed(student.id, window.currentLedgerFilter || 'all') +
+            '</div>' +
 
-          '<!-- Transaction Ledger Table with Edit and Void Actions -->' +
-          '<div style="max-height:300px; overflow-y:auto; border:1px solid var(--border-light); border-radius:var(--radius-md);">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
-              '<thead><tr style="background:var(--bg-muted); text-align:left;"><th style="padding:8px 12px;">Date</th><th style="padding:8px 12px;">Skill / Behavior</th><th style="padding:8px 12px;">Category</th><th style="padding:8px 12px;">Source</th><th style="padding:8px 12px; text-align:right;">Amount</th><th style="padding:8px 12px; text-align:center;">Status</th><th style="padding:8px 12px; text-align:right;">Actions</th></tr></thead>' +
-              '<tbody>' +
-                (allTxs.length === 0 ? '<tr><td colspan="7" style="padding:24px; text-align:center; color:var(--text-muted);">No XP transactions recorded yet.</td></tr>' :
-                  allTxs.map(tx => {
-                    const isVoid = tx.status === 'voided';
-                    const numAmt = parseInt(tx.amount, 10) || 0;
-                    const amtColor = isVoid ? 'var(--text-muted)' : numAmt > 0 ? '#059669' : '#dc2626';
-                    const amtSign = numAmt > 0 ? '+' : '';
-                    return '' +
-                      '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isVoid ? '0.6' : '1') + '; background:' + (isVoid ? 'rgba(0,0,0,0.02)' : 'transparent') + ';">' +
-                        '<td style="padding:8px 12px; color:var(--text-muted); font-size:0.8rem; white-space:nowrap;">' + tx.date + '</td>' +
-                        '<td style="padding:8px 12px; font-weight:600; color:var(--text-main);">' +
-                          '<span>' + (tx.icon || '⭐') + '</span> ' + tx.reason +
-                          (isVoid ? '<div style="font-size:0.72rem; color:#dc2626; font-style:italic;">Voided: ' + (tx.voidReason || 'Removed by teacher') + '</div>' : '') +
-                        '</td>' +
-                        '<td style="padding:8px 12px; font-size:0.75rem;">' +
-                          '<span class="badge-cefr" style="background:' + (tx.category === 'positive' ? 'rgba(16,185,129,0.1)' : tx.category === 'needs_work' ? 'rgba(239,68,68,0.1)' : 'rgba(124,58,237,0.1)') + '; color:' + (tx.category === 'positive' ? '#059669' : tx.category === 'needs_work' ? '#dc2626' : '#7c3aed') + ';">' +
-                            (tx.category || 'positive') +
-                          '</span>' +
-                        '</td>' +
-                        '<td style="padding:8px 12px; font-size:0.78rem; color:var(--text-muted);">' + (tx.createdBy || tx.source || 'Teacher') + '</td>' +
-                        '<td style="padding:8px 12px; text-align:right; font-weight:900; color:' + amtColor + '; white-space:nowrap;">' +
-                          amtSign + numAmt + ' XP' +
-                        '</td>' +
-                        '<td style="padding:8px 12px; text-align:center; font-size:0.75rem;">' +
-                          (isVoid ? '<span style="color:#dc2626; font-weight:700;">Voided</span>' : '<span style="color:#059669; font-weight:700;">Active</span>') +
-                        '</td>' +
-                        '<td style="padding:8px 12px; text-align:right; white-space:nowrap;">' +
-                          (isVoid ? 
-                            '<button class="btn-sm-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="handleRestoreXPTransaction(\'' + tx.id + '\')" title="Restore this transaction">↩️ Restore</button>' :
-                            '<div style="display:inline-flex; gap:4px;">' +
-                              '<button class="btn-sm-secondary" style="padding:2px 6px; font-size:0.72rem;" onclick="openEditXPModal(\'' + tx.id + '\')" title="Edit amount or reason">✏️</button>' +
-                              '<button class="btn-sm-secondary" style="padding:2px 6px; font-size:0.72rem; color:var(--color-danger);" onclick="openVoidXPModal(\'' + tx.id + '\')" title="Void/Remove transaction">🗑️</button>' +
-                            '</div>'
-                          ) +
-                        '</td>' +
-                      '</tr>';
-                  }).join('')
-                ) +
-              '</tbody>' +
-            '</table>' +
+            '<div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
+              '<button type="button" class="btn-sm-secondary" onclick="openStudentXPHistoryModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">📜 Open Full Table Ledger View</button>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">✏️ Adjust Total XP</button>' +
+                '<button type="button" class="btn-primary-action" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">+ Award Points</button>' +
+              '</div>' +
+            '</div>' +
           '</div>';
 
       case 'rewards':
@@ -3086,6 +3171,8 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
+              const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+              const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
               let avatarMarkup = '';
@@ -3096,6 +3183,8 @@
                   stage: (mState && mState.stageKey) ? mState.stageKey : 'baby',
                   color: (mState && mState.profile) ? mState.profile.baseColor : 'blue',
                   equipped: (mState && mState.profile) ? mState.profile.equipped : {},
+                  archetype: archetype,
+                  studentId: s.id,
                   size: 120,
                   animated: true,
                   isAvatar: true
@@ -3105,7 +3194,7 @@
               }
 
               return '' +
-                '<div class="student-directory-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
+                '<div class="student-directory-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
                   '<div class="card-overlay-top">' +
                     '<div class="card-overlay-left">' +
@@ -3114,6 +3203,7 @@
                       ) +
                       '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
                       '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+                      '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
                     '</div>' +
                     '<div class="card-overlay-right">' +
                       '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3138,7 +3228,7 @@
                       avatarMarkup +
                     '</div>' +
                     '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3147,7 +3237,6 @@
                       '<h3 class="student-name">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
                       '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
                     '</div>' +
-                    '<p class="student-grade">' + (cls ? cls.name : 'Unenrolled') + ' · ' + (s.grade || 'Grade 4') + '</p>' +
                     '<div class="student-xp-progress-bar" title="Evolution Progress: ' + progressPct + '%">' +
                       '<div class="student-xp-progress-fill" style="width:' + progressPct + '%;"></div>' +
                     '</div>' +
@@ -3160,7 +3249,7 @@
 
                     // Dominant Tactile 3D Action Button (+10 XP)
                     '<div class="student-card-action-bar">' +
-                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                         '⚡ +10 XP' +
                       '</button>' +
                     '</div>' +
@@ -3483,6 +3572,8 @@
         else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
         else elementKey = 'aqua';
       }
+      const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+      const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
 
       let avatarMarkup = '';
@@ -3493,6 +3584,8 @@
           stage: (monsterState && monsterState.stageKey) ? monsterState.stageKey : 'baby',
           color: (monsterState && monsterState.profile) ? monsterState.profile.baseColor : 'blue',
           equipped: (monsterState && monsterState.profile) ? monsterState.profile.equipped : {},
+          archetype: archetype,
+          studentId: s.id,
           size: 120,
           animated: true,
           isAvatar: true
@@ -3502,7 +3595,7 @@
       }
 
       return '' +
-        '<div class="classroom-student-card student-card ' + elementClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+        '<div class="classroom-student-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
           '<div class="card-overlay-top">' +
             '<div class="card-overlay-left">' +
@@ -3511,6 +3604,7 @@
               ) +
               '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
               '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
+              '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
             '</div>' +
             '<div class="card-overlay-right">' +
               '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
@@ -3535,7 +3629,7 @@
               avatarMarkup +
             '</div>' +
             '<div class="pedestal-disc roster-pedestal-disk"></div>' +
-            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*-\s*/i, '') + '</span>' +
+            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3544,7 +3638,6 @@
               '<h3 class="student-name">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
               '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
             '</div>' +
-            '<p class="student-grade">' + (s.grade || cls.name || 'Grade 4') + '</p>' +
             '<div class="student-xp-progress-bar" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
               '<div class="student-xp-progress-fill" style="width:' + monsterState.progressPct + '%;"></div>' +
             '</div>' +
@@ -3554,7 +3647,7 @@
 
             // Dominant Tactile 3D Action Button (+10 XP)
             '<div class="student-card-action-bar">' +
-              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
                 '⚡ +10 XP' +
               '</button>' +
             '</div>' +
@@ -3644,7 +3737,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const today = new Date().toISOString().split('T')[0];
     const attRecords = store.getAttendanceRecords(cls.id);
     const todayAttCount = attRecords.filter(r => r.date === today).length;
-    const attStatusText = todayAttCount > 0 ? 'Completed today (' + todayAttCount + ' logged)' : 'Roll call needed today';
+    const isAttCompleted = todayAttCount > 0;
 
     return '' +
       '<div class="dashboard-hero-grid">' +
@@ -3654,31 +3747,43 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
           '</h3>' +
           '<div class="hero-tiles-grid">' +
-            '<div class="hero-tile-card">' +
+            // Rich Preview Tile with Visual Depth for Next Lesson
+            '<div class="hero-tile-card next-lesson-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Next Lesson</div>' +
+                '<div class="hero-tile-tag"><span>🚀</span> Next Lesson</div>' +
                 '<div class="hero-tile-heading">Fire Station Adventure</div>' +
-                '<div class="hero-tile-sub">A1+ • Emergency & Jobs Vocabulary</div>' +
+                '<div class="hero-tile-sub">A1+ • Emergency &amp; Jobs Vocabulary</div>' +
               '</div>' +
-              '<a href="firefighter/index.html" class="btn-3d btn-3d-primary" style="padding:6px 14px; font-size:0.78rem; text-decoration:none; display:inline-flex; width:fit-content; border-radius:9px;">▶ Start Lesson</a>' +
+              '<a href="firefighter/index.html" class="btn-launch-lesson">' +
+                '<span>▶</span> <span>Start Lesson</span>' +
+              '</a>' +
             '</div>' +
 
-            '<div class="hero-tile-card">' +
+            // Interactive Quick-Action Roll Call Card with Status Chips
+            '<div class="hero-tile-card roll-call-tile">' +
               '<div>' +
-                '<div class="hero-tile-tag">Active Assignment</div>' +
+                '<div class="hero-tile-tag"><span>📋</span> Roll Call &amp; Attendance</div>' +
+                '<div class="hero-tile-heading">Daily Roll Call</div>' +
+                '<div class="hero-tile-sub">Roster verification for ' + students.length + ' enrolled learners</div>' +
+                (isAttCompleted ? 
+                  '<span class="roll-call-chip chip-completed">✓ Live attendance (' + todayAttCount + ' Logged)</span>' : 
+                  '<span class="roll-call-chip chip-pending">⏱️ Roll call needed today</span>'
+                ) +
+              '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">' +
+                '📋 ' + (isAttCompleted ? 'Edit Roll Call' : 'Open Roll Call') +
+              '</button>' +
+            '</div>' +
+
+            // Active Assignment Card
+            '<div class="hero-tile-card assignment-tile">' +
+              '<div>' +
+                '<div class="hero-tile-tag"><span>📝</span> Active Assignment</div>' +
                 '<div class="hero-tile-heading">My Town Prepositions</div>' +
                 '<div class="hero-tile-sub">' + students.length + ' Learners Assigned · Due Friday</div>' +
+                '<span class="roll-call-chip chip-pending" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;">⏳ In Progress</span>' +
               '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">View Submissions</button>' +
-            '</div>' +
-
-            '<div class="hero-tile-card">' +
-              '<div>' +
-                '<div class="hero-tile-tag">Attendance Status</div>' +
-                '<div class="hero-tile-heading">' + attStatusText + '</div>' +
-                '<div class="hero-tile-sub">Daily Roll Call &amp; Verification</div>' +
-              '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openFastAttendanceModal()" style="padding:6px 14px; font-size:0.78rem; width:fit-content; border-radius:9px;">📋 Open Roll Call</button>' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">View Submissions</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -3689,17 +3794,34 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span>⚠️</span> <span>Needs Attention</span>' +
           '</h3>' +
           '<div class="needs-attention-list">' +
-            '<div class="needs-attention-item needs-ruby">' +
-              '<div class="needs-icon-badge">🗣️</div>' +
-              '<div><strong>Speaking Practice:</strong> 2 learners need targeted pronunciation focus</div>' +
+            // Speaking Practice: Ruby/Red icon badge with action link
+            '<div class="needs-attention-card alert-ruby">' +
+              '<div class="needs-status-badge badge-ruby">🗣️ Speaking Focus</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Targeted Pronunciation</div>' +
+                '<div class="needs-desc">2 learners need targeted pronunciation focus on phonics pairs.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-ruby" onclick="openClass(\'' + cls.id + '\', \'progress\'); return false;">Practice ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-amber">' +
-              '<div class="needs-icon-badge">✍️</div>' +
-              '<div><strong>Homework Review:</strong> 1 workbook submission ready for feedback</div>' +
+
+            // Homework Review: Amber icon badge
+            '<div class="needs-attention-card alert-amber">' +
+              '<div class="needs-status-badge badge-amber">📝 1 Awaiting Review</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Workbook Submission</div>' +
+                '<div class="needs-desc">1 workbook submission ready for feedback and grading.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-amber" onclick="openClass(\'' + cls.id + '\', \'assignments\'); return false;">Review ➔</a>' +
             '</div>' +
-            '<div class="needs-attention-item needs-cyan">' +
-              '<div class="needs-icon-badge">🎯</div>' +
-              '<div><strong>Assessment Ahead:</strong> Prepositions quiz scheduled for Thursday</div>' +
+
+            // Scheduled Quiz: Violet icon badge
+            '<div class="needs-attention-card alert-violet">' +
+              '<div class="needs-status-badge badge-violet">🎯 Quiz Upcoming</div>' +
+              '<div class="needs-content">' +
+                '<div class="needs-title">Prepositions Diagnostic</div>' +
+                '<div class="needs-desc">Assessment quiz scheduled for Thursday morning.</div>' +
+              '</div>' +
+              '<a href="#" class="needs-action-link link-violet" onclick="openQuickAssessmentModal(); return false;">Prepare ➔</a>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -4710,6 +4832,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   function renderResourceCard(item) {
+    if (window.LibraryController && typeof window.LibraryController.renderResourceCard === 'function') {
+      return window.LibraryController.renderResourceCard(item);
+    }
     const objective = (item.learningObjectives && item.learningObjectives[0]) || item.description || "Core communicative practice";
     const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) || item.languageFocus || "Sentence Structure";
     const words = (item.vocabulary && item.vocabulary.core) 
@@ -4848,7 +4973,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return html;
   }
 
+  window.renderLibraryView = renderLibraryView;
   function renderLibraryView(container) {
+    if (window.LibraryController && typeof window.LibraryController.render === 'function') {
+      window.LibraryController.render(container);
+      return;
+    }
     const allGames = (store.getResources() || []).filter(r => !r.archived);
     const allWorksheets = (store.getWorksheets() || []).filter(w => !w.archived);
     const allCombined = store.getStandardizedResources ? store.getStandardizedResources(false) : allGames.concat(allWorksheets);
@@ -5433,6 +5563,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   function updateLibraryGrid() {
+    if (document.getElementById('curriculum-library-root') && window.LibraryController) {
+      window.LibraryController.updateView();
+      return;
+    }
     const grid = document.getElementById('library-resource-grid');
     if (!grid) {
       renderCurrentView();
@@ -7335,96 +7469,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     let tabBodyHtml = '';
 
     if (activeTab === 'levels') {
+      const activeStudent = (store.getStudents ? store.getStudents() : [])[0] || null;
+      const currentActiveLevel = activeStudent ? (store.calculateMonsterState ? store.calculateMonsterState(activeStudent.id).currentLevel : 1) : 1;
+
       tabBodyHtml = (window.MonsterRenderer && window.MonsterRenderer.renderMonsterEvolutionStagesBanner ? window.MonsterRenderer.renderMonsterEvolutionStagesBanner() : '') +
-        
-        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
-            '<div>' +
-              '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Monster Evolution Stages &amp; XP Thresholds</h3>' +
-              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Configure progression level names, XP required, stage keys, descriptions, and perks. Changes dynamically update all active students.</p>' +
-            '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="openProgressionLevelEditorModal(null)">+ Add Progression Level</button>' +
-          '</div>' +
-
-          '<!-- Horizontal Monster Evolution Progression Timeline -->' +
+        (window.GamificationMilestones && window.GamificationMilestones.renderEvolutionJourney ? 
+          window.GamificationMilestones.renderEvolutionJourney(levels, currentActiveLevel, { onEdit: 'openProgressionLevelEditorModal' }) :
           '<div class="monster-evolution-timeline">' +
-            levels.map((l, idx) => {
-              const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                stage: l.stageKey,
-                color: 'blue',
-                size: 80,
-                animated: false
-              }) : '👾';
-              const isLast = idx === levels.length - 1;
-              const chevronHtml = !isLast ? (
-                '<div class="evolution-timeline-chevron" title="Evolution Step">' +
-                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
-                    '<polyline points="9 18 15 12 9 6"></polyline>' +
-                  '</svg>' +
-                '</div>'
-              ) : '';
-
-              return '' +
-                '<div class="evolution-stage-card">' +
-                  '<div style="font-size:0.68rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Level ' + l.level + '</div>' +
-                  '<div style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; margin-bottom:6px;">' +
-                    stageSvg +
-                  '</div>' +
-                  '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main); margin-bottom:4px; line-height:1.2;">' + l.name + '</div>' +
-                  '<div style="font-size:0.72rem; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); padding:2px 8px; border-radius:10px; white-space:nowrap;">' + l.xpRequired.toLocaleString() + ' ⭐ XP</div>' +
-                '</div>' +
-                chevronHtml;
-            }).join('') +
-          '</div>' +
-
-          '<div style="overflow-x:auto;">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
-              '<thead>' +
-                '<tr style="background:var(--bg-muted); text-align:left; border-bottom:1px solid var(--border-light);">' +
-                  '<th style="padding:10px 12px;">Stage &amp; Icon</th>' +
-                  '<th style="padding:10px 12px;">Level #</th>' +
-                  '<th style="padding:10px 12px;">Level Name</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">XP Required</th>' +
-                  '<th style="padding:10px 12px;">Description</th>' +
-                  '<th style="padding:10px 12px;">Perks &amp; Rewards</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Status</th>' +
-                  '<th style="padding:10px 12px; text-align:center;">Reorder</th>' +
-                  '<th style="padding:10px 12px; text-align:right;">Actions</th>' +
-                '</tr>' +
-              '</thead>' +
-              '<tbody>' +
-                levels.map(l => {
-                  const stageSvg = window.renderMonsterSVG ? window.renderMonsterSVG({
-                    stage: l.stageKey,
-                    color: 'blue',
-                    size: 40,
-                    animated: false
-                  }) : '👾';
-                  const isArchived = l.status === 'archived';
-
-                  return '' +
-                    '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isArchived ? '0.6' : '1') + ';">' +
-                      '<td style="padding:10px 12px;"><div style="width:40px; height:40px;">' + stageSvg + '</div></td>' +
-                      '<td style="padding:10px 12px; font-weight:800;">Level ' + l.level + '</td>' +
-                      '<td style="padding:10px 12px; font-weight:700; color:var(--color-primary);">' + l.name + '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; font-weight:800;">' + l.xpRequired.toLocaleString() + ' ⭐</td>' +
-                      '<td style="padding:10px 12px; color:var(--text-muted); max-width:240px;">' + (l.description || 'Evolutionary milestone') + '</td>' +
-                      '<td style="padding:10px 12px; font-size:0.75rem;">' + (Array.isArray(l.rewards) ? l.rewards.join(', ') : (l.rewards || 'Base avatar perks')) + '</td>' +
-                      '<td style="padding:10px 12px; text-align:center;"><span class="badge" style="background:' + (isArchived ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)') + '; color:' + (isArchived ? '#dc2626' : '#059669') + '; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">' + (isArchived ? 'Archived' : 'Active') + '</span></td>' +
-                      '<td style="padding:10px 12px; text-align:center; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'up\')" title="Move Up" style="padding:1px 5px; font-size:0.7rem; margin-right:2px;">▲</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleReorderProgressionLevel(\'' + l.id + '\', \'down\')" title="Move Down" style="padding:1px 5px; font-size:0.7rem;">▼</button>' +
-                      '</td>' +
-                      '<td style="padding:10px 12px; text-align:right; white-space:nowrap;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="openProgressionLevelEditorModal(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; margin-right:4px;">✏️ Edit</button>' +
-                        '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveProgressionLevel(\'' + l.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? '↩️ Restore' : '📦 Archive') + '</button>' +
-                      '</td>' +
-                    '</tr>';
-                }).join('') +
-              '</tbody>' +
-            '</table>' +
-          '</div>' +
-        '</div>';
+            levels.map(l => '<div class="evolution-stage-card"><div class="milestone-title">' + l.name + '</div></div>').join('') +
+          '</div>'
+        );
     } else if (activeTab === 'items') {
       const categories = ['all', 'body', 'eyes', 'mouth', 'horns', 'wings', 'tail', 'hat', 'glasses', 'backpack', 'accessory', 'environment', 'aura'];
       let filteredItems = allItems.slice();
@@ -7551,8 +7605,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Classroom Badges (' + badges.length + ')</h2>' +
             '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:30px;">' +
+          '<div id="badges-grid" class="badges-trading-grid" style="margin-bottom:30px;">' +
             badges.map(b => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderBadgeTradingCard) {
+                return window.GamificationMilestones.renderBadgeTradingCard(b, {
+                  onAward: 'openAwardBadgeModal',
+                  onEdit: 'openEditBadgeModal'
+                });
+              }
               const isArchived = b.status === 'archived' || b.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -7584,8 +7644,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Learning Achievements (' + achievements.length + ')</h2>' +
             '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
           '</div>' +
-          '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:14px;">' +
+          '<div id="achievements-grid" class="achievements-trading-grid">' +
             achievements.map(a => {
+              if (window.GamificationMilestones && window.GamificationMilestones.renderAchievementTradingCard) {
+                return window.GamificationMilestones.renderAchievementTradingCard(a, {
+                  onEdit: 'openEditAchievementModal'
+                });
+              }
               const isArchived = a.status === 'archived' || a.archived;
               return '' +
                 '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
@@ -8081,26 +8146,48 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
-      '<div class="kpi-grid" style="margin-bottom:24px;">' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Enrolled Learners</span><div class="kpi-icon-wrap icon-blue">👥</div></div>' +
-          '<span class="kpi-val">' + students.length + '</span>' +
-          '<span class="kpi-badge-sub badge-blue">' + cls.name + '</span>' +
+      // High-Impact Stats Bar (Unified Elevated Container, zero thin 1px individual card borders)
+      '<div class="dashboard-stats-hud-container" style="margin-bottom:24px;">' +
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Enrolled Learners</span>' +
+            '<div class="stats-hud-icon icon-blue">👥</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + students.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-blue">👥 ' + cls.name + ' Active</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Attendance Rate</span><div class="kpi-icon-wrap icon-emerald">✓</div></div>' +
-          '<span class="kpi-val">' + attRate + '%</span>' +
-          '<span class="kpi-badge-sub badge-emerald">Live Attendance</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Attendance Rate</span>' +
+            '<div class="stats-hud-icon icon-emerald">✓</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + attRate + '%</div>' +
+          '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Active Assignments</span><div class="kpi-icon-wrap icon-amber">📝</div></div>' +
-          '<span class="kpi-val">' + assignments.length + '</span>' +
-          '<span class="kpi-badge-sub badge-amber">' + (assignments.length === 1 ? '1 Pending' : assignments.length + ' Active') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Active Assignments</span>' +
+            '<div class="stats-hud-icon icon-amber">📝</div>' +
+          '</div>' +
+          '<div class="stats-hud-number">' + assignments.length + '</div>' +
+          '<div class="stats-hud-micro-badge badge-amber">Pending completion</div>' +
         '</div>' +
-        '<div class="kpi-card">' +
-          '<div class="kpi-header-row"><span class="kpi-label">Target CEFR</span><div class="kpi-icon-wrap icon-purple">🎯</div></div>' +
-          '<span class="kpi-val" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A1') + '</span>' +
-          '<span class="kpi-badge-sub badge-purple">' + (cls.academicYear || '2026–2027') + '</span>' +
+
+        '<div class="stats-hud-divider"></div>' +
+
+        '<div class="stats-hud-item">' +
+          '<div class="stats-hud-header">' +
+            '<span class="stats-hud-label">Proficiency Target</span>' +
+            '<div class="stats-hud-icon icon-indigo">🎯</div>' +
+          '</div>' +
+          '<div class="stats-hud-number" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A2') + ' Level</div>' +
+          '<div class="stats-hud-micro-badge badge-indigo">CEFR Target</div>' +
         '</div>' +
       '</div>' +
 
@@ -8859,6 +8946,7 @@ window.switchClassroomSubTab = function(subTab) {
 
   window.updateMultiSelectBar = function() {
     const bar = document.getElementById('floating-multiselect-bar');
+    const dock = document.getElementById('classroom-floating-toolkit');
     const badge = document.getElementById('multiselect-count-badge');
     const totalBadge = document.getElementById('multiselect-total-class-count');
     if (!bar) return;
@@ -8868,6 +8956,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (selectedStudentIds.size > 0) {
       bar.style.display = 'flex';
+      if (dock) dock.style.display = 'flex';
       if (badge) badge.textContent = selectedStudentIds.size;
     } else {
       bar.style.display = 'none';
@@ -11552,6 +11641,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '<th style="padding:8px 10px;">Date &amp; Time</th>' +
                 '<th style="padding:8px 10px;">Type / Skill</th>' +
                 '<th style="padding:8px 10px; text-align:right;">Amount</th>' +
+                '<th style="padding:8px 10px; text-align:right;">Balance After</th>' +
                 '<th style="padding:8px 10px;">Reason</th>' +
                 '<th style="padding:8px 10px;">Teacher</th>' +
                 '<th style="padding:8px 10px; text-align:center;">Action</th>' +
@@ -11559,16 +11649,19 @@ window.switchClassroomSubTab = function(subTab) {
             '</thead>' +
             '<tbody>' +
               txs.map(tx => {
-                const isVoided = !!tx.isVoided;
+                const isVoided = !!tx.isVoided || tx.status === 'voided';
                 const isPos = tx.amount >= 0;
                 const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+                const typeStr = (tx.type || tx.category || 'participation');
+                const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : '—';
                 return '' +
                   '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isVoided ? '0.5; text-decoration:line-through;' : '1') + ';">' +
                     '<td style="padding:8px 10px; white-space:nowrap; color:var(--text-muted);">' + dateStr + '</td>' +
-                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + (tx.category || 'xp') + '</td>' +
+                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + typeStr + '</td>' +
                     '<td style="padding:8px 10px; text-align:right; font-weight:800; color:' + (isVoided ? 'var(--text-muted)' : (isPos ? '#059669' : '#dc2626')) + ';">' +
                       (isPos ? '+' : '') + tx.amount + ' XP' +
                     '</td>' +
+                    '<td style="padding:8px 10px; text-align:right; font-weight:700; color:var(--text-main);">' + balanceStr + '</td>' +
                     '<td style="padding:8px 10px; max-width:200px;">' + (tx.reason || 'XP transaction') + '</td>' +
                     '<td style="padding:8px 10px; color:var(--text-muted);">' + (tx.teacher || tx.source || 'Teacher') + '</td>' +
                     '<td style="padding:8px 10px; text-align:center;">' +
@@ -12568,13 +12661,17 @@ window.switchClassroomSubTab = function(subTab) {
     };
     const targetId = document.getElementById(`layer-${category}`) ? `layer-${category}` : (layerMap[category] || `layer-${category}`);
     const layerTarget = document.getElementById(targetId);
-    if (layerTarget && typeof item === 'object' && (item.svgMarkup || item.imageSrc)) {
-      if (item.svgMarkup) {
-        layerTarget.innerHTML = item.svgMarkup.trim().startsWith('<svg')
-          ? item.svgMarkup
-          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${item.svgMarkup}</svg>`;
-      } else if (item.imageSrc) {
-        layerTarget.innerHTML = `<img src="${item.imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
+    const assetObj = (item && typeof item === 'object') ? item : (window.CLOTHING_ASSETS?.[itemId] || window.CAPE_ASSETS?.[itemId] || {});
+    const svgContent = item.svgMarkup || assetObj.svgMarkup;
+    const imageSrc = item.imageSrc || assetObj.imageSrc;
+
+    if (layerTarget && (svgContent || imageSrc)) {
+      if (svgContent) {
+        layerTarget.innerHTML = svgContent.trim().startsWith('<svg')
+          ? svgContent
+          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${svgContent}</svg>`;
+      } else if (imageSrc) {
+        layerTarget.innerHTML = `<img src="${imageSrc}" class="w-full h-full object-contain pointer-events-none" style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none;" />`;
       }
     }
 
@@ -14395,6 +14492,12 @@ window.switchClassroomSubTab = function(subTab) {
     const fromLvl = levels.find(l => l.level === fromLevelNum) || levels[0];
     const toLvl = levels.find(l => l.level === toLevelNum) || levels[1] || levels[0];
 
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, toLvl);
+      return;
+    }
+
     const titleEl = document.getElementById('m-levelup-title');
     if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
@@ -14442,42 +14545,20 @@ window.switchClassroomSubTab = function(subTab) {
     currentCelebrationStudentId = studentId;
     const student = store.getStudent(studentId);
     if (!student) return;
-    const profile = store.getMonsterProfile(studentId);
-
-    const titleEl = document.getElementById('m-hatch-title') || document.getElementById('modal-hatch-title');
-    if (titleEl) titleEl.innerText = '🥚 ✨ ' + student.firstName.toUpperCase() + "'S EGG HAS HATCHED! ✨ 🐣";
-
-    const xpInfoEl = document.getElementById('m-hatch-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ Level 3 Baby Monster Unlocked!';
-
-    const renderWrap = document.getElementById('m-hatch-monster-svg') || document.getElementById('modal-hatch-monster-render');
-    if (renderWrap && window.renderMonsterSVG) {
-      const svg = window.renderMonsterSVG({
-        stage: 'baby',
-        color: profile.baseColor || 'blue',
-        size: 160,
-        animated: true
-      });
-      renderWrap.innerHTML = '' +
-        '<div class="monster-avatar-container">' +
-          '<div class="monster-sprite">' + svg + '</div>' +
-          '<div class="monster-pedestal"></div>' +
-        '</div>';
-    }
 
     // Mark as hatched in store
-    store.updateMonsterProfile(studentId, { isHatched: true });
-    store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
+    if (store.updateMonsterProfile) store.updateMonsterProfile(studentId, { isHatched: true });
+    if (store.logMonsterHistory) store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
 
-    const btnCloset = document.getElementById('btn-modal-hatch-closet');
-    if (btnCloset) {
-      btnCloset.onclick = function() {
-        window.closeModal('modal-monster-hatch');
-        window.openStudentDetail(studentId, 'monster');
-      };
+    // Cinematic Full-Screen Hatching & Evolution Overlay
+    if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
+      window.GamificationMilestones.triggerEvolutionCeremony(student, {
+        name: 'Baby Monster',
+        stageKey: 'baby',
+        description: 'The dormant shell has cracked wide open, revealing an adorable companion ready for classroom adventure!'
+      });
+      return;
     }
-
-    window.openModal('modal-monster-hatch');
   };
 
   window.openEvolutionPathModal = function(studentId) {
@@ -14522,6 +14603,14 @@ window.switchClassroomSubTab = function(subTab) {
 
   // Expose key view renderers to window
   window.renderStudentsView = renderStudentsView;
+  window.renderStudentRoster = function() {
+    const container = document.getElementById('view-container') || document.querySelector('.main-content');
+    if (container && typeof renderStudentsView === 'function') {
+      renderStudentsView(container);
+    } else if (typeof renderCurrentView === 'function') {
+      renderCurrentView();
+    }
+  };
   window.renderClassroomStudentsGrid = renderClassroomStudentsGrid;
   window.renderClassroomGroupsGrid = renderClassroomGroupsGrid;
   window.renderLeaderboardView = renderLeaderboardView;

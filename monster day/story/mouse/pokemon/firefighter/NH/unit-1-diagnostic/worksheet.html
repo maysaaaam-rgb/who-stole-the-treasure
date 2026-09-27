@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📋 Unit 1 Diagnostic: 8-Task Audit Vault Assessment Sheet | Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>📋</text></svg>">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.35;
+      padding: 16px;
+    }
+    .print-bar {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .print-btn {
+      background: #38bdf8;
+      color: #000000;
+      border: none;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn:hover { background: #0284c7; color: white; }
+    .back-btn {
+      background: #334155;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+    .page {
+      background: #ffffff;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 26px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .badge {
+      background: #38bdf8;
+      color: #041226;
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+    }
+    .info-line {
+      border-bottom: 1px dotted #94a3b8;
+      display: inline-block;
+      width: 65%;
+      height: 1.1rem;
+    }
+    .task-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .task-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      font-size: 0.84rem;
+    }
+    .task-title {
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .tier-pill {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .bronze { background: #fed7aa; color: #7c2d12; }
+    .silver { background: #e2e8f0; color: #334155; }
+    .gold { background: #fef08a; color: #713f12; }
+    .diamond { background: #bae6fd; color: #0369a1; }
+    .score-summary {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: 14px;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .print-bar { display: none !important; }
+      .page { border: none; box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-bar">
+    <div style="font-weight: 800; font-size: 1.1rem;">📋 Unit 1 Diagnostic: 8-Task Audit Vault Assessment</div>
+    <div style="display: flex; gap: 12px;">
+      <a href="index.html" class="back-btn">⬅ Back to Diagnostic Vault</a>
+      <button class="print-btn" onclick="window.print()">🖨️ Print Assessment (A4)</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="sheet-header">
+      <div>
+        <h1 style="font-size: 1.3rem; font-weight: 900; color: #0f172a;">📋 Unit 1 Comprehensive Diagnostic Audit</h1>
+        <p style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">Track 4: Literature &amp; Diagnostic Matrix | Grade 3–4 (CEFR A1–A2)</p>
+      </div>
+      <div>
+        <span class="badge">Mastery Audit</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div><strong>Student Name:</strong> <span class="info-line"></span></div>
+      <div><strong>Grade:</strong> <span class="info-line"></span></div>
+      <div><strong>Date:</strong> <span class="info-line"></span></div>
+    </div>
+
+    <div class="task-grid">
+      <!-- Bronze Tasks -->
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 1: Magic 'e' Phonics</span>
+          <span class="tier-pill bronze">Bronze 10 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Write the long vowel word:</p>
+        <p>1. r _ k e &nbsp;&nbsp; 2. b _ k e &nbsp;&nbsp; 3. c _ b e</p>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 2: Wildlife Needs</span>
+          <span class="tier-pill bronze">Bronze 10 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">The sea turtle needs: [ &nbsp; ] air &nbsp; [ &nbsp; ] clean ocean</p>
+        <p>Sentence: The turtle needs _________________.</p>
+      </div>
+
+      <!-- Silver Tasks -->
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 3: Preposition Catapult</span>
+          <span class="tier-pill silver">Silver 20 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Fill in: under, between, behind</p>
+        <p>The cat is _________ the boxes.</p>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 4: Inventions &amp; Purpose</span>
+          <span class="tier-pill silver">Silver 20 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Complete the purpose statement:</p>
+        <p>A solar rover was built to _________________.</p>
+      </div>
+
+      <!-- Gold Tasks -->
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 5: Comparative Dinosaurs</span>
+          <span class="tier-pill gold">Gold 30 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Use comparative adjective (-er than):</p>
+        <p>T-Rex is _______________ (fast) than Stegosaurus.</p>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 6: Classroom Imperatives</span>
+          <span class="tier-pill gold">Gold 30 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Give positive and negative rule:</p>
+        <p>1. (raise / hand): _________________________<br>2. (don't / shout): _________________________</p>
+      </div>
+
+      <!-- Diamond Tasks -->
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 7: Story Sequencing &amp; Why</span>
+          <span class="tier-pill diamond">Diamond 40 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Answer with 'Because':</p>
+        <p>Why did Alice follow the rabbit? Because _________</p>
+      </div>
+
+      <div class="task-card">
+        <div class="task-title">
+          <span>Task 8: Synthesis Challenge</span>
+          <span class="tier-pill diamond">Diamond 40 XP</span>
+        </div>
+        <p style="color:#64748b; font-size:0.78rem;">Explain your mission solution:</p>
+        <p>We used [tool] AND [action] to ______________.</p>
+      </div>
+    </div>
+
+    <div class="score-summary">
+      <div><strong>Diagnostic Mastery Level:</strong> [ &nbsp; ] Bronze (0-40) &nbsp; [ &nbsp; ] Silver (41-80) &nbsp; [ &nbsp; ] Gold (81-140) &nbsp; [ &nbsp; ] Diamond (141-200)</div>
+      <div style="font-weight:900; color:#38bdf8;">Total: _____ / 200 XP</div>
+    </div>
+  </div>
+
+</body>
+</html>
