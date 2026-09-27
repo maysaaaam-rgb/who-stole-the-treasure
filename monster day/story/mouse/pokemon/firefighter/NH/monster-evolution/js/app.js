@@ -221,14 +221,14 @@
             <div class="card-caption-tray">
               <div class="card-monster-name">
                 <span>${monster.name}</span>
-                <span style="font-size: 1.1rem;">${monster.habitatIcon}</span>
+                <span style="font-size: 1.25rem;">${monster.habitatIcon}</span>
               </div>
               <div class="card-formula-snippet">
                 "It lives in the ${monster.habitat}."
               </div>
-              <div class="card-flip-prompt">
-                <span>🔄 Click to Inspect Life Stages</span>
-              </div>
+              <button class="btn-3d btn-astral action-chamber-btn" type="button">
+                <span>Send to Evolution Chamber ⚡</span>
+              </button>
             </div>
           </div>
 
@@ -250,7 +250,7 @@
                 `).join('')}
               </div>
             </div>
-            <button class="btn-3d btn-astral back-footer-btn" style="padding: 10px; font-size: 0.85rem;">
+            <button class="btn-3d btn-astral back-footer-btn action-chamber-btn" style="padding: 10px; font-size: 0.85rem;">
               <span>⚡ Send to Evolution Chamber</span>
             </button>
           </div>
@@ -259,7 +259,7 @@
 
       cardWrap.addEventListener('click', (e) => {
         // If clicking action button
-        if (e.target.closest('.back-footer-btn')) {
+        if (e.target.closest('.action-chamber-btn') || e.target.closest('.back-footer-btn')) {
           e.stopPropagation();
           audio.playSnap();
           playerSession.selectedMonsterIdx = idx;
