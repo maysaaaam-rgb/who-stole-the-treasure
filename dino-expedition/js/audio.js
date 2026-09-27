@@ -36,7 +36,7 @@
     }
 
     /**
-     * Card Flip: Low-pass filtered noise burst simulating a physical card snap
+     * Card Flip: Low-pass filtered noise burst (1200 Hz -> 300 Hz) simulating a physical card snap
      */
     playSnap() {
       if (this.isMuted) return;
@@ -54,14 +54,14 @@
       const noise = this.ctx.createBufferSource();
       noise.buffer = buffer;
 
-      // Low-pass filter to soften noise to a physical card snap
+      // Low-pass filter from 1200 Hz to 300 Hz
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(1400, now);
+      filter.frequency.setValueAtTime(1200, now);
       filter.frequency.exponentialRampToValueAtTime(300, now + 0.04);
 
       const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.setValueAtTime(0.28, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
 
       noise.connect(filter);
@@ -72,7 +72,8 @@
     }
 
     /**
-     * Correct/XP: Ascending C-Major pentatonic chord (C5 -> E5 -> G5 -> C6) with exponential decay ramps
+     * XP Gain: Ascending dual-tone chime (B5 987.77 Hz -> E6 1318.51 Hz)
+     * Dual-oscillator ADSR exponential decay ramps
      */
     playXP() {
       if (this.isMuted) return;
@@ -80,36 +81,33 @@
       if (!this.ctx) return;
 
       const now = this.ctx.currentTime;
-      // C5: 523.25Hz, E5: 659.25Hz, G5: 783.99Hz, C6: 1046.50Hz
-      const notes = [
-        { freq: 523.25, start: now, dur: 0.18 },
-        { freq: 659.25, start: now + 0.06, dur: 0.22 },
-        { freq: 783.99, start: now + 0.12, dur: 0.28 },
-        { freq: 1046.50, start: now + 0.18, dur: 0.45 }
+      const tones = [
+        { freq: 987.77, start: now, dur: 0.18 },       // B5
+        { freq: 1318.51, start: now + 0.08, dur: 0.32 } // E6
       ];
 
-      notes.forEach((n) => {
+      tones.forEach(t => {
         const osc1 = this.ctx.createOscillator();
         const osc2 = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
         osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(n.freq, n.start);
+        osc1.frequency.setValueAtTime(t.freq, t.start);
 
         osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(n.freq * 1.5, n.start); // Perfect fifth harmonic overtone
+        osc2.frequency.setValueAtTime(t.freq * 2, t.start); // Octave overtone for shimmer
 
-        gain.gain.setValueAtTime(0.18, n.start);
-        gain.gain.exponentialRampToValueAtTime(0.0001, n.start + n.dur);
+        gain.gain.setValueAtTime(0.22, t.start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t.start + t.dur);
 
         osc1.connect(gain);
         osc2.connect(gain);
         gain.connect(this.ctx.destination);
 
-        osc1.start(n.start);
-        osc1.stop(n.start + n.dur);
-        osc2.start(n.start);
-        osc2.stop(n.start + n.dur);
+        osc1.start(t.start);
+        osc1.stop(t.start + t.dur);
+        osc2.start(t.start);
+        osc2.stop(t.start + t.dur);
       });
     }
 
