@@ -52,7 +52,8 @@
         feature: 'fiery wings & molten horns',
         speechIntro: 'Emberwing is an ember creature. It evolves from a small hatchling into a mighty volcanic dragon!',
         currentStage: 'ultimate',
-        imageSrc: 'assets/emberwing_stage_ultimate.webp',
+        defaultImage: 'assets/emberwing_stage_growing.webp',
+        imageSrc: 'assets/emberwing_stage_growing.webp',
         stages: [
           {
             stageId: 'baby',
@@ -136,7 +137,8 @@
         feature: 'hydrodynamic fins & bioluminescence',
         speechIntro: 'Aquafind is a graceful aqua creature. It evolves from a water sprout into a colossal ocean leviathan!',
         currentStage: 'ultimate',
-        imageSrc: 'assets/aquafind_stage_ultimate.webp',
+        defaultImage: 'assets/aquafind_stage_baby.webp',
+        imageSrc: 'assets/aquafind_stage_baby.webp',
         stages: [
           {
             stageId: 'baby',
@@ -220,7 +222,8 @@
         feature: 'living bark armor & vine tendrils',
         speechIntro: 'Florasprout is a peaceful nature guardian. It evolves from a moss seedling into an ancient forest titan!',
         currentStage: 'ultimate',
-        imageSrc: 'assets/florasprout_stage_ultimate.webp',
+        defaultImage: 'assets/florasprout_stage_growing.webp',
+        imageSrc: 'assets/florasprout_stage_growing.webp',
         stages: [
           {
             stageId: 'baby',
@@ -304,7 +307,8 @@
         feature: 'orbital star rings & crystal crest',
         speechIntro: 'Astralight is a cosmic marvel. It evolves from a celestial star spark into a stellar astral sovereign!',
         currentStage: 'ultimate',
-        imageSrc: 'assets/astralight_stage_ultimate.webp',
+        defaultImage: 'assets/astralight_stage_baby.webp',
+        imageSrc: 'assets/astralight_stage_baby.webp',
         stages: [
           {
             stageId: 'baby',
@@ -388,7 +392,8 @@
         feature: 'lightning tail & conductive prongs',
         speechIntro: 'Sparktail is an electric powerhouse. It evolves from a volt nibbler into a thunder storm dragon!',
         currentStage: 'ultimate',
-        imageSrc: 'assets/sparktail_stage_ultimate.webp',
+        defaultImage: 'assets/sparktail_stage_baby.webp',
+        imageSrc: 'assets/sparktail_stage_baby.webp',
         stages: [
           {
             stageId: 'baby',

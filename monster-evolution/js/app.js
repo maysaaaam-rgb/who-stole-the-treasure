@@ -214,8 +214,8 @@
             </div>
             <div class="card-xp-tag">+10 XP</div>
             <!-- Transparent 3D Character Model -->
-            <div class="card-hero-stage card-art-hero">
-              <img src="${monster.imageSrc || ultimateStage.imageSrc}" alt="${monster.name}" class="hero-3d-sprite monster-raster-img" onerror="this.onerror=null; this.src=this.src.replace('.webp','.png');" loading="eager" />
+            <div class="card-hero-stage">
+              <img src="${monster.defaultImage}" alt="${monster.name}" class="monster-3d-model hero-3d-sprite" onerror="this.onerror=null; this.src=this.src.replace('.webp','.png');" loading="eager" />
               <div class="isometric-pedestal pedestal-disk" style="background: radial-gradient(ellipse at center, ${monster.accentColor}70 0%, ${monster.accentColor}20 45%, transparent 70%);"></div>
             </div>
             <div class="card-caption-tray">
