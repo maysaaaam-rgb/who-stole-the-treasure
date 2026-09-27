@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☀️ The Wind and the Sun: Weather Powers & The Jacket Contest | Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Canvas for Victory Confetti -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- Sticky Tactical Top HUD -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <a href="../index.html" class="hud-back-btn" title="Back to Adventure Academy">
+        <span>⬅️</span>
+        <span>Academy</span>
+      </a>
+      <div class="hud-title-cluster">
+        <h1>
+          <span>☀️</span>
+          <span>The Wind and the Sun</span>
+        </h1>
+        <span class="badge-category">Language & Quests</span>
+      </div>
+    </div>
+
+    <nav class="stage-pills-nav" aria-label="Stage Navigation">
+      <button class="stage-pill active" data-stage="1" id="pill-stage-1">
+        <span>🎬</span>
+        <span>1. Cinema</span>
+      </button>
+      <button class="stage-pill" data-stage="2" id="pill-stage-2">
+        <span>⚡</span>
+        <span>2. Weather Lab</span>
+      </button>
+      <button class="stage-pill" data-stage="3" id="pill-stage-3">
+        <span>🧥</span>
+        <span>3. Reaction Race</span>
+      </button>
+      <button class="stage-pill" data-stage="4" id="pill-stage-4">
+        <span>🎙️</span>
+        <span>4. Teleprompter</span>
+      </button>
+    </nav>
+
+    <div class="hud-right">
+      <div class="xp-counter-pill">
+        <span>⭐</span>
+        <span id="current-xp">0</span>
+        <span>/ 150 XP</span>
+      </div>
+      <button class="audio-toggle-btn" id="audio-toggle-btn" title="Toggle Sound">
+        <span id="audio-icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Arcade Stage Viewport -->
+  <main class="arcade-viewport">
+    <!-- STAGE 1: YouTube Story Cinema Terminal -->
+    <section class="stage-view active-stage" id="stage-1-view">
+      <div class="cinema-terminal-box">
+        <div class="cinema-header">
+          <div class="cinema-header-info">
+            <h2>🎬 Story Cinema: The Contest Begins</h2>
+            <p>Watch the fable! The player will pause at 3 challenge checkpoints.</p>
+          </div>
+          <button class="btn-3d btn-3d-cyan" id="btn-skip-to-stage2" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <span>Skip to Lab ⚡</span>
+          </button>
+        </div>
+
+        <div class="cinema-bezel">
+          <!-- YouTube IFrame Target -->
+          <div id="player"></div>
+
+          <!-- Offline / Fallback Card (Activated if YouTube fails to load) -->
+          <div class="cinema-fallback-card" id="cinema-fallback">
+            <div class="fallback-characters">
+              <img src="assets/wind_spirit.webp" alt="Wind Spirit" class="fallback-sprite">
+              <img src="assets/traveler_character.webp" alt="Traveler" class="fallback-sprite">
+              <img src="assets/sun_character.webp" alt="Sun Character" class="fallback-sprite">
+            </div>
+            <h3 style="font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem;">Offline Cinema Mode</h3>
+            <p style="color: var(--text-muted); max-width: 500px; margin-bottom: 1.5rem;">
+              "The Wind and the Sun had a great contest: who can make the traveler take off his warm jacket first?"
+            </p>
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn-3d btn-3d-amber" id="fallback-read-btn">
+                <span>🔊 Listen to Story</span>
+              </button>
+              <button class="btn-3d btn-3d-cyan" id="fallback-checkpoints-btn">
+                <span>⚡ Test Checkpoints</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cinema-controls-bar">
+          <div class="checkpoints-tracker">
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Checkpoints:</span>
+            <div class="cp-marker-pill" id="cp-marker-1">
+              <span>🔒</span>
+              <span>00:55 The Bet</span>
+            </div>
+            <div class="cp-marker-pill" id="cp-marker-2">
+              <span>🔒</span>
+              <span>01:24 Wind Gale</span>
+            </div>
+            <div class="cp-marker-pill" id="cp-marker-3">
+              <span>🔒</span>
+              <span>02:36 Sun Rays</span>
+            </div>
+          </div>
+
+          <button class="btn-3d btn-3d-emerald" id="btn-proceed-stage2" disabled>
+            <span>Stage 2: Weather Lab ⚡</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 2: 3D Weather Powers Lab -->
+    <section class="stage-view" id="stage-2-view">
+      <div class="weather-lab-grid">
+        <!-- Left: Wind Power Controller -->
+        <div class="weather-control-card card-wind">
+          <div class="character-card-header">
+            <div class="character-avatar-wrapper">
+              <img src="assets/wind_spirit.webp" alt="Wind Spirit" class="character-avatar-img">
+              <div class="pedestal-reflection"></div>
+            </div>
+            <div>
+              <h3 style="color: var(--accent-cyan); font-weight: 800;">🌬️ The Wind</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">"I can blow with icy fury!"</p>
+            </div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span style="color: var(--accent-cyan);">Wind Intensity</span>
+              <span id="wind-level-text" style="font-weight: 800;">Level 1</span>
+            </div>
+            <input type="range" min="1" max="5" value="1" class="slider-track slider-wind" id="wind-slider">
+          </div>
+
+          <div class="power-level-status" id="wind-status-box">
+            <div class="power-title" id="wind-title" style="color: var(--accent-cyan);">Gentle Breeze</div>
+            <div id="wind-desc" style="color: var(--text-muted);">Leaves flutter softly in the meadow.</div>
+          </div>
+
+          <button class="btn-3d btn-3d-cyan" id="btn-test-wind">
+            <span>💨 Blow Wind Sweep</span>
+          </button>
+        </div>
+
+        <!-- Center: Interactive Traveler Reaction Simulation -->
+        <div class="traveler-simulation-card" id="traveler-sim-box">
+          <div class="environment-fx-backdrop" id="env-backdrop"></div>
+          <div>
+            <span class="badge-category" style="background: rgba(56, 189, 248, 0.2);">Simulation Arena</span>
+            <h3 style="margin-top: 0.4rem; font-size: 1.25rem;">The Traveler's Reaction</h3>
+          </div>
+
+          <div class="traveler-composite-stage">
+            <img src="assets/traveler_character.webp" alt="Traveler" class="traveler-sprite" id="sim-traveler-img">
+            <div class="traveler-pedestal" id="sim-pedestal"></div>
+          </div>
+
+          <div class="traveler-state-pill" id="traveler-reaction-pill">
+            <span>🧥 Traveler feels pleasant.</span>
+          </div>
+
+          <button class="btn-3d btn-3d-emerald" id="btn-proceed-stage3" style="width: 100%; margin-top: 1rem;">
+            <span>Stage 3: Reaction Race (+35 XP) 🚀</span>
+          </button>
+        </div>
+
+        <!-- Right: Sun Power Controller -->
+        <div class="weather-control-card card-sun">
+          <div class="character-card-header">
+            <div class="character-avatar-wrapper">
+              <img src="assets/sun_character.webp" alt="The Sun" class="character-avatar-img">
+              <div class="pedestal-reflection sun-pedestal"></div>
+            </div>
+            <div>
+              <h3 style="color: var(--accent-amber); font-weight: 800;">☀️ The Sun</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">"I shine warm golden rays!"</p>
+            </div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span style="color: var(--accent-amber);">Sun Intensity</span>
+              <span id="sun-level-text" style="font-weight: 800;">Level 1</span>
+            </div>
+            <input type="range" min="1" max="5" value="1" class="slider-track slider-sun" id="sun-slider">
+          </div>
+
+          <div class="power-level-status" id="sun-status-box">
+            <div class="power-title" id="sun-title" style="color: var(--accent-amber);">Soft Glow</div>
+            <div id="sun-desc" style="color: var(--text-muted);">Gentle morning light breaks through.</div>
+          </div>
+
+          <button class="btn-3d btn-3d-amber" id="btn-test-sun">
+            <span>✨ Shine Warm Chime</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 3: Jacket Reaction Race (20s Sorting Drill) -->
+    <section class="stage-view" id="stage-3-view">
+      <div class="reaction-race-card">
+        <div style="text-align: center;">
+          <h2 style="font-size: 1.5rem; margin-bottom: 0.3rem;">⚡ Jacket Reaction Race</h2>
+          <p style="color: var(--text-muted);">Sort the weather events! Does the traveler ❄️ <b>ZIP UP</b> or ☀️ <b>UNZIP</b>?</p>
+        </div>
+
+        <div class="race-timer-bar-wrapper">
+          <div class="race-timer-bar" id="race-timer-bar"></div>
+        </div>
+
+        <div class="race-scoreboard">
+          <div class="score-item">
+            <span>⏱️ Time:</span>
+            <span id="race-timer-text" style="color: #ffffff;">20s</span>
+          </div>
+          <div class="score-item">
+            <span>🎯 Sorted:</span>
+            <span id="race-score-text" style="color: var(--accent-emerald);">0</span>
+          </div>
+          <div class="score-item">
+            <span>🔥 Streak:</span>
+            <span id="race-streak-text" style="color: var(--accent-amber);">0x</span>
+          </div>
+        </div>
+
+        <div class="active-token-card" id="race-token-box">
+          <div class="token-word" id="race-token-word">Click Start Race!</div>
+          <div class="token-prompt" id="race-token-prompt">Prepare to sort 12 weather conditions.</div>
+        </div>
+
+        <div class="sorting-bins-grid" id="sorting-bins-grid">
+          <button class="bin-action-btn bin-zip" id="btn-bin-zip" disabled>
+            <span style="font-size: 2.2rem;">❄️</span>
+            <span>ZIP UP JACKET</span>
+            <span style="font-size: 0.8rem; opacity: 0.9;">(Cold / Gale / Storm)</span>
+          </button>
+
+          <button class="bin-action-btn bin-unzip" id="btn-bin-unzip" disabled>
+            <span style="font-size: 2.2rem;">☀️</span>
+            <span>UNZIP / TAKE OFF</span>
+            <span style="font-size: 0.8rem; opacity: 0.9;">(Sun / Warm / Heat)</span>
+          </button>
+        </div>
+
+        <button class="btn-3d btn-3d-amber" id="btn-start-race" style="padding: 1rem 2rem; font-size: 1.15rem;">
+          <span>🏁 Start 20-Second Race!</span>
+        </button>
+
+        <button class="btn-3d btn-3d-emerald" id="btn-proceed-stage4" style="display: none; padding: 1rem 2rem; font-size: 1.15rem;">
+          <span>Stage 4: Teleprompter Studio (+35 XP) 🎙️</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- STAGE 4: Fable Teleprompter Studio (Oral Graduation) -->
+    <section class="stage-view" id="stage-4-view">
+      <div class="teleprompter-card">
+        <div>
+          <span class="badge-category">Oral Production Studio</span>
+          <h2 style="font-size: 1.6rem; margin-top: 0.4rem;">🎙️ The Moral of The Fable</h2>
+          <p style="color: var(--text-muted);">Listen to the model sentence, then read it aloud with confidence!</p>
+        </div>
+
+        <div class="teleprompter-display">
+          <p class="teleprompter-line-text" id="tp-line-text">
+            Loading teleprompter sentence...
+          </p>
+        </div>
+
+        <div class="teleprompter-nav">
+          <button class="btn-3d btn-3d-glass" id="btn-tp-prev" title="Previous Sentence">
+            <span>⏮️ Previous</span>
+          </button>
+          <button class="btn-3d btn-3d-amber" id="btn-tp-speak">
+            <span>🔊 Read For Me</span>
+          </button>
+          <button class="btn-3d btn-3d-cyan" id="btn-tp-next">
+            <span>Next Sentence ⏭️</span>
+          </button>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <button class="btn-3d btn-3d-emerald" id="btn-complete-lesson" style="padding: 1rem 2.5rem; font-size: 1.2rem;">
+            <span>🎉 Complete Fable & Award 150 XP!</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Checkpoint Modal Overlay -->
+  <div class="checkpoint-overlay" id="checkpoint-overlay">
+    <div class="checkpoint-modal-card">
+      <span class="checkpoint-badge" id="cp-modal-badge">Checkpoint</span>
+      <h3 class="checkpoint-question" id="cp-modal-question">Question</h3>
+      <p class="checkpoint-hint" id="cp-modal-hint">Hint</p>
+
+      <div class="checkpoint-options-grid" id="cp-options-grid"></div>
+
+      <div class="checkpoint-feedback" id="cp-feedback"></div>
+
+      <button class="btn-3d btn-3d-cyan" id="btn-cp-continue" style="display: none; align-self: center;">
+        <span>Continue Story ▶️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Victory Modal Overlay -->
+  <div class="victory-modal-overlay" id="victory-modal">
+    <div class="victory-card">
+      <div class="victory-badge">🏆</div>
+      <h2 style="font-size: 1.8rem; color: #fff;">Fable Master Graduation!</h2>
+      <p style="color: var(--text-muted); font-size: 1.05rem;">
+        You mastered the weather powers of the Wind and the Sun and learned that <b>gentle warmth is stronger than cold force</b>!
+      </p>
+
+      <div style="padding: 1rem; background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-amber); border-radius: 14px;">
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-amber);">+150 XP AWARDED!</div>
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.2rem;">Added to Adventure Academy Player Profile</div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 0.5rem;">
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-3d-amber" style="text-decoration: none;">
+          <span>📄 Print Worksheet</span>
+        </a>
+        <a href="../index.html" class="btn-3d btn-3d-emerald" style="text-decoration: none;">
+          <span>🏰 Return to Academy</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
