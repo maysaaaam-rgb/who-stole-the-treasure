@@ -318,7 +318,7 @@
       });
     }
 
-    // Focal stage with real transparent 3D raster asset
+    // Focal stage with real transparent 3D raster asset & comparative stat bars
     if (el.focalStage) {
       el.focalStage.innerHTML = `
         <div class="focal-sprite-wrap">
@@ -326,7 +326,24 @@
         </div>
         <div class="pedestal-disk" style="background: radial-gradient(ellipse at center, ${dino.accentColor}70 0%, ${dino.accentColor}20 45%, transparent 70%);"></div>
         <div class="stamp-overlay" id="stamp-overlay">
-          <div class="rubber-stamp">APPROVED! ⭐</div>
+          <div class="rubber-stamp">STAMP: CORRECT! ⭐</div>
+        </div>
+        <div class="comparative-stat-bars">
+          <div class="stat-bar-row">
+            <span class="stat-name">Power / Mass</span>
+            <div class="stat-track"><div class="stat-fill" style="width: ${dino.stats.power}%; background: var(--coral-primary);"></div></div>
+            <span class="stat-num">${dino.stats.power}</span>
+          </div>
+          <div class="stat-bar-row">
+            <span class="stat-name">Speed / Agility</span>
+            <div class="stat-track"><div class="stat-fill" style="width: ${dino.stats.speed}%; background: var(--cyan-primary);"></div></div>
+            <span class="stat-num">${dino.stats.speed}</span>
+          </div>
+          <div class="stat-bar-row">
+            <span class="stat-name">Armor / Defense</span>
+            <div class="stat-track"><div class="stat-fill" style="width: ${dino.stats.defense}%; background: var(--emerald-primary);"></div></div>
+            <span class="stat-num">${dino.stats.defense}</span>
+          </div>
         </div>
       `;
     }
@@ -354,8 +371,9 @@
       }
       if (el.wbSentenceDisplay) {
         el.wbSentenceDisplay.innerHTML = `
-          <span>"${dino.teleprompter[1]}"</span><br>
-          <span style="color: var(--emerald-primary); font-size: 1.15rem;">"${dino.teleprompter[2]}"</span>
+          <div class="socket-dock-container docked-success">
+            <span class="socket-prefix">${dino.teleprompter[1]}</span>
+          </div>
         `;
       }
       if (el.wbOptionsGrid) {
@@ -383,7 +401,11 @@
 
     if (el.wbSentenceDisplay) {
       el.wbSentenceDisplay.innerHTML = `
-        ${currentTask.sentencePre}<span class="sentence-blank-slot">? ? ?</span>${currentTask.sentencePost}
+        <div class="socket-dock-container">
+          <span class="socket-prefix">${currentTask.sentencePre}</span>
+          <span class="sentence-blank-slot socket-target" data-socket="comparative">⚡ [DOCK COMPARATIVE]</span>
+          <span class="socket-postfix">${currentTask.sentencePost}</span>
+        </div>
       `;
     }
 
@@ -399,7 +421,7 @@
         btn.className = 'btn-3d btn-ghost workbench-option-btn';
         btn.innerHTML = `
           <span>${opt.text}</span>
-          <span class="option-hint">Tactile Action ➔</span>
+          <span class="option-hint">Dock to Socket ➔</span>
         `;
 
         btn.addEventListener('click', () => {
@@ -428,11 +450,15 @@
 
       audio.playStampSlam();
       audio.playXP();
-      confetti.burst(window.innerWidth / 2, window.innerHeight / 2, 45);
+      confetti.burst(window.innerWidth / 2, window.innerHeight / 2, 55);
 
       if (el.wbSentenceDisplay) {
         el.wbSentenceDisplay.innerHTML = `
-          ${task.sentencePre}<span class="sentence-blank-slot" style="background: rgba(16, 185, 129, 0.2); color: var(--emerald-primary); border-color: var(--emerald-primary);">${option.text}</span>${task.sentencePost}
+          <div class="socket-dock-container docked-success">
+            <span class="socket-prefix">${task.sentencePre}</span>
+            <span class="sentence-blank-slot socket-target docked" style="background: rgba(16, 185, 129, 0.25); color: var(--emerald-primary); border-color: var(--emerald-primary); box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);">${option.text}</span>
+            <span class="socket-postfix">${task.sentencePost}</span>
+          </div>
         `;
       }
 

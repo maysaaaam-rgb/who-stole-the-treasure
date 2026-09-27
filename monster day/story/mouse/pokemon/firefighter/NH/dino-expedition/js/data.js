@@ -41,7 +41,7 @@
         habitatName: 'Volcanic Crags',
         habitatIcon: '🌋',
         feature: 'crushing jaws',
-        imageSrc: 'assets/trex.png',
+        imageSrc: 'assets/trex.webp',
         speechIntro: 'Tyrannosaurus Rex was a fierce carnivore. It was bigger and heavier than Velociraptor!',
         teleprompter: [
           'Welcome to the expedition! This is Tyrannosaurus Rex.',
@@ -115,7 +115,7 @@
         habitatName: 'Fern Valley',
         habitatIcon: '🌿',
         feature: 'sickle claws',
-        imageSrc: 'assets/raptor.png',
+        imageSrc: 'assets/raptor.webp',
         speechIntro: 'Velociraptor was an agile hunter. It was much faster than T-Rex!',
         teleprompter: [
           'Welcome to the expedition! This is Velociraptor.',
@@ -189,7 +189,7 @@
         habitatName: 'Redwood Forest',
         habitatIcon: '🌲',
         feature: 'three brow horns & shield',
-        imageSrc: 'assets/triceratops.png',
+        imageSrc: 'assets/triceratops.webp',
         speechIntro: 'Triceratops was a massive herbivore. It was heavier and stronger than Velociraptor!',
         teleprompter: [
           'Welcome to the expedition! This is Triceratops.',
@@ -263,7 +263,7 @@
         habitatName: 'Deep Wetlands',
         habitatIcon: '🏞️',
         feature: 'colossal tall neck',
-        imageSrc: 'assets/brachiosaurus.png',
+        imageSrc: 'assets/brachiosaurus.webp',
         speechIntro: 'Brachiosaurus was a colossal giant. It was much heavier than Tyrannosaurus Rex!',
         teleprompter: [
           'Welcome to the expedition! This is Brachiosaurus.',
@@ -337,7 +337,7 @@
         habitatName: 'Rocky Plains',
         habitatIcon: '🪨',
         feature: 'bone club & armor plates',
-        imageSrc: 'assets/ankylosaurus.png',
+        imageSrc: 'assets/ankylosaurus.webp',
         speechIntro: 'Ankylosaurus was a living tank. It was heavier and more armored than Velociraptor!',
         teleprompter: [
           'Welcome to the expedition! This is Ankylosaurus.',
@@ -411,7 +411,7 @@
         habitatName: 'Ancient Riverbank',
         habitatIcon: '🌊',
         feature: 'dorsal plates & tail spikes',
-        imageSrc: 'assets/stegosaurus.png',
+        imageSrc: 'assets/stegosaurus.webp',
         speechIntro: 'Stegosaurus was a plated defender. It was bigger and heavier than Velociraptor!',
         teleprompter: [
           'Welcome to the expedition! This is Stegosaurus.',
