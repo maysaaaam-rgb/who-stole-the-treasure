@@ -29,7 +29,7 @@
     stages: [
       { id: 1, lesson: 1, name: "Biome Scanner", title: "Stage 1: Biome Scanner & Daylight Radar", icon: "🧭", duration: "8 min", xp: 20 },
       { id: 2, lesson: 1, name: "Mining Airlock", title: "Stage 2: Resource Mining Airlock", icon: "⛏️", duration: "10 min", xp: 25 },
-      { id: 3, lesson: 1, name: "Tool Smithing", title: "Stage 3: The Tool Smithing Bench", icon: "🔨", duration: "9 min", xp: 25 },
+      { id: 3, lesson: 1, name: "2x2 Smithing", title: "Stage 3: The 2x2 Starter Smithing Bench", icon: "🔨", duration: "9 min", xp: 25 },
       { id: 4, lesson: 1, name: "Sunset Drill", title: "Stage 4: Sunset Emergency Drill", icon: "🌅", duration: "8 min", xp: 25 },
       { id: 5, lesson: 2, name: "3x3 Forge", title: "Stage 5: 3x3 Tactile Shelter Forge", icon: "🧱", duration: "14 min", xp: 35 },
       { id: 6, lesson: 2, name: "Creeper Defense", title: "Stage 6: The Midnight Creeper Defense", icon: "👾", duration: "10 min", xp: 25 },
@@ -44,11 +44,11 @@
         icon: "🌲",
         accent: "#10b981",
         accentGlow: "rgba(16, 185, 129, 0.45)",
-        mascotImg: "assets/characters/steve_hero.jpg",
+        mascotImg: "assets/characters/steve_hero.webp",
         mascotName: "Steve the Crafter",
         keyResource: "Oak Wood",
-        resourceImg: "assets/blocks/wood_block.jpg",
-        description: "Dense forest of tall oak trees and abundant wildlife. The prime source for building wood and sticks.",
+        resourceImg: "assets/wood_block.webp",
+        description: "Dense forest of tall oak trees and abundant timber. The prime source for building wood and sticks.",
         sentenceFrame: "We chop oak trees to collect wood for our shelter.",
         speechPrompt: "In the Oak Forest, we chop oak trees to collect wood."
       },
@@ -58,10 +58,10 @@
         icon: "🪨",
         accent: "#94a3b8",
         accentGlow: "rgba(148, 163, 184, 0.45)",
-        mascotImg: "assets/characters/steve_hero.jpg",
+        mascotImg: "assets/characters/steve_hero.webp",
         mascotName: "Steve the Miner",
         keyResource: "Cobblestone & Coal",
-        resourceImg: "assets/blocks/stone_block.jpg",
+        resourceImg: "assets/stone_block.webp",
         description: "Deep subterranean stone walls packed with mineral veins. Vital for heavy stone tools and campfire torches.",
         sentenceFrame: "We mine rocks to collect stone and dark coal.",
         speechPrompt: "In the Rocky Cavern, we mine rocks to collect stone."
@@ -72,10 +72,10 @@
         icon: "🌋",
         accent: "#ef4444",
         accentGlow: "rgba(239, 68, 68, 0.45)",
-        mascotImg: "assets/characters/iron_golem.jpg",
+        mascotImg: "assets/characters/iron_golem.webp",
         mascotName: "Iron Golem Guardian",
         keyResource: "Iron Ore Veins",
-        resourceImg: "assets/items/tools_weapons.jpg",
+        resourceImg: "assets/iron_sword.webp",
         description: "A sheer canyon cutting into the bedrock. High risk, but packed with valuable iron for swords and armor.",
         sentenceFrame: "We smelt raw iron ore to make sharp iron swords.",
         speechPrompt: "In the Deep Ravine, we smelt raw iron ore to make iron swords."
@@ -86,10 +86,10 @@
         icon: "🌾",
         accent: "#f59e0b",
         accentGlow: "rgba(245, 158, 11, 0.45)",
-        mascotImg: "assets/characters/creeper_mob.jpg",
+        mascotImg: "assets/characters/creeper_mob.webp",
         mascotName: "Nocturnal Creeper Mob",
         keyResource: "Flat Bedrock Base",
-        resourceImg: "assets/items/torch_door.jpg",
+        resourceImg: "assets/wooden_door.webp",
         description: "Wide open grasslands. Perfect for building a large base, but dangerous when the nocturnal creepers spawn!",
         sentenceFrame: "When the sun sets, we must build a shelter to survive!",
         speechPrompt: "When the sun sets, we must build a shelter to survive!"
@@ -103,9 +103,9 @@
         title: "Oak Tree Trunk",
         type: "wood",
         maxHits: 4,
-        yieldItem: "Wood Block",
+        yieldItem: "Wood Planks",
         yieldCount: 4,
-        img: "assets/blocks/wood_block.jpg",
+        img: "assets/wood_block.webp",
         audio: "wood",
         stem: "We chop trees to collect wood.",
         purpose: "to make sticks, planks, and doors"
@@ -117,7 +117,7 @@
         maxHits: 5,
         yieldItem: "Cobblestone",
         yieldCount: 4,
-        img: "assets/blocks/stone_block.jpg",
+        img: "assets/stone_block.webp",
         audio: "stone",
         stem: "We mine rocks to collect stone.",
         purpose: "to upgrade our wooden pickaxe"
@@ -129,7 +129,7 @@
         maxHits: 4,
         yieldItem: "Coal Lump",
         yieldCount: 2,
-        img: "assets/blocks/stone_block.jpg",
+        img: "assets/coal_lump.webp",
         audio: "stone",
         stem: "We mine coal minerals from stone.",
         purpose: "to craft bright glowing torches"
@@ -141,44 +141,88 @@
         maxHits: 6,
         yieldItem: "Iron Ingot",
         yieldCount: 2,
-        img: "assets/items/tools_weapons.jpg",
+        img: "assets/iron_ingot.webp",
         audio: "stone",
         stem: "We smelt iron ore in the furnace.",
         purpose: "to forge an indestructible sword"
       }
     ],
 
-    // Stage 3: Tool Smithing Bench Recipes
+    // Stage 3: The 2x2 Starter Smithing Bench Recipes (Step 1 -> Step 2)
+    smithing2x2Recipes: [
+      {
+        id: "sticks-2x2",
+        stepNumber: 1,
+        name: "4x Wooden Sticks",
+        tier: "Step 1: Basic Component",
+        badge: "Step 1 of 2: Craft Sticks",
+        icon: "🥢",
+        resultItem: "Sticks",
+        img: "assets/torch_item.webp",
+        formula: "I need 2 Wood Planks to craft 4 Sticks.",
+        purpose: "We use sticks to make pickaxes, torches, and tools.",
+        pattern: [
+          ["wood", ""],
+          ["wood", ""]
+        ],
+        ghostGrid: ["wood", "", "wood", ""],
+        ingredientsLabel: "2 Wood Planks (Slots 1 & 3)",
+        miniGuide: "Place 1 Wood Plank in the top-left, and 1 Wood Plank in the bottom-left.",
+        stampText: "CRAFTED: 4x STICKS! ⭐"
+      },
+      {
+        id: "wood-pick-2x2",
+        stepNumber: 2,
+        name: "Starter Wooden Pickaxe",
+        tier: "Step 2: Starter Tool",
+        badge: "Step 2 of 2: Wooden Pickaxe",
+        icon: "⛏️",
+        resultItem: "Wooden Pickaxe",
+        img: "assets/stone_pickaxe.webp",
+        formula: "I need 2 Wood Planks and 2 Sticks to make a Wooden Pickaxe.",
+        purpose: "We use the wooden pickaxe to mine stone boulders.",
+        pattern: [
+          ["wood", "wood"],
+          ["stick", "stick"]
+        ],
+        ghostGrid: ["wood", "wood", "stick", "stick"],
+        ingredientsLabel: "2 Wood Planks (Top) + 2 Sticks (Bottom)",
+        miniGuide: "Place 2 Wood Planks across the top row, and 2 Sticks across the bottom row.",
+        stampText: "CRAFTED: STARTER PICKAXE! ⭐"
+      }
+    ],
+
+    // Backwards compatibility for existing references
     smithingRecipes: [
       {
         id: "recipe-wood-pick",
         name: "Wooden Pickaxe",
         tier: "Tier 1: Starter Tool",
-        cost: { stick: 2, wood: 3 },
+        cost: { stick: 2, wood: 2 },
         resultItem: "Wooden Pickaxe",
-        img: "assets/items/tools_weapons.jpg",
-        formula: "I need 2 sticks and 3 wood to make a wooden pickaxe.",
+        img: "assets/stone_pickaxe.webp",
+        formula: "I need 2 sticks and 2 wood to make a wooden pickaxe.",
         purpose: "We use the wooden pickaxe to mine stone."
       },
       {
         id: "recipe-stone-pick",
         name: "Stone Pickaxe",
         tier: "Tier 2: Advanced Miner",
-        cost: { stick: 2, stone: 3 },
+        cost: { stick: 2, stone: 2 },
         resultItem: "Stone Pickaxe",
-        img: "assets/items/tools_weapons.jpg",
-        formula: "I need 2 sticks and 3 stone to make a stone pickaxe.",
+        img: "assets/stone_pickaxe.webp",
+        formula: "I need 2 sticks and 2 stone to make a stone pickaxe.",
         purpose: "We use the stone pickaxe to mine iron ore."
       }
     ],
 
     // Stage 4: Sunset Emergency Sorting
     sortingItems: [
-      { id: "s-1", name: "Glowing Torches", category: "survival", icon: "🔥", reason: "Lights the dark to stop monster spawns" },
+      { id: "s-1", name: "Glowing Torches", category: "survival", icon: "🕯️", reason: "Lights the dark to stop monster spawns" },
       { id: "s-2", name: "Wooden Door", category: "survival", icon: "🚪", reason: "Blocks monsters from entering shelter" },
       { id: "s-3", name: "Stone Pickaxe", category: "survival", icon: "⛏️", reason: "Mines emergency stone blocks" },
-      { id: "s-4", name: "Iron Sword", category: "survival", icon: "🗡️", reason: "Protects crafters against creepers" },
-      { id: "s-5", name: "Coal Lumps", category: "survival", icon: "⚫", reason: "Fuel for campfire and torches" },
+      { id: "s-4", name: "Iron Sword", category: "survival", icon: "⚔️", reason: "Protects crafters against creepers" },
+      { id: "s-5", name: "Coal Lumps", category: "survival", icon: "⬛", reason: "Fuel for campfire and torches" },
       { id: "s-6", name: "Baked Bread", category: "survival", icon: "🍞", reason: "Restores crafter energy" },
       { id: "l-1", name: "Gold Trophy", category: "luxury", icon: "🏆", reason: "Shiny decoration, zero defense" },
       { id: "l-2", name: "Diamond Block", category: "luxury", icon: "💎", reason: "Precious display, not for night 1" },
@@ -204,7 +248,7 @@
           ["wood", "wood", ""]
         ],
         defenseBoost: 30,
-        resultImg: "assets/items/torch_door.jpg",
+        resultImg: "assets/wooden_door.webp",
         previewAnimation: "floating-door",
         miniGuide: "Fill column 1 and column 2 with 6 wood planks. Leave column 3 empty.",
         stampText: "CRAFTED: WOODEN DOOR! ⭐",
@@ -224,7 +268,7 @@
           ["", "", ""]
         ],
         defenseBoost: 25,
-        resultImg: "assets/items/torch_door.jpg",
+        resultImg: "assets/torch_item.webp",
         previewAnimation: "flaming-torch",
         miniGuide: "Place 1 Coal in the top-center, and 1 Stick in the middle-center.",
         stampText: "CRAFTED: 4x TORCHES! ⭐",
@@ -244,7 +288,7 @@
           ["", "stick", ""]
         ],
         defenseBoost: 20,
-        resultImg: "assets/items/tools_weapons.jpg",
+        resultImg: "assets/iron_sword.webp",
         previewAnimation: "shimmering-sword",
         miniGuide: "Place 2 Iron Ingots vertically down the center, with 1 Stick at the bottom.",
         stampText: "CRAFTED: IRON SWORD! ⭐",
@@ -259,7 +303,7 @@
         alert: "⚠️ Dark Shadow at West Window!",
         threat: "Creeper sneaking in unlit blindspot.",
         actionNeeded: "torch",
-        actionBtn: "🔥 Place Torch on Window",
+        actionBtn: "🕯️ Mount Torch on Window",
         reactionSuccess: "Window illuminated! The creeper fled into the woods."
       },
       {
@@ -267,15 +311,15 @@
         alert: "⚠️ Footsteps Outside the Main Entrance!",
         threat: "Monsters approaching unbolted door.",
         actionNeeded: "lock",
-        actionBtn: "🔒 Fasten Heavy Door Lock",
-        reactionSuccess: "Door locked! The monsters cannot enter your shelter."
+        actionBtn: "🔒 Bolt Heavy Wooden Door",
+        reactionSuccess: "Door bolted! The monsters cannot enter your shelter."
       },
       {
         id: "def-3",
         alert: "⚠️ Perimeter Breach in the Outer Yard!",
         threat: "A pack of creepers surrounding the base.",
         actionNeeded: "golem",
-        actionBtn: "🤖 Summon Iron Golem Defender",
+        actionBtn: "🤖 Deploy Iron Golem Defender",
         reactionSuccess: "Iron Golem deployed! The perimeter is secure."
       }
     ],
@@ -285,15 +329,15 @@
       {
         id: "tp-forest-base",
         title: "Oak Forest Fortified Shelter",
-        mascotImg: "assets/characters/steve_hero.jpg",
-        line1: "Night has arrived in the Oak Forest biome!",
+        mascotImg: "assets/characters/steve_hero.webp",
+        line1: "Night has arrived in the biome!",
         line2: "I used wood, stone, and iron to build a strong shelter with torches.",
         line3: "The door is locked — my base is safe from the monsters!"
       },
       {
         id: "tp-cavern-bunker",
         title: "Rocky Cavern Deep Fortress",
-        mascotImg: "assets/characters/iron_golem.jpg",
+        mascotImg: "assets/characters/iron_golem.webp",
         line1: "The sun has set behind the Rocky Cavern peaks!",
         line2: "We used cobblestone and coal torches to illuminate the underground shelter.",
         line3: "Our iron sword is ready — we survived the midnight trials!"
