@@ -458,6 +458,7 @@ body {
 .radar-card,
 .specimen-card {
   position: relative;
+  min-height: 440px;
   height: 450px;
   perspective: 1200px;
   cursor: pointer;
@@ -496,7 +497,7 @@ body {
   background: var(--bg-glass);
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow-panel);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -509,51 +510,41 @@ body {
 
 /* 65% Full-Bleed Media Viewport / Card Hero Stage */
 .card-hero-stage,
+.stage-display,
 .card-art-hero {
-  position: relative;
-  height: 220px;
-  min-height: 220px;
   width: 100%;
-  background: radial-gradient(circle at 50% 35%, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 100%);
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  position: relative;
+  padding-top: 15px;
+  background: radial-gradient(circle at 50% 35%, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.monster-3d-model,
 .hero-3d-sprite,
+.monster-img,
+.monster-3d-model,
 .monster-raster-img {
-  max-height: 180px;
   width: auto;
-  max-width: 90%;
+  max-width: 85%;
+  height: 170px;
   object-fit: contain;
   z-index: 2;
-  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.6));
-  animation: idleBob 3s ease-in-out infinite;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.75));
+  animation: idleBob 3.5s ease-in-out infinite;
   transition: transform 0.3s ease;
 }
 
-.monster-card-wrap:hover .monster-3d-model,
-.radar-card:hover .monster-3d-model,
-.specimen-card:hover .monster-3d-model,
 .monster-card-wrap:hover .hero-3d-sprite,
 .radar-card:hover .hero-3d-sprite,
 .specimen-card:hover .hero-3d-sprite,
-.monster-card-wrap:hover .monster-raster-img {
+.monster-card-wrap:hover .monster-img,
+.monster-card-wrap:hover .monster-3d-model {
   transform: scale(1.06);
-}
-
-.monster-sprite-container {
-  position: relative;
-  z-index: 2;
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: idleBob 3s ease-in-out infinite;
 }
 
 @keyframes idleBob {
@@ -561,22 +552,17 @@ body {
   50% { transform: translateY(-10px); }
 }
 
-/* Isometric Reflection Pedestal Disk */
+/* Grounding Isometric Pedestal Disk */
 .isometric-pedestal,
 .pedestal-disk {
   position: absolute;
-  bottom: 10px;
-  width: 150px;
-  height: 38px;
+  bottom: 15px;
+  width: 160px;
+  height: 32px;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.45) 0%, rgba(56, 189, 248, 0.1) 50%, transparent 75%);
   border-radius: 50%;
-  animation: pedestalPulse 3s ease-in-out infinite;
   z-index: 1;
   pointer-events: none;
-}
-
-@keyframes pedestalPulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.12); opacity: 0.45; }
 }
 
 .card-badge-top {
@@ -592,6 +578,7 @@ body {
   gap: 5px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
+  z-index: 10;
 }
 
 .card-xp-tag {
@@ -606,17 +593,36 @@ body {
   padding: 3px 8px;
   border-radius: 6px;
   font-family: 'JetBrains Mono', monospace;
+  z-index: 10;
 }
 
 /* 35% Dark Glassmorphic Caption Tray */
 .card-caption-tray {
-  height: 35%;
-  padding: 16px;
+  height: calc(100% - 220px);
+  min-height: 190px;
+  padding: 16px 18px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 8px;
   text-align: left;
   background: rgba(15, 23, 42, 0.95);
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  overflow: visible;
+}
+
+.action-chamber-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 11px 16px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .card-monster-name {
