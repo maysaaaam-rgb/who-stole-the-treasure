@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧁 Creature Café: Mythical Likes & Dislikes | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Ambient Looping Video Backdrop -->
+  <video class="ambient-video-backdrop" autoplay loop muted playsinline>
+    <source src="assets/backdrop.mp4" type="video/mp4">
+  </video>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Sticky Tactical HUD Dock -->
+  <header class="tactical-hud">
+    <div class="hud-container">
+      <div class="hud-brand">
+        <div class="hud-logo">🧁</div>
+        <div class="hud-title-wrap">
+          <div class="hud-title">
+            <span>CREATURE CAFÉ</span>
+            <span class="hud-pill">Grade 3–4 • CEFR A1+</span>
+          </div>
+          <div class="hud-subtitle">Mythical Likes & Dislikes • Food & Hobbies</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-pill">
+          <span class="stat-icon">⭐</span>
+          <span class="stat-label">Academy XP</span>
+          <span class="stat-value" id="hud-xp-val">0</span>
+        </div>
+
+        <div class="happiness-gauge" title="Café Customer Happiness">
+          <span class="stat-icon">😊</span>
+          <span class="stat-label">Happiness</span>
+          <div class="gauge-track">
+            <div class="gauge-fill" id="happiness-fill" style="width: 25%;"></div>
+          </div>
+          <span class="stat-value" id="happiness-val" style="color: #10b981; font-size: 0.85rem;">25%</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button id="btn-sound-toggle" class="btn-3d btn-ghost btn-icon" title="Toggle Sound">🔊</button>
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-ghost btn-sm">📝 Worksheet</a>
+        <a href="../index.html" class="btn-3d btn-ghost btn-sm">🚪 Exit</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Phase Navigation Strip -->
+  <nav class="phase-strip-wrap">
+    <div class="phase-strip">
+      <button class="phase-tab active" data-phase="1" id="tab-phase-1">
+        <span>📋</span>
+        <span>Phase 1: Menu Scanner</span>
+        <span class="phase-tab-badge">Discovery</span>
+      </button>
+      <button class="phase-tab" data-phase="2" id="tab-phase-2">
+        <span>🍳</span>
+        <span>Phase 2: Kitchen Workbench</span>
+        <span class="phase-tab-badge">Order Match</span>
+      </button>
+      <button class="phase-tab" data-phase="3" id="tab-phase-3">
+        <span>🎤</span>
+        <span>Phase 3: Live Karaoke</span>
+        <span class="phase-tab-badge">Speaking</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Game Stage Arena -->
+  <main class="main-stage">
+    
+    <!-- PHASE 1: MENU SCANNER -->
+    <section class="phase-view active" id="phase-1-view">
+      <div class="section-header">
+        <h1 class="section-title">📋 Mythical Creature Menu Scanner</h1>
+        <p class="section-subtitle">Meet our 5 legendary café guests! Explore what each creature loves to eat and do, and discover what they can't stand.</p>
+        
+        <div class="grammar-formula-banner">
+          <div class="formula-tag positive">
+            <span>❤️</span>
+            <span>Formula 1: [Creature] likes [Item / Verb-ing].</span>
+          </div>
+          <div class="formula-tag negative">
+            <span>💔</span>
+            <span>Formula 2: [Creature] doesn't like [Item / Verb-ing].</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-cards-grid" id="menu-cards-container">
+        <!-- Rendered by app.js with 65% Full-Bleed Artwork Rule -->
+      </div>
+    </section>
+
+    <!-- PHASE 2: CAFÉ KITCHEN WORKBENCH -->
+    <section class="phase-view" id="phase-2-view">
+      <div class="section-header">
+        <h1 class="section-title">🍳 Café Kitchen: Order Workbench</h1>
+        <p class="section-subtitle">The customers are sitting at their tables! Read the order ticket, check their preferences, and serve the right treat.</p>
+      </div>
+
+      <div class="workbench-container">
+        <!-- Left: Customer Station -->
+        <div class="customer-station">
+          <div class="customer-stage-header">
+            <span class="round-pill" id="workbench-round-pill">ROUND 1 / 8</span>
+            <span class="hud-pill" id="workbench-element-badge">🔥 Fire Dragon</span>
+          </div>
+          
+          <div class="customer-hero-stage">
+            <div class="isometric-pedestal" id="workbench-pedestal"></div>
+            <img id="workbench-creature-img" class="hero-3d-sprite" src="assets/emberwing_stage_growing.webp" alt="Creature">
+          </div>
+
+          <div class="customer-meta-footer">
+            <h2 class="customer-name" id="workbench-creature-name">Ember Dragon</h2>
+            <p class="customer-species" id="workbench-creature-species">Flame Wyrm • Scorching Eater</p>
+          </div>
+        </div>
+
+        <!-- Right: Order Workbench Board -->
+        <div class="order-workbench-board">
+          <div class="speech-bubble-order">
+            <p class="order-prompt-text" id="order-prompt-text">Ember Dragon is starving after flying! What does it like to eat?</p>
+            <span class="order-helper-badge" id="order-helper-badge">💡 Tip: Fire creatures love scorching heat!</span>
+          </div>
+
+          <!-- Sentence Target Slot -->
+          <div class="sentence-builder-tray">
+            <span id="sentence-prefix-text">Ember Dragon likes</span>
+            <span class="sentence-slot" id="workbench-target-slot">???</span>
+          </div>
+
+          <!-- Option Buttons Grid -->
+          <div class="workbench-options-grid" id="workbench-options-grid">
+            <!-- 4 Chunky 3D options rendered dynamically -->
+          </div>
+
+          <!-- Feedback text -->
+          <div id="workbench-feedback-box" style="display: none; padding: 12px 16px; border-radius: 10px; font-weight: 700;"></div>
+
+          <!-- Stamp Slam Overlay -->
+          <div class="stamp-slam-toast" id="stamp-slam-toast">
+            <span>✨</span>
+            <span id="stamp-toast-msg">SERVED! +30 XP</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHASE 3: LIVE KARAOKE TELEPROMPTER -->
+    <section class="phase-view" id="phase-3-view">
+      <div class="section-header">
+        <h1 class="section-title">🎤 Live Café Review Teleprompter</h1>
+        <p class="section-subtitle">Take the microphone! Deliver a 3-sentence speaking review of any café customer using the teleprompter.</p>
+      </div>
+
+      <!-- Creature Selection Tabs -->
+      <div class="teleprompter-tabs" id="teleprompter-tabs">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="teleprompter-container">
+        <!-- Left: Companion Live Stage -->
+        <div class="customer-station">
+          <div class="customer-stage-header">
+            <span class="hud-pill" id="karaoke-badge">🔥 Fire Dragon</span>
+            <button class="btn-3d btn-ghost btn-sm" id="btn-karaoke-listen" title="Listen to Pronunciation">🔊 Listen</button>
+          </div>
+
+          <div class="customer-hero-stage">
+            <div class="isometric-pedestal" id="karaoke-pedestal"></div>
+            <img id="karaoke-creature-img" class="hero-3d-sprite" src="assets/emberwing_stage_growing.webp" alt="Teleprompter Mascot">
+          </div>
+
+          <div class="customer-meta-footer">
+            <h2 class="customer-name" id="karaoke-creature-name">Ember Dragon</h2>
+            <p class="customer-species" id="karaoke-creature-desc">Reviewing customer likes & dislikes</p>
+          </div>
+        </div>
+
+        <!-- Right: Teleprompter Monitor -->
+        <div class="teleprompter-screen">
+          <div class="teleprompter-header">
+            <div class="recording-indicator">
+              <span class="rec-dot"></span>
+              <span>LIVE TELEPROMPTER • READY</span>
+            </div>
+            <span class="hud-pill">3-SENTENCE FORMULA</span>
+          </div>
+
+          <div class="teleprompter-script" id="teleprompter-script">
+            <!-- 3 sentences with karaoke word highlights -->
+          </div>
+
+          <div class="teleprompter-controls">
+            <button class="btn-3d btn-primary" id="btn-start-karaoke">
+              <span>▶️</span>
+              <span>Start Read-Along</span>
+            </button>
+            <button class="btn-3d btn-emerald" id="btn-complete-karaoke">
+              <span>⭐</span>
+              <span>Record & Claim +50 XP</span>
+            </button>
+            <button class="btn-3d btn-ghost" id="btn-stop-karaoke">
+              <span>⏹️</span>
+              <span>Stop</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Victory Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-card">
+      <div class="victory-trophy">🏆</div>
+      <h2 class="victory-title">Master Café Chef!</h2>
+      <p class="victory-desc">You satisfied every mythical customer, mastered the likes and dislikes formulas, and completed your speaking debrief!</p>
+      
+      <div class="victory-stars">
+        <span>⭐</span>
+        <span>⭐</span>
+        <span>⭐</span>
+      </div>
+
+      <div class="victory-actions">
+        <button class="btn-3d btn-primary" id="btn-replay-game">🔄 Play Again</button>
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-emerald">📄 Print Worksheet</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

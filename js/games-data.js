@@ -511,6 +511,118 @@ const GAMES_REGISTRY = [
     "url": "monster-evolution/index.html"
   },
   {
+    "id": "creature-cafe",
+    "aliases": [
+      "creature-cafe",
+      "mythical-cafe",
+      "likes-dislikes",
+      "mythical-creatures-cafe"
+    ],
+    "title": "🧁 Creature Café: Mythical Likes & Dislikes",
+    "description": "5-Layer EdTech CLIL & ESL arcade module (Grade 3–4 | CEFR A1+ | 200 XP). Phase 1: Menu Scanner inspecting 5 legendary creatures and their taste/activity preferences with 65% full-bleed 3D cards; Phase 2: Café Kitchen Workbench with interactive treat serving, target sentence slots, stamp slam feedback, and soft-wobble hints; Phase 3: Live Café Review Teleprompter with real-time word-by-word karaoke highlighting and printable A4 Café Menu & Review Log.",
+    "type": "game",
+    "category": "Language & Quests",
+    "categoryLabel": "🧁 Mythical Likes & Dislikes",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–10",
+    "ageGroup": "7-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 200,
+    "skills": [
+      "Likes & Dislikes Sentence Construction",
+      "Food & Treat Vocabulary",
+      "Mythical Creature Trait Association",
+      "Interactive Kitchen Workbench Order Serving",
+      "3-Sentence Oral Teleprompter Presentation"
+    ],
+    "topic": "Food Preferences, Likes & Dislikes, Hobbies",
+    "topics": [
+      "Food & Drink",
+      "Likes & Dislikes",
+      "Mythical Creatures",
+      "Hobbies & Actions",
+      "Speaking & Presentation"
+    ],
+    "languageFocus": "Positive: [Creature] likes [Item / Verb-ing]. Negative: [Creature] doesn't like [Item / Verb-ing]. Question: What does it like?",
+    "activityMode": "3-Phase Interactive CLIL Café & Teleprompter Studio",
+    "interactionType": "65% Full-Bleed 3D Cards, Kitchen Workbench Order Matching, Rubber Stamp Impact, Live Word-by-Word Karaoke Teleprompter, A4 Printable Field Dossier",
+    "difficulty": "Grade 3–4 (A1+)",
+    "tags": [
+      "creature-cafe",
+      "likes-dislikes",
+      "food",
+      "creatures",
+      "clil",
+      "speaking",
+      "speech-teleprompter",
+      "audio-synthesis"
+    ],
+    "learningObjectives": [
+      "Express creature food and hobby preferences using 'likes' and 'doesn't like'.",
+      "Ask and answer: 'What does [creature] like?'",
+      "Serve correct items in the kitchen workbench based on sensory clues.",
+      "Deliver a 3-sentence speaking review using the live teleprompter."
+    ],
+    "teacherInstructions": "Guide students through the 3-phase arc: 1. Menu Scanner (explore the 5 creatures and listen to their preferences), 2. Kitchen Workbench (serve the right food tokens to earn XP and boost customer happiness), 3. Live Teleprompter (deliver a 3-sentence customer review and complete the companion worksheet).",
+    "studentInstructions": "Welcome to Creature Café! Explore the menu to learn what dragons, mermaids, and yetis love to eat. Serve their orders in the kitchen and read your review on the live teleprompter!",
+    "route": "creature-cafe/index.html",
+    "worksheetRoute": "creature-cafe/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🧁",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 50%, #0284c7 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"cafeThumbGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#0c4a6e\"/>\n          <stop offset=\"100%\" stop-color=\"#0284c7\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#cafeThumbGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"42\" fill=\"rgba(56, 189, 248, 0.2)\" stroke=\"#38bdf8\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n      <text x=\"100\" y=\"82\" font-size=\"48\" text-anchor=\"middle\">🧁</text>\n    </svg>",
+    "categoryGroup": "Language & Quests",
+    "vocabulary": {
+      "core": [
+        "spicy peppers",
+        "sweet honey",
+        "cold ice berries",
+        "golden nuts",
+        "crunchy crystals"
+      ],
+      "supporting": [
+        "flying",
+        "swimming",
+        "sleeping",
+        "roaring"
+      ],
+      "phonics": [
+        "/p/ in peppers",
+        "/h/ in honey",
+        "/b/ in berries"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "[Creature] likes [Item] / It doesn't like [Item]",
+      "formula": "[Creature] likes [Item / Verb-ing]. It doesn't like [Item / Verb-ing].",
+      "formulas": [
+        "Ember Dragon likes spicy peppers.",
+        "Coral Mermaid doesn't like spicy peppers.",
+        "Thunder Yeti likes cold ice berries."
+      ]
+    },
+    "clilDomain": "Mythical Preferences & Diets",
+    "clilTheme": "Food, Flavors & Hobbies",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 5,
+    "formula": "[Creature] likes [Item / Verb-ing]. It doesn't like [Item / Verb-ing].",
+    "status": "active",
+    "worksheetUrl": "creature-cafe/worksheet.html",
+    "url": "creature-cafe/index.html"
+  },
+  {
     "id": "wildlife-detective",
     "aliases": [
       "wildlife",
