@@ -165,7 +165,14 @@ body {
 /* ==========================================================================
    TOP TACTICAL HUD & STAT BAR
    ========================================================================== */
-.tactical-hud {
+.tactical-hud,
+.hud-bar,
+.arcade-nav-dock {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  margin-bottom: 24px;
   background: var(--bg-glass-heavy);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--slate-border);
@@ -173,9 +180,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -447,10 +451,17 @@ body {
    PHASE 1: RADAR SCANNER (3D FLIP CARDS)
    65/35 Full-Bleed Rule • Isometric Reflection Pedestal • idleBob
    ========================================================================== */
+.scanner-grid,
+.cards-stage,
 .radar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
   gap: 24px;
+  padding-bottom: 90px; /* leaves room for bottom HUD */
+  position: relative;
+  z-index: 10;
   perspective: 1200px;
 }
 
@@ -458,10 +469,14 @@ body {
 .radar-card,
 .specimen-card {
   position: relative;
+  width: 290px;
+  min-width: 280px;
+  max-width: 320px;
   min-height: 440px;
   height: 450px;
   perspective: 1200px;
   cursor: pointer;
+  overflow: visible;
 }
 
 .monster-card-inner,
