@@ -10,7 +10,7 @@ const CURRICULUM_TRACKS = [
     "label": "🚀 Science & Space",
     "title": "Track 1: 🚀 Science & Space Exploration",
     "subtitle": "Planetary astronomy, earth systems, environmental science, and animal adaptations.",
-    "count": 18
+    "count": 19
   },
   {
     "id": "track-2",
@@ -41,8 +41,8 @@ const CURRICULUM_TRACKS = [
     "key": "all",
     "label": "🌟 All Lessons (60+)",
     "title": "Complete Learning Library (All Lessons)",
-    "subtitle": "All 60 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
-    "count": 60
+    "subtitle": "All 61 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 61
   }
 ];
 
@@ -276,6 +276,122 @@ const GAMES_REGISTRY = [
     "status": "active",
     "worksheetUrl": "dino-arena/worksheet.html",
     "url": "dino-arena/index.html"
+  },
+  {
+    "id": "dino-expedition",
+    "aliases": [
+      "dino-expedition",
+      "prehistoric-habitats",
+      "dino-habitats",
+      "paleo-expedition"
+    ],
+    "title": "🦖 Dino Expedition: Prehistoric Habitats",
+    "description": "High-craft 3-phase CLIL & ESL paleontology expedition (CEFR A1+ | 150 XP). Phase 1: 3D Discovery Radar with 360° flip cards and authentic 3D raster fossils; Phase 2: Tactile Adaptation Workbench with comparative syntax engine, energy gauge, and rubber stamp slam; Phase 3: Live Karaoke Teleprompter broadcast studio with speech synthesis and A4 Field Passport.",
+    "type": "game",
+    "category": "CLIL & Science",
+    "categoryLabel": "🦖 Prehistoric Habitats & Comparatives",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 8–11",
+    "ageGroup": "8–11",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 150,
+    "skills": [
+      "3D Prehistoric Fossil Scanning",
+      "Comparative Adjective Formulation (-er than)",
+      "CLIL Diet & Habitat Classification (Carnivore vs. Herbivore)",
+      "Survival Feature Mechanics & Rubber Stamp Verification",
+      "3-Sentence Oral Teleprompter Broadcast"
+    ],
+    "topic": "Dinosaurs, Habitats, Diets & Comparative Adjectives",
+    "topics": [
+      "Paleontology",
+      "Comparative Adjectives",
+      "Habitats",
+      "Animal Adaptations",
+      "Herbivore vs Carnivore"
+    ],
+    "languageFocus": "Comparative Adjectives: [Dino A] was [bigger / faster / heavier] than [Dino B]. Habitat & Diet: It lived in the [habitat] to find [food/plants].",
+    "activityMode": "3-Phase Interactive CLIL Arcade & Teleprompter Studio",
+    "interactionType": "3D Radar Flip Cards, Tactile Adaptation Workbench, Dynamic Energy Reactor, Rubber Stamp Slam, Live Karaoke Teleprompter, A4 Printable Field Passport",
+    "difficulty": "Grade 3–4 (A1+)",
+    "tags": [
+      "dino-expedition",
+      "dinosaurs",
+      "comparatives",
+      "habitats",
+      "clil",
+      "science",
+      "paleontology",
+      "speech-teleprompter",
+      "audio-synthesis"
+    ],
+    "learningObjectives": [
+      "Compare physical dinosaur traits using comparative adjectives (bigger, faster, heavier).",
+      "Classify prehistoric creatures by diet and environmental habitat requirements.",
+      "Deliver a 3-part oral paleontologist field report via the live teleprompter."
+    ],
+    "teacherInstructions": "Guide students through the 3-phase arc: 1. Discovery Radar (flip 3D fossil cards to inspect height, weight, and habitat), 2. Tactile Workbench (build comparative sentences and slam the rubber stamp to fill energy to 100%), 3. Live Teleprompter (deliver 3-sentence broadcast with audio accompaniment and print the A4 Field Passport).",
+    "studentInstructions": "Enter the Prehistoric Dino Expedition! Scan all 6 fossil specimens, master comparative sentences at the workbench, and deliver your live teleprompter field debrief to earn your Senior Paleontologist Diploma!",
+    "route": "dino-expedition/index.html",
+    "worksheetRoute": "dino-expedition/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🦖",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #059669 100%)",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"dinoExpThumbGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#060911\"/>\n          <stop offset=\"50%\" stop-color=\"#064e3b\"/>\n          <stop offset=\"100%\" stop-color=\"#10b981\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#dinoExpThumbGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"42\" fill=\"rgba(16, 185, 129, 0.2)\" stroke=\"#10b981\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n      <text x=\"100\" y=\"82\" font-size=\"48\" text-anchor=\"middle\">🦖</text>\n    </svg>",
+    "categoryGroup": "Science & Paleontology",
+    "vocabulary": {
+      "core": [
+        "carnivore",
+        "herbivore",
+        "claws",
+        "horns",
+        "armor",
+        "forest",
+        "swamp",
+        "plains"
+      ],
+      "supporting": [
+        "heavier",
+        "faster",
+        "fossil",
+        "predator",
+        "extinct"
+      ],
+      "phonics": [
+        "/k/ in carnivore",
+        "/h/ in herbivore",
+        "/kl/ in claws"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "[Dino A] was [comparative] than [Dino B] / It lived in [habitat]",
+      "formula": "[Dino A] was [bigger / faster / heavier] than [Dino B] / It lived in [habitat] to find [food/plants]",
+      "formulas": [
+        "T-Rex was faster than Triceratops.",
+        "Brachiosaurus was heavier than Stegosaurus.",
+        "It lived in the prehistoric forest to find food."
+      ]
+    },
+    "clilDomain": "Paleontology & Animal Biology",
+    "clilTheme": "Prehistoric Fauna, Diets & Habitats",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "trackOrder": 3,
+    "formula": "[Dino A] was [bigger / faster / heavier] than [Dino B] / It lived in [habitat] to find [food/plants]",
+    "status": "active",
+    "worksheetUrl": "dino-expedition/worksheet.html",
+    "url": "dino-expedition/index.html"
   },
   {
     "id": "wildlife-detective",

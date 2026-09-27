@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦖 Dino Expedition: Prehistoric Field Passport & Diploma | English Adventure Academy</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
+  <style>
+    :root {
+      --ink: #060911;
+      --paper: #ffffff;
+      --accent: #059669;
+      --accent-amber: #d97706;
+      --accent-cyan: #0284c7;
+      --border-gray: #cbd5e1;
+      --bg-shade: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Comic Neue', sans-serif;
+      background: #0f172a;
+      color: var(--ink);
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .no-print-bar {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 14px 24px;
+      border-radius: 14px;
+      color: #ffffff;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .no-print-bar h2 {
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .no-print-bar p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .bar-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-back {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-back:hover {
+      background: #475569;
+    }
+
+    .btn-print {
+      background: #10b981;
+      color: #060911;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+    .btn-print:hover {
+      background: #34d399;
+    }
+
+    /* A4 Page Canvas */
+    .passport-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      padding: 14mm 16mm;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .passport-header {
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .passport-title-block h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+
+    .passport-title-block p {
+      font-size: 11.5px;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .academy-seal-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 4px 10px;
+      background: #ecfdf5;
+      color: #065f46;
+      font-weight: 800;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-box {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 10px;
+      background: var(--bg-shade);
+      border: 1px solid var(--border-gray);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .field-line {
+      display: inline-block;
+      border-bottom: 1.5px dashed #64748b;
+      min-width: 110px;
+      padding: 0 4px;
+      color: #0284c7;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Part 1: Matrix Table */
+    .dino-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+
+    .dino-table th, .dino-table td {
+      border: 1px solid var(--border-gray);
+      padding: 5px 7px;
+      text-align: left;
+    }
+
+    .dino-table th {
+      background: #e2e8f0;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      color: #1e293b;
+    }
+
+    .dino-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    .check-box {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid #0f172a;
+      border-radius: 2px;
+      margin-right: 3px;
+      vertical-align: middle;
+    }
+
+    /* Part 2: Cloze & Comparisons */
+    .cloze-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+
+    .cloze-blank {
+      display: inline-block;
+      min-width: 110px;
+      border-bottom: 1.5px solid #065f46;
+      margin: 0 4px;
+      text-align: center;
+      font-weight: 700;
+      color: #047857;
+    }
+
+    /* Part 3: Presentation Speech Teleprompter Box */
+    .teleprompter-box {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      line-height: 2.0;
+      margin-bottom: 12px;
+    }
+
+    .tele-speech-blank {
+      display: inline-block;
+      min-width: 120px;
+      border-bottom: 1.5px solid #1d4ed8;
+      margin: 0 4px;
+      text-align: center;
+      font-weight: 700;
+      color: #1e40af;
+    }
+
+    /* Part 4: Diploma & Badges */
+    .diploma-card {
+      border: 2px dashed #059669;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .diploma-left {
+      max-width: 68%;
+    }
+
+    .diploma-left h3 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #065f46;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diploma-left p {
+      font-size: 10.5px;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .diploma-stamps {
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge-stamp {
+      border: 1.5px dashed #047857;
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+      background: #ffffff;
+      min-width: 60px;
+    }
+
+    .badge-stamp-icon {
+      font-size: 18px;
+    }
+
+    .badge-stamp-label {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+      line-height: 1.1;
+    }
+
+    .signature-area {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .passport-page {
+        box-shadow: none;
+        margin: 0;
+        padding: 10mm 12mm;
+        width: 100%;
+        min-height: auto;
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action Bar (Hidden on Print) -->
+  <div class="no-print-bar">
+    <div>
+      <h2>🦖 Prehistoric Paleontology Field Passport</h2>
+      <p>Printable A4 Worksheet & Certification • Grade 3–4 (CEFR A1+)</p>
+    </div>
+    <div class="bar-actions">
+      <a href="index.html" class="btn-action btn-back">⬅️ Back to Game</a>
+      <button class="btn-action btn-print" onclick="window.print()">🖨️ Print Dossier</button>
+    </div>
+  </div>
+
+  <!-- A4 Printable Passport -->
+  <div class="passport-page">
+    
+    <!-- Header -->
+    <div class="passport-header">
+      <div class="passport-title-block">
+        <h1>🦖 PALEONTOLOGY EXPEDITION PASSPORT</h1>
+        <p>Prehistoric Habitats & Comparative Biology • English Adventure Academy</p>
+      </div>
+      <div class="academy-seal-badge">
+        <span style="font-size: 18px;">🌿</span>
+        <span>Academy Certified</span>
+      </div>
+    </div>
+
+    <!-- Cadet Meta Box -->
+    <div class="meta-box">
+      <div><strong>Cadet Paleontologist:</strong> <span class="field-line" id="cadet-name">_____________________</span></div>
+      <div><strong>Rank:</strong> <span class="field-line">Field Researcher</span></div>
+      <div><strong>Expedition XP:</strong> <span class="field-line">____ / 150 XP</span></div>
+    </div>
+
+    <!-- PART 1: DINO TRAIT & HABITAT MATRIX -->
+    <div class="section-title">🔍 PART 1: PREHISTORIC SPECIMEN CLASSIFICATION MATRIX</div>
+    <p style="font-size: 10.5px; color: #475569; margin-bottom: 6px;">
+      Examine each dinosaur discovered on the expedition. Check its <strong>Diet</strong>, identify its <strong>Habitat</strong>, and write its <strong>Key Survival Adaptation</strong>.
+    </p>
+
+    <table class="dino-table">
+      <thead>
+        <tr>
+          <th>Creature</th>
+          <th>Diet (Check One)</th>
+          <th>Prehistoric Habitat</th>
+          <th>Key Adaptation Feature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tyrannosaurus Rex</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Prehistoric Plains</td>
+          <td><em>Bone-crushing jaws &amp; razor teeth</em></td>
+        </tr>
+        <tr>
+          <td><strong>Velociraptor</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Forest &amp; Scrubland</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td><strong>Triceratops</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Dense Forest</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td><strong>Brachiosaurus</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Prehistoric Plains</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td><strong>Ankylosaurus</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Prehistoric Plains</td>
+          <td>__________________________________</td>
+        </tr>
+        <tr>
+          <td><strong>Stegosaurus</strong></td>
+          <td><span class="check-box"></span> Carnivore &nbsp; <span class="check-box"></span> Herbivore</td>
+          <td>Fern Forest</td>
+          <td>__________________________________</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- PART 2: COMPARATIVE GRAMMAR WORKBENCH -->
+    <div class="section-title">⚡ PART 2: COMPARATIVE GRAMMAR WORKBENCH</div>
+    <p style="font-size: 10.5px; color: #475569; margin-bottom: 6px;">
+      Fill in each sentence using the target formula: <strong>[Dino A] was [comparative adjective] than [Dino B]</strong>.
+      <br><em>Word Bank: bigger, faster, heavier, stronger, taller</em>
+    </p>
+
+    <div class="cloze-box">
+      <strong>1.</strong> Velociraptor ran at 40 km/h, so it was <span class="cloze-blank">faster</span> than Triceratops.<br>
+      <strong>2.</strong> Weighing over 50,000 kg, Brachiosaurus was <span class="cloze-blank"></span> than Stegosaurus.<br>
+      <strong>3.</strong> With its 12-meter body, Tyrannosaurus Rex was <span class="cloze-blank"></span> than Velociraptor.<br>
+      <strong>4.</strong> Triceratops had a heavy bony shield, so it was <span class="cloze-blank"></span> than Velociraptor.<br>
+      <strong>5.</strong> It lived in the <span class="cloze-blank"></span> to find tall green plants.
+    </div>
+
+    <!-- PART 3: 3-SENTENCE ORAL TELEPROMPTER DEBRIEF -->
+    <div class="section-title">🎤 PART 3: 3-SENTENCE ORAL TELEPROMPTER DEBRIEF</div>
+    <p style="font-size: 10.5px; color: #475569; margin-bottom: 6px;">
+      Practice reading your official paleontologist field debrief aloud. Fill in the blanks with your chosen dinosaur.
+    </p>
+
+    <div class="teleprompter-box">
+      <strong>Sentence 1 (Identification):</strong> "Welcome to the Paleontology Station! Today we examined the incredible <span class="tele-speech-blank"></span>."<br>
+      <strong>Sentence 2 (Grammar Comparison):</strong> "This prehistoric creature was <span class="tele-speech-blank"></span> than other dinosaurs of its time."<br>
+      <strong>Sentence 3 (Habitat &amp; Diet):</strong> "It lived in the <span class="tele-speech-blank"></span> to find food and survive!"
+    </div>
+
+    <!-- PART 4: CERTIFICATION DIPLOMA & BADGES -->
+    <div class="diploma-card">
+      <div class="diploma-left">
+        <h3>🏅 Senior Paleontologist Certification</h3>
+        <p>This certifies that the cadet has successfully conducted prehistoric specimen analysis, mastered comparative adjective syntax, and delivered an oral teleprompter report.</p>
+        <div class="signature-area">
+          <span>Cadet Signature: _______________________</span>
+          <span>Lead Scientist: <em>Dr. Fossil (Academy AI)</em></span>
+        </div>
+      </div>
+      <div class="diploma-stamps">
+        <div class="badge-stamp">
+          <div class="badge-stamp-icon">🦖</div>
+          <div class="badge-stamp-label">Radar Ace</div>
+        </div>
+        <div class="badge-stamp">
+          <div class="badge-stamp-icon">⚡</div>
+          <div class="badge-stamp-label">Grammar Pro</div>
+        </div>
+        <div class="badge-stamp">
+          <div class="badge-stamp-icon">🎤</div>
+          <div class="badge-stamp-label">Teleprompter</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Autofill Cadet Name from URL params or localStorage
+    const params = new URLSearchParams(window.location.search);
+    const cadetName = params.get('name') || localStorage.getItem('dino_cadet_name') || 'Cadet Explorer';
+    document.getElementById('cadet-name').textContent = cadetName;
+  </script>
+</body>
+</html>
