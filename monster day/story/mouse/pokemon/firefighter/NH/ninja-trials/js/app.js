@@ -364,12 +364,12 @@
     grid.innerHTML = data.categories.map((cat, idx) => {
       const isScanned = playerSession.scannedCategories.has(cat.id);
       return `
-        <div class="scanner-card-outer" id="scannerCard-${cat.id}" onclick="handleScanCard('${cat.id}')">
+        <div class="scanner-card-outer discipline-card" id="scannerCard-${cat.id}" onclick="handleScanCard('${cat.id}')">
           <div class="scanner-card-inner ${isScanned ? 'is-flipped' : ''}">
             
             <!-- FRONT VIEWPORT (65% Full-Bleed Mascot Media + 35% Glass Tray) -->
-            <div class="scanner-card-front" style="border-color:${cat.accent};">
-              <div class="card-media-viewport">
+            <div class="scanner-card-front card-face-front" style="border-color:${cat.accent};">
+              <div class="card-media-viewport card-hero-stage">
                 <span class="discipline-badge-pill" style="border-color:${cat.accent}; color:${cat.accent};">
                   ${cat.icon} Discipline 0${idx + 1}
                 </span>
@@ -381,7 +381,7 @@
                 </div>
               </div>
 
-              <div class="card-caption-tray">
+              <div class="card-caption-tray card-info-tray">
                 <div class="caption-title" style="color:#ffffff;">${cat.title}</div>
                 <div class="caption-mascot">${cat.mascotName} • <span style="color:${cat.accent};">${cat.belt}</span></div>
                 <button type="button" class="btn-3d btn-game-gold" style="width:100%; padding:10px 14px; font-size:0.92rem; margin-top:6px;" onclick="event.stopPropagation(); handleScanCard('${cat.id}')">
@@ -391,7 +391,7 @@
             </div>
 
             <!-- BACK VIEWPORT (Acoustic & Linguistic Drill Details) -->
-            <div class="scanner-card-back" style="border-color:${cat.accent};">
+            <div class="scanner-card-back card-face-back" style="border-color:${cat.accent};">
               <span class="discipline-badge-pill" style="border-color:${cat.accent}; color:${cat.accent};">
                 ${cat.icon} Mastered Scan
               </span>
@@ -525,12 +525,12 @@
     const isMastered = playerSession.completedTrialIds.has(activeTrial.id);
 
     container.innerHTML = `
-      <div class="active-kinetic-stage">
+      <div class="active-kinetic-stage kinetic-main-stage">
         
         <!-- Trial Navigation Header & Stepper -->
         <div class="trial-selector-bar">
           <div>
-            <span class="hud-tag" style="background:${currentCat.accentGlow}; border-color:${currentCat.accent}; color:#ffffff;">
+            <span class="hud-tag trial-counter-pill" style="background:${currentCat.accentGlow}; border-color:${currentCat.accent}; color:#ffffff;">
               Trial 0${playerSession.activeTrialIndex + 1} of 0${catChallenges.length}
             </span>
             <h3 style="font-size:1.35rem; font-weight:900; color:#ffffff; margin-top:6px;">
@@ -589,17 +589,17 @@
           <div style="font-size:0.85rem; font-weight:900; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">
             Digital Dojo Stopwatch
           </div>
-          <div class="digital-stopwatch-readout" id="stopwatchDisplay">
+          <div class="digital-stopwatch-readout digital-stopwatch" id="stopwatchDisplay">
             ${activeTrial.timerSeconds ? String(activeTrial.timerSeconds).padStart(2, '0') + ':00' : 'ACTIVE'}
           </div>
-          <div class="stopwatch-controls">
-            <button type="button" class="btn-3d btn-game-amber" id="btnStartStopwatch" onclick="startStopwatch(${activeTrial.timerSeconds || 15})">
+          <div class="stopwatch-controls action-controls">
+            <button type="button" class="btn-3d btn-game-amber btn-kinetic-action" id="btnStartStopwatch" onclick="startStopwatch(${activeTrial.timerSeconds || 15})">
               <span>▶</span> <span>Start Timer</span>
             </button>
-            <button type="button" class="btn-3d btn-game-crimson" onclick="stopStopwatch()">
+            <button type="button" class="btn-3d btn-game-crimson btn-kinetic-action" onclick="stopStopwatch()">
               <span>⏹</span> <span>Stop &amp; Whistle</span>
             </button>
-            <button type="button" class="btn-3d btn-game-cyan" onclick="resetStopwatch(${activeTrial.timerSeconds || 15})">
+            <button type="button" class="btn-3d btn-game-cyan btn-kinetic-action" onclick="resetStopwatch(${activeTrial.timerSeconds || 15})">
               <span>↺</span> <span>Reset</span>
             </button>
           </div>
@@ -607,7 +607,7 @@
 
         <!-- Rubber Stamp Affirmation CTA -->
         <div style="position:relative; width:100%; display:flex; justify-content:center; margin-top:8px;">
-          <div class="rubber-stamp-seal ${isMastered ? 'is-stamped' : ''}" id="trialStampSeal">
+          <div class="rubber-stamp-seal rubber-stamp ${isMastered ? 'is-stamped' : ''}" id="trialStampSeal">
             I CAN DO IT!
           </div>
           <button type="button" class="btn-3d btn-game-emerald" id="btnStampTrial" onclick="stampTrialMastery('${activeTrial.id}', ${activeTrial.xp})" style="font-size:1.25rem; padding:18px 36px;">
