@@ -1416,6 +1416,114 @@ const GAMES_REGISTRY = [
     "url": "biome-crafter/index.html"
   },
   {
+    "id": "twin-gates",
+    "aliases": [
+      "crystal-citadel",
+      "twin-doors",
+      "citadel-escape",
+      "the-twin-gates"
+    ],
+    "title": "🚪 Mystery of the Twin Gates: The Crystal Citadel",
+    "description": "5-Chamber interactive 3D perspective storytelling quest. Decipher sensory clues behind frost and magma gates, befriend cavern guardians, solve ancient clockwork gear riddles, walk the rhythm chasm bridge, power the Golden Airship core with gathered relics, and broadcast your escape in live karaoke teleprompter mode!",
+    "category": "Language & Quests",
+    "categoryGroup": "Communication & Interactive Storytelling",
+    "cefrLevel": "A1–A1+",
+    "level": "A1+",
+    "ageGroup": "7–11",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "xp": 200,
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "type": "game",
+    "topics": [
+      "Spatial Directions",
+      "Sensory & Elemental Clues",
+      "Infinitives of Purpose",
+      "Interactive Storytelling",
+      "Live Karaoke Teleprompter"
+    ],
+    "learningObjectives": [
+      "Give spatial and directional instructions using: 'Go through the [left / right] door!' and 'It is [behind / under] the [object].'",
+      "Identify sensory and elemental conditions: 'I hear [fire / ice]! It is [cold / hot / dangerous].'",
+      "Formulate cause and purpose statements: 'I need a [torch / shield] to [melt / block] the [ice / fire].'",
+      "Perform a 3-sentence speaking ceiling broadcast with calibrated karaoke teleprompter timing."
+    ],
+    "teacherInstructions": "Guide students through 5 cinematic chambers: Chamber 1 (Threshold Clues & Shield Choice), Chamber 2 (The Shivering Yeti / Baby Dragon Lair), Chamber 3 (Chasm Rune Rhythm Bridge), Chamber 4 (Clockwork Golem Riddle), and Chamber 5 (Golden Airship Launchpad & Live Teleprompter).",
+    "route": "twin-gates/index.html",
+    "worksheet": "twin-gates/worksheet.html",
+    "worksheetRoute": "twin-gates/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🚪",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0369a1 50%, #f59e0b 100%)",
+    "tags": [
+      "story",
+      "interactive",
+      "citadel",
+      "gates",
+      "directions",
+      "teleprompter",
+      "clil",
+      "speaking",
+      "riddle",
+      "airship"
+    ],
+    "vocabulary": {
+      "core": [
+        "gate",
+        "door",
+        "shield",
+        "torch",
+        "gear",
+        "crystal",
+        "left",
+        "right",
+        "behind",
+        "airship"
+      ],
+      "supporting": [
+        "freeze",
+        "melt",
+        "power",
+        "launch",
+        "citadel",
+        "guardian",
+        "riddle",
+        "bridge",
+        "chasm",
+        "sunrise"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Go through the [left/right] door! / I need [item] to [verb]",
+      "formula": "Go through the [left / right] door! / I need a [tool] to [verb] the [object].",
+      "formulas": [
+        "Go through the left door! I hear cold wind.",
+        "I need a torch to melt the ice for the Yeti.",
+        "We use a bronze gear to power the lift.",
+        "We launched the Golden Airship — mission complete!"
+      ]
+    },
+    "clilDomain": "Interactive Storytelling & Spatial Navigation",
+    "clilTheme": "Fantasy Quests & Cause-and-Effect Decisions",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 4,
+    "formula": "Go through the [direction] door / I need [tool] to [verb]",
+    "status": "active",
+    "worksheetUrl": "twin-gates/worksheet.html",
+    "url": "twin-gates/index.html"
+  },
+  {
     "id": "ninja-trials",
     "aliases": [
       "ninja-academy",

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📄 Twin Gates: Explorer Comic Strip &amp; Citadel Passport • Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🚪</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 8mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      line-height: 1.35;
+      padding: 16px;
+    }
+
+    /* Print Navigation Bar */
+    .print-nav-bar {
+      max-width: 820px;
+      margin: 0 auto 16px auto;
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    /* A4 Sheet Container */
+    .a4-sheet {
+      max-width: 820px;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+      break-after: page;
+    }
+
+    /* Header */
+    .ws-header {
+      border-bottom: 2.5px solid #0284c7;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ws-title-wrap h1 {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #0369a1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ws-title-wrap p {
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .ws-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .meta-item strong {
+      color: #334155;
+    }
+
+    /* Section Styling */
+    .ws-section {
+      margin-bottom: 14px;
+    }
+
+    .ws-section-title {
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-left: 4px solid #0284c7;
+      padding-left: 8px;
+    }
+
+    /* 4-Panel Comic Strip */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .comic-panel {
+      border: 2px solid #334155;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 180px;
+    }
+
+    .comic-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .comic-badge {
+      font-size: 0.7rem;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #0284c7;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .comic-draw-box {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .comic-speech-bubble {
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.76rem;
+      line-height: 1.3;
+      color: #1e293b;
+    }
+
+    .comic-speech-bubble strong {
+      color: #0369a1;
+    }
+
+    .blank-line {
+      display: inline-block;
+      min-width: 70px;
+      border-bottom: 1.5px solid #0f172a;
+      text-align: center;
+      font-weight: 800;
+      color: #0369a1;
+    }
+
+    /* Relic Matching Matrix */
+    .relic-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+    }
+
+    .relic-matrix-table th,
+    .relic-matrix-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .relic-matrix-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 900;
+    }
+
+    .relic-matrix-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Teleprompter Script Card */
+    .teleprompter-checklist-box {
+      background: #060911;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 2px solid #38bdf8;
+      margin-bottom: 14px;
+    }
+
+    .tp-recite-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid #1e293b;
+      font-size: 0.84rem;
+    }
+
+    .tp-recite-row:last-child {
+      border-bottom: none;
+    }
+
+    .tp-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #38bdf8;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Certification Stamp Box */
+    .cert-stamp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border: 2px dashed #0284c7;
+      border-radius: 12px;
+      padding: 10px 16px;
+    }
+
+    .cert-stamp-badge {
+      border: 3px dashed #10b981;
+      color: #059669;
+      font-size: 0.85rem;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      transform: rotate(-3deg);
+      display: inline-block;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .print-nav-bar {
+        display: none !important;
+      }
+      .a4-sheet {
+        box-shadow: none;
+        border: none;
+        padding: 4mm 6mm;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Print Control Bar -->
+  <div class="print-nav-bar">
+    <div style="font-size:0.9rem; font-weight:800; display:flex; align-items:center; gap:8px;">
+      <span>🚪</span>
+      <span>Adventure Academy: Twin Gates Printable Story Passport</span>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <a href="index.html" class="btn-action btn-secondary">
+        <span>🎮 Return to Game</span>
+      </a>
+      <button type="button" class="btn-action" onclick="window.print()">
+        <span>🖨️ Print Worksheet (A4)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- A4 PRINTABLE WORKSHEET -->
+  <main class="a4-sheet">
+
+    <!-- Header -->
+    <header class="ws-header">
+      <div class="ws-title-wrap">
+        <h1>
+          <span>🚪</span>
+          <span>Twin Gates: The Crystal Citadel Explorer Passport</span>
+        </h1>
+        <p>Interactive Storytelling, Spatial Directions &amp; Purpose Formulas (CEFR A1–A1+ • Grade 3–4)</p>
+      </div>
+      <div style="font-size:1.15rem; font-weight:900; color:#0284c7; background:#e0f2fe; padding:6px 14px; border-radius:8px;">
+        ⭐ 200 XP
+      </div>
+    </header>
+
+    <!-- Student Metadata -->
+    <div class="ws-meta-grid">
+      <div class="meta-item">
+        <strong>Explorer Name:</strong> _____________________
+      </div>
+      <div class="meta-item">
+        <strong>Date:</strong> _____________________
+      </div>
+      <div class="meta-item">
+        <strong>Class / Group:</strong> _____________________
+      </div>
+      <div class="meta-item">
+        <strong>Teacher Check:</strong> [ &nbsp; ] Pass / ⭐ XP
+      </div>
+    </div>
+
+    <!-- SECTION 1: 4-PANEL CITADEL COMIC STRIP -->
+    <section class="ws-section">
+      <div class="ws-section-title">
+        <span>🎨</span>
+        <span>Part 1: My Citadel Escape Comic Strip (Draw &amp; Complete Sentences)</span>
+      </div>
+
+      <div class="comic-grid">
+        <!-- Panel 1 -->
+        <div class="comic-panel">
+          <div class="comic-panel-header">
+            <span class="comic-badge">Panel 1: The Twin Gates</span>
+            <span style="font-size:0.75rem; color:#64748b;">Chamber 1</span>
+          </div>
+          <div class="comic-draw-box">
+            [ Draw the Frost Gate ❄️ or Magma Gate 🔥 with your Explorer ]
+          </div>
+          <div class="comic-speech-bubble">
+            "I hear cold wind! Go through the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (left / right) door! I have my Frost Shield."
+          </div>
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="comic-panel">
+          <div class="comic-panel-header">
+            <span class="comic-badge" style="background:#f59e0b;">Panel 2: Friendly Creature</span>
+            <span style="font-size:0.75rem; color:#64748b;">Chamber 2</span>
+          </div>
+          <div class="comic-draw-box">
+            [ Draw the Shivering Yeti 🐾 or Baby Fire Dragon 🐉 ]
+          </div>
+          <div class="comic-speech-bubble">
+            "The Yeti is cold! I need a <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (torch / crystal) to <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (melt / feed) the ice!"
+          </div>
+        </div>
+
+        <!-- Panel 3 -->
+        <div class="comic-panel">
+          <div class="comic-panel-header">
+            <span class="comic-badge" style="background:#10b981;">Panel 3: Chasm Bridge</span>
+            <span style="font-size:0.75rem; color:#64748b;">Chamber 3</span>
+          </div>
+          <div class="comic-draw-box">
+            [ Draw 3 Glowing Rune Stones: Frost ❄️, Ember 🔥, Sun ☀️ ]
+          </div>
+          <div class="comic-speech-bubble">
+            "Step on the stones in order: 1. Left <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ➔ 2. Right <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ➔ 3. Center <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>!"
+          </div>
+        </div>
+
+        <!-- Panel 4 -->
+        <div class="comic-panel">
+          <div class="comic-panel-header">
+            <span class="comic-badge" style="background:#8b5cf6;">Panel 4: Golden Airship</span>
+            <span style="font-size:0.75rem; color:#64748b;">Chamber 5</span>
+          </div>
+          <div class="comic-draw-box">
+            [ Draw the Golden Airship flying into the morning sky 🌅 ]
+          </div>
+          <div class="comic-speech-bubble">
+            "All 3 relics are powered! We launch the Golden Airship into the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (sunrise / sea)!"
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: RELIC PURPOSE MATRIX -->
+    <section class="ws-section">
+      <div class="ws-section-title">
+        <span>🛡️</span>
+        <span>Part 2: Relic Matching — Infinitive of Purpose (TO + VERB)</span>
+      </div>
+
+      <table class="relic-matrix-table">
+        <thead>
+          <tr>
+            <th style="width:18%;">Relic</th>
+            <th style="width:25%;">Tool Name</th>
+            <th style="width:20%;">Action Verb</th>
+            <th>Complete Purpose Formula</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-size:1.2rem; text-align:center;">🛡️</td>
+            <td><strong>Frost Shield</strong></td>
+            <td><span class="blank-line">to block</span></td>
+            <td>We need a shield <strong>to block</strong> freezing cold winds.</td>
+          </tr>
+          <tr>
+            <td style="font-size:1.2rem; text-align:center;">🕯️</td>
+            <td><strong>Blazing Torch</strong></td>
+            <td><span class="blank-line">to melt</span></td>
+            <td>We use a torch <strong>to melt</strong> the thick glacier ice.</td>
+          </tr>
+          <tr>
+            <td style="font-size:1.2rem; text-align:center;">⚙️</td>
+            <td><strong>Bronze Gear</strong></td>
+            <td><span class="blank-line">to power</span></td>
+            <td>We use a bronze gear <strong>to power</strong> the summit lift.</td>
+          </tr>
+          <tr>
+            <td style="font-size:1.2rem; text-align:center;">💎</td>
+            <td><strong>Aetheric Crystal</strong></td>
+            <td><span class="blank-line">to fly</span></td>
+            <td>We need the crystal <strong>to fly</strong> the Golden Airship.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: 3-SENTENCE GRADUATION TELEPROMPTER SCRIPT -->
+    <section class="ws-section">
+      <div class="ws-section-title">
+        <span>🎙️</span>
+        <span>Part 3: Final Live Karaoke Recitation Checklist (Read Aloud to Partner or Teacher)</span>
+      </div>
+
+      <div class="teleprompter-checklist-box">
+        <div class="tp-recite-row">
+          <div class="tp-checkbox"></div>
+          <div>
+            <strong>Sentence 1:</strong> "We explored the Crystal Citadel and unlocked the magic gates!"
+          </div>
+        </div>
+        <div class="tp-recite-row">
+          <div class="tp-checkbox"></div>
+          <div>
+            <strong>Sentence 2:</strong> "We solved the ancient riddles and passed the creatures safely!"
+          </div>
+        </div>
+        <div class="tp-recite-row">
+          <div class="tp-checkbox"></div>
+          <div>
+            <strong>Sentence 3:</strong> "We launched the Golden Airship — mission complete!"
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: PASSPORT CERTIFICATION STAMP -->
+    <div class="cert-stamp-row">
+      <div>
+        <div style="font-size:0.92rem; font-weight:900; color:#0f172a;">Official Citadel Storyteller Stamp:</div>
+        <div style="font-size:0.75rem; color:#64748b;">Awarded for passing 5 chambers and completing the live broadcast.</div>
+      </div>
+      <div class="cert-stamp-badge">
+        ✓ CITADEL MASTER STORYTELLER
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.75rem; color:#64748b;">Score Earned:</div>
+        <div style="font-size:1.1rem; font-weight:900; color:#0284c7;">_____ / 200 XP</div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

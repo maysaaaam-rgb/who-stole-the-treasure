@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚪 Mystery of the Twin Gates: The Crystal Citadel • Adventure Academy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🚪</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ZERO-DEPENDENCY CONFETTI CELEBRATION CANVAS -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <!-- STICKY TACTICAL STORY HUD DOCK -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <span class="hud-logo-icon">🚪</span>
+      <div class="hud-title-wrap">
+        <h1>
+          <span>Twin Gates</span>
+          <span class="hud-tag">Crystal Citadel Quest</span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Live Path Breadcrumbs -->
+    <nav class="hud-breadcrumbs" id="hudBreadcrumbs">
+      <span class="crumb-node is-active" id="crumbNode1"><span>1.</span> Entrance</span>
+      <span class="crumb-arrow">➔</span>
+      <span class="crumb-node" id="crumbNode2"><span>2.</span> Creature</span>
+      <span class="crumb-arrow">➔</span>
+      <span class="crumb-node" id="crumbNode3"><span>3.</span> Bridge</span>
+      <span class="crumb-arrow">➔</span>
+      <span class="crumb-node" id="crumbNode4"><span>4.</span> Vault</span>
+      <span class="crumb-arrow">➔</span>
+      <span class="crumb-node" id="crumbNode5"><span>5.</span> Airship</span>
+    </nav>
+
+    <!-- Right Controls, Inventory & XP -->
+    <div class="hud-right">
+      <!-- 4 Inventory Relic Slots -->
+      <div class="inventory-dock" title="Discovered Citadel Relics">
+        <div class="inv-slot" id="hudSlotShield" title="Frost Shield">🛡️</div>
+        <div class="inv-slot" id="hudSlotTorch" title="Blazing Torch">🕯️</div>
+        <div class="inv-slot" id="hudSlotGear" title="Bronze Gear">⚙️</div>
+        <div class="inv-slot" id="hudSlotCrystal" title="Aetheric Crystal">💎</div>
+      </div>
+
+      <!-- XP Pill -->
+      <div class="xp-badge" id="hudXP" title="Total Exploration XP">
+        ⭐ +0 XP
+      </div>
+
+      <!-- Sound Toggle -->
+      <button type="button" class="hud-btn" id="btnMuteToggle" onclick="toggleMuteAudio()" title="Toggle Sound FX & Speech">
+        🔊 Sound
+      </button>
+
+      <!-- Printable Story Passport -->
+      <a href="worksheet.html" target="_blank" class="hud-btn" style="color:#fbbf24; border-color:#f59e0b;" title="Printable A4 Story Passport">
+        📄 Passport
+      </a>
+
+      <!-- Exit to Academy -->
+      <a href="../index.html" class="hud-btn" title="Exit to Academy">
+        ✕ Exit
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN STAGE VIEWPORT -->
+  <main class="main-stage-viewport">
+
+    <!-- ===================================================================
+         CHAMBER 1: THE TWIN ENTRANCE GATES
+         =================================================================== -->
+    <section class="chamber-view is-visible" id="chamberPhase1">
+      <div class="chamber-banner">
+        <div class="banner-title-box">
+          <h2><span>🚪</span> Chamber 1: The Twin Entrance Gates</h2>
+          <p>The Citadel looms ahead! Listen to the elemental audio clues, choose your protective shield, and open the gate (+30 XP)!</p>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn-3d btn-cyan" onclick="playEntranceClue('wind')">
+            <span>❄️ Listen: Left Clue</span>
+          </button>
+          <button type="button" class="btn-3d btn-amber" onclick="playEntranceClue('fire')">
+            <span>🔥 Listen: Right Clue</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Synchronized Karaoke Teleprompter Bar -->
+      <div class="karaoke-prompter-dock">
+        <div class="prompter-lines-wrap">
+          <div class="prompter-label">Citadel Guide Narration</div>
+          <div class="prompter-spoken-text" id="karaokeTextChamber1">
+            "Listen carefully to the wind and the crackling fire! Choose your shield, then pick a door!"
+          </div>
+        </div>
+        <button type="button" class="btn-3d btn-secondary" onclick="replayChamberNarration(1)">
+          <span>🔊 Replay</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Elemental Shield Selection -->
+      <div style="background:rgba(15,23,42,0.85); border:2px solid #334155; border-radius:20px; padding:18px; margin-bottom:24px;">
+        <h4 style="font-size:1.05rem; font-weight:900; color:#38bdf8; margin-bottom:10px;">
+          Step 1: Equip Protective Gear
+        </h4>
+        <div class="options-grid" id="chamber1OptionsGrid">
+          <button type="button" class="puzzle-option-btn" id="optFrostShield" onclick="handleChamber1Choice('frost_shield')">
+            <span style="font-size:1.8rem;">🛡️</span>
+            <div>
+              <div style="font-weight:900;">Frost Crystal Shield</div>
+              <div style="font-size:0.8rem; color:#94a3b8;">Deflects cold winds &amp; icicles</div>
+            </div>
+          </button>
+          <button type="button" class="puzzle-option-btn" id="optPaperKite" onclick="handleChamber1Choice('paper_kite')">
+            <span style="font-size:1.8rem;">🪁</span>
+            <div>
+              <div style="font-weight:900;">Paper Flying Kite</div>
+              <div style="font-size:0.8rem; color:#94a3b8;">Lightweight toy, no defense</div>
+            </div>
+          </button>
+        </div>
+        <div id="chamber1Feedback" style="font-size:0.92rem; font-weight:800; color:#cbd5e1;"></div>
+      </div>
+
+      <!-- Step 3: 3D Twin Gates Stage -->
+      <div class="twin-gates-arena">
+        <!-- Left Door: Frost Gate -->
+        <div class="gate-portal-column">
+          <div class="gate-card-3d glow-left" id="doorCardLeftChamber1" onclick="chooseTwinDoor('left', 1)">
+            <div class="gate-media-viewport">
+              <span class="hud-tag" style="position:absolute; top:12px; left:12px; z-index:5;">LEFT GATE</span>
+              <div class="gate-render-wrapper">
+                <img src="assets/gate_frost_left.webp" alt="Frost Gate" class="gate-render-img">
+                <div class="pedestal-disc" style="background:radial-gradient(ellipse at center, rgba(56,189,248,0.5) 0%, transparent 72%);"></div>
+              </div>
+            </div>
+            <div class="gate-caption-tray">
+              <div>
+                <div class="gate-title" style="color:#38bdf8;">Frost Rune Gate</div>
+                <div class="gate-cue">Whistling icy wind echoes from behind</div>
+              </div>
+              <button type="button" class="btn-3d btn-cyan" style="width:100%; padding:10px; font-size:0.9rem;">
+                <span>🚪 Enter Left Door</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Door: Magma Gate -->
+        <div class="gate-portal-column">
+          <div class="gate-card-3d glow-right" id="doorCardRightChamber1" onclick="chooseTwinDoor('right', 1)">
+            <div class="gate-media-viewport">
+              <span class="hud-tag" style="position:absolute; top:12px; left:12px; z-index:5; background:rgba(245,158,11,0.2); border-color:#f59e0b; color:#f59e0b;">RIGHT GATE</span>
+              <div class="gate-render-wrapper">
+                <img src="assets/gate_magma_right.webp" alt="Magma Gate" class="gate-render-img">
+                <div class="pedestal-disc" style="background:radial-gradient(ellipse at center, rgba(245,158,11,0.5) 0%, transparent 72%);"></div>
+              </div>
+            </div>
+            <div class="gate-caption-tray">
+              <div>
+                <div class="gate-title" style="color:#f59e0b;">Magma Ember Gate</div>
+                <div class="gate-cue">Popping warm embers crackle from behind</div>
+              </div>
+              <button type="button" class="btn-3d btn-amber" style="width:100%; padding:10px; font-size:0.9rem;">
+                <span>🚪 Enter Right Door</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAMBER 2: THE CREATURE DEN (YETI OR BABY DRAGON)
+         =================================================================== -->
+    <section class="chamber-view" id="chamberPhase2">
+      <div class="chamber-banner">
+        <div class="banner-title-box">
+          <h2 id="chamber2BannerTitle"><span>🐾</span> Chamber 2: The Creature Den</h2>
+          <p id="chamber2BannerDesc">You stepped through the gate and met a mythical creature! Offer a gift to earn its friendship (+40 XP)!</p>
+        </div>
+      </div>
+
+      <!-- Karaoke Teleprompter Bar -->
+      <div class="karaoke-prompter-dock">
+        <div class="prompter-lines-wrap">
+          <div class="prompter-label">Citadel Guide Narration</div>
+          <div class="prompter-spoken-text" id="karaokeTextChamber2">
+            "Look! A friendly creature is waiting. Offer a gift to become companions!"
+          </div>
+        </div>
+        <button type="button" class="btn-3d btn-secondary" onclick="replayChamberNarration(2)">
+          <span>🔊 Replay</span>
+        </button>
+      </div>
+
+      <!-- Consequence Chamber Card (65% Creature Viewport / 35% Action Tray) -->
+      <div class="consequence-card">
+        <div class="consequence-viewport">
+          <img src="assets/yeti_companion.webp" alt="Creature" class="consequence-sprite" id="chamber2CreatureImg">
+          <div class="pedestal-disc" id="chamber2Pedestal" style="background:radial-gradient(ellipse at center, rgba(56,189,248,0.5) 0%, transparent 72%);"></div>
+        </div>
+        <div class="consequence-tray">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:1.3rem; font-weight:900; color:#ffffff;" id="chamber2CreatureName">Friendly Yeti Companion</div>
+              <div style="font-size:0.9rem; color:#94a3b8;" id="chamber2CreatureFormula">"I need a torch to melt the ice for the Yeti."</div>
+            </div>
+            <div id="chamber2OfferingSeal"></div>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:8px;">
+            <button type="button" class="btn-3d btn-amber" id="btnChamber2Action" onclick="handleChamber2Offering()" style="flex:1; padding:12px;">
+              <span>🕯️ Offer Blazing Torch (+25 XP)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Twin Gates Choice -->
+      <div class="twin-gates-arena" id="chamber2DoorsArena">
+        <!-- Rendered dynamically by js/app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAMBER 3: THE COLLAPSING CHASM BRIDGE (Rune Rhythm)
+         =================================================================== -->
+    <section class="chamber-view" id="chamberPhase3">
+      <div class="chamber-banner">
+        <div class="banner-title-box">
+          <h2><span>🌉</span> Chamber 3: The Collapsing Chasm Bridge</h2>
+          <p>Step on the hovering rune stones in the correct rhythm sequence to cross the bottomless chasm safely (+40 XP)!</p>
+        </div>
+      </div>
+
+      <!-- Karaoke Teleprompter Bar -->
+      <div class="karaoke-prompter-dock">
+        <div class="prompter-lines-wrap">
+          <div class="prompter-label">Citadel Guide Narration</div>
+          <div class="prompter-spoken-text" id="karaokeTextChamber3">
+            "Follow the rune chime: Left Frost ➔ Right Ember ➔ Center Sun!"
+          </div>
+        </div>
+        <button type="button" class="btn-3d btn-secondary" onclick="replayChamberNarration(3)">
+          <span>🔊 Replay</span>
+        </button>
+      </div>
+
+      <!-- Interactive Stepping Stones -->
+      <div style="background:rgba(15,23,42,0.85); border:2px solid #334155; border-radius:24px; padding:24px; text-align:center; margin-bottom:24px;">
+        <h4 style="font-size:1.15rem; font-weight:900; color:#ffffff; margin-bottom:6px;">
+          Rune Sequence: Step on the Stones in Order (Left ➔ Right ➔ Center)
+        </h4>
+        <p style="font-size:0.88rem; color:#94a3b8; margin-bottom:16px;">
+          Listen to the chime and tap each rune stone to build the bridge.
+        </p>
+
+        <div class="bridge-stones-row">
+          <div class="rune-stone-tile" id="runeTile0" onclick="handleRuneStep(0)">
+            <span>❄️</span>
+            <span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">1. Frost</span>
+          </div>
+          <div class="rune-stone-tile" id="runeTile1" onclick="handleRuneStep(1)">
+            <span>☀️</span>
+            <span style="font-size:0.75rem; font-weight:800; color:#fbbf24;">3. Sun</span>
+          </div>
+          <div class="rune-stone-tile" id="runeTile2" onclick="handleRuneStep(2)">
+            <span>🔥</span>
+            <span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">2. Ember</span>
+          </div>
+        </div>
+
+        <div id="bridgeFeedback" style="font-size:0.95rem; font-weight:900; color:#34d399; margin-top:8px;"></div>
+      </div>
+
+      <!-- Next Twin Gates Choice -->
+      <div class="twin-gates-arena" id="chamber3DoorsArena">
+        <!-- Injected dynamically by js/app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAMBER 4: THE CLOCKWORK RIDDLE VAULT
+         =================================================================== -->
+    <section class="chamber-view" id="chamberPhase4">
+      <div class="chamber-banner">
+        <div class="banner-title-box">
+          <h2><span>⚙️</span> Chamber 4: The Clockwork Riddle Vault</h2>
+          <p>Solve the mechanical guardian's riddle, snap the bronze gear into the central axis, and power the summit lift (+40 XP)!</p>
+        </div>
+      </div>
+
+      <!-- Karaoke Teleprompter Bar -->
+      <div class="karaoke-prompter-dock">
+        <div class="prompter-lines-wrap">
+          <div class="prompter-label">Citadel Guide Narration</div>
+          <div class="prompter-spoken-text" id="karaokeTextChamber4">
+            "What has twenty teeth, spins in circles, and powers the machines?"
+          </div>
+        </div>
+        <button type="button" class="btn-3d btn-secondary" onclick="replayChamberNarration(4)">
+          <span>🔊 Replay</span>
+        </button>
+      </div>
+
+      <!-- Consequence Chamber Card: Clockwork Golem -->
+      <div class="consequence-card">
+        <div class="consequence-viewport">
+          <img src="assets/clockwork_golem.webp" alt="Clockwork Guardian" class="consequence-sprite">
+          <div class="pedestal-disc" style="background:radial-gradient(ellipse at center, rgba(245,158,11,0.5) 0%, transparent 72%);"></div>
+        </div>
+        <div class="consequence-tray">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:1.3rem; font-weight:900; color:#ffffff;">Clockwork Guardian Golem</div>
+              <div style="font-size:0.9rem; color:#f59e0b;">"I need a bronze gear to power the summit lift!"</div>
+            </div>
+            <div id="gearSnapSeal"></div>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:8px;">
+            <button type="button" class="btn-3d btn-amber" id="btnSnapGear" onclick="handleSnapGear()" style="flex:1; padding:12px;">
+              <span>⚙️ Snap Bronze Gear into Central Axis (+25 XP)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Twin Gates Choice -->
+      <div class="twin-gates-arena" id="chamber4DoorsArena">
+        <!-- Injected dynamically by js/app.js -->
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CHAMBER 5: GRAND ESCAPE & TELEPROMPTER STUDIO
+         =================================================================== -->
+    <section class="chamber-view" id="chamberPhase5">
+      <div class="chamber-banner">
+        <div class="banner-title-box">
+          <h2><span>🚀</span> Chamber 5: The Golden Airship Launchpad</h2>
+          <p>Slot your 3 gathered relics into the engine, deliver your 3-sentence broadcast, and escape into the sunrise (+50 XP)!</p>
+        </div>
+      </div>
+
+      <!-- Celestial Airship 65% Viewport -->
+      <div class="consequence-card" style="height:480px;">
+        <div class="consequence-viewport">
+          <img src="assets/airship_golden.webp" alt="Golden Airship" class="consequence-sprite" style="max-height:92%;">
+          <div class="pedestal-disc" style="background:radial-gradient(ellipse at center, rgba(245,158,11,0.6) 0%, transparent 72%);"></div>
+        </div>
+        <div class="consequence-tray">
+          <div style="font-size:1.35rem; font-weight:900; color:#fef08a;">The Golden Celestial Airship</div>
+          <div style="font-size:0.9rem; color:#94a3b8;">Insert 3 discovered relics to power the propulsion core:</div>
+
+          <!-- Relic Sockets Row -->
+          <div class="engine-relics-row" style="margin:8px 0;">
+            <div class="relic-socket is-powered" title="Frost Shield">
+              <span style="font-size:2rem;">🛡️</span>
+              <span style="font-size:0.75rem; font-weight:900; color:#38bdf8;">Shield</span>
+            </div>
+            <div class="relic-socket is-powered" title="Bronze Gear">
+              <span style="font-size:2rem;">⚙️</span>
+              <span style="font-size:0.75rem; font-weight:900; color:#f59e0b;">Gear</span>
+            </div>
+            <div class="relic-socket is-powered" title="Aetheric Crystal">
+              <span style="font-size:2rem;">💎</span>
+              <span style="font-size:0.75rem; font-weight:900; color:#34d399;">Crystal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Broadcast Teleprompter Studio -->
+      <div style="background:rgba(15,23,42,0.95); border:3px solid #38bdf8; border-radius:24px; padding:24px; margin-top:20px; box-shadow:0 0 35px rgba(56,189,248,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:12px; height:12px; border-radius:50%; background:#ef4444; display:inline-block; box-shadow:0 0 10px #ef4444;"></span>
+            <span style="font-size:0.85rem; font-weight:900; color:#38bdf8; letter-spacing:0.5px;">ON AIR • FINAL GRADUATION BROADCAST</span>
+          </div>
+          <span class="hud-tag">3-Sentence Production Ceiling</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+          <div class="prompter-spoken-text" id="teleprompterLine1" style="font-size:1.15rem; background:#060911; padding:12px 18px; border-radius:12px; border:1px solid #334155;">
+            "We explored the Crystal Citadel and unlocked the magic gates!"
+          </div>
+          <div class="prompter-spoken-text" id="teleprompterLine2" style="font-size:1.15rem; background:#060911; padding:12px 18px; border-radius:12px; border:1px solid #334155;">
+            "We solved the ancient riddles and passed the creatures safely!"
+          </div>
+          <div class="prompter-spoken-text" id="teleprompterLine3" style="font-size:1.15rem; background:#060911; padding:12px 18px; border-radius:12px; border:1px solid #334155;">
+            "We launched the Golden Airship — mission complete!"
+          </div>
+        </div>
+
+        <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
+          <button type="button" class="btn-3d btn-cyan" id="btnKaraokeBroadcast" onclick="startFinalKaraokeBroadcast()" style="font-size:1.1rem; padding:14px 28px;">
+            <span>🎙️ Read Aloud (Live Karaoke Mode)</span>
+          </button>
+          <button type="button" class="btn-3d btn-emerald" onclick="finishCitadelQuest()" style="font-size:1.1rem; padding:14px 28px;">
+            <span>🏆 Launch Airship &amp; Claim Master Passport (+200 XP)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- COMPLETION MODAL & MASTER PASSPORT -->
+  <div class="modal-overlay" id="completionModal" onclick="closeCompletionModal()">
+    <div class="passport-card" onclick="event.stopPropagation()">
+      <div style="font-size:4rem;">🚪</div>
+      <h2 style="font-size:2rem; font-weight:900; color:#fef08a;">Master of the Twin Gates</h2>
+      <p style="font-size:1rem; color:#cbd5e1; line-height:1.6; max-width:480px;">
+        Congratulations, Explorer! You deciphered the elemental clues, befriended the Citadel guardians, aligned the clockwork gears, and escaped aboard the Golden Airship!
+      </p>
+
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0;">
+        <span class="xp-badge" style="font-size:1.15rem; padding:10px 22px;">
+          ⭐ +200 XP Total
+        </span>
+        <span class="hud-tag" style="font-size:0.9rem; padding:10px 18px; background:rgba(16,185,129,0.25); color:#34d399; border-color:#10b981;">
+          ✓ CEFR A1–A1+ Storyteller Certified
+        </span>
+      </div>
+
+      <div style="display:flex; gap:14px; width:100%; margin-top:14px;">
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-amber" style="flex:1; padding:14px;">
+          <span>📄 Print My Story Passport</span>
+        </a>
+        <button type="button" class="btn-3d btn-emerald" onclick="closeCompletionModal()" style="flex:1; padding:14px;">
+          <span>✓ Done</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/story-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
