@@ -1,25 +1,24 @@
 /**
- * TWIN GATES: THE MAGIC DOOR ADVENTURE (A1 MASTER ARC)
- * 60-30-10 Cyber-Glassmorphism, Colossal 3D Gate Perspective & Holographic Clue Badges
+ * TWIN GATES: ESCAPE THE SKY CASTLE
+ * 3-Layer Scene Architecture, Colossal 3D Doors & Cyber-Glassmorphism
  */
 
 :root {
   /* 60-30-10 Palette Architecture */
   --bg-obsidian: #060911;
-  --bg-void: radial-gradient(circle at 50% 25%, #0c1a30 0%, #060911 100%);
+  --bg-void: radial-gradient(circle at 50% 20%, #0c1a30 0%, #060911 100%);
   --panel-glass: rgba(15, 23, 42, 0.85);
   --panel-glass-border: rgba(255, 255, 255, 0.12);
 
-  /* Vivid Game Accents */
-  --accent-cyan: #38bdf8;
-  --accent-cyan-glow: rgba(56, 189, 248, 0.5);
+  /* Active Accents */
   --accent-amber: #f59e0b;
   --accent-amber-glow: rgba(245, 158, 11, 0.5);
+  --accent-cyan: #38bdf8;
+  --accent-cyan-glow: rgba(56, 189, 248, 0.5);
   --accent-emerald: #10b981;
   --accent-emerald-glow: rgba(16, 185, 129, 0.5);
   --accent-gold: #fbbf24;
   --accent-gold-glow: rgba(251, 191, 36, 0.6);
-  --accent-coral: #f43f5e;
 
   /* Physics */
   --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -45,7 +44,7 @@ body {
 }
 
 /* =========================================================================
-   STICKY TACTICAL STORY HUD DOCK
+   STICKY TACTICAL HUD DOCK
    ========================================================================= */
 .tactical-hud {
   position: sticky;
@@ -55,13 +54,13 @@ body {
   z-index: 1000;
   background: rgba(6, 9, 17, 0.94);
   backdrop-filter: blur(16px);
-  border-bottom: 2px solid rgba(56, 189, 248, 0.25);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.3);
   padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
 }
 
 .hud-left {
@@ -72,7 +71,7 @@ body {
 
 .hud-logo-icon {
   font-size: 2.2rem;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7));
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.7));
   animation: pulseLogo 3s ease-in-out infinite;
 }
 
@@ -96,14 +95,14 @@ body {
   font-weight: 900;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(56, 189, 248, 0.2);
-  color: var(--accent-cyan);
-  border: 1px solid var(--accent-cyan);
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--accent-amber);
+  border: 1px solid var(--accent-amber);
   text-transform: uppercase;
 }
 
-/* Chamber Tracker Pill */
-.chamber-tracker-pill {
+/* Scene Stepper Tracker */
+.scene-stepper-pill {
   background: rgba(15, 23, 42, 0.9);
   border: 2px solid #334155;
   border-radius: 999px;
@@ -111,32 +110,32 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 900;
   color: #f59e0b;
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
 }
 
-.chamber-tracker-dots {
+.scene-dots-tray {
   display: flex;
   gap: 6px;
 }
 
-.chamber-dot {
+.scene-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #334155;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.chamber-dot.is-active {
+.scene-dot.is-active {
   background: #f59e0b;
   box-shadow: 0 0 8px #f59e0b;
-  transform: scale(1.2);
+  transform: scale(1.25);
 }
 
-.chamber-dot.is-passed {
+.scene-dot.is-passed {
   background: #10b981;
 }
 
@@ -147,7 +146,7 @@ body {
   gap: 12px;
 }
 
-.inventory-dock {
+.backpack-dock {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -157,23 +156,24 @@ body {
   padding: 4px 12px;
 }
 
-.inv-slot {
-  width: 32px;
-  height: 32px;
+.backpack-slot {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px dashed #475569;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   transition: all 0.3s ease;
+  user-select: none;
 }
 
-.inv-slot.is-filled {
-  background: rgba(56, 189, 248, 0.25);
-  border: 1.5px solid var(--accent-cyan);
-  box-shadow: 0 0 12px var(--accent-cyan-glow);
+.backpack-slot.is-filled {
+  background: rgba(245, 158, 11, 0.25);
+  border: 1.5px solid var(--accent-amber);
+  box-shadow: 0 0 12px var(--accent-amber-glow);
   transform: scale(1.1);
 }
 
@@ -186,9 +186,6 @@ body {
   font-weight: 900;
   color: #060911;
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .hud-btn {
@@ -209,7 +206,7 @@ body {
 
 .hud-btn:hover {
   background: #1e293b;
-  border-color: var(--accent-cyan);
+  border-color: var(--accent-amber);
   color: #ffffff;
 }
 
@@ -240,16 +237,6 @@ body {
   transform: translateY(4px);
 }
 
-.btn-cyan {
-  background: #0284c7;
-  color: #ffffff;
-  border-bottom: 5px solid #0369a1;
-  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
-}
-.btn-cyan:active {
-  border-bottom-width: 1px;
-}
-
 .btn-amber {
   background: #f59e0b;
   color: #060911;
@@ -257,6 +244,16 @@ body {
   box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
 }
 .btn-amber:active {
+  border-bottom-width: 1px;
+}
+
+.btn-cyan {
+  background: #0284c7;
+  color: #ffffff;
+  border-bottom: 5px solid #0369a1;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+}
+.btn-cyan:active {
   border-bottom-width: 1px;
 }
 
@@ -275,77 +272,179 @@ body {
   color: #e2e8f0;
   border-bottom: 5px solid #0f172a;
   border: 1px solid #334155;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
 }
 .btn-secondary:active {
   border-bottom-width: 1px;
 }
 
 /* =========================================================================
-   STAGE VIEWPORT & CHAMBER ROUTER
+   STAGE VIEWPORT & 3-LAYER SCENE ARCHITECTURE
    ========================================================================= */
 .main-stage-viewport {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 24px 20px 60px 20px;
+  padding-top: 24px;
+  padding-bottom: 60px;
+  padding-left: 20px;
+  padding-right: 20px;
   position: relative;
   z-index: 1;
 }
 
-.chamber-view {
+.scene-view {
   display: none;
-  animation: fadeInChamber 0.4s ease;
+  animation: fadeInScene 0.4s ease;
 }
 
-.chamber-view.is-visible {
+.scene-view.is-visible {
   display: block;
 }
 
-@keyframes fadeInChamber {
+@keyframes fadeInScene {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Chamber Banner */
-.chamber-banner {
-  background: var(--panel-glass);
-  backdrop-filter: blur(14px);
-  border: 1.5px solid var(--panel-glass-border);
-  border-radius: 24px;
-  padding: 16px 24px;
+/* Castle Hero Shaking Alert Banner */
+.castle-alert-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 2px solid #ef4444;
+  border-radius: 18px;
+  padding: 12px 20px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  gap: 12px;
+  animation: gentleShake 3s ease-in-out infinite;
 }
 
-.banner-title-box h2 {
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #ffffff;
+@keyframes gentleShake {
+  0%, 100% { transform: translateY(0); }
+  2% { transform: translateX(-3px); }
+  4% { transform: translateX(3px); }
+  6% { transform: translateX(-2px); }
+  8% { transform: translateX(2px); }
+  10% { transform: translateX(0); }
+}
+
+/* -------------------------------------------------------------------------
+   LAYER 1: VISUAL ENVIRONMENT CHAMBER (Top 65% Height ~ 420px)
+   ------------------------------------------------------------------------- */
+.env-chamber-viewport {
+  position: relative;
+  height: 420px;
+  width: 100%;
+  border-radius: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  background: #090e1a;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  margin-bottom: 18px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
 }
 
-.banner-title-box p {
-  font-size: 0.95rem;
-  color: #94a3b8;
-  font-weight: 600;
-  margin-top: 4px;
+.env-backdrop-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9);
+  transition: filter 0.8s ease;
 }
 
-/* Synchronized Karaoke Teleprompter Bar */
+/* Pitch Dark Mask for Scene 1 */
+.dark-cellar-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.94);
+  transition: opacity 1s ease;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.dark-cellar-mask.is-lit {
+  opacity: 0.15;
+  background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.scene-subject-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-sprite {
+  max-height: 280px;
+  max-width: 280px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.8));
+  animation: idleBob 4s ease-in-out infinite;
+}
+
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.pedestal-disc {
+  position: absolute;
+  bottom: -10px;
+  width: 180px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.6) 0%, transparent 72%);
+  z-index: 1;
+}
+
+/* Wall Sconce Torch Target (Scene 1) */
+.wall-sconce-target {
+  position: absolute;
+  top: 100px;
+  right: 18%;
+  width: 100px;
+  height: 100px;
+  border: 3px dashed #f59e0b;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  cursor: pointer;
+  transition: all 0.3s var(--spring-bounce);
+  animation: pulseGlow 2.5s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.8); }
+}
+
+.wall-sconce-target.is-lit {
+  border-style: solid;
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.25);
+  box-shadow: 0 0 45px rgba(251, 191, 36, 0.9);
+}
+
+/* -------------------------------------------------------------------------
+   LAYER 2: SPOKEN STORY & KARAOKE BAR (15% Height)
+   ------------------------------------------------------------------------- */
 .karaoke-prompter-dock {
   background: rgba(15, 23, 42, 0.95);
-  border: 2px solid var(--accent-cyan);
+  border: 2px solid var(--accent-amber);
   border-radius: 18px;
-  padding: 14px 20px;
-  margin-bottom: 24px;
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+  padding: 14px 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -354,9 +453,9 @@ body {
 }
 
 .prompter-label {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 900;
-  color: var(--accent-cyan);
+  color: var(--accent-amber);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
@@ -387,8 +486,57 @@ body {
   opacity: 0.95;
 }
 
+/* -------------------------------------------------------------------------
+   LAYER 3: INTERACTION & DOORWAY TRAY (Bottom 20% Height)
+   ------------------------------------------------------------------------- */
+.interaction-tray-panel {
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid var(--panel-glass-border);
+  border-radius: 24px;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.inventory-items-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.inventory-item-card {
+  background: #1e293b;
+  border: 2px solid #475569;
+  border-radius: 16px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s var(--spring-bounce);
+  user-select: none;
+}
+
+.inventory-item-card:hover {
+  border-color: var(--accent-amber);
+  background: #334155;
+  transform: translateY(-3px);
+}
+
+.inventory-item-card.is-active-item {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.4);
+}
+
 /* =========================================================================
-   COLOSSAL 3D TWIN GATES STAGE & HOLOGRAPHIC CLUE BADGES
+   COLOSSAL 3D TWIN GATES STAGE (Revealed upon solving room obstacle)
    ========================================================================= */
 .twin-gates-arena {
   display: flex;
@@ -396,9 +544,15 @@ body {
   align-items: center;
   gap: 48px;
   perspective: 1200px;
-  min-height: 540px;
-  margin: 24px 0 32px 0;
+  min-height: 520px;
+  margin: 20px 0 28px 0;
   flex-wrap: wrap;
+  animation: rumbleReveal 0.6s var(--spring-bounce);
+}
+
+@keyframes rumbleReveal {
+  0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .gate-card-wrapper {
@@ -409,7 +563,7 @@ body {
   cursor: pointer;
 }
 
-/* Floating 90px Circular Holographic Clue Badge */
+/* Floating 90px Holographic Clue Badge */
 .gate-clue-badge {
   position: absolute;
   top: -45px;
@@ -419,18 +573,18 @@ body {
   height: 90px;
   border-radius: 50%;
   background: rgba(15, 23, 42, 0.95);
-  border: 4px solid var(--gate-glow, #38bdf8);
-  box-shadow: 0 0 25px var(--gate-glow, #38bdf8), inset 0 0 15px var(--gate-glow, #38bdf8);
+  border: 4px solid var(--gate-glow, #f59e0b);
+  box-shadow: 0 0 25px var(--gate-glow, #f59e0b), inset 0 0 15px var(--gate-glow, #f59e0b);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 50;
-  transition: transform 0.3s var(--spring-bounce), box-shadow 0.3s ease;
-  animation: badgeFloat 3.5s ease-in-out infinite;
+  transition: transform 0.3s var(--spring-bounce);
+  animation: badgeBob 3.5s ease-in-out infinite;
 }
 
-@keyframes badgeFloat {
+@keyframes badgeBob {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(-6px); }
 }
@@ -440,7 +594,7 @@ body {
 }
 
 .badge-icon {
-  font-size: 2.3rem;
+  font-size: 2.2rem;
   line-height: 1;
 }
 
@@ -460,7 +614,7 @@ body {
   border-radius: 28px;
   border: 4px solid rgba(255, 255, 255, 0.15);
   background: radial-gradient(circle at 50% 30%, #1e293b 0%, #060911 100%);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px var(--gate-glow, rgba(56, 189, 248, 0.4));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px var(--gate-glow, rgba(245, 158, 11, 0.4));
   transition: transform 0.8s var(--gate-spring), box-shadow 0.3s ease;
   overflow: hidden;
   display: flex;
@@ -477,11 +631,11 @@ body {
 }
 
 .gate-card-wrapper.left-gate:hover .gate-door-leaf {
-  transform: rotateY(-25deg);
+  transform: rotateY(-35deg);
 }
 
 .gate-card-wrapper.right-gate:hover .gate-door-leaf {
-  transform: rotateY(25deg);
+  transform: rotateY(35deg);
 }
 
 .gate-card-wrapper.opened.left-gate .gate-door-leaf {
@@ -492,7 +646,6 @@ body {
   transform: rotateY(85deg);
 }
 
-/* 65% Media Viewport & 35% Caption Tray */
 .gate-media-viewport {
   height: 65%;
   width: 100%;
@@ -511,27 +664,6 @@ body {
   filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.85));
   animation: idleBob 4s ease-in-out infinite;
   z-index: 2;
-}
-
-@keyframes idleBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.pedestal-disc {
-  position: absolute;
-  bottom: 8px;
-  width: 160px;
-  height: 48px;
-  border-radius: 50%;
-  z-index: 1;
-  background: radial-gradient(ellipse at center, var(--gate-glow, rgba(56, 189, 248, 0.5)) 0%, transparent 72%);
-  animation: pedestalPulse 3.5s ease-in-out infinite;
-}
-
-@keyframes pedestalPulse {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.12); opacity: 1; }
 }
 
 .gate-caption-tray {
@@ -559,113 +691,9 @@ body {
 }
 
 /* =========================================================================
-   CHAMBER 1: ELEMENTAL TOOL FORGE
+   SCENE 3: COLLAPSING STEPPING STONES (Rhythm sequence)
    ========================================================================= */
-.tool-select-bar {
-  background: var(--panel-glass);
-  border: 2px solid #334155;
-  border-radius: 24px;
-  padding: 18px 24px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.tool-choices-grid {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.tool-choice-btn {
-  background: #1e293b;
-  border: 2px solid #475569;
-  border-radius: 16px;
-  padding: 12px 20px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.2s var(--spring-bounce);
-}
-
-.tool-choice-btn:hover {
-  border-color: var(--accent-cyan);
-  background: #334155;
-  transform: translateY(-2px);
-}
-
-.tool-choice-btn.is-selected {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.25);
-  color: #34d399;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-}
-
-/* =========================================================================
-   CHAMBER 2 & 5: CONSEQUENCE CARD (65% VIEWPORT / 35% ACTION TRAY)
-   ========================================================================= */
-.consequence-card {
-  max-width: 640px;
-  height: 480px;
-  margin: 0 auto 28px auto;
-  border-radius: 28px;
-  background: radial-gradient(circle at 50% 30%, #1e293b 0%, #060911 100%);
-  border: 3px solid #334155;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.consequence-viewport {
-  height: 65%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.consequence-sprite {
-  max-height: 85%;
-  max-width: 85%;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.85));
-  animation: idleBob 3.8s ease-in-out infinite;
-  z-index: 2;
-}
-
-.consequence-tray {
-  height: 35%;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(12px);
-  border-top: 2px solid #334155;
-  padding: 16px 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* =========================================================================
-   CHAMBER 3: RHYTHM ROCK STEPPING STONES
-   ========================================================================= */
-.rock-bridge-card {
-  background: var(--panel-glass);
-  border: 2px solid #334155;
-  border-radius: 24px;
-  padding: 24px;
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.bridge-stones-row {
+.stepping-stones-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -674,10 +702,10 @@ body {
   flex-wrap: wrap;
 }
 
-.stone-tile-btn {
-  width: 110px;
-  height: 110px;
-  border-radius: 24px;
+.stone-step-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 26px;
   background: #0f172a;
   border: 3px solid #334155;
   border-bottom: 7px solid #1e293b;
@@ -685,57 +713,27 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 2.2rem;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s var(--spring-bounce);
 }
 
-.stone-tile-btn:hover {
+.stone-step-btn:hover {
   transform: translateY(-4px);
-  border-color: var(--accent-cyan);
 }
 
-.stone-tile-btn.is-stepped {
-  background: rgba(16, 185, 129, 0.25);
+.stone-step-btn.is-stepped {
   border-color: #10b981;
+  background: rgba(16, 185, 129, 0.25);
   box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
   transform: scale(1.08);
 }
 
 /* =========================================================================
-   CHAMBER 4: GOLDEN KEYHOLE STAGE
+   RUBBER STAMP SEAL & COMPLETION MODAL
    ========================================================================= */
-.golden-keyhole-box {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 4px dashed #fbbf24;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5rem;
-  margin: 16px auto;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.golden-keyhole-box.is-unlocked {
-  border-style: solid;
-  border-color: #10b981;
-  box-shadow: 0 0 35px rgba(16, 185, 129, 0.8);
-  animation: keySpin 1.2s var(--spring-bounce);
-}
-
-@keyframes keySpin {
-  0% { transform: scale(0.8) rotate(-45deg); }
-  50% { transform: scale(1.2) rotate(180deg); }
-  100% { transform: scale(1) rotate(360deg); }
-}
-
-/* Rubber Stamp Seal */
 .rubber-stamp-seal {
   display: inline-block;
   border: 3px dashed #10b981;
@@ -754,9 +752,6 @@ body {
   100% { transform: scale(1) rotate(-3deg); opacity: 1; }
 }
 
-/* =========================================================================
-   COMPLETION MODAL & CONFETTI CANVAS
-   ========================================================================= */
 .confetti-canvas {
   position: fixed;
   inset: 0;

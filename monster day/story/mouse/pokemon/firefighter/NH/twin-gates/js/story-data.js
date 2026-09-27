@@ -1,182 +1,177 @@
 /**
- * TWIN GATES: THE MAGIC DOOR ADVENTURE (A1 MASTER ARC)
+ * TWIN GATES: ESCAPE THE SKY CASTLE
  * Primary ESL / CEFR A1 Story Curriculum Database
- * 35-Minute Interactive Arcade Quest • Total XP: 150
+ * 35–40 Minute Narrative Adventure • Total XP: 150
  */
 
 (function(root) {
   'use strict';
 
-  const TWIN_GATES_DATA = {
+  const SKY_CASTLE_STORY = {
     meta: {
       id: "twin-gates",
-      title: "🚪 Twin Gates: The Magic Door Adventure (A1 Master Arc)",
-      subtitle: "Colossal 3D Doors, Big Picture Clues & A1 Speaking Teleprompter",
+      title: "🚪 Mystery of the Twin Gates: Escape the Sky Castle",
+      subtitle: "The Sky Castle is shaking! Solve hazards, choose doors, and reach the Golden Airship!",
       category: "Language & Quests",
       track: "Track 3: Communication & Interactive Storytelling",
-      grade: "Grade 3–4",
+      grade: "Grades 2–4",
       level: "CEFR A1",
       ageGroup: "7–10",
-      duration: "35 min",
-      totalChambers: 5,
+      duration: "35–40 min",
+      totalScenes: 5,
       totalXP: 150,
-      vocabulary: [
-        "door", "gate", "ice", "fire", "key", "torch", "shield", "berry", "cave", "dragon", "yeti", "treasure"
+      lexicon: [
+        "dark", "torch", "bread", "beast", "bridge", "jump", "stones", "gold", "key", "door", "airship", "safe"
       ],
       formulas: [
-        "Open the [left / right] door!",
-        "It is [cold / hot / dark / safe].",
-        "I need a [key / torch / berry] to go inside."
+        "It is [dark / cold / hungry / broken].",
+        "I use the [torch / bread / key] to [see / feed / open].",
+        "Let's go through the [left / right] door!"
       ]
     },
 
     inventoryItems: [
-      { id: "torch", name: "Fire Torch", icon: "🕯️", img: "assets/fire_torch.webp", desc: "Melts cold ice." },
-      { id: "shield", name: "Fire Shield", icon: "🛡️", img: "assets/shield_item.webp", desc: "Blocks hot fire." },
-      { id: "berry", name: "Magic Berry", icon: "🍓", img: "assets/magic_berry.webp", desc: "Treat for friends." },
-      { id: "key", name: "Golden Key", icon: "🗝️", img: "assets/golden_key.webp", desc: "Opens gold gates." }
+      { id: "torch", name: "Blazing Torch", icon: "🕯️", img: "assets/item_torch.webp", desc: "Lights dark rooms." },
+      { id: "bread", name: "Warm Bread", icon: "🍞", img: "assets/item_bread.webp", desc: "Feeds hungry beasts." },
+      { id: "key", name: "Golden Key", icon: "🗝️", img: "assets/item_golden_key.webp", desc: "Opens the Sky Gate." }
     ],
 
-    chambers: [
-      // CHAMBER 1: The Two Gates (Ice or Fire?)
+    scenes: [
+      // SCENE 1: The Dark Cellar
       {
         id: 1,
-        title: "Chamber 1: The Two Gates",
-        subtitle: "Cold Ice or Hot Fire?",
-        stepTag: "Chamber 1 of 5",
-        speechPrompt: "Look! Two giant magic doors! Is it cold ice or hot fire?",
-        shortPrompt: "Choose a tool: Torch for Ice or Shield for Fire!",
+        title: "Scene 1: The Dark Cellar",
+        subtitle: "It is pitch black! Light the wall sconce!",
+        heroSpeech: "The Sky Castle is shaking! It is too dark! Use the torch to light the room!",
+        promptFormula: "I use the torch to see in the dark.",
+        hazardType: "darkness",
+        neededItem: "torch",
+        actionBtnText: "🕯️ Use Torch to Light Room",
+        successText: "The room is bright and warm! Two colossal doors appear!",
         doors: {
           left: {
-            id: "gate_ice",
+            id: "door_ice",
             label: "Left Door",
+            badge: "❄️ ICE DOOR",
+            cue: "I feel freezing cold air!",
             theme: "ice",
-            glowColor: "#38bdf8",
-            clueBadge: { icon: "❄️", label: "ICE", color: "#38bdf8", sfx: "wind" },
-            image: "assets/gate_ice_giant.webp",
-            promptText: "It is cold ice!",
-            neededTool: "torch",
-            toolName: "Fire Torch",
-            toolIcon: "🕯️",
-            formula: "I need a torch to melt the ice."
+            image: "assets/door_left_ice.webp",
+            glow: "#38bdf8"
           },
           right: {
-            id: "gate_fire",
+            id: "door_wood",
             label: "Right Door",
-            theme: "fire",
-            glowColor: "#f59e0b",
-            clueBadge: { icon: "🔥", label: "FIRE", color: "#f59e0b", sfx: "fire" },
-            image: "assets/gate_fire_giant.webp",
-            promptText: "It is hot fire!",
-            neededTool: "shield",
-            toolName: "Fire Shield",
-            toolIcon: "🛡️",
-            formula: "I need a shield to block the fire."
+            badge: "🪵 WOOD DOOR",
+            cue: "I smell ancient pine wood!",
+            theme: "wood",
+            image: "assets/door_right_wood.webp",
+            glow: "#f59e0b"
           }
         }
       },
 
-      // CHAMBER 2: The Creature Room (Yeti or Dragon?)
+      // SCENE 2: The Beast Den
       {
         id: 2,
-        title: "Chamber 2: The Creature Cave",
-        subtitle: "Feed the Friendly Creature",
-        stepTag: "Chamber 2 of 5",
-        branches: {
-          ice: {
-            creatureId: "yeti",
-            name: "Fluffy Yeti",
-            image: "assets/yeti_companion.webp",
-            speechPrompt: "A fluffy Yeti is here! Give the yeti a sweet berry.",
-            formula: "I need a berry to feed the yeti.",
-            actionLabel: "🍓 Give Magic Berry to the Yeti",
-            glowColor: "#38bdf8",
-            doors: {
-              left: { label: "Stone Arch", image: "assets/gate_stone_giant.webp", badge: "🪨 ROCK", theme: "stone", glow: "#10b981" },
-              right: { label: "Cloud Arch", image: "assets/gate_ice_giant.webp", badge: "☁️ CLOUD", theme: "cloud", glow: "#38bdf8" }
-            }
-          },
-          fire: {
-            creatureId: "dragon",
-            name: "Baby Dragon",
-            image: "assets/baby_dragon.webp",
-            speechPrompt: "A cute Baby Dragon is here! Give the dragon a sweet berry.",
-            formula: "I need a berry to feed the dragon.",
-            actionLabel: "🍓 Give Magic Berry to the Dragon",
-            glowColor: "#f59e0b",
-            doors: {
-              left: { label: "Stone Arch", image: "assets/gate_stone_giant.webp", badge: "🪨 ROCK", theme: "stone", glow: "#10b981" },
-              right: { label: "Cloud Arch", image: "assets/gate_fire_giant.webp", badge: "☁️ CLOUD", theme: "cloud", glow: "#f59e0b" }
-            }
-          }
-        }
-      },
-
-      // CHAMBER 3: The Stepping Bridge (Safe Path)
-      {
-        id: 3,
-        title: "Chamber 3: The Stepping Bridge",
-        subtitle: "Build the Rock Bridge",
-        stepTag: "Chamber 3 of 5",
-        speechPrompt: "The bridge is broken! Choose the strong rocks or the soft clouds.",
-        shortPrompt: "Tap the rock tiles in order: 1 - 2 - 3!",
-        tiles: [
-          { index: 0, order: 1, label: "Rock 1", icon: "🪨", sub: "Step 1" },
-          { index: 1, order: 2, label: "Rock 2", icon: "🪨", sub: "Step 2" },
-          { index: 2, order: 3, label: "Rock 3", icon: "🪨", sub: "Step 3" }
-        ],
+        title: "Scene 2: The Beast Den",
+        subtitle: "A giant furry beast is blocking the way!",
+        heroSpeech: "The beast is hungry! Give the beast warm bread!",
+        promptFormula: "I use the bread to feed the beast.",
+        hazardType: "beast",
+        neededItem: "bread",
+        actionBtnText: "🍞 Give Bread to the Beast",
+        successText: "The beast is happy and falls asleep! The double doors unlock!",
         doors: {
           left: {
-            id: "door_rock_safe",
-            label: "Rock Gate",
-            badge: { icon: "🪨", label: "ROCKS", color: "#10b981" },
+            id: "door_stone",
+            label: "Left Door",
+            badge: "🪨 ROCK ARCH",
+            cue: "Strong stone path ahead!",
+            theme: "stone",
             image: "assets/gate_stone_giant.webp",
-            glowColor: "#10b981"
+            glow: "#10b981"
           },
           right: {
-            id: "door_cloud_soft",
-            label: "Cloud Gate",
-            badge: { icon: "☁️", label: "CLOUDS", color: "#38bdf8" },
-            image: "assets/gate_ice_giant.webp",
-            glowColor: "#38bdf8"
+            id: "door_cloud",
+            label: "Right Door",
+            badge: "☁️ CLOUD ARCH",
+            cue: "Soft foggy mist ahead!",
+            theme: "cloud",
+            image: "assets/door_left_ice.webp",
+            glow: "#38bdf8"
           }
         }
       },
 
-      // CHAMBER 4: The Golden Gate (The Final Lock)
+      // SCENE 3: The Collapsing Stepping Stones
       {
-        id: 4,
-        title: "Chamber 4: The Golden Gate",
-        subtitle: "Unlock the Giant Lock",
-        stepTag: "Chamber 4 of 5",
-        speechPrompt: "The giant golden door is locked! Find the big gold key!",
-        shortPrompt: "Put the Golden Key into the lock to open the gate!",
-        neededItem: "key",
-        gateImage: "assets/gate_gold_giant.webp",
-        keyImage: "assets/golden_key.webp",
-        formula: "I need a key to open the door."
+        id: 3,
+        title: "Scene 3: The Abyss Bridge",
+        subtitle: "Step on the floating stones in order!",
+        heroSpeech: "The bridge is broken! Step on Blue, then Yellow, then Green!",
+        promptFormula: "Step on the stones to cross the abyss!",
+        hazardType: "broken_bridge",
+        sequence: [
+          { index: 0, color: "blue", label: "1. Blue Stone", icon: "💎", hex: "#38bdf8" },
+          { index: 1, color: "yellow", label: "2. Yellow Stone", icon: "☀️", hex: "#fbbf24" },
+          { index: 2, color: "green", label: "3. Green Stone", icon: "🍀", hex: "#10b981" }
+        ],
+        successText: "You crossed safely! The sky tunnel doors are open!",
+        doors: {
+          left: {
+            id: "door_sky_passage",
+            label: "Left Door",
+            badge: "⛅ SKY PATH",
+            cue: "Leads to the Grand Sky Gate!",
+            theme: "sky",
+            image: "assets/door_right_wood.webp",
+            glow: "#f59e0b"
+          },
+          right: {
+            id: "door_tower_passage",
+            label: "Right Door",
+            badge: "🏰 TOWER PATH",
+            cue: "Leads to the Grand Sky Gate!",
+            theme: "tower",
+            image: "assets/gate_stone_giant.webp",
+            glow: "#10b981"
+          }
+        }
       },
 
-      // CHAMBER 5: The Treasure Vault & Live Teleprompter
+      // SCENE 4: The Grand Sky Gate
+      {
+        id: 4,
+        title: "Scene 4: The Grand Sky Gate",
+        subtitle: "The final colossal lock before the launchpad!",
+        heroSpeech: "The giant golden gate is locked! Put the Golden Key into the lock!",
+        promptFormula: "I use the golden key to open the gate.",
+        hazardType: "golden_lock",
+        neededItem: "key",
+        actionBtnText: "🗝️ Put Golden Key into the Lock",
+        gateImage: "assets/door_vault_gold.webp",
+        successText: "The golden gate swings wide open! The airship launchpad is ahead!"
+      },
+
+      // SCENE 5: Airship Escape & Teleprompter Studio
       {
         id: 5,
-        title: "Chamber 5: The Treasure Vault",
-        subtitle: "Final Oral Graduation",
-        stepTag: "Chamber 5 of 5",
-        speechPrompt: "You found the magic treasure chest! Now speak into the microphone!",
-        chestImage: "assets/treasure_chest.webp",
+        title: "Scene 5: The Airship Dock",
+        subtitle: "Escape into the sunrise! Deliver your 3-sentence broadcast!",
+        heroSpeech: "We reached the Golden Airship! Speak into the microphone to launch!",
+        airshipImage: "assets/flying_airship.webp",
         teleprompterLines: [
-          "We opened the giant magic door!",
-          "We saw the friendly creature in the cave.",
-          "We unlocked the golden gate and found the treasure!"
+          "We entered the Sky Castle and lit the dark room!",
+          "We fed the friendly beast and crossed the magic bridge.",
+          "We unlocked the Golden Gate and escaped on the airship!"
         ]
       }
     ]
   };
 
-  root.TWIN_GATES_DATA = TWIN_GATES_DATA;
+  root.SKY_CASTLE_STORY = SKY_CASTLE_STORY;
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TWIN_GATES_DATA;
+    module.exports = SKY_CASTLE_STORY;
   }
 })(typeof window !== 'undefined' ? window : global);
