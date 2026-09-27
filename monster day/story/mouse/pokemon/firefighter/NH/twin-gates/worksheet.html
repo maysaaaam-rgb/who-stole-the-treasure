@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📄 Twin Gates: Explorer Comic Strip &amp; Citadel Passport • Adventure Academy</title>
+  <title>📄 Twin Gates: My Magic Door Comic &amp; Explorer Badge • Adventure Academy (A1)</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🚪</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,7 +57,6 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.2s ease;
     }
 
     .btn-action:hover {
@@ -68,10 +67,6 @@
     .btn-secondary {
       background: #334155;
       color: #fff;
-    }
-
-    .btn-secondary:hover {
-      background: #475569;
     }
 
     /* A4 Sheet Container */
@@ -147,6 +142,28 @@
       padding-left: 8px;
     }
 
+    /* Vocabulary Bank Pill Tray */
+    .vocab-bank-tray {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .vocab-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #bae6fd;
+    }
+
     /* 4-Panel Comic Strip */
     .comic-grid {
       display: grid;
@@ -204,47 +221,45 @@
       border: 1.5px solid #cbd5e1;
       border-radius: 8px;
       padding: 6px 8px;
-      font-size: 0.76rem;
-      line-height: 1.3;
+      font-size: 0.78rem;
+      line-height: 1.35;
       color: #1e293b;
-    }
-
-    .comic-speech-bubble strong {
-      color: #0369a1;
     }
 
     .blank-line {
       display: inline-block;
-      min-width: 70px;
+      min-width: 65px;
       border-bottom: 1.5px solid #0f172a;
       text-align: center;
       font-weight: 800;
       color: #0369a1;
     }
 
-    /* Relic Matching Matrix */
-    .relic-matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.78rem;
+    /* Picture Word Match Grid */
+    .word-match-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       margin-bottom: 12px;
     }
 
-    .relic-matrix-table th,
-    .relic-matrix-table td {
+    .match-card {
       border: 1px solid #cbd5e1;
-      padding: 6px 10px;
-      text-align: left;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 8px;
+      text-align: center;
     }
 
-    .relic-matrix-table th {
-      background: #f1f5f9;
-      color: #334155;
+    .match-icon {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+
+    .match-word {
+      font-size: 0.8rem;
       font-weight: 900;
-    }
-
-    .relic-matrix-table tr:nth-child(even) {
-      background: #f8fafc;
+      color: #0f172a;
     }
 
     /* Teleprompter Script Card */
@@ -326,7 +341,7 @@
   <div class="print-nav-bar">
     <div style="font-size:0.9rem; font-weight:800; display:flex; align-items:center; gap:8px;">
       <span>🚪</span>
-      <span>Adventure Academy: Twin Gates Printable Story Passport</span>
+      <span>Adventure Academy: Twin Gates Magic Door Passport (A1)</span>
     </div>
     <div style="display:flex; gap:10px;">
       <a href="index.html" class="btn-action btn-secondary">
@@ -346,12 +361,12 @@
       <div class="ws-title-wrap">
         <h1>
           <span>🚪</span>
-          <span>Twin Gates: The Crystal Citadel Explorer Passport</span>
+          <span>Twin Gates: The Magic Door Adventure (Passport)</span>
         </h1>
-        <p>Interactive Storytelling, Spatial Directions &amp; Purpose Formulas (CEFR A1–A1+ • Grade 3–4)</p>
+        <p>Directions, Choice &amp; Simple Sentence Frames (CEFR A1 • Grade 3–4)</p>
       </div>
       <div style="font-size:1.15rem; font-weight:900; color:#0284c7; background:#e0f2fe; padding:6px 14px; border-radius:8px;">
-        ⭐ 200 XP
+        ⭐ 150 XP
       </div>
     </header>
 
@@ -367,29 +382,46 @@
         <strong>Class / Group:</strong> _____________________
       </div>
       <div class="meta-item">
-        <strong>Teacher Check:</strong> [ &nbsp; ] Pass / ⭐ XP
+        <strong>Teacher Check:</strong> [ &nbsp; ] Pass / ⭐ 150 XP
       </div>
+    </div>
+
+    <!-- VOCABULARY BANK TRAY -->
+    <div class="vocab-bank-tray">
+      <span style="font-size:0.75rem; font-weight:900; color:#334155; margin-right:4px;">Word Bank:</span>
+      <span class="vocab-pill">door</span>
+      <span class="vocab-pill">gate</span>
+      <span class="vocab-pill">ice</span>
+      <span class="vocab-pill">fire</span>
+      <span class="vocab-pill">key</span>
+      <span class="vocab-pill">torch</span>
+      <span class="vocab-pill">shield</span>
+      <span class="vocab-pill">berry</span>
+      <span class="vocab-pill">cave</span>
+      <span class="vocab-pill">dragon</span>
+      <span class="vocab-pill">yeti</span>
+      <span class="vocab-pill">treasure</span>
     </div>
 
     <!-- SECTION 1: 4-PANEL CITADEL COMIC STRIP -->
     <section class="ws-section">
       <div class="ws-section-title">
         <span>🎨</span>
-        <span>Part 1: My Citadel Escape Comic Strip (Draw &amp; Complete Sentences)</span>
+        <span>Part 1: My Magic Door Comic Strip (Draw &amp; Fill in the Blank)</span>
       </div>
 
       <div class="comic-grid">
         <!-- Panel 1 -->
         <div class="comic-panel">
           <div class="comic-panel-header">
-            <span class="comic-badge">Panel 1: The Twin Gates</span>
+            <span class="comic-badge">Panel 1: The Magic Doors</span>
             <span style="font-size:0.75rem; color:#64748b;">Chamber 1</span>
           </div>
           <div class="comic-draw-box">
-            [ Draw the Frost Gate ❄️ or Magma Gate 🔥 with your Explorer ]
+            [ Draw the giant ice or fire door ]
           </div>
           <div class="comic-speech-bubble">
-            "I hear cold wind! Go through the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (left / right) door! I have my Frost Shield."
+            "Open the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (left / right) door! It is <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (cold / hot). I have my tool!"
           </div>
         </div>
 
@@ -400,112 +432,94 @@
             <span style="font-size:0.75rem; color:#64748b;">Chamber 2</span>
           </div>
           <div class="comic-draw-box">
-            [ Draw the Shivering Yeti 🐾 or Baby Fire Dragon 🐉 ]
+            [ Draw the fluffy Yeti or Baby Dragon ]
           </div>
           <div class="comic-speech-bubble">
-            "The Yeti is cold! I need a <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (torch / crystal) to <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (melt / feed) the ice!"
+            "A friendly <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (yeti / dragon) is in the cave! I give it a sweet <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (berry / key)."
           </div>
         </div>
 
         <!-- Panel 3 -->
         <div class="comic-panel">
           <div class="comic-panel-header">
-            <span class="comic-badge" style="background:#10b981;">Panel 3: Chasm Bridge</span>
+            <span class="comic-badge" style="background:#10b981;">Panel 3: Rock Bridge</span>
             <span style="font-size:0.75rem; color:#64748b;">Chamber 3</span>
           </div>
           <div class="comic-draw-box">
-            [ Draw 3 Glowing Rune Stones: Frost ❄️, Ember 🔥, Sun ☀️ ]
+            [ Draw 3 stepping stones: 1 - 2 - 3 ]
           </div>
           <div class="comic-speech-bubble">
-            "Step on the stones in order: 1. Left <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ➔ 2. Right <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> ➔ 3. Center <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>!"
+            "The bridge is broken! Step on the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (rocks / clouds) in order: 1 ➔ 2 ➔ 3!"
           </div>
         </div>
 
         <!-- Panel 4 -->
         <div class="comic-panel">
           <div class="comic-panel-header">
-            <span class="comic-badge" style="background:#8b5cf6;">Panel 4: Golden Airship</span>
+            <span class="comic-badge" style="background:#8b5cf6;">Panel 4: Golden Treasure</span>
             <span style="font-size:0.75rem; color:#64748b;">Chamber 5</span>
           </div>
           <div class="comic-draw-box">
-            [ Draw the Golden Airship flying into the morning sky 🌅 ]
+            [ Draw the glowing treasure chest ]
           </div>
           <div class="comic-speech-bubble">
-            "All 3 relics are powered! We launch the Golden Airship into the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (sunrise / sea)!"
+            "I use the golden <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (key / torch) to open the gate! We found the <span class="blank-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> (treasure / ice)!"
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 2: RELIC PURPOSE MATRIX -->
+    <!-- SECTION 2: PICTURE WORD MATCHING -->
     <section class="ws-section">
       <div class="ws-section-title">
-        <span>🛡️</span>
-        <span>Part 2: Relic Matching — Infinitive of Purpose (TO + VERB)</span>
+        <span>🔍</span>
+        <span>Part 2: Visual Item Match</span>
       </div>
 
-      <table class="relic-matrix-table">
-        <thead>
-          <tr>
-            <th style="width:18%;">Relic</th>
-            <th style="width:25%;">Tool Name</th>
-            <th style="width:20%;">Action Verb</th>
-            <th>Complete Purpose Formula</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="font-size:1.2rem; text-align:center;">🛡️</td>
-            <td><strong>Frost Shield</strong></td>
-            <td><span class="blank-line">to block</span></td>
-            <td>We need a shield <strong>to block</strong> freezing cold winds.</td>
-          </tr>
-          <tr>
-            <td style="font-size:1.2rem; text-align:center;">🕯️</td>
-            <td><strong>Blazing Torch</strong></td>
-            <td><span class="blank-line">to melt</span></td>
-            <td>We use a torch <strong>to melt</strong> the thick glacier ice.</td>
-          </tr>
-          <tr>
-            <td style="font-size:1.2rem; text-align:center;">⚙️</td>
-            <td><strong>Bronze Gear</strong></td>
-            <td><span class="blank-line">to power</span></td>
-            <td>We use a bronze gear <strong>to power</strong> the summit lift.</td>
-          </tr>
-          <tr>
-            <td style="font-size:1.2rem; text-align:center;">💎</td>
-            <td><strong>Aetheric Crystal</strong></td>
-            <td><span class="blank-line">to fly</span></td>
-            <td>We need the crystal <strong>to fly</strong> the Golden Airship.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="word-match-grid">
+        <div class="match-card">
+          <div class="match-icon">🕯️</div>
+          <div class="match-word">Fire Torch</div>
+        </div>
+        <div class="match-card">
+          <div class="match-icon">🛡️</div>
+          <div class="match-word">Fire Shield</div>
+        </div>
+        <div class="match-card">
+          <div class="match-icon">🍓</div>
+          <div class="match-word">Magic Berry</div>
+        </div>
+        <div class="match-card">
+          <div class="match-icon">🗝️</div>
+          <div class="match-word">Golden Key</div>
+        </div>
+      </div>
     </section>
 
     <!-- SECTION 3: 3-SENTENCE GRADUATION TELEPROMPTER SCRIPT -->
     <section class="ws-section">
       <div class="ws-section-title">
         <span>🎙️</span>
-        <span>Part 3: Final Live Karaoke Recitation Checklist (Read Aloud to Partner or Teacher)</span>
+        <span>Part 3: Speaking Teleprompter Checklist (Read Aloud)</span>
       </div>
 
       <div class="teleprompter-checklist-box">
         <div class="tp-recite-row">
           <div class="tp-checkbox"></div>
           <div>
-            <strong>Sentence 1:</strong> "We explored the Crystal Citadel and unlocked the magic gates!"
+            <strong>Sentence 1:</strong> "We opened the giant magic door!"
           </div>
         </div>
         <div class="tp-recite-row">
           <div class="tp-checkbox"></div>
           <div>
-            <strong>Sentence 2:</strong> "We solved the ancient riddles and passed the creatures safely!"
+            <strong>Sentence 2:</strong> "We saw the friendly creature in the cave."
           </div>
         </div>
         <div class="tp-recite-row">
           <div class="tp-checkbox"></div>
           <div>
-            <strong>Sentence 3:</strong> "We launched the Golden Airship — mission complete!"
+            <strong>Sentence 3:</strong> "We unlocked the golden gate and found the treasure!"
           </div>
         </div>
       </div>
@@ -514,15 +528,15 @@
     <!-- SECTION 4: PASSPORT CERTIFICATION STAMP -->
     <div class="cert-stamp-row">
       <div>
-        <div style="font-size:0.92rem; font-weight:900; color:#0f172a;">Official Citadel Storyteller Stamp:</div>
-        <div style="font-size:0.75rem; color:#64748b;">Awarded for passing 5 chambers and completing the live broadcast.</div>
+        <div style="font-size:0.92rem; font-weight:900; color:#0f172a;">Official Magic Door Explorer Stamp:</div>
+        <div style="font-size:0.75rem; color:#64748b;">Awarded for completing all 5 chambers and the final reading test.</div>
       </div>
       <div class="cert-stamp-badge">
-        ✓ CITADEL MASTER STORYTELLER
+        ✓ A1 MASTER EXPLORER
       </div>
       <div style="text-align:right;">
         <div style="font-size:0.75rem; color:#64748b;">Score Earned:</div>
-        <div style="font-size:1.1rem; font-weight:900; color:#0284c7;">_____ / 200 XP</div>
+        <div style="font-size:1.1rem; font-weight:900; color:#0284c7;">_____ / 150 XP</div>
       </div>
     </div>
 
