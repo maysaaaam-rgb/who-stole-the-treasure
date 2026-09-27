@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco-Engineers: Ocean Cleaners &amp; Reef Rescue | English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- CONFETTI OVERLAY CANVAS -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- TOP TACTICAL HUD -->
+  <header class="tactical-hud">
+    <div class="hud-left">
+      <a href="../index.html#library" class="btn-3d btn-ghost" style="padding: 6px 14px; font-size: 0.9rem;">
+        <span>🏠 Hub</span>
+      </a>
+      <div class="hud-title-badge">
+        <span style="font-size: 1.4rem;">🌊</span>
+        <span>ECO-ENGINEERS: OCEAN CLEANERS</span>
+        <span class="tag">GRADE 3–4 • CEFR A1+</span>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="hud-stat-pill xp-pill">
+        <span>⭐</span>
+        <span id="hud-xp-val">0</span>
+        <span style="font-size: 0.75rem; color: #94a3b8;">XP</span>
+      </div>
+      <div class="hud-stat-pill battery-pill">
+        <span>⚡</span>
+        <span id="hud-battery-val">20%</span>
+      </div>
+      <div class="hud-stat-pill" style="color: var(--cyan-primary); border-color: rgba(56, 189, 248, 0.4);">
+        <span>🔥</span>
+        <span id="hud-streak-val">0</span>
+      </div>
+      <button class="btn-3d btn-ghost" id="btn-mute-toggle" style="padding: 6px 12px; font-size: 0.85rem;">
+        <span>🔊</span> Sound
+      </button>
+      <button class="btn-3d btn-ghost" id="btn-fullscreen-toggle" style="padding: 6px 12px; font-size: 0.85rem;">
+        <span>📺</span> Screen
+      </button>
+      <a href="worksheet.html" target="_blank" class="btn-3d btn-amber" style="padding: 6px 14px; font-size: 0.85rem;">
+        <span>🖨️ Mission Log</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- PHASE NAVIGATION STRIP -->
+  <nav class="phase-strip">
+    <button class="phase-tab active" data-phase="1">
+      <span class="phase-num">1</span>
+      <span>Radar Scanner</span>
+    </button>
+    <button class="phase-tab" data-phase="2">
+      <span class="phase-num">2</span>
+      <span>Mission Workbench</span>
+    </button>
+    <button class="phase-tab" data-phase="3">
+      <span class="phase-num">3</span>
+      <span>Teleprompter Studio</span>
+    </button>
+  </nav>
+
+  <!-- MAIN INTERACTIVE ARENA -->
+  <main class="main-stage-container">
+
+    <!-- ======================================================================
+         PHASE 1: INPUT & DISCOVERY RADAR SCANNER (3D FLIP CARDS)
+         ====================================================================== -->
+    <section class="phase-view active-view" id="phase-1-view" data-phase="1">
+      <div class="section-header">
+        <span class="section-tag">PHASE 1 • RADAR RECONNAISSANCE</span>
+        <h1 class="section-title">Eco-Machine Radar Scanner</h1>
+        <p class="section-desc">Flip cards to inspect cutting-edge marine cleanup robots, their engineering specifications, and the ocean habitats they protect.</p>
+      </div>
+
+      <div class="radar-grid" id="radar-grid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHASE 2: TACTILE WORKBENCH & CHALLENGE LAB
+         ====================================================================== -->
+    <section class="phase-view" id="phase-2-view" data-phase="2">
+      <div class="section-header">
+        <span class="section-tag">PHASE 2 • TACTILE ADAPTATION &amp; FORMULA LAB</span>
+        <h1 class="section-title">Mission Engineering Workbench</h1>
+        <p class="section-desc">Power up machines and master the linguistic formulas: <strong>"The [Machine] helps to [Verb]"</strong> &amp; <strong>"We must protect the [Habitat]"</strong>.</p>
+      </div>
+
+      <div class="workbench-layout">
+        <!-- Sidebar -->
+        <aside class="workbench-sidebar">
+          <div style="font-size: 0.85rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">
+            Select Eco-Machine
+          </div>
+          <div class="machine-selector-row" id="wb-machine-btns">
+            <!-- Dynamic selector buttons -->
+          </div>
+
+          <!-- Focal Machine Stage -->
+          <div class="focal-machine-stage" id="focal-stage">
+            <!-- Dynamic focal machine -->
+          </div>
+
+          <!-- Battery Meter (20% to 100%) -->
+          <div class="battery-meter-container">
+            <div class="battery-meta">
+              <span>Clean Battery Energy</span>
+              <span id="wb-battery-val" style="color: var(--emerald-primary);">20%</span>
+            </div>
+            <div class="battery-track">
+              <div class="battery-fill" id="wb-battery-fill"></div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Task Panel -->
+        <div class="workbench-main-panel">
+          <div class="task-progress-tracker">
+            <span class="task-progress-step" id="wb-task-step">MISSION 1 OF 3</span>
+            <span style="font-size: 0.85rem; color: #94a3b8;">+15 XP per correct formula</span>
+          </div>
+
+          <div class="task-prompt-box" id="wb-prompt-box">
+            Loading mission prompt...
+          </div>
+
+          <div class="sentence-builder-display" id="wb-sentence-display">
+            <!-- Sentence slot -->
+          </div>
+
+          <!-- Spoken Clue Box (Soft-fail feedback) -->
+          <div class="spoken-clue-box" id="wb-clue-box" style="display: none;">
+            <!-- Rendered on soft-fail -->
+          </div>
+
+          <div class="workbench-options-grid" id="wb-options-grid">
+            <!-- 3D Tactile Option Buttons -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         PHASE 3: LIVE TELEPROMPTER STUDIO
+         ====================================================================== -->
+    <section class="phase-view" id="phase-3-view" data-phase="3">
+      <div class="section-header">
+        <span class="section-tag">PHASE 3 • ORAL BROADCAST SHOWCASE</span>
+        <h1 class="section-title">Live Teleprompter Studio</h1>
+        <p class="section-desc">Broadcast your field report to the Global Ocean Council. Follow the glowing karaoke word tracker as you speak!</p>
+      </div>
+
+      <div class="teleprompter-layout">
+        <!-- Sidebar -->
+        <aside class="teleprompter-sidebar">
+          <div style="font-size: 0.85rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">
+            Machine to Broadcast
+          </div>
+          <div class="machine-selector-row" id="tp-machine-btns">
+            <!-- Mini buttons -->
+          </div>
+          <div class="focal-machine-stage" id="tp-focal-stage" style="height: 200px;">
+            <!-- Preview -->
+          </div>
+        </aside>
+
+        <!-- Main Studio Screen -->
+        <div class="teleprompter-screen-panel">
+          <div class="screen-hud-badge">
+            <span style="font-weight: 800; font-size: 0.95rem; color: var(--cyan-primary);">
+              🎙️ OCEAN RESCUE BROADCAST FEED
+            </span>
+            <div class="on-air-pill" id="tp-on-air-badge">
+              <span>🔴</span>
+              <span>OFF AIR • READY</span>
+            </div>
+          </div>
+
+          <!-- Karaoke Teleprompter Container -->
+          <div class="teleprompter-teleprompter-box" id="tp-teleprompter-box">
+            <!-- Teleprompter Lines -->
+          </div>
+
+          <!-- Broadcast Controls -->
+          <div class="teleprompter-controls">
+            <span style="font-size: 0.9rem; color: #94a3b8;">
+              3-Sentence Speaking Protocol • Calibrated Audio Teleprompter
+            </span>
+            <button class="btn-3d btn-coral" id="tp-broadcast-btn" style="padding: 14px 28px; font-size: 1.1rem;">
+              <span>🎙️ Start Live Karaoke Broadcast (+30 XP)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- VICTORY / DIPLOMA MODAL -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="victory-card">
+      <div class="victory-badge">🪸</div>
+      <h2 class="victory-title">Certified Ocean Eco-Engineer!</h2>
+      <p class="victory-desc">
+        Outstanding mission! You calibrated all four cleanup robots, mastered purpose and conservation formulas, and broadcasted your live debriefs to protect marine habitats.
+      </p>
+
+      <div class="victory-stats-grid">
+        <div class="stat-box">
+          <span class="stat-val" id="modal-final-xp">160 XP</span>
+          <span class="stat-label">Total XP</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color: var(--cyan-primary);">4 / 4</span>
+          <span class="stat-label">Robots Active</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" style="color: var(--emerald-primary);">100%</span>
+          <span class="stat-label">Clean Energy</span>
+        </div>
+      </div>
+
+      <div class="victory-actions">
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-amber">
+          <span>🖨️ Print Mission Passport</span>
+        </a>
+        <button class="btn-3d btn-cyan" id="btn-replay-game">
+          <span>🔄 Replay Missions</span>
+        </button>
+        <button class="btn-3d btn-ghost" id="btn-modal-close">
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

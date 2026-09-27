@@ -18,7 +18,7 @@ const CURRICULUM_TRACKS = [
     "label": "🛠️ STEM & Inventions",
     "title": "Track 2: 🛠️ Applied STEM & Creative Engineering",
     "subtitle": "Famous inventors, clean energy Eco-Rover build labs, robotics, and team showdowns.",
-    "count": 12
+    "count": 13
   },
   {
     "id": "track-3",
@@ -39,10 +39,10 @@ const CURRICULUM_TRACKS = [
   {
     "id": "all",
     "key": "all",
-    "label": "🌟 All Lessons (59+)",
+    "label": "🌟 All Lessons (60+)",
     "title": "Complete Learning Library (All Lessons)",
-    "subtitle": "All 59 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
-    "count": 59
+    "subtitle": "All 60 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 60
   }
 ];
 
@@ -5846,6 +5846,109 @@ const GAMES_REGISTRY = [
     "formula": "It has [feature] to [action] / It needs [habitat]",
     "url": "fantasy-creatures/index.html",
     "worksheetUrl": "fantasy-creatures/worksheet.html"
+  },
+  {
+    "id": "ocean-cleaners",
+    "aliases": [
+      "eco-engineers-ocean",
+      "ocean-cleaners-lab",
+      "reef-rescue"
+    ],
+    "title": "🌊 Eco-Engineers: Ocean Cleaners & Reef Rescue",
+    "description": "Tactile 3-phase CLIL & ESL engineering adventure for Grade 3–4. Calibrate autonomous cleanup catamarans, coral restoration submersibles, turtle rescue drones, and acoustic bubble barriers. Practice 'The [Machine] helps to [Verb]' and 'We must protect the [Habitat]', then broadcast your field report live!",
+    "category": "Inventions & Engineering",
+    "categoryGroup": "Marine Robotics & Environmental STEM",
+    "cefrLevel": "A1+",
+    "level": "A1+ / A2",
+    "ageGroup": "7–10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Grade 5"
+    ],
+    "xp": 160,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "type": "game",
+    "topics": [
+      "Ocean Engineering",
+      "Marine Conservation",
+      "Robotics & Sensors",
+      "Habitat Protection"
+    ],
+    "learningObjectives": [
+      "Identify marine cleanup machines and engineering features (solar hulls, robotic arms, sonar)",
+      "Formulate purpose statements using 'The [Machine] helps to [Verb]'",
+      "Formulate environmental protection pledges using 'We must protect the [Habitat]'",
+      "Deliver a 3-sentence live spoken debrief with karaoke teleprompter synchronization"
+    ],
+    "teacherInstructions": "Launch Phase 1 for classroom discovery and vocabulary elicitation. Use Phase 2 for tactile grammar assembly and battery charging. Conclude with Phase 3 paired or whole-class oral broadcasts.",
+    "route": "ocean-cleaners/index.html",
+    "worksheet": "ocean-cleaners/worksheet.html",
+    "worksheetRoute": "ocean-cleaners/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🌊",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0f172a 50%, #0284c7 100%)",
+    "tags": [
+      "ocean",
+      "plastic",
+      "coral",
+      "robot",
+      "net",
+      "turtle",
+      "clean",
+      "rescue",
+      "filter",
+      "collect",
+      "stem",
+      "clil"
+    ],
+    "vocabulary": {
+      "core": [
+        "ocean",
+        "plastic",
+        "coral",
+        "robot",
+        "net",
+        "turtle",
+        "clean",
+        "rescue",
+        "filter",
+        "collect"
+      ],
+      "supporting": [
+        "catamaran",
+        "estuary",
+        "lagoon",
+        "battery",
+        "conveyor",
+        "barrier"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Purpose & Conservation Statements",
+      "formula": "The [Machine] helps to [Verb] / We must protect the [Habitat]",
+      "formulas": [
+        "The Solar Skimmer helps to collect plastic.",
+        "The Reef Rover helps to plant coral.",
+        "The Aqua Drone helps to rescue turtles.",
+        "The Bubble Barrier helps to filter microplastics.",
+        "We must protect the coral reef."
+      ]
+    },
+    "clilDomain": "Marine Robotics & Ecological Engineering",
+    "clilTheme": "Ocean Plastics Remediation & Habitat Restoration",
+    "status": "active",
+    "trackId": "track-2",
+    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
+    "formula": "The [Machine] helps to [Verb] / We must protect the [Habitat]",
+    "url": "ocean-cleaners/index.html",
+    "worksheetUrl": "ocean-cleaners/worksheet.html"
   }
 ];
 
