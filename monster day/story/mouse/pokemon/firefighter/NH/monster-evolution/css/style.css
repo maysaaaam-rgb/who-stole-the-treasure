@@ -511,8 +511,8 @@ body {
 .card-hero-stage,
 .card-art-hero {
   position: relative;
-  height: 200px;
-  min-height: 200px;
+  height: 220px;
+  min-height: 220px;
   width: 100%;
   background: radial-gradient(circle at 50% 35%, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.98) 100%);
   display: flex;
@@ -522,9 +522,11 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.monster-3d-model,
 .hero-3d-sprite,
 .monster-raster-img {
-  max-height: 170px;
+  max-height: 180px;
+  width: auto;
   max-width: 90%;
   object-fit: contain;
   z-index: 2;
@@ -533,6 +535,9 @@ body {
   transition: transform 0.3s ease;
 }
 
+.monster-card-wrap:hover .monster-3d-model,
+.radar-card:hover .monster-3d-model,
+.specimen-card:hover .monster-3d-model,
 .monster-card-wrap:hover .hero-3d-sprite,
 .radar-card:hover .hero-3d-sprite,
 .specimen-card:hover .hero-3d-sprite,
