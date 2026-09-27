@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco-Engineer Mission Log &amp; Diploma | Ocean Cleaners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #f59e0b;
+      --cyan: #0284c7;
+      --emerald: #059669;
+      --border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Comic Neue', sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .no-print-bar {
+      width: 100%;
+      max-width: 800px;
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-print {
+      background: #f59e0b;
+      color: #000000;
+      font-weight: 800;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border-bottom: 3px solid #b45309;
+    }
+
+    .btn-back {
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* A4 Document Sheet */
+    .sheet {
+      width: 100%;
+      max-width: 800px;
+      background: #ffffff;
+      border: 2px solid #0f172a;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .academy-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .academy-seal {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      border: 2px solid #0f172a;
+    }
+
+    .academy-title h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .academy-title p {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .student-meta-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-item label {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .meta-item .meta-line {
+      border-bottom: 1.5px dashed #94a3b8;
+      height: 20px;
+    }
+
+    .worksheet-section {
+      margin-bottom: 24px;
+    }
+
+    .section-title-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    /* Activity 1: Match & Connect */
+    .match-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+
+    .match-table th, .match-table td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .match-table th {
+      background: #f1f5f9;
+      font-weight: 800;
+    }
+
+    /* Activity 2: Sentence Builder */
+    .cloze-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cloze-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .blank-input {
+      display: inline-block;
+      min-width: 120px;
+      border-bottom: 2px solid #0f172a;
+      margin: 0 4px;
+    }
+
+    .formula-tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      margin-left: auto;
+    }
+
+    /* Activity 3: Teleprompter Speech Log */
+    .speech-dossier-box {
+      border: 2px dashed #0284c7;
+      border-radius: 12px;
+      padding: 16px;
+      background: #f0f9ff;
+    }
+
+    .speech-line {
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .speech-line .line-num {
+      font-weight: 800;
+      color: #0284c7;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .speech-line .line-content {
+      flex: 1;
+      border-bottom: 1.5px dashed #94a3b8;
+      height: 22px;
+    }
+
+    /* Certification Diploma */
+    .diploma-footer {
+      border-top: 2px solid #0f172a;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .stamp-box {
+      border: 2px dashed #10b981;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 800;
+      color: #059669;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .signature-slot {
+      text-align: right;
+    }
+
+    .signature-line {
+      width: 160px;
+      border-bottom: 1.5px solid #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .signature-slot label {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen-Only Bar -->
+  <div class="no-print-bar">
+    <a href="index.html" class="btn-back">⬅️ Back to Interactive Game</a>
+    <span>🖨️ English Adventure Academy Printable Dossier</span>
+    <button class="btn-print" onclick="window.print()">Print Mission Log (A4)</button>
+  </div>
+
+  <!-- A4 Worksheet Document -->
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="academy-brand">
+        <div class="academy-seal">🌊</div>
+        <div class="academy-title">
+          <h1>ENGLISH ADVENTURE ACADEMY</h1>
+          <p>Eco-Engineers: Ocean Cleaners &amp; Reef Rescue • Grade 3–4 CLIL Dossier</p>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-weight: 700;">
+          CEFR A1+ • UNIT 2
+        </span>
+      </div>
+    </header>
+
+    <!-- Student Metadata -->
+    <div class="student-meta-grid">
+      <div class="meta-item">
+        <label>Eco-Engineer Cadet Name</label>
+        <div class="meta-line"></div>
+      </div>
+      <div class="meta-item">
+        <label>Engineer Rank</label>
+        <div class="meta-line" style="text-align: center; font-weight: 700; font-size: 0.85rem; color: #0f172a;">Reef Guardian</div>
+      </div>
+      <div class="meta-item">
+        <label>Date</label>
+        <div class="meta-line"></div>
+      </div>
+    </div>
+
+    <!-- PART A: Machine & Action Matching -->
+    <section class="worksheet-section">
+      <div class="section-title-bar">
+        <span>PART 1</span>
+        <span>•</span>
+        <span>ECO-ROBOT &amp; ACTION MATCHING</span>
+      </div>
+      <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 10px;">
+        Draw lines to connect each marine machine with its engineering feature, action, and target habitat.
+      </p>
+
+      <table class="match-table">
+        <thead>
+          <tr>
+            <th>Eco-Machine</th>
+            <th>Engineering Feature</th>
+            <th>Purpose (helps to + verb)</th>
+            <th>Protected Habitat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🚤 Solar Skimmer</strong></td>
+            <td>robotic arms &amp; seed pod</td>
+            <td>to rescue turtles</td>
+            <td>coral reef</td>
+          </tr>
+          <tr>
+            <td><strong>🪸 Reef Rover</strong></td>
+            <td>air nozzles &amp; mesh grid</td>
+            <td>to collect plastic</td>
+            <td>river estuary</td>
+          </tr>
+          <tr>
+            <td><strong>🐢 Aqua Drone</strong></td>
+            <td>solar conveyor net</td>
+            <td>to plant coral</td>
+            <td>open ocean</td>
+          </tr>
+          <tr>
+            <td><strong>🫧 Bubble Barrier</strong></td>
+            <td>acoustic sonar &amp; net cutter</td>
+            <td>to filter microplastics</td>
+            <td>coastal lagoon</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PART B: Target Grammar Sentence Completion -->
+    <section class="worksheet-section">
+      <div class="section-title-bar">
+        <span>PART 2</span>
+        <span>•</span>
+        <span>GRAMMAR FORMULAS: "HELPS TO [VERB]" &amp; "WE MUST PROTECT"</span>
+      </div>
+      <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 10px;">
+        Use the word bank to complete the sentences: <em>[plastic, coral, turtles, microplastics, ocean, lagoon]</em>.
+      </p>
+
+      <div class="cloze-list">
+        <div class="cloze-item">
+          <span>1. The Solar Skimmer helps to collect floating <span class="blank-input"></span> from the open sea.</span>
+          <span class="formula-tag">helps to + verb</span>
+        </div>
+        <div class="cloze-item">
+          <span>2. The Reef Rover helps to plant young <span class="blank-input"></span> along broken reefs.</span>
+          <span class="formula-tag">helps to + verb</span>
+        </div>
+        <div class="cloze-item">
+          <span>3. The Aqua Drone helps to rescue trapped sea <span class="blank-input"></span> from old nets.</span>
+          <span class="formula-tag">helps to + verb</span>
+        </div>
+        <div class="cloze-item">
+          <span>4. We must protect the <span class="blank-input"></span> and coastal <span class="blank-input"></span> for wildlife.</span>
+          <span class="formula-tag">must protect + habitat</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART C: 3-Sentence Field Report Teleprompter Log -->
+    <section class="worksheet-section">
+      <div class="section-title-bar">
+        <span>PART 3</span>
+        <span>•</span>
+        <span>3-SENTENCE ORAL TELEPROMPTER DEBRIEF</span>
+      </div>
+      <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 10px;">
+        Choose your favorite ocean cleanup machine. Write your 3-sentence presentation debrief below:
+      </p>
+
+      <div class="speech-dossier-box">
+        <div class="speech-line">
+          <span class="line-num">Line 1:</span>
+          <span>This is our ocean machine: </span>
+          <div class="line-content"></div>
+        </div>
+        <div class="speech-line">
+          <span class="line-num">Line 2:</span>
+          <span>The machine helps to </span>
+          <div class="line-content"></div>
+        </div>
+        <div class="speech-line">
+          <span class="line-num">Line 3:</span>
+          <span>We must protect the </span>
+          <div class="line-content"></div>
+          <span> for our future.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFICATION DIPLOMA FOOTER -->
+    <footer class="diploma-footer">
+      <div class="stamp-box">
+        ⭐ CERTIFIED OCEAN ECO-ENGINEER ⭐
+      </div>
+      <div class="signature-slot">
+        <div class="signature-line"></div>
+        <label>Academy Lead / Ocean Science Examiner</label>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>
