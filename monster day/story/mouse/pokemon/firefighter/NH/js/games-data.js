@@ -10,7 +10,7 @@ const CURRICULUM_TRACKS = [
     "label": "🚀 Science & Space",
     "title": "Track 1: 🚀 Science & Space Exploration",
     "subtitle": "Planetary astronomy, earth systems, environmental science, and animal adaptations.",
-    "count": 17
+    "count": 18
   },
   {
     "id": "track-2",
@@ -39,10 +39,10 @@ const CURRICULUM_TRACKS = [
   {
     "id": "all",
     "key": "all",
-    "label": "🌟 All Lessons (58+)",
+    "label": "🌟 All Lessons (59+)",
     "title": "Complete Learning Library (All Lessons)",
-    "subtitle": "All 58 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
-    "count": 58
+    "subtitle": "All 59 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 59
   }
 ];
 
@@ -5746,6 +5746,106 @@ const GAMES_REGISTRY = [
     "formula": "The [Animal] needs [Noun] / It [Verbs] [Noun] to the [Animal]!",
     "url": "smart-farm/index.html",
     "worksheetUrl": "smart-farm/worksheet.html"
+  },
+  {
+    "id": "fantasy-creatures",
+    "aliases": [
+      "mythical-creatures",
+      "magical-habitats",
+      "guardian-creatures"
+    ],
+    "title": "🐉 Fantasy Creatures & Magical Habitats",
+    "description": "Tactile 3-phase CLIL & ESL adventure for Grade 3. Explore 4 mythical guardians on 3D radar flip cards, match anatomical adaptations with 'It has [feature] to [action]' in the Care Workbench, and broadcast a live karaoke field debrief to the Academy!",
+    "category": "CLIL & Science",
+    "categoryGroup": "Natural Science & Habitats",
+    "cefrLevel": "A1",
+    "level": "A1",
+    "ageGroup": "7–10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
+    "xp": 160,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "type": "game",
+    "topics": [
+      "Mythical Creatures",
+      "Animal Adaptations",
+      "Magical Habitats",
+      "Care & Conservation"
+    ],
+    "learningObjectives": [
+      "Identify mythical guardians and their anatomical features (wings, horn, claws)",
+      "Formulate purpose statements using 'It has [feature] to [action]'",
+      "Identify suitable habitats using 'It needs [habitat]'",
+      "Deliver a 3-sentence spoken broadcast report with live karaoke teleprompter"
+    ],
+    "teacherInstructions": "Use Phase 1 for classroom discovery and vocabulary elicitation. Transition to Phase 2 for grammar scaffolding and tactile sentence construction. Complete Phase 3 with whole-class or paired oral speaking presentations.",
+    "route": "fantasy-creatures/index.html",
+    "worksheet": "fantasy-creatures/worksheet.html",
+    "worksheetRoute": "fantasy-creatures/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🐉",
+    "gradient": "linear-gradient(135deg, #090d16 0%, #0f172a 50%, #f97316 100%)",
+    "tags": [
+      "fantasy",
+      "creatures",
+      "clil",
+      "dragon",
+      "unicorn",
+      "fairy",
+      "griffin",
+      "habitats",
+      "adaptations"
+    ],
+    "vocabulary": {
+      "core": [
+        "dragon",
+        "fairy",
+        "unicorn",
+        "griffin",
+        "wings",
+        "horn",
+        "claws",
+        "cave",
+        "forest",
+        "mountain"
+      ],
+      "supporting": [
+        "habitat",
+        "guardian",
+        "purify",
+        "heal",
+        "soar",
+        "prey"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Purpose & Needs Statements",
+      "formula": "It has [feature] to [action] / It needs [habitat]",
+      "formulas": [
+        "The dragon has wings to fly high.",
+        "The fairy has glowing wings to heal plants.",
+        "The unicorn has a magic horn to purify water.",
+        "The griffin has sharp claws to catch prey.",
+        "It needs a warm volcanic cave."
+      ]
+    },
+    "clilDomain": "Zoological Adaptations & Habitats",
+    "clilTheme": "Mythological Biology & Habitat Conservation",
+    "status": "active",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration",
+    "formula": "It has [feature] to [action] / It needs [habitat]",
+    "url": "fantasy-creatures/index.html",
+    "worksheetUrl": "fantasy-creatures/worksheet.html"
   }
 ];
 
