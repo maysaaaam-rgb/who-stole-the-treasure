@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧁 Creature Café: Mythical Likes & Dislikes | Companion Worksheet</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
+  <style>
+    :root {
+      --ink: #060911;
+      --paper: #ffffff;
+      --accent: #0284c7;
+      --accent-ember: #ef4444;
+      --accent-aqua: #06b6d4;
+      --accent-verdant: #10b981;
+      --border-gray: #cbd5e1;
+      --bg-shade: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: var(--ink);
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .no-print-bar {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 14px 24px;
+      border-radius: 14px;
+      color: #ffffff;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .no-print-bar h2 {
+      font-size: 17px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .no-print-bar p {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .bar-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-back {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    .btn-back:hover {
+      background: #475569;
+    }
+
+    .btn-print {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+    .btn-print:hover {
+      background: #38bdf8;
+    }
+
+    /* A4 Paper Sheet */
+    .sheet {
+      width: 100%;
+      max-width: 820px;
+      background: var(--paper);
+      padding: 32px 36px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Worksheet Header */
+    .header-block {
+      border-bottom: 2px solid var(--border-gray);
+      padding-bottom: 16px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .title-group h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-group p {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      text-transform: uppercase;
+    }
+
+    .student-fields {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+      background: var(--bg-shade);
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-gray);
+    }
+
+    .field-item {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .field-line {
+      flex: 1;
+      border-bottom: 1px dashed #94a3b8;
+      height: 16px;
+    }
+
+    /* Section Styling */
+    .section {
+      border: 1px solid var(--border-gray);
+      border-radius: 10px;
+      padding: 16px;
+      background: #ffffff;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-instructions {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    /* Formula Banner */
+    .formula-reference {
+      background: #f1f5f9;
+      border-left: 4px solid var(--accent);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      font-size: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-around;
+      font-weight: 700;
+    }
+    .formula-reference span strong {
+      color: #0369a1;
+    }
+
+    /* Matching Grid */
+    .match-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+    }
+
+    .match-table th, .match-table td {
+      border: 1px solid var(--border-gray);
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .match-table th {
+      background: var(--bg-shade);
+      font-weight: 700;
+      text-align: left;
+    }
+
+    /* Fill-in Blanks */
+    .fill-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fill-item {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.6;
+    }
+
+    .blank-slot {
+      display: inline-block;
+      min-width: 120px;
+      border-bottom: 1.5px solid #0f172a;
+      height: 18px;
+    }
+
+    /* Speaking Teleprompter Review */
+    .teleprompter-box {
+      background: #faf5ff;
+      border: 1px dashed #c084fc;
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .script-prompt-line {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .script-input-line {
+      flex: 1;
+      min-width: 140px;
+      border-bottom: 1px solid #7e22ce;
+      height: 18px;
+    }
+
+    /* Certificate Footer */
+    .certificate-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 2px dashed var(--border-gray);
+      padding-top: 14px;
+      margin-top: 6px;
+    }
+
+    .stamp-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-align: center;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .sheet {
+        box-shadow: none;
+        max-width: 100%;
+        padding: 15mm 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Top Bar (Hidden in Print) -->
+  <div class="no-print-bar">
+    <div>
+      <h2><span>🧁</span> Creature Café Companion Worksheet</h2>
+      <p>Printable A4 Classroom Menu &amp; Review Dossier (CEFR A1+ • Grade 3–4)</p>
+    </div>
+    <div class="bar-actions">
+      <a href="index.html" class="btn-action btn-back">⬅️ Back to Game</a>
+      <button onclick="window.print()" class="btn-action btn-print">🖨️ Print Worksheet</button>
+    </div>
+  </div>
+
+  <!-- A4 Printable Sheet -->
+  <div class="sheet">
+    
+    <!-- Header Block -->
+    <div class="header-block">
+      <div class="header-top">
+        <div class="title-group">
+          <h1><span>🧁</span> Creature Café: Menu &amp; Review Log</h1>
+          <p>English Adventure Academy • Grade 3–4 Primary ESL / CLIL • Likes &amp; Dislikes</p>
+        </div>
+        <span class="badge-pill">Module Dossier</span>
+      </div>
+
+      <div class="student-fields">
+        <div class="field-item">
+          <span>Student Name:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-item">
+          <span>Date:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-item">
+          <span>Class / Grade:</span>
+          <div class="field-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Formula Reference -->
+    <div class="formula-reference">
+      <span>❤️ <strong>Positive:</strong> [Creature] <u>likes</u> [Item / -ing].</span>
+      <span>💔 <strong>Negative:</strong> [Creature] <u>doesn't like</u> [Item / -ing].</span>
+      <span>❓ <strong>Question:</strong> What does it like?</span>
+    </div>
+
+    <!-- Section 1: Menu Match -->
+    <div class="section">
+      <h3 class="section-title"><span>📋</span> Part 1: Mythical Menu Match</h3>
+      <p class="section-instructions">Draw a line connecting each mythical customer to their favorite food and their disliked food.</p>
+      
+      <table class="match-table">
+        <thead>
+          <tr>
+            <th>Mythical Creature</th>
+            <th>❤️ Likes Food (Draw Line)</th>
+            <th>💔 Doesn't Like Food</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🔥 Ember Dragon</strong></td>
+            <td>• sweet honey</td>
+            <td>• crunchy crystals</td>
+          </tr>
+          <tr>
+            <td><strong>🌊 Coral Mermaid</strong></td>
+            <td>• cold ice berries</td>
+            <td>• golden nuts</td>
+          </tr>
+          <tr>
+            <td><strong>🌿 Nature Fox</strong></td>
+            <td>• spicy peppers</td>
+            <td>• cold ice berries</td>
+          </tr>
+          <tr>
+            <td><strong>✨ Astral Sprite</strong></td>
+            <td>• golden nuts</td>
+            <td>• spicy peppers</td>
+          </tr>
+          <tr>
+            <td><strong>⚡ Thunder Yeti</strong></td>
+            <td>• crunchy crystals</td>
+            <td>• sweet honey</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 2: Grammar Cloze -->
+    <div class="section">
+      <h3 class="section-title"><span>✍️</span> Part 2: Fill in the Blank (likes / doesn't like)</h3>
+      <p class="section-instructions">Complete each sentence using <strong>likes</strong> or <strong>doesn't like</strong>.</p>
+      
+      <div class="fill-list">
+        <div class="fill-item">
+          <span>1. Ember Dragon is fiery. It</span>
+          <span class="blank-slot"></span>
+          <span>spicy peppers, but it</span>
+          <span class="blank-slot"></span>
+          <span>cold ice berries.</span>
+        </div>
+        <div class="fill-item">
+          <span>2. Coral Mermaid lives in water. She</span>
+          <span class="blank-slot"></span>
+          <span>swimming, but she</span>
+          <span class="blank-slot"></span>
+          <span>spicy peppers!</span>
+        </div>
+        <div class="fill-item">
+          <span>3. Nature Fox is quiet. It</span>
+          <span class="blank-slot"></span>
+          <span>golden nuts and sleeping in the forest.</span>
+        </div>
+        <div class="fill-item">
+          <span>4. Astral Sprite flies among stars. It</span>
+          <span class="blank-slot"></span>
+          <span>crunchy crystals to get star energy.</span>
+        </div>
+        <div class="fill-item">
+          <span>5. Thunder Yeti has high voltage! It</span>
+          <span class="blank-slot"></span>
+          <span>cold ice berries to cool down.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Teleprompter Review Debrief -->
+    <div class="section">
+      <h3 class="section-title"><span>🎤</span> Part 3: My Creature Café Speaking Review</h3>
+      <p class="section-instructions">Choose one creature. Write and read your 3-sentence speaking presentation to a partner or teacher.</p>
+      
+      <div class="teleprompter-box">
+        <div class="script-prompt-line">
+          <strong>Sentence 1 (Welcome):</strong>
+          <span>Welcome to the café table of</span>
+          <span class="script-input-line"></span>
+          <span>!</span>
+        </div>
+        <div class="script-prompt-line">
+          <strong>Sentence 2 (Likes):</strong>
+          <span>It likes</span>
+          <span class="script-input-line"></span>
+          <span>and</span>
+          <span class="script-input-line"></span>
+          <span>.</span>
+        </div>
+        <div class="script-prompt-line">
+          <strong>Sentence 3 (Dislikes):</strong>
+          <span>It doesn't like</span>
+          <span class="script-input-line"></span>
+          <span>or</span>
+          <span class="script-input-line"></span>
+          <span>!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificate & Signature -->
+    <div class="certificate-footer">
+      <div>
+        <p style="font-size: 13px; font-weight: 700; color: #0f172a;">Teacher / Partner Check:</p>
+        <p style="font-size: 12px; color: #64748b;">Pronunciation: ⭐ ⭐ ⭐ | Grammar Accuracy: ⭐ ⭐ ⭐</p>
+      </div>
+      <div class="stamp-box">
+        CAFÉ CHEF BADGE<br>
+        APPROVED 🧁
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
