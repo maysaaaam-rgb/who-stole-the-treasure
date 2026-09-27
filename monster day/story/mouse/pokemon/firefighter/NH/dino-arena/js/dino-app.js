@@ -1,1136 +1,969 @@
 /**
- * DINO ARENA: TOP TRUMPS PALEONTOLOGY CLASH — MASTER APPLICATION
- * Full 6-Stage Interactive CLIL Lesson Engine:
- * 1. Mystery Silhouette & Roar Guessing Game
- * 2. CLIL Diet & Adaptation Lab
- * 3. Comparative Adjective Balance Gym
- * 4. 1v1 Dino Top Trumps Battle Arena
- * 5. Paleontologist Teleprompter Broadcast Studio
- * 6. Exit Diagnostic Checkpoint & Field Passport
+ * DINO ARENA: CRETACEOUS ADAPTATIONS & CLASH — MASTER ARCADE CONTROLLER
+ * 70-Minute (2-Lesson) 7-Stage Interactive Game Controller
+ * 1. Mystery Silhouette & Roar Chamber
+ * 2. 3D Hologram Anatomy Scanner
+ * 3. Diet Airlock Sorter
+ * 4. Comparative Balance Scale Gym
+ * 5. 1v1 Cretaceous Showdown Arena
+ * 6. Teleprompter Studio
+ * 7. Exit Diagnostic & Printable Field Passport
  */
+
 (function() {
   'use strict';
 
-  // HUD Elements
-  const hudEnergyFill = document.getElementById('hud-energy-fill');
-  const hudXpLabel = document.getElementById('hud-xp-label');
-  const hudStreakCount = document.getElementById('hud-streak-count');
-  const hudSoundBtn = document.getElementById('btn-sound-toggle');
-  const hudFullscreenBtn = document.getElementById('btn-fullscreen-toggle');
-  const phaseTabs = document.querySelectorAll('.phase-tab');
-  const phasePanels = document.querySelectorAll('.phase-panel');
-
-  // Confetti Canvas
-  const confettiCanvas = document.getElementById('confetti-canvas');
-  let confettiCtx = null;
-  let confettiParticles = [];
-  let confettiAnimationId = null;
-
-  // Master Reactive playerSession State
+  // --- Master Reactive Player State ---
   const playerSession = {
-    currentPhase: 1,
+    currentStage: 1,
     scoreXP: 0,
+    maxXP: 200,
     streak: 0,
-    bestStreak: 0,
-    correctCount: 0,
-    totalAttempts: 0,
     isLocked: false,
+    audioInitialized: false,
 
-    // Stage 1 State
+    // Stage 1: Mystery
     stage1Index: 0,
     stage1Solved: new Set(),
 
-    // Stage 2 State
-    stage2Index: 0,
-    stage2Sorted: { Carnivore: [], Herbivore: [] },
+    // Stage 2: Scanner
+    selectedScannerDinoId: 'trex',
 
-    // Stage 3 State
+    // Stage 3: Diet Sorter
     stage3Index: 0,
-    stage3SlottedTokens: [],
-    stage3AvailableTokens: [],
+    stage3SortedCount: 0,
 
-    // Stage 4 State
-    stage4RoundIndex: 0,
+    // Stage 4: Balance Gym
+    stage4Index: 0,
+    slottedTokens: [],
+    availableTokens: [],
+
+    // Stage 5: 1v1 Arena
+    stage5Index: 0,
     championDinoId: 'trex',
 
-    // Stage 5 State
-    teleprompterIndex: 0,
+    // Stage 6: Teleprompter
     teleprompterSpeaking: false,
 
-    // Stage 6 State
+    // Stage 7: Exit Quiz
     quizIndex: 0,
-    quizCorrectCount: 0,
-    quizAnswers: []
+    quizCorrectCount: 0
   };
 
-  /* ==========================================================================
-     CONFETTI PARTICLE ENGINE (ZERO DEPENDENCY)
-     ========================================================================== */
-  function initConfetti() {
-    if (!confettiCanvas) return;
-    confettiCtx = confettiCanvas.getContext('2d');
-    resizeConfetti();
-    window.addEventListener('resize', resizeConfetti);
+  // Safe Audio Reference
+  const audio = window.DinoArenaAudio || window.dinoAudio || {
+    initCtx: () => {},
+    playCardSnap: () => {},
+    playClashImpact: () => {},
+    playStampSlam: () => {},
+    playXPChime: () => {},
+    playSoftFail: () => {},
+    playVictoryFanfare: () => {},
+    playRoar: () => {},
+    playFootstep: () => {},
+    playThud: () => {},
+    speak: (t, b, e) => { if (e) e(); },
+    stopSpeech: () => {},
+    toggleMute: () => false
+  };
+
+  function ensureAudio() {
+    if (!playerSession.audioInitialized) {
+      audio.initCtx();
+      playerSession.audioInitialized = true;
+    }
+  }
+  document.addEventListener('click', ensureAudio, { once: true });
+  document.addEventListener('keydown', ensureAudio, { once: true });
+
+  // DOM Elements Cache
+  const elements = {
+    // HUD
+    xpLabel: document.getElementById('hud-xp-label'),
+    energyFill: document.getElementById('hud-energy-fill'),
+    energyPct: document.getElementById('hud-energy-pct'),
+    streakCount: document.getElementById('hud-streak-count'),
+    btnSoundToggle: document.getElementById('btn-sound-toggle'),
+    btnFullscreenToggle: document.getElementById('btn-fullscreen-toggle'),
+
+    // Nav Tabs & Panels
+    stageTabs: document.querySelectorAll('.stage-tab'),
+    phasePanels: document.querySelectorAll('.phase-panel'),
+
+    // Confetti
+    confettiCanvas: document.getElementById('confetti-canvas'),
+
+    // Stage 1
+    stage1Title: document.getElementById('stage1-title'),
+    mysteryArtStage: document.getElementById('mystery-art-stage'),
+    mysteryDinoSprite: document.getElementById('mystery-dino-sprite'),
+    btnMysteryFootsteps: document.getElementById('btn-mystery-footsteps'),
+    btnMysteryRoar: document.getElementById('btn-mystery-roar'),
+    mysteryRoundIndicator: document.getElementById('mystery-round-indicator'),
+    mysteryCluesList: document.getElementById('mystery-clues-list'),
+    mysteryOptionsGrid: document.getElementById('mystery-options-grid'),
+    btnNextMystery: document.getElementById('btn-next-mystery'),
+
+    // Stage 2
+    scannerCardsContainer: document.getElementById('scanner-cards-container'),
+
+    // Stage 3
+    dietBeltProgress: document.getElementById('diet-belt-progress'),
+    dietDinoSprite: document.getElementById('diet-dino-sprite'),
+    dietDinoName: document.getElementById('diet-dino-name'),
+    dietDinoHint: document.getElementById('diet-dino-hint'),
+    btnSortCarnivore: document.getElementById('btn-sort-carnivore'),
+    btnSortHerbivore: document.getElementById('btn-sort-herbivore'),
+    dietStampToast: document.getElementById('diet-stamp-toast'),
+
+    // Stage 4
+    scaleBeam: document.getElementById('scale-beam'),
+    scaleDinoLeft: document.getElementById('scale-dino-left'),
+    scaleDinoRight: document.getElementById('scale-dino-right'),
+    panStatLeft: document.getElementById('pan-stat-left'),
+    panStatRight: document.getElementById('pan-stat-right'),
+    builderPromptLabel: document.getElementById('builder-prompt-label'),
+    formulaSlotBar: document.getElementById('formula-slot-bar'),
+    wordTokenBank: document.getElementById('word-token-bank'),
+    btnBuilderReset: document.getElementById('btn-builder-reset'),
+    btnBuilderCheck: document.getElementById('btn-builder-check'),
+    btnBuilderNext: document.getElementById('btn-builder-next'),
+
+    // Stage 5
+    clashQuestionTitle: document.getElementById('clash-question-title'),
+    cardClashLeft: document.getElementById('card-clash-left'),
+    cardClashRight: document.getElementById('card-clash-right'),
+    clashImgLeft: document.getElementById('clash-img-left'),
+    clashImgRight: document.getElementById('clash-img-right'),
+    clashNameLeft: document.getElementById('clash-name-left'),
+    clashNameRight: document.getElementById('clash-name-right'),
+    clashStatsLeft: document.getElementById('clash-stats-left'),
+    clashStatsRight: document.getElementById('clash-stats-right'),
+    clashStampToast: document.getElementById('clash-stamp-toast'),
+
+    // Stage 6
+    teleprompterDinoSprite: document.getElementById('teleprompter-dino-sprite'),
+    teleprompterDinoName: document.getElementById('teleprompter-dino-name'),
+    teleprompterDinoTitle: document.getElementById('teleprompter-dino-title'),
+    teleprompterScriptBox: document.getElementById('teleprompter-script-box'),
+    btnBroadcastTeleprompter: document.getElementById('btn-broadcast-teleprompter'),
+    btnClaimTeleprompter: document.getElementById('btn-claim-teleprompter'),
+
+    // Stage 7
+    quizQuestionNumber: document.getElementById('quiz-question-number'),
+    quizScoreDisplay: document.getElementById('quiz-score-display'),
+    quizQuestionText: document.getElementById('quiz-question-text'),
+    quizOptionsList: document.getElementById('quiz-options-list'),
+    quizFeedbackBox: document.getElementById('quiz-feedback-box')
+  };
+
+  // --- XP & Evolution Energy Routing ---
+  function awardXP(amount) {
+    playerSession.scoreXP = Math.min(playerSession.maxXP, playerSession.scoreXP + amount);
+    const pct = Math.round((playerSession.scoreXP / playerSession.maxXP) * 100);
+
+    if (elements.xpLabel) {
+      elements.xpLabel.textContent = `${playerSession.scoreXP} / ${playerSession.maxXP} XP`;
+    }
+    if (elements.energyFill) {
+      elements.energyFill.style.width = `${pct}%`;
+    }
+    if (elements.energyPct) {
+      elements.energyPct.textContent = `${pct}%`;
+    }
+
+    if (window.AdventureAcademy && typeof window.AdventureAcademy.awardXP === 'function') {
+      window.AdventureAcademy.awardXP(amount);
+    } else {
+      try {
+        const storedXP = parseInt(localStorage.getItem('adventure_academy_xp') || '0', 10);
+        localStorage.setItem('adventure_academy_xp', (storedXP + amount).toString());
+      } catch (e) {}
+    }
   }
 
-  function resizeConfetti() {
-    if (!confettiCanvas) return;
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
+  function updateStreak(increment = true) {
+    if (increment) {
+      playerSession.streak++;
+    } else {
+      playerSession.streak = 0;
+    }
+    if (elements.streakCount) {
+      elements.streakCount.textContent = `${playerSession.streak}x`;
+    }
   }
 
-  function spawnConfetti(count = 50, continuous = false) {
-    const colors = ['#f59e0b', '#ef4444', '#10b981', '#38bdf8', '#fbbf24', '#ffffff'];
+  // --- Stage Navigation Router ---
+  function switchStage(stageNum) {
+    ensureAudio();
+    audio.playCardSnap();
+    audio.stopSpeech();
+    playerSession.currentStage = stageNum;
+
+    elements.stageTabs.forEach(tab => {
+      const s = parseInt(tab.getAttribute('data-stage'), 10);
+      tab.classList.toggle('active', s === stageNum);
+    });
+
+    elements.phasePanels.forEach(panel => {
+      const s = parseInt(panel.getAttribute('data-stage'), 10);
+      panel.classList.toggle('active', s === stageNum);
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Stage Bootstraps
+    if (stageNum === 1) loadStage1Round(playerSession.stage1Index);
+    else if (stageNum === 2) initStage2Scanner();
+    else if (stageNum === 3) loadStage3Dino(playerSession.stage3Index);
+    else if (stageNum === 4) loadStage4GymRound(playerSession.stage4Index);
+    else if (stageNum === 5) loadStage5Battle(playerSession.stage5Index);
+    else if (stageNum === 6) loadStage6Teleprompter(playerSession.championDinoId);
+    else if (stageNum === 7) loadStage7Quiz(playerSession.quizIndex);
+  }
+
+  // ==========================================================================
+  // STAGE 1: MYSTERY SILHOUETTE & ROAR CHAMBER
+  // ==========================================================================
+  function loadStage1Round(roundIdx) {
+    if (roundIdx >= DINO_ARENA_DATA.mysteryRounds.length) {
+      // Completed all mysteries, auto-suggest Stage 2
+      switchStage(2);
+      return;
+    }
+
+    const round = DINO_ARENA_DATA.mysteryRounds[roundIdx];
+    const dino = DINO_ARENA_DATA.dinosaurs.find(d => d.id === round.dinoId);
+    if (!dino) return;
+
+    if (elements.stage1Title) elements.stage1Title.textContent = `🔍 ${round.title.toUpperCase()}`;
+    if (elements.mysteryRoundIndicator) elements.mysteryRoundIndicator.textContent = `Specimen ${roundIdx + 1} / ${DINO_ARENA_DATA.mysteryRounds.length}`;
+
+    // Reset silhouette
+    if (elements.mysteryArtStage) elements.mysteryArtStage.classList.remove('revealed');
+    if (elements.mysteryDinoSprite) {
+      elements.mysteryDinoSprite.src = dino.asset;
+      elements.mysteryDinoSprite.alt = dino.name;
+    }
+    if (elements.btnNextMystery) elements.btnNextMystery.style.display = 'none';
+
+    // Render Clues
+    if (elements.mysteryCluesList) {
+      elements.mysteryCluesList.innerHTML = '';
+      round.clues.forEach(c => {
+        const chip = document.createElement('div');
+        chip.className = 'mystery-clue-chip';
+        chip.innerHTML = `<span>${c.icon}</span> <span><strong>${c.label}:</strong> ${c.text}</span>`;
+        elements.mysteryCluesList.appendChild(chip);
+      });
+    }
+
+    // Render 4 Options
+    if (elements.mysteryOptionsGrid) {
+      elements.mysteryOptionsGrid.innerHTML = '';
+      round.options.forEach(optId => {
+        const targetDino = DINO_ARENA_DATA.dinosaurs.find(d => d.id === optId);
+        if (!targetDino) return;
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-3d btn-ghost';
+        btn.textContent = targetDino.name;
+        btn.addEventListener('click', () => handleMysteryGuess(btn, optId, round.dinoId, dino));
+        elements.mysteryOptionsGrid.appendChild(btn);
+      });
+    }
+  }
+
+  function handleMysteryGuess(btnElem, guessedId, correctId, dino) {
+    ensureAudio();
+
+    if (guessedId === correctId) {
+      // Correct!
+      audio.playRoar();
+      audio.playXPChime();
+      spawnConfetti(45);
+      awardXP(20);
+      updateStreak(true);
+
+      if (elements.mysteryArtStage) {
+        elements.mysteryArtStage.classList.add('revealed');
+      }
+
+      btnElem.classList.remove('btn-ghost');
+      btnElem.classList.add('btn-emerald');
+      btnElem.style.borderColor = '#10b981';
+
+      // Disable other buttons
+      elements.mysteryOptionsGrid.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
+
+      // Voice modeling
+      audio.speak(`That's right! It is ${dino.name}! ${dino.clue}`);
+
+      if (elements.btnNextMystery) {
+        elements.btnNextMystery.style.display = 'inline-flex';
+      }
+    } else {
+      // Soft-fail
+      audio.playSoftFail();
+      updateStreak(false);
+      btnElem.classList.remove('wobble');
+      void btnElem.offsetWidth;
+      btnElem.classList.add('wobble');
+      audio.speak('Not quite! Check the weight and diet clues again.');
+    }
+  }
+
+  // ==========================================================================
+  // STAGE 2: 3D HOLOGRAM ANATOMY SCANNER
+  // ==========================================================================
+  function initStage2Scanner() {
+    if (!elements.scannerCardsContainer) return;
+    elements.scannerCardsContainer.innerHTML = '';
+
+    DINO_ARENA_DATA.dinosaurs.forEach(dino => {
+      const card = document.createElement('div');
+      card.className = 'scanner-flip-card';
+      card.setAttribute('data-id', dino.id);
+
+      card.innerHTML = `
+        <div class="scanner-card-inner">
+          <!-- Front View (65% Full-Bleed Artwork) -->
+          <div class="scanner-card-front">
+            <div class="card-hero-stage">
+              <span class="hud-pill" style="position: absolute; top: 12px; left: 12px; z-index: 10;">${dino.badge}</span>
+              <div class="isometric-pedestal" style="border-color: ${dino.accentColor}; box-shadow: 0 0 24px ${dino.glowColor};"></div>
+              <img class="hero-3d-sprite" src="${dino.asset}" alt="${dino.name}">
+            </div>
+            <div class="scanner-info-tray">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff;">${dino.name}</h3>
+                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">${dino.period}</span>
+              </div>
+              <p style="font-size: 0.85rem; color: #cbd5e1;">${dino.weaponDesc}</p>
+              <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 800;">🔄 TAP TO FLIP</span>
+                <span style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: #38bdf8;">${dino.weightKg.toLocaleString()} kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back View (Anatomy Hotspots) -->
+          <div class="scanner-card-back">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px;">
+              <h4 style="font-size: 1rem; font-weight: 800; color: #fbbf24;">${dino.name} Anatomy</h4>
+              <span style="font-size: 0.75rem; color: #94a3b8;">🔄 Click to Flip Back</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; font-size: 0.85rem;">
+              <div><strong>Diet:</strong> ${dino.diet} (${dino.dietIcon})</div>
+              <div><strong>Teeth:</strong> ${dino.teeth}</div>
+              <div><strong>Speed:</strong> ${dino.speedKmh} km/h</div>
+              <div><strong>Armor Rating:</strong> ${dino.armorRating} / 10</div>
+            </div>
+            <div style="margin-top: auto;">
+              <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">MODEL AUDIO PINS:</span>
+              <div class="hotspot-pins-row">
+                ${dino.hotspots.map(h => `<button class="hotspot-pin" data-phrase="${h.phrase}">📍 ${h.label}</button>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Flip toggle
+      card.addEventListener('click', (e) => {
+        if (e.target.classList.contains('hotspot-pin')) {
+          e.stopPropagation();
+          ensureAudio();
+          audio.playCardSnap();
+          const phrase = e.target.getAttribute('data-phrase');
+          audio.speak(phrase);
+          return;
+        }
+        ensureAudio();
+        audio.playCardSnap();
+        card.classList.toggle('flipped');
+      });
+
+      elements.scannerCardsContainer.appendChild(card);
+    });
+  }
+
+  // ==========================================================================
+  // STAGE 3: DIET AIRLOCK SORTER
+  // ==========================================================================
+  function loadStage3Dino(index) {
+    if (index >= DINO_ARENA_DATA.dinosaurs.length) {
+      // Completed all 6 sorter rounds
+      audio.playVictoryFanfare();
+      spawnConfetti(50);
+      switchStage(4);
+      return;
+    }
+
+    const dino = DINO_ARENA_DATA.dinosaurs[index];
+    if (elements.dietBeltProgress) {
+      elements.dietBeltProgress.textContent = `Specimen ${index + 1} of ${DINO_ARENA_DATA.dinosaurs.length} on Airlock Conveyor`;
+    }
+    if (elements.dietDinoSprite) {
+      elements.dietDinoSprite.src = dino.asset;
+      elements.dietDinoSprite.alt = dino.name;
+    }
+    if (elements.dietDinoName) {
+      elements.dietDinoName.textContent = dino.name;
+    }
+    if (elements.dietDinoHint) {
+      elements.dietDinoHint.textContent = `Dental Adaptation: ${dino.teeth}`;
+    }
+  }
+
+  function handleDietSort(selectedDiet) {
+    ensureAudio();
+    const dino = DINO_ARENA_DATA.dinosaurs[playerSession.stage3Index];
+    if (!dino) return;
+
+    if (selectedDiet.toLowerCase() === dino.diet.toLowerCase()) {
+      // Correct!
+      audio.playStampSlam();
+      audio.playXPChime();
+      awardXP(15);
+      updateStreak(true);
+
+      if (elements.dietStampToast) {
+        elements.dietStampToast.classList.add('show');
+        setTimeout(() => elements.dietStampToast.classList.remove('show'), 1100);
+      }
+
+      audio.speak(`${dino.name} is a ${dino.diet.toLowerCase()}! ${dino.dietFact}`);
+
+      setTimeout(() => {
+        playerSession.stage3Index++;
+        loadStage3Dino(playerSession.stage3Index);
+      }, 1200);
+    } else {
+      // Soft-fail
+      audio.playSoftFail();
+      updateStreak(false);
+      const card = elements.dietSpecimenCard;
+      if (card) {
+        card.classList.remove('wobble');
+        void card.offsetWidth;
+        card.classList.add('wobble');
+      }
+      audio.speak(`Not quite! Look at its teeth: ${dino.teeth}`);
+    }
+  }
+
+  // ==========================================================================
+  // STAGE 4: COMPARATIVE BALANCE SCALE GYM
+  // ==========================================================================
+  function loadStage4GymRound(index) {
+    if (index >= DINO_ARENA_DATA.grammarGymRounds.length) {
+      audio.playVictoryFanfare();
+      spawnConfetti(50);
+      switchStage(5);
+      return;
+    }
+
+    const round = DINO_ARENA_DATA.grammarGymRounds[index];
+    const dinoA = DINO_ARENA_DATA.dinosaurs.find(d => d.id === round.dinoA);
+    const dinoB = DINO_ARENA_DATA.dinosaurs.find(d => d.id === round.dinoB);
+    if (!dinoA || !dinoB) return;
+
+    if (elements.scaleDinoLeft) elements.scaleDinoLeft.src = dinoA.asset;
+    if (elements.scaleDinoRight) elements.scaleDinoRight.src = dinoB.asset;
+    if (elements.panStatLeft) elements.panStatLeft.textContent = round.statA;
+    if (elements.panStatRight) elements.panStatRight.textContent = round.statB;
+
+    // Tilt beam physically with thud
+    if (elements.scaleBeam) {
+      elements.scaleBeam.className = 'scale-beam';
+      setTimeout(() => {
+        elements.scaleBeam.classList.add(round.tilt === 'left' ? 'tilt-left' : 'tilt-right');
+        audio.playThud();
+      }, 150);
+    }
+
+    if (elements.builderPromptLabel) {
+      elements.builderPromptLabel.textContent = `Challenge ${index + 1} of ${DINO_ARENA_DATA.grammarGymRounds.length}: Compare ${round.statLabel}!`;
+    }
+
+    // Reset Slots
+    playerSession.slottedTokens = new Array(round.formulaTokens.length).fill(null);
+    renderGymSlots(round);
+
+    // Tokens Bank
+    const allTokens = [...round.formulaTokens, ...round.distractors].sort(() => Math.random() - 0.5);
+    playerSession.availableTokens = allTokens;
+    renderTokenBank();
+
+    if (elements.btnBuilderNext) elements.btnBuilderNext.style.display = 'none';
+  }
+
+  function renderGymSlots(round) {
+    if (!elements.formulaSlotBar) return;
+    elements.formulaSlotBar.innerHTML = '';
+
+    playerSession.slottedTokens.forEach((token, idx) => {
+      const slot = document.createElement('div');
+      slot.className = `sentence-slot-box ${token ? 'filled' : ''}`;
+      slot.textContent = token || `[ Word ${idx + 1} ]`;
+      slot.addEventListener('click', () => {
+        if (playerSession.slottedTokens[idx]) {
+          playerSession.availableTokens.push(playerSession.slottedTokens[idx]);
+          playerSession.slottedTokens[idx] = null;
+          audio.playCardSnap();
+          renderGymSlots(round);
+          renderTokenBank();
+        }
+      });
+      elements.formulaSlotBar.appendChild(slot);
+    });
+  }
+
+  function renderTokenBank() {
+    if (!elements.wordTokenBank) return;
+    elements.wordTokenBank.innerHTML = '';
+
+    playerSession.availableTokens.forEach((word, idx) => {
+      const chip = document.createElement('button');
+      chip.className = 'word-token-chip';
+      chip.textContent = word;
+      chip.addEventListener('click', () => {
+        const emptySlotIdx = playerSession.slottedTokens.indexOf(null);
+        if (emptySlotIdx !== -1) {
+          playerSession.slottedTokens[emptySlotIdx] = word;
+          playerSession.availableTokens.splice(idx, 1);
+          audio.playCardSnap();
+          const round = DINO_ARENA_DATA.grammarGymRounds[playerSession.stage4Index];
+          renderGymSlots(round);
+          renderTokenBank();
+        }
+      });
+      elements.wordTokenBank.appendChild(chip);
+    });
+  }
+
+  function checkGymSentence() {
+    ensureAudio();
+    const round = DINO_ARENA_DATA.grammarGymRounds[playerSession.stage4Index];
+    if (!round) return;
+
+    const built = playerSession.slottedTokens.join(' ');
+    const target = round.formulaTokens.join(' ');
+
+    if (built === target) {
+      // Verified!
+      audio.playXPChime();
+      audio.speak(round.voiceText);
+      awardXP(25);
+      updateStreak(true);
+      if (elements.btnBuilderNext) elements.btnBuilderNext.style.display = 'inline-flex';
+    } else {
+      audio.playSoftFail();
+      updateStreak(false);
+      if (elements.formulaSlotBar) {
+        elements.formulaSlotBar.classList.remove('wobble');
+        void elements.formulaSlotBar.offsetWidth;
+        elements.formulaSlotBar.classList.add('wobble');
+      }
+      audio.speak('Not quite the right sentence order! Try again.');
+    }
+  }
+
+  // ==========================================================================
+  // STAGE 5: 1v1 CRETACEOUS SHOWDOWN ARENA
+  // ==========================================================================
+  function loadStage5Battle(index) {
+    if (index >= DINO_ARENA_DATA.battles.length) {
+      audio.playVictoryFanfare();
+      spawnConfetti(60);
+      switchStage(6);
+      return;
+    }
+
+    const battle = DINO_ARENA_DATA.battles[index];
+    const dino1 = DINO_ARENA_DATA.dinosaurs.find(d => d.id === battle.dino1);
+    const dino2 = DINO_ARENA_DATA.dinosaurs.find(d => d.id === battle.dino2);
+    if (!dino1 || !dino2) return;
+
+    if (elements.clashQuestionTitle) elements.clashQuestionTitle.textContent = `⚔️ ${battle.question}`;
+
+    // Left Dino Card
+    if (elements.cardClashLeft) elements.cardClashLeft.setAttribute('data-dino', dino1.id);
+    if (elements.clashImgLeft) elements.clashImgLeft.src = dino1.asset;
+    if (elements.clashNameLeft) elements.clashNameLeft.textContent = dino1.name;
+    if (elements.clashStatsLeft) elements.clashStatsLeft.textContent = `Speed: ${dino1.speedKmh} km/h | Weight: ${dino1.weightKg.toLocaleString()} kg | Armor: ${dino1.armorRating}/10`;
+
+    // Right Dino Card
+    if (elements.cardClashRight) elements.cardClashRight.setAttribute('data-dino', dino2.id);
+    if (elements.clashImgRight) elements.clashImgRight.src = dino2.asset;
+    if (elements.clashNameRight) elements.clashNameRight.textContent = dino2.name;
+    if (elements.clashStatsRight) elements.clashStatsRight.textContent = `Speed: ${dino2.speedKmh} km/h | Weight: ${dino2.weightKg.toLocaleString()} kg | Armor: ${dino2.armorRating}/10`;
+  }
+
+  function handleClashChoice(chosenDinoId, cardElement) {
+    ensureAudio();
+    const battle = DINO_ARENA_DATA.battles[playerSession.stage5Index];
+    if (!battle) return;
+
+    if (chosenDinoId === battle.winnerId) {
+      // Winner!
+      audio.playClashImpact();
+      audio.playXPChime();
+      spawnConfetti(45);
+      awardXP(25);
+      updateStreak(true);
+
+      // Card surge animation
+      cardElement.classList.add(cardElement.id.includes('left') ? 'surge-left' : 'surge-right');
+
+      // Stamp slam
+      if (elements.clashStampToast) {
+        elements.clashStampToast.textContent = `⭐ ${battle.stampText} WINNER!`;
+        elements.clashStampToast.classList.add('show');
+        setTimeout(() => elements.clashStampToast.classList.remove('show'), 1200);
+      }
+
+      // Voice comparative formula
+      audio.speak(battle.comparativeFrame);
+
+      // Record champion dino for teleprompter
+      playerSession.championDinoId = battle.winnerId;
+
+      setTimeout(() => {
+        cardElement.classList.remove('surge-left', 'surge-right');
+        playerSession.stage5Index++;
+        loadStage5Battle(playerSession.stage5Index);
+      }, 1600);
+    } else {
+      // Soft-fail
+      audio.playSoftFail();
+      updateStreak(false);
+      cardElement.classList.remove('wobble');
+      void cardElement.offsetWidth;
+      cardElement.classList.add('wobble');
+      audio.speak(`Check the stats! ${battle.statComparison}`);
+    }
+  }
+
+  // ==========================================================================
+  // STAGE 6: TELEPROMPTER STUDIO
+  // ==========================================================================
+  function loadStage6Teleprompter(dinoId) {
+    const scriptObj = DINO_ARENA_DATA.teleprompter.find(t => t.dinoId === dinoId) || DINO_ARENA_DATA.teleprompter[0];
+    const dino = DINO_ARENA_DATA.dinosaurs.find(d => d.id === scriptObj.dinoId);
+    if (!dino) return;
+
+    if (elements.teleprompterDinoSprite) elements.teleprompterDinoSprite.src = dino.asset;
+    if (elements.teleprompterDinoName) elements.teleprompterDinoName.textContent = dino.name;
+    if (elements.teleprompterDinoTitle) elements.teleprompterDinoTitle.textContent = scriptObj.title;
+
+    if (elements.teleprompterScriptBox) {
+      elements.teleprompterScriptBox.innerHTML = '';
+      [scriptObj.sentence1, scriptObj.sentence2, scriptObj.sentence3].forEach((sentence, sIdx) => {
+        const div = document.createElement('div');
+        div.className = 'teleprompter-sentence';
+        div.id = `tele-line-${sIdx}`;
+
+        const words = sentence.split(' ');
+        words.forEach(w => {
+          const span = document.createElement('span');
+          span.className = 'karaoke-word';
+          span.textContent = w + ' ';
+          div.appendChild(span);
+        });
+
+        elements.teleprompterScriptBox.appendChild(div);
+      });
+    }
+  }
+
+  function broadcastTeleprompter() {
+    ensureAudio();
+    audio.playCardSnap();
+    audio.stopSpeech();
+
+    const scriptObj = DINO_ARENA_DATA.teleprompter.find(t => t.dinoId === playerSession.championDinoId) || DINO_ARENA_DATA.teleprompter[0];
+    const sentences = [scriptObj.sentence1, scriptObj.sentence2, scriptObj.sentence3];
+    let currentIdx = 0;
+
+    function playSentence() {
+      if (currentIdx >= sentences.length) {
+        audio.playVictoryFanfare();
+        spawnConfetti(50);
+        return;
+      }
+
+      document.querySelectorAll('.teleprompter-sentence').forEach((el, idx) => {
+        el.classList.toggle('active', idx === currentIdx);
+      });
+
+      const lineText = sentences[currentIdx];
+      const spans = document.querySelectorAll(`#tele-line-${currentIdx} .karaoke-word`);
+      let wordCursor = 0;
+
+      if (spans.length > 0) spans[0].classList.add('highlight');
+
+      audio.speak(
+        lineText,
+        () => {
+          if (wordCursor < spans.length) {
+            spans.forEach(s => s.classList.remove('highlight'));
+            spans[wordCursor].classList.add('highlight');
+            wordCursor++;
+          }
+        },
+        () => {
+          if (wordCursor < spans.length) {
+            spans.forEach(s => s.classList.add('highlight'));
+          }
+          currentIdx++;
+          setTimeout(playSentence, 600);
+        }
+      );
+    }
+
+    playSentence();
+  }
+
+  // ==========================================================================
+  // STAGE 7: EXIT DIAGNOSTIC CHECKPOINT
+  // ==========================================================================
+  function loadStage7Quiz(qIdx) {
+    if (qIdx >= DINO_ARENA_DATA.exitQuiz.length) {
+      // Completed!
+      awardXP(40);
+      audio.playVictoryFanfare();
+      spawnConfetti(70);
+
+      if (elements.quizQuestionNumber) elements.quizQuestionNumber.textContent = '🎓 PALEONTOLOGIST DIPLOMA UNLOCKED!';
+      if (elements.quizQuestionText) {
+        elements.quizQuestionText.textContent = 'Congratulations! You mastered Cretaceous anatomy, diet classification, and comparative grammar rules!';
+      }
+      if (elements.quizOptionsList) {
+        elements.quizOptionsList.innerHTML = `
+          <div style="text-align: center; padding: 20px;">
+            <div style="font-size: 3rem; margin-bottom: 8px;">🏆</div>
+            <h3 style="color: #34d399; font-size: 1.4rem; margin-bottom: 8px;">Certified Arena Grandmaster</h3>
+            <p style="color: #94a3b8; margin-bottom: 16px;">200 / 200 XP Awarded • Field Passport Ready for Printing!</p>
+            <a href="worksheet.html" target="_blank" class="btn-3d btn-amber">
+              📄 Open Printable Field Passport
+            </a>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    const q = DINO_ARENA_DATA.exitQuiz[qIdx];
+    if (elements.quizQuestionNumber) elements.quizQuestionNumber.textContent = `Question ${qIdx + 1} of ${DINO_ARENA_DATA.exitQuiz.length}`;
+    if (elements.quizScoreDisplay) elements.quizScoreDisplay.textContent = `Score: ${playerSession.quizCorrectCount} / ${DINO_ARENA_DATA.exitQuiz.length}`;
+    if (elements.quizQuestionText) elements.quizQuestionText.textContent = q.question;
+
+    if (elements.quizOptionsList) {
+      elements.quizOptionsList.innerHTML = '';
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.textContent = opt.text;
+        btn.addEventListener('click', () => {
+          ensureAudio();
+          if (opt.isCorrect) {
+            audio.playXPChime();
+            playerSession.quizCorrectCount++;
+            btn.style.borderColor = '#10b981';
+            btn.style.background = 'rgba(16, 185, 129, 0.25)';
+            audio.speak('Correct! ' + q.explanation);
+          } else {
+            audio.playSoftFail();
+            btn.classList.add('wobble');
+            audio.speak(q.explanation);
+          }
+          setTimeout(() => {
+            playerSession.quizIndex++;
+            loadStage7Quiz(playerSession.quizIndex);
+          }, 1400);
+        });
+        elements.quizOptionsList.appendChild(btn);
+      });
+    }
+  }
+
+  // ==========================================================================
+  // CONFETTI ENGINE (Zero-Dependency Canvas)
+  // ==========================================================================
+  let confettiCtx = null;
+  let particles = [];
+  function spawnConfetti(count = 50) {
+    const canvas = elements.confettiCanvas;
+    if (!canvas) return;
+    confettiCtx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#f59e0b', '#ef4444', '#10b981', '#38bdf8', '#ffffff'];
     for (let i = 0; i < count; i++) {
-      confettiParticles.push({
-        x: window.innerWidth * (0.2 + Math.random() * 0.6),
-        y: window.innerHeight * 0.45,
+      particles.push({
+        x: canvas.width * 0.5 + (Math.random() - 0.5) * 200,
+        y: canvas.height * 0.45,
         vx: (Math.random() - 0.5) * 14,
-        vy: -Math.random() * 15 - 4,
+        vy: -Math.random() * 12 - 4,
         size: Math.random() * 8 + 6,
         color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
-        rotSpeed: (Math.random() - 0.5) * 12,
-        gravity: 0.38,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        gravity: 0.32,
         opacity: 1
       });
     }
 
-    if (!confettiAnimationId) {
-      animateConfetti(continuous);
-    }
-  }
+    function render() {
+      confettiCtx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = 0;
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.opacity -= 0.012;
 
-  function animateConfetti(continuous = false) {
-    if (!confettiCtx) return;
-    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-
-    for (let i = confettiParticles.length - 1; i >= 0; i--) {
-      const p = confettiParticles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += p.gravity;
-      p.rotation += p.rotSpeed;
-      p.opacity -= 0.012;
-
-      if (p.opacity <= 0 || p.y > confettiCanvas.height) {
-        confettiParticles.splice(i, 1);
-        continue;
-      }
-
-      confettiCtx.save();
-      confettiCtx.translate(p.x, p.y);
-      confettiCtx.rotate((p.rotation * Math.PI) / 180);
-      confettiCtx.globalAlpha = Math.max(0, p.opacity);
-      confettiCtx.fillStyle = p.color;
-      confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-      confettiCtx.restore();
-    }
-
-    if (confettiParticles.length > 0) {
-      confettiAnimationId = requestAnimationFrame(() => animateConfetti(continuous));
-    } else {
-      confettiAnimationId = null;
-    }
-  }
-
-  /* ==========================================================================
-     HUD & REVENUE XP MANAGEMENT
-     ========================================================================== */
-  function updateHUD() {
-    const maxXP = 200;
-    const pct = Math.min(100, Math.round((playerSession.scoreXP / maxXP) * 100));
-    if (hudEnergyFill) hudEnergyFill.style.width = `${pct}%`;
-    if (hudXpLabel) hudXpLabel.textContent = `${playerSession.scoreXP} / ${maxXP} XP`;
-    if (hudStreakCount) hudStreakCount.textContent = `${playerSession.streak}x`;
-  }
-
-  function addXP(amount) {
-    playerSession.scoreXP = Math.min(200, playerSession.scoreXP + amount);
-    updateHUD();
-    window.DinoArenaAudio.playXP(Math.max(1, playerSession.streak));
-  }
-
-  function switchPhase(phaseNum) {
-    playerSession.currentPhase = phaseNum;
-    phaseTabs.forEach(tab => {
-      tab.classList.toggle('active', parseInt(tab.dataset.phase, 10) === phaseNum);
-    });
-
-    phasePanels.forEach(panel => {
-      panel.classList.toggle('active', parseInt(panel.dataset.phase, 10) === phaseNum);
-    });
-
-    window.DinoArenaAudio.playCardSnap();
-
-    // Trigger phase initialization
-    if (phaseNum === 1) renderStage1Mystery();
-    else if (phaseNum === 2) renderStage2DietLab();
-    else if (phaseNum === 3) renderStage3GrammarGym();
-    else if (phaseNum === 4) loadClashRound(playerSession.stage4RoundIndex);
-    else if (phaseNum === 5) renderStage5Teleprompter(playerSession.teleprompterIndex);
-    else if (phaseNum === 6) renderStage6Quiz();
-  }
-
-  /* ==========================================================================
-     CARD BUILDER COMPONENT (65/35 TOP TRUMPS RATIO FOR BATTLES)
-     ========================================================================== */
-  function renderDino3DStage(dino, customClass = '') {
-    const glowRgb = dino.glowRgb || '245, 158, 11';
-    const glowColor = dino.glowColor || '#f59e0b';
-    const imgPath = dino.imagePath || 'assets/trex.png';
-    return `
-      <div class="dino-stage-viewport ${customClass}" style="--glow-rgb: ${glowRgb}; --glow-color: ${glowColor};">
-        <div class="dino-pedestal-ring"></div>
-        <img src="${imgPath}" alt="${dino.name}" class="dino-hero-image" loading="lazy" />
-      </div>
-    `;
-  }
-
-  function createDinoCardHtml(dino, sideKey = 'card') {
-    const isCarnivore = (dino.diet === 'Carnivore');
-    const dietBadgeClass = isCarnivore ? 'card-diet-carnivore' : 'card-diet-herbivore';
-    
-    const speedPct = Math.min(100, Math.round((dino.speedKmh / 60) * 100));
-    const weightPct = Math.min(100, Math.round((dino.weightKg / 40000) * 100));
-    const armorPct = Math.min(100, dino.armorRating * 10);
-    const lengthPct = Math.min(100, Math.round((dino.lengthMeters / 26) * 100));
-
-    return `
-      <div class="dino-card" id="${sideKey}-${dino.id}" data-id="${dino.id}">
-        
-        <!-- Top 65% Hero Visual Zone with 3D Isometric Viewport & Pedestal -->
-        <div class="card-hero-zone">
-          <div class="card-diet-badge ${dietBadgeClass}">
-            <span>${dino.dietIcon}</span>
-            <span>${dino.diet}</span>
-          </div>
-
-          <button class="card-audio-btn" data-audio-phrase="${dino.name}! ${dino.weaponDesc}" title="Listen to Dinosaur Adaptation">
-            🔊
-          </button>
-
-          <!-- 3D Full-Bleed Creature Viewport with Isometric Glowing Pedestal -->
-          ${renderDino3DStage(dino, 'in-card')}
-        </div>
-
-        <!-- Dynamic Physical Rubber Stamp Overlays -->
-        <div class="stamp-overlay stamp-winner" id="${sideKey}-stamp-win">
-          WINNER!
-        </div>
-        <div class="stamp-overlay stamp-defeated" id="${sideKey}-stamp-lose">
-          DEFEATED
-        </div>
-
-        <!-- Bottom 38% Stat HUD -->
-        <div class="card-stat-hud">
-          <div class="card-dino-name">
-            <span>${dino.fallbackIcon} ${dino.name}</span>
-            <span class="card-dino-period">${dino.period}</span>
-          </div>
-
-          <div class="stat-bars-grid">
-            <div class="stat-row">
-              <div class="stat-label-row">
-                <span>Speed</span>
-                <span class="stat-val-text">${dino.speedKmh} km/h</span>
-              </div>
-              <div class="stat-meter-track">
-                <div class="stat-meter-fill stat-fill-speed" style="width: ${speedPct}%"></div>
-              </div>
-            </div>
-
-            <div class="stat-row">
-              <div class="stat-label-row">
-                <span>Weight</span>
-                <span class="stat-val-text">${dino.weightKg.toLocaleString()} kg</span>
-              </div>
-              <div class="stat-meter-track">
-                <div class="stat-meter-fill stat-fill-weight" style="width: ${weightPct}%"></div>
-              </div>
-            </div>
-
-            <div class="stat-row">
-              <div class="stat-label-row">
-                <span>Armor</span>
-                <span class="stat-val-text">${dino.armorRating} / 10</span>
-              </div>
-              <div class="stat-meter-track">
-                <div class="stat-meter-fill stat-fill-armor" style="width: ${armorPct}%"></div>
-              </div>
-            </div>
-
-            <div class="stat-row">
-              <div class="stat-label-row">
-                <span>Length</span>
-                <span class="stat-val-text">${dino.lengthMeters} m</span>
-              </div>
-              <div class="stat-meter-track">
-                <div class="stat-meter-fill stat-fill-length" style="width: ${lengthPct}%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    `;
-  }
-
-  /* ==========================================================================
-     STAGE 1: MYSTERY SILHOUETTE & ROAR GUESSING GAME
-     ========================================================================== */
-  const mysteryArtStage = document.getElementById('mystery-art-stage');
-  const mysteryCluesList = document.getElementById('mystery-clues-list');
-  const mysteryOptionsGrid = document.getElementById('mystery-options-grid');
-  const mysteryRoundIndicator = document.getElementById('mystery-round-indicator');
-  const mysteryStatusBanner = document.getElementById('mystery-status-banner');
-  const btnNextMystery = document.getElementById('btn-next-mystery');
-  const btnFootsteps = document.getElementById('btn-mystery-footsteps');
-  const btnRoar = document.getElementById('btn-mystery-roar');
-
-  if (btnFootsteps) {
-    btnFootsteps.onclick = () => window.DinoArenaAudio.playFootsteps();
-  }
-  if (btnRoar) {
-    btnRoar.onclick = () => window.DinoArenaAudio.playRoar();
-  }
-
-  function renderStage1Mystery() {
-    const rounds = window.DINO_ARENA_DATA.mysteryRounds;
-    if (playerSession.stage1Index >= rounds.length) {
-      playerSession.stage1Index = 0;
-    }
-
-    const currentMystery = rounds[playerSession.stage1Index];
-    const targetDino = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === currentMystery.dinoId);
-
-    mysteryRoundIndicator.textContent = `Specimen ${playerSession.stage1Index + 1} / ${rounds.length}`;
-    mysteryStatusBanner.textContent = "Listen to the audio hints and match the 3 paleontological clues below:";
-    btnNextMystery.style.display = 'none';
-
-    // Reset Silhouette Stage to Dark Fog with 3D Creature Silhouette
-    mysteryArtStage.className = 'mystery-art-stage';
-    mysteryArtStage.innerHTML = `
-      <div class="mystery-silhouette-wrap">
-        ${renderDino3DStage(targetDino, 'in-mystery')}
-      </div>
-    `;
-
-    // Populate Clues with staggered animation
-    mysteryCluesList.innerHTML = '';
-    currentMystery.clues.forEach((clue, idx) => {
-      const clueDiv = document.createElement('div');
-      clueDiv.className = 'mystery-clue-item';
-      clueDiv.style.animationDelay = `${idx * 0.12}s`;
-      clueDiv.innerHTML = `
-        <span style="font-size:20px;">${clue.icon}</span>
-        <div>
-          <strong style="color:#f59e0b; font-size:12px; text-transform:uppercase;">${clue.label}:</strong>
-          <span style="color:#f8fafc; font-weight:600; margin-left:6px;">${clue.text}</span>
-        </div>
-      `;
-      mysteryCluesList.appendChild(clueDiv);
-    });
-
-    // Populate 4 3D Option Buttons
-    mysteryOptionsGrid.innerHTML = '';
-    currentMystery.options.forEach(optId => {
-      const dinoObj = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === optId);
-      const btn = document.createElement('button');
-      btn.className = 'btn-mystery-option';
-      btn.innerHTML = `<span>${dinoObj.fallbackIcon}</span> ${dinoObj.name}`;
-      btn.onclick = () => handleMysteryGuess(optId, currentMystery.dinoId, btn, targetDino);
-      mysteryOptionsGrid.appendChild(btn);
-    });
-
-    // Auto-play footsteps to stimulate immersion
-    setTimeout(() => {
-      window.DinoArenaAudio.playFootsteps();
-    }, 350);
-  }
-
-  function handleMysteryGuess(chosenId, correctId, btnEl, targetDino) {
-    if (playerSession.isLocked) return;
-
-    if (chosenId === correctId) {
-      playerSession.isLocked = true;
-      btnEl.classList.add('correct');
-
-      // Unmask Silhouette to full vibrant color & elemental aura
-      mysteryArtStage.classList.add('revealed');
-
-      // Celebratory Audio & Confetti
-      window.DinoArenaAudio.playRoar();
-      window.DinoArenaAudio.playVictory();
-      spawnConfetti(45);
-
-      // Streak & XP
-      playerSession.streak++;
-      if (playerSession.streak > playerSession.bestStreak) playerSession.bestStreak = playerSession.streak;
-      addXP(25);
-
-      mysteryStatusBanner.innerHTML = `<span style="color:#34d399; font-weight:800;">✓ BRILLIANT! Identified ${targetDino.name}! (+25 XP)</span>`;
-
-      window.DinoArenaAudio.speak(`Correct! That is ${targetDino.name}. ${targetDino.clue}`, null, () => {
-        playerSession.isLocked = false;
-        btnNextMystery.style.display = 'block';
-      });
-
-      playerSession.stage1Solved.add(correctId);
-
-    } else {
-      // Soft-fail
-      btnEl.classList.add('wrong');
-      window.DinoArenaAudio.playSoftFail();
-      playerSession.streak = 0;
-      updateHUD();
-
-      mysteryStatusBanner.innerHTML = `<span style="color:#f87171; font-weight:700;">✗ Not quite! Review the clues and try again.</span>`;
-      setTimeout(() => {
-        btnEl.classList.remove('wrong');
-      }, 1200);
-    }
-  }
-
-  if (btnNextMystery) {
-    btnNextMystery.onclick = () => {
-      playerSession.stage1Index++;
-      const total = window.DINO_ARENA_DATA.mysteryRounds.length;
-      if (playerSession.stage1Index >= total) {
-        // Complete Stage 1 -> Advance to Stage 2
-        window.DinoArenaAudio.playVictory();
-        spawnConfetti(70);
-        setTimeout(() => {
-          switchPhase(2);
-        }, 800);
-      } else {
-        renderStage1Mystery();
-      }
-    };
-  }
-
-  /* ==========================================================================
-     STAGE 2: CLIL DIET & ADAPTATION LAB
-     ========================================================================== */
-  const dietSpecimenCard = document.getElementById('diet-specimen-card');
-  const dietBeltProgress = document.getElementById('diet-belt-progress');
-  const btnSortCarnivore = document.getElementById('btn-sort-carnivore');
-  const btnSortHerbivore = document.getElementById('btn-sort-herbivore');
-  const dropCarnivore = document.getElementById('drop-carnivore');
-  const dropHerbivore = document.getElementById('drop-herbivore');
-  const dietFeedbackBanner = document.getElementById('diet-feedback-banner');
-
-  function renderStage2DietLab() {
-    const dinos = window.DINO_ARENA_DATA.dinosaurs;
-    if (playerSession.stage2Index >= dinos.length) {
-      dietBeltProgress.textContent = "All 6 Prehistoric Specimens Classified! Master CLIL Badge Earned!";
-      dietSpecimenCard.innerHTML = `
-        <div style="font-size:54px; margin-bottom:12px;">🏆</div>
-        <h3 style="color:#34d399; font-size:22px; font-weight:800;">DIET LAB CERTIFIED</h3>
-        <p style="color:#94a3b8; font-size:14px; margin-top:6px;">All carnivores and herbivores accurately categorized by anatomical adaptations.</p>
-        <button class="btn-builder-next" style="margin-top:16px;" onclick="window.switchDinoPhase(3)">
-          Advance to Comparative Gym ➔
-        </button>
-      `;
-      return;
-    }
-
-    const currentDino = dinos[playerSession.stage2Index];
-    dietBeltProgress.textContent = `Specimen ${playerSession.stage2Index + 1} of ${dinos.length} on Airlock Belt`;
-    dietFeedbackBanner.style.display = 'none';
-
-    dietSpecimenCard.innerHTML = `
-      <div class="diet-specimen-viewport-wrap">
-        ${renderDino3DStage(currentDino, 'in-diet')}
-      </div>
-      <h3 class="diet-specimen-title">${currentDino.fallbackIcon} ${currentDino.name}</h3>
-      <div class="diet-tooth-callout">
-        🦷 <strong>Anatomy &amp; Teeth:</strong> ${currentDino.teeth}
-      </div>
-    `;
-
-    // Hook Drag & Drop
-    dietSpecimenCard.setAttribute('draggable', 'true');
-    dietSpecimenCard.ondragstart = (e) => {
-      e.dataTransfer.setData('text/plain', currentDino.id);
-    };
-  }
-
-  function handleDietSort(chosenDiet) {
-    if (playerSession.isLocked) return;
-    const dinos = window.DINO_ARENA_DATA.dinosaurs;
-    if (playerSession.stage2Index >= dinos.length) return;
-
-    const currentDino = dinos[playerSession.stage2Index];
-    const isCorrect = (currentDino.diet === chosenDiet);
-
-    if (isCorrect) {
-      playerSession.isLocked = true;
-      playerSession.stage2Sorted[chosenDiet].push(currentDino.id);
-
-      // Add sorted chip to container
-      const targetDrop = (chosenDiet === 'Carnivore') ? dropCarnivore : dropHerbivore;
-      const emptyHint = targetDrop.querySelector('.crate-empty-hint');
-      if (emptyHint) emptyHint.style.display = 'none';
-
-      const chip = document.createElement('div');
-      chip.className = 'sorted-dino-chip';
-      chip.innerHTML = `<span>${currentDino.fallbackIcon}</span> <span>${currentDino.name}</span>`;
-      targetDrop.appendChild(chip);
-
-      window.DinoArenaAudio.playCardSnap();
-      addXP(15);
-
-      dietFeedbackBanner.style.display = 'block';
-      dietFeedbackBanner.innerHTML = `✓ ${currentDino.dietFact}`;
-
-      window.DinoArenaAudio.speak(currentDino.dietFact, null, () => {
-        playerSession.isLocked = false;
-        playerSession.stage2Index++;
-        if (playerSession.stage2Index >= dinos.length) {
-          spawnConfetti(50);
-          addXP(20);
+        if (p.opacity > 0) {
+          alive++;
+          confettiCtx.save();
+          confettiCtx.globalAlpha = Math.max(0, p.opacity);
+          confettiCtx.translate(p.x, p.y);
+          confettiCtx.rotate((p.rotation * Math.PI) / 180);
+          confettiCtx.fillStyle = p.color;
+          confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          confettiCtx.restore();
         }
-        renderStage2DietLab();
       });
 
-    } else {
-      window.DinoArenaAudio.playSoftFail();
-      dietSpecimenCard.classList.add('card-wobble');
-      dietFeedbackBanner.style.display = 'block';
-      dietFeedbackBanner.innerHTML = `✗ Notice the teeth: ${currentDino.teeth}. Does it eat meat or plants?`;
+      if (alive > 0) {
+        requestAnimationFrame(render);
+      } else {
+        confettiCtx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
 
-      window.DinoArenaAudio.speak(`Notice the teeth: ${currentDino.teeth}. Try sorting again!`, null, () => {
-        dietSpecimenCard.classList.remove('card-wobble');
+    render();
+  }
+
+  // ==========================================================================
+  // EVENT LISTENERS & BOOTSTRAP
+  // ==========================================================================
+  function setupEventListeners() {
+    // Stage Tabs
+    elements.stageTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const stageNum = parseInt(tab.getAttribute('data-stage'), 10);
+        switchStage(stageNum);
+      });
+    });
+
+    // Sound Toggle
+    if (elements.btnSoundToggle) {
+      elements.btnSoundToggle.addEventListener('click', () => {
+        ensureAudio();
+        const muted = audio.toggleMute();
+        elements.btnSoundToggle.textContent = muted ? '🔇' : '🔊';
       });
     }
-  }
 
-  if (btnSortCarnivore) btnSortCarnivore.onclick = () => handleDietSort('Carnivore');
-  if (btnSortHerbivore) btnSortHerbivore.onclick = () => handleDietSort('Herbivore');
-
-  // Drag over dropzones
-  [dropCarnivore, dropHerbivore].forEach(dropZone => {
-    if (!dropZone) return;
-    dropZone.ondragover = (e) => {
-      e.preventDefault();
-      dropZone.parentElement.classList.add('dragover');
-    };
-    dropZone.ondragleave = () => {
-      dropZone.parentElement.classList.remove('dragover');
-    };
-    dropZone.ondrop = (e) => {
-      e.preventDefault();
-      dropZone.parentElement.classList.remove('dragover');
-      const diet = dropZone.parentElement.dataset.diet;
-      handleDietSort(diet);
-    };
-  });
-
-  /* ==========================================================================
-     STAGE 3: THE COMPARATIVE ADJECTIVE BALANCE GYM
-     ========================================================================== */
-  const scaleBeam = document.getElementById('scale-beam');
-  const dishLeft = document.getElementById('dish-left');
-  const dishRight = document.getElementById('dish-right');
-  const panStatLeft = document.getElementById('pan-stat-left');
-  const panStatRight = document.getElementById('pan-stat-right');
-  const builderPromptLabel = document.getElementById('builder-prompt-label');
-  const formulaSlotBar = document.getElementById('formula-slot-bar');
-  const wordTokenBank = document.getElementById('word-token-bank');
-  const btnBuilderReset = document.getElementById('btn-builder-reset');
-  const btnBuilderCheck = document.getElementById('btn-builder-check');
-  const btnBuilderNext = document.getElementById('btn-builder-next');
-  const builderFeedbackBanner = document.getElementById('builder-feedback-banner');
-
-  function renderStage3GrammarGym() {
-    const gymRounds = window.DINO_ARENA_DATA.grammarGymRounds;
-    if (playerSession.stage3Index >= gymRounds.length) {
-      playerSession.stage3Index = 0;
-    }
-
-    const round = gymRounds[playerSession.stage3Index];
-    const dinoA = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === round.dinoA);
-    const dinoB = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === round.dinoB);
-
-    builderPromptLabel.textContent = `Challenge ${playerSession.stage3Index + 1} of ${gymRounds.length}: Compare their ${round.statLabel} on the Digital Scale!`;
-    builderFeedbackBanner.style.display = 'none';
-    btnBuilderNext.style.display = 'none';
-
-    // Populate Scale Dishes with 3D Creature Viewports
-    dishLeft.innerHTML = `
-      <div class="dish-scale-viewport">
-        ${renderDino3DStage(dinoA, 'in-scale')}
-      </div>
-    `;
-    dishRight.innerHTML = `
-      <div class="dish-scale-viewport">
-        ${renderDino3DStage(dinoB, 'in-scale')}
-      </div>
-    `;
-
-    panStatLeft.textContent = `${dinoA.fallbackIcon} ${round.statA}`;
-    panStatRight.textContent = `${dinoB.fallbackIcon} ${round.statB}`;
-
-    // Reset Scale Beam to center, then drop with physical thud
-    scaleBeam.className = 'scale-beam';
-    setTimeout(() => {
-      scaleBeam.classList.add(round.tilt === 'left' ? 'tilt-left' : 'tilt-right');
-      window.DinoArenaAudio.playThud();
-    }, 280);
-
-    // Initialize Tokens & Slots
-    playerSession.stage3SlottedTokens = [];
-    const allTokens = [...round.formulaTokens, ...round.distractors];
-    // Shuffle tokens deterministically
-    allTokens.sort(() => Math.random() - 0.5);
-    playerSession.stage3AvailableTokens = allTokens;
-
-    renderBuilderSlots(round.formulaTokens.length);
-    renderBuilderTokens();
-  }
-
-  function renderBuilderSlots(slotCount) {
-    formulaSlotBar.innerHTML = '';
-    for (let i = 0; i < slotCount; i++) {
-      const slot = document.createElement('div');
-      const slottedWord = playerSession.stage3SlottedTokens[i];
-
-      if (slottedWord) {
-        slot.className = 'formula-slot filled';
-        slot.textContent = slottedWord;
-        slot.title = 'Click to return word to bank';
-        slot.onclick = () => {
-          playerSession.stage3SlottedTokens.splice(i, 1);
-          renderBuilderSlots(slotCount);
-          renderBuilderTokens();
-          window.DinoArenaAudio.playCardSnap();
-        };
-      } else {
-        slot.className = 'formula-slot';
-        slot.textContent = `[ Word ${i + 1} ]`;
-      }
-      formulaSlotBar.appendChild(slot);
-    }
-  }
-
-  function renderBuilderTokens() {
-    wordTokenBank.innerHTML = '';
-    const round = window.DINO_ARENA_DATA.grammarGymRounds[playerSession.stage3Index];
-    const maxSlots = round.formulaTokens.length;
-
-    // Count how many times each token is currently slotted
-    const slottedCounts = {};
-    playerSession.stage3SlottedTokens.forEach(w => {
-      slottedCounts[w] = (slottedCounts[w] || 0) + 1;
-    });
-
-    playerSession.stage3AvailableTokens.forEach(token => {
-      const isUsed = (slottedCounts[token] && slottedCounts[token] > 0);
-      if (isUsed) {
-        slottedCounts[token]--;
-      }
-
-      const btn = document.createElement('button');
-      btn.className = `word-token-chip ${isUsed ? 'used' : ''}`;
-      btn.textContent = token;
-
-      if (!isUsed) {
-        btn.onclick = () => {
-          if (playerSession.stage3SlottedTokens.length < maxSlots) {
-            playerSession.stage3SlottedTokens.push(token);
-            renderBuilderSlots(maxSlots);
-            renderBuilderTokens();
-            window.DinoArenaAudio.playCardSnap();
-          }
-        };
-      }
-
-      wordTokenBank.appendChild(btn);
-    });
-  }
-
-  if (btnBuilderReset) {
-    btnBuilderReset.onclick = () => {
-      playerSession.stage3SlottedTokens = [];
-      const round = window.DINO_ARENA_DATA.grammarGymRounds[playerSession.stage3Index];
-      renderBuilderSlots(round.formulaTokens.length);
-      renderBuilderTokens();
-      window.DinoArenaAudio.playCardSnap();
-    };
-  }
-
-  if (btnBuilderCheck) {
-    btnBuilderCheck.onclick = () => {
-      const round = window.DINO_ARENA_DATA.grammarGymRounds[playerSession.stage3Index];
-      const builtString = playerSession.stage3SlottedTokens.join(' ').trim();
-      const targetString = round.formulaTokens.join(' ').trim();
-
-      if (builtString === targetString) {
-        window.DinoArenaAudio.playVictory();
-        spawnConfetti(40);
-        addXP(30);
-
-        builderFeedbackBanner.style.display = 'block';
-        builderFeedbackBanner.style.background = '#064e3b';
-        builderFeedbackBanner.style.border = '2px solid #10b981';
-        builderFeedbackBanner.style.color = '#a7f3d0';
-        builderFeedbackBanner.innerHTML = `✓ EXCELLENT! "${round.voiceText}" (+30 XP)`;
-
-        window.DinoArenaAudio.speak(round.voiceText, null, () => {
-          btnBuilderNext.style.display = 'inline-block';
-        });
-
-      } else {
-        window.DinoArenaAudio.playSoftFail();
-        formulaSlotBar.classList.add('card-wobble');
-        setTimeout(() => formulaSlotBar.classList.remove('card-wobble'), 500);
-
-        builderFeedbackBanner.style.display = 'block';
-        builderFeedbackBanner.style.background = '#7f1d1d';
-        builderFeedbackBanner.style.border = '2px solid #ef4444';
-        builderFeedbackBanner.style.color = '#fecaca';
-        builderFeedbackBanner.innerHTML = `✗ Check the formula: [Subject Dinosaur] + [Comparative Verb/Adjective] + [Object Dinosaur] + [.]`;
-
-        window.DinoArenaAudio.speak('Check the formula and order of words! Try again.');
-      }
-    };
-  }
-
-  if (btnBuilderNext) {
-    btnBuilderNext.onclick = () => {
-      playerSession.stage3Index++;
-      const total = window.DINO_ARENA_DATA.grammarGymRounds.length;
-      if (playerSession.stage3Index >= total) {
-        window.DinoArenaAudio.playVictory();
-        spawnConfetti(70);
-        setTimeout(() => switchPhase(4), 800);
-      } else {
-        renderStage3GrammarGym();
-      }
-    };
-  }
-
-  /* ==========================================================================
-     STAGE 4: 1v1 DINO BATTLE ARENA (THE MAIN SHOWDOWN)
-     ========================================================================== */
-  const clashQuestion = document.getElementById('clash-question');
-  const clashSubtext = document.getElementById('clash-subtext');
-  const clashCounter = document.getElementById('clash-counter');
-  const cardLeftContainer = document.getElementById('card-left-container');
-  const cardRightContainer = document.getElementById('card-right-container');
-  const btnPickLeft = document.getElementById('btn-pick-left');
-  const btnPickRight = document.getElementById('btn-pick-right');
-
-  function loadClashRound(index) {
-    const battles = window.DINO_ARENA_DATA.battles;
-    if (index >= battles.length) {
-      // Completed all battle rounds -> Advance to Teleprompter Showcase
-      window.DinoArenaAudio.playVictory();
-      spawnConfetti(65);
-      setTimeout(() => switchPhase(5), 900);
-      return;
-    }
-
-    playerSession.stage4RoundIndex = index;
-    playerSession.isLocked = false;
-    const battle = battles[index];
-
-    const dino1 = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === battle.dino1);
-    const dino2 = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === battle.dino2);
-
-    clashQuestion.textContent = battle.question;
-    clashSubtext.textContent = `Battle ${index + 1} of ${battles.length} • Click the winning champion or use hotkeys [1] / [2]!`;
-    if (clashCounter) clashCounter.textContent = `Round ${index + 1} / ${battles.length}`;
-
-    cardLeftContainer.innerHTML = createDinoCardHtml(dino1, 'left');
-    cardRightContainer.innerHTML = createDinoCardHtml(dino2, 'right');
-
-    btnPickLeft.innerHTML = `
-      <span class="btn-main-text">👈 ${dino1.name} <span class="hotkey-hint">[1]</span></span>
-      <span class="btn-sub-text">${dino1.diet} • ${dino1.speedKmh} km/h • ${dino1.weightKg.toLocaleString()} kg</span>
-    `;
-
-    btnPickRight.innerHTML = `
-      <span class="btn-main-text">👉 ${dino2.name} <span class="hotkey-hint">[2]</span></span>
-      <span class="btn-sub-text">${dino2.diet} • ${dino2.speedKmh} km/h • ${dino2.weightKg.toLocaleString()} kg</span>
-    `;
-
-    const leftCard = cardLeftContainer.querySelector('.dino-card');
-    const rightCard = cardRightContainer.querySelector('.dino-card');
-
-    leftCard.addEventListener('click', () => handleClashPick(dino1.id));
-    rightCard.addEventListener('click', () => handleClashPick(dino2.id));
-
-    // Audio preview buttons on cards
-    leftCard.querySelector('.card-audio-btn').onclick = (e) => {
-      e.stopPropagation();
-      window.DinoArenaAudio.playCardSnap();
-      window.DinoArenaAudio.speak(`${dino1.name}. ${dino1.weaponDesc}`);
-    };
-
-    rightCard.querySelector('.card-audio-btn').onclick = (e) => {
-      e.stopPropagation();
-      window.DinoArenaAudio.playCardSnap();
-      window.DinoArenaAudio.speak(`${dino2.name}. ${dino2.weaponDesc}`);
-    };
-  }
-
-  function handleClashPick(chosenId) {
-    if (playerSession.isLocked) return;
-    playerSession.isLocked = true;
-    playerSession.totalAttempts++;
-
-    const battle = window.DINO_ARENA_DATA.battles[playerSession.stage4RoundIndex];
-    const isWinner = (chosenId === battle.winnerId);
-
-    const leftCard = cardLeftContainer.querySelector('.dino-card');
-    const rightCard = cardRightContainer.querySelector('.dino-card');
-
-    const leftStampWin = document.getElementById('left-stamp-win');
-    const leftStampLose = document.getElementById('left-stamp-lose');
-    const rightStampWin = document.getElementById('right-stamp-win');
-    const rightStampLose = document.getElementById('right-stamp-lose');
-
-    if (isWinner) {
-      playerSession.championDinoId = chosenId;
-
-      window.DinoArenaAudio.playClashImpact();
-      leftCard.classList.add('clash-left-active');
-      rightCard.classList.add('clash-right-active');
-
-      setTimeout(() => {
-        if (chosenId === battle.dino1) {
-          leftStampWin.textContent = battle.stampText;
-          leftStampWin.classList.add('active');
-          rightStampLose.classList.add('active');
+    // Fullscreen Toggle
+    if (elements.btnFullscreenToggle) {
+      elements.btnFullscreenToggle.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
         } else {
-          rightStampWin.textContent = battle.stampText;
-          rightStampWin.classList.add('active');
-          leftStampLose.classList.add('active');
+          document.exitFullscreen().catch(() => {});
         }
+      });
+    }
 
-        playerSession.streak++;
-        if (playerSession.streak > playerSession.bestStreak) playerSession.bestStreak = playerSession.streak;
-        playerSession.correctCount++;
+    // Stage 1 Mystery Audio
+    if (elements.btnMysteryFootsteps) {
+      elements.btnMysteryFootsteps.addEventListener('click', () => {
+        ensureAudio();
+        audio.playFootstep();
+      });
+    }
+    if (elements.btnMysteryRoar) {
+      elements.btnMysteryRoar.addEventListener('click', () => {
+        ensureAudio();
+        audio.playRoar();
+      });
+    }
+    if (elements.btnNextMystery) {
+      elements.btnNextMystery.addEventListener('click', () => {
+        playerSession.stage1Index++;
+        loadStage1Round(playerSession.stage1Index);
+      });
+    }
 
-        const earnedXP = Math.round(15 * (playerSession.streak >= 3 ? 1.5 : 1.0));
-        addXP(earnedXP);
+    // Stage 3 Sorter
+    if (elements.btnSortCarnivore) {
+      elements.btnSortCarnivore.addEventListener('click', () => handleDietSort('Carnivore'));
+    }
+    if (elements.btnSortHerbivore) {
+      elements.btnSortHerbivore.addEventListener('click', () => handleDietSort('Herbivore'));
+    }
 
-        if (playerSession.streak % 3 === 0) spawnConfetti(35);
+    // Stage 4 Gym
+    if (elements.btnBuilderReset) {
+      elements.btnBuilderReset.addEventListener('click', () => {
+        ensureAudio();
+        audio.playCardSnap();
+        loadStage4GymRound(playerSession.stage4Index);
+      });
+    }
+    if (elements.btnBuilderCheck) {
+      elements.btnBuilderCheck.addEventListener('click', checkGymSentence);
+    }
+    if (elements.btnBuilderNext) {
+      elements.btnBuilderNext.addEventListener('click', () => {
+        playerSession.stage4Index++;
+        loadStage4GymRound(playerSession.stage4Index);
+      });
+    }
 
-        window.DinoArenaAudio.speak(`Correct! ${battle.comparativeFrame}`, null, () => {
-          setTimeout(advanceClashRound, 600);
-        });
+    // Stage 5 Battle Cards
+    if (elements.cardClashLeft) {
+      elements.cardClashLeft.addEventListener('click', () => {
+        const id = elements.cardClashLeft.getAttribute('data-dino');
+        handleClashChoice(id, elements.cardClashLeft);
+      });
+    }
+    if (elements.cardClashRight) {
+      elements.cardClashRight.addEventListener('click', () => {
+        const id = elements.cardClashRight.getAttribute('data-dino');
+        handleClashChoice(id, elements.cardClashRight);
+      });
+    }
 
-      }, 240);
-
-    } else {
-      window.DinoArenaAudio.playSoftFail();
-      const chosenCard = (chosenId === battle.dino1) ? leftCard : rightCard;
-      chosenCard.classList.add('card-wobble');
-
-      playerSession.streak = 0;
-      updateHUD();
-
-      window.DinoArenaAudio.speak(`Notice the stats: ${battle.statComparison}. Try again!`, null, () => {
-        playerSession.isLocked = false;
-        chosenCard.classList.remove('card-wobble');
+    // Stage 6 Teleprompter
+    if (elements.btnBroadcastTeleprompter) {
+      elements.btnBroadcastTeleprompter.addEventListener('click', broadcastTeleprompter);
+    }
+    if (elements.btnClaimTeleprompter) {
+      elements.btnClaimTeleprompter.addEventListener('click', () => {
+        awardXP(40);
+        audio.playVictoryFanfare();
+        spawnConfetti(60);
+        switchStage(7);
       });
     }
   }
 
-  function advanceClashRound() {
-    window.DinoArenaAudio.playCardSnap();
-    loadClashRound(playerSession.stage4RoundIndex + 1);
+  function init() {
+    setupEventListeners();
+    switchStage(1);
   }
 
-  if (btnPickLeft) {
-    btnPickLeft.onclick = () => {
-      const battle = window.DINO_ARENA_DATA.battles[playerSession.stage4RoundIndex];
-      if (battle) handleClashPick(battle.dino1);
-    };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
-
-  if (btnPickRight) {
-    btnPickRight.onclick = () => {
-      const battle = window.DINO_ARENA_DATA.battles[playerSession.stage4RoundIndex];
-      if (battle) handleClashPick(battle.dino2);
-    };
-  }
-
-  // Keyboard Hotkeys [1] and [2] for Stage 4
-  window.addEventListener('keydown', (e) => {
-    if (playerSession.currentPhase !== 4 || playerSession.isLocked) return;
-    const battle = window.DINO_ARENA_DATA.battles[playerSession.stage4RoundIndex];
-    if (!battle) return;
-
-    if (e.key === '1') {
-      handleClashPick(battle.dino1);
-    } else if (e.key === '2') {
-      handleClashPick(battle.dino2);
-    }
-  });
-
-  /* ==========================================================================
-     STAGE 5: PALEONTOLOGIST TELEPROMPTER STUDIO
-     ========================================================================== */
-  const teleprompterBadgeTag = document.getElementById('teleprompter-badge-tag');
-  const teleprompterArtPodium = document.getElementById('teleprompter-art-podium');
-  const teleprompterScript = document.getElementById('teleprompter-script');
-  const btnSpeakTeleprompter = document.getElementById('btn-speak-teleprompter');
-  const btnNextTeleprompter = document.getElementById('btn-next-teleprompter');
-
-  function renderStage5Teleprompter(index) {
-    const teleList = window.DINO_ARENA_DATA.teleprompter;
-    if (!teleList || teleList.length === 0) return;
-
-    playerSession.teleprompterIndex = index % teleList.length;
-    const arch = teleList[playerSession.teleprompterIndex];
-    const dino = window.DINO_ARENA_DATA.dinosaurs.find(d => d.id === arch.dinoId) || window.DINO_ARENA_DATA.dinosaurs[0];
-
-    teleprompterBadgeTag.textContent = `🎙️ ${dino.fallbackIcon} ${dino.name} — ${arch.title}`;
-    
-    // Podium with dedicated 3D creature showcase stage
-    teleprompterArtPodium.innerHTML = `
-      <div class="teleprompter-stage-wrap">
-        ${renderDino3DStage(dino, 'in-teleprompter')}
-      </div>
-    `;
-
-    // 3-part oral report template
-    const fullText = `${arch.sentence1} ${arch.sentence2} ${arch.sentence3}`;
-    const words = fullText.split(/\s+/);
-    teleprompterScript.innerHTML = '';
-
-    words.forEach((w, i) => {
-      const span = document.createElement('span');
-      span.className = 'karaoke-word';
-      span.id = `tele-word-${i}`;
-      span.textContent = w;
-      teleprompterScript.appendChild(span);
-    });
-
-    playerSession.teleprompterText = fullText;
-    playerSession.teleprompterWords = words;
-  }
-
-  function startTeleprompterSpeech() {
-    if (playerSession.teleprompterSpeaking) {
-      window.DinoArenaAudio.stopSpeech();
-      playerSession.teleprompterSpeaking = false;
-      btnSpeakTeleprompter.innerHTML = '📢 BROADCAST REPORT';
-      btnSpeakTeleprompter.classList.remove('broadcasting');
-      return;
-    }
-
-    playerSession.teleprompterSpeaking = true;
-    btnSpeakTeleprompter.innerHTML = '⏹️ STOPPING BROADCAST...';
-    btnSpeakTeleprompter.classList.add('broadcasting');
-
-    let currentWordIndex = 0;
-    const wordSpans = teleprompterScript.querySelectorAll('.karaoke-word');
-    wordSpans.forEach(s => s.classList.remove('highlight', 'passed'));
-
-    window.DinoArenaAudio.speak(
-      playerSession.teleprompterText,
-      (charIndex) => {
-        let accumulated = 0;
-        for (let i = 0; i < playerSession.teleprompterWords.length; i++) {
-          accumulated += playerSession.teleprompterWords[i].length + 1;
-          if (charIndex < accumulated) {
-            currentWordIndex = i;
-            break;
-          }
-        }
-
-        wordSpans.forEach((span, idx) => {
-          if (idx === currentWordIndex) {
-            span.classList.add('highlight');
-            span.classList.remove('passed');
-          } else if (idx < currentWordIndex) {
-            span.classList.remove('highlight');
-            span.classList.add('passed');
-          } else {
-            span.classList.remove('highlight', 'passed');
-          }
-        });
-      },
-      () => {
-        playerSession.teleprompterSpeaking = false;
-        btnSpeakTeleprompter.innerHTML = '📢 BROADCAST AGAIN';
-        btnSpeakTeleprompter.classList.remove('broadcasting');
-
-        wordSpans.forEach(s => {
-          s.classList.remove('highlight');
-          s.classList.add('passed');
-        });
-
-        window.DinoArenaAudio.playVictory();
-        spawnConfetti(45);
-        addXP(25);
-      }
-    );
-  }
-
-  if (btnSpeakTeleprompter) btnSpeakTeleprompter.onclick = startTeleprompterSpeech;
-  if (btnNextTeleprompter) {
-    btnNextTeleprompter.onclick = () => {
-      window.DinoArenaAudio.stopSpeech();
-      playerSession.teleprompterSpeaking = false;
-      btnSpeakTeleprompter.innerHTML = '📢 BROADCAST REPORT';
-      btnSpeakTeleprompter.classList.remove('broadcasting');
-      window.DinoArenaAudio.playCardSnap();
-
-      playerSession.teleprompterIndex++;
-      const total = window.DINO_ARENA_DATA.teleprompter.length;
-      if (playerSession.teleprompterIndex >= total) {
-        // Broadcasts explored -> Advance to Exit Checkpoint
-        switchPhase(6);
-      } else {
-        renderStage5Teleprompter(playerSession.teleprompterIndex);
-      }
-    };
-  }
-
-  /* ==========================================================================
-     STAGE 6: EXIT CHECKPOINT & FIELD PASSPORT
-     ========================================================================== */
-  const quizContainerCard = document.getElementById('quiz-container-card');
-  const quizProgressFill = document.getElementById('quiz-progress-fill');
-  const quizQNum = document.getElementById('quiz-q-num');
-  const quizQuestionText = document.getElementById('quiz-question-text');
-  const quizOptionsList = document.getElementById('quiz-options-list');
-  const quizExplanationBox = document.getElementById('quiz-explanation-box');
-  const btnQuizNext = document.getElementById('btn-quiz-next');
-  const passportPreviewCard = document.getElementById('passport-preview-card');
-  const passportXpVal = document.getElementById('passport-xp-val');
-  const passportStreakVal = document.getElementById('passport-streak-val');
-  const passportAccuracyVal = document.getElementById('passport-accuracy-val');
-  const btnReplayGame = document.getElementById('btn-replay-game');
-
-  function renderStage6Quiz() {
-    const questions = window.DINO_ARENA_DATA.exitQuiz;
-    if (playerSession.quizIndex >= questions.length) {
-      // Show Passport Certificate Card
-      quizContainerCard.style.display = 'none';
-      passportPreviewCard.style.display = 'flex';
-
-      const accuracy = (playerSession.totalAttempts > 0)
-        ? Math.round((playerSession.correctCount / playerSession.totalAttempts) * 100)
-        : 100;
-
-      passportXpVal.textContent = `${playerSession.scoreXP} XP`;
-      passportStreakVal.textContent = `${playerSession.bestStreak}x`;
-      passportAccuracyVal.textContent = `${accuracy}%`;
-
-      window.DinoArenaAudio.playVictory();
-      spawnConfetti(70);
-      return;
-    }
-
-    quizContainerCard.style.display = 'flex';
-    passportPreviewCard.style.display = 'none';
-    quizExplanationBox.style.display = 'none';
-    btnQuizNext.style.display = 'none';
-
-    const q = questions[playerSession.quizIndex];
-    quizQNum.textContent = `Diagnostic Question ${playerSession.quizIndex + 1} / ${questions.length}`;
-    quizProgressFill.style.width = `${((playerSession.quizIndex + 1) / questions.length) * 100}%`;
-    quizQuestionText.textContent = q.question;
-
-    quizOptionsList.innerHTML = '';
-    q.options.forEach((opt, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn-quiz-option';
-      btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt.text}`;
-      btn.onclick = () => handleQuizOption(opt, q, btn);
-      quizOptionsList.appendChild(btn);
-    });
-  }
-
-  function handleQuizOption(selectedOpt, question, btnEl) {
-    if (playerSession.isLocked) return;
-    playerSession.isLocked = true;
-
-    const allButtons = quizOptionsList.querySelectorAll('.btn-quiz-option');
-    allButtons.forEach(b => b.style.pointerEvents = 'none');
-
-    if (selectedOpt.isCorrect) {
-      btnEl.classList.add('correct');
-      window.DinoArenaAudio.playVictory();
-      playerSession.quizCorrectCount++;
-      addXP(25);
-    } else {
-      btnEl.classList.add('wrong');
-      window.DinoArenaAudio.playSoftFail();
-    }
-
-    quizExplanationBox.style.display = 'block';
-    quizExplanationBox.textContent = `💡 Explanation: ${question.explanation}`;
-    btnQuizNext.style.display = 'inline-block';
-    playerSession.isLocked = false;
-  }
-
-  if (btnQuizNext) {
-    btnQuizNext.onclick = () => {
-      playerSession.quizIndex++;
-      window.DinoArenaAudio.playCardSnap();
-      renderStage6Quiz();
-    };
-  }
-
-  if (btnReplayGame) {
-    btnReplayGame.onclick = () => {
-      playerSession.scoreXP = 0;
-      playerSession.streak = 0;
-      playerSession.stage1Index = 0;
-      playerSession.stage2Index = 0;
-      playerSession.stage3Index = 0;
-      playerSession.stage4RoundIndex = 0;
-      playerSession.teleprompterIndex = 0;
-      playerSession.quizIndex = 0;
-      updateHUD();
-      switchPhase(1);
-    };
-  }
-
-  /* ==========================================================================
-     GLOBAL HUD INITIALIZATION
-     ========================================================================== */
-  phaseTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const phaseNum = parseInt(tab.dataset.phase, 10);
-      switchPhase(phaseNum);
-    });
-  });
-
-  window.switchDinoPhase = switchPhase;
-
-  if (hudSoundBtn) {
-    hudSoundBtn.onclick = () => {
-      const muted = window.DinoArenaAudio.toggleMute();
-      hudSoundBtn.innerHTML = muted ? '🔇 <span>Audio Muted</span>' : '🔊 <span>Audio Active</span>';
-    };
-  }
-
-  if (hudFullscreenBtn) {
-    hudFullscreenBtn.onclick = () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-        hudFullscreenBtn.innerHTML = '🗗 <span>Exit Fullscreen</span>';
-      } else {
-        document.exitFullscreen().catch(() => {});
-        hudFullscreenBtn.innerHTML = '⛶ <span>Fullscreen</span>';
-      }
-    };
-  }
-
-  // Initialize on Load
-  window.addEventListener('DOMContentLoaded', () => {
-    initConfetti();
-    updateHUD();
-    switchPhase(1);
-  });
 
 })();

@@ -3,120 +3,156 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🦖 Dino Clash: The Ultimate Cretaceous Showdown | English Adventure Academy</title>
+  <title>🦖 Dino Arena: Cretaceous Adaptations &amp; Clash | English Adventure Academy</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦖</text></svg>">
 </head>
 <body>
 
-  <!-- Confetti Canvas for Victory Celebrations -->
+  <!-- Ambient Looping Video Backdrop -->
+  <video class="ambient-video-backdrop" autoplay loop muted playsinline>
+    <source src="assets/backdrop.mp4" type="video/mp4">
+  </video>
+
+  <!-- Confetti Canvas for Celebrations -->
   <canvas id="confetti-canvas"></canvas>
 
-  <!-- Top Tactical HUD -->
+  <!-- Sticky Tactical HUD Dock -->
   <header class="tactical-hud">
-    <div class="hud-left">
-      <a href="../index.html" class="btn-icon-hud" title="Return to Academy Hub">
-        🏛️ <span>Academy Hub</span>
-      </a>
-      <button id="btn-sound-toggle" class="btn-icon-hud" title="Toggle Sound Synthesis">
-        🔊 <span>Audio Active</span>
-      </button>
-    </div>
-
-    <div class="hud-center">
-      <div class="energy-track-wrap">
-        <span class="energy-label">Arena Energy</span>
-        <div class="energy-bar-outer" id="hud-energy-outer">
-          <div class="energy-bar-inner" id="hud-energy-fill"></div>
+    <div class="hud-container">
+      <div class="hud-brand">
+        <div class="hud-logo">🦖</div>
+        <div class="hud-title-wrap">
+          <div class="hud-title">
+            <span>DINO ARENA</span>
+            <span class="hud-pill">Grade 3–4 • CEFR A1+–A2</span>
+          </div>
+          <div class="hud-subtitle">Cretaceous Adaptations &amp; Clash • 70 Min (2 Lessons)</div>
         </div>
-        <span id="hud-xp-label" style="font-size:13px; font-weight:800; color:#f59e0b;">0 / 200 XP</span>
       </div>
-    </div>
 
-    <div class="hud-right">
-      <div class="streak-pill" id="hud-streak-pill" title="Clash Streak Multiplier">
-        <span class="streak-flame">🔥</span>
-        <span id="hud-streak-count">0x</span>
+      <div class="hud-stats">
+        <div class="stat-pill">
+          <span class="stat-icon">⭐</span>
+          <span class="stat-label">Arena XP</span>
+          <span class="stat-value" id="hud-xp-label">0 / 200 XP</span>
+        </div>
+
+        <div class="energy-gauge" title="Evolution Energy Reactor">
+          <span class="stat-icon">⚡</span>
+          <span class="stat-label">Energy</span>
+          <div class="gauge-track">
+            <div class="gauge-fill" id="hud-energy-fill" style="width: 20%;"></div>
+          </div>
+          <span class="stat-value" id="hud-energy-pct" style="color: #f59e0b; font-size: 0.85rem;">20%</span>
+        </div>
+
+        <div class="streak-flame-pill" title="Clash Win Streak">
+          <span style="font-size: 1.1rem;">🔥</span>
+          <span class="stat-value" id="hud-streak-count" style="color: #ef4444; font-size: 0.95rem;">0x</span>
+        </div>
       </div>
-      <button id="btn-fullscreen-toggle" class="btn-icon-hud" title="Toggle Fullscreen Arena">
-        ⛶ <span>Fullscreen</span>
-      </button>
+
+      <div class="hud-actions">
+        <button id="btn-sound-toggle" class="btn-3d btn-ghost btn-icon" title="Toggle Sound">🔊</button>
+        <button id="btn-fullscreen-toggle" class="btn-3d btn-ghost btn-icon" title="Toggle Fullscreen">⛶</button>
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-ghost btn-sm">📝 Passport</a>
+        <a href="../index.html" class="btn-3d btn-ghost btn-sm">🚪 Exit</a>
+      </div>
     </div>
   </header>
 
-  <!-- 6-Stage Full Lesson Navigation Bar -->
-  <nav class="phase-selector" aria-label="Game Phases">
-    <button class="phase-tab active" data-phase="1">
-      <span>🔍</span> 1. Mystery Hook
-    </button>
-    <button class="phase-tab" data-phase="2">
-      <span>🥩</span> 2. Diet Sorter
-    </button>
-    <button class="phase-tab" data-phase="3">
-      <span>⚖️</span> 3. Grammar Gym
-    </button>
-    <button class="phase-tab" data-phase="4">
-      <span>⚔️</span> 4. Battle Arena
-    </button>
-    <button class="phase-tab" data-phase="5">
-      <span>🎙️</span> 5. Teleprompter
-    </button>
-    <button class="phase-tab" data-phase="6">
-      <span>🎓</span> 6. Exit Passport
-    </button>
+  <!-- 2-Lesson (70-Min) Navigation Bar -->
+  <nav class="lesson-nav-wrap" aria-label="Game Stages">
+    <div class="lesson-nav-tabs">
+      <!-- Lesson 1 Row -->
+      <div class="lesson-group">
+        <span class="lesson-badge l1">Lesson 1 (35m): Prehistoric Anatomy</span>
+        <div class="stage-buttons-row">
+          <button class="stage-tab active" data-stage="1" id="tab-stage-1">
+            <span>🔍</span> 1. Mystery Roar
+          </button>
+          <button class="stage-tab" data-stage="2" id="tab-stage-2">
+            <span>🔬</span> 2. 3D Anatomy
+          </button>
+          <button class="stage-tab" data-stage="3" id="tab-stage-3">
+            <span>🥩</span> 3. Diet Sorter
+          </button>
+          <button class="stage-tab" data-stage="4" id="tab-stage-4">
+            <span>⚖️</span> 4. Balance Gym
+          </button>
+        </div>
+      </div>
+
+      <!-- Lesson 2 Row -->
+      <div class="lesson-group">
+        <span class="lesson-badge l2">Lesson 2 (35m): Arena Clash &amp; Report</span>
+        <div class="stage-buttons-row">
+          <button class="stage-tab" data-stage="5" id="tab-stage-5">
+            <span>⚔️</span> 5. 1v1 Battle Arena
+          </button>
+          <button class="stage-tab" data-stage="6" id="tab-stage-6">
+            <span>🎙️</span> 6. Teleprompter Studio
+          </button>
+          <button class="stage-tab" data-stage="7" id="tab-stage-7">
+            <span>🎓</span> 7. Field Passport Checkpoint
+          </button>
+        </div>
+      </div>
+    </div>
   </nav>
 
-  <!-- Main Stage Viewport (Anti-Dashboard Single Focus Arena) -->
+  <!-- Main Game Stage Arena -->
   <main class="main-stage-container">
 
     <!-- ======================================================================
-         STAGE 1: MYSTERY SILHOUETTE & ROAR GUESSING GAME
+         STAGE 1: MYSTERY SILHOUETTE & ROAR CHAMBER (8 MINS)
          ====================================================================== -->
-    <section class="phase-panel active" id="panel-phase-1" data-phase="1">
+    <section class="phase-panel active" id="panel-stage-1" data-stage="1">
       <div class="arena-headline-bar">
-        <span class="announcer-prompt-label">STAGE 1: WHO AM I? • SILHOUETTE &amp; ROAR MYSTERY</span>
+        <span class="announcer-prompt-label">STAGE 1 • MYSTERY HOOK &amp; ROAR CHAMBER</span>
         <h2 class="arena-title" id="stage1-title">🔍 MYSTERY PREHISTORIC BEAST</h2>
-        <p class="arena-instruction" id="stage1-subtext">Listen to the roar, inspect the clues, and guess the mystery dinosaur!</p>
+        <p class="arena-instruction">Listen to footsteps and roars, analyze the anatomical clue chips, and identify the mystery dinosaur!</p>
       </div>
 
       <div class="mystery-chamber">
-        <!-- Foggy Prehistoric Silhouette Frame -->
-        <div class="mystery-silhouette-wrap" id="mystery-silhouette-frame">
-          <div class="mystery-fog-backdrop"></div>
+        <!-- Prehistoric Silhouette Stage -->
+        <div class="mystery-silhouette-wrap">
           <div class="mystery-art-stage" id="mystery-art-stage">
-            <!-- Dynamic vector art with silhouette filter or full color -->
+            <div class="mystery-fog-backdrop"></div>
+            <div class="isometric-pedestal" id="mystery-pedestal"></div>
+            <img class="hero-3d-sprite" id="mystery-dino-sprite" src="assets/triceratops.webp" alt="Mystery Dinosaur">
           </div>
           <div class="mystery-sound-controls">
-            <button class="btn-mystery-audio" id="btn-mystery-footsteps" title="Listen to Footsteps">
+            <button class="btn-mystery-audio" id="btn-mystery-footsteps">
               🐾 Footsteps
             </button>
-            <button class="btn-mystery-audio" id="btn-mystery-roar" title="Hear Beast Roar">
+            <button class="btn-mystery-audio" id="btn-mystery-roar">
               🦖 Beast Roar
             </button>
           </div>
         </div>
 
-        <!-- Clue Cards Panel -->
+        <!-- Clues & Options Panel -->
         <div class="mystery-clues-dock">
           <div class="mystery-clues-header">
-            <span>📜 PALEONTOLOGICAL FIELD CLUES</span>
+            <span>📜 PALEONTOLOGICAL CLUES</span>
             <span class="clue-counter" id="mystery-round-indicator">Specimen 1 / 6</span>
           </div>
 
           <div class="mystery-clues-grid" id="mystery-clues-list">
-            <!-- Clues injected dynamically -->
+            <!-- Injected dynamically -->
           </div>
 
-          <div class="mystery-status-banner" id="mystery-status-banner">
+          <div style="font-size: 0.95rem; font-weight: 700; color: #cbd5e1;">
             Choose your hypothesis from the 4 radar options below:
           </div>
 
-          <!-- 4 3D Option Buttons -->
           <div class="mystery-options-grid" id="mystery-options-grid">
             <!-- 4 Option Buttons injected dynamically -->
           </div>
 
-          <button class="btn-next-mystery" id="btn-next-mystery" style="display:none;">
+          <button class="btn-3d btn-amber" id="btn-next-mystery" style="display:none; margin-top: 10px;">
             Next Mystery Specimen ➔
           </button>
         </div>
@@ -124,261 +160,280 @@
     </section>
 
     <!-- ======================================================================
-         STAGE 2: CLIL DIET & ADAPTATION LAB
+         STAGE 2: 3D HOLOGRAM ANATOMY SCANNER (8 MINS)
          ====================================================================== -->
-    <section class="phase-panel" id="panel-phase-2" data-phase="2">
+    <section class="phase-panel" id="panel-stage-2" data-stage="2">
       <div class="arena-headline-bar">
-        <span class="announcer-prompt-label">STAGE 2: CLIL DIET &amp; PHYSIOLOGICAL ADAPTATION LAB</span>
+        <span class="announcer-prompt-label">STAGE 2 • 3D HOLOGRAM ANATOMY SCANNER</span>
+        <h2 class="arena-title">🔬 6-SPECIMEN ANATOMICAL DOSSIER</h2>
+        <p class="arena-instruction">Tap any card to flip and inspect physical adaptations. Click hotspot pins to hear audio explanations!</p>
+      </div>
+
+      <div class="scanner-carousel-grid" id="scanner-cards-container">
+        <!-- 6 flip cards with 65% full-bleed hero stages injected dynamically -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         STAGE 3: DIET AIRLOCK SORTER (9 MINS)
+         ====================================================================== -->
+    <section class="phase-panel" id="panel-stage-3" data-stage="3">
+      <div class="arena-headline-bar">
+        <span class="announcer-prompt-label">STAGE 3 • CLIL DIET AIRLOCK SORTER</span>
         <h2 class="arena-title">🥩 CARNIVORE VS. 🌿 HERBIVORE CLASSIFICATION</h2>
-        <p class="arena-instruction">Inspect teeth, claws, and anatomical adaptations. Classify each dinosaur into the correct crate!</p>
+        <p class="arena-instruction">Inspect teeth, horns, claws, and anatomical adaptations. Sort each dinosaur into the correct airlock bay!</p>
       </div>
 
       <div class="diet-lab-stage">
-        <!-- Center Specimen Airlock Belt -->
         <div class="diet-conveyor-wrap">
-          <div class="conveyor-belt-track">
-            <div class="belt-indicator" id="diet-belt-progress">Specimen 1 of 6 on Airlock Belt</div>
-          </div>
+          <div class="conveyor-belt-track" id="diet-belt-progress">Specimen 1 of 6 on Airlock Conveyor</div>
           
           <div class="diet-specimen-card" id="diet-specimen-card">
-            <!-- Specimen injected dynamically -->
+            <div class="card-hero-stage">
+              <div class="isometric-pedestal" id="diet-pedestal"></div>
+              <img class="hero-3d-sprite" id="diet-dino-sprite" src="assets/trex.webp" alt="Specimen">
+            </div>
+            <div style="padding: 16px; background: rgba(15, 23, 42, 0.95); text-align: center;">
+              <h3 id="diet-dino-name" style="font-size: 1.25rem; font-weight: 800; color: #ffffff;">Tyrannosaurus Rex</h3>
+              <p id="diet-dino-hint" style="font-size: 0.88rem; color: #94a3b8; margin-top: 4px;">Adaptation: 20cm serrated dagger teeth</p>
+            </div>
           </div>
         </div>
 
-        <!-- 2 Large Sorting Crates / Dropzones -->
         <div class="diet-crates-dock">
-          <div class="diet-crate crate-carnivore" id="crate-carnivore" data-diet="Carnivore">
-            <div class="crate-header">
-              <span class="crate-icon">🥩</span>
-              <span class="crate-title">CARNIVORES</span>
-              <span class="crate-subtitle">Meat-Eaters • Sharp Teeth &amp; Claws</span>
-            </div>
-            <div class="crate-drop-zone" id="drop-carnivore">
-              <div class="crate-empty-hint">Drag or Click to Sort Meat-Eaters Here</div>
-            </div>
-            <button class="btn-crate-action btn-sort-carnivore" id="btn-sort-carnivore">
+          <!-- Carnivore Bay -->
+          <div class="diet-crate crate-carnivore" id="crate-carnivore">
+            <span class="crate-icon">🥩</span>
+            <div class="crate-title">CARNIVORES</div>
+            <div class="crate-subtitle">Meat-Eaters • Sharp Dagger Teeth &amp; Sickle Claws</div>
+            <button class="btn-3d btn-coral" id="btn-sort-carnivore" style="width: 100%;">
               🥩 SORT AS CARNIVORE
             </button>
           </div>
 
-          <div class="diet-crate crate-herbivore" id="crate-herbivore" data-diet="Herbivore">
-            <div class="crate-header">
-              <span class="crate-icon">🌿</span>
-              <span class="crate-title">HERBIVORES</span>
-              <span class="crate-subtitle">Plant-Eaters • Flat Grinding Teeth &amp; Horns</span>
-            </div>
-            <div class="crate-drop-zone" id="drop-herbivore">
-              <div class="crate-empty-hint">Drag or Click to Sort Plant-Eaters Here</div>
-            </div>
-            <button class="btn-crate-action btn-sort-herbivore" id="btn-sort-herbivore">
+          <!-- Herbivore Bay -->
+          <div class="diet-crate crate-herbivore" id="crate-herbivore">
+            <span class="crate-icon">🌿</span>
+            <div class="crate-title">HERBIVORES</div>
+            <div class="crate-subtitle">Plant-Eaters • Grinding Teeth, Neck Frills &amp; Tail Clubs</div>
+            <button class="btn-3d btn-emerald" id="btn-sort-herbivore" style="width: 100%;">
               🌿 SORT AS HERBIVORE
             </button>
           </div>
         </div>
 
-        <div class="diet-feedback-banner" id="diet-feedback-banner" style="display:none;"></div>
+        <div class="stamp-slam-toast" id="diet-stamp-toast">
+          <span>⭐</span>
+          <span>[ VERIFIED! ]</span>
+        </div>
       </div>
     </section>
 
     <!-- ======================================================================
-         STAGE 3: THE COMPARATIVE ADJECTIVE BALANCE GYM
+         STAGE 4: COMPARATIVE BALANCE SCALE GYM (10 MINS)
          ====================================================================== -->
-    <section class="phase-panel" id="panel-phase-3" data-phase="3">
+    <section class="phase-panel" id="panel-stage-4" data-stage="4">
       <div class="arena-headline-bar">
-        <span class="announcer-prompt-label">STAGE 3: THE COMPARATIVE ADJECTIVE GYM</span>
+        <span class="announcer-prompt-label">STAGE 4 • COMPARATIVE ADJECTIVE BALANCE GYM</span>
         <h2 class="arena-title">⚖️ DIGITAL BALANCE SCALE &amp; FORMULA BUILDER</h2>
-        <p class="arena-instruction">Compare weight and speed on the physical scale, then snap word tokens to build the comparative rule!</p>
+        <p class="arena-instruction">Observe weight, speed, and armor on the tilting balance scale. Snap word tokens to build the comparative rule!</p>
       </div>
 
       <div class="grammar-gym-stage">
-        <!-- Physical Digital Balance Scale -->
+        <!-- Tilting Balance Scale Simulator -->
         <div class="balance-scale-wrap">
           <div class="scale-fulcrum-pivot">
             <div class="scale-fulcrum-triangle"></div>
           </div>
           <div class="scale-beam" id="scale-beam">
             <!-- Left Pan -->
-            <div class="scale-pan scale-pan-left" id="scale-pan-left">
-              <div class="pan-dish" id="dish-left"></div>
+            <div class="scale-pan" id="scale-pan-left">
+              <div class="pan-dish" id="dish-left">
+                <img class="hero-3d-sprite" id="scale-dino-left" src="assets/brachiosaurus.webp" alt="Left Dino">
+              </div>
               <div class="pan-stat-tag" id="pan-stat-left">40,000 kg</div>
             </div>
             <!-- Right Pan -->
-            <div class="scale-pan scale-pan-right" id="scale-pan-right">
-              <div class="pan-dish" id="dish-right"></div>
+            <div class="scale-pan" id="scale-pan-right">
+              <div class="pan-dish" id="dish-right">
+                <img class="hero-3d-sprite" id="scale-dino-right" src="assets/stegosaurus.webp" alt="Right Dino">
+              </div>
               <div class="pan-stat-tag" id="pan-stat-right">5,000 kg</div>
             </div>
           </div>
         </div>
 
-        <!-- Comparative Adjective Formula Builder -->
+        <!-- Word Token Sentence Builder -->
         <div class="grammar-builder-dock">
-          <div class="builder-prompt-label" id="builder-prompt-label">
+          <div style="font-size: 1.05rem; font-weight: 700; color: #fbbf24;" id="builder-prompt-label">
             Challenge 1 of 5: Compare the dinosaurs' WEIGHT!
           </div>
 
-          <!-- Target Slot Track -->
           <div class="formula-slot-bar" id="formula-slot-bar">
-            <!-- Slots dynamically created -->
+            <!-- Target slots created dynamically -->
           </div>
 
-          <!-- Token Bank -->
           <div class="word-token-bank" id="word-token-bank">
-            <!-- Tokens injected dynamically -->
+            <!-- Token chips injected dynamically -->
           </div>
 
-          <div class="builder-actions">
-            <button class="btn-builder-reset" id="btn-builder-reset">
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-3d btn-ghost btn-sm" id="btn-builder-reset">
               ↺ Reset Words
             </button>
-            <button class="btn-builder-check" id="btn-builder-check">
+            <button class="btn-3d btn-cyan btn-sm" id="btn-builder-check">
               ✓ Verify Sentence &amp; Speak
             </button>
-            <button class="btn-builder-next" id="btn-builder-next" style="display:none;">
+            <button class="btn-3d btn-amber btn-sm" id="btn-builder-next" style="display:none;">
               Next Comparison ➔
             </button>
           </div>
-
-          <div class="builder-feedback-banner" id="builder-feedback-banner" style="display:none;"></div>
         </div>
       </div>
     </section>
 
     <!-- ======================================================================
-         STAGE 4: 1v1 DINO BATTLE ARENA (THE MAIN SHOWDOWN)
+         STAGE 5: 1v1 CRETACEOUS SHOWDOWN ARENA (18 MINS)
          ====================================================================== -->
-    <section class="phase-panel" id="panel-phase-4" data-phase="4">
-      <div class="clash-battle-stage">
-        
-        <!-- Announcer Board -->
-        <div class="clash-announcer-board">
-          <span class="announcer-prompt-label">⚔️ STAGE 4: TOP TRUMPS 1v1 BATTLE ARENA</span>
-          <h2 class="announcer-question" id="clash-question">Who is FASTER?</h2>
-          <p class="announcer-subtext" id="clash-subtext">Battle 1 of 8 • Click the winning champion or press hotkeys [1] / [2]!</p>
-          <span class="hotkey-hint" id="clash-counter" style="margin-top:8px;">Round 1 / 8</span>
-        </div>
-
-        <!-- 1v1 Clash Dock with VS Emblem -->
-        <div class="clash-cards-dock">
-          <div id="card-left-container"></div>
-          <div class="clash-vs-emblem">VS</div>
-          <div id="card-right-container"></div>
-        </div>
-
-        <!-- Chunky 3D Push Decision Buttons -->
-        <div class="arena-clash-actions">
-          <button class="btn-clash-pick btn-pick-left" id="btn-pick-left">
-            <span class="btn-main-text">👈 Pick Left Champion <span class="hotkey-hint">[1]</span></span>
-            <span class="btn-sub-text">Stat Champion</span>
-          </button>
-          <button class="btn-clash-pick btn-pick-right" id="btn-pick-right">
-            <span class="btn-main-text">👉 Pick Right Champion <span class="hotkey-hint">[2]</span></span>
-            <span class="btn-sub-text">Stat Champion</span>
-          </button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         STAGE 5: PALEONTOLOGIST TELEPROMPTER STUDIO
-         ====================================================================== -->
-    <section class="phase-panel" id="panel-phase-5" data-phase="5">
-      <div class="teleprompter-stage">
-        <div class="arena-headline-bar">
-          <span class="announcer-prompt-label">STAGE 5: SPOKEN CLIL SHOWCASE</span>
-          <h2 class="arena-title">🎙️ PALEONTOLOGIST TELEPROMPTER STUDIO</h2>
-          <p class="arena-instruction">Broadcast your champion discovery live to Earth! Follow along as speech synthesis tracks words in real-time karaoke.</p>
-        </div>
-
-        <div class="teleprompter-card-wrap">
-          <span class="teleprompter-badge-tag" id="teleprompter-badge-tag">🎙️ Apex Arena Broadcast</span>
-          <div class="teleprompter-art-podium" id="teleprompter-art-podium"></div>
-          
-          <div class="teleprompter-display">
-            <div class="teleprompter-script" id="teleprompter-script"></div>
-            
-            <div class="teleprompter-controls">
-              <button class="btn-speak-teleprompter" id="btn-speak-teleprompter">
-                📢 BROADCAST REPORT
-              </button>
-              <button class="btn-next-teleprompter" id="btn-next-teleprompter">
-                Next Champion ➔
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         STAGE 6: EXIT CHECKPOINT & FIELD PASSPORT
-         ====================================================================== -->
-    <section class="phase-panel" id="panel-phase-6" data-phase="6">
+    <section class="phase-panel" id="panel-stage-5" data-stage="5">
       <div class="arena-headline-bar">
-        <span class="announcer-prompt-label">STAGE 6: MASTERY DIAGNOSTIC CHECKPOINT</span>
-        <h2 class="arena-title">🎓 JUNIOR PALEONTOLOGIST FIELD PASSPORT</h2>
-        <p class="arena-instruction">Complete the 3-question diagnostic checkpoint to certify your mastery and generate your printable Field Passport!</p>
+        <span class="announcer-prompt-label">STAGE 5 • 1v1 CRETACEOUS SHOWDOWN ARENA</span>
+        <h2 class="arena-title" id="clash-question-title">⚔️ WHO IS FASTER?</h2>
+        <p class="arena-instruction">Analyze the combat stats. Slap the card of the winning dinosaur to trigger the arena clash!</p>
       </div>
 
-      <div class="exit-checkpoint-stage">
-        <!-- Diagnostic Quiz Container -->
-        <div class="quiz-container-card" id="quiz-container-card">
-          <div class="quiz-progress-bar">
-            <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      <div class="clash-battle-stage">
+        <div class="clash-cards-arena">
+          <!-- Left Dino Card (65% Full Bleed) -->
+          <div class="clash-dino-card" id="card-clash-left" data-dino="raptor">
+            <div class="card-hero-stage">
+              <div class="isometric-pedestal" id="clash-pedestal-left"></div>
+              <img class="hero-3d-sprite" id="clash-img-left" src="assets/raptor.webp" alt="Left Dinosaur">
+            </div>
+            <div style="padding: 18px; background: rgba(15, 23, 42, 0.95); display: flex; flex-direction: column; gap: 8px;">
+              <h3 id="clash-name-left" style="font-size: 1.25rem; font-weight: 800; color: #ffffff;">Velociraptor</h3>
+              <div id="clash-stats-left" style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #38bdf8;">
+                Speed: 60 km/h | Weight: 15 kg
+              </div>
+            </div>
           </div>
 
-          <div class="quiz-question-box">
-            <span class="quiz-badge" id="quiz-q-num">Question 1 / 3</span>
-            <h3 class="quiz-question-text" id="quiz-question-text"></h3>
-            <div class="quiz-options-list" id="quiz-options-list"></div>
-            <div class="quiz-explanation-box" id="quiz-explanation-box" style="display:none;"></div>
-            <button class="btn-quiz-next" id="btn-quiz-next" style="display:none;">
-              Next Question ➔
-            </button>
+          <!-- Center VS Emblem -->
+          <div class="clash-vs-emblem">
+            <span>VS</span>
+            <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Round 1 / 8</span>
+          </div>
+
+          <!-- Right Dino Card (65% Full Bleed) -->
+          <div class="clash-dino-card" id="card-clash-right" data-dino="trex">
+            <div class="card-hero-stage">
+              <div class="isometric-pedestal" id="clash-pedestal-right"></div>
+              <img class="hero-3d-sprite" id="clash-img-right" src="assets/trex.webp" alt="Right Dinosaur">
+            </div>
+            <div style="padding: 18px; background: rgba(15, 23, 42, 0.95); display: flex; flex-direction: column; gap: 8px;">
+              <h3 id="clash-name-right" style="font-size: 1.25rem; font-weight: 800; color: #ffffff;">Tyrannosaurus Rex</h3>
+              <div id="clash-stats-right" style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #38bdf8;">
+                Speed: 27 km/h | Weight: 8,000 kg
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Field Passport Diploma Card (Unlocked after Quiz) -->
-        <div class="diploma-card exit-passport-card" id="passport-preview-card" style="display:none;">
-          <div class="diploma-seal">🦖</div>
-          <h2 class="diploma-title">CERTIFIED JUNIOR PALEONTOLOGIST</h2>
-          <p class="diploma-subtitle">Adventure Academy Paleontology Field Station • Cretaceous Division</p>
-          
-          <div class="diploma-stats-grid">
-            <div class="stat-box">
-              <div class="stat-val" id="passport-xp-val">200 XP</div>
-              <div class="stat-label">Total XP</div>
+        <!-- Rubber Stamp Slam Overlay -->
+        <div class="stamp-slam-toast" id="clash-stamp-toast">
+          ⭐ WINNER!
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         STAGE 6: TELEPROMPTER STUDIO (9 MINS)
+         ====================================================================== -->
+    <section class="phase-panel" id="panel-stage-6" data-stage="6">
+      <div class="arena-headline-bar">
+        <span class="announcer-prompt-label">STAGE 6 • PALEONTOLOGIST TELEPROMPTER STUDIO</span>
+        <h2 class="arena-title">🎙️ 3-SENTENCE ARENA BROADCAST</h2>
+        <p class="arena-instruction">Select a champion dinosaur and broadcast their field report with real-time highlighted speech modeling!</p>
+      </div>
+
+      <div class="teleprompter-stage-wrap">
+        <!-- Champion Hero Viewport -->
+        <div class="mystery-silhouette-wrap">
+          <div class="card-hero-stage" style="height: 280px;">
+            <div class="isometric-pedestal" id="teleprompter-pedestal"></div>
+            <img class="hero-3d-sprite" id="teleprompter-dino-sprite" src="assets/trex.webp" alt="Champion Dinosaur">
+          </div>
+          <div style="padding: 16px; background: rgba(15, 23, 42, 0.95); text-align: center;">
+            <h3 id="teleprompter-dino-name" style="font-size: 1.3rem; font-weight: 800; color: #ffffff;">Tyrannosaurus Rex</h3>
+            <p id="teleprompter-dino-title" style="font-size: 0.85rem; color: #94a3b8;">Apex Predator • Arena Champion</p>
+          </div>
+        </div>
+
+        <!-- Teleprompter Screen -->
+        <div class="teleprompter-monitor">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: #ef4444; font-weight: 800; font-size: 0.85rem;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+              <span>LIVE TELEPROMPTER • READY</span>
             </div>
-            <div class="stat-box">
-              <div class="stat-val" id="passport-streak-val">8x</div>
-              <div class="stat-label">Best Streak</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-val" id="passport-accuracy-val">100%</div>
-              <div class="stat-label">Accuracy</div>
-            </div>
+            <span class="hud-pill">3-SENTENCE FORMULA</span>
           </div>
 
-          <div style="margin: 16px 0; width:100%; max-width:380px;">
-            <label for="student-name-input" style="font-size:13px; font-weight:700; color:#94a3b8; display:block; margin-bottom:6px;">Cadet Paleontologist Name:</label>
-            <input type="text" id="student-name-input" class="student-name-input" placeholder="Enter Your Name..." value="Apex Paleontologist">
+          <div class="teleprompter-screen" id="teleprompter-script-box">
+            <!-- 3 sentences with karaoke spans injected dynamically -->
           </div>
 
-          <div class="diploma-actions">
-            <a href="worksheet.html" target="_blank" class="btn-print-passport" id="btn-print-passport">
-              🖨️ Open A4 Printable Field Passport
-            </a>
-            <button class="btn-replay-game" id="btn-replay-game">
-              🔄 Replay Master Lesson
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn-3d btn-primary" id="btn-broadcast-teleprompter">
+              <span>📢</span>
+              <span>Broadcast Report</span>
+            </button>
+            <button class="btn-3d btn-emerald" id="btn-claim-teleprompter">
+              <span>⭐</span>
+              <span>Claim +40 XP</span>
             </button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         STAGE 7: EXIT DIAGNOSTIC & PRINTABLE FIELD PASSPORT (8 MINS)
+         ====================================================================== -->
+    <section class="phase-panel" id="panel-stage-7" data-stage="7">
+      <div class="arena-headline-bar">
+        <span class="announcer-prompt-label">STAGE 7 • EXIT DIAGNOSTIC &amp; PASSPORT</span>
+        <h2 class="arena-title">🎓 CERTIFIED PALEONTOLOGIST PASSPORT</h2>
+        <p class="arena-instruction">Complete the 3-question rapid checkpoint to claim your Paleontology Grandmaster Diploma!</p>
+      </div>
+
+      <div class="exit-diagnostic-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 12px;">
+          <h3 id="quiz-question-number" style="font-size: 1.15rem; font-weight: 800; color: #fbbf24;">Question 1 of 3</h3>
+          <span class="clue-counter" id="quiz-score-display">Score: 0 / 3</span>
+        </div>
+
+        <p id="quiz-question-text" style="font-size: 1.25rem; font-weight: 700; color: #ffffff; line-height: 1.5;">
+          Which comparative adjective correctly finishes the sentence: 'Velociraptor is _______ than Tyrannosaurus Rex.'?
+        </p>
+
+        <div class="quiz-options-list" id="quiz-options-list">
+          <!-- 4 Question buttons injected dynamically -->
+        </div>
+
+        <div id="quiz-feedback-box" style="display:none; padding: 12px; border-radius: 10px; font-weight: 700;"></div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+          <a href="worksheet.html" target="_blank" class="btn-3d btn-emerald" id="btn-print-passport">
+            📄 Print Field Passport
+          </a>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Scripts: Data, Audio Synthesizer, Application State Machine -->
+  <!-- Scripts -->
   <script src="js/dino-data.js"></script>
   <script src="js/dino-audio.js"></script>
   <script src="js/dino-app.js"></script>
