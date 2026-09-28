@@ -1347,7 +1347,7 @@
       `;
     }
 
-    if (effectiveWings === 'wings-fairy') {
+    if (effectiveWings === 'wings-fairy' || effectiveWings === 'wings-mini') {
       return `
         <!-- Fairy Wings -->
         <g class="monster-wings-layer wings-fairy" filter="url(#mf-glow)" opacity="0.85">
@@ -1401,7 +1401,7 @@
 
     if (effectiveTail === 'none' || effectiveTail === 'tail-none') return '';
 
-    if (effectiveTail === 'tail-puff') {
+    if (effectiveTail === 'tail-puff' || effectiveTail === 'tail-bunny') {
       return `
         <!-- Cute Baby Puff Tail (Level 3) -->
         <g class="monster-tail-layer tail-puff">
@@ -2170,7 +2170,7 @@
           <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
         </g>
       `;
-    } else if (eyesId === 'eyes-happy') {
+    } else if (eyesId === 'eyes-happy' || eyesId === 'eyes-happy-crescents' || eyesId === 'happy_eyes') {
       eyesMarkup = `
         <!-- Happy Crescent Eyes -->
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
@@ -2705,7 +2705,7 @@
           <ellipse cx="14" cy="38" rx="5" ry="3" fill="#f472b6" opacity="0.6" />
           <ellipse cx="42" cy="38" rx="5" ry="3" fill="#f472b6" opacity="0.6" />
         `;
-      } else if (item.id === 'eyes-happy') {
+      } else if (item.id === 'eyes-happy' || item.id === 'eyes-happy-crescents') {
         inner = `
           <path d="M 13 28 Q 20 18 27 28" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" fill="none" />
           <path d="M 31 28 Q 38 18 45 28" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" fill="none" />

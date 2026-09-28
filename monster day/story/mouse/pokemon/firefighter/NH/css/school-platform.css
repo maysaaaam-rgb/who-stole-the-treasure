@@ -5616,16 +5616,32 @@ body.classroom-mode-active .classroom-students-grid {
    STUDENTS DIRECTORY & MONSTER COMPANIONS CARDS
    ========================================================================= */
 
+/* Strict Isolation: #students-grid must contain ONLY student cards in an uninterrupted 4-column flow */
+.students-directory-grid > header,
+.students-directory-grid > nav,
+.students-directory-grid > .app-header,
+.students-directory-grid > .role-pill-group,
+.students-directory-grid > .classroom-unified-dock,
+.students-directory-grid > div:not(.student-card):not(.student-directory-card) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
 .students-directory-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 24px;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+  gap: 24px !important;
 }
 
 @media (min-width: 1200px) {
   .students-directory-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 24px !important;
   }
 }
 

@@ -1061,8 +1061,10 @@
     const size = options.size || 54;
     let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
     const student = (typeof store !== 'undefined' && store.getStudent) ? store.getStudent(studentId) : (typeof studentOrId === 'object' ? studentOrId : { id: studentId });
+    const profile = (typeof store !== 'undefined' && store.getMonsterProfile && studentId) ? store.getMonsterProfile(studentId) : null;
+    const mState = (typeof store !== 'undefined' && store.calculateMonsterState && studentId) ? store.calculateMonsterState(studentId) : null;
+    const sprite = window.getStudentMonsterAvatarUrl ? window.getStudentMonsterAvatarUrl(student, profile, mState) : ((student && student.custom_avatar_url) || (profile && profile.custom_avatar_url) || DEFAULT_MASCOT.sprite);
     const mascot = getStudentMascot(student || { id: studentId }) || DEFAULT_MASCOT;
-    const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
     const name = (mascot && mascot.name) || 'Monster';
     const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
 
@@ -1145,7 +1147,49 @@
       return `assets/monsters/${species}_stage_baby.png`;
     }
   }
-  window.getMonsterAsset = getMonsterAsset;
+  /**
+   * Authoritative Student Monster Avatar Resolution
+   * Checks student.custom_avatar_url, profile.custom_avatar_url, or synthesizes
+   * the exact customized SVG companion if custom colors/cosmetics are equipped.
+   */
+  function getStudentMonsterAvatarUrl(student, profile, mState) {
+    if (student && student.custom_avatar_url) return student.custom_avatar_url;
+    if (profile && profile.custom_avatar_url) return profile.custom_avatar_url;
+    if (student && student.custom_avatar) return student.custom_avatar;
+
+    const baseColor = (profile && profile.baseColor) || (student && student.element) || '';
+    const equipped = (profile && profile.equipped) || {};
+    const hasEquipped = Object.values(equipped).some(v => v && v !== 'none' && v !== 'default');
+    const isCustomFur = baseColor && baseColor !== 'blue';
+
+    if ((hasEquipped || isCustomFur) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+      const stageKey = (mState && mState.stageKey && mState.stageKey !== 'egg' && mState.stageKey !== 'cracking_egg') ? mState.stageKey : 'baby';
+      try {
+        const svgMarkup = window.MonsterRenderer.renderMonsterSVG({
+          stage: stageKey,
+          color: baseColor || 'blue',
+          equipped: equipped,
+          size: 240,
+          animated: true,
+          isAvatar: true
+        });
+        if (svgMarkup) {
+          const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
+          if (student) student.custom_avatar_url = uri;
+          if (profile) profile.custom_avatar_url = uri;
+          return uri;
+        }
+      } catch (e) {
+        console.warn('Failed to synthesize custom monster avatar SVG:', e);
+      }
+    }
+
+    const mascot = (student ? getStudentMascot(student) : null) || DEFAULT_MASCOT;
+    const archetype = String((student && (student.archetype || student.monster_archetype)) || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
+    const lvl = (mState && mState.currentLevel) || (student && student.level) || 1;
+    return getMonsterAsset(archetype, lvl);
+  }
+  window.getStudentMonsterAvatarUrl = getStudentMonsterAvatarUrl;
 
   /**
    * Render modern Student Monster Evolution Card Structure
@@ -1177,7 +1221,7 @@
     const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
     const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toUpperCase();
     const archetypeClass = 'archetype-' + archetype.toLowerCase();
-    const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, mState.currentLevel);
+    const dynamicSprite = getStudentMonsterAvatarUrl(s, profile, mState);
     const name = (mascot && mascot.name) || 'Monster';
 
     // Dynamic character sprite on illuminated pedestal with real-time asset binding
@@ -3224,13 +3268,14 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
+              const profile = (store && store.getMonsterProfile) ? store.getMonsterProfile(s.id) : (mState && mState.profile);
               const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
               const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
               const name = (mascot && mascot.name) || 'Monster';
               const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
               const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
-              const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, mState.currentLevel);
+              const dynamicSprite = getStudentMonsterAvatarUrl(s, profile, mState);
 
               const avatarMarkup = '' +
                 '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
@@ -3302,6 +3347,16 @@
           '</div>'
         ) +
       '</div>';
+
+    // Ensure #students-grid strictly contains only student cards with no injected elements
+    const gridEl = container.querySelector('#students-grid');
+    if (gridEl) {
+      Array.from(gridEl.children).forEach(child => {
+        if (!child.classList.contains('student-card') && !child.classList.contains('student-directory-card')) {
+          child.remove();
+        }
+      });
+    }
   }
 
   function renderClassesView(container) {
@@ -3621,8 +3676,9 @@
       const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
       const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
+      const profile = (store && store.getMonsterProfile) ? store.getMonsterProfile(s.id) : (monsterState && monsterState.profile);
       const curLvl = monsterState ? monsterState.currentLevel : 1;
-      const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, curLvl);
+      const dynamicSprite = getStudentMonsterAvatarUrl(s, profile, monsterState);
 
       const avatarMarkup = '' +
         '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
@@ -13388,10 +13444,47 @@ window.switchClassroomSubTab = function(subTab) {
     const student = store.getStudent(monsterCreatorStudentId);
     if (!student) return;
 
+    const mState = store.calculateMonsterState(monsterCreatorStudentId);
+    const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+
+    // Generate custom companion avatar SVG & data URL
+    let dataUri = '';
+    try {
+      if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        const svgMarkup = window.MonsterRenderer.renderMonsterSVG({
+          stage: previewStage,
+          color: monsterCreatorDraft.baseColor,
+          equipped: monsterCreatorDraft.equipped,
+          size: 240,
+          animated: true,
+          isAvatar: true
+        });
+        if (svgMarkup) {
+          dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to synthesize custom monster avatar SVG on save:', e);
+    }
+
+    if (dataUri) {
+      student.custom_avatar_url = dataUri;
+      student.custom_avatar = dataUri;
+    }
+    student.monster_customization = {
+      baseColor: monsterCreatorDraft.baseColor,
+      equipped: Object.assign({}, monsterCreatorDraft.equipped)
+    };
+
     store.updateMonsterProfile(monsterCreatorStudentId, {
       baseColor: monsterCreatorDraft.baseColor,
-      equipped: monsterCreatorDraft.equipped
+      equipped: monsterCreatorDraft.equipped,
+      custom_avatar_url: dataUri || undefined
     });
+
+    if (store.saveState) {
+      store.saveState();
+    }
 
     showNotification('✓ Monster companion updated for ' + student.firstName + '!');
     window.closeModal('modal-avatar-selector');
@@ -13419,6 +13512,16 @@ window.switchClassroomSubTab = function(subTab) {
     if (monsterPreview) {
       monsterPreview.innerHTML = window.renderMonsterStageBadge(monsterCreatorStudentId, { size: 48, animated: true });
     }
+
+    // Dispatch global event for external reactive subscribers
+    window.dispatchEvent(new CustomEvent('monsterProfileUpdated', {
+      detail: {
+        studentId: monsterCreatorStudentId,
+        custom_avatar_url: dataUri,
+        baseColor: monsterCreatorDraft.baseColor,
+        equipped: monsterCreatorDraft.equipped
+      }
+    }));
   };
   window.handleConfirmSaveAvatar = window.handleConfirmSaveMonster;
 
