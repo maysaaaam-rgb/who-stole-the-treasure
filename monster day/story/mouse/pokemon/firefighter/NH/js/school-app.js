@@ -1003,33 +1003,56 @@
     }
   };
 
-  function getStudentMascot(student) {
-    if (!student) return ELEMENTAL_AVATARS.IGNIS;
-    const s = typeof student === 'object' ? student : { id: String(student) };
-    const archetype = (s.archetype || "").toUpperCase();
-    if (ELEMENTAL_AVATARS[archetype]) return ELEMENTAL_AVATARS[archetype];
+  const DEFAULT_MASCOT = ELEMENTAL_AVATARS.IGNIS;
 
-    // Fallback to deterministic hash so adjacent cards have different creatures
-    const keys = Object.keys(ELEMENTAL_AVATARS);
-    const hash = String(s.id || s.name || "0")
-      .split("")
-      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return ELEMENTAL_AVATARS[keys[hash % keys.length]];
+  function getStudentMascot(student) {
+    if (!student) return DEFAULT_MASCOT;
+    try {
+      const s = typeof student === 'object' ? student : { id: String(student) };
+      const rawArchetype = String(s.archetype || s.element || "").toUpperCase();
+      if (ELEMENTAL_AVATARS[rawArchetype]) return ELEMENTAL_AVATARS[rawArchetype];
+
+      // Fallback to deterministic hash so adjacent cards have different creatures
+      const keys = Object.keys(ELEMENTAL_AVATARS);
+      if (!keys.length) return DEFAULT_MASCOT;
+      const hash = String(s.id || s.name || s.studentId || s.studentIdNumber || "0")
+        .split("")
+        .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      const idx = Math.abs(hash) % keys.length;
+      return ELEMENTAL_AVATARS[keys[idx]] || DEFAULT_MASCOT;
+    } catch (e) {
+      return DEFAULT_MASCOT;
+    }
   }
 
   const ELEMENTAL_SPECIES = ELEMENTAL_AVATARS;
   function getStudentSpeciesData(student) {
-    const mascot = getStudentMascot(student);
+    const mascot = getStudentMascot(student) || DEFAULT_MASCOT;
     return Object.assign({}, mascot, {
-      image: mascot.sprite,
-      fallback: mascot.sprite
+      image: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite,
+      fallback: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite
     });
+  }
+
+  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+  function getStudentArchetype(student) {
+    if (!student) return SPECIES_ARCHETYPES[0];
+    try {
+      const s = (typeof student === 'object') ? student : { id: String(student) };
+      if (s.archetype) return String(s.archetype).toLowerCase();
+      const code = String(s.id || s.name || s.studentId || "0").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      return SPECIES_ARCHETYPES[Math.abs(code) % SPECIES_ARCHETYPES.length] || SPECIES_ARCHETYPES[0];
+    } catch (e) {
+      return SPECIES_ARCHETYPES[0];
+    }
   }
 
   window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
   window.getStudentMascot = getStudentMascot;
   window.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
   window.getStudentSpeciesData = getStudentSpeciesData;
+  window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
+  window.getStudentArchetype = getStudentArchetype;
 
   // =========================================================================
   // CANONICAL STUDENT MONSTER AVATAR & STAGE RENDERER (3D RASTER MASCOTS)
@@ -1038,11 +1061,14 @@
     const size = options.size || 54;
     let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
     const student = (typeof store !== 'undefined' && store.getStudent) ? store.getStudent(studentId) : (typeof studentOrId === 'object' ? studentOrId : { id: studentId });
-    const mascot = getStudentMascot(student || { id: studentId });
+    const mascot = getStudentMascot(student || { id: studentId }) || DEFAULT_MASCOT;
+    const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
+    const name = (mascot && mascot.name) || 'Monster';
+    const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
 
     return '' +
       '<span class="roster-monster-avatar-wrap" style="display:inline-flex; align-items:center; justify-content:center; width:' + size + 'px; height:' + size + 'px; position:relative;">' +
-        '<img src="' + mascot.sprite + '" onerror="this.onerror=null; this.src=\'' + mascot.sprite + '\';" class="roster-monster-sprite" alt="' + mascot.name + '" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px ' + mascot.glow + ');" />' +
+        '<img src="' + sprite + '" onerror="this.onerror=null; this.src=\'' + sprite + '\';" class="roster-monster-sprite" alt="' + name + '" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px ' + glow + ');" />' +
       '</span>';
   };
   window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
@@ -1123,15 +1149,18 @@
     }
     const elementClass = 'element-' + element;
 
-    const mascot = getStudentMascot(s);
-    const archetype = (s.archetype || mascot.name || 'IGNIS').toUpperCase();
+    const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
+    const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
+    const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
+    const name = (mascot && mascot.name) || 'Monster';
+    const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toUpperCase();
     const archetypeClass = 'archetype-' + archetype.toLowerCase();
 
     // Isolated character sprite on illuminated pedestal (Purge static card graphics)
     const avatarMarkup = '' +
-      '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
-        '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
-        '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+      '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
+        '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
+        '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -3170,15 +3199,18 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
-              const mascot = getStudentMascot(s);
-              const archetype = (s.archetype || mascot.element || 'IGNIS').toLowerCase();
+              const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
+              const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
+              const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
+              const name = (mascot && mascot.name) || 'Monster';
+              const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
               const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
               const avatarMarkup = '' +
-                '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
-                  '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
-                  '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+                '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
+                  '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
+                  '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
                 '</div>';
 
               return '' +
@@ -3557,15 +3589,18 @@
         else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
         else elementKey = 'aqua';
       }
-      const mascot = getStudentMascot(s);
-      const archetype = (s.archetype || mascot.element || 'IGNIS').toLowerCase();
+      const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
+      const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
+      const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
+      const name = (mascot && mascot.name) || 'Monster';
+      const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
       const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
 
       const avatarMarkup = '' +
-        '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
-          '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
-          '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+        '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
+          '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
+          '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
         '</div>';
 
       return '' +
@@ -12787,7 +12822,10 @@ window.switchClassroomSubTab = function(subTab) {
     const liveStageRenderer = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterLiveStage : window.renderMonsterLiveStage;
     const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
     const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
-    const mascot = getStudentMascot(student);
+    const mascot = (student ? getStudentMascot(student) : null) || DEFAULT_MASCOT;
+    const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
+    const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
+    const name = (mascot && mascot.name) || 'Monster';
 
     if (box) {
       if (liveStageRenderer) {
@@ -12798,8 +12836,8 @@ window.switchClassroomSubTab = function(subTab) {
           size: 280,
           animated: monsterCreatorIsAnimated,
           student: student,
-          studentId: student.id,
-          archetype: student.archetype || mascot.element
+          studentId: student ? student.id : '',
+          archetype: (student && student.archetype) || (mascot && mascot.element) || 'IGNIS'
         });
       } else if (renderFn) {
         box.innerHTML = renderFn({
@@ -12814,12 +12852,12 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     if (miniAvatarBox) {
-      miniAvatarBox.innerHTML = '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 6px ' + mascot.glow + ');" />';
+      miniAvatarBox.innerHTML = '<img src="' + sprite + '" alt="' + name + '" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 6px ' + glow + ');" />';
     }
 
-    if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
-    if (stageEl) stageEl.textContent = mascot.name + ' · Level ' + mState.currentLevel;
-    if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+    if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || (student ? student.firstName + "'s Monster" : "Student Monster"));
+    if (stageEl) stageEl.textContent = name + ' · Level ' + (mState ? mState.currentLevel : 1);
+    if (descEl) descEl.textContent = '⭐ ' + (student && store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 0) + ' XP · ' + (mState && mState.isHatched ? 'Active Companion' : 'Mystery Egg');
 
     // Render Preview Background Swatches
     const bgSwatchesEl = document.getElementById('monster-preview-bg-swatches');
