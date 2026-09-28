@@ -1389,6 +1389,7 @@
     if (modal) {
       populateModalDropdowns();
       modal.classList.add('is-open');
+      document.body.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
     }
   };
@@ -1402,12 +1403,14 @@
     }
     const remainingOpen = document.querySelectorAll('.modal-overlay.is-open');
     if (remainingOpen.length === 0) {
+      document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
     }
   };
 
   window.closeAllModals = function() {
     document.querySelectorAll('.modal-overlay.is-open').forEach(m => m.classList.remove('is-open'));
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
   };
 
@@ -12968,7 +12971,7 @@ window.switchClassroomSubTab = function(subTab) {
       }
     }
 
-    if (isNone) {
+    if (isNone || itemId === 'horns-none' || itemId === 'no_horns' || itemId === 'none' || itemId === 'hat-none' || itemId === 'wings-none' || itemId === 'tail-none') {
       if (category === 'accessory') {
         monsterCreatorDraft.equipped.accessory = 'none';
         monsterCreatorDraft.equipped.glasses = 'none';
@@ -12977,6 +12980,11 @@ window.switchClassroomSubTab = function(subTab) {
         monsterCreatorDraft.equipped.hats = 'none';
       } else {
         monsterCreatorDraft.equipped[category] = 'none';
+      }
+      if (category === 'horns' || itemId === 'horns-none' || itemId === 'no_horns') {
+        monsterCreatorDraft.equipped.horns = 'none';
+        const hLayer = document.getElementById('layer-horns');
+        if (hLayer) hLayer.innerHTML = '';
       }
       renderEquippedList();
       renderItemsGrid(category);

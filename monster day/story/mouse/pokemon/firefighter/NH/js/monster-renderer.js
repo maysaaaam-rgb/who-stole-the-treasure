@@ -1568,42 +1568,49 @@
     const cW = g.cW;
     const scale = g.earScale;
 
-    let hornId = equipped.horns;
-    if (!hornId || hornId === 'default') {
-      if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
-      else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
-      else hornId = 'none';
-    }
+    const hornId = equipped ? equipped.horns : 'none';
+    const earId = equipped ? (equipped.ears || equipped.ear) : null;
+    const isNoHorns = !hornId || hornId === 'none' || hornId === 'horns-none' || hornId === 'no_horns' || hornId === 'null';
+    const hasExplicitEars = earId && earId !== 'none' && earId !== 'no_ears';
+    const hasEarHorns = hornId === 'horns-ears' || hornId === 'signature-ears' || hornId === 'ears';
 
-    // Left (Rear) Ear: Layered beneath body with volumetric darker tone
-    const rearEarMarkup = `
-      <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
-      <g filter="url(#plush-shadow)" class="monster-ear-rear">
-        <path d="M ${cX - cW * 0.44} ${topY + 12 * scale}
-                 C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
-                 C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
-                 C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
-              fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
-        <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
-        <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
-                 C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
-                 C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
-              fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
-      </g>
-    `;
+    // Only render floppy rear ear if explicit ears are equipped or signature ears horn is selected
+    // When "No Horns" is selected, the head dome MUST remain clean and earless!
+    const shouldRenderEar = hasExplicitEars || (!isNoHorns && hasEarHorns);
+
+    let rearEarMarkup = '';
+    if (shouldRenderEar) {
+      rearEarMarkup = `
+        <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
+        <g filter="url(#plush-shadow)" class="monster-ear-rear">
+          <path d="M ${cX - cW * 0.44} ${topY + 12 * scale}
+                   C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
+                   C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
+                   C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
+                fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
+          <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
+          <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
+                   C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
+                   C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
+                fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
+        </g>
+      `;
+    }
 
     // Rear Horn (if curved or crystal, renders behind skull)
     let rearHornMarkup = '';
-    if (hornId === 'horns-curved') {
-      rearHornMarkup = `
-        <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 10} ${cX - 46} ${topY - 4} ${cX - 40} ${topY + 16} C ${cX - 32} ${topY + 6} ${cX - 24} ${topY - 4} ${cX - 12} ${topY + 8} Z"
-              fill="${palette.shadowDark || palette.shadow}" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
-      `;
-    } else if (hornId === 'horns-crystal') {
-      rearHornMarkup = `
-        <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 16} ${cX - 42} ${topY - 30} ${cX - 32} ${topY - 38} C ${cX - 22} ${topY - 24} ${cX - 14} ${topY - 6} ${cX - 10} ${topY + 10} Z"
-              fill="url(#plush-crystal-horn)" stroke="#4c1d95" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
-      `;
+    if (!isNoHorns) {
+      if (hornId === 'horns-curved') {
+        rearHornMarkup = `
+          <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 10} ${cX - 46} ${topY - 4} ${cX - 40} ${topY + 16} C ${cX - 32} ${topY + 6} ${cX - 24} ${topY - 4} ${cX - 12} ${topY + 8} Z"
+                fill="${palette.shadowDark || palette.shadow}" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
+        `;
+      } else if (hornId === 'horns-crystal') {
+        rearHornMarkup = `
+          <path d="M ${cX - 18} ${topY + 8} C ${cX - 34} ${topY - 16} ${cX - 42} ${topY - 30} ${cX - 32} ${topY - 38} C ${cX - 22} ${topY - 24} ${cX - 14} ${topY - 6} ${cX - 10} ${topY + 10} Z"
+                fill="url(#plush-crystal-horn)" stroke="#4c1d95" stroke-width="2.2" opacity="0.85" filter="url(#plush-shadow)" />
+        `;
+      }
     }
 
     return `
@@ -1614,12 +1621,27 @@
 
   // --- HORNS LAYER (Horns & Crests) ---
   function renderHornsLayer(stage, hornId, palette, cX, g) {
-    if (!hornId || hornId === 'none' || hornId === 'horns-none') return '';
+    if (!hornId || hornId === 'none' || hornId === 'horns-none' || hornId === 'no_horns' || hornId === 'null') return '';
     const topY = g.topY;
     if (hornId === 'default') {
       if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
       else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
       else return '';
+    }
+
+    if (hornId === 'horns-ears' || hornId === 'signature-ears' || hornId === 'ears') {
+      const cW = g.cW;
+      const scale = g.earScale;
+      return `
+        <!-- Signature Floppy Ears Layer -->
+        <g filter="url(#plush-shadow)" class="monster-ear-front">
+          <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
+                   C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
+                   C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
+                   C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
+                fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+        </g>
+      `;
     }
 
     if (hornId === 'horns-small' || hornId === 'horns-nub') {
@@ -1706,33 +1728,38 @@
     const cW = g.cW;
     const scale = g.earScale;
 
-    let hornId = equipped.horns;
-    if (!hornId || hornId === 'default') {
-      if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
-      else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
-      else hornId = 'none';
+    const hornId = equipped ? equipped.horns : 'none';
+    const earId = equipped ? (equipped.ears || equipped.ear) : null;
+    const isNoHorns = !hornId || hornId === 'none' || hornId === 'horns-none' || hornId === 'no_horns' || hornId === 'null';
+    const hasExplicitEars = earId && earId !== 'none' && earId !== 'no_ears';
+    const hasEarHorns = hornId === 'horns-ears' || hornId === 'signature-ears' || hornId === 'ears';
+
+    // Only render front ear if explicit ears are equipped or signature ears horn is selected
+    // When "No Horns" is selected, the head dome MUST remain clean and earless!
+    const shouldRenderEar = hasExplicitEars || (!isNoHorns && hasEarHorns);
+
+    let frontEarMarkup = '';
+    if (shouldRenderEar) {
+      frontEarMarkup = `
+        <!-- Front Ear (Flared Root Fillet Transition) -->
+        <g filter="url(#plush-shadow)" class="monster-ear-front">
+          <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
+                   C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
+                   C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
+                   C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
+                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+          <!-- Front Inner Ear Cavity (Velvet Tone) -->
+          <path d="M ${cX + cW * 0.34 * scale} ${topY + 3 * scale}
+                   C ${cX + cW * 0.48 * scale} ${topY - 6 * scale} ${cX + cW * 0.68 * scale} ${topY - 25 * scale} ${cX + cW * 0.88 * scale} ${topY - 22 * scale}
+                   C ${cX + cW * 1.08 * scale} ${topY - 14 * scale} ${cX + cW * 0.82 * scale} ${topY + 1 * scale} ${cX + cW * 0.48 * scale} ${topY + 8 * scale} Z"
+                fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
+          <path d="M ${cX + cW * 0.50 * scale} ${topY - 18 * scale} Q ${cX + cW * 0.62 * scale} ${topY - 28 * scale} ${cX + cW * 0.82 * scale} ${topY - 26 * scale}"
+                fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
+        </g>
+      `;
     }
 
-    // Right (Front) Ear: Flared root transition blending into skull envelope with keylit velvet gradient and pastel cavity
-    const frontEarMarkup = `
-      <!-- Front Ear (Flared Root Fillet Transition) -->
-      <g filter="url(#plush-shadow)" class="monster-ear-front">
-        <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
-                 C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
-                 C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
-                 C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
-              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-        <!-- Front Inner Ear Cavity (Velvet Tone) -->
-        <path d="M ${cX + cW * 0.34 * scale} ${topY + 3 * scale}
-                 C ${cX + cW * 0.48 * scale} ${topY - 6 * scale} ${cX + cW * 0.68 * scale} ${topY - 25 * scale} ${cX + cW * 0.88 * scale} ${topY - 22 * scale}
-                 C ${cX + cW * 1.08 * scale} ${topY - 14 * scale} ${cX + cW * 0.82 * scale} ${topY + 1 * scale} ${cX + cW * 0.48 * scale} ${topY + 8 * scale} Z"
-              fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
-        <path d="M ${cX + cW * 0.50 * scale} ${topY - 18 * scale} Q ${cX + cW * 0.62 * scale} ${topY - 28 * scale} ${cX + cW * 0.82 * scale} ${topY - 26 * scale}"
-              fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
-      </g>
-    `;
-
-    if (!includeHorns || hornId === 'none' || hornId === 'horns-none') {
+    if (!includeHorns || isNoHorns) {
       return frontEarMarkup;
     }
 

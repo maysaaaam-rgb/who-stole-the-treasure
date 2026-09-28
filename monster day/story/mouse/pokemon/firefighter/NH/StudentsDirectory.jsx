@@ -165,6 +165,7 @@ export function MonsterBodyRenderer({
   const chosenEyes = eyes || face || 'default';
   const stageKey = level === 1 ? 'egg' : (level === 2 ? 'cracking_egg' : (level >= 7 ? 'ultimate' : (level >= 4 ? 'growing' : (stage || 'baby'))));
 
+  const isNoHorns = !horns || horns === 'none' || horns === 'no_horns' || horns === 'horns-none' || horns === 'null';
   const equipped = {
     body: `body-${normColor}`,
     colors: `color-${normColor}`,
@@ -172,7 +173,7 @@ export function MonsterBodyRenderer({
     face: chosenEyes,
     eyes: chosenEyes,
     mouth: mouth || 'smile',
-    horns: horns || 'none',
+    horns: isNoHorns ? 'none' : horns,
     wings: wings || 'none',
     tail: tail || 'none',
     tails: tail || 'none',
@@ -297,7 +298,7 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
       )}
 
       {/* z-60: Horns & Crests */}
-      {equipped.horns && equipped.horns !== 'none' && (
+      {equipped.horns && equipped.horns !== 'none' && equipped.horns !== 'no_horns' && equipped.horns !== 'horns-none' && (
         <div id="layer-horns" style={{ position: 'absolute', inset: 0, zIndex: 60, pointerEvents: 'none' }}>
           <img src={`assets/packs/items/${equipped.horns}.png`} alt="Horns" className="layer-asset" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         </div>
