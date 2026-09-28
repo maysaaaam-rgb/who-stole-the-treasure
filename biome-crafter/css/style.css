@@ -1835,7 +1835,495 @@ body {
   }
 }
 
-/* Mini Blueprint 3x3 for Stage 3 Left Recipe Card */
+/* =========================================================================
+   STAGE 3: AUTHENTIC SANDBOX 3x3 CRAFTING TABLE & BLACKSMITH'S TOME
+   ========================================================================= */
+.sandbox-forge-layout {
+  display: grid !important;
+  grid-template-columns: 310px 1fr 60px 220px !important;
+  gap: 20px !important;
+  align-items: center !important;
+  margin-top: 14px !important;
+}
+
+@media (max-width: 1200px) {
+  .sandbox-forge-layout {
+    grid-template-columns: 290px 1fr !important;
+    gap: 20px !important;
+  }
+  .forge-flow-arrow-container {
+    display: none !important;
+  }
+  .forge-output-chamber {
+    grid-column: span 2;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 860px) {
+  .sandbox-forge-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .forge-output-chamber {
+    grid-column: span 1;
+  }
+}
+
+/* Blacksmith's Discovery Tome (Left Panel) */
+.blacksmith-tome-panel {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 2.5px solid #334155 !important;
+  border-bottom: 6px solid #1e293b !important;
+  border-radius: 24px !important;
+  padding: 18px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.tome-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+
+.tome-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.tome-progress-tag {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #fef08a;
+  letter-spacing: 0.4px;
+}
+
+.tome-recipe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tome-recipe-list::-webkit-scrollbar {
+  width: 6px;
+}
+.tome-recipe-list::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 6px;
+}
+
+.tome-item-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  user-select: none;
+  transition: transform 0.12s var(--spring-snap), border-color 0.15s ease;
+}
+
+.tome-item-card.is-discovered {
+  background: #1e293b;
+  border: 1.5px solid #10b981;
+  border-bottom: 3.5px solid #047857;
+}
+
+.tome-item-card.is-discovered:hover {
+  transform: translateX(3px);
+  border-color: #34d399;
+}
+
+.tome-item-card.is-undiscovered {
+  background: #090e17;
+  border: 1.5px dashed #334155;
+  opacity: 0.65;
+}
+
+.tome-card-thumb-wrap {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+}
+
+.tome-card-thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+}
+
+.tome-mystery-icon {
+  font-size: 1.25rem;
+  color: #64748b;
+}
+
+.tome-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tome-card-name {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tome-card-sub {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.tome-card-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.tome-check-pill {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #34d399;
+}
+
+.tome-lock-pill {
+  background: rgba(51, 65, 85, 0.5);
+  border: 1px solid #475569;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+/* Center 3x3 Oak Crafting Mat */
+.oak-crafting-mat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #1e293b 0%, #0b1120 100%);
+  border: 4px solid #78350f;
+  border-bottom: 8px solid #451a03;
+  border-radius: 26px;
+  padding: 18px 24px;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.12), 0 20px 40px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.oak-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.oak-table-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #f59e0b;
+  letter-spacing: 0.5px;
+}
+
+.btn-clear-small {
+  padding: 6px 14px !important;
+  font-size: 0.82rem !important;
+  border-radius: 10px !important;
+}
+
+.oak-frame {
+  margin: 0 auto;
+}
+
+.oak-sockets-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 96px) !important;
+  grid-template-rows: repeat(3, 96px) !important;
+  gap: 12px !important;
+}
+
+.oak-sockets-grid .crafting-socket {
+  width: 96px !important;
+  height: 96px !important;
+  min-width: 96px !important;
+  min-height: 96px !important;
+  background: #090e17 !important;
+  box-shadow: inset 0 4px 10px #000000 !important;
+  border: 2px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  position: relative !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.18s var(--spring-snap) !important;
+}
+
+.oak-sockets-grid .crafting-socket:hover {
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: inset 0 4px 12px #000000, 0 0 14px rgba(56, 189, 248, 0.25) !important;
+  transform: translateY(-2px) !important;
+}
+
+.oak-sockets-grid .crafting-socket:active {
+  transform: translateY(2px) !important;
+  box-shadow: inset 0 6px 14px #000000 !important;
+}
+
+.oak-sockets-grid .crafting-socket.is-slotted {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  box-shadow: inset 0 2px 8px #000000, 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Forge Flow Arrow */
+.forge-flow-arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.forge-flow-arrow {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  transition: color 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+.forge-flow-arrow .arrow-svg {
+  width: 44px;
+  height: 44px;
+}
+
+.forge-flow-arrow.is-active {
+  color: #f59e0b;
+  filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.85));
+  animation: flowArrowPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes flowArrowPulse {
+  0% { transform: translateX(0) scale(0.96); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6)); }
+  100% { transform: translateX(6px) scale(1.08); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.95)); }
+}
+
+/* Output Anvil Chamber (Right Stage) */
+.forge-output-chamber {
+  background: #0f172a;
+  border: 2.5px solid #334155;
+  border-bottom: 6px solid #1e293b;
+  border-radius: 24px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.output-chamber-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.output-chamber-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.output-status-pill {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid #475569;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+.output-status-pill.is-active {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #34d399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* 140px x 140px Output Anvil Socket */
+.output-anvil-socket {
+  width: 140px !important;
+  height: 140px !important;
+  min-width: 140px !important;
+  min-height: 140px !important;
+  background: #090e17;
+  border: 3px dashed #334155;
+  border-radius: 24px;
+  box-shadow: inset 0 4px 14px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  transition: all 0.22s var(--spring-snap);
+}
+
+.output-anvil-socket.is-craftable {
+  border: 3px solid #f59e0b !important;
+  border-bottom: 7px solid #b45309 !important;
+  background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.28) 0%, #090e17 90%) !important;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.65), inset 0 0 18px rgba(245, 158, 11, 0.3) !important;
+  cursor: pointer !important;
+  animation: craftablePop 1.8s ease-in-out infinite alternate !important;
+}
+
+.output-anvil-socket.is-craftable:hover {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.85), inset 0 0 22px rgba(245, 158, 11, 0.45) !important;
+}
+
+.output-anvil-socket.is-craftable:active {
+  transform: scale(0.96) translateY(3px);
+  border-bottom-width: 3px !important;
+}
+
+@keyframes craftablePop {
+  0% { transform: scale(1); box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); }
+  100% { transform: scale(1.03); box-shadow: 0 0 40px rgba(245, 158, 11, 0.85); }
+}
+
+.output-pedestal-disc {
+  width: 140px;
+  height: 18px;
+  margin-top: -8px;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.5) 0%, transparent 72%) !important;
+  border-radius: 50%;
+}
+
+.output-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0.4;
+}
+
+.output-empty-icon {
+  font-size: 2.2rem;
+}
+
+.output-empty-hint {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.output-item-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.output-item-img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.8));
+  animation: floatOutput 2.5s ease-in-out infinite;
+}
+
+@keyframes floatOutput {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.output-item-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.output-item-xp {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #fef08a;
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid #f59e0b;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.btn-claim-output {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  border-bottom: 5px solid #047857 !important;
+  border-radius: 14px !important;
+  font-size: 0.95rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  padding: 12px 18px !important;
+  cursor: pointer !important;
+  box-shadow: 0 5px 0 #047857, 0 0 20px rgba(16, 185, 129, 0.6) !important;
+  transition: transform 0.08s var(--spring-snap), box-shadow 0.08s var(--spring-snap) !important;
+  animation: readyPulse 1.5s infinite alternate !important;
+}
+
+.btn-claim-output:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-claim-output:active {
+  transform: translateY(3px) !important;
+  border-bottom-width: 2px !important;
+  box-shadow: 0 2px 0 #047857, 0 0 10px rgba(16, 185, 129, 0.4) !important;
+}
 .mini-blueprint-3x3 {
   display: grid;
   grid-template-columns: repeat(3, 30px);
