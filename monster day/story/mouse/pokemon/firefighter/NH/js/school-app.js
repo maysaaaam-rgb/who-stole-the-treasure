@@ -12491,47 +12491,21 @@ window.switchClassroomSubTab = function(subTab) {
       id: 'explorer_vest',
       name: 'Explorer Vest',
       svgMarkup: `
-        <g id="clothing-explorer-vest" filter="url(#mf-shadow)">
-          <!-- Left Vest Flank Panel (Contoured to Chibi Body) -->
-          <path d="M 82 108 
-                   C 66 110, 52 120, 50 134 
-                   C 49 146, 56 156, 66 160 
-                   L 86 160 
-                   C 88 152, 88 136, 86 120 
-                   C 85 114, 84 110, 82 108 Z" 
-                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
-
-          <!-- Right Vest Flank Panel (Contoured to Chibi Body) -->
-          <path d="M 118 108 
-                   C 134 110, 148 120, 150 134 
-                   C 151 146, 144 156, 134 160 
-                   L 114 160 
-                   C 112 152, 112 136, 114 120 
-                   C 115 114, 116 110, 118 108 Z" 
-                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
-
-          <!-- Lapel Trim & Stitch Lines -->
-          <path d="M 82 108 L 86 120 L 86 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
-          <path d="M 118 108 L 114 120 L 114 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
-
-          <!-- Left Utility Flap Pocket -->
-          <path d="M 58 138 C 58 136, 76 136, 76 138 L 75 150 C 75 152, 59 152, 59 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <polygon points="57,138 67,143 77,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
-          <circle cx="67" cy="142" r="1.5" fill="#facc15" />
-
-          <!-- Right Utility Flap Pocket -->
-          <path d="M 124 138 C 124 136, 142 136, 142 138 L 141 150 C 141 152, 125 152, 125 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <polygon points="123,138 133,143 143,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
-          <circle cx="133" cy="142" r="1.5" fill="#facc15" />
-
-          <!-- Brass Rivets / Snap Buttons -->
-          <circle cx="85" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
-          <circle cx="85" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
-          <circle cx="85" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
-
-          <circle cx="115" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
-          <circle cx="115" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
-          <circle cx="115" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+        <g id="clothing-explorer-vest">
+          <!-- Left Vest Panel (Follows Torso Curve) -->
+          <path d="M 64 102 C 60 120, 62 142, 76 152 C 86 154, 88 138, 86 112 C 82 104, 72 100, 64 102 Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <!-- Right Vest Panel -->
+          <path d="M 136 102 C 140 120, 138 142, 124 152 C 114 154, 112 138, 114 112 C 118 104, 128 100, 136 102 Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <!-- Leather Collar Trim -->
+          <path d="M 64 102 C 72 108, 84 112, 88 114 L 86 122 C 80 118, 70 112, 64 104 Z" fill="#92400e" />
+          <path d="M 136 102 C 128 108, 116 112, 112 114 L 114 122 C 120 118, 130 112, 136 104 Z" fill="#92400e" />
+          <!-- Brass Fastener Rivets -->
+          <circle cx="84" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
+          <circle cx="82" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
+          <circle cx="116" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
+          <circle cx="118" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
         </g>
       `
     },
