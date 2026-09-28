@@ -275,7 +275,7 @@
         const stageLabel = s.level === 1 ? 'Mystery Egg' : s.level === 2 ? 'Cracking Egg' : s.level === 7 ? 'Ultimate Apex' : `Lvl ${s.level} Companion`;
 
         return `
-          <div class="student-directory-card student-card element-${s.archetype} archetype-${s.archetype}" data-student-id="${s.id}" style="position:relative; z-index:1;">
+          <div class="student-directory-card student-card relative isolate rounded-2xl bg-white element-${s.archetype} archetype-${s.archetype}" data-student-id="${s.id}" style="position:relative; isolation:isolate;">
             <div class="card-overlay-top" style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
               <div style="display:flex; gap:6px; align-items:center;">
                 <span class="student-card-status-dot status-active"></span>
@@ -296,7 +296,8 @@
                 <img src="${sprite}" alt="${s.firstName}'s Monster" class="w-full h-full object-contain filter drop-shadow-md mascot-sprite-img monster-hero-3d" loading="lazy" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));" />
               </div>
 
-              <span class="stage-level-badge" style="margin-top:6px; display:inline-block; position:relative; z-index:1;">Lvl ${s.level} • ${stageLabel}</span>
+              <!-- Evolution Badge -->
+              <span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white" style="margin-top:6px; display:inline-block;">Lvl ${s.level} • ${stageLabel}</span>
             </div>
 
             <div class="student-card-content" style="width:100%; margin-top:12px;">

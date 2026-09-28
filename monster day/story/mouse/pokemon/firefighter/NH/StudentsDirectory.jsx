@@ -337,7 +337,7 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
   const archetypeBadgeStyle = getArchetypeBadgeClass(archetype);
 
   return (
-    <div className={`student-directory-card student-card element-${archetype} archetype-${archetype}`} style={{ position: 'relative', zIndex: 1 }}>
+    <div className={`student-directory-card student-card relative isolate rounded-2xl bg-white element-${archetype} archetype-${archetype}`} style={{ position: 'relative', isolation: 'isolate' }}>
       {/* Top Overlay Badges */}
       <div className="card-overlay-top" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -391,8 +391,8 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
           />
         </div>
 
-        {/* Level badge strictly scoped with relative positioning to prevent stacking leak */}
-        <span className="stage-level-badge" style={{ marginTop: '6px', display: 'inline-block', position: 'relative', zIndex: 1 }}>
+        {/* Evolution Badge */}
+        <span className="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white" style={{ marginTop: '6px', display: 'inline-block' }}>
           Lvl {level} • {stageName}
         </span>
       </div>
