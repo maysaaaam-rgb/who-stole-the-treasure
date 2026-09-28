@@ -335,6 +335,21 @@
     function saveClosetChanges() {
       if (!currentEditingStudent) return;
       currentEditingStudent.equipped = Object.assign({}, draftEquipped);
+      if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        const stage = currentEditingStudent.level === 1 ? 'egg' : (currentEditingStudent.level === 2 ? 'cracking_egg' : 'baby');
+        const color = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || 'blue';
+        const svg = window.MonsterRenderer.renderMonsterSVG({
+          stage: stage,
+          color: color,
+          equipped: draftEquipped,
+          size: 200,
+          animated: true,
+          isAvatar: true
+        });
+        if (svg) {
+          currentEditingStudent.custom_avatar_url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+      }
       closeClosetModal();
       renderCards();
     }
