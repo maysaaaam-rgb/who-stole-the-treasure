@@ -2156,6 +2156,8 @@
     });
   }
 
+  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+
   function getStudentArchetype(student) {
     if (!student) return SPECIES_ARCHETYPES[0];
     const s = (typeof student === 'object') ? student : { id: String(student) };
