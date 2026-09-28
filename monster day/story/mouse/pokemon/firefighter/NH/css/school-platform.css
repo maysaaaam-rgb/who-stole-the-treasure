@@ -3375,6 +3375,10 @@ button, input, select, textarea {
   padding-top: 10px;
 }
 
+.z-\[9999\] {
+  z-index: 9999 !important;
+}
+
 /* MODAL STYLES */
 .modal-overlay {
   position: fixed;

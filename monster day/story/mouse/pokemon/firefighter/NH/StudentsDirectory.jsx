@@ -598,25 +598,45 @@ export function ClosetCustomizerModal({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto pointer-events-auto"
-      style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(6, 9, 17, 0.75)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden"
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
     >
       <div 
-        className="relative z-10 w-full max-w-5xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-        style={{ background: 'rgba(15, 23, 42, 0.96)', borderRadius: '24px', border: '1.5px solid rgba(56, 189, 248, 0.35)', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8)', padding: '24px' }}
+        className="relative z-10 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        style={{ background: '#ffffff', borderRadius: '24px', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.4)', padding: '24px' }}
       >
         
         {/* Modal Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '14px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px', marginBottom: '18px' }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc' }}>
+            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#0f172a' }}>
               🎨 Monster Studio &amp; Customizer: {student.firstName || student.name}
             </h2>
-            <p style={{ margin: '4px 0 0 0', fontSize: '0.84rem', color: '#94a3b8' }}>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.84rem', color: '#64748b' }}>
               Select colors, horns, and gear. Updates reflect instantly in live preview.
             </p>
           </div>
-          <button type="button" className="modal-close-btn" onClick={onClose} style={{ cursor: 'pointer' }}>✕</button>
+          <button 
+            type="button" 
+            className="modal-close-btn" 
+            onClick={onClose} 
+            style={{ 
+              cursor: 'pointer',
+              background: '#f1f5f9',
+              border: 'none',
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#64748b',
+              fontWeight: 700,
+              fontSize: '1rem'
+            }}
+          >
+            ✕
+          </button>
         </div>
 
         {/* 2-Column Customizer Body */}
@@ -676,7 +696,7 @@ export function ClosetCustomizerModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             
             {/* Category Tab Bar */}
-            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px', borderBottom: '1px solid #e2e8f0' }}>
               {TABS.map(tab => (
                 <button
                   key={tab.id}
@@ -689,9 +709,9 @@ export function ClosetCustomizerModal({
                     fontWeight: 700, 
                     borderRadius: '8px', 
                     cursor: 'pointer',
-                    background: activeTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.6)',
-                    color: activeTab === tab.id ? '#38bdf8' : '#94a3b8',
-                    border: activeTab === tab.id ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.05)'
+                    background: activeTab === tab.id ? 'rgba(56, 189, 248, 0.15)' : '#f1f5f9',
+                    color: activeTab === tab.id ? '#0284c7' : '#64748b',
+                    border: activeTab === tab.id ? '1px solid #0284c7' : '1px solid #e2e8f0'
                   }}
                 >
                   {tab.icon} {tab.label}
@@ -727,8 +747,8 @@ export function ClosetCustomizerModal({
                     onClick={() => isUnlocked && handleSelectItem(targetField, item.id)}
                     disabled={!isUnlocked}
                     style={{
-                      background: isSelected ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.75)',
-                      border: isSelected ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                      background: isSelected ? 'rgba(56, 189, 248, 0.12)' : '#f8fafc',
+                      border: isSelected ? '2px solid #0284c7' : '1px solid #e2e8f0',
                       borderRadius: '12px',
                       padding: '12px',
                       textAlign: 'center',
@@ -745,23 +765,36 @@ export function ClosetCustomizerModal({
                     }}
                   >
                     {!isUnlocked && (
-                      <span className="monster-item-lock-pill" style={{ position: 'absolute', top: '6px', right: '6px', fontSize: '0.65rem' }}>
+                      <span className="monster-item-lock-pill" style={{ position: 'absolute', top: '6px', right: '6px', fontSize: '0.65rem', background: '#e2e8f0', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
                         {lockLabel}
                       </span>
                     )}
                     {isSelected && (
-                      <span style={{ position: 'absolute', top: '6px', left: '6px', color: '#38bdf8', fontWeight: 900, fontSize: '0.9rem' }}>✓</span>
+                      <span style={{ position: 'absolute', top: '6px', left: '6px', color: '#0284c7', fontWeight: 900, fontSize: '0.9rem' }}>✓</span>
                     )}
                     <div style={{ fontSize: '2rem', margin: '4px 0', lineHeight: 1 }}>{item.icon || '✨'}</div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#f1f5f9' }}>{item.name}</div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a' }}>{item.name}</div>
                   </button>
                 );
               })}
             </div>
 
             {/* Modal Actions */}
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px' }}>
-              <button type="button" className="btn-sm-secondary" onClick={onClose} style={{ cursor: 'pointer' }}>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '12px', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+              <button 
+                type="button" 
+                className="btn-sm-secondary" 
+                onClick={onClose} 
+                style={{ 
+                  cursor: 'pointer',
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '8px',
+                  padding: '10px 18px',
+                  fontWeight: 600
+                }}
+              >
                 Cancel
               </button>
               <button 
