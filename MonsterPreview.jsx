@@ -85,65 +85,108 @@ export default function MonsterPreview({
       className={`monster-preview-layer-stack relative aspect-square flex items-center justify-center overflow-hidden ${className}`}
       style={{ width: `${size}px`, height: `${size}px`, position: 'relative', margin: '0 auto', ...style }}
     >
-      {/* 0. Pedestal Base */}
+      {/* 0. Ambient Aura & Orbital Glow Ring (z-10) directly behind monster's midsection */}
       <div 
-        className="pedestal-disk absolute bottom-3 w-3/4 h-5 z-10" 
+        className="orbital-glow-ring absolute z-10 pointer-events-none rounded-full"
         style={{ 
           position: 'absolute', 
-          bottom: '12px', 
-          width: '75%', 
-          height: '18px', 
+          top: '44%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '76%', 
+          height: '76%', 
+          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 72%)', 
           zIndex: 10,
-          background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.45) 0%, rgba(245, 158, 11, 0.2) 50%, transparent 75%)',
-          borderRadius: '50%'
+          pointerEvents: 'none'
         }} 
       />
 
-      {/* 1. Base Body (Clean, Earless/Hornless Dome) */}
-      <img 
-        src={`assets/monsters/base/body_${stage}_${normColor}.webp`} 
-        className="absolute inset-0 w-full h-full object-contain z-20"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 20 }}
-        alt="Base Body"
-        onError={(e) => {
-          e.currentTarget.src = getMonsterAsset(student.archetype, level);
-        }}
+      {/* 1. Pedestal Base - locked to bottom: 12% */}
+      <div 
+        className="pedestal-disk absolute z-10 pointer-events-none" 
+        style={{ 
+          position: 'absolute', 
+          bottom: '12%', 
+          left: '50%', 
+          transform: 'translateX(-50%)', 
+          width: '76%', 
+          height: '22px', 
+          zIndex: 10, 
+          background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)', 
+          borderRadius: '50%' 
+        }} 
       />
 
-      {/* 2. Horns / Ears Layer (ONLY render if an item is selected; omit if null or 'no_horns') */}
-      {!isNoHorns && (
+      {/* 2. Base Monster Assembly - shifted up ~9% so bottom paws sit directly on pedestal surface */}
+      <div 
+        className="relative z-20 w-full h-full flex items-center justify-center"
+        style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', transform: 'translateY(-9%)' }}
+      >
+        {/* Base Body (Clean, Earless/Hornless Dome) */}
         <img 
-          src={`assets/monsters/horns/${rawHorns}.webp`} 
-          className="absolute inset-0 w-full h-full object-contain z-30 pointer-events-none"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 30, pointerEvents: 'none' }}
-          alt="Equipped Horns"
+          src={`assets/monsters/base/body_${stage}_${normColor}.webp`} 
+          className="absolute inset-0 w-full h-full object-contain z-20"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 20 }}
+          alt="Base Body"
           onError={(e) => {
-            e.currentTarget.style.display = 'none';
+            e.currentTarget.src = getMonsterAsset(student.archetype, level);
           }}
         />
-      )}
 
-      {/* 3. Clothing Layer */}
-      {draft.clothing && draft.clothing !== 'none' && (
-        <img 
-          src={`assets/packs/items/${draft.clothing}.png`} 
-          className="absolute inset-0 w-full h-full object-contain z-35 pointer-events-none"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 35, pointerEvents: 'none' }}
-          alt="Equipped Clothing"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-        />
-      )}
+        {/* Horns / Ears Layer (ONLY render if an item is selected; omit if null or 'no_horns') */}
+        {!isNoHorns && (
+          <img 
+            src={`assets/monsters/horns/${rawHorns}.webp`} 
+            className="absolute inset-0 w-full h-full object-contain z-30 pointer-events-none"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 30, pointerEvents: 'none' }}
+            alt="Equipped Horns"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        )}
 
-      {/* 4. Headwear Layer */}
-      {draft.hat && draft.hat !== 'none' && (
-        <img 
-          src={`assets/packs/items/${draft.hat}.png`} 
-          className="absolute inset-0 w-full h-full object-contain z-40 pointer-events-none"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 40, pointerEvents: 'none' }}
-          alt="Equipped Hat"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-        />
-      )}
+        {/* Clothing Layer */}
+        {draft.clothing && draft.clothing !== 'none' && (
+          <img 
+            src={`assets/packs/items/${draft.clothing}.png`} 
+            className="absolute inset-0 w-full h-full object-contain z-35 pointer-events-none"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 35, pointerEvents: 'none' }}
+            alt="Equipped Clothing"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+        )}
+
+        {/* Facial Accessories & Glasses (slot-glasses: top: 36%, left: 50%, width: 58%, z-index: 42) */}
+        {draft.glasses && draft.glasses !== 'none' && (
+          <img 
+            src={`assets/packs/items/${draft.glasses}.png`} 
+            className="slot-glasses absolute object-contain pointer-events-none"
+            style={{ 
+              position: 'absolute', 
+              top: '36%', 
+              left: '50%', 
+              transform: 'translate(-50%, -50%)', 
+              width: '58%', 
+              zIndex: 42, 
+              pointerEvents: 'none' 
+            }}
+            alt="Equipped Glasses"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+        )}
+
+        {/* Headwear Layer */}
+        {draft.hat && draft.hat !== 'none' && (
+          <img 
+            src={`assets/packs/items/${draft.hat}.png`} 
+            className="absolute inset-0 w-full h-full object-contain z-40 pointer-events-none"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 40, pointerEvents: 'none' }}
+            alt="Equipped Hat"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+        )}
+      </div>
     </div>
   );
 }

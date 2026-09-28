@@ -290,10 +290,10 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
         <div id="layer-face" style={{ position: 'absolute', inset: 0, zIndex: 40, pointerEvents: 'none' }} />
       )}
 
-      {/* z-50: Glasses / Eyewear */}
+      {/* z-50: Glasses / Eyewear (slot-glasses: top: 36%, left: 50%, width: 58%, z-index: 42) */}
       {equipped.glasses && equipped.glasses !== 'none' && (
-        <div id="layer-glasses" style={{ position: 'absolute', inset: 0, zIndex: 50, pointerEvents: 'none' }}>
-          <img src={`assets/packs/items/${equipped.glasses}.png`} alt="Glasses" className="layer-asset" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+        <div id="layer-glasses" className="slot-glasses" style={{ position: 'absolute', top: '36%', left: '50%', transform: 'translate(-50%, -50%)', width: '58%', zIndex: 42, pointerEvents: 'none' }}>
+          <img src={`assets/packs/items/${equipped.glasses}.png`} alt="Glasses" className="layer-asset" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         </div>
       )}
 
@@ -648,43 +648,78 @@ export function ClosetCustomizerModal({
               Live Avatar Preview
             </div>
             
-            <div className="relative w-full aspect-square max-w-[260px] mx-auto rounded-2xl bg-slate-950 flex items-center justify-center overflow-hidden shadow-inner border border-slate-800/80" style={{ position: 'relative', width: '240px', height: '240px', margin: '0 auto' }}>
-              {/* 1. Pedestal Base */}
-              <div 
-                className="pedestal-disk" 
-                id="preview-pedestal"
-                style={{ 
-                  position: 'absolute', 
-                  bottom: '14px', 
-                  left: '12%', 
-                  width: '76%', 
-                  height: '20px', 
-                  zIndex: 10,
-                  background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.5) 0%, rgba(245, 158, 11, 0.2) 50%, transparent 75%)',
-                  borderRadius: '50%'
-                }} 
-              />
+            <div className="relative w-64 h-64 mx-auto rounded-3xl bg-slate-950 flex items-center justify-center p-4 overflow-hidden shadow-inner border border-slate-800/80" style={{ position: 'relative', width: '256px', height: '256px', margin: '0 auto' }}>
+              {/* Container maintaining a 1:1 aspect ratio with centered anchor */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                {/* 1. Ambient Aura & Orbital Glow Ring (z-10) directly behind monster's midsection */}
+                <div 
+                  className="orbital-glow-ring absolute z-10 pointer-events-none rounded-full"
+                  style={{ 
+                    position: 'absolute', 
+                    top: '44%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)', 
+                    width: '76%', 
+                    height: '76%', 
+                    background: 'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 72%)', 
+                    zIndex: 10,
+                    pointerEvents: 'none'
+                  }} 
+                />
 
-              {/* 2. Base Monster Body with Live Color Tint & Features */}
-              <MonsterCompositeView 
-                stage={stageKey}
-                color={customizationDraft.furColor}
-                furColor={customizationDraft.furColor}
-                eyes={customizationDraft.eyes}
-                face={customizationDraft.eyes}
-                mouth={customizationDraft.mouth}
-                horns={customizationDraft.horns}
-                tail={customizationDraft.tail}
-                wings={customizationDraft.wings}
-                clothing={customizationDraft.clothing}
-                aura={customizationDraft.aura}
-                hat={customizationDraft.hat}
-                glasses={customizationDraft.glasses}
-                level={currentLevel}
-                archetype={student.monster_archetype || student.archetype || 'ignis'}
-                className="w-full h-full object-contain relative z-20"
-                style={{ width: '100%', height: '100%', position: 'relative', zIndex: 20 }}
-              />
+                {/* 2. Golden Pedestal Base - locked to bottom: 12% */}
+                <div 
+                  className="pedestal-disk" 
+                  id="preview-pedestal"
+                  style={{ 
+                    position: 'absolute', 
+                    bottom: '12%', 
+                    left: '50%', 
+                    transform: 'translateX(-50%)', 
+                    width: '76%', 
+                    height: '22px', 
+                    zIndex: 10,
+                    background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)',
+                    borderRadius: '50%',
+                    pointerEvents: 'none'
+                  }} 
+                />
+
+                {/* 3. Base Monster Assembly - shifted up ~9% so bottom paws sit directly on pedestal surface */}
+                <div 
+                  className="relative z-20 w-full h-full flex items-center justify-center"
+                  style={{ 
+                    position: 'relative', 
+                    zIndex: 20, 
+                    width: '100%', 
+                    height: '100%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    transform: 'translateY(-9%)' 
+                  }}
+                >
+                  <MonsterCompositeView 
+                    stage={stageKey}
+                    color={customizationDraft.furColor}
+                    furColor={customizationDraft.furColor}
+                    eyes={customizationDraft.eyes}
+                    face={customizationDraft.eyes}
+                    mouth={customizationDraft.mouth}
+                    horns={customizationDraft.horns}
+                    tail={customizationDraft.tail}
+                    wings={customizationDraft.wings}
+                    clothing={customizationDraft.clothing}
+                    aura={customizationDraft.aura}
+                    hat={customizationDraft.hat}
+                    glasses={customizationDraft.glasses}
+                    level={currentLevel}
+                    archetype={student.monster_archetype || student.archetype || 'ignis'}
+                    className="w-full h-full object-contain relative z-20"
+                    style={{ width: '100%', height: '100%', position: 'relative', zIndex: 20 }}
+                  />
+                </div>
+              </div>
             </div>
 
             <div style={{ marginTop: '14px', fontSize: '0.92rem', fontWeight: 700, color: '#e2e8f0' }}>
