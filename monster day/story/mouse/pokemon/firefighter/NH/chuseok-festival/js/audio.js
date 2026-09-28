@@ -1,8 +1,8 @@
 /**
  * CHUSEOK FESTIVAL: KOREA'S HARVEST FESTIVAL
- * Web Audio API Procedural Synthesizer & Calibrated Speech Narration Engine
- * Polyphonic musical chords, traditional Korean Janggu drum, wooden loom clacks,
- * mystery chest reveals, spinning wheel ticks, and calibrated TTS narration.
+ * ElevenLabs v2-Calibrated Speech Narration & Procedural Web Audio Engine
+ * Supports SSML-directed speech with real pause handling (<break time="..."/>),
+ * exact character personas (Sarah, Marcus, Callum), and polyphonic acoustic synthesis.
  * Zero external audio file dependencies.
  */
 
@@ -14,7 +14,7 @@
       this.ctx = null;
       this.isMuted = false;
       this.hasUserInteracted = false;
-      this.currentUtterance = null;
+      this.activeUtterances = [];
 
       const unlockAudio = () => {
         if (!this.hasUserInteracted) {
@@ -54,7 +54,7 @@
       this.initContext();
       if (!this.ctx) return;
 
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50];
       const now = this.ctx.currentTime;
 
       notes.forEach((freq, idx) => {
@@ -86,8 +86,8 @@
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(246.94, now); // B3
-      osc.frequency.linearRampToValueAtTime(220.00, now + 0.28); // A3
+      osc.frequency.setValueAtTime(246.94, now);
+      osc.frequency.linearRampToValueAtTime(220.00, now + 0.28);
 
       gain.gain.setValueAtTime(0.001, now);
       gain.gain.linearRampToValueAtTime(0.16, now + 0.03);
@@ -134,7 +134,6 @@
       if (!this.ctx) return;
 
       const now = this.ctx.currentTime;
-      // Metallic latch click
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'square';
@@ -150,8 +149,7 @@
       osc.start(now);
       osc.stop(now + 0.1);
 
-      // Shimmer chord
-      [587.33, 880, 1174.66].forEach((f, i) => { // D5, A5, D6
+      [587.33, 880, 1174.66].forEach((f, i) => {
         const chime = this.ctx.createOscillator();
         const cGain = this.ctx.createGain();
         chime.type = 'sine';
@@ -168,7 +166,7 @@
       });
     }
 
-    // 5. Traditional Korean Janggu Drum Thud & Rim Snap
+    // 5. Traditional Korean Janggu Drum Thud
     playJangguDrum(isHigh = false) {
       if (this.isMuted) return;
       this.initContext();
@@ -193,54 +191,38 @@
       osc.stop(now + 0.23);
     }
 
-    // 6. Spinning Prize Wheel Tick
-    playWheelTick() {
+    // 6. Royal Gong Sound Effect (for Callum King monologue)
+    playGong() {
       if (this.isMuted) return;
       this.initContext();
       if (!this.ctx) return;
 
       const now = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
+      const gong = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(650, now);
-      osc.frequency.exponentialRampToValueAtTime(180, now + 0.035);
+      gong.type = 'sine';
+      gong.frequency.setValueAtTime(146.83, now); // D3
+      gong.frequency.linearRampToValueAtTime(138.59, now + 1.2);
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.12, now + 0.005);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      gain.gain.linearRampToValueAtTime(0.4, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
 
-      osc.connect(gain);
+      gong.connect(gain);
       gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.05);
+      gong.start(now);
+      gong.stop(now + 2.05);
     }
 
-    // 7. Resonant Harvest Victory Fanfare & Gong
+    // 7. Resonant Harvest Victory Fanfare
     playVictoryFanfare() {
       if (this.isMuted) return;
       this.initContext();
       if (!this.ctx) return;
 
+      this.playGong();
       const now = this.ctx.currentTime;
-      // Resonant deep gong
-      const gong = this.ctx.createOscillator();
-      const gongGain = this.ctx.createGain();
-      gong.type = 'sine';
-      gong.frequency.setValueAtTime(146.83, now); // D3
-      gong.frequency.linearRampToValueAtTime(138.59, now + 1.2);
-
-      gongGain.gain.setValueAtTime(0.001, now);
-      gongGain.gain.linearRampToValueAtTime(0.35, now + 0.03);
-      gongGain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
-
-      gong.connect(gongGain);
-      gongGain.connect(this.ctx.destination);
-      gong.start(now);
-      gong.stop(now + 1.85);
-
-      // Ascending triumphant fanfare
       const melody = [523.25, 659.25, 783.99, 1046.50, 1318.51];
       melody.forEach((freq, idx) => {
         const osc = this.ctx.createOscillator();
@@ -259,40 +241,98 @@
       });
     }
 
-    // 8. Calibrated Web Speech API TTS Narration
-    speakText(text, persona = 'rachel') {
+    // 8. Human-Grade ElevenLabs v2 SSML Speech Dispatcher
+    speakSSML(ssmlScript, persona = 'sarah') {
       if (this.isMuted || !window.speechSynthesis) return;
 
-      window.speechSynthesis.cancel();
+      this.stopSpeech();
 
-      // Clean brackets and pause annotations for speech
-      const cleaned = text
-        .replace(/\[pause[^\]]*\]/gi, ', ')
-        .replace(/\[emphasis:\s*([^\]]+)\]/gi, '$1')
-        .replace(/\[[^\]]+\]/g, '');
-
-      const utterance = new SpeechSynthesisUtterance(cleaned);
-      utterance.lang = 'en-US';
-
-      // Persona calibration
+      // If Callum Monarch, trigger royal gong first
       const lower = String(persona || '').toLowerCase();
-      if (lower.includes('marcus') || lower.includes('king') || lower.includes('monarch')) {
-        utterance.rate = 0.82;
-        utterance.pitch = 0.85; // Deep royal voice
-      } else if (lower.includes('antony') || lower.includes('game') || lower.includes('master')) {
-        utterance.rate = 1.0;
-        utterance.pitch = 1.1; // High energy
-      } else if (lower.includes('adam') || lower.includes('story')) {
-        utterance.rate = 0.88;
-        utterance.pitch = 0.98; // Warm narrative
-      } else {
-        // Default Rachel educator
-        utterance.rate = 0.88;
-        utterance.pitch = 1.05;
+      if (lower.includes('callum') || lower.includes('king') || lower.includes('monarch')) {
+        this.playGong();
       }
 
-      this.currentUtterance = utterance;
-      window.speechSynthesis.speak(utterance);
+      // Parse SSML chunks (segments and break pauses)
+      const segments = this.parseSSMLToSegments(ssmlScript);
+      this.speakSegmentsSequence(segments, persona);
+    }
+
+    parseSSMLToSegments(ssml) {
+      const regex = /<break\s+time=["'](\d+)(ms|s)["']\s*\/?>/gi;
+      let raw = ssml
+        .replace(/<speak>/gi, '')
+        .replace(/<\/speak>/gi, '')
+        .replace(/<prosody[^>]*>/gi, '')
+        .replace(/<\/prosody>/gi, '')
+        .replace(/<emphasis[^>]*>/gi, '')
+        .replace(/<\/emphasis>/gi, '');
+
+      const segments = [];
+      let lastIndex = 0;
+      let match;
+
+      while ((match = regex.exec(raw)) !== null) {
+        const textBefore = raw.substring(lastIndex, match.index).trim();
+        if (textBefore) {
+          segments.push({ type: 'text', content: textBefore });
+        }
+        const val = parseInt(match[1], 10);
+        const unit = match[2].toLowerCase();
+        const pauseMs = unit === 's' ? val * 1000 : val;
+        segments.push({ type: 'pause', duration: Math.min(pauseMs, 2000) });
+        lastIndex = match.index + match[0].length;
+      }
+
+      const remaining = raw.substring(lastIndex).trim();
+      if (remaining) {
+        segments.push({ type: 'text', content: remaining });
+      }
+
+      return segments.length > 0 ? segments : [{ type: 'text', content: raw.replace(/<[^>]+>/g, '').trim() }];
+    }
+
+    speakSegmentsSequence(segments, persona) {
+      if (!segments || segments.length === 0) return;
+
+      let idx = 0;
+
+      const processNext = () => {
+        if (this.isMuted || idx >= segments.length) return;
+        const seg = segments[idx++];
+
+        if (seg.type === 'pause') {
+          setTimeout(processNext, seg.duration || 300);
+        } else if (seg.type === 'text') {
+          const utterance = new SpeechSynthesisUtterance(seg.content);
+          utterance.lang = 'en-US';
+
+          const lower = String(persona || '').toLowerCase();
+          if (lower.includes('callum') || lower.includes('king') || lower.includes('monarch')) {
+            utterance.rate = 0.82;
+            utterance.pitch = 0.78; // Deep resonant monarch
+          } else if (lower.includes('marcus') || lower.includes('game')) {
+            utterance.rate = 0.98;
+            utterance.pitch = 1.0; // Energetic conversational narrator
+          } else {
+            // Sarah default (warm maternal educator)
+            utterance.rate = 0.88;
+            utterance.pitch = 1.05;
+          }
+
+          utterance.onend = () => {
+            processNext();
+          };
+
+          utterance.onerror = () => {
+            processNext();
+          };
+
+          window.speechSynthesis.speak(utterance);
+        }
+      };
+
+      processNext();
     }
 
     stopSpeech() {

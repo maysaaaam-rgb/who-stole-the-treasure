@@ -1,8 +1,8 @@
 /**
- * CHUSEOK: KOREA'S HARVEST FESTIVAL
- * Complete 2-Lesson Synchronous Digital Courseware & Game Data
+ * CHUSEOK: KOREA'S HARVEST FESTIVAL (REVISED ARCHITECTURE)
+ * Photorealistic Asset Directions • ElevenLabs v2 Conversational Prompting • Uncluttered UI
  * Unit 2: "Thank You" • Global Readings 2
- * CEFR A2-B1 | Primary / Lower-Intermediate Level
+ * CEFR A2-B1 | Primary / Lower-Intermediate ESL
  */
 
 (function(root) {
@@ -21,7 +21,7 @@
       totalLessons: 2,
       totalSlides: 16,
       totalXP: 250,
-      grammarFormula: "Gratitude Expressions: 'I am thankful for...' & 'They gather to [verb]...'",
+      grammarFormula: "Gratitude Expressions: 'I am thankful for my ______ because ______.'",
       clilTopic: "Social Studies & World Cultures: Harvest Celebrations Around the World"
     },
 
@@ -54,203 +54,215 @@
         id: 1,
         lessonId: 1,
         slideNumber: 1,
-        title: "Warm-Up: What Are You Holding?",
-        type: "schema_activation",
+        title: "Visual Gratitude Opener: What Are You Holding?",
+        type: "photorealistic_opener",
         timing: "00:00 - 04:00 (4 mins)",
-        modality: "[ANNOTATE] & [SPEAK]",
-        summary: "Look closely at the items people hold with care. What makes your heart happy today?",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.95,
-          pitch: 1.05,
-          script: "Welcome back! Look closely at the hands on your screen. They are holding things people love. What makes your heart happy today?"
-        },
-        sentenceFrame: "I am thankful for my ______.",
+        modality: "[ANNOTATE / STAMP] ➔ [SPEAK]",
+        summary: "Look closely at these four photos. Each pair of hands is holding something special. What makes your heart happy today?",
+        imageSrc: "assets/hands_holding.jpg",
+        imageAlt: "Four pairs of hands holding video game controller, soccer ball, honey candies, and miniature house model",
+        ssml: `<speak>
+  <prosody rate="93%">
+    Hello everyone! <break time="300ms"/> Look closely at these four photos. 
+    Each pair of hands is holding something special. <break time="400ms"/>
+    What makes your heart happy today?
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Warm, gentle maternal cadence, slight breathiness for genuine intimacy (Stability: 0.45, Clarity: 0.85)",
+        headerText: "What are you holding?",
+        sentenceFrame: "I am thankful for my ____________.",
         items: [
-          { id: "game", icon: "🎮", name: "Game Controller", label: "My Games" },
-          { id: "ball", icon: "⚽", name: "Football", label: "My Sports" },
-          { id: "sweets", icon: "🍬", name: "Sweets & Treats", label: "Good Food" },
-          { id: "home", icon: "🏠", name: "Cozy Home", label: "My Family" }
+          { id: "game", name: "Game Controller", label: "My Games 🎮" },
+          { id: "ball", name: "Leather Football", label: "My Sports ⚽" },
+          { id: "sweets", name: "Honey Candies", label: "Good Food 🍬" },
+          { id: "home", name: "Cozy House", label: "My Family 🏠" }
         ],
-        teacherPrompt: "Give 15 seconds for students to stamp items with stars or hearts. Call 2 students to complete: 'I am thankful for my...'."
+        teacherProtocol: "1. Display slide full-screen. 2. Give 10 seconds for students to stamp a ⭐. 3. Call 2 students: 'Leo, I see your star! Unmute and read: I am thankful for...'"
       },
       {
         id: 2,
         lessonId: 1,
         slideNumber: 2,
-        title: "Visual Anchor: Weave & Cloth",
-        type: "vocab_reveal",
+        title: "Visual Anchor: Vocabulary (Weave & Cloth)",
+        type: "photorealistic_loom",
         timing: "04:00 - 08:00 (4 mins)",
-        modality: "[ACTION/TPR] & [CHAT]",
-        summary: "Discover how thread turns into warm, colorful cloth using an ancient wooden loom.",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.85,
-          pitch: 1.05,
-          script: "Listen and repeat: Weave. [pause] Weave. The shuttle goes in and out to weave cloth. Now say: Cloth. [pause] Cloth."
-        },
-        sentenceFrame: "They ______ cloth together.",
-        vocab: [
-          { word: "Weave", pos: "verb", icon: "🧵", def: "To move threads over and under to make fabric.", actionPrompt: "Move both hands left and right like a loom shuttle!" },
-          { word: "Cloth", pos: "noun", icon: "🧣", def: "A soft material made by weaving threads together.", actionPrompt: "Touch your shirt or sleeves—that is cloth!" }
+        modality: "[TPR / ACTION] ➔ [CHAT]",
+        summary: "Discover how vibrant silk threads are woven on a traditional wooden loom into smooth, luxurious cloth.",
+        imageSrc: "assets/loom_weaving.jpg",
+        imageAlt: "Hands guiding shuttle through vibrant silk threads on wooden loom alongside rich woven silk cloth",
+        ssml: `<speak>
+  <prosody rate="85%">
+    Let's learn two important words. <break time="300ms"/> 
+    First: <emphasis level="strong">Weave</emphasis>. <break time="500ms"/> 
+    Hands move back and forth to weave. <break time="600ms"/>
+    Next: <emphasis level="strong">Cloth</emphasis>. <break time="500ms"/>
+    This beautiful silk is cloth!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Clear enunciation, pedagogical cadence (Stability: 0.50, Clarity: 0.90)",
+        vocabCards: [
+          { word: "Weave", icon: "🧵", def: "Action: to make fabric with thread", tip: "Hands slide back and forth like a shuttle!" },
+          { word: "Cloth", icon: "🧣", def: "Material made by weaving", tip: "Touch your shirt or sleeves—that is cloth!" }
         ],
-        interactiveAction: "Click the loom shuttle to hear the rhythmic wooden clack clack!",
-        teacherPrompt: "Verify hand movements on camera. Check the chat waterfall for students typing 'WEAVE' or 'CLOTH'."
+        sentenceFrame: "They weave soft cloth together.",
+        teacherProtocol: "1. Demonstrate weaving hand motion on webcam. 2. Trigger shuttle clack audio. 3. Chat waterfall: '3, 2, 1, Enter! Type WEAVE or CLOTH!'"
       },
       {
         id: 3,
         lessonId: 1,
         slideNumber: 3,
-        title: "Wordwall Challenge: Mystery Word Cracker",
-        type: "mystery_chests",
+        title: "Low-Anxiety Checkpoint: Mystery Treasure Chests",
+        type: "lacquered_chests",
         timing: "08:00 - 12:00 (4 mins)",
-        modality: "[POLL/CHAT]",
-        summary: "Crack open four ancient Korean treasure chests to discover four golden festival words!",
-        tts: {
-          persona: "Antony - Game Master",
-          speed: 1.0,
-          pitch: 1.0,
-          script: "Four mystery chests, four new words! Which chest should we crack open first?"
-        },
+        modality: "[CHAT POLL]",
+        summary: "Four vintage lacquered wooden Korean chests inlaid with mother-of-pearl. Vote which one to crack open first!",
+        ssml: `<speak>
+  <prosody rate="98%">
+    Four locked chests, <break time="150ms"/> four secret words! 
+    Type a number in the chat: one, two, three, or four! 
+    Which one should we unlock first?
+  </prosody>
+</speak>`,
+        voicePersona: "Marcus",
+        voiceProfile: "Warm, energetic British narrator; engaging, conversational game-show tone",
         chests: [
-          { id: 1, icon: "🏆", word: "Contest", def: "A game or match with two teams trying to win.", clue: "Box 1: Two teams compete!" },
-          { id: 2, icon: "🌾", word: "Harvest", def: "Gathering ripe crops and food at the end of summer.", clue: "Box 2: Golden rice and autumn fruit!" },
-          { id: 3, icon: "🎉", word: "Festival", def: "A joyful celebration with games, music, and traditions.", clue: "Box 3: Joy, songs, and celebrations!" },
-          { id: 4, icon: "🍲", word: "Feast", def: "A giant, delicious celebratory meal for everyone.", clue: "Box 4: Steaming dishes and delicious food!" }
+          { id: 1, icon: "🏆", word: "Contest", def: "A game between two teams to win a prize." },
+          { id: 2, icon: "🌾", word: "Harvest", def: "Gathering ripe food and crops at the end of summer." },
+          { id: 3, icon: "🎉", word: "Festival", def: "A big celebration with family, music, and food." },
+          { id: 4, icon: "🍲", word: "Feast", def: "A giant, delicious celebratory meal for everyone." }
         ],
-        teacherPrompt: "Open voted chests, model pronunciation, and challenge students to match definition within 45 seconds."
+        teacherProtocol: "1. Open chat waterfall: 'Vote now: 1, 2, 3, or 4!' 2. Click the winning chest. 3. Choral drill the word twice with the entire class."
       },
       {
         id: 4,
         lessonId: 1,
         slideNumber: 4,
-        title: "Guided Story: The Great Weaving Challenge",
-        type: "story_contest",
+        title: "Story Immersion: The 30-Day Weaving Battle",
+        type: "weaving_battle",
         timing: "12:00 - 18:00 (6 mins)",
-        modality: "[ANNOTATE]",
-        summary: "Long ago in Korea, two royal teams entered a fierce month-long weaving competition!",
-        tts: {
-          persona: "Adam - Narrative Storyteller",
-          speed: 0.90,
-          pitch: 1.0,
-          script: "Who can weave the most cloth? Two teams have a contest to find out. They weave and weave for a whole month!"
+        modality: "[ANNOTATE / COUNTING]",
+        summary: "Who can weave the most cloth? Two rival teams enter a fierce month-long contest on their wooden looms!",
+        ssml: `<speak>
+  <prosody rate="88%">
+    Who can weave the most cloth? <break time="400ms"/>
+    Two teams have a contest to find out! <break time="500ms"/>
+    They weave <break time="150ms"/> and weave <break time="150ms"/> 
+    for a whole month!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Expressive narrative reading; clear pauses for lower-intermediate learners",
+        passage: "Who can weave the most cloth? Two teams have a contest to find out. They weave and weave for a whole month!",
+        prompts: [
+          { q: "How long did they weave?", a: "One whole month (30 days)!" },
+          { q: "What are they doing?", a: "A weaving contest!" }
+        ],
+        teams: {
+          blue: { name: "Team Blue", rolls: 5 },
+          red: { name: "Team Red", rolls: 6 }
         },
-        storyFacts: [
-          { label: "How long?", value: "One whole month!", icon: "📅" },
-          { label: "Who?", value: "Two royal teams!", icon: "👥" },
-          { label: "Goal:", value: "Weave the most rolls of silk cloth!", icon: "🧵" }
-        ],
-        teams: [
-          { name: "Team Blue", color: "#38bdf8", rollsCount: 5 },
-          { name: "Team Red", color: "#f43f5e", rollsCount: 6 }
-        ],
-        teacherPrompt: "Assign Team Blue and Team Red. Have students count and stamp cloth rolls to see who leads!"
+        teacherProtocol: "1. Play audio once; students follow with pointer finger. 2. 20-second cloth counting challenge: 'Who can spot more rolls? Team Red or Team Blue?'"
       },
       {
         id: 5,
         lessonId: 1,
         slideNumber: 5,
-        title: "Story Climax: The King & The Full Moon",
-        type: "story_climax",
+        title: "Story Climax: The King's Full Moon Feast",
+        type: "king_climax",
         timing: "18:00 - 24:00 (6 mins)",
-        modality: "[CHAT] & [SPEAK]",
-        summary: "On the night of the radiant autumn harvest moon, the King declares the grand prize!",
-        tts: {
-          persona: "Marcus - Deep Theatrical Monarch",
-          speed: 0.88,
-          pitch: 0.95,
-          script: "It is the night of the full moon! This team wins! The prize is a big feast for both teams!"
-        },
-        keyElements: [
-          { icon: "🌕", text: "Night of the Autumn Full Moon" },
-          { icon: "👑", text: "The King chooses the winner" },
-          { icon: "🍲", text: "The Prize: A giant delicious FEAST for all!" }
-        ],
-        sentenceFrame: "The prize is a big _________ (feast / cloth) for everyone!",
-        teacherPrompt: "Unmute a student to deliver the King's line in their deepest royal voice!"
+        modality: "[VOICE ACTING CHALLENGE] & [CHAT]",
+        summary: "Under the giant autumn harvest moon, the Joseon King in crimson silk robe proclaims the grand prize!",
+        imageSrc: "assets/king_moon.jpg",
+        imageAlt: "Joseon Dynasty Korean king in crimson dragon robe standing on palace pavilion under glowing full harvest moon",
+        ssml: `<speak>
+  <prosody rate="85%" pitch="-2st">
+    It is the night of the full moon! <break time="400ms"/>
+    This team wins! <break time="500ms"/>
+    The prize <break time="200ms"/> is a big feast for both teams!
+  </prosody>
+</speak>`,
+        voicePersona: "Callum",
+        voiceProfile: "Deep, resonant, dignified older monarch voice; theatrical, authoritative (Stability: 0.60, Style: 0.25, Pitch: -2st)",
+        quote: "The prize is a big feast for both teams.",
+        choiceQuestion: "Did only the winners eat?",
+        choiceAnswer: "NO! Both teams ate together!",
+        teacherProtocol: "1. Play the King's audio with royal gong cue. 2. Ask: 'Who has the deepest king voice in class?' Unmute one student. 3. Check chat for 'BOTH'."
       },
       {
         id: 6,
         lessonId: 1,
         slideNumber: 6,
-        title: "Consolidation Mini-Game: True or False Fast Dash",
-        type: "true_false_quiz",
+        title: "Low-Stakes Review: Speed Clicker (True or False)",
+        type: "photorealistic_tf",
         timing: "24:00 - 30:00 (6 mins)",
-        modality: "[POLL]",
-        summary: "Test your quick recall with three fast-paced true or false challenge cards!",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 1.0,
-          pitch: 1.05,
-          script: "Quick check! Are these statements True or False? Ready... go!"
-        },
+        modality: "[CAMERA GESTURE / QUICK POLL]",
+        summary: "Three rapid-fire questions testing reading comprehension with thumbs up (True) and thumbs down (False).",
+        ssml: `<speak>
+  <prosody rate="95%">
+    Three quick questions! Is it True, or is it False? 
+    Show me your thumbs!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Crisp, friendly prompt delivery",
         questions: [
-          {
-            id: 1,
-            text: "The weaving contest lasted for only two days.",
-            correct: false,
-            feedback: "False! The teams wove cloth for a whole month!"
-          },
-          {
-            id: 2,
-            text: "The King arrived on the night of the full moon.",
-            correct: true,
-            feedback: "True! The full moon marked the end of the competition."
-          },
-          {
-            id: 3,
-            text: "Only the winning team was allowed to eat the feast.",
-            correct: false,
-            feedback: "False! The prize was a giant feast shared by BOTH teams!"
-          }
+          { id: 1, text: "The teams had a weaving contest.", correct: true, icon: "🧵", explanation: "True! They competed to weave the most rolls of silk." },
+          { id: 2, text: "The King came in the middle of a sunny day.", correct: false, icon: "☀️", explanation: "False! The King arrived on the night of the full moon!" },
+          { id: 3, text: "The prize was a big feast for both teams.", correct: true, icon: "🍲", explanation: "True! Both teams celebrated and ate together!" }
         ],
-        teacherPrompt: "Trigger quick poll responses. Emphasize that in Chuseok spirit, the feast was shared by everyone."
+        teacherProtocol: "1. Read statement 1. 2. Scan webcams for thumbs up/down. 3. Re-emphasize that the King arrived under the harvest full moon."
       },
       {
         id: 7,
         lessonId: 1,
         slideNumber: 7,
-        title: "Production: The Gratitude Harvest Card",
-        type: "gratitude_board",
+        title: "Production: The Digital Gratitude Scroll",
+        type: "digital_scroll",
         timing: "30:00 - 38:00 (8 mins)",
-        modality: "[COLLABORATIVE BOARD / SPEAK]",
-        summary: "Write your personal harvest gratitude message and pin it to the class autumn board!",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.95,
-          pitch: 1.05,
-          script: "At Chuseok, people celebrate being together. Write your gratitude card to share with the class."
+        modality: "[COLLABORATIVE STICKY BOARD / SPEAK]",
+        summary: "Write your heartfelt message on the parchment scroll and share it on the class gratitude wall.",
+        ssml: `<speak>
+  <prosody rate="90%">
+    Chuseok is all about being thankful. 
+    Think of one person or thing you love. 
+    Let's write our gratitude notes together.
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Warm, inspiring pedagogical tone",
+        template: "I am thankful for my ____________ because ____________.",
+        wordBank: {
+          who: ["family", "home", "pet", "teacher", "friends", "books"],
+          why: ["they are kind", "it is warm and safe", "they make me smile", "they help me read"]
         },
-        template: {
-          stem1: "I am thankful for my",
-          options1: ["family", "friends", "home", "teacher", "books", "pets"],
-          stem2: "They make me feel",
-          options2: ["happy", "safe", "loved", "strong", "grateful"]
-        },
-        teacherPrompt: "Invite students to submit their cards. Read out 3-4 cards live on microphone with high praise."
+        teacherProtocol: "1. Give 90 seconds of quiet typing. 2. Read 4 student notes aloud from the screen with personalized praise."
       },
       {
         id: 8,
         lessonId: 1,
         slideNumber: 8,
-        title: "Lesson 1 Wrap-Up: Star Trophies Cleared!",
+        title: "Lesson 1 Milestone: Master Weaver Badge",
         type: "milestone_badge",
         timing: "38:00 - 40:00 (2 mins)",
-        modality: "[REACTION]",
-        summary: "Celebrate completing Lesson 1 and claim your three commemorative ancient tokens!",
-        tts: {
-          persona: "Antony - Game Master",
-          speed: 1.0,
-          pitch: 1.05,
-          script: "Lesson 1 Cleared! You unlocked the Loom Token, Harvest Moon Badge, and the King's Royal Crown!"
+        modality: "[REACTION CELEBRATION]",
+        summary: "Claim your 3D embossed gold medal featuring the harvest moon and loom shuttle on royal blue velvet!",
+        ssml: `<speak>
+  <prosody rate="95%">
+    Congratulations! Lesson 1 is complete! 
+    You have unlocked the Master Weaver Badge!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        badge: {
+          title: "Master Weaver Badge",
+          desc: "Embossed Gold Medal • Harvest Moon & Loom Shuttle",
+          icon: "🏅"
         },
-        badges: [
-          { id: "loom", icon: "🧵", title: "Loom Master", desc: "Learned how threads make cloth" },
-          { id: "moon", icon: "🌕", title: "Harvest Moon", desc: "Discovered the full moon contest" },
-          { id: "crown", icon: "👑", title: "King's Crown", desc: "Awarded the feast to everyone" }
-        ],
         xpAward: 100,
-        nextLessonTeaser: "Up next in Lesson 2: What delicious food and colorful clothes do families share today?"
+        teaser: "Next Up in Lesson 2: Delicious Songpyeon rice cakes, circle dances, and remembering ancestors!",
+        teacherProtocol: "Trigger celebration sound and invite students to flood screen with emojis (🎉, ⭐, 🚀)."
       },
 
       // ==========================================
@@ -260,213 +272,213 @@
         id: 9,
         lessonId: 2,
         slideNumber: 1,
-        title: "Fast Recall: Spin-the-Wheel Review",
-        type: "spin_wheel",
-        timing: "00:00 - 05:00 (5 mins)",
-        modality: "[SPIN / SPEAK]",
-        summary: "Spin the ancient prize wheel to test your recall of Lesson 1 vocabulary!",
-        tts: {
-          persona: "Antony - Game Master",
-          speed: 1.0,
-          pitch: 1.05,
-          script: "Round two begins! Let's give the wheel a spin to see who remembers our magic words!"
-        },
-        wheelItems: [
-          { word: "Weave", def: "Making cloth with threads", color: "#38bdf8" },
-          { word: "Contest", def: "A game where teams compete", color: "#f59e0b" },
-          { word: "Harvest", def: "Gathering autumn crops", color: "#10b981" },
-          { word: "Full Moon", def: "The glowing autumn night", color: "#a855f7" },
-          { word: "Feast", def: "A giant celebratory meal", color: "#f43f5e" }
-        ],
-        teacherPrompt: "Spin the wheel, land on a word, and ask the student to define it or construct a sentence within 30 seconds."
+        title: "Fast Schema Reactivation: The Mystery Photo Reveal",
+        type: "frosted_reveal",
+        timing: "00:00 - 04:00 (4 mins)",
+        modality: "[CHAT] & [SPEAK]",
+        summary: "Unlock the 4 frosted-glass tiles covering the family portrait by recalling yesterday's secret word!",
+        imageSrc: "assets/hanbok_family.jpg",
+        imageAlt: "Photorealistic Korean family in vibrant silk Hanbok holding woven harvest fruit basket",
+        ssml: `<speak>
+  <prosody rate="95%">
+    Welcome back, explorers! Look at the frosted glass. 
+    Who can remember our secret word from yesterday? 
+    What did the two teams make on their looms?
+  </prosody>
+</speak>`,
+        voicePersona: "Marcus",
+        voiceProfile: "Upbeat, lively narrator",
+        puzzleWord: "CLOTH",
+        puzzleClue: "C _ _ T H",
+        revealedText: "Today, Chuseok is an important holiday in Korea. It lasts three days at the end of summer.",
+        teacherProtocol: "1. Trigger Tile 1 reveal once 3 students type CLOTH. 2. Direct visual attention to the family's silk Hanbok clothes."
       },
       {
         id: 10,
         lessonId: 2,
         slideNumber: 2,
-        title: "Modern Chuseok: Meet the Family & Hanbok",
-        type: "tradition_spotlight",
-        timing: "05:00 - 10:00 (5 mins)",
-        modality: "[CHAT] & [ANNOTATE]",
-        summary: "See how modern Korean families celebrate for three days wearing bright traditional Hanbok clothes.",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.90,
-          pitch: 1.05,
-          script: "Today, Chuseok lasts three days at the end of summer. Families travel home to celebrate and give thanks for the harvest."
-        },
+        title: "Visual Scaffolding: The Sweet Songpyeon Feast",
+        type: "photorealistic_songpyeon",
+        timing: "04:00 - 10:00 (6 mins)",
+        modality: "[POLL / ANNOTATE]",
+        summary: "Culinary macro photograph of steaming half-moon Songpyeon rice cakes on brass platter with honey filling cut open.",
+        imageSrc: "assets/songpyeon.jpg",
+        imageAlt: "Culinary macro photograph of authentic brass platter with half-moon Songpyeon rice cakes, one cut open with honey dripping",
+        ssml: `<speak>
+  <prosody rate="88%">
+    Look at this delicious feast! <break time="300ms"/> 
+    These special rice cakes are called <emphasis level="strong">Songpyeon</emphasis>. <break time="400ms"/>
+    They are shaped like a beautiful half-moon, <break time="200ms"/> 
+    and inside <break time="150ms"/> they are sweet and chewy!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Warm, sensory, mouth-watering inflection",
         facts: [
-          { icon: "⏱️", label: "Duration", value: "3 Days Holiday" },
-          { icon: "📅", label: "Season", value: "End of Summer / Early Autumn" },
-          { icon: "👘", label: "Clothing", value: "Traditional Hanbok (Silk Robes)" },
-          { icon: "🚗", label: "Journey", value: "Travel home to visit grandparents" }
+          { icon: "🍡", label: "Special Korean rice cakes eaten on Chuseok" },
+          { icon: "🌙", label: "Shaped like a beautiful half-moon" },
+          { icon: "🍯", label: "Sweet filling: toasted sesame seeds, chestnut paste, honey" },
+          { icon: "🌲", label: "Steamed over fresh fragrant pine needles" }
         ],
-        sentenceFrame: "They go home to see their _________ (grandparents / teachers).",
-        chatQuestion: "Do you travel to visit family during holidays? Type YES or NO in chat!",
-        teacherPrompt: "Highlight Hanbok colors and ask students to stamp a heart on the child's bright silk jacket."
+        sensoryFrame: "Songpyeon is ____________ and ____________. (sweet / chewy / soft / warm)",
+        pollQuestion: "Would you like to try eating Songpyeon?",
+        teacherProtocol: "1. Zoom in on rice cake texture. 2. Drill: 'Repeat after me: Song-pyeon [song-pyahn]'. 3. Show poll results instantly."
       },
       {
         id: 11,
         lessonId: 2,
         slideNumber: 3,
-        title: "Food Discovery: Songpyeon Rice Cakes",
-        type: "food_cutaway",
+        title: "Visual Movement: The Midnight Circle Dance (Ganggangsullae)",
+        type: "ganggangsullae_view",
         timing: "10:00 - 15:00 (5 mins)",
-        modality: "[POLL / SPEAK]",
-        summary: "Discover Songpyeon—delicious half-moon rice cakes filled with sweet honey, sesame, and beans!",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.85,
-          pitch: 1.05,
-          script: "Songpyeon! These are special rice cakes. Inside, they are sweet, filled with honey, sesame, and beans!"
-        },
-        songpyeonFacts: [
-          { icon: "🍡", label: "Name", value: "Songpyeon (Rice Cake)" },
-          { icon: "🌙", label: "Shape", value: "Shaped like a half-moon" },
-          { icon: "🍯", label: "Filling", value: "Sweet honey, sesame seeds, beans" },
-          { icon: "🌲", label: "Steamed on", value: "Fresh pine needles for scent" }
+        modality: "[ANNOTATE] & [SPEAK]",
+        summary: "Wide-angle atmospheric photograph of dozens of women and girls holding hands in a massive illuminated circle under the harvest moon.",
+        imageSrc: "assets/ganggangsullae.jpg",
+        imageAlt: "Atmospheric wide-angle photograph of traditional circular harvest dance Ganggangsullae under glowing full moon",
+        ssml: `<speak>
+  <prosody rate="90%">
+    Under the bright autumn moon, <break time="200ms"/> 
+    people wear their brand-new clothes! <break time="300ms"/>
+    Women and girls join hands to dance and play games 
+    in a giant, spinning circle!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Rhythmic, energetic storytelling with faint acoustic Korean drum rhythm",
+        keyPoints: [
+          { icon: "👗", text: "New Clothes: People buy fresh new Hanbok to celebrate Chuseok." },
+          { icon: "⭕", text: "Circle Dance & Games: Joining hands in unity under the autumn moon!" }
         ],
-        sentenceFrame: "Songpyeon tastes _________ (sweet / salty / spicy).",
-        pollQuestion: "Would you like to taste Songpyeon?",
-        pollOptions: [
-          "Yes! I love sweet rice cakes! 🍯",
-          "No, I prefer crunchy salty snacks! 🥨"
-        ],
-        teacherPrompt: "Elicit sensory adjectives from students: sweet, chewy, warm, soft, fragrant."
+        discussionPrompt: "Do you dance, sing, or play games at your family's celebrations?",
+        teacherProtocol: "1. Have students link hands on screen to form a virtual circle. 2. Highlight: 'New clothes for a holiday symbolize a fresh start!'"
       },
       {
         id: 12,
         lessonId: 2,
         slideNumber: 4,
-        title: "Tradition in Motion: The Circle Dance (Ganggangsullae)",
-        type: "circle_dance",
-        timing: "15:00 - 20:00 (5 mins)",
-        modality: "[SPEAK] & [ANNOTATE]",
-        summary: "Join hands under the harvest moon in Ganggangsullae—an ancient circular dance of unity and joy.",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.90,
-          pitch: 1.05,
-          script: "Under the full moon, women and girls join hands. They dance and sing together in a giant circle."
-        },
-        danceFacts: [
-          { icon: "💃", text: "Women and girls join hands in a giant circle" },
-          { icon: "🌕", text: "Danced outdoors under the bright autumn moon" },
-          { icon: "🥁", text: "Guided by the steady beat of the traditional drum (Janggu)" }
+        title: "Respect & Heritage: Remembering Ancestors (Charye)",
+        type: "ancestor_charye_view",
+        timing: "15:00 - 22:00 (7 mins)",
+        modality: "[DRAG-AND-DROP VOCAB MATCH]",
+        summary: "Dignified high-definition photograph of the traditional memorial table ceremony (Charye) with scholar bowing in deep respect.",
+        imageSrc: "assets/ancestor_charye.jpg",
+        imageAlt: "Korean scholar in Hanbok bowing before ceremonial Charye memorial altar table with harvest fruits and calligraphy screen",
+        ssml: `<speak>
+  <prosody rate="85%">
+    Chuseok is also a time to remember ancestors. <break time="500ms"/>
+    Who are ancestors? <break time="300ms"/>
+    Ancestors are family members who lived long ago, <break time="200ms"/>
+    like great-grandparents. <break time="400ms"/>
+    Families bow and offer harvest food <break time="200ms"/>
+    to say thank you and show their love.
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Respectful, gentle, reverent pedagogical tone",
+        vocabDefinitions: [
+          { term: "Ancestors", def: "Family members who lived long ago (like great-grandparents)", icon: "👵👴" },
+          { term: "Ceremony (Charye)", def: "Offering harvest food and bowing to show love and respect", icon: "🍎" }
         ],
-        sentenceFrame: "In my country, we dance by _________.",
-        interactiveRhythm: "Click to start the traditional Janggu drum tempo and watch the dancers revolve!",
-        teacherPrompt: "Have all students stand and raise both hands in a circle to feel the rhythm."
+        targetSentence: "This shows they care about their ____________. (family / ancestors)",
+        teacherProtocol: "1. Clearly explain ancestors: 'Raise your hand if you know about your great-grandparents!' 2. Explain bowing as gratitude. 3. Validate student drag matching."
       },
       {
         id: 13,
         lessonId: 2,
         slideNumber: 5,
-        title: "Honoring Ancestors: The Memorial Ceremony (Charye)",
-        type: "ancestor_table",
-        timing: "20:00 - 26:00 (6 mins)",
-        modality: "[CHAT] & [VOCAB MATCH]",
-        summary: "Learn how families prepare ceremonial harvest tables and bow deeply to remember their ancestors.",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.85,
-          pitch: 1.05,
-          script: "Chuseok is also a time to remember ancestors. Ancestors are family members who lived long ago. Families bow and share harvest food to show love and respect."
-        },
-        tableElements: [
-          { id: "ancestor", term: "Ancestors", match: "Family members from long ago", icon: "👴" },
-          { id: "ceremony", term: "Ceremony (Charye)", match: "Special table of fresh harvest food", icon: "🍱" },
-          { id: "bow", term: "Deep Bow", match: "Sign of deep love and respect", icon: "🙇" }
+        title: "Cross-Cultural Bridge: Harvest Around the World",
+        type: "venn_comparison",
+        timing: "22:00 - 28:00 (6 mins)",
+        modality: "[COLLABORATIVE DRAG / SPEAK]",
+        summary: "Compare Chuseok harvest traditions with celebrations across the globe using an interactive 3-zone Venn diagram.",
+        ssml: `<speak>
+  <prosody rate="93%">
+    Why do people all around the world celebrate the harvest? 
+    Because everyone is thankful for food and family! 
+    Is there a special holiday like this where you live?
+  </prosody>
+</speak>`,
+        voicePersona: "Marcus",
+        voiceProfile: "Inquisitive, encouraging conversational narrator",
+        vennTiles: [
+          { id: "v1", text: "Eat special sweet food", defaultZone: "both" },
+          { id: "v2", text: "Spend time with family", defaultZone: "both" },
+          { id: "v3", text: "Lasts 3 days holiday", defaultZone: "chuseok" },
+          { id: "v4", text: "Say thank you for the harvest", defaultZone: "both" }
         ],
-        sentenceFrame: "This shows they care about their __________.",
-        teacherPrompt: "Clarify cultural meaning: bowing in this tradition expresses gratitude, memory, and respect."
+        teacherProtocol: "1. Drag 'Spend time with family' to the center (BOTH). 2. Elicit student connections: 'Autumn is when we harvest food and gather together!'"
       },
       {
         id: 14,
         lessonId: 2,
         slideNumber: 6,
-        title: "Cultural Bridge: Harvest Around the World",
-        type: "venn_diagram",
-        timing: "26:00 - 33:00 (7 mins)",
-        modality: "[DRAG & DROP / SPEAK]",
-        summary: "Compare Chuseok traditions with harvest celebrations in your own culture and family.",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.95,
-          pitch: 1.05,
-          script: "People all around the world celebrate the harvest! What does Chuseok share with holidays in your country?"
-        },
-        tiles: [
-          { id: "t1", text: "Special sweet food (Songpyeon)", category: "chuseok" },
-          { id: "t2", text: "Eating together with family", category: "both" },
-          { id: "t3", text: "3 days national holiday", category: "chuseok" },
-          { id: "t4", text: "Giving thanks for food", category: "both" },
-          { id: "t5", text: "Circle dance (Ganggangsullae)", category: "chuseok" },
-          { id: "t6", text: "Autumn harvest season", category: "both" }
+        title: "Arcade Mastery Quest: 3-Minute Harvest Dash",
+        type: "arcade_dash",
+        timing: "28:00 - 33:00 (5 mins)",
+        modality: "[GAMIFIED MULTIPLE CHOICE]",
+        summary: "Fast 4-question synchronous multiple choice sprint with countdown timer and leaderboard excitement!",
+        ssml: `<speak>
+  <prosody rate="103%">
+    Get ready for the Harvest Sprint! 
+    Answer fast, score points, and let's see who climbs to the top of the podium! 
+    Ready? Three, two, one, go!
+  </prosody>
+</speak>`,
+        voicePersona: "Marcus",
+        voiceProfile: "Fast, energetic game master",
+        questions: [
+          { q: "What special rice cakes do people eat on Chuseok?", options: ["Songpyeon", "Pizza", "Tacos", "Donuts"], correct: 0 },
+          { q: "How many days does the Chuseok holiday last?", options: ["1 day", "3 days", "10 days", "1 month"], correct: 1 },
+          { q: "Who are ancestors?", options: ["Family from long ago", "New school friends", "Movie actors", "Tour guides"], correct: 0 },
+          { q: "What shape are Songpyeon cakes?", options: ["Half-moon", "Square", "Star", "Triangle"], correct: 0 }
         ],
-        sentenceFrame: "Both holidays celebrate by _________.",
-        teacherPrompt: "Guide students to see that 'Giving thanks' and 'Family food' always belong in the center overlap."
+        teacherProtocol: "1. Launch the 3-minute sprint. 2. Call out live podium changes: 'Lucas takes 1st place! Maria answers all 4 correctly!' 3. Display leaderboard confetti."
       },
       {
         id: 15,
         lessonId: 2,
         slideNumber: 7,
-        title: "High-Energy Quest: 3-Minute Harvest Dash",
-        type: "blooket_quiz",
+        title: "Production: The Personal Gratitude Harvest",
+        type: "gratitude_tree",
         timing: "33:00 - 38:00 (5 mins)",
-        modality: "[GAMIFIED COMPETITION]",
-        summary: "Race against the 15-second clock in a four-question rapid quiz challenge!",
-        tts: {
-          persona: "Antony - Game Master",
-          speed: 1.05,
-          pitch: 1.05,
-          script: "Time for the Final Harvest Quest! Grab your devices or answer right on your screen!"
-        },
-        quizQuestions: [
-          {
-            id: 1,
-            q: "What sweet food is made especially for Chuseok?",
-            options: ["Songpyeon (rice cake)", "Pizza", "Hot dog", "Ice cream"],
-            correct: 0
-          },
-          {
-            id: 2,
-            q: "Who do families honor during the morning ceremony?",
-            options: ["Ancient ancestors", "School teachers", "Movie stars", "Only the king"],
-            correct: 0
-          },
-          {
-            id: 3,
-            q: "How many days does modern Chuseok holiday last?",
-            options: ["1 day", "3 days", "7 days", "1 month"],
-            correct: 1
-          },
-          {
-            id: 4,
-            q: "What shape are Songpyeon rice cakes?",
-            options: ["Half-moon", "Square box", "Triangle star", "Circle coin"],
-            correct: 0
-          }
+        modality: "[CHAT EXIT TICKET]",
+        summary: "Write your personal harvest gratitude message before closing your lesson.",
+        ssml: `<speak>
+  <prosody rate="90%">
+    You have done an amazing job today! 
+    Before we say goodbye, think of one person you want to thank today. 
+    Write your message on our class gratitude tree.
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        voiceProfile: "Reflective, gentle educator voice",
+        sentenceFrame: "Today, I want to say thank you to ____________ because ____________.",
+        examples: [
+          "...my mom because she makes delicious breakfast.",
+          "...my brother because he plays games with me.",
+          "...my teacher because she helps me read."
         ],
-        teacherPrompt: "Cheer on students as the clock ticks! Celebrate top scorers on the microphone."
+        teacherProtocol: "1. Post sentence frame in chat. 2. Read each student message aloud with personalized praise. 3. Give verbal permission to disconnect."
       },
       {
         id: 16,
         lessonId: 2,
         slideNumber: 8,
-        title: "Exit Ticket: The Gratitude Handprint",
-        type: "exit_ticket",
+        title: "Unit 2 Mastery: Cultural Explorer Certificate",
+        type: "unit_certificate",
         timing: "38:00 - 40:00 (2 mins)",
-        modality: "[CHAT EXIT TICKET]",
-        summary: "Type your final harvest thank-you note before claiming your master graduation certificate!",
-        tts: {
-          persona: "Rachel - Warm Educator",
-          speed: 0.95,
-          pitch: 1.05,
-          script: "You did an amazing job today. Before you leave, tell us one thing you will say thank you for today."
-        },
-        sentenceFrame: "Today I will say thank you to ______ for ______.",
-        teacherPrompt: "Read each submitted exit ticket out loud to dismiss students individually with warm encouragement."
+        modality: "[HIGH-FIVE CAMERA CHECK]",
+        summary: "Claim your embossed Chuseok Cultural Explorer Certificate and give a virtual high-five on webcam!",
+        ssml: `<speak>
+  <prosody rate="95%">
+    Congratulations! You have mastered Unit 2! 
+    You are an official Chuseok Cultural Explorer! High five!
+  </prosody>
+</speak>`,
+        voicePersona: "Sarah",
+        vocabMastered: ["Weave", "Cloth", "Contest", "Harvest", "Festival", "Feast", "Songpyeon", "Ancestors", "Ceremony"],
+        xpAward: 150,
+        teacherProtocol: "All students put their hand up to the webcam for a virtual high-five celebration screenshot!"
       }
     ]
   };
