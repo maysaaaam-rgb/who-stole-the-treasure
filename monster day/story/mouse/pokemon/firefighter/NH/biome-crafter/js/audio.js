@@ -375,6 +375,10 @@
       });
     }
 
+    playFanfare() {
+      return this.playVictoryFanfare();
+    }
+
     // 9. Calibrated Speech Synthesis (rate: 0.88, pitch: 1.05, lang: "en-US")
     speak(text, onComplete) {
       if (this.isMuted) {
