@@ -2149,40 +2149,18 @@
     if (clothingId === 'clothing-adv-jacket' || norm.includes('jacket') || norm === 'explorer_jacket') {
       return `
         <!-- Tailored Aviator Explorer Jacket Contoured to Chibi Body -->
-        <g id="clothing-explorer-jacket" filter="url(#mf-shadow)">
-          <!-- Contoured Aviator Shearling Collar -->
-          <path d="M 74 108 C 82 114, 118 114, 126 108 C 132 114, 128 122, 118 122 C 108 122, 104 116, 100 116 C 96 116, 92 122, 82 122 C 72 122, 68 114, 74 108 Z" 
-                fill="#fef3c7" stroke="#d97706" stroke-width="1.8" />
-
-          <!-- Left Jacket Body & Arm Sleeve Wrap -->
-          <path d="M 80 114 
-                   C 64 116, 50 124, 48 138 
-                   C 47 148, 54 158, 66 160 
-                   L 96 160 
-                   L 98 122 
-                   C 92 118, 86 115, 80 114 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
-
-          <!-- Right Jacket Body & Arm Sleeve Wrap -->
-          <path d="M 120 114 
-                   C 136 116, 150 124, 152 138 
-                   C 153 148, 146 158, 134 160 
-                   L 104 160 
-                   L 102 122 
-                   C 108 118, 114 115, 120 114 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
-
-          <!-- Center Zipper Strip -->
-          <line x1="100" y1="120" x2="100" y2="160" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
-          <rect x="98.5" y="124" width="3" height="5" rx="1" fill="#ca8a04" />
-
-          <!-- Cuffs and Waistband Ribbing -->
-          <path d="M 64 158 C 76 161, 124 161, 136 158 L 134 162 C 122 165, 78 165, 66 162 Z" fill="#451a03" />
-
-          <!-- Golden Aviator Wings Chest Badge -->
-          <polygon points="76,128 80,125 84,128 80,131" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <line x1="72" y1="128" x2="76" y2="128" stroke="#facc15" stroke-width="1.2" />
-          <line x1="84" y1="128" x2="88" y2="128" stroke="#facc15" stroke-width="1.2" />
+        <g id="clothing-explorer-jacket">
+          <!-- Outer Tailored Coat Wrapped Around Shoulders -->
+          <path d="M 58 100 C 54 128, 56 154, 76 158 C 86 160, 90 144, 88 116 C 80 106, 68 98, 58 100 Z" 
+                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 142 100 C 146 128, 144 154, 124 158 C 114 160, 110 144, 112 116 C 120 106, 132 98, 142 100 Z" 
+                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <!-- Folded Collar Lapels -->
+          <polygon points="62,102 82,118 74,124 58,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <polygon points="138,102 118,118 126,124 142,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <!-- Buckled Belt Across Base -->
+          <path d="M 74 154 C 88 158, 112 158, 126 154 L 126 160 C 112 164, 88 164, 74 160 Z" fill="#451a03" />
+          <rect x="94" y="153" width="12" height="9" rx="2" fill="#fbbf24" stroke="#78350f" stroke-width="1.5" />
         </g>
       `;
     }
