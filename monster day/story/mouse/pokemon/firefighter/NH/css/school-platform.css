@@ -6658,6 +6658,17 @@ body.classroom-mode-active .classroom-students-grid {
   width: 78%;
 }
 
+.preview-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  height: 85%;
+  pointer-events: none;
+  z-index: 10;
+}
+
 /* ==========================================================================
    SIMON SAYS — PROJECTOR-OPTIMIZED CLASSROOM PHYSICAL GAME STYLES
    ========================================================================== */
