@@ -156,6 +156,7 @@ body {
 /* =========================================================================
    STICKY TACTICAL HUD DOCK (Daylight Gauge & Inventory Counters)
    ========================================================================= */
+/* 1. Ensure the sticky HUD stays strictly docked to the top edge */
 .tactical-hud,
 #tactical-hud,
 .cyber-hud {
@@ -163,6 +164,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  width: 100%;
   z-index: 1000;
   background: rgba(6, 9, 17, 0.95);
   backdrop-filter: blur(16px);
@@ -351,20 +353,29 @@ body {
 /* =========================================================================
    STAGE VIEWPORT & ROUTER ARCHITECTURE
    ========================================================================= */
+/* 2. Add top padding to the stage viewport so it starts safely BELOW the HUD */
 .arcade-viewport,
 .stage-container,
 #stage-viewport,
-.main-stage-viewport {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 36px !important;
+.main-stage-viewport,
+.smithing-bench-stage {
+  padding-top: 48px !important;
   padding-bottom: 60px;
   padding-left: 20px;
   padding-right: 20px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+/* 3. Keep target step pills spaced cleanly under the stage title */
+.stage-target-tabs,
+.step-badge-row {
+  margin-top: 16px;
+  margin-bottom: 20px;
 }
 
 .stage-view {
@@ -1692,7 +1703,8 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-top: 16px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
