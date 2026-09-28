@@ -29,7 +29,7 @@
     stages: [
       { id: 1, lesson: 1, name: "Biome Scanner", title: "Stage 1: Biome Scanner & Daylight Radar", icon: "🧭", duration: "8 min", xp: 20 },
       { id: 2, lesson: 1, name: "Mining Airlock", title: "Stage 2: Resource Mining Airlock", icon: "⛏️", duration: "10 min", xp: 25 },
-      { id: 3, lesson: 1, name: "2x2 Smithing", title: "Stage 3: The 2x2 Starter Smithing Bench", icon: "🔨", duration: "9 min", xp: 25 },
+      { id: 3, lesson: 1, name: "3x3 Tool Forge", title: "Stage 3: The 3x3 Real Crafting Forge with English Gates", icon: "🔨", duration: "12–15 min", xp: 35 },
       { id: 4, lesson: 1, name: "Sunset Drill", title: "Stage 4: Sunset Emergency Drill", icon: "🌅", duration: "8 min", xp: 25 },
       { id: 5, lesson: 2, name: "3x3 Forge", title: "Stage 5: 3x3 Tactile Shelter Forge", icon: "🧱", duration: "14 min", xp: 35 },
       { id: 6, lesson: 2, name: "Creeper Defense", title: "Stage 6: The Midnight Creeper Defense", icon: "👾", duration: "10 min", xp: 25 },
@@ -148,51 +148,98 @@
       }
     ],
 
-    // Stage 3: The 2x2 Starter Smithing Bench Recipes (Step 1 -> Step 2)
-    smithing2x2Recipes: [
+    // Stage 3: The 3x3 Real Crafting Forge with English Gates (3 Progressive Tiers)
+    smithing3x3Tiers: [
       {
-        id: "sticks-2x2",
-        stepNumber: 1,
-        name: "4x Wooden Sticks",
-        tier: "Step 1: Basic Component",
-        badge: "Step 1 of 2: Craft Sticks",
-        icon: "🥢",
-        resultItem: "Sticks",
-        img: "assets/wooden_sticks_transparent.webp",
-        formula: "I need two wood planks to craft four sticks.",
-        speechText: "I need two wood planks to craft four sticks.",
-        purpose: "We use sticks to make pickaxes, torches, and tools.",
-        pattern: [
-          ["wood", ""],
-          ["wood", ""]
-        ],
-        ghostGrid: ["wood", "", "wood", ""],
-        ingredientsLabel: "2 Wood Planks (Slots 1 & 3)",
-        miniGuide: "Place 1 Wood Plank in the top-left, and 1 Wood Plank in the bottom-left.",
-        stampText: "CRAFTED: 4x STICKS! ⭐"
-      },
-      {
-        id: "wood-pick-2x2",
-        stepNumber: 2,
+        id: "wooden-pickaxe-3x3",
+        tier: 1,
+        tierName: "Tier 1: Starter Tool",
         name: "Starter Wooden Pickaxe",
-        tier: "Step 2: Starter Tool",
-        badge: "Step 2 of 2: Wooden Pickaxe",
         icon: "⛏️",
         resultItem: "Wooden Pickaxe",
         img: "assets/wooden_pickaxe_transparent.webp",
-        formula: "I need two wood planks and two sticks to craft a wooden pickaxe.",
-        speechText: "I need two wood planks and two sticks to craft a wooden pickaxe.",
-        purpose: "We use the wooden pickaxe to mine stone boulders.",
+        badge: "Tier 1: Starter Wooden Pickaxe",
+        xpReward: 35,
+        targetSentence: "I combine three wood planks and two sticks to craft a wooden pickaxe.",
+        speechText: "I combine three wood planks and two sticks to craft a wooden pickaxe.",
+        sentenceChunks: ["I combine", "three wood planks", "and two sticks", "to craft", "a wooden pickaxe."],
+        distractorChunks: ["to smelt", "five cobblestone"],
         pattern: [
-          ["wood", "wood"],
-          ["stick", "stick"]
+          ["wood", "wood", "wood"],
+          ["", "stick", ""],
+          ["", "stick", ""]
         ],
-        ghostGrid: ["wood", "wood", "stick", "stick"],
-        ingredientsLabel: "2 Wood Planks (Top) + 2 Sticks (Bottom)",
-        miniGuide: "Place 2 Wood Planks across the top row, and 2 Sticks across the bottom row.",
-        stampText: "CRAFTED: STARTER PICKAXE! ⭐"
+        ghostGrid: [
+          "wood", "wood", "wood",
+          "", "stick", "",
+          "", "stick", ""
+        ],
+        ingredientsLabel: "3 Wood Planks (Row 1) + 2 Sticks (Center Column)",
+        miniGuide: "Place 3 Wood Planks across the top row, and 2 Sticks down the center.",
+        stampText: "FORGED: WOODEN PICKAXE! ⭐"
+      },
+      {
+        id: "stone-hatchet-3x3",
+        tier: 2,
+        tierName: "Tier 2: Heavy Tool",
+        name: "Heavy Stone Hatchet",
+        icon: "🪓",
+        resultItem: "Stone Hatchet",
+        img: "assets/stone_hatchet_transparent.webp",
+        badge: "Tier 2: Heavy Stone Hatchet",
+        xpReward: 35,
+        targetSentence: "I use cobblestone and sticks to assemble a stone hatchet.",
+        speechText: "I use cobblestone and sticks to assemble a stone hatchet.",
+        sentenceChunks: ["I use", "cobblestone", "and sticks", "to assemble", "a stone hatchet."],
+        distractorChunks: ["three iron ingots", "to mine"],
+        pattern: [
+          ["stone", "stone", ""],
+          ["stone", "stick", ""],
+          ["", "stick", ""]
+        ],
+        ghostGrid: [
+          "stone", "stone", "",
+          "stone", "stick", "",
+          "", "stick", ""
+        ],
+        ingredientsLabel: "3 Cobblestone (Top-Left) + 2 Sticks (Center Column)",
+        miniGuide: "Place 3 Cobblestone in the top-left corner, and 2 Sticks down the center.",
+        stampText: "FORGED: STONE HATCHET! ⭐"
+      },
+      {
+        id: "iron-broadsword-3x3",
+        tier: 3,
+        tierName: "Tier 3: Master Weapon",
+        name: "Forged Iron Broadsword",
+        icon: "⚔️",
+        resultItem: "Iron Broadsword",
+        img: "assets/iron_sword_transparent.webp",
+        badge: "Tier 3: Forged Iron Broadsword",
+        xpReward: 35,
+        targetSentence: "I need two iron ingots and one stick to forge an iron broadsword.",
+        speechText: "I need two iron ingots and one stick to forge an iron broadsword.",
+        sentenceChunks: ["I need", "two iron ingots", "and one stick", "to forge", "an iron broadsword."],
+        distractorChunks: ["four sticks", "to chop"],
+        pattern: [
+          ["", "iron", ""],
+          ["", "iron", ""],
+          ["", "stick", ""]
+        ],
+        ghostGrid: [
+          "", "iron", "",
+          "", "iron", "",
+          "", "stick", ""
+        ],
+        ingredientsLabel: "2 Iron Ingots (Slots 2 & 5) + 1 Stick (Slot 8)",
+        miniGuide: "Place 2 Iron Ingots in the center column, and 1 Stick at the bottom center.",
+        stampText: "FORGED: IRON BROADSWORD! ⭐"
       }
     ],
+
+    // Backward compatibility pointer
+    get smithing2x2Recipes() {
+      return this.smithing3x3Tiers;
+    },
 
     // Backwards compatibility for existing references
     smithingRecipes: [

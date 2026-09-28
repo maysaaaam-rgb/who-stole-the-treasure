@@ -162,13 +162,13 @@
     </section>
 
     <!-- ===================================================================
-         STAGE 3: THE 2x2 STARTER SMITHING BENCH (Recipe Assembly)
+         STAGE 3: THE 3x3 REAL CRAFTING FORGE WITH ENGLISH GATES
          =================================================================== -->
     <section class="stage-view smithing-bench-stage" id="stagePhase3">
       <div class="stage-hero-banner">
         <div class="stage-hero-left">
-          <h2><span>🔨</span> Stage 3: The 2x2 Starter Smithing Bench</h2>
-          <p>Practice starter crafting on a 2x2 workbench grid! Follow the ghost blueprint to craft Sticks, then assemble a Starter Wooden Pickaxe (+25 XP)!</p>
+          <h2><span>🔨</span> Stage 3: The 3x3 Real Crafting Forge with English Gates</h2>
+          <p>Master the authentic 3x3 Crafting Forge! Unlock and assemble 3 legendary survival tools: <strong>Wooden Pickaxe</strong>, <strong>Heavy Stone Hatchet</strong>, and <strong>Forged Iron Broadsword</strong>. Solve the English linguistic gates before striking the anvil (+35 XP each)!</p>
         </div>
         <div>
           <button type="button" class="btn-3d btn-game-torch" onclick="switchStage(4)">
@@ -183,42 +183,45 @@
           <!-- Injected dynamically by js/app.js -->
         </div>
 
-        <!-- Center: 2x2 Crafting Grid & Tactile Inventory Tray -->
+        <!-- Center: 3x3 Crafting Grid, Linguistic Gate & Tactile Inventory Tray -->
         <div class="forge-center-stage">
-          <!-- Recipe Stepper Pills -->
+          <!-- Tier Stepper Pills -->
           <div class="smithing-stepper-row stage-target-tabs step-badge-row" id="smithing2x2Stepper">
             <!-- Stepper buttons -->
           </div>
 
-          <!-- Visual Crafting Formula Header & Audio Hook (Replaces Text Wall) -->
-          <div class="visual-formula-dock" id="smithing2x2FormulaDock">
-            <!-- Dynamically populated by js/app.js -->
+          <!-- 3x3 Interactive Workbench Mat & Grounded Pedestal Frame -->
+          <div class="forge-3x3-workbench-mat">
+            <div class="smithing-3x3-frame" id="smithing3x3Frame">
+              <div class="crafting-grid smithing-3x3-grid" id="grid2x2Sockets">
+                <!-- 9 sockets: 0 to 8 with dynamic glowing ghost previews -->
+              </div>
+
+              <!-- Animated Rubber Stamp Seal -->
+              <div class="forge-stamp-seal" id="smithingStampSeal" style="display:none;">
+                <span id="smithingStampSealText">FORGED: WOODEN PICKAXE! ⭐</span>
+              </div>
+            </div>
+            <div class="pedestal-disc runic-forge-pedestal"></div>
           </div>
 
-          <!-- 2x2 Interactive Workbench Grid -->
-          <div class="smithing-2x2-frame">
-            <div class="crafting-grid smithing-2x2-grid" id="grid2x2Sockets">
-              <!-- 4 sockets: 0, 1, 2, 3 with ghost previews -->
-            </div>
-
-            <!-- Animated Rubber Stamp Seal -->
-            <div class="forge-stamp-seal" id="smithingStampSeal" style="display:none;">
-              <span id="smithingStampSealText">CRAFTED: 4x STICKS! ⭐</span>
-            </div>
+          <!-- Tactile Inventory Palette (4 Materials: Oak Planks, Cobblestone, Iron Ingots, Sticks) -->
+          <div class="inventory-tray smithing-inventory-palette" id="smithing2x2InventoryTray">
+            <!-- Rendered dynamically with 3D isometric bevels -->
           </div>
 
-          <!-- Tactile Inventory Palette -->
-          <div class="inventory-tray" id="smithing2x2InventoryTray">
-            <!-- Rendered dynamically -->
+          <!-- Mandatory Linguistic Forge Gate (Sentence Builder Strip) -->
+          <div class="linguistic-forge-gate" id="linguisticForgeGate">
+            <!-- Rendered dynamically by js/app.js -->
           </div>
 
           <!-- Forge Action Controls -->
-          <div style="display:flex; gap:14px; width:100%; max-width:480px; justify-content:center; margin-top:10px;">
+          <div class="forge-action-controls-row">
             <button type="button" class="btn-3d btn-clear-3d" onclick="clear2x2Grid()">
-              <span>↺ Clear</span>
+              <span>↺ Reset Grid</span>
             </button>
             <button type="button" class="btn-3d btn-craft-3d" id="btnForge2x2Item" onclick="verify2x2Craft()">
-              <span>🔨 Craft Starter Tool!</span>
+              <span>🔒 FORGE LOCKED (Solve Sentence &amp; Grid)</span>
             </button>
           </div>
         </div>
@@ -611,33 +614,33 @@
     </div>
   </div>
 
-  <!-- 3D REWARD POP-UP MODAL: WOODEN PICKAXE -->
+  <!-- 3D REWARD POP-UP MODAL: CRAFTED TOOL -->
   <div class="modal-overlay craft-reward-modal-overlay" id="smithingRewardModal" style="display:none;" onclick="handleCloseSmithingReward(event)">
     <div class="craft-reward-modal-card" onclick="event.stopPropagation()">
-      <div class="reward-sparkle-stars">✨ 🌟 ⛏️ 🌟 ✨</div>
-      <h2 class="reward-title">WOODEN PICKAXE CRAFTED!</h2>
-      <div class="reward-subtitle">Starter Tool Ready for Mining</div>
+      <div class="reward-sparkle-stars" id="rewardModalSparkles">✨ 🌟 ⛏️ 🌟 ✨</div>
+      <h2 class="reward-title" id="rewardModalTitle">WOODEN PICKAXE FORGED!</h2>
+      <div class="reward-subtitle" id="rewardModalSubtitle">Starter Tool Ready for Mining</div>
 
       <div class="reward-pedestal-stage">
-        <img src="assets/wooden_pickaxe_transparent.webp" alt="Wooden Pickaxe" class="reward-hero-tool">
+        <img src="assets/wooden_pickaxe_transparent.webp" alt="Crafted Tool" class="reward-hero-tool" id="rewardModalImg">
         <div class="pedestal-disc reward-pedestal-disk"></div>
       </div>
 
-      <div class="reward-xp-pill">
-        <span>⭐ +25 XP REWARDED!</span>
+      <div class="reward-xp-pill" id="rewardModalXP">
+        <span>⭐ +35 XP REWARDED!</span>
       </div>
 
       <div class="reward-sentence-card">
-        <div class="reward-sentence-text" id="rewardModalSentence">"I need two wood planks and two sticks to craft a wooden pickaxe."</div>
-        <button type="button" class="reward-speaker-btn" onclick="speakStage3Formula()" title="Listen to Formula">
+        <div class="reward-sentence-text" id="rewardModalSentence">"I combine three wood planks and two sticks to craft a wooden pickaxe."</div>
+        <button type="button" class="reward-speaker-btn btn-formula-audio-speaker" onclick="speakStage3Formula()" title="Listen to Formula">
           <span class="speaker-wave-anim">🔊</span>
           <span>Listen</span>
         </button>
       </div>
 
       <div class="reward-modal-actions">
-        <button type="button" class="btn-3d btn-game-emerald reward-continue-btn" onclick="continueAfterPickaxeReward()">
-          <span>Next: Stage 4 Sunset Drill 🌅 →</span>
+        <button type="button" class="btn-3d btn-game-emerald reward-continue-btn" id="rewardModalContinueBtn" onclick="continueAfterPickaxeReward()">
+          <span>Next Tool: Heavy Stone Hatchet 🪓 →</span>
         </button>
       </div>
     </div>
