@@ -158,27 +158,35 @@
     }
   };
 
-  function getStudentMascot(student) {
-    if (!student) return ELEMENTAL_AVATARS.IGNIS;
-    const s = typeof student === 'object' ? student : { id: String(student) };
-    const archetype = (s.archetype || "").toUpperCase();
-    if (ELEMENTAL_AVATARS[archetype]) return ELEMENTAL_AVATARS[archetype];
+  const DEFAULT_MASCOT = ELEMENTAL_AVATARS.IGNIS;
 
-    // Fallback to deterministic hash so adjacent cards have different creatures
-    const keys = Object.keys(ELEMENTAL_AVATARS);
-    const hash = String(s.id || s.name || "0")
-      .split("")
-      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return ELEMENTAL_AVATARS[keys[hash % keys.length]];
+  function getStudentMascot(student) {
+    if (!student) return DEFAULT_MASCOT;
+    try {
+      const s = typeof student === 'object' ? student : { id: String(student) };
+      const rawArchetype = String(s.archetype || s.element || "").toUpperCase();
+      if (ELEMENTAL_AVATARS[rawArchetype]) return ELEMENTAL_AVATARS[rawArchetype];
+
+      // Fallback to deterministic hash so adjacent cards have different creatures
+      const keys = Object.keys(ELEMENTAL_AVATARS);
+      if (!keys.length) return DEFAULT_MASCOT;
+      const hash = String(s.id || s.name || s.studentId || s.studentIdNumber || "0")
+        .split("")
+        .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      const idx = Math.abs(hash) % keys.length;
+      return ELEMENTAL_AVATARS[keys[idx]] || DEFAULT_MASCOT;
+    } catch (e) {
+      return DEFAULT_MASCOT;
+    }
   }
 
   const ELEMENTAL_SPECIES = ELEMENTAL_AVATARS;
 
   function getStudentSpeciesData(student) {
-    const mascot = getStudentMascot(student);
+    const mascot = getStudentMascot(student) || DEFAULT_MASCOT;
     return Object.assign({}, mascot, {
-      image: mascot.sprite,
-      fallback: mascot.sprite
+      image: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite,
+      fallback: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite
     });
   }
 
@@ -186,10 +194,14 @@
 
   function getStudentArchetype(student) {
     if (!student) return SPECIES_ARCHETYPES[0];
-    const s = (typeof student === 'object') ? student : { id: String(student) };
-    if (s.archetype) return s.archetype;
-    const code = (s.id || s.name || "").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return SPECIES_ARCHETYPES[code % SPECIES_ARCHETYPES.length];
+    try {
+      const s = (typeof student === 'object') ? student : { id: String(student) };
+      if (s.archetype) return String(s.archetype).toLowerCase();
+      const code = String(s.id || s.name || s.studentId || "0").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      return SPECIES_ARCHETYPES[Math.abs(code) % SPECIES_ARCHETYPES.length] || SPECIES_ARCHETYPES[0];
+    } catch (e) {
+      return SPECIES_ARCHETYPES[0];
+    }
   }
 
   /**
