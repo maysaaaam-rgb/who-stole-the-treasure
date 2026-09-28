@@ -124,86 +124,6 @@
     return 'baby';
   }
 
-  // =========================================================================
-  // 4 DISTINCT SPECIES ARCHETYPES (SINGLE SOURCE OF TRUTH)
-  // 1. Ignis (Emberwing / Fire): assets/monsters/ignis.webp
-  // 2. Flora (Florasprout / Nature): assets/monsters/flora.webp
-  // 3. Volt (Sparktail / Electric): assets/monsters/volt.webp
-  // 4. Astral (Astralight / Cosmic): assets/monsters/astral.webp
-  // =========================================================================
-  const ELEMENTAL_AVATARS = {
-    IGNIS: {
-      name: "Ember Beast",
-      sprite: "assets/packs/characters/emberwing_stage_baby.png",
-      glow: "rgba(239, 68, 68, 0.55)",
-      border: "#ef4444"
-    },
-    FLORA: {
-      name: "Leaf Guardian",
-      sprite: "assets/packs/characters/florasprout_stage_baby.png",
-      glow: "rgba(16, 185, 129, 0.55)",
-      border: "#10b981"
-    },
-    VOLT: {
-      name: "Thunder Spark",
-      sprite: "assets/packs/characters/sparktail_stage_baby.png",
-      glow: "rgba(245, 158, 11, 0.55)",
-      border: "#f59e0b"
-    },
-    ASTRAL: {
-      name: "Cosmic Sprite",
-      sprite: "assets/packs/characters/astralight_stage_baby.png",
-      glow: "rgba(139, 92, 246, 0.55)",
-      border: "#8b5cf6"
-    }
-  };
-
-  const DEFAULT_MASCOT = ELEMENTAL_AVATARS.IGNIS;
-
-  function getStudentMascot(student) {
-    if (!student) return DEFAULT_MASCOT;
-    try {
-      const s = typeof student === 'object' ? student : { id: String(student) };
-      const rawArchetype = String(s.archetype || s.element || "").toUpperCase();
-      if (ELEMENTAL_AVATARS[rawArchetype]) return ELEMENTAL_AVATARS[rawArchetype];
-
-      // Fallback to deterministic hash so adjacent cards have different creatures
-      const keys = Object.keys(ELEMENTAL_AVATARS);
-      if (!keys.length) return DEFAULT_MASCOT;
-      const hash = String(s.id || s.name || s.studentId || s.studentIdNumber || "0")
-        .split("")
-        .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-      const idx = Math.abs(hash) % keys.length;
-      return ELEMENTAL_AVATARS[keys[idx]] || DEFAULT_MASCOT;
-    } catch (e) {
-      return DEFAULT_MASCOT;
-    }
-  }
-
-  const ELEMENTAL_SPECIES = ELEMENTAL_AVATARS;
-
-  function getStudentSpeciesData(student) {
-    const mascot = getStudentMascot(student) || DEFAULT_MASCOT;
-    return Object.assign({}, mascot, {
-      image: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite,
-      fallback: (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite
-    });
-  }
-
-  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
-
-  function getStudentArchetype(student) {
-    if (!student) return SPECIES_ARCHETYPES[0];
-    try {
-      const s = (typeof student === 'object') ? student : { id: String(student) };
-      if (s.archetype) return String(s.archetype).toLowerCase();
-      const code = String(s.id || s.name || s.studentId || "0").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-      return SPECIES_ARCHETYPES[Math.abs(code) % SPECIES_ARCHETYPES.length] || SPECIES_ARCHETYPES[0];
-    } catch (e) {
-      return SPECIES_ARCHETYPES[0];
-    }
-  }
-
   /**
    * Comprehensive Shared SVG Defs (Volumetric Gradients & Filters)
    */
@@ -329,37 +249,6 @@
           <feGaussianBlur stdDeviation="4" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
-
-        <filter id="mf-shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="3.5" stdDeviation="2.8" flood-color="#020617" flood-opacity="0.32" />
-        </filter>
-
-        <!-- Specular Lighting for Chibi Monster Torso -->
-        <linearGradient id="bodyShading" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
-          <stop offset="35%" stop-color="#ffffff" stop-opacity="0.1" />
-          <stop offset="70%" stop-color="#020617" stop-opacity="0.2" />
-          <stop offset="100%" stop-color="#020617" stop-opacity="0.65" />
-        </linearGradient>
-
-        <!-- Tailored Outfits Volumetric Gradients -->
-        <linearGradient id="vestLeatherGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#b45309" />
-          <stop offset="45%" stop-color="#92400e" />
-          <stop offset="100%" stop-color="#78350f" />
-        </linearGradient>
-
-        <linearGradient id="capeRubyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ef4444" />
-          <stop offset="50%" stop-color="#dc2626" />
-          <stop offset="100%" stop-color="#991b1b" />
-        </linearGradient>
-
-        <linearGradient id="armorGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#fef08a" />
-          <stop offset="40%" stop-color="#eab308" />
-          <stop offset="100%" stop-color="#ca8a04" />
-        </linearGradient>
 
         <!-- Backward-Compatible Secondary Gradients & Filters -->
         <linearGradient id="mg-egg-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -540,8 +429,6 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
-    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
-    equipped.archetype = archetype;
     const size = options.size || 200;
     const animated = options.animated !== false;
 
@@ -569,7 +456,7 @@
     try {
       const auraLayer = renderAuraLayer(equipped.aura, stage, palette);
       const wingsLayer = renderWingsLayer(stage, equipped.wings, palette);
-      const tailLayer = renderTailLayer(stage, equipped.tail, palette, archetype);
+      const tailLayer = renderTailLayer(stage, equipped.tail, palette);
       const backpackLayer = renderBackpackLayer(stage, equipped.backpack);
       let rearUnderBody = '';
       if (stage !== 'egg' && stage !== 'cracking_egg') {
@@ -664,8 +551,6 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
-    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
-    equipped.archetype = archetype;
     const size = options.size || 200;
     const animated = options.animated !== false;
 
@@ -683,18 +568,6 @@
       }
     }
 
-    const archetypeGlowColors = {
-      ignis: '#f97316',
-      flora: '#10b981',
-      volt: '#eab308',
-      astral: '#8b5cf6'
-    };
-    const glowColor = archetypeGlowColors[archetype] || '#38bdf8';
-    const archetypeUnderglow = `
-      <!-- Archetype Underglow (${archetype}) -->
-      <ellipse cx="100" cy="158" rx="58" ry="13" fill="${glowColor}" opacity="${stage === 'egg' ? '0.22' : '0.45'}" filter="url(#plush-contact-blur)" />
-    `;
-
     const pedestalMarkup = renderPedestalDais();
     const contactShadowMarkup = renderContactShadow(stage);
 
@@ -705,7 +578,7 @@
     try { wingsLayer = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsLayer = ''; }
 
     let tailLayer = '';
-    try { tailLayer = renderTailLayer(stage, equipped.tail, palette, archetype); } catch (e) { tailLayer = ''; }
+    try { tailLayer = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailLayer = ''; }
 
     let backpackLayer = '';
     try { backpackLayer = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackLayer = ''; }
@@ -748,10 +621,9 @@
     `;
 
     return `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass} archetype-${archetype}" data-stage="${stage}" data-color="${colorKey}" data-archetype="${archetype}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
         ${defs}
         ${bgLayer}
-        ${archetypeUnderglow}
         ${pedestalMarkup}
         ${contactShadowMarkup}
         ${bobGroup}
@@ -836,26 +708,6 @@
   }
 
   /**
-   * 3D Raster Mascot Viewport Stage with Grounded Isometric Pedestal
-   */
-  function renderMonsterViewportStage(speciesOrStudent, options = {}) {
-    const mascot = (speciesOrStudent && speciesOrStudent.sprite)
-      ? speciesOrStudent
-      : getStudentMascot(speciesOrStudent);
-    return `
-<div class="avatar-hero-container monster-viewport-stage" style="--glow: ${mascot.glow}; --pedestal-glow: ${mascot.glow}">
-  <div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ${mascot.glow}"></div>
-  <img 
-    src="${mascot.sprite}" 
-    alt="${mascot.name}" 
-    class="mascot-sprite-img monster-hero-3d"
-    loading="lazy" 
-    onerror="this.src='${mascot.sprite}'" 
-  />
-</div>`.trim();
-  }
-
-  /**
    * Main Render Entry Point: Defaults to Scalable Procedural Composite SVG Pipeline
    */
   function renderMonsterSVG(options = {}) {
@@ -883,8 +735,6 @@
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     const equipped = Object.assign({}, options.equipped || {});
-    const archetype = options.archetype || getStudentArchetype(options.student || options.studentId || options.id || options.name || { color: colorKey });
-    equipped.archetype = archetype;
     const animated = options.animated !== false;
     const animClass = animated ? 'eaa-monster-animated bobbing' : '';
     const defs = getSharedDefs(colorKey, palette);
@@ -904,39 +754,54 @@
     let wingsMarkup = '';
     try { wingsMarkup = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsMarkup = ''; }
     let tailMarkup = '';
-    try { tailMarkup = renderTailLayer(stage, equipped.tail, palette, archetype); } catch (e) { tailMarkup = ''; }
+    try { tailMarkup = renderTailLayer(stage, equipped.tail, palette); } catch (e) { tailMarkup = ''; }
     let backpackMarkup = '';
     try { backpackMarkup = renderBackpackLayer(stage, equipped.backpack); } catch (e) { backpackMarkup = ''; }
-    let capeMarkup = '';
-    if (equipped.cape && equipped.cape !== 'none') {
-      capeMarkup = `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`;
-    }
-    const backGearSvg = (wingsMarkup || tailMarkup || backpackMarkup || capeMarkup)
-      ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${capeMarkup}${wingsMarkup}${tailMarkup}${backpackMarkup}</svg>`
+    const backGearSvg = (wingsMarkup || tailMarkup || backpackMarkup)
+      ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${wingsMarkup}${tailMarkup}${backpackMarkup}</svg>`
       : '';
 
-    // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso)
+    // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso, Horns)
     let bodySvg = '';
-    const student = options.student || (options.studentId ? (root.store && root.store.getStudent ? root.store.getStudent(options.studentId) : null) : null);
-    const studentLvl = options.level || (student && student.level) || (stage === 'ultimate' ? 7 : (stage === 'growing' ? 4 : (stage === 'cracking_egg' ? 2 : (stage === 'egg' ? 1 : 3))));
-    const baseSprite = (student && student.custom_avatar_url) || options.customAvatarUrl || options.custom_avatar_url || getMonsterAsset(archetype, studentLvl);
-
-    if (stage === 'egg' || studentLvl === 1) {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}<image href="assets/monsters/stage-1-mystery-egg.png" xlink:href="assets/monsters/stage-1-mystery-egg.png" x="25" y="25" width="150" height="150" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" /></svg>`;
-    } else if (stage === 'cracking_egg' || studentLvl === 2) {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}<image href="assets/monsters/stage-2-cracking-egg.png" xlink:href="assets/monsters/stage-2-cracking-egg.png" x="25" y="25" width="150" height="150" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" /></svg>`;
+    if (stage === 'egg') {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
+    } else if (stage === 'cracking_egg') {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
     } else {
+      const pedestalMarkup = renderPedestalDais();
+      const contactShadowMarkup = renderContactShadow(stage);
+      let underBodyMarkup = '';
+      let feetMarkup = '';
+      let torsoMarkup = '';
+      let overBodyMarkup = '';
+      try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
+      try { feetMarkup = renderGroundedFeet(palette, colorKey, cX, g); } catch (e) {}
+      try { torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped); } catch (e) {}
+      try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
+
       bodySvg = `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           ${defs}
-          <g id="layer-body-sprite">
-            <image href="${baseSprite}" xlink:href="${baseSprite}" x="20" y="20" width="160" height="160" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
-          </g>
+          ${pedestalMarkup}
+          ${contactShadowMarkup}
+          ${underBodyMarkup}
+          ${feetMarkup}
+          ${torsoMarkup}
+          ${overBodyMarkup}
         </svg>
       `;
     }
 
-    // 4. Clothing & Outfits wrapped to torso (z-30)
+    // 4. Face Features (Eyes, Mouth, Blushes)
+    let faceSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg') {
+      try {
+        const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
+        faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
+      } catch (e) {}
+    }
+
+    // 5. Clothing & Outfits (Vests, Jackets, Coats, Capes)
     let clothingSvg = '';
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
@@ -947,18 +812,7 @@
       } catch (e) {}
     }
 
-    // 5. Face Features & Expressions rendered OVER clothing (z-40)
-    let faceSvg = '';
-    if (stage !== 'egg' && stage !== 'cracking_egg') {
-      try {
-        const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
-        if (faceMarkup) {
-          faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
-        }
-      } catch (e) {}
-    }
-
-    // 6. Face Accessories & Glasses (z-50)
+    // 6. Face Accessories & Glasses (Round Wire Glasses, Goggles)
     let glassesSvg = '';
     if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.glasses && equipped.glasses !== 'none') {
       try {
@@ -967,45 +821,50 @@
       } catch (e) {}
     }
 
-    // 7. Horns & Crests (z-60)
-    let hornsSvg = '';
-    if (stage !== 'egg' && stage !== 'cracking_egg') {
-      try {
-        const hornsMarkup = renderHornsLayer(stage, equipped.horns, palette, cX, g);
-        if (hornsMarkup) hornsSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${hornsMarkup}</svg>`;
-      } catch (e) {}
-    }
-
-    // 8. Headwear (Hats, Caps, Crowns) (z-70)
+    // 7. Headgear (Horns, Hats, Crowns)
     let headwearSvg = '';
-    const hatId = equipped.hat || equipped.hats;
-    if (stage !== 'egg' && stage !== 'cracking_egg') {
+    if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.hat && equipped.hat !== 'none') {
       try {
-        let fg = '';
-        if (hatId && hatId !== 'none') {
-          fg += renderForegroundAccessories(stage, { hat: hatId }, palette) || '';
-        }
-        if (equipped.accessory && equipped.accessory !== 'none') {
-          fg += renderForegroundAccessories(stage, { accessory: equipped.accessory }, palette) || '';
-        }
+        const fg = renderForegroundAccessories(stage, { hat: equipped.hat }, palette);
         if (fg) headwearSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
       } catch (e) {}
     }
 
-    const stageSize = options.size || 280;
+    // 8. Held Items (Wands, Compasses, Bags)
+    let heldSvg = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.accessory && equipped.accessory !== 'none') {
+      try {
+        const fg = renderForegroundAccessories(stage, { accessory: equipped.accessory }, palette);
+        if (fg) heldSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+      } catch (e) {}
+    }
 
     return `
-      <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: ${stageSize}px; height: ${stageSize}px; margin: 0 auto;">
-        <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">${auraSvg}</div>
-        <div id="layer-back-gear" class="layer-item z-10" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
-        <div id="layer-body" class="layer-item z-20" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">${bodySvg}</div>
-        <div id="layer-clothing" class="layer-item z-30" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;">${clothingSvg}</div>
-        <div id="layer-face" class="layer-item z-40" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;">${faceSvg}</div>
-        <div id="layer-glasses" class="layer-item z-50" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
-        <div id="layer-horns" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">${hornsSvg}</div>
-        <div id="layer-headwear" class="layer-item z-70" style="position: absolute; inset: 0; z-index: 70; pointer-events: none;">${headwearSvg}</div>
+      <div class="monster-live-stage ${animClass}" id="monster-live-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
+        <!-- 1. Background Aura / FX -->
+        <div id="layer-aura-back" class="layer-item z-0">${auraSvg}</div>
+        
+        <!-- 2. Back Gear (Wings, Capes, Tails behind torso) -->
+        <div id="layer-back-gear" class="layer-item z-10">${backGearSvg}</div>
+
+        <!-- 3. Base Monster Body & Fur (e.g., Gold, Blue, Violet) -->
+        <div id="layer-monster-body" class="layer-item z-20">${bodySvg}</div>
+
+        <!-- 4. Clothing & Outfits (Vests, Jackets, Coats, Capes) -->
+        <div id="layer-clothing" class="layer-item z-30">${clothingSvg}</div>
+
+        <!-- 5. Face Features (Eyes, Mouth, Blushes) -->
+        <div id="layer-face" class="layer-item z-40">${faceSvg}</div>
+
+        <!-- 6. Face Accessories & Glasses (Round Wire Glasses, Goggles) -->
+        <div id="layer-glasses" class="layer-item z-50">${glassesSvg}</div>
+
+        <!-- 7. Headgear (Horns, Hats, Crowns) -->
+        <div id="layer-headwear" class="layer-item z-60">${headwearSvg}</div>
+
+        <!-- 8. Held Items (Wands, Compasses, Bags) -->
+        <div id="layer-held" class="layer-item z-70">${heldSvg}</div>
       </div>
-      <div class="pedestal-disk" id="preview-pedestal"></div>
     `.trim();
   }
 
@@ -1528,27 +1387,16 @@
   }
 
   // --- TAIL LAYER ---
-  function renderTailLayer(stage, tailId, palette, archetype) {
+  function renderTailLayer(stage, tailId, palette) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effectiveTail = tailId;
     if (!effectiveTail || effectiveTail === 'default') {
-      const arch = archetype || (palette && palette.archetype) || 'ignis';
-      if (arch === 'ignis') {
-        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-flame';
-      } else if (arch === 'flora') {
-        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-fox';
-      } else if (arch === 'volt') {
-        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-volt';
-      } else if (arch === 'astral') {
-        effectiveTail = stage === 'baby' ? 'tail-puff' : 'tail-star';
-      } else {
-        if (stage === 'baby') effectiveTail = 'tail-puff';
-        else if (stage === 'growing') effectiveTail = 'tail-perky';
-        else if (stage === 'adventurer') effectiveTail = 'tail-perky';
-        else if (stage === 'advanced') effectiveTail = 'tail-dragon';
-        else if (stage === 'ultimate') effectiveTail = 'tail-celestial';
-      }
+      if (stage === 'baby') effectiveTail = 'tail-puff';
+      else if (stage === 'growing') effectiveTail = 'tail-perky';
+      else if (stage === 'adventurer') effectiveTail = 'tail-perky';
+      else if (stage === 'advanced') effectiveTail = 'tail-dragon';
+      else if (stage === 'ultimate') effectiveTail = 'tail-celestial';
     }
 
     if (effectiveTail === 'none' || effectiveTail === 'tail-none') return '';
@@ -1585,7 +1433,7 @@
 
     if (effectiveTail === 'tail-flame') {
       return `
-        <!-- Blazing Flame Tail (Ignis) -->
+        <!-- Blazing Flame Tail -->
         <g class="monster-tail-layer tail-flame" filter="url(#mf-glow)">
           <path d="M 132 136 C 158 132 172 118 168 98 C 162 92 154 100 146 114 Z" fill="${palette.primaryDark}" stroke="${palette.shadow}" stroke-width="2.4" />
           <!-- Animated flame cluster on tip -->
@@ -1596,29 +1444,9 @@
       `;
     }
 
-    if (effectiveTail === 'tail-volt') {
-      return `
-        <!-- Zigzag Lightning Tail (Volt) -->
-        <g class="monster-tail-layer tail-volt" filter="url(#mf-glow)">
-          <polygon points="132,136 148,124 142,118 162,104 152,98 174,74 164,88 152,92 158,104 142,114 136,138" fill="#facc15" stroke="#ca8a04" stroke-width="2.2" />
-          <polygon points="166,78 174,74 168,86" fill="#fef08a" />
-        </g>
-      `;
-    }
-
-    if (effectiveTail === 'tail-fox') {
-      return `
-        <!-- Lush Bushy Fox Tail with White Brush Tip (Flora) -->
-        <g class="monster-tail-layer tail-fox" filter="url(#plush-shadow)">
-          <path d="M 132 136 C 160 134 182 118 178 90 C 172 76 156 82 144 102 C 136 116 128 134 132 136 Z" fill="${palette.primaryDark || '#15803d'}" stroke="${palette.shadowDark || '#052e16'}" stroke-width="2.5" />
-          <path d="M 178 90 C 176 82 168 78 158 84 C 164 92 168 96 178 90 Z" fill="#ecfdf5" stroke="${palette.shadowDark || '#052e16'}" stroke-width="1.8" />
-        </g>
-      `;
-    }
-
     if (effectiveTail === 'tail-star') {
       return `
-        <!-- Star-Tipped Tail (Astral) -->
+        <!-- Star-Tipped Tail -->
         <g class="monster-tail-layer tail-star">
           <path d="M 134 134 C 156 128 170 114 166 100 C 160 94 152 100 146 112 Z" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
           <polygon points="166,96 170,102 176,102 172,106 174,112 166,108 158,112 160,106 156,102 162,102" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" filter="url(#mf-glow)" />
@@ -1721,95 +1549,11 @@
     return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
   }
 
-  // --- ARCHETYPE REAR EARS / HORNS SILHOUETTE (Left / Rear) ---
-  function renderArchetypeEarRear(archetype, stage, palette, colorKey, cX, topY, cW, scale) {
-    const isGrowing = stage === 'growing';
-    const isAdvanced = stage === 'advanced' || stage === 'ultimate';
-    const darkShade = palette.shadowDark || palette.shadow || '#0c4a6e';
-
-    if (archetype === 'ignis') {
-      // Dragon Horn: Pointed, swept-back dragon horn with flame ridge spines
-      const hornLength = isGrowing ? 1.25 : (isAdvanced ? 1.4 : 1.0);
-      return `
-        <!-- Ignis Rear Dragon Horn -->
-        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-ignis">
-          <path d="M ${cX - cW * 0.35} ${topY + 10 * scale}
-                   C ${cX - cW * 0.75} ${topY - 8 * scale * hornLength} ${cX - cW * 1.15 * scale} ${topY - 22 * scale * hornLength} ${cX - cW * 1.35 * scale * hornLength} ${topY - 32 * scale * hornLength}
-                   C ${cX - cW * 1.10 * scale * hornLength} ${topY - 26 * scale * hornLength} ${cX - cW * 0.60 * scale} ${topY - 14 * scale} ${cX - cW * 0.18} ${topY + 4 * scale} Z"
-                fill="${darkShade}" stroke="#7c2d12" stroke-width="2.6" stroke-linejoin="round" />
-          <!-- Flame dorsal ridge spines along horn -->
-          <polygon points="${cX - cW * 0.65},${topY - 10 * scale} ${cX - cW * 0.85 * scale},${topY - 18 * scale * hornLength} ${cX - cW * 0.60 * scale},${topY - 14 * scale}" fill="#ea580c" />
-          <polygon points="${cX - cW * 0.95 * scale},${topY - 22 * scale * hornLength} ${cX - cW * 1.15 * scale * hornLength},${topY - 30 * scale * hornLength} ${cX - cW * 0.90 * scale * hornLength},${topY - 24 * scale * hornLength}" fill="#f97316" />
-          ${isGrowing ? `<circle cx="${cX - cW * 1.32 * scale * hornLength}" cy="${topY - 31 * scale * hornLength}" r="2" fill="#fdba74" filter="url(#plush-glow)" />` : ''}
-        </g>
-      `;
-    }
-
-    if (archetype === 'flora') {
-      // Fox Ear: Fluffy pointed triangular fox ear with inner shadow cavity
-      const earSpan = isGrowing ? 1.15 : (isAdvanced ? 1.25 : 0.95);
-      return `
-        <!-- Flora Rear Fox Ear -->
-        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-flora">
-          <path d="M ${cX - cW * 0.38} ${topY + 12 * scale}
-                   C ${cX - cW * 0.70} ${topY + 2 * scale} ${cX - cW * 0.95 * scale * earSpan} ${topY - 18 * scale * earSpan} ${cX - cW * 0.82 * scale * earSpan} ${topY - 34 * scale * earSpan}
-                   C ${cX - cW * 0.62 * scale * earSpan} ${topY - 26 * scale * earSpan} ${cX - cW * 0.42 * scale} ${topY - 8 * scale} ${cX - cW * 0.22 * scale} ${topY + 4 * scale} Z"
-                fill="${darkShade}" stroke="#064e3b" stroke-width="2.6" stroke-linejoin="round" />
-          <!-- Rear inner ear depth cavity -->
-          <path d="M ${cX - cW * 0.42} ${topY + 8 * scale}
-                   C ${cX - cW * 0.65} ${topY} ${cX - cW * 0.80 * scale * earSpan} ${topY - 14 * scale * earSpan} ${cX - cW * 0.72 * scale * earSpan} ${topY - 24 * scale * earSpan}
-                   C ${cX - cW * 0.58 * scale} ${topY - 18 * scale} ${cX - cW * 0.38 * scale} ${topY - 4 * scale} ${cX - cW * 0.30 * scale} ${topY + 4 * scale} Z"
-                fill="#064e3b" opacity="0.65" />
-        </g>
-      `;
-    }
-
-    if (archetype === 'volt') {
-      // Lightning Ear: Zigzag electric bolt ear with dark-dipped tip
-      const voltScale = isGrowing ? 1.2 : (isAdvanced ? 1.3 : 1.0);
-      return `
-        <!-- Volt Rear Lightning-Bolt Ear -->
-        <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-volt">
-          <path d="M ${cX - cW * 0.32} ${topY + 10 * scale}
-                   L ${cX - cW * 0.65} ${topY - 4 * scale * voltScale}
-                   L ${cX - cW * 0.50} ${topY - 8 * scale * voltScale}
-                   L ${cX - cW * 0.88 * scale * voltScale} ${topY - 24 * scale * voltScale}
-                   L ${cX - cW * 0.68 * scale * voltScale} ${topY - 26 * scale * voltScale}
-                   L ${cX - cW * 1.05 * scale * voltScale} ${topY - 40 * scale * voltScale}
-                   L ${cX - cW * 0.75 * scale * voltScale} ${topY - 32 * scale * voltScale}
-                   L ${cX - cW * 0.42 * scale} ${topY - 14 * scale}
-                   L ${cX - cW * 0.18} ${topY + 6 * scale} Z"
-                fill="${darkShade}" stroke="#713f12" stroke-width="2.6" stroke-linejoin="round" />
-          <!-- Dark dipped tip -->
-          <polygon points="${cX - cW * 1.05 * scale * voltScale},${topY - 40 * scale * voltScale} ${cX - cW * 0.75 * scale * voltScale},${topY - 32 * scale * voltScale} ${cX - cW * 0.82 * scale * voltScale},${topY - 30 * scale * voltScale}" fill="#1e293b" />
-          ${isGrowing ? `<circle cx="${cX - cW * 0.90 * scale * voltScale}" cy="${topY - 26 * scale * voltScale}" r="2" fill="#facc15" filter="url(#plush-glow)" />` : ''}
-        </g>
-      `;
-    }
-
-    // Default / Astral: Winged celestial feathered crest / owl horn-tuft
-    const owlSpread = isGrowing ? 1.2 : (isAdvanced ? 1.35 : 1.0);
-    return `
-      <!-- Astral Rear Celestial Owl Feathered Crest -->
-      <g filter="url(#plush-shadow)" class="monster-ear-rear archetype-astral">
-        <path d="M ${cX - cW * 0.36} ${topY + 12 * scale}
-                 C ${cX - cW * 0.68} ${topY + 4 * scale} ${cX - cW * 1.10 * scale * owlSpread} ${topY - 12 * scale * owlSpread} ${cX - cW * 1.22 * scale * owlSpread} ${topY - 26 * scale * owlSpread}
-                 C ${cX - cW * 0.95 * scale * owlSpread} ${topY - 24 * scale * owlSpread} ${cX - cW * 0.80 * scale} ${topY - 16 * scale} ${cX - cW * 0.75 * scale} ${topY - 8 * scale}
-                 C ${cX - cW * 0.55 * scale} ${topY - 4 * scale} ${cX - cW * 0.38 * scale} ${topY + 6 * scale} ${cX - cW * 0.20 * scale} ${topY + 8 * scale} Z"
-              fill="${darkShade}" stroke="#4c1d95" stroke-width="2.6" stroke-linejoin="round" />
-        <!-- Feather notch lines -->
-        <path d="M ${cX - cW * 0.85 * scale * owlSpread} ${topY - 16 * scale * owlSpread} L ${cX - cW * 1.05 * scale * owlSpread} ${topY - 22 * scale * owlSpread}" stroke="#a855f7" stroke-width="1.8" />
-        <circle cx="${cX - cW * 1.18 * scale * owlSpread}" cy="${topY - 24 * scale * owlSpread}" r="2.2" fill="#fde047" opacity="0.9" />
-      </g>
-    `;
-  }
-
   // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
   function renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
     const cW = g.cW;
     const scale = g.earScale;
-    const archetype = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
 
     let hornId = equipped.horns;
     if (!hornId || hornId === 'default') {
@@ -1818,8 +1562,22 @@
       else hornId = 'none';
     }
 
-    // Left (Rear) Archetype Ear / Horn
-    const rearEarMarkup = renderArchetypeEarRear(archetype, stage, palette, colorKey, cX, topY, cW, scale);
+    // Left (Rear) Ear: Layered beneath body with volumetric darker tone
+    const rearEarMarkup = `
+      <!-- Rear Ear (Depth Stacking: Ambient Occlusion & Volumetric Parallax) -->
+      <g filter="url(#plush-shadow)" class="monster-ear-rear">
+        <path d="M ${cX - cW * 0.44} ${topY + 12 * scale}
+                 C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
+                 C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
+                 C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
+              fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
+        <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
+        <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
+                 C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
+                 C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
+              fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
+      </g>
+    `;
 
     // Rear Horn (if curved or crystal, renders behind skull)
     let rearHornMarkup = '';
@@ -1841,18 +1599,45 @@
     `;
   }
 
-  // --- HORNS LAYER (Horns & Crests) ---
-  function renderHornsLayer(stage, hornId, palette, cX, g) {
-    if (!hornId || hornId === 'none' || hornId === 'horns-none') return '';
+  // --- FOREGROUND OVER-BODY ACCESSORIES (Flared Roots & Front Elements) ---
+  function renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
-    if (hornId === 'default') {
+    const cW = g.cW;
+    const scale = g.earScale;
+
+    let hornId = equipped.horns;
+    if (!hornId || hornId === 'default') {
       if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
       else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
-      else return '';
+      else hornId = 'none';
     }
 
+    // Right (Front) Ear: Flared root transition blending into skull envelope with keylit velvet gradient and pastel cavity
+    const frontEarMarkup = `
+      <!-- Front Ear (Flared Root Fillet Transition) -->
+      <g filter="url(#plush-shadow)" class="monster-ear-front">
+        <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
+                 C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
+                 C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
+                 C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
+              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
+        <!-- Front Inner Ear Cavity (Velvet Tone) -->
+        <path d="M ${cX + cW * 0.34 * scale} ${topY + 3 * scale}
+                 C ${cX + cW * 0.48 * scale} ${topY - 6 * scale} ${cX + cW * 0.68 * scale} ${topY - 25 * scale} ${cX + cW * 0.88 * scale} ${topY - 22 * scale}
+                 C ${cX + cW * 1.08 * scale} ${topY - 14 * scale} ${cX + cW * 0.82 * scale} ${topY + 1 * scale} ${cX + cW * 0.48 * scale} ${topY + 8 * scale} Z"
+              fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
+        <path d="M ${cX + cW * 0.50 * scale} ${topY - 18 * scale} Q ${cX + cW * 0.62 * scale} ${topY - 28 * scale} ${cX + cW * 0.82 * scale} ${topY - 26 * scale}"
+              fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.8" />
+      </g>
+    `;
+
+    if (hornId === 'none' || hornId === 'horns-none') {
+      return frontEarMarkup;
+    }
+
+    let hornsMarkup = '';
     if (hornId === 'horns-small' || hornId === 'horns-nub') {
-      return `
+      hornsMarkup = `
         <!-- Small Sprout Horns with Flared Roots -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 22} ${topY + 8} C ${cX - 24} ${topY - 4} ${cX - 20} ${topY - 16} ${cX - 14} ${topY - 14} Q ${cX - 12} ${topY - 4} ${cX - 10} ${topY + 8} Z"
@@ -1862,7 +1647,7 @@
         </g>
       `;
     } else if (hornId === 'horns-curved') {
-      return `
+      hornsMarkup = `
         <!-- Curved Ram Horns with Sweeping S-Curves and Ribbed Fillets -->
         <g fill="#f97316" stroke="#c2410c" stroke-width="2.4" filter="url(#plush-shadow)">
           <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 10} ${cX + 48} ${topY - 4} ${cX + 42} ${topY + 18} C ${cX + 34} ${topY + 6} ${cX + 26} ${topY - 4} ${cX + 12} ${topY + 8} Z" />
@@ -1871,7 +1656,7 @@
         </g>
       `;
     } else if (hornId === 'horns-crystal') {
-      return `
+      hornsMarkup = `
         <!-- Crystal Horns with Specular Edge Ridge -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX + 16} ${topY + 8} C ${cX + 32} ${topY - 16} ${cX + 42} ${topY - 30} ${cX + 32} ${topY - 38} C ${cX + 22} ${topY - 24} ${cX + 14} ${topY - 6} ${cX + 10} ${topY + 10} Z"
@@ -1880,7 +1665,7 @@
         </g>
       `;
     } else if (hornId === 'horns-gold') {
-      return `
+      hornsMarkup = `
         <!-- Gold Sovereign Horns -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} C ${cX - 30} ${topY - 12} ${cX - 36} ${topY - 26} ${cX - 24} ${topY - 32} C ${cX - 18} ${topY - 18} ${cX - 14} ${topY} ${cX - 10} ${topY + 8} Z"
@@ -1890,7 +1675,7 @@
         </g>
       `;
     } else if (hornId === 'horns-nature') {
-      return `
+      hornsMarkup = `
         <!-- Nature Leaf Horns -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} C ${cX - 32} ${topY - 6} ${cX - 32} ${topY - 26} ${cX - 18} ${topY - 30} C ${cX - 12} ${topY - 16} ${cX - 12} ${topY} ${cX - 10} ${topY + 8} Z"
@@ -1900,7 +1685,7 @@
         </g>
       `;
     } else if (hornId === 'horns-ice') {
-      return `
+      hornsMarkup = `
         <!-- Ice Spire Horns -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 20} ${topY + 8} L ${cX - 28} ${topY - 28} L ${cX - 12} ${topY + 8} Z" fill="url(#mg-ice-horn)" stroke="#0284c7" stroke-width="2" />
@@ -1908,7 +1693,7 @@
         </g>
       `;
     } else if (hornId === 'horns-flame') {
-      return `
+      hornsMarkup = `
         <!-- Flame Horns -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 20} ${topY + 8} Q ${cX - 32} ${topY - 10} ${cX - 26} ${topY - 30} Q ${cX - 14} ${topY - 14} ${cX - 10} ${topY + 8} Z" fill="url(#mg-flame-horn)" stroke="#991b1b" stroke-width="2" />
@@ -1916,7 +1701,7 @@
         </g>
       `;
     } else if (hornId === 'horns-star') {
-      return `
+      hornsMarkup = `
         <!-- Star Horns -->
         <g filter="url(#plush-shadow)">
           <path d="M ${cX - 18} ${topY + 8} L ${cX - 22} ${topY - 16} L ${cX - 12} ${topY + 8} Z" fill="#facc15" stroke="#ca8a04" stroke-width="2" />
@@ -1926,130 +1711,10 @@
         </g>
       `;
     }
-    return '';
-  }
-
-  // --- ARCHETYPE FRONT EARS / HORNS SILHOUETTE (Right / Front) ---
-  function renderArchetypeEarFront(archetype, stage, palette, colorKey, cX, topY, cW, scale) {
-    const isGrowing = stage === 'growing';
-    const isAdvanced = stage === 'advanced' || stage === 'ultimate';
-
-    if (archetype === 'ignis') {
-      // Ignis Front Dragon Horn: Majestic swept-back dragon horn with ember highlights & flame dorsal ridge
-      const hornLength = isGrowing ? 1.25 : (isAdvanced ? 1.4 : 1.0);
-      return `
-        <!-- Ignis Front Dragon Horn (Swept-Back Flame Spire) -->
-        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-ignis">
-          <path d="M ${cX + cW * 0.18} ${topY + 4 * scale}
-                   C ${cX + cW * 0.55} ${topY - 14 * scale} ${cX + cW * 0.95 * scale * hornLength} ${topY - 28 * scale * hornLength} ${cX + cW * 1.35 * scale * hornLength} ${topY - 34 * scale * hornLength}
-                   C ${cX + cW * 1.15 * scale * hornLength} ${topY - 24 * scale * hornLength} ${cX + cW * 0.75 * scale} ${topY - 8 * scale * hornLength} ${cX + cW * 0.35} ${topY + 10 * scale} Z"
-                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-          <!-- Flame Ridge Dorsal Spikes -->
-          <polygon points="${cX + cW * 0.60 * scale},${topY - 14 * scale} ${cX + cW * 0.85 * scale * hornLength},${topY - 20 * scale * hornLength} ${cX + cW * 0.68 * scale},${topY - 10 * scale}" fill="#ea580c" />
-          <polygon points="${cX + cW * 0.90 * scale * hornLength},${topY - 24 * scale * hornLength} ${cX + cW * 1.20 * scale * hornLength},${topY - 30 * scale * hornLength} ${cX + cW * 0.98 * scale * hornLength},${topY - 20 * scale * hornLength}" fill="#f97316" />
-          <!-- Specular Ridge Crest -->
-          <path d="M ${cX + cW * 0.30} ${topY + 2 * scale} Q ${cX + cW * 0.70 * scale} ${topY - 16 * scale * hornLength} ${cX + cW * 1.25 * scale * hornLength} ${topY - 30 * scale * hornLength}"
-                fill="none" stroke="#fef08a" stroke-width="2.0" stroke-linecap="round" opacity="0.85" />
-          ${isGrowing ? `<circle cx="${cX + cW * 1.32 * scale * hornLength}" cy="${topY - 33 * scale * hornLength}" r="2.5" fill="#fde047" filter="url(#plush-glow)" />` : ''}
-        </g>
-      `;
-    }
-
-    if (archetype === 'flora') {
-      // Flora Front Fox Ear: Pointed triangular fluffy fox ear with lush layered inner tufts
-      const earSpan = isGrowing ? 1.15 : (isAdvanced ? 1.25 : 0.95);
-      return `
-        <!-- Flora Front Fox Ear (Triangular Woodland Ear with Fluff Tufts) -->
-        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-flora">
-          <path d="M ${cX + cW * 0.22 * scale} ${topY + 4 * scale}
-                   C ${cX + cW * 0.42 * scale} ${topY - 8 * scale} ${cX + cW * 0.62 * scale * earSpan} ${topY - 26 * scale * earSpan} ${cX + cW * 0.82 * scale * earSpan} ${topY - 34 * scale * earSpan}
-                   C ${cX + cW * 0.95 * scale * earSpan} ${topY - 18 * scale * earSpan} ${cX + cW * 0.70} ${topY + 2 * scale} ${cX + cW * 0.38} ${topY + 12 * scale} Z"
-                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-          <!-- Velvet Inner Ear Cavity -->
-          <path d="M ${cX + cW * 0.30 * scale} ${topY + 4 * scale}
-                   C ${cX + cW * 0.44 * scale} ${topY - 6 * scale} ${cX + cW * 0.60 * scale * earSpan} ${topY - 20 * scale * earSpan} ${cX + cW * 0.74 * scale * earSpan} ${topY - 26 * scale * earSpan}
-                   C ${cX + cW * 0.80 * scale * earSpan} ${topY - 14 * scale} ${cX + cW * 0.62 * scale} ${topY + 2 * scale} ${cX + cW * 0.42 * scale} ${topY + 8 * scale} Z"
-                fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
-          <!-- Layered White Inner Fur Tufts -->
-          <path d="M ${cX + cW * 0.34 * scale} ${topY + 2 * scale} Q ${cX + cW * 0.52 * scale} ${topY - 2 * scale} ${cX + cW * 0.48 * scale} ${topY + 7 * scale}
-                   Q ${cX + cW * 0.60 * scale} ${topY + 1 * scale} ${cX + cW * 0.54 * scale} ${topY + 9 * scale}"
-                fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity="0.9" />
-          <!-- Outer Specular Arc -->
-          <path d="M ${cX + cW * 0.45 * scale} ${topY - 12 * scale * earSpan} Q ${cX + cW * 0.62 * scale * earSpan} ${topY - 28 * scale * earSpan} ${cX + cW * 0.78 * scale * earSpan} ${topY - 32 * scale * earSpan}"
-                fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" opacity="0.8" />
-        </g>
-      `;
-    }
-
-    if (archetype === 'volt') {
-      // Volt Front Lightning Ear: Dynamic zigzag lightning bolt ear with iconic dark dipped tip
-      const voltScale = isGrowing ? 1.2 : (isAdvanced ? 1.3 : 1.0);
-      return `
-        <!-- Volt Front Lightning-Bolt Ear -->
-        <g filter="url(#plush-shadow)" class="monster-ear-front archetype-volt">
-          <path d="M ${cX + cW * 0.18} ${topY + 6 * scale}
-                   L ${cX + cW * 0.42 * scale} ${topY - 14 * scale}
-                   L ${cX + cW * 0.75 * scale * voltScale} ${topY - 32 * scale * voltScale}
-                   L ${cX + cW * 1.05 * scale * voltScale} ${topY - 40 * scale * voltScale}
-                   L ${cX + cW * 0.68 * scale * voltScale} ${topY - 26 * scale * voltScale}
-                   L ${cX + cW * 0.88 * scale * voltScale} ${topY - 24 * scale * voltScale}
-                   L ${cX + cW * 0.50} ${topY - 8 * scale * voltScale}
-                   L ${cX + cW * 0.65} ${topY - 4 * scale * voltScale}
-                   L ${cX + cW * 0.32} ${topY + 10 * scale} Z"
-                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-          <!-- Iconic Dark Dipped Tip -->
-          <polygon points="${cX + cW * 1.05 * scale * voltScale},${topY - 40 * scale * voltScale} ${cX + cW * 0.75 * scale * voltScale},${topY - 32 * scale * voltScale} ${cX + cW * 0.82 * scale * voltScale},${topY - 30 * scale * voltScale}" fill="#1e293b" />
-          <!-- Electric Amber Inner Energy Line -->
-          <path d="M ${cX + cW * 0.30} ${topY + 4 * scale} L ${cX + cW * 0.52 * scale} ${topY - 10 * scale} L ${cX + cW * 0.78 * scale * voltScale} ${topY - 28 * scale * voltScale}"
-                fill="none" stroke="#fef08a" stroke-width="2.2" stroke-linecap="round" opacity="0.9" />
-          ${isGrowing ? `<circle cx="${cX + cW * 0.90 * scale * voltScale}" cy="${topY - 26 * scale * voltScale}" r="2.5" fill="#facc15" filter="url(#plush-glow)" />` : ''}
-        </g>
-      `;
-    }
-
-    // Default / Astral: Winged celestial feathered crest / owl horn-tuft
-    const owlSpread = isGrowing ? 1.2 : (isAdvanced ? 1.35 : 1.0);
-    return `
-      <!-- Astral Front Celestial Owl Feathered Crest -->
-      <g filter="url(#plush-shadow)" class="monster-ear-front archetype-astral">
-        <path d="M ${cX + cW * 0.20 * scale} ${topY + 8 * scale}
-                 C ${cX + cW * 0.38 * scale} ${topY + 6 * scale} ${cX + cW * 0.55 * scale} ${topY - 4 * scale} ${cX + cW * 0.75 * scale} ${topY - 8 * scale}
-                 C ${cX + cW * 0.80 * scale} ${topY - 16 * scale} ${cX + cW * 0.95 * scale * owlSpread} ${topY - 24 * scale * owlSpread} ${cX + cW * 1.22 * scale * owlSpread} ${topY - 26 * scale * owlSpread}
-                 C ${cX + cW * 1.10 * scale * owlSpread} ${topY - 12 * scale * owlSpread} ${cX + cW * 0.68} ${topY + 4 * scale} ${cX + cW * 0.36} ${topY + 12 * scale} Z"
-              fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-        <!-- Feather vanes / ribs -->
-        <path d="M ${cX + cW * 0.40 * scale} ${topY + 4 * scale} Q ${cX + cW * 0.75 * scale * owlSpread} ${topY - 10 * scale} ${cX + cW * 1.10 * scale * owlSpread} ${topY - 20 * scale * owlSpread}"
-              fill="none" stroke="#f3e8ff" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
-        <!-- Radiant Forehead Crest Star Gem -->
-        <polygon points="${cX + cW * 0.35},${topY + 1 * scale} ${cX + cW * 0.39},${topY - 4 * scale} ${cX + cW * 0.45},${topY - 2 * scale} ${cX + cW * 0.41},${topY + 3 * scale} ${cX + cW * 0.43},${topY + 8 * scale} ${cX + cW * 0.37},${topY + 5 * scale} ${cX + cW * 0.31},${topY + 7 * scale} ${cX + cW * 0.33},${topY + 2 * scale}" fill="#fde047" stroke="#ca8a04" stroke-width="1.0" filter="url(#plush-glow)" />
-      </g>
-    `;
-  }
-
-  // --- FOREGROUND OVER-BODY ACCESSORIES (Flared Roots & Front Elements) ---
-  function renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, includeHorns = true) {
-    const topY = g.topY;
-    const cW = g.cW;
-    const scale = g.earScale;
-    const archetype = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
-
-    let hornId = equipped.horns;
-    if (!hornId || hornId === 'default') {
-      if (stage === 'ultimate' || stage === 'advanced') hornId = 'horns-crystal';
-      else if (stage === 'adventurer' || stage === 'growing') hornId = 'horns-small';
-      else hornId = 'none';
-    }
-
-    // Right (Front) Archetype Ear / Horn
-    const frontEarMarkup = renderArchetypeEarFront(archetype, stage, palette, colorKey, cX, topY, cW, scale);
-
-    if (!includeHorns || hornId === 'none' || hornId === 'horns-none') {
-      return frontEarMarkup;
-    }
 
     return `
       ${frontEarMarkup}
-      ${renderHornsLayer(stage, hornId, palette, cX, g)}
+      ${hornsMarkup}
     `;
   }
 
@@ -2084,365 +1749,270 @@
     `;
   }
 
-  // --- HIGH-END CHIBI MONSTER BODY SILHOUETTE (Commercial-Grade Contoured Game Vectors) ---
+  // --- ORGANIC PEAR / JELLY-BEAN TORSO WITH VOLUMETRIC VECTOR LIGHTING ---
   function renderChibiTorso(stage, palette, colorKey, cX, g, equipped) {
-    const primaryColor = palette.primary || '#10b981';
-    const darkColor = palette.primaryDark || '#047857';
-    const lightColor = palette.primaryLight || '#6ee7b7';
-    const bellyColor = palette.belly || '#fef3c7';
-    const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
+    const topY = g.topY;
+    const botY = g.botY;
+    const cW = g.cW;
+    const bW = g.bW;
+    const cheekY = g.cheekY;
+
+    // Organic Pear / Jelly-Bean Cubic Bezier Silhouette with Lateral Cheek Swells
+    const bodyPath = `
+      M ${cX} ${topY}
+      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
+      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
+      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
+      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
+      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
+      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY}
+      Z
+    `;
+
+    // Inner Belly / Muzzle Patch (soft pastel tone breaking up monochromatic fills)
+    const bellyTop = g.eyeY + 8;
+    const bellyW = bW * 0.62;
+    const bellyPath = `
+      M ${cX} ${bellyTop}
+      C ${cX + bellyW * 0.65} ${bellyTop} ${cX + bellyW} ${bellyTop + 14} ${cX + bellyW} ${botY - 14}
+      C ${cX + bellyW * 0.90} ${botY} ${cX + 12} ${botY} ${cX} ${botY}
+      C ${cX - 12} ${botY} ${cX - bellyW * 0.90} ${botY} ${cX - bellyW} ${botY - 14}
+      C ${cX - bellyW} ${bellyTop + 14} ${cX - bellyW * 0.65} ${bellyTop} ${cX} ${bellyTop}
+      Z
+    `;
+
+    // Ambient Occlusion Crescent along lower-right inner rim
+    const aoCrescent = `
+      <path d="M ${cX - 10} ${botY}
+               C ${cX + 18} ${botY} ${cX + bW * 0.88} ${botY + 2} ${cX + bW} ${botY - 10}
+               C ${cX + bW * 1.06} ${botY - 24} ${cX + cW * 1.05} ${cheekY + 14} ${cX + cW} ${cheekY}
+               C ${cX + cW - 5} ${cheekY + 14} ${cX + bW - 7} ${botY - 20} ${cX - 10} ${botY} Z"
+            fill="${palette.shadowDark || palette.shadow}" opacity="0.26" />
+    `;
+
+    // Top Specular Highlight Arc along crown curve
+    const specularArc = `
+      <path d="M ${cX - cW * 0.45} ${topY + 6}
+               C ${cX - cW * 0.20} ${topY + 2} ${cX + cW * 0.20} ${topY + 2} ${cX + cW * 0.45} ${topY + 6}"
+            fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" opacity="0.75" />
+      <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="2.2" fill="#ffffff" opacity="0.9" />
+    `;
+
+    // Front Arms / Paws
+    let armsMarkup = '';
+    if (stage === 'baby') {
+      // Tiny baby paws curled happily on belly
+      armsMarkup = `
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <ellipse cx="${cX - 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
+
+          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <ellipse cx="${cX + 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
+        </g>
+      `;
+    } else {
+      // Growing, Adventurer, Advanced, Ultimate arms
+      armsMarkup = `
+        <g filter="url(#plush-shadow)">
+          <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+          <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
+
+          <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+          <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
+        </g>
+      `;
+    }
 
     return `
-      <!-- High-End Chibi Monster Body Silhouette -->
-      <g id="layer-body">
-        <!-- Outer Body Silhouette with Dynamic Taper & Soft Cheeks -->
-        <path id="monster-torso" 
-              d="M 100 62 
-                 C 126 62, 148 76, 150 102 
-                 C 152 126, 146 154, 128 162 
-                 C 114 168, 86 168, 72 162 
-                 C 54 154, 48 126, 50 102 
-                 C 52 76, 74 62, 100 62 Z" 
-              fill="${primaryColor}" stroke="${darkColor}" stroke-width="4" stroke-linejoin="round" />
-
-        <!-- Ambient Specular Shading -->
-        <path d="M 100 62 C 126 62, 148 76, 150 102 C 152 126, 146 154, 128 162 C 114 168, 86 168, 72 162 C 54 154, 48 126, 50 102 C 52 76, 74 62, 100 62 Z" 
-              fill="url(#bodyShading)" opacity="0.3" />
-
-        <!-- Cream Belly / Chest Fluff Plate -->
-        <path id="monster-belly"
-              d="M 100 104 
-                 C 118 104, 128 116, 126 138 
-                 C 124 154, 114 160, 100 160 
-                 C 86 160, 76 154, 74 138 
-                 C 72 116, 82 104, 100 104 Z" 
-              fill="${bellyColor}" />
-
-        <!-- Expressive Chibi Ears / Crest -->
-        <path id="ear-left" d="M 68 74 C 52 45, 42 22, 60 16 C 74 12, 78 42, 82 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
-        <path id="ear-inner-left" d="M 64 62 C 55 42, 50 26, 62 22 C 70 20, 74 42, 76 58 Z" fill="${lightColor}" opacity="0.75" />
-        <path id="ear-right" d="M 132 74 C 148 45, 158 22, 140 16 C 126 12, 122 42, 118 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
-        <path id="ear-inner-right" d="M 136 62 C 145 42, 150 26, 138 22 C 130 20, 126 42, 124 58 Z" fill="${lightColor}" opacity="0.75" />
-
-        <!-- Rounded Front Paws Anchored to Pedestal -->
-        <ellipse cx="74" cy="162" rx="13" ry="8" id="paw-left" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
-        <ellipse cx="126" cy="162" rx="13" ry="8" id="paw-right" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
+      <!-- Main Organic Torso with Volumetric Shading -->
+      <g filter="url(#plush-shadow)">
+        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
+        <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
+        ${aoCrescent}
+        ${specularArc}
+        ${armsMarkup}
       </g>
     `;
   }
 
-  // --- MAIN MONSTER BODY LAYER (Local 3D Raster Mascot Loader) ---
+  // --- MAIN MONSTER BODY LAYER (Stages 3 to 7) ---
   function renderMonsterBody(stage, palette, colorKey, equipped) {
-    const archetype = (equipped && equipped.archetype) || 'ignis';
-    const species = getStudentSpeciesData(equipped && (equipped.student || equipped.archetype) ? (equipped.student || equipped.archetype) : archetype);
+    const g = getStageGeometry(stage);
+    const cX = 100;
+    const cY = (g.topY + g.botY) / 2;
+    const rx = g.bW;
+    const ry = (g.botY - g.topY) / 2;
 
-    const rasterBody = `
-      <g id="layer-body">
-        <image href="${species.image}" xlink:href="${species.fallback}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-raster-model" />
-      </g>
-    `;
-    const clothingMarkup = renderClothingLayer((equipped && equipped.clothing) || '', 100, 110, 40, 40, palette, stage);
+    const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
+    const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
+    const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
+    const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
+    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
+    const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
 
     return `
-      ${rasterBody}
+      ${underBodyMarkup}
+      ${feetMarkup}
+      ${torsoMarkup}
+      ${overBodyMarkup}
       ${clothingMarkup}
+      ${faceMarkup}
     `;
   }
 
-  // --- CONTOURED CHIBI CLOTHING LAYER (Commercial-Grade Contoured Game Vectors) ---
+  // --- CLOTHING LAYER ---
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
     const norm = String(clothingId).toLowerCase().trim();
 
-    // 1. Tailored Safari Explorer Vest
+    // Adventure Explorer Vest
     if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest') || norm === 'explorer_vest') {
       return `
         <!-- Tailored Explorer Vest -->
-        <g id="clothing-explorer-vest">
-          <!-- Left Vest Panel (Follows Torso Curve) -->
-          <path d="M 64 102 C 60 120, 62 142, 76 152 C 86 154, 88 138, 86 112 C 82 104, 72 100, 64 102 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <!-- Right Vest Panel -->
-          <path d="M 136 102 C 140 120, 138 142, 124 152 C 114 154, 112 138, 114 112 C 118 104, 128 100, 136 102 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <!-- Leather Collar Trim -->
-          <path d="M 64 102 C 72 108, 84 112, 88 114 L 86 122 C 80 118, 70 112, 64 104 Z" fill="#92400e" />
-          <path d="M 136 102 C 128 108, 116 112, 112 114 L 114 122 C 120 118, 130 112, 136 104 Z" fill="#92400e" />
-          <!-- Brass Fastener Rivets -->
-          <circle cx="84" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="82" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="116" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="118" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
+        <g filter="url(#mf-shadow)">
+          <path d="M 68 110 C 68 128 72 142 82 146 C 88 146 90 134 88 114 C 84 110 74 108 68 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 132 110 C 132 128 128 142 118 146 C 112 146 110 134 112 114 C 116 110 126 108 132 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+          <circle cx="86" cy="126" r="2.5" fill="#f59e0b" />
+          <circle cx="86" cy="136" r="2.5" fill="#f59e0b" />
+          <circle cx="114" cy="126" r="2.5" fill="#f59e0b" />
+          <circle cx="114" cy="136" r="2.5" fill="#f59e0b" />
         </g>
       `;
     }
 
-    // 2. Tailored Aviator Explorer Jacket
-    if (clothingId === 'clothing-adv-jacket' || norm.includes('jacket') || norm === 'explorer_jacket') {
-      return `
-        <!-- Tailored Aviator Explorer Jacket Contoured to Chibi Body -->
-        <g id="clothing-explorer-jacket">
-          <!-- Outer Tailored Coat Wrapped Around Shoulders -->
-          <path d="M 58 100 C 54 128, 56 154, 76 158 C 86 160, 90 144, 88 116 C 80 106, 68 98, 58 100 Z" 
-                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <path d="M 142 100 C 146 128, 144 154, 124 158 C 114 160, 110 144, 112 116 C 120 106, 132 98, 142 100 Z" 
-                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <!-- Folded Collar Lapels -->
-          <polygon points="62,102 82,118 74,124 58,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <polygon points="138,102 118,118 126,124 142,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <!-- Buckled Belt Across Base -->
-          <path d="M 74 154 C 88 158, 112 158, 126 154 L 126 160 C 112 164, 88 164, 74 160 Z" fill="#451a03" />
-          <rect x="94" y="153" width="12" height="9" rx="2" fill="#fbbf24" stroke="#78350f" stroke-width="1.5" />
-        </g>
-      `;
-    }
-
-    // 3. Hero Adventure Cape
     if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape') || norm === 'hero_cape') {
       return `
-        <!-- Contoured Hero Adventure Cape -->
-        <g id="clothing-hero-cape" filter="url(#mf-shadow)">
-          <path d="M 72 108 
-                   C 54 112, 38 126, 36 150 
-                   C 34 166, 44 176, 60 178 
-                   C 78 180, 122 180, 140 178 
-                   C 156 176, 166 166, 164 150 
-                   C 162 126, 146 112, 128 108 
-                   C 114 114, 86 114, 72 108 Z" 
-                fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
-          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
-          <circle cx="100" cy="110" r="6" fill="#facc15" stroke="#ca8a04" stroke-width="1.8" />
-          <polygon points="100,106 102,109 105,109 103,111 104,114 100,112 96,114 97,111 95,109 98,109" fill="#ef4444" />
+        <!-- Hero Adventure Cape -->
+        <g filter="url(#mf-shadow)">
+          <path d="M 60 110 L 40 160 L 160 160 L 140 110 Z" fill="#dc2626" opacity="0.9" />
+          <circle cx="100" cy="110" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
         </g>
       `;
     }
 
-    // 4. Explorer Travel Coat
+    if (clothingId === 'clothing-adv-jacket' || norm.includes('jacket') || norm === 'explorer_jacket') {
+      return `
+        <!-- Tailored Explorer Jacket wrapped cleanly around chibi torso without blocking face -->
+        <g filter="url(#mf-shadow)">
+          <path d="M 64 108 C 64 136 68 152 82 154 C 94 154 96 142 94 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 136 108 C 136 136 132 152 118 154 C 106 154 104 142 106 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
+          <path d="M 80 152 L 120 152 L 116 158 L 84 158 Z" fill="#78350f" />
+        </g>
+      `;
+    }
+
     if (clothingId === 'clothing-travel-coat') {
       return `
-        <!-- Contoured Explorer Travel Coat -->
-        <g id="clothing-travel-coat" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 60 112, 48 124, 46 138 
-                   C 44 152, 54 164, 66 166 
-                   C 78 168, 122 168, 134 166 
-                   C 146 164, 156 152, 154 138 
-                   C 152 124, 140 112, 124 108 
-                   C 112 115, 88 115, 76 108 Z" 
-                fill="#0369a1" stroke="#075985" stroke-width="2.5" stroke-linejoin="round" />
-          <line x1="100" y1="112" x2="100" y2="166" stroke="#f8fafc" stroke-width="2" />
-          <circle cx="94" cy="124" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="94" cy="136" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="94" cy="148" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="106" cy="124" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="106" cy="136" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="106" cy="148" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        <!-- Explorer Travel Coat -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 1} L ${cX - rx + 2} ${cY + ry - 1} Z" fill="#0369a1" stroke="#075985" stroke-width="2" />
+          <line x1="${cX}" y1="${cY + 4}" x2="${cX}" y2="${cY + ry - 1}" stroke="#f8fafc" stroke-width="2" />
+          <circle cx="${cX - 5}" cy="${cY + 12}" r="1.8" fill="#facc15" />
+          <circle cx="${cX - 5}" cy="${cY + 20}" r="1.8" fill="#facc15" />
         </g>
       `;
     }
 
-    // 5. Casual Student Hoodie
     if (clothingId === 'clothing-hoodie') {
       return `
-        <!-- Contoured Casual Student Hoodie -->
-        <g id="clothing-hoodie" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 161 
-                   C 78 164, 122 164, 134 161 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 115, 88 115, 76 108 Z" 
-                fill="#059669" stroke="#047857" stroke-width="2.5" stroke-linejoin="round" />
-          <ellipse cx="100" cy="111" rx="20" ry="7" fill="#10b981" stroke="#047857" stroke-width="1.8" />
-          <path d="M 78 144 L 122 144 L 118 158 L 82 158 Z" fill="#047857" stroke="#064e3b" stroke-width="1.8" stroke-linejoin="round" />
-          <line x1="84" y1="146" x2="80" y2="156" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" />
-          <line x1="116" y1="146" x2="120" y2="156" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" />
-          <line x1="94" y1="114" x2="93" y2="128" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
-          <circle cx="93" cy="129" r="1.5" fill="#facc15" />
-          <line x1="106" y1="114" x2="107" y2="128" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
-          <circle cx="107" cy="129" r="1.5" fill="#facc15" />
+        <!-- Casual Student Hoodie -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 10} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#059669" stroke="#047857" stroke-width="2" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.6}" ry="5" fill="#10b981" />
+          <!-- Pouch pocket -->
+          <path d="M ${cX - 14} ${cY + ry - 12} L ${cX + 14} ${cY + ry - 12} L ${cX + 10} ${cY + ry - 4} L ${cX - 10} ${cY + ry - 4} Z" fill="#047857" opacity="0.8" />
         </g>
       `;
     }
 
-    // 6. Cozy Knitted Sweater
     if (clothingId === 'clothing-sweater') {
       return `
-        <!-- Contoured Cozy Knitted Sweater -->
-        <g id="clothing-sweater" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#dc2626" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
-          <path d="M 52 128 Q 100 134 148 128" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
-          <path d="M 54 140 Q 100 146 146 140" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
-          <path d="M 60 152 Q 100 156 140 152" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
+        <!-- Cozy Knitted Sweater -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+          <line x1="${cX - rx + 4}" y1="${cY + 10}" x2="${cX + rx - 4}" y2="${cY + 10}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
+          <line x1="${cX - rx + 4}" y1="${cY + 18}" x2="${cX + rx - 4}" y2="${cY + 18}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
         </g>
       `;
     }
 
-    // 7. Cozy Winter Scarf
     if (clothingId === 'clothing-scarf') {
       return `
-        <!-- Cozy Winter Scarf Wrapped Snugly -->
-        <g id="clothing-scarf" filter="url(#mf-shadow)">
-          <ellipse cx="100" cy="110" rx="28" ry="9" fill="#ef4444" stroke="#b91c1c" stroke-width="2.2" />
-          <path d="M 112 114 C 114 128, 120 148, 122 162 C 118 164, 108 164, 106 162 C 104 148, 106 128, 108 114 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.8" />
-          <line x1="108" y1="162" x2="108" y2="167" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
-          <line x1="114" y1="163" x2="114" y2="168" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
-          <line x1="120" y1="162" x2="120" y2="167" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
+        <!-- Cozy Winter Scarf -->
+        <g filter="url(#mf-shadow)">
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="7" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+          <path d="M ${cX + 8} ${cY + 8} L ${cX + 18} ${cY + ry + 4} L ${cX + 6} ${cY + ry + 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+          <!-- Scarf fringe -->
+          <line x1="${cX + 7}" y1="${cY + ry + 4}" x2="${cX + 7}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 12}" y1="${cY + ry + 4}" x2="${cX + 12}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 17}" y1="${cY + ry + 4}" x2="${cX + 17}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
         </g>
       `;
     }
 
-    // 8. Ace Pilot Jumpsuit
     if (clothingId === 'clothing-pilot') {
       return `
-        <!-- Contoured Ace Pilot Flight Suit -->
-        <g id="clothing-pilot" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#ea580c" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round" />
-          <line x1="100" y1="112" x2="100" y2="160" stroke="#facc15" stroke-width="2.2" />
-          <polygon points="76,128 80,124 84,127 80,131" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        <!-- Ace Pilot Jumpsuit -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#ea580c" stroke="#c2410c" stroke-width="2" />
+          <line x1="${cX}" y1="${cY + 3}" x2="${cX}" y2="${cY + ry - 3}" stroke="#facc15" stroke-width="2" />
+          <!-- Star patch on chest -->
+          <polygon points="${cX-10},${cY+12} ${cX-8},${cY+14} ${cX-5},${cY+14} ${cX-7},${cY+16} ${cX-6},${cY+19} ${cX-10},${cY+17} ${cX-14},${cY+19} ${cX-13},${cY+16} ${cX-15},${cY+14} ${cX-12},${cY+14}" fill="#facc15" />
         </g>
       `;
     }
 
-    // 9. Formal Evening Tuxedo
     if (clothingId === 'clothing-tuxedo') {
       return `
-        <!-- Contoured Formal Evening Tuxedo -->
-        <g id="clothing-tuxedo" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#0f172a" stroke="#020617" stroke-width="2.5" stroke-linejoin="round" />
-          <!-- White shirt plastron -->
-          <polygon points="100,112 110,154 90,154" fill="#f8fafc" />
+        <!-- Formal Evening Tuxedo -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
+          <polygon points="${cX},${cY+4} ${cX+10},${cY+ry-3} ${cX-10},${cY+ry-3}" fill="#f8fafc" />
           <!-- Red bow tie -->
-          <polygon points="100,116 94,112 94,120" fill="#ef4444" />
-          <polygon points="100,116 106,112 106,120" fill="#ef4444" />
-          <circle cx="100" cy="116" r="1.8" fill="#dc2626" />
+          <polygon points="${cX},${cY+6} ${cX-6},${cY+4} ${cX-6},${cY+8}" fill="#ef4444" />
+          <polygon points="${cX},${cY+6} ${cX+6},${cY+4} ${cX+6},${cY+8}" fill="#ef4444" />
+          <circle cx="${cX}" cy="${cY+6}" r="1.5" fill="#dc2626" />
         </g>
       `;
     }
 
-    // 10. Shadow Ninja Garb
     if (clothingId === 'clothing-ninja') {
       return `
-        <!-- Contoured Shadow Ninja Garb -->
-        <g id="clothing-ninja" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#18181b" stroke="#09090b" stroke-width="2.5" stroke-linejoin="round" />
-          <!-- Crimson waist sash -->
-          <path d="M 58 146 C 76 150, 124 150, 142 146 L 140 154 C 122 158, 78 158, 60 154 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.2" />
-          <path d="M 108 152 L 114 166 L 106 166 Z" fill="#dc2626" />
+        <!-- Shadow Ninja Garb -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#18181b" stroke="#09090b" stroke-width="2" />
+          <!-- Red ninja sash -->
+          <rect x="${cX - rx + 4}" y="${cY + ry - 10}" width="${rx * 2 - 8}" height="5" fill="#dc2626" stroke="#991b1b" stroke-width="1" />
+          <path d="M ${cX + 6} ${cY + ry - 6} L ${cX + 12} ${cY + ry + 8} L ${cX + 4} ${cY + ry + 8} Z" fill="#dc2626" />
         </g>
       `;
     }
 
-    // 11. Elegant Kimono Robe
     if (clothingId === 'clothing-kimono') {
       return `
-        <!-- Contoured Elegant Kimono Robe -->
-        <g id="clothing-kimono" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#f43f5e" stroke="#e11d48" stroke-width="2.5" stroke-linejoin="round" />
-          <!-- Gold Obi Sash -->
-          <path d="M 56 138 C 76 142, 124 142, 144 138 L 142 148 C 122 152, 78 152, 58 148 Z" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
-          <line x1="86" y1="112" x2="108" y2="138" stroke="#ffffff" stroke-width="2" />
-          <line x1="114" y1="112" x2="92" y2="138" stroke="#ffffff" stroke-width="2" />
+        <!-- Elegant Kimono Robe -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#f43f5e" stroke="#e11d48" stroke-width="2" />
+          <!-- Gold Obi sash -->
+          <rect x="${cX - rx + 4}" y="${cY + 12}" width="${rx * 2 - 8}" height="7" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
+          <line x1="${cX - 12}" y1="${cY + 2}" x2="${cX + 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
+          <line x1="${cX + 12}" y1="${cY + 2}" x2="${cX - 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
         </g>
       `;
     }
 
-    // 12. Knight Golden Armor Plate
     if (clothingId === 'clothing-armor') {
       return `
-        <!-- Contoured Knight Golden Armor Plate -->
-        <g id="clothing-armor" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="url(#armorGoldGrad)" stroke="#ca8a04" stroke-width="2.5" stroke-linejoin="round" />
-          <path d="M 78 118 C 88 122, 98 120, 100 128 C 102 120, 112 122, 122 118" fill="none" stroke="#a16207" stroke-width="2" />
-          <line x1="100" y1="128" x2="100" y2="158" stroke="#a16207" stroke-width="2" />
-          <circle cx="100" cy="136" r="6" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
-          <polygon points="100,131 102,134 105,134 103,137 104,141 100,138 96,141 97,137 95,134 98,134" fill="#ea580c" />
-        </g>
-      `;
-    }
-
-    // 13. Magical Robe
-    if (clothingId === 'clothing-magic-robe') {
-      return `
-        <!-- Contoured Magical Wizard Robe -->
-        <g id="clothing-magic-robe" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 60 112, 46 126, 44 144 
-                   C 42 158, 52 168, 64 170 
-                   C 78 172, 122 172, 136 170 
-                   C 148 168, 158 158, 156 144 
-                   C 154 126, 140 112, 124 108 
-                   C 112 115, 88 115, 76 108 Z" 
-                fill="#a855f7" stroke="#7e22ce" stroke-width="2.5" stroke-linejoin="round" />
-          <ellipse cx="100" cy="144" rx="24" ry="5" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
-          <polygon points="100,118 103,124 108,124 104,128 106,134 100,130 94,134 96,128 92,124 97,124" fill="#facc15" />
-        </g>
-      `;
-    }
-
-    // 14. Varsity Academy School Jacket
-    if (clothingId === 'clothing-school-jacket') {
-      return `
-        <!-- Contoured Varsity Academy School Jacket -->
-        <g id="clothing-school-jacket" filter="url(#mf-shadow)">
-          <path d="M 76 108 
-                   C 62 112, 50 122, 48 136 
-                   C 46 148, 54 158, 66 160 
-                   C 78 162, 122 162, 134 160 
-                   C 146 158, 154 148, 152 136 
-                   C 150 122, 138 112, 124 108 
-                   C 112 114, 88 114, 76 108 Z" 
-                fill="#1e3a8a" stroke="#172554" stroke-width="2.5" stroke-linejoin="round" />
-          <!-- White leather sleeve flanks -->
-          <path d="M 52 124 C 50 136, 54 148, 62 156" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" fill="none" />
-          <path d="M 148 124 C 150 136, 146 148, 138 156" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" fill="none" />
-          <text x="80" y="138" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="14" fill="#facc15">A</text>
-          <circle cx="100" cy="120" r="2" fill="#ffffff" />
-          <circle cx="100" cy="132" r="2" fill="#ffffff" />
-          <circle cx="100" cy="144" r="2" fill="#ffffff" />
+        <!-- Knight Golden Armor Plate -->
+        <g filter="url(#mf-shadow)">
+          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 5} ${cY + ry - 3} Q ${cX} ${cY + ry + 4} ${cX - rx + 5} ${cY + ry - 3} Z" fill="#eab308" stroke="#ca8a04" stroke-width="2" />
+          <circle cx="${cX}" cy="${cY + 14}" r="5" fill="#facc15" stroke="#a16207" stroke-width="1.5" />
+          <polygon points="${cX},${cY+11} ${cX+2},${cY+13} ${cX+5},${cY+13} ${cX+3},${cY+15} ${cX+4},${cY+17} ${cX},${cY+16} ${cX-4},${cY+17} ${cX-3},${cY+15} ${cX-5},${cY+13} ${cX-2},${cY+13}" fill="#ca8a04" />
         </g>
       `;
     }
@@ -2560,94 +2130,30 @@
 
   // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
   function renderFaceElements(stage, palette, colorKey, equipped, cX, g) {
-    const arch = (equipped && equipped.archetype) || getStudentArchetype(equipped && (equipped.student || equipped.studentId) ? (equipped.student || equipped.studentId) : { color: colorKey });
-    let eyesId = equipped.eyes || 'default';
-    if (eyesId === 'default') {
-      if (arch === 'ignis') eyesId = 'eyes-dragon';
-      else if (arch === 'astral') eyesId = 'eyes-star';
-      else if (arch === 'volt') eyesId = 'eyes-sparkle';
-      else eyesId = 'eyes-sparkle';
-    }
-    const mouthId = equipped.mouth || (arch === 'volt' ? 'mouth-cheer' : 'mouth-smile');
+    let eyesId = equipped.eyes || 'eyes-sparkle';
+    if (eyesId === 'default') eyesId = 'eyes-sparkle';
+    const mouthId = equipped.mouth || 'mouth-smile';
 
     // Low Horizon Placement (Lower 38%-42% of cranial mass for peak cute chibi appeal)
     const eyeY = g.eyeY;
     const eyeSpacing = g.eyeSpacing;
     const mouthY = eyeY + 13;
 
-    // Signature cheeks tailored by archetype
-    let cheeks = '';
-    if (arch === 'volt') {
-      cheeks = `
-        <!-- Volt Signature Electric Cheek Pouches -->
-        <circle cx="${cX - eyeSpacing - 9}" cy="${eyeY + 10}" r="8.5" fill="#ef4444" stroke="#dc2626" stroke-width="1.2" />
-        <circle cx="${cX - eyeSpacing - 9}" cy="${eyeY + 10}" r="5.5" fill="#f87171" opacity="0.6" />
-        <circle cx="${cX + eyeSpacing + 9}" cy="${eyeY + 10}" r="8.5" fill="#ef4444" stroke="#dc2626" stroke-width="1.2" />
-        <circle cx="${cX + eyeSpacing + 9}" cy="${eyeY + 10}" r="5.5" fill="#f87171" opacity="0.6" />
-      `;
-    } else if (arch === 'ignis') {
-      cheeks = `
-        <!-- Ignis Warm Ember Blush -->
-        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#ea580c" opacity="0.75" />
-        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#ea580c" opacity="0.75" />
-      `;
-    } else if (arch === 'astral') {
-      cheeks = `
-        <!-- Astral Violet Shimmer Blush -->
-        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#a855f7" opacity="0.65" />
-        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="#a855f7" opacity="0.65" />
-      `;
-    } else {
-      cheeks = `
-        <!-- Soft Velvet Cheek Blush (Flora / Default) -->
-        <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
-        <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
-      `;
-    }
+    // Warm signature pink blush cheeks nestled directly into the cheek swell
+    const cheeks = `
+      <!-- Soft Velvet Cheek Blush -->
+      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+    `;
 
-    // 3D Snout & Muzzle Dome tailored by archetype
-    let snoutDome = '';
-    if (arch === 'ignis') {
-      snoutDome = `
-        <!-- Ignis Dragon Snout with Dual Nostril Slits & Fangs -->
-        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="15.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
-        <ellipse cx="${cX - 3.5}" cy="${eyeY + 6.5}" rx="1.5" ry="2.2" transform="rotate(-15, ${cX - 3.5}, ${eyeY + 6.5})" fill="#7c2d12" />
-        <ellipse cx="${cX + 3.5}" cy="${eyeY + 6.5}" rx="1.5" ry="2.2" transform="rotate(15, ${cX + 3.5}, ${eyeY + 6.5})" fill="#7c2d12" />
-        <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
-        <!-- Cute dragon baby fangs -->
-        <polygon points="${cX - 5},${mouthY + 1} ${cX - 3},${mouthY + 6} ${cX - 1},${mouthY + 1}" fill="#ffffff" stroke="#7c2d12" stroke-width="0.8" />
-        <polygon points="${cX + 1},${mouthY + 1} ${cX + 3},${mouthY + 6} ${cX + 5},${mouthY + 1}" fill="#ffffff" stroke="#7c2d12" stroke-width="0.8" />
-      `;
-    } else if (arch === 'flora') {
-      snoutDome = `
-        <!-- Flora Fox Muzzle with Triangular Nose & Whiskers -->
-        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="13.5" ry="8.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
-        <path d="M ${cX - 3.5} ${eyeY + 4} Q ${cX} ${eyeY + 3.2} ${cX + 3.5} ${eyeY + 4} Q ${cX} ${eyeY + 7.5} ${cX - 3.5} ${eyeY + 4} Z" fill="#0f172a" />
-        <circle cx="${cX - 0.8}" cy="${eyeY + 3.8}" r="0.8" fill="#ffffff" opacity="0.9" />
-        <circle cx="${cX - 9}" cy="${eyeY + 8}" r="0.8" fill="#475569" />
-        <circle cx="${cX - 11}" cy="${eyeY + 10}" r="0.8" fill="#475569" />
-        <circle cx="${cX + 9}" cy="${eyeY + 8}" r="0.8" fill="#475569" />
-        <circle cx="${cX + 11}" cy="${eyeY + 10}" r="0.8" fill="#475569" />
-      `;
-    } else if (arch === 'astral') {
-      snoutDome = `
-        <!-- Astral Owl Facial Disc & Golden Curved Beak -->
-        <ellipse cx="${cX}" cy="${eyeY + 6}" rx="12" ry="7" fill="url(#plush-snout-${colorKey})" opacity="0.75" />
-        <!-- Golden Curved Beak -->
-        <polygon points="${cX},${eyeY + 3} ${cX - 3.5},${eyeY + 8} ${cX},${eyeY + 12} ${cX + 3.5},${eyeY + 8}" fill="#f59e0b" stroke="#b45309" stroke-width="1.2" />
-        <line x1="${cX}" y1="${eyeY + 3}" x2="${cX}" y2="${eyeY + 10}" stroke="#ffffff" stroke-width="0.8" opacity="0.8" />
-        <!-- Astral Forehead 4-Point Radiant Star Gem -->
-        <polygon points="${cX},${eyeY - 14} ${cX + 2.5},${eyeY - 9} ${cX + 7.5},${eyeY - 9} ${cX + 3.5},${eyeY - 6} ${cX + 5},${eyeY - 1} ${cX},${eyeY - 4.5} ${cX - 5},${eyeY - 1} ${cX - 3.5},${eyeY - 6} ${cX - 7.5},${eyeY - 9} ${cX - 2.5},${eyeY - 9}" fill="#fde047" stroke="#ca8a04" stroke-width="1.0" filter="url(#plush-glow)" />
-      `;
-    } else {
-      // Volt / Default
-      snoutDome = `
-        <!-- 3D Snout & Muzzle Dome -->
-        <ellipse cx="${cX}" cy="${eyeY + 7}" rx="14.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
-        <ellipse cx="${cX}" cy="${eyeY + 4.5}" rx="3.2" ry="2.4" fill="#0f172a" />
-        <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
-      `;
-    }
+    // 3D Snout & Muzzle Dome with Curved Button Nose
+    const snoutDome = `
+      <!-- 3D Snout & Muzzle Dome (Volumetric Dimensional Pad) -->
+      <ellipse cx="${cX}" cy="${eyeY + 7}" rx="14.5" ry="9.5" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+      <!-- Cute Curved Button Snout Nose with Specular Highlight -->
+      <ellipse cx="${cX}" cy="${eyeY + 4.5}" rx="3.2" ry="2.4" fill="#0f172a" />
+      <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
+    `;
 
     let eyesMarkup = '';
     if (eyesId === 'eyes-wink' || eyesId === 'eyes-curious') {
@@ -3301,14 +2807,9 @@
       // Mini torso outfit
       if (item.id === 'clothing-vest') {
         inner = `
-          <!-- Mini Contoured Safari Explorer Vest -->
-          <path d="M 23 16 C 18 17 14 20 13 25 C 12 30 14 36 17 38 L 24 38 C 25 34 25 28 24 22 Z" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
-          <path d="M 33 16 C 38 17 42 20 43 25 C 44 30 42 36 39 38 L 32 38 C 31 34 31 28 32 22 Z" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
-          <polygon points="28,16 23,24 33,24" fill="#fef3c7" />
-          <circle cx="23" cy="27" r="1.2" fill="#facc15" />
-          <circle cx="23" cy="33" r="1.2" fill="#facc15" />
-          <circle cx="33" cy="27" r="1.2" fill="#facc15" />
-          <circle cx="33" cy="33" r="1.2" fill="#facc15" />
+          <rect x="14" y="16" width="28" height="26" rx="4" fill="#78350f" stroke="#451a03" stroke-width="2" />
+          <polygon points="28,16 22,24 34,24" fill="#fef3c7" />
+          <circle cx="28" cy="30" r="2" fill="#facc15" />
         `;
       } else if (item.id === 'clothing-cape') {
         inner = `
@@ -3317,12 +2818,9 @@
         `;
       } else if (item.id === 'clothing-adv-jacket') {
         inner = `
-          <!-- Mini Contoured Aviator Explorer Jacket -->
-          <path d="M 21 16 C 24 18 32 18 35 16 C 37 19 35 22 28 22 C 21 22 19 19 21 16 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1" />
-          <path d="M 23 18 C 17 19 13 22 12 27 C 11 31 13 37 18 38 L 27 38 L 27 22 Z" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <path d="M 33 18 C 39 19 43 22 44 27 C 45 31 43 37 38 38 L 29 38 L 29 22 Z" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <line x1="28" y1="22" x2="28" y2="38" stroke="#facc15" stroke-width="1.5" />
-          <polygon points="19,25 21,23 23,25 21,27" fill="#facc15" />
+          <rect x="14" y="16" width="28" height="26" rx="4" fill="#92400e" stroke="#78350f" stroke-width="2" />
+          <ellipse cx="28" cy="18" rx="12" ry="5" fill="#fef3c7" />
+          <line x1="28" y1="22" x2="28" y2="42" stroke="#facc15" stroke-width="2" />
         `;
       } else if (item.id === 'clothing-travel-coat') {
         inner = `
@@ -3677,11 +3175,11 @@
   const STAGE_IMAGES = {
     egg: 'assets/monsters/stage-1-mystery-egg.png',
     cracking_egg: 'assets/monsters/stage-2-cracking-egg.png',
-    baby: 'assets/packs/characters/emberwing_stage_baby.png',
-    growing: 'assets/packs/characters/emberwing_stage_growing.png',
+    baby: 'assets/monsters/stage-3-baby-monster.png',
+    growing: 'assets/monsters/stage-4-growing-monster.png',
     adventurer: 'assets/monsters/stage-5-adventurer-monster.png',
     advanced: 'assets/monsters/stage-6-advanced-monster.png',
-    ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
+    ultimate: 'assets/monsters/stage-7-ultimate-monster.png'
   };
 
   function getMonsterStageImage(stageKey) {
@@ -3786,36 +3284,12 @@
     `.trim();
   }
 
-  function getMonsterAsset(speciesOrArchetype, level) {
-    const lvl = parseInt(level, 10) || 1;
-    if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
-    if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
+  function getMonsterAsset(species, level) {
+    let stage = 'baby';
+    if (level >= 7) stage = 'ultimate';
+    else if (level >= 4) stage = 'growing';
 
-    const raw = String(speciesOrArchetype || 'ignis').toLowerCase().trim();
-    let species = 'emberwing';
-    if (raw.includes('flora') || raw.includes('leaf') || raw.includes('golem') || raw.includes('verdant') || raw.includes('earth')) {
-      species = 'florasprout';
-    } else if (raw.includes('volt') || raw.includes('spark') || raw.includes('thunder') || raw.includes('electric')) {
-      species = 'sparktail';
-    } else if (raw.includes('astral') || raw.includes('star') || raw.includes('spirit') || raw.includes('cosmic')) {
-      species = 'astralight';
-    } else if (raw.includes('aqua') || raw.includes('water') || raw.includes('sea')) {
-      species = 'aquafind';
-    } else if (raw.includes('ember') || raw.includes('ignis') || raw.includes('fire') || raw.includes('dragon')) {
-      species = 'emberwing';
-    }
-
-    if (lvl >= 7) {
-      return `assets/monsters/${species}_stage_ultimate.png`;
-    } else if (lvl === 6) {
-      return 'assets/monsters/stage-6-advanced-monster.png';
-    } else if (lvl === 5) {
-      return 'assets/monsters/stage-5-adventurer-monster.png';
-    } else if (lvl >= 4) {
-      return `assets/monsters/${species}_stage_growing.png`;
-    } else {
-      return `assets/monsters/${species}_stage_baby.png`;
-    }
+    return `/assets/monsters/${species}_stage_${stage}.webp`;
   }
 
   root.MonsterRenderer = {
@@ -3825,12 +3299,6 @@
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
     renderMonsterLiveStage: renderMonsterLiveStage,
-    renderHornsLayer: renderHornsLayer,
-    renderClothingLayer: renderClothingLayer,
-    renderForegroundAccessories: renderForegroundAccessories,
-    renderTailLayer: renderTailLayer,
-    renderWingsLayer: renderWingsLayer,
-    renderAuraLayer: renderAuraLayer,
     renderMonsterWithPedestal: renderMonsterWithPedestal,
     renderMonsterViewport: renderMonsterSingleSVG,
     renderMonsterImageViewport: renderMonsterImageViewport,
@@ -3838,26 +3306,12 @@
     getStageInfo: getStageInfo,
     getBadgeColors: getBadgeColors,
     palettes: MONSTER_PALETTES,
-    stages: STAGE_META,
-    SPECIES_ARCHETYPES: SPECIES_ARCHETYPES,
-    getStudentArchetype: getStudentArchetype,
-    ELEMENTAL_SPECIES: ELEMENTAL_SPECIES,
-    getStudentSpeciesData: getStudentSpeciesData,
-    ELEMENTAL_AVATARS: ELEMENTAL_AVATARS,
-    getStudentMascot: getStudentMascot,
-    renderMonsterViewportStage: renderMonsterViewportStage
+    stages: STAGE_META
   };
 
   root.getMonsterAsset = getMonsterAsset;
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterLiveStage = renderMonsterLiveStage;
-  root.renderMonsterViewportStage = renderMonsterViewportStage;
-  root.renderHornsLayer = renderHornsLayer;
-  root.renderClothingLayer = renderClothingLayer;
-  root.renderForegroundAccessories = renderForegroundAccessories;
-  root.renderTailLayer = renderTailLayer;
-  root.renderWingsLayer = renderWingsLayer;
-  root.renderAuraLayer = renderAuraLayer;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterSingleSVG;
   root.renderMonsterImageViewport = renderMonsterImageViewport;
@@ -3867,12 +3321,6 @@
   root.getMonsterStageImage = getMonsterStageImage;
   root.renderMonsterArtwork = renderMonsterArtwork;
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
-  root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
-  root.getStudentArchetype = getStudentArchetype;
-  root.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
-  root.getStudentSpeciesData = getStudentSpeciesData;
-  root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
-  root.getStudentMascot = getStudentMascot;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;
