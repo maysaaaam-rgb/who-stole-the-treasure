@@ -5618,8 +5618,62 @@ body.classroom-mode-active .classroom-students-grid {
 
 .students-directory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+@media (min-width: 1200px) {
+  .students-directory-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
+.student-card .monster-stage {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.student-card .monster-stage:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.student-card .monster-stage:hover .monster-hero-3d,
+.student-card .monster-stage:hover .monster-composite-stage {
+  filter: drop-shadow(0 10px 20px rgba(56, 189, 248, 0.45));
+}
+
+.monster-stage-edit-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 15;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.student-card .monster-stage:hover .monster-stage-edit-badge,
+.monster-stage-edit-badge:hover {
+  opacity: 1;
+  transform: scale(1.15);
+  background: #38bdf8;
+  color: #060911;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
 }
 
 .student-directory-card {

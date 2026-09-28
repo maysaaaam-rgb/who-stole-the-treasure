@@ -1114,12 +1114,36 @@
    * Level 4–6: growing
    * Level 7+:  ultimate
    */
-  function getMonsterAsset(species, level) {
-    let stage = 'baby';
-    if (level >= 7) stage = 'ultimate';
-    else if (level >= 4) stage = 'growing';
+  function getMonsterAsset(speciesOrArchetype, level) {
+    const lvl = parseInt(level, 10) || 1;
+    if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
+    if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
 
-    return `/assets/monsters/${species}_stage_${stage}.webp`;
+    const raw = String(speciesOrArchetype || 'ignis').toLowerCase().trim();
+    let species = 'emberwing';
+    if (raw.includes('flora') || raw.includes('leaf') || raw.includes('golem') || raw.includes('verdant') || raw.includes('earth')) {
+      species = 'florasprout';
+    } else if (raw.includes('volt') || raw.includes('spark') || raw.includes('thunder') || raw.includes('electric')) {
+      species = 'sparktail';
+    } else if (raw.includes('astral') || raw.includes('star') || raw.includes('spirit') || raw.includes('cosmic')) {
+      species = 'astralight';
+    } else if (raw.includes('aqua') || raw.includes('water') || raw.includes('sea')) {
+      species = 'aquafind';
+    } else if (raw.includes('ember') || raw.includes('ignis') || raw.includes('fire') || raw.includes('dragon')) {
+      species = 'emberwing';
+    }
+
+    if (lvl >= 7) {
+      return `assets/monsters/${species}_stage_ultimate.png`;
+    } else if (lvl === 6) {
+      return 'assets/monsters/stage-6-advanced-monster.png';
+    } else if (lvl === 5) {
+      return 'assets/monsters/stage-5-adventurer-monster.png';
+    } else if (lvl >= 4) {
+      return `assets/monsters/${species}_stage_growing.png`;
+    } else {
+      return `assets/monsters/${species}_stage_baby.png`;
+    }
   }
   window.getMonsterAsset = getMonsterAsset;
 
@@ -1151,16 +1175,16 @@
 
     const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
     const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
-    const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
-    const name = (mascot && mascot.name) || 'Monster';
-    const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toUpperCase();
+    const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toUpperCase();
     const archetypeClass = 'archetype-' + archetype.toLowerCase();
+    const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, mState.currentLevel);
+    const name = (mascot && mascot.name) || 'Monster';
 
-    // Isolated character sprite on illuminated pedestal (Purge static card graphics)
+    // Dynamic character sprite on illuminated pedestal with real-time asset binding
     const avatarMarkup = '' +
       '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
         '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-        '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
+        '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -1194,6 +1218,7 @@
 
         // Monster Stage Platform with idleBob & Pedestal Disc
         '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
+          '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Customize Monster">✏️</button>' +
           avatarMarkup +
           '<span class="stage-level-badge">' + evolutionBadge + '</span>' +
         '</div>' +
@@ -3201,16 +3226,16 @@
               }
               const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
               const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
-              const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
               const name = (mascot && mascot.name) || 'Monster';
-              const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
+              const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
               const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
+              const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, mState.currentLevel);
 
               const avatarMarkup = '' +
                 '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
                   '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-                  '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
+                  '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
                 '</div>';
 
               return '' +
@@ -3244,6 +3269,7 @@
 
                   // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
                   '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
+                    '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
                     avatarMarkup +
                     '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
@@ -3591,16 +3617,17 @@
       }
       const mascot = getStudentMascot(s) || DEFAULT_MASCOT;
       const glow = (mascot && mascot.glow) || 'rgba(56, 189, 248, 0.45)';
-      const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
       const name = (mascot && mascot.name) || 'Monster';
-      const archetype = String(s.archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
+      const archetype = String(s.archetype || s.monster_archetype || (mascot && mascot.element) || (mascot && mascot.name) || 'IGNIS').toLowerCase();
       const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
+      const curLvl = monsterState ? monsterState.currentLevel : 1;
+      const dynamicSprite = s.custom_avatar_url || getMonsterAsset(archetype, curLvl);
 
       const avatarMarkup = '' +
         '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
           '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-          '<img src="' + sprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + sprite + '\'" />' +
+          '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
         '</div>';
 
       return '' +
@@ -3634,6 +3661,7 @@
 
           // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
           '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+            '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
             avatarMarkup +
             '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
@@ -12411,62 +12439,29 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   const MONSTER_CREATOR_TABS = [
-    {
-      id: 'monster',
-      label: 'Monster',
-      icon: '👾',
-      title: 'Fur Colors & Palette',
+    { id: 'colors', label: 'Colors', icon: '🎨', title: 'Fur Colors & Palette' },
+    { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
+    { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
+    { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings & Gliders' },
+    { id: 'tails', label: 'Tails', icon: '🦎', title: 'Tails & Crests' },
+    { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras & Glows' },
+    { id: 'clothing', label: 'Clothing', icon: '👔', title: 'Clothing & Outfits',
       subCategories: [
-        { id: 'colors', label: 'Fur Colors', icon: '🎨', title: 'Fur Colors & Palette' }
-      ]
-    },
-    {
-      id: 'face',
-      label: 'Face',
-      icon: '👀',
-      title: 'Eyes & Mouth Expressions',
-      subCategories: [
-        { id: 'eyes', label: 'Eyes', icon: '👀', title: 'Eye Expressions' },
-        { id: 'mouths', label: 'Mouths', icon: '👄', title: 'Mouth Expressions' }
-      ]
-    },
-    {
-      id: 'features',
-      label: 'Features',
-      icon: '🪶',
-      title: 'Horns, Wings, Tail & Gear',
-      subCategories: [
-        { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
-        { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings' },
-        { id: 'tails', label: 'Tails', icon: '🦎', title: 'Tails' },
-        { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
-        { id: 'backpacks', label: 'Backpacks', icon: '🎒', title: 'Backpacks & Bags' },
-        { id: 'accessories', label: 'Accessories', icon: '🎀', title: 'Accessories & Held' },
-        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
-      ]
-    },
-    {
-      id: 'clothing',
-      label: 'Clothing',
-      icon: '👔',
-      title: 'Clothing & Outfits',
-      subCategories: [
+        { id: 'all_clothing', label: 'All Outfits', icon: '👔', title: 'All Outfits' },
         { id: 'adventure', label: 'Adventure', icon: '🧭', title: 'Adventure Gear' },
         { id: 'school', label: 'School', icon: '🏫', title: 'School Uniforms' },
         { id: 'special', label: 'Special', icon: '✨', title: 'Special Outfits' },
         { id: 'fantasy', label: 'Fantasy', icon: '🛡️', title: 'Fantasy & Armor' }
       ]
     },
-    {
-      id: 'world',
-      label: 'World',
-      icon: '🌍',
-      title: 'Environment Worlds & Auras',
+    { id: 'accessories', label: 'Accessories', icon: '👓', title: 'Glasses & Accessories' },
+    { id: 'face', label: 'Face', icon: '👀', title: 'Face Expressions',
       subCategories: [
-        { id: 'worlds', label: 'Worlds', icon: '🌍', title: 'Adventure Worlds' },
-        { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras' }
+        { id: 'eyes', label: 'Eyes', icon: '👀', title: 'Eye Expressions' },
+        { id: 'mouths', label: 'Mouths', icon: '👄', title: 'Mouth Expressions' }
       ]
-    }
+    },
+    { id: 'worlds', label: 'Worlds', icon: '🌍', title: 'Adventure Worlds' }
   ];
 
   window.openMonsterCreator = function(studentId) {
@@ -12483,8 +12478,8 @@ window.switchClassroomSubTab = function(subTab) {
       equipped: Object.assign({}, profile.equipped || {})
     };
 
-    monsterCreatorActiveTab = 'features';
-    monsterCreatorActiveSubTab = 'horns';
+    monsterCreatorActiveTab = 'colors';
+    monsterCreatorActiveSubTab = 'colors';
     monsterCreatorIsAnimated = true;
 
     // Reset animate button UI
@@ -12523,6 +12518,8 @@ window.switchClassroomSubTab = function(subTab) {
     const tabObj = MONSTER_CREATOR_TABS.find(t => t.id === tabId) || MONSTER_CREATOR_TABS[0];
     if (tabObj && tabObj.subCategories && tabObj.subCategories.length > 0) {
       monsterCreatorActiveSubTab = tabObj.subCategories[0].id;
+    } else {
+      monsterCreatorActiveSubTab = tabId;
     }
     window.renderMonsterCreatorNav();
     window.renderMonsterCreatorSubNav();
@@ -12536,6 +12533,13 @@ window.switchClassroomSubTab = function(subTab) {
     const currentTab = MONSTER_CREATOR_TABS.find(t => t.id === monsterCreatorActiveTab) || MONSTER_CREATOR_TABS[0];
     const subCats = currentTab.subCategories || [];
 
+    if (subCats.length === 0) {
+      subNavEl.style.display = 'none';
+      subNavEl.innerHTML = '';
+      return;
+    }
+
+    subNavEl.style.display = 'flex';
     subNavEl.innerHTML = subCats.map(sub => '' +
       '<button type="button" class="monster-subnav-btn ' + (monsterCreatorActiveSubTab === sub.id ? 'is-active' : '') + '" onclick="selectMonsterCreatorSubTab(\'' + sub.id + '\')">' +
         '<span>' + sub.icon + '</span>' +
@@ -12565,6 +12569,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (!student) return;
     const mState = store.calculateMonsterState(monsterCreatorStudentId);
     const unlockedSet = mState.unlockedItemIds || new Set();
+    const studentInv = (store.getStudentInventory && monsterCreatorStudentId) ? store.getStudentInventory(monsterCreatorStudentId) : [];
 
     const allItems = store.getMonsterItems ? store.getMonsterItems() : [];
     let items = [];
@@ -12578,11 +12583,13 @@ window.switchClassroomSubTab = function(subTab) {
     } else if (sub === 'mouths') {
       items = allItems.filter(i => i.category === 'mouth');
     } else if (sub === 'horns') {
+      noneOptions.push({ id: 'horns-none', category: 'horns', name: 'No Horns', isNone: true });
       items = allItems.filter(i => i.category === 'horns');
     } else if (sub === 'wings') {
       noneOptions.push({ id: 'wings-none', category: 'wings', name: 'No Wings', isNone: true });
       items = allItems.filter(i => i.category === 'wings');
     } else if (sub === 'tails') {
+      noneOptions.push({ id: 'tail-none', category: 'tail', name: 'No Tail', isNone: true });
       items = allItems.filter(i => i.category === 'tail');
     } else if (sub === 'hats') {
       noneOptions.push({ id: 'hat-none', category: 'hat', name: 'No Hat', isNone: true });
@@ -12593,6 +12600,9 @@ window.switchClassroomSubTab = function(subTab) {
     } else if (sub === 'accessories') {
       noneOptions.push({ id: 'acc-none', category: 'accessory', name: 'No Accessory', isNone: true });
       items = allItems.filter(i => i.category === 'accessory' || i.category === 'glasses');
+    } else if (sub === 'all_clothing' || sub === 'clothing') {
+      noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
+      items = allItems.filter(i => i.category === 'clothing');
     } else if (sub === 'adventure') {
       noneOptions.push({ id: 'clothing-none', category: 'clothing', name: 'No Outfit', isNone: true });
       items = allItems.filter(i => i.category === 'clothing' && (i.subCategory === 'adventure' || ['clothing-vest', 'clothing-cape', 'clothing-adv-jacket', 'clothing-travel-coat'].includes(i.id)));
@@ -12643,13 +12653,15 @@ window.switchClassroomSubTab = function(subTab) {
       const curLevel = (window.currentMonster && window.currentMonster.level) || (mState ? mState.currentLevel : 1);
       const reqLevel = (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1;
       const isLevelLocked = !item.isNone && (reqLevel > curLevel);
-      const isUnlocked = item.isNone || (!isLevelLocked && (unlockedSet.has(item.id) || !item.unlockType || item.unlockType === 'level'));
+      const isInventoryUnlocked = studentInv.some(e => (e.itemId || e.id) === item.id);
+      const isUnlocked = item.isNone || isInventoryUnlocked || (!isLevelLocked && (unlockedSet.has(item.id) || !item.unlockType || item.unlockType === 'level'));
 
       let lockBadge = '';
       if (isLevelLocked) {
         lockBadge = '<span class="monster-item-lock-pill">🔒 Level ' + reqLevel + '</span>';
       } else if (!isUnlocked) {
-        lockBadge = '<span class="monster-item-lock-pill">🔒 Locked</span>';
+        const lockText = (item.unlockRequirement && item.unlockRequirement.label) || (item.unlockType === 'mystery_box' ? 'Found in Mystery Boxes' : 'Found in Mystery Boxes / Quests');
+        lockBadge = '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>';
       }
 
       const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
@@ -13228,6 +13240,9 @@ window.switchClassroomSubTab = function(subTab) {
     const sprite = (mascot && mascot.sprite) || DEFAULT_MASCOT.sprite;
     const name = (mascot && mascot.name) || 'Monster';
 
+    const currentLvl = mState ? mState.currentLevel : 1;
+    const currentArchetype = (student && (student.archetype || student.monster_archetype)) || (mascot && mascot.element) || 'IGNIS';
+
     if (box) {
       if (liveStageRenderer) {
         box.innerHTML = liveStageRenderer({
@@ -13238,7 +13253,8 @@ window.switchClassroomSubTab = function(subTab) {
           animated: monsterCreatorIsAnimated,
           student: student,
           studentId: student ? student.id : '',
-          archetype: (student && student.archetype) || (mascot && mascot.element) || 'IGNIS'
+          archetype: currentArchetype,
+          level: currentLvl
         });
       } else if (renderFn) {
         box.innerHTML = renderFn({
@@ -13253,7 +13269,8 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     if (miniAvatarBox) {
-      miniAvatarBox.innerHTML = '<img src="' + sprite + '" alt="' + name + '" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 6px ' + glow + ');" />';
+      const miniSprite = (student && student.custom_avatar_url) || getMonsterAsset(currentArchetype, currentLvl);
+      miniAvatarBox.innerHTML = '<img src="' + miniSprite + '" alt="' + name + '" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 6px ' + glow + ');" />';
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || (student ? student.firstName + "'s Monster" : "Student Monster"));

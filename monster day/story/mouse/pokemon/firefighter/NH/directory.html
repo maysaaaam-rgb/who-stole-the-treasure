@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students Directory &amp; Monster Companions</title>
+  <link rel="stylesheet" href="css/school-platform.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+    }
+    .directory-wrapper {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 20px 80px 20px;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header-bar h1 {
+      font-size: 1.85rem;
+      font-weight: 900;
+      margin: 0 0 6px 0;
+      background: linear-gradient(135deg, #ffffff 40%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-bar p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+    /* Enforce uninterrupted 4-column grid on desktop */
+    .students-directory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 24px;
+    }
+    @media (min-width: 1200px) {
+      .students-directory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="directory-wrapper">
+    <!-- Header -->
+    <div class="header-bar">
+      <div>
+        <h1>👧 Students Directory &amp; Monster Companions</h1>
+        <p>Live learning companions dynamically rendered from student archetype &amp; evolution level.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn-sm-secondary" onclick="window.location.reload()">🔄 Refresh</button>
+        <a href="index.html" class="btn-primary-action" style="text-decoration:none;">🏠 Main LMS</a>
+      </div>
+    </div>
+
+    <!-- Contiguous 4-Column Student Cards Grid -->
+    <div id="students-grid" class="students-directory-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Closet / Customizer Modal -->
+  <div class="modal-overlay" id="modal-closet-customizer">
+    <div class="modal-dialog" style="max-width: 980px; width: 94vw; max-height: 92vh; overflow-y: auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border-radius: 20px; padding: 24px; border: 1.5px solid rgba(56, 189, 248, 0.35);">
+      <button class="modal-close-btn" onclick="closeClosetModal()">✕</button>
+      
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:14px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:2rem;">🎨</span>
+          <div>
+            <h2 id="customizer-student-title" style="font-size:1.4rem; font-weight:800; margin:0; color:#f8fafc;">Monster Customizer</h2>
+            <p style="font-size:0.84rem; color:#94a3b8; margin:3px 0 0 0;">Equip unlocked cosmetic items or unlock rare gear from Mystery Boxes &amp; Quests.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 320px 1fr; gap:20px; align-items:start;">
+        <!-- Left: Live Preview Viewport -->
+        <div style="background:#060911; border-radius:18px; padding:20px; border:1.5px solid rgba(56,189,248,0.25); text-align:center;">
+          <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#38bdf8; margin-bottom:12px; letter-spacing:0.5px;">Live Interactive Preview</div>
+          <div id="modal-live-stage-preview" style="height:220px; display:flex; align-items:center; justify-content:center;">
+            <!-- Dynamically Rendered Layered Stage -->
+          </div>
+          <div id="modal-live-stage-name" style="margin-top:14px; font-size:1.05rem; font-weight:800; color:#f1f5f9;">Emberwing</div>
+          <div id="modal-live-stage-meta" style="font-size:0.8rem; color:#38bdf8; font-weight:700;">Level 3 • Baby Monster</div>
+        </div>
+
+        <!-- Right: Tabbed Items Selection -->
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Tabs -->
+          <div id="closet-tab-nav" style="display:flex; gap:6px; overflow-x:auto; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
+            <!-- Populated via JS: Colors, Horns, Hats, Wings, Tails, Auras, Clothing, Accessories -->
+          </div>
+
+          <!-- Items Grid -->
+          <div id="closet-items-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; max-height:340px; overflow-y:auto; padding:4px;">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+            <button type="button" class="btn-sm-secondary" onclick="closeClosetModal()">Cancel</button>
+            <button type="button" class="btn-primary-action btn-3d btn-3d-primary" onclick="saveClosetChanges()" style="padding:10px 22px; font-weight:800;">✓ Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/monster-renderer.js"></script>
+  <script>
+    // Asset Resolver matching our standard
+    function getMonsterAsset(speciesOrArchetype, level) {
+      if (window.MonsterRenderer && window.MonsterRenderer.getMonsterAsset) {
+        return window.MonsterRenderer.getMonsterAsset(speciesOrArchetype, level);
+      }
+      const lvl = parseInt(level, 10) || 1;
+      if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
+      if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
+
+      const raw = String(speciesOrArchetype || 'ignis').toLowerCase();
+      let species = 'emberwing';
+      if (raw.includes('flora') || raw.includes('leaf') || raw.includes('golem')) species = 'florasprout';
+      else if (raw.includes('volt') || raw.includes('spark') || raw.includes('electric')) species = 'sparktail';
+      else if (raw.includes('astral') || raw.includes('star') || raw.includes('spirit')) species = 'astralight';
+      else if (raw.includes('aqua') || raw.includes('water')) species = 'aquafind';
+
+      let stage = lvl >= 7 ? 'ultimate' : (lvl >= 4 ? 'growing' : 'baby');
+      if (lvl === 5) return 'assets/monsters/stage-5-adventurer-monster.png';
+      if (lvl === 6) return 'assets/monsters/stage-6-advanced-monster.png';
+      return `assets/monsters/${species}_stage_${stage}.png`;
+    }
+
+    // Demo Directory Student Data across levels 1 to 7 and archetypes
+    let students = [
+      { id: 'st-1', firstName: 'Emma', lastName: 'Watson', archetype: 'ignis', level: 3, xp: 480, streak: 5, cefr: 'A1', equipped: {} },
+      { id: 'st-2', firstName: 'Liam', lastName: 'Smith', archetype: 'flora', level: 4, xp: 820, streak: 8, cefr: 'A2', equipped: { hat: 'hat-explorer' } },
+      { id: 'st-3', firstName: 'Sophia', lastName: 'Chen', archetype: 'volt', level: 1, xp: 50, streak: 2, cefr: 'Pre-A1', equipped: {} },
+      { id: 'st-4', firstName: 'Noah', lastName: 'Taylor', archetype: 'astral', level: 2, xp: 190, streak: 4, cefr: 'A1', equipped: {} },
+      { id: 'st-5', firstName: 'Mia', lastName: 'Johnson', archetype: 'aqua', level: 5, xp: 1450, streak: 12, cefr: 'B1', equipped: { wings: 'wings-dragon' } },
+      { id: 'st-6', firstName: 'Oliver', lastName: 'Brown', archetype: 'ignis', level: 6, xp: 2300, streak: 15, cefr: 'B1', equipped: { clothing: 'clothing-vest' } },
+      { id: 'st-7', firstName: 'Ava', lastName: 'Davis', archetype: 'flora', level: 7, xp: 3800, streak: 21, cefr: 'B2', equipped: { aura: 'aura-starlight' } },
+      { id: 'st-8', firstName: 'Lucas', lastName: 'Miller', archetype: 'volt', level: 3, xp: 520, streak: 6, cefr: 'A1', equipped: {} }
+    ];
+
+    // Cosmetic Catalog
+    const CATALOG = [
+      { id: 'color-red', category: 'colors', name: 'Crimson Ember', icon: '🔴', unlockLevel: 1 },
+      { id: 'color-blue', category: 'colors', name: 'Azure Frost', icon: '🔵', unlockLevel: 1 },
+      { id: 'color-green', category: 'colors', name: 'Verdant Flora', icon: '🟢', unlockLevel: 1 },
+      { id: 'color-purple', category: 'colors', name: 'Astral Void', icon: '🟣', unlockLevel: 3 },
+      { id: 'horns-sprout', category: 'horns', name: 'Sprout Nubs', icon: '🌱', unlockLevel: 1 },
+      { id: 'horns-curved', category: 'horns', name: 'Curved Horns', icon: '🪶', unlockLevel: 4 },
+      { id: 'horns-crystal', category: 'horns', name: 'Crystal Spikes', icon: '💎', unlockLevel: 6 },
+      { id: 'hat-cap', category: 'hats', name: 'Explorer Cap', icon: '🧢', unlockLevel: 2 },
+      { id: 'hat-crown', category: 'hats', name: 'Golden Crown', icon: '👑', unlockLevel: 7 },
+      { id: 'wings-fairy', category: 'wings', name: 'Fairy Wings', icon: '🪽', unlockLevel: 3 },
+      { id: 'wings-dragon', category: 'wings', name: 'Dragon Wings', icon: '🦇', unlockLevel: 5 },
+      { id: 'tail-flame', category: 'tails', name: 'Flame Tail', icon: '🔥', unlockLevel: 2 },
+      { id: 'tail-star', category: 'tails', name: 'Cosmic Star Tail', icon: '⭐', unlockLevel: 5 },
+      { id: 'aura-sparkle', category: 'auras', name: 'Sparkle Aura', icon: '✨', unlockLevel: 2 },
+      { id: 'aura-flame', category: 'auras', name: 'Fire Aura', icon: '🔥', unlockLevel: 4 }
+    ];
+
+    let currentEditingStudent = null;
+    let activeClosetTab = 'colors';
+    let draftEquipped = {};
+
+    function renderCards() {
+      const grid = document.getElementById('students-grid');
+      if (!grid) return;
+
+      grid.innerHTML = students.map(s => {
+        const sprite = s.custom_avatar_url || getMonsterAsset(s.archetype, s.level);
+        const stageLabel = s.level === 1 ? 'Mystery Egg' : s.level === 2 ? 'Cracking Egg' : s.level === 7 ? 'Ultimate Apex' : `Lvl ${s.level} Companion`;
+
+        return `
+          <div class="student-directory-card student-card element-${s.archetype} archetype-${s.archetype}" data-student-id="${s.id}">
+            <div class="card-overlay-top" style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="student-card-status-dot status-active"></span>
+                <span class="badge-cefr badge-cefr-${s.cefr.toLowerCase().replace('+', '-plus')}">${s.cefr}</span>
+                <span class="badge-archetype archetype-${s.archetype}">${s.archetype.toUpperCase()}</span>
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="student-card-streak-pill">🔥 ${s.streak}d</span>
+                <button type="button" class="btn-card-more-3dots" onclick="openClosetModal('${s.id}')">•••</button>
+              </div>
+            </div>
+
+            <div class="monster-stage element-${s.archetype}" onclick="openClosetModal('${s.id}')" title="Click to customize monster">
+              <button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); openClosetModal('${s.id}')" title="Customize Monster">✏️</button>
+              <div class="avatar-hero-container monster-viewport-stage">
+                <div class="mascot-pedestal-glow monster-iso-pedestal"></div>
+                <img src="${sprite}" alt="${s.firstName}'s Monster" class="mascot-sprite-img monster-hero-3d" loading="lazy" />
+              </div>
+              <span class="stage-level-badge">Lvl ${s.level} • ${stageLabel}</span>
+            </div>
+
+            <div class="student-card-content" style="width:100%; margin-top:12px;">
+              <div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 class="student-name" style="margin:0; font-size:1.02rem; font-weight:800;">${s.firstName} ${s.lastName}</h3>
+                <span class="student-xp-pill">⭐ ${s.xp.toLocaleString()}</span>
+              </div>
+              <div class="student-xp-progress-bar" style="margin:8px 0 6px 0;">
+                <div class="student-xp-progress-fill" style="width:${Math.min(100, (s.xp % 500) / 5)}%;"></div>
+              </div>
+              <div class="student-card-action-bar" style="margin-top:10px;">
+                <button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="quickAwardXP('${s.id}', 10)">
+                  ⚡ +10 XP
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function quickAwardXP(studentId, amount) {
+      const s = students.find(item => item.id === studentId);
+      if (!s) return;
+      s.xp += amount;
+      renderCards();
+    }
+
+    // Modal Controller
+    function openClosetModal(studentId) {
+      currentEditingStudent = students.find(item => item.id === studentId);
+      if (!currentEditingStudent) return;
+      draftEquipped = Object.assign({}, currentEditingStudent.equipped || {});
+      activeClosetTab = 'colors';
+
+      document.getElementById('customizer-student-title').textContent = `🎨 Monster Customizer: ${currentEditingStudent.firstName}`;
+      renderClosetTabs();
+      renderClosetItems();
+      updateClosetPreview();
+
+      const modal = document.getElementById('modal-closet-customizer');
+      if (modal) modal.classList.add('is-open');
+    }
+
+    function closeClosetModal() {
+      const modal = document.getElementById('modal-closet-customizer');
+      if (modal) modal.classList.remove('is-open');
+    }
+
+    function renderClosetTabs() {
+      const nav = document.getElementById('closet-tab-nav');
+      if (!nav) return;
+      const tabs = [
+        { id: 'colors', label: 'Colors', icon: '🎨' },
+        { id: 'horns', label: 'Horns', icon: '🪶' },
+        { id: 'hats', label: 'Hats', icon: '🎩' },
+        { id: 'wings', label: 'Wings', icon: '🪽' },
+        { id: 'tails', label: 'Tails', icon: '🦎' },
+        { id: 'auras', label: 'Auras', icon: '✨' }
+      ];
+
+      nav.innerHTML = tabs.map(t => `
+        <button type="button" class="classroom-nav-tab-btn ${activeClosetTab === t.id ? 'is-active' : ''}" onclick="selectClosetTab('${t.id}')" style="padding:6px 12px; font-size:0.82rem; font-weight:700;">
+          ${t.icon} ${t.label}
+        </button>
+      `).join('');
+    }
+
+    function selectClosetTab(tabId) {
+      activeClosetTab = tabId;
+      renderClosetTabs();
+      renderClosetItems();
+    }
+
+    function renderClosetItems() {
+      const grid = document.getElementById('closet-items-grid');
+      if (!grid || !currentEditingStudent) return;
+
+      const items = CATALOG.filter(i => i.category === activeClosetTab);
+      grid.innerHTML = items.map(item => {
+        const isEquipped = draftEquipped[item.category] === item.id;
+        const isLocked = item.unlockLevel > currentEditingStudent.level;
+
+        return `
+          <div onclick="${isLocked ? '' : `toggleEquipItem('${item.category}', '${item.id}')`}" style="
+            background: ${isEquipped ? 'rgba(56,189,248,0.2)' : 'rgba(15,23,42,0.7)'};
+            border: ${isEquipped ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)'};
+            border-radius: 12px; padding: 12px; text-align: center;
+            cursor: ${isLocked ? 'not-allowed' : 'pointer'};
+            opacity: ${isLocked ? 0.45 : 1};
+            filter: ${isLocked ? 'grayscale(0.7)' : 'none'};
+            position: relative;
+          ">
+            ${isLocked ? `<span class="monster-item-lock-pill" style="position:absolute; top:6px; right:6px; font-size:0.65rem;">🔒 Level ${item.unlockLevel}</span>` : ''}
+            ${isEquipped ? '<span style="position:absolute; top:6px; left:6px; color:#38bdf8; font-weight:900;">✓</span>' : ''}
+            <div style="font-size:2rem; margin:4px 0;">${item.icon}</div>
+            <div style="font-size:0.8rem; font-weight:700; color:#f1f5f9;">${item.name}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleEquipItem(category, itemId) {
+      draftEquipped[category] = draftEquipped[category] === itemId ? 'none' : itemId;
+      renderClosetItems();
+      updateClosetPreview();
+    }
+
+    function updateClosetPreview() {
+      if (!currentEditingStudent) return;
+      const previewBox = document.getElementById('modal-live-stage-preview');
+      const sprite = getMonsterAsset(currentEditingStudent.archetype, currentEditingStudent.level);
+      previewBox.innerHTML = `
+        <div class="monster-composite-stage" style="position:relative; width:170px; height:170px; margin:0 auto;">
+          <div class="mascot-pedestal-glow monster-iso-pedestal" style="position:absolute; bottom:0; width:100%; height:20px;"></div>
+          <img src="${sprite}" alt="Preview" class="mascot-sprite-img monster-hero-3d" style="width:100%; height:100%; object-fit:contain;" />
+        </div>
+      `;
+      document.getElementById('modal-live-stage-meta').textContent = `Level ${currentEditingStudent.level} • ${currentEditingStudent.archetype.toUpperCase()}`;
+    }
+
+    function saveClosetChanges() {
+      if (!currentEditingStudent) return;
+      currentEditingStudent.equipped = Object.assign({}, draftEquipped);
+      closeClosetModal();
+      renderCards();
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCards();
+    });
+  </script>
+</body>
+</html>

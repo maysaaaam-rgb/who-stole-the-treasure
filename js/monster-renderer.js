@@ -917,24 +917,20 @@
 
     // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso)
     let bodySvg = '';
-    if (stage === 'egg') {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
-    } else if (stage === 'cracking_egg') {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
+    const student = options.student || (options.studentId ? (root.store && root.store.getStudent ? root.store.getStudent(options.studentId) : null) : null);
+    const studentLvl = options.level || (student && student.level) || (stage === 'ultimate' ? 7 : (stage === 'growing' ? 4 : (stage === 'cracking_egg' ? 2 : (stage === 'egg' ? 1 : 3))));
+    const baseSprite = (student && student.custom_avatar_url) || options.customAvatarUrl || options.custom_avatar_url || getMonsterAsset(archetype, studentLvl);
+
+    if (stage === 'egg' || studentLvl === 1) {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}<image href="assets/monsters/stage-1-mystery-egg.png" xlink:href="assets/monsters/stage-1-mystery-egg.png" x="25" y="25" width="150" height="150" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" /></svg>`;
+    } else if (stage === 'cracking_egg' || studentLvl === 2) {
+      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}<image href="assets/monsters/stage-2-cracking-egg.png" xlink:href="assets/monsters/stage-2-cracking-egg.png" x="25" y="25" width="150" height="150" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" /></svg>`;
     } else {
-      const primaryColor = palette.primary || '#10b981';
-      const darkColor = palette.primaryDark || '#047857';
-      const lightColor = palette.primaryLight || '#6ee7b7';
-      const bellyColor = palette.belly || '#fef3c7';
-      const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
-
-      const mascot = getStudentMascot(options.student || { id: options.studentId || options.id || options.name || archetype, archetype: archetype });
-
       bodySvg = `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           ${defs}
-          <g id="layer-body">
-            <image href="${mascot.sprite}" xlink:href="${mascot.sprite}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
+          <g id="layer-body-sprite">
+            <image href="${baseSprite}" xlink:href="${baseSprite}" x="20" y="20" width="160" height="160" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
           </g>
         </svg>
       `;
@@ -956,7 +952,9 @@
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
         const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
-        faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
+        if (faceMarkup) {
+          faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
+        }
       } catch (e) {}
     }
 
@@ -994,33 +992,18 @@
       } catch (e) {}
     }
 
+    const stageSize = options.size || 280;
+
     return `
-      <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: 260px; height: 260px; margin: 0 auto;">
-        <!-- z-0: Ambient Pedestal Glow -->
-        <div id="layer-pedestal" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">
-          <div id="layer-aura-back" style="position: absolute; inset: 0;">${auraSvg}</div>
-        </div>
-        
-        <!-- z-10: Back Accessories (Wings, Tails, Capes) -->
-        <div id="layer-back-gear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
-
-        <!-- z-20: Base Creature Body Sprite -->
-        <div id="layer-body" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">${bodySvg}</div>
-
-        <!-- z-30: Tailored Clothing (Explorer Vest, Jackets) -->
-        <div id="layer-clothing" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;">${clothingSvg}</div>
-
-        <!-- z-40: Facial Expressions (Eyes, Mouth) -->
-        <div id="layer-face" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;">${faceSvg}</div>
-
-        <!-- z-50: Eyewear (Glasses, Goggles) -->
-        <div id="layer-glasses" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
-
-        <!-- z-60: Headwear & Horns (Hats, Crests, Floppy Ears) -->
-        <div id="layer-headwear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">
-          ${headwearSvg}
-          <div id="layer-horns" style="position: absolute; inset: 0;">${hornsSvg}</div>
-        </div>
+      <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: ${stageSize}px; height: ${stageSize}px; margin: 0 auto;">
+        <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">${auraSvg}</div>
+        <div id="layer-back-gear" class="layer-item z-10" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
+        <div id="layer-body" class="layer-item z-20" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">${bodySvg}</div>
+        <div id="layer-clothing" class="layer-item z-30" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;">${clothingSvg}</div>
+        <div id="layer-face" class="layer-item z-40" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;">${faceSvg}</div>
+        <div id="layer-glasses" class="layer-item z-50" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
+        <div id="layer-horns" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">${hornsSvg}</div>
+        <div id="layer-headwear" class="layer-item z-70" style="position: absolute; inset: 0; z-index: 70; pointer-events: none;">${headwearSvg}</div>
       </div>
       <div class="pedestal-disk" id="preview-pedestal"></div>
     `.trim();
@@ -3803,12 +3786,36 @@
     `.trim();
   }
 
-  function getMonsterAsset(species, level) {
-    let stage = 'baby';
-    if (level >= 7) stage = 'ultimate';
-    else if (level >= 4) stage = 'growing';
+  function getMonsterAsset(speciesOrArchetype, level) {
+    const lvl = parseInt(level, 10) || 1;
+    if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
+    if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
 
-    return `/assets/monsters/${species}_stage_${stage}.webp`;
+    const raw = String(speciesOrArchetype || 'ignis').toLowerCase().trim();
+    let species = 'emberwing';
+    if (raw.includes('flora') || raw.includes('leaf') || raw.includes('golem') || raw.includes('verdant') || raw.includes('earth')) {
+      species = 'florasprout';
+    } else if (raw.includes('volt') || raw.includes('spark') || raw.includes('thunder') || raw.includes('electric')) {
+      species = 'sparktail';
+    } else if (raw.includes('astral') || raw.includes('star') || raw.includes('spirit') || raw.includes('cosmic')) {
+      species = 'astralight';
+    } else if (raw.includes('aqua') || raw.includes('water') || raw.includes('sea')) {
+      species = 'aquafind';
+    } else if (raw.includes('ember') || raw.includes('ignis') || raw.includes('fire') || raw.includes('dragon')) {
+      species = 'emberwing';
+    }
+
+    if (lvl >= 7) {
+      return `assets/monsters/${species}_stage_ultimate.png`;
+    } else if (lvl === 6) {
+      return 'assets/monsters/stage-6-advanced-monster.png';
+    } else if (lvl === 5) {
+      return 'assets/monsters/stage-5-adventurer-monster.png';
+    } else if (lvl >= 4) {
+      return `assets/monsters/${species}_stage_growing.png`;
+    } else {
+      return `assets/monsters/${species}_stage_baby.png`;
+    }
   }
 
   root.MonsterRenderer = {
