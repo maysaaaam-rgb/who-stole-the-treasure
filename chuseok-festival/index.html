@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chuseok: Korea's Harvest Festival • English Adventure Academy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation HUD -->
+  <header class="chuseok-hud">
+    <div class="hud-left">
+      <div class="hud-title-badge">
+        <span class="hud-icon">🌾</span>
+        <div class="hud-title-text">
+          <h1>Chuseok: Korea's Harvest Festival</h1>
+          <p>Unit 2: Thank You • Global Readings 2 (A2-B1)</p>
+        </div>
+      </div>
+
+      <!-- Lesson Switcher -->
+      <nav class="hud-lesson-switcher">
+        <button type="button" class="btn-lesson-tab active" id="tab-lesson-1">
+          🌸 Lesson 1: Weaving &amp; Feast
+        </button>
+        <button type="button" class="btn-lesson-tab" id="tab-lesson-2">
+          🌾 Lesson 2: Cakes &amp; Ancestors
+        </button>
+      </nav>
+    </div>
+
+    <div class="hud-right">
+      <div class="xp-counter-pill">
+        <span>⭐</span>
+        <span id="hud-xp-val">0</span>
+        <span>XP</span>
+      </div>
+
+      <button type="button" class="btn-3d btn-3d-ghost" id="btn-audio-mute" style="padding: 6px 14px; font-size: 0.82rem;">
+        🔊 Audio
+      </button>
+
+      <button type="button" class="btn-3d btn-3d-cyan" id="btn-fullscreen" style="padding: 6px 14px; font-size: 0.82rem;">
+        📺 Fullscreen
+      </button>
+
+      <a href="../index.html" class="btn-3d btn-3d-ghost" style="padding: 6px 14px; font-size: 0.82rem; text-decoration: none;">
+        🏠 LMS
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Slide Viewport -->
+  <main class="chuseok-main-viewport" id="slide-viewport">
+    
+    <!-- Slide Header Bar -->
+    <div class="slide-header-bar">
+      <div>
+        <div class="slide-badge-cluster">
+          <span class="badge-slide-pill" id="slide-badge-num">Slide 1 of 16</span>
+          <span class="badge-timing-pill" id="slide-timing-badge">00:00 - 04:00 (4 mins)</span>
+          <span class="badge-modality-pill" id="slide-modality-badge">[ANNOTATE] &amp; [SPEAK]</span>
+        </div>
+        <h2 class="slide-title-heading" id="slide-title-text">Warm-Up: What Are You Holding?</h2>
+      </div>
+
+      <div style="display:flex; gap: 8px;">
+        <a href="worksheet.html" target="_blank" class="btn-3d btn-3d-amber" style="padding: 8px 16px; font-size: 0.84rem; text-decoration: none;">
+          📄 Worksheet
+        </a>
+      </div>
+    </div>
+
+    <!-- Active Stage Card -->
+    <section class="slide-stage-card">
+      
+      <!-- Audio Narration Bar -->
+      <div class="audio-narration-bar" id="audio-narration-bar">
+        <button type="button" class="btn-3d btn-3d-cyan" id="btn-audio-play" style="padding: 6px 12px; font-size: 0.8rem;">
+          ▶ Play Audio
+        </button>
+        <span class="audio-persona-badge" id="audio-persona-label">Rachel - Warm Educator</span>
+        <p id="audio-script-text">"Welcome back! Look closely at the hands on your screen..."</p>
+      </div>
+
+      <!-- Dynamic Stage Container -->
+      <div id="slide-stage-content">
+        <!-- Rendered dynamically by ChuseokApp -->
+      </div>
+
+      <!-- Teacher Prompt Protocol Tray -->
+      <div style="margin-top: 18px; background: rgba(15, 23, 42, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--accent-amber); font-weight: 900; background: rgba(245, 158, 11, 0.15); padding: 2px 8px; border-radius: 6px;">
+          👨‍🏫 Teacher Protocol
+        </span>
+        <p id="teacher-prompt-text" style="font-size: 0.8rem; color: #94a3b8; margin: 0;">
+          Give 15 seconds for students to stamp items with stars or hearts. Call 2 students to complete the sentence.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Persistent Bottom Dock -->
+  <footer class="chuseok-bottom-dock">
+    <button type="button" class="btn-3d btn-3d-ghost" id="btn-nav-prev">
+      ◀ Previous Slide
+    </button>
+
+    <div class="slide-dots-rail" id="slide-dots-rail">
+      <!-- Populated dynamically (1 to 16 dots) -->
+    </div>
+
+    <button type="button" class="btn-3d btn-3d-cyan" id="btn-nav-next">
+      Next Slide ▶
+    </button>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
