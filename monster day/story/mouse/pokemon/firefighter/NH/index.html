@@ -2719,7 +2719,53 @@
               <div id="layer-back-gear" class="layer-item" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;"></div>
 
               <!-- 3. Base Monster Body & Fur (Paws, Torso, Ears) (z-20) -->
-              <div id="layer-body" class="layer-item" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;"></div>
+              <div id="layer-body" class="layer-item" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">
+                <svg viewBox="0 0 200 200" width="100%" height="100%">
+                  <defs>
+                    <!-- Specular Lighting for Chibi Monster Torso -->
+                    <linearGradient id="bodyShading" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+                      <stop offset="35%" stop-color="#ffffff" stop-opacity="0.1" />
+                      <stop offset="70%" stop-color="#020617" stop-opacity="0.2" />
+                      <stop offset="100%" stop-color="#020617" stop-opacity="0.65" />
+                    </linearGradient>
+                  </defs>
+                  <g id="layer-body">
+                    <!-- Outer Body Silhouette with Dynamic Taper & Soft Cheeks -->
+                    <path id="monster-torso" 
+                          d="M 100 62 
+                             C 126 62, 148 76, 150 102 
+                             C 152 126, 146 154, 128 162 
+                             C 114 168, 86 168, 72 162 
+                             C 54 154, 48 126, 50 102 
+                             C 52 76, 74 62, 100 62 Z" 
+                          fill="#10b981" stroke="#047857" stroke-width="4" stroke-linejoin="round" />
+
+                    <!-- Ambient Specular Shading -->
+                    <path d="M 100 62 C 126 62, 148 76, 150 102 C 152 126, 146 154, 128 162 C 114 168, 86 168, 72 162 C 54 154, 48 126, 50 102 C 52 76, 74 62, 100 62 Z" 
+                          fill="url(#bodyShading)" opacity="0.3" />
+
+                    <!-- Cream Belly / Chest Fluff Plate -->
+                    <path id="monster-belly"
+                          d="M 100 104 
+                             C 118 104, 128 116, 126 138 
+                             C 124 154, 114 160, 100 160 
+                             C 86 160, 76 154, 74 138 
+                             C 72 116, 82 104, 100 104 Z" 
+                          fill="#fef3c7" />
+
+                    <!-- Expressive Chibi Ears / Crest -->
+                    <path id="ear-left" d="M 68 74 C 52 45, 42 22, 60 16 C 74 12, 78 42, 82 66 Z" fill="#10b981" stroke="#047857" stroke-width="3" />
+                    <path id="ear-inner-left" d="M 64 62 C 55 42, 50 26, 62 22 C 70 20, 74 42, 76 58 Z" fill="#6ee7b7" opacity="0.75" />
+                    <path id="ear-right" d="M 132 74 C 148 45, 158 22, 140 16 C 126 12, 122 42, 118 66 Z" fill="#10b981" stroke="#047857" stroke-width="3" />
+                    <path id="ear-inner-right" d="M 136 62 C 145 42, 150 26, 138 22 C 130 20, 126 42, 124 58 Z" fill="#6ee7b7" opacity="0.75" />
+
+                    <!-- Rounded Front Paws Anchored to Pedestal -->
+                    <ellipse cx="74" cy="162" rx="13" ry="8" id="paw-left" fill="#059669" stroke="#047857" stroke-width="3" />
+                    <ellipse cx="126" cy="162" rx="13" ry="8" id="paw-right" fill="#059669" stroke="#047857" stroke-width="3" />
+                  </g>
+                </svg>
+              </div>
 
               <!-- 4. Clothing & Outfits wrapped to torso (z-30) -->
               <div id="layer-clothing" class="layer-item" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;"></div>

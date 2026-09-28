@@ -267,6 +267,37 @@
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
 
+        <filter id="mf-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="3.5" stdDeviation="2.8" flood-color="#020617" flood-opacity="0.32" />
+        </filter>
+
+        <!-- Specular Lighting for Chibi Monster Torso -->
+        <linearGradient id="bodyShading" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+          <stop offset="35%" stop-color="#ffffff" stop-opacity="0.1" />
+          <stop offset="70%" stop-color="#020617" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#020617" stop-opacity="0.65" />
+        </linearGradient>
+
+        <!-- Tailored Outfits Volumetric Gradients -->
+        <linearGradient id="vestLeatherGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b45309" />
+          <stop offset="45%" stop-color="#92400e" />
+          <stop offset="100%" stop-color="#78350f" />
+        </linearGradient>
+
+        <linearGradient id="capeRubyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ef4444" />
+          <stop offset="50%" stop-color="#dc2626" />
+          <stop offset="100%" stop-color="#991b1b" />
+        </linearGradient>
+
+        <linearGradient id="armorGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fef08a" />
+          <stop offset="40%" stop-color="#eab308" />
+          <stop offset="100%" stop-color="#ca8a04" />
+        </linearGradient>
+
         <!-- Backward-Compatible Secondary Gradients & Filters -->
         <linearGradient id="mg-egg-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${palette.primaryLight}" />
@@ -808,27 +839,49 @@
     } else if (stage === 'cracking_egg') {
       bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
     } else {
-      const pedestalMarkup = renderPedestalDais();
-      const contactShadowMarkup = renderContactShadow(stage);
-      let underBodyMarkup = '';
-      let feetMarkup = '';
-      let torsoMarkup = '';
-      let overBodyMarkup = '';
-      try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
-      try { feetMarkup = renderGroundedFeet(palette, colorKey, cX, g); } catch (e) {}
-      try { torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped); } catch (e) {}
-      // Pass false to omit horns from body layer so they render in layer-horns (z-60)
-      try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, false); } catch (e) {}
+      const primaryColor = palette.primary || '#10b981';
+      const darkColor = palette.primaryDark || '#047857';
+      const lightColor = palette.primaryLight || '#6ee7b7';
+      const bellyColor = palette.belly || '#fef3c7';
+      const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
 
       bodySvg = `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           ${defs}
-          ${pedestalMarkup}
-          ${contactShadowMarkup}
-          ${underBodyMarkup}
-          ${feetMarkup}
-          ${torsoMarkup}
-          ${overBodyMarkup}
+          <g id="layer-body">
+            <!-- Outer Body Silhouette with Dynamic Taper & Soft Cheeks -->
+            <path id="monster-torso" 
+                  d="M 100 62 
+                     C 126 62, 148 76, 150 102 
+                     C 152 126, 146 154, 128 162 
+                     C 114 168, 86 168, 72 162 
+                     C 54 154, 48 126, 50 102 
+                     C 52 76, 74 62, 100 62 Z" 
+                  fill="${primaryColor}" stroke="${darkColor}" stroke-width="4" stroke-linejoin="round" />
+
+            <!-- Ambient Specular Shading -->
+            <path d="M 100 62 C 126 62, 148 76, 150 102 C 152 126, 146 154, 128 162 C 114 168, 86 168, 72 162 C 54 154, 48 126, 50 102 C 52 76, 74 62, 100 62 Z" 
+                  fill="url(#bodyShading)" opacity="0.3" />
+
+            <!-- Cream Belly / Chest Fluff Plate -->
+            <path id="monster-belly"
+                  d="M 100 104 
+                     C 118 104, 128 116, 126 138 
+                     C 124 154, 114 160, 100 160 
+                     C 86 160, 76 154, 74 138 
+                     C 72 116, 82 104, 100 104 Z" 
+                  fill="${bellyColor}" />
+
+            <!-- Expressive Chibi Ears / Crest -->
+            <path id="ear-left" d="M 68 74 C 52 45, 42 22, 60 16 C 74 12, 78 42, 82 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
+            <path id="ear-inner-left" d="M 64 62 C 55 42, 50 26, 62 22 C 70 20, 74 42, 76 58 Z" fill="${lightColor}" opacity="0.75" />
+            <path id="ear-right" d="M 132 74 C 148 45, 158 22, 140 16 C 126 12, 122 42, 118 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
+            <path id="ear-inner-right" d="M 136 62 C 145 42, 150 26, 138 22 C 130 20, 126 42, 124 58 Z" fill="${lightColor}" opacity="0.75" />
+
+            <!-- Rounded Front Paws Anchored to Pedestal -->
+            <ellipse cx="74" cy="162" rx="13" ry="8" id="paw-left" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
+            <ellipse cx="126" cy="162" rx="13" ry="8" id="paw-right" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
+          </g>
         </svg>
       `;
     }
@@ -1992,93 +2045,49 @@
     `;
   }
 
-  // --- ORGANIC PEAR / JELLY-BEAN TORSO WITH VOLUMETRIC VECTOR LIGHTING ---
+  // --- HIGH-END CHIBI MONSTER BODY SILHOUETTE (Commercial-Grade Contoured Game Vectors) ---
   function renderChibiTorso(stage, palette, colorKey, cX, g, equipped) {
-    const topY = g.topY;
-    const botY = g.botY;
-    const cW = g.cW;
-    const bW = g.bW;
-    const cheekY = g.cheekY;
-
-    // Organic Pear / Jelly-Bean Cubic Bezier Silhouette with Lateral Cheek Swells
-    const bodyPath = `
-      M ${cX} ${topY}
-      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
-      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
-      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
-      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
-      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
-      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY}
-      Z
-    `;
-
-    // Inner Belly / Muzzle Patch (soft pastel tone breaking up monochromatic fills)
-    const bellyTop = g.eyeY + 8;
-    const bellyW = bW * 0.62;
-    const bellyPath = `
-      M ${cX} ${bellyTop}
-      C ${cX + bellyW * 0.65} ${bellyTop} ${cX + bellyW} ${bellyTop + 14} ${cX + bellyW} ${botY - 14}
-      C ${cX + bellyW * 0.90} ${botY} ${cX + 12} ${botY} ${cX} ${botY}
-      C ${cX - 12} ${botY} ${cX - bellyW * 0.90} ${botY} ${cX - bellyW} ${botY - 14}
-      C ${cX - bellyW} ${bellyTop + 14} ${cX - bellyW * 0.65} ${bellyTop} ${cX} ${bellyTop}
-      Z
-    `;
-
-    // Ambient Occlusion Crescent along lower-right inner rim
-    const aoCrescent = `
-      <path d="M ${cX - 10} ${botY}
-               C ${cX + 18} ${botY} ${cX + bW * 0.88} ${botY + 2} ${cX + bW} ${botY - 10}
-               C ${cX + bW * 1.06} ${botY - 24} ${cX + cW * 1.05} ${cheekY + 14} ${cX + cW} ${cheekY}
-               C ${cX + cW - 5} ${cheekY + 14} ${cX + bW - 7} ${botY - 20} ${cX - 10} ${botY} Z"
-            fill="${palette.shadowDark || palette.shadow}" opacity="0.26" />
-    `;
-
-    // Top Specular Highlight Arc along crown curve
-    const specularArc = `
-      <path d="M ${cX - cW * 0.45} ${topY + 6}
-               C ${cX - cW * 0.20} ${topY + 2} ${cX + cW * 0.20} ${topY + 2} ${cX + cW * 0.45} ${topY + 6}"
-            fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" opacity="0.75" />
-      <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="2.2" fill="#ffffff" opacity="0.9" />
-    `;
-
-    // Front Arms / Paws
-    let armsMarkup = '';
-    if (stage === 'baby') {
-      // Tiny baby paws curled happily on belly
-      armsMarkup = `
-        <g filter="url(#plush-shadow)">
-          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <ellipse cx="${cX - 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
-
-          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <ellipse cx="${cX + 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
-        </g>
-      `;
-    } else {
-      // Growing, Adventurer, Advanced, Ultimate arms
-      armsMarkup = `
-        <g filter="url(#plush-shadow)">
-          <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-          <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-
-          <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-          <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-        </g>
-      `;
-    }
+    const primaryColor = palette.primary || '#10b981';
+    const darkColor = palette.primaryDark || '#047857';
+    const lightColor = palette.primaryLight || '#6ee7b7';
+    const bellyColor = palette.belly || '#fef3c7';
+    const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
 
     return `
-      <!-- Main Organic Torso with Volumetric Shading -->
-      <g filter="url(#plush-shadow)">
-        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
-        <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
-        ${aoCrescent}
-        ${specularArc}
-        ${armsMarkup}
+      <!-- High-End Chibi Monster Body Silhouette -->
+      <g id="layer-body">
+        <!-- Outer Body Silhouette with Dynamic Taper & Soft Cheeks -->
+        <path id="monster-torso" 
+              d="M 100 62 
+                 C 126 62, 148 76, 150 102 
+                 C 152 126, 146 154, 128 162 
+                 C 114 168, 86 168, 72 162 
+                 C 54 154, 48 126, 50 102 
+                 C 52 76, 74 62, 100 62 Z" 
+              fill="${primaryColor}" stroke="${darkColor}" stroke-width="4" stroke-linejoin="round" />
+
+        <!-- Ambient Specular Shading -->
+        <path d="M 100 62 C 126 62, 148 76, 150 102 C 152 126, 146 154, 128 162 C 114 168, 86 168, 72 162 C 54 154, 48 126, 50 102 C 52 76, 74 62, 100 62 Z" 
+              fill="url(#bodyShading)" opacity="0.3" />
+
+        <!-- Cream Belly / Chest Fluff Plate -->
+        <path id="monster-belly"
+              d="M 100 104 
+                 C 118 104, 128 116, 126 138 
+                 C 124 154, 114 160, 100 160 
+                 C 86 160, 76 154, 74 138 
+                 C 72 116, 82 104, 100 104 Z" 
+              fill="${bellyColor}" />
+
+        <!-- Expressive Chibi Ears / Crest -->
+        <path id="ear-left" d="M 68 74 C 52 45, 42 22, 60 16 C 74 12, 78 42, 82 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
+        <path id="ear-inner-left" d="M 64 62 C 55 42, 50 26, 62 22 C 70 20, 74 42, 76 58 Z" fill="${lightColor}" opacity="0.75" />
+        <path id="ear-right" d="M 132 74 C 148 45, 158 22, 140 16 C 126 12, 122 42, 118 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
+        <path id="ear-inner-right" d="M 136 62 C 145 42, 150 26, 138 22 C 130 20, 126 42, 124 58 Z" fill="${lightColor}" opacity="0.75" />
+
+        <!-- Rounded Front Paws Anchored to Pedestal -->
+        <ellipse cx="74" cy="162" rx="13" ry="8" id="paw-left" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
+        <ellipse cx="126" cy="162" rx="13" ry="8" id="paw-right" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
       </g>
     `;
   }
@@ -2108,154 +2117,348 @@
     `;
   }
 
-  // --- CLOTHING LAYER ---
+  // --- CONTOURED CHIBI CLOTHING LAYER (Commercial-Grade Contoured Game Vectors) ---
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
     const norm = String(clothingId).toLowerCase().trim();
 
-    // Adventure Explorer Vest
+    // 1. Tailored Safari Explorer Vest
     if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest') || norm === 'explorer_vest') {
       return `
-        <!-- Tailored Explorer Vest -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 68 110 C 68 128 72 142 82 146 C 88 146 90 134 88 114 C 84 110 74 108 68 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <path d="M 132 110 C 132 128 128 142 118 146 C 112 146 110 134 112 114 C 116 110 126 108 132 110 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <circle cx="86" cy="126" r="2.5" fill="#f59e0b" />
-          <circle cx="86" cy="136" r="2.5" fill="#f59e0b" />
-          <circle cx="114" cy="126" r="2.5" fill="#f59e0b" />
-          <circle cx="114" cy="136" r="2.5" fill="#f59e0b" />
+        <!-- Tailored Safari Explorer Vest Contoured to Chibi Body -->
+        <g id="clothing-explorer-vest" filter="url(#mf-shadow)">
+          <!-- Left Vest Flank Panel -->
+          <path d="M 82 108 
+                   C 66 110, 52 120, 50 134 
+                   C 49 146, 56 156, 66 160 
+                   L 86 160 
+                   C 88 152, 88 136, 86 120 
+                   C 85 114, 84 110, 82 108 Z" 
+                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Right Vest Flank Panel -->
+          <path d="M 118 108 
+                   C 134 110, 148 120, 150 134 
+                   C 151 146, 144 156, 134 160 
+                   L 114 160 
+                   C 112 152, 112 136, 114 120 
+                   C 115 114, 116 110, 118 108 Z" 
+                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Lapel Trim & Double Stitch Lines -->
+          <path d="M 82 108 L 86 120 L 86 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
+          <path d="M 118 108 L 114 120 L 114 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
+
+          <!-- Left Utility Flap Pocket -->
+          <path d="M 58 138 C 58 136, 76 136, 76 138 L 75 150 C 75 152, 59 152, 59 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <polygon points="57,138 67,143 77,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="67" cy="142" r="1.5" fill="#facc15" />
+
+          <!-- Right Utility Flap Pocket -->
+          <path d="M 124 138 C 124 136, 142 136, 142 138 L 141 150 C 141 152, 125 152, 125 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <polygon points="123,138 133,143 143,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="133" cy="142" r="1.5" fill="#facc15" />
+
+          <!-- Brass Rivets / Snap Buttons -->
+          <circle cx="85" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="85" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="85" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+
+          <circle cx="115" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="115" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="115" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
         </g>
       `;
     }
 
-    if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape') || norm === 'hero_cape') {
-      return `
-        <!-- Hero Adventure Cape -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 60 110 L 40 160 L 160 160 L 140 110 Z" fill="#dc2626" opacity="0.9" />
-          <circle cx="100" cy="110" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
-        </g>
-      `;
-    }
-
+    // 2. Tailored Aviator Explorer Jacket
     if (clothingId === 'clothing-adv-jacket' || norm.includes('jacket') || norm === 'explorer_jacket') {
       return `
-        <!-- Tailored Explorer Jacket wrapped cleanly around chibi torso without blocking face -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 64 108 C 64 136 68 152 82 154 C 94 154 96 142 94 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <path d="M 136 108 C 136 136 132 152 118 154 C 106 154 104 142 106 116 Z" fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <path d="M 80 152 L 120 152 L 116 158 L 84 158 Z" fill="#78350f" />
+        <!-- Tailored Aviator Explorer Jacket Contoured to Chibi Body -->
+        <g id="clothing-explorer-jacket" filter="url(#mf-shadow)">
+          <!-- Contoured Aviator Shearling Collar -->
+          <path d="M 74 108 C 82 114, 118 114, 126 108 C 132 114, 128 122, 118 122 C 108 122, 104 116, 100 116 C 96 116, 92 122, 82 122 C 72 122, 68 114, 74 108 Z" 
+                fill="#fef3c7" stroke="#d97706" stroke-width="1.8" />
+
+          <!-- Left Jacket Body & Arm Sleeve Wrap -->
+          <path d="M 80 114 
+                   C 64 116, 50 124, 48 138 
+                   C 47 148, 54 158, 66 160 
+                   L 96 160 
+                   L 98 122 
+                   C 92 118, 86 115, 80 114 Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Right Jacket Body & Arm Sleeve Wrap -->
+          <path d="M 120 114 
+                   C 136 116, 150 124, 152 138 
+                   C 153 148, 146 158, 134 160 
+                   L 104 160 
+                   L 102 122 
+                   C 108 118, 114 115, 120 114 Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Center Zipper Strip -->
+          <line x1="100" y1="120" x2="100" y2="160" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+          <rect x="98.5" y="124" width="3" height="5" rx="1" fill="#ca8a04" />
+
+          <!-- Cuffs and Waistband Ribbing -->
+          <path d="M 64 158 C 76 161, 124 161, 136 158 L 134 162 C 122 165, 78 165, 66 162 Z" fill="#451a03" />
+
+          <!-- Golden Aviator Wings Chest Badge -->
+          <polygon points="76,128 80,125 84,128 80,131" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <line x1="72" y1="128" x2="76" y2="128" stroke="#facc15" stroke-width="1.2" />
+          <line x1="84" y1="128" x2="88" y2="128" stroke="#facc15" stroke-width="1.2" />
         </g>
       `;
     }
 
+    // 3. Hero Adventure Cape
+    if (norm === 'clothing-cape' || norm === 'cape' || norm.includes('cape') || norm === 'hero_cape') {
+      return `
+        <!-- Contoured Hero Adventure Cape -->
+        <g id="clothing-hero-cape" filter="url(#mf-shadow)">
+          <path d="M 72 108 
+                   C 54 112, 38 126, 36 150 
+                   C 34 166, 44 176, 60 178 
+                   C 78 180, 122 180, 140 178 
+                   C 156 176, 166 166, 164 150 
+                   C 162 126, 146 112, 128 108 
+                   C 114 114, 86 114, 72 108 Z" 
+                fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="100" cy="110" r="6" fill="#facc15" stroke="#ca8a04" stroke-width="1.8" />
+          <polygon points="100,106 102,109 105,109 103,111 104,114 100,112 96,114 97,111 95,109 98,109" fill="#ef4444" />
+        </g>
+      `;
+    }
+
+    // 4. Explorer Travel Coat
     if (clothingId === 'clothing-travel-coat') {
       return `
-        <!-- Explorer Travel Coat -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 1} L ${cX - rx + 2} ${cY + ry - 1} Z" fill="#0369a1" stroke="#075985" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 4}" x2="${cX}" y2="${cY + ry - 1}" stroke="#f8fafc" stroke-width="2" />
-          <circle cx="${cX - 5}" cy="${cY + 12}" r="1.8" fill="#facc15" />
-          <circle cx="${cX - 5}" cy="${cY + 20}" r="1.8" fill="#facc15" />
+        <!-- Contoured Explorer Travel Coat -->
+        <g id="clothing-travel-coat" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 60 112, 48 124, 46 138 
+                   C 44 152, 54 164, 66 166 
+                   C 78 168, 122 168, 134 166 
+                   C 146 164, 156 152, 154 138 
+                   C 152 124, 140 112, 124 108 
+                   C 112 115, 88 115, 76 108 Z" 
+                fill="#0369a1" stroke="#075985" stroke-width="2.5" stroke-linejoin="round" />
+          <line x1="100" y1="112" x2="100" y2="166" stroke="#f8fafc" stroke-width="2" />
+          <circle cx="94" cy="124" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="94" cy="136" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="94" cy="148" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="106" cy="124" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="106" cy="136" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="106" cy="148" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
         </g>
       `;
     }
 
+    // 5. Casual Student Hoodie
     if (clothingId === 'clothing-hoodie') {
       return `
-        <!-- Casual Student Hoodie -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 10} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#059669" stroke="#047857" stroke-width="2" />
-          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.6}" ry="5" fill="#10b981" />
-          <!-- Pouch pocket -->
-          <path d="M ${cX - 14} ${cY + ry - 12} L ${cX + 14} ${cY + ry - 12} L ${cX + 10} ${cY + ry - 4} L ${cX - 10} ${cY + ry - 4} Z" fill="#047857" opacity="0.8" />
+        <!-- Contoured Casual Student Hoodie -->
+        <g id="clothing-hoodie" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 161 
+                   C 78 164, 122 164, 134 161 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 115, 88 115, 76 108 Z" 
+                fill="#059669" stroke="#047857" stroke-width="2.5" stroke-linejoin="round" />
+          <ellipse cx="100" cy="111" rx="20" ry="7" fill="#10b981" stroke="#047857" stroke-width="1.8" />
+          <path d="M 78 144 L 122 144 L 118 158 L 82 158 Z" fill="#047857" stroke="#064e3b" stroke-width="1.8" stroke-linejoin="round" />
+          <line x1="84" y1="146" x2="80" y2="156" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="116" y1="146" x2="120" y2="156" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="94" y1="114" x2="93" y2="128" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+          <circle cx="93" cy="129" r="1.5" fill="#facc15" />
+          <line x1="106" y1="114" x2="107" y2="128" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+          <circle cx="107" cy="129" r="1.5" fill="#facc15" />
         </g>
       `;
     }
 
+    // 6. Cozy Knitted Sweater
     if (clothingId === 'clothing-sweater') {
       return `
-        <!-- Cozy Knitted Sweater -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
-          <line x1="${cX - rx + 4}" y1="${cY + 10}" x2="${cX + rx - 4}" y2="${cY + 10}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
-          <line x1="${cX - rx + 4}" y1="${cY + 18}" x2="${cX + rx - 4}" y2="${cY + 18}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
+        <!-- Contoured Cozy Knitted Sweater -->
+        <g id="clothing-sweater" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#dc2626" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 52 128 Q 100 134 148 128" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
+          <path d="M 54 140 Q 100 146 146 140" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
+          <path d="M 60 152 Q 100 156 140 152" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
         </g>
       `;
     }
 
+    // 7. Cozy Winter Scarf
     if (clothingId === 'clothing-scarf') {
       return `
-        <!-- Cozy Winter Scarf -->
-        <g filter="url(#mf-shadow)">
-          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="7" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
-          <path d="M ${cX + 8} ${cY + 8} L ${cX + 18} ${cY + ry + 4} L ${cX + 6} ${cY + ry + 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
-          <!-- Scarf fringe -->
-          <line x1="${cX + 7}" y1="${cY + ry + 4}" x2="${cX + 7}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 12}" y1="${cY + ry + 4}" x2="${cX + 12}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 17}" y1="${cY + ry + 4}" x2="${cX + 17}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+        <!-- Cozy Winter Scarf Wrapped Snugly -->
+        <g id="clothing-scarf" filter="url(#mf-shadow)">
+          <ellipse cx="100" cy="110" rx="28" ry="9" fill="#ef4444" stroke="#b91c1c" stroke-width="2.2" />
+          <path d="M 112 114 C 114 128, 120 148, 122 162 C 118 164, 108 164, 106 162 C 104 148, 106 128, 108 114 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.8" />
+          <line x1="108" y1="162" x2="108" y2="167" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
+          <line x1="114" y1="163" x2="114" y2="168" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
+          <line x1="120" y1="162" x2="120" y2="167" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
         </g>
       `;
     }
 
+    // 8. Ace Pilot Jumpsuit
     if (clothingId === 'clothing-pilot') {
       return `
-        <!-- Ace Pilot Jumpsuit -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#ea580c" stroke="#c2410c" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 3}" x2="${cX}" y2="${cY + ry - 3}" stroke="#facc15" stroke-width="2" />
-          <!-- Star patch on chest -->
-          <polygon points="${cX-10},${cY+12} ${cX-8},${cY+14} ${cX-5},${cY+14} ${cX-7},${cY+16} ${cX-6},${cY+19} ${cX-10},${cY+17} ${cX-14},${cY+19} ${cX-13},${cY+16} ${cX-15},${cY+14} ${cX-12},${cY+14}" fill="#facc15" />
+        <!-- Contoured Ace Pilot Flight Suit -->
+        <g id="clothing-pilot" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#ea580c" stroke="#c2410c" stroke-width="2.5" stroke-linejoin="round" />
+          <line x1="100" y1="112" x2="100" y2="160" stroke="#facc15" stroke-width="2.2" />
+          <polygon points="76,128 80,124 84,127 80,131" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
         </g>
       `;
     }
 
+    // 9. Formal Evening Tuxedo
     if (clothingId === 'clothing-tuxedo') {
       return `
-        <!-- Formal Evening Tuxedo -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
-          <polygon points="${cX},${cY+4} ${cX+10},${cY+ry-3} ${cX-10},${cY+ry-3}" fill="#f8fafc" />
+        <!-- Contoured Formal Evening Tuxedo -->
+        <g id="clothing-tuxedo" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#0f172a" stroke="#020617" stroke-width="2.5" stroke-linejoin="round" />
+          <!-- White shirt plastron -->
+          <polygon points="100,112 110,154 90,154" fill="#f8fafc" />
           <!-- Red bow tie -->
-          <polygon points="${cX},${cY+6} ${cX-6},${cY+4} ${cX-6},${cY+8}" fill="#ef4444" />
-          <polygon points="${cX},${cY+6} ${cX+6},${cY+4} ${cX+6},${cY+8}" fill="#ef4444" />
-          <circle cx="${cX}" cy="${cY+6}" r="1.5" fill="#dc2626" />
+          <polygon points="100,116 94,112 94,120" fill="#ef4444" />
+          <polygon points="100,116 106,112 106,120" fill="#ef4444" />
+          <circle cx="100" cy="116" r="1.8" fill="#dc2626" />
         </g>
       `;
     }
 
+    // 10. Shadow Ninja Garb
     if (clothingId === 'clothing-ninja') {
       return `
-        <!-- Shadow Ninja Garb -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#18181b" stroke="#09090b" stroke-width="2" />
-          <!-- Red ninja sash -->
-          <rect x="${cX - rx + 4}" y="${cY + ry - 10}" width="${rx * 2 - 8}" height="5" fill="#dc2626" stroke="#991b1b" stroke-width="1" />
-          <path d="M ${cX + 6} ${cY + ry - 6} L ${cX + 12} ${cY + ry + 8} L ${cX + 4} ${cY + ry + 8} Z" fill="#dc2626" />
+        <!-- Contoured Shadow Ninja Garb -->
+        <g id="clothing-ninja" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#18181b" stroke="#09090b" stroke-width="2.5" stroke-linejoin="round" />
+          <!-- Crimson waist sash -->
+          <path d="M 58 146 C 76 150, 124 150, 142 146 L 140 154 C 122 158, 78 158, 60 154 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.2" />
+          <path d="M 108 152 L 114 166 L 106 166 Z" fill="#dc2626" />
         </g>
       `;
     }
 
+    // 11. Elegant Kimono Robe
     if (clothingId === 'clothing-kimono') {
       return `
-        <!-- Elegant Kimono Robe -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 2} L ${cX - rx + 2} ${cY + ry - 2} Z" fill="#f43f5e" stroke="#e11d48" stroke-width="2" />
-          <!-- Gold Obi sash -->
-          <rect x="${cX - rx + 4}" y="${cY + 12}" width="${rx * 2 - 8}" height="7" fill="#facc15" stroke="#ca8a04" stroke-width="1.2" />
-          <line x1="${cX - 12}" y1="${cY + 2}" x2="${cX + 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
-          <line x1="${cX + 12}" y1="${cY + 2}" x2="${cX - 4}" y2="${cY + 12}" stroke="#ffffff" stroke-width="2" />
+        <!-- Contoured Elegant Kimono Robe -->
+        <g id="clothing-kimono" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#f43f5e" stroke="#e11d48" stroke-width="2.5" stroke-linejoin="round" />
+          <!-- Gold Obi Sash -->
+          <path d="M 56 138 C 76 142, 124 142, 144 138 L 142 148 C 122 152, 78 152, 58 148 Z" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <line x1="86" y1="112" x2="108" y2="138" stroke="#ffffff" stroke-width="2" />
+          <line x1="114" y1="112" x2="92" y2="138" stroke="#ffffff" stroke-width="2" />
         </g>
       `;
     }
 
+    // 12. Knight Golden Armor Plate
     if (clothingId === 'clothing-armor') {
       return `
-        <!-- Knight Golden Armor Plate -->
-        <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 5} ${cY + ry - 3} Q ${cX} ${cY + ry + 4} ${cX - rx + 5} ${cY + ry - 3} Z" fill="#eab308" stroke="#ca8a04" stroke-width="2" />
-          <circle cx="${cX}" cy="${cY + 14}" r="5" fill="#facc15" stroke="#a16207" stroke-width="1.5" />
-          <polygon points="${cX},${cY+11} ${cX+2},${cY+13} ${cX+5},${cY+13} ${cX+3},${cY+15} ${cX+4},${cY+17} ${cX},${cY+16} ${cX-4},${cY+17} ${cX-3},${cY+15} ${cX-5},${cY+13} ${cX-2},${cY+13}" fill="#ca8a04" />
+        <!-- Contoured Knight Golden Armor Plate -->
+        <g id="clothing-armor" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="url(#armorGoldGrad)" stroke="#ca8a04" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 78 118 C 88 122, 98 120, 100 128 C 102 120, 112 122, 122 118" fill="none" stroke="#a16207" stroke-width="2" />
+          <line x1="100" y1="128" x2="100" y2="158" stroke="#a16207" stroke-width="2" />
+          <circle cx="100" cy="136" r="6" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+          <polygon points="100,131 102,134 105,134 103,137 104,141 100,138 96,141 97,137 95,134 98,134" fill="#ea580c" />
+        </g>
+      `;
+    }
+
+    // 13. Magical Robe
+    if (clothingId === 'clothing-magic-robe') {
+      return `
+        <!-- Contoured Magical Wizard Robe -->
+        <g id="clothing-magic-robe" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 60 112, 46 126, 44 144 
+                   C 42 158, 52 168, 64 170 
+                   C 78 172, 122 172, 136 170 
+                   C 148 168, 158 158, 156 144 
+                   C 154 126, 140 112, 124 108 
+                   C 112 115, 88 115, 76 108 Z" 
+                fill="#a855f7" stroke="#7e22ce" stroke-width="2.5" stroke-linejoin="round" />
+          <ellipse cx="100" cy="144" rx="24" ry="5" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <polygon points="100,118 103,124 108,124 104,128 106,134 100,130 94,134 96,128 92,124 97,124" fill="#facc15" />
+        </g>
+      `;
+    }
+
+    // 14. Varsity Academy School Jacket
+    if (clothingId === 'clothing-school-jacket') {
+      return `
+        <!-- Contoured Varsity Academy School Jacket -->
+        <g id="clothing-school-jacket" filter="url(#mf-shadow)">
+          <path d="M 76 108 
+                   C 62 112, 50 122, 48 136 
+                   C 46 148, 54 158, 66 160 
+                   C 78 162, 122 162, 134 160 
+                   C 146 158, 154 148, 152 136 
+                   C 150 122, 138 112, 124 108 
+                   C 112 114, 88 114, 76 108 Z" 
+                fill="#1e3a8a" stroke="#172554" stroke-width="2.5" stroke-linejoin="round" />
+          <!-- White leather sleeve flanks -->
+          <path d="M 52 124 C 50 136, 54 148, 62 156" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" fill="none" />
+          <path d="M 148 124 C 150 136, 146 148, 138 156" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" fill="none" />
+          <text x="80" y="138" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="14" fill="#facc15">A</text>
+          <circle cx="100" cy="120" r="2" fill="#ffffff" />
+          <circle cx="100" cy="132" r="2" fill="#ffffff" />
+          <circle cx="100" cy="144" r="2" fill="#ffffff" />
         </g>
       `;
     }
@@ -3114,9 +3317,14 @@
       // Mini torso outfit
       if (item.id === 'clothing-vest') {
         inner = `
-          <rect x="14" y="16" width="28" height="26" rx="4" fill="#78350f" stroke="#451a03" stroke-width="2" />
-          <polygon points="28,16 22,24 34,24" fill="#fef3c7" />
-          <circle cx="28" cy="30" r="2" fill="#facc15" />
+          <!-- Mini Contoured Safari Explorer Vest -->
+          <path d="M 23 16 C 18 17 14 20 13 25 C 12 30 14 36 17 38 L 24 38 C 25 34 25 28 24 22 Z" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <path d="M 33 16 C 38 17 42 20 43 25 C 44 30 42 36 39 38 L 32 38 C 31 34 31 28 32 22 Z" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <polygon points="28,16 23,24 33,24" fill="#fef3c7" />
+          <circle cx="23" cy="27" r="1.2" fill="#facc15" />
+          <circle cx="23" cy="33" r="1.2" fill="#facc15" />
+          <circle cx="33" cy="27" r="1.2" fill="#facc15" />
+          <circle cx="33" cy="33" r="1.2" fill="#facc15" />
         `;
       } else if (item.id === 'clothing-cape') {
         inner = `
@@ -3125,9 +3333,12 @@
         `;
       } else if (item.id === 'clothing-adv-jacket') {
         inner = `
-          <rect x="14" y="16" width="28" height="26" rx="4" fill="#92400e" stroke="#78350f" stroke-width="2" />
-          <ellipse cx="28" cy="18" rx="12" ry="5" fill="#fef3c7" />
-          <line x1="28" y1="22" x2="28" y2="42" stroke="#facc15" stroke-width="2" />
+          <!-- Mini Contoured Aviator Explorer Jacket -->
+          <path d="M 21 16 C 24 18 32 18 35 16 C 37 19 35 22 28 22 C 21 22 19 19 21 16 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1" />
+          <path d="M 23 18 C 17 19 13 22 12 27 C 11 31 13 37 18 38 L 27 38 L 27 22 Z" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <path d="M 33 18 C 39 19 43 22 44 27 C 45 31 43 37 38 38 L 29 38 L 29 22 Z" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <line x1="28" y1="22" x2="28" y2="38" stroke="#facc15" stroke-width="1.5" />
+          <polygon points="19,25 21,23 23,25 21,27" fill="#facc15" />
         `;
       } else if (item.id === 'clothing-travel-coat') {
         inner = `
