@@ -137,7 +137,86 @@ export const DEFAULT_CATALOG = [
 
 /**
  * -----------------------------------------------------------------------------
- * 2. MONSTER MULTI-LAYER COMPOSITE COMPONENT
+ * 2. MONSTER BODY RENDERER COMPONENT
+ * Renders the live SVG procedural monster body with live color tint,
+ * face features, horns, wings, and tail from MonsterRenderer.
+ * -----------------------------------------------------------------------------
+ */
+export function MonsterBodyRenderer({
+  color = 'blue',
+  face = 'default',
+  horns = 'none',
+  wings = 'none',
+  tail = 'none',
+  clothing = 'none',
+  hat = 'none',
+  glasses = 'none',
+  aura = 'none',
+  level = 3,
+  stage = 'baby',
+  archetype = 'ignis',
+  className = 'w-full h-full object-contain z-20',
+  style = {},
+  isAnimated = true
+}) {
+  const normColor = String(color || 'blue').toLowerCase().replace(/^body-/, '').replace(/^color-/, '');
+  const stageKey = level === 1 ? 'egg' : (level === 2 ? 'cracking_egg' : (level >= 7 ? 'ultimate' : (level >= 4 ? 'growing' : (stage || 'baby'))));
+
+  const equipped = {
+    body: `body-${normColor}`,
+    face: face || 'default',
+    eyes: face && face.startsWith('eyes-') ? face : 'default',
+    horns: horns || 'none',
+    wings: wings || 'none',
+    tail: tail || 'none',
+    clothing: clothing || 'none',
+    hat: hat || 'none',
+    glasses: glasses || 'none',
+    aura: aura || 'none'
+  };
+
+  const svgHtml = useMemo(() => {
+    if (typeof window !== 'undefined' && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+      return window.MonsterRenderer.renderMonsterSVG({
+        stage: stageKey,
+        color: normColor,
+        level: level,
+        archetype: archetype,
+        equipped: equipped,
+        size: 200,
+        animated: isAnimated,
+        isAvatar: true
+      });
+    }
+    return null;
+  }, [normColor, stageKey, level, archetype, JSON.stringify(equipped), isAnimated]);
+
+  if (svgHtml) {
+    return (
+      <div 
+        className={className}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}
+        dangerouslySetInnerHTML={{ __html: svgHtml }}
+      />
+    );
+  }
+
+  // Fallback to static raster image if MonsterRenderer not yet initialized
+  const fallbackAsset = getMonsterAsset(archetype, level);
+  return (
+    <img 
+      src={fallbackAsset} 
+      alt="Monster Body" 
+      className={className} 
+      style={{ objectFit: 'contain', ...style }} 
+      onError={(e) => { e.currentTarget.src = 'assets/monsters/stage-3-baby-monster.png'; }}
+    />
+  );
+}
+
+/**
+ * -----------------------------------------------------------------------------
+ * 3. MONSTER MULTI-LAYER COMPOSITE COMPONENT
  * Renders the 8-layer composite stage adhering to strict Z-index stacking order:
  * Pedestal -> Aura (z-0) -> Wings/Back (z-10) -> Body (z-20) -> Clothing (z-30) ->
  * Face (z-40) -> Glasses (z-50) -> Horns (z-60) -> Headwear/Hat (z-70)
