@@ -2524,6 +2524,7 @@ button, input, select, textarea {
   }
 }
 
+.avatar-hero-container,
 .monster-viewport-stage {
   position: relative;
   width: 100%;
@@ -2534,6 +2535,7 @@ button, input, select, textarea {
   margin-bottom: 6px;
 }
 
+.mascot-sprite-img,
 .monster-hero-3d {
   max-width: 85%;
   max-height: 125px;
@@ -2544,10 +2546,12 @@ button, input, select, textarea {
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.student-card:hover .mascot-sprite-img,
 .student-card:hover .monster-hero-3d {
   transform: translateY(-6px) scale(1.06);
 }
 
+.mascot-pedestal-glow,
 .monster-iso-pedestal {
   position: absolute;
   bottom: 8px;
@@ -2557,7 +2561,7 @@ button, input, select, textarea {
   width: 95px;
   height: 22px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, var(--pedestal-glow, rgba(56, 189, 248, 0.45)) 0%, transparent 72%);
+  background: radial-gradient(ellipse at center, var(--glow, var(--pedestal-glow, rgba(56, 189, 248, 0.45))) 0%, transparent 72%);
   animation: pedestalPulse 3s ease-in-out infinite;
   z-index: 1;
 }

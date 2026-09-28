@@ -831,14 +831,15 @@
       ? speciesOrStudent
       : getStudentMascot(speciesOrStudent);
     return `
-<div class="monster-viewport-stage" style="--pedestal-glow: ${mascot.glow}">
+<div class="avatar-hero-container monster-viewport-stage" style="--glow: ${mascot.glow}; --pedestal-glow: ${mascot.glow}">
+  <div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ${mascot.glow}"></div>
   <img 
     src="${mascot.sprite}" 
     alt="${mascot.name}" 
-    class="monster-hero-3d" 
+    class="mascot-sprite-img monster-hero-3d"
+    loading="lazy" 
     onerror="this.src='${mascot.sprite}'" 
   />
-  <div class="monster-iso-pedestal"></div>
 </div>`.trim();
   }
 
