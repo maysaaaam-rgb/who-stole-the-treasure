@@ -6603,6 +6603,30 @@ body.classroom-mode-active .classroom-students-grid {
 #layer-horns { z-index: 55; }
 #layer-headwear { z-index: 60; }
 
+/* Facial accessory anchor: adjusted upward from 46-50% to 36% to align over eyes */
+.slot-glasses {
+  position: absolute;
+  top: 36% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 58% !important;
+  pointer-events: none !important;
+  z-index: 42 !important;
+}
+
+#layer-glasses.slot-glasses,
+.monster-composite-stage #layer-glasses.slot-glasses,
+.monster-composite-stage .slot-glasses {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 58%;
+  height: auto;
+  pointer-events: none;
+  z-index: 50;
+}
+
 #preview-pedestal,
 .pedestal-disk {
   width: 140px;

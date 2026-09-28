@@ -2498,53 +2498,54 @@
       `;
     }
 
-    // Glasses & Eyewear dynamically centered over the eyes
+    // Glasses & Eyewear dynamically centered over the eyes (aligned squarely over eye line)
+    const gY = eyeY - 2.5;
     if (glassesId === 'glasses-round' || glassesId === 'acc-glasses-round' || glassesId === 'glasses-wire' || glassesId === 'round_glasses') {
       glassesMarkup = `
-        <!-- Round Wire Glasses (Reflective Glass & Golden Rim) -->
+        <!-- Round Wire Glasses (Reflective Glass & Golden Rim aligned over eyes) -->
         <g class="monster-eyewear" filter="url(#mf-shadow)">
-          <line x1="${leftEyeX + 11.5}" y1="${eyeY}" x2="${rightEyeX - 11.5}" y2="${eyeY}" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" />
-          <path d="M ${leftEyeX + 10} ${eyeY} Q 100 ${eyeY - 3} ${rightEyeX - 10} ${eyeY}" stroke="#eab308" stroke-width="2" fill="none" />
-          <circle cx="${leftEyeX}" cy="${eyeY}" r="12" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
-          <circle cx="${leftEyeX}" cy="${eyeY}" r="10.8" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
-          <ellipse cx="${leftEyeX - 3.5}" cy="${eyeY - 4}" rx="4" ry="2.2" transform="rotate(-30, ${leftEyeX - 3.5}, ${eyeY - 4})" fill="#ffffff" opacity="0.7" />
-          <circle cx="${rightEyeX}" cy="${eyeY}" r="12" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
-          <circle cx="${rightEyeX}" cy="${eyeY}" r="10.8" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
-          <ellipse cx="${rightEyeX - 3.5}" cy="${eyeY - 4}" rx="4" ry="2.2" transform="rotate(-30, ${rightEyeX - 3.5}, ${eyeY - 4})" fill="#ffffff" opacity="0.7" />
-          <path d="M ${leftEyeX - 12} ${eyeY} Q ${leftEyeX - 20} ${eyeY - 2} ${leftEyeX - 26} ${eyeY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
-          <path d="M ${rightEyeX + 12} ${eyeY} Q ${rightEyeX + 20} ${eyeY - 2} ${rightEyeX + 26} ${eyeY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
+          <line x1="${leftEyeX + 11.5}" y1="${gY}" x2="${rightEyeX - 11.5}" y2="${gY}" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M ${leftEyeX + 10} ${gY} Q 100 ${gY - 3} ${rightEyeX - 10} ${gY}" stroke="#eab308" stroke-width="2" fill="none" />
+          <circle cx="${leftEyeX}" cy="${gY}" r="11.5" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
+          <circle cx="${leftEyeX}" cy="${gY}" r="10.2" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
+          <ellipse cx="${leftEyeX - 3.5}" cy="${gY - 4}" rx="3.8" ry="2.0" transform="rotate(-30, ${leftEyeX - 3.5}, ${gY - 4})" fill="#ffffff" opacity="0.7" />
+          <circle cx="${rightEyeX}" cy="${gY}" r="11.5" fill="rgba(224, 242, 254, 0.22)" stroke="#ca8a04" stroke-width="2.2" />
+          <circle cx="${rightEyeX}" cy="${gY}" r="10.2" fill="none" stroke="#fef3c7" stroke-width="0.8" opacity="0.75" />
+          <ellipse cx="${rightEyeX - 3.5}" cy="${gY - 4}" rx="3.8" ry="2.0" transform="rotate(-30, ${rightEyeX - 3.5}, ${gY - 4})" fill="#ffffff" opacity="0.7" />
+          <path d="M ${leftEyeX - 11.5} ${gY} Q ${leftEyeX - 20} ${gY - 2} ${leftEyeX - 26} ${gY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
+          <path d="M ${rightEyeX + 11.5} ${gY} Q ${rightEyeX + 20} ${gY - 2} ${rightEyeX + 26} ${gY - 6}" stroke="#ca8a04" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
       `;
     } else if (glassesId === 'glasses-goggles' || glassesId === 'detective-goggles') {
       glassesMarkup = `
         <!-- Detective Goggles -->
         <g class="monster-eyewear" filter="url(#mf-shadow)">
-          <path d="M 52 ${eyeY - 2} Q 100 ${eyeY - 8} 148 ${eyeY - 2}" stroke="#78350f" stroke-width="5.5" fill="none" stroke-linecap="round" />
-          <line x1="${leftEyeX + 11}" y1="${eyeY}" x2="${rightEyeX - 11}" y2="${eyeY}" stroke="#b45309" stroke-width="4.5" stroke-linecap="round" />
-          <circle cx="${leftEyeX}" cy="${eyeY}" r="13" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
-          <circle cx="${leftEyeX}" cy="${eyeY}" r="10.5" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
-          <circle cx="${leftEyeX - 3}" cy="${eyeY - 3}" r="3" fill="#ffffff" opacity="0.7" />
-          <circle cx="${rightEyeX}" cy="${eyeY}" r="13" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
-          <circle cx="${rightEyeX}" cy="${eyeY}" r="10.5" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
-          <circle cx="${rightEyeX - 3}" cy="${eyeY - 3}" r="3" fill="#ffffff" opacity="0.7" />
+          <path d="M 52 ${gY - 2} Q 100 ${gY - 8} 148 ${gY - 2}" stroke="#78350f" stroke-width="5.5" fill="none" stroke-linecap="round" />
+          <line x1="${leftEyeX + 11}" y1="${gY}" x2="${rightEyeX - 11}" y2="${gY}" stroke="#b45309" stroke-width="4.5" stroke-linecap="round" />
+          <circle cx="${leftEyeX}" cy="${gY}" r="12.5" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
+          <circle cx="${leftEyeX}" cy="${gY}" r="10" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
+          <circle cx="${leftEyeX - 3}" cy="${gY - 3}" r="3" fill="#ffffff" opacity="0.7" />
+          <circle cx="${rightEyeX}" cy="${gY}" r="12.5" fill="#0284c7" fill-opacity="0.8" stroke="#d97706" stroke-width="3.5" />
+          <circle cx="${rightEyeX}" cy="${gY}" r="10" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.8" />
+          <circle cx="${rightEyeX - 3}" cy="${gY - 3}" r="3" fill="#ffffff" opacity="0.7" />
         </g>
       `;
     } else if (glassesId === 'glasses-star') {
       glassesMarkup = `
         <!-- Star Sunglasses -->
         <g class="monster-eyewear" filter="url(#mf-shadow)">
-          <line x1="${leftEyeX + 10}" y1="${eyeY}" x2="${rightEyeX - 10}" y2="${eyeY}" stroke="#f59e0b" stroke-width="2.5" />
-          <polygon points="${leftEyeX},${eyeY-12} ${leftEyeX+4},${eyeY-3} ${leftEyeX+13},${eyeY-3} ${leftEyeX+6},${eyeY+3} ${leftEyeX+9},${eyeY+12} ${leftEyeX},${eyeY+6} ${leftEyeX-9},${eyeY+12} ${leftEyeX-6},${eyeY+3} ${leftEyeX-13},${eyeY-3} ${leftEyeX-4},${eyeY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
-          <polygon points="${rightEyeX},${eyeY-12} ${rightEyeX+4},${eyeY-3} ${rightEyeX+13},${eyeY-3} ${rightEyeX+6},${eyeY+3} ${rightEyeX+9},${eyeY+12} ${rightEyeX},${eyeY+6} ${rightEyeX-9},${eyeY+12} ${rightEyeX-6},${eyeY+3} ${rightEyeX-13},${eyeY-3} ${rightEyeX-4},${eyeY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+          <line x1="${leftEyeX + 10}" y1="${gY}" x2="${rightEyeX - 10}" y2="${gY}" stroke="#f59e0b" stroke-width="2.5" />
+          <polygon points="${leftEyeX},${gY-12} ${leftEyeX+4},${gY-3} ${leftEyeX+13},${gY-3} ${leftEyeX+6},${gY+3} ${leftEyeX+9},${gY+12} ${leftEyeX},${gY+6} ${leftEyeX-9},${gY+12} ${leftEyeX-6},${gY+3} ${leftEyeX-13},${gY-3} ${leftEyeX-4},${gY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
+          <polygon points="${rightEyeX},${gY-12} ${rightEyeX+4},${gY-3} ${rightEyeX+13},${gY-3} ${rightEyeX+6},${gY+3} ${rightEyeX+9},${gY+12} ${rightEyeX},${gY+6} ${rightEyeX-9},${gY+12} ${rightEyeX-6},${gY+3} ${rightEyeX-13},${gY-3} ${rightEyeX-4},${gY-3}" fill="#fbbf24" stroke="#d97706" stroke-width="2" />
         </g>
       `;
     } else if (glassesId === 'glasses-sunglasses') {
       glassesMarkup = `
         <!-- Cool Dark Shades -->
         <g class="monster-eyewear" filter="url(#mf-shadow)">
-          <path d="M ${leftEyeX - 13} ${eyeY - 6} L ${rightEyeX + 13} ${eyeY - 6} L ${rightEyeX + 11} ${eyeY + 8} Q ${rightEyeX} ${eyeY + 12} ${rightEyeX - 11} ${eyeY + 8} L ${100} ${eyeY - 2} L ${leftEyeX + 11} ${eyeY + 8} Q ${leftEyeX} ${eyeY + 12} ${leftEyeX - 11} ${eyeY + 8} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
-          <line x1="${leftEyeX - 8}" y1="${eyeY - 4}" x2="${leftEyeX + 4}" y2="${eyeY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
-          <line x1="${rightEyeX - 8}" y1="${eyeY - 4}" x2="${rightEyeX + 4}" y2="${eyeY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
+          <path d="M ${leftEyeX - 13} ${gY - 6} L ${rightEyeX + 13} ${gY - 6} L ${rightEyeX + 11} ${gY + 8} Q ${rightEyeX} ${gY + 12} ${rightEyeX - 11} ${gY + 8} L ${100} ${gY - 2} L ${leftEyeX + 11} ${gY + 8} Q ${leftEyeX} ${gY + 12} ${leftEyeX - 11} ${gY + 8} Z" fill="#0f172a" stroke="#020617" stroke-width="2" />
+          <line x1="${leftEyeX - 8}" y1="${gY - 4}" x2="${leftEyeX + 4}" y2="${gY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
+          <line x1="${rightEyeX - 8}" y1="${gY - 4}" x2="${rightEyeX + 4}" y2="${gY + 6}" stroke="#ffffff" stroke-width="1.5" opacity="0.5" />
         </g>
       `;
     }
