@@ -613,13 +613,14 @@ export function ClosetCustomizerModal({
   const stageKey = currentLevel === 1 ? 'egg' : (currentLevel === 2 ? 'cracking_egg' : (currentLevel >= 7 ? 'ultimate' : (currentLevel >= 4 ? 'growing' : 'baby')));
 
   return (
+    // Modal backdrop wrapper
     <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden"
-      style={{ position: 'fixed', inset: 0, zIndex: 9999999, background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 isolate"
+      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', isolation: 'isolate' }}
     >
       <div 
-        className="relative z-50 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-        style={{ background: '#ffffff', borderRadius: '24px', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.4)', padding: '24px', position: 'relative', zIndex: 50, isolation: 'isolate' }}
+        className="relative z-10 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        style={{ background: '#ffffff', borderRadius: '24px', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.4)', padding: '24px', position: 'relative', zIndex: 10 }}
       >
         
         {/* Modal Header */}
