@@ -12759,60 +12759,27 @@ window.switchClassroomSubTab = function(subTab) {
       id: 'explorer_vest',
       name: 'Explorer Vest',
       svgMarkup: `
-        <g id="clothing-explorer-vest">
-          <!-- Left Vest Panel (Follows Torso Curve) -->
-          <path d="M 64 102 C 60 120, 62 142, 76 152 C 86 154, 88 138, 86 112 C 82 104, 72 100, 64 102 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <!-- Right Vest Panel -->
-          <path d="M 136 102 C 140 120, 138 142, 124 152 C 114 154, 112 138, 114 112 C 118 104, 128 100, 136 102 Z" 
-                fill="#78350f" stroke="#451a03" stroke-width="2.5" />
-          <!-- Leather Collar Trim -->
-          <path d="M 64 102 C 72 108, 84 112, 88 114 L 86 122 C 80 118, 70 112, 64 104 Z" fill="#92400e" />
-          <path d="M 136 102 C 128 108, 116 112, 112 114 L 114 122 C 120 118, 130 112, 136 104 Z" fill="#92400e" />
-          <!-- Brass Fastener Rivets -->
-          <circle cx="84" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="82" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="116" cy="126" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-          <circle cx="118" cy="138" r="2.5" fill="#f59e0b" stroke="#78350f" stroke-width="0.8" />
-        </g>
-      `
-    },
-    explorer_jacket: {
-      id: 'explorer_jacket',
-      name: 'Explorer Jacket',
-      svgMarkup: `
-        <g id="clothing-explorer-jacket">
-          <!-- Outer Tailored Coat Wrapped Around Shoulders -->
-          <path d="M 58 100 C 54 128, 56 154, 76 158 C 86 160, 90 144, 88 116 C 80 106, 68 98, 58 100 Z" 
-                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <path d="M 142 100 C 146 128, 144 154, 124 158 C 114 160, 110 144, 112 116 C 120 106, 132 98, 142 100 Z" 
-                fill="#92400e" stroke="#451a03" stroke-width="2.5" />
-          <!-- Folded Collar Lapels -->
-          <polygon points="62,102 82,118 74,124 58,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <polygon points="138,102 118,118 126,124 142,108" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
-          <!-- Buckled Belt Across Base -->
-          <path d="M 74 154 C 88 158, 112 158, 126 154 L 126 160 C 112 164, 88 164, 74 160 Z" fill="#451a03" />
-          <rect x="94" y="153" width="12" height="9" rx="2" fill="#fbbf24" stroke="#78350f" stroke-width="1.5" />
+        <g filter="url(#bodyGlow)">
+          <!-- Sturdy Khaki Safari Utility Vest with Brass Buttons -->
+          <path d="M 68 116 L 86 156 L 96 156 L 94 122 Q 80 120 68 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M 132 116 L 114 156 L 104 156 L 106 122 Q 120 120 132 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
+          <path d="M 72 116 L 90 128 L 88 148 L 74 146 Z" fill="#d97706" />
+          <path d="M 128 116 L 110 128 L 112 148 L 126 146 Z" fill="#d97706" />
+          <rect x="74" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <rect x="114" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="94" cy="132" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <circle cx="94" cy="144" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
         </g>
       `
     },
     hero_cape: {
       id: 'hero_cape',
       name: 'Hero Cape',
-      svgMarkup: `
-        <g id="clothing-hero-cape" filter="url(#mf-shadow)">
-          <path d="M 72 108 C 54 112, 38 126, 36 150 C 34 166, 44 176, 60 178 C 78 180, 122 180, 140 178 C 156 176, 166 166, 164 150 C 162 126, 146 112, 128 108 C 114 114, 86 114, 72 108 Z" fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
-          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
-          <circle cx="100" cy="110" r="6" fill="#facc15" stroke="#ca8a04" stroke-width="1.8" />
-          <polygon points="100,106 102,109 105,109 103,111 104,114 100,112 96,114 97,111 95,109 98,109" fill="#ef4444" />
-        </g>
-      `
+      svgMarkup: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`
     }
   };
   CLOTHING_ASSETS.vest = CLOTHING_ASSETS.explorer_vest;
   CLOTHING_ASSETS['clothing-vest'] = CLOTHING_ASSETS.explorer_vest;
-  CLOTHING_ASSETS.jacket = CLOTHING_ASSETS.explorer_jacket;
-  CLOTHING_ASSETS['clothing-adv-jacket'] = CLOTHING_ASSETS.explorer_jacket;
   CLOTHING_ASSETS.cape = CLOTHING_ASSETS.hero_cape;
   CLOTHING_ASSETS['clothing-cape'] = CLOTHING_ASSETS.hero_cape;
 
@@ -12820,12 +12787,7 @@ window.switchClassroomSubTab = function(subTab) {
     hero_cape: {
       id: 'hero_cape',
       name: 'Hero Cape',
-      svgMarkup: `
-        <g id="clothing-hero-cape-back" filter="url(#mf-shadow)">
-          <path d="M 72 108 C 54 112, 38 126, 36 150 C 34 166, 44 176, 60 178 C 78 180, 122 180, 140 178 C 156 176, 166 166, 164 150 C 162 126, 146 112, 128 108 C 114 114, 86 114, 72 108 Z" fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
-          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
-        </g>
-      `
+      svgMarkup: `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`
     },
     wings: {
       id: 'wings',
@@ -12847,28 +12809,12 @@ window.switchClassroomSubTab = function(subTab) {
   window.CAPE_ASSETS = CAPE_ASSETS;
 
   window.currentMonster = {
-    _species: 'flora',
     get level() {
       if (monsterCreatorStudentId && store && typeof store.calculateMonsterState === 'function') {
         const mState = store.calculateMonsterState(monsterCreatorStudentId);
         if (mState && mState.currentLevel) return mState.currentLevel;
       }
       return 1;
-    },
-    get species() {
-      if (this._species && this._species !== 'flora') return this._species;
-      if (monsterCreatorStudentId && store && typeof store.getStudent === 'function') {
-        const student = store.getStudent(monsterCreatorStudentId);
-        if (student) {
-          const mascot = (typeof getStudentMascot === 'function') ? getStudentMascot(student) : null;
-          if (mascot && mascot.element) return mascot.element.toLowerCase();
-          if (student.archetype) return student.archetype.toLowerCase();
-        }
-      }
-      return this._species || 'flora';
-    },
-    set species(val) {
-      this._species = val;
     },
     get equipped() {
       if (!monsterCreatorDraft) return {};
@@ -12877,17 +12823,6 @@ window.switchClassroomSubTab = function(subTab) {
         get(target, prop) {
           if (prop === 'mouths') return target.mouth || target.mouths || 'mouth-smile';
           if (prop === 'hat' || prop === 'hats') return target.hat || target.hats || 'none';
-          if (prop === 'horns') {
-            if (target.horns && target.horns !== 'none') return target.horns;
-            if (target.hat && target.hat !== 'none') return target.hat;
-            return target.horns || 'none';
-          }
-          if (prop === 'tail') {
-            if (target.tail && target.tail !== 'none') return target.tail;
-            if (target.wings && target.wings !== 'none') return target.wings;
-            if (target.backpack && target.backpack !== 'none') return target.backpack;
-            return target.tail || 'none';
-          }
           if (prop === 'cape') {
             if (target.cape && target.cape !== 'none') return target.cape;
             if (target.clothing && (target.clothing.includes('cape') || target.clothing === 'clothing-cape')) return target.clothing;
@@ -12926,201 +12861,18 @@ window.switchClassroomSubTab = function(subTab) {
     }
   };
 
-  function getAssetMarkup(category, id) {
-    if (!id || id === 'none') return '';
+  window.renderEquippedList = function() {
+    window.updateMonsterCreatorPreview();
+  };
 
-    if (typeof id === 'object' && id !== null) {
-      if (id.svgMarkup) {
-        return id.svgMarkup.trim().startsWith('<svg') 
-          ? id.svgMarkup 
-          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${id.svgMarkup}</svg>`;
-      }
-      if (id.imageSrc) {
-        return `<img src="${id.imageSrc}" class="w-full h-full object-contain pointer-events-none" />`;
-      }
-      id = id.id;
-    }
-
-    // 1. Direct registry in window.ASSET_REGISTRY (standalone monster studio)
-    if (typeof window !== 'undefined' && window.ASSET_REGISTRY) {
-      let regList = null;
-      if (category === 'horns') regList = window.ASSET_REGISTRY.horns;
-      else if (category === 'clothing') regList = window.ASSET_REGISTRY.clothing;
-      else if (category === 'glasses' || category === 'accessories') regList = window.ASSET_REGISTRY.accessories;
-      else if (category === 'tail' || category === 'back') regList = window.ASSET_REGISTRY.back;
-      if (regList) {
-        const match = regList.find(item => item.id === id);
-        if (match && match.svg) {
-          return match.svg.trim().startsWith('<svg') 
-            ? match.svg 
-            : `<svg viewBox="0 0 200 200" width="100%" height="100%">${match.svg}</svg>`;
-        }
-      }
-    }
-
-    // 2. Direct lookup in CLOTHING_ASSETS / CAPE_ASSETS
-    const clothingObj = (typeof window !== 'undefined' && window.CLOTHING_ASSETS ? window.CLOTHING_ASSETS[id] : null);
-    if (clothingObj && clothingObj.svgMarkup) {
-      return clothingObj.svgMarkup.trim().startsWith('<svg') 
-        ? clothingObj.svgMarkup 
-        : `<svg viewBox="0 0 200 200" width="100%" height="100%">${clothingObj.svgMarkup}</svg>`;
-    }
-
-    const capeObj = (typeof window !== 'undefined' && window.CAPE_ASSETS ? window.CAPE_ASSETS[id] : null);
-    if (capeObj && capeObj.svgMarkup) {
-      return capeObj.svgMarkup.trim().startsWith('<svg') 
-        ? capeObj.svgMarkup 
-        : `<svg viewBox="0 0 200 200" width="100%" height="100%">${capeObj.svgMarkup}</svg>`;
-    }
-
-    // 3. Store items
-    if (typeof window !== 'undefined' && window.store && typeof window.store.getMonsterItem === 'function') {
-      const sItem = window.store.getMonsterItem(id);
-      if (sItem) {
-        if (sItem.svgMarkup) {
-          return sItem.svgMarkup.trim().startsWith('<svg') 
-            ? sItem.svgMarkup 
-            : `<svg viewBox="0 0 200 200" width="100%" height="100%">${sItem.svgMarkup}</svg>`;
-        }
-        if (sItem.imageSrc) {
-          return `<img src="${sItem.imageSrc}" class="w-full h-full object-contain pointer-events-none" />`;
-        }
-      }
-    }
-
-    // 4. Procedural generator functions via MonsterRenderer
-    const MR = (typeof MonsterRenderer !== 'undefined' ? MonsterRenderer : null) || 
-               (typeof window !== 'undefined' ? window.MonsterRenderer : null);
-    if (MR) {
-      const palette = (MR.palettes && MR.palettes.blue) || { primary: '#10b981', primaryDark: '#047857', primaryLight: '#6ee7b7' };
-      const defs = (typeof MR.getSharedDefs === 'function') ? MR.getSharedDefs('blue', palette) : '';
-      let markup = '';
-      try {
-        if (category === 'horns') {
-          markup = (typeof MR.renderHornsLayer === 'function') ? MR.renderHornsLayer('baby', id, palette, 100, { bW: 46, topY: 88, botY: 148 }) : '';
-        } else if (category === 'clothing') {
-          markup = (typeof MR.renderClothingLayer === 'function') ? MR.renderClothingLayer(id, 100, 118, 46, 30, palette, 'baby') : '';
-        } else if (category === 'glasses') {
-          markup = (typeof MR.renderForegroundAccessories === 'function') ? MR.renderForegroundAccessories('baby', { glasses: id }, palette) : '';
-        } else if (category === 'tail') {
-          markup = (typeof MR.renderTailLayer === 'function') ? MR.renderTailLayer('baby', id, palette) : '';
-        } else if (category === 'hat' || category === 'headwear') {
-          markup = (typeof MR.renderForegroundAccessories === 'function') ? MR.renderForegroundAccessories('baby', { hat: id }, palette) : '';
-        } else if (category === 'wings') {
-          markup = (typeof MR.renderWingsLayer === 'function') ? MR.renderWingsLayer('baby', id, palette) : '';
-        }
-      } catch (e) {}
-
-      if (markup) {
-        return markup.trim().startsWith('<svg') 
-          ? markup 
-          : `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${markup}</svg>`;
-      }
-    }
-
-    return '';
-  }
-  window.getAssetMarkup = getAssetMarkup;
-
-  function renderEquippedList() {
-    const summaryEl = document.getElementById('monster-creator-equipped-summary');
-    const countSummaryEl = document.getElementById('monster-creator-equipped-count');
-    const equipped = (window.currentMonster && window.currentMonster.equipped) || (monsterCreatorDraft && monsterCreatorDraft.equipped) || {};
-    const baseColor = (monsterCreatorDraft && monsterCreatorDraft.baseColor) || 'blue';
-
-    if (summaryEl) {
-      const allItems = (store && typeof store.getMonsterItems === 'function') ? store.getMonsterItems() : [];
-      const getItemName = function(id, fallback) {
-        if (!id || id === 'none') return fallback || 'None';
-        const found = allItems.find(i => i.id === id);
-        return found ? found.name : fallback || id;
-      };
-
-      const layers = [
-        { label: 'Fur Color', val: baseColor, name: baseColor.charAt(0).toUpperCase() + baseColor.slice(1), icon: '🎨', tab: 'monster', sub: 'colors', canRemove: false },
-        { label: 'Eyes', val: equipped.eyes, name: getItemName(equipped.eyes, 'Default Eyes'), icon: '👀', tab: 'face', sub: 'eyes', canRemove: false },
-        { label: 'Mouth', val: equipped.mouth, name: getItemName(equipped.mouth, 'Default Smile'), icon: '👄', tab: 'face', sub: 'mouths', canRemove: false },
-        { label: 'Horns', val: equipped.horns, name: getItemName(equipped.horns, 'Signature Ears'), icon: '🪶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },
-        { label: 'Wings', val: equipped.wings, name: getItemName(equipped.wings, 'None'), icon: '🪽', tab: 'features', sub: 'wings', canRemove: true, cat: 'wings' },
-        { label: 'Tail', val: equipped.tail, name: getItemName(equipped.tail, 'Puff Tail'), icon: '🦎', tab: 'features', sub: 'tails', canRemove: true, cat: 'tail' },
-        { label: 'Clothing', val: equipped.clothing, name: getItemName(equipped.clothing, 'Explorer Vest'), icon: '👔', tab: 'clothing', sub: 'adventure', canRemove: true, cat: 'clothing' },
-        { label: 'Hat', val: equipped.hat, name: getItemName(equipped.hat, 'None'), icon: '🎩', tab: 'features', sub: 'hats', canRemove: true, cat: 'hat' },
-        { label: 'Glasses', val: equipped.glasses, name: getItemName(equipped.glasses, 'None'), icon: '👓', tab: 'features', sub: 'accessories', canRemove: true, cat: 'glasses' },
-        { label: 'Backpack', val: equipped.backpack, name: getItemName(equipped.backpack, 'None'), icon: '🎒', tab: 'features', sub: 'backpacks', canRemove: true, cat: 'backpack' },
-        { label: 'Accessory', val: equipped.accessory, name: getItemName(equipped.accessory, 'None'), icon: '🎀', tab: 'features', sub: 'accessories', canRemove: true, cat: 'accessory' },
-        { label: 'Aura', val: equipped.aura, name: getItemName(equipped.aura, 'None'), icon: '✨', tab: 'features', sub: 'auras', canRemove: true, cat: 'aura' },
-        { label: 'World', val: equipped.background, name: getItemName(equipped.background, 'Explorer Camp'), icon: '🌍', tab: 'world', sub: 'worlds', canRemove: false }
-      ];
-
-      const activeLayers = layers.filter(l => l.val && l.val !== 'none');
-      if (countSummaryEl) countSummaryEl.textContent = '(' + activeLayers.length + ')';
-
-      summaryEl.innerHTML = activeLayers.map(l => '' +
-        '<div class="monster-equipped-row" onclick="navigateToEquippedFeature(\'' + l.tab + '\', \'' + l.sub + '\')" title="Jump to ' + l.label + ' in customizer">' +
-          '<div class="monster-equipped-row-left">' +
-            '<span class="monster-equipped-row-icon">' + l.icon + '</span>' +
-            '<div>' +
-              '<div class="monster-equipped-row-label">' + l.label + '</div>' +
-              '<div class="monster-equipped-row-val">' + l.name + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="monster-equipped-row-actions">' +
-            (l.canRemove ? '<button type="button" class="monster-unequip-btn" onclick="event.stopPropagation(); handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip">✕</button>' : '') +
-            '<span class="monster-equipped-chevron">›</span>' +
-          '</div>' +
-        '</div>'
-      ).join('');
-    }
-
-    const specsEl = document.getElementById('equipped-specs-list');
-    if (specsEl) {
-      const keys = Object.keys(equipped).filter(k => equipped[k] && equipped[k] !== 'none');
-      specsEl.innerHTML = keys.map(k => `
-        <div class="spec-entry">
-          <span class="spec-entry-key">${k}</span>
-          <span class="spec-entry-val">${equipped[k]}</span>
-        </div>
-      `).join('');
-    }
-  }
-  window.renderEquippedList = renderEquippedList;
+  window.renderItemsGrid = function(category) {
+    window.renderMonsterCreatorItems();
+  };
 
   function updateMonsterPreview() {
-    const equipped = currentMonster.equipped || {};
-
-    // 1. Base Body Sprite
-    const bodyLayer = document.getElementById("layer-body");
-    if (bodyLayer) {
-      const species = currentMonster.species || "flora";
-      bodyLayer.innerHTML = `<img src="assets/monsters/${species}.png" class="w-full h-full object-contain pointer-events-none" />`;
+    if (typeof window.updateMonsterCreatorPreview === 'function') {
+      window.updateMonsterCreatorPreview();
     }
-
-    // 2. Headwear / Horns
-    const headLayer = document.getElementById("layer-headwear");
-    if (headLayer) {
-      headLayer.innerHTML = equipped.horns ? getAssetMarkup("horns", equipped.horns) : "";
-    }
-
-    // 3. Clothing / Vest
-    const clothingLayer = document.getElementById("layer-clothing");
-    if (clothingLayer) {
-      clothingLayer.innerHTML = equipped.clothing ? getAssetMarkup("clothing", equipped.clothing) : "";
-    }
-
-    // 4. Glasses / Eyewear
-    const glassesLayer = document.getElementById("layer-glasses");
-    if (glassesLayer) {
-      glassesLayer.innerHTML = equipped.glasses ? getAssetMarkup("glasses", equipped.glasses) : "";
-    }
-
-    // 5. Back Gear / Tails / Wings
-    const backLayer = document.getElementById("layer-back-gear");
-    if (backLayer) {
-      backLayer.innerHTML = equipped.tail ? getAssetMarkup("tail", equipped.tail) : "";
-    }
-
-    // Synchronize Equipped Features Drawer
-    renderEquippedList();
   }
   window.updateMonsterPreview = updateMonsterPreview;
 
@@ -13158,8 +12910,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     // 2. Update live stage layer
     const layerMap = {
-      pedestal: 'layer-pedestal',
-      aura: document.getElementById('layer-pedestal') ? 'layer-pedestal' : 'layer-aura-back',
+      aura: 'layer-aura-back',
       wings: 'layer-back-gear',
       tail: 'layer-back-gear',
       backpack: 'layer-back-gear',
@@ -13170,7 +12921,7 @@ window.switchClassroomSubTab = function(subTab) {
       eyes: 'layer-face',
       mouth: 'layer-face',
       glasses: 'layer-glasses',
-      horns: document.getElementById('layer-horns') ? 'layer-horns' : 'layer-headwear',
+      horns: 'layer-horns',
       hat: 'layer-headwear',
       hats: 'layer-headwear',
       headwear: 'layer-headwear',
