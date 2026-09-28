@@ -2524,24 +2524,57 @@ button, input, select, textarea {
   }
 }
 
-.roster-sprite,
-.roster-monster-sprite {
-  animation: idleBob 3s ease-in-out infinite;
-  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+.roster-monster-viewport {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  margin: 2px auto;
 }
 
-@keyframes idleBob {
+.roster-sprite,
+.roster-monster-sprite {
+  max-width: 110px;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  animation: monsterFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.35));
+  z-index: 2;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes monsterFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-7px); }
 }
 
 .roster-pedestal-disk,
 .pedestal-disc {
   width: 90px;
-  height: 20px;
+  height: 18px;
   border-radius: 50%;
   margin-top: -6px;
   z-index: 1;
+  animation: pedestalPulse 3s ease-in-out infinite;
+}
+
+@keyframes pedestalPulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(0.92); opacity: 0.45; }
+}
+
+.monster-live-stage-model,
+.monster-raster-model {
+  width: 156px;
+  height: 156px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.45));
 }
 
 /* Elemental Pedestal Glow Variations:

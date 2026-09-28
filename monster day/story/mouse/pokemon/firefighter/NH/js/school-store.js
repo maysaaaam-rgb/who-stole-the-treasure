@@ -2100,12 +2100,58 @@
 
   // =========================================================================
   // 4 DISTINCT SPECIES ARCHETYPES (SINGLE SOURCE OF TRUTH)
-  // 1. Ignis (Dragon/Flame): Pointed horns, dragon snout, warm ember underglow (#f97316)
-  // 2. Flora (Fox/Forest): Fluffy fox ears, leaf tail, emerald nature glow (#10b981)
-  // 3. Volt (Pikachu/Electric): Lightning-bolt ears, cheek pouches, electric amber glow (#eab308)
-  // 4. Astral (Owl/Cosmic): Feathered crest, star eyes, violet celestial glow (#8b5cf6)
+  // 1. Ignis (Emberwing / Fire): assets/monsters/ignis.webp
+  // 2. Flora (Florasprout / Nature): assets/monsters/flora.webp
+  // 3. Volt (Sparktail / Electric): assets/monsters/volt.webp
+  // 4. Astral (Astralight / Cosmic): assets/monsters/astral.webp
   // =========================================================================
+  const ELEMENTAL_SPECIES = {
+    ignis: {
+      name: "Emberwing",
+      element: "IGNIS",
+      image: "assets/monsters/ignis.webp",
+      fallback: "assets/packs/characters/emberwing_stage_baby.png",
+      glow: "rgba(239, 68, 68, 0.45)"
+    },
+    flora: {
+      name: "Florasprout",
+      element: "FLORA",
+      image: "assets/monsters/flora.webp",
+      fallback: "assets/packs/characters/florasprout_stage_baby.png",
+      glow: "rgba(16, 185, 129, 0.45)"
+    },
+    volt: {
+      name: "Sparktail",
+      element: "VOLT",
+      image: "assets/monsters/volt.webp",
+      fallback: "assets/packs/characters/sparktail_stage_baby.png",
+      glow: "rgba(245, 158, 11, 0.45)"
+    },
+    astral: {
+      name: "Astralight",
+      element: "ASTRAL",
+      image: "assets/monsters/astral.webp",
+      fallback: "assets/packs/characters/astralight_stage_baby.png",
+      glow: "rgba(139, 92, 246, 0.45)"
+    }
+  };
+
   const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+
+  function getStudentSpeciesData(student) {
+    const keys = ["ignis", "flora", "volt", "astral"];
+    if (!student) return ELEMENTAL_SPECIES.ignis;
+    if (typeof student === 'string') {
+      if (ELEMENTAL_SPECIES[student]) return ELEMENTAL_SPECIES[student];
+    }
+    if (student && student.archetype && ELEMENTAL_SPECIES[student.archetype]) {
+      return ELEMENTAL_SPECIES[student.archetype];
+    }
+    const seed = String(student.id || student.name || "0")
+      .split("")
+      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    return ELEMENTAL_SPECIES[keys[seed % keys.length]] || ELEMENTAL_SPECIES.ignis;
+  }
 
   function getStudentArchetype(student) {
     if (!student) return SPECIES_ARCHETYPES[0];
@@ -2269,13 +2315,19 @@
     root.recalculateAllStudents = recalculateAllStudents;
     root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.getStudentArchetype = getStudentArchetype;
+    root.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
+    root.getStudentSpeciesData = getStudentSpeciesData;
     if (typeof window !== 'undefined') {
       window.recalculateAllStudents = recalculateAllStudents;
       window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
       window.getStudentArchetype = getStudentArchetype;
+      window.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
+      window.getStudentSpeciesData = getStudentSpeciesData;
     }
     root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.AdventureAcademy.getStudentArchetype = getStudentArchetype;
+    root.AdventureAcademy.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
+    root.AdventureAcademy.getStudentSpeciesData = getStudentSpeciesData;
     if (!root.AdventureAcademy.getStudents) {
       root.AdventureAcademy.getStudents = function() {
         const activeStore = root.schoolStore || (typeof window !== 'undefined' ? window.schoolStore : null);
