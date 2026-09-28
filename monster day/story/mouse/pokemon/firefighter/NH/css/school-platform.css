@@ -2708,7 +2708,8 @@ button, input, select, textarea {
   color: #f8fafc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin-top: 2px;
-  z-index: 3;
+  position: relative;
+  z-index: 1;
   letter-spacing: 0.02em;
 }
 
@@ -3380,13 +3381,15 @@ button, input, select, textarea {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(4px);
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  pointer-events: auto;
 }
 
 .modal-overlay.is-open {

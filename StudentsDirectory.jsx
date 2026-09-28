@@ -59,10 +59,6 @@ export function getMonsterStageAsset(xp = 0, evolutionLevel = 3, archetype = 'ig
 
 /**
  * High-Contrast Archetype Badge Helper
- * FLORA: bg-emerald-100 text-emerald-800 border border-emerald-200
- * IGNIS: bg-rose-100 text-rose-800 border border-rose-200
- * ASTRAL: bg-purple-100 text-purple-800 border border-purple-200
- * Default/Volt: bg-amber-100 text-amber-900 border border-amber-200
  */
 export function getArchetypeBadgeClass(archetype = '') {
   const raw = String(archetype || '').toLowerCase();
@@ -79,10 +75,10 @@ export function getArchetypeBadgeClass(archetype = '') {
 }
 
 /**
- * Standard Catalog Items with Ears, Horns, Clothing & Accessories
+ * Standard Catalog Items with Colors, Eyes, Horns, Clothing, Hats, Wings, Tails, Auras & Accessories
  */
 export const DEFAULT_CATALOG = [
-  // Colors
+  // Colors (Category: furColor / colors)
   { id: 'color-blue', category: 'colors', name: 'Sky Blue', icon: '🔵', unlockLevel: 1 },
   { id: 'color-pink', category: 'colors', name: 'Berry Pink', icon: '🌸', unlockLevel: 1 },
   { id: 'color-green', category: 'colors', name: 'Leaf Green', icon: '🟢', unlockLevel: 1 },
@@ -90,45 +86,46 @@ export const DEFAULT_CATALOG = [
   { id: 'color-purple', category: 'colors', name: 'Lavender Void', icon: '🟣', unlockLevel: 3 },
   { id: 'color-gold', category: 'colors', name: 'Royal Gold', icon: '🟡', unlockLevel: 5 },
 
-  // Ears (Decoupled Slot)
-  { id: 'ear-bear', category: 'ears', name: 'Plush Bear Ears', icon: '🐻', unlockLevel: 1 },
-  { id: 'ear-bunny', category: 'ears', name: 'Lop Bunny Ears', icon: '🐰', unlockLevel: 2 },
-  { id: 'ear-fin', category: 'ears', name: 'Dragon Fin Ears', icon: '🐲', unlockLevel: 4 },
+  // Eyes & Expression (Category: eyes / face)
+  { id: 'eyes-default', category: 'eyes', name: 'Curious Eyes', icon: '👀', unlockLevel: 1 },
+  { id: 'eyes-happy', category: 'eyes', name: 'Happy Eyes', icon: '😊', unlockLevel: 1 },
+  { id: 'eyes-sparkle', category: 'eyes', name: 'Sparkle Stare', icon: '✨', unlockLevel: 2 },
+  { id: 'eyes-wink', category: 'eyes', name: 'Playful Wink', icon: '😉', unlockLevel: 3 },
 
-  // Horns (Decoupled Slot)
+  // Horns & Crests (Category: horns)
   { id: 'horns-sprout', category: 'horns', name: 'Dual Sprout Nubs', icon: '🌱', unlockLevel: 1 },
   { id: 'horns-curved', category: 'horns', name: 'Curved Ram Horns', icon: '🪶', unlockLevel: 3 },
   { id: 'horns-crystal', category: 'horns', name: 'Crystal Spikes', icon: '💎', unlockLevel: 5 },
   { id: 'horns-antlers', category: 'horns', name: 'Sovereign Antlers', icon: '🦌', unlockLevel: 6 },
 
-  // Hats
+  // Hats & Headwear (Category: hats / hat)
   { id: 'hat-cap', category: 'hats', name: 'Explorer Cap', icon: '🧢', unlockLevel: 2 },
   { id: 'hat-wizard', category: 'hats', name: 'Wizard Hat', icon: '🧙', unlockLevel: 4 },
-  { id: 'hat-crown', category: 'hats', name: 'Golden Sovereign Crown', icon: '👑', unlockLevel: 7 },
+  { id: 'hat-crown', category: 'hats', name: 'Golden Crown', icon: '👑', unlockLevel: 7 },
 
-  // Wings
+  // Wings (Category: wings)
   { id: 'wings-fairy', category: 'wings', name: 'Gossamer Fairy Wings', icon: '🪽', unlockLevel: 3 },
   { id: 'wings-dragon', category: 'wings', name: 'Obsidian Dragon Wings', icon: '🦇', unlockLevel: 5 },
   { id: 'wings-angel', category: 'wings', name: 'Celestial Feather Wings', icon: '🕊️', unlockLevel: 6 },
 
-  // Tails
+  // Tails (Category: tails / tail)
   { id: 'tail-puff', category: 'tails', name: 'Puff Bunny Tail', icon: '🐇', unlockLevel: 1 },
   { id: 'tail-flame', category: 'tails', name: 'Ignis Flame Tail', icon: '🔥', unlockLevel: 2 },
   { id: 'tail-star', category: 'tails', name: 'Cosmic Star Tail', icon: '⭐', unlockLevel: 4 },
   { id: 'tail-dragon', category: 'tails', name: 'Spiked Dragon Tail', icon: '🦎', unlockLevel: 5 },
 
-  // Auras
+  // Auras (Category: auras / aura)
   { id: 'aura-sparkle', category: 'auras', name: 'Sparkle Starlight', icon: '✨', unlockLevel: 2 },
   { id: 'aura-flame', category: 'auras', name: 'Inferno Flames', icon: '🔥', unlockLevel: 4 },
   { id: 'aura-cosmic', category: 'auras', name: 'Cosmic Constellation', icon: '🌌', unlockLevel: 6 },
 
-  // Clothing
+  // Clothing (Category: clothing)
   { id: 'clothing-vest', category: 'clothing', name: 'Explorer Leather Vest', icon: '🦺', unlockLevel: 2 },
   { id: 'clothing-robe', category: 'clothing', name: 'Mystic Academy Robe', icon: '🥋', unlockLevel: 4 },
   { id: 'clothing-cloak', category: 'clothing', name: 'Heroic Cloak', icon: '🦸', unlockLevel: 5 },
   { id: 'clothing-hoodie', category: 'clothing', name: 'Cyber Sport Hoodie', icon: '🧥', unlockLevel: 3 },
 
-  // Accessories & Eyewear
+  // Accessories & Eyewear (Category: accessories / glasses)
   { id: 'glasses-round', category: 'accessories', name: 'Round Wire Spectacles', icon: '👓', unlockLevel: 2 },
   { id: 'glasses-goggles', category: 'accessories', name: 'Aviator Brass Goggles', icon: '🥽', unlockLevel: 4 },
   { id: 'acc-satchel', category: 'accessories', name: 'Scholar Satchel', icon: '🎒', unlockLevel: 3 },
@@ -137,14 +134,17 @@ export const DEFAULT_CATALOG = [
 
 /**
  * -----------------------------------------------------------------------------
- * 2. MONSTER BODY RENDERER COMPONENT
+ * 2. MONSTER COMPOSITE VIEW / BODY RENDERER COMPONENT
  * Renders the live SVG procedural monster body with live color tint,
  * face features, horns, wings, and tail from MonsterRenderer.
  * -----------------------------------------------------------------------------
  */
 export function MonsterBodyRenderer({
   color = 'blue',
+  furColor,
   face = 'default',
+  eyes,
+  mouth = 'smile',
   horns = 'none',
   wings = 'none',
   tail = 'none',
@@ -152,27 +152,38 @@ export function MonsterBodyRenderer({
   hat = 'none',
   glasses = 'none',
   aura = 'none',
+  background = 'none',
   level = 3,
-  stage = 'baby',
+  stage,
   archetype = 'ignis',
   className = 'w-full h-full object-contain z-20',
   style = {},
   isAnimated = true
 }) {
-  const normColor = String(color || 'blue').toLowerCase().replace(/^body-/, '').replace(/^color-/, '');
+  const chosenColor = furColor || color || 'blue';
+  const normColor = String(chosenColor).toLowerCase().replace(/^body-/, '').replace(/^color-/, '');
+  const chosenEyes = eyes || face || 'default';
   const stageKey = level === 1 ? 'egg' : (level === 2 ? 'cracking_egg' : (level >= 7 ? 'ultimate' : (level >= 4 ? 'growing' : (stage || 'baby'))));
 
   const equipped = {
     body: `body-${normColor}`,
-    face: face || 'default',
-    eyes: face && face.startsWith('eyes-') ? face : 'default',
+    colors: `color-${normColor}`,
+    furColor: normColor,
+    face: chosenEyes,
+    eyes: chosenEyes,
+    mouth: mouth || 'smile',
     horns: horns || 'none',
     wings: wings || 'none',
     tail: tail || 'none',
+    tails: tail || 'none',
     clothing: clothing || 'none',
     hat: hat || 'none',
+    hats: hat || 'none',
     glasses: glasses || 'none',
-    aura: aura || 'none'
+    accessories: glasses || 'none',
+    aura: aura || 'none',
+    auras: aura || 'none',
+    background: background || 'none'
   };
 
   const svgHtml = useMemo(() => {
@@ -201,7 +212,7 @@ export function MonsterBodyRenderer({
     );
   }
 
-  // Fallback to static raster image if MonsterRenderer not yet initialized
+  // Fallback to static raster image if MonsterRenderer is not available
   const fallbackAsset = getMonsterAsset(archetype, level);
   return (
     <img 
@@ -213,6 +224,9 @@ export function MonsterBodyRenderer({
     />
   );
 }
+
+// Alias for seamless backward and forward compatibility
+export const MonsterCompositeView = MonsterBodyRenderer;
 
 /**
  * -----------------------------------------------------------------------------
@@ -304,9 +318,10 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
 
 /**
  * -----------------------------------------------------------------------------
- * 3. STUDENT CARD COMPONENT
+ * 4. STUDENT CARD COMPONENT
  * Interactive 3D hover physics, pencil edit badge, evolution tier & XP progress.
  * Adheres strictly to the aspect-square dark glass container specifications.
+ * Ensures badges do NOT leak z-index into overlays.
  * -----------------------------------------------------------------------------
  */
 export function StudentCard({ student, onCustomize, onQuickXP }) {
@@ -321,7 +336,7 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
   const archetypeBadgeStyle = getArchetypeBadgeClass(archetype);
 
   return (
-    <div className={`student-directory-card student-card element-${archetype} archetype-${archetype}`}>
+    <div className={`student-directory-card student-card element-${archetype} archetype-${archetype}`} style={{ position: 'relative', zIndex: 1 }}>
       {/* Top Overlay Badges */}
       <div className="card-overlay-top" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -349,7 +364,7 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
       {/* Monster Stage Platform with Hover Physics & Pencil Edit Badge */}
       <div 
         className={`monster-stage element-${archetype} pb-2`} 
-        style={{ paddingBottom: '8px', cursor: 'pointer' }}
+        style={{ paddingBottom: '8px', cursor: 'pointer', position: 'relative' }}
         onClick={() => onCustomize(student)}
         title={`Lvl ${level} ${stageName} — Click to customize`}
       >
@@ -375,7 +390,8 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
           />
         </div>
 
-        <span className="stage-level-badge" style={{ marginTop: '6px', display: 'inline-block' }}>
+        {/* Level badge strictly scoped with relative positioning to prevent stacking leak */}
+        <span className="stage-level-badge" style={{ marginTop: '6px', display: 'inline-block', position: 'relative', zIndex: 1 }}>
           Lvl {level} • {stageName}
         </span>
       </div>
@@ -419,18 +435,59 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
 
 /**
  * -----------------------------------------------------------------------------
- * 4. CLOSET / MONSTER CUSTOMIZER MODAL
- * Real-time dynamic preview, decoupled ears & horns, tabbed cosmetic selector,
- * inventory checks, padlock lock indicators, and instant SVG avatar synthesis.
+ * 5. MONSTER STUDIO & CUSTOMIZER MODAL
+ * - Fully isolated z-50 fixed stacking context with pointer-events-auto.
+ * - Reactive customizationDraft: { furColor, eyes, mouth, horns, tail, wings, clothing, aura, background, hat, glasses }.
+ * - Interactive <button> grid tiles with instant selection checkmark (✓).
+ * - Real-time reactive preview with MonsterCompositeView and golden pedestal base.
+ * - Instant synchronization to parent directory on Save Changes.
  * -----------------------------------------------------------------------------
  */
-export function ClosetCustomizerModal({ student, isOpen, onClose, onSave, catalog = [], studentInventory = [] }) {
+export function ClosetCustomizerModal({ 
+  student, 
+  isOpen, 
+  onClose, 
+  onSave, 
+  onUpdateSuccess, 
+  catalog = [], 
+  studentInventory = [] 
+}) {
   const [activeTab, setActiveTab] = useState('colors');
-  const [draftEquipped, setDraftEquipped] = useState(student ? (student.equipped_cosmetics || student.equipped || {}) : {});
+
+  // Mutable local customization state initialized from the selected student
+  const [customizationDraft, setCustomizationDraft] = useState({
+    furColor: 'blue',
+    eyes: 'default',
+    mouth: 'smile',
+    horns: 'none',
+    tail: 'none',
+    wings: 'none',
+    clothing: 'none',
+    aura: 'none',
+    background: 'none',
+    hat: 'none',
+    glasses: 'none'
+  });
 
   useEffect(() => {
     if (student) {
-      setDraftEquipped(student.equipped_cosmetics || student.equipped || {});
+      const equipped = student.equipped_cosmetics || student.equipped || {};
+      const rawColor = student.furColor || student.color || equipped.colors || equipped.body || 'blue';
+      const normColor = String(rawColor).toLowerCase().replace(/^body-/, '').replace(/^color-/, '');
+      
+      setCustomizationDraft({
+        furColor: normColor || 'blue',
+        eyes: student.eyes || student.face || equipped.eyes || equipped.face || 'default',
+        mouth: student.mouth || equipped.mouth || 'smile',
+        horns: student.horns || equipped.horns || 'none',
+        tail: student.tail || equipped.tail || equipped.tails || 'none',
+        wings: student.wings || equipped.wings || 'none',
+        clothing: student.clothing || equipped.clothing || 'none',
+        aura: student.aura || equipped.aura || equipped.auras || 'none',
+        background: student.background || equipped.background || 'none',
+        hat: student.hat || equipped.hat || equipped.hats || 'none',
+        glasses: student.glasses || equipped.glasses || equipped.accessories || 'none'
+      });
     }
   }, [student]);
 
@@ -440,159 +497,250 @@ export function ClosetCustomizerModal({ student, isOpen, onClose, onSave, catalo
   const inventorySet = new Set(studentInventory.map(item => item.id || item.itemId));
   const activeCatalog = (catalog && catalog.length > 0) ? catalog : DEFAULT_CATALOG;
 
-  // Decoupled Ears and Horns, Clothing, Wings, Tails, Auras, Hats, Accessories
+  // Category Tabs Definition with mapping to draft fields
   const TABS = [
-    { id: 'colors', label: 'Colors', icon: '🎨' },
-    { id: 'ears', label: 'Ears', icon: '🦻' },
-    { id: 'horns', label: 'Horns', icon: '🪶' },
-    { id: 'hats', label: 'Hats', icon: '🎩' },
-    { id: 'wings', label: 'Wings', icon: '🪽' },
-    { id: 'tails', label: 'Tails', icon: '🦎' },
-    { id: 'auras', label: 'Auras', icon: '✨' },
-    { id: 'clothing', label: 'Clothing', icon: '👔' },
-    { id: 'accessories', label: 'Accessories', icon: '👓' }
+    { id: 'colors', label: 'Colors', icon: '🎨', field: 'furColor' },
+    { id: 'eyes', label: 'Face', icon: '👀', field: 'eyes' },
+    { id: 'horns', label: 'Horns', icon: '🪶', field: 'horns' },
+    { id: 'hats', label: 'Hats', icon: '🎩', field: 'hat' },
+    { id: 'wings', label: 'Wings', icon: '🪽', field: 'wings' },
+    { id: 'tails', label: 'Tails', icon: '🦎', field: 'tail' },
+    { id: 'clothing', label: 'Clothing', icon: '👔', field: 'clothing' },
+    { id: 'auras', label: 'Auras', icon: '✨', field: 'aura' },
+    { id: 'accessories', label: 'Accessories', icon: '👓', field: 'glasses' }
   ];
 
+  const currentTabDef = TABS.find(t => t.id === activeTab) || TABS[0];
+
   const filteredItems = activeCatalog.filter(item => {
-    if (activeTab === 'colors') return item.category === 'body' || item.category === 'colors';
-    if (activeTab === 'accessories') return item.category === 'accessory' || item.category === 'glasses' || item.category === 'accessories';
+    if (activeTab === 'colors') return item.category === 'colors' || item.category === 'body';
+    if (activeTab === 'eyes') return item.category === 'eyes' || item.category === 'face';
+    if (activeTab === 'hats') return item.category === 'hats' || item.category === 'hat';
+    if (activeTab === 'tails') return item.category === 'tails' || item.category === 'tail';
+    if (activeTab === 'auras') return item.category === 'auras' || item.category === 'aura';
+    if (activeTab === 'accessories') return item.category === 'accessories' || item.category === 'glasses' || item.category === 'accessory';
     return item.category === activeTab;
   });
 
-  const handleToggleItem = (item) => {
-    setDraftEquipped(prev => ({
-      ...prev,
-      [item.category]: prev[item.category] === item.id ? 'none' : item.id
-    }));
-  };
-
-  const handleSaveChanges = () => {
-    let customAvatarUrl = student.custom_avatar_url;
-    if (typeof window !== 'undefined' && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
-      const stage = currentLevel === 1 ? 'egg' : (currentLevel === 2 ? 'cracking_egg' : (currentLevel >= 7 ? 'ultimate' : (currentLevel >= 4 ? 'growing' : 'baby')));
-      const color = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || (draftEquipped.body && draftEquipped.body.replace('body-', '')) || 'blue';
-      const svg = window.MonsterRenderer.renderMonsterSVG({
-        stage,
-        color,
-        archetype: student.monster_archetype || student.archetype || 'ignis',
-        level: currentLevel,
-        equipped: draftEquipped,
-        size: 200,
-        animated: true,
-        isAvatar: true
-      });
-      if (svg) {
-        customAvatarUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  // Interactive item selection handler
+  const handleSelectItem = (field, itemId) => {
+    setCustomizationDraft(prev => {
+      if (field === 'furColor') {
+        const cleanColor = itemId.replace(/^color-/, '').replace(/^body-/, '');
+        return { ...prev, furColor: cleanColor };
       }
-    }
-    if (onSave) {
-      onSave(student.id, draftEquipped, customAvatarUrl);
-    }
-    onClose();
+      const currentVal = prev[field];
+      const nextVal = currentVal === itemId ? 'none' : itemId;
+      return { ...prev, [field]: nextVal };
+    });
   };
 
-  const previewStudent = {
-    ...student,
-    equipped_cosmetics: draftEquipped,
-    equipped: draftEquipped
+  // Synchronize and persist customization
+  const handleSaveChanges = async () => {
+    try {
+      let customAvatarUrl = student.custom_avatar_url;
+      const stage = currentLevel === 1 ? 'egg' : (currentLevel === 2 ? 'cracking_egg' : (currentLevel >= 7 ? 'ultimate' : (currentLevel >= 4 ? 'growing' : 'baby')));
+      const normColor = String(customizationDraft.furColor || 'blue').replace(/^color-/, '').replace(/^body-/, '');
+      
+      const equippedDraft = {
+        body: `body-${normColor}`,
+        colors: `color-${normColor}`,
+        furColor: normColor,
+        eyes: customizationDraft.eyes,
+        face: customizationDraft.eyes,
+        mouth: customizationDraft.mouth,
+        horns: customizationDraft.horns,
+        tail: customizationDraft.tail,
+        tails: customizationDraft.tail,
+        wings: customizationDraft.wings,
+        clothing: customizationDraft.clothing,
+        aura: customizationDraft.aura,
+        auras: customizationDraft.aura,
+        hat: customizationDraft.hat,
+        hats: customizationDraft.hat,
+        glasses: customizationDraft.glasses,
+        accessories: customizationDraft.glasses,
+        background: customizationDraft.background
+      };
+
+      if (typeof window !== 'undefined' && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        const svg = window.MonsterRenderer.renderMonsterSVG({
+          stage: stage,
+          color: normColor,
+          archetype: student.monster_archetype || student.archetype || 'ignis',
+          level: currentLevel,
+          equipped: equippedDraft,
+          size: 200,
+          animated: true,
+          isAvatar: true
+        });
+        if (svg) {
+          customAvatarUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+      }
+
+      // Notify parent callbacks immediately
+      if (onSave) {
+        onSave(student.id, customizationDraft, customAvatarUrl);
+      }
+      if (onUpdateSuccess) {
+        onUpdateSuccess(student.id, customizationDraft, customAvatarUrl);
+      }
+
+      onClose();
+    } catch (err) {
+      console.error("Failed to save companion customization:", err);
+    }
   };
 
   const stageKey = currentLevel === 1 ? 'egg' : (currentLevel === 2 ? 'cracking_egg' : (currentLevel >= 7 ? 'ultimate' : (currentLevel >= 4 ? 'growing' : 'baby')));
-  const colorKey = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || (draftEquipped.body && draftEquipped.body.replace('body-', '')) || 'blue';
 
   return (
-    <div className="modal-overlay is-open" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="modal-dialog" style={{ maxWidth: '960px', width: '92vw', background: 'rgba(15, 23, 42, 0.95)', backdropFilter: 'blur(16px)', borderRadius: '20px', padding: '24px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto pointer-events-auto"
+      style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(6, 9, 17, 0.75)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      <div 
+        className="relative z-10 w-full max-w-5xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        style={{ background: 'rgba(15, 23, 42, 0.96)', borderRadius: '24px', border: '1.5px solid rgba(56, 189, 248, 0.35)', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8)', padding: '24px' }}
+      >
         
-        {/* Header */}
+        {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '14px', marginBottom: '18px' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc' }}>
               🎨 Monster Studio &amp; Customizer: {student.firstName || student.name}
             </h2>
             <p style={{ margin: '4px 0 0 0', fontSize: '0.84rem', color: '#94a3b8' }}>
-              Equip unlocked cosmetic items or unlock rare gear from Mystery Boxes &amp; Quests.
+              Select colors, horns, and gear. Updates reflect instantly in live preview.
             </p>
           </div>
-          <button type="button" className="modal-close-btn" onClick={onClose}>✕</button>
+          <button type="button" className="modal-close-btn" onClick={onClose} style={{ cursor: 'pointer' }}>✕</button>
         </div>
 
         {/* 2-Column Customizer Body */}
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '20px', alignItems: 'start' }}>
           
-          {/* Column 1: Live Interactive Preview */}
-          <div style={{ background: '#060911', borderRadius: '16px', padding: '20px', border: '1px solid rgba(56, 189, 248, 0.2)', textAlign: 'center' }}>
-            <div style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', color: '#38bdf8', marginBottom: '12px' }}>
+          {/* Column 1: Live Interactive Preview with Golden Pedestal */}
+          <div style={{ background: '#060911', borderRadius: '18px', padding: '20px', border: '1px solid rgba(56, 189, 248, 0.25)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', color: '#38bdf8', marginBottom: '12px', letterSpacing: '0.05em' }}>
               Live Avatar Preview
             </div>
-            <div style={{ height: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {typeof window !== 'undefined' && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function' ? (
-                <div 
-                  className="monster-modal-preview-wrapper"
-                  dangerouslySetInnerHTML={{
-                    __html: window.MonsterRenderer.renderMonsterSVG({
-                      stage: stageKey,
-                      color: colorKey,
-                      archetype: student.monster_archetype || student.archetype || 'ignis',
-                      level: currentLevel,
-                      equipped: draftEquipped,
-                      size: 200,
-                      animated: true,
-                      isAvatar: true
-                    })
-                  }} 
-                />
-              ) : (
-                <MonsterSpriteLayer student={previewStudent} size={200} isAnimated={true} />
-              )}
+            
+            <div className="relative w-full aspect-square max-w-[260px] mx-auto rounded-2xl bg-slate-950 flex items-center justify-center overflow-hidden shadow-inner border border-slate-800/80" style={{ position: 'relative', width: '240px', height: '240px', margin: '0 auto' }}>
+              {/* 1. Pedestal Base */}
+              <div 
+                className="pedestal-disk" 
+                id="preview-pedestal"
+                style={{ 
+                  position: 'absolute', 
+                  bottom: '14px', 
+                  left: '12%', 
+                  width: '76%', 
+                  height: '20px', 
+                  zIndex: 10,
+                  background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.5) 0%, rgba(245, 158, 11, 0.2) 50%, transparent 75%)',
+                  borderRadius: '50%'
+                }} 
+              />
+
+              {/* 2. Base Monster Body with Live Color Tint & Features */}
+              <MonsterCompositeView 
+                stage={stageKey}
+                color={customizationDraft.furColor}
+                furColor={customizationDraft.furColor}
+                eyes={customizationDraft.eyes}
+                face={customizationDraft.eyes}
+                mouth={customizationDraft.mouth}
+                horns={customizationDraft.horns}
+                tail={customizationDraft.tail}
+                wings={customizationDraft.wings}
+                clothing={customizationDraft.clothing}
+                aura={customizationDraft.aura}
+                hat={customizationDraft.hat}
+                glasses={customizationDraft.glasses}
+                level={currentLevel}
+                archetype={student.monster_archetype || student.archetype || 'ignis'}
+                className="w-full h-full object-contain relative z-20"
+                style={{ width: '100%', height: '100%', position: 'relative', zIndex: 20 }}
+              />
             </div>
-            <div style={{ marginTop: '12px', fontSize: '0.88rem', fontWeight: 700, color: '#e2e8f0' }}>
+
+            <div style={{ marginTop: '14px', fontSize: '0.92rem', fontWeight: 700, color: '#e2e8f0' }}>
               Level {currentLevel} • {(student.monster_archetype || student.archetype || 'Ignis').toUpperCase()}
             </div>
           </div>
 
-          {/* Column 2: Tabbed Items Grid */}
+          {/* Column 2: Tabbed Items Grid with Interactive <button> Tiles */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             
             {/* Category Tab Bar */}
-            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '4px' }}>
+            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
               {TABS.map(tab => (
                 <button
                   key={tab.id}
                   type="button"
                   className={`classroom-nav-tab-btn ${activeTab === tab.id ? 'is-active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
-                  style={{ padding: '8px 14px', fontSize: '0.84rem', fontWeight: 700, borderRadius: '8px', cursor: 'pointer' }}
+                  style={{ 
+                    padding: '8px 14px', 
+                    fontSize: '0.84rem', 
+                    fontWeight: 700, 
+                    borderRadius: '8px', 
+                    cursor: 'pointer',
+                    background: activeTab === tab.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                    color: activeTab === tab.id ? '#38bdf8' : '#94a3b8',
+                    border: activeTab === tab.id ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.05)'
+                  }}
                 >
                   {tab.icon} {tab.label}
                 </button>
               ))}
             </div>
 
-            {/* Items Grid */}
+            {/* Items Grid with Interactive <button> Elements */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', maxHeight: '320px', overflowY: 'auto', padding: '4px' }}>
               {filteredItems.map(item => {
-                const isEquipped = draftEquipped[item.category] === item.id;
+                const targetField = currentTabDef.field;
+                const activeVal = customizationDraft[targetField];
+                
+                // Compare selected state
+                let isSelected = false;
+                if (targetField === 'furColor') {
+                  const itemColor = item.id.replace(/^color-/, '').replace(/^body-/, '');
+                  isSelected = activeVal === itemColor;
+                } else {
+                  isSelected = activeVal === item.id;
+                }
+
                 const isLevelLocked = item.unlockLevel > currentLevel;
                 const isInventoryUnlocked = inventorySet.has(item.id);
                 const isUnlocked = isInventoryUnlocked || (!isLevelLocked && (!item.unlockType || item.unlockType === 'level'));
 
-                const lockLabel = isLevelLocked ? `🔒 Level ${item.unlockLevel}` : '🔒 Found in Mystery Boxes';
+                const lockLabel = isLevelLocked ? `🔒 Level ${item.unlockLevel}` : '🔒 Rare Drop';
 
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={item.id}
-                    onClick={() => isUnlocked && handleToggleItem(item)}
+                    onClick={() => isUnlocked && handleSelectItem(targetField, item.id)}
+                    disabled={!isUnlocked}
                     style={{
-                      background: isEquipped ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.7)',
-                      border: isEquipped ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
+                      background: isSelected ? 'rgba(56, 189, 248, 0.2)' : 'rgba(15, 23, 42, 0.75)',
+                      border: isSelected ? '2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)',
                       borderRadius: '12px',
                       padding: '12px',
                       textAlign: 'center',
                       cursor: isUnlocked ? 'pointer' : 'not-allowed',
                       opacity: isUnlocked ? 1 : 0.45,
                       filter: isUnlocked ? 'none' : 'grayscale(0.7)',
-                      position: 'relative'
+                      position: 'relative',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: '88px',
+                      transition: 'all 0.15s ease'
                     }}
                   >
                     {!isUnlocked && (
@@ -600,26 +748,26 @@ export function ClosetCustomizerModal({ student, isOpen, onClose, onSave, catalo
                         {lockLabel}
                       </span>
                     )}
-                    {isEquipped && (
-                      <span style={{ position: 'absolute', top: '6px', left: '6px', color: '#38bdf8', fontWeight: 900 }}>✓</span>
+                    {isSelected && (
+                      <span style={{ position: 'absolute', top: '6px', left: '6px', color: '#38bdf8', fontWeight: 900, fontSize: '0.9rem' }}>✓</span>
                     )}
-                    <div style={{ fontSize: '2rem', margin: '4px 0' }}>{item.icon || '✨'}</div>
+                    <div style={{ fontSize: '2rem', margin: '4px 0', lineHeight: 1 }}>{item.icon || '✨'}</div>
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#f1f5f9' }}>{item.name}</div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
 
             {/* Modal Actions */}
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '14px' }}>
-              <button type="button" className="btn-sm-secondary" onClick={onClose}>
+              <button type="button" className="btn-sm-secondary" onClick={onClose} style={{ cursor: 'pointer' }}>
                 Cancel
               </button>
               <button 
                 type="button" 
                 className="btn-primary-action btn-3d btn-3d-primary"
                 onClick={handleSaveChanges}
-                style={{ padding: '10px 22px', fontWeight: 800 }}
+                style={{ padding: '10px 22px', fontWeight: 800, cursor: 'pointer' }}
               >
                 ✓ Save Changes
               </button>
@@ -634,9 +782,12 @@ export function ClosetCustomizerModal({ student, isOpen, onClose, onSave, catalo
   );
 }
 
+// Alias ClosetCustomizerModal as MonsterStudioModal
+export const MonsterStudioModal = ClosetCustomizerModal;
+
 /**
  * -----------------------------------------------------------------------------
- * 5. MAIN STUDENTS DIRECTORY COMPONENT
+ * 6. MAIN STUDENTS DIRECTORY COMPONENT
  * Clean, contiguous 4-column CSS Grid layout with ZERO spliced navbar bugs.
  * -----------------------------------------------------------------------------
  */
@@ -654,20 +805,21 @@ export default function StudentsDirectory({ students = [], onUpdateStudentXP, on
     setIsModalOpen(true);
   };
 
-  const handleSaveCosmetics = (studentId, equipped, customAvatarUrl) => {
+  const handleSaveCosmetics = (studentId, customizationDraft, customAvatarUrl) => {
     setLocalStudents(prev => prev.map(s => {
       if (s.id === studentId) {
         return {
           ...s,
-          equipped_cosmetics: equipped,
-          equipped: equipped,
+          ...customizationDraft,
+          equipped_cosmetics: customizationDraft,
+          equipped: customizationDraft,
           custom_avatar_url: customAvatarUrl || s.custom_avatar_url
         };
       }
       return s;
     }));
     if (onSaveCosmetics) {
-      onSaveCosmetics(studentId, equipped, customAvatarUrl);
+      onSaveCosmetics(studentId, customizationDraft, customAvatarUrl);
     }
   };
 
@@ -696,13 +848,14 @@ export default function StudentsDirectory({ students = [], onUpdateStudentXP, on
         ))}
       </div>
 
-      {/* Closet / Customizer Modal */}
+      {/* Monster Studio & Customizer Modal */}
       {selectedStudent && (
         <ClosetCustomizerModal
           student={selectedStudent}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveCosmetics}
+          onUpdateSuccess={handleSaveCosmetics}
           catalog={catalog.length > 0 ? catalog : DEFAULT_CATALOG}
           studentInventory={selectedStudent.inventory || []}
         />
