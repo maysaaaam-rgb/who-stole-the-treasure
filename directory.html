@@ -105,7 +105,7 @@
         <div style="display:flex; flex-direction:column; gap:12px;">
           <!-- Tabs -->
           <div id="closet-tab-nav" style="display:flex; gap:6px; overflow-x:auto; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
-            <!-- Populated via JS: Colors, Horns, Hats, Wings, Tails, Auras, Clothing, Accessories -->
+            <!-- Populated via JS: Colors, Ears, Horns, Hats, Wings, Tails, Auras, Clothing, Accessories -->
           </div>
 
           <!-- Items Grid -->
@@ -147,47 +147,114 @@
       return `assets/monsters/${species}_stage_${stage}.png`;
     }
 
+    function getMonsterStageAsset(xp, level, archetype) {
+      let lvl = parseInt(level, 10);
+      if (!lvl || isNaN(lvl)) {
+        const totalXp = parseInt(xp, 10) || 0;
+        if (totalXp >= 3500) lvl = 7;
+        else if (totalXp >= 2500) lvl = 6;
+        else if (totalXp >= 1500) lvl = 5;
+        else if (totalXp >= 600) lvl = 4;
+        else if (totalXp >= 200) lvl = 3;
+        else if (totalXp >= 50) lvl = 2;
+        else lvl = 1;
+      }
+      return getMonsterAsset(archetype, lvl);
+    }
+
     // Demo Directory Student Data across levels 1 to 7 and archetypes
     let students = [
       { id: 'st-1', firstName: 'Emma', lastName: 'Watson', archetype: 'ignis', level: 3, xp: 480, streak: 5, cefr: 'A1', equipped: {} },
-      { id: 'st-2', firstName: 'Liam', lastName: 'Smith', archetype: 'flora', level: 4, xp: 820, streak: 8, cefr: 'A2', equipped: { hat: 'hat-explorer' } },
+      { id: 'st-2', firstName: 'Liam', lastName: 'Smith', archetype: 'flora', level: 4, xp: 820, streak: 8, cefr: 'A2', equipped: { hat: 'hat-cap' } },
       { id: 'st-3', firstName: 'Sophia', lastName: 'Chen', archetype: 'volt', level: 1, xp: 50, streak: 2, cefr: 'Pre-A1', equipped: {} },
       { id: 'st-4', firstName: 'Noah', lastName: 'Taylor', archetype: 'astral', level: 2, xp: 190, streak: 4, cefr: 'A1', equipped: {} },
       { id: 'st-5', firstName: 'Mia', lastName: 'Johnson', archetype: 'aqua', level: 5, xp: 1450, streak: 12, cefr: 'B1', equipped: { wings: 'wings-dragon' } },
       { id: 'st-6', firstName: 'Oliver', lastName: 'Brown', archetype: 'ignis', level: 6, xp: 2300, streak: 15, cefr: 'B1', equipped: { clothing: 'clothing-vest' } },
-      { id: 'st-7', firstName: 'Ava', lastName: 'Davis', archetype: 'flora', level: 7, xp: 3800, streak: 21, cefr: 'B2', equipped: { aura: 'aura-starlight' } },
+      { id: 'st-7', firstName: 'Ava', lastName: 'Davis', archetype: 'flora', level: 7, xp: 3800, streak: 21, cefr: 'B2', equipped: { aura: 'aura-sparkle' } },
       { id: 'st-8', firstName: 'Lucas', lastName: 'Miller', archetype: 'volt', level: 3, xp: 520, streak: 6, cefr: 'A1', equipped: {} }
     ];
 
-    // Cosmetic Catalog
+    // Comprehensive Cosmetic Catalog with decoupled Ears, Horns, Clothing, Accessories
     const CATALOG = [
-      { id: 'color-red', category: 'colors', name: 'Crimson Ember', icon: '🔴', unlockLevel: 1 },
+      // Colors
+      { id: 'color-blue', category: 'colors', name: 'Crimson Ember', icon: '🔴', unlockLevel: 1 },
       { id: 'color-blue', category: 'colors', name: 'Azure Frost', icon: '🔵', unlockLevel: 1 },
       { id: 'color-green', category: 'colors', name: 'Verdant Flora', icon: '🟢', unlockLevel: 1 },
       { id: 'color-purple', category: 'colors', name: 'Astral Void', icon: '🟣', unlockLevel: 3 },
+      { id: 'color-gold', category: 'colors', name: 'Royal Gold', icon: '🟡', unlockLevel: 5 },
+
+      // Ears (Decoupled Slot)
+      { id: 'ear-bear', category: 'ears', name: 'Plush Bear Ears', icon: '🐻', unlockLevel: 1 },
+      { id: 'ear-bunny', category: 'ears', name: 'Lop Bunny Ears', icon: '🐰', unlockLevel: 2 },
+      { id: 'ear-fin', category: 'ears', name: 'Dragon Fin Ears', icon: '🐲', unlockLevel: 4 },
+
+      // Horns (Decoupled Slot)
       { id: 'horns-sprout', category: 'horns', name: 'Sprout Nubs', icon: '🌱', unlockLevel: 1 },
-      { id: 'horns-curved', category: 'horns', name: 'Curved Horns', icon: '🪶', unlockLevel: 4 },
-      { id: 'horns-crystal', category: 'horns', name: 'Crystal Spikes', icon: '💎', unlockLevel: 6 },
+      { id: 'horns-curved', category: 'horns', name: 'Curved Ram Horns', icon: '🪶', unlockLevel: 3 },
+      { id: 'horns-crystal', category: 'horns', name: 'Crystal Spikes', icon: '💎', unlockLevel: 5 },
+
+      // Hats
       { id: 'hat-cap', category: 'hats', name: 'Explorer Cap', icon: '🧢', unlockLevel: 2 },
+      { id: 'hat-wizard', category: 'hats', name: 'Wizard Hat', icon: '🧙', unlockLevel: 4 },
       { id: 'hat-crown', category: 'hats', name: 'Golden Crown', icon: '👑', unlockLevel: 7 },
+
+      // Wings
       { id: 'wings-fairy', category: 'wings', name: 'Fairy Wings', icon: '🪽', unlockLevel: 3 },
       { id: 'wings-dragon', category: 'wings', name: 'Dragon Wings', icon: '🦇', unlockLevel: 5 },
+
+      // Tails
+      { id: 'tail-puff', category: 'tails', name: 'Puff Bunny Tail', icon: '🐇', unlockLevel: 1 },
       { id: 'tail-flame', category: 'tails', name: 'Flame Tail', icon: '🔥', unlockLevel: 2 },
-      { id: 'tail-star', category: 'tails', name: 'Cosmic Star Tail', icon: '⭐', unlockLevel: 5 },
+      { id: 'tail-star', category: 'tails', name: 'Cosmic Star Tail', icon: '⭐', unlockLevel: 4 },
+      { id: 'tail-dragon', category: 'tails', name: 'Dragon Tail', icon: '🦎', unlockLevel: 5 },
+
+      // Auras
       { id: 'aura-sparkle', category: 'auras', name: 'Sparkle Aura', icon: '✨', unlockLevel: 2 },
-      { id: 'aura-flame', category: 'auras', name: 'Fire Aura', icon: '🔥', unlockLevel: 4 }
+      { id: 'aura-flame', category: 'auras', name: 'Fire Aura', icon: '🔥', unlockLevel: 4 },
+
+      // Clothing
+      { id: 'clothing-vest', category: 'clothing', name: 'Adventurer Vest', icon: '🦺', unlockLevel: 2 },
+      { id: 'clothing-robe', category: 'clothing', name: 'Scholar Robe', icon: '🥋', unlockLevel: 4 },
+      { id: 'clothing-hoodie', category: 'clothing', name: 'Cyber Sport Hoodie', icon: '🧥', unlockLevel: 3 },
+
+      // Accessories
+      { id: 'glasses-round', category: 'accessories', name: 'Round Glasses', icon: '👓', unlockLevel: 2 },
+      { id: 'glasses-goggles', category: 'accessories', name: 'Aviator Goggles', icon: '🥽', unlockLevel: 4 },
+      { id: 'acc-satchel', category: 'accessories', name: 'Scholar Satchel', icon: '🎒', unlockLevel: 3 },
+      { id: 'acc-medal', category: 'accessories', name: 'Champion Star Medal', icon: '🏅', unlockLevel: 5 }
     ];
 
     let currentEditingStudent = null;
     let activeClosetTab = 'colors';
     let draftEquipped = {};
 
+    function synthesizeStudentAvatar(s) {
+      if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        const stage = s.level === 1 ? 'egg' : (s.level === 2 ? 'cracking_egg' : (s.level >= 7 ? 'ultimate' : (s.level >= 4 ? 'growing' : 'baby')));
+        const color = (s.equipped && s.equipped.colors && s.equipped.colors.replace('color-', '')) || (s.equipped && s.equipped.body && s.equipped.body.replace('body-', '')) || 'blue';
+        const svg = window.MonsterRenderer.renderMonsterSVG({
+          stage: stage,
+          color: color,
+          archetype: s.archetype,
+          level: s.level,
+          equipped: s.equipped || {},
+          size: 200,
+          animated: true,
+          isAvatar: true
+        });
+        if (svg) {
+          return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+      }
+      return getMonsterStageAsset(s.xp, s.level, s.archetype);
+    }
+
     function renderCards() {
       const grid = document.getElementById('students-grid');
       if (!grid) return;
 
       grid.innerHTML = students.map(s => {
-        const sprite = s.custom_avatar_url || getMonsterAsset(s.archetype, s.level);
+        const sprite = s.custom_avatar_url || synthesizeStudentAvatar(s);
         const stageLabel = s.level === 1 ? 'Mystery Egg' : s.level === 2 ? 'Cracking Egg' : s.level === 7 ? 'Ultimate Apex' : `Lvl ${s.level} Companion`;
 
         return `
@@ -204,13 +271,15 @@
               </div>
             </div>
 
-            <div class="monster-stage element-${s.archetype} pb-2" style="padding-bottom:8px;" onclick="openClosetModal('${s.id}')" title="Click to customize monster">
+            <div class="monster-stage element-${s.archetype} pb-2" style="padding-bottom:8px; cursor:pointer;" onclick="openClosetModal('${s.id}')" title="Click to customize monster">
               <button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); openClosetModal('${s.id}')" title="Customize Monster">✏️</button>
-              <div class="avatar-hero-container monster-viewport-stage">
-                <div class="mascot-pedestal-glow monster-iso-pedestal"></div>
-                <img src="${sprite}" alt="${s.firstName}'s Monster" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" />
+              
+              <!-- Approved Aspect-Square Dark Glass Container with Drop Shadow -->
+              <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-900/60 flex items-center justify-center p-2" style="position:relative; width:100%; aspect-ratio:1/1; border-radius:1rem; overflow:hidden; background:rgba(15,23,42,0.6); display:flex; align-items:center; justify-content:center; padding:0.5rem;">
+                <img src="${sprite}" alt="${s.firstName}'s Monster" class="w-full h-full object-contain filter drop-shadow-md mascot-sprite-img monster-hero-3d" loading="lazy" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.3));" />
               </div>
-              <span class="stage-level-badge">Lvl ${s.level} • ${stageLabel}</span>
+
+              <span class="stage-level-badge" style="margin-top:6px; display:inline-block;">Lvl ${s.level} • ${stageLabel}</span>
             </div>
 
             <div class="student-card-content" style="width:100%; margin-top:12px;">
@@ -271,15 +340,18 @@
       if (!nav) return;
       const tabs = [
         { id: 'colors', label: 'Colors', icon: '🎨' },
+        { id: 'ears', label: 'Ears', icon: '🦻' },
         { id: 'horns', label: 'Horns', icon: '🪶' },
         { id: 'hats', label: 'Hats', icon: '🎩' },
         { id: 'wings', label: 'Wings', icon: '🪽' },
         { id: 'tails', label: 'Tails', icon: '🦎' },
-        { id: 'auras', label: 'Auras', icon: '✨' }
+        { id: 'auras', label: 'Auras', icon: '✨' },
+        { id: 'clothing', label: 'Clothing', icon: '👔' },
+        { id: 'accessories', label: 'Accessories', icon: '👓' }
       ];
 
       nav.innerHTML = tabs.map(t => `
-        <button type="button" class="classroom-nav-tab-btn ${activeClosetTab === t.id ? 'is-active' : ''}" onclick="selectClosetTab('${t.id}')" style="padding:6px 12px; font-size:0.82rem; font-weight:700;">
+        <button type="button" class="classroom-nav-tab-btn ${activeClosetTab === t.id ? 'is-active' : ''}" onclick="selectClosetTab('${t.id}')" style="padding:6px 12px; font-size:0.82rem; font-weight:700; cursor:pointer;">
           ${t.icon} ${t.label}
         </button>
       `).join('');
@@ -295,7 +367,12 @@
       const grid = document.getElementById('closet-items-grid');
       if (!grid || !currentEditingStudent) return;
 
-      const items = CATALOG.filter(i => i.category === activeClosetTab);
+      const items = CATALOG.filter(i => {
+        if (activeClosetTab === 'colors') return i.category === 'body' || i.category === 'colors';
+        if (activeClosetTab === 'accessories') return i.category === 'accessory' || i.category === 'glasses' || i.category === 'accessories';
+        return i.category === activeClosetTab;
+      });
+
       grid.innerHTML = items.map(item => {
         const isEquipped = draftEquipped[item.category] === item.id;
         const isLocked = item.unlockLevel > currentEditingStudent.level;
@@ -328,13 +405,30 @@
     function updateClosetPreview() {
       if (!currentEditingStudent) return;
       const previewBox = document.getElementById('modal-live-stage-preview');
-      const sprite = getMonsterAsset(currentEditingStudent.archetype, currentEditingStudent.level);
-      previewBox.innerHTML = `
-        <div class="monster-composite-stage" style="position:relative; width:170px; height:170px; margin:0 auto;">
-          <div class="mascot-pedestal-glow monster-iso-pedestal" style="position:absolute; bottom:0; width:100%; height:20px;"></div>
-          <img src="${sprite}" alt="Preview" class="mascot-sprite-img monster-hero-3d" style="width:100%; height:100%; object-fit:contain;" />
-        </div>
-      `;
+      const stage = currentEditingStudent.level === 1 ? 'egg' : (currentEditingStudent.level === 2 ? 'cracking_egg' : (currentEditingStudent.level >= 7 ? 'ultimate' : (currentEditingStudent.level >= 4 ? 'growing' : 'baby')));
+      const color = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || (draftEquipped.body && draftEquipped.body.replace('body-', '')) || 'blue';
+
+      if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+        const svg = window.MonsterRenderer.renderMonsterSVG({
+          stage: stage,
+          color: color,
+          archetype: currentEditingStudent.archetype,
+          level: currentEditingStudent.level,
+          equipped: draftEquipped,
+          size: 200,
+          animated: true,
+          isAvatar: true
+        });
+        previewBox.innerHTML = svg;
+      } else {
+        const sprite = getMonsterAsset(currentEditingStudent.archetype, currentEditingStudent.level);
+        previewBox.innerHTML = `
+          <div class="monster-composite-stage" style="position:relative; width:170px; height:170px; margin:0 auto;">
+            <div class="mascot-pedestal-glow monster-iso-pedestal" style="position:absolute; bottom:0; width:100%; height:20px;"></div>
+            <img src="${sprite}" alt="Preview" class="mascot-sprite-img monster-hero-3d" style="width:100%; height:100%; object-fit:contain;" />
+          </div>
+        `;
+      }
       document.getElementById('modal-live-stage-meta').textContent = `Level ${currentEditingStudent.level} • ${currentEditingStudent.archetype.toUpperCase()}`;
     }
 
@@ -342,11 +436,13 @@
       if (!currentEditingStudent) return;
       currentEditingStudent.equipped = Object.assign({}, draftEquipped);
       if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
-        const stage = currentEditingStudent.level === 1 ? 'egg' : (currentEditingStudent.level === 2 ? 'cracking_egg' : 'baby');
-        const color = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || 'blue';
+        const stage = currentEditingStudent.level === 1 ? 'egg' : (currentEditingStudent.level === 2 ? 'cracking_egg' : (currentEditingStudent.level >= 7 ? 'ultimate' : (currentEditingStudent.level >= 4 ? 'growing' : 'baby')));
+        const color = (draftEquipped.colors && draftEquipped.colors.replace('color-', '')) || (draftEquipped.body && draftEquipped.body.replace('body-', '')) || 'blue';
         const svg = window.MonsterRenderer.renderMonsterSVG({
           stage: stage,
           color: color,
+          archetype: currentEditingStudent.archetype,
+          level: currentEditingStudent.level,
           equipped: draftEquipped,
           size: 200,
           animated: true,
