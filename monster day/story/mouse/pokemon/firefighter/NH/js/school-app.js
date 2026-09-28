@@ -12686,7 +12686,8 @@ window.switchClassroomSubTab = function(subTab) {
 
     // 2. Update live stage layer
     const layerMap = {
-      aura: 'layer-aura-back',
+      pedestal: 'layer-pedestal',
+      aura: document.getElementById('layer-pedestal') ? 'layer-pedestal' : 'layer-aura-back',
       wings: 'layer-back-gear',
       tail: 'layer-back-gear',
       backpack: 'layer-back-gear',
@@ -12697,7 +12698,7 @@ window.switchClassroomSubTab = function(subTab) {
       eyes: 'layer-face',
       mouth: 'layer-face',
       glasses: 'layer-glasses',
-      horns: 'layer-horns',
+      horns: document.getElementById('layer-horns') ? 'layer-horns' : 'layer-headwear',
       hat: 'layer-headwear',
       hats: 'layer-headwear',
       headwear: 'layer-headwear',
@@ -12811,7 +12812,12 @@ window.switchClassroomSubTab = function(subTab) {
     const mState = store.calculateMonsterState(monsterCreatorStudentId);
     const profile = store.getMonsterProfile(monsterCreatorStudentId);
 
-    const box = document.querySelector('#modal-avatar-selector #avatar-preview-box') || document.getElementById('avatar-preview-box');
+    const box = document.getElementById('live-interactive-preview') ||
+                document.querySelector('#modal-avatar-selector #live-interactive-preview') ||
+                document.querySelector('#modal-avatar-selector .preview-stage') ||
+                document.querySelector('.preview-stage') ||
+                document.querySelector('#modal-avatar-selector #avatar-preview-box') ||
+                document.getElementById('avatar-preview-box');
     const miniAvatarBox = document.getElementById('monster-creator-mini-avatar');
     const nameEl = document.getElementById('avatar-preview-name');
     const stageEl = document.getElementById('avatar-preview-category');
