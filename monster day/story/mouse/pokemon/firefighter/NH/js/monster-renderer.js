@@ -131,53 +131,58 @@
   // 3. Volt (Sparktail / Electric): assets/monsters/volt.webp
   // 4. Astral (Astralight / Cosmic): assets/monsters/astral.webp
   // =========================================================================
-  const ELEMENTAL_SPECIES = {
-    ignis: {
-      name: "Emberwing",
-      element: "IGNIS",
-      image: "assets/monsters/ignis.webp",
-      fallback: "assets/packs/characters/emberwing_stage_baby.png",
-      glow: "rgba(239, 68, 68, 0.45)"
+  const ELEMENTAL_AVATARS = {
+    IGNIS: {
+      name: "Ember Beast",
+      sprite: "assets/packs/characters/emberwing_stage_baby.png",
+      glow: "rgba(239, 68, 68, 0.55)",
+      border: "#ef4444"
     },
-    flora: {
-      name: "Florasprout",
-      element: "FLORA",
-      image: "assets/monsters/flora.webp",
-      fallback: "assets/packs/characters/florasprout_stage_baby.png",
-      glow: "rgba(16, 185, 129, 0.45)"
+    FLORA: {
+      name: "Leaf Guardian",
+      sprite: "assets/packs/characters/florasprout_stage_baby.png",
+      glow: "rgba(16, 185, 129, 0.55)",
+      border: "#10b981"
     },
-    volt: {
-      name: "Sparktail",
-      element: "VOLT",
-      image: "assets/monsters/volt.webp",
-      fallback: "assets/packs/characters/sparktail_stage_baby.png",
-      glow: "rgba(245, 158, 11, 0.45)"
+    VOLT: {
+      name: "Thunder Spark",
+      sprite: "assets/packs/characters/sparktail_stage_baby.png",
+      glow: "rgba(245, 158, 11, 0.55)",
+      border: "#f59e0b"
     },
-    astral: {
-      name: "Astralight",
-      element: "ASTRAL",
-      image: "assets/monsters/astral.webp",
-      fallback: "assets/packs/characters/astralight_stage_baby.png",
-      glow: "rgba(139, 92, 246, 0.45)"
+    ASTRAL: {
+      name: "Cosmic Sprite",
+      sprite: "assets/packs/characters/astralight_stage_baby.png",
+      glow: "rgba(139, 92, 246, 0.55)",
+      border: "#8b5cf6"
     }
   };
 
-  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+  function getStudentMascot(student) {
+    if (!student) return ELEMENTAL_AVATARS.IGNIS;
+    const s = typeof student === 'object' ? student : { id: String(student) };
+    const archetype = (s.archetype || "").toUpperCase();
+    if (ELEMENTAL_AVATARS[archetype]) return ELEMENTAL_AVATARS[archetype];
 
-  function getStudentSpeciesData(student) {
-    const keys = ["ignis", "flora", "volt", "astral"];
-    if (!student) return ELEMENTAL_SPECIES.ignis;
-    if (typeof student === 'string') {
-      if (ELEMENTAL_SPECIES[student]) return ELEMENTAL_SPECIES[student];
-    }
-    if (student && student.archetype && ELEMENTAL_SPECIES[student.archetype]) {
-      return ELEMENTAL_SPECIES[student.archetype];
-    }
-    const seed = String(student.id || student.name || "0")
+    // Fallback to deterministic hash so adjacent cards have different creatures
+    const keys = Object.keys(ELEMENTAL_AVATARS);
+    const hash = String(s.id || s.name || "0")
       .split("")
       .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return ELEMENTAL_SPECIES[keys[seed % keys.length]] || ELEMENTAL_SPECIES.ignis;
+    return ELEMENTAL_AVATARS[keys[hash % keys.length]];
   }
+
+  const ELEMENTAL_SPECIES = ELEMENTAL_AVATARS;
+
+  function getStudentSpeciesData(student) {
+    const mascot = getStudentMascot(student);
+    return Object.assign({}, mascot, {
+      image: mascot.sprite,
+      fallback: mascot.sprite
+    });
+  }
+
+  const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
 
   function getStudentArchetype(student) {
     if (!student) return SPECIES_ARCHETYPES[0];
@@ -822,16 +827,16 @@
    * 3D Raster Mascot Viewport Stage with Grounded Isometric Pedestal
    */
   function renderMonsterViewportStage(speciesOrStudent, options = {}) {
-    const species = (speciesOrStudent && speciesOrStudent.image && speciesOrStudent.glow)
+    const mascot = (speciesOrStudent && speciesOrStudent.sprite)
       ? speciesOrStudent
-      : getStudentSpeciesData(speciesOrStudent);
+      : getStudentMascot(speciesOrStudent);
     return `
-<div class="monster-viewport-stage" style="--pedestal-glow: ${species.glow}">
+<div class="monster-viewport-stage" style="--pedestal-glow: ${mascot.glow}">
   <img 
-    src="${species.image}" 
-    alt="${species.name}" 
+    src="${mascot.sprite}" 
+    alt="${mascot.name}" 
     class="monster-hero-3d" 
-    onerror="this.src='${species.fallback}'" 
+    onerror="this.src='${mascot.sprite}'" 
   />
   <div class="monster-iso-pedestal"></div>
 </div>`.trim();
@@ -910,13 +915,13 @@
       const bellyColor = palette.belly || '#fef3c7';
       const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
 
-      const species = getStudentSpeciesData(options.student || { id: options.studentId || options.id || options.name || archetype, archetype: archetype });
+      const mascot = getStudentMascot(options.student || { id: options.studentId || options.id || options.name || archetype, archetype: archetype });
 
       bodySvg = `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           ${defs}
           <g id="layer-body">
-            <image href="${species.image}" xlink:href="${species.fallback}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
+            <image href="${mascot.sprite}" xlink:href="${mascot.sprite}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
           </g>
         </svg>
       `;
@@ -3674,11 +3679,11 @@
   const STAGE_IMAGES = {
     egg: 'assets/monsters/stage-1-mystery-egg.png',
     cracking_egg: 'assets/monsters/stage-2-cracking-egg.png',
-    baby: 'assets/monsters/stage-3-baby-monster.png',
-    growing: 'assets/monsters/stage-4-growing-monster.png',
+    baby: 'assets/packs/characters/emberwing_stage_baby.png',
+    growing: 'assets/packs/characters/emberwing_stage_growing.png',
     adventurer: 'assets/monsters/stage-5-adventurer-monster.png',
     advanced: 'assets/monsters/stage-6-advanced-monster.png',
-    ultimate: 'assets/monsters/stage-7-ultimate-monster.png'
+    ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
   };
 
   function getMonsterStageImage(stageKey) {
@@ -3811,6 +3816,8 @@
     getStudentArchetype: getStudentArchetype,
     ELEMENTAL_SPECIES: ELEMENTAL_SPECIES,
     getStudentSpeciesData: getStudentSpeciesData,
+    ELEMENTAL_AVATARS: ELEMENTAL_AVATARS,
+    getStudentMascot: getStudentMascot,
     renderMonsterViewportStage: renderMonsterViewportStage
   };
 
@@ -3832,6 +3839,8 @@
   root.getStudentArchetype = getStudentArchetype;
   root.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
   root.getStudentSpeciesData = getStudentSpeciesData;
+  root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
+  root.getStudentMascot = getStudentMascot;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;
