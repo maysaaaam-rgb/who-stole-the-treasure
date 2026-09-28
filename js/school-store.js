@@ -15973,6 +15973,326 @@
       };
     }
 
+    // =========================================================================
+    // MYSTERY BOXES, STUDENT INVENTORY & TRADING ENGINE
+    // =========================================================================
+    _ensureMysteryBoxState() {
+      if (!this.state.mysteryBoxes || !Array.isArray(this.state.mysteryBoxes)) {
+        this.state.mysteryBoxes = [];
+      }
+      if (!this.state.studentInventories || typeof this.state.studentInventories !== 'object') {
+        this.state.studentInventories = {};
+      }
+      if (!this.state.trades || !Array.isArray(this.state.trades)) {
+        this.state.trades = [];
+      }
+
+      // Pre-seed default unopened boxes for existing students if empty
+      const students = this.state.students || [];
+      if (this.state.mysteryBoxes.length === 0 && students.length > 0) {
+        students.forEach((s, idx) => {
+          this.state.mysteryBoxes.push({
+            id: 'box-' + s.id + '-wood-1',
+            studentId: s.id,
+            boxTier: 'WOODEN',
+            isOpened: false,
+            openedAt: null,
+            createdAt: new Date().toISOString()
+          });
+          this.state.mysteryBoxes.push({
+            id: 'box-' + s.id + '-gilded-1',
+            studentId: s.id,
+            boxTier: 'GILDED',
+            isOpened: false,
+            openedAt: null,
+            createdAt: new Date().toISOString()
+          });
+          if (idx % 2 === 0) {
+            this.state.mysteryBoxes.push({
+              id: 'box-' + s.id + '-celestial-1',
+              studentId: s.id,
+              boxTier: 'CELESTIAL',
+              isOpened: false,
+              openedAt: null,
+              createdAt: new Date().toISOString()
+            });
+          }
+        });
+        this.saveState();
+      }
+    }
+
+    getMysteryBoxes(studentId = null, includeOpened = false) {
+      this._ensureMysteryBoxState();
+      return this.state.mysteryBoxes.filter(b => {
+        const matchStudent = !studentId || b.studentId === studentId;
+        const matchOpened = includeOpened || !b.isOpened;
+        return matchStudent && matchOpened;
+      });
+    }
+
+    grantMysteryBox(studentId, boxTier = 'WOODEN') {
+      this._ensureMysteryBoxState();
+      const validTiers = ['WOODEN', 'GILDED', 'CELESTIAL'];
+      const tier = validTiers.includes(String(boxTier).toUpperCase()) ? String(boxTier).toUpperCase() : 'WOODEN';
+      const box = {
+        id: 'box-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+        studentId: studentId,
+        boxTier: tier,
+        isOpened: false,
+        openedAt: null,
+        createdAt: new Date().toISOString()
+      };
+      this.state.mysteryBoxes.push(box);
+      this.saveState();
+      this.notify();
+      return box;
+    }
+
+    grantClassMysteryBoxes(classId, boxTier = 'WOODEN') {
+      this._ensureMysteryBoxState();
+      const students = this.getStudentsByClass(classId);
+      const boxes = [];
+      students.forEach(s => {
+        boxes.push(this.grantMysteryBox(s.id, boxTier));
+      });
+      return boxes;
+    }
+
+    getStudentInventory(studentId) {
+      this._ensureMysteryBoxState();
+      if (!this.state.studentInventories[studentId]) {
+        this.state.studentInventories[studentId] = [];
+      }
+      return this.state.studentInventories[studentId];
+    }
+
+    openMysteryBox(boxId, studentId) {
+      this._ensureMysteryBoxState();
+      const box = this.state.mysteryBoxes.find(b => b.id === boxId);
+      if (!box) {
+        return { success: false, error: 'Mystery box not found' };
+      }
+      if (box.studentId !== studentId) {
+        return { success: false, error: 'This box belongs to another student' };
+      }
+      if (box.isOpened) {
+        return { success: false, error: 'This mystery box is already opened' };
+      }
+
+      // Roll item based on tier drop rates:
+      // WOODEN: 70% Common / 30% Rare
+      // GILDED: 65% Rare / 35% Epic
+      // CELESTIAL: 60% Epic / 40% Legendary
+      const roll = Math.random() * 100;
+      let targetRarity = 'common';
+      if (box.boxTier === 'WOODEN') {
+        targetRarity = roll < 70 ? 'common' : 'rare';
+      } else if (box.boxTier === 'GILDED') {
+        targetRarity = roll < 65 ? 'rare' : 'epic';
+      } else { // CELESTIAL
+        targetRarity = roll < 60 ? 'epic' : 'legendary';
+      }
+
+      const allItems = this.getMonsterItems(null, true);
+      let candidateItems = allItems.filter(i => i.rarity === targetRarity);
+      if (candidateItems.length === 0) {
+        candidateItems = allItems;
+      }
+      const item = candidateItems[Math.floor(Math.random() * candidateItems.length)];
+
+      const inv = this.getStudentInventory(studentId);
+      const existingEntry = inv.find(e => e.itemId === item.id);
+      let isDuplicate = false;
+      let bonusXp = 0;
+
+      if (existingEntry) {
+        isDuplicate = true;
+        bonusXp = 50;
+        existingEntry.quantity = (existingEntry.quantity || 1) + 1;
+        // Award XP bonus
+        this.addXPTransaction(studentId, {
+          amount: 50,
+          reason: 'Mystery Box Duplicate Reward Bonus (' + item.name + ')',
+          category: 'positive',
+          icon: '⭐',
+          source: 'mystery-box'
+        });
+      } else {
+        inv.push({
+          id: 'inv-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+          studentId: studentId,
+          itemId: item.id,
+          name: item.name,
+          category: item.category,
+          rarity: item.rarity,
+          icon: item.icon,
+          isEquipped: false,
+          quantity: 1,
+          acquiredAt: new Date().toISOString()
+        });
+
+        // Also add to unlockedItems in student's monsterProfile
+        const profile = this.getMonsterProfile(studentId);
+        if (profile) {
+          if (!profile.unlockedItems) profile.unlockedItems = [];
+          if (!profile.unlockedItems.includes(item.id)) {
+            profile.unlockedItems.push(item.id);
+            this.saveMonsterProfile(studentId, profile);
+          }
+        }
+      }
+
+      box.isOpened = true;
+      box.openedAt = new Date().toISOString();
+      this.saveState();
+      this.notify();
+
+      return {
+        success: true,
+        boxId: box.id,
+        boxTier: box.boxTier,
+        item: {
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          rarity: item.rarity,
+          icon: item.icon || item.icon_url || '✨',
+          description: item.description || ''
+        },
+        isDuplicate,
+        bonusXp,
+        openedAt: box.openedAt
+      };
+    }
+
+    equipInventoryItem(studentId, itemId) {
+      this._ensureMysteryBoxState();
+      const inv = this.getStudentInventory(studentId);
+      const entry = inv.find(e => e.itemId === itemId);
+      const item = this.getMonsterItem(itemId);
+      if (!item) return false;
+
+      // Un-equip previous of same category in inventory
+      inv.forEach(e => {
+        if (e.category === item.category) e.isEquipped = false;
+      });
+      if (entry) entry.isEquipped = true;
+
+      // Update student monster profile equipped slot
+      const profile = this.getMonsterProfile(studentId);
+      if (profile) {
+        if (!profile.equipped) profile.equipped = {};
+        profile.equipped[item.category] = item.id;
+        if (!profile.unlockedItems) profile.unlockedItems = [];
+        if (!profile.unlockedItems.includes(item.id)) profile.unlockedItems.push(item.id);
+        this.saveMonsterProfile(studentId, profile);
+      }
+      this.saveState();
+      this.notify();
+      return true;
+    }
+
+    getTrades(studentId = null) {
+      this._ensureMysteryBoxState();
+      if (!studentId) return this.state.trades;
+      return this.state.trades.filter(t => t.senderId === studentId || t.receiverId === studentId);
+    }
+
+    createTrade({ senderId, receiverId, senderItemId, receiverItemId = null, message = '' }) {
+      this._ensureMysteryBoxState();
+      const trade = {
+        id: 'trade-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+        senderId,
+        receiverId,
+        senderItemId,
+        receiverItemId,
+        status: 'pending',
+        message: message || '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      this.state.trades.unshift(trade);
+      this.saveState();
+      this.notify();
+      return trade;
+    }
+
+    acceptTrade(tradeId) {
+      this._ensureMysteryBoxState();
+      const trade = this.state.trades.find(t => t.id === tradeId);
+      if (!trade || trade.status !== 'pending') return false;
+
+      const senderInv = this.getStudentInventory(trade.senderId);
+      const receiverInv = this.getStudentInventory(trade.receiverId);
+
+      // Transfer sender item to receiver
+      const sIdx = senderInv.findIndex(e => e.itemId === trade.senderItemId);
+      if (sIdx !== -1) {
+        const itemToTransfer = senderInv[sIdx];
+        if (itemToTransfer.quantity > 1) {
+          itemToTransfer.quantity--;
+        } else {
+          senderInv.splice(sIdx, 1);
+        }
+        // Add to receiver
+        const rExisting = receiverInv.find(e => e.itemId === trade.senderItemId);
+        if (rExisting) {
+          rExisting.quantity = (rExisting.quantity || 1) + 1;
+        } else {
+          receiverInv.push({ ...itemToTransfer, studentId: trade.receiverId, quantity: 1, isEquipped: false });
+        }
+      }
+
+      // Transfer receiver item to sender (if bilateral exchange)
+      if (trade.receiverItemId) {
+        const rIdx = receiverInv.findIndex(e => e.itemId === trade.receiverItemId);
+        if (rIdx !== -1) {
+          const itemToTransfer = receiverInv[rIdx];
+          if (itemToTransfer.quantity > 1) {
+            itemToTransfer.quantity--;
+          } else {
+            receiverInv.splice(rIdx, 1);
+          }
+          // Add to sender
+          const sExisting = senderInv.find(e => e.itemId === trade.receiverItemId);
+          if (sExisting) {
+            sExisting.quantity = (sExisting.quantity || 1) + 1;
+          } else {
+            senderInv.push({ ...itemToTransfer, studentId: trade.senderId, quantity: 1, isEquipped: false });
+          }
+        }
+      }
+
+      trade.status = 'accepted';
+      trade.updatedAt = new Date().toISOString();
+      this.saveState();
+      this.notify();
+      return true;
+    }
+
+    rejectTrade(tradeId) {
+      this._ensureMysteryBoxState();
+      const trade = this.state.trades.find(t => t.id === tradeId);
+      if (!trade || trade.status !== 'pending') return false;
+      trade.status = 'rejected';
+      trade.updatedAt = new Date().toISOString();
+      this.saveState();
+      this.notify();
+      return true;
+    }
+
+    cancelTrade(tradeId) {
+      this._ensureMysteryBoxState();
+      const trade = this.state.trades.find(t => t.id === tradeId);
+      if (!trade || trade.status !== 'pending') return false;
+      trade.status = 'cancelled';
+      trade.updatedAt = new Date().toISOString();
+      this.saveState();
+      this.notify();
+      return true;
+    }
+
   }
 
   MasterSchoolStore.prototype.evaluateMonsterStage = evaluateMonsterStage;

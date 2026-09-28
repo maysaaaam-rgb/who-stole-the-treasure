@@ -7464,12 +7464,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     const activeTab = gamificationActiveTab || 'badges';
 
+    const allBoxes = store.getMysteryBoxes ? store.getMysteryBoxes(null, true) : [];
+    const unopenedBoxes = allBoxes.filter(b => !b.isOpened);
+
     const tabsHtml = 
       '<div style="display:flex; gap:8px; border-bottom:1px solid var(--border-light); margin-bottom:20px; overflow-x:auto;">' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">🏆 Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">👾 Monster Evolution Levels (' + levels.length + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + allItems.length + ')</button>' +
         '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">⭐ Classroom XP Skills (' + allSkills.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'boxes' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'boxes\')">🎁 Mystery Boxes &amp; Trading (' + unopenedBoxes.length + ' Ready)</button>' +
       '</div>';
 
     let tabBodyHtml = '';
@@ -7603,6 +7607,139 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             }).join('') +
           '</div>' +
         '</div>';
+    } else if (activeTab === 'boxes') {
+      const allStudents = store.getStudents ? store.getStudents() : [];
+      const allTrades = store.getTrades ? store.getTrades() : [];
+
+      tabBodyHtml = 
+        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:22px; box-shadow:var(--shadow-sm);">' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--border-light); padding-bottom:16px;">' +
+            '<div>' +
+              '<h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">🎁 Mystery Boxes, Backpacks &amp; Trading Vault</h3>' +
+              '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Weighted drop algorithms, individual/class box grants, live 3D unboxing sequences, and peer exchange.</p>' +
+            '</div>' +
+            '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.openTradingCabinet()" style="font-size:0.82rem; padding:8px 14px;">🤝 Open Trading Cabinet</button>' +
+              '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestDemoUnboxing()" style="font-size:0.82rem; padding:8px 16px;">✨ Test 3D Unboxing Rig</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:24px;">' +
+            '<div style="background:linear-gradient(135deg, rgba(120,53,15,0.2) 0%, rgba(69,26,3,0.3) 100%); border:1.5px solid #b45309; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                  '<span style="font-size:2.2rem;">🪵</span>' +
+                  '<span class="box-tier-pill tier-wooden">WOODEN CHEST</span>' +
+                '</div>' +
+                '<div style="font-weight:900; font-size:1rem; color:#fef08a; margin-bottom:4px;">Sturdy Forest Oak</div>' +
+                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Standard classroom reward for completing daily reading &amp; speaking missions.</p>' +
+                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
+                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#10b981; font-weight:700;">Common Drop Rate:</span> <strong style="color:#ffffff;">70%</strong></div>' +
+                  '<div style="display:flex; justify-content:space-between;"><span style="color:#38bdf8; font-weight:700;">Rare Drop Rate:</span> <strong style="color:#ffffff;">30%</strong></div>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'WOODEN\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
+                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'WOODEN\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="background:linear-gradient(135deg, rgba(234,179,8,0.2) 0%, rgba(180,83,9,0.25) 100%); border:1.5px solid #eab308; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                  '<span style="font-size:2.2rem;">🪙</span>' +
+                  '<span class="box-tier-pill tier-gilded">GILDED CHEST</span>' +
+                '</div>' +
+                '<div style="font-weight:900; font-size:1rem; color:#fef08a; margin-bottom:4px;">Imperial Gold Reliquary</div>' +
+                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Awarded for unit test mastery, reading streaks, and stellar teamwork exhibitions.</p>' +
+                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
+                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#38bdf8; font-weight:700;">Rare Drop Rate:</span> <strong style="color:#ffffff;">65%</strong></div>' +
+                  '<div style="display:flex; justify-content:space-between;"><span style="color:#a855f7; font-weight:700;">Epic Drop Rate:</span> <strong style="color:#ffffff;">35%</strong></div>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'GILDED\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
+                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'GILDED\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
+              '</div>' +
+            '</div>' +
+
+            '<div style="background:linear-gradient(135deg, rgba(88,28,135,0.3) 0%, rgba(30,27,75,0.4) 100%); border:1.5px solid #a855f7; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
+              '<div>' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                  '<span style="font-size:2.2rem;">🌌</span>' +
+                  '<span class="box-tier-pill tier-celestial">CELESTIAL CHEST</span>' +
+                '</div>' +
+                '<div style="font-weight:900; font-size:1rem; color:#e9d5ff; margin-bottom:4px;">Astral Void Ark</div>' +
+                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Crown jewel tier awarded for CEFR milestone achievements and apex monster forms.</p>' +
+                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
+                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#a855f7; font-weight:700;">Epic Drop Rate:</span> <strong style="color:#ffffff;">60%</strong></div>' +
+                  '<div style="display:flex; justify-content:space-between;"><span style="color:#f59e0b; font-weight:700;">Legendary Drop Rate:</span> <strong style="color:#ffffff;">40%</strong></div>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'CELESTIAL\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
+                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'CELESTIAL\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:20px;">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">' +
+              '<div style="font-weight:800; font-size:0.95rem; color:var(--text-main);">Active Class Roster Mystery Boxes (' + allStudents.length + ' Students)</div>' +
+              '<span style="font-size:0.75rem; color:var(--text-muted);">' + unopenedBoxes.length + ' unopened boxes currently in circulation</span>' +
+            '</div>' +
+            '<div style="overflow-x:auto;">' +
+              '<table style="width:100%; border-collapse:collapse; font-size:0.82rem; text-align:left;">' +
+                '<thead>' +
+                  '<tr style="border-bottom:1px solid var(--border-light); color:var(--text-muted);">' +
+                    '<th style="padding:8px 10px;">Student</th>' +
+                    '<th style="padding:8px 10px;">Unopened Boxes</th>' +
+                    '<th style="padding:8px 10px;">Backpack Items</th>' +
+                    '<th style="padding:8px 10px; text-align:right;">Quick Actions</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                  allStudents.map(s => {
+                    const sBoxes = store.getMysteryBoxes ? store.getMysteryBoxes(s.id, false) : [];
+                    const sInv = store.getStudentInventory ? store.getStudentInventory(s.id) : [];
+                    return '' +
+                      '<tr style="border-bottom:1px solid var(--border-light);">' +
+                        '<td style="padding:8px 10px; font-weight:800; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + ' <span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">(' + (s.grade || 'Grade 4B') + ')</span></td>' +
+                        '<td style="padding:8px 10px;">' +
+                          (sBoxes.length === 0 ? '<span style="color:var(--text-muted); font-size:0.75rem;">0 boxes</span>' :
+                            sBoxes.map(b => '<span class="box-tier-pill ' + (b.boxTier === 'CELESTIAL' ? 'tier-celestial' : b.boxTier === 'GILDED' ? 'tier-gilded' : 'tier-wooden') + '" style="font-size:0.62rem; padding:2px 6px; margin-right:4px;">' + b.boxTier + '</span>').join('')
+                          ) +
+                        '</td>' +
+                        '<td style="padding:8px 10px; font-weight:700; color:#38bdf8;">' + sInv.length + ' collectibles</td>' +
+                        '<td style="padding:8px 10px; text-align:right;">' +
+                          '<button type="button" class="btn-sm-secondary" onclick="window.handleGrantStudentPrompt(\'' + s.id + '\')" style="font-size:0.72rem; padding:3px 8px; margin-right:4px;">+ Grant Box</button>' +
+                          '<button type="button" class="btn-sm-secondary" onclick="window.openTradingCabinet(\'' + s.id + '\')" style="font-size:0.72rem; padding:3px 8px;">🤝 Cabinet</button>' +
+                        '</td>' +
+                      '</tr>';
+                  }).join('') +
+                '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:16px;">' +
+            '<div style="font-weight:800; font-size:0.95rem; color:var(--text-main); margin-bottom:8px;">Recent Peer Trades &amp; Gifts (' + allTrades.length + ')</div>' +
+            (allTrades.length === 0 ? 
+              '<div style="font-size:0.8rem; color:var(--text-muted); padding:10px 0;">No trades executed yet. Students can propose trades in their Trading Cabinet.</div>' :
+              '<div style="display:flex; flex-direction:column; gap:6px;">' +
+                allTrades.slice(0, 5).map(tr => {
+                  const sender = store.getStudent ? store.getStudent(tr.senderId) : null;
+                  const receiver = store.getStudent ? store.getStudent(tr.receiverId) : null;
+                  return '' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); padding:8px 12px; border-radius:8px; font-size:0.78rem;">' +
+                      '<span><strong>' + (sender ? sender.firstName : 'Student') + '</strong> ➔ <strong>' + (receiver ? receiver.firstName : 'Student') + '</strong>: ' + (tr.message || 'Collectible Exchange') + '</span>' +
+                      '<span style="font-weight:800; color:' + (tr.status === 'accepted' ? '#10b981' : '#f59e0b') + '; text-transform:uppercase;">' + tr.status + '</span>' +
+                    '</div>';
+                }).join('') +
+              '</div>'
+            ) +
+          '</div>' +
+        '</div>';
     } else {
       // Tab 1: Badges & Achievements
       tabBodyHtml = 
@@ -7689,9 +7826,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Gamification &amp; Reward Milestones</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage badges, monster evolution stages, modular cosmetics, and XP skills.</p>' +
         '</div>' +
-        '<div style="display:flex; gap:8px;">' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
           '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
           '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
+          '<button class="btn-sm-secondary" onclick="window.openTradingCabinet()" style="background:rgba(245,158,11,0.12); color:#f59e0b; border-color:rgba(245,158,11,0.4); font-weight:800;">🎁 Trading Cabinet</button>' +
         '</div>' +
       '</div>' +
       tabsHtml +
@@ -7704,6 +7842,50 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (container && currentView === 'gamification') {
       renderGamificationView(container);
     }
+  };
+
+  window.handleGrantStudentPrompt = function(studentId) {
+    const student = store.getStudent ? store.getStudent(studentId) : null;
+    const name = student ? (student.firstName + ' ' + student.lastName) : 'Student';
+    const tierChoice = prompt('Grant Mystery Box to ' + name + ':\nEnter tier (WOODEN, GILDED, CELESTIAL):', 'WOODEN');
+    if (!tierChoice) return;
+    const box = store.grantMysteryBox(studentId, tierChoice.trim().toUpperCase());
+    if (window.showNotification) {
+      window.showNotification('🎁 Granted ' + box.boxTier + ' Mystery Box to ' + name + '!', 'success');
+    }
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') renderGamificationView(container);
+  };
+
+  window.handleGrantClassMysteryBox = function(tier) {
+    const boxTier = tier || 'WOODEN';
+    const cls = store.getActiveClass ? store.getActiveClass() : { id: 'class-4b', name: 'Grade 4B' };
+    const confirmed = confirm('Grant a ' + boxTier + ' Mystery Box to all students in ' + cls.name + '?');
+    if (!confirmed) return;
+    store.grantClassMysteryBoxes(cls.id, boxTier);
+    if (window.showNotification) {
+      window.showNotification('🎉 Granted ' + boxTier + ' Mystery Box to entire class (' + cls.name + ')!', 'success');
+    }
+    const container = document.getElementById('app-view-container');
+    if (container && currentView === 'gamification') renderGamificationView(container);
+  };
+
+  window.handleTestTierUnboxing = function(tier) {
+    const boxTier = tier || 'WOODEN';
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
+    if (window.MysteryBoxModal && s) {
+      window.MysteryBoxModal.openUnboxing(null, s.id, {
+        tier: boxTier,
+        onComplete: () => {
+          const container = document.getElementById('app-view-container');
+          if (container && currentView === 'gamification') renderGamificationView(container);
+        }
+      });
+    }
+  };
+
+  window.handleTestDemoUnboxing = function() {
+    window.handleTestTierUnboxing('GILDED');
   };
 
   window.filterMonsterItemsCategory = function(cat) {
@@ -8382,10 +8564,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</div>' +
             // Quick Studio Buttons
             '<div style="display:flex; flex-direction:column; gap:10px;">' +
-              '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + s.id + '\')" style="padding:12px 22px; font-weight:800; font-size:0.95rem; justify-content:center; box-shadow:0 4px 14px rgba(37,99,235,0.4);">' +
+              '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + s.id + '\')" style="padding:10px 20px; font-weight:800; font-size:0.92rem; justify-content:center; box-shadow:0 4px 14px rgba(37,99,235,0.4);">' +
                 '🎨 Monster Studio' +
               '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreen(\'' + s.id + '\')" style="padding:10px 18px; font-size:0.86rem; background:rgba(255,255,255,0.12); color:#ffffff; border:1px solid rgba(255,255,255,0.25); justify-content:center;">' +
+              '<button type="button" class="btn-3d btn-3d-primary" onclick="window.openTradingCabinet(\'' + s.id + '\')" style="padding:10px 20px; font-size:0.88rem; font-weight:800; justify-content:center; background:linear-gradient(135deg, #b45309 0%, #f59e0b 100%); border-bottom:4px solid #78350f; color:#ffffff;">' +
+                '🎁 Mystery Chests &amp; Backpack' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreen(\'' + s.id + '\')" style="padding:8px 16px; font-size:0.82rem; background:rgba(255,255,255,0.12); color:#ffffff; border:1px solid rgba(255,255,255,0.25); justify-content:center;">' +
                 '👑 Inspect Companion' +
               '</button>' +
             '</div>' +
