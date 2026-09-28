@@ -252,7 +252,11 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
     >
       {/* z-0: Aura Layer */}
       {equipped.aura && equipped.aura !== 'none' && (
-        <div id="layer-aura-back" style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+        <div 
+          id="layer-aura-back" 
+          className="preview-aura"
+          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '85%', height: '85%', zIndex: 10, pointerEvents: 'none' }}
+        >
           <div className="aura-glow-effect" style={{ width: '100%', height: '100%', filter: 'blur(8px)', opacity: 0.8 }} />
         </div>
       )}

@@ -107,6 +107,35 @@ export default function MonsterPreview({
           className="relative z-20 w-full h-full flex items-center justify-center"
           style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
+          {/* Aura Layer (z-10, centered 85% x 85%) */}
+          {draft.aura && draft.aura !== 'none' && (
+            <div 
+              className="preview-aura pointer-events-none"
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '85%',
+                height: '85%',
+                pointerEvents: 'none',
+                zIndex: 10
+              }}
+            >
+              <img 
+                src={`assets/packs/items/${draft.aura}.png`} 
+                className="w-full h-full object-contain"
+                alt="Equipped Aura"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement.style.background = 'radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(245, 158, 11, 0.15) 50%, transparent 70%)';
+                  e.currentTarget.parentElement.style.borderRadius = '50%';
+                  e.currentTarget.parentElement.style.filter = 'blur(10px)';
+                }}
+              />
+            </div>
+          )}
+
           {/* Base Body (Clean, Earless/Hornless Dome) */}
           <img 
             src={`assets/monsters/base/body_${stage}_${normColor}.webp`} 
