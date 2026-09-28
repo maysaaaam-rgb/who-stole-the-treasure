@@ -163,6 +163,73 @@
       });
     }
 
+    // Heavy Metallic Anvil Strike: 220 Hz Low-Pass Noise Crunch + Sub-Bass Anvil Resonant Ping
+    playAnvilStrike() {
+      if (this.isMuted) return;
+      this.initContext();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+
+      // 1. Noise crunch with 220 Hz low-pass filter
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
+      const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(220, now);
+      filter.frequency.exponentialRampToValueAtTime(70, now + 0.22);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.85, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.25);
+
+      // 2. Heavy metallic thud oscillator (220 Hz -> 55 Hz)
+      const thudOsc = this.ctx.createOscillator();
+      const thudGain = this.ctx.createGain();
+      thudOsc.type = 'sawtooth';
+      thudOsc.frequency.setValueAtTime(220, now);
+      thudOsc.frequency.exponentialRampToValueAtTime(55, now + 0.3);
+
+      thudGain.gain.setValueAtTime(0.7, now);
+      thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+      thudOsc.connect(thudGain);
+      thudGain.connect(this.ctx.destination);
+      thudOsc.start(now);
+      thudOsc.stop(now + 0.35);
+
+      // 3. Resonant metallic anvil ping (880 Hz & 1760 Hz with exponential decay)
+      [880, 1760].forEach((freq, idx) => {
+        const pingOsc = this.ctx.createOscillator();
+        const pingGain = this.ctx.createGain();
+        pingOsc.type = 'sine';
+        pingOsc.frequency.setValueAtTime(freq, now + 0.02);
+
+        pingGain.gain.setValueAtTime(0, now);
+        pingGain.gain.setValueAtTime(0.3, now + 0.02);
+        pingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6 + idx * 0.1);
+
+        pingOsc.connect(pingGain);
+        pingGain.connect(this.ctx.destination);
+        pingOsc.start(now + 0.02);
+        pingOsc.stop(now + 0.75);
+      });
+    }
+
     // 4. Creeper Hiss (Exponential Low-Pass Swept White Noise)
     playCreeperHiss() {
       if (this.isMuted) return;
