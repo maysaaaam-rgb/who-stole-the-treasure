@@ -1129,9 +1129,9 @@
 
     // Isolated character sprite on illuminated pedestal (Purge static card graphics)
     const avatarMarkup = '' +
-      '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
-        '<img src="' + mascot.sprite + '" alt="' + studentName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
-        '<div class="monster-iso-pedestal"></div>' +
+      '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
+        '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
+        '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -3176,9 +3176,9 @@
               const elementClass = 'element-' + elementKey;
 
               const avatarMarkup = '' +
-                '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
-                  '<img src="' + mascot.sprite + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
-                  '<div class="monster-iso-pedestal"></div>' +
+                '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
+                  '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
+                  '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
                 '</div>';
 
               return '' +
@@ -3563,9 +3563,9 @@
       const elementClass = 'element-' + elementKey;
 
       const avatarMarkup = '' +
-        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
-          '<img src="' + mascot.sprite + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
-          '<div class="monster-iso-pedestal"></div>' +
+        '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + mascot.glow + '; --pedestal-glow: ' + mascot.glow + '">' +
+          '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + mascot.glow + '"></div>' +
+          '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + mascot.sprite + '\'" />' +
         '</div>';
 
       return '' +
