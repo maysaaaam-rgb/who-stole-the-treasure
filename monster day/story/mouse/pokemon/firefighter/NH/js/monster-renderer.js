@@ -3819,6 +3819,11 @@
     renderMonsterSVG: renderMonsterSVG,
     renderMonsterLiveStage: renderMonsterLiveStage,
     renderHornsLayer: renderHornsLayer,
+    renderClothingLayer: renderClothingLayer,
+    renderForegroundAccessories: renderForegroundAccessories,
+    renderTailLayer: renderTailLayer,
+    renderWingsLayer: renderWingsLayer,
+    renderAuraLayer: renderAuraLayer,
     renderMonsterWithPedestal: renderMonsterWithPedestal,
     renderMonsterViewport: renderMonsterSingleSVG,
     renderMonsterImageViewport: renderMonsterImageViewport,
@@ -3841,6 +3846,11 @@
   root.renderMonsterLiveStage = renderMonsterLiveStage;
   root.renderMonsterViewportStage = renderMonsterViewportStage;
   root.renderHornsLayer = renderHornsLayer;
+  root.renderClothingLayer = renderClothingLayer;
+  root.renderForegroundAccessories = renderForegroundAccessories;
+  root.renderTailLayer = renderTailLayer;
+  root.renderWingsLayer = renderWingsLayer;
+  root.renderAuraLayer = renderAuraLayer;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterSingleSVG;
   root.renderMonsterImageViewport = renderMonsterImageViewport;

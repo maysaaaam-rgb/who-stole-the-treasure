@@ -975,10 +975,64 @@ window.closeCustomizerModal = closeCustomizerModal;
 
 // Compatibility adapters
 window.currentMonster = {
+  get species() { return ACTIVE_MONSTER.species || "flora"; },
   get equipped() { return workingCustomization; },
   get level() { return ACTIVE_MONSTER.level; }
 };
-window.updateMonsterPreview = renderMonsterRig;
+window.renderEquippedList = function() {
+  renderSpecsSidebar();
+};
+window.getAssetMarkup = function(category, id) {
+  if (!id || id === 'none') return '';
+  let regList = null;
+  if (category === 'horns') regList = ASSET_REGISTRY.horns;
+  else if (category === 'clothing') regList = ASSET_REGISTRY.clothing;
+  else if (category === 'glasses' || category === 'accessories') regList = ASSET_REGISTRY.accessories;
+  else if (category === 'tail' || category === 'back') regList = ASSET_REGISTRY.back;
+  if (regList) {
+    const match = regList.find(item => item.id === id);
+    if (match && match.svg) return match.svg;
+  }
+  return '';
+};
+function updateMonsterPreview() {
+  const equipped = currentMonster.equipped || {};
+
+  // 1. Base Body Sprite
+  const bodyLayer = document.getElementById("layer-body");
+  if (bodyLayer) {
+    const species = currentMonster.species || "flora";
+    bodyLayer.innerHTML = `<img src="assets/monsters/${species}.png" class="w-full h-full object-contain pointer-events-none" />`;
+  }
+
+  // 2. Headwear / Horns
+  const headLayer = document.getElementById("layer-headwear");
+  if (headLayer) {
+    headLayer.innerHTML = equipped.horns ? getAssetMarkup("horns", equipped.horns) : "";
+  }
+
+  // 3. Clothing / Vest
+  const clothingLayer = document.getElementById("layer-clothing");
+  if (clothingLayer) {
+    clothingLayer.innerHTML = equipped.clothing ? getAssetMarkup("clothing", equipped.clothing) : "";
+  }
+
+  // 4. Glasses / Eyewear
+  const glassesLayer = document.getElementById("layer-glasses");
+  if (glassesLayer) {
+    glassesLayer.innerHTML = equipped.glasses ? getAssetMarkup("glasses", equipped.glasses) : "";
+  }
+
+  // 5. Back Gear / Tails / Wings
+  const backLayer = document.getElementById("layer-back-gear");
+  if (backLayer) {
+    backLayer.innerHTML = equipped.tail ? getAssetMarkup("tail", equipped.tail) : "";
+  }
+
+  // Synchronize Equipped Features Drawer
+  renderEquippedList();
+}
+window.updateMonsterPreview = updateMonsterPreview;
 window.equipItem = function(category, item) {
   equipItemSlot(category, item);
 };
