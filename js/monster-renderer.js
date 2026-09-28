@@ -995,30 +995,32 @@
     }
 
     return `
-      <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
-        <!-- 1. Background Aura / FX (z-0) -->
-        <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">${auraSvg}</div>
+      <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: 260px; height: 260px; margin: 0 auto;">
+        <!-- z-0: Ambient Pedestal Glow -->
+        <div id="layer-pedestal" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">
+          <div id="layer-aura-back" style="position: absolute; inset: 0;">${auraSvg}</div>
+        </div>
         
-        <!-- 2. Back Gear (Wings, Capes, Tails behind torso) (z-10) -->
-        <div id="layer-back-gear" class="layer-item z-10" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
+        <!-- z-10: Back Accessories (Wings, Tails, Capes) -->
+        <div id="layer-back-gear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
 
-        <!-- 3. Base Monster Body & Fur (z-20) -->
-        <div id="layer-body" class="layer-item z-20" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">${bodySvg}</div>
+        <!-- z-20: Base Creature Body Sprite -->
+        <div id="layer-body" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">${bodySvg}</div>
 
-        <!-- 4. Clothing & Outfits wrapped to torso (z-30) -->
-        <div id="layer-clothing" class="layer-item z-30" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;">${clothingSvg}</div>
+        <!-- z-30: Tailored Clothing (Explorer Vest, Jackets) -->
+        <div id="layer-clothing" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;">${clothingSvg}</div>
 
-        <!-- 5. Face Features & Expressions (z-40) -->
-        <div id="layer-face" class="layer-item z-40" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;">${faceSvg}</div>
+        <!-- z-40: Facial Expressions (Eyes, Mouth) -->
+        <div id="layer-face" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;">${faceSvg}</div>
 
-        <!-- 6. Face Accessories & Glasses (z-50) -->
-        <div id="layer-glasses" class="layer-item z-50" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
+        <!-- z-50: Eyewear (Glasses, Goggles) -->
+        <div id="layer-glasses" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;">${glassesSvg}</div>
 
-        <!-- 7. Horns & Crests (z-55) -->
-        <div id="layer-horns" class="layer-item z-55" style="position: absolute; inset: 0; z-index: 55; pointer-events: none;">${hornsSvg}</div>
-
-        <!-- 8. Headwear (Hats, Caps, Crowns) (z-60) -->
-        <div id="layer-headwear" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">${headwearSvg}</div>
+        <!-- z-60: Headwear & Horns (Hats, Crests, Floppy Ears) -->
+        <div id="layer-headwear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">
+          ${headwearSvg}
+          <div id="layer-horns" style="position: absolute; inset: 0;">${hornsSvg}</div>
+        </div>
       </div>
       <div class="pedestal-disk" id="preview-pedestal"></div>
     `.trim();
