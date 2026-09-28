@@ -6715,6 +6715,72 @@ const GAMES_REGISTRY = [
     "formula": "The [Machine] helps to [Verb] / We must protect the [Habitat]",
     "url": "ocean-cleaners/index.html",
     "worksheetUrl": "ocean-cleaners/worksheet.html"
+  },
+  {
+    "id": "chuseok-festival",
+    "title": "🌾 Chuseok: Korea's Harvest Festival",
+    "description": "Comprehensive 2-part synchronous courseware based on Unit 2 'Thank You' (Global Readings 2). Features the ancient month-long weaving contest, King's full moon feast verdict, Hanbok traditions, Songpyeon rice cakes, Ganggangsullae circle dance, ancestor memorial ceremonies, and global harvest comparisons.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌾 World Cultures & Social Studies",
+    "level": "A2-B1",
+    "cefrLevel": "A2-B1",
+    "age": "Ages 8–11",
+    "ageGroup": "8-11",
+    "topic": "Harvest Festivals, Gratitude, Ancient Legends & World Traditions",
+    "duration": "2 x 45 Mins",
+    "clilDomain": "Social Studies & World Cultures",
+    "clilTheme": "Harvest Celebrations & Gratitude Around the World",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "I am thankful for my [Noun] because they make me feel [Adjective].",
+    "grammar": {
+      "focusPattern": "Gratitude & Collective Purpose Statements",
+      "formula": "I am thankful for my [Noun] / They gather to [Verb]",
+      "formulas": [
+        "I am thankful for my family because they make me feel loved.",
+        "They gather to weave cloth together.",
+        "The King awarded a feast to both teams.",
+        "Families travel home to honor their ancestors.",
+        "Both holidays celebrate by eating together."
+      ]
+    },
+    "vocabulary": {
+      "core": [
+        "weave",
+        "cloth",
+        "contest",
+        "harvest",
+        "festival",
+        "feast",
+        "songpyeon",
+        "ancestors",
+        "hanbok",
+        "ceremony"
+      ],
+      "supporting": [
+        "full moon",
+        "pine needles",
+        "circle dance",
+        "shuttle",
+        "tradition",
+        "respect"
+      ]
+    },
+    "learningObjectives": [
+      "Identify ancient and modern traditions of Chuseok (weaving contest, Hanbok, Songpyeon, Ganggangsullae, Charye).",
+      "Express gratitude using the scaffolded formula: 'I am thankful for my ______ because they make me feel ______.'",
+      "Compare harvest celebrations across cultures using an interactive 3-zone Venn diagram.",
+      "Deliver a live graduation exit ticket on the class Gratitude Board."
+    ],
+    "url": "chuseok-festival/index.html",
+    "route": "chuseok-festival/index.html",
+    "worksheetUrl": "chuseok-festival/worksheet.html",
+    "worksheetRoute": "chuseok-festival/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🌾",
+    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
   }
 ];
 
