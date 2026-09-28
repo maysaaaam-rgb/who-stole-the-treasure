@@ -606,6 +606,8 @@
   // =========================================================================
   // STAGE 3: THE 2x2 STARTER SMITHING BENCH (Recipe Assembly)
   // =========================================================================
+  let draggedSmithingItem = null;
+
   function renderStage3Smithing() {
     const data = root.BIOME_CRAFTER_DATA;
     if (!data) return;
@@ -615,39 +617,47 @@
         id: "sticks-2x2",
         stepNumber: 1,
         name: "4x Wooden Sticks",
+        tier: "Step 1: Basic Component",
+        badge: "Step 1 of 2: Craft Sticks",
         icon: "🥢",
         resultItem: "Sticks",
-        img: "assets/torch_item.webp",
-        formula: "I need 2 Wood Planks to craft 4 Sticks.",
-        ingredientsLabel: "2 Wood Planks (Vertical Column)",
+        img: "assets/wooden_sticks_transparent.webp",
+        formula: "I need two wood planks to craft four sticks.",
+        speechText: "I need two wood planks to craft four sticks.",
+        pattern: [["wood", ""], ["wood", ""]],
         ghostGrid: ["wood", "", "wood", ""],
-        miniGuide: "Place 1 Wood Plank in slot 1 and 1 in slot 3.",
+        ingredientsLabel: "2 Wood Planks (Slots 1 & 3)",
+        miniGuide: "Place 1 Wood Plank in the top-left, and 1 Wood Plank in the bottom-left.",
         stampText: "CRAFTED: 4x STICKS! ⭐"
       },
       {
         id: "wood-pick-2x2",
         stepNumber: 2,
         name: "Starter Wooden Pickaxe",
+        tier: "Step 2: Starter Tool",
+        badge: "Step 2 of 2: Wooden Pickaxe",
         icon: "⛏️",
         resultItem: "Wooden Pickaxe",
-        img: "assets/stone_pickaxe.webp",
-        formula: "I need 2 Wood Planks and 2 Sticks to make a Wooden Pickaxe.",
-        ingredientsLabel: "2 Wood Planks (Top) + 2 Sticks (Bottom)",
+        img: "assets/wooden_pickaxe_transparent.webp",
+        formula: "I need two wood planks and two sticks to craft a wooden pickaxe.",
+        speechText: "I need two wood planks and two sticks to craft a wooden pickaxe.",
+        pattern: [["wood", "wood"], ["stick", "stick"]],
         ghostGrid: ["wood", "wood", "stick", "stick"],
-        miniGuide: "Place 2 Wood Planks on top, and 2 Sticks on bottom.",
+        ingredientsLabel: "2 Wood Planks (Top) + 2 Sticks (Bottom)",
+        miniGuide: "Place 2 Wood Planks across the top row, and 2 Sticks across the bottom row.",
         stampText: "CRAFTED: STARTER PICKAXE! ⭐"
       }
     ];
 
     const active = recipes[playerSession.smithing2x2Index] || recipes[0];
+    const isStep2 = (active.id === 'wood-pick-2x2' || active.stepNumber === 2);
 
     // 1. Render Left Recipe List / Blueprint Preview Card
     const recipeListEl = document.getElementById('smithing2x2RecipeList');
     if (recipeListEl) {
-      const isStep1 = (active.id === 'sticks-2x2');
-      const formulaChips = isStep1
+      const formulaChips = !isStep2
         ? `<div class="recipe-formula-chip"><span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🪵 Wood</span> <span class="chip-eq">=</span> <span class="chip-result">🥢 4x Sticks</span></div>`
-        : `<div class="recipe-formula-chip"><span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🥢 Stick</span> <span class="chip-plus">+</span> <span class="chip-item">🥢 Stick</span> <span class="chip-eq">=</span> <span class="chip-result">⛏️ Pickaxe</span></div>`;
+        : `<div class="recipe-formula-chip" style="flex-direction:column; gap:4px;"><div style="display:flex; align-items:center; gap:6px;"><span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🪵 Wood</span></div><div style="font-size:0.75rem; font-weight:900; color:#38bdf8; letter-spacing:1px;">OVER ⬇️</div><div style="display:flex; align-items:center; gap:6px;"><span class="chip-item">🥢 Stick</span> <span class="chip-plus">+</span> <span class="chip-item">🥢 Stick</span> <span class="chip-eq">=</span> <span class="chip-result">⛏️ Pickaxe</span></div></div>`;
 
       recipeListEl.innerHTML = `
         <div class="blueprint-preview-card target-step-card">
@@ -668,7 +678,7 @@
               <div class="target-card-subtitle">${active.tier || 'Crafting Recipe'}</div>
             </div>
 
-            <!-- Simple Visual Formula Chip (No Wordy Instructions) -->
+            <!-- Simple Visual Formula Chip -->
             <div class="formula-chip-wrap">
               <div class="formula-chip-label">Visual Crafting Formula:</div>
               ${formulaChips}
@@ -693,24 +703,69 @@
       }).join('');
     }
 
-    // 3. Formula text
-    const formEl = document.getElementById('smithing2x2Formula');
-    const ingEl = document.getElementById('smithing2x2Ingredients');
-    if (formEl) formEl.textContent = `"${active.formula}"`;
-    if (ingEl) ingEl.textContent = `Required: ${active.ingredientsLabel}`;
+    // 3. Clean Visual Formula Header & Audio Hook (Replaces text wall)
+    const formulaDock = document.getElementById('smithing2x2FormulaDock');
+    if (formulaDock) {
+      const speechPrompt = active.speechText || active.formula || "I need two wood planks and two sticks to craft a wooden pickaxe.";
+      if (isStep2) {
+        formulaDock.innerHTML = `
+          <div class="visual-formula-card">
+            <div class="visual-formula-content">
+              <div class="visual-formula-row">
+                <span class="v-chip"><img src="assets/wood_block_transparent.webp" class="v-chip-img" alt="Wood"> Wood Plank</span>
+                <span class="v-plus">+</span>
+                <span class="v-chip"><img src="assets/wood_block_transparent.webp" class="v-chip-img" alt="Wood"> Wood Plank</span>
+              </div>
+              <div class="visual-formula-separator">
+                <span class="v-over-badge">OVER ⬇️</span>
+              </div>
+              <div class="visual-formula-row">
+                <span class="v-chip"><img src="assets/wooden_sticks_transparent.webp" class="v-chip-img" alt="Stick"> Stick</span>
+                <span class="v-plus">+</span>
+                <span class="v-chip"><img src="assets/wooden_sticks_transparent.webp" class="v-chip-img" alt="Stick"> Stick</span>
+              </div>
+            </div>
+            <button type="button" class="btn-formula-audio-speaker" onclick="speakStage3Formula()" title="Click to hear formula spoken!">
+              <span class="speaker-wave-anim">🔊</span>
+              <span class="speaker-formula-text">"${speechPrompt}"</span>
+            </button>
+          </div>
+        `;
+      } else {
+        formulaDock.innerHTML = `
+          <div class="visual-formula-card">
+            <div class="visual-formula-content">
+              <div class="visual-formula-row">
+                <span class="v-chip"><img src="assets/wood_block_transparent.webp" class="v-chip-img" alt="Wood"> Wood Plank</span>
+                <span class="v-plus">+</span>
+                <span class="v-chip"><img src="assets/wood_block_transparent.webp" class="v-chip-img" alt="Wood"> Wood Plank</span>
+                <span class="v-plus">=</span>
+                <span class="v-chip v-chip-result"><img src="assets/wooden_sticks_transparent.webp" class="v-chip-img" alt="Sticks"> 4x Sticks</span>
+              </div>
+            </div>
+            <button type="button" class="btn-formula-audio-speaker" onclick="speakStage3Formula()" title="Click to hear formula spoken!">
+              <span class="speaker-wave-anim">🔊</span>
+              <span class="speaker-formula-text">"${speechPrompt}"</span>
+            </button>
+          </div>
+        `;
+      }
+    }
 
-    // 4. Render 2x2 Grid Sockets with Visual Ghost Blueprints (No Plain Text)
+    // 4. Render 2x2 Grid Sockets with High-Contrast Ghost Blueprints (NO BARE NUMBERS)
     const gridEl = document.getElementById('grid2x2Sockets');
     if (gridEl) {
       gridEl.innerHTML = [0, 1, 2, 3].map(idx => {
         const currentItem = playerSession.smithing2x2Grid[idx];
         const ghostItem = active.ghostGrid[idx];
         const isGhost = !currentItem && !!ghostItem;
+        const isMatchingTarget = !currentItem && ghostItem && (playerSession.selectedSmithing2x2Item === ghostItem);
 
         let displayContent = '';
-        let ghostClass = '';
+        let socketClasses = ['crafting-socket'];
 
         if (currentItem) {
+          socketClasses.push('is-slotted');
           if (currentItem === 'wood') {
             displayContent = `<img src="assets/wood_block_transparent.webp" alt="Wood Plank" class="placed-item-sprite">`;
           } else if (currentItem === 'stick') {
@@ -719,7 +774,11 @@
             displayContent = `<img src="assets/stone_block_transparent.webp" alt="Stone" class="placed-item-sprite">`;
           }
         } else if (isGhost) {
-          ghostClass = 'is-ghost-hint';
+          socketClasses.push('is-ghost-hint');
+          if (isMatchingTarget) {
+            socketClasses.push('is-matching-target');
+          }
+
           if (ghostItem === 'wood') {
             displayContent = `
               <div class="ghost-blueprint-icon">
@@ -739,15 +798,19 @@
         }
 
         return `
-          <div class="crafting-socket ${currentItem ? 'is-slotted' : ''} ${ghostClass}" onclick="handleSocket2x2Click(${idx})" title="Slot ${idx + 1}: ${currentItem ? currentItem : (ghostItem ? 'Requires ' + ghostItem : 'Empty')}">
-            <span class="socket-index-num">${idx + 1}</span>
+          <div class="${socketClasses.join(' ')}" 
+               onclick="handleSocket2x2Click(${idx})"
+               ondragover="handleSmithingDragOver(event)"
+               ondragleave="handleSmithingDragLeave(event)"
+               ondrop="handleSmithingDrop(event, ${idx})"
+               title="Socket: ${currentItem ? currentItem : (ghostItem ? 'Place ' + ghostItem : 'Empty')}">
             ${displayContent}
           </div>
         `;
       }).join('');
     }
 
-    // 5. Render Inventory Tray for 2x2 Bench
+    // 5. Render Inventory Tray for 2x2 Bench (Interactive Click + Drag & Drop)
     const trayEl = document.getElementById('smithing2x2InventoryTray');
     if (trayEl) {
       const palette = [
@@ -758,7 +821,11 @@
       trayEl.innerHTML = palette.map(p => {
         const isSelected = (playerSession.selectedSmithing2x2Item === p.key);
         return `
-          <button type="button" class="btn-3d inventory-item-btn ${isSelected ? 'is-selected' : ''}" onclick="selectSmithingPaletteItem('${p.key}')">
+          <button type="button" 
+                  class="btn-3d inventory-item-btn ${isSelected ? 'is-selected' : ''}" 
+                  draggable="true"
+                  ondragstart="handleSmithingDragStart(event, '${p.key}')"
+                  onclick="selectSmithingPaletteItem('${p.key}')">
             <img src="${p.iconImg}" alt="${p.label}" class="inv-token-img">
             <span class="inv-btn-name">${p.label}</span>
             <span class="inv-count-pill">×${p.count}</span>
@@ -778,19 +845,65 @@
         }
       }
 
+      const toolLabel = active.resultItem || (isStep2 ? 'Wooden Pickaxe' : 'Sticks');
+      const xpReward = isStep2 ? 25 : 12;
+
       if (isMatch) {
         forgeBtn.classList.add('is-ready-to-forge');
-        forgeBtn.innerHTML = `<span>✨ Craft ${active.resultItem || 'Tool'}! (+12 XP)</span>`;
+        forgeBtn.innerHTML = `<span>✨ CRAFT ${toolLabel.toUpperCase()}! (+${xpReward} XP)</span>`;
       } else {
         forgeBtn.classList.remove('is-ready-to-forge');
-        forgeBtn.innerHTML = `<span>🔨 Craft ${active.resultItem || 'Tool'}!</span>`;
+        forgeBtn.innerHTML = `<span>🔨 CRAFT ${toolLabel.toUpperCase()}!</span>`;
       }
+    }
+  }
+
+  function handleSmithingDragStart(event, key) {
+    draggedSmithingItem = key;
+    playerSession.selectedSmithing2x2Item = key;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text/plain', key);
+      event.dataTransfer.effectAllowed = 'copyMove';
+    }
+    renderStage3Smithing();
+  }
+
+  function handleSmithingDragOver(event) {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
+    const socket = event.currentTarget;
+    if (socket && !socket.classList.contains('is-drag-hover')) {
+      socket.classList.add('is-drag-hover');
+    }
+  }
+
+  function handleSmithingDragLeave(event) {
+    const socket = event.currentTarget;
+    if (socket) {
+      socket.classList.remove('is-drag-hover');
+    }
+  }
+
+  function handleSmithingDrop(event, idx) {
+    event.preventDefault();
+    const socket = event.currentTarget;
+    if (socket) {
+      socket.classList.remove('is-drag-hover');
+    }
+    const itemKey = (event.dataTransfer && event.dataTransfer.getData('text/plain')) || draggedSmithingItem || playerSession.selectedSmithing2x2Item;
+    if (itemKey) {
+      playerSession.smithing2x2Grid[idx] = itemKey;
+      if (root.BiomeAudio) root.BiomeAudio.playSnap();
+      renderStage3Smithing();
     }
   }
 
   function select2x2Recipe(idx) {
     playerSession.smithing2x2Index = idx;
     playerSession.smithing2x2Grid = ['', '', '', ''];
+    playerSession.selectedSmithing2x2Item = 'wood';
     if (root.BiomeAudio) root.BiomeAudio.playSnap();
     renderStage3Smithing();
   }
@@ -809,7 +922,7 @@
     } else {
       // Place selected item
       playerSession.smithing2x2Grid[idx] = playerSession.selectedSmithing2x2Item;
-      if (root.BiomeAudio) root.BiomeAudio.playWoodChop();
+      if (root.BiomeAudio) root.BiomeAudio.playSnap();
     }
     renderStage3Smithing();
   }
@@ -818,6 +931,69 @@
     playerSession.smithing2x2Grid = ['', '', '', ''];
     if (root.BiomeAudio) root.BiomeAudio.playSnap();
     renderStage3Smithing();
+  }
+
+  function triggerWorkbenchSparks() {
+    const frame = document.querySelector('.smithing-2x2-frame');
+    if (!frame) return;
+
+    for (let i = 0; i < 24; i++) {
+      const spark = document.createElement('div');
+      spark.className = 'forge-spark-particle';
+      const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.4;
+      const distance = 70 + Math.random() * 110;
+      const tx = Math.cos(angle) * distance;
+      const ty = Math.sin(angle) * distance;
+      spark.style.setProperty('--tx', `${tx}px`);
+      spark.style.setProperty('--ty', `${ty}px`);
+      spark.style.left = '50%';
+      spark.style.top = '50%';
+      spark.style.background = Math.random() > 0.5 ? '#f59e0b' : '#38bdf8';
+      frame.appendChild(spark);
+      setTimeout(() => spark.remove(), 900);
+    }
+  }
+
+  function speakStage3Formula() {
+    const data = root.BIOME_CRAFTER_DATA;
+    const recipe = (data && data.smithing2x2Recipes && data.smithing2x2Recipes[playerSession.smithing2x2Index]) || null;
+    const sentence = recipe ? (recipe.speechText || recipe.formula) : "I need two wood planks and two sticks to craft a wooden pickaxe.";
+
+    if (root.BiomeAudio && typeof root.BiomeAudio.speak === 'function') {
+      root.BiomeAudio.speak(sentence);
+    } else if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utt = new SpeechSynthesisUtterance(sentence);
+      utt.rate = 0.88;
+      utt.pitch = 1.05;
+      utt.lang = 'en-US';
+      window.speechSynthesis.speak(utt);
+    }
+  }
+
+  function showSmithingRewardModal() {
+    const modal = document.getElementById('smithingRewardModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.classList.add('is-open');
+    }
+    // Auto-trigger voice hint after modal opens
+    setTimeout(() => {
+      speakStage3Formula();
+    }, 400);
+  }
+
+  function handleCloseSmithingReward(e) {
+    if (e && e.target && e.target.id === 'smithingRewardModal') {
+      const modal = document.getElementById('smithingRewardModal');
+      if (modal) modal.style.display = 'none';
+    }
+  }
+
+  function continueAfterPickaxeReward() {
+    const modal = document.getElementById('smithingRewardModal');
+    if (modal) modal.style.display = 'none';
+    switchStage(4);
   }
 
   function verify2x2Craft() {
@@ -836,12 +1012,6 @@
 
     if (isMatch) {
       playerSession.craftedSmithing2x2Ids.add(recipe.id);
-      addXP(12);
-      if (root.BiomeAudio) {
-        root.BiomeAudio.playHammerSlam();
-        root.BiomeAudio.playVictoryFanfare();
-      }
-      ConfettiEngine.burst(40);
 
       // Rubber stamp animation
       const stamp = document.getElementById('smithingStampSeal');
@@ -855,19 +1025,39 @@
       }
 
       if (recipe.id === 'sticks-2x2') {
+        addXP(12);
+        if (root.BiomeAudio) {
+          root.BiomeAudio.playHammerSlam();
+          root.BiomeAudio.playVictoryFanfare();
+        }
+        ConfettiEngine.burst(40);
         playerSession.inventory.stick = (playerSession.inventory.stick || 0) + 4;
         updateHUD();
         setTimeout(() => {
           playerSession.smithing2x2Index = 1;
           playerSession.smithing2x2Grid = ['', '', '', ''];
+          playerSession.selectedSmithing2x2Item = 'wood';
           if (stamp) stamp.style.display = 'none';
           renderStage3Smithing();
         }, 1500);
       } else {
+        // Step 2: Starter Wooden Pickaxe (+25 XP)
+        addXP(25);
+        if (root.BiomeAudio) {
+          if (typeof root.BiomeAudio.playFanfare === 'function') {
+            root.BiomeAudio.playFanfare();
+          } else {
+            root.BiomeAudio.playVictoryFanfare();
+          }
+        }
+        triggerWorkbenchSparks();
+        ConfettiEngine.burst(80);
+
         setTimeout(() => {
           if (stamp) stamp.style.display = 'none';
           renderStage3Smithing();
-        }, 1500);
+          showSmithingRewardModal();
+        }, 1100);
       }
     } else {
       if (root.BiomeAudio) root.BiomeAudio.playSoftFail();
@@ -1733,12 +1923,20 @@
   root.handleMineClick = handleMineClick;
 
   root.speakSmithingFormula = speakSmithingFormula;
+  root.speakStage3Formula = speakStage3Formula;
   root.craftSmithingTool = craftSmithingTool;
   root.select2x2Recipe = select2x2Recipe;
   root.selectSmithingPaletteItem = selectSmithingPaletteItem;
   root.handleSocket2x2Click = handleSocket2x2Click;
   root.clear2x2Grid = clear2x2Grid;
   root.verify2x2Craft = verify2x2Craft;
+  root.showSmithingRewardModal = showSmithingRewardModal;
+  root.handleCloseSmithingReward = handleCloseSmithingReward;
+  root.continueAfterPickaxeReward = continueAfterPickaxeReward;
+  root.handleSmithingDragStart = handleSmithingDragStart;
+  root.handleSmithingDragOver = handleSmithingDragOver;
+  root.handleSmithingDragLeave = handleSmithingDragLeave;
+  root.handleSmithingDrop = handleSmithingDrop;
 
   root.handleSortChoice = handleSortChoice;
 

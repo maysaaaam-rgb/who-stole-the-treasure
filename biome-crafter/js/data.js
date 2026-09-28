@@ -159,7 +159,8 @@
         icon: "🥢",
         resultItem: "Sticks",
         img: "assets/wooden_sticks_transparent.webp",
-        formula: "I need 2 Wood Planks to craft 4 Sticks.",
+        formula: "I need two wood planks to craft four sticks.",
+        speechText: "I need two wood planks to craft four sticks.",
         purpose: "We use sticks to make pickaxes, torches, and tools.",
         pattern: [
           ["wood", ""],
@@ -178,8 +179,9 @@
         badge: "Step 2 of 2: Wooden Pickaxe",
         icon: "⛏️",
         resultItem: "Wooden Pickaxe",
-        img: "assets/stone_pickaxe.webp",
-        formula: "I need 2 Wood Planks and 2 Sticks to make a Wooden Pickaxe.",
+        img: "assets/wooden_pickaxe_transparent.webp",
+        formula: "I need two wood planks and two sticks to craft a wooden pickaxe.",
+        speechText: "I need two wood planks and two sticks to craft a wooden pickaxe.",
         purpose: "We use the wooden pickaxe to mine stone boulders.",
         pattern: [
           ["wood", "wood"],
