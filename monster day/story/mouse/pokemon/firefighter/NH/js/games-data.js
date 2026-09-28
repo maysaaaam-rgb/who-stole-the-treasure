@@ -6781,6 +6781,65 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🌾",
     "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
+  },
+  {
+    "id": "forest-safari",
+    "title": "🌲 Forest Ranger Pet Safari: Two Different Forests",
+    "description": "Interactive Junior Ranger safari quest for A1+ kids (Ages 7–10). Explore Deciduous and Coniferous forests, clap big words, spot wildlife camouflage, bundle up for -50°C winter, sort forest treasures, and earn the Certified Junior Biome Ranger Gold Badge.",
+    "category": "Ecology & Wildlife Biomes",
+    "categoryGroup": "Forest Ecology",
+    "level": "A1+ (Ages 7–10)",
+    "duration": "2x 45 min",
+    "xp": 350,
+    "topic": "Two Different Forests: Deciduous vs. Coniferous Biomes",
+    "grammar": {
+      "focusPattern": "I see a [animal]. It is [color/size].",
+      "formula": "I see a [animal]. It is [color/size] to hide in the [habitat].",
+      "formulas": [
+        "I see a + [Animal]",
+        "It is + [Adjective]",
+        "I like the + [Animal]"
+      ]
+    },
+    "clilDomain": "Forest Ecology & Animal Biome Adaptations",
+    "clilTheme": "Deciduous vs. Coniferous Forests",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "leaves",
+        "pine cone",
+        "hibernate",
+        "camouflage",
+        "bear",
+        "deer",
+        "squirrel",
+        "wolf"
+      ],
+      "supporting": [
+        "autumn",
+        "freezing",
+        "coat",
+        "gloves",
+        "hare",
+        "owl",
+        "lynx",
+        "evergreen"
+      ]
+    },
+    "learningObjectives": [
+      "Distinguish between deciduous (leaves fall down) and coniferous (evergreen cones) forests.",
+      "Recognize how animals adapt to winter through hibernation (bear) and white camouflage (hare).",
+      "Produce scaffolded A1+ speaking statements using 'I see a...' and 'I like the...'.",
+      "Sort natural objects and animals into their correct forest biome baskets."
+    ],
+    "url": "forest-safari/index.html",
+    "route": "forest-safari/index.html",
+    "worksheetUrl": "forest-safari/worksheet.html",
+    "worksheetRoute": "forest-safari/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🌲",
+    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)"
   }
 ];
 
