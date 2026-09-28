@@ -85,31 +85,15 @@ export default function MonsterPreview({
       className={`monster-preview-layer-stack relative aspect-square flex items-center justify-center overflow-hidden ${className}`}
       style={{ width: `${size}px`, height: `${size}px`, position: 'relative', margin: '0 auto', ...style }}
     >
-      {/* 0. Ambient Aura & Orbital Glow Ring (z-10) directly behind monster's midsection */}
-      <div 
-        className="orbital-glow-ring absolute z-10 pointer-events-none rounded-full"
-        style={{ 
-          position: 'absolute', 
-          top: '44%', 
-          left: '50%', 
-          transform: 'translate(-50%, -50%)', 
-          width: '76%', 
-          height: '76%', 
-          background: 'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 72%)', 
-          zIndex: 10,
-          pointerEvents: 'none'
-        }} 
-      />
-
-      {/* 1. Pedestal Base - locked to bottom: 12% */}
+      {/* 1. Pedestal Base - locked to bottom: 18% */}
       <div 
         className="pedestal-disk absolute z-10 pointer-events-none" 
         style={{ 
           position: 'absolute', 
-          bottom: '12%', 
+          bottom: '18%', 
           left: '50%', 
           transform: 'translateX(-50%)', 
-          width: '76%', 
+          width: '74%', 
           height: '22px', 
           zIndex: 10, 
           background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)', 
@@ -117,10 +101,10 @@ export default function MonsterPreview({
         }} 
       />
 
-      {/* 2. Base Monster Assembly - shifted up ~9% so bottom paws sit directly on pedestal surface */}
+      {/* 2. Base Monster Assembly - shifted up 15% so bottom paws sit directly on pedestal surface with balanced margins */}
       <div 
         className="relative z-20 w-full h-full flex items-center justify-center"
-        style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', transform: 'translateY(-9%)' }}
+        style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', transform: 'translateY(-15%)' }}
       >
         {/* Base Body (Clean, Earless/Hornless Dome) */}
         <img 
@@ -157,18 +141,18 @@ export default function MonsterPreview({
           />
         )}
 
-        {/* Facial Accessories & Glasses (slot-glasses: top: 36%, left: 50%, width: 58%, z-index: 42) */}
+        {/* Facial Accessories & Glasses (slot-glasses: top: 34%, left: 50%, width: 56%, z-index: 45) */}
         {draft.glasses && draft.glasses !== 'none' && (
           <img 
             src={`assets/packs/items/${draft.glasses}.png`} 
-            className="slot-glasses absolute object-contain pointer-events-none"
+            className="slot-glasses accessory-round-wire-glasses absolute object-contain pointer-events-none"
             style={{ 
               position: 'absolute', 
-              top: '36%', 
+              top: '34%', 
               left: '50%', 
               transform: 'translate(-50%, -50%)', 
-              width: '58%', 
-              zIndex: 42, 
+              width: '56%', 
+              zIndex: 45, 
               pointerEvents: 'none' 
             }}
             alt="Equipped Glasses"
