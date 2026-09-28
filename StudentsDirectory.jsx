@@ -290,9 +290,9 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
         <div id="layer-face" style={{ position: 'absolute', inset: 0, zIndex: 40, pointerEvents: 'none' }} />
       )}
 
-      {/* z-50: Glasses / Eyewear (slot-glasses: top: 36%, left: 50%, width: 58%, z-index: 42) */}
+      {/* z-50: Glasses / Eyewear (slot-glasses: top: 34%, left: 50%, width: 56%, z-index: 45) */}
       {equipped.glasses && equipped.glasses !== 'none' && (
-        <div id="layer-glasses" className="slot-glasses" style={{ position: 'absolute', top: '36%', left: '50%', transform: 'translate(-50%, -50%)', width: '58%', zIndex: 42, pointerEvents: 'none' }}>
+        <div id="layer-glasses" className="slot-glasses accessory-round-wire-glasses" style={{ position: 'absolute', top: '34%', left: '50%', transform: 'translate(-50%, -50%)', width: '56%', zIndex: 45, pointerEvents: 'none' }}>
           <img src={`assets/packs/items/${equipped.glasses}.png`} alt="Glasses" className="layer-asset" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         </div>
       )}
@@ -337,7 +337,7 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
   const archetypeBadgeStyle = getArchetypeBadgeClass(archetype);
 
   return (
-    <div className={`student-directory-card student-card relative isolate rounded-2xl bg-white element-${archetype} archetype-${archetype}`} style={{ position: 'relative', isolation: 'isolate' }}>
+    <div className={`student-directory-card student-card relative isolate rounded-2xl bg-white element-${archetype} archetype-${archetype}`} style={{ position: 'relative', isolation: 'isolate', zIndex: 0 }}>
       {/* Top Overlay Badges */}
       <div className="card-overlay-top" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -392,7 +392,7 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
         </div>
 
         {/* Evolution Badge */}
-        <span className="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white" style={{ marginTop: '6px', display: 'inline-block' }}>
+        <span className="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white" style={{ marginTop: '6px', display: 'inline-block', position: 'relative', zIndex: 0 }}>
           Lvl {level} • {stageName}
         </span>
       </div>
@@ -491,6 +491,18 @@ export function ClosetCustomizerModal({
       });
     }
   }, [student]);
+
+  // Prevent stacking context leak by locking body and demoting background badges
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
 
   if (!isOpen || !student) return null;
 
@@ -599,11 +611,11 @@ export function ClosetCustomizerModal({
   return (
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden"
-      style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 9999999, background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
     >
       <div 
-        className="relative z-10 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
-        style={{ background: '#ffffff', borderRadius: '24px', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.4)', padding: '24px' }}
+        className="relative z-50 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        style={{ background: '#ffffff', borderRadius: '24px', boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.4)', padding: '24px', position: 'relative', zIndex: 50, isolation: 'isolate' }}
       >
         
         {/* Modal Header */}
@@ -651,41 +663,25 @@ export function ClosetCustomizerModal({
             <div className="relative w-64 h-64 mx-auto rounded-3xl bg-slate-950 flex items-center justify-center p-4 overflow-hidden shadow-inner border border-slate-800/80" style={{ position: 'relative', width: '256px', height: '256px', margin: '0 auto' }}>
               {/* Container maintaining a 1:1 aspect ratio with centered anchor */}
               <div className="relative w-full h-full flex items-center justify-center">
-                {/* 1. Ambient Aura & Orbital Glow Ring (z-10) directly behind monster's midsection */}
-                <div 
-                  className="orbital-glow-ring absolute z-10 pointer-events-none rounded-full"
-                  style={{ 
-                    position: 'absolute', 
-                    top: '44%', 
-                    left: '50%', 
-                    transform: 'translate(-50%, -50%)', 
-                    width: '76%', 
-                    height: '76%', 
-                    background: 'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 72%)', 
-                    zIndex: 10,
-                    pointerEvents: 'none'
-                  }} 
-                />
-
-                {/* 2. Golden Pedestal Base - locked to bottom: 12% */}
+                {/* 1. Golden Pedestal Base - locked to bottom: 18% with comfortable breathing room */}
                 <div 
                   className="pedestal-disk" 
                   id="preview-pedestal"
                   style={{ 
                     position: 'absolute', 
-                    bottom: '12%', 
+                    bottom: '18%', 
                     left: '50%', 
                     transform: 'translateX(-50%)', 
-                    width: '76%', 
+                    width: '74%', 
                     height: '22px', 
                     zIndex: 10,
-                    background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)',
+                    background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.6) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)',
                     borderRadius: '50%',
                     pointerEvents: 'none'
                   }} 
                 />
 
-                {/* 3. Base Monster Assembly - shifted up ~9% so bottom paws sit directly on pedestal surface */}
+                {/* 2. Base Monster Assembly - shifted up by 15% to seat paws directly on pedestal and center cleanly */}
                 <div 
                   className="relative z-20 w-full h-full flex items-center justify-center"
                   style={{ 
@@ -696,7 +692,7 @@ export function ClosetCustomizerModal({
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    transform: 'translateY(-9%)' 
+                    transform: 'translateY(-15%)' 
                   }}
                 >
                   <MonsterCompositeView 

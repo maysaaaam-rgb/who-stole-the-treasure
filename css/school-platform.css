@@ -2707,7 +2707,7 @@ button, input, select, textarea {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin-top: 2px;
   position: relative;
-  z-index: 1;
+  z-index: 0;
   letter-spacing: 0.02em;
 }
 
@@ -3420,9 +3420,12 @@ body.modal-open .student-card-streak-pill,
 body.modal-open .student-directory-card,
 body.modal-open .student-card {
   z-index: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   filter: none !important;
+  pointer-events: none !important;
 }
 
 .modal-close-btn {
@@ -6603,28 +6606,29 @@ body.classroom-mode-active .classroom-students-grid {
 #layer-horns { z-index: 55; }
 #layer-headwear { z-index: 60; }
 
-/* Facial accessory anchor: adjusted upward from 46-50% to 36% to align over eyes */
-.slot-glasses {
+/* Facial accessory anchor: adjusted upward to 34% to align over eyes */
+.slot-glasses,
+.accessory-round-wire-glasses {
   position: absolute;
-  top: 36% !important;
+  top: 34% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
-  width: 58% !important;
+  width: 56% !important;
   pointer-events: none !important;
-  z-index: 42 !important;
+  z-index: 45 !important;
 }
 
 #layer-glasses.slot-glasses,
 .monster-composite-stage #layer-glasses.slot-glasses,
 .monster-composite-stage .slot-glasses {
   position: absolute;
-  top: 36%;
+  top: 34%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 58%;
+  width: 56%;
   height: auto;
   pointer-events: none;
-  z-index: 50;
+  z-index: 45;
 }
 
 #preview-pedestal,
@@ -6632,8 +6636,8 @@ body.classroom-mode-active .classroom-students-grid {
   width: 140px;
   height: 28px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.65) 0%, rgba(37, 99, 235, 0.25) 55%, transparent 75%);
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+  background: radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%);
+  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.2);
   margin: -16px auto 0 auto;
   position: relative;
   z-index: 1;
