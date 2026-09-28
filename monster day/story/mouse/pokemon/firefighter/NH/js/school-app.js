@@ -12491,27 +12491,84 @@ window.switchClassroomSubTab = function(subTab) {
       id: 'explorer_vest',
       name: 'Explorer Vest',
       svgMarkup: `
-        <g filter="url(#bodyGlow)">
-          <!-- Sturdy Khaki Safari Utility Vest with Brass Buttons -->
-          <path d="M 68 116 L 86 156 L 96 156 L 94 122 Q 80 120 68 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
-          <path d="M 132 116 L 114 156 L 104 156 L 106 122 Q 120 120 132 116 Z" fill="#b45309" stroke="#78350f" stroke-width="2.2" stroke-linejoin="round" />
-          <path d="M 72 116 L 90 128 L 88 148 L 74 146 Z" fill="#d97706" />
-          <path d="M 128 116 L 110 128 L 112 148 L 126 146 Z" fill="#d97706" />
-          <rect x="74" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <rect x="114" y="136" width="12" height="12" rx="2" fill="#78350f" stroke="#451a03" stroke-width="1.2" />
-          <circle cx="94" cy="132" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
-          <circle cx="94" cy="144" r="2.2" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        <g id="clothing-explorer-vest" filter="url(#mf-shadow)">
+          <!-- Left Vest Flank Panel (Contoured to Chibi Body) -->
+          <path d="M 82 108 
+                   C 66 110, 52 120, 50 134 
+                   C 49 146, 56 156, 66 160 
+                   L 86 160 
+                   C 88 152, 88 136, 86 120 
+                   C 85 114, 84 110, 82 108 Z" 
+                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Right Vest Flank Panel (Contoured to Chibi Body) -->
+          <path d="M 118 108 
+                   C 134 110, 148 120, 150 134 
+                   C 151 146, 144 156, 134 160 
+                   L 114 160 
+                   C 112 152, 112 136, 114 120 
+                   C 115 114, 116 110, 118 108 Z" 
+                fill="url(#vestLeatherGrad)" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+
+          <!-- Lapel Trim & Stitch Lines -->
+          <path d="M 82 108 L 86 120 L 86 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
+          <path d="M 118 108 L 114 120 L 114 160" fill="none" stroke="#d97706" stroke-width="1.8" stroke-dasharray="2 1.5" />
+
+          <!-- Left Utility Flap Pocket -->
+          <path d="M 58 138 C 58 136, 76 136, 76 138 L 75 150 C 75 152, 59 152, 59 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <polygon points="57,138 67,143 77,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="67" cy="142" r="1.5" fill="#facc15" />
+
+          <!-- Right Utility Flap Pocket -->
+          <path d="M 124 138 C 124 136, 142 136, 142 138 L 141 150 C 141 152, 125 152, 125 150 Z" fill="#78350f" stroke="#451a03" stroke-width="1.5" />
+          <polygon points="123,138 133,143 143,138" fill="#92400e" stroke="#451a03" stroke-width="1.2" />
+          <circle cx="133" cy="142" r="1.5" fill="#facc15" />
+
+          <!-- Brass Rivets / Snap Buttons -->
+          <circle cx="85" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="85" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="85" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+
+          <circle cx="115" cy="130" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="115" cy="142" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+          <circle cx="115" cy="154" r="2.2" fill="#facc15" stroke="#92400e" stroke-width="0.8" />
+        </g>
+      `
+    },
+    explorer_jacket: {
+      id: 'explorer_jacket',
+      name: 'Explorer Jacket',
+      svgMarkup: `
+        <g id="clothing-explorer-jacket" filter="url(#mf-shadow)">
+          <path d="M 74 108 C 82 114, 118 114, 126 108 C 132 114, 128 122, 118 122 C 108 122, 104 116, 100 116 C 96 116, 92 122, 82 122 C 72 122, 68 114, 74 108 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1.8" />
+          <path d="M 80 114 C 64 116, 50 124, 48 138 C 47 148, 54 158, 66 160 L 96 160 L 98 122 C 92 118, 86 115, 80 114 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 120 114 C 136 116, 150 124, 152 138 C 153 148, 146 158, 134 160 L 104 160 L 102 122 C 108 118, 114 115, 120 114 Z" fill="#78350f" stroke="#451a03" stroke-width="2.5" stroke-linejoin="round" />
+          <line x1="100" y1="120" x2="100" y2="160" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+          <rect x="98.5" y="124" width="3" height="5" rx="1" fill="#ca8a04" />
+          <path d="M 64 158 C 76 161, 124 161, 136 158 L 134 162 C 122 165, 78 165, 66 162 Z" fill="#451a03" />
+          <polygon points="76,128 80,125 84,128 80,131" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+          <line x1="72" y1="128" x2="76" y2="128" stroke="#facc15" stroke-width="1.2" />
+          <line x1="84" y1="128" x2="88" y2="128" stroke="#facc15" stroke-width="1.2" />
         </g>
       `
     },
     hero_cape: {
       id: 'hero_cape',
       name: 'Hero Cape',
-      svgMarkup: `<path d="M 74 116 Q 100 124 126 116" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round"/>`
+      svgMarkup: `
+        <g id="clothing-hero-cape" filter="url(#mf-shadow)">
+          <path d="M 72 108 C 54 112, 38 126, 36 150 C 34 166, 44 176, 60 178 C 78 180, 122 180, 140 178 C 156 176, 166 166, 164 150 C 162 126, 146 112, 128 108 C 114 114, 86 114, 72 108 Z" fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+          <circle cx="100" cy="110" r="6" fill="#facc15" stroke="#ca8a04" stroke-width="1.8" />
+          <polygon points="100,106 102,109 105,109 103,111 104,114 100,112 96,114 97,111 95,109 98,109" fill="#ef4444" />
+        </g>
+      `
     }
   };
   CLOTHING_ASSETS.vest = CLOTHING_ASSETS.explorer_vest;
   CLOTHING_ASSETS['clothing-vest'] = CLOTHING_ASSETS.explorer_vest;
+  CLOTHING_ASSETS.jacket = CLOTHING_ASSETS.explorer_jacket;
+  CLOTHING_ASSETS['clothing-adv-jacket'] = CLOTHING_ASSETS.explorer_jacket;
   CLOTHING_ASSETS.cape = CLOTHING_ASSETS.hero_cape;
   CLOTHING_ASSETS['clothing-cape'] = CLOTHING_ASSETS.hero_cape;
 
@@ -12519,7 +12576,12 @@ window.switchClassroomSubTab = function(subTab) {
     hero_cape: {
       id: 'hero_cape',
       name: 'Hero Cape',
-      svgMarkup: `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`
+      svgMarkup: `
+        <g id="clothing-hero-cape-back" filter="url(#mf-shadow)">
+          <path d="M 72 108 C 54 112, 38 126, 36 150 C 34 166, 44 176, 60 178 C 78 180, 122 180, 140 178 C 156 176, 166 166, 164 150 C 162 126, 146 112, 128 108 C 114 114, 86 114, 72 108 Z" fill="url(#capeRubyGrad)" stroke="#991b1b" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M 42 168 C 64 176, 136 176, 158 168" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+        </g>
+      `
     },
     wings: {
       id: 'wings',
