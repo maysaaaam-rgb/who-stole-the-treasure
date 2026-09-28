@@ -1235,7 +1235,7 @@
     const streak = s.streakDays || 0;
 
     return '' +
-      '<div class="student-card ' + elementClass + ' ' + archetypeClass + '" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
+      '<div class="student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + '" style="position:relative; isolation:isolate;" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
         // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
         '<div class="card-overlay-top">' +
           '<div class="card-overlay-left">' +
@@ -1264,7 +1264,7 @@
         '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
           '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Customize Monster">✏️</button>' +
           avatarMarkup +
-          '<span class="stage-level-badge">' + evolutionBadge + '</span>' +
+          '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">' + evolutionBadge + '</span>' +
         '</div>' +
 
         // Card Content: Info, Progress & Dominant 3D Button
@@ -3293,7 +3293,7 @@
                 '</div>';
 
               return '' +
-                '<div class="student-directory-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
+                '<div class="student-directory-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
                   '<div class="card-overlay-top">' +
                     '<div class="card-overlay-left">' +
@@ -3325,7 +3325,7 @@
                   '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
                     '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
                     avatarMarkup +
-                    '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
+                    '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
@@ -3696,7 +3696,7 @@
         '</div>';
 
       return '' +
-        '<div class="classroom-student-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
+        '<div class="classroom-student-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
           '<div class="card-overlay-top">' +
             '<div class="card-overlay-left">' +
@@ -3728,7 +3728,7 @@
           '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
             '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
             avatarMarkup +
-            '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
+            '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
