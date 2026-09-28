@@ -819,6 +819,25 @@
   }
 
   /**
+   * 3D Raster Mascot Viewport Stage with Grounded Isometric Pedestal
+   */
+  function renderMonsterViewportStage(speciesOrStudent, options = {}) {
+    const species = (speciesOrStudent && speciesOrStudent.image && speciesOrStudent.glow)
+      ? speciesOrStudent
+      : getStudentSpeciesData(speciesOrStudent);
+    return `
+<div class="monster-viewport-stage" style="--pedestal-glow: ${species.glow}">
+  <img 
+    src="${species.image}" 
+    alt="${species.name}" 
+    class="monster-hero-3d" 
+    onerror="this.src='${species.fallback}'" 
+  />
+  <div class="monster-iso-pedestal"></div>
+</div>`.trim();
+  }
+
+  /**
    * Main Render Entry Point: Defaults to Scalable Procedural Composite SVG Pipeline
    */
   function renderMonsterSVG(options = {}) {
@@ -3791,12 +3810,14 @@
     SPECIES_ARCHETYPES: SPECIES_ARCHETYPES,
     getStudentArchetype: getStudentArchetype,
     ELEMENTAL_SPECIES: ELEMENTAL_SPECIES,
-    getStudentSpeciesData: getStudentSpeciesData
+    getStudentSpeciesData: getStudentSpeciesData,
+    renderMonsterViewportStage: renderMonsterViewportStage
   };
 
   root.getMonsterAsset = getMonsterAsset;
   root.renderMonsterSVG = renderMonsterSVG;
   root.renderMonsterLiveStage = renderMonsterLiveStage;
+  root.renderMonsterViewportStage = renderMonsterViewportStage;
   root.renderHornsLayer = renderHornsLayer;
   root.renderMonsterWithPedestal = renderMonsterWithPedestal;
   root.renderMonsterViewport = renderMonsterSingleSVG;
