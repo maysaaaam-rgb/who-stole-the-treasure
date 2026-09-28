@@ -75,9 +75,9 @@
     </div>
   </div>
 
-  <!-- Closet / Customizer Modal (Isolated z-index: 99999 stacking context) -->
-  <div class="modal-overlay" id="modal-closet-customizer" style="position: fixed; inset: 0; z-index: 99999; display: none; align-items: center; justify-content: center; pointer-events: auto; background: rgba(6, 9, 17, 0.75); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-    <div class="modal-dialog" style="max-width: 980px; width: 94vw; max-height: 92vh; overflow-y: auto; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px); border-radius: 24px; padding: 24px; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 25px 60px -15px rgba(0,0,0,0.8); position: relative; z-index: 10;">
+  <!-- Closet / Customizer Modal (Isolated z-index: 9999 stacking context) -->
+  <div class="modal-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden" id="modal-closet-customizer" style="position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center; pointer-events: auto; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden;">
+    <div class="modal-dialog relative z-10 w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden" style="max-width: 980px; width: 94vw; max-height: 92vh; overflow-y: auto; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px); border-radius: 24px; padding: 24px; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 25px 60px -15px rgba(0,0,0,0.8); position: relative; z-index: 10;">
       <button class="modal-close-btn" onclick="closeClosetModal()" style="cursor: pointer;">✕</button>
       
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:14px;">
