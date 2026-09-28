@@ -2711,37 +2711,15 @@
           </div>
 
           <div id="live-interactive-preview" class="monster-preview-stage preview-stage avatar-preview-box" data-legacy-id="avatar-preview-box" style="width:280px; height:280px; border-radius:22px; background:radial-gradient(circle at 50% 45%, #1e1b4b 0%, #090d16 80%); display:flex; flex-direction:column; align-items:center; justify-content:center; margin:10px auto; box-shadow:0 12px 32px rgba(0,0,0,0.35), inset 0 0 24px rgba(56,189,248,0.12); border:1.5px solid rgba(56,189,248,0.35); overflow:hidden; transition:all 0.2s ease; position:relative;">
-            <div class="monster-composite-stage" id="monster-composite-stage" style="position: relative; width: 260px; height: 260px; margin: 0 auto;">
-              <!-- z-0: Ambient Pedestal Glow -->
-              <div id="layer-pedestal" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">
-                <div id="layer-aura-back" style="position: absolute; inset: 0;"></div>
-              </div>
-              
-              <!-- z-10: Back Accessories (Wings, Tails, Capes) -->
-              <div id="layer-back-gear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;"></div>
-
-              <!-- z-20: Base Creature Body Sprite -->
-              <div id="layer-body" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;">
-                <svg viewBox="0 0 200 200" width="100%" height="100%">
-                  <g id="layer-body-sprite">
-                    <image href="assets/packs/characters/ignis-chibi.png" xlink:href="assets/packs/characters/ignis-chibi.png" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
-                  </g>
-                </svg>
-              </div>
-
-              <!-- z-30: Tailored Clothing (Explorer Vest, Jackets) -->
-              <div id="layer-clothing" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;"></div>
-
-              <!-- z-40: Facial Expressions (Eyes, Mouth) -->
-              <div id="layer-face" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;"></div>
-
-              <!-- z-50: Eyewear (Glasses, Goggles) -->
-              <div id="layer-glasses" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;"></div>
-
-              <!-- z-60: Headwear & Horns (Hats, Crests, Floppy Ears) -->
-              <div id="layer-headwear" class="layer-slot layer-item" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;">
-                <div id="layer-horns" style="position: absolute; inset: 0;"></div>
-              </div>
+            <div class="monster-composite-stage" id="monster-composite-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
+              <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;"></div>
+              <div id="layer-back-gear" class="layer-item z-10" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;"></div>
+              <div id="layer-body" class="layer-item z-20" style="position: absolute; inset: 0; z-index: 20; pointer-events: none;"></div>
+              <div id="layer-clothing" class="layer-item z-30" style="position: absolute; inset: 0; z-index: 30; pointer-events: none;"></div>
+              <div id="layer-face" class="layer-item z-40" style="position: absolute; inset: 0; z-index: 40; pointer-events: none;"></div>
+              <div id="layer-glasses" class="layer-item z-50" style="position: absolute; inset: 0; z-index: 50; pointer-events: none;"></div>
+              <div id="layer-horns" class="layer-item z-60" style="position: absolute; inset: 0; z-index: 60; pointer-events: none;"></div>
+              <div id="layer-headwear" class="layer-item z-70" style="position: absolute; inset: 0; z-index: 70; pointer-events: none;"></div>
             </div>
             <div class="pedestal-disk" id="preview-pedestal"></div>
           </div>
@@ -2789,7 +2767,7 @@
           </div>
 
           <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-light); padding-top:12px;">
-            <button type="button" class="btn-primary-action" style="width:100%; justify-content:center; padding:11px 16px; font-size:0.92rem; font-weight:800;" onclick="handleConfirmSaveMonster()">✓ Save Monster</button>
+            <button type="button" class="btn-primary-action btn-3d btn-3d-primary" style="width:100%; justify-content:center; padding:11px 16px; font-size:0.92rem; font-weight:800;" onclick="handleConfirmSaveMonster()">✓ Save Changes</button>
             <button type="button" class="btn-sm-secondary" style="width:100%; justify-content:center; padding:8px; font-size:0.84rem;" onclick="closeModal('modal-avatar-selector')">Cancel</button>
           </div>
         </div>
