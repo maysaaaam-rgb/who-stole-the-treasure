@@ -82,40 +82,41 @@ export default function MonsterPreview({
   // Raster Layer Stack (Fallback & Component-level composition)
   return (
     <div 
-      className={`monster-preview-layer-stack relative aspect-square flex items-center justify-center overflow-hidden ${className}`}
+      className={`monster-preview-layer-stack relative w-64 h-64 mx-auto rounded-3xl bg-slate-950 flex items-center justify-center p-4 overflow-hidden shadow-inner ${className}`}
       style={{ width: `${size}px`, height: `${size}px`, position: 'relative', margin: '0 auto', ...style }}
     >
-      {/* 1. Pedestal Base - locked to bottom: 18% */}
+      {/* Inner Monster Stage - Shift vertical offset upwards by 12% */}
       <div 
-        className="pedestal-disk absolute z-10 pointer-events-none" 
-        style={{ 
-          position: 'absolute', 
-          bottom: '18%', 
-          left: '50%', 
-          transform: 'translateX(-50%)', 
-          width: '74%', 
-          height: '22px', 
-          zIndex: 10, 
-          background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.55) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)', 
-          borderRadius: '50%' 
-        }} 
-      />
-
-      {/* 2. Base Monster Assembly - shifted up 15% so bottom paws sit directly on pedestal surface with balanced margins */}
-      <div 
-        className="relative z-20 w-full h-full flex items-center justify-center"
-        style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', transform: 'translateY(-15%)' }}
+        className="relative w-full h-full flex items-center justify-center -translate-y-3"
+        style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'translateY(-12px)' }}
       >
-        {/* Base Body (Clean, Earless/Hornless Dome) */}
+        {/* 1. Pedestal Base (lifted off the bottom border) */}
         <img 
-          src={`assets/monsters/base/body_${stage}_${normColor}.webp`} 
-          className="absolute inset-0 w-full h-full object-contain z-20"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 20 }}
-          alt="Base Body"
+          src="/assets/monsters/base/pedestal_gold.webp" 
+          className="absolute bottom-6 w-[78%] z-10 pointer-events-none drop-shadow-lg"
+          alt="Pedestal"
           onError={(e) => {
-            e.currentTarget.src = getMonsterAsset(student.archetype, level);
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = 'assets/monsters/base/pedestal_gold.webp';
           }}
+          style={{ position: 'absolute', bottom: '24px', width: '78%', zIndex: 10, pointerEvents: 'none' }}
         />
+
+        {/* 2. Monster Base & Stacked Accessories */}
+        <div 
+          className="relative z-20 w-full h-full flex items-center justify-center"
+          style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {/* Base Body (Clean, Earless/Hornless Dome) */}
+          <img 
+            src={`assets/monsters/base/body_${stage}_${normColor}.webp`} 
+            className="absolute inset-0 w-full h-full object-contain z-20"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 20 }}
+            alt="Base Body"
+            onError={(e) => {
+              e.currentTarget.src = getMonsterAsset(student.archetype, level);
+            }}
+          />
 
         {/* Horns / Ears Layer (ONLY render if an item is selected; omit if null or 'no_horns') */}
         {!isNoHorns && (
