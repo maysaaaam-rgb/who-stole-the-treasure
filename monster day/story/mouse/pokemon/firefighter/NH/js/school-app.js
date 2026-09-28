@@ -1116,31 +1116,24 @@
     }
     const elementClass = 'element-' + element;
 
-    const species = (profile && (profile.monsterName || profile.species || profile.element))
-      ? (profile.monsterName || profile.element).toLowerCase().replace(/\s+/g, '')
-      : (element === 'ember' ? 'emberwing' : 'monster');
-
+    const species = getStudentSpeciesData(s);
     const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
     const archetypeClass = 'archetype-' + archetype;
 
     let avatarMarkup = '';
     const customImg = options.image || s.monsterAvatar;
     if (customImg) {
-      avatarMarkup = '<img src="' + customImg + '" class="monster-avatar" alt="' + studentName + ' Monster" />';
-    } else if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
-      avatarMarkup = window.MonsterRenderer.renderMonsterSVG({
-        stage: mState.stageKey || 'baby',
-        color: (profile && profile.baseColor) || 'blue',
-        equipped: (profile && profile.equipped) || {},
-        archetype: archetype,
-        studentId: studentId,
-        size: 120,
-        animated: true,
-        isAvatar: true
-      });
+      avatarMarkup = '' +
+        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+          '<img src="' + customImg + '" alt="' + studentName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+          '<div class="monster-iso-pedestal"></div>' +
+        '</div>';
     } else {
-      const assetUrl = getMonsterAsset(species, mState.currentLevel);
-      avatarMarkup = '<img src="' + assetUrl + '" class="monster-avatar" alt="' + studentName + ' Monster" onerror="this.onerror=null; this.src=\'assets/monsters/stage-4-growing-monster.png\';" />';
+      avatarMarkup = '' +
+        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+          '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+          '<div class="monster-iso-pedestal"></div>' +
+        '</div>';
     }
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -1174,10 +1167,7 @@
 
         // Monster Stage Platform with idleBob & Pedestal Disc
         '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
-          '<div class="monster-avatar-container roster-monster-sprite">' +
-            avatarMarkup +
-          '</div>' +
-          '<div class="pedestal-disc roster-pedestal-disk"></div>' +
+          avatarMarkup +
           '<span class="stage-level-badge">' + evolutionBadge + '</span>' +
         '</div>' +
 
@@ -3186,22 +3176,20 @@
               const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
+              const species = getStudentSpeciesData(s);
               let avatarMarkup = '';
               if (s.monsterAvatar) {
-                avatarMarkup = '<img src="' + s.monsterAvatar + '" class="monster-avatar" alt="' + s.firstName + ' Monster" />';
-              } else if (window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
-                avatarMarkup = window.MonsterRenderer.renderMonsterSVG({
-                  stage: (mState && mState.stageKey) ? mState.stageKey : 'baby',
-                  color: (mState && mState.profile) ? mState.profile.baseColor : 'blue',
-                  equipped: (mState && mState.profile) ? mState.profile.equipped : {},
-                  archetype: archetype,
-                  studentId: s.id,
-                  size: 120,
-                  animated: true,
-                  isAvatar: true
-                });
+                avatarMarkup = '' +
+                  '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+                    '<img src="' + s.monsterAvatar + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+                    '<div class="monster-iso-pedestal"></div>' +
+                  '</div>';
               } else {
-                avatarMarkup = window.renderMonsterStageBadge(s.id, { size: 105, animated: true });
+                avatarMarkup = '' +
+                  '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+                    '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+                    '<div class="monster-iso-pedestal"></div>' +
+                  '</div>';
               }
 
               return '' +
@@ -3235,10 +3223,7 @@
 
                   // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
                   '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
-                    '<div class="monster-avatar-container roster-monster-sprite">' +
-                      avatarMarkup +
-                    '</div>' +
-                    '<div class="pedestal-disc roster-pedestal-disk"></div>' +
+                    avatarMarkup +
                     '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
@@ -3590,15 +3575,17 @@
       const species = getStudentSpeciesData(s);
       let avatarMarkup = '';
       if (s.monsterAvatar) {
-        avatarMarkup = '<img src="' + s.monsterAvatar + '" class="monster-avatar" alt="' + s.firstName + ' Monster" />';
-      } else if (species) {
         avatarMarkup = '' +
-          '<div class="monster-avatar-container roster-monster-viewport" style="--species-glow: ' + species.glow + ';">' +
-            '<img src="' + species.image + '" onerror="this.onerror=null; this.src=\'' + species.fallback + '\';" class="roster-monster-sprite" alt="' + species.name + '" />' +
-            '<div class="pedestal-disc roster-pedestal-disk" style="background: radial-gradient(ellipse at center, ' + species.glow + ' 0%, transparent 72%);"></div>' +
+          '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+            '<img src="' + s.monsterAvatar + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+            '<div class="monster-iso-pedestal"></div>' +
           '</div>';
       } else {
-        avatarMarkup = window.renderMonsterStageBadge(s.id, { size: 105, animated: true });
+        avatarMarkup = '' +
+          '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
+            '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
+            '<div class="monster-iso-pedestal"></div>' +
+          '</div>';
       }
 
       return '' +
@@ -3632,10 +3619,7 @@
 
           // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
           '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
-            '<div class="monster-avatar-container roster-monster-sprite">' +
-              avatarMarkup +
-            '</div>' +
-            '<div class="pedestal-disc roster-pedestal-disk"></div>' +
+            avatarMarkup +
             '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
