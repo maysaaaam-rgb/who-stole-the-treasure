@@ -976,51 +976,58 @@
   // =========================================================================
   // 4 ELEMENTAL SPECIES ARCHETYPES (LOCAL 3D RASTER MASCOTS)
   // =========================================================================
-  const ELEMENTAL_SPECIES = {
-    ignis: {
-      name: "Emberwing",
-      element: "IGNIS",
-      image: "assets/monsters/ignis.webp",
-      fallback: "assets/packs/characters/emberwing_stage_baby.png",
-      glow: "rgba(239, 68, 68, 0.45)"
+  const ELEMENTAL_AVATARS = {
+    IGNIS: {
+      name: "Ember Beast",
+      sprite: "assets/packs/characters/emberwing_stage_baby.png",
+      glow: "rgba(239, 68, 68, 0.55)",
+      border: "#ef4444"
     },
-    flora: {
-      name: "Florasprout",
-      element: "FLORA",
-      image: "assets/monsters/flora.webp",
-      fallback: "assets/packs/characters/florasprout_stage_baby.png",
-      glow: "rgba(16, 185, 129, 0.45)"
+    FLORA: {
+      name: "Leaf Guardian",
+      sprite: "assets/packs/characters/florasprout_stage_baby.png",
+      glow: "rgba(16, 185, 129, 0.55)",
+      border: "#10b981"
     },
-    volt: {
-      name: "Sparktail",
-      element: "VOLT",
-      image: "assets/monsters/volt.webp",
-      fallback: "assets/packs/characters/sparktail_stage_baby.png",
-      glow: "rgba(245, 158, 11, 0.45)"
+    VOLT: {
+      name: "Thunder Spark",
+      sprite: "assets/packs/characters/sparktail_stage_baby.png",
+      glow: "rgba(245, 158, 11, 0.55)",
+      border: "#f59e0b"
     },
-    astral: {
-      name: "Astralight",
-      element: "ASTRAL",
-      image: "assets/monsters/astral.webp",
-      fallback: "assets/packs/characters/astralight_stage_baby.png",
-      glow: "rgba(139, 92, 246, 0.45)"
+    ASTRAL: {
+      name: "Cosmic Sprite",
+      sprite: "assets/packs/characters/astralight_stage_baby.png",
+      glow: "rgba(139, 92, 246, 0.55)",
+      border: "#8b5cf6"
     }
   };
 
-  function getStudentSpeciesData(student) {
-    const keys = ["ignis", "flora", "volt", "astral"];
-    if (!student) return ELEMENTAL_SPECIES.ignis;
-    if (typeof student === 'string') {
-      if (ELEMENTAL_SPECIES[student]) return ELEMENTAL_SPECIES[student];
-    }
-    if (student && student.archetype && ELEMENTAL_SPECIES[student.archetype]) {
-      return ELEMENTAL_SPECIES[student.archetype];
-    }
-    const seed = String(student.id || student.name || "0")
+  function getStudentMascot(student) {
+    if (!student) return ELEMENTAL_AVATARS.IGNIS;
+    const s = typeof student === 'object' ? student : { id: String(student) };
+    const archetype = (s.archetype || "").toUpperCase();
+    if (ELEMENTAL_AVATARS[archetype]) return ELEMENTAL_AVATARS[archetype];
+
+    // Fallback to deterministic hash so adjacent cards have different creatures
+    const keys = Object.keys(ELEMENTAL_AVATARS);
+    const hash = String(s.id || s.name || "0")
       .split("")
       .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return ELEMENTAL_SPECIES[keys[seed % keys.length]] || ELEMENTAL_SPECIES.ignis;
+    return ELEMENTAL_AVATARS[keys[hash % keys.length]];
   }
+
+  const ELEMENTAL_SPECIES = ELEMENTAL_AVATARS;
+  function getStudentSpeciesData(student) {
+    const mascot = getStudentMascot(student);
+    return Object.assign({}, mascot, {
+      image: mascot.sprite,
+      fallback: mascot.sprite
+    });
+  }
+
+  window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
+  window.getStudentMascot = getStudentMascot;
   window.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
   window.getStudentSpeciesData = getStudentSpeciesData;
 
@@ -1031,11 +1038,11 @@
     const size = options.size || 54;
     let studentId = typeof studentOrId === 'string' ? studentOrId : (studentOrId && studentOrId.id ? studentOrId.id : null);
     const student = (typeof store !== 'undefined' && store.getStudent) ? store.getStudent(studentId) : (typeof studentOrId === 'object' ? studentOrId : { id: studentId });
-    const species = getStudentSpeciesData(student || { id: studentId });
+    const mascot = getStudentMascot(student || { id: studentId });
 
     return '' +
       '<span class="roster-monster-avatar-wrap" style="display:inline-flex; align-items:center; justify-content:center; width:' + size + 'px; height:' + size + 'px; position:relative;">' +
-        '<img src="' + species.image + '" onerror="this.onerror=null; this.src=\'' + species.fallback + '\';" class="roster-monster-sprite" alt="' + species.name + '" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));" />' +
+        '<img src="' + mascot.sprite + '" onerror="this.onerror=null; this.src=\'' + mascot.sprite + '\';" class="roster-monster-sprite" alt="' + mascot.name + '" style="max-width:100%; max-height:100%; object-fit:contain; filter:drop-shadow(0 4px 8px ' + mascot.glow + ');" />' +
       '</span>';
   };
   window.renderStudentMonsterAvatar = window.renderMonsterAvatar;
@@ -1116,25 +1123,16 @@
     }
     const elementClass = 'element-' + element;
 
-    const species = getStudentSpeciesData(s);
-    const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
-    const archetypeClass = 'archetype-' + archetype;
+    const mascot = getStudentMascot(s);
+    const archetype = (s.archetype || mascot.name || 'IGNIS').toUpperCase();
+    const archetypeClass = 'archetype-' + archetype.toLowerCase();
 
-    let avatarMarkup = '';
-    const customImg = options.image || s.monsterAvatar;
-    if (customImg) {
-      avatarMarkup = '' +
-        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-          '<img src="' + customImg + '" alt="' + studentName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-          '<div class="monster-iso-pedestal"></div>' +
-        '</div>';
-    } else {
-      avatarMarkup = '' +
-        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-          '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-          '<div class="monster-iso-pedestal"></div>' +
-        '</div>';
-    }
+    // Isolated character sprite on illuminated pedestal (Purge static card graphics)
+    const avatarMarkup = '' +
+      '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
+        '<img src="' + mascot.sprite + '" alt="' + studentName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+        '<div class="monster-iso-pedestal"></div>' +
+      '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
     const streak = s.streakDays || 0;
@@ -3154,7 +3152,7 @@
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
             '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
           '</div>' :
-          '<div class="students-directory-grid">' +
+          '<div id="students-grid" class="students-grid students-directory-grid">' +
             filtered.map(s => {
               const mState = store.calculateMonsterState(s.id);
               const totalXP = mState.totalXP || 0;
@@ -3172,25 +3170,16 @@
                 else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
                 else elementKey = 'aqua';
               }
-              const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+              const mascot = getStudentMascot(s);
+              const archetype = (s.archetype || mascot.element || 'IGNIS').toLowerCase();
               const archetypeClass = 'archetype-' + archetype;
               const elementClass = 'element-' + elementKey;
 
-              const species = getStudentSpeciesData(s);
-              let avatarMarkup = '';
-              if (s.monsterAvatar) {
-                avatarMarkup = '' +
-                  '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-                    '<img src="' + s.monsterAvatar + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-                    '<div class="monster-iso-pedestal"></div>' +
-                  '</div>';
-              } else {
-                avatarMarkup = '' +
-                  '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-                    '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-                    '<div class="monster-iso-pedestal"></div>' +
-                  '</div>';
-              }
+              const avatarMarkup = '' +
+                '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
+                  '<img src="' + mascot.sprite + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+                  '<div class="monster-iso-pedestal"></div>' +
+                '</div>';
 
               return '' +
                 '<div class="student-directory-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
@@ -3568,25 +3557,16 @@
         else if (c === 'gold' || c === 'yellow') elementKey = 'spark';
         else elementKey = 'aqua';
       }
-      const archetype = s.archetype || (window.getStudentArchetype && window.getStudentArchetype(s)) || (window.AdventureAcademy && window.AdventureAcademy.getStudentArchetype && window.AdventureAcademy.getStudentArchetype(s)) || 'ignis';
+      const mascot = getStudentMascot(s);
+      const archetype = (s.archetype || mascot.element || 'IGNIS').toLowerCase();
       const archetypeClass = 'archetype-' + archetype;
       const elementClass = 'element-' + elementKey;
 
-      const species = getStudentSpeciesData(s);
-      let avatarMarkup = '';
-      if (s.monsterAvatar) {
-        avatarMarkup = '' +
-          '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-            '<img src="' + s.monsterAvatar + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-            '<div class="monster-iso-pedestal"></div>' +
-          '</div>';
-      } else {
-        avatarMarkup = '' +
-          '<div class="monster-viewport-stage" style="--pedestal-glow: ' + species.glow + '">' +
-            '<img src="' + species.image + '" alt="' + species.name + '" class="monster-hero-3d" onerror="this.src=\'' + species.fallback + '\'" />' +
-            '<div class="monster-iso-pedestal"></div>' +
-          '</div>';
-      }
+      const avatarMarkup = '' +
+        '<div class="monster-viewport-stage" style="--pedestal-glow: ' + mascot.glow + '">' +
+          '<img src="' + mascot.sprite + '" alt="' + s.firstName + ' Monster" class="monster-hero-3d" onerror="this.src=\'' + mascot.sprite + '\'" />' +
+          '<div class="monster-iso-pedestal"></div>' +
+        '</div>';
 
       return '' +
         '<div class="classroom-student-card student-card ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
@@ -12807,6 +12787,7 @@ window.switchClassroomSubTab = function(subTab) {
     const liveStageRenderer = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterLiveStage : window.renderMonsterLiveStage;
     const renderFn = window.MonsterRenderer ? window.MonsterRenderer.renderMonsterSVG : window.renderMonsterSVG;
     const previewStage = (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg') ? 'baby' : (mState.stageKey || 'baby');
+    const mascot = getStudentMascot(student);
 
     if (box) {
       if (liveStageRenderer) {
@@ -12815,7 +12796,10 @@ window.switchClassroomSubTab = function(subTab) {
           color: monsterCreatorDraft.baseColor,
           equipped: monsterCreatorDraft.equipped,
           size: 280,
-          animated: monsterCreatorIsAnimated
+          animated: monsterCreatorIsAnimated,
+          student: student,
+          studentId: student.id,
+          archetype: student.archetype || mascot.element
         });
       } else if (renderFn) {
         box.innerHTML = renderFn({
@@ -12829,20 +12813,12 @@ window.switchClassroomSubTab = function(subTab) {
       }
     }
 
-    if (miniAvatarBox && renderFn) {
-      miniAvatarBox.innerHTML = renderFn({
-        stage: previewStage,
-        color: monsterCreatorDraft.baseColor,
-        equipped: monsterCreatorDraft.equipped,
-        size: 46,
-        animated: false,
-        rawSvg: true,
-        isAvatar: true
-      });
+    if (miniAvatarBox) {
+      miniAvatarBox.innerHTML = '<img src="' + mascot.sprite + '" alt="' + mascot.name + '" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 2px 6px ' + mascot.glow + ');" />';
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || student.firstName + "'s Monster");
-    if (stageEl) stageEl.textContent = 'Level ' + mState.currentLevel + ' · ' + mState.stageName;
+    if (stageEl) stageEl.textContent = mascot.name + ' · Level ' + mState.currentLevel;
     if (descEl) descEl.textContent = '⭐ ' + store.getStudentTotalXP(student.id) + ' XP · ' + (mState.isHatched ? 'Active Companion' : 'Mystery Egg');
 
     // Render Preview Background Swatches
