@@ -126,12 +126,58 @@
 
   // =========================================================================
   // 4 DISTINCT SPECIES ARCHETYPES (SINGLE SOURCE OF TRUTH)
-  // 1. Ignis (Dragon/Flame): Pointed horns, dragon snout, warm ember underglow (#f97316)
-  // 2. Flora (Fox/Forest): Fluffy fox ears, leaf tail, emerald nature glow (#10b981)
-  // 3. Volt (Pikachu/Electric): Lightning-bolt ears, cheek pouches, electric amber glow (#eab308)
-  // 4. Astral (Owl/Cosmic): Feathered crest, star eyes, violet celestial glow (#8b5cf6)
+  // 1. Ignis (Emberwing / Fire): assets/monsters/ignis.webp
+  // 2. Flora (Florasprout / Nature): assets/monsters/flora.webp
+  // 3. Volt (Sparktail / Electric): assets/monsters/volt.webp
+  // 4. Astral (Astralight / Cosmic): assets/monsters/astral.webp
   // =========================================================================
+  const ELEMENTAL_SPECIES = {
+    ignis: {
+      name: "Emberwing",
+      element: "IGNIS",
+      image: "assets/monsters/ignis.webp",
+      fallback: "assets/packs/characters/emberwing_stage_baby.png",
+      glow: "rgba(239, 68, 68, 0.45)"
+    },
+    flora: {
+      name: "Florasprout",
+      element: "FLORA",
+      image: "assets/monsters/flora.webp",
+      fallback: "assets/packs/characters/florasprout_stage_baby.png",
+      glow: "rgba(16, 185, 129, 0.45)"
+    },
+    volt: {
+      name: "Sparktail",
+      element: "VOLT",
+      image: "assets/monsters/volt.webp",
+      fallback: "assets/packs/characters/sparktail_stage_baby.png",
+      glow: "rgba(245, 158, 11, 0.45)"
+    },
+    astral: {
+      name: "Astralight",
+      element: "ASTRAL",
+      image: "assets/monsters/astral.webp",
+      fallback: "assets/packs/characters/astralight_stage_baby.png",
+      glow: "rgba(139, 92, 246, 0.45)"
+    }
+  };
+
   const SPECIES_ARCHETYPES = ["ignis", "flora", "volt", "astral"];
+
+  function getStudentSpeciesData(student) {
+    const keys = ["ignis", "flora", "volt", "astral"];
+    if (!student) return ELEMENTAL_SPECIES.ignis;
+    if (typeof student === 'string') {
+      if (ELEMENTAL_SPECIES[student]) return ELEMENTAL_SPECIES[student];
+    }
+    if (student && student.archetype && ELEMENTAL_SPECIES[student.archetype]) {
+      return ELEMENTAL_SPECIES[student.archetype];
+    }
+    const seed = String(student.id || student.name || "0")
+      .split("")
+      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    return ELEMENTAL_SPECIES[keys[seed % keys.length]] || ELEMENTAL_SPECIES.ignis;
+  }
 
   function getStudentArchetype(student) {
     if (!student) return SPECIES_ARCHETYPES[0];
@@ -845,42 +891,13 @@
       const bellyColor = palette.belly || '#fef3c7';
       const pawColor = palette.paw || palette.shadowDark || palette.primaryDark || '#059669';
 
+      const species = getStudentSpeciesData(options.student || { id: options.studentId || options.id || options.name || archetype, archetype: archetype });
+
       bodySvg = `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
           ${defs}
           <g id="layer-body">
-            <!-- Outer Body Silhouette with Dynamic Taper & Soft Cheeks -->
-            <path id="monster-torso" 
-                  d="M 100 62 
-                     C 126 62, 148 76, 150 102 
-                     C 152 126, 146 154, 128 162 
-                     C 114 168, 86 168, 72 162 
-                     C 54 154, 48 126, 50 102 
-                     C 52 76, 74 62, 100 62 Z" 
-                  fill="${primaryColor}" stroke="${darkColor}" stroke-width="4" stroke-linejoin="round" />
-
-            <!-- Ambient Specular Shading -->
-            <path d="M 100 62 C 126 62, 148 76, 150 102 C 152 126, 146 154, 128 162 C 114 168, 86 168, 72 162 C 54 154, 48 126, 50 102 C 52 76, 74 62, 100 62 Z" 
-                  fill="url(#bodyShading)" opacity="0.3" />
-
-            <!-- Cream Belly / Chest Fluff Plate -->
-            <path id="monster-belly"
-                  d="M 100 104 
-                     C 118 104, 128 116, 126 138 
-                     C 124 154, 114 160, 100 160 
-                     C 86 160, 76 154, 74 138 
-                     C 72 116, 82 104, 100 104 Z" 
-                  fill="${bellyColor}" />
-
-            <!-- Expressive Chibi Ears / Crest -->
-            <path id="ear-left" d="M 68 74 C 52 45, 42 22, 60 16 C 74 12, 78 42, 82 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
-            <path id="ear-inner-left" d="M 64 62 C 55 42, 50 26, 62 22 C 70 20, 74 42, 76 58 Z" fill="${lightColor}" opacity="0.75" />
-            <path id="ear-right" d="M 132 74 C 148 45, 158 22, 140 16 C 126 12, 122 42, 118 66 Z" fill="${primaryColor}" stroke="${darkColor}" stroke-width="3" />
-            <path id="ear-inner-right" d="M 136 62 C 145 42, 150 26, 138 22 C 130 20, 126 42, 124 58 Z" fill="${lightColor}" opacity="0.75" />
-
-            <!-- Rounded Front Paws Anchored to Pedestal -->
-            <ellipse cx="74" cy="162" rx="13" ry="8" id="paw-left" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
-            <ellipse cx="126" cy="162" rx="13" ry="8" id="paw-right" fill="${pawColor}" stroke="${darkColor}" stroke-width="3" />
+            <image href="${species.image}" xlink:href="${species.fallback}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-live-stage-model" />
           </g>
         </svg>
       `;
@@ -2092,28 +2109,21 @@
     `;
   }
 
-  // --- MAIN MONSTER BODY LAYER (Stages 3 to 7) ---
+  // --- MAIN MONSTER BODY LAYER (Local 3D Raster Mascot Loader) ---
   function renderMonsterBody(stage, palette, colorKey, equipped) {
-    const g = getStageGeometry(stage);
-    const cX = 100;
-    const cY = (g.topY + g.botY) / 2;
-    const rx = g.bW;
-    const ry = (g.botY - g.topY) / 2;
+    const archetype = (equipped && equipped.archetype) || 'ignis';
+    const species = getStudentSpeciesData(equipped && (equipped.student || equipped.archetype) ? (equipped.student || equipped.archetype) : archetype);
 
-    const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
-    const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
-    const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
-    const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
-    const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-    const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
+    const rasterBody = `
+      <g id="layer-body">
+        <image href="${species.image}" xlink:href="${species.fallback}" x="22" y="22" width="156" height="156" preserveAspectRatio="xMidYMid meet" class="monster-raster-model" />
+      </g>
+    `;
+    const clothingMarkup = renderClothingLayer((equipped && equipped.clothing) || '', 100, 110, 40, 40, palette, stage);
 
     return `
-      ${underBodyMarkup}
-      ${feetMarkup}
-      ${torsoMarkup}
-      ${overBodyMarkup}
+      ${rasterBody}
       ${clothingMarkup}
-      ${faceMarkup}
     `;
   }
 
@@ -3779,7 +3789,9 @@
     palettes: MONSTER_PALETTES,
     stages: STAGE_META,
     SPECIES_ARCHETYPES: SPECIES_ARCHETYPES,
-    getStudentArchetype: getStudentArchetype
+    getStudentArchetype: getStudentArchetype,
+    ELEMENTAL_SPECIES: ELEMENTAL_SPECIES,
+    getStudentSpeciesData: getStudentSpeciesData
   };
 
   root.getMonsterAsset = getMonsterAsset;
@@ -3797,6 +3809,8 @@
   root.renderMonsterEvolutionStagesBanner = renderMonsterEvolutionStagesBanner;
   root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
   root.getStudentArchetype = getStudentArchetype;
+  root.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
+  root.getStudentSpeciesData = getStudentSpeciesData;
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.MonsterRenderer;
