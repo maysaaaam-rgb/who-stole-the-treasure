@@ -644,42 +644,35 @@
     // 1. Render Left Recipe List / Blueprint Preview Card
     const recipeListEl = document.getElementById('smithing2x2RecipeList');
     if (recipeListEl) {
+      const isStep1 = (active.id === 'sticks-2x2');
+      const formulaChips = isStep1
+        ? `<div class="recipe-formula-chip"><span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🪵 Wood</span> <span class="chip-eq">=</span> <span class="chip-result">🥢 4x Sticks</span></div>`
+        : `<div class="recipe-formula-chip"><span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🪵 Wood</span> <span class="chip-plus">+</span> <span class="chip-item">🥢 Stick</span> <span class="chip-plus">+</span> <span class="chip-item">🥢 Stick</span> <span class="chip-eq">=</span> <span class="chip-result">⛏️ Pickaxe</span></div>`;
+
       recipeListEl.innerHTML = `
-        <div class="blueprint-preview-card" style="width:100%; border:3px solid #38bdf8; border-bottom:6px solid #0284c7;">
+        <div class="blueprint-preview-card target-step-card">
           <div class="blueprint-media-viewport">
-            <span class="hud-tag" style="position:absolute; top:12px; left:12px; background:rgba(56,189,248,0.25); border-color:#38bdf8;">
-              ${active.icon} Step 0${active.stepNumber || (playerSession.smithing2x2Index + 1)} Target
+            <span class="step-target-badge">
+              ${active.icon} STEP 0${active.stepNumber || (playerSession.smithing2x2Index + 1)} TARGET
             </span>
 
             <div class="blueprint-subject-stage">
-              <img src="${active.img}" alt="${active.name}" class="blueprint-subject-sprite" style="max-height:120px;">
-              <div class="pedestal-disc" style="background: radial-gradient(ellipse at center, rgba(56,189,248,0.45) 0%, transparent 72%);"></div>
+              <img src="${active.img}" alt="${active.name}" class="target-item-hero-img">
+              <div class="pedestal-disc target-hero-pedestal"></div>
             </div>
           </div>
 
           <div class="blueprint-caption-tray">
-            <div>
-              <div style="font-size:1.15rem; font-weight:900; color:#ffffff;">${active.name}</div>
-              <div style="font-size:0.82rem; color:#38bdf8; font-weight:800; margin-top:2px;">${active.ingredientsLabel}</div>
+            <div class="target-card-header">
+              <div class="target-card-title">${active.name}</div>
+              <div class="target-card-subtitle">${active.tier || 'Crafting Recipe'}</div>
             </div>
 
-            <!-- Mini 2x2 Schematic Diagram -->
-            <div style="background:#060911; border:1.5px solid #334155; border-radius:12px; padding:10px; margin-top:8px;">
-              <div style="font-size:0.75rem; font-weight:900; color:#94a3b8; margin-bottom:6px; text-transform:uppercase;">
-                Workbench Blueprint Layout:
-              </div>
-              <div class="mini-blueprint-grid grid-2x2">
-                ${active.ghostGrid.map(item => `
-                  <div class="mini-blueprint-cell ${item ? 'is-filled' : ''}">
-                    ${item === 'wood' ? '🪵' : item === 'stick' ? '🥢' : ''}
-                  </div>
-                `).join('')}
-              </div>
+            <!-- Simple Visual Formula Chip (No Wordy Instructions) -->
+            <div class="formula-chip-wrap">
+              <div class="formula-chip-label">Visual Crafting Formula:</div>
+              ${formulaChips}
             </div>
-
-            <p style="font-size:0.78rem; color:#cbd5e1; margin-top:8px;">
-              ${active.miniGuide}
-            </p>
           </div>
         </div>
       `;
@@ -706,7 +699,7 @@
     if (formEl) formEl.textContent = `"${active.formula}"`;
     if (ingEl) ingEl.textContent = `Required: ${active.ingredientsLabel}`;
 
-    // 4. Render 2x2 Grid Sockets
+    // 4. Render 2x2 Grid Sockets with Visual Ghost Blueprints (No Plain Text)
     const gridEl = document.getElementById('grid2x2Sockets');
     if (gridEl) {
       gridEl.innerHTML = [0, 1, 2, 3].map(idx => {
@@ -714,23 +707,41 @@
         const ghostItem = active.ghostGrid[idx];
         const isGhost = !currentItem && !!ghostItem;
 
-        let displayIcon = '';
+        let displayContent = '';
         let ghostClass = '';
 
         if (currentItem) {
-          displayIcon = (currentItem === 'wood' ? '🪵' : currentItem === 'stick' ? '🥢' : '🪨');
+          if (currentItem === 'wood') {
+            displayContent = `<img src="assets/wood_block_transparent.webp" alt="Wood Plank" class="placed-item-sprite">`;
+          } else if (currentItem === 'stick') {
+            displayContent = `<img src="assets/wooden_sticks_transparent.webp" alt="Sticks" class="placed-item-sprite">`;
+          } else {
+            displayContent = `<img src="assets/stone_block_transparent.webp" alt="Stone" class="placed-item-sprite">`;
+          }
         } else if (isGhost) {
-          displayIcon = (ghostItem === 'wood' ? '🪵' : ghostItem === 'stick' ? '🥢' : '🪨');
           ghostClass = 'is-ghost-hint';
+          if (ghostItem === 'wood') {
+            displayContent = `
+              <div class="ghost-blueprint-icon">
+                <img src="assets/wood_block_transparent.webp" alt="Wood Ghost">
+              </div>`;
+          } else if (ghostItem === 'stick') {
+            displayContent = `
+              <div class="ghost-blueprint-icon">
+                <img src="assets/wooden_sticks_transparent.webp" alt="Stick Ghost">
+              </div>`;
+          } else {
+            displayContent = `
+              <div class="ghost-blueprint-icon">
+                <img src="assets/stone_block_transparent.webp" alt="Stone Ghost">
+              </div>`;
+          }
         }
 
         return `
-          <div class="crafting-socket ${currentItem ? 'is-slotted' : ''} ${ghostClass}" onclick="handleSocket2x2Click(${idx})" title="Slot ${idx + 1}: ${currentItem || (ghostItem ? 'Requires ' + ghostItem : 'Empty')}">
+          <div class="crafting-socket ${currentItem ? 'is-slotted' : ''} ${ghostClass}" onclick="handleSocket2x2Click(${idx})" title="Slot ${idx + 1}: ${currentItem ? currentItem : (ghostItem ? 'Requires ' + ghostItem : 'Empty')}">
             <span class="socket-index-num">${idx + 1}</span>
-            <div class="slotted-item-icon ${isGhost ? 'ghost-icon-pulse' : ''}">
-              ${displayIcon}
-            </div>
-            ${isGhost ? `<span class="ghost-item-label">${ghostItem}</span>` : ''}
+            ${displayContent}
           </div>
         `;
       }).join('');
@@ -740,17 +751,17 @@
     const trayEl = document.getElementById('smithing2x2InventoryTray');
     if (trayEl) {
       const palette = [
-        { key: 'wood', label: 'Wood Planks', icon: '🪵', count: Math.max(playerSession.inventory.wood, 4) },
-        { key: 'stick', label: 'Sticks', icon: '🥢', count: Math.max(playerSession.inventory.stick, 4) }
+        { key: 'wood', label: 'Wood Planks', iconImg: 'assets/wood_block_transparent.webp', count: Math.max(playerSession.inventory.wood, 4) },
+        { key: 'stick', label: 'Sticks', iconImg: 'assets/wooden_sticks_transparent.webp', count: Math.max(playerSession.inventory.stick, 4) }
       ];
 
       trayEl.innerHTML = palette.map(p => {
         const isSelected = (playerSession.selectedSmithing2x2Item === p.key);
         return `
-          <button type="button" class="btn-3d inventory-item-btn ${isSelected ? 'btn-game-torch is-selected' : 'btn-game-secondary'}" onclick="selectSmithingPaletteItem('${p.key}')">
-            <span class="inv-btn-icon">${p.icon}</span>
+          <button type="button" class="btn-3d inventory-item-btn ${isSelected ? 'is-selected' : ''}" onclick="selectSmithingPaletteItem('${p.key}')">
+            <img src="${p.iconImg}" alt="${p.label}" class="inv-token-img">
             <span class="inv-btn-name">${p.label}</span>
-            <span class="inv-count-pill">${p.count}</span>
+            <span class="inv-count-pill">×${p.count}</span>
           </button>
         `;
       }).join('');
@@ -826,7 +837,10 @@
     if (isMatch) {
       playerSession.craftedSmithing2x2Ids.add(recipe.id);
       addXP(12);
-      if (root.BiomeAudio) root.BiomeAudio.playHammerSlam();
+      if (root.BiomeAudio) {
+        root.BiomeAudio.playHammerSlam();
+        root.BiomeAudio.playVictoryFanfare();
+      }
       ConfettiEngine.burst(40);
 
       // Rubber stamp animation

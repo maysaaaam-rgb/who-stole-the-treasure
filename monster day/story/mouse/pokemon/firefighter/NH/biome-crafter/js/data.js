@@ -158,7 +158,7 @@
         badge: "Step 1 of 2: Craft Sticks",
         icon: "🥢",
         resultItem: "Sticks",
-        img: "assets/torch_item.webp",
+        img: "assets/wooden_sticks_transparent.webp",
         formula: "I need 2 Wood Planks to craft 4 Sticks.",
         purpose: "We use sticks to make pickaxes, torches, and tools.",
         pattern: [
