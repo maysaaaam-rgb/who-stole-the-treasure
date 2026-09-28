@@ -1261,7 +1261,7 @@
         '</div>' +
 
         // Monster Stage Platform with idleBob & Pedestal Disc
-        '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
+        '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
           '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Customize Monster">✏️</button>' +
           avatarMarkup +
           '<span class="stage-level-badge">' + evolutionBadge + '</span>' +
@@ -1270,15 +1270,21 @@
         // Card Content: Info, Progress & Dominant 3D Button
         '<div class="student-card-content">' +
           '<div class="student-name-row">' +
-            '<h3 class="student-name">' + studentName + '</h3>' +
+            '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
             '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + '</span>' +
           '</div>' +
-          '<div class="student-xp-progress-bar" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
-            '<div class="student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%;"></div>' +
+          '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
+              '<span>Evolution Progress</span>' +
+              '<span>' + (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve') : 'Ready to evolve!')) + '</span>' +
+            '</div>' +
+            '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
+              '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
+            '</div>' +
           '</div>' +
           '<div class="student-card-action-bar">' +
-            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
-              '⚡ +10 XP' +
+            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
+              '+10 XP' +
             '</button>' +
           '</div>' +
         '</div>' +
@@ -3250,7 +3256,7 @@
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
             '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
           '</div>' :
-          '<div id="students-grid" class="students-grid students-directory-grid">' +
+          '<div id="students-grid" class="students-grid students-directory-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">' +
             filtered.map(s => {
               const mState = store.calculateMonsterState(s.id);
               const totalXP = mState.totalXP || 0;
@@ -3280,7 +3286,7 @@
               const avatarMarkup = '' +
                 '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
                   '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-                  '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+                  '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
                 '</div>';
 
               return '' +
@@ -3313,7 +3319,7 @@
                   '</div>' +
 
                   // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
-                  '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
+                  '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
                     '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
                     avatarMarkup +
                     '<span class="stage-level-badge">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
@@ -3321,24 +3327,24 @@
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
                   '<div class="student-card-content">' +
-                    '<div class="student-name-row">' +
-                      '<h3 class="student-name">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
+                    '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
+                      '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
+                      '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
                     '</div>' +
-                    '<div class="student-xp-progress-bar" title="Evolution Progress: ' + progressPct + '%">' +
-                      '<div class="student-xp-progress-fill" style="width:' + progressPct + '%;"></div>' +
-                    '</div>' +
-                    '<div class="student-xp-progress-sub">' +
-                      (!mState.isHatched ? 
-                        ('🥚 Egg Crack: ' + mState.eggCrackPct + '%') : 
-                        (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve') : '👑 Apex Form Reached!')
-                      ) +
+                    '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
+                      '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
+                        '<span>Evolution Progress</span>' +
+                        '<span>' + (!mState.isHatched ? ('🥚 Egg Crack: ' + mState.eggCrackPct + '%') : (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
+                      '</div>' +
+                      '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ' + progressPct + '%">' +
+                        '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + progressPct + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
+                      '</div>' +
                     '</div>' +
 
                     // Dominant Tactile 3D Action Button (+10 XP)
-                    '<div class="student-card-action-bar">' +
-                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
-                        '⚡ +10 XP' +
+                    '<div class="student-card-action-bar" style="margin-top:10px;">' +
+                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                        '+10 XP' +
                       '</button>' +
                     '</div>' +
                   '</div>' +
@@ -3716,7 +3722,7 @@
           '</div>' +
 
           // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
-          '<div class="monster-stage ' + elementClass + '" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+          '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
             '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
             avatarMarkup +
             '<span class="stage-level-badge">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
@@ -3724,21 +3730,24 @@
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
           '<div class="student-card-content">' +
-            '<div class="student-name-row">' +
-              '<h3 class="student-name">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
+            '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
+              '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
+              '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
             '</div>' +
-            '<div class="student-xp-progress-bar" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
-              '<div class="student-xp-progress-fill" style="width:' + monsterState.progressPct + '%;"></div>' +
-            '</div>' +
-            '<div class="student-xp-progress-sub">' +
-              (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : '👑 Apex Form')) +
+            '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
+                '<span>Evolution Progress</span>' +
+                '<span>' + (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.currentLevel >= 7 ? '👑 Apex Form' : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
+              '</div>' +
+              '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
+                '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + monsterState.progressPct + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
+              '</div>' +
             '</div>' +
 
             // Dominant Tactile 3D Action Button (+10 XP)
-            '<div class="student-card-action-bar">' +
-              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
-                '⚡ +10 XP' +
+            '<div class="student-card-action-bar" style="margin-top:10px;">' +
+              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                '+10 XP' +
               '</button>' +
             '</div>' +
           '</div>' +

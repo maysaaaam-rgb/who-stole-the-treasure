@@ -204,26 +204,32 @@
               </div>
             </div>
 
-            <div class="monster-stage element-${s.archetype}" onclick="openClosetModal('${s.id}')" title="Click to customize monster">
+            <div class="monster-stage element-${s.archetype} pb-2" style="padding-bottom:8px;" onclick="openClosetModal('${s.id}')" title="Click to customize monster">
               <button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); openClosetModal('${s.id}')" title="Customize Monster">✏️</button>
               <div class="avatar-hero-container monster-viewport-stage">
                 <div class="mascot-pedestal-glow monster-iso-pedestal"></div>
-                <img src="${sprite}" alt="${s.firstName}'s Monster" class="mascot-sprite-img monster-hero-3d" loading="lazy" />
+                <img src="${sprite}" alt="${s.firstName}'s Monster" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" />
               </div>
               <span class="stage-level-badge">Lvl ${s.level} • ${stageLabel}</span>
             </div>
 
             <div class="student-card-content" style="width:100%; margin-top:12px;">
-              <div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 class="student-name" style="margin:0; font-size:1.02rem; font-weight:800;">${s.firstName} ${s.lastName}</h3>
-                <span class="student-xp-pill">⭐ ${s.xp.toLocaleString()}</span>
+              <div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                <h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">${s.firstName} ${s.lastName}</h3>
+                <span class="student-xp-pill" style="flex-shrink:0;">⭐ ${s.xp.toLocaleString()}</span>
               </div>
-              <div class="student-xp-progress-bar" style="margin:8px 0 6px 0;">
-                <div class="student-xp-progress-fill" style="width:${Math.min(100, (s.xp % 500) / 5)}%;"></div>
+              <div class="evolution-progress-rail" style="margin:8px 0 6px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">
+                  <span>Evolution Progress</span>
+                  <span>${s.level >= 7 ? '👑 Apex Form' : `${(500 - (s.xp % 500)).toLocaleString()} XP to evolve`}</span>
+                </div>
+                <div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ${Math.min(100, Math.round(((s.xp % 500) / 500) * 100))}%">
+                  <div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:${Math.min(100, (s.xp % 500) / 5)}%; height:100%; background:#4f46e5; border-radius:9999px;"></div>
+                </div>
               </div>
               <div class="student-card-action-bar" style="margin-top:10px;">
-                <button type="button" class="btn-3d btn-3d-success btn-dominant-xp" onclick="quickAwardXP('${s.id}', 10)">
-                  ⚡ +10 XP
+                <button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="quickAwardXP('${s.id}', 10)">
+                  +10 XP
                 </button>
               </div>
             </div>

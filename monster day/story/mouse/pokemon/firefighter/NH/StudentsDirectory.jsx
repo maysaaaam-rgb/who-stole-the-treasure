@@ -40,6 +40,27 @@ export function getMonsterAsset(archetype = 'ignis', evolutionLevel = 3) {
 }
 
 /**
+ * High-Contrast Archetype Badge Helper
+ * FLORA: bg-emerald-100 text-emerald-800 border border-emerald-200
+ * IGNIS: bg-rose-100 text-rose-800 border border-rose-200
+ * ASTRAL: bg-purple-100 text-purple-800 border border-purple-200
+ * Default/Volt: bg-amber-100 text-amber-900 border border-amber-200
+ */
+export function getArchetypeBadgeClass(archetype = '') {
+  const raw = String(archetype || '').toLowerCase();
+  if (raw.includes('flora') || raw.includes('leaf') || raw.includes('verdant')) {
+    return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+  }
+  if (raw.includes('ignis') || raw.includes('ember') || raw.includes('fire')) {
+    return 'bg-rose-100 text-rose-800 border border-rose-200';
+  }
+  if (raw.includes('astral') || raw.includes('star') || raw.includes('cosmic')) {
+    return 'bg-purple-100 text-purple-800 border border-purple-200';
+  }
+  return 'bg-amber-100 text-amber-900 border border-amber-200';
+}
+
+/**
  * -----------------------------------------------------------------------------
  * 2. MONSTER MULTI-LAYER COMPOSITE COMPONENT
  * Renders the 8-layer composite stage adhering to strict Z-index stacking order:
@@ -57,8 +78,8 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
 
   return (
     <div 
-      className={`monster-composite-stage ${isAnimated ? 'eaa-monster-animated bobbing' : ''}`}
-      style={{ position: 'relative', width: `${size}px`, height: `${size}px`, margin: '0 auto' }}
+      className={`monster-composite-stage pb-2 ${isAnimated ? 'eaa-monster-animated bobbing' : ''}`}
+      style={{ position: 'relative', width: `${size}px`, height: `${size}px`, margin: '0 auto', paddingBottom: '8px' }}
     >
       {/* z-0: Aura Layer */}
       {equipped.aura && equipped.aura !== 'none' && (
@@ -81,8 +102,8 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
         <img 
           src={baseAsset} 
           alt={student.firstName || 'Monster'} 
-          className="mascot-sprite-img monster-hero-3d" 
-          style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+          className="mascot-sprite-img monster-hero-3d object-contain p-2" 
+          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px' }} 
           loading="lazy"
           onError={(e) => { e.currentTarget.src = 'assets/monsters/stage-3-baby-monster.png'; }}
         />
@@ -122,7 +143,7 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
       )}
 
       {/* Grounded Isometric Pedestal Disc */}
-      <div className="pedestal-disk" id="preview-pedestal" style={{ position: 'absolute', bottom: 0, left: '15%', width: '70%', height: '14px', zIndex: 1 }} />
+      <div className="pedestal-disk" id="preview-pedestal" style={{ position: 'absolute', bottom: '6px', left: '15%', width: '70%', height: '16px', zIndex: 1 }} />
     </div>
   );
 }
@@ -134,12 +155,15 @@ export function MonsterSpriteLayer({ student, size = 160, isAnimated = true }) {
  * -----------------------------------------------------------------------------
  */
 export function StudentCard({ student, onCustomize, onQuickXP }) {
-  const level = student.evolution_level || 1;
+  const level = student.evolution_level || (student.monster_state && student.monster_state.currentLevel) || 1;
   const archetype = (student.monster_archetype || student.archetype || 'ignis').toLowerCase();
   const xp = student.totalXP || student.xp || 0;
   const streak = student.streakDays || 0;
   const cefr = student.overallCefr || 'A1';
   const stageName = level === 1 ? 'Mystery Egg' : level === 2 ? 'Cracking Egg' : level === 7 ? 'Apex Ultimate' : `Stage ${level} Companion`;
+  const xpToNext = student.xpToNext !== undefined ? student.xpToNext : Math.max(0, 500 - (xp % 500));
+  const progressPct = student.progressPct !== undefined ? student.progressPct : Math.min(100, Math.round(((xp % 500) / 500) * 100));
+  const archetypeBadgeStyle = getArchetypeBadgeClass(archetype);
 
   return (
     <div className={`student-directory-card student-card element-${archetype} archetype-${archetype}`}>
@@ -148,15 +172,19 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
           <span className="student-card-status-dot status-active" />
           <span className="badge-cefr">{cefr}</span>
-          <span className="badge-archetype">{archetype.toUpperCase()}</span>
+          <span className={`badge-archetype archetype-${archetype} ${archetypeBadgeStyle} px-2 py-0.5 rounded-full text-xs font-bold uppercase`}>
+            {archetype.toUpperCase()}
+          </span>
         </div>
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-          <span className="student-card-streak-pill">🔥 {streak}d</span>
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 student-card-streak-pill">
+            🔥 {streak}d
+          </span>
           <button 
             type="button" 
             className="btn-card-more-3dots"
             onClick={() => onCustomize(student)}
-            title="Customize Monster"
+            title="More Options"
           >
             •••
           </button>
@@ -165,7 +193,8 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
 
       {/* Monster Stage Platform with Hover Physics & Pencil Edit Badge */}
       <div 
-        className={`monster-stage element-${archetype}`} 
+        className={`monster-stage element-${archetype} pb-2`} 
+        style={{ paddingBottom: '8px' }}
         onClick={() => onCustomize(student)}
         title={`Lvl ${level} ${stageName} — Click to customize`}
       >
@@ -184,24 +213,34 @@ export function StudentCard({ student, onCustomize, onQuickXP }) {
 
       {/* Card Info & Tactile 3D Action Button */}
       <div className="student-card-content" style={{ width: '100%', marginTop: '12px' }}>
-        <div className="student-name-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 className="student-name" style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>
+        <div className="student-name-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+          <h3 className="font-bold text-slate-850 text-base leading-tight line-clamp-2 min-h-[2.5rem] break-words student-name" style={{ margin: 0, minHeight: '2.5rem' }}>
             {student.firstName} {student.lastName || ''}
           </h3>
-          <span className="student-xp-pill">⭐ {xp.toLocaleString()}</span>
+          <span className="student-xp-pill" style={{ flexShrink: 0 }}>⭐ {xp.toLocaleString()}</span>
         </div>
 
-        <div className="student-xp-progress-bar" style={{ margin: '8px 0 4px 0' }}>
-          <div className="student-xp-progress-fill" style={{ width: `${Math.min(100, (xp % 500) / 5)}%` }} />
+        {/* Evolution Progress Rail */}
+        <div className="evolution-progress-rail my-2" style={{ margin: '8px 0 6px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.72rem', color: '#64748b', marginBottom: '3px', fontWeight: 600 }}>
+            <span>Evolution Progress</span>
+            <span>{level >= 7 ? '👑 Apex Form' : (xpToNext > 0 ? `${xpToNext.toLocaleString()} XP to evolve` : 'Ready to evolve!')}</span>
+          </div>
+          <div className="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 w-full progress-track student-xp-progress-bar" style={{ height: '6px', background: '#f1f5f9', borderRadius: '9999px', overflow: 'hidden' }}>
+            <div 
+              className="bg-indigo-600 h-full rounded-full transition-all duration-300 progress-fill student-xp-progress-fill" 
+              style={{ width: `${progressPct}%`, height: '100%', background: '#4f46e5', borderRadius: '9999px' }} 
+            />
+          </div>
         </div>
 
         <div className="student-card-action-bar" style={{ marginTop: '10px' }}>
           <button 
             type="button" 
-            className="btn-3d btn-3d-success btn-dominant-xp"
+            className="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full"
             onClick={(e) => { e.stopPropagation(); onQuickXP(student.id, 10); }}
           >
-            ⚡ +10 XP
+            +10 XP
           </button>
         </div>
       </div>
@@ -399,7 +438,7 @@ export default function StudentsDirectory({ students = [], onUpdateStudentXP, on
       </div>
 
       {/* Uninterrupted 4-Column Grid: No Spliced Top Navbars */}
-      <div className="students-grid students-directory-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 students-grid students-directory-grid">
         {students.map(student => (
           <StudentCard
             key={student.id}
