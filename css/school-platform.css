@@ -6466,11 +6466,28 @@ body.classroom-mode-active .classroom-students-grid {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.monster-composite-stage .layer-item svg,
-.monster-composite-stage .layer-slot svg,
-.monster-composite-stage .layer-slot img {
+.monster-composite-stage .layer-slot {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-composite-stage .layer-slot img,
+.monster-composite-stage .layer-slot svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.monster-composite-stage .layer-item svg {
   width: 100%;
   height: 100%;
   display: block;
