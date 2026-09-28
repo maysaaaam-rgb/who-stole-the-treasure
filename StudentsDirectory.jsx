@@ -660,41 +660,25 @@ export function ClosetCustomizerModal({
               Live Avatar Preview
             </div>
             
+            {/* Preview Box Container */}
             <div className="relative w-64 h-64 mx-auto rounded-3xl bg-slate-950 flex items-center justify-center p-4 overflow-hidden shadow-inner border border-slate-800/80" style={{ position: 'relative', width: '256px', height: '256px', margin: '0 auto' }}>
-              {/* Container maintaining a 1:1 aspect ratio with centered anchor */}
-              <div className="relative w-full h-full flex items-center justify-center">
-                {/* 1. Golden Pedestal Base - locked to bottom: 18% with comfortable breathing room */}
-                <div 
-                  className="pedestal-disk" 
-                  id="preview-pedestal"
-                  style={{ 
-                    position: 'absolute', 
-                    bottom: '18%', 
-                    left: '50%', 
-                    transform: 'translateX(-50%)', 
-                    width: '74%', 
-                    height: '22px', 
-                    zIndex: 10,
-                    background: 'radial-gradient(ellipse at center, rgba(234, 179, 8, 0.6) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 75%)',
-                    borderRadius: '50%',
-                    pointerEvents: 'none'
-                  }} 
+              {/* Inner Monster Stage - Shift vertical offset upwards by 12% */}
+              <div className="relative w-full h-full flex items-center justify-center -translate-y-3" style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'translateY(-12px)' }}>
+                
+                {/* 1. Pedestal Base (lifted off the bottom border) */}
+                <img 
+                  src="/assets/monsters/base/pedestal_gold.webp" 
+                  className="absolute bottom-6 w-[78%] z-10 pointer-events-none drop-shadow-lg"
+                  alt="Pedestal"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'assets/monsters/base/pedestal_gold.webp';
+                  }}
+                  style={{ position: 'absolute', bottom: '24px', width: '78%', zIndex: 10, pointerEvents: 'none' }}
                 />
 
-                {/* 2. Base Monster Assembly - shifted up by 15% to seat paws directly on pedestal and center cleanly */}
-                <div 
-                  className="relative z-20 w-full h-full flex items-center justify-center"
-                  style={{ 
-                    position: 'relative', 
-                    zIndex: 20, 
-                    width: '100%', 
-                    height: '100%', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    transform: 'translateY(-15%)' 
-                  }}
-                >
+                {/* 2. Monster Base & Stacked Accessories */}
+                <div className="relative z-20 w-full h-full flex items-center justify-center" style={{ position: 'relative', zIndex: 20, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <MonsterCompositeView 
                     stage={stageKey}
                     color={customizationDraft.furColor}

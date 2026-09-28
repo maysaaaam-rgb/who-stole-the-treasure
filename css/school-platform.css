@@ -6645,6 +6645,19 @@ body.classroom-mode-active .classroom-students-grid {
   animation: pedestalPulse 3s ease-in-out infinite;
 }
 
+/* Preview Stage Alignment Utilities */
+.-translate-y-3 {
+  transform: translateY(-0.75rem);
+}
+
+.bottom-6 {
+  bottom: 1.5rem;
+}
+
+.w-\[78\%\] {
+  width: 78%;
+}
+
 /* ==========================================================================
    SIMON SAYS — PROJECTOR-OPTIMIZED CLASSROOM PHYSICAL GAME STYLES
    ========================================================================== */
