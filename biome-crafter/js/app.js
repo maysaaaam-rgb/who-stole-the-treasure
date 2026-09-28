@@ -16,13 +16,13 @@
     daylightRemaining: 180,
     daylightInterval: null,
 
-    // Inventory Slots
+    // Inventory Slots (Starting supply for Stage 3 Sandbox Crafting)
     inventory: {
-      wood: 6,
-      stone: 6,
-      iron: 4,
-      stick: 6,
-      coal: 2
+      wood: 12,
+      stone: 12,
+      iron: 8,
+      stick: 12,
+      coal: 8
     },
 
     // Stage 1: Biome Scanner
@@ -31,22 +31,20 @@
     // Stage 2: Mining Airlock
     miningProgress: {},
 
-    // Stage 3: 3x3 Real Crafting Forge with English Gates
-    smithing3x3Index: 0,
+    // Stage 3: The Blacksmith's 3x3 Crafting Table (Sandbox)
     smithing3x3Grid: ['', '', '', '', '', '', '', '', ''],
     selectedSmithing3x3Item: 'wood',
-    smithing3x3SentenceSlots: [],
-    smithing3x3BankWords: [],
-    smithing3x3SentenceVerified: false,
+    discoveredRecipes: new Set(),
+    matchedRecipe: null,
     craftedSmithing3x3Ids: new Set(),
-    get smithing2x2Index() { return this.smithing3x3Index; },
-    set smithing2x2Index(v) { this.smithing3x3Index = v; },
+    get smithing2x2Index() { return 0; },
+    set smithing2x2Index(v) {},
     get smithing2x2Grid() { return this.smithing3x3Grid; },
     set smithing2x2Grid(v) { this.smithing3x3Grid = v; },
     get selectedSmithing2x2Item() { return this.selectedSmithing3x3Item; },
     set selectedSmithing2x2Item(v) { this.selectedSmithing3x3Item = v; },
-    get craftedSmithing2x2Ids() { return this.craftedSmithing3x3Ids; },
-    craftedSmithingIds: new Set(),
+    get craftedSmithing2x2Ids() { return this.discoveredRecipes; },
+    get craftedSmithingIds() { return this.discoveredRecipes; },
 
     // Stage 4: Sunset Sorting Drill
     sortingIndex: 0,
@@ -614,177 +612,143 @@
   }
 
   // =========================================================================
-  // STAGE 3: THE 2x2 STARTER SMITHING BENCH (Recipe Assembly)
+  // =========================================================================
+  // STAGE 3: THE BLACKSMITH'S 3x3 CRAFTING TABLE (AUTHENTIC SANDBOX)
   // =========================================================================
   let draggedSmithingItem = null;
 
-  // =========================================================================
-  // STAGE 3: THE 3x3 REAL CRAFTING FORGE WITH ENGLISH GATES
-  // =========================================================================
+  const SMITHING_SPRITES = {
+    wood: 'assets/wood_block_transparent.webp',
+    stone: 'assets/stone_block_transparent.webp',
+    iron: 'assets/iron_ingot_transparent.webp',
+    stick: 'assets/wooden_sticks_transparent.webp',
+    coal: 'assets/coal_lump_transparent.webp'
+  };
 
-  function initTierSentence(recipe) {
-    if (!recipe || !recipe.sentenceChunks) return;
-    playerSession.smithing3x3SentenceSlots = new Array(recipe.sentenceChunks.length).fill('');
-    // Combine correct chunks and distractors, then shuffle
-    const allWords = [...recipe.sentenceChunks, ...(recipe.distractorChunks || [])];
-    for (let i = allWords.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
+  const SMITHING_LABELS = {
+    wood: 'Oak Planks',
+    stone: 'Cobblestone',
+    iron: 'Iron Ingots',
+    stick: 'Wooden Sticks',
+    coal: 'Coal Lump'
+  };
+
+  function matchesGridPattern(gridA, gridB) {
+    if (!gridA || !gridB || gridA.length !== 9 || gridB.length !== 9) return false;
+    for (let i = 0; i < 9; i++) {
+      const itemA = gridA[i] || '';
+      const itemB = gridB[i] || '';
+      if (itemA !== itemB) return false;
     }
-    playerSession.smithing3x3BankWords = allWords;
-    playerSession.smithing3x3SentenceVerified = false;
+    return true;
+  }
+
+  function findMatchingRecipe(grid) {
+    const data = root.BIOME_CRAFTER_DATA;
+    if (!data || !data.recipeRegistry) return null;
+
+    for (const recipe of data.recipeRegistry) {
+      if (matchesGridPattern(grid, recipe.grid)) return recipe;
+      if (recipe.altGrids && recipe.altGrids.length) {
+        for (const alt of recipe.altGrids) {
+          if (matchesGridPattern(grid, alt)) return recipe;
+        }
+      }
+    }
+    return null;
   }
 
   function renderStage3Smithing() {
     const data = root.BIOME_CRAFTER_DATA;
     if (!data) return;
 
-    const recipes = data.smithing3x3Tiers || [];
-    if (!recipes.length) return;
+    const recipes = data.recipeRegistry || [];
 
-    const active = recipes[playerSession.smithing3x3Index] || recipes[0];
-
-    // Ensure sentence slots are initialized for active tier
-    if (!playerSession.smithing3x3SentenceSlots || playerSession.smithing3x3SentenceSlots.length !== active.sentenceChunks.length) {
-      initTierSentence(active);
+    // 1. Update Blacksmith's Discovery Tome Progress Count
+    const tomeProgressEl = document.getElementById('tomeProgressCount');
+    if (tomeProgressEl) {
+      tomeProgressEl.textContent = `Discovered: ${playerSession.discoveredRecipes.size} / ${recipes.length}`;
     }
 
-    // 1. Render Left Preview Card & Mini 3x3 Blueprint Schematic
-    const recipeListEl = document.getElementById('smithing2x2RecipeList');
-    if (recipeListEl) {
-      recipeListEl.innerHTML = `
-        <div class="blueprint-preview-card target-step-card">
-          <div class="blueprint-media-viewport">
-            <span class="step-target-badge">
-              ${active.icon} ${active.tierName.toUpperCase()}
-            </span>
-
-            <div class="blueprint-subject-stage">
-              <img src="${active.img}" alt="${active.name}" class="target-item-hero-img">
-              <div class="pedestal-disc target-hero-pedestal"></div>
-            </div>
-          </div>
-
-          <div class="blueprint-caption-tray">
-            <div class="target-card-header">
-              <div class="target-card-title">${active.name}</div>
-              <div class="target-card-subtitle">${active.badge}</div>
-            </div>
-
-            <!-- Mini 3x3 Blueprint Schematic -->
-            <div class="mini-blueprint-box">
-              <div class="mini-blueprint-header">
-                <span>📐</span> <span>3x3 Workbench Blueprint:</span>
+    // 2. Render Left Blacksmith's Discovery Tome List
+    const tomeListEl = document.getElementById('blacksmithTomeList');
+    if (tomeListEl) {
+      tomeListEl.innerHTML = recipes.map(r => {
+        const isDiscovered = playerSession.discoveredRecipes.has(r.id);
+        if (isDiscovered) {
+          const filterStyle = r.imgFilter ? `style="filter: ${r.imgFilter};"` : '';
+          return `
+            <div class="tome-item-card is-discovered" title="${r.name} - ${r.desc}">
+              <div class="tome-card-thumb-wrap">
+                <img src="${r.img}" alt="${r.name}" class="tome-card-thumb" ${filterStyle}>
               </div>
-              <div class="mini-blueprint-grid mini-blueprint-3x3">
-                ${active.pattern.map(row => {
-                  return row.map(cell => {
-                    if (cell === 'wood') return `<div class="mini-blueprint-cell has-item">🪵</div>`;
-                    if (cell === 'stone') return `<div class="mini-blueprint-cell has-item">🪨</div>`;
-                    if (cell === 'iron') return `<div class="mini-blueprint-cell has-item">⚙️</div>`;
-                    if (cell === 'stick') return `<div class="mini-blueprint-cell has-item">🥢</div>`;
-                    return `<div class="mini-blueprint-cell is-empty">·</div>`;
-                  }).join('');
-                }).join('')}
+              <div class="tome-card-info">
+                <div class="tome-card-name">${r.name}</div>
+                <div class="tome-card-sub">${r.category} • ⭐ +${r.xp} XP</div>
               </div>
-              <div style="font-size:0.76rem; color:#94a3b8; text-align:center; margin-top:6px;">
-                ${active.miniGuide}
+              <div class="tome-card-status">
+                <span class="tome-check-pill">✓ DISCOVERED</span>
               </div>
             </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // 2. Render Tier Stepper Pills
-    const stepperEl = document.getElementById('smithing2x2Stepper');
-    if (stepperEl) {
-      stepperEl.innerHTML = recipes.map((r, idx) => {
-        const isActive = (idx === playerSession.smithing3x3Index);
-        const done = playerSession.craftedSmithing3x3Ids.has(r.id);
-        return `
-          <button type="button" class="recipe-step-pill ${isActive ? 'is-active' : ''} ${done ? 'is-crafted' : ''}" onclick="select2x2Recipe(${idx})">
-            <span>${r.icon || '🔨'}</span>
-            <span>${done ? '✓ ' : ''}Tier 0${r.tier}: ${r.name}</span>
-          </button>
-        `;
-      }).join('');
-    }
-
-    // 3. Render 3x3 Grid Sockets (9 Slots: 0 to 8) with Glowing Ghost Blueprints
-    const gridEl = document.getElementById('grid2x2Sockets');
-    if (gridEl) {
-      gridEl.className = 'crafting-grid smithing-3x3-grid';
-      gridEl.innerHTML = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => {
-        const currentItem = playerSession.smithing3x3Grid[idx];
-        const ghostItem = active.ghostGrid[idx];
-        const isGhost = !currentItem && !!ghostItem;
-        const isMatchingTarget = !currentItem && ghostItem && (playerSession.selectedSmithing3x3Item === ghostItem);
-
-        let displayContent = '';
-        let socketClasses = ['crafting-socket'];
-
-        if (currentItem) {
-          socketClasses.push('is-slotted');
-          if (currentItem === 'wood') {
-            displayContent = `<img src="assets/wood_block_transparent.webp" alt="Oak Planks" class="placed-item-sprite">`;
-          } else if (currentItem === 'stone') {
-            displayContent = `<img src="assets/stone_block_transparent.webp" alt="Cobblestone" class="placed-item-sprite">`;
-          } else if (currentItem === 'iron') {
-            displayContent = `<img src="assets/iron_ingot_transparent.webp" alt="Iron Ingot" class="placed-item-sprite">`;
-          } else if (currentItem === 'stick') {
-            displayContent = `<img src="assets/wooden_sticks_transparent.webp" alt="Stick" class="placed-item-sprite">`;
-          }
-        } else if (isGhost) {
-          socketClasses.push('is-ghost-hint');
-          if (isMatchingTarget) {
-            socketClasses.push('is-matching-target');
-          }
-
-          if (ghostItem === 'wood') {
-            displayContent = `
-              <div class="ghost-blueprint-icon">
-                <img src="assets/wood_block_transparent.webp" alt="Wood Ghost">
-              </div>`;
-          } else if (ghostItem === 'stone') {
-            displayContent = `
-              <div class="ghost-blueprint-icon">
-                <img src="assets/stone_block_transparent.webp" alt="Stone Ghost">
-              </div>`;
-          } else if (ghostItem === 'iron') {
-            displayContent = `
-              <div class="ghost-blueprint-icon">
-                <img src="assets/iron_ingot_transparent.webp" alt="Iron Ghost">
-              </div>`;
-          } else if (ghostItem === 'stick') {
-            displayContent = `
-              <div class="ghost-blueprint-icon">
-                <img src="assets/wooden_sticks_transparent.webp" alt="Stick Ghost">
-              </div>`;
-          }
+          `;
+        } else {
+          return `
+            <div class="tome-item-card is-undiscovered" title="Experiment with materials on the 3×3 grid to discover!">
+              <div class="tome-card-thumb-wrap">
+                <span class="tome-mystery-icon">🔒</span>
+              </div>
+              <div class="tome-card-info">
+                <div class="tome-card-name">??? Undiscovered Blueprint</div>
+                <div class="tome-card-sub">${r.category}</div>
+              </div>
+              <div class="tome-card-status">
+                <span class="tome-lock-pill">LOCKED</span>
+              </div>
+            </div>
+          `;
         }
-
-        return `
-          <div class="${socketClasses.join(' ')}" 
-               onclick="handleSocket2x2Click(${idx})"
-               ondragover="handleSmithingDragOver(event)"
-               ondragleave="handleSmithingDragLeave(event)"
-               ondrop="handleSmithingDrop(event, ${idx})"
-               title="Slot ${idx + 1}: ${currentItem ? currentItem : (ghostItem ? 'Place ' + ghostItem : 'Empty')}">
-            ${displayContent}
-          </div>
-        `;
       }).join('');
     }
 
-    // 4. Render Tactile Inventory Palette (4 Materials with 3D Bevels & Counts)
-    const trayEl = document.getElementById('smithing2x2InventoryTray');
+    // 3. Render 3x3 Oak Crafting Grid Sockets (9 Slots: 0 to 8 - Completely clean & empty by default)
+    const gridEl = document.getElementById('grid2x2Sockets') || document.getElementById('crafting3x3Grid');
+    if (gridEl) {
+      gridEl.innerHTML = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => {
+        const slottedItem = playerSession.smithing3x3Grid[idx];
+
+        if (slottedItem) {
+          const spriteSrc = SMITHING_SPRITES[slottedItem] || 'assets/wood_block_transparent.webp';
+          const label = SMITHING_LABELS[slottedItem] || slottedItem;
+          return `
+            <div class="crafting-socket is-slotted"
+                 onclick="handleSocketClick(${idx})"
+                 title="Slot ${idx + 1}: ${label} (Click to return to backpack)">
+              <img src="${spriteSrc}" alt="${label}" class="placed-item-sprite">
+            </div>
+          `;
+        } else {
+          return `
+            <div class="crafting-socket"
+                 onclick="handleSocketClick(${idx})"
+                 ondragover="handleSmithingDragOver(event)"
+                 ondragleave="handleSmithingDragLeave(event)"
+                 ondrop="handleSmithingDrop(event, ${idx})"
+                 title="Slot ${idx + 1}: Empty (Click or drag to place)">
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    // 4. Render Tactile Inventory Palette (5 Materials with 3D Bevels & Live Counts)
+    const trayEl = document.getElementById('smithing2x2InventoryTray') || document.getElementById('smithingInventoryTray');
     if (trayEl) {
       const palette = [
-        { key: 'wood', label: 'Oak Planks', iconImg: 'assets/wood_block_transparent.webp', count: Math.max(playerSession.inventory.wood, 6) },
-        { key: 'stone', label: 'Cobblestone', iconImg: 'assets/stone_block_transparent.webp', count: Math.max(playerSession.inventory.stone, 6) },
-        { key: 'iron', label: 'Iron Ingots', iconImg: 'assets/iron_ingot_transparent.webp', count: Math.max(playerSession.inventory.iron, 4) },
-        { key: 'stick', label: 'Sticks', iconImg: 'assets/wooden_sticks_transparent.webp', count: Math.max(playerSession.inventory.stick, 6) }
+        { key: 'wood', label: 'Oak Planks', iconImg: SMITHING_SPRITES.wood, count: playerSession.inventory.wood || 0 },
+        { key: 'stone', label: 'Cobblestone', iconImg: SMITHING_SPRITES.stone, count: playerSession.inventory.stone || 0 },
+        { key: 'iron', label: 'Iron Ingots', iconImg: SMITHING_SPRITES.iron, count: playerSession.inventory.iron || 0 },
+        { key: 'stick', label: 'Sticks', iconImg: SMITHING_SPRITES.stick, count: playerSession.inventory.stick || 0 },
+        { key: 'coal', label: 'Coal Lump', iconImg: SMITHING_SPRITES.coal, count: playerSession.inventory.coal || 0 }
       ];
 
       trayEl.innerHTML = palette.map(p => {
@@ -795,7 +759,7 @@
                   draggable="true"
                   ondragstart="handleSmithingDragStart(event, '${p.key}')"
                   onclick="selectSmithingPaletteItem('${p.key}')"
-                  title="Select ${p.label}">
+                  title="Select ${p.label} (Stock: ${p.count})">
             <img src="${p.iconImg}" alt="${p.label}" class="inv-token-img">
             <span class="inv-btn-name">${p.label}</span>
             <span class="inv-count-pill">×${p.count}</span>
@@ -804,178 +768,104 @@
       }).join('');
     }
 
-    // 5. Render Mandatory Linguistic Forge Gate (Interactive Sentence Builder)
-    const gateEl = document.getElementById('linguisticForgeGate');
-    if (gateEl) {
-      const isVerified = playerSession.smithing3x3SentenceVerified;
-      const statusHtml = isVerified
-        ? `<span class="gate-status-pill is-unlocked">🔓 Forge Gate Unlocked! Formula Verified</span>`
-        : `<span class="gate-status-pill is-locked">🔒 Forge Locked — English Formula Required</span>`;
+    // 5. Evaluate Live Spatial Recipe Recognition
+    const matched = findMatchingRecipe(playerSession.smithing3x3Grid);
+    playerSession.matchedRecipe = matched;
 
-      const slotsHtml = playerSession.smithing3x3SentenceSlots.map((word, sIdx) => {
-        if (word) {
-          return `
-            <div class="sentence-target-slot is-filled" onclick="handleSentenceSlotClick(${sIdx})" title="Click to remove">
-              <span>${word}</span>
-              <span style="font-size:0.75rem; opacity:0.6; margin-left:4px;">✕</span>
-            </div>
-          `;
-        } else {
-          return `
-            <div class="sentence-target-slot is-empty" title="Tap a word below to fill">
-              <span>[ Slot ${sIdx + 1} ]</span>
-            </div>
-          `;
-        }
-      }).join('');
-
-      const bankHtml = playerSession.smithing3x3BankWords.map((word, wIdx) => {
-        return `
-          <button type="button" class="bank-word-chip" onclick="handleWordBankClick('${word.replace(/'/g, "\\'")}', ${wIdx})">
-            <span>+ ${word}</span>
-          </button>
-        `;
-      }).join('');
-
-      gateEl.innerHTML = `
-        <div class="gate-header">
-          <div class="gate-title">
-            <span>📜</span> <span>Linguistic Forge Gate (English Target)</span>
-          </div>
-          ${statusHtml}
-        </div>
-
-        <div class="sentence-target-slots-strip" id="sentenceSlotsStrip">
-          ${slotsHtml}
-        </div>
-
-        <div class="word-bank-tray">
-          ${bankHtml}
-        </div>
-
-        <div style="display:flex; justify-content:center; margin-top:4px;">
-          <button type="button" class="btn-pronounce-verify" onclick="verifySentenceGate()">
-            <span class="speaker-wave-anim">🔊</span>
-            <span>Pronounce &amp; Verify English Formula</span>
-          </button>
-        </div>
-      `;
+    // 6. Update Connecting Flow Arrow
+    const arrowEl = document.getElementById('forgeFlowArrow');
+    if (arrowEl) {
+      if (matched) arrowEl.classList.add('is-active');
+      else arrowEl.classList.remove('is-active');
     }
 
-    // 6. Check Match State for 3D Forge Button
-    const forgeBtn = document.getElementById('btnForge2x2Item');
-    if (forgeBtn) {
-      let isGridMatch = true;
-      for (let i = 0; i < 9; i++) {
-        if ((playerSession.smithing3x3Grid[i] || '') !== (active.ghostGrid[i] || '')) {
-          isGridMatch = false;
-          break;
-        }
-      }
-
-      const isSentenceOk = playerSession.smithing3x3SentenceVerified;
-      const toolLabel = active.resultItem || 'Tool';
-      const xpReward = active.xpReward || 35;
-
-      if (isGridMatch && isSentenceOk) {
-        forgeBtn.classList.add('is-ready-to-forge');
-        forgeBtn.innerHTML = `<span>🔥 FORGE ${toolLabel.toUpperCase()}! (+${xpReward} XP)</span>`;
-      } else if (isSentenceOk && !isGridMatch) {
-        forgeBtn.classList.remove('is-ready-to-forge');
-        forgeBtn.innerHTML = `<span>🔨 Complete 3x3 Pattern on Workbench</span>`;
+    // 7. Update Output Chamber Header Status
+    const statusPill = document.getElementById('outputStatusPill');
+    if (statusPill) {
+      if (matched) {
+        statusPill.textContent = 'READY TO FORGE! ⚡';
+        statusPill.classList.add('is-active');
       } else {
-        forgeBtn.classList.remove('is-ready-to-forge');
-        forgeBtn.innerHTML = `<span>🔒 FORGE LOCKED (Solve Sentence &amp; Grid)</span>`;
+        statusPill.textContent = 'Awaiting Recipe';
+        statusPill.classList.remove('is-active');
+      }
+    }
+
+    // 8. Update 140px x 140px Output Anvil Socket & Claim Trigger
+    const outputSocketEl = document.getElementById('outputAnvilSocket');
+    const claimContainerEl = document.getElementById('outputClaimContainer');
+
+    if (outputSocketEl) {
+      if (matched) {
+        outputSocketEl.classList.add('is-craftable');
+        const filterStyle = matched.imgFilter ? `style="filter: ${matched.imgFilter};"` : '';
+        outputSocketEl.innerHTML = `
+          <div class="output-item-preview">
+            <img src="${matched.img}" alt="${matched.name}" class="output-item-img" ${filterStyle}>
+            <span class="output-item-name">${matched.name}</span>
+            <span class="output-item-xp">⭐ +${matched.xp} XP</span>
+          </div>
+        `;
+        outputSocketEl.title = `Click to Forge & Claim ${matched.name}!`;
+
+        if (claimContainerEl) {
+          claimContainerEl.innerHTML = `
+            <button type="button" class="btn-3d btn-claim-output" onclick="claimCraftedOutput()">
+              <span>⚡ CLAIM ${matched.name.toUpperCase()}!</span>
+            </button>
+          `;
+        }
+      } else {
+        outputSocketEl.classList.remove('is-craftable');
+        outputSocketEl.innerHTML = `
+          <div class="output-empty-state">
+            <span class="output-empty-icon">⚒️</span>
+            <span class="output-empty-hint">Arrange 3×3 Recipe</span>
+          </div>
+        `;
+        outputSocketEl.title = 'Arrange materials on 3×3 workbench to reveal recipe';
+
+        if (claimContainerEl) {
+          claimContainerEl.innerHTML = '';
+        }
       }
     }
   }
 
-  function handleWordBankClick(word, idx) {
-    const emptySlotIdx = playerSession.smithing3x3SentenceSlots.findIndex(s => s === '');
-    if (emptySlotIdx !== -1) {
-      playerSession.smithing3x3SentenceSlots[emptySlotIdx] = word;
-      playerSession.smithing3x3BankWords.splice(idx, 1);
-      playerSession.smithing3x3SentenceVerified = false;
+  function selectSmithingPaletteItem(key) {
+    playerSession.selectedSmithing3x3Item = key;
+    if (root.BiomeAudio) root.BiomeAudio.playSnap();
+    renderStage3Smithing();
+  }
+
+  function handleSocketClick(idx) {
+    const currentSlotted = playerSession.smithing3x3Grid[idx];
+
+    if (currentSlotted) {
+      // Return slotted material to backpack
+      playerSession.inventory[currentSlotted] = (playerSession.inventory[currentSlotted] || 0) + 1;
+      playerSession.smithing3x3Grid[idx] = '';
       if (root.BiomeAudio) root.BiomeAudio.playSnap();
+      updateHUD();
       renderStage3Smithing();
-    }
-  }
-
-  function handleSentenceSlotClick(slotIdx) {
-    const word = playerSession.smithing3x3SentenceSlots[slotIdx];
-    if (word) {
-      playerSession.smithing3x3SentenceSlots[slotIdx] = '';
-      playerSession.smithing3x3BankWords.push(word);
-      playerSession.smithing3x3SentenceVerified = false;
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
-      renderStage3Smithing();
-    }
-  }
-
-  function verifySentenceGate() {
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-    const active = recipes[playerSession.smithing3x3Index] || recipes[0];
-    const gate = document.getElementById('linguisticForgeGate');
-
-    const isComplete = playerSession.smithing3x3SentenceSlots.every(s => s !== '');
-    if (!isComplete) {
-      if (gate) {
-        gate.classList.remove('gate-wobble');
-        void gate.offsetWidth;
-        gate.classList.add('gate-wobble');
-      }
-      if (root.BiomeAudio) {
-        root.BiomeAudio.playSoftFail();
-        root.BiomeAudio.speak("Place all word chips into the sentence slots first!");
-      }
-      return;
-    }
-
-    const isCorrect = playerSession.smithing3x3SentenceSlots.every((s, i) => s === active.sentenceChunks[i]);
-    const fullSentence = playerSession.smithing3x3SentenceSlots.join(' ');
-
-    if (isCorrect) {
-      playerSession.smithing3x3SentenceVerified = true;
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
-
-      karaokeHighlightSentence(fullSentence, () => {
-        renderStage3Smithing();
-      });
     } else {
-      playerSession.smithing3x3SentenceVerified = false;
-      if (gate) {
-        gate.classList.remove('gate-wobble');
-        void gate.offsetWidth;
-        gate.classList.add('gate-wobble');
+      // Dock currently selected material into empty slot
+      const selected = playerSession.selectedSmithing3x3Item;
+      if (!selected) return;
+
+      if ((playerSession.inventory[selected] || 0) <= 0) {
+        if (root.BiomeAudio) {
+          root.BiomeAudio.playSoftFail();
+          root.BiomeAudio.speak("Out of " + (SMITHING_LABELS[selected] || selected) + "! Mine or chop more in Stage 2.");
+        }
+        return;
       }
-      if (root.BiomeAudio) {
-        root.BiomeAudio.playSoftFail();
-        root.BiomeAudio.speak("Check your word order! Listen carefully: " + active.targetSentence);
-      }
+
+      playerSession.inventory[selected]--;
+      playerSession.smithing3x3Grid[idx] = selected;
+      if (root.BiomeAudio) root.BiomeAudio.playSnap();
+      updateHUD();
       renderStage3Smithing();
-    }
-  }
-
-  function karaokeHighlightSentence(sentenceText, onComplete) {
-    const slotEls = document.querySelectorAll('.sentence-target-slot.is-filled');
-    let i = 0;
-
-    const highlightInterval = setInterval(() => {
-      slotEls.forEach((el, idx) => {
-        if (idx === i) el.classList.add('is-karaoke-active');
-        else el.classList.remove('is-karaoke-active');
-      });
-      i++;
-      if (i > slotEls.length) {
-        clearInterval(highlightInterval);
-        slotEls.forEach(el => el.classList.remove('is-karaoke-active'));
-        if (typeof onComplete === 'function') onComplete();
-      }
-    }, 450);
-
-    if (root.BiomeAudio) {
-      root.BiomeAudio.speak(sentenceText);
     }
   }
 
@@ -986,7 +876,6 @@
       event.dataTransfer.setData('text/plain', key);
       event.dataTransfer.effectAllowed = 'copyMove';
     }
-    renderStage3Smithing();
   }
 
   function handleSmithingDragOver(event) {
@@ -1015,43 +904,32 @@
     }
     const itemKey = (event.dataTransfer && event.dataTransfer.getData('text/plain')) || draggedSmithingItem || playerSession.selectedSmithing3x3Item;
     if (itemKey) {
-      playerSession.smithing3x3Grid[idx] = itemKey;
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
-      renderStage3Smithing();
+      const old = playerSession.smithing3x3Grid[idx];
+      if (old) {
+        playerSession.inventory[old] = (playerSession.inventory[old] || 0) + 1;
+      }
+      if ((playerSession.inventory[itemKey] || 0) > 0) {
+        playerSession.inventory[itemKey]--;
+        playerSession.smithing3x3Grid[idx] = itemKey;
+        if (root.BiomeAudio) root.BiomeAudio.playSnap();
+        updateHUD();
+        renderStage3Smithing();
+      } else {
+        if (root.BiomeAudio) root.BiomeAudio.playSoftFail();
+      }
     }
   }
 
-  function select2x2Recipe(idx) {
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-    if (idx < 0 || idx >= recipes.length) return;
-    playerSession.smithing3x3Index = idx;
-    playerSession.smithing3x3Grid = new Array(9).fill('');
-    initTierSentence(recipes[idx]);
-    if (root.BiomeAudio) root.BiomeAudio.playSnap();
-    renderStage3Smithing();
-  }
-
-  function selectSmithingPaletteItem(key) {
-    playerSession.selectedSmithing3x3Item = key;
-    if (root.BiomeAudio) root.BiomeAudio.playSnap();
-    renderStage3Smithing();
-  }
-
-  function handleSocket2x2Click(idx) {
-    if (playerSession.smithing3x3Grid[idx]) {
-      playerSession.smithing3x3Grid[idx] = '';
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
-    } else {
-      playerSession.smithing3x3Grid[idx] = playerSession.selectedSmithing3x3Item;
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
+  function clearSmithingGrid() {
+    for (let i = 0; i < 9; i++) {
+      const it = playerSession.smithing3x3Grid[i];
+      if (it) {
+        playerSession.inventory[it] = (playerSession.inventory[it] || 0) + 1;
+        playerSession.smithing3x3Grid[i] = '';
+      }
     }
-    renderStage3Smithing();
-  }
-
-  function clear2x2Grid() {
-    playerSession.smithing3x3Grid = new Array(9).fill('');
     if (root.BiomeAudio) root.BiomeAudio.playSnap();
+    updateHUD();
     renderStage3Smithing();
   }
 
@@ -1076,29 +954,71 @@
     }
   }
 
-  function speakStage3Formula() {
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-    const active = recipes[playerSession.smithing3x3Index] || recipes[0];
-    const sentence = active ? (active.speechText || active.targetSentence) : "I combine three wood planks and two sticks to craft a wooden pickaxe.";
-
-    if (root.BiomeAudio && typeof root.BiomeAudio.speak === 'function') {
-      root.BiomeAudio.speak(sentence);
-    } else if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance(sentence);
-      utt.rate = 0.88;
-      utt.pitch = 1.05;
-      utt.lang = 'en-US';
-      window.speechSynthesis.speak(utt);
+  function claimCraftedOutput() {
+    const recipe = playerSession.matchedRecipe || findMatchingRecipe(playerSession.smithing3x3Grid);
+    if (!recipe) {
+      if (root.BiomeAudio) root.BiomeAudio.playSoftFail();
+      return;
     }
+
+    const frame = document.getElementById('smithing3x3Frame');
+    const stage = document.getElementById('stagePhase3');
+
+    // 1. Consume materials from workbench grid
+    playerSession.smithing3x3Grid = new Array(9).fill('');
+    playerSession.matchedRecipe = null;
+
+    // 2. Add to discovered recipes
+    playerSession.discoveredRecipes.add(recipe.id);
+
+    // 3. Audio & Haptic Anvil Slam
+    if (root.BiomeAudio) {
+      if (root.BiomeAudio.playAnvilStrike) root.BiomeAudio.playAnvilStrike();
+      else if (root.BiomeAudio.playHammerSlam) root.BiomeAudio.playHammerSlam();
+
+      setTimeout(() => {
+        if (root.BiomeAudio.playFanfare) root.BiomeAudio.playFanfare();
+        else if (root.BiomeAudio.playVictoryFanfare) root.BiomeAudio.playVictoryFanfare();
+      }, 350);
+    }
+
+    // 4. Visual impact animations
+    if (frame) {
+      frame.classList.add('is-striking');
+    }
+    if (stage) {
+      stage.classList.add('screen-shake');
+      setTimeout(() => stage.classList.remove('screen-shake'), 1200);
+    }
+
+    triggerWorkbenchSparks();
+    ConfettiEngine.burst(85);
+    addXP(recipe.xp || 35);
+
+    // 5. Rubber stamp animation on workbench
+    const stamp = document.getElementById('smithingStampSeal');
+    const stampText = document.getElementById('smithingStampSealText');
+    if (stamp && stampText) {
+      stampText.textContent = `FORGED: ${recipe.name.toUpperCase()}! ⭐`;
+      stamp.style.display = 'flex';
+      stamp.classList.remove('rubber-stamp-anim');
+      void stamp.offsetWidth;
+      stamp.classList.add('rubber-stamp-anim');
+    }
+
+    // 6. Update UI & open reward discovery modal
+    updateHUD();
+    renderStage3Smithing();
+
+    setTimeout(() => {
+      if (frame) frame.classList.remove('is-striking');
+      if (stamp) stamp.style.display = 'none';
+      showDiscoveryRewardModal(recipe);
+    }, 1300);
   }
 
-  function showSmithingRewardModal() {
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-    const active = recipes[playerSession.smithing3x3Index] || recipes[0];
-    const isFinalTier = (playerSession.smithing3x3Index >= recipes.length - 1);
+  function showDiscoveryRewardModal(recipe) {
+    if (!recipe) return;
 
     const titleEl = document.getElementById('rewardModalTitle');
     const subEl = document.getElementById('rewardModalSubtitle');
@@ -1107,32 +1027,23 @@
     const sentEl = document.getElementById('rewardModalSentence');
     const contBtn = document.getElementById('rewardModalContinueBtn');
 
-    if (titleEl) titleEl.textContent = `${active.resultItem.toUpperCase()} FORGED!`;
-    if (subEl) subEl.textContent = `${active.tierName} Crafted & Verified`;
+    if (titleEl) titleEl.textContent = `${recipe.name.toUpperCase()} FORGED!`;
+    if (subEl) subEl.textContent = `${recipe.category} Discovered & Added to Tome`;
     if (imgEl) {
-      imgEl.src = active.img;
-      imgEl.alt = active.name;
+      imgEl.src = recipe.img;
+      imgEl.alt = recipe.name;
+      if (recipe.imgFilter) imgEl.style.filter = recipe.imgFilter;
+      else imgEl.style.filter = 'none';
     }
-    if (xpEl) xpEl.innerHTML = `<span>⭐ +${active.xpReward || 35} XP REWARDED!</span>`;
-    if (sentEl) sentEl.textContent = `"${active.targetSentence}"`;
-    if (contBtn) {
-      if (isFinalTier) {
-        contBtn.innerHTML = `<span>All 3 Tools Mastered! Enter Stage 4 🌅 →</span>`;
-      } else {
-        const nextRecipe = recipes[playerSession.smithing3x3Index + 1];
-        contBtn.innerHTML = `<span>Forge Next: ${nextRecipe.name} ${nextRecipe.icon} →</span>`;
-      }
-    }
+    if (xpEl) xpEl.innerHTML = `<span>⭐ +${recipe.xp} XP REWARDED!</span>`;
+    if (sentEl) sentEl.textContent = recipe.desc || "Item successfully forged in the 3x3 Crafting Table.";
+    if (contBtn) contBtn.innerHTML = `<span>Keep Crafting ⚒️ →</span>`;
 
     const modal = document.getElementById('smithingRewardModal');
     if (modal) {
       modal.style.display = 'flex';
       modal.classList.add('is-open');
     }
-
-    setTimeout(() => {
-      speakStage3Formula();
-    }, 400);
   }
 
   function handleCloseSmithingReward(e) {
@@ -1145,119 +1056,17 @@
   function continueAfterPickaxeReward() {
     const modal = document.getElementById('smithingRewardModal');
     if (modal) modal.style.display = 'none';
-
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-
-    if (playerSession.smithing3x3Index < recipes.length - 1) {
-      // Advance to next tier
-      playerSession.smithing3x3Index++;
-      playerSession.smithing3x3Grid = new Array(9).fill('');
-      initTierSentence(recipes[playerSession.smithing3x3Index]);
-      if (root.BiomeAudio) root.BiomeAudio.playSnap();
-      renderStage3Smithing();
-    } else {
-      // All 3 tiers forged! Proceed to Stage 4 Sunset Emergency Drill
-      switchStage(4);
-    }
+    renderStage3Smithing();
   }
 
-  function verify2x2Craft() {
-    const data = root.BIOME_CRAFTER_DATA;
-    const recipes = data.smithing3x3Tiers;
-    const active = recipes[playerSession.smithing3x3Index] || recipes[0];
-    const frame = document.getElementById('smithing3x3Frame');
-    const gate = document.getElementById('linguisticForgeGate');
-
-    // 1. Check Sentence Gate Lock
-    if (!playerSession.smithing3x3SentenceVerified) {
-      if (gate) {
-        gate.classList.remove('gate-wobble');
-        void gate.offsetWidth;
-        gate.classList.add('gate-wobble');
-      }
-      if (root.BiomeAudio) {
-        root.BiomeAudio.playSoftFail();
-        root.BiomeAudio.speak("Linguistic Forge Gate is locked! Pronounce and verify the English sentence first.");
-      }
-      return;
-    }
-
-    // 2. Check 3x3 Grid Pattern
-    let isGridMatch = true;
-    for (let i = 0; i < 9; i++) {
-      if ((playerSession.smithing3x3Grid[i] || '') !== (active.ghostGrid[i] || '')) {
-        isGridMatch = false;
-        break;
-      }
-    }
-
-    if (!isGridMatch) {
-      if (frame) {
-        frame.classList.remove('gate-wobble');
-        void frame.offsetWidth;
-        frame.classList.add('gate-wobble');
-      }
-      if (root.BiomeAudio) {
-        root.BiomeAudio.playSoftFail();
-        root.BiomeAudio.speak("Check your material pattern on the 3x3 workbench grid!");
-      }
-      return;
-    }
-
-    // 3. BOTH VERIFIED: FORGE ANVIL STRIKE TRIGGER!
-    playerSession.craftedSmithing3x3Ids.add(active.id);
-
-    // Anvil strike animation & screen shake
-    if (frame) {
-      frame.classList.add('is-striking');
-    }
-    const stage = document.getElementById('stagePhase3');
-    if (stage) {
-      stage.classList.add('screen-shake');
-      setTimeout(() => stage.classList.remove('screen-shake'), 1200);
-    }
-
-    // Heavy metallic anvil strike sound + fanfare
-    if (root.BiomeAudio) {
-      root.BiomeAudio.playAnvilStrike();
-      setTimeout(() => {
-        if (root.BiomeAudio.playFanfare) root.BiomeAudio.playFanfare();
-        else root.BiomeAudio.playVictoryFanfare();
-      }, 350);
-    }
-
-    triggerWorkbenchSparks();
-    ConfettiEngine.burst(90);
-    addXP(active.xpReward || 35);
-
-    // Rubber stamp animation
-    const stamp = document.getElementById('smithingStampSeal');
-    const stampText = document.getElementById('smithingStampSealText');
-    if (stamp && stampText) {
-      stampText.textContent = active.stampText || `FORGED: ${active.resultItem.toUpperCase()}! ⭐`;
-      stamp.style.display = 'flex';
-      stamp.classList.remove('rubber-stamp-anim');
-      void stamp.offsetWidth;
-      stamp.classList.add('rubber-stamp-anim');
-    }
-
-    // Reveal 3D Reward Pop-Up Modal after strike finishes
-    setTimeout(() => {
-      if (frame) frame.classList.remove('is-striking');
-      if (stamp) stamp.style.display = 'none';
-      showSmithingRewardModal();
-    }, 1500);
-  }
-
-  // Backwards compatibility
-  function speakSmithingFormula(recipeId) {
-    speakStage3Formula();
-  }
-
-  function craftSmithingTool(recipeId) {
-    verify2x2Craft();
-  }
+  // Backwards compatibility aliases
+  function handleSocket2x2Click(idx) { handleSocketClick(idx); }
+  function clear2x2Grid() { clearSmithingGrid(); }
+  function verify2x2Craft() { claimCraftedOutput(); }
+  function select2x2Recipe(idx) { renderStage3Smithing(); }
+  function speakStage3Formula() {}
+  function speakSmithingFormula(id) {}
+  function craftSmithingTool(id) { claimCraftedOutput(); }
 
   // =========================================================================
   // STAGE 4: SUNSET EMERGENCY SORTING DRILL (20-Second Active Timer)

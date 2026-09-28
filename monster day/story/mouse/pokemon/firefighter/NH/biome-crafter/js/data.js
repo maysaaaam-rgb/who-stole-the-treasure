@@ -148,97 +148,170 @@
       }
     ],
 
-    // Stage 3: The 3x3 Real Crafting Forge with English Gates (3 Progressive Tiers)
-    smithing3x3Tiers: [
+    // Stage 3: The 3x3 Authentic Sandbox Crafting Table (RECIPE_REGISTRY)
+    recipeRegistry: [
       {
-        id: "wooden-pickaxe-3x3",
-        tier: 1,
-        tierName: "Tier 1: Starter Tool",
-        name: "Starter Wooden Pickaxe",
+        id: "wooden-pickaxe",
+        name: "Wooden Pickaxe",
+        category: "Mining Tool",
         icon: "⛏️",
-        resultItem: "Wooden Pickaxe",
         img: "assets/wooden_pickaxe_transparent.webp",
-        badge: "Tier 1: Starter Wooden Pickaxe",
-        xpReward: 35,
-        targetSentence: "I combine three wood planks and two sticks to craft a wooden pickaxe.",
-        speechText: "I combine three wood planks and two sticks to craft a wooden pickaxe.",
-        sentenceChunks: ["I combine", "three wood planks", "and two sticks", "to craft", "a wooden pickaxe."],
-        distractorChunks: ["to smelt", "five cobblestone"],
-        pattern: [
-          ["wood", "wood", "wood"],
-          ["", "stick", ""],
-          ["", "stick", ""]
-        ],
-        ghostGrid: [
+        xp: 35,
+        desc: "Essential starter tool to mine stone blocks and coal ore.",
+        grid: [
           "wood", "wood", "wood",
+          "",     "stick", "",
+          "",     "stick", ""
+        ]
+      },
+      {
+        id: "stone-pickaxe",
+        name: "Stone Pickaxe",
+        category: "Mining Tool",
+        icon: "⛏️",
+        img: "assets/stone_pickaxe_transparent.webp",
+        xp: 45,
+        desc: "Upgraded stone pickaxe capable of extracting iron ore veins.",
+        grid: [
+          "stone", "stone", "stone",
+          "",      "stick", "",
+          "",      "stick", ""
+        ]
+      },
+      {
+        id: "iron-pickaxe",
+        name: "Forged Iron Pickaxe",
+        category: "Heavy Mining Tool",
+        icon: "⛏️",
+        img: "assets/stone_pickaxe_transparent.webp",
+        imgFilter: "hue-rotate(185deg) brightness(1.25) contrast(1.15)",
+        xp: 60,
+        desc: "Durable metallic pickaxe for deep diamond and redstone mining.",
+        grid: [
+          "iron", "iron", "iron",
+          "",     "stick", "",
+          "",     "stick", ""
+        ]
+      },
+      {
+        id: "wooden-sword",
+        name: "Wooden Sword",
+        category: "Basic Weapon",
+        icon: "🗡️",
+        img: "assets/iron_sword_transparent.webp",
+        imgFilter: "sepia(0.8) saturate(1.8) hue-rotate(-20deg) brightness(0.9)",
+        xp: 30,
+        desc: "Light wooden blade to defend against nocturnal spiders and creepers.",
+        grid: [
+          "", "wood", "",
+          "", "wood", "",
+          "", "stick", ""
+        ],
+        altGrids: [
+          ["wood", "", "", "wood", "", "", "stick", "", ""],
+          ["", "", "wood", "", "", "wood", "", "", "stick"]
+        ]
+      },
+      {
+        id: "iron-broadsword",
+        name: "Forged Iron Broadsword",
+        category: "Combat Weapon",
+        icon: "⚔️",
+        img: "assets/iron_sword_transparent.webp",
+        xp: 55,
+        desc: "Razor-sharp forged iron blade dealing massive critical damage.",
+        grid: [
+          "", "iron", "",
+          "", "iron", "",
+          "", "stick", ""
+        ],
+        altGrids: [
+          ["iron", "", "", "iron", "", "", "stick", "", ""],
+          ["", "", "iron", "", "", "iron", "", "", "stick"]
+        ]
+      },
+      {
+        id: "stone-axe",
+        name: "Stone War Axe",
+        category: "Lumber & Combat",
+        icon: "🪓",
+        img: "assets/stone_hatchet_transparent.webp",
+        xp: 40,
+        desc: "Heavy stone wedge for rapid timber harvesting and woodchopping.",
+        grid: [
+          "stone", "stone", "",
+          "stone", "stick", "",
+          "",      "stick", ""
+        ],
+        altGrids: [
+          ["", "stone", "stone", "", "stick", "stone", "", "stick", ""]
+        ]
+      },
+      {
+        id: "stone-shovel",
+        name: "Stone Shovel",
+        category: "Excavator",
+        icon: "🥄",
+        img: "assets/stone_hatchet_transparent.webp",
+        imgFilter: "hue-rotate(85deg) brightness(0.9)",
+        xp: 25,
+        desc: "Rapid excavation tool to clear dirt, gravel, and sand.",
+        grid: [
+          "", "stone", "",
           "", "stick", "",
           "", "stick", ""
         ],
-        ingredientsLabel: "3 Wood Planks (Row 1) + 2 Sticks (Center Column)",
-        miniGuide: "Place 3 Wood Planks across the top row, and 2 Sticks down the center.",
-        stampText: "FORGED: WOODEN PICKAXE! ⭐"
+        altGrids: [
+          ["stone", "", "", "stick", "", "", "stick", "", ""],
+          ["", "", "stone", "", "", "stick", "", "", "stick"]
+        ]
       },
       {
-        id: "stone-hatchet-3x3",
-        tier: 2,
-        tierName: "Tier 2: Heavy Tool",
-        name: "Heavy Stone Hatchet",
-        icon: "🪓",
-        resultItem: "Stone Hatchet",
-        img: "assets/stone_hatchet_transparent.webp",
-        badge: "Tier 2: Heavy Stone Hatchet",
-        xpReward: 35,
-        targetSentence: "I use cobblestone and sticks to assemble a stone hatchet.",
-        speechText: "I use cobblestone and sticks to assemble a stone hatchet.",
-        sentenceChunks: ["I use", "cobblestone", "and sticks", "to assemble", "a stone hatchet."],
-        distractorChunks: ["three iron ingots", "to mine"],
-        pattern: [
-          ["stone", "stone", ""],
-          ["stone", "stick", ""],
-          ["", "stick", ""]
+        id: "torches",
+        name: "Torches (x4)",
+        category: "Illumination",
+        icon: "🔥",
+        img: "assets/torch_item_transparent.webp",
+        xp: 20,
+        desc: "Essential light source that keeps darkness and nocturnal creepers away.",
+        grid: [
+          "", "coal", "",
+          "", "stick", "",
+          "", "",     ""
         ],
-        ghostGrid: [
-          "stone", "stone", "",
-          "stone", "stick", "",
-          "", "stick", ""
-        ],
-        ingredientsLabel: "3 Cobblestone (Top-Left) + 2 Sticks (Center Column)",
-        miniGuide: "Place 3 Cobblestone in the top-left corner, and 2 Sticks down the center.",
-        stampText: "FORGED: STONE HATCHET! ⭐"
+        altGrids: [
+          ["coal", "", "", "stick", "", "", "", "", ""],
+          ["", "", "coal", "", "", "stick", "", "", ""],
+          ["", "", "", "", "coal", "", "", "stick", ""],
+          ["", "", "", "coal", "", "", "stick", "", ""],
+          ["", "", "", "", "", "coal", "", "", "stick"]
+        ]
       },
       {
-        id: "iron-broadsword-3x3",
-        tier: 3,
-        tierName: "Tier 3: Master Weapon",
-        name: "Forged Iron Broadsword",
-        icon: "⚔️",
-        resultItem: "Iron Broadsword",
-        img: "assets/iron_sword_transparent.webp",
-        badge: "Tier 3: Forged Iron Broadsword",
-        xpReward: 35,
-        targetSentence: "I need two iron ingots and one stick to forge an iron broadsword.",
-        speechText: "I need two iron ingots and one stick to forge an iron broadsword.",
-        sentenceChunks: ["I need", "two iron ingots", "and one stick", "to forge", "an iron broadsword."],
-        distractorChunks: ["four sticks", "to chop"],
-        pattern: [
-          ["", "iron", ""],
-          ["", "iron", ""],
-          ["", "stick", ""]
+        id: "wooden-door",
+        name: "Oak Shelter Door",
+        category: "Fortification",
+        icon: "🚪",
+        img: "assets/wooden_door_transparent.webp",
+        xp: 35,
+        desc: "Reinforced wooden door safeguarding your shelter entrance at night.",
+        grid: [
+          "wood", "wood", "",
+          "wood", "wood", "",
+          "wood", "wood", ""
         ],
-        ghostGrid: [
-          "", "iron", "",
-          "", "iron", "",
-          "", "stick", ""
-        ],
-        ingredientsLabel: "2 Iron Ingots (Slots 2 & 5) + 1 Stick (Slot 8)",
-        miniGuide: "Place 2 Iron Ingots in the center column, and 1 Stick at the bottom center.",
-        stampText: "FORGED: IRON BROADSWORD! ⭐"
+        altGrids: [
+          ["", "wood", "wood", "", "wood", "wood", "", "wood", "wood"]
+        ]
       }
     ],
 
-    // Backward compatibility pointer
+    // Backward compatibility pointers
+    get smithing3x3Tiers() {
+      return this.recipeRegistry;
+    },
     get smithing2x2Recipes() {
-      return this.smithing3x3Tiers;
+      return this.recipeRegistry;
     },
 
     // Backwards compatibility for existing references

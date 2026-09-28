@@ -162,13 +162,13 @@
     </section>
 
     <!-- ===================================================================
-         STAGE 3: THE 3x3 REAL CRAFTING FORGE WITH ENGLISH GATES
+         STAGE 3: THE BLACKSMITH'S 3x3 CRAFTING TABLE (AUTHENTIC SANDBOX)
          =================================================================== -->
     <section class="stage-view smithing-bench-stage" id="stagePhase3">
       <div class="stage-hero-banner">
         <div class="stage-hero-left">
-          <h2><span>🔨</span> Stage 3: The 3x3 Real Crafting Forge with English Gates</h2>
-          <p>Master the authentic 3x3 Crafting Forge! Unlock and assemble 3 legendary survival tools: <strong>Wooden Pickaxe</strong>, <strong>Heavy Stone Hatchet</strong>, and <strong>Forged Iron Broadsword</strong>. Solve the English linguistic gates before striking the anvil (+35 XP each)!</p>
+          <h2><span>⚒️</span> Stage 3: The Blacksmith's 3x3 Crafting Table</h2>
+          <p>Experiment freely with Wood, Stone, Iron, Sticks, and Coal! Arrange materials in spatial shapes on the 3x3 oak table to forge survival tools, weapons, and torches (+XP per discovery).</p>
         </div>
         <div>
           <button type="button" class="btn-3d btn-game-torch" onclick="switchStage(4)">
@@ -177,52 +177,75 @@
         </div>
       </div>
 
-      <div class="crafting-forge-layout">
-        <!-- Left: Step Indicator & 3D Preview Card + Mini Schematic -->
-        <div class="forge-left-recipes" id="smithing2x2RecipeList">
-          <!-- Injected dynamically by js/app.js -->
+      <div class="crafting-forge-layout sandbox-forge-layout">
+        <!-- Left: Blacksmith's Discovery Tome -->
+        <div class="forge-left-recipes blacksmith-tome-panel" id="blacksmithTomePanel">
+          <div class="tome-header">
+            <div class="tome-title-badge">
+              <span>📖</span> <span>Blacksmith's Tome</span>
+            </div>
+            <div class="tome-progress-tag" id="tomeProgressCount">
+              Discovered: 0 / 9
+            </div>
+          </div>
+          <div class="tome-recipe-list" id="blacksmithTomeList">
+            <!-- Injected dynamically by js/app.js -->
+          </div>
         </div>
 
-        <!-- Center: 3x3 Crafting Grid, Linguistic Gate & Tactile Inventory Tray -->
-        <div class="forge-center-stage">
-          <!-- Tier Stepper Pills -->
-          <div class="smithing-stepper-row stage-target-tabs step-badge-row" id="smithing2x2Stepper">
-            <!-- Stepper buttons -->
-          </div>
+        <!-- Center: 3x3 Oak Crafting Table & Inventory Palette -->
+        <div class="forge-center-stage sandbox-center-stage">
+          <!-- 3x3 Dark Oak Workbench Mat -->
+          <div class="oak-crafting-mat">
+            <div class="oak-table-header">
+              <span class="oak-table-title">⚒️ 3×3 Oak Crafting Table</span>
+              <button type="button" class="btn-3d btn-clear-3d btn-clear-small" onclick="clearSmithingGrid()" title="Clear table and return materials to backpack">
+                <span>↺ Clear Table</span>
+              </button>
+            </div>
 
-          <!-- 3x3 Interactive Workbench Mat & Grounded Pedestal Frame -->
-          <div class="forge-3x3-workbench-mat">
-            <div class="smithing-3x3-frame" id="smithing3x3Frame">
-              <div class="crafting-grid smithing-3x3-grid" id="grid2x2Sockets">
-                <!-- 9 sockets: 0 to 8 with dynamic glowing ghost previews -->
+            <div class="smithing-3x3-frame oak-frame" id="smithing3x3Frame">
+              <div class="crafting-grid smithing-3x3-grid oak-sockets-grid" id="grid2x2Sockets">
+                <!-- 9 empty tactile inset sockets: 0 to 8 -->
               </div>
 
-              <!-- Animated Rubber Stamp Seal -->
+              <!-- Animated Rubber Stamp Seal upon claim -->
               <div class="forge-stamp-seal" id="smithingStampSeal" style="display:none;">
-                <span id="smithingStampSealText">FORGED: WOODEN PICKAXE! ⭐</span>
+                <span id="smithingStampSealText">FORGED! ⭐</span>
               </div>
             </div>
             <div class="pedestal-disc runic-forge-pedestal"></div>
           </div>
 
-          <!-- Tactile Inventory Palette (4 Materials: Oak Planks, Cobblestone, Iron Ingots, Sticks) -->
+          <!-- Tactile Inventory Palette (5 Materials: Oak Planks, Cobblestone, Iron Ingots, Sticks, Coal) -->
           <div class="inventory-tray smithing-inventory-palette" id="smithing2x2InventoryTray">
-            <!-- Rendered dynamically with 3D isometric bevels -->
+            <!-- Rendered dynamically with 3D isometric bevels and live stock counts -->
+          </div>
+        </div>
+
+        <!-- Flow Connector Arrow -->
+        <div class="forge-flow-arrow-container">
+          <div class="forge-flow-arrow" id="forgeFlowArrow">
+            <svg viewBox="0 0 48 48" class="arrow-svg" fill="none" stroke="currentColor">
+              <path d="M 8 24 L 38 24 M 26 12 L 38 24 L 26 36" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right: Output Anvil Chamber (140px x 140px Socket) -->
+        <div class="forge-output-chamber" id="forgeOutputChamber">
+          <div class="output-chamber-header">
+            <span class="output-chamber-title">⚡ Output Anvil</span>
+            <span class="output-status-pill" id="outputStatusPill">Awaiting Recipe</span>
           </div>
 
-          <!-- Mandatory Linguistic Forge Gate (Sentence Builder Strip) -->
-          <div class="linguistic-forge-gate" id="linguisticForgeGate">
-            <!-- Rendered dynamically by js/app.js -->
+          <div class="output-anvil-socket" id="outputAnvilSocket" onclick="claimCraftedOutput()" title="Click to claim crafted item">
+            <!-- Dynamically rendered: empty state or illuminated 3D item with spring pop -->
           </div>
+          <div class="pedestal-disc output-pedestal-disc"></div>
 
-          <!-- Forge Action Controls -->
-          <div class="forge-action-controls-row">
-            <button type="button" class="btn-3d btn-clear-3d" onclick="clear2x2Grid()">
-              <span>↺ Reset Grid</span>
-            </button>
-            <button type="button" class="btn-3d btn-craft-3d" id="btnForge2x2Item" onclick="verify2x2Craft()">
-              <span>🔒 FORGE LOCKED (Solve Sentence &amp; Grid)</span>
-            </button>
+          <div class="output-claim-container" id="outputClaimContainer">
+            <!-- Claim button rendered when recipe matches -->
           </div>
         </div>
       </div>
@@ -630,12 +653,8 @@
         <span>⭐ +35 XP REWARDED!</span>
       </div>
 
-      <div class="reward-sentence-card">
-        <div class="reward-sentence-text" id="rewardModalSentence">"I combine three wood planks and two sticks to craft a wooden pickaxe."</div>
-        <button type="button" class="reward-speaker-btn btn-formula-audio-speaker" onclick="speakStage3Formula()" title="Listen to Formula">
-          <span class="speaker-wave-anim">🔊</span>
-          <span>Listen</span>
-        </button>
+      <div class="reward-sentence-card" id="rewardModalSentenceCard">
+        <div class="reward-sentence-text" id="rewardModalSentence">Essential starter tool to mine stone blocks and coal ore.</div>
       </div>
 
       <div class="reward-modal-actions">
