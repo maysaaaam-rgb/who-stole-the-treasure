@@ -1,0 +1,5 @@
+tellTarget("..")
+{
+   gotoAndStop("cam");
+   play();
+}
