@@ -1053,6 +1053,37 @@ body {
   transition: transform 0.25s var(--spring-snap);
 }
 
+/* 3D Volumetric Clay Toy Layer Aesthetics */
+.monster-svg #layer-torso-base {
+  filter: drop-shadow(0 6px 14px rgba(15, 23, 42, 0.16));
+  transform-origin: 150px 160px;
+  transition: transform 0.3s var(--spring-snap);
+}
+
+.monster-svg #layer-clothes-armor {
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.14));
+}
+
+.monster-svg #layer-facial-features {
+  transform-origin: 150px 140px;
+  transition: transform 0.25s var(--spring-snap);
+}
+
+.monster-svg #layer-ears-horns {
+  transform-origin: 150px 100px;
+  transition: transform 0.3s var(--spring-snap);
+}
+
+.monster-svg #layer-front-limbs {
+  transform-origin: 150px 160px;
+  transition: transform 0.3s var(--spring-snap);
+}
+
+.monster-svg #layer-eyewear,
+.monster-svg #layer-hats-crowns {
+  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.15));
+}
+
 /* ==========================================================================
    SUB-PREVIEW DOCK: SPEECH BUBBLE & SQUISHY JELLY ACTION DOCK
    ========================================================================== */

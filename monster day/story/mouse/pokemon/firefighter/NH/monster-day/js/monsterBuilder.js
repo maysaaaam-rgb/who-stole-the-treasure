@@ -366,10 +366,27 @@ class MonsterRenderer {
 
   getSvgOutput(currentMonster = {}) {
     const bodyColor = (this.palettes && this.palettes[currentMonster.color]?.main) || currentMonster.color || '#a855f7';
+    const bodyColorDark = (this.palettes && this.palettes[currentMonster.color]?.dark) || this.darkenColor(bodyColor, 20);
+    const bodyColorShadow = this.darkenColor(bodyColor, 35);
     const darkenColor = (col, percent) => this.darkenColor(col, percent);
     const svgOutput = `
-<svg viewBox="0 0 300 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 300 320" width="100%" height="100%" style="--monster-body-color: ${bodyColor}; --monster-body-color-dark: ${bodyColorDark}; --monster-body-shadow: ${bodyColorShadow};" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <!-- 3D Volumetric Clay Shader for Body -->
+    <radialGradient id="monsterClayGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+      <stop offset="25%" stop-color="var(--monster-body-color, ${bodyColor})" />
+      <stop offset="85%" stop-color="var(--monster-body-color-dark, ${bodyColorDark})" />
+      <stop offset="100%" stop-color="var(--monster-body-shadow, ${bodyColorShadow})" />
+    </radialGradient>
+    <radialGradient id="bellyGrad" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fffbeb" />
+      <stop offset="70%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#fde68a" />
+    </radialGradient>
+    <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.18" />
+    </filter>
     <!-- Dynamic 3D Radial Shader for Body -->
     <radialGradient id="activeBodyClay" cx="35%" cy="30%" r="70%">
       <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
@@ -390,6 +407,8 @@ class MonsterRenderer {
   <ellipse cx="176" cy="255" rx="16" ry="8" fill="${darkenColor(bodyColor, 15)}" stroke="#1e293b" stroke-width="3" />
 
   <!-- 3. SOLID 3D TORSO (MUST BE FILLED) -->
+  <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+  <circle cx="150" cy="155" r="75" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
   <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
 
   <!-- 4. EARS & ARMS (Attached at perimeter) -->
@@ -417,14 +436,15 @@ class MonsterRenderer {
   }
 
   // ==========================================
-  // ==========================================
-  // MASTER SVG COMPOSER (Strict Layer Architecture)
+  // MASTER SVG COMPOSER (Strict 9-Layer Architecture)
   // ==========================================
   renderSvg(rawMonster, options = {}) {
     const monster = this.normalize(rawMonster);
     const pal = this.getPalette(monster.color);
     const secPal = this.getPalette(monster.secondaryColor);
     const bodyColor = (pal && pal.main) || (this.palettes && this.palettes[monster.color]?.main) || monster.color || '#a855f7';
+    const bodyColorDark = (pal && pal.dark) || this.darkenColor(bodyColor, 20);
+    const bodyColorShadow = this.darkenColor(bodyColor, 35);
     const anchors = this.anchorReg.getSockets(monster.body);
     const width = options.width || '100%';
     const height = options.height || '100%';
@@ -443,22 +463,26 @@ class MonsterRenderer {
     const secGradId = `secGrad_${monster.secondaryColor}_${uid}`;
     const goldGradId = `goldAccGrad_${uid}`;
 
-    // Strict Layer Sequence:
-    // 1. Pedestal Shadow & Backdrops & Aura
-    // 2. Tail / Wings / Back Gear
-    // 3. Back Limbs (Legs/Feet behind body)
-    // 4. Torso / Head Base (Body mesh, belly, patterns, horns & ears attached to headTop)
-    // 5. Eyes / Mouth (Positioned strictly at faceCenter)
-    // 6. Front Limbs (Arms & Hands attached at armLeft & armRight)
-    // 7. Clothes & Accessories (Tops, bottoms, outfits, glasses, hats, cape)
+    // Strict 9-Layer Architecture (Back-to-Front Pipeline):
+    // 1. Stage background & podium
+    // 2. Wings / Tail (behind the body)
+    // 3. Monster Torso Base
+    // 4. Ears & Horns (anchored behind or on top of the head)
+    // 5. Clothes / Armor (aligned strictly below the chin line, e.g., cy > 165)
+    // 6. Arms & Limbs
+    // 7. Facial Features (Mouth, Nose, Eyes) – must ALWAYS stay on top of clothing
+    // 8. Eyewear (Sunglasses / Goggles)
+    // 9. Hats & Crowns (placed on top of the head)
     const layers = [
-      this.renderBackdrops(monster, anchors),
+      this.renderBackdrops(monster, anchors, pal),
       this.renderWingsAndTail(monster, pal, anchors),
-      this.renderBackLimbs(monster, pal, anchors),
-      this.renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId, secGradId),
-      this.renderEyesAndMouth(monster, pal, anchors, action),
+      this.renderTorsoBase(monster, pal, secPal, anchors, bodyGradId, secGradId),
+      this.renderEarsAndHorns(monster, pal, anchors),
+      this.renderClothes(monster, pal, anchors),
       this.renderFrontLimbs(monster, pal, anchors, action),
-      this.renderClothesAndAccessories(monster, pal, anchors)
+      this.renderFacialFeatures(monster, pal, anchors, action),
+      this.renderEyewear(monster, anchors),
+      this.renderHatsAndCrowns(monster, anchors)
     ];
 
     const isInvisible = monster.powers.includes('invisible');
@@ -469,7 +493,7 @@ class MonsterRenderer {
            viewBox="0 0 300 320" 
            width="${width}" 
            height="${height}" 
-           style="opacity: ${opacityVal};"
+           style="opacity: ${opacityVal}; --monster-body-color: ${bodyColor}; --monster-body-color-dark: ${bodyColorDark}; --monster-body-shadow: ${bodyColorShadow};"
            xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="mDropGlow_${uid}" x="-20%" y="-20%" width="140%" height="140%">
@@ -479,30 +503,49 @@ class MonsterRenderer {
           <filter id="footBlur" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="3"/>
           </filter>
-          <!-- Dynamic 3D Radial Shader for Body -->
+
+          <!-- Tactile Clay Shadow Filter -->
+          <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.18"/>
+          </filter>
+
+          <!-- 3D Volumetric Clay Shader for Body (CSS Variables Enabled) -->
+          <radialGradient id="monsterClayGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+            <stop offset="25%" stop-color="var(--monster-body-color, ${bodyColor})" />
+            <stop offset="85%" stop-color="var(--monster-body-color-dark, ${bodyColorDark})" />
+            <stop offset="100%" stop-color="var(--monster-body-shadow, ${bodyColorShadow})" />
+          </radialGradient>
+          <radialGradient id="bellyGrad" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#fffbeb" />
+            <stop offset="70%" stop-color="#fef3c7" />
+            <stop offset="100%" stop-color="#fde68a" />
+          </radialGradient>
+
+          <!-- Dynamic 3D Radial Shader for Body & Compatibility Gradients -->
           <radialGradient id="activeBodyClay" cx="35%" cy="30%" r="70%">
             <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
             <stop offset="30%" stop-color="${bodyColor}" />
             <stop offset="85%" stop-color="${bodyColor}" />
-            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
+            <stop offset="100%" stop-color="${bodyColorShadow}" />
           </radialGradient>
           <radialGradient id="${bodyGradId}" cx="35%" cy="30%" r="70%">
             <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
-            <stop offset="30%" stop-color="${bodyColor}" />
-            <stop offset="85%" stop-color="${bodyColor}" />
-            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
+            <stop offset="25%" stop-color="var(--monster-body-color, ${bodyColor})" />
+            <stop offset="85%" stop-color="var(--monster-body-color-dark, ${bodyColorDark})" />
+            <stop offset="100%" stop-color="var(--monster-body-shadow, ${bodyColorShadow})" />
           </radialGradient>
           <radialGradient id="clayGradient" cx="35%" cy="30%" r="70%">
             <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
             <stop offset="30%" stop-color="${bodyColor}" />
             <stop offset="85%" stop-color="${bodyColor}" />
-            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
+            <stop offset="100%" stop-color="${bodyColorShadow}" />
           </radialGradient>
           <radialGradient id="clayBodyGrad" cx="35%" cy="30%" r="70%">
             <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
             <stop offset="30%" stop-color="${bodyColor}" />
             <stop offset="85%" stop-color="${bodyColor}" />
-            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
+            <stop offset="100%" stop-color="${bodyColorShadow}" />
           </radialGradient>
           <radialGradient id="clayLimbGrad" cx="35%" cy="30%" r="65%">
             <stop offset="0%" stop-color="${pal.highlight}"/>
@@ -534,9 +577,9 @@ class MonsterRenderer {
   }
 
   // -------------------------------------------------------------
-  // LAYER 1: BACKDROPS & AURA
+  // LAYER 1: BACKDROPS & STAGE PODIUM (with Grounded Back Limbs)
   // -------------------------------------------------------------
-  renderBackdrops(monster, anchors) {
+  renderBackdrops(monster, anchors, pal) {
     let powerAura = '';
     if (monster.powers.includes('shoot_lightning')) {
       powerAura = `
@@ -563,17 +606,20 @@ class MonsterRenderer {
       `;
     }
 
+    const backLimbs = this.renderBackLimbs(monster, pal || this.getPalette(monster.color), anchors);
+
     return `
-      <g id="layer-backdrop-stage">
+      <g id="layer-backdrop-stage" class="layer-backdrop-stage">
         <!-- Anchored Stage Platform Contact Shadow -->
         <ellipse cx="150" cy="262" rx="65" ry="12" fill="#78350f" opacity="0.35" filter="url(#footBlur)" />
         ${powerAura}
+        ${backLimbs}
       </g>
     `;
   }
 
   // -------------------------------------------------------------
-  // LAYER 2: TAIL / WINGS / BACK GEAR
+  // LAYER 2: TAIL / WINGS / BACK GEAR (Behind Torso Base)
   // -------------------------------------------------------------
   renderWingsAndTail(monster, pal, anchors) {
     let out = '';
@@ -628,11 +674,11 @@ class MonsterRenderer {
       out += `<path class="monster-cape-back" d="M 112,${anchors.cape.y} Q 150,${anchors.cape.y + 10} 188,${anchors.cape.y} L 214,250 Q 150,265 86,250 Z" fill="${capeColor}" stroke="#7f1d1d" stroke-width="3" />`;
     }
 
-    return `<g id="layer-wings-tail">${out}</g>`;
+    return `<g id="layer-wings-tail" class="layer-wings-tail">${out}</g>`;
   }
 
   // -------------------------------------------------------------
-  // LAYER 3: BACK LIMBS (Legs & Feet behind torso)
+  // BACK LIMBS HELPER (Legs & Feet behind Torso)
   // -------------------------------------------------------------
   renderBackLimbs(monster, pal, anchors) {
     const count = monster.legs.count;
@@ -649,7 +695,7 @@ class MonsterRenderer {
     const feet = monster.feet || 'normal';
 
     return `
-      <g id="layer-back-limbs">
+      <g id="layer-back-limbs" class="layer-back-limbs">
         ${configs.map(c => `
           <g transform="translate(0, 0)">
             <!-- Foot Ground Contact Shadow Anchoring to Platform -->
@@ -669,15 +715,12 @@ class MonsterRenderer {
   }
 
   // -------------------------------------------------------------
-  // LAYER 4: TORSO / HEAD BASE (Master Anchor + Horns/Ears Attached)
+  // LAYER 3: MONSTER TORSO BASE (Solid 3D Clay Lighting + Belly)
   // -------------------------------------------------------------
-  renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId = 'clayGradient', secGradId = 'secGrad') {
+  renderTorsoBase(monster, pal, secPal, anchors, bodyGradId = 'clayGradient', secGradId = 'secGrad') {
     const currentMonster = monster || {};
     const shape = currentMonster.body || 'round';
-    const darkenColor = (col, percent = 20) => this.darkenColor(col, percent);
-
-    // FIXED: Solid, high-opacity fill with direct inline color and inner clay lighting
-    const bodyColor = (pal && pal.main) || (this.palettes && this.palettes[currentMonster.color]?.main) || currentMonster.color || '#a855f7'; // default to purple if not set
+    const bodyColor = (pal && pal.main) || (this.palettes && this.palettes[currentMonster.color]?.main) || currentMonster.color || '#a855f7';
 
     let bodySvg = '';
     let bellySvg = '';
@@ -685,69 +728,96 @@ class MonsterRenderer {
     if (shape === 'tall') {
       bodySvg = `
         <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'round') {
-      // 3. SOLID 3D TORSO (MUST BE FILLED)
       bodySvg = `
         <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <circle cx="150" cy="155" r="75" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'wide') {
       bodySvg = `
         <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'short') {
       bodySvg = `
         <ellipse cx="150" cy="170" rx="72" ry="58" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'thin') {
       bodySvg = `
         <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'blob') {
       bodySvg = `
         <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'ghost') {
       bodySvg = `
         <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="${secPal.belly}" opacity="0.65"/>`;
+      bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="url(#bellyGrad)" opacity="0.65"/>`;
     } else if (shape === 'dinosaur') {
       bodySvg = `
         <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     } else if (shape === 'robot') {
       bodySvg = `
         <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
+      bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
     } else {
-      // 3. SOLID 3D TORSO (MUST BE FILLED)
       bodySvg = `
         <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <circle cx="150" cy="155" r="75" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
         <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
-      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
     }
 
+    // Specular 3D Clay Highlight Pill/Disc on top-left of torso
+    const shineX = 132;
+    const shineY = anchors.faceCenter.eyeY - 14;
+    const shineSvg = `<ellipse cx="${shineX}" cy="${shineY}" rx="20" ry="10" fill="#ffffff" opacity="0.35" transform="rotate(-18 ${shineX} ${shineY})" pointer-events="none" />`;
 
+    return `
+      <g id="layer-torso-base" class="layer-torso-base layer-torso-head" filter="url(#clayShadow)">
+        <!-- 1. Central Torso Solid Base Fill with 3D Radial Clay Lighting -->
+        ${bodySvg}
+        <!-- 2. Soft Specular Clay Highlight on Top-Left -->
+        ${shineSvg}
+        <!-- 3. Creamy Belly Patch -->
+        ${bellySvg}
+      </g>
+    `;
+  }
 
+  // -------------------------------------------------------------
+  // LAYER 4: EARS & HORNS (Anchored to headTop / ears sockets)
+  // -------------------------------------------------------------
+  renderEarsAndHorns(monster, pal, anchors) {
     // Horns (Attached firmly to headTop socket)
     let hornsSvg = '';
     const hornCount = monster.horns.count;
@@ -792,127 +862,91 @@ class MonsterRenderer {
       `;
     }
 
-    // Specular 3D Clay Highlight Pill/Disc on top-left of torso
-    const shineX = 132;
-    const shineY = anchors.faceCenter.eyeY - 14;
-    const shineSvg = `<ellipse cx="${shineX}" cy="${shineY}" rx="20" ry="10" fill="#ffffff" opacity="0.35" transform="rotate(-18 ${shineX} ${shineY})" pointer-events="none" />`;
-
-    // Cheek blushes
-    const blushY = anchors.faceCenter.mouthY;
-    const blushSvg = `
-      <ellipse cx="${anchors.faceCenter.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
-      <ellipse cx="${anchors.faceCenter.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
-    `;
-
     return `
-      <g id="layer-torso-head">
+      <g id="layer-ears-horns" class="layer-ears-horns">
         ${earsSvg}
         ${hornsSvg}
-        <!-- 1. Central Torso Solid Base Fill with 3D Radial Clay Lighting -->
-        ${bodySvg}
-        <!-- 2. Soft Specular Clay Highlight on Top-Left -->
-        ${shineSvg}
-        <!-- 3. Soft Cheek Blushes -->
-        ${blushSvg}
-        <!-- 4. Belly Patch -->
-        ${bellySvg}
       </g>
     `;
   }
 
   // -------------------------------------------------------------
-  // LAYER 5: EYES & MOUTH (Anchored to faceCenter)
+  // LAYER 5: CLOTHES & ARMOR (Aligned Strictly Below Chin Line: cy >= 168)
   // -------------------------------------------------------------
-  renderEyesAndMouth(monster, pal, anchors, action) {
+  renderClothes(monster, pal, anchors) {
+    let out = '';
     const f = anchors.faceCenter;
-    const count = monster.eyes.count;
-    const size = monster.eyes.size || 'big';
-    let rBase = 16;
-    if (size === 'tiny') rBase = 7;
-    else if (size === 'small') rBase = 11;
-    else if (size === 'giant') rBase = 22;
+    const mouthBottom = (f.mouthY || 154) + 12;
+    const chinY = Math.max(168, mouthBottom);
 
-    let eyeConfigs = [];
-    if (count === 1) {
-      eyeConfigs = [{ cx: f.cx, cy: f.eyeY, r: rBase * 1.3 }];
-    } else if (count === 2) {
-      eyeConfigs = [
-        { cx: f.cx - 24, cy: f.eyeY, r: rBase },
-        { cx: f.cx + 24, cy: f.eyeY, r: rBase }
-      ];
-    } else if (count === 3) {
-      eyeConfigs = [
-        { cx: f.cx - 38, cy: f.eyeY + 3, r: rBase * 0.85 },
-        { cx: f.cx,      cy: f.eyeY - 4, r: rBase * 0.95 },
-        { cx: f.cx + 38, cy: f.eyeY + 3, r: rBase * 0.85 }
-      ];
-    } else {
-      eyeConfigs = [
-        { cx: f.cx - 36, cy: f.eyeY - 4, r: rBase * 0.78 },
-        { cx: f.cx - 12, cy: f.eyeY - 8, r: rBase * 0.82 },
-        { cx: f.cx + 12, cy: f.eyeY - 8, r: rBase * 0.82 },
-        { cx: f.cx + 36, cy: f.eyeY - 4, r: rBase * 0.78 }
-      ];
-    }
+    const t = monster.clothes.top;
+    if (t === 'tshirt' || t === 'shirt') {
+      const topCol = this.getClothColor(monster.clothes.topColor, '#2563eb');
+      const leftArm = anchors.armLeft;
+      const rightArm = anchors.armRight;
+      const shoulderLeftY = Math.max(chinY, leftArm.y + 10);
+      const shoulderRightY = Math.max(chinY, rightArm.y + 10);
 
-    // Render Eyes according to action state (e.g., tickle = squint, sleep = closed)
-    let eyesSvg = '';
-    if (action === 'sleep') {
-      // Peaceful closed arcs
-      eyesSvg = eyeConfigs.map(c => `
-        <path d="M ${c.cx - c.r},${c.cy + 3} Q ${c.cx},${c.cy + c.r + 5} ${c.cx + c.r},${c.cy + 3}" 
-              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-      `).join('');
-    } else if (action === 'tickle') {
-      // Giggling squints (> <)
-      eyesSvg = eyeConfigs.map(c => `
-        <path d="M ${c.cx - c.r * 0.7},${c.cy + 3} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 3}" 
-              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-      `).join('');
-    } else {
-      // Normal Big Glossy Eyes
-      eyesSvg = eyeConfigs.map(c => `
-        <g class="monster-eye-item">
-          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
-          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.58}" fill="#0284c7"/>
-          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.38}" fill="#0f172a"/>
-          <circle cx="${c.cx - c.r * 0.22}" cy="${c.cy - c.r * 0.22}" r="${c.r * 0.22}" fill="#ffffff"/>
-          <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.1}" fill="#ffffff"/>
+      out += `
+        <g class="clothing-top clothing-tshirt">
+          <!-- Main shirt body anchored strictly below chin line -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 6},${shoulderRightY + 36} 
+                   L ${rightArm.x - 12},${shoulderRightY + 40} 
+                   L 186,215 
+                   L 114,215 
+                   L ${leftArm.x + 12},${shoulderLeftY + 40} 
+                   L ${leftArm.x - 6},${shoulderLeftY + 36} Z" 
+                fill="${topCol}" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Tactile Collar Ribbing Below Chin -->
+          <path d="M ${leftArm.x + 14},${shoulderLeftY} Q 150,${chinY + 14} ${rightArm.x - 14},${shoulderRightY}" 
+                fill="none" stroke="${this.darkenColor(topCol, 25)}" stroke-width="4" stroke-linecap="round"/>
+          <!-- Star Medal on Chest (Well Below Chin) -->
+          <polygon points="150,${chinY + 22} 153,${chinY + 29} 160,${chinY + 30} 154,${chinY + 35} 156,${chinY + 42} 150,${chinY + 38} 144,${chinY + 42} 146,${chinY + 35} 140,${chinY + 30} 147,${chinY + 29}" 
+                   fill="#facc15" stroke="#ca8a04" stroke-width="1.2"/>
         </g>
-      `).join('');
+      `;
+    } else if (t === 'jacket') {
+      const topCol = this.getClothColor(monster.clothes.topColor, '#1e293b');
+      const leftArm = anchors.armLeft;
+      const rightArm = anchors.armRight;
+      const shoulderLeftY = Math.max(chinY, leftArm.y + 10);
+      const shoulderRightY = Math.max(chinY, rightArm.y + 10);
+
+      out += `
+        <g class="clothing-top clothing-jacket">
+          <!-- Jacket Torso -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 14} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 6},${shoulderRightY + 38} 
+                   L ${rightArm.x - 10},${shoulderRightY + 42} 
+                   L 188,216 
+                   L 112,216 
+                   L ${leftArm.x + 10},${shoulderLeftY + 42} 
+                   L ${leftArm.x - 6},${shoulderLeftY + 38} Z" 
+                fill="${topCol}" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Zipper down front center -->
+          <line x1="150" y1="${chinY + 14}" x2="150" y2="216" stroke="#94a3b8" stroke-width="3" stroke-dasharray="3,2"/>
+          <!-- Jacket Lapels -->
+          <path d="M ${leftArm.x + 12},${shoulderLeftY} L 150,${chinY + 24} L ${rightArm.x - 12},${shoulderRightY}" 
+                fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+      `;
     }
 
-    // Nose
-    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="6" ry="4.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="2.5"/><circle cx="${f.cx - 1.5}" cy="${f.noseY - 1.5}" r="1.5" fill="#ffffff" opacity="0.6"/>`;
-
-    // Mouth (Adapts to eat/tickle actions)
-    let mouthSvg = '';
-    if (action === 'eat') {
-      // Mouth wide open to catch snack
-      mouthSvg = `
-        <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="18" ry="14" fill="#881337" stroke="#0f172a" stroke-width="3"/>
-        <path d="M ${f.cx - 12},${f.mouthY + 6} Q ${f.cx},${f.mouthY + 12} ${f.cx + 12},${f.mouthY + 6}" fill="#f43f5e"/>
-      `;
-    } else if (action === 'tickle') {
-      // Big laughing open mouth
-      mouthSvg = `
-        <path d="M ${f.cx - 20},${f.mouthY - 4} Q ${f.cx},${f.mouthY + 22} ${f.cx + 20},${f.mouthY - 4} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
-        <ellipse cx="${f.cx}" cy="${f.mouthY + 10}" rx="9" ry="5" fill="#f43f5e"/>
-      `;
-    } else {
-      // Friendly smile with teeth option
-      mouthSvg = `
-        <path d="M ${f.cx - 18},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 14} ${f.cx + 18},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+    // Cape front fasteners if cape is active
+    if (monster.clothes.cape) {
+      out += `
+        <g class="clothing-cape-front">
+          <ellipse cx="132" cy="${chinY + 6}" rx="5" ry="5" fill="#eab308" stroke="#78350f" stroke-width="1.5"/>
+          <ellipse cx="168" cy="${chinY + 6}" rx="5" ry="5" fill="#eab308" stroke="#78350f" stroke-width="1.5"/>
+          <path d="M 132,${chinY + 6} Q 150,${chinY + 12} 168,${chinY + 6}" fill="none" stroke="#eab308" stroke-width="2.5"/>
+        </g>
       `;
     }
 
-    return `
-      <g id="layer-eyes-mouth">
-        ${eyesSvg}
-        ${noseSvg}
-        ${mouthSvg}
-      </g>
-    `;
+    return `<g id="layer-clothes-armor" class="layer-clothes-armor layer-clothes-accessories">${out}</g>`;
   }
 
   // -------------------------------------------------------------
@@ -931,8 +965,6 @@ class MonsterRenderer {
     const shL = anchors.armLeft;
     const shR = anchors.armRight;
 
-    // Adjust arm target when dancing or eating
-    // Default: for tall (90, 140) -> (60, 175) and (210, 140) -> (240, 175)
     let leftHandOffset = { x: -30 * factor, y: 35 * factor };
     let rightHandOffset = { x: 30 * factor, y: 35 * factor };
 
@@ -945,7 +977,7 @@ class MonsterRenderer {
     const rightHand = { x: shR.x + rightHandOffset.x, y: shR.y + rightHandOffset.y };
 
     return `
-      <g id="layer-front-limbs">
+      <g id="layer-front-limbs" class="layer-front-limbs">
         <!-- Left Arm with Rounded Torso Joint -->
         <g class="monster-arm-left">
           <!-- Rounded Joint Socket at Torso Connection -->
@@ -982,14 +1014,109 @@ class MonsterRenderer {
   }
 
   // -------------------------------------------------------------
-  // LAYER 7: CLOTHES & ACCESSORIES (Glasses, Outfits, Hats)
+  // LAYER 7: FACIAL FEATURES (Mouth, Nose, Eyes ALWAYS on Top of Clothing)
   // -------------------------------------------------------------
-  renderClothesAndAccessories(monster, pal, anchors) {
+  renderFacialFeatures(monster, pal, anchors, action) {
+    const f = anchors.faceCenter;
+    const count = monster.eyes.count;
+    const size = monster.eyes.size || 'big';
+    let rBase = 16;
+    if (size === 'tiny') rBase = 7;
+    else if (size === 'small') rBase = 11;
+    else if (size === 'giant') rBase = 22;
+
+    let eyeConfigs = [];
+    if (count === 1) {
+      eyeConfigs = [{ cx: f.cx, cy: f.eyeY, r: rBase * 1.3 }];
+    } else if (count === 2) {
+      eyeConfigs = [
+        { cx: f.cx - 24, cy: f.eyeY, r: rBase },
+        { cx: f.cx + 24, cy: f.eyeY, r: rBase }
+      ];
+    } else if (count === 3) {
+      eyeConfigs = [
+        { cx: f.cx - 38, cy: f.eyeY + 3, r: rBase * 0.85 },
+        { cx: f.cx,      cy: f.eyeY - 4, r: rBase * 0.95 },
+        { cx: f.cx + 38, cy: f.eyeY + 3, r: rBase * 0.85 }
+      ];
+    } else {
+      eyeConfigs = [
+        { cx: f.cx - 36, cy: f.eyeY - 4, r: rBase * 0.78 },
+        { cx: f.cx - 12, cy: f.eyeY - 8, r: rBase * 0.82 },
+        { cx: f.cx + 12, cy: f.eyeY - 8, r: rBase * 0.82 },
+        { cx: f.cx + 36, cy: f.eyeY - 4, r: rBase * 0.78 }
+      ];
+    }
+
+    // Eyes (Adapts to action states: sleep = closed arcs, tickle = giggling squints)
+    let eyesSvg = '';
+    if (action === 'sleep') {
+      eyesSvg = eyeConfigs.map(c => `
+        <path d="M ${c.cx - c.r},${c.cy + 3} Q ${c.cx},${c.cy + c.r + 5} ${c.cx + c.r},${c.cy + 3}" 
+              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+      `).join('');
+    } else if (action === 'tickle') {
+      eyesSvg = eyeConfigs.map(c => `
+        <path d="M ${c.cx - c.r * 0.7},${c.cy + 3} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 3}" 
+              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+      `).join('');
+    } else {
+      eyesSvg = eyeConfigs.map(c => `
+        <g class="monster-eye-item">
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.58}" fill="#0284c7"/>
+          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.38}" fill="#0f172a"/>
+          <circle cx="${c.cx - c.r * 0.22}" cy="${c.cy - c.r * 0.22}" r="${c.r * 0.22}" fill="#ffffff"/>
+          <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.1}" fill="#ffffff"/>
+        </g>
+      `).join('');
+    }
+
+    // Soft Cheeks Blushes
+    const blushY = f.mouthY;
+    const blushSvg = `
+      <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+      <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+    `;
+
+    // Nose
+    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="6" ry="4.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="2.5"/><circle cx="${f.cx - 1.5}" cy="${f.noseY - 1.5}" r="1.5" fill="#ffffff" opacity="0.6"/>`;
+
+    // Mouth (Adapts to eat/tickle actions)
+    let mouthSvg = '';
+    if (action === 'eat') {
+      mouthSvg = `
+        <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="18" ry="14" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+        <path d="M ${f.cx - 12},${f.mouthY + 6} Q ${f.cx},${f.mouthY + 12} ${f.cx + 12},${f.mouthY + 6}" fill="#f43f5e"/>
+      `;
+    } else if (action === 'tickle') {
+      mouthSvg = `
+        <path d="M ${f.cx - 20},${f.mouthY - 4} Q ${f.cx},${f.mouthY + 22} ${f.cx + 20},${f.mouthY - 4} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+        <ellipse cx="${f.cx}" cy="${f.mouthY + 10}" rx="9" ry="5" fill="#f43f5e"/>
+      `;
+    } else {
+      mouthSvg = `
+        <path d="M ${f.cx - 18},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 14} ${f.cx + 18},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+      `;
+    }
+
+    return `
+      <g id="layer-facial-features" class="layer-facial-features layer-eyes-mouth">
+        ${blushSvg}
+        ${eyesSvg}
+        ${noseSvg}
+        ${mouthSvg}
+      </g>
+    `;
+  }
+
+  // -------------------------------------------------------------
+  // LAYER 8: EYEWEAR (Glasses / Sunglasses)
+  // -------------------------------------------------------------
+  renderEyewear(monster, anchors) {
     let out = '';
     const f = anchors.faceCenter;
-    const top = anchors.headTop;
 
-    // Glasses
     if (monster.accessories.includes('glasses') || monster.accessories.includes('sunglasses')) {
       const isSun = monster.accessories.includes('sunglasses');
       const lens = isSun ? '#0f172a' : 'rgba(255, 255, 255, 0.45)';
@@ -997,24 +1124,23 @@ class MonsterRenderer {
         <g class="accessory-glasses" transform="translate(${f.cx}, ${f.eyeY})">
           <circle cx="-24" cy="0" r="17" fill="${lens}" stroke="#0f172a" stroke-width="3.5"/>
           <circle cx="24" cy="0" r="17" fill="${lens}" stroke="#0f172a" stroke-width="3.5"/>
+          ${isSun ? '<ellipse cx="-28" cy="-5" rx="6" ry="3" fill="#ffffff" opacity="0.35" transform="rotate(-30 -28 -5)"/>' : ''}
+          ${isSun ? '<ellipse cx="20" cy="-5" rx="6" ry="3" fill="#ffffff" opacity="0.35" transform="rotate(-30 20 -5)"/>' : ''}
           <path d="M -7,-1 Q 0,-5 7,-1" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
         </g>
       `;
     }
 
-    // Clothes (T-shirt / Jacket)
-    const t = monster.clothes.top;
-    if (t === 'tshirt' || t === 'shirt') {
-      const topCol = this.getClothColor(monster.clothes.topColor, '#2563eb');
-      out += `
-        <g class="clothing-top">
-          <path d="M ${anchors.armLeft.x},${anchors.armLeft.y} Q 150,${anchors.armLeft.y + 12} ${anchors.armRight.x},${anchors.armRight.y} L ${anchors.armRight.x + 6},${anchors.armRight.y + 36} L ${anchors.armRight.x - 12},${anchors.armRight.y + 40} L 185,210 L 115,210 L ${anchors.armLeft.x + 12},${anchors.armLeft.y + 40} L ${anchors.armLeft.x - 6},${anchors.armLeft.y + 36} Z" fill="${topCol}" stroke="#0f172a" stroke-width="3.5"/>
-          <polygon points="150,${anchors.armLeft.y + 20} 152,${anchors.armLeft.y + 26} 158,${anchors.armLeft.y + 27} 153,${anchors.armLeft.y + 31} 155,${anchors.armLeft.y + 37} 150,${anchors.armLeft.y + 34} 145,${anchors.armLeft.y + 37} 147,${anchors.armLeft.y + 31} 142,${anchors.armLeft.y + 27} 148,${anchors.armLeft.y + 26}" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-        </g>
-      `;
-    }
+    return `<g id="layer-eyewear" class="layer-eyewear">${out}</g>`;
+  }
 
-    // Headwear / Hats (Attached to headTop)
+  // -------------------------------------------------------------
+  // LAYER 9: HATS & CROWNS (Placed on Top of Head)
+  // -------------------------------------------------------------
+  renderHatsAndCrowns(monster, anchors) {
+    let out = '';
+    const top = anchors.headTop;
+
     if (monster.accessories.includes('hat') || monster.accessories.includes('cap')) {
       out += `
         <g class="accessory-hat" transform="translate(${top.x}, ${top.y - 8})">
@@ -1033,7 +1159,29 @@ class MonsterRenderer {
       `;
     }
 
-    return `<g id="layer-clothes-accessories">${out}</g>`;
+    return `<g id="layer-hats-crowns" class="layer-hats-crowns">${out}</g>`;
+  }
+
+  // -------------------------------------------------------------
+  // BACKWARD COMPATIBILITY DELEGATES
+  // -------------------------------------------------------------
+  renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId, secGradId) {
+    return `
+      ${this.renderTorsoBase(monster, pal, secPal, anchors, bodyGradId, secGradId)}
+      ${this.renderEarsAndHorns(monster, pal, anchors)}
+    `;
+  }
+
+  renderEyesAndMouth(monster, pal, anchors, action) {
+    return this.renderFacialFeatures(monster, pal, anchors, action);
+  }
+
+  renderClothesAndAccessories(monster, pal, anchors) {
+    return `
+      ${this.renderClothes(monster, pal, anchors)}
+      ${this.renderEyewear(monster, anchors)}
+      ${this.renderHatsAndCrowns(monster, anchors)}
+    `;
   }
 }
 
