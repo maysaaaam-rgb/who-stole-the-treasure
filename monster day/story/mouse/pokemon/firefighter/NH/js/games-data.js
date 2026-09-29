@@ -1041,7 +1041,10 @@ const GAMES_REGISTRY = [
       "preposition-catapult",
       "catapult",
       "cat-dog",
-      "dog-vs-cat"
+      "dog-vs-cat",
+      "fleabag",
+      "mutt",
+      "fleabag-vs-mutt"
     ],
     "title": "🐱 Cat vs. Dog: Preposition Catapult",
     "description": "Real-time 60FPS parabolic physics catapult clash (CEFR A1 | 130 XP). Launch fish bones over the tall wooden fence, calculate wind vectors, and solve preposition linguistic gates to unlock tactical Double Shot, Super Power, and Grammar Medic power-ups!",
