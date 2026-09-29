@@ -332,6 +332,7 @@ class MonsterRenderer {
   }
 
   // ==========================================
+  // ==========================================
   // MASTER SVG COMPOSER (Strict Layer Architecture)
   // ==========================================
   renderSvg(rawMonster, options = {}) {
@@ -350,6 +351,12 @@ class MonsterRenderer {
     else if (action === 'sleep') actionAnimClass = 'anim-sleep';
     else if (isAnimated) actionAnimClass = 'animated-monster';
 
+    // Unique gradient ID scoped to avoid cross-SVG / display:none caching bugs
+    const uid = options.uid || ('m_' + Math.random().toString(36).substring(2, 7));
+    const bodyGradId = `clayGrad_${monster.color}_${uid}`;
+    const secGradId = `secGrad_${monster.secondaryColor}_${uid}`;
+    const goldGradId = `goldAccGrad_${uid}`;
+
     // Strict Layer Sequence:
     // 1. Pedestal Shadow & Backdrops & Aura
     // 2. Tail / Wings / Back Gear
@@ -362,7 +369,7 @@ class MonsterRenderer {
       this.renderBackdrops(monster, anchors),
       this.renderWingsAndTail(monster, pal, anchors),
       this.renderBackLimbs(monster, pal, anchors),
-      this.renderTorsoAndHead(monster, pal, secPal, anchors),
+      this.renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId, secGradId),
       this.renderEyesAndMouth(monster, pal, anchors, action),
       this.renderFrontLimbs(monster, pal, anchors, action),
       this.renderClothesAndAccessories(monster, pal, anchors)
@@ -379,27 +386,25 @@ class MonsterRenderer {
            style="opacity: ${opacityVal};"
            xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="mDropGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <filter id="mDropGlow_${uid}" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="rgba(15,23,42,0.18)"/>
-          </filter>
-          <!-- Soft Inset Ambient Occlusion & Squish Filter -->
-          <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="5" stdDeviation="4.5" flood-color="rgba(15,23,42,0.22)"/>
-          </filter>
-          <filter id="claySquish" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="5" stdDeviation="4.5" flood-color="rgba(15,23,42,0.22)"/>
           </filter>
           <!-- Foot Contact Blur Filter -->
           <filter id="footBlur" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="3"/>
           </filter>
           <!-- 3D Clay Radial Gradient Highlight on top-left to simulate rounded volume -->
-          <radialGradient id="clayGradient" cx="35%" cy="30%" r="65%">
+          <radialGradient id="${bodyGradId}" cx="35%" cy="28%" r="65%">
             <stop offset="0%" stop-color="${pal.highlight}"/>
             <stop offset="55%" stop-color="${pal.main}"/>
             <stop offset="100%" stop-color="${pal.dark}"/>
           </radialGradient>
-          <radialGradient id="clayBodyGrad" cx="35%" cy="30%" r="65%">
+          <radialGradient id="clayGradient" cx="35%" cy="28%" r="65%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="55%" stop-color="${pal.main}"/>
+            <stop offset="100%" stop-color="${pal.dark}"/>
+          </radialGradient>
+          <radialGradient id="clayBodyGrad" cx="35%" cy="28%" r="65%">
             <stop offset="0%" stop-color="${pal.highlight}"/>
             <stop offset="55%" stop-color="${pal.main}"/>
             <stop offset="100%" stop-color="${pal.dark}"/>
@@ -409,18 +414,18 @@ class MonsterRenderer {
             <stop offset="55%" stop-color="${pal.main}"/>
             <stop offset="100%" stop-color="${pal.dark}"/>
           </radialGradient>
-          <radialGradient id="clayShine" cx="35%" cy="30%" r="65%">
-            <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
-            <stop offset="100%" stop-color="rgba(0,0,0,0.18)"/>
-          </radialGradient>
-          <linearGradient id="bodyGrad_${monster.color}" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="${pal.highlight}"/>
-            <stop offset="50%" stop-color="${pal.main}"/>
-            <stop offset="100%" stop-color="${pal.dark}"/>
+          <linearGradient id="${secGradId}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="${secPal.belly}"/>
           </linearGradient>
           <linearGradient id="secGrad_${monster.secondaryColor}" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#ffffff"/>
             <stop offset="100%" stop-color="${secPal.belly}"/>
+          </linearGradient>
+          <linearGradient id="${goldGradId}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a"/>
+            <stop offset="50%" stop-color="#eab308"/>
+            <stop offset="100%" stop-color="#b45309"/>
           </linearGradient>
           <linearGradient id="goldAccGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#fef08a"/>
@@ -556,9 +561,9 @@ class MonsterRenderer {
             <ellipse cx="${c.x}" cy="259" rx="${feet === 'giant' ? 24 : 18}" ry="6" fill="#0f172a" opacity="0.3" filter="url(#footBlur)"/>
             <!-- Leg Column connecting flush into Torso Base at c.y and extending down to 252 -->
             <path d="M ${c.x - 9},${c.y} L ${c.x - 9},250 Q ${c.x},255 ${c.x + 9},250 L ${c.x + 9},${c.y} Z" 
-                  fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+                  fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="3.5" stroke-linejoin="round"/>
             <!-- Flat Foot on Stage Platform at y=254 -->
-            <ellipse cx="${c.x}" cy="254" rx="${feet === 'giant' ? 22 : 16}" ry="8" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+            <ellipse cx="${c.x}" cy="254" rx="${feet === 'giant' ? 22 : 16}" ry="8" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>
             <circle cx="${c.x - 7}" cy="255" r="3" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
             <circle cx="${c.x}" cy="257" r="3.2" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
             <circle cx="${c.x + 7}" cy="255" r="3" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
@@ -571,41 +576,71 @@ class MonsterRenderer {
   // -------------------------------------------------------------
   // LAYER 4: TORSO / HEAD BASE (Master Anchor + Horns/Ears Attached)
   // -------------------------------------------------------------
-  renderTorsoAndHead(monster, pal, secPal, anchors) {
+  renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId = 'clayGradient', secGradId = 'secGrad') {
     const shape = monster.body || 'round';
     let bodySvg = '';
     let bellySvg = '';
 
     if (shape === 'tall') {
-      bodySvg = `<rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'round') {
-      bodySvg = `<circle cx="150" cy="155" r="75" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <circle cx="150" cy="155" r="75" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'wide') {
-      bodySvg = `<rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'short') {
-      bodySvg = `<ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'thin') {
-      bodySvg = `<rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'blob') {
-      bodySvg = `<path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'ghost') {
-      bodySvg = `<path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="url(#secGrad_${monster.secondaryColor})" opacity="0.6"/>`;
+      bodySvg = `
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="${secPal.belly}" opacity="0.65"/>`;
     } else if (shape === 'dinosaur') {
-      bodySvg = `<path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'robot') {
-      bodySvg = `<rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
+      bodySvg = `
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
     } else {
-      bodySvg = `<circle cx="150" cy="155" r="75" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
-      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+      bodySvg = `
+        <circle cx="150" cy="155" r="75" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     }
 
     // Horns (Attached firmly to headTop socket)
@@ -624,7 +659,7 @@ class MonsterRenderer {
         <g class="monster-horns-group">
           ${cfgs.map(c => `
             <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot})">
-              <polygon points="-9,0 0,-34 9,0" fill="url(#goldAccGrad)" stroke="#78350f" stroke-width="3" stroke-linejoin="round"/>
+              <polygon points="-9,0 0,-34 9,0" fill="#eab308" stroke="#78350f" stroke-width="3" stroke-linejoin="round"/>
             </g>
           `).join('')}
         </g>
@@ -644,7 +679,7 @@ class MonsterRenderer {
         <g class="monster-ears-group">
           ${ecfgs.map(c => `
             <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot})">
-              <ellipse cx="0" cy="-18" rx="13" ry="24" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+              <ellipse cx="0" cy="-18" rx="13" ry="24" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>
               <ellipse cx="0" cy="-16" rx="7" ry="15" fill="${pal.belly}"/>
             </g>
           `).join('')}
