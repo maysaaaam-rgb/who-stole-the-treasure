@@ -6,7 +6,8 @@
   <title>Cat vs Dog (Fleabag vs Mutt) | Standalone Single-File Port</title>
   <style>
 /* Cat vs Dog (Fleabag vs Mutt) Authentic HTML5 Port
-   60-30-10 Cyber-Glassmorphic Standard with Tactile 3D Controls */
+   60-30-10 Cyber-Glassmorphic Standard with Tactile 3D Controls
+   Mobile Responsive & Aspect Ratio Containment */
 
 :root {
   --bg-obsidian: #060911;
@@ -41,19 +42,22 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 10px;
   overflow-x: hidden;
+  touch-action: manipulation;
 }
 
 /* Platform Header */
 .header-bar {
   width: 100%;
-  max-width: 920px;
+  max-width: 900px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   padding: 0 4px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .brand-badge {
@@ -71,10 +75,33 @@ body {
   color: var(--amber-accent);
 }
 
+/* Scoreboard Pill */
+.scoreboard-pill {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid var(--border-glass);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.scoreboard-pill b {
+  color: var(--cyan-accent);
+}
+
+.scoreboard-pill b:last-child {
+  color: var(--amber-accent);
+}
+
 .controls-cluster {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 /* Tactile 3D Buttons */
@@ -84,8 +111,8 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.3);
   border-bottom: 5px solid #0f172a;
   border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 0.82rem;
+  padding: 7px 13px;
+  font-size: 0.8rem;
   font-weight: 800;
   cursor: pointer;
   display: inline-flex;
@@ -138,8 +165,8 @@ body {
   color: #f8fafc;
   border: 1px solid var(--border-glass);
   border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 0.8rem;
+  padding: 6px 10px;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   outline: none;
@@ -164,12 +191,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: none;
 }
 
 #battle-canvas {
   width: 100%;
   height: 100%;
   display: block;
+  object-fit: contain;
+  touch-action: none;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
@@ -185,7 +215,7 @@ body {
   justify-content: center;
   gap: 16px;
   z-index: 50;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.35s ease;
 }
 
 .loading-spinner {
@@ -230,7 +260,7 @@ body {
   background: var(--bg-panel);
   border: 2px solid var(--border-glass);
   border-radius: 20px;
-  padding: 30px;
+  padding: 26px 30px;
   width: 90%;
   max-width: 440px;
   text-align: center;
@@ -238,7 +268,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .winner-avatar {
@@ -257,14 +287,24 @@ body {
   line-height: 1.5;
 }
 
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+}
+
 /* Bottom Hint Tray */
 .hint-tray {
   margin-top: 10px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
   color: #64748b;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
 }
 
@@ -333,39 +373,42 @@ body {
 /**
  * Cat vs Dog (Fleabag vs Mutt) Authentic Audio Manager
  * Uses Web Audio API with pre-decoded buffers and dual-mode fallback
- * Includes automatic First-Click / Pointer interaction unlock
+ * Includes persistent localStorage mute, gain normalization, and instant stopAll
  */
 class GameAudio {
   constructor(basePath = 'assets/audio/') {
     this.basePath = basePath;
     this.ctx = null;
     this.buffers = {};
-    this.volume = 0.8;
-    this.sfxEnabled = true;
-    this.musicEnabled = true;
+    this.volume = 0.75;
+    this.isMuted = localStorage.getItem('cat_vs_dog_muted') === 'true';
+    this.sfxEnabled = !this.isMuted;
+    this.musicEnabled = !this.isMuted;
+    this.activeSources = [];
     this.currentMusic = null;
     this.initialized = false;
 
-    // Mapping authentic sound files
+    // Mapping authentic sound files with normalized channel gain
     this.soundMap = {
-      dog_throw: '202.mp3',
-      cat_throw: '324.mp3',
-      hit_fence: '308.mp3',
-      hit_ground: '244.mp3',
-      hit_char: '168.mp3',
-      dog_hurt: '123.mp3',
-      dog_bark: '117.mp3',
-      cat_hurt: '413.mp3',
-      cat_meow: '15.mp3',
-      powerup_select: '26.mp3',
-      heal: '28.mp3',
-      powerup_active: '287.mp3',
-      click: '122.mp3',
-      charge_whistle: '9.mp3',
-      victory: '419.mp3'
+      dog_throw: { file: '202.mp3', gain: 0.85 },
+      cat_throw: { file: '324.mp3', gain: 0.85 },
+      hit_fence: { file: '308.mp3', gain: 0.95 },
+      hit_ground: { file: '244.mp3', gain: 0.75 },
+      hit_char: { file: '168.mp3', gain: 0.9 },
+      dog_hurt: { file: '123.mp3', gain: 0.75 }, // normalized to prevent speaker clipping
+      dog_bark: { file: '117.mp3', gain: 0.8 },
+      dog_laugh: { file: '117.mp3', gain: 0.85 },
+      cat_hurt: { file: '413.mp3', gain: 0.7 }, // normalized screech
+      cat_meow: { file: '15.mp3', gain: 0.75 },
+      cat_smirk: { file: '15.mp3', gain: 0.8 },
+      powerup_select: { file: '26.mp3', gain: 0.7 },
+      heal: { file: '28.mp3', gain: 0.85 },
+      powerup_active: { file: '287.mp3', gain: 0.8 },
+      click: { file: '122.mp3', gain: 0.7 },
+      charge_whistle: { file: '9.mp3', gain: 0.5 },
+      victory: { file: '419.mp3', gain: 0.85 }
     };
 
-    // Auto-setup first pointer interaction unlock
     this.setupInteractionUnlock();
   }
 
@@ -401,14 +444,13 @@ class GameAudio {
 
   async preloadAll() {
     if (!this.ctx) return;
-    const loadPromises = Object.entries(this.soundMap).map(async ([key, filename]) => {
+    const loadPromises = Object.entries(this.soundMap).map(async ([key, conf]) => {
       try {
         let url;
-        // Check if bundled base64 audio is provided
         if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
           url = window.BUNDLED_AUDIO[key];
         } else {
-          url = `${this.basePath}${filename}`;
+          url = `${this.basePath}${conf.file}`;
         }
 
         const response = await fetch(url);
@@ -416,20 +458,21 @@ class GameAudio {
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
         this.buffers[key] = audioBuffer;
-      } catch (err) {
-        // Soft-fail: fallback will handle direct play on demand
-      }
+      } catch (err) {}
     });
     await Promise.all(loadPromises);
   }
 
   play(key, options = {}) {
-    if (!this.sfxEnabled) return;
+    if (this.isMuted || !this.sfxEnabled) return null;
     if (!this.initialized) this.init();
 
-    const vol = (options.volume !== undefined ? options.volume : 1.0) * this.volume;
+    const conf = this.soundMap[key] || { gain: 1.0, file: '' };
+    const baseGain = conf.gain || 1.0;
+    const customVol = options.volume !== undefined ? options.volume : 1.0;
+    const finalVol = Math.max(0.01, Math.min(1.0, this.volume * baseGain * customVol));
 
-    // 1. Try Web Audio buffer
+    // 1. Web Audio buffer
     if (this.ctx && this.buffers[key]) {
       try {
         if (this.ctx.state === 'suspended') {
@@ -438,27 +481,32 @@ class GameAudio {
         const source = this.ctx.createBufferSource();
         source.buffer = this.buffers[key];
         const gainNode = this.ctx.createGain();
-        gainNode.gain.setValueAtTime(vol, this.ctx.currentTime);
+        gainNode.gain.setValueAtTime(finalVol, this.ctx.currentTime);
         source.connect(gainNode);
         gainNode.connect(this.ctx.destination);
         source.start(0);
+
+        this.activeSources.push(source);
+        source.onended = () => {
+          const idx = this.activeSources.indexOf(source);
+          if (idx !== -1) this.activeSources.splice(idx, 1);
+        };
         return source;
       } catch (e) {}
     }
 
-    // 2. Fallback HTML5 Audio
+    // 2. HTML5 Audio Fallback
     let url;
     if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
       url = window.BUNDLED_AUDIO[key];
-    } else {
-      const filename = this.soundMap[key];
-      if (filename) url = `${this.basePath}${filename}`;
+    } else if (conf.file) {
+      url = `${this.basePath}${conf.file}`;
     }
 
     if (url) {
       try {
         const audio = new Audio(url);
-        audio.volume = Math.min(1.0, Math.max(0.0, vol));
+        audio.volume = finalVol;
         audio.play().catch(() => {});
         return audio;
       } catch (e) {}
@@ -467,7 +515,7 @@ class GameAudio {
   }
 
   playMusic(key = 'victory') {
-    if (!this.musicEnabled) return;
+    if (this.isMuted || !this.musicEnabled) return;
     if (!this.initialized) this.init();
 
     this.stopMusic();
@@ -475,14 +523,14 @@ class GameAudio {
     if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
       url = window.BUNDLED_AUDIO[key];
     } else {
-      const filename = this.soundMap[key];
-      if (filename) url = `${this.basePath}${filename}`;
+      const conf = this.soundMap[key];
+      if (conf) url = `${this.basePath}${conf.file}`;
     }
 
     if (url) {
       try {
         const audio = new Audio(url);
-        audio.volume = this.volume * 0.7;
+        audio.volume = this.volume * 0.65;
         audio.loop = true;
         audio.play().catch(() => {});
         this.currentMusic = audio;
@@ -500,24 +548,33 @@ class GameAudio {
     }
   }
 
+  stopAll() {
+    this.stopMusic();
+    for (const src of this.activeSources) {
+      try {
+        src.stop();
+        src.disconnect();
+      } catch (e) {}
+    }
+    this.activeSources = [];
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    this.sfxEnabled = !this.isMuted;
+    this.musicEnabled = !this.isMuted;
+    localStorage.setItem('cat_vs_dog_muted', this.isMuted ? 'true' : 'false');
+    if (this.isMuted) {
+      this.stopAll();
+    }
+    return !this.isMuted;
+  }
+
   setVolume(vol) {
     this.volume = Math.max(0, Math.min(1, vol));
     if (this.currentMusic) {
-      this.currentMusic.volume = this.volume * 0.7;
+      this.currentMusic.volume = this.volume * 0.65;
     }
-  }
-
-  toggleSfx() {
-    this.sfxEnabled = !this.sfxEnabled;
-    return this.sfxEnabled;
-  }
-
-  toggleMusic() {
-    this.musicEnabled = !this.musicEnabled;
-    if (!this.musicEnabled) {
-      this.stopMusic();
-    }
-    return this.musicEnabled;
   }
 }
 
@@ -752,7 +809,8 @@ window.SpriteManager = SpriteManager;
 /**
  * Cat vs Dog (Fleabag vs Mutt) Authentic Physics & Battle Engine
  * Faithful port of original Flash ActionScript physics, wind ranges, and combat
- * Includes 24 FPS tick sequencing, comic damage popups, and exact hitboxes
+ * Includes 24 FPS tick sequencing, wood/dirt/fire debris VFX, screen shake,
+ * idle quirks, opponent taunts, comic damage arcs, and match tracker
  */
 class BattleEngine {
   constructor(audio, sprites) {
@@ -792,12 +850,17 @@ class BattleEngine {
     this.chargePower = 0; // 0.0 to 1.0 (1 to 32)
     this.meterOscillationPeriod = 1150; // ms for full 0 -> 100 -> 0 cycle
 
-    // Active projectiles in flight & visual effects
+    // Screen Shake & VFX
+    this.screenShakeFrames = 0;
+    this.screenShakeIntensity = 0;
     this.projectiles = [];
     this.particles = [];
     this.damagePopups = [];
     this.activeToxicClouds = [];
-    this.screenShake = 0;
+    this.confetti = [];
+
+    // Session Score Tracker
+    this.scores = this.loadScores();
 
     // Characters
     this.cat = this.createCharacter('cat', 85, this.groundY);
@@ -815,8 +878,31 @@ class BattleEngine {
     this.onStateChange = null;
     this.onTurnChange = null;
     this.onGameOver = null;
+    this.onScoreUpdate = null;
 
     this.reset();
+  }
+
+  loadScores() {
+    try {
+      const saved = localStorage.getItem('cat_vs_dog_scores');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return { catWins: 0, dogWins: 0 };
+  }
+
+  saveScores() {
+    try {
+      localStorage.setItem('cat_vs_dog_scores', JSON.stringify(this.scores));
+    } catch (e) {}
+    if (this.onScoreUpdate) {
+      this.onScoreUpdate(this.scores);
+    }
+  }
+
+  resetScores() {
+    this.scores = { catWins: 0, dogWins: 0 };
+    this.saveScores();
   }
 
   createCharacter(type, x, y) {
@@ -826,9 +912,10 @@ class BattleEngine {
       y: y,
       hp: 100,
       maxHp: 100,
-      state: 'idle', // 'idle', 'windup', 'release', 'hit_hurt', 'victory', 'defeat'
+      state: 'idle', // 'idle', 'windup', 'release', 'hit_hurt', 'taunt', 'quirk', 'victory', 'defeat'
       frame: 0,
       frameAccumulator: 0,
+      idleTimer: 0,
       remainingThrows: 1,
       selectedPowerup: null, // 'x2', 'bomb', 'gas'
       powerups: {
@@ -851,12 +938,15 @@ class BattleEngine {
     this.particles = [];
     this.damagePopups = [];
     this.activeToxicClouds = [];
-    this.screenShake = 0;
+    this.confetti = [];
+    this.screenShakeFrames = 0;
+    this.screenShakeIntensity = 0;
     this.currentTurn = 'cat';
     this.turnState = 'IDLE';
     this.isCharging = false;
     this.chargePower = 0;
     this.aiState.previousShotError = 0;
+    this.audio.stopAll();
     this.generateWind();
   }
 
@@ -871,9 +961,9 @@ class BattleEngine {
     if (this.wind === 0) {
       this.windFrame = 2;
     } else if (this.wind < 0) {
-      this.windFrame = 10 + this.wind; // -1 -> 9, -7 -> 3
+      this.windFrame = 10 + this.wind;
     } else {
-      this.windFrame = 17 - this.wind; // 1 -> 16, 7 -> 10
+      this.windFrame = 17 - this.wind;
     }
   }
 
@@ -890,6 +980,11 @@ class BattleEngine {
     return this.currentTurn !== this.playerSide;
   }
 
+  triggerScreenShake(intensity = 4, frames = 12) {
+    this.screenShakeIntensity = intensity;
+    this.screenShakeFrames = frames;
+  }
+
   usePowerup(characterType, powerup) {
     const char = characterType === 'cat' ? this.cat : this.dog;
     if (char.type !== this.currentTurn || this.turnState !== 'IDLE') return false;
@@ -902,7 +997,7 @@ class BattleEngine {
       char.state = 'idle';
       this.audio.play('heal');
       this.spawnHealParticles(char.x, char.y - 40);
-      this.spawnDamagePopup(char.x, char.y - 70, `+${healAmount} HEAL`, '#10b981');
+      this.spawnDamagePopup(char.x, char.y - 70, `+${healAmount} HP`, '#10b981');
 
       this.turnState = 'RESOLVING';
       setTimeout(() => {
@@ -927,7 +1022,7 @@ class BattleEngine {
     char.frame = 0;
     this.isCharging = true;
     this.chargeStartTime = performance.now();
-    this.audio.play('charge_whistle', { volume: 0.6 });
+    this.audio.play('charge_whistle', { volume: 0.5 });
   }
 
   releaseCharge() {
@@ -959,7 +1054,6 @@ class BattleEngine {
       this.audio.play('dog_throw');
     }
 
-    // Trigger projectile spawn at arm release (~350ms into 24 FPS animation)
     setTimeout(() => {
       this.spawnProjectile(char, p);
     }, 380);
@@ -970,7 +1064,6 @@ class BattleEngine {
     const startX = isCat ? char.x + 35 : char.x - 35;
     const startY = char.y - 65;
 
-    // Exact ballistics scaled to canvas
     const angleRad = (53 * Math.PI) / 180;
     const baseSpeed = 7.2 + (powerVal / 32) * 9.4;
 
@@ -1016,13 +1109,14 @@ class BattleEngine {
       this.handleCpuTurn(deltaMs);
     }
 
-    // 3. Update character animations at locked 24 FPS
+    // 3. Update character animations & idle quirks at 24 FPS
     this.updateCharacterAnim(this.cat, deltaMs);
     this.updateCharacterAnim(this.dog, deltaMs);
 
-    // 4. Update Screen Shake
-    if (this.screenShake > 0) {
-      this.screenShake = Math.max(0, this.screenShake - deltaMs * 0.04);
+    // 4. Update Screen Shake decay
+    if (this.screenShakeFrames > 0) {
+      this.screenShakeFrames--;
+      this.screenShakeIntensity = Math.max(0, this.screenShakeIntensity * 0.88);
     }
 
     // 5. Update projectiles
@@ -1038,16 +1132,17 @@ class BattleEngine {
       p.rotation += p.rotSpeed;
       p.frame = (p.frame + 0.4) % 8;
 
-      // Trail particle
-      if (Math.random() < 0.4) {
+      // Projectile Trail particle
+      if (Math.random() < 0.45) {
         this.particles.push({
+          type: 'spark',
           x: p.x,
           y: p.y,
           vx: (Math.random() - 0.5) * 0.5,
           vy: (Math.random() - 0.5) * 0.5,
           alpha: 0.6,
           size: p.type === 'bomb' ? 6 : 3,
-          color: p.isGas ? '#33cccc' : '#f8fafc',
+          color: p.isGas ? '#33cccc' : (p.type === 'bomb' ? '#f59e0b' : '#f8fafc'),
           life: 250
         });
       }
@@ -1060,29 +1155,37 @@ class BattleEngine {
       }
     }
 
-    // 6. Update particles, toxic clouds, and comic damage popups
+    // 6. Update particles (sparks, wood splinters, dirt puffs, smoke rings)
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const pt = this.particles[i];
       pt.x += pt.vx;
       pt.y += pt.vy;
-      pt.alpha -= 0.025;
+      if (pt.gravity) pt.vy += pt.gravity;
+      if (pt.vrot) pt.rot += pt.vrot;
+      if (pt.type === 'dirt' || pt.type === 'ring') {
+        pt.radius += pt.growth;
+      }
+      pt.alpha -= pt.decay || 0.025;
       pt.life -= deltaMs;
       if (pt.life <= 0 || pt.alpha <= 0) {
         this.particles.splice(i, 1);
       }
     }
 
+    // 7. Update floating comic damage text in arc
     for (let i = this.damagePopups.length - 1; i >= 0; i--) {
       const dp = this.damagePopups[i];
+      dp.x += dp.vx || 0;
       dp.y += dp.vy;
-      dp.vy += 0.04; // decelerate upward
+      dp.vy += 0.08; // arc gravity physics
       dp.life -= deltaMs;
-      dp.alpha = Math.max(0, dp.life / 800);
+      dp.alpha = Math.max(0, dp.life / 850);
       if (dp.life <= 0) {
         this.damagePopups.splice(i, 1);
       }
     }
 
+    // 8. Update active toxic clouds
     for (let i = this.activeToxicClouds.length - 1; i >= 0; i--) {
       const cloud = this.activeToxicClouds[i];
       cloud.life -= deltaMs;
@@ -1091,24 +1194,44 @@ class BattleEngine {
         this.activeToxicClouds.splice(i, 1);
       }
     }
+
+    // 9. Update Confetti for victory
+    for (let i = this.confetti.length - 1; i >= 0; i--) {
+      const c = this.confetti[i];
+      c.x += c.vx;
+      c.y += c.vy;
+      c.rot += c.vrot;
+      c.alpha -= 0.003;
+      if (c.y > this.height || c.alpha <= 0) {
+        this.confetti.splice(i, 1);
+      }
+    }
   }
 
   checkProjectileCollisions(p) {
     const isCat = p.owner === 'cat';
     const target = isCat ? this.dog : this.cat;
 
-    // A. Center Fence Collision (Exact Flash boundaries)
+    // A. Center Fence Collision
     const fenceHalf = this.fenceWidth / 2;
     if (p.x >= this.fenceX - fenceHalf && p.x <= this.fenceX + fenceHalf && p.y >= this.fenceTopY && p.y <= this.groundY) {
       p.active = false;
       this.audio.play('hit_fence');
-      this.screenShake = 3;
-      this.spawnImpactParticles(p.x, p.y, '#996600', 10);
-      this.spawnDamagePopup(this.fenceX, this.fenceTopY - 10, 'CLANG!', '#f59e0b');
+      this.triggerScreenShake(p.type === 'bomb' ? 8 : 4, 12);
+
+      if (p.type === 'bomb') {
+        this.spawnBombExplosion(p.x, p.y);
+      } else {
+        this.spawnWoodSplinters(p.x, p.y);
+      }
+      this.spawnDamagePopup(this.fenceX, this.fenceTopY - 12, 'CLANG!', '#f59e0b');
+
+      // Opponent taunts on clumsy hit
+      this.triggerTauntReaction(target);
       return;
     }
 
-    // B. Opponent Character Collision (Exact Flash movieclip bounds)
+    // B. Opponent Character Collision
     const hw = target.hitbox.w / 2;
     if (p.x >= target.x - hw && p.x <= target.x + hw && p.y >= target.y - target.hitbox.h && p.y <= target.y) {
       p.active = false;
@@ -1116,18 +1239,31 @@ class BattleEngine {
       return;
     }
 
-    // C. Ground Collision
+    // C. Ground Collision (Miss)
     if (p.y >= this.groundY) {
       p.active = false;
       this.audio.play('hit_ground');
-      this.spawnImpactParticles(p.x, this.groundY, '#d2801c', 6);
+
+      if (p.type === 'bomb') {
+        this.triggerScreenShake(7, 12);
+        this.spawnBombExplosion(p.x, this.groundY);
+      } else {
+        this.triggerScreenShake(2, 6);
+        this.spawnDirtPuffs(p.x, this.groundY);
+      }
       this.spawnDamagePopup(p.x, this.groundY - 15, 'MISS!', '#94a3b8');
+
+      // If shot was a complete airball or fell short, opponent taunts!
+      if (Math.abs(p.x - target.x) > 100) {
+        this.triggerTauntReaction(target);
+      }
       return;
     }
 
     // D. Off-screen bounds
     if (p.x < -60 || p.x > this.width + 60 || p.y > this.height + 60) {
       p.active = false;
+      this.triggerTauntReaction(target);
     }
   }
 
@@ -1136,18 +1272,19 @@ class BattleEngine {
     let isCrit = false;
 
     if (projectile.type === 'bomb') {
-      damage *= 2; // double damage
+      damage *= 2;
       isCrit = true;
-      this.screenShake = 8;
+      this.triggerScreenShake(8, 14);
+      this.spawnBombExplosion(target.x, target.y - 35);
     } else {
-      this.screenShake = 4;
+      this.triggerScreenShake(4, 10);
+      this.spawnImpactParticles(target.x, target.y - 45, isCrit ? '#ef4444' : '#fbbf24', 12);
     }
 
     target.hp = Math.max(0, target.hp - damage);
     target.state = 'hit_hurt';
     target.frame = 0;
 
-    // Authentic audio
     this.audio.play('hit_char');
     if (target.type === 'cat') {
       this.audio.play('cat_hurt');
@@ -1155,13 +1292,12 @@ class BattleEngine {
       this.audio.play('dog_hurt');
     }
 
-    // Spawn floating comic damage text
-    const label = isCrit ? `-${damage} CRITICAL!` : `-${damage}`;
+    // Comic Floating Arc Text
+    const label = isCrit ? `-${damage} CRITICAL!` : `-${damage} DIRECT HIT!`;
     const color = isCrit ? '#ef4444' : '#fbbf24';
     this.spawnDamagePopup(target.x, target.y - 75, label, color);
-    this.spawnImpactParticles(target.x, target.y - 45, color, isCrit ? 16 : 10);
 
-    // Toxic Stink Attack
+    // Stink Bomb poison
     if (projectile.isGas) {
       this.activeToxicClouds.push({
         x: target.x,
@@ -1173,17 +1309,34 @@ class BattleEngine {
       this.spawnDamagePopup(target.x, target.y - 100, '-8 POISON', '#10b981');
     }
 
-    // Check KO
     if (target.hp <= 0) {
       this.triggerGameOver(projectile.owner);
     } else {
-      // Revert from hurt to idle after 600ms
       setTimeout(() => {
         if (target.hp > 0 && target.state === 'hit_hurt') {
           target.state = 'idle';
         }
       }, 650);
     }
+  }
+
+  triggerTauntReaction(char) {
+    if (char.state !== 'idle' || this.turnState === 'GAME_OVER') return;
+    char.state = 'taunt';
+    char.frame = 0;
+
+    const isDog = char.type === 'dog';
+    if (isDog) {
+      this.audio.play('dog_laugh');
+      this.spawnDamagePopup(char.x, char.y - 80, 'HA HA!', '#38bdf8');
+    } else {
+      this.audio.play('cat_smirk');
+      this.spawnDamagePopup(char.x, char.y - 80, 'NICE TRY!', '#f59e0b');
+    }
+
+    setTimeout(() => {
+      if (char.state === 'taunt') char.state = 'idle';
+    }, 1200);
   }
 
   handlePostThrow() {
@@ -1228,12 +1381,22 @@ class BattleEngine {
     winner.state = 'victory';
     winner.frame = 0;
     loser.state = 'defeat';
-    loser.frame = 4; // dazed frame
+    loser.frame = 4;
 
+    // Update session score tracker
+    if (winnerType === 'cat') {
+      this.scores.catWins++;
+    } else {
+      this.scores.dogWins++;
+    }
+    this.saveScores();
+
+    // Spawn victory confetti
+    this.spawnVictoryConfetti();
     this.audio.play('victory');
 
     if (this.onGameOver) {
-      this.onGameOver(winnerType);
+      this.onGameOver(winnerType, this.scores);
     }
   }
 
@@ -1281,11 +1444,36 @@ class BattleEngine {
   }
 
   updateCharacterAnim(char, deltaMs) {
-    const animKey = `${char.type}_${char.state}`;
+    // Idle Quirk Timer
+    if (char.state === 'idle') {
+      char.idleTimer += deltaMs;
+      if (char.idleTimer > 4200 && Math.random() < 0.015) {
+        char.state = 'quirk';
+        char.idleTimer = 0;
+        setTimeout(() => {
+          if (char.state === 'quirk') char.state = 'idle';
+        }, 1200);
+      }
+    } else {
+      char.idleTimer = 0;
+    }
+
+    const stateMap = {
+      idle: 'idle',
+      quirk: 'idle',
+      taunt: 'victory', // expressive victory smirk loop
+      windup: 'windup',
+      release: 'release',
+      hit_hurt: 'hit_hurt',
+      victory: 'victory',
+      defeat: 'hit_hurt'
+    };
+
+    const targetState = stateMap[char.state] || 'idle';
+    const animKey = `${char.type}_${targetState}`;
     const anim = this.sprites.animations[animKey];
     if (!anim) return;
 
-    // Accumulator tick counter locked strictly to 24 FPS
     char.frameAccumulator = (char.frameAccumulator || 0) + deltaMs;
     while (char.frameAccumulator >= this.frameDuration) {
       char.frameAccumulator -= this.frameDuration;
@@ -1297,12 +1485,90 @@ class BattleEngine {
     this.damagePopups.push({
       x: x,
       y: y,
-      vy: -1.8,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: -3.2, // jumping arc start
       text: text,
       color: color,
       alpha: 1.0,
-      life: 800
+      life: 850
     });
+  }
+
+  spawnWoodSplinters(x, y) {
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.random() * Math.PI) + Math.PI; // bounce up
+      const speed = Math.random() * 5 + 2;
+      this.particles.push({
+        type: 'splinter',
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        gravity: 0.35,
+        rot: Math.random() * Math.PI,
+        vrot: (Math.random() - 0.5) * 0.4,
+        w: 5,
+        h: 2,
+        color: Math.random() < 0.5 ? '#996600' : '#857d50',
+        alpha: 1.0,
+        decay: 0.02,
+        life: 500
+      });
+    }
+  }
+
+  spawnDirtPuffs(x, y) {
+    for (let i = 0; i < 6; i++) {
+      this.particles.push({
+        type: 'dirt',
+        x: x + (Math.random() - 0.5) * 15,
+        y: y - 5,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: -Math.random() * 1.2 - 0.5,
+        radius: 4,
+        growth: 0.6,
+        color: '#d2801c',
+        alpha: 0.65,
+        decay: 0.025,
+        life: 450
+      });
+    }
+  }
+
+  spawnBombExplosion(x, y) {
+    // Expanding smoke ring
+    this.particles.push({
+      type: 'ring',
+      x: x,
+      y: y,
+      vx: 0,
+      vy: 0,
+      radius: 8,
+      growth: 2.2,
+      color: '#f59e0b',
+      alpha: 0.9,
+      decay: 0.035,
+      life: 400
+    });
+
+    // Fiery orange/red sparks
+    for (let i = 0; i < 24; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 6 + 2;
+      this.particles.push({
+        type: 'spark',
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        gravity: 0.2,
+        size: Math.random() * 5 + 3,
+        color: Math.random() < 0.5 ? '#ff4500' : '#ffd700',
+        alpha: 1.0,
+        decay: 0.03,
+        life: 550
+      });
+    }
   }
 
   spawnImpactParticles(x, y, color, count) {
@@ -1310,6 +1576,7 @@ class BattleEngine {
       const angle = Math.random() * Math.PI * 2;
       const speed = Math.random() * 4 + 1;
       this.particles.push({
+        type: 'spark',
         x: x,
         y: y,
         vx: Math.cos(angle) * speed,
@@ -1323,8 +1590,9 @@ class BattleEngine {
   }
 
   spawnHealParticles(x, y) {
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 14; i++) {
       this.particles.push({
+        type: 'spark',
         x: x + (Math.random() - 0.5) * 40,
         y: y + (Math.random() - 0.5) * 40,
         vx: (Math.random() - 0.5) * 1.0,
@@ -1336,6 +1604,24 @@ class BattleEngine {
       });
     }
   }
+
+  spawnVictoryConfetti() {
+    const colors = ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#fbbf24'];
+    for (let i = 0; i < 50; i++) {
+      this.confetti.push({
+        x: Math.random() * this.width,
+        y: -10 - Math.random() * 120,
+        vx: (Math.random() - 0.5) * 2.5,
+        vy: Math.random() * 3.5 + 2.0,
+        rot: Math.random() * Math.PI * 2,
+        vrot: (Math.random() - 0.5) * 0.2,
+        w: Math.random() * 8 + 5,
+        h: Math.random() * 6 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 1.0
+      });
+    }
+  }
 }
 
 window.BattleEngine = BattleEngine;
@@ -1343,7 +1629,8 @@ window.BattleEngine = BattleEngine;
 
 /**
  * Cat vs Dog (Fleabag vs Mutt) Main Game Controller
- * Integrates Canvas Rendering, State Loop, Touch/Mouse Input, and HUD
+ * Integrates Canvas Rendering, State Loop, Touch/Pointer Input, Debris VFX,
+ * Scoreboard Tracker, and Mute Controls
  */
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('battle-canvas');
@@ -1378,8 +1665,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   setupUIControls();
+  updateScoreboardUI(engine.scores);
 
-  // Preload assets and start render loop
+  // Preload assets and launch
   const loadingOverlay = document.getElementById('loading-overlay');
   sprites.loadAll().then(() => {
     if (loadingOverlay) {
@@ -1420,6 +1708,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Reset Scores button
+    const resetScoreBtn = document.getElementById('btn-reset-score');
+    if (resetScoreBtn) {
+      resetScoreBtn.addEventListener('click', () => {
+        audio.play('click');
+        engine.resetScores();
+        updateScoreboardUI(engine.scores);
+      });
+    }
+
     // Rematch button inside modal
     const rematchBtn = document.getElementById('btn-rematch');
     if (rematchBtn) {
@@ -1430,22 +1728,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Sound FX & Music toggle buttons
-    const sfxBtn = document.getElementById('btn-toggle-sfx');
-    if (sfxBtn) {
-      sfxBtn.addEventListener('click', () => {
-        const enabled = audio.toggleSfx();
-        sfxBtn.textContent = enabled ? '🔊 SFX' : '🔇 SFX';
-        sfxBtn.classList.toggle('active', enabled);
-      });
-    }
-
-    const musicBtn = document.getElementById('btn-toggle-music');
-    if (musicBtn) {
-      musicBtn.addEventListener('click', () => {
-        const enabled = audio.toggleMusic();
-        musicBtn.textContent = enabled ? '🎵 Music' : '🚫 Music';
-        musicBtn.classList.toggle('active', enabled);
+    // Persistent Mute Toggle button
+    const muteBtn = document.getElementById('btn-toggle-mute');
+    if (muteBtn) {
+      updateMuteButtonUI(muteBtn);
+      muteBtn.addEventListener('click', () => {
+        audio.toggleMute();
+        updateMuteButtonUI(muteBtn);
       });
     }
 
@@ -1463,30 +1752,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Game over hook
-    engine.onGameOver = (winner) => {
+    engine.onGameOver = (winner, scores) => {
       showGameOver(winner);
+      updateScoreboardUI(scores);
     };
 
-    // Canvas Input Handlers (Mouse & Touch)
-    canvas.addEventListener('mousedown', handlePointerDown);
-    window.addEventListener('mouseup', handlePointerUp);
-    canvas.addEventListener('mousemove', handlePointerMove);
+    engine.onScoreUpdate = (scores) => {
+      updateScoreboardUI(scores);
+    };
 
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      handlePointerDown(touch);
-    }, { passive: false });
+    // Universal Pointer Event Handlers (Zero touch lag on mobile)
+    canvas.addEventListener('pointerdown', handlePointerDown, { passive: false });
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    canvas.addEventListener('pointermove', handlePointerMove, { passive: false });
+  }
 
-    window.addEventListener('touchend', (e) => {
-      handlePointerUp(e);
-    });
+  function updateMuteButtonUI(btn) {
+    if (!btn) return;
+    btn.textContent = audio.isMuted ? '🔇 Muted' : '🔊 Sound';
+    btn.classList.toggle('active', !audio.isMuted);
+  }
 
-    canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      handlePointerMove(touch);
-    }, { passive: false });
+  function updateScoreboardUI(scores) {
+    const scoreElem = document.getElementById('scoreboard-pill');
+    if (scoreElem) {
+      scoreElem.innerHTML = `🐱 <b>${scores.catWins}</b> &nbsp;|&nbsp; <b>${scores.dogWins}</b> 🐶`;
+    }
   }
 
   function getCanvasCoords(e) {
@@ -1500,6 +1792,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handlePointerDown(e) {
+    e.preventDefault();
     audio.init();
     const pos = getCanvasCoords(e);
     isPointerDown = true;
@@ -1512,7 +1805,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Start charging if human turn
+    // Start charging if player turn
     if (!engine.isCpuTurn() && engine.turnState === 'IDLE') {
       const isCatTurn = engine.currentTurn === 'cat';
       const playerZone = isCatTurn ? pos.x < 300 : pos.x > 300;
@@ -1532,6 +1825,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handlePointerMove(e) {
+    e.preventDefault();
     const pos = getCanvasCoords(e);
     hoveredButton = null;
 
@@ -1552,11 +1846,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!modal) return;
     const isCat = winner === 'cat';
-    title.textContent = isCat ? '🐱 Fleabag the Cat Wins!' : '🐶 Mutt the Dog Wins!';
+    title.textContent = isCat ? '🐱 Fleabag Wins The Round!' : '🐶 Mutt Wins The Round!';
     title.style.color = isCat ? '#38bdf8' : '#f59e0b';
     desc.textContent = isCat 
-      ? 'Fleabag ruled the backyard with surgical can tosses!' 
-      : 'Mutt defended the doghouse with supreme bone trajectory!';
+      ? 'Fleabag celebrated with an alley cat smirk!' 
+      : 'Mutt danced around the backyard triumphantly!';
 
     if (winnerBadge) {
       winnerBadge.textContent = isCat ? '🐱' : '🐶';
@@ -1574,18 +1868,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const deltaMs = Math.min(50, currentTimestamp - lastTimestamp);
     lastTimestamp = currentTimestamp;
 
-    // Update state and physics
+    // Physics step
     engine.update(deltaMs);
 
     // Clear canvas
     ctx.clearRect(0, 0, V_WIDTH, V_HEIGHT);
 
-    // Apply Screen Shake if active
-    const hasShake = engine.screenShake > 0;
-    if (hasShake) {
+    // Apply Screen Shake
+    const isShaking = engine.screenShakeFrames > 0;
+    if (isShaking) {
       ctx.save();
-      const sx = (Math.random() - 0.5) * engine.screenShake * 2;
-      const sy = (Math.random() - 0.5) * engine.screenShake * 2;
+      const intensity = engine.screenShakeIntensity;
+      const sx = (Math.random() - 0.5) * intensity * 2;
+      const sy = (Math.random() - 0.5) * intensity * 2;
       ctx.translate(sx, sy);
     }
 
@@ -1598,7 +1893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Characters
     drawCharacters();
 
-    // 4. Projectiles & Effects
+    // 4. Projectiles & Debris VFX
     drawProjectilesAndEffects();
 
     // 5. Power-Up Buttons
@@ -1607,32 +1902,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. Charging Power Meter
     drawPowerMeter();
 
-    // 7. Floating Comic Damage Numbers
+    // 7. Floating Comic Damage Text
     drawDamagePopups();
 
-    if (hasShake) {
+    // 8. Victory Confetti
+    drawConfetti();
+
+    if (isShaking) {
       ctx.restore();
     }
 
-    // 8. Turn Banner Overlay
+    // 9. Turn Banner Overlay
     drawTurnIndicator();
 
     requestAnimationFrame(renderLoop);
   }
 
   function drawHUD() {
-    // Cat Health Bar (Left, top ~30px)
+    // Cat Health Bar
     const catBarIndex = Math.floor((1 - engine.cat.hp / 100) * 30);
     sprites.drawFrame(ctx, 'cat_bar', catBarIndex, 148, 44, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Dog Health Bar (Right, top ~30px)
+    // Dog Health Bar
     const dogBarIndex = Math.floor((1 - engine.dog.hp / 100) * 28);
     sprites.drawFrame(ctx, 'dog_bar', dogBarIndex, 451, 44, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Wind Indicator (Center top ~48px)
+    // Wind Indicator
     sprites.drawFrame(ctx, 'wind', engine.windFrame - 1, 300, 48, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Wind text
+    // Wind speed label
     ctx.save();
     ctx.font = '900 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
@@ -1654,7 +1952,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawCharacters() {
-    // Draw Cat
+    // Cat
     const catAnim = `cat_${engine.cat.state}`;
     sprites.drawFrame(ctx, catAnim, engine.cat.frame, engine.cat.x, engine.cat.y, {
       anchorX: 0.5,
@@ -1662,7 +1960,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scale: 1.0
     });
 
-    // Draw Dog
+    // Dog
     const dogAnim = `dog_${engine.dog.state}`;
     sprites.drawFrame(ctx, dogAnim, engine.dog.frame, engine.dog.x, engine.dog.y, {
       anchorX: 0.5,
@@ -1672,26 +1970,52 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawProjectilesAndEffects() {
+    // Projectiles
     for (const p of engine.projectiles) {
       const animKey = p.type === 'bomb' ? 'proj_bomb' : (p.type === 'can' ? 'proj_can' : 'proj_bone');
       sprites.drawFrame(ctx, animKey, p.frame, p.x, p.y, {
         anchorX: 0.5,
         anchorY: 0.5,
         rotation: p.rotation,
-        scale: p.type === 'bomb' ? 1.3 : 1.0
+        scale: p.type === 'bomb' ? 1.35 : 1.0
       });
     }
 
+    // Particles (Sparks, Wood Splinters, Dirt Puffs, Smoke Rings)
     for (const pt of engine.particles) {
       ctx.save();
-      ctx.globalAlpha = pt.alpha;
-      ctx.fillStyle = pt.color;
-      ctx.beginPath();
-      ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.globalAlpha = Math.max(0, pt.alpha);
+
+      if (pt.type === 'splinter') {
+        // Wood Splinters with rotation
+        ctx.translate(pt.x, pt.y);
+        ctx.rotate(pt.rot || 0);
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(-pt.w / 2, -pt.h / 2, pt.w, pt.h);
+      } else if (pt.type === 'dirt') {
+        // Dirt puffs
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, Math.max(1, pt.radius), 0, Math.PI * 2);
+        ctx.fill();
+      } else if (pt.type === 'ring') {
+        // Shockwave rings
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, Math.max(1, pt.radius), 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // Sparks
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size || 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     }
 
+    // Toxic Gas Clouds
     for (const cloud of engine.activeToxicClouds) {
       const shapeImg = sprites.getImage(`assets/sprites/png_shapes/40${6 + Math.floor(cloud.frame)}.png`);
       if (shapeImg) {
@@ -1756,18 +2080,30 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawDamagePopups() {
     for (const dp of engine.damagePopups) {
       ctx.save();
-      ctx.globalAlpha = dp.alpha;
-      ctx.font = '900 22px "Plus Jakarta Sans", Impact, sans-serif';
+      ctx.globalAlpha = Math.max(0, dp.alpha);
+      ctx.font = '900 23px "Plus Jakarta Sans", Impact, sans-serif';
       ctx.textAlign = 'center';
 
       // Thick comic black outline
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 4.5;
       ctx.strokeStyle = '#000000';
       ctx.strokeText(dp.text, dp.x, dp.y);
 
-      // Vivid fill color
+      // Vivid fill
       ctx.fillStyle = dp.color;
       ctx.fillText(dp.text, dp.x, dp.y);
+      ctx.restore();
+    }
+  }
+
+  function drawConfetti() {
+    for (const c of engine.confetti) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, c.alpha);
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot);
+      ctx.fillStyle = c.color;
+      ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
       ctx.restore();
     }
   }
