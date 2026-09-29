@@ -26,7 +26,7 @@ class BattleEngine {
     // Game rules & options
     this.gameMode = '1P'; // '1P' (vs CPU) or '2P' (local pass-and-play)
     this.difficulty = 'normal'; // 'easy' or 'normal'
-    this.playerSide = 'dog'; // In 1P, player controls Dog (or Cat)
+    this.playerSide = 'cat'; // In 1P, player controls Cat (Fleabag) on left
 
     // Current turn: 'cat' or 'dog'
     this.currentTurn = 'cat';
@@ -297,7 +297,7 @@ class BattleEngine {
     }
 
     // 2. CPU AI Turn Handling
-    if (this.isCpuTurn() && this.turnState === 'IDLE') {
+    if (this.isCpuTurn() && (this.turnState === 'IDLE' || this.isCharging)) {
       this.handleCpuTurn(deltaMs);
     }
 
@@ -554,6 +554,8 @@ class BattleEngine {
     this.turnState = 'IDLE';
     this.isCharging = false;
     this.chargePower = 0;
+    this.aiState.isCharging = false;
+    this.aiState.turnStart = 0;
 
     if (this.cat.hp > 0 && this.cat.state !== 'victory') this.cat.state = 'idle';
     if (this.dog.hp > 0 && this.dog.state !== 'victory') this.dog.state = 'idle';
@@ -594,6 +596,12 @@ class BattleEngine {
 
   handleCpuTurn(deltaMs) {
     if (!this.aiState.isCharging) {
+      if (!this.aiState.turnStart) {
+        this.aiState.turnStart = performance.now();
+      }
+      if (performance.now() - this.aiState.turnStart < 650) {
+        return;
+      }
       this.aiState.isCharging = true;
       this.aiState.chargeStart = performance.now();
 
@@ -616,6 +624,7 @@ class BattleEngine {
         if (cpuChar.hp < 40 && cpuChar.powerups.heal) {
           this.usePowerup(cpuChar.type, 'heal');
           this.aiState.isCharging = false;
+          this.aiState.turnStart = 0;
           return;
         } else if (cpuChar.powerups.bomb) {
           cpuChar.selectedPowerup = 'bomb';
@@ -628,8 +637,10 @@ class BattleEngine {
 
       this.startCharging();
     } else {
-      if (this.chargePower >= this.aiState.targetPower) {
+      const chargeElapsed = performance.now() - this.aiState.chargeStart;
+      if (this.chargePower >= this.aiState.targetPower || chargeElapsed > 1800) {
         this.aiState.isCharging = false;
+        this.aiState.turnStart = 0;
         this.releaseCharge();
       }
     }
