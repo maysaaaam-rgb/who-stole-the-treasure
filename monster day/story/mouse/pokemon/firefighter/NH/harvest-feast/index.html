@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌾 Story Settings & The Chuseok Harvest Feast | Smartboard Experience</title>
+  
+  <!-- Primary Platform & Module Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app-root">
+    <!-- Ambient Canvas Particle Background Layer -->
+    <canvas id="ambient-canvas" class="canvas-particles-layer"></canvas>
+
+    <!-- TOP CLASSROOM SMARTBOARD HUD -->
+    <header class="smartboard-hud">
+      <div class="hud-left">
+        <div class="hud-brand-pill">
+          <span class="hud-brand-icon">🌾</span>
+          <span class="hud-brand-title">Story Settings & Harvest Feast</span>
+        </div>
+
+        <nav class="hud-stage-stepper" aria-label="Lesson Stages">
+          <button type="button" class="stage-tab-btn active" data-stage="1">
+            <span>1️⃣</span> Setting Decoder
+          </button>
+          <button type="button" class="stage-tab-btn" data-stage="2">
+            <span>2️⃣</span> Venn Relay
+          </button>
+          <button type="button" class="stage-tab-btn" data-stage="3">
+            <span>3️⃣</span> Songpyeon Feast
+          </button>
+          <button type="button" class="stage-tab-btn" data-stage="4">
+            <span>4️⃣</span> Gratitude Lanterns
+          </button>
+        </nav>
+      </div>
+
+      <div class="hud-right">
+        <!-- Class Harvest Energy Gauge -->
+        <div class="class-harvest-bar-shell" title="Classroom Harvest Energy Progress">
+          <span class="harvest-bar-label">Harvest Energy</span>
+          <div class="harvest-bar-track">
+            <div class="harvest-bar-fill" id="harvest-bar-fill"></div>
+          </div>
+          <span id="harvest-percent-text" style="font-family: var(--font-display); font-size: 0.9rem; font-weight: 900; color: #10b981; min-width: 40px;">10%</span>
+        </div>
+
+        <!-- Audio & Ambiance Controls -->
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-soundscape" style="padding: 8px 14px; font-size: 0.88rem;">
+          🎵 Ambiance: Farm
+        </button>
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-sfx" style="padding: 8px 14px; font-size: 0.88rem;">
+          🔊 SFX On
+        </button>
+
+        <!-- Utility Buttons -->
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-fullscreen" style="padding: 8px 14px; font-size: 0.88rem;" title="Toggle Fullscreen (F)">
+          ⛶ Fullscreen
+        </button>
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-reset" style="padding: 8px 14px; font-size: 0.88rem;" title="Restart Lesson">
+          🔄 Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWPORT CONTAINER -->
+    <main class="stage-main-viewport">
+      
+      <!-- ===================================================================
+           STAGE 1: SETTING & EMOTION DECODER (Pre-reading & Settings Analysis)
+           =================================================================== -->
+      <section class="stage-view active" data-stage="1" id="stage-view-1">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🔍 Stage 1:</span> Setting & Emotion Decoder
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Examine each illustrated moment of Clara. What is she doing? How does she feel?
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            💡 "The setting is the time and place in the story."
+          </div>
+        </div>
+
+        <!-- 3 Clara Panels Grid -->
+        <div class="panels-grid-3" id="stage-1-panels-grid">
+          <!-- Dynamically populated by HarvestFeastApp.renderStage1() -->
+        </div>
+
+        <!-- Setting Portal Unlock Banner (Appears when all 3 solved) -->
+        <div id="stage-1-portal-box" style="display: none;"></div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 2: DUAL-ZONE VENN DIAGRAM RELAY (Kitchen vs. Farm)
+           =================================================================== -->
+      <section class="stage-view" data-stage="2" id="stage-view-2">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🚜 Stage 2:</span> Dual-Zone Venn Diagram Relay
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Drag each word token (or tap token then tap zone) to sort it: Kitchen, Farm, or Both!
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            🌾 Vocabulary: fruit, vegetables, family, outside, plants, inside, bowls
+          </div>
+        </div>
+
+        <div class="venn-stage-layout">
+          <!-- Overlapping Venn Diagram Stage Box -->
+          <div class="venn-diagram-canvas-box">
+            <div class="venn-rings-wrapper">
+              
+              <!-- LEFT ZONE: IN THE KITCHEN -->
+              <div class="venn-ring-zone venn-zone-kitchen" id="zone-kitchen">
+                <div class="zone-header-badge" style="color: #fb923c;">
+                  <span>🍳</span> In the Kitchen
+                </div>
+                <p style="font-size: 0.85rem; color: #fdba74; text-align: center;">Warm indoor home, cooking, soup & eating tools</p>
+                <div class="zone-dropped-tokens-tray" id="tray-kitchen"></div>
+              </div>
+
+              <!-- CENTER INTERSECTION: BOTH PLACES -->
+              <div class="venn-ring-zone venn-zone-intersect" id="zone-both">
+                <div class="zone-header-badge" style="color: #34d399; font-size: 1.15rem;">
+                  <span>🤝</span> Both Places
+                </div>
+                <p style="font-size: 0.82rem; color: #a7f3d0; text-align: center;">Shared across the farm and the home</p>
+                <div class="zone-dropped-tokens-tray" id="tray-both"></div>
+              </div>
+
+              <!-- RIGHT ZONE: ON THE FARM -->
+              <div class="venn-ring-zone venn-zone-farm" id="zone-farm">
+                <div class="zone-header-badge" style="color: #facc15;">
+                  <span>🚜</span> On the Farm
+                </div>
+                <p style="font-size: 0.85rem; color: #fef08a; text-align: center;">Open air, soil, crops, orchard trees & sun</p>
+                <div class="zone-dropped-tokens-tray" id="tray-farm"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Word Bank Shelf -->
+          <div class="word-bank-bottom-shelf">
+            <div class="shelf-title-row">
+              <span>📦 Word Bank Shelf (Drag or Tap to Place)</span>
+              <span style="font-size: 0.88rem; color: #94a3b8; font-weight: normal;">7 Vocabulary Tokens</span>
+            </div>
+            <div class="word-bank-tokens-cluster" id="venn-tokens-shelf">
+              <!-- Dynamically populated by HarvestFeastApp.renderStage2() -->
+            </div>
+          </div>
+
+          <!-- Stage 2 Completion Banner -->
+          <div id="stage-2-banner-box" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 3: THE CHUSEOK SONGPYEON FEAST (Comprehension & Traditions)
+           =================================================================== -->
+      <section class="stage-view" data-stage="3" id="stage-view-3">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🥮 Stage 3:</span> The Chuseok Songpyeon Feast
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Tap each steaming half-moon Songpyeon cake on the lacquered tray to discover Korean autumn traditions!
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            🇰🇷 Korean Harvest Festival Traditions
+          </div>
+        </div>
+
+        <div class="chuseok-feast-stage-wrapper">
+          <!-- Lacquered Dining Table Tray (Soban) -->
+          <div class="lacquered-tray-canvas">
+            <!-- Pine Needle Bed Texture Layer -->
+            <div class="pine-needle-bed"></div>
+
+            <div class="tray-title-badge">
+              🌲 Fragrant Pine Needle Feast Tray (Soban) 🌲
+            </div>
+
+            <!-- 5 Songpyeon Cakes Interactive Arc -->
+            <div class="songpyeon-cakes-row" id="songpyeon-cakes-row">
+              <!-- Dynamically populated by HarvestFeastApp.renderStage3() -->
+            </div>
+          </div>
+
+          <!-- Stage 3 Completion Banner -->
+          <div id="stage-3-banner-box" style="display: none; width: 100%; max-width: 960px; margin-top: 20px;"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 4: GRATITUDE SENTENCE BUILDER & LANTERN FINALE
+           =================================================================== -->
+      <section class="stage-view" data-stage="4" id="stage-view-4">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🏮 Stage 4:</span> Gratitude Sentence Builder & Sky Lantern Wall
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Build the gratitude sentences from the lesson, then release floating paper lanterns to the Harvest Moon!
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            🌕 Formula: "They are thankful for [ X ]."
+          </div>
+        </div>
+
+        <div class="finale-stage-wrapper">
+          <!-- Left Column: Sentence Builder & Lantern Launcher -->
+          <div class="sentence-builder-card">
+            <h3 style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 900; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+              <span>✍️</span> Target Sentence Frames
+            </h3>
+
+            <!-- 2 Target Sentence Frame Boxes -->
+            <div id="sentence-frames-container" style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- Dynamically populated by HarvestFeastApp.renderStage4() -->
+            </div>
+
+            <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.12); margin: 6px 0;">
+
+            <!-- Class Lantern Launcher Console -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <h4 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 900; color: #38bdf8;">
+                🏮 Send a Sky Lantern to the Harvest Moon
+              </h4>
+
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="input-student-name" placeholder="Student / Team Name..." 
+                  style="flex: 1; background: rgba(0, 0, 0, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-pill); padding: 10px 16px; color: #ffffff; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; outline: none;">
+                <input type="text" id="input-custom-gratitude" placeholder="We are thankful for..." 
+                  style="flex: 2; background: rgba(0, 0, 0, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-pill); padding: 10px 16px; color: #ffffff; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; outline: none;">
+              </div>
+
+              <!-- Quick Presets -->
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;" id="preset-gratitude-pills">
+                <!-- Dynamically populated by HarvestFeastApp.renderStage4() -->
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-top: 10px;">
+                <button type="button" class="btn-tactile-3d btn-gold" id="btn-launch-lantern" style="flex: 1; padding: 12px 20px;">
+                  🚀 Launch Sky Lantern
+                </button>
+                <button type="button" class="btn-tactile-3d btn-emerald" id="btn-finish-lesson" style="padding: 12px 20px;">
+                  🏆 Class Celebration!
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: The Moonlit Sky Lantern Wall -->
+          <div class="sky-lantern-wall-container">
+            <!-- Full Harvest Moon SVG Graphic -->
+            <div class="harvest-moon-visual" title="Chuseok Harvest Full Moon"></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; z-index: 5;">
+              <h3 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: #fef08a;">
+                🏮 Our Class Harvest Wall
+              </h3>
+              <span style="font-size: 0.88rem; color: #cbd5e1; background: rgba(0, 0, 0, 0.4); padding: 4px 12px; border-radius: var(--radius-pill);">
+                Under the Autumn Full Moon
+              </span>
+            </div>
+
+            <!-- Lantern Floating Atmosphere -->
+            <div class="lanterns-float-stage" id="lanterns-float-stage">
+              <!-- Initial Decorative Floating Lanterns -->
+              <div class="floating-sky-lantern" style="left: 20%; animation-duration: 20s; animation-delay: -5s;">
+                <div style="font-size: 1.4rem; margin-bottom: 4px;">🏮</div>
+                <div style="color: #451a03; font-weight: 900; font-size: 0.85rem;">Clara's Family</div>
+                <div style="color: #7c2d12; font-size: 0.78rem; font-weight: 800;">"The bountiful autumn harvest"</div>
+              </div>
+              <div class="floating-sky-lantern" style="left: 55%; animation-duration: 24s; animation-delay: -12s;">
+                <div style="font-size: 1.4rem; margin-bottom: 4px;">🏮</div>
+                <div style="color: #451a03; font-weight: 900; font-size: 0.85rem;">Grandmother</div>
+                <div style="color: #7c2d12; font-size: 0.78rem; font-weight: 800;">"Sweet honey songpyeon & peace"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =====================================================================
+         MODALS & INTERACTION OVERLAYS
+         ===================================================================== -->
+    
+    <!-- 1. Songpyeon Cultural Quiz Modal -->
+    <div class="modal-overlay-barrier" id="quiz-modal" role="dialog" aria-modal="true">
+      <div class="modal-glass-card">
+        <button type="button" class="modal-close-corner" title="Close">✕</button>
+        <div id="quiz-modal-content"></div>
+      </div>
+    </div>
+
+    <!-- 2. Final Victory / Class Celebration Modal -->
+    <div class="modal-overlay-barrier" id="victory-modal" role="dialog" aria-modal="true">
+      <div class="modal-glass-card" style="max-width: 680px;">
+        <button type="button" class="modal-close-corner" title="Close">✕</button>
+        <div style="font-size: 4.5rem; margin-bottom: 12px;">🏆 🌾 🏮</div>
+        <h2 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: #fbbf24; margin-bottom: 12px;">
+          Harvest Feast Complete!
+        </h2>
+        <p style="color: #e2e8f0; font-size: 1.15rem; line-height: 1.6; margin-bottom: 24px;">
+          Outstanding work, Class Explorers! You decoded Clara's story settings (time and place), 
+          sorted farm crops and kitchen tools, tasted five delicious half-moon Songpyeon cakes, 
+          and released class gratitude lanterns under the golden Harvest Moon!
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center;">
+          <a href="worksheet.html" target="_blank" class="btn-tactile-3d btn-cyan" style="text-decoration: none; padding: 14px 28px;">
+            📄 Printable Worksheet
+          </a>
+          <button type="button" class="btn-tactile-3d btn-gold" onclick="window.location.reload()" style="padding: 14px 28px;">
+            🔄 Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ambient Golden Sparkle Canvas Particle Script (Zero Dependencies) -->
+  <script>
+    (function initAmbientSparks() {
+      const canvas = document.getElementById('ambient-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      const particleCount = 35;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2.5 + 1,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -Math.random() * 0.6 - 0.2,
+          alpha: Math.random() * 0.6 + 0.2,
+          alphaSpeed: (Math.random() - 0.5) * 0.015,
+          color: Math.random() > 0.4 ? '#fef08a' : '#f59e0b'
+        });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha += p.alphaSpeed;
+
+          if (p.alpha <= 0.1 || p.alpha >= 0.8) {
+            p.alphaSpeed = -p.alphaSpeed;
+          }
+
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    })();
+  </script>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
