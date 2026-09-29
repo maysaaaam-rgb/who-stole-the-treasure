@@ -361,6 +361,58 @@ class MonsterRenderer {
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
   }
 
+  getSvgOutput(currentMonster = {}) {
+    const bodyColor = (this.palettes && this.palettes[currentMonster.color]?.main) || currentMonster.color || '#a855f7';
+    const darkenColor = (col, percent) => this.darkenColor(col, percent);
+    const svgOutput = `
+<svg viewBox="0 0 300 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dynamic 3D Radial Shader for Body -->
+    <radialGradient id="activeBodyClay" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+      <stop offset="30%" stop-color="${bodyColor}" />
+      <stop offset="85%" stop-color="${bodyColor}" />
+      <stop offset="100%" stop-color="${darkenColor(bodyColor, 35)}" />
+    </radialGradient>
+  </defs>
+
+  <!-- 1. PODIUM SHADOW -->
+  <ellipse cx="150" cy="265" rx="65" ry="12" fill="#78350f" opacity="0.4" />
+
+  <!-- 2. LEGS & FEET -->
+  <rect x="112" y="195" width="24" height="60" rx="12" fill="${bodyColor}" stroke="#1e293b" stroke-width="3" />
+  <ellipse cx="124" cy="255" rx="16" ry="8" fill="${darkenColor(bodyColor, 15)}" stroke="#1e293b" stroke-width="3" />
+
+  <rect x="164" y="195" width="24" height="60" rx="12" fill="${bodyColor}" stroke="#1e293b" stroke-width="3" />
+  <ellipse cx="176" cy="255" rx="16" ry="8" fill="${darkenColor(bodyColor, 15)}" stroke="#1e293b" stroke-width="3" />
+
+  <!-- 3. SOLID 3D TORSO (MUST BE FILLED) -->
+  <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
+
+  <!-- 4. EARS & ARMS (Attached at perimeter) -->
+  <!-- Left Ear -->
+  <path d="M 100 95 Q 80 40 96 35 Q 115 45 110 90 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3" />
+  <!-- Right Ear -->
+  <path d="M 200 95 Q 220 40 204 35 Q 185 45 190 90 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3" />
+
+  <!-- 5. EYES & MOUTH -->
+  <!-- Left Eye -->
+  <circle cx="125" cy="135" r="15" fill="#fff" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="128" cy="135" r="7" fill="#38bdf8"/>
+  <circle cx="130" cy="134" r="3.5" fill="#000"/>
+
+  <!-- Right Eye -->
+  <circle cx="175" cy="135" r="15" fill="#fff" stroke="#1e293b" stroke-width="3"/>
+  <circle cx="172" cy="135" r="7" fill="#38bdf8"/>
+  <circle cx="170" cy="134" r="3.5" fill="#000"/>
+
+  <!-- Smile -->
+  <path d="M 138 165 Q 150 176 162 165" stroke="#1e293b" stroke-width="4" stroke-linecap="round" fill="none" />
+</svg>
+`;
+    return svgOutput;
+  }
+
   // ==========================================
   // ==========================================
   // MASTER SVG COMPOSER (Strict Layer Architecture)
@@ -369,6 +421,7 @@ class MonsterRenderer {
     const monster = this.normalize(rawMonster);
     const pal = this.getPalette(monster.color);
     const secPal = this.getPalette(monster.secondaryColor);
+    const bodyColor = (pal && pal.main) || (this.palettes && this.palettes[monster.color]?.main) || monster.color || '#a855f7';
     const anchors = this.anchorReg.getSockets(monster.body);
     const width = options.width || '100%';
     const height = options.height || '100%';
@@ -423,21 +476,30 @@ class MonsterRenderer {
           <filter id="footBlur" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="3"/>
           </filter>
-          <!-- 3D Clay Radial Gradient Highlight on top-left to simulate rounded volume -->
-          <radialGradient id="${bodyGradId}" cx="35%" cy="28%" r="65%">
-            <stop offset="0%" stop-color="${pal.highlight}"/>
-            <stop offset="55%" stop-color="${pal.main}"/>
-            <stop offset="100%" stop-color="${pal.dark}"/>
+          <!-- Dynamic 3D Radial Shader for Body -->
+          <radialGradient id="activeBodyClay" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+            <stop offset="30%" stop-color="${bodyColor}" />
+            <stop offset="85%" stop-color="${bodyColor}" />
+            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
           </radialGradient>
-          <radialGradient id="clayGradient" cx="35%" cy="28%" r="65%">
-            <stop offset="0%" stop-color="${pal.highlight}"/>
-            <stop offset="55%" stop-color="${pal.main}"/>
-            <stop offset="100%" stop-color="${pal.dark}"/>
+          <radialGradient id="${bodyGradId}" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+            <stop offset="30%" stop-color="${bodyColor}" />
+            <stop offset="85%" stop-color="${bodyColor}" />
+            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
           </radialGradient>
-          <radialGradient id="clayBodyGrad" cx="35%" cy="28%" r="65%">
-            <stop offset="0%" stop-color="${pal.highlight}"/>
-            <stop offset="55%" stop-color="${pal.main}"/>
-            <stop offset="100%" stop-color="${pal.dark}"/>
+          <radialGradient id="clayGradient" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+            <stop offset="30%" stop-color="${bodyColor}" />
+            <stop offset="85%" stop-color="${bodyColor}" />
+            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
+          </radialGradient>
+          <radialGradient id="clayBodyGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65" />
+            <stop offset="30%" stop-color="${bodyColor}" />
+            <stop offset="85%" stop-color="${bodyColor}" />
+            <stop offset="100%" stop-color="${this.darkenColor(bodyColor, 35)}" />
           </radialGradient>
           <radialGradient id="clayLimbGrad" cx="35%" cy="30%" r="65%">
             <stop offset="0%" stop-color="${pal.highlight}"/>
@@ -619,67 +681,68 @@ class MonsterRenderer {
 
     if (shape === 'tall') {
       bodySvg = `
-        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'round') {
-      // Make sure the torso has a solid fill color:
+      // 3. SOLID 3D TORSO (MUST BE FILLED)
       bodySvg = `
-        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4" stroke-linejoin="round" />
-        <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'wide') {
       bodySvg = `
-        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'short') {
       bodySvg = `
-        <ellipse cx="150" cy="170" rx="72" ry="58" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'thin') {
       bodySvg = `
-        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'blob') {
       bodySvg = `
-        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'ghost') {
       bodySvg = `
-        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="${secPal.belly}" opacity="0.65"/>`;
     } else if (shape === 'dinosaur') {
       bodySvg = `
-        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'robot') {
       bodySvg = `
-        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
-        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
     } else {
-      // Make sure the torso has a solid fill color:
+      // 3. SOLID 3D TORSO (MUST BE FILLED)
       bodySvg = `
-        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4" stroke-linejoin="round" />
-        <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
+        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     }
+
 
 
     // Horns (Attached firmly to headTop socket)
