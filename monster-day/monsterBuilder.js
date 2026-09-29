@@ -331,6 +331,36 @@ class MonsterRenderer {
     return this.clothingColors[col] || col || fallback;
   }
 
+  darkenColor(col, percent = 20) {
+    if (!col) return '#3b0764';
+    const colorMap = {
+      purple: '#a855f7',
+      green:  '#22c55e',
+      blue:   '#0ea5e9',
+      red:    '#f43f5e',
+      orange: '#f97316',
+      yellow: '#eab308',
+      pink:   '#f472b6',
+      black:  '#334155',
+      white:  '#f8fafc'
+    };
+    let hex = (typeof col === 'string' && colorMap[col.toLowerCase()]) ? colorMap[col.toLowerCase()] : col;
+    if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) return '#3b0764';
+    if (hex.length === 4) {
+      hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+    }
+    let num = parseInt(hex.slice(1), 16);
+    if (isNaN(num)) return '#3b0764';
+    let r = (num >> 16) & 255;
+    let g = (num >> 8) & 255;
+    let b = num & 255;
+    const factor = Math.max(0, (100 - percent) / 100);
+    r = Math.floor(r * factor);
+    g = Math.floor(g * factor);
+    b = Math.floor(b * factor);
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  }
+
   // ==========================================
   // ==========================================
   // MASTER SVG COMPOSER (Strict Layer Architecture)
@@ -577,71 +607,80 @@ class MonsterRenderer {
   // LAYER 4: TORSO / HEAD BASE (Master Anchor + Horns/Ears Attached)
   // -------------------------------------------------------------
   renderTorsoAndHead(monster, pal, secPal, anchors, bodyGradId = 'clayGradient', secGradId = 'secGrad') {
-    const shape = monster.body || 'round';
+    const currentMonster = monster || {};
+    const shape = currentMonster.body || 'round';
+    const darkenColor = (col, percent = 20) => this.darkenColor(col, percent);
+
+    // FIXED: Solid, high-opacity fill with direct inline color and inner clay lighting
+    const bodyColor = (pal && pal.main) || (this.palettes && this.palettes[currentMonster.color]?.main) || currentMonster.color || '#a855f7'; // default to purple if not set
+
     let bodySvg = '';
     let bellySvg = '';
 
     if (shape === 'tall') {
       bodySvg = `
-        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'round') {
+      // Make sure the torso has a solid fill color:
       bodySvg = `
-        <circle cx="150" cy="155" r="75" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4" stroke-linejoin="round" />
         <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'wide') {
       bodySvg = `
-        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'short') {
       bodySvg = `
-        <ellipse cx="150" cy="170" rx="72" ry="58" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <ellipse cx="150" cy="170" rx="72" ry="58" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'thin') {
       bodySvg = `
-        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'blob') {
       bodySvg = `
-        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'ghost') {
       bodySvg = `
-        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="${secPal.belly}" opacity="0.65"/>`;
     } else if (shape === 'dinosaur') {
       bodySvg = `
-        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     } else if (shape === 'robot') {
       bodySvg = `
-        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4.5" stroke-linejoin="round" />
         <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
     } else {
+      // Make sure the torso has a solid fill color:
       bodySvg = `
-        <circle cx="150" cy="155" r="75" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" />
+        <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="${darkenColor(bodyColor, 20)}" stroke-width="4" stroke-linejoin="round" />
         <circle cx="150" cy="155" r="75" fill="url(#${bodyGradId})" stroke="none" opacity="0.65" pointer-events="none" />
       `;
       bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="${secPal.belly}" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/><ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#${secGradId})" stroke="none" opacity="0.35" pointer-events="none"/>`;
     }
+
 
     // Horns (Attached firmly to headTop socket)
     let hornsSvg = '';
