@@ -6840,6 +6840,78 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🌲",
     "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)"
+  },
+  {
+    "id": "harvest-feast",
+    "title": "🌾 Story Settings & The Chuseok Harvest Feast",
+    "description": "High-end 4K Smartboard interactive CLIL experience for primary ESL learners. Decode Clara's story settings and emotions across orchard trees and golden wheat fields, master the dual-zone Venn diagram relay, unlock the 5 steaming half-moon Songpyeon cakes on a traditional lacquered Korean table, and send student gratitude lanterns floating to the autumn Harvest Moon.",
+    "category": "Literature, Settings & Culture",
+    "categoryGroup": "Story & Culture",
+    "level": "A1–A2 (Ages 7–11)",
+    "duration": "45–60 min",
+    "xp": 350,
+    "topic": "Story Settings (Time and Place) & The Chuseok Harvest Feast",
+    "grammar": {
+      "focusPattern": "The setting is the time and place in the story.",
+      "formula": "Clara is [Verb-ing] because she feels [Adjective]. / They are thankful for [Noun Phrase].",
+      "formulas": [
+        "The setting is the time and place in the story.",
+        "Clara is [Verb-ing] because she feels [Adjective].",
+        "We find [Items] in the kitchen / on the farm / in both places.",
+        "They are thankful for [the harvest / food].",
+        "They are also thankful for [family / ancestors]."
+      ]
+    },
+    "clilDomain": "Narrative Elements (Setting & Emotion) & Cultural Harvest Traditions",
+    "clilTheme": "Farm Harvests, Home Kitchens & Korean Chuseok Traditions",
+    "vocabulary": {
+      "core": [
+        "setting",
+        "time",
+        "place",
+        "laughing",
+        "climbing",
+        "crying",
+        "scared",
+        "happy",
+        "surprised",
+        "fruit",
+        "vegetables",
+        "family",
+        "outside",
+        "plants",
+        "inside",
+        "bowls",
+        "songpyeon",
+        "thankful"
+      ],
+      "supporting": [
+        "orchard",
+        "harvest",
+        "wheat",
+        "ancestors",
+        "half-moon",
+        "pine needles",
+        "gratitude",
+        "autumn",
+        "full moon",
+        "lantern"
+      ]
+    },
+    "learningObjectives": [
+      "Define and analyze story setting as the time and place of narrative events.",
+      "Identify character actions and emotions based on visual cues and environmental context.",
+      "Categorize vocabulary into kitchen, farm, and intersecting zones using a Venn diagram.",
+      "Explore Korean Chuseok traditions including Hanbok, Songpyeon cakes, and ancestral honor.",
+      "Construct gratitude statements using the formula: 'They are thankful for [X].'"
+    ],
+    "url": "harvest-feast/index.html",
+    "route": "harvest-feast/index.html",
+    "worksheetUrl": "harvest-feast/worksheet.html",
+    "worksheetRoute": "harvest-feast/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🌾",
+    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
   }
 ];
 

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌾 Student Worksheet — Story Settings & The Chuseok Harvest Feast</title>
+  <style>
+    :root {
+      --ink-primary: #0f172a;
+      --ink-secondary: #475569;
+      --border-color: #94a3b8;
+      --accent-color: #d97706;
+      --bg-box: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--ink-primary);
+      background-color: #e2e8f0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .worksheet-paper {
+      max-width: 840px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 36px 44px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Print action bar */
+    .print-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #cbd5e1;
+    }
+
+    .btn-print {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .btn-print:hover {
+      background: #0369a1;
+    }
+
+    /* Header Block */
+    .header-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 3px double var(--ink-primary);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-group h1 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .title-group p {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .student-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 20px;
+      min-width: 320px;
+    }
+    .field-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .field-line {
+      flex: 1;
+      border-bottom: 1.5px solid var(--border-color);
+      height: 20px;
+    }
+
+    /* Instructions Box */
+    .concept-box {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-left: 5px solid #f59e0b;
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .concept-box strong {
+      color: #b45309;
+    }
+
+    /* Section Styling */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Part 1: Setting Match */
+    .setting-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 18px;
+    }
+    .setting-table th, .setting-table td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+    }
+    .setting-table th {
+      background: #f1f5f9;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    /* Part 2: Venn Diagram */
+    .venn-sheet-draw {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .venn-column-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 140px;
+      background: #fafafa;
+    }
+    .venn-column-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .word-bank-chips {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .word-chip {
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* Part 3: Songpyeon Comprehension */
+    .quiz-question-row {
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+    }
+    .quiz-question-row p {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .quiz-options {
+      display: flex;
+      gap: 18px;
+      padding-left: 10px;
+    }
+    .quiz-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Part 4: Gratitude Lantern */
+    .lantern-drawing-box {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 20px;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 18px;
+      background: #fcfcfc;
+    }
+    .sentence-fill-line {
+      display: inline-block;
+      min-width: 140px;
+      border-bottom: 1.5px solid var(--ink-primary);
+      margin: 0 6px;
+    }
+    .lantern-draw-target {
+      border: 2px dashed #f59e0b;
+      border-radius: 20px 20px 30px 30px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      background: #fffdf5;
+      font-size: 0.85rem;
+      color: #92400e;
+    }
+
+    /* Print Rules */
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .worksheet-paper {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .print-bar {
+        display: none;
+      }
+      @page {
+        margin: 1.2cm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="worksheet-paper">
+    
+    <!-- Print Bar -->
+    <div class="print-bar">
+      <div>
+        <strong>Story Settings & Chuseok Feast Companion Worksheet</strong>
+        <p style="font-size: 0.85rem; color: #64748b;">English Adventure Academy · Primary ESL Curriculum</p>
+      </div>
+      <button class="btn-print" onclick="window.print()">🖨️ Print Worksheet (A4)</button>
+    </div>
+
+    <!-- Header Block -->
+    <header class="header-block">
+      <div class="title-group">
+        <h1>🌾 Story Settings & The Chuseok Feast</h1>
+        <p>Pre-reading, Setting Analysis & Cultural Traditions</p>
+      </div>
+      <div class="student-fields">
+        <div class="field-row">
+          <span>Name:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Date:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Class:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Score:</span>
+          <div class="field-line">/ 20</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Target Concept Box -->
+    <div class="concept-box">
+      <strong>💡 Target Key Concept:</strong> <em>"The setting is the time and place in the story."</em>
+    </div>
+
+    <!-- SECTION 1 -->
+    <section>
+      <h2 class="section-title">Part 1: Setting & Emotion Decoder</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 10px;">
+        Read each setting description from the story. Fill in what Clara is doing (<strong>Action</strong>) and how she feels (<strong>Emotion</strong>).
+      </p>
+
+      <table class="setting-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Setting (Time & Place)</th>
+            <th style="width: 35%;">Story Moment</th>
+            <th style="width: 20%;">Clara is... (Action)</th>
+            <th style="width: 20%;">Clara feels... (Emotion)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sunny Morning</strong><br>Apple Orchard Tree</td>
+            <td>Clara climbs up a high branch and looks down over the orchard.</td>
+            <td>( laughing / climbing / crying )</td>
+            <td>( scared / happy / surprised )</td>
+          </tr>
+          <tr>
+            <td><strong>Golden Afternoon</strong><br>Kitchen Garden</td>
+            <td>Clara holds a heavy basket of sweet orange pumpkins and corn.</td>
+            <td>( laughing / climbing / crying )</td>
+            <td>( scared / happy / sad )</td>
+          </tr>
+          <tr>
+            <td><strong>Windy Sunset</strong><br>Deep Wheat Field</td>
+            <td>The wheat is taller than Clara. She cannot find the path home!</td>
+            <td>( laughing / climbing / crying )</td>
+            <td>( scared / happy / angry )</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section>
+      <h2 class="section-title">Part 2: The Harvest Venn Diagram</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 8px;">
+        Write the 7 vocabulary words into the correct category: <strong>Kitchen</strong>, <strong>Farm</strong>, or <strong>Both Places</strong>.
+      </p>
+
+      <div class="word-bank-chips">
+        <span class="word-chip">🍎 fruit</span>
+        <span class="word-chip">🥕 vegetables</span>
+        <span class="word-chip">👨‍👩‍👧‍👦 family</span>
+        <span class="word-chip">🌤️ outside</span>
+        <span class="word-chip">🌾 plants</span>
+        <span class="word-chip">🏠 inside</span>
+        <span class="word-chip">🥣 bowls</span>
+      </div>
+
+      <div class="venn-sheet-draw">
+        <div class="venn-column-box">
+          <div class="venn-column-title">🍳 In the Kitchen</div>
+          <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">(Inside tools & tableware)</div>
+          <p>1. ___________________</p>
+          <p style="margin-top: 6px;">2. ___________________</p>
+        </div>
+
+        <div class="venn-column-box" style="border-color: #10b981; background: #f0fdf4;">
+          <div class="venn-column-title" style="color: #047857;">🤝 Both Places</div>
+          <div style="font-size: 0.85rem; color: #047857; margin-bottom: 8px;">(Shared together)</div>
+          <p>1. ___________________</p>
+          <p style="margin-top: 6px;">2. ___________________</p>
+          <p style="margin-top: 6px;">3. ___________________</p>
+        </div>
+
+        <div class="venn-column-box">
+          <div class="venn-column-title">🚜 On the Farm</div>
+          <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">(Outdoors & growing soil)</div>
+          <p>1. ___________________</p>
+          <p style="margin-top: 6px;">2. ___________________</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section>
+      <h2 class="section-title">Part 3: The Chuseok Songpyeon Feast Comprehension</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 10px;">
+        Circle the correct answer (A, B, or C) for each Korean harvest tradition.
+      </p>
+
+      <div class="quiz-question-row">
+        <p>1. What special clothes do families wear on the morning of Chuseok?</p>
+        <div class="quiz-options">
+          <label><input type="radio" disabled> A) New clothes (Hanbok)</label>
+          <label><input type="radio" disabled> B) Swimsuits</label>
+          <label><input type="radio" disabled> C) Pajamas</label>
+        </div>
+      </div>
+
+      <div class="quiz-question-row">
+        <p>2. What shape are traditional Songpyeon rice cakes?</p>
+        <div class="quiz-options">
+          <label><input type="radio" disabled> A) Half-moon crescent</label>
+          <label><input type="radio" disabled> B) Square</label>
+          <label><input type="radio" disabled> C) Star</label>
+        </div>
+      </div>
+
+      <div class="quiz-question-row">
+        <p>3. What fragrant leaves are Songpyeon cakes steamed over in the pot?</p>
+        <div class="quiz-options">
+          <label><input type="radio" disabled> A) Pine needles</label>
+          <label><input type="radio" disabled> B) Banana peels</label>
+          <label><input type="radio" disabled> C) Maple leaves</label>
+        </div>
+      </div>
+
+      <div class="quiz-question-row">
+        <p>4. Who do families gather to honor and remember at the Charye memorial table?</p>
+        <div class="quiz-options">
+          <label><input type="radio" disabled> A) Family & ancestors</label>
+          <label><input type="radio" disabled> B) Movie actors</label>
+          <label><input type="radio" disabled> C) Comic book superheroes</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section>
+      <h2 class="section-title">Part 4: Gratitude Sentences & Sky Lantern</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 12px;">
+        Complete the gratitude sentences from the lesson, then write or draw your own thankful wish inside the paper lantern!
+      </p>
+
+      <div class="lantern-drawing-box">
+        <div>
+          <p style="font-size: 1rem; margin-bottom: 12px;">
+            1. They are thankful for <span class="sentence-fill-line"></span>.
+          </p>
+          <p style="font-size: 1rem; margin-bottom: 16px;">
+            2. They are also thankful for <span class="sentence-fill-line"></span>.
+          </p>
+          <p style="font-size: 0.95rem; font-weight: 700; color: #0284c7;">
+            3. Write your own: I am thankful for _______________________________________.
+          </p>
+        </div>
+
+        <div class="lantern-draw-target">
+          <span style="font-size: 1.5rem; margin-bottom: 4px;">🏮</span>
+          <strong>Sky Lantern</strong>
+          <span>Draw or write what you are thankful for here!</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
