@@ -15,201 +15,201 @@
 // =============================================================================
 class MonsterAnchorRegistry {
   constructor() {
-    // Master Torso Anchor Origin (x0, y0)
-    this.TORSO_ORIGIN = { x0: 200, y0: 240 };
+    // Master Torso Anchor Origin (x0, y0) centered for 300 x 320 viewBox
+    this.TORSO_ORIGIN = { x0: 150, y0: 160 };
 
-    // Standardized sockets defined for all 9 body types
+    // Standardized sockets defined for all 9 body types (300 x 320 coordinate system)
     this.sockets = {
       round: {
         id: 'round',
-        torso: { cx: 200, cy: 235, rx: 78, ry: 74 },
-        headTop: { x: 200, y: 95 },
-        faceCenter: { cx: 200, cy: 175, eyeY: 148, noseY: 175, mouthY: 210, width: 88 },
-        armLeft:  { x: 122, y: 224, rot: -28 },
-        armRight: { x: 278, y: 224, rot: 28 },
-        legLeft:  { x: 156, y: 340, rot: -4 },
-        legRight: { x: 244, y: 340, rot: 4 },
-        ears:     { left: { x: 135, y: 122, rot: -26 }, right: { x: 265, y: 122, rot: 26 } },
-        horns:    { left: { x: 162, y: 102, rot: -18 }, right: { x: 238, y: 102, rot: 18 } },
-        tail:     { x: 135, y: 330 },
-        wings:    { left: { x: 138, y: 195 }, right: { x: 262, y: 195 } },
-        cape:     { x: 200, y: 212 },
+        torso: { cx: 150, cy: 155, r: 75 },
+        headTop: { x: 150, y: 80 },
+        faceCenter: { cx: 150, cy: 140, eyeY: 125, noseY: 142, mouthY: 162, width: 72 },
+        armLeft:  { x: 78, y: 155, rot: -28 },
+        armRight: { x: 222, y: 155, rot: 28 },
+        legLeft:  { x: 115, y: 220, rot: 0 },
+        legRight: { x: 185, y: 220, rot: 0 },
+        ears:     { left: { x: 92, y: 98, rot: -26 }, right: { x: 208, y: 98, rot: 26 } },
+        horns:    { left: { x: 122, y: 82, rot: -18 }, right: { x: 178, y: 82, rot: 18 } },
+        tail:     { x: 85, y: 215 },
+        wings:    { left: { x: 85, y: 140 }, right: { x: 215, y: 140 } },
+        cape:     { x: 150, y: 135 },
         legs: [
-          [{ x: 200, y: 345 }],
-          [{ x: 156, y: 340, rot: -4 }, { x: 244, y: 340, rot: 4 }],
-          [{ x: 140, y: 340, rot: -10 }, { x: 200, y: 345, rot: 0 }, { x: 260, y: 340, rot: 10 }],
-          [{ x: 128, y: 338, rot: -14 }, { x: 176, y: 345, rot: -4 }, { x: 224, y: 345, rot: 4 }, { x: 272, y: 338, rot: 14 }],
-          [{ x: 120, y: 338, rot: -16 }, { x: 160, y: 345, rot: -8 }, { x: 200, y: 348, rot: 0 }, { x: 240, y: 345, rot: 8 }, { x: 280, y: 338, rot: 16 }]
+          [{ x: 150, y: 225 }],
+          [{ x: 115, y: 220, rot: 0 }, { x: 185, y: 220, rot: 0 }],
+          [{ x: 105, y: 220, rot: -4 }, { x: 150, y: 225, rot: 0 }, { x: 195, y: 220, rot: 4 }],
+          [{ x: 95, y: 218, rot: -6 }, { x: 130, y: 224, rot: -2 }, { x: 170, y: 224, rot: 2 }, { x: 205, y: 218, rot: 6 }],
+          [{ x: 90, y: 218, rot: -8 }, { x: 120, y: 224, rot: -4 }, { x: 150, y: 226, rot: 0 }, { x: 180, y: 224, rot: 4 }, { x: 210, y: 218, rot: 8 }]
         ]
       },
       tall: {
         id: 'tall',
-        torso: { cx: 200, cy: 220, rx: 62, ry: 135 },
-        headTop: { x: 200, y: 75 },
-        faceCenter: { cx: 200, cy: 165, eyeY: 136, noseY: 164, mouthY: 198, width: 80 },
-        armLeft:  { x: 136, y: 214, rot: -28 },
-        armRight: { x: 264, y: 214, rot: 28 },
-        legLeft:  { x: 165, y: 350, rot: -3 },
-        legRight: { x: 235, y: 350, rot: 3 },
-        ears:     { left: { x: 142, y: 112, rot: -24 }, right: { x: 258, y: 112, rot: 24 } },
-        horns:    { left: { x: 166, y: 84, rot: -16 }, right: { x: 234, y: 84, rot: 16 } },
-        tail:     { x: 145, y: 340 },
-        wings:    { left: { x: 142, y: 185 }, right: { x: 258, y: 185 } },
-        cape:     { x: 200, y: 204 },
+        torso: { cx: 150, cy: 152, width: 120, height: 145, rx: 58 },
+        headTop: { x: 150, y: 80 },
+        faceCenter: { cx: 150, cy: 135, eyeY: 120, noseY: 138, mouthY: 158, width: 68 },
+        armLeft:  { x: 90, y: 140, rot: -28 },
+        armRight: { x: 210, y: 140, rot: 28 },
+        legLeft:  { x: 115, y: 215, rot: 0 },
+        legRight: { x: 185, y: 215, rot: 0 },
+        ears:     { left: { x: 95, y: 100, rot: -24 }, right: { x: 205, y: 100, rot: 24 } },
+        horns:    { left: { x: 125, y: 82, rot: -16 }, right: { x: 175, y: 82, rot: 16 } },
+        tail:     { x: 95, y: 215 },
+        wings:    { left: { x: 95, y: 135 }, right: { x: 205, y: 135 } },
+        cape:     { x: 150, y: 130 },
         legs: [
-          [{ x: 200, y: 355 }],
-          [{ x: 165, y: 350, rot: -3 }, { x: 235, y: 350, rot: 3 }],
-          [{ x: 152, y: 350, rot: -8 }, { x: 200, y: 355, rot: 0 }, { x: 248, y: 350, rot: 8 }],
-          [{ x: 142, y: 348, rot: -12 }, { x: 180, y: 355, rot: -3 }, { x: 220, y: 355, rot: 3 }, { x: 258, y: 348, rot: 12 }],
-          [{ x: 135, y: 348, rot: -14 }, { x: 168, y: 355, rot: -7 }, { x: 200, y: 356, rot: 0 }, { x: 232, y: 355, rot: 7 }, { x: 265, y: 348, rot: 14 }]
+          [{ x: 150, y: 220 }],
+          [{ x: 115, y: 215, rot: 0 }, { x: 185, y: 215, rot: 0 }],
+          [{ x: 105, y: 215, rot: -4 }, { x: 150, y: 220, rot: 0 }, { x: 195, y: 215, rot: 4 }],
+          [{ x: 95, y: 215, rot: -6 }, { x: 130, y: 220, rot: -2 }, { x: 170, y: 220, rot: 2 }, { x: 205, y: 215, rot: 6 }],
+          [{ x: 90, y: 215, rot: -8 }, { x: 120, y: 220, rot: -4 }, { x: 150, y: 222, rot: 0 }, { x: 180, y: 220, rot: 4 }, { x: 210, y: 215, rot: 8 }]
         ]
       },
       short: {
         id: 'short',
-        torso: { cx: 200, cy: 240, rx: 85, ry: 65 },
-        headTop: { x: 200, y: 118 },
-        faceCenter: { cx: 200, cy: 185, eyeY: 158, noseY: 184, mouthY: 218, width: 92 },
-        armLeft:  { x: 116, y: 234, rot: -28 },
-        armRight: { x: 284, y: 234, rot: 28 },
-        legLeft:  { x: 150, y: 330, rot: -5 },
-        legRight: { x: 250, y: 330, rot: 5 },
-        ears:     { left: { x: 128, y: 142, rot: -28 }, right: { x: 272, y: 142, rot: 28 } },
-        horns:    { left: { x: 156, y: 124, rot: -20 }, right: { x: 244, y: 124, rot: 20 } },
-        tail:     { x: 128, y: 320 },
-        wings:    { left: { x: 126, y: 205 }, right: { x: 274, y: 205 } },
-        cape:     { x: 200, y: 220 },
+        torso: { cx: 150, cy: 170, rx: 72, ry: 58 },
+        headTop: { x: 150, y: 112 },
+        faceCenter: { cx: 150, cy: 150, eyeY: 136, noseY: 152, mouthY: 172, width: 72 },
+        armLeft:  { x: 80, y: 168, rot: -28 },
+        armRight: { x: 220, y: 168, rot: 28 },
+        legLeft:  { x: 115, y: 220, rot: 0 },
+        legRight: { x: 185, y: 220, rot: 0 },
+        ears:     { left: { x: 92, y: 125, rot: -28 }, right: { x: 208, y: 125, rot: 28 } },
+        horns:    { left: { x: 120, y: 114, rot: -20 }, right: { x: 180, y: 114, rot: 20 } },
+        tail:     { x: 85, y: 215 },
+        wings:    { left: { x: 82, y: 150 }, right: { x: 218, y: 150 } },
+        cape:     { x: 150, y: 142 },
         legs: [
-          [{ x: 200, y: 335 }],
-          [{ x: 150, y: 330, rot: -5 }, { x: 250, y: 330, rot: 5 }],
-          [{ x: 135, y: 330, rot: -10 }, { x: 200, y: 335, rot: 0 }, { x: 265, y: 330, rot: 10 }],
-          [{ x: 124, y: 328, rot: -14 }, { x: 172, y: 335, rot: -4 }, { x: 228, y: 335, rot: 4 }, { x: 276, y: 328, rot: 14 }],
-          [{ x: 116, y: 328, rot: -16 }, { x: 158, y: 335, rot: -8 }, { x: 200, y: 338, rot: 0 }, { x: 242, y: 335, rot: 8 }, { x: 284, y: 328, rot: 16 }]
+          [{ x: 150, y: 225 }],
+          [{ x: 115, y: 220, rot: 0 }, { x: 185, y: 220, rot: 0 }],
+          [{ x: 105, y: 220, rot: -4 }, { x: 150, y: 225, rot: 0 }, { x: 195, y: 220, rot: 4 }],
+          [{ x: 95, y: 218, rot: -6 }, { x: 130, y: 224, rot: -2 }, { x: 170, y: 224, rot: 2 }, { x: 205, y: 218, rot: 6 }],
+          [{ x: 90, y: 218, rot: -8 }, { x: 120, y: 224, rot: -4 }, { x: 150, y: 226, rot: 0 }, { x: 180, y: 224, rot: 4 }, { x: 210, y: 218, rot: 8 }]
         ]
       },
       wide: {
         id: 'wide',
-        torso: { cx: 200, cy: 230, rx: 105, ry: 75 },
-        headTop: { x: 200, y: 94 },
-        faceCenter: { cx: 200, cy: 178, eyeY: 148, noseY: 175, mouthY: 212, width: 104 },
-        armLeft:  { x: 104, y: 224, rot: -30 },
-        armRight: { x: 296, y: 224, rot: 30 },
-        legLeft:  { x: 145, y: 342, rot: -5 },
-        legRight: { x: 255, y: 342, rot: 5 },
-        ears:     { left: { x: 118, y: 130, rot: -32 }, right: { x: 282, y: 130, rot: 32 } },
-        horns:    { left: { x: 152, y: 100, rot: -22 }, right: { x: 248, y: 100, rot: 22 } },
-        tail:     { x: 115, y: 330 },
-        wings:    { left: { x: 115, y: 195 }, right: { x: 285, y: 195 } },
-        cape:     { x: 200, y: 212 },
+        torso: { cx: 150, cy: 162, width: 160, height: 115, rx: 50 },
+        headTop: { x: 150, y: 105 },
+        faceCenter: { cx: 150, cy: 145, eyeY: 130, noseY: 146, mouthY: 168, width: 80 },
+        armLeft:  { x: 72, y: 155, rot: -30 },
+        armRight: { x: 228, y: 155, rot: 30 },
+        legLeft:  { x: 110, y: 215, rot: 0 },
+        legRight: { x: 190, y: 215, rot: 0 },
+        ears:     { left: { x: 85, y: 115, rot: -32 }, right: { x: 215, y: 115, rot: 32 } },
+        horns:    { left: { x: 118, y: 106, rot: -22 }, right: { x: 182, y: 106, rot: 22 } },
+        tail:     { x: 80, y: 210 },
+        wings:    { left: { x: 75, y: 140 }, right: { x: 225, y: 140 } },
+        cape:     { x: 150, y: 135 },
         legs: [
-          [{ x: 200, y: 345 }],
-          [{ x: 145, y: 342, rot: -5 }, { x: 255, y: 342, rot: 5 }],
-          [{ x: 130, y: 340, rot: -10 }, { x: 200, y: 345, rot: 0 }, { x: 270, y: 340, rot: 10 }],
-          [{ x: 118, y: 338, rot: -15 }, { x: 170, y: 345, rot: -5 }, { x: 230, y: 345, rot: 5 }, { x: 282, y: 338, rot: 15 }],
-          [{ x: 110, y: 338, rot: -18 }, { x: 155, y: 345, rot: -9 }, { x: 200, y: 348, rot: 0 }, { x: 245, y: 345, rot: 9 }, { x: 290, y: 338, rot: 18 }]
+          [{ x: 150, y: 220 }],
+          [{ x: 110, y: 215, rot: 0 }, { x: 190, y: 215, rot: 0 }],
+          [{ x: 100, y: 215, rot: -5 }, { x: 150, y: 220, rot: 0 }, { x: 200, y: 215, rot: 5 }],
+          [{ x: 90, y: 214, rot: -7 }, { x: 130, y: 218, rot: -2 }, { x: 170, y: 218, rot: 2 }, { x: 210, y: 214, rot: 7 }],
+          [{ x: 85, y: 214, rot: -9 }, { x: 118, y: 218, rot: -4 }, { x: 150, y: 220, rot: 0 }, { x: 182, y: 218, rot: 4 }, { x: 215, y: 214, rot: 9 }]
         ]
       },
       thin: {
         id: 'thin',
-        torso: { cx: 200, cy: 230, rx: 48, ry: 130 },
-        headTop: { x: 200, y: 84 },
-        faceCenter: { cx: 200, cy: 168, eyeY: 138, noseY: 166, mouthY: 200, width: 72 },
-        armLeft:  { x: 146, y: 215, rot: -25 },
-        armRight: { x: 254, y: 215, rot: 25 },
-        legLeft:  { x: 172, y: 350, rot: -3 },
-        legRight: { x: 228, y: 350, rot: 3 },
-        ears:     { left: { x: 146, y: 115, rot: -22 }, right: { x: 254, y: 115, rot: 22 } },
-        horns:    { left: { x: 170, y: 90, rot: -14 }, right: { x: 230, y: 90, rot: 14 } },
-        tail:     { x: 150, y: 345 },
-        wings:    { left: { x: 148, y: 190 }, right: { x: 252, y: 190 } },
-        cape:     { x: 200, y: 205 },
+        torso: { cx: 150, cy: 152, width: 84, height: 155, rx: 42 },
+        headTop: { x: 150, y: 75 },
+        faceCenter: { cx: 150, cy: 135, eyeY: 118, noseY: 136, mouthY: 156, width: 56 },
+        armLeft:  { x: 110, y: 145, rot: -25 },
+        armRight: { x: 190, y: 145, rot: 25 },
+        legLeft:  { x: 125, y: 222, rot: 0 },
+        legRight: { x: 175, y: 222, rot: 0 },
+        ears:     { left: { x: 112, y: 95, rot: -22 }, right: { x: 188, y: 95, rot: 22 } },
+        horns:    { left: { x: 130, y: 78, rot: -14 }, right: { x: 170, y: 78, rot: 14 } },
+        tail:     { x: 112, y: 218 },
+        wings:    { left: { x: 112, y: 135 }, right: { x: 188, y: 135 } },
+        cape:     { x: 150, y: 128 },
         legs: [
-          [{ x: 200, y: 355 }],
-          [{ x: 172, y: 350, rot: -3 }, { x: 228, y: 350, rot: 3 }],
-          [{ x: 160, y: 350, rot: -7 }, { x: 200, y: 355, rot: 0 }, { x: 240, y: 350, rot: 7 }],
-          [{ x: 150, y: 348, rot: -10 }, { x: 182, y: 355, rot: -3 }, { x: 218, y: 355, rot: 3 }, { x: 250, y: 348, rot: 10 }],
-          [{ x: 145, y: 348, rot: -12 }, { x: 172, y: 355, rot: -6 }, { x: 200, y: 356, rot: 0 }, { x: 228, y: 355, rot: 6 }, { x: 255, y: 348, rot: 12 }]
+          [{ x: 150, y: 225 }],
+          [{ x: 125, y: 222, rot: 0 }, { x: 175, y: 222, rot: 0 }],
+          [{ x: 118, y: 222, rot: -3 }, { x: 150, y: 225, rot: 0 }, { x: 182, y: 222, rot: 3 }],
+          [{ x: 110, y: 220, rot: -5 }, { x: 135, y: 224, rot: -2 }, { x: 165, y: 224, rot: 2 }, { x: 190, y: 220, rot: 5 }],
+          [{ x: 106, y: 220, rot: -6 }, { x: 128, y: 224, rot: -3 }, { x: 150, y: 226, rot: 0 }, { x: 172, y: 224, rot: 3 }, { x: 194, y: 220, rot: 6 }]
         ]
       },
       blob: {
         id: 'blob',
-        torso: { cx: 200, cy: 235, rx: 88, ry: 80 },
-        headTop: { x: 200, y: 90 },
-        faceCenter: { cx: 200, cy: 174, eyeY: 144, noseY: 172, mouthY: 208, width: 90 },
-        armLeft:  { x: 118, y: 222, rot: -28 },
-        armRight: { x: 282, y: 222, rot: 28 },
-        legLeft:  { x: 154, y: 340, rot: -4 },
-        legRight: { x: 246, y: 340, rot: 4 },
-        ears:     { left: { x: 132, y: 120, rot: -28 }, right: { x: 268, y: 120, rot: 28 } },
-        horns:    { left: { x: 160, y: 98, rot: -18 }, right: { x: 240, y: 98, rot: 18 } },
-        tail:     { x: 130, y: 330 },
-        wings:    { left: { x: 130, y: 195 }, right: { x: 270, y: 195 } },
-        cape:     { x: 200, y: 212 },
+        torso: { cx: 150, cy: 160 },
+        headTop: { x: 150, y: 82 },
+        faceCenter: { cx: 150, cy: 140, eyeY: 124, noseY: 142, mouthY: 164, width: 70 },
+        armLeft:  { x: 88, y: 160, rot: -28 },
+        armRight: { x: 212, y: 160, rot: 28 },
+        legLeft:  { x: 115, y: 224, rot: 0 },
+        legRight: { x: 185, y: 224, rot: 0 },
+        ears:     { left: { x: 100, y: 98, rot: -28 }, right: { x: 200, y: 98, rot: 28 } },
+        horns:    { left: { x: 124, y: 84, rot: -18 }, right: { x: 176, y: 84, rot: 18 } },
+        tail:     { x: 92, y: 220 },
+        wings:    { left: { x: 92, y: 145 }, right: { x: 208, y: 145 } },
+        cape:     { x: 150, y: 135 },
         legs: [
-          [{ x: 200, y: 345 }],
-          [{ x: 154, y: 340, rot: -4 }, { x: 246, y: 340, rot: 4 }],
-          [{ x: 138, y: 340, rot: -10 }, { x: 200, y: 345, rot: 0 }, { x: 262, y: 340, rot: 10 }],
-          [{ x: 126, y: 338, rot: -14 }, { x: 174, y: 345, rot: -4 }, { x: 226, y: 345, rot: 4 }, { x: 274, y: 338, rot: 14 }],
-          [{ x: 118, y: 338, rot: -16 }, { x: 158, y: 345, rot: -8 }, { x: 200, y: 348, rot: 0 }, { x: 242, y: 345, rot: 8 }, { x: 282, y: 338, rot: 16 }]
+          [{ x: 150, y: 228 }],
+          [{ x: 115, y: 224, rot: 0 }, { x: 185, y: 224, rot: 0 }],
+          [{ x: 105, y: 224, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 195, y: 224, rot: 4 }],
+          [{ x: 95, y: 222, rot: -6 }, { x: 130, y: 226, rot: -2 }, { x: 170, y: 226, rot: 2 }, { x: 205, y: 222, rot: 6 }],
+          [{ x: 90, y: 222, rot: -8 }, { x: 120, y: 226, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 180, y: 226, rot: 4 }, { x: 210, y: 222, rot: 8 }]
         ]
       },
       ghost: {
         id: 'ghost',
-        torso: { cx: 200, cy: 240, rx: 85, ry: 95 },
-        headTop: { x: 200, y: 94 },
-        faceCenter: { cx: 200, cy: 178, eyeY: 148, noseY: 176, mouthY: 212, width: 88 },
-        armLeft:  { x: 124, y: 228, rot: -28 },
-        armRight: { x: 276, y: 228, rot: 28 },
-        legLeft:  { x: 180, y: 370, rot: 0 },
-        legRight: { x: 220, y: 370, rot: 0 },
-        ears:     { left: { x: 132, y: 125, rot: -26 }, right: { x: 268, y: 125, rot: 26 } },
-        horns:    { left: { x: 160, y: 100, rot: -18 }, right: { x: 240, y: 100, rot: 18 } },
-        tail:     { x: 132, y: 335 },
-        wings:    { left: { x: 135, y: 200 }, right: { x: 265, y: 200 } },
-        cape:     { x: 200, y: 216 },
-        legs: [[{ x: 200, y: 350 }]]
+        torso: { cx: 150, cy: 160 },
+        headTop: { x: 150, y: 85 },
+        faceCenter: { cx: 150, cy: 140, eyeY: 124, noseY: 142, mouthY: 164, width: 70 },
+        armLeft:  { x: 90, y: 158, rot: -28 },
+        armRight: { x: 210, y: 158, rot: 28 },
+        legLeft:  { x: 135, y: 250, rot: 0 },
+        legRight: { x: 165, y: 250, rot: 0 },
+        ears:     { left: { x: 98, y: 102, rot: -26 }, right: { x: 202, y: 102, rot: 26 } },
+        horns:    { left: { x: 124, y: 88, rot: -18 }, right: { x: 176, y: 88, rot: 18 } },
+        tail:     { x: 95, y: 225 },
+        wings:    { left: { x: 92, y: 145 }, right: { x: 208, y: 145 } },
+        cape:     { x: 150, y: 135 },
+        legs: [[{ x: 150, y: 250 }]]
       },
       dinosaur: {
         id: 'dinosaur',
-        torso: { cx: 195, cy: 235, rx: 80, ry: 85 },
-        headTop: { x: 185, y: 92 },
-        faceCenter: { cx: 185, cy: 172, eyeY: 142, noseY: 170, mouthY: 206, width: 86 },
-        armLeft:  { x: 124, y: 224, rot: -28 },
-        armRight: { x: 272, y: 224, rot: 28 },
-        legLeft:  { x: 154, y: 342, rot: -4 },
-        legRight: { x: 246, y: 342, rot: 4 },
-        ears:     { left: { x: 128, y: 120, rot: -28 }, right: { x: 254, y: 120, rot: 28 } },
-        horns:    { left: { x: 150, y: 96, rot: -20 }, right: { x: 228, y: 96, rot: 20 } },
-        tail:     { x: 130, y: 330 },
-        wings:    { left: { x: 130, y: 195 }, right: { x: 265, y: 195 } },
-        cape:     { x: 195, y: 212 },
+        torso: { cx: 142, cy: 160 },
+        headTop: { x: 142, y: 84 },
+        faceCenter: { cx: 142, cy: 136, eyeY: 120, noseY: 138, mouthY: 158, width: 68 },
+        armLeft:  { x: 94, y: 158, rot: -28 },
+        armRight: { x: 206, y: 158, rot: 28 },
+        legLeft:  { x: 115, y: 224, rot: 0 },
+        legRight: { x: 185, y: 224, rot: 0 },
+        ears:     { left: { x: 96, y: 98, rot: -28 }, right: { x: 196, y: 98, rot: 28 } },
+        horns:    { left: { x: 118, y: 84, rot: -20 }, right: { x: 172, y: 84, rot: 20 } },
+        tail:     { x: 95, y: 220 },
+        wings:    { left: { x: 95, y: 142 }, right: { x: 205, y: 142 } },
+        cape:     { x: 145, y: 132 },
         legs: [
-          [{ x: 200, y: 345 }],
-          [{ x: 154, y: 342, rot: -4 }, { x: 246, y: 342, rot: 4 }],
-          [{ x: 138, y: 340, rot: -10 }, { x: 200, y: 345, rot: 0 }, { x: 262, y: 340, rot: 10 }],
-          [{ x: 126, y: 338, rot: -14 }, { x: 174, y: 345, rot: -4 }, { x: 226, y: 345, rot: 4 }, { x: 274, y: 338, rot: 14 }],
-          [{ x: 118, y: 338, rot: -16 }, { x: 158, y: 345, rot: -8 }, { x: 200, y: 348, rot: 0 }, { x: 242, y: 345, rot: 8 }, { x: 282, y: 338, rot: 16 }]
+          [{ x: 150, y: 228 }],
+          [{ x: 115, y: 224, rot: 0 }, { x: 185, y: 224, rot: 0 }],
+          [{ x: 105, y: 224, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 195, y: 224, rot: 4 }],
+          [{ x: 95, y: 222, rot: -6 }, { x: 130, y: 226, rot: -2 }, { x: 170, y: 226, rot: 2 }, { x: 205, y: 222, rot: 6 }],
+          [{ x: 90, y: 222, rot: -8 }, { x: 120, y: 226, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 180, y: 226, rot: 4 }, { x: 210, y: 222, rot: 8 }]
         ]
       },
       robot: {
         id: 'robot',
-        torso: { cx: 200, cy: 235, rx: 75, ry: 75 },
-        headTop: { x: 200, y: 98 },
-        faceCenter: { cx: 200, cy: 174, eyeY: 145, noseY: 172, mouthY: 208, width: 86 },
-        armLeft:  { x: 120, y: 222, rot: -25 },
-        armRight: { x: 280, y: 222, rot: 25 },
-        legLeft:  { x: 155, y: 340, rot: -4 },
-        legRight: { x: 245, y: 340, rot: 4 },
-        ears:     { left: { x: 132, y: 124, rot: -24 }, right: { x: 268, y: 124, rot: 24 } },
-        horns:    { left: { x: 158, y: 102, rot: -16 }, right: { x: 242, y: 102, rot: 16 } },
-        tail:     { x: 135, y: 330 },
-        wings:    { left: { x: 130, y: 195 }, right: { x: 270, y: 195 } },
-        cape:     { x: 200, y: 212 },
+        torso: { cx: 150, cy: 157, width: 110, height: 145, rx: 20 },
+        headTop: { x: 150, y: 85 },
+        faceCenter: { cx: 150, cy: 125, eyeY: 114, noseY: 128, mouthY: 142, width: 66 },
+        armLeft:  { x: 95, y: 150, rot: -25 },
+        armRight: { x: 205, y: 150, rot: 25 },
+        legLeft:  { x: 118, y: 224, rot: 0 },
+        legRight: { x: 182, y: 224, rot: 0 },
+        ears:     { left: { x: 95, y: 105, rot: -24 }, right: { x: 205, y: 105, rot: 24 } },
+        horns:    { left: { x: 122, y: 85, rot: -16 }, right: { x: 178, y: 85, rot: 16 } },
+        tail:     { x: 95, y: 218 },
+        wings:    { left: { x: 95, y: 135 }, right: { x: 205, y: 135 } },
+        cape:     { x: 150, y: 130 },
         legs: [
-          [{ x: 200, y: 345 }],
-          [{ x: 155, y: 340, rot: -4 }, { x: 245, y: 340, rot: 4 }],
-          [{ x: 140, y: 340, rot: -10 }, { x: 200, y: 345, rot: 0 }, { x: 260, y: 340, rot: 10 }],
-          [{ x: 128, y: 338, rot: -14 }, { x: 175, y: 345, rot: -4 }, { x: 225, y: 345, rot: 4 }, { x: 272, y: 338, rot: 14 }],
-          [{ x: 120, y: 338, rot: -16 }, { x: 160, y: 345, rot: -8 }, { x: 200, y: 348, rot: 0 }, { x: 240, y: 345, rot: 8 }, { x: 280, y: 338, rot: 16 }]
+          [{ x: 150, y: 228 }],
+          [{ x: 118, y: 224, rot: 0 }, { x: 182, y: 224, rot: 0 }],
+          [{ x: 108, y: 224, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 192, y: 224, rot: 4 }],
+          [{ x: 98, y: 222, rot: -6 }, { x: 132, y: 226, rot: -2 }, { x: 168, y: 226, rot: 2 }, { x: 202, y: 222, rot: 6 }],
+          [{ x: 92, y: 222, rot: -8 }, { x: 122, y: 226, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 178, y: 226, rot: 4 }, { x: 208, y: 222, rot: 8 }]
         ]
       }
     };
@@ -339,8 +339,8 @@ class MonsterRenderer {
     const pal = this.getPalette(monster.color);
     const secPal = this.getPalette(monster.secondaryColor);
     const anchors = this.anchorReg.getSockets(monster.body);
-    const width = options.width || 400;
-    const height = options.height || 480;
+    const width = options.width || '100%';
+    const height = options.height || '100%';
     const isAnimated = options.animated !== false;
 
     const action = options.action || this.currentAction;
@@ -351,7 +351,7 @@ class MonsterRenderer {
     else if (isAnimated) actionAnimClass = 'animated-monster';
 
     // Strict Layer Sequence:
-    // 1. Backdrops & Aura
+    // 1. Pedestal Shadow & Backdrops & Aura
     // 2. Tail / Wings / Back Gear
     // 3. Back Limbs (Legs/Feet behind body)
     // 4. Torso / Head Base (Body mesh, belly, patterns, horns & ears attached to headTop)
@@ -373,24 +373,42 @@ class MonsterRenderer {
 
     return `
       <svg class="monster-svg ${actionAnimClass}" 
-           viewBox="0 0 400 480" 
+           viewBox="0 0 300 320" 
            width="${width}" 
            height="${height}" 
            style="opacity: ${opacityVal};"
            xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="mDropGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="rgba(15,23,42,0.18)"/>
+            <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="rgba(15,23,42,0.18)"/>
           </filter>
           <!-- Soft Inset Ambient Occlusion & Squish Filter -->
+          <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="5" stdDeviation="4.5" flood-color="rgba(15,23,42,0.22)"/>
+          </filter>
           <filter id="claySquish" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="rgba(15,23,42,0.22)"/>
+            <feDropShadow dx="0" dy="5" stdDeviation="4.5" flood-color="rgba(15,23,42,0.22)"/>
           </filter>
           <!-- Foot Contact Blur Filter -->
           <filter id="footBlur" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="4"/>
+            <feGaussianBlur stdDeviation="3"/>
           </filter>
           <!-- 3D Clay Radial Gradient Highlight on top-left to simulate rounded volume -->
+          <radialGradient id="clayGradient" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="55%" stop-color="${pal.main}"/>
+            <stop offset="100%" stop-color="${pal.dark}"/>
+          </radialGradient>
+          <radialGradient id="clayBodyGrad" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="55%" stop-color="${pal.main}"/>
+            <stop offset="100%" stop-color="${pal.dark}"/>
+          </radialGradient>
+          <radialGradient id="clayLimbGrad" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="${pal.highlight}"/>
+            <stop offset="55%" stop-color="${pal.main}"/>
+            <stop offset="100%" stop-color="${pal.dark}"/>
+          </radialGradient>
           <radialGradient id="clayShine" cx="35%" cy="30%" r="65%">
             <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
             <stop offset="100%" stop-color="rgba(0,0,0,0.18)"/>
@@ -422,25 +440,25 @@ class MonsterRenderer {
     let powerAura = '';
     if (monster.powers.includes('shoot_lightning')) {
       powerAura = `
-        <g class="aura-lightning" stroke="#facc15" stroke-width="4" fill="none" opacity="0.8">
-          <polyline points="100,120 130,170 115,190 145,240" />
-          <polyline points="295,120 270,170 285,190 255,240" />
+        <g class="aura-lightning" stroke="#facc15" stroke-width="3" fill="none" opacity="0.8">
+          <polyline points="75,80 95,120 85,135 105,170" />
+          <polyline points="225,80 205,120 215,135 195,170" />
         </g>
       `;
     } else if (monster.powers.includes('breathe_fire')) {
       powerAura = `
-        <g class="aura-fire" opacity="0.6">
-          <circle cx="80" cy="220" r="14" fill="#f97316"/>
-          <circle cx="320" cy="220" r="14" fill="#f97316"/>
-          <circle cx="95" cy="180" r="8" fill="#ef4444"/>
-          <circle cx="305" cy="180" r="8" fill="#ef4444"/>
+        <g class="aura-fire" opacity="0.65">
+          <circle cx="60" cy="155" r="10" fill="#f97316"/>
+          <circle cx="240" cy="155" r="10" fill="#f97316"/>
+          <circle cx="72" cy="125" r="6" fill="#ef4444"/>
+          <circle cx="228" cy="125" r="6" fill="#ef4444"/>
         </g>
       `;
     } else if (monster.powers.includes('magic')) {
       powerAura = `
         <g class="aura-magic" fill="#c084fc" opacity="0.85">
-          <polygon points="100,100 104,112 116,112 106,120 110,132 100,124 90,132 94,120 84,112 96,112" />
-          <polygon points="300,100 304,112 316,112 306,120 310,132 300,124 290,132 294,120 284,112 296,112" />
+          <polygon points="75,70 78,79 87,79 80,85 83,94 75,88 67,94 70,85 63,79 72,79" />
+          <polygon points="225,70 228,79 237,79 230,85 233,94 225,88 217,94 220,85 213,79 222,79" />
         </g>
       `;
     }
@@ -448,7 +466,7 @@ class MonsterRenderer {
     return `
       <g id="layer-backdrop-stage">
         <!-- Anchored Stage Platform Contact Shadow -->
-        <ellipse cx="200" cy="430" rx="90" ry="14" fill="#0f172a" opacity="0.35" filter="url(#footBlur)" />
+        <ellipse cx="150" cy="262" rx="65" ry="12" fill="#78350f" opacity="0.35" filter="url(#footBlur)" />
         ${powerAura}
       </g>
     `;
@@ -467,24 +485,24 @@ class MonsterRenderer {
     if (w === 'dragon') {
       out += `
         <g class="monster-wings-group dragon-wings">
-          <path d="M ${wl.x},${wl.y} Q 50,110 20,150 Q 70,190 30,240 Q 100,230 ${wl.x + 5},${wl.y + 35} Z" fill="#f97316" stroke="#c2410c" stroke-width="4"/>
-          <path d="M ${wr.x},${wr.y} Q 350,110 380,150 Q 330,190 370,240 Q 300,230 ${wr.x - 5},${wr.y + 35} Z" fill="#f97316" stroke="#c2410c" stroke-width="4"/>
+          <path d="M ${wl.x},${wl.y} Q 40,80 15,110 Q 55,140 25,175 Q 75,170 ${wl.x + 5},${wl.y + 25} Z" fill="#f97316" stroke="#c2410c" stroke-width="3"/>
+          <path d="M ${wr.x},${wr.y} Q 260,80 285,110 Q 245,140 275,175 Q 225,170 ${wr.x - 5},${wr.y + 25} Z" fill="#f97316" stroke="#c2410c" stroke-width="3"/>
         </g>
       `;
     } else if (w === 'butterfly') {
       out += `
         <g class="monster-wings-group butterfly-wings">
-          <path d="M ${wl.x},${wl.y + 10} C 50,110 10,190 60,240 C 20,280 70,330 ${wl.x + 5},${wl.y + 60} Z" fill="#ec4899" stroke="#be185d" stroke-width="4"/>
-          <circle cx="65" cy="195" r="12" fill="#fef08a"/>
-          <path d="M ${wr.x},${wr.y + 10} C 350,110 390,190 340,240 C 380,280 330,330 ${wr.x - 5},${wr.y + 60} Z" fill="#ec4899" stroke="#be185d" stroke-width="4"/>
-          <circle cx="335" cy="195" r="12" fill="#fef08a"/>
+          <path d="M ${wl.x},${wl.y + 5} C 40,80 10,140 45,175 C 15,205 55,240 ${wl.x + 5},${wl.y + 45} Z" fill="#ec4899" stroke="#be185d" stroke-width="3"/>
+          <circle cx="50" cy="140" r="9" fill="#fef08a"/>
+          <path d="M ${wr.x},${wr.y + 5} C 260,80 290,140 255,175 C 285,205 245,240 ${wr.x - 5},${wr.y + 45} Z" fill="#ec4899" stroke="#be185d" stroke-width="3"/>
+          <circle cx="250" cy="140" r="9" fill="#fef08a"/>
         </g>
       `;
     } else if (w === 'bat') {
       out += `
         <g class="monster-wings-group bat-wings">
-          <path d="M ${wl.x},${wl.y + 5} Q 50,130 15,175 Q 55,210 40,245 Q 85,245 90,275 ${wl.x + 5},${wl.y + 35} Z" fill="#334155" stroke="#0f172a" stroke-width="4"/>
-          <path d="M ${wr.x},${wr.y + 5} Q 350,130 385,175 Q 345,210 360,245 Q 315,245 310,275 ${wr.x - 5},${wr.y + 35} Z" fill="#334155" stroke="#0f172a" stroke-width="4"/>
+          <path d="M ${wl.x},${wl.y + 5} Q 40,95 15,130 Q 45,155 30,180 Q 65,180 70,200 ${wl.x + 5},${wl.y + 25} Z" fill="#334155" stroke="#0f172a" stroke-width="3"/>
+          <path d="M ${wr.x},${wr.y + 5} Q 260,95 285,130 Q 255,155 270,180 Q 235,180 230,200 ${wr.x - 5},${wr.y + 25} Z" fill="#334155" stroke="#0f172a" stroke-width="3"/>
         </g>
       `;
     }
@@ -493,21 +511,21 @@ class MonsterRenderer {
     const t = anchors.tail;
     const tl = monster.specialParts.tail;
     if (tl === 'long') {
-      out += `<path d="M ${t.x},${t.y} C 60,330 20,280 35,230 C 45,205 68,215 58,240 C 48,270 78,310 ${t.x + 10},${t.y + 15} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4"/>`;
+      out += `<path d="M ${t.x},${t.y} C 45,${t.y} 15,180 28,145 C 36,128 52,135 44,155 C 36,178 58,205 ${t.x + 8},${t.y + 10} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>`;
     } else if (tl === 'curly') {
-      out += `<path d="M ${t.x},${t.y + 5} C 60,350 30,310 55,270 C 75,240 110,270 85,290 C 70,300 60,330 ${t.x + 5},${t.y + 18} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4"/>`;
+      out += `<path d="M ${t.x},${t.y + 4} C 45,${t.y + 20} 25,190 42,160 C 58,138 85,160 65,175 C 54,182 45,205 ${t.x + 4},${t.y + 12} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>`;
     } else if (tl === 'dinosaur') {
-      out += `<path d="M ${t.x},${t.y - 10} C 50,320 15,380 5,400 C 35,390 85,375 ${t.x + 10},${t.y + 25} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4"/>`;
+      out += `<path d="M ${t.x},${t.y - 8} C 40,${t.y} 12,240 5,255 C 28,248 65,238 ${t.x + 8},${t.y + 18} Z" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3"/>`;
     } else if (tl === 'snake') {
-      out += `<path d="M ${t.x},${t.y + 5} Q 60,360 40,330 Q 20,300 55,260 Q 80,230 65,200" fill="none" stroke="${pal.main}" stroke-width="14" stroke-linecap="round"/><path d="M ${t.x},${t.y + 5} Q 60,360 40,330 Q 20,300 55,260 Q 80,230 65,200" fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round"/>`;
+      out += `<path d="M ${t.x},${t.y} Q 45,${t.y + 15} 30,195 Q 15,170 42,145 Q 60,125 50,105" fill="none" stroke="${pal.main}" stroke-width="11" stroke-linecap="round"/><path d="M ${t.x},${t.y} Q 45,${t.y + 15} 30,195 Q 15,170 42,145 Q 60,125 50,105" fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round"/>`;
     } else if (tl === 'bunny') {
-      out += `<circle cx="${t.x - 16}" cy="${t.y + 5}" r="16" fill="#ffffff" stroke="${pal.stroke}" stroke-width="4"/>`;
+      out += `<circle cx="${t.x - 12}" cy="${t.y + 2}" r="12" fill="#ffffff" stroke="${pal.stroke}" stroke-width="3"/>`;
     }
 
     // Cape Back
     if (monster.clothes.cape) {
       const capeColor = this.getClothColor(monster.clothes.capeColor || 'red', '#dc2626');
-      out += `<path class="monster-cape-back" d="M 150,215 Q 200,230 250,215 L 285,390 Q 200,410 115,390 Z" fill="${capeColor}" stroke="#7f1d1d" stroke-width="4" />`;
+      out += `<path class="monster-cape-back" d="M 112,${anchors.cape.y} Q 150,${anchors.cape.y + 10} 188,${anchors.cape.y} L 214,250 Q 150,265 86,250 Z" fill="${capeColor}" stroke="#7f1d1d" stroke-width="3" />`;
     }
 
     return `<g id="layer-wings-tail">${out}</g>`;
@@ -533,16 +551,17 @@ class MonsterRenderer {
     return `
       <g id="layer-back-limbs">
         ${configs.map(c => `
-          <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot || 0})">
+          <g transform="translate(0, 0)">
             <!-- Foot Ground Contact Shadow Anchoring to Platform -->
-            <ellipse cx="2" cy="86" rx="${feet === 'giant' ? 36 : 28}" ry="9" fill="#0f172a" opacity="0.35" filter="url(#footBlur)"/>
-            <!-- Leg Column -->
-            <path d="M -14,0 L -14,75 Q -14,88 0,88 Q 14,88 14,75 L 14,0 Z" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round"/>
-            <!-- Flat Foot on Stage Platform -->
-            <ellipse cx="2" cy="80" rx="${feet === 'giant' ? 32 : 24}" ry="12" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
-            <circle cx="-12" cy="86" r="4.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
-            <circle cx="2" cy="89" r="5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
-            <circle cx="16" cy="86" r="4.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
+            <ellipse cx="${c.x}" cy="259" rx="${feet === 'giant' ? 24 : 18}" ry="6" fill="#0f172a" opacity="0.3" filter="url(#footBlur)"/>
+            <!-- Leg Column connecting flush into Torso Base at c.y and extending down to 252 -->
+            <path d="M ${c.x - 9},${c.y} L ${c.x - 9},250 Q ${c.x},255 ${c.x + 9},250 L ${c.x + 9},${c.y} Z" 
+                  fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+            <!-- Flat Foot on Stage Platform at y=254 -->
+            <ellipse cx="${c.x}" cy="254" rx="${feet === 'giant' ? 22 : 16}" ry="8" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+            <circle cx="${c.x - 7}" cy="255" r="3" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+            <circle cx="${c.x}" cy="257" r="3.2" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+            <circle cx="${c.x + 7}" cy="255" r="3" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
           </g>
         `).join('')}
       </g>
@@ -554,36 +573,39 @@ class MonsterRenderer {
   // -------------------------------------------------------------
   renderTorsoAndHead(monster, pal, secPal, anchors) {
     const shape = monster.body || 'round';
-    let bodyPath = '';
-    let bellyPath = '';
+    let bodySvg = '';
+    let bellySvg = '';
 
     if (shape === 'tall') {
-      bodyPath = `M 200,75 C 240,75 262,110 262,160 C 262,210 265,310 255,365 C 245,380 155,380 145,365 C 135,310 138,210 138,160 C 138,110 160,75 200,75 Z`;
-      bellyPath = `<ellipse cx="200" cy="285" rx="46" ry="75" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
-    } else if (shape === 'short') {
-      bodyPath = `M 200,120 C 260,120 285,155 285,210 C 285,280 285,350 200,350 C 115,350 115,280 115,210 C 115,155 140,120 200,120 Z`;
-      bellyPath = `<ellipse cx="200" cy="265" rx="65" ry="55" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
+      bodySvg = `<rect x="90" y="80" width="120" height="145" rx="58" ry="58" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="180" rx="36" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+    } else if (shape === 'round') {
+      bodySvg = `<circle cx="150" cy="155" r="75" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     } else if (shape === 'wide') {
-      bodyPath = `M 200,95 C 275,95 305,150 305,230 C 305,320 285,365 200,365 C 115,365 95,320 95,230 C 95,150 125,95 200,95 Z`;
-      bellyPath = `<ellipse cx="200" cy="280" rx="76" ry="62" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
+      bodySvg = `<rect x="70" y="105" width="160" height="115" rx="50" ry="50" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="172" rx="55" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
+    } else if (shape === 'short') {
+      bodySvg = `<ellipse cx="150" cy="170" rx="72" ry="58" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="182" rx="48" ry="36" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     } else if (shape === 'thin') {
-      bodyPath = `M 200,85 C 235,85 248,120 248,180 C 248,250 252,330 242,370 C 235,380 165,380 158,370 C 148,330 152,250 152,180 C 152,120 165,85 200,85 Z`;
-      bellyPath = `<ellipse cx="200" cy="290" rx="36" ry="65" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
+      bodySvg = `<rect x="108" y="75" width="84" height="155" rx="42" ry="42" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="182" rx="26" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     } else if (shape === 'blob') {
-      bodyPath = `M 200,90 C 265,80 295,135 275,190 C 315,245 295,340 255,365 C 200,385 150,360 125,345 C 85,300 100,225 125,185 C 105,130 145,85 200,90 Z`;
-      bellyPath = `<path d="M 195,240 Q 255,235 245,305 Q 235,355 195,350 Q 150,355 155,295 Z" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
+      bodySvg = `<path d="M 150,82 C 190,80 215,115 205,150 C 230,175 228,215 205,230 C 180,240 120,240 95,230 C 72,215 70,175 95,150 C 85,115 110,80 150,82 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="184" rx="42" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     } else if (shape === 'ghost') {
-      bodyPath = `M 200,95 C 265,95 285,150 285,240 C 285,330 290,400 270,410 C 250,385 230,415 200,395 C 170,415 150,385 130,410 C 110,400 115,330 115,240 C 115,150 135,95 200,95 Z`;
-      bellyPath = `<ellipse cx="200" cy="275" rx="55" ry="60" fill="url(#secGrad_${monster.secondaryColor})" opacity="0.6"/>`;
+      bodySvg = `<path d="M 150,85 C 195,85 215,120 215,175 C 215,225 218,255 200,260 C 185,245 175,262 150,250 C 125,262 115,245 100,260 C 82,255 85,225 85,175 C 85,120 105,85 150,85 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="180" rx="38" ry="36" fill="url(#secGrad_${monster.secondaryColor})" opacity="0.6"/>`;
     } else if (shape === 'dinosaur') {
-      bodyPath = `M 180,95 C 230,85 265,120 265,170 C 265,220 285,300 275,355 C 255,375 145,375 125,355 C 115,295 130,220 135,170 C 135,120 145,95 180,95 Z`;
-      bellyPath = `<path d="M 200,230 C 245,230 258,260 258,310 C 258,355 240,360 200,360 C 160,360 142,355 142,310 C 142,260 155,230 200,230 Z" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/>`;
+      bodySvg = `<path d="M 140,84 C 175,76 202,105 200,145 C 200,185 215,220 205,235 C 190,245 110,245 95,235 C 85,220 100,185 100,145 C 100,105 112,85 140,84 Z" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="185" rx="38" ry="38" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     } else if (shape === 'robot') {
-      bodyPath = `M 135,100 L 265,100 L 265,195 L 285,215 L 285,345 L 115,345 L 115,215 L 135,195 Z`;
-      bellyPath = `<rect x="145" y="235" width="110" height="95" rx="14" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3"/><circle cx="200" cy="282" r="16" fill="#38bdf8"/>`;
-    } else { // round default
-      bodyPath = `M 200,95 C 245,95 272,125 272,165 C 272,192 258,212 278,225 C 300,240 292,305 278,345 C 260,375 140,375 122,345 C 108,305 100,240 122,225 C 142,212 128,192 128,165 C 128,125 155,95 200,95 Z`;
-      bellyPath = `<path d="M 200,235 C 238,235 254,260 254,295 C 254,335 235,355 200,355 C 165,355 146,335 146,295 C 146,260 162,235 200,235 Z" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="3" opacity="0.9"/>`;
+      bodySvg = `<rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
+    } else {
+      bodySvg = `<circle cx="150" cy="155" r="75" fill="url(#clayGradient)" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round" filter="url(#clayShadow)" />`;
+      bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#secGrad_${monster.secondaryColor})" stroke="${pal.dark}" stroke-width="2.5" opacity="0.9"/>`;
     }
 
     // Horns (Attached firmly to headTop socket)
@@ -593,16 +615,16 @@ class MonsterRenderer {
       const h = anchors.horns;
       const top = anchors.headTop;
       let cfgs = [];
-      if (hornCount === 1) cfgs = [{ x: top.x, y: top.y, rot: 0, flip: false }];
+      if (hornCount === 1) cfgs = [{ x: top.x, y: top.y, rot: 0 }];
       else cfgs = [
-        { x: h.left.x, y: h.left.y, rot: h.left.rot, flip: false },
-        { x: h.right.x, y: h.right.y, rot: h.right.rot, flip: true }
+        { x: h.left.x, y: h.left.y, rot: h.left.rot },
+        { x: h.right.x, y: h.right.y, rot: h.right.rot }
       ];
       hornsSvg = `
         <g class="monster-horns-group">
           ${cfgs.map(c => `
             <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot})">
-              <polygon points="-12,0 0,-44 12,0" fill="url(#goldAccGrad)" stroke="#78350f" stroke-width="4" stroke-linejoin="round"/>
+              <polygon points="-9,0 0,-34 9,0" fill="url(#goldAccGrad)" stroke="#78350f" stroke-width="3" stroke-linejoin="round"/>
             </g>
           `).join('')}
         </g>
@@ -615,35 +637,45 @@ class MonsterRenderer {
     if (earCount > 0) {
       const e = anchors.ears;
       let ecfgs = [
-        { x: e.left.x, y: e.left.y, rot: e.left.rot, flip: false },
-        { x: e.right.x, y: e.right.y, rot: e.right.rot, flip: true }
+        { x: e.left.x, y: e.left.y, rot: e.left.rot },
+        { x: e.right.x, y: e.right.y, rot: e.right.rot }
       ];
       earsSvg = `
         <g class="monster-ears-group">
           ${ecfgs.map(c => `
             <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot})">
-              <ellipse cx="0" cy="-22" rx="16" ry="28" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4"/>
-              <ellipse cx="0" cy="-20" rx="9" ry="18" fill="${pal.belly}"/>
+              <ellipse cx="0" cy="-18" rx="13" ry="24" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+              <ellipse cx="0" cy="-16" rx="7" ry="15" fill="${pal.belly}"/>
             </g>
           `).join('')}
         </g>
       `;
     }
 
+    // Specular 3D Clay Highlight Pill/Disc on top-left of torso
+    const shineX = 132;
+    const shineY = anchors.faceCenter.eyeY - 14;
+    const shineSvg = `<ellipse cx="${shineX}" cy="${shineY}" rx="20" ry="10" fill="#ffffff" opacity="0.35" transform="rotate(-18 ${shineX} ${shineY})" pointer-events="none" />`;
+
+    // Cheek blushes
+    const blushY = anchors.faceCenter.mouthY;
+    const blushSvg = `
+      <ellipse cx="${anchors.faceCenter.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+      <ellipse cx="${anchors.faceCenter.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+    `;
+
     return `
-      <g id="layer-torso-head" filter="url(#claySquish)">
+      <g id="layer-torso-head">
         ${earsSvg}
         ${hornsSvg}
-        <!-- 1. Central Torso Solid Base Fill -->
-        <path d="${bodyPath}" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="5" stroke-linejoin="round"/>
-        <!-- 2. Radial 3D Clay Lighting Mesh Highlight -->
-        <path d="${bodyPath}" fill="url(#clayShine)" style="mix-blend-mode: overlay; pointer-events: none;"/>
-        <!-- 3. Soft Ambient Shadow Gradient Underlay -->
-        <path d="${bodyPath}" fill="url(#bodyGrad_${monster.color})" opacity="0.3" style="mix-blend-mode: multiply; pointer-events: none;"/>
-        <!-- Soft Blush Cheeks -->
-        <ellipse cx="146" cy="182" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
-        <ellipse cx="254" cy="182" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
-        ${bellyPath}
+        <!-- 1. Central Torso Solid Base Fill with 3D Radial Clay Lighting -->
+        ${bodySvg}
+        <!-- 2. Soft Specular Clay Highlight on Top-Left -->
+        ${shineSvg}
+        <!-- 3. Soft Cheek Blushes -->
+        ${blushSvg}
+        <!-- 4. Belly Patch -->
+        ${bellySvg}
       </g>
     `;
   }
@@ -655,31 +687,31 @@ class MonsterRenderer {
     const f = anchors.faceCenter;
     const count = monster.eyes.count;
     const size = monster.eyes.size || 'big';
-    let rBase = 20;
-    if (size === 'tiny') rBase = 9;
-    else if (size === 'small') rBase = 14;
-    else if (size === 'giant') rBase = 30;
+    let rBase = 16;
+    if (size === 'tiny') rBase = 7;
+    else if (size === 'small') rBase = 11;
+    else if (size === 'giant') rBase = 22;
 
     let eyeConfigs = [];
     if (count === 1) {
       eyeConfigs = [{ cx: f.cx, cy: f.eyeY, r: rBase * 1.3 }];
     } else if (count === 2) {
       eyeConfigs = [
-        { cx: f.cx - 32, cy: f.eyeY, r: rBase },
-        { cx: f.cx + 32, cy: f.eyeY, r: rBase }
+        { cx: f.cx - 24, cy: f.eyeY, r: rBase },
+        { cx: f.cx + 24, cy: f.eyeY, r: rBase }
       ];
     } else if (count === 3) {
       eyeConfigs = [
-        { cx: f.cx - 52, cy: f.eyeY + 4, r: rBase * 0.85 },
-        { cx: f.cx,      cy: f.eyeY - 6, r: rBase * 0.95 },
-        { cx: f.cx + 52, cy: f.eyeY + 4, r: rBase * 0.85 }
+        { cx: f.cx - 38, cy: f.eyeY + 3, r: rBase * 0.85 },
+        { cx: f.cx,      cy: f.eyeY - 4, r: rBase * 0.95 },
+        { cx: f.cx + 38, cy: f.eyeY + 3, r: rBase * 0.85 }
       ];
     } else {
       eyeConfigs = [
-        { cx: f.cx - 48, cy: f.eyeY - 6, r: rBase * 0.78 },
-        { cx: f.cx - 16, cy: f.eyeY - 10, r: rBase * 0.82 },
-        { cx: f.cx + 16, cy: f.eyeY - 10, r: rBase * 0.82 },
-        { cx: f.cx + 48, cy: f.eyeY - 6, r: rBase * 0.78 }
+        { cx: f.cx - 36, cy: f.eyeY - 4, r: rBase * 0.78 },
+        { cx: f.cx - 12, cy: f.eyeY - 8, r: rBase * 0.82 },
+        { cx: f.cx + 12, cy: f.eyeY - 8, r: rBase * 0.82 },
+        { cx: f.cx + 36, cy: f.eyeY - 4, r: rBase * 0.78 }
       ];
     }
 
@@ -688,22 +720,22 @@ class MonsterRenderer {
     if (action === 'sleep') {
       // Peaceful closed arcs
       eyesSvg = eyeConfigs.map(c => `
-        <path d="M ${c.cx - c.r},${c.cy + 4} Q ${c.cx},${c.cy + c.r + 6} ${c.cx + c.r},${c.cy + 4}" 
-              fill="none" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M ${c.cx - c.r},${c.cy + 3} Q ${c.cx},${c.cy + c.r + 5} ${c.cx + c.r},${c.cy + 3}" 
+              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
       `).join('');
     } else if (action === 'tickle') {
       // Giggling squints (> <)
       eyesSvg = eyeConfigs.map(c => `
-        <path d="M ${c.cx - c.r * 0.7},${c.cy + 4} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 4}" 
-              fill="none" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M ${c.cx - c.r * 0.7},${c.cy + 3} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 3}" 
+              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
       `).join('');
     } else {
       // Normal Big Glossy Eyes
       eyesSvg = eyeConfigs.map(c => `
         <g class="monster-eye-item">
-          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3.5"/>
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
           <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.58}" fill="#0284c7"/>
-          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.4}" fill="#0f172a"/>
+          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.38}" fill="#0f172a"/>
           <circle cx="${c.cx - c.r * 0.22}" cy="${c.cy - c.r * 0.22}" r="${c.r * 0.22}" fill="#ffffff"/>
           <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.1}" fill="#ffffff"/>
         </g>
@@ -711,26 +743,26 @@ class MonsterRenderer {
     }
 
     // Nose
-    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="8" ry="6" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="3"/><circle cx="${f.cx - 2}" cy="${f.noseY - 2}" r="2" fill="#ffffff" opacity="0.6"/>`;
+    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="6" ry="4.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="2.5"/><circle cx="${f.cx - 1.5}" cy="${f.noseY - 1.5}" r="1.5" fill="#ffffff" opacity="0.6"/>`;
 
     // Mouth (Adapts to eat/tickle actions)
     let mouthSvg = '';
     if (action === 'eat') {
       // Mouth wide open to catch snack
       mouthSvg = `
-        <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="24" ry="18" fill="#881337" stroke="#0f172a" stroke-width="4"/>
-        <path d="M ${f.cx - 16},${f.mouthY + 8} Q ${f.cx},${f.mouthY + 16} ${f.cx + 16},${f.mouthY + 8}" fill="#f43f5e"/>
+        <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="18" ry="14" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+        <path d="M ${f.cx - 12},${f.mouthY + 6} Q ${f.cx},${f.mouthY + 12} ${f.cx + 12},${f.mouthY + 6}" fill="#f43f5e"/>
       `;
     } else if (action === 'tickle') {
       // Big laughing open mouth
       mouthSvg = `
-        <path d="M ${f.cx - 28},${f.mouthY - 6} Q ${f.cx},${f.mouthY + 28} ${f.cx + 28},${f.mouthY - 6} Z" fill="#881337" stroke="#0f172a" stroke-width="4"/>
-        <ellipse cx="${f.cx}" cy="${f.mouthY + 12}" rx="12" ry="7" fill="#f43f5e"/>
+        <path d="M ${f.cx - 20},${f.mouthY - 4} Q ${f.cx},${f.mouthY + 22} ${f.cx + 20},${f.mouthY - 4} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+        <ellipse cx="${f.cx}" cy="${f.mouthY + 10}" rx="9" ry="5" fill="#f43f5e"/>
       `;
     } else {
       // Friendly smile with teeth option
       mouthSvg = `
-        <path d="M ${f.cx - 24},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 18} ${f.cx + 24},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M ${f.cx - 18},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 14} ${f.cx + 18},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
       `;
     }
 
@@ -752,46 +784,58 @@ class MonsterRenderer {
     const length = monster.arms.length || 'normal';
 
     let factor = 1.0;
-    if (length === 'tiny') factor = 0.6;
+    if (length === 'tiny') factor = 0.65;
     else if (length === 'short') factor = 0.85;
-    else if (length === 'long') factor = 1.35;
+    else if (length === 'long') factor = 1.3;
 
     const shL = anchors.armLeft;
     const shR = anchors.armRight;
 
     // Adjust arm target when dancing or eating
-    let leftHandOffset = { x: -55 * factor, y: 35 * factor };
-    let rightHandOffset = { x: 55 * factor, y: -35 * factor };
+    // Default: for tall (90, 140) -> (60, 175) and (210, 140) -> (240, 175)
+    let leftHandOffset = { x: -30 * factor, y: 35 * factor };
+    let rightHandOffset = { x: 30 * factor, y: 35 * factor };
 
     if (action === 'dance') {
-      leftHandOffset = { x: -65 * factor, y: -45 * factor };
-      rightHandOffset = { x: 65 * factor, y: -45 * factor };
+      leftHandOffset = { x: -35 * factor, y: -35 * factor };
+      rightHandOffset = { x: 35 * factor, y: -35 * factor };
     }
+
+    const leftHand = { x: shL.x + leftHandOffset.x, y: shL.y + leftHandOffset.y };
+    const rightHand = { x: shR.x + rightHandOffset.x, y: shR.y + rightHandOffset.y };
 
     return `
       <g id="layer-front-limbs">
         <!-- Left Arm with Rounded Torso Joint -->
         <g class="monster-arm-left">
           <!-- Rounded Joint Socket at Torso Connection -->
-          <circle cx="${shL.x}" cy="${shL.y}" r="13" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4"/>
+          <circle cx="${shL.x}" cy="${shL.y}" r="10" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
           <!-- Arm Limb -->
-          <path d="M ${shL.x},${shL.y} Q ${shL.x - 25},${shL.y + 15} ${shL.x + leftHandOffset.x},${shL.y + leftHandOffset.y}" 
-                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M ${shL.x},${shL.y} Q ${shL.x - 25},${shL.y + 15} ${shL.x + leftHandOffset.x},${shL.y + leftHandOffset.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="${shL.x + leftHandOffset.x}" cy="${shL.y + leftHandOffset.y}" r="14" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
+          <path d="M ${shL.x},${shL.y} Q ${shL.x - 18},${shL.y + 16} ${leftHand.x},${leftHand.y}" 
+                fill="none" stroke="url(#clayLimbGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M ${shL.x},${shL.y} Q ${shL.x - 18},${shL.y + 16} ${leftHand.x},${leftHand.y}" 
+                fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Hand Paw -->
+          <circle cx="${leftHand.x}" cy="${leftHand.y}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.5"/>
+          <circle cx="${leftHand.x - 4}" cy="${leftHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${leftHand.x}" cy="${leftHand.y - 7}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${leftHand.x + 4}" cy="${leftHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
         </g>
 
         <!-- Right Arm with Rounded Torso Joint -->
         <g class="monster-arm-right">
           <!-- Rounded Joint Socket at Torso Connection -->
-          <circle cx="${shR.x}" cy="${shR.y}" r="13" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4"/>
+          <circle cx="${shR.x}" cy="${shR.y}" r="10" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
           <!-- Arm Limb -->
-          <path d="M ${shR.x},${shR.y} Q ${shR.x + 25},${shR.y - 15} ${shR.x + rightHandOffset.x},${shR.y + rightHandOffset.y}" 
-                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M ${shR.x},${shR.y} Q ${shR.x + 25},${shR.y - 15} ${shR.x + rightHandOffset.x},${shR.y + rightHandOffset.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="${shR.x + rightHandOffset.x}" cy="${shR.y + rightHandOffset.y}" r="14" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
+          <path d="M ${shR.x},${shR.y} Q ${shR.x + 18},${shR.y + 16} ${rightHand.x},${rightHand.y}" 
+                fill="none" stroke="url(#clayLimbGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M ${shR.x},${shR.y} Q ${shR.x + 18},${shR.y + 16} ${rightHand.x},${rightHand.y}" 
+                fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Hand Paw -->
+          <circle cx="${rightHand.x}" cy="${rightHand.y}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.5"/>
+          <circle cx="${rightHand.x - 4}" cy="${rightHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${rightHand.x}" cy="${rightHand.y - 7}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${rightHand.x + 4}" cy="${rightHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
         </g>
       </g>
     `;
@@ -808,12 +852,12 @@ class MonsterRenderer {
     // Glasses
     if (monster.accessories.includes('glasses') || monster.accessories.includes('sunglasses')) {
       const isSun = monster.accessories.includes('sunglasses');
-      const lens = isSun ? '#0f172a' : 'rgba(255, 255, 255, 0.4)';
+      const lens = isSun ? '#0f172a' : 'rgba(255, 255, 255, 0.45)';
       out += `
         <g class="accessory-glasses" transform="translate(${f.cx}, ${f.eyeY})">
-          <circle cx="-34" cy="0" r="24" fill="${lens}" stroke="#0f172a" stroke-width="5"/>
-          <circle cx="34" cy="0" r="24" fill="${lens}" stroke="#0f172a" stroke-width="5"/>
-          <path d="M -10,-2 Q 0,-8 10,-2" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="-24" cy="0" r="17" fill="${lens}" stroke="#0f172a" stroke-width="3.5"/>
+          <circle cx="24" cy="0" r="17" fill="${lens}" stroke="#0f172a" stroke-width="3.5"/>
+          <path d="M -7,-1 Q 0,-5 7,-1" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
         </g>
       `;
     }
@@ -824,8 +868,8 @@ class MonsterRenderer {
       const topCol = this.getClothColor(monster.clothes.topColor, '#2563eb');
       out += `
         <g class="clothing-top">
-          <path d="M 142,215 Q 200,230 258,215 L 292,255 L 268,266 L 258,310 L 142,310 L 132,266 L 108,255 Z" fill="${topCol}" stroke="#0f172a" stroke-width="4.5"/>
-          <polygon points="200,248 203,256 212,257 205,263 207,271 200,267 193,271 195,263 188,257 197,256" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+          <path d="M ${anchors.armLeft.x},${anchors.armLeft.y} Q 150,${anchors.armLeft.y + 12} ${anchors.armRight.x},${anchors.armRight.y} L ${anchors.armRight.x + 6},${anchors.armRight.y + 36} L ${anchors.armRight.x - 12},${anchors.armRight.y + 40} L 185,210 L 115,210 L ${anchors.armLeft.x + 12},${anchors.armLeft.y + 40} L ${anchors.armLeft.x - 6},${anchors.armLeft.y + 36} Z" fill="${topCol}" stroke="#0f172a" stroke-width="3.5"/>
+          <polygon points="150,${anchors.armLeft.y + 20} 152,${anchors.armLeft.y + 26} 158,${anchors.armLeft.y + 27} 153,${anchors.armLeft.y + 31} 155,${anchors.armLeft.y + 37} 150,${anchors.armLeft.y + 34} 145,${anchors.armLeft.y + 37} 147,${anchors.armLeft.y + 31} 142,${anchors.armLeft.y + 27} 148,${anchors.armLeft.y + 26}" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
         </g>
       `;
     }
@@ -833,18 +877,18 @@ class MonsterRenderer {
     // Headwear / Hats (Attached to headTop)
     if (monster.accessories.includes('hat') || monster.accessories.includes('cap')) {
       out += `
-        <g class="accessory-hat" transform="translate(${top.x}, ${top.y - 10})">
-          <ellipse cx="0" cy="0" rx="38" ry="12" fill="#eab308" stroke="#713f12" stroke-width="3.5"/>
-          <path d="M -24,0 L -18,-30 Q 0,-38 18,-30 L 24,0 Z" fill="#ca8a04" stroke="#713f12" stroke-width="3.5"/>
+        <g class="accessory-hat" transform="translate(${top.x}, ${top.y - 8})">
+          <ellipse cx="0" cy="0" rx="30" ry="9" fill="#eab308" stroke="#713f12" stroke-width="3"/>
+          <path d="M -18,0 L -14,-24 Q 0,-30 14,-24 L 18,0 Z" fill="#ca8a04" stroke="#713f12" stroke-width="3"/>
         </g>
       `;
     } else if (monster.accessories.includes('crown')) {
       out += `
-        <g class="accessory-crown" transform="translate(${top.x}, ${top.y - 8})">
-          <polygon points="-28,0 -34,-26 -16,-12 0,-34 16,-12 34,-26 28,0" fill="url(#goldAccGrad)" stroke="#78350f" stroke-width="3.5"/>
-          <circle cx="0" cy="-34" r="4" fill="#ef4444"/>
-          <circle cx="-34" cy="-26" r="3.5" fill="#3b82f6"/>
-          <circle cx="34" cy="-26" r="3.5" fill="#10b981"/>
+        <g class="accessory-crown" transform="translate(${top.x}, ${top.y - 6})">
+          <polygon points="-22,0 -26,-20 -12,-10 0,-26 12,-10 26,-20 22,0" fill="url(#goldAccGrad)" stroke="#78350f" stroke-width="3"/>
+          <circle cx="0" cy="-26" r="3.2" fill="#ef4444"/>
+          <circle cx="-26" cy="-20" r="2.8" fill="#3b82f6"/>
+          <circle cx="26" cy="-20" r="2.8" fill="#10b981"/>
         </g>
       `;
     }
