@@ -40,7 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Preload assets and launch
   const loadingOverlay = document.getElementById('loading-overlay');
-  sprites.loadAll().then(() => {
+  let gameStarted = false;
+  const launchGame = () => {
+    if (gameStarted) return;
+    gameStarted = true;
     if (loadingOverlay) {
       loadingOverlay.style.opacity = '0';
       setTimeout(() => {
@@ -48,7 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 350);
     }
     requestAnimationFrame(renderLoop);
-  });
+  };
+
+  // Safe fallback: start within 1.5s maximum even on slow connections
+  setTimeout(launchGame, 1500);
+  sprites.loadAll().then(launchGame).catch(launchGame);
 
   function setupUIControls() {
     // Mode toggles
@@ -176,13 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Start charging if player turn
+    // Start charging if player turn (click anywhere on canvas to charge)
     if (!engine.isCpuTurn() && engine.turnState === 'IDLE') {
-      const isCatTurn = engine.currentTurn === 'cat';
-      const playerZone = isCatTurn ? pos.x < 300 : pos.x > 300;
-      if (playerZone) {
-        engine.startCharging();
-      }
+      engine.startCharging();
     }
   }
 
