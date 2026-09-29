@@ -12,45 +12,52 @@
 </head>
 <body>
 
+  <!-- Floating Ambient Blur Orbs Behind Main Panels -->
+  <div class="clay-ambient-orb orb-1"></div>
+  <div class="clay-ambient-orb orb-2"></div>
+  <div class="clay-ambient-orb orb-3"></div>
+
   <!-- =========================================================================
        1. TOP UTILITY NAVIGATION (COMPLETELY DETACHED FROM STEP WIZARD)
        ========================================================================= -->
   <header class="top-utility-nav" id="top-utility-nav">
     <div class="top-nav-left">
-      <a href="../index.html" class="btn-3d btn-secondary" title="Return to Master ESL Library">
+      <a href="../index.html" class="btn-clay btn-frosted-secondary" title="Return to Master ESL Library">
         <span>📚</span>
         <span>LIBRARY</span>
       </a>
-      <button class="btn-3d btn-secondary" onclick="app.goToScreen('screen-start')" title="Return to Main Menu">
+      <button class="btn-clay btn-frosted-secondary" onclick="app.goToScreen('screen-start')" title="Return to Main Menu">
         <span>🏠</span>
         <span>HOME</span>
       </button>
       <div class="nav-brand-badge">👹 BUILD YOUR MONSTER! 👾</div>
     </div>
 
-    <div class="top-nav-right">
-      <!-- Stars Counter Pill -->
-      <div class="score-pill-3d" title="Your Star Points">
-        <span class="star-icon">⭐</span>
-        <span id="global-score-count">0</span>
+    <!-- Top-Centered Floating Stars Pill -->
+    <div class="top-nav-center">
+      <div class="stars-floating-pill" title="Your Star Points">
+        <span class="star-glow-icon">⭐</span>
+        <span>STARS: <span id="global-score-count">0</span></span>
       </div>
+    </div>
 
+    <div class="top-nav-right">
       <!-- Classroom Speaking Game: Find A Monster -->
-      <button class="btn-3d btn-accent" onclick="app.openFindMonsterGame()" title="Classroom Game: Find a Monster">
+      <button class="btn-clay btn-jelly-accent" onclick="app.openFindMonsterGame()" title="Classroom Game: Find a Monster">
         <span>🔎</span> <span>FIND MONSTER</span>
       </button>
 
       <!-- Badges Overview -->
-      <button class="btn-3d btn-secondary" onclick="if(window.teacherMode){teacherMode.checkBadges();} document.getElementById('badges-overview-modal').classList.add('active')" title="View Badges">
+      <button class="btn-clay btn-frosted-secondary" onclick="if(window.teacherMode){teacherMode.checkBadges();} document.getElementById('badges-overview-modal').classList.add('active')" title="View Badges">
         <span>🏆</span> <span>BADGES</span>
       </button>
 
       <!-- Sound & Voice Toggles -->
-      <button class="btn-3d btn-secondary" id="sfx-toggle-btn" onclick="app.toggleSfx()" title="Toggle Sound Effects">🔊 SFX: ON</button>
-      <button class="btn-3d btn-secondary" id="tts-toggle-btn" onclick="app.toggleTts()" title="Toggle English Voice">🗣️ Voice: ON</button>
+      <button class="btn-clay btn-frosted-secondary" id="sfx-toggle-btn" onclick="app.toggleSfx()" title="Toggle Sound Effects">🔊 SFX: ON</button>
+      <button class="btn-clay btn-frosted-secondary" id="tts-toggle-btn" onclick="app.toggleTts()" title="Toggle English Voice">🗣️ Voice: ON</button>
 
       <!-- Teacher Settings -->
-      <button class="btn-3d btn-secondary" onclick="document.getElementById('teacher-settings-modal').classList.add('active')" title="Teacher Settings">
+      <button class="btn-clay btn-frosted-secondary" onclick="document.getElementById('teacher-settings-modal').classList.add('active')" title="Teacher Settings">
         <span>👩‍🏫</span> <span>TEACHER</span>
       </button>
     </div>
@@ -71,27 +78,33 @@
          SCREEN 0: START MENU
          ======================================================================= -->
     <section class="screen-view active" id="screen-start">
-      <div class="start-screen-card">
+      <div class="clay-main-card start-hero-card">
         <h1 class="title-hero">BUILD YOUR MONSTER! 👾</h1>
         <p class="subtitle-hero">Create a funny, scary, or super cute companion!</p>
 
-        <!-- Preview on 3D Stage Podium -->
-        <div class="start-preview-wrapper">
-          <div class="stage-podium-box" style="height: 380px;">
-            <div class="stage-podium-disc"></div>
-            <div class="stage-podium-glow"></div>
+        <!-- Preview on Theatrical Stage Podium -->
+        <div class="theatrical-stage-wrapper" style="max-width: 480px; margin: 0 auto 24px auto;">
+          <div class="theatrical-curtain-box" style="height: 380px;">
+            <div class="stage-top-overlay-strip">
+              <div class="stage-overlay-pill live-status">PREVIEW STAGE</div>
+            </div>
+            <div class="theatrical-pedestal-cylinder" style="bottom: 16px;">
+              <div class="pedestal-top-disc"></div>
+              <div class="pedestal-cylinder-body"></div>
+              <div class="monster-contact-shadow"></div>
+            </div>
             <div class="monster-viewport-rig" id="start-monster-preview"></div>
           </div>
         </div>
 
         <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-          <button class="btn-3d btn-primary btn-large" onclick="app.startCreation()">
+          <button class="btn-clay btn-gel-primary btn-large" onclick="app.startCreation()">
             <span>▶ START CREATING</span>
           </button>
-          <button class="btn-3d btn-accent btn-large" onclick="app.makeItWeird()">
+          <button class="btn-clay btn-jelly-accent btn-large" onclick="app.makeItWeird()">
             <span>🎲 MAKE IT WEIRD!</span>
           </button>
-          <button class="btn-3d btn-secondary btn-large" onclick="app.goToScreen('screen-modes-hub')">
+          <button class="btn-clay btn-frosted-secondary btn-large" onclick="app.goToScreen('screen-modes-hub')">
             <span>🎮 PLAY MORE GAMES</span>
           </button>
         </div>
@@ -102,54 +115,59 @@
          SCREEN 1: 3-PHASE STREAMLINED STEP WIZARD
          ======================================================================= -->
     <section class="screen-view" id="screen-create">
-      <div class="wizard-detached-shell">
+      <div class="clay-main-card wizard-detached-shell">
 
-        <!-- 3-Phase Grouped Hierarchy Tabs -->
-        <div class="phase-nav-container">
-          <!-- Phase 1: Basics -->
-          <div class="phase-card active" data-phase-id="1" onclick="app.setStep(1)">
-            <div class="phase-card-badge">🧸</div>
-            <div class="phase-card-meta">
-              <span class="phase-card-label">Phase 1</span>
-              <span class="phase-card-title">Basics & Anatomy</span>
+        <!-- Stepper Section Wrapper with 3-Phase Bar & Connected Milestone Track -->
+        <div class="stepper-section-wrapper">
+          <!-- 3-Phase Grouped Hierarchy Tabs -->
+          <div class="phase-group-bar">
+            <!-- Phase 1: Basics -->
+            <div class="phase-group-pill phase-card active" data-phase-id="1" onclick="app.setStep(1)">
+              <div class="phase-avatar-icon">🧸</div>
+              <div class="phase-meta-col">
+                <span class="phase-tag-text">Phase 1</span>
+                <span class="phase-title-text">Basics & Anatomy</span>
+              </div>
+            </div>
+            <!-- Phase 2: Style & Gear -->
+            <div class="phase-group-pill phase-card" data-phase-id="2" onclick="app.setStep(7)">
+              <div class="phase-avatar-icon">🎽</div>
+              <div class="phase-meta-col">
+                <span class="phase-tag-text">Phase 2</span>
+                <span class="phase-title-text">Style & Gear</span>
+              </div>
+            </div>
+            <!-- Phase 3: Identity -->
+            <div class="phase-group-pill phase-card" data-phase-id="3" onclick="app.setStep(11)">
+              <div class="phase-avatar-icon">🆔</div>
+              <div class="phase-meta-col">
+                <span class="phase-tag-text">Phase 3</span>
+                <span class="phase-title-text">Identity & Passport</span>
+              </div>
             </div>
           </div>
-          <!-- Phase 2: Style & Gear -->
-          <div class="phase-card" data-phase-id="2" onclick="app.setStep(7)">
-            <div class="phase-card-badge">🎽</div>
-            <div class="phase-card-meta">
-              <span class="phase-card-label">Phase 2</span>
-              <span class="phase-card-title">Style & Gear</span>
-            </div>
-          </div>
-          <!-- Phase 3: Identity -->
-          <div class="phase-card" data-phase-id="3" onclick="app.setStep(11)">
-            <div class="phase-card-badge">🆔</div>
-            <div class="phase-card-meta">
-              <span class="phase-card-label">Phase 3</span>
-              <span class="phase-card-title">Identity & Passport</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- Phase Header & Sub-step Progress Bar -->
-        <div class="phase-header-card">
-          <div class="phase-header-top">
-            <div class="phase-indicator-pill" id="phase-indicator-pill">Phase 1: Step 1 of 6</div>
-            <h2 class="phase-step-title" id="phase-step-title">CHOOSE YOUR BODY 🧸</h2>
-            <div class="phase-cheer-badge" id="phase-cheer-badge">Great choice! ⭐</div>
+          <!-- Horizontal Connected Milestone Track -->
+          <div class="segmented-milestone-track">
+            <div class="stepper-header-row">
+              <div class="stepper-step-indicator" id="phase-indicator-pill">Phase 1: Step 1 of 6</div>
+              <h2 class="stepper-step-headline" id="phase-step-title">CHOOSE YOUR BODY 🧸</h2>
+              <div class="stepper-cheer-tag" id="phase-cheer-badge">Great Choice! ⭐</div>
+            </div>
+            <!-- Connected Checkpoint Pills Row -->
+            <div class="milestone-checkpoints-row" id="milestone-checkpoints-row">
+              <div id="phase-substep-track" style="display:contents;"></div>
+            </div>
           </div>
-          <!-- Sub-step Pills for the Active Phase -->
-          <div class="phase-substep-row" id="phase-substep-track"></div>
         </div>
 
         <!-- Mode Quest Banner (Challenge / Listening mode) -->
         <div id="creator-mode-banner" class="mode-quest-banner hidden" style="background:#fef3c7; border:3px solid #f59e0b; border-radius:16px; padding:12px 18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <div style="font-weight:900; font-size:1.1rem; color:#b45309;" id="banner-quest-text">Mission Active</div>
           <div style="display:flex; gap:8px;">
-            <button class="btn-3d btn-accent" id="banner-audio-replay-btn" style="display: none;" onclick="app.playListeningAudio()">🔊 Replay</button>
-            <button class="btn-3d btn-success" onclick="app.checkCurrentModeMission()">⭐ CHECK NOW!</button>
-            <button class="btn-3d btn-secondary" onclick="app.returnToModeScreen()">➔ Back</button>
+            <button class="btn-clay btn-jelly-accent" id="banner-audio-replay-btn" style="display: none;" onclick="app.playListeningAudio()">🔊 Replay</button>
+            <button class="btn-clay btn-gel-primary" onclick="app.checkCurrentModeMission()">⭐ CHECK NOW!</button>
+            <button class="btn-clay btn-frosted-secondary" onclick="app.returnToModeScreen()">➔ Back</button>
           </div>
         </div>
 
@@ -157,69 +175,83 @@
         <div class="creator-split-grid">
           
           <!-- LEFT: DYNAMIC STEP OPTIONS -->
-          <div class="options-panel-3d" id="wizard-step-content">
+          <div class="options-panel-clay options-panel-3d" id="wizard-step-content">
             <!-- Dynamically populated by app.getStepHtml(stepNum) -->
           </div>
 
           <!-- RIGHT: LIVE PREVIEW & INTERACTIVE ACTION DOCK -->
-          <div class="stage-column-shell">
+          <div class="theatrical-stage-wrapper stage-column-shell">
             
-            <!-- 3D Circular Podium Stage -->
-            <div class="stage-podium-box">
+            <!-- Theatrical Curtain Framing Stage Box -->
+            <div class="theatrical-curtain-box">
+              <!-- Translucent Floating Pill Badges Overlay -->
+              <div class="stage-top-overlay-strip">
+                <button class="stage-overlay-pill" onclick="if(window.teacherMode){teacherMode.checkBadges();} document.getElementById('badges-overview-modal').classList.add('active')">
+                  <span>🏆</span> <span>Badges</span>
+                </button>
+                <button class="stage-overlay-pill" onclick="app.openFindMonsterGame()">
+                  <span>🔎</span> <span>Find Monster</span>
+                </button>
+                <div class="stage-overlay-pill live-status">LIVE STAGE</div>
+              </div>
+
               <!-- Ambient Particles Canvas (Twinkling stars/sparkles) -->
               <canvas class="stage-ambient-canvas" id="stage-ambient-canvas"></canvas>
               
-              <!-- 3D Circular Podium Disc & Ambient Glow -->
-              <div class="stage-podium-disc"></div>
-              <div class="stage-podium-glow"></div>
+              <!-- 3D Cylindrical Sandy / Stone Pedestal Base -->
+              <div class="theatrical-pedestal-cylinder">
+                <div class="pedestal-top-disc"></div>
+                <div class="pedestal-cylinder-body"></div>
+                <div class="monster-contact-shadow"></div>
+              </div>
 
               <!-- Monster Viewport Rig -->
               <div class="monster-viewport-rig" id="create-monster-preview"></div>
             </div>
 
-            <!-- Spoken English Phrase Pronunciation Bar -->
-            <div class="spoken-phrase-card">
-              <span class="spoken-phrase-badge">SAY</span>
-              <span class="spoken-phrase-text" id="active-phrase-text">ROUND PURPLE BODY</span>
-              <button class="btn-3d btn-accent" onclick="app.speakActivePhrase()" title="Pronounce this phrase">
+            <!-- Integrated Speech Bubble Bar -->
+            <div class="speech-bubble-card">
+              <span class="speech-say-tag">SAY:</span>
+              <span class="speech-phrase-text" id="active-phrase-text">ROUND PURPLE BODY</span>
+              <button class="btn-clay btn-gel-primary" onclick="app.speakActivePhrase()" title="Pronounce this phrase">
                 <span>🔊</span> <span>Hear It</span>
               </button>
             </div>
 
-            <!-- INTERACTIVE ACTION DOCK (4 VERBS & ANIMATIONS) -->
-            <div class="action-dock-container">
-              <div class="action-dock-title-row">
+            <!-- Docked Action Triggers (Clay Jelly Buttons) -->
+            <div class="action-dock-clay">
+              <div class="action-dock-header-row">
                 <span>🎮 Interactive Action Dock</span>
                 <span style="font-size: 0.75rem; color: #8b5cf6;">Tap to animate & listen</span>
               </div>
 
-              <div class="action-dock-buttons">
+              <div class="action-buttons-grid-4">
                 <!-- 1. Tickle! (Laugh) -->
-                <button class="action-dock-btn action-btn-tickle" onclick="window.monsterActionDock.triggerTickle()">
+                <button class="action-jelly-btn action-btn-tickle" onclick="window.monsterActionDock.triggerTickle()">
                   <span class="action-icon">😂</span>
                   <span>Tickle!</span>
-                  <span class="action-verb-tag">Verb: Laugh</span>
+                  <span class="action-verb-label">Laugh</span>
                 </button>
 
                 <!-- 2. Feed Snack (Eat) -->
-                <button class="action-dock-btn action-btn-feed" onclick="window.monsterActionDock.triggerFeed()">
+                <button class="action-jelly-btn action-btn-feed" onclick="window.monsterActionDock.triggerFeed()">
                   <span class="action-icon">🍎</span>
                   <span>Feed Snack</span>
-                  <span class="action-verb-tag">Verb: Eat</span>
+                  <span class="action-verb-label">Eat</span>
                 </button>
 
                 <!-- 3. Dance! (Dance) -->
-                <button class="action-dock-btn action-btn-dance" onclick="window.monsterActionDock.triggerDance()">
+                <button class="action-jelly-btn action-btn-dance" onclick="window.monsterActionDock.triggerDance()">
                   <span class="action-icon">💃</span>
                   <span>Dance!</span>
-                  <span class="action-verb-tag">Verb: Dance</span>
+                  <span class="action-verb-label">Dance</span>
                 </button>
 
                 <!-- 4. Sleep (Sleep) -->
-                <button class="action-dock-btn action-btn-sleep" onclick="window.monsterActionDock.triggerSleep()">
+                <button class="action-jelly-btn action-btn-sleep" onclick="window.monsterActionDock.triggerSleep()">
                   <span class="action-icon">💤</span>
                   <span>Sleep</span>
-                  <span class="action-verb-tag">Verb: Sleep</span>
+                  <span class="action-verb-label">Sleep</span>
                 </button>
               </div>
 
@@ -230,11 +262,11 @@
             </div>
 
             <!-- Quick Action Utilities -->
-            <div style="display: flex; gap: 10px; justify-content: space-between;">
-              <button class="btn-3d btn-accent" style="flex:1;" onclick="app.makeItWeird()">
+            <div style="display: flex; gap: 12px; justify-content: space-between;">
+              <button class="btn-clay btn-jelly-accent" style="flex:1;" onclick="app.makeItWeird()">
                 <span>🎲 MAKE IT WEIRD!</span>
               </button>
-              <button class="btn-3d btn-secondary" onclick="app.showResetModal()">
+              <button class="btn-clay btn-frosted-secondary" onclick="app.showResetModal()">
                 <span>🔄 Reset</span>
               </button>
             </div>
@@ -245,10 +277,10 @@
 
         <!-- Bottom Step Navigation Bar -->
         <div class="wizard-bottom-bar">
-          <button class="btn-3d btn-secondary btn-large" id="wizard-back-btn" onclick="app.prevStep()">
+          <button class="btn-clay btn-frosted-secondary btn-large" id="wizard-back-btn" onclick="app.prevStep()">
             <span>← PREVIOUS</span>
           </button>
-          <button class="btn-3d btn-primary btn-large" id="wizard-next-btn" onclick="app.nextStep()">
+          <button class="btn-clay btn-gel-primary btn-large" id="wizard-next-btn" onclick="app.nextStep()">
             <span>NEXT →</span>
           </button>
         </div>
@@ -260,7 +292,7 @@
          SCREEN 2: FINAL SHOWCASE & MONSTER ID CARD
          ======================================================================= -->
     <section class="screen-view" id="screen-final">
-      <div class="start-screen-card" style="max-width: 980px;">
+      <div class="clay-main-card start-hero-card" style="max-width: 980px;">
         <h1 class="title-hero" style="font-size: 2.4rem;">YOUR MONSTER IS READY! 🎉</h1>
         <p class="subtitle-hero">Here is your official Academy Monster Passport and ID Card!</p>
 
@@ -269,16 +301,16 @@
 
         <!-- Navigation Buttons -->
         <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 24px;">
-          <button class="btn-3d btn-primary btn-large" onclick="app.startSpeakingMode()">
+          <button class="btn-clay btn-gel-primary btn-large" onclick="app.startSpeakingMode()">
             <span>🎤 DESCRIBE MY MONSTER</span>
           </button>
-          <button class="btn-3d btn-accent btn-large" onclick="app.openPresentationMode()">
+          <button class="btn-clay btn-jelly-accent btn-large" onclick="app.openPresentationMode()">
             <span>📽️ PRESENTATION MODE</span>
           </button>
-          <button class="btn-3d btn-secondary btn-large" onclick="app.goToScreen('screen-create')">
+          <button class="btn-clay btn-frosted-secondary btn-large" onclick="app.goToScreen('screen-create')">
             <span>🛠️ EDIT MONSTER</span>
           </button>
-          <button class="btn-3d btn-secondary btn-large" onclick="app.goToScreen('screen-modes-hub')">
+          <button class="btn-clay btn-frosted-secondary btn-large" onclick="app.goToScreen('screen-modes-hub')">
             <span>🎮 PLAY MORE GAMES</span>
           </button>
         </div>
