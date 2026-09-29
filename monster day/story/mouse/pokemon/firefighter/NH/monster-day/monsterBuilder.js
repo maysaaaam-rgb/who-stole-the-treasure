@@ -224,6 +224,35 @@ class MonsterAnchorRegistry {
 // Global Registry Singleton
 window.monsterAnchorRegistry = new MonsterAnchorRegistry();
 
+function darkenColor(hex, percent = 20) {
+  const colorMap = {
+    purple: '#a855f7',
+    green:  '#22c55e',
+    blue:   '#0ea5e9',
+    red:    '#f43f5e',
+    orange: '#f97316',
+    yellow: '#eab308',
+    pink:   '#f472b6',
+    black:  '#334155',
+    white:  '#f8fafc'
+  };
+  if (!hex) hex = '#a855f7';
+  if (typeof hex === 'string' && colorMap[hex.toLowerCase()]) {
+    hex = colorMap[hex.toLowerCase()];
+  }
+  if (typeof hex === 'string' && hex.length === 4 && hex.startsWith('#')) {
+    hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+  }
+  let num = parseInt(hex.replace("#", ""), 16),
+      amt = Math.round(2.55 * percent),
+      R = (num >> 16) - amt,
+      G = (num >> 8 & 0x00FF) - amt,
+      B = (num & 0x0000FF) - amt;
+  return "#" + (0x1000000 + (R < 0 ? 0 : R) * 0x10000 + (G < 0 ? 0 : G) * 0x100 + (B < 0 ? 0 : B)).toString(16).slice(1);
+}
+if (typeof window !== 'undefined') {
+  window.darkenColor = darkenColor;
+}
 
 // =============================================================================
 // 2. ENHANCED PROCEDURAL VECTOR MONSTER RENDERER
@@ -332,33 +361,7 @@ class MonsterRenderer {
   }
 
   darkenColor(col, percent = 20) {
-    if (!col) return '#3b0764';
-    const colorMap = {
-      purple: '#a855f7',
-      green:  '#22c55e',
-      blue:   '#0ea5e9',
-      red:    '#f43f5e',
-      orange: '#f97316',
-      yellow: '#eab308',
-      pink:   '#f472b6',
-      black:  '#334155',
-      white:  '#f8fafc'
-    };
-    let hex = (typeof col === 'string' && colorMap[col.toLowerCase()]) ? colorMap[col.toLowerCase()] : col;
-    if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) return '#3b0764';
-    if (hex.length === 4) {
-      hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
-    }
-    let num = parseInt(hex.slice(1), 16);
-    if (isNaN(num)) return '#3b0764';
-    let r = (num >> 16) & 255;
-    let g = (num >> 8) & 255;
-    let b = num & 255;
-    const factor = Math.max(0, (100 - percent) / 100);
-    r = Math.floor(r * factor);
-    g = Math.floor(g * factor);
-    b = Math.floor(b * factor);
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    return darkenColor(col, percent);
   }
 
   getSvgOutput(currentMonster = {}) {
