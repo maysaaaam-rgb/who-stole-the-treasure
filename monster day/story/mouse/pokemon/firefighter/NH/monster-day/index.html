@@ -84,14 +84,14 @@
 
         <!-- Preview on Theatrical Stage Podium -->
         <div class="theatrical-stage-wrapper" style="max-width: 480px; margin: 0 auto 24px auto;">
-          <div class="theatrical-curtain-box" style="height: 380px;">
+          <div class="theatrical-curtain-box stage-container" style="height: 380px;">
             <div class="stage-top-overlay-strip">
               <div class="stage-overlay-pill live-status">PREVIEW STAGE</div>
             </div>
-            <div class="theatrical-pedestal-cylinder" style="bottom: 16px;">
-              <div class="pedestal-top-disc"></div>
-              <div class="pedestal-cylinder-body"></div>
-              <div class="monster-contact-shadow"></div>
+            <div class="theatrical-pedestal-cylinder ground-podium stage-podium-cylinder" style="bottom: 16px;">
+              <div class="pedestal-top-disc podium-top-disc"></div>
+              <div class="pedestal-cylinder-body podium-cylinder-body"></div>
+              <div class="monster-contact-shadow podium-contact-shadow"></div>
             </div>
             <div class="monster-viewport-rig" id="start-monster-preview"></div>
           </div>
@@ -175,7 +175,7 @@
         <div class="creator-split-grid">
           
           <!-- LEFT: DYNAMIC STEP OPTIONS -->
-          <div class="options-panel-clay options-panel-3d" id="wizard-step-content">
+          <div class="options-panel-clay options-panel-3d options-panel" id="wizard-step-content">
             <!-- Dynamically populated by app.getStepHtml(stepNum) -->
           </div>
 
@@ -183,7 +183,7 @@
           <div class="theatrical-stage-wrapper stage-column-shell">
             
             <!-- Theatrical Curtain Framing Stage Box -->
-            <div class="theatrical-curtain-box">
+            <div class="theatrical-curtain-box stage-container">
               <!-- Translucent Floating Pill Badges Overlay -->
               <div class="stage-top-overlay-strip">
                 <button class="stage-overlay-pill" onclick="if(window.teacherMode){teacherMode.checkBadges();} document.getElementById('badges-overview-modal').classList.add('active')">
@@ -199,10 +199,10 @@
               <canvas class="stage-ambient-canvas" id="stage-ambient-canvas"></canvas>
               
               <!-- 3D Cylindrical Sandy / Stone Pedestal Base -->
-              <div class="theatrical-pedestal-cylinder">
-                <div class="pedestal-top-disc"></div>
-                <div class="pedestal-cylinder-body"></div>
-                <div class="monster-contact-shadow"></div>
+              <div class="theatrical-pedestal-cylinder ground-podium stage-podium-cylinder">
+                <div class="pedestal-top-disc podium-top-disc"></div>
+                <div class="pedestal-cylinder-body podium-cylinder-body"></div>
+                <div class="monster-contact-shadow podium-contact-shadow"></div>
               </div>
 
               <!-- Monster Viewport Rig -->
@@ -227,28 +227,28 @@
 
               <div class="action-buttons-grid-4">
                 <!-- 1. Tickle! (Laugh) -->
-                <button class="action-jelly-btn action-btn-tickle" onclick="window.monsterActionDock.triggerTickle()">
+                <button class="action-jelly-btn action-dock-btn action-btn action-btn-tickle" onclick="window.monsterActionDock.triggerTickle()">
                   <span class="action-icon">😂</span>
                   <span>Tickle!</span>
                   <span class="action-verb-label">Laugh</span>
                 </button>
 
                 <!-- 2. Feed Snack (Eat) -->
-                <button class="action-jelly-btn action-btn-feed" onclick="window.monsterActionDock.triggerFeed()">
+                <button class="action-jelly-btn action-dock-btn action-btn action-btn-feed" onclick="window.monsterActionDock.triggerFeed()">
                   <span class="action-icon">🍎</span>
                   <span>Feed Snack</span>
                   <span class="action-verb-label">Eat</span>
                 </button>
 
                 <!-- 3. Dance! (Dance) -->
-                <button class="action-jelly-btn action-btn-dance" onclick="window.monsterActionDock.triggerDance()">
+                <button class="action-jelly-btn action-dock-btn action-btn action-btn-dance" onclick="window.monsterActionDock.triggerDance()">
                   <span class="action-icon">💃</span>
                   <span>Dance!</span>
                   <span class="action-verb-label">Dance</span>
                 </button>
 
                 <!-- 4. Sleep (Sleep) -->
-                <button class="action-jelly-btn action-btn-sleep" onclick="window.monsterActionDock.triggerSleep()">
+                <button class="action-jelly-btn action-dock-btn action-btn action-btn-sleep" onclick="window.monsterActionDock.triggerSleep()">
                   <span class="action-icon">💤</span>
                   <span>Sleep</span>
                   <span class="action-verb-label">Sleep</span>

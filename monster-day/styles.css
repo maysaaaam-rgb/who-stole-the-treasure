@@ -665,12 +665,13 @@ body {
   border-top: 2px dashed rgba(203, 213, 225, 0.6);
 }
 
-.milestone-checkpoint-pill {
+.milestone-checkpoint-pill,
+.substep-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
-  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  border-radius: 9999px;
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -683,21 +684,24 @@ body {
   transition: all 0.15s var(--spring-snap);
 }
 
-.milestone-checkpoint-pill:hover {
+.milestone-checkpoint-pill:hover,
+.substep-pill:hover {
   background: #ffffff;
   color: #1e293b;
   transform: translateY(-2px);
 }
 
-.milestone-checkpoint-pill.active {
+.milestone-checkpoint-pill.active,
+.substep-pill.active {
   background: linear-gradient(135deg, #a855f7, #7c3aed);
   color: #ffffff;
   border-color: #ffffff;
-  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.6), 0 6px 16px rgba(168, 85, 247, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
 }
 
-.milestone-checkpoint-pill.completed {
+.milestone-checkpoint-pill.completed,
+.substep-pill.completed {
   background: #dcfce7;
   color: #15803d;
   border-color: #86efac;
@@ -713,15 +717,18 @@ body {
   align-items: start;
 }
 
-/* Left: Options Panel */
-.options-panel-clay {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(255, 255, 255, 0.95);
-  border-radius: var(--radius-panel);
+/* Left: Options Panel (Porcelain white with dual-tone clay shadows) */
+.options-panel,
+.options-panel-clay,
+.options-panel-3d {
+  background: #ffffff;
+  border-radius: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9),
+    inset -3px -3px 8px rgba(203, 213, 225, 0.4),
+    0 12px 28px rgba(148, 163, 184, 0.18);
   padding: 26px;
-  box-shadow: var(--clay-highlight), var(--clay-occlusion), 0 12px 28px rgba(120, 100, 180, 0.1);
   min-height: 520px;
   display: flex;
   flex-direction: column;
@@ -810,27 +817,36 @@ body {
   gap: 14px;
 }
 
-.swatch-disc-3d {
+.swatch-disc-3d,
+.color-swatch-item,
+.color-swatch {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  border: 4px solid #ffffff;
-  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.8), 0 6px 12px rgba(100, 116, 139, 0.3);
+  border: 3.5px solid #ffffff;
+  box-shadow: inset 3px 3px 5px rgba(255, 255, 255, 0.6), 0 6px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   position: relative;
-  transition: transform 0.15s var(--spring-snap), box-shadow 0.15s;
+  transition: transform 0.18s var(--spring-snap), box-shadow 0.18s;
 }
 
-.swatch-disc-3d:hover {
-  transform: scale(1.15);
+.swatch-disc-3d:hover,
+.color-swatch-item:hover,
+.color-swatch:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: inset 3px 3px 6px rgba(255, 255, 255, 0.8), 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.swatch-disc-3d.active {
-  transform: scale(1.22);
-  box-shadow: 0 0 0 4px #a855f7, 0 10px 20px rgba(168, 85, 247, 0.35);
+.swatch-disc-3d.active,
+.color-swatch-item.active,
+.color-swatch.active {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 4px #a855f7, 0 8px 20px rgba(168, 85, 247, 0.45), inset 3px 3px 5px rgba(255, 255, 255, 0.7);
 }
 
-.swatch-disc-3d.active::after {
+.swatch-disc-3d.active::after,
+.color-swatch-item.active::after,
+.color-swatch.active::after {
   content: '✓';
   position: absolute;
   top: 50%;
@@ -848,7 +864,7 @@ body {
 .swatch-red    { background: #f43f5e; }
 .swatch-orange { background: #f97316; }
 .swatch-yellow { background: #eab308; }
-.swatch-pink   { background: #ec4899; }
+.swatch-pink   { background: #f472b6; }
 .swatch-black  { background: #334155; }
 .swatch-white  { background: #f8fafc; border: 4px solid #cbd5e1; }
 
@@ -861,39 +877,43 @@ body {
   gap: 16px;
 }
 
-/* Theatrical Curtain Framing Container with Deep Inset Vignette */
-.theatrical-curtain-box {
+/* Theatrical Curtain Framing Container with Inset Drop Shadow */
+.stage-container,
+.theatrical-curtain-box,
+.stage-podium-box {
   position: relative;
   width: 100%;
   height: 480px;
-  border-radius: 32px;
+  border-radius: 28px;
   border: 3px solid rgba(255, 255, 255, 0.95);
-  box-shadow: inset 0 0 45px rgba(15, 118, 110, 0.28), 0 20px 45px rgba(120, 100, 180, 0.22);
+  box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.25), 0 20px 45px rgba(120, 100, 180, 0.22);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  /* Soft Mint-Green / Teal Fabric Curtain Backdrop with Vertical Fold Gradients */
-  background: linear-gradient(180deg, #ccfbf1 0%, #5eead4 40%, #14b8a6 75%, #0f766e 100%);
+  /* Theater Curtain Motif */
+  background: linear-gradient(180deg, #2dd4bf 0%, #0d9488 65%, #115e59 100%);
 }
 
-/* Vertical Fabric Fold Overlay Simulation */
-.theatrical-curtain-box::before {
+/* Vertical Fabric Drape Highlights Overlay */
+.stage-container::before,
+.theatrical-curtain-box::before,
+.stage-podium-box::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.16) 0px,
-    rgba(15, 118, 110, 0.1) 18px,
-    rgba(255, 255, 255, 0.22) 36px,
-    rgba(13, 148, 136, 0.14) 54px
+    rgba(255, 255, 255, 0.18) 0px,
+    rgba(13, 148, 136, 0.12) 18px,
+    rgba(255, 255, 255, 0.24) 36px,
+    rgba(17, 94, 89, 0.16) 54px
   );
   pointer-events: none;
   z-index: 1;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 /* Top Header Strip Overlay Inside the Preview (Translucent Floating Pill Badges) */
@@ -914,7 +934,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  border-radius: var(--radius-pill);
+  border-radius: 9999px;
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -961,16 +981,19 @@ body {
 }
 
 /* 3D Cylindrical Sandy / Stone Pedestal Base */
-.theatrical-pedestal-cylinder {
+.theatrical-pedestal-cylinder,
+.stage-podium-cylinder,
+.ground-podium {
   position: absolute;
   bottom: 24px;
   width: 290px;
-  height: 80px;
+  height: 72px;
   z-index: 5;
 }
 
-/* Pedestal Base Top Disc with Specular Highlight */
-.pedestal-top-disc {
+/* Pedestal Base Top Disc with Bright Specular Rim Highlight */
+.pedestal-top-disc,
+.podium-top-disc {
   position: absolute;
   top: 0;
   left: 0;
@@ -978,32 +1001,36 @@ body {
   height: 48px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 35%, #fffbeb 0%, #fef3c7 45%, #fde68a 100%);
-  border: 2.5px solid #fef08a;
-  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.95), 0 4px 10px rgba(180, 83, 9, 0.15);
+  border: 2.5px solid #ffffff;
+  box-shadow: inset 0 3px 6px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(180, 83, 9, 0.2);
 }
 
-/* Pedestal Stone Rim Body */
-.pedestal-cylinder-body {
+/* Pedestal Cylinder Skirt: 14px Thick Darker Bevel Tone with Bottom Drop Shadow */
+.pedestal-cylinder-body,
+.podium-cylinder-body {
   position: absolute;
   top: 24px;
   left: 0;
   right: 0;
-  height: 48px;
+  height: 38px;
   border-radius: 0 0 50% 50% / 0 0 36px 36px;
   background: linear-gradient(180deg, #fde68a 0%, #d97706 70%, #92400e 100%);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.35);
 }
 
 /* Monster Foot Contact Occlusion Shadow */
-.monster-contact-shadow {
+.monster-contact-shadow,
+.podium-contact-shadow {
   position: absolute;
-  top: 12px;
+  top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  width: 170px;
-  height: 26px;
+  width: 180px;
+  height: 24px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.32) 0%, rgba(15, 23, 42, 0) 70%);
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0) 70%);
+  opacity: 0.35;
+  filter: blur(4px);
 }
 
 /* Monster Rig Container */
@@ -1108,14 +1135,16 @@ body {
   gap: 10px;
 }
 
-.action-jelly-btn {
+.action-jelly-btn,
+.action-dock-btn,
+.action-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
   padding: 12px 6px;
-  border-radius: var(--radius-chip);
+  border-radius: 20px;
   border: 2px solid rgba(255, 255, 255, 0.7);
   font-family: inherit;
   font-size: 0.92rem;
@@ -1123,49 +1152,88 @@ body {
   cursor: pointer;
   color: #ffffff;
   transition: transform 0.15s var(--spring-snap), box-shadow 0.15s;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 6px 14px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 5px 0 var(--btn-dark-shade, #475569), 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
-.action-jelly-btn .action-icon {
+.action-jelly-btn:active,
+.action-dock-btn:active,
+.action-btn:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 var(--btn-dark-shade, #475569);
+}
+
+.action-jelly-btn .action-icon,
+.action-dock-btn .action-icon,
+.action-btn .action-icon {
   font-size: 1.6rem;
   line-height: 1;
 }
 
-.action-jelly-btn .action-verb-label {
+.action-jelly-btn .action-verb-label,
+.action-dock-btn .action-verb-label,
+.action-btn .action-verb-label {
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
   opacity: 0.92;
 }
 
-/* 4 Clay Action Colors */
+/* 4 Clay Action Colors with --btn-dark-shade */
 .action-btn-tickle {
+  --btn-dark-shade: #9f1239;
   background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 #9f1239, 0 10px 18px rgba(225, 29, 72, 0.35);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 var(--btn-dark-shade), 0 8px 15px rgba(0, 0, 0, 0.15);
 }
-.action-btn-tickle:hover { transform: translateY(-2px); box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 #9f1239; }
-.action-btn-tickle:active { transform: translateY(3px); box-shadow: 0 2px 0 #9f1239; }
+.action-btn-tickle:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 var(--btn-dark-shade), 0 12px 20px rgba(225, 29, 72, 0.35);
+}
+.action-btn-tickle:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 var(--btn-dark-shade);
+}
 
 .action-btn-feed {
+  --btn-dark-shade: #9a3412;
   background: linear-gradient(180deg, #fdba74 0%, #ea580c 100%);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 #9a3412, 0 10px 18px rgba(234, 88, 12, 0.35);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 var(--btn-dark-shade), 0 8px 15px rgba(0, 0, 0, 0.15);
 }
-.action-btn-feed:hover { transform: translateY(-2px); box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 #9a3412; }
-.action-btn-feed:active { transform: translateY(3px); box-shadow: 0 2px 0 #9a3412; }
+.action-btn-feed:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 var(--btn-dark-shade), 0 12px 20px rgba(234, 88, 12, 0.35);
+}
+.action-btn-feed:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 var(--btn-dark-shade);
+}
 
 .action-btn-dance {
+  --btn-dark-shade: #5b21b6;
   background: linear-gradient(180deg, #c084fc 0%, #7c3aed 100%);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 #5b21b6, 0 10px 18px rgba(124, 58, 237, 0.35);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 var(--btn-dark-shade), 0 8px 15px rgba(0, 0, 0, 0.15);
 }
-.action-btn-dance:hover { transform: translateY(-2px); box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 #5b21b6; }
-.action-btn-dance:active { transform: translateY(3px); box-shadow: 0 2px 0 #5b21b6; }
+.action-btn-dance:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 var(--btn-dark-shade), 0 12px 20px rgba(124, 58, 237, 0.35);
+}
+.action-btn-dance:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 var(--btn-dark-shade);
+}
 
 .action-btn-sleep {
+  --btn-dark-shade: #155e75;
   background: linear-gradient(180deg, #67e8f9 0%, #0891b2 100%);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 #155e75, 0 10px 18px rgba(8, 145, 178, 0.35);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 5px 0 var(--btn-dark-shade), 0 8px 15px rgba(0, 0, 0, 0.15);
 }
-.action-btn-sleep:hover { transform: translateY(-2px); box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 #155e75; }
-.action-btn-sleep:active { transform: translateY(3px); box-shadow: 0 2px 0 #155e75; }
+.action-btn-sleep:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 7px 0 var(--btn-dark-shade), 0 12px 20px rgba(8, 145, 178, 0.35);
+}
+.action-btn-sleep:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 var(--btn-dark-shade);
+}
 
 /* Dynamic Action Feedback Banner */
 .action-feedback-banner {

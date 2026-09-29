@@ -240,7 +240,7 @@ class MonsterRenderer {
       red:    { main: '#f43f5e', belly: '#ffe4e6', dark: '#be123c', stroke: '#881337', highlight: '#fb7185' },
       orange: { main: '#f97316', belly: '#ffedd5', dark: '#c2410c', stroke: '#7c2d12', highlight: '#fb923c' },
       yellow: { main: '#eab308', belly: '#fef9c3', dark: '#a16207', stroke: '#713f12', highlight: '#fde047' },
-      pink:   { main: '#ec4899', belly: '#fce7f3', dark: '#be185d', stroke: '#831843', highlight: '#f472b6' },
+      pink:   { main: '#f472b6', belly: '#fce7f3', dark: '#db2777', stroke: '#831843', highlight: '#f9a8d4' },
       black:  { main: '#334155', belly: '#94a3b8', dark: '#0f172a', stroke: '#020617', highlight: '#64748b' },
       white:  { main: '#f8fafc', belly: '#cbd5e1', dark: '#94a3b8', stroke: '#334155', highlight: '#ffffff' }
     };
@@ -382,6 +382,19 @@ class MonsterRenderer {
           <filter id="mDropGlow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="rgba(15,23,42,0.18)"/>
           </filter>
+          <!-- Soft Inset Ambient Occlusion & Squish Filter -->
+          <filter id="claySquish" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="rgba(15,23,42,0.22)"/>
+          </filter>
+          <!-- Foot Contact Blur Filter -->
+          <filter id="footBlur" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4"/>
+          </filter>
+          <!-- 3D Clay Radial Gradient Highlight on top-left to simulate rounded volume -->
+          <radialGradient id="clayShine" cx="35%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0.18)"/>
+          </radialGradient>
           <linearGradient id="bodyGrad_${monster.color}" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="${pal.highlight}"/>
             <stop offset="50%" stop-color="${pal.main}"/>
@@ -434,8 +447,8 @@ class MonsterRenderer {
 
     return `
       <g id="layer-backdrop-stage">
-        <!-- Isometric Stage Contact Shadow -->
-        <ellipse cx="200" cy="445" rx="100" ry="16" fill="rgba(15, 23, 42, 0.16)" />
+        <!-- Anchored Stage Platform Contact Shadow -->
+        <ellipse cx="200" cy="430" rx="90" ry="14" fill="#0f172a" opacity="0.35" filter="url(#footBlur)" />
         ${powerAura}
       </g>
     `;
@@ -521,9 +534,11 @@ class MonsterRenderer {
       <g id="layer-back-limbs">
         ${configs.map(c => `
           <g transform="translate(${c.x}, ${c.y}) rotate(${c.rot || 0})">
+            <!-- Foot Ground Contact Shadow Anchoring to Platform -->
+            <ellipse cx="2" cy="86" rx="${feet === 'giant' ? 36 : 28}" ry="9" fill="#0f172a" opacity="0.35" filter="url(#footBlur)"/>
             <!-- Leg Column -->
             <path d="M -14,0 L -14,75 Q -14,88 0,88 Q 14,88 14,75 L 14,0 Z" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4.5" stroke-linejoin="round"/>
-            <!-- Foot -->
+            <!-- Flat Foot on Stage Platform -->
             <ellipse cx="2" cy="80" rx="${feet === 'giant' ? 32 : 24}" ry="12" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="4.5"/>
             <circle cx="-12" cy="86" r="4.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
             <circle cx="2" cy="89" r="5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1.5"/>
@@ -616,10 +631,15 @@ class MonsterRenderer {
     }
 
     return `
-      <g id="layer-torso-head" filter="url(#mDropGlow)">
+      <g id="layer-torso-head" filter="url(#claySquish)">
         ${earsSvg}
         ${hornsSvg}
-        <path d="${bodyPath}" fill="url(#bodyGrad_${monster.color})" stroke="${pal.stroke}" stroke-width="5" stroke-linejoin="round"/>
+        <!-- 1. Central Torso Solid Base Fill -->
+        <path d="${bodyPath}" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="5" stroke-linejoin="round"/>
+        <!-- 2. Radial 3D Clay Lighting Mesh Highlight -->
+        <path d="${bodyPath}" fill="url(#clayShine)" style="mix-blend-mode: overlay; pointer-events: none;"/>
+        <!-- 3. Soft Ambient Shadow Gradient Underlay -->
+        <path d="${bodyPath}" fill="url(#bodyGrad_${monster.color})" opacity="0.3" style="mix-blend-mode: multiply; pointer-events: none;"/>
         <!-- Soft Blush Cheeks -->
         <ellipse cx="146" cy="182" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
         <ellipse cx="254" cy="182" rx="14" ry="9" fill="${pal.dark}" opacity="0.25"/>
@@ -750,21 +770,27 @@ class MonsterRenderer {
 
     return `
       <g id="layer-front-limbs">
-        <!-- Left Arm -->
+        <!-- Left Arm with Rounded Torso Joint -->
         <g class="monster-arm-left">
+          <!-- Rounded Joint Socket at Torso Connection -->
+          <circle cx="${shL.x}" cy="${shL.y}" r="13" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4"/>
+          <!-- Arm Limb -->
           <path d="M ${shL.x},${shL.y} Q ${shL.x - 25},${shL.y + 15} ${shL.x + leftHandOffset.x},${shL.y + leftHandOffset.y}" 
-                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round"/>
+                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M ${shL.x},${shL.y} Q ${shL.x - 25},${shL.y + 15} ${shL.x + leftHandOffset.x},${shL.y + leftHandOffset.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round"/>
+                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="${shL.x + leftHandOffset.x}" cy="${shL.y + leftHandOffset.y}" r="14" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
         </g>
 
-        <!-- Right Arm -->
+        <!-- Right Arm with Rounded Torso Joint -->
         <g class="monster-arm-right">
+          <!-- Rounded Joint Socket at Torso Connection -->
+          <circle cx="${shR.x}" cy="${shR.y}" r="13" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="4"/>
+          <!-- Arm Limb -->
           <path d="M ${shR.x},${shR.y} Q ${shR.x + 25},${shR.y - 15} ${shR.x + rightHandOffset.x},${shR.y + rightHandOffset.y}" 
-                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round"/>
+                fill="none" stroke="${pal.main}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M ${shR.x},${shR.y} Q ${shR.x + 25},${shR.y - 15} ${shR.x + rightHandOffset.x},${shR.y + rightHandOffset.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round"/>
+                fill="none" stroke="${pal.stroke}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="${shR.x + rightHandOffset.x}" cy="${shR.y + rightHandOffset.y}" r="14" fill="${pal.main}" stroke="${pal.stroke}" stroke-width="3.5"/>
         </g>
       </g>
