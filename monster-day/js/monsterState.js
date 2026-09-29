@@ -85,7 +85,17 @@ class MonsterState {
       powers: [], // 'fly', 'breathe_fire', 'make_ice', 'shoot_lightning', 'invisible', 'jump_high', 'swim_fast', 'super_strong', 'magic', 'run_fast'
       personality: [], // 'friendly', 'funny', 'scary', 'angry', 'happy', 'sleepy', 'crazy', 'shy', 'strong', 'clever'
       world: 'castle', // 'house', 'forest', 'castle', 'volcano', 'ocean', 'ice_world', 'moon', 'space', 'jungle', 'cave'
-      food: 'pizza' // 'pizza', 'burgers', 'ice cream', 'apples', 'fish', 'cake', 'sandwiches', 'chocolate'
+      food: 'pizza', // 'pizza', 'burgers', 'ice cream', 'apples', 'fish', 'cake', 'sandwiches', 'chocolate'
+
+      // Clinic & Emotions State (Unit 2 Handoff)
+      clinicMood: 'sick', // 'sick', 'sad', 'scared', 'angry', 'sleepy', 'happy'
+      clinicCertified: false,
+      clinic: {
+        activeCaseIndex: 0,
+        patientMood: 'sick',
+        selectedTool: null,
+        isTreated: false
+      }
     };
   }
 
@@ -359,6 +369,45 @@ class MonsterState {
         this.monster.teeth = 'sharp';
         break;
     }
+    this.notify();
+  }
+
+  // Clinic & Emotions State Helpers (Unit 2)
+  setClinicMood(mood) {
+    this.monster.clinicMood = mood;
+    if (!this.monster.clinic) this.monster.clinic = {};
+    this.monster.clinic.patientMood = mood;
+    this.notify();
+  }
+
+  selectClinicTool(toolId) {
+    if (!this.monster.clinic) this.monster.clinic = {};
+    this.monster.clinic.selectedTool = toolId;
+    this.notify();
+  }
+
+  setClinicCase(caseIndex) {
+    if (!this.monster.clinic) this.monster.clinic = {};
+    this.monster.clinic.activeCaseIndex = caseIndex;
+    this.monster.clinic.isTreated = false;
+    this.monster.clinicMood = 'sick';
+    this.monster.clinic.patientMood = 'sick';
+    this.notify();
+  }
+
+  setClinicTreated(isTreated) {
+    if (!this.monster.clinic) this.monster.clinic = {};
+    this.monster.clinic.isTreated = isTreated;
+    if (isTreated) {
+      this.monster.clinicMood = 'happy';
+      this.monster.clinic.patientMood = 'happy';
+      this.monster.clinicCertified = true;
+    }
+    this.notify();
+  }
+
+  setClinicCertified(bool) {
+    this.monster.clinicCertified = !!bool;
     this.notify();
   }
 }
