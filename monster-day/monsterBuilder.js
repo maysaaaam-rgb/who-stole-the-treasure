@@ -25,8 +25,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 150, cy: 155, r: 75 },
         headTop: { x: 150, y: 80 },
         faceCenter: { cx: 150, cy: 140, eyeY: 125, noseY: 142, mouthY: 162, width: 72 },
-        armLeft:  { x: 78, y: 155, rot: -28 },
-        armRight: { x: 222, y: 155, rot: 28 },
+        armLeft:  { x: 95, y: 150, rot: -28 },
+        armRight: { x: 205, y: 150, rot: 28 },
         legLeft:  { x: 115, y: 220, rot: 0 },
         legRight: { x: 185, y: 220, rot: 0 },
         ears:     { left: { x: 92, y: 98, rot: -26 }, right: { x: 208, y: 98, rot: 26 } },
@@ -47,8 +47,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 150, cy: 152, width: 120, height: 145, rx: 58 },
         headTop: { x: 150, y: 80 },
         faceCenter: { cx: 150, cy: 135, eyeY: 120, noseY: 138, mouthY: 158, width: 68 },
-        armLeft:  { x: 90, y: 140, rot: -28 },
-        armRight: { x: 210, y: 140, rot: 28 },
+        armLeft:  { x: 85, y: 135, rot: -28 },
+        armRight: { x: 215, y: 135, rot: 28 },
         legLeft:  { x: 115, y: 215, rot: 0 },
         legRight: { x: 185, y: 215, rot: 0 },
         ears:     { left: { x: 95, y: 100, rot: -24 }, right: { x: 205, y: 100, rot: 24 } },
@@ -91,8 +91,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 150, cy: 162, width: 160, height: 115, rx: 50 },
         headTop: { x: 150, y: 105 },
         faceCenter: { cx: 150, cy: 145, eyeY: 130, noseY: 146, mouthY: 168, width: 80 },
-        armLeft:  { x: 72, y: 155, rot: -30 },
-        armRight: { x: 228, y: 155, rot: 30 },
+        armLeft:  { x: 65, y: 140, rot: -30 },
+        armRight: { x: 235, y: 140, rot: 30 },
         legLeft:  { x: 110, y: 215, rot: 0 },
         legRight: { x: 190, y: 215, rot: 0 },
         ears:     { left: { x: 85, y: 115, rot: -32 }, right: { x: 215, y: 115, rot: 32 } },
@@ -113,8 +113,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 150, cy: 152, width: 84, height: 155, rx: 42 },
         headTop: { x: 150, y: 75 },
         faceCenter: { cx: 150, cy: 135, eyeY: 118, noseY: 136, mouthY: 156, width: 56 },
-        armLeft:  { x: 110, y: 145, rot: -25 },
-        armRight: { x: 190, y: 145, rot: 25 },
+        armLeft:  { x: 108, y: 145, rot: -25 },
+        armRight: { x: 192, y: 145, rot: 25 },
         legLeft:  { x: 125, y: 222, rot: 0 },
         legRight: { x: 175, y: 222, rot: 0 },
         ears:     { left: { x: 112, y: 95, rot: -22 }, right: { x: 188, y: 95, rot: 22 } },
@@ -135,8 +135,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 150, cy: 160 },
         headTop: { x: 150, y: 82 },
         faceCenter: { cx: 150, cy: 140, eyeY: 124, noseY: 142, mouthY: 164, width: 70 },
-        armLeft:  { x: 88, y: 160, rot: -28 },
-        armRight: { x: 212, y: 160, rot: 28 },
+        armLeft:  { x: 95, y: 150, rot: -28 },
+        armRight: { x: 205, y: 150, rot: 28 },
         legLeft:  { x: 115, y: 224, rot: 0 },
         legRight: { x: 185, y: 224, rot: 0 },
         ears:     { left: { x: 100, y: 98, rot: -28 }, right: { x: 200, y: 98, rot: 28 } },
@@ -173,8 +173,8 @@ class MonsterAnchorRegistry {
         torso: { cx: 142, cy: 160 },
         headTop: { x: 142, y: 84 },
         faceCenter: { cx: 142, cy: 136, eyeY: 120, noseY: 138, mouthY: 158, width: 68 },
-        armLeft:  { x: 94, y: 158, rot: -28 },
-        armRight: { x: 206, y: 158, rot: 28 },
+        armLeft:  { x: 92, y: 155, rot: -28 },
+        armRight: { x: 208, y: 155, rot: 28 },
         legLeft:  { x: 115, y: 224, rot: 0 },
         legRight: { x: 185, y: 224, rot: 0 },
         ears:     { left: { x: 96, y: 98, rot: -28 }, right: { x: 196, y: 98, rot: 28 } },
@@ -210,6 +210,72 @@ class MonsterAnchorRegistry {
           [{ x: 108, y: 224, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 192, y: 224, rot: 4 }],
           [{ x: 98, y: 222, rot: -6 }, { x: 132, y: 226, rot: -2 }, { x: 168, y: 226, rot: 2 }, { x: 202, y: 222, rot: 6 }],
           [{ x: 92, y: 222, rot: -8 }, { x: 122, y: 226, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 178, y: 226, rot: 4 }, { x: 208, y: 222, rot: 8 }]
+        ]
+      },
+      teardrop: {
+        id: 'teardrop',
+        torso: { cx: 150, cy: 160 },
+        headTop: { x: 150, y: 84 },
+        faceCenter: { cx: 150, cy: 138, eyeY: 124, noseY: 140, mouthY: 160, width: 68 },
+        armLeft:  { x: 90, y: 150, rot: -28 },
+        armRight: { x: 210, y: 150, rot: 28 },
+        legLeft:  { x: 115, y: 224, rot: 0 },
+        legRight: { x: 185, y: 224, rot: 0 },
+        ears:     { left: { x: 100, y: 98, rot: -26 }, right: { x: 200, y: 98, rot: 26 } },
+        horns:    { left: { x: 124, y: 84, rot: -18 }, right: { x: 176, y: 84, rot: 18 } },
+        tail:     { x: 92, y: 220 },
+        wings:    { left: { x: 92, y: 142 }, right: { x: 208, y: 142 } },
+        cape:     { x: 150, y: 132 },
+        legs: [
+          [{ x: 150, y: 228 }],
+          [{ x: 115, y: 224, rot: 0 }, { x: 185, y: 224, rot: 0 }],
+          [{ x: 105, y: 224, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 195, y: 224, rot: 4 }],
+          [{ x: 95, y: 222, rot: -6 }, { x: 130, y: 226, rot: -2 }, { x: 170, y: 226, rot: 2 }, { x: 205, y: 222, rot: 6 }],
+          [{ x: 90, y: 222, rot: -8 }, { x: 120, y: 226, rot: -4 }, { x: 150, y: 228, rot: 0 }, { x: 180, y: 226, rot: 4 }, { x: 210, y: 222, rot: 8 }]
+        ]
+      },
+      cloud: {
+        id: 'cloud',
+        torso: { cx: 150, cy: 155 },
+        headTop: { x: 150, y: 80 },
+        faceCenter: { cx: 150, cy: 140, eyeY: 124, noseY: 142, mouthY: 162, width: 72 },
+        armLeft:  { x: 80, y: 150, rot: -28 },
+        armRight: { x: 220, y: 150, rot: 28 },
+        legLeft:  { x: 115, y: 220, rot: 0 },
+        legRight: { x: 185, y: 220, rot: 0 },
+        ears:     { left: { x: 95, y: 95, rot: -26 }, right: { x: 205, y: 95, rot: 26 } },
+        horns:    { left: { x: 124, y: 80, rot: -18 }, right: { x: 176, y: 80, rot: 18 } },
+        tail:     { x: 85, y: 215 },
+        wings:    { left: { x: 80, y: 140 }, right: { x: 220, y: 140 } },
+        cape:     { x: 150, y: 132 },
+        legs: [
+          [{ x: 150, y: 225 }],
+          [{ x: 115, y: 220, rot: 0 }, { x: 185, y: 220, rot: 0 }],
+          [{ x: 105, y: 220, rot: -4 }, { x: 150, y: 225, rot: 0 }, { x: 195, y: 220, rot: 4 }],
+          [{ x: 95, y: 218, rot: -6 }, { x: 130, y: 224, rot: -2 }, { x: 170, y: 224, rot: 2 }, { x: 205, y: 218, rot: 6 }],
+          [{ x: 90, y: 218, rot: -8 }, { x: 120, y: 224, rot: -4 }, { x: 150, y: 226, rot: 0 }, { x: 180, y: 224, rot: 4 }, { x: 210, y: 218, rot: 8 }]
+        ]
+      },
+      square: {
+        id: 'square',
+        torso: { cx: 150, cy: 152, width: 130, height: 135, rx: 28 },
+        headTop: { x: 150, y: 85 },
+        faceCenter: { cx: 150, cy: 138, eyeY: 122, noseY: 138, mouthY: 158, width: 70 },
+        armLeft:  { x: 85, y: 145, rot: -25 },
+        armRight: { x: 215, y: 145, rot: 25 },
+        legLeft:  { x: 115, y: 222, rot: 0 },
+        legRight: { x: 185, y: 222, rot: 0 },
+        ears:     { left: { x: 96, y: 92, rot: -24 }, right: { x: 204, y: 92, rot: 24 } },
+        horns:    { left: { x: 122, y: 84, rot: -16 }, right: { x: 178, y: 84, rot: 16 } },
+        tail:     { x: 88, y: 216 },
+        wings:    { left: { x: 88, y: 138 }, right: { x: 212, y: 138 } },
+        cape:     { x: 150, y: 130 },
+        legs: [
+          [{ x: 150, y: 228 }],
+          [{ x: 115, y: 222, rot: 0 }, { x: 185, y: 222, rot: 0 }],
+          [{ x: 105, y: 222, rot: -4 }, { x: 150, y: 226, rot: 0 }, { x: 195, y: 222, rot: 4 }],
+          [{ x: 95, y: 220, rot: -6 }, { x: 130, y: 224, rot: -2 }, { x: 170, y: 224, rot: 2 }, { x: 205, y: 220, rot: 6 }],
+          [{ x: 90, y: 220, rot: -8 }, { x: 120, y: 224, rot: -4 }, { x: 150, y: 226, rot: 0 }, { x: 180, y: 224, rot: 4 }, { x: 210, y: 220, rot: 8 }]
         ]
       }
     };
@@ -317,9 +383,10 @@ class MonsterRenderer {
       expression: m.expression || 'happy',
       arms: {
         count: m.arms?.count !== undefined ? m.arms.count : 2,
-        length: m.arms?.length || 'normal'
+        length: m.arms?.length || 'normal',
+        style: m.arms?.style || m.hands || 'clay'
       },
-      hands: m.hands || 'normal',
+      hands: m.hands || m.arms?.style || 'clay',
       legs: {
         count: m.legs?.count !== undefined ? m.legs.count : 2
       },
@@ -333,14 +400,14 @@ class MonsterRenderer {
         shell: !!m.specialParts?.shell
       },
       clothes: {
-        outfit: m.clothes?.outfit || 'none',
-        top: m.clothes?.top || 'none',
+        outfit: m.clothes?.outfit || (['superhero', 'hoodie', 'tuxedo', 'wizard', 'astronaut', 'pirate'].includes(m.clothes?.top) ? m.clothes.top : 'none'),
+        top: m.clothes?.top || (m.clothes?.outfit && m.clothes.outfit !== 'none' ? m.clothes.outfit : 'none'),
         topColor: m.clothes?.topColor || 'blue',
         bottom: m.clothes?.bottom || 'none',
         bottomColor: m.clothes?.bottomColor || 'black',
         shoes: m.clothes?.shoes || 'none',
         shoesColor: m.clothes?.shoesColor || 'yellow',
-        cape: !!m.clothes?.cape,
+        cape: !!(m.clothes?.cape || m.clothes?.top === 'superhero' || m.clothes?.outfit === 'superhero'),
         capeColor: m.clothes?.capeColor || 'red'
       },
       accessories: Array.isArray(m.accessories) ? m.accessories : [],
@@ -669,7 +736,7 @@ class MonsterRenderer {
     }
 
     // Cape Back
-    if (monster.clothes.cape) {
+    if (monster.clothes.cape || monster.clothes.top === 'superhero' || monster.clothes.outfit === 'superhero') {
       const capeColor = this.getClothColor(monster.clothes.capeColor || 'red', '#dc2626');
       out += `<path class="monster-cape-back" d="M 112,${anchors.cape.y} Q 150,${anchors.cape.y + 10} 188,${anchors.cape.y} L 214,250 Q 150,265 86,250 Z" fill="${capeColor}" stroke="#7f1d1d" stroke-width="3" />`;
     }
@@ -715,7 +782,7 @@ class MonsterRenderer {
   }
 
   // -------------------------------------------------------------
-  // LAYER 3: MONSTER TORSO BASE (Solid 3D Clay Lighting + Belly)
+  // LAYER 3: MONSTER TORSO BASE (Solid 3D Clay Lighting + Patterns + Belly)
   // -------------------------------------------------------------
   renderTorsoBase(monster, pal, secPal, anchors, bodyGradId = 'clayGradient', secGradId = 'secGrad') {
     const currentMonster = monster || {};
@@ -788,6 +855,27 @@ class MonsterRenderer {
         <rect x="95" y="85" width="110" height="145" rx="20" ry="20" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<rect x="115" y="155" width="70" height="60" rx="10" ry="10" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="185" r="12" fill="#38bdf8"/>`;
+    } else if (shape === 'teardrop') {
+      bodySvg = `
+        <path d="M 150,82 C 178,82 196,115 204,155 C 214,195 210,232 188,236 C 166,240 134,240 112,236 C 90,232 86,195 96,155 C 104,115 122,82 150,82 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,82 C 178,82 196,115 204,155 C 214,195 210,232 188,236 C 166,240 134,240 112,236 C 90,232 86,195 96,155 C 104,115 122,82 150,82 Z" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,82 C 178,82 196,115 204,155 C 214,195 210,232 188,236 C 166,240 134,240 112,236 C 90,232 86,195 96,155 C 104,115 122,82 150,82 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="186" rx="42" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
+    } else if (shape === 'cloud') {
+      bodySvg = `
+        <path d="M 150,80 C 180,72 205,92 215,115 C 235,128 240,165 225,188 C 232,215 205,235 180,232 C 162,238 138,238 120,232 C 95,235 68,215 75,188 C 60,165 65,128 85,115 C 95,92 120,72 150,80 Z" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,80 C 180,72 205,92 215,115 C 235,128 240,165 225,188 C 232,215 205,235 180,232 C 162,238 138,238 120,232 C 95,235 68,215 75,188 C 60,165 65,128 85,115 C 95,92 120,72 150,80 Z" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
+        <path d="M 150,80 C 180,72 205,92 215,115 C 235,128 240,165 225,188 C 232,215 205,235 180,232 C 162,238 138,238 120,232 C 95,235 68,215 75,188 C 60,165 65,128 85,115 C 95,92 120,72 150,80 Z" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
+      `;
+      bellySvg = `<ellipse cx="150" cy="176" rx="46" ry="38" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
+    } else if (shape === 'square') {
+      bodySvg = `
+        <rect x="85" y="85" width="130" height="135" rx="28" ry="28" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="85" y="85" width="130" height="135" rx="28" ry="28" fill="url(#monsterClayGrad)" stroke="#1e293b" stroke-width="3.5" />
+        <rect x="85" y="85" width="130" height="135" rx="28" ry="28" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
+      `;
+      bellySvg = `<rect x="110" y="150" width="80" height="60" rx="16" ry="16" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5"/><circle cx="150" cy="180" r="10" fill="#38bdf8"/>`;
     } else {
       bodySvg = `
         <circle cx="150" cy="155" r="75" fill="${bodyColor}" stroke="#1e293b" stroke-width="3.5" />
@@ -795,6 +883,61 @@ class MonsterRenderer {
         <circle cx="150" cy="155" r="75" fill="url(#activeBodyClay)" stroke="#1e293b" stroke-width="3.5" />
       `;
       bellySvg = `<ellipse cx="150" cy="175" rx="46" ry="42" fill="url(#bellyGrad)" stroke="${pal.dark}" stroke-width="2.5" opacity="0.95"/>`;
+    }
+
+    // Pattern & Texture Layer
+    let patternSvg = '';
+    const pat = currentMonster.pattern || 'none';
+    const patCol = (secPal && secPal.main) || '#fde047';
+    const patDark = (secPal && secPal.dark) || '#ca8a04';
+
+    if (pat === 'dots' || pat === 'spots') {
+      patternSvg = `
+        <g class="monster-pattern monster-pattern-dots" fill="${patCol}" stroke="${patDark}" stroke-width="1.8" opacity="0.88">
+          <circle cx="120" cy="118" r="9"/>
+          <circle cx="180" cy="115" r="8"/>
+          <circle cx="106" cy="155" r="10"/>
+          <circle cx="194" cy="158" r="11"/>
+          <circle cx="125" cy="205" r="8"/>
+          <circle cx="178" cy="208" r="9"/>
+          <circle cx="150" cy="110" r="6"/>
+        </g>
+      `;
+    } else if (pat === 'stripes') {
+      patternSvg = `
+        <g class="monster-pattern monster-pattern-stripes" fill="none" stroke="${patCol}" stroke-width="6" stroke-linecap="round" opacity="0.9">
+          <!-- Left side stripes -->
+          <path d="M 92,125 Q 112,130 118,122" />
+          <path d="M 88,150 Q 115,155 125,145" />
+          <path d="M 94,178 Q 118,182 124,170" />
+          <!-- Right side stripes -->
+          <path d="M 208,125 Q 188,130 182,122" />
+          <path d="M 212,150 Q 185,155 175,145" />
+          <path d="M 206,178 Q 182,182 176,170" />
+        </g>
+      `;
+    } else if (pat === 'fur') {
+      patternSvg = `
+        <g class="monster-pattern monster-pattern-fur" fill="${patCol}" stroke="${pal.stroke}" stroke-width="1.5" opacity="0.85">
+          <!-- Left flank fur tufts -->
+          <path d="M 88,135 L 74,142 L 88,148 L 72,156 L 88,162 Z" />
+          <path d="M 92,175 L 78,182 L 94,188 Z" />
+          <!-- Right flank fur tufts -->
+          <path d="M 212,135 L 226,142 L 212,148 L 228,156 L 212,162 Z" />
+          <path d="M 208,175 L 222,182 L 206,188 Z" />
+          <!-- Forehead fur tuft -->
+          <path d="M 142,86 L 150,70 L 158,86 L 150,82 Z" />
+        </g>
+      `;
+    } else if (pat === 'scales') {
+      patternSvg = `
+        <g class="monster-pattern monster-pattern-scales" fill="none" stroke="${patCol}" stroke-width="3" stroke-linecap="round" opacity="0.88">
+          <path d="M 130,125 Q 140,135 150,125 Q 160,135 170,125" />
+          <path d="M 120,145 Q 130,155 140,145 Q 150,155 160,145 Q 170,155 180,145" />
+          <path d="M 115,168 Q 125,178 135,168 Q 145,178 155,168 Q 165,178 175,168 Q 185,178 195,168" />
+          <path d="M 125,192 Q 135,202 145,192 Q 155,202 165,192 Q 175,202 185,192" />
+        </g>
+      `;
     }
 
     // Specular 3D Clay Highlight Pill/Disc on top-left of torso
@@ -806,9 +949,11 @@ class MonsterRenderer {
       <g id="layer-torso-base" class="layer-torso-base layer-torso-head" filter="url(#clayShadow)">
         <!-- 1. Central Torso Solid Base Fill with 3D Radial Clay Lighting -->
         ${bodySvg}
-        <!-- 2. Soft Specular Clay Highlight on Top-Left -->
+        <!-- 2. Body Pattern & Texture -->
+        ${patternSvg}
+        <!-- 3. Soft Specular Clay Highlight on Top-Left -->
         ${shineSvg}
-        <!-- 3. Creamy Belly Patch -->
+        <!-- 4. Creamy Belly Patch -->
         ${bellySvg}
       </g>
     `;
@@ -872,21 +1017,193 @@ class MonsterRenderer {
 
   // -------------------------------------------------------------
   // LAYER 5: CLOTHES & ARMOR (Aligned Strictly Below Chin Line: cy >= 168)
+  // Dynamic body width fitting for all 12 body types
   // -------------------------------------------------------------
+  getBodyBounds(shape) {
+    const map = {
+      round:    { hw: 75, botY: 220, topY: 155 },
+      tall:     { hw: 60, botY: 215, topY: 135 },
+      short:    { hw: 72, botY: 220, topY: 160 },
+      wide:     { hw: 80, botY: 215, topY: 140 },
+      thin:     { hw: 42, botY: 220, topY: 140 },
+      blob:     { hw: 70, botY: 224, topY: 150 },
+      ghost:    { hw: 65, botY: 235, topY: 145 },
+      dinosaur: { hw: 62, botY: 225, topY: 145 },
+      robot:    { hw: 55, botY: 222, topY: 140 },
+      teardrop: { hw: 68, botY: 224, topY: 145 },
+      cloud:    { hw: 78, botY: 220, topY: 145 },
+      square:   { hw: 60, botY: 220, topY: 140 }
+    };
+    return map[shape] || map.round;
+  }
+
   renderClothes(monster, pal, anchors) {
     let out = '';
     const f = anchors.faceCenter;
     const mouthBottom = (f.mouthY || 154) + 12;
     const chinY = Math.max(168, mouthBottom);
 
-    const t = monster.clothes.top;
-    if (t === 'tshirt' || t === 'shirt') {
-      const topCol = this.getClothColor(monster.clothes.topColor, '#2563eb');
-      const leftArm = anchors.armLeft;
-      const rightArm = anchors.armRight;
-      const shoulderLeftY = Math.max(chinY, leftArm.y + 10);
-      const shoulderRightY = Math.max(chinY, rightArm.y + 10);
+    const bounds = this.getBodyBounds(monster.body);
+    const leftArm = anchors.armLeft;
+    const rightArm = anchors.armRight;
+    const leftX = Math.min(leftArm.x, 150 - bounds.hw + 6);
+    const rightX = Math.max(rightArm.x, 150 + bounds.hw - 6);
+    const botY = bounds.botY;
 
+    const shoulderLeftY = Math.max(chinY, leftArm.y + 10);
+    const shoulderRightY = Math.max(chinY, rightArm.y + 10);
+
+    const outfit = monster.clothes.outfit || 'none';
+    const t = monster.clothes.top || 'none';
+    const activeOutfit = outfit !== 'none' ? outfit : t;
+    const topCol = this.getClothColor(monster.clothes.topColor, '#2563eb');
+
+    if (activeOutfit === 'superhero') {
+      out += `
+        <g class="clothing-top clothing-superhero">
+          <!-- Fitted Superhero Chest Suit -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 4},${shoulderRightY + 36} 
+                   L ${rightX - 6},${botY} 
+                   L ${leftX + 6},${botY} 
+                   L ${leftArm.x - 4},${shoulderLeftY + 36} Z" 
+                fill="#1d4ed8" stroke="#1e3a8a" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Chest Emblem: Gold Shield + Red Bolt -->
+          <polygon points="150,${chinY + 12} 166,${chinY + 22} 161,${chinY + 39} 150,${chinY + 46} 139,${chinY + 39} 134,${chinY + 22}" 
+                   fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+          <polygon points="151,${chinY + 16} 144,${chinY + 28} 151,${chinY + 28} 147,${chinY + 40} 157,${chinY + 26} 150,${chinY + 26}" 
+                   fill="#ef4444"/>
+          <!-- Gold Utility Belt with Metallic Buckle -->
+          <rect x="${leftX + 4}" y="${botY - 14}" width="${rightX - leftX - 8}" height="13" rx="3" fill="#eab308" stroke="#78350f" stroke-width="2"/>
+          <rect x="142" y="${botY - 16}" width="16" height="17" rx="3" fill="#fef08a" stroke="#78350f" stroke-width="2"/>
+          <!-- Cape Front Fasteners at Neckline -->
+          <ellipse cx="132" cy="${chinY + 5}" rx="5" ry="5" fill="#facc15" stroke="#78350f" stroke-width="1.5"/>
+          <ellipse cx="168" cy="${chinY + 5}" rx="5" ry="5" fill="#facc15" stroke="#78350f" stroke-width="1.5"/>
+          <path d="M 132,${chinY + 5} Q 150,${chinY + 11} 168,${chinY + 5}" fill="none" stroke="#facc15" stroke-width="2.5"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'hoodie') {
+      out += `
+        <g class="clothing-top clothing-hoodie">
+          <!-- Hoodie Torso -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 6},${shoulderRightY + 36} 
+                   L ${rightX - 6},${botY} 
+                   L ${leftX + 6},${botY} 
+                   L ${leftArm.x - 6},${shoulderLeftY + 36} Z" 
+                fill="${topCol}" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Striped Wrapped Neck Scarf with Tassels -->
+          <path d="M ${leftArm.x + 8},${chinY + 2} Q 150,${chinY + 14} ${rightArm.x - 8},${chinY + 2} L ${rightArm.x - 4},${chinY + 16} Q 150,${chinY + 26} ${leftArm.x + 4},${chinY + 16} Z" 
+                fill="#f43f5e" stroke="#881337" stroke-width="2.5"/>
+          <line x1="140" y1="${chinY + 6}" x2="136" y2="${chinY + 22}" stroke="#fde047" stroke-width="2.5"/>
+          <line x1="160" y1="${chinY + 6}" x2="164" y2="${chinY + 22}" stroke="#fde047" stroke-width="2.5"/>
+          <!-- Scarf Tail with Tassels -->
+          <rect x="156" y="${chinY + 14}" width="14" height="26" rx="3" fill="#f43f5e" stroke="#881337" stroke-width="2"/>
+          <line x1="158" y1="${chinY + 40}" x2="158" y2="${chinY + 45}" stroke="#fde047" stroke-width="2"/>
+          <line x1="163" y1="${chinY + 40}" x2="163" y2="${chinY + 45}" stroke="#fde047" stroke-width="2"/>
+          <line x1="168" y1="${chinY + 40}" x2="168" y2="${chinY + 45}" stroke="#fde047" stroke-width="2"/>
+          <!-- Kangaroo Pouch Pocket -->
+          <path d="M ${leftX + 18},${botY - 6} L ${leftX + 26},${botY - 28} Q 150,${botY - 33} ${rightX - 26},${botY - 28} L ${rightX - 18},${botY - 6} Z" 
+                fill="${this.darkenColor(topCol, 18)}" stroke="#0f172a" stroke-width="2.5"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'tuxedo') {
+      out += `
+        <g class="clothing-top clothing-tuxedo">
+          <!-- Formal Black Vest / Tailored Coat -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 4},${shoulderRightY + 36} 
+                   L ${rightX - 6},${botY} 
+                   L ${leftX + 6},${botY} 
+                   L ${leftArm.x - 4},${shoulderLeftY + 36} Z" 
+                fill="#0f172a" stroke="#020617" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- White V-Neck Shirt Insert -->
+          <polygon points="134,${chinY + 4} 166,${chinY + 4} 158,${chinY + 38} 142,${chinY + 38}" 
+                   fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.8"/>
+          <!-- Symmetrical Red Bowtie -->
+          <polygon points="140,${chinY + 5} 160,${chinY + 5} 150,${chinY + 12}" fill="#dc2626" stroke="#991b1b" stroke-width="1.2"/>
+          <polygon points="140,${chinY + 19} 160,${chinY + 19} 150,${chinY + 12}" fill="#dc2626" stroke="#991b1b" stroke-width="1.2"/>
+          <circle cx="150" cy="${chinY + 12}" r="3.2" fill="#ef4444" stroke="#991b1b" stroke-width="1.2"/>
+          <!-- 3 Shiny Gold Buttons -->
+          <circle cx="150" cy="${chinY + 25}" r="3" fill="#eab308" stroke="#78350f" stroke-width="1"/>
+          <circle cx="150" cy="${chinY + 35}" r="3" fill="#eab308" stroke="#78350f" stroke-width="1"/>
+          <circle cx="150" cy="${chinY + 45}" r="3" fill="#eab308" stroke="#78350f" stroke-width="1"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'wizard') {
+      out += `
+        <g class="clothing-top clothing-wizard">
+          <!-- Midnight-Blue Tunic -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 6},${shoulderRightY + 38} 
+                   L ${rightX - 4},${botY + 4} 
+                   L ${leftX + 4},${botY + 4} 
+                   L ${leftArm.x - 6},${shoulderLeftY + 38} Z" 
+                fill="#1e1b4b" stroke="#312e81" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Mystical Crescent Moon & Stars -->
+          <path d="M 136,${chinY + 18} A 6 6 0 0 0 142,${chinY + 28} A 8 8 0 0 1 136,${chinY + 18}" fill="#facc15"/>
+          <polygon points="160,${chinY + 18} 162,${chinY + 23} 167,${chinY + 24} 163,${chinY + 28} 164,${chinY + 33} 160,${chinY + 30} 156,${chinY + 33} 157,${chinY + 28} 153,${chinY + 24} 158,${chinY + 23}" fill="#facc15"/>
+          <polygon points="144,${chinY + 34} 145,${chinY + 37} 148,${chinY + 38} 145,${chinY + 40} 146,${chinY + 43} 144,${chinY + 41} 142,${chinY + 43} 143,${chinY + 40} 140,${chinY + 38} 143,${chinY + 37}" fill="#fde047"/>
+          <!-- Gold Braided Rope Belt with Hanging Tassels -->
+          <line x1="${leftX + 6}" y1="${botY - 14}" x2="${rightX - 6}" y2="${botY - 14}" stroke="#facc15" stroke-width="4" stroke-dasharray="4,2"/>
+          <circle cx="150" cy="${botY - 14}" r="5" fill="#eab308" stroke="#78350f" stroke-width="1.5"/>
+          <line x1="148" y1="${botY - 9}" x2="146" y2="${botY + 4}" stroke="#facc15" stroke-width="2.5"/>
+          <line x1="152" y1="${botY - 9}" x2="154" y2="${botY + 4}" stroke="#facc15" stroke-width="2.5"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'astronaut') {
+      out += `
+        <g class="clothing-top clothing-astronaut">
+          <!-- Space Armor Torso -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   Q 150,${chinY + 12} ${rightArm.x},${shoulderRightY} 
+                   L ${rightArm.x + 6},${shoulderRightY + 36} 
+                   L ${rightX - 6},${botY} 
+                   L ${leftX + 6},${botY} 
+                   L ${leftArm.x - 6},${shoulderLeftY + 36} Z" 
+                fill="#f1f5f9" stroke="#64748b" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Shoulder Pads -->
+          <ellipse cx="${leftArm.x + 8}" cy="${shoulderLeftY + 4}" rx="12" ry="6" fill="#cbd5e1" stroke="#64748b" stroke-width="2" transform="rotate(-15 ${leftArm.x + 8} ${shoulderLeftY + 4})"/>
+          <ellipse cx="${rightArm.x - 8}" cy="${shoulderRightY + 4}" rx="12" ry="6" fill="#cbd5e1" stroke="#64748b" stroke-width="2" transform="rotate(15 ${rightArm.x - 8} ${shoulderRightY + 4})"/>
+          <!-- LED Digital Monitor Chest Panel -->
+          <rect x="130" y="${chinY + 15}" width="40" height="22" rx="4" fill="#0f172a" stroke="#0ea5e9" stroke-width="2"/>
+          <line x1="134" y1="${chinY + 21}" x2="150" y2="${chinY + 21}" stroke="#38bdf8" stroke-width="2"/>
+          <line x1="134" y1="${chinY + 27}" x2="146" y2="${chinY + 27}" stroke="#38bdf8" stroke-width="2"/>
+          <circle cx="158" cy="${chinY + 21}" r="2.2" fill="#22c55e"/>
+          <circle cx="164" cy="${chinY + 21}" r="2.2" fill="#eab308"/>
+          <circle cx="164" cy="${chinY + 29}" r="2.2" fill="#ef4444"/>
+          <!-- Oxygen Gauge -->
+          <circle cx="150" cy="${chinY + 44}" r="7" fill="#e2e8f0" stroke="#475569" stroke-width="1.8"/>
+          <line x1="150" y1="${chinY + 44}" x2="153" y2="${chinY + 40}" stroke="#ef4444" stroke-width="1.5"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'pirate') {
+      out += `
+        <g class="clothing-top clothing-pirate">
+          <!-- Cream Ruffled Buccaneer Shirt -->
+          <polygon points="140,${chinY + 4} 160,${chinY + 4} 156,${chinY + 28} 144,${chinY + 28}" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+          <line x1="143" y1="${chinY + 12}" x2="157" y2="${chinY + 12}" stroke="#d97706" stroke-width="1.5"/>
+          <line x1="145" y1="${chinY + 19}" x2="155" y2="${chinY + 19}" stroke="#d97706" stroke-width="1.5"/>
+          <!-- Brown Leather Vest with Open Curved Lapels -->
+          <path d="M ${leftArm.x},${shoulderLeftY} 
+                   L 142,${chinY + 6} L 144,${botY - 14} L ${leftX + 6},${botY - 14} 
+                   L ${leftArm.x - 4},${shoulderLeftY + 36} Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M ${rightArm.x},${shoulderRightY} 
+                   L 158,${chinY + 6} L 156,${botY - 14} L ${rightX - 6},${botY - 14} 
+                   L ${rightArm.x + 4},${shoulderRightY + 36} Z" 
+                fill="#78350f" stroke="#451a03" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Wide Black Belt with Gold Skull Buckle -->
+          <rect x="${leftX + 4}" y="${botY - 15}" width="${rightX - leftX - 8}" height="14" rx="2" fill="#18181b" stroke="#09090b" stroke-width="2"/>
+          <rect x="141" y="${botY - 17}" width="18" height="18" rx="3" fill="#eab308" stroke="#78350f" stroke-width="2"/>
+          <circle cx="150" cy="${botY - 8}" r="3.2" fill="#ffffff"/>
+        </g>
+      `;
+    } else if (activeOutfit === 'tshirt' || activeOutfit === 'shirt') {
       out += `
         <g class="clothing-top clothing-tshirt">
           <!-- Main shirt body anchored strictly below chin line -->
@@ -907,13 +1224,7 @@ class MonsterRenderer {
                    fill="#facc15" stroke="#ca8a04" stroke-width="1.2"/>
         </g>
       `;
-    } else if (t === 'jacket') {
-      const topCol = this.getClothColor(monster.clothes.topColor, '#1e293b');
-      const leftArm = anchors.armLeft;
-      const rightArm = anchors.armRight;
-      const shoulderLeftY = Math.max(chinY, leftArm.y + 10);
-      const shoulderRightY = Math.max(chinY, rightArm.y + 10);
-
+    } else if (activeOutfit === 'jacket') {
       out += `
         <g class="clothing-top clothing-jacket">
           <!-- Jacket Torso -->
@@ -936,7 +1247,7 @@ class MonsterRenderer {
     }
 
     // Cape front fasteners if cape is active
-    if (monster.clothes.cape) {
+    if (monster.clothes.cape || activeOutfit === 'superhero') {
       out += `
         <g class="clothing-cape-front">
           <ellipse cx="132" cy="${chinY + 6}" rx="5" ry="5" fill="#eab308" stroke="#78350f" stroke-width="1.5"/>
@@ -950,67 +1261,174 @@ class MonsterRenderer {
   }
 
   // -------------------------------------------------------------
-  // LAYER 6: FRONT LIMBS (Arms & Hands attached at armLeft/armRight)
+  // LAYER 6: FRONT LIMBS (Dynamic Skeletal Rigging with 5 Styles)
   // -------------------------------------------------------------
   renderFrontLimbs(monster, pal, anchors, action) {
-    const count = monster.arms.count;
+    const count = monster.arms.count !== undefined ? monster.arms.count : 2;
     if (count === 0) return '';
     const length = monster.arms.length || 'normal';
+    const style = monster.arms.style || monster.hands || 'clay';
 
     let factor = 1.0;
     if (length === 'tiny') factor = 0.65;
     else if (length === 'short') factor = 0.85;
     else if (length === 'long') factor = 1.3;
+    else if (length === 'super_long') factor = 1.55;
 
-    const shL = anchors.armLeft;
-    const shR = anchors.armRight;
+    // Helper to generate a single limb (left or right)
+    const renderSingleArm = (sh, isLeft, armIndex = 0, totalPairs = 1) => {
+      let yShift = 0;
+      let handYShift = 0;
+      let reachAngle = 1.0;
+      if (totalPairs === 2) {
+        if (armIndex === 0) {
+          // Upper arm pair
+          yShift = -14;
+          handYShift = -12;
+          reachAngle = 0.8;
+        } else {
+          // Lower arm pair
+          yShift = 20;
+          handYShift = 24;
+          reachAngle = 1.15;
+        }
+      }
 
-    let leftHandOffset = { x: -30 * factor, y: 35 * factor };
-    let rightHandOffset = { x: 30 * factor, y: 35 * factor };
+      const shoulderX = sh.x + (totalPairs === 2 && armIndex === 1 ? (isLeft ? 4 : -4) : 0);
+      const shoulderY = sh.y + yShift;
 
-    if (action === 'dance') {
-      leftHandOffset = { x: -35 * factor, y: -35 * factor };
-      rightHandOffset = { x: 35 * factor, y: -35 * factor };
+      // Default hand offset
+      let handOffsetX = (isLeft ? -34 : 34) * factor;
+      let handOffsetY = (36 * factor + handYShift) * reachAngle;
+
+      if (action === 'dance') {
+        handOffsetX = (isLeft ? -36 : 36) * factor;
+        handOffsetY = (-32 * factor + handYShift) * reachAngle;
+      } else if (action === 'tickle') {
+        handOffsetX = (isLeft ? -24 : 24) * factor;
+        handOffsetY = (14 * factor + handYShift) * reachAngle;
+      } else if (action === 'sleep') {
+        handOffsetX = (isLeft ? -16 : 16) * factor;
+        handOffsetY = (46 * factor + handYShift) * reachAngle;
+      }
+
+      const handX = shoulderX + handOffsetX;
+      const handY = shoulderY + handOffsetY;
+
+      // Curvature control point (M shoulderX,shoulderY Q ctrlX,ctrlY handX,handY)
+      const ctrlX = shoulderX + (isLeft ? -28 : 28) * factor;
+      const ctrlY = shoulderY + (action === 'dance' ? -10 : 20) * factor;
+
+      const pathData = `M ${shoulderX},${shoulderY} Q ${ctrlX},${ctrlY} ${handX},${handY}`;
+
+      let limbContent = '';
+
+      if (style === 'robot') {
+        // 2. Robot Arms: segmented metallic joints, elbow bolts, mechanical claws
+        limbContent = `
+          <!-- Shoulder Bolt -->
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="10" fill="#94a3b8" stroke="#334155" stroke-width="3"/>
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="4" fill="#38bdf8"/>
+          <!-- Arm Column -->
+          <path d="${pathData}" fill="none" stroke="#475569" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathData}" fill="none" stroke="#94a3b8" stroke-width="8" stroke-dasharray="6,4" stroke-linecap="round"/>
+          <path d="${pathData}" fill="none" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Elbow Joint Nut -->
+          <rect x="${ctrlX - 6}" y="${ctrlY - 6}" width="12" height="12" rx="3" fill="#eab308" stroke="#78350f" stroke-width="2" transform="rotate(${isLeft ? -20 : 20} ${ctrlX} ${ctrlY})"/>
+          <!-- Wrist & Mechanical Claw Hand -->
+          <circle cx="${handX}" cy="${handY}" r="8" fill="#475569" stroke="#1e293b" stroke-width="2.5"/>
+          <path d="M ${handX + (isLeft ? 4 : -4)},${handY - 6} Q ${handX + (isLeft ? -12 : 12)},${handY - 10} ${handX + (isLeft ? -14 : 14)},${handY - 2}" 
+                fill="none" stroke="#e2e8f0" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M ${handX + (isLeft ? 4 : -4)},${handY + 6} Q ${handX + (isLeft ? -12 : 12)},${handY + 10} ${handX + (isLeft ? -14 : 14)},${handY + 2}" 
+                fill="none" stroke="#e2e8f0" stroke-width="4.5" stroke-linecap="round"/>
+        `;
+      } else if (style === 'claws') {
+        // 3. Furry / Monster Claws: fluffy tufts, sharp white/cream claws
+        const clawOffset1 = isLeft ? -7 : 7;
+        const clawOffset2 = isLeft ? -11 : 11;
+        limbContent = `
+          <!-- Shoulder Socket -->
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+          <!-- Arm Limb -->
+          <path d="${pathData}" fill="none" stroke="url(#clayLimbGrad)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathData}" fill="none" stroke="${pal.stroke}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Elbow Fur Tufts -->
+          <polygon points="${ctrlX},${ctrlY - 6} ${ctrlX + (isLeft ? -12 : 12)},${ctrlY} ${ctrlX},${ctrlY + 8}" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="1.5"/>
+          <!-- Hand Paw Base -->
+          <circle cx="${handX}" cy="${handY}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.8"/>
+          <!-- Sharp Monster Claws -->
+          <polygon points="${handX + (isLeft ? -5 : 5)},${handY - 7} ${handX + clawOffset2},${handY - 11} ${handX + (isLeft ? -1 : 1)},${handY - 5}" fill="#fef08a" stroke="#78350f" stroke-width="1.5"/>
+          <polygon points="${handX + (isLeft ? -7 : 7)},${handY - 1} ${handX + clawOffset2 - (isLeft ? 2 : -2)},${handY - 1} ${handX + (isLeft ? -5 : 5)},${handY + 4}" fill="#fef08a" stroke="#78350f" stroke-width="1.5"/>
+          <polygon points="${handX + (isLeft ? -4 : 4)},${handY + 5} ${handX + clawOffset1},${handY + 11} ${handX + (isLeft ? 0 : 0)},${handY + 7}" fill="#fef08a" stroke="#78350f" stroke-width="1.5"/>
+        `;
+      } else if (style === 'tentacles') {
+        // 4. Tentacles / Slime: wavy tapered curves with suction cups
+        limbContent = `
+          <!-- Shoulder Fusion -->
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="10" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+          <!-- Tapered Tentacle Limb -->
+          <path d="${pathData}" fill="none" stroke="url(#clayLimbGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathData}" fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Suction Cups along curve -->
+          <g class="tentacle-suctions">
+            <circle cx="${shoulderX + (isLeft ? -14 : 14) * factor}" cy="${shoulderY + 10 * factor}" r="4" fill="${pal.belly}" stroke="${pal.stroke}" stroke-width="1.5"/>
+            <circle cx="${shoulderX + (isLeft ? -14 : 14) * factor}" cy="${shoulderY + 10 * factor}" r="1.5" fill="${pal.dark}"/>
+            <circle cx="${ctrlX + (isLeft ? -4 : 4)}" cy="${ctrlY + 4}" r="3.5" fill="${pal.belly}" stroke="${pal.stroke}" stroke-width="1.5"/>
+            <circle cx="${ctrlX + (isLeft ? -4 : 4)}" cy="${ctrlY + 4}" r="1.2" fill="${pal.dark}"/>
+            <circle cx="${handX + (isLeft ? 6 : -6)}" cy="${handY - 3}" r="3" fill="${pal.belly}" stroke="${pal.stroke}" stroke-width="1.2"/>
+            <circle cx="${handX + (isLeft ? 6 : -6)}" cy="${handY - 3}" r="1" fill="${pal.dark}"/>
+          </g>
+          <!-- Slime Tip Bead -->
+          <circle cx="${handX}" cy="${handY}" r="7" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.5"/>
+        `;
+      } else if (style === 'gloves') {
+        // 5. Superhero Gloves: gauntlet cuffs and bold red boxing/hero gloves
+        limbContent = `
+          <!-- Shoulder Socket -->
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+          <!-- Arm Sleeve -->
+          <path d="${pathData}" fill="none" stroke="url(#clayLimbGrad)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathData}" fill="none" stroke="${pal.stroke}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Gauntlet Rolled Cuff -->
+          <ellipse cx="${handX + (isLeft ? 8 : -8)}" cy="${handY - 8}" rx="10" ry="6" fill="#facc15" stroke="#ca8a04" stroke-width="2.5" transform="rotate(${isLeft ? -25 : 25} ${handX + (isLeft ? 8 : -8)} ${handY - 8})"/>
+          <!-- Puffy Red Hero Glove -->
+          <circle cx="${handX}" cy="${handY}" r="13" fill="#ef4444" stroke="#991b1b" stroke-width="3"/>
+          <circle cx="${handX + (isLeft ? 5 : -5)}" cy="${handY - 4}" r="5" fill="#f87171" stroke="#991b1b" stroke-width="1.8"/>
+          <ellipse cx="${handX - 2}" cy="${handY - 3}" rx="4" ry="2" fill="#ffffff" opacity="0.4"/>
+        `;
+      } else {
+        // 1. Clay / Chubby Arms (Default): body-matched color with 3-finger paw dots
+        limbContent = `
+          <!-- Rounded Joint Socket at Torso Connection -->
+          <circle cx="${shoulderX}" cy="${shoulderY}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
+          <!-- Fleshy Curved Arm Limb (18px stroke) -->
+          <path d="${pathData}" fill="none" stroke="url(#clayLimbGrad)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="${pathData}" fill="none" stroke="${pal.stroke}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Hand Paw Base -->
+          <circle cx="${handX}" cy="${handY}" r="12" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.8"/>
+          <!-- Cute 3-Finger Paw Beans -->
+          <circle cx="${handX - 4}" cy="${handY - 5}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${handX}" cy="${handY - 7}" r="3.2" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+          <circle cx="${handX + 4}" cy="${handY - 5}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
+        `;
+      }
+
+      return `
+        <g class="monster-arm-${isLeft ? 'left' : 'right'}${totalPairs === 2 ? '-' + (armIndex + 1) : ''}">
+          ${limbContent}
+        </g>
+      `;
+    };
+
+    let limbsHtml = '';
+    const numPairs = count === 4 ? 2 : 1;
+
+    for (let i = 0; i < numPairs; i++) {
+      limbsHtml += renderSingleArm(anchors.armLeft, true, i, numPairs);
+      limbsHtml += renderSingleArm(anchors.armRight, false, i, numPairs);
     }
 
-    const leftHand = { x: shL.x + leftHandOffset.x, y: shL.y + leftHandOffset.y };
-    const rightHand = { x: shR.x + rightHandOffset.x, y: shR.y + rightHandOffset.y };
-
-    return `
-      <g id="layer-front-limbs" class="layer-front-limbs">
-        <!-- Left Arm with Rounded Torso Joint -->
-        <g class="monster-arm-left">
-          <!-- Rounded Joint Socket at Torso Connection -->
-          <circle cx="${shL.x}" cy="${shL.y}" r="10" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
-          <!-- Arm Limb -->
-          <path d="M ${shL.x},${shL.y} Q ${shL.x - 18},${shL.y + 16} ${leftHand.x},${leftHand.y}" 
-                fill="none" stroke="url(#clayLimbGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M ${shL.x},${shL.y} Q ${shL.x - 18},${shL.y + 16} ${leftHand.x},${leftHand.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Hand Paw -->
-          <circle cx="${leftHand.x}" cy="${leftHand.y}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.5"/>
-          <circle cx="${leftHand.x - 4}" cy="${leftHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-          <circle cx="${leftHand.x}" cy="${leftHand.y - 7}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-          <circle cx="${leftHand.x + 4}" cy="${leftHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-        </g>
-
-        <!-- Right Arm with Rounded Torso Joint -->
-        <g class="monster-arm-right">
-          <!-- Rounded Joint Socket at Torso Connection -->
-          <circle cx="${shR.x}" cy="${shR.y}" r="10" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="3"/>
-          <!-- Arm Limb -->
-          <path d="M ${shR.x},${shR.y} Q ${shR.x + 18},${shR.y + 16} ${rightHand.x},${rightHand.y}" 
-                fill="none" stroke="url(#clayLimbGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M ${shR.x},${shR.y} Q ${shR.x + 18},${shR.y + 16} ${rightHand.x},${rightHand.y}" 
-                fill="none" stroke="${pal.stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          <!-- Hand Paw -->
-          <circle cx="${rightHand.x}" cy="${rightHand.y}" r="11" fill="url(#clayLimbGrad)" stroke="${pal.stroke}" stroke-width="2.5"/>
-          <circle cx="${rightHand.x - 4}" cy="${rightHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-          <circle cx="${rightHand.x}" cy="${rightHand.y - 7}" r="2.8" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-          <circle cx="${rightHand.x + 4}" cy="${rightHand.y - 5}" r="2.5" fill="#ffffff" stroke="${pal.stroke}" stroke-width="1"/>
-        </g>
-      </g>
-    `;
+    return `<g id="layer-front-limbs" class="layer-front-limbs">${limbsHtml}</g>`;
   }
 
   // -------------------------------------------------------------
@@ -1870,7 +2288,7 @@ class MonsterApp {
     const m = window.monsterStore ? window.monsterStore.get() : {};
 
     switch (stepNum) {
-      case 1: // BODY
+      case 1: // BODY & PATTERN
         return `
           <div class="options-instruction-title">🧸 Choose Your Monster's Body Shape:</div>
           <div class="tactile-opt-grid">
@@ -1883,6 +2301,19 @@ class MonsterApp {
             <button class="tactile-opt-card" data-body="ghost"><span class="opt-emoji">👻</span><span>Ghost</span></button>
             <button class="tactile-opt-card" data-body="dinosaur"><span class="opt-emoji">🦖</span><span>Dinosaur</span></button>
             <button class="tactile-opt-card" data-body="robot"><span class="opt-emoji">🤖</span><span>Robot</span></button>
+            <button class="tactile-opt-card" data-body="teardrop"><span class="opt-emoji">🍐</span><span>Pear / Drop</span></button>
+            <button class="tactile-opt-card" data-body="cloud"><span class="opt-emoji">☁️</span><span>Cloud Puff</span></button>
+            <button class="tactile-opt-card" data-body="square"><span class="opt-emoji">📦</span><span>Box / Cube</span></button>
+          </div>
+          <div class="subgroup-wrapper" style="margin-top: 18px;">
+            <span class="subgroup-label">Body Pattern & Texture:</span>
+            <div class="tactile-opt-grid">
+              <button class="tactile-opt-card" data-pattern="none"><span class="opt-emoji">✨</span><span>Smooth</span></button>
+              <button class="tactile-opt-card" data-pattern="dots"><span class="opt-emoji">🔴</span><span>Polka Dots</span></button>
+              <button class="tactile-opt-card" data-pattern="stripes"><span class="opt-emoji">🐅</span><span>Stripes</span></button>
+              <button class="tactile-opt-card" data-pattern="fur"><span class="opt-emoji">🦁</span><span>Fluffy Fur</span></button>
+              <button class="tactile-opt-card" data-pattern="scales"><span class="opt-emoji">🐊</span><span>Dragon Scales</span></button>
+            </div>
           </div>
         `;
 
@@ -1944,8 +2375,18 @@ class MonsterApp {
 
       case 5: // ARMS & LEGS
         return `
-          <div class="options-instruction-title">👐 Choose Arms and Legs:</div>
+          <div class="options-instruction-title">👐 Choose Arm Style & Limbs:</div>
           <div class="subgroup-wrapper">
+            <span class="subgroup-label">Arm Style:</span>
+            <div class="tactile-opt-grid">
+              <button class="tactile-opt-card" data-arm-style="clay"><span class="opt-emoji">🐾</span><span>Clay Paws</span><span class="opt-sub">Cute & Chubby</span></button>
+              <button class="tactile-opt-card" data-arm-style="robot"><span class="opt-emoji">🦾</span><span>Robot Joints</span><span class="opt-sub">Steel & Bolt</span></button>
+              <button class="tactile-opt-card" data-arm-style="claws"><span class="opt-emoji">🦅</span><span>Sharp Claws</span><span class="opt-sub">Furry Tufts</span></button>
+              <button class="tactile-opt-card" data-arm-style="tentacles"><span class="opt-emoji">🐙</span><span>Tentacles</span><span class="opt-sub">Wavy & Suctions</span></button>
+              <button class="tactile-opt-card" data-arm-style="gloves"><span class="opt-emoji">🥊</span><span>Hero Gloves</span><span class="opt-sub">Gauntlet Cuffs</span></button>
+            </div>
+          </div>
+          <div class="subgroup-wrapper" style="margin-top: 14px;">
             <span class="subgroup-label">Number of Arms:</span>
             <div class="tactile-opt-grid">
               <button class="tactile-opt-card" data-arm-count="0"><span>No Arms</span></button>
@@ -1956,6 +2397,7 @@ class MonsterApp {
           <div class="subgroup-wrapper" style="margin-top: 14px;">
             <span class="subgroup-label">Number of Legs:</span>
             <div class="tactile-opt-grid">
+              <button class="tactile-opt-card" data-leg-count="0"><span>No Legs</span></button>
               <button class="tactile-opt-card" data-leg-count="1"><span class="opt-emoji">🦿</span><span>1 Leg</span></button>
               <button class="tactile-opt-card" data-leg-count="2"><span class="opt-emoji">🦵</span><span>2 Legs</span></button>
               <button class="tactile-opt-card" data-leg-count="4"><span class="opt-emoji">🐾</span><span>4 Legs</span></button>
@@ -2004,15 +2446,21 @@ class MonsterApp {
           </div>
         `;
 
-      case 8: // CLOTHES
+      case 8: // CLOTHES & OUTFITS
         return `
           <div class="options-instruction-title">👕 Dress Your Monster:</div>
           <div class="subgroup-wrapper">
-            <span class="subgroup-label">Tops:</span>
+            <span class="subgroup-label">Outfits & Tops:</span>
             <div class="tactile-opt-grid">
-              <button class="tactile-opt-card" data-top="none"><span>None</span></button>
-              <button class="tactile-opt-card" data-top="tshirt"><span class="opt-emoji">👕</span><span>T-Shirt</span></button>
-              <button class="tactile-opt-card" data-top="jacket"><span class="opt-emoji">🧥</span><span>Jacket</span></button>
+              <button class="tactile-opt-card" data-top="none"><span class="opt-emoji">🍃</span><span>None</span><span class="opt-sub">Natural</span></button>
+              <button class="tactile-opt-card" data-top="superhero"><span class="opt-emoji">🦸</span><span>Superhero Suit</span><span class="opt-sub">Emblem & Belt</span></button>
+              <button class="tactile-opt-card" data-top="hoodie"><span class="opt-emoji">🧣</span><span>Winter Hoodie</span><span class="opt-sub">Scarf & Pocket</span></button>
+              <button class="tactile-opt-card" data-top="tuxedo"><span class="opt-emoji">🤵</span><span>Fancy Tuxedo</span><span class="opt-sub">Bowtie & Buttons</span></button>
+              <button class="tactile-opt-card" data-top="wizard"><span class="opt-emoji">🧙</span><span>Wizard Robe</span><span class="opt-sub">Stars & Rope</span></button>
+              <button class="tactile-opt-card" data-top="astronaut"><span class="opt-emoji">👨‍🚀</span><span>Astronaut Suit</span><span class="opt-sub">LED & Gauge</span></button>
+              <button class="tactile-opt-card" data-top="pirate"><span class="opt-emoji">🏴‍☠️</span><span>Pirate Vest</span><span class="opt-sub">Ruffles & Skull</span></button>
+              <button class="tactile-opt-card" data-top="jacket"><span class="opt-emoji">🧥</span><span>Cool Jacket</span><span class="opt-sub">Zipper & Lapels</span></button>
+              <button class="tactile-opt-card" data-top="tshirt"><span class="opt-emoji">👕</span><span>T-Shirt</span><span class="opt-sub">Star Medal</span></button>
             </div>
           </div>
           <div class="subgroup-wrapper" style="margin-top: 14px;">
@@ -2093,10 +2541,16 @@ class MonsterApp {
   // EVENT BINDINGS FOR OPTIONS
   // ==========================================
   bindStepEvents(container) {
-    // Body
+    // Body & Pattern
     container.querySelectorAll('[data-body]').forEach(b => {
       b.onclick = () => {
         window.monsterStore.update(m => { m.body = b.getAttribute('data-body'); });
+        this.syncStepSelections(container);
+      };
+    });
+    container.querySelectorAll('[data-pattern]').forEach(b => {
+      b.onclick = () => {
+        window.monsterStore.update(m => { m.pattern = b.getAttribute('data-pattern'); });
         this.syncStepSelections(container);
       };
     });
@@ -2138,6 +2592,17 @@ class MonsterApp {
     });
 
     // Arms & Legs
+    container.querySelectorAll('[data-arm-style]').forEach(b => {
+      b.onclick = () => {
+        const style = b.getAttribute('data-arm-style');
+        window.monsterStore.update(m => {
+          if (!m.arms) m.arms = { count: 2, length: 'normal' };
+          m.arms.style = style;
+          m.hands = style;
+        });
+        this.syncStepSelections(container);
+      };
+    });
     container.querySelectorAll('[data-arm-count]').forEach(b => {
       b.onclick = () => {
         window.monsterStore.update(m => { m.arms.count = parseInt(b.getAttribute('data-arm-count'), 10); });
@@ -2176,7 +2641,14 @@ class MonsterApp {
     // Clothes
     container.querySelectorAll('[data-top]').forEach(b => {
       b.onclick = () => {
-        window.monsterStore.update(m => { m.clothes.top = b.getAttribute('data-top'); });
+        const top = b.getAttribute('data-top');
+        window.monsterStore.update(m => {
+          m.clothes.top = top;
+          m.clothes.outfit = top;
+          if (top === 'superhero') {
+            m.clothes.cape = true;
+          }
+        });
         this.syncStepSelections(container);
       };
     });
@@ -2230,9 +2702,13 @@ class MonsterApp {
     if (!container || !window.monsterStore) return;
     const m = window.monsterStore.get();
 
-    // Body
+    // Body & Pattern
     container.querySelectorAll('[data-body]').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-body') === m.body);
+    });
+    container.querySelectorAll('[data-pattern]').forEach(b => {
+      const p = b.getAttribute('data-pattern');
+      b.classList.toggle('active', p === m.pattern || (p === 'none' && (!m.pattern || m.pattern === 'none')));
     });
     // Eyes
     container.querySelectorAll('[data-eye-count]').forEach(b => {
@@ -2248,6 +2724,17 @@ class MonsterApp {
     container.querySelectorAll('[data-horn-count]').forEach(b => {
       b.classList.toggle('active', parseInt(b.getAttribute('data-horn-count'), 10) === m.horns.count);
     });
+    // Limbs
+    container.querySelectorAll('[data-arm-style]').forEach(b => {
+      const curStyle = (m.arms && m.arms.style) || m.hands || 'clay';
+      b.classList.toggle('active', b.getAttribute('data-arm-style') === curStyle);
+    });
+    container.querySelectorAll('[data-arm-count]').forEach(b => {
+      b.classList.toggle('active', parseInt(b.getAttribute('data-arm-count'), 10) === m.arms.count);
+    });
+    container.querySelectorAll('[data-leg-count]').forEach(b => {
+      b.classList.toggle('active', parseInt(b.getAttribute('data-leg-count'), 10) === m.legs.count);
+    });
     // Colors
     container.querySelectorAll('[data-color]').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-color') === m.color);
@@ -2261,7 +2748,8 @@ class MonsterApp {
     });
     // Clothes
     container.querySelectorAll('[data-top]').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-top') === m.clothes.top);
+      const curTop = m.clothes.top || m.clothes.outfit || 'none';
+      b.classList.toggle('active', b.getAttribute('data-top') === curTop);
     });
     container.querySelectorAll('[data-cape]').forEach(b => {
       b.classList.toggle('active', (b.getAttribute('data-cape') === 'true') === m.clothes.cape);

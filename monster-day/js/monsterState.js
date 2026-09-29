@@ -40,9 +40,10 @@ class MonsterState {
       // Limbs
       arms: {
         count: 2, // 0, 1, 2, 3, 4, 'many'
-        length: 'normal' // 'tiny', 'short', 'normal', 'long', 'super_long'
+        length: 'normal', // 'tiny', 'short', 'normal', 'long', 'super_long'
+        style: 'clay' // 'clay', 'robot', 'claws', 'tentacles', 'gloves'
       },
-      hands: 'normal', // 'normal', 'tiny', 'giant', 'claws', 'three_fingers', 'four_fingers'
+      hands: 'clay', // 'clay', 'robot', 'claws', 'tentacles', 'gloves', 'normal'
       legs: {
         count: 2 // 0, 1, 2, 3, 4, 'many'
       },
@@ -210,8 +211,16 @@ class MonsterState {
     this.notify();
   }
 
+  setArmStyle(style) {
+    if (!this.monster.arms) this.monster.arms = { count: 2, length: 'normal', style: 'clay' };
+    this.monster.arms.style = style;
+    this.monster.hands = style;
+    this.notify();
+  }
+
   setHandsStyle(style) {
     this.monster.hands = style;
+    if (this.monster.arms) this.monster.arms.style = style;
     this.notify();
   }
 
@@ -244,18 +253,18 @@ class MonsterState {
 
   setSpecialOutfit(outfit) {
     this.monster.clothes.outfit = outfit;
-    // When a full outfit is set, tops and bottoms are replaced
-    if (outfit !== 'none') {
-      this.monster.clothes.top = 'none';
-      this.monster.clothes.bottom = 'none';
+    this.monster.clothes.top = outfit;
+    if (outfit === 'superhero') {
+      this.monster.clothes.cape = true;
     }
     this.notify();
   }
 
   setClothesTop(top) {
     this.monster.clothes.top = top;
-    if (top !== 'none') {
-      this.monster.clothes.outfit = 'none';
+    this.monster.clothes.outfit = top;
+    if (top === 'superhero') {
+      this.monster.clothes.cape = true;
     }
     this.notify();
   }
