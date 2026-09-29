@@ -258,6 +258,15 @@
       } else if (pathname.includes('solar') || pathname.includes('planet') || pathname.includes('space-explorer')) {
         targetUrl = basePrefix + 'solar-system/index.html';
         targetName = '🪐 Solar System Explorer: Planetary Comparatives Lab';
+      } else if (pathname.includes('cat-vs-dog/arena') || pathname.includes('arena')) {
+        targetUrl = basePrefix + 'cat-vs-dog/arena.html';
+        targetName = '🐱 Cat vs. Dog: Widescreen Arena';
+      } else if (pathname.includes('cat-vs-dog/lite') || pathname.includes('cat-dog-lite')) {
+        targetUrl = basePrefix + 'cat-vs-dog/lite.html';
+        targetName = '🐱 Cat vs. Dog: Lite Single-File Edition';
+      } else if (pathname.includes('cat-vs-dog/standalone')) {
+        targetUrl = basePrefix + 'cat-vs-dog/standalone.html';
+        targetName = '🐱 Cat vs. Dog: Standalone Offline Edition';
       } else if (pathname.includes('cat-vs-dog') || pathname.includes('cat-dog') || pathname.includes('catapult') || pathname.includes('fleabag') || pathname.includes('mutt')) {
         targetUrl = basePrefix + 'cat-vs-dog/index.html';
         targetName = '🐱 Cat vs. Dog: Fleabag vs Mutt';
