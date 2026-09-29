@@ -1,0 +1,9 @@
+tellTarget("../gato")
+{
+   gotoAndStop("gh1");
+}
+tellTarget("..")
+{
+   gotoAndStop("cam");
+   play();
+}

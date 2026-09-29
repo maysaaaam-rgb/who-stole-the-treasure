@@ -1,0 +1,9 @@
+tellTarget("../pero")
+{
+   gotoAndStop("ph1");
+}
+tellTarget("..")
+{
+   gotoAndStop("cam1");
+   play();
+}

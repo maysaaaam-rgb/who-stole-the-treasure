@@ -1,34 +1,19 @@
-/* ==========================================================================
-   CAT VS. DOG: PREPOSITION CATAPULT — COMMERCIAL ARCADE ENGINE
-   60-30-10 Palette • Tactile 3D Physics Buttons • Cyber-Glassmorphism
-   ========================================================================== */
+/* Cat vs Dog (Fleabag vs Mutt) Authentic HTML5 Port
+   60-30-10 Cyber-Glassmorphic Standard with Tactile 3D Controls */
 
 :root {
-  --bg-dark: #070b14;
-  --bg-surface: #0f172a;
-  --panel-bg: rgba(15, 23, 42, 0.92);
-  --panel-border: rgba(56, 189, 248, 0.28);
-  
-  /* Primary Characters */
-  --cat-blue: #0284c7;
-  --cat-glow: #38bdf8;
-  --cat-shadow: #0369a1;
-  --cat-dark: #0c4a6e;
-  
-  --dog-amber: #ea580c;
-  --dog-glow: #fb923c;
-  --dog-shadow: #c2410c;
-  --dog-dark: #7c2d12;
-  
-  /* Accent States */
-  --emerald: #10b981;
-  --emerald-shadow: #047857;
-  --ruby: #ef4444;
-  --ruby-shadow: #b91c1c;
-  --gold: #f59e0b;
-  --gold-shadow: #b45309;
-
-  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg-obsidian: #060911;
+  --bg-panel: rgba(15, 23, 42, 0.85);
+  --border-glass: rgba(56, 189, 248, 0.25);
+  --cyan-accent: #38bdf8;
+  --cyan-depth: #0284c7;
+  --amber-accent: #f59e0b;
+  --amber-depth: #d97706;
+  --emerald-accent: #10b981;
+  --emerald-depth: #059669;
+  --coral-accent: #f43f5e;
+  --coral-depth: #e11d48;
+  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 * {
@@ -40,1031 +25,248 @@
 }
 
 body {
-  font-family: var(--font-family);
-  background: var(--bg-dark);
-  background-image: 
-    radial-gradient(circle at 50% 15%, rgba(30, 27, 75, 0.6) 0%, transparent 60%),
-    radial-gradient(circle at 10% 90%, rgba(2, 132, 199, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(234, 88, 12, 0.15) 0%, transparent 40%),
-    linear-gradient(to bottom, #070b14, #0b1120);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background: var(--bg-obsidian);
+  background-image: radial-gradient(circle at 50% 25%, #0f1c3f 0%, #060911 100%);
   color: #f8fafc;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 12px;
   overflow-x: hidden;
-  padding: 12px 16px 32px;
 }
 
-/* ==========================================================================
-   APP HEADER & 4-STAGE PEDAGOGICAL STEPPER
-   ========================================================================== */
-.app-header {
+/* Platform Header */
+.header-bar {
   width: 100%;
-  max-width: 1100px;
+  max-width: 920px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 18px;
-  background: var(--panel-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  margin-bottom: 12px;
+  padding: 0 4px;
 }
 
 .brand-badge {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-badge .icon-box {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, var(--cat-blue), var(--dog-amber));
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
-}
-
-.brand-titles h1 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  background: linear-gradient(90deg, #38bdf8, #f8fafc, #fb923c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.brand-titles p {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* 4-Stage Stepper Track */
-.stepper-nav {
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: var(--cyan-accent);
   display: flex;
   align-items: center;
   gap: 8px;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
 
-.step-pill {
+.brand-badge span {
+  color: var(--amber-accent);
+}
+
+.controls-cluster {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 20px;
-  color: #64748b;
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.step-pill.active {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.35), rgba(56, 189, 248, 0.15));
-  border-color: var(--cat-glow);
-  color: #ffffff;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
-}
-
-.step-pill.completed {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: var(--emerald);
-  color: #34d399;
-}
-
-.step-number {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-}
-
-.step-pill.active .step-number {
-  background: var(--cat-glow);
-  color: #070b14;
-}
-
-.step-pill.completed .step-number {
-  background: var(--emerald);
-  color: #ffffff;
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 }
 
-/* ==========================================================================
-   TACTILE 3D BUTTONS (5px solid depth lip + active depression)
-   ========================================================================== */
+/* Tactile 3D Buttons */
 .btn-3d {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 18px;
-  font-family: var(--font-family);
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.1s ease;
-}
-
-.btn-3d:active, .btn-3d.depressed {
-  transform: translateY(4px);
-}
-
-.btn-cat {
-  background: var(--cat-blue);
-  border-bottom: 5px solid var(--cat-shadow);
-  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.35);
-}
-.btn-cat:active {
-  border-bottom-width: 1px;
-}
-
-.btn-dog {
-  background: var(--dog-amber);
-  border-bottom: 5px solid var(--dog-shadow);
-  box-shadow: 0 6px 14px rgba(234, 88, 12, 0.35);
-}
-.btn-dog:active {
-  border-bottom-width: 1px;
-}
-
-.btn-emerald {
-  background: var(--emerald);
-  border-bottom: 5px solid var(--emerald-shadow);
-  box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35);
-}
-.btn-emerald:active {
-  border-bottom-width: 1px;
-}
-
-.btn-gold {
-  background: var(--gold);
-  border-bottom: 5px solid var(--gold-shadow);
-  color: #070b14;
-  box-shadow: 0 6px 14px rgba(245, 158, 11, 0.35);
-}
-.btn-gold:active {
-  border-bottom-width: 1px;
-}
-
-.btn-icon-round {
-  width: 40px;
-  height: 40px;
-  padding: 0;
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-bottom: 5px solid #0f172a;
   border-radius: 10px;
-  background: #1e293b;
-  border-bottom: 4px solid #0f172a;
-  color: #94a3b8;
-  font-size: 1.1rem;
-}
-.btn-icon-round:active {
-  border-bottom-width: 1px;
-  transform: translateY(3px);
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   STAGE CONTAINERS & VIEWPORTS
-   ========================================================================== */
-.stage-viewport {
-  width: 100%;
-  max-width: 1100px;
-  display: none;
-  animation: fadeInStage 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.stage-viewport.active {
-  display: block;
-}
-
-@keyframes fadeInStage {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================================================
-   STAGE 1: 3D PREPOSITION EXPLORER (DIORAMA CARDS)
-   ========================================================================== */
-.explorer-intro {
-  text-align: center;
-  margin-bottom: 18px;
-}
-
-.explorer-intro h2 {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #f8fafc;
-  margin-bottom: 4px;
-}
-
-.explorer-intro p {
-  color: #94a3b8;
-  font-size: 0.88rem;
-}
-
-.diorama-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.diorama-card {
-  background: var(--panel-bg);
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 14px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-}
-
-.diorama-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  border-color: var(--cat-glow);
-  box-shadow: 0 16px 32px rgba(56, 189, 248, 0.25);
-}
-
-.diorama-card.inspected {
-  border-color: var(--emerald);
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.95));
-}
-
-.diorama-card.active-reading {
-  border-color: #f59e0b;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
-  animation: pulseCard 1.5s infinite alternate;
-}
-
-@keyframes pulseCard {
-  0% { transform: scale(1.02); }
-  100% { transform: scale(1.04); }
-}
-
-.diorama-art-box {
-  width: 100%;
-  height: 120px;
-  background: #020617;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.diorama-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.diorama-pill {
-  font-size: 0.78rem;
-  font-weight: 900;
-  padding: 3px 8px;
-  border-radius: 6px;
-  color: #ffffff;
-  letter-spacing: 0.06em;
-}
-
-.diorama-status {
-  font-size: 0.85rem;
-}
-
-.diorama-sentence {
+  padding: 8px 14px;
   font-size: 0.82rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  line-height: 1.35;
-  margin-bottom: 6px;
-}
-
-.diorama-rule {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  line-height: 1.3;
-}
-
-.explorer-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--panel-bg);
-  padding: 14px 20px;
-  border-radius: 16px;
-  border: 1px solid var(--panel-border);
-}
-
-/* ==========================================================================
-   STAGE 2: SPATIAL PLACEMENT LAB (DRAG & SNAP)
-   ========================================================================== */
-.lab-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.lab-instruction-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(90deg, rgba(2, 132, 199, 0.25), rgba(234, 88, 12, 0.25));
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 14px 20px;
-  border-radius: 16px;
-}
-
-.lab-instruction-text {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.lab-workbench {
-  width: 100%;
-  height: 400px;
-  background: #020617;
-  background-image: 
-    radial-gradient(circle at 50% 30%, rgba(30, 27, 75, 0.4), transparent 70%),
-    linear-gradient(to bottom, #090d1a 0%, #030712 100%);
-  border-radius: 18px;
-  border: 2px solid rgba(56, 189, 248, 0.25);
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 12px 32px rgba(0, 0, 0, 0.5);
-}
-
-/* Ground Line in Workbench */
-.workbench-ground {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 90px;
-  background: #111827;
-  border-top: 3px solid #1f2937;
-}
-
-/* Scenery Anchors */
-.anchor-trashbin {
-  position: absolute;
-  bottom: 60px;
-  left: 180px;
-  width: 100px;
-  height: 110px;
-  pointer-events: none;
-}
-
-.anchor-fence {
-  position: absolute;
-  bottom: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90px;
-  height: 220px;
-  pointer-events: none;
-}
-
-/* Magnetic Drop Sockets */
-.drop-socket {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  border: 2px dashed rgba(56, 189, 248, 0.5);
-  border-radius: 18px;
-  background: rgba(56, 189, 248, 0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  z-index: 10;
-}
-
-.drop-socket.highlight {
-  border-color: var(--gold);
-  background: rgba(245, 158, 11, 0.22);
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
-}
-
-.drop-socket.snapped {
-  border: 2px solid var(--emerald);
-  background: rgba(16, 185, 129, 0.15);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
-}
-
-#socket-cat {
-  left: 170px;
-  bottom: 165px;
-}
-
-#socket-dog {
-  right: 170px;
-  bottom: 75px;
-}
-
-.socket-label {
-  font-size: 0.72rem;
   font-weight: 800;
-  text-transform: uppercase;
-  color: #38bdf8;
-  letter-spacing: 0.06em;
-  text-align: center;
-}
-
-/* Draggable Mascot Tokens */
-.tokens-dock {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  padding: 12px;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  border-radius: 16px;
-}
-
-.drag-token {
-  width: 100px;
-  height: 100px;
-  cursor: grab;
-  position: relative;
-  transition: transform 0.15s ease, filter 0.15s ease;
-  touch-action: none;
-}
-
-.drag-token:active {
-  cursor: grabbing;
-  transform: scale(1.1);
-  filter: drop-shadow(0 12px 20px rgba(56, 189, 248, 0.5));
-}
-
-.drag-token.snapped {
-  cursor: default;
-  pointer-events: none;
-}
-
-/* ==========================================================================
-   STAGE 3: 3D ALLEY CATAPULT ARENA (CORE PHYSICS CANVAS & HUD)
-   ========================================================================== */
-.arena-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Arena Top Stats Bar */
-.arena-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  padding: 10px 18px;
-  border-radius: 16px;
-}
-
-.team-hud {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.team-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.team-cat .team-avatar {
-  background: rgba(2, 132, 199, 0.2);
-  border: 2px solid var(--cat-blue);
-}
-
-.team-dog .team-avatar {
-  background: rgba(234, 88, 12, 0.2);
-  border: 2px solid var(--dog-amber);
-}
-
-.team-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.team-name {
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.team-cat .team-name { color: var(--cat-glow); }
-.team-dog .team-name { color: var(--dog-glow); }
-
-.hp-bar-outer {
-  width: 140px;
-  height: 12px;
-  background: #1e293b;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.hp-bar-inner {
-  height: 100%;
-  width: 100%;
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.team-cat .hp-bar-inner { background: linear-gradient(90deg, #0284c7, #38bdf8); }
-.team-dog .hp-bar-inner { background: linear-gradient(90deg, #ea580c, #fb923c); }
-
-/* Wind Meter in Center */
-.wind-indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  background: rgba(15, 23, 42, 0.8);
-  padding: 6px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-}
-
-.wind-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.08em;
-}
-
-.wind-dial {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.88rem;
-  font-weight: 900;
-}
-
-/* Canvas Viewport (16:9 Aspect Ratio) */
-.canvas-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 8;
-  max-height: 480px;
-  background: #020617;
-  border-radius: 18px;
-  border: 2px solid rgba(56, 189, 248, 0.35);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(2, 132, 199, 0.15);
-  overflow: hidden;
-}
-
-#battleCanvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Comic Feedback Overlay */
-.comic-toast {
-  position: absolute;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: rgba(15, 23, 42, 0.95);
-  border: 2px solid var(--cat-glow);
-  padding: 10px 20px;
-  border-radius: 14px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-  z-index: 25;
-}
-
-.comic-toast.visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* Tactical Controls Dashboard */
-.tactical-dock {
-  display: grid;
-  grid-template-columns: 240px 1fr 220px;
-  gap: 14px;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
-  padding: 14px 18px;
-  border-radius: 16px;
-  align-items: center;
-}
-
-/* Angle Control */
-.angle-box {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.control-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.74rem;
-  font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.06em;
-}
-
-.range-slider {
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  background: #1e293b;
-  outline: none;
-  -webkit-appearance: none;
-}
-
-.range-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--cat-glow);
   cursor: pointer;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-
-/* Arsenal Weapon Selector */
-.weapons-selector {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.weapon-btn {
-  flex: 1;
-  background: rgba(30, 41, 59, 0.6);
-  border: 2px solid rgba(148, 163, 184, 0.2);
-  border-radius: 12px;
-  padding: 8px 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.weapon-btn img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.weapon-name {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #cbd5e1;
-}
-
-.weapon-btn.active {
-  border-color: var(--cat-glow);
-  background: rgba(56, 189, 248, 0.18);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
-}
-
-/* Fire Power Meter & Button */
-.fire-box {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.power-meter-outer {
-  width: 100%;
-  height: 10px;
-  background: #1e293b;
-  border-radius: 5px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.power-meter-inner {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-  transition: width 0.05s linear;
-}
-
-/* ==========================================================================
-   STAGE 4: LIVE TELEPROMPTER STUDIO (ORAL PRODUCTION)
-   ========================================================================== */
-.studio-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.victory-podium {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-.podium-mascot-box {
-  width: 140px;
-  height: 140px;
-  position: relative;
-}
-
-.podium-mascot-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.6));
-  animation: floatMascot 3s ease-in-out infinite;
-}
-
-@keyframes floatMascot {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.victory-titles h2 {
-  font-size: 1.8rem;
-  font-weight: 900;
-  background: linear-gradient(90deg, #f59e0b, #fef08a, #f59e0b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Karaoke Teleprompter Box */
-.teleprompter-box {
-  width: 100%;
-  max-width: 780px;
-  background: rgba(15, 23, 42, 0.94);
-  border: 2px solid var(--cat-glow);
-  box-shadow: 0 12px 35px rgba(2, 132, 199, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.5);
-  border-radius: 20px;
-  padding: 24px 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.teleprompter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 10px;
-}
-
-.on-air-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid var(--ruby);
-  color: #fca5a5;
-  font-size: 0.72rem;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.08em;
+  transition: transform 0.08s var(--spring-snap), border-bottom-width 0.08s ease;
+  outline: none;
 }
 
-.on-air-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ruby);
-  animation: pulseDot 1s infinite alternate;
+.btn-3d:hover {
+  background: #334155;
+  color: #ffffff;
 }
 
-@keyframes pulseDot {
-  0% { opacity: 0.4; }
-  100% { opacity: 1; }
+.btn-3d:active {
+  transform: translateY(4px);
+  border-bottom-width: 1px;
 }
 
-.teleprompter-script {
-  font-size: 1.25rem;
-  line-height: 1.8;
+.btn-3d.active {
+  background: #0369a1;
+  border-color: var(--cyan-accent);
+  border-bottom-color: #0c4a6e;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.btn-primary {
+  background: #0284c7;
+  border-color: #38bdf8;
+  border-bottom-color: var(--cyan-depth);
+}
+
+.btn-primary:hover {
+  background: #0369a1;
+}
+
+.btn-amber {
+  background: #d97706;
+  border-color: #f59e0b;
+  border-bottom-color: #b45309;
+}
+
+.btn-amber:hover {
+  background: #b45309;
+}
+
+/* Glass Selects */
+.glass-select {
+  background: rgba(15, 23, 42, 0.85);
+  color: #f8fafc;
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
   font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+
+.glass-select option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* Game Frame / Viewport Wrapper */
+.game-frame {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 600 / 430;
+  background: #000000;
+  border-radius: 18px;
+  border: 2px solid var(--border-glass);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(56, 189, 248, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#battle-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: #060911;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 50;
+  transition: opacity 0.4s ease;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(56, 189, 248, 0.2);
+  border-top-color: var(--cyan-accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  font-weight: 800;
   color: #94a3b8;
-  min-height: 140px;
+  letter-spacing: 0.5px;
 }
 
-.script-sentence {
-  margin-bottom: 10px;
+/* Modal Windows */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 9, 17, 0.85);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  animation: fadeIn 0.25s ease forwards;
 }
 
-.script-word {
-  display: inline-block;
-  padding: 2px 4px;
-  border-radius: 4px;
-  transition: all 0.15s ease;
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.script-word.active-reading {
-  color: #070b14;
-  background: #fef08a;
-  transform: scale(1.12);
-  box-shadow: 0 0 12px rgba(254, 240, 138, 0.8);
+.modal-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 440px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.winner-avatar {
+  font-size: 3.5rem;
+  margin-bottom: -6px;
+}
+
+.modal-title {
+  font-size: 1.45rem;
   font-weight: 900;
 }
 
-.script-prep {
-  color: #38bdf8;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+.modal-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
 }
 
-.studio-actions {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
-
-/* ==========================================================================
-   INTERACTIVE QUESTION MODAL (ARCADE CEFR A1)
-   ========================================================================== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(7, 11, 20, 0.85);
-  backdrop-filter: blur(8px);
+/* Bottom Hint Tray */
+.hint-tray {
+  margin-top: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.question-card {
-  width: 90%;
-  max-width: 580px;
-  background: var(--panel-bg);
-  border: 2px solid var(--cat-glow);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-  display: flex;
-  flex-direction: column;
   gap: 16px;
-  transform: scale(0.95);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
-.modal-overlay.active .question-card {
-  transform: scale(1);
-}
-
-.question-header {
-  display: flex;
-  justify-content: space-between;
+.hint-pill {
+  display: inline-flex;
   align-items: center;
-}
-
-.question-prompt {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #f8fafc;
-  line-height: 1.4;
-  background: rgba(30, 41, 59, 0.6);
-  padding: 14px 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.option-btn {
-  padding: 14px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  background: #1e293b;
-  border-bottom: 4px solid #0f172a;
-  border-radius: 12px;
-  color: #ffffff;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.1s ease;
-}
-
-.option-btn:hover {
-  background: #334155;
-}
-
-.option-btn:active {
-  border-bottom-width: 1px;
-  transform: translateY(3px);
-}
-
-.option-btn.correct {
-  background: var(--emerald);
-  border-bottom-color: var(--emerald-shadow);
-}
-
-.option-btn.wrong {
-  background: var(--ruby);
-  border-bottom-color: var(--ruby-shadow);
-}
-
-/* ==========================================================================
-   CONFETTI PARTICLE OVERLAY
-   ========================================================================== */
-.confetti-particle {
-  position: absolute;
-  width: 8px;
-  height: 12px;
-  border-radius: 2px;
-  pointer-events: none;
-  animation: confettiFall 1.8s linear forwards;
-  z-index: 99;
-}
-
-@keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(350px) rotate(720deg); opacity: 0; }
-}
-
-/* ==========================================================================
-   RESPONSIVE DESIGN (Classroom Smartboards, Tablets, Laptops)
-   ========================================================================== */
-@media (max-width: 860px) {
-  .diorama-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .tactical-dock {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .stepper-nav span.step-text {
-    display: none;
-  }
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
 }

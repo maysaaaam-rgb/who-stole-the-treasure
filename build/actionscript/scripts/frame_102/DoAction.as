@@ -1,0 +1,23 @@
+if(eval("do") == "1")
+{
+   tellTarget("/i4")
+   {
+      gotoAndStop(13);
+   }
+   tellTarget("/i3")
+   {
+      gotoAndStop(2);
+   }
+   tellTarget("/i2")
+   {
+      gotoAndStop(2);
+   }
+   tellTarget("/i1")
+   {
+      gotoAndStop(2);
+   }
+}
+else
+{
+   gotoAndPlay(103);
+}
