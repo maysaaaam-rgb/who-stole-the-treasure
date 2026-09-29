@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌲 Student Worksheet — Nature's Armor & The Detective's Lens</title>
+  <style>
+    :root {
+      --ink-primary: #0f172a;
+      --ink-secondary: #475569;
+      --border-color: #94a3b8;
+      --accent-color: #059669;
+      --bg-box: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--ink-primary);
+      background-color: #e2e8f0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .worksheet-paper {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 36px 44px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .print-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px dashed #cbd5e1;
+    }
+
+    .btn-print {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .btn-print:hover { background: #047857; }
+
+    .header-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 3px double var(--ink-primary);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .title-group h1 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .title-group p {
+      font-size: 0.95rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .student-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      min-width: 320px;
+    }
+    .field-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .field-line {
+      flex: 1;
+      border-bottom: 1.5px solid var(--border-color);
+      height: 20px;
+    }
+
+    .concept-box {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      border-left: 5px solid #10b981;
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+    .concept-box strong { color: #047857; }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Part 1 Table */
+    .table-biome {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .table-biome th, .table-biome td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+    .table-biome th {
+      background: #f1f5f9;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    /* Part 2 Match */
+    .match-columns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .match-item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+
+    /* Part 3 Seasons */
+    .seasons-grid-sheet {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .season-cell {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 6px;
+      padding: 10px;
+      min-height: 90px;
+      background: #fafafa;
+      font-size: 0.85rem;
+    }
+
+    /* Part 4 & 5 */
+    .fill-blank-line {
+      display: inline-block;
+      min-width: 140px;
+      border-bottom: 1.5px solid var(--ink-primary);
+      margin: 0 4px;
+    }
+
+    @media print {
+      body { background: transparent; padding: 0; }
+      .worksheet-paper { box-shadow: none; padding: 0; max-width: 100%; }
+      .print-bar { display: none; }
+      @page { margin: 1.2cm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="worksheet-paper">
+    
+    <div class="print-bar">
+      <div>
+        <strong>Nature's Armor &amp; The Detective's Lens Companion Worksheet</strong>
+        <p style="font-size: 0.85rem; color: #64748b;">English Adventure Academy · Primary ESL Curriculum</p>
+      </div>
+      <button class="btn-print" onclick="window.print()">🖨️ Print Worksheet (A4)</button>
+    </div>
+
+    <header class="header-block">
+      <div class="title-group">
+        <h1>🌲 Nature's Armor &amp; The Detective's Lens</h1>
+        <p>Forest Biomes, Survival Adaptations &amp; Author's Purpose</p>
+      </div>
+      <div class="student-fields">
+        <div class="field-row">
+          <span>Name:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Date:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Class:</span>
+          <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+          <span>Score:</span>
+          <div class="field-line">/ 25</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="concept-box">
+      <strong>💡 Key Principles:</strong> 
+      1) <em>"Coniferous needles stay green; deciduous broadleaves drop in autumn."</em><br>
+      2) <em>"Authors usually write to <strong>TEACH</strong>, <strong>PERSUADE</strong>, or <strong>ENTERTAIN</strong>."</em>
+    </div>
+
+    <!-- PART 1 -->
+    <section>
+      <h2 class="section-title">Part 1: Biome Scanner — Deciduous vs. Coniferous Forests</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 8px;">
+        Read each statement from the reading. Put a checkmark (✓) in the correct forest column.
+      </p>
+
+      <table class="table-biome">
+        <thead>
+          <tr>
+            <th style="text-align: left; width: 60%;">Statement</th>
+            <th style="width: 20%;">Deciduous Forests (🍁)</th>
+            <th style="width: 20%;">Coniferous Forests (🌲)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. The trees don't lose their leaves in autumn.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+          <tr>
+            <td>2. Winters are shorter here.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+          <tr>
+            <td>3. The animals find food in the trees.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+          <tr>
+            <td>4. The leaves stay the same color in autumn.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+          <tr>
+            <td>5. Some animals change color in winter.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+          <tr>
+            <td>6. The leaves of these trees are not thin.</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+            <td style="text-align: center;">[ &nbsp; ]</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- PART 2 -->
+    <section>
+      <h2 class="section-title">Part 2: Winter Survival Match</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 8px;">
+        Match each organism on the left with its winter survival strategy on the right. Write the letter in the blank.
+      </p>
+
+      <div class="match-columns-grid">
+        <div>
+          <div class="match-item-row"><strong>1. Deciduous Trees</strong> [ ___ ]</div>
+          <div class="match-item-row"><strong>2. Coniferous Trees</strong> [ ___ ]</div>
+          <div class="match-item-row"><strong>3. Bears</strong> [ ___ ]</div>
+          <div class="match-item-row"><strong>4. Hares</strong> [ ___ ]</div>
+        </div>
+        <div>
+          <div class="match-item-row"><strong>a.</strong> have thin leaves.</div>
+          <div class="match-item-row"><strong>b.</strong> lose their leaves in autumn and grow them again in spring.</div>
+          <div class="match-item-row"><strong>c.</strong> change from brown to white.</div>
+          <div class="match-item-row"><strong>d.</strong> hibernate and wake up in spring.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PART 3 -->
+    <section>
+      <h2 class="section-title">Part 3: 4-Season Human Adaptation Matrix</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 8px;">
+        Write one item or clothing you use to adapt to each season, then complete the sentence frame:
+      </p>
+
+      <div class="seasons-grid-sheet">
+        <div class="season-cell">
+          <strong>🌱 Spring:</strong><br>
+          Item: ________________
+        </div>
+        <div class="season-cell">
+          <strong>☀️ Summer:</strong><br>
+          Item: ________________
+        </div>
+        <div class="season-cell">
+          <strong>🍁 Autumn:</strong><br>
+          Item: ________________
+        </div>
+        <div class="season-cell">
+          <strong>❄️ Winter:</strong><br>
+          Item: ________________
+        </div>
+      </div>
+      <p style="font-size: 0.95rem;">
+        <em>Sentence:</em> "In winter, I adapt by <span class="fill-blank-line"></span>."
+      </p>
+    </section>
+
+    <!-- PART 4 -->
+    <section>
+      <h2 class="section-title">Part 4: Decoding Author's Purpose ("A New Friend")</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 8px;">
+        Answer the questions based on the Korean story <em>A New Friend</em>:
+      </p>
+
+      <div style="font-size: 0.9rem; margin-bottom: 10px;">
+        <p>1. Does the author want to entertain me? &nbsp; ( <strong>YES</strong> &nbsp;/&nbsp; <strong>NO</strong> )</p>
+        <p style="margin-top: 6px;">2. Does the author want to teach me about birds? &nbsp; ( <strong>YES</strong> &nbsp;/&nbsp; <strong>NO</strong> )</p>
+        <p style="margin-top: 6px;">3. Does the author want to change my opinion about birds? &nbsp; ( <strong>YES</strong> &nbsp;/&nbsp; <strong>NO</strong> )</p>
+      </div>
+
+      <p style="font-size: 0.95rem;">
+        4. <em>Synthesis:</em> "I think the author's purpose is to <span class="fill-blank-line"></span> and <span class="fill-blank-line"></span>."
+      </p>
+    </section>
+
+    <!-- PART 5 -->
+    <section>
+      <h2 class="section-title">Part 5: The Young Author's Speech Ticket</h2>
+      <p style="font-size: 0.9rem; color: #475569; margin-bottom: 6px;">
+        Write your own sentence as an author. Choose what you wrote (poem, story, card) and your purpose (entertain, teach, thank, persuade):
+      </p>
+      <p style="font-size: 1rem; font-weight: 700; color: #047857; margin-top: 6px;">
+        "I wrote a <span class="fill-blank-line"></span> to <span class="fill-blank-line"></span> my <span class="fill-blank-line"></span>."
+      </p>
+    </section>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌲 Nature's Armor & The Detective's Lens | Smartboard Experience</title>
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app-root">
+    <!-- Ambient Canvas Particles (Leaves & Snow flurries) -->
+    <canvas id="ambient-canvas" class="canvas-particles-layer"></canvas>
+
+    <!-- TOP SMARTBOARD CLASSROOM HUD -->
+    <header class="smartboard-hud">
+      <div class="hud-left">
+        <div class="hud-brand-pill">
+          <span class="hud-brand-icon">🌲</span>
+          <span class="hud-brand-title">Nature's Armor & The Detective's Lens</span>
+        </div>
+
+        <nav class="hud-stage-stepper" aria-label="Lesson Stages">
+          <button type="button" class="stage-tab-btn active" data-stage="1">
+            <span>1️⃣</span> Biome Scanner
+          </button>
+          <button type="button" class="stage-tab-btn" data-stage="2">
+            <span>2️⃣</span> Survival Match
+          </button>
+          <button type="button" class="stage-tab-btn" data-stage="3">
+            <span>3️⃣</span> Season Matrix
+          </button>
+          <button type="button" class="stage-tab-btn module-2-tab" data-stage="4">
+            <span>4️⃣</span> Alice &amp; Purpose
+          </button>
+          <button type="button" class="stage-tab-btn module-2-tab" data-stage="5">
+            <span>5️⃣</span> Story Case File
+          </button>
+          <button type="button" class="stage-tab-btn module-2-tab" data-stage="6">
+            <span>6️⃣</span> Author Studio
+          </button>
+        </nav>
+      </div>
+
+      <div class="hud-right">
+        <!-- Energy Gauge -->
+        <div class="class-energy-shell" title="Class Energy Progress">
+          <span class="energy-bar-label">Progress</span>
+          <div class="energy-bar-track">
+            <div class="energy-bar-fill" id="energy-bar-fill"></div>
+          </div>
+          <span id="energy-percent-text" style="font-family: var(--font-display); font-size: 0.9rem; font-weight: 900; color: #10b981; min-width: 40px;">10%</span>
+        </div>
+
+        <!-- Audio & Ambiance Controls -->
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-soundscape" style="padding: 8px 14px; font-size: 0.88rem;">
+          🎵 🍂 Autumn Forest
+        </button>
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-sfx" style="padding: 8px 14px; font-size: 0.88rem;">
+          🔊 SFX On
+        </button>
+
+        <!-- Utility Buttons -->
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-fullscreen" style="padding: 8px 14px; font-size: 0.88rem;" title="Fullscreen (F)">
+          ⛶ Fullscreen
+        </button>
+        <button type="button" class="btn-tactile-3d btn-ghost" id="btn-reset" style="padding: 8px 14px; font-size: 0.88rem;" title="Restart Lesson">
+          🔄 Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWPORT STAGES -->
+    <main class="stage-main-viewport">
+
+      <!-- ===================================================================
+           STAGE 1: BIOME SCANNER & TRUE/FALSE ARENA (Activity A)
+           =================================================================== -->
+      <section class="stage-view active" data-stage="1" id="stage-view-1">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🔍 Stage 1:</span> Biome Scanner &amp; True/False Arena
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Examine each statement: Does it describe a Deciduous Forest or a Coniferous Forest?
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            🌲 Biome Cold-Adaptation: Broadleaves vs. Evergreen Needles
+          </div>
+        </div>
+
+        <div class="biome-scanner-layout">
+          <!-- Split Biome Header Banners -->
+          <div class="biome-split-header">
+            <div class="biome-card-banner biome-banner-deciduous">
+              <div class="biome-banner-info">
+                <h3>🍁 Deciduous Forests</h3>
+                <p>Broad, flat leaves change to vibrant red and gold in autumn, then fall down to conserve moisture through winter.</p>
+              </div>
+              <div class="biome-banner-icon">🍂</div>
+            </div>
+
+            <div class="biome-card-banner biome-banner-coniferous">
+              <div class="biome-banner-info">
+                <h3>🌲 Coniferous Forests</h3>
+                <p>Thin, needle-shaped waxy leaves stay deep green through freezing blizzards and don't fall off in autumn.</p>
+              </div>
+              <div class="biome-banner-icon">🌲</div>
+            </div>
+          </div>
+
+          <!-- 6 Statements Grid -->
+          <div class="statements-interactive-grid" id="stage-1-statements-grid">
+            <!-- Dynamically populated by ForestAdaptationApp.renderStage1() -->
+          </div>
+
+          <!-- Stage 1 Unlock Banner -->
+          <div id="stage-1-unlock-box" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 2: WINTER SURVIVAL MATCH (Activity B)
+           =================================================================== -->
+      <section class="stage-view" data-stage="2" id="stage-view-2">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🐻 Stage 2:</span> Winter Survival Adaptation Match
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Tap an organism on the left, then tap its matching winter adaptation on the right!
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            ❄️ Hibernate, Camouflage, Needle Wax, &amp; Leaf Dropping
+          </div>
+        </div>
+
+        <div class="survival-match-stage">
+          <div class="survival-board-layout">
+            <!-- Left Column: Organisms -->
+            <div class="survival-column" id="survival-orgs-col">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Right Column: Adaptation Targets -->
+            <div class="survival-column" id="survival-targets-col">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Stage 2 Unlock Banner -->
+          <div id="stage-2-unlock-box" style="display: none;"></div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 3: THE 4-SEASON HUMAN ADAPTATION MATRIX (Activity C)
+           =================================================================== -->
+      <section class="stage-view" data-stage="3" id="stage-view-3">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🧥 Stage 3:</span> The 4-Season Human Adaptation Matrix
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Drag each lifestyle item into the correct season quadrant! How do YOU adapt?
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            🗣️ "In [Season], I adapt by using [Item]."
+          </div>
+        </div>
+
+        <div class="adaptation-matrix-layout">
+          <!-- 4 Seasonal Quadrants -->
+          <div class="seasons-4-quadrants">
+            <!-- Spring -->
+            <div class="season-quadrant-box quadrant-spring" id="quadrant-spring">
+              <div class="season-header-row">
+                <h4 style="color: #4ade80;"><span>🌱</span> Spring</h4>
+                <span style="font-size: 0.85rem; color: #86efac;">Rain &amp; Mild Chills</span>
+              </div>
+              <div class="season-dropped-tray" id="tray-spring"></div>
+            </div>
+
+            <!-- Summer -->
+            <div class="season-quadrant-box quadrant-summer" id="quadrant-summer">
+              <div class="season-header-row">
+                <h4 style="color: #facc15;"><span>☀️</span> Summer</h4>
+                <span style="font-size: 0.85rem; color: #fde047;">Hot Sun &amp; Beach</span>
+              </div>
+              <div class="season-dropped-tray" id="tray-summer"></div>
+            </div>
+
+            <!-- Autumn -->
+            <div class="season-quadrant-box quadrant-autumn" id="quadrant-autumn">
+              <div class="season-header-row">
+                <h4 style="color: #fb923c;"><span>🍁</span> Autumn</h4>
+                <span style="font-size: 0.85rem; color: #fdba74;">Crisp Wind &amp; Harvest</span>
+              </div>
+              <div class="season-dropped-tray" id="tray-autumn"></div>
+            </div>
+
+            <!-- Winter -->
+            <div class="season-quadrant-box quadrant-winter" id="quadrant-winter">
+              <div class="season-header-row">
+                <h4 style="color: #38bdf8;"><span>❄️</span> Winter</h4>
+                <span style="font-size: 0.85rem; color: #7dd3fc;">Sub-Zero Snow &amp; Ice</span>
+              </div>
+              <div class="season-dropped-tray" id="tray-winter"></div>
+            </div>
+          </div>
+
+          <!-- Right Shelf: Draggable Items -->
+          <div class="adaptation-item-shelf">
+            <h4 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 900; color: #38bdf8;">
+              📦 Adaptation Items
+            </h4>
+            <div id="adaptation-items-shelf" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Live Spoken Frame Output -->
+            <div style="margin-top: auto; background: rgba(0, 0, 0, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 12px 14px;">
+              <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 900; color: var(--accent-gold);">Spoken Sentence:</span>
+              <p id="season-sentence-live" style="font-size: 0.95rem; font-weight: 800; color: #34d399; margin-top: 4px;">
+                "In winter, I adapt by wearing a heavy coat."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3 Unlock Banner -->
+        <div id="stage-3-unlock-box" style="display: none;"></div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 4: ALICE'S PORTAL & PURPOSE WHEEL (Module 2, Activity A)
+           =================================================================== -->
+      <section class="stage-view" data-stage="4" id="stage-view-4">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>📖 Stage 4:</span> Alice's Portal &amp; Author's Purpose
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Why do authors write stories? Discover the 3 primary purposes!
+            </p>
+          </div>
+          <div class="target-concept-pill pink-pill">
+            🎭 Golden Rule: To TEACH, PERSUADE, or ENTERTAIN
+          </div>
+        </div>
+
+        <div class="alice-portal-stage">
+          <!-- Left: Storybook Scene -->
+          <div class="alice-storybook-card">
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: #f472b6;">
+              Alice's Adventures in Wonderland
+            </h3>
+            <p style="color: #cbd5e1; font-size: 0.95rem; margin-top: 6px;">
+              The author wrote <em>The Beginning of Alice's Adventures</em> to...
+            </p>
+
+            <div class="alice-book-visual">
+              🐇 🎩 ⏳
+            </div>
+
+            <!-- 3 Selectable Options -->
+            <div id="alice-options-cluster" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Right: Purpose Badges Showcase -->
+          <div class="purpose-rules-wheel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; color: #ffffff;">
+                  The Author's Purpose Detective Wheel
+                </h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+                  Every book, article, and poem is written for a distinct goal:
+                </p>
+              </div>
+              <button type="button" class="btn-tactile-3d btn-gold" id="btn-view-golden-rule" style="padding: 10px 18px; font-size: 0.9rem;">
+                🌟 Golden Rule
+              </button>
+            </div>
+
+            <!-- 3 Badges Display -->
+            <div class="purpose-badges-trio">
+              <!-- Entertain -->
+              <div class="purpose-badge-pill badge-entertain">
+                <div style="font-size: 3rem; margin-bottom: 8px;">🎭</div>
+                <h4 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; color: #f472b6; margin-bottom: 6px;">
+                  TO ENTERTAIN
+                </h4>
+                <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.4;">
+                  Makes you laugh, have fun, feel thrilled, or imagine magical worlds!
+                </p>
+              </div>
+
+              <!-- Teach -->
+              <div class="purpose-badge-pill badge-teach">
+                <div style="font-size: 3rem; margin-bottom: 8px;">📖</div>
+                <h4 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; color: #38bdf8; margin-bottom: 6px;">
+                  TO TEACH / INFORM
+                </h4>
+                <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.4;">
+                  Gives real science facts, nature secrets, historical dates, or explanations.
+                </p>
+              </div>
+
+              <!-- Persuade -->
+              <div class="purpose-badge-pill badge-persuade">
+                <div style="font-size: 3rem; margin-bottom: 8px;">📢</div>
+                <h4 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; color: #fbbf24; margin-bottom: 6px;">
+                  TO PERSUADE
+                </h4>
+                <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.4;">
+                  Tries to change your opinion, convince your mind, or urge you to act!
+                </p>
+              </div>
+            </div>
+
+            <!-- Stage 4 Unlock Banner -->
+            <div id="stage-4-unlock-box" style="display: none;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 5: "A NEW FRIEND" STORY TEASER & CASE FILE (Activity B)
+           =================================================================== -->
+      <section class="stage-view" data-stage="5" id="stage-view-5">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🕊️ Stage 5:</span> "A New Friend" Story Teaser &amp; Case File
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Listen to the story read-aloud, test the Yes/No verdicts, and synthesize the author's purpose!
+            </p>
+          </div>
+          <div class="target-concept-pill">
+            💡 Dual Purpose: Both Entertains and Teaches!
+          </div>
+        </div>
+
+        <div class="story-case-layout">
+          <!-- Left: Story Reading & Karaoke Panel -->
+          <div class="story-reading-panel">
+            <!-- Scene Header Vector Artwork -->
+            <div class="story-scene-header">
+              <svg viewBox="0 0 540 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="skyGradStory" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#38bdf8"/>
+                    <stop offset="100%" stop-color="#bae6fd"/>
+                  </linearGradient>
+                </defs>
+                <rect width="540" height="220" fill="url(#skyGradStory)"/>
+                <!-- Sun -->
+                <circle cx="480" cy="50" r="35" fill="#fef08a" opacity="0.8"/>
+                <!-- Traditional Korean Tile Roof -->
+                <path d="M 0 110 Q 270 70 540 110 L 540 145 Q 270 105 0 145 Z" fill="#334155"/>
+                <path d="M 0 120 Q 270 80 540 120" stroke="#0f172a" stroke-width="6" fill="none"/>
+                <!-- Swallow Nest under roof beam -->
+                <ellipse cx="270" cy="120" rx="35" ry="22" fill="#78350f"/>
+                <!-- Baby swallows in nest -->
+                <circle cx="260" cy="110" r="8" fill="#1e293b"/>
+                <polygon points="252,110 248,112 252,114" fill="#f59e0b"/>
+                <circle cx="280" cy="110" r="8" fill="#1e293b"/>
+                <polygon points="288,110 292,112 288,114" fill="#f59e0b"/>
+                <!-- Mother Swallow in Flight -->
+                <path d="M 120 70 Q 140 40 160 65 Q 180 40 200 70 Q 160 80 120 70 Z" fill="#0f172a"/>
+                <!-- House Wall & Veranda -->
+                <rect y="140" width="540" height="80" fill="#fef3c7"/>
+                <rect x="40" y="160" width="80" height="60" fill="#78350f" opacity="0.6"/>
+              </svg>
+            </div>
+
+            <!-- Karaoke Word Stream -->
+            <div class="karaoke-text-box" id="story-karaoke-text">
+              <!-- Dynamically populated -->
+            </div>
+
+            <button type="button" class="btn-tactile-3d btn-gold" id="btn-story-read-aloud" style="padding: 12px 24px; font-size: 1.05rem; align-self: flex-start;">
+              🔊 Play Karaoke Read-Aloud
+            </button>
+          </div>
+
+          <!-- Right: Verdict Questions & Synthesis -->
+          <div class="verdict-case-panel">
+            <h3 style="font-family: var(--font-display); font-size: 1.3rem; font-weight: 900; color: #38bdf8;">
+              🕵️ Detective Verdicts (Yes / No)
+            </h3>
+
+            <!-- 3 Toggle Questions -->
+            <div id="verdict-questions-container" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Synthesis Slot Builder -->
+            <div style="margin-top: 10px; background: rgba(0, 0, 0, 0.4); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); padding: 14px 16px;">
+              <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 900; color: var(--accent-gold);">
+                Synthesis Slot Builder:
+              </span>
+              <p style="font-size: 1rem; font-weight: 800; margin: 8px 0; color: #ffffff;">
+                "I think the author's purpose is to 
+                <span id="synth-slot-1" style="color: #38bdf8; text-decoration: underline; font-weight: 900;">[ ______ ]</span> and 
+                <span id="synth-slot-2" style="color: #38bdf8; text-decoration: underline; font-weight: 900;">[ ______ ]</span>."
+              </p>
+              <div id="synthesis-tokens-cluster" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Stage 5 Unlock Banner -->
+            <div id="stage-5-unlock-box" style="display: none;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           STAGE 6: THE YOUNG AUTHOR'S SPEECH STUDIO (Activity C - Exit Ticket)
+           =================================================================== -->
+      <section class="stage-view" data-stage="6" id="stage-view-6">
+        <div class="stage-header-strip">
+          <div class="stage-title-col">
+            <h2>
+              <span>🎤 Stage 6:</span> The Young Author's Speech Studio
+            </h2>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 4px;">
+              Now it's your turn to be the author! Choose what you wrote and why, then launch a paper airplane!
+            </p>
+          </div>
+          <div class="target-concept-pill pink-pill">
+            ✈️ "I wrote [X] to [Purpose] my [Recipient]."
+          </div>
+        </div>
+
+        <div class="author-studio-layout">
+          <!-- Left: Studio Console -->
+          <div class="studio-builder-card">
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 900; color: #94a3b8; text-transform: uppercase;">1. What did you write?</span>
+              <div id="studio-formats-cluster" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;"></div>
+            </div>
+
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 900; color: #94a3b8; text-transform: uppercase;">2. Why did you write it? (Author's Purpose)</span>
+              <div id="studio-purposes-cluster" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;"></div>
+            </div>
+
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 900; color: #94a3b8; text-transform: uppercase;">3. Who did you write it for?</span>
+              <div id="studio-recipients-cluster" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;"></div>
+            </div>
+
+            <!-- Live Spoken Sentence Frame -->
+            <div style="background: rgba(0, 0, 0, 0.45); border: 2px solid var(--accent-pink); border-radius: var(--radius-md); padding: 14px 18px;">
+              <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 900; color: #f472b6;">Your Author Statement:</span>
+              <p id="studio-sentence-live" style="font-size: 1.15rem; font-weight: 900; color: #ffffff; margin-top: 6px;">
+                "I wrote a poem to entertain my best friend."
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 10px;">
+              <button type="button" class="btn-tactile-3d btn-pink" id="btn-launch-airplane" style="flex: 1; padding: 14px 20px;">
+                🚀 Launch Paper Airplane!
+              </button>
+              <button type="button" class="btn-tactile-3d btn-emerald" id="btn-class-celebrate" style="padding: 14px 24px;">
+                🏆 Class Victory!
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: The Authors' Vault -->
+          <div class="airplane-vault-stage" id="airplane-vault-stage">
+            <div style="display: flex; justify-content: space-between; align-items: center; z-index: 5; margin-bottom: 16px;">
+              <h3 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 900; color: #fbbf24;">
+                ✈️ The Class Authors' Vault
+              </h3>
+              <span style="font-size: 0.88rem; color: #94a3b8; background: rgba(0, 0, 0, 0.4); padding: 4px 12px; border-radius: var(--radius-pill);">
+                Classroom Digital Showcase
+              </span>
+            </div>
+
+            <!-- Vault Badges Stream -->
+            <div id="authors-vault-badges" style="display: flex; flex-direction: column; gap: 10px; z-index: 5; max-height: 480px; overflow-y: auto;">
+              <div style="background: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: var(--radius-pill); padding: 8px 16px; font-size: 0.9rem; font-weight: 800; color: #fbbf24;">
+                <span>✈️</span> Wrote <em>a birthday card</em> to <strong>thank</strong> my mom and dad!
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =====================================================================
+         MODAL DIALOGS
+         ===================================================================== -->
+
+    <!-- Golden Rule Modal -->
+    <div class="modal-overlay-barrier" id="golden-rule-modal" role="dialog" aria-modal="true">
+      <div class="modal-glass-card" style="max-width: 680px;">
+        <button type="button" class="modal-close-corner" title="Close">✕</button>
+        <div style="font-size: 4rem; margin-bottom: 8px;">🌟 📖 🎭</div>
+        <h2 style="font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: #fbbf24; margin-bottom: 12px;">
+          The Golden Rule of Author's Purpose
+        </h2>
+        <p style="color: #f8fafc; font-size: 1.25rem; font-weight: 800; line-height: 1.5; margin-bottom: 24px;">
+          "Authors usually write to <strong>TEACH</strong> something, <strong>CHANGE</strong> someone's opinion (PERSUADE), or <strong>ENTERTAIN</strong>."
+        </p>
+        <button type="button" class="btn-tactile-3d btn-emerald" onclick="document.getElementById('golden-rule-modal').classList.remove('active')" style="padding: 12px 28px; font-size: 1.1rem;">
+          Understood! Back to Lesson ✓
+        </button>
+      </div>
+    </div>
+
+    <!-- Final Class Victory Modal -->
+    <div class="modal-overlay-barrier" id="victory-modal" role="dialog" aria-modal="true">
+      <div class="modal-glass-card" style="max-width: 680px;">
+        <button type="button" class="modal-close-corner" title="Close">✕</button>
+        <div style="font-size: 4.5rem; margin-bottom: 12px;">🏆 🌲 ✈️</div>
+        <h2 style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: #34d399; margin-bottom: 12px;">
+          Double Mastery Accomplished!
+        </h2>
+        <p style="color: #e2e8f0; font-size: 1.15rem; line-height: 1.6; margin-bottom: 24px;">
+          Incredible work, Junior Biome Rangers &amp; Story Detectives! You decoded cold-adaptation armor across deciduous and coniferous forests, 
+          unlocked bear hibernation and hare camouflage, and cracked the author's purpose in Alice's Adventures and 'A New Friend'!
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center;">
+          <a href="worksheet.html" target="_blank" class="btn-tactile-3d btn-cyan" style="text-decoration: none; padding: 14px 28px;">
+            📄 Printable Worksheet
+          </a>
+          <button type="button" class="btn-tactile-3d btn-gold" onclick="window.location.reload()" style="padding: 14px 28px;">
+            🔄 Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ambient Golden Flurry Canvas Particle Script (Zero Dependencies) -->
+  <script>
+    (function initForestSparks() {
+      const canvas = document.getElementById('ambient-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      const particleCount = 38;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2.8 + 1,
+          vx: (Math.random() - 0.5) * 0.5 + 0.2,
+          vy: Math.random() * 0.7 + 0.3, // gently drifting downwards like leaves/snow
+          alpha: Math.random() * 0.6 + 0.2,
+          alphaSpeed: (Math.random() - 0.5) * 0.015,
+          color: Math.random() > 0.5 ? '#f59e0b' : '#38bdf8'
+        });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha += p.alphaSpeed;
+
+          if (p.alpha <= 0.1 || p.alpha >= 0.8) {
+            p.alphaSpeed = -p.alphaSpeed;
+          }
+
+          if (p.y > height + 10) {
+            p.y = -10;
+            p.x = Math.random() * width;
+          }
+          if (p.x > width + 10) p.x = -10;
+          if (p.x < -10) p.x = width + 10;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      loop();
+    })();
+  </script>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
