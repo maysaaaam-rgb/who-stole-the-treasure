@@ -1414,7 +1414,7 @@ class MonsterApp {
     const meta = this.getStepMeta(stepNumber);
 
     // 1. Update Phase Navigation Bar Highlight
-    document.querySelectorAll('.phase-card').forEach(card => {
+    document.querySelectorAll('.phase-group-pill, .phase-card').forEach(card => {
       const pId = parseInt(card.getAttribute('data-phase-id'), 10);
       card.classList.remove('active', 'completed');
       if (pId === phase.id) card.classList.add('active');
@@ -1431,13 +1431,13 @@ class MonsterApp {
     if (titleEl) titleEl.innerText = meta.title;
     if (cheerEl) cheerEl.innerText = meta.cheer;
 
-    // 3. Render Sub-step pills for active phase
-    const trackEl = document.getElementById('phase-substep-track');
+    // 3. Render Sub-step pills / Horizontal Connected Milestone Checkpoints
+    const trackEl = document.getElementById('milestone-checkpoints-row') || document.getElementById('phase-substep-track');
     if (trackEl) {
       trackEl.innerHTML = phase.steps.map(s => {
         const isCurrent = s.num === stepNumber ? 'active' : (s.num < stepNumber ? 'completed' : '');
         return `
-          <button class="substep-pill ${isCurrent}" onclick="app.setStep(${s.num})">
+          <button class="milestone-checkpoint-pill substep-pill ${isCurrent}" onclick="app.setStep(${s.num})" title="${s.title}">
             <span>${s.label}</span>
           </button>
         `;
@@ -1720,7 +1720,7 @@ class MonsterApp {
               <input type="text" id="monster-name-input" value="${m.name || 'Zippy'}" 
                      style="flex:1; padding:12px; font-size:1.2rem; font-weight:800; border-radius:12px; border:3px solid #cbd5e1;" 
                      oninput="app.setMonsterName(this.value)" placeholder="Type monster name...">
-              <button class="btn-3d btn-accent" onclick="app.pickRandomName()">🎲 RANDOM</button>
+              <button class="btn-clay btn-jelly-accent" onclick="app.pickRandomName()">🎲 RANDOM</button>
             </div>
           </div>
           ${window.monsterPassportEngine.generatePassportHtml(m)}
