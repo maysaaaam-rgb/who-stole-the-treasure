@@ -1,6 +1,7 @@
 /**
  * Cat vs Dog (Fleabag vs Mutt) Authentic Audio Manager
  * Uses Web Audio API with pre-decoded buffers and dual-mode fallback
+ * Includes automatic First-Click / Pointer interaction unlock
  */
 class GameAudio {
   constructor(basePath = 'assets/audio/') {
@@ -28,8 +29,24 @@ class GameAudio {
       heal: '28.mp3',
       powerup_active: '287.mp3',
       click: '122.mp3',
+      charge_whistle: '9.mp3',
       victory: '419.mp3'
     };
+
+    // Auto-setup first pointer interaction unlock
+    this.setupInteractionUnlock();
+  }
+
+  setupInteractionUnlock() {
+    const unlockHandler = () => {
+      this.init();
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+    };
+    window.addEventListener('pointerdown', unlockHandler, { once: true });
+    window.addEventListener('keydown', unlockHandler, { once: true });
+    window.addEventListener('touchstart', unlockHandler, { once: true });
   }
 
   init() {
@@ -39,7 +56,7 @@ class GameAudio {
       if (AudioCtx) {
         this.ctx = new AudioCtx();
         if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
+          this.ctx.resume().catch(() => {});
         }
       }
       this.initialized = true;
@@ -54,14 +71,21 @@ class GameAudio {
     if (!this.ctx) return;
     const loadPromises = Object.entries(this.soundMap).map(async ([key, filename]) => {
       try {
-        const url = `${this.basePath}${filename}`;
+        let url;
+        // Check if bundled base64 audio is provided
+        if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
+          url = window.BUNDLED_AUDIO[key];
+        } else {
+          url = `${this.basePath}${filename}`;
+        }
+
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
         this.buffers[key] = audioBuffer;
       } catch (err) {
-        console.warn(`Failed to preload audio: ${key} (${filename})`, err);
+        // Soft-fail: fallback will handle direct play on demand
       }
     });
     await Promise.all(loadPromises);
@@ -73,11 +97,11 @@ class GameAudio {
 
     const vol = (options.volume !== undefined ? options.volume : 1.0) * this.volume;
 
-    // Try Web Audio buffer first
+    // 1. Try Web Audio buffer
     if (this.ctx && this.buffers[key]) {
       try {
         if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
+          this.ctx.resume().catch(() => {});
         }
         const source = this.ctx.createBufferSource();
         source.buffer = this.buffers[key];
@@ -87,22 +111,25 @@ class GameAudio {
         gainNode.connect(this.ctx.destination);
         source.start(0);
         return source;
-      } catch (e) {
-        console.warn('Web Audio playback error, falling back:', e);
-      }
+      } catch (e) {}
     }
 
-    // Fallback HTML5 Audio
-    const filename = this.soundMap[key];
-    if (filename) {
+    // 2. Fallback HTML5 Audio
+    let url;
+    if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
+      url = window.BUNDLED_AUDIO[key];
+    } else {
+      const filename = this.soundMap[key];
+      if (filename) url = `${this.basePath}${filename}`;
+    }
+
+    if (url) {
       try {
-        const audio = new Audio(`${this.basePath}${filename}`);
+        const audio = new Audio(url);
         audio.volume = Math.min(1.0, Math.max(0.0, vol));
         audio.play().catch(() => {});
         return audio;
-      } catch (e) {
-        console.warn('HTML5 Audio error:', e);
-      }
+      } catch (e) {}
     }
     return null;
   }
@@ -112,17 +139,22 @@ class GameAudio {
     if (!this.initialized) this.init();
 
     this.stopMusic();
-    const filename = this.soundMap[key];
-    if (filename) {
+    let url;
+    if (window.BUNDLED_AUDIO && window.BUNDLED_AUDIO[key]) {
+      url = window.BUNDLED_AUDIO[key];
+    } else {
+      const filename = this.soundMap[key];
+      if (filename) url = `${this.basePath}${filename}`;
+    }
+
+    if (url) {
       try {
-        const audio = new Audio(`${this.basePath}${filename}`);
+        const audio = new Audio(url);
         audio.volume = this.volume * 0.7;
         audio.loop = true;
         audio.play().catch(() => {});
         this.currentMusic = audio;
-      } catch (e) {
-        console.warn('Music play error:', e);
-      }
+      } catch (e) {}
     }
   }
 
