@@ -1,0 +1,486 @@
+/* ==========================================================================
+   modes.css - Challenge Modes, Listening Mode, Secret Monster, Speaking Teleprompter & Presentation
+   "Build Your Own Monster!"
+   ========================================================================== */
+
+/* ==========================================
+   ACTIVE MODE QUEST BANNER (IN CREATOR)
+   ========================================== */
+.mode-quest-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 3px solid #f59e0b;
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+  animation: bannerPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mode-quest-banner.hidden {
+  display: none;
+}
+
+.banner-quest-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.banner-quest-icon {
+  font-size: 1.8rem;
+}
+
+.banner-quest-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #78350f;
+}
+
+.banner-quest-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================
+   MONSTER CHALLENGE & LISTENING COMMON STYLES
+   ========================================== */
+.challenge-screen-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 4px solid #ffffff;
+  box-shadow: var(--shadow-lg);
+  padding: 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.challenge-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.challenge-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+}
+
+.quest-mission-card {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 3px solid #f59e0b;
+  border-radius: var(--radius-lg);
+  padding: 20px 26px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.quest-mission-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #92400e;
+  text-transform: uppercase;
+}
+
+.quest-mission-instruction {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #78350f;
+}
+
+.quest-mission-hint {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
+/* Feedback Banners */
+.feedback-banner {
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: bannerPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-banner.hidden {
+  display: none;
+}
+
+.feedback-banner.success {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 3px solid #22c55e;
+  color: #14532d;
+}
+
+.feedback-banner.hint {
+  background: linear-gradient(135deg, #fef9c3, #fef08a);
+  border: 3px solid #eab308;
+  color: #713f12;
+}
+
+@keyframes bannerPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================
+   LISTENING CHALLENGE SPECIFIC STYLES
+   ========================================== */
+.listening-controls-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.diff-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid #cbd5e1;
+}
+
+.diff-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.diff-btn.active {
+  background: #ffffff;
+  color: var(--primary-dark);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.listen-audio-hero {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  border: none;
+  padding: 16px 32px;
+  border-radius: var(--radius-lg);
+  font-size: 1.3rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+  transition: all 0.25s;
+}
+
+.listen-audio-hero:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.45);
+}
+
+.listening-text-large {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.listening-text-medium {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.listening-text-hidden {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #6366f1;
+  font-style: italic;
+}
+
+/* ==========================================
+   SECRET MONSTER MODE (2-PLAYER)
+   ========================================== */
+.secret-step-container {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.secret-step-container.active {
+  display: flex;
+}
+
+.secret-player-banner {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  border: 3px solid #8b5cf6;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.secret-card-box {
+  background: #ffffff;
+  border: 4px dashed #8b5cf6;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.secret-card-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secret-clue-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.secret-clue-item {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 1.05rem;
+  color: #334155;
+}
+
+/* Compare Screen (Step 2) */
+.secret-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.secret-compare-monster-box {
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.secret-compare-monster-box h3 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+}
+
+.secret-comparison-table {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  border: 2px solid #e2e8f0;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.5fr 1.5fr 1fr;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+}
+
+.compare-row.header {
+  background: #f1f5f9;
+  font-weight: 900;
+  color: #334155;
+}
+
+.compare-row.match {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.compare-row.mismatch {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* ==========================================
+   SPEAKING MODE (TELEPROMPTER MODAL)
+   ========================================== */
+.speaking-teleprompter-card {
+  max-width: 750px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.speaking-step-counter {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.speaking-icon-badge {
+  font-size: 4.5rem;
+  animation: bounceScore 1.5s infinite alternate ease-in-out;
+}
+
+.speaking-starter-prompt {
+  background: #fef08a;
+  border: 2px solid #eab308;
+  color: #854d0e;
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 6px 18px;
+  border-radius: 999px;
+}
+
+.speaking-main-sentence {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.speaking-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+/* ==========================================
+   CLASSROOM PRESENTATION MODE (PROJECTOR)
+   ========================================== */
+.presentation-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+  z-index: 5000;
+  display: none;
+  flex-direction: column;
+  padding: 30px 50px;
+  color: #ffffff;
+  overflow-y: auto;
+}
+
+.presentation-fullscreen-modal.active {
+  display: flex;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.presentation-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.presentation-top-bar h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.presentation-body-layout {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 40px;
+  align-items: center;
+  flex: 1;
+}
+
+.presentation-monster-side {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.presentation-bullets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pres-bullet-card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(10px);
+}
+
+.pres-bullet-card:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateX(8px);
+  border-color: #facc15;
+}
+
+.pres-speak-chip {
+  background: #facc15;
+  border: none;
+  font-size: 1.2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .presentation-body-layout {
+    grid-template-columns: 1fr;
+  }
+  .secret-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .speaking-main-sentence {
+    font-size: 1.6rem;
+  }
+}
