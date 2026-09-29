@@ -6912,6 +6912,72 @@ const GAMES_REGISTRY = [
     "featured": true,
     "thumbnailIcon": "🌾",
     "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
+  },
+  {
+    "id": "forest-adaptation",
+    "title": "🌲 Nature's Armor & The Detective's Lens",
+    "description": "High-resolution, audio-rich Smartboard ESL experience. Compare deciduous and coniferous forest adaptations, match winter survival armor (bear hibernation and hare camouflage), master the 4-season human adaptation matrix, and decode author's purpose (Entertain, Teach, Persuade) with Alice in Wonderland and the Korean swallow story 'A New Friend'.",
+    "category": "Science, Biomes & Literature",
+    "categoryGroup": "Biome & Reading Strategy",
+    "level": "A1–A2 (Ages 7–11)",
+    "duration": "45–60 min",
+    "xp": 350,
+    "topic": "Forest Adaptations & Decoding Author's Purpose",
+    "grammar": {
+      "focusPattern": "In [Season], I adapt by [Action/Clothing]. / The author wrote [Title] to [teach/entertain/persuade].",
+      "formula": "In [Season], I adapt by [wearing/using] [Item].",
+      "formulas": [
+        "In [Season], I adapt by [wearing/using] [Item].",
+        "The author wrote [Title] to [teach / entertain / persuade].",
+        "[Organism] adapts by [Adaptation]."
+      ]
+    },
+    "clilDomain": "Forest Ecology (Deciduous vs. Coniferous) & Reading Strategies (Author's Purpose)",
+    "clilTheme": "Seasonal Plant/Animal Armor & Reading Comprehension",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "needles",
+        "leaves",
+        "hibernate",
+        "camouflage",
+        "bears",
+        "hares",
+        "entertain",
+        "teach",
+        "persuade",
+        "swallow",
+        "nest",
+        "adaptation"
+      ],
+      "supporting": [
+        "autumn",
+        "winter",
+        "spring",
+        "summer",
+        "evergreen",
+        "broadleaf",
+        "opinion",
+        "purpose",
+        "speech",
+        "airplane"
+      ]
+    },
+    "learningObjectives": [
+      "Distinguish between deciduous and coniferous forest biomes and their leaf adaptations.",
+      "Identify plant and animal winter survival strategies (hibernation, snow camouflage, waxy needles).",
+      "Categorize human seasonal adaptations across Spring, Summer, Autumn, and Winter.",
+      "Identify the 3 main author's purposes: To Entertain, To Teach/Inform, and To Persuade.",
+      "Analyze the dual purpose of the narrative story 'A New Friend' and craft an author statement."
+    ],
+    "url": "forest-adaptation/index.html",
+    "route": "forest-adaptation/index.html",
+    "worksheetUrl": "forest-adaptation/worksheet.html",
+    "worksheetRoute": "forest-adaptation/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🌲",
+    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)"
   }
 ];
 
