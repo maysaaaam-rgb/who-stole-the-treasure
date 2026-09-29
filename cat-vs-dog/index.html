@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Cat vs Dog (Fleabag vs Mutt) | Authentic Modern HTML5 Port</title>
   
   <!-- Fonts -->
@@ -20,6 +20,11 @@
       🐱 <span>CAT</span> VS <span>DOG</span> 🐶
     </div>
 
+    <!-- Match Win Scoreboard -->
+    <div id="scoreboard-pill" class="scoreboard-pill" title="Session Scoreboard (Local Storage)">
+      🐱 <b>0</b> &nbsp;|&nbsp; <b>0</b> 🐶
+    </div>
+
     <div class="controls-cluster">
       <select id="game-mode-select" class="glass-select" title="Game Mode">
         <option value="1P">1 Player (vs CPU)</option>
@@ -31,9 +36,10 @@
         <option value="easy">Wind: Calm (-1 to +1)</option>
       </select>
 
-      <button id="btn-toggle-sfx" class="btn-3d active" title="Toggle Sound FX">🔊 SFX</button>
+      <button id="btn-toggle-mute" class="btn-3d active" title="Toggle Sound Mute">🔊 Sound</button>
       <button id="btn-toggle-music" class="btn-3d" title="Toggle Theme Music">🎵 Music</button>
-      <button id="btn-reset" class="btn-3d" title="Restart Game">🔄 Reset</button>
+      <button id="btn-reset" class="btn-3d" title="Restart Round">🔄 Round</button>
+      <button id="btn-reset-score" class="btn-3d" title="Reset Win Counter">📊 Score</button>
       <button id="btn-fullscreen" class="btn-3d" title="Classroom Fullscreen">📺</button>
     </div>
   </header>
@@ -55,16 +61,18 @@
         <div id="winner-avatar" class="winner-avatar">🏆</div>
         <h2 id="game-over-title" class="modal-title">Victory!</h2>
         <p id="game-over-desc" class="modal-desc">Winner details...</p>
-        <button id="btn-rematch" class="btn-3d btn-primary" style="padding: 12px 24px; font-size: 1rem;">
-          ⚔️ Play Rematch
-        </button>
+        <div class="modal-actions">
+          <button id="btn-rematch" class="btn-3d btn-primary" style="padding: 10px 22px; font-size: 0.95rem;">
+            ⚔️ Play Next Round
+          </button>
+        </div>
       </div>
     </div>
   </main>
 
   <!-- Bottom Hint & Tactical Tray -->
   <footer class="hint-tray">
-    <span class="hint-pill">🖱️ Click &amp; Hold to Charge Throw Power</span>
+    <span class="hint-pill">🖱️ Click &amp; Hold to Charge Power</span>
     <span class="hint-pill">🎯 Release to Launch Over Fence</span>
     <span class="hint-pill">💨 Watch Wind Vane Indicator</span>
     <span class="hint-pill">⚡ Tap Power-ups: x2 Double, 💣 Bomb, 🧪 Stink, 🩹 Heal</span>

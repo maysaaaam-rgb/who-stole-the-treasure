@@ -1,6 +1,7 @@
 /**
  * Cat vs Dog (Fleabag vs Mutt) Main Game Controller
- * Integrates Canvas Rendering, State Loop, Touch/Mouse Input, and HUD
+ * Integrates Canvas Rendering, State Loop, Touch/Pointer Input, Debris VFX,
+ * Scoreboard Tracker, and Mute Controls
  */
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('battle-canvas');
@@ -35,8 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   setupUIControls();
+  updateScoreboardUI(engine.scores);
 
-  // Preload assets and start render loop
+  // Preload assets and launch
   const loadingOverlay = document.getElementById('loading-overlay');
   sprites.loadAll().then(() => {
     if (loadingOverlay) {
@@ -77,6 +79,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Reset Scores button
+    const resetScoreBtn = document.getElementById('btn-reset-score');
+    if (resetScoreBtn) {
+      resetScoreBtn.addEventListener('click', () => {
+        audio.play('click');
+        engine.resetScores();
+        updateScoreboardUI(engine.scores);
+      });
+    }
+
     // Rematch button inside modal
     const rematchBtn = document.getElementById('btn-rematch');
     if (rematchBtn) {
@@ -87,22 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Sound FX & Music toggle buttons
-    const sfxBtn = document.getElementById('btn-toggle-sfx');
-    if (sfxBtn) {
-      sfxBtn.addEventListener('click', () => {
-        const enabled = audio.toggleSfx();
-        sfxBtn.textContent = enabled ? '🔊 SFX' : '🔇 SFX';
-        sfxBtn.classList.toggle('active', enabled);
-      });
-    }
-
-    const musicBtn = document.getElementById('btn-toggle-music');
-    if (musicBtn) {
-      musicBtn.addEventListener('click', () => {
-        const enabled = audio.toggleMusic();
-        musicBtn.textContent = enabled ? '🎵 Music' : '🚫 Music';
-        musicBtn.classList.toggle('active', enabled);
+    // Persistent Mute Toggle button
+    const muteBtn = document.getElementById('btn-toggle-mute');
+    if (muteBtn) {
+      updateMuteButtonUI(muteBtn);
+      muteBtn.addEventListener('click', () => {
+        audio.toggleMute();
+        updateMuteButtonUI(muteBtn);
       });
     }
 
@@ -120,30 +123,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Game over hook
-    engine.onGameOver = (winner) => {
+    engine.onGameOver = (winner, scores) => {
       showGameOver(winner);
+      updateScoreboardUI(scores);
     };
 
-    // Canvas Input Handlers (Mouse & Touch)
-    canvas.addEventListener('mousedown', handlePointerDown);
-    window.addEventListener('mouseup', handlePointerUp);
-    canvas.addEventListener('mousemove', handlePointerMove);
+    engine.onScoreUpdate = (scores) => {
+      updateScoreboardUI(scores);
+    };
 
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      handlePointerDown(touch);
-    }, { passive: false });
+    // Universal Pointer Event Handlers (Zero touch lag on mobile)
+    canvas.addEventListener('pointerdown', handlePointerDown, { passive: false });
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    canvas.addEventListener('pointermove', handlePointerMove, { passive: false });
+  }
 
-    window.addEventListener('touchend', (e) => {
-      handlePointerUp(e);
-    });
+  function updateMuteButtonUI(btn) {
+    if (!btn) return;
+    btn.textContent = audio.isMuted ? '🔇 Muted' : '🔊 Sound';
+    btn.classList.toggle('active', !audio.isMuted);
+  }
 
-    canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      handlePointerMove(touch);
-    }, { passive: false });
+  function updateScoreboardUI(scores) {
+    const scoreElem = document.getElementById('scoreboard-pill');
+    if (scoreElem) {
+      scoreElem.innerHTML = `🐱 <b>${scores.catWins}</b> &nbsp;|&nbsp; <b>${scores.dogWins}</b> 🐶`;
+    }
   }
 
   function getCanvasCoords(e) {
@@ -157,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handlePointerDown(e) {
+    e.preventDefault();
     audio.init();
     const pos = getCanvasCoords(e);
     isPointerDown = true;
@@ -169,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Start charging if human turn
+    // Start charging if player turn
     if (!engine.isCpuTurn() && engine.turnState === 'IDLE') {
       const isCatTurn = engine.currentTurn === 'cat';
       const playerZone = isCatTurn ? pos.x < 300 : pos.x > 300;
@@ -189,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handlePointerMove(e) {
+    e.preventDefault();
     const pos = getCanvasCoords(e);
     hoveredButton = null;
 
@@ -209,11 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!modal) return;
     const isCat = winner === 'cat';
-    title.textContent = isCat ? '🐱 Fleabag the Cat Wins!' : '🐶 Mutt the Dog Wins!';
+    title.textContent = isCat ? '🐱 Fleabag Wins The Round!' : '🐶 Mutt Wins The Round!';
     title.style.color = isCat ? '#38bdf8' : '#f59e0b';
     desc.textContent = isCat 
-      ? 'Fleabag ruled the backyard with surgical can tosses!' 
-      : 'Mutt defended the doghouse with supreme bone trajectory!';
+      ? 'Fleabag celebrated with an alley cat smirk!' 
+      : 'Mutt danced around the backyard triumphantly!';
 
     if (winnerBadge) {
       winnerBadge.textContent = isCat ? '🐱' : '🐶';
@@ -231,18 +239,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const deltaMs = Math.min(50, currentTimestamp - lastTimestamp);
     lastTimestamp = currentTimestamp;
 
-    // Update state and physics
+    // Physics step
     engine.update(deltaMs);
 
     // Clear canvas
     ctx.clearRect(0, 0, V_WIDTH, V_HEIGHT);
 
-    // Apply Screen Shake if active
-    const hasShake = engine.screenShake > 0;
-    if (hasShake) {
+    // Apply Screen Shake
+    const isShaking = engine.screenShakeFrames > 0;
+    if (isShaking) {
       ctx.save();
-      const sx = (Math.random() - 0.5) * engine.screenShake * 2;
-      const sy = (Math.random() - 0.5) * engine.screenShake * 2;
+      const intensity = engine.screenShakeIntensity;
+      const sx = (Math.random() - 0.5) * intensity * 2;
+      const sy = (Math.random() - 0.5) * intensity * 2;
       ctx.translate(sx, sy);
     }
 
@@ -255,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Characters
     drawCharacters();
 
-    // 4. Projectiles & Effects
+    // 4. Projectiles & Debris VFX
     drawProjectilesAndEffects();
 
     // 5. Power-Up Buttons
@@ -264,32 +273,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. Charging Power Meter
     drawPowerMeter();
 
-    // 7. Floating Comic Damage Numbers
+    // 7. Floating Comic Damage Text
     drawDamagePopups();
 
-    if (hasShake) {
+    // 8. Victory Confetti
+    drawConfetti();
+
+    if (isShaking) {
       ctx.restore();
     }
 
-    // 8. Turn Banner Overlay
+    // 9. Turn Banner Overlay
     drawTurnIndicator();
 
     requestAnimationFrame(renderLoop);
   }
 
   function drawHUD() {
-    // Cat Health Bar (Left, top ~30px)
+    // Cat Health Bar
     const catBarIndex = Math.floor((1 - engine.cat.hp / 100) * 30);
     sprites.drawFrame(ctx, 'cat_bar', catBarIndex, 148, 44, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Dog Health Bar (Right, top ~30px)
+    // Dog Health Bar
     const dogBarIndex = Math.floor((1 - engine.dog.hp / 100) * 28);
     sprites.drawFrame(ctx, 'dog_bar', dogBarIndex, 451, 44, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Wind Indicator (Center top ~48px)
+    // Wind Indicator
     sprites.drawFrame(ctx, 'wind', engine.windFrame - 1, 300, 48, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Wind text
+    // Wind speed label
     ctx.save();
     ctx.font = '900 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
@@ -311,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawCharacters() {
-    // Draw Cat
+    // Cat
     const catAnim = `cat_${engine.cat.state}`;
     sprites.drawFrame(ctx, catAnim, engine.cat.frame, engine.cat.x, engine.cat.y, {
       anchorX: 0.5,
@@ -319,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scale: 1.0
     });
 
-    // Draw Dog
+    // Dog
     const dogAnim = `dog_${engine.dog.state}`;
     sprites.drawFrame(ctx, dogAnim, engine.dog.frame, engine.dog.x, engine.dog.y, {
       anchorX: 0.5,
@@ -329,26 +341,52 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawProjectilesAndEffects() {
+    // Projectiles
     for (const p of engine.projectiles) {
       const animKey = p.type === 'bomb' ? 'proj_bomb' : (p.type === 'can' ? 'proj_can' : 'proj_bone');
       sprites.drawFrame(ctx, animKey, p.frame, p.x, p.y, {
         anchorX: 0.5,
         anchorY: 0.5,
         rotation: p.rotation,
-        scale: p.type === 'bomb' ? 1.3 : 1.0
+        scale: p.type === 'bomb' ? 1.35 : 1.0
       });
     }
 
+    // Particles (Sparks, Wood Splinters, Dirt Puffs, Smoke Rings)
     for (const pt of engine.particles) {
       ctx.save();
-      ctx.globalAlpha = pt.alpha;
-      ctx.fillStyle = pt.color;
-      ctx.beginPath();
-      ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.globalAlpha = Math.max(0, pt.alpha);
+
+      if (pt.type === 'splinter') {
+        // Wood Splinters with rotation
+        ctx.translate(pt.x, pt.y);
+        ctx.rotate(pt.rot || 0);
+        ctx.fillStyle = pt.color;
+        ctx.fillRect(-pt.w / 2, -pt.h / 2, pt.w, pt.h);
+      } else if (pt.type === 'dirt') {
+        // Dirt puffs
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, Math.max(1, pt.radius), 0, Math.PI * 2);
+        ctx.fill();
+      } else if (pt.type === 'ring') {
+        // Shockwave rings
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, Math.max(1, pt.radius), 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // Sparks
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size || 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     }
 
+    // Toxic Gas Clouds
     for (const cloud of engine.activeToxicClouds) {
       const shapeImg = sprites.getImage(`assets/sprites/png_shapes/40${6 + Math.floor(cloud.frame)}.png`);
       if (shapeImg) {
@@ -413,18 +451,30 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawDamagePopups() {
     for (const dp of engine.damagePopups) {
       ctx.save();
-      ctx.globalAlpha = dp.alpha;
-      ctx.font = '900 22px "Plus Jakarta Sans", Impact, sans-serif';
+      ctx.globalAlpha = Math.max(0, dp.alpha);
+      ctx.font = '900 23px "Plus Jakarta Sans", Impact, sans-serif';
       ctx.textAlign = 'center';
 
       // Thick comic black outline
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 4.5;
       ctx.strokeStyle = '#000000';
       ctx.strokeText(dp.text, dp.x, dp.y);
 
-      // Vivid fill color
+      // Vivid fill
       ctx.fillStyle = dp.color;
       ctx.fillText(dp.text, dp.x, dp.y);
+      ctx.restore();
+    }
+  }
+
+  function drawConfetti() {
+    for (const c of engine.confetti) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, c.alpha);
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot);
+      ctx.fillStyle = c.color;
+      ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
       ctx.restore();
     }
   }
