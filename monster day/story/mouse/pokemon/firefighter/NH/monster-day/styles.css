@@ -1657,4 +1657,475 @@ body {
   .theatrical-curtain-box {
     height: 420px;
   }
+  .clinic-split-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
+
+/* ==========================================================================
+   UNIT 2: MONSTER HEALTH & EMOTIONS CLINIC & EMERGENCY BANNER
+   ========================================================================== */
+.emergency-clinic-banner {
+  background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 50%, #fecdd3 100%);
+  border: 3.5px solid #f43f5e;
+  border-radius: var(--radius-card);
+  padding: 24px 28px;
+  margin: 22px auto 0 auto;
+  max-width: 900px;
+  box-shadow: 0 16px 36px rgba(244, 63, 94, 0.22), 0 6px 0 #e11d48;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  animation: bannerPulse 3s ease-in-out infinite;
+}
+
+@keyframes bannerPulse {
+  0%, 100% { box-shadow: 0 16px 36px rgba(244, 63, 94, 0.22), 0 6px 0 #e11d48; }
+  50% { box-shadow: 0 20px 48px rgba(244, 63, 94, 0.35), 0 6px 0 #be123c; }
+}
+
+.emergency-banner-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.emergency-siren-icon {
+  font-size: 3rem;
+  line-height: 1;
+  display: inline-block;
+  animation: sirenWobble 1s ease-in-out infinite alternate;
+}
+
+@keyframes sirenWobble {
+  0% { transform: rotate(-14deg) scale(1); }
+  100% { transform: rotate(14deg) scale(1.18); }
+}
+
+.emergency-title-box {
+  flex: 1;
+  text-align: left;
+}
+
+.emergency-headline {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #9f1239;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.emergency-quote {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #881337;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.emergency-action-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.btn-rush-clinic {
+  background: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%);
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  padding: 16px 36px !important;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 6px 0 #9f1239, 0 14px 28px rgba(225, 29, 72, 0.4) !important;
+  cursor: pointer;
+  width: 100%;
+  max-width: 480px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.1s var(--spring-snap), box-shadow 0.1s;
+}
+
+.btn-rush-clinic:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #9f1239, 0 6px 12px rgba(225, 29, 72, 0.3) !important;
+}
+
+/* Passport Certified Rubber Stamp */
+.passport-certified-stamp {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  border: 3.5px dashed #059669;
+  color: #047857;
+  background: rgba(236, 253, 245, 0.94);
+  backdrop-filter: blur(8px);
+  padding: 8px 18px;
+  border-radius: 16px;
+  transform: rotate(-11deg);
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.passport-certified-stamp .stamp-star {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #059669;
+}
+
+.passport-certified-stamp .stamp-main {
+  font-size: 1.15rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.passport-certified-stamp .stamp-sub {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #065f46;
+  opacity: 0.9;
+  letter-spacing: 1px;
+}
+
+/* Screen Clinic Shell */
+.clinic-main-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.clinic-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.clinic-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.clinic-badge-pill {
+  background: #dbeafe;
+  border: 2px solid #3b82f6;
+  color: #1d4ed8;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+}
+
+.clinic-headline {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.clinic-header-right {
+  display: flex;
+  gap: 10px;
+}
+
+/* Mood Switcher Bar */
+.clinic-mood-bar {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2.5px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 14px 20px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: var(--clay-highlight), 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.mood-bar-label {
+  font-weight: 900;
+  font-size: 1rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mood-pills-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mood-pill {
+  padding: 8px 16px !important;
+  font-size: 0.92rem !important;
+  font-weight: 800 !important;
+  border-radius: var(--radius-pill) !important;
+  cursor: pointer;
+  transition: all 0.15s var(--spring-snap);
+}
+
+.mood-pill.active {
+  background: #f5f3ff !important;
+  border: 2.5px solid #a855f7 !important;
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35) !important;
+  color: #6d28d9 !important;
+  transform: translateY(-2px);
+}
+
+/* Split Workbench */
+.clinic-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.clinic-stage-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.clinic-exam-stage {
+  background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%) !important;
+  border-color: #10b981 !important;
+}
+
+.clinic-live-status {
+  background: #d1fae5 !important;
+  border-color: #10b981 !important;
+  color: #065f46 !important;
+}
+
+.clinic-speech-card {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clinic-speech-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clinic-dialogue-text {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.45;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border-left: 5px solid #f43f5e;
+}
+
+.clinic-target-syntax-tile {
+  background: #f0fdf4;
+  border: 2.5px solid #22c55e;
+  border-radius: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.clinic-target-syntax-tile:hover {
+  transform: scale(1.02);
+  background: #dcfce7;
+}
+
+.syntax-chip-tag {
+  background: #22c55e;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.syntax-phrase-body {
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #15803d;
+  text-align: left;
+}
+
+.syntax-audio-icon {
+  font-size: 1.25rem;
+}
+
+.clinic-readout-pill {
+  background: #eff6ff;
+  border: 2.5px solid #3b82f6;
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-top: 12px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #1d4ed8;
+  text-align: center;
+  animation: modalPop 0.25s var(--spring-snap);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.2);
+}
+
+.clinic-readout-pill.hidden {
+  display: none;
+}
+
+/* Tools Tray Column */
+.clinic-tools-column {
+  background: rgba(255, 255, 255, 0.88);
+  border: 2.5px solid #cbd5e1;
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--clay-highlight), 0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+.tools-tray-header h3 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.tools-tray-header p {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748b;
+  margin: 0;
+}
+
+.doctor-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.doctor-tool-card {
+  background: #ffffff;
+  border: 2.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: grab;
+  transition: all 0.15s var(--spring-snap);
+  box-shadow: 0 5px 0 #cbd5e1, 0 8px 16px rgba(148, 163, 184, 0.2);
+  user-select: none;
+}
+
+.doctor-tool-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 #cbd5e1, 0 12px 22px rgba(148, 163, 184, 0.3);
+  border-color: #94a3b8;
+}
+
+.doctor-tool-card:active {
+  cursor: grabbing;
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #cbd5e1;
+}
+
+.doctor-tool-card.selected {
+  border-color: #a855f7;
+  background: #faf5ff;
+  box-shadow: 0 5px 0 #7e22ce, 0 0 18px rgba(168, 85, 247, 0.45);
+}
+
+.tool-card-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tool-card-name {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.tool-action-tag {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #475569;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+.tool-desc-text {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.25;
+}
+
+.wobble-fail {
+  animation: wobbleFail 0.45s ease-in-out;
+}
+
+@keyframes wobbleFail {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Treatment Feedback */
+.clinic-treatment-feedback {
+  background: #f0fdf4;
+  border: 3px solid #22c55e;
+  border-radius: 20px;
+  padding: 18px;
+  margin-top: 18px;
+  text-align: center;
+  animation: modalPop 0.3s var(--spring-snap);
+  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.2);
+}
+
+.feedback-badge-win {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #15803d;
+  margin-bottom: 6px;
+}
+
+.clinic-treatment-feedback p {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #166534;
+  margin: 0 0 14px 0;
+}
+
+.feedback-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+

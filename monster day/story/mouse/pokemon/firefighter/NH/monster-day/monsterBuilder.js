@@ -530,6 +530,11 @@ class MonsterRenderer {
     const secGradId = `secGrad_${monster.secondaryColor}_${uid}`;
     const goldGradId = `goldAccGrad_${uid}`;
 
+    const clinicMood = options.clinicMood || monster.clinicMood || null;
+    const symptomSocket = options.symptomSocket || null;
+    const visualIndicator = options.visualIndicator || null;
+    const isTreated = options.isTreated || false;
+
     // Strict 9-Layer Architecture (Back-to-Front Pipeline):
     // 1. Stage background & podium
     // 2. Wings / Tail (behind the body)
@@ -540,6 +545,7 @@ class MonsterRenderer {
     // 7. Facial Features (Mouth, Nose, Eyes) – must ALWAYS stay on top of clothing
     // 8. Eyewear (Sunglasses / Goggles)
     // 9. Hats & Crowns (placed on top of the head)
+    // 10. Clinic Symptom Indicator (Unit 2 Clinic Target Ring)
     const layers = [
       this.renderBackdrops(monster, anchors, pal),
       this.renderWingsAndTail(monster, pal, anchors),
@@ -547,10 +553,14 @@ class MonsterRenderer {
       this.renderEarsAndHorns(monster, pal, anchors),
       this.renderClothes(monster, pal, anchors),
       this.renderFrontLimbs(monster, pal, anchors, action),
-      this.renderFacialFeatures(monster, pal, anchors, action),
+      this.renderFacialFeatures(monster, pal, anchors, action, clinicMood),
       this.renderEyewear(monster, anchors),
       this.renderHatsAndCrowns(monster, anchors)
     ];
+
+    if (symptomSocket && !isTreated) {
+      layers.push(this.renderClinicSymptomIndicator(anchors, symptomSocket, visualIndicator, uid));
+    }
 
     const isInvisible = monster.powers.includes('invisible');
     const opacityVal = isInvisible ? 0.52 : 1.0;
@@ -1434,7 +1444,10 @@ class MonsterRenderer {
   // -------------------------------------------------------------
   // LAYER 7: FACIAL FEATURES (Mouth, Nose, Eyes ALWAYS on Top of Clothing)
   // -------------------------------------------------------------
-  renderFacialFeatures(monster, pal, anchors, action) {
+  // -------------------------------------------------------------
+  // LAYER 7: FACIAL FEATURES (Mouth, Nose, Eyes ALWAYS on Top of Clothing)
+  // -------------------------------------------------------------
+  renderFacialFeatures(monster, pal, anchors, action, clinicMood = null) {
     const f = anchors.faceCenter;
     const count = monster.eyes.count;
     const size = monster.eyes.size || 'big';
@@ -1466,57 +1479,166 @@ class MonsterRenderer {
       ];
     }
 
-    // Eyes (Adapts to action states: sleep = closed arcs, tickle = giggling squints)
+    const blushY = f.mouthY;
+    let blushSvg = `
+      <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+      <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+    `;
     let eyesSvg = '';
-    if (action === 'sleep') {
+    let mouthSvg = '';
+
+    // CLINIC MOOD MORPHS (Unit 2 Clinic Experience)
+    if (clinicMood === 'sick') {
+      // 1. SICK: Dizzy swirling spiral rings, pale green cheeks & sweat drop, trembling wavy mouth
+      eyesSvg = eyeConfigs.map(c => `
+        <g class="monster-eye-item clinic-eye-sick">
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.75}" fill="none" stroke="#0284c7" stroke-width="2.2" stroke-dasharray="4,3"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.48}" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-dasharray="3,2"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.22}" fill="#0f172a"/>
+          <path d="M ${c.cx - c.r * 0.5},${c.cy - c.r * 0.5} Q ${c.cx},${c.cy + c.r * 0.4} ${c.cx + c.r * 0.5},${c.cy - c.r * 0.5}" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      `).join('');
+
+      blushSvg = `
+        <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="14" ry="8" fill="#84cc16" opacity="0.38"/>
+        <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="14" ry="8" fill="#84cc16" opacity="0.38"/>
+        <path d="M ${f.cx + 42},${f.eyeY - 14} Q ${f.cx + 47},${f.eyeY - 2} ${f.cx + 42},${f.eyeY + 2} Q ${f.cx + 37},${f.eyeY - 2} ${f.cx + 42},${f.eyeY - 14} Z" fill="#38bdf8" opacity="0.85"/>
+      `;
+
+      mouthSvg = `
+        <path d="M ${f.cx - 18},${f.mouthY} Q ${f.cx - 9},${f.mouthY - 6} ${f.cx},${f.mouthY} Q ${f.cx + 9},${f.mouthY + 6} ${f.cx + 18},${f.mouthY}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+      `;
+    } else if (clinicMood === 'sad') {
+      // 2. SAD: Drooping eyelids, dripping tear SVG, downward curved frown
+      eyesSvg = eyeConfigs.map(c => `
+        <g class="monster-eye-item clinic-eye-sad">
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+          <circle cx="${c.cx}" cy="${c.cy + 2}" r="${c.r * 0.5}" fill="#0284c7"/>
+          <circle cx="${c.cx}" cy="${c.cy + 2}" r="${c.r * 0.3}" fill="#0f172a"/>
+          <!-- Drooping eyelid curve -->
+          <path d="M ${c.cx - c.r},${c.cy - 1} Q ${c.cx},${c.cy + c.r * 0.35} ${c.cx + c.r},${c.cy - 1} L ${c.cx + c.r},${c.cy - c.r * 1.05} L ${c.cx - c.r},${c.cy - c.r * 1.05} Z" fill="${pal.main}" stroke="#0f172a" stroke-width="2.5"/>
+        </g>
+      `).join('');
+
+      blushSvg = `
+        <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+        <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
+        <path d="M ${f.cx - 24},${f.eyeY + 12} C ${f.cx - 28},${f.eyeY + 24} ${f.cx - 20},${f.eyeY + 24} ${f.cx - 24},${f.eyeY + 12} Z" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      `;
+
+      mouthSvg = `
+        <path d="M ${f.cx - 18},${f.mouthY + 8} Q ${f.cx},${f.mouthY - 6} ${f.cx + 18},${f.mouthY + 8}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+      `;
+    } else if (clinicMood === 'scared') {
+      // 3. SCARED: Wide vibrating white eyes with tiny pinpoint pupils, cold sweat, trembling oval mouth
+      eyesSvg = eyeConfigs.map(c => `
+        <g class="monster-eye-item clinic-eye-scared">
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r * 1.15}" ry="${c.r * 1.2}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.22}" fill="#0f172a"/>
+        </g>
+      `).join('');
+
+      blushSvg = `
+        <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.2"/>
+        <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.2"/>
+        <path d="M ${f.cx + 40},${f.eyeY - 12} Q ${f.cx + 45},${f.eyeY} ${f.cx + 40},${f.eyeY + 4} Q ${f.cx + 35},${f.eyeY} ${f.cx + 40},${f.eyeY - 12} Z" fill="#38bdf8" opacity="0.85"/>
+      `;
+
+      mouthSvg = `
+        <ellipse cx="${f.cx}" cy="${f.mouthY + 2}" rx="12" ry="8" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+      `;
+    } else if (clinicMood === 'angry') {
+      // 4. ANGRY: Angled sharp V-eyebrows, red dilated pupils, snarling fangs mouth
+      eyesSvg = eyeConfigs.map(c => `
+        <g class="monster-eye-item clinic-eye-angry">
+          <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 0.9}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.52}" fill="#dc2626"/>
+          <circle cx="${c.cx}" cy="${c.cy}" r="${c.r * 0.3}" fill="#0f172a"/>
+          <path d="M ${c.cx - c.r * 1.1},${c.cy - c.r * 0.6} L ${c.cx + c.r * 1.1},${c.cy - c.r * 0.1}" stroke="#0f172a" stroke-width="4.5" stroke-linecap="round"/>
+        </g>
+      `).join('');
+
+      mouthSvg = `
+        <path d="M ${f.cx - 18},${f.mouthY + 2} Q ${f.cx},${f.mouthY + 12} ${f.cx + 18},${f.mouthY + 2} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+        <polygon points="${f.cx - 10},${f.mouthY + 2} ${f.cx - 6},${f.mouthY + 8} ${f.cx - 2},${f.mouthY + 2}" fill="#ffffff"/>
+        <polygon points="${f.cx + 2},${f.mouthY + 2} ${f.cx + 6},${f.mouthY + 8} ${f.cx + 10},${f.mouthY + 2}" fill="#ffffff"/>
+      `;
+    } else if (clinicMood === 'sleepy') {
+      // 5. SLEEPY: Closed sleepy arcs, soft mouth, floating Zzz
       eyesSvg = eyeConfigs.map(c => `
         <path d="M ${c.cx - c.r},${c.cy + 3} Q ${c.cx},${c.cy + c.r + 5} ${c.cx + c.r},${c.cy + 3}" 
               fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
       `).join('');
-    } else if (action === 'tickle') {
+
+      mouthSvg = `
+        <path d="M ${f.cx - 10},${f.mouthY} Q ${f.cx},${f.mouthY + 6} ${f.cx + 10},${f.mouthY}" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+        <text x="${f.cx + 34}" y="${f.eyeY - 14}" font-family="Fredoka, sans-serif" font-size="14" font-weight="900" fill="#8b5cf6" opacity="0.85">Zzz</text>
+      `;
+    } else if (clinicMood === 'happy') {
+      // 6. HAPPY: Sparkling wide starry pupils, double gleam, wide open smile with pink tongue
       eyesSvg = eyeConfigs.map(c => `
-        <path d="M ${c.cx - c.r * 0.7},${c.cy + 3} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 3}" 
-              fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-      `).join('');
-    } else {
-      eyesSvg = eyeConfigs.map(c => `
-        <g class="monster-eye-item">
+        <g class="monster-eye-item clinic-eye-happy">
           <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
-          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.58}" fill="#0284c7"/>
+          <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.6}" fill="#0284c7"/>
           <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.38}" fill="#0f172a"/>
           <circle cx="${c.cx - c.r * 0.22}" cy="${c.cy - c.r * 0.22}" r="${c.r * 0.22}" fill="#ffffff"/>
-          <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.1}" fill="#ffffff"/>
+          <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.12}" fill="#ffffff"/>
         </g>
       `).join('');
-    }
 
-    // Soft Cheeks Blushes
-    const blushY = f.mouthY;
-    const blushSvg = `
-      <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
-      <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="10" ry="6" fill="${pal.dark}" opacity="0.25"/>
-    `;
-
-    // Nose
-    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="6" ry="4.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="2.5"/><circle cx="${f.cx - 1.5}" cy="${f.noseY - 1.5}" r="1.5" fill="#ffffff" opacity="0.6"/>`;
-
-    // Mouth (Adapts to eat/tickle actions)
-    let mouthSvg = '';
-    if (action === 'eat') {
-      mouthSvg = `
-        <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="18" ry="14" fill="#881337" stroke="#0f172a" stroke-width="3"/>
-        <path d="M ${f.cx - 12},${f.mouthY + 6} Q ${f.cx},${f.mouthY + 12} ${f.cx + 12},${f.mouthY + 6}" fill="#f43f5e"/>
+      blushSvg = `
+        <ellipse cx="${f.cx - 36}" cy="${blushY}" rx="12" ry="7" fill="#f43f5e" opacity="0.32"/>
+        <ellipse cx="${f.cx + 36}" cy="${blushY}" rx="12" ry="7" fill="#f43f5e" opacity="0.32"/>
       `;
-    } else if (action === 'tickle') {
+
       mouthSvg = `
         <path d="M ${f.cx - 20},${f.mouthY - 4} Q ${f.cx},${f.mouthY + 22} ${f.cx + 20},${f.mouthY - 4} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
         <ellipse cx="${f.cx}" cy="${f.mouthY + 10}" rx="9" ry="5" fill="#f43f5e"/>
       `;
     } else {
-      mouthSvg = `
-        <path d="M ${f.cx - 18},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 14} ${f.cx + 18},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
-      `;
+      // DEFAULT / ACTION DRIVEN
+      if (action === 'sleep') {
+        eyesSvg = eyeConfigs.map(c => `
+          <path d="M ${c.cx - c.r},${c.cy + 3} Q ${c.cx},${c.cy + c.r + 5} ${c.cx + c.r},${c.cy + 3}" 
+                fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+        `).join('');
+      } else if (action === 'tickle') {
+        eyesSvg = eyeConfigs.map(c => `
+          <path d="M ${c.cx - c.r * 0.7},${c.cy + 3} Q ${c.cx},${c.cy - c.r * 0.6} ${c.cx + c.r * 0.7},${c.cy + 3}" 
+                fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+        `).join('');
+      } else {
+        eyesSvg = eyeConfigs.map(c => `
+          <g class="monster-eye-item">
+            <ellipse cx="${c.cx}" cy="${c.cy}" rx="${c.r}" ry="${c.r * 1.05}" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+            <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.58}" fill="#0284c7"/>
+            <circle cx="${c.cx}" cy="${c.cy + 1}" r="${c.r * 0.38}" fill="#0f172a"/>
+            <circle cx="${c.cx - c.r * 0.22}" cy="${c.cy - c.r * 0.22}" r="${c.r * 0.22}" fill="#ffffff"/>
+            <circle cx="${c.cx + c.r * 0.24}" cy="${c.cy + c.r * 0.24}" r="${c.r * 0.1}" fill="#ffffff"/>
+          </g>
+        `).join('');
+      }
+
+      if (action === 'eat') {
+        mouthSvg = `
+          <ellipse cx="${f.cx}" cy="${f.mouthY}" rx="18" ry="14" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+          <path d="M ${f.cx - 12},${f.mouthY + 6} Q ${f.cx},${f.mouthY + 12} ${f.cx + 12},${f.mouthY + 6}" fill="#f43f5e"/>
+        `;
+      } else if (action === 'tickle') {
+        mouthSvg = `
+          <path d="M ${f.cx - 20},${f.mouthY - 4} Q ${f.cx},${f.mouthY + 22} ${f.cx + 20},${f.mouthY - 4} Z" fill="#881337" stroke="#0f172a" stroke-width="3"/>
+          <ellipse cx="${f.cx}" cy="${f.mouthY + 10}" rx="9" ry="5" fill="#f43f5e"/>
+        `;
+      } else {
+        mouthSvg = `
+          <path d="M ${f.cx - 18},${f.mouthY - 2} Q ${f.cx},${f.mouthY + 14} ${f.cx + 18},${f.mouthY - 2}" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+        `;
+      }
     }
+
+    // Nose
+    const noseSvg = `<ellipse cx="${f.cx}" cy="${f.noseY}" rx="6" ry="4.5" fill="${pal.dark}" stroke="${pal.stroke}" stroke-width="2.5"/><circle cx="${f.cx - 1.5}" cy="${f.noseY - 1.5}" r="1.5" fill="#ffffff" opacity="0.6"/>`;
 
     return `
       <g id="layer-facial-features" class="layer-facial-features layer-eyes-mouth">
@@ -1524,6 +1646,83 @@ class MonsterRenderer {
         ${eyesSvg}
         ${noseSvg}
         ${mouthSvg}
+      </g>
+    `;
+  }
+
+  // -------------------------------------------------------------
+  // LAYER 10: CLINIC SYMPTOM INDICATOR & INTERACTIVE SOCKET TARGET
+  // -------------------------------------------------------------
+  renderClinicSymptomIndicator(anchors, symptomSocket, visualIndicator, uid) {
+    let sx = anchors.faceCenter.cx;
+    let sy = anchors.torso.cy + 18;
+
+    if (symptomSocket === 'belly') {
+      sx = anchors.faceCenter.cx;
+      sy = anchors.torso.cy + (anchors.torso.r ? 15 : 20);
+    } else if (symptomSocket === 'headTop') {
+      sx = anchors.headTop.x;
+      sy = anchors.headTop.y - 12;
+    } else if (symptomSocket === 'legLeft') {
+      sx = anchors.legLeft ? anchors.legLeft.x : 115;
+      sy = (anchors.legLeft && anchors.legLeft.y) ? anchors.legLeft.y + 15 : 230;
+    } else if (symptomSocket === 'forehead') {
+      sx = anchors.faceCenter.cx;
+      sy = anchors.faceCenter.eyeY - 20;
+    }
+
+    let detailSvg = '';
+    if (visualIndicator === 'redPulseGlow') {
+      detailSvg = `
+        <circle cx="${sx}" cy="${sy}" r="32" fill="none" stroke="#ef4444" stroke-width="3" opacity="0.8" stroke-dasharray="6,4">
+          <animate attributeName="r" values="24;36;24" dur="1.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.4s" repeatCount="indefinite" />
+        </circle>
+        <path d="M ${sx - 14},${sy - 4} Q ${sx - 7},${sy - 12} ${sx},${sy - 4} T ${sx + 14},${sy - 4}" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round"/>
+        <path d="M ${sx - 10},${sy + 6} Q ${sx - 5},${sy} ${sx},${sy + 6} T ${sx + 10},${sy + 6}" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round"/>
+      `;
+    } else if (visualIndicator === 'swollenSparks') {
+      detailSvg = `
+        <circle cx="${sx}" cy="${sy}" r="28" fill="none" stroke="#eab308" stroke-width="3" opacity="0.8" stroke-dasharray="4,4">
+          <animate attributeName="r" values="20;32;20" dur="1.2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.2s" repeatCount="indefinite" />
+        </circle>
+        <g fill="#f59e0b">
+          <circle cx="${sx - 18}" cy="${sy + 10}" r="3" fill="#facc15" />
+          <circle cx="${sx + 18}" cy="${sy + 10}" r="3" fill="#facc15" />
+          <circle cx="${sx}" cy="${sy - 18}" r="4" fill="#fbbf24" />
+        </g>
+      `;
+    } else if (visualIndicator === 'bandageTarget') {
+      detailSvg = `
+        <circle cx="${sx}" cy="${sy}" r="28" fill="none" stroke="#06b6d4" stroke-width="3" opacity="0.8" stroke-dasharray="6,3">
+          <animate attributeName="r" values="20;32;20" dur="1.5s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite" />
+        </circle>
+        <g transform="translate(${sx}, ${sy})">
+          <rect x="-14" y="-5" width="28" height="10" rx="3" fill="#fef08a" stroke="#d97706" stroke-width="2" transform="rotate(25)" />
+          <rect x="-14" y="-5" width="28" height="10" rx="3" fill="#fde047" stroke="#d97706" stroke-width="2" transform="rotate(-25)" opacity="0.85" />
+          <circle cx="0" cy="0" r="3" fill="#ef4444" />
+        </g>
+      `;
+    } else if (visualIndicator === 'steamParticles') {
+      detailSvg = `
+        <circle cx="${sx}" cy="${sy}" r="30" fill="none" stroke="#f97316" stroke-width="3" opacity="0.8" stroke-dasharray="5,4">
+          <animate attributeName="r" values="22;34;22" dur="1.3s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.3s" repeatCount="indefinite" />
+        </circle>
+        <path d="M ${sx - 10},${sy + 6} Q ${sx - 14},${sy - 4} ${sx - 8},${sy - 14} T ${sx - 6},${sy - 24}" fill="none" stroke="#fdba74" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+        <path d="M ${sx + 8},${sy + 6} Q ${sx + 12},${sy - 4} ${sx + 6},${sy - 14} T ${sx + 8},${sy - 24}" fill="none" stroke="#fdba74" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      `;
+    }
+
+    return `
+      <!-- CLINIC SYMPTOM SOCKET INTERACTIVE TARGET -->
+      <g class="clinic-symptom-socket-group" data-socket="${symptomSocket}" style="cursor: pointer;" onclick="if(window.app && window.app.handleSocketClick){window.app.handleSocketClick('${symptomSocket}')}">
+        <circle cx="${sx}" cy="${sy}" r="24" fill="rgba(255, 255, 255, 0.45)" stroke="#ffffff" stroke-width="2.5" />
+        <circle cx="${sx}" cy="${sy}" r="16" fill="rgba(239, 68, 68, 0.28)" stroke="#ef4444" stroke-width="2.5" />
+        <circle cx="${sx}" cy="${sy}" r="6" fill="#ef4444" />
+        ${detailSvg}
       </g>
     `;
   }
@@ -1755,6 +1954,226 @@ class SoundEngine {
     } catch (e) {}
   }
 
+  // 6. VICTORY ARPEGGIO (Ascending pentatonic chord C5 -> E5 -> G5 -> C6)
+  playVictoryArpeggio() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+        gain.gain.setValueAtTime(0.35, ctx.currentTime + idx * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + idx * 0.1 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.1);
+        osc.stop(ctx.currentTime + idx * 0.1 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  // 7. EMERGENCY ALARM CHIME
+  playAlarm() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const times = [0, 0.16, 0.32];
+      times.forEach(t => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime + t);
+        osc.frequency.linearRampToValueAtTime(660, ctx.currentTime + t + 0.13);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + t + 0.13);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + t);
+        osc.stop(ctx.currentTime + t + 0.13);
+      });
+    } catch (e) {}
+  }
+
+  // 8. STETHOSCOPE (Dual low heartbeat thump)
+  playStethoscope() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      [0, 0.18].forEach((t, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(i === 0 ? 68 : 52, ctx.currentTime + t);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + t + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + t);
+        osc.stop(ctx.currentTime + t + 0.12);
+      });
+    } catch (e) {}
+  }
+
+  // 9. THERMOMETER (Digital double beep)
+  playThermometer() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      [0, 0.12].forEach(t => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1400, ctx.currentTime + t);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + t);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + t + 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + t);
+        osc.stop(ctx.currentTime + t + 0.08);
+      });
+    } catch (e) {}
+  }
+
+  // 10. BANDAGE SNAP (Noise burst + snappy tone)
+  playBandageSnap() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const bufferSize = ctx.sampleRate * 0.09;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.02));
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.45, ctx.currentTime);
+      noise.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start();
+    } catch (e) {}
+  }
+
+  // 11. DROPS (High resonant water drop tone)
+  playDrops() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(700, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.35, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch (e) {}
+  }
+
+  // 12. ICE SIZZLE (Cool breath decay tone)
+  playIceSizzle() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1200, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(800, ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.25);
+    } catch (e) {}
+  }
+
+  // 13. POTION GLUG (Liquid bubble glug-glug)
+  playPotionGlug() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const steps = [350, 480, 420, 560];
+      steps.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (idx + 1) * 0.08);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.08);
+        osc.stop(ctx.currentTime + (idx + 1) * 0.08);
+      });
+    } catch (e) {}
+  }
+
+  // 14. SOFT FAIL (Warm descending two-tone chime 246.94 Hz -> 220 Hz)
+  playSoftFail() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+      osc1.frequency.setValueAtTime(246.94, ctx.currentTime);
+      osc1.frequency.linearRampToValueAtTime(220.00, ctx.currentTime + 0.25);
+      osc2.frequency.setValueAtTime(493.88, ctx.currentTime);
+      osc2.frequency.linearRampToValueAtTime(440.00, ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + 0.35);
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+      osc1.start();
+      osc2.start();
+      osc1.stop(ctx.currentTime + 0.35);
+      osc2.stop(ctx.currentTime + 0.35);
+    } catch (e) {}
+  }
+
+  // 15. SPARKLE (Ascending twinkle)
+  playSparkle() {
+    if (!this.sfxEnabled) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+    try {
+      const freqs = [1046.50, 1318.51, 1567.98, 2093.00];
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.005, ctx.currentTime + idx * 0.06 + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.06);
+        osc.stop(ctx.currentTime + idx * 0.06 + 0.2);
+      });
+    } catch (e) {}
+  }
+
   // Speech TTS
   speak(text, callback = null) {
     if (!this.ttsEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
@@ -1949,6 +2368,36 @@ class MonsterPassportEngine {
             </div>
           </div>
         </div>
+
+        ${monster.clinicCertified ? `
+          <div class="passport-certified-stamp">
+            <div class="stamp-border">
+              <div class="stamp-star">★ OFFICIAL ★</div>
+              <div class="stamp-main">HEALTHY &amp; CERTIFIED</div>
+              <div class="stamp-sub">MONSTER CLINIC</div>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  generateEmergencyBanner(monster) {
+    const name = (monster && monster.name) ? monster.name : 'Your monster';
+    return `
+      <div class="emergency-clinic-banner" id="emergency-clinic-banner">
+        <div class="emergency-banner-top">
+          <span class="emergency-siren-icon">🚨</span>
+          <div class="emergency-title-box">
+            <h3 class="emergency-headline">EMERGENCY ALERT IN MONSTER TOWN!</h3>
+            <p class="emergency-quote">"Oh no! <strong>${name}</strong> went outside to play and had a little accident!<br>It does not feel well! Can you be the Monster Doctor and help it get better?"</p>
+          </div>
+        </div>
+        <div class="emergency-action-box">
+          <button class="btn-clay btn-danger btn-rush-clinic" onclick="app.rushToClinic()">
+            <span>🩺 RUSH TO MONSTER CLINIC (+30 ⭐) ➔</span>
+          </button>
+        </div>
       </div>
     `;
   }
@@ -2109,6 +2558,11 @@ class MonsterApp {
     this.currentStep = 1;
     this.totalSteps = 12;
 
+    // Unit 2: Clinic Runtime Context
+    this.clinicCaseIndex = 0;
+    this.clinicSelectedTool = null;
+    this.clinicIsTreated = false;
+
     // 3-Phase Grouped Hierarchy Definition
     this.phases = [
       {
@@ -2267,11 +2721,13 @@ class MonsterApp {
       const monster = window.monsterStore.get();
       const mount = document.getElementById('final-passport-mount');
       if (mount) {
-        mount.innerHTML = window.monsterPassportEngine.generatePassportHtml(monster);
+        mount.innerHTML = window.monsterPassportEngine.generatePassportHtml(monster) + window.monsterPassportEngine.generateEmergencyBanner(monster);
       }
       if (window.teacherMode) {
         window.teacherMode.addPoints(3, 'Monster Complete!');
       }
+    } else if (screenId === 'screen-clinic') {
+      this.renderClinicScreen();
     }
     this.updateAllPreviews();
   }
@@ -2530,6 +2986,7 @@ class MonsterApp {
             </div>
           </div>
           ${window.monsterPassportEngine.generatePassportHtml(m)}
+          ${window.monsterPassportEngine.generateEmergencyBanner(m)}
         `;
 
       default:
@@ -3200,6 +3657,387 @@ class MonsterApp {
       window.teacherMode.addPoints(result.correct, 'Secret Monster');
       window.teacherMode.triggerConfetti();
     }
+  }
+
+  // =========================================================================
+  // UNIT 2: MONSTER HEALTH & EMOTIONS CLINIC ENGINE
+  // =========================================================================
+  getClinicCurriculum() {
+    return [
+      {
+        id: 'stomachache',
+        condition: 'stomachache',
+        title: 'Tummy Trouble',
+        targetPhrase: 'The monster has a stomachache.',
+        dialogueAudio: 'Ouch! My tummy hurts! I ate too many rocks!',
+        symptomSocket: 'belly',
+        visualIndicator: 'redPulseGlow',
+        requiredTools: ['glowPotion', 'tummyPotion'],
+        treatmentAudio: 'Glug glug glug... Ah! My stomach feels great now!',
+        healedExpression: 'happy',
+        hint: 'Use the Glow Potion to heal the tummy trouble!'
+      },
+      {
+        id: 'earache',
+        condition: 'earache',
+        title: 'Ear & Horn Ache',
+        targetPhrase: 'It has an earache.',
+        dialogueAudio: 'Owie! My ears hurt from the loud thunder!',
+        symptomSocket: 'headTop',
+        visualIndicator: 'swollenSparks',
+        requiredTools: ['healingDrops', 'earDrops'],
+        treatmentAudio: 'Drip drop... Yay! I can hear perfectly!',
+        healedExpression: 'happy',
+        hint: 'Use the Healing Drops on the sore ears and horns!'
+      },
+      {
+        id: 'scrapedKnee',
+        condition: 'scrapedKnee',
+        title: 'Hurt Leg & Knee',
+        targetPhrase: 'It has a hurt leg.',
+        dialogueAudio: 'I tripped over a star and scraped my knee!',
+        symptomSocket: 'legLeft',
+        visualIndicator: 'bandageTarget',
+        requiredTools: ['bandage'],
+        treatmentAudio: 'Snap! All patched up! Ready to dance!',
+        healedExpression: 'happy',
+        hint: 'Use the Bandage to patch up the scraped knee!'
+      },
+      {
+        id: 'fever',
+        condition: 'fever',
+        title: 'High Fever',
+        targetPhrase: 'The monster has a fever. It feels hot.',
+        dialogueAudio: 'I feel so hot and dizzy! I need to cool down!',
+        symptomSocket: 'forehead',
+        visualIndicator: 'steamParticles',
+        requiredTools: ['icePack'],
+        treatmentAudio: 'Sssss... So cool and refreshing!',
+        healedExpression: 'happy',
+        hint: 'Use the Ice Pack to cool down the hot fever!'
+      }
+    ];
+  }
+
+  getClinicTools() {
+    return [
+      {
+        id: 'stethoscope',
+        icon: '🩺',
+        name: 'Stethoscope',
+        tag: 'Examine',
+        desc: 'Listen to heartbeat & tummy sounds'
+      },
+      {
+        id: 'thermometer',
+        icon: '🌡️',
+        name: 'Thermometer',
+        tag: 'Check Temp',
+        desc: 'Checks body temperature (39.5°C)'
+      },
+      {
+        id: 'bandage',
+        icon: '🩹',
+        name: 'Bandage',
+        tag: 'Patch Up',
+        desc: 'Patches scraped knees & limbs'
+      },
+      {
+        id: 'healingDrops',
+        icon: '💧',
+        name: 'Healing Drops',
+        tag: 'Soothe',
+        desc: 'Soothes hurt ears & eyes'
+      },
+      {
+        id: 'icePack',
+        icon: '🧊',
+        name: 'Ice Pack',
+        tag: 'Cool Down',
+        desc: 'Cools fevers & swellings'
+      },
+      {
+        id: 'glowPotion',
+        icon: '🧪',
+        name: 'Glow Potion',
+        tag: 'Heal Tummy',
+        desc: 'Instantly remedies stomachaches'
+      }
+    ];
+  }
+
+  rushToClinic() {
+    this.clinicCaseIndex = 0;
+    this.clinicIsTreated = false;
+    this.clinicSelectedTool = null;
+    if (window.monsterStore) {
+      window.monsterStore.setClinicCase(0);
+    }
+    window.soundEngine.playAlarm();
+    this.goToScreen('screen-clinic');
+    window.soundEngine.speak("Emergency alert! Let's rush to the Monster Clinic to help our patient!");
+  }
+
+  renderClinicScreen() {
+    const monster = window.monsterStore ? window.monsterStore.get() : { name: 'Zippy', color: 'purple', body: 'round', eyes: { count: 2 } };
+    const cases = this.getClinicCurriculum();
+    const currentCase = cases[this.clinicCaseIndex % cases.length];
+    const tools = this.getClinicTools();
+
+    // 1. Update Case Header Badge & Status
+    const badgeEl = document.getElementById('clinic-case-badge');
+    if (badgeEl) {
+      badgeEl.innerText = `CASE ${(this.clinicCaseIndex % cases.length) + 1} OF ${cases.length} · ${currentCase.title.toUpperCase()}`;
+    }
+
+    const statusEl = document.getElementById('clinic-patient-status');
+    if (statusEl) {
+      statusEl.innerText = `PATIENT: ${(monster.clinicMood || 'sick').toUpperCase()}`;
+    }
+
+    // 2. Update Speech Bubble & Target Syntax
+    const sympEl = document.getElementById('clinic-symptom-text');
+    if (sympEl) {
+      sympEl.innerText = `"${currentCase.dialogueAudio}"`;
+    }
+
+    const targEl = document.getElementById('clinic-target-phrase');
+    if (targEl) {
+      targEl.innerText = currentCase.targetPhrase;
+    }
+
+    // 3. Highlight Mood Switcher Bar
+    const currentMood = monster.clinicMood || 'sick';
+    document.querySelectorAll('#clinic-mood-switcher .mood-pill').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-mood') === currentMood);
+    });
+
+    // 4. Render 6 Doctor Tools in Tray
+    const dockEl = document.getElementById('clinic-tools-dock');
+    if (dockEl) {
+      dockEl.innerHTML = tools.map(t => {
+        const isSelected = this.clinicSelectedTool === t.id ? 'selected' : '';
+        return `
+          <div class="doctor-tool-card ${isSelected}" 
+               id="tool-card-${t.id}"
+               data-tool-id="${t.id}" 
+               draggable="true" 
+               ondragstart="app.handleToolDragStart(event, '${t.id}')"
+               onclick="app.selectClinicTool('${t.id}')">
+            <span class="tool-card-icon">${t.icon}</span>
+            <div class="tool-card-name">${t.name}</div>
+            <span class="tool-action-tag">${t.tag}</span>
+            <small class="tool-desc-text">${t.desc}</small>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 5. Render Monster in Exam Viewport
+    const viewEl = document.getElementById('clinic-monster-viewport');
+    if (viewEl) {
+      viewEl.innerHTML = window.monsterRenderer.renderSvg(monster, {
+        width: '100%',
+        height: '100%',
+        clinicMood: currentMood,
+        symptomSocket: currentCase.symptomSocket,
+        visualIndicator: currentCase.visualIndicator,
+        isTreated: this.clinicIsTreated
+      });
+
+      // Wire drag drop on exam stage
+      viewEl.ondragover = (e) => { e.preventDefault(); };
+      viewEl.ondrop = (e) => {
+        e.preventDefault();
+        const toolId = e.dataTransfer ? e.dataTransfer.getData('text/plain') : null;
+        if (toolId) this.applyClinicTool(toolId);
+      };
+    }
+
+    // 6. Feedback & Celebration Panel State
+    const feedPanel = document.getElementById('clinic-feedback-panel');
+    if (feedPanel) {
+      if (this.clinicIsTreated) {
+        feedPanel.classList.remove('hidden');
+        const msgEl = document.getElementById('clinic-feedback-msg');
+        if (msgEl) {
+          msgEl.innerHTML = `<strong>${(monster.name || 'Your monster').toUpperCase()}</strong> is all healed and feeling wonderful! Passport certified! ⭐`;
+        }
+      } else {
+        feedPanel.classList.add('hidden');
+      }
+    }
+  }
+
+  handleToolDragStart(event, toolId) {
+    this.clinicSelectedTool = toolId;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text/plain', toolId);
+    }
+  }
+
+  handleSocketClick(socketId) {
+    if (this.clinicSelectedTool) {
+      this.applyClinicTool(this.clinicSelectedTool);
+    } else {
+      window.soundEngine.playPop();
+      const currentCase = this.getClinicCurriculum()[this.clinicCaseIndex % this.getClinicCurriculum().length];
+      this.showDiagnosticReadout(`👆 First select a tool from the medical kit, then tap the hurting ${currentCase.symptomSocket}!`);
+      window.soundEngine.speak("Please select a tool from your medical kit first!");
+    }
+  }
+
+  setClinicMood(mood) {
+    if (!window.monsterStore) return;
+    window.monsterStore.setClinicMood(mood);
+    window.soundEngine.playPop();
+    this.renderClinicScreen();
+    window.soundEngine.speak(`The monster feels ${mood}!`);
+  }
+
+  selectClinicTool(toolId) {
+    this.clinicSelectedTool = toolId;
+    window.soundEngine.playPop();
+
+    // Highlight tool UI
+    document.querySelectorAll('.doctor-tool-card').forEach(c => {
+      c.classList.toggle('selected', c.getAttribute('data-tool-id') === toolId);
+    });
+
+    const tools = this.getClinicTools();
+    const tool = tools.find(t => t.id === toolId);
+    const cases = this.getClinicCurriculum();
+    const currentCase = cases[this.clinicCaseIndex % cases.length];
+
+    if (toolId === 'stethoscope') {
+      this.showDiagnosticReadout('🩺 Stethoscope Ready: Drag onto the patient or click to examine!');
+      window.soundEngine.speak('Stethoscope ready! Drag onto the patient to examine!');
+    } else if (toolId === 'thermometer') {
+      this.showDiagnosticReadout('🌡️ Thermometer Ready: Drag onto forehead to check temperature!');
+      window.soundEngine.speak('Thermometer ready! Drag onto the patient to check temperature!');
+    } else if (tool) {
+      this.showDiagnosticReadout(`${tool.icon} ${tool.name} Ready: Drag onto the hurting ${currentCase.symptomSocket} to treat!`);
+    }
+  }
+
+  applyClinicTool(toolId) {
+    const cases = this.getClinicCurriculum();
+    const currentCase = cases[this.clinicCaseIndex % cases.length];
+
+    // Diagnostic Tools
+    if (toolId === 'stethoscope') {
+      window.soundEngine.playStethoscope();
+      const diagMsg = currentCase.condition === 'stomachache' 
+        ? 'Lub-dub... rumble rumble! Tummy trouble diagnosed!' 
+        : 'Lub-dub... lub-dub... Heartbeat checked! Patient needs treatment!';
+      this.showDiagnosticReadout(`🩺 ${diagMsg}`);
+      window.soundEngine.speak(diagMsg);
+      return;
+    }
+
+    if (toolId === 'thermometer') {
+      window.soundEngine.playThermometer();
+      const isFever = currentCase.condition === 'fever';
+      const tempMsg = isFever ? '🌡️ 39.5°C — High Fever Detected!' : '🌡️ 37.0°C — Normal Temperature!';
+      this.showDiagnosticReadout(tempMsg);
+      window.soundEngine.speak(isFever ? 'Thirty-nine point five degrees! High fever! Apply the ice pack!' : 'Temperature normal!');
+      return;
+    }
+
+    // Treatment Tools
+    if (currentCase.requiredTools.includes(toolId)) {
+      // SUCCESS TREATMENT
+      this.clinicIsTreated = true;
+      if (window.monsterStore) {
+        window.monsterStore.setClinicTreated(true);
+      }
+
+      // Audio & Voice Effects
+      if (toolId === 'glowPotion' || toolId === 'tummyPotion') {
+        window.soundEngine.playPotionGlug();
+      } else if (toolId === 'icePack') {
+        window.soundEngine.playIceSizzle();
+      } else if (toolId === 'bandage') {
+        window.soundEngine.playBandageSnap();
+      } else if (toolId === 'healingDrops' || toolId === 'earDrops') {
+        window.soundEngine.playDrops();
+      }
+
+      window.soundEngine.speak(currentCase.treatmentAudio);
+      setTimeout(() => {
+        window.soundEngine.playVictoryArpeggio();
+      }, 700);
+
+      // Star & Gamification Award (+30 Stars)
+      if (window.teacherMode) {
+        window.teacherMode.addPoints(30, 'Cured Patient!');
+        window.teacherMode.triggerConfetti();
+      }
+
+      // Trigger Joyous Celebration & Dance
+      if (window.monsterActionDock) {
+        window.monsterActionDock.applyActionState('dance', '🎉 Healed & Happy! Look at it dance!', 3500);
+      }
+
+      this.showDiagnosticReadout(`🎉 HEALED! +30 Stars! ${currentCase.treatmentAudio}`);
+      this.renderClinicScreen();
+    } else {
+      // Soft-Fail: gentle wobble and supportive clue with zero deduction
+      window.soundEngine.playSoftFail();
+      const card = document.getElementById(`tool-card-${toolId}`);
+      if (card) {
+        card.classList.remove('wobble-fail');
+        void card.offsetWidth;
+        card.classList.add('wobble-fail');
+      }
+
+      const clue = `💡 Clue: ${currentCase.hint}`;
+      this.showDiagnosticReadout(clue);
+      window.soundEngine.speak(`That tool does not cure this. ${currentCase.hint}`);
+    }
+  }
+
+  showDiagnosticReadout(text) {
+    const el = document.getElementById('clinic-diagnostic-readout');
+    if (!el) return;
+    el.innerHTML = text;
+    el.classList.remove('hidden');
+    el.classList.add('visible');
+
+    if (this._readoutTimeout) clearTimeout(this._readoutTimeout);
+    this._readoutTimeout = setTimeout(() => {
+      el.classList.remove('visible');
+      el.classList.add('hidden');
+    }, 4500);
+  }
+
+  nextClinicCase() {
+    const cases = this.getClinicCurriculum();
+    this.clinicCaseIndex = (this.clinicCaseIndex + 1) % cases.length;
+    this.clinicIsTreated = false;
+    this.clinicSelectedTool = null;
+
+    if (window.monsterStore) {
+      window.monsterStore.setClinicCase(this.clinicCaseIndex);
+    }
+
+    window.soundEngine.playPop();
+    this.renderClinicScreen();
+
+    const nextCase = cases[this.clinicCaseIndex % cases.length];
+    window.soundEngine.speak(`Next patient case: ${nextCase.dialogueAudio}`);
+  }
+
+  speakClinicSymptom() {
+    const cases = this.getClinicCurriculum();
+    const currentCase = cases[this.clinicCaseIndex % cases.length];
+    window.soundEngine.speak(currentCase.dialogueAudio);
+  }
+
+  speakClinicTargetPhrase() {
+    const cases = this.getClinicCurriculum();
+    const currentCase = cases[this.clinicCaseIndex % cases.length];
+    window.soundEngine.speak(currentCase.targetPhrase);
   }
 }
 

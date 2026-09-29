@@ -42,6 +42,11 @@
     </div>
 
     <div class="top-nav-right">
+      <!-- Unit 2: Monster Health & Emotions Clinic -->
+      <button class="btn-clay btn-gel-primary" onclick="app.rushToClinic()" title="Unit 2: Monster Health Clinic">
+        <span>🩺</span> <span>CLINIC</span>
+      </button>
+
       <!-- Classroom Speaking Game: Find A Monster -->
       <button class="btn-clay btn-jelly-accent" onclick="app.openFindMonsterGame()" title="Classroom Game: Find a Monster">
         <span>🔎</span> <span>FIND MONSTER</span>
@@ -312,6 +317,124 @@
     </section>
 
     <!-- =======================================================================
+         SCREEN 2B: UNIT 2 - MONSTER HEALTH & EMOTIONS CLINIC
+         ======================================================================= -->
+    <section class="screen-view" id="screen-clinic">
+      <div class="clay-main-card clinic-main-shell">
+        
+        <!-- Clinic Header Row -->
+        <div class="clinic-header-bar">
+          <div class="clinic-header-left">
+            <span class="clinic-badge-pill" id="clinic-case-badge">CASE 1 OF 4</span>
+            <h2 class="clinic-headline">🏥 MONSTER HEALTH &amp; EMOTIONS CLINIC 🩺</h2>
+          </div>
+          <div class="clinic-header-right">
+            <button class="btn-clay btn-frosted-secondary" onclick="app.goToScreen('screen-create')">
+              <span>🛠️ BUILDER</span>
+            </button>
+            <button class="btn-clay btn-frosted-secondary" onclick="app.goToScreen('screen-final')">
+              <span>📜 PASSPORT</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Emotions & Mood Switcher Bar -->
+        <div class="clinic-mood-bar">
+          <div class="mood-bar-label">
+            <span>🎭 MONSTER MOOD:</span>
+            <small style="color: #64748b;">(Tap to express feelings)</small>
+          </div>
+          <div class="mood-pills-row" id="clinic-mood-switcher">
+            <button class="btn-clay mood-pill" data-mood="sick" onclick="app.setClinicMood('sick')"><span>🤒 Sick</span></button>
+            <button class="btn-clay mood-pill" data-mood="sad" onclick="app.setClinicMood('sad')"><span>😢 Sad</span></button>
+            <button class="btn-clay mood-pill" data-mood="scared" onclick="app.setClinicMood('scared')"><span>😨 Scared</span></button>
+            <button class="btn-clay mood-pill" data-mood="angry" onclick="app.setClinicMood('angry')"><span>😡 Angry</span></button>
+            <button class="btn-clay mood-pill" data-mood="sleepy" onclick="app.setClinicMood('sleepy')"><span>😴 Sleepy</span></button>
+            <button class="btn-clay mood-pill" data-mood="happy" onclick="app.setClinicMood('happy')"><span>😄 Happy</span></button>
+          </div>
+        </div>
+
+        <!-- Split Exam Workbench -->
+        <div class="clinic-split-grid">
+          
+          <!-- LEFT: THEATRICAL EXAM ROOM STAGE & SYMPTOM DIALOGUE -->
+          <div class="clinic-stage-column">
+            
+            <!-- Exam Room Stage Container -->
+            <div class="theatrical-curtain-box stage-container clinic-exam-stage">
+              <div class="stage-top-overlay-strip">
+                <div class="stage-overlay-pill clinic-live-status">🩺 EXAM ROOM 1</div>
+                <div class="stage-overlay-pill" id="clinic-patient-status">PATIENT: SICK</div>
+              </div>
+
+              <!-- Exam Bed / Cylinder Podium Base -->
+              <div class="theatrical-pedestal-cylinder ground-podium stage-podium-cylinder clinic-exam-table">
+                <div class="pedestal-top-disc podium-top-disc"></div>
+                <div class="pedestal-cylinder-body podium-cylinder-body"></div>
+                <div class="monster-contact-shadow podium-contact-shadow"></div>
+              </div>
+
+              <!-- Monster Viewport Rig -->
+              <div class="monster-viewport-rig" id="clinic-monster-viewport"></div>
+            </div>
+
+            <!-- Dialogue & Target Syntax Speech Bubble -->
+            <div class="speech-bubble-card clinic-speech-card">
+              <div class="clinic-speech-header">
+                <span class="speech-say-tag">PATIENT SAYS:</span>
+                <button class="btn-clay btn-gel-primary" onclick="app.speakClinicSymptom()" title="Hear patient describe symptom">
+                  <span>🔊</span> <span>Listen</span>
+                </button>
+              </div>
+              <div class="clinic-dialogue-text" id="clinic-symptom-text">
+                "Ouch! My tummy hurts! I ate too many rocks!"
+              </div>
+              <div class="clinic-target-syntax-tile" onclick="app.speakClinicTargetPhrase()" title="Click to hear model English sentence">
+                <span class="syntax-chip-tag">TARGET ENGLISH:</span>
+                <span class="syntax-phrase-body" id="clinic-target-phrase">The monster has a stomachache.</span>
+                <span class="syntax-audio-icon">🗣️</span>
+              </div>
+            </div>
+
+            <!-- Readout / Diagnosis Pill (Pop-up info for stethoscope & thermometer) -->
+            <div id="clinic-diagnostic-readout" class="clinic-readout-pill hidden"></div>
+
+          </div>
+
+          <!-- RIGHT: DOCTOR TOOLS DOCK (6 CLAYMORPHIC TOOLS) -->
+          <div class="clinic-tools-column">
+            <div class="tools-tray-header">
+              <h3>🧰 DOCTOR'S MEDICAL KIT</h3>
+              <p>Drag a tool onto the hurting socket or tap tool &amp; socket!</p>
+            </div>
+
+            <!-- 6 Doctor Tools Grid -->
+            <div class="doctor-tools-grid" id="clinic-tools-dock">
+              <!-- Dynamically populated by app.renderClinicScreen() -->
+            </div>
+
+            <!-- Treatment Result & Celebration Panel -->
+            <div class="clinic-treatment-feedback hidden" id="clinic-feedback-panel">
+              <div class="feedback-badge-win">🎉 TREATMENT SUCCESS!</div>
+              <p id="clinic-feedback-msg">Your monster is all healed and feeling wonderful!</p>
+              <div class="feedback-actions-row">
+                <button class="btn-clay btn-gel-primary btn-large" onclick="app.nextClinicCase()">
+                  <span>➡️ NEXT PATIENT CASE (+30 ⭐)</span>
+                </button>
+                <button class="btn-clay btn-jelly-accent btn-large" onclick="app.goToScreen('screen-final')">
+                  <span>📜 VIEW CERTIFIED PASSPORT</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
          SCREEN 3: PLAY MORE GAMES HUB
          ======================================================================= -->
     <section class="screen-view" id="screen-modes-hub">
@@ -342,6 +465,12 @@
             <span class="opt-emoji" style="font-size: 2.4rem;">🤫</span>
             <strong style="font-size: 1.15rem;">Secret Monster</strong>
             <p style="font-size: 0.85rem; color: #64748b;">2-Player partner guessing game!</p>
+          </div>
+
+          <div class="tactile-opt-card" style="padding: 20px;" onclick="app.rushToClinic()">
+            <span class="opt-emoji" style="font-size: 2.4rem;">🩺</span>
+            <strong style="font-size: 1.15rem;">Monster Clinic</strong>
+            <p style="font-size: 0.85rem; color: #64748b;">Unit 2: Doctor exam &amp; feelings!</p>
           </div>
         </div>
 
