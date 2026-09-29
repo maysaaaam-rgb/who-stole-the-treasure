@@ -1,6 +1,6 @@
 /**
  * Cat vs Dog (Fleabag vs Mutt) Main Game Controller
- * Integrates Canvas Rendering, State Loop, Input Handling, and HUD
+ * Integrates Canvas Rendering, State Loop, Touch/Mouse Input, and HUD
  */
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('battle-canvas');
@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const V_WIDTH = 600;
   const V_HEIGHT = 430;
 
-  // Track mouse/touch state for canvas
   let isPointerDown = false;
   let hoveredButton = null;
   let lastTimestamp = performance.now();
@@ -35,21 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'dog_heal', char: 'dog', type: 'heal', x: 495, y: 55, w: 30, h: 30 }
   ];
 
-  // Initialize UI controls
   setupUIControls();
 
-  // Start preloading assets
+  // Preload assets and start render loop
   const loadingOverlay = document.getElementById('loading-overlay');
-  const loadingProgress = document.getElementById('loading-bar-fill');
-
   sprites.loadAll().then(() => {
     if (loadingOverlay) {
       loadingOverlay.style.opacity = '0';
       setTimeout(() => {
         loadingOverlay.style.display = 'none';
-      }, 400);
+      }, 350);
     }
-    // Start main render loop
     requestAnimationFrame(renderLoop);
   });
 
@@ -124,12 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Hook game-over event
+    // Game over hook
     engine.onGameOver = (winner) => {
       showGameOver(winner);
     };
 
-    // Canvas Input Handlers
+    // Canvas Input Handlers (Mouse & Touch)
     canvas.addEventListener('mousedown', handlePointerDown);
     window.addEventListener('mouseup', handlePointerUp);
     canvas.addEventListener('mousemove', handlePointerMove);
@@ -145,9 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
       const touch = e.touches[0];
       handlePointerMove(touch);
-    }, { passive: true });
+    }, { passive: false });
   }
 
   function getCanvasCoords(e) {
@@ -161,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handlePointerDown(e) {
-    audio.init(); // User gesture audio unlock
+    audio.init();
     const pos = getCanvasCoords(e);
     isPointerDown = true;
 
-    // Check if clicked a power-up button
+    // Check powerup buttons
     for (const btn of hudButtons) {
       if (pos.x >= btn.x && pos.x <= btn.x + btn.w && pos.y >= btn.y && pos.y <= btn.y + btn.h) {
         engine.usePowerup(btn.char, btn.type);
@@ -173,10 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Otherwise, if it is a human player's turn, begin charging power meter
+    // Start charging if human turn
     if (!engine.isCpuTurn() && engine.turnState === 'IDLE') {
-      const char = engine.getActiveCharacter();
-      // Allow pressing anywhere on the player's side
       const isCatTurn = engine.currentTurn === 'cat';
       const playerZone = isCatTurn ? pos.x < 300 : pos.x > 300;
       if (playerZone) {
@@ -218,8 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
     title.textContent = isCat ? '🐱 Fleabag the Cat Wins!' : '🐶 Mutt the Dog Wins!';
     title.style.color = isCat ? '#38bdf8' : '#f59e0b';
     desc.textContent = isCat 
-      ? 'Fleabag reigned supreme across the alley fence!' 
-      : 'Mutt defended the backyard bone cache in glory!';
+      ? 'Fleabag ruled the backyard with surgical can tosses!' 
+      : 'Mutt defended the doghouse with supreme bone trajectory!';
 
     if (winnerBadge) {
       winnerBadge.textContent = isCat ? '🐱' : '🐶';
@@ -237,31 +231,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const deltaMs = Math.min(50, currentTimestamp - lastTimestamp);
     lastTimestamp = currentTimestamp;
 
-    // Update game physics & state
+    // Update state and physics
     engine.update(deltaMs);
 
-    // Clear and draw canvas
+    // Clear canvas
     ctx.clearRect(0, 0, V_WIDTH, V_HEIGHT);
 
-    // 1. Draw authentic background
+    // Apply Screen Shake if active
+    const hasShake = engine.screenShake > 0;
+    if (hasShake) {
+      ctx.save();
+      const sx = (Math.random() - 0.5) * engine.screenShake * 2;
+      const sy = (Math.random() - 0.5) * engine.screenShake * 2;
+      ctx.translate(sx, sy);
+    }
+
+    // 1. Authentic Background
     sprites.drawBackground(ctx, V_WIDTH, V_HEIGHT);
 
-    // 2. Draw HUD Elements (Health Bars & Wind Meter)
+    // 2. HUD Elements (Health Bars & Wind Indicator)
     drawHUD();
 
-    // 3. Draw Characters
+    // 3. Characters
     drawCharacters();
 
-    // 4. Draw Projectiles & Effects
+    // 4. Projectiles & Effects
     drawProjectilesAndEffects();
 
-    // 5. Draw Power-Up Buttons
+    // 5. Power-Up Buttons
     drawHUDButtons();
 
-    // 6. Draw Charging Power Meter
+    // 6. Charging Power Meter
     drawPowerMeter();
 
-    // 7. Draw Turn Indicator
+    // 7. Floating Comic Damage Numbers
+    drawDamagePopups();
+
+    if (hasShake) {
+      ctx.restore();
+    }
+
+    // 8. Turn Banner Overlay
     drawTurnIndicator();
 
     requestAnimationFrame(renderLoop);
@@ -269,19 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function drawHUD() {
     // Cat Health Bar (Left, top ~30px)
-    // Frame index: 1 (full HP) to 31 (empty HP)
     const catBarIndex = Math.floor((1 - engine.cat.hp / 100) * 30);
     sprites.drawFrame(ctx, 'cat_bar', catBarIndex, 148, 44, { anchorX: 0.5, anchorY: 0.5 });
 
     // Dog Health Bar (Right, top ~30px)
-    // Frame index: 1 (full HP) to 29 (empty HP)
     const dogBarIndex = Math.floor((1 - engine.dog.hp / 100) * 28);
     sprites.drawFrame(ctx, 'dog_bar', dogBarIndex, 451, 44, { anchorX: 0.5, anchorY: 0.5 });
 
     // Wind Indicator (Center top ~48px)
     sprites.drawFrame(ctx, 'wind', engine.windFrame - 1, 300, 48, { anchorX: 0.5, anchorY: 0.5 });
 
-    // Wind Speed text
+    // Wind text
     ctx.save();
     ctx.font = '900 11px system-ui, sans-serif';
     ctx.textAlign = 'center';
@@ -305,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawCharacters() {
     // Draw Cat
     const catAnim = `cat_${engine.cat.state}`;
-    sprites.drawFrame(ctx, catAnim, engine.cat.stateFrame, engine.cat.x, engine.cat.y, {
+    sprites.drawFrame(ctx, catAnim, engine.cat.frame, engine.cat.x, engine.cat.y, {
       anchorX: 0.5,
       anchorY: 1.0,
       scale: 1.0
@@ -313,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Draw Dog
     const dogAnim = `dog_${engine.dog.state}`;
-    sprites.drawFrame(ctx, dogAnim, engine.dog.stateFrame, engine.dog.x, engine.dog.y, {
+    sprites.drawFrame(ctx, dogAnim, engine.dog.frame, engine.dog.x, engine.dog.y, {
       anchorX: 0.5,
       anchorY: 1.0,
       scale: 1.0
@@ -321,18 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawProjectilesAndEffects() {
-    // Draw Projectiles
     for (const p of engine.projectiles) {
       const animKey = p.type === 'bomb' ? 'proj_bomb' : (p.type === 'can' ? 'proj_can' : 'proj_bone');
       sprites.drawFrame(ctx, animKey, p.frame, p.x, p.y, {
         anchorX: 0.5,
         anchorY: 0.5,
         rotation: p.rotation,
-        scale: p.type === 'bomb' ? 1.25 : 1.0
+        scale: p.type === 'bomb' ? 1.3 : 1.0
       });
     }
 
-    // Draw Particles
     for (const pt of engine.particles) {
       ctx.save();
       ctx.globalAlpha = pt.alpha;
@@ -343,7 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.restore();
     }
 
-    // Draw Toxic Gas Clouds
     for (const cloud of engine.activeToxicClouds) {
       const shapeImg = sprites.getImage(`assets/sprites/png_shapes/40${6 + Math.floor(cloud.frame)}.png`);
       if (shapeImg) {
@@ -368,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       sprites.drawButton(ctx, btn.id, state, btn.x, btn.y, btn.w, btn.h, !isAvailable);
 
-      // Selected ring glow
       if (isSelected) {
         ctx.save();
         ctx.strokeStyle = '#38bdf8';
@@ -386,9 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCat = char.type === 'cat';
     const meterAnim = isCat ? 'cat_meter' : 'dog_meter';
 
-    // Map 0..1 to 1..37 frame index
     const meterFrame = Math.max(0, Math.min(36, Math.floor(engine.chargePower * 36)));
-
     const meterX = isCat ? char.x + 10 : char.x - 10;
     const meterY = char.y - 85;
 
@@ -398,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
       scale: 1.0
     });
 
-    // Power text label
     ctx.save();
     ctx.font = '900 12px system-ui, sans-serif';
     ctx.fillStyle = '#f59e0b';
@@ -407,6 +408,25 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.textAlign = 'center';
     ctx.fillText(`${Math.round(engine.chargePower * 100)}%`, meterX, meterY - 50);
     ctx.restore();
+  }
+
+  function drawDamagePopups() {
+    for (const dp of engine.damagePopups) {
+      ctx.save();
+      ctx.globalAlpha = dp.alpha;
+      ctx.font = '900 22px "Plus Jakarta Sans", Impact, sans-serif';
+      ctx.textAlign = 'center';
+
+      // Thick comic black outline
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#000000';
+      ctx.strokeText(dp.text, dp.x, dp.y);
+
+      // Vivid fill color
+      ctx.fillStyle = dp.color;
+      ctx.fillText(dp.text, dp.x, dp.y);
+      ctx.restore();
+    }
   }
 
   function drawTurnIndicator() {

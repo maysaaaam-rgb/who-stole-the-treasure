@@ -1,6 +1,7 @@
 /**
  * Cat vs Dog (Fleabag vs Mutt) Authentic Physics & Battle Engine
  * Faithful port of original Flash ActionScript physics, wind ranges, and combat
+ * Includes 24 FPS tick sequencing, comic damage popups, and exact hitboxes
  */
 class BattleEngine {
   constructor(audio, sprites) {
@@ -15,16 +16,20 @@ class BattleEngine {
     this.groundY = 338;
     this.fenceX = 300;
     this.fenceTopY = 195;
-    this.fenceWidth = 16;
+    this.fenceWidth = 20;
+
+    // Fixed 24 FPS tick timing
+    this.flashFps = 24;
+    this.frameDuration = 1000 / this.flashFps; // ~41.67 ms
 
     // Game rules & options
     this.gameMode = '1P'; // '1P' (vs CPU) or '2P' (local pass-and-play)
-    this.difficulty = 'normal'; // 'easy' or 'normal' / 'hard'
+    this.difficulty = 'normal'; // 'easy' or 'normal'
     this.playerSide = 'dog'; // In 1P, player controls Dog (or Cat)
 
     // Current turn: 'cat' or 'dog'
     this.currentTurn = 'cat';
-    this.turnState = 'IDLE'; // 'IDLE', 'CHARGING', 'THROWING', 'FLIGHT', 'RESOLVING', 'GAME_OVER'
+    this.turnState = 'IDLE'; // 'IDLE', 'WINDUP', 'RELEASE', 'FLIGHT', 'RESOLVING', 'GAME_OVER'
 
     // Wind system
     this.wind = 0; // -7 to +7
@@ -36,10 +41,12 @@ class BattleEngine {
     this.chargePower = 0; // 0.0 to 1.0 (1 to 32)
     this.meterOscillationPeriod = 1150; // ms for full 0 -> 100 -> 0 cycle
 
-    // Active projectiles in flight
+    // Active projectiles in flight & visual effects
     this.projectiles = [];
     this.particles = [];
+    this.damagePopups = [];
     this.activeToxicClouds = [];
+    this.screenShake = 0;
 
     // Characters
     this.cat = this.createCharacter('cat', 85, this.groundY);
@@ -68,9 +75,9 @@ class BattleEngine {
       y: y,
       hp: 100,
       maxHp: 100,
-      state: 'idle', // 'idle', 'charging', 'throwing', 'hurt', 'healing', 'victory', 'defeated'
-      stateFrame: 0,
-      stateTimer: 0,
+      state: 'idle', // 'idle', 'windup', 'release', 'hit_hurt', 'victory', 'defeat'
+      frame: 0,
+      frameAccumulator: 0,
       remainingThrows: 1,
       selectedPowerup: null, // 'x2', 'bomb', 'gas'
       powerups: {
@@ -80,8 +87,8 @@ class BattleEngine {
         heal: true
       },
       hitbox: {
-        w: 55,
-        h: 75
+        w: type === 'cat' ? 56 : 60,
+        h: type === 'cat' ? 75 : 80
       }
     };
   }
@@ -91,7 +98,9 @@ class BattleEngine {
     this.dog = this.createCharacter('dog', 525, this.groundY);
     this.projectiles = [];
     this.particles = [];
+    this.damagePopups = [];
     this.activeToxicClouds = [];
+    this.screenShake = 0;
     this.currentTurn = 'cat';
     this.turnState = 'IDLE';
     this.isCharging = false;
@@ -102,18 +111,12 @@ class BattleEngine {
 
   generateWind() {
     if (this.difficulty === 'easy') {
-      // Flash easy mode: wind is in {-1, 0, 1}
       const choices = [-1, 0, 1];
       this.wind = choices[Math.floor(Math.random() * choices.length)];
     } else {
-      // Flash normal mode: random integer -7 to +7
       this.wind = Math.floor(Math.random() * 15) - 7;
     }
 
-    // Map to DefineSprite_216 frame:
-    // Frame 2: 0 wind
-    // Frames 9..3: -1 to -7 (left)
-    // Frames 16..10: +1 to +7 (right)
     if (this.wind === 0) {
       this.windFrame = 2;
     } else if (this.wind < 0) {
@@ -133,7 +136,6 @@ class BattleEngine {
 
   isCpuTurn() {
     if (this.gameMode === '2P') return false;
-    // In 1P mode, CPU controls the side not chosen by player
     return this.currentTurn !== this.playerSide;
   }
 
@@ -143,23 +145,21 @@ class BattleEngine {
     if (!char.powerups[powerup]) return false;
 
     if (powerup === 'heal') {
-      // First Aid Bandage heals immediately and consumes turn
       char.powerups.heal = false;
-      char.hp = Math.min(char.maxHp, char.hp + 28);
-      char.state = 'healing';
-      char.stateFrame = 0;
+      const healAmount = 28;
+      char.hp = Math.min(char.maxHp, char.hp + healAmount);
+      char.state = 'idle';
       this.audio.play('heal');
       this.spawnHealParticles(char.x, char.y - 40);
+      this.spawnDamagePopup(char.x, char.y - 70, `+${healAmount} HEAL`, '#10b981');
 
       this.turnState = 'RESOLVING';
       setTimeout(() => {
-        char.state = 'idle';
         this.endTurn();
-      }, 1200);
+      }, 1100);
       return true;
     }
 
-    // Toggle selected attack power-up
     if (char.selectedPowerup === powerup) {
       char.selectedPowerup = null;
     } else {
@@ -172,10 +172,11 @@ class BattleEngine {
   startCharging() {
     if (this.turnState !== 'IDLE' || this.isCharging) return;
     const char = this.getActiveCharacter();
-    char.state = 'charging';
-    char.stateFrame = 0;
+    char.state = 'windup';
+    char.frame = 0;
     this.isCharging = true;
     this.chargeStartTime = performance.now();
+    this.audio.play('charge_whistle', { volume: 0.6 });
   }
 
   releaseCharge() {
@@ -183,7 +184,6 @@ class BattleEngine {
     this.isCharging = false;
     const char = this.getActiveCharacter();
 
-    // Check if double attack active
     if (char.selectedPowerup === 'x2') {
       char.remainingThrows = 2;
       char.powerups.x2 = false;
@@ -195,25 +195,23 @@ class BattleEngine {
   }
 
   executeThrow(char, powerNormalized) {
-    this.turnState = 'THROWING';
-    char.state = 'throwing';
-    char.stateFrame = 0;
+    this.turnState = 'RELEASE';
+    char.state = 'release';
+    char.frame = 0;
 
-    // Power index p is 1 to 32
     const p = Math.max(1, Math.min(32, Math.round(powerNormalized * 31) + 1));
     const isCat = char.type === 'cat';
 
-    // Play throw whoosh sound
     if (isCat) {
       this.audio.play('cat_throw');
     } else {
       this.audio.play('dog_throw');
     }
 
-    // Trigger projectile spawn at throw release frame (~frame 30 of 70)
+    // Trigger projectile spawn at arm release (~350ms into 24 FPS animation)
     setTimeout(() => {
       this.spawnProjectile(char, p);
-    }, 450);
+    }, 380);
   }
 
   spawnProjectile(char, powerVal) {
@@ -222,7 +220,6 @@ class BattleEngine {
     const startY = char.y - 65;
 
     // Exact ballistics scaled to canvas
-    // Launch angle: ~53 degrees
     const angleRad = (53 * Math.PI) / 180;
     const baseSpeed = 7.2 + (powerVal / 32) * 9.4;
 
@@ -232,7 +229,6 @@ class BattleEngine {
     const projType = char.selectedPowerup === 'bomb' ? 'bomb' : (isCat ? 'can' : 'bone');
     const isGas = char.selectedPowerup === 'gas';
 
-    // Consume used attack powerup
     if (char.selectedPowerup === 'bomb') char.powerups.bomb = false;
     if (char.selectedPowerup === 'gas') char.powerups.gas = false;
     char.selectedPowerup = null;
@@ -247,7 +243,7 @@ class BattleEngine {
       vy: vy,
       gravity: 0.38,
       rotation: 0,
-      rotSpeed: isCat ? 0.3 : 0.25,
+      rotSpeed: isCat ? 0.32 : 0.28,
       power: powerVal,
       active: true,
       frame: 0
@@ -257,11 +253,10 @@ class BattleEngine {
   }
 
   update(deltaMs) {
-    // 1. Update power meter oscillation if charging
+    // 1. Power meter oscillation
     if (this.isCharging) {
       const elapsed = performance.now() - this.chargeStartTime;
       const progress = (elapsed % this.meterOscillationPeriod) / this.meterOscillationPeriod;
-      // Triangular wave 0 -> 1 -> 0
       this.chargePower = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
     }
 
@@ -270,27 +265,30 @@ class BattleEngine {
       this.handleCpuTurn(deltaMs);
     }
 
-    // 3. Update character animations
+    // 3. Update character animations at locked 24 FPS
     this.updateCharacterAnim(this.cat, deltaMs);
     this.updateCharacterAnim(this.dog, deltaMs);
 
-    // 4. Update projectiles
+    // 4. Update Screen Shake
+    if (this.screenShake > 0) {
+      this.screenShake = Math.max(0, this.screenShake - deltaMs * 0.04);
+    }
+
+    // 5. Update projectiles
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];
       if (!p.active) continue;
 
-      // Ballistic physics step:
-      // Apply horizontal wind acceleration
       const windForce = this.wind * 0.048;
       p.vx += windForce;
       p.vy += p.gravity;
       p.x += p.vx;
       p.y += p.vy;
       p.rotation += p.rotSpeed;
-      p.frame = (p.frame + 0.5) % 8;
+      p.frame = (p.frame + 0.4) % 8;
 
       // Trail particle
-      if (Math.random() < 0.35) {
+      if (Math.random() < 0.4) {
         this.particles.push({
           x: p.x,
           y: p.y,
@@ -303,7 +301,6 @@ class BattleEngine {
         });
       }
 
-      // Collision checks
       this.checkProjectileCollisions(p);
 
       if (!p.active) {
@@ -312,15 +309,26 @@ class BattleEngine {
       }
     }
 
-    // 5. Update particles & toxic gas clouds
+    // 6. Update particles, toxic clouds, and comic damage popups
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const pt = this.particles[i];
       pt.x += pt.vx;
       pt.y += pt.vy;
-      pt.alpha -= 0.02;
+      pt.alpha -= 0.025;
       pt.life -= deltaMs;
       if (pt.life <= 0 || pt.alpha <= 0) {
         this.particles.splice(i, 1);
+      }
+    }
+
+    for (let i = this.damagePopups.length - 1; i >= 0; i--) {
+      const dp = this.damagePopups[i];
+      dp.y += dp.vy;
+      dp.vy += 0.04; // decelerate upward
+      dp.life -= deltaMs;
+      dp.alpha = Math.max(0, dp.life / 800);
+      if (dp.life <= 0) {
+        this.damagePopups.splice(i, 1);
       }
     }
 
@@ -338,15 +346,18 @@ class BattleEngine {
     const isCat = p.owner === 'cat';
     const target = isCat ? this.dog : this.cat;
 
-    // A. Center Fence Collision
-    if (p.x >= this.fenceX - 10 && p.x <= this.fenceX + 10 && p.y >= this.fenceTopY) {
+    // A. Center Fence Collision (Exact Flash boundaries)
+    const fenceHalf = this.fenceWidth / 2;
+    if (p.x >= this.fenceX - fenceHalf && p.x <= this.fenceX + fenceHalf && p.y >= this.fenceTopY && p.y <= this.groundY) {
       p.active = false;
       this.audio.play('hit_fence');
-      this.spawnImpactParticles(p.x, p.y, '#996600', 8);
+      this.screenShake = 3;
+      this.spawnImpactParticles(p.x, p.y, '#996600', 10);
+      this.spawnDamagePopup(this.fenceX, this.fenceTopY - 10, 'CLANG!', '#f59e0b');
       return;
     }
 
-    // B. Opponent Character Collision
+    // B. Opponent Character Collision (Exact Flash movieclip bounds)
     const hw = target.hitbox.w / 2;
     if (p.x >= target.x - hw && p.x <= target.x + hw && p.y >= target.y - target.hitbox.h && p.y <= target.y) {
       p.active = false;
@@ -359,24 +370,31 @@ class BattleEngine {
       p.active = false;
       this.audio.play('hit_ground');
       this.spawnImpactParticles(p.x, this.groundY, '#d2801c', 6);
+      this.spawnDamagePopup(p.x, this.groundY - 15, 'MISS!', '#94a3b8');
       return;
     }
 
-    // D. Off-screen Left/Right/Bottom Bounds
+    // D. Off-screen bounds
     if (p.x < -60 || p.x > this.width + 60 || p.y > this.height + 60) {
       p.active = false;
     }
   }
 
   applyHit(target, projectile) {
-    let damage = Math.floor(Math.random() * 5) + 18; // 18-22 base damage
+    let damage = Math.floor(Math.random() * 5) + 18; // 18-22 normal
+    let isCrit = false;
+
     if (projectile.type === 'bomb') {
-      damage *= 2; // double damage for Power Bomb
+      damage *= 2; // double damage
+      isCrit = true;
+      this.screenShake = 8;
+    } else {
+      this.screenShake = 4;
     }
 
     target.hp = Math.max(0, target.hp - damage);
-    target.state = 'hurt';
-    target.stateFrame = 0;
+    target.state = 'hit_hurt';
+    target.frame = 0;
 
     // Authentic audio
     this.audio.play('hit_char');
@@ -386,10 +404,13 @@ class BattleEngine {
       this.audio.play('dog_hurt');
     }
 
-    // Spawn impact flash and particles
-    this.spawnImpactParticles(target.x, target.y - 45, '#ef4444', 12);
+    // Spawn floating comic damage text
+    const label = isCrit ? `-${damage} CRITICAL!` : `-${damage}`;
+    const color = isCrit ? '#ef4444' : '#fbbf24';
+    this.spawnDamagePopup(target.x, target.y - 75, label, color);
+    this.spawnImpactParticles(target.x, target.y - 45, color, isCrit ? 16 : 10);
 
-    // Spawn toxic gas cloud if stink attack
+    // Toxic Stink Attack
     if (projectile.isGas) {
       this.activeToxicClouds.push({
         x: target.x,
@@ -398,11 +419,19 @@ class BattleEngine {
         life: 2500
       });
       target.hp = Math.max(0, target.hp - 8);
+      this.spawnDamagePopup(target.x, target.y - 100, '-8 POISON', '#10b981');
     }
 
     // Check KO
     if (target.hp <= 0) {
       this.triggerGameOver(projectile.owner);
+    } else {
+      // Revert from hurt to idle after 600ms
+      setTimeout(() => {
+        if (target.hp > 0 && target.state === 'hit_hurt') {
+          target.state = 'idle';
+        }
+      }, 650);
     }
   }
 
@@ -411,7 +440,6 @@ class BattleEngine {
     char.remainingThrows--;
 
     if (char.remainingThrows > 0 && this.turnState !== 'GAME_OVER') {
-      // Double throw: immediate follow-up throw!
       setTimeout(() => {
         this.executeThrow(char, this.chargePower);
       }, 500);
@@ -431,11 +459,9 @@ class BattleEngine {
     this.isCharging = false;
     this.chargePower = 0;
 
-    // Reset character states to idle if not KO
     if (this.cat.hp > 0 && this.cat.state !== 'victory') this.cat.state = 'idle';
     if (this.dog.hp > 0 && this.dog.state !== 'victory') this.dog.state = 'idle';
 
-    // Generate new wind for the new round
     this.generateWind();
 
     if (this.onTurnChange) {
@@ -449,11 +475,10 @@ class BattleEngine {
     const loser = winnerType === 'cat' ? this.dog : this.cat;
 
     winner.state = 'victory';
-    winner.stateFrame = 0;
-    loser.state = 'defeated';
-    loser.stateFrame = 0;
+    winner.frame = 0;
+    loser.state = 'defeat';
+    loser.frame = 4; // dazed frame
 
-    // Play authentic fanfare
     this.audio.play('victory');
 
     if (this.onGameOver) {
@@ -463,32 +488,25 @@ class BattleEngine {
 
   handleCpuTurn(deltaMs) {
     if (!this.aiState.isCharging) {
-      // AI initiates charge
       this.aiState.isCharging = true;
       this.aiState.chargeStart = performance.now();
 
-      // Original Flash AI formula:
-      // Mutt: p_ideal = 21 - wind * 1.05
-      // Fleabag: p_ideal = 21 + wind * 1.05
       const isDog = this.currentTurn === 'dog';
       let idealPower = isDog ? 21.5 - this.wind * 1.05 : 21.5 + this.wind * 1.05;
 
-      // Add difficulty variance
       let variance = 0;
       if (this.difficulty === 'easy') {
-        variance = (Math.random() - 0.5) * 7.0; // easy makes mistakes
+        variance = (Math.random() - 0.5) * 7.0;
       } else {
-        variance = (Math.random() - 0.5) * 2.2; // normal / hard is sharp
-        // adaptive learning from previous shot
+        variance = (Math.random() - 0.5) * 2.2;
         idealPower += this.aiState.previousShotError * 0.4;
       }
 
       const finalP = Math.max(1, Math.min(32, Math.round(idealPower + variance)));
       this.aiState.targetPower = finalP / 32;
 
-      // Randomly use a powerup if available (30% chance)
       const cpuChar = this.getActiveCharacter();
-      if (Math.random() < 0.3) {
+      if (Math.random() < 0.35) {
         if (cpuChar.hp < 40 && cpuChar.powerups.heal) {
           this.usePowerup(cpuChar.type, 'heal');
           this.aiState.isCharging = false;
@@ -504,7 +522,6 @@ class BattleEngine {
 
       this.startCharging();
     } else {
-      // Check if current charge reached target power
       if (this.chargePower >= this.aiState.targetPower) {
         this.aiState.isCharging = false;
         this.releaseCharge();
@@ -513,13 +530,28 @@ class BattleEngine {
   }
 
   updateCharacterAnim(char, deltaMs) {
-    char.stateTimer += deltaMs;
     const animKey = `${char.type}_${char.state}`;
     const anim = this.sprites.animations[animKey];
     if (!anim) return;
 
-    const frameStep = (anim.fps * deltaMs) / 1000;
-    char.stateFrame = (char.stateFrame + frameStep) % anim.count;
+    // Accumulator tick counter locked strictly to 24 FPS
+    char.frameAccumulator = (char.frameAccumulator || 0) + deltaMs;
+    while (char.frameAccumulator >= this.frameDuration) {
+      char.frameAccumulator -= this.frameDuration;
+      char.frame = (char.frame + 1) % anim.count;
+    }
+  }
+
+  spawnDamagePopup(x, y, text, color = '#fbbf24') {
+    this.damagePopups.push({
+      x: x,
+      y: y,
+      vy: -1.8,
+      text: text,
+      color: color,
+      alpha: 1.0,
+      life: 800
+    });
   }
 
   spawnImpactParticles(x, y, color, count) {
@@ -540,7 +572,7 @@ class BattleEngine {
   }
 
   spawnHealParticles(x, y) {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       this.particles.push({
         x: x + (Math.random() - 0.5) * 40,
         y: y + (Math.random() - 0.5) * 40,
