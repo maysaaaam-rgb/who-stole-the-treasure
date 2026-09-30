@@ -610,6 +610,7 @@ header.app-header,
 /* ============================================================
    CLICKABLE ACTIVE XP BADGE ON STUDENT CARD
    ============================================================ */
+.xp-clickable-badge,
 .student-xp-pill-clickable {
   cursor: pointer;
   background: rgba(245, 158, 11, 0.15);
@@ -628,6 +629,7 @@ header.app-header,
   flex-shrink: 0;
 }
 
+.xp-clickable-badge:hover,
 .student-xp-pill-clickable:hover {
   transform: scale(1.06);
   background: rgba(245, 158, 11, 0.28);
@@ -635,9 +637,15 @@ header.app-header,
   box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
 }
 
+.xp-clickable-badge:active,
 .student-xp-pill-clickable:active {
   transform: translateY(2px) scale(0.98);
   border-bottom-width: 1px;
+}
+
+.xp-num {
+  font-weight: 900;
+  letter-spacing: 0.02em;
 }
 
 .xp-click-hint {
