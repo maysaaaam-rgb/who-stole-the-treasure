@@ -2571,150 +2571,114 @@
     return allStudents;
   }
 
-  function executeLocalTerm2Reset() {
-    console.log("⚡ Executing 100% Local-First Term 2 Reset...");
+  // =========================================================================
+  // FAILSAFE LOCAL-FIRST TERM 2 MIGRATION (LOCKED ONCE - NEVER WIPES NEW XP)
+  // =========================================================================
+  const MIGRATION_FLAG = "term2_migration_completed_locked_v3";
+
+  function checkAndRunMigrationOnce() {
+    if (typeof localStorage === 'undefined') return;
+    if (localStorage.getItem(MIGRATION_FLAG) === "true") {
+      // Already migrated: NEVER run archival or reset again!
+      return (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+        JSON.parse(localStorage.getItem('adventure_students') || '[]');
+    }
+
+    console.log("⚡ Executing 100% Local-First Term 2 Reset (One-Time Run)...");
     const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
-    if (!students || students.length === 0) return;
+      JSON.parse(localStorage.getItem('adventure_students') || '[]');
+    if (!students || students.length === 0) {
+      localStorage.setItem(MIGRATION_FLAG, "true");
+      return;
+    }
 
-    const updated = students.map(st => {
-      const active = Number(st.xp) || 0;
+    students.forEach(st => {
+      const curActive = Number(st.xp) || 0;
       const existingArch = Number(st.archivedXP ?? st.archived_xp ?? 0);
-
-      if (active > 0) {
-        st.archivedXP = existingArch + active;
-        st.archived_xp = st.archivedXP;
-        st.xp = 0; // FORCE 0 XP
+      // Only migrate legacy XP once if active > 0 and archive is 0
+      if (curActive > 0 && existingArch === 0) {
+        st.archivedXP = curActive;
+        st.archived_xp = curActive;
+        st.xp = 0;
       }
-
-      // Freeze monster level at 3 or 4 (never drop to egg)
-      const curLvl = Math.max(Number(st.level) || 3, 3);
-      st.level = curLvl;
-      st.stageName = st.stageName || (curLvl >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
+      st.level = Math.max(Number(st.level) || 3, 3);
+      st.stageName = st.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster";
       st.levelName = st.stageName;
       st.isEgg = false;
       st.isHatched = true;
-
-      return st;
     });
 
-    // 1. Save locally immediately
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('adventure_students', JSON.stringify(updated));
-      localStorage.setItem('term2_migration_v2', 'true');
-      localStorage.setItem('term2_migration_v3', 'true');
+    localStorage.setItem('adventure_students', JSON.stringify(students));
+    localStorage.setItem(MIGRATION_FLAG, "true");
+    localStorage.setItem('term2_migration_v2', 'true');
+    localStorage.setItem('term2_migration_v3', 'true');
 
-      // Also ensure all class rosters are synced so Grade 4A/4B students are 0 XP
-      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const arr = JSON.parse(raw);
-            if (Array.isArray(arr)) {
-              const synced = arr.map(s => {
-                const u = updated.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
-                if (u) return Object.assign({}, s, u);
-                const act = Number(s.xp) || 0;
-                const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
-                s.archivedXP = arch + act;
-                s.archived_xp = s.archivedXP;
+    // Also sync all class rosters so Grade 4A/4B students are aligned
+    ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+      try {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            const synced = arr.map(s => {
+              const u = students.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+              if (u) return Object.assign({}, s, u);
+              const curAct = Number(s.xp) || 0;
+              const curArch = Number(s.archivedXP ?? s.archived_xp ?? 0);
+              if (curAct > 0 && curArch === 0) {
+                s.archivedXP = curAct;
+                s.archived_xp = curAct;
                 s.xp = 0;
-                s.level = Math.max(Number(s.level) || 3, 3);
-                s.stageName = s.stageName || (s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
-                s.levelName = s.stageName;
-                s.isEgg = false;
-                s.isHatched = true;
-                return s;
-              });
-              localStorage.setItem(k, JSON.stringify(synced));
-            }
+              }
+              s.level = Math.max(Number(s.level) || 3, 3);
+              s.stageName = s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster";
+              s.levelName = s.stageName;
+              s.isEgg = false;
+              s.isHatched = true;
+              return s;
+            });
+            localStorage.setItem(k, JSON.stringify(synced));
           }
-        } catch (e) {}
-      });
-    }
+        }
+      } catch (e) {}
+    });
 
     if (typeof window !== 'undefined') {
-      if (window.AdventureAcademy) window.AdventureAcademy.students = updated;
+      if (window.AdventureAcademy) window.AdventureAcademy.students = students;
       if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
         window.schoolStore.state.students.forEach(s => {
-          const u = updated.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
-          if (u) {
-            Object.assign(s, u);
-          } else {
-            const act = Number(s.xp) || 0;
-            const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
-            s.archivedXP = arch + act;
-            s.archived_xp = s.archivedXP;
-            s.xp = 0;
-            s.level = Math.max(Number(s.level) || 3, 3);
-            s.stageName = s.stageName || (s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
-            s.levelName = s.stageName;
-            s.isEgg = false;
-            s.isHatched = true;
-          }
+          const u = students.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+          if (u) Object.assign(s, u);
         });
         if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
-        if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
       }
     }
 
-    // 2. Re-render UI immediately
     if (typeof renderStudentRoster === 'function') renderStudentRoster();
     else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
     if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
 
-    // 3. Attempt silent cloud sync
+    // Silent background push
     if (typeof safeBackgroundSupabaseSync === 'function') {
-      safeBackgroundSupabaseSync(updated);
+      safeBackgroundSupabaseSync(students);
     } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
-      window.safeBackgroundSupabaseSync(updated);
-    } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
-      AdventureSupabase.safeBackgroundSupabaseSync(updated);
+      window.safeBackgroundSupabaseSync(students);
     }
 
-    return updated;
+    return students;
   }
-
-  // Auto-run if not yet migrated
-  if (typeof localStorage !== 'undefined') {
-    if (localStorage.getItem('term2_migration_v2') !== 'true') {
-      executeLocalTerm2Reset();
-    }
-  }
-
-  const MIGRATION_KEY = 'term2_migration_v3';
 
   function autoRunTerm2Migration() {
-    if (typeof localStorage === 'undefined') return;
-    try {
-      const alreadyRun = localStorage.getItem(MIGRATION_KEY) === 'true';
-      let hasActiveXP = false;
-      const checkKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'];
-      for (const k of checkKeys) {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          try {
-            const arr = JSON.parse(raw);
-            if (Array.isArray(arr) && arr.some(s => Number(s.xp) > 0)) {
-              hasActiveXP = true;
-              break;
-            }
-          } catch (e) {}
-        }
-      }
+    return checkAndRunMigrationOnce();
+  }
 
-      if (alreadyRun && !hasActiveXP) {
-        return;
-      }
-
-      console.log('[Term2 Migration] Initiating self-executing Term 2 migration v3 (0 active XP, lifetime level lock)...');
-      const updated = executeLocalTerm2Reset() || archiveAndResetXP();
-      localStorage.setItem(MIGRATION_KEY, 'true');
-      console.log('[Term2 Migration] Self-executing Term 2 migration v3 completed successfully.');
-      return updated;
-    } catch (e) {
-      console.error('[Term2 Migration] Migration exception:', e);
+  function executeLocalTerm2Reset(force = false) {
+    if (!force && typeof localStorage !== 'undefined' && localStorage.getItem(MIGRATION_FLAG) === "true") {
+      console.log("[Term 2 Reset] Migration already completed and locked (" + MIGRATION_FLAG + "). Skipping automatic wipe.");
+      return (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+        (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
     }
+    return checkAndRunMigrationOnce();
   }
 
   // Quick Direct Edit fallback
@@ -2724,16 +2688,35 @@
     const st = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
     if (!st) return;
 
-    const displayName = st.name || (st.firstName + ' ' + (st.lastName || '')).trim() || 'Student';
+    const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
     const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
-    if (input === null) return;
+    if (input === null || input.trim() === '') return;
 
-    const newXP = Math.max(0, parseInt(input, 10) || 0);
+    const newXP = Math.max(0, parseInt(input.trim(), 10) || 0);
     st.xp = newXP;
+    st.totalXP = newXP;
+
+    // Update in-memory schoolStore state if present
+    const storeInst = (typeof window !== 'undefined' && window.schoolStore) || (typeof root !== 'undefined' && root.schoolStore);
+    if (storeInst) {
+      if (typeof storeInst.setStudentXP === 'function') {
+        storeInst.setStudentXP(studentId, newXP, 'Teacher Direct XP Edit');
+      } else if (storeInst.state && Array.isArray(storeInst.state.students)) {
+        const idx = storeInst.state.students.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+        if (idx !== -1) {
+          storeInst.state.students[idx].xp = newXP;
+          storeInst.state.students[idx].totalXP = newXP;
+          if (typeof storeInst.evaluateMonsterStage === 'function') {
+            storeInst.evaluateMonsterStage(storeInst.state.students[idx]);
+          }
+          if (typeof storeInst.saveState === 'function') storeInst.saveState();
+        }
+      }
+    }
 
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('adventure_students', JSON.stringify(students));
-      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'].forEach(k => {
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
         try {
           const raw = localStorage.getItem(k);
           if (raw) {
@@ -2742,6 +2725,7 @@
               const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
               if (idx !== -1) {
                 arr[idx].xp = newXP;
+                arr[idx].totalXP = newXP;
                 localStorage.setItem(k, JSON.stringify(arr));
               }
             }
@@ -2752,14 +2736,15 @@
 
     if (typeof window !== 'undefined') {
       if (window.AdventureAcademy) window.AdventureAcademy.students = students;
-      if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
-        const idx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId));
-        if (idx !== -1) {
-          window.schoolStore.state.students[idx].xp = newXP;
-          if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
-          if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
-        }
-      }
+    }
+
+    // Direct DOM element update
+    const card = document.querySelector('[data-student-id="' + studentId + '"]');
+    if (card) {
+      const xpNum = card.querySelector('.xp-num');
+      if (xpNum) xpNum.innerText = newXP + ' XP';
+      const xpVal = card.querySelector('.xp-val-text');
+      if (xpVal) xpVal.innerText = newXP + ' XP';
     }
 
     if (typeof renderStudentRoster === 'function') renderStudentRoster();
@@ -2778,7 +2763,7 @@
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
-      autoRunTerm2Migration();
+      checkAndRunMigrationOnce();
     } catch (e) {}
   }
 
@@ -11229,10 +11214,11 @@
       const lastCelebrated = profile.lastCelebratedLevel || prevLevel;
 
       this.state.xpTransactions.push(tx);
-      const newTotalXP = this.getStudentTotalXP(studentId);
       if (s) {
-        s.xp = newTotalXP;
-        s.totalXP = newTotalXP;
+        const curActive = Number(s.xp) || 0;
+        const updatedXP = Math.max(0, curActive + points);
+        s.xp = updatedXP;
+        s.totalXP = updatedXP;
         tx.balanceAfter = s.xp;
         if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
         const now = new Date();
@@ -11248,6 +11234,7 @@
         };
         s.xpHistory.unshift(ledgerItem);
       }
+      const newTotalXP = s ? s.xp : this.getStudentTotalXP(studentId);
       const newMonsterState = this.calculateMonsterState(studentId);
       const newLevel = newMonsterState ? newMonsterState.currentLevel : prevLevel;
       if (s) {
@@ -11256,8 +11243,24 @@
         try {
           if (typeof localStorage !== 'undefined' && this.state.students) {
             localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+            ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+              const raw = localStorage.getItem(k);
+              if (raw) {
+                const arr = JSON.parse(raw);
+                if (Array.isArray(arr)) {
+                  const idx = arr.findIndex(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+                  if (idx !== -1) {
+                    arr[idx] = Object.assign({}, arr[idx], s);
+                    localStorage.setItem(k, JSON.stringify(arr));
+                  }
+                }
+              }
+            });
           }
         } catch (e) {}
+      }
+      if (typeof window !== 'undefined' && window.AdventureAcademy) {
+        window.AdventureAcademy.students = this.state.students;
       }
 
       let evolutionEvent = null;
@@ -11367,6 +11370,83 @@
         reason = options.reason || 'Classroom Award';
       }
       return this.giveXP(studentId, amount, reason, 'Teacher', options);
+    }
+
+    setStudentXP(studentId, newXP, reason = 'Teacher manual edit') {
+      const s = this.getStudent(studentId);
+      if (!s) return null;
+      const parsedXP = Math.max(0, parseInt(newXP, 10) || 0);
+      const oldXP = Number(s.xp) || 0;
+      s.xp = parsedXP;
+      s.totalXP = parsedXP;
+
+      evaluateMonsterStage(s);
+
+      const tx = {
+        id: 'tx_edit_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        studentId: s.id,
+        amount: parsedXP - oldXP,
+        points: parsedXP - oldXP,
+        xp: parsedXP,
+        type: 'manual_edit',
+        reason: `${reason} (${oldXP} XP -> ${parsedXP} XP)`,
+        category: parsedXP >= oldXP ? 'positive' : 'needs_work',
+        icon: '✎',
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        timestamp: new Date().toISOString(),
+        teacherId: 'Teacher',
+        createdBy: 'Teacher',
+        balanceAfter: s.xp,
+        status: 'active'
+      };
+      if (!this.state.xpTransactions) this.state.xpTransactions = [];
+      this.state.xpTransactions.push(tx);
+
+      if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
+      s.xpHistory.unshift({
+        id: tx.id,
+        amount: parsedXP - oldXP,
+        type: 'manual_edit',
+        reason: tx.reason,
+        date: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: tx.timestamp,
+        balanceAfter: s.xp
+      });
+
+      this.saveState();
+
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+        ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+          try {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const arr = JSON.parse(raw);
+              if (Array.isArray(arr)) {
+                const idx = arr.findIndex(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+                if (idx !== -1) {
+                  arr[idx] = Object.assign({}, arr[idx], s);
+                  localStorage.setItem(k, JSON.stringify(arr));
+                }
+              }
+            }
+          } catch (e) {}
+        });
+      }
+
+      if (typeof window !== 'undefined' && window.AdventureAcademy) {
+        window.AdventureAcademy.students = this.state.students;
+      }
+
+      if (typeof safeBackgroundSupabaseSync === 'function') {
+        safeBackgroundSupabaseSync(this.state.students);
+      } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+        window.safeBackgroundSupabaseSync(this.state.students);
+      }
+
+      this.notify('students', this.state.students);
+      return s;
     }
 
     giveBatchFeedback(studentIds = [], skillIds = [], options = {}) {
