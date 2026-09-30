@@ -1447,11 +1447,13 @@ window.addQuickXP = function(studentId, amount = 10, event) {
     else if (typeof renderCurrentView === 'function') renderCurrentView();
   }
 
-  // 7. Silent background cloud sync (never blocks execution)
-  if (typeof safeBackgroundSupabaseSync === 'function') {
-    safeBackgroundSupabaseSync(students);
-  } else if (typeof window.safeBackgroundSupabaseSync === 'function') {
-    window.safeBackgroundSupabaseSync(students);
+  // 7. Push single update to Supabase in the background (DO NOT pull down remote table!)
+  if (typeof syncSingleStudentXP === 'function') {
+    syncSingleStudentXP(student);
+  } else if (typeof window.syncSingleStudentXP === 'function') {
+    window.syncSingleStudentXP(student);
+  } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.syncSingleStudentXP === 'function') {
+    AdventureSupabase.syncSingleStudentXP(student);
   }
 };
 

@@ -399,10 +399,13 @@ body.theme-korean-traditions,
    HEADER STICKY & CLEARANCE FIX (ANTI-SLICING)
    ============================================================ */
 header.app-top-header,
+.top-nav-bar,
 header.app-header,
 .main-navbar-container {
   position: sticky !important;
   top: 0 !important;
+  left: 0;
+  width: 100%;
   z-index: 1000 !important;
   background: rgba(6, 9, 17, 0.94) !important;
   backdrop-filter: blur(16px) !important;
@@ -412,9 +415,12 @@ header.app-header,
 
 #classroom-view,
 .classroom-container,
+#app-view-container,
 .app-main {
+  position: relative;
   min-height: calc(100vh - 65px);
   padding: 16px 24px 100px 24px !important;
+  overflow-y: auto;
 }
 
 .classroom-students-grid > nav,

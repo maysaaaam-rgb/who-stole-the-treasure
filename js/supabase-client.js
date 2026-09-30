@@ -1292,9 +1292,9 @@
       xp: Number(row.xp) || 0,
       archivedXP: Number(row.archived_xp) || 0,
       archived_xp: Number(row.archived_xp) || 0,
-      level: levelNum,
-      stageName: row.stage_name || (levelNum >= 3 ? 'Level 3 • Baby Monster' : 'Level 1 • Mystery Egg'),
-      levelName: row.stage_name || (levelNum >= 3 ? 'Level 3 • Baby Monster' : 'Level 1 • Mystery Egg'),
+      level: Math.max(levelNum, 3),
+      stageName: (row.stage_name && !row.stage_name.includes("Mystery Egg")) ? row.stage_name : (levelNum >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster'),
+      levelName: (row.stage_name && !row.stage_name.includes("Mystery Egg")) ? row.stage_name : (levelNum >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster'),
       aliceCharacter: row.alice_character || null,
       koreanRole: row.korean_role || null,
       customIcon: activeIcon,
@@ -1303,13 +1303,14 @@
       xpHistory: Array.isArray(row.xp_history) ? row.xp_history : [],
       xp_history: Array.isArray(row.xp_history) ? row.xp_history : [],
       streakDays: row.streak_days !== undefined ? row.streak_days : 0,
-      equippedMonster: row.equipped_monster || 'Mystery Egg',
+      equippedMonster: row.equipped_monster || 'Baby Monster',
       archived: Boolean(row.archived),
       latestTeacherNote: row.latest_teacher_note || '',
       manualCefrOverrides: row.manual_cefr_overrides || {},
       monsterProfile: row.monster_profile || {},
       extraData: row.extra_data || {},
-      isEgg: levelNum < 3,
+      isEgg: false,
+      isHatched: true,
       updatedAt: row.updated_at
     };
   }
@@ -1602,17 +1603,89 @@
     }
   }
 
+  // 1. Force cloud database to match local Term 2 reset
+  async function forcePushTerm2ResetToCloud() {
+    const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
+    if (!client) return;
+
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    if (!students || students.length === 0) return;
+
+    const payload = students.map(s => {
+      const curLvl = Math.max(Number(s.level) || 3, 3);
+      const stage = (s.stageName && !s.stageName.includes("Mystery Egg"))
+        ? s.stageName
+        : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+      return {
+        id: String(s.id),
+        name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
+        grade: s.grade || s.class_id || s.classId || '4A',
+        xp: Number(s.xp) || 0, // Pushes 0 (or new earned points) to Supabase
+        archived_xp: Number(s.archivedXP ?? s.archived_xp ?? 0),
+        level: curLvl,
+        stage_name: stage,
+        alice_character: s.aliceCharacter || null,
+        updated_at: new Date().toISOString()
+      };
+    });
+
+    try {
+      const { error } = await client
+        .from('students')
+        .upsert(payload, { onConflict: 'id' });
+
+      if (error) console.warn("[AdventureSupabase] Supabase upsert warning:", error.message);
+      else console.log("✅ Supabase remote database successfully overwritten with Term 2 values.");
+    } catch (err) {
+      console.warn("[AdventureSupabase] Cloud sync bypassed:", err.message);
+    }
+  }
+
+  // 2. Safe awardXP sync: ONLY pushes the incremented student, NEVER pulls the entire table
+  async function syncSingleStudentXP(student) {
+    const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
+    if (!client || !student) return;
+
+    const curLvl = Math.max(Number(student.level) || 3, 3);
+    const stage = (student.stageName && !student.stageName.includes("Mystery Egg"))
+      ? student.stageName
+      : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+
+    try {
+      await client
+        .from('students')
+        .update({
+          xp: Number(student.xp) || 0,
+          archived_xp: Number(student.archivedXP ?? student.archived_xp ?? 0),
+          level: curLvl,
+          stage_name: stage,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', String(student.id));
+      console.log(`[AdventureSupabase] Pushed single student update for ${student.id} (${student.xp} XP).`);
+    } catch (e) {
+      console.warn("[AdventureSupabase] Background update skipped:", e.message);
+    }
+  }
+
   AdventureSupabaseService.prototype.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
   AdventureSupabaseService.prototype.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
+  AdventureSupabaseService.prototype.forcePushTerm2ResetToCloud = forcePushTerm2ResetToCloud;
+  AdventureSupabaseService.prototype.syncSingleStudentXP = syncSingleStudentXP;
 
   root.AdventureSupabase = new AdventureSupabaseService();
   root.toSupabaseRecord = toSupabaseRecord;
   root.fromSupabaseRecord = fromSupabaseRecord;
   root.syncWithSupabaseCloud = syncWithSupabaseCloud;
   root.forcePushToSupabase = forcePushToSupabase;
+  root.forcePushTerm2ResetToCloud = forcePushTerm2ResetToCloud;
+  root.syncSingleStudentXP = syncSingleStudentXP;
   root.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
   root.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
   if (typeof window !== 'undefined') {
+    window.forcePushTerm2ResetToCloud = forcePushTerm2ResetToCloud;
+    window.syncSingleStudentXP = syncSingleStudentXP;
     window.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
     window.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
   }

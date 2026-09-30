@@ -2760,10 +2760,80 @@
     }
   }
 
+  function cleanupStaleXP() {
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    if (!students || students.length === 0) return;
+
+    let changed = false;
+
+    students.forEach(s => {
+      const act = Number(s.xp) || 0;
+      const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
+
+      // If active XP matches archived XP exactly, it was erroneously reverted from cloud (e.g., Alya 330/330, Ahmet 150/150)
+      if (act > 0 && arch > 0 && act === arch) {
+        s.xp = 0;
+        s.totalXP = 0;
+        changed = true;
+      }
+      // Fix "Lvl 3 • Mystery Egg" glitch (Elif Su Yarar)
+      if ((Number(s.level) === 3 || s.level === '3') && s.stageName && s.stageName.includes("Mystery Egg")) {
+        s.stageName = "Level 3 • Baby Monster";
+        s.levelName = "Level 3 • Baby Monster";
+        s.isEgg = false;
+        s.isHatched = true;
+        changed = true;
+      }
+      if ((Number(s.level) || 3) < 3) {
+        s.level = 3;
+        s.stageName = "Level 3 • Baby Monster";
+        s.levelName = "Level 3 • Baby Monster";
+        s.isEgg = false;
+        s.isHatched = true;
+        changed = true;
+      }
+    });
+
+    if (changed && typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(students));
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const synced = arr.map(st => {
+                const u = students.find(x => String(x.id) === String(st.id) || String(x.studentIdNumber) === String(st.studentIdNumber));
+                if (u) return Object.assign({}, st, u);
+                return st;
+              });
+              localStorage.setItem(k, JSON.stringify(synced));
+            }
+          }
+        } catch (e) {}
+      });
+
+      if (typeof window !== 'undefined') {
+        if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+        if (typeof forcePushTerm2ResetToCloud === 'function') {
+          forcePushTerm2ResetToCloud();
+        } else if (typeof window.forcePushTerm2ResetToCloud === 'function') {
+          window.forcePushTerm2ResetToCloud();
+        } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.forcePushTerm2ResetToCloud === 'function') {
+          AdventureSupabase.forcePushTerm2ResetToCloud();
+        }
+      }
+    }
+  }
+
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
       checkAndRunMigrationOnce();
+    } catch (e) {}
+    try {
+      cleanupStaleXP();
     } catch (e) {}
   }
 
@@ -2773,6 +2843,7 @@
     root.promptDirectXPEdit = promptDirectXPEdit;
     root.openDirectXPEdit = promptDirectXPEdit;
     root.executeLocalTerm2Reset = executeLocalTerm2Reset;
+    root.cleanupStaleXP = cleanupStaleXP;
     root.recalculateAllStudents = recalculateAllStudents;
     root.archiveAndResetXP = archiveAndResetXP;
     root.autoRunTerm2Migration = autoRunTerm2Migration;
@@ -2789,6 +2860,7 @@
       window.promptDirectXPEdit = promptDirectXPEdit;
       window.openDirectXPEdit = promptDirectXPEdit;
       window.executeLocalTerm2Reset = executeLocalTerm2Reset;
+      window.cleanupStaleXP = cleanupStaleXP;
       window.recalculateAllStudents = recalculateAllStudents;
       window.autoRunTerm2Migration = autoRunTerm2Migration;
       window.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
@@ -16279,32 +16351,33 @@
 
           if (localIdx !== -1) {
             const local = this.state.students[localIdx];
-            let mergedXP = Number(remoteStudent.xp) || 0;
             let mergedArchived = Math.max(Number(local.archivedXP ?? local.archived_xp ?? 0), Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0));
 
-            // Term 2 Protection: Never let unarchived remote legacy XP override local active 0 XP
-            if (isTerm2Migrated && Number(local.xp) === 0 && mergedXP > 0 && Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0) === 0) {
-              mergedArchived = Math.max(mergedArchived, mergedXP);
-              mergedXP = 0;
+            // Term 2 Protection: Local state is authoritative for active Term 2 XP.
+            // Never let unarchived remote legacy XP override local active XP (like Alya's 330 or Ahmet's 150).
+            let mergedXP = Number(local.xp) || 0;
+            // If remote student has archived XP, capture it
+            if (Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0) > mergedArchived) {
+              mergedArchived = Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0);
             }
 
-            const finalLevel = Math.max(Number(local.level) || 1, Number(remoteStudent.level) || 1);
+            const finalLevel = Math.max(Number(local.level) || 3, Number(remoteStudent.level) || 3, 3);
+            let finalStageName = local.stageName;
+            if (!finalStageName || finalStageName.includes("Mystery Egg")) {
+              finalStageName = finalLevel >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster';
+            }
 
             this.state.students[localIdx] = Object.assign({}, local, remoteStudent, {
               xp: mergedXP,
+              totalXP: mergedXP,
               archivedXP: mergedArchived,
               archived_xp: mergedArchived,
-              level: finalLevel
+              level: finalLevel,
+              stageName: finalStageName,
+              levelName: finalStageName,
+              isEgg: false,
+              isHatched: true
             });
-
-            if (typeof getStudentStage === 'function') {
-              const stage = getStudentStage(this.state.students[localIdx]);
-              this.state.students[localIdx].level = Math.max(finalLevel, stage.level);
-              this.state.students[localIdx].stageName = stage.stageName;
-              this.state.students[localIdx].levelName = stage.stageName;
-              this.state.students[localIdx].isEgg = stage.isEgg;
-              if (this.state.students[localIdx].level >= 3) this.state.students[localIdx].isHatched = true;
-            }
 
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
               this.state.monsterProfiles[remoteStudent.id] = Object.assign(
