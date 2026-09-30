@@ -1,0 +1,930 @@
+/**
+ * Alice in Wonderland: Mad Tea Party Double-Sided Trading Cards
+ * Master Stylesheet — Cyber-Glassmorphic Studio UI + Victorian Antique Print Cards
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Cinzel+Decorative:wght@700;900&family=MedievalSharp&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+
+:root {
+  /* AGENTS.md 60-30-10 Cyber-Glassmorphic Foundations */
+  --bg-obsidian: #060911;
+  --bg-obsidian-gradient: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+  --panel-glass: rgba(15, 23, 42, 0.85);
+  --panel-glass-border: rgba(255, 255, 255, 0.12);
+  --panel-glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Victorian Storybook Palette */
+  --gold-filigree-light: #fef08a;
+  --gold-filigree: #d97706;
+  --gold-filigree-dark: #78350f;
+  --parchment-base: #f7f1e1;
+  --parchment-border: #d4c5a3;
+  --parchment-shadow: #2c2214;
+  --parchment-dark: #231d16;
+
+  /* Card Poker Standard Sizes */
+  --card-width-screen: 320px;
+  --card-height-screen: 448px; /* 2.5 x 3.5 ratio */
+  --card-print-w: 2.5in;
+  --card-print-h: 3.5in;
+
+  /* Accent Jewel Tones */
+  --accent-cyan: #38bdf8;
+  --accent-amber: #f59e0b;
+  --accent-emerald: #10b981;
+  --accent-rose: #f43f5e;
+  --accent-violet: #a855f7;
+}
+
+/* Base App Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-obsidian);
+  background-image: var(--bg-obsidian-gradient);
+  color: #f1f5f9;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* App Header & Cyber-Glass Navigation */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6, 9, 17, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--panel-glass-border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  background: radial-gradient(circle, #f59e0b, #b45309);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+  border: 2px solid #fde68a;
+}
+
+.brand-title h1 {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #fff 30%, #fcd34d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-title p {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+/* Header Controls & 3D Buttons */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.btn-tactile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.1s var(--spring-snap), box-shadow 0.1s ease, filter 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #d97706, #b45309);
+  color: #fff;
+  border-bottom: 5px solid #78350f;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #334155, #1e293b);
+  color: #e2e8f0;
+  border-bottom: 5px solid #0f172a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-cyan {
+  background: linear-gradient(180deg, #0284c7, #0369a1);
+  color: #fff;
+  border-bottom: 5px solid #075985;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+.btn-emerald {
+  background: linear-gradient(180deg, #059669, #047857);
+  color: #fff;
+  border-bottom: 5px solid #064e3b;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+}
+
+.btn-tactile:hover {
+  filter: brightness(1.1);
+}
+
+.btn-tactile:active {
+  transform: translateY(4px);
+  border-bottom-width: 1px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Secondary Filter & Search Dock */
+.filter-dock {
+  background: var(--panel-glass);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--panel-glass-border);
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.act-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.act-pill {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 20px;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.act-pill:hover, .act-pill.active {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fde68a;
+}
+
+.class-selector-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 0.25rem 0.35rem;
+  border-radius: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.class-toggle-pill {
+  padding: 0.4rem 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 18px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s var(--spring-snap);
+}
+
+.class-toggle-pill:hover {
+  color: #fde68a;
+}
+
+.class-toggle-pill.active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  gap: 0.5rem;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.85rem;
+  outline: none;
+  width: 220px;
+}
+
+.search-box input::placeholder {
+  color: #64748b;
+}
+
+.card-view-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Main Cards Grid View */
+.view-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+.cards-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 2.25rem 1.75rem;
+  justify-items: center;
+}
+
+/* ========================================================
+   THE TRADING CARD MASTER COMPONENT (2.5 x 3.5 Aspect Ratio)
+   Double-sided with 3D Flip Physics
+   ======================================================== */
+.trading-card-wrapper {
+  perspective: 1400px;
+  width: var(--card-width-screen);
+  height: var(--card-height-screen);
+  cursor: pointer;
+  user-select: none;
+}
+
+.trading-card-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s var(--spring-snap);
+  border-radius: 14px;
+}
+
+.trading-card-wrapper.is-flipped .trading-card-3d {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.65), 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================================
+   FRONT FACE: THE COLLECTIBLE PORTRAIT
+   ======================================================== */
+.card-front {
+  background: #1e1b18;
+  background-image: 
+    radial-gradient(circle at 50% 15%, rgba(217, 119, 6, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, #2a241e 0%, #15120e 100%);
+  display: flex;
+  flex-direction: column;
+  border: 4px solid #b45309;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 12px 30px rgba(0, 0, 0, 0.7);
+  padding: 8px;
+}
+
+/* Victorian Filigree Outer Border Frame */
+.filigree-outer-border {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #fde68a;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: 
+    linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, transparent 100%),
+    #17130e;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.75);
+}
+
+/* Corner Gilded Accents (Teacups, Roses, Gears, Card Suits) */
+.corner-flourish {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  z-index: 10;
+  fill: #fde68a;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+}
+.corner-tl { top: -2px; left: -2px; }
+.corner-tr { top: -2px; right: -2px; transform: scaleX(-1); }
+.corner-bl { bottom: -2px; left: -2px; transform: scaleY(-1); }
+.corner-br { bottom: -2px; right: -2px; transform: scale(-1); }
+
+/* Front Header: Vintage Serif Top Banner */
+.card-top-banner {
+  text-align: center;
+  padding: 4px 6px 3px;
+  background: linear-gradient(180deg, #451a03 0%, #291203 100%);
+  border: 1px solid #d97706;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  box-shadow: inset 0 1px 0 rgba(254, 240, 138, 0.4), 0 2px 4px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.banner-motif {
+  font-size: 0.65rem;
+  color: #fde68a;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+}
+
+.banner-text {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: #fef08a;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* Portrait Window (65% Bleed Frame) */
+.card-portrait-window {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #d97706;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 3px 6px rgba(0,0,0,0.5);
+  background: #000;
+}
+
+.card-portrait-window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.trading-card-wrapper:hover .card-portrait-window img {
+  transform: scale(1.04);
+}
+
+/* Front Bottom Plaque: Character Identity */
+.card-bottom-plaque {
+  margin-top: 6px;
+  background: linear-gradient(180deg, #2b1d0c 0%, #1c1308 100%);
+  border: 1.5px solid #d97706;
+  border-radius: 6px;
+  padding: 5px 8px 4px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(254, 240, 138, 0.3), 0 3px 6px rgba(0,0,0,0.6);
+}
+
+.plaque-char-name {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 1.02rem;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px rgba(245, 158, 11, 0.4);
+  line-height: 1.15;
+}
+
+.plaque-actor {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #fde68a;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.plaque-role {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+/* Stat Badges Ribbon (Footer) */
+.card-stat-ribbon {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.stat-badge {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(217, 119, 6, 0.6);
+  border-radius: 4px;
+  padding: 2px 2px 1px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.stat-val {
+  font-family: 'Cinzel', serif;
+  font-size: 0.76rem;
+  font-weight: 900;
+  color: #fef08a;
+  line-height: 1.1;
+}
+
+.stat-val.tp { color: #38bdf8; }
+.stat-val.mad { color: #f43f5e; }
+.stat-val.courage { color: #facc15; }
+
+/* Flip Prompt Hint */
+.flip-hint {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fde68a;
+  border: 1px solid #d97706;
+  border-radius: 12px;
+  padding: 2px 7px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ========================================================
+   BACK FACE: STUDENT PREPARATION & PERFORMANCE GUIDE
+   Warm Antique Parchment Storybook Style
+   ======================================================== */
+.card-back {
+  background: #f7f1e1;
+  background-image: 
+    radial-gradient(circle at 50% 50%, #fffbf0 0%, #ede3ca 100%);
+  color: #231d16;
+  border: 4px solid #b45309;
+  box-shadow: inset 0 0 15px rgba(120, 53, 15, 0.4), 0 12px 30px rgba(0, 0, 0, 0.7);
+  padding: 8px;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+}
+
+.back-inner-frame {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #854d0e;
+  border-radius: 9px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 8px rgba(120, 53, 15, 0.2);
+  overflow: hidden;
+}
+
+/* Back Header: Character & Act Scene */
+.back-header {
+  border-bottom: 1.5px solid #a16207;
+  padding-bottom: 4px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.back-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.back-char-title {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  color: #78350f;
+  line-height: 1.15;
+}
+
+.back-actor-pill {
+  background: #78350f;
+  color: #fef08a;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+}
+
+.back-act-scene {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.66rem;
+  font-style: italic;
+  color: #854d0e;
+  margin-top: 1px;
+}
+
+/* Back Middle Content: Two Sections (Costume Checklist + Speech) */
+.back-body-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: hidden;
+}
+
+/* Section Box Styles */
+.guide-box {
+  background: rgba(254, 249, 235, 0.8);
+  border: 1px solid #d4c5a3;
+  border-radius: 5px;
+  padding: 4px 6px;
+}
+
+.guide-box-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: #78350f;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px dashed #d4c5a3;
+  padding-bottom: 2px;
+}
+
+/* Costume & Prop Checklist */
+.checklist-compact {
+  list-style: none;
+  font-size: 0.64rem;
+  line-height: 1.25;
+  color: #382e21;
+}
+
+.checklist-compact li {
+  position: relative;
+  padding-left: 13px;
+  margin-bottom: 2px;
+}
+
+.checklist-compact li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #b45309;
+  font-weight: 900;
+  font-size: 0.65rem;
+}
+
+/* 1-Minute Performance Speech Section */
+.speech-box {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.speech-vocal-pill {
+  font-size: 0.6rem;
+  font-style: italic;
+  color: #92400e;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.speech-text-wrap {
+  flex: 1;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.66rem;
+  line-height: 1.28;
+  color: #1c150c;
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+.speech-action {
+  font-weight: 700;
+  color: #9a3412;
+  margin-bottom: 3px;
+  display: block;
+}
+
+.speech-quote {
+  font-style: italic;
+  font-weight: 600;
+  color: #7c2d12;
+  display: block;
+  margin-top: 2px;
+  padding-left: 4px;
+  border-left: 2px solid #b45309;
+}
+
+/* Key Interaction Cue (Bottom Box) */
+.interaction-cue-box {
+  background: #fef3c7;
+  border: 1.5px solid #d97706;
+  border-radius: 5px;
+  padding: 4px 6px;
+  box-shadow: inset 0 1px 2px rgba(217, 119, 6, 0.15);
+}
+
+.cue-header {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #92400e;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cue-body {
+  font-size: 0.62rem;
+  line-height: 1.22;
+  color: #451a03;
+}
+
+.cue-trigger {
+  font-weight: 700;
+  color: #b45309;
+}
+
+.cue-response {
+  font-weight: 800;
+  font-style: italic;
+  color: #7f1d1d;
+  background: rgba(254, 202, 202, 0.4);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Card Action Mini-Bar (Screen Only) */
+.card-mini-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.btn-mini-audio {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 3px solid #0f172a;
+  color: #fde68a;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.1s var(--spring-snap);
+}
+
+.btn-mini-audio:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+/* ========================================================
+   MODAL & SINGLE CARD INSPECTOR / EXPORT
+   ======================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  background: var(--bg-obsidian);
+  border: 1px solid var(--panel-glass-border);
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  padding: 1.75rem;
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================================
+   PRINT ENGINE (A4 / US LETTER 3x3 DUPLEX PRINT SHEETS)
+   ======================================================== */
+.print-section {
+  display: none;
+}
+
+@media print {
+  /* Hide screen UI elements */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .app-header,
+  .filter-dock,
+  .card-mini-actions,
+  .flip-hint,
+  .view-container,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  .print-section {
+    display: block !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Sheet Layout for 3x3 Grid */
+  .print-sheet-page {
+    width: 210mm; /* A4 width */
+    height: 297mm; /* A4 height */
+    page-break-after: always;
+    page-break-inside: avoid;
+    box-sizing: border-box;
+    padding: 8mm 6mm;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .print-sheet-header {
+    text-align: center;
+    margin-bottom: 4mm;
+    font-family: 'Cinzel', serif;
+    font-size: 9pt;
+    color: #475569;
+  }
+
+  .print-cards-grid-3x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 2.5in);
+    grid-template-rows: repeat(3, 3.5in);
+    gap: 0;
+    border: 1px dashed #cbd5e1;
+  }
+
+  /* Printable Card (Exact 2.5in x 3.5in) */
+  .printable-card-unit {
+    width: 2.5in;
+    height: 3.5in;
+    box-sizing: border-box;
+    position: relative;
+    page-break-inside: avoid;
+    border: 0.5px solid #d4c5a3;
+  }
+
+  .printable-card-unit .card-face {
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+
+  /* 3mm Bleed & Trim Crop Marks */
+  .crop-mark {
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: #94a3b8;
+    pointer-events: none;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .filter-dock {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-box input {
+    width: 100%;
+  }
+  .cards-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .trading-card-wrapper {
+    margin: 0 auto;
+  }
+}

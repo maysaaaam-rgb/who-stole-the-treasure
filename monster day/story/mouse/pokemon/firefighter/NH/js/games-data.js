@@ -48,36 +48,33 @@ const CURRICULUM_TRACKS = [
 
 const GAMES_REGISTRY = [
   {
-    "id": "tea-party-cards",
+    "id": "alice-cards-4a",
     "aliases": [
-      "tea-party",
-      "alice-cards",
+      "alice-cards-4a",
+      "tea-party-cards-4a",
       "class-4a-cards",
-      "trading-cards",
-      "mad-tea-party-cards"
+      "alice-cards"
     ],
-    "title": "☕ Alice in Wonderland: Mad Tea Party Trading Cards",
+    "title": "🎩 Alice in Wonderland: Mad Tea Party Cards (4A)",
     "description": "Double-sided Victorian fantasy trading cards and student acting guide suite for Class 4-A (18 cast members). Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets.",
     "type": "game",
-    "category": "Literature & Drama",
-    "categoryGroup": "Literature, Drama & Character Roleplay",
-    "categoryLabel": "☕ Literature & Roleplay",
-    "level": "Grade 4–8",
-    "cefrLevel": "A2-B1",
+    "category": "Literature & Story Quests",
+    "categoryGroup": "Alice Series",
+    "categoryLabel": "🎩 Literature & Roleplay",
+    "level": "A2–B1",
+    "cefrLevel": "A2–B1",
     "age": "Ages 8–14",
     "ageGroup": "8-14",
-    "grade": "Grade 4–8",
+    "grade": "Grade 4A",
     "grades": [
       "Grade 4",
-      "Grade 5",
-      "Grade 6",
-      "Grade 7",
-      "Grade 8"
+      "Grade 4A"
     ],
-    "duration": 60,
-    "durationText": "60 min",
-    "estimatedMinutes": 60,
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
     "xp": 250,
+    "targetClass": "4A",
     "skills": [
       "Drama & Character Portrayal",
       "Dialogue Memorization & Delivery",
@@ -88,30 +85,32 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Alice in Wonderland, The Mad Tea Party & Victorian Theatre",
     "topics": [
-      "Literature & Classics",
-      "Theatrical Performance",
-      "Character Archetypes"
+      "Alice in Wonderland",
+      "Character Acting",
+      "Storytelling"
     ],
     "languageFocus": "I’m late for an important date! / Off with their heads! / It is no use going back to yesterday... / Contrariwise! / Nohow!",
     "activityMode": "Double-Sided Collectible Trading Cards / 3x3 Duplex Print Sheets / 18 Student Acting Dossiers",
     "interactionType": "3D Flip Cards, Audio Speech Synthesis, Duplex Cardstock Print Engine",
-    "route": "tea-party-cards/index.html",
-    "url": "tea-party-cards/index.html",
-    "path": "tea-party-cards/index.html",
-    "worksheetUrl": "tea-party-cards/worksheet.html",
-    "worksheetRoute": "tea-party-cards/worksheet.html",
-    "thumbnailIcon": "☕",
-    "thumbnailUrl": "tea-party-cards/assets/characters/mad-hatter.jpg",
-    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "route": "alice-cards-4a/index.html",
+    "url": "alice-cards-4a/index.html",
+    "path": "alice-cards-4a/index.html",
+    "worksheetUrl": "alice-cards-4a/worksheet.html",
+    "worksheetRoute": "alice-cards-4a/worksheet.html",
+    "thumbnailIcon": "🫖",
+    "thumbnailUrl": "alice-cards-4a/assets/characters/mad-hatter.jpg",
+    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
     "status": "active",
     "trackId": "track-4",
     "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
     "formula": "Class 4-A Character Acting Guides, RPG Stats & Duplex Cards",
+    "grammar": {
+      "focusPattern": "Character Dialogue & Motives",
+      "formula": "Class 4-A Character Acting Guides, RPG Stats & Duplex Cards"
+    },
     "learningObjectives": [
-      "Memorize character dialogue lines and stage interaction cues.",
-      "Prepare authentic Victorian fantasy costumes and physical props.",
-      "Perform character monologues with accurate vocal tone and posture.",
-      "Engage with 3D collectible trading cards and A4 duplex print sheets."
+      "Perform character roleplay using character-specific quotes and modal phrases.",
+      "Formulate character motives and RPG battle stats."
     ],
     "vocabulary": {
       "core": [
@@ -132,6 +131,92 @@ const GAMES_REGISTRY = [
       "Collectible Cards",
       "3x3 Duplex Print Ready",
       "18 Character Dossiers",
+      "Speech & Audio"
+    ]
+  },
+  {
+    "id": "alice-cards-4b",
+    "aliases": [
+      "alice-cards-4b",
+      "tea-party-cards-4b",
+      "class-4b-cards"
+    ],
+    "title": "😸 Alice in Wonderland: Mad Tea Party Cards (4B)",
+    "description": "Double-sided Victorian fantasy trading cards and student acting guide suite for Class 4-B (19 cast members). Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets.",
+    "type": "game",
+    "category": "Literature & Story Quests",
+    "categoryGroup": "Alice Series",
+    "categoryLabel": "😸 Literature & Roleplay",
+    "level": "A2–B1",
+    "cefrLevel": "A2–B1",
+    "age": "Ages 8–14",
+    "ageGroup": "8-14",
+    "grade": "Grade 4B",
+    "grades": [
+      "Grade 4",
+      "Grade 4B"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 250,
+    "targetClass": "4B",
+    "skills": [
+      "Drama & Character Portrayal",
+      "Dialogue Memorization & Delivery",
+      "Victorian Vocabulary & Idioms",
+      "Stage Cues & Acting Interactions",
+      "Oral Fluency & Public Speaking",
+      "Costume & Prop Preparation"
+    ],
+    "topic": "Alice in Wonderland, The Mad Tea Party & Victorian Theatre",
+    "topics": [
+      "Alice in Wonderland",
+      "Character Acting",
+      "Storytelling"
+    ],
+    "languageFocus": "I’m late for an important date! / Off with their heads! / It is no use going back to yesterday... / Contrariwise! / Nohow!",
+    "activityMode": "Double-Sided Collectible Trading Cards / 3x3 Duplex Print Sheets / 19 Student Acting Dossiers",
+    "interactionType": "3D Flip Cards, Audio Speech Synthesis, Duplex Cardstock Print Engine",
+    "route": "alice-cards-4b/index.html",
+    "url": "alice-cards-4b/index.html",
+    "path": "alice-cards-4b/index.html",
+    "worksheetUrl": "alice-cards-4b/worksheet.html",
+    "worksheetRoute": "alice-cards-4b/worksheet.html",
+    "thumbnailIcon": "🎩",
+    "thumbnailUrl": "alice-cards-4b/assets/characters/cheshire-cat.jpg",
+    "gradient": "linear-gradient(135deg, #3b0764 0%, #1e1b4b 50%, #0f172a 100%)",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "Class 4-B Character Acting Guides, RPG Stats & Duplex Cards",
+    "grammar": {
+      "focusPattern": "Character Dialogue & Motives",
+      "formula": "Class 4-B Character Acting Guides, RPG Stats & Duplex Cards"
+    },
+    "learningObjectives": [
+      "Perform character roleplay using character-specific quotes and modal phrases.",
+      "Formulate character motives and RPG battle stats."
+    ],
+    "vocabulary": {
+      "core": [
+        "tea power",
+        "madness",
+        "courage",
+        "muchness",
+        "bonkers",
+        "contrariwise",
+        "nohow",
+        "oraculum",
+        "chrysalis",
+        "jabberwocky"
+      ]
+    },
+    "badges": [
+      "Class 4-B Cast",
+      "Collectible Cards",
+      "3x3 Duplex Print Ready",
+      "19 Character Dossiers",
       "Speech & Audio"
     ]
   },
