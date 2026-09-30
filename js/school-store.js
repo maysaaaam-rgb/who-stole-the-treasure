@@ -2132,59 +2132,61 @@
     { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
+  // 1. Strict Stage Thresholds using Lifetime Cumulative XP (Active + Archived)
   const EVOLUTION_THRESHOLDS = [
-    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, isEgg: true, spriteType: "egg" },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, isEgg: true, spriteType: "cracking_egg" },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, isEgg: false, spriteType: "baby" },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, isEgg: false, spriteType: "growing" },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, isEgg: false, spriteType: "adventurer" },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, isEgg: false, spriteType: "advanced" },
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, isEgg: false, spriteType: "ultimate" }
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, isEgg: false },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, isEgg: false },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, isEgg: false },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, isEgg: false },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, isEgg: false },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, isEgg: true },
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, isEgg: true }
   ];
 
   function getStudentStage(student) {
     if (!student) return { level: 1, stageName: "Level 1 • Mystery Egg", levelName: "Level 1 • Mystery Egg", isEgg: true, lifetimeXP: 0, activeXP: 0, archivedXP: 0, progressPct: 0, xpToNext: 30, spriteType: "egg" };
     const s = (typeof student === 'object') ? student : { xp: Number(student) || 0 };
-    const activeXP = Math.max(0, Number(s.xp) || 0);
-    const archivedXP = Math.max(0, Number(s.archivedXP ?? s.archived_xp ?? 0));
+    const activeXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
+    const archivedXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
     const lifetimeXP = activeXP + archivedXP;
 
     let calculatedLevel = 1;
     let stageName = "Level 1 • Mystery Egg";
     let isEgg = true;
-    let spriteType = "egg";
     let minXP = 0;
     let nextThreshold = 30;
 
-    for (let i = EVOLUTION_THRESHOLDS.length - 1; i >= 0; i--) {
-      if (lifetimeXP >= EVOLUTION_THRESHOLDS[i].minXP) {
-        calculatedLevel = EVOLUTION_THRESHOLDS[i].level;
-        stageName = EVOLUTION_THRESHOLDS[i].name;
-        isEgg = EVOLUTION_THRESHOLDS[i].isEgg;
-        spriteType = EVOLUTION_THRESHOLDS[i].spriteType || (isEgg ? (calculatedLevel === 1 ? 'egg' : 'cracking_egg') : (calculatedLevel === 3 ? 'baby' : calculatedLevel === 4 ? 'growing' : calculatedLevel === 5 ? 'adventurer' : calculatedLevel === 6 ? 'advanced' : 'ultimate'));
-        minXP = EVOLUTION_THRESHOLDS[i].minXP;
-        nextThreshold = (i < EVOLUTION_THRESHOLDS.length - 1) ? EVOLUTION_THRESHOLDS[i + 1].minXP : Infinity;
+    for (let i = 0; i < EVOLUTION_THRESHOLDS.length; i++) {
+      const t = EVOLUTION_THRESHOLDS[i];
+      if (lifetimeXP >= t.minXP) {
+        calculatedLevel = t.level;
+        stageName = t.name;
+        isEgg = t.isEgg;
+        minXP = t.minXP;
+        const prevTier = EVOLUTION_THRESHOLDS[i - 1];
+        nextThreshold = prevTier ? prevTier.minXP : Infinity;
         break;
       }
     }
 
-    // ONE-WAY RATCHET: Student level can NEVER regress backward
-    const currentSavedLevel = Number(s.level) || 1;
-    const finalLevel = Math.max(currentSavedLevel, calculatedLevel);
-    const finalTier = EVOLUTION_THRESHOLDS.find(t => t.level === finalLevel) || EVOLUTION_THRESHOLDS[0];
+    // Prevent level regression (Lock Level Floor at current level or minimum 3 for hatched monsters)
+    const currentSaved = Number(s.level) || 1;
+    const finalLevel = Math.max(currentSaved, calculatedLevel);
+    const finalTier = EVOLUTION_THRESHOLDS.find(t => t.level === finalLevel) || EVOLUTION_THRESHOLDS[EVOLUTION_THRESHOLDS.length - 1];
 
-    const progressPct = finalTier.level === 7 || nextThreshold === Infinity
+    const progressPct = finalLevel >= 7 || nextThreshold === Infinity
       ? 100
       : Math.min(100, Math.max(0, Math.round(((lifetimeXP - minXP) / (nextThreshold - minXP)) * 100)));
 
-    const xpToNext = (finalTier.level === 7 || nextThreshold === Infinity) ? 0 : Math.max(0, nextThreshold - lifetimeXP);
+    const xpToNext = (finalLevel >= 7 || nextThreshold === Infinity) ? 0 : Math.max(0, nextThreshold - lifetimeXP);
+    const spriteType = isEgg ? (finalLevel === 1 ? 'egg' : 'cracking_egg') : (finalLevel === 3 ? 'baby' : finalLevel === 4 ? 'growing' : finalLevel === 5 ? 'adventurer' : finalLevel === 6 ? 'advanced' : 'ultimate');
 
     return {
       level: finalLevel,
-      stageName: finalLevel > calculatedLevel ? (s.stageName || finalTier.name) : stageName,
-      levelName: finalLevel > calculatedLevel ? (s.stageName || finalTier.name) : stageName,
+      stageName: finalLevel > calculatedLevel ? (s.stageName || stageName) : stageName,
+      levelName: finalLevel > calculatedLevel ? (s.stageName || stageName) : stageName,
       isEgg: finalLevel < 3,
-      spriteType: finalTier.spriteType || spriteType,
+      spriteType: spriteType,
       lifetimeXP: lifetimeXP,
       activeXP: activeXP,
       archivedXP: archivedXP,
@@ -2314,7 +2316,8 @@
     student.remainingXP = stage.xpToNext;
     student.xpToNext = stage.xpToNext;
     student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - 30) / (200 - 30)) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
-    student.nextThreshold = stage.level === 7 ? 5000 : (EVOLUTION_THRESHOLDS[stage.level] ? EVOLUTION_THRESHOLDS[stage.level].minXP : 5000);
+    const nextTier = EVOLUTION_THRESHOLDS.find(t => t.level === stage.level + 1);
+    student.nextThreshold = stage.level >= 7 ? 5000 : (nextTier ? nextTier.minXP : 5000);
 
     if (stage.isEgg) {
       student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
@@ -2574,74 +2577,107 @@
   // =========================================================================
   // FAILSAFE LOCAL-FIRST TERM 2 MIGRATION (LOCKED ONCE - NEVER WIPES NEW XP)
   // =========================================================================
-  const MIGRATION_FLAG = "term2_migration_completed_locked_v3";
+  const TERM2_MIGRATION_FLAG = "term2_migration_final_lock_v1";
+  const MIGRATION_FLAG = TERM2_MIGRATION_FLAG;
 
-  function checkAndRunMigrationOnce() {
-    if (typeof localStorage === 'undefined') return;
-    if (localStorage.getItem(MIGRATION_FLAG) === "true") {
-      // Already migrated: NEVER run archival or reset again!
-      return (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-        JSON.parse(localStorage.getItem('adventure_students') || '[]');
+  function initTerm2DataStore() {
+    if (typeof localStorage === 'undefined') return [];
+    const isMigrated = localStorage.getItem(TERM2_MIGRATION_FLAG) === "true";
+
+    let students = [];
+    try {
+      students = JSON.parse(localStorage.getItem('adventure_students')) || [];
+    } catch (e) {
+      students = [];
     }
-
-    console.log("⚡ Executing 100% Local-First Term 2 Reset (One-Time Run)...");
-    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-      JSON.parse(localStorage.getItem('adventure_students') || '[]');
-    if (!students || students.length === 0) {
-      localStorage.setItem(MIGRATION_FLAG, "true");
-      return;
-    }
-
-    students.forEach(st => {
-      const curActive = Number(st.xp) || 0;
-      const existingArch = Number(st.archivedXP ?? st.archived_xp ?? 0);
-      // Only migrate legacy XP once if active > 0 and archive is 0
-      if (curActive > 0 && existingArch === 0) {
-        st.archivedXP = curActive;
-        st.archived_xp = curActive;
-        st.xp = 0;
+    if (!Array.isArray(students) || students.length === 0) {
+      if (typeof window !== 'undefined' && Array.isArray(window.AdventureAcademy?.students) && window.AdventureAcademy.students.length > 0) {
+        students = window.AdventureAcademy.students;
       }
-      st.level = Math.max(Number(st.level) || 3, 3);
-      st.stageName = st.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster";
-      st.levelName = st.stageName;
-      st.isEgg = false;
-      st.isHatched = true;
-    });
+    }
+    if (!Array.isArray(students) || students.length === 0) {
+      localStorage.setItem(TERM2_MIGRATION_FLAG, "true");
+      return [];
+    }
 
-    localStorage.setItem('adventure_students', JSON.stringify(students));
-    localStorage.setItem(MIGRATION_FLAG, "true");
-    localStorage.setItem('term2_migration_v2', 'true');
-    localStorage.setItem('term2_migration_v3', 'true');
+    // SELF-HEALING DATA CLEANER: Run ONCE during migration or verify integrity without wiping XP
+    let dataChanged = false;
 
-    // Also sync all class rosters so Grade 4A/4B students are aligned
-    ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
-      try {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          const arr = JSON.parse(raw);
-          if (Array.isArray(arr)) {
-            const synced = arr.map(s => {
-              const u = students.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
-              if (u) return Object.assign({}, s, u);
-              const curAct = Number(s.xp) || 0;
-              const curArch = Number(s.archivedXP ?? s.archived_xp ?? 0);
-              if (curAct > 0 && curArch === 0) {
-                s.archivedXP = curAct;
-                s.archived_xp = curAct;
-                s.xp = 0;
-              }
-              s.level = Math.max(Number(s.level) || 3, 3);
-              s.stageName = s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster";
-              s.levelName = s.stageName;
-              s.isEgg = false;
-              s.isHatched = true;
-              return s;
-            });
-            localStorage.setItem(k, JSON.stringify(synced));
-          }
+    students.forEach(s => {
+      // A. Strict Number Typing
+      const activeXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
+      const archivedXP = (typeof s.archivedXP === 'number' && !isNaN(s.archivedXP))
+        ? s.archivedXP
+        : (typeof s.archived_xp === 'number' && !isNaN(s.archived_xp) ? s.archived_xp : 0);
+
+      // One-time archival of legacy unarchived XP:
+      if (!isMigrated) {
+        if (activeXP > 0 && archivedXP === 0) {
+          s.archivedXP = activeXP;
+          s.archived_xp = activeXP;
+          s.xp = 0;
+          dataChanged = true;
         }
-      } catch (e) {}
+      }
+
+      // B. Reconcile Ahmet & Alya if activeXP was mistakenly cloned from archivedXP
+      const sName = s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+      if (sName && (sName.includes("Ahmet") || sName.includes("Alya"))) {
+        if (s.xp === s.archivedXP && s.archivedXP > 0 && !isMigrated) {
+          s.xp = 0;
+          dataChanged = true;
+        }
+      }
+
+      // C. Reconcile Elisa's Corrupt Level 7 (340 Total XP must be Level 3)
+      if (sName && sName.includes("Elisa")) {
+        const totalXP = (s.xp || 0) + (s.archivedXP || s.archived_xp || 0);
+        if (totalXP < 500 && s.level > 3) {
+          s.level = 3;
+          s.stageName = "Level 3 • Baby Monster";
+          s.levelName = "Level 3 • Baby Monster";
+          s.isEgg = false;
+          dataChanged = true;
+        }
+      }
+
+      // D. Fix Elif Su Yarar String Mismatch ("Lvl 3 • Mystery Egg")
+      if (s.level >= 3 && s.stageName && s.stageName.includes("Mystery Egg")) {
+        s.stageName = "Level 3 • Baby Monster";
+        s.levelName = "Level 3 • Baby Monster";
+        s.isEgg = false;
+        dataChanged = true;
+      }
+
+      // E. Ensure Hatched Level Floor (Level >= 3 for students with XP)
+      if (s.level < 3 && ((s.archivedXP || 0) > 0 || (s.xp || 0) > 0)) {
+        s.level = 3;
+        s.stageName = "Level 3 • Baby Monster";
+        s.levelName = "Level 3 • Baby Monster";
+        s.isEgg = false;
+        dataChanged = true;
+      }
     });
+
+    if (!isMigrated || dataChanged) {
+      localStorage.setItem('adventure_students', JSON.stringify(students));
+      localStorage.setItem(TERM2_MIGRATION_FLAG, "true");
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const synced = arr.map(st => {
+                const u = students.find(x => String(x.id) === String(st.id) || String(x.studentIdNumber) === String(st.studentIdNumber));
+                return u ? Object.assign({}, st, u) : st;
+              });
+              localStorage.setItem(k, JSON.stringify(synced));
+            }
+          }
+        } catch (e) {}
+      });
+    }
 
     if (typeof window !== 'undefined') {
       if (window.AdventureAcademy) window.AdventureAcademy.students = students;
@@ -2654,22 +2690,28 @@
       }
     }
 
-    if (typeof renderStudentRoster === 'function') renderStudentRoster();
-    else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
-    if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
+    if (dataChanged) {
+      if (typeof renderStudentRoster === 'function') renderStudentRoster();
+      else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
+      if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
 
-    // Silent background push
-    if (typeof safeBackgroundSupabaseSync === 'function') {
-      safeBackgroundSupabaseSync(students);
-    } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
-      window.safeBackgroundSupabaseSync(students);
+      // Silent background push
+      if (typeof safeBackgroundSupabaseSync === 'function') {
+        safeBackgroundSupabaseSync(students);
+      } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+        window.safeBackgroundSupabaseSync(students);
+      }
     }
 
     return students;
   }
 
+  function checkAndRunMigrationOnce() {
+    return initTerm2DataStore();
+  }
+
   function autoRunTerm2Migration() {
-    return checkAndRunMigrationOnce();
+    return initTerm2DataStore();
   }
 
   function executeLocalTerm2Reset(force = false) {
@@ -2761,6 +2803,10 @@
   }
 
   function cleanupStaleXP() {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem(TERM2_MIGRATION_FLAG) === "true") {
+      // Once Term 2 migration is locked, NEVER wipe student XP
+      return;
+    }
     const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
       (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
     if (!students || students.length === 0) return;
@@ -2830,6 +2876,9 @@
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
+      initTerm2DataStore();
+    } catch (e) {}
+    try {
       checkAndRunMigrationOnce();
     } catch (e) {}
     try {
@@ -2840,6 +2889,7 @@
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
+    root.initTerm2DataStore = initTerm2DataStore;
     root.promptDirectXPEdit = promptDirectXPEdit;
     root.openDirectXPEdit = promptDirectXPEdit;
     root.executeLocalTerm2Reset = executeLocalTerm2Reset;
@@ -2857,6 +2907,7 @@
     root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
+      window.initTerm2DataStore = initTerm2DataStore;
       window.promptDirectXPEdit = promptDirectXPEdit;
       window.openDirectXPEdit = promptDirectXPEdit;
       window.executeLocalTerm2Reset = executeLocalTerm2Reset;
@@ -2871,6 +2922,7 @@
       window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
       window.getStudentMascot = getStudentMascot;
     }
+    root.AdventureAcademy.initTerm2DataStore = initTerm2DataStore;
     root.AdventureAcademy.promptDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.openDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.executeLocalTerm2Reset = executeLocalTerm2Reset;
@@ -13656,8 +13708,8 @@
       }
 
       const currentDisplayedLevel = currentLevel;
-      const currentLevelTier = EVOLUTION_THRESHOLDS[stage.level - 1] || EVOLUTION_THRESHOLDS[0];
-      const nextLevelTier = EVOLUTION_THRESHOLDS[stage.level] || null;
+      const currentLevelTier = EVOLUTION_THRESHOLDS.find(t => t.level === stage.level) || EVOLUTION_THRESHOLDS[EVOLUTION_THRESHOLDS.length - 1];
+      const nextLevelTier = EVOLUTION_THRESHOLDS.find(t => t.level === stage.level + 1) || null;
 
       const stageKey = stage.spriteType;
       const stageName = stage.stageName || stage.levelName;

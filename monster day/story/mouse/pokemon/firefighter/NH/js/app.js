@@ -1357,7 +1357,7 @@ window.addQuickXP = function(studentId, amount = 10, event) {
   }
 
   // 1. Increment active XP immediately
-  const oldXP = Number(student.xp) || 0;
+  const oldXP = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
   const newXP = oldXP + Number(amount);
   student.xp = newXP;
   student.totalXP = newXP;
@@ -1429,7 +1429,7 @@ window.addQuickXP = function(studentId, amount = 10, event) {
   // 6. Direct DOM update without full page reload
   const cardEl = document.querySelector(`[data-student-id="${student.id}"]`) || document.querySelector(`[data-student-id="${studentId}"]`);
   if (cardEl) {
-    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill');
+    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill, .student-xp-pill-clickable span');
     if (xpTextEl) xpTextEl.innerText = `${newXP} XP`;
     const burst = document.createElement('div');
     burst.className = 'xp-burst-float';
@@ -1470,7 +1470,7 @@ window.openDirectXPEdit = function(studentId, event) {
   const student = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
   if (!student) return;
 
-  const currentVal = Number(student.xp) || 0;
+  const currentVal = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
   const displayName = student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim() || 'Student';
   const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
   if (input === null) return; // User cancelled
@@ -1523,7 +1523,7 @@ window.openDirectXPEdit = function(studentId, event) {
   // Direct DOM element update
   const cardEl = document.querySelector(`[data-student-id="${student.id}"]`) || document.querySelector(`[data-student-id="${studentId}"]`);
   if (cardEl) {
-    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill');
+    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill, .student-xp-pill-clickable span');
     if (xpTextEl) xpTextEl.innerText = `${parsed} XP`;
     const progressFill = cardEl.querySelector('.student-xp-progress-fill');
     if (progressFill && window.schoolStore && typeof window.schoolStore.calculateMonsterState === 'function') {
