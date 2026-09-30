@@ -1256,19 +1256,24 @@
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
-    const streak = s.streakDays || 0;
+    const streak = s.streak || s.streakDays || 0;
+    const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
+    const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : '👗');
+    const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : 'Explorer';
 
     return '' +
       '<div class="student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + '" style="position:relative; isolation:isolate;" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
-        // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
-        '<div class="card-overlay-top">' +
-          '<div class="card-overlay-left">' +
-            '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
-            '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
+        // Clean card header layout
+        '<div class="card-header-flex">' +
+          '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + studentId + '\')" title="Click to change companion">' +
+            '<span class="role-icon">' + roleIcon + '</span>' +
+            '<span class="role-title">' + roleName + '</span>' +
+            '<span class="role-edit">✎</span>' +
           '</div>' +
-          '<div class="card-overlay-right">' +
-            '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Edit Student XP">✏️</button>' +
-            '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+          '<div class="card-pills-right">' +
+            '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
+            '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
+            '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Edit Student XP">✏️</button>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
               '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
               '<div class="card-dropdown-menu" id="menu-stud-menu-' + studentId + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
@@ -3362,7 +3367,7 @@
               const mState = store.calculateMonsterState(s.id);
               const totalXP = mState.totalXP || 0;
               const progressPct = mState.progressPct;
-              const streak = s.streakDays || 0;
+              const streak = s.streak || s.streakDays || 0;
               const cls = store.getClass(s.classId);
               const isSelected = selectedStudentIds.has(s.id);
 
@@ -3393,25 +3398,27 @@
               const badge = getStudentBadge(s);
               const activeXP = Number(s.xp) || 0;
               const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
+              const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : (badge && badge.icon ? badge.icon : '👗'));
+              const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : (badge && badge.role ? badge.role : 'Explorer');
 
               return '' +
                 '<div class="student-directory-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
-                  // Top Overlay Bar: Clean Thematic Companion Chip + Meta Group
-                  '<div class="student-card-header-clean card-overlay-top">' +
+                  // Clean Card Header Layout
+                  '<div class="card-header-flex student-card-header-clean card-overlay-top">' +
                     '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
                       (isMultiSelectMode ?
                         '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
                       ) +
-                      '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
-                        '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
-                        '<span class="thematic-chip-name">' + badge.role + '</span>' +
-                        '<span class="thematic-chip-edit">✏️</span>' +
+                      '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
+                        '<span class="role-icon">' + roleIcon + '</span>' +
+                        '<span class="role-title">' + roleName + '</span>' +
+                        '<span class="role-edit">✎</span>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="card-meta-group">' +
-                      '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
-                      '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-                      '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+                    '<div class="card-pills-right">' +
+                      '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
+                      '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
+                      '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                         '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                         '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
@@ -3794,7 +3801,9 @@
         animated: true
       }) : null;
       const isSelected = selectedStudentIds.has(s.id);
-      const streak = s.streakDays || 0;
+      const streak = s.streak || s.streakDays || 0;
+      const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : (badge && badge.icon ? badge.icon : '👗'));
+      const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : (badge && badge.role ? badge.role : 'Explorer');
 
       let elementKey = s.element || (monsterState && monsterState.profile && monsterState.profile.element);
       if (!elementKey) {
@@ -3823,22 +3832,22 @@
 
       return '' +
         '<div class="classroom-student-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
-          // Top Overlay Bar: Clean Thematic Companion Chip + Meta Group
-          '<div class="student-card-header-clean card-overlay-top">' +
+          // Clean Card Header Layout
+          '<div class="card-header-flex student-card-header-clean card-overlay-top">' +
             '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
               (isMultiSelectMode ?
                 '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
               ) +
-              '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
-                '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
-                '<span class="thematic-chip-name">' + badge.role + '</span>' +
-                '<span class="thematic-chip-edit">✏️</span>' +
+              '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
+                '<span class="role-icon">' + roleIcon + '</span>' +
+                '<span class="role-title">' + roleName + '</span>' +
+                '<span class="role-edit">✎</span>' +
               '</div>' +
             '</div>' +
-            '<div class="card-meta-group">' +
-              '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
-              '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-              '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+            '<div class="card-pills-right">' +
+              '<span class="arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
+              '<span class="streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+              '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                 '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                 '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
