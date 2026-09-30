@@ -2771,10 +2771,12 @@
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
     root.promptDirectXPEdit = promptDirectXPEdit;
+    root.openDirectXPEdit = promptDirectXPEdit;
     root.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.recalculateAllStudents = recalculateAllStudents;
     root.archiveAndResetXP = archiveAndResetXP;
     root.autoRunTerm2Migration = autoRunTerm2Migration;
+    root.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
     root.getStudentStage = getStudentStage;
     root.EVOLUTION_THRESHOLDS = EVOLUTION_THRESHOLDS;
     root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
@@ -2785,9 +2787,11 @@
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
       window.promptDirectXPEdit = promptDirectXPEdit;
+      window.openDirectXPEdit = promptDirectXPEdit;
       window.executeLocalTerm2Reset = executeLocalTerm2Reset;
       window.recalculateAllStudents = recalculateAllStudents;
       window.autoRunTerm2Migration = autoRunTerm2Migration;
+      window.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
       window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
       window.getStudentArchetype = getStudentArchetype;
       window.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
@@ -2796,8 +2800,10 @@
       window.getStudentMascot = getStudentMascot;
     }
     root.AdventureAcademy.promptDirectXPEdit = promptDirectXPEdit;
+    root.AdventureAcademy.openDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.AdventureAcademy.autoRunTerm2Migration = autoRunTerm2Migration;
+    root.AdventureAcademy.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
     root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.AdventureAcademy.getStudentArchetype = getStudentArchetype;
     root.AdventureAcademy.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;

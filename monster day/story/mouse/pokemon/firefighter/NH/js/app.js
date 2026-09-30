@@ -1455,6 +1455,93 @@ window.addQuickXP = function(studentId, amount = 10, event) {
   }
 };
 
+// =========================================================================
+// DIRECT XP EDIT DIALOG CONTROLLER
+// =========================================================================
+window.openDirectXPEdit = function(studentId, event) {
+  if (event) {
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+  }
+
+  const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+  const student = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+  if (!student) return;
+
+  const currentVal = Number(student.xp) || 0;
+  const displayName = student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim() || 'Student';
+  const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
+  if (input === null) return; // User cancelled
+
+  const parsed = parseInt(input.trim ? input.trim() : input, 10);
+  if (isNaN(parsed) || parsed < 0) {
+    alert("Please enter a valid positive number.");
+    return;
+  }
+
+  student.xp = parsed;
+  student.totalXP = parsed;
+
+  // Update in-memory schoolStore state if present
+  if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+    const storeIdx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    if (storeIdx !== -1) {
+      window.schoolStore.state.students[storeIdx].xp = parsed;
+      window.schoolStore.state.students[storeIdx].totalXP = parsed;
+      if (typeof window.schoolStore.evaluateMonsterStage === 'function') {
+        window.schoolStore.evaluateMonsterStage(window.schoolStore.state.students[storeIdx]);
+      }
+      if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
+    }
+  }
+
+  localStorage.setItem('adventure_students', JSON.stringify(students));
+  ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+    try {
+      const raw = localStorage.getItem(k);
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+          if (idx !== -1) {
+            arr[idx].xp = parsed;
+            arr[idx].totalXP = parsed;
+            if (window.schoolStore && typeof window.schoolStore.evaluateMonsterStage === 'function') {
+              window.schoolStore.evaluateMonsterStage(arr[idx]);
+            }
+            localStorage.setItem(k, JSON.stringify(arr));
+          }
+        }
+      }
+    } catch (e) {}
+  });
+
+  if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+
+  // Direct DOM element update
+  const cardEl = document.querySelector(`[data-student-id="${student.id}"]`) || document.querySelector(`[data-student-id="${studentId}"]`);
+  if (cardEl) {
+    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill');
+    if (xpTextEl) xpTextEl.innerText = `${parsed} XP`;
+    const progressFill = cardEl.querySelector('.student-xp-progress-fill');
+    if (progressFill && window.schoolStore && typeof window.schoolStore.calculateMonsterState === 'function') {
+      const mState = window.schoolStore.calculateMonsterState(student.id);
+      if (mState) progressFill.style.width = (mState.progressPct || 0) + '%';
+    }
+  }
+
+  if (typeof renderStudentRoster === 'function') renderStudentRoster();
+  else if (typeof renderCurrentView === 'function') renderCurrentView();
+
+  if (typeof safeBackgroundSupabaseSync === 'function') {
+    safeBackgroundSupabaseSync(students);
+  } else if (typeof window.safeBackgroundSupabaseSync === 'function') {
+    window.safeBackgroundSupabaseSync(students);
+  }
+};
+
+window.promptDirectXPEdit = window.openDirectXPEdit;
+
 // Safe global bridges for platform interoperability
 if (typeof window !== 'undefined') {
   if (!window.handleQuickAwardXP) {
@@ -1462,9 +1549,6 @@ if (typeof window !== 'undefined') {
   }
   if (!window.checkAndRunMigrationOnce && typeof checkAndRunMigrationOnce === 'function') {
     window.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
-  }
-  if (!window.promptDirectXPEdit && typeof promptDirectXPEdit === 'function') {
-    window.promptDirectXPEdit = promptDirectXPEdit;
   }
 }
 

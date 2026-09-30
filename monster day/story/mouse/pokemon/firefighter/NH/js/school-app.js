@@ -12253,11 +12253,18 @@ window.switchClassroomSubTab = function(subTab) {
     }
     if (!st) return;
 
+    const currentVal = Number(st.xp) || 0;
     const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
-    const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
-    if (input === null || input.trim() === '') return;
+    const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
+    if (input === null) return; // User cancelled
 
-    const newXP = Math.max(0, parseInt(input.trim(), 10) || 0);
+    const parsed = parseInt(input.trim ? input.trim() : input, 10);
+    if (isNaN(parsed) || parsed < 0) {
+      alert("Please enter a valid positive number.");
+      return;
+    }
+
+    const newXP = parsed;
     st.xp = newXP;
     st.totalXP = newXP;
 
@@ -12338,6 +12345,9 @@ window.switchClassroomSubTab = function(subTab) {
       AdventureSupabase.safeBackgroundSupabaseSync(allStudents);
     }
   }
+
+  window.promptDirectXPEdit = promptDirectXPEdit;
+  window.openDirectXPEdit = promptDirectXPEdit;
 
   window.promptDirectXPEdit = promptDirectXPEdit;
 
