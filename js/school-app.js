@@ -11859,40 +11859,77 @@ window.switchClassroomSubTab = function(subTab) {
   // -------------------------------------------------------------------------
 
   window.handleQuickAwardXP = function(studentId, amount = 10, event) {
-    if (event) event.stopPropagation();
-    const s = store.getStudent(studentId);
+    if (event) {
+      event.stopPropagation();
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+    }
+    const storeInstance = (typeof window !== 'undefined' && window.schoolStore) || (typeof store !== 'undefined' ? store : null);
+    let s = storeInstance && typeof storeInstance.getStudent === 'function' ? storeInstance.getStudent(studentId) : null;
+    if (!s) {
+      const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+        (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+      s = students.find(st => String(st.id) === String(studentId) || String(st.studentIdNumber) === String(studentId));
+    }
     if (!s) return;
 
     const parsedAmount = parseInt(amount, 10) || 10;
-    const res = store.giveXP(studentId, parsedAmount, 'Quick Classroom Award', 'Teacher', {
-      category: 'positive',
-      icon: '⭐'
-    });
+    let res = null;
+    if (storeInstance && typeof storeInstance.giveXP === 'function') {
+      res = storeInstance.giveXP(s.id || studentId, parsedAmount, 'Quick Classroom Award', 'Teacher', {
+        category: 'positive',
+        icon: '⭐'
+      });
+    } else {
+      s.xp = Math.max(0, (Number(s.xp) || 0) + parsedAmount);
+      s.totalXP = s.xp;
+    }
 
-    // Floating XP burst animation
-    const card = document.querySelector('[data-student-id="' + studentId + '"]');
+    // Floating XP burst animation & immediate DOM updates
+    const card = document.querySelector('[data-student-id="' + studentId + '"]') || document.querySelector('[data-student-id="' + s.id + '"]');
     if (card) {
+      const xpNum = card.querySelector('.xp-num');
+      if (xpNum) xpNum.innerText = (s.xp || 0) + ' XP';
+      const xpVal = card.querySelector('.xp-val-text');
+      if (xpVal) xpVal.innerText = (s.xp || 0) + ' XP';
       const burst = document.createElement('div');
       burst.className = 'xp-burst-float';
       burst.innerText = '+' + parsedAmount + ' XP ⭐';
       card.appendChild(burst);
       setTimeout(() => burst.remove(), 1200);
+
+      const progressFill = card.querySelector('.student-xp-progress-fill');
+      const mState = storeInstance && typeof storeInstance.calculateMonsterState === 'function' ? storeInstance.calculateMonsterState(s.id) : null;
+      if (progressFill && mState) {
+        progressFill.style.width = (mState.progressPct || 0) + '%';
+      }
+    }
+
+    // Audio SFX: Web Audio API coin reward chime
+    if (window.classSoundboard && typeof window.classSoundboard.playCoinReward === 'function') {
+      window.classSoundboard.playCoinReward();
+    } else if (typeof playCoinReward === 'function') {
+      playCoinReward();
     }
 
     // Check if award caused evolution or hatching
     if (res && res.evolutionEvent) {
-      if (res.evolutionEvent.isHatch) {
+      if (res.evolutionEvent.isHatch && typeof window.openMonsterHatchModal === 'function') {
         window.openMonsterHatchModal(studentId);
-      } else {
+      } else if (typeof window.openMonsterLevelUpModal === 'function') {
         window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
       }
     }
 
-    showNotification('+' + parsedAmount + ' XP awarded to ' + s.firstName + '!');
+    const studentName = s.firstName || s.name || 'Student';
+    if (typeof showNotification === 'function') {
+      showNotification('+' + parsedAmount + ' XP awarded to ' + studentName + '!');
+    }
     renderCurrentView();
 
     if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
-      window.openStudentDetail(studentId, studentProfileActiveTab);
+      if (typeof window.openStudentDetail === 'function') {
+        window.openStudentDetail(studentId, studentProfileActiveTab);
+      }
     }
   };
 
@@ -12206,20 +12243,40 @@ window.switchClassroomSubTab = function(subTab) {
 
   // Quick Direct Edit fallback
   function promptDirectXPEdit(studentId) {
-    const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
-    const st = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    const storeInstance = (typeof window !== 'undefined' && window.schoolStore) || (typeof store !== 'undefined' ? store : null);
+    let st = storeInstance && typeof storeInstance.getStudent === 'function' ? storeInstance.getStudent(studentId) : null;
+    if (!st) {
+      const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+      st = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    }
     if (!st) return;
 
-    const displayName = st.name || (st.firstName + ' ' + (st.lastName || '')).trim() || 'Student';
+    const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
     const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
-    if (input === null) return;
+    if (input === null || input.trim() === '') return;
 
-    const newXP = Math.max(0, parseInt(input, 10) || 0);
+    const newXP = Math.max(0, parseInt(input.trim(), 10) || 0);
     st.xp = newXP;
+    st.totalXP = newXP;
+
+    if (storeInstance) {
+      if (typeof storeInstance.setStudentXP === 'function') {
+        storeInstance.setStudentXP(st.id || studentId, newXP, 'Teacher Direct XP Edit');
+      } else if (storeInstance.state && Array.isArray(storeInstance.state.students)) {
+        const idx = storeInstance.state.students.findIndex(s => String(s.id) === String(st.id) || String(s.studentIdNumber) === String(st.id));
+        if (idx !== -1) {
+          storeInstance.state.students[idx].xp = newXP;
+          storeInstance.state.students[idx].totalXP = newXP;
+          if (typeof storeInstance.evaluateMonsterStage === 'function') {
+            storeInstance.evaluateMonsterStage(storeInstance.state.students[idx]);
+          }
+          if (typeof storeInstance.saveState === 'function') storeInstance.saveState();
+        }
+      }
+    }
 
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('adventure_students', JSON.stringify(students));
-      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'].forEach(k => {
+      ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
         try {
           const raw = localStorage.getItem(k);
           if (raw) {
@@ -12228,6 +12285,10 @@ window.switchClassroomSubTab = function(subTab) {
               const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
               if (idx !== -1) {
                 arr[idx].xp = newXP;
+                arr[idx].totalXP = newXP;
+                if (typeof storeInstance?.evaluateMonsterStage === 'function') {
+                  storeInstance.evaluateMonsterStage(arr[idx]);
+                }
                 localStorage.setItem(k, JSON.stringify(arr));
               }
             }
@@ -12236,13 +12297,28 @@ window.switchClassroomSubTab = function(subTab) {
       });
     }
 
-    if (window.AdventureAcademy) window.AdventureAcademy.students = students;
-    if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
-      const idx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId));
-      if (idx !== -1) {
-        window.schoolStore.state.students[idx].xp = newXP;
-        if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
-        if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
+    if (window.AdventureAcademy) {
+      const list = window.AdventureAcademy.students;
+      if (Array.isArray(list)) {
+        const idx = list.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+        if (idx !== -1) {
+          list[idx].xp = newXP;
+          list[idx].totalXP = newXP;
+        }
+      }
+    }
+
+    // Direct DOM element update
+    const card = document.querySelector('[data-student-id="' + studentId + '"]') || document.querySelector('[data-student-id="' + st.id + '"]');
+    if (card) {
+      const xpNum = card.querySelector('.xp-num');
+      if (xpNum) xpNum.innerText = newXP + ' XP';
+      const xpVal = card.querySelector('.xp-val-text');
+      if (xpVal) xpVal.innerText = newXP + ' XP';
+      const progressFill = card.querySelector('.student-xp-progress-fill');
+      const mState = storeInstance && typeof storeInstance.calculateMonsterState === 'function' ? storeInstance.calculateMonsterState(st.id) : null;
+      if (progressFill && mState) {
+        progressFill.style.width = (mState.progressPct || 0) + '%';
       }
     }
 
@@ -12250,12 +12326,14 @@ window.switchClassroomSubTab = function(subTab) {
     else if (typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
     if (typeof window.renderCurrentView === 'function') window.renderCurrentView();
 
+    const allStudents = (storeInstance && storeInstance.state && storeInstance.state.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
     if (typeof safeBackgroundSupabaseSync === 'function') {
-      safeBackgroundSupabaseSync(students);
+      safeBackgroundSupabaseSync(allStudents);
     } else if (typeof window.safeBackgroundSupabaseSync === 'function') {
-      window.safeBackgroundSupabaseSync(students);
+      window.safeBackgroundSupabaseSync(allStudents);
     } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
-      AdventureSupabase.safeBackgroundSupabaseSync(students);
+      AdventureSupabase.safeBackgroundSupabaseSync(allStudents);
     }
   }
 

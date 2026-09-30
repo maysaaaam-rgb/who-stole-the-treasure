@@ -1339,3 +1339,16 @@ class AppController {
 }
 
 window.app = new AppController();
+
+// Safe global bridges for platform interoperability
+if (typeof window !== 'undefined') {
+  if (!window.checkAndRunMigrationOnce && typeof checkAndRunMigrationOnce === 'function') {
+    window.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
+  }
+  if (!window.handleQuickAwardXP && typeof handleQuickAwardXP === 'function') {
+    window.handleQuickAwardXP = handleQuickAwardXP;
+  }
+  if (!window.promptDirectXPEdit && typeof promptDirectXPEdit === 'function') {
+    window.promptDirectXPEdit = promptDirectXPEdit;
+  }
+}

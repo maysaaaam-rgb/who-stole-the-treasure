@@ -24,26 +24,56 @@
     { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
-  function getStageFromXP(rawXP) {
-    const xp = Math.max(0, Number(rawXP) || 0);
+  function getStageFromXP(rawXP, studentObj = null) {
+    let activeXP = 0;
+    let archivedXP = 0;
+    let curLevel = 3;
+    if (typeof rawXP === 'object' && rawXP !== null) {
+      activeXP = Math.max(0, Number(rawXP.xp) || 0);
+      archivedXP = Math.max(0, Number(rawXP.archivedXP ?? rawXP.archived_xp ?? 0));
+      curLevel = Math.max(3, Number(rawXP.level) || 3);
+    } else {
+      activeXP = Math.max(0, Number(rawXP) || 0);
+      if (studentObj && typeof studentObj === 'object') {
+        archivedXP = Math.max(0, Number(studentObj.archivedXP ?? studentObj.archived_xp ?? 0));
+        curLevel = Math.max(3, Number(studentObj.level) || 3);
+      }
+    }
+    const lifetimeXP = activeXP + archivedXP;
+
     for (let i = EVOLUTION_TIERS.length - 1; i >= 0; i--) {
-      if (xp >= EVOLUTION_TIERS[i].minXP) {
+      if (lifetimeXP >= EVOLUTION_TIERS[i].minXP) {
         const tier = EVOLUTION_TIERS[i];
-        const nextThreshold = tier.maxXP === Infinity ? tier.minXP : tier.maxXP + 1;
-        const progressInTier = tier.maxXP === Infinity 
+        const calculatedLevel = tier.level;
+        const finalLevel = Math.max(curLevel, calculatedLevel);
+        const finalTier = EVOLUTION_TIERS.find(t => t.level === finalLevel) || tier;
+        const nextThreshold = finalTier.maxXP === Infinity ? finalTier.minXP : finalTier.maxXP + 1;
+        const progressInTier = finalTier.maxXP === Infinity 
           ? 100 
-          : Math.min(100, Math.round(((xp - tier.minXP) / (nextThreshold - tier.minXP)) * 100));
+          : Math.min(100, Math.round(((lifetimeXP - finalTier.minXP) / (nextThreshold - finalTier.minXP)) * 100));
         return {
-          level: tier.level,
-          levelName: tier.name,
-          isEgg: tier.isEgg,
-          spriteType: tier.spriteType,
+          level: finalLevel,
+          levelName: finalTier.name,
+          stageName: finalTier.name,
+          isEgg: finalLevel < 3,
+          spriteType: finalTier.spriteType,
           progressPct: progressInTier,
-          xpToNext: tier.maxXP === Infinity ? 0 : (nextThreshold - xp)
+          xpToNext: finalTier.maxXP === Infinity ? 0 : Math.max(0, nextThreshold - lifetimeXP),
+          lifetimeXP: lifetimeXP
         };
       }
     }
-    return EVOLUTION_TIERS[0];
+    const defaultTier = EVOLUTION_TIERS[2] || EVOLUTION_TIERS[0];
+    return {
+      level: Math.max(3, curLevel),
+      levelName: defaultTier.name,
+      stageName: defaultTier.name,
+      isEgg: false,
+      spriteType: defaultTier.spriteType,
+      progressPct: 0,
+      xpToNext: 300,
+      lifetimeXP: lifetimeXP
+    };
   }
 
   // =========================================================================
@@ -383,11 +413,12 @@
         const list = JSON.parse(raw);
         if (Array.isArray(list)) {
           const updated = list.map(student => {
-            const evalStage = getStageFromXP(student.xp);
+            const evalStage = getStageFromXP(student.xp, student);
             student.level = evalStage.level;
             student.levelName = evalStage.levelName;
-            student.stageName = evalStage.levelName;
+            student.stageName = evalStage.stageName;
             student.isEgg = evalStage.isEgg;
+            if (evalStage.level >= 3) student.isHatched = true;
             student.progressPct = evalStage.progressPct;
             student.remainingXP = evalStage.xpToNext;
             student.xpToNext = evalStage.xpToNext;
@@ -407,11 +438,12 @@
         const masterData = JSON.parse(masterRaw);
         if (masterData && Array.isArray(masterData.students)) {
           masterData.students.forEach(student => {
-            const evalStage = getStageFromXP(student.xp);
+            const evalStage = getStageFromXP(student.xp, student);
             student.level = evalStage.level;
             student.levelName = evalStage.levelName;
-            student.stageName = evalStage.levelName;
+            student.stageName = evalStage.stageName;
             student.isEgg = evalStage.isEgg;
+            if (evalStage.level >= 3) student.isHatched = true;
             student.progressPct = evalStage.progressPct;
             student.remainingXP = evalStage.xpToNext;
             student.xpToNext = evalStage.xpToNext;
@@ -424,17 +456,26 @@
     // Also update in-memory active store
     if (typeof window !== 'undefined' && window.AdventureAcademy?.students) {
       window.AdventureAcademy.students.forEach(s => {
-        Object.assign(s, getStageFromXP(s.xp));
+        const evalStage = getStageFromXP(s.xp, s);
+        s.level = evalStage.level;
+        s.levelName = evalStage.levelName;
+        s.stageName = evalStage.stageName;
+        s.isEgg = evalStage.isEgg;
+        if (evalStage.level >= 3) s.isHatched = true;
+        s.progressPct = evalStage.progressPct;
+        s.remainingXP = evalStage.xpToNext;
+        s.xpToNext = evalStage.xpToNext;
       });
     }
 
     if (typeof window !== 'undefined' && window.schoolStore?.state?.students) {
       window.schoolStore.state.students.forEach(s => {
-        const evalStage = getStageFromXP(s.xp);
+        const evalStage = getStageFromXP(s.xp, s);
         s.level = evalStage.level;
         s.levelName = evalStage.levelName;
-        s.stageName = evalStage.levelName;
+        s.stageName = evalStage.stageName;
         s.isEgg = evalStage.isEgg;
+        if (evalStage.level >= 3) s.isHatched = true;
         s.progressPct = evalStage.progressPct;
         s.remainingXP = evalStage.xpToNext;
         s.xpToNext = evalStage.xpToNext;
