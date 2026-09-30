@@ -243,6 +243,14 @@
         selectedClassDetailId = cId;
         studentsFilterClass = cId;
         const clsObj = store.getClass(cId);
+        const classNameStr = clsObj ? clsObj.name : (cId !== 'all' ? cId : 'All');
+        if (typeof window !== 'undefined') {
+          window.AdventureAcademy = window.AdventureAcademy || {};
+          window.AdventureAcademy.currentClass = classNameStr;
+          try {
+            localStorage.setItem('adventure_active_class', classNameStr);
+          } catch(err) {}
+        }
         if (typeof window.updateClassroomTheme === 'function') {
           window.updateClassroomTheme(clsObj ? clsObj.name : '');
         }
@@ -250,6 +258,9 @@
           window.switchProgressCheckClass(cId);
         }
         renderCurrentView();
+        if (window.LibraryController && typeof window.LibraryController.updateView === 'function') {
+          window.LibraryController.updateView();
+        }
       });
     }
     setupGlobalCloudSyncUI();
@@ -3127,6 +3138,14 @@
       const classSelect = document.getElementById('header-class-select');
       if (classSelect) classSelect.value = clsId;
       const clsObj = store.getClass(clsId);
+      const classNameStr = clsObj ? clsObj.name : clsId;
+      if (typeof window !== 'undefined') {
+        window.AdventureAcademy = window.AdventureAcademy || {};
+        window.AdventureAcademy.currentClass = classNameStr;
+        try {
+          localStorage.setItem('adventure_active_class', classNameStr);
+        } catch(err) {}
+      }
       if (typeof window.updateClassroomTheme === 'function') {
         window.updateClassroomTheme(clsObj ? clsObj.name : '');
       }
@@ -3134,11 +3153,21 @@
         window.switchProgressCheckClass(clsId);
       }
     } else {
+      if (typeof window !== 'undefined') {
+        window.AdventureAcademy = window.AdventureAcademy || {};
+        window.AdventureAcademy.currentClass = 'All';
+        try {
+          localStorage.setItem('adventure_active_class', 'All');
+        } catch(err) {}
+      }
       if (typeof window.updateClassroomTheme === 'function') {
         window.updateClassroomTheme('');
       }
     }
     renderCurrentView();
+    if (window.LibraryController && typeof window.LibraryController.updateView === 'function') {
+      window.LibraryController.updateView();
+    }
   };
 
   window.handleStudentsFilterStage = function(st) {
@@ -4570,6 +4599,24 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Favorites Only Toggle
     if (libFilterFavoritesOnly) {
       all = all.filter(r => Boolean(r.featured));
+    }
+
+    // Classroom target filter (e.g. 4A vs 4B)
+    const activeCls = (store && typeof store.getActiveClass === 'function') ? store.getActiveClass() : null;
+    const currentClassStr = (typeof window !== 'undefined' && window.AdventureAcademy && window.AdventureAcademy.currentClass) ||
+      (activeCls && activeCls.name) ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('adventure_active_class') : '') ||
+      'All';
+
+    if (currentClassStr && currentClassStr !== 'All' && currentClassStr !== 'all' && currentClassStr !== 'All Classes') {
+      const cleanClass = currentClassStr.toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
+      all = all.filter(lesson => {
+        if (lesson.targetClass) {
+          const targetClean = String(lesson.targetClass).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
+          return cleanClass === targetClean;
+        }
+        return true;
+      });
     }
 
     // Tab filter

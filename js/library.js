@@ -6,6 +6,30 @@
 (function(window) {
   'use strict';
 
+  function getFilteredLibraryLessons() {
+    const currentClass = (window.AdventureAcademy && window.AdventureAcademy.currentClass) ||
+      (window.schoolStore && typeof window.schoolStore.getActiveClass === 'function' && window.schoolStore.getActiveClass()?.name) ||
+      (typeof localStorage !== 'undefined' ? localStorage.getItem('adventure_active_class') : null) ||
+      'All';
+    const allLessons = (window.GAMES_REGISTRY || window.GAMES_DATA || []);
+
+    return allLessons.filter(lesson => {
+      if (!lesson || lesson.status === 'archived') return false;
+      // If the module is tagged for a specific class, only show it when that class or 'All' is selected
+      if (lesson.targetClass) {
+        if (!currentClass || currentClass === 'All' || currentClass === 'all' || currentClass === 'All Classes') return true;
+        const normalizedCurrent = String(currentClass).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
+        const normalizedTarget = String(lesson.targetClass).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
+        return normalizedTarget === normalizedCurrent;
+      }
+      return true; // General lessons show for everyone
+    });
+  }
+
+  if (typeof window !== 'undefined') {
+    window.getFilteredLibraryLessons = getFilteredLibraryLessons;
+  }
+
   class CurriculumLibraryController {
     constructor() {
       this.activeTrackId = 'track-1';
@@ -27,8 +51,7 @@
     }
 
     getAllActiveModules() {
-      const registry = window.GAMES_REGISTRY || window.GAMES_DATA || [];
-      return registry.filter(item => item && item.status !== 'archived');
+      return getFilteredLibraryLessons();
     }
 
     getTracks() {
@@ -379,6 +402,7 @@
               </div>
             </div>
             <div class="card-badge-wrap">
+              ${item.targetClass ? `<span class="card-class-badge" style="background:rgba(168,85,247,0.22); border:1.5px solid #a855f7; color:#f3e8ff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:9999px; display:inline-flex; align-items:center; gap:3px;" title="Dedicated to Grade ${item.targetClass}">🏷️ Grade ${item.targetClass}</span>` : ''}
               <span class="card-cefr-badge" title="CEFR Proficiency Level">${cefr}</span>
               <span class="card-xp-pill" title="Student XP Reward">+${item.xp || 100} XP</span>
             </div>
