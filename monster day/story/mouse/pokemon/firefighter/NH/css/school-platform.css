@@ -2,6 +2,7 @@
    ENGLISH ADVENTURE ACADEMY — DIGITAL ESL SCHOOL PLATFORM
    Unified Stylesheet: Professional Teacher SaaS & Playful Student Adventure
    ========================================================================== */
+@import url('style.css');
 
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;

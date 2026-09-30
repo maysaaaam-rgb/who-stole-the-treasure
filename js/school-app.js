@@ -121,6 +121,9 @@
     if (initialClass && initialClass.id) {
       studentsFilterClass = initialClass.id;
       selectedClassDetailId = initialClass.id;
+      if (typeof window.updateClassroomTheme === 'function') {
+        window.updateClassroomTheme(initialClass.name);
+      }
     }
     setupRoleSwitcher();
     setupHeaderControls();
@@ -239,6 +242,10 @@
         store.setActiveClass(cId);
         selectedClassDetailId = cId;
         studentsFilterClass = cId;
+        const clsObj = store.getClass(cId);
+        if (typeof window.updateClassroomTheme === 'function') {
+          window.updateClassroomTheme(clsObj ? clsObj.name : '');
+        }
         if (typeof window.switchProgressCheckClass === 'function') {
           window.switchProgressCheckClass(cId);
         }
@@ -915,6 +922,12 @@
     }
     renderNavigation();
     renderCurrentView();
+    if (typeof window.updateClassroomTheme === 'function') {
+      const actClass = store.getActiveClass();
+      if (viewName === 'class-detail' || viewName === 'students') {
+        window.updateClassroomTheme(actClass ? actClass.name : '');
+      }
+    }
     const floatingToolkit = document.getElementById('classroom-floating-toolkit');
     if (floatingToolkit) {
       const role = (store && typeof store.getRole === 'function') ? store.getRole() : 'teacher';
@@ -2557,16 +2570,20 @@
   window.openStudentProfileById = function(studentIdNumber, activeTab = 'overview') {
     return window.openStudentDetail(studentIdNumber, activeTab);
   };
+  window.openStudentProfileModal = function(studentId, activeTab = 'overview') {
+    return window.openStudentDetail(studentId, activeTab);
+  };
 
   function renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords) {
     switch (studentProfileActiveTab) {
       case 'overview':
         return '' +
+          ((typeof renderStudentThemeBadge === 'function') ? renderStudentThemeBadge(student) : '') +
           '<div class="kpi-grid" style="margin-bottom:16px;">' +
             '<div class="kpi-card" style="cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
-              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Total XP <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
-              '<span class="kpi-val">⭐ ' + totalXP.toLocaleString() + '</span>' +
-              '<span class="kpi-sub">Earned from missions · Click to manage</span>' +
+              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Active XP (Term 2) <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
+              '<span class="kpi-val">⭐ ' + (Number(student.xp) || 0) + ' XP</span>' +
+              '<span class="kpi-sub">Cold Storage: 🗄️ ' + (student.archivedXP || student.archived_xp || 0) + ' ARCH</span>' +
             '</div>' +
             '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">✓ Computed from roll call</span></div>' +
             '<div class="kpi-card"><span class="kpi-label">Current CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + student.overallCefr + '</span><span class="kpi-sub">Target: A1+</span></div>' +
@@ -3109,8 +3126,16 @@
       selectedClassDetailId = clsId;
       const classSelect = document.getElementById('header-class-select');
       if (classSelect) classSelect.value = clsId;
+      const clsObj = store.getClass(clsId);
+      if (typeof window.updateClassroomTheme === 'function') {
+        window.updateClassroomTheme(clsObj ? clsObj.name : '');
+      }
       if (typeof window.switchProgressCheckClass === 'function') {
         window.switchProgressCheckClass(clsId);
+      }
+    } else {
+      if (typeof window.updateClassroomTheme === 'function') {
+        window.updateClassroomTheme('');
       }
     }
     renderCurrentView();
@@ -3207,6 +3232,14 @@
           '</div>' +
         '</div>' +
 
+        // Classroom Hero Banner (Alice / Korean Traditions Cover)
+        '<div id="classroom-hero-banner" class="classroom-hero-banner active-theme-cover" style="display:none;">' +
+          '<div class="classroom-hero-content">' +
+            '<h2 id="classroom-hero-title" style="font-size:1.4rem; font-weight:800; color:#fff; margin:0 0 4px 0;"></h2>' +
+            '<p id="classroom-hero-subtitle" style="font-size:0.86rem; color:#cbd5e1; margin:0;"></p>' +
+          '</div>' +
+        '</div>' +
+
         // Search & Filter Toolbar
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
           '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
@@ -3292,6 +3325,11 @@
                   '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
                 '</div>';
 
+              const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(s) : null;
+              const compIcon = s.customIcon || s.custom_icon || (compData ? compData.icon : '✨');
+              const activeXP = Number(s.xp) || 0;
+              const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
+
               return '' +
                 '<div class="student-directory-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
@@ -3301,10 +3339,12 @@
                         '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
                       ) +
                       '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
+                      '<span class="thematic-card-companion-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + (compData ? compData.name : 'Choose') + ' (Click to change)">' + compIcon + '</span>' +
                       '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
                       '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
                     '</div>' +
                     '<div class="card-overlay-right">' +
+                      '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
                       '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                         '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -3332,7 +3372,7 @@
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                       '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + totalXP.toLocaleString() + '</span>' +
+                      '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Term 2 Active XP — Click to Edit">⭐ ' + activeXP + ' XP</span>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3365,6 +3405,11 @@
           child.remove();
         }
       });
+    }
+
+    if (typeof window.updateClassroomTheme === 'function') {
+      const activeC = (store.getClass && studentsFilterClass !== 'all') ? store.getClass(studentsFilterClass) : store.getActiveClass();
+      window.updateClassroomTheme(activeC ? activeC.name : '');
     }
   }
 
@@ -3485,6 +3530,14 @@
           '<button class="btn-primary-action" onclick="toggleSmartboardMode()" style="padding:4px 12px; font-size:0.8rem; background:var(--color-danger);">✕ Exit Classroom Mode</button>' : '') +
       '</div>' +
 
+      // Classroom Hero Banner (Alice / Korean Traditions Cover)
+      '<div id="classroom-hero-banner" class="classroom-hero-banner active-theme-cover" style="display:none;">' +
+        '<div class="classroom-hero-content">' +
+          '<h2 id="classroom-hero-title" style="font-size:1.4rem; font-weight:800; color:#fff; margin:0 0 4px 0;"></h2>' +
+          '<p id="classroom-hero-subtitle" style="font-size:0.86rem; color:#cbd5e1; margin:0;"></p>' +
+        '</div>' +
+      '</div>' +
+
       // Top Banner
       '<div class="classroom-header-banner">' +
         '<div>' +
@@ -3522,6 +3575,10 @@
       '<div id="classroom-main-content-wrap">' +
         renderClassroomSubTabContent(cls, students) +
       '</div>';
+
+    if (typeof window.updateClassroomTheme === 'function') {
+      window.updateClassroomTheme(cls ? cls.name : '');
+    }
   }
 
   function renderClassroomSubTabContent(cls, students) {
@@ -3656,6 +3713,10 @@
     const cardsHtml = students.map(s => {
       const totalXP = store.getStudentTotalXP(s.id);
       const formattedXP = totalXP.toLocaleString();
+      const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(s) : null;
+      const compIcon = s.customIcon || s.custom_icon || (compData ? compData.icon : '✨');
+      const activeXP = Number(s.xp) || 0;
+      const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
       const progressPct = calculateStudentProgressPct(s.id);
       const status = determineStudentStatus(s.id, cls.id);
       // avatarEmoji deprecated
@@ -3704,10 +3765,12 @@
                 '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
               ) +
               '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
+              '<span class="thematic-card-companion-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + (compData ? compData.name : 'Choose') + ' (Click to change)">' + compIcon + '</span>' +
               '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
               '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
             '</div>' +
             '<div class="card-overlay-right">' +
+              '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
               '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                 '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -3735,7 +3798,7 @@
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
               '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to Edit / Correct XP">⭐ ' + formattedXP + '</span>' +
+              '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Term 2 Active XP — Click to Edit">⭐ ' + activeXP + ' XP</span>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +

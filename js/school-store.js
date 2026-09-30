@@ -2132,26 +2132,73 @@
     { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
-  function getStageFromXP(rawXP) {
-    const xp = Math.max(0, Number(rawXP) || 0);
-    for (let i = EVOLUTION_TIERS.length - 1; i >= 0; i--) {
-      if (xp >= EVOLUTION_TIERS[i].minXP) {
-        const tier = EVOLUTION_TIERS[i];
-        const nextThreshold = tier.maxXP === Infinity ? tier.minXP : tier.maxXP + 1;
-        const progressInTier = tier.maxXP === Infinity 
-          ? 100 
-          : Math.min(100, Math.round(((xp - tier.minXP) / (nextThreshold - tier.minXP)) * 100));
-        return {
-          level: tier.level,
-          levelName: tier.name,
-          isEgg: tier.isEgg,
-          spriteType: tier.spriteType,
-          progressPct: progressInTier,
-          xpToNext: tier.maxXP === Infinity ? 0 : (nextThreshold - xp)
-        };
+  const EVOLUTION_THRESHOLDS = [
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, isEgg: false, spriteType: "ultimate" }
+  ];
+
+  function getStudentStage(student) {
+    if (!student) return { level: 1, stageName: "Level 1 • Mystery Egg", levelName: "Level 1 • Mystery Egg", isEgg: true, lifetimeXP: 0, activeXP: 0, archivedXP: 0, progressPct: 0, xpToNext: 30, spriteType: "egg" };
+    const s = (typeof student === 'object') ? student : { xp: Number(student) || 0 };
+    const activeXP = Math.max(0, Number(s.xp) || 0);
+    const archivedXP = Math.max(0, Number(s.archivedXP ?? s.archived_xp ?? 0));
+    const lifetimeXP = activeXP + archivedXP;
+
+    let calculatedLevel = 1;
+    let stageName = "Level 1 • Mystery Egg";
+    let isEgg = true;
+    let spriteType = "egg";
+    let minXP = 0;
+    let nextThreshold = 30;
+
+    for (let i = EVOLUTION_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (lifetimeXP >= EVOLUTION_THRESHOLDS[i].minXP) {
+        calculatedLevel = EVOLUTION_THRESHOLDS[i].level;
+        stageName = EVOLUTION_THRESHOLDS[i].name;
+        isEgg = EVOLUTION_THRESHOLDS[i].isEgg;
+        spriteType = EVOLUTION_THRESHOLDS[i].spriteType || (isEgg ? (calculatedLevel === 1 ? 'egg' : 'cracking_egg') : (calculatedLevel === 3 ? 'baby' : calculatedLevel === 4 ? 'growing' : calculatedLevel === 5 ? 'adventurer' : calculatedLevel === 6 ? 'advanced' : 'ultimate'));
+        minXP = EVOLUTION_THRESHOLDS[i].minXP;
+        nextThreshold = (i < EVOLUTION_THRESHOLDS.length - 1) ? EVOLUTION_THRESHOLDS[i + 1].minXP : Infinity;
+        break;
       }
     }
-    return EVOLUTION_TIERS[0];
+
+    // ONE-WAY RATCHET: Student level can NEVER regress backward
+    const currentSavedLevel = Number(s.level) || 1;
+    const finalLevel = Math.max(currentSavedLevel, calculatedLevel);
+    const finalTier = EVOLUTION_THRESHOLDS.find(t => t.level === finalLevel) || EVOLUTION_THRESHOLDS[0];
+
+    const progressPct = finalTier.level === 7 || nextThreshold === Infinity
+      ? 100
+      : Math.min(100, Math.max(0, Math.round(((lifetimeXP - minXP) / (nextThreshold - minXP)) * 100)));
+
+    const xpToNext = (finalTier.level === 7 || nextThreshold === Infinity) ? 0 : Math.max(0, nextThreshold - lifetimeXP);
+
+    return {
+      level: finalLevel,
+      stageName: finalLevel > calculatedLevel ? (s.stageName || finalTier.name) : stageName,
+      levelName: finalLevel > calculatedLevel ? (s.stageName || finalTier.name) : stageName,
+      isEgg: finalLevel < 3,
+      spriteType: finalTier.spriteType || spriteType,
+      lifetimeXP: lifetimeXP,
+      activeXP: activeXP,
+      archivedXP: archivedXP,
+      progressPct: progressPct,
+      xpToNext: xpToNext
+    };
+  }
+
+  function getStageFromXP(rawXP) {
+    if (typeof rawXP === 'object' && rawXP !== null) {
+      return getStudentStage(rawXP);
+    }
+    const xp = Math.max(0, Number(rawXP) || 0);
+    return getStudentStage({ xp: xp, archivedXP: 0 });
   }
 
   // =========================================================================
@@ -2250,30 +2297,30 @@
 
   function evaluateMonsterStage(student) {
     if (!student) return student;
-    const rawXP = (student.xp !== undefined && student.xp !== null) ? student.xp : 0;
-    const stage = getStageFromXP(rawXP);
+    const stage = getStudentStage(student);
 
     if (!Array.isArray(student.xpHistory)) student.xpHistory = [];
 
     student.level = stage.level;
-    student.levelName = stage.levelName;
-    student.stageName = stage.levelName;
+    student.levelName = stage.stageName;
+    student.stageName = stage.stageName;
     student.stageKey = stage.spriteType;
     student.isEgg = stage.isEgg;
+    if (stage.level >= 3) student.isHatched = true;
     student.archetype = getStudentArchetype(student);
     student.progressPct = stage.progressPct;
     student.progressToNext = stage.progressPct;
     student.progress = stage.progressPct;
     student.remainingXP = stage.xpToNext;
     student.xpToNext = stage.xpToNext;
-    student.crackProgress = stage.level === 1 ? Math.min(95, Math.round((Number(rawXP) / 30) * 100)) : (stage.level === 2 ? Math.min(100, Math.round(((Number(rawXP) - 30) / (200 - 30)) * 100)) : 100);
-    student.nextThreshold = stage.level === 7 ? 5000 : (EVOLUTION_TIERS[stage.level] ? EVOLUTION_TIERS[stage.level].minXP : 5000);
+    student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - 30) / (200 - 30)) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
+    student.nextThreshold = stage.level === 7 ? 5000 : (EVOLUTION_THRESHOLDS[stage.level] ? EVOLUTION_THRESHOLDS[stage.level].minXP : 5000);
 
     if (stage.isEgg) {
       student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
       student.avatar = stage.level === 1 ? 'mystery-egg.png' : 'cracked-egg.png';
     } else {
-      const cleanName = stage.levelName.replace(/^Level \d+\s*•\s*/, '');
+      const cleanName = stage.stageName.replace(/^Level \d+\s*•\s*/, '');
       student.equippedMonster = cleanName;
     }
 
@@ -2319,14 +2366,15 @@
         const list = JSON.parse(raw);
         if (Array.isArray(list)) {
           const updated = list.map(student => {
-            const evalStage = getStageFromXP(student.xp);
-            student.level = evalStage.level;
-            student.levelName = evalStage.levelName;
-            student.stageName = evalStage.levelName;
-            student.isEgg = evalStage.isEgg;
-            student.progressPct = evalStage.progressPct;
-            student.remainingXP = evalStage.xpToNext;
-            student.xpToNext = evalStage.xpToNext;
+            const stage = getStudentStage(student);
+            student.level = stage.level;
+            student.levelName = stage.stageName;
+            student.stageName = stage.stageName;
+            student.isEgg = stage.isEgg;
+            if (stage.level >= 3) student.isHatched = true;
+            student.progressPct = stage.progressPct;
+            student.remainingXP = stage.xpToNext;
+            student.xpToNext = stage.xpToNext;
             return student;
           });
           localStorage.setItem(key, JSON.stringify(updated));
@@ -2343,14 +2391,15 @@
         const masterData = JSON.parse(masterRaw);
         if (masterData && Array.isArray(masterData.students)) {
           masterData.students.forEach(student => {
-            const evalStage = getStageFromXP(student.xp);
-            student.level = evalStage.level;
-            student.levelName = evalStage.levelName;
-            student.stageName = evalStage.levelName;
-            student.isEgg = evalStage.isEgg;
-            student.progressPct = evalStage.progressPct;
-            student.remainingXP = evalStage.xpToNext;
-            student.xpToNext = evalStage.xpToNext;
+            const stage = getStudentStage(student);
+            student.level = stage.level;
+            student.levelName = stage.stageName;
+            student.stageName = stage.stageName;
+            student.isEgg = stage.isEgg;
+            if (stage.level >= 3) student.isHatched = true;
+            student.progressPct = stage.progressPct;
+            student.remainingXP = stage.xpToNext;
+            student.xpToNext = stage.xpToNext;
           });
           localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterData));
         }
@@ -2360,32 +2409,164 @@
     // Also update in-memory active store
     if (typeof window !== 'undefined' && window.AdventureAcademy?.students) {
       window.AdventureAcademy.students.forEach(s => {
-        Object.assign(s, getStageFromXP(s.xp));
+        const stage = getStudentStage(s);
+        s.level = stage.level;
+        s.levelName = stage.stageName;
+        s.stageName = stage.stageName;
+        s.isEgg = stage.isEgg;
+        if (stage.level >= 3) s.isHatched = true;
+        s.progressPct = stage.progressPct;
+        s.remainingXP = stage.xpToNext;
+        s.xpToNext = stage.xpToNext;
       });
     }
 
     if (typeof window !== 'undefined' && window.schoolStore?.state?.students) {
       window.schoolStore.state.students.forEach(s => {
-        const evalStage = getStageFromXP(s.xp);
-        s.level = evalStage.level;
-        s.levelName = evalStage.levelName;
-        s.stageName = evalStage.levelName;
-        s.isEgg = evalStage.isEgg;
-        s.progressPct = evalStage.progressPct;
-        s.remainingXP = evalStage.xpToNext;
-        s.xpToNext = evalStage.xpToNext;
+        const stage = getStudentStage(s);
+        s.level = stage.level;
+        s.levelName = stage.stageName;
+        s.stageName = stage.stageName;
+        s.isEgg = stage.isEgg;
+        if (stage.level >= 3) s.isHatched = true;
+        s.progressPct = stage.progressPct;
+        s.remainingXP = stage.xpToNext;
+        s.xpToNext = stage.xpToNext;
       });
     }
   }
 
+  function archiveAndResetXP() {
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+
+    const updated = students.map(student => {
+      const currentActive = Number(student.xp) || 0;
+
+      // 1. Move active XP into archive ledger
+      student.archivedXP = (Number(student.archivedXP ?? student.archived_xp ?? 0)) + currentActive;
+      student.archived_xp = student.archivedXP;
+      student.xp = 0; // Force active points to 0 for Term 2
+
+      // 2. Lock current level & stage so monsters never revert
+      const stage = getStudentStage(student);
+      student.level = stage.level;
+      student.stageName = stage.stageName;
+      student.levelName = stage.stageName;
+      student.isEgg = stage.isEgg;
+      if (stage.level >= 3) student.isHatched = true;
+
+      // 3. Record audit trail entry
+      if (!student.xpHistory) student.xpHistory = [];
+      student.xpHistory.unshift({
+        id: "archive_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+        amount: currentActive,
+        type: "season_archive",
+        reason: `Term 1 Archived: ${currentActive} XP moved to cold storage`,
+        date: new Date().toLocaleDateString("en-GB"),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        balanceAfter: 0
+      });
+      student.xp_history = student.xpHistory;
+
+      return student;
+    });
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(updated));
+    }
+    if (typeof window !== 'undefined' && window.AdventureAcademy) {
+      window.AdventureAcademy.students = updated;
+    }
+
+    // Also update master store
+    if (typeof window !== 'undefined' && window.schoolStore && window.schoolStore.state) {
+      if (Array.isArray(window.schoolStore.state.students)) {
+        window.schoolStore.state.students.forEach(s => {
+          const u = updated.find(st => String(st.id) === String(s.id) || String(st.studentIdNumber) === String(s.studentIdNumber));
+          if (u) {
+            s.archivedXP = u.archivedXP;
+            s.archived_xp = u.archivedXP;
+            s.xp = 0;
+            s.level = u.level;
+            s.stageName = u.stageName;
+            s.levelName = u.stageName;
+            s.isEgg = u.isEgg;
+            s.isHatched = u.isHatched;
+            s.xpHistory = u.xpHistory;
+            s.xp_history = u.xp_history;
+          } else {
+            const cActive = Number(s.xp) || 0;
+            s.archivedXP = (Number(s.archivedXP ?? s.archived_xp ?? 0)) + cActive;
+            s.archived_xp = s.archivedXP;
+            s.xp = 0;
+            const stage = getStudentStage(s);
+            s.level = stage.level;
+            s.stageName = stage.stageName;
+            s.levelName = stage.stageName;
+            s.isEgg = stage.isEgg;
+            if (stage.level >= 3) s.isHatched = true;
+          }
+        });
+      }
+      window.schoolStore.saveState();
+      window.schoolStore.notify('students', window.schoolStore.state.students);
+    }
+
+    // Update eaa_master_school_v6 in localStorage if present
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const masterRaw = localStorage.getItem('eaa_master_school_v6');
+        if (masterRaw) {
+          const masterObj = JSON.parse(masterRaw);
+          if (masterObj && Array.isArray(masterObj.students)) {
+            masterObj.students.forEach(s => {
+              const u = updated.find(st => String(st.id) === String(s.id) || String(st.studentIdNumber) === String(s.studentIdNumber));
+              if (u) {
+                s.archivedXP = u.archivedXP;
+                s.archived_xp = u.archivedXP;
+                s.xp = 0;
+                s.level = u.level;
+                s.stageName = u.stageName;
+                s.levelName = u.stageName;
+                s.isEgg = u.isEgg;
+                s.isHatched = u.isHatched;
+                s.xpHistory = u.xpHistory;
+              }
+            });
+            localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterObj));
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (typeof syncWithSupabaseCloud === 'function') syncWithSupabaseCloud();
+    else if (typeof window !== 'undefined' && typeof window.syncWithSupabaseCloud === 'function') window.syncWithSupabaseCloud();
+
+    if (typeof renderStudentRoster === 'function') renderStudentRoster();
+    else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
+    else if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
+
+    return updated;
+  }
+
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
+    try {
+      if (!localStorage.getItem('eaa_term2_archived_v1')) {
+        archiveAndResetXP();
+        localStorage.setItem('eaa_term2_archived_v1', 'true');
+      }
+    } catch (e) {}
   }
 
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
     root.recalculateAllStudents = recalculateAllStudents;
+    root.archiveAndResetXP = archiveAndResetXP;
+    root.getStudentStage = getStudentStage;
+    root.EVOLUTION_THRESHOLDS = EVOLUTION_THRESHOLDS;
     root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.getStudentArchetype = getStudentArchetype;
     root.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
@@ -10699,14 +10880,17 @@
     getStudentTotalXP(studentId) {
       if (!studentId) return 0;
       const s = (this.state && this.state.students) ? this.state.students.find(std => std.id === studentId || std.studentIdNumber === studentId) : null;
-      const sXP = s ? (Number(s.xp) || 0) : 0;
-      if (!this.state || !this.state.xpTransactions || !this.state.xpTransactions.length) {
-        return sXP;
-      }
-      const resolvedId = s ? s.id : studentId;
-      const txs = this.state.xpTransactions.filter(t => (t.studentId === resolvedId || (s && t.studentId === s.studentIdNumber)) && t.status !== 'voided');
-      const txSum = txs.reduce((sum, t) => sum + (parseInt(t.amount, 10) || 0), 0);
-      return Math.max(sXP, txSum);
+      if (!s) return 0;
+      return Number(s.xp) || 0;
+    }
+
+    getStudentLifetimeXP(studentId) {
+      if (!studentId) return 0;
+      const s = (this.state && this.state.students) ? this.state.students.find(std => std.id === studentId || std.studentIdNumber === studentId) : null;
+      if (!s) return 0;
+      const activeXP = Math.max(0, Number(s.xp) || 0);
+      const archivedXP = Math.max(0, Number(s.archivedXP ?? s.archived_xp ?? 0));
+      return activeXP + archivedXP;
     }
 
     getXPTransactions(studentId, includeVoided = false) {
@@ -13069,24 +13253,25 @@
     }
 
     calculateMonsterState(studentId) {
-      const totalXP = this.getStudentTotalXP(studentId);
-      const stage = getStageFromXP(totalXP);
+      const student = this.getStudent(studentId);
+      const stage = student ? getStudentStage(student) : getStageFromXP(this.getStudentTotalXP(studentId));
+      const totalXP = stage.lifetimeXP !== undefined ? stage.lifetimeXP : this.getStudentLifetimeXP(studentId);
       const profile = this.getMonsterProfile(studentId) || {};
 
-      // Permanent Evolution Rule & Dynamic XP Single Source of Truth:
-      // Synchronize profile level and hatch state strictly to XP stage
-      profile.highestUnlockedLevel = stage.level;
-      if (stage.level >= 3) {
+      // Permanent Evolution Rule & Dynamic Lifetime XP Single Source of Truth:
+      // Synchronize profile level and hatch state strictly to XP stage with one-way ratchet
+      const currentLevel = stage.level;
+      profile.highestUnlockedLevel = Math.max(profile.highestUnlockedLevel || 1, currentLevel);
+      if (currentLevel >= 3) {
         profile.isHatched = true;
       }
 
-      const currentDisplayedLevel = stage.level;
-      const currentLevelTier = EVOLUTION_TIERS[stage.level - 1] || EVOLUTION_TIERS[0];
-      const nextLevelTier = EVOLUTION_TIERS[stage.level] || null;
+      const currentDisplayedLevel = currentLevel;
+      const currentLevelTier = EVOLUTION_THRESHOLDS[stage.level - 1] || EVOLUTION_THRESHOLDS[0];
+      const nextLevelTier = EVOLUTION_THRESHOLDS[stage.level] || null;
 
-      const currentLevel = stage.level;
       const stageKey = stage.spriteType;
-      const stageName = stage.levelName;
+      const stageName = stage.stageName || stage.levelName;
       const stageDescription = `Level ${stage.level} monster companion.`;
       const levelXP = currentLevelTier.minXP;
       const nextLevelXP = nextLevelTier ? nextLevelTier.minXP : levelXP;
@@ -13096,12 +13281,12 @@
       const isHatched = !stage.isEgg;
 
       let eggCrackPct = 0;
-      if (currentDisplayedLevel === 1) {
-        eggCrackPct = Math.min(95, Math.round((totalXP / 30) * 100));
-      } else if (currentDisplayedLevel === 2) {
-        eggCrackPct = Math.min(100, Math.round(((totalXP - 30) / (200 - 30)) * 100));
-      } else {
+      if (currentDisplayedLevel >= 3) {
         eggCrackPct = 100;
+      } else if (currentDisplayedLevel === 2) {
+        eggCrackPct = Math.min(100, Math.max(30, Math.round(((totalXP - 30) / (200 - 30)) * 100)));
+      } else {
+        eggCrackPct = Math.min(95, Math.round((totalXP / 30) * 100));
       }
 
       const currentLevelObj = {
