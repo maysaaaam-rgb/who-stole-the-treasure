@@ -796,6 +796,62 @@
       description: "Interactive slide presentation and comprehensive homework quest deck for Alice in Wonderland. Features 12 graded challenges across 3 progression tiers (+10 to +200 XP), clear student instructions, model answer examples, and direct teacher XP awarding."
     },
     {
+      id: "tea-party-cards",
+      title: "☕ Alice in Wonderland: Mad Tea Party Trading Cards",
+      category: "Literature & Drama",
+      categoryLabel: "☕ Literature & Roleplay",
+      type: "game",
+      level: "Grade 4–8",
+      cefrLevel: "A2-B1",
+      age: "Ages 8–14",
+      grade: "Grade 4–8",
+      grades: ["Grade 4", "Grade 5", "Grade 6", "Grade 7", "Grade 8"],
+      duration: 60,
+      durationText: "60 min",
+      estimatedMinutes: 60,
+      xp: 250,
+      skills: [
+        "Drama & Character Portrayal",
+        "Dialogue Memorization & Delivery",
+        "Victorian Vocabulary & Idioms",
+        "Stage Cues & Acting Interactions",
+        "Oral Fluency & Public Speaking",
+        "Costume & Prop Preparation"
+      ],
+      topics: [
+        "Alice in Wonderland, The Mad Tea Party & Victorian Theatre",
+        "Literature & Classics",
+        "Theatrical Performance",
+        "Character Archetypes",
+        "3D Trading Cards & Duplex Printouts"
+      ],
+      objectives: [
+        "Memorize character dialogue lines and stage interaction cues.",
+        "Prepare authentic Victorian fantasy costumes and physical props.",
+        "Perform character monologues with accurate vocal tone and posture.",
+        "Engage with 3D collectible trading cards and A4 duplex print sheets."
+      ],
+      route: "tea-party-cards/index.html",
+      url: "tea-party-cards/index.html",
+      path: "tea-party-cards/index.html",
+      worksheet: "tea-party-cards/worksheet.html",
+      worksheetRoute: "tea-party-cards/worksheet.html",
+      worksheetUrl: "tea-party-cards/worksheet.html",
+      featured: true,
+      thumbnailIcon: "☕",
+      thumbnail: "tea-party-cards/assets/characters/mad-hatter.jpg",
+      thumbnailUrl: "tea-party-cards/assets/characters/mad-hatter.jpg",
+      gradient: "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+      trackId: "track-4",
+      trackTitle: "📖 Literature, Story Quests & Diagnostic Tests",
+      formula: "Class 4-A Character Acting Guides, RPG Stats & Duplex Cards",
+      languageFocus: "I’m late for an important date! / Off with their heads! / It is no use going back to yesterday... / Contrariwise! / Nohow!",
+      teacherGuide: true,
+      archived: false,
+      badge: "☕ Class 4-A Cast Cards",
+      description: "Double-sided Victorian fantasy trading cards and student acting guide suite for Class 4-A (18 cast members). Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets."
+    },
+    {
       id: "monster-studio",
       title: "🎨 Monster Studio & Customizer",
       category: "Creative Tools",
@@ -9488,6 +9544,36 @@
           answerKey: '1. Quieter; 2. taller',
           description: 'Reading comprehension and comparative adjective practice based on Aesop\'s fable.',
           archived: false
+        },
+        {
+          id: 'ws-tea-party-cards',
+          title: 'Alice in Wonderland: Mad Tea Party Student Role Dossiers & Acting Guides',
+          level: 'Grade 4–8',
+          cefrLevel: 'A2–B1',
+          grade: 'Grade 4',
+          grades: ['Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8'],
+          skill: 'Drama, Speaking & Roleplay',
+          skills: ['Drama & Character Portrayal', 'Public Speaking & Oral Delivery', 'Stage Direction & Interaction Cues', 'Literature & Reading'],
+          topic: 'Alice in Wonderland: Mad Tea Party Rehearsal Dossiers',
+          topics: ['Alice in Wonderland', 'Character Acting', 'Costume & Prop Preparation', '1-Minute Monologues', 'Duplex Print Sheets'],
+          duration: '45 min',
+          estimatedMinutes: 45,
+          xp: 150,
+          status: 'Ready to Print',
+          createdDate: '2026-09-30',
+          instructions: 'Complete your character dossier, memorize your 1-minute performance monologue, review your costume and prop checklist, and rehearse your stage entrance and interaction cues.',
+          questions: [
+            { id: 'q-1', text: 'Which prop does the White Rabbit carry to show he is running late?', type: 'multiple_choice', options: ['Pocket watch & umbrella', 'Flamingo mallet', 'Golden crown', 'Hookah pipe'], answer: 'Pocket watch & umbrella', points: 1 },
+            { id: 'q-2', text: 'Fill in the Hatter\'s famous quote: "Why is a _____ like a writing desk?"', type: 'fill_blank', options: [], answer: 'raven', points: 1 },
+            { id: 'q-3', text: 'True or False: The Red Queen demands total obedience with the command "Off with their heads!".', type: 'true_false', options: ['True', 'False'], answer: 'True', points: 1 }
+          ],
+          category: 'Literature & Drama',
+          gameId: 'tea-party-cards',
+          pdfUrl: 'tea-party-cards/worksheet.html',
+          worksheetRoute: 'tea-party-cards/worksheet.html',
+          answerKey: '1. Pocket watch & umbrella; 2. raven; 3. True',
+          description: 'Printable 18-student character acting guide dossiers and 3x3 duplex card sheets for Class 4-A Alice in Wonderland production.',
+          archived: false
         }
       ],
 
@@ -10197,6 +10283,10 @@
               const aliceRes = CANONICAL_GAMES.find(g => g.id === 'alice-quest');
               if (aliceRes && !merged.resources.some(r => r.id === 'alice-quest')) {
                 merged.resources.unshift(aliceRes);
+              }
+              const teaRes = CANONICAL_GAMES.find(g => g.id === 'tea-party-cards');
+              if (teaRes && !merged.resources.some(r => r.id === 'tea-party-cards')) {
+                merged.resources.unshift(teaRes);
               }
               const monsterRes = CANONICAL_GAMES.find(g => g.id === 'monster-day');
               if (monsterRes) {
