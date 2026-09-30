@@ -4082,20 +4082,20 @@ body.modal-open .student-card {
   cursor: pointer;
 }
 
-/* Student Status Dot */
+/* Student Status Dot - Retired to prevent card header distortion */
 .student-card-status-dot {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-card);
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
-.student-card-status-dot.status-active { background: var(--color-success); }
-.student-card-status-dot.status-attention { background: var(--color-warning); }
-.student-card-status-dot.status-absent { background: var(--color-danger); }
-.student-card-status-dot.status-unassessed { background: var(--text-muted); }
+.student-card-status-dot.status-active,
+.student-card-status-dot.status-attention,
+.student-card-status-dot.status-absent,
+.student-card-status-dot.status-unassessed {
+  display: none !important;
+}
 
 /* ==========================================================================
    MONSTER COMPANION AVATAR STAGE (72px - 80px Prominent Viewport)
