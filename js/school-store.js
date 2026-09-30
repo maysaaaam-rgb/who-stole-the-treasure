@@ -2571,6 +2571,117 @@
     return allStudents;
   }
 
+  function executeLocalTerm2Reset() {
+    console.log("⚡ Executing 100% Local-First Term 2 Reset...");
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    if (!students || students.length === 0) return;
+
+    const updated = students.map(st => {
+      const active = Number(st.xp) || 0;
+      const existingArch = Number(st.archivedXP ?? st.archived_xp ?? 0);
+
+      if (active > 0) {
+        st.archivedXP = existingArch + active;
+        st.archived_xp = st.archivedXP;
+        st.xp = 0; // FORCE 0 XP
+      }
+
+      // Freeze monster level at 3 or 4 (never drop to egg)
+      const curLvl = Math.max(Number(st.level) || 3, 3);
+      st.level = curLvl;
+      st.stageName = st.stageName || (curLvl >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
+      st.levelName = st.stageName;
+      st.isEgg = false;
+      st.isHatched = true;
+
+      return st;
+    });
+
+    // 1. Save locally immediately
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(updated));
+      localStorage.setItem('term2_migration_v2', 'true');
+      localStorage.setItem('term2_migration_v3', 'true');
+
+      // Also ensure all class rosters are synced so Grade 4A/4B students are 0 XP
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const synced = arr.map(s => {
+                const u = updated.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+                if (u) return Object.assign({}, s, u);
+                const act = Number(s.xp) || 0;
+                const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
+                s.archivedXP = arch + act;
+                s.archived_xp = s.archivedXP;
+                s.xp = 0;
+                s.level = Math.max(Number(s.level) || 3, 3);
+                s.stageName = s.stageName || (s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
+                s.levelName = s.stageName;
+                s.isEgg = false;
+                s.isHatched = true;
+                return s;
+              });
+              localStorage.setItem(k, JSON.stringify(synced));
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.AdventureAcademy) window.AdventureAcademy.students = updated;
+      if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+        window.schoolStore.state.students.forEach(s => {
+          const u = updated.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
+          if (u) {
+            Object.assign(s, u);
+          } else {
+            const act = Number(s.xp) || 0;
+            const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
+            s.archivedXP = arch + act;
+            s.archived_xp = s.archivedXP;
+            s.xp = 0;
+            s.level = Math.max(Number(s.level) || 3, 3);
+            s.stageName = s.stageName || (s.level >= 4 ? "Level 4 • Growing Monster" : "Level 3 • Baby Monster");
+            s.levelName = s.stageName;
+            s.isEgg = false;
+            s.isHatched = true;
+          }
+        });
+        if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
+        if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
+      }
+    }
+
+    // 2. Re-render UI immediately
+    if (typeof renderStudentRoster === 'function') renderStudentRoster();
+    else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
+    if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
+
+    // 3. Attempt silent cloud sync
+    if (typeof safeBackgroundSupabaseSync === 'function') {
+      safeBackgroundSupabaseSync(updated);
+    } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+      window.safeBackgroundSupabaseSync(updated);
+    } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
+      AdventureSupabase.safeBackgroundSupabaseSync(updated);
+    }
+
+    return updated;
+  }
+
+  // Auto-run if not yet migrated
+  if (typeof localStorage !== 'undefined') {
+    if (localStorage.getItem('term2_migration_v2') !== 'true') {
+      executeLocalTerm2Reset();
+    }
+  }
+
   const MIGRATION_KEY = 'term2_migration_v3';
 
   function autoRunTerm2Migration() {
@@ -2597,7 +2708,7 @@
       }
 
       console.log('[Term2 Migration] Initiating self-executing Term 2 migration v3 (0 active XP, lifetime level lock)...');
-      const updated = archiveAndResetXP();
+      const updated = executeLocalTerm2Reset() || archiveAndResetXP();
       localStorage.setItem(MIGRATION_KEY, 'true');
       console.log('[Term2 Migration] Self-executing Term 2 migration v3 completed successfully.');
       return updated;
@@ -2616,6 +2727,7 @@
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
+    root.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.recalculateAllStudents = recalculateAllStudents;
     root.archiveAndResetXP = archiveAndResetXP;
     root.autoRunTerm2Migration = autoRunTerm2Migration;
@@ -2628,6 +2740,7 @@
     root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
+      window.executeLocalTerm2Reset = executeLocalTerm2Reset;
       window.recalculateAllStudents = recalculateAllStudents;
       window.autoRunTerm2Migration = autoRunTerm2Migration;
       window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
@@ -2637,6 +2750,7 @@
       window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
       window.getStudentMascot = getStudentMascot;
     }
+    root.AdventureAcademy.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.AdventureAcademy.autoRunTerm2Migration = autoRunTerm2Migration;
     root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.AdventureAcademy.getStudentArchetype = getStudentArchetype;
