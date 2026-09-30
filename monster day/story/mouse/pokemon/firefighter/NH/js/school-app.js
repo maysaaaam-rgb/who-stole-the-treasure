@@ -11938,6 +11938,8 @@ window.switchClassroomSubTab = function(subTab) {
     window.handleQuickAwardXP(studentId, 10, event);
   };
 
+  window.addQuickXP = window.handleQuickAwardXP;
+
   // =========================================================================
   // DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT)
   // =========================================================================

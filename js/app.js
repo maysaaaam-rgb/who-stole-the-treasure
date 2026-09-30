@@ -1340,15 +1340,131 @@ class AppController {
 
 window.app = new AppController();
 
+// =========================================================================
+// FAILSAFE LOCAL-FIRST QUICK XP HANDLER
+// =========================================================================
+window.addQuickXP = function(studentId, amount = 10, event) {
+  if (event) {
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+  }
+
+  const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+  const student = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+  if (!student) {
+    console.error("Student not found:", studentId);
+    return;
+  }
+
+  // 1. Increment active XP immediately
+  const oldXP = Number(student.xp) || 0;
+  const newXP = oldXP + Number(amount);
+  student.xp = newXP;
+  student.totalXP = newXP;
+
+  // 2. Evaluate lifetime progression (Locked Level Floor)
+  const lifetimeXP = (Number(student.archivedXP ?? student.archived_xp ?? 0)) + newXP;
+  if (lifetimeXP >= 500 && (Number(student.level) || 3) < 4) {
+    student.level = 4;
+    student.stageName = "Level 4 • Growing Monster";
+    student.levelName = student.stageName;
+  }
+
+  // 3. Log to XP History
+  if (!student.xpHistory) student.xpHistory = [];
+  student.xpHistory.unshift({
+    id: "tx_" + Date.now(),
+    amount: amount,
+    type: "participation",
+    reason: "Class Participation (+10 XP)",
+    date: new Date().toLocaleDateString("en-GB"),
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    balanceAfter: newXP
+  });
+
+  // 4. Save to localStorage & in-memory store
+  localStorage.setItem('adventure_students', JSON.stringify(students));
+  ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+    try {
+      const raw = localStorage.getItem(k);
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+          if (idx !== -1) {
+            arr[idx].xp = newXP;
+            arr[idx].totalXP = newXP;
+            if (student.level) arr[idx].level = student.level;
+            if (student.stageName) arr[idx].stageName = student.stageName;
+            localStorage.setItem(k, JSON.stringify(arr));
+          }
+        }
+      }
+    } catch (e) {}
+  });
+
+  if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+  if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+    const storeIdx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    if (storeIdx !== -1) {
+      window.schoolStore.state.students[storeIdx].xp = newXP;
+      window.schoolStore.state.students[storeIdx].totalXP = newXP;
+      if (typeof window.schoolStore.evaluateMonsterStage === 'function') {
+        window.schoolStore.evaluateMonsterStage(window.schoolStore.state.students[storeIdx]);
+      }
+      if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
+    }
+  }
+
+  // 5. Sound trigger with safety guard
+  try {
+    if (window.classSoundboard?.playCoinReward) window.classSoundboard.playCoinReward();
+    else if (window.academyAudio?.playCoin) window.academyAudio.playCoin();
+    else if (typeof playCoinChime === 'function') playCoinChime();
+    else if (typeof playCoinReward === 'function') playCoinReward();
+  } catch (err) {
+    // Ignore audio errors so they never block state updates
+  }
+
+  // 6. Direct DOM update without full page reload
+  const cardEl = document.querySelector(`[data-student-id="${student.id}"]`) || document.querySelector(`[data-student-id="${studentId}"]`);
+  if (cardEl) {
+    const xpTextEl = cardEl.querySelector('.xp-num, .xp-val-text, .student-xp-pill');
+    if (xpTextEl) xpTextEl.innerText = `${newXP} XP`;
+    const burst = document.createElement('div');
+    burst.className = 'xp-burst-float';
+    burst.innerText = `+${amount} XP ⭐`;
+    cardEl.appendChild(burst);
+    setTimeout(() => burst.remove(), 1200);
+
+    const progressFill = cardEl.querySelector('.student-xp-progress-fill');
+    if (progressFill && window.schoolStore && typeof window.schoolStore.calculateMonsterState === 'function') {
+      const mState = window.schoolStore.calculateMonsterState(student.id);
+      if (mState) progressFill.style.width = (mState.progressPct || 0) + '%';
+    }
+  } else {
+    if (typeof renderStudentRoster === 'function') renderStudentRoster();
+    else if (typeof renderCurrentView === 'function') renderCurrentView();
+  }
+
+  // 7. Silent background cloud sync (never blocks execution)
+  if (typeof safeBackgroundSupabaseSync === 'function') {
+    safeBackgroundSupabaseSync(students);
+  } else if (typeof window.safeBackgroundSupabaseSync === 'function') {
+    window.safeBackgroundSupabaseSync(students);
+  }
+};
+
 // Safe global bridges for platform interoperability
 if (typeof window !== 'undefined') {
+  if (!window.handleQuickAwardXP) {
+    window.handleQuickAwardXP = window.addQuickXP;
+  }
   if (!window.checkAndRunMigrationOnce && typeof checkAndRunMigrationOnce === 'function') {
     window.checkAndRunMigrationOnce = checkAndRunMigrationOnce;
-  }
-  if (!window.handleQuickAwardXP && typeof handleQuickAwardXP === 'function') {
-    window.handleQuickAwardXP = handleQuickAwardXP;
   }
   if (!window.promptDirectXPEdit && typeof promptDirectXPEdit === 'function') {
     window.promptDirectXPEdit = promptDirectXPEdit;
   }
 }
+
