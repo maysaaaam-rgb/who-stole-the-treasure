@@ -2717,6 +2717,64 @@
     }
   }
 
+  // Quick Direct Edit fallback
+  function promptDirectXPEdit(studentId) {
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    const st = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    if (!st) return;
+
+    const displayName = st.name || (st.firstName + ' ' + (st.lastName || '')).trim() || 'Student';
+    const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
+    if (input === null) return;
+
+    const newXP = Math.max(0, parseInt(input, 10) || 0);
+    st.xp = newXP;
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(students));
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+              if (idx !== -1) {
+                arr[idx].xp = newXP;
+                localStorage.setItem(k, JSON.stringify(arr));
+              }
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+      if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+        const idx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId));
+        if (idx !== -1) {
+          window.schoolStore.state.students[idx].xp = newXP;
+          if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
+          if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
+        }
+      }
+    }
+
+    if (typeof renderStudentRoster === 'function') renderStudentRoster();
+    else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
+    if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
+
+    if (typeof safeBackgroundSupabaseSync === 'function') {
+      safeBackgroundSupabaseSync(students);
+    } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+      window.safeBackgroundSupabaseSync(students);
+    } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
+      AdventureSupabase.safeBackgroundSupabaseSync(students);
+    }
+  }
+
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
@@ -2727,6 +2785,7 @@
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
+    root.promptDirectXPEdit = promptDirectXPEdit;
     root.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.recalculateAllStudents = recalculateAllStudents;
     root.archiveAndResetXP = archiveAndResetXP;
@@ -2740,6 +2799,7 @@
     root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
+      window.promptDirectXPEdit = promptDirectXPEdit;
       window.executeLocalTerm2Reset = executeLocalTerm2Reset;
       window.recalculateAllStudents = recalculateAllStudents;
       window.autoRunTerm2Migration = autoRunTerm2Migration;
@@ -2750,6 +2810,7 @@
       window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
       window.getStudentMascot = getStudentMascot;
     }
+    root.AdventureAcademy.promptDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.executeLocalTerm2Reset = executeLocalTerm2Reset;
     root.AdventureAcademy.autoRunTerm2Migration = autoRunTerm2Migration;
     root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;

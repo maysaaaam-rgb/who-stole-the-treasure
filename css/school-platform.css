@@ -9721,4 +9721,45 @@ body.curriculum-drawer-open {
   transform: translateY(2px) scale(0.95) !important;
 }
 
+/* ============================================================
+   CLICKABLE ACTIVE XP BADGE ON STUDENT CARD
+   ============================================================ */
+.xp-clickable-badge,
+.student-xp-pill-clickable {
+  cursor: pointer !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  border-bottom: 3px solid rgba(217, 119, 6, 0.85) !important;
+  color: #fbbf24 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  font-weight: 800 !important;
+  font-size: 0.82rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
+}
+
+.xp-clickable-badge:hover,
+.student-xp-pill-clickable:hover {
+  transform: scale(1.06) !important;
+  background: rgba(245, 158, 11, 0.28) !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.35) !important;
+}
+
+.xp-clickable-badge:active,
+.student-xp-pill-clickable:active {
+  transform: translateY(2px) scale(0.98) !important;
+  border-bottom-width: 1px !important;
+}
+
+.xp-clickable-badge .xp-num {
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+}
+
 

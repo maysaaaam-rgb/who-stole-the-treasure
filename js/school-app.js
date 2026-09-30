@@ -1300,7 +1300,7 @@
         '<div class="student-card-content">' +
           '<div class="student-name-row">' +
             '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
-            '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + (mState.totalXP || 0).toLocaleString() + ' XP</span><span class="xp-click-hint">✎</span></div>' +
+            '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + studentId + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3445,7 +3445,7 @@
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                       '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + activeXP + ' XP</span><span class="xp-click-hint">✎</span></div>' +
+                      '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + s.id + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3874,7 +3874,7 @@
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
               '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + activeXP + ' XP</span><span class="xp-click-hint">✎</span></div>' +
+              '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + s.id + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -12203,6 +12203,63 @@ window.switchClassroomSubTab = function(subTab) {
   window.updateResultingXPFromDelta = updateResultingXPFromDelta;
   window.updateResultingXPFromExact = updateResultingXPFromExact;
   window.commitStudentXPEdit = commitStudentXPEdit;
+
+  // Quick Direct Edit fallback
+  function promptDirectXPEdit(studentId) {
+    const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+    const st = students.find(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+    if (!st) return;
+
+    const displayName = st.name || (st.firstName + ' ' + (st.lastName || '')).trim() || 'Student';
+    const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
+    if (input === null) return;
+
+    const newXP = Math.max(0, parseInt(input, 10) || 0);
+    st.xp = newXP;
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(students));
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const idx = arr.findIndex(s => String(s.id) === String(studentId) || String(s.studentIdNumber) === String(studentId));
+              if (idx !== -1) {
+                arr[idx].xp = newXP;
+                localStorage.setItem(k, JSON.stringify(arr));
+              }
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+    if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+      const idx = window.schoolStore.state.students.findIndex(s => String(s.id) === String(studentId));
+      if (idx !== -1) {
+        window.schoolStore.state.students[idx].xp = newXP;
+        if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
+        if (typeof window.schoolStore.notify === 'function') window.schoolStore.notify('students', window.schoolStore.state.students);
+      }
+    }
+
+    if (typeof renderStudentRoster === 'function') renderStudentRoster();
+    else if (typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
+    if (typeof window.renderCurrentView === 'function') window.renderCurrentView();
+
+    if (typeof safeBackgroundSupabaseSync === 'function') {
+      safeBackgroundSupabaseSync(students);
+    } else if (typeof window.safeBackgroundSupabaseSync === 'function') {
+      window.safeBackgroundSupabaseSync(students);
+    } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
+      AdventureSupabase.safeBackgroundSupabaseSync(students);
+    }
+  }
+
+  window.promptDirectXPEdit = promptDirectXPEdit;
 
   window.handleEditXPReasonChange = function(val) {
     const customReason = document.getElementById('edit-student-xp-custom-reason');
