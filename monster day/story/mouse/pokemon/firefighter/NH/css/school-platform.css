@@ -9632,156 +9632,93 @@ body.curriculum-drawer-open {
   transition: all 0.3s ease;
 }
 
-/* ==========================================================================
-   Clean Card Header Layout (Cyber-Glassmorphism & Anti-Admin Standards)
-   ========================================================================== */
+/* Remove any rogue black blobs */
+.student-card-status-dot {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .card-header-flex {
   display: flex !important;
-  justify-content: space-between !important;
   align-items: center !important;
+  justify-content: space-between !important;
   width: 100% !important;
-  padding: 4px 6px !important;
-  gap: 8px !important;
-  z-index: 10 !important;
+  margin-bottom: 12px !important;
   position: relative !important;
-  box-sizing: border-box !important;
-  margin-bottom: 6px !important;
+  z-index: 2 !important;
 }
 
 .char-role-badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  background: rgba(15, 23, 42, 0.75) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-bottom: 2px solid rgba(15, 23, 42, 0.9) !important;
+  background: rgba(168, 85, 247, 0.18) !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+  color: #c084fc !important;
   padding: 3px 8px !important;
-  border-radius: 9999px !important;
-  cursor: pointer !important;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  color: #f8fafc !important;
-  font-size: 0.74rem !important;
-  font-weight: 700 !important;
-  user-select: none !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
-  max-width: 55% !important;
-}
-
-.char-role-badge:hover {
-  background: rgba(30, 41, 59, 0.9) !important;
-  border-color: rgba(56, 189, 248, 0.5) !important;
-  box-shadow: 0 3px 10px rgba(56, 189, 248, 0.25) !important;
-  transform: translateY(-1px) !important;
-}
-
-.char-role-badge:active {
-  transform: translateY(1px) !important;
-  border-bottom-width: 1px !important;
-}
-
-.char-role-badge .role-icon {
-  font-size: 0.95rem !important;
-  line-height: 1 !important;
-  display: inline-block !important;
-  flex-shrink: 0 !important;
-}
-
-.char-role-badge .role-title {
-  text-transform: capitalize !important;
-  letter-spacing: 0.02em !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  border-radius: 20px !important;
   font-size: 0.72rem !important;
-  color: #e2e8f0 !important;
+  font-weight: 800 !important;
+  text-transform: capitalize !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, background 0.15s ease !important;
 }
-
-.char-role-badge .role-edit {
-  font-size: 0.68rem !important;
-  color: #94a3b8 !important;
-  margin-left: 2px !important;
-  transition: color 0.15s ease !important;
-  flex-shrink: 0 !important;
-}
-
-.char-role-badge:hover .role-edit {
-  color: #38bdf8 !important;
+.char-role-badge:hover {
+  transform: scale(1.05) !important;
+  background: rgba(168, 85, 247, 0.3) !important;
 }
 
 .card-pills-right {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
+  gap: 6px !important;
 }
 
 .arch-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-  background: rgba(30, 41, 59, 0.85) !important;
-  backdrop-filter: blur(6px) !important;
-  -webkit-backdrop-filter: blur(6px) !important;
-  border: 1px solid rgba(148, 163, 184, 0.25) !important;
-  color: #94a3b8 !important;
-  font-size: 0.68rem !important;
+  background: #1e1b4b !important;
+  border: 1px solid #6366f1 !important;
+  color: #a5b4fc !important;
+  font-size: 0.7rem !important;
   font-weight: 800 !important;
-  padding: 3px 7px !important;
-  border-radius: 9999px !important;
-  letter-spacing: 0.02em !important;
-  white-space: nowrap !important;
-  line-height: 1 !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
 }
 
 .streak-pill {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-  background: rgba(239, 68, 68, 0.15) !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  color: #f87171 !important;
-  font-size: 0.68rem !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #f59e0b !important;
+  font-size: 0.7rem !important;
   font-weight: 800 !important;
-  padding: 3px 7px !important;
-  border-radius: 9999px !important;
-  white-space: nowrap !important;
-  line-height: 1 !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
 }
 
 .btn-card-pencil {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4) !important;
+  color: #e2e8f0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 26px !important;
-  height: 26px !important;
-  border-radius: 8px !important;
-  background: linear-gradient(135deg, #1e293b, #0f172a) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-bottom: 3px solid #020617 !important;
-  color: #f8fafc !important;
-  font-size: 0.78rem !important;
-  cursor: pointer !important;
+  font-size: 0.75rem !important;
   transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35) !important;
-  padding: 0 !important;
-  line-height: 1 !important;
-  user-select: none !important;
 }
-
 .btn-card-pencil:hover {
-  background: linear-gradient(135deg, #334155, #1e293b) !important;
-  border-color: rgba(56, 189, 248, 0.5) !important;
-  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3) !important;
-  transform: translateY(-1px) !important;
+  background: #38bdf8 !important;
+  color: #0f172a !important;
+  transform: translateY(-1px) scale(1.05) !important;
 }
-
 .btn-card-pencil:active {
-  transform: translateY(2px) !important;
-  border-bottom-width: 1px !important;
-  box-shadow: none !important;
+  transform: translateY(2px) scale(0.95) !important;
 }
 
 
