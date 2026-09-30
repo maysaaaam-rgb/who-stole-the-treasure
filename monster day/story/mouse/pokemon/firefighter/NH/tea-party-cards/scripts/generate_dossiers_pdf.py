@@ -1,6 +1,6 @@
 """
-Alice in Wonderland: Mad Tea Party Student Role Dossiers PDF Generator
-Generates a 19-page comprehensive A4 printable PDF where each page is an individual
+Alice in Wonderland: Mad Tea Party Class 4-A Student Role Dossiers PDF Generator
+Generates an 18-page comprehensive A4 printable PDF where each page is an individual
 student acting dossier with portrait, role details, stats, costumes, props, and performance script.
 """
 
@@ -14,7 +14,7 @@ ASSETS_DIR = os.path.join(BASE_DIR, "assets", "characters")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# A4 dimensions at 150 DPI (clean high-res print, compact filesize)
+# A4 dimensions at 150 DPI
 PAGE_W = 1240
 PAGE_H = 1754
 
@@ -44,23 +44,22 @@ def render_dossier_page(char):
     gold_light = (217, 119, 6)
     slate_dark = (30, 41, 59)
 
-    # Outer decorative border
+    # Outer border
     draw.rectangle([20, 20, PAGE_W - 20, PAGE_H - 20], outline=gold_dark, width=3)
     draw.rectangle([28, 28, PAGE_W - 28, PAGE_H - 28], outline=gold_med, width=1)
 
     # 1. Header Banner
     draw.rectangle([35, 35, PAGE_W - 35, 125], fill=(254, 243, 199), outline=gold_med, width=2)
-    draw.text((55, 48), f"{char['name']} — ACTING GUIDE & ROLE DOSSIER", fill=gold_dark, font=F_HEADER)
+    draw.text((55, 48), f"{char['name']} — CLASS 4-A ACTING DOSSIER", fill=gold_dark, font=F_HEADER)
     draw.text((55, 92), f"ALICE IN WONDERLAND: MAD TEA PARTY • {char['act'].upper()}", fill=gold_med, font=F_SUB)
 
-    # Actor pill on right of header
-    badge_x = PAGE_W - 275
+    # Actor badge
+    badge_x = PAGE_W - 285
     draw.rectangle([badge_x, 46, PAGE_W - 50, 115], fill=gold_dark, outline=gold_light, width=2)
     draw.text((badge_x + 15, 54), "STUDENT ACTOR", fill=(254, 240, 138), font=F_SM)
     draw.text((badge_x + 15, 74), char['actor'].upper(), fill=(255, 255, 255), font=F_NAME)
 
-    # 2. Upper Section: Portrait + Stats & Identity
-    # Portrait
+    # 2. Portrait + Role + Stats
     p_box = (45, 145, 345, 525)
     draw.rectangle([p_box[0] - 2, p_box[1] - 2, p_box[2] + 2, p_box[3] + 2], outline=gold_med, width=3)
     
@@ -72,7 +71,6 @@ def render_dossier_page(char):
     else:
         draw.rectangle(p_box, fill=(20, 20, 20))
 
-    # Role Info (Right of portrait)
     rx = 370
     draw.text((rx, 150), f"ROLE ARCHETYPE:", fill=gold_dark, font=F_SM)
     draw.text((rx, 172), char['role'], fill=slate_dark, font=F_ROLE)
@@ -92,19 +90,19 @@ def render_dossier_page(char):
         draw.text((cx + 20, stat_box_y + 14), lbl, fill=(100, 116, 139), font=F_SM)
         draw.text((cx + 20, stat_box_y + 36), val, fill=col, font=F_NAME)
 
-    # Special Ability Box
+    # Ability
     ab_y = 315
     draw.rectangle([rx, ab_y, PAGE_W - 45, ab_y + 90], fill=(254, 249, 235), outline=gold_dark, width=1)
     draw.text((rx + 15, ab_y + 10), "★ SPECIAL CHARACTER ABILITY", fill=gold_dark, font=F_SM)
     draw.text((rx + 15, ab_y + 34), char['ability'], fill=slate_dark, font=F_BODY)
 
-    # Vocal Delivery Box
+    # Vocal Delivery
     vc_y = 420
     draw.rectangle([rx, vc_y, PAGE_W - 45, vc_y + 105], fill=(255, 255, 255), outline=gold_med, width=1)
     draw.text((rx + 15, vc_y + 10), "🎙️ VOCAL TONE & ACTING DELIVERY", fill=gold_dark, font=F_SM)
     draw.text((rx + 15, vc_y + 36), char['vocal'], fill=(154, 52, 18), font=F_BODY)
 
-    # 3. Two-Column Checklists (Costumes & Props)
+    # 3. Two Column Checklists
     y_col = 545
     box_w = (PAGE_W - 90 - 20) // 2
 
@@ -132,7 +130,7 @@ def render_dossier_page(char):
         draw.text((p_box_c[0] + 44, py), prop[:48], fill=slate_dark, font=F_BODY)
         py += 32
 
-    # 4. Performance Monologue & Dialogue Section
+    # 4. Performance Monologue & Script
     s_top = 790
     draw.rectangle([45, s_top, PAGE_W - 45, s_top + 450], fill=(255, 255, 255), outline=gold_dark, width=2)
     draw.rectangle([45, s_top, PAGE_W - 45, s_top + 38], fill=(254, 243, 199))
@@ -141,7 +139,6 @@ def render_dossier_page(char):
     draw.text((65, s_top + 55), "🎬 Stage Action Directions:", fill=(154, 52, 18), font=F_BODY_BOLD)
     draw.text((65, s_top + 85), char['action'], fill=slate_dark, font=F_BODY)
 
-    # Key Line Box
     q_y = s_top + 130
     draw.rectangle([65, q_y, PAGE_W - 65, q_y + 110], fill=(254, 242, 242), outline=(239, 68, 68), width=1)
     draw.text((80, q_y + 10), "⭐ Key Script Line to Memorize:", fill=(153, 27, 27), font=F_SM)
@@ -156,7 +153,7 @@ def render_dossier_page(char):
     if w2: draw.text((65, s_top + 325), w2, fill=slate_dark, font=F_BODY)
     if w3: draw.text((65, s_top + 355), w3, fill=slate_dark, font=F_BODY)
 
-    # 5. Key Interaction Cue Box (Exact Trigger)
+    # 5. Key Interaction Cue
     cue_top = 1260
     draw.rectangle([45, cue_top, PAGE_W - 45, cue_top + 220], fill=(254, 243, 199), outline=gold_dark, width=2)
     draw.rectangle([45, cue_top, PAGE_W - 45, cue_top + 38], fill=(245, 158, 11))
@@ -188,18 +185,18 @@ def render_dossier_page(char):
 
 def main():
     print("=" * 60)
-    print("GENERATING 19 STUDENT ROLE DOSSIERS PDF (A4 PRINTABLE)")
+    print("GENERATING CLASS 4-A STUDENT ROLE DOSSIERS PDF (18 STUDENTS)")
     print("=" * 60)
 
     pages = []
     for char in CHARACTERS:
-        print(f"Rendering Dossier {char['num']:02d}/19: {char['name']} ({char['actor']})")
+        print(f"Rendering Dossier {char['num']:02d}/18: {char['name']} ({char['actor']})")
         page_img = render_dossier_page(char)
         pages.append(page_img)
 
-    out_pdf = os.path.join(OUTPUT_DIR, "Tea_Party_Student_Role_Dossiers.pdf")
+    out_pdf = os.path.join(OUTPUT_DIR, "Class_4A_Student_Role_Dossiers.pdf")
     pages[0].save(out_pdf, save_all=True, append_images=pages[1:], resolution=150)
-    print(f"Saved: {out_pdf} (19 Pages)")
+    print(f"Saved: {out_pdf} (18 Pages)")
     print("=" * 60)
 
 if __name__ == "__main__":
