@@ -2437,13 +2437,14 @@
   }
 
   function archiveAndResetXP() {
-    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+    const rosterKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'];
+    const allUpdatedMap = new Map();
 
-    const updated = students.map(student => {
+    function processStudent(student) {
+      if (!student) return student;
       const currentActive = Number(student.xp) || 0;
 
-      // 1. Move active XP into archive ledger
+      // 1. Move active XP into archive ledger (if activeXP > 0 or archivedXP unset)
       student.archivedXP = (Number(student.archivedXP ?? student.archived_xp ?? 0)) + currentActive;
       student.archived_xp = student.archivedXP;
       student.xp = 0; // Force active points to 0 for Term 2
@@ -2455,84 +2456,56 @@
       student.levelName = stage.stageName;
       student.isEgg = stage.isEgg;
       if (stage.level >= 3) student.isHatched = true;
+      student.progressPct = stage.progressPct;
+      student.remainingXP = stage.xpToNext;
+      student.xpToNext = stage.xpToNext;
 
-      // 3. Record audit trail entry
-      if (!student.xpHistory) student.xpHistory = [];
-      student.xpHistory.unshift({
-        id: "archive_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-        amount: currentActive,
-        type: "season_archive",
-        reason: `Term 1 Archived: ${currentActive} XP moved to cold storage`,
-        date: new Date().toLocaleDateString("en-GB"),
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        balanceAfter: 0
-      });
-      student.xp_history = student.xpHistory;
-
-      return student;
-    });
-
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('adventure_students', JSON.stringify(updated));
-    }
-    if (typeof window !== 'undefined' && window.AdventureAcademy) {
-      window.AdventureAcademy.students = updated;
-    }
-
-    // Also update master store
-    if (typeof window !== 'undefined' && window.schoolStore && window.schoolStore.state) {
-      if (Array.isArray(window.schoolStore.state.students)) {
-        window.schoolStore.state.students.forEach(s => {
-          const u = updated.find(st => String(st.id) === String(s.id) || String(st.studentIdNumber) === String(s.studentIdNumber));
-          if (u) {
-            s.archivedXP = u.archivedXP;
-            s.archived_xp = u.archivedXP;
-            s.xp = 0;
-            s.level = u.level;
-            s.stageName = u.stageName;
-            s.levelName = u.stageName;
-            s.isEgg = u.isEgg;
-            s.isHatched = u.isHatched;
-            s.xpHistory = u.xpHistory;
-            s.xp_history = u.xp_history;
-          } else {
-            const cActive = Number(s.xp) || 0;
-            s.archivedXP = (Number(s.archivedXP ?? s.archived_xp ?? 0)) + cActive;
-            s.archived_xp = s.archivedXP;
-            s.xp = 0;
-            const stage = getStudentStage(s);
-            s.level = stage.level;
-            s.stageName = stage.stageName;
-            s.levelName = stage.stageName;
-            s.isEgg = stage.isEgg;
-            if (stage.level >= 3) s.isHatched = true;
-          }
+      // 3. Record audit trail entry if active points were archived
+      if (currentActive > 0) {
+        if (!student.xpHistory) student.xpHistory = [];
+        student.xpHistory.unshift({
+          id: "archive_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+          amount: currentActive,
+          type: "season_archive",
+          reason: `Term 1 Archived: ${currentActive} XP moved to cold storage`,
+          date: new Date().toLocaleDateString("en-GB"),
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          balanceAfter: 0
         });
+        student.xp_history = student.xpHistory;
       }
-      window.schoolStore.saveState();
-      window.schoolStore.notify('students', window.schoolStore.state.students);
+
+      if (student.id) {
+        allUpdatedMap.set(String(student.id), student);
+      }
+      return student;
     }
 
-    // Update eaa_master_school_v6 in localStorage if present
+    // Process all roster keys in localStorage immediately (Local-First)
     if (typeof localStorage !== 'undefined') {
+      rosterKeys.forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              const updatedList = list.map(processStudent);
+              localStorage.setItem(k, JSON.stringify(updatedList));
+            }
+          }
+        } catch (e) {
+          console.error('[Term2 Migration] Error updating roster key ' + k, e);
+        }
+      });
+
+      // Update eaa_master_school_v6
       try {
         const masterRaw = localStorage.getItem('eaa_master_school_v6');
         if (masterRaw) {
           const masterObj = JSON.parse(masterRaw);
           if (masterObj && Array.isArray(masterObj.students)) {
             masterObj.students.forEach(s => {
-              const u = updated.find(st => String(st.id) === String(s.id) || String(st.studentIdNumber) === String(s.studentIdNumber));
-              if (u) {
-                s.archivedXP = u.archivedXP;
-                s.archived_xp = u.archivedXP;
-                s.xp = 0;
-                s.level = u.level;
-                s.stageName = u.stageName;
-                s.levelName = u.stageName;
-                s.isEgg = u.isEgg;
-                s.isHatched = u.isHatched;
-                s.xpHistory = u.xpHistory;
-              }
+              processStudent(s);
             });
             localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterObj));
           }
@@ -2540,41 +2513,93 @@
       } catch (e) {}
     }
 
-    const MIGRATION_KEY = 'term2_migration_v2';
-
-    if (typeof forcePushToSupabase === 'function') {
-      forcePushToSupabase(updated);
-    } else if (typeof window !== 'undefined' && typeof window.forcePushToSupabase === 'function') {
-      window.forcePushToSupabase(updated);
-    } else if (typeof syncWithSupabaseCloud === 'function') {
-      syncWithSupabaseCloud();
-    } else if (typeof window !== 'undefined' && typeof window.syncWithSupabaseCloud === 'function') {
-      window.syncWithSupabaseCloud();
+    // Update in-memory AdventureAcademy.students
+    if (typeof window !== 'undefined' && window.AdventureAcademy) {
+      if (Array.isArray(window.AdventureAcademy.students)) {
+        window.AdventureAcademy.students.forEach(s => processStudent(s));
+      } else {
+        window.AdventureAcademy.students = Array.from(allUpdatedMap.values());
+      }
     }
 
+    // Update window.schoolStore.state.students
+    if (typeof window !== 'undefined' && window.schoolStore && window.schoolStore.state) {
+      if (Array.isArray(window.schoolStore.state.students)) {
+        window.schoolStore.state.students.forEach(s => {
+          processStudent(s);
+        });
+      }
+      if (typeof window.schoolStore.saveState === 'function') {
+        window.schoolStore.saveState();
+      }
+      if (typeof window.schoolStore.notify === 'function') {
+        window.schoolStore.notify('students', window.schoolStore.state.students);
+      }
+    }
+
+    const MIGRATION_KEY = 'term2_migration_v3';
     if (typeof localStorage !== 'undefined') {
-      try { localStorage.setItem(MIGRATION_KEY, 'true'); } catch (e) {}
+      try {
+        localStorage.setItem(MIGRATION_KEY, 'true');
+        localStorage.setItem('term2_migration_v2', 'true');
+        localStorage.setItem('term2_migration_v1', 'true');
+      } catch (e) {}
     }
 
+    // Re-render UI immediately
     if (typeof renderStudentRoster === 'function') renderStudentRoster();
     else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
     else if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
 
-    return updated;
+    // Isolated non-blocking background push to Supabase that never blocks UI or throws:
+    const allStudents = Array.from(allUpdatedMap.values());
+    if (allStudents.length > 0) {
+      setTimeout(() => {
+        try {
+          const syncFn = (typeof safeBackgroundSupabaseSync === 'function' ? safeBackgroundSupabaseSync : null) ||
+            (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function' ? window.safeBackgroundSupabaseSync : null) ||
+            (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function' ? AdventureSupabase.safeBackgroundSupabaseSync : null);
+          if (syncFn) {
+            syncFn(allStudents);
+          }
+        } catch (err) {
+          console.warn('[Term2 Migration] Background sync error ignored:', err);
+        }
+      }, 100);
+    }
+
+    return allStudents;
   }
 
-  const MIGRATION_KEY = 'term2_migration_v2';
+  const MIGRATION_KEY = 'term2_migration_v3';
 
   function autoRunTerm2Migration() {
     if (typeof localStorage === 'undefined') return;
     try {
-      if (localStorage.getItem(MIGRATION_KEY) === 'true') {
+      const alreadyRun = localStorage.getItem(MIGRATION_KEY) === 'true';
+      let hasActiveXP = false;
+      const checkKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'];
+      for (const k of checkKeys) {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          try {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr) && arr.some(s => Number(s.xp) > 0)) {
+              hasActiveXP = true;
+              break;
+            }
+          } catch (e) {}
+        }
+      }
+
+      if (alreadyRun && !hasActiveXP) {
         return;
       }
-      console.log('[Term2 Migration] Initiating self-executing Term 2 migration (0 active XP, lifetime level lock)...');
+
+      console.log('[Term2 Migration] Initiating self-executing Term 2 migration v3 (0 active XP, lifetime level lock)...');
       const updated = archiveAndResetXP();
       localStorage.setItem(MIGRATION_KEY, 'true');
-      console.log('[Term2 Migration] Self-executing Term 2 migration completed successfully.');
+      console.log('[Term2 Migration] Self-executing Term 2 migration v3 completed successfully.');
       return updated;
     } catch (e) {
       console.error('[Term2 Migration] Migration exception:', e);
@@ -2584,9 +2609,7 @@
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
-      if (localStorage.getItem(MIGRATION_KEY) !== 'true') {
-        autoRunTerm2Migration();
-      }
+      autoRunTerm2Migration();
     } catch (e) {}
   }
 
@@ -15991,10 +16014,37 @@
           remoteMap.set(remoteStudent.id, remoteStudent);
 
           const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
+          const isTerm2Migrated = (typeof localStorage !== 'undefined' && localStorage.getItem('term2_migration_v3') === 'true');
+
           if (localIdx !== -1) {
             const local = this.state.students[localIdx];
-            // Supabase is authoritative source of truth: merge remote attributes
-            this.state.students[localIdx] = Object.assign({}, local, remoteStudent);
+            let mergedXP = Number(remoteStudent.xp) || 0;
+            let mergedArchived = Math.max(Number(local.archivedXP ?? local.archived_xp ?? 0), Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0));
+
+            // Term 2 Protection: Never let unarchived remote legacy XP override local active 0 XP
+            if (isTerm2Migrated && Number(local.xp) === 0 && mergedXP > 0 && Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0) === 0) {
+              mergedArchived = Math.max(mergedArchived, mergedXP);
+              mergedXP = 0;
+            }
+
+            const finalLevel = Math.max(Number(local.level) || 1, Number(remoteStudent.level) || 1);
+
+            this.state.students[localIdx] = Object.assign({}, local, remoteStudent, {
+              xp: mergedXP,
+              archivedXP: mergedArchived,
+              archived_xp: mergedArchived,
+              level: finalLevel
+            });
+
+            if (typeof getStudentStage === 'function') {
+              const stage = getStudentStage(this.state.students[localIdx]);
+              this.state.students[localIdx].level = Math.max(finalLevel, stage.level);
+              this.state.students[localIdx].stageName = stage.stageName;
+              this.state.students[localIdx].levelName = stage.stageName;
+              this.state.students[localIdx].isEgg = stage.isEgg;
+              if (this.state.students[localIdx].level >= 3) this.state.students[localIdx].isHatched = true;
+            }
+
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
               this.state.monsterProfiles[remoteStudent.id] = Object.assign(
                 {},
@@ -16005,7 +16055,29 @@
             modified = true;
           } else {
             // Student added on another device: ingest into local state
-            this.state.students.push(remoteStudent);
+            let mergedXP = Number(remoteStudent.xp) || 0;
+            let mergedArchived = Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0);
+            if (isTerm2Migrated && mergedXP > 0 && mergedArchived === 0) {
+              mergedArchived = mergedXP;
+              mergedXP = 0;
+            }
+
+            const sCopy = Object.assign({}, remoteStudent, {
+              xp: mergedXP,
+              archivedXP: mergedArchived,
+              archived_xp: mergedArchived
+            });
+
+            if (typeof getStudentStage === 'function') {
+              const stage = getStudentStage(sCopy);
+              sCopy.level = Math.max(Number(sCopy.level) || 1, stage.level);
+              sCopy.stageName = stage.stageName;
+              sCopy.levelName = stage.stageName;
+              sCopy.isEgg = stage.isEgg;
+              if (sCopy.level >= 3) sCopy.isHatched = true;
+            }
+
+            this.state.students.push(sCopy);
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
               this.state.monsterProfiles[remoteStudent.id] = remoteStudent.monsterProfile;
             }

@@ -290,13 +290,13 @@
         syncBtn.style.color = '#475569';
         syncBtn.style.borderColor = '#cbd5e1';
         syncBtn.title = 'Database not configured. Click to configure cloud database.';
-      } else if (live === 'error' || status.lastSyncStatus === 'error') {
-        if (syncIcon) syncIcon.textContent = '❌';
-        if (syncText) syncText.textContent = 'Cloud Connection Failed';
-        syncBtn.style.background = '#fef2f2';
-        syncBtn.style.color = '#991b1b';
-        syncBtn.style.borderColor = '#fecaca';
-        syncBtn.title = 'Supabase Error: ' + (status.lastError || 'Network unreachable');
+      } else if (live === 'error' || status.lastSyncStatus === 'error' || live === 'local') {
+        if (syncIcon) syncIcon.textContent = '💾';
+        if (syncText) syncText.textContent = 'Saved Locally';
+        syncBtn.style.background = '#fef9c3';
+        syncBtn.style.color = '#854d0e';
+        syncBtn.style.borderColor = '#fde047';
+        syncBtn.title = 'Local-First Mode: All changes saved safely on your device. Cloud status: ' + (status.lastError || 'Standby');
       } else if (status.lastSyncStatus === 'syncing') {
         if (syncIcon) syncIcon.textContent = '⏳';
         if (syncText) syncText.textContent = 'Syncing...';
@@ -399,11 +399,11 @@
       if (indicator) indicator.textContent = '⚠️';
       if (text) text.textContent = 'Offline / Local Mode';
       if (latencyBadge) latencyBadge.textContent = 'Local Cache Active';
-    } else if (live === 'error') {
-      if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
-      if (indicator) indicator.textContent = '❌';
-      if (text) text.textContent = 'Cloud Connection Failed';
-      if (latencyBadge) latencyBadge.textContent = sb.lastError || '';
+    } else if (live === 'error' || live === 'local') {
+      if (pill) { pill.style.background = '#fef9c3'; pill.style.color = '#854d0e'; }
+      if (indicator) indicator.textContent = '💾';
+      if (text) text.textContent = 'Saved Locally';
+      if (latencyBadge) latencyBadge.textContent = sb.lastError ? 'Local: ' + sb.lastError : 'Local-First Mode';
     } else if (isConn) {
       if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
       if (indicator) indicator.textContent = '🟢';
@@ -1263,7 +1263,6 @@
         // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
         '<div class="card-overlay-top">' +
           '<div class="card-overlay-left">' +
-            '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
             '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
             '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
           '</div>' +
@@ -3403,7 +3402,6 @@
                       (isMultiSelectMode ?
                         '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
                       ) +
-                      '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
                       '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
                         '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
                         '<span class="thematic-chip-name">' + badge.role + '</span>' +
@@ -3831,7 +3829,6 @@
               (isMultiSelectMode ?
                 '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
               ) +
-              '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
               '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
                 '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
                 '<span class="thematic-chip-name">' + badge.role + '</span>' +
@@ -12153,12 +12150,18 @@ window.switchClassroomSubTab = function(subTab) {
       }
     }
 
-    // 5. Push to Supabase with Timeout Protection
-    if (typeof safeSyncStudentToSupabase === 'function') {
-      safeSyncStudentToSupabase(student);
-    } else if (typeof window !== 'undefined' && typeof window.safeSyncStudentToSupabase === 'function') {
-      window.safeSyncStudentToSupabase(student);
-    }
+    // 5. Push to Supabase with Timeout Protection (Local-First: isolated background call)
+    setTimeout(() => {
+      if (typeof safeBackgroundSupabaseSync === 'function') {
+        safeBackgroundSupabaseSync([student]);
+      } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+        window.safeBackgroundSupabaseSync([student]);
+      } else if (typeof safeSyncStudentToSupabase === 'function') {
+        safeSyncStudentToSupabase(student);
+      } else if (typeof window !== 'undefined' && typeof window.safeSyncStudentToSupabase === 'function') {
+        window.safeSyncStudentToSupabase(student);
+      }
+    }, 50);
 
     // 6. Refresh UI
     if (typeof renderCurrentView === 'function') {

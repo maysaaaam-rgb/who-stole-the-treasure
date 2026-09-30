@@ -181,18 +181,20 @@
       }
 
       try {
-        const { data, error, status } = await this.client.from('classes').select('id').limit(1);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
+        const checkPromise = this.client.from('students').select('id').limit(1);
+        const { data, error, status } = await Promise.race([checkPromise, timeoutPromise]);
         if (error || (status && status >= 400)) {
-          console.warn('[AdventureSupabase] Live check returned error:', error);
-          this.liveStatus = 'error';
+          console.warn('[AdventureSupabase] Live check returned non-critical status, running Local-First:', error ? error.message : status);
+          this.liveStatus = 'local';
           this.lastError = error ? error.message : `HTTP ${status}`;
         } else {
           this.liveStatus = 'connected';
           this.lastError = null;
         }
       } catch (err) {
-        console.warn('[AdventureSupabase] Live check exception:', err);
-        this.liveStatus = (typeof navigator !== 'undefined' && !navigator.onLine) ? 'offline' : 'error';
+        console.warn('[AdventureSupabase] Live check bypassed, running in Local-First mode:', err.message);
+        this.liveStatus = 'local';
         this.lastError = err.message;
       }
 
@@ -1537,7 +1539,71 @@
     }
   }
 
+  // Safe background push that never throws or blocks UI
+  async function safeBackgroundSupabaseSync(studentsList) {
+    const statusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text') || (typeof document !== 'undefined' && document.querySelector('.cloud-status'));
+    const syncIconEl = document.getElementById('global-sync-icon');
+    const syncBtn = document.getElementById('global-cloud-sync-btn');
+    if (statusEl) statusEl.innerHTML = `<span style="color:#38bdf8;">⏳ Syncing...</span>`;
+    if (syncIconEl) syncIconEl.innerText = "⏳";
+
+    const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
+
+    if (!client) {
+      if (statusEl) statusEl.innerHTML = `<span style="color:#94a3b8;">⚪ Local Mode</span>`;
+      if (syncIconEl) syncIconEl.innerText = "⚪";
+      return;
+    }
+
+    try {
+      const students = studentsList || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+      
+      // Sanitize payload to basic fields first so it never fails on missing columns
+      const payload = students.map(s => ({
+        id: String(s.id),
+        name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim(),
+        grade: s.grade || s.class_id || s.classId || '4A',
+        xp: Number(s.xp) || 0,
+        archived_xp: Number(s.archivedXP ?? s.archived_xp ?? 0),
+        level: Number(s.level) || 3,
+        stage_name: s.stageName || s.stage_name || 'Level 3 • Baby Monster',
+        avatar_config: {
+          ...(s.avatarConfig || s.avatar_config || {}),
+          aliceCharacter: s.aliceCharacter || s.alice_character || null,
+          koreanRole: s.koreanRole || s.korean_role || null,
+          customIcon: s.customIcon || s.custom_icon || null
+        },
+        updated_at: new Date().toISOString()
+      }));
+
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
+      const pushPromise = client.from('students').upsert(payload, { onConflict: 'id' });
+
+      const { error } = await Promise.race([pushPromise, timeoutPromise]);
+      if (error) throw error;
+
+      if (statusEl) statusEl.innerHTML = `<span style="color:#10b981;">🟢 Cloud Synced</span>`;
+      if (syncIconEl) syncIconEl.innerText = "☁️✓";
+      if (syncBtn) {
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+      }
+    } catch (err) {
+      console.warn("Supabase background sync failed, running in Local-First mode:", err.message);
+      // Do NOT throw error — update status gracefully
+      if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;" title="${err.message}">🟡 Saved Locally</span>`;
+      if (syncIconEl) syncIconEl.innerText = "💾";
+      if (syncBtn) {
+        syncBtn.style.background = '#fef9c3';
+        syncBtn.style.color = '#854d0e';
+        syncBtn.style.borderColor = '#fde047';
+      }
+    }
+  }
+
   AdventureSupabaseService.prototype.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+  AdventureSupabaseService.prototype.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
 
   root.AdventureSupabase = new AdventureSupabaseService();
   root.toSupabaseRecord = toSupabaseRecord;
@@ -1545,8 +1611,10 @@
   root.syncWithSupabaseCloud = syncWithSupabaseCloud;
   root.forcePushToSupabase = forcePushToSupabase;
   root.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+  root.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
   if (typeof window !== 'undefined') {
     window.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+    window.safeBackgroundSupabaseSync = safeBackgroundSupabaseSync;
   }
 
 })(typeof window !== 'undefined' ? window : global);
