@@ -10,7 +10,7 @@ const CURRICULUM_TRACKS = [
     "label": "🚀 Science & Space",
     "title": "Track 1: 🚀 Science & Space Exploration",
     "subtitle": "Planetary astronomy, earth systems, environmental science, and animal adaptations.",
-    "count": 20
+    "count": 23
   },
   {
     "id": "track-2",
@@ -26,7 +26,7 @@ const CURRICULUM_TRACKS = [
     "label": "🗣️ Language & Quests",
     "title": "Track 3: 🗣️ Language Mechanics & Communication Quests",
     "subtitle": "Preposition physics catapults, acoustic phonics labs, imperative meme rules, and roleplay.",
-    "count": 15
+    "count": 19
   },
   {
     "id": "track-4",
@@ -34,27 +34,35 @@ const CURRICULUM_TRACKS = [
     "label": "📖 Literature & Tests",
     "title": "Track 4: 📖 Literature, Story Quests & Diagnostic Tests",
     "subtitle": "Classic storyboards (Alice in Wonderland, Wizard of Oz), timed reading quests, and diagnostic vaults.",
-    "count": 14
+    "count": 17
   },
   {
     "id": "all",
     "key": "all",
-    "label": "🌟 All Lessons (60+)",
+    "label": "🌟 All Lessons (70+)",
     "title": "Complete Learning Library (All Lessons)",
-    "subtitle": "All 62 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
-    "count": 62
+    "subtitle": "All 72 interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.",
+    "count": 72
   }
 ];
 
 const GAMES_REGISTRY = [
   {
     "id": "tea-party-cards",
+    "aliases": [
+      "tea-party",
+      "alice-cards",
+      "class-4a-cards",
+      "trading-cards",
+      "mad-tea-party-cards"
+    ],
     "title": "☕ Alice in Wonderland: Mad Tea Party Trading Cards",
-    "description": "Double-sided Victorian fantasy trading cards and student acting guide suite for 19 cast members. Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets.",
+    "description": "Double-sided Victorian fantasy trading cards and student acting guide suite for Class 4-A (18 cast members). Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets.",
     "type": "game",
     "category": "Literature & Drama",
-    "categoryLabel": "☕ Literature, Drama & Role-Play",
-    "level": "A2-B1",
+    "categoryGroup": "Literature, Drama & Character Roleplay",
+    "categoryLabel": "☕ Literature & Roleplay",
+    "level": "Grade 4–8",
     "cefrLevel": "A2-B1",
     "age": "Ages 8–14",
     "ageGroup": "8-14",
@@ -85,15 +93,45 @@ const GAMES_REGISTRY = [
       "Character Archetypes"
     ],
     "languageFocus": "I’m late for an important date! / Off with their heads! / It is no use going back to yesterday... / Contrariwise! / Nohow!",
-    "activityMode": "Double-Sided Collectible Trading Cards / 3x3 Duplex Print Sheets / 19 Student Acting Dossiers",
+    "activityMode": "Double-Sided Collectible Trading Cards / 3x3 Duplex Print Sheets / 18 Student Acting Dossiers",
     "interactionType": "3D Flip Cards, Audio Speech Synthesis, Duplex Cardstock Print Engine",
+    "route": "tea-party-cards/index.html",
     "url": "tea-party-cards/index.html",
+    "path": "tea-party-cards/index.html",
     "worksheetUrl": "tea-party-cards/worksheet.html",
+    "worksheetRoute": "tea-party-cards/worksheet.html",
+    "thumbnailIcon": "☕",
     "thumbnailUrl": "tea-party-cards/assets/characters/mad-hatter.jpg",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "Class 4-A Character Acting Guides, RPG Stats & Duplex Cards",
+    "learningObjectives": [
+      "Memorize character dialogue lines and stage interaction cues.",
+      "Prepare authentic Victorian fantasy costumes and physical props.",
+      "Perform character monologues with accurate vocal tone and posture.",
+      "Engage with 3D collectible trading cards and A4 duplex print sheets."
+    ],
+    "vocabulary": {
+      "core": [
+        "tea power",
+        "madness",
+        "courage",
+        "muchness",
+        "bonkers",
+        "contrariwise",
+        "nohow",
+        "oraculum",
+        "chrysalis",
+        "jabberwocky"
+      ]
+    },
     "badges": [
+      "Class 4-A Cast",
       "Collectible Cards",
       "3x3 Duplex Print Ready",
-      "19 Character Dossiers",
+      "18 Character Dossiers",
       "Speech & Audio"
     ]
   },
@@ -6892,7 +6930,9 @@ const GAMES_REGISTRY = [
     "worksheetRoute": "forest-safari/worksheet.html",
     "featured": true,
     "thumbnailIcon": "🌲",
-    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)"
+    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration"
   },
   {
     "id": "harvest-feast",
@@ -6964,7 +7004,9 @@ const GAMES_REGISTRY = [
     "worksheetRoute": "harvest-feast/worksheet.html",
     "featured": true,
     "thumbnailIcon": "🌾",
-    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
+    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests"
   },
   {
     "id": "forest-adaptation",
@@ -7030,7 +7072,9 @@ const GAMES_REGISTRY = [
     "worksheetRoute": "forest-adaptation/worksheet.html",
     "featured": true,
     "thumbnailIcon": "🌲",
-    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)"
+    "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)",
+    "trackId": "track-1",
+    "trackTitle": "🚀 Science & Space Exploration"
   }
 ];
 
