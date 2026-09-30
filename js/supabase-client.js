@@ -1363,11 +1363,80 @@
     }
   }
 
+  async function forcePushToSupabase(studentsList) {
+    const syncStatusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text');
+    if (syncStatusEl) syncStatusEl.innerText = "⏳ Pushing...";
+
+    const client = root.supabaseClient || (root.AdventureSupabase && root.AdventureSupabase.client);
+    if (!client) {
+      console.warn("[AdventureSupabase] Supabase client not initialized. Cannot force push.");
+      if (syncStatusEl) syncStatusEl.innerText = "⚪ Local Only";
+      return { success: false, error: 'Client not initialized' };
+    }
+
+    const list = (Array.isArray(studentsList) && studentsList.length > 0)
+      ? studentsList
+      : (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+
+    if (!list.length) {
+      if (syncStatusEl) syncStatusEl.innerText = "🟢 Synced";
+      return { success: true, count: 0 };
+    }
+
+    const payload = list.map(toSupabaseRecord);
+
+    try {
+      const { data, error } = await client
+        .from('students')
+        .upsert(payload, { onConflict: 'id' });
+
+      if (error) {
+        console.warn("[AdventureSupabase] Batch upsert warning, retrying with schema-safe fallback:", error.message);
+        const fallbackPayload = payload.map(row => ({
+          id: row.id,
+          student_id_number: row.student_id_number,
+          first_name: row.first_name,
+          last_name: row.last_name,
+          class_id: row.class_id,
+          xp: row.xp,
+          archived_xp: row.archived_xp,
+          level: row.level,
+          stage_name: row.stage_name,
+          alice_character: row.alice_character,
+          korean_role: row.korean_role,
+          custom_icon: row.custom_icon,
+          streak_days: row.streak_days,
+          updated_at: row.updated_at
+        }));
+        const fallbackRes = await client.from('students').upsert(fallbackPayload, { onConflict: 'id' });
+        if (fallbackRes.error) throw fallbackRes.error;
+      }
+
+      console.log(`[AdventureSupabase] forcePushToSupabase: Successfully synced ${payload.length} students to Supabase cloud.`);
+      if (syncStatusEl) syncStatusEl.innerText = "🟢 Synced";
+      const syncBtn = document.getElementById('global-cloud-sync-btn');
+      if (syncBtn) {
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+      }
+      return { success: true, count: payload.length };
+    } catch (err) {
+      console.error("[AdventureSupabase] forcePushToSupabase Error:", err.message);
+      if (syncStatusEl) syncStatusEl.innerText = "🔴 Sync Error";
+      return { success: false, error: err.message };
+    }
+  }
+
+  AdventureSupabaseService.prototype.forcePushToSupabase = forcePushToSupabase;
+
   root.AdventureSupabase = new AdventureSupabaseService();
   root.toSupabaseRecord = toSupabaseRecord;
   root.fromSupabaseRecord = fromSupabaseRecord;
   root.syncWithSupabaseCloud = syncWithSupabaseCloud;
+  root.forcePushToSupabase = forcePushToSupabase;
 
 })(typeof window !== 'undefined' ? window : global);
+
 
 

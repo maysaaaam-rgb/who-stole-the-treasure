@@ -161,6 +161,26 @@
       border: "#7e22ce",
       decor: "♠ ♥ ♦ ♣"
     },
+    "knave_of_hearts": {
+      name: "Knave of Hearts",
+      title: "Champion of the Royal Guard",
+      icon: "⚔️",
+      quote: "I fight with valor, loyalty, and truth!",
+      color: "#f87171",
+      bgGradient: "linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#b91c1c",
+      decor: "♠ ♥ ♦ ♣"
+    },
+    "king_of_hearts": {
+      name: "King of Hearts",
+      title: "Monarch of Wonderland",
+      icon: "🤴",
+      quote: "Rule with patience, wisdom, and justice.",
+      color: "#fbbf24",
+      bgGradient: "linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#d97706",
+      decor: "♠ ♥ ♦ ♣"
+    },
 
     // Korean Traditions & Games Badges (Grade 3)
     "ddakji": {
@@ -174,7 +194,7 @@
       decor: "🏮 🎴 🪵"
     },
     "yut_nori": {
-      name: "Yut Nori Tactician",
+      name: "Yut Nori Master",
       title: "Grand Board Strategist (윷놀이)",
       icon: "🪵",
       quote: "Cast the sticks: Do, Gae, Geol, Yut, Mo!",
@@ -184,13 +204,83 @@
       decor: "🏮 🎴 🪵"
     },
     "tuho": {
-      name: "Tuho Sharpshooter",
+      name: "Tuho Archer",
       title: "Royal Arrow Pitcher (투호)",
       icon: "🏹",
       quote: "Breathe, aim true, and land in the jar!",
       color: "#f87171",
       bgGradient: "linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(15, 23, 42, 0.9))",
       border: "#dc2626",
+      decor: "🏮 🎴 🪵"
+    },
+    "hanbok_dancer": {
+      name: "Hanbok Dancer",
+      title: "Graceful Silk Dancer (한복무용)",
+      icon: "👘",
+      quote: "Spinning colors of joy and harmony!",
+      color: "#ec4899",
+      bgGradient: "linear-gradient(135deg, rgba(236, 72, 153, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#db2777",
+      decor: "🏮 🎴 🪵"
+    },
+    "mask_dancer": {
+      name: "Mask Dancer",
+      title: "Talchum Master (탈춤)",
+      icon: "🎭",
+      quote: "Expressing joy and courage behind the mask!",
+      color: "#f97316",
+      bgGradient: "linear-gradient(135deg, rgba(249, 115, 22, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#ea580c",
+      decor: "🏮 🎴 🪵"
+    },
+    "drum_master": {
+      name: "Drum Master",
+      title: "Buk & Janggu Performer (사물놀이)",
+      icon: "🥁",
+      quote: "Feel the thunder of the festival rhythm!",
+      color: "#eab308",
+      bgGradient: "linear-gradient(135deg, rgba(234, 179, 8, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#ca8a04",
+      decor: "🏮 🎴 🪵"
+    },
+    "kite_flyer": {
+      name: "Kite Flyer",
+      title: "Yeonnalligi Champion (연날리기)",
+      icon: "🪁",
+      quote: "Soaring high into the bright autumn skies!",
+      color: "#06b6d4",
+      bgGradient: "linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#0891b2",
+      decor: "🏮 🎴 🪵"
+    },
+    "neolttwigi": {
+      name: "Neolttwigi Acrobat",
+      title: "Seesaw Acrobat (널뛰기)",
+      icon: "🤸",
+      quote: "Leaping high with balance and courage!",
+      color: "#8b5cf6",
+      bgGradient: "linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#7c3aed",
+      decor: "🏮 🎴 🪵"
+    },
+    "songpyeon_chef": {
+      name: "Songpyeon Chef",
+      title: "Chuseok Rice Cake Artisan (송편)",
+      icon: "🥟",
+      quote: "Wrapping sweet memories in pine needle aroma!",
+      color: "#10b981",
+      bgGradient: "linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#059669",
+      decor: "🏮 🎴 🪵"
+    },
+    "rice_cake_maker": {
+      name: "Rice Cake Maker",
+      title: "Tteok Hammer Craftsman (떡메치기)",
+      icon: "🍡",
+      quote: "Pounding tradition with rhythm and strength!",
+      color: "#14b8a6",
+      bgGradient: "linear-gradient(135deg, rgba(20, 184, 166, 0.22), rgba(15, 23, 42, 0.9))",
+      border: "#0d9488",
       decor: "🏮 🎴 🪵"
     },
     "lotus_lantern": {
@@ -217,19 +307,28 @@
 
   const CHARACTER_ICON_PRESETS = {
     grade4_alice: [
-      { key: "alice", name: "Alice", icon: "👗", altIcons: ["👗", "👱‍♀️", "🎀", "📖", "🗝️"] },
-      { key: "mad_hatter", name: "The Mad Hatter", icon: "🎩", altIcons: ["🎩", "🫖", "☕", "🍰", "🎉"] },
-      { key: "cheshire_cat", name: "The Cheshire Cat", icon: "😸", altIcons: ["😸", "🐱", "🐾", "✨", "🌙"] },
-      { key: "white_rabbit", name: "The White Rabbit", icon: "⏱️", altIcons: ["⏱️", "🐇", "🐰", "⌛", "🎺"] },
+      { key: "mad_hatter", name: "Mad Hatter", icon: "🎩", altIcons: ["🎩", "🫖", "☕", "🍰", "🎉"] },
+      { key: "cheshire_cat", name: "Cheshire Cat", icon: "😸", altIcons: ["😸", "🐱", "🐾", "✨", "🌙"] },
+      { key: "white_rabbit", name: "White Rabbit", icon: "⏱️", altIcons: ["⏱️", "🐇", "🐰", "⌛", "🎺"] },
       { key: "queen_of_hearts", name: "Queen of Hearts", icon: "👑", altIcons: ["👑", "❤️", "🌹", "🎴", "🏰"] },
-      { key: "caterpillar", name: "The Wise Caterpillar", icon: "🐛", altIcons: ["🐛", "🍄", "💨", "🌿", "🔮"] }
+      { key: "alice", name: "Alice", icon: "👗", altIcons: ["👗", "👱‍♀️", "🎀", "📖", "🗝️"] },
+      { key: "caterpillar", name: "Caterpillar", icon: "🐛", altIcons: ["🐛", "🍄", "💨", "🌿", "🔮"] },
+      { key: "dormouse", name: "Dormouse", icon: "🐭", altIcons: ["🐭", "🧀", "🫖", "💤", "🪺"] },
+      { key: "march_hare", name: "March Hare", icon: "🫖", altIcons: ["🫖", "🐇", "☕", "🤪", "🧁"] },
+      { key: "knave_of_hearts", name: "Knave of Hearts", icon: "⚔️", altIcons: ["⚔️", "🛡️", "🥧", "🃏", "❤️"] },
+      { key: "king_of_hearts", name: "King of Hearts", icon: "🤴", altIcons: ["🤴", "👑", "⚖️", "🏰", "📜"] }
     ],
     grade3_korean: [
       { key: "ddakji", name: "Ddakji Striker", icon: "🎴", altIcons: ["🎴", "🟦", "🟥", "💥", "🏆"] },
-      { key: "yut_nori", name: "Yut Nori Tactician", icon: "🪵", altIcons: ["🪵", "🎲", "🎯", "🥢", "📜"] },
-      { key: "tuho", name: "Tuho Sharpshooter", icon: "🏹", altIcons: ["🏹", "🏺", "🎯", "⚡", "🎖️"] },
-      { key: "lotus_lantern", name: "Lotus Artisan", icon: "🏮", altIcons: ["🏮", "🪷", "✨", "🕯️", "🌸"] },
-      { key: "gonggi", name: "Gonggi Champion", icon: "✨", altIcons: ["✨", "🪨", "🖐️", "🎯", "🥇"] }
+      { key: "yut_nori", name: "Yut Nori Master", icon: "🪵", altIcons: ["🪵", "🎲", "🎯", "🥢", "📜"] },
+      { key: "tuho", name: "Tuho Archer", icon: "🏹", altIcons: ["🏹", "🏺", "🎯", "⚡", "🎖️"] },
+      { key: "hanbok_dancer", name: "Hanbok Dancer", icon: "👘", altIcons: ["👘", "🌸", "🪭", "💃", "✨"] },
+      { key: "mask_dancer", name: "Mask Dancer", icon: "🎭", altIcons: ["🎭", "🦁", "🎪", "🎊", "🔥"] },
+      { key: "drum_master", name: "Drum Master", icon: "🥁", altIcons: ["🥁", "🪘", "🎶", "⚡", "🎵"] },
+      { key: "kite_flyer", name: "Kite Flyer", icon: "🪁", altIcons: ["🪁", "🎏", "☁️", "🌬️", "🌈"] },
+      { key: "neolttwigi", name: "Neolttwigi Acrobat", icon: "🤸", altIcons: ["🤸", "🪵", "🚀", "🌟", "🎪"] },
+      { key: "songpyeon_chef", name: "Songpyeon Chef", icon: "🥟", altIcons: ["🥟", "🌾", "🌲", "🍯", "🍂"] },
+      { key: "rice_cake_maker", name: "Rice Cake Maker", icon: "🍡", altIcons: ["🍡", "🔨", "🍚", "🥢", "🍵"] }
     ]
   };
 
@@ -299,21 +398,46 @@
     if (rawKey.includes('hatter')) return THEME_COMPANIONS["mad_hatter"];
     if (rawKey.includes('cat') || rawKey.includes('cheshire')) return THEME_COMPANIONS["cheshire_cat"];
     if (rawKey.includes('rabbit')) return THEME_COMPANIONS["white_rabbit"];
-    if (rawKey.includes('red_queen') || rawKey.includes('queen_of_hearts')) return THEME_COMPANIONS["red_queen"];
+    if (rawKey.includes('red_queen') || rawKey.includes('queen_of_hearts')) return THEME_COMPANIONS["queen_of_hearts"] || THEME_COMPANIONS["red_queen"];
     if (rawKey.includes('white_queen')) return THEME_COMPANIONS["white_queen"];
     if (rawKey.includes('caterpillar') || rawKey.includes('absolem')) return THEME_COMPANIONS["caterpillar"];
     if (rawKey.includes('hare')) return THEME_COMPANIONS["march_hare"];
+    if (rawKey.includes('knave')) return THEME_COMPANIONS["knave_of_hearts"];
+    if (rawKey.includes('king')) return THEME_COMPANIONS["king_of_hearts"];
     if (rawKey.includes('bayard') || rawKey.includes('dog')) return THEME_COMPANIONS["bayard"];
     if (rawKey.includes('bander')) return THEME_COMPANIONS["bandersnatch"];
     if (rawKey.includes('dragon') || rawKey.includes('jabber')) return THEME_COMPANIONS["dragon"];
     if (rawKey.includes('dormouse') || rawKey.includes('mouse')) return THEME_COMPANIONS["dormouse"];
+    if (rawKey.includes('alice')) return THEME_COMPANIONS["alice"];
+
     if (rawKey.includes('ddakji')) return THEME_COMPANIONS["ddakji"];
     if (rawKey.includes('yut')) return THEME_COMPANIONS["yut_nori"];
     if (rawKey.includes('tuho') || rawKey.includes('arrow')) return THEME_COMPANIONS["tuho"];
+    if (rawKey.includes('hanbok')) return THEME_COMPANIONS["hanbok_dancer"];
+    if (rawKey.includes('mask') || rawKey.includes('talchum')) return THEME_COMPANIONS["mask_dancer"];
+    if (rawKey.includes('drum') || rawKey.includes('janggu') || rawKey.includes('buk')) return THEME_COMPANIONS["drum_master"];
+    if (rawKey.includes('kite') || rawKey.includes('yeonnalligi')) return THEME_COMPANIONS["kite_flyer"];
+    if (rawKey.includes('neolttwigi') || rawKey.includes('acrobat')) return THEME_COMPANIONS["neolttwigi"];
+    if (rawKey.includes('songpyeon')) return THEME_COMPANIONS["songpyeon_chef"];
+    if (rawKey.includes('rice_cake') || rawKey.includes('tteok')) return THEME_COMPANIONS["rice_cake_maker"];
     if (rawKey.includes('lantern') || rawKey.includes('lotus')) return THEME_COMPANIONS["lotus_lantern"];
     if (rawKey.includes('gonggi')) return THEME_COMPANIONS["gonggi"];
     
     return isGrade3 ? THEME_COMPANIONS["ddakji"] : THEME_COMPANIONS["alice"];
+  }
+
+  function getStudentBadge(student) {
+    if (!student) return { icon: '✨', role: 'Student', name: 'Student', title: '', quote: '' };
+    const comp = resolveStudentCompanion(student);
+    const icon = student.customIcon || student.custom_icon || (comp ? comp.icon : '✨');
+    const role = comp ? comp.name : (student.aliceCharacter || student.koreanRole || 'Student');
+    return {
+      icon: icon,
+      role: role,
+      name: role,
+      title: comp ? comp.title : '',
+      quote: comp ? comp.quote : ''
+    };
   }
 
   function renderStudentThemeBadge(student) {
@@ -452,7 +576,9 @@
     }
 
     // Push updated custom character & icon to Supabase
-    if (typeof window.syncWithSupabaseCloud === 'function') {
+    if (typeof window.forcePushToSupabase === 'function') {
+      window.forcePushToSupabase([student]);
+    } else if (typeof window.syncWithSupabaseCloud === 'function') {
       window.syncWithSupabaseCloud();
     } else if (window.AdventureSupabase && typeof window.AdventureSupabase.saveStudent === 'function') {
       window.AdventureSupabase.saveStudent(student);
@@ -467,6 +593,7 @@
   root.CLASSROOM_THEMES = CLASSROOM_THEMES;
   root.updateClassroomTheme = updateClassroomTheme;
   root.resolveStudentCompanion = resolveStudentCompanion;
+  root.getStudentBadge = getStudentBadge;
   root.renderStudentThemeBadge = renderStudentThemeBadge;
   root.openCharacterIconPicker = openCharacterIconPicker;
   root.closeCharacterIconPicker = closeCharacterIconPicker;

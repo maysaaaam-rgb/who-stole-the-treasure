@@ -2540,8 +2540,21 @@
       } catch (e) {}
     }
 
-    if (typeof syncWithSupabaseCloud === 'function') syncWithSupabaseCloud();
-    else if (typeof window !== 'undefined' && typeof window.syncWithSupabaseCloud === 'function') window.syncWithSupabaseCloud();
+    const MIGRATION_KEY = 'term2_migration_v2';
+
+    if (typeof forcePushToSupabase === 'function') {
+      forcePushToSupabase(updated);
+    } else if (typeof window !== 'undefined' && typeof window.forcePushToSupabase === 'function') {
+      window.forcePushToSupabase(updated);
+    } else if (typeof syncWithSupabaseCloud === 'function') {
+      syncWithSupabaseCloud();
+    } else if (typeof window !== 'undefined' && typeof window.syncWithSupabaseCloud === 'function') {
+      window.syncWithSupabaseCloud();
+    }
+
+    if (typeof localStorage !== 'undefined') {
+      try { localStorage.setItem(MIGRATION_KEY, 'true'); } catch (e) {}
+    }
 
     if (typeof renderStudentRoster === 'function') renderStudentRoster();
     else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
@@ -2550,12 +2563,29 @@
     return updated;
   }
 
+  const MIGRATION_KEY = 'term2_migration_v2';
+
+  function autoRunTerm2Migration() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      if (localStorage.getItem(MIGRATION_KEY) === 'true') {
+        return;
+      }
+      console.log('[Term2 Migration] Initiating self-executing Term 2 migration (0 active XP, lifetime level lock)...');
+      const updated = archiveAndResetXP();
+      localStorage.setItem(MIGRATION_KEY, 'true');
+      console.log('[Term2 Migration] Self-executing Term 2 migration completed successfully.');
+      return updated;
+    } catch (e) {
+      console.error('[Term2 Migration] Migration exception:', e);
+    }
+  }
+
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
-      if (!localStorage.getItem('eaa_term2_archived_v1')) {
-        archiveAndResetXP();
-        localStorage.setItem('eaa_term2_archived_v1', 'true');
+      if (localStorage.getItem(MIGRATION_KEY) !== 'true') {
+        autoRunTerm2Migration();
       }
     } catch (e) {}
   }
@@ -2565,6 +2595,7 @@
     root.AdventureAcademy = root.AdventureAcademy || {};
     root.recalculateAllStudents = recalculateAllStudents;
     root.archiveAndResetXP = archiveAndResetXP;
+    root.autoRunTerm2Migration = autoRunTerm2Migration;
     root.getStudentStage = getStudentStage;
     root.EVOLUTION_THRESHOLDS = EVOLUTION_THRESHOLDS;
     root.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
@@ -2575,6 +2606,7 @@
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
       window.recalculateAllStudents = recalculateAllStudents;
+      window.autoRunTerm2Migration = autoRunTerm2Migration;
       window.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
       window.getStudentArchetype = getStudentArchetype;
       window.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;
@@ -2582,6 +2614,7 @@
       window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
       window.getStudentMascot = getStudentMascot;
     }
+    root.AdventureAcademy.autoRunTerm2Migration = autoRunTerm2Migration;
     root.AdventureAcademy.SPECIES_ARCHETYPES = SPECIES_ARCHETYPES;
     root.AdventureAcademy.getStudentArchetype = getStudentArchetype;
     root.AdventureAcademy.ELEMENTAL_SPECIES = ELEMENTAL_SPECIES;

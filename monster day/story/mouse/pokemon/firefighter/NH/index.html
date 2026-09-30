@@ -1931,44 +1931,42 @@
     <!-- Cluster Divider -->
     <div class="dock-divider" aria-hidden="true"></div>
 
-    <!-- Live Native Web Audio Soundboard Dock -->
-    <div class="dock-cluster" id="toolkit-sound-bar" aria-label="Classroom Soundboard">
-      <span class="dock-sfx-tag">SFX</span>
-      <button type="button" class="dock-sfx-btn sfx-btn-party" data-sound="party" onclick="window.classSoundboard.playPartyHorn()" title="Party Horn (Press P or 1)">
-        <span class="sfx-icon">🥳</span>
-        <span class="sfx-label">Party</span>
-        <span class="dock-sfx-key">1</span>
+    <!-- Live Native Web Audio Soundboard Dock (Collapsed Flyout) -->
+    <div class="dock-cluster sfx-flyout-wrap" id="toolkit-sound-bar" aria-label="Classroom Soundboard">
+      <button type="button" class="dock-pill-btn dock-btn sfx-trigger-btn" id="sfx-flyout-trigger" onclick="toggleSFXFlyout(event)" title="Classroom Soundboard (1-7 Hotkeys)">
+        <span class="dock-btn-icon">🔊</span>
+        <span class="dock-btn-label">SFX ▾</span>
       </button>
-      <button type="button" class="dock-sfx-btn" data-sound="bell" onclick="window.classSoundboard.playAttentionBell()" title="Attention Bell (Press 2)">
-        <span class="sfx-icon">🔔</span>
-        <span class="sfx-label">Bell</span>
-        <span class="dock-sfx-key">2</span>
-      </button>
-      <button type="button" class="dock-sfx-btn" data-sound="shhh" onclick="window.classSoundboard.playQuietChime()" title="Quiet Singing Bowl (Press 3)">
-        <span class="sfx-icon">🤫</span>
-        <span class="sfx-label">Shhh</span>
-        <span class="dock-sfx-key">3</span>
-      </button>
-      <button type="button" class="dock-sfx-btn" data-sound="buzzer" onclick="window.classSoundboard.playCountdownBuzzer()" title="Countdown Buzzer (Press 4)">
-        <span class="sfx-icon">⏰</span>
-        <span class="sfx-label">Buzzer</span>
-        <span class="dock-sfx-key">4</span>
-      </button>
-      <button type="button" class="dock-sfx-btn" data-sound="clap" onclick="window.classSoundboard.playApplause()" title="Applause & Cheer (Press 5)">
-        <span class="sfx-icon">👏</span>
-        <span class="sfx-label">Clap</span>
-        <span class="dock-sfx-key">5</span>
-      </button>
-      <button type="button" class="dock-sfx-btn" data-sound="coin" onclick="window.classSoundboard.playCoinChime()" title="XP Coin Chime (Press 6)">
-        <span class="sfx-icon">🪙</span>
-        <span class="sfx-label">Coin</span>
-        <span class="dock-sfx-key">6</span>
-      </button>
-      <button type="button" class="dock-sfx-btn" data-sound="fanfare" onclick="window.classSoundboard.playFanfare()" title="Victory Fanfare (Press 7)">
-        <span class="sfx-icon">🎺</span>
-        <span class="sfx-label">Fanfare</span>
-        <span class="dock-sfx-key">7</span>
-      </button>
+      <div id="sfx-flyout-menu" class="sfx-flyout-menu" role="menu" aria-label="Soundboard Presets">
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playPartyHorn()" title="Party Horn (Press 1)">
+          <span>🥳</span>
+          <span>Party Horn (1)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playAttentionBell()" title="Attention Bell (Press 2)">
+          <span>🔔</span>
+          <span>Attention Bell (2)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playQuietChime()" title="Quiet Singing Bowl (Press 3)">
+          <span>🤫</span>
+          <span>Quiet Chime (3)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playCountdownBuzzer()" title="Countdown Buzzer (Press 4)">
+          <span>⏰</span>
+          <span>Countdown Buzzer (4)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playApplause()" title="Applause & Cheer (Press 5)">
+          <span>👏</span>
+          <span>Applause Cheer (5)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playCoinChime()" title="Coin Chime (Press 6)">
+          <span>🪙</span>
+          <span>Coin Chime (6)</span>
+        </button>
+        <button type="button" class="sfx-flyout-item" onclick="window.classSoundboard.playFanfare()" title="Victory Fanfare (Press 7)">
+          <span>🎺</span>
+          <span>Victory Fanfare (7)</span>
+        </button>
+      </div>
     </div>
 
     <!-- Cluster Divider -->

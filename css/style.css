@@ -391,3 +391,219 @@ body.theme-korean-traditions,
   border-bottom-width: 1px;
   box-shadow: 0 1px 4px rgba(16, 185, 129, 0.35);
 }
+
+/* ============================================================
+   HEADER STICKY & CLEARANCE FIX (ANTI-SLICING)
+   ============================================================ */
+header.app-top-header,
+header.app-header,
+.main-navbar-container {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background: rgba(6, 9, 17, 0.94) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+#classroom-view,
+.classroom-container,
+.app-main {
+  min-height: calc(100vh - 65px);
+  padding: 16px 24px 100px 24px !important;
+}
+
+.classroom-students-grid > nav,
+.classroom-students-grid > .app-header,
+.classroom-students-grid > .role-pill-group,
+.classroom-students-grid > .classroom-unified-dock,
+.classroom-students-grid > div:not(.classroom-student-card):not(.card-add-student) {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* ============================================================
+   CLEAN STUDENT CARD HEADER & THEMATIC CHIP
+   ============================================================ */
+.student-card-header-clean {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  padding: 10px 14px 6px 14px !important;
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.thematic-card-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-bottom: 2.5px solid rgba(0, 0, 0, 0.45) !important;
+  border-radius: 20px !important;
+  padding: 3px 10px 3px 8px !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  backdrop-filter: blur(8px) !important;
+  max-width: 62% !important;
+}
+
+.thematic-card-chip:hover {
+  transform: translateY(-1px) scale(1.03) !important;
+  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25) !important;
+}
+
+.thematic-card-chip:active {
+  transform: translateY(1px) scale(0.98) !important;
+  border-bottom-width: 1px !important;
+}
+
+.thematic-chip-icon {
+  font-size: 1.1rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+.thematic-chip-name {
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  color: #e2e8f0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  letter-spacing: 0.02em !important;
+}
+
+.thematic-chip-edit {
+  font-size: 0.65rem !important;
+  opacity: 0.7 !important;
+  margin-left: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+.card-meta-group {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.student-card-streak-pill.streak-pill,
+.streak-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  background: rgba(249, 115, 22, 0.18) !important;
+  border: 1px solid rgba(249, 115, 22, 0.35) !important;
+  color: #fb923c !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  padding: 2px 7px !important;
+  border-radius: 9999px !important;
+  white-space: nowrap !important;
+}
+
+.btn-card-more-3dots.card-menu-btn,
+.card-menu-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4) !important;
+  color: #94a3b8 !important;
+  border-radius: 8px !important;
+  width: 26px !important;
+  height: 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-card-more-3dots.card-menu-btn:hover,
+.card-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  transform: scale(1.08) !important;
+}
+
+/* ============================================================
+   BOTTOM TOOLBAR CLEANUP & SFX FLYOUT MENU
+   ============================================================ */
+.sfx-flyout-wrap {
+  position: relative !important;
+  display: inline-block !important;
+}
+
+.sfx-flyout-menu {
+  position: absolute !important;
+  bottom: calc(100% + 12px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.35) !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+  display: none;
+  flex-direction: column !important;
+  gap: 6px !important;
+  min-width: 175px !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2) !important;
+  z-index: 10001 !important;
+}
+
+.sfx-flyout-menu.is-open {
+  display: flex !important;
+  animation: sfxPopIn 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+@keyframes sfxPopIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.sfx-flyout-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.4) !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  color: #e2e8f0 !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+.sfx-flyout-item:hover {
+  background: rgba(56, 189, 248, 0.18) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  transform: translateX(2px) !important;
+}
+
+.sfx-flyout-item:active {
+  transform: translateY(2px) !important;
+  border-bottom-width: 1px !important;
+}
+
