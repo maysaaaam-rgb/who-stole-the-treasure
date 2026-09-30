@@ -2456,6 +2456,41 @@
     }
   };
 
+  function getStudentBadge(student) {
+    if (typeof window !== 'undefined' && typeof window.getStudentBadge === 'function' && window.getStudentBadge !== getStudentBadge) {
+      return window.getStudentBadge(student);
+    }
+    const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(student) : null;
+    const compIcon = (student && (student.customIcon || student.custom_icon)) || (compData ? compData.icon : '✨');
+    const compRole = compData ? compData.name : ((student && (student.aliceCharacter || student.koreanRole)) || 'Student');
+    return {
+      icon: compIcon,
+      role: compRole,
+      name: compRole
+    };
+  }
+  window.getStudentBadge = getStudentBadge;
+
+  window.toggleSFXFlyout = function(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('sfx-flyout-menu');
+    if (menu) {
+      menu.classList.toggle('is-open');
+    }
+  };
+
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('sfx-flyout-menu');
+      const trigger = document.getElementById('sfx-flyout-trigger');
+      if (menu && menu.classList.contains('is-open')) {
+        if (!menu.contains(e.target) && (!trigger || !trigger.contains(e.target))) {
+          menu.classList.remove('is-open');
+        }
+      }
+    });
+  }
+
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
   window.openStudentProfile = function(studentIdOrNumber, activeTab = 'overview') {
@@ -2507,6 +2542,7 @@
           const xpToNext = monsterState.xpToNext;
           const progressPct = monsterState.progressPct;
           const monsterSvg = window.renderStudentMonsterAvatar(student.id, { size: 124, animated: true });
+          const archivedVal = Number(student.archivedXP ?? student.archived_xp ?? 0);
 
           return '' +
             '<div class="student-profile-monster-hero" style="display:flex; gap:20px; align-items:center; background:linear-gradient(135deg, var(--bg-surface), var(--bg-card)); border:1px solid var(--border-light); border-radius:18px; padding:20px; margin-bottom:18px; box-shadow:var(--shadow-sm); flex-wrap:wrap;">' +
@@ -2551,7 +2587,7 @@
                 // Evolution Progress Meter
                 '<div style="margin-top:12px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:4px;">' +
-                    '<span>⭐ ' + totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() : 'MAX') + ' XP</span>' +
+                    '<span>⭐ ' + totalXP.toLocaleString() + ' Active XP · 🗄️ ' + archivedVal.toLocaleString() + ' Archived XP</span>' +
                     '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
                   '</div>' +
                   '<div style="height:10px; border-radius:5px; background:var(--border-light); overflow:hidden;">' +
@@ -3354,29 +3390,30 @@
                   '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
                 '</div>';
 
-              const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(s) : null;
-              const compIcon = s.customIcon || s.custom_icon || (compData ? compData.icon : '✨');
+              const badge = getStudentBadge(s);
               const activeXP = Number(s.xp) || 0;
               const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
 
               return '' +
                 '<div class="student-directory-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
-                  // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
-                  '<div class="card-overlay-top">' +
-                    '<div class="card-overlay-left">' +
+                  // Top Overlay Bar: Clean Thematic Companion Chip + Meta Group
+                  '<div class="student-card-header-clean card-overlay-top">' +
+                    '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
                       (isMultiSelectMode ?
                         '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
                       ) +
                       '<span class="student-card-status-dot status-active" title="Status: Active"></span>' +
-                      '<span class="thematic-card-companion-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + (compData ? compData.name : 'Choose') + ' (Click to change)">' + compIcon + '</span>' +
-                      '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
-                      '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
+                      '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
+                        '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
+                        '<span class="thematic-chip-name">' + badge.role + '</span>' +
+                        '<span class="thematic-chip-edit">✏️</span>' +
+                      '</div>' +
                     '</div>' +
-                    '<div class="card-overlay-right">' +
+                    '<div class="card-meta-group">' +
                       '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-                      '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+                      '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
-                        '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
+                        '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                         '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
@@ -3742,8 +3779,7 @@
     const cardsHtml = students.map(s => {
       const totalXP = store.getStudentTotalXP(s.id);
       const formattedXP = totalXP.toLocaleString();
-      const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(s) : null;
-      const compIcon = s.customIcon || s.custom_icon || (compData ? compData.icon : '✨');
+      const badge = getStudentBadge(s);
       const activeXP = Number(s.xp) || 0;
       const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
       const progressPct = calculateStudentProgressPct(s.id);
@@ -3787,22 +3823,24 @@
 
       return '' +
         '<div class="classroom-student-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
-          // Top Overlay Bar: Badges + Top-Right 3-Dots Menu
-          '<div class="card-overlay-top">' +
-            '<div class="card-overlay-left">' +
+          // Top Overlay Bar: Clean Thematic Companion Chip + Meta Group
+          '<div class="student-card-header-clean card-overlay-top">' +
+            '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
               (isMultiSelectMode ?
                 '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
               ) +
               '<span class="student-card-status-dot status-' + status + '" title="Status: ' + status + '"></span>' +
-              '<span class="thematic-card-companion-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + (compData ? compData.name : 'Choose') + ' (Click to change)">' + compIcon + '</span>' +
-              '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
-              '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
+              '<div class="thematic-card-chip" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\');" title="Companion: ' + badge.role + ' (Click to change)">' +
+                '<span class="thematic-chip-icon">' + badge.icon + '</span>' +
+                '<span class="thematic-chip-name">' + badge.role + '</span>' +
+                '<span class="thematic-chip-edit">✏️</span>' +
+              '</div>' +
             '</div>' +
-            '<div class="card-overlay-right">' +
+            '<div class="card-meta-group">' +
               '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-              '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+              '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
-                '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
+                '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                 '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
