@@ -587,7 +587,7 @@
     closeCharacterIconPicker();
   }
 
-  // Export to global root
+  // Export to global root & window
   root.THEME_COMPANIONS = THEME_COMPANIONS;
   root.CHARACTER_ICON_PRESETS = CHARACTER_ICON_PRESETS;
   root.CLASSROOM_THEMES = CLASSROOM_THEMES;
@@ -598,5 +598,12 @@
   root.openCharacterIconPicker = openCharacterIconPicker;
   root.closeCharacterIconPicker = closeCharacterIconPicker;
   root.saveStudentCharacterRole = saveStudentCharacterRole;
+  root.saveStudentCompanionRole = saveStudentCharacterRole;
+  if (typeof window !== 'undefined') {
+    window.openCharacterIconPicker = openCharacterIconPicker;
+    window.closeCharacterIconPicker = closeCharacterIconPicker;
+    window.saveStudentCharacterRole = saveStudentCharacterRole;
+    window.saveStudentCompanionRole = saveStudentCharacterRole;
+  }
 
 })(typeof window !== 'undefined' ? window : global);
