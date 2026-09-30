@@ -1,7 +1,8 @@
 """
-Alice in Wonderland: Mad Tea Party Class 4-A Student Role Dossiers PDF Generator
-Generates an 18-page comprehensive A4 printable PDF where each page is an individual
-student acting dossier with portrait, role details, stats, costumes, props, and performance script.
+Alice in Wonderland: Mad Tea Party Student Role Dossiers PDF Generator
+Generates A4 printable PDFs where each page is an individual student acting dossier
+with portrait, role details, stats, costumes, props, and performance script.
+Supports Class 4-A (18 Students) and Class 4-B (19 Students).
 """
 
 import os, sys
@@ -33,9 +34,9 @@ F_BODY = get_font("georgia.ttf", 17)
 F_BODY_BOLD = get_font("georgia.ttf", 17)
 F_SM = get_font("arial.ttf", 14)
 
-from generate_cards_pdf import CHARACTERS
+from generate_cards_pdf import CHARACTERS_4A, CHARACTERS_4B
 
-def render_dossier_page(char):
+def render_dossier_page(char, class_title="CLASS 4-A"):
     img = Image.new("RGB", (PAGE_W, PAGE_H), color=(253, 250, 242))
     draw = ImageDraw.Draw(img)
 
@@ -50,14 +51,14 @@ def render_dossier_page(char):
 
     # 1. Header Banner
     draw.rectangle([35, 35, PAGE_W - 35, 125], fill=(254, 243, 199), outline=gold_med, width=2)
-    draw.text((55, 48), f"{char['name']} — CLASS 4-A ACTING DOSSIER", fill=gold_dark, font=F_HEADER)
+    draw.text((55, 48), f"{char['name']} — {class_title.upper()} ACTING DOSSIER", fill=gold_dark, font=F_HEADER)
     draw.text((55, 92), f"ALICE IN WONDERLAND: MAD TEA PARTY • {char['act'].upper()}", fill=gold_med, font=F_SUB)
 
     # Actor badge
-    badge_x = PAGE_W - 285
+    badge_x = PAGE_W - 295
     draw.rectangle([badge_x, 46, PAGE_W - 50, 115], fill=gold_dark, outline=gold_light, width=2)
     draw.text((badge_x + 15, 54), "STUDENT ACTOR", fill=(254, 240, 138), font=F_SM)
-    draw.text((badge_x + 15, 74), char['actor'].upper(), fill=(255, 255, 255), font=F_NAME)
+    draw.text((badge_x + 15, 74), char['actor'].upper()[:16], fill=(255, 255, 255), font=F_NAME)
 
     # 2. Portrait + Role + Stats
     p_box = (45, 145, 345, 525)
@@ -183,21 +184,27 @@ def render_dossier_page(char):
 
     return img
 
-def main():
-    print("=" * 60)
-    print("GENERATING CLASS 4-A STUDENT ROLE DOSSIERS PDF (18 STUDENTS)")
-    print("=" * 60)
+def generate_dossiers_for_class(class_id, char_list, pdf_filename, class_title):
+    print("=" * 65)
+    print(f"GENERATING {class_title.upper()} STUDENT ROLE DOSSIERS PDF ({len(char_list)} STUDENTS)")
+    print("=" * 65)
 
     pages = []
-    for char in CHARACTERS:
-        print(f"Rendering Dossier {char['num']:02d}/18: {char['name']} ({char['actor']})")
-        page_img = render_dossier_page(char)
+    for char in char_list:
+        print(f"Rendering Dossier {char['num']:02d}/{len(char_list)}: {char['name']} ({char['actor']})")
+        page_img = render_dossier_page(char, class_title)
         pages.append(page_img)
 
-    out_pdf = os.path.join(OUTPUT_DIR, "Class_4A_Student_Role_Dossiers.pdf")
+    out_pdf = os.path.join(OUTPUT_DIR, pdf_filename)
     pages[0].save(out_pdf, save_all=True, append_images=pages[1:], resolution=150)
-    print(f"Saved: {out_pdf} (18 Pages)")
-    print("=" * 60)
+    print(f"Saved: {out_pdf} ({len(pages)} Pages)")
+
+def main():
+    generate_dossiers_for_class("4a", CHARACTERS_4A, "Class_4A_Student_Role_Dossiers.pdf", "Class 4-A")
+    generate_dossiers_for_class("4b", CHARACTERS_4B, "Class_4B_Student_Role_Dossiers.pdf", "Class 4-B")
+    print("=" * 65)
+    print("ALL DOSSIERS GENERATED SUCCESSFULLY!")
+    print("=" * 65)
 
 if __name__ == "__main__":
     main()

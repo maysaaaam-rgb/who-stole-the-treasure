@@ -209,6 +209,41 @@ body {
   color: #fde68a;
 }
 
+.class-selector-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 0.25rem 0.35rem;
+  border-radius: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.class-toggle-pill {
+  padding: 0.4rem 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 18px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s var(--spring-snap);
+}
+
+.class-toggle-pill:hover {
+  color: #fde68a;
+}
+
+.class-toggle-pill.active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45);
+}
+
 .search-box {
   display: flex;
   align-items: center;
