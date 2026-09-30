@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alice in Wonderland — Mad Tea Party Double-Sided Trading Cards</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- Top App Navigation & Cyber-Glass Header -->
+  <header class="app-header">
+    <div class="brand-block">
+      <div class="brand-icon">☕</div>
+      <div class="brand-title">
+        <h1>MAD TEA PARTY TRADING CARDS</h1>
+        <p>19 Unique Double-Sided Character Cards • Collectible Souvenirs & Acting Guides</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-tactile btn-primary" id="btn-print-cards" title="Print 3x3 Duplex Cardstock Sheets">
+        🖨️ Print 3x3 Sheets
+      </button>
+      <a href="worksheet.html" class="btn-tactile btn-cyan" title="Open Printable Student Role Sheets">
+        📑 Student Role Dossiers
+      </a>
+      <button class="btn-tactile btn-secondary" id="btn-flip-all" title="Flip all cards between Front and Back">
+        🔄 Flip All
+      </button>
+      <button class="btn-tactile btn-secondary" data-sfx="teacup" title="Porcelain Teacup Clink">
+        ☕ Clink
+      </button>
+      <button class="btn-tactile btn-secondary" data-sfx="fanfare" title="Royal Fanfare">
+        🎺 Fanfare
+      </button>
+      <button class="btn-tactile btn-primary" id="btn-sound-toggle">
+        🔊 Sound FX
+      </button>
+    </div>
+  </header>
+
+  <!-- Filter & Search Dock -->
+  <nav class="filter-dock">
+    <div class="act-pills" id="act-pills-container">
+      <button class="act-pill active" data-act="all">All Cards (19)</button>
+      <button class="act-pill" data-act="act1">Act I: Garden Party (5)</button>
+      <button class="act-pill" data-act="act2">Act II: Mad Tea Table (5)</button>
+      <button class="act-pill" data-act="act3">Act III: Encounters (4)</button>
+      <button class="act-pill" data-act="act4">Act IV: Royal Climax (5)</button>
+    </div>
+
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Search character, student, role..." autocomplete="off">
+    </div>
+
+    <div class="card-view-toggles">
+      <span class="act-pill" id="card-count-badge" style="cursor:default;">19 / 19 Cards</span>
+    </div>
+  </nav>
+
+  <!-- Interactive Screen Showcase Container -->
+  <main class="view-container">
+    <div class="cards-gallery-grid" id="cards-gallery-grid">
+      <!-- Dynamic Trading Card Elements inserted via js/app.js -->
+    </div>
+  </main>
+
+  <!-- PRINT SECTION: High-Precision 3x3 Duplex Cardstock Print Engine -->
+  <div class="print-section" id="print-section">
+    <div id="print-sheets-container">
+      <!-- Generated 3x3 Duplex Pages inserted via js/app.js -->
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
