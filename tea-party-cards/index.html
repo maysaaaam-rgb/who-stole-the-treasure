@@ -16,16 +16,20 @@
       <div class="brand-icon">☕</div>
       <div class="brand-title">
         <h1>MAD TEA PARTY TRADING CARDS</h1>
-        <p>Class 4-A: 18 Unique Double-Sided Character Cards • Collectible Souvenirs & Acting Guides</p>
+        <p id="app-subtitle">Class 4-B: 19 Unique Double-Sided Character Cards • Collectible Souvenirs & Acting Guides</p>
       </div>
     </div>
 
     <div class="header-actions">
+      <div class="class-selector-dock" id="class-selector-dock" title="Switch between Class 4-B and Class 4-A">
+        <button type="button" class="class-toggle-pill active" data-class="4b">Class 4-B (19)</button>
+        <button type="button" class="class-toggle-pill" data-class="4a">Class 4-A (18)</button>
+      </div>
       <button class="btn-tactile btn-primary" id="btn-print-cards" title="Print 3x3 Duplex Cardstock Sheets">
         🖨️ Print 3x3 Sheets
       </button>
-      <a href="worksheet.html" class="btn-tactile btn-cyan" title="Open Printable Student Role Sheets">
-        📑 Student Role Dossiers
+      <a href="worksheet.html" class="btn-tactile btn-cyan" id="link-dossiers" title="Open Printable Student Role Sheets">
+        📑 Student Dossiers
       </a>
       <button class="btn-tactile btn-secondary" id="btn-flip-all" title="Flip all cards between Front and Back">
         🔄 Flip All
@@ -45,11 +49,11 @@
   <!-- Filter & Search Dock -->
   <nav class="filter-dock">
     <div class="act-pills" id="act-pills-container">
-      <button class="act-pill active" data-act="all">All Cards (18)</button>
-      <button class="act-pill" data-act="act1">Act I: Garden Party (4)</button>
-      <button class="act-pill" data-act="act2">Act II: Mad Tea Table (5)</button>
-      <button class="act-pill" data-act="act3">Act III: Encounters (4)</button>
-      <button class="act-pill" data-act="act4">Act IV: Royal Climax (5)</button>
+      <button class="act-pill active" data-act="all">All Cards (<span id="pill-count-all">19</span>)</button>
+      <button class="act-pill" data-act="act1">Act I: Garden Party (<span id="pill-count-act1">5</span>)</button>
+      <button class="act-pill" data-act="act2">Act II: Mad Tea Table (<span id="pill-count-act2">5</span>)</button>
+      <button class="act-pill" data-act="act3">Act III: Encounters (<span id="pill-count-act3">4</span>)</button>
+      <button class="act-pill" data-act="act4">Act IV: Royal Climax (<span id="pill-count-act4">5</span>)</button>
     </div>
 
     <div class="search-box">
@@ -57,8 +61,11 @@
       <input type="text" id="search-input" placeholder="Search character, student, role..." autocomplete="off">
     </div>
 
-    <div class="card-view-toggles">
-      <span class="act-pill" id="card-count-badge" style="cursor:default;">18 / 18 Cards</span>
+    <div class="card-view-toggles" style="display:flex; align-items:center; gap:0.5rem;">
+      <span class="act-pill" id="card-count-badge" style="cursor:default;">19 / 19 Cards</span>
+      <a href="output/Class_4B_Tea_Party_Cards_Duplex_Sheets.pdf" id="btn-download-pdf" target="_blank" class="act-pill" style="text-decoration:none; background:rgba(217,119,6,0.25); border-color:#f59e0b; color:#fde68a;" title="Download 300 DPI Duplex Print Sheets PDF">
+        📥 300 DPI PDF
+      </a>
     </div>
   </nav>
 

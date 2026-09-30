@@ -1,6 +1,7 @@
 /**
  * Alice in Wonderland: Mad Tea Party Double-Sided Trading Cards
- * Interactive Application Controller & Print Grid Engine
+ * Interactive Application Controller & Dynamic Print Grid Engine
+ * Dual-Class Support: Class 4-B (19 Cards) & Class 4-A (18 Cards)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,12 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnPrintCards = document.getElementById('btn-print-cards');
   const btnFlipAll = document.getElementById('btn-flip-all');
   const btnSoundToggle = document.getElementById('btn-sound-toggle');
+  const classSelectorDock = document.getElementById('class-selector-dock');
+  const appSubtitle = document.getElementById('app-subtitle');
+  const btnDownloadPdf = document.getElementById('btn-download-pdf');
+  const linkDossiers = document.getElementById('link-dossiers');
 
   let activeActFilter = 'all';
   let activeSearchQuery = '';
   let allFlipped = false;
 
+  // Read initial class from URL parameter, default to '4b'
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialClass = urlParams.get('class') === '4a' ? '4a' : '4b';
+
   // Initialize
+  if (typeof window.setCardsClass === 'function') {
+    window.setCardsClass(initialClass);
+  }
+  updateActPillCounts();
   renderCards();
   setupPrintSheets();
   setupEventListeners();
@@ -36,13 +49,86 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
+   * Update Act Filter Badge Counts
+   */
+  function updateActPillCounts() {
+    const list = window.TEA_PARTY_CARDS_DATA || [];
+    const countAll = list.length;
+    const count1 = list.filter(c => c.actNumber === 1 || c.act.includes('Act I')).length;
+    const count2 = list.filter(c => c.actNumber === 2 || c.act.includes('Act II')).length;
+    const count3 = list.filter(c => c.actNumber === 3 || c.act.includes('Act III')).length;
+    const count4 = list.filter(c => c.actNumber === 4 || c.act.includes('Act IV')).length;
+
+    const elAll = document.getElementById('pill-count-all');
+    const el1 = document.getElementById('pill-count-act1');
+    const el2 = document.getElementById('pill-count-act2');
+    const el3 = document.getElementById('pill-count-act3');
+    const el4 = document.getElementById('pill-count-act4');
+
+    if (elAll) elAll.textContent = countAll;
+    if (el1) el1.textContent = count1;
+    if (el2) el2.textContent = count2;
+    if (el3) el3.textContent = count3;
+    if (el4) el4.textContent = count4;
+  }
+
+  /**
+   * Switch Active Class (4-A vs 4-B)
+   */
+  function setClassView(classId) {
+    if (typeof window.setCardsClass === 'function') {
+      window.setCardsClass(classId);
+    }
+
+    if (classSelectorDock) {
+      classSelectorDock.querySelectorAll('.class-toggle-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.class === classId);
+      });
+    }
+
+    const is4b = classId === '4b';
+    if (appSubtitle) {
+      appSubtitle.textContent = is4b
+        ? "Class 4-B: 19 Unique Double-Sided Character Cards • Collectible Souvenirs & Acting Guides"
+        : "Class 4-A: 18 Unique Double-Sided Character Cards • Collectible Souvenirs & Acting Guides";
+    }
+
+    if (btnDownloadPdf) {
+      btnDownloadPdf.href = is4b
+        ? "output/Class_4B_Tea_Party_Cards_Duplex_Sheets.pdf"
+        : "output/Class_4A_Tea_Party_Cards_Duplex_Sheets.pdf";
+    }
+
+    if (linkDossiers) {
+      linkDossiers.href = `worksheet.html?class=${classId}`;
+    }
+
+    // Reset filter and update
+    activeActFilter = 'all';
+    if (actFilterContainer) {
+      actFilterContainer.querySelectorAll('.act-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.act === 'all');
+      });
+    }
+
+    updateActPillCounts();
+    renderCards();
+    setupPrintSheets();
+
+    if (window.teaPartyAudio) {
+      window.teaPartyAudio.playCardSelect();
+    }
+  }
+
+  /**
    * Render Interactive Screen Cards
    */
   function renderCards() {
     if (!cardsGrid) return;
     cardsGrid.innerHTML = '';
 
-    const filtered = TEA_PARTY_CARDS_DATA.filter(char => {
+    const data = window.TEA_PARTY_CARDS_DATA || [];
+    const filtered = data.filter(char => {
       const matchesAct = activeActFilter === 'all' || 
         (activeActFilter === 'act1' && (char.actNumber === 1 || char.act.includes('Act I'))) ||
         (activeActFilter === 'act2' && (char.actNumber === 2 || char.act.includes('Act II'))) ||
@@ -59,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (cardCountBadge) {
-      cardCountBadge.textContent = `${filtered.length} / 19 Cards`;
+      cardCountBadge.textContent = `${filtered.length} / ${data.length} Cards`;
     }
 
     if (filtered.length === 0) {
@@ -131,16 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span class="stat-val courage">${char.stats.courage}</span>
                 </div>
               </div>
-
-              <div class="flip-hint">🔄 Flip</div>
             </div>
           </div>
 
           <!-- BACK FACE -->
           <div class="card-face card-back" style="--card-theme: ${char.themeColor};">
             <div class="back-inner-frame">
-              
-              <!-- Header -->
               <div class="back-header">
                 <div class="back-header-top">
                   <div class="back-char-title">${char.name}</div>
@@ -149,10 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="back-act-scene">${char.act}</div>
               </div>
 
-              <!-- Body Guide -->
               <div class="back-body-content">
-                
-                <!-- Costume & Prop Checklist -->
+                <!-- Checklists -->
                 <div class="guide-box">
                   <div class="guide-box-title">
                     <span>🧰</span> Costume & Prop Essentials
@@ -163,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   </ul>
                 </div>
 
-                <!-- 1-Minute Speech / Monologue -->
+                <!-- 1-Minute Speech Prompt -->
                 <div class="guide-box speech-box">
                   <div class="guide-box-title">
                     <span>🎭</span> 1-Min Speech Prompt
@@ -172,11 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   <div class="speech-text-wrap">
                     <span class="speech-action">🎬 ${char.stageAction}</span>
                     <span class="speech-quote">"${char.openingLine}"</span>
-                    <p style="margin-top: 3px; font-size: 0.6rem; color: #4b3823;">${char.speakingPrompt}</p>
+                    <p style="margin-top: 3px; font-size: 0.62rem; color: #4b3823;">${char.speakingPrompt}</p>
                   </div>
                 </div>
 
-                <!-- Key Interaction Cue -->
+                <!-- Exact Interaction Cue -->
                 <div class="interaction-cue-box">
                   <div class="cue-header">
                     <span>⚡ Key Interaction Cue</span>
@@ -189,56 +269,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="cue-response">"${char.interactionCue.responseLine}"</span>
                   </div>
                 </div>
-
               </div>
-
             </div>
           </div>
 
         </div>
       </div>
 
-      <!-- Action Mini Bar -->
-      <div class="card-mini-actions">
-        <button class="btn-mini-audio" data-action="speak" data-id="${char.id}" title="Hear Key Line">
-          🔊 Line
-        </button>
-        <button class="btn-mini-audio" data-action="flip" data-id="${char.id}" title="Flip Card">
+      <!-- Quick Action Toolbar underneath card -->
+      <div class="card-quick-actions">
+        <button type="button" class="card-btn-action btn-flip" data-action="flip" title="Flip Card">
           🔄 Flip
         </button>
-        <a href="worksheet.html#student-${char.id}" target="_blank" class="btn-mini-audio" style="text-decoration:none;" title="View Dossier">
-          📄 Role Sheet
-        </a>
+        <button type="button" class="card-btn-action btn-speak" data-action="speak" title="Listen to Performance Speech">
+          🗣️ Speak
+        </button>
+        <button type="button" class="card-btn-action btn-sound" data-action="sfx" title="Sound Effect">
+          🎵 Chime
+        </button>
       </div>
     `;
 
-    // Event listener for card flip
-    const card3D = wrap.querySelector('.trading-card-wrapper');
-    card3D.addEventListener('click', (e) => {
-      // Don't flip if clicking child action link
-      if (e.target.closest('.card-mini-actions')) return;
-      card3D.classList.toggle('is-flipped');
+    // Interactive Card Flipping
+    const card3dWrap = wrap.querySelector('.trading-card-wrapper');
+    const btnFlip = wrap.querySelector('.btn-flip');
+    const btnSpeak = wrap.querySelector('.btn-speak');
+    const btnSound = wrap.querySelector('.btn-sound');
+
+    card3dWrap.addEventListener('click', (e) => {
+      // Don't flip if clicking interactive sub-elements
+      card3dWrap.classList.toggle('is-flipped');
       if (window.teaPartyAudio) {
         window.teaPartyAudio.playCardFlip();
       }
     });
 
-    // Button event listeners
-    const btnSpeak = wrap.querySelector('[data-action="speak"]');
+    btnFlip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      card3dWrap.classList.toggle('is-flipped');
+      if (window.teaPartyAudio) {
+        window.teaPartyAudio.playCardFlip();
+      }
+    });
+
     btnSpeak.addEventListener('click', (e) => {
       e.stopPropagation();
       if (window.teaPartyAudio) {
-        window.teaPartyAudio.playCardSelect();
-        window.teaPartyAudio.speakText(char.openingLine);
+        btnSpeak.style.transform = 'scale(0.92)';
+        setTimeout(() => btnSpeak.style.transform = '', 150);
+        window.teaPartyAudio.speakMonologue(char.name, char.openingLine, char.speakingPrompt);
       }
     });
 
-    const btnFlip = wrap.querySelector('[data-action="flip"]');
-    btnFlip.addEventListener('click', (e) => {
+    btnSound.addEventListener('click', (e) => {
       e.stopPropagation();
-      card3D.classList.toggle('is-flipped');
       if (window.teaPartyAudio) {
-        window.teaPartyAudio.playCardFlip();
+        window.teaPartyAudio.playRoyalFanfare();
       }
     });
 
@@ -246,23 +332,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Generate 3x3 Duplex Print Sheets (A4 / US Letter Ready)
-   * Sheet 1 Front: Cards 1-9
-   * Sheet 1 Back: Cards 1-9 (Columns mirrored: 3, 2, 1, 6, 5, 4, 9, 8, 7 for duplex alignment)
-   * Sheet 2 Front: Cards 10-18
-   * Sheet 2 Back: Cards 10-18 (Mirrored)
-   * Sheet 3 Front: Card 19
-   * Sheet 3 Back: Card 19 (Mirrored to Col 3)
+   * Setup High-Precision 3x3 Duplex Cardstock Print Engine
    */
   function setupPrintSheets() {
     if (!printContainer) return;
     printContainer.innerHTML = '';
 
-    const batches = [
-      TEA_PARTY_CARDS_DATA.slice(0, 9),
-      TEA_PARTY_CARDS_DATA.slice(9, 18),
-      TEA_PARTY_CARDS_DATA.slice(18, 19)
-    ];
+    const data = window.TEA_PARTY_CARDS_DATA || [];
+    const classLabel = (window.CURRENT_CLASS_ID || '4b').toUpperCase();
+    const totalCards = data.length;
+    const numBatches = Math.ceil(totalCards / 9);
+    const batches = [];
+
+    for (let b = 0; b < numBatches; b++) {
+      batches.push(data.slice(b * 9, (b + 1) * 9));
+    }
 
     batches.forEach((batch, batchIdx) => {
       // 1. FRONT SHEET (3x3 Grid)
@@ -270,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
       frontPage.className = 'print-sheet-page';
       frontPage.innerHTML = `
         <div class="print-sheet-header">
-          <strong>MAD TEA PARTY TRADING CARDS — SHEET ${batchIdx + 1} (FRONT SIDES)</strong> | 3x3 Grid • 2.5" × 3.5" Standard Poker Dimensions
+          <strong>CLASS ${classLabel}: MAD TEA PARTY CARDS — SHEET ${batchIdx + 1} (FRONT SIDES)</strong> | 3x3 Grid • 2.5" × 3.5" Standard Poker Dimensions
         </div>
         <div class="print-cards-grid-3x3" id="print-grid-front-${batchIdx}"></div>
       `;
@@ -300,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       backPage.className = 'print-sheet-page';
       backPage.innerHTML = `
         <div class="print-sheet-header">
-          <strong>MAD TEA PARTY TRADING CARDS — SHEET ${batchIdx + 1} (BACK SIDES — DUPLEX ALIGNED)</strong> | Flip on Long Edge
+          <strong>CLASS ${classLabel}: MAD TEA PARTY CARDS — SHEET ${batchIdx + 1} (BACK SIDES — DUPLEX ALIGNED)</strong> | Flip on Long Edge
         </div>
         <div class="print-cards-grid-3x3" id="print-grid-back-${batchIdx}"></div>
       `;
@@ -422,6 +506,18 @@ document.addEventListener('DOMContentLoaded', () => {
    * Setup Event Listeners & UI Controls
    */
   function setupEventListeners() {
+    // Class switcher pills
+    if (classSelectorDock) {
+      classSelectorDock.addEventListener('click', (e) => {
+        const btn = e.target.closest('.class-toggle-pill');
+        if (!btn) return;
+        const targetClass = btn.dataset.class;
+        if (targetClass) {
+          setClassView(targetClass);
+        }
+      });
+    }
+
     // Act filters
     if (actFilterContainer) {
       actFilterContainer.addEventListener('click', (e) => {

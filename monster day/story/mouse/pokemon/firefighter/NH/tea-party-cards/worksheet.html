@@ -374,25 +374,32 @@
     <div class="brand-block">
       <div class="brand-icon">📑</div>
       <div class="brand-title">
-        <h1 style="font-size: 1.1rem; color: #fff;">CLASS 4-A: STUDENT ROLE DOSSIERS</h1>
-        <p style="font-size: 0.75rem; color: #94a3b8;">18 Printable Single-Page Rehearsal Guides & Costume Checklists</p>
+        <h1 style="font-size: 1.1rem; color: #fff;" id="worksheet-title">CLASS 4-B: STUDENT ROLE DOSSIERS</h1>
+        <p style="font-size: 0.75rem; color: #94a3b8;" id="worksheet-subtitle">19 Printable Single-Page Rehearsal Guides & Costume Checklists</p>
       </div>
     </div>
 
     <div class="header-actions">
+      <div class="class-selector-dock" id="class-selector-dock" title="Switch between Class 4-B and Class 4-A">
+        <button type="button" class="class-toggle-pill active" data-class="4b">Class 4-B (19)</button>
+        <button type="button" class="class-toggle-pill" data-class="4a">Class 4-A (18)</button>
+      </div>
       <select id="jump-student-select" style="background:#1e293b; color:#fff; border:1px solid #475569; padding:0.5rem 0.8rem; border-radius:6px; font-size:0.85rem; outline:none;">
         <option value="">Jump to Student Role...</option>
       </select>
-      <button class="btn-tactile btn-primary" onclick="window.print()">
-        🖨️ Print All Dossiers (18 Pages)
+      <button class="btn-tactile btn-primary" onclick="window.print()" id="btn-print-dossiers">
+        🖨️ Print All Dossiers (19 Pages)
       </button>
-      <a href="index.html" class="btn-tactile btn-secondary">
+      <a href="output/Class_4B_Student_Role_Dossiers.pdf" id="btn-download-dossier-pdf" target="_blank" class="btn-tactile btn-cyan" title="Download 300 DPI PDF Dossier">
+        📥 300 DPI PDF
+      </a>
+      <a href="index.html" class="btn-tactile btn-secondary" id="link-trading-cards">
         🃏 Return to Trading Cards
       </a>
     </div>
   </header>
 
-  <!-- Container for 19 Student Dossiers -->
+  <!-- Container for Student Dossiers -->
   <main class="dossier-page-container" id="dossiers-root">
     <!-- Populated dynamically via JS -->
   </main>
@@ -403,143 +410,203 @@
     document.addEventListener('DOMContentLoaded', () => {
       const root = document.getElementById('dossiers-root');
       const select = document.getElementById('jump-student-select');
-      if (!root || !TEA_PARTY_CARDS_DATA) return;
+      const titleEl = document.getElementById('worksheet-title');
+      const subEl = document.getElementById('worksheet-subtitle');
+      const printBtn = document.getElementById('btn-print-dossiers');
+      const pdfBtn = document.getElementById('btn-download-dossier-pdf');
+      const linkCards = document.getElementById('link-trading-cards');
+      const classSelector = document.getElementById('class-selector-dock');
 
-      TEA_PARTY_CARDS_DATA.forEach((char, idx) => {
-        // Populate dropdown
-        const opt = document.createElement('option');
-        opt.value = `student-${char.id}`;
-        opt.textContent = `${idx + 1}. ${char.name} (${char.actor})`;
-        select.appendChild(opt);
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentClass = urlParams.get('class') === '4a' ? '4a' : '4b';
 
-        // Build single page dossier
-        const sheet = document.createElement('article');
-        sheet.className = 'student-dossier-sheet';
-        sheet.id = `student-${char.id}`;
+      function renderClassDossiers(classId) {
+        currentClass = classId;
+        const list = typeof window.getCardsData === 'function' 
+          ? window.getCardsData(classId) 
+          : (classId === '4a' ? window.CLASS_4A_CARDS_DATA : window.CLASS_4B_CARDS_DATA);
+        
+        if (!list || !root) return;
 
-        sheet.innerHTML = `
-          <div class="dossier-inner-border">
-            
-            <!-- Header -->
-            <header class="dossier-header">
-              <div class="dossier-title-group">
-                <h2>${char.name}</h2>
-                <div class="dossier-subtitle">ALICE IN WONDERLAND: MAD TEA PARTY • ${char.act}</div>
-              </div>
-              <div class="dossier-actor-badge">
-                <div class="actor-label">CAST ACTOR</div>
-                <div class="student-name">${char.actor}</div>
-              </div>
-            </header>
+        const is4b = classId === '4b';
+        const count = list.length;
+        const classLabel = is4b ? 'CLASS 4-B' : 'CLASS 4-A';
 
-            <!-- Profile & Identity Grid -->
-            <div class="dossier-profile-grid">
-              <div class="dossier-portrait-frame">
-                <img src="${char.image}" alt="${char.name}" />
-              </div>
+        // Update Header Info
+        if (titleEl) titleEl.textContent = `${classLabel}: STUDENT ROLE DOSSIERS`;
+        if (subEl) subEl.textContent = `${count} Printable Single-Page Rehearsal Guides & Costume Checklists`;
+        if (printBtn) printBtn.textContent = `🖨️ Print All Dossiers (${count} Pages)`;
+        if (pdfBtn) {
+          pdfBtn.href = is4b 
+            ? "output/Class_4B_Student_Role_Dossiers.pdf"
+            : "output/Class_4A_Student_Role_Dossiers.pdf";
+        }
+        if (linkCards) {
+          linkCards.href = `index.html?class=${classId}`;
+        }
 
-              <div class="dossier-role-info">
-                <div>
-                  <div class="role-meta-row">
-                    <span class="role-meta-label">Role Archetype:</span>
-                    <div class="role-meta-value">${char.role}</div>
-                  </div>
-                  <div class="role-meta-row">
-                    <span class="role-meta-label">Title / Epithet:</span>
-                    <div class="role-meta-value">${char.title}</div>
-                  </div>
-                </div>
+        // Update Class Switcher Active Button
+        if (classSelector) {
+          classSelector.querySelectorAll('.class-toggle-pill').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.class === classId);
+          });
+        }
 
-                <div class="stat-pill-row">
-                  <div class="stat-dossier-pill">
-                    <span class="label">TEA POWER</span>
-                    <span class="value">${char.stats.teaPower}/100</span>
-                  </div>
-                  <div class="stat-dossier-pill">
-                    <span class="label">MADNESS / WIT</span>
-                    <span class="value">${char.stats.madness}/100</span>
-                  </div>
-                  <div class="stat-dossier-pill">
-                    <span class="label">COURAGE</span>
-                    <span class="value">${char.stats.courage}/100</span>
-                  </div>
-                </div>
+        // Rebuild dropdown
+        select.innerHTML = '<option value="">Jump to Student Role...</option>';
+        root.innerHTML = '';
 
-                <div class="ability-box">
-                  <strong>⭐ Special Ability: ${char.specialAbility.name}</strong><br>
-                  ${char.specialAbility.description}
-                </div>
-              </div>
-            </div>
+        list.forEach((char, idx) => {
+          // Populate dropdown
+          const opt = document.createElement('option');
+          opt.value = `student-${char.id}`;
+          opt.textContent = `${idx + 1}. ${char.name} (${char.actor})`;
+          select.appendChild(opt);
 
-            <!-- Two-Column Checklists: Costume & Props -->
-            <div class="dossier-two-col">
-              <div class="dossier-card-box">
-                <div class="dossier-box-heading">
-                  <span>👗</span> Costume & Makeup Checklist
-                </div>
-                <ul class="checkbox-list">
-                  ${char.costume.map(item => `
-                    <li>
-                      <div class="checkbox-box"></div>
-                      <span>${item}</span>
-                    </li>
-                  `).join('')}
-                </ul>
-              </div>
+          // Build single page dossier
+          const sheet = document.createElement('article');
+          sheet.className = 'student-dossier-sheet';
+          sheet.id = `student-${char.id}`;
 
-              <div class="dossier-card-box">
-                <div class="dossier-box-heading">
-                  <span>🧰</span> Physical Props to Bring
-                </div>
-                <ul class="checkbox-list">
-                  ${char.props.map(prop => `
-                    <li>
-                      <div class="checkbox-box"></div>
-                      <span><strong>${prop}</strong></span>
-                    </li>
-                  `).join('')}
-                </ul>
-              </div>
-            </div>
-
-            <!-- Performance Monologue & Script -->
-            <div class="speech-dossier-box">
-              <div class="dossier-box-heading">
-                <span>🎭</span> 1-Minute Performance Speech & Acting Prompts
-              </div>
-              <div class="vocal-cue-pill">🎙️ Vocal Delivery: ${char.vocalTone}</div>
+          sheet.innerHTML = `
+            <div class="dossier-inner-border">
               
-              <div class="monologue-text">
-                <p><strong>Stage Directions:</strong> ${char.stageAction}</p>
-                <p style="margin-top: 4px;"><strong>Performance Prompt:</strong> ${char.speakingPrompt}</p>
+              <!-- Header -->
+              <header class="dossier-header">
+                <div class="dossier-title-group">
+                  <h2>${char.name}</h2>
+                  <div class="dossier-subtitle">ALICE IN WONDERLAND: MAD TEA PARTY • ${char.act} • ${classLabel}</div>
+                </div>
+                <div class="dossier-actor-badge">
+                  <div class="actor-label">CAST ACTOR</div>
+                  <div class="student-name">${char.actor}</div>
+                </div>
+              </header>
+
+              <!-- Profile & Identity Grid -->
+              <div class="dossier-profile-grid">
+                <div class="dossier-portrait-frame">
+                  <img src="${char.image}" alt="${char.name}" />
+                </div>
+
+                <div class="dossier-role-info">
+                  <div>
+                    <div class="role-meta-row">
+                      <span class="role-meta-label">Role Archetype:</span>
+                      <div class="role-meta-value">${char.role}</div>
+                    </div>
+                    <div class="role-meta-row">
+                      <span class="role-meta-label">Title / Epithet:</span>
+                      <div class="role-meta-value">${char.title}</div>
+                    </div>
+                  </div>
+
+                  <div class="stat-pill-row">
+                    <div class="stat-dossier-pill">
+                      <span class="label">TEA POWER</span>
+                      <span class="value">${char.stats.teaPower}/100</span>
+                    </div>
+                    <div class="stat-dossier-pill">
+                      <span class="label">MADNESS / WIT</span>
+                      <span class="value">${char.stats.madness}/100</span>
+                    </div>
+                    <div class="stat-dossier-pill">
+                      <span class="label">COURAGE</span>
+                      <span class="value">${char.stats.courage}/100</span>
+                    </div>
+                  </div>
+
+                  <div class="ability-box">
+                    <strong>⭐ Special Ability: ${char.specialAbility.name}</strong><br>
+                    ${char.specialAbility.description}
+                  </div>
+                </div>
               </div>
 
-              <div class="memorize-lines">
-                <strong>⭐ Key Script Lines to Memorize:</strong>
-                ${char.keyLines.map(line => `<div style="font-style:italic; margin-bottom:2px;">"${line}"</div>`).join('')}
+              <!-- Two-Column Checklists: Costume & Props -->
+              <div class="dossier-two-col">
+                <div class="dossier-card-box">
+                  <div class="dossier-box-heading">
+                    <span>👗</span> Costume & Makeup Checklist
+                  </div>
+                  <ul class="checkbox-list">
+                    ${char.costume.map(item => `
+                      <li>
+                        <div class="checkbox-box"></div>
+                        <span>${item}</span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+
+                <div class="dossier-card-box">
+                  <div class="dossier-box-heading">
+                    <span>🧰</span> Physical Props to Bring
+                  </div>
+                  <ul class="checkbox-list">
+                    ${char.props.map(prop => `
+                      <li>
+                        <div class="checkbox-box"></div>
+                        <span><strong>${prop}</strong></span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
               </div>
+
+              <!-- Performance Monologue & Script -->
+              <div class="speech-dossier-box">
+                <div class="dossier-box-heading">
+                  <span>🎭</span> 1-Minute Performance Speech & Acting Prompts
+                </div>
+                <div class="vocal-cue-pill">🎙️ Vocal Delivery: ${char.vocalTone}</div>
+                
+                <div class="monologue-text">
+                  <p><strong>Stage Directions:</strong> ${char.stageAction}</p>
+                  <p style="margin-top: 4px;"><strong>Performance Prompt:</strong> ${char.speakingPrompt}</p>
+                </div>
+
+                <div class="memorize-lines">
+                  <strong>⭐ Key Script Lines to Memorize:</strong>
+                  ${char.keyLines.map(line => `<div style="font-style:italic; margin-bottom:2px;">"${line}"</div>`).join('')}
+                </div>
+              </div>
+
+              <!-- Key Interaction Cue -->
+              <div class="dossier-interaction-cue">
+                <div class="dossier-cue-title">
+                  <span>⚡ Key Stage Interaction Cue</span>
+                  <span>Exact Response Trigger</span>
+                </div>
+                <div class="dossier-cue-content">
+                  When <strong>${char.interactionCue.triggerCharacter}</strong> says: 
+                  <em>"${char.interactionCue.triggerLine}"</em><br>
+                  ➔ <strong>Action:</strong> ${char.interactionCue.actionInstruction} 
+                  <span class="cue-highlight">"${char.interactionCue.responseLine}"</span>
+                </div>
+              </div>
+
             </div>
+          `;
 
-            <!-- Key Interaction Cue -->
-            <div class="dossier-interaction-cue">
-              <div class="dossier-cue-title">
-                <span>⚡ Key Stage Interaction Cue</span>
-                <span>Exact Response Trigger</span>
-              </div>
-              <div class="dossier-cue-content">
-                When <strong>${char.interactionCue.triggerCharacter}</strong> says: 
-                <em>"${char.interactionCue.triggerLine}"</em><br>
-                ➔ <strong>Action:</strong> ${char.interactionCue.actionInstruction} 
-                <span class="cue-highlight">"${char.interactionCue.responseLine}"</span>
-              </div>
-            </div>
+          root.appendChild(sheet);
+        });
+      }
 
-          </div>
-        `;
+      // Initial Render
+      renderClassDossiers(currentClass);
 
-        root.appendChild(sheet);
-      });
+      // Class Switcher Events
+      if (classSelector) {
+        classSelector.addEventListener('click', (e) => {
+          const btn = e.target.closest('.class-toggle-pill');
+          if (!btn) return;
+          const target = btn.dataset.class;
+          if (target) {
+            renderClassDossiers(target);
+          }
+        });
+      }
 
       // Jump select handler
       select.addEventListener('change', (e) => {

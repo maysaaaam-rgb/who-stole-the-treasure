@@ -1,11 +1,7 @@
 """
 Alice in Wonderland: Mad Tea Party Double-Sided Trading Cards
-Class 4-A High-Resolution Batch Generator (300 DPI Print Engine)
-
-Generates:
-1. 36 Individual 300 DPI Card PNGs for Class 4-A (Front & Back for all 18 characters)
-2. Class_4A_Cards_Individual_Cards.pdf (36 Pages)
-3. Class_4A_Tea_Party_Cards_Duplex_Sheets.pdf (4 Pages: 2 Front + 2 Back Duplex Sheets, exactly 18 cards)
+Dual-Class Batch Generator (300 DPI Print Engine)
+Supports Class 4-A (18 Students) and Class 4-B (19 Students)
 """
 
 import os, sys
@@ -16,9 +12,11 @@ from PIL import Image, ImageDraw, ImageFont
 BASE_DIR = r"c:\Users\maysa\Desktop\DV\tea-party-cards"
 ASSETS_DIR = os.path.join(BASE_DIR, "assets", "characters")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
-PNG_DIR = os.path.join(OUTPUT_DIR, "class_4a_png")
+PNG_DIR_4A = os.path.join(OUTPUT_DIR, "class_4a_png")
+PNG_DIR_4B = os.path.join(OUTPUT_DIR, "class_4b_png")
 
-os.makedirs(PNG_DIR, exist_ok=True)
+os.makedirs(PNG_DIR_4A, exist_ok=True)
+os.makedirs(PNG_DIR_4B, exist_ok=True)
 
 # 300 DPI Dimensions for 2.5" x 3.5" Poker Card
 CARD_W = 750
@@ -41,8 +39,10 @@ FONT_BODY_BOLD = get_font("georgia.ttf", 19)
 FONT_BODY_SM = get_font("georgia.ttf", 16)
 FONT_HEADER_SM = get_font("arial.ttf", 16)
 
-# Class 4-A Roster
-CHARACTERS = [
+# ==========================================
+# CLASS 4-A: CAST ROSTER (18 STUDENTS)
+# ==========================================
+CHARACTERS_4A = [
     {
         "id": "alice", "num": 1, "name": "ALICE", "actor": "İpek",
         "role": "The Unconquerable Dreamer & Champion", "act": "Act I & IV: Garden & Royal Climax",
@@ -279,6 +279,259 @@ CHARACTERS = [
     }
 ]
 
+# ==========================================
+# CLASS 4-B: CAST ROSTER (19 STUDENTS)
+# ==========================================
+CHARACTERS_4B = [
+    {
+        "id": "alice", "num": 1, "name": "ALICE", "actor": "Derin",
+        "role": "The Unconquerable Dreamer & Champion (Lead)", "act": "Act I & IV: Garden & Royal Climax",
+        "tp": 90, "mad": 94, "courage": 99,
+        "ability": "Muchness Surge: Reclaims true self, stands tall against conformity, and wields Vorpal resolve.",
+        "vocal": "Clear, earnest, curious, shifting to resolute confidence.",
+        "quote": "It’s no use going back to yesterday, because I was a different person then.",
+        "action": "Stands up abruptly in defiance: 'It is my life! Why must everyone decide what I ought to be?'",
+        "speech": "Alice politely challenges stopped clocks, refuses to conform to expectations, and asserts her own identity.",
+        "cue": "When Lowell advises sensible business, declare: 'It is my life! Why must everyone decide what I ought to be?'",
+        "costume": ["Cornflower blue tea dress with lace pinafore", "Blue satin hair bow & white stockings"],
+        "props": ["Antique brass skeleton key", "Porcelain floral teacup & saucer"]
+    },
+    {
+        "id": "cheshire-cat", "num": 2, "name": "CHESHIRE CAT", "actor": "Elif Beren",
+        "role": "Enigmatic Riddle-Weaver of the Woods", "act": "Act III: Wonderland Encounters",
+        "tp": 88, "mad": 99, "courage": 88,
+        "ability": "Grin Dispersal: Fades into transparent air, leaving only a mischievous smile.",
+        "vocal": "Silky, purring, hypnotic, lingering with knowing smirk.",
+        "quote": "We’re all mad here. If you don’t care where to get to, it doesn’t matter which way you walk.",
+        "action": "Steps out holding painted grin mask: 'Every path leads somewhere, Hatter...'",
+        "speech": "Appears from behind guests with teasing grin, taunts Alice with circular logic, and vanishes.",
+        "cue": "When Hatter sighs for path to Marmoreal, lower mask: 'Every path leads somewhere, Hatter.'",
+        "costume": ["Plum velvet cat ears with pocket watches", "Striped velvet frock coat & clown collar"],
+        "props": ["Handheld Cheshire grin mask on wand", "'To Wonderland' miniature signpost"]
+    },
+    {
+        "id": "white-queen", "num": 3, "name": "WHITE QUEEN", "actor": "İlay Eskin",
+        "role": "Ethereal Sovereign of Marmoreal", "act": "Act IV: The Royal Confrontation",
+        "tp": 93, "mad": 84, "courage": 92,
+        "ability": "Harmonic Potion: Calms beasts and awakens the champion's true courage.",
+        "vocal": "Ethereal, melodic, whisper-soft, floating with serene grace and unyielding will.",
+        "quote": "Your reign of fear ends at this table, sister. The champion has found her muchness.",
+        "action": "Glides gracefully downstage, raising hands to cast a calming aura.",
+        "speech": "Rallies Underland for the Frabjous Day, stands beside Alice, and dispels draconic terror.",
+        "cue": "When Dragon ignites flame blade, step forward: 'Your reign of fear ends at this table, sister.'",
+        "costume": ["Crown tiara & white lace Elizabethan collar", "Silver brocade gown with chess filigree"],
+        "props": ["Carved alabaster chess queen", "Oraculum prophecy scroll"]
+    },
+    {
+        "id": "dinah", "num": 4, "name": "CAT", "actor": "Nilda / Milda",
+        "role": "Gentle Hearth Guardian & Waking Tether", "act": "Act III: Wonderland Encounters",
+        "tp": 82, "mad": 75, "courage": 86,
+        "ability": "Hearth Anchor: Whispers memories of crackling fires and warm milk.",
+        "vocal": "Purring, gentle, domestic, blending feline curiosity with Victorian primness.",
+        "quote": "Do you remember home, Alice? The gentle fire, the warm hearth...",
+        "action": "Steps forward with padded grace, playing with a mechanical trinket.",
+        "speech": "Connects waking reality with Wonderland, asking Alice if home is truly forgotten.",
+        "cue": "When Tweedles argue over tolls, step between: 'Do you remember home, Alice?'",
+        "costume": ["Olive velvet cat ears & curled brocade tail", "Green velvet tailcoat & paw mittens"],
+        "props": ["Clockwork table clock", "Miniature saucer with silver fish trinket"]
+    },
+    {
+        "id": "dormouse-yagmur", "num": 5, "name": "DORMOUSE (SENTINEL)", "actor": "Yağmur",
+        "role": "Skeptical Tea Critic & Clockkeeper (Shared)", "act": "Act II: Down the Rabbit Hole & Tea Table",
+        "tp": 83, "mad": 88, "courage": 89,
+        "ability": "Muchness Meter: Cuts through grand illusions with blunt honesty; rattles brass alarm clocks.",
+        "vocal": "Heavy-lidded, grumbling, soft-spoken squeaks with sharp outbursts.",
+        "quote": "She’s the wrong Alice, Hatter! Look at her—she’s completely lost her muchness!",
+        "action": "Struggles upright from behind books, clutching alarm clock: 'She's the wrong Alice!'",
+        "speech": "Complains about cold tea and lost muchness, demanding proof Alice is the champion.",
+        "cue": "When Alice insists she is Alice, slam clock: 'She’s the wrong Alice, Hatter!'",
+        "costume": ["Rustic earth-toned mouse nightcap", "Patched vintage tweed coat & houndstooth lapels"],
+        "props": ["Twin-bell brass wind-up alarm clock", "Floral demitasse cup"]
+    },
+    {
+        "id": "dormouse-nisa", "num": 6, "name": "DORMOUSE (SLEEPER)", "actor": "Nisa",
+        "role": "Drowsy Teapot Guardian & Rapier Duelist (Shared)", "act": "Act II: Down the Rabbit Hole & Tea Table",
+        "tp": 84, "mad": 86, "courage": 91,
+        "ability": "Treacle Wake: Jolts upright from deep sleep into furious rapier combat.",
+        "vocal": "Muffled, drowsy mumbles that suddenly snap into fierce bravery.",
+        "quote": "I wasn't asleep! I was merely resting my whiskers and contemplating treacle!",
+        "action": "Jolts awake from inside teapot, rubbing eyes with 'Zzz' handkerchief.",
+        "speech": "Threatens anyone mentioning cats, mumbles treacle poetry, and nods back off.",
+        "cue": "When March Hare clatters teacups, shoot upright: 'I wasn't asleep! Contemplating treacle!'",
+        "costume": ["Patchwork tan-and-plaid nightcap with mouse ears", "Rustic tweed frock coat & brown vest"],
+        "props": ["Pewter teaspoon rapier sword", "Handkerchief with embroidered 'Zzz'"]
+    },
+    {
+        "id": "bayard", "num": 7, "name": "BAYARD DOG 🐶", "actor": "Ozan",
+        "role": "Loyal Scent-Tracker & Underland Scout", "act": "Act IV: The Royal Confrontation",
+        "tp": 84, "mad": 80, "courage": 96,
+        "ability": "True Compass Scent: Detects card soldiers miles away to warn the innocent.",
+        "vocal": "Deep, weary, gravelly, carrying sorrowful loyalty.",
+        "quote": "Follow the scent... Red Queen holds my pups hostage, but my heart belongs to the true Queen.",
+        "action": "Bounds in low, sniffing stage floor and raising brass compass high.",
+        "speech": "Drops to knee to sniff stage, warns Stayne's cards are closing in, and urges Alice toward White Castle.",
+        "cue": "When offstage drums beat, drop to knee: 'Beware! Scent of crimson steel! Run, Alice, run!'",
+        "costume": ["Russet leather hood with drooping hound ears", "Weathered leather coat & paw gloves"],
+        "props": ["Antique nautical brass compass", "Distressed parchment map of Underland"]
+    },
+    {
+        "id": "white-rabbit", "num": 8, "name": "WHITE RABBIT", "actor": "Mina",
+        "role": "Frantic Royal Herald & Timekeeper", "act": "Act II: Down the Rabbit Hole & Tea Table",
+        "tp": 82, "mad": 76, "courage": 70,
+        "ability": "Ticking Sprint: Dodges danger at double speed while delivering royal scrolls.",
+        "vocal": "High-pitched, breathless, twitchy, speaking in frantic bursts.",
+        "quote": "I’m late! For a very important date! The Queen will have my head!",
+        "action": "Sprints across apron checking watch: 'No time, no time! Queen's tea is cold!'",
+        "speech": "Paces around table checking watch, reads jumbled royal proclamation, and warns Alice.",
+        "cue": "When Alice questions conformity, sprint across: 'No time! The Queen's tea is cold!'",
+        "costume": ["Plush rabbit ears headband & lace jabot", "Damask brocade vest & velvet coat"],
+        "props": ["Giant gold pocket watch on chain", "Royal proclamation scroll with wax seal"]
+    },
+    {
+        "id": "march-hare", "num": 9, "name": "MARCH HARE", "actor": "Kerem",
+        "role": "Erratic Co-Host of the Mad Tea Table", "act": "Act II: Down the Rabbit Hole & Tea Table",
+        "tp": 96, "mad": 98, "courage": 80,
+        "ability": "Clean Cup Protocol: Forces everyone to scramble one seat to the left mid-sentence.",
+        "vocal": "Jittery, eccentric, sudden shouts and nervous chuckles.",
+        "quote": "Clean cup! Move down! Take some wine! Oh, there isn’t any, but it was polite to offer!",
+        "action": "Clatters teacups maniacally, tossing imaginary sugar cubes.",
+        "speech": "Erratically offers empty cups, insists butter belongs in clocks, and forces seat swaps.",
+        "cue": "When Hatter shouts 'No room!', slide empty cup at Alice: 'Take some wine!'",
+        "costume": ["Top hat with upright plush hare ears", "Moss green velvet tailcoat & carrot vest"],
+        "props": ["Antique copper & porcelain teapot", "Tea party menu with gear seals"]
+    },
+    {
+        "id": "jabberwocky", "num": 10, "name": "DRAGON (JABBERWOCKY)", "actor": "Ali",
+        "role": "The Red Queen's Draconic Destroyer", "act": "Act IV: The Royal Confrontation",
+        "tp": 62, "mad": 79, "courage": 100,
+        "ability": "Biting Jaws & Flame Blade: Ignites draconic fire; armor shrugs off mortal blows.",
+        "vocal": "Deep, guttural, slow, cold draconic malice.",
+        "quote": "My jaws that bite, my claws that catch... You cannot escape the Frabjous Day.",
+        "action": "Strides center stage with flared wings and glowing broadsword.",
+        "speech": "Mocks Alice's mortal fragility, roars warnings of fire and ruin, and declares the realm will not fall.",
+        "cue": "When Red Queen shouts 'Champion!', ignite sword: 'My jaws that bite, my claws that catch!'",
+        "costume": ["Horned draconic crown & shoulder wings", "Scale leather armor & iron breastplate"],
+        "props": ["Full glowing flame broadsword", "Stolen royal crimson velvet crown"]
+    },
+    {
+        "id": "bandersnatch", "num": 11, "name": "BANDERSNATCH", "actor": "Lina",
+        "role": "Fierce Guardian of the Underland Keys", "act": "Act IV: The Royal Confrontation",
+        "tp": 72, "mad": 76, "courage": 96,
+        "ability": "Beast Compassion: Turns razor claws into shields for those who show kindness.",
+        "vocal": "Low guttural growls shifting into rough protective warmth.",
+        "quote": "Grrr... Give me back my eye! You bandaged my wound? No one has ever shown me kindness.",
+        "action": "Snarls on all fours with claws, then freezes: 'The girl with gentle hands...'",
+        "speech": "Circles table sniffing guests, bares claws at sudden moves, then kneels before Alice offering keys.",
+        "cue": "When Red Queen orders 'Tear them!', lower claws: 'You healed my eye when she gave chains.'",
+        "costume": ["Scale makeup & heavy fur-trimmed hooded robe", "Metallic gauntlet with razor claws"],
+        "props": ["Heavy iron ring with Underland dungeon keys", "Faux leather muzzle with broken chains"]
+    },
+    {
+        "id": "hamish", "num": 12, "name": "HAMISH ASCOT", "actor": "Utku",
+        "role": "Arrogant Aristocrat & Reluctant Suitor", "act": "Act I: The Victorian Garden Party",
+        "tp": 71, "mad": 46, "courage": 51,
+        "ability": "Social Condescension: Freezes imagination with high-society snobbery.",
+        "vocal": "Nasal, entitled, patronizing, stiff aristocratic pride.",
+        "quote": "Alice, you must govern that runaway imagination. My digestion cannot tolerate excitement.",
+        "action": "Enters with silver-topped cane, inspecting watch: 'Still daydreaming under the shade.'",
+        "speech": "Complains about garden drafts, lectures Alice on marrying into society, and demands precise tea.",
+        "cue": "When Elif steps back, tap cane: 'Ah, Alice. A habit we shall promptly cure.'",
+        "costume": ["Burgundy velvet morning tailcoat", "Tall burgundy silk top hat & patterned vest"],
+        "props": ["Silver-topped mahogany cane", "Gold pocket watch on double-Albert chain"]
+    },
+    {
+        "id": "margaret", "num": 13, "name": "ALICE'S SISTER", "actor": "Elif",
+        "role": "Dutiful Sister & High-Society Diplomat", "act": "Act I: The Victorian Garden Party",
+        "tp": 79, "mad": 63, "courage": 75,
+        "ability": "Sisterly Protocol: Whispers urgent warnings to shield Alice from scandal.",
+        "vocal": "Soft, anxious, elder-sisterly, balancing propriety with affection.",
+        "quote": "Alice, pay attention. What is the use of a book without pictures or conversations?",
+        "action": "Glides in with antique book, sitting beside Alice with sisterly care.",
+        "speech": "Urges Alice to stop daydreaming and fix stockings, confiding in whispers about sacrifices.",
+        "cue": "When Mother turns to check tea service, whisper: 'Please, Alice, just smile today.'",
+        "costume": ["Cornflower blue velvet dress with cameo brooch", "Gibson hair bun with pearl pins"],
+        "props": ["Leather-bound illustrated poetry book", "Lace-edged embroidered handkerchief"]
+    },
+    {
+        "id": "tweedledum", "num": 14, "name": "TWEEDLEWEED (DUM)", "actor": "Egehan",
+        "role": "Contrarian Scholar of Nonsense Fables (Duo)", "act": "Act III: Wonderland Encounters",
+        "tp": 85, "mad": 94, "courage": 78,
+        "ability": "Contrariwise Axiom: Counter-argues any proposition with backwards logic.",
+        "vocal": "Bouncy, rhythmic, argumentative, double-speed.",
+        "quote": "Contrariwise! If it was so, it might be; but as it isn’t, it ain’t! That’s logic!",
+        "action": "Marches mechanically in step with Uras, swinging giant wooden button.",
+        "speech": "Argues over who greets guest first, challenges concept of reality, and recites treacle fables.",
+        "cue": "When Alice crosses path, block way: 'Contrariwise! You are headed the wrong direction!'",
+        "costume": ["Green bowler hat with hanging bell", "Striped Victorian suit & floppy bowtie"],
+        "props": ["Oversized 6-inch carved button", "Stack of brass gears & treacle jar"]
+    },
+    {
+        "id": "tweedledee", "num": 15, "name": "TWEEDLEWEED (DEE)", "actor": "Uras",
+        "role": "Stubborn Herald of Contradiction & Tolls (Duo)", "act": "Act III: Wonderland Encounters",
+        "tp": 85, "mad": 94, "courage": 78,
+        "ability": "Nohow Toll: Demands ridiculous greeting ceremonies before anyone advances.",
+        "vocal": "Mirroring Egehan's cadence, interrupting with defiance.",
+        "quote": "Nohow! And what’s more, you began it! The first thing in a visit is to say ‘How d’ye do?’",
+        "action": "Elbows Egehan out of way, ringing brass handbell with sharp comedic timing.",
+        "speech": "Contradicts everything Egehan states, accuses him of ruining poetry, and demands tolls.",
+        "cue": "When Egehan yells 'wrong direction!', chime bell: 'Nohow! You ought to pay toll!'",
+        "costume": ["Matching green bowler hat with side bell", "Striped Edwardian jacket & rosette blush"],
+        "props": ["Polished brass handheld bell", "Vintage umbrella with duck handle"]
+    },
+    {
+        "id": "mad-hatter", "num": 16, "name": "MAD HATTER", "actor": "Ozan M.",
+        "role": "Mercurial Chronomancer & Tea Host", "act": "Act II: Down the Rabbit Hole & Tea Table",
+        "tp": 99, "mad": 100, "courage": 86,
+        "ability": "Time Freeze Feud: Freezes clocks at 6:00 in an endless loop of tea and riddles.",
+        "vocal": "Mercurial, rapid-fire, manic laughter to solemn gravity.",
+        "quote": "Why is a raven like a writing desk? All the best people are bonkers.",
+        "action": "Inspects pocket watch with butter knife, leaping up: 'No room! No room!'",
+        "speech": "Demands tea before having any, inspects clocks with butter, and rallies the table for Frabjous Day.",
+        "cue": "When Alice asks for directions, wave butter knife: 'No room! No room at all!'",
+        "costume": ["Peacock-feathered blue damask top hat with '10/6' card", "Brocade waistcoat & velvet tailcoat"],
+        "props": ["Silver teapot & butter knife", "Antique pocket watch & china cup"]
+    },
+    {
+        "id": "lowell", "num": 17, "name": "LOWELL", "actor": "Ertuğrul",
+        "role": "Cynical Man of Commerce & Society", "act": "Act I: The Victorian Garden Party",
+        "tp": 76, "mad": 70, "courage": 65,
+        "ability": "Cynical Ledger: Reduces dreams to financial ledgers and cold contracts.",
+        "vocal": "Smooth, arrogant, cynical, speaking with bored, dismissive charm.",
+        "quote": "Do not fight the current, little sister. Marriage is simply sensible business.",
+        "action": "Leans casually against column, twirling lion-headed cane: 'Sensible business.'",
+        "speech": "Laughs off rabbit holes as hysteria, brags of investments, and warns nonconformity brings ruin.",
+        "cue": "When Hamish gestures pompously, sip tea: 'Do not fight the current, little sister.'",
+        "costume": ["Dark emerald velvet morning coat", "Forest green top hat & gear waistcoat"],
+        "props": ["Heavy brass lion-headed cane", "Gold pocket watch on heavy chain"]
+    },
+    {
+        "id": "helen", "num": 18, "name": "ALICE'S MOTHER", "actor": "Elisa",
+        "role": "Imperious Matriarch of the Kingsleigh Estate", "act": "Act I: The Victorian Garden Party",
+        "tp": 87, "mad": 68, "courage": 83,
+        "ability": "Matriarch's Command: Commands spinal alignment with an icy stare and fan snap.",
+        "vocal": "Regally composed, crisp, sharp Victorian etiquette.",
+        "quote": "Posture, Alice. A young lady of good standing does not slouch. Smile, Alice.",
+        "action": "Straightens Alice’s shoulders: 'A young lady of good standing does not slouch.'",
+        "speech": "Instructs on holding teacups without trembling and demands obedience for Alice's societal future.",
+        "cue": "As garden party bell chimes, straighten Alice: 'Posture, Alice. Ascot family is arriving.'",
+        "costume": ["Wine-burgundy crushed velvet matriarch gown", "Cream lace collar & pearl jewelry"],
+        "props": ["Antique painted folding fan with lace", "Gold open-face pocket watch on lapel"]
+    },
+    {
+        "id": "red-queen", "num": 19, "name": "RED QUEEN", "actor": "Öykü",
+        "role": "Tyrannical Monarch of Underland", "act": "Act IV: The Royal Confrontation",
+        "tp": 76, "mad": 91, "courage": 95,
+        "ability": "Execution Mandate: Paralyzes opposition with terrifying tyrannical authority.",
+        "vocal": "Shrill, explosive, haughty, unchallengeable decrees.",
+        "quote": "Off with their heads! I’d far rather be feared than loved. Someone stole my tarts!",
+        "action": "Sweeps downstage with heart scepter: 'Silence! Who dared host this tea party?!'",
+        "speech": "Barges in inspecting table for treason, accuses guests of insolence, and orders executions.",
+        "cue": "When Bayard warns 'Run, Alice!', roar: 'Silence! Who dared host an unauthorized tea party?!'",
+        "costume": ["Heart-shaped coiffure with ruby tiara", "Burgundy ruff collar & crimson velvet gown"],
+        "props": ["Ruby heart royal scepter", "Gilded Queen of Hearts card"]
+    }
+]
+
 def draw_filigree_frame(draw, w, h, gold_light, gold_dark, fill_bg):
     draw.rectangle([0, 0, w, h], fill=fill_bg)
     draw.rectangle([10, 10, w - 10, h - 10], outline=gold_dark, width=6)
@@ -452,97 +705,119 @@ def render_back_card(char):
 
     return img
 
-def main():
-    print("=" * 60)
-    print("CLASS 4-A: 300 DPI TRADING CARD GENERATOR (18 STUDENTS)")
-    print("=" * 60)
+def generate_class_suite(class_id, char_list, png_dir, pdf_prefix):
+    print("=" * 65)
+    print(f"GENERATING {class_id.upper()}: 300 DPI TRADING CARDS ({len(char_list)} STUDENTS)")
+    print("=" * 65)
 
     front_images = []
     back_images = []
 
-    for char in CHARACTERS:
+    for char in char_list:
         num = char["num"]
-        slug = f"4a_{num:02d}_{char['actor'].lower().replace(' ', '_')}"
+        actor_clean = char['actor'].lower().replace(' ', '_').replace('/', '_')
+        slug = f"{class_id}_{num:02d}_{actor_clean}"
         
         front_img = render_front_card(char)
-        f_path = os.path.join(PNG_DIR, f"{slug}_front.png")
+        f_path = os.path.join(png_dir, f"{slug}_front.png")
         front_img.save(f_path, dpi=(300, 300))
         front_images.append(front_img)
 
         back_img = render_back_card(char)
-        b_path = os.path.join(PNG_DIR, f"{slug}_back.png")
+        b_path = os.path.join(png_dir, f"{slug}_back.png")
         back_img.save(b_path, dpi=(300, 300))
         back_images.append(back_img)
 
-        print(f"Generated card {num:02d}/18: {char['name']} ({char['actor']})")
+        print(f"Generated card {num:02d}/{len(char_list)}: {char['name']} ({char['actor']})")
 
-    # 1. Export Individual Cards Multi-Page PDF (36 pages)
-    single_pdf_path = os.path.join(OUTPUT_DIR, "Class_4A_Cards_Individual_Cards.pdf")
+    # 1. Export Individual Cards Multi-Page PDF
+    single_pdf_path = os.path.join(OUTPUT_DIR, f"{pdf_prefix}_Cards_Individual_Cards.pdf")
     pages = []
     for f, b in zip(front_images, back_images):
         pages.append(f)
         pages.append(b)
     pages[0].save(single_pdf_path, save_all=True, append_images=pages[1:], resolution=300)
-    print(f"Saved: {single_pdf_path} (36 Pages)")
+    print(f"Saved: {single_pdf_path} ({len(pages)} Pages)")
 
-    # 2. Export 3x3 Duplex Sheets (Exactly 2 sheets of 9 cards = 18 cards!)
+    # 2. Export 3x3 Duplex Sheets
     A4_W, A4_H = 2480, 3508
-    sheet_pdf_path = os.path.join(OUTPUT_DIR, "Class_4A_Tea_Party_Cards_Duplex_Sheets.pdf")
+    sheet_pdf_path = os.path.join(OUTPUT_DIR, f"{pdf_prefix}_Tea_Party_Cards_Duplex_Sheets.pdf")
     duplex_pages = []
 
-    batches = [
-        (0, 9),
-        (9, 18)
-    ]
+    # Calculate batches of 9
+    total_cards = len(char_list)
+    num_batches = (total_cards + 8) // 9
+    batches = []
+    for b in range(num_batches):
+        s = b * 9
+        e = min(s + 9, total_cards)
+        batches.append((s, e))
 
     margin_x = (A4_W - 3 * CARD_W) // 2
     margin_y = (A4_H - 3 * CARD_H) // 2
     mirrored_map = [2, 1, 0, 5, 4, 3, 8, 7, 6]
 
     for b_idx, (start, end) in enumerate(batches):
-        batch_chars = CHARACTERS[start:end]
+        batch_count = end - start
         
         # FRONT SHEET
         front_sheet = Image.new("RGB", (A4_W, A4_H), color=(255, 255, 255))
         f_draw = ImageDraw.Draw(front_sheet)
-        header_text = f"CLASS 4-A: MAD TEA PARTY CARDS — SHEET {b_idx + 1} (FRONTS) • 3x3 GRID (300 DPI)"
+        header_text = f"{class_id.upper()}: MAD TEA PARTY CARDS — SHEET {b_idx + 1} (FRONTS) • 3x3 GRID (300 DPI)"
         f_draw.text((margin_x, margin_y - 80), header_text, fill=(50, 50, 50), font=FONT_TITLE)
 
         for i in range(9):
-            card_img = front_images[start + i]
+            card_idx = start + i
             row = i // 3
             col = i % 3
             pos_x = margin_x + col * CARD_W
             pos_y = margin_y + row * CARD_H
-            front_sheet.paste(card_img, (pos_x, pos_y))
-            f_draw.rectangle([pos_x, pos_y, pos_x + CARD_W, pos_y + CARD_H], outline=(200, 200, 200), width=1)
+
+            if card_idx < end:
+                card_img = front_images[card_idx]
+                front_sheet.paste(card_img, (pos_x, pos_y))
+                f_draw.rectangle([pos_x, pos_y, pos_x + CARD_W, pos_y + CARD_H], outline=(200, 200, 200), width=1)
+            else:
+                # Clean cutting guideline for empty card space
+                f_draw.rectangle([pos_x + 10, pos_y + 10, pos_x + CARD_W - 10, pos_y + CARD_H - 10], outline=(220, 220, 220), width=1)
 
         duplex_pages.append(front_sheet)
 
         # BACK SHEET (DUPLEX HORIZONTALLY MIRRORED)
         back_sheet = Image.new("RGB", (A4_W, A4_H), color=(255, 255, 255))
         b_draw = ImageDraw.Draw(back_sheet)
-        back_header = f"CLASS 4-A: MAD TEA PARTY CARDS — SHEET {b_idx + 1} (BACKS — DUPLEX ALIGNED) • FLIP ON LONG EDGE"
+        back_header = f"{class_id.upper()}: MAD TEA PARTY CARDS — SHEET {b_idx + 1} (BACKS — DUPLEX ALIGNED) • FLIP ON LONG EDGE"
         b_draw.text((margin_x, margin_y - 80), back_header, fill=(50, 50, 50), font=FONT_TITLE)
 
         for i in range(9):
-            target_idx = mirrored_map[i]
-            card_img = back_images[start + target_idx]
+            target_slot = mirrored_map[i]
+            card_idx = start + target_slot
             row = i // 3
             col = i % 3
             pos_x = margin_x + col * CARD_W
             pos_y = margin_y + row * CARD_H
-            back_sheet.paste(card_img, (pos_x, pos_y))
-            b_draw.rectangle([pos_x, pos_y, pos_x + CARD_W, pos_y + CARD_H], outline=(200, 200, 200), width=1)
+
+            if card_idx < end:
+                card_img = back_images[card_idx]
+                back_sheet.paste(card_img, (pos_x, pos_y))
+                b_draw.rectangle([pos_x, pos_y, pos_x + CARD_W, pos_y + CARD_H], outline=(200, 200, 200), width=1)
+            else:
+                # Clean cutting guideline for empty card space
+                b_draw.rectangle([pos_x + 10, pos_y + 10, pos_x + CARD_W - 10, pos_y + CARD_H - 10], outline=(220, 220, 220), width=1)
 
         duplex_pages.append(back_sheet)
 
     duplex_pages[0].save(sheet_pdf_path, save_all=True, append_images=duplex_pages[1:], resolution=300)
-    print(f"Saved: {sheet_pdf_path} (4 Pages, Duplex Registered)")
+    print(f"Saved: {sheet_pdf_path} ({len(duplex_pages)} Pages, Duplex Registered)")
 
-    print("=" * 60)
-    print("CLASS 4-A GENERATION COMPLETE!")
-    print("=" * 60)
+def main():
+    # Generate Class 4-A Suite
+    generate_class_suite("class_4a", CHARACTERS_4A, PNG_DIR_4A, "Class_4A")
+    # Generate Class 4-B Suite
+    generate_class_suite("class_4b", CHARACTERS_4B, PNG_DIR_4B, "Class_4B")
+    print("=" * 65)
+    print("ALL CLASSES TRADING CARDS GENERATED SUCCESSFULLY!")
+    print("=" * 65)
 
 if __name__ == "__main__":
     main()
