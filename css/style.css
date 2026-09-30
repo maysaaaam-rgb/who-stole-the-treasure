@@ -418,9 +418,20 @@ header.app-header,
 #app-view-container,
 .app-main {
   position: relative;
-  min-height: calc(100vh - 65px);
-  padding: 16px 24px 100px 24px !important;
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  padding: 18px 24px 110px 24px !important;
   overflow-y: auto;
+}
+
+/* Floating Unified Toolkit Dock */
+.classroom-unified-dock,
+#classroom-floating-toolkit {
+  position: fixed !important;
+  bottom: 12px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 900 !important;
 }
 
 .classroom-students-grid > nav,
@@ -981,21 +992,23 @@ header.app-header,
   pointer-events: none !important;
 }
 
+.card-header-clean,
 .card-header-flex {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   width: 100% !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 10px !important;
   position: relative !important;
-  z-index: 2 !important;
+  z-index: 5 !important;
 }
 
+.companion-tag,
 .char-role-badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  background: rgba(168, 85, 247, 0.18) !important;
+  background: rgba(168, 85, 247, 0.16) !important;
   border: 1px solid rgba(168, 85, 247, 0.4) !important;
   color: #c084fc !important;
   padding: 3px 8px !important;
@@ -1004,11 +1017,18 @@ header.app-header,
   font-weight: 800 !important;
   text-transform: capitalize !important;
   cursor: pointer !important;
-  transition: transform 0.15s ease, background 0.15s ease !important;
+  transition: transform 0.1s ease, background 0.15s ease !important;
 }
+
+.companion-tag:hover,
 .char-role-badge:hover {
   transform: scale(1.05) !important;
   background: rgba(168, 85, 247, 0.3) !important;
+}
+
+.companion-edit {
+  font-size: 0.65rem !important;
+  opacity: 0.7 !important;
 }
 
 .card-pills-cluster,

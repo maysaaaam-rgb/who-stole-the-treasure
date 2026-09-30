@@ -2577,12 +2577,13 @@
   // =========================================================================
   // FAILSAFE LOCAL-FIRST TERM 2 MIGRATION (LOCKED ONCE - NEVER WIPES NEW XP)
   // =========================================================================
-  const TERM2_MIGRATION_FLAG = "term2_migration_final_lock_v1";
-  const MIGRATION_FLAG = TERM2_MIGRATION_FLAG;
+  const MIGRATION_LOCK = "term2_migration_master_v1";
+  const TERM2_MIGRATION_FLAG = MIGRATION_LOCK;
+  const MIGRATION_FLAG = MIGRATION_LOCK;
 
-  function initTerm2DataStore() {
+  function initMasterDataStore() {
     if (typeof localStorage === 'undefined') return [];
-    const isMigrated = localStorage.getItem(TERM2_MIGRATION_FLAG) === "true";
+    const isMigrated = localStorage.getItem(MIGRATION_LOCK) === "true";
 
     let students = [];
     try {
@@ -2706,12 +2707,14 @@
     return students;
   }
 
+  const initTerm2DataStore = initMasterDataStore;
+
   function checkAndRunMigrationOnce() {
-    return initTerm2DataStore();
+    return initMasterDataStore();
   }
 
   function autoRunTerm2Migration() {
-    return initTerm2DataStore();
+    return initMasterDataStore();
   }
 
   function executeLocalTerm2Reset(force = false) {
@@ -2876,20 +2879,26 @@
   if (typeof localStorage !== 'undefined') {
     recalculateAllStudents();
     try {
-      initTerm2DataStore();
-    } catch (e) {}
-    try {
-      checkAndRunMigrationOnce();
+      initMasterDataStore();
     } catch (e) {}
     try {
       cleanupStaleXP();
     } catch (e) {}
   }
 
+  if (typeof document !== 'undefined') {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMasterDataStore);
+    } else {
+      initMasterDataStore();
+    }
+  }
+
   // Global AdventureAcademy Hub & Store Bridge
   if (typeof root !== 'undefined') {
     root.AdventureAcademy = root.AdventureAcademy || {};
-    root.initTerm2DataStore = initTerm2DataStore;
+    root.initMasterDataStore = initMasterDataStore;
+    root.initTerm2DataStore = initMasterDataStore;
     root.promptDirectXPEdit = promptDirectXPEdit;
     root.openDirectXPEdit = promptDirectXPEdit;
     root.executeLocalTerm2Reset = executeLocalTerm2Reset;
@@ -2907,7 +2916,8 @@
     root.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
     root.getStudentMascot = getStudentMascot;
     if (typeof window !== 'undefined') {
-      window.initTerm2DataStore = initTerm2DataStore;
+      window.initMasterDataStore = initMasterDataStore;
+      window.initTerm2DataStore = initMasterDataStore;
       window.promptDirectXPEdit = promptDirectXPEdit;
       window.openDirectXPEdit = promptDirectXPEdit;
       window.executeLocalTerm2Reset = executeLocalTerm2Reset;
@@ -2922,7 +2932,8 @@
       window.ELEMENTAL_AVATARS = ELEMENTAL_AVATARS;
       window.getStudentMascot = getStudentMascot;
     }
-    root.AdventureAcademy.initTerm2DataStore = initTerm2DataStore;
+    root.AdventureAcademy.initMasterDataStore = initMasterDataStore;
+    root.AdventureAcademy.initTerm2DataStore = initMasterDataStore;
     root.AdventureAcademy.promptDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.openDirectXPEdit = promptDirectXPEdit;
     root.AdventureAcademy.executeLocalTerm2Reset = executeLocalTerm2Reset;

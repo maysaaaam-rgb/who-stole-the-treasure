@@ -1545,6 +1545,29 @@ window.openDirectXPEdit = function(studentId, event) {
 window.promptDirectXPEdit = window.openDirectXPEdit;
 
 // Safe global bridges for platform interoperability
+function renderCardHeader(student) {
+  if (!student) return '';
+  const icon = student.customIcon || (student.aliceCharacter === 'mad_hatter' ? '🎩' : student.aliceCharacter === 'cheshire_cat' ? '😸' : '👗');
+  const role = student.aliceCharacter ? student.aliceCharacter.replace('_', ' ') : 'Explorer';
+  const archXP = Number(student.archivedXP ?? student.archived_xp ?? 0);
+
+  return `
+    <div class="card-header-clean">
+      <div class="companion-tag" onclick="event.stopPropagation(); window.openCharacterIconPicker('${student.id}')" title="Change Companion Icon">
+        <span class="companion-ico">${icon}</span>
+        <span class="companion-txt">${role}</span>
+        <span class="companion-edit">✎</span>
+      </div>
+      <div class="card-pills-cluster">
+        <span class="pill-arch-box">🗄️ ${archXP} ARCH</span>
+        <span class="pill-streak-box">🔥 ${student.streak || 0}d</span>
+        <button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit('${student.id}', event)" title="Edit Student XP">✏️</button>
+      </div>
+    </div>
+  `;
+}
+window.renderCardHeader = renderCardHeader;
+
 if (typeof window !== 'undefined') {
   if (!window.handleQuickAwardXP) {
     window.handleQuickAwardXP = window.addQuickXP;
