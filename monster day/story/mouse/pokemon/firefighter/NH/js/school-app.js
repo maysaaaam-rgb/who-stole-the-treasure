@@ -1264,15 +1264,15 @@
     return '' +
       '<div class="student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + '" style="position:relative; isolation:isolate;" data-student-id="' + studentId + '" data-archetype="' + archetype + '">' +
         // Clean card header layout
-        '<div class="card-header-flex">' +
-          '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + studentId + '\')" title="Click to change companion">' +
+        '<div class="card-header-clean card-header-flex student-card-header-clean card-overlay-top">' +
+          '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + studentId + '\')" title="Click to change companion">' +
             '<span class="role-icon">' + roleIcon + '</span>' +
             '<span class="role-title">' + roleName + '</span>' +
             '<span class="role-edit">✎</span>' +
           '</div>' +
-          '<div class="card-pills-right">' +
-            '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
-            '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
+          '<div class="card-pills-cluster card-pills-right">' +
+            '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
+            '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
             '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Edit Student XP">✏️</button>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
               '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
@@ -1300,7 +1300,7 @@
         '<div class="student-card-content">' +
           '<div class="student-name-row">' +
             '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
-            '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+            '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3404,20 +3404,20 @@
               return '' +
                 '<div class="student-directory-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="if (isMultiSelectMode) { toggleSelectStudent(\'' + s.id + '\', event); } else { openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\'); }">' +
                   // Clean Card Header Layout
-                  '<div class="card-header-flex student-card-header-clean card-overlay-top">' +
+                  '<div class="card-header-clean card-header-flex student-card-header-clean card-overlay-top">' +
                     '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
                       (isMultiSelectMode ?
                         '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
                       ) +
-                      '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
+                      '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
                         '<span class="role-icon">' + roleIcon + '</span>' +
                         '<span class="role-title">' + roleName + '</span>' +
                         '<span class="role-edit">✎</span>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="card-pills-right">' +
-                      '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
-                      '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
+                    '<div class="card-pills-cluster card-pills-right">' +
+                      '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
+                      '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
                       '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                         '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -3445,7 +3445,7 @@
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                       '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+                      '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3833,20 +3833,20 @@
       return '' +
         '<div class="classroom-student-card student-card relative isolate rounded-2xl bg-white ' + elementClass + ' ' + archetypeClass + (isSelected ? ' is-selected' : '') + '" style="position:relative; isolation:isolate;" data-student-id="' + s.id + '" data-archetype="' + archetype + '" onclick="handleStudentCardClick(\'' + s.id + '\', event)">' +
           // Clean Card Header Layout
-          '<div class="card-header-flex student-card-header-clean card-overlay-top">' +
+          '<div class="card-header-clean card-header-flex student-card-header-clean card-overlay-top">' +
             '<div style="display:flex; align-items:center; gap:6px; min-width:0; flex:1;">' +
               (isMultiSelectMode ?
                 '<input type="checkbox" class="student-card-checkbox" ' + (isSelected ? 'checked' : '') + ' onclick="event.stopPropagation(); toggleSelectStudent(\'' + s.id + '\', event);" style="margin-right:2px;" />' : ''
               ) +
-              '<div class="char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
+              '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
                 '<span class="role-icon">' + roleIcon + '</span>' +
                 '<span class="role-title">' + roleName + '</span>' +
                 '<span class="role-edit">✎</span>' +
               '</div>' +
             '</div>' +
-            '<div class="card-pills-right">' +
-              '<span class="arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-              '<span class="streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+            '<div class="card-pills-cluster card-pills-right">' +
+              '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
+              '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
               '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                 '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -3874,7 +3874,7 @@
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
               '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+              '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -12308,7 +12308,7 @@ window.switchClassroomSubTab = function(subTab) {
     }
     if (!st) return;
 
-    const currentVal = Number(st.xp) || 0;
+    const currentVal = (typeof st.xp === 'number' && !isNaN(st.xp)) ? st.xp : 0;
     const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
     const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
     if (input === null) return; // User cancelled

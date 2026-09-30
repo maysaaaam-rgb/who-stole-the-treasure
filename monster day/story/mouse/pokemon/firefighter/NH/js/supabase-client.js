@@ -1540,7 +1540,7 @@
     }
   }
 
-  // Safe background push that never throws or blocks UI
+  // Safe background push that never throws or blocks UI (Strict Local-First & Push-Only)
   async function safeBackgroundSupabaseSync(studentsList) {
     const statusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text') || (typeof document !== 'undefined' && document.querySelector('.cloud-status'));
     const syncIconEl = document.getElementById('global-sync-icon');
@@ -1558,26 +1558,36 @@
 
     try {
       const students = studentsList || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+      if (!Array.isArray(students) || students.length === 0) return;
       
       // Sanitize payload to basic fields first so it never fails on missing columns
-      const payload = students.map(s => ({
-        id: String(s.id),
-        name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim(),
-        grade: s.grade || s.class_id || s.classId || '4A',
-        xp: Number(s.xp) || 0,
-        archived_xp: Number(s.archivedXP ?? s.archived_xp ?? 0),
-        level: Number(s.level) || 3,
-        stage_name: s.stageName || s.stage_name || 'Level 3 • Baby Monster',
-        avatar_config: {
-          ...(s.avatarConfig || s.avatar_config || {}),
-          aliceCharacter: s.aliceCharacter || s.alice_character || null,
-          koreanRole: s.koreanRole || s.korean_role || null,
-          customIcon: s.customIcon || s.custom_icon || null
-        },
-        updated_at: new Date().toISOString()
-      }));
+      const payload = students.map(s => {
+        const curLvl = Math.max(Number(s.level) || 3, 3);
+        const stage = (s.stageName && !s.stageName.includes("Mystery Egg"))
+          ? s.stageName
+          : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+        const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
+        const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
 
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
+        return {
+          id: String(s.id),
+          name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
+          grade: s.grade || s.class_id || s.classId || '4A',
+          xp: actXP,
+          archived_xp: archXP,
+          level: curLvl,
+          stage_name: stage,
+          avatar_config: {
+            ...(s.avatarConfig || s.avatar_config || {}),
+            aliceCharacter: s.aliceCharacter || s.alice_character || null,
+            koreanRole: s.koreanRole || s.korean_role || null,
+            customIcon: s.customIcon || s.custom_icon || null
+          },
+          updated_at: new Date().toISOString()
+        };
+      });
+
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase sync timeout")), 3500));
       const pushPromise = client.from('students').upsert(payload, { onConflict: 'id' });
 
       const { error } = await Promise.race([pushPromise, timeoutPromise]);
@@ -1592,7 +1602,7 @@
       }
     } catch (err) {
       console.warn("Supabase background sync failed, running in Local-First mode:", err.message);
-      // Do NOT throw error — update status gracefully
+      // Do NOT throw error — update status gracefully, NEVER overwrite local state
       if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;" title="${err.message}">🟡 Saved Locally</span>`;
       if (syncIconEl) syncIconEl.innerText = "💾";
       if (syncBtn) {
@@ -1617,12 +1627,15 @@
       const stage = (s.stageName && !s.stageName.includes("Mystery Egg"))
         ? s.stageName
         : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+      const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
+      const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
+
       return {
         id: String(s.id),
         name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
         grade: s.grade || s.class_id || s.classId || '4A',
-        xp: Number(s.xp) || 0, // Pushes 0 (or new earned points) to Supabase
-        archived_xp: Number(s.archivedXP ?? s.archived_xp ?? 0),
+        xp: actXP,
+        archived_xp: archXP,
         level: curLvl,
         stage_name: stage,
         alice_character: s.aliceCharacter || null,
@@ -1651,21 +1664,27 @@
     const stage = (student.stageName && !student.stageName.includes("Mystery Egg"))
       ? student.stageName
       : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+    const actXP = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
+    const archXP = Number(student.archivedXP ?? student.archived_xp ?? 0);
 
     try {
-      await client
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Single update timeout")), 3500));
+      const updatePromise = client
         .from('students')
         .update({
-          xp: Number(student.xp) || 0,
-          archived_xp: Number(student.archivedXP ?? student.archived_xp ?? 0),
+          xp: actXP,
+          archived_xp: archXP,
           level: curLvl,
           stage_name: stage,
           updated_at: new Date().toISOString()
         })
         .eq('id', String(student.id));
-      console.log(`[AdventureSupabase] Pushed single student update for ${student.id} (${student.xp} XP).`);
+
+      const { error } = await Promise.race([updatePromise, timeoutPromise]);
+      if (error) throw error;
+      console.log(`[AdventureSupabase] Pushed single student update for ${student.id} (${actXP} XP).`);
     } catch (e) {
-      console.warn("[AdventureSupabase] Background update skipped:", e.message);
+      console.warn("[AdventureSupabase] Single student background update skipped:", e.message);
     }
   }
 
