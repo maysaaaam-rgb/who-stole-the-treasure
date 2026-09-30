@@ -48,6 +48,56 @@ const CURRICULUM_TRACKS = [
 
 const GAMES_REGISTRY = [
   {
+    "id": "tea-party-cards",
+    "title": "☕ Alice in Wonderland: Mad Tea Party Trading Cards",
+    "description": "Double-sided Victorian fantasy trading cards and student acting guide suite for 19 cast members. Features 300 DPI high-resolution character portraits, RPG stat badges, costume and prop checklists, 1-minute performance speeches, and exact stage interaction cues with 3x3 duplex print sheets.",
+    "type": "game",
+    "category": "Literature & Drama",
+    "categoryLabel": "☕ Literature, Drama & Role-Play",
+    "level": "A2-B1",
+    "cefrLevel": "A2-B1",
+    "age": "Ages 8–14",
+    "ageGroup": "8-14",
+    "grade": "Grade 4–8",
+    "grades": [
+      "Grade 4",
+      "Grade 5",
+      "Grade 6",
+      "Grade 7",
+      "Grade 8"
+    ],
+    "duration": 60,
+    "durationText": "60 min",
+    "estimatedMinutes": 60,
+    "xp": 250,
+    "skills": [
+      "Drama & Character Portrayal",
+      "Dialogue Memorization & Delivery",
+      "Victorian Vocabulary & Idioms",
+      "Stage Cues & Acting Interactions",
+      "Oral Fluency & Public Speaking",
+      "Costume & Prop Preparation"
+    ],
+    "topic": "Alice in Wonderland, The Mad Tea Party & Victorian Theatre",
+    "topics": [
+      "Literature & Classics",
+      "Theatrical Performance",
+      "Character Archetypes"
+    ],
+    "languageFocus": "I’m late for an important date! / Off with their heads! / It is no use going back to yesterday... / Contrariwise! / Nohow!",
+    "activityMode": "Double-Sided Collectible Trading Cards / 3x3 Duplex Print Sheets / 19 Student Acting Dossiers",
+    "interactionType": "3D Flip Cards, Audio Speech Synthesis, Duplex Cardstock Print Engine",
+    "url": "tea-party-cards/index.html",
+    "worksheetUrl": "tea-party-cards/worksheet.html",
+    "thumbnailUrl": "tea-party-cards/assets/characters/mad-hatter.jpg",
+    "badges": [
+      "Collectible Cards",
+      "3x3 Duplex Print Ready",
+      "19 Character Dossiers",
+      "Speech & Audio"
+    ]
+  },
+  {
     "id": "nasa-mission",
     "title": "🚀 NASA Mission: Find a New Planet",
     "description": "Interactive 6-stage CLIL space expedition for primary ESL learners. Fuel thrusters with Magic 'e' phonics, scan uncharted alien surfaces, sort survival cargo, build modular crisis-solving rovers, collaborate with global peers using 'AND', and broadcast the final live discovery report to Earth!",
