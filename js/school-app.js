@@ -1268,6 +1268,7 @@
             '<span class="badge-archetype ' + archetypeClass + '" title="Species Archetype: ' + archetype.toUpperCase() + '">' + archetype.toUpperCase() + '</span>' +
           '</div>' +
           '<div class="card-overlay-right">' +
+            '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Edit Student XP">✏️</button>' +
             '<span class="student-card-streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
               '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
@@ -1295,7 +1296,7 @@
         '<div class="student-card-content">' +
           '<div class="student-name-row">' +
             '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
-            '<span class="student-xp-pill" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Total XP">⭐ ' + (mState.totalXP || 0).toLocaleString() + '</span>' +
+            '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + (mState.totalXP || 0).toLocaleString() + ' XP</span><span class="xp-click-hint">✎</span></div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3410,6 +3411,7 @@
                       '</div>' +
                     '</div>' +
                     '<div class="card-meta-group">' +
+                      '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
                       '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
                       '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
@@ -3438,7 +3440,7 @@
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                       '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Term 2 Active XP — Click to Edit">⭐ ' + activeXP + ' XP</span>' +
+                      '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + activeXP + ' XP</span><span class="xp-click-hint">✎</span></div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3837,6 +3839,7 @@
               '</div>' +
             '</div>' +
             '<div class="card-meta-group">' +
+              '<button type="button" class="btn-card-edit-xp" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
               '<span class="archived-xp-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
               '<span class="student-card-streak-pill streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
@@ -3865,7 +3868,7 @@
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
               '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<span class="student-xp-pill" style="flex-shrink:0;" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Term 2 Active XP — Click to Edit">⭐ ' + activeXP + ' XP</span>' +
+              '<div class="student-xp-pill-clickable" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Click to adjust or set XP">⭐ <span class="xp-val-text">' + activeXP + ' XP</span><span class="xp-click-hint">✎</span></div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -11892,11 +11895,73 @@ window.switchClassroomSubTab = function(subTab) {
     window.handleQuickAwardXP(studentId, 10, event);
   };
 
-  // Student Direct XP Adjustment Controller
-  window.openEditStudentXPModal = function(studentId) {
-    const s = store.getStudent(studentId);
-    if (!s) return;
+  // =========================================================================
+  // DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT)
+  // =========================================================================
+  let activeEditingStudentId = null;
+  let activeXPDelta = 0;
+  let currentEditMode = 'adjust'; // 'adjust' | 'exact'
 
+  function openEditStudentXPModal(studentId) {
+    let student = null;
+    if (typeof store !== 'undefined' && store.getStudent) {
+      student = store.getStudent(studentId);
+    }
+    if (!student) {
+      const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+      student = students.find(s => String(s.id) === String(studentId));
+    }
+    if (!student) return;
+
+    activeEditingStudentId = student.id;
+    activeXPDelta = 0;
+    currentEditMode = 'adjust';
+
+    const modernModal = document.getElementById('edit-student-xp-modal');
+    if (modernModal) {
+      const nameEl = document.getElementById('edit-xp-student-name');
+      if (nameEl) nameEl.innerText = student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim();
+
+      const gradeEl = document.getElementById('edit-xp-student-grade');
+      if (gradeEl) gradeEl.innerText = `${student.grade || student.class_id || student.classId || 'Grade 4A'} • ID: ${student.id}`;
+
+      const activeEl = document.getElementById('edit-xp-current-active');
+      if (activeEl) activeEl.innerText = `${Number(student.xp) || 0} XP`;
+
+      const archEl = document.getElementById('edit-xp-current-archived');
+      if (archEl) archEl.innerText = `${Number(student.archivedXP ?? student.archived_xp ?? 0)} XP`;
+
+      const stageEl = document.getElementById('edit-xp-current-stage');
+      if (stageEl) stageEl.innerText = student.stageName || student.stage_name || `Level ${student.level || 3}`;
+
+      const avatarEl = document.getElementById('edit-xp-avatar');
+      if (avatarEl) {
+        if (student.customIcon) {
+          avatarEl.innerHTML = `<span>${student.customIcon}</span>`;
+        } else if (typeof window.renderMonsterAvatar === 'function') {
+          avatarEl.innerHTML = window.renderMonsterAvatar(student.id, { size: 38, animated: false });
+        } else {
+          avatarEl.innerHTML = '🦊';
+        }
+      }
+
+      const customDelta = document.getElementById('input-custom-delta');
+      if (customDelta) customDelta.value = "";
+
+      const exactInput = document.getElementById('input-exact-xp');
+      if (exactInput) exactInput.value = Number(student.xp) || 0;
+
+      const reasonInput = document.getElementById('input-xp-reason');
+      if (reasonInput) reasonInput.value = "Teacher manual adjustment";
+
+      setXPEditMode('adjust');
+      updateResultingXPFromDelta();
+
+      modernModal.style.display = 'flex';
+      return;
+    }
+
+    // Fallback to legacy modal if present
     const idInput = document.getElementById('edit-student-xp-student-id');
     const avatarEl = document.getElementById('edit-student-xp-avatar');
     const titleEl = document.getElementById('edit-student-xp-title');
@@ -11908,8 +11973,8 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (idInput) idInput.value = studentId;
     if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 42, animated: false });
-    if (titleEl) titleEl.innerText = 'Edit XP: ' + s.firstName + ' ' + s.lastName;
-    const currentXP = store.getStudentTotalXP(studentId);
+    if (titleEl) titleEl.innerText = 'Edit XP: ' + (student.name || student.firstName);
+    const currentXP = Number(student.xp) || 0;
     if (currentEl) currentEl.innerText = 'Current Balance: ' + currentXP.toLocaleString() + ' XP';
     if (amountInput) amountInput.value = '10';
     if (reasonSelect) reasonSelect.value = 'Teacher point correction';
@@ -11919,29 +11984,213 @@ window.switchClassroomSubTab = function(subTab) {
     }
     if (teacherInput) teacherInput.value = 'Teacher';
 
-    // Reset mode button to 'add'
     const addBtn = document.querySelector('.edit-xp-mode-btn[data-mode="add"]');
-    window.setEditXPMode('add', addBtn);
+    if (window.setEditXPMode && addBtn) window.setEditXPMode('add', addBtn);
+    if (typeof window.openModal === 'function') window.openModal('modal-edit-student-xp');
+  }
 
-    window.openModal('modal-edit-student-xp');
-  };
+  function closeEditStudentXPModal() {
+    const modernModal = document.getElementById('edit-student-xp-modal');
+    if (modernModal) modernModal.style.display = 'none';
+    if (typeof window.closeModal === 'function') {
+      window.closeModal('modal-edit-student-xp');
+    }
+    activeEditingStudentId = null;
+  }
 
-  window.setEditXPMode = function(mode, btn) {
-    const modeInput = document.getElementById('edit-student-xp-mode');
-    const label = document.getElementById('edit-student-xp-amount-label');
-    if (modeInput) modeInput.value = mode;
+  function setXPEditMode(mode) {
+    currentEditMode = mode;
+    const tabAdjust = document.getElementById('tab-mode-adjust');
+    const tabExact = document.getElementById('tab-mode-exact');
+    const panelAdjust = document.getElementById('panel-xp-adjust');
+    const panelExact = document.getElementById('panel-xp-exact');
 
-    document.querySelectorAll('.edit-xp-mode-btn').forEach(b => b.classList.remove('is-active'));
-    if (btn) btn.classList.add('is-active');
+    if (tabAdjust) tabAdjust.classList.toggle('active', mode === 'adjust');
+    if (tabExact) tabExact.classList.toggle('active', mode === 'exact');
+    if (panelAdjust) panelAdjust.style.display = mode === 'adjust' ? 'block' : 'none';
+    if (panelExact) panelExact.style.display = mode === 'exact' ? 'block' : 'none';
 
-    if (label) {
-      if (mode === 'add') label.innerText = 'Amount to Add (XP) *';
-      else if (mode === 'deduct') label.innerText = 'Amount to Deduct (XP) *';
-      else label.innerText = 'New Exact Total XP *';
+    if (mode === 'adjust') updateResultingXPFromDelta();
+    else updateResultingXPFromExact();
+  }
+
+  function applyQuickXPDelta(amount) {
+    activeXPDelta += Number(amount);
+    const deltaInput = document.getElementById('input-custom-delta');
+    if (deltaInput) deltaInput.value = activeXPDelta > 0 ? `+${activeXPDelta}` : activeXPDelta;
+    updateResultingXPFromDelta();
+  }
+
+  function resetXPDelta() {
+    activeXPDelta = 0;
+    const deltaInput = document.getElementById('input-custom-delta');
+    if (deltaInput) deltaInput.value = "";
+    updateResultingXPFromDelta();
+  }
+
+  function updateResultingXPFromDelta() {
+    let student = null;
+    if (typeof store !== 'undefined' && store.getStudent) {
+      student = store.getStudent(activeEditingStudentId);
+    }
+    if (!student) {
+      const students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+      student = students.find(s => String(s.id) === String(activeEditingStudentId));
+    }
+    if (!student) return;
+
+    const deltaInput = document.getElementById('input-custom-delta');
+    const rawDelta = deltaInput ? deltaInput.value : '';
+    activeXPDelta = rawDelta !== '' && !isNaN(Number(rawDelta)) ? Number(rawDelta) : activeXPDelta;
+
+    const currentActive = Number(student.xp) || 0;
+    const resulting = Math.max(0, currentActive + activeXPDelta);
+    const resultingEl = document.getElementById('edit-xp-resulting-display');
+    if (resultingEl) {
+      resultingEl.innerText = `${resulting} XP (${activeXPDelta >= 0 ? '+' : ''}${activeXPDelta})`;
+    }
+  }
+
+  function updateResultingXPFromExact() {
+    const exactInput = document.getElementById('input-exact-xp');
+    const val = Number(exactInput ? exactInput.value : 0) || 0;
+    const clamped = Math.max(0, val);
+    const resultingEl = document.getElementById('edit-xp-resulting-display');
+    if (resultingEl) {
+      resultingEl.innerText = `${clamped} XP`;
+    }
+  }
+
+  function commitStudentXPEdit() {
+    if (!activeEditingStudentId) return;
+
+    const studentId = String(activeEditingStudentId);
+    let students = window.AdventureAcademy?.students || JSON.parse(localStorage.getItem('adventure_students') || '[]');
+    let studentIndex = students.findIndex(s => String(s.id) === studentId);
+
+    let student = null;
+    if (typeof store !== 'undefined' && store.getStudent) {
+      student = store.getStudent(studentId);
+    }
+    if (!student && studentIndex !== -1) {
+      student = students[studentIndex];
+    }
+    if (!student) return;
+
+    const oldActiveXP = Number(student.xp) || 0;
+    let newActiveXP = oldActiveXP;
+
+    if (currentEditMode === 'adjust') {
+      newActiveXP = Math.max(0, oldActiveXP + activeXPDelta);
+    } else {
+      const exactInput = document.getElementById('input-exact-xp');
+      newActiveXP = Math.max(0, Number(exactInput ? exactInput.value : 0) || 0);
     }
 
-    window.updateEditXPPreview();
-  };
+    const reasonInput = document.getElementById('input-xp-reason');
+    const reason = (reasonInput && reasonInput.value.trim()) || "Teacher manual adjustment";
+
+    // 1. Update Student State
+    student.xp = newActiveXP;
+    student.totalXP = newActiveXP;
+
+    // 2. Protect Evolution Stage using Lifetime XP (One-Way Ratchet)
+    if (typeof evaluateMonsterStage === 'function') {
+      evaluateMonsterStage(student);
+    } else if (typeof getStudentStage === 'function') {
+      const stage = getStudentStage(student);
+      student.level = stage.level;
+      student.stageName = stage.stageName;
+      student.isEgg = stage.isEgg;
+    }
+
+    // 3. Log to XP Audit Trail
+    if (!student.xpHistory) student.xpHistory = [];
+    student.xpHistory.unshift({
+      id: "edit_" + Date.now(),
+      amount: newActiveXP - oldActiveXP,
+      type: "manual_edit",
+      reason: `${reason} (Changed from ${oldActiveXP} XP to ${newActiveXP} XP)`,
+      date: new Date().toLocaleDateString("en-GB"),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      balanceAfter: newActiveXP
+    });
+
+    // 4. Save Locally
+    if (studentIndex !== -1) {
+      students[studentIndex] = student;
+    } else {
+      students.push(student);
+    }
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('adventure_students', JSON.stringify(students));
+      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a'].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const idx = arr.findIndex(s => String(s.id) === studentId);
+              if (idx !== -1) {
+                arr[idx] = Object.assign({}, arr[idx], student);
+                localStorage.setItem(k, JSON.stringify(arr));
+              }
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      if (window.AdventureAcademy) window.AdventureAcademy.students = students;
+      if (window.store && window.store.state && window.store.state.students) {
+        const storeIdx = window.store.state.students.findIndex(s => String(s.id) === studentId);
+        if (storeIdx !== -1) {
+          window.store.state.students[storeIdx] = student;
+        }
+        if (typeof window.store.saveState === 'function') window.store.saveState();
+      }
+    }
+
+    // 5. Push to Supabase with Timeout Protection
+    if (typeof safeSyncStudentToSupabase === 'function') {
+      safeSyncStudentToSupabase(student);
+    } else if (typeof window !== 'undefined' && typeof window.safeSyncStudentToSupabase === 'function') {
+      window.safeSyncStudentToSupabase(student);
+    }
+
+    // 6. Refresh UI
+    if (typeof renderCurrentView === 'function') {
+      renderCurrentView();
+    } else if (typeof renderStudentRoster === 'function') {
+      renderStudentRoster();
+    }
+    if (typeof window.renderClassroomStudentsGrid === 'function') {
+      window.renderClassroomStudentsGrid();
+    }
+
+    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
+      window.openStudentDetail(studentId, studentProfileActiveTab);
+    }
+
+    if (typeof window !== 'undefined' && window.showNotification) {
+      window.showNotification(`Saved: ${student.name || student.firstName} now has ${newActiveXP} XP`, 'success');
+    }
+
+    closeEditStudentXPModal();
+  }
+
+  // Legacy fallback functions for backwards compatibility
+  window.setEditXPMode = setXPEditMode;
+  window.openEditStudentXPModal = openEditStudentXPModal;
+  window.closeEditStudentXPModal = closeEditStudentXPModal;
+  window.setXPEditMode = setXPEditMode;
+  window.applyQuickXPDelta = applyQuickXPDelta;
+  window.resetXPDelta = resetXPDelta;
+  window.updateResultingXPFromDelta = updateResultingXPFromDelta;
+  window.updateResultingXPFromExact = updateResultingXPFromExact;
+  window.commitStudentXPEdit = commitStudentXPEdit;
 
   window.handleEditXPReasonChange = function(val) {
     const customReason = document.getElementById('edit-student-xp-custom-reason');
@@ -11952,100 +12201,12 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   window.updateEditXPPreview = function() {
-    const studentId = document.getElementById('edit-student-xp-student-id')?.value;
-    if (!studentId) return;
-
-    const currentXP = store.getStudentTotalXP(studentId);
-    const mode = document.getElementById('edit-student-xp-mode')?.value || 'add';
-    const amountVal = parseInt(document.getElementById('edit-student-xp-amount')?.value, 10);
-    const inputAmount = isNaN(amountVal) ? 0 : amountVal;
-
-    let targetTotal = currentXP;
-    let delta = 0;
-
-    if (mode === 'add') {
-      delta = inputAmount;
-      targetTotal = currentXP + delta;
-    } else if (mode === 'deduct') {
-      delta = -inputAmount;
-      targetTotal = Math.max(0, currentXP + delta);
-      delta = targetTotal - currentXP;
-    } else if (mode === 'set') {
-      targetTotal = Math.max(0, inputAmount);
-      delta = targetTotal - currentXP;
-    }
-
-    const previewVal = document.getElementById('edit-student-xp-preview-val');
-    const previewDelta = document.getElementById('edit-student-xp-preview-delta');
-
-    if (previewVal) previewVal.innerText = targetTotal.toLocaleString() + ' XP';
-    if (previewDelta) {
-      if (delta > 0) {
-        previewDelta.innerText = '+' + delta.toLocaleString() + ' XP';
-        previewDelta.style.color = '#059669';
-      } else if (delta < 0) {
-        previewDelta.innerText = delta.toLocaleString() + ' XP';
-        previewDelta.style.color = '#dc2626';
-      } else {
-        previewDelta.innerText = '±0 XP (No change)';
-        previewDelta.style.color = 'var(--text-muted)';
-      }
-    }
+    updateResultingXPFromDelta();
   };
 
   window.handleSaveEditStudentXP = function(e) {
-    e.preventDefault();
-    const studentId = document.getElementById('edit-student-xp-student-id')?.value;
-    if (!studentId) return;
-
-    const mode = document.getElementById('edit-student-xp-mode')?.value || 'add';
-    const amount = parseInt(document.getElementById('edit-student-xp-amount')?.value, 10);
-    if (isNaN(amount) || amount < 0) {
-      alert('Please enter a valid amount.');
-      return;
-    }
-
-    const reasonSelect = document.getElementById('edit-student-xp-reason-select')?.value;
-    const customReason = document.getElementById('edit-student-xp-custom-reason')?.value.trim();
-    const reason = (reasonSelect === 'Other' && customReason) ? customReason : reasonSelect;
-    const teacher = document.getElementById('edit-student-xp-teacher')?.value.trim() || 'Teacher';
-
-    let options = {
-      reason,
-      teacher,
-      category: 'correction'
-    };
-
-    if (mode === 'set') {
-      options.isAbsolute = true;
-      options.targetTotal = amount;
-    } else if (mode === 'deduct') {
-      options.delta = -amount;
-      options.icon = '⚖️';
-    } else {
-      options.delta = amount;
-      options.icon = '⭐';
-    }
-
-    const res = store.adjustStudentXP(studentId, options);
-    window.closeModal('modal-edit-student-xp');
-
-    if (res) {
-      showNotification('XP updated! New total: ' + res.newTotalXP.toLocaleString() + ' XP');
-      if (res.evolutionEvent) {
-        if (res.evolutionEvent.isHatch) {
-          window.openMonsterHatchModal(studentId);
-        } else {
-          window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
-        }
-      }
-    }
-
-    renderCurrentView();
-
-    if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
-      window.openStudentDetail(studentId, studentProfileActiveTab);
-    }
+    if (e && e.preventDefault) e.preventDefault();
+    commitStudentXPEdit();
   };
 
   window.openStudentXPHistoryModal = function(studentId) {

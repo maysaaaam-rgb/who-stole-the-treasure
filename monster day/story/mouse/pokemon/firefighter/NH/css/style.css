@@ -607,3 +607,352 @@ header.app-header,
   border-bottom-width: 1px !important;
 }
 
+/* ============================================================
+   CLICKABLE ACTIVE XP BADGE ON STUDENT CARD
+   ============================================================ */
+.student-xp-pill-clickable {
+  cursor: pointer;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-bottom: 3px solid rgba(217, 119, 6, 0.85);
+  color: #fbbf24;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.student-xp-pill-clickable:hover {
+  transform: scale(1.06);
+  background: rgba(245, 158, 11, 0.28);
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+}
+
+.student-xp-pill-clickable:active {
+  transform: translateY(2px) scale(0.98);
+  border-bottom-width: 1px;
+}
+
+.xp-click-hint {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* Edit Pencil Button on Card Header */
+.btn-card-edit-xp {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+  color: #e2e8f0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.btn-card-edit-xp:hover {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #38bdf8;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.btn-card-edit-xp:active {
+  transform: scale(0.95) translateY(1px);
+}
+
+/* ============================================================
+   EDIT XP MODAL STYLING (60-30-10 CYBER-GLASSMORPHISM)
+   ============================================================ */
+.edit-xp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 7, 25, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: editXpFadeIn 0.2s ease-out;
+}
+
+@keyframes editXpFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.edit-xp-modal-card {
+  width: 480px;
+  max-width: 95vw;
+  background: #0f172a;
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(56, 189, 248, 0.15);
+  animation: editXpSlideUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes editXpSlideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.edit-xp-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.edit-xp-avatar-box {
+  width: 44px;
+  height: 44px;
+  background: #1e293b;
+  border: 1.5px solid #38bdf8;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
+}
+
+.edit-xp-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.edit-xp-close-btn:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.edit-xp-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.edit-xp-stat-box {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-xp-stat-box .stat-label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.edit-xp-stat-box .stat-value {
+  font-size: 1rem;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+.stat-value.active-val { color: #38bdf8; }
+.stat-value.arch-val { color: #a5b4fc; }
+.stat-value.stage-val { color: #fbbf24; font-size: 0.85rem; }
+
+.edit-xp-mode-tabs {
+  display: flex;
+  gap: 8px;
+  background: #090d16;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.xp-mode-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.xp-mode-tab.active {
+  background: #1e293b;
+  color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.xp-input-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+.quick-xp-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.btn-quick-adjust {
+  border: none;
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+  user-select: none;
+}
+
+.btn-quick-adjust:hover {
+  transform: scale(1.05);
+}
+
+.btn-quick-adjust:active {
+  transform: scale(0.96);
+}
+
+.btn-quick-adjust.add {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-bottom: 2px solid rgba(16, 185, 129, 0.7);
+}
+
+.btn-quick-adjust.sub {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-bottom: 2px solid rgba(239, 68, 68, 0.7);
+}
+
+.btn-quick-adjust.clear {
+  background: #334155;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+}
+
+.xp-number-field,
+.xp-text-field {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.xp-number-field:focus,
+.xp-text-field:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}
+
+.edit-xp-preview-box {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px dashed rgba(56, 189, 248, 0.4);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.edit-xp-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.btn-cancel-modal {
+  background: transparent;
+  border: 1px solid #334155;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.4);
+  color: #94a3b8;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cancel-modal:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+}
+
+.btn-cancel-modal:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.btn-save-xp {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  border: none;
+  border-bottom: 4px solid #1e40af;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-save-xp:hover {
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.55);
+}
+
+.btn-save-xp:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+
