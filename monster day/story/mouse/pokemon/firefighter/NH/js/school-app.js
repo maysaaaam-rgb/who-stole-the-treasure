@@ -11956,12 +11956,16 @@ window.switchClassroomSubTab = function(subTab) {
       }
       const allStudents = (storeInstance && storeInstance.state && storeInstance.state.students) || 
         (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
-      if (typeof safeBackgroundSupabaseSync === 'function') {
+      if (typeof syncSingleStudentXP === 'function') {
+        syncSingleStudentXP(s);
+      } else if (typeof window !== 'undefined' && typeof window.syncSingleStudentXP === 'function') {
+        window.syncSingleStudentXP(s);
+      } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.syncSingleStudentXP === 'function') {
+        AdventureSupabase.syncSingleStudentXP(s);
+      } else if (typeof safeBackgroundSupabaseSync === 'function') {
         safeBackgroundSupabaseSync(allStudents);
       } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
         window.safeBackgroundSupabaseSync(allStudents);
-      } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
-        AdventureSupabase.safeBackgroundSupabaseSync(allStudents);
       }
     } catch (e) {}
 
