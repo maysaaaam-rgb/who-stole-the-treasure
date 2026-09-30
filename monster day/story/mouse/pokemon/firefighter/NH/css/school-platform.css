@@ -2802,6 +2802,9 @@ button, input, select, textarea {
 }
 
 .student-card-action-bar .btn-dominant-xp,
+.student-card-action-bar .btn-add-xp,
+.btn-dominant-xp,
+.btn-add-xp,
 .btn-xp-3d {
   width: 100%;
   justify-content: center;
@@ -2809,10 +2812,10 @@ button, input, select, textarea {
   color: #ffffff;
   font-weight: 800;
   border: none;
-  border-bottom: 4px solid #047857;
+  border-bottom: 5px solid #047857;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.08s ease, border-bottom-width 0.08s ease;
+  transition: transform 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-bottom-width 0.08s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-size: 0.95rem;
   padding: 10px 14px;
   display: flex;
@@ -2822,12 +2825,18 @@ button, input, select, textarea {
 }
 
 .student-card-action-bar .btn-dominant-xp:active,
+.student-card-action-bar .btn-add-xp:active,
+.btn-dominant-xp:active,
+.btn-add-xp:active,
 .btn-xp-3d:active {
-  transform: translateY(3px);
+  transform: translateY(4px);
   border-bottom-width: 1px;
 }
 
 .student-card-action-bar .btn-dominant-xp:hover,
+.student-card-action-bar .btn-add-xp:hover,
+.btn-dominant-xp:hover,
+.btn-add-xp:hover,
 .btn-xp-3d:hover {
   background: #059669;
 }

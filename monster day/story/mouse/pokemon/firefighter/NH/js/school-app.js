@@ -1273,14 +1273,14 @@
           '<div class="card-pills-right">' +
             '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
             '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
-            '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\')" title="Edit Student XP">✏️</button>' +
+            '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Edit Student XP">✏️</button>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
               '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
               '<div class="card-dropdown-menu" id="menu-stud-menu-' + studentId + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
                 '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + studentId + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + studentId + '\'); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + studentId + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
                 '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + studentId + '\'); closeAllCardMenus();">📜 View XP History</button>' +
                 '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
                 '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || studentId) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
@@ -1300,7 +1300,7 @@
         '<div class="student-card-content">' +
           '<div class="student-name-row">' +
             '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
-            '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + studentId + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+            '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -1312,7 +1312,7 @@
             '</div>' +
           '</div>' +
           '<div class="student-card-action-bar">' +
-            '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + studentId + '\', 10, event);" title="Quick +10 XP">' +
+            '<button type="button" class="btn-3d btn-add-xp btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="window.addQuickXP(\'' + studentId + '\', 10, event)" title="Quick +10 XP">' +
               '+10 XP' +
             '</button>' +
           '</div>' +
@@ -3418,14 +3418,14 @@
                     '<div class="card-pills-right">' +
                       '<span class="arch-pill">🗄️ ' + archivedVal + ' ARCH</span>' +
                       '<span class="streak-pill">🔥 ' + streak + 'd</span>' +
-                      '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
+                      '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                         '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                         '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\'); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                          '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
                           '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
@@ -3445,7 +3445,7 @@
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
                       '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
-                      '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + s.id + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+                      '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3459,7 +3459,7 @@
 
                     // Dominant Tactile 3D Action Button (+10 XP)
                     '<div class="student-card-action-bar" style="margin-top:10px;">' +
-                      '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+                      '<button type="button" class="btn-3d btn-add-xp btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="window.addQuickXP(\'' + s.id + '\', 10, event)" title="Quick +10 XP">' +
                         '+10 XP' +
                       '</button>' +
                     '</div>' +
@@ -3847,14 +3847,14 @@
             '<div class="card-pills-right">' +
               '<span class="arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
               '<span class="streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
-              '<button type="button" class="btn-card-pencil" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\')" title="Edit Student XP">✏️</button>' +
+              '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                 '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                 '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + s.id + '\'); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                  '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
                   '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
@@ -3874,7 +3874,7 @@
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
               '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
-              '<div class="xp-clickable-badge" onclick="event.stopPropagation(); promptDirectXPEdit(\'' + s.id + '\')" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
+              '<div class="xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + (s.xp || 0) + ' XP</span> ✎</div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
@@ -3888,7 +3888,7 @@
 
             // Dominant Tactile 3D Action Button (+10 XP)
             '<div class="student-card-action-bar" style="margin-top:10px;">' +
-              '<button type="button" class="btn-3d btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="event.stopPropagation(); handleQuickAwardXP(\'' + s.id + '\', 10, event);" title="Quick +10 XP">' +
+              '<button type="button" class="btn-3d btn-add-xp btn-3d-success btn-dominant-xp btn-xp-3d w-full" onclick="window.addQuickXP(\'' + s.id + '\', 10, event)" title="Quick +10 XP">' +
                 '+10 XP' +
               '</button>' +
             '</div>' +
@@ -11924,6 +11924,47 @@ window.switchClassroomSubTab = function(subTab) {
     if (typeof showNotification === 'function') {
       showNotification('+' + parsedAmount + ' XP awarded to ' + studentName + '!');
     }
+
+    // Ensure all local rosters stay updated
+    try {
+      if (typeof localStorage !== 'undefined') {
+        ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const idx = arr.findIndex(st => String(st.id) === String(studentId) || String(st.studentIdNumber) === String(studentId));
+              if (idx !== -1) {
+                arr[idx].xp = s.xp;
+                arr[idx].totalXP = s.totalXP || s.xp;
+                if (s.level) arr[idx].level = s.level;
+                if (s.stageName) arr[idx].stageName = s.stageName;
+                localStorage.setItem(k, JSON.stringify(arr));
+              }
+            }
+          }
+        });
+      }
+      if (typeof window !== 'undefined' && window.AdventureAcademy && Array.isArray(window.AdventureAcademy.students)) {
+        const idx = window.AdventureAcademy.students.findIndex(st => String(st.id) === String(studentId) || String(st.studentIdNumber) === String(studentId));
+        if (idx !== -1) {
+          window.AdventureAcademy.students[idx].xp = s.xp;
+          window.AdventureAcademy.students[idx].totalXP = s.totalXP || s.xp;
+          if (s.level) window.AdventureAcademy.students[idx].level = s.level;
+          if (s.stageName) window.AdventureAcademy.students[idx].stageName = s.stageName;
+        }
+      }
+      const allStudents = (storeInstance && storeInstance.state && storeInstance.state.students) || 
+        (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
+      if (typeof safeBackgroundSupabaseSync === 'function') {
+        safeBackgroundSupabaseSync(allStudents);
+      } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
+        window.safeBackgroundSupabaseSync(allStudents);
+      } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function') {
+        AdventureSupabase.safeBackgroundSupabaseSync(allStudents);
+      }
+    } catch (e) {}
+
     renderCurrentView();
 
     if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
@@ -11938,7 +11979,13 @@ window.switchClassroomSubTab = function(subTab) {
     window.handleQuickAwardXP(studentId, 10, event);
   };
 
-  window.addQuickXP = window.handleQuickAwardXP;
+  window.addQuickXP = function(studentId, amount = 10, event) {
+    if (event) {
+      if (typeof event.stopPropagation === 'function') event.stopPropagation();
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+    }
+    return window.handleQuickAwardXP(studentId, amount, event);
+  };
 
   // =========================================================================
   // DEDICATED "EDIT STUDENT XP" MODAL CONTROLLER (INTERACTIVE 3D ARTIFACT)
@@ -12244,7 +12291,11 @@ window.switchClassroomSubTab = function(subTab) {
   window.commitStudentXPEdit = commitStudentXPEdit;
 
   // Quick Direct Edit fallback
-  function promptDirectXPEdit(studentId) {
+  function promptDirectXPEdit(studentId, event) {
+    if (event) {
+      if (typeof event.stopPropagation === 'function') event.stopPropagation();
+      if (typeof event.preventDefault === 'function') event.preventDefault();
+    }
     const storeInstance = (typeof window !== 'undefined' && window.schoolStore) || (typeof store !== 'undefined' ? store : null);
     let st = storeInstance && typeof storeInstance.getStudent === 'function' ? storeInstance.getStudent(studentId) : null;
     if (!st) {
