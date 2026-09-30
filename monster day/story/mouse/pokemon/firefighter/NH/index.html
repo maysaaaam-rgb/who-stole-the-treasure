@@ -4279,5 +4279,87 @@
     }
   </style>
 
+  <!-- Modal: Interactive Edit Student XP -->
+  <div class="edit-xp-modal-overlay" id="edit-student-xp-modal" style="display: none;" onclick="if(event.target === this) closeEditStudentXPModal();">
+    <div class="edit-xp-modal-card" onclick="event.stopPropagation();">
+      <div class="edit-xp-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="edit-xp-avatar-box" id="edit-xp-avatar">🦊</div>
+          <div>
+            <h3 id="edit-xp-student-name" style="margin: 0; color: #fff; font-size: 1.2rem;">Student Name</h3>
+            <span id="edit-xp-student-grade" style="font-size: 0.8rem; color: #94a3b8;">Grade 4A</span>
+          </div>
+        </div>
+        <button type="button" class="edit-xp-close-btn" onclick="closeEditStudentXPModal()">✕</button>
+      </div>
+
+      <div class="edit-xp-modal-body">
+        <!-- Balance Info Tiles -->
+        <div class="edit-xp-stats-row">
+          <div class="edit-xp-stat-box">
+            <span class="stat-label">Active Term XP</span>
+            <span class="stat-value active-val" id="edit-xp-current-active">0 XP</span>
+          </div>
+          <div class="edit-xp-stat-box">
+            <span class="stat-label">Archived Season 1</span>
+            <span class="stat-value arch-val" id="edit-xp-current-archived">0 XP</span>
+          </div>
+          <div class="edit-xp-stat-box">
+            <span class="stat-label">Locked Stage</span>
+            <span class="stat-value stage-val" id="edit-xp-current-stage">Level 3</span>
+          </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="edit-xp-mode-tabs">
+          <button type="button" class="xp-mode-tab active" id="tab-mode-adjust" onclick="setXPEditMode('adjust')">Quick Adjust (+ / -)</button>
+          <button type="button" class="xp-mode-tab" id="tab-mode-exact" onclick="setXPEditMode('exact')">Set Exact Balance</button>
+        </div>
+
+        <!-- Mode 1: Quick Adjust Form -->
+        <div id="panel-xp-adjust" class="xp-input-panel">
+          <label class="xp-input-label">Select Amount to Add or Subtract:</label>
+          <div class="quick-xp-buttons-grid">
+            <button type="button" class="btn-quick-adjust add" onclick="applyQuickXPDelta(10)">+10 XP</button>
+            <button type="button" class="btn-quick-adjust add" onclick="applyQuickXPDelta(25)">+25 XP</button>
+            <button type="button" class="btn-quick-adjust add" onclick="applyQuickXPDelta(50)">+50 XP</button>
+            <button type="button" class="btn-quick-adjust add" onclick="applyQuickXPDelta(100)">+100 XP</button>
+            <button type="button" class="btn-quick-adjust sub" onclick="applyQuickXPDelta(-10)">-10 XP</button>
+            <button type="button" class="btn-quick-adjust sub" onclick="applyQuickXPDelta(-25)">-25 XP</button>
+            <button type="button" class="btn-quick-adjust sub" onclick="applyQuickXPDelta(-50)">-50 XP</button>
+            <button type="button" class="btn-quick-adjust clear" onclick="resetXPDelta()">Reset</button>
+          </div>
+          <div style="margin-top: 12px;">
+            <label class="xp-input-label">Or Custom Delta Amount:</label>
+            <input type="number" id="input-custom-delta" class="xp-number-field" placeholder="e.g. +15 or -20" oninput="updateResultingXPFromDelta()">
+          </div>
+        </div>
+
+        <!-- Mode 2: Set Exact Balance Form -->
+        <div id="panel-xp-exact" class="xp-input-panel" style="display: none;">
+          <label class="xp-input-label">Set New Active Term XP:</label>
+          <input type="number" id="input-exact-xp" class="xp-number-field" min="0" placeholder="Enter new points..." oninput="updateResultingXPFromExact()">
+        </div>
+
+        <!-- Reason Field -->
+        <div style="margin-top: 14px;">
+          <label class="xp-input-label">Reason / Memo (Logged to Audit Trail):</label>
+          <input type="text" id="input-xp-reason" class="xp-text-field" placeholder="e.g. Worksheet correction, Speaking bonus, Manual adjustment...">
+        </div>
+
+        <!-- Result Preview Box -->
+        <div class="edit-xp-preview-box">
+          <span>Resulting Balance:</span>
+          <strong id="edit-xp-resulting-display" style="color: #38bdf8; font-size: 1.3rem;">0 XP</strong>
+        </div>
+      </div>
+
+      <div class="edit-xp-modal-footer">
+        <button type="button" class="btn-cancel-modal" onclick="closeEditStudentXPModal()">Cancel</button>
+        <button type="button" class="btn-save-xp" onclick="commitStudentXPEdit()">💾 Save New XP</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

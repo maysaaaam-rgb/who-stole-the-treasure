@@ -1313,9 +1313,16 @@
   }
 
   async function syncWithSupabaseCloud() {
-    const syncStatusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text');
+    const syncStatusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text') || (typeof document !== 'undefined' && document.querySelector('.cloud-status'));
+    const syncIconEl = document.getElementById('global-sync-icon');
     const syncBtn = document.getElementById('global-cloud-sync-btn');
     if (syncStatusEl) syncStatusEl.innerText = "⏳ Syncing...";
+    if (syncIconEl) syncIconEl.innerText = "⏳";
+    if (syncBtn) {
+      syncBtn.style.background = '#eff6ff';
+      syncBtn.style.color = '#1e40af';
+      syncBtn.style.borderColor = '#bfdbfe';
+    }
 
     const client = root.supabaseClient || (root.AdventureSupabase && root.AdventureSupabase.client);
     if (!client) {
@@ -1325,32 +1332,40 @@
     }
 
     try {
-      const { data: remoteStudents, error: pullErr } = await client
-        .from('students')
-        .select('*');
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000));
 
-      if (pullErr) throw pullErr;
-
-      const localStudents = JSON.parse(localStorage.getItem('adventure_students') || '[]');
-
-      if (localStudents.length > 0) {
-        const payload = localStudents.map(toSupabaseRecord);
-        const { error: pushErr } = await client
+      const syncOperation = (async () => {
+        const { data: remoteStudents, error: pullErr } = await client
           .from('students')
-          .upsert(payload, { onConflict: 'id' });
+          .select('*');
 
-        if (pushErr) throw pushErr;
-      } else if (remoteStudents && remoteStudents.length > 0) {
-        const hydrated = remoteStudents.map(fromSupabaseRecord);
-        localStorage.setItem('adventure_students', JSON.stringify(hydrated));
-        if (root.AdventureAcademy) root.AdventureAcademy.students = hydrated;
-        if (root.schoolStore && root.schoolStore.state) {
-          root.schoolStore.state.students = hydrated;
-          root.schoolStore.saveState();
+        if (pullErr) throw pullErr;
+
+        const localStudents = JSON.parse(localStorage.getItem('adventure_students') || '[]');
+
+        if (localStudents.length > 0) {
+          const payload = localStudents.map(toSupabaseRecord);
+          const { error: pushErr } = await client
+            .from('students')
+            .upsert(payload, { onConflict: 'id' });
+
+          if (pushErr) throw pushErr;
+        } else if (remoteStudents && remoteStudents.length > 0) {
+          const hydrated = remoteStudents.map(fromSupabaseRecord);
+          localStorage.setItem('adventure_students', JSON.stringify(hydrated));
+          if (root.AdventureAcademy) root.AdventureAcademy.students = hydrated;
+          if (root.schoolStore && root.schoolStore.state) {
+            root.schoolStore.state.students = hydrated;
+            root.schoolStore.saveState();
+          }
         }
-      }
+        return true;
+      })();
+
+      await Promise.race([syncOperation, timeoutPromise]);
 
       if (syncStatusEl) syncStatusEl.innerText = "🟢 Synced";
+      if (syncIconEl) syncIconEl.innerText = "☁️✓";
       if (syncBtn) {
         syncBtn.style.background = '#ecfdf5';
         syncBtn.style.color = '#065f46';
@@ -1358,8 +1373,14 @@
       }
       console.log("Supabase sync successful.");
     } catch (err) {
-      console.error("Supabase Sync Error:", err.message);
-      if (syncStatusEl) syncStatusEl.innerText = "🔴 Sync Error";
+      console.warn("Supabase background sync bypassed:", err.message);
+      if (syncStatusEl) syncStatusEl.innerText = "🟡 Saved Locally";
+      if (syncIconEl) syncIconEl.innerText = "💾";
+      if (syncBtn) {
+        syncBtn.style.background = '#fef9c3';
+        syncBtn.style.color = '#854d0e';
+        syncBtn.style.borderColor = '#fde047';
+      }
     }
   }
 
@@ -1430,11 +1451,103 @@
 
   AdventureSupabaseService.prototype.forcePushToSupabase = forcePushToSupabase;
 
+  async function safeSyncStudentToSupabase(student) {
+    if (!student) return;
+
+    const syncStatusEl = document.getElementById('supabase-sync-status') || document.getElementById('global-sync-text') || (typeof document !== 'undefined' && document.querySelector('.cloud-status'));
+    const syncIconEl = document.getElementById('global-sync-icon');
+    const syncBtn = document.getElementById('global-cloud-sync-btn');
+    if (syncStatusEl) syncStatusEl.innerText = "⏳ Saving...";
+    if (syncIconEl) syncIconEl.innerText = "⏳";
+    if (syncBtn) {
+      syncBtn.style.background = '#eff6ff';
+      syncBtn.style.color = '#1e40af';
+      syncBtn.style.borderColor = '#bfdbfe';
+    }
+
+    const client = root.supabaseClient || (root.AdventureSupabase && root.AdventureSupabase.client) || (typeof window !== 'undefined' ? window.supabaseClient : null);
+
+    if (!client) {
+      if (syncStatusEl) syncStatusEl.innerText = "⚪ Local Only";
+      return;
+    }
+
+    try {
+      // 5-second safety timeout prevents infinite hanging
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000));
+      
+      const payload = {
+        id: String(student.id),
+        name: student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim(),
+        grade: student.grade || student.class_id || student.classId || '4A',
+        xp: Number(student.xp) || 0,
+        archived_xp: Number(student.archivedXP ?? student.archived_xp ?? 0),
+        level: Number(student.level) || 3,
+        stage_name: student.stageName || student.stage_name || 'Level 3 • Baby Monster',
+        alice_character: student.aliceCharacter || student.alice_character || null,
+        korean_role: student.koreanRole || student.korean_role || null,
+        custom_icon: student.customIcon || student.custom_icon || null,
+        avatar_config: student.avatarConfig || student.avatar_config || {},
+        xp_history: student.xpHistory || student.xp_history || [],
+        updated_at: new Date().toISOString()
+      };
+
+      const pushPromise = (async () => {
+        let res = await client.from('students').upsert([payload], { onConflict: 'id' });
+        if (res.error) {
+          // Fallback without jsonb columns if schema has column differences
+          const fallbackPayload = [{
+            id: payload.id,
+            name: payload.name,
+            grade: payload.grade,
+            class_id: payload.grade,
+            xp: payload.xp,
+            archived_xp: payload.archived_xp,
+            level: payload.level,
+            stage_name: payload.stage_name,
+            alice_character: payload.alice_character,
+            korean_role: payload.korean_role,
+            custom_icon: payload.custom_icon,
+            updated_at: payload.updated_at
+          }];
+          const fbRes = await client.from('students').upsert(fallbackPayload, { onConflict: 'id' });
+          if (fbRes.error) throw fbRes.error;
+        }
+        return true;
+      })();
+
+      await Promise.race([pushPromise, timeoutPromise]);
+
+      if (syncStatusEl) syncStatusEl.innerText = "🟢 Synced";
+      if (syncIconEl) syncIconEl.innerText = "☁️✓";
+      if (syncBtn) {
+        syncBtn.style.background = '#ecfdf5';
+        syncBtn.style.color = '#065f46';
+        syncBtn.style.borderColor = '#a7f3d0';
+      }
+    } catch (err) {
+      console.warn("Supabase background sync bypassed:", err.message);
+      if (syncStatusEl) syncStatusEl.innerText = "🟡 Saved Locally";
+      if (syncIconEl) syncIconEl.innerText = "💾";
+      if (syncBtn) {
+        syncBtn.style.background = '#fef9c3';
+        syncBtn.style.color = '#854d0e';
+        syncBtn.style.borderColor = '#fde047';
+      }
+    }
+  }
+
+  AdventureSupabaseService.prototype.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+
   root.AdventureSupabase = new AdventureSupabaseService();
   root.toSupabaseRecord = toSupabaseRecord;
   root.fromSupabaseRecord = fromSupabaseRecord;
   root.syncWithSupabaseCloud = syncWithSupabaseCloud;
   root.forcePushToSupabase = forcePushToSupabase;
+  root.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+  if (typeof window !== 'undefined') {
+    window.safeSyncStudentToSupabase = safeSyncStudentToSupabase;
+  }
 
 })(typeof window !== 'undefined' ? window : global);
 
