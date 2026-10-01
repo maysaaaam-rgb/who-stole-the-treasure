@@ -10847,6 +10847,33 @@
               if (!merged.resources.some(r => r.id === 'res-global-readings-2')) {
                 merged.resources.push(GLOBAL_READINGS_2_DATA.resource);
               }
+              // Ensure all canonical games exist and remain fresh in merged.resources
+              if (Array.isArray(CANONICAL_GAMES)) {
+                CANONICAL_GAMES.forEach(cg => {
+                  const existingIdx = merged.resources.findIndex(r => r.id === cg.id);
+                  if (existingIdx === -1) {
+                    merged.resources.push({
+                      ...cg,
+                      cloudStatus: cg.cloudStatus || 'saved',
+                      cloudSyncedAt: cg.cloudSyncedAt || new Date().toISOString(),
+                      cloudSynced: true
+                    });
+                  } else {
+                    Object.assign(merged.resources[existingIdx], {
+                      title: cg.title || merged.resources[existingIdx].title,
+                      route: cg.route || cg.url || merged.resources[existingIdx].route,
+                      url: cg.url || cg.route || merged.resources[existingIdx].url,
+                      worksheetUrl: cg.worksheetUrl || cg.worksheetRoute || merged.resources[existingIdx].worksheetUrl,
+                      trackId: cg.trackId || merged.resources[existingIdx].trackId,
+                      trackTitle: cg.trackTitle || merged.resources[existingIdx].trackTitle,
+                      category: cg.category || merged.resources[existingIdx].category,
+                      level: cg.level || merged.resources[existingIdx].level,
+                      cefrLevel: cg.cefrLevel || merged.resources[existingIdx].cefrLevel,
+                      archived: false
+                    });
+                  }
+                });
+              }
             }
 
             // Ensure Global Readings 3 curriculum book, units, lessons, objectives, and resource are present in existing saved state

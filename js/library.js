@@ -15,12 +15,20 @@
 
     return allLessons.filter(lesson => {
       if (!lesson || lesson.status === 'archived') return false;
-      // If the module is tagged for a specific class, only show it when that class or 'All' is selected
+      // If the module is tagged for a specific class, check exact match or multi-class inclusion
       if (lesson.targetClass) {
         if (!currentClass || currentClass === 'All' || currentClass === 'all' || currentClass === 'All Classes') return true;
         const normalizedCurrent = String(currentClass).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
         const normalizedTarget = String(lesson.targetClass).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
-        return normalizedTarget === normalizedCurrent;
+        if (normalizedTarget === normalizedCurrent || normalizedTarget.includes(normalizedCurrent) || normalizedCurrent.includes(normalizedTarget)) return true;
+        if (Array.isArray(lesson.grades)) {
+          const matchesGrade = lesson.grades.some(g => {
+            const ng = String(g).toLowerCase().replace(/grade\s*/i, '').replace(/class\s*/i, '').replace(/[-\s]+/g, '').trim();
+            return ng === normalizedCurrent || normalizedCurrent.includes(ng);
+          });
+          if (matchesGrade) return true;
+        }
+        return false;
       }
       return true; // General lessons show for everyone
     });
@@ -109,21 +117,23 @@
     getFilteredModules() {
       let modules = this.getAllActiveModules();
 
+      // If user is searching, search across ALL tracks so matching lessons are never hidden by active track tab
+      if (this.searchQuery && this.searchQuery.trim()) {
+        const q = this.searchQuery.trim().toLowerCase();
+        return modules.filter(m => {
+          const title = (m.title || '').toLowerCase();
+          const formula = ((m.grammar && (m.grammar.formula || m.grammar.focusPattern)) || m.formula || '').toLowerCase();
+          const topic = ((m.topics && m.topics.join(' ')) || m.topic || m.category || m.categoryLabel || '').toLowerCase();
+          const vocab = ((m.vocabulary && m.vocabulary.core && m.vocabulary.core.join(' ')) || '').toLowerCase();
+          const desc = (m.description || '').toLowerCase();
+          const id = (m.id || '').toLowerCase();
+          return title.includes(q) || formula.includes(q) || topic.includes(q) || vocab.includes(q) || desc.includes(q) || id.includes(q);
+        });
+      }
+
       // Filter by active track
       if (this.activeTrackId !== 'all') {
         modules = modules.filter(m => m.trackId === this.activeTrackId);
-      }
-
-      // Filter by optional search query
-      if (this.searchQuery && this.searchQuery.trim()) {
-        const q = this.searchQuery.trim().toLowerCase();
-        modules = modules.filter(m => {
-          const title = (m.title || '').toLowerCase();
-          const formula = ((m.grammar && (m.grammar.formula || m.grammar.focusPattern)) || m.formula || '').toLowerCase();
-          const topic = ((m.topics && m.topics.join(' ')) || m.topic || m.category || '').toLowerCase();
-          const vocab = ((m.vocabulary && m.vocabulary.core && m.vocabulary.core.join(' ')) || '').toLowerCase();
-          return title.includes(q) || formula.includes(q) || topic.includes(q) || vocab.includes(q);
-        });
       }
 
       return modules;
