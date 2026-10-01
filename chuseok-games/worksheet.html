@@ -145,9 +145,9 @@
         <option value="3B">Class 3B (16 Students)</option>
       </select>
 
-      <select id="student-filter" onchange="renderWorksheets()" class="bg-slate-800 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none max-w-[180px]">
+      <select id="student-filter" onchange="renderWorksheets()" class="bg-slate-800 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none max-w-[200px]">
+        <option value="BLANK">📝 Universal Blank Sheet (1-Page A4)</option>
         <option value="ALL">🖨️ All Students (Batch)</option>
-        <option value="BLANK">📝 Blank Template</option>
       </select>
 
       <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-lg shadow-amber-500/25 transition">
@@ -243,32 +243,32 @@
             </div>
             <div class="text-right border border-slate-900 rounded p-1 bg-amber-50/90 leading-tight">
               <div class="text-[6.5pt] font-bold uppercase text-slate-600">Due Date:</div>
-              <div class="text-[8.5pt] font-black text-rose-700">Tuesday, Oct 6</div>
+              <div class="text-[8.5pt] font-black text-rose-700">Due: Tuesday, Oct 6</div>
             </div>
           </div>
 
-          <!-- Student Fill-in Line -->
+          <!-- Student Fill-in Line (Clean Underline for Pencil Handwriting & Class Checkboxes) -->
           <div class="flex items-center justify-between text-[8pt] p-1 bg-slate-50 border border-slate-300 rounded mb-1">
-            <div class="flex items-center gap-1 flex-1">
+            <div class="flex items-center gap-1.5 flex-1">
               <span class="font-bold text-slate-800">Name:</span>
-              <span class="font-bold border-b border-slate-900 px-1 flex-1">${studentName || '________________________'}</span>
+              <span class="border-b border-slate-800 flex-1 inline-block pb-0.5">&nbsp;${studentName ? studentName : '____________________________________'}</span>
             </div>
-            <div class="flex items-center gap-3 px-3">
+            <div class="flex items-center gap-4 px-4">
               <span class="font-bold text-slate-800">Class:</span>
-              <label class="flex items-center gap-0.5"><span class="checkbox-square">${className === '3A' ? '✓' : ''}</span> 3A</label>
-              <label class="flex items-center gap-0.5"><span class="checkbox-square">${className === '3B' ? '✓' : ''}</span> 3B</label>
+              <label class="flex items-center gap-1 font-bold text-slate-800 cursor-pointer"><span class="checkbox-square">${studentName && className === '3A' ? '✓' : ''}</span> 3/A</label>
+              <label class="flex items-center gap-1 font-bold text-slate-800 cursor-pointer"><span class="checkbox-square">${studentName && className === '3B' ? '✓' : ''}</span> 3/B</label>
             </div>
-            <div class="text-[7pt] text-slate-500 font-bold">Bring crafted game to school!</div>
+            <div class="text-[7.5pt] text-slate-600 font-bold bg-white px-2 py-0.5 rounded border border-slate-300">Due: Tuesday, Oct 6</div>
           </div>
 
-          <!-- Assigned Game Checkbox Line -->
+          <!-- Assigned Game Checkbox Row -->
           <div class="flex items-center justify-between text-[7.5pt] p-1 bg-amber-50/70 border border-amber-300/80 rounded mb-1.5 font-semibold text-slate-900">
             <span class="font-bold text-amber-900">My Assigned Game:</span>
-            <label class="flex items-center gap-0.5"><span class="checkbox-square">${gameTitle.includes('Ddakji') ? '✓' : ''}</span> Ddakji</label>
-            <label class="flex items-center gap-0.5"><span class="checkbox-square">${gameTitle.includes('Paengi') ? '✓' : ''}</span> Paengi</label>
-            <label class="flex items-center gap-0.5"><span class="checkbox-square">${gameTitle.includes('Gonggi') ? '✓' : ''}</span> Gonggi</label>
-            <label class="flex items-center gap-0.5"><span class="checkbox-square">${gameTitle.includes('Jegichagi') ? '✓' : ''}</span> Jegichagi</label>
-            <label class="flex items-center gap-0.5"><span class="checkbox-square">${gameTitle.includes('Yut') ? '✓' : ''}</span> Yut Nori</label>
+            <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square">${studentName && gameTitle && gameTitle.includes('Ddakji') ? '✓' : ''}</span> Ddakji</label>
+            <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square">${studentName && gameTitle && gameTitle.includes('Paengi') ? '✓' : ''}</span> Paengi</label>
+            <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square">${studentName && gameTitle && gameTitle.includes('Gonggi') ? '✓' : ''}</span> Gonggi</label>
+            <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square">${studentName && gameTitle && gameTitle.includes('Jegichagi') ? '✓' : ''}</span> Jegichagi</label>
+            <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square">${studentName && gameTitle && gameTitle.includes('Yut') ? '✓' : ''}</span> Yut Nori</label>
           </div>
 
           <!-- Task 1: The Maker's Story (2 lines) -->
@@ -378,9 +378,10 @@
       const cls = classSelect.value;
       const studentFilter = document.getElementById('student-filter');
 
+      const prevVal = studentFilter.value;
       studentFilter.innerHTML = `
+        <option value="BLANK">📝 Universal Blank Sheet (1-Page A4)</option>
         <option value="ALL">🖨️ All Students (Batch: ${CLASS_ROSTERS[cls].length} Sheets)</option>
-        <option value="BLANK">📝 Blank Template</option>
       `;
 
       CLASS_ROSTERS[cls].forEach(st => {
@@ -389,6 +390,12 @@
         opt.textContent = st;
         studentFilter.appendChild(opt);
       });
+
+      if (prevVal && [...studentFilter.options].some(o => o.value === prevVal)) {
+        studentFilter.value = prevVal;
+      } else {
+        studentFilter.value = 'BLANK';
+      }
 
       renderWorksheets();
     }
