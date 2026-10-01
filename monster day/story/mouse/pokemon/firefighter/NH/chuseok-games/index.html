@@ -305,7 +305,7 @@
       <!-- Right Controls: Mode Toggle + Audio + Print -->
       <div class="flex items-center gap-2">
         <!-- Admin Unlock Toggle -->
-        <button id="admin-toggle-btn" onclick="toggleAdminMode()" class="btn-3d btn-slate px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 text-amber-300" title="Click to unlock Teacher Admin Mode (passcode: chuseok2026)">
+        <button id="admin-toggle-btn" onclick="toggleAdminMode()" class="btn-3d btn-slate px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 text-amber-300" title="Click to unlock Teacher Admin Mode">
           <span id="admin-icon">🔒</span>
           <span id="admin-label">Teacher Mode</span>
         </button>
@@ -442,7 +442,7 @@
       </div>
 
       <!-- STUDENT FINDER SEARCH BAR (Parent / Student View Friendly) -->
-      <div class="bg-gradient-to-r from-blue-950/70 via-slate-950/90 to-amber-950/60 p-4 rounded-2xl border border-white/15 space-y-2">
+      <div id="student-search-container" class="bg-gradient-to-r from-blue-950/70 via-slate-950/90 to-amber-950/60 p-4 rounded-2xl border border-white/15 space-y-2">
         <label for="student-search-input" class="text-xs font-bold text-amber-300 flex items-center gap-2">
           <span>🔍</span> Type your name to find your assigned game station:
         </label>
@@ -466,7 +466,7 @@
       </div>
 
       <!-- TEACHER ADMIN CONTROLS (Only visible in Teacher Mode) -->
-      <div id="teacher-admin-panel" class="hidden flex-wrap items-center justify-between gap-3 bg-slate-950/70 p-4 rounded-2xl border border-amber-500/30">
+      <div id="teacher-admin-panel" class="admin-only hidden flex-wrap items-center justify-between gap-3 bg-slate-950/70 p-4 rounded-2xl border border-amber-500/30">
         <div class="flex items-center gap-2">
           <span class="text-xs font-extrabold text-amber-400 flex items-center gap-1.5">
             <span>🛠️</span> Teacher Admin Active:
@@ -1122,6 +1122,21 @@
   </section>
 
   <!-- =========================================================
+       FOOTER WITH TEACHER UNLOCK
+       ========================================================= -->
+  <footer class="max-w-7xl mx-auto px-4 py-8 text-center text-xs text-slate-500 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span>🌕</span>
+      <span><strong>English Adventure Academy</strong> &bull; Korean Chuseok Cultural Festival</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="openTeacherAuth()" class="hover:text-amber-400 flex items-center gap-1.5 transition py-1.5 px-3 rounded-xl bg-slate-900/80 border border-white/10 text-slate-400" title="Click to enter Teacher Passcode">
+        <span>🔒</span> <span>Teacher Access</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- =========================================================
        5. STRICTLY 1-PAGE UNIVERSAL PRINTABLE A4 WORKSHEET CONTAINER
        ========================================================= -->
   <section id="print-worksheet-section">
@@ -1181,7 +1196,7 @@
       <input 
         id="passcode-input" 
         type="password" 
-        placeholder="Enter passcode (hint: chuseok2026)" 
+        placeholder="Enter teacher passcode" 
         class="w-full bg-slate-950 text-white text-xs p-3 rounded-xl border border-white/20 font-mono focus:outline-none focus:border-amber-400"
         onkeydown="if(event.key === 'Enter') submitPasscode()"
       />
@@ -1400,12 +1415,55 @@
     /* =========================================================
        ADMIN VS PARENT/STUDENT VIEW LOGIC
        ========================================================= */
+    // --- TEACHER ACCESS & PARENT VIEW SYSTEM ---
+    const TEACHER_PASSWORD = "3515149460";
+
     function checkAdminStatus() {
       const urlParams = new URLSearchParams(window.location.search);
-      const isTeacherParam = urlParams.get('admin') === 'true' || urlParams.get('teacher') === 'true';
-      const isSessionAdmin = sessionStorage.getItem('chuseok_is_admin') === 'true';
-      isTeacherAdmin = isTeacherParam || isSessionAdmin;
+      const isAdminParam = urlParams.get('admin') === 'true' || urlParams.get('teacher') === 'true';
+      const isAdminSession = sessionStorage.getItem('isTeacherAdmin') === 'true' || sessionStorage.getItem('chuseok_is_admin') === 'true';
+
+      if (isAdminParam || isAdminSession) {
+        enableTeacherMode();
+      } else {
+        enableParentView();
+      }
+    }
+
+    function enableParentView() {
+      isTeacherAdmin = false;
+      // Hide all randomizer, spin, edit, and swap controls
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+      
+      // Show student search bar for parents
+      const searchBar = document.getElementById('student-search-container');
+      if (searchBar) searchBar.style.display = 'block';
+
+      sessionStorage.removeItem('isTeacherAdmin');
+      sessionStorage.removeItem('chuseok_is_admin');
       updateAdminUI();
+    }
+
+    function enableTeacherMode() {
+      isTeacherAdmin = true;
+      // Reveal all admin tools and spin buttons
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+      sessionStorage.setItem('isTeacherAdmin', 'true');
+      sessionStorage.setItem('chuseok_is_admin', 'true');
+      updateAdminUI();
+    }
+
+    // Teacher Unlock Trigger (Lock Icon in footer or header)
+    function openTeacherAuth() {
+      const enteredPass = prompt("Enter Teacher Passcode:");
+      if (enteredPass === TEACHER_PASSWORD) {
+        soundEngine.playChime();
+        alert("Teacher access unlocked!");
+        enableTeacherMode();
+      } else if (enteredPass !== null) {
+        soundEngine.playClick();
+        alert("Incorrect passcode.");
+      }
     }
 
     function updateAdminUI() {
@@ -1416,19 +1474,29 @@
       const adminPanel = document.getElementById('teacher-admin-panel');
 
       if (isTeacherAdmin) {
-        adminIcon.textContent = '🔓';
-        adminLabel.textContent = 'Lock View';
-        rolePill.textContent = '🔓 Teacher Admin Mode';
-        rolePill.className = "px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
-        adminPanel.classList.remove('hidden');
-        adminPanel.classList.add('flex');
+        if (adminIcon) adminIcon.textContent = '🔓';
+        if (adminLabel) adminLabel.textContent = 'Lock View';
+        if (rolePill) {
+          rolePill.textContent = '🔓 Teacher Admin Mode';
+          rolePill.className = "px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+        }
+        if (adminPanel) {
+          adminPanel.classList.remove('hidden');
+          adminPanel.classList.add('flex');
+          adminPanel.style.display = '';
+        }
       } else {
-        adminIcon.textContent = '🔒';
-        adminLabel.textContent = 'Teacher Mode';
-        rolePill.textContent = '🔒 Parent / Student View';
-        rolePill.className = "px-2 py-0.5 text-xs font-black uppercase rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30";
-        adminPanel.classList.add('hidden');
-        adminPanel.classList.remove('flex');
+        if (adminIcon) adminIcon.textContent = '🔒';
+        if (adminLabel) adminLabel.textContent = 'Teacher Mode';
+        if (rolePill) {
+          rolePill.textContent = '🔒 Parent / Student View';
+          rolePill.className = "px-2 py-0.5 text-xs font-black uppercase rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30";
+        }
+        if (adminPanel) {
+          adminPanel.classList.add('hidden');
+          adminPanel.classList.remove('flex');
+          adminPanel.style.display = 'none';
+        }
       }
 
       renderStations();
@@ -1437,10 +1505,7 @@
     function toggleAdminMode() {
       soundEngine.playClick();
       if (isTeacherAdmin) {
-        // Lock view back to Parent Mode
-        isTeacherAdmin = false;
-        sessionStorage.removeItem('chuseok_is_admin');
-        updateAdminUI();
+        enableParentView();
         showToast("Switched to locked Parent / Student View.");
       } else {
         // Open Passcode Modal
@@ -1458,13 +1523,11 @@
 
     function submitPasscode() {
       const code = document.getElementById('passcode-input').value.trim();
-      if (code === 'chuseok2026') {
+      if (code === TEACHER_PASSWORD) {
         soundEngine.playChime();
-        isTeacherAdmin = true;
-        sessionStorage.setItem('chuseok_is_admin', 'true');
+        enableTeacherMode();
         closePasscodeModal();
-        updateAdminUI();
-        showToast("Unlocked Teacher Admin Mode!");
+        showToast("Teacher access unlocked!");
       } else {
         soundEngine.playClick();
         document.getElementById('passcode-error').classList.remove('hidden');
@@ -1636,7 +1699,7 @@
             if (isTeacherAdmin) {
               pill.innerHTML = `
                 <span>${student}</span>
-                <button onclick="reRollStudent('${student}', '${game.id}')" class="text-slate-400 hover:text-amber-400 text-[11px]" title="Re-roll student to another station">🎲</button>
+                <button onclick="reRollStudent('${student}', '${game.id}')" class="admin-only text-slate-400 hover:text-amber-400 text-[11px]" title="Re-roll student to another station">🎲</button>
               `;
             } else {
               pill.innerHTML = `<span>${student}</span>`;
