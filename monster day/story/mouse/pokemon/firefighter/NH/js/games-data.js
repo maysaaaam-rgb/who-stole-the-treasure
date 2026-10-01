@@ -6961,7 +6961,7 @@ const GAMES_REGISTRY = [
   {
     "id": "chuseok-games",
     "title": "🌕 Chuseok Game Master Portal: Traditional Korean Folk Games",
-    "description": "Interactive classroom smartboard portal and printable A4 quest workbook for Grade 3 (A1+). Features 5 traditional Korean games (Ddakji, Paengi, Tuho, Jegichagi, Yut Nori), a fair 19-student randomizer for Classes 3A & 3B, embedded video craft guides, A1+ interactive gap-fill exercises with strictly blank inputs, native Web Audio effects, and a gamified 100 XP quest tracker.",
+    "description": "Interactive classroom smartboard portal and printable A4 quest workbook for Grade 3 (A1+). Features 5 traditional Korean games (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori), a fair 19-student randomizer for Classes 3A & 3B, embedded video craft guides, A1+ interactive gap-fill exercises with strictly blank inputs, native Web Audio effects, and a gamified 100 XP quest tracker.",
     "type": "game",
     "category": "Language & Quests",
     "categoryLabel": "🌕 World Cultures & Folk Games",
@@ -6992,7 +6992,7 @@ const GAMES_REGISTRY = [
       "Folk Games",
       "Ddakji",
       "Paengi",
-      "Tuho",
+      "Gonggi",
       "Jegichagi",
       "Yut Nori",
       "Recycled Crafting",
@@ -7000,32 +7000,33 @@ const GAMES_REGISTRY = [
       "Class 3A",
       "Class 3B"
     ],
-    "languageFocus": "First, fold/cut/tie... / Next, toss/spin/kick... / It's your turn! / Nice throw! / Good job!",
+    "languageFocus": "Hit the card and flip it over! / Twist the top and make it spin! / Toss the Gonggi and catch them fast! / Kick it high and keep it in the air! / Roll the dice, move your pieces home!",
     "grammar": {
-      "focusPattern": "First, [Verb] the [Noun]. Next, [Verb] it. Finally, [Verb] to [Goal]!",
-      "formula": "First, [Verb] the [Noun]. Next, [Verb] it. Finally, [Verb] to [Goal]!"
+      "focusPattern": "Hit the [card] and [action]! / Toss the [item] and [action]!",
+      "formula": "Hit the card and flip it over! / Toss the Gonggi and catch them fast!"
     },
     "learningObjectives": [
-      "Craft a traditional Korean folk game using recycled household materials.",
-      "Explain game rules clearly in English using 3 imperative sequence steps (First, Next, Finally).",
+      "Craft a traditional Korean folk game using recycled household materials (paper, caps, string).",
+      "Chant and produce target English game rules clearly and fluently.",
       "Host peer classmates at an interactive classroom arcade station using cheering frames."
     ],
     "vocabulary": {
       "core": [
         "fold",
-        "wrap",
-        "cut",
-        "spin",
+        "twist",
         "toss",
         "kick",
-        "line",
-        "point"
+        "roll",
+        "catch",
+        "spin",
+        "flip"
       ],
       "supporting": [
         "cardboard",
         "bottle cap",
         "shuttlecock",
-        "sticks",
+        "stone",
+        "dice",
         "turn"
       ]
     },
