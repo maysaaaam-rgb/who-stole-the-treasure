@@ -21,7 +21,7 @@
       margin: 0;
     }
 
-    .a4-sheet {
+    .a4-student-page {
       width: 210mm;
       min-height: 297mm;
       padding: 10mm 14mm;
@@ -33,20 +33,20 @@
     }
 
     .print-box {
-      border: 1.3pt solid #1e293b;
-      border-radius: 6pt;
-      padding: 7pt 9pt;
-      margin-bottom: 7pt;
+      border: 1.2pt solid #1e293b;
+      border-radius: 5pt;
+      padding: 6pt 8pt;
+      margin-bottom: 6pt;
       background: #ffffff;
     }
 
     .print-box-header {
       background: #f8fafc;
       font-weight: 800;
-      font-size: 9pt;
-      border-bottom: 1.2pt solid #1e293b;
-      padding: 3.5pt 7pt;
-      margin: -7pt -9pt 6pt -9pt;
+      font-size: 8.5pt;
+      border-bottom: 1pt solid #1e293b;
+      padding: 3pt 6pt;
+      margin: -6pt -8pt 5pt -8pt;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -54,20 +54,20 @@
 
     .handwriting-line {
       border-bottom: 1pt dashed #94a3b8;
-      min-height: 22pt;
+      min-height: 21pt;
       display: flex;
       align-items: flex-end;
       padding-bottom: 2pt;
       margin-bottom: 4pt;
-      font-size: 9.5pt;
+      font-size: 9pt;
       color: #334155;
     }
 
     .checkbox-square {
       display: inline-block;
-      width: 11pt;
-      height: 11pt;
-      border: 1.3pt solid #1e293b;
+      width: 10.5pt;
+      height: 10.5pt;
+      border: 1.2pt solid #1e293b;
       border-radius: 2pt;
       margin-right: 3.5pt;
       vertical-align: middle;
@@ -78,8 +78,8 @@
       border: 1.5pt dashed #b45309;
       background: #fffbeb;
       border-radius: 6pt;
-      padding: 6pt 8pt;
-      margin-top: 5pt;
+      padding: 5pt 7pt;
+      margin-bottom: 6pt;
     }
 
     @media print {
@@ -91,15 +91,19 @@
       .no-print {
         display: none !important;
       }
-      .a4-sheet {
+      .a4-student-page {
         box-shadow: none !important;
         border-radius: 0 !important;
         margin: 0 !important;
         padding: 8mm 10mm !important;
         width: 100% !important;
         min-height: auto !important;
+        page-break-after: always;
+        break-after: page;
+      }
+      .a4-student-page:last-child {
         page-break-after: avoid;
-        page-break-inside: avoid;
+        break-after: avoid;
       }
       .pocket-script-box {
         background: #fffbeb !important;
@@ -123,188 +127,310 @@
         <span>←</span> Back to Game Portal
       </a>
       <div>
-        <h1 class="text-sm font-black text-white">Chuseok Game Master Printable A4 Quest Sheet</h1>
-        <p class="text-[11px] text-slate-400">ESL Level A1+ • Week 1: Traditional Games &amp; Crafting | Due: Tuesday, Oct 6</p>
+        <h1 class="text-sm font-black text-white">Chuseok Game Master Printable A4 Workbooks</h1>
+        <p class="text-[11px] text-slate-400">Classes 3A (17) &amp; 3B (16) • CEFR A1+ • Due: Tuesday, Oct 6</p>
       </div>
     </div>
 
-    <!-- Filter Game Specific Sheet -->
-    <div class="flex items-center gap-2">
-      <label for="game-filter" class="text-xs font-bold text-slate-300">Target Game:</label>
-      <select id="game-filter" onchange="updateSelectedGame()" class="bg-slate-800 text-amber-300 font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none">
-        <option value="All 5 Traditional Folk Games">All 5 Games (General)</option>
-        <option value="Ddakji (딱지) - Origami Slap-Tile">1. Ddakji (딱지) - Paper Tile</option>
-        <option value="Paengi (팽이) - Origami Spinning Top">2. Paengi (팽이) - Spinning Top</option>
-        <option value="Gonggi (공기놀이) - Pebble / Box Toss">3. Gonggi (공기놀이) - Pebble Toss</option>
-        <option value="Jegichagi (제기차기) - Foot Shuttlecock">4. Jegichagi (제기차기) - Shuttlecock</option>
-        <option value="Yut Nori (윷놀이) - Board Race &amp; Dice">5. Yut Nori (윷놀이) - Board &amp; Dice</option>
+    <!-- Filter & Batch Controls -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Class Toggle -->
+      <select id="class-select" onchange="onClassChange()" class="bg-slate-800 text-amber-300 font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none">
+        <option value="3A">Class 3A (17 Students)</option>
+        <option value="3B">Class 3B (16 Students)</option>
+      </select>
+
+      <!-- Student Filter -->
+      <select id="student-filter" onchange="renderWorksheets()" class="bg-slate-800 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10 focus:outline-none max-w-[180px]">
+        <option value="ALL">🖨️ All Students (Batch)</option>
+        <option value="BLANK">📝 Blank Template</option>
       </select>
 
       <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-lg shadow-amber-500/25 transition">
-        <span>🖨️</span> Print Student Quest Worksheets
+        <span>🖨️</span> Print A4 Sheet(s)
       </button>
     </div>
   </div>
 
-  <!-- A4 Printable Sheet -->
-  <div class="a4-sheet">
-    <!-- Header -->
-    <div class="border-b-2 border-slate-900 pb-2 mb-2.5 flex items-center justify-between">
-      <div class="space-y-0.5">
-        <div class="flex items-center gap-1.5">
-          <span class="text-lg">🌕</span>
-          <span class="text-[11px] font-black uppercase tracking-wider text-slate-800">English Adventure Academy • Chuseok Quest</span>
-        </div>
-        <h2 class="text-lg font-black text-amber-900 leading-tight">Chuseok Game Master Quest</h2>
-        <p class="text-[9.5pt] text-slate-600 font-medium">CEFR Level A1+ | Month-Long Chuseok Cultural Festival • Week 1: Games &amp; Crafting</p>
-      </div>
-      <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50/90 leading-tight">
-        <div class="text-[8.5pt] font-black uppercase tracking-wider text-slate-600">Assignment Due Date:</div>
-        <div class="text-[11pt] font-black text-rose-700">Tuesday, October 6</div>
-        <div class="text-[8pt] text-slate-500">Bring crafted game to school!</div>
-      </div>
-    </div>
-
-    <!-- Student Info Bar -->
-    <div class="grid grid-cols-12 gap-2 mb-2.5 p-1.5 bg-slate-50 rounded-lg border border-slate-300 text-[9pt] items-center">
-      <div class="col-span-5 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Name:</span>
-        <span class="font-bold border-b border-slate-900 flex-1 px-1">_________________________</span>
-      </div>
-      <div class="col-span-3 flex items-center gap-2">
-        <span class="font-extrabold text-slate-700">Class:</span>
-        <label class="flex items-center gap-0.5 cursor-pointer"><span class="checkbox-square"></span> 3A</label>
-        <label class="flex items-center gap-0.5 cursor-pointer"><span class="checkbox-square"></span> 3B</label>
-      </div>
-      <div class="col-span-4 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Assigned Game:</span>
-        <span id="sheet-assigned-game" class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 truncate">[ Selected Game ]</span>
-      </div>
-    </div>
-
-    <!-- Open-Ended Writing Sections with 3 Wide Dotted Handwriting Lines -->
-
-    <!-- Part 1: How I Made It -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>✂️ PART 1: HOW I MADE IT (MATERIALS &amp; STEPS)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 50 XP CRAFT MASTER ]</span>
-      </div>
-      <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">What items did you find at home, and how did you build your game?</span>
-        <span class="text-[7.5pt] text-slate-500 italic">"I used..." • "First, I folded/cut..." • "Then, I taped/tied..."</span>
-      </div>
-      <div class="handwriting-line"></div>
-      <div class="handwriting-line"></div>
-      <div class="handwriting-line"></div>
-    </div>
-
-    <!-- Part 2: How We Play It -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>🎯 PART 2: HOW WE PLAY IT (RULES &amp; GOAL)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 30 XP ENGLISH RULEBOOK ]</span>
-      </div>
-      <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">How do players take turns, and how does someone score or win?</span>
-        <span class="text-[7.5pt] text-slate-500 italic">"Stand behind the..." • "To play, you..." • "You score 1 point when..."</span>
-      </div>
-      <div class="handwriting-line"></div>
-      <div class="handwriting-line"></div>
-      <div class="handwriting-line"></div>
-    </div>
-
-    <!-- Host Pocket Cheat-Sheet (Dotted Cut-Out Box) -->
-    <div class="pocket-script-box mb-2">
-      <div class="flex items-center justify-between text-[8.5pt] font-black text-amber-950 border-b border-amber-300 pb-1 mb-1.5">
-        <span class="flex items-center gap-1">✂️ HOST POCKET CHEAT-SHEET (Cut along the dotted line and hold in your hand on arcade day):</span>
-        <span class="text-[7.5pt] uppercase tracking-wider text-amber-800">Keep in Pocket</span>
-      </div>
-      <div class="grid grid-cols-3 gap-2 text-[8.5pt] text-slate-900 font-medium">
-        <div class="bg-white/90 p-2 rounded border border-amber-200">
-          <span class="font-bold text-amber-900 block text-[8pt] uppercase">1. Welcome Phrase</span>
-          "Welcome to my station! My game is called ___________."
-        </div>
-        <div class="bg-white/90 p-2 rounded border border-amber-200">
-          <span class="font-bold text-amber-900 block text-[8pt] uppercase">2. Turn Taking</span>
-          "It is your turn! Stand here and try to ___________!"
-        </div>
-        <div class="bg-white/90 p-2 rounded border border-amber-200">
-          <span class="font-bold text-amber-900 block text-[8pt] uppercase">3. Cheering Phrases</span>
-          "Great shot! / Nice throw! / Awesome job playing!"
-        </div>
-      </div>
-    </div>
-
-    <!-- Arcade Scorecard: 3 Rows for Visitor Peer Names & Signatures -->
-    <div class="grid grid-cols-12 gap-2 text-[8pt] pt-1">
-      <div class="col-span-8 border border-slate-400 rounded-lg p-2 bg-slate-50">
-        <div class="font-black text-slate-900 text-[8.5pt] mb-1 flex items-center justify-between">
-          <span>🎪 CLASSROOM ARCADE HOST VISITOR LOG (Tuesday, Oct 6)</span>
-          <span class="text-amber-800 font-bold">[ 3 Peer Signatures Required • 20 XP ]</span>
-        </div>
-        <div class="grid grid-cols-3 gap-1.5 text-[8pt]">
-          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-blue-900">Visitor 1: ____________</div>
-            <div>Score: _____________</div>
-            <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
-              <span class="checkbox-square"></span> Spoke English!
-            </label>
-          </div>
-          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-rose-900">Visitor 2: ____________</div>
-            <div>Score: _____________</div>
-            <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
-              <span class="checkbox-square"></span> Spoke English!
-            </label>
-          </div>
-          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-emerald-900">Visitor 3: ____________</div>
-            <div>Score: _____________</div>
-            <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
-              <span class="checkbox-square"></span> Spoke English!
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- QR Code Box: Scannable code linking parents directly to YouTube tutorial -->
-      <div class="col-span-4 border border-slate-400 rounded-lg p-2 bg-slate-50 flex items-center gap-2">
-        <svg viewBox="0 0 60 60" class="w-12 h-12 flex-shrink-0" aria-label="QR Code">
-          <rect width="60" height="60" fill="#ffffff"/>
-          <rect x="5" y="5" width="16" height="16" fill="#111827"/>
-          <rect x="8" y="8" width="10" height="10" fill="#ffffff"/>
-          <rect x="10" y="10" width="6" height="6" fill="#111827"/>
-          <rect x="39" y="5" width="16" height="16" fill="#111827"/>
-          <rect x="42" y="8" width="10" height="10" fill="#ffffff"/>
-          <rect x="44" y="10" width="6" height="6" fill="#111827"/>
-          <rect x="5" y="39" width="16" height="16" fill="#111827"/>
-          <rect x="8" y="42" width="10" height="10" fill="#ffffff"/>
-          <rect x="10" y="44" width="6" height="6" fill="#111827"/>
-          <rect x="25" y="10" width="4" height="4" fill="#111827"/>
-          <rect x="30" y="15" width="4" height="4" fill="#111827"/>
-          <rect x="25" y="25" width="8" height="8" fill="#111827"/>
-          <rect x="35" y="30" width="6" height="4" fill="#111827"/>
-          <rect x="25" y="45" width="6" height="6" fill="#111827"/>
-          <rect x="45" y="45" width="6" height="6" fill="#111827"/>
-        </svg>
-        <div class="text-[7.5pt] leading-tight text-slate-700 flex-1">
-          <strong class="text-slate-900 block font-bold text-[8pt]">Tutorial Videos:</strong>
-          Scan or visit portal for step-by-step DIY craft guides.
-          <div class="mt-1 font-bold text-amber-900">Total: ____ / 100 XP</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- A4 Worksheets Container -->
+  <div id="sheets-container"></div>
 
   <script>
-    function updateSelectedGame() {
-      const select = document.getElementById('game-filter');
-      const label = document.getElementById('sheet-assigned-game');
-      if (select && label) {
-        label.textContent = select.value;
+    const CLASS_ROSTERS = {
+      "3A": [
+        "Aslıhan Akın",
+        "Ateş Özenci",
+        "Ayça Koca",
+        "Ayşe Mila Yılmaz",
+        "Batı Mustafa Kır",
+        "Beren Umur",
+        "Beste Aksu",
+        "Cemre Özbay",
+        "Ege Taş",
+        "Fatih Yetkin Yılmaz",
+        "Gurur Ürek",
+        "Gökçe Duman",
+        "Gülce Çalışkan",
+        "Güneş Nisa Aydın",
+        "Mavi Nil Bozkurt",
+        "Melis Ayşen Şentürk",
+        "Melodi Karaca"
+      ],
+      "3B": [
+        "Ahmet Alhasan",
+        "Ayaz Kahraman",
+        "Begüm Eren",
+        "Buğlem Arıöz",
+        "Demir Susatar",
+        "Deniz Akıncı",
+        "Deniz Kavasoğlu",
+        "Ece Aras",
+        "Ece Yaşar",
+        "Ecem Naz Yaman",
+        "Elif Miray Ata",
+        "İlker Mete Kırsaç",
+        "Mila Topçu",
+        "Rüzgar Sarp Kutlu",
+        "Sena Varaş",
+        "Ülkü Sancaklı"
+      ]
+    };
+
+    const GAMES = [
+      { id: "ddakji", title: "Ddakji (딱지) - Paper Slap-Tile" },
+      { id: "paengi", title: "Paengi (팽이) - Origami Spinning Top" },
+      { id: "gonggi", title: "Gonggi (공기놀이) - Paper Pebble Toss" },
+      { id: "jegichagi", title: "Jegichagi (제기차기) - Shuttlecock" },
+      { id: "yutnori", title: "Yut Nori (윷놀이) - Board Race & Dice" }
+    ];
+
+    function getStudentGame(studentName, className) {
+      const savedDraw = localStorage.getItem(`chuseok_draw_${className}`);
+      if (savedDraw) {
+        try {
+          const parsed = JSON.parse(savedDraw);
+          for (let gameId in parsed) {
+            if (parsed[gameId].includes(studentName)) {
+              const g = GAMES.find(x => x.id === gameId);
+              return g ? g.title : gameId;
+            }
+          }
+        } catch(e) {}
+      }
+      // Fallback deterministic assignment
+      const roster = CLASS_ROSTERS[className];
+      const idx = roster.indexOf(studentName);
+      if (idx >= 0) {
+        return GAMES[idx % GAMES.length].title;
+      }
+      return "[ Selected Game ]";
+    }
+
+    function createA4PageHTML(studentName, className, gameTitle) {
+      return `
+        <div class="a4-student-page">
+          <!-- Header -->
+          <div class="border-b-2 border-slate-900 pb-2 mb-2 flex items-center justify-between">
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-1.5">
+                <span class="text-base">🌕</span>
+                <span class="text-[10.5pt] font-black uppercase tracking-tight text-slate-900">ENGLISH ADVENTURE ACADEMY CHUSEOK QUEST</span>
+              </div>
+              <p class="text-[8.5pt] text-slate-600 font-semibold">Traditional Folk Game Master Workbook (CEFR Level A1+ | Week 1: Games &amp; Crafting)</p>
+            </div>
+            <div class="text-right border-2 border-slate-900 rounded p-1.5 bg-amber-50/90 leading-tight">
+              <div class="text-[7.5pt] font-bold uppercase text-slate-600">Assignment Due Date:</div>
+              <div class="text-[10.5pt] font-black text-rose-700">Tuesday, October 6</div>
+              <div class="text-[7pt] text-slate-500">Bring crafted game to school!</div>
+            </div>
+          </div>
+
+          <!-- Metadata Grid -->
+          <div class="grid grid-cols-12 gap-2 mb-2 p-1.5 bg-slate-100 rounded border border-slate-300 text-[8.5pt] items-center">
+            <div class="col-span-5 flex items-center gap-1">
+              <span class="font-extrabold text-slate-800">Student:</span>
+              <span class="font-black border-b border-slate-900 flex-1 px-1 text-slate-900">${studentName || '____________________'}</span>
+            </div>
+            <div class="col-span-3 flex items-center gap-2">
+              <span class="font-extrabold text-slate-800">Class:</span>
+              <label class="flex items-center gap-0.5 font-bold"><span class="checkbox-square">${className === '3A' ? '✓' : ''}</span> 3A</label>
+              <label class="flex items-center gap-0.5 font-bold"><span class="checkbox-square">${className === '3B' ? '✓' : ''}</span> 3B</label>
+            </div>
+            <div class="col-span-4 flex items-center gap-1">
+              <span class="font-extrabold text-slate-800">Assigned Game:</span>
+              <span class="font-black text-amber-900 border-b border-slate-900 flex-1 px-1 truncate">${gameTitle || '[ Game Name (Korean) ]'}</span>
+            </div>
+          </div>
+
+          <!-- Question 1: Maker's Story (3 lines) -->
+          <div class="print-box">
+            <div class="print-box-header">
+              <span>✂️ 1. THE MAKER'S STORY (CRAFTING &amp; MATERIALS)</span>
+              <span class="text-[7.5pt] text-slate-500 italic">"I made my game using..." | "First, I folded/cut..." | "It was easy/hard because..."</span>
+            </div>
+            <div class="font-bold text-slate-800 text-[8pt] mb-1">What materials did you find at home, and how did you build your game?</div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+          </div>
+
+          <!-- Question 2: The Rulebook (3 lines) -->
+          <div class="print-box">
+            <div class="print-box-header">
+              <span>🎯 2. THE RULEBOOK (GAME INSTRUCTIONS)</span>
+              <span class="text-[7.5pt] text-slate-500 italic">"Players must stand..." | "To play, you need to..." | "The winner is the person who..."</span>
+            </div>
+            <div class="font-bold text-slate-800 text-[8pt] mb-1">How do players play your game, and how does someone win?</div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+          </div>
+
+          <!-- Question 3: Game Master Pro-Tips (2 lines) -->
+          <div class="print-box">
+            <div class="print-box-header">
+              <span>💡 3. GAME MASTER PRO-TIPS (STRATEGY &amp; ADVICE)</span>
+              <span class="text-[7.5pt] text-slate-500 italic">"My best tip is to..." | "Be careful not to..." | "Watch out for..."</span>
+            </div>
+            <div class="font-bold text-slate-800 text-[8pt] mb-1">What is your secret tip or strategy to score high in this game?</div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+          </div>
+
+          <!-- Question 4: Host Presentation Speech (2 lines) -->
+          <div class="print-box">
+            <div class="print-box-header">
+              <span>🎤 4. HOST PRESENTATION SPEECH (ARCADE DAY SCRIPT)</span>
+              <span class="text-[7.5pt] text-slate-500 italic">"Welcome to my station! My game is called..." | "It's your turn!" | "Great job playing!"</span>
+            </div>
+            <div class="font-bold text-slate-800 text-[8pt] mb-1">Write what you will say to invite classmates to play at your table on Tuesday!</div>
+            <div class="handwriting-line"></div>
+            <div class="handwriting-line"></div>
+          </div>
+
+          <!-- Cut-Out Pocket Card -->
+          <div class="pocket-script-box">
+            <div class="font-black text-amber-950 flex items-center justify-between text-[8pt] border-b border-amber-300 pb-1 mb-1">
+              <span>✂️ CUT-OUT HOST POCKET SCRIPT (Hold in your hand while hosting):</span>
+              <span class="text-[7pt] text-amber-800 uppercase tracking-wider">English Adventure Academy</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-[8pt] text-slate-900 font-medium">
+              <div class="bg-white/90 p-1.5 rounded border border-amber-200">
+                <span class="font-bold text-amber-900 block text-[7pt] uppercase">1. Welcome Phrase</span>
+                "Welcome! My game is called __________."
+              </div>
+              <div class="bg-white/90 p-1.5 rounded border border-amber-200">
+                <span class="font-bold text-amber-900 block text-[7pt] uppercase">2. Turn Taking</span>
+                "Your turn! Try your best to __________!"
+              </div>
+              <div class="bg-white/90 p-1.5 rounded border border-amber-200">
+                <span class="font-bold text-amber-900 block text-[7pt] uppercase">3. Cheering Phrases</span>
+                "Awesome shot! / Great job playing!"
+              </div>
+            </div>
+          </div>
+
+          <!-- Arcade Scorecard (Visitor Log) & Stamp Box -->
+          <div class="grid grid-cols-12 gap-2 text-[7.5pt]">
+            <div class="col-span-8 border border-slate-400 rounded p-1.5 bg-slate-50">
+              <div class="font-black text-slate-900 text-[8pt] mb-0.5 flex items-center justify-between">
+                <span>🎪 ARCADE SCORECARD (VISITOR LOG)</span>
+                <span class="text-amber-800 font-bold">[ 3 Peer Signatures Required ]</span>
+              </div>
+              <table class="w-full text-left border-collapse border border-slate-300 bg-white">
+                <thead>
+                  <tr class="bg-slate-100 text-[7pt] uppercase text-slate-700">
+                    <th class="p-1 border border-slate-300">Classmate</th>
+                    <th class="p-1 border border-slate-300">Name</th>
+                    <th class="p-1 border border-slate-300">Score</th>
+                    <th class="p-1 border border-slate-300 text-center">Spoke English!</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="p-1 border border-slate-300 font-bold text-blue-900">Peer #1</td>
+                    <td class="p-1 border border-slate-300">_________________</td>
+                    <td class="p-1 border border-slate-300">_______</td>
+                    <td class="p-1 border border-slate-300 text-center"><span class="checkbox-square"></span> Spoke English!</td>
+                  </tr>
+                  <tr>
+                    <td class="p-1 border border-slate-300 font-bold text-rose-900">Peer #2</td>
+                    <td class="p-1 border border-slate-300">_________________</td>
+                    <td class="p-1 border border-slate-300">_______</td>
+                    <td class="p-1 border border-slate-300 text-center"><span class="checkbox-square"></span> Spoke English!</td>
+                  </tr>
+                  <tr>
+                    <td class="p-1 border border-slate-300 font-bold text-emerald-900">Peer #3</td>
+                    <td class="p-1 border border-slate-300">_________________</td>
+                    <td class="p-1 border border-slate-300">_______</td>
+                    <td class="p-1 border border-slate-300 text-center"><span class="checkbox-square"></span> Spoke English!</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Stamp Box -->
+            <div class="col-span-4 border border-slate-400 rounded p-1.5 bg-slate-50 flex flex-col justify-between">
+              <div>
+                <strong class="text-slate-900 block font-black text-[8pt]">Teacher XP Stamp Box:</strong>
+                <div class="mt-1 space-y-0.5 text-[7.5pt]">
+                  <div class="flex items-center gap-1"><span class="checkbox-square"></span> 50 XP Craft Master</div>
+                  <div class="flex items-center gap-1"><span class="checkbox-square"></span> 30 XP English Rulebook</div>
+                  <div class="flex items-center gap-1"><span class="checkbox-square"></span> 20 XP Arcade Host</div>
+                </div>
+              </div>
+              <div class="font-black text-amber-900 text-right border-t border-slate-300 pt-1 text-[8pt]">
+                Total: ______ / 100 XP Stamp
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function onClassChange() {
+      const classSelect = document.getElementById('class-select');
+      const cls = classSelect.value;
+      const studentFilter = document.getElementById('student-filter');
+
+      // Re-populate student filter dropdown
+      studentFilter.innerHTML = `
+        <option value="ALL">🖨️ All Students (Batch: ${CLASS_ROSTERS[cls].length} Sheets)</option>
+        <option value="BLANK">📝 Blank Template</option>
+      `;
+
+      CLASS_ROSTERS[cls].forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st;
+        opt.textContent = st;
+        studentFilter.appendChild(opt);
+      });
+
+      renderWorksheets();
+    }
+
+    function renderWorksheets() {
+      const cls = document.getElementById('class-select').value;
+      const filter = document.getElementById('student-filter').value;
+      const container = document.getElementById('sheets-container');
+      container.innerHTML = '';
+
+      if (filter === 'BLANK') {
+        container.innerHTML = createA4PageHTML('', cls, '[ Selected Game ]');
+      } else if (filter === 'ALL') {
+        CLASS_ROSTERS[cls].forEach(st => {
+          const game = getStudentGame(st, cls);
+          container.innerHTML += createA4PageHTML(st, cls, game);
+        });
+      } else {
+        const game = getStudentGame(filter, cls);
+        container.innerHTML = createA4PageHTML(filter, cls, game);
       }
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      onClassChange();
+    });
   </script>
 </body>
 </html>
