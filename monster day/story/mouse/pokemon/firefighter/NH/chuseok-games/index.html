@@ -529,7 +529,7 @@
       <!-- =========================================================
            GAME 1: DDAKJI (딱지)
            ========================================================= -->
-      <div id="game-card-ddakji" class="station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 space-y-6 transition-all duration-300">
+      <div id="game-card-ddakji" class="game-card station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 space-y-6 transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-blue-500/30 shadow-lg group">
@@ -635,7 +635,7 @@
       <!-- =========================================================
            GAME 2: PAENGI (팽이)
            ========================================================= -->
-      <div id="game-card-paengi" class="station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 space-y-6 transition-all duration-300">
+      <div id="game-card-paengi" class="game-card station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 space-y-6 transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-rose-500/30 shadow-lg group">
@@ -737,7 +737,7 @@
       <!-- =========================================================
            GAME 3: GONGGI (공기놀이) - GEOMETRIC CRAFT STONES / BLOCKS
            ========================================================= -->
-      <div id="game-card-gonggi" class="station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 space-y-6 transition-all duration-300">
+      <div id="game-card-gonggi" class="game-card station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 space-y-6 transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
@@ -839,7 +839,7 @@
       <!-- =========================================================
            GAME 4: JEGICHAGI (제기차기)
            ========================================================= -->
-      <div id="game-card-jegichagi" class="station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 space-y-6 transition-all duration-300">
+      <div id="game-card-jegichagi" class="game-card station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 space-y-6 transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg group">
@@ -941,7 +941,7 @@
       <!-- =========================================================
            GAME 5: YUT NORI (윷놀이)
            ========================================================= -->
-      <div id="game-card-yutnori" class="station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 space-y-6 transition-all duration-300">
+      <div id="game-card-yutnori" class="game-card station-card glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 space-y-6 transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-violet-500/30 shadow-lg group">
@@ -2605,6 +2605,32 @@
       }
       render();
     }
+
+    // Force update game thumbnail images on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      const GAME_IMAGES = {
+        ddakji: "https://img.youtube.com/vi/SQgJBrJiipU/hqdefault.jpg",
+        paengi: "https://img.youtube.com/vi/JBxoY_4VddI/hqdefault.jpg",
+        gonggi: "https://img.youtube.com/vi/DpA6rFZQMNk/hqdefault.jpg",
+        jegichagi: "https://img.youtube.com/vi/rJQh5Qu1gco/hqdefault.jpg",
+        yutnori: "https://img.youtube.com/vi/2aT1WQnnjAY/hqdefault.jpg"
+      };
+
+      const images = document.querySelectorAll('.game-card img, .station-card img');
+      if (images.length >= 5) {
+        images[0].src = GAME_IMAGES.ddakji;
+        images[1].src = GAME_IMAGES.paengi;
+        images[2].src = GAME_IMAGES.gonggi;
+        images[3].src = GAME_IMAGES.jegichagi;
+        images[4].src = GAME_IMAGES.yutnori;
+      }
+
+      // Also ensure exact matching by station card ID
+      Object.keys(GAME_IMAGES).forEach(id => {
+        const cardImg = document.querySelector(`#game-card-${id} img`);
+        if (cardImg) cardImg.src = GAME_IMAGES[id];
+      });
+    });
 
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
