@@ -64,7 +64,11 @@ def render_dossier_page(char, class_title="CLASS 4-A"):
     p_box = (45, 145, 345, 525)
     draw.rectangle([p_box[0] - 2, p_box[1] - 2, p_box[2] + 2, p_box[3] + 2], outline=gold_med, width=3)
     
-    art_path = os.path.join(ASSETS_DIR, f"{char['id']}.jpg")
+    img_ref = char.get("image", f"{char['id']}.jpg")
+    img_filename = os.path.basename(img_ref)
+    art_path = os.path.join(ASSETS_DIR, img_filename)
+    if not os.path.exists(art_path):
+        art_path = os.path.join(ASSETS_DIR, f"{char['id']}.jpg")
     if os.path.exists(art_path):
         art = Image.open(art_path)
         art_resized = art.resize((300, 380), Image.Resampling.LANCZOS)

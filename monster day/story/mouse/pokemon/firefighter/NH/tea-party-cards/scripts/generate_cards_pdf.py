@@ -109,7 +109,7 @@ CHARACTERS_4A = [
         "props": ["Handheld Cheshire grin mask on wand", "'To Wonderland' miniature signpost"]
     },
     {
-        "id": "dinah", "num": 6, "name": "CAT (THE SHADOW)", "actor": "Emir Ali",
+        "id": "cat-shadow", "image": "cat-shadow.jpg", "num": 6, "name": "CAT (THE SHADOW)", "actor": "Emir Ali",
         "role": "Phantom Guide & Shadow Illusionist", "act": "Act III: Wonderland Encounters",
         "tp": 87, "mad": 98, "courage": 89,
         "ability": "Shadow Prowl: Slips through trees silently, reappearing with paradoxical truths.",
@@ -187,7 +187,7 @@ CHARACTERS_4A = [
         "props": ["Ruby heart royal scepter", "Gilded Queen of Hearts card"]
     },
     {
-        "id": "tweedledum", "num": 12, "name": "THE TWO SISTERS (1)", "actor": "Defne",
+        "id": "two-sisters-defne", "image": "two-sisters-defne.jpg", "num": 12, "name": "THE TWO SISTERS (1)", "actor": "Defne",
         "role": "Contrarian Scholar of Nonsense Fables (Tweedle)", "act": "Act III: Wonderland Encounters",
         "tp": 86, "mad": 95, "courage": 79,
         "ability": "Treacle Riddle: Weaves dizzying fables of sisters living in a treacle well.",
@@ -200,7 +200,7 @@ CHARACTERS_4A = [
         "props": ["Oversized 6-inch carved button", "Stack of brass gears & treacle jar"]
     },
     {
-        "id": "tweedledee", "num": 13, "name": "THE TWO SISTERS (2)", "actor": "Esila",
+        "id": "two-sisters-esila", "image": "two-sisters-esila.jpg", "num": 13, "name": "THE TWO SISTERS (2)", "actor": "Esila",
         "role": "Stubborn Herald of Contradiction & Tolls (Tweedle)", "act": "Act III: Wonderland Encounters",
         "tp": 86, "mad": 95, "courage": 79,
         "ability": "Nohow Toll: Demands ridiculous greeting ceremonies before anyone advances.",
@@ -213,7 +213,7 @@ CHARACTERS_4A = [
         "props": ["Polished brass handheld bell", "Vintage umbrella with duck handle"]
     },
     {
-        "id": "bandersnatch", "num": 14, "name": "BANDERSNATCH", "actor": "Rüzgar",
+        "id": "bandersnatch-ruzgar", "image": "bandersnatch-ruzgar.jpg", "num": 14, "name": "BANDERSNATCH", "actor": "Rüzgar",
         "role": "Fierce Guardian of the Underland Keys", "act": "Act IV: The Royal Confrontation",
         "tp": 73, "mad": 77, "courage": 97,
         "ability": "Beast Compassion: Turns razor claws into shields for those who show kindness.",
@@ -562,7 +562,11 @@ def render_front_card(char):
     pv_box = (36, 95, CARD_W - 36, 680)
     draw.rectangle([pv_box[0] - 2, pv_box[1] - 2, pv_box[2] + 2, pv_box[3] + 2], outline=gold_med, width=3)
 
-    art_path = os.path.join(ASSETS_DIR, f"{char['id']}.jpg")
+    img_ref = char.get("image", f"{char['id']}.jpg")
+    img_filename = os.path.basename(img_ref)
+    art_path = os.path.join(ASSETS_DIR, img_filename)
+    if not os.path.exists(art_path):
+        art_path = os.path.join(ASSETS_DIR, f"{char['id']}.jpg")
     if os.path.exists(art_path):
         art = Image.open(art_path)
         target_w = pv_box[2] - pv_box[0]
