@@ -42,10 +42,11 @@
     body {
       background-color: #060911;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 10% 30%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 90% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 100%, #0d1527 0%, #060911 100%);
+        linear-gradient(to bottom, rgba(6, 9, 17, 0.82), rgba(6, 9, 17, 0.94)),
+        url('https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
       color: #f8fafc;
       min-height: 100vh;
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -65,7 +66,7 @@
       background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
       color: #0f172a;
       border-bottom: 5px solid #92400e;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
     }
     .btn-amber:active {
       border-bottom-width: 1px;
@@ -76,7 +77,7 @@
       background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
       color: #ffffff;
       border-bottom: 5px solid #1e3a8a;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     }
     .btn-blue:active {
       border-bottom-width: 1px;
@@ -87,7 +88,7 @@
       background: linear-gradient(180deg, #f43f5e 0%, #be123c 100%);
       color: #ffffff;
       border-bottom: 5px solid #881337;
-      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.35);
+      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
     }
     .btn-crimson:active {
       border-bottom-width: 1px;
@@ -98,7 +99,7 @@
       background: linear-gradient(180deg, #10b981 0%, #047857 100%);
       color: #ffffff;
       border-bottom: 5px solid #064e3b;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
     }
     .btn-jade:active {
       border-bottom-width: 1px;
@@ -109,7 +110,7 @@
       background: linear-gradient(180deg, #a855f7 0%, #6d28d9 100%);
       color: #ffffff;
       border-bottom: 5px solid #4c1d95;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
     }
     .btn-violet:active {
       border-bottom-width: 1px;
@@ -129,14 +130,14 @@
 
     /* Glass Panels */
     .glass-panel {
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
     }
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.78);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -146,17 +147,17 @@
       transform: translateY(-2px);
     }
 
-    /* Word bank chips */
+    /* Word Bank Chips */
     .word-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 6px 12px;
       border-radius: 9999px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.85rem;
-      background: rgba(30, 41, 59, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: #f8fafc;
       cursor: pointer;
       user-select: none;
@@ -171,6 +172,49 @@
     }
     .word-chip:active {
       transform: scale(0.95);
+    }
+
+    /* Material Selector Badges */
+    .material-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(30, 41, 59, 0.65);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .material-badge.selected {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: #10b981;
+      color: #a7f3d0;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Speaking Chant Speech Bubble */
+    .chant-bubble {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 2px solid rgba(245, 158, 11, 0.5);
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+    .chant-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 28px;
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: rgba(245, 158, 11, 0.5) transparent;
+      display: block;
+      width: 0;
     }
 
     /* Soft Fail Wobble Animation */
@@ -197,38 +241,19 @@
       border-color: #10b981 !important;
     }
 
-    /* Harvest Moon float physics */
-    @keyframes moonFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(1deg); }
-    }
-    .moon-float {
-      animation: moonFloat 6s ease-in-out infinite;
-    }
-
-    /* Cloud drift */
-    @keyframes cloudDrift {
-      0% { transform: translateX(-20px); opacity: 0.4; }
-      50% { transform: translateX(20px); opacity: 0.7; }
-      100% { transform: translateX(-20px); opacity: 0.4; }
-    }
-    .cloud-drift {
-      animation: cloudDrift 14s ease-in-out infinite;
-    }
-
     /* Blank input fields styling */
     .gap-input {
       background: rgba(30, 41, 59, 0.95);
-      border: 2px dashed rgba(245, 158, 11, 0.6);
+      border: 2px dashed rgba(245, 158, 11, 0.65);
       color: #38bdf8;
       font-weight: 800;
       text-align: center;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 8px;
       outline: none;
       transition: all 0.2s ease;
       font-size: 0.95rem;
-      min-width: 90px;
+      min-width: 95px;
     }
     .gap-input:focus {
       border-style: solid;
@@ -239,17 +264,16 @@
     .gap-input.correct {
       border-style: solid;
       border-color: #10b981;
-      background: rgba(6, 78, 59, 0.4);
+      background: rgba(6, 78, 59, 0.5);
       color: #34d399;
     }
     .gap-input.incorrect {
       border-style: solid;
       border-color: #f43f5e;
-      background: rgba(136, 19, 55, 0.4);
+      background: rgba(136, 19, 55, 0.5);
       color: #fda4af;
     }
 
-    /* Confetti canvas */
     #confetti-canvas {
       position: fixed;
       inset: 0;
@@ -274,17 +298,16 @@
       }
       body {
         background: #ffffff !important;
+        background-image: none !important;
         color: #000000 !important;
         font-size: 11pt;
         line-height: 1.35;
         padding: 0 !important;
         margin: 0 !important;
       }
-      /* Hide all web app navigation, interactive widgets, hero, modals */
-      header, nav, #app-hero, #randomizer-section, #games-hub-section, #tracker-section, #video-modal, #swap-modal, #confetti-canvas, .web-only-control {
+      header, nav, #app-journey-banner, #randomizer-section, #games-hub-section, #tracker-section, #video-modal, #edit-roster-modal, #confetti-canvas {
         display: none !important;
       }
-      /* Display the dedicated print worksheet */
       #print-worksheet-section {
         display: block !important;
         width: 100% !important;
@@ -338,7 +361,7 @@
   <!-- =========================================================
        TOP FLOATING APP NAVIGATION BAR
        ========================================================= -->
-  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-white/10 px-4 py-3">
+  <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
       <!-- Title & Branding -->
       <div class="flex items-center gap-3">
@@ -349,37 +372,34 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">Chuseok Game Master</span>
-              <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">Grade 3 • A1+</span>
+              <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">ESL A1+ • Grade 3</span>
             </div>
-            <p class="text-xs text-slate-400 hidden sm:block">Korean Thanksgiving Recycled Folk Games & Arcade Hub</p>
+            <p class="text-xs text-slate-400 hidden sm:block">Korean Thanksgiving Folk Games &amp; Classroom Arcade</p>
           </div>
         </a>
       </div>
 
       <!-- Center Quick Links -->
       <nav class="hidden md:flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/10 text-xs font-bold">
+        <button onclick="scrollToSection('app-journey-banner')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">📅 4-Week Journey</button>
         <button onclick="scrollToSection('randomizer-section')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">🎲 Randomizer</button>
         <button onclick="scrollToSection('games-hub-section')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">🎮 5 Games</button>
         <button onclick="scrollToSection('tracker-section')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">🏆 100 XP Quest</button>
-        <button onclick="openPrintModal()" class="px-3 py-1.5 rounded-lg text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition">🖨️ A4 Worksheet</button>
       </nav>
 
       <!-- Right Controls: Audio + Print + Master Link -->
       <div class="flex items-center gap-2">
-        <!-- Sound Toggle -->
         <button id="sound-toggle-btn" onclick="toggleAudio()" class="btn-3d btn-slate px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5" title="Toggle Sound Effects">
           <span id="sound-icon">🔊</span>
           <span id="sound-label" class="hidden sm:inline">SFX ON</span>
         </button>
 
-        <!-- Quick Print Action -->
         <button onclick="window.print()" class="btn-3d btn-amber px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5 shadow-amber-500/25">
           <span>🖨️</span>
-          <span class="hidden sm:inline">Print Worksheet</span>
+          <span class="hidden sm:inline">Print Student Quest Worksheets</span>
           <span class="sm:hidden">Print</span>
         </button>
 
-        <!-- Back to Academy -->
         <a href="../index.html" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Back to Central Platform">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         </a>
@@ -388,93 +408,94 @@
   </header>
 
   <!-- =========================================================
-       HERO BANNER: CHUSEOK CULTURAL ARCADE
+       1. PROMINENT 4-WEEK CHUSEOK CULTURAL JOURNEY BANNER
        ========================================================= -->
-  <section id="app-hero" class="relative overflow-hidden pt-8 pb-10 px-4 max-w-7xl mx-auto">
-    <!-- Ambient Moon Backdrop -->
-    <div class="absolute -top-12 right-6 md:right-24 w-44 h-44 md:w-60 md:h-60 rounded-full bg-gradient-to-tr from-amber-400 via-amber-200 to-yellow-100 opacity-20 blur-2xl pointer-events-none moon-float"></div>
-    <div class="absolute top-10 left-10 text-6xl opacity-15 pointer-events-none cloud-drift">☁️</div>
-
-    <div class="relative glass-panel rounded-3xl p-6 md:p-8 border border-white/15 overflow-hidden">
-      <!-- Traditional Corner Ribbon -->
-      <div class="absolute top-0 right-0 w-32 h-32 overflow-hidden pointer-events-none">
-        <div class="bg-gradient-to-r from-red-600 to-amber-500 text-white font-extrabold text-[10px] uppercase tracking-wider py-1.5 text-center transform rotate-45 translate-x-8 translate-y-4 shadow-md">
-          Chuseok 2026
+  <section id="app-journey-banner" class="pt-6 pb-4 px-4 max-w-7xl mx-auto">
+    <div class="glass-panel rounded-3xl p-5 md:p-6 border border-amber-500/30 relative overflow-hidden shadow-2xl">
+      <!-- Title & Mission Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-white/10 pb-4 mb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🌾</span>
+            <h2 class="text-xl sm:text-2xl font-black text-white">4-Week Chuseok Cultural Festival Journey (추석)</h2>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-300 mt-1">
+            An immersive month-long unit exploring Korean Thanksgiving through craft, cuisine, dance, and storytelling!
+          </p>
+        </div>
+        <div class="text-right">
+          <span class="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-xs uppercase border border-amber-500/30">
+            Due Date: Tuesday, October 6
+          </span>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        <!-- Text Column -->
-        <div class="lg:col-span-8 space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 font-extrabold text-xs uppercase tracking-wider border border-amber-400/30 flex items-center gap-1.5">
-              <span>🌾</span> Korean Thanksgiving Folk Games
+      <!-- 4-Week Journey Stages Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- Week 1: Active -->
+        <div class="relative rounded-2xl p-4 bg-gradient-to-b from-amber-500/20 to-slate-900/90 border-2 border-amber-400 shadow-lg shadow-amber-500/20 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] uppercase tracking-wider animate-pulse">
+              ● Active • Current Week
             </span>
-            <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 font-bold text-xs border border-blue-500/30">
-              Week 1: Craft • Speak • Host
-            </span>
-            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-xs border border-emerald-500/30">
-              Recycled Materials ♻️
-            </span>
+            <span class="text-2xl">🎮</span>
           </div>
-
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
-            Craft Your Game. <span class="bg-gradient-to-r from-amber-400 via-rose-400 to-violet-400 bg-clip-text text-transparent">Rule the Arcade!</span>
-          </h1>
-
-          <p class="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            Welcome, Grade 3 Game Masters! Craft one traditional Korean game at home using recycled cardboard, bottle caps, paper, and string. Learn your English rules, then host your classmates in our live classroom arcade on <strong class="text-amber-300 underline decoration-amber-500 underline-offset-4">Tuesday, October 6</strong>!
+          <h3 class="font-black text-base text-amber-300">Week 1: Traditional Games &amp; Crafting</h3>
+          <p class="text-xs text-slate-200 leading-relaxed">
+            Craft recycled games at home, explain English rules, and host classmates in our live game arcade!
           </p>
-
-          <!-- 3-Pillar Quick Guide -->
-          <div class="grid grid-cols-3 gap-3 pt-2">
-            <div class="bg-slate-900/60 rounded-xl p-3 border border-white/10 text-center">
-              <div class="text-2xl mb-1">♻️</div>
-              <div class="font-extrabold text-xs text-amber-400">1. Home Craft</div>
-              <div class="text-[11px] text-slate-400">Cardboard &amp; Caps</div>
-            </div>
-            <div class="bg-slate-900/60 rounded-xl p-3 border border-white/10 text-center">
-              <div class="text-2xl mb-1">🗣️</div>
-              <div class="font-extrabold text-xs text-sky-400">2. English Rules</div>
-              <div class="text-[11px] text-slate-400">First, Next, Finally</div>
-            </div>
-            <div class="bg-slate-900/60 rounded-xl p-3 border border-white/10 text-center">
-              <div class="text-2xl mb-1">🎪</div>
-              <div class="font-extrabold text-xs text-emerald-400">3. Arcade Host</div>
-              <div class="text-[11px] text-slate-400">Earn 100 XP + Badges</div>
-            </div>
-          </div>
         </div>
 
-        <!-- Quick Action / Date Pill Column -->
-        <div class="lg:col-span-4 flex flex-col gap-3 justify-center items-center bg-slate-950/60 p-5 rounded-2xl border border-white/10 text-center">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-red-500 flex items-center justify-center text-3xl shadow-xl shadow-amber-500/20">
-            🎯
+        <!-- Week 2: Upcoming -->
+        <div class="rounded-2xl p-4 bg-slate-900/60 border border-white/10 opacity-75 hover:opacity-100 transition space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+              Upcoming
+            </span>
+            <span class="text-2xl">🥟</span>
           </div>
-          <div>
-            <div class="text-xs uppercase font-extrabold text-amber-400 tracking-wider">Due Date for Game &amp; Log</div>
-            <div class="text-xl font-black text-white">Tuesday, October 6</div>
-            <div class="text-xs text-slate-400 mt-1">Bring your game to the classroom!</div>
+          <h3 class="font-extrabold text-base text-white">Week 2: Chuseok Cooking &amp; Treats</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Making Songpyeon half-moon rice cakes, tasting autumn harvest treats, and learning food vocabulary.
+          </p>
+        </div>
+
+        <!-- Week 3: Upcoming -->
+        <div class="rounded-2xl p-4 bg-slate-900/60 border border-white/10 opacity-75 hover:opacity-100 transition space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+              Upcoming
+            </span>
+            <span class="text-2xl">💃</span>
           </div>
-          <div class="flex w-full gap-2 pt-2">
-            <button onclick="scrollToSection('randomizer-section')" class="flex-1 btn-3d btn-amber py-2 rounded-xl text-xs font-black">
-              🎲 Assign Games
-            </button>
-            <button onclick="openPrintModal()" class="flex-1 btn-3d btn-slate py-2 rounded-xl text-xs font-bold">
-              📄 Preview Sheet
-            </button>
+          <h3 class="font-extrabold text-base text-white">Week 3: Folk Dance &amp; Rhythms</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Ganggangsullae women's circle dance under the full moon, traditional rhythms, and action verbs.
+          </p>
+        </div>
+
+        <!-- Week 4: Upcoming -->
+        <div class="rounded-2xl p-4 bg-slate-900/60 border border-white/10 opacity-75 hover:opacity-100 transition space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+              Upcoming
+            </span>
+            <span class="text-2xl">🌕</span>
           </div>
+          <h3 class="font-extrabold text-base text-white">Week 4: Grand Harvest Showcase</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Folk tale storytelling under the Harvest Moon, gratitude boards, and final 100 XP Game Master awards!
+          </p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-       SECTION 1: CLASS ROSTER & FAIR GAME RANDOMIZER
+       2. CLASS ROSTER & FAIR GAME RANDOMIZER (3A & 3B)
        ========================================================= -->
-  <section id="randomizer-section" class="px-4 py-8 max-w-7xl mx-auto">
+  <section id="randomizer-section" class="px-4 py-6 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
-      <!-- Section Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
         <div>
           <div class="flex items-center gap-2">
@@ -482,77 +503,58 @@
             <h2 class="text-2xl sm:text-3xl font-black text-white">Class Roster &amp; Fair Game Randomizer</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Fair Allocation Algorithm ensures balanced teams across all 5 stations (4 games with 4 students, 1 game with 3 students = 19).
+            Automatically balances the 19 students across the 5 game stations (4, 4, 4, 4, 3 split).
           </p>
         </div>
 
-        <!-- Class Toggle 3A / 3B -->
-        <div class="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-2xl border border-white/15">
-          <button id="class-3a-btn" onclick="switchClass('3A')" class="btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
-            <span>🏫</span>
-            <span>Class 3A (19)</span>
-          </button>
-          <button id="class-3b-btn" onclick="switchClass('3B')" class="btn-3d btn-slate px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
-            <span>🏫</span>
-            <span>Class 3B (19)</span>
+        <!-- Class Toggle 3A / 3B + Edit Names Modal Trigger -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-white/15">
+            <button id="class-3a-btn" onclick="switchClass('3A')" class="btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
+              <span>🏫</span>
+              <span>Class 3A</span>
+            </button>
+            <button id="class-3b-btn" onclick="switchClass('3B')" class="btn-3d btn-slate px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
+              <span>🏫</span>
+              <span>Class 3B</span>
+            </button>
+          </div>
+          <button onclick="openEditRosterModal()" class="btn-3d btn-slate px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 text-amber-300" title="Edit student names">
+            <span>✏️</span> Edit Names
           </button>
         </div>
       </div>
 
-      <!-- Controls & Roster Textarea (Collapsible / Editable) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        <!-- Left: Roster Input & Stats -->
-        <div class="lg:col-span-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <label for="roster-textarea" class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-              <span>📝</span> Student Names (<span id="roster-count">19</span> detected):
-            </label>
-            <div class="flex items-center gap-1 text-[11px]">
-              <button onclick="resetRosterToDefault()" class="text-amber-400 hover:text-amber-300 underline font-semibold">Reset to Default</button>
-            </div>
-          </div>
-
-          <textarea id="roster-textarea" rows="4" oninput="updateRosterCount()" class="w-full bg-slate-950/80 border border-white/15 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-400 font-mono transition" placeholder="Paste student names separated by commas or lines..."></textarea>
-
-          <!-- Action Buttons Bar -->
-          <div class="flex flex-wrap items-center gap-2 pt-1">
-            <button id="spin-btn" onclick="spinAndAssignGames()" class="flex-1 btn-3d btn-amber py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25">
-              <span id="spin-spinner" class="text-lg">🎰</span>
-              <span id="spin-text">Spin &amp; Assign Games</span>
-            </button>
-            <button onclick="toggleSwapMode()" id="swap-mode-btn" class="btn-3d btn-slate py-3 px-3 rounded-xl font-bold text-xs flex items-center gap-1 text-slate-300" title="Swap two students between games">
-              <span>⇄</span>
-              <span>Swap Mode</span>
-            </button>
-          </div>
-
-          <!-- Secondary Export Actions -->
-          <div class="flex items-center gap-2 pt-1 text-xs">
-            <button onclick="copyRosterToClipboard()" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-white/10 font-bold text-slate-300 flex items-center justify-center gap-1">
-              📋 Copy Roster
-            </button>
-            <button onclick="saveDrawToStorage()" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-white/10 font-bold text-slate-300 flex items-center justify-center gap-1">
-              💾 Save Draw
-            </button>
-            <button onclick="printDrawAssignments()" class="flex-1 py-1.5 px-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-white/10 font-bold text-slate-300 flex items-center justify-center gap-1">
-              🖨️ Print Draw
-            </button>
-          </div>
-          <div id="status-toast" class="hidden text-xs py-1.5 px-3 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-center"></div>
+      <!-- Draw Control Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-950/70 p-4 rounded-2xl border border-white/10">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-extrabold text-slate-300">
+            Active Class: <strong class="text-amber-400" id="current-class-label">Class 3A</strong> (<span id="roster-count">19</span> Students)
+          </span>
         </div>
-
-        <!-- Right: 5 Station Live Display Boards -->
-        <div class="lg:col-span-7">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="stations-board">
-            <!-- 5 Stations injected by JS -->
-          </div>
+        <div class="flex items-center gap-2">
+          <button id="spin-btn" onclick="spinAndDrawGames()" class="btn-3d btn-amber py-2.5 px-5 rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25">
+            <span class="text-lg">🎰</span>
+            <span>Spin &amp; Draw Games</span>
+          </button>
+          <button onclick="copyRosterAssignments()" class="btn-3d btn-slate py-2 px-3 rounded-xl text-xs font-bold text-slate-300">
+            📋 Copy Draw
+          </button>
         </div>
+      </div>
+
+      <div id="status-toast" class="hidden text-xs py-2 px-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-center"></div>
+
+      <!-- 5 Station Boards Injected by JS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" id="stations-board">
+        <!-- 5 Station Cards injected here -->
       </div>
     </div>
   </section>
 
   <!-- =========================================================
-       SECTION 2: 5 THEMATIC GAME CARDS & PRACTICE HUB
+       3. THE 5 CHUSEOK GAMES & STUDENT PRACTICE HUB
+       High-Res JPEGs + 3-Step A1+ Layout (Materials, Craft, Chant)
        ========================================================= -->
   <section id="games-hub-section" class="px-4 py-8 max-w-7xl mx-auto space-y-8">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-white/10 pb-4">
@@ -562,167 +564,77 @@
           <h2 class="text-2xl sm:text-3xl font-black text-white">5 Traditional Korean Game Stations</h2>
         </div>
         <p class="text-xs sm:text-sm text-slate-400 mt-1">
-          Explore crafting steps, watch video tutorials, and master English game rules with strictly blank A1+ gap-fill challenges!
+          Explore photographic visuals, watch verified tutorials, and master your English game day chant!
         </p>
       </div>
-      <div class="text-xs text-amber-400 font-bold bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 flex items-center gap-2">
-        <span>💡 Tip:</span> Click word chips or type answers, then click "Check Answers"!
+      <div class="text-xs text-amber-400 font-bold bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 flex items-center gap-1.5">
+        <span>💡 A1+ Goal:</span> Select materials, fill in the step verb, and say the chant out loud!
       </div>
     </div>
 
     <!-- The 5 Game Cards Container -->
     <div class="space-y-8" id="game-cards-container">
-      <!-- GAME 1: DDAKJI (딱지) - Cobalt Blue -->
-      <div id="game-card-ddakji" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- Left Column: Visual Artwork & Context -->
-          <div class="lg:w-5/12 w-full space-y-4">
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border border-blue-500/30 p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
-              <!-- SVG Illustration: Ddakji Origami Tiles -->
-              <svg viewBox="0 0 200 160" class="w-48 h-40 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="blueTile" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#3b82f6"/>
-                    <stop offset="100%" stop-color="#1d4ed8"/>
-                  </linearGradient>
-                  <linearGradient id="redTile" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#ef4444"/>
-                    <stop offset="100%" stop-color="#b91c1c"/>
-                  </linearGradient>
-                </defs>
-                <!-- Floor reflection -->
-                <ellipse cx="100" cy="135" rx="70" ry="18" fill="rgba(37, 99, 235, 0.2)"/>
-                <!-- Bottom red tile -->
-                <polygon points="100,50 150,85 100,120 50,85" fill="url(#redTile)" stroke="#7f1d1d" stroke-width="2"/>
-                <line x1="100" y1="50" x2="100" y2="120" stroke="#fca5a5" stroke-width="1.5" stroke-dasharray="3,2"/>
-                <line x1="50" y1="85" x2="150" y2="85" stroke="#fca5a5" stroke-width="1.5" stroke-dasharray="3,2"/>
-                <!-- Top blue tile slamming down -->
-                <g transform="translate(10, -20) rotate(-15 100 80)">
-                  <polygon points="100,40 145,70 100,100 55,70" fill="url(#blueTile)" stroke="#1e3a8a" stroke-width="2"/>
-                  <line x1="100" y1="40" x2="100" y2="100" stroke="#93c5fd" stroke-width="1.5"/>
-                  <line x1="55" y1="70" x2="145" y2="70" stroke="#93c5fd" stroke-width="1.5"/>
-                  <text x="100" y="74" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">SLAP!</text>
-                </g>
-                <!-- Slam impact stars -->
-                <polygon points="135,65 140,75 150,75 142,82 145,92 135,85 125,92 128,82 120,75 130,75" fill="#f59e0b"/>
-              </svg>
 
-              <div class="mt-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 font-extrabold text-xs uppercase border border-blue-500/30">
-                  Station 1 • Cobalt Blue Hanbok
-                </span>
-                <h3 class="text-2xl font-black text-white mt-1">Ddakji (딱지)</h3>
-                <p class="text-xs text-slate-300">Folded Paper Tile Flipping Game</p>
+      <!-- =========================================================
+           GAME 1: DDAKJI (딱지) — Origami Slap-Tile Game
+           ========================================================= -->
+      <div id="game-card-ddakji" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: High-Res 16:9 Image -->
+          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-blue-500/30 shadow-lg group">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" alt="Ddakji Folded Paper Tiles" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-blue-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 1</span>
+                <h3 class="text-xl font-black text-white mt-0.5">Ddakji (딱지)</h3>
               </div>
+              <button onclick="openVideoModal('ddakji')" class="btn-3d btn-blue px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                <span>▶</span> Watch Video
+              </button>
             </div>
-
-            <!-- Recycled Materials List -->
-            <div class="bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs space-y-1">
-              <div class="font-extrabold text-blue-400 flex items-center gap-1">
-                <span>♻️</span> Recycled Materials Needed:
-              </div>
-              <p class="text-slate-300">2 square sheets of colored paper, cereal box cardboard, flyer paper, tape.</p>
-            </div>
-
-            <!-- Video Tutorial Trigger -->
-            <button onclick="openVideoModal('ddakji')" class="w-full btn-3d btn-blue py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2">
-              <span>▶</span> Watch Craft &amp; Play Tutorial
-            </button>
           </div>
 
-          <!-- Right Column: A1+ Interactive Gap-Fill Exercises -->
-          <div class="lg:w-7/12 w-full space-y-5">
-            <!-- Word Bank -->
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-              <div class="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-                <span>Word Bank (Click to fill active blank):</span>
-                <span class="text-blue-400">Ddakji Words</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5" id="wordbank-ddakji">
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'fold')">fold</button>
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'wrap')">wrap</button>
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'strong')">strong</button>
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'floor')">floor</button>
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'slam')">slam</button>
-                <button class="word-chip" onclick="fillActiveBlank('ddakji', 'win')">win</button>
+          <!-- Right: Simplified 3-Step A1+ Layout -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Step 1: Materials Needed (Visual Badges) -->
+            <div class="space-y-1.5">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Step 1: Materials Needed (Tap to collect)</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> 2 Square Papers</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>📦</span> Cereal Box Card</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Clear Tape</span>
               </div>
             </div>
 
-            <!-- Part A: Crafting Steps (Blank Inputs) -->
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-blue-300 flex items-center gap-1.5">
-                  <span>🛠️</span> Part A: Crafting Steps (Imperatives)
-                </h4>
-                <button onclick="speakExercise('ddakji-craft')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
+            <!-- Step 2: Short Craft Step (Fill-in-the-gap) -->
+            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-sky-400">Step 2: Craft Instruction</span>
+              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
+                <span>1.</span>
+                <input type="text" class="gap-input" data-game="ddakji" data-answer="fold" placeholder="verb..." />
+                <span>two square sheets of paper into thirds, then lock the flaps!</span>
               </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>First,</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="0" data-answer="fold" placeholder="verb..." />
-                  <span>two square sheets of paper into thirds.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>Next, cross them and</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="1" data-answer="wrap" placeholder="verb..." />
-                  <span>the four flaps to lock the tile.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>Finally, use tape to make the tile heavy and</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="2" data-answer="strong" placeholder="adj..." />
-                  <span>!</span>
-                </div>
+              <!-- Word bank -->
+              <div class="flex items-center gap-2 pt-1 text-xs">
+                <span class="text-slate-400 font-bold">Word Bank:</span>
+                <button class="word-chip" onclick="fillGameBlank('ddakji', 'fold')">fold</button>
+                <button class="word-chip" onclick="fillGameBlank('ddakji', 'spin')">spin</button>
+                <button onclick="checkSimpleBlank('ddakji')" class="ml-auto btn-3d btn-blue px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
               </div>
+              <div id="feedback-ddakji" class="text-[11px] font-bold text-slate-400"></div>
             </div>
 
-            <!-- Part B: Rules & Speaking Frames -->
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-sky-300 flex items-center gap-1.5">
-                  <span>🗣️</span> Part B: Speaking Rules &amp; Cheering
-                </h4>
-                <button onclick="speakExercise('ddakji-rules')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
-              </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>"Put one tile flat on the</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="3" data-answer="floor" placeholder="place..." />
-                  <span>."</span>
+            <!-- Step 3: Game Day Speaking Chant -->
+            <div class="space-y-1">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
+              <div class="chant-bubble flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
+                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Hit the card and flip it over!"</div>
                 </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>"It's your turn!</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="4" data-answer="slam" placeholder="action..." />
-                  <span>your tile down hard!"</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>"If the bottom tile flips over, you</span>
-                  <input type="text" class="gap-input" data-game="ddakji" data-idx="5" data-answer="win" placeholder="verb..." />
-                  <span>a point!"</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Check Answers & Feedback -->
-            <div class="flex items-center justify-between gap-3 pt-2">
-              <div id="feedback-ddakji" class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                <span>Status: Fill all 6 blanks</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="clearGameBlanks('ddakji')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-800">
-                  ↺ Reset
-                </button>
-                <button onclick="checkGameAnswers('ddakji')" class="btn-3d btn-blue px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
-                  <span>✓</span> Check Answers
+                <button onclick="speakChant('Hit the card and flip it over!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                  <span>🔊</span>
                 </button>
               </div>
             </div>
@@ -730,145 +642,62 @@
         </div>
       </div>
 
-      <!-- GAME 2: PAENGI (팽이) - Crimson -->
-      <div id="game-card-paengi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- Left Column -->
-          <div class="lg:w-5/12 w-full space-y-4">
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border border-rose-500/30 p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
-              <!-- SVG Illustration: Spinning Top -->
-              <svg viewBox="0 0 200 160" class="w-48 h-40 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="topBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#f43f5e"/>
-                    <stop offset="100%" stop-color="#9f1239"/>
-                  </linearGradient>
-                </defs>
-                <!-- Spinning motion swirls -->
-                <ellipse cx="100" cy="130" rx="60" ry="14" fill="none" stroke="rgba(244, 63, 94, 0.4)" stroke-width="2" stroke-dasharray="8,6"/>
-                <ellipse cx="100" cy="130" rx="40" ry="10" fill="none" stroke="rgba(245, 158, 11, 0.5)" stroke-width="1.5" stroke-dasharray="6,4"/>
-                <!-- Top stick / skewer -->
-                <line x1="100" y1="25" x2="100" y2="135" stroke="#fcd34d" stroke-width="4" stroke-linecap="round"/>
-                <!-- Top disc / bottle caps -->
-                <ellipse cx="100" cy="80" rx="55" ry="18" fill="url(#topBody)" stroke="#ffe4e6" stroke-width="2"/>
-                <ellipse cx="100" cy="74" rx="42" ry="14" fill="#fb7185" stroke="#ffe4e6" stroke-width="1.5"/>
-                <ellipse cx="100" cy="68" rx="28" ry="9" fill="#f43f5e"/>
-                <!-- String wound around bottom -->
-                <path d="M96,95 Q104,97 100,102 Q96,105 102,110 Q97,114 100,118" fill="none" stroke="#ffffff" stroke-width="2.5"/>
-                <!-- Spin sparkle -->
-                <polygon points="50,60 53,67 60,67 55,72 57,80 50,75 43,80 45,72 40,67 47,67" fill="#fbbf24"/>
-              </svg>
-
-              <div class="mt-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 font-extrabold text-xs uppercase border border-rose-500/30">
-                  Station 2 • Crimson Hanbok
-                </span>
-                <h3 class="text-2xl font-black text-white mt-1">Paengi (팽이)</h3>
-                <p class="text-xs text-slate-300">Traditional Pull-String Spinning Top</p>
+      <!-- =========================================================
+           GAME 2: PAENGI (팽이) — Paper / Origami Spinning Top
+           ========================================================= -->
+      <div id="game-card-paengi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: High-Res 16:9 Image -->
+          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-rose-500/30 shadow-lg group">
+            <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80" alt="Paengi Spinning Top" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 2</span>
+                <h3 class="text-xl font-black text-white mt-0.5">Paengi (팽이)</h3>
               </div>
+              <button onclick="openVideoModal('paengi')" class="btn-3d btn-crimson px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                <span>▶</span> Watch Video
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs space-y-1">
-              <div class="font-extrabold text-rose-400 flex items-center gap-1">
-                <span>♻️</span> Recycled Materials Needed:
-              </div>
-              <p class="text-slate-300">Cardboard discs, plastic bottle caps, toothpick or wooden skewer, string.</p>
-            </div>
-
-            <button onclick="openVideoModal('paengi')" class="w-full btn-3d btn-crimson py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2">
-              <span>▶</span> Watch Craft &amp; Play Tutorial
-            </button>
           </div>
 
-          <!-- Right Column -->
-          <div class="lg:w-7/12 w-full space-y-5">
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-              <div class="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-                <span>Word Bank (Click to fill active blank):</span>
-                <span class="text-rose-400">Paengi Words</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5" id="wordbank-paengi">
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'cut')">cut</button>
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'center')">center</button>
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'wind')">wind</button>
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'pull')">pull</button>
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'spin')">spin</button>
-                <button class="word-chip" onclick="fillActiveBlank('paengi', 'longest')">longest</button>
+          <!-- Right: Simplified 3-Step A1+ Layout -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="space-y-1.5">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-rose-400">Step 1: Materials Needed (Tap to collect)</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> Origami Paper</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🪵</span> Toothpick / Skewer</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>✂️</span> Safety Scissors</span>
               </div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-rose-300 flex items-center gap-1.5">
-                  <span>🛠️</span> Part A: Crafting Steps (Imperatives)
-                </h4>
-                <button onclick="speakExercise('paengi-craft')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
+            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-pink-400">Step 2: Craft Instruction</span>
+              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
+                <span>1.</span>
+                <input type="text" class="gap-input" data-game="paengi" data-answer="twist" placeholder="verb..." />
+                <span>the paper handle and make your colorful top balance!</span>
               </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>First,</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="0" data-answer="cut" placeholder="verb..." />
-                  <span>three circles from thick cardboard.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>Next, poke a wooden skewer right through the</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="1" data-answer="center" placeholder="noun..." />
-                  <span>.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>Finally,</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="2" data-answer="wind" placeholder="verb..." />
-                  <span>the pull-string tightly around the wooden stem.</span>
-                </div>
+              <div class="flex items-center gap-2 pt-1 text-xs">
+                <span class="text-slate-400 font-bold">Word Bank:</span>
+                <button class="word-chip" onclick="fillGameBlank('paengi', 'twist')">twist</button>
+                <button class="word-chip" onclick="fillGameBlank('paengi', 'kick')">kick</button>
+                <button onclick="checkSimpleBlank('paengi')" class="ml-auto btn-3d btn-crimson px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
               </div>
+              <div id="feedback-paengi" class="text-[11px] font-bold text-slate-400"></div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-pink-300 flex items-center gap-1.5">
-                  <span>🗣️</span> Part B: Speaking Rules &amp; Cheering
-                </h4>
-                <button onclick="speakExercise('paengi-rules')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
-              </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>"Hold the top steady and</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="3" data-answer="pull" placeholder="action..." />
-                  <span>the string fast!"</span>
+            <div class="space-y-1">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
+              <div class="chant-bubble flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
+                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Twist the top and make it spin!"</div>
                 </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>"Watch it</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="4" data-answer="spin" placeholder="verb..." />
-                  <span>on the smooth floor!"</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>"The top that spins</span>
-                  <input type="text" class="gap-input" data-game="paengi" data-idx="5" data-answer="longest" placeholder="word..." />
-                  <span>wins the round!"</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3 pt-2">
-              <div id="feedback-paengi" class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                <span>Status: Fill all 6 blanks</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="clearGameBlanks('paengi')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-800">
-                  ↺ Reset
-                </button>
-                <button onclick="checkGameAnswers('paengi')" class="btn-3d btn-crimson px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
-                  <span>✓</span> Check Answers
+                <button onclick="speakChant('Twist the top and make it spin!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                  <span>🔊</span>
                 </button>
               </div>
             </div>
@@ -876,153 +705,62 @@
         </div>
       </div>
 
-      <!-- GAME 3: TUHO (투호) - Mustard Gold -->
-      <div id="game-card-tuho" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- Left Column -->
-          <div class="lg:w-5/12 w-full space-y-4">
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border border-amber-500/30 p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
-              <!-- SVG Illustration: Tuho Pitch Pot & Arrows -->
-              <svg viewBox="0 0 200 160" class="w-48 h-40 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="jarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#f59e0b"/>
-                    <stop offset="100%" stop-color="#b45309"/>
-                  </linearGradient>
-                </defs>
-                <ellipse cx="100" cy="142" rx="45" ry="12" fill="rgba(245, 158, 11, 0.25)"/>
-                <!-- Tall Pot / Pringles Can -->
-                <rect x="75" y="60" width="50" height="75" rx="8" fill="url(#jarGrad)" stroke="#78350f" stroke-width="2"/>
-                <ellipse cx="100" cy="60" rx="25" ry="8" fill="#d97706" stroke="#78350f" stroke-width="2"/>
-                <ellipse cx="100" cy="60" rx="18" ry="5" fill="#451a03"/>
-                <!-- Decorative dragon band -->
-                <rect x="75" y="85" width="50" height="15" fill="#78350f" opacity="0.6"/>
-                <circle cx="90" cy="92.5" r="3" fill="#fde68a"/>
-                <circle cx="100" cy="92.5" r="3" fill="#fde68a"/>
-                <circle cx="110" cy="92.5" r="3" fill="#fde68a"/>
-                <!-- Arrow inside jar -->
-                <line x1="88" y1="45" x2="96" y2="90" stroke="#fef08a" stroke-width="3" stroke-linecap="round"/>
-                <polygon points="85,42 90,48 83,50" fill="#dc2626"/>
-                <!-- Flying arrow aiming into pot -->
-                <g transform="translate(130, 20) rotate(42)">
-                  <line x1="0" y1="0" x2="60" y2="0" stroke="#fde047" stroke-width="3" stroke-linecap="round"/>
-                  <polygon points="0,0 8,-4 8,4" fill="#1e293b"/>
-                  <!-- Feather flights -->
-                  <polygon points="50,0 58,-6 54,0" fill="#ef4444"/>
-                  <polygon points="50,0 58,6 54,0" fill="#3b82f6"/>
-                </g>
-              </svg>
-
-              <div class="mt-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 font-extrabold text-xs uppercase border border-amber-500/30">
-                  Station 3 • Mustard Gold Hanbok
-                </span>
-                <h3 class="text-2xl font-black text-white mt-1">Tuho (투호)</h3>
-                <p class="text-xs text-slate-300">Royal Arrow Pitch-Pot Game</p>
+      <!-- =========================================================
+           GAME 3: GONGGI (공기놀이) — Paper Pebble Toss (Replaced Tuho)
+           ========================================================= -->
+      <div id="game-card-gonggi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: High-Res 16:9 Image -->
+          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Gonggi Game Tokens" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-500/90 text-slate-950 font-black text-[11px] uppercase tracking-wide">Station 3</span>
+                <h3 class="text-xl font-black text-white mt-0.5">Gonggi (공기놀이)</h3>
               </div>
+              <button onclick="openVideoModal('gonggi')" class="btn-3d btn-amber px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                <span>▶</span> Watch Video
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs space-y-1">
-              <div class="font-extrabold text-amber-400 flex items-center gap-1">
-                <span>♻️</span> Recycled Materials Needed:
-              </div>
-              <p class="text-slate-300">Empty tall container (Pringles tube/can/jar), chopsticks or straws, paper feathers.</p>
-            </div>
-
-            <button onclick="openVideoModal('tuho')" class="w-full btn-3d btn-amber py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2">
-              <span>▶</span> Watch Craft &amp; Play Tutorial
-            </button>
           </div>
 
-          <!-- Right Column -->
-          <div class="lg:w-7/12 w-full space-y-5">
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-              <div class="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-                <span>Word Bank (Click to fill active blank):</span>
-                <span class="text-amber-400">Tuho Words</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5" id="wordbank-tuho">
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'jar')">jar</button>
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'tape')">tape</button>
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'arrows')">arrows</button>
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'line')">line</button>
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'toss')">toss</button>
-                <button class="word-chip" onclick="fillActiveBlank('tuho', 'point')">point</button>
+          <!-- Right: Simplified 3-Step A1+ Layout -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="space-y-1.5">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 1: Materials Needed (Tap to collect)</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> 5 Paper Squares</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🍚</span> Rice / Beans (Filling)</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Tape / Glue</span>
               </div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-amber-300 flex items-center gap-1.5">
-                  <span>🛠️</span> Part A: Crafting Steps (Imperatives)
-                </h4>
-                <button onclick="speakExercise('tuho-craft')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
+            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-yellow-400">Step 2: Craft Instruction</span>
+              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
+                <span>1.</span>
+                <input type="text" class="gap-input" data-game="gonggi" data-answer="toss" placeholder="verb..." />
+                <span>one stone into the air and catch the others on the table!</span>
               </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>First, find a tall container or empty</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="0" data-answer="jar" placeholder="container..." />
-                  <span>.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>Next,</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="1" data-answer="tape" placeholder="verb..." />
-                  <span>paper wings onto four wooden chopsticks.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>Finally, test your safe throwing</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="2" data-answer="arrows" placeholder="noun..." />
-                  <span>!</span>
-                </div>
+              <div class="flex items-center gap-2 pt-1 text-xs">
+                <span class="text-slate-400 font-bold">Word Bank:</span>
+                <button class="word-chip" onclick="fillGameBlank('gonggi', 'toss')">toss</button>
+                <button class="word-chip" onclick="fillGameBlank('gonggi', 'cut')">cut</button>
+                <button onclick="checkSimpleBlank('gonggi')" class="ml-auto btn-3d btn-amber px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
               </div>
+              <div id="feedback-gonggi" class="text-[11px] font-bold text-slate-400"></div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-yellow-300 flex items-center gap-1.5">
-                  <span>🗣️</span> Part B: Speaking Rules &amp; Cheering
-                </h4>
-                <button onclick="speakExercise('tuho-rules')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
-              </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>"Stand two big steps behind the</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="3" data-answer="line" placeholder="place..." />
-                  <span>."</span>
+            <div class="space-y-1">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
+              <div class="chant-bubble flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
+                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Toss the Gonggi and catch them fast!"</div>
                 </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>"Aim carefully and</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="4" data-answer="toss" placeholder="action..." />
-                  <span>the arrow into the jar!"</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>"Nice throw! You get one</span>
-                  <input type="text" class="gap-input" data-game="tuho" data-idx="5" data-answer="point" placeholder="reward..." />
-                  <span>!"</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3 pt-2">
-              <div id="feedback-tuho" class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                <span>Status: Fill all 6 blanks</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="clearGameBlanks('tuho')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-800">
-                  ↺ Reset
-                </button>
-                <button onclick="checkGameAnswers('tuho')" class="btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
-                  <span>✓</span> Check Answers
+                <button onclick="speakChant('Toss the Gonggi and catch them fast!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                  <span>🔊</span>
                 </button>
               </div>
             </div>
@@ -1030,147 +768,62 @@
         </div>
       </div>
 
-      <!-- GAME 4: JEGICHAGI (제기차기) - Jade Green -->
-      <div id="game-card-jegichagi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- Left Column -->
-          <div class="lg:w-5/12 w-full space-y-4">
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border border-emerald-500/30 p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
-              <!-- SVG Illustration: Jegichagi Shuttlecock -->
-              <svg viewBox="0 0 200 160" class="w-48 h-40 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="shuttleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#10b981"/>
-                    <stop offset="100%" stop-color="#047857"/>
-                  </linearGradient>
-                </defs>
-                <ellipse cx="100" cy="140" rx="55" ry="12" fill="rgba(16, 185, 129, 0.25)"/>
-                <!-- Ribbon Fringes / Strips bouncing up -->
-                <path d="M100,85 C80,50 60,30 50,20" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round"/>
-                <path d="M100,85 C90,45 80,25 75,15" fill="none" stroke="#34d399" stroke-width="3.5" stroke-linecap="round"/>
-                <path d="M100,85 C100,40 100,20 100,10" fill="none" stroke="#a7f3d0" stroke-width="4" stroke-linecap="round"/>
-                <path d="M100,85 C110,45 120,25 125,15" fill="none" stroke="#34d399" stroke-width="3.5" stroke-linecap="round"/>
-                <path d="M100,85 C120,50 140,30 150,20" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round"/>
-                <!-- Coin wrapped head -->
-                <ellipse cx="100" cy="98" rx="20" ry="12" fill="url(#shuttleGrad)" stroke="#a7f3d0" stroke-width="2"/>
-                <circle cx="100" cy="98" r="6" fill="#fcd34d" stroke="#b45309" stroke-width="1.5"/>
-                <!-- Rubber band tie -->
-                <rect x="94" y="86" width="12" height="5" rx="2" fill="#ef4444"/>
-                <!-- Kick sneaker contact indicator -->
-                <path d="M40,120 Q70,125 85,110" fill="none" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4,3"/>
-                <text x="60" y="140" fill="#38bdf8" font-size="10" font-weight="bold">KICK!</text>
-              </svg>
-
-              <div class="mt-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-extrabold text-xs uppercase border border-emerald-500/30">
-                  Station 4 • Jade Green Hanbok
-                </span>
-                <h3 class="text-2xl font-black text-white mt-1">Jegichagi (제기차기)</h3>
-                <p class="text-xs text-slate-300">Traditional Foot Shuttlecock Keep-Up</p>
+      <!-- =========================================================
+           GAME 4: JEGICHAGI (제기차기) — Bottle-Cap & Ribbon Shuttlecock
+           ========================================================= -->
+      <div id="game-card-jegichagi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: High-Res 16:9 Image -->
+          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg group">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" alt="Jegichagi Shuttlecock" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 4</span>
+                <h3 class="text-xl font-black text-white mt-0.5">Jegichagi (제기차기)</h3>
               </div>
+              <button onclick="openVideoModal('jegichagi')" class="btn-3d btn-jade px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                <span>▶</span> Watch Video
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs space-y-1">
-              <div class="font-extrabold text-emerald-400 flex items-center gap-1">
-                <span>♻️</span> Recycled Materials Needed:
-              </div>
-              <p class="text-slate-300">1 heavy coin or washer, thin plastic grocery bag or tissue paper, rubber band.</p>
-            </div>
-
-            <button onclick="openVideoModal('jegichagi')" class="w-full btn-3d btn-jade py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2">
-              <span>▶</span> Watch Craft &amp; Play Tutorial
-            </button>
           </div>
 
-          <!-- Right Column -->
-          <div class="lg:w-7/12 w-full space-y-5">
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-              <div class="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-                <span>Word Bank (Click to fill active blank):</span>
-                <span class="text-emerald-400">Jegichagi Words</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5" id="wordbank-jegichagi">
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'plastic')">plastic</button>
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'tie')">tie</button>
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'strips')">strips</button>
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'kick')">kick</button>
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'air')">air</button>
-                <button class="word-chip" onclick="fillActiveBlank('jegichagi', 'three')">three</button>
+          <!-- Right: Simplified 3-Step A1+ Layout -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="space-y-1.5">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">Step 1: Materials Needed (Tap to collect)</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🧴</span> 1 Bottle Cap</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🎀</span> Metallic Ribbons / Bag</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Tape / Rubber Band</span>
               </div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-emerald-300 flex items-center gap-1.5">
-                  <span>🛠️</span> Part A: Crafting Steps (Imperatives)
-                </h4>
-                <button onclick="speakExercise('jegi-craft')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
+            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-teal-400">Step 2: Craft Instruction</span>
+              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
+                <span>1.</span>
+                <input type="text" class="gap-input" data-game="jegichagi" data-answer="kick" placeholder="verb..." />
+                <span>the jegi with your inner foot and keep it off the ground!</span>
               </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>First, place a round coin inside a</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="0" data-answer="plastic" placeholder="material..." />
-                  <span>bag.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>Next,</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="1" data-answer="tie" placeholder="verb..." />
-                  <span>the bag tightly above the coin with a rubber band.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>Finally, cut the top bag into fringe</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="2" data-answer="strips" placeholder="noun..." />
-                  <span>!</span>
-                </div>
+              <div class="flex items-center gap-2 pt-1 text-xs">
+                <span class="text-slate-400 font-bold">Word Bank:</span>
+                <button class="word-chip" onclick="fillGameBlank('jegichagi', 'kick')">kick</button>
+                <button class="word-chip" onclick="fillGameBlank('jegichagi', 'fold')">fold</button>
+                <button onclick="checkSimpleBlank('jegichagi')" class="ml-auto btn-3d btn-jade px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
               </div>
+              <div id="feedback-jegichagi" class="text-[11px] font-bold text-slate-400"></div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-teal-300 flex items-center gap-1.5">
-                  <span>🗣️</span> Part B: Speaking Rules &amp; Cheering
-                </h4>
-                <button onclick="speakExercise('jegi-rules')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
-              </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>"Drop the shuttlecock and</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="3" data-answer="kick" placeholder="action..." />
-                  <span>it with the inside of your foot!"</span>
+            <div class="space-y-1">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
+              <div class="chant-bubble flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
+                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Kick it high and keep it in the air!"</div>
                 </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>"Keep the jegi up in the</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="4" data-answer="air" placeholder="place..." />
-                  <span>!"</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>"Count out loud: one, two,</span>
-                  <input type="text" class="gap-input" data-game="jegichagi" data-idx="5" data-answer="three" placeholder="number..." />
-                  <span>! Great kick!"</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3 pt-2">
-              <div id="feedback-jegichagi" class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                <span>Status: Fill all 6 blanks</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="clearGameBlanks('jegichagi')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-800">
-                  ↺ Reset
-                </button>
-                <button onclick="checkGameAnswers('jegichagi')" class="btn-3d btn-jade px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
-                  <span>✓</span> Check Answers
+                <button onclick="speakChant('Kick it high and keep it in the air!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                  <span>🔊</span>
                 </button>
               </div>
             </div>
@@ -1178,179 +831,80 @@
         </div>
       </div>
 
-      <!-- GAME 5: YUT NORI (윷놀이) - Royal Violet -->
-      <div id="game-card-yutnori" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
-          <!-- Left Column -->
-          <div class="lg:w-5/12 w-full space-y-4">
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border border-violet-500/30 p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
-              <!-- SVG Illustration: Yut Sticks & Board -->
-              <svg viewBox="0 0 200 160" class="w-48 h-40 drop-shadow-lg">
-                <defs>
-                  <linearGradient id="stickFlat" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#fef08a"/>
-                    <stop offset="100%" stop-color="#fde047"/>
-                  </linearGradient>
-                  <linearGradient id="stickRound" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#a855f7"/>
-                    <stop offset="100%" stop-color="#6b21a8"/>
-                  </linearGradient>
-                </defs>
-                <!-- Board grid backdrop -->
-                <rect x="35" y="25" width="130" height="110" rx="8" fill="rgba(15, 23, 42, 0.7)" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="4,3"/>
-                <!-- Corner board circles -->
-                <circle cx="45" cy="35" r="5" fill="#fcd34d"/>
-                <circle cx="155" cy="35" r="5" fill="#fcd34d"/>
-                <circle cx="155" cy="125" r="5" fill="#fcd34d"/>
-                <circle cx="45" cy="125" r="5" fill="#fcd34d"/>
-                <circle cx="100" cy="80" r="7" fill="#ec4899"/>
-                <!-- Diagonal X paths -->
-                <line x1="45" y1="35" x2="155" y2="125" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="2,2"/>
-                <line x1="155" y1="35" x2="45" y2="125" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="2,2"/>
-                <!-- 4 Tossed Yut Sticks -->
-                <!-- Stick 1 (Flat side up with X) -->
-                <g transform="translate(60, 45) rotate(-20)">
-                  <rect x="0" y="0" width="16" height="50" rx="6" fill="url(#stickFlat)" stroke="#854d0e" stroke-width="1.5"/>
-                  <text x="8" y="28" fill="#713f12" font-size="14" font-weight="black" text-anchor="middle">✕</text>
-                </g>
-                <!-- Stick 2 (Round side up) -->
-                <g transform="translate(85, 45) rotate(10)">
-                  <rect x="0" y="0" width="16" height="50" rx="6" fill="url(#stickRound)" stroke="#4c1d95" stroke-width="1.5"/>
-                  <line x1="8" y1="5" x2="8" y2="45" stroke="#d8b4fe" stroke-width="1.5"/>
-                </g>
-                <!-- Stick 3 (Flat side up) -->
-                <g transform="translate(110, 50) rotate(-15)">
-                  <rect x="0" y="0" width="16" height="50" rx="6" fill="url(#stickFlat)" stroke="#854d0e" stroke-width="1.5"/>
-                  <text x="8" y="28" fill="#713f12" font-size="14" font-weight="black" text-anchor="middle">✕</text>
-                </g>
-                <!-- Stick 4 (Round side up) -->
-                <g transform="translate(130, 40) rotate(25)">
-                  <rect x="0" y="0" width="16" height="50" rx="6" fill="url(#stickRound)" stroke="#4c1d95" stroke-width="1.5"/>
-                  <line x1="8" y1="5" x2="8" y2="45" stroke="#d8b4fe" stroke-width="1.5"/>
-                </g>
-              </svg>
-
-              <div class="mt-2">
-                <span class="inline-block px-3 py-1 rounded-full bg-violet-500/20 text-violet-400 font-extrabold text-xs uppercase border border-violet-500/30">
-                  Station 5 • Royal Violet Hanbok
-                </span>
-                <h3 class="text-2xl font-black text-white mt-1">Yut Nori (윷놀이)</h3>
-                <p class="text-xs text-slate-300">Four-Stick Family Board Race</p>
+      <!-- =========================================================
+           GAME 5: YUT NORI (윷놀이) — Traditional Board Race & Dice Option
+           ========================================================= -->
+      <div id="game-card-yutnori" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Left: High-Res 16:9 Image -->
+          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-violet-500/30 shadow-lg group">
+            <img src="https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80" alt="Yut Nori Board &amp; Dice" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-0.5 rounded-full bg-violet-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 5</span>
+                <h3 class="text-xl font-black text-white mt-0.5">Yut Nori (윷놀이)</h3>
               </div>
+              <button onclick="openVideoModal('yutnori')" class="btn-3d btn-violet px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                <span>▶</span> Watch Video
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs space-y-1">
-              <div class="font-extrabold text-violet-400 flex items-center gap-1">
-                <span>♻️</span> Recycled Materials Needed:
-              </div>
-              <p class="text-slate-300">4 popsicle sticks or cardboard sticks (flat on 1 side), bottle cap tokens, paper board.</p>
-            </div>
-
-            <button onclick="openVideoModal('yutnori')" class="w-full btn-3d btn-violet py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2">
-              <span>▶</span> Watch Craft &amp; Play Tutorial
-            </button>
           </div>
 
-          <!-- Right Column -->
-          <div class="lg:w-7/12 w-full space-y-5">
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-white/10">
-              <div class="text-[11px] uppercase font-extrabold text-slate-400 tracking-wider mb-2 flex items-center justify-between">
-                <span>Word Bank (Click to fill active blank):</span>
-                <span class="text-violet-400">Yut Nori Words</span>
-              </div>
-              <div class="flex flex-wrap gap-1.5" id="wordbank-yutnori">
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'sticks')">sticks</button>
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'draw')">draw</button>
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'paper')">paper</button>
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'toss')">toss</button>
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'up')">up</button>
-                <button class="word-chip" onclick="fillActiveBlank('yutnori', 'board')">board</button>
+          <!-- Right: Simplified 3-Step A1+ Layout -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Teacher Note on Card -->
+            <div class="bg-violet-950/60 p-2.5 rounded-xl border border-violet-500/30 text-xs text-violet-200 flex items-center gap-2">
+              <span class="text-base">💡</span>
+              <span><strong>Teacher Note:</strong> You can craft 4 Yut sticks OR craft a paper dice to play!</span>
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-violet-400">Step 1: Materials Needed (Tap to collect)</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🥢</span> 4 Craft Sticks (or Paper Dice)</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🗺️</span> Paper Race Board</span>
+                <span class="material-badge" onclick="toggleMaterial(this)"><span>🔘</span> 4 Bottle Cap Tokens</span>
               </div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-violet-300 flex items-center gap-1.5">
-                  <span>🛠️</span> Part A: Crafting Steps (Imperatives)
-                </h4>
-                <button onclick="speakExercise('yut-craft')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
+            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-purple-400">Step 2: Craft Instruction</span>
+              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
+                <span>1.</span>
+                <input type="text" class="gap-input" data-game="yutnori" data-answer="roll" placeholder="verb..." />
+                <span>the dice or toss the 4 sticks to move your pieces home!</span>
               </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>First, gather four flat craft</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="0" data-answer="sticks" placeholder="noun..." />
-                  <span>or popsicle sticks.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>Next,</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="1" data-answer="draw" placeholder="verb..." />
-                  <span>an 'X' mark on the flat side of each stick.</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>Finally, make the square race map on a sheet of</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="2" data-answer="paper" placeholder="noun..." />
-                  <span>!</span>
-                </div>
+              <div class="flex items-center gap-2 pt-1 text-xs">
+                <span class="text-slate-400 font-bold">Word Bank:</span>
+                <button class="word-chip" onclick="fillGameBlank('yutnori', 'roll')">roll</button>
+                <button class="word-chip" onclick="fillGameBlank('yutnori', 'twist')">twist</button>
+                <button onclick="checkSimpleBlank('yutnori')" class="ml-auto btn-3d btn-violet px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
               </div>
+              <div id="feedback-yutnori" class="text-[11px] font-bold text-slate-400"></div>
             </div>
 
-            <div class="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-white/10">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-sm text-purple-300 flex items-center gap-1.5">
-                  <span>🗣️</span> Part B: Speaking Rules &amp; Cheering
-                </h4>
-                <button onclick="speakExercise('yut-rules')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                  <span>🔊</span> Listen
-                </button>
-              </div>
-              <div class="space-y-2.5 text-xs sm:text-sm text-slate-200">
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">1.</span>
-                  <span>"Hold the four wooden sticks and</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="3" data-answer="toss" placeholder="action..." />
-                  <span>them gently into the air!"</span>
+            <div class="space-y-1">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
+              <div class="chant-bubble flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
+                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Roll the dice, move your pieces home!"</div>
                 </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">2.</span>
-                  <span>"Count how many flat sides land face</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="4" data-answer="up" placeholder="direction..." />
-                  <span>!"</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2">
-                  <span class="font-bold text-amber-400">3.</span>
-                  <span>"Move your bottle cap token around the</span>
-                  <input type="text" class="gap-input" data-game="yutnori" data-idx="5" data-answer="board" placeholder="place..." />
-                  <span>!"</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3 pt-2">
-              <div id="feedback-yutnori" class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                <span>Status: Fill all 6 blanks</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="clearGameBlanks('yutnori')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-800">
-                  ↺ Reset
-                </button>
-                <button onclick="checkGameAnswers('yutnori')" class="btn-3d btn-violet px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5">
-                  <span>✓</span> Check Answers
+                <button onclick="speakChant('Roll the dice, move your pieces home!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                  <span>🔊</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </section>
 
   <!-- =========================================================
-       SECTION 3: GAMIFIED 100 XP QUEST TRACKER
+       4. GAMIFIED 100 XP TRACKER & AUDIO SYSTEM
        ========================================================= -->
   <section id="tracker-section" class="px-4 py-8 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6 border border-amber-500/30">
@@ -1358,14 +912,13 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="text-2xl">🏆</span>
-            <h2 class="text-2xl sm:text-3xl font-black text-white">Gamified 100 XP Quest Tracker</h2>
+            <h2 class="text-2xl sm:text-3xl font-black text-white">Gamified 100 XP Quest Log</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Track each student's journey from Apprentice Crafter to Certified Game Master!
+            Track student milestones from Craft Apprentice to Certified Game Master!
           </p>
         </div>
 
-        <!-- Student Selector Dropdown -->
         <div class="flex items-center gap-2 bg-slate-900/90 p-2 rounded-2xl border border-white/15">
           <label for="student-select" class="text-xs font-bold text-slate-300">👤 Student:</label>
           <select id="student-select" onchange="onStudentSelectChange()" class="bg-slate-950 text-amber-300 font-extrabold text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-white/15 focus:outline-none focus:border-amber-400">
@@ -1374,12 +927,12 @@
         </div>
       </div>
 
-      <!-- XP Progress Bar & Total -->
+      <!-- Real-time Animated XP Meter -->
       <div class="bg-slate-950/80 rounded-2xl p-5 border border-white/10 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-xl">⭐</span>
-            <span class="font-black text-lg text-white" id="tracker-student-name">Ali</span>
+            <span class="font-black text-lg text-white" id="tracker-student-name">Student</span>
             <span class="text-xs text-slate-400 font-semibold">(Class <span id="tracker-student-class">3A</span> • <span id="tracker-assigned-game">Ddakji</span>)</span>
           </div>
           <div class="flex items-baseline gap-1">
@@ -1388,20 +941,19 @@
           </div>
         </div>
 
-        <!-- Progress Bar Track -->
         <div class="w-full h-5 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-white/15 relative">
           <div id="tracker-xp-bar" class="h-full bg-gradient-to-r from-amber-500 via-rose-500 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%;"></div>
         </div>
 
         <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
           <span id="tracker-rank-badge" class="font-extrabold text-amber-400 flex items-center gap-1">
-            <span>🌱</span> Level: Apprentice Crafter
+            <span>🌱</span> Level: Craft Apprentice
           </span>
-          <span class="text-[11px]">Milestone: 100 XP unlocks Certified Game Master Title!</span>
+          <span class="text-[11px]">100 XP unlocks Certified Game Master Title!</span>
         </div>
       </div>
 
-      <!-- 3 Core Quests Checkboxes -->
+      <!-- The 3 Core Quests -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Quest 1 -->
         <label class="glass-card rounded-2xl p-4 border border-white/10 cursor-pointer flex flex-col justify-between hover:border-amber-400/50 transition">
@@ -1412,9 +964,9 @@
               </span>
               <input type="checkbox" id="quest-1-check" onchange="toggleQuest(1)" class="w-5 h-5 rounded accent-amber-500 cursor-pointer" />
             </div>
-            <div class="font-extrabold text-sm text-white">Quest 1: The Recycled Builder</div>
+            <div class="font-extrabold text-sm text-white">Quest 1: The Craft Master</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Brings a completed, playable game built using recycled household materials (cardboard, caps, string, cans).
+              Built a completed, playable game from recycled household items (cardboard, paper, caps, string).
             </p>
           </div>
           <div class="text-[11px] text-amber-300 font-bold mt-3">Due: Tuesday, Oct 6</div>
@@ -1431,7 +983,7 @@
             </div>
             <div class="font-extrabold text-sm text-white">Quest 2: The English Rulebook</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Explains game rules in English using 3 imperative steps (<em>"First...", "Next...", "Finally..."</em>).
+              Spoke the rules and game chant in English clearly (*"Hit the card!", "Twist the top!"*).
             </p>
           </div>
           <div class="text-[11px] text-sky-300 font-bold mt-3">Spoken at Game Station</div>
@@ -1448,81 +1000,36 @@
             </div>
             <div class="font-extrabold text-sm text-white">Quest 3: The Arcade Host</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Hosts 3 classmates at their station using target English phrases (<em>"It's your turn!", "Nice throw!"</em>).
+              Hosted 3 peers with target English phrases (*"Your turn!", "Nice toss!", "Great kick!"*).
             </p>
           </div>
           <div class="text-[11px] text-emerald-300 font-bold mt-3">3 Peer Signatures</div>
         </label>
       </div>
-
-      <!-- Bonus Badges (+15 XP each) -->
-      <div class="bg-slate-950/60 rounded-2xl p-4 border border-white/10 space-y-3">
-        <div class="flex items-center justify-between">
-          <h4 class="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
-            <span>✨</span> Bonus Badges (+15 XP each)
-          </h4>
-          <span class="text-xs text-slate-400">Can exceed 100 XP!</span>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-emerald-400/40">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">🌿</span>
-              <div>
-                <div class="text-xs font-extrabold text-white">Eco-Crafter</div>
-                <div class="text-[10px] text-slate-400">Creative waste materials</div>
-              </div>
-            </div>
-            <input type="checkbox" id="badge-eco-check" onchange="toggleBonus('eco')" class="w-4 h-4 rounded accent-emerald-500 cursor-pointer" />
-          </label>
-
-          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-amber-400/40">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">🌕</span>
-              <div>
-                <div class="text-xs font-extrabold text-white">Chuseok Spirit</div>
-                <div class="text-[10px] text-slate-400">Enthusiastic sportsmanship</div>
-              </div>
-            </div>
-            <input type="checkbox" id="badge-spirit-check" onchange="toggleBonus('spirit')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
-          </label>
-
-          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-violet-400/40">
-            <div class="flex items-center gap-2">
-              <span class="text-2xl">👑</span>
-              <div>
-                <div class="text-xs font-extrabold text-white">English Champion</div>
-                <div class="text-[10px] text-slate-400">100% English speaking</div>
-              </div>
-            </div>
-            <input type="checkbox" id="badge-english-check" onchange="toggleBonus('english')" class="w-4 h-4 rounded accent-violet-500 cursor-pointer" />
-          </label>
-        </div>
-      </div>
     </div>
   </section>
 
   <!-- =========================================================
-       PRINTABLE A4 WORKSHEET CONTAINER (FOR SCREEN PREVIEW & PRINT)
+       5. CLEAN PRINTABLE A4 STUDENT QUEST WORKSHEET
        ========================================================= -->
   <section id="print-worksheet-section" class="max-w-4xl mx-auto p-4 bg-white text-slate-900 rounded-2xl shadow-2xl my-6">
-    <!-- Header -->
     <div class="border-b-2 border-slate-900 pb-3 mb-4 flex items-center justify-between">
       <div class="space-y-1">
         <div class="flex items-center gap-2">
           <span class="text-xl">🌕</span>
           <span class="text-lg font-black uppercase tracking-tight text-slate-900">English Adventure Academy • Chuseok Quest</span>
         </div>
-        <h2 class="text-xl font-black text-amber-700">Traditional Folk Game Craft &amp; Host Workbook</h2>
-        <p class="text-xs text-slate-600">CEFR Level A1+ | Global Readings Unit 2: Cultural Celebrations</p>
+        <h2 class="text-xl font-black text-amber-800">Traditional Folk Game Craft &amp; Host Workbook</h2>
+        <p class="text-xs text-slate-600">CEFR Level A1+ | Unit 2: Korean Thanksgiving &amp; Folk Games</p>
       </div>
-      <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50">
+      <div class="text-right border-2 border-slate-900 rounded-lg p-2.5 bg-amber-50">
         <div class="text-[10px] font-bold uppercase text-slate-600">Assignment Due Date:</div>
         <div class="text-sm font-black text-rose-700">Tuesday, October 6</div>
-        <div class="text-[10px] text-slate-500">Bring your game to school!</div>
+        <div class="text-[10px] text-slate-500">Bring crafted game to school!</div>
       </div>
     </div>
 
-    <!-- Student Info Bar -->
+    <!-- Student Header -->
     <div class="grid grid-cols-12 gap-3 mb-4 p-2.5 bg-slate-100 rounded-lg border border-slate-300 text-xs">
       <div class="col-span-5 flex items-center gap-1.5">
         <span class="font-extrabold text-slate-700">Student Name:</span>
@@ -1535,24 +1042,24 @@
       </div>
       <div class="col-span-4 flex items-center gap-1.5">
         <span class="font-extrabold text-slate-700">Assigned Game:</span>
-        <span class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 print-game-slot">Ddakji / Paengi / Tuho / Jegi / Yut</span>
+        <span class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 print-game-slot">Ddakji / Paengi / Gonggi / Jegi / Yut</span>
       </div>
     </div>
 
-    <!-- Section 1: Home Craft Log -->
+    <!-- Part 1: Home Craft Log -->
     <div class="print-box">
       <div class="print-box-header">
         <span>♻️ PART 1: HOME CRAFT LOG (50 XP)</span>
-        <span class="text-xs text-slate-600">Craft at home with recycled materials</span>
+        <span class="text-xs text-slate-600">Craft at home with recycled household waste</span>
       </div>
       <div class="text-xs space-y-2">
         <div class="flex items-center gap-3 text-[11px] mb-2">
           <span class="font-bold">Materials Used:</span>
+          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Paper</label>
           <label class="flex items-center gap-1"><span class="checkbox-square"></span> Cardboard</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Bottle Caps</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Paper / Box</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Sticks / Straws</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> String / Tape</label>
+          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Bottle Cap</label>
+          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Sticks / Toothpick</label>
+          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Tape / Glue</label>
         </div>
         <div class="handwriting-line">
           <span class="font-bold mr-2 text-slate-700">Step 1: First, I</span>
@@ -1562,91 +1069,81 @@
           <span class="font-bold mr-2 text-slate-700">Step 2: Next, I</span>
           <span class="text-slate-400">__________________________________________________________________________</span>
         </div>
-        <div class="handwriting-line">
-          <span class="font-bold mr-2 text-slate-700">Step 3: Finally, I</span>
-          <span class="text-slate-400">__________________________________________________________________________</span>
-        </div>
       </div>
     </div>
 
-    <!-- Section 2: English Rulebook & Speaking Checklist -->
+    <!-- Part 2: Speaking Chant & Rules -->
     <div class="print-box">
       <div class="print-box-header">
-        <span>🗣️ PART 2: ENGLISH RULEBOOK &amp; SPEAKING CHECKLIST (30 XP)</span>
+        <span>🗣️ PART 2: ENGLISH CHANT &amp; RULES CHECKLIST (30 XP)</span>
         <span class="text-xs text-slate-600">Practice speaking out loud at home</span>
       </div>
       <div class="grid grid-cols-2 gap-3 text-xs">
         <div class="bg-slate-50 p-2 rounded border border-slate-200 space-y-1">
-          <div class="font-black text-amber-800 text-[11px]">TARGET SPEAKING FRAMES:</div>
-          <p>• <strong>Welcome:</strong> "Welcome to my station! Today we play..."</p>
-          <p>• <strong>Rule 1:</strong> "First, stand behind the line / put tile down."</p>
-          <p>• <strong>Rule 2:</strong> "Next, toss / spin / kick / slam your game!"</p>
-          <p>• <strong>Scoring:</strong> "If you flip / hit / keep it in the air, you get a point!"</p>
+          <div class="font-black text-amber-800 text-[11px]">TARGET SPEAKING CHANTS:</div>
+          <p>• <strong>Ddakji:</strong> "Hit the card and flip it over!"</p>
+          <p>• <strong>Paengi:</strong> "Twist the top and make it spin!"</p>
+          <p>• <strong>Gonggi:</strong> "Toss the Gonggi and catch them fast!"</p>
+          <p>• <strong>Jegichagi:</strong> "Kick it high and keep it in the air!"</p>
+          <p>• <strong>Yut Nori:</strong> "Roll the dice, move your pieces home!"</p>
         </div>
         <div class="space-y-1.5 p-1">
           <div class="font-black text-slate-700 text-[11px]">HOME PRACTICE CHECKLIST:</div>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I read the rules 3 times out loud.</label>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I played my game with Mom / Dad / Brother / Sister.</label>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I can say: "It's your turn!" &amp; "Good job!" in English.</label>
+          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I practiced my game chant 3 times out loud.</label>
+          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I played my game with my family at home.</label>
+          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I can say: "Your turn!" &amp; "Great job!" in English.</label>
           <div class="pt-1 text-[11px] text-slate-600">Parent Signature: _______________________</div>
         </div>
       </div>
     </div>
 
-    <!-- Section 3: Arcade Game Day Scorecard (3 Peer Signatures) -->
+    <!-- Part 3: Arcade Game Day Scorecard -->
     <div class="print-box">
       <div class="print-box-header">
         <span>🎪 PART 3: CLASSROOM ARCADE HOST SCORECARD (20 XP)</span>
-        <span class="text-xs text-slate-600">Host 3 classmates on Tuesday Game Day</span>
+        <span class="text-xs text-slate-600">Host 3 peers on Tuesday Game Day</span>
       </div>
       <div class="grid grid-cols-3 gap-2 text-xs">
-        <!-- Peer 1 -->
         <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
           <div class="font-black text-blue-800">Classmate #1</div>
           <div>Name: ______________</div>
           <div>Score: _____________</div>
           <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"They cheered for me!"</div>
+          <div class="text-[10px] text-slate-500 italic">"They said: Your turn!"</div>
         </div>
-        <!-- Peer 2 -->
         <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
           <div class="font-black text-rose-800">Classmate #2</div>
           <div>Name: ______________</div>
           <div>Score: _____________</div>
           <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"Nice throw!"</div>
+          <div class="text-[10px] text-slate-500 italic">"They said: Nice toss!"</div>
         </div>
-        <!-- Peer 3 -->
         <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
           <div class="font-black text-emerald-800">Classmate #3</div>
           <div>Name: ______________</div>
           <div>Score: _____________</div>
           <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"Good job!"</div>
+          <div class="text-[10px] text-slate-500 italic">"They said: Great kick!"</div>
         </div>
       </div>
     </div>
 
-    <!-- Section 4: Teacher Grading Stamp & QR Code -->
+    <!-- Part 4: Assessment & Scannable QR Code -->
     <div class="grid grid-cols-12 gap-3 items-center pt-1 text-xs">
       <div class="col-span-8 border border-slate-400 rounded-lg p-2.5 bg-slate-50">
         <div class="font-black text-slate-900 text-xs mb-1 flex items-center justify-between">
           <span>TEACHER ASSESSMENT &amp; XP VERIFICATION</span>
           <span class="text-amber-800 font-extrabold text-sm">TOTAL: ______ / 100 XP</span>
         </div>
-        <div class="grid grid-cols-4 gap-1 text-[11px]">
-          <div><span class="checkbox-square"></span> 50 XP Craft</div>
-          <div><span class="checkbox-square"></span> 30 XP Rules</div>
-          <div><span class="checkbox-square"></span> 20 XP Host</div>
-          <div><span class="checkbox-square"></span> +15 XP Bonus</div>
+        <div class="grid grid-cols-3 gap-1 text-[11px]">
+          <div><span class="checkbox-square"></span> 50 XP Craft Master</div>
+          <div><span class="checkbox-square"></span> 30 XP English Rulebook</div>
+          <div><span class="checkbox-square"></span> 20 XP Arcade Host</div>
         </div>
       </div>
-      <!-- QR Code Placeholder Frame -->
       <div class="col-span-4 border-2 border-dashed border-slate-400 rounded-lg p-2 flex items-center gap-2">
-        <!-- SVG simulated QR code -->
         <svg viewBox="0 0 60 60" class="w-12 h-12 flex-shrink-0">
           <rect width="60" height="60" fill="#ffffff"/>
-          <!-- Position squares -->
           <rect x="5" y="5" width="16" height="16" fill="#111827"/>
           <rect x="8" y="8" width="10" height="10" fill="#ffffff"/>
           <rect x="10" y="10" width="6" height="6" fill="#111827"/>
@@ -1656,7 +1153,6 @@
           <rect x="5" y="39" width="16" height="16" fill="#111827"/>
           <rect x="8" y="42" width="10" height="10" fill="#ffffff"/>
           <rect x="10" y="44" width="6" height="6" fill="#111827"/>
-          <!-- Random dots -->
           <rect x="25" y="10" width="4" height="4" fill="#111827"/>
           <rect x="30" y="15" width="4" height="4" fill="#111827"/>
           <rect x="25" y="25" width="8" height="8" fill="#111827"/>
@@ -1673,7 +1169,8 @@
   </section>
 
   <!-- =========================================================
-       MODAL 1: YOUTUBE VIDEO TUTORIAL VIEWER
+       MODAL 1: VERIFIED YOUTUBE VIDEO TUTORIAL VIEWER
+       (Includes dual tab switcher for Yut Nori Sticks vs Dice)
        ========================================================= -->
   <div id="video-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-3xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl space-y-4 p-5">
@@ -1685,14 +1182,24 @@
         <button onclick="closeVideoModal()" class="text-slate-400 hover:text-white text-2xl font-bold px-2 py-1 rounded-lg">✕</button>
       </div>
 
+      <!-- Yut Nori Dual Option Tabs (Hidden by default, shown only for Yut Nori) -->
+      <div id="yut-video-tabs" class="hidden flex items-center gap-2 p-1 bg-slate-900 rounded-xl border border-white/10 text-xs">
+        <button id="yut-tab-sticks" onclick="switchYutVideo('sticks')" class="flex-1 py-1.5 px-3 rounded-lg font-bold bg-violet-600 text-white">
+          🥢 1. 4 Yut Sticks Tutorial
+        </button>
+        <button id="yut-tab-dice" onclick="switchYutVideo('dice')" class="flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-300 hover:text-white">
+          🎲 2. Alternative Paper Dice Tutorial
+        </button>
+      </div>
+
       <!-- Responsive 16:9 Iframe Container -->
       <div class="relative w-full pb-[56.25%] rounded-2xl overflow-hidden bg-slate-950 border border-white/10">
-        <iframe id="modal-video-iframe" class="absolute inset-0 w-full h-full" src="" title="Video Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="modal-video-iframe" class="absolute inset-0 w-full h-full" src="" title="YouTube Video Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
 
       <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
         <span id="modal-video-desc">Step-by-step DIY recycled craft tutorial</span>
-        <a id="modal-video-fallback" href="#" target="_blank" class="text-amber-400 hover:underline flex items-center gap-1">
+        <a id="modal-video-fallback" href="#" target="_blank" class="text-amber-400 hover:underline flex items-center gap-1 font-bold">
           <span>Open on YouTube ↗</span>
         </a>
       </div>
@@ -1700,32 +1207,23 @@
   </div>
 
   <!-- =========================================================
-       MODAL 2: SWAP STUDENTS DIALOG
+       MODAL 2: EDIT STUDENT NAMES MODAL
        ========================================================= -->
-  <div id="swap-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div id="edit-roster-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-md rounded-3xl border border-white/20 p-6 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <h3 class="text-lg font-black text-white flex items-center gap-2">
-          <span>⇄</span> Swap Two Students
+          <span>✏️</span> Edit Names for <span id="modal-class-label">Class 3A</span>
         </h3>
-        <button onclick="closeSwapModal()" class="text-slate-400 hover:text-white text-2xl font-bold">✕</button>
+        <button onclick="closeEditRosterModal()" class="text-slate-400 hover:text-white text-2xl font-bold">✕</button>
       </div>
       <p class="text-xs text-slate-300">
-        Select two students below to swap their assigned game stations:
+        Paste or edit student names below (one per line or separated by commas):
       </p>
-      <div class="space-y-3">
-        <div>
-          <label class="text-xs font-bold text-slate-400 block mb-1">Student 1:</label>
-          <select id="swap-student-1" class="w-full bg-slate-950 text-white text-xs p-2.5 rounded-xl border border-white/20"></select>
-        </div>
-        <div>
-          <label class="text-xs font-bold text-slate-400 block mb-1">Student 2:</label>
-          <select id="swap-student-2" class="w-full bg-slate-950 text-white text-xs p-2.5 rounded-xl border border-white/20"></select>
-        </div>
-      </div>
+      <textarea id="modal-roster-textarea" rows="8" class="w-full bg-slate-950 text-white text-xs p-3 rounded-xl border border-white/20 font-mono focus:outline-none focus:border-amber-400"></textarea>
       <div class="flex gap-2 pt-2">
-        <button onclick="closeSwapModal()" class="flex-1 btn-3d btn-slate py-2 rounded-xl text-xs font-bold">Cancel</button>
-        <button onclick="executeSwap()" class="flex-1 btn-3d btn-amber py-2 rounded-xl text-xs font-black">Confirm Swap</button>
+        <button onclick="closeEditRosterModal()" class="flex-1 btn-3d btn-slate py-2.5 rounded-xl text-xs font-bold">Cancel</button>
+        <button onclick="saveEditedRoster()" class="flex-1 btn-3d btn-amber py-2.5 rounded-xl text-xs font-black">Save &amp; Update</button>
       </div>
     </div>
   </div>
@@ -1735,19 +1233,20 @@
        ========================================================= -->
   <script>
     /* =========================================================
-       1. DATA STRUCTURES & DEFAULT ROSTERS
+       1. DATA STRUCTURES & VERIFIED VIDEOS
        ========================================================= */
-    const DEFAULT_ROSTER_3A = [
-      "Ali", "Aylin", "Can", "Defne", "Deniz", "Ege", "Elif", "Emre", 
-      "Kerem", "Leyla", "Mehmet", "Melis", "Mert", "Mira", "Selin", 
-      "Tolga", "Umut", "Yagmur", "Zeynep"
-    ];
-
-    const DEFAULT_ROSTER_3B = [
-      "Arda", "Asya", "Batu", "Beren", "Burak", "Cansu", "Demir", "Duru", 
-      "Ela", "Emir", "Eren", "Ipek", "Kaan", "Kuzey", "Nil", "Ozan", 
-      "Ruzgar", "Sarp", "Tuana"
-    ];
+    const ROSTERS = {
+      "3A": [
+        "Ali", "Aylin", "Can", "Defne", "Deniz", "Ege", "Elif", "Emre", 
+        "Kerem", "Leyla", "Mehmet", "Melis", "Mert", "Mira", "Selin", 
+        "Tolga", "Umut", "Yagmur", "Zeynep"
+      ],
+      "3B": [
+        "Arda", "Asya", "Batu", "Beren", "Burak", "Cansu", "Demir", "Duru", 
+        "Ela", "Emir", "Eren", "Ipek", "Kaan", "Kuzey", "Nil", "Ozan", 
+        "Ruzgar", "Sarp", "Tuana"
+      ]
+    };
 
     const GAMES_INFO = [
       {
@@ -1757,7 +1256,9 @@
         theme: "blue",
         colorHex: "#2563eb",
         badgeClass: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-        videoUrl: "https://www.youtube.com/embed/Pj1e7zV2U6o",
+        videoEmbed: "https://www.youtube-nocookie.com/embed/SQgJBrJiipU",
+        videoWatch: "https://www.youtube.com/watch?v=SQgJBrJiipU",
+        chant: "Hit the card and flip it over!",
         icon: "🟦"
       },
       {
@@ -1767,18 +1268,22 @@
         theme: "rose",
         colorHex: "#e11d48",
         badgeClass: "bg-rose-500/20 text-rose-400 border-rose-500/30",
-        videoUrl: "https://www.youtube.com/embed/z5N2hE_2p6w",
+        videoEmbed: "https://www.youtube-nocookie.com/embed/JBxoY_4VddI",
+        videoWatch: "https://www.youtube.com/watch?v=JBxoY_4VddI",
+        chant: "Twist the top and make it spin!",
         icon: "🌀"
       },
       {
-        id: "tuho",
-        nameEn: "Tuho",
-        nameKr: "투호",
+        id: "gonggi",
+        nameEn: "Gonggi",
+        nameKr: "공기놀이",
         theme: "amber",
         colorHex: "#f59e0b",
         badgeClass: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-        videoUrl: "https://www.youtube.com/embed/PqKjP6sM2g4",
-        icon: "🏹"
+        videoEmbed: "https://www.youtube-nocookie.com/embed/DpA6rFZQMNk",
+        videoWatch: "https://www.youtube.com/watch?v=DpA6rFZQMNk",
+        chant: "Toss the Gonggi and catch them fast!",
+        icon: "🪨"
       },
       {
         id: "jegichagi",
@@ -1787,7 +1292,9 @@
         theme: "emerald",
         colorHex: "#10b981",
         badgeClass: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-        videoUrl: "https://www.youtube.com/embed/qgWn7vK6v8I",
+        videoEmbed: "https://www.youtube-nocookie.com/embed/rJQh5Qu1gco",
+        videoWatch: "https://www.youtube.com/watch?v=rJQh5Qu1gco",
+        chant: "Kick it high and keep it in the air!",
         icon: "🥏"
       },
       {
@@ -1797,22 +1304,23 @@
         theme: "violet",
         colorHex: "#8b5cf6",
         badgeClass: "bg-violet-500/20 text-violet-400 border-violet-500/30",
-        videoUrl: "https://www.youtube.com/embed/c8xK6jH8M2A",
+        videoEmbed: "https://www.youtube-nocookie.com/embed/2aT1WQnnjAY",
+        videoWatch: "https://www.youtube.com/watch?v=2aT1WQnnjAY",
+        videoDiceEmbed: "https://www.youtube-nocookie.com/embed/8DwMw0oOE1w",
+        videoDiceWatch: "https://www.youtube.com/watch?v=8DwMw0oOE1w",
+        chant: "Roll the dice, move your pieces home!",
         icon: "🥢"
       }
     ];
 
-    // Global Reactive App State
     let currentClass = '3A';
-    let currentDraw = {}; // { ddakji: [names], paengi: [names], ... }
-    let studentAssignments = {}; // { "Ali": "ddakji", ... }
-    let studentXPData = {}; // { "Ali": { q1: true, q2: false, q3: false, eco: false, spirit: false, english: false, xp: 50 } }
-    let activeGapInput = null;
+    let currentDraw = {};
+    let studentAssignments = {};
+    let studentXPData = {};
     let audioMuted = false;
 
     /* =========================================================
-       2. NATIVE WEB AUDIO SYNTHESIZER (NO EXTERNAL AUDIO FILES)
-       Synthesizes dual-oscillator polyphonic ADSR chords
+       2. NATIVE WEB AUDIO SYNTHESIZER
        ========================================================= */
     class ChuseokSoundboard {
       constructor() {
@@ -1821,15 +1329,12 @@
       init() {
         if (!this.ctx) {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) {
-            this.ctx = new AudioContextClass();
-          }
+          if (AudioContextClass) this.ctx = new AudioContextClass();
         }
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
       }
-
       playClick() {
         if (audioMuted) return;
         this.init();
@@ -1847,15 +1352,12 @@
         osc.start(now);
         osc.stop(now + 0.045);
       }
-
       playChime() {
         if (audioMuted) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        // Pentatonic C-E-G ascending chime
-        const freqs = [523.25, 659.25, 783.99];
-        freqs.forEach((freq, idx) => {
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
@@ -1869,13 +1371,11 @@
           osc.stop(now + idx * 0.08 + 0.42);
         });
       }
-
       playFanfare() {
         if (audioMuted) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        // Triumphant 4-note chord C5 - E5 - G5 - C6
         const notes = [
           { f: 523.25, t: 0.0, d: 0.15 },
           { f: 659.25, t: 0.12, d: 0.15 },
@@ -1889,7 +1389,7 @@
           osc1.type = 'triangle';
           osc2.type = 'sine';
           osc1.frequency.setValueAtTime(n.f, now + n.t);
-          osc2.frequency.setValueAtTime(n.f * 1.003, now + n.t); // slight chorus
+          osc2.frequency.setValueAtTime(n.f * 1.003, now + n.t);
           gain.gain.setValueAtTime(0, now + n.t);
           gain.gain.linearRampToValueAtTime(0.3, now + n.t + 0.03);
           gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
@@ -1902,7 +1402,6 @@
           osc2.stop(now + n.t + n.d + 0.02);
         });
       }
-
       playTick() {
         if (audioMuted) return;
         this.init();
@@ -1919,7 +1418,6 @@
         osc.start(now);
         osc.stop(now + 0.035);
       }
-
       playTock() {
         if (audioMuted) return;
         this.init();
@@ -1936,15 +1434,12 @@
         osc.start(now);
         osc.stop(now + 0.035);
       }
-
       playSoftFail() {
         if (audioMuted) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        // Warm descending two-tone sine chime (246.94 Hz -> 220 Hz)
-        const notes = [246.94, 220.00];
-        notes.forEach((freq, idx) => {
+        [246.94, 220.00].forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
@@ -1970,13 +1465,12 @@
     }
 
     /* =========================================================
-       3. ROSTER MANAGEMENT & FAIR ALLOCATION ALGORITHM
+       3. CLASS ROSTER & FAIR DRAW ENGINE (4,4,4,4,3 SPLIT)
        ========================================================= */
-    function initRoster() {
+    function initApp() {
       const savedClass = localStorage.getItem('chuseok_selected_class') || '3A';
       switchClass(savedClass, false);
 
-      // Load saved sound preference
       if (localStorage.getItem('chuseok_sfx_muted') === '1') {
         audioMuted = true;
         document.getElementById('sound-icon').textContent = '🔇';
@@ -1984,14 +1478,27 @@
       }
     }
 
+    function getActiveRoster() {
+      const saved = localStorage.getItem(`chuseok_roster_${currentClass}`);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch(e) {}
+      }
+      return [...ROSTERS[currentClass]];
+    }
+
     function switchClass(cls, playSfx = true) {
       currentClass = cls;
       localStorage.setItem('chuseok_selected_class', cls);
       if (playSfx) soundEngine.playClick();
 
+      document.getElementById('current-class-label').textContent = `Class ${cls}`;
+      document.getElementById('modal-class-label').textContent = `Class ${cls}`;
+
       const btnA = document.getElementById('class-3a-btn');
       const btnB = document.getElementById('class-3b-btn');
-
       if (cls === '3A') {
         btnA.className = "btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition";
         btnB.className = "btn-3d btn-slate px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition";
@@ -2000,17 +1507,8 @@
         btnA.className = "btn-3d btn-slate px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition";
       }
 
-      // Check for saved custom roster in localStorage or fallback to defaults
-      const savedRoster = localStorage.getItem(`chuseok_roster_${cls}`);
-      const textarea = document.getElementById('roster-textarea');
-      if (savedRoster) {
-        textarea.value = savedRoster;
-      } else {
-        const defaultList = (cls === '3A') ? DEFAULT_ROSTER_3A : DEFAULT_ROSTER_3B;
-        textarea.value = defaultList.join('\n');
-      }
-
-      updateRosterCount();
+      const list = getActiveRoster();
+      document.getElementById('roster-count').textContent = list.length;
 
       // Check for saved draw
       const savedDrawJson = localStorage.getItem(`chuseok_draw_${cls}`);
@@ -2021,48 +1519,16 @@
           renderStations();
           populateStudentSelect();
           return;
-        } catch (e) {
-          console.warn("Failed to parse saved draw", e);
-        }
+        } catch(e) {}
       }
 
-      // If no saved draw, run fair assignment
-      spinAndAssignGames(false);
+      // If none, run initial draw
+      spinAndDrawGames(false);
     }
 
-    function resetRosterToDefault() {
-      soundEngine.playClick();
-      const defaultList = (currentClass === '3A') ? DEFAULT_ROSTER_3A : DEFAULT_ROSTER_3B;
-      document.getElementById('roster-textarea').value = defaultList.join('\n');
-      localStorage.removeItem(`chuseok_roster_${currentClass}`);
-      updateRosterCount();
-      spinAndAssignGames(true);
-      showToast("Roster reset to 19 standard students.");
-    }
-
-    function getStudentList() {
-      const text = document.getElementById('roster-textarea').value;
-      return text
-        .split(/[\n,]+/)
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
-    }
-
-    function updateRosterCount() {
-      const list = getStudentList();
-      document.getElementById('roster-count').textContent = list.length;
-      localStorage.setItem(`chuseok_roster_${currentClass}`, document.getElementById('roster-textarea').value);
-    }
-
-    /* Fair Allocation Algorithm:
-       For 19 students and 5 games: 4 games receive 4 students, 1 game receives 3 students.
-       Balanced across any roster length N. */
-    function spinAndAssignGames(animate = true) {
-      const students = getStudentList();
-      if (students.length === 0) {
-        showToast("Please enter at least one student name!");
-        return;
-      }
+    function spinAndDrawGames(animate = true) {
+      const students = getActiveRoster();
+      if (students.length === 0) return;
 
       if (animate) {
         soundEngine.init();
@@ -2075,36 +1541,34 @@
           ticks++;
           if (ticks > 10) {
             clearInterval(tickInterval);
-            finishAssignment(students);
+            executeFairDraw(students);
             spinBtn.disabled = false;
             soundEngine.playFanfare();
             triggerConfetti();
           }
         }, 80);
       } else {
-        finishAssignment(students);
+        executeFairDraw(students);
       }
     }
 
-    function finishAssignment(students) {
-      // Fisher-Yates shuffle
+    function executeFairDraw(students) {
       const shuffled = [...students];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
 
-      // Initialize games
       currentDraw = {
         ddakji: [],
         paengi: [],
-        tuho: [],
+        gonggi: [],
         jegichagi: [],
         yutnori: []
       };
 
       const gameKeys = Object.keys(currentDraw);
-      // Distribute sequentially to guarantee fair balance (e.g. 4,4,4,4,3)
+      // Automatic 4, 4, 4, 4, 3 distribution across the 5 stations
       shuffled.forEach((student, index) => {
         const targetGame = gameKeys[index % gameKeys.length];
         currentDraw[targetGame].push(student);
@@ -2113,8 +1577,8 @@
       rebuildStudentMap();
       renderStations();
       populateStudentSelect();
-      saveDrawToStorage(false);
-      showToast(`Fairly assigned ${students.length} students across 5 stations!`);
+      localStorage.setItem(`chuseok_draw_${currentClass}`, JSON.stringify(currentDraw));
+      showToast(`Fairly balanced ${students.length} students across 5 stations!`);
     }
 
     function rebuildStudentMap() {
@@ -2133,15 +1597,13 @@
       GAMES_INFO.forEach(game => {
         const assigned = currentDraw[game.id] || [];
         const card = document.createElement('div');
-        card.className = `glass-card rounded-2xl p-3 border border-white/15 space-y-2.5 relative overflow-hidden`;
+        card.className = "glass-card rounded-2xl p-3 border border-white/15 space-y-2.5 relative overflow-hidden flex flex-col justify-between";
 
-        // Accent top border line
         const borderLine = document.createElement('div');
-        borderLine.className = `h-1 w-full rounded-t-full`;
+        borderLine.className = "h-1 w-full rounded-t-full";
         borderLine.style.backgroundColor = game.colorHex;
         card.appendChild(borderLine);
 
-        // Header
         const header = document.createElement('div');
         header.className = "flex items-center justify-between";
         header.innerHTML = `
@@ -2151,36 +1613,33 @@
             <span class="text-[10px] text-slate-400 font-bold">(${game.nameKr})</span>
           </div>
           <span class="px-2 py-0.5 rounded-full text-[10px] font-black ${game.badgeClass}">
-            ${assigned.length} students
+            ${assigned.length}
           </span>
         `;
         card.appendChild(header);
 
-        // Students Pills
         const pillsWrap = document.createElement('div');
-        pillsWrap.className = "flex flex-wrap gap-1 min-h-[48px]";
+        pillsWrap.className = "flex flex-col gap-1 min-h-[90px]";
 
         if (assigned.length === 0) {
-          pillsWrap.innerHTML = `<span class="text-[11px] text-slate-500 italic p-1">No students yet</span>`;
+          pillsWrap.innerHTML = `<span class="text-[11px] text-slate-500 italic p-1">No students</span>`;
         } else {
           assigned.forEach(student => {
             const pill = document.createElement('div');
-            pill.className = "inline-flex items-center gap-1 bg-slate-900/90 text-slate-200 px-2 py-1 rounded-lg text-xs font-semibold border border-white/10 hover:border-amber-400/50 transition group";
+            pill.className = "flex items-center justify-between bg-slate-900/90 text-slate-200 px-2 py-1 rounded-lg text-xs font-semibold border border-white/10";
             pill.innerHTML = `
               <span>${student}</span>
-              <button onclick="reRollSingleStudent('${student}', '${game.id}')" class="opacity-40 group-hover:opacity-100 hover:text-amber-400 text-[10px]" title="Re-roll to another station">🎲</button>
+              <button onclick="reRollStudent('${student}', '${game.id}')" class="text-slate-400 hover:text-amber-400 text-[11px]" title="Re-roll to another station">🎲</button>
             `;
             pillsWrap.appendChild(pill);
           });
         }
         card.appendChild(pillsWrap);
 
-        // Station quick jump link
         const footer = document.createElement('div');
-        footer.className = "pt-1 flex items-center justify-between text-[11px]";
+        footer.className = "pt-1 border-t border-white/10 text-center";
         footer.innerHTML = `
-          <button onclick="scrollToSection('game-card-${game.id}')" class="text-slate-400 hover:text-white transition">View Station &rarr;</button>
-          <button onclick="openPrintForGame('${game.nameEn}')" class="text-amber-400 hover:text-amber-300 font-bold">Print Card</button>
+          <button onclick="scrollToSection('game-card-${game.id}')" class="text-[11px] text-slate-400 hover:text-white transition">Jump to Card &rarr;</button>
         `;
         card.appendChild(footer);
 
@@ -2188,7 +1647,7 @@
       });
     }
 
-    function reRollSingleStudent(studentName, fromGameId) {
+    function reRollStudent(studentName, fromGameId) {
       soundEngine.playClick();
       const otherGames = GAMES_INFO.map(g => g.id).filter(id => id !== fromGameId);
       const targetGameId = otherGames[Math.floor(Math.random() * otherGames.length)];
@@ -2199,76 +1658,11 @@
       rebuildStudentMap();
       renderStations();
       populateStudentSelect();
-      saveDrawToStorage(false);
+      localStorage.setItem(`chuseok_draw_${currentClass}`, JSON.stringify(currentDraw));
       showToast(`${studentName} moved to ${targetGameId}!`);
     }
 
-    function toggleSwapMode() {
-      soundEngine.playClick();
-      const students = getStudentList();
-      if (students.length < 2) {
-        showToast("Need at least 2 students to swap!");
-        return;
-      }
-      const select1 = document.getElementById('swap-student-1');
-      const select2 = document.getElementById('swap-student-2');
-      select1.innerHTML = '';
-      select2.innerHTML = '';
-
-      students.forEach((s, idx) => {
-        const game = studentAssignments[s] || 'unassigned';
-        const opt1 = new Option(`${s} (${game})`, s);
-        const opt2 = new Option(`${s} (${game})`, s);
-        if (idx === 1) opt2.selected = true;
-        select1.add(opt1);
-        select2.add(opt2);
-      });
-
-      document.getElementById('swap-modal').classList.remove('hidden');
-    }
-
-    function closeSwapModal() {
-      soundEngine.playClick();
-      document.getElementById('swap-modal').classList.add('hidden');
-    }
-
-    function executeSwap() {
-      const s1 = document.getElementById('swap-student-1').value;
-      const s2 = document.getElementById('swap-student-2').value;
-      if (s1 === s2) {
-        showToast("Please choose two different students!");
-        return;
-      }
-
-      const g1 = studentAssignments[s1];
-      const g2 = studentAssignments[s2];
-
-      if (!g1 || !g2) {
-        showToast("Both students must be assigned to stations!");
-        return;
-      }
-
-      currentDraw[g1] = currentDraw[g1].map(name => name === s1 ? s2 : name);
-      currentDraw[g2] = currentDraw[g2].map(name => name === s2 ? s1 : name);
-
-      rebuildStudentMap();
-      renderStations();
-      populateStudentSelect();
-      saveDrawToStorage(false);
-      soundEngine.playChime();
-      closeSwapModal();
-      showToast(`Swapped ${s1} and ${s2}!`);
-    }
-
-    function saveDrawToStorage(notify = true) {
-      localStorage.setItem(`chuseok_draw_${currentClass}`, JSON.stringify(currentDraw));
-      if (notify) {
-        soundEngine.playChime();
-        showToast(`Saved Class ${currentClass} draw!`);
-      }
-    }
-
-    function copyRosterToClipboard() {
+    function copyRosterAssignments() {
       soundEngine.playClick();
       let text = `=== CHUSEOK GAME MASTER DRAW (Class ${currentClass}) ===\n\n`;
       GAMES_INFO.forEach(g => {
@@ -2276,155 +1670,93 @@
         text += `• ${g.nameEn} (${g.nameKr}) [${list.length}]: ${list.join(', ')}\n`;
       });
       navigator.clipboard.writeText(text).then(() => {
-        showToast("Copied assignment roster to clipboard!");
+        showToast("Copied draw assignments to clipboard!");
       });
     }
 
-    function printDrawAssignments() {
+    function openEditRosterModal() {
       soundEngine.playClick();
-      window.print();
+      const list = getActiveRoster();
+      document.getElementById('modal-roster-textarea').value = list.join('\n');
+      document.getElementById('edit-roster-modal').classList.remove('hidden');
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('status-toast');
-      toast.textContent = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-      }, 3500);
+    function closeEditRosterModal() {
+      soundEngine.playClick();
+      document.getElementById('edit-roster-modal').classList.add('hidden');
+    }
+
+    function saveEditedRoster() {
+      soundEngine.playClick();
+      const text = document.getElementById('modal-roster-textarea').value;
+      const list = text.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      if (list.length === 0) {
+        showToast("Please enter at least one name!");
+        return;
+      }
+      localStorage.setItem(`chuseok_roster_${currentClass}`, JSON.stringify(list));
+      closeEditRosterModal();
+      document.getElementById('roster-count').textContent = list.length;
+      spinAndDrawGames(true);
+      showToast(`Updated Class ${currentClass} roster (${list.length} students)!`);
     }
 
     /* =========================================================
-       4. INTERACTIVE GAP-FILL & WORD BANK ENGINE
+       4. SIMPLIFIED A1+ CARD INTERACTION
        ========================================================= */
-    // Focus tracking for blank entry fields
-    document.addEventListener('focusin', (e) => {
-      if (e.target.classList.contains('gap-input')) {
-        activeGapInput = e.target;
-      }
-    });
-
-    function fillActiveBlank(gameId, word) {
+    function toggleMaterial(el) {
       soundEngine.playClick();
-      // If user has focused a specific gap input in that game, fill it
-      if (activeGapInput && activeGapInput.getAttribute('data-game') === gameId) {
-        activeGapInput.value = word;
-        activeGapInput.classList.remove('incorrect');
-        // Advance to next gap input
-        const nextIdx = parseInt(activeGapInput.getAttribute('data-idx')) + 1;
-        const nextInput = document.querySelector(`.gap-input[data-game="${gameId}"][data-idx="${nextIdx}"]`);
-        if (nextInput) {
-          nextInput.focus();
-          activeGapInput = nextInput;
-        }
-        return;
-      }
+      el.classList.toggle('selected');
+    }
 
-      // Otherwise find first empty gap input in this game
-      const inputs = document.querySelectorAll(`.gap-input[data-game="${gameId}"]`);
-      for (const input of inputs) {
-        if (!input.value.trim()) {
-          input.value = word;
-          input.classList.remove('incorrect');
-          input.focus();
-          activeGapInput = input;
-          break;
-        }
+    function fillGameBlank(gameId, word) {
+      soundEngine.playClick();
+      const input = document.querySelector(`.gap-input[data-game="${gameId}"]`);
+      if (input) {
+        input.value = word;
+        input.classList.remove('incorrect');
+        input.focus();
       }
     }
 
-    function clearGameBlanks(gameId) {
-      soundEngine.playClick();
-      const inputs = document.querySelectorAll(`.gap-input[data-game="${gameId}"]`);
-      inputs.forEach(inp => {
-        inp.value = '';
-        inp.className = 'gap-input';
-      });
+    function checkSimpleBlank(gameId) {
+      const input = document.querySelector(`.gap-input[data-game="${gameId}"]`);
       const feedback = document.getElementById(`feedback-${gameId}`);
-      if (feedback) {
-        feedback.innerHTML = `<span>Status: Fill all 6 blanks</span>`;
-        feedback.className = "text-xs font-bold text-slate-400 flex items-center gap-1.5";
-      }
-    }
+      if (!input || !feedback) return;
 
-    function checkGameAnswers(gameId) {
-      const inputs = document.querySelectorAll(`.gap-input[data-game="${gameId}"]`);
-      let allCorrect = true;
-      let filledCount = 0;
+      const expected = input.getAttribute('data-answer').toLowerCase();
+      const actual = input.value.trim().toLowerCase();
 
-      inputs.forEach(inp => {
-        const expected = inp.getAttribute('data-answer').toLowerCase();
-        const actual = inp.value.trim().toLowerCase();
-
-        if (actual.length > 0) filledCount++;
-
-        if (actual === expected) {
-          inp.className = 'gap-input correct';
-        } else {
-          allCorrect = false;
-          inp.className = 'gap-input incorrect anim-wobble';
-          setTimeout(() => inp.classList.remove('anim-wobble'), 500);
-        }
-      });
-
-      const feedback = document.getElementById(`feedback-${gameId}`);
-
-      if (filledCount < inputs.length) {
+      if (!actual) {
         soundEngine.playSoftFail();
-        feedback.className = "text-xs font-bold text-rose-400 flex items-center gap-1.5";
-        feedback.innerHTML = `<span>⚠️ Please fill all 6 blanks first!</span>`;
+        feedback.textContent = "⚠️ Please choose a word from the bank!";
+        feedback.className = "text-[11px] font-bold text-rose-400";
         return;
       }
 
-      if (allCorrect) {
+      if (actual === expected) {
         soundEngine.playChime();
-        feedback.className = "text-xs font-bold text-emerald-400 flex items-center gap-1.5";
-        feedback.innerHTML = `<span>🎉 Perfect! 6/6 correct! +20 XP awarded!</span>`;
-
-        // Card success animation
+        input.className = "gap-input correct";
+        feedback.textContent = "🎉 Correct! +20 XP awarded!";
+        feedback.className = "text-[11px] font-bold text-emerald-400";
         const card = document.getElementById(`game-card-${gameId}`);
         card.classList.add('anim-success');
-        setTimeout(() => card.classList.remove('anim-success'), 850);
-
-        // Award XP to active student
+        setTimeout(() => card.classList.remove('anim-success'), 800);
         awardActiveStudentXP(20);
       } else {
         soundEngine.playSoftFail();
-        feedback.className = "text-xs font-bold text-rose-400 flex items-center gap-1.5";
-        feedback.innerHTML = `<span>Almost! Check the highlighted words and try again!</span>`;
+        input.className = "gap-input incorrect anim-wobble";
+        setTimeout(() => input.classList.remove('anim-wobble'), 500);
+        feedback.textContent = "Almost! Try the other word!";
+        feedback.className = "text-[11px] font-bold text-rose-400";
       }
     }
 
-    /* TTS Audio Narration (Calibrated strictly to AGENTS.md: rate 0.88, pitch 1.05, en-US) */
-    function speakExercise(exerciseKey) {
+    function speakChant(text) {
       soundEngine.init();
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
-
-      let textToRead = "";
-      if (exerciseKey === 'ddakji-craft') {
-        textToRead = "First, fold two square sheets of paper into thirds. Next, cross them and wrap the four flaps to lock the tile. Finally, use tape to make the tile heavy and strong!";
-      } else if (exerciseKey === 'ddakji-rules') {
-        textToRead = "Put one tile flat on the floor. It's your turn! Slam your tile down hard! If the bottom tile flips over, you win a point!";
-      } else if (exerciseKey === 'paengi-craft') {
-        textToRead = "First, cut three circles from thick cardboard. Next, poke a wooden skewer right through the center. Finally, wind the pull-string tightly around the wooden stem.";
-      } else if (exerciseKey === 'paengi-rules') {
-        textToRead = "Hold the top steady and pull the string fast! Watch it spin on the smooth floor! The top that spins longest wins the round!";
-      } else if (exerciseKey === 'tuho-craft') {
-        textToRead = "First, find a tall container or empty jar. Next, tape paper wings onto four wooden chopsticks. Finally, test your safe throwing arrows!";
-      } else if (exerciseKey === 'tuho-rules') {
-        textToRead = "Stand two big steps behind the line. Aim carefully and toss the arrow into the jar! Nice throw! You get one point!";
-      } else if (exerciseKey === 'jegi-craft') {
-        textToRead = "First, place a round coin inside a plastic bag. Next, tie the bag tightly above the coin with a rubber band. Finally, cut the top bag into fringe strips!";
-      } else if (exerciseKey === 'jegi-rules') {
-        textToRead = "Drop the shuttlecock and kick it with the inside of your foot! Keep the jegi up in the air! Count out loud: one, two, three! Great kick!";
-      } else if (exerciseKey === 'yut-craft') {
-        textToRead = "First, gather four flat craft or popsicle sticks. Next, draw an X mark on the flat side of each stick. Finally, make the square race map on a sheet of paper!";
-      } else if (exerciseKey === 'yut-rules') {
-        textToRead = "Hold the four wooden sticks and toss them gently into the air! Count how many flat sides land face up! Move your bottle cap token around the board!";
-      }
-
-      const utterance = new SpeechSynthesisUtterance(textToRead);
+      const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
       utterance.rate = 0.88;
       utterance.pitch = 1.05;
@@ -2432,11 +1764,11 @@
     }
 
     /* =========================================================
-       5. 100 XP QUEST TRACKER ENGINE
+       5. 100 XP QUEST LOG ENGINE
        ========================================================= */
     function populateStudentSelect() {
       const select = document.getElementById('student-select');
-      const students = getStudentList();
+      const students = getActiveRoster();
       select.innerHTML = '';
 
       students.forEach(s => {
@@ -2462,32 +1794,17 @@
       document.getElementById('tracker-student-class').textContent = currentClass;
       document.getElementById('tracker-assigned-game').textContent = `${gameObj.nameEn} (${gameObj.nameKr})`;
 
-      // Also update the print preview slot
-      const printNameSlots = document.querySelectorAll('.print-name-slot');
-      printNameSlots.forEach(s => s.textContent = studentName);
-      const printGameSlots = document.querySelectorAll('.print-game-slot');
-      printGameSlots.forEach(s => s.textContent = `${gameObj.nameEn} (${gameObj.nameKr})`);
+      document.querySelectorAll('.print-name-slot').forEach(s => s.textContent = studentName);
+      document.querySelectorAll('.print-game-slot').forEach(s => s.textContent = `${gameObj.nameEn} (${gameObj.nameKr})`);
 
-      // Load or initialize student XP data
       if (!studentXPData[studentName]) {
-        studentXPData[studentName] = {
-          q1: false,
-          q2: false,
-          q3: false,
-          eco: false,
-          spirit: false,
-          english: false,
-          xp: 0
-        };
+        studentXPData[studentName] = { q1: false, q2: false, q3: false, xp: 0 };
       }
 
       const data = studentXPData[studentName];
       document.getElementById('quest-1-check').checked = !!data.q1;
       document.getElementById('quest-2-check').checked = !!data.q2;
       document.getElementById('quest-3-check').checked = !!data.q3;
-      document.getElementById('badge-eco-check').checked = !!data.eco;
-      document.getElementById('badge-spirit-check').checked = !!data.spirit;
-      document.getElementById('badge-english-check').checked = !!data.english;
 
       updateXPBar(data.xp);
     }
@@ -2502,31 +1819,10 @@
       const check = document.getElementById(`quest-${qNum}-check`);
       data[`q${qNum}`] = check.checked;
 
-      recalculateStudentXP(studentName);
-    }
-
-    function toggleBonus(bonusKey) {
-      soundEngine.playClick();
-      const select = document.getElementById('student-select');
-      const studentName = select.value;
-      if (!studentName) return;
-
-      const data = studentXPData[studentName];
-      const check = document.getElementById(`badge-${bonusKey}-check`);
-      data[bonusKey] = check.checked;
-
-      recalculateStudentXP(studentName);
-    }
-
-    function recalculateStudentXP(studentName) {
-      const data = studentXPData[studentName];
       let xp = 0;
       if (data.q1) xp += 50;
       if (data.q2) xp += 30;
       if (data.q3) xp += 20;
-      if (data.eco) xp += 15;
-      if (data.spirit) xp += 15;
-      if (data.english) xp += 15;
 
       data.xp = xp;
       updateXPBar(xp);
@@ -2542,10 +1838,8 @@
       const studentName = select.value;
       if (!studentName) return;
 
-      if (!studentXPData[studentName]) {
-        studentXPData[studentName] = { xp: 0 };
-      }
-      studentXPData[studentName].xp = (studentXPData[studentName].xp || 0) + amount;
+      if (!studentXPData[studentName]) studentXPData[studentName] = { xp: 0 };
+      studentXPData[studentName].xp = Math.min(100, (studentXPData[studentName].xp || 0) + amount);
       updateXPBar(studentXPData[studentName].xp);
     }
 
@@ -2561,31 +1855,56 @@
       if (xp >= 100) {
         rankBadge.innerHTML = `<span>🏆</span> Title: Certified Game Master!`;
         rankBadge.className = "font-black text-emerald-400 flex items-center gap-1";
-      } else if (xp >= 70) {
-        rankBadge.innerHTML = `<span>🎪</span> Title: Arcade Station Host`;
+      } else if (xp >= 50) {
+        rankBadge.innerHTML = `<span>🎪</span> Title: Craft Master`;
         rankBadge.className = "font-black text-sky-400 flex items-center gap-1";
-      } else if (xp >= 40) {
-        rankBadge.innerHTML = `<span>🛠️</span> Title: Station Builder`;
-        rankBadge.className = "font-extrabold text-amber-400 flex items-center gap-1";
       } else {
-        rankBadge.innerHTML = `<span>🌱</span> Title: Apprentice Crafter`;
+        rankBadge.innerHTML = `<span>🌱</span> Level: Craft Apprentice`;
         rankBadge.className = "font-extrabold text-slate-400 flex items-center gap-1";
       }
     }
 
     /* =========================================================
-       6. VIDEO MODAL ENGINE
+       6. VERIFIED YOUTUBE MODAL ENGINE
        ========================================================= */
     function openVideoModal(gameId) {
       soundEngine.playClick();
       const game = GAMES_INFO.find(g => g.id === gameId);
       if (!game) return;
 
-      document.getElementById('modal-video-title').textContent = `${game.nameEn} (${game.nameKr}) Craft & Play Tutorial`;
+      document.getElementById('modal-video-title').textContent = `${game.nameEn} (${game.nameKr}) Craft Tutorial`;
       document.getElementById('modal-video-icon').textContent = game.icon;
-      document.getElementById('modal-video-iframe').src = game.videoUrl;
-      document.getElementById('modal-video-fallback').href = game.videoUrl.replace('/embed/', '/watch?v=');
+
+      const yutTabs = document.getElementById('yut-video-tabs');
+      if (gameId === 'yutnori') {
+        yutTabs.classList.remove('hidden');
+        switchYutVideo('sticks');
+      } else {
+        yutTabs.classList.add('hidden');
+        document.getElementById('modal-video-iframe').src = game.videoEmbed;
+        document.getElementById('modal-video-fallback').href = game.videoWatch;
+      }
+
       document.getElementById('video-modal').classList.remove('hidden');
+    }
+
+    function switchYutVideo(type) {
+      soundEngine.playClick();
+      const game = GAMES_INFO.find(g => g.id === 'yutnori');
+      const tabSticks = document.getElementById('yut-tab-sticks');
+      const tabDice = document.getElementById('yut-tab-dice');
+
+      if (type === 'sticks') {
+        tabSticks.className = "flex-1 py-1.5 px-3 rounded-lg font-bold bg-violet-600 text-white";
+        tabDice.className = "flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-300 hover:text-white";
+        document.getElementById('modal-video-iframe').src = game.videoEmbed;
+        document.getElementById('modal-video-fallback').href = game.videoWatch;
+      } else {
+        tabDice.className = "flex-1 py-1.5 px-3 rounded-lg font-bold bg-violet-600 text-white";
+        tabSticks.className = "flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-300 hover:text-white";
+        document.getElementById('modal-video-iframe').src = game.videoDiceEmbed;
+        document.getElementById('modal-video-fallback').href = game.videoDiceWatch;
+      }
     }
 
     function closeVideoModal() {
@@ -2594,31 +1913,21 @@
       document.getElementById('video-modal').classList.add('hidden');
     }
 
-    /* =========================================================
-       7. PRINT MODAL / PREVIEW HELPER
-       ========================================================= */
-    function openPrintModal() {
-      soundEngine.playClick();
-      const worksheetSection = document.getElementById('print-worksheet-section');
-      worksheetSection.scrollIntoView({ behavior: 'smooth' });
-      showToast("Worksheet preview is shown below. Click 'Print Worksheet' to print on A4!");
-    }
-
-    function openPrintForGame(gameName) {
-      soundEngine.playClick();
-      const printGameSlots = document.querySelectorAll('.print-game-slot');
-      printGameSlots.forEach(s => s.textContent = gameName);
-      openPrintModal();
-    }
-
     function scrollToSection(sectionId) {
       soundEngine.playClick();
       const el = document.getElementById(sectionId);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
+    function showToast(msg) {
+      const toast = document.getElementById('status-toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
     /* =========================================================
-       8. PROCEDURAL CELEBRATORY CONFETTI ENGINE
+       7. CONFETTI ENGINE
        ========================================================= */
     function triggerConfetti() {
       const canvas = document.getElementById('confetti-canvas');
@@ -2627,9 +1936,9 @@
       canvas.height = window.innerHeight;
 
       const particles = [];
-      const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#8b5cf6', '#f43f5e', '#ffffff'];
+      const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#8b5cf6', '#ffffff'];
 
-      for (let i = 0; i < 90; i++) {
+      for (let i = 0; i < 80; i++) {
         particles.push({
           x: canvas.width / 2,
           y: canvas.height / 3,
@@ -2643,18 +1952,15 @@
         });
       }
 
-      let frame = 0;
       function render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         let alive = false;
-
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.45; // gravity
+          p.vy += 0.45;
           p.rotation += p.rotSpeed;
           p.opacity -= 0.012;
-
           if (p.opacity > 0) {
             alive = true;
             ctx.save();
@@ -2666,21 +1972,13 @@
             ctx.restore();
           }
         });
-
-        frame++;
-        if (alive && frame < 120) {
-          requestAnimationFrame(render);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        if (alive) requestAnimationFrame(render);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       render();
     }
 
-    // Initialize App on DOM Load
-    window.addEventListener('DOMContentLoaded', () => {
-      initRoster();
-    });
+    window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
