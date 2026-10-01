@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🖨️ Chuseok Game Master Quest Worksheet | Print Companion</title>
+  <title>🖨️ Chuseok Game Master Quest | Printable A4 Student Workbook</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
     .a4-sheet {
       width: 210mm;
       min-height: 297mm;
-      padding: 10mm 13mm;
+      padding: 10mm 14mm;
       margin: 0 auto 20px auto;
       background: #ffffff;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -33,20 +33,20 @@
     }
 
     .print-box {
-      border: 1.2pt solid #1e293b;
-      border-radius: 5pt;
-      padding: 6pt 8pt;
-      margin-bottom: 6pt;
+      border: 1.3pt solid #1e293b;
+      border-radius: 6pt;
+      padding: 7pt 9pt;
+      margin-bottom: 7pt;
       background: #ffffff;
     }
 
     .print-box-header {
       background: #f8fafc;
       font-weight: 800;
-      font-size: 8.5pt;
+      font-size: 9pt;
       border-bottom: 1.2pt solid #1e293b;
-      padding: 3pt 6pt;
-      margin: -6pt -8pt 5pt -8pt;
+      padding: 3.5pt 7pt;
+      margin: -7pt -9pt 6pt -9pt;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -54,22 +54,22 @@
 
     .handwriting-line {
       border-bottom: 1pt dashed #94a3b8;
-      min-height: 19pt;
+      min-height: 22pt;
       display: flex;
       align-items: flex-end;
       padding-bottom: 2pt;
-      margin-bottom: 3pt;
-      font-size: 9pt;
+      margin-bottom: 4pt;
+      font-size: 9.5pt;
       color: #334155;
     }
 
     .checkbox-square {
       display: inline-block;
-      width: 10.5pt;
-      height: 10.5pt;
+      width: 11pt;
+      height: 11pt;
       border: 1.3pt solid #1e293b;
       border-radius: 2pt;
-      margin-right: 3pt;
+      margin-right: 3.5pt;
       vertical-align: middle;
       background: #ffffff;
     }
@@ -77,8 +77,8 @@
     .pocket-script-box {
       border: 1.5pt dashed #b45309;
       background: #fffbeb;
-      border-radius: 5pt;
-      padding: 5pt 7pt;
+      border-radius: 6pt;
+      padding: 6pt 8pt;
       margin-top: 5pt;
     }
 
@@ -100,6 +100,16 @@
         min-height: auto !important;
         page-break-after: avoid;
         page-break-inside: avoid;
+      }
+      .pocket-script-box {
+        background: #fffbeb !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .print-box-header {
+        background: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
     }
   </style>
@@ -131,7 +141,7 @@
       </select>
 
       <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-lg shadow-amber-500/25 transition">
-        <span>🖨️</span> Print A4 Sheet
+        <span>🖨️</span> Print Student Quest Worksheets
       </button>
     </div>
   </div>
@@ -145,7 +155,7 @@
           <span class="text-lg">🌕</span>
           <span class="text-[11px] font-black uppercase tracking-wider text-slate-800">English Adventure Academy • Chuseok Quest</span>
         </div>
-        <h2 class="text-base font-black text-slate-900 leading-tight">Traditional Korean Folk Game Master Workbook</h2>
+        <h2 class="text-lg font-black text-amber-900 leading-tight">Chuseok Game Master Quest</h2>
         <p class="text-[9.5pt] text-slate-600 font-medium">CEFR Level A1+ | Month-Long Chuseok Cultural Festival • Week 1: Games &amp; Crafting</p>
       </div>
       <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50/90 leading-tight">
@@ -158,7 +168,7 @@
     <!-- Student Info Bar -->
     <div class="grid grid-cols-12 gap-2 mb-2.5 p-1.5 bg-slate-50 rounded-lg border border-slate-300 text-[9pt] items-center">
       <div class="col-span-5 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Student Name:</span>
+        <span class="font-extrabold text-slate-700">Name:</span>
         <span class="font-bold border-b border-slate-900 flex-1 px-1">_________________________</span>
       </div>
       <div class="col-span-3 flex items-center gap-2">
@@ -167,115 +177,89 @@
         <label class="flex items-center gap-0.5 cursor-pointer"><span class="checkbox-square"></span> 3B</label>
       </div>
       <div class="col-span-4 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Game:</span>
-        <span id="sheet-assigned-game" class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 truncate">All 5 Traditional Folk Games</span>
+        <span class="font-extrabold text-slate-700">Assigned Game:</span>
+        <span id="sheet-assigned-game" class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 truncate">[ Selected Game ]</span>
       </div>
     </div>
 
-    <!-- 4 OPEN-ENDED CORE PROMPTS -->
+    <!-- Open-Ended Writing Sections with 3 Wide Dotted Handwriting Lines -->
 
-    <!-- Prompt 1: The Maker's Story -->
+    <!-- Part 1: How I Made It -->
     <div class="print-box">
       <div class="print-box-header">
-        <span>🛠️ 1. THE MAKER'S STORY (CRAFTING &amp; RECYCLED MATERIALS)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 30 XP ]</span>
+        <span>✂️ PART 1: HOW I MADE IT (MATERIALS &amp; STEPS)</span>
+        <span class="text-[8pt] text-amber-900 font-bold">[ 50 XP CRAFT MASTER ]</span>
       </div>
       <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">What materials did you find at home, and how did you build your game?</span>
-        <span class="text-[7.5pt] text-slate-500 italic">Ideas: "I made my game using..." • "First, I..." • "It was easy/hard because..."</span>
+        <span class="font-bold">What items did you find at home, and how did you build your game?</span>
+        <span class="text-[7.5pt] text-slate-500 italic">"I used..." • "First, I folded/cut..." • "Then, I taped/tied..."</span>
       </div>
       <div class="handwriting-line"></div>
-      <div class="handwriting-line"></div>
-    </div>
-
-    <!-- Prompt 2: The Rulebook -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>📜 2. THE RULEBOOK (GAME INSTRUCTIONS &amp; HOW TO WIN)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 30 XP ]</span>
-      </div>
-      <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">How do players play your game, and how does someone win?</span>
-        <span class="text-[7.5pt] text-slate-500 italic">Ideas: "Players must stand..." • "To play, you need to..." • "The winner is..."</span>
-      </div>
       <div class="handwriting-line"></div>
       <div class="handwriting-line"></div>
     </div>
 
-    <!-- Prompt 3: Game Master Pro-Tips -->
+    <!-- Part 2: How We Play It -->
     <div class="print-box">
       <div class="print-box-header">
-        <span>💡 3. GAME MASTER PRO-TIPS (STRATEGY &amp; SECRETS)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 20 XP ]</span>
+        <span>🎯 PART 2: HOW WE PLAY IT (RULES &amp; GOAL)</span>
+        <span class="text-[8pt] text-amber-900 font-bold">[ 30 XP ENGLISH RULEBOOK ]</span>
       </div>
       <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">What is your secret tip or strategy to score high in this game?</span>
-        <span class="text-[7.5pt] text-slate-500 italic">Ideas: "My best tip is to..." • "Be careful not to..." • "Watch out for..."</span>
+        <span class="font-bold">How do players take turns, and how does someone score or win?</span>
+        <span class="text-[7.5pt] text-slate-500 italic">"Stand behind the..." • "To play, you..." • "You score 1 point when..."</span>
       </div>
+      <div class="handwriting-line"></div>
       <div class="handwriting-line"></div>
       <div class="handwriting-line"></div>
     </div>
 
-    <!-- Prompt 4: Host Presentation Speech & Cut-Out Pocket Script -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>🎤 4. HOST PRESENTATION SPEECH (ARCADE DAY SCRIPT)</span>
-        <span class="text-[8pt] text-amber-900 font-bold">[ 20 XP ]</span>
+    <!-- Host Pocket Cheat-Sheet (Dotted Cut-Out Box) -->
+    <div class="pocket-script-box mb-2">
+      <div class="flex items-center justify-between text-[8.5pt] font-black text-amber-950 border-b border-amber-300 pb-1 mb-1.5">
+        <span class="flex items-center gap-1">✂️ HOST POCKET CHEAT-SHEET (Cut along the dotted line and hold in your hand on arcade day):</span>
+        <span class="text-[7.5pt] uppercase tracking-wider text-amber-800">Keep in Pocket</span>
       </div>
-      <div class="flex items-center justify-between text-[8.5pt] text-slate-700 mb-1">
-        <span class="font-bold">Write what you will say to invite classmates to play at your table on Tuesday!</span>
-        <span class="text-[7.5pt] text-slate-500 italic">Ideas: "Welcome to my station! My game is called..." • "It's your turn!"</span>
-      </div>
-      <div class="handwriting-line"></div>
-
-      <!-- Cut-out Pocket Script -->
-      <div class="pocket-script-box">
-        <div class="flex items-center justify-between text-[8pt] font-black text-amber-950 border-b border-amber-300 pb-1 mb-1.5">
-          <span class="flex items-center gap-1">✂️ CUT-OUT HOST POCKET SCRIPT (Hold in your hand while hosting peers at your table):</span>
-          <span class="text-[7pt] uppercase tracking-wider text-amber-800">Keep in pocket</span>
+      <div class="grid grid-cols-3 gap-2 text-[8.5pt] text-slate-900 font-medium">
+        <div class="bg-white/90 p-2 rounded border border-amber-200">
+          <span class="font-bold text-amber-900 block text-[8pt] uppercase">1. Welcome Phrase</span>
+          "Welcome to my station! My game is called ___________."
         </div>
-        <div class="grid grid-cols-3 gap-2 text-[8pt] text-slate-900 font-medium">
-          <div class="bg-white/80 p-1.5 rounded border border-amber-200">
-            <span class="font-bold text-amber-900 block text-[7.5pt]">1. WELCOME SPEECH</span>
-            "Welcome! My game is called ___________."
-          </div>
-          <div class="bg-white/80 p-1.5 rounded border border-amber-200">
-            <span class="font-bold text-amber-900 block text-[7.5pt]">2. INVITING TO PLAY</span>
-            "Your turn! Try your best to ___________!"
-          </div>
-          <div class="bg-white/80 p-1.5 rounded border border-amber-200">
-            <span class="font-bold text-amber-900 block text-[7.5pt]">3. CHEERING &amp; PRAISE</span>
-            "Awesome shot! / Great job playing!"
-          </div>
+        <div class="bg-white/90 p-2 rounded border border-amber-200">
+          <span class="font-bold text-amber-900 block text-[8pt] uppercase">2. Turn Taking</span>
+          "It is your turn! Stand here and try to ___________!"
+        </div>
+        <div class="bg-white/90 p-2 rounded border border-amber-200">
+          <span class="font-bold text-amber-900 block text-[8pt] uppercase">3. Cheering Phrases</span>
+          "Great shot! / Nice throw! / Awesome job playing!"
         </div>
       </div>
     </div>
 
-    <!-- Bottom Row: 3-Peer Visitor Log & Teacher XP Stamp -->
+    <!-- Arcade Scorecard: 3 Rows for Visitor Peer Names & Signatures -->
     <div class="grid grid-cols-12 gap-2 text-[8pt] pt-1">
-      <!-- 3-Peer Visitor Log -->
       <div class="col-span-8 border border-slate-400 rounded-lg p-2 bg-slate-50">
         <div class="font-black text-slate-900 text-[8.5pt] mb-1 flex items-center justify-between">
           <span>🎪 CLASSROOM ARCADE HOST VISITOR LOG (Tuesday, Oct 6)</span>
-          <span class="text-amber-800 font-bold">[ 3 Peer Signatures Required ]</span>
+          <span class="text-amber-800 font-bold">[ 3 Peer Signatures Required • 20 XP ]</span>
         </div>
         <div class="grid grid-cols-3 gap-1.5 text-[8pt]">
           <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-blue-900">Peer #1: ____________</div>
+            <div class="font-bold text-blue-900">Visitor 1: ____________</div>
             <div>Score: _____________</div>
             <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
               <span class="checkbox-square"></span> Spoke English!
             </label>
           </div>
           <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-rose-900">Peer #2: ____________</div>
+            <div class="font-bold text-rose-900">Visitor 2: ____________</div>
             <div>Score: _____________</div>
             <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
               <span class="checkbox-square"></span> Spoke English!
             </label>
           </div>
           <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
-            <div class="font-bold text-emerald-900">Peer #3: ____________</div>
+            <div class="font-bold text-emerald-900">Visitor 3: ____________</div>
             <div>Score: _____________</div>
             <label class="flex items-center gap-1 text-[7.5pt] font-semibold text-slate-700">
               <span class="checkbox-square"></span> Spoke English!
@@ -284,7 +268,7 @@
         </div>
       </div>
 
-      <!-- Teacher Grading & QR Code -->
+      <!-- QR Code Box: Scannable code linking parents directly to YouTube tutorial -->
       <div class="col-span-4 border border-slate-400 rounded-lg p-2 bg-slate-50 flex items-center gap-2">
         <svg viewBox="0 0 60 60" class="w-12 h-12 flex-shrink-0" aria-label="QR Code">
           <rect width="60" height="60" fill="#ffffff"/>
@@ -305,11 +289,9 @@
           <rect x="45" y="45" width="6" height="6" fill="#111827"/>
         </svg>
         <div class="text-[7.5pt] leading-tight text-slate-700 flex-1">
-          <strong class="text-slate-900 block font-bold text-[8pt]">Teacher XP Stamp:</strong>
-          <div class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> 50 XP Craft Master</div>
-          <div class="flex items-center gap-1"><span class="checkbox-square"></span> 30 XP English Rulebook</div>
-          <div class="flex items-center gap-1"><span class="checkbox-square"></span> 20 XP Arcade Host</div>
-          <div class="mt-1 font-bold text-amber-900">Total: _____ / 100 XP</div>
+          <strong class="text-slate-900 block font-bold text-[8pt]">Tutorial Videos:</strong>
+          Scan or visit portal for step-by-step DIY craft guides.
+          <div class="mt-1 font-bold text-amber-900">Total: ____ / 100 XP</div>
         </div>
       </div>
     </div>
