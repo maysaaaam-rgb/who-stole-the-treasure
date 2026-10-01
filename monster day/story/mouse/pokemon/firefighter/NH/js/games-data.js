@@ -6961,7 +6961,7 @@ const GAMES_REGISTRY = [
   {
     "id": "chuseok-games",
     "title": "🌕 Chuseok Game Master Portal: Traditional Korean Folk Games",
-    "description": "Interactive classroom smartboard portal and printable A4 quest workbook for Grade 3 (A1+). Features 5 traditional Korean games (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori), a fair 19-student randomizer for Classes 3A & 3B, embedded video craft guides, A1+ interactive gap-fill exercises with strictly blank inputs, native Web Audio effects, and a gamified 100 XP quest tracker.",
+    "description": "Interactive classroom smartboard portal and printable A4 quest workbook for Grade 3 (A1+). Features 5 traditional Korean games (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori), a fair 19-student randomizer for Classes 3A & 3B, embedded video craft guides, open-ended guided response prompts with clickable sentence starters, cut-out host pocket scripts, 3-peer visitor logs, and a gamified 100 XP quest tracker.",
     "type": "game",
     "category": "Language & Quests",
     "categoryLabel": "🌕 World Cultures & Folk Games",
@@ -7033,7 +7033,7 @@ const GAMES_REGISTRY = [
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "activityMode": "Interactive Smartboard Arcade Portal / Fair Roster Randomizer / Printable A4 Workbook",
-    "interactionType": "Interactive Word Banks, Video Tutorials, 3D Push-Buttons, Web Audio Chimes, Confetti",
+    "interactionType": "Open-Ended Guided Prompts, Clickable Sentence Starters, Video Tutorials, 3D Push-Buttons, Web Audio Chimes, Confetti",
     "url": "chuseok-games/index.html",
     "route": "chuseok-games/index.html",
     "worksheetUrl": "chuseok-games/worksheet.html",

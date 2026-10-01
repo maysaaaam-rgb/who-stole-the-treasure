@@ -42,7 +42,7 @@
     body {
       background-color: #060911;
       background-image: 
-        linear-gradient(to bottom, rgba(6, 9, 17, 0.82), rgba(6, 9, 17, 0.94)),
+        linear-gradient(to bottom, rgba(6, 9, 17, 0.84), rgba(6, 9, 17, 0.95)),
         url('https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
       background-position: center top;
@@ -130,7 +130,7 @@
 
     /* Glass Panels */
     .glass-panel {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.86);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -147,53 +147,50 @@
       transform: translateY(-2px);
     }
 
-    /* Word Bank Chips */
-    .word-chip {
+    /* Sentence Starter Chips */
+    .starter-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 9999px;
-      font-weight: 800;
-      font-size: 0.85rem;
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #f8fafc;
+      font-weight: 700;
+      font-size: 0.78rem;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
       cursor: pointer;
       user-select: none;
       transition: all 0.15s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    .word-chip:hover {
+    .starter-chip:hover {
       background: #f59e0b;
       color: #0f172a;
-      transform: translateY(-1px) scale(1.05);
+      transform: translateY(-1px);
       border-color: #fbbf24;
     }
-    .word-chip:active {
-      transform: scale(0.95);
+    .starter-chip:active {
+      transform: scale(0.96);
     }
 
-    /* Material Selector Badges */
-    .material-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: rgba(30, 41, 59, 0.65);
+    /* Open-ended textareas */
+    .open-response-textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.95);
       border: 1.5px solid rgba(255, 255, 255, 0.15);
-      color: #e2e8f0;
-      cursor: pointer;
-      transition: all 0.18s ease;
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #f1f5f9;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 72px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-    .material-badge.selected {
-      background: rgba(16, 185, 129, 0.25);
-      border-color: #10b981;
-      color: #a7f3d0;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    .open-response-textarea:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
     }
 
     /* Speaking Chant Speech Bubble */
@@ -202,78 +199,11 @@
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
       border: 2px solid rgba(245, 158, 11, 0.5);
       border-radius: 18px;
-      padding: 14px 18px;
+      padding: 12px 16px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     }
-    .chant-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 28px;
-      border-width: 10px 10px 0;
-      border-style: solid;
-      border-color: rgba(245, 158, 11, 0.5) transparent;
-      display: block;
-      width: 0;
-    }
 
-    /* Soft Fail Wobble Animation */
-    @keyframes softWobble {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-6px); }
-      40% { transform: translateX(6px); }
-      60% { transform: translateX(-4px); }
-      80% { transform: translateX(4px); }
-    }
-    .anim-wobble {
-      animation: softWobble 0.45s ease-in-out;
-      border-color: #f43f5e !important;
-    }
-
-    /* Victory Glow Animation */
-    @keyframes successGlow {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    .anim-success {
-      animation: successGlow 0.8s ease-out;
-      border-color: #10b981 !important;
-    }
-
-    /* Blank input fields styling */
-    .gap-input {
-      background: rgba(30, 41, 59, 0.95);
-      border: 2px dashed rgba(245, 158, 11, 0.65);
-      color: #38bdf8;
-      font-weight: 800;
-      text-align: center;
-      padding: 4px 10px;
-      border-radius: 8px;
-      outline: none;
-      transition: all 0.2s ease;
-      font-size: 0.95rem;
-      min-width: 95px;
-    }
-    .gap-input:focus {
-      border-style: solid;
-      border-color: #38bdf8;
-      background: rgba(15, 23, 42, 0.98);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
-    }
-    .gap-input.correct {
-      border-style: solid;
-      border-color: #10b981;
-      background: rgba(6, 78, 59, 0.5);
-      color: #34d399;
-    }
-    .gap-input.incorrect {
-      border-style: solid;
-      border-color: #f43f5e;
-      background: rgba(136, 19, 55, 0.5);
-      color: #fda4af;
-    }
-
+    /* Confetti Canvas */
     #confetti-canvas {
       position: fixed;
       inset: 0;
@@ -285,7 +215,7 @@
 
     /* =========================================================
        PRINT WORKSHEET STYLING (@media print)
-       Clean, ink-saving, single-page A4 output
+       Open-Ended Primary-Ruled Handwriting Lines
        ========================================================= */
     #print-worksheet-section {
       display: none;
@@ -294,14 +224,14 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 8mm 10mm 8mm 10mm;
+        margin: 6mm 8mm 6mm 8mm;
       }
       body {
         background: #ffffff !important;
         background-image: none !important;
         color: #000000 !important;
-        font-size: 11pt;
-        line-height: 1.35;
+        font-size: 10.5pt;
+        line-height: 1.3;
         padding: 0 !important;
         margin: 0 !important;
       }
@@ -319,7 +249,7 @@
         border: 1.5pt solid #1f2937;
         border-radius: 6pt;
         padding: 6pt 8pt;
-        margin-bottom: 6pt;
+        margin-bottom: 5pt;
         background: #ffffff;
       }
       .print-box-header {
@@ -327,26 +257,26 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         font-weight: 800;
-        font-size: 10pt;
+        font-size: 9.5pt;
         border-bottom: 1pt solid #1f2937;
         padding: 3pt 6pt;
-        margin: -6pt -8pt 6pt -8pt;
+        margin: -6pt -8pt 5pt -8pt;
         display: flex;
         justify-content: space-between;
       }
       .handwriting-line {
         border-bottom: 1pt dashed #9ca3af;
-        min-height: 20pt;
+        min-height: 22pt;
         display: flex;
         align-items: flex-end;
         padding-bottom: 2pt;
         margin-bottom: 4pt;
-        font-size: 10pt;
+        font-size: 9.5pt;
       }
       .checkbox-square {
         display: inline-block;
-        width: 12pt;
-        height: 12pt;
+        width: 11pt;
+        height: 11pt;
         border: 1.5pt solid #1f2937;
         border-radius: 2pt;
         margin-right: 4pt;
@@ -359,7 +289,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <!-- =========================================================
-       TOP FLOATING APP NAVIGATION BAR
+       TOP FLOATING NAVIGATION BAR
        ========================================================= -->
   <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
@@ -372,14 +302,14 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-base sm:text-lg tracking-tight text-white">Chuseok Game Master</span>
-              <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">ESL A1+ • Grade 3</span>
+              <span class="hidden sm:inline-block px-2 py-0.5 text-xs font-black uppercase rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">ESL A1+ • Free Expression</span>
             </div>
-            <p class="text-xs text-slate-400 hidden sm:block">Korean Thanksgiving Folk Games &amp; Classroom Arcade</p>
+            <p class="text-xs text-slate-400 hidden sm:block">Korean Thanksgiving Folk Games &amp; Open-Ended Quest Studio</p>
           </div>
         </a>
       </div>
 
-      <!-- Center Quick Links -->
+      <!-- Center Links -->
       <nav class="hidden md:flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/10 text-xs font-bold">
         <button onclick="scrollToSection('app-journey-banner')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">📅 4-Week Journey</button>
         <button onclick="scrollToSection('randomizer-section')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">🎲 Randomizer</button>
@@ -387,7 +317,7 @@
         <button onclick="scrollToSection('tracker-section')" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">🏆 100 XP Quest</button>
       </nav>
 
-      <!-- Right Controls: Audio + Print + Master Link -->
+      <!-- Right Controls: Audio + Print -->
       <div class="flex items-center gap-2">
         <button id="sound-toggle-btn" onclick="toggleAudio()" class="btn-3d btn-slate px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5" title="Toggle Sound Effects">
           <span id="sound-icon">🔊</span>
@@ -396,7 +326,7 @@
 
         <button onclick="window.print()" class="btn-3d btn-amber px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5 shadow-amber-500/25">
           <span>🖨️</span>
-          <span class="hidden sm:inline">Print Student Quest Worksheets</span>
+          <span class="hidden sm:inline">Print Student Quest Worksheet</span>
           <span class="sm:hidden">Print</span>
         </button>
 
@@ -408,11 +338,10 @@
   </header>
 
   <!-- =========================================================
-       1. PROMINENT 4-WEEK CHUSEOK CULTURAL JOURNEY BANNER
+       1. 4-WEEK CHUSEOK CULTURAL JOURNEY BANNER
        ========================================================= -->
   <section id="app-journey-banner" class="pt-6 pb-4 px-4 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-5 md:p-6 border border-amber-500/30 relative overflow-hidden shadow-2xl">
-      <!-- Title & Mission Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-white/10 pb-4 mb-4">
         <div>
           <div class="flex items-center gap-2">
@@ -420,7 +349,7 @@
             <h2 class="text-xl sm:text-2xl font-black text-white">4-Week Chuseok Cultural Festival Journey (추석)</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-300 mt-1">
-            An immersive month-long unit exploring Korean Thanksgiving through craft, cuisine, dance, and storytelling!
+            An immersive month-long elementary school unit celebrating Korean Thanksgiving through craft, cuisine, dance, and storytelling!
           </p>
         </div>
         <div class="text-right">
@@ -430,7 +359,6 @@
         </div>
       </div>
 
-      <!-- 4-Week Journey Stages Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Week 1: Active -->
         <div class="relative rounded-2xl p-4 bg-gradient-to-b from-amber-500/20 to-slate-900/90 border-2 border-amber-400 shadow-lg shadow-amber-500/20 space-y-2">
@@ -442,7 +370,7 @@
           </div>
           <h3 class="font-black text-base text-amber-300">Week 1: Traditional Games &amp; Crafting</h3>
           <p class="text-xs text-slate-200 leading-relaxed">
-            Craft recycled games at home, explain English rules, and host classmates in our live game arcade!
+            Craft recycled games at home, explain English rules, and speak English with confidence!
           </p>
         </div>
 
@@ -456,7 +384,7 @@
           </div>
           <h3 class="font-extrabold text-base text-white">Week 2: Chuseok Cooking &amp; Treats</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Making Songpyeon half-moon rice cakes, tasting autumn harvest treats, and learning food vocabulary.
+            Making Songpyeon half-moon rice cakes, tasting autumn harvest treats, and festive food vocabulary.
           </p>
         </div>
 
@@ -470,7 +398,7 @@
           </div>
           <h3 class="font-extrabold text-base text-white">Week 3: Folk Dance &amp; Rhythms</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Ganggangsullae women's circle dance under the full moon, traditional rhythms, and action verbs.
+            Ganggangsullae circle dance under the harvest moon, traditional rhythms, and movement verbs.
           </p>
         </div>
 
@@ -503,11 +431,10 @@
             <h2 class="text-2xl sm:text-3xl font-black text-white">Class Roster &amp; Fair Game Randomizer</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Automatically balances the 19 students across the 5 game stations (4, 4, 4, 4, 3 split).
+            Fair Allocation distributes 19 students evenly across the 5 stations (4, 4, 4, 4, 3 split).
           </p>
         </div>
 
-        <!-- Class Toggle 3A / 3B + Edit Names Modal Trigger -->
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-white/15">
             <button id="class-3a-btn" onclick="switchClass('3A')" class="btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
@@ -525,7 +452,7 @@
         </div>
       </div>
 
-      <!-- Draw Control Bar -->
+      <!-- Controls Bar -->
       <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-950/70 p-4 rounded-2xl border border-white/10">
         <div class="flex items-center gap-3">
           <span class="text-xs font-extrabold text-slate-300">
@@ -535,7 +462,7 @@
         <div class="flex items-center gap-2">
           <button id="spin-btn" onclick="spinAndDrawGames()" class="btn-3d btn-amber py-2.5 px-5 rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25">
             <span class="text-lg">🎰</span>
-            <span>Spin &amp; Draw Games</span>
+            <span>Spin &amp; Assign Games</span>
           </button>
           <button onclick="copyRosterAssignments()" class="btn-3d btn-slate py-2 px-3 rounded-xl text-xs font-bold text-slate-300">
             📋 Copy Draw
@@ -545,16 +472,13 @@
 
       <div id="status-toast" class="hidden text-xs py-2 px-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-center"></div>
 
-      <!-- 5 Station Boards Injected by JS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" id="stations-board">
-        <!-- 5 Station Cards injected here -->
-      </div>
+      <!-- 5 Station Cards Injected by JS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" id="stations-board"></div>
     </div>
   </section>
 
   <!-- =========================================================
-       3. THE 5 CHUSEOK GAMES & STUDENT PRACTICE HUB
-       High-Res JPEGs + 3-Step A1+ Layout (Materials, Craft, Chant)
+       3. 5 THEMATIC GAME STATIONS (OPEN-ENDED RESPONSE STUDIO)
        ========================================================= -->
   <section id="games-hub-section" class="px-4 py-8 max-w-7xl mx-auto space-y-8">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-white/10 pb-4">
@@ -564,23 +488,22 @@
           <h2 class="text-2xl sm:text-3xl font-black text-white">5 Traditional Korean Game Stations</h2>
         </div>
         <p class="text-xs sm:text-sm text-slate-400 mt-1">
-          Explore photographic visuals, watch verified tutorials, and master your English game day chant!
+          Open-ended response studio with optional sentence starters — express your own craft and game ideas!
         </p>
       </div>
       <div class="text-xs text-amber-400 font-bold bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 flex items-center gap-1.5">
-        <span>💡 A1+ Goal:</span> Select materials, fill in the step verb, and say the chant out loud!
+        <span>💡 Tip:</span> Click any starter chip to add it to your response!
       </div>
     </div>
 
-    <!-- The 5 Game Cards Container -->
-    <div class="space-y-8" id="game-cards-container">
+    <!-- The 5 Game Cards -->
+    <div class="space-y-10" id="game-cards-container">
 
       <!-- =========================================================
-           GAME 1: DDAKJI (딱지) — Origami Slap-Tile Game
+           GAME 1: DDAKJI (딱지)
            ========================================================= -->
       <div id="game-card-ddakji" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: High-Res 16:9 Image -->
           <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-blue-500/30 shadow-lg group">
             <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" alt="Ddakji Folded Paper Tiles" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
@@ -590,64 +513,101 @@
                 <h3 class="text-xl font-black text-white mt-0.5">Ddakji (딱지)</h3>
               </div>
               <button onclick="openVideoModal('ddakji')" class="btn-3d btn-blue px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Video
+                <span>▶</span> Watch Tutorial
               </button>
             </div>
           </div>
 
-          <!-- Right: Simplified 3-Step A1+ Layout -->
-          <div class="lg:col-span-7 space-y-4">
-            <!-- Step 1: Materials Needed (Visual Badges) -->
-            <div class="space-y-1.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-blue-400">Step 1: Materials Needed (Tap to collect)</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> 2 Square Papers</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>📦</span> Cereal Box Card</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Clear Tape</span>
+          <div class="lg:col-span-7 space-y-3">
+            <div class="chant-bubble flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase font-black text-blue-400">English Speaking Chant:</div>
+                <div class="text-base sm:text-lg font-black text-white">"Hit the card and flip it over!"</div>
               </div>
+              <button onclick="speakChant('Hit the card and flip it over!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                <span>🔊</span>
+              </button>
             </div>
-
-            <!-- Step 2: Short Craft Step (Fill-in-the-gap) -->
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-sky-400">Step 2: Craft Instruction</span>
-              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
-                <span>1.</span>
-                <input type="text" class="gap-input" data-game="ddakji" data-answer="fold" placeholder="verb..." />
-                <span>two square sheets of paper into thirds, then lock the flaps!</span>
-              </div>
-              <!-- Word bank -->
-              <div class="flex items-center gap-2 pt-1 text-xs">
-                <span class="text-slate-400 font-bold">Word Bank:</span>
-                <button class="word-chip" onclick="fillGameBlank('ddakji', 'fold')">fold</button>
-                <button class="word-chip" onclick="fillGameBlank('ddakji', 'spin')">spin</button>
-                <button onclick="checkSimpleBlank('ddakji')" class="ml-auto btn-3d btn-blue px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
-              </div>
-              <div id="feedback-ddakji" class="text-[11px] font-bold text-slate-400"></div>
-            </div>
-
-            <!-- Step 3: Game Day Speaking Chant -->
-            <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
-              <div class="chant-bubble flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
-                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Hit the card and flip it over!"</div>
-                </div>
-                <button onclick="speakChant('Hit the card and flip it over!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
-                  <span>🔊</span>
-                </button>
-              </div>
-            </div>
+            <p class="text-xs text-slate-300">
+              Fold two square sheets of paper or cereal boxes into an interlocking slap tile. Slam your card down to flip your opponent's card!
+            </p>
           </div>
+        </div>
+
+        <!-- 4 Open-Ended Core Prompts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <!-- Prompt 1: Maker's Story -->
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-blue-300">🛠️ 1. The Maker's Story (Crafting)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-1">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'I made my game using ')">"I made my game using..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'First, I ')">"First, I..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'It was easy to make because ')">"It was easy to make because..."</span>
+            </div>
+            <textarea id="resp-ddakji-1" oninput="trackEffort('ddakji', 1)" class="open-response-textarea" placeholder="Write your craft story here..."></textarea>
+          </div>
+
+          <!-- Prompt 2: Rulebook -->
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-sky-300">📜 2. The Rulebook (Instructions)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-2">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'Players must stand ')">"Players must stand..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'To play, you need to ')">"To play, you need to..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'The winner is the person who ')">"The winner is..."</span>
+            </div>
+            <textarea id="resp-ddakji-2" oninput="trackEffort('ddakji', 2)" class="open-response-textarea" placeholder="Explain how to play and win..."></textarea>
+          </div>
+
+          <!-- Prompt 3: Game Master Pro-Tips -->
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-3">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-3', 'My best tip is to ')">"My best tip is to..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-3', 'Be careful not to ')">"Be careful not to..."</span>
+            </div>
+            <textarea id="resp-ddakji-3" oninput="trackEffort('ddakji', 3)" class="open-response-textarea" placeholder="Share your secret winning strategy..."></textarea>
+          </div>
+
+          <!-- Prompt 4: Host Presentation Speech -->
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-4">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-4', 'Welcome to my station! My game is called ')">"Welcome to my station! My game..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-ddakji-4', 'It is your turn! Try to ')">"It's your turn! Try to..."</span>
+            </div>
+            <textarea id="resp-ddakji-4" oninput="trackEffort('ddakji', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-semibold" id="effort-ddakji">Effort Status: Start typing your answers!</span>
+          <button onclick="saveStudentResponses('ddakji')" class="btn-3d btn-blue px-4 py-1.5 rounded-xl font-black text-xs">
+            💾 Save My Responses
+          </button>
         </div>
       </div>
 
       <!-- =========================================================
-           GAME 2: PAENGI (팽이) — Paper / Origami Spinning Top
+           GAME 2: PAENGI (팽이)
            ========================================================= -->
       <div id="game-card-paengi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: High-Res 16:9 Image -->
           <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-rose-500/30 shadow-lg group">
             <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80" alt="Paengi Spinning Top" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
@@ -657,62 +617,96 @@
                 <h3 class="text-xl font-black text-white mt-0.5">Paengi (팽이)</h3>
               </div>
               <button onclick="openVideoModal('paengi')" class="btn-3d btn-crimson px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Video
+                <span>▶</span> Watch Tutorial
               </button>
             </div>
           </div>
 
-          <!-- Right: Simplified 3-Step A1+ Layout -->
-          <div class="lg:col-span-7 space-y-4">
-            <div class="space-y-1.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-rose-400">Step 1: Materials Needed (Tap to collect)</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> Origami Paper</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🪵</span> Toothpick / Skewer</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>✂️</span> Safety Scissors</span>
+          <div class="lg:col-span-7 space-y-3">
+            <div class="chant-bubble flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase font-black text-rose-400">English Speaking Chant:</div>
+                <div class="text-base sm:text-lg font-black text-white">"Twist the top and make it spin!"</div>
               </div>
+              <button onclick="speakChant('Twist the top and make it spin!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                <span>🔊</span>
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-pink-400">Step 2: Craft Instruction</span>
-              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
-                <span>1.</span>
-                <input type="text" class="gap-input" data-game="paengi" data-answer="twist" placeholder="verb..." />
-                <span>the paper handle and make your colorful top balance!</span>
-              </div>
-              <div class="flex items-center gap-2 pt-1 text-xs">
-                <span class="text-slate-400 font-bold">Word Bank:</span>
-                <button class="word-chip" onclick="fillGameBlank('paengi', 'twist')">twist</button>
-                <button class="word-chip" onclick="fillGameBlank('paengi', 'kick')">kick</button>
-                <button onclick="checkSimpleBlank('paengi')" class="ml-auto btn-3d btn-crimson px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
-              </div>
-              <div id="feedback-paengi" class="text-[11px] font-bold text-slate-400"></div>
-            </div>
-
-            <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
-              <div class="chant-bubble flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
-                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Twist the top and make it spin!"</div>
-                </div>
-                <button onclick="speakChant('Twist the top and make it spin!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
-                  <span>🔊</span>
-                </button>
-              </div>
-            </div>
+            <p class="text-xs text-slate-300">
+              Folded origami paper top with toothpicks or cardboard discs. Spin against peers to see who stays spinning the longest!
+            </p>
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-rose-300">🛠️ 1. The Maker's Story (Crafting)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-1">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-1', 'I made my game using ')">"I made my game using..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-1', 'First, I folded ')">"First, I folded..."</span>
+            </div>
+            <textarea id="resp-paengi-1" oninput="trackEffort('paengi', 1)" class="open-response-textarea" placeholder="Describe the materials and build steps..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-pink-300">📜 2. The Rulebook (Instructions)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-2">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-2', 'To play, twist the ')">"To play, twist the..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-2', 'The winner is the top that ')">"The winner is the top that..."</span>
+            </div>
+            <textarea id="resp-paengi-2" oninput="trackEffort('paengi', 2)" class="open-response-textarea" placeholder="Explain the spinning rules..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-3">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-3', 'My best tip is to ')">"My best tip is to..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-3', 'Spin on a ')">"Spin on a..."</span>
+            </div>
+            <textarea id="resp-paengi-3" oninput="trackEffort('paengi', 3)" class="open-response-textarea" placeholder="Share your top spinning secrets..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-4">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-4', 'Welcome to my Paengi station! ')">"Welcome to my Paengi station!"</span>
+              <span class="starter-chip" onclick="insertStarter('resp-paengi-4', 'Ready, set, spin! ')">"Ready, set, spin!"</span>
+            </div>
+            <textarea id="resp-paengi-4" oninput="trackEffort('paengi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-semibold" id="effort-paengi">Effort Status: Start typing your answers!</span>
+          <button onclick="saveStudentResponses('paengi')" class="btn-3d btn-crimson px-4 py-1.5 rounded-xl font-black text-xs">
+            💾 Save My Responses
+          </button>
         </div>
       </div>
 
       <!-- =========================================================
-           GAME 3: GONGGI (공기놀이) — Paper Pebble Toss (Replaced Tuho)
+           GAME 3: GONGGI (공기놀이)
            ========================================================= -->
       <div id="game-card-gonggi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: High-Res 16:9 Image -->
           <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Gonggi Game Tokens" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Gonggi Tokens" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
             <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
               <div>
@@ -720,60 +714,94 @@
                 <h3 class="text-xl font-black text-white mt-0.5">Gonggi (공기놀이)</h3>
               </div>
               <button onclick="openVideoModal('gonggi')" class="btn-3d btn-amber px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Video
+                <span>▶</span> Watch Tutorial
               </button>
             </div>
           </div>
 
-          <!-- Right: Simplified 3-Step A1+ Layout -->
-          <div class="lg:col-span-7 space-y-4">
-            <div class="space-y-1.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 1: Materials Needed (Tap to collect)</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>📄</span> 5 Paper Squares</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🍚</span> Rice / Beans (Filling)</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Tape / Glue</span>
+          <div class="lg:col-span-7 space-y-3">
+            <div class="chant-bubble flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase font-black text-amber-400">English Speaking Chant:</div>
+                <div class="text-base sm:text-lg font-black text-white">"Toss the Gonggi and catch them fast!"</div>
               </div>
+              <button onclick="speakChant('Toss the Gonggi and catch them fast!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                <span>🔊</span>
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-yellow-400">Step 2: Craft Instruction</span>
-              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
-                <span>1.</span>
-                <input type="text" class="gap-input" data-game="gonggi" data-answer="toss" placeholder="verb..." />
-                <span>one stone into the air and catch the others on the table!</span>
-              </div>
-              <div class="flex items-center gap-2 pt-1 text-xs">
-                <span class="text-slate-400 font-bold">Word Bank:</span>
-                <button class="word-chip" onclick="fillGameBlank('gonggi', 'toss')">toss</button>
-                <button class="word-chip" onclick="fillGameBlank('gonggi', 'cut')">cut</button>
-                <button onclick="checkSimpleBlank('gonggi')" class="ml-auto btn-3d btn-amber px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
-              </div>
-              <div id="feedback-gonggi" class="text-[11px] font-bold text-slate-400"></div>
-            </div>
-
-            <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
-              <div class="chant-bubble flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
-                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Toss the Gonggi and catch them fast!"</div>
-                </div>
-                <button onclick="speakChant('Toss the Gonggi and catch them fast!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
-                  <span>🔊</span>
-                </button>
-              </div>
-            </div>
+            <p class="text-xs text-slate-300">
+              Fold 5 small paper origami stones or use clean pebbles. Toss one in the air while grabbing the others from the table!
+            </p>
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">🛠️ 1. The Maker's Story (Crafting)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-1">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-1', 'I made 5 Gonggi stones with ')">"I made 5 Gonggi stones with..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-1', 'I filled them with ')">"I filled them with..."</span>
+            </div>
+            <textarea id="resp-gonggi-1" oninput="trackEffort('gonggi', 1)" class="open-response-textarea" placeholder="Describe the materials and origami boxes..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-yellow-300">📜 2. The Rulebook (Instructions)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-2">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-2', 'Toss one stone up and ')">"Toss one stone up and..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-2', 'You get points when ')">"You get points when..."</span>
+            </div>
+            <textarea id="resp-gonggi-2" oninput="trackEffort('gonggi', 2)" class="open-response-textarea" placeholder="Explain the toss and catch steps..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-3">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-3', 'My best tip is to catch with ')">"My best tip is to catch with..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-3', 'Watch out for ')">"Watch out for..."</span>
+            </div>
+            <textarea id="resp-gonggi-3" oninput="trackEffort('gonggi', 3)" class="open-response-textarea" placeholder="Share your secret finger agility tips..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-4">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-4', 'Welcome! Can you catch all 5? ')">"Welcome! Can you catch all 5?"</span>
+              <span class="starter-chip" onclick="insertStarter('resp-gonggi-4', 'Awesome toss! ')">"Awesome toss!"</span>
+            </div>
+            <textarea id="resp-gonggi-4" oninput="trackEffort('gonggi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-semibold" id="effort-gonggi">Effort Status: Start typing your answers!</span>
+          <button onclick="saveStudentResponses('gonggi')" class="btn-3d btn-amber px-4 py-1.5 rounded-xl font-black text-xs text-slate-950">
+            💾 Save My Responses
+          </button>
         </div>
       </div>
 
       <!-- =========================================================
-           GAME 4: JEGICHAGI (제기차기) — Bottle-Cap & Ribbon Shuttlecock
+           GAME 4: JEGICHAGI (제기차기)
            ========================================================= -->
       <div id="game-card-jegichagi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: High-Res 16:9 Image -->
           <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg group">
             <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" alt="Jegichagi Shuttlecock" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
@@ -783,60 +811,94 @@
                 <h3 class="text-xl font-black text-white mt-0.5">Jegichagi (제기차기)</h3>
               </div>
               <button onclick="openVideoModal('jegichagi')" class="btn-3d btn-jade px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Video
+                <span>▶</span> Watch Tutorial
               </button>
             </div>
           </div>
 
-          <!-- Right: Simplified 3-Step A1+ Layout -->
-          <div class="lg:col-span-7 space-y-4">
-            <div class="space-y-1.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">Step 1: Materials Needed (Tap to collect)</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🧴</span> 1 Bottle Cap</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🎀</span> Metallic Ribbons / Bag</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🩹</span> Tape / Rubber Band</span>
+          <div class="lg:col-span-7 space-y-3">
+            <div class="chant-bubble flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase font-black text-emerald-400">English Speaking Chant:</div>
+                <div class="text-base sm:text-lg font-black text-white">"Kick it high and keep it in the air!"</div>
               </div>
+              <button onclick="speakChant('Kick it high and keep it in the air!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                <span>🔊</span>
+              </button>
             </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-teal-400">Step 2: Craft Instruction</span>
-              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
-                <span>1.</span>
-                <input type="text" class="gap-input" data-game="jegichagi" data-answer="kick" placeholder="verb..." />
-                <span>the jegi with your inner foot and keep it off the ground!</span>
-              </div>
-              <div class="flex items-center gap-2 pt-1 text-xs">
-                <span class="text-slate-400 font-bold">Word Bank:</span>
-                <button class="word-chip" onclick="fillGameBlank('jegichagi', 'kick')">kick</button>
-                <button class="word-chip" onclick="fillGameBlank('jegichagi', 'fold')">fold</button>
-                <button onclick="checkSimpleBlank('jegichagi')" class="ml-auto btn-3d btn-jade px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
-              </div>
-              <div id="feedback-jegichagi" class="text-[11px] font-bold text-slate-400"></div>
-            </div>
-
-            <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
-              <div class="chant-bubble flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
-                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Kick it high and keep it in the air!"</div>
-                </div>
-                <button onclick="speakChant('Kick it high and keep it in the air!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
-                  <span>🔊</span>
-                </button>
-              </div>
-            </div>
+            <p class="text-xs text-slate-300">
+              Made from a bottle cap and plastic bag/ribbon streamers. Kick with the inside of your foot and count your keep-ups!
+            </p>
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🛠️ 1. The Maker's Story (Crafting)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-1">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-1', 'I made my Jegi using a bottle cap and ')">"I used a cap and..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-1', 'I cut the plastic into ')">"I cut the plastic into..."</span>
+            </div>
+            <textarea id="resp-jegichagi-1" oninput="trackEffort('jegichagi', 1)" class="open-response-textarea" placeholder="Explain your shuttlecock materials..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-teal-300">📜 2. The Rulebook (Instructions)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-2">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-2', 'Kick the jegi with the inside of ')">"Kick with the inside of..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-2', 'Count each tap: one, two, ')">"Count each tap..."</span>
+            </div>
+            <textarea id="resp-jegichagi-2" oninput="trackEffort('jegichagi', 2)" class="open-response-textarea" placeholder="Describe the kicking rules and scoring..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-3">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-3', 'Keep your eyes on ')">"Keep your eyes on..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-3', 'Bend your knee to ')">"Bend your knee to..."</span>
+            </div>
+            <textarea id="resp-jegichagi-3" oninput="trackEffort('jegichagi', 3)" class="open-response-textarea" placeholder="Share your footwork tips..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-4">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-4', 'Welcome to my Jegichagi station! ')">"Welcome to my Jegichagi station!"</span>
+              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-4', 'Great kick! Try again! ')">"Great kick! Try again!"</span>
+            </div>
+            <textarea id="resp-jegichagi-4" oninput="trackEffort('jegichagi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-semibold" id="effort-jegichagi">Effort Status: Start typing your answers!</span>
+          <button onclick="saveStudentResponses('jegichagi')" class="btn-3d btn-jade px-4 py-1.5 rounded-xl font-black text-xs">
+            💾 Save My Responses
+          </button>
         </div>
       </div>
 
       <!-- =========================================================
-           GAME 5: YUT NORI (윷놀이) — Traditional Board Race & Dice Option
+           GAME 5: YUT NORI (윷놀이)
            ========================================================= -->
       <div id="game-card-yutnori" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <!-- Left: High-Res 16:9 Image -->
           <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-violet-500/30 shadow-lg group">
             <img src="https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80" alt="Yut Nori Board &amp; Dice" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
@@ -846,57 +908,86 @@
                 <h3 class="text-xl font-black text-white mt-0.5">Yut Nori (윷놀이)</h3>
               </div>
               <button onclick="openVideoModal('yutnori')" class="btn-3d btn-violet px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Video
+                <span>▶</span> Watch Tutorial
               </button>
             </div>
           </div>
 
-          <!-- Right: Simplified 3-Step A1+ Layout -->
-          <div class="lg:col-span-7 space-y-4">
-            <!-- Teacher Note on Card -->
-            <div class="bg-violet-950/60 p-2.5 rounded-xl border border-violet-500/30 text-xs text-violet-200 flex items-center gap-2">
-              <span class="text-base">💡</span>
-              <span><strong>Teacher Note:</strong> You can craft 4 Yut sticks OR craft a paper dice to play!</span>
+          <div class="lg:col-span-7 space-y-3">
+            <div class="chant-bubble flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase font-black text-violet-400">English Speaking Chant:</div>
+                <div class="text-base sm:text-lg font-black text-white">"Roll the dice, move your pieces home!"</div>
+              </div>
+              <button onclick="speakChant('Roll the dice, move your pieces home!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
+                <span>🔊</span>
+              </button>
             </div>
-
-            <div class="space-y-1.5">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-violet-400">Step 1: Materials Needed (Tap to collect)</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🥢</span> 4 Craft Sticks (or Paper Dice)</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🗺️</span> Paper Race Board</span>
-                <span class="material-badge" onclick="toggleMaterial(this)"><span>🔘</span> 4 Bottle Cap Tokens</span>
-              </div>
-            </div>
-
-            <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-purple-400">Step 2: Craft Instruction</span>
-              <div class="flex items-center flex-wrap gap-2 text-sm text-slate-200">
-                <span>1.</span>
-                <input type="text" class="gap-input" data-game="yutnori" data-answer="roll" placeholder="verb..." />
-                <span>the dice or toss the 4 sticks to move your pieces home!</span>
-              </div>
-              <div class="flex items-center gap-2 pt-1 text-xs">
-                <span class="text-slate-400 font-bold">Word Bank:</span>
-                <button class="word-chip" onclick="fillGameBlank('yutnori', 'roll')">roll</button>
-                <button class="word-chip" onclick="fillGameBlank('yutnori', 'twist')">twist</button>
-                <button onclick="checkSimpleBlank('yutnori')" class="ml-auto btn-3d btn-violet px-3 py-1 rounded-lg text-xs font-bold">✓ Check</button>
-              </div>
-              <div id="feedback-yutnori" class="text-[11px] font-bold text-slate-400"></div>
-            </div>
-
-            <div class="space-y-1">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Step 3: English Speaking Chant</span>
-              <div class="chant-bubble flex items-center justify-between gap-3">
-                <div>
-                  <div class="text-[11px] uppercase font-bold text-amber-400">Chant Out Loud:</div>
-                  <div class="text-base sm:text-lg font-black text-white tracking-wide">"Roll the dice, move your pieces home!"</div>
-                </div>
-                <button onclick="speakChant('Roll the dice, move your pieces home!')" class="btn-3d btn-amber p-2.5 rounded-xl text-slate-950 font-black" title="Listen to Chant">
-                  <span>🔊</span>
-                </button>
-              </div>
+            <div class="bg-violet-950/60 p-2.5 rounded-xl border border-violet-500/30 text-xs text-violet-200">
+              💡 <strong>Option:</strong> You may craft 4 traditional wooden Yut sticks OR craft a paper dice to play!
             </div>
           </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-violet-300">🛠️ 1. The Maker's Story (Crafting)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-1">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-1', 'I crafted a board and ')">"I crafted a board and..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-1', 'I chose to make a paper dice because ')">"I chose a paper dice because..."</span>
+            </div>
+            <textarea id="resp-yutnori-1" oninput="trackEffort('yutnori', 1)" class="open-response-textarea" placeholder="Explain your board and sticks/dice build..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-purple-300">📜 2. The Rulebook (Instructions)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-2">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-2', 'Roll the dice and move ')">"Roll the dice and move..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-2', 'The first person to get all pieces home ')">"The first person home..."</span>
+            </div>
+            <textarea id="resp-yutnori-2" oninput="trackEffort('yutnori', 2)" class="open-response-textarea" placeholder="Explain the board race rules..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-3">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-3', 'Take the diagonal shortcut when ')">"Take the shortcut when..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-3', 'Watch out for ')">"Watch out for..."</span>
+            </div>
+            <textarea id="resp-yutnori-3" oninput="trackEffort('yutnori', 3)" class="open-response-textarea" placeholder="Share your board race shortcuts and strategy..."></textarea>
+          </div>
+
+          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
+              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-4">0 words</span>
+            </div>
+            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-4', 'Welcome to Yut Nori! Choose your token: ')">"Welcome! Choose your token..."</span>
+              <span class="starter-chip" onclick="insertStarter('resp-yutnori-4', 'Your turn to roll! ')">"Your turn to roll!"</span>
+            </div>
+            <textarea id="resp-yutnori-4" oninput="trackEffort('yutnori', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-semibold" id="effort-yutnori">Effort Status: Start typing your answers!</span>
+          <button onclick="saveStudentResponses('yutnori')" class="btn-3d btn-violet px-4 py-1.5 rounded-xl font-black text-xs">
+            💾 Save My Responses
+          </button>
         </div>
       </div>
 
@@ -904,7 +995,7 @@
   </section>
 
   <!-- =========================================================
-       4. GAMIFIED 100 XP TRACKER & AUDIO SYSTEM
+       4. GAMIFIED 100 XP QUEST LOG & WEB AUDIO
        ========================================================= -->
   <section id="tracker-section" class="px-4 py-8 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6 border border-amber-500/30">
@@ -915,7 +1006,7 @@
             <h2 class="text-2xl sm:text-3xl font-black text-white">Gamified 100 XP Quest Log</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Track student milestones from Craft Apprentice to Certified Game Master!
+            Effort-based rewards celebrate original writing, craft creativity, and English hosting!
           </p>
         </div>
 
@@ -953,7 +1044,7 @@
         </div>
       </div>
 
-      <!-- The 3 Core Quests -->
+      <!-- Core Quests -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Quest 1 -->
         <label class="glass-card rounded-2xl p-4 border border-white/10 cursor-pointer flex flex-col justify-between hover:border-amber-400/50 transition">
@@ -966,7 +1057,7 @@
             </div>
             <div class="font-extrabold text-sm text-white">Quest 1: The Craft Master</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Built a completed, playable game from recycled household items (cardboard, paper, caps, string).
+              Completed the game from recycled materials at home (cardboard, paper, caps, string).
             </p>
           </div>
           <div class="text-[11px] text-amber-300 font-bold mt-3">Due: Tuesday, Oct 6</div>
@@ -983,7 +1074,7 @@
             </div>
             <div class="font-extrabold text-sm text-white">Quest 2: The English Rulebook</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Spoke the rules and game chant in English clearly (*"Hit the card!", "Twist the top!"*).
+              Answered the open-ended questions and practiced the spoken host presentation script.
             </p>
           </div>
           <div class="text-[11px] text-sky-300 font-bold mt-3">Spoken at Game Station</div>
@@ -1000,39 +1091,83 @@
             </div>
             <div class="font-extrabold text-sm text-white">Quest 3: The Arcade Host</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Hosted 3 peers with target English phrases (*"Your turn!", "Nice toss!", "Great kick!"*).
+              Hosted 3 peers on Tuesday using target English phrases (*"Your turn!", "Nice toss!", "Great kick!"*).
             </p>
           </div>
           <div class="text-[11px] text-emerald-300 font-bold mt-3">3 Peer Signatures</div>
         </label>
       </div>
+
+      <!-- Bonus Badges (+15 XP each) -->
+      <div class="bg-slate-950/60 rounded-2xl p-4 border border-white/10 space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+            <span>✨</span> Bonus Badges (+15 XP each)
+          </h4>
+          <span class="text-xs text-slate-400">Can exceed 100 XP!</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-emerald-400/40">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🌿</span>
+              <div>
+                <div class="text-xs font-extrabold text-white">Eco-Crafter</div>
+                <div class="text-[10px] text-slate-400">Creative recycling</div>
+              </div>
+            </div>
+            <input type="checkbox" id="badge-eco-check" onchange="toggleBonus('eco')" class="w-4 h-4 rounded accent-emerald-500 cursor-pointer" />
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-amber-400/40">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🌕</span>
+              <div>
+                <div class="text-xs font-extrabold text-white">Chuseok Spirit</div>
+                <div class="text-[10px] text-slate-400">Enthusiastic cheering</div>
+              </div>
+            </div>
+            <input type="checkbox" id="badge-spirit-check" onchange="toggleBonus('spirit')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
+          </label>
+
+          <label class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-white/10 cursor-pointer hover:border-violet-400/40">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">👑</span>
+              <div>
+                <div class="text-xs font-extrabold text-white">English Champion</div>
+                <div class="text-[10px] text-slate-400">Zero native language</div>
+              </div>
+            </div>
+            <input type="checkbox" id="badge-english-check" onchange="toggleBonus('english')" class="w-4 h-4 rounded accent-violet-500 cursor-pointer" />
+          </label>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- =========================================================
-       5. CLEAN PRINTABLE A4 STUDENT QUEST WORKSHEET
+       5. PRINTABLE A4 STUDENT QUEST WORKSHEET
        ========================================================= -->
   <section id="print-worksheet-section" class="max-w-4xl mx-auto p-4 bg-white text-slate-900 rounded-2xl shadow-2xl my-6">
-    <div class="border-b-2 border-slate-900 pb-3 mb-4 flex items-center justify-between">
-      <div class="space-y-1">
+    <div class="border-b-2 border-slate-900 pb-2.5 mb-3 flex items-center justify-between">
+      <div class="space-y-0.5">
         <div class="flex items-center gap-2">
           <span class="text-xl">🌕</span>
-          <span class="text-lg font-black uppercase tracking-tight text-slate-900">English Adventure Academy • Chuseok Quest</span>
+          <span class="text-xs font-black uppercase tracking-tight text-slate-900">English Adventure Academy • Chuseok Quest</span>
         </div>
-        <h2 class="text-xl font-black text-amber-800">Traditional Folk Game Craft &amp; Host Workbook</h2>
-        <p class="text-xs text-slate-600">CEFR Level A1+ | Unit 2: Korean Thanksgiving &amp; Folk Games</p>
+        <h2 class="text-lg font-black text-amber-900">Traditional Folk Game Master Workbook</h2>
+        <p class="text-[10px] text-slate-600">CEFR Level A1+ | Month-Long Chuseok Cultural Festival • Week 1: Games &amp; Crafting</p>
       </div>
-      <div class="text-right border-2 border-slate-900 rounded-lg p-2.5 bg-amber-50">
-        <div class="text-[10px] font-bold uppercase text-slate-600">Assignment Due Date:</div>
-        <div class="text-sm font-black text-rose-700">Tuesday, October 6</div>
-        <div class="text-[10px] text-slate-500">Bring crafted game to school!</div>
+      <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50/90">
+        <div class="text-[9px] font-bold uppercase text-slate-600">Assignment Due Date:</div>
+        <div class="text-xs font-black text-rose-700">Tuesday, October 6</div>
+        <div class="text-[9px] text-slate-500">Bring crafted game to school!</div>
       </div>
     </div>
 
     <!-- Student Header -->
-    <div class="grid grid-cols-12 gap-3 mb-4 p-2.5 bg-slate-100 rounded-lg border border-slate-300 text-xs">
-      <div class="col-span-5 flex items-center gap-1.5">
-        <span class="font-extrabold text-slate-700">Student Name:</span>
+    <div class="grid grid-cols-12 gap-2 mb-3 p-2 bg-slate-100 rounded-lg border border-slate-300 text-xs items-center">
+      <div class="col-span-5 flex items-center gap-1">
+        <span class="font-extrabold text-slate-700">Student:</span>
         <span class="font-bold border-b border-slate-900 flex-1 px-1 print-name-slot">____________________</span>
       </div>
       <div class="col-span-3 flex items-center gap-2">
@@ -1040,109 +1175,99 @@
         <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square"></span> 3A</label>
         <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square"></span> 3B</label>
       </div>
-      <div class="col-span-4 flex items-center gap-1.5">
-        <span class="font-extrabold text-slate-700">Assigned Game:</span>
+      <div class="col-span-4 flex items-center gap-1">
+        <span class="font-extrabold text-slate-700">Game:</span>
         <span class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 print-game-slot">Ddakji / Paengi / Gonggi / Jegi / Yut</span>
       </div>
     </div>
 
-    <!-- Part 1: Home Craft Log -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>♻️ PART 1: HOME CRAFT LOG (50 XP)</span>
-        <span class="text-xs text-slate-600">Craft at home with recycled household waste</span>
+    <!-- 4 Open-Ended Questions with Handwriting Lines & Sentence Starters -->
+    <div class="space-y-2 text-xs">
+      <!-- Question 1 -->
+      <div class="print-box">
+        <div class="print-box-header">
+          <span>🛠️ 1. THE MAKER'S STORY (CRAFTING &amp; MATERIALS)</span>
+          <span class="text-[9px] text-slate-500 italic">Starters: "I made my game using..." • "First, I..." • "It was easy/hard because..."</span>
+        </div>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">What materials did you find at home, and how did you build your game?</div>
+        <div class="handwriting-line"></div>
+        <div class="handwriting-line"></div>
       </div>
-      <div class="text-xs space-y-2">
-        <div class="flex items-center gap-3 text-[11px] mb-2">
-          <span class="font-bold">Materials Used:</span>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Paper</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Cardboard</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Bottle Cap</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Sticks / Toothpick</label>
-          <label class="flex items-center gap-1"><span class="checkbox-square"></span> Tape / Glue</label>
+
+      <!-- Question 2 -->
+      <div class="print-box">
+        <div class="print-box-header">
+          <span>📜 2. THE RULEBOOK (GAME INSTRUCTIONS)</span>
+          <span class="text-[9px] text-slate-500 italic">Starters: "Players must stand..." • "To play, you need to..." • "The winner is..."</span>
         </div>
-        <div class="handwriting-line">
-          <span class="font-bold mr-2 text-slate-700">Step 1: First, I</span>
-          <span class="text-slate-400">__________________________________________________________________________</span>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">How do players play your game, and how does someone win?</div>
+        <div class="handwriting-line"></div>
+        <div class="handwriting-line"></div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="print-box">
+        <div class="print-box-header">
+          <span>💡 3. GAME MASTER PRO-TIPS (STRATEGY &amp; ADVICE)</span>
+          <span class="text-[9px] text-slate-500 italic">Starters: "My best tip is to..." • "Be careful not to..." • "Watch out for..."</span>
         </div>
-        <div class="handwriting-line">
-          <span class="font-bold mr-2 text-slate-700">Step 2: Next, I</span>
-          <span class="text-slate-400">__________________________________________________________________________</span>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">What is your secret tip or strategy to score high in this game?</div>
+        <div class="handwriting-line"></div>
+      </div>
+
+      <!-- Question 4 & Cut-Out Host Pocket Script -->
+      <div class="print-box">
+        <div class="print-box-header">
+          <span>🎤 4. HOST PRESENTATION SPEECH (ARCADE DAY SCRIPT)</span>
+          <span class="text-[9px] text-slate-500 italic">Starters: "Welcome to my station! My game is called..." • "It's your turn!"</span>
+        </div>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">Write what you will say to invite classmates to play at your table on Tuesday!</div>
+        <div class="handwriting-line"></div>
+
+        <!-- Cut-out Pocket Script -->
+        <div class="mt-2 border-2 border-dashed border-amber-600 rounded-lg p-2 bg-amber-50 text-[10px]">
+          <div class="font-black text-amber-900 flex items-center justify-between">
+            <span>✂️ CUT-OUT HOST POCKET SCRIPT (Hold in your hand while hosting):</span>
+            <span class="text-[9px]">English Adventure Academy</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 mt-1 italic text-slate-800">
+            <div>"Welcome! My game is called ___________."</div>
+            <div>"Your turn! Try your best to ___________!"</div>
+            <div>"Awesome shot! / Great job playing!"</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Part 2: Speaking Chant & Rules -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>🗣️ PART 2: ENGLISH CHANT &amp; RULES CHECKLIST (30 XP)</span>
-        <span class="text-xs text-slate-600">Practice speaking out loud at home</span>
-      </div>
-      <div class="grid grid-cols-2 gap-3 text-xs">
-        <div class="bg-slate-50 p-2 rounded border border-slate-200 space-y-1">
-          <div class="font-black text-amber-800 text-[11px]">TARGET SPEAKING CHANTS:</div>
-          <p>• <strong>Ddakji:</strong> "Hit the card and flip it over!"</p>
-          <p>• <strong>Paengi:</strong> "Twist the top and make it spin!"</p>
-          <p>• <strong>Gonggi:</strong> "Toss the Gonggi and catch them fast!"</p>
-          <p>• <strong>Jegichagi:</strong> "Kick it high and keep it in the air!"</p>
-          <p>• <strong>Yut Nori:</strong> "Roll the dice, move your pieces home!"</p>
+    <!-- Peer Visitor Log & Assessment -->
+    <div class="grid grid-cols-12 gap-2 pt-2 text-xs">
+      <div class="col-span-8 border border-slate-400 rounded-lg p-2 bg-slate-50">
+        <div class="font-black text-slate-900 text-[10px] mb-1 flex items-center justify-between">
+          <span>🎪 CLASSROOM ARCADE HOST VISITOR LOG (Tuesday, Oct 6)</span>
+          <span class="text-amber-800 font-bold">[ 3 Peer Signatures ]</span>
         </div>
-        <div class="space-y-1.5 p-1">
-          <div class="font-black text-slate-700 text-[11px]">HOME PRACTICE CHECKLIST:</div>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I practiced my game chant 3 times out loud.</label>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I played my game with my family at home.</label>
-          <label class="flex items-center gap-1.5"><span class="checkbox-square"></span> I can say: "Your turn!" &amp; "Great job!" in English.</label>
-          <div class="pt-1 text-[11px] text-slate-600">Parent Signature: _______________________</div>
+        <div class="grid grid-cols-3 gap-1.5 text-[9.5pt]">
+          <div class="border border-slate-300 rounded p-1.5 bg-white">
+            <div class="font-bold text-blue-900">Peer #1: ________</div>
+            <div>Score: _________</div>
+            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          </div>
+          <div class="border border-slate-300 rounded p-1.5 bg-white">
+            <div class="font-bold text-rose-900">Peer #2: ________</div>
+            <div>Score: _________</div>
+            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          </div>
+          <div class="border border-slate-300 rounded p-1.5 bg-white">
+            <div class="font-bold text-emerald-900">Peer #3: ________</div>
+            <div>Score: _________</div>
+            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Part 3: Arcade Game Day Scorecard -->
-    <div class="print-box">
-      <div class="print-box-header">
-        <span>🎪 PART 3: CLASSROOM ARCADE HOST SCORECARD (20 XP)</span>
-        <span class="text-xs text-slate-600">Host 3 peers on Tuesday Game Day</span>
-      </div>
-      <div class="grid grid-cols-3 gap-2 text-xs">
-        <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
-          <div class="font-black text-blue-800">Classmate #1</div>
-          <div>Name: ______________</div>
-          <div>Score: _____________</div>
-          <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"They said: Your turn!"</div>
-        </div>
-        <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
-          <div class="font-black text-rose-800">Classmate #2</div>
-          <div>Name: ______________</div>
-          <div>Score: _____________</div>
-          <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"They said: Nice toss!"</div>
-        </div>
-        <div class="border border-slate-300 rounded p-2 bg-slate-50 space-y-1">
-          <div class="font-black text-emerald-800">Classmate #3</div>
-          <div>Name: ______________</div>
-          <div>Score: _____________</div>
-          <div>Signature: ___________</div>
-          <div class="text-[10px] text-slate-500 italic">"They said: Great kick!"</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Part 4: Assessment & Scannable QR Code -->
-    <div class="grid grid-cols-12 gap-3 items-center pt-1 text-xs">
-      <div class="col-span-8 border border-slate-400 rounded-lg p-2.5 bg-slate-50">
-        <div class="font-black text-slate-900 text-xs mb-1 flex items-center justify-between">
-          <span>TEACHER ASSESSMENT &amp; XP VERIFICATION</span>
-          <span class="text-amber-800 font-extrabold text-sm">TOTAL: ______ / 100 XP</span>
-        </div>
-        <div class="grid grid-cols-3 gap-1 text-[11px]">
-          <div><span class="checkbox-square"></span> 50 XP Craft Master</div>
-          <div><span class="checkbox-square"></span> 30 XP English Rulebook</div>
-          <div><span class="checkbox-square"></span> 20 XP Arcade Host</div>
-        </div>
-      </div>
-      <div class="col-span-4 border-2 border-dashed border-slate-400 rounded-lg p-2 flex items-center gap-2">
-        <svg viewBox="0 0 60 60" class="w-12 h-12 flex-shrink-0">
+      <!-- Teacher Grading & QR Code -->
+      <div class="col-span-4 border border-slate-400 rounded-lg p-2 bg-slate-50 flex items-center gap-2">
+        <svg viewBox="0 0 60 60" class="w-11 h-11 flex-shrink-0">
           <rect width="60" height="60" fill="#ffffff"/>
           <rect x="5" y="5" width="16" height="16" fill="#111827"/>
           <rect x="8" y="8" width="10" height="10" fill="#ffffff"/>
@@ -1160,9 +1285,9 @@
           <rect x="25" y="45" width="6" height="6" fill="#111827"/>
           <rect x="45" y="45" width="6" height="6" fill="#111827"/>
         </svg>
-        <div class="text-[10px] leading-tight text-slate-600">
-          <strong class="text-slate-900 block">Scan Video Guides</strong>
-          Tutorials &amp; speaking audio for parents at home.
+        <div class="text-[9px] leading-tight text-slate-700">
+          <strong class="text-slate-900 block font-bold">100 XP Stamp:</strong>
+          [ ] 50 XP Craft Master<br>[ ] 30 XP English Rulebook<br>[ ] 20 XP Arcade Host
         </div>
       </div>
     </div>
@@ -1170,7 +1295,6 @@
 
   <!-- =========================================================
        MODAL 1: VERIFIED YOUTUBE VIDEO TUTORIAL VIEWER
-       (Includes dual tab switcher for Yut Nori Sticks vs Dice)
        ========================================================= -->
   <div id="video-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-3xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl space-y-4 p-5">
@@ -1182,7 +1306,6 @@
         <button onclick="closeVideoModal()" class="text-slate-400 hover:text-white text-2xl font-bold px-2 py-1 rounded-lg">✕</button>
       </div>
 
-      <!-- Yut Nori Dual Option Tabs (Hidden by default, shown only for Yut Nori) -->
       <div id="yut-video-tabs" class="hidden flex items-center gap-2 p-1 bg-slate-900 rounded-xl border border-white/10 text-xs">
         <button id="yut-tab-sticks" onclick="switchYutVideo('sticks')" class="flex-1 py-1.5 px-3 rounded-lg font-bold bg-violet-600 text-white">
           🥢 1. 4 Yut Sticks Tutorial
@@ -1192,7 +1315,6 @@
         </button>
       </div>
 
-      <!-- Responsive 16:9 Iframe Container -->
       <div class="relative w-full pb-[56.25%] rounded-2xl overflow-hidden bg-slate-950 border border-white/10">
         <iframe id="modal-video-iframe" class="absolute inset-0 w-full h-full" src="" title="YouTube Video Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
@@ -1232,9 +1354,6 @@
        VANILLA JAVASCRIPT: LOGIC, ROSTERS, AUDIO & STATE
        ========================================================= -->
   <script>
-    /* =========================================================
-       1. DATA STRUCTURES & VERIFIED VIDEOS
-       ========================================================= */
     const ROSTERS = {
       "3A": [
         "Ali", "Aylin", "Can", "Defne", "Deniz", "Ege", "Elif", "Emre", 
@@ -1253,7 +1372,6 @@
         id: "ddakji",
         nameEn: "Ddakji",
         nameKr: "딱지",
-        theme: "blue",
         colorHex: "#2563eb",
         badgeClass: "bg-blue-500/20 text-blue-400 border-blue-500/30",
         videoEmbed: "https://www.youtube-nocookie.com/embed/SQgJBrJiipU",
@@ -1265,7 +1383,6 @@
         id: "paengi",
         nameEn: "Paengi",
         nameKr: "팽이",
-        theme: "rose",
         colorHex: "#e11d48",
         badgeClass: "bg-rose-500/20 text-rose-400 border-rose-500/30",
         videoEmbed: "https://www.youtube-nocookie.com/embed/JBxoY_4VddI",
@@ -1277,7 +1394,6 @@
         id: "gonggi",
         nameEn: "Gonggi",
         nameKr: "공기놀이",
-        theme: "amber",
         colorHex: "#f59e0b",
         badgeClass: "bg-amber-500/20 text-amber-400 border-amber-500/30",
         videoEmbed: "https://www.youtube-nocookie.com/embed/DpA6rFZQMNk",
@@ -1289,7 +1405,6 @@
         id: "jegichagi",
         nameEn: "Jegichagi",
         nameKr: "제기차기",
-        theme: "emerald",
         colorHex: "#10b981",
         badgeClass: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
         videoEmbed: "https://www.youtube-nocookie.com/embed/rJQh5Qu1gco",
@@ -1301,7 +1416,6 @@
         id: "yutnori",
         nameEn: "Yut Nori",
         nameKr: "윷놀이",
-        theme: "violet",
         colorHex: "#8b5cf6",
         badgeClass: "bg-violet-500/20 text-violet-400 border-violet-500/30",
         videoEmbed: "https://www.youtube-nocookie.com/embed/2aT1WQnnjAY",
@@ -1320,7 +1434,7 @@
     let audioMuted = false;
 
     /* =========================================================
-       2. NATIVE WEB AUDIO SYNTHESIZER
+       NATIVE WEB AUDIO SYNTHESIZER
        ========================================================= */
     class ChuseokSoundboard {
       constructor() {
@@ -1434,24 +1548,6 @@
         osc.start(now);
         osc.stop(now + 0.035);
       }
-      playSoftFail() {
-        if (audioMuted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        [246.94, 220.00].forEach((freq, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.15);
-          gain.gain.setValueAtTime(0.2, now + idx * 0.15);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.25);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now + idx * 0.15);
-          osc.stop(now + idx * 0.15 + 0.27);
-        });
-      }
     }
 
     const soundEngine = new ChuseokSoundboard();
@@ -1465,7 +1561,7 @@
     }
 
     /* =========================================================
-       3. CLASS ROSTER & FAIR DRAW ENGINE (4,4,4,4,3 SPLIT)
+       ROSTER & FAIR RANDOMIZER
        ========================================================= */
     function initApp() {
       const savedClass = localStorage.getItem('chuseok_selected_class') || '3A';
@@ -1476,6 +1572,8 @@
         document.getElementById('sound-icon').textContent = '🔇';
         document.getElementById('sound-label').textContent = 'MUTED';
       }
+
+      loadAllSavedResponses();
     }
 
     function getActiveRoster() {
@@ -1510,7 +1608,6 @@
       const list = getActiveRoster();
       document.getElementById('roster-count').textContent = list.length;
 
-      // Check for saved draw
       const savedDrawJson = localStorage.getItem(`chuseok_draw_${cls}`);
       if (savedDrawJson) {
         try {
@@ -1522,7 +1619,6 @@
         } catch(e) {}
       }
 
-      // If none, run initial draw
       spinAndDrawGames(false);
     }
 
@@ -1568,7 +1664,6 @@
       };
 
       const gameKeys = Object.keys(currentDraw);
-      // Automatic 4, 4, 4, 4, 3 distribution across the 5 stations
       shuffled.forEach((student, index) => {
         const targetGame = gameKeys[index % gameKeys.length];
         currentDraw[targetGame].push(student);
@@ -1702,54 +1797,85 @@
     }
 
     /* =========================================================
-       4. SIMPLIFIED A1+ CARD INTERACTION
+       OPEN-ENDED PROMPTS & EFFORT COUNTER ENGINE
        ========================================================= */
-    function toggleMaterial(el) {
+    function insertStarter(textareaId, phrase) {
       soundEngine.playClick();
-      el.classList.toggle('selected');
-    }
-
-    function fillGameBlank(gameId, word) {
-      soundEngine.playClick();
-      const input = document.querySelector(`.gap-input[data-game="${gameId}"]`);
-      if (input) {
-        input.value = word;
-        input.classList.remove('incorrect');
-        input.focus();
-      }
-    }
-
-    function checkSimpleBlank(gameId) {
-      const input = document.querySelector(`.gap-input[data-game="${gameId}"]`);
-      const feedback = document.getElementById(`feedback-${gameId}`);
-      if (!input || !feedback) return;
-
-      const expected = input.getAttribute('data-answer').toLowerCase();
-      const actual = input.value.trim().toLowerCase();
-
-      if (!actual) {
-        soundEngine.playSoftFail();
-        feedback.textContent = "⚠️ Please choose a word from the bank!";
-        feedback.className = "text-[11px] font-bold text-rose-400";
-        return;
-      }
-
-      if (actual === expected) {
-        soundEngine.playChime();
-        input.className = "gap-input correct";
-        feedback.textContent = "🎉 Correct! +20 XP awarded!";
-        feedback.className = "text-[11px] font-bold text-emerald-400";
-        const card = document.getElementById(`game-card-${gameId}`);
-        card.classList.add('anim-success');
-        setTimeout(() => card.classList.remove('anim-success'), 800);
-        awardActiveStudentXP(20);
+      const ta = document.getElementById(textareaId);
+      if (!ta) return;
+      if (ta.value.trim().length > 0) {
+        ta.value = ta.value.trim() + " " + phrase;
       } else {
-        soundEngine.playSoftFail();
-        input.className = "gap-input incorrect anim-wobble";
-        setTimeout(() => input.classList.remove('anim-wobble'), 500);
-        feedback.textContent = "Almost! Try the other word!";
-        feedback.className = "text-[11px] font-bold text-rose-400";
+        ta.value = phrase;
       }
+      ta.focus();
+      // trigger input event
+      ta.dispatchEvent(new Event('input'));
+    }
+
+    function trackEffort(gameId, promptNum) {
+      const ta = document.getElementById(`resp-${gameId}-${promptNum}`);
+      const countEl = document.getElementById(`count-${gameId}-${promptNum}`);
+      if (!ta || !countEl) return;
+
+      const words = ta.value.trim().split(/\s+/).filter(w => w.length > 0);
+      countEl.textContent = `${words.length} words`;
+
+      // Update Effort Status Bar for this Game
+      let totalWords = 0;
+      for (let i = 1; i <= 4; i++) {
+        const item = document.getElementById(`resp-${gameId}-${i}`);
+        if (item) {
+          totalWords += item.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+        }
+      }
+
+      const statusEl = document.getElementById(`effort-${gameId}`);
+      if (statusEl) {
+        if (totalWords >= 25) {
+          statusEl.innerHTML = `🌟 <strong>Outstanding Effort!</strong> (${totalWords} words) — Ready for Game Day!`;
+          statusEl.className = "text-emerald-400 font-bold";
+        } else if (totalWords >= 10) {
+          statusEl.innerHTML = `✍️ <strong>Great progress!</strong> (${totalWords} words) — Keep going!`;
+          statusEl.className = "text-amber-400 font-bold";
+        } else if (totalWords > 0) {
+          statusEl.innerHTML = `🌱 <strong>Good start!</strong> (${totalWords} words) — Use sentence starters for ideas!`;
+          statusEl.className = "text-sky-400 font-bold";
+        } else {
+          statusEl.textContent = "Effort Status: Start typing your answers!";
+          statusEl.className = "text-slate-400 font-semibold";
+        }
+      }
+    }
+
+    function saveStudentResponses(gameId) {
+      soundEngine.playChime();
+      const responses = {};
+      for (let i = 1; i <= 4; i++) {
+        const ta = document.getElementById(`resp-${gameId}-${i}`);
+        if (ta) responses[i] = ta.value;
+      }
+      localStorage.setItem(`chuseok_responses_${gameId}`, JSON.stringify(responses));
+      showToast(`Saved your ${gameId} responses! +15 XP effort reward!`);
+      awardActiveStudentXP(15);
+    }
+
+    function loadAllSavedResponses() {
+      GAMES_INFO.forEach(game => {
+        const saved = localStorage.getItem(`chuseok_responses_${game.id}`);
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            for (let i = 1; i <= 4; i++) {
+              const ta = document.getElementById(`resp-${game.id}-${i}`);
+              if (ta && parsed[i]) {
+                ta.value = parsed[i];
+                trackEffort(game.id, i);
+              }
+            }
+          } catch(e) {}
+        }
+      });
     }
 
     function speakChant(text) {
@@ -1764,7 +1890,7 @@
     }
 
     /* =========================================================
-       5. 100 XP QUEST LOG ENGINE
+       100 XP QUEST TRACKER ENGINE
        ========================================================= */
     function populateStudentSelect() {
       const select = document.getElementById('student-select');
@@ -1798,13 +1924,16 @@
       document.querySelectorAll('.print-game-slot').forEach(s => s.textContent = `${gameObj.nameEn} (${gameObj.nameKr})`);
 
       if (!studentXPData[studentName]) {
-        studentXPData[studentName] = { q1: false, q2: false, q3: false, xp: 0 };
+        studentXPData[studentName] = { q1: false, q2: false, q3: false, eco: false, spirit: false, english: false, xp: 0 };
       }
 
       const data = studentXPData[studentName];
       document.getElementById('quest-1-check').checked = !!data.q1;
       document.getElementById('quest-2-check').checked = !!data.q2;
       document.getElementById('quest-3-check').checked = !!data.q3;
+      document.getElementById('badge-eco-check').checked = !!data.eco;
+      document.getElementById('badge-spirit-check').checked = !!data.spirit;
+      document.getElementById('badge-english-check').checked = !!data.english;
 
       updateXPBar(data.xp);
     }
@@ -1819,10 +1948,31 @@
       const check = document.getElementById(`quest-${qNum}-check`);
       data[`q${qNum}`] = check.checked;
 
+      recalculateStudentXP(studentName);
+    }
+
+    function toggleBonus(bonusKey) {
+      soundEngine.playClick();
+      const select = document.getElementById('student-select');
+      const studentName = select.value;
+      if (!studentName) return;
+
+      const data = studentXPData[studentName];
+      const check = document.getElementById(`badge-${bonusKey}-check`);
+      data[bonusKey] = check.checked;
+
+      recalculateStudentXP(studentName);
+    }
+
+    function recalculateStudentXP(studentName) {
+      const data = studentXPData[studentName];
       let xp = 0;
       if (data.q1) xp += 50;
       if (data.q2) xp += 30;
       if (data.q3) xp += 20;
+      if (data.eco) xp += 15;
+      if (data.spirit) xp += 15;
+      if (data.english) xp += 15;
 
       data.xp = xp;
       updateXPBar(xp);
@@ -1839,7 +1989,7 @@
       if (!studentName) return;
 
       if (!studentXPData[studentName]) studentXPData[studentName] = { xp: 0 };
-      studentXPData[studentName].xp = Math.min(100, (studentXPData[studentName].xp || 0) + amount);
+      studentXPData[studentName].xp = (studentXPData[studentName].xp || 0) + amount;
       updateXPBar(studentXPData[studentName].xp);
     }
 
@@ -1865,7 +2015,7 @@
     }
 
     /* =========================================================
-       6. VERIFIED YOUTUBE MODAL ENGINE
+       VERIFIED YOUTUBE MODAL ENGINE
        ========================================================= */
     function openVideoModal(gameId) {
       soundEngine.playClick();
@@ -1923,12 +2073,11 @@
       const toast = document.getElementById('status-toast');
       toast.textContent = msg;
       toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3500);
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
     }
 
-    /* =========================================================
-       7. CONFETTI ENGINE
-       ========================================================= */
     function triggerConfetti() {
       const canvas = document.getElementById('confetti-canvas');
       const ctx = canvas.getContext('2d');
