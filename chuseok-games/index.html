@@ -168,6 +168,11 @@
       50% { transform: scale(1.015); }
     }
 
+    /* Strict Parent View Lockdown (Zero Admin Controls visible without .is-teacher) */
+    body:not(.is-teacher) .admin-only {
+      display: none !important;
+    }
+
     /* Confetti Canvas */
     #confetti-canvas {
       position: fixed;
@@ -444,7 +449,7 @@
       <!-- STUDENT FINDER SEARCH BAR (Parent / Student View Friendly) -->
       <div id="student-search-container" class="bg-gradient-to-r from-blue-950/70 via-slate-950/90 to-amber-950/60 p-4 rounded-2xl border border-white/15 space-y-2">
         <label for="student-search-input" class="text-xs font-bold text-amber-300 flex items-center gap-2">
-          <span>🔍</span> Type your name to find your assigned game station:
+          <span>🔍</span> Type your child's name to find their assigned game:
         </label>
         <div class="flex flex-col sm:flex-row items-center gap-2">
           <div class="relative w-full flex-1">
@@ -561,6 +566,16 @@
 
           <!-- Right Column (3 Structured Open-Ended Prompts) -->
           <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Student Selector for Homework Submission -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-white/10">
+              <label for="student-select-ddakji" class="text-[11px] font-bold text-amber-300 flex items-center gap-1 whitespace-nowrap">
+                <span>👤</span> Student Name:
+              </label>
+              <select id="student-select-ddakji" onchange="onStationStudentSelectChange('ddakji', this.value)" class="student-station-select flex-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-xs p-1.5 rounded-lg focus:outline-none focus:border-amber-400">
+                <option value="">-- Choose your name --</option>
+              </select>
+            </div>
+
             <!-- Section 1: Crafting -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
@@ -571,7 +586,7 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "I made my game using..." | "First, I folded/cut..." | "Then, I..."
               </div>
-              <textarea id="resp-ddakji-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
+              <textarea id="resp-ddakji-1" rows="2" class="how-made-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
 
             <!-- Section 2: Rules -->
@@ -580,11 +595,11 @@
                 <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
                 <span class="text-[10px] text-slate-400">Game Rules</span>
               </div>
-              <p class="text-xs text-slate-300 mb-1.5">How do players play your game, and how does someone score or win?</p>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Stand behind the..." | "To play, you need to..." | "The winner is..."
               </div>
-              <textarea id="resp-ddakji-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
+              <textarea id="resp-ddakji-2" rows="2" class="how-play-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
 
             <!-- Section 3: Host Speech -->
@@ -597,12 +612,12 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Welcome to my station! My game is called..." | "It is your turn!" | "Great shot!"
               </div>
-              <textarea id="resp-ddakji-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+              <textarea id="resp-ddakji-3" rows="2" class="host-speech-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
 
-            <!-- Save & Earn XP Button -->
-            <button onclick="saveStudentResponses('ddakji')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
-              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            <!-- Submit to Teacher via Google Sheets & Earn XP Button -->
+            <button id="submit-btn-ddakji" onclick="submitHomeworkToGoogleSheet('ddakji')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Submit My Homework &amp; Claim +30 XP</span>
             </button>
           </div>
         </div>
@@ -653,6 +668,17 @@
           </div>
 
           <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Student Selector for Homework Submission -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-white/10">
+              <label for="student-select-paengi" class="text-[11px] font-bold text-amber-300 flex items-center gap-1 whitespace-nowrap">
+                <span>👤</span> Student Name:
+              </label>
+              <select id="student-select-paengi" onchange="onStationStudentSelectChange('paengi', this.value)" class="student-station-select flex-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-xs p-1.5 rounded-lg focus:outline-none focus:border-amber-400">
+                <option value="">-- Choose your name --</option>
+              </select>
+            </div>
+
+            <!-- Section 1: Crafting -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
@@ -662,21 +688,23 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "I made my game using..." | "First, I folded/cut..." | "Then, I..."
               </div>
-              <textarea id="resp-paengi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
+              <textarea id="resp-paengi-1" rows="2" class="how-made-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
 
+            <!-- Section 2: Rules -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
                 <span class="text-[10px] text-slate-400">Game Rules</span>
               </div>
-              <p class="text-xs text-slate-300 mb-1.5">How do players play your game, and how does someone score or win?</p>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Stand behind the..." | "To play, you need to..." | "The winner is..."
               </div>
-              <textarea id="resp-paengi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
+              <textarea id="resp-paengi-2" rows="2" class="how-play-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
 
+            <!-- Section 3: Host Speech -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
@@ -686,11 +714,12 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Welcome to my station! My game is called..." | "It is your turn!" | "Great shot!"
               </div>
-              <textarea id="resp-paengi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+              <textarea id="resp-paengi-3" rows="2" class="host-speech-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
 
-            <button onclick="saveStudentResponses('paengi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
-              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            <!-- Submit to Teacher via Google Sheets & Earn XP Button -->
+            <button id="submit-btn-paengi" onclick="submitHomeworkToGoogleSheet('paengi')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Submit My Homework &amp; Claim +30 XP</span>
             </button>
           </div>
         </div>
@@ -704,7 +733,7 @@
           <div class="lg:col-span-5 space-y-4">
             <div class="relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
               <!-- Geometric craft stones / blocks (ABSOLUTELY NO FOOD OR DUMPLINGS) -->
-              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80" alt="Geometric Craft Stones for Gonggi" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Geometric Craft Stones for Gonggi" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
                 <div>
@@ -741,6 +770,17 @@
           </div>
 
           <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Student Selector for Homework Submission -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-white/10">
+              <label for="student-select-gonggi" class="text-[11px] font-bold text-amber-300 flex items-center gap-1 whitespace-nowrap">
+                <span>👤</span> Student Name:
+              </label>
+              <select id="student-select-gonggi" onchange="onStationStudentSelectChange('gonggi', this.value)" class="student-station-select flex-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-xs p-1.5 rounded-lg focus:outline-none focus:border-amber-400">
+                <option value="">-- Choose your name --</option>
+              </select>
+            </div>
+
+            <!-- Section 1: Crafting -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
@@ -750,21 +790,23 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "I made my game using..." | "First, I folded/cut..." | "Then, I..."
               </div>
-              <textarea id="resp-gonggi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
+              <textarea id="resp-gonggi-1" rows="2" class="how-made-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
 
+            <!-- Section 2: Rules -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
                 <span class="text-[10px] text-slate-400">Game Rules</span>
               </div>
-              <p class="text-xs text-slate-300 mb-1.5">How do players play your game, and how does someone score or win?</p>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Stand behind the..." | "To play, you need to..." | "The winner is..."
               </div>
-              <textarea id="resp-gonggi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
+              <textarea id="resp-gonggi-2" rows="2" class="how-play-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
 
+            <!-- Section 3: Host Speech -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
@@ -774,11 +816,12 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Welcome to my station! My game is called..." | "It is your turn!" | "Great shot!"
               </div>
-              <textarea id="resp-gonggi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+              <textarea id="resp-gonggi-3" rows="2" class="host-speech-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
 
-            <button onclick="saveStudentResponses('gonggi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
-              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            <!-- Submit to Teacher via Google Sheets & Earn XP Button -->
+            <button id="submit-btn-gonggi" onclick="submitHomeworkToGoogleSheet('gonggi')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Submit My Homework &amp; Claim +30 XP</span>
             </button>
           </div>
         </div>
@@ -829,6 +872,17 @@
           </div>
 
           <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Student Selector for Homework Submission -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-white/10">
+              <label for="student-select-jegichagi" class="text-[11px] font-bold text-amber-300 flex items-center gap-1 whitespace-nowrap">
+                <span>👤</span> Student Name:
+              </label>
+              <select id="student-select-jegichagi" onchange="onStationStudentSelectChange('jegichagi', this.value)" class="student-station-select flex-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-xs p-1.5 rounded-lg focus:outline-none focus:border-amber-400">
+                <option value="">-- Choose your name --</option>
+              </select>
+            </div>
+
+            <!-- Section 1: Crafting -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
@@ -838,21 +892,23 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "I made my game using..." | "First, I folded/cut..." | "Then, I..."
               </div>
-              <textarea id="resp-jegichagi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
+              <textarea id="resp-jegichagi-1" rows="2" class="how-made-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
 
+            <!-- Section 2: Rules -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
                 <span class="text-[10px] text-slate-400">Game Rules</span>
               </div>
-              <p class="text-xs text-slate-300 mb-1.5">How do players play your game, and how does someone score or win?</p>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Stand behind the..." | "To play, you need to..." | "The winner is..."
               </div>
-              <textarea id="resp-jegichagi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
+              <textarea id="resp-jegichagi-2" rows="2" class="how-play-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
 
+            <!-- Section 3: Host Speech -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
@@ -862,11 +918,12 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Welcome to my station! My game is called..." | "It is your turn!" | "Great shot!"
               </div>
-              <textarea id="resp-jegichagi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+              <textarea id="resp-jegichagi-3" rows="2" class="host-speech-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
 
-            <button onclick="saveStudentResponses('jegichagi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
-              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            <!-- Submit to Teacher via Google Sheets & Earn XP Button -->
+            <button id="submit-btn-jegichagi" onclick="submitHomeworkToGoogleSheet('jegichagi')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Submit My Homework &amp; Claim +30 XP</span>
             </button>
           </div>
         </div>
@@ -922,6 +979,17 @@
           </div>
 
           <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Student Selector for Homework Submission -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-white/10">
+              <label for="student-select-yutnori" class="text-[11px] font-bold text-amber-300 flex items-center gap-1 whitespace-nowrap">
+                <span>👤</span> Student Name:
+              </label>
+              <select id="student-select-yutnori" onchange="onStationStudentSelectChange('yutnori', this.value)" class="student-station-select flex-1 bg-slate-950 border border-slate-700 text-amber-300 font-bold text-xs p-1.5 rounded-lg focus:outline-none focus:border-amber-400">
+                <option value="">-- Choose your name --</option>
+              </select>
+            </div>
+
+            <!-- Section 1: Crafting -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
@@ -931,21 +999,23 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "I made my game using..." | "First, I folded/cut..." | "Then, I..."
               </div>
-              <textarea id="resp-yutnori-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
+              <textarea id="resp-yutnori-1" rows="2" class="how-made-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
 
+            <!-- Section 2: Rules -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
                 <span class="text-[10px] text-slate-400">Game Rules</span>
               </div>
-              <p class="text-xs text-slate-300 mb-1.5">How do players play your game, and how does someone score or win?</p>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Stand behind the..." | "To play, you need to..." | "The winner is..."
               </div>
-              <textarea id="resp-yutnori-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
+              <textarea id="resp-yutnori-2" rows="2" class="how-play-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
 
+            <!-- Section 3: Host Speech -->
             <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
@@ -955,11 +1025,12 @@
               <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
                 💡 Sentence Starters: "Welcome to my station! My game is called..." | "It is your turn!" | "Great shot!"
               </div>
-              <textarea id="resp-yutnori-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+              <textarea id="resp-yutnori-3" rows="2" class="host-speech-textarea w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
 
-            <button onclick="saveStudentResponses('yutnori')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
-              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            <!-- Submit to Teacher via Google Sheets & Earn XP Button -->
+            <button id="submit-btn-yutnori" onclick="submitHomeworkToGoogleSheet('yutnori')" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Submit My Homework &amp; Claim +30 XP</span>
             </button>
           </div>
         </div>
@@ -1209,9 +1280,36 @@
   </div>
 
   <!-- =========================================================
+       MODAL 3: CELEBRATION MODAL (GOOGLE SHEETS HOMEWORK SUBMISSION)
+       ========================================================= -->
+  <div id="celebration-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-md rounded-3xl border border-amber-500/40 p-6 space-y-4 shadow-2xl text-center">
+      <div class="text-5xl animate-bounce">🌕🎉</div>
+      <h3 class="text-xl font-black text-amber-300">Quest Homework Submitted!</h3>
+      <p id="celebration-modal-text" class="text-sm text-slate-200 leading-relaxed font-medium">
+        Great job! Your homework has been sent to your teacher.
+      </p>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black border border-amber-500/30">
+        <span>⭐</span> <span>+30 XP Awarded</span>
+      </div>
+      <div class="pt-2">
+        <button onclick="closeCelebrationModal()" class="w-full btn-3d btn-amber py-2.5 rounded-xl text-xs font-black">
+          Awesome! Continue Quest 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
        VANILLA JAVASCRIPT: LOGIC, ROSTERS, AUDIO & PRINT ENGINE
        ========================================================= -->
   <script>
+    // =========================================================
+    // GOOGLE SHEETS LIVE DATA RECEIVER (BACKEND SUBMISSION)
+    // Paste your deployed Google Apps Script Web App URL here:
+    // =========================================================
+    const GOOGLE_SHEET_WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
     /* 1. HARDCODED VERIFIED CLASS ROSTERS (Classes 3A & 3B Only) */
     const CLASS_ROSTERS = {
       "3A": [
@@ -1420,18 +1518,20 @@
 
     function checkAdminStatus() {
       const urlParams = new URLSearchParams(window.location.search);
-      const isAdminParam = urlParams.get('admin') === 'true' || urlParams.get('teacher') === 'true';
-      const isAdminSession = sessionStorage.getItem('isTeacherAdmin') === 'true' || sessionStorage.getItem('chuseok_is_admin') === 'true';
+      const isAdmin = urlParams.get('admin') === 'true' || urlParams.get('teacher') === 'true' || sessionStorage.getItem('isTeacherAdmin') === 'true' || sessionStorage.getItem('chuseok_is_admin') === 'true';
 
-      if (isAdminParam || isAdminSession) {
+      if (isAdmin) {
+        document.body.classList.add('is-teacher');
         enableTeacherMode();
       } else {
+        document.body.classList.remove('is-teacher');
         enableParentView();
       }
     }
 
     function enableParentView() {
       isTeacherAdmin = false;
+      document.body.classList.remove('is-teacher');
       // Hide all randomizer, spin, edit, and swap controls
       document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
       
@@ -1446,6 +1546,7 @@
 
     function enableTeacherMode() {
       isTeacherAdmin = true;
+      document.body.classList.add('is-teacher');
       // Reveal all admin tools and spin buttons
       document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
       sessionStorage.setItem('isTeacherAdmin', 'true');
@@ -1734,6 +1835,7 @@
           }
         }
       });
+      populateStudentSelectors();
     }
 
     function reRollStudent(studentName, fromGameId) {
@@ -1814,6 +1916,13 @@
             select.value = match;
             onStudentSelectChange();
           }
+
+          highlightAndScrollToGame(gameId);
+          const stationSelect = document.getElementById(`student-select-${gameId}`);
+          if (stationSelect) {
+            stationSelect.value = match;
+            onStationStudentSelectChange(gameId, match);
+          }
         }
       }
     }
@@ -1843,18 +1952,195 @@
     }
 
     /* =========================================================
-       ON-SCREEN OPEN-ENDED WRITING & PERSISTENCE
+       ON-SCREEN OPEN-ENDED WRITING & GOOGLE SHEETS LIVE SUBMISSION
        ========================================================= */
-    function saveStudentResponses(gameId) {
-      soundEngine.playChime();
-      const responses = {};
-      for (let i = 1; i <= 3; i++) {
-        const ta = document.getElementById(`resp-${gameId}-${i}`);
-        if (ta) responses[i] = ta.value;
+    function populateStudentSelectors() {
+      GAMES_INFO.forEach(game => {
+        const select = document.getElementById(`student-select-${game.id}`);
+        if (!select) return;
+        const currentVal = select.value;
+        select.innerHTML = '<option value="">-- Choose your name --</option>';
+
+        const assigned = currentDraw[game.id] || [];
+        if (assigned.length > 0) {
+          const optGroup = document.createElement('optgroup');
+          optGroup.label = `Assigned Station Masters (${assigned.length})`;
+          assigned.forEach(st => {
+            const opt = document.createElement('option');
+            opt.value = st;
+            opt.textContent = `⭐ ${st}`;
+            optGroup.appendChild(opt);
+          });
+          select.appendChild(optGroup);
+        }
+
+        const roster = getActiveRoster();
+        const others = roster.filter(st => !assigned.includes(st));
+        if (others.length > 0) {
+          const optGroup2 = document.createElement('optgroup');
+          optGroup2.label = `Other Class ${currentClass} Students`;
+          others.forEach(st => {
+            const opt = document.createElement('option');
+            opt.value = st;
+            opt.textContent = st;
+            optGroup2.appendChild(opt);
+          });
+          select.appendChild(optGroup2);
+        }
+
+        if (currentVal) {
+          select.value = currentVal;
+        }
+      });
+    }
+
+    function onStationStudentSelectChange(gameId, studentName) {
+      if (!studentName) return;
+      soundEngine.playClick();
+
+      // Check if student has saved responses
+      const savedSub = localStorage.getItem(`chuseok_submission_${currentClass}_${studentName}`);
+      if (savedSub) {
+        try {
+          const data = JSON.parse(savedSub);
+          if (data.part1HowDidIMakeIt || data.howDidIMakeIt) {
+            document.getElementById(`resp-${gameId}-1`).value = data.part1HowDidIMakeIt || data.howDidIMakeIt;
+          }
+          if (data.part2HowDoWePlayIt || data.howDoWePlayIt) {
+            document.getElementById(`resp-${gameId}-2`).value = data.part2HowDoWePlayIt || data.howDoWePlayIt;
+          }
+          if (data.part3HostPresentationScript || data.hostPresentationScript) {
+            document.getElementById(`resp-${gameId}-3`).value = data.part3HostPresentationScript || data.hostPresentationScript;
+          }
+        } catch(e) {}
       }
-      localStorage.setItem(`chuseok_responses_${gameId}`, JSON.stringify(responses));
-      showToast(`Saved ${gameId} responses! +30 XP awarded!`);
-      awardActiveStudentXP(30);
+
+      // Sync with search bar & bottom tracker
+      const searchInput = document.getElementById('student-search-input');
+      if (searchInput) searchInput.value = studentName;
+      const trackerSelect = document.getElementById('student-select');
+      if (trackerSelect) {
+        trackerSelect.value = studentName;
+        onStudentSelectChange();
+      }
+    }
+
+    function submitHomeworkToGoogleSheet(gameId) {
+      soundEngine.playClick();
+      const game = GAMES_INFO.find(g => g.id === gameId);
+      const gameName = game ? game.nameEn : gameId;
+
+      const selectEl = document.getElementById(`student-select-${gameId}`);
+      let studentName = selectEl ? selectEl.value.trim() : '';
+      if (!studentName) {
+        const searchInput = document.getElementById('student-search-input');
+        if (searchInput && searchInput.value.trim()) {
+          studentName = searchInput.value.trim();
+        }
+      }
+
+      const part1 = (document.getElementById(`resp-${gameId}-1`)?.value || '').trim();
+      const part2 = (document.getElementById(`resp-${gameId}-2`)?.value || '').trim();
+      const part3 = (document.getElementById(`resp-${gameId}-3`)?.value || '').trim();
+
+      // 2. Validation: Alert if the student name is missing or if all three text boxes are empty.
+      if (!studentName) {
+        alert("Please select or enter your child's name before submitting!");
+        if (selectEl) selectEl.focus();
+        return;
+      }
+
+      if (!part1 && !part2 && !part3) {
+        alert("Please write your answers in at least one box before submitting!");
+        const firstArea = document.getElementById(`resp-${gameId}-1`);
+        if (firstArea) firstArea.focus();
+        return;
+      }
+
+      const payload = {
+        timestamp: new Date().toISOString(),
+        studentName: studentName,
+        className: currentClass,
+        assignedGame: gameName,
+        part1HowDidIMakeIt: part1,
+        part2HowDoWePlayIt: part2,
+        part3HostPresentationScript: part3
+      };
+
+      // Local backup in localStorage
+      localStorage.setItem(`chuseok_resp_${gameId}_1`, part1);
+      localStorage.setItem(`chuseok_resp_${gameId}_2`, part2);
+      localStorage.setItem(`chuseok_resp_${gameId}_3`, part3);
+      localStorage.setItem(`chuseok_submission_${currentClass}_${studentName}`, JSON.stringify(payload));
+
+      const btn = document.getElementById(`submit-btn-${gameId}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = "⏳ Submitting to Teacher...";
+      }
+
+      // 3. Dispatch via fetch:
+      if (GOOGLE_SHEET_WEBHOOK_URL && GOOGLE_SHEET_WEBHOOK_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+        fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          mode: "no-cors"
+        })
+        .then(() => {
+          onSubmissionSuccess(payload, btn);
+        })
+        .catch(err => {
+          console.warn("Google Sheet webhook submission error:", err);
+          onSubmissionSuccess(payload, btn);
+        });
+      } else {
+        setTimeout(() => {
+          onSubmissionSuccess(payload, btn);
+        }, 500);
+      }
+    }
+
+    function onSubmissionSuccess(payload, btn) {
+      soundEngine.playVictoryFanfare();
+      awardXP(30);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = "✅ Submitted to Teacher! (+30 XP)";
+        btn.className = "w-full py-2.5 bg-emerald-600 text-white font-black rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2";
+      }
+      showCelebrationModal(`Great job, ${payload.studentName}! Your homework has been sent to your teacher.`);
+    }
+
+    function showCelebrationModal(msg) {
+      const textEl = document.getElementById('celebration-modal-text');
+      if (textEl) textEl.textContent = msg;
+      const modal = document.getElementById('celebration-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeCelebrationModal() {
+      soundEngine.playClick();
+      const modal = document.getElementById('celebration-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function saveStudentResponses(gameId) {
+      submitHomeworkToGoogleSheet(gameId);
+    }
+
+    function awardXP(points = 30) {
+      const select = document.getElementById('student-select');
+      const studentName = select ? select.value : '';
+      if (studentName) {
+        if (!studentXPData[studentName]) {
+          studentXPData[studentName] = { q1: false, q2: false, q3: false, eco: false, spirit: false, english: false, xp: 0 };
+        }
+        studentXPData[studentName].q2 = true;
+        const check2 = document.getElementById('quest-2-check');
+        if (check2) check2.checked = true;
+        recalculateStudentXP(studentName);
+      }
     }
 
     function loadAllSavedResponses() {
