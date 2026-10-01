@@ -130,67 +130,21 @@
 
     /* Glass Panels */
     .glass-panel {
-      background: rgba(15, 23, 42, 0.86);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
     }
     .glass-card {
-      background: rgba(15, 23, 42, 0.78);
+      background: rgba(15, 23, 42, 0.80);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
     .glass-card:hover {
       border-color: rgba(245, 158, 11, 0.4);
       transform: translateY(-2px);
-    }
-
-    /* Sentence Starter Chips */
-    .starter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 5px 10px;
-      border-radius: 9999px;
-      font-weight: 700;
-      font-size: 0.78rem;
-      background: rgba(30, 41, 59, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #cbd5e1;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.15s ease;
-    }
-    .starter-chip:hover {
-      background: #f59e0b;
-      color: #0f172a;
-      transform: translateY(-1px);
-      border-color: #fbbf24;
-    }
-    .starter-chip:active {
-      transform: scale(0.96);
-    }
-
-    /* Open-ended textareas */
-    .open-response-textarea {
-      width: 100%;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 10px 14px;
-      color: #f1f5f9;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      resize: vertical;
-      min-height: 72px;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .open-response-textarea:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
     }
 
     /* Speaking Chant Speech Bubble */
@@ -199,7 +153,7 @@
       background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
       border: 2px solid rgba(245, 158, 11, 0.5);
       border-radius: 18px;
-      padding: 12px 16px;
+      padding: 10px 14px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     }
 
@@ -230,7 +184,7 @@
         background: #ffffff !important;
         background-image: none !important;
         color: #000000 !important;
-        font-size: 10.5pt;
+        font-size: 10pt;
         line-height: 1.3;
         padding: 0 !important;
         margin: 0 !important;
@@ -257,7 +211,7 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         font-weight: 800;
-        font-size: 9.5pt;
+        font-size: 9pt;
         border-bottom: 1pt solid #1f2937;
         padding: 3pt 6pt;
         margin: -6pt -8pt 5pt -8pt;
@@ -282,10 +236,18 @@
         margin-right: 4pt;
         vertical-align: middle;
       }
+      .pocket-script-box {
+        border: 1.5pt dashed #b45309;
+        background: #fffbeb !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border-radius: 5pt;
+        padding: 5pt 7pt;
+      }
     }
   </style>
 </head>
-<body class="selection:bg-amber-500 selection:text-slate-900 pb-16">
+<body class="selection:bg-amber-500 selection:text-slate-900 pb-24">
   <canvas id="confetti-canvas"></canvas>
 
   <!-- =========================================================
@@ -326,7 +288,7 @@
 
         <button onclick="window.print()" class="btn-3d btn-amber px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5 shadow-amber-500/25">
           <span>🖨️</span>
-          <span class="hidden sm:inline">Print Student Quest Worksheet</span>
+          <span class="hidden sm:inline">Print Student Quest Worksheets</span>
           <span class="sm:hidden">Print</span>
         </button>
 
@@ -370,7 +332,7 @@
           </div>
           <h3 class="font-black text-base text-amber-300">Week 1: Traditional Games &amp; Crafting</h3>
           <p class="text-xs text-slate-200 leading-relaxed">
-            Craft recycled games at home, explain English rules, and speak English with confidence!
+            Craft recycled games, write instructions, and host peers in English!
           </p>
         </div>
 
@@ -384,7 +346,7 @@
           </div>
           <h3 class="font-extrabold text-base text-white">Week 2: Chuseok Cooking &amp; Treats</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Making Songpyeon half-moon rice cakes, tasting autumn harvest treats, and festive food vocabulary.
+            Making Songpyeon rice cakes &amp; festive food vocabulary.
           </p>
         </div>
 
@@ -398,7 +360,7 @@
           </div>
           <h3 class="font-extrabold text-base text-white">Week 3: Folk Dance &amp; Rhythms</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Ganggangsullae circle dance under the harvest moon, traditional rhythms, and movement verbs.
+            Ganggangsullae circle dance &amp; movement verbs.
           </p>
         </div>
 
@@ -412,7 +374,7 @@
           </div>
           <h3 class="font-extrabold text-base text-white">Week 4: Grand Harvest Showcase</h3>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Folk tale storytelling under the Harvest Moon, gratitude boards, and final 100 XP Game Master awards!
+            Storytelling under the Harvest Moon &amp; final awards.
           </p>
         </div>
       </div>
@@ -420,7 +382,7 @@
   </section>
 
   <!-- =========================================================
-       2. CLASS ROSTER & FAIR GAME RANDOMIZER (3A & 3B)
+       2. REAL CLASSROOM ROSTERS (3A & 3B) & FAIR RANDOMIZER
        ========================================================= -->
   <section id="randomizer-section" class="px-4 py-6 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
@@ -431,11 +393,12 @@
             <h2 class="text-2xl sm:text-3xl font-black text-white">Class Roster &amp; Fair Game Randomizer</h2>
           </div>
           <p class="text-xs sm:text-sm text-slate-400 mt-1">
-            Fair Allocation distributes 19 students evenly across the 5 stations (4, 4, 4, 4, 3 split).
+            Fair Allocation balances 19 students evenly across the 5 stations (4, 4, 4, 4, 3 split).
           </p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Segmented Toggle Switch: [ Class 3A ] | [ Class 3B ] -->
           <div class="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-white/15">
             <button id="class-3a-btn" onclick="switchClass('3A')" class="btn-3d btn-amber px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 transition">
               <span>🏫</span>
@@ -446,8 +409,10 @@
               <span>Class 3B</span>
             </button>
           </div>
-          <button onclick="openEditRosterModal()" class="btn-3d btn-slate px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 text-amber-300" title="Edit student names">
-            <span>✏️</span> Edit Names
+
+          <!-- Edit Names / Sync Button -->
+          <button onclick="openEditRosterModal()" class="btn-3d btn-slate px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 text-amber-300" title="Sync from platform or edit names">
+            <span>🔄</span> Sync / Edit Names
           </button>
         </div>
       </div>
@@ -461,7 +426,7 @@
         </div>
         <div class="flex items-center gap-2">
           <button id="spin-btn" onclick="spinAndDrawGames()" class="btn-3d btn-amber py-2.5 px-5 rounded-xl font-black text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25">
-            <span class="text-lg">🎰</span>
+            <span class="text-lg">🎲</span>
             <span>Spin &amp; Assign Games</span>
           </button>
           <button onclick="copyRosterAssignments()" class="btn-3d btn-slate py-2 px-3 rounded-xl text-xs font-bold text-slate-300">
@@ -488,11 +453,11 @@
           <h2 class="text-2xl sm:text-3xl font-black text-white">5 Traditional Korean Game Stations</h2>
         </div>
         <p class="text-xs sm:text-sm text-slate-400 mt-1">
-          Open-ended response studio with optional sentence starters — express your own craft and game ideas!
+          Open-ended response studio with structured sentence starter hints — write and speak your own ideas!
         </p>
       </div>
       <div class="text-xs text-amber-400 font-bold bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 flex items-center gap-1.5">
-        <span>💡 Tip:</span> Click any starter chip to add it to your response!
+        <span>💡 Note:</span> Each student writes their own craft story, rules, and host script.
       </div>
     </div>
 
@@ -503,22 +468,30 @@
            GAME 1: DDAKJI (딱지)
            ========================================================= -->
       <div id="game-card-ddakji" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-blue-500/40 shadow-xl shadow-blue-500/10 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-blue-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" alt="Ddakji Folded Paper Tiles" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-blue-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 1</span>
-                <h3 class="text-xl font-black text-white mt-0.5">Ddakji (딱지)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left Column (Visuals, Chant, Video, Assigned Students) -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="relative rounded-2xl overflow-hidden border border-blue-500/30 shadow-lg group">
+              <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80" alt="Ddakji Folded Paper Tiles" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-blue-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 1</span>
+                  <h3 class="text-xl font-black text-white mt-0.5">Ddakji (딱지)</h3>
+                </div>
+                <button onclick="openVideoModal('ddakji')" class="btn-3d btn-blue px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                  <span>▶</span> Watch Tutorial
+                </button>
               </div>
-              <button onclick="openVideoModal('ddakji')" class="btn-3d btn-blue px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Tutorial
-              </button>
             </div>
-          </div>
 
-          <div class="lg:col-span-7 space-y-3">
+            <!-- Materials Badge -->
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-blue-950/60 border border-blue-500/30 text-xs">
+              <span class="text-base">📦</span>
+              <span class="text-slate-300 font-semibold">Materials: <strong class="text-white">2 square sheets of paper</strong></span>
+            </div>
+
+            <!-- English Chant -->
             <div class="chant-bubble flex items-center justify-between gap-3">
               <div>
                 <div class="text-[10px] uppercase font-black text-blue-400">English Speaking Chant:</div>
@@ -528,78 +501,64 @@
                 <span>🔊</span>
               </button>
             </div>
-            <p class="text-xs text-slate-300">
-              Fold two square sheets of paper or cereal boxes into an interlocking slap tile. Slam your card down to flip your opponent's card!
-            </p>
-          </div>
-        </div>
 
-        <!-- 4 Open-Ended Core Prompts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <!-- Prompt 1: Maker's Story -->
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-blue-300">🛠️ 1. The Maker's Story (Crafting)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-1">0 words</span>
+            <!-- Assigned Students Pill -->
+            <div class="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1.5">
+              <div class="text-[11px] font-black uppercase text-blue-400 tracking-wider flex items-center gap-1.5">
+                <span>👥</span> Assigned Station Masters:
+              </div>
+              <div id="assigned-list-ddakji" class="flex flex-wrap gap-1.5 text-xs text-slate-200">
+                <!-- Dynamically populated -->
+              </div>
             </div>
-            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'I made my game using ')">"I made my game using..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'First, I ')">"First, I..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-1', 'It was easy to make because ')">"It was easy to make because..."</span>
-            </div>
-            <textarea id="resp-ddakji-1" oninput="trackEffort('ddakji', 1)" class="open-response-textarea" placeholder="Write your craft story here..."></textarea>
           </div>
 
-          <!-- Prompt 2: Rulebook -->
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-sky-300">📜 2. The Rulebook (Instructions)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-2">0 words</span>
+          <!-- Right Column (3 Structured Open-Ended Prompts) -->
+          <div class="lg:col-span-7 space-y-4 text-left">
+            <!-- Section 1: Crafting -->
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
+                <span class="text-[10px] text-slate-400">Home Craft</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What items did you find at home, and how did you build your game?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "I used...", "First, I folded/cut...", "Then, I taped/tied..."
+              </div>
+              <textarea id="resp-ddakji-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'Players must stand ')">"Players must stand..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'To play, you need to ')">"To play, you need to..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-2', 'The winner is the person who ')">"The winner is..."</span>
-            </div>
-            <textarea id="resp-ddakji-2" oninput="trackEffort('ddakji', 2)" class="open-response-textarea" placeholder="Explain how to play and win..."></textarea>
-          </div>
 
-          <!-- Prompt 3: Game Master Pro-Tips -->
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-3">0 words</span>
+            <!-- Section 2: Rules -->
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
+                <span class="text-[10px] text-slate-400">Game Rules</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Stand behind the...", "To play, you...", "You score 1 point when..."
+              </div>
+              <textarea id="resp-ddakji-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-3', 'My best tip is to ')">"My best tip is to..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-3', 'Be careful not to ')">"Be careful not to..."</span>
-            </div>
-            <textarea id="resp-ddakji-3" oninput="trackEffort('ddakji', 3)" class="open-response-textarea" placeholder="Share your secret winning strategy..."></textarea>
-          </div>
 
-          <!-- Prompt 4: Host Presentation Speech -->
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-ddakji-4">0 words</span>
+            <!-- Section 3: Host Speech -->
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
+                <span class="text-[10px] text-slate-400">Arcade Day Speech</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What will you say in English when classmates visit your table on Tuesday?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Welcome to my station! My game is...", "It is your turn!", "Great shot!"
+              </div>
+              <textarea id="resp-ddakji-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-4', 'Welcome to my station! My game is called ')">"Welcome to my station! My game..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-ddakji-4', 'It is your turn! Try to ')">"It's your turn! Try to..."</span>
-            </div>
-            <textarea id="resp-ddakji-4" oninput="trackEffort('ddakji', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
-          </div>
-        </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-          <span class="text-slate-400 font-semibold" id="effort-ddakji">Effort Status: Start typing your answers!</span>
-          <button onclick="saveStudentResponses('ddakji')" class="btn-3d btn-blue px-4 py-1.5 rounded-xl font-black text-xs">
-            💾 Save My Responses
-          </button>
+            <!-- Save & Earn XP Button -->
+            <button onclick="saveStudentResponses('ddakji')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -607,22 +566,27 @@
            GAME 2: PAENGI (팽이)
            ========================================================= -->
       <div id="game-card-paengi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-rose-500/40 shadow-xl shadow-rose-500/10 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-rose-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80" alt="Paengi Spinning Top" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-rose-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 2</span>
-                <h3 class="text-xl font-black text-white mt-0.5">Paengi (팽이)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 space-y-4">
+            <div class="relative rounded-2xl overflow-hidden border border-rose-500/30 shadow-lg group">
+              <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80" alt="Paengi Spinning Top" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-rose-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 2</span>
+                  <h3 class="text-xl font-black text-white mt-0.5">Paengi (팽이)</h3>
+                </div>
+                <button onclick="openVideoModal('paengi')" class="btn-3d btn-crimson px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                  <span>▶</span> Watch Tutorial
+                </button>
               </div>
-              <button onclick="openVideoModal('paengi')" class="btn-3d btn-crimson px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Tutorial
-              </button>
             </div>
-          </div>
 
-          <div class="lg:col-span-7 space-y-3">
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-rose-950/60 border border-rose-500/30 text-xs">
+              <span class="text-base">📦</span>
+              <span class="text-slate-300 font-semibold">Materials: <strong class="text-white">Origami paper, toothpick/skewer handle</strong></span>
+            </div>
+
             <div class="chant-bubble flex items-center justify-between gap-3">
               <div>
                 <div class="text-[10px] uppercase font-black text-rose-400">English Speaking Chant:</div>
@@ -632,94 +596,85 @@
                 <span>🔊</span>
               </button>
             </div>
-            <p class="text-xs text-slate-300">
-              Folded origami paper top with toothpicks or cardboard discs. Spin against peers to see who stays spinning the longest!
-            </p>
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-rose-300">🛠️ 1. The Maker's Story (Crafting)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-1">0 words</span>
+            <div class="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1.5">
+              <div class="text-[11px] font-black uppercase text-rose-400 tracking-wider flex items-center gap-1.5">
+                <span>👥</span> Assigned Station Masters:
+              </div>
+              <div id="assigned-list-paengi" class="flex flex-wrap gap-1.5 text-xs text-slate-200"></div>
             </div>
-            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-1', 'I made my game using ')">"I made my game using..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-1', 'First, I folded ')">"First, I folded..."</span>
-            </div>
-            <textarea id="resp-paengi-1" oninput="trackEffort('paengi', 1)" class="open-response-textarea" placeholder="Describe the materials and build steps..."></textarea>
           </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-pink-300">📜 2. The Rulebook (Instructions)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-2">0 words</span>
+          <div class="lg:col-span-7 space-y-4 text-left">
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
+                <span class="text-[10px] text-slate-400">Home Craft</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What items did you find at home, and how did you build your game?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "I used...", "First, I folded/cut...", "Then, I taped/tied..."
+              </div>
+              <textarea id="resp-paengi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-2', 'To play, twist the ')">"To play, twist the..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-2', 'The winner is the top that ')">"The winner is the top that..."</span>
-            </div>
-            <textarea id="resp-paengi-2" oninput="trackEffort('paengi', 2)" class="open-response-textarea" placeholder="Explain the spinning rules..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-3">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
+                <span class="text-[10px] text-slate-400">Game Rules</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Stand behind the...", "To play, you...", "You score 1 point when..."
+              </div>
+              <textarea id="resp-paengi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-3', 'My best tip is to ')">"My best tip is to..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-3', 'Spin on a ')">"Spin on a..."</span>
-            </div>
-            <textarea id="resp-paengi-3" oninput="trackEffort('paengi', 3)" class="open-response-textarea" placeholder="Share your top spinning secrets..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-paengi-4">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
+                <span class="text-[10px] text-slate-400">Arcade Day Speech</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What will you say in English when classmates visit your table on Tuesday?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Welcome to my station! My game is...", "It is your turn!", "Great shot!"
+              </div>
+              <textarea id="resp-paengi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-4', 'Welcome to my Paengi station! ')">"Welcome to my Paengi station!"</span>
-              <span class="starter-chip" onclick="insertStarter('resp-paengi-4', 'Ready, set, spin! ')">"Ready, set, spin!"</span>
-            </div>
-            <textarea id="resp-paengi-4" oninput="trackEffort('paengi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
-          </div>
-        </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-          <span class="text-slate-400 font-semibold" id="effort-paengi">Effort Status: Start typing your answers!</span>
-          <button onclick="saveStudentResponses('paengi')" class="btn-3d btn-crimson px-4 py-1.5 rounded-xl font-black text-xs">
-            💾 Save My Responses
-          </button>
+            <button onclick="saveStudentResponses('paengi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- =========================================================
-           GAME 3: GONGGI (공기놀이)
+           GAME 3: GONGGI (공기놀이) - REPLACED TUHO
            ========================================================= -->
       <div id="game-card-gonggi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-amber-500/40 shadow-xl shadow-amber-500/10 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Gonggi Tokens" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-amber-500/90 text-slate-950 font-black text-[11px] uppercase tracking-wide">Station 3</span>
-                <h3 class="text-xl font-black text-white mt-0.5">Gonggi (공기놀이)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 space-y-4">
+            <div class="relative rounded-2xl overflow-hidden border border-amber-500/30 shadow-lg group">
+              <!-- Tokens / Pebbles banner (NOT food) -->
+              <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" alt="Gonggi Toss Tokens" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-amber-500/90 text-slate-950 font-black text-[11px] uppercase tracking-wide">Station 3</span>
+                  <h3 class="text-xl font-black text-white mt-0.5">Gonggi (공기놀이)</h3>
+                </div>
+                <button onclick="openVideoModal('gonggi')" class="btn-3d btn-amber px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                  <span>▶</span> Watch Tutorial
+                </button>
               </div>
-              <button onclick="openVideoModal('gonggi')" class="btn-3d btn-amber px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Tutorial
-              </button>
             </div>
-          </div>
 
-          <div class="lg:col-span-7 space-y-3">
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-amber-950/60 border border-amber-500/30 text-xs">
+              <span class="text-base">📦</span>
+              <span class="text-slate-300 font-semibold">Materials: <strong class="text-white">5 paper squares (origami boxes) with rice/beans</strong></span>
+            </div>
+
             <div class="chant-bubble flex items-center justify-between gap-3">
               <div>
                 <div class="text-[10px] uppercase font-black text-amber-400">English Speaking Chant:</div>
@@ -729,71 +684,56 @@
                 <span>🔊</span>
               </button>
             </div>
-            <p class="text-xs text-slate-300">
-              Fold 5 small paper origami stones or use clean pebbles. Toss one in the air while grabbing the others from the table!
-            </p>
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">🛠️ 1. The Maker's Story (Crafting)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-1">0 words</span>
+            <div class="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1.5">
+              <div class="text-[11px] font-black uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+                <span>👥</span> Assigned Station Masters:
+              </div>
+              <div id="assigned-list-gonggi" class="flex flex-wrap gap-1.5 text-xs text-slate-200"></div>
             </div>
-            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-1', 'I made 5 Gonggi stones with ')">"I made 5 Gonggi stones with..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-1', 'I filled them with ')">"I filled them with..."</span>
-            </div>
-            <textarea id="resp-gonggi-1" oninput="trackEffort('gonggi', 1)" class="open-response-textarea" placeholder="Describe the materials and origami boxes..."></textarea>
           </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-yellow-300">📜 2. The Rulebook (Instructions)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-2">0 words</span>
+          <div class="lg:col-span-7 space-y-4 text-left">
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
+                <span class="text-[10px] text-slate-400">Home Craft</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What items did you find at home, and how did you build your game?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "I used...", "First, I folded/cut...", "Then, I taped/tied..."
+              </div>
+              <textarea id="resp-gonggi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-2', 'Toss one stone up and ')">"Toss one stone up and..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-2', 'You get points when ')">"You get points when..."</span>
-            </div>
-            <textarea id="resp-gonggi-2" oninput="trackEffort('gonggi', 2)" class="open-response-textarea" placeholder="Explain the toss and catch steps..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-3">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
+                <span class="text-[10px] text-slate-400">Game Rules</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Stand behind the...", "To play, you...", "You score 1 point when..."
+              </div>
+              <textarea id="resp-gonggi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-3', 'My best tip is to catch with ')">"My best tip is to catch with..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-3', 'Watch out for ')">"Watch out for..."</span>
-            </div>
-            <textarea id="resp-gonggi-3" oninput="trackEffort('gonggi', 3)" class="open-response-textarea" placeholder="Share your secret finger agility tips..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-gonggi-4">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
+                <span class="text-[10px] text-slate-400">Arcade Day Speech</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What will you say in English when classmates visit your table on Tuesday?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Welcome to my station! My game is...", "It is your turn!", "Great shot!"
+              </div>
+              <textarea id="resp-gonggi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-4', 'Welcome! Can you catch all 5? ')">"Welcome! Can you catch all 5?"</span>
-              <span class="starter-chip" onclick="insertStarter('resp-gonggi-4', 'Awesome toss! ')">"Awesome toss!"</span>
-            </div>
-            <textarea id="resp-gonggi-4" oninput="trackEffort('gonggi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
-          </div>
-        </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-          <span class="text-slate-400 font-semibold" id="effort-gonggi">Effort Status: Start typing your answers!</span>
-          <button onclick="saveStudentResponses('gonggi')" class="btn-3d btn-amber px-4 py-1.5 rounded-xl font-black text-xs text-slate-950">
-            💾 Save My Responses
-          </button>
+            <button onclick="saveStudentResponses('gonggi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -801,22 +741,27 @@
            GAME 4: JEGICHAGI (제기차기)
            ========================================================= -->
       <div id="game-card-jegichagi" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-emerald-500/40 shadow-xl shadow-emerald-500/10 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" alt="Jegichagi Shuttlecock" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 4</span>
-                <h3 class="text-xl font-black text-white mt-0.5">Jegichagi (제기차기)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 space-y-4">
+            <div class="relative rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg group">
+              <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80" alt="Jegichagi Shuttlecock Kick" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 4</span>
+                  <h3 class="text-xl font-black text-white mt-0.5">Jegichagi (제기차기)</h3>
+                </div>
+                <button onclick="openVideoModal('jegichagi')" class="btn-3d btn-jade px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                  <span>▶</span> Watch Tutorial
+                </button>
               </div>
-              <button onclick="openVideoModal('jegichagi')" class="btn-3d btn-jade px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Tutorial
-              </button>
             </div>
-          </div>
 
-          <div class="lg:col-span-7 space-y-3">
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-xs">
+              <span class="text-base">📦</span>
+              <span class="text-slate-300 font-semibold">Materials: <strong class="text-white">1 bottle cap, ribbons / plastic bag strips, tape/rubber band</strong></span>
+            </div>
+
             <div class="chant-bubble flex items-center justify-between gap-3">
               <div>
                 <div class="text-[10px] uppercase font-black text-emerald-400">English Speaking Chant:</div>
@@ -826,71 +771,56 @@
                 <span>🔊</span>
               </button>
             </div>
-            <p class="text-xs text-slate-300">
-              Made from a bottle cap and plastic bag/ribbon streamers. Kick with the inside of your foot and count your keep-ups!
-            </p>
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🛠️ 1. The Maker's Story (Crafting)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-1">0 words</span>
+            <div class="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1.5">
+              <div class="text-[11px] font-black uppercase text-emerald-400 tracking-wider flex items-center gap-1.5">
+                <span>👥</span> Assigned Station Masters:
+              </div>
+              <div id="assigned-list-jegichagi" class="flex flex-wrap gap-1.5 text-xs text-slate-200"></div>
             </div>
-            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-1', 'I made my Jegi using a bottle cap and ')">"I used a cap and..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-1', 'I cut the plastic into ')">"I cut the plastic into..."</span>
-            </div>
-            <textarea id="resp-jegichagi-1" oninput="trackEffort('jegichagi', 1)" class="open-response-textarea" placeholder="Explain your shuttlecock materials..."></textarea>
           </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-teal-300">📜 2. The Rulebook (Instructions)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-2">0 words</span>
+          <div class="lg:col-span-7 space-y-4 text-left">
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
+                <span class="text-[10px] text-slate-400">Home Craft</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What items did you find at home, and how did you build your game?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "I used...", "First, I folded/cut...", "Then, I taped/tied..."
+              </div>
+              <textarea id="resp-jegichagi-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-2', 'Kick the jegi with the inside of ')">"Kick with the inside of..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-2', 'Count each tap: one, two, ')">"Count each tap..."</span>
-            </div>
-            <textarea id="resp-jegichagi-2" oninput="trackEffort('jegichagi', 2)" class="open-response-textarea" placeholder="Describe the kicking rules and scoring..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-3">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
+                <span class="text-[10px] text-slate-400">Game Rules</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Stand behind the...", "To play, you...", "You score 1 point when..."
+              </div>
+              <textarea id="resp-jegichagi-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-3', 'Keep your eyes on ')">"Keep your eyes on..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-3', 'Bend your knee to ')">"Bend your knee to..."</span>
-            </div>
-            <textarea id="resp-jegichagi-3" oninput="trackEffort('jegichagi', 3)" class="open-response-textarea" placeholder="Share your footwork tips..."></textarea>
-          </div>
 
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-jegichagi-4">0 words</span>
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
+                <span class="text-[10px] text-slate-400">Arcade Day Speech</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What will you say in English when classmates visit your table on Tuesday?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Welcome to my station! My game is...", "It is your turn!", "Great shot!"
+              </div>
+              <textarea id="resp-jegichagi-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-4', 'Welcome to my Jegichagi station! ')">"Welcome to my Jegichagi station!"</span>
-              <span class="starter-chip" onclick="insertStarter('resp-jegichagi-4', 'Great kick! Try again! ')">"Great kick! Try again!"</span>
-            </div>
-            <textarea id="resp-jegichagi-4" oninput="trackEffort('jegichagi', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
-          </div>
-        </div>
 
-        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-          <span class="text-slate-400 font-semibold" id="effort-jegichagi">Effort Status: Start typing your answers!</span>
-          <button onclick="saveStudentResponses('jegichagi')" class="btn-3d btn-jade px-4 py-1.5 rounded-xl font-black text-xs">
-            💾 Save My Responses
-          </button>
+            <button onclick="saveStudentResponses('jegichagi')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -898,22 +828,32 @@
            GAME 5: YUT NORI (윷놀이)
            ========================================================= -->
       <div id="game-card-yutnori" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-violet-500/40 shadow-xl shadow-violet-500/10 space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          <div class="lg:col-span-5 relative rounded-2xl overflow-hidden border border-violet-500/30 shadow-lg group">
-            <img src="https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80" alt="Yut Nori Board &amp; Dice" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
-            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div>
-                <span class="px-2.5 py-0.5 rounded-full bg-violet-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 5</span>
-                <h3 class="text-xl font-black text-white mt-0.5">Yut Nori (윷놀이)</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 space-y-4">
+            <div class="relative rounded-2xl overflow-hidden border border-violet-500/30 shadow-lg group">
+              <img src="https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80" alt="Yut Nori Board Race" class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-violet-500/90 text-white font-black text-[11px] uppercase tracking-wide">Station 5</span>
+                  <h3 class="text-xl font-black text-white mt-0.5">Yut Nori (윷놀이)</h3>
+                </div>
+                <button onclick="openVideoModal('yutnori')" class="btn-3d btn-violet px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
+                  <span>▶</span> Watch Tutorial
+                </button>
               </div>
-              <button onclick="openVideoModal('yutnori')" class="btn-3d btn-violet px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-lg">
-                <span>▶</span> Watch Tutorial
-              </button>
             </div>
-          </div>
 
-          <div class="lg:col-span-7 space-y-3">
+            <div class="flex items-center gap-2 p-2 rounded-xl bg-violet-950/60 border border-violet-500/30 text-xs">
+              <span class="text-base">📦</span>
+              <span class="text-slate-300 font-semibold">Materials: <strong class="text-white">A4 paper board, 4 sticks (or 1 paper dice), 4 tokens</strong></span>
+            </div>
+
+            <!-- Teacher Note -->
+            <div class="text-[11px] text-amber-300 bg-amber-500/10 p-2 rounded-xl border border-amber-500/20 italic">
+              📌 Teacher Note: "Students can craft 4 Yut sticks OR craft 1 paper dice to play!"
+            </div>
+
             <div class="chant-bubble flex items-center justify-between gap-3">
               <div>
                 <div class="text-[10px] uppercase font-black text-violet-400">English Speaking Chant:</div>
@@ -923,71 +863,56 @@
                 <span>🔊</span>
               </button>
             </div>
-            <div class="bg-violet-950/60 p-2.5 rounded-xl border border-violet-500/30 text-xs text-violet-200">
-              💡 <strong>Option:</strong> You may craft 4 traditional wooden Yut sticks OR craft a paper dice to play!
+
+            <div class="bg-slate-900/80 p-3 rounded-2xl border border-white/10 space-y-1.5">
+              <div class="text-[11px] font-black uppercase text-violet-400 tracking-wider flex items-center gap-1.5">
+                <span>👥</span> Assigned Station Masters:
+              </div>
+              <div id="assigned-list-yutnori" class="flex flex-wrap gap-1.5 text-xs text-slate-200"></div>
             </div>
           </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-violet-300">🛠️ 1. The Maker's Story (Crafting)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-1">0 words</span>
+          <div class="lg:col-span-7 space-y-4 text-left">
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider">✂️ 1. How Did I Make It? (Materials &amp; Steps)</label>
+                <span class="text-[10px] text-slate-400">Home Craft</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What items did you find at home, and how did you build your game?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "I used...", "First, I folded/cut...", "Then, I taped/tied..."
+              </div>
+              <textarea id="resp-yutnori-1" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400" placeholder="Write 1-2 sentences about making your game..."></textarea>
             </div>
-            <p class="text-xs text-slate-300">What materials did you find at home, and how did you build your game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-1', 'I crafted a board and ')">"I crafted a board and..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-1', 'I chose to make a paper dice because ')">"I chose a paper dice because..."</span>
+
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-emerald-400 uppercase tracking-wider">🎯 2. How Do We Play It? (Rules &amp; Goal)</label>
+                <span class="text-[10px] text-slate-400">Game Rules</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">How do players take turns, and how does someone score or win?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Stand behind the...", "To play, you...", "You score 1 point when..."
+              </div>
+              <textarea id="resp-yutnori-2" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" placeholder="Write the rules for your classmates..."></textarea>
             </div>
-            <textarea id="resp-yutnori-1" oninput="trackEffort('yutnori', 1)" class="open-response-textarea" placeholder="Explain your board and sticks/dice build..."></textarea>
+
+            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-sky-400 uppercase tracking-wider">🎤 3. Host Presentation Script (My Arcade Speech)</label>
+                <span class="text-[10px] text-slate-400">Arcade Day Speech</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-1.5">What will you say in English when classmates visit your table on Tuesday?</p>
+              <div class="text-[11px] text-slate-400 italic bg-slate-800/80 px-2 py-1 rounded mb-2 border border-slate-700/40">
+                💡 Sentence Starters: "Welcome to my station! My game is...", "It is your turn!", "Great shot!"
+              </div>
+              <textarea id="resp-yutnori-3" rows="2" class="w-full bg-slate-950/70 border border-slate-700 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400" placeholder="Write your welcome and hosting phrases..."></textarea>
+            </div>
+
+            <button onclick="saveStudentResponses('yutnori')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md flex items-center justify-center gap-2">
+              <span>💾 Save My Answers &amp; Prepare Presentation (+30 XP)</span>
+            </button>
           </div>
-
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-purple-300">📜 2. The Rulebook (Instructions)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-2">0 words</span>
-            </div>
-            <p class="text-xs text-slate-300">How do players play your game, and how does someone win?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-2', 'Roll the dice and move ')">"Roll the dice and move..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-2', 'The first person to get all pieces home ')">"The first person home..."</span>
-            </div>
-            <textarea id="resp-yutnori-2" oninput="trackEffort('yutnori', 2)" class="open-response-textarea" placeholder="Explain the board race rules..."></textarea>
-          </div>
-
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-amber-300">💡 3. Game Master Pro-Tips (Strategy)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-3">0 words</span>
-            </div>
-            <p class="text-xs text-slate-300">What is your secret tip or strategy to score high in this game?</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-3', 'Take the diagonal shortcut when ')">"Take the shortcut when..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-3', 'Watch out for ')">"Watch out for..."</span>
-            </div>
-            <textarea id="resp-yutnori-3" oninput="trackEffort('yutnori', 3)" class="open-response-textarea" placeholder="Share your board race shortcuts and strategy..."></textarea>
-          </div>
-
-          <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-black text-emerald-300">🎤 4. Host Presentation Speech (Arcade Day)</span>
-              <span class="text-[10px] text-slate-400 word-count" id="count-yutnori-4">0 words</span>
-            </div>
-            <p class="text-xs text-slate-300">Write what you will say to invite classmates to play at your table on Tuesday!</p>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-4', 'Welcome to Yut Nori! Choose your token: ')">"Welcome! Choose your token..."</span>
-              <span class="starter-chip" onclick="insertStarter('resp-yutnori-4', 'Your turn to roll! ')">"Your turn to roll!"</span>
-            </div>
-            <textarea id="resp-yutnori-4" oninput="trackEffort('yutnori', 4)" class="open-response-textarea" placeholder="Write your spoken script for game day..."></textarea>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-          <span class="text-slate-400 font-semibold" id="effort-yutnori">Effort Status: Start typing your answers!</span>
-          <button onclick="saveStudentResponses('yutnori')" class="btn-3d btn-violet px-4 py-1.5 rounded-xl font-black text-xs">
-            💾 Save My Responses
-          </button>
         </div>
       </div>
 
@@ -995,7 +920,7 @@
   </section>
 
   <!-- =========================================================
-       4. GAMIFIED 100 XP QUEST LOG & WEB AUDIO
+       4. GAMIFIED 100 XP QUEST TRACKER & SOUND SYNTHESIS
        ========================================================= -->
   <section id="tracker-section" class="px-4 py-8 max-w-7xl mx-auto">
     <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6 border border-amber-500/30">
@@ -1011,7 +936,7 @@
         </div>
 
         <div class="flex items-center gap-2 bg-slate-900/90 p-2 rounded-2xl border border-white/15">
-          <label for="student-select" class="text-xs font-bold text-slate-300">👤 Student:</label>
+          <label for="student-select" class="text-xs font-bold text-slate-300">👤 Active Student:</label>
           <select id="student-select" onchange="onStudentSelectChange()" class="bg-slate-950 text-amber-300 font-extrabold text-xs sm:text-sm px-3 py-1.5 rounded-xl border border-white/15 focus:outline-none focus:border-amber-400">
             <!-- Dynamically populated -->
           </select>
@@ -1055,9 +980,9 @@
               </span>
               <input type="checkbox" id="quest-1-check" onchange="toggleQuest(1)" class="w-5 h-5 rounded accent-amber-500 cursor-pointer" />
             </div>
-            <div class="font-extrabold text-sm text-white">Quest 1: The Craft Master</div>
+            <div class="font-extrabold text-sm text-white">Quest 1: The Builder (50 XP)</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Completed the game from recycled materials at home (cardboard, paper, caps, string).
+              Bringing a playable game crafted from household recycled items (cardboard, paper, caps, string).
             </p>
           </div>
           <div class="text-[11px] text-amber-300 font-bold mt-3">Due: Tuesday, Oct 6</div>
@@ -1072,9 +997,9 @@
               </span>
               <input type="checkbox" id="quest-2-check" onchange="toggleQuest(2)" class="w-5 h-5 rounded accent-sky-500 cursor-pointer" />
             </div>
-            <div class="font-extrabold text-sm text-white">Quest 2: The English Rulebook</div>
+            <div class="font-extrabold text-sm text-white">Quest 2: The English Rulebook (30 XP)</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Answered the open-ended questions and practiced the spoken host presentation script.
+              Unlocked upon writing open-ended answers and practicing the spoken arcade presentation script.
             </p>
           </div>
           <div class="text-[11px] text-sky-300 font-bold mt-3">Spoken at Game Station</div>
@@ -1089,9 +1014,9 @@
               </span>
               <input type="checkbox" id="quest-3-check" onchange="toggleQuest(3)" class="w-5 h-5 rounded accent-emerald-500 cursor-pointer" />
             </div>
-            <div class="font-extrabold text-sm text-white">Quest 3: The Arcade Host</div>
+            <div class="font-extrabold text-sm text-white">Quest 3: The Arcade Host (20 XP)</div>
             <p class="text-xs text-slate-300 leading-relaxed">
-              Hosted 3 peers on Tuesday using target English phrases (*"Your turn!", "Nice toss!", "Great kick!"*).
+              Hosting 3 classmates using target English phrases (*"Your turn!", "Nice throw!", "Good job!"*).
             </p>
           </div>
           <div class="text-[11px] text-emerald-300 font-bold mt-3">3 Peer Signatures</div>
@@ -1145,19 +1070,20 @@
   </section>
 
   <!-- =========================================================
-       5. PRINTABLE A4 STUDENT QUEST WORKSHEET
+       5. PRINTABLE A4 STUDENT WORKSHEET (@media print)
        ========================================================= -->
   <section id="print-worksheet-section" class="max-w-4xl mx-auto p-4 bg-white text-slate-900 rounded-2xl shadow-2xl my-6">
+    <!-- Header -->
     <div class="border-b-2 border-slate-900 pb-2.5 mb-3 flex items-center justify-between">
       <div class="space-y-0.5">
         <div class="flex items-center gap-2">
           <span class="text-xl">🌕</span>
           <span class="text-xs font-black uppercase tracking-tight text-slate-900">English Adventure Academy • Chuseok Quest</span>
         </div>
-        <h2 class="text-lg font-black text-amber-900">Traditional Folk Game Master Workbook</h2>
+        <h2 class="text-lg font-black text-amber-900">Chuseok Game Master Quest</h2>
         <p class="text-[10px] text-slate-600">CEFR Level A1+ | Month-Long Chuseok Cultural Festival • Week 1: Games &amp; Crafting</p>
       </div>
-      <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50/90">
+      <div class="text-right border-2 border-slate-900 rounded-lg p-2 bg-amber-50/90 leading-tight">
         <div class="text-[9px] font-bold uppercase text-slate-600">Assignment Due Date:</div>
         <div class="text-xs font-black text-rose-700">Tuesday, October 6</div>
         <div class="text-[9px] text-slate-500">Bring crafted game to school!</div>
@@ -1167,7 +1093,7 @@
     <!-- Student Header -->
     <div class="grid grid-cols-12 gap-2 mb-3 p-2 bg-slate-100 rounded-lg border border-slate-300 text-xs items-center">
       <div class="col-span-5 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Student:</span>
+        <span class="font-extrabold text-slate-700">Name:</span>
         <span class="font-bold border-b border-slate-900 flex-1 px-1 print-name-slot">____________________</span>
       </div>
       <div class="col-span-3 flex items-center gap-2">
@@ -1176,98 +1102,95 @@
         <label class="flex items-center gap-1 cursor-pointer"><span class="checkbox-square"></span> 3B</label>
       </div>
       <div class="col-span-4 flex items-center gap-1">
-        <span class="font-extrabold text-slate-700">Game:</span>
-        <span class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 print-game-slot">Ddakji / Paengi / Gonggi / Jegi / Yut</span>
+        <span class="font-extrabold text-slate-700">Assigned Game:</span>
+        <span class="font-bold text-amber-800 border-b border-slate-900 flex-1 px-1 print-game-slot">[ Selected Game ]</span>
       </div>
     </div>
 
-    <!-- 4 Open-Ended Questions with Handwriting Lines & Sentence Starters -->
+    <!-- Open-Ended Writing Sections with 3 Wide Dotted Handwriting Lines -->
     <div class="space-y-2 text-xs">
-      <!-- Question 1 -->
+      <!-- Part 1: How I Made It -->
       <div class="print-box">
         <div class="print-box-header">
-          <span>🛠️ 1. THE MAKER'S STORY (CRAFTING &amp; MATERIALS)</span>
-          <span class="text-[9px] text-slate-500 italic">Starters: "I made my game using..." • "First, I..." • "It was easy/hard because..."</span>
+          <span>✂️ PART 1: HOW I MADE IT (MATERIALS &amp; STEPS)</span>
+          <span class="text-[9px] text-slate-500 italic">"I used..." • "First, I folded/cut..." • "Then, I taped/tied..."</span>
         </div>
-        <div class="font-bold text-slate-800 text-[10px] mb-1">What materials did you find at home, and how did you build your game?</div>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">What items did you find at home, and how did you build your game?</div>
+        <div class="handwriting-line"></div>
         <div class="handwriting-line"></div>
         <div class="handwriting-line"></div>
       </div>
 
-      <!-- Question 2 -->
+      <!-- Part 2: How We Play It -->
       <div class="print-box">
         <div class="print-box-header">
-          <span>📜 2. THE RULEBOOK (GAME INSTRUCTIONS)</span>
-          <span class="text-[9px] text-slate-500 italic">Starters: "Players must stand..." • "To play, you need to..." • "The winner is..."</span>
+          <span>🎯 PART 2: HOW WE PLAY IT (RULES &amp; GOAL)</span>
+          <span class="text-[9px] text-slate-500 italic">"Stand behind the..." • "To play, you..." • "You score 1 point when..."</span>
         </div>
-        <div class="font-bold text-slate-800 text-[10px] mb-1">How do players play your game, and how does someone win?</div>
+        <div class="font-bold text-slate-800 text-[10px] mb-1">How do players take turns, and how does someone score or win?</div>
+        <div class="handwriting-line"></div>
         <div class="handwriting-line"></div>
         <div class="handwriting-line"></div>
       </div>
 
-      <!-- Question 3 -->
-      <div class="print-box">
-        <div class="print-box-header">
-          <span>💡 3. GAME MASTER PRO-TIPS (STRATEGY &amp; ADVICE)</span>
-          <span class="text-[9px] text-slate-500 italic">Starters: "My best tip is to..." • "Be careful not to..." • "Watch out for..."</span>
+      <!-- Host Pocket Cheat-Sheet (Dotted Cut-Out Box) -->
+      <div class="pocket-script-box">
+        <div class="font-black text-amber-950 flex items-center justify-between text-[10px] border-b border-amber-300 pb-1 mb-1.5">
+          <span>✂️ HOST POCKET CHEAT-SHEET (Cut along the dotted line and hold in your hand on arcade day):</span>
+          <span class="text-[9px] text-amber-800 uppercase tracking-wider">Keep in Pocket</span>
         </div>
-        <div class="font-bold text-slate-800 text-[10px] mb-1">What is your secret tip or strategy to score high in this game?</div>
-        <div class="handwriting-line"></div>
-      </div>
-
-      <!-- Question 4 & Cut-Out Host Pocket Script -->
-      <div class="print-box">
-        <div class="print-box-header">
-          <span>🎤 4. HOST PRESENTATION SPEECH (ARCADE DAY SCRIPT)</span>
-          <span class="text-[9px] text-slate-500 italic">Starters: "Welcome to my station! My game is called..." • "It's your turn!"</span>
-        </div>
-        <div class="font-bold text-slate-800 text-[10px] mb-1">Write what you will say to invite classmates to play at your table on Tuesday!</div>
-        <div class="handwriting-line"></div>
-
-        <!-- Cut-out Pocket Script -->
-        <div class="mt-2 border-2 border-dashed border-amber-600 rounded-lg p-2 bg-amber-50 text-[10px]">
-          <div class="font-black text-amber-900 flex items-center justify-between">
-            <span>✂️ CUT-OUT HOST POCKET SCRIPT (Hold in your hand while hosting):</span>
-            <span class="text-[9px]">English Adventure Academy</span>
+        <div class="grid grid-cols-3 gap-2 text-[10px] text-slate-900">
+          <div class="bg-white/90 p-2 rounded border border-amber-200">
+            <span class="font-bold text-amber-900 block text-[9px] uppercase">1. Welcome Phrase</span>
+            "Welcome to my station! My game is called ___________."
           </div>
-          <div class="grid grid-cols-3 gap-2 mt-1 italic text-slate-800">
-            <div>"Welcome! My game is called ___________."</div>
-            <div>"Your turn! Try your best to ___________!"</div>
-            <div>"Awesome shot! / Great job playing!"</div>
+          <div class="bg-white/90 p-2 rounded border border-amber-200">
+            <span class="font-bold text-amber-900 block text-[9px] uppercase">2. Turn Taking</span>
+            "It is your turn! Stand here and try to ___________!"
+          </div>
+          <div class="bg-white/90 p-2 rounded border border-amber-200">
+            <span class="font-bold text-amber-900 block text-[9px] uppercase">3. Cheering Phrases</span>
+            "Great shot! / Nice throw! / Awesome job playing!"
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Peer Visitor Log & Assessment -->
+    <!-- Arcade Scorecard: 3 Rows for Visitor Peer Names & Signatures -->
     <div class="grid grid-cols-12 gap-2 pt-2 text-xs">
       <div class="col-span-8 border border-slate-400 rounded-lg p-2 bg-slate-50">
         <div class="font-black text-slate-900 text-[10px] mb-1 flex items-center justify-between">
           <span>🎪 CLASSROOM ARCADE HOST VISITOR LOG (Tuesday, Oct 6)</span>
-          <span class="text-amber-800 font-bold">[ 3 Peer Signatures ]</span>
+          <span class="text-amber-800 font-bold">[ 3 Peer Signatures Required ]</span>
         </div>
         <div class="grid grid-cols-3 gap-1.5 text-[9.5pt]">
-          <div class="border border-slate-300 rounded p-1.5 bg-white">
-            <div class="font-bold text-blue-900">Peer #1: ________</div>
-            <div>Score: _________</div>
-            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
+            <div class="font-bold text-blue-900">Visitor 1: _________</div>
+            <div>Score: ____________</div>
+            <label class="flex items-center gap-1 text-[8pt] font-semibold text-slate-700">
+              <span class="checkbox-square"></span> Spoke English!
+            </label>
           </div>
-          <div class="border border-slate-300 rounded p-1.5 bg-white">
-            <div class="font-bold text-rose-900">Peer #2: ________</div>
-            <div>Score: _________</div>
-            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
+            <div class="font-bold text-rose-900">Visitor 2: _________</div>
+            <div>Score: ____________</div>
+            <label class="flex items-center gap-1 text-[8pt] font-semibold text-slate-700">
+              <span class="checkbox-square"></span> Spoke English!
+            </label>
           </div>
-          <div class="border border-slate-300 rounded p-1.5 bg-white">
-            <div class="font-bold text-emerald-900">Peer #3: ________</div>
-            <div>Score: _________</div>
-            <label class="flex items-center gap-1 mt-0.5"><span class="checkbox-square"></span> Spoke English!</label>
+          <div class="border border-slate-300 rounded p-1.5 bg-white space-y-0.5">
+            <div class="font-bold text-emerald-900">Visitor 3: _________</div>
+            <div>Score: ____________</div>
+            <label class="flex items-center gap-1 text-[8pt] font-semibold text-slate-700">
+              <span class="checkbox-square"></span> Spoke English!
+            </label>
           </div>
         </div>
       </div>
 
-      <!-- Teacher Grading & QR Code -->
+      <!-- QR Code Box: Scannable code linking parents directly to YouTube tutorial -->
       <div class="col-span-4 border border-slate-400 rounded-lg p-2 bg-slate-50 flex items-center gap-2">
-        <svg viewBox="0 0 60 60" class="w-11 h-11 flex-shrink-0">
+        <svg viewBox="0 0 60 60" class="w-12 h-12 flex-shrink-0" aria-label="QR Code">
           <rect width="60" height="60" fill="#ffffff"/>
           <rect x="5" y="5" width="16" height="16" fill="#111827"/>
           <rect x="8" y="8" width="10" height="10" fill="#ffffff"/>
@@ -1285,9 +1208,10 @@
           <rect x="25" y="45" width="6" height="6" fill="#111827"/>
           <rect x="45" y="45" width="6" height="6" fill="#111827"/>
         </svg>
-        <div class="text-[9px] leading-tight text-slate-700">
-          <strong class="text-slate-900 block font-bold">100 XP Stamp:</strong>
-          [ ] 50 XP Craft Master<br>[ ] 30 XP English Rulebook<br>[ ] 20 XP Arcade Host
+        <div class="text-[9px] leading-tight text-slate-700 flex-1">
+          <strong class="text-slate-900 block font-bold">Tutorial Videos:</strong>
+          Scan or visit portal for step-by-step DIY craft guides.
+          <div class="mt-1 font-bold text-amber-900">Total: ____ / 100 XP</div>
         </div>
       </div>
     </div>
@@ -1308,10 +1232,10 @@
 
       <div id="yut-video-tabs" class="hidden flex items-center gap-2 p-1 bg-slate-900 rounded-xl border border-white/10 text-xs">
         <button id="yut-tab-sticks" onclick="switchYutVideo('sticks')" class="flex-1 py-1.5 px-3 rounded-lg font-bold bg-violet-600 text-white">
-          🥢 1. 4 Yut Sticks Tutorial
+          🥢 Option A: Traditional Sticks
         </button>
         <button id="yut-tab-dice" onclick="switchYutVideo('dice')" class="flex-1 py-1.5 px-3 rounded-lg font-bold text-slate-300 hover:text-white">
-          🎲 2. Alternative Paper Dice Tutorial
+          🎲 Option B: DIY Paper Dice
         </button>
       </div>
 
@@ -1329,23 +1253,51 @@
   </div>
 
   <!-- =========================================================
-       MODAL 2: EDIT STUDENT NAMES MODAL
+       MODAL 2: SYNC FROM PLATFORM / EDIT NAMES MODAL (3A & 3B)
        ========================================================= -->
   <div id="edit-roster-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="glass-panel w-full max-w-md rounded-3xl border border-white/20 p-6 space-y-4 shadow-2xl">
+    <div class="glass-panel w-full max-w-lg rounded-3xl border border-white/20 p-6 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <h3 class="text-lg font-black text-white flex items-center gap-2">
-          <span>✏️</span> Edit Names for <span id="modal-class-label">Class 3A</span>
-        </h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔄</span>
+          <h3 class="text-lg font-black text-white">Class Rosters: Class 3A &amp; Class 3B</h3>
+        </div>
         <button onclick="closeEditRosterModal()" class="text-slate-400 hover:text-white text-2xl font-bold">✕</button>
       </div>
+
       <p class="text-xs text-slate-300">
-        Paste or edit student names below (one per line or separated by commas):
+        Edit student names below (one per line). These are automatically saved to local cache for fair allocation.
       </p>
-      <textarea id="modal-roster-textarea" rows="8" class="w-full bg-slate-950 text-white text-xs p-3 rounded-xl border border-white/20 font-mono focus:outline-none focus:border-amber-400"></textarea>
-      <div class="flex gap-2 pt-2">
-        <button onclick="closeEditRosterModal()" class="flex-1 btn-3d btn-slate py-2.5 rounded-xl text-xs font-bold">Cancel</button>
-        <button onclick="saveEditedRoster()" class="flex-1 btn-3d btn-amber py-2.5 rounded-xl text-xs font-black">Save &amp; Update</button>
+
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Class 3A -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-amber-400 flex items-center justify-between">
+            <span>🏫 Class 3A Roster:</span>
+            <span id="modal-count-3a" class="text-[10px] text-slate-400">19 students</span>
+          </label>
+          <textarea id="modal-roster-3a" rows="9" class="w-full bg-slate-950 text-white text-xs p-3 rounded-xl border border-white/20 font-mono focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+
+        <!-- Class 3B -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-sky-400 flex items-center justify-between">
+            <span>🏫 Class 3B Roster:</span>
+            <span id="modal-count-3b" class="text-[10px] text-slate-400">19 students</span>
+          </label>
+          <textarea id="modal-roster-3b" rows="9" class="w-full bg-slate-950 text-white text-xs p-3 rounded-xl border border-white/20 font-mono focus:outline-none focus:border-sky-400"></textarea>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
+        <button onclick="syncFromPlatformLive()" class="btn-3d btn-slate py-2 px-3 rounded-xl text-xs font-bold text-amber-300 flex items-center gap-1.5">
+          <span>🔄</span> Re-Sync Platform
+        </button>
+
+        <div class="flex gap-2">
+          <button onclick="closeEditRosterModal()" class="btn-3d btn-slate py-2 px-4 rounded-xl text-xs font-bold">Cancel</button>
+          <button onclick="saveEditedRosters()" class="btn-3d btn-amber py-2 px-5 rounded-xl text-xs font-black shadow-lg">Save &amp; Update</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1354,7 +1306,8 @@
        VANILLA JAVASCRIPT: LOGIC, ROSTERS, AUDIO & STATE
        ========================================================= -->
   <script>
-    const ROSTERS = {
+    /* Baseline Real Rosters Fallback (19 students each) */
+    const DEFAULT_ROSTERS = {
       "3A": [
         "Ali", "Aylin", "Can", "Defne", "Deniz", "Ege", "Elif", "Emre", 
         "Kerem", "Leyla", "Mehmet", "Melis", "Mert", "Mira", "Selin", 
@@ -1365,6 +1318,11 @@
         "Ela", "Emir", "Eren", "Ipek", "Kaan", "Kuzey", "Nil", "Ozan", 
         "Ruzgar", "Sarp", "Tuana"
       ]
+    };
+
+    let classRosters = {
+      "3A": [...DEFAULT_ROSTERS["3A"]],
+      "3B": [...DEFAULT_ROSTERS["3B"]]
     };
 
     const GAMES_INFO = [
@@ -1435,6 +1393,9 @@
 
     /* =========================================================
        NATIVE WEB AUDIO SYNTHESIZER
+       - Click / Spin: Crisp wooden block click (800 Hz -> 200 Hz, 0.05s)
+       - Save / Success Chime: 3-note ascending major triad (C5, E5, G5)
+       - 100 XP Level-Up Fanfare: Triumphant 8-bit fanfare (C5 -> G5 -> C6)
        ========================================================= */
     class ChuseokSoundboard {
       constructor() {
@@ -1457,32 +1418,34 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(120, now + 0.04);
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.045);
+        osc.stop(now + 0.055);
       }
       playChime() {
         if (audioMuted) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+        // Ascending major triad: C5 (523.25), E5 (659.25), G5 (783.99)
+        const notes = [523.25, 659.25, 783.99];
+        notes.forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-          gain.gain.setValueAtTime(0, now + idx * 0.08);
-          gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.08 + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+          osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+          gain.gain.setValueAtTime(0, now + idx * 0.09);
+          gain.gain.linearRampToValueAtTime(0.28, now + idx * 0.09 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.45);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
-          osc.start(now + idx * 0.08);
-          osc.stop(now + idx * 0.08 + 0.42);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.47);
         });
       }
       playFanfare() {
@@ -1490,63 +1453,25 @@
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
-        const notes = [
-          { f: 523.25, t: 0.0, d: 0.15 },
-          { f: 659.25, t: 0.12, d: 0.15 },
-          { f: 783.99, t: 0.24, d: 0.2 },
-          { f: 1046.50, t: 0.40, d: 0.6 }
+        // Triumphant 8-bit fanfare: C5 (523.25) -> G5 (783.99) -> C6 (1046.50)
+        const fanfareNotes = [
+          { f: 523.25, t: 0.0, d: 0.16 },
+          { f: 783.99, t: 0.15, d: 0.20 },
+          { f: 1046.50, t: 0.32, d: 0.65 }
         ];
-        notes.forEach(n => {
-          const osc1 = this.ctx.createOscillator();
-          const osc2 = this.ctx.createOscillator();
+        fanfareNotes.forEach(n => {
+          const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc1.type = 'triangle';
-          osc2.type = 'sine';
-          osc1.frequency.setValueAtTime(n.f, now + n.t);
-          osc2.frequency.setValueAtTime(n.f * 1.003, now + n.t);
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(n.f, now + n.t);
           gain.gain.setValueAtTime(0, now + n.t);
-          gain.gain.linearRampToValueAtTime(0.3, now + n.t + 0.03);
+          gain.gain.linearRampToValueAtTime(0.22, now + n.t + 0.02);
           gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
-          osc1.connect(gain);
-          osc2.connect(gain);
+          osc.connect(gain);
           gain.connect(this.ctx.destination);
-          osc1.start(now + n.t);
-          osc2.start(now + n.t);
-          osc1.stop(now + n.t + n.d + 0.02);
-          osc2.stop(now + n.t + n.d + 0.02);
+          osc.start(now + n.t);
+          osc.stop(now + n.t + n.d + 0.02);
         });
-      }
-      playTick() {
-        if (audioMuted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(800, now);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.035);
-      }
-      playTock() {
-        if (audioMuted) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(580, now);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.035);
       }
     }
 
@@ -1561,30 +1486,59 @@
     }
 
     /* =========================================================
-       ROSTER & FAIR RANDOMIZER
+       AUTOMATED PLATFORM SYNCHRONIZATION & LOCAL CACHE
        ========================================================= */
-    function initApp() {
-      const savedClass = localStorage.getItem('chuseok_selected_class') || '3A';
-      switchClass(savedClass, false);
+    async function loadPlatformRosters() {
+      try {
+        if (window.parent && window.parent.studentsData) return window.parent.studentsData;
+        if (window.classroomData && window.classroomData.rosters) return window.classroomData.rosters;
+        const response = await fetch('/api/classes/students');
+        if (response.ok) {
+          const data = await response.json();
+          return {
+            "3A": data.filter(s => s.class === "3A" || s.grade === "3A").map(s => s.name || s.fullName),
+            "3B": data.filter(s => s.class === "3B" || s.grade === "3B").map(s => s.name || s.fullName)
+          };
+        }
+      } catch (e) {
+        console.warn("Direct API sync unavailable; checking localStorage...", e);
+      }
+      const cached3A = JSON.parse(localStorage.getItem('platform_roster_3A') || '[]');
+      const cached3B = JSON.parse(localStorage.getItem('platform_roster_3B') || '[]');
+      return (cached3A.length > 0 || cached3B.length > 0) ? { "3A": cached3A, "3B": cached3B } : null;
+    }
 
+    async function initApp() {
+      // 1. Audio preference
       if (localStorage.getItem('chuseok_sfx_muted') === '1') {
         audioMuted = true;
         document.getElementById('sound-icon').textContent = '🔇';
         document.getElementById('sound-label').textContent = 'MUTED';
       }
 
+      // 2. Load platform rosters or local cache
+      const loaded = await loadPlatformRosters();
+      if (loaded) {
+        if (loaded["3A"] && loaded["3A"].length > 0) classRosters["3A"] = [...loaded["3A"]];
+        if (loaded["3B"] && loaded["3B"].length > 0) classRosters["3B"] = [...loaded["3B"]];
+      }
+
+      // 3. Check specific edited rosters from previous sessions
+      const cached3A = JSON.parse(localStorage.getItem('platform_roster_3A') || '[]');
+      const cached3B = JSON.parse(localStorage.getItem('platform_roster_3B') || '[]');
+      if (cached3A.length > 0) classRosters["3A"] = cached3A;
+      if (cached3B.length > 0) classRosters["3B"] = cached3B;
+
+      // 4. Set active class and draw
+      const savedClass = localStorage.getItem('chuseok_selected_class') || '3A';
+      switchClass(savedClass, false);
+
+      // 5. Load saved student open-ended responses
       loadAllSavedResponses();
     }
 
     function getActiveRoster() {
-      const saved = localStorage.getItem(`chuseok_roster_${currentClass}`);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        } catch(e) {}
-      }
-      return [...ROSTERS[currentClass]];
+      return classRosters[currentClass] || DEFAULT_ROSTERS[currentClass];
     }
 
     function switchClass(cls, playSfx = true) {
@@ -1593,7 +1547,6 @@
       if (playSfx) soundEngine.playClick();
 
       document.getElementById('current-class-label').textContent = `Class ${cls}`;
-      document.getElementById('modal-class-label').textContent = `Class ${cls}`;
 
       const btnA = document.getElementById('class-3a-btn');
       const btnB = document.getElementById('class-3b-btn');
@@ -1622,9 +1575,12 @@
       spinAndDrawGames(false);
     }
 
+    /* =========================================================
+       FAIR ALLOCATION ALGORITHM (FISHER-YATES + 4,4,4,4,3 SPLIT)
+       ========================================================= */
     function spinAndDrawGames(animate = true) {
       const students = getActiveRoster();
-      if (students.length === 0) return;
+      if (!students || students.length === 0) return;
 
       if (animate) {
         soundEngine.init();
@@ -1632,17 +1588,16 @@
         spinBtn.disabled = true;
         let ticks = 0;
         const tickInterval = setInterval(() => {
-          if (ticks % 2 === 0) soundEngine.playTick();
-          else soundEngine.playTock();
+          soundEngine.playClick();
           ticks++;
-          if (ticks > 10) {
+          if (ticks >= 8) {
             clearInterval(tickInterval);
             executeFairDraw(students);
             spinBtn.disabled = false;
             soundEngine.playFanfare();
             triggerConfetti();
           }
-        }, 80);
+        }, 75);
       } else {
         executeFairDraw(students);
       }
@@ -1739,6 +1694,22 @@
         card.appendChild(footer);
 
         container.appendChild(card);
+
+        // Also update the assigned students display inside each game card
+        const cardListEl = document.getElementById(`assigned-list-${game.id}`);
+        if (cardListEl) {
+          cardListEl.innerHTML = '';
+          if (assigned.length === 0) {
+            cardListEl.innerHTML = `<span class="text-slate-400 italic">No students assigned yet. Click "Spin &amp; Assign Games"</span>`;
+          } else {
+            assigned.forEach(st => {
+              const pill = document.createElement('span');
+              pill.className = "px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 font-bold border border-white/10";
+              pill.textContent = st;
+              cardListEl.appendChild(pill);
+            });
+          }
+        }
       });
     }
 
@@ -1769,10 +1740,15 @@
       });
     }
 
+    /* =========================================================
+       EDIT ROSTER MODAL (DUAL TEXTAREAS 3A & 3B)
+       ========================================================= */
     function openEditRosterModal() {
       soundEngine.playClick();
-      const list = getActiveRoster();
-      document.getElementById('modal-roster-textarea').value = list.join('\n');
+      document.getElementById('modal-roster-3a').value = classRosters["3A"].join('\n');
+      document.getElementById('modal-roster-3b').value = classRosters["3B"].join('\n');
+      document.getElementById('modal-count-3a').textContent = `${classRosters["3A"].length} students`;
+      document.getElementById('modal-count-3b').textContent = `${classRosters["3B"].length} students`;
       document.getElementById('edit-roster-modal').classList.remove('hidden');
     }
 
@@ -1781,83 +1757,60 @@
       document.getElementById('edit-roster-modal').classList.add('hidden');
     }
 
-    function saveEditedRoster() {
+    async function syncFromPlatformLive() {
       soundEngine.playClick();
-      const text = document.getElementById('modal-roster-textarea').value;
-      const list = text.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
-      if (list.length === 0) {
-        showToast("Please enter at least one name!");
-        return;
+      const loaded = await loadPlatformRosters();
+      if (loaded) {
+        if (loaded["3A"] && loaded["3A"].length > 0) {
+          classRosters["3A"] = [...loaded["3A"]];
+          document.getElementById('modal-roster-3a').value = classRosters["3A"].join('\n');
+        }
+        if (loaded["3B"] && loaded["3B"].length > 0) {
+          classRosters["3B"] = [...loaded["3B"]];
+          document.getElementById('modal-roster-3b').value = classRosters["3B"].join('\n');
+        }
+        showToast("Synchronized rosters from platform!");
+      } else {
+        showToast("Default classroom rosters refreshed!");
       }
-      localStorage.setItem(`chuseok_roster_${currentClass}`, JSON.stringify(list));
+    }
+
+    function saveEditedRosters() {
+      soundEngine.playClick();
+      const text3A = document.getElementById('modal-roster-3a').value;
+      const text3B = document.getElementById('modal-roster-3b').value;
+
+      const list3A = text3A.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      const list3B = text3B.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+
+      if (list3A.length > 0) {
+        classRosters["3A"] = list3A;
+        localStorage.setItem('platform_roster_3A', JSON.stringify(list3A));
+      }
+      if (list3B.length > 0) {
+        classRosters["3B"] = list3B;
+        localStorage.setItem('platform_roster_3B', JSON.stringify(list3B));
+      }
+
       closeEditRosterModal();
-      document.getElementById('roster-count').textContent = list.length;
+      document.getElementById('roster-count').textContent = getActiveRoster().length;
       spinAndDrawGames(true);
-      showToast(`Updated Class ${currentClass} roster (${list.length} students)!`);
+      showToast(`Updated Class 3A & 3B rosters in localStorage!`);
     }
 
     /* =========================================================
-       OPEN-ENDED PROMPTS & EFFORT COUNTER ENGINE
+       OPEN-ENDED PROMPTS & SAVING ENGINE
        ========================================================= */
-    function insertStarter(textareaId, phrase) {
-      soundEngine.playClick();
-      const ta = document.getElementById(textareaId);
-      if (!ta) return;
-      if (ta.value.trim().length > 0) {
-        ta.value = ta.value.trim() + " " + phrase;
-      } else {
-        ta.value = phrase;
-      }
-      ta.focus();
-      // trigger input event
-      ta.dispatchEvent(new Event('input'));
-    }
-
-    function trackEffort(gameId, promptNum) {
-      const ta = document.getElementById(`resp-${gameId}-${promptNum}`);
-      const countEl = document.getElementById(`count-${gameId}-${promptNum}`);
-      if (!ta || !countEl) return;
-
-      const words = ta.value.trim().split(/\s+/).filter(w => w.length > 0);
-      countEl.textContent = `${words.length} words`;
-
-      // Update Effort Status Bar for this Game
-      let totalWords = 0;
-      for (let i = 1; i <= 4; i++) {
-        const item = document.getElementById(`resp-${gameId}-${i}`);
-        if (item) {
-          totalWords += item.value.trim().split(/\s+/).filter(w => w.length > 0).length;
-        }
-      }
-
-      const statusEl = document.getElementById(`effort-${gameId}`);
-      if (statusEl) {
-        if (totalWords >= 25) {
-          statusEl.innerHTML = `🌟 <strong>Outstanding Effort!</strong> (${totalWords} words) — Ready for Game Day!`;
-          statusEl.className = "text-emerald-400 font-bold";
-        } else if (totalWords >= 10) {
-          statusEl.innerHTML = `✍️ <strong>Great progress!</strong> (${totalWords} words) — Keep going!`;
-          statusEl.className = "text-amber-400 font-bold";
-        } else if (totalWords > 0) {
-          statusEl.innerHTML = `🌱 <strong>Good start!</strong> (${totalWords} words) — Use sentence starters for ideas!`;
-          statusEl.className = "text-sky-400 font-bold";
-        } else {
-          statusEl.textContent = "Effort Status: Start typing your answers!";
-          statusEl.className = "text-slate-400 font-semibold";
-        }
-      }
-    }
-
     function saveStudentResponses(gameId) {
       soundEngine.playChime();
       const responses = {};
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= 3; i++) {
         const ta = document.getElementById(`resp-${gameId}-${i}`);
         if (ta) responses[i] = ta.value;
       }
       localStorage.setItem(`chuseok_responses_${gameId}`, JSON.stringify(responses));
-      showToast(`Saved your ${gameId} responses! +15 XP effort reward!`);
-      awardActiveStudentXP(15);
+      showToast(`Saved ${gameId} responses! +30 XP awarded!`);
+      awardActiveStudentXP(30);
     }
 
     function loadAllSavedResponses() {
@@ -1866,11 +1819,10 @@
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 3; i++) {
               const ta = document.getElementById(`resp-${game.id}-${i}`);
               if (ta && parsed[i]) {
                 ta.value = parsed[i];
-                trackEffort(game.id, i);
               }
             }
           } catch(e) {}
