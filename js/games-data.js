@@ -6979,7 +6979,6 @@ const GAMES_REGISTRY = [
     "durationText": "45 min",
     "estimatedMinutes": 45,
     "xp": 145,
-    "targetClass": "Grade 3 (3A & 3B)",
     "skills": [
       "Recycled Material DIY Game Crafting",
       "Imperative Procedural Steps (First, Next, Finally)",
@@ -6990,10 +6989,48 @@ const GAMES_REGISTRY = [
     "topics": [
       "Chuseok Festival",
       "Korean Folk Games",
+      "Folk Games",
+      "Ddakji",
+      "Paengi",
+      "Tuho",
+      "Jegichagi",
+      "Yut Nori",
       "Recycled Crafting",
-      "Imperative Instructions"
+      "Imperative Instructions",
+      "Class 3A",
+      "Class 3B"
     ],
     "languageFocus": "First, fold/cut/tie... / Next, toss/spin/kick... / It's your turn! / Nice throw! / Good job!",
+    "grammar": {
+      "focusPattern": "First, [Verb] the [Noun]. Next, [Verb] it. Finally, [Verb] to [Goal]!",
+      "formula": "First, [Verb] the [Noun]. Next, [Verb] it. Finally, [Verb] to [Goal]!"
+    },
+    "learningObjectives": [
+      "Craft a traditional Korean folk game using recycled household materials.",
+      "Explain game rules clearly in English using 3 imperative sequence steps (First, Next, Finally).",
+      "Host peer classmates at an interactive classroom arcade station using cheering frames."
+    ],
+    "vocabulary": {
+      "core": [
+        "fold",
+        "wrap",
+        "cut",
+        "spin",
+        "toss",
+        "kick",
+        "line",
+        "point"
+      ],
+      "supporting": [
+        "cardboard",
+        "bottle cap",
+        "shuttlecock",
+        "sticks",
+        "turn"
+      ]
+    },
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "activityMode": "Interactive Smartboard Arcade Portal / Fair Roster Randomizer / Printable A4 Workbook",
     "interactionType": "Interactive Word Banks, Video Tutorials, 3D Push-Buttons, Web Audio Chimes, Confetti",
     "url": "chuseok-games/index.html",
