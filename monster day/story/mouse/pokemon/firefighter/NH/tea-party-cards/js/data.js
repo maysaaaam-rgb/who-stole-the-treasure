@@ -262,7 +262,7 @@ const CLASS_4A_CARDS_DATA = [
       "Antique fish-shaped table clock",
       "Tiny potion vial labeled 'Drink Me'"
     ],
-    image: "assets/characters/dinah.jpg"
+    image: "assets/characters/cat-shadow.jpg"
   },
   {
     id: "4a-sister-belis",
@@ -518,7 +518,7 @@ const CLASS_4A_CARDS_DATA = [
       "Stack of antique brass clockwork gears",
       "Treacle jar prop"
     ],
-    image: "assets/characters/tweedledum.jpg"
+    image: "assets/characters/two-sisters-defne.jpg"
   },
   {
     id: "4a-sister-2-esila",
@@ -560,7 +560,7 @@ const CLASS_4A_CARDS_DATA = [
       "Polished handheld brass school bell",
       "Vintage umbrella with duck-head handle"
     ],
-    image: "assets/characters/tweedledee.jpg"
+    image: "assets/characters/two-sisters-esila.jpg"
   },
   {
     id: "4a-bandersnatch-ruzgar",
@@ -602,7 +602,7 @@ const CLASS_4A_CARDS_DATA = [
       "Heavy iron ring with oversized Underland dungeon keys",
       "Faux leather beast collar with broken chains"
     ],
-    image: "assets/characters/bandersnatch.jpg"
+    image: "assets/characters/bandersnatch-ruzgar.jpg"
   },
   {
     id: "4a-absolem-elif",
