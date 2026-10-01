@@ -6959,6 +6959,52 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060911 0%, #78350f 50%, #f59e0b 100%)"
   },
   {
+    "id": "chuseok-games",
+    "title": "🌕 Chuseok Game Master Portal: Traditional Korean Folk Games",
+    "description": "Interactive classroom smartboard portal and printable A4 quest workbook for Grade 3 (A1+). Features 5 traditional Korean games (Ddakji, Paengi, Tuho, Jegichagi, Yut Nori), a fair 19-student randomizer for Classes 3A & 3B, embedded video craft guides, A1+ interactive gap-fill exercises with strictly blank inputs, native Web Audio effects, and a gamified 100 XP quest tracker.",
+    "type": "game",
+    "category": "Language & Quests",
+    "categoryLabel": "🌕 World Cultures & Folk Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 7–10",
+    "ageGroup": "7-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 45,
+    "durationText": "45 min",
+    "estimatedMinutes": 45,
+    "xp": 145,
+    "targetClass": "Grade 3 (3A & 3B)",
+    "skills": [
+      "Recycled Material DIY Game Crafting",
+      "Imperative Procedural Steps (First, Next, Finally)",
+      "English Speaking & Cheering Frames",
+      "Interactive Arcade Station Hosting"
+    ],
+    "topic": "Korean Chuseok Festival: Traditional Folk Games & Sustainable Recycling",
+    "topics": [
+      "Chuseok Festival",
+      "Korean Folk Games",
+      "Recycled Crafting",
+      "Imperative Instructions"
+    ],
+    "languageFocus": "First, fold/cut/tie... / Next, toss/spin/kick... / It's your turn! / Nice throw! / Good job!",
+    "activityMode": "Interactive Smartboard Arcade Portal / Fair Roster Randomizer / Printable A4 Workbook",
+    "interactionType": "Interactive Word Banks, Video Tutorials, 3D Push-Buttons, Web Audio Chimes, Confetti",
+    "url": "chuseok-games/index.html",
+    "route": "chuseok-games/index.html",
+    "worksheetUrl": "chuseok-games/worksheet.html",
+    "worksheetRoute": "chuseok-games/worksheet.html",
+    "featured": true,
+    "thumbnailIcon": "🌕",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)"
+  },
+  {
     "id": "forest-safari",
     "title": "🌲 Forest Ranger Pet Safari: Two Different Forests",
     "description": "Interactive Junior Ranger safari quest for A1+ kids (Ages 7–10). Explore Deciduous and Coniferous forests, clap big words, spot wildlife camouflage, bundle up for -50°C winter, sort forest treasures, and earn the Certified Junior Biome Ranger Gold Badge.",
