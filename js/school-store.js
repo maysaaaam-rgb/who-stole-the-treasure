@@ -11012,16 +11012,133 @@
       return getInitialState();
     }
 
-    saveState() {
+    _sanitizeStateForStorage(state) {
+      if (!state) return state;
       try {
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
-          if (this.state && Array.isArray(this.state.students)) {
+        // Deep-clone state
+        const cloned = JSON.parse(JSON.stringify(state));
+
+        // 1. Truncate all student xpHistory / xp_history arrays to most recent 10 items & strip base64
+        if (Array.isArray(cloned.students)) {
+          cloned.students.forEach(s => {
+            if (Array.isArray(s.xpHistory)) {
+              s.xpHistory = s.xpHistory.slice(-10);
+            }
+            if (Array.isArray(s.xp_history)) {
+              s.xp_history = s.xp_history.slice(-10);
+            }
+            if (s.avatarConfig && typeof s.avatarConfig === 'object') {
+              Object.keys(s.avatarConfig).forEach(k => {
+                if (typeof s.avatarConfig[k] === 'string' && s.avatarConfig[k].startsWith('data:image/')) {
+                  s.avatarConfig[k] = '';
+                }
+              });
+            }
+            if (typeof s.avatar === 'string' && s.avatar.startsWith('data:image/')) {
+              s.avatar = '';
+            }
+            if (typeof s.customIcon === 'string' && s.customIcon.startsWith('data:image/')) {
+              s.customIcon = '';
+            }
+          });
+        }
+
+        // 2. Truncate any activityLogs, systemLogs, auditTrail arrays to last 20 items
+        ['activityLogs', 'systemLogs', 'auditTrail', 'logs', 'activityHistory'].forEach(key => {
+          if (Array.isArray(cloned[key])) {
+            cloned[key] = cloned[key].slice(-20);
+          }
+        });
+
+        // 3. Strip any base64 data URLs stored in custom icons or resources
+        if (Array.isArray(cloned.resources)) {
+          cloned.resources.forEach(r => {
+            if (typeof r.icon === 'string' && r.icon.startsWith('data:image/')) {
+              r.icon = '';
+            }
+            if (typeof r.thumbnail === 'string' && r.thumbnail.startsWith('data:image/')) {
+              r.thumbnail = '';
+            }
+          });
+        }
+
+        // 4. Remove obsolete cache objects
+        cloned.cachedResources = undefined;
+        delete cloned.cachedResources;
+
+        return cloned;
+      } catch (err) {
+        console.warn('MasterSchoolStore: Error sanitizing state for storage', err);
+        return state;
+      }
+    }
+
+    _purgeStaleStorageKeys() {
+      if (typeof localStorage === 'undefined') return;
+      const staleKeys = [
+        'eaa_master_school_v1',
+        'eaa_master_school_v2',
+        'eaa_master_school_v3',
+        'eaa_master_school_v4',
+        'eaa_master_school_v5',
+        'adventure_students_backup',
+        'offline_queue'
+      ];
+      staleKeys.forEach(key => {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {}
+      });
+    }
+
+    saveState() {
+      if (typeof localStorage === 'undefined') {
+        this.notify();
+        return;
+      }
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+        if (this.state && Array.isArray(this.state.students)) {
+          try {
             localStorage.setItem('adventure_students', JSON.stringify(this.state.students));
+          } catch (e) {
+            console.warn('MasterSchoolStore: adventure_students save warning', e);
           }
         }
       } catch (e) {
-        console.warn('MasterSchoolStore: Failed to save state to localStorage', e);
+        const isQuota = e && (
+          e.name === 'QuotaExceededError' ||
+          e.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+          e.code === 22 ||
+          e.code === 1014 ||
+          (e.message && e.message.toLowerCase().includes('quota'))
+        );
+
+        if (isQuota) {
+          console.warn('MasterSchoolStore: QuotaExceededError encountered. Applying defensive quota protection...');
+          try {
+            // 1. Purge stale historical keys from localStorage
+            this._purgeStaleStorageKeys();
+
+            // 2. Sanitize and strip heavy ephemeral state properties
+            const sanitizedState = this._sanitizeStateForStorage(this.state);
+            this.state = sanitizedState;
+
+            // 3. Re-attempt setItem call with sanitized state
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizedState));
+            if (Array.isArray(sanitizedState.students)) {
+              try {
+                localStorage.setItem('adventure_students', JSON.stringify(sanitizedState.students));
+              } catch (subErr) {}
+            }
+            console.log('MasterSchoolStore: Quota recovery complete. Sanitized state saved successfully.');
+          } catch (recoveryErr) {
+            console.error('MasterSchoolStore: Recovery from QuotaExceededError failed:', recoveryErr);
+          }
+        } else {
+          console.warn('MasterSchoolStore: Failed to save state to localStorage', e);
+        }
       }
       this.notify();
     }

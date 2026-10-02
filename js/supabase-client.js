@@ -37,6 +37,7 @@
       this.listeners = [];
       this._realtimeChannel = null;
       this._activeStore = null;
+      this._resourcesTableUnavailable = false;
 
       // Automatically capture credentials from URL query parameters if provided (e.g. ?supabase_url=...&supabase_key=...)
       this._detectUrlCredentials();
@@ -677,23 +678,24 @@
       const timestamp = new Date().toISOString();
 
       // 1. Attempt writing to dedicated public.resources table
-      try {
-        const { data, error } = await client.from('resources').upsert(row, { onConflict: 'id' }).select();
-        if (!error) {
-          console.log('[AdventureSupabase] Successfully saved resource to public.resources:', row.id);
-          await this._saveResourceToSharedCohort(row).catch(() => {});
-          resource.cloudStatus = 'saved';
-          resource.cloudSyncedAt = timestamp;
-          resource.cloudSynced = true;
-          return { success: true, resource: row, table: 'resources' };
-        }
-        if (error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
-          console.error('[AdventureSupabase] saveResource error:', error);
-          throw new Error('Supabase saveResource error: ' + error.message);
-        }
-      } catch (err) {
-        if (!err.message.includes('PGRST205') && !err.message.includes('schema cache')) {
-          throw err;
+      if (!this._resourcesTableUnavailable) {
+        try {
+          const { data, error } = await client.from('resources').upsert(row, { onConflict: 'id' }).select();
+          if (!error) {
+            console.log('[AdventureSupabase] Successfully saved resource to public.resources:', row.id);
+            await this._saveResourceToSharedCohort(row).catch(() => {});
+            resource.cloudStatus = 'saved';
+            resource.cloudSyncedAt = timestamp;
+            resource.cloudSynced = true;
+            return { success: true, resource: row, table: 'resources' };
+          }
+          if (error.code === 'PGRST116' || error.code === '404' || error.code === 'PGRST205' || error.status === 404 || error.message?.includes('not found') || error.message?.includes('schema cache')) {
+            this._resourcesTableUnavailable = true;
+          } else {
+            console.warn('[AdventureSupabase] saveResource warning:', error.message);
+          }
+        } catch (err) {
+          this._resourcesTableUnavailable = true;
         }
       }
 
@@ -744,22 +746,32 @@
     }
 
     async getResources(includeArchived = false) {
-      const client = this._ensureClient();
+      if (this._resourcesTableUnavailable) {
+        return this._getResourcesFromSharedCohort(includeArchived);
+      }
+      const client = (typeof window !== 'undefined' && window.supabaseClient) || this._ensureClient();
       try {
         let query = client.from('resources').select('*');
         if (!includeArchived) query = query.eq('archived', false);
-        const { data, error } = await query;
-        if (!error && Array.isArray(data) && data.length > 0) {
-          return data;
-        }
-        if (error && error.code !== 'PGRST205' && !error.message.includes('schema cache')) {
-          console.warn('[AdventureSupabase] getResources error:', error);
-          throw new Error('Supabase getResources error: ' + error.message);
+        const { data: resources, error: resErr } = await query;
+
+        if (resErr) {
+          if (resErr.code === 'PGRST116' || resErr.code === '404' || resErr.code === 'PGRST205' || resErr.status === 404 || resErr.message?.includes('not found') || resErr.message?.includes('schema cache')) {
+            if (!this._resourcesTableUnavailable) {
+              console.warn("[AdventureSupabase] 'resources' table not active in cloud. Skipping resource sync.");
+            }
+            this._resourcesTableUnavailable = true;
+          } else {
+            console.warn("[AdventureSupabase] Resource sync warning:", resErr.message);
+          }
+        } else if (Array.isArray(resources) && resources.length > 0) {
+          return resources;
         }
       } catch (err) {
-        if (!err.message.includes('PGRST205') && !err.message.includes('schema cache')) {
-          throw err;
+        if (!this._resourcesTableUnavailable) {
+          console.warn("[AdventureSupabase] 'resources' table not active in cloud. Skipping resource sync.");
         }
+        this._resourcesTableUnavailable = true;
       }
 
       // Fallback adapter
@@ -783,9 +795,11 @@
     async deleteResource(id) {
       if (!id) return { success: false };
       const client = this._ensureClient();
-      try {
-        await client.from('resources').delete().eq('id', String(id));
-      } catch (e) {}
+      if (!this._resourcesTableUnavailable) {
+        try {
+          await client.from('resources').delete().eq('id', String(id));
+        } catch (e) {}
+      }
       // Also update fallback cohort if present
       try {
         const SYNC_ID = 'class-cloud-library-sync';
@@ -867,9 +881,16 @@
       }
 
       // 2. Best-effort push to public.resources table if available
-      try {
-        await client.from('resources').upsert(formattedRows, { onConflict: 'id' });
-      } catch (e) {}
+      if (!this._resourcesTableUnavailable) {
+        try {
+          const { error: upsertErr } = await client.from('resources').upsert(formattedRows, { onConflict: 'id' });
+          if (upsertErr && (upsertErr.code === 'PGRST116' || upsertErr.code === '404' || upsertErr.code === 'PGRST205' || upsertErr.status === 404 || upsertErr.message?.includes('not found') || upsertErr.message?.includes('schema cache'))) {
+            this._resourcesTableUnavailable = true;
+          }
+        } catch (e) {
+          this._resourcesTableUnavailable = true;
+        }
+      }
 
       // 3. Persist local store
       if (typeof targetStore.saveState === 'function') {
@@ -906,8 +927,9 @@
       try {
         const channel = this.client.channel('adventure-realtime-all');
 
-        // Listen to all public schema table changes including resources
-        const tables = ['classes', 'students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records', 'resources'];
+        // Listen to all public schema table changes including resources (if available)
+        const tables = ['classes', 'students', 'teacher_notes', 'assessment_results', 'xp_transactions', 'attendance_records'];
+        if (!this._resourcesTableUnavailable) tables.push('resources');
         tables.forEach(tableName => {
           channel.on('postgres_changes', { event: '*', schema: 'public', table: tableName }, payload => {
             console.log(`[AdventureSupabase:Realtime] ${tableName} event:`, payload.eventType);
