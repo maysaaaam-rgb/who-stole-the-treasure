@@ -1584,10 +1584,7 @@
       
       // Sanitize payload to basic fields first so it never fails on missing columns
       const payload = students.map(s => {
-        const curLvl = Math.max(Number(s.level) || 3, 3);
-        const stage = (s.stageName && !s.stageName.includes("Mystery Egg"))
-          ? s.stageName
-          : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+        const { curLvl, stage } = _cloudStageFor(s);
         const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
         const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
 
@@ -1635,6 +1632,19 @@
     }
   }
 
+  // Derive level/stage from real XP (no artificial Level 3 floor)
+  function _cloudStageFor(s) {
+    try {
+      const fn = (typeof root.getStudentStage === 'function') ? root.getStudentStage : null;
+      if (fn && s) {
+        const st = fn(s);
+        return { curLvl: st.level, stage: st.stageName };
+      }
+    } catch (e) {}
+    const curLvl = Math.max(1, Number(s && s.level) || 1);
+    return { curLvl, stage: (s && s.stageName) || ('Level ' + curLvl) };
+  }
+
   // 1. Force cloud database to match local Term 2 reset
   async function forcePushTerm2ResetToCloud() {
     const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
@@ -1645,10 +1655,7 @@
     if (!students || students.length === 0) return;
 
     const payload = students.map(s => {
-      const curLvl = Math.max(Number(s.level) || 3, 3);
-      const stage = (s.stageName && !s.stageName.includes("Mystery Egg"))
-        ? s.stageName
-        : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+      const { curLvl, stage } = _cloudStageFor(s);
       const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
       const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
 
@@ -1682,10 +1689,7 @@
     const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
     if (!client || !student) return;
 
-    const curLvl = Math.max(Number(student.level) || 3, 3);
-    const stage = (student.stageName && !student.stageName.includes("Mystery Egg"))
-      ? student.stageName
-      : (curLvl >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster');
+    const { curLvl, stage } = _cloudStageFor(student);
     const actXP = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
     const archXP = Number(student.archivedXP ?? student.archived_xp ?? 0);
 
