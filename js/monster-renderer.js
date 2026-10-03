@@ -3383,8 +3383,26 @@
     return `/assets/monsters/${species}_stage_${stage}.webp`;
   }
 
+  // Scene and glow layers on their own (used behind the illustrated monsters).
+  function renderBackdropSvg(bgId) {
+    const palette = MONSTER_PALETTES.blue;
+    const defs = getSharedDefs('blue', palette);
+    return '<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="none">' + defs + renderBackgroundLayer(bgId || 'bg-meadow', 'growing') + '</svg>';
+  }
+
+  function renderAuraSvg(auraId, stage, colorKey) {
+    let key = String(colorKey || 'blue').toLowerCase().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[key]) key = 'blue';
+    const palette = MONSTER_PALETTES[key];
+    const defs = getSharedDefs(key, palette);
+    const markup = renderAuraLayer(auraId, normalizeStageKey(stage), palette);
+    return markup ? '<svg viewBox="0 0 200 200" width="100%" height="100%">' + defs + markup + '</svg>' : '';
+  }
+
   root.MonsterRenderer = {
     getMonsterAsset: getMonsterAsset,
+    renderBackdropSvg: renderBackdropSvg,
+    renderAuraSvg: renderAuraSvg,
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
