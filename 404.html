@@ -222,6 +222,9 @@
       } else if (pathname.includes('clara') || pathname.includes('inventor')) {
         targetUrl = basePrefix + 'inventor-lab/index.html';
         targetName = 'Inventor Lab';
+      } else if (pathname.includes('alice-party-home') || pathname.includes('tea-party-home') || pathname.includes('party-home')) {
+        targetUrl = basePrefix + 'alice-party-home/index.html' + (pathname.includes('4b') ? '?class=4b' : pathname.includes('4a') ? '?class=4a' : '');
+        targetName = 'Alice Tea Party: Home Practice (A1+)';
       } else if (pathname.includes('alice-cards-4a')) {
         targetUrl = basePrefix + 'alice-cards-4a/index.html';
         targetName = 'Alice Mad Tea Party Cards (4A)';

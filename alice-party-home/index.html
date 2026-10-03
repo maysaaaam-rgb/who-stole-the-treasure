@@ -157,6 +157,8 @@
     $('#xp').textContent = '⭐ ' + save.xp + ' XP';
     const keys = Object.keys(P.classes); let cur = keys[0];
     try { cur = localStorage.getItem('eaa_party_class') || cur; } catch (e) {}
+    const wantClass = (new URLSearchParams(location.search).get('class') || '').toLowerCase();   // library links open the right class
+    if (P.classes[wantClass]) cur = wantClass;
     function draw() {
       html('<h1>Who are you?</h1><p class="goal">Choose your class. Then tap your name.</p>' +
         '<div class="tabs">' + keys.map(k => '<button class="btn ghost ' + (k === cur ? 'on' : '') + '" data-k="' + k + '">' + P.classes[k].label + '</button>').join('') + '</div>' +
