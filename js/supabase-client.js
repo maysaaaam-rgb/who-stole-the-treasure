@@ -287,7 +287,6 @@
               last_name: row.last_name,
               class_id: row.class_id,
               xp: row.xp,
-              archived_xp: row.archived_xp,
               level: row.level,
               streak_days: row.streak_days,
               latest_teacher_note: row.latest_teacher_note,
@@ -1088,6 +1087,25 @@
           });
         }
 
+        // Self-heal: push any student whose local XP is HIGHER than the cloud's (cloud pushes used to fail silently).
+        // Never lowers cloud XP, so a stale or brand-new device can't wipe out points.
+        try {
+          const localList = (store.state && Array.isArray(store.state.students)) ? store.state.students : [];
+          const cloudById = new Map(students.map(c => [String(c.id), c]));
+          const stale = localList.filter(l => {
+            const c = cloudById.get(String(l.id));
+            if (!c) return false;
+            const total = Math.max(0, Number(l.xp) || 0) + Math.max(0, Number(l.archivedXP ?? l.archived_xp ?? 0) || 0);
+            return total > (Number(c.xp) || 0);
+          });
+          if (stale.length) {
+            const pushed = await pushStudentXPBatch(this._ensureClient(), stale);
+            console.log('[AdventureSupabase] Cloud XP repaired for ' + stale.length + ' student(s):', pushed.ok ? 'ok' : pushed.error);
+          }
+        } catch (healErr) {
+          console.warn('[AdventureSupabase] XP self-heal skipped:', healErr && healErr.message);
+        }
+
         this.isSyncing = false;
         this.lastSyncStatus = 'success';
         this.lastSyncTime = new Date().toISOString();
@@ -1251,7 +1269,6 @@
 
     return {
       id: String(student.id),
-      name: student.name || (firstName + ' ' + lastName).trim() || 'Student',
       first_name: firstName,
       last_name: lastName,
       student_id_number: student.studentIdNumber ? String(student.studentIdNumber) : String(student.id),
@@ -1263,27 +1280,24 @@
       parent_name: String(student.parentName || ''),
       parent_contact: String(student.parentContact || ''),
       parent_email: String(student.parentEmail || ''),
-      xp: activeXP,
-      archived_xp: archivedXP,
-      level: Number(student.level) || 1,
-      stage_name: student.stageName || student.levelName || 'Level 1 • Mystery Egg',
-      alice_character: student.aliceCharacter || student.alice_character || null,
-      korean_role: student.koreanRole || student.korean_role || null,
-      custom_icon: activeIcon,
-      avatar_config: {
-        ...avatarConfig,
-        customIcon: activeIcon
-      },
-      xp_history: student.xpHistory || student.xp_history || [],
+      xp: activeXP + archivedXP,
+      level: _cloudStageFor(Object.assign({}, student, { xp: activeXP + archivedXP })).curLvl,
       streak_days: parseInt(student.streakDays, 10) || 0,
       equipped_monster: String(student.equippedMonster || 'Mystery Egg'),
       archived: Boolean(student.archived),
       latest_teacher_note: String(student.latestTeacherNote || ''),
       manual_cefr_overrides: student.manualCefrOverrides || {},
       monster_profile: student.monsterProfile || {},
+      // The cloud table has no columns for these, so they ride along in extra_data.
       extra_data: {
         lastActive: student.lastActive || null,
-        parentNotes: student.parentNotes || ''
+        parentNotes: student.parentNotes || '',
+        stageName: student.stageName || student.levelName || null,
+        aliceCharacter: student.aliceCharacter || student.alice_character || null,
+        koreanRole: student.koreanRole || student.korean_role || null,
+        customIcon: activeIcon,
+        avatarConfig: { ...avatarConfig, customIcon: activeIcon },
+        xpHistory: student.xpHistory || student.xp_history || []
       },
       updated_at: new Date().toISOString()
     };
@@ -1291,8 +1305,9 @@
 
   function fromSupabaseRecord(row) {
     if (!row) return {};
-    const config = row.avatar_config || {};
-    const activeIcon = row.custom_icon || config.customIcon || null;
+    const extra = row.extra_data || {};
+    const config = row.avatar_config || extra.avatarConfig || {};
+    const activeIcon = row.custom_icon || extra.customIcon || config.customIcon || null;
     const firstName = row.first_name || (row.name ? row.name.split(' ')[0] : 'Student');
     const lastName = row.last_name !== undefined ? row.last_name : (row.name ? row.name.split(' ').slice(1).join(' ') : '');
     const levelNum = Number(row.level) || 1;
@@ -1312,18 +1327,17 @@
       parentContact: row.parent_contact || '',
       parentEmail: row.parent_email || '',
       xp: Number(row.xp) || 0,
-      archivedXP: Number(row.archived_xp) || 0,
-      archived_xp: Number(row.archived_xp) || 0,
-      level: Math.max(levelNum, 3),
-      stageName: (row.stage_name && !row.stage_name.includes("Mystery Egg")) ? row.stage_name : (levelNum >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster'),
-      levelName: (row.stage_name && !row.stage_name.includes("Mystery Egg")) ? row.stage_name : (levelNum >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster'),
-      aliceCharacter: row.alice_character || null,
-      koreanRole: row.korean_role || null,
+      archivedXP: 0,
+      level: levelNum,
+      stageName: extra.stageName || row.stage_name || ('Level ' + levelNum),
+      levelName: extra.stageName || row.stage_name || ('Level ' + levelNum),
+      aliceCharacter: row.alice_character || extra.aliceCharacter || null,
+      koreanRole: row.korean_role || extra.koreanRole || null,
       customIcon: activeIcon,
       custom_icon: activeIcon,
       avatarConfig: { ...config, customIcon: activeIcon },
-      xpHistory: Array.isArray(row.xp_history) ? row.xp_history : [],
-      xp_history: Array.isArray(row.xp_history) ? row.xp_history : [],
+      xpHistory: Array.isArray(row.xp_history) ? row.xp_history : (Array.isArray(extra.xpHistory) ? extra.xpHistory : []),
+      xp_history: Array.isArray(row.xp_history) ? row.xp_history : (Array.isArray(extra.xpHistory) ? extra.xpHistory : []),
       streakDays: row.streak_days !== undefined ? row.streak_days : 0,
       equippedMonster: row.equipped_monster || 'Baby Monster',
       archived: Boolean(row.archived),
@@ -1438,24 +1452,8 @@
 
       if (error) {
         console.warn("[AdventureSupabase] Batch upsert warning, retrying with schema-safe fallback:", error.message);
-        const fallbackPayload = payload.map(row => ({
-          id: row.id,
-          student_id_number: row.student_id_number,
-          first_name: row.first_name,
-          last_name: row.last_name,
-          class_id: row.class_id,
-          xp: row.xp,
-          archived_xp: row.archived_xp,
-          level: row.level,
-          stage_name: row.stage_name,
-          alice_character: row.alice_character,
-          korean_role: row.korean_role,
-          custom_icon: row.custom_icon,
-          streak_days: row.streak_days,
-          updated_at: row.updated_at
-        }));
-        const fallbackRes = await client.from('students').upsert(fallbackPayload, { onConflict: 'id' });
-        if (fallbackRes.error) throw fallbackRes.error;
+        const pushed = await pushStudentXPBatch(client, list);
+        if (!pushed.ok) throw new Error(pushed.error);
       }
 
       console.log(`[AdventureSupabase] forcePushToSupabase: Successfully synced ${payload.length} students to Supabase cloud.`);
@@ -1498,50 +1496,8 @@
     }
 
     try {
-      // 5-second safety timeout prevents infinite hanging
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000));
-      
-      const payload = {
-        id: String(student.id),
-        name: student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim(),
-        grade: student.grade || student.class_id || student.classId || '4A',
-        xp: Number(student.xp) || 0,
-        archived_xp: Number(student.archivedXP ?? student.archived_xp ?? 0),
-        level: _cloudStageFor(student).curLvl,
-        stage_name: _cloudStageFor(student).stage,
-        alice_character: student.aliceCharacter || student.alice_character || null,
-        korean_role: student.koreanRole || student.korean_role || null,
-        custom_icon: student.customIcon || student.custom_icon || null,
-        avatar_config: student.avatarConfig || student.avatar_config || {},
-        xp_history: student.xpHistory || student.xp_history || [],
-        updated_at: new Date().toISOString()
-      };
-
-      const pushPromise = (async () => {
-        let res = await client.from('students').upsert([payload], { onConflict: 'id' });
-        if (res.error) {
-          // Fallback without jsonb columns if schema has column differences
-          const fallbackPayload = [{
-            id: payload.id,
-            name: payload.name,
-            grade: payload.grade,
-            class_id: payload.grade,
-            xp: payload.xp,
-            archived_xp: payload.archived_xp,
-            level: payload.level,
-            stage_name: payload.stage_name,
-            alice_character: payload.alice_character,
-            korean_role: payload.korean_role,
-            custom_icon: payload.custom_icon,
-            updated_at: payload.updated_at
-          }];
-          const fbRes = await client.from('students').upsert(fallbackPayload, { onConflict: 'id' });
-          if (fbRes.error) throw fbRes.error;
-        }
-        return true;
-      })();
-
-      await Promise.race([pushPromise, timeoutPromise]);
+      const pushed = await pushStudentXPBatch(client, [student]);
+      if (!pushed.ok) throw new Error(pushed.error);
 
       if (syncStatusEl) syncStatusEl.innerText = "🟢 Synced";
       if (syncIconEl) syncIconEl.innerText = "☁️✓";
@@ -1582,35 +1538,8 @@
       const students = studentsList || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
       if (!Array.isArray(students) || students.length === 0) return;
       
-      // Sanitize payload to basic fields first so it never fails on missing columns
-      const payload = students.map(s => {
-        const { curLvl, stage } = _cloudStageFor(s);
-        const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
-        const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
-
-        return {
-          id: String(s.id),
-          name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
-          grade: s.grade || s.class_id || s.classId || '4A',
-          xp: actXP,
-          archived_xp: archXP,
-          level: curLvl,
-          stage_name: stage,
-          avatar_config: {
-            ...(s.avatarConfig || s.avatar_config || {}),
-            aliceCharacter: s.aliceCharacter || s.alice_character || null,
-            koreanRole: s.koreanRole || s.korean_role || null,
-            customIcon: s.customIcon || s.custom_icon || null
-          },
-          updated_at: new Date().toISOString()
-        };
-      });
-
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Supabase sync timeout")), 3500));
-      const pushPromise = client.from('students').upsert(payload, { onConflict: 'id' });
-
-      const { error } = await Promise.race([pushPromise, timeoutPromise]);
-      if (error) throw error;
+      const pushed = await pushStudentXPBatch(client, students);
+      if (!pushed.ok) throw new Error(pushed.error);
 
       if (statusEl) statusEl.innerHTML = `<span style="color:#10b981;">🟢 Cloud Synced</span>`;
       if (syncIconEl) syncIconEl.innerText = "☁️✓";
@@ -1632,6 +1561,31 @@
     }
   }
 
+  // THE one way local XP reaches the cloud.
+  // Only touches columns that really exist on public.students (xp, level, updated_at) and
+  // uses UPDATE per student, so it can never fail on a missing column or clobber other fields.
+  // Cloud XP = active XP + any legacy archived XP (Term 2 reset cancelled).
+  async function pushStudentXPBatch(client, students) {
+    if (!client) return { ok: false, error: 'no client' };
+    const list = (students || []).filter(s => s && s.id);
+    const now = new Date().toISOString();
+    let failed = 0, lastErr = '';
+    for (let i = 0; i < list.length; i += 8) {
+      const chunk = list.slice(i, i + 8);
+      const results = await Promise.all(chunk.map(s => {
+        const total = Math.max(0, Number(s.xp) || 0) + Math.max(0, Number(s.archivedXP ?? s.archived_xp ?? 0) || 0);
+        const level = _cloudStageFor(Object.assign({}, s, { xp: total })).curLvl;
+        return Promise.race([
+          client.from('students').update({ xp: total, level: level, updated_at: now }).eq('id', String(s.id)),
+          new Promise(resolve => setTimeout(() => resolve({ error: { message: 'timeout' } }), 8000))
+        ]).catch(e => ({ error: e }));
+      }));
+      results.forEach(r => { if (r && r.error) { failed++; lastErr = r.error.message || String(r.error); } });
+    }
+    return failed ? { ok: false, error: failed + '/' + list.length + ' failed: ' + lastErr } : { ok: true, count: list.length };
+  }
+  root.pushStudentXPBatch = pushStudentXPBatch;
+
   // Derive level/stage from real XP (no artificial Level 3 floor)
   function _cloudStageFor(s) {
     try {
@@ -1645,73 +1599,23 @@
     return { curLvl, stage: (s && s.stageName) || ('Level ' + curLvl) };
   }
 
-  // 1. Force cloud database to match local Term 2 reset
+  // Term 2 reset is cancelled; this legacy name now just pushes current XP safely.
   async function forcePushTerm2ResetToCloud() {
     const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
     if (!client) return;
-
-    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
+    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) ||
       (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
     if (!students || students.length === 0) return;
-
-    const payload = students.map(s => {
-      const { curLvl, stage } = _cloudStageFor(s);
-      const actXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
-      const archXP = Number(s.archivedXP ?? s.archived_xp ?? 0);
-
-      return {
-        id: String(s.id),
-        name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
-        grade: s.grade || s.class_id || s.classId || '4A',
-        xp: actXP,
-        archived_xp: archXP,
-        level: curLvl,
-        stage_name: stage,
-        alice_character: s.aliceCharacter || null,
-        updated_at: new Date().toISOString()
-      };
-    });
-
-    try {
-      const { error } = await client
-        .from('students')
-        .upsert(payload, { onConflict: 'id' });
-
-      if (error) console.warn("[AdventureSupabase] Supabase upsert warning:", error.message);
-      else console.log("✅ Supabase remote database successfully overwritten with Term 2 values.");
-    } catch (err) {
-      console.warn("[AdventureSupabase] Cloud sync bypassed:", err.message);
-    }
+    const pushed = await pushStudentXPBatch(client, students);
+    if (!pushed.ok) console.warn("[AdventureSupabase] Cloud sync bypassed:", pushed.error);
   }
 
   // 2. Safe awardXP sync: ONLY pushes the incremented student, NEVER pulls the entire table
   async function syncSingleStudentXP(student) {
     const client = (typeof window !== 'undefined' ? (window.supabaseClient || (window.AdventureSupabase && window.AdventureSupabase.client)) : null) || root.supabaseClient;
     if (!client || !student) return;
-
-    const { curLvl, stage } = _cloudStageFor(student);
-    const actXP = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
-    const archXP = Number(student.archivedXP ?? student.archived_xp ?? 0);
-
-    try {
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Single update timeout")), 3500));
-      const updatePromise = client
-        .from('students')
-        .update({
-          xp: actXP,
-          archived_xp: archXP,
-          level: curLvl,
-          stage_name: stage,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', String(student.id));
-
-      const { error } = await Promise.race([updatePromise, timeoutPromise]);
-      if (error) throw error;
-      console.log(`[AdventureSupabase] Pushed single student update for ${student.id} (${actXP} XP).`);
-    } catch (e) {
-      console.warn("[AdventureSupabase] Single student background update skipped:", e.message);
-    }
+    const pushed = await pushStudentXPBatch(client, [student]);
+    if (!pushed.ok) console.warn("[AdventureSupabase] Single student background update skipped:", pushed.error);
   }
 
   AdventureSupabaseService.prototype.safeSyncStudentToSupabase = safeSyncStudentToSupabase;

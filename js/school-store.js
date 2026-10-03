@@ -10068,32 +10068,21 @@
       this._pushRestoredRosterToCloud();
     }
 
-    // Push restored (archive-folded) balances to Supabase so cloud archived_xp is cleared.
+    // Push restored (archive-folded) balances to Supabase.
     // Only students folded during this boot are sent, so stale devices can't overwrite newer cloud XP.
+    // Uses the single schema-safe push path (the old upsert wrote columns that don't exist in the cloud table).
     _pushRestoredRosterToCloud(attempt = 0) {
       if (typeof window === 'undefined') return;
       if (!this._restoredStudentIds || !this._restoredStudentIds.size) return;
-      if (!window.supabaseClient) {
+      if (!window.supabaseClient || typeof window.pushStudentXPBatch !== 'function') {
         if (attempt < 10) setTimeout(() => this._pushRestoredRosterToCloud(attempt + 1), 1500);
         return;
       }
       try {
         const students = (this.state && Array.isArray(this.state.students)) ? this.state.students : [];
-        const payload = students.filter(s => s && s.id != null && this._restoredStudentIds.has(String(s.id))).map(s => {
-          const st = getStudentStage({ xp: Number(s.xp) || 0 });
-          return {
-            id: String(s.id),
-            name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
-            grade: s.grade || '4A',
-            xp: Number(s.xp) || 0,
-            archived_xp: 0,
-            level: st.level,
-            stage_name: st.stageName,
-            updated_at: new Date().toISOString()
-          };
-        });
-        window.supabaseClient.from('students').upsert(payload, { onConflict: 'id' })
-          .then(res => { if (res && res.error) console.warn('Restored roster cloud push failed:', res.error.message); })
+        const restored = students.filter(s => s && s.id != null && this._restoredStudentIds.has(String(s.id)));
+        window.pushStudentXPBatch(window.supabaseClient, restored)
+          .then(res => { if (res && !res.ok) console.warn('Restored roster cloud push failed:', res.error); })
           .catch(err => console.warn('Restored roster cloud push failed:', err && err.message));
       } catch (e) {
         console.warn('Restored roster cloud push skipped:', e && e.message);
