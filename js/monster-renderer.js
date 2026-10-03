@@ -748,7 +748,7 @@
     // 1. Background Aura / FX
     let auraMarkup = '';
     try { auraMarkup = renderAuraLayer(equipped.aura, stage, palette); } catch (e) { auraMarkup = ''; }
-    const auraSvg = auraMarkup ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${auraMarkup}</svg>` : '';
+    const auraSvg = auraMarkup ? `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${auraMarkup}</svg>` : '';
 
     // 0. Selected world background (only when the caller asks for it, e.g. the Monster Studio preview)
     let bgSvg = '';
@@ -771,15 +771,15 @@
       capeMarkup = `<path d="M 65 110 L 45 180 Q 100 195 155 180 L 135 110 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3" opacity="0.9"/>`;
     }
     const backGearSvg = (wingsMarkup || tailMarkup || backpackMarkup || capeMarkup)
-      ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${capeMarkup}${wingsMarkup}${tailMarkup}${backpackMarkup}</svg>`
+      ? `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${capeMarkup}${wingsMarkup}${tailMarkup}${backpackMarkup}</svg>`
       : '';
 
     // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso)
     let bodySvg = '';
     if (stage === 'egg') {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
+      bodySvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
     } else if (stage === 'cracking_egg') {
-      bodySvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
+      bodySvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggCracking(palette, colorKey)}</svg>`;
     } else {
       const pedestalMarkup = renderPedestalDais();
       const contactShadowMarkup = renderContactShadow(stage);
@@ -794,7 +794,7 @@
       try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, false); } catch (e) {}
 
       bodySvg = `
-        <svg viewBox="0 0 200 200" width="100%" height="100%">
+        <svg viewBox="10 10 180 180" width="100%" height="100%">
           ${defs}
           ${pedestalMarkup}
           ${contactShadowMarkup}
@@ -812,7 +812,7 @@
       try {
         const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
         if (clothingMarkup) {
-          clothingSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${clothingMarkup}</svg>`;
+          clothingSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${clothingMarkup}</svg>`;
         }
       } catch (e) {}
     }
@@ -822,7 +822,7 @@
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
         const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
-        faceSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
+        faceSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${faceMarkup}</svg>`;
       } catch (e) {}
     }
 
@@ -831,7 +831,7 @@
     if (stage !== 'egg' && stage !== 'cracking_egg' && equipped.glasses && equipped.glasses !== 'none') {
       try {
         const fg = renderForegroundAccessories(stage, { glasses: equipped.glasses }, palette);
-        if (fg) glassesSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+        if (fg) glassesSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${fg}</svg>`;
       } catch (e) {}
     }
 
@@ -840,7 +840,7 @@
     if (stage !== 'egg' && stage !== 'cracking_egg') {
       try {
         const hornsMarkup = renderHornsLayer(stage, equipped.horns, palette, cX, g);
-        if (hornsMarkup) hornsSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${hornsMarkup}</svg>`;
+        if (hornsMarkup) hornsSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${hornsMarkup}</svg>`;
       } catch (e) {}
     }
 
@@ -856,7 +856,7 @@
         if (equipped.accessory && equipped.accessory !== 'none') {
           fg += renderForegroundAccessories(stage, { accessory: equipped.accessory }, palette) || '';
         }
-        if (fg) headwearSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${fg}</svg>`;
+        if (fg) headwearSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${fg}</svg>`;
       } catch (e) {}
     }
 
@@ -1430,7 +1430,7 @@
       return `
         <!-- Cute Baby Puff Tail (Level 3) -->
         <g class="monster-tail-layer tail-puff">
-          <circle cx="134" cy="140" r="10" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" />
+          <circle cx="136" cy="140" r="9" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.2" />
         </g>
       `;
     }
@@ -1440,7 +1440,7 @@
         <!-- Perky Explorer Tail (Levels 4 & 5) -->
         <g class="monster-tail-layer tail-perky">
           <path d="M 134 134 C 154 128 168 116 164 102 C 160 96 152 100 146 112 C 140 122 132 134 134 134 Z" fill="${palette.primary}" stroke="${palette.primaryDark}" stroke-width="2.4" />
-          <ellipse cx="163" cy="102" rx="6" ry="6" fill="${palette.purple || '#c084fc'}" />
+          <ellipse cx="160" cy="103" rx="5" ry="6" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2" transform="rotate(-25 160 103)" />
         </g>
       `;
     }
@@ -1599,12 +1599,12 @@
                    C ${cX - cW * 0.90} ${topY + 2 * scale} ${cX - cW * 1.30 * scale} ${topY - 16 * scale} ${cX - cW * 0.92 * scale} ${topY - 28 * scale}
                    C ${cX - cW * 0.65 * scale} ${topY - 34 * scale} ${cX - cW * 0.40 * scale} ${topY - 8 * scale} ${cX - cW * 0.24 * scale} ${topY + 4 * scale}
                    C ${cX - cW * 0.32 * scale} ${topY + 9 * scale} ${cX - cW * 0.38 * scale} ${topY + 11 * scale} ${cX - cW * 0.44} ${topY + 12 * scale} Z"
-                fill="url(#plush-rear-ear-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="2.6" stroke-linejoin="round" />
+                fill="url(#plush-front-ear-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
           <!-- Rear Inner Ear Cavity (Darker Shadow Tone) -->
           <path d="M ${cX - cW * 0.48} ${topY + 8 * scale}
                    C ${cX - cW * 0.82} ${topY + 1 * scale} ${cX - cW * 1.08 * scale} ${topY - 14 * scale} ${cX - cW * 0.88 * scale} ${topY - 22 * scale}
                    C ${cX - cW * 0.68 * scale} ${topY - 25 * scale} ${cX - cW * 0.48 * scale} ${topY - 6 * scale} ${cX - cW * 0.34 * scale} ${topY + 3 * scale} Z"
-                fill="${palette.shadowDark || palette.shadow}" opacity="0.55" />
+                fill="url(#plush-inner-ear-${colorKey})" opacity="0.85" />
         </g>
       `;
     }
@@ -1823,12 +1823,12 @@
     // Organic Pear / Jelly-Bean Cubic Bezier Silhouette with Lateral Cheek Swells
     const bodyPath = `
       M ${cX} ${topY}
-      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
-      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
-      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
-      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
-      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
-      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY}
+      C ${cX + cW * 0.56} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
+      C ${cX + cW * 1.1} ${cheekY + 16} ${cX + bW * 1.04} ${botY - 20} ${cX + bW * 0.9} ${botY - 8}
+      C ${cX + bW * 0.74} ${botY + 3} ${cX + 20} ${botY + 2} ${cX} ${botY + 2}
+      C ${cX - 20} ${botY + 2} ${cX - bW * 0.74} ${botY + 3} ${cX - bW * 0.9} ${botY - 8}
+      C ${cX - bW * 1.04} ${botY - 20} ${cX - cW * 1.1} ${cheekY + 16} ${cX - cW * 1.06} ${cheekY}
+      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY}
       Z
     `;
 
@@ -1938,12 +1938,12 @@
   function bodyOutlinePath(g, cX) {
     const topY = g.topY, botY = g.botY, cW = g.cW, bW = g.bW, cheekY = g.cheekY;
     return `M ${cX} ${topY}
-      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
-      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
-      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
-      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
-      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
-      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY} Z`;
+      C ${cX + cW * 0.56} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
+      C ${cX + cW * 1.1} ${cheekY + 16} ${cX + bW * 1.04} ${botY - 20} ${cX + bW * 0.9} ${botY - 8}
+      C ${cX + bW * 0.74} ${botY + 3} ${cX + 20} ${botY + 2} ${cX} ${botY + 2}
+      C ${cX - 20} ${botY + 2} ${cX - bW * 0.74} ${botY + 3} ${cX - bW * 0.9} ${botY - 8}
+      C ${cX - bW * 1.04} ${botY - 20} ${cX - cW * 1.1} ${cheekY + 16} ${cX - cW * 1.06} ${cheekY}
+      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY} Z`;
   }
 
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
