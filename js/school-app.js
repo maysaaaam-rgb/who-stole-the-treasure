@@ -13280,9 +13280,14 @@ window.switchClassroomSubTab = function(subTab) {
       window.MonsterRenderer.renderMonsterItemThumbnail :
       (window.renderMonsterItemThumbnail || null);
 
+    const gridStage = (mState && (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg')) ? 'baby' : ((mState && mState.stageKey) || 'baby');
+    const illustratedMode = !!(window.MonsterDressUp && window.MonsterDressUp.hasArt(monsterCreatorDraft.baseColor, gridStage));
+    const ART_FREE_CATEGORIES = ['body', 'background', 'aura'];
+
     grid.innerHTML = fullList.map(item => {
       const cat = item.category;
       let isSelected = false;
+      const notForArt = illustratedMode && !item.isNone && ART_FREE_CATEGORIES.indexOf(cat) === -1 && !window.MonsterDressUp.supportedItem(item.id);
 
       if (item.isNone) {
         if (cat === 'accessory') {
@@ -13320,7 +13325,10 @@ window.switchClassroomSubTab = function(subTab) {
         rarityBadge = '<span class="monster-item-rarity-pill is-' + item.rarity + '">' + item.rarity + '</span>';
       }
 
-      const isCardLocked = isLevelLocked || !isUnlocked;
+      if (notForArt && !isLevelLocked && isUnlocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🎨 Drawn monsters only</span>';
+      }
+      const isCardLocked = isLevelLocked || !isUnlocked || notForArt;
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
              (isCardLocked ? 'style="pointer-events:none !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
@@ -13649,7 +13657,16 @@ window.switchClassroomSubTab = function(subTab) {
     const currentArchetype = (student && (student.archetype || student.monster_archetype)) || (mascot && mascot.element) || 'IGNIS';
 
     if (box) {
-      if (liveStageRenderer) {
+      if (window.MonsterDressUp && window.MonsterDressUp.hasArt(monsterCreatorDraft.baseColor, previewStage)) {
+        box.innerHTML = window.MonsterDressUp.render({
+          color: monsterCreatorDraft.baseColor,
+          stage: previewStage,
+          equipped: monsterCreatorDraft.equipped,
+          size: 280,
+          showBackground: true,
+          animated: monsterCreatorIsAnimated
+        });
+      } else if (liveStageRenderer) {
         box.innerHTML = liveStageRenderer({
           stage: previewStage,
           color: monsterCreatorDraft.baseColor,
