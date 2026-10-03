@@ -110,6 +110,7 @@
   <main id="stage"></main>
 </div>
 
+<script src="../js/voice.js"></script>
 <script src="party-data.js"></script>
 <script>
 (function () {
@@ -144,18 +145,8 @@
   const sfxSoft = () => { note(246.94, 0, 0.45, 0.10); note(220, 0.22, 0.6, 0.10); };
   const sfxWin = () => [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => note(f, i * 0.12, 0.9, 0.12));
 
-  /* ---------- voice ---------- */
-  function speak(text, rate) {
-    if (!('speechSynthesis' in window)) return Promise.resolve();
-    return new Promise(res => {
-      try {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = rate || 0.8; u.pitch = 1.05;
-        const v = window.speechSynthesis.getVoices().find(x => /^en/i.test(x.lang)); if (v) u.voice = v;
-        u.onend = res; u.onerror = res; window.speechSynthesis.speak(u);
-      } catch (e) { res(); }
-    });
-  }
+  /* ---------- voice: recorded British voice if available, otherwise the best voice on the device ---------- */
+  const speak = (text, rate) => window.EAAVoice.say(text, { rate: rate, dir: "audio/" });
 
   /* ======================= PICKER ======================= */
   const wantedId = new URLSearchParams(location.search).get('s');
@@ -339,7 +330,6 @@
     $('#again').addEventListener('click', () => { sessionXP = 0; go(0); });
   }
 
-  if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
   $('#xp').textContent = '⭐ ' + save.xp + ' XP';
   go(0);
 })();
