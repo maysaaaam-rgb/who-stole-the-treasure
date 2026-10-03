@@ -110,6 +110,7 @@
   <main id="stage"></main>
 </div>
 
+<script src="config.js"></script>
 <script src="../js/voice.js"></script>
 <script src="party-data.js"></script>
 <script>
@@ -183,7 +184,34 @@
 
   function award(n) { if (!FIRST_TIME) return; sessionXP += n; $('#xp').textContent = '⭐ ' + (save.xp + sessionXP) + ' XP'; }
   function renderSteps() { $('#steps').innerHTML = STEP_NAMES.map((_, i) => '<div class="step ' + (i < step ? 'done' : i === step ? 'now' : '') + '"></div>').join(''); }
-  function go(n) { step = n; renderSteps(); [meet, words, order, say, party, win][n](); window.scrollTo(0, 0); }
+  function go(n) { step = n; renderSteps(); if (n >= 1) report(Math.min(n, 5)); [meet, words, order, say, party, win][n](); window.scrollTo(0, 0); }
+  /* ---------- tell the teacher (Google Sheet). Works offline: unsent reports are kept and retried. ---------- */
+  const CFG = window.PARTY_CONFIG || {};
+  const PENDING_KEY = 'eaa_party_pending_v1';
+  const pendingGet = () => { try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '{}'); } catch (e) { return {}; } };
+  const pendingSet = o => { try { localStorage.setItem(PENDING_KEY, JSON.stringify(o)); } catch (e) {} };
+  let lastSendOk = null;
+  async function flushReports() {
+    if (!CFG.submitUrl) return null;
+    const p = pendingGet(); let ok = true;
+    for (const id of Object.keys(p)) {
+      try {
+        await fetch(CFG.submitUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p[id]) });
+        const cur = pendingGet(); if (JSON.stringify(cur[id]) === JSON.stringify(p[id])) { delete cur[id]; pendingSet(cur); }
+      } catch (e) { ok = false; }
+    }
+    lastSendOk = ok; return ok;
+  }
+  function report(stepsDone) {
+    if (!CFG.submitUrl) return Promise.resolve(null);
+    const p = pendingGet();
+    p[ST.id] = { token: CFG.token, homework: CFG.homework, studentId: ST.id, name: ST.name, classLabel: ST.classLabel, character: ROLE.short,
+                 steps: stepsDone, xp: FIRST_TIME ? stepsDone * 10 + (stepsDone >= 5 ? 10 : 0) : 0, device: (navigator.userAgent || '').slice(0, 60), at: new Date().toISOString() };
+    pendingSet(p);
+    return flushReports();
+  }
+  window.addEventListener('online', flushReports);
+
   const partnerText = () => PARTNERS.map(p => esc(p.name) + ' (' + esc(P.roles[p.role].short) + ')').join(' + ');
 
   /* 1. MEET */
@@ -327,12 +355,15 @@
       '<div class="xp-big">' + (FIRST_TIME ? '+' + earned + ' XP' : 'Practice again ✓') + '</div>' +
       (FIRST_TIME ? '' : '<div class="proof">You already won this card, so no new XP. Keep practising!</div>') +
       '<div class="proof">Done on ' + (save.dates[ST.id] || today) + ' · Show this screen to your teacher</div>' +
+      (CFG.submitUrl ? '<div class="proof" id="sent">📨 Sending to your teacher…</div>' : '') +
       '<div class="proof">Next: practise with ' + partnerText() + ' at the tea party! 🫖</div>' +
       '<div class="row"><button class="btn amber wide" id="again">↺ Play again</button></div><div class="row"><a class="btn ghost wide" href="./" style="text-decoration:none">← Choose another student</a></div>');
     $('#again').addEventListener('click', () => { sessionXP = 0; go(0); });
+    if (CFG.submitUrl) { setTimeout(() => { const el = $('#sent'); if (!el) return; const ok = lastSendOk; el.textContent = ok === false ? '📨 Saved. It will be sent when you are online.' : '📨 Sent to your teacher ✓'; }, 1800); }
   }
 
   $('#xp').textContent = '⭐ ' + save.xp + ' XP';
+  flushReports();
   go(0);
 })();
 </script>
