@@ -621,7 +621,7 @@
     `;
 
     return `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 10 180 180" width="${size}" height="${size}" class="eaa-monster-svg ${animClass}" data-stage="${stage}" data-color="${colorKey}">
         ${defs}
         ${bgLayer}
         ${pedestalMarkup}

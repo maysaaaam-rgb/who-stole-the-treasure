@@ -1183,8 +1183,10 @@
    * the exact customized SVG companion if custom colors/cosmetics are equipped.
    */
   function getStudentMonsterAvatarUrl(student, profile, mState) {
-    if (student && student.custom_avatar_url) return student.custom_avatar_url;
-    if (profile && profile.custom_avatar_url) return profile.custom_avatar_url;
+    // A saved avatar made by an older version of the monster drawing is stale: always redraw those.
+    const isGenerated = u => typeof u === 'string' && u.indexOf('eaa-monster-svg') !== -1;
+    if (student && student.custom_avatar_url && !isGenerated(student.custom_avatar_url)) return student.custom_avatar_url;
+    if (profile && profile.custom_avatar_url && !isGenerated(profile.custom_avatar_url)) return profile.custom_avatar_url;
     if (student && student.custom_avatar) return student.custom_avatar;
 
     const baseColor = (profile && profile.baseColor) || (student && student.element) || '';
@@ -1205,8 +1207,6 @@
         });
         if (svgMarkup) {
           const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
-          if (student) student.custom_avatar_url = uri;
-          if (profile) profile.custom_avatar_url = uri;
           return uri;
         }
       } catch (e) {
