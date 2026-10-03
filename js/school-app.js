@@ -4202,7 +4202,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle);">' +
               '<div>' +
                 '<div style="font-weight:800; font-size:0.95rem;">' + a.title + '</div>' +
-                '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + ' · Game: ' + a.gameId + '</div>' +
+                '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + (a.gameId ? ' · Game: ' + a.gameId : '') + '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
                 '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster-day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
@@ -6244,7 +6244,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + cls.name + '</span>' +
                 '</div>' +
                 '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' +
-                  'Due: ' + (a.dueDate || 'No deadline') + ' · Game: ' + (res ? res.title : a.gameId) +
+                  'Due: ' + (a.dueDate || 'No deadline') + ((res || a.gameId) ? ' · Game: ' + (res ? res.title : a.gameId) : '') +
                 '</div>' +
                 (a.instructions ? '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">"' + a.instructions + '"</div>' : '') +
               '</div>' +
@@ -7601,11 +7601,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       (assessmentsActiveSubTab === 'evaluations' ? renderAssessmentsTableHTML(assessments) : renderRubricsTemplatesHTML(rubrics));
   }
 
+  // Friendly empty state used when a list has nothing to show yet
+  function emptyStateHTML(icon, title, text) {
+    return '<div class="empty-state-box">' +
+      '<div class="empty-state-icon">' + icon + '</div>' +
+      '<div class="empty-state-title">' + title + '</div>' +
+      '<div class="empty-state-text">' + text + '</div>' +
+    '</div>';
+  }
+
   function renderAssessmentsTableHTML(assessments) {
     return '' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
         '<div style="padding:16px 20px; border-bottom:1px solid var(--border-subtle); font-weight:800; font-size:1.05rem;">Recent Multi-Skill Evaluations</div>' +
         '<div style="display:flex; flex-direction:column;">' +
+          (assessments.length === 0 ? emptyStateHTML('🎯', 'No evaluations yet', 'Use “+ Record Assessment” (top right) to score a student on speaking, listening, reading or writing.') : '') +
           assessments.map(ass => {
             const s = store.getStudent(ass.studentId) || { firstName: 'Student', lastName: '' };
             return '' +
@@ -8697,6 +8707,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Two-way parent messages and student progress check-ins.</p>' +
       '</div>' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
+        (threads.length === 0 ? emptyStateHTML('💬', 'No family messages yet', 'Use “+ Create → Family Message” to start a conversation with a parent.') : '') +
         threads.map(t => {
           const msgs = t.messages || t.threads || [];
           const lastMsg = msgs[msgs.length - 1] || {};
@@ -8800,7 +8811,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
               '<div>' +
                 '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
-                  '<span style="background:rgba(234,179,8,0.25); color:#fef08a; border:1px solid rgba(234,179,8,0.5); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">LEVEL ' + mState.currentLevel + ' · ' + mState.stageName.toUpperCase() + '</span>' +
+                  '<span style="background:rgba(234,179,8,0.25); color:#fef08a; border:1px solid rgba(234,179,8,0.5); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">LEVEL ' + mState.currentLevel + ' · ' + String(mState.stageName || '').replace(/^Level \d+\s*[-•]\s*/i, '').toUpperCase() + '</span>' +
                   '<span style="background:rgba(255,255,255,0.15); color:#ffffff; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px;">🔥 ' + streak + '-Day Streak</span>' +
                   '<span style="background:rgba(59,130,246,0.3); color:#93c5fd; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">' + (s.overallCefr || 'A1') + ' Explorer</span>' +
                 '</div>' +
@@ -8810,7 +8821,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="max-width:380px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:6px;">' +
                     '<span>⭐ ' + totalXP.toLocaleString() + ' XP</span>' +
-                    '<span style="color:#fef08a;">' + (mState.nextLevel ? (totalXP.toLocaleString() + ' / ' + mState.nextLevel.xpRequired.toLocaleString() + ' XP (' + progressPct + '%)') : '👑 Apex Form Reached!') + '</span>' +
+                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString() + ' / ' + mState.nextLevel.xpRequired.toLocaleString() + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve (' + progressPct + '%)') : 'Ready to evolve!'))) + '</span>' +
                   '</div>' +
                   '<div style="background:rgba(255,255,255,0.2); height:10px; border-radius:999px; overflow:hidden;">' +
                     '<div style="background:linear-gradient(90deg, #f59e0b, #fbbf24, #10b981); height:100%; width:' + progressPct + '%; border-radius:999px; transition:width 0.4s ease;"></div>' +
@@ -8857,7 +8868,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:16px; padding:18px; margin-bottom:18px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">' +
               '<div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.04em;">Current Module · Unit ' + activeUnit.number + '</span>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.04em;">Current Module' + (activeUnit.number ? ' · Unit ' + activeUnit.number : '') + '</span>' +
                 '<h3 style="font-size:1.25rem; font-weight:900; margin:2px 0 6px 0; color:var(--text-main);">"' + activeUnit.title + '"</h3>' +
                 '<div style="display:flex; gap:12px; font-size:0.82rem; color:var(--text-muted); flex-wrap:wrap;">' +
                   (activeUnit.reading1 ? '<span>📖 Reading 1: <strong>' + activeUnit.reading1 + '</strong></span>' : '') +

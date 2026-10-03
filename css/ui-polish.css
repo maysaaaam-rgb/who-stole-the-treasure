@@ -4,6 +4,25 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
+   0. DESIGN TOKENS THAT WERE USED (≈200 times) BUT NEVER DEFINED
+   Missing tokens made many boxes transparent / borderless.
+   -------------------------------------------------------------------------- */
+:root {
+  --bg-card: #ffffff;
+  --bg-card-secondary: #f1f5f9;
+  --bg-card-hover: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --color-primary-light: #dbeafe;
+  --color-primary-dark: #1d4ed8;
+  --color-accent: #f59e0b;
+}
+.app-main[class*="theme-"] { --text-primary: #f8fafc; }
+:where(.app-main[class*="theme-"] [class*="card"], .app-main[class*="theme-"] [style*="--bg-card"]) { --text-primary: #0f172a; }
+
+
+/* --------------------------------------------------------------------------
    1. NO SIDEWAYS PAGE SCROLL + RESPONSIVE TOP BAR
    -------------------------------------------------------------------------- */
 html { overflow-x: clip; }
@@ -62,6 +81,7 @@ html { overflow-x: clip; }
   .app-main[class*="theme-"] input,
   .app-main[class*="theme-"] textarea,
   .app-main[class*="theme-"] table,
+  .app-main[class*="theme-"] [style*="--bg-card"],
   .app-main[class*="theme-"] [style*="--bg-surface"],
   .app-main[class*="theme-"] [style*="--bg-muted"],
   .app-main[class*="theme-"] [style*="--bg-canvas"],
@@ -186,3 +206,43 @@ button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
 .app-main a.btn-sm-secondary[style*="#38bdf8"], .app-main a.btn-sm-secondary[style*="rgb(56, 189, 248)"] { color: #0369a1 !important; }
 .badge[style*="background:#10b981"], .badge[style*="background: #10b981"] { background: #047857 !important; }
 .role-title { color: #6d28d9 !important; }
+
+/* --------------------------------------------------------------------------
+   8. EMPTY STATES + SPACE FOR THE FLOATING TOOLBAR
+   -------------------------------------------------------------------------- */
+.empty-state-box { text-align: center; padding: 36px 16px; color: #475569; }
+.empty-state-icon { font-size: 2.4rem; margin-bottom: 8px; }
+.empty-state-title { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+.empty-state-text { font-size: 0.9rem; margin-top: 4px; max-width: 420px; margin-inline: auto; }
+.app-main { padding-bottom: 96px; }          /* the floating Toolkit/Timer bar no longer hides the last items */
+
+/* --------------------------------------------------------------------------
+   9. PHONE-SIZED TOP BAR (nothing overlaps or runs off the screen)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .header-inner { padding: 0 10px; gap: 6px; }
+  .brand-section { gap: 6px; flex: 0 0 auto; }
+  .role-pill-group { display: none; }
+  .header-right { gap: 6px; margin-left: auto; min-width: 0; }
+  .class-switcher-select { max-width: 112px; font-size: 0.8rem; }
+  .btn-header-create { padding: 6px 12px 7px; }
+  .btn-header-create > svg { display: none; }
+  .header-right > .icon-circle-btn { display: none; }          /* search + lock shortcuts: available from the menu */
+  .user-chip { padding: 2px; }
+  #global-cloud-sync-btn { padding: 6px 8px; }
+}
+@media (max-width: 640px) {
+  .class-switcher-select { max-width: 92px; padding-inline: 6px; }
+  .btn-header-create { padding: 6px 14px 7px; }
+  .btn-header-create > span { font-size: 0; }                    /* "+ Create" becomes a compact "+" on phones */
+  .btn-header-create > span::before { content: "+"; font-size: 1.25rem; line-height: 1; }
+  .btn-header-create { min-width: 44px; justify-content: center; }
+}
+
+/* --------------------------------------------------------------------------
+   10. ACCESSIBILITY BASICS
+   -------------------------------------------------------------------------- */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid #38bdf8; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
