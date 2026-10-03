@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party Cards – print (A5, double-sided)</title>
+<style>
+  @page { size: A5 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: #1e293b; font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif; color: #1c1917; }
+
+  /* ---------- screen toolbar + picker (hidden when printing) ---------- */
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+         padding: 10px 16px; background: #0f172a; color: #f8fafc; border-bottom: 1px solid #334155; }
+  .bar a.btn, .bar button { font: inherit; font-weight: 800; padding: 10px 18px; border: 0; border-bottom: 4px solid #b45309; border-radius: 12px; background: #f59e0b; color: #1c1203; cursor: pointer; text-decoration: none; }
+  .bar a.ghost { background: #334155; border-bottom-color: #1e293b; color: #f8fafc; }
+  .bar span { font-size: 14px; color: #cbd5e1; }
+  .picker { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; color: #f8fafc; }
+  .picker h2 { margin: 24px 0 8px; }
+  .picker .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .picker a.st { display: block; padding: 10px 12px; border-radius: 12px; background: #0f172a; border: 1px solid #334155; color: #f8fafc; text-decoration: none; font-weight: 700; }
+  .picker a.st small { display: block; color: #94a3b8; font-weight: 600; }
+  .picker a.st:hover { border-color: #38bdf8; }
+  .sheets { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; padding: 24px 12px 48px; }
+
+  /* ---------- one A5 page ---------- */
+  .page { width: 148mm; height: 210mm; background: #fffaf0; position: relative; overflow: hidden;
+          box-shadow: 0 8px 30px rgba(0,0,0,.5); page-break-after: always; break-after: page; }
+  .frame { position: absolute; inset: 6mm; border: 1.2mm solid var(--c); border-radius: 5mm; padding: 4mm; display: flex; flex-direction: column; }
+  .frame::after { content: ""; position: absolute; inset: 1.4mm; border: .3mm solid var(--c); border-radius: 3.6mm; pointer-events: none; }
+
+  /* FRONT */
+  .tag { text-align: center; font-weight: 800; letter-spacing: .12em; font-size: 10pt; color: var(--c); margin: 0 0 2mm; }
+  .pic { flex: none; height: 104mm; border-radius: 3mm; overflow: hidden; border: .5mm solid var(--c); background: #ddd; }
+  .pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; display: block; }
+  .name { text-align: center; font-weight: 900; font-size: 25pt; line-height: 1.05; margin: 3mm 0 0; color: var(--c); }
+  .who { text-align: center; font-size: 12pt; font-weight: 800; color: #44403c; margin: 1mm 0 1.5mm; }
+  .sents { list-style: none; padding: 0; margin: 0; text-align: center; }
+  .sents li { font-size: 15pt; font-weight: 800; line-height: 1.32; }
+  .words { margin-top: auto; display: flex; justify-content: space-between; gap: 1mm; padding-top: 2mm; border-top: .4mm dashed var(--c); }
+  .words div { text-align: center; font-size: 8.5pt; font-weight: 700; flex: 1; }
+  .words b { display: block; font-size: 18pt; line-height: 1.1; }
+
+  /* BACK */
+  .back { --fs: 11.5pt; }
+  .head { text-align: center; margin-bottom: 2mm; }
+  .head .t { font-weight: 900; font-size: 15pt; color: var(--c); }
+  .head .s { font-size: 9.5pt; font-weight: 700; color: #57534e; }
+  .script { display: grid; gap: 1.3mm; }
+  .ln { padding: 1.2mm 3mm; border-radius: 2.5mm; font-size: var(--fs); line-height: 1.22; }
+  .ln small { display: block; font-size: 7.5pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .ln.them { background: #f5f5f4; color: #57534e; border: .3mm solid #d6d3d1; }
+  .ln.me { background: #fff; color: #111; font-weight: 800; border: .7mm solid var(--c); font-size: calc(var(--fs) + 1pt); }
+  .ln.me small { color: var(--c); }
+  .box { margin-top: 2mm; border: .4mm solid var(--c); border-radius: 3mm; padding: 1.6mm 3mm; font-size: 9.5pt; line-height: 1.25; }
+  .box h4 { margin: 0 0 .8mm; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+  .practice { margin-top: auto; text-align: center; font-size: 10pt; font-weight: 800; padding-top: 1mm; }
+  .practice span { font-size: 16pt; letter-spacing: 1.5mm; vertical-align: middle; }
+
+  @media print {
+    body { background: #fff; }
+    .bar, .picker { display: none !important; }
+    .sheets { display: block; padding: 0; }
+    .page { box-shadow: none; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar">
+  <button onclick="window.print()">🖨️ Print</button>
+  <a class="btn ghost" href="cards.html">← All students</a>
+  <span><b>Print settings:</b> A5 · both sides (duplex) · flip on the <b>long edge</b> · scale 100% · background graphics on. Page 1 = front, page 2 = back.</span>
+</div>
+<div class="picker" id="picker"></div>
+<div class="sheets" id="sheets"></div>
+
+<script src="party-data.js"></script>
+<script>
+(function () {
+  var P = window.PARTY, q = new URLSearchParams(location.search);
+  var one = q.get('s'), cls = q.get('class');
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+
+  // ----- picker (no parameters) -----
+  if (!one && !cls) {
+    document.getElementById('bar').style.display = 'none';
+    var h = '<h1>🫖 Tea Party Cards</h1><p>Choose a class (prints every student) or one student. Each student gets one A5 card: front and back.</p>';
+    Object.keys(P.classes).forEach(function (k) {
+      var c = P.classes[k];
+      h += '<h2>' + c.label + ' · ' + c.students.length + ' students</h2><p><a class="st" style="display:inline-block" href="?class=' + k + '">🖨️ Print the whole class (' + c.students.length * 2 + ' pages)</a></p><div class="grid">' +
+        c.students.map(function (s) { return '<a class="st" href="?s=' + s.id + '">' + esc(s.name) + '<small>' + esc(P.roles[s.role].short) + '</small></a>'; }).join('') + '</div>';
+    });
+    document.getElementById('picker').innerHTML = h;
+    return;
+  }
+
+  // ----- build pages -----
+  var students = [];
+  if (one) { var f = P.find(one); if (f) students.push(f); }
+  else if (P.classes[cls]) P.classes[cls].students.forEach(function (s) { students.push(P.find(s.id)); });
+
+  var out = students.map(function (st) {
+    var r = st.role, script = P.dialogues[st.pair], partners = P.partners(st);
+    var pNames = partners.map(function (p) { return esc(p.name) + ' (' + esc(P.roles[p.role].short) + ')'; }).join(' + ');
+    var front =
+      '<section class="page" style="--c:' + r.color + '"><div class="frame">' +
+        '<div class="tag">TEA PARTY CARD · ' + st.classLabel.toUpperCase() + '</div>' +
+        '<div class="pic"><img src="assets/' + st.photo + '" alt=""></div>' +
+        '<div class="name">' + esc(r.name) + '</div>' +
+        '<div class="who">Student: ' + esc(st.name) + '</div>' +
+        '<ul class="sents">' + r.sentences.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' +
+        '<div class="words">' + r.words.map(function (w) { return '<div><b>' + w[1] + '</b>' + esc(w[0]) + '</div>'; }).join('') + '</div>' +
+      '</div></section>';
+    var back =
+      '<section class="page back" style="--c:' + r.color + '"><div class="frame">' +
+        '<div class="head"><div class="t">' + esc(r.name) + ' · MY TEA PARTY</div>' +
+        '<div class="s">My partner: ' + pNames + ' · Practise! Then talk for 1 minute.</div></div>' +
+        '<div class="script">' + script.map(function (l) {
+          var me = l[0] === st.roleKey;
+          var label = me ? '✋ I say' : '👂 ' + esc(P.roles[l[0]].short) + ' says';
+          return '<div class="ln ' + (me ? 'me' : 'them') + '"><small>' + label + '</small>' + esc(l[1]) + '</div>';
+        }).join('') + '</div>' +
+        '<div class="box"><h4>Ask me! (talk to other students)</h4>' +
+          r.askMe.map(function (qa) { return '<div><b>' + esc(qa[0]) + '</b> → ' + esc(qa[1]) + '</div>'; }).join('') + '</div>' +
+        '<div class="box"><h4>Bring to the party</h4>' + r.props.map(esc).join(' · ') + '</div>' +
+        '<div class="practice">I practised: <span>☐ ☐ ☐ ☐ ☐</span></div>' +
+      '</div></section>';
+    return front + back;
+  });
+  document.getElementById('sheets').innerHTML = out.join('');
+  document.title = (one ? 'Card' : 'Cards ' + cls.toUpperCase()) + ' – Tea Party (A5)';
+
+  // Auto-fit: shrink the script text on any back page that would overflow the frame.
+  document.querySelectorAll('.page.back').forEach(function (pg) {
+    var f = pg.querySelector('.frame'), fs = 11.5;
+    while (f.scrollHeight > f.clientHeight + 1 && fs > 8) { fs -= 0.25; pg.style.setProperty('--fs', fs + 'pt'); }
+  });
+})();
+</script>
+</body>
+</html>
