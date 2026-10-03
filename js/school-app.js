@@ -1182,6 +1182,24 @@
    * Checks student.custom_avatar_url, profile.custom_avatar_url, or synthesizes
    * the exact customized SVG companion if custom colors/cosmetics are equipped.
    */
+  // Illustrated art lives in assets/monsters/art/<species>_<stage>.webp (egg, baby, growing, adventurer, advanced, ultimate).
+  // A species is listed in "ready" only when its final art is in the folder.
+  const MONSTER_ART = {
+    base: 'assets/monsters/art/',
+    ready: ['aquafind', 'florasprout', 'astralight'],
+    speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' }
+  };
+  window.MONSTER_ART = MONSTER_ART;
+  function getIllustratedMonsterUrl(baseColor, mState) {
+    const color = String(baseColor || 'blue').toLowerCase().replace(/^body-/, '');
+    const species = MONSTER_ART.speciesByColor[color] || 'aquafind';
+    if (MONSTER_ART.ready.indexOf(species) === -1) return '';
+    let stage = (mState && mState.stageKey) || 'baby';
+    if (stage === 'cracking_egg') stage = 'egg';
+    if (['egg', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'].indexOf(stage) === -1) stage = 'baby';
+    return MONSTER_ART.base + species + '_' + stage + '.webp';
+  }
+
   function getStudentMonsterAvatarUrl(student, profile, mState) {
     // A saved avatar made by an older version of the monster drawing is stale: always redraw those.
     const isGenerated = u => typeof u === 'string' && u.indexOf('eaa-monster-svg') !== -1;
@@ -1191,6 +1209,11 @@
 
     const baseColor = (profile && profile.baseColor) || (student && student.element) || '';
     const equipped = (profile && profile.equipped) || {};
+
+    // Illustrated monster art: species follows the colour the student picked, stage follows their level.
+    // Monster Studio still shows the dress-up (hats, glasses, clothes) on the drawn version.
+    const illustrated = getIllustratedMonsterUrl(baseColor, mState);
+    if (illustrated) return illustrated;
     const hasEquipped = Object.values(equipped).some(v => v && v !== 'none' && v !== 'default');
     const isCustomFur = baseColor && baseColor !== 'blue';
 
