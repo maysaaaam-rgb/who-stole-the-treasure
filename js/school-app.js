@@ -1201,6 +1201,26 @@
     return MONSTER_ART.base + species + '_' + stage + '.webp';
   }
 
+  // Card hero picture: the dressed-up illustrated monster when the student wears items the art supports, otherwise the plain picture.
+  function heroMonsterHtml(src, name, profile, state, cls) {
+    const img = '<img src="' + src + '" alt="' + name + '" class="' + cls + '" loading="lazy" onerror="this.src=\'' + src + '\'" />';
+    try {
+      const D = window.MonsterDressUp;
+      if (!D || !profile || !state) return img;
+      let stage = state.stageKey;
+      if (stage === 'cracking_egg') stage = 'egg';
+      if (!stage || stage === 'egg') return img;
+      const color = profile.baseColor || 'blue';
+      if (!D.hasArt(color, stage)) return img;
+      const eq = Object.assign({}, profile.equipped || {});
+      delete eq.background; delete eq.aura;
+      const wearing = [eq.hat, eq.glasses, eq.accessory, eq.backpack, eq.clothing].some(function (id) { return id && D.supportedItem(id); });
+      if (!wearing) return img;
+      return '<div class="eaa-card-dressed" style="width:100%;max-height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;">' +
+        D.render({ color: color, stage: stage, equipped: eq, size: '100%', animated: false }) + '</div>';
+    } catch (e) { return img; }
+  }
+
   function getStudentMonsterAvatarUrl(student, profile, mState) {
     // A saved avatar made by an older version of the monster drawing is stale: always redraw those.
     const isGenerated = u => typeof u === 'string' && u.indexOf('eaa-monster-svg') !== -1;
@@ -1282,7 +1302,7 @@
     const avatarMarkup = '' +
       '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
         '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-        '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+        heroMonsterHtml(dynamicSprite, name, profile, mState, 'mascot-sprite-img monster-hero-3d') +
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -3422,7 +3442,7 @@
               const avatarMarkup = '' +
                 '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
                   '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-                  '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+                  heroMonsterHtml(dynamicSprite, name, profile, mState, 'mascot-sprite-img monster-hero-3d object-contain p-2') +
                 '</div>';
 
               const badge = getStudentBadge(s);
@@ -3857,7 +3877,7 @@
       const avatarMarkup = '' +
         '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
           '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-          '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+          heroMonsterHtml(dynamicSprite, name, profile, monsterState, 'mascot-sprite-img monster-hero-3d') +
         '</div>';
 
       return '' +

@@ -77,17 +77,18 @@
     return false;
   }
 
-  function itemHtml(name, a) {
+  function itemHtml(name, a, monsterKey) {
     var rule = RULE[name], box = root.MONSTER_ITEM_BOX && root.MONSTER_ITEM_BOX[name];
     if (!rule || !box || !a) return '';
     var pt = a[rule.at], baseW = a[rule.base];
     if (!pt || !baseW) return '';
-    var contentW = baseW * rule.w;                       // wanted width of the visible part, in 1024px space
+    var ov = (root.MONSTER_OVERRIDES && root.MONSTER_OVERRIDES[monsterKey] && root.MONSTER_OVERRIDES[monsterKey][name]) || {};
+    var contentW = baseW * rule.w * (ov.dw || 1);                       // wanted width of the visible part, in 1024px space
     var imgW = contentW / (box.r - box.l);               // width of the whole picture
     var px = (box.l + box.r) / 2;
     var py = rule.from === 'bottom' ? box.b : rule.from === 'top' ? box.t : (box.t + box.b) / 2;
-    var cx = pt.x + (rule.dx || 0) * baseW * 1 + 0;
-    var cy = pt.y + (rule.dy || 0) * baseW;
+    var cx = pt.x + ((rule.dx || 0) + (ov.dx || 0)) * baseW;
+    var cy = pt.y + ((rule.dy || 0) + (ov.dy || 0)) * baseW;
     var left = cx - px * imgW, top = cy - py * imgW;
     return '<img class="eaa-dressup-item" data-item="' + name + '" src="' + ITEMS + 'item_' + name + '.webp" alt="" draggable="false" ' +
       'style="position:absolute;z-index:' + rule.z + ';left:' + (left / 10.24).toFixed(2) + '%;top:' + (top / 10.24).toFixed(2) + '%;width:' + (imgW / 10.24).toFixed(2) + '%;pointer-events:none;" />';
@@ -105,6 +106,7 @@
     var key = species + '_' + stage;
     var anchors = root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[key];
     var size = options.size || 280;
+    var sizeCss = typeof size === 'number' ? ('width:' + size + 'px;height:' + size + 'px;') : ('width:' + size + ';aspect-ratio:1/1;');
 
     var layers = '';
     var MR = root.MonsterRenderer;
@@ -122,12 +124,12 @@
         if (!id || id === 'none' || id === 'default') return;
         if (isHiddenByBaked(id, anchors.bakedItems)) return;
         var name = FILE[id];
-        if (name) items += itemHtml(name, anchors);
+        if (name) items += itemHtml(name, anchors, key);
       });
     }
 
     var bob = options.animated === false ? '' : 'animation:eaaDressBob 3.2s ease-in-out infinite;';
-    return '<div class="eaa-dressup" data-monster="' + key + '" style="position:relative;width:' + size + 'px;height:' + size + 'px;margin:0 auto;">' +
+    return '<div class="eaa-dressup" data-monster="' + key + '" style="position:relative;' + sizeCss + 'margin:0 auto;">' +
       layers +
       '<div style="position:absolute;inset:7%;z-index:10;' + bob + '">' +
         items +
