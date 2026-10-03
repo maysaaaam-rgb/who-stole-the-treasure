@@ -750,6 +750,15 @@
     try { auraMarkup = renderAuraLayer(equipped.aura, stage, palette); } catch (e) { auraMarkup = ''; }
     const auraSvg = auraMarkup ? `<svg viewBox="0 0 200 200" width="100%" height="100%">${defs}${auraMarkup}</svg>` : '';
 
+    // 0. Selected world background (only when the caller asks for it, e.g. the Monster Studio preview)
+    let bgSvg = '';
+    if (options.showBackground) {
+      try {
+        const bgMarkup = renderBackgroundLayer(equipped.background || 'bg-meadow', stage);
+        if (bgMarkup) bgSvg = `<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="none">${defs}${bgMarkup}</svg>`;
+      } catch (e) { bgSvg = ''; }
+    }
+
     // 2. Back Gear (Wings, Capes, Tails behind torso, Backpacks)
     let wingsMarkup = '';
     try { wingsMarkup = renderWingsLayer(stage, equipped.wings, palette); } catch (e) { wingsMarkup = ''; }
@@ -853,8 +862,11 @@
 
     return `
       <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
-        <!-- 1. Background Aura / FX (z-0) -->
-        <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 0; pointer-events: none;">${auraSvg}</div>
+        <!-- 0. World background (z-0) -->
+        <div id="layer-background" class="layer-item z-bg" style="position: absolute; inset: 0; z-index: 0; border-radius: 16px; overflow: hidden; pointer-events: none;">${bgSvg}</div>
+
+        <!-- 1. Background Aura / FX (z-1) -->
+        <div id="layer-aura-back" class="layer-item z-0" style="position: absolute; inset: 0; z-index: 1; pointer-events: none;">${auraSvg}</div>
         
         <!-- 2. Back Gear (Wings, Capes, Tails behind torso) (z-10) -->
         <div id="layer-back-gear" class="layer-item z-10" style="position: absolute; inset: 0; z-index: 10; pointer-events: none;">${backGearSvg}</div>
@@ -1917,7 +1929,34 @@
   }
 
   // --- CLOTHING LAYER ---
+  // Outfits that wrap the torso are clipped to the monster's real body outline, so a coat/parka/robe
+  // follows the round belly instead of showing as a flat rectangle.
+  const TORSO_WRAP_OUTFITS = ['clothing-travel-coat', 'clothing-hoodie', 'clothing-sweater', 'clothing-pilot', 'clothing-tuxedo', 'clothing-ninja',
+    'clothing-kimono', 'clothing-armor', 'clothing-magic-robe', 'clothing-school-jacket', 'clothing-scholar', 'clothing-royal-robe',
+    'clothing-royal', 'clothing-robe', 'clothing-space', 'clothing-hero', 'clothing-winter', 'clothing-dragon-armor', 'clothing-knight-armor'];
+
+  function bodyOutlinePath(g, cX) {
+    const topY = g.topY, botY = g.botY, cW = g.cW, bW = g.bW, cheekY = g.cheekY;
+    return `M ${cX} ${topY}
+      C ${cX + cW * 0.52} ${topY} ${cX + cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX + cW} ${cheekY}
+      C ${cX + cW * 1.05} ${cheekY + 14} ${cX + bW * 1.06} ${botY - 24} ${cX + bW} ${botY - 10}
+      C ${cX + bW * 0.88} ${botY + 2} ${cX + 16} ${botY + 1} ${cX} ${botY}
+      C ${cX - 16} ${botY + 1} ${cX - bW * 0.88} ${botY + 2} ${cX - bW} ${botY - 10}
+      C ${cX - bW * 1.06} ${botY - 24} ${cX - cW * 1.05} ${cheekY + 14} ${cX - cW} ${cheekY}
+      C ${cX - cW * 0.94} ${topY + (cheekY - topY) * 0.45} ${cX - cW * 0.52} ${topY} ${cX} ${topY} Z`;
+  }
+
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
+    const raw = renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage);
+    if (!raw || TORSO_WRAP_OUTFITS.indexOf(String(clothingId)) === -1) return raw;
+    try {
+      const g = getStageGeometry(stage);
+      const id = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
+      return `<clipPath id="${id}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath><g clip-path="url(#${id})">${raw}</g>`;
+    } catch (e) { return raw; }
+  }
+
+  function renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage) {
     if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
     const norm = String(clothingId).toLowerCase().trim();
 

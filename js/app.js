@@ -1472,7 +1472,7 @@ window.openDirectXPEdit = function(studentId, event) {
 
   const currentVal = (typeof student.xp === 'number' && !isNaN(student.xp)) ? student.xp : 0;
   const displayName = student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim() || 'Student';
-  const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
+  const input = prompt(`Edit XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
   if (input === null) return; // User cancelled
 
   const parsed = parseInt(input.trim ? input.trim() : input, 10);

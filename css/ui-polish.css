@@ -1,0 +1,248 @@
+/* ==========================================================================
+   UI POLISH LAYER  (loaded last — fixes contrast, overflow and card layout)
+   Keep every rule here small and scoped so the older stylesheets stay untouched.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. DESIGN TOKENS THAT WERE USED (≈200 times) BUT NEVER DEFINED
+   Missing tokens made many boxes transparent / borderless.
+   -------------------------------------------------------------------------- */
+:root {
+  --bg-card: #ffffff;
+  --bg-card-secondary: #f1f5f9;
+  --bg-card-hover: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-primary: #0f172a;
+  --color-primary-light: #dbeafe;
+  --color-primary-dark: #1d4ed8;
+  --color-accent: #f59e0b;
+}
+.app-main[class*="theme-"] { --text-primary: #f8fafc; }
+:where(.app-main[class*="theme-"] [class*="card"], .app-main[class*="theme-"] [style*="--bg-card"]) { --text-primary: #0f172a; }
+
+
+/* --------------------------------------------------------------------------
+   1. NO SIDEWAYS PAGE SCROLL + RESPONSIVE TOP BAR
+   -------------------------------------------------------------------------- */
+html { overflow-x: clip; }
+.header-inner { gap: 10px; }
+.header-right { min-width: 0; flex-wrap: nowrap; }
+.header-right > * { flex: 0 0 auto; }
+.brand-section { min-width: 0; }
+
+@media (max-width: 1240px) {
+  .brand-logo-btn > span { display: none; }                      /* keep the logo icon, hide the long name */
+}
+@media (max-width: 1100px) {
+  .role-pill-btn { padding: 6px 10px; }
+  .role-pill-btn > span:last-child { display: none; }            /* emoji-only role switcher */
+  #header-user-name { display: none; }
+  .user-chip { padding-right: 4px; }
+  #global-sync-text { display: none; }                           /* icon-only sync button (title still explains) */
+}
+
+/* --------------------------------------------------------------------------
+   2. DARK CLASS THEMES: TEXT THAT SITS DIRECTLY ON THE CANVAS MUST BE LIGHT
+   The Grade 3 / Grade 4 themes paint a near-black canvas, but most headings and
+   body text use dark "light-theme" colours. Re-point the text colours on the canvas
+   and keep dark text inside every light panel.
+   -------------------------------------------------------------------------- */
+.app-main[class*="theme-"] {
+  --text-main: #f8fafc;
+  --text-secondary: #dbe4f0;
+  --text-muted: #b6c3d6;
+  --text-subtle: #9fb0c6;
+  color: #f8fafc;
+}
+
+/* light panels: restore the normal dark text colours.
+   :where() keeps this at zero specificity, so any class that sets its own colour (e.g. white text on a dark badge) still wins. */
+:where(.app-main[class*="theme-"] [class*="card"],
+  .app-main[class*="theme-"] [class*="tile"],
+  .app-main[class*="theme-"] [class*="panel"],
+  .app-main[class*="theme-"] [class*="kpi"],
+  .app-main[class*="theme-"] [class*="chip"],
+  .app-main[class*="theme-"] [class*="badge"],
+  .app-main[class*="theme-"] [class*="alert"],
+  .app-main[class*="theme-"] [class*="toolbar"],
+  .app-main[class*="theme-"] [class*="accordion"],
+  .app-main[class*="theme-"] [class*="modal"],
+  .app-main[class*="theme-"] [class*="dropdown"],
+  .app-main[class*="theme-"] [class*="drawer"],
+  .app-main[class*="theme-"] [class*="table-wrap"],
+  .app-main[class*="theme-"] [class*="widget"],
+  .app-main[class*="theme-"] [class*="list-item"],
+  .app-main[class*="theme-"] [class*="row-item"],
+  .app-main[class*="theme-"] .filter-select,
+  .app-main[class*="theme-"] .btn-sm-secondary,
+  .app-main[class*="theme-"] .btn-3d-secondary,
+  .app-main[class*="theme-"] select,
+  .app-main[class*="theme-"] input,
+  .app-main[class*="theme-"] textarea,
+  .app-main[class*="theme-"] table,
+  .app-main[class*="theme-"] [style*="--bg-card"],
+  .app-main[class*="theme-"] [style*="--bg-surface"],
+  .app-main[class*="theme-"] [style*="--bg-muted"],
+  .app-main[class*="theme-"] [style*="--bg-canvas"],
+  .app-main[class*="theme-"] [style*="background:#fff"],
+  .app-main[class*="theme-"] [style*="background: #fff"],
+  .app-main[class*="theme-"] [style*="background:white"],
+  .app-main[class*="theme-"] [style*="background: white"],
+  .app-main[class*="theme-"] [style*="background:#f8fafc"],
+  .app-main[class*="theme-"] [style*="background:#f1f5f9"]) {
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  color: #0f172a;
+}
+
+/* dark glass cards keep light text */
+.app-main[class*="theme-"] .resource-card-v3,
+.app-main[class*="theme-"] .hw-quest-card-thumb-wrap {
+  --text-main: #f8fafc; --text-secondary: #dbe4f0; --text-muted: #b6c3d6; --text-subtle: #9fb0c6;
+  color: #f8fafc;
+}
+
+/* --------------------------------------------------------------------------
+   3. STUDENT DIRECTORY CARDS
+   -------------------------------------------------------------------------- */
+/* name + XP: stack them so the full name is readable (no more "Bahriye Ada…") */
+.student-name-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+.student-name {
+  min-height: 0 !important;
+  font-size: 1rem; line-height: 1.25; font-weight: 800;
+  -webkit-line-clamp: 3; line-clamp: 3;
+  overflow-wrap: anywhere; word-break: normal; hyphens: auto;
+}
+.student-name-row .xp-clickable-badge { align-self: flex-start; }
+
+/* header row: wrap instead of overlapping the companion tag */
+.card-header-flex { flex-wrap: wrap; row-gap: 6px; }
+.card-header-flex .companion-tag { max-width: 100%; }
+.card-pills-cluster { flex-wrap: wrap; justify-content: flex-end; row-gap: 4px; }
+.pill-arch-box, .pill-streak-box { font-size: 0.75rem; }
+
+/* small icon buttons were nearly invisible on white */
+.btn-card-pencil, .btn-card-more-3dots { color: #475569 !important; }
+.btn-card-pencil:hover, .btn-card-more-3dots:hover { color: #0f172a !important; background: #eef2f7; }
+
+/* progress labels: bigger and darker */
+.evolution-progress-rail > div:first-child { font-size: 0.8rem !important; color: #475569 !important; }
+
+/* --------------------------------------------------------------------------
+   4. TOAST WITH ACTION (Undo)
+   -------------------------------------------------------------------------- */
+.toast-action-btn {
+  margin-left: 8px; padding: 4px 12px; border-radius: 8px; border: 0;
+  background: #f59e0b; color: #1c1203; font: inherit; font-weight: 800; cursor: pointer;
+  border-bottom: 3px solid #b45309;
+}
+.toast-action-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+/* --------------------------------------------------------------------------
+   5. MONSTER STUDIO (customizer) — no hidden columns on mid-size screens
+   -------------------------------------------------------------------------- */
+#avatar-category-nav { flex-wrap: wrap !important; overflow: visible !important; }
+#modal-avatar-selector .modal-dialog { max-width: min(1180px, 96vw); }
+@media (min-width: 901px) and (max-width: 1180px) {
+  #modal-avatar-selector .monster-customizer-grid { grid-template-columns: minmax(0, 1fr) 300px !important; }
+  #modal-avatar-selector .monster-customizer-grid > :nth-child(3) { grid-column: 1 / -1; }
+}
+/* the preview stage used to shrink (and the glow disk landed beside the monster) because both sat in one flex row */
+#avatar-preview-box { position: relative; overflow: hidden; }
+#avatar-preview-box .monster-composite-stage { flex: none; }
+#avatar-preview-box .pedestal-disk { display: none; }
+
+/* locked items: dim the picture, but keep the "unlocks at Level N" label clear and readable */
+.monster-item-card.is-locked > :not(.monster-item-lock-pill) { opacity: 0.5; filter: grayscale(0.6); }
+.monster-item-card.is-locked { background: #f8fafc; border-style: dashed; }
+.monster-item-card.is-locked .monster-item-lock-pill {
+  font-size: 0.74rem; padding: 2px 7px; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; opacity: 1; filter: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. HEADER ICONS ON THE DARK THEMED TOP BAR
+   -------------------------------------------------------------------------- */
+body[class*="theme-"] .mobile-nav-toggle-btn { color: #f8fafc !important; }
+body[class*="theme-"] .brand-logo-btn { color: #f8fafc; }
+
+/* --------------------------------------------------------------------------
+   7. CLASS MANAGEMENT PAGE (these classes had no styles at all)
+   -------------------------------------------------------------------------- */
+.classes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; margin-top: 22px; }
+.class-card {
+  background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 18px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  --text-main: #0f172a; --text-muted: #64748b; color: #0f172a;
+}
+.class-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.class-card-name { font-size: 1.25rem; font-weight: 800; line-height: 1.2; color: #0f172a; }
+.class-card-sub { font-size: 0.85rem; color: #64748b; margin-top: 3px; }
+.class-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.class-stat-box { display: flex; flex-direction: column; align-items: center; gap: 2px; background: #f1f5f9; border-radius: 12px; padding: 10px 4px; }
+.class-stat-num { font-size: 1.35rem; font-weight: 800; color: #0f172a; line-height: 1.1; }
+.class-stat-lbl { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }
+.class-card-actions { display: flex; gap: 8px; margin-top: auto; align-items: stretch; }
+.btn-card-more {
+  min-width: 44px; border-radius: 12px; border: 1px solid #cbd5e1; background: #ffffff;
+  font-weight: 900; font-size: 1.1rem; color: #334155; cursor: pointer;
+}
+.btn-card-more:hover { background: #f1f5f9; }
+.class-card-actions .card-more-menu-wrap { flex: none; display: flex; }
+.class-card-actions .btn-card-more {
+  position: static !important; width: 44px; height: auto; min-height: 40px;
+  background: #ffffff !important; color: #334155 !important; border: 1px solid #cbd5e1 !important; backdrop-filter: none;
+}
+.class-card-actions .card-dropdown-menu { right: 0; left: auto; }
+
+/* a few remaining low-contrast spots */
+.xp-num, .student-xp-pill-clickable { color: #b45309 !important; }
+button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
+.btn-award-badge-3d { background: #059669; border-bottom-color: #047857; }
+.app-main a.btn-sm-secondary[style*="#34d399"], .app-main a.btn-sm-secondary[style*="rgb(52, 211, 153)"] { color: #047857 !important; }
+.app-main a.btn-sm-secondary[style*="#38bdf8"], .app-main a.btn-sm-secondary[style*="rgb(56, 189, 248)"] { color: #0369a1 !important; }
+.badge[style*="background:#10b981"], .badge[style*="background: #10b981"] { background: #047857 !important; }
+.role-title { color: #6d28d9 !important; }
+
+/* --------------------------------------------------------------------------
+   8. EMPTY STATES + SPACE FOR THE FLOATING TOOLBAR
+   -------------------------------------------------------------------------- */
+.empty-state-box { text-align: center; padding: 36px 16px; color: #475569; }
+.empty-state-icon { font-size: 2.4rem; margin-bottom: 8px; }
+.empty-state-title { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+.empty-state-text { font-size: 0.9rem; margin-top: 4px; max-width: 420px; margin-inline: auto; }
+.app-main { padding-bottom: 96px; }          /* the floating Toolkit/Timer bar no longer hides the last items */
+
+/* --------------------------------------------------------------------------
+   9. PHONE-SIZED TOP BAR (nothing overlaps or runs off the screen)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .header-inner { padding: 0 10px; gap: 6px; }
+  .brand-section { gap: 6px; flex: 0 0 auto; }
+  .role-pill-group { display: none; }
+  .header-right { gap: 6px; margin-left: auto; min-width: 0; }
+  .class-switcher-select { max-width: 112px; font-size: 0.8rem; }
+  .btn-header-create { padding: 6px 12px 7px; }
+  .btn-header-create > svg { display: none; }
+  .header-right > .icon-circle-btn { display: none; }          /* search + lock shortcuts: available from the menu */
+  .user-chip { padding: 2px; }
+  #global-cloud-sync-btn { padding: 6px 8px; }
+}
+@media (max-width: 640px) {
+  .class-switcher-select { max-width: 92px; padding-inline: 6px; }
+  .btn-header-create { padding: 6px 14px 7px; }
+  .btn-header-create > span { font-size: 0; }                    /* "+ Create" becomes a compact "+" on phones */
+  .btn-header-create > span::before { content: "+"; font-size: 1.25rem; line-height: 1; }
+  .btn-header-create { min-width: 44px; justify-content: center; }
+}
+
+/* --------------------------------------------------------------------------
+   10. ACCESSIBILITY BASICS
+   -------------------------------------------------------------------------- */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible { outline: 3px solid #38bdf8; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
