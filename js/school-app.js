@@ -1190,6 +1190,7 @@
     speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' }
   };
   window.MONSTER_ART = MONSTER_ART;
+  window.getIllustratedMonsterUrl = function (baseColor, mState) { return getIllustratedMonsterUrl(baseColor, mState); };
   function getIllustratedMonsterUrl(baseColor, mState) {
     const color = String(baseColor || 'blue').toLowerCase().replace(/^body-/, '');
     const species = MONSTER_ART.speciesByColor[color] || 'aquafind';

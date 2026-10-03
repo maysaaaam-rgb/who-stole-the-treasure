@@ -329,6 +329,13 @@
       spriteMarkup = '<div style="font-size: 5rem;">🐾✨</div>';
     }
 
+    // Prefer the illustrated monster art (species follows the student's chosen colour)
+    try {
+      const prof = root.store && root.store.getMonsterProfile ? root.store.getMonsterProfile(std.id) : null;
+      const artUrl = root.getIllustratedMonsterUrl ? root.getIllustratedMonsterUrl((prof && prof.baseColor) || std.color || 'blue', { stageKey: stageKey }) : '';
+      if (artUrl) spriteMarkup = '<img src="' + artUrl + '" alt="" style="width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.35));">';
+    } catch (e) { /* keep the drawn monster */ }
+
     const overlay = document.createElement('div');
     overlay.id = 'evolution-ceremony-overlay';
     overlay.innerHTML = '' +
