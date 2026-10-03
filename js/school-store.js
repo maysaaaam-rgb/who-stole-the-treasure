@@ -2169,10 +2169,8 @@
       }
     }
 
-    // Prevent level regression (Lock Level Floor at current level or minimum 3 for hatched monsters)
-    const currentSaved = Number(s.level) || 1;
-    const finalLevel = Math.max(currentSaved, calculatedLevel);
-    const finalTier = EVOLUTION_THRESHOLDS.find(t => t.level === finalLevel) || EVOLUTION_THRESHOLDS[EVOLUTION_THRESHOLDS.length - 1];
+    // Level derives purely from XP (Term 2 reset cancelled — no stale level floors)
+    const finalLevel = calculatedLevel;
 
     const progressPct = finalLevel >= 7 || nextThreshold === Infinity
       ? 100
@@ -2183,8 +2181,8 @@
 
     return {
       level: finalLevel,
-      stageName: finalLevel > calculatedLevel ? (s.stageName || stageName) : stageName,
-      levelName: finalLevel > calculatedLevel ? (s.stageName || stageName) : stageName,
+      stageName: stageName,
+      levelName: stageName,
       isEgg: finalLevel < 3,
       spriteType: spriteType,
       lifetimeXP: lifetimeXP,
@@ -2439,292 +2437,73 @@
     }
   }
 
-  function archiveAndResetXP() {
-    const rosterKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'];
-    const allUpdatedMap = new Map();
+  // =========================================================================
+  // TERM 2 RESET CANCELLED — ARCHIVED XP RESTORATION (IDEMPOTENT, SAFE TO RE-RUN)
+  // Folds archivedXP / archived_xp back into active xp so teachers can edit a
+  // single XP balance. Guards against cloud-reverted duplicates (xp === archivedXP).
+  // =========================================================================
+  const LEGACY_MIGRATION_KEYS = [
+    'term2_migration_v1', 'term2_migration_v2', 'term2_migration_v3',
+    'term2_migration_completed_v1', 'term2_migration_completed_locked_v3',
+    'term2_migration_permanent_lock_v1', 'term2_migration_permanent_lock_v5',
+    'term2_migration_master_v1'
+  ];
 
-    function processStudent(student) {
-      if (!student) return student;
-      const currentActive = Number(student.xp) || 0;
-
-      // 1. Move active XP into archive ledger (if activeXP > 0 or archivedXP unset)
-      student.archivedXP = (Number(student.archivedXP ?? student.archived_xp ?? 0)) + currentActive;
-      student.archived_xp = student.archivedXP;
-      student.xp = 0; // Force active points to 0 for Term 2
-
-      // 2. Lock current level & stage so monsters never revert
-      const stage = getStudentStage(student);
-      student.level = stage.level;
-      student.stageName = stage.stageName;
-      student.levelName = stage.stageName;
-      student.isEgg = stage.isEgg;
-      if (stage.level >= 3) student.isHatched = true;
-      student.progressPct = stage.progressPct;
-      student.remainingXP = stage.xpToNext;
-      student.xpToNext = stage.xpToNext;
-
-      // 3. Record audit trail entry if active points were archived
-      if (currentActive > 0) {
-        if (!student.xpHistory) student.xpHistory = [];
-        student.xpHistory.unshift({
-          id: "archive_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-          amount: currentActive,
-          type: "season_archive",
-          reason: `Term 1 Archived: ${currentActive} XP moved to cold storage`,
-          date: new Date().toLocaleDateString("en-GB"),
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          balanceAfter: 0
-        });
-        student.xp_history = student.xpHistory;
-      }
-
-      if (student.id) {
-        allUpdatedMap.set(String(student.id), student);
-      }
-      return student;
+  function restoreStudentArchivedXP(student) {
+    if (!student || typeof student !== 'object') return false;
+    const arch = Math.max(0, Number(student.archivedXP ?? student.archived_xp ?? 0) || 0);
+    const act = Math.max(0, Number(student.xp) || 0);
+    const changed = arch > 0 || ('archived_xp' in student);
+    if (arch > 0) {
+      // Cloud-reverted rows duplicated the archive into xp (e.g. 330/330) — don't double count.
+      student.xp = (act === arch) ? arch : arch + act;
+      student.totalXP = student.xp;
+      student.xpArchiveFolded = true;
     }
-
-    // Process all roster keys in localStorage immediately (Local-First)
-    if (typeof localStorage !== 'undefined') {
-      rosterKeys.forEach(k => {
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const list = JSON.parse(raw);
-            if (Array.isArray(list)) {
-              const updatedList = list.map(processStudent);
-              localStorage.setItem(k, JSON.stringify(updatedList));
-            }
-          }
-        } catch (e) {
-          console.error('[Term2 Migration] Error updating roster key ' + k, e);
-        }
-      });
-
-      // Update eaa_master_school_v6
-      try {
-        const masterRaw = localStorage.getItem('eaa_master_school_v6');
-        if (masterRaw) {
-          const masterObj = JSON.parse(masterRaw);
-          if (masterObj && Array.isArray(masterObj.students)) {
-            masterObj.students.forEach(s => {
-              processStudent(s);
-            });
-            localStorage.setItem('eaa_master_school_v6', JSON.stringify(masterObj));
-          }
-        }
-      } catch (e) {}
-    }
-
-    // Update in-memory AdventureAcademy.students
-    if (typeof window !== 'undefined' && window.AdventureAcademy) {
-      if (Array.isArray(window.AdventureAcademy.students)) {
-        window.AdventureAcademy.students.forEach(s => processStudent(s));
-      } else {
-        window.AdventureAcademy.students = Array.from(allUpdatedMap.values());
-      }
-    }
-
-    // Update window.schoolStore.state.students
-    if (typeof window !== 'undefined' && window.schoolStore && window.schoolStore.state) {
-      if (Array.isArray(window.schoolStore.state.students)) {
-        window.schoolStore.state.students.forEach(s => {
-          processStudent(s);
-        });
-      }
-      if (typeof window.schoolStore.saveState === 'function') {
-        window.schoolStore.saveState();
-      }
-      if (typeof window.schoolStore.notify === 'function') {
-        window.schoolStore.notify('students', window.schoolStore.state.students);
-      }
-    }
-
-    const MIGRATION_KEY = 'term2_migration_v3';
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem(MIGRATION_KEY, 'true');
-        localStorage.setItem('term2_migration_v2', 'true');
-        localStorage.setItem('term2_migration_v1', 'true');
-      } catch (e) {}
-    }
-
-    // Re-render UI immediately
-    if (typeof renderStudentRoster === 'function') renderStudentRoster();
-    else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
-    else if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
-
-    // Isolated non-blocking background push to Supabase that never blocks UI or throws:
-    const allStudents = Array.from(allUpdatedMap.values());
-    if (allStudents.length > 0) {
-      setTimeout(() => {
-        try {
-          const syncFn = (typeof safeBackgroundSupabaseSync === 'function' ? safeBackgroundSupabaseSync : null) ||
-            (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function' ? window.safeBackgroundSupabaseSync : null) ||
-            (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.safeBackgroundSupabaseSync === 'function' ? AdventureSupabase.safeBackgroundSupabaseSync : null);
-          if (syncFn) {
-            syncFn(allStudents);
-          }
-        } catch (err) {
-          console.warn('[Term2 Migration] Background sync error ignored:', err);
-        }
-      }, 100);
-    }
-
-    return allStudents;
+    student.archivedXP = 0;
+    delete student.archived_xp;
+    evaluateMonsterStage(student);
+    return changed;
   }
 
-  // =========================================================================
-  // FAILSAFE LOCAL-FIRST TERM 2 MIGRATION (LOCKED ONCE - NEVER WIPES NEW XP)
-  // =========================================================================
-  const MIGRATION_LOCK = "term2_migration_master_v1";
-  const TERM2_MIGRATION_FLAG = MIGRATION_LOCK;
-  const MIGRATION_FLAG = MIGRATION_LOCK;
-
-  function initMasterDataStore() {
+  function restoreArchivedXP() {
     if (typeof localStorage === 'undefined') return [];
-    const isMigrated = localStorage.getItem(MIGRATION_LOCK) === "true";
-
-    let students = [];
-    try {
-      students = JSON.parse(localStorage.getItem('adventure_students')) || [];
-    } catch (e) {
-      students = [];
-    }
-    if (!Array.isArray(students) || students.length === 0) {
-      if (typeof window !== 'undefined' && Array.isArray(window.AdventureAcademy?.students) && window.AdventureAcademy.students.length > 0) {
-        students = window.AdventureAcademy.students;
-      }
-    }
-    if (!Array.isArray(students) || students.length === 0) {
-      localStorage.setItem(TERM2_MIGRATION_FLAG, "true");
-      return [];
-    }
-
-    // SELF-HEALING DATA CLEANER: Run ONCE during migration or verify integrity without wiping XP
-    let dataChanged = false;
-
-    students.forEach(s => {
-      // A. Strict Number Typing
-      const activeXP = (typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0;
-      const archivedXP = (typeof s.archivedXP === 'number' && !isNaN(s.archivedXP))
-        ? s.archivedXP
-        : (typeof s.archived_xp === 'number' && !isNaN(s.archived_xp) ? s.archived_xp : 0);
-
-      // One-time archival of legacy unarchived XP:
-      if (!isMigrated) {
-        if (activeXP > 0 && archivedXP === 0) {
-          s.archivedXP = activeXP;
-          s.archived_xp = activeXP;
-          s.xp = 0;
-          dataChanged = true;
-        }
-      }
-
-      // B. Reconcile Ahmet & Alya if activeXP was mistakenly cloned from archivedXP
-      const sName = s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
-      if (sName && (sName.includes("Ahmet") || sName.includes("Alya"))) {
-        if (s.xp === s.archivedXP && s.archivedXP > 0 && !isMigrated) {
-          s.xp = 0;
-          dataChanged = true;
-        }
-      }
-
-      // C. Reconcile Elisa's Corrupt Level 7 (340 Total XP must be Level 3)
-      if (sName && sName.includes("Elisa")) {
-        const totalXP = (s.xp || 0) + (s.archivedXP || s.archived_xp || 0);
-        if (totalXP < 500 && s.level > 3) {
-          s.level = 3;
-          s.stageName = "Level 3 • Baby Monster";
-          s.levelName = "Level 3 • Baby Monster";
-          s.isEgg = false;
-          dataChanged = true;
-        }
-      }
-
-      // D. Fix Elif Su Yarar String Mismatch ("Lvl 3 • Mystery Egg")
-      if (s.level >= 3 && s.stageName && s.stageName.includes("Mystery Egg")) {
-        s.stageName = "Level 3 • Baby Monster";
-        s.levelName = "Level 3 • Baby Monster";
-        s.isEgg = false;
-        dataChanged = true;
-      }
-
-      // E. Ensure Hatched Level Floor (Level >= 3 for students with XP)
-      if (s.level < 3 && ((s.archivedXP || 0) > 0 || (s.xp || 0) > 0)) {
-        s.level = 3;
-        s.stageName = "Level 3 • Baby Monster";
-        s.levelName = "Level 3 • Baby Monster";
-        s.isEgg = false;
-        dataChanged = true;
+    const rosterKeys = ['adventure_students', 'students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'];
+    let restored = [];
+    rosterKeys.forEach(k => {
+      try {
+        const raw = localStorage.getItem(k);
+        if (!raw) return;
+        const list = JSON.parse(raw);
+        if (!Array.isArray(list)) return;
+        let dirty = false;
+        list.forEach(st => { if (restoreStudentArchivedXP(st)) dirty = true; });
+        if (dirty) localStorage.setItem(k, JSON.stringify(list));
+        if (k === 'adventure_students') restored = list;
+      } catch (err) {
+        console.warn('[XP Restore] Skipped roster key ' + k, err);
       }
     });
-
-    if (!isMigrated || dataChanged) {
-      localStorage.setItem('adventure_students', JSON.stringify(students));
-      localStorage.setItem(TERM2_MIGRATION_FLAG, "true");
-      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const arr = JSON.parse(raw);
-            if (Array.isArray(arr)) {
-              const synced = arr.map(st => {
-                const u = students.find(x => String(x.id) === String(st.id) || String(x.studentIdNumber) === String(st.studentIdNumber));
-                return u ? Object.assign({}, st, u) : st;
-              });
-              localStorage.setItem(k, JSON.stringify(synced));
-            }
-          }
-        } catch (e) {}
-      });
+    LEGACY_MIGRATION_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (err) {} });
+    if (typeof window !== 'undefined' && window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
+      let dirty = false;
+      window.schoolStore.state.students.forEach(st => { if (restoreStudentArchivedXP(st)) dirty = true; });
+      if (dirty && typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
     }
-
-    if (typeof window !== 'undefined') {
-      if (window.AdventureAcademy) window.AdventureAcademy.students = students;
-      if (window.schoolStore && window.schoolStore.state && Array.isArray(window.schoolStore.state.students)) {
-        window.schoolStore.state.students.forEach(s => {
-          const u = students.find(x => String(x.id) === String(s.id) || String(x.studentIdNumber) === String(s.studentIdNumber));
-          if (u) Object.assign(s, u);
-        });
-        if (typeof window.schoolStore.saveState === 'function') window.schoolStore.saveState();
-      }
-    }
-
-    if (dataChanged) {
-      if (typeof renderStudentRoster === 'function') renderStudentRoster();
-      else if (typeof window !== 'undefined' && typeof window.renderStudentRoster === 'function') window.renderStudentRoster();
-      if (typeof window !== 'undefined' && typeof window.renderCurrentView === 'function') window.renderCurrentView();
-
-      // Silent background push
-      if (typeof safeBackgroundSupabaseSync === 'function') {
-        safeBackgroundSupabaseSync(students);
-      } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
-        window.safeBackgroundSupabaseSync(students);
-      }
-    }
-
-    return students;
+    return restored;
   }
 
-  const initTerm2DataStore = initMasterDataStore;
-
-  function checkAndRunMigrationOnce() {
-    return initMasterDataStore();
+  // Legacy entry points kept as harmless aliases so older callers never throw
+  // and can never zero out XP again.
+  function archiveAndResetXP() {
+    console.warn('[XP Restore] Term 2 XP archival has been cancelled; archiveAndResetXP() is now a no-op restore.');
+    return restoreArchivedXP();
   }
-
-  function autoRunTerm2Migration() {
-    return initMasterDataStore();
-  }
-
-  function executeLocalTerm2Reset(force = false) {
-    if (!force && typeof localStorage !== 'undefined' && localStorage.getItem(MIGRATION_FLAG) === "true") {
-      console.log("[Term 2 Reset] Migration already completed and locked (" + MIGRATION_FLAG + "). Skipping automatic wipe.");
-      return (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-        (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
-    }
-    return checkAndRunMigrationOnce();
-  }
+  const initMasterDataStore = restoreArchivedXP;
+  const initTerm2DataStore = restoreArchivedXP;
+  const checkAndRunMigrationOnce = restoreArchivedXP;
+  const autoRunTerm2Migration = restoreArchivedXP;
+  const executeLocalTerm2Reset = restoreArchivedXP;
 
   // Quick Direct Edit fallback
   function promptDirectXPEdit(studentId) {
@@ -2734,7 +2513,7 @@
     if (!st) return;
 
     const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
-    const input = prompt(`Enter new Term 2 XP for ${displayName}:`, st.xp || 0);
+    const input = prompt(`Enter new XP total for ${displayName}:`, st.xp || 0);
     if (input === null || input.trim() === '') return;
 
     const newXP = Math.max(0, parseInt(input.trim(), 10) || 0);
@@ -2805,93 +2584,12 @@
     }
   }
 
-  function cleanupStaleXP() {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem(TERM2_MIGRATION_FLAG) === "true") {
-      // Once Term 2 migration is locked, NEVER wipe student XP
-      return;
-    }
-    const students = (typeof window !== 'undefined' && window.AdventureAcademy?.students) || 
-      (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('adventure_students') || '[]') : []);
-    if (!students || students.length === 0) return;
-
-    let changed = false;
-
-    students.forEach(s => {
-      const act = Number(s.xp) || 0;
-      const arch = Number(s.archivedXP ?? s.archived_xp ?? 0);
-
-      // If active XP matches archived XP exactly, it was erroneously reverted from cloud (e.g., Alya 330/330, Ahmet 150/150)
-      if (act > 0 && arch > 0 && act === arch) {
-        s.xp = 0;
-        s.totalXP = 0;
-        changed = true;
-      }
-      // Fix "Lvl 3 • Mystery Egg" glitch (Elif Su Yarar)
-      if ((Number(s.level) === 3 || s.level === '3') && s.stageName && s.stageName.includes("Mystery Egg")) {
-        s.stageName = "Level 3 • Baby Monster";
-        s.levelName = "Level 3 • Baby Monster";
-        s.isEgg = false;
-        s.isHatched = true;
-        changed = true;
-      }
-      if ((Number(s.level) || 3) < 3) {
-        s.level = 3;
-        s.stageName = "Level 3 • Baby Monster";
-        s.levelName = "Level 3 • Baby Monster";
-        s.isEgg = false;
-        s.isHatched = true;
-        changed = true;
-      }
-    });
-
-    if (changed && typeof localStorage !== 'undefined') {
-      localStorage.setItem('adventure_students', JSON.stringify(students));
-      ['students', 'aa_roster_grade_4b', 'aa_roster_grade_4a', 'eaa_cadet_roster_v2'].forEach(k => {
-        try {
-          const raw = localStorage.getItem(k);
-          if (raw) {
-            const arr = JSON.parse(raw);
-            if (Array.isArray(arr)) {
-              const synced = arr.map(st => {
-                const u = students.find(x => String(x.id) === String(st.id) || String(x.studentIdNumber) === String(st.studentIdNumber));
-                if (u) return Object.assign({}, st, u);
-                return st;
-              });
-              localStorage.setItem(k, JSON.stringify(synced));
-            }
-          }
-        } catch (e) {}
-      });
-
-      if (typeof window !== 'undefined') {
-        if (window.AdventureAcademy) window.AdventureAcademy.students = students;
-        if (typeof forcePushTerm2ResetToCloud === 'function') {
-          forcePushTerm2ResetToCloud();
-        } else if (typeof window.forcePushTerm2ResetToCloud === 'function') {
-          window.forcePushTerm2ResetToCloud();
-        } else if (typeof AdventureSupabase !== 'undefined' && typeof AdventureSupabase.forcePushTerm2ResetToCloud === 'function') {
-          AdventureSupabase.forcePushTerm2ResetToCloud();
-        }
-      }
-    }
-  }
+  // cleanupStaleXP previously zeroed "duplicate" XP; restoration now handles that safely.
+  const cleanupStaleXP = restoreArchivedXP;
 
   if (typeof localStorage !== 'undefined') {
+    try { restoreArchivedXP(); } catch (err) { console.warn('[XP Restore] init error', err); }
     recalculateAllStudents();
-    try {
-      initMasterDataStore();
-    } catch (e) {}
-    try {
-      cleanupStaleXP();
-    } catch (e) {}
-  }
-
-  if (typeof document !== 'undefined') {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initMasterDataStore);
-    } else {
-      initMasterDataStore();
-    }
   }
 
   // Global AdventureAcademy Hub & Store Bridge
@@ -10359,6 +10057,8 @@
       if (this.state.students) {
         this.state.students.forEach(s => {
           if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
+          // Term 2 reset cancelled: fold any archived XP back into the active balance.
+          restoreStudentArchivedXP(s);
         });
       }
       this.syncAllStudentLevels();
@@ -11082,7 +10782,15 @@
         'eaa_master_school_v4',
         'eaa_master_school_v5',
         'adventure_students_backup',
-        'offline_queue'
+        'offline_queue',
+        'term2_migration_v1',
+        'term2_migration_v2',
+        'term2_migration_v3',
+        'term2_migration_completed_v1',
+        'term2_migration_completed_locked_v3',
+        'term2_migration_permanent_lock_v1',
+        'term2_migration_permanent_lock_v5',
+        'term2_migration_master_v1'
       ];
       staleKeys.forEach(key => {
         try {
@@ -16554,37 +16262,30 @@
           remoteMap.set(remoteStudent.id, remoteStudent);
 
           const localIdx = this.state.students.findIndex(s => s.id === remoteStudent.id);
-          const isTerm2Migrated = (typeof localStorage !== 'undefined' && localStorage.getItem('term2_migration_v3') === 'true');
+          const remoteArch = Math.max(0, Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0) || 0);
+          const remoteAct = Math.max(0, Number(remoteStudent.xp) || 0);
+          // Term 2 reset cancelled: a cloud row may still carry a stale archive. Fold it, never double count.
+          const remoteFolded = remoteArch > 0 ? (remoteAct === remoteArch ? remoteArch : remoteArch + remoteAct) : remoteAct;
 
           if (localIdx !== -1) {
             const local = this.state.students[localIdx];
-            let mergedArchived = Math.max(Number(local.archivedXP ?? local.archived_xp ?? 0), Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0));
-
-            // Term 2 Protection: Local state is authoritative for active Term 2 XP.
-            // Never let unarchived remote legacy XP override local active XP (like Alya's 330 or Ahmet's 150).
-            let mergedXP = Number(local.xp) || 0;
-            // If remote student has archived XP, capture it
-            if (Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0) > mergedArchived) {
-              mergedArchived = Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0);
+            // Local is authoritative so teacher edits (up or down) stick. Only absorb a stale cloud archive once.
+            let mergedXP = Math.max(0, Number(local.xp) || 0);
+            let folded = !!local.xpArchiveFolded;
+            if (remoteArch > 0 && !folded) {
+              mergedXP = Math.max(mergedXP, remoteFolded);
+              folded = true;
             }
 
-            const finalLevel = Math.max(Number(local.level) || 3, Number(remoteStudent.level) || 3, 3);
-            let finalStageName = local.stageName;
-            if (!finalStageName || finalStageName.includes("Mystery Egg")) {
-              finalStageName = finalLevel >= 4 ? 'Level 4 • Growing Monster' : 'Level 3 • Baby Monster';
-            }
-
-            this.state.students[localIdx] = Object.assign({}, local, remoteStudent, {
+            const mergedStudent = Object.assign({}, local, remoteStudent, {
               xp: mergedXP,
               totalXP: mergedXP,
-              archivedXP: mergedArchived,
-              archived_xp: mergedArchived,
-              level: finalLevel,
-              stageName: finalStageName,
-              levelName: finalStageName,
-              isEgg: false,
-              isHatched: true
+              archivedXP: 0,
+              xpArchiveFolded: folded
             });
+            delete mergedStudent.archived_xp;
+            evaluateMonsterStage(mergedStudent);
+            this.state.students[localIdx] = mergedStudent;
 
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
               this.state.monsterProfiles[remoteStudent.id] = Object.assign(
@@ -16595,28 +16296,15 @@
             }
             modified = true;
           } else {
-            // Student added on another device: ingest into local state
-            let mergedXP = Number(remoteStudent.xp) || 0;
-            let mergedArchived = Number(remoteStudent.archivedXP ?? remoteStudent.archived_xp ?? 0);
-            if (isTerm2Migrated && mergedXP > 0 && mergedArchived === 0) {
-              mergedArchived = mergedXP;
-              mergedXP = 0;
-            }
-
+            // Student added on another device: ingest into local state with archive folded in
             const sCopy = Object.assign({}, remoteStudent, {
-              xp: mergedXP,
-              archivedXP: mergedArchived,
-              archived_xp: mergedArchived
+              xp: remoteFolded,
+              totalXP: remoteFolded,
+              archivedXP: 0,
+              xpArchiveFolded: true
             });
-
-            if (typeof getStudentStage === 'function') {
-              const stage = getStudentStage(sCopy);
-              sCopy.level = Math.max(Number(sCopy.level) || 1, stage.level);
-              sCopy.stageName = stage.stageName;
-              sCopy.levelName = stage.stageName;
-              sCopy.isEgg = stage.isEgg;
-              if (sCopy.level >= 3) sCopy.isHatched = true;
-            }
+            delete sCopy.archived_xp;
+            evaluateMonsterStage(sCopy);
 
             this.state.students.push(sCopy);
             if (remoteStudent.monsterProfile && this.state.monsterProfiles) {
