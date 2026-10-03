@@ -338,14 +338,14 @@
       cssClass: "theme-alice-wonderland",
       coverImage: "assets/themes/grade-4/alice-wonderland.jpeg",
       title: "Wonderland Academy",
-      subtitle: "Curious Minds & Mad Riddles • Term 2"
+      subtitle: "Curious Minds & Mad Riddles"
     },
     grade3: {
       pattern: /3[A-Za-z]|Grade\s*3/i,
       cssClass: "theme-korean-traditions",
       coverImage: "assets/themes/grade-3/korean-festival.jpeg",
       title: "Korean Cultural Plaza",
-      subtitle: "Traditional Festivals & Folk Games • Term 2"
+      subtitle: "Traditional Festivals & Folk Games"
     }
   };
 
@@ -454,7 +454,7 @@
 
         <div class="thematic-char-info" style="flex:1;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
-            <span class="thematic-tag">Term 2 Companion</span>
+            <span class="thematic-tag">Class Companion</span>
             <button type="button" class="btn-change-char-role" onclick="openCharacterIconPicker('${student.id}')">Swap Role ▾</button>
           </div>
           <h4 style="color: ${char.color}; margin: 2px 0 0 0; font-size: 1.15rem; font-weight: 800;">${char.name}</h4>

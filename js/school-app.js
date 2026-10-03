@@ -9,7 +9,7 @@
 
 
   // Toast Notification System
-  function showNotification(message, type = 'success') {
+  function showNotification(message, type = 'success', opts) {
     if (typeof document === 'undefined' || !document.body) {
       console.log('[Notification]', message);
       return;
@@ -22,6 +22,12 @@
       document.body.appendChild(toast);
     }
     toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+    if (opts && opts.actionLabel && typeof opts.onAction === 'function') {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'toast-action-btn'; btn.textContent = opts.actionLabel;
+      btn.onclick = function (ev) { ev.stopPropagation(); toast.style.opacity = '0'; toast.style.pointerEvents = 'none'; try { opts.onAction(); } catch (e) { console.warn(e); } };
+      toast.appendChild(btn);
+    }
     toast.style.opacity = '1';
     toast.style.pointerEvents = 'auto';
     toast.style.transform = 'translateY(0)';
@@ -34,7 +40,7 @@
           toast.style.pointerEvents = 'none';
           toast.style.transform = 'translateY(10px)';
         }
-      }, 3200);
+      }, (opts && opts.duration) || 3200);
     }
   }
   window.showNotification = showNotification;
@@ -1271,8 +1277,8 @@
             '<span class="role-edit">✎</span>' +
           '</div>' +
           '<div class="card-pills-cluster card-pills-right">' +
-            '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-            '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+            (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+            (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
             '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Edit Student XP">✏️</button>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
               '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
@@ -2633,7 +2639,7 @@
           ((typeof renderStudentThemeBadge === 'function') ? renderStudentThemeBadge(student) : '') +
           '<div class="kpi-grid" style="margin-bottom:16px;">' +
             '<div class="kpi-card" style="cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
-              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Active XP (Term 2) <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
+              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Active XP <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
               '<span class="kpi-val">⭐ ' + (Number(student.xp) || 0) + ' XP</span>' +
               '<span class="kpi-sub">Cold Storage: 🗄️ ' + (student.archivedXP || student.archived_xp || 0) + ' ARCH</span>' +
             '</div>' +
@@ -3416,8 +3422,8 @@
                       '</div>' +
                     '</div>' +
                     '<div class="card-pills-cluster card-pills-right">' +
-                      '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-                      '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+                      (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+                      (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
                       '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                         '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -3845,8 +3851,8 @@
               '</div>' +
             '</div>' +
             '<div class="card-pills-cluster card-pills-right">' +
-              '<span class="pill-arch-box arch-pill" title="Cold Storage Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' ARCH</span>' +
-              '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + 'd</span>' +
+              (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+              (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
               '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
                 '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
@@ -11922,7 +11928,24 @@ window.switchClassroomSubTab = function(subTab) {
 
     const studentName = s.firstName || s.name || 'Student';
     if (typeof showNotification === 'function') {
-      showNotification('+' + parsedAmount + ' XP awarded to ' + studentName + '!');
+      showNotification('+' + parsedAmount + ' XP awarded to ' + studentName + '!', 'success', {
+        actionLabel: 'Undo', duration: 6000,
+        onAction: function () {
+          if (storeInstance && typeof storeInstance.giveXP === 'function') {
+            storeInstance.giveXP(s.id || studentId, -parsedAmount, 'Undo quick award', 'Teacher', { category: 'needs_work', icon: '↩️' });
+          } else {
+            s.xp = Math.max(0, (Number(s.xp) || 0) - parsedAmount); s.totalXP = s.xp;
+          }
+          const c = document.querySelector('[data-student-id="' + (s.id || studentId) + '"]');
+          if (c) {
+            const n = c.querySelector('.xp-num'); if (n) n.innerText = (s.xp || 0) + ' XP';
+            const f = c.querySelector('.student-xp-progress-fill'); const ms = storeInstance && storeInstance.calculateMonsterState ? storeInstance.calculateMonsterState(s.id) : null;
+            if (f && ms) f.style.width = (ms.progressPct || 0) + '%';
+          }
+          if (typeof window.renderCurrentView === 'function') { try { window.renderCurrentView(); } catch (e) {} }
+          showNotification('Undone: -' + parsedAmount + ' XP for ' + studentName);
+        }
+      });
     }
 
     // Ensure all local rosters stay updated
@@ -12310,7 +12333,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     const currentVal = (typeof st.xp === 'number' && !isNaN(st.xp)) ? st.xp : 0;
     const displayName = st.name || ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || 'Student';
-    const input = prompt(`Edit Active Term 2 XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
+    const input = prompt(`Edit XP for ${displayName}:\n(Current balance: ${currentVal} XP)`, currentVal);
     if (input === null) return; // User cancelled
 
     const parsed = parseInt(input.trim ? input.trim() : input, 10);
@@ -13265,7 +13288,7 @@ window.switchClassroomSubTab = function(subTab) {
       const isCardLocked = isLevelLocked || !isUnlocked;
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
-             (isCardLocked ? 'style="pointer-events:none !important; opacity:0.45 !important; filter:grayscale(0.7) !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
+             (isCardLocked ? 'style="pointer-events:none !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
              'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
           (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
           (isCardLocked ? lockBadge : '') +
@@ -13597,6 +13620,7 @@ window.switchClassroomSubTab = function(subTab) {
           color: monsterCreatorDraft.baseColor,
           equipped: monsterCreatorDraft.equipped,
           size: 280,
+          showBackground: true,
           animated: monsterCreatorIsAnimated,
           student: student,
           studentId: student ? student.id : '',
@@ -13621,7 +13645,10 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || (student ? student.firstName + "'s Monster" : "Student Monster"));
-    if (stageEl) stageEl.textContent = name + ' · Level ' + (mState ? mState.currentLevel : 1);
+    if (stageEl) {
+      const stageWord = ((mState && mState.stageName) || '').replace(/^Level \d+\s*[-•]\s*/i, '').trim();
+      stageEl.textContent = name + (stageWord ? ' · ' + stageWord : '') + ' · Level ' + (mState ? mState.currentLevel : 1);
+    }
     if (descEl) descEl.textContent = '⭐ ' + (student && store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 0) + ' XP · ' + (mState && mState.isHatched ? 'Active Companion' : 'Mystery Egg');
 
     // Render Preview Background Swatches

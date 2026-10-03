@@ -1,0 +1,108 @@
+/* ==========================================================================
+   UI POLISH LAYER  (loaded last — fixes contrast, overflow and card layout)
+   Keep every rule here small and scoped so the older stylesheets stay untouched.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. NO SIDEWAYS PAGE SCROLL + RESPONSIVE TOP BAR
+   -------------------------------------------------------------------------- */
+html { overflow-x: clip; }
+.header-inner { gap: 10px; }
+.header-right { min-width: 0; flex-wrap: nowrap; }
+.header-right > * { flex: 0 0 auto; }
+.brand-section { min-width: 0; }
+
+@media (max-width: 1240px) {
+  .brand-logo-btn > span { display: none; }                      /* keep the logo icon, hide the long name */
+}
+@media (max-width: 1100px) {
+  .role-pill-btn { padding: 6px 10px; }
+  .role-pill-btn > span:last-child { display: none; }            /* emoji-only role switcher */
+  #header-user-name { display: none; }
+  .user-chip { padding-right: 4px; }
+  #global-sync-text { display: none; }                           /* icon-only sync button (title still explains) */
+}
+
+/* --------------------------------------------------------------------------
+   2. DARK CLASS THEMES: TEXT THAT SITS DIRECTLY ON THE CANVAS MUST BE LIGHT
+   The Grade 3 / Grade 4 themes paint a near-black canvas, but most headings and
+   body text use dark "light-theme" colours. Re-point the text colours on the canvas
+   and keep dark text inside every light panel.
+   -------------------------------------------------------------------------- */
+.app-main[class*="theme-"] {
+  --text-main: #f8fafc;
+  --text-secondary: #dbe4f0;
+  --text-muted: #b6c3d6;
+  --text-subtle: #9fb0c6;
+  color: #f8fafc;
+}
+
+/* light panels: restore the normal dark text colours */
+.app-main[class*="theme-"] :is(
+  [class*="card"], [class*="tile"], [class*="panel"], [class*="kpi"], [class*="chip"], [class*="badge"],
+  [class*="alert"], [class*="toolbar"], [class*="accordion"], [class*="modal"], [class*="dropdown"],
+  [class*="drawer"], [class*="table-wrap"], [class*="widget"], [class*="list-item"], [class*="row-item"],
+  .filter-select, .btn-sm-secondary, .btn-3d-secondary, select, input, textarea, table
+) {
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   3. STUDENT DIRECTORY CARDS
+   -------------------------------------------------------------------------- */
+/* name + XP: stack them so the full name is readable (no more "Bahriye Ada…") */
+.student-name-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+.student-name {
+  min-height: 0 !important;
+  font-size: 1rem; line-height: 1.25; font-weight: 800;
+  -webkit-line-clamp: 3; line-clamp: 3;
+  overflow-wrap: anywhere; word-break: normal; hyphens: auto;
+}
+.student-name-row .xp-clickable-badge { align-self: flex-start; }
+
+/* header row: wrap instead of overlapping the companion tag */
+.card-header-flex { flex-wrap: wrap; row-gap: 6px; }
+.card-header-flex .companion-tag { max-width: 100%; }
+.card-pills-cluster { flex-wrap: wrap; justify-content: flex-end; row-gap: 4px; }
+.pill-arch-box, .pill-streak-box { font-size: 0.75rem; }
+
+/* small icon buttons were nearly invisible on white */
+.btn-card-pencil, .btn-card-more-3dots { color: #475569 !important; }
+.btn-card-pencil:hover, .btn-card-more-3dots:hover { color: #0f172a !important; background: #eef2f7; }
+
+/* progress labels: bigger and darker */
+.evolution-progress-rail > div:first-child { font-size: 0.8rem !important; color: #475569 !important; }
+
+/* --------------------------------------------------------------------------
+   4. TOAST WITH ACTION (Undo)
+   -------------------------------------------------------------------------- */
+.toast-action-btn {
+  margin-left: 8px; padding: 4px 12px; border-radius: 8px; border: 0;
+  background: #f59e0b; color: #1c1203; font: inherit; font-weight: 800; cursor: pointer;
+  border-bottom: 3px solid #b45309;
+}
+.toast-action-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+/* --------------------------------------------------------------------------
+   5. MONSTER STUDIO (customizer) — no hidden columns on mid-size screens
+   -------------------------------------------------------------------------- */
+#avatar-category-nav { flex-wrap: wrap !important; overflow: visible !important; }
+#modal-avatar-selector .modal-dialog { max-width: min(1180px, 96vw); }
+@media (min-width: 901px) and (max-width: 1180px) {
+  #modal-avatar-selector .monster-customizer-grid { grid-template-columns: minmax(0, 1fr) 300px !important; }
+  #modal-avatar-selector .monster-customizer-grid > :nth-child(3) { grid-column: 1 / -1; }
+}
+/* the preview stage used to shrink (and the glow disk landed beside the monster) because both sat in one flex row */
+#avatar-preview-box { position: relative; overflow: hidden; }
+#avatar-preview-box .monster-composite-stage { flex: none; }
+#avatar-preview-box .pedestal-disk { display: none; }
+
+/* locked items: dim the picture, but keep the "unlocks at Level N" label clear and readable */
+.monster-item-card.is-locked > :not(.monster-item-lock-pill) { opacity: 0.5; filter: grayscale(0.6); }
+.monster-item-card.is-locked { background: #f8fafc; border-style: dashed; }
+.monster-item-card.is-locked .monster-item-lock-pill {
+  font-size: 0.74rem; padding: 2px 7px; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; opacity: 1; filter: none;
+}
