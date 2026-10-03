@@ -1186,7 +1186,7 @@
   // A species is listed in "ready" only when its final art is in the folder.
   const MONSTER_ART = {
     base: 'assets/monsters/art/',
-    ready: ['aquafind', 'florasprout', 'astralight'],
+    ready: ['aquafind', 'florasprout', 'astralight', 'emberwing', 'sparktail'],
     speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' }
   };
   window.MONSTER_ART = MONSTER_ART;
