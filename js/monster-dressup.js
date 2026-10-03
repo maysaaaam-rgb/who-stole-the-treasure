@@ -27,16 +27,16 @@
   // How each picture is placed. anchor = which point of the picture touches the monster point.
   // w = width as a multiple of a measured width; dx/dy = shift as a multiple of that width.
   var RULE = {
-    hat_crown:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.80, dy: 0.14 },
-    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 1.00, dy: 0.30 },
-    hat_scholar:   { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.95, dy: 0.14 },
-    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.22 },
+    hat_crown:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.72, dy: 0.12 },
+    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.92, dy: 0.28 },
+    hat_scholar:   { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.88, dy: 0.12 },
+    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dy: 0.22 },
     hat_bow:       { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.50, dx: 0.28, dy: 0.1 },
     hat_starclip:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.26, dx: -0.30, dy: 0.12 },
     hat_flower:    { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 1.00, dy: 0.2 },
     hat_headband:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.98, dy: 0.32 },
-    glasses_round:   { z: 50, at: 'eyeCenter', from: 'center', base: 'eyeSpan', w: 1.70 },
-    glasses_goggles: { z: 50, at: 'eyeCenter', from: 'center', base: 'eyeSpan', w: 1.80 },
+    glasses_round:   { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.92 },
+    glasses_goggles: { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.84 },
     neck_star:     { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.80, dy: -0.04 },
     neck_medal:    { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.75, dy: -0.04 },
     neck_pendant:  { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.80, dy: -0.04 },
@@ -91,7 +91,7 @@
     var cy = pt.y + ((rule.dy || 0) + (ov.dy || 0)) * baseW;
     var left = cx - px * imgW, top = cy - py * imgW;
     return '<img class="eaa-dressup-item" data-item="' + name + '" src="' + ITEMS + 'item_' + name + '.webp" alt="" draggable="false" ' +
-      'style="position:absolute;z-index:' + rule.z + ';left:' + (left / 10.24).toFixed(2) + '%;top:' + (top / 10.24).toFixed(2) + '%;width:' + (imgW / 10.24).toFixed(2) + '%;pointer-events:none;" />';
+      'style="position:absolute;z-index:' + rule.z + ';left:' + (left / 10.24).toFixed(2) + '%;top:' + (top / 10.24).toFixed(2) + '%;width:' + (imgW / 10.24).toFixed(2) + '%;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(30,20,60,0.35));" />';
   }
 
   /**
