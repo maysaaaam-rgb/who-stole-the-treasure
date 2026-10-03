@@ -10054,16 +10054,50 @@
   class MasterSchoolStore {
     constructor() {
       this.state = this.loadState();
+      this._restoredStudentIds = new Set();
       if (this.state.students) {
         this.state.students.forEach(s => {
           if (!s.name) s.name = ((s.firstName || '') + ' ' + (s.lastName || '')).trim();
           // Term 2 reset cancelled: fold any archived XP back into the active balance.
-          restoreStudentArchivedXP(s);
+          if (restoreStudentArchivedXP(s) && s.id != null) this._restoredStudentIds.add(String(s.id));
         });
       }
       this.syncAllStudentLevels();
       this.listeners = [];
       try { this.saveState(); } catch (e) {}
+      this._pushRestoredRosterToCloud();
+    }
+
+    // Push restored (archive-folded) balances to Supabase so cloud archived_xp is cleared.
+    // Only students folded during this boot are sent, so stale devices can't overwrite newer cloud XP.
+    _pushRestoredRosterToCloud(attempt = 0) {
+      if (typeof window === 'undefined') return;
+      if (!this._restoredStudentIds || !this._restoredStudentIds.size) return;
+      if (!window.supabaseClient) {
+        if (attempt < 10) setTimeout(() => this._pushRestoredRosterToCloud(attempt + 1), 1500);
+        return;
+      }
+      try {
+        const students = (this.state && Array.isArray(this.state.students)) ? this.state.students : [];
+        const payload = students.filter(s => s && s.id != null && this._restoredStudentIds.has(String(s.id))).map(s => {
+          const st = getStudentStage({ xp: Number(s.xp) || 0 });
+          return {
+            id: String(s.id),
+            name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
+            grade: s.grade || '4A',
+            xp: Number(s.xp) || 0,
+            archived_xp: 0,
+            level: st.level,
+            stage_name: st.stageName,
+            updated_at: new Date().toISOString()
+          };
+        });
+        window.supabaseClient.from('students').upsert(payload, { onConflict: 'id' })
+          .then(res => { if (res && res.error) console.warn('Restored roster cloud push failed:', res.error.message); })
+          .catch(err => console.warn('Restored roster cloud push failed:', err && err.message));
+      } catch (e) {
+        console.warn('Restored roster cloud push skipped:', e && e.message);
+      }
     }
 
     syncAllStudentLevels() {
