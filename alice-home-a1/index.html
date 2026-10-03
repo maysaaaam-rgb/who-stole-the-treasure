@@ -124,6 +124,13 @@
   .stars { text-align: center; font-size: 2rem; letter-spacing: .3em; }
   .proof { text-align: center; color: var(--muted); font-size: .95rem; margin-top: 8px; }
 
+  .bubble { border-radius: 18px; padding: 14px 16px; margin: 6px 0 12px; border: 1px solid var(--line); }
+  .bubble.them { background: rgba(2,6,23,.55); border-left: 6px solid var(--violet); }
+  .bubble b { color: var(--muted); font-size: .95rem; }
+  .bubble .bt { font-size: 1.5rem; font-weight: 800; margin-top: 4px; }
+  .who { display: flex; gap: 8px; margin-bottom: 12px; }
+  .who a { flex: 1; text-align: center; text-decoration: none; color: var(--text); font-weight: 800; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--glass); }
+  .who a.on { background: var(--cyan-d); border-color: var(--cyan); }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -133,31 +140,34 @@
     <div class="brand">🫖 Alice's Tea Party<small>Home practice · 10 minutes</small></div>
     <div class="xp-pill" id="xp">⭐ 0 XP</div>
   </div>
+  <nav class="who" id="who" aria-label="Choose a character"></nav>
   <div class="steps" id="steps" aria-hidden="true"></div>
   <main id="stage"></main>
 </div>
 
+<script src="party-data.js"></script>
 <script>
 (function () {
   'use strict';
 
   /* ======================= CONTENT (A1+) ======================= */
-  const SENTENCES = ['I am Alice.', 'I have a key.', 'I like tea.'];
-  const WORDS = [
-    { w: 'key',    p: '🔑' },
-    { w: 'teacup', p: '🫖' },
-    { w: 'dress',  p: '👗' },
-    { w: 'bow',    p: '🎀' },
-    { w: 'clock',  p: '🕐' },
-    { w: 'door',   p: '🚪' }
-  ];
-  const STEP_NAMES = ['Meet', 'Words', 'Order', 'Say', 'Win'];
+  const P = window.PARTY;
+  const wanted = (new URLSearchParams(location.search).get('c') || 'alice').toLowerCase();
+  const CHAR = P.characters[wanted] || P.characters.alice;
+  const PARTNER = P.characters[CHAR.partner];
+  const SCRIPT = P.dialogues[CHAR.pair];
+  const SENTENCES = CHAR.sentences;
+  const WORDS = CHAR.words;
+  const STEP_NAMES = ['Meet', 'Words', 'Order', 'Say', 'Party', 'Win'];
   const XP_PER_STEP = 10, XP_BONUS = 10;
 
   /* ======================= PROGRESS (this device only) ======================= */
   const KEY = 'eaa_alice_home_a1_v1';
-  let save = { xp: 0, done: false, date: null };
+  let save = { xp: 0, done: {}, dates: {} };
   try { save = Object.assign(save, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+  if (typeof save.done !== 'object' || save.done === null) save.done = {};   // older save format
+  if (!save.dates) save.dates = {};
+  const FIRST_TIME = !save.done[CHAR.id];   // XP is only paid once per character
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
 
   let step = 0;            // 0..4
@@ -208,17 +218,17 @@
   const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   function html(s) { stage.innerHTML = '<section class="panel">' + s + '</section>'; }
 
-  function award(n) { sessionXP += n; $('#xp').textContent = '⭐ ' + (save.xp + sessionXP) + ' XP'; }
+  function award(n) { if (!FIRST_TIME) { return; } sessionXP += n; $('#xp').textContent = '⭐ ' + (save.xp + sessionXP) + ' XP'; }
   function renderSteps() {
     $('#steps').innerHTML = STEP_NAMES.map((_, i) => '<div class="step ' + (i < step ? 'done' : i === step ? 'now' : '') + '"></div>').join('');
   }
-  function go(n) { step = n; renderSteps(); [meet, words, order, say, win][n](); window.scrollTo(0, 0); }
+  function go(n) { step = n; renderSteps(); [meet, words, order, say, party, win][n](); window.scrollTo(0, 0); }
 
   /* ======================= 1. MEET ======================= */
   function meet() {
     html(
-      '<h1>Meet Alice!</h1><p class="goal">Listen. Tap 🔊 for each sentence.</p>' +
-      '<div class="hero"><img src="assets/alice.jpg" alt="Alice with a key and a teacup"></div>' +
+      '<h1>Meet ' + CHAR.short + '!</h1><p class="goal">Listen. Tap 🔊 for each sentence.</p>' +
+      '<div class="hero"><img src="' + CHAR.image + '" alt="' + CHAR.short + '"></div>' +
       '<ul class="lines">' + SENTENCES.map((s, i) =>
         '<li class="line" data-i="' + i + '"><span class="t">' + s + '</span><button class="btn speak" aria-label="Listen: ' + s + '">🔊</button></li>').join('') + '</ul>' +
       '<div class="row"><button class="btn ghost" id="all">🔊 Listen to all</button><button class="btn green" id="next">Next ➜</button></div>'
@@ -353,26 +363,69 @@
     round();
   }
 
-  /* ======================= 5. WIN ======================= */
+  /* ======================= 5. PARTY (listen to partner, choose + say my reply) ======================= */
+  function party() {
+    const mine = SCRIPT.map((l, idx) => ({ l: l, idx: idx })).filter(o => o.l.who === CHAR.id);
+    let n = 0;
+    function round() {
+      const o = mine[n];
+      const cue = o.idx > 0 ? SCRIPT[o.idx - 1] : null;      // what my partner just said
+      const pool = shuffle(mine.filter(m => m !== o)).slice(0, 2).map(m => m.l.text).concat(o.l.text);
+      const opts = shuffle(pool);
+      html(
+        '<div class="count">Tea party · ' + (n + 1) + ' of ' + mine.length + '</div>' +
+        '<h1>Listen. Then answer!</h1>' +
+        (cue
+          ? '<div class="bubble them"><b>' + PARTNER.short + ' says:</b><div class="bt">“' + cue.text + '”</div></div>' +
+            '<div class="row" style="margin-top:0"><button class="btn ghost" id="hear">🔊 Listen</button></div>'
+          : '<p class="goal">You start! Choose your first line.</p>') +
+        '<div class="choices" id="opts" style="margin-top:14px">' + opts.map(t => '<button class="btn choice reply" data-t="' + t.replace(/"/g, '&quot;') + '">' + t + '</button>').join('') + '</div>' +
+        '<div class="msg" id="msg"></div><div id="sayzone"></div>'
+      );
+      if (cue) { $('#hear').addEventListener('click', () => speak(cue.text, 0.75)); speak(cue.text, 0.75); }
+      stage.querySelectorAll('.reply').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.t === o.l.text) {
+          b.classList.add('right'); sfxCorrect();
+          stage.querySelectorAll('.reply').forEach(x => x.disabled = true);
+          $('#msg').className = 'msg ok'; $('#msg').textContent = '✓ Yes! Now say it out loud.';
+          $('#sayzone').innerHTML = '<div class="row"><button class="btn ghost" id="h2">🔊 Hear it</button><button class="btn green" id="ok">✓ I said it!</button></div>';
+          $('#h2').addEventListener('click', () => speak(o.l.text, 0.75));
+          $('#ok').addEventListener('click', () => { n++; if (n < mine.length) round(); else { award(XP_PER_STEP); go(5); } });
+        } else {
+          b.classList.add('try'); sfxSoft();
+          $('#msg').className = 'msg no'; $('#msg').textContent = 'Listen again. Try again! 💪';
+          setTimeout(() => b.classList.remove('try'), 450);
+        }
+      }));
+    }
+    round();
+  }
+
+  /* ======================= 6. WIN ======================= */
   function win() {
     award(XP_BONUS);
-    save.xp += sessionXP; sessionXP = 0; save.done = true;
-    save.date = new Date().toLocaleDateString('en-GB'); persist();
+    const earned = sessionXP;
+    save.xp += sessionXP; sessionXP = 0;
+    const today = new Date().toLocaleDateString('en-GB');
+    if (FIRST_TIME) { save.done[CHAR.id] = true; save.dates[CHAR.id] = today; }
+    persist();
     $('#xp').textContent = '⭐ ' + save.xp + ' XP';
-    sfxWin(); speak('Well done! You win the Alice card!', 0.8);
+    sfxWin(); speak('Well done! You win the ' + CHAR.short + ' card!', 0.8);
     html(
       '<h1 style="text-align:center">You win the card! 🎉</h1>' +
-      '<div class="card"><img src="assets/alice.jpg" alt="Alice card"><div class="tray"><div class="nm">ALICE</div><ul>' +
+      '<div class="card"><img src="' + CHAR.image + '" alt="' + CHAR.short + ' card"><div class="tray"><div class="nm">' + CHAR.name + '</div><ul>' +
         SENTENCES.map(s => '<li>' + s + '</li>').join('') + '</ul></div></div>' +
       '<div class="stars" aria-hidden="true">⭐⭐⭐</div>' +
-      '<div class="xp-big">+' + (XP_PER_STEP * 4 + XP_BONUS) + ' XP</div>' +
-      '<div class="proof">Done on ' + save.date + ' · Show this screen to your teacher</div>' +
+      '<div class="xp-big">' + (FIRST_TIME ? '+' + earned + ' XP' : 'Practice again ✓') + '</div>' +
+      (FIRST_TIME ? '' : '<div class="proof">You already won this card, so no new XP. Keep practising!</div>') +
+      '<div class="proof">Done on ' + (save.dates[CHAR.id] || today) + ' · Show this screen to your teacher</div>' +
       '<div class="row"><button class="btn amber wide" id="again">↺ Play again</button></div>'
     );
     $('#again').addEventListener('click', () => { sessionXP = 0; go(0); });
   }
 
   /* ======================= START ======================= */
+  $('#who').innerHTML = Object.values(P.characters).map(c => '<a href="?c=' + c.id + '" class="' + (c.id === CHAR.id ? 'on' : '') + '">' + c.short.replace(/^the /, '') + '</a>').join('');
   if ('speechSynthesis' in window) { window.speechSynthesis.getVoices(); }
   $('#xp').textContent = '⭐ ' + save.xp + ' XP';
   go(0);
