@@ -55,7 +55,9 @@
   var N = { C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880, B5: 987.77, C6: 1046.5, E6: 1318.5, G6: 1568 };
 
   var recipes = {
-    click: function (t) { tone(t, 880, 700, 0.06, 'sine', 0.16, 0.004); },
+    click: function (t) {   // a clear "pop-tick": a short bright glide plus a little wooden tick
+      tone(t, 1250, 820, 0.085, 'sine', 0.34, 0.003); wood(t, 540, 0.34);
+    },
     correct: function (t) { [N.C5, N.E5, N.G5, N.C6].forEach(function (f, i) { bell(t + i * 0.085, f, 0.2, 0.32); }); },
     wrong: function (t) { tone(t, 392, 392, 0.2, 'sine', 0.2, 0.01); tone(t + 0.17, 311, 294, 0.3, 'sine', 0.2, 0.01); },
     fling: function (t) {   // "whoop": a smooth rising glide with a little airy tail
@@ -94,7 +96,7 @@
   };
 
   /* loudness balance: every sound gets its own level so impacts are clearly heard and nothing is too loud */
-  var LEVEL = { click: 8.3, correct: 1.2, wrong: 1.36, fling: 3.3, windgust: 1.5, knock: 1.8, bonk: 3.4, rockhit: 4.1, splat: 2.2, hit: 3.9, graze: 3.3, boing: 4.7, tink: 7, thud: 5.3, shield: 1.6, double: 1.6, streak: 1.3, countdown: 3.8, go: 1.1, win: 1.3, cheer: 1.25 };
+  var LEVEL = { click: 2.9, correct: 1.2, wrong: 1.36, fling: 3.3, windgust: 1.5, knock: 1.8, bonk: 3.4, rockhit: 4.1, splat: 2.2, hit: 3.9, graze: 3.3, boing: 4.7, tink: 7, thud: 5.3, shield: 1.6, double: 1.6, streak: 1.3, countdown: 3.8, go: 1.1, win: 1.3, cheer: 1.25 };
   SFX.LEVEL = LEVEL;
 
   SFX.play = function (name, when) {

@@ -206,9 +206,11 @@ function playSlide(f0, f1, dur, type, gain) {
   o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0 + dur + 0.03);
 }
 
+var lastTouchClickAt = -9999;
 function sfx(name) {
   if (!cfg.sound) return;
   var nowMs = performance.now();
+  if (name === 'click' && nowMs - lastTouchClickAt < 700) return;   // already played on touch-down
   if (sfxLast[name] && nowMs - sfxLast[name] < 160) return;
   sfxLast[name] = nowMs;
   var ctx = getAudioContext();
@@ -2695,3 +2697,15 @@ window.addEventListener('DOMContentLoaded', function () {
   applyArenaTheme();
   setupEventHandlers();
 });
+
+/* Every button, chip, card and answer plays the tap sound the moment it is touched.
+   The first touch also switches the audio on (browsers keep it off until the user taps). */
+document.addEventListener('pointerdown', function (e) {
+  try { getAudioContext(); } catch (err) {}
+  if (!cfg.sound) return;
+  var t = e.target && e.target.closest ? e.target.closest('button, .chip, .grade-card, .q-opt, select, .team-pill, .builder-tile, .spelling-letter-btn, .ammo-btn, a.btn') : null;
+  if (!t || t.disabled) return;
+  lastTouchClickAt = performance.now();
+  sfxLast.click = 0;
+  if (window.SFX && audioCtx) SFX.play('click');
+}, true);
