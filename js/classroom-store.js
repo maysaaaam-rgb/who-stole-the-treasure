@@ -11,11 +11,12 @@
   'use strict';
   var store = root.schoolStore || root.store;
   if (!store) return;
+  try { if (root.MonsterCostumes) root.MonsterCostumes.install(store); } catch (e) { /* costumes are optional */ }
 
   var DEFAULTS = {
     coinsPerXp: 10,
     itemPrices: { common: 25, rare: 60, epic: 120, legendary: 250 },
-    boxPrices: { WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
+    boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
       { id: 'p-song', icon: '🎵', name: 'Choose the warm-up song', price: 40, weeklyLimit: 2, active: true },
       { id: 'p-seat', icon: '🪑', name: 'Sit anywhere for one lesson', price: 30, weeklyLimit: 2, active: true },
@@ -27,10 +28,18 @@
     ]
   };
   var SELL_CATEGORIES = ['hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
+  // Four kinds of mystery box. The saved ids stay WOODEN / GILDED / CELESTIAL (old boxes keep working); they are shown as Silver / Gold / Diamond.
+  var TIERS = ['BRONZE', 'WOODEN', 'GILDED', 'CELESTIAL'];
   var BOX_INFO = {
-    WOODEN: { name: 'Wooden Box', icon: '📦', odds: 'Common or Rare item' },
-    GILDED: { name: 'Gilded Box', icon: '🎁', odds: 'Rare or Epic item' },
-    CELESTIAL: { name: 'Celestial Box', icon: '✨', odds: 'Epic or Legendary item' }
+    BRONZE:    { name: 'Bronze Box',  icon: '🥉', pill: 'tier-bronze',    color: '#c2783e', text: '#fdba74', title: 'Little Treasure',   blurb: 'A small surprise for a few coins.',                  odds: 'Common items, small prizes, a few coins' },
+    WOODEN:    { name: 'Silver Box',  icon: '🥈', pill: 'tier-wooden',    color: '#cbd5e1', text: '#e2e8f0', title: 'Silver Strongbox',  blurb: 'Good prizes: items, sounds, titles, free rewards.',  odds: 'Items, sounds, titles, free rewards or coins' },
+    GILDED:    { name: 'Gold Box',    icon: '🥇', pill: 'tier-gilded',    color: '#eab308', text: '#fef08a', title: 'Golden Reliquary',  blurb: 'Better items and big coin wins.',                    odds: 'Rare and epic prizes, free rewards, big coins' },
+    CELESTIAL: { name: 'Diamond Box', icon: '💎', pill: 'tier-celestial', color: '#22d3ee', text: '#cffafe', title: 'Diamond Vault',     blurb: 'The best prizes: epic and legendary, jackpots.',     odds: 'Epic and legendary prizes, free rewards, jackpots' }
+  };
+  /** Name, icon and colours of a box kind (works for old saved ids too). */
+  root.boxTierInfo = function (tier) {
+    var t = String(tier || '').toUpperCase(), alias = { SILVER: 'WOODEN', GOLD: 'GILDED', DIAMOND: 'CELESTIAL' };
+    return BOX_INFO[alias[t] || t] || BOX_INFO.WOODEN;
   };
   var RARITY_COLOR = { common: '#64748b', rare: '#2563eb', epic: '#7c3aed', legendary: '#d97706' };
 
@@ -54,6 +63,8 @@
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
+    if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
+    if (!d.cosmetics || typeof d.cosmetics !== 'object') d.cosmetics = {};
     return d;
   }
   function save() { store.saveState(); store.notify(); schedulePush(); }
@@ -199,6 +210,11 @@
       var bi = boxes.findIndex ? boxes.findIndex(function (b) { return b.id === p.refId; }) : -1;
       if (bi === -1 || boxes[bi].isOpened) return { success: false, error: 'This box was already opened, so it cannot be refunded' };
       boxes.splice(bi, 1);
+    } else if (p.kind === 'extra') {
+      var ce = cosEntry(p.studentId), xi = ce.owned.indexOf(p.refId);
+      if (xi !== -1) ce.owned.splice(xi, 1);
+      Object.keys(ce.equipped).forEach(function (k) { if (ce.equipped[k] === p.refId) delete ce.equipped[k]; });
+      touchCos(p.studentId);
     } else {
       var inv = store.getStudentInventory(p.studentId);
       var ii = inv.findIndex(function (e) { return e.purchaseId === p.id; });
@@ -214,6 +230,193 @@
     p.status = 'refunded';
     save();
     return { success: true };
+  }
+
+
+  // ---------------------------------------------------------------- extras: sounds, titles, animals, name plates
+  function CCo() { return root.ClassroomCosmetics || null; }
+  function cosEntry(studentId) {
+    var d = data(), e = d.cosmetics[studentId];
+    if (!e) e = d.cosmetics[studentId] = { owned: [], equipped: {}, updatedAt: 0 };
+    if (!Array.isArray(e.owned)) e.owned = [];
+    if (!e.equipped || typeof e.equipped !== 'object') e.equipped = {};
+    return e;
+  }
+  function ownedMonsterIds(studentId) {
+    var inv = store.getStudentInventory ? store.getStudentInventory(studentId) : [];
+    var ids = inv.map(function (e) { return e.itemId; });
+    var p = store.getMonsterProfile ? store.getMonsterProfile(studentId) : null;
+    if (p && p.unlockedItems) ids = ids.concat(p.unlockedItems);
+    return ids;
+  }
+  function setTitleFor(k) {
+    var M = root.MonsterCostumes; if (!M || !M.sets[k]) return null;
+    var st = M.sets[k];
+    return { kind: 'title', id: 'set-' + k, name: st.title, icon: st.icon, rarity: 'epic', desc: 'You finished the ' + st.name + ' costume set!', fromSet: k };
+  }
+  function setTitleItems(studentId) {
+    var M = root.MonsterCostumes; if (!M) return [];
+    return M.completedSets(ownedMonsterIds(studentId)).map(setTitleFor).filter(Boolean);
+  }
+  function findExtra(id) {
+    id = String(id);
+    if (id.indexOf('set-') === 0) return setTitleFor(id.slice(4));
+    var C = CCo(); return C ? C.byId(id) : null;
+  }
+  function extraOwned(studentId, id) {
+    if (String(id).indexOf('set-') === 0) return setTitleItems(studentId).some(function (t) { return t.id === id; });
+    return cosEntry(studentId).owned.indexOf(id) !== -1;
+  }
+  function extraPrice(x) { return data().config.itemPrices[x.rarity] || data().config.itemPrices.common; }
+  function touchCos(studentId) { cosEntry(studentId).updatedAt = Date.now(); }
+  function buyExtra(studentId, id) {
+    var x = findExtra(id);
+    if (!x || String(id).indexOf('set-') === 0) return { success: false, error: 'This is not for sale' };
+    if (extraOwned(studentId, id)) return { success: false, error: 'You already have this' };
+    var price = extraPrice(x);
+    if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
+    var e = cosEntry(studentId), pid = uid('buy');
+    e.owned.push(id);
+    if (!e.equipped[x.kind]) e.equipped[x.kind] = id;               // wear the first one right away
+    touchCos(studentId);
+    spend(studentId, price, 'buy-extra', 'Bought ' + x.name, pid);
+    data().purchases.unshift({ id: pid, studentId: studentId, kind: 'extra', refId: id, name: x.name, icon: x.icon, price: price, ts: new Date().toISOString(), status: 'done' });
+    save();
+    return { success: true, item: x, price: price, balance: balance(studentId) };
+  }
+  function giveExtra(studentId, id) {                              // prizes: no price
+    var x = findExtra(id); if (!x) return false;
+    var e = cosEntry(studentId);
+    if (e.owned.indexOf(id) === -1) e.owned.push(id);
+    if (!e.equipped[x.kind]) e.equipped[x.kind] = id;
+    touchCos(studentId);
+    return true;
+  }
+  function equipExtra(studentId, kind, id) {
+    var e = cosEntry(studentId);
+    if (!id) { delete e.equipped[kind]; touchCos(studentId); save(); return { success: true }; }
+    var x = findExtra(id);
+    if (!x || x.kind !== kind) return { success: false, error: 'Not found' };
+    if (!extraOwned(studentId, id)) return { success: false, error: 'You do not own this yet' };
+    e.equipped[kind] = id; touchCos(studentId); save();
+    return { success: true, item: x };
+  }
+  /** What the student is wearing: { sound, title, pack, plate } (missing ones are left out). */
+  function equippedExtras(studentId) {
+    var e = cosEntry(studentId), out = {};
+    ['sound', 'title', 'pack', 'plate'].forEach(function (k) {
+      var id = e.equipped[k], x = id ? findExtra(id) : null;
+      if (x && extraOwned(studentId, id)) out[k] = x;
+    });
+    return out;
+  }
+
+  // ---------------------------------------------------------------- class party fund
+  function classOfStudent(studentId) { var st = store.getStudent ? store.getStudent(studentId) : null; return st ? (st.classId || null) : null; }
+  function fundFor(classId) { return classId ? (data().config.partyFunds[classId] || null) : null; }
+  function setFund(classId, name, goal) {
+    goal = Math.max(1, Math.round(Number(goal) || 0));
+    if (!classId) return { success: false, error: 'Choose a class first' };
+    var f = data().config.partyFunds[classId];
+    if (!f) f = data().config.partyFunds[classId] = { name: '', goal: 0, raised: 0, donors: {} };
+    f.name = String(name || 'Class party').slice(0, 40); f.goal = goal;
+    data().config.updatedAt = Date.now(); save();
+    return { success: true, fund: f };
+  }
+  function donate(studentId, amount) {
+    var f = fundFor(classOfStudent(studentId));
+    amount = Math.round(Number(amount) || 0);
+    if (!f || !f.goal) return { success: false, error: 'There is no party fund yet' };
+    if (f.raised >= f.goal) return { success: false, error: 'The fund is already full!' };
+    amount = Math.min(amount, f.goal - f.raised);
+    if (amount < 1) return { success: false, error: 'Choose how many coins' };
+    if (balance(studentId) < amount) return { success: false, error: 'Not enough coins' };
+    spend(studentId, amount, 'donate', 'Gave to the ' + f.name);
+    f.raised += amount; f.donors[studentId] = (f.donors[studentId] || 0) + amount;
+    data().config.updatedAt = Date.now(); save();
+    return { success: true, fund: f, full: f.raised >= f.goal, amount: amount, balance: balance(studentId) };
+  }
+  function resetFund(classId) {
+    var f = fundFor(classId); if (!f) return;
+    f.raised = 0; f.donors = {}; data().config.updatedAt = Date.now(); save();
+  }
+
+  // ---------------------------------------------------------------- mystery boxes 2.0
+  // Each box can hold a monster item, a sound / title / animal / name plate, a free class reward, coins, or a rare jackpot.
+  // It never gives something the student already has (that would be a wasted box).
+  var BOX_ODDS = {
+    BRONZE:    [['item', 55], ['extra', 14], ['voucher', 7],  ['coins', 19], ['jackpot', 5]],
+    WOODEN:    [['item', 60], ['extra', 15], ['voucher', 10], ['coins', 10], ['jackpot', 5]],
+    GILDED:    [['item', 55], ['extra', 20], ['voucher', 12], ['coins', 8],  ['jackpot', 5]],
+    CELESTIAL: [['item', 50], ['extra', 20], ['voucher', 15], ['coins', 10], ['jackpot', 5]]
+  };
+  var BOX_RARITY = { BRONZE: [['common', 85], ['rare', 15]], WOODEN: [['common', 70], ['rare', 30]], GILDED: [['rare', 65], ['epic', 35]], CELESTIAL: [['epic', 60], ['legendary', 40]] };
+  var BOX_COINS = { BRONZE: [8, 20], WOODEN: [20, 40], GILDED: [50, 100], CELESTIAL: [120, 250] };
+  var BOX_VOUCHER_CAP = { BRONZE: 40, WOODEN: 70, GILDED: 100, CELESTIAL: 100000 };
+  function rollTable(t) { var r = Math.random() * 100, a = 0; for (var i = 0; i < t.length; i++) { a += t[i][1]; if (r < a) return t[i][0]; } return t[t.length - 1][0]; }
+  function pickOne(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function grantMonsterItem(studentId, item) {
+    var inv = store.getStudentInventory(studentId);
+    inv.push({ id: uid('inv'), studentId: studentId, itemId: item.id, name: item.name, category: item.category, rarity: item.rarity, icon: item.icon, isEquipped: false, quantity: 1, acquiredAt: new Date().toISOString(), source: 'mystery-box' });
+    var prof = store.getMonsterProfile(studentId);
+    if (prof) {
+      if (!prof.unlockedItems) prof.unlockedItems = [];
+      if (prof.unlockedItems.indexOf(item.id) === -1) prof.unlockedItems.push(item.id);
+      store.updateMonsterProfile(studentId, { unlockedItems: prof.unlockedItems });
+    }
+  }
+  function rewardItem(studentId, rarity) {
+    var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i); });
+    var pool = all.filter(function (i) { return i.rarity === rarity; });
+    if (!pool.length) pool = all;
+    if (!pool.length) return null;
+    var it = pickOne(pool);
+    grantMonsterItem(studentId, it);
+    return { type: 'item', item: { id: it.id, name: it.name, category: it.category, rarity: it.rarity, icon: it.icon || '✨', description: it.description || '' } };
+  }
+  function rewardExtra(studentId, rarity) {
+    var C = CCo(); if (!C) return null;
+    var all = C.CATALOG.filter(function (x) { return !extraOwned(studentId, x.id); });
+    var pool = all.filter(function (x) { return x.rarity === rarity; });
+    if (!pool.length) pool = all;
+    if (!pool.length) return null;
+    var x = pickOne(pool);
+    giveExtra(studentId, x.id);
+    return { type: 'extra', kind: x.kind, item: { id: x.id, name: x.name, category: C.KINDS[x.kind].one, rarity: x.rarity, icon: x.icon, description: x.desc } };
+  }
+  function rewardVoucher(studentId, tier) {
+    var cap = BOX_VOUCHER_CAP[tier] || 70;
+    var pool = data().config.privileges.filter(function (p) { return p.active && p.price <= cap; });
+    if (!pool.length) return null;
+    var p = pickOne(pool), rid = uid('req'), now = new Date().toISOString();
+    data().requests.unshift({ id: rid, studentId: studentId, privilegeId: p.id, name: 'FREE: ' + p.name, icon: p.icon, price: 0, status: 'approved', createdAt: now, decidedAt: now, note: 'Won in a Mystery Box', voucher: true });
+    return { type: 'voucher', item: { id: 'voucher', name: 'Free: ' + p.name, category: 'free reward', rarity: tier === 'WOODEN' ? 'rare' : 'epic', icon: p.icon, description: 'Show your teacher. This one is free!' } };
+  }
+  function rewardCoins(studentId, tier, fixed) {
+    var r = BOX_COINS[tier] || BOX_COINS.WOODEN;
+    var n = fixed || (r[0] + Math.floor(Math.random() * (r[1] - r[0] + 1)));
+    var w = wallet(studentId);
+    w.grants += n; log(w, n, 'box', 'Mystery box coins');
+    return { type: 'coins', amount: n, item: { id: 'coins', name: '+' + n + ' coins!', category: 'coins', rarity: 'rare', icon: '🪙', description: 'The box was full of coins!' } };
+  }
+  function openBox2(boxId, studentId) {
+    if (store._ensureMysteryBoxState) store._ensureMysteryBoxState();
+    var box = (store.state.mysteryBoxes || []).filter(function (b) { return b.id === boxId; })[0];
+    if (!box) return { success: false, error: 'Mystery box not found' };
+    if (box.studentId !== studentId) return { success: false, error: 'This box belongs to another student' };
+    if (box.isOpened) return { success: false, error: 'This mystery box is already opened' };
+    var tier = BOX_ODDS[box.boxTier] ? box.boxTier : 'WOODEN';
+    var kind = rollTable(BOX_ODDS[tier]), rarity = rollTable(BOX_RARITY[tier]), res = null;
+    if (kind === 'item') res = rewardItem(studentId, rarity) || rewardExtra(studentId, rarity);
+    else if (kind === 'extra') res = rewardExtra(studentId, rarity) || rewardItem(studentId, rarity);
+    else if (kind === 'voucher') res = rewardVoucher(studentId, tier);
+    else if (kind === 'coins') res = rewardCoins(studentId, tier);
+    else res = rewardItem(studentId, 'legendary') || rewardExtra(studentId, 'legendary') || rewardCoins(studentId, tier, 300);
+    if (!res) res = rewardCoins(studentId, tier);
+    box.isOpened = true; box.openedAt = new Date().toISOString();
+    save();
+    return { success: true, boxId: box.id, boxTier: box.boxTier, item: res.item, isDuplicate: false, bonusXp: 0, bonusCoins: res.type === 'coins' ? res.amount : 0,
+      reward: { type: res.type, kind: res.kind || null, amount: res.amount || 0, rolled: kind }, openedAt: box.openedAt };
   }
 
 
@@ -239,6 +442,7 @@
     // the platform re-creates 3 starter boxes (ids ending -wood-1, -gilded-1, -celestial-1) on every fresh device: they say nothing about what the student did
     (store.state.mysteryBoxes || []).forEach(function (b) { if (b.studentId === id) { if (!/-(wood|gilded|celestial)-1$/.test(String(b.id))) up(b.createdAt); up(b.openedAt); } });
     ((store.state.studentInventories || {})[id] || []).forEach(function (e) { up(e.acquiredAt); });
+    if (d.cosmetics && d.cosmetics[id] && d.cosmetics[id].updatedAt) up(d.cosmetics[id].updatedAt);
     return t;
   }
   function bundleFor(id) {
@@ -251,7 +455,8 @@
       requests: d.requests.filter(function (r) { return r.studentId === id; }).slice(0, 40),
       purchases: d.purchases.filter(function (p) { return p.studentId === id; }).slice(0, 40),
       boxes: boxes.filter(function (b) { return !b.isOpened; }).concat(boxes.filter(function (b) { return b.isOpened; }).slice(-10)),
-      inventory: ((store.state.studentInventories || {})[id] || []).slice(0, 150)
+      inventory: ((store.state.studentInventories || {})[id] || []).slice(0, 150),
+      cosmetics: (d.cosmetics && d.cosmetics[id]) ? JSON.parse(JSON.stringify(d.cosmetics[id])) : null
     };
   }
   function adoptBundle(id, b) {
@@ -263,6 +468,7 @@
     store.state.mysteryBoxes = (store.state.mysteryBoxes || []).filter(function (x) { return x.studentId !== id; }).concat(b.boxes || []);
     if (!store.state.studentInventories) store.state.studentInventories = {};
     store.state.studentInventories[id] = (b.inventory || []).slice();
+    if (b.cosmetics) d.cosmetics[id] = b.cosmetics;
   }
   /** Take the cloud copy of any student that is newer than ours. Returns true when something changed. */
   function adoptDoc(doc) {
@@ -335,14 +541,9 @@
       if (cloudClient() && Date.now() - lastPull > 60000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
     });
   })();
-  // opening a mystery box changes the student's items, so save that too
+  // Mystery boxes 2.0: the platform's box opening now goes through openBox2 (see above); it saves and syncs by itself
   if (store.openMysteryBox && !store.openMysteryBox.__cs) {
-    var origOpen = store.openMysteryBox;
-    store.openMysteryBox = function (boxId, studentId) {
-      var r = origOpen.apply(this, arguments);
-      try { if (r && r.success) { wallet(studentId); schedulePush(); } } catch (e) { /* ignore */ }
-      return r;
-    };
+    store.openMysteryBox = function (boxId, studentId) { return openBox2(boxId, studentId); };
     store.openMysteryBox.__cs = true;
   }
 
@@ -389,10 +590,14 @@
     // students & coins
     html += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
-      '<thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:6px 8px;">Student</th><th style="padding:6px 8px;">XP</th><th style="padding:6px 8px;">Coins</th><th style="padding:6px 8px;">Give or take</th></tr></thead><tbody>' +
+      '<thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:6px 8px;">Student</th><th style="padding:6px 8px;">XP</th><th style="padding:6px 8px;">Coins</th><th style="padding:6px 8px;">Wearing</th><th style="padding:6px 8px;">Give or take</th></tr></thead><tbody>' +
       students.map(function (s) {
         var xp = store.getStudentTotalXP ? store.getStudentTotalXP(s.id) : 0;
-        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);"><td style="padding:8px;font-weight:800;">' + esc(studentName(s.id)) + '</td><td style="padding:8px;">' + xp + '</td><td style="padding:8px;">' + coinPill(balance(s.id)) + '</td><td style="padding:8px;white-space:nowrap;">' +
+        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);"><td style="padding:8px;font-weight:800;">' + esc(studentName(s.id)) + '</td><td style="padding:8px;">' + xp + '</td><td style="padding:8px;">' + coinPill(balance(s.id)) + '</td><td style="padding:8px;font-size:.74rem;color:var(--text-muted,#64748b);">' + (function () {
+            var e = equippedExtras(s.id), bits = [];
+            if (e.title) bits.push('🏷️ ' + esc(e.title.name)); if (e.pack) bits.push(esc(e.pack.icon) + ' ' + esc(e.pack.name)); if (e.plate) bits.push('🖼️ ' + esc(e.plate.name)); if (e.sound) bits.push('🔊 ' + esc(e.sound.name));
+            return bits.length ? bits.join(' · ') : '—';
+          })() + '</td><td style="padding:8px;white-space:nowrap;">' +
           btn('+5', "ClassroomStore.ui.give('" + s.id + "',5)", 'ghost') + ' ' + btn('+10', "ClassroomStore.ui.give('" + s.id + "',10)", 'ghost') + ' ' + btn('−5', "ClassroomStore.ui.give('" + s.id + "',-5)", 'ghost') + ' ' + btn('Custom…', "ClassroomStore.ui.giveCustom('" + s.id + "')", 'ghost') + '</td></tr>';
       }).join('') + '</tbody></table></div>');
 
@@ -400,7 +605,7 @@
     html += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;">' +
       ['common', 'rare', 'epic', 'legendary'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + k + ' item<input type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') +
-      ['WOODEN', 'GILDED', 'CELESTIAL'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + BOX_INFO[k].name + '<input type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') + '</div>' +
+      TIERS.map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + BOX_INFO[k].name + '<input type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') + '</div>' +
       cfg.privileges.map(function (p) {
         return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);">' +
           '<span style="font-size:1.3rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;font-weight:800;">' + esc(p.name) + '</div>' +
@@ -409,6 +614,24 @@
           '<label style="font-size:.78rem;font-weight:700;"><input type="checkbox" ' + (p.active ? 'checked' : '') + ' onchange="ClassroomStore.ui.setPriv(\'' + p.id + '\',\'active\',this.checked)"> on sale</label>' +
           btn('Remove', "ClassroomStore.ui.removePriv('" + p.id + "')", 'ghost') + '</div>';
       }).join('') + '<div style="margin-top:10px;">' + btn('+ Add a reward', 'ClassroomStore.ui.addPriv()', 'ghost') + '</div>');
+
+    // class party fund
+    if (cls) {
+      var fund = fundFor(cls.id);
+      html += card(h2('🎉 Class party fund' + ' · ' + esc(cls.name || cls.id), 'Pupils give coins together toward a class goal, like a game day or a movie. The goal bar shows on their Party fund tab.') +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">What is it for?<input id="cs-fund-name" type="text" maxlength="40" value="' + esc(fund ? fund.name : 'Class game day') + '" style="display:block;width:220px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
+        '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Goal (coins)<input id="cs-fund-goal" type="number" min="1" value="' + (fund && fund.goal ? fund.goal : 200) + '" style="display:block;width:100px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
+        btn(fund && fund.goal ? 'Save changes' : 'Start the fund', "ClassroomStore.ui.setFund('" + cls.id + "')") + (fund && fund.goal ? ' ' + btn('Start again', "ClassroomStore.ui.resetFund('" + cls.id + "')", 'ghost') : '') + '</div>' +
+        (fund && fund.goal ? '<div style="margin-top:12px;font-weight:800;color:var(--text-main,#0f172a);">' + fund.raised + ' / ' + fund.goal + ' coins' + (fund.raised >= fund.goal ? ' · 🎊 GOAL REACHED, time to plan the party!' : '') + '</div><div style="margin-top:6px;background:#e2e8f0;border-radius:999px;height:16px;overflow:hidden;"><div style="width:' + Math.min(100, Math.round(fund.raised / fund.goal * 100)) + '%;height:100%;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);"></div></div>' : ''));
+    }
+
+    // mystery box odds (information for the teacher)
+    html += card(h2('🎁 What a mystery box can hold', 'Never something the pupil already has. Free rewards show up in “Approved, not used yet” above for you to honour.') +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:var(--text-main,#0f172a);"><thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Monster item</th><th style="padding:5px 8px;">Sound / title / animal / plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
+      TIERS.map(function (t) {
+        var o = {}; BOX_ODDS[t].forEach(function (r) { o[r[0]] = r[1]; });
+        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);"><td style="padding:6px 8px;font-weight:800;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + (BOX_VOUCHER_CAP[t] > 1000 ? 'any' : BOX_VOUCHER_CAP[t]) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + BOX_COINS[t][0] + ' to ' + BOX_COINS[t][1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (legendary or 300 coins)</td></tr>';
+      }).join('') + '</tbody></table></div>');
 
     // history
     var recent = d.purchases.slice(0, 15);
@@ -429,13 +652,16 @@
     if (artOn && item.category === 'aura') return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
     var D = root.MonsterDressUp, pic = D && D.itemPicture ? D.itemPicture(item.id) : '';
     if (pic) return '<img src="' + pic + '" alt="" style="width:72px;height:72px;object-fit:contain;">';
+    if (!artOn && root.MonsterRenderer && root.MonsterRenderer.renderMonsterItemThumbnail) {
+      try { var th = root.MonsterRenderer.renderMonsterItemThumbnail(item, { size: 72, colorKey: 'blue' }); if (th) return '<div style="width:72px;height:72px;margin:0 auto;display:flex;align-items:center;justify-content:center;">' + th + '</div>'; } catch (e) { /* use the emoji */ }
+    }
     return '<div style="font-size:2.4rem;line-height:72px;height:72px;">' + esc(item.icon || '🎁') + '</div>';
   }
   function renderStudent(container) {
     var s = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents() || [])[0];
     if (!s) { container.innerHTML = '<div style="padding:40px;text-align:center;">No active student profile found.</div>'; return; }
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
-    var tabs = [['items', '🎨 Monster items'], ['boxes', '🎁 Mystery boxes'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
+    var tabs = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
     var html = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' +
       '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:20px;padding:20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
       '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.8rem;font-weight:800;color:#92400e;">YOUR COINS</div><div style="font-size:2.4rem;font-weight:900;color:#78350f;line-height:1;">' + bal + '</div>' +
@@ -447,26 +673,52 @@
 
     if (studentTab === 'items') {
       var list = shopItems(s.id);
-      var cats = ['all', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
-      var catLabel = { all: 'All', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
-      var present = cats.filter(function (c) { return c === 'all' || list.some(function (x) { return x.item.category === c; }); });
+      var cats = ['all', 'sets', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
+      var catLabel = { all: 'All', sets: '🎭 Costume sets', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
+      var present = cats.filter(function (c) { return c === 'all' || (c === 'sets' && root.MonsterCostumes) || list.some(function (x) { return x.item.category === c; }); });
       html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">' + present.map(function (c) {
         return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:800;cursor:pointer;border:1px solid var(--border-light,#cbd5e1);background:' + (itemFilter === c ? '#0f172a' : 'transparent') + ';color:' + (itemFilter === c ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + catLabel[c] + '</button>';
       }).join('') + '</div>';
       var shown = list.filter(function (x) { return itemFilter === 'all' || x.item.category === itemFilter; });
-      html += shown.length ? '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;">' + shown.map(function (x) {
+      if (itemFilter === 'sets' && root.MonsterCostumes) {
+        var M = root.MonsterCostumes, mine = ownedMonsterIds(s.id);
+        html += Object.keys(M.sets).map(function (k) {
+          var st = M.sets[k], have = st.pieces.filter(function (pid) { return mine.indexOf(pid) !== -1; }).length, done = have === st.pieces.length;
+          return '<div style="background:var(--bg-surface,#fff);border:2px solid ' + (done ? '#16a34a' : 'var(--border-light,#e2e8f0)') + ';border-radius:18px;padding:12px 14px;margin-bottom:12px;">' +
+            '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;"><span style="font-size:1.6rem;">' + st.icon + '</span><div style="flex:1;min-width:160px;"><div style="font-weight:900;color:var(--text-main,#0f172a);">' + esc(st.name) + '</div>' +
+            '<div style="font-size:.74rem;color:var(--text-muted,#64748b);">' + (done ? '✅ Set complete! You earned the title “' + esc(st.title) + '”' : 'Collect all 3 to earn the title “' + esc(st.title) + '”') + '</div></div>' +
+            '<span style="font-weight:900;font-size:.85rem;color:' + (done ? '#16a34a' : '#64748b') + ';">' + have + ' / ' + st.pieces.length + '</span></div>' +
+            '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">' + st.pieces.map(function (pid) {
+              var it = findItem(pid) || (M.byId(pid)), owned = mine.indexOf(pid) !== -1, price = it ? itemPrice(it) : 0, can = bal >= price;
+              if (!it) return '';
+              return '<div style="text-align:center;border:1px solid var(--border-light,#e2e8f0);border-radius:14px;padding:8px;opacity:' + (owned ? .75 : 1) + ';">' + itemPicHtml(it) +
+                '<div style="font-weight:800;font-size:.8rem;margin-top:2px;color:var(--text-main,#0f172a);">' + esc(it.name) + '</div>' +
+                '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[it.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(it.rarity) + '</div>' +
+                '<div style="margin-top:6px;">' + (owned ? '<span style="font-weight:900;color:#16a34a;">✓ You have it</span>' : coinPill(price) + '<div style="margin-top:6px;">' + btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyItem('" + pid + "')", 'ok', !can) + '</div>') + '</div></div>';
+            }).join('') + '</div></div>';
+        }).join('');
+        shown = [];
+      }
+      html += itemFilter === 'sets' ? '' : shown.length ? '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;">' + shown.map(function (x) {
         var can = bal >= x.price;
         return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:12px;text-align:center;">' +
           itemPicHtml(x.item) + '<div style="font-weight:900;font-size:.88rem;margin-top:4px;color:var(--text-main,#0f172a);">' + esc(x.item.name) + '</div>' +
           '<div style="font-size:.7rem;font-weight:800;color:' + (RARITY_COLOR[x.item.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(x.item.rarity || 'common') + ' · opens at level ' + x.level + '</div>' +
           '<div style="margin:8px 0;">' + coinPill(x.price) + '</div>' + btn(can ? 'Buy now' : 'Need ' + (x.price - bal) + ' more', "ClassroomStore.ui.buyItem('" + x.item.id + "')", 'ok', !can) + '</div>';
       }).join('') + '</div>' : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
+    } else if (studentTab === 'extras') {
+      html += renderExtrasTab(s, bal);
+    } else if (studentTab === 'party') {
+      html += renderPartyTab(s, bal);
     } else if (studentTab === 'boxes') {
       var mine = store.getMysteryBoxes ? store.getMysteryBoxes(s.id, false) : [];
-      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;">' + ['WOODEN', 'GILDED', 'CELESTIAL'].map(function (t) {
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;">' + TIERS.map(function (t) {
         var price = cfg.boxPrices[t], can = bal >= price;
-        return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:16px;text-align:center;"><div style="font-size:2.6rem;">' + BOX_INFO[t].icon + '</div><div style="font-weight:900;color:var(--text-main,#0f172a);">' + BOX_INFO[t].name + '</div><div style="font-size:.75rem;color:var(--text-muted,#64748b);margin:3px 0 8px;">' + BOX_INFO[t].odds + '</div>' + coinPill(price) + '<div style="margin-top:10px;">' + btn(can ? 'Buy box' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", 'ok', !can) + '</div></div>';
+        return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:16px;text-align:center;"><div style="font-size:2.6rem;">' + BOX_INFO[t].icon + '</div><div style="font-weight:900;color:var(--text-main,#0f172a);">' + BOX_INFO[t].name + '</div><div style="font-size:.75rem;color:var(--text-muted,#64748b);margin:3px 0 8px;">' + BOX_INFO[t].blurb + '</div>' + coinPill(price) + '<div style="margin-top:10px;">' + btn(can ? 'Buy box' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyBox('" + t + "')", 'ok', !can) + '</div></div>';
       }).join('') + '</div>' +
+        card(h2('What can be inside?', 'Every box is a surprise. You never get something you already have.') +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:.82rem;color:var(--text-main,#0f172a);">' +
+          [['🎨', 'A monster item or costume piece'], ['🔊', 'A victory sound, title, animal or name plate'], ['🎟️', 'A FREE class reward from your teacher'], ['🪙', 'A pile of coins'], ['💎', 'A rare legendary jackpot']].map(function (r) { return '<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:1.4rem;">' + r[0] + '</span><span>' + r[1] + '</span></div>'; }).join('') + '</div>') +
         card(h2('🎁 Your unopened boxes (' + mine.length + ')') + (mine.length ? mine.map(function (b) { return '<span style="display:inline-block;margin:0 8px 8px 0;">' + btn((BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].icon : '🎁') + ' Open ' + (BOX_INFO[b.boxTier] ? BOX_INFO[b.boxTier].name : 'box'), "ClassroomStore.ui.openBox('" + b.id + "')") + '</span>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">No unopened boxes.</div>'));
     } else if (studentTab === 'rewards') {
       html += '<div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-bottom:10px;">Ask for a reward. Your teacher says yes or no. If it is a no, your coins come back.</div>' +
@@ -486,6 +738,81 @@
     container.innerHTML = html + '</div>';
   }
 
+  /** The four kind cards shown on the teacher's Mystery Boxes screen. */
+  root.renderBoxTierCardsHtml = function () {
+    var cfg = data().config;
+    function pct(t, k) { var f = BOX_ODDS[t].filter(function (r) { return r[0] === k; })[0]; return f ? f[1] : 0; }
+    return '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:24px;">' + TIERS.map(function (t) {
+      var i = BOX_INFO[t], rar = BOX_RARITY[t].map(function (r) { return r[1] + '% ' + r[0]; }).join(' / ');
+      return '<div style="background:linear-gradient(135deg, rgba(15,23,42,0.55), rgba(30,41,59,0.55)); border:1.5px solid ' + i.color + '; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
+        '<div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span style="font-size:2.2rem;">' + i.icon + '</span><span class="box-tier-pill ' + i.pill + '">' + i.name.toUpperCase() + '</span></div>' +
+        '<div style="font-weight:900; font-size:1rem; color:' + i.text + '; margin-bottom:4px;">' + i.title + '</div>' +
+        '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">' + i.blurb + '</p>' +
+        '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.74rem; margin-bottom:10px; color:#e2e8f0; line-height:1.55;">' +
+        '🎨 Monster item <b>' + pct(t, 'item') + '%</b> (' + rar + ')<br>✨ Sound / title / animal / plate <b>' + pct(t, 'extra') + '%</b><br>🎟️ Free class reward <b>' + pct(t, 'voucher') + '%</b><br>🪙 Coins <b>' + pct(t, 'coins') + '%</b> (' + BOX_COINS[t][0] + ' to ' + BOX_COINS[t][1] + ')<br>💎 Jackpot <b>' + pct(t, 'jackpot') + '%</b><br>Price in the shop: <b>' + cfg.boxPrices[t] + ' coins</b></div></div>' +
+        '<div style="display:flex; gap:6px;"><button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'' + t + '\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
+        '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'' + t + '\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button></div></div>';
+    }).join('') + '</div>';
+  };
+
+  var extraKind = 'sound';
+  function plateStyle(x) { return (x && x.css) || ''; }
+  function extraCard(s, x, bal) {
+    var owned = extraOwned(s.id, x.id), eq = equippedExtras(s.id)[x.kind], wearing = eq && eq.id === x.id, price = extraPrice(x), can = bal >= price;
+    var pic = x.kind === 'plate' ? '<div style="height:54px;border-radius:12px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;' + plateStyle(x) + '">' + esc(s.firstName || 'Name') + '</div>'
+      : x.kind === 'title' ? '<div style="font-size:2rem;">' + x.icon + '</div><div style="display:inline-block;background:#fef3c7;border:2px solid #f59e0b;color:#78350f;border-radius:999px;padding:1px 10px;font-weight:900;font-size:.76rem;margin:2px 0;">' + esc(x.name) + '</div>'
+      : x.kind === 'pack' ? '<img src="bamboozle/memes/' + x.animal + '_celebrate.webp" alt="" style="width:64px;height:64px;object-fit:contain;" onerror="this.outerHTML=\'<div style=&quot;font-size:2.4rem;&quot;>' + x.icon + '</div>\'">'
+      : '<div style="font-size:2.2rem;">' + x.icon + '</div>';
+    var actions = '';
+    if (x.kind === 'sound') actions += btn('▶ Listen', "ClassroomStore.ui.previewSound('" + x.id + "')", 'ghost') + ' ';
+    if (owned) actions += wearing ? '<span style="font-weight:900;color:#16a34a;font-size:.8rem;">✓ Wearing</span>' : btn('Wear it', "ClassroomStore.ui.equip('" + x.kind + "','" + x.id + "')");
+    else if (String(x.id).indexOf('set-') === 0) actions += '<span style="font-size:.72rem;color:var(--text-muted,#64748b);">Finish the costume set</span>';
+    else actions += btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyExtra('" + x.id + "')", 'ok', !can);
+    return '<div style="background:var(--bg-surface,#fff);border:' + (wearing ? '2px solid #16a34a' : '1px solid var(--border-light,#e2e8f0)') + ';border-radius:16px;padding:10px;text-align:center;">' + pic +
+      '<div style="font-weight:900;font-size:.84rem;margin-top:2px;color:var(--text-main,#0f172a);">' + esc(x.name) + '</div>' +
+      '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[x.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(x.rarity) + '</div>' +
+      '<div style="font-size:.72rem;color:var(--text-muted,#64748b);margin:3px 0;min-height:2.2em;">' + esc(x.desc || '') + '</div>' +
+      (owned || String(x.id).indexOf('set-') === 0 ? '' : '<div style="margin:4px 0;">' + coinPill(price) + '</div>') + '<div>' + actions + '</div></div>';
+  }
+  function renderExtrasTab(s, bal) {
+    var C = CCo();
+    if (!C) return '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">Extras are not loaded.</div>';
+    var eq = equippedExtras(s.id), K = C.KINDS;
+    var look = '<div style="background:linear-gradient(135deg,#ede9fe,#e0f2fe);border:1px solid #c4b5fd;border-radius:16px;padding:12px 14px;margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">' +
+      '<div style="font-weight:900;color:#4c1d95;">Your look</div>' +
+      '<div style="font-size:.85rem;color:#1e1b4b;">🏷️ ' + (eq.title ? '<b>' + esc(eq.title.name) + '</b>' : '<i>no title</i>') + '</div>' +
+      '<div style="font-size:.85rem;color:#1e1b4b;">🦊 ' + (eq.pack ? '<b>' + esc(eq.pack.name) + '</b>' : '<i>no animal</i>') + '</div>' +
+      '<div style="font-size:.85rem;color:#1e1b4b;">🔊 ' + (eq.sound ? '<b>' + esc(eq.sound.name) + '</b> ' + btn('▶', "ClassroomStore.ui.previewSound('" + eq.sound.id + "')", 'ghost') : '<i>no sound</i>') + '</div>' +
+      '<div style="font-size:.85rem;color:#1e1b4b;">🖼️ ' + (eq.plate ? '<b>' + esc(eq.plate.name) + '</b>' : '<i>plain card</i>') + '</div></div>';
+    var chips = Object.keys(K).map(function (k) {
+      var on = extraKind === k;
+      return '<button type="button" onclick="ClassroomStore.ui.extraKind(\'' + k + '\')" style="padding:6px 13px;border-radius:999px;font-size:.8rem;font-weight:800;cursor:pointer;border:1px solid var(--border-light,#cbd5e1);background:' + (on ? '#0f172a' : 'transparent') + ';color:' + (on ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + K[k].icon + ' ' + K[k].label + '</button>';
+    }).join(' ');
+    var list = C.ofKind(extraKind).slice();
+    if (extraKind === 'title') list = setTitleItems(s.id).concat(list);
+    list.sort(function (a, b) { var o = { common: 0, rare: 1, epic: 2, legendary: 3 }; return (o[a.rarity] - o[b.rarity]) || a.name.localeCompare(b.name); });
+    var note = extraKind === 'sound' ? 'A victory sound plays on the board when your name is picked or you get a star.'
+      : extraKind === 'title' ? 'Your title shows next to your name. Finish a costume set to earn a special title for free.'
+      : extraKind === 'pack' ? 'Your animal is the sticker that reacts when you play.'
+      : 'Your name plate decorates your card on the Class Board.';
+    return look + '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">' + chips + '</div>' +
+      '<div style="font-size:.82rem;color:var(--text-muted,#64748b);margin-bottom:10px;">' + note + '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;">' + list.map(function (x) { return extraCard(s, x, bal); }).join('') + '</div>';
+  }
+  function renderPartyTab(s, bal) {
+    var cid = classOfStudent(s.id), f = fundFor(cid);
+    if (!f || !f.goal) return card('<div style="text-align:center;padding:20px;"><div style="font-size:3rem;">🎉</div><div style="font-weight:900;font-size:1.1rem;color:var(--text-main,#0f172a);">No class party fund yet</div><div style="font-size:.85rem;color:var(--text-muted,#64748b);margin-top:6px;">Ask your teacher to start one. Then everyone can give coins to reach the goal together!</div></div>');
+    var pct = Math.min(100, Math.round(f.raised / f.goal * 100)), full = f.raised >= f.goal;
+    var donors = Object.keys(f.donors || {}).map(function (id) { return { id: id, n: f.donors[id] }; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 6);
+    return card('<div style="text-align:center;"><div style="font-size:2.6rem;">' + (full ? '🎊' : '🎉') + '</div><div style="font-weight:900;font-size:1.25rem;color:var(--text-main,#0f172a);">' + esc(f.name) + '</div>' +
+      '<div style="margin:12px auto;max-width:520px;background:#e2e8f0;border-radius:999px;height:26px;overflow:hidden;border:2px solid #0f172a;"><div style="width:' + pct + '%;height:100%;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);transition:width .5s;"></div></div>' +
+      '<div style="font-weight:900;color:var(--text-main,#0f172a);">' + f.raised + ' / ' + f.goal + ' coins' + (full ? ' · GOAL REACHED! 🎉' : '') + '</div>' +
+      (full ? '<div style="font-size:.85rem;color:#15803d;font-weight:800;margin-top:6px;">The class did it together! Your teacher will plan the party.</div>' :
+        '<div style="margin-top:12px;font-size:.82rem;color:var(--text-muted,#64748b);">You have ' + bal + ' coins. Give some to help the class:</div><div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">' +
+        [5, 10, 25].map(function (n) { return btn('Give ' + n, "ClassroomStore.ui.donate(" + n + ")", 'ok', bal < n); }).join('') + '</div>') + '</div>' +
+      (donors.length ? '<div style="margin-top:14px;border-top:1px solid var(--border-light,#e2e8f0);padding-top:10px;"><div style="font-weight:800;font-size:.82rem;margin-bottom:6px;color:var(--text-main,#0f172a);">⭐ Biggest helpers</div>' + donors.map(function (d) { return '<div style="display:flex;justify-content:space-between;font-size:.84rem;padding:2px 0;color:var(--text-main,#0f172a);"><span>' + esc(studentName(d.id)) + '</span><b>' + d.n + ' 🪙</b></div>'; }).join('') + '</div>' : ''));
+  }
+
   // ---------------------------------------------------------------- UI actions
   function activeStudentId() { var s = store.getActiveStudent ? store.getActiveStudent() : null; return s ? s.id : null; }
   function confirm(title, message, confirmText, fn) {
@@ -494,6 +821,31 @@
   }
   var ui = {
     tab: function (t) { studentTab = t; rerender(); },
+    extraKind: function (k) { extraKind = k; rerender(); },
+    previewSound: function (id) { if (root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id); },
+    buyExtra: function (id) {
+      var sid = activeStudentId(), x = findExtra(id); if (!sid || !x) return;
+      confirm('Buy ' + x.name + '?', 'It costs ' + extraPrice(x) + ' coins. You have ' + balance(sid) + '.', 'Buy', function () {
+        var r = buyExtra(sid, id); notify(r.success ? 'You bought ' + r.item.name + '! It is on right away.' : r.error, r.success ? 'success' : 'error');
+        if (r.success && x.kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
+        rerender();
+      });
+    },
+    equip: function (kind, id) {
+      var sid = activeStudentId(); if (!sid) return;
+      var r = equipExtra(sid, kind, id); notify(r.success ? 'Now wearing it!' : r.error, r.success ? 'success' : 'error');
+      if (r.success && kind === 'sound' && root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id);
+      rerender();
+    },
+    donate: function (n) {
+      var sid = activeStudentId(); if (!sid) return;
+      var r = donate(sid, n); notify(r.success ? (r.full ? 'The fund is FULL! Thank you! 🎉' : 'Thank you! You gave ' + r.amount + ' coins.') : r.error, r.success ? 'success' : 'error'); rerender();
+    },
+    setFund: function (classId) {
+      var nm = document.getElementById('cs-fund-name'), gl = document.getElementById('cs-fund-goal');
+      var r = setFund(classId, nm ? nm.value : '', gl ? gl.value : 0); notify(r.success ? 'Party fund saved' : r.error, r.success ? 'success' : 'error'); rerender();
+    },
+    resetFund: function (classId) { confirm('Start the fund again?', 'The coins already given stay spent. The bar goes back to zero.', 'Reset', function () { resetFund(classId); rerender(); }); },
     filter: function (c) { itemFilter = c; rerender(); },
     buyItem: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
@@ -546,6 +898,9 @@
   };
 
   root.ClassroomStore = {
+    cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
+    fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
+    openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
     ui: ui, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
   };

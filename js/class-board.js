@@ -32,7 +32,9 @@
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {};
       var prof = st.getMonsterProfile ? st.getMonsterProfile(s.id) : null, img = '';
       try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
-      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img };
+      var x = {};
+      try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(s.id) : {}; } catch (e) { x = {}; }
+      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, x: x };
     }).sort(function (a, b) { return b.xp - a.xp; });
   }
   function goalProgress(cls, g) {
@@ -67,6 +69,10 @@
     '.cb-pt{position:absolute;top:8px;right:8px;background:#fbbf24;color:#4a2300;border-radius:99px;padding:2px 11px;font-weight:600;font-size:.95rem;font-variant-numeric:tabular-nums}' +
     '.cb-add{display:flex;gap:6px;justify-content:center;margin-top:8px}.cb-add button{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:99px;padding:5px 11px;font:500 .9rem Fredoka,sans-serif;cursor:pointer;border-bottom:3px solid rgba(0,0,0,.2)}' +
     '.cb-add button:hover{background:#22c55e}.cb-add button:active{transform:translateY(2px);border-bottom-width:1px}' +
+    '.cb-ti{display:block;margin:3px auto 0;max-width:96%;font-size:.74rem;font-weight:600;background:rgba(251,191,36,.95);color:#4a2300;border-radius:99px;padding:1px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.cb-an{position:absolute;left:6px;top:6px;width:38px;height:38px;border-radius:50%;background:#fff center/contain no-repeat;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.35)}' +
+    '.cb-st.plated .cb-pt{box-shadow:0 2px 6px rgba(0,0,0,.35)}' +
+    '.cb-st.plated .cb-add button{background:rgba(38,33,92,.78);color:#fff}.cb-st.plated .cb-add button:hover{background:#16a34a}' +
     '.cb-st.off{opacity:.42;filter:grayscale(.7)}.cb-st.off .cb-add{visibility:hidden}.cb-st.pick{animation:cbPick .25s infinite alternate;background:rgba(251,191,36,.45);border-color:#fbbf24}' +
     '@keyframes cbPick{to{transform:scale(1.06)}}' +
     '.cb-burst{position:absolute;left:50%;top:30%;transform:translateX(-50%);font-weight:600;font-size:1.5rem;color:#fde68a;text-shadow:0 2px 8px rgba(0,0,0,.5);pointer-events:none;animation:cbUp 1s forwards}' +
@@ -120,10 +126,13 @@
         '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString() + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
       '<div class="cb-mg">' + list.map(function (s) {
-        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '">' +
+        var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
+        var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
+        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString() + '</span>' +
           '<img src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Click to mark here / absent" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
+          (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()">▶ Start</button>' +
@@ -141,11 +150,19 @@
     var el = document.getElementById('cb-total'); if (el) el.textContent = t.toLocaleString();
     return list;
   }
+  /** Play the victory sound this pupil bought (if any). Returns true when one played. */
+  function pupilSound(id) {
+    try {
+      var e = root.ClassroomStore && root.ClassroomStore.cosmetics ? root.ClassroomStore.cosmetics.equipped(id) : {};
+      if (e.sound && root.ClassroomCosmetics) return !!root.ClassroomCosmetics.playSound(e.sound.id);
+    } catch (x) { /* optional */ }
+    return false;
+  }
   var api = {
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
       st.giveXP(id, n, 'Quick Classroom Award', 'Teacher', { category: 'positive', icon: '⭐' });
-      try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ }
+      if (!pupilSound(id)) { try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ } }
       var list = totals(), me = list.filter(function (s) { return s.id === id; })[0];
       var card = document.getElementById('cb-' + id);
       if (me && card) {
@@ -192,9 +209,10 @@
         setTimeout(function () {
           c.classList.remove('pick'); pickBusy = false;
           var w = document.createElement('div'); w.className = 'cb-win';
-          w.innerHTML = '<div><img src="' + esc(c.querySelector('img').getAttribute('src')) + '" alt=""><h2>' + c.querySelector('b.n').textContent.replace(' · away', '') + '!</h2><button>Give +5 and close</button></div>';
+          var ti = c.querySelector('.cb-ti'), pl = c.getAttribute('style') || '';
+          w.innerHTML = '<div' + (pl ? ' style="' + esc(pl) + '"' : '') + '><img src="' + esc(c.querySelector('img').getAttribute('src')) + '" alt=""><h2>' + c.querySelector('b.n').textContent.replace(' · away', '') + '!</h2>' + (ti ? '<div class="cb-ti" style="font-size:1.2rem;margin:-4px auto 14px;display:inline-block;padding:3px 16px">' + ti.textContent + '</div><br>' : '') + '<button>Give +5 and close</button></div>';
           document.body.appendChild(w);
-          try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ }
+          if (!pupilSound(c.dataset.id)) { try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ } }
           w.querySelector('button').onclick = function () { api.award(c.dataset.id, 5); w.remove(); };
           w.addEventListener('mousedown', function (e) { if (e.target === w) w.remove(); });
         }, 250);

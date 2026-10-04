@@ -229,16 +229,23 @@
   function render3DChestSVG(tier = 'WOODEN', isOpened = false) {
     const t = String(tier).toUpperCase();
 
-    // Color definitions per tier
-    let bodyMain = '#78350f'; // Warm oak wood
-    let bodySide = '#451a03';
-    let trimMain = '#d97706';
-    let trimDark = '#92400e';
-    let glowColor = '#f59e0b';
-    let lockGem = '#f59e0b';
+    // Color definitions per tier: BRONZE (copper), WOODEN = Silver, GILDED = Gold, CELESTIAL = Diamond
+    let bodyMain = '#64748b'; // Brushed silver
+    let bodySide = '#334155';
+    let trimMain = '#e2e8f0';
+    let trimDark = '#94a3b8';
+    let glowColor = '#cbd5e1';
+    let lockGem = '#38bdf8';
     let runesMarkup = '';
 
-    if (t === 'GILDED') {
+    if (t === 'BRONZE') {
+      bodyMain = '#9a5b2c'; // Warm copper
+      bodySide = '#6b3a17';
+      trimMain = '#fdba74';
+      trimDark = '#9a3412';
+      glowColor = '#f59e0b';
+      lockGem = '#fdba74';
+    } else if (t === 'GILDED') {
       bodyMain = '#b45309';
       bodySide = '#78350f';
       trimMain = '#fef08a';
@@ -250,16 +257,16 @@
         <circle cx="125" cy="115" r="4" fill="${glowColor}" opacity="0.8" filter="blur(1px)"/>
       `;
     } else if (t === 'CELESTIAL') {
-      bodyMain = '#1e1b4b'; // Deep cosmic obsidian
-      bodySide = '#0f172a';
-      trimMain = '#38bdf8'; // Cyan astral trim
-      trimDark = '#6366f1';
-      glowColor = '#a855f7'; // Electric violet
-      lockGem = '#38bdf8';
+      bodyMain = '#0e7490'; // Icy diamond crystal
+      bodySide = '#164e63';
+      trimMain = '#cffafe'; // Bright crystal trim
+      trimDark = '#22d3ee';
+      glowColor = '#67e8f9'; // Diamond glow
+      lockGem = '#e0f2fe';
       runesMarkup = `
-        <path d="M 60 115 L 75 125 L 60 135" stroke="#38bdf8" stroke-width="2" fill="none" opacity="0.85"/>
-        <path d="M 140 115 L 125 125 L 140 135" stroke="#a855f7" stroke-width="2" fill="none" opacity="0.85"/>
-        <circle cx="100" cy="128" r="3" fill="#ffffff" filter="blur(1px)"/>
+        <polygon points="68,118 74,110 80,118 74,130" fill="#e0f2fe" opacity="0.9"/>
+        <polygon points="120,118 126,110 132,118 126,130" fill="#e0f2fe" opacity="0.9"/>
+        <polygon points="94,126 100,116 106,126 100,140" fill="#ffffff" opacity="0.95"/>
       `;
     }
 
@@ -379,9 +386,8 @@
       const student = this.activeStudent;
       const tier = (box.boxTier || 'WOODEN').toUpperCase();
 
-      let tierBadge = '<span class="box-tier-pill tier-wooden">🪵 WOODEN CHEST</span>';
-      if (tier === 'GILDED') tierBadge = '<span class="box-tier-pill tier-gilded">🪙 GILDED CHEST</span>';
-      if (tier === 'CELESTIAL') tierBadge = '<span class="box-tier-pill tier-celestial">🌌 CELESTIAL CHEST</span>';
+      const tInfo = (window.boxTierInfo ? window.boxTierInfo(tier) : { icon: '🥈', name: 'Silver Box', pill: 'tier-wooden' });
+      let tierBadge = '<span class="box-tier-pill ' + tInfo.pill + '">' + tInfo.icon + ' ' + tInfo.name.toUpperCase() + '</span>';
 
       modalEl.innerHTML = `
         <div class="mystery-box-modal-content">
@@ -504,17 +510,29 @@
                 
                 ${res.isDuplicate ? `
                   <div class="reward-duplicate-badge">
-                    ⭐ Duplicate! Converted to <strong>+50 Star XP</strong>
+                    ${res.bonusCoins ? '🪙 You already had it! Converted to <strong>+' + res.bonusCoins + ' coins</strong>' : '⭐ Duplicate! Converted to <strong>+50 Star XP</strong>'}
                   </div>
                 ` : ''}
 
                 <div class="reward-modal-actions">
+                  ${(res.reward && res.reward.type && res.reward.type !== 'item') ? (
+                    res.reward.type === 'extra' ? `
+                  <button type="button" class="btn-3d btn-3d-primary" onclick="window.MysteryBoxModal.equipExtra('${res.reward.kind}','${item.id}')">
+                    ✨ Wear it now
+                  </button>
+                  <button type="button" class="btn-3d btn-3d-secondary" onclick="window.MysteryBoxModal.sendToBackpack()">
+                    👍 Keep it for later
+                  </button>` : `
+                  <button type="button" class="btn-3d btn-3d-primary" onclick="window.MysteryBoxModal.close()">
+                    🎉 Great!
+                  </button>`
+                  ) : `
                   <button type="button" class="btn-3d btn-3d-primary" onclick="window.MysteryBoxModal.equipDrop('${item.id}')">
                     ⚡ Equip to Monster
                   </button>
                   <button type="button" class="btn-3d btn-3d-secondary" onclick="window.MysteryBoxModal.sendToBackpack()">
                     🎒 Send to Backpack
-                  </button>
+                  </button>`}
                 </div>
               </div>
             </div>
@@ -542,6 +560,17 @@
           window.showNotification('🎉 Item equipped to ' + this.activeStudent.firstName + '\'s monster companion!', 'success');
         }
       }
+      this.close();
+    }
+
+    equipExtra(kind, id) {
+      try {
+        if (window.ClassroomStore && window.ClassroomStore.cosmetics && this.activeStudent) {
+          const r = window.ClassroomStore.cosmetics.equip(this.activeStudent.id, kind, id);
+          if (r && r.success && kind === 'sound' && window.ClassroomCosmetics) window.ClassroomCosmetics.playSound(id);
+          if (window.showNotification) window.showNotification('✨ Now wearing it!', 'success');
+        }
+      } catch (e) { /* ignore */ }
       this.close();
     }
 
@@ -652,7 +681,7 @@
                   ` : myBoxes.map(b => `
                     <div class="cabinet-box-row">
                       <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:1.4rem;">${b.boxTier === 'CELESTIAL' ? '🌌' : b.boxTier === 'GILDED' ? '🪙' : '🪵'}</span>
+                        <span style="font-size:1.4rem;">${window.boxTierInfo ? window.boxTierInfo(b.boxTier).icon : '🎁'}</span>
                         <div>
                           <div style="font-weight:800; font-size:0.84rem; color:#ffffff;">${b.boxTier} CHEST</div>
                           <div style="font-size:0.7rem; color:#94a3b8;">Ready to unlock</div>

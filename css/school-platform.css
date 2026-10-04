@@ -9378,22 +9378,28 @@ body.curriculum-drawer-open {
   display: inline-block;
 }
 
-.tier-wooden {
-  background: rgba(180, 83, 9, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(180, 83, 9, 0.4);
+.tier-bronze {
+  background: rgba(194, 120, 62, 0.22);
+  color: #fdba74;
+  border: 1px solid rgba(194, 120, 62, 0.55);
 }
 
-.tier-gilded {
+.tier-wooden {   /* Silver */
+  background: rgba(203, 213, 225, 0.2);
+  color: #e2e8f0;
+  border: 1px solid rgba(203, 213, 225, 0.55);
+}
+
+.tier-gilded {   /* Gold */
   background: rgba(234, 179, 8, 0.2);
   color: #fef08a;
   border: 1px solid rgba(234, 179, 8, 0.5);
 }
 
-.tier-celestial {
-  background: rgba(168, 85, 247, 0.2);
-  color: #e9d5ff;
-  border: 1px solid rgba(168, 85, 247, 0.5);
+.tier-celestial {   /* Diamond */
+  background: rgba(34, 211, 238, 0.2);
+  color: #cffafe;
+  border: 1px solid rgba(103, 232, 249, 0.6);
 }
 
 .btn-unboxing-pulse {
@@ -9776,4 +9782,6 @@ body.curriculum-drawer-open {
   letter-spacing: 0.02em !important;
 }
 
-
+/* Mystery box prize card: the two buttons stack so neither is cut off */
+.reward-modal-actions { flex-wrap: wrap; }
+.reward-modal-actions .btn-3d { flex: 1 1 100%; }

@@ -1106,6 +1106,7 @@
     }
 
     if (!auraId || auraId === 'none') return '';
+    if (String(auraId).indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const ca = window.MonsterCostumes.aura(auraId, stage); if (ca) return ca; }
 
     if (auraId === 'aura-sparkle' || auraId === 'aura-friendship') {
       return `
@@ -1504,6 +1505,7 @@
     }
 
     if (effBackpack === 'none' || effBackpack === 'backpack-none') return '';
+    if (String(effBackpack).indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const cb = window.MonsterCostumes.backpack(stage, effBackpack); if (cb) return cb; }
 
     if (effBackpack === 'bp-explorer' || effBackpack === 'backpack-explorer') {
       return `
@@ -1959,6 +1961,7 @@
   function renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage) {
     if (!clothingId || clothingId === 'none' || clothingId === 'clothing-none') return '';
     const norm = String(clothingId).toLowerCase().trim();
+    if (norm.indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const cc = window.MonsterCostumes.clothing(norm); if (cc) return cc; }
 
     // Adventure Explorer Vest
     if (norm === 'clothing-vest' || norm === 'vest' || norm.includes('vest') || norm === 'explorer_vest') {
@@ -2704,6 +2707,14 @@
       `;
     }
 
+    // New costume sets (js/monster-costumes.js)
+    if (typeof window !== 'undefined' && window.MonsterCostumes) {
+      try {
+        const cm = window.MonsterCostumes.foreground(stage, g, { hat: hatId, glasses: glassesId, accessory: accId });
+        hatMarkup += cm.hat; glassesMarkup += cm.glasses; accessoryMarkup += cm.accessory;
+      } catch (e) { /* a costume that fails to draw is simply skipped */ }
+    }
+
     return `
       ${hatMarkup}
       ${glassesMarkup}
@@ -2721,6 +2732,7 @@
   function renderMonsterItemThumbnail(item, options = {}) {
     if (!item) return '';
     const size = options.size || 56;
+    if (item.id && String(item.id).indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const ct = window.MonsterCostumes.thumbnail(item, size); if (ct) return ct; }
     const colorKey = options.colorKey || 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
 
