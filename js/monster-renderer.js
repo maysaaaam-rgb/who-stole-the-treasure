@@ -3326,7 +3326,7 @@
               <div style="font-size:0.82rem; font-weight:900; color:#f8fafc; margin-bottom:8px; line-height:1.2;">${st.name}</div>
               
               <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);">
-                <img src="${getMonsterStageImage(st.stageKey)}" alt="${st.name}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+                <img src="assets/monsters/art/aquafind_${st.stageKey === 'cracking_egg' ? 'egg' : st.stageKey}.webp" onerror="this.onerror=null;this.src='${getMonsterStageImage(st.stageKey)}'" alt="${st.name}" style="width:100%; height:100%; object-fit:contain; display:block; padding:6px; box-sizing:border-box;" />
               </div>
 
               <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">
@@ -3383,8 +3383,26 @@
     return `/assets/monsters/${species}_stage_${stage}.webp`;
   }
 
+  // Scene and glow layers on their own (used behind the illustrated monsters).
+  function renderBackdropSvg(bgId) {
+    const palette = MONSTER_PALETTES.blue;
+    const defs = getSharedDefs('blue', palette);
+    return '<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="none">' + defs + renderBackgroundLayer(bgId || 'bg-meadow', 'growing') + '</svg>';
+  }
+
+  function renderAuraSvg(auraId, stage, colorKey) {
+    let key = String(colorKey || 'blue').toLowerCase().replace(/^body-/, '');
+    if (!MONSTER_PALETTES[key]) key = 'blue';
+    const palette = MONSTER_PALETTES[key];
+    const defs = getSharedDefs(key, palette);
+    const markup = renderAuraLayer(auraId, normalizeStageKey(stage), palette);
+    return markup ? '<svg viewBox="0 0 200 200" width="100%" height="100%">' + defs + markup + '</svg>' : '';
+  }
+
   root.MonsterRenderer = {
     getMonsterAsset: getMonsterAsset,
+    renderBackdropSvg: renderBackdropSvg,
+    renderAuraSvg: renderAuraSvg,
     getMonsterStageImage: getMonsterStageImage,
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,

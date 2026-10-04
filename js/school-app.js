@@ -808,7 +808,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -928,6 +928,7 @@
     }
   };
 
+  window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
     if (updateHash) {
@@ -1182,6 +1183,45 @@
    * Checks student.custom_avatar_url, profile.custom_avatar_url, or synthesizes
    * the exact customized SVG companion if custom colors/cosmetics are equipped.
    */
+  // Illustrated art lives in assets/monsters/art/<species>_<stage>.webp (egg, baby, growing, adventurer, advanced, ultimate).
+  // A species is listed in "ready" only when its final art is in the folder.
+  const MONSTER_ART = {
+    base: 'assets/monsters/art/',
+    ready: ['aquafind', 'florasprout', 'astralight', 'emberwing', 'sparktail'],
+    speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' }
+  };
+  window.MONSTER_ART = MONSTER_ART;
+  window.getIllustratedMonsterUrl = function (baseColor, mState) { return getIllustratedMonsterUrl(baseColor, mState); };
+  function getIllustratedMonsterUrl(baseColor, mState) {
+    const color = String(baseColor || 'blue').toLowerCase().replace(/^body-/, '');
+    const species = MONSTER_ART.speciesByColor[color] || 'aquafind';
+    if (MONSTER_ART.ready.indexOf(species) === -1) return '';
+    let stage = (mState && mState.stageKey) || 'baby';
+    if (stage === 'cracking_egg') stage = 'cracking';
+    if (['egg', 'cracking', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'].indexOf(stage) === -1) stage = 'baby';
+    return MONSTER_ART.base + species + '_' + stage + '.webp';
+  }
+
+  // Card hero picture: the dressed-up illustrated monster when the student wears items the art supports, otherwise the plain picture.
+  function heroMonsterHtml(src, name, profile, state, cls) {
+    const img = '<img src="' + src + '" alt="' + name + '" class="' + cls + '" loading="lazy" onerror="this.src=\'' + src + '\'" />';
+    try {
+      const D = window.MonsterDressUp;
+      if (!D || !profile || !state) return img;
+      let stage = state.stageKey;
+      if (stage === 'cracking_egg') stage = 'egg';
+      if (!stage || stage === 'egg') return img;
+      const color = profile.baseColor || 'blue';
+      if (!D.hasArt(color, stage)) return img;
+      const eq = Object.assign({}, profile.equipped || {});
+      delete eq.background; delete eq.aura;
+      const wearing = [eq.hat, eq.glasses, eq.accessory, eq.backpack, eq.clothing].some(function (id) { return id && D.supportedItem(id); });
+      if (!wearing) return img;
+      return '<div class="eaa-card-dressed" style="width:100%;max-height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;">' +
+        D.render({ color: color, stage: stage, equipped: eq, size: '100%', animated: false }) + '</div>';
+    } catch (e) { return img; }
+  }
+
   function getStudentMonsterAvatarUrl(student, profile, mState) {
     // A saved avatar made by an older version of the monster drawing is stale: always redraw those.
     const isGenerated = u => typeof u === 'string' && u.indexOf('eaa-monster-svg') !== -1;
@@ -1191,6 +1231,11 @@
 
     const baseColor = (profile && profile.baseColor) || (student && student.element) || '';
     const equipped = (profile && profile.equipped) || {};
+
+    // Illustrated monster art: species follows the colour the student picked, stage follows their level.
+    // Monster Studio still shows the dress-up (hats, glasses, clothes) on the drawn version.
+    const illustrated = getIllustratedMonsterUrl(baseColor, mState);
+    if (illustrated) return illustrated;
     const hasEquipped = Object.values(equipped).some(v => v && v !== 'none' && v !== 'default');
     const isCustomFur = baseColor && baseColor !== 'blue';
 
@@ -1258,7 +1303,7 @@
     const avatarMarkup = '' +
       '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
         '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-        '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+        heroMonsterHtml(dynamicSprite, name, profile, mState, 'mascot-sprite-img monster-hero-3d') +
       '</div>';
 
     const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
@@ -3398,7 +3443,7 @@
               const avatarMarkup = '' +
                 '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
                   '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-                  '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d object-contain p-2" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+                  heroMonsterHtml(dynamicSprite, name, profile, mState, 'mascot-sprite-img monster-hero-3d object-contain p-2') +
                 '</div>';
 
               const badge = getStudentBadge(s);
@@ -3833,7 +3878,7 @@
       const avatarMarkup = '' +
         '<div class="avatar-hero-container monster-viewport-stage" style="--glow: ' + glow + '; --pedestal-glow: ' + glow + '">' +
           '<div class="mascot-pedestal-glow monster-iso-pedestal" style="--glow: ' + glow + '"></div>' +
-          '<img src="' + dynamicSprite + '" alt="' + name + '" class="mascot-sprite-img monster-hero-3d" loading="lazy" onerror="this.src=\'' + dynamicSprite + '\'" />' +
+          heroMonsterHtml(dynamicSprite, name, profile, monsterState, 'mascot-sprite-img monster-hero-3d') +
         '</div>';
 
       return '' +
@@ -9194,8 +9239,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
           { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
           { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
-          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
-        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
+          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' },
+          { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
+        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
 
         renderNavGroup('teaching', 'Teaching', [
           { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
@@ -9241,6 +9287,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'store' ? 'is-active' : '') + '" onclick="switchView(\'store\')" title="Store"><span class="nav-item-left"><span class="nav-icon">🛍️</span> <span class="nav-label">Store</span></span></button></li>' +
         '</ul>' +
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
           '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
@@ -9338,6 +9385,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
+        case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
         default: renderTeacherDashboard(container); break;
       }
@@ -13256,9 +13304,15 @@ window.switchClassroomSubTab = function(subTab) {
       window.MonsterRenderer.renderMonsterItemThumbnail :
       (window.renderMonsterItemThumbnail || null);
 
+    const gridStage = (mState && (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg')) ? 'baby' : ((mState && mState.stageKey) || 'baby');
+    const illustratedMode = !!(window.MonsterDressUp && window.MonsterDressUp.hasArt(monsterCreatorDraft.baseColor, gridStage));
+    const ART_FREE_CATEGORIES = ['body', 'background', 'aura'];
+
     grid.innerHTML = fullList.map(item => {
       const cat = item.category;
       let isSelected = false;
+      const notForArt = illustratedMode && !item.isNone && ART_FREE_CATEGORIES.indexOf(cat) === -1 && !window.MonsterDressUp.supportedItem(item.id);
+      const artOnlyItem = !illustratedMode && !item.isNone && window.MonsterDressUp && window.MonsterDressUp.isArtOnly(item.id);
 
       if (item.isNone) {
         if (cat === 'accessory') {
@@ -13289,14 +13343,20 @@ window.switchClassroomSubTab = function(subTab) {
         lockBadge = '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>';
       }
 
-      const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
+      const itemPic = (illustratedMode && !item.isNone && window.MonsterDressUp) ? window.MonsterDressUp.itemPicture(item.id) : '';
+      const thumbSvg = itemPic ? ('<img src="' + itemPic + '" alt="" style="width:44px;height:44px;object-fit:contain;" />') : (thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨'));
 
       let rarityBadge = '';
       if (item.rarity && item.rarity !== 'common' && !item.isNone) {
         rarityBadge = '<span class="monster-item-rarity-pill is-' + item.rarity + '">' + item.rarity + '</span>';
       }
 
-      const isCardLocked = isLevelLocked || !isUnlocked;
+      if (notForArt && !isLevelLocked && isUnlocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🎨 Drawn monsters only</span>';
+      } else if (artOnlyItem && !isLevelLocked && isUnlocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🖼️ Illustrated monsters only</span>';
+      }
+      const isCardLocked = isLevelLocked || !isUnlocked || notForArt || artOnlyItem;
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
              (isCardLocked ? 'style="pointer-events:none !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
@@ -13625,7 +13685,16 @@ window.switchClassroomSubTab = function(subTab) {
     const currentArchetype = (student && (student.archetype || student.monster_archetype)) || (mascot && mascot.element) || 'IGNIS';
 
     if (box) {
-      if (liveStageRenderer) {
+      if (window.MonsterDressUp && window.MonsterDressUp.hasArt(monsterCreatorDraft.baseColor, previewStage)) {
+        box.innerHTML = window.MonsterDressUp.render({
+          color: monsterCreatorDraft.baseColor,
+          stage: previewStage,
+          equipped: monsterCreatorDraft.equipped,
+          size: 280,
+          showBackground: true,
+          animated: monsterCreatorIsAnimated
+        });
+      } else if (liveStageRenderer) {
         box.innerHTML = liveStageRenderer({
           stage: previewStage,
           color: monsterCreatorDraft.baseColor,
