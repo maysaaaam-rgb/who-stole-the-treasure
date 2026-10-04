@@ -48,7 +48,9 @@ function draw() {
     item('🏔️ Mountain Race', 'Quiz race for teams · 55 questions', [{t: '▶ Play', h: '../unit2-revision/index.html' + q, c: 'blue'}]) +
     item('🎲 Bamboozle', 'Pick a mystery card · surprises and tricks', [{t: '▶ Play', h: '../bamboozle/index.html?grade=' + G + '&unit=2', c: 'pink'}]) +
     item('🕹️ Arcade', 'Memory Match, Sentence Relay, Hangman, Speaking Wheel, Champions Cup', [{t: '▶ Play', h: '../unit2-arcade/index.html' + q, c: 'gold'}]) +
-    item('🦉 Simon Says', 'Listening and moving with class names', [{t: '▶ Play', h: '../simon-says/index.html' + q}]);
+    item('🦉 Simon Says', 'Listening and moving with class names', [{t: '▶ Play', h: '../simon-says/index.html' + q}]) +
+    item('🐱🐶 Alley Fling', 'Cats vs Dogs: answer, then pull back and throw', [{t: '▶ Play', h: '../unit2-throw/index.html?grade=' + G, c: 'gold'}]) +
+    item('📞 Telephone Pictionary', 'Write, draw, fold and pass in groups', [{t: '▶ Play', h: '../telephone-pictionary/index.html' + q, c: 'pink'}, {t: '🖨️ Sheet', h: '../telephone-pictionary/sheet.html', c: 'grey'}]);
   document.querySelectorAll('.chip').forEach(function (b) { b.classList.toggle('sel', b.dataset.g === G); });
 }
 document.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { g = b.dataset.g; draw(); }; });
