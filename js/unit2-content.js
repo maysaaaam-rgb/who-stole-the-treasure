@@ -76,7 +76,7 @@
       }
     });
     var src = root.GAMES_DATA || root.GAMES_REGISTRY || [], fields = ['title', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'url', 'worksheet', 'worksheetRoute', 'worksheetUrl', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus', 'skills', 'category', 'categoryLabel'];
-    ['simon-says-grade3', 'simon-says-grade4', 'bamboozle-g3-u1', 'bamboozle-g3-u2', 'bamboozle-g4-u1', 'bamboozle-g4-u2', 'arcade-g3-u2', 'arcade-g4-u2', 'race-g3-u2', 'race-g4-u2', 'print-g3-u2', 'print-g4-u2'].forEach(function (id) {
+    ['simon-says-grade3', 'simon-says-grade4', 'bamboozle-g3-u1', 'bamboozle-g3-u2', 'bamboozle-g4-u1', 'bamboozle-g4-u2', 'arcade-g3-u2', 'arcade-g4-u2', 'race-g3-u2', 'race-g4-u2', 'print-g3-u2', 'print-g4-u2', 'alley-fling', 'telephone-pictionary'].forEach(function (id) {
       var def = src.filter(function (g) { return g && g.id === id; })[0], cur = st.state.resources.filter(function (r) { return r && r.id === id; })[0];
       if (def && cur && (cur.description !== def.description || cur.route !== def.route)) { fields.forEach(function (f) { if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f])); }); changed = true; }
     });

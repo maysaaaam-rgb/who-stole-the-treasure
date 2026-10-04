@@ -8528,6 +8528,107 @@ const GAMES_REGISTRY = [
     "formula": "I am thankful for my family. There are pink potatoes.",
     "url": "telephone-pictionary/index.html",
     "worksheetUrl": "telephone-pictionary/sheet.html"
+  },
+  {
+    "id": "alley-fling",
+    "title": "🐱🐶 Alley Fling: Cats vs Dogs (Unit 2, Grades 3 and 4)",
+    "description": "A whole-class aim-and-throw game on the smartboard. Teams earn each throw by answering Unit 2 English questions (listening, words, sentence builder, spelling, speaking, grammar, reading). Then a pupil pulls back and lets go like a slingshot. Choose rock, fish, yarn, bone or ball, and watch the wind. Team Battle, Friendly Co-op against the Bin Boss, Quick Quiz and Practice, with a skill report and words to practise at the end.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Vocabulary",
+      "Sentence building",
+      "Spelling",
+      "Speaking",
+      "Grammar",
+      "Reading"
+    ],
+    "topic": "Unit 2 review (Grade 3: Thank You; Grade 4: What Lives Here?)",
+    "topics": [
+      "Unit 2 review"
+    ],
+    "languageFocus": "Unit 2 vocabulary, sentences and grammar",
+    "activityMode": "Two teams, whole class",
+    "interactionType": "Team quiz game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "game",
+      "teams",
+      "smartboard",
+      "review",
+      "speaking",
+      "spelling"
+    ],
+    "learningObjectives": [
+      "Recall Unit 2 words and sentence patterns",
+      "Practise all skills: listening, speaking, reading and writing",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose the grade, mode and arena. The class is split into Cats and Dogs. You can tap a name to move a pupil, press the cross if someone is absent, or press \"I pick the teams\". Each turn a pupil answers a question; for Speak It, you tap Good English or Try Again. Then the pupil touches the scene, pulls back and lets go to throw. Wrong answers only mean a second try. At the end, review the skill report and the words to practise.",
+    "studentInstructions": "Answer the question, then pull back and let go to throw!",
+    "route": "unit2-throw/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-throw/index.html",
+    "worksheetUrl": null
   }
 ];
 
