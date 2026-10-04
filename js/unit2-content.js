@@ -61,9 +61,29 @@
     if (st.notify) st.notify();
     return true;
   }
-  root.Unit2Content = { data: DATA, apply: apply, applyUnit1Fixes: applyUnit1Fixes };
+
+  // ---- Simon Says: the single old library card is replaced by the Grade 3 and Grade 4 editions ----
+  function applySimonSplit() {
+    // Safe to run several times: removes the old single card and keeps the two grade cards identical to the library data.
+    var st = root.schoolStore || root.store, changed = false;
+    if (!st || !st.state || !Array.isArray(st.state.resources)) return false;
+    if (st.state.resources.some(function (r) { return r && r.id === 'simon-says-classroom'; })) {
+      if (st.deleteResource) st.deleteResource('simon-says-classroom');
+      else st.state.resources = st.state.resources.filter(function (r) { return r && r.id !== 'simon-says-classroom'; });
+      changed = true;
+    }
+    var src = root.GAMES_DATA || root.GAMES_REGISTRY || [], fields = ['title', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'url', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus'];
+    ['simon-says-grade3', 'simon-says-grade4'].forEach(function (id) {
+      var def = src.filter(function (g) { return g && g.id === id; })[0], cur = st.state.resources.filter(function (r) { return r && r.id === id; })[0];
+      if (def && cur && cur.description !== def.description) { fields.forEach(function (f) { if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f])); }); changed = true; }
+    });
+    if (changed) { if (st.saveState) st.saveState(); if (st.notify) st.notify(); }
+    return changed;
+  }
+  root.Unit2Content = { data: DATA, apply: apply, applyUnit1Fixes: applyUnit1Fixes, applySimonSplit: applySimonSplit };
   if (typeof document !== 'undefined') {
-    var run = function () { try { var a = apply(), b = applyUnit1Fixes(); if ((a || b) && root.renderCurrentView) root.renderCurrentView(); } catch (e) { console.warn('[Unit2Content]', e); } };
+    var run = function () { try { var a = apply(), b = applyUnit1Fixes(), c = applySimonSplit(); if ((a || b || c) && root.renderCurrentView) root.renderCurrentView(); } catch (e) { console.warn('[Unit2Content]', e); } };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 400); }); else setTimeout(run, 400);
+    [6000, 13000].forEach(function (ms) { setTimeout(function () { try { if (applySimonSplit() && root.renderCurrentView) root.renderCurrentView(); } catch (e) { /* ignore */ } }, ms); });
   }
 })(typeof window !== 'undefined' ? window : this);
