@@ -808,7 +808,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -928,6 +928,7 @@
     }
   };
 
+  window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
     if (updateHash) {
@@ -9238,8 +9239,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
           { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
           { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
-          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' }
-        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance']) +
+          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' },
+          { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
+        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
 
         renderNavGroup('teaching', 'Teaching', [
           { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
@@ -9285,6 +9287,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'store' ? 'is-active' : '') + '" onclick="switchView(\'store\')" title="Store"><span class="nav-item-left"><span class="nav-icon">🛍️</span> <span class="nav-label">Store</span></span></button></li>' +
         '</ul>' +
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
           '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
@@ -9382,6 +9385,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
+        case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
         default: renderTeacherDashboard(container); break;
       }

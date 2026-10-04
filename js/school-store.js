@@ -16797,7 +16797,7 @@
           if (!profile.unlockedItems) profile.unlockedItems = [];
           if (!profile.unlockedItems.includes(item.id)) {
             profile.unlockedItems.push(item.id);
-            this.saveMonsterProfile(studentId, profile);
+            this.updateMonsterProfile(studentId, { unlockedItems: profile.unlockedItems });
           }
         }
       }
@@ -16845,7 +16845,7 @@
         profile.equipped[item.category] = item.id;
         if (!profile.unlockedItems) profile.unlockedItems = [];
         if (!profile.unlockedItems.includes(item.id)) profile.unlockedItems.push(item.id);
-        this.saveMonsterProfile(studentId, profile);
+        this.updateMonsterProfile(studentId, { unlockedItems: profile.unlockedItems, equipped: Object.assign({}, profile.equipped) });
       }
       this.saveState();
       this.notify();
