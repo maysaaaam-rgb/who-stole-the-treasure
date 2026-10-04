@@ -896,10 +896,10 @@
       'the-day-your-brain-quit': 'brain/index.html',
       'brain': 'brain/index.html',
       'nasa-mission': 'nasa-mission/index.html',
-      'academy-bamboozle': 'baamboozle/index.html',
-      'baamboozle': 'baamboozle/index.html',
-      'bamboozle': 'baamboozle/index.html',
-      'young-inventors-battle': 'baamboozle/index.html',
+      'academy-bamboozle': 'bamboozle/index.html?grade=3&unit=1',
+      'baamboozle': 'bamboozle/index.html?grade=3&unit=1',
+      'bamboozle': 'bamboozle/index.html?grade=3&unit=1',
+      'young-inventors-battle': 'bamboozle/index.html?grade=3&unit=1',
       'good-ideas-lab': 'good-ideas-lab/index.html',
       'inventors-odyssey': 'good-ideas-lab/index.html',
       'the-inventors-odyssey': 'good-ideas-lab/index.html',
@@ -14019,20 +14019,16 @@ window.switchClassroomSubTab = function(subTab) {
         break;
       case 'bamboozle':
         container.innerHTML = '' +
-          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
-            '<!-- Baamboozle Arena Utility Card -->' +
-            '<div class="toolkit-card" style="max-width:520px; width:100%; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border: 2px solid #38bdf8; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'baamboozle/index.html\', \'_blank\')">' +
-              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
-                '<span style="font-size: 2.4rem;">⚡</span>' +
-                '<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">PARTY SHOWDOWN</span>' +
+          '<div style="padding:20px 12px; text-align:center;">' +
+            '<div style="background:linear-gradient(180deg,#a78bfa 0%,#7dd3fc 60%,#fde68a 100%); color:#26215c; border-radius:22px; padding:24px 16px; box-shadow:0 12px 28px rgba(38,33,92,.22);">' +
+              '<div style="font-size:3rem;">🎲</div>' +
+              '<h3 style="font-size:1.7rem; font-weight:900; margin:4px 0;">Bamboozle: Mystery Cards</h3>' +
+              '<p style="font-size:0.95rem; font-weight:600; margin:0 auto 16px auto; max-width:520px; color:#3b2f99;">Team quiz for the smartboard. Pick a number, answer the question, and watch out for surprise cards!</p>' +
+              '<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; max-width:560px; margin:0 auto;">' +
+                [['3','1','🔧 Grade 3 · Unit 1'],['3','2','🌾 Grade 3 · Unit 2'],['4','1','📖 Grade 4 · Unit 1'],['4','2','🌲 Grade 4 · Unit 2']].map(function (x) {
+                  return '<button type="button" class="btn-primary-action" onclick="window.open(\'bamboozle/index.html?grade=' + x[0] + '&unit=' + x[1] + '\',\'_blank\')" style="font-size:1.05rem; font-weight:900; padding:14px 10px; border-radius:18px; background:#22c55e;">' + x[2] + '</button>';
+                }).join('') +
               '</div>' +
-              '<div style="margin: 1rem 0;">' +
-                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Baamboozle Arena</h3>' +
-                '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">24-Card Team Tournament with Phonics, CLIL Inventions, Tongue Twisters & Sabotage Traps.</p>' +
-              '</div>' +
-              '<button style="background: #38bdf8; color: #022c22; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
-                '🚀 Launch Arena' +
-              '</button>' +
             '</div>' +
           '</div>';
         break;
