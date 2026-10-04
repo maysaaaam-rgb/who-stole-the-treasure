@@ -16351,6 +16351,12 @@
               mergedXP = Math.max(mergedXP, remoteFolded);
               folded = true;
             }
+            // Neither side has ever recorded an XP change (no stamp): a brand-new device only holds placeholder XP,
+            // so it must take the cloud's higher number instead of keeping its own and saving it over the real one.
+            if (!cloudIsNewer && remoteStamp === 0 && localStamp === 0 && remoteAct > mergedXP) {
+              mergedXP = remoteAct;
+              folded = true;
+            }
 
             const mergedStudent = Object.assign({}, local, remoteStudent, {
               xp: mergedXP,

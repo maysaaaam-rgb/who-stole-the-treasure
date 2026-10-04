@@ -270,6 +270,26 @@
 
       const row = toSupabaseRecord(student);
 
+      // Safety net: a device that never changed this student's XP (no stamp) must never lower the XP,
+      // or shorten the XP history, that is already in the cloud (a new device starts with placeholder values).
+      if (!this._xpGuardAt) this._xpGuardAt = {};
+      if (!student.xpUpdatedAt && (Date.now() - (this._xpGuardAt[row.id] || 0)) > 60000) {
+        this._xpGuardAt[row.id] = Date.now();
+        try {
+          const cur = await client.from('students').select('xp,extra_data').eq('id', row.id).maybeSingle();
+          const c = cur && cur.data;
+          if (c) {
+            if (typeof c.xp === 'number' && c.xp > row.xp) {
+              row.xp = c.xp;
+              row.level = _cloudStageFor(Object.assign({}, student, { xp: c.xp })).curLvl;
+              row.extra_data.xpUpdatedAt = (c.extra_data && c.extra_data.xpUpdatedAt) || null;
+            }
+            const ch = c.extra_data && c.extra_data.xpHistory;
+            if (Array.isArray(ch) && ch.length > (row.extra_data.xpHistory || []).length) row.extra_data.xpHistory = ch;
+          }
+        } catch (e) { /* if the check cannot run, save as before */ }
+      }
+
       try {
         const { data, error } = await client
           .from('students')
