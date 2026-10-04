@@ -59,7 +59,9 @@
     if (!d.config) d.config = clone(DEFAULTS);
     var c = d.config;
     c.itemPrices = Object.assign({}, DEFAULTS.itemPrices, c.itemPrices || {});
+    var hadBronze = !!(c.boxPrices && c.boxPrices.BRONZE);
     c.boxPrices = Object.assign({}, DEFAULTS.boxPrices, c.boxPrices || {});
+    if (!hadBronze) c.boxPrices.BRONZE = Math.max(1, Math.round(c.boxPrices.WOODEN / 2));   // the cheapest box costs half a Silver Box
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};

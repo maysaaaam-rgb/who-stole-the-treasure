@@ -53,7 +53,7 @@
   ITEMS.forEach(function (i) { BY_ID[i.id] = i; });
 
   /* ---------------- hats: sit on the crown (topY) ---------------- */
-  function hatSvg(id, g) {
+  function hatSvg0(id, g) {
     var t = g.topY, e = g.eyeY, c = g.cheekY;
     switch (id) {
       case 'cs-gat':
@@ -102,7 +102,7 @@
   }
 
   /* ---------------- glasses: centred on the eyes ---------------- */
-  function glassesSvg(id, g) {
+  function glassesSvg0(id, g) {
     var y = g.eyeY, s = g.eyeSpacing;
     if (id === 'cs-binoculars') {
       return '<g class="monster-glasses"><rect x="' + (100 - 6) + '" y="' + (y - 4) + '" width="12" height="8" rx="3" fill="#475569" stroke="#0f172a" stroke-width="1.6"/>' +
@@ -122,7 +122,7 @@
   }
 
   /* ---------------- accessories: held or worn on the chest ---------------- */
-  function accessorySvg(id) {
+  function accessorySvg0(id) {
     switch (id) {
       case 'cs-magnifier':
         return '<g class="monster-acc" transform="translate(136,108)"><line x1="14" y1="16" x2="30" y2="38" stroke="#78350f" stroke-width="6" stroke-linecap="round"/><line x1="14" y1="16" x2="30" y2="38" stroke="#a16207" stroke-width="2.4" stroke-linecap="round"/>' +
@@ -146,7 +146,7 @@
   }
 
   /* ---------------- clothing: drawn over the torso ---------------- */
-  function clothingSvg(id) {
+  function clothingSvg0(id) {
     switch (id) {
       case 'cs-hanbok':
         return '<g class="monster-clothing"><path d="M64 110 C62 128 66 142 80 148 L120 148 C134 142 138 128 136 110 C126 106 112 108 100 118 C88 108 74 106 64 110 Z" fill="#fb7185" stroke="#9f1239" stroke-width="2.6" stroke-linejoin="round"/>' +
@@ -189,7 +189,7 @@
   }
 
   /* ---------------- back gear: behind the body ---------------- */
-  function backpackSvg(id) {
+  function backpackSvg0(id) {
     switch (id) {
       case 'cs-jetpack':
         return '<g class="monster-backpack">' +
@@ -211,7 +211,7 @@
   }
 
   /* ---------------- aura: floating decoration around the monster ---------------- */
-  function auraSvg(id) {
+  function auraSvg0(id) {
     if (id === 'cs-lantern') {
       function lamp(x, y, s) {
         return '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')"><circle cx="0" cy="0" r="16" fill="#fdba74" opacity="0.28"/>' +
@@ -227,6 +227,16 @@
     return '';
   }
 
+
+  /* ---- extension point: js/monster-costumes2.js registers more drawings here ---- */
+  var EXT = { hat: {}, glasses: {}, accessory: {}, clothing: {}, backpack: {}, aura: {}, views: {} };
+  function hatSvg(id, g) { return EXT.hat[id] ? EXT.hat[id](g) : hatSvg0(id, g); }
+  function glassesSvg(id, g) { return EXT.glasses[id] ? EXT.glasses[id](g) : glassesSvg0(id, g); }
+  function accessorySvg(id) { return EXT.accessory[id] ? EXT.accessory[id]() : accessorySvg0(id); }
+  function clothingSvg(id) { return EXT.clothing[id] ? EXT.clothing[id]() : clothingSvg0(id); }
+  function backpackSvg(id) { return EXT.backpack[id] ? EXT.backpack[id]() : backpackSvg0(id); }
+  function auraSvg(id) { return EXT.aura[id] ? EXT.aura[id]() : auraSvg0(id); }
+
   /* ---------------- small shop / dress-up icons ---------------- */
   var VIEW = { hat: '50 8 100 78', glasses: '56 78 88 50', accessory: '20 80 160 90', clothing: '54 92 92 66', backpack: '30 92 140 84', aura: '10 10 180 160' };
   var VIEW_BY_ID = { 'cs-magnifier': '122 98 60 58', 'cs-ladle': '128 90 48 82', 'cs-teddy': '22 104 52 56', 'cs-medal': '66 96 68 60', 'cs-space-helmet': '40 40 120 110', 'cs-chef-hat': '56 12 88 70', 'cs-night-cap': '56 18 100 80', 'cs-headband': '50 54 110 56', 'cs-binoculars': '46 90 108 40', 'cs-hero-mask': '62 90 76 40' };
@@ -239,12 +249,18 @@
     else if (cat === 'backpack') body = backpackSvg(id);
     else if (cat === 'aura') body = auraSvg(id);
     if (!body) return null;
-    var vb = VIEW_BY_ID[id] || VIEW[cat] || '0 0 200 200', p = vb.split(' ').map(Number);
-    var back = '<rect x="' + p[0] + '" y="' + p[1] + '" width="' + p[2] + '" height="' + p[3] + '" rx="' + Math.round(Math.min(p[2], p[3]) * 0.18) + '" fill="#dbeafe"/>';
+    var vb = EXT.views[id] || VIEW_BY_ID[id] || VIEW[cat] || '0 0 200 200', p = vb.split(' ').map(Number);
+    var back = '<rect x="' + p[0] + '" y="' + p[1] + '" width="' + p[2] + '" height="' + p[3] + '" rx="' + Math.round(Math.min(p[2], p[3]) * 0.18) + '" fill="' + (cat === 'aura' ? '#3b3a7a' : '#dbeafe') + '"/>';
     return '<svg xmlns="http://www.w3.org/2000/svg" width="' + (size || 56) + '" height="' + (size || 56) + '" viewBox="' + vb + '" preserveAspectRatio="xMidYMid meet" style="display:block;overflow:visible">' + back + body + '</svg>';
   }
 
   root.MonsterCostumes = {
+    /** Register more costumes: { sets, items, hat, glasses, accessory, clothing, backpack, aura, views } */
+    extend: function (x) {
+      Object.keys(x.sets || {}).forEach(function (k) { SETS[k] = x.sets[k]; });
+      (x.items || []).forEach(function (i) { if (!BY_ID[i.id]) { ITEMS.push(i); BY_ID[i.id] = i; } });
+      ['hat', 'glasses', 'accessory', 'clothing', 'backpack', 'aura', 'views'].forEach(function (k) { Object.keys(x[k] || {}).forEach(function (id) { EXT[k][id] = x[k][id]; }); });
+    },
     sets: SETS,
     items: ITEMS,
     has: function (id) { return !!BY_ID[id]; },

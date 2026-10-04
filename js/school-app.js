@@ -13489,8 +13489,20 @@ window.switchClassroomSubTab = function(subTab) {
     }
   };
 
+  /** Shop-only items (unlockType 'store') can be worn only by a student who owns them. */
+  function ownsShopItem(studentId, item) {
+    if (!item || item.unlockType !== 'store') return true;
+    try {
+      const inv = store.getStudentInventory ? store.getStudentInventory(studentId) : [];
+      if (inv.some(e => e.itemId === item.id)) return true;
+      const pr = store.getMonsterProfile ? store.getMonsterProfile(studentId) : null;
+      return !!(pr && pr.unlockedItems && pr.unlockedItems.indexOf(item.id) !== -1);
+    } catch (e) { return false; }
+  }
+
   function equipItem(category, item) {
     if (!item) return;
+    if (monsterCreatorStudentId && !ownsShopItem(monsterCreatorStudentId, item)) { console.warn('Shop item not owned:', item.name || item.id); return; }
 
     // Strict block on locked cosmetics
     const unlockLevel = (item && item.unlockLevel) || (item && item.unlockRequirement && item.unlockRequirement.level);
@@ -13566,6 +13578,11 @@ window.switchClassroomSubTab = function(subTab) {
     // Strict Level Lock Enforcement
     const curLevel = (window.currentMonster && window.currentMonster.level) || 
       (store && monsterCreatorStudentId && typeof store.calculateMonsterState === 'function' ? (store.calculateMonsterState(monsterCreatorStudentId)?.currentLevel || 1) : 1);
+
+    if (!isNone && !ownsShopItem(monsterCreatorStudentId, targetItem)) {
+      console.warn('Shop item not owned:', targetItem.name || itemId);
+      return; // bought in the shop only
+    }
 
     if (!isNone) {
       const reqLevel = (targetItem.unlockRequirement && targetItem.unlockRequirement.level) || targetItem.unlockLevel || 1;
