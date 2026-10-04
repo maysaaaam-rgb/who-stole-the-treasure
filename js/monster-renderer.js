@@ -3326,7 +3326,7 @@
               <div style="font-size:0.82rem; font-weight:900; color:#f8fafc; margin-bottom:8px; line-height:1.2;">${st.name}</div>
               
               <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);">
-                <img src="assets/monsters/art/aquafind_${st.stageKey === 'cracking_egg' ? 'egg' : st.stageKey}.webp" onerror="this.onerror=null;this.src='${getMonsterStageImage(st.stageKey)}'" alt="${st.name}" style="width:100%; height:100%; object-fit:contain; display:block; padding:6px; box-sizing:border-box;" />
+                <img src="${window.EAA_ILLUSTRATED_MONSTERS === true ? 'assets/monsters/art/aquafind_' + (st.stageKey === 'cracking_egg' ? 'egg' : st.stageKey) + '.webp' : getMonsterStageImage(st.stageKey)}" onerror="this.onerror=null;this.src='${getMonsterStageImage(st.stageKey)}'" alt="${st.name}" style="width:100%; height:100%; object-fit:contain; display:block; padding:6px; box-sizing:border-box;" />
               </div>
 
               <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">

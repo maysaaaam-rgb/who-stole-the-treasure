@@ -194,11 +194,11 @@
   root.MonsterDressUp = {
     render: render,
     speciesForColor: speciesForColor,
-    hasArt: function (color, stage) { var s = speciesForColor(color); return !!(root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[s + '_' + normStage(stage)]); },
+    hasArt: function (color, stage) { if (root.EAA_ILLUSTRATED_MONSTERS !== true) return false; var s = speciesForColor(color); return !!(root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[s + '_' + normStage(stage)]); },
     supportedItem: function (id) { return !!FILE[id]; },
     isHiddenByBaked: isHiddenByBaked,
     isArtOnly: function (id) { return ART_ONLY.indexOf(id) !== -1; },
-    itemPicture: function (id) { return FILE[id] ? ITEMS + 'item_' + FILE[id] + '.webp' : ''; },
+    itemPicture: function (id) { return (root.EAA_ILLUSTRATED_MONSTERS === true && FILE[id]) ? ITEMS + 'item_' + FILE[id] + '.webp' : ''; },
     // one of: cheer, think, oops, sleepy (the monster in its 'growing' pose with that expression)
     emotionUrl: function (color, emotion) { return ART + speciesForColor(color) + '_growing_' + emotion + '.webp'; },
     eggUrl: function (color, cracking) { return ART + speciesForColor(color) + (cracking ? '_cracking' : '_egg') + '.webp'; }

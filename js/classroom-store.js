@@ -116,7 +116,7 @@
   function canSell(item) {
     if (SELL_CATEGORIES.indexOf(item.category) === -1) return false;
     var D = root.MonsterDressUp;
-    if (['hat', 'glasses', 'accessory', 'backpack', 'clothing'].indexOf(item.category) !== -1) return !!(D && D.supportedItem(item.id));
+    if (['hat', 'glasses', 'accessory', 'backpack', 'clothing'].indexOf(item.category) !== -1) return root.EAA_ILLUSTRATED_MONSTERS === true ? !!(D && D.supportedItem(item.id)) : true;
     return true;
   }
   /** Items the student cannot use yet, which they can buy now. */
@@ -424,8 +424,9 @@
   // ---------------------------------------------------------------- UI (student)
   function itemPicHtml(item) {
     var name = String(item.id).replace(/^(bg|aura)-/, '');
-    if (item.category === 'background') return '<img src="assets/monsters/bg-art/bg_' + name + '.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:12px;">';
-    if (item.category === 'aura') return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
+    var artOn = root.EAA_ILLUSTRATED_MONSTERS === true;
+    if (artOn && item.category === 'background') return '<img src="assets/monsters/bg-art/bg_' + name + '.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:12px;">';
+    if (artOn && item.category === 'aura') return '<div style="width:72px;height:72px;margin:0 auto;background:#0f172a;border-radius:12px;display:flex;align-items:center;justify-content:center;"><img src="assets/monsters/aura-art/aura_' + name + '.webp" alt="" style="width:68px;height:68px;object-fit:contain;"></div>';
     var D = root.MonsterDressUp, pic = D && D.itemPicture ? D.itemPicture(item.id) : '';
     if (pic) return '<img src="' + pic + '" alt="" style="width:72px;height:72px;object-fit:contain;">';
     return '<div style="font-size:2.4rem;line-height:72px;height:72px;">' + esc(item.icon || '🎁') + '</div>';
