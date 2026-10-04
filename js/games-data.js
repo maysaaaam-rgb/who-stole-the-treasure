@@ -3488,24 +3488,19 @@ const GAMES_REGISTRY = [
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
-    "id": "simon-says-classroom",
-    "title": "Simon Says: Physical Classroom Game",
-    "description": "Teacher-led physical listening and reaction activity for the interactive smartboard. Features massive projector-friendly command displays, valid vs trick logic, procedural audio cues, natural TTS speech pronunciation, and +25 XP champion celebration.",
+    "id": "simon-says-grade3",
+    "title": "🦉 Simon Says: Inventors, Monsters & Harvest (Grade 3)",
+    "description": "Whole-class smartboard Simon Says for Grade 3. Commands come from Unit 1 (inventions, sound moves), Monster Day and Unit 2 (harvest, Chuseok, Mars). Pupils who slip are out and tap back in as helpers. The game gets harder with sneaky tricks. Uses your class list.",
     "type": "game",
     "category": "Phonics & Language Quests",
     "categoryLabel": "🗣️ Speaking Games",
-    "level": "Pre-A1–A2",
-    "cefrLevel": "Pre-A1–A2",
-    "age": "Ages 5–12",
-    "ageGroup": "5-12",
-    "grade": "Grades 1–6",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 1",
-      "Grade 2",
-      "Grade 3",
-      "Grade 4",
-      "Grade 5",
-      "Grade 6"
+      "Grade 3"
     ],
     "duration": 20,
     "durationText": "15–20 min",
@@ -3518,36 +3513,35 @@ const GAMES_REGISTRY = [
       "Focus",
       "Action Verbs"
     ],
-    "topic": "Action Verbs, Body Parts & Imperatives",
+    "topic": "Unit 1 Inventions, Monster Parts & Unit 2 Harvest",
     "topics": [
-      "Total Physical Response (TPR)",
-      "Action Verbs & Body Movement",
-      "Listening Skills"
+      "Unit 1: plan, build, test, try again, tidy, mess, machine, invent",
+      "Monster Day: tail, claws, fangs, wings, horns",
+      "Unit 2: pick, dig, weave, bow, harvest, space suit, helmet"
     ],
-    "languageFocus": "Imperatives (Touch, Jump, Turn, Raise, Freeze) & Simon Says Conditional Rules",
+    "languageFocus": "Imperatives with Unit 1 and Unit 2 words; First, Second, Third, Last commands; Simon says rules",
     "activityMode": "Classroom / Physical Whole Group",
     "interactionType": "Teacher-Led Smartboard Physical Activity",
     "difficulty": "All Levels (Adaptive Speed)",
     "tags": [
       "simon-says",
-      "listening",
-      "speaking",
-      "total-physical-response",
       "tpr",
-      "movement",
+      "listening",
       "smartboard",
-      "projector",
-      "toolkit"
+      "grade-3",
+      "unit-1",
+      "unit-2",
+      "names-elimination"
     ],
     "learningObjectives": [
-      "Respond physically to oral imperative command structures with speed and accuracy (TPR)",
-      "Distinguish between valid commands ('Simon says...') and false commands without Simon",
-      "Identify and execute action verbs and body part physical movements",
-      "Exercise self-regulation, auditory attention, and inhibitory control"
+      "Respond to spoken imperatives using Unit 1 and Unit 2 vocabulary",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow a two- or four-step command with First, Second, Third, Last",
+      "Practise -st, sh, fl and fr sounds in context"
     ],
-    "teacherInstructions": "Launch on your interactive whiteboard or projector. Have all students stand up. Tap any student to eliminate them when you observe them moving on a trick or performing the wrong action.",
-    "studentInstructions": "Listen carefully! Only do the action if Simon says! If you move without Simon says, you are out!",
-    "route": "#simon-says",
+    "teacherInstructions": "Open from the library on the smartboard. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. The game gets harder every few rounds. The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=3",
     "worksheet": null,
     "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
@@ -3558,32 +3552,45 @@ const GAMES_REGISTRY = [
     "categoryGroup": "TPR Action Quests",
     "vocabulary": {
       "core": [
-        "touch",
-        "jump",
-        "clap",
-        "turn around",
-        "stand up",
-        "sit down"
+        "plan",
+        "build",
+        "test",
+        "try again",
+        "tidy",
+        "mess",
+        "machine",
+        "invent",
+        "pick",
+        "harvest",
+        "bow",
+        "celebrate"
       ],
       "supporting": [
-        "shoulders",
-        "knees",
-        "toes",
-        "whisper",
-        "freeze",
-        "hop"
+        "mirror",
+        "parachute",
+        "tail",
+        "claws",
+        "fangs",
+        "wings",
+        "horns",
+        "space suit",
+        "helmet",
+        "weave",
+        "songpyeon"
       ],
       "phonics": [
-        "/cl/ in clap",
-        "/t/ in touch"
+        "-st: stand, stamp, stir, stretch",
+        "sh: shake, shut",
+        "fl / fr: flap, freeze, frog"
       ]
     },
     "grammar": {
-      "focusPattern": "Simon says, [Imperative Verb + Object]!",
-      "formula": "Simon says: Touch your [body part] and jump [number] times!",
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Build a machine! / Pick the fruit!",
       "formulas": [
-        "Imperative Formula: Verb + Noun Phrase (e.g., 'Touch your nose')",
-        "Simon says + [Imperative] vs. [Imperative] (Do not move!)"
+        "Simon says + imperative: do it",
+        "No Simon says: do not move",
+        "First…, Second…, Third…, Last…"
       ]
     },
     "clilDomain": "Kinesiology & Auditory Processing",
@@ -3593,7 +3600,119 @@ const GAMES_REGISTRY = [
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "👑",
     "formula": "Simon says: Touch your [body part] and jump [number] times!",
-    "url": "#simon-says",
+    "url": "simon-says/index.html?grade=3",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
+  },
+  {
+    "id": "simon-says-grade4",
+    "title": "🦉 Simon Says: Alice, Brain & Forests (Grade 4)",
+    "description": "Whole-class smartboard Simon Says for Grade 4. Commands come from Unit 1 (Alice in Wonderland, the brain, reading) and Unit 2 (forest animals, A New Friend, ai words). Pupils who slip are out and can become helpers. The game adds two-step and past-tense commands. Uses your class list.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🗣️ Speaking Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–20 min",
+    "estimatedMinutes": 20,
+    "xp": 25,
+    "skills": [
+      "Listening",
+      "Physical Response",
+      "Vocabulary",
+      "Focus",
+      "Action Verbs"
+    ],
+    "topic": "Unit 1 Alice & the Brain, Unit 2 Forests & A New Friend",
+    "topics": [
+      "Unit 1: fall, chase, shelves, sleepy, visualize, skim",
+      "Unit 2: hibernate, freeze, shiver, nest, roof, vet",
+      "Spelling pattern ai: sail, wait, paint, train, tail"
+    ],
+    "languageFocus": "Imperatives with Unit 1 and 2 words; two-step commands; past simple story verbs; so they can / instead of",
+    "activityMode": "Classroom / Physical Whole Group",
+    "interactionType": "Teacher-Led Smartboard Physical Activity",
+    "difficulty": "All Levels (Adaptive Speed)",
+    "tags": [
+      "simon-says",
+      "tpr",
+      "listening",
+      "smartboard",
+      "grade-4",
+      "unit-1",
+      "unit-2",
+      "names-elimination"
+    ],
+    "learningObjectives": [
+      "Respond to spoken imperatives using Unit 1 and Unit 2 vocabulary",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow two-step and past-tense story commands",
+      "Practise the ai spelling pattern words in context"
+    ],
+    "teacherInstructions": "Open from the library on the smartboard. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. The game gets harder every few rounds. The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "TPR Action Quests",
+    "vocabulary": {
+      "core": [
+        "fall",
+        "chase",
+        "visualize",
+        "skim",
+        "hibernate",
+        "survive",
+        "adapt",
+        "nest",
+        "roof",
+        "vet"
+      ],
+      "supporting": [
+        "shelves",
+        "sleepy",
+        "creative",
+        "shiver",
+        "tiptoe",
+        "howl",
+        "hoot",
+        "pine tree",
+        "gold coins",
+        "predator"
+      ],
+      "phonics": [
+        "ai: sail, wait, paint, train, tail"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Hibernate like a bear!",
+      "formulas": [
+        "Simon says + imperative: do it",
+        "Two-step commands: First…, then…",
+        "Hide so the wolf cannot see you (so…can)",
+        "Wave with your feet instead of your hands (instead of)"
+      ]
+    },
+    "clilDomain": "Kinesiology & Auditory Processing",
+    "clilTheme": "Kinesiology & Auditory Processing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👑",
+    "formula": "Simon says: Touch your [body part] and jump [number] times!",
+    "url": "simon-says/index.html?grade=4",
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {

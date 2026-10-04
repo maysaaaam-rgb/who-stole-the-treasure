@@ -1157,72 +1157,57 @@
   // =========================================================================
 
   root.renderToolkitSimonView = function() {
-    // Return the preview inside the standard toolkit modal
-    const classes = (typeof store !== 'undefined' && store.getClasses) ? store.getClasses().filter(c => !c.archived) : [];
-    const classCount = classes.length;
-    const activeClass = (typeof store !== 'undefined' && store.getActiveClass) ? store.getActiveClass() : (classes[0] || null);
-
+    const st = (typeof store !== 'undefined') ? store : null;
+    const act = st && st.getActiveClass ? st.getActiveClass() : null;
+    const cardStyle = 'flex:1; min-width:240px; background:linear-gradient(135deg,#fef9c3 0%,#fde68a 100%); border:3px solid #26215c; border-radius:20px; padding:18px; text-align:center; box-shadow:0 6px 0 rgba(38,33,92,.3);';
     return `
       <div style="padding:16px 8px; text-align:center;">
-        <div style="background:linear-gradient(135deg, #064e3b 0%, #042f2e 100%); color:#ffffff; border-radius:20px; padding:28px 20px; box-shadow:0 12px 28px rgba(6,78,59,0.25); margin-bottom:20px; text-align:center;">
-          <span style="font-size:3.5rem;">🗣️</span>
-          <h2 style="font-size:1.8rem; font-weight:900; margin:10px 0 6px 0;">Simon Says: Smartboard Edition</h2>
-          <p style="font-size:0.95rem; color:#a7f3d0; margin:0 0 20px 0; max-width:520px; margin-left:auto; margin-right:auto;">
-            Physical classroom listening &amp; reaction game. Massive projector-optimized commands, procedural sound effects, and 100% teacher-driven observation &amp; elimination.
+        <div style="background:linear-gradient(180deg,#38bdf8 0%,#c7d2fe 100%); color:#26215c; border-radius:22px; padding:26px 18px; box-shadow:0 12px 28px rgba(38,33,92,.2); margin-bottom:16px;">
+          <span style="font-size:3.4rem;">🦉</span>
+          <h2 style="font-size:1.8rem; font-weight:900; margin:6px 0;">Simon Says: Smartboard Edition</h2>
+          <p style="font-size:0.98rem; font-weight:600; margin:0 auto 18px auto; max-width:560px; color:#3b2f99;">
+            Two editions built from Unit 1 and Unit 2. Tap a pupil\u2019s name to take them out, and they become a helper. Levels get harder with sneaky tricks.
           </p>
-
-          <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.15); padding:8px 18px; border-radius:30px; font-size:0.88rem; font-weight:700; margin-bottom:24px;">
-            🎒 Class: <strong>${activeClass ? activeClass.name : 'All Students'}</strong>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
+            <div style="${cardStyle}">
+              <div style="font-size:2rem;">🔧</div><div style="font-size:1.3rem; font-weight:900;">Grade 3</div>
+              <div style="font-size:0.85rem; font-weight:600; margin:2px 0 12px;">Inventors · Monsters · Harvest</div>
+              <button type="button" class="btn-primary-action" onclick="window.openSimonSaysGrade(3)" style="font-size:1.1rem; font-weight:900; padding:10px 24px; border-radius:24px; background:#22c55e;">▶ Open Grade 3</button>
+            </div>
+            <div style="${cardStyle}">
+              <div style="font-size:2rem;">🌲</div><div style="font-size:1.3rem; font-weight:900;">Grade 4</div>
+              <div style="font-size:0.85rem; font-weight:600; margin:2px 0 12px;">Alice · Brain · Forests</div>
+              <button type="button" class="btn-primary-action" onclick="window.openSimonSaysGrade(4)" style="font-size:1.1rem; font-weight:900; padding:10px 24px; border-radius:24px; background:#22c55e;">▶ Open Grade 4</button>
+            </div>
           </div>
-
-          <div>
-            <button type="button" class="btn-primary-action" onclick="window.openSimonSaysModal()" style="font-size:1.2rem; font-weight:900; padding:14px 36px; border-radius:30px; background:#10b981; border:none; box-shadow:0 8px 20px rgba(16,185,129,0.4); cursor:pointer;">
-              🚀 Open Full Smartboard Projector View
-            </button>
-          </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; text-align:left;">
-          <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:14px;">
-            <div style="font-size:1.3rem; margin-bottom:4px;">👥</div>
-            <div style="font-size:0.85rem; font-weight:800; color:var(--text-main);">Existing Student List</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Auto-loads your classroom roster without manual typing.</div>
-          </div>
-          <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:14px;">
-            <div style="font-size:1.3rem; margin-bottom:4px;">👁️</div>
-            <div style="font-size:0.85rem; font-weight:800; color:var(--text-main);">Teacher-Controlled</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Observe real students and click names to eliminate.</div>
-          </div>
-          <div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:14px;">
-            <div style="font-size:1.3rem; margin-bottom:4px;">🏆</div>
-            <div style="font-size:0.85rem; font-weight:800; color:var(--text-main);">XP Celebration</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Crown the last player standing with confetti &amp; +25 XP.</div>
-          </div>
+          ${act ? '<div style="margin-top:12px; font-size:0.85rem; font-weight:700;">🎒 Your class: ' + act.name + '</div>' : ''}
         </div>
       </div>
     `;
   };
 
-  root.openSimonSaysModal = function(classId = null) {
+  function gradeForClass(classId) {
+    try {
+      const st = (typeof store !== 'undefined') ? store : null;
+      const c = classId && st && st.getClass ? st.getClass(classId) : (st && st.getActiveClass ? st.getActiveClass() : null);
+      const m = String((c && (c.name || c.grade)) || '').match(/[34]/);
+      return m ? m[0] : '3';
+    } catch (e) { return '3'; }
+  }
+
+  /** Opens the new kid-friendly Simon Says page in a new tab (it can read the class list from this window). */
+  root.openSimonSaysGrade = function(grade) {
     if (typeof window.closeModal === 'function') {
-      window.closeModal('modal-classroom-toolkit');
+      try { window.closeModal('modal-classroom-toolkit'); } catch (e) { /* ignore */ }
     }
-    const modal = document.getElementById('modal-simon-says');
-    if (!modal) return;
+    const url = 'simon-says/index.html?grade=' + (String(grade) === '4' ? '4' : '3');
+    const w = window.open(url, '_blank');
+    if (!w) window.location.href = url;
+  };
 
-    simonGame.init();
-    if (classId) {
-      simonGame.switchClass(classId);
-    } else {
-      simonGame.loadClassData();
-      simonGame.render();
-    }
-
-    if (typeof window.openModal === 'function') {
-      window.openModal('modal-simon-says');
-    } else {
-      modal.classList.add('is-open');
-    }
+  // Every older entry point (library card, #simon-says link, toolkit button) now opens the new page.
+  root.openSimonSaysModal = function(classId = null) {
+    root.openSimonSaysGrade(gradeForClass(classId));
   };
 
   // DOM ready check

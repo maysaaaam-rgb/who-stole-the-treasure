@@ -848,6 +848,12 @@
         return;
       }
     }
+    if (gameOrActivityId === 'simon-says-grade3' || gameOrActivityId === 'simon-says-grade4') {
+      if (typeof window.openSimonSaysGrade === 'function') {
+        window.openSimonSaysGrade(gameOrActivityId.slice(-1));
+        return;
+      }
+    }
     if (res && res.route) {
       if (res.route === '#simon-says') {
         if (typeof window.openSimonSaysModal === 'function') {
