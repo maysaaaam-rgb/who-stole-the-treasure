@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 2 · Print &amp; Play</title>
+<style>
+  :root { --ink:#26215c; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); min-height:100vh; background:linear-gradient(180deg,#a7f3d0 0%,#bae6fd 55%,#fde68a 100%); padding:2.4vh 3vw 6vh; }
+  .wrap { max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:2vh; }
+  h1 { font-size:clamp(28px,5.4vw,56px); text-align:center; } .sub { text-align:center; font-size:clamp(14px,2vw,22px); font-weight:600; color:#6d5fd1; }
+  .chip { font:inherit; font-weight:700; font-size:clamp(15px,2.2vw,24px); color:var(--ink); background:#f1f5f9; border:4px solid #cbd5e1; border-bottom-width:7px; border-radius:22px; padding:.5em 1.1em; cursor:pointer; } .chip.sel { background:#fde047; border-color:var(--ink); }
+  .row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .card { background:#fff; border:5px solid var(--ink); border-radius:26px; box-shadow:0 8px 0 rgba(38,33,92,.25); padding:16px 18px; }
+  h2 { font-size:clamp(20px,3vw,30px); margin-bottom:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .item { display:flex; flex-direction:column; gap:6px; border:4px solid #cbd5e1; border-radius:20px; padding:12px; background:#f8fafc; }
+  .item b { font-size:clamp(16px,2.2vw,22px); } .item span { font-size:clamp(13px,1.7vw,17px); color:#6b5fb5; font-weight:600; }
+  .btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  a.btn { font-weight:700; font-size:clamp(14px,1.9vw,19px); color:#fff; text-decoration:none; background:#22c55e; border:3px solid rgba(38,33,92,.85); border-bottom-width:6px; border-radius:16px; padding:.35em .9em; }
+  a.btn.blue { background:#3b82f6; } a.btn.grey { background:#64748b; } a.btn.gold { background:#f59e0b; } a.btn.pink { background:#ec4899; }
+  .play .item:nth-child(1){border-color:#f87171} .play .item:nth-child(2){border-color:#60a5fa} .play .item:nth-child(3){border-color:#4ade80} .play .item:nth-child(4){border-color:#c084fc}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📚 Unit 2: Print &amp; Play</h1>
+  <div class="sub" id="sub">Worksheets, check papers and smartboard games</div>
+  <div class="row"><button class="chip sel" data-g="3">🌾 Grade 3 · Thank You</button><button class="chip" data-g="4">🌲 Grade 4 · What Lives Here?</button></div>
+
+  <div class="card"><h2>🖨️ Printable worksheets (about 15 minutes each)</h2><div class="grid" id="ws"></div></div>
+  <div class="card"><h2>📝 Unit 2 check paper (50 marks)</h2><div class="grid" id="chk"></div></div>
+  <div class="card play"><h2>🎮 Smartboard games</h2><div class="grid" id="games"></div></div>
+</div>
+<script>
+var g = ((location.search.match(/grade=([34])/) || [])[1]) || '3';
+function item(t, d, links) { return '<div class="item"><b>' + t + '</b><span>' + d + '</span><div class="btns">' + links.map(function (l) { return '<a class="btn ' + (l.c || '') + '" href="' + l.h + '" target="_blank">' + l.t + '</a>'; }).join('') + '</div></div>'; }
+function draw() {
+  var G = g, pre = 'unit2-grade' + G;
+  var topics = G === '3' ? ['Chuseok and harvest words', 'Setting detective: Earth or Mars', 'Final -st sounds', 'There is / There are, thankful for'] : ['Forest, animal and story words', 'Headings and author’s purpose', 'The ai vowel team', 'so they can, instead of, past tense'];
+  var names = ['Vocabulary', 'Reading', 'Phonics', 'Grammar & writing'], files = ['ws1-vocabulary', 'ws2-reading', 'ws3-phonics', 'ws4-grammar-writing'];
+  document.getElementById('ws').innerHTML = names.map(function (n, i) { return item((i + 1) + '. ' + n, topics[i] + ' · 15 marks', [{t: '🖨️ Open &amp; print', h: pre + '-' + files[i] + '.html'}]); }).join('') + item('🧩 Puzzle pack (word search and word scramble)', 'Two puzzles, 22 marks, great for early finishers or a quiet starter', [{t: '🖨️ Open &amp; print', h: pre + '-puzzles.html'}, {t: '🔑 Answers', h: pre + '-puzzles-answers.html', c: 'grey'}])
+    + item('✅ Answers for all four', 'Teacher answers and marking notes', [{t: '🔑 Open answers', h: pre + '-worksheets-answers.html', c: 'grey'}]);
+  document.getElementById('chk').innerHTML = item('Unit 2 progress check', 'Listening, vocabulary, grammar, phonics, reading, writing (38 marks, about 38 minutes) plus speaking (12 marks, done with the teacher)', [{t: '🖨️ Open &amp; print', h: pre + '-check50.html'}]) + item('Teacher guide', 'Answers, listening script to read aloud twice, marking rules, speaking rubric, score bands and a class record table', [{t: '🔑 Open guide', h: pre + '-check50-teacher.html', c: 'grey'}]);
+  var q = '?grade=' + G;
+  document.getElementById('games').innerHTML =
+    item('🏔️ Mountain Race', 'Quiz race for teams · 55 questions', [{t: '▶ Play', h: '../unit2-revision/index.html' + q, c: 'blue'}]) +
+    item('🎲 Bamboozle', 'Pick a mystery card · surprises and tricks', [{t: '▶ Play', h: '../bamboozle/index.html?grade=' + G + '&unit=2', c: 'pink'}]) +
+    item('🕹️ Arcade', 'Memory Match, Sentence Relay, Hangman, Speaking Wheel, Champions Cup', [{t: '▶ Play', h: '../unit2-arcade/index.html' + q, c: 'gold'}]) +
+    item('🦉 Simon Says', 'Listening and moving with class names', [{t: '▶ Play', h: '../simon-says/index.html' + q}]);
+  document.querySelectorAll('.chip').forEach(function (b) { b.classList.toggle('sel', b.dataset.g === G); });
+}
+document.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { g = b.dataset.g; draw(); }; });
+draw();
+</script>
+</body>
+</html>

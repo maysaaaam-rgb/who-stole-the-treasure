@@ -1102,113 +1102,6 @@ const GAMES_REGISTRY = [
     "url": "eco-engineers/index.html"
   },
   {
-    "id": "baamboozle",
-    "aliases": [
-      "academy-bamboozle",
-      "bamboozle"
-    ],
-    "title": "⚡ Baamboozle Arena: STEM Showdown",
-    "description": "High-energy classroom team showdown with mystery cards, problem-solving questions, and sudden game-changing power-ups (Swap, Steal, and Double Points)!",
-    "type": "game",
-    "category": "Engineering & Inventions",
-    "categoryLabel": "⚡ Team Quiz Show",
-    "level": "A1–A2",
-    "cefrLevel": "A1–A2",
-    "age": "Ages 7–12",
-    "ageGroup": "7-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 15,
-    "durationText": "15 min",
-    "estimatedMinutes": 15,
-    "xp": 100,
-    "skills": [
-      "Speaking",
-      "Quick Recall",
-      "Team Collaboration"
-    ],
-    "topic": "Inventions, Tools & Problem Solving",
-    "topics": [
-      "Inventors & Inventions",
-      "Classroom Game Show",
-      "Team Communication"
-    ],
-    "languageFocus": "Why did people invent...? People invented... to [verb].",
-    "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
-    "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
-    "difficulty": "All Levels (A1–A2+)",
-    "tags": [
-      "baamboozle",
-      "bamboozle",
-      "game-show",
-      "quiz",
-      "team-battle",
-      "inventions",
-      "speaking",
-      "review"
-    ],
-    "learningObjectives": [
-      "Review and master primary science and invention vocabulary in high-energy team tournament format",
-      "Formulate fast affirmative and interrogative responses under time pressure",
-      "Distinguish between problems, tools, and technological solutions",
-      "Collaborate with peers using strategic gameplay and respectful sportsmanship"
-    ],
-    "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
-    "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
-    "route": "baamboozle/index.html",
-    "featured": true,
-    "thumbnailIcon": "🎮",
-    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"baamboozleGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"50%\" stop-color=\"#312e81\"/>\n          <stop offset=\"100%\" stop-color=\"#4338ca\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#baamboozleGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">⚡</text>\n    </svg>",
-    "categoryGroup": "Invention Game Show",
-    "vocabulary": {
-      "core": [
-        "inventor",
-        "invention",
-        "machine",
-        "blueprint",
-        "experiment",
-        "solution"
-      ],
-      "supporting": [
-        "gadget",
-        "teamwork",
-        "score",
-        "power-up",
-        "challenge"
-      ],
-      "phonics": [
-        "/v/ in inventor",
-        "/bl/ in blueprint"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Who invented the [item]? / What does it do?",
-      "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
-      "formulas": [
-        "Subject + was invented in [Year] by [Inventor]",
-        "It is used to + Base Verb"
-      ]
-    },
-    "clilDomain": "History of Technology & Team Problem Solving",
-    "clilTheme": "History of Technology & Team Problem Solving",
-    "trackId": "track-2",
-    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
-    "trackOrder": 3,
-    "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
-    "worksheetRoute": "baamboozle/worksheet.html",
-    "status": "active",
-    "worksheetUrl": "baamboozle/worksheet.html",
-    "url": "baamboozle/index.html"
-  },
-  {
     "id": "cat-vs-dog",
     "aliases": [
       "preposition-catapult",
@@ -3714,6 +3607,977 @@ const GAMES_REGISTRY = [
     "formula": "Simon says: Touch your [body part] and jump [number] times!",
     "url": "simon-says/index.html?grade=4",
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
+  },
+  {
+    "id": "bamboozle-g3-u1",
+    "title": "🎲 Bamboozle: Unit 1 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 1: What Does It Do? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "topics": [
+      "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+      "Team quiz review"
+    ],
+    "languageFocus": "has got / have got; What does it do? It cleans…; First, Second, Third, Last",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-1"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 1: What Does It Do?",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "invent",
+        "plan",
+        "build",
+        "test",
+        "try again",
+        "mess",
+        "tidy",
+        "machine"
+      ],
+      "supporting": [
+        "mirror",
+        "parachute",
+        "problem",
+        "solution",
+        "First, Second, Third, Last"
+      ],
+      "phonics": [
+        "sh, ch, fr, magic e (ship, frog, kite, bone)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "has got / have got; What does it do? It cleans…; First, Second, Third, Last",
+      "formula": "What does the machine do? It cleans the paper.",
+      "formulas": [
+        "has got / have got; What does it do? It cleans…; First, Second, Third, Last"
+      ]
+    },
+    "clilDomain": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "clilTheme": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔧",
+    "formula": "What does the machine do? It cleans the paper.",
+    "url": "bamboozle/index.html?grade=3&unit=1",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g3-u2",
+    "title": "🎲 Bamboozle: Unit 2 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 2: Thank You or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+      "Team quiz review"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-2"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌾",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "bamboozle/index.html?grade=3&unit=2",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u1",
+    "title": "🎲 Bamboozle: Unit 1 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 1: I Love Reading or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "topics": [
+      "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Who / Where / Why questions; past simple (chased, fell)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-1"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 1: I Love Reading",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "fall",
+        "chase",
+        "sleepy",
+        "visualize",
+        "skim",
+        "freeze",
+        "journey",
+        "creative"
+      ],
+      "supporting": [
+        "predator",
+        "monarch",
+        "caterpillar",
+        "shelves",
+        "cells",
+        "lobes"
+      ],
+      "phonics": [
+        "-st, -nd, -ng, tr-, -er"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Who / Where / Why questions; past simple (chased, fell)",
+      "formula": "Why was Alice sleepy? Because she was bored.",
+      "formulas": [
+        "Who / Where / Why questions; past simple (chased, fell)"
+      ]
+    },
+    "clilDomain": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "clilTheme": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "📖",
+    "formula": "Why was Alice sleepy? Because she was bored.",
+    "url": "bamboozle/index.html?grade=4&unit=1",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u2",
+    "title": "🎲 Bamboozle: Unit 2 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 2: What Lives Here? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+      "Team quiz review"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-2"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: What Lives Here?",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌲",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "bamboozle/index.html?grade=4&unit=2",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g3-u2",
+    "title": "🕹️ Unit 2 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
+    "description": "Four whole-class smartboard mini games for Unit 2: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-arcade/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g3-u2",
+    "title": "🏔️ Mountain Race: Unit 2 Revision (Grade 3)",
+    "description": "Team quiz race for the smartboard with 55 Unit 2 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏔️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-revision/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "print-g3-u2",
+    "title": "🖨️ Unit 2 Print & Play: Worksheets & Check Paper (Grade 3)",
+    "description": "Printable Unit 2 pack: four worksheets (vocabulary, reading, phonics, grammar and writing), a 50-mark check paper with listening script and speaking rubric, answer keys, and quick links to all the Unit 2 smartboard games.",
+    "type": "worksheet",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 30,
+    "durationText": "15–40 min",
+    "estimatedMinutes": 30,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Reading",
+      "Phonics",
+      "Grammar",
+      "Writing"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "printable",
+      "worksheet",
+      "check",
+      "assessment"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Choose a worksheet, open it and print. Teacher answers are on the answer pages.",
+    "studentInstructions": "Do your best and write full sentences!",
+    "route": "unit2-print/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🖨️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-print/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g4-u2",
+    "title": "🕹️ Unit 2 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
+    "description": "Four whole-class smartboard mini games for Unit 2: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-arcade/index.html?grade=4",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g4-u2",
+    "title": "🏔️ Mountain Race: Unit 2 Revision (Grade 4)",
+    "description": "Team quiz race for the smartboard with 56 Unit 2 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏔️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-revision/index.html?grade=4",
+    "worksheetUrl": null
+  },
+  {
+    "id": "print-g4-u2",
+    "title": "🖨️ Unit 2 Print & Play: Worksheets & Check Paper (Grade 4)",
+    "description": "Printable Unit 2 pack: four worksheets (vocabulary, reading, phonics, grammar and writing), a 50-mark check paper with listening script and speaking rubric, answer keys, and quick links to all the Unit 2 smartboard games.",
+    "type": "worksheet",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "15–40 min",
+    "estimatedMinutes": 30,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Reading",
+      "Phonics",
+      "Grammar",
+      "Writing"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "printable",
+      "worksheet",
+      "check",
+      "assessment"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Choose a worksheet, open it and print. Teacher answers are on the answer pages.",
+    "studentInstructions": "Do your best and write full sentences!",
+    "route": "unit2-print/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🖨️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-print/index.html?grade=4",
+    "worksheetUrl": null
   },
   {
     "id": "yesterday-detectives",
@@ -6268,96 +7132,6 @@ const GAMES_REGISTRY = [
     "formula": "First, Alice [fell/saw]. Then she [drank/met] the [character].",
     "url": "alice-homework/index.html",
     "worksheetUrl": "alice-homework-quest/index.html"
-  },
-  {
-    "id": "bamboozle",
-    "title": "🎮 Bamboozle Meme Arena",
-    "description": "High-octane classroom quiz battle arena. 16 mystery tiles, animated meme power-ups, swap scores, point steals, and curriculum trivia.",
-    "category": "Engineering & Inventions",
-    "categoryGroup": "Invention Game Show",
-    "level": "A1 / A2",
-    "cefrLevel": "A1+",
-    "age": "Ages 7–12",
-    "ageGroup": "7-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
-    "xp": 150,
-    "skills": [
-      "Speaking",
-      "Listening",
-      "Vocabulary Recall",
-      "Team Collaboration"
-    ],
-    "topic": "Invention Trivia, Science Facts & Rapid Problem Solving",
-    "topics": [
-      "Team Trivia",
-      "Inventions",
-      "Engineering Quiz"
-    ],
-    "languageFocus": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-    "learningObjectives": [
-      "Answer fast-paced team quiz questions across science and historical inventors",
-      "Communicate strategically using swap, trap, and 2x points power-ups",
-      "Articulate team consensus answers within 20-second countdowns"
-    ],
-    "teacherInstructions": "Split class into 2 to 4 teams. Teams take turns picking tiles, answering questions, and triggering wacky game-show power-ups.",
-    "studentInstructions": "Pick a lucky tile for your team, answer the curriculum question correctly, and dodge the score-swapping traps!",
-    "route": "bamboozle/index.html",
-    "worksheet": "bamboozle/index.html",
-    "worksheetRoute": "bamboozle/index.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailIcon": "⚡",
-    "gradient": "linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%)",
-    "tags": [
-      "bamboozle",
-      "quiz",
-      "game-show",
-      "speaking",
-      "teamwork"
-    ],
-    "vocabulary": {
-      "core": [
-        "points",
-        "swap",
-        "team",
-        "challenge",
-        "power-up"
-      ],
-      "supporting": [
-        "bonus",
-        "double",
-        "steal",
-        "mystery",
-        "congratulations"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Wh- Questions & Modal Answers (Can we swap? / It is...)",
-      "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-      "formulas": [
-        "Which inventor created the light bulb?",
-        "Can Team Red swap points with Team Blue?",
-        "If we get this right, we will earn fifty bonus points!"
-      ]
-    },
-    "clilDomain": "Interactive EdTech Game Mechanics",
-    "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval",
-    "status": "active",
-    "trackId": "track-2",
-    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
-    "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-    "url": "bamboozle/index.html",
-    "worksheetUrl": "bamboozle/index.html"
   },
   {
     "id": "monster-lab",

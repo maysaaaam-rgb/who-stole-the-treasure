@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 2 Arcade · Smartboard</title>
+<style>
+  :root { --ink:#26215c; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing:border-box; margin:0; }
+  html,body { height:100%; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); user-select:none; overflow:hidden; background:linear-gradient(180deg,#34d399 0%,#7dd3fc 45%,#fde68a 100%); }
+  .sky { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+  .sky i { position:absolute; opacity:.35; font-style:normal; font-size:5vh; animation:float linear infinite; }
+  @keyframes float { from { transform:translateY(110vh) rotate(0); } to { transform:translateY(-15vh) rotate(360deg); } }
+  .screen { display:none; height:100%; padding:1.4vh 1.6vw; position:relative; z-index:1; overflow-y:auto; overflow-x:hidden; }
+  .screen.on { display:flex; }
+  .btn { font:inherit; font-weight:700; font-size:clamp(16px,2.9vh,32px); color:#fff; border:4px solid rgba(38,33,92,.85); border-bottom-width:8px; border-radius:2.6vh; padding:.9vh 1.8vw; cursor:pointer; background:#22c55e; text-shadow:0 2px 0 rgba(0,0,0,.2); transition:transform .12s var(--spring),border-bottom-width .12s; }
+  .btn:active { transform:translateY(5px); border-bottom-width:3px; }
+  .btn.blue { background:#3b82f6; } .btn.orange { background:#fb923c; } .btn.pink { background:#ec4899; } .btn.purple { background:#8b5cf6; } .btn.gold { background:#f59e0b; } .btn.grey { background:#64748b; }
+  .btn[hidden] { display:none; } .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .card { background:#fff; border:5px solid var(--ink); border-radius:3.4vh; box-shadow:0 .9vh 0 rgba(38,33,92,.3); }
+  .chip { font:inherit; font-weight:700; font-size:clamp(14px,2.6vh,30px); color:var(--ink); background:#f1f5f9; border:4px solid #cbd5e1; border-bottom-width:7px; border-radius:2.6vh; padding:.8vh 1.4vw; cursor:pointer; transition:transform .12s var(--spring); }
+  .chip:active { transform:translateY(4px); } .chip.sel { background:#fde047; border-color:var(--ink); }
+  .row { display:flex; gap:.9vw; justify-content:center; flex-wrap:wrap; align-items:center; }
+  .lab { font-size:clamp(15px,2.6vh,28px); font-weight:700; width:5.2em; text-align:right; }
+  /* menu */
+  #menu { align-items:center; justify-content:center; text-align:center; flex-direction:column; }
+  .menubox { padding:2.2vh 2.4vw; width:min(1180px,97vw); max-height:98vh; display:flex; flex-direction:column; gap:1.5vh; overflow-y:auto; }
+  .title { font-size:clamp(28px,7.4vh,86px); font-weight:800; line-height:1.05; }
+  .title span:nth-child(3n+1){color:#ef4444} .title span:nth-child(3n+2){color:#f59e0b} .title span:nth-child(3n){color:#3b82f6}
+  .sub { font-size:clamp(14px,2.5vh,28px); color:#6d5fd1; font-weight:600; }
+  .games { display:grid; grid-template-columns:1fr 1fr; gap:1.4vh 1.2vw; }
+  .gm { font:inherit; color:var(--ink); background:#f8fafc; border:5px solid #cbd5e1; border-bottom-width:10px; border-radius:3vh; padding:1.2vh 1vw; cursor:pointer; transition:transform .15s var(--spring); text-align:center; }
+  .gm:active { transform:translateY(5px); } .gm:hover { border-color:var(--ink); }
+  .gm b { display:block; font-size:clamp(18px,3.6vh,42px); } .gm span { font-size:clamp(12px,2.1vh,24px); color:#6b5fb5; font-weight:600; } .gm i { font-style:normal; font-size:clamp(30px,6.4vh,76px); display:block; }
+  .gm.cup { background:linear-gradient(135deg,#fef9c3,#fde68a); border-color:var(--ink); } .games .gm:nth-child(1){background:#fef2f2} .games .gm:nth-child(2){background:#eff6ff} .games .gm:nth-child(3){background:#f0fdf4} .games .gm:nth-child(4){background:#faf5ff}
+  #lvl { font-weight:800; }
+  /* play */
+  #play { flex-direction:column; gap:1vh; }
+  #score { display:flex; gap:.7vw; padding-right:12vw; }
+  .team { flex:1; min-width:0; padding:.5vh .6vw; text-align:center; border-radius:2.2vh; border:4px solid var(--ink); color:#fff; text-shadow:0 2px 0 rgba(0,0,0,.25); transition:transform .25s var(--spring); }
+  .team .nm { font-weight:800; font-size:clamp(11px,2vh,24px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .team .pt { font-weight:800; font-size:clamp(20px,4.2vh,48px); line-height:1; }
+  .team.turn { transform:scale(1.08); box-shadow:0 0 0 .6vh #fde047, 0 0 3vh #fde047; }
+  #lvl { align-self:center; font-size:clamp(13px,2.2vh,26px); color:#6b5fb5; margin-top:-.4vh; }
+  #banner { align-self:center; font-weight:800; font-size:clamp(16px,3.2vh,38px); background:#fde047; border:5px solid var(--ink); border-radius:99px; padding:.2vh 2.4vw; box-shadow:0 .6vh 0 rgba(38,33,92,.3); text-align:center; }
+  #stage { flex:1; min-height:0; display:flex; flex-direction:column; gap:1vh; }
+  #msg { text-align:center; font-weight:800; font-size:clamp(18px,3.4vh,42px); min-height:4vh; }
+  #foot { display:flex; gap:.7vw; justify-content:center; flex-wrap:wrap; } #foot .btn { padding:.6vh 1.2vw; }
+  /* memory */
+  #mgrid { flex:1; min-height:0; display:grid; gap:1vh .8vw; }
+  .mc { position:relative; font:inherit; border:5px solid var(--ink); border-bottom-width:9px; border-radius:2.6vh; cursor:pointer; background:#8b5cf6; color:#fff; font-weight:800; font-size:clamp(26px,7vh,90px); display:flex; align-items:center; justify-content:center; text-align:center; transition:transform .25s var(--spring); text-shadow:0 3px 0 rgba(0,0,0,.25); padding:.4vh .4vw; line-height:1.05; }
+  .mc.up { background:#fff; color:var(--ink); text-shadow:none; transform:rotateY(0); } .mc.word { font-size:clamp(16px,4.2vh,56px); background:#fef9c3; }
+  .mc.done { background:#bbf7d0; border-color:#16a34a; opacity:.75; pointer-events:none; }
+  .mc.back:nth-child(3n+1){background:#ef4444} .mc.back:nth-child(3n+2){background:#3b82f6} .mc.back:nth-child(3n){background:#22c55e}
+  /* sentence + letters */
+  #cardBox { padding:1.6vh 1.8vw; text-align:center; display:flex; flex-direction:column; gap:1vh; justify-content:center; flex:1; min-height:0; }
+  #hint { font-size:clamp(14px,2.6vh,30px); color:#6b5fb5; font-weight:600; }
+  #built { min-height:10vh; padding:1vh .8vw; background:#f5f3ff; border:5px dashed #8b5cf6; border-radius:2.6vh; display:flex; flex-wrap:wrap; gap:1vh .8vw; align-items:center; justify-content:center; }
+  #tiles { display:flex; flex-wrap:wrap; gap:1vh .8vw; justify-content:center; }
+  .wt { font:inherit; font-weight:700; font-size:clamp(20px,4.4vh,54px); color:#fff; background:#8b5cf6; border:4px solid var(--ink); border-bottom-width:8px; border-radius:2.2vh; padding:.6vh 1.4vw; cursor:pointer; text-shadow:0 2px 0 rgba(0,0,0,.2); }
+  .wt:active { transform:translateY(5px); border-bottom-width:3px; } .wt.used { opacity:.2; pointer-events:none; } #built .wt { background:#0ea5e9; }
+  #lpic { font-size:clamp(60px,18vh,200px); line-height:1.05; }
+  #lword { font-size:clamp(34px,10vh,120px); font-weight:800; letter-spacing:.12em; }
+  #lopts { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2vh .9vw; }
+  .lt { font:inherit; font-weight:800; font-size:clamp(34px,9vh,110px); color:#fff; border:5px solid var(--ink); border-bottom-width:10px; border-radius:3vh; padding:.8vh 0; cursor:pointer; text-shadow:0 3px 0 rgba(0,0,0,.25); }
+  .lt:nth-child(1){background:#ef4444} .lt:nth-child(2){background:#3b82f6} .lt:nth-child(3){background:#22c55e} .lt:nth-child(4){background:#f59e0b}
+  .lt:active { transform:translateY(6px); border-bottom-width:3px; } .lt.no { opacity:.35; pointer-events:none; } .lt.ok { background:#16a34a !important; animation:pop .5s var(--spring); } @keyframes pop { 50% { transform:scale(1.1); } }
+  /* hangman */
+  #scene2 { display:flex; align-items:flex-end; justify-content:center; gap:2vw; min-height:11vh; flex:0 0 auto; }
+  #sun { font-size:clamp(34px,7vh,84px); transition:transform .6s var(--spring); } #snow { font-size:clamp(46px,10vh,120px); transform-origin:50% 100%; transition:transform .6s var(--spring); line-height:1; } #drips { font-size:clamp(20px,4vh,46px); min-width:6em; text-align:left; letter-spacing:.1em; }
+  #balloons { font-size:clamp(28px,6.4vh,76px); letter-spacing:.2em; min-height:7vh; }
+  #hword { font-size:clamp(30px,8vh,100px); font-weight:800; letter-spacing:.14em; min-height:9vh; line-height:1.15; flex:0 0 auto; }
+  #hhint { font-size:clamp(14px,2.6vh,30px); color:#6b5fb5; font-weight:600; min-height:3.4vh; flex:0 0 auto; } #balloons,#kb { flex:0 0 auto; } #hpic { font-size:clamp(44px,11vh,130px); line-height:1.05; flex:0 0 auto; }
+  #kb { display:grid; grid-template-columns:repeat(13,1fr); gap:.8vh .4vw; }
+  #kb button { font:inherit; font-weight:800; font-size:clamp(16px,4.2vh,48px); color:#fff; background:#3b82f6; border:3px solid var(--ink); border-bottom-width:6px; border-radius:1.8vh; padding:.5vh 0; cursor:pointer; text-shadow:0 2px 0 rgba(0,0,0,.25); }
+  #kb button:nth-child(4n+1){background:#ef4444} #kb button:nth-child(4n+2){background:#3b82f6} #kb button:nth-child(4n+3){background:#22c55e} #kb button:nth-child(4n){background:#f59e0b}
+  #kb button:active { transform:translateY(4px); border-bottom-width:2px; } #kb button.hit { background:#16a34a !important; opacity:.5; pointer-events:none; } #kb button.miss { background:#94a3b8 !important; opacity:.45; pointer-events:none; }
+  #hopts { display:grid; grid-template-columns:1fr 1fr; gap:1.2vh .8vw; margin:.6vh 0; } #hopts .btn { font-size:clamp(18px,3.6vh,42px); }
+  /* wheel */
+  #wheelWrap { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; gap:3vw; }
+  #wheelBox { position:relative; width:clamp(180px,46vh,560px); height:clamp(180px,46vh,560px); flex:0 0 auto; }
+  #wheel { width:100%; height:100%; border-radius:50%; border:.9vh solid var(--ink); position:relative; transition:transform 4.2s cubic-bezier(.12,.7,.1,1); box-shadow:0 1vh 0 rgba(38,33,92,.3); }
+  #wheel b { position:absolute; left:50%; top:50%; font-size:clamp(26px,7.2vh,86px); transform-origin:0 0; font-weight:400; }
+  #pointer { position:absolute; left:50%; top:-3%; transform:translateX(-50%); font-size:clamp(34px,8vh,96px); z-index:3; filter:drop-shadow(0 .5vh 0 rgba(38,33,92,.4)); }
+  #wcard { width:min(46vw,640px); max-height:100%; overflow-y:auto; padding:1.2vh 1.6vw; text-align:center; display:flex; flex-direction:column; gap:.8vh; }
+  #wpic { font-size:clamp(46px,12vh,140px); line-height:1.05; } #wword { font-size:clamp(26px,7vh,84px); font-weight:800; line-height:1.05; } #wtask { font-size:clamp(14px,2.6vh,30px); font-weight:700; color:#6b5fb5; } #wex { font-size:clamp(14px,2.6vh,30px); font-weight:600; font-style:italic; min-height:3vh; } #wcard .btn { padding:.5vh 1.2vw; }
+  /* sticker + overlays */
+  .conf { position:fixed; top:-6vh; z-index:50; pointer-events:none; animation:fall linear forwards; } @keyframes fall { to { transform:translateY(115vh) rotate(540deg); } }
+  #meme { position:fixed; inset:0; z-index:45; display:none; align-items:center; justify-content:center; flex-direction:column; pointer-events:none; text-align:center; }
+  #meme.on { display:flex; animation:memepop 1.9s var(--spring) forwards; }
+  @keyframes memepop { 0% { transform:scale(.2) rotate(-14deg); opacity:0; } 14% { transform:scale(1.08) rotate(5deg); opacity:1; } 24% { transform:scale(1) rotate(-3deg); } 80% { transform:scale(1) rotate(2deg); opacity:1; } 100% { transform:scale(.9); opacity:0; } }
+  #memePic { width:clamp(150px,38vh,400px); height:clamp(150px,38vh,400px); display:flex; align-items:center; justify-content:center; filter:drop-shadow(0 1.2vh 0 rgba(38,33,92,.35)); } #memePic img { width:100%; height:100%; object-fit:contain; }
+  .stk { position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#fff; border:.8vh solid var(--ink); border-radius:50%; box-shadow:inset 0 0 0 1.2vh #fde047; }
+  .stk .an { font-size:clamp(90px,24vh,260px); line-height:1; } .stk .ex { position:absolute; right:2%; top:2%; font-size:clamp(50px,13vh,140px); transform:rotate(14deg); } .stk .sh { position:absolute; left:50%; top:34%; transform:translateX(-50%); font-size:clamp(60px,15vh,170px); }
+  #memeCap { font-family:Impact,"Arial Black","Comic Sans MS",sans-serif; font-weight:900; font-size:clamp(34px,10vh,120px); letter-spacing:.04em; text-transform:uppercase; color:#fff; -webkit-text-stroke:1.1vh var(--ink); paint-order:stroke fill; margin-top:-1vh; }
+  #tools { position:fixed; right:1vw; top:1vh; z-index:40; display:flex; gap:.5vw; } #tools .btn { padding:.4vh .8vw; font-size:clamp(16px,2.6vh,28px); border-bottom-width:5px; }
+  #end { align-items:center; justify-content:center; text-align:center; flex-direction:column; gap:1.4vh; }
+  .podium { display:flex; gap:1.2vw; align-items:flex-end; justify-content:center; flex-wrap:wrap; }
+  .podium .p { padding:1.2vh 1.6vw; border:5px solid var(--ink); border-radius:3.4vh; font-weight:800; min-width:11vw; box-shadow:0 .9vh 0 rgba(38,33,92,.3); color:#fff; text-shadow:0 2px 0 rgba(0,0,0,.25); } .podium .p .em { font-size:2.1em; display:block; }
+  @media (max-aspect-ratio: 1/1) { #score { padding-right:0; } .games { grid-template-columns:1fr; } #wheelWrap { flex-direction:column; } }
+</style>
+</head>
+<body>
+<div class="sky" id="sky"></div>
+
+<div id="menu" class="screen on">
+  <div class="menubox card">
+    <div class="title" id="mtitle">Unit 2 Arcade!</div>
+    <div class="sub" id="msub">Pick a game. Teams take turns. Everyone helps on mini whiteboards!</div>
+    <div class="row"><span class="lab">Class</span><button class="chip sel" data-g="3">🔧 Grade 3 · Thank You</button><button class="chip" data-g="4">🌲 Grade 4 · What Lives Here?</button></div>
+    <div class="row"><span class="lab">Teams</span><button class="chip" data-t="2">2</button><button class="chip" data-t="3">3</button><button class="chip sel" data-t="4">4</button><button class="chip" data-t="5">5</button><button class="chip" data-t="6">6</button></div>
+    <div class="row"><span class="lab">Length</span><button class="chip" data-l="s">⏱️ Short · 1 level</button><button class="chip sel" data-l="n">⌛ Normal · 2 levels</button><button class="chip" data-l="l">🏋️ Long · 3 levels</button></div>
+    <button class="gm cup" data-game="cup"><i>🏆</i><b>Champions Cup: all 4 games in a row</b><span>One running score, 4 games, 3 levels each if you choose Long. The big challenge for one or two lessons!</span></button>
+    <div class="row"><span class="lab">Hangman</span><button class="chip sel" data-h="snow">⛄ Save the snowman</button><button class="chip" data-h="balloon">🎈 Save the balloons</button></div>
+    <div class="games">
+      <button class="gm" data-game="memory"><i>🃏</i><b>Memory Match</b><span>Find the picture and its word</span></button>
+      <button class="gm" data-game="sentence"><i>🧩</i><b>Sentence Relay</b><span>Put the words in the right order</span></button>
+      <button class="gm" data-game="letters"><i>⛄</i><b>Hangman</b><span>Guess the letters and save the snowman (or the balloons)!</span></button>
+      <button class="gm" data-game="wheel"><i>🎡</i><b>Speaking Wheel</b><span>Spin and say a sentence</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="play" class="screen">
+  <div id="score"></div>
+  <div id="banner"></div><div id="lvl"></div>
+  <div id="stage"></div>
+  <div id="msg"></div>
+  <div id="foot"><button class="btn orange" id="again" hidden>🔊 Say it</button><button class="btn" id="check" hidden>✔ Check</button><button class="btn blue" id="undo" hidden>↩ Undo</button><button class="btn pink" id="next" hidden>Next team ▶</button><button class="btn grey" id="quit">✕ Back to games</button></div>
+</div>
+
+<div id="end" class="screen">
+  <div class="title" style="font-size:clamp(28px,6.8vh,80px)" id="endT">🏆 Well done, everyone! 🏆</div>
+  <div class="podium" id="podium"></div>
+  <div class="row"><button class="btn" id="replay">↺ Play again</button><button class="btn blue" id="home">⌂ All games</button></div>
+</div>
+
+<div id="meme"><div id="memePic"></div><div id="memeCap"></div></div>
+<div id="tools"><button class="btn purple" id="mus" title="Music">🎵</button><button class="btn blue" id="snd" title="Sound">🔊</button><button class="btn blue" id="full" title="Full screen">⛶</button></div>
+
+<script src="data.js"></script>
+<script>
+var TEAMS = [{n:'Fox',k:'fox',e:'🦊',c:'#f97316'},{n:'Frog',k:'frog',e:'🐸',c:'#16a34a'},{n:'Panda',k:'panda',e:'🐼',c:'#64748b'},{n:'Lion',k:'lion',e:'🦁',c:'#ca8a04'},{n:'Octopus',k:'octopus',e:'🐙',c:'#db2777'},{n:'Unicorn',k:'unicorn',e:'🦄',c:'#7c3aed'}];
+var cfg = {g:'3', t:4, l:'n', h:'snow', game:'memory'}, S = {scores:[], turn:0};
+function $(id) { return document.getElementById(id); }
+function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function show(id) { ['menu','play','end'].forEach(function (s) { $(s).classList.toggle('on', s === id); }); }
+(function sky() { var b = ['⭐','🎈','✨','🌾','🌲','🌟'], h = ''; for (var i = 0; i < 9; i++) h += '<i style="left:' + (i * 11 + 2) + '%;animation-duration:' + (14 + (i * 3) % 11) + 's;animation-delay:-' + (i * 2) + 's">' + b[i % 6] + '</i>'; $('sky').innerHTML = h; })();
+
+/* sound: chords and soft tones only */
+var AC = null, master = null, soundOn = true, musicOn = false, musicTimer = null, musicStep = 0;
+function audio() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.connect(AC.destination); } catch (e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, t0, dur, vol, glide) { var ac = audio(); if (!ac || !soundOn) return; [0, 4].forEach(function (det, i) { var o = ac.createOscillator(), g = ac.createGain(); o.type = i ? 'triangle' : 'sine'; o.frequency.setValueAtTime(f, t0); if (glide) o.frequency.exponentialRampToValueAtTime(glide, t0 + dur); o.detune.value = det; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur); o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.05); }); }
+function sfx(k) { var ac = audio(); if (!ac || !soundOn) return; var t = ac.currentTime;
+  if (k === 'click') tone(660, t, 0.12, 0.09, 990);
+  else if (k === 'flip') { tone(330, t, 0.2, 0.08, 880); }
+  else if (k === 'correct') [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(function (f, i) { tone(f, t + i * 0.075, 0.6, 0.12); });
+  else if (k === 'soft') { tone(246.94, t, 0.55, 0.12); tone(220, t + 0.2, 0.75, 0.12); }
+  else if (k === 'spin') { for (var i = 0; i < 14; i++) tone(500 + i * 40, t + i * 0.28, 0.14, 0.05, 700 + i * 40); }
+  else if (k === 'win') [523.25, 523.25, 659.25, 783.99, 659.25, 783.99, 1046.5].forEach(function (f, i) { tone(f, t + i * 0.17, 0.6, 0.12); tone(f / 2, t + i * 0.17, 0.6, 0.06); }); }
+function music(on) { musicOn = on; $('mus').style.opacity = on ? 1 : .5; if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } if (!on || !audio()) return; var sc = [261.63, 293.66, 329.63, 392, 440, 523.25, 440, 392], ch = [[261.63, 329.63, 392], [220, 261.63, 329.63], [174.61, 220, 261.63], [196, 246.94, 293.66]]; musicTimer = setInterval(function () { if (!soundOn) return; var t = AC.currentTime; tone(sc[musicStep % 8], t, 0.45, 0.03); if (musicStep % 8 === 0) ch[Math.floor(musicStep / 8) % 4].forEach(function (f) { tone(f / 2, t, 3.2, 0.025); }); musicStep++; }, 420); }
+function speak(text) { if (!soundOn || !('speechSynthesis' in window) || !text) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); }
+function confetti(n) { var bits = ['🎉','⭐','🎈','✨','🌟','🎊'], i; for (i = 0; i < (n || 24); i++) { var d = document.createElement('div'); d.className = 'conf'; d.textContent = bits[i % bits.length]; d.style.left = Math.random() * 98 + 'vw'; d.style.fontSize = (2.6 + Math.random() * 3) + 'vh'; d.style.animationDuration = (1.4 + Math.random() * 1.3) + 's'; d.style.animationDelay = (Math.random() * .3) + 's'; document.body.appendChild(d); setTimeout((function (x) { return function () { x.remove(); }; })(d), 3200); } }
+
+/* reaction stickers: picture from ../bamboozle/memes if it exists, otherwise a big emoji sticker */
+var MEME = {win:{faces:['celebrate','cool','laugh'],caps:['BOOM!','NICE ONE!','SO COOL!','YES YES YES!','SUPER STAR!']}, phew:{faces:['laugh','cool'],caps:['PHEW! YES!','GOT IT!']}, oops:{faces:['oops','thinking'],caps:['OOPS!','HMMM…','NOT YET!']}, miss:{faces:['oops','thinking'],caps:['GOOD TRY!','NEXT TIME!']}, match:{faces:['celebrate','cool'],caps:['MATCH!','YOU FOUND IT!','AMAZING!']}, speak:{faces:['celebrate','laugh','cool'],caps:['GREAT TALKING!','SUPER SPEAKER!','WELL SAID!']}, end:{faces:['celebrate'],caps:['WE DID IT!','WELL DONE!']}};
+var FACE_EMOJI = {celebrate:'🎉', cool:'', laugh:'😂', oops:'🙈', thinking:'🤔', sneaky:'😏', shocked:'😱'}, memeSeen = {}, memeTimer = null;
+function memeFor(kind, idx) {
+  var m = MEME[kind]; if (!m) return; var t = TEAMS[idx == null ? S.turn : idx] || TEAMS[0], face = pick(m.faces), cap = pick(m.caps), src = '../bamboozle/memes/' + t.k + '_' + face + '.webp', pic = $('memePic'); $('memeCap').textContent = cap;
+  function emoji() { pic.innerHTML = '<div class="stk"><span class="an">' + t.e + '</span>' + (face === 'cool' ? '<span class="sh">😎</span>' : '<span class="ex">' + FACE_EMOJI[face] + '</span>') + '</div>'; }
+  function go() { var el = $('meme'); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); clearTimeout(memeTimer); memeTimer = setTimeout(function () { el.classList.remove('on'); }, 1900); }
+  if (memeSeen[src] === 'ok') { pic.innerHTML = '<img src="' + src + '" alt="">'; go(); } else if (memeSeen[src] === 'no') { emoji(); go(); }
+  else { var im = new Image(); im.onload = function () { memeSeen[src] = 'ok'; pic.innerHTML = '<img src="' + src + '" alt="">'; go(); }; im.onerror = function () { memeSeen[src] = 'no'; emoji(); go(); }; im.src = src; }
+}
+
+/* menu */
+document.querySelectorAll('.chip[data-g],.chip[data-t],.chip[data-l],.chip[data-h]').forEach(function (b) { b.onclick = function () { sfx('click'); var k = b.dataset.g ? 'g' : b.dataset.t ? 't' : b.dataset.h ? 'h' : 'l'; document.querySelectorAll('.chip[data-' + k + ']').forEach(function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); cfg[k] = (k === 't') ? Number(b.dataset.t) : b.dataset[k]; }; });
+document.querySelectorAll('.gm').forEach(function (b) { b.onclick = function () { audio(); sfx('click'); if (b.dataset.game === 'cup') { S.cup = {order: ['memory', 'sentence', 'letters', 'wheel'], idx: 0}; cfg.game = S.cup.order[0]; startGame(true); } else { S.cup = null; cfg.game = b.dataset.game; startGame(); } }; });
+$('snd').onclick = function () { soundOn = !soundOn; $('snd').textContent = soundOn ? '🔊' : '🔇'; if (!soundOn && 'speechSynthesis' in window) speechSynthesis.cancel(); };
+$('mus').onclick = function () { audio(); music(!musicOn); }; $('mus').style.opacity = .5;
+$('full').onclick = function () { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); };
+$('quit').onclick = function () { if ('speechSynthesis' in window) speechSynthesis.cancel(); show('menu'); };
+$('home').onclick = function () { show('menu'); }; $('replay').onclick = function () { if (S.cup) { S.cup.idx = 0; cfg.game = S.cup.order[0]; startGame(true); } else startGame(); };
+
+function drawScore() { $('score').innerHTML = TEAMS.slice(0, cfg.t).map(function (t, i) { return '<div class="team ' + (i === S.turn ? 'turn' : '') + '" style="background:' + t.c + '"><div class="nm">' + t.e + ' ' + t.n + '</div><div class="pt">' + S.scores[i] + '</div></div>'; }).join(''); }
+function who(text) { $('banner').textContent = TEAMS[S.turn].e + ' ' + TEAMS[S.turn].n + ' team: ' + text; }
+function passTurn() { S.turn = (S.turn + 1) % cfg.t; drawScore(); }
+function setFoot(o) { ['again','check','undo','next'].forEach(function (id) { $(id).hidden = !o[id]; }); }
+var G = null, GAMES = {memory: ['🃏', 'Memory Match'], sentence: ['🧩', 'Sentence Relay'], letters: ['⛄', 'Hangman'], wheel: ['🎡', 'Speaking Wheel']};
+function levelsCount() { return cfg.l === 's' ? 1 : cfg.l === 'n' ? 2 : 3; }
+function startGame(keepCup) {
+  if (!(S.cup && keepCup === 'next')) { S.scores = []; S.turn = 0; for (var i = 0; i < cfg.t; i++) S.scores.push(0); }
+  $('msg').textContent = ''; setFoot({}); $('stage').innerHTML = ''; drawScore(); show('play');
+  G = {level: 1, levels: levelsCount()}; setLvl();
+  ({memory: memory, sentence: sentence, letters: letters, wheel: wheel})[cfg.game]();
+}
+function setLvl() { var nm = GAMES[cfg.game]; $('lvl').textContent = (S.cup ? '🏆 Cup game ' + (S.cup.idx + 1) + ' of 4 · ' : '') + nm[0] + ' ' + nm[1] + ' · Level ' + G.level + ' of ' + G.levels + [' · warm-up', ' · getting harder', ' · champion level'][G.level - 1]; }
+/* called when a level is finished: next level, or the end of the game */
+function levelDone(next) {
+  if (G.level < G.levels) { G.level++; setLvl(); sfx('correct'); confetti(40); memeFor('win'); $('msg').style.color = '#15803d'; $('msg').textContent = '⭐ Level ' + G.level + ' unlocked! It gets harder!'; setTimeout(function () { $('msg').textContent = ''; next(); }, 2300); }
+  else finishGame();
+}
+function finishGame() {
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  if (S.cup && S.cup.idx < 3) { S.cup.idx++; var nm = GAMES[S.cup.order[S.cup.idx]]; cfg.game = S.cup.order[S.cup.idx]; sfx('correct'); confetti(50); memeFor('win'); $('msg').style.color = '#15803d'; $('msg').textContent = '🏆 Next game: ' + nm[0] + ' ' + nm[1] + '!'; setTimeout(function () { startGame('next'); }, 2600); return; }
+  show('end'); sfx('win'); confetti(70); var top = S.scores.indexOf(Math.max.apply(null, S.scores)); memeFor('end', top);
+  var order = S.scores.map(function (p, i) { return {i: i, p: p}; }).sort(function (a, b) { return b.p - a.p; }), medals = ['🥇', '🥈', '🥉'];
+  $('podium').innerHTML = order.map(function (r, k) { var t = TEAMS[r.i]; return '<div class="p" style="background:' + t.c + ';font-size:' + (k === 0 ? '4.2vh' : '3.2vh') + '"><span class="em">' + t.e + '</span>' + (medals[k] || '⭐') + ' ' + t.n + '<div style="font-size:1.5em">' + r.p + ' ⭐</div></div>'; }).join('');
+  $('endT').textContent = S.cup ? '🏆 Champions Cup winners! 🏆' : '🏆 Well done, everyone! 🏆';
+}
+/* ---------------- 1. Memory Match: 3 levels (6, 8, then 8 word-and-meaning pairs) ---------------- */
+function memory() { G.pool = shuffle(ARC[cfg.g].concrete); G.defPool = shuffle(ARC[cfg.g].words.filter(function (w) { return w.d.length <= 58; })); memLevel(); }
+function memLevel() {
+  var L = G.level, n = [6, 8, 8][L - 1], useDef = (L === 3), words = (useDef ? G.defPool : G.pool).slice(L === 2 ? 3 : 0, (L === 2 ? 3 : 0) + n), cards = [];
+  words.forEach(function (w) { cards.push({k: w.w, kind: useDef ? 'word' : 'pic', t: useDef ? w.w : w.e, w: w}); cards.push({k: w.w, kind: useDef ? 'def' : 'word', t: useDef ? w.d : w.w, w: w}); }); cards = shuffle(cards);
+  G.cards = cards; G.first = null; G.lock = false; G.left = words.length; var cols = Math.ceil(Math.sqrt(cards.length * 1.6)); setLvl();
+  $('stage').innerHTML = '<div id="mgrid" style="grid-template-columns:repeat(' + cols + ',1fr);grid-template-rows:repeat(' + Math.ceil(cards.length / cols) + ',1fr)"></div>'; who(useDef ? 'match each word with its meaning!' : 'flip two cards!');
+  cards.forEach(function (c, i) { var b = document.createElement('button'); b.className = 'mc back'; b.textContent = '?'; b.onclick = function () { flip(i, b); }; c.el = b; $('mgrid').appendChild(b); });
+}
+function cardCls(c, extra) { return 'mc ' + extra + (c.kind === 'word' ? ' word' : '') + (c.kind === 'def' ? ' def' : ''); }
+function flip(i, b) {
+  var c = G.cards[i]; if (G.lock || c.up || c.done) return; c.up = true; b.className = cardCls(c, 'up'); b.textContent = c.t; sfx('flip'); if (c.kind === 'word') speak(c.t);
+  if (G.first == null) { G.first = i; return; }
+  var a = G.cards[G.first]; G.lock = true;
+  if (a.k === c.k) { setTimeout(function () { a.done = c.done = true; a.el.className = cardCls(a, 'done'); c.el.className = cardCls(c, 'done'); S.scores[S.turn] += 10; sfx('correct'); confetti(20); memeFor('match'); $('msg').style.color = '#15803d'; $('msg').textContent = a.w.w + ': ' + a.w.d; G.left--; G.first = null; G.lock = false; drawScore(); if (G.left === 0) setTimeout(function () { levelDone(memLevel); }, 2200); who('you found one! Go again!'); }, 500); }
+  else { setTimeout(function () { a.up = c.up = false; a.el.className = c.el.className = 'mc back'; a.el.textContent = c.el.textContent = '?'; sfx('soft'); G.first = null; G.lock = false; $('msg').textContent = ''; passTurn(); who('flip two cards!'); }, 1300); }
+}
+
+/* ---------------- 2. Sentence Relay: 3 levels, short to long sentences, 5 each ---------------- */
+function sentence() {
+  var all = ARC[cfg.g].builders.slice().sort(function (a, b) { return a.order.length - b.order.length; }), third = Math.ceil(all.length / 3);
+  G.groups = [shuffle(all.slice(0, third)), shuffle(all.slice(third, third * 2)), shuffle(all.slice(third * 2))]; sentLevel();
+}
+function sentLevel() { G.list = G.groups[G.level - 1].slice(0, 5); G.i = 0; setLvl(); nextSentence(); }
+function nextSentence() {
+  var q = G.list[G.i]; G.tries = 0; G.built = []; G.locked = false; G.tiles = shuffle(q.order); $('msg').textContent = ''; setFoot({check: true, undo: true});
+  $('stage').innerHTML = '<div id="cardBox" class="card"><div id="hint">Sentence ' + (G.i + 1) + ' of ' + G.list.length + ': tap the words in the right order</div><div id="built"></div><div id="tiles"></div></div>'; who('build the sentence!'); drawTiles();
+}
+function drawTiles() { $('built').innerHTML = G.built.map(function (w) { return '<span class="wt">' + w.t + '</span>'; }).join(''); $('tiles').innerHTML = ''; G.tiles.forEach(function (w, i) { var b = document.createElement('button'); b.className = 'wt' + (G.built.some(function (x) { return x.i === i; }) ? ' used' : ''); b.textContent = w; b.onclick = function () { if (G.locked) return; sfx('click'); G.built.push({i: i, t: w}); drawTiles(); }; $('tiles').appendChild(b); }); }
+
+/* ---------------- 3. Hangman: save the balloons. 3 levels, 3 words each ---------------- */
+var HANG_LEN = [[4, 6], [6, 8], [8, 10]];
+function letters() {
+  var all = ARC[cfg.g].words.filter(function (w) { return /^[a-z]+$/i.test(w.w); }); G.pools = HANG_LEN.map(function (r) { var p = shuffle(all.filter(function (w) { return w.w.length >= r[0] && w.w.length <= r[1]; })); return p.length >= 3 ? p : shuffle(all); }); hangLevel();
+}
+function hangLevel() { G.list = G.pools[G.level - 1].slice(0, 3); G.i = 0; setLvl(); hangWord(); }
+function hangWord() {
+  var q = G.list[G.i]; G.q = q; G.word = q.w.toLowerCase(); G.guessed = {}; G.lives = 6; G.over = false; G.hintOn = G.level === 1; G.choice = false; $('msg').textContent = ''; setFoot({});
+  $('stage').innerHTML = '<div id="cardBox" class="card"><div id="balloons"></div><div id="hpic">' + q.e + '</div><div id="hword"></div><div id="hhint"></div><div id="kb"></div><div class="row"><button class="btn gold" id="hHint">💡 Hint (costs 1 life)</button><button class="btn purple" id="hSolve">🎯 I know the word!</button></div></div>';
+  who('guess a letter! (word ' + (G.i + 1) + ' of ' + G.list.length + ')');
+  'abcdefghijklmnopqrstuvwxyz'.split('').forEach(function (c) { var bt = document.createElement('button'); bt.textContent = c.toUpperCase(); bt.dataset.c = c; bt.onclick = function () { guess(c, bt); }; $('kb').appendChild(bt); });
+  $('hHint').onclick = function () { if (G.over || G.hintOn) return; sfx('click'); G.hintOn = true; popBalloon(); drawHang(); if (G.lives <= 0) return lose(); };
+  $('hSolve').onclick = openSolve; if (G.hintOn) $('hHint').style.display = 'none'; drawHang();
+}
+function maskWord() { return G.word.split('').map(function (c) { return G.guessed[c] ? c.toUpperCase() : '_'; }).join(' '); }
+function drawHang() {
+  var lost = 6 - Math.max(0, G.lives);
+  if (cfg.h === 'balloon') $('balloons').textContent = '🎈'.repeat(Math.max(0, G.lives)) + '💥'.repeat(lost);
+  else { var k = Math.max(0, G.lives) / 6; $('balloons').innerHTML = '<div id="scene2"><span id="sun" style="transform:scale(' + (1 + lost * 0.12).toFixed(2) + ')">☀️</span><span id="snow" style="transform:scale(' + (0.3 + 0.7 * k).toFixed(2) + ')">' + (G.lives <= 0 ? '🫠' : '⛄') + '</span><span id="drips">' + '💧'.repeat(lost) + '</span></div>'; }
+  $('hword').textContent = maskWord();
+  $('hhint').textContent = G.hintOn ? '💡 ' + G.q.d : 'Think about the picture. Need help? Press Hint.';
+}
+function popBalloon() { G.lives--; sfx('soft'); }
+function lifeWord() { return cfg.h === 'balloon' ? 'Pop!' : 'Drip!'; }
+function guess(c, bt) {
+  if (G.over) return; if (G.guessed[c]) return; G.guessed[c] = true;
+  if (G.word.indexOf(c) !== -1) {
+    bt.classList.add('hit'); var count = G.word.split(c).length - 1, pts = 5 * count; S.scores[S.turn] += pts; sfx('correct'); $('msg').style.color = '#15803d'; $('msg').textContent = 'Yes! ' + count + ' × ' + c.toUpperCase() + '  +' + pts + ' ⭐ · go again!'; drawScore(); drawHang();
+    if (G.word.split('').every(function (x) { return G.guessed[x]; })) win(10, 'You finished the word!');
+  } else {
+    bt.classList.add('miss'); popBalloon(); memeFor('oops'); $('msg').style.color = '#c2410c'; $('msg').textContent = lifeWord() + ' No ' + c.toUpperCase() + '. Next team!'; drawHang();
+    if (G.lives <= 0) return lose(); passTurn(); who('guess a letter!');
+  }
+}
+function win(bonus, text) {
+  G.over = true; S.scores[S.turn] += bonus; G.q && 0; sfx('correct'); confetti(40); memeFor('win'); G.word.split('').forEach(function (x) { G.guessed[x] = true; }); drawHang(); drawScore();
+  $('msg').style.color = '#15803d'; $('msg').textContent = text + ' +' + bonus + ' ⭐  ' + G.q.w + ': ' + G.q.x; speak(G.q.w); setFoot({again: true, next: true}); $('hSolve').disabled = true; $('hHint').disabled = true; document.querySelectorAll('#kb button').forEach(function (b) { b.disabled = true; });
+}
+function lose() {
+  G.over = true; memeFor('miss'); G.word.split('').forEach(function (x) { G.guessed[x] = true; }); drawHang(); $('msg').style.color = '#c2410c'; $('msg').textContent = (cfg.h === 'balloon' ? 'All the balloons popped!' : 'The snowman melted into a puddle, but he is happy!') + ' The word is ' + G.q.w + '. ' + G.q.x; speak(G.q.w); setFoot({again: true, next: true}); $('hSolve').disabled = true; $('hHint').disabled = true; document.querySelectorAll('#kb button').forEach(function (b) { b.disabled = true; });
+}
+function openSolve() {
+  if (G.over) return; var shown = G.word.split('').filter(function (c) { return G.guessed[c]; }).length;
+  if (shown < 2) { $('msg').style.color = '#c2410c'; $('msg').textContent = 'Guess at least two letters first!'; return; }
+  var others = shuffle(ARC[cfg.g].words.filter(function (w) { return w.w.toLowerCase() !== G.word && w.w.length === G.word.length; })).slice(0, 3);
+  if (others.length < 3) others = others.concat(shuffle(ARC[cfg.g].words.filter(function (w) { return w.w.toLowerCase() !== G.word && others.indexOf(w) === -1; })).slice(0, 3 - others.length));
+  var opts = shuffle([G.q].concat(others)); $('hSolve').disabled = true; sfx('click'); $('kb').style.display = 'none';
+  var box = document.createElement('div'); box.id = 'hopts'; opts.forEach(function (w) { var b = document.createElement('button'); b.className = 'btn blue'; b.textContent = w.w; b.onclick = function () { solveWith(w, box); }; box.appendChild(b); }); $('cardBox').appendChild(box); $('msg').style.color = '#6b5fb5'; $('msg').textContent = 'Which word is it? Pick carefully!';
+}
+function solveWith(w, box) {
+  if (G.over) return; box.remove(); $('kb').style.display = '';
+  if (w === G.q) win(15, 'Brilliant! You solved it!');
+  else { $('hSolve').disabled = false; popBalloon(); memeFor('oops'); $('msg').style.color = '#c2410c'; $('msg').textContent = 'Oops! It is not “' + w.w + '”. ' + lifeWord() + ' Next team!'; drawHang(); if (G.lives <= 0) return lose(); passTurn(); who('guess a letter!'); }
+}
+
+$('undo').onclick = function () { if (cfg.game === 'sentence' && !G.locked) { sfx('click'); G.built.pop(); drawTiles(); } };
+$('check').onclick = function () { if (cfg.game === 'sentence' && !G.locked) checkSentence(); };
+function checkSentence() {
+  var q = G.list[G.i], ans = G.built.map(function (b) { return b.t; }).join(' ');
+  if (ans === q.answer) { G.locked = true; var pts = G.tries === 0 ? 10 : 5; S.scores[S.turn] += pts; sfx('correct'); confetti(24); memeFor(G.tries === 0 ? 'win' : 'phew'); $('msg').style.color = '#15803d'; $('msg').textContent = '+' + pts + ' ⭐  ' + q.answer; speak(q.answer); setFoot({again: true, next: true}); drawScore(); }
+  else { G.tries++; sfx('soft'); if (G.tries >= 2) { G.locked = true; memeFor('miss'); $('msg').style.color = '#c2410c'; $('msg').textContent = 'The sentence is: ' + q.answer; speak(q.answer); setFoot({again: true, next: true}); } else { memeFor('oops'); $('msg').style.color = '#c2410c'; $('msg').textContent = 'Oops! Check the first word. Try again! 💪'; G.built = []; drawTiles(); } }
+}
+
+/* ---------------- 4. Speaking Wheel: 3 levels, one spin per team in each level ---------------- */
+function wheel() {
+  var segs = shuffle(ARC[cfg.g].words).slice(0, 8), colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'];
+  G.segs = segs; G.spins = 0; G.max = cfg.t; G.rot = 0; G.cur = null; G.busy = false;
+  var grad = colors.map(function (c, i) { return c + ' ' + (i * 45) + 'deg ' + ((i + 1) * 45) + 'deg'; }).join(',');
+  $('stage').innerHTML = '<div id="wheelWrap"><div id="wheelBox"><div id="pointer">⬇️</div><div id="wheel" style="background:conic-gradient(' + grad + ')">' + segs.map(function (w) { return '<b>' + w.e + '</b>'; }).join('') + '</div></div><div id="wcard" class="card"><div id="wpic">🎡</div><div id="wword">Spin the wheel!</div><div id="wtask"></div><div id="wex"></div><div class="row"><button class="btn gold" id="spin">🎡 SPIN!</button></div><div class="row" id="award" style="display:none"><button class="btn" id="great">⭐ Great! +10</button><button class="btn blue" id="good">👍 Good try +5</button></div><div class="row"><button class="btn purple" id="showEx" style="display:none">💡 Show an example</button></div></div></div>';
+  var box = $('wheelBox'), rad = box.offsetWidth * 0.34; document.querySelectorAll('#wheel b').forEach(function (el, i) { var ang = i * 45 + 22.5; el.style.transform = 'rotate(' + ang + 'deg) translate(0,-' + rad + 'px) rotate(-' + ang + 'deg) translate(-50%,-50%)'; });
+  $('spin').onclick = spin; $('showEx').onclick = function () { sfx('click'); $('wex').textContent = '“' + G.cur.x + '”'; speak(G.cur.x); }; $('great').onclick = function () { award(10); }; $('good').onclick = function () { award(5); };
+  readyWheel();
+}
+var TASKS = ['Say a sentence with the word.', 'Say TWO sentences with the word.', 'Ask a question with the word, then answer it!'];
+function readyWheel() { G.cur = null; G.busy = false; setLvl(); $('wpic').textContent = '🎡'; $('wword').textContent = 'Spin the wheel!'; $('wtask').textContent = 'Level ' + G.level + ': ' + TASKS[G.level - 1]; $('wex').textContent = ''; $('spin').style.display = ''; $('award').style.display = 'none'; $('showEx').style.display = 'none'; $('msg').textContent = ''; setFoot({}); who('spin the wheel!'); }
+function spin() {
+  if (G.busy) return; G.busy = true; var idx = Math.floor(Math.random() * 8); sfx('spin'); $('spin').style.display = 'none';
+  G.rot += 360 * 5 + (360 - (idx * 45 + 22.5)) - (G.rot % 360); $('wheel').style.transform = 'rotate(' + G.rot + 'deg)';
+  setTimeout(function () { var w = G.segs[idx]; G.cur = w; sfx('correct'); $('wpic').textContent = w.e; $('wword').textContent = w.w; $('wtask').textContent = 'Level ' + G.level + ': ' + TASKS[G.level - 1]; speak(w.w); $('award').style.display = 'flex'; $('showEx').style.display = ''; setFoot({again: true}); }, 4400);
+}
+function award(p) { S.scores[S.turn] += p; sfx('correct'); confetti(p === 10 ? 30 : 12); memeFor('speak'); $('award').style.display = 'none'; drawScore(); $('msg').style.color = '#15803d'; $('msg').textContent = '+' + p + ' ⭐'; setFoot({again: true, next: true}); $('next').textContent = (G.spins + 1 >= G.max && G.level >= G.levels && !(S.cup && S.cup.idx < 3)) ? '🏆 Finish!' : 'Next team ▶'; }
+$('again').onclick = function () { sfx('click'); if (cfg.game === 'sentence') speak(G.list[G.i].answer); else if (cfg.game === 'letters') speak(G.q.w); else if (cfg.game === 'wheel' && G.cur) speak(G.cur.w); };
+$('next').onclick = function () {
+  sfx('click'); if ('speechSynthesis' in window) speechSynthesis.cancel(); passTurn();
+  if (cfg.game === 'sentence') { G.i++; if (G.i >= G.list.length) return levelDone(sentLevel); nextSentence(); }
+  else if (cfg.game === 'letters') { G.i++; if (G.i >= G.list.length) return levelDone(hangLevel); hangWord(); }
+  else if (cfg.game === 'wheel') { G.spins++; if (G.spins >= G.max) { G.spins = 0; return levelDone(readyWheel); } readyWheel(); }
+};
+(function () { var q = (location.search.match(/grade=([34])/) || [])[1]; if (q) { cfg.g = q; document.querySelectorAll('.chip[data-g]').forEach(function (x) { x.classList.toggle('sel', x.dataset.g === q); }); } })();
+</script>
+</body>
+</html>

@@ -64,18 +64,21 @@
 
   // ---- Simon Says: the single old library card is replaced by the Grade 3 and Grade 4 editions ----
   function applySimonSplit() {
-    // Safe to run several times: removes the old single card and keeps the two grade cards identical to the library data.
+    // Safe to run several times. Removes the retired single cards (old Simon Says, old Bamboozle games) and keeps
+    // the new Simon Says and Bamboozle cards identical to the library data.
     var st = root.schoolStore || root.store, changed = false;
     if (!st || !st.state || !Array.isArray(st.state.resources)) return false;
-    if (st.state.resources.some(function (r) { return r && r.id === 'simon-says-classroom'; })) {
-      if (st.deleteResource) st.deleteResource('simon-says-classroom');
-      else st.state.resources = st.state.resources.filter(function (r) { return r && r.id !== 'simon-says-classroom'; });
-      changed = true;
-    }
-    var src = root.GAMES_DATA || root.GAMES_REGISTRY || [], fields = ['title', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'url', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus'];
-    ['simon-says-grade3', 'simon-says-grade4'].forEach(function (id) {
+    ['simon-says-classroom', 'baamboozle', 'bamboozle'].forEach(function (oldId) {
+      if (st.state.resources.some(function (r) { return r && r.id === oldId; })) {
+        if (st.deleteResource) st.deleteResource(oldId);
+        else st.state.resources = st.state.resources.filter(function (r) { return r && r.id !== oldId; });
+        changed = true;
+      }
+    });
+    var src = root.GAMES_DATA || root.GAMES_REGISTRY || [], fields = ['title', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'url', 'worksheet', 'worksheetRoute', 'worksheetUrl', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus', 'skills', 'category', 'categoryLabel'];
+    ['simon-says-grade3', 'simon-says-grade4', 'bamboozle-g3-u1', 'bamboozle-g3-u2', 'bamboozle-g4-u1', 'bamboozle-g4-u2', 'arcade-g3-u2', 'arcade-g4-u2', 'race-g3-u2', 'race-g4-u2', 'print-g3-u2', 'print-g4-u2'].forEach(function (id) {
       var def = src.filter(function (g) { return g && g.id === id; })[0], cur = st.state.resources.filter(function (r) { return r && r.id === id; })[0];
-      if (def && cur && cur.description !== def.description) { fields.forEach(function (f) { if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f])); }); changed = true; }
+      if (def && cur && (cur.description !== def.description || cur.route !== def.route)) { fields.forEach(function (f) { if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f])); }); changed = true; }
     });
     if (changed) { if (st.saveState) st.saveState(); if (st.notify) st.notify(); }
     return changed;
