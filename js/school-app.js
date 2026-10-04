@@ -52,7 +52,7 @@
   }
 
   // Application State
-  let currentView = 'dashboard';
+  let currentView = 'command';
   let selectedAttDate = new Date().toISOString().split('T')[0];
   let activeArchivedFilter = 'all';
   let selectedClassDetailId = 'class-3a';
@@ -120,7 +120,7 @@
   async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
-      currentView = 'dashboard';
+      currentView = 'command';
       window.__pendingDashboardOpen = false;
     }
     const initialClass = store.getActiveClass();
@@ -227,7 +227,7 @@
         const role = btn.getAttribute('data-role');
         store.setRole(role);
 
-        if (role === 'teacher') currentView = 'dashboard';
+        if (role === 'teacher') currentView = 'command';
         else if (role === 'student') currentView = 'adventure';
         else if (role === 'parent') currentView = 'parent-home';
 
@@ -808,7 +808,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -949,7 +949,7 @@
     const floatingToolkit = document.getElementById('classroom-floating-toolkit');
     if (floatingToolkit) {
       const role = (store && typeof store.getRole === 'function') ? store.getRole() : 'teacher';
-      const teacherViews = ['dashboard', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
+      const teacherViews = ['dashboard', 'command', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
       floatingToolkit.style.display = (role === 'teacher' && teacherViews.includes(currentView)) ? 'flex' : 'none';
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3368,12 +3368,12 @@
               '<input type="text" class="search-input" placeholder="🔍 Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
             '</div>' +
 
-            '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="min-width:140px;">' +
+            '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="all" ' + (studentsFilterClass === 'all' ? 'selected' : '') + '>All Classes (' + allStudents.length + ')</option>' +
               classes.map(c => '<option value="' + c.id + '" ' + (studentsFilterClass === c.id ? 'selected' : '') + '>' + c.name + '</option>').join('') +
             '</select>' +
 
-            '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="min-width:160px;">' +
+            '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="all" ' + (studentsFilterStage === 'all' ? 'selected' : '') + '>All Evolution Stages</option>' +
               '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>🥚 Level 1: Mystery Egg</option>' +
               '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>🥚✨ Level 2: Cracking Egg</option>' +
@@ -3384,14 +3384,14 @@
               '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
             '</select>' +
 
-            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="min-width:150px;">' +
+            '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
               '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
               '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
               '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>🏆 Has Achievements</option>' +
             '</select>' +
 
-            '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="min-width:140px;">' +
+            '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>⭐ XP: High to Low</option>' +
               '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>⭐ XP: Low to High</option>' +
               '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>👾 Level: High to Low</option>' +
@@ -8619,7 +8619,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderAttendanceView(container) {
     const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
-    renderAttendanceTableForClass(cls, students);
+    container.innerHTML = '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
+      '<h2 style="font-size:1.5rem; font-weight:900; margin:0 0 4px 0;">📋 Attendance · ' + cls.name + '</h2>' +
+      '<p style="margin:0 0 16px 0; color:var(--text-muted);">Tap the button to take the register for today.</p>' +
+      renderAttendanceTableForClass(cls, students) + '</div>';
   }
 
   function renderTeacherDashboard(container) {
@@ -8866,7 +8869,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="max-width:380px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:6px;">' +
                     '<span>⭐ ' + totalXP.toLocaleString() + ' XP</span>' +
-                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString() + ' / ' + mState.nextLevel.xpRequired.toLocaleString() + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve (' + progressPct + '%)') : 'Ready to evolve!'))) + '</span>' +
+                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString() + ' / ' + mState.nextLevel.xpRequired.toLocaleString() + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (totalXP.toLocaleString() + ' / ' + (totalXP + mState.xpToNext).toLocaleString() + ' XP') : 'Ready to evolve!'))) + '</span>' +
                   '</div>' +
                   '<div style="background:rgba(255,255,255,0.2); height:10px; border-radius:999px; overflow:hidden;">' +
                     '<div style="background:linear-gradient(90deg, #f59e0b, #fbbf24, #10b981); height:100%; width:' + progressPct + '%; border-radius:999px; transition:width 0.4s ease;"></div>' +
@@ -9159,7 +9162,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="openMonsterCreator(\'' + s.id + '\')" title="Open Monster Studio">' + window.renderStudentMonsterAvatar(s.id, { size: 42, animated: true }) + '</div>' +
                 '<div>' +
                   '<div style="font-weight:800; font-size:1rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div style="font-size:0.75rem; font-weight:700; color:var(--color-primary);">' + mState.stageName + ' · Lvl ' + mState.currentLevel + '</div>' +
+                  '<div style="font-size:0.75rem; font-weight:700; color:var(--color-primary);">' + String(mState.stageName || '').replace(/^Level \d+\s*[-•]\s*/i, '') + ' · Lvl ' + mState.currentLevel + '</div>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; align-items:center; gap:10px;">' +
@@ -9232,16 +9235,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
       sidebar.innerHTML = 
         '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Overview Dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Overview</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
         '</ul>' +
 
         renderNavGroup('my-school', 'My School', [
+          { view: 'board', label: 'Class Board', icon: '📺', title: 'Class Board: projector view with timer, picker and points', isActive: currentView === 'board' },
           { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
           { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
           { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
           { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' },
           { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
-        ], ['classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
+        ], ['board', 'classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
 
         renderNavGroup('teaching', 'Teaching', [
           { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
@@ -9385,6 +9390,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
+        case 'command': if (window.renderCommandCenterView) window.renderCommandCenterView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Command Center is not loaded.</div>'; break;
+        case 'board': if (window.renderClassBoardView) window.renderClassBoardView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class Board is not loaded.</div>'; break;
         case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
         default: renderTeacherDashboard(container); break;

@@ -662,9 +662,13 @@ button, input, select, textarea {
 @media (max-width: 580px) {
   .dashboard-stats-hud-container,
   .kpi-unified-bar {
-    grid-template-columns: 1fr;
-    gap: 18px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 12px;
+    padding: 16px;
   }
+  .stats-hud-label { white-space: normal !important; font-size: 0.68rem; }
+  .stats-hud-icon { display: none !important; }
+  .stats-hud-number { font-size: 1.7rem; }
 }
 
 .stats-hud-item {
@@ -2846,14 +2850,15 @@ button, input, select, textarea {
    ========================================================================== */
 .dashboard-hero-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 20px;
   margin-top: 16px;
 }
+.dashboard-hero-grid > * { min-width: 0; }
 
 @media (max-width: 960px) {
   .dashboard-hero-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
