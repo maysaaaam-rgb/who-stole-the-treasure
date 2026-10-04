@@ -114,7 +114,9 @@
 
   function itemHtml(name, a, monsterKey) {
     var anchorsOf = a;
-    var rule = RULE[name], box = root.MONSTER_ITEM_BOX && root.MONSTER_ITEM_BOX[name];
+    var variant = (root.MONSTER_ITEM_VARIANT && root.MONSTER_ITEM_VARIANT[name]) || '';
+    var picName = name + variant;
+    var rule = RULE[name], box = root.MONSTER_ITEM_BOX && (root.MONSTER_ITEM_BOX[picName] || root.MONSTER_ITEM_BOX[name]);
     if (!rule || !box || !a) return '';
     var pt = a[rule.at], baseW = a[rule.base];
     if (!pt || !baseW) return '';
@@ -127,7 +129,7 @@
     var dyBase = rule.dyk === 'eyeGap' ? Math.max(40, (anchorsOf.eyeCenter.y - anchorsOf.hatBase.y)) : baseW;
     var cy = pt.y + ((rule.dy || 0) + (ov.dy || 0)) * dyBase;
     var left = cx - px * imgW, top = cy - py * imgW;
-    return '<img class="eaa-dressup-item" data-item="' + name + '" src="' + ITEMS + 'item_' + name + '.webp" alt="" draggable="false" ' +
+    return '<img class="eaa-dressup-item" data-item="' + name + '" src="' + ITEMS + 'item_' + picName + '.webp" alt="" draggable="false" ' +
       'style="position:absolute;z-index:' + rule.z + ';left:' + (left / 10.24).toFixed(2) + '%;top:' + (top / 10.24).toFixed(2) + '%;width:' + (imgW / 10.24).toFixed(2) + '%;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(30,20,60,0.35));" />';
   }
 
