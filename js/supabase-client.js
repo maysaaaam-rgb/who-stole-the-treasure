@@ -1297,7 +1297,8 @@
         koreanRole: student.koreanRole || student.korean_role || null,
         customIcon: activeIcon,
         avatarConfig: { ...avatarConfig, customIcon: activeIcon },
-        xpHistory: student.xpHistory || student.xp_history || []
+        xpHistory: student.xpHistory || student.xp_history || [],
+        xpUpdatedAt: student.xpUpdatedAt || null
       },
       updated_at: new Date().toISOString()
     };
@@ -1345,6 +1346,7 @@
       manualCefrOverrides: row.manual_cefr_overrides || {},
       monsterProfile: row.monster_profile || {},
       extraData: row.extra_data || {},
+      xpUpdatedAt: extra.xpUpdatedAt || null,
       isEgg: false,
       isHatched: true,
       updatedAt: row.updated_at

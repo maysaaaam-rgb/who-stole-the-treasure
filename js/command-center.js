@@ -78,6 +78,15 @@
       }).join('') || '<div class="cc-empty">No XP awarded yet.</div>';
   }
 
+  function xpBanner(cls) {
+    try {
+      if (localStorage.getItem('eaa_xp_recon_hidden')) return '';
+      var plan = reconPlan(cls);
+      if (plan.off.length < 3) return '';
+      return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#2e2410;border:1px solid #6b4e12;color:#fde68a;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⚠️ <b>' + plan.off.length + ' students</b> have XP totals that do not match their award history.</span><button class="cc-plus" style="margin-left:auto;padding:7px 14px" onclick="CommandCenter.restoreXp()">Review &amp; restore</button></div>';
+    } catch (e) { return ''; }
+  }
+
   var CSS = '' +
     '.cc{--bg:#0a0b0f;--p:#0d0e13;--l:#1d2029;--t:#e6e8ee;--m:#8b93a7;color:var(--t);font-family:Inter,system-ui,sans-serif;font-size:13px;max-width:1240px;margin:0 auto;padding:6px 0 80px}' +
     '.cc *{box-sizing:border-box}.cc h1{font-size:22px;font-weight:700;letter-spacing:-.02em;margin:0}.cc .cc-sub{color:var(--m);margin:2px 0 0}' +
@@ -164,6 +173,7 @@
     container.innerHTML = '<div class="cc">' +
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
+      (xpBanner(cls)) +
       '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">📋 Take attendance</button><button onclick="switchView(\'homework\')">📝 Homework</button><button onclick="switchView(\'curriculum\')">📚 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp"><div><small>Attendance</small><b>' + att + '%</b></div><div><small>Active this week</small><b>' + active + '<em>of ' + current.length + '</em></b></div>' +
         '<div><small>XP earned this week</small><b>' + weekXp.toLocaleString() + '<em>avg ' + avg + ' total</em></b></div><div><small>Near evolving</small><b>' + near + '<em>students</em></b></div></div>' +
@@ -189,6 +199,66 @@
     palette: function () { openPalette(); }
   };
   root.CommandCenter = api;
+
+  // ------------------------------------------------------------- XP restore (history vs shown totals)
+  // The shown XP can drift away from the award history (e.g. after a reset). This previews the fix and applies it on request.
+  function activeTx(studentId) {
+    return (S().state.xpTransactions || []).filter(function (t) { return t.studentId === studentId && t.status !== 'voided' && t.status !== 'reverted' && !t.isVoided; });
+  }
+  function reconPlan(cls) {
+    var st = S(), seen = {}, dupes = [], rows = [];
+    st.getStudentsByClass(cls.id).forEach(function (s) {
+      var groups = {};
+      activeTx(s.id).forEach(function (t) {
+        var amt = Number(t.amount) || 0;
+        if (amt > -500) return;
+        var k = [amt, t.reason, String(t.timestamp || '').slice(0, 10)].join('|');
+        (groups[k] = groups[k] || []).push(t);
+      });
+      Object.keys(groups).forEach(function (k) { if (groups[k].length >= 2) groups[k].forEach(function (t) { dupes.push(t); seen[t.id] = true; }); });
+    });
+    st.getStudentsByClass(cls.id).forEach(function (s) {
+      var target = activeTx(s.id).reduce(function (n, t) { return seen[t.id] ? n : n + (Number(t.amount) || 0); }, 0);
+      target = Math.max(0, Math.round(target));
+      var shown = Number(s.xp) || 0;
+      rows.push({ id: s.id, name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim(), shown: shown, target: target, diff: target - shown });
+    });
+    return { rows: rows, dupes: dupes, off: rows.filter(function (r) { return r.diff !== 0; }) };
+  }
+  function reconModal() {
+    var st = S(), cls = st.getActiveClass(), plan = reconPlan(cls);
+    ensureCss();
+    var old = document.getElementById('cc-recon'); if (old) old.remove();
+    var ovl = document.createElement('div'); ovl.id = 'cc-recon'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
+    var names = {}; st.getStudentsByClass(cls.id).forEach(function (s) { names[s.id] = s.firstName; });
+    ovl.innerHTML = '<div class="cc-pal" style="width:min(640px,94vw);padding:20px;max-height:86vh;overflow:auto">' +
+      '<h2 style="font-size:18px;margin:0 0 6px">Restore XP from the award history · ' + esc(cls.name) + '</h2>' +
+      '<p style="color:#8b93a7;margin:0 0 12px">The totals students see do not match the history of awards you gave. This sets each student\'s XP to what the history adds up to. A backup of today\'s numbers is saved first.</p>' +
+      (plan.dupes.length ? '<p style="background:#2e2410;color:#fbbf24;border-radius:8px;padding:8px 10px;margin:0 0 12px">' + plan.dupes.length + ' duplicate large corrections will be removed (' + plan.dupes.map(function (t) { return esc(names[t.studentId] || '') + ' ' + t.amount; }).join(', ') + ').</p>' : '') +
+      '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:#7c8498;text-align:left"><th style="padding:5px 8px">Student</th><th>Shown now</th><th>Will become</th><th>Change</th></tr>' +
+      plan.rows.map(function (r) { return '<tr style="border-top:1px solid #1d2029"><td style="padding:6px 8px">' + esc(r.name) + '</td><td>' + r.shown + '</td><td><b>' + r.target + '</b></td><td style="color:' + (r.diff > 0 ? '#34d399' : r.diff < 0 ? '#f87171' : '#8b93a7') + '">' + (r.diff > 0 ? '+' : '') + r.diff + '</td></tr>'; }).join('') + '</table>' +
+      '<div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end"><button class="cc-plus" id="cc-r-no" style="padding:9px 16px">Not now</button><button class="cc-plus" id="cc-r-hide" style="padding:9px 16px">Don\'t ask again</button><button id="cc-r-go" style="background:#4f46e5;color:#fff;border:0;border-radius:8px;padding:9px 18px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer">Restore these totals</button></div></div>';
+    document.body.appendChild(ovl);
+    ovl.querySelector('#cc-r-no').onclick = function () { ovl.remove(); };
+    ovl.querySelector('#cc-r-hide').onclick = function () { try { localStorage.setItem('eaa_xp_recon_hidden', '1'); } catch (e) { /* ignore */ } ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); };
+    ovl.querySelector('#cc-r-go').onclick = function () { applyRecon(plan); ovl.remove(); };
+    ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+  }
+  function applyRecon(plan) {
+    var st = S(), backup = {};
+    plan.rows.forEach(function (r) { backup[r.id] = r.shown; });
+    try { localStorage.setItem('eaa_xp_backup_' + Date.now(), JSON.stringify(backup)); } catch (e) { /* ignore */ }
+    plan.dupes.forEach(function (t) { st.voidXPTransaction(t.id, 'Duplicate correction removed during XP restore'); });
+    plan.rows.forEach(function (r) {
+      var stu = st.getStudent(r.id); if (!stu) return;
+      st.updateStudent(r.id, { xp: r.target, totalXP: r.target, xpUpdatedAt: new Date().toISOString() });
+      if (st.evaluateMonsterStage) st.evaluateMonsterStage(stu);
+      if (st.updateStudent) st.updateStudent(r.id, { level: stu.level, stageName: stu.stageName, levelName: stu.levelName });
+    });
+    st.saveState(); if (st.notify) st.notify();
+    if (root.renderCurrentView) root.renderCurrentView();
+  }
+  api.restoreXp = reconModal;
 
   // ------------------------------------------------------------- Ctrl+K palette
   var VIEWS = [['dashboard', '🏠 Dashboard'], ['command', '🧭 Command Center'], ['board', '📺 Class Board'], ['students', '🧒 Students'], ['attendance', '📋 Attendance'], ['curriculum', '📚 Curriculum'], ['library', '📖 Library'], ['homework', '📝 Homework'], ['assignments', '🗂️ Assignments'], ['progress', '📈 Progress'], ['leaderboard', '🏆 Leaderboard'], ['store', '🛍️ Classroom Store'], ['monster', '🐾 Monsters'], ['settings', '⚙️ Settings']];

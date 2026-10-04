@@ -11260,6 +11260,7 @@
         const updatedXP = Math.max(0, curActive + points);
         s.xp = updatedXP;
         s.totalXP = updatedXP;
+        s.xpUpdatedAt = new Date().toISOString();
         tx.balanceAfter = s.xp;
         if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
         const now = new Date();
@@ -11420,6 +11421,7 @@
       const oldXP = Number(s.xp) || 0;
       s.xp = parsedXP;
       s.totalXP = parsedXP;
+      s.xpUpdatedAt = new Date().toISOString();
 
       evaluateMonsterStage(s);
 
@@ -11628,11 +11630,13 @@
         }
         s.xp = Math.max(0, (Number(s.xp) || 0) - (Number(tx.amount) || 0));
         s.totalXP = s.xp;
+        s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
       }
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+      this.pushXPChange(tx, s);
       return true;
     }
 
@@ -11658,12 +11662,23 @@
         }
         s.xp = Math.max(0, (Number(s.xp) || 0) + (Number(tx.amount) || 0));
         s.totalXP = s.xp;
+        s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
       }
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+      this.pushXPChange(tx, s);
       return true;
+    }
+
+    /** Send a changed XP entry and its student to the cloud so every device sees the same thing. */
+    pushXPChange(tx, s) {
+      try {
+        if (typeof window === 'undefined' || !window.AdventureSupabase || !window.AdventureSupabase.isConfigured) return;
+        if (tx) window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
+        if (s) window.AdventureSupabase.saveStudent(s).catch(() => {});
+      } catch (e) { /* offline: the next sync sends it */ }
     }
 
     updateXPTransaction(txId, updates) {
@@ -16321,7 +16336,14 @@
             // Local is authoritative so teacher edits (up or down) stick. Only absorb a stale cloud archive once.
             let mergedXP = Math.max(0, Number(local.xp) || 0);
             let folded = !!local.xpArchiveFolded;
-            if (remoteArch > 0 && !folded) {
+            // The newest XP change wins, so a device with old numbers can never undo a newer change made elsewhere.
+            const remoteStamp = Date.parse(remoteStudent.xpUpdatedAt || '') || 0;
+            const localStamp = Date.parse(local.xpUpdatedAt || '') || 0;
+            const cloudIsNewer = remoteStamp > localStamp;
+            if (cloudIsNewer) {
+              mergedXP = remoteAct;
+              folded = true;
+            } else if (remoteArch > 0 && !folded) {
               mergedXP = Math.max(mergedXP, remoteFolded);
               folded = true;
             }
@@ -16330,7 +16352,8 @@
               xp: mergedXP,
               totalXP: mergedXP,
               archivedXP: 0,
-              xpArchiveFolded: folded
+              xpArchiveFolded: folded,
+              xpUpdatedAt: (cloudIsNewer ? remoteStudent.xpUpdatedAt : local.xpUpdatedAt) || remoteStudent.xpUpdatedAt || null
             });
             delete mergedStudent.archived_xp;
             evaluateMonsterStage(mergedStudent);
@@ -16448,9 +16471,13 @@
         if (!this.state.xpTransactions) this.state.xpTransactions = [];
         cloudData.xpTransactions.forEach(tx => {
           if (!tx || !tx.id) return;
-          const exists = this.state.xpTransactions.some(t => t.id === tx.id);
-          if (!exists) {
+          const existing = this.state.xpTransactions.find(t => t.id === tx.id);
+          if (!existing) {
             this.state.xpTransactions.push(tx);
+            modified = true;
+          } else if (tx.status === 'voided' && existing.status !== 'voided') {
+            existing.status = 'voided';
+            existing.isVoided = true;
             modified = true;
           }
         });

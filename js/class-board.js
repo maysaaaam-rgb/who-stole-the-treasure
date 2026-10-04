@@ -11,10 +11,15 @@
 
   function goalKey(cls) { return 'eaa_board_goal_' + cls.id; }
   function loadGoal(cls) {
+    // The cloud copy (shared with the Classroom Store save) is the truth; this browser only keeps a fallback.
+    try { var cg = root.ClassroomStore && root.ClassroomStore.getBoardGoal(cls.id); if (cg && cg.target) return cg; } catch (e) { /* use fallback */ }
     try { var g = JSON.parse(localStorage.getItem(goalKey(cls))); if (g && g.target) return g; } catch (e) { /* none saved */ }
     return { label: 'Pizza party!', target: 500, since: new Date().setHours(0, 0, 0, 0) };
   }
-  function saveGoal(cls, g) { try { localStorage.setItem(goalKey(cls), JSON.stringify(g)); } catch (e) { /* private mode */ } }
+  function saveGoal(cls, g) {
+    try { localStorage.setItem(goalKey(cls), JSON.stringify(g)); } catch (e) { /* private mode */ }
+    try { if (root.ClassroomStore) root.ClassroomStore.setBoardGoal(cls.id, g); } catch (e) { /* local copy still saved */ }
+  }
   function loadAbsent(cls) {
     absent = {};
     try { var d = JSON.parse(sessionStorage.getItem('eaa_board_absent_' + cls.id) || '{}'); absent = d || {}; } catch (e) { absent = {}; }
@@ -127,6 +132,8 @@
         '<button onclick="try{classSoundboard.playAttentionBell()}catch(e){}">🔔 Bell</button><button onclick="try{classSoundboard.playApplause()}catch(e){}">👏</button><span class="sep"></span>' +
         '<button onclick="ClassBoard.full()">⛶ Full screen</button><button onclick="switchView(\'dashboard\')">✕ Exit</button></div></div>';
     paintGoal(); paintClock();
+    // pull the newest goal from the cloud, then redraw the bar
+    try { if (root.ClassroomStore && root.ClassroomStore.cloud) root.ClassroomStore.cloud.pull().then(function () { paintGoal(); }); } catch (e) { /* offline */ }
   }
 
   function totals() {
