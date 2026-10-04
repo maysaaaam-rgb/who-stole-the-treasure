@@ -1193,6 +1193,7 @@
   window.MONSTER_ART = MONSTER_ART;
   window.getIllustratedMonsterUrl = function (baseColor, mState) { return getIllustratedMonsterUrl(baseColor, mState); };
   function getIllustratedMonsterUrl(baseColor, mState) {
+    if (window.EAA_ILLUSTRATED_MONSTERS !== true) return '';   // the drawn monsters are in use for now
     const color = String(baseColor || 'blue').toLowerCase().replace(/^body-/, '');
     const species = MONSTER_ART.speciesByColor[color] || 'aquafind';
     if (MONSTER_ART.ready.indexOf(species) === -1) return '';

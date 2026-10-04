@@ -13405,9 +13405,13 @@
 
     getMonsterItems(category = null, includeArchived = false) {
       if (!this.state.monsterItems) this.state.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+      // Items that only have a picture for the illustrated monsters stay hidden while the drawn monsters are in use.
+      const D = (typeof window !== 'undefined') ? window.MonsterDressUp : null;
+      const hideArtOnly = (typeof window === 'undefined' || window.EAA_ILLUSTRATED_MONSTERS !== true) && D && typeof D.isArtOnly === 'function';
       return this.state.monsterItems.filter(item => {
         const matchCat = !category || item.category === category;
         const matchArchived = includeArchived || item.status !== 'archived';
+        if (hideArtOnly && D.isArtOnly(item.id)) return false;
         return matchCat && matchArchived;
       });
     }
