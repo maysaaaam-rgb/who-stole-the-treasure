@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alley Fling · Sound Lab</title>
+<style>
+  :root { --ink:#26215c; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Trebuchet MS",system-ui,sans-serif; color:var(--ink); min-height:100vh; background:linear-gradient(180deg,#bae6fd,#fde68a); padding:2.4vh 3vw 6vh; }
+  .wrap { max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:1.6vh; }
+  h1 { font-size:clamp(26px,4.4vw,46px); text-align:center; }
+  .sub { text-align:center; font-weight:600; color:#6d5fd1; font-size:clamp(14px,1.8vw,20px); }
+  .card { background:#fff; border:5px solid var(--ink); border-radius:24px; box-shadow:0 8px 0 rgba(38,33,92,.25); padding:14px 16px; }
+  h2 { font-size:clamp(18px,2.4vw,26px); margin-bottom:8px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
+  .snd { display:flex; align-items:center; gap:10px; border:4px solid #cbd5e1; border-radius:18px; padding:8px 10px; background:#f8fafc; }
+  .snd b { font-size:clamp(15px,1.7vw,19px); } .snd small { display:block; font-weight:600; color:#6b5fb5; font-size:clamp(11px,1.2vw,14px); }
+  button { font:inherit; font-weight:800; color:#fff; background:#22c55e; border:3px solid var(--ink); border-bottom-width:7px; border-radius:16px; padding:.35em .9em; cursor:pointer; font-size:clamp(15px,1.8vw,20px); }
+  button:active { transform:translateY(4px); border-bottom-width:3px; }
+  button.blue { background:#3b82f6; } button.gold { background:#f59e0b; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; font-weight:700; }
+  input[type=range] { width:200px; }
+  #status { text-align:center; font-weight:700; min-height:1.4em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔊 Sound Lab</h1>
+  <div class="sub">Tap a button to hear each Alley Fling sound. Tell me the names of any that sound bad, too loud, too quiet or annoying.</div>
+  <div class="card row"><button class="gold" id="all">▶ Play all (one by one)</button><button class="blue" id="speak">🗣️ Test the voice</button><label>Volume <input type="range" id="vol" min="0" max="100" value="90"></label></div>
+  <div id="status">Press any button to start the sound.</div>
+  <div class="card"><h2>🎮 During play</h2><div class="grid" id="g1"></div></div>
+  <div class="card"><h2>💥 Throws and hits</h2><div class="grid" id="g2"></div></div>
+  <div class="card"><h2>🏆 Rewards and results</h2><div class="grid" id="g3"></div></div>
+</div>
+<script src="sfx.js?v=1"></script>
+<script>
+var GROUPS = {
+  g1: [['click', 'Button tap', 'a soft pop'], ['countdown', 'Countdown tick', 'a wooden tick'], ['go', 'GO!', 'bright start chime'], ['correct', 'Correct answer', 'four rising bell notes'], ['wrong', 'Wrong answer', 'two soft falling notes, never a buzzer'], ['windgust', 'Wind gust', 'a quiet airy swell']],
+  g2: [['fling', 'Throw', 'a rising whoop'], ['hit', 'Hit', 'a bonk with a sparkle'], ['bonk', 'Bonk (fish, yarn, ball, bone)', 'boing and bonk'], ['rockhit', 'Rock hit', 'a heavy thunk'], ['splat', 'Splat (fish hit)', 'a wet blup-blup'], ['graze', 'Graze', 'a light tap'], ['knock', 'Fence knock', 'a wooden knock-knock'], ['thud', 'Ground thud', 'a soft low thump'], ['boing', 'Bounce', 'a springy boing'], ['tink', 'Tink', 'a small bell tap']],
+  g3: [['shield', 'Shield', 'a shimmering chime'], ['double', 'Double', 'a power-up'], ['streak', 'Streak', 'a quick rising run'], ['cheer', 'Cheer', 'a happy rising run'], ['win', 'Win!', 'victory fanfare']]
+};
+var ctx = null, statusEl = document.getElementById('status');
+function audio() { if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); SFX.init(ctx); setVol(); } if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+function setVol() { if (!ctx) return; var v = document.getElementById('vol').value / 100; try { ctx.destination && (SFX.setVolume ? SFX.setVolume(v) : 0); } catch (e) {} }
+function play(n, label) { audio(); SFX.play(n); statusEl.textContent = '▶ ' + label + ' (' + n + ')'; }
+Object.keys(GROUPS).forEach(function (g) {
+  var box = document.getElementById(g);
+  GROUPS[g].forEach(function (s) {
+    var d = document.createElement('div'); d.className = 'snd';
+    d.innerHTML = '<button>▶</button><div><b>' + s[1] + '</b><small>' + s[2] + '</small></div>';
+    d.querySelector('button').onclick = function () { play(s[0], s[1]); };
+    box.appendChild(d);
+  });
+});
+document.getElementById('all').onclick = function () {
+  audio(); var list = [].concat(GROUPS.g1, GROUPS.g2, GROUPS.g3), i = 0;
+  (function next() { if (i >= list.length) { statusEl.textContent = 'Done.'; return; } var s = list[i++]; play(s[0], s[1]); setTimeout(next, 1500); })();
+};
+document.getElementById('speak').onclick = function () {
+  audio(); try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance('Great job! The answer is festival.'); u.rate = 0.88; u.pitch = 1.05; u.lang = 'en-US'; speechSynthesis.speak(u); statusEl.textContent = '🗣️ Voice test'; } catch (e) { statusEl.textContent = 'No voice available in this browser.'; }
+};
+document.getElementById('vol').oninput = function () { audio(); if (window.SFX && SFX.setVolume) SFX.setVolume(this.value / 100); };
+</script>
+</body>
+</html>
