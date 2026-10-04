@@ -16872,6 +16872,12 @@
       const entry = inv.find(e => e.itemId === itemId);
       const item = this.getMonsterItem(itemId);
       if (!item) return false;
+      // Shop-only items can only be worn by a student who bought or won them
+      if (item.unlockType === 'store') {
+        const pr = this.getMonsterProfile(studentId);
+        const owned = !!entry || !!(pr && pr.unlockedItems && pr.unlockedItems.includes(item.id));
+        if (!owned) return false;
+      }
 
       // Un-equip previous of same category in inventory
       inv.forEach(e => {
