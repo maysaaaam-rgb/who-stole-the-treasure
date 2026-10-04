@@ -320,7 +320,7 @@
   }
   function cloudLabel() {
     var map = { local: '💾 Saved on this device only', saving: '☁️ Saving to the cloud…', saved: '☁️ Saved to the cloud', error: '⚠️ Cloud save failed, kept on this device' };
-    return map[cloudState] || map.local;
+    return map[cloudClient() ? cloudState : 'local'] || map.local;
   }
   // pull once the cloud connection is ready, and again whenever the window gets focus (at most once a minute)
   (function startCloud() {
