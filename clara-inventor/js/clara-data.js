@@ -404,10 +404,10 @@
         {
           stepNumber: 1,
           label: "FIRST",
-          action: "Press play.",
-          altAction: "Press on.",
-          icon: "▶️",
-          desc: "Tap the play button to begin!"
+          action: "Press on.",
+          altAction: "Power on.",
+          icon: "🔘",
+          desc: "Switch on power to light up the screen!"
         },
         {
           stepNumber: 2,
@@ -419,18 +419,18 @@
         {
           stepNumber: 3,
           label: "THIRD",
-          action: "Play the game.",
-          altAction: "Press play.",
-          icon: "🎮",
-          desc: "Start your game adventure!"
+          action: "Press play.",
+          altAction: "Tap app.",
+          icon: "▶️",
+          desc: "Tap the play button to begin the game!"
         },
         {
           stepNumber: 4,
           label: "LAST",
-          action: "Press on.",
-          altAction: "Play the game.",
-          icon: "🔘",
-          desc: "Switch on power and jump into the bunny carrot hop!"
+          action: "Play the game.",
+          altAction: "Enjoy.",
+          icon: "🎮",
+          desc: "Start your adventure and jump into the bunny carrot hop!"
         }
       ],
 
@@ -778,8 +778,8 @@
           setup: "Give 4 students large instruction cards.",
           instructions: "Students stand scrambled at the front. Class directs them into correct order.",
           teacherLanguage: "Can we play the game? No! Put them in order! Who is FIRST?",
-          answerKey: "1. Press play, 2. Type password, 3. Play the game, 4. Press on (or Power On -> Pin -> Play -> Hop).",
-          expectedResponses: "First, press play! Second, type password! Third, play the game! Last, press on!",
+          answerKey: "1. Press on, 2. Type password, 3. Press play, 4. Play the game.",
+          expectedResponses: "First, press on! Second, type password! Third, press play! Last, play the game!",
           physicalVersion: "4 students step forward in sequence when their step is called.",
           digitalVersion: "Operate the virtual tablet: enter PIN 1-2-3-4, tap play, hop bunny.",
           easierVersion: "Color-code the cards (Green = First, Blue = Second, Purple = Third, Gold = Last).",

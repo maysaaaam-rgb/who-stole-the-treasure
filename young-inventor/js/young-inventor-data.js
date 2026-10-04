@@ -12,7 +12,7 @@
       id: 'young-inventors',
       title: 'YOUNG INVENTORS',
       subtitle: 'PLAN \u2022 BUILD \u2022 TEST \u2022 IMPROVE',
-      unit: 'Global Readings 3 \u2014 Unit 1: Inventions',
+      unit: 'Global Readings 2 \u2014 Unit 1: Inventions',
       grade: 'Grade 4',
       level: 'A1+ / early A2',
       duration: '45\u201360 minutes',

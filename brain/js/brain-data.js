@@ -8,7 +8,7 @@ const BRAIN_LESSON_DATA = {
   meta: {
     title: "THE DAY YOUR BRAIN QUIT!",
     subtitle: "Can you save your brain?",
-    unit: "Unit 1 Page 17 (RG2)",
+    unit: "Unit 1 Page 17 (Global Readings 3)",
     readingTitle: "How Your Brain Learns",
     targetAge: "Grade 4 (A1–A1+)",
     totalClues: 5,
