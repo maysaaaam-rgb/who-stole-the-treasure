@@ -190,7 +190,7 @@
    "kind": "monster",
    "hatBase": {
     "x": 545,
-    "y": 198
+    "y": 233
    },
    "hatWidth": 400,
    "eyeCenter": {
@@ -224,7 +224,7 @@
    "kind": "monster",
    "hatBase": {
     "x": 545,
-    "y": 198
+    "y": 233
    },
    "hatWidth": 400,
    "eyeCenter": {
@@ -260,7 +260,7 @@
    "kind": "monster",
    "hatBase": {
     "x": 545,
-    "y": 198
+    "y": 233
    },
    "hatWidth": 400,
    "eyeCenter": {
@@ -296,7 +296,7 @@
    "kind": "monster",
    "hatBase": {
     "x": 545,
-    "y": 198
+    "y": 233
    },
    "hatWidth": 400,
    "eyeCenter": {
