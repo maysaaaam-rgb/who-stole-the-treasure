@@ -8431,6 +8431,103 @@ const GAMES_REGISTRY = [
       "19 Student Cards",
       "Pair Role-play"
     ]
+  },
+  {
+    "id": "telephone-pictionary",
+    "title": "📞 Telephone Pictionary: Draw & Pass (Grades 3 and 4)",
+    "description": "A paper and smartboard group game: write a sentence, draw it, fold and pass, write what you see, and so on. The smartboard shows sentence ideas from Units 1 and 2, a timer for every turn, the groups, and a funny reveal. A printable folding sheet is included.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "20–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Writing",
+      "Vocabulary",
+      "Speaking",
+      "Teamwork"
+    ],
+    "topic": "Unit 1 and Unit 2 sentences",
+    "topics": [
+      "Unit 1 and Unit 2 sentences"
+    ],
+    "languageFocus": "Short sentences from Units 1 and 2; describing a picture",
+    "activityMode": "Small groups of 4 to 6",
+    "interactionType": "Paper game with a smartboard timer",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "drawing",
+      "writing",
+      "group",
+      "paper",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Write a short correct sentence from the unit",
+      "Describe what a picture shows",
+      "Work together and enjoy the funny changes"
+    ],
+    "teacherInstructions": "Print the sheet (one per pupil in each group). Open the helper on the smartboard, make groups, and press start. Pupil 1 writes, Pupil 2 draws, Pupil 3 writes what they see, and so on. After each turn the paper is folded and passed. At the end each group opens the paper and reads the first sentence and what the last picture shows.",
+    "studentInstructions": "Write or draw. Fold the paper. Pass it on. Open it at the end and laugh!",
+    "route": "telephone-pictionary/index.html",
+    "worksheet": "telephone-pictionary/sheet.html",
+    "worksheetRoute": "telephone-pictionary/sheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "telephone-pictionary/index.html",
+    "worksheetUrl": "telephone-pictionary/sheet.html"
   }
 ];
 
