@@ -40,9 +40,9 @@
   // w = width as a multiple of a measured width; dx/dy = shift as a multiple of that width.
   var RULE = {
     hat_crown:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.72, dyk: 'eyeGap', dy: 0.22 },
-    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.92, dyk: 'eyeGap', dy: 0.38 },
+    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.92, dyk: 'eyeGap', dy: 0.32 },
     hat_scholar:   { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.88, dyk: 'eyeGap', dy: 0.28 },
-    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dyk: 'eyeGap', dy: 0.33 },
+    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dyk: 'eyeGap', dy: 0.29 },
     hat_bow:       { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.50, dx: 0.28, dy: 0.1 },
     hat_starclip:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.26, dx: -0.30, dy: 0.12 },
     hat_flower:    { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 1.00, dy: 0.2 },
