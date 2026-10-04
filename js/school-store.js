@@ -16290,6 +16290,7 @@
         if (!this.state.classes) this.state.classes = [];
         cloudData.classes.forEach(remoteClass => {
           if (!remoteClass || !remoteClass.id) return;
+          if (remoteClass.grade === 'System') return;   // hidden sync rows are not real classes
           const localIdx = this.state.classes.findIndex(c => c.id === remoteClass.id);
           if (localIdx !== -1) {
             this.state.classes[localIdx] = Object.assign({}, this.state.classes[localIdx], remoteClass);

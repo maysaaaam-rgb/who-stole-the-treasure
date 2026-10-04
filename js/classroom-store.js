@@ -55,7 +55,7 @@
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
     return d;
   }
-  function save() { store.saveState(); store.notify(); }
+  function save() { store.saveState(); store.notify(); schedulePush(); }
 
   function wallet(studentId) {
     var d = data();
@@ -215,6 +215,136 @@
     return { success: true };
   }
 
+
+  // ---------------------------------------------------------------- cloud save
+  // One hidden row in the classes table (grade "System", archived), same pattern the cloud library already uses.
+  // It holds a small bundle per student: coins, purchases, requests, boxes and items. Newest copy of each student wins.
+  var CLOUD_ID = 'class-classroom-store-sync';
+  var cloudState = 'local';            // local | saving | saved | error
+  var cloudAt = 0, pushTimer = null, pulling = false, lastPull = 0;
+
+  function cloudClient() {
+    var A = root.AdventureSupabase;
+    if (!A || !A.isConfigured) return null;
+    try { return A.client || (A._ensureClient && A._ensureClient()) || null; } catch (e) { return null; }
+  }
+  function stampOf(id) {
+    var d = data(), t = 0;
+    function up(x) { var v = x ? new Date(x).getTime() : 0; if (v > t) t = v; }
+    var w = d.wallets[id];
+    if (w) (w.ledger || []).forEach(function (l) { up(l.ts); });
+    d.requests.forEach(function (r) { if (r.studentId === id) { up(r.createdAt); up(r.decidedAt); } });
+    d.purchases.forEach(function (p) { if (p.studentId === id) up(p.ts); });
+    // the platform re-creates 3 starter boxes (ids ending -wood-1, -gilded-1, -celestial-1) on every fresh device: they say nothing about what the student did
+    (store.state.mysteryBoxes || []).forEach(function (b) { if (b.studentId === id) { if (!/-(wood|gilded|celestial)-1$/.test(String(b.id))) up(b.createdAt); up(b.openedAt); } });
+    ((store.state.studentInventories || {})[id] || []).forEach(function (e) { up(e.acquiredAt); });
+    return t;
+  }
+  function bundleFor(id) {
+    var d = data(), w = d.wallets[id];
+    if (!w) return null;
+    var boxes = (store.state.mysteryBoxes || []).filter(function (b) { return b.studentId === id; });
+    return {
+      v: 1, updatedAt: stampOf(id),
+      wallet: { earnedHigh: w.earnedHigh, grants: w.grants, spent: w.spent, ledger: (w.ledger || []).slice(0, 20) },
+      requests: d.requests.filter(function (r) { return r.studentId === id; }).slice(0, 40),
+      purchases: d.purchases.filter(function (p) { return p.studentId === id; }).slice(0, 40),
+      boxes: boxes.filter(function (b) { return !b.isOpened; }).concat(boxes.filter(function (b) { return b.isOpened; }).slice(-10)),
+      inventory: ((store.state.studentInventories || {})[id] || []).slice(0, 150)
+    };
+  }
+  function adoptBundle(id, b) {
+    var d = data();
+    if (store._ensureMysteryBoxState) store._ensureMysteryBoxState();
+    d.wallets[id] = { earnedHigh: b.wallet.earnedHigh || 0, grants: b.wallet.grants || 0, spent: b.wallet.spent || 0, ledger: (b.wallet.ledger || []).slice() };
+    d.requests = d.requests.filter(function (r) { return r.studentId !== id; }).concat(b.requests || []).sort(function (a, c) { return String(c.createdAt).localeCompare(String(a.createdAt)); });
+    d.purchases = d.purchases.filter(function (p) { return p.studentId !== id; }).concat(b.purchases || []).sort(function (a, c) { return String(c.ts).localeCompare(String(a.ts)); });
+    store.state.mysteryBoxes = (store.state.mysteryBoxes || []).filter(function (x) { return x.studentId !== id; }).concat(b.boxes || []);
+    if (!store.state.studentInventories) store.state.studentInventories = {};
+    store.state.studentInventories[id] = (b.inventory || []).slice();
+  }
+  /** Take the cloud copy of any student that is newer than ours. Returns true when something changed. */
+  function adoptDoc(doc) {
+    if (!doc || typeof doc !== 'object') return false;
+    var changed = false, d = data();
+    Object.keys(doc.students || {}).forEach(function (id) {
+      var b = doc.students[id];
+      if (!b || !b.wallet) return;
+      if ((b.updatedAt || 0) > stampOf(id) || !d.wallets[id]) { adoptBundle(id, b); changed = true; }
+    });
+    if (doc.cfg && (doc.cfgAt || 0) > (d.config.updatedAt || 0)) { d.config = doc.cfg; d.config.updatedAt = doc.cfgAt; data(); changed = true; }
+    return changed;
+  }
+  function parseRow(row) { try { return row && row.description ? JSON.parse(row.description) : null; } catch (e) { return null; } }
+
+  async function cloudPull() {
+    var client = cloudClient();
+    if (!client || pulling) return false;
+    pulling = true;
+    try {
+      var res = await client.from('classes').select('description').eq('id', CLOUD_ID).maybeSingle();
+      lastPull = Date.now();
+      if (res && res.error) throw res.error;
+      var changed = adoptDoc(parseRow(res && res.data));
+      if (changed) { store.saveState(); store.notify(); }
+      return changed;
+    } catch (e) { cloudState = 'error'; return false; }
+    finally { pulling = false; }
+  }
+  async function cloudPush() {
+    var client = cloudClient();
+    if (!client) { cloudState = 'local'; return false; }
+    cloudState = 'saving';
+    try {
+      var res = await client.from('classes').select('description').eq('id', CLOUD_ID).maybeSingle();
+      if (res && res.error) throw res.error;
+      var remote = parseRow(res && res.data) || { v: 1, students: {}, cfg: null, cfgAt: 0 };
+      if (!remote.students) remote.students = {};
+      var d = data();
+      Object.keys(d.wallets).forEach(function (id) {
+        var lb = bundleFor(id), rb = remote.students[id];
+        if (lb && (!rb || (lb.updatedAt || 0) >= (rb.updatedAt || 0))) remote.students[id] = lb;
+      });
+      if ((d.config.updatedAt || 0) >= (remote.cfgAt || 0)) { remote.cfg = d.config; remote.cfgAt = d.config.updatedAt || 0; }
+      var up = await client.from('classes').upsert({ id: CLOUD_ID, name: 'Classroom Store Sync', grade: 'System', teacher: 'System', description: JSON.stringify(remote), archived: true, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+      if (up && up.error) throw up.error;
+      cloudState = 'saved'; cloudAt = Date.now();
+      return true;
+    } catch (e) { cloudState = 'error'; return false; }
+  }
+  function schedulePush() {
+    if (!cloudClient()) { cloudState = 'local'; return; }
+    cloudState = 'saving';
+    if (pushTimer) clearTimeout(pushTimer);
+    pushTimer = setTimeout(function () { pushTimer = null; cloudPush().then(function () { if (root.__csRefreshStatus) root.__csRefreshStatus(); }); }, 1500);
+  }
+  function cloudLabel() {
+    var map = { local: '💾 Saved on this device only', saving: '☁️ Saving to the cloud…', saved: '☁️ Saved to the cloud', error: '⚠️ Cloud save failed, kept on this device' };
+    return map[cloudState] || map.local;
+  }
+  // pull once the cloud connection is ready, and again whenever the window gets focus (at most once a minute)
+  (function startCloud() {
+    var tries = 0;
+    var t = setInterval(function () {
+      tries++;
+      if (cloudClient()) { clearInterval(t); cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); }); }
+      else if (tries > 40) clearInterval(t);
+    }, 1500);
+    if (root.addEventListener) root.addEventListener('focus', function () {
+      if (cloudClient() && Date.now() - lastPull > 60000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
+    });
+  })();
+  // opening a mystery box changes the student's items, so save that too
+  if (store.openMysteryBox && !store.openMysteryBox.__cs) {
+    var origOpen = store.openMysteryBox;
+    store.openMysteryBox = function (boxId, studentId) {
+      var r = origOpen.apply(this, arguments);
+      try { if (r && r.success) { wallet(studentId); schedulePush(); } } catch (e) { /* ignore */ }
+      return r;
+    };
+    store.openMysteryBox.__cs = true;
+  }
+
   // ---------------------------------------------------------------- UI (shared)
   var studentTab = 'items', itemFilter = 'all';
   function card(inner, extra) { return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:18px;margin-bottom:16px;' + (extra || '') + '">' + inner + '</div>'; }
@@ -240,7 +370,8 @@
     var html = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' +
       '<div style="margin-bottom:18px;"><div style="font-size:1.6rem;font-weight:900;color:var(--text-main,#0f172a);">🛍️ Classroom Store</div>' +
       '<div style="font-size:.88rem;color:var(--text-muted,#64748b);margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level. ' +
-      'Back-pay: everyone already started with their current XP ÷ ' + cfg.coinsPerXp + '.</div></div>';
+      'Back-pay: everyone already started with their current XP ÷ ' + cfg.coinsPerXp + '.</div>' +
+      '<div id="cs-cloud-status" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--text-muted,#64748b);">' + cloudLabel() + '</div></div>';
 
     // pending requests
     html += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
@@ -392,18 +523,18 @@
       var v = root.prompt ? root.prompt('How many coins? Use a minus sign to take coins away (for example -10).', '10') : null;
       if (v === null) return; ui.give(sid, Number(v));
     },
-    setPrice: function (kind, key, v) { v = Math.max(1, Math.round(Number(v) || 1)); (kind === 'item' ? data().config.itemPrices : data().config.boxPrices)[key] = v; save(); },
+    setPrice: function (kind, key, v) { v = Math.max(1, Math.round(Number(v) || 1)); (kind === 'item' ? data().config.itemPrices : data().config.boxPrices)[key] = v; data().config.updatedAt = Date.now(); save(); },
     setPriv: function (id, field, v) {
       var p = privilege(id); if (!p) return;
-      p[field] = field === 'active' ? !!v : Math.max(field === 'price' ? 1 : 0, Math.round(Number(v) || 0)); save();
+      p[field] = field === 'active' ? !!v : Math.max(field === 'price' ? 1 : 0, Math.round(Number(v) || 0)); data().config.updatedAt = Date.now(); save();
     },
     removePriv: function (id) {
-      confirm('Remove this reward?', 'Students will no longer see it. Past requests are kept.', 'Remove', function () { data().config.privileges = data().config.privileges.filter(function (p) { return p.id !== id; }); save(); rerender(); });
+      confirm('Remove this reward?', 'Students will no longer see it. Past requests are kept.', 'Remove', function () { data().config.privileges = data().config.privileges.filter(function (p) { return p.id !== id; }); data().config.updatedAt = Date.now(); save(); rerender(); });
     },
     addPriv: function () {
       var name = root.prompt ? root.prompt('Name of the new reward (for example: Choose the story):', '') : null; if (!name) return;
       var price = root.prompt ? root.prompt('How many coins?', '50') : null; if (price === null) return;
-      data().config.privileges.push({ id: uid('p'), icon: '🎁', name: name.trim(), price: Math.max(1, Math.round(Number(price) || 50)), weeklyLimit: 1, active: true }); save(); rerender();
+      data().config.privileges.push({ id: uid('p'), icon: '🎁', name: name.trim(), price: Math.max(1, Math.round(Number(price) || 50)), weeklyLimit: 1, active: true }); data().config.updatedAt = Date.now(); save(); rerender();
     },
     undo: function (pid) {
       confirm('Undo this purchase?', 'The coins go back to the student and the item or unopened box is removed.', 'Undo purchase', function () { var r = undoPurchase(pid); notify(r.success ? 'Purchase undone, coins refunded' : r.error, r.success ? 'success' : 'error'); rerender(); });
@@ -412,10 +543,12 @@
 
   root.ClassroomStore = {
     ui: ui, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
-    requestPrivilege: requestPrivilege, decide: decide, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
+    requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
   };
+  root.__csRefreshStatus = function () { var el = document.getElementById('cs-cloud-status'); if (el) el.textContent = cloudLabel(); };
   root.renderClassroomStoreView = function (container) {
     var role = store.getRole ? store.getRole() : 'teacher';
+    if (cloudClient() && Date.now() - lastPull > 30000) cloudPull().then(function (c) { if (c && root.renderCurrentView) root.renderCurrentView(); });
     if (role === 'student') renderStudent(container); else renderTeacher(container);
   };
 })(typeof window !== 'undefined' ? window : this);
