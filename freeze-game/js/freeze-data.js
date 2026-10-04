@@ -44,7 +44,7 @@
         color: '#f43f5e',
         glowColor: 'rgba(244, 63, 94, 0.45)',
         locationText: 'Back of head (above your neck)',
-        roleInThinking: 'Processes images, recognizes colors, and creates mental mental pictures.',
+        roleInThinking: 'Processes images, recognizes colors, and creates mental pictures.',
         coords: { x: '25%', y: '64%' },
         targetFormula: 'The occipital lobe sees and pictures mental images.'
       },

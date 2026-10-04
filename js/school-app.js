@@ -4646,6 +4646,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                         (l.activities ?
                                           '<div style="display:flex; flex-direction:column; gap:8px;">' +
                                             l.activities.map(act => {
+                                              if (window.lessonActivityNeedsGeneric(act)) return window.renderLessonActivityGeneric(act);
                                               if (act.type === 'story') {
                                                 return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; color:var(--color-primary);">' + act.title + '</div><div style="font-style:italic; margin-top:4px; line-height:1.45;">"' + act.text + '"</div></div>';
                                               } else if (act.type === 'vocab_definitions') {
@@ -4683,6 +4684,35 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>';
   }
 
+
+  // Lesson activities written as teacher prompt / student text / words / answer (the Unit 2 format), and any type the older
+  // renderers above do not know (discussion, inquiry, reflection, phonics box, round robin, reading journal...).
+  window.lessonActivityNeedsGeneric = function (act) {
+    if (!act) return false;
+    if (act.prompt || act.answer) return true;
+    var known = ['story', 'vocab_definitions', 'dialects', 'matching', 'questions', 'sequence_device', 'sequence_inventor', 'biomimicry', 'design_cycle'];
+    if (known.indexOf(act.type) === -1) return true;
+    if (act.type === 'matching' && !Array.isArray(act.pairs)) return true;
+    if (act.type === 'questions' && !Array.isArray(act.items)) return true;
+    if (act.type === 'vocab_definitions' && !Array.isArray(act.words)) return true;
+    if ((act.type === 'sequence_device' || act.type === 'sequence_inventor') && !Array.isArray(act.steps)) return true;
+    return false;
+  };
+  window.renderLessonActivityGeneric = function (act) {
+    const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const icons = { discussion: '🗣️', inquiry: '🔍', wonder: '💭', reflection: '💭', story: '📖', questions: '❓', vocab_definitions: '🔤', matching: '🧩', phonics_box: '🔊', round_robin: '🔁', reading_journal: '📓', sequence_device: '🔢', skimming_guide: '👀' };
+    const label = String(act.type || 'activity').replace(/_/g, ' ');
+    let h = '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);">' +
+      '<div style="font-weight:800; color:var(--color-primary); margin-bottom:4px;">' + (icons[act.type] || '📌') + ' ' + esc(act.title || label.charAt(0).toUpperCase() + label.slice(1)) + '</div>';
+    if (act.prompt) h += '<div style="margin:3px 0; line-height:1.45;"><strong>Teacher:</strong> ' + esc(act.prompt) + '</div>';
+    if (act.text) h += '<div style="font-style:italic; margin:3px 0; line-height:1.45;">&ldquo;' + esc(act.text) + '&rdquo;</div>';
+    if (Array.isArray(act.words) && act.words.length) {
+      h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:6px; margin:6px 0;">' +
+        act.words.map(w => '<div style="background:var(--bg-muted); padding:6px 9px; border-radius:7px;"><strong>' + esc(w.word) + ':</strong> ' + esc(w.def) + '</div>').join('') + '</div>';
+    }
+    if (act.answer) h += '<div style="margin-top:4px; color:var(--color-success); font-weight:700;">✔ ' + esc(act.answer) + '</div>';
+    return h + '</div>';
+  };
   // LESSON LIBRARY & WORKSHEETS CATALOG
   // =========================================================================
   let libraryActiveCatalogTab = 'games'; // 'games' | 'worksheets'

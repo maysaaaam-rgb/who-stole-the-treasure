@@ -1287,7 +1287,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',
         duration: 25,
-        gameRoute: 'monster-day/index.html',
+        gameRoute: 'inventor-lab/index.html',
         activities: [
           { type: 'discussion', prompt: 'Look at the picture. What do you see? What tools are they using?' },
           { type: 'inquiry', prompt: 'Think: What problems do these tools solve in our daily life?' },
@@ -1391,7 +1391,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Recognize and use sequence words (First, Second, Third, Last) to describe chronological order in instructions and inventing.',
         duration: 25,
-        gameRoute: 'predictions/index.html',
+        gameRoute: 'clara-inventor/index.html',
         activities: [
           {
             type: 'sequence_device',
@@ -1449,7 +1449,7 @@
         sourceBook: 'Global Readings 2',
         objective: "Understand the 5-step engineering feedback loop and peer testing using Leonardo da Vinci's drawings and Karl Benz's motorcar.",
         duration: 30,
-        gameRoute: 'advice/index.html',
+        gameRoute: 'inventor-forge/index.html',
         activities: [
           { type: 'design_cycle', steps: ['1. Have a good idea', '2. Make a drawing', '3. Share your idea', '4. Test your idea', '5. Try again and improve'] },
           { type: 'history_spotlight', inventor: 'Karl Benz (1844–1929)', invention: 'First motorcar (1885)', feedback: '"No horses? Good idea!" / "Only three wheels?"' },
@@ -1845,7 +1845,7 @@
         weekNumber: 1,
         sourcePages: '4–5',
         sourceBook: 'Global Readings 3',
-        objective: 'Read story on animal camoflague, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
+        objective: 'Read story on animal camouflage, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
         duration: 35,
         gameRoute: 'camp-mystery/index.html',
         tasks: [
@@ -2040,7 +2040,7 @@
         sourceBook: 'Global Readings 3',
         objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',
         duration: 35,
-        gameRoute: 'monster-day/index.html',
+        gameRoute: 'brain-explorers/index.html',
         activities: [
           { type: 'phonics_box', title: 'Spelling Pattern: Agent / Comparative final -er', words: ['reader', 'learner', 'thinker', 'writer', 'faster', 'stronger', 'helper', 'speaker'] },
           { type: 'round_robin', topic: 'Why is reading important for your imagination, memory, and everyday life?' },
@@ -6206,7 +6206,7 @@
           { num: 3, prompt: "What can the robot do?", options: ["fly in the air", "sing songs", "move and carry things"], correct: "c", key: "c move and carry things", points: 1.5 },
           { num: 4, prompt: "When does Tom work on his inventions?", options: ["before school", "after school", "at night"], correct: "b", key: "b after school", points: 1.5 },
           { num: 5, prompt: "True or False: Tom's robot works.", options: ["True", "False"], correct: "True", key: "True", points: 1 },
-          { num: 6, prompt: "Put the story events in order (1, 2, 3):", options: ["[ ] Tom tests the robot", "[ ] Tom collects materials", "[ ] Tom paints it blue"], key: "Order: 2 -> 1 -> 3", points: 2 },
+          { num: 6, prompt: "Put the story events in order (1, 2, 3):", options: ["[ ] Tom tests the robot", "[ ] Tom collects materials", "[ ] Tom paints it blue"], key: "Order: 2 -> 3 -> 1", points: 2 },
           { num: 7, prompt: "Where does Tom go after school?", answer: "Tom goes to his room", key: "Tom goes to his room", points: 1 },
           { num: 8, prompt: "Why is Tom happy at the end?", answer: "He is happy because his robot works", key: "He is happy because his robot works", points: 1 }
         ]
@@ -8945,7 +8945,7 @@
         {
           id: "quiz-g3-u1-after-school-inventor",
           title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
-          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          subtitle: "Diagnostic Progress Check & Young Inventor Showcase Qualifier",
           type: "diagnostic-quiz",
           section: "quizzes-and-tests",
           category: "Unit Progress Checks",
@@ -9028,7 +9028,7 @@
           questions: [
             {
               id: 'q-1',
-              question: 'Which tool does a firefighter use to put out water?',
+              question: 'Which tool does a firefighter use to put out a fire?',
               options: ['A water hose', 'A frying pan', 'A paint brush'],
               correctIndex: 0
             },
@@ -9774,7 +9774,7 @@
           pdfUrl: 'brain/worksheets.html',
           worksheetRoute: 'brain/worksheets.html',
           answerKey: '1. How Your Brain Learns; 2. Think, Learn, Remember, Imagine',
-          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (RG2).',
+          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (Global Readings 3).',
           archived: false
         },
         {
@@ -13014,7 +13014,7 @@
         const g3Quiz = {
           id: "quiz-g3-u1-after-school-inventor",
           title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
-          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          subtitle: "Diagnostic Progress Check & Young Inventor Showcase Qualifier",
           type: "diagnostic-quiz",
           section: "quizzes-and-tests",
           category: "Unit Progress Checks",
