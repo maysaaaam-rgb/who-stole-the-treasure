@@ -7975,64 +7975,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</div>' +
           '</div>' +
 
-          '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:24px;">' +
-            '<div style="background:linear-gradient(135deg, rgba(120,53,15,0.2) 0%, rgba(69,26,3,0.3) 100%); border:1.5px solid #b45309; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                  '<span style="font-size:2.2rem;">🪵</span>' +
-                  '<span class="box-tier-pill tier-wooden">WOODEN CHEST</span>' +
-                '</div>' +
-                '<div style="font-weight:900; font-size:1rem; color:#fef08a; margin-bottom:4px;">Sturdy Forest Oak</div>' +
-                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Standard classroom reward for completing daily reading &amp; speaking missions.</p>' +
-                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
-                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#10b981; font-weight:700;">Common Drop Rate:</span> <strong style="color:#ffffff;">70%</strong></div>' +
-                  '<div style="display:flex; justify-content:space-between;"><span style="color:#38bdf8; font-weight:700;">Rare Drop Rate:</span> <strong style="color:#ffffff;">30%</strong></div>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'WOODEN\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
-                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'WOODEN\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
-              '</div>' +
-            '</div>' +
-
-            '<div style="background:linear-gradient(135deg, rgba(234,179,8,0.2) 0%, rgba(180,83,9,0.25) 100%); border:1.5px solid #eab308; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                  '<span style="font-size:2.2rem;">🪙</span>' +
-                  '<span class="box-tier-pill tier-gilded">GILDED CHEST</span>' +
-                '</div>' +
-                '<div style="font-weight:900; font-size:1rem; color:#fef08a; margin-bottom:4px;">Imperial Gold Reliquary</div>' +
-                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Awarded for unit test mastery, reading streaks, and stellar teamwork exhibitions.</p>' +
-                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
-                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#38bdf8; font-weight:700;">Rare Drop Rate:</span> <strong style="color:#ffffff;">65%</strong></div>' +
-                  '<div style="display:flex; justify-content:space-between;"><span style="color:#a855f7; font-weight:700;">Epic Drop Rate:</span> <strong style="color:#ffffff;">35%</strong></div>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'GILDED\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
-                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'GILDED\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
-              '</div>' +
-            '</div>' +
-
-            '<div style="background:linear-gradient(135deg, rgba(88,28,135,0.3) 0%, rgba(30,27,75,0.4) 100%); border:1.5px solid #a855f7; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">' +
-              '<div>' +
-                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-                  '<span style="font-size:2.2rem;">🌌</span>' +
-                  '<span class="box-tier-pill tier-celestial">CELESTIAL CHEST</span>' +
-                '</div>' +
-                '<div style="font-weight:900; font-size:1rem; color:#e9d5ff; margin-bottom:4px;">Astral Void Ark</div>' +
-                '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">Crown jewel tier awarded for CEFR milestone achievements and apex monster forms.</p>' +
-                '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.75rem; margin-bottom:12px;">' +
-                  '<div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="color:#a855f7; font-weight:700;">Epic Drop Rate:</span> <strong style="color:#ffffff;">60%</strong></div>' +
-                  '<div style="display:flex; justify-content:space-between;"><span style="color:#f59e0b; font-weight:700;">Legendary Drop Rate:</span> <strong style="color:#ffffff;">40%</strong></div>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; gap:6px;">' +
-                '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'CELESTIAL\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
-                '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'CELESTIAL\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
+          (window.renderBoxTierCardsHtml ? window.renderBoxTierCardsHtml() : '') +
 
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:20px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">' +
@@ -8058,7 +8001,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                         '<td style="padding:8px 10px; font-weight:800; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + ' <span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">(' + (s.grade || 'Grade 4B') + ')</span></td>' +
                         '<td style="padding:8px 10px;">' +
                           (sBoxes.length === 0 ? '<span style="color:var(--text-muted); font-size:0.75rem;">0 boxes</span>' :
-                            sBoxes.map(b => '<span class="box-tier-pill ' + (b.boxTier === 'CELESTIAL' ? 'tier-celestial' : b.boxTier === 'GILDED' ? 'tier-gilded' : 'tier-wooden') + '" style="font-size:0.62rem; padding:2px 6px; margin-right:4px;">' + b.boxTier + '</span>').join('')
+                            sBoxes.map(b => { const ti = window.boxTierInfo ? window.boxTierInfo(b.boxTier) : { pill: 'tier-wooden', name: b.boxTier }; return '<span class="box-tier-pill ' + ti.pill + '" style="font-size:0.62rem; padding:2px 6px; margin-right:4px;">' + ti.name + '</span>'; }).join('')
                           ) +
                         '</td>' +
                         '<td style="padding:8px 10px; font-weight:700; color:#38bdf8;">' + sInv.length + ' collectibles</td>' +
@@ -8198,11 +8141,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   window.handleGrantStudentPrompt = function(studentId) {
     const student = store.getStudent ? store.getStudent(studentId) : null;
     const name = student ? (student.firstName + ' ' + student.lastName) : 'Student';
-    const tierChoice = prompt('Grant Mystery Box to ' + name + ':\nEnter tier (WOODEN, GILDED, CELESTIAL):', 'WOODEN');
+    const tierChoice = prompt('Grant Mystery Box to ' + name + ':\nWhich kind? Type Bronze, Silver, Gold or Diamond:', 'Silver');
     if (!tierChoice) return;
     const box = store.grantMysteryBox(studentId, tierChoice.trim().toUpperCase());
     if (window.showNotification) {
-      window.showNotification('🎁 Granted ' + box.boxTier + ' Mystery Box to ' + name + '!', 'success');
+      window.showNotification('🎁 Granted a ' + (window.boxTierInfo ? window.boxTierInfo(box.boxTier).name : box.boxTier) + ' to ' + name + '!', 'success');
     }
     const container = document.getElementById('app-view-container');
     if (container && currentView === 'gamification') renderGamificationView(container);
@@ -8211,11 +8154,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   window.handleGrantClassMysteryBox = function(tier) {
     const boxTier = tier || 'WOODEN';
     const cls = store.getActiveClass ? store.getActiveClass() : { id: 'class-4b', name: 'Grade 4B' };
-    const confirmed = confirm('Grant a ' + boxTier + ' Mystery Box to all students in ' + cls.name + '?');
+    const confirmed = confirm('Grant a ' + (window.boxTierInfo ? window.boxTierInfo(boxTier).name : boxTier) + ' to all students in ' + cls.name + '?');
     if (!confirmed) return;
     store.grantClassMysteryBoxes(cls.id, boxTier);
     if (window.showNotification) {
-      window.showNotification('🎉 Granted ' + boxTier + ' Mystery Box to entire class (' + cls.name + ')!', 'success');
+      window.showNotification('🎉 Granted a ' + (window.boxTierInfo ? window.boxTierInfo(boxTier).name : boxTier) + ' to the whole class (' + cls.name + ')!', 'success');
     }
     const container = document.getElementById('app-view-container');
     if (container && currentView === 'gamification') renderGamificationView(container);

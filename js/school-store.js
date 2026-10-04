@@ -16730,8 +16730,11 @@
 
     grantMysteryBox(studentId, boxTier = 'WOODEN') {
       this._ensureMysteryBoxState();
-      const validTiers = ['WOODEN', 'GILDED', 'CELESTIAL'];
-      const tier = validTiers.includes(String(boxTier).toUpperCase()) ? String(boxTier).toUpperCase() : 'WOODEN';
+      // Box kinds: BRONZE, WOODEN (shown as Silver), GILDED (shown as Gold), CELESTIAL (shown as Diamond)
+      const validTiers = ['BRONZE', 'WOODEN', 'GILDED', 'CELESTIAL'];
+      const tierAlias = { SILVER: 'WOODEN', GOLD: 'GILDED', DIAMOND: 'CELESTIAL' };
+      const wanted = String(boxTier).toUpperCase();
+      const tier = validTiers.includes(tierAlias[wanted] || wanted) ? (tierAlias[wanted] || wanted) : 'WOODEN';
       const box = {
         id: 'box-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
         studentId: studentId,
