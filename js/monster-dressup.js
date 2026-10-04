@@ -39,10 +39,10 @@
   // How each picture is placed. anchor = which point of the picture touches the monster point.
   // w = width as a multiple of a measured width; dx/dy = shift as a multiple of that width.
   var RULE = {
-    hat_crown:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.72, dy: 0.18 },
-    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.92, dy: 0.32 },
-    hat_scholar:   { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.88, dy: 0.18 },
-    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dy: 0.28 },
+    hat_crown:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.72, dyk: 'eyeGap', dy: 0.22 },
+    hat_explorer:  { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.92, dyk: 'eyeGap', dy: 0.38 },
+    hat_scholar:   { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.88, dyk: 'eyeGap', dy: 0.28 },
+    hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dyk: 'eyeGap', dy: 0.33 },
     hat_bow:       { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.50, dx: 0.28, dy: 0.1 },
     hat_starclip:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.26, dx: -0.30, dy: 0.12 },
     hat_flower:    { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 1.00, dy: 0.2 },
@@ -66,16 +66,16 @@
     held_compass:    { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42 },
     held_trophy:     { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.46, dy: -0.06 },
     held_microphone: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42, dy: -0.12 },
-    hat_party:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.70, dy: 0.24 },
-    hat_chef:      { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.68, dy: 0.30 },
-    hat_pirate:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.95, dy: 0.26 },
-    hat_cowboy:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 1.05, dy: 0.28 },
-    hat_tophat:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.80, dy: 0.21 },
-    hat_santa:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.26 },
-    hat_beanie:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.74, dy: 0.33 },
-    hat_propeller: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.21 },
-    hat_sailor:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.85, dy: 0.24 },
-    hat_astronaut_cap: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.26 },
+    hat_party:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.70, dyk: 'eyeGap', dy: 0.30 },
+    hat_chef:      { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.68, dyk: 'eyeGap', dy: 0.30 },
+    hat_pirate:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.95, dyk: 'eyeGap', dy: 0.36 },
+    hat_cowboy:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 1.05, dyk: 'eyeGap', dy: 0.40 },
+    hat_tophat:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.80, dyk: 'eyeGap', dy: 0.30 },
+    hat_santa:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dyk: 'eyeGap', dy: 0.38 },
+    hat_beanie:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.74, dyk: 'eyeGap', dy: 0.50 },
+    hat_propeller: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dyk: 'eyeGap', dy: 0.40 },
+    hat_sailor:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.85, dyk: 'eyeGap', dy: 0.36 },
+    hat_astronaut_cap: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dyk: 'eyeGap', dy: 0.40 },
     glasses_sun:   { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.92 },
     glasses_star:  { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 1.00 },
     glasses_heart: { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.95 },
@@ -113,6 +113,7 @@
   }
 
   function itemHtml(name, a, monsterKey) {
+    var anchorsOf = a;
     var rule = RULE[name], box = root.MONSTER_ITEM_BOX && root.MONSTER_ITEM_BOX[name];
     if (!rule || !box || !a) return '';
     var pt = a[rule.at], baseW = a[rule.base];
@@ -123,7 +124,8 @@
     var px = (box.l + box.r) / 2;
     var py = rule.from === 'bottom' ? box.b : rule.from === 'top' ? box.t : (box.t + box.b) / 2;
     var cx = pt.x + ((rule.dx || 0) + (ov.dx || 0)) * baseW;
-    var cy = pt.y + ((rule.dy || 0) + (ov.dy || 0)) * baseW;
+    var dyBase = rule.dyk === 'eyeGap' ? Math.max(40, (anchorsOf.eyeCenter.y - anchorsOf.hatBase.y)) : baseW;
+    var cy = pt.y + ((rule.dy || 0) + (ov.dy || 0)) * dyBase;
     var left = cx - px * imgW, top = cy - py * imgW;
     return '<img class="eaa-dressup-item" data-item="' + name + '" src="' + ITEMS + 'item_' + name + '.webp" alt="" draggable="false" ' +
       'style="position:absolute;z-index:' + rule.z + ';left:' + (left / 10.24).toFixed(2) + '%;top:' + (top / 10.24).toFixed(2) + '%;width:' + (imgW / 10.24).toFixed(2) + '%;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(30,20,60,0.35));" />';
