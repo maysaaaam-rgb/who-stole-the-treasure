@@ -53,6 +53,7 @@
     c.boxPrices = Object.assign({}, DEFAULTS.boxPrices, c.boxPrices || {});
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
+    if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     return d;
   }
   function save() { store.saveState(); store.notify(); schedulePush(); }
@@ -523,6 +524,8 @@
       var v = root.prompt ? root.prompt('How many coins? Use a minus sign to take coins away (for example -10).', '10') : null;
       if (v === null) return; ui.give(sid, Number(v));
     },
+    getBoardGoal: function (classId) { return data().config.boardGoals[classId] || null; },
+    setBoardGoal: function (classId, g) { data().config.boardGoals[classId] = g; data().config.updatedAt = Date.now(); save(); },
     setPrice: function (kind, key, v) { v = Math.max(1, Math.round(Number(v) || 1)); (kind === 'item' ? data().config.itemPrices : data().config.boxPrices)[key] = v; data().config.updatedAt = Date.now(); save(); },
     setPriv: function (id, field, v) {
       var p = privilege(id); if (!p) return;
@@ -542,7 +545,7 @@
   };
 
   root.ClassroomStore = {
-    ui: ui, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
+    ui: ui, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
   };
   root.__csRefreshStatus = function () { var el = document.getElementById('cs-cloud-status'); if (el) el.textContent = cloudLabel(); };
