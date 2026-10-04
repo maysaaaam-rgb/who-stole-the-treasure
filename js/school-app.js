@@ -1196,8 +1196,8 @@
     const species = MONSTER_ART.speciesByColor[color] || 'aquafind';
     if (MONSTER_ART.ready.indexOf(species) === -1) return '';
     let stage = (mState && mState.stageKey) || 'baby';
-    if (stage === 'cracking_egg') stage = 'egg';
-    if (['egg', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'].indexOf(stage) === -1) stage = 'baby';
+    if (stage === 'cracking_egg') stage = 'cracking';
+    if (['egg', 'cracking', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'].indexOf(stage) === -1) stage = 'baby';
     return MONSTER_ART.base + species + '_' + stage + '.webp';
   }
 
@@ -13308,6 +13308,7 @@ window.switchClassroomSubTab = function(subTab) {
       const cat = item.category;
       let isSelected = false;
       const notForArt = illustratedMode && !item.isNone && ART_FREE_CATEGORIES.indexOf(cat) === -1 && !window.MonsterDressUp.supportedItem(item.id);
+      const artOnlyItem = !illustratedMode && !item.isNone && window.MonsterDressUp && window.MonsterDressUp.isArtOnly(item.id);
 
       if (item.isNone) {
         if (cat === 'accessory') {
@@ -13338,7 +13339,8 @@ window.switchClassroomSubTab = function(subTab) {
         lockBadge = '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>';
       }
 
-      const thumbSvg = thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨');
+      const itemPic = (illustratedMode && !item.isNone && window.MonsterDressUp) ? window.MonsterDressUp.itemPicture(item.id) : '';
+      const thumbSvg = itemPic ? ('<img src="' + itemPic + '" alt="" style="width:44px;height:44px;object-fit:contain;" />') : (thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨'));
 
       let rarityBadge = '';
       if (item.rarity && item.rarity !== 'common' && !item.isNone) {
@@ -13347,8 +13349,10 @@ window.switchClassroomSubTab = function(subTab) {
 
       if (notForArt && !isLevelLocked && isUnlocked) {
         lockBadge = '<span class="monster-item-lock-pill">🎨 Drawn monsters only</span>';
+      } else if (artOnlyItem && !isLevelLocked && isUnlocked) {
+        lockBadge = '<span class="monster-item-lock-pill">🖼️ Illustrated monsters only</span>';
       }
-      const isCardLocked = isLevelLocked || !isUnlocked || notForArt;
+      const isCardLocked = isLevelLocked || !isUnlocked || notForArt || artOnlyItem;
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
              (isCardLocked ? 'style="pointer-events:none !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +

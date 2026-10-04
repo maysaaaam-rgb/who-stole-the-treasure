@@ -21,8 +21,20 @@
     'neck-star': 'neck_star', 'neck-medal': 'neck_medal', 'neck-pendant': 'neck_pendant', 'neck-badge': 'neck_badge',
     'bp-explorer': 'bp_explorer', 'bp-book': 'bp_book', 'bp-mini-wings': 'bp_miniwings', 'bp-adv-bag': 'bp_adventure',
     'acc-book': 'held_book', 'acc-wand': 'held_wand', 'acc-compass': 'held_compass', 'acc-trophy': 'held_trophy', 'acc-microphone': 'held_microphone',
-    'clothing-scarf': 'outfit_scarf', 'clothing-cape': 'outfit_cape', 'clothing-vest': 'outfit_vest', 'clothing-hoodie': 'outfit_hoodie'
+    'clothing-scarf': 'outfit_scarf', 'clothing-cape': 'outfit_cape', 'clothing-vest': 'outfit_vest', 'clothing-hoodie': 'outfit_hoodie',
+    // added with the second art batch (illustrated monsters only)
+    'hat-party': 'hat_party', 'hat-chef': 'hat_chef', 'hat-pirate': 'hat_pirate', 'hat-cowboy': 'hat_cowboy', 'hat-tophat': 'hat_tophat',
+    'hat-santa': 'hat_santa', 'hat-beanie': 'hat_beanie', 'hat-propeller': 'hat_propeller', 'hat-sailor': 'hat_sailor', 'hat-astro': 'hat_astronaut_cap',
+    'glasses-sun': 'glasses_sun', 'glasses-star': 'glasses_star', 'glasses-heart': 'glasses_heart',
+    'neck-bowtie': 'neck_bowtie', 'neck-bandana': 'neck_bandana', 'neck-bell': 'neck_bell',
+    'acc-balloon': 'held_balloon', 'acc-icecream': 'held_icecream', 'acc-ball': 'held_ball', 'acc-paintbrush': 'held_paintbrush',
+    'acc-pencil': 'held_pencil', 'acc-magnifier': 'held_magnifier', 'acc-umbrella': 'held_umbrella'
   };
+  var ART_ONLY = ['hat-party', 'hat-chef', 'hat-pirate', 'hat-cowboy', 'hat-tophat', 'hat-santa', 'hat-beanie', 'hat-propeller', 'hat-sailor', 'hat-astro',
+    'glasses-sun', 'glasses-star', 'glasses-heart', 'neck-bowtie', 'neck-bandana', 'neck-bell',
+    'acc-balloon', 'acc-icecream', 'acc-ball', 'acc-paintbrush', 'acc-pencil', 'acc-magnifier', 'acc-umbrella'];
+  var BG_IMG = ['meadow', 'castle', 'forest', 'volcano', 'beach', 'moonlit', 'winter', 'cosmos', 'desert', 'underwater', 'rainbow', 'cloud', 'crystal'];
+  var AURA_IMG = ['sparkle', 'flame', 'ice', 'rainbow', 'cosmic', 'lightning', 'blossom', 'star', 'dragon', 'royal'];
 
   // How each picture is placed. anchor = which point of the picture touches the monster point.
   // w = width as a multiple of a measured width; dx/dy = shift as a multiple of that width.
@@ -53,7 +65,30 @@
     held_wand:       { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.55, dy: -0.20 },
     held_compass:    { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42 },
     held_trophy:     { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.46, dy: -0.06 },
-    held_microphone: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42, dy: -0.12 }
+    held_microphone: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42, dy: -0.12 },
+    hat_party:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.70, dy: 0.18 },
+    hat_chef:      { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.85, dy: 0.18 },
+    hat_pirate:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.95, dy: 0.20 },
+    hat_cowboy:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 1.05, dy: 0.22 },
+    hat_tophat:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.80, dy: 0.15 },
+    hat_santa:     { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.20 },
+    hat_beanie:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.20 },
+    hat_propeller: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.15 },
+    hat_sailor:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.85, dy: 0.18 },
+    hat_astronaut_cap: { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.90, dy: 0.20 },
+    glasses_sun:   { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.92 },
+    glasses_star:  { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 1.00 },
+    glasses_heart: { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.95 },
+    neck_bowtie:   { z: 40, at: 'neck', from: 'center', base: 'neckWidth', w: 0.62, dy: -0.04 },
+    neck_bandana:  { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.95, dy: -0.18 },
+    neck_bell:     { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.62, dy: -0.10 },
+    held_balloon:  { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.50, dy: -0.30 },
+    held_icecream: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42, dy: -0.12 },
+    held_ball:     { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.40 },
+    held_paintbrush: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.50, dy: -0.20 },
+    held_pencil:   { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.50, dy: -0.20 },
+    held_magnifier: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.42 },
+    held_umbrella: { z: 70, at: 'pawRight', from: 'center', base: 'bodyHeight', w: 0.55, dy: -0.20 }
   };
 
   function speciesForColor(color) {
@@ -69,7 +104,7 @@
   // Items hidden because the monster already wears something similar in that picture.
   function isHiddenByBaked(id, baked) {
     baked = baked || [];
-    if (baked.indexOf('scarf') !== -1 && (id === 'clothing-scarf' || id === 'clothing-hoodie')) return true;
+    if (baked.indexOf('scarf') !== -1 && (id === 'clothing-scarf' || id === 'clothing-hoodie' || id === 'neck-bandana')) return true;
     if (baked.indexOf('satchel') !== -1 && /^bp-/.test(id)) return true;
     if (baked.indexOf('badge') !== -1 && id === 'neck-badge') return true;
     if (baked.indexOf('crown') !== -1 && /^hat-/.test(id)) return true;
@@ -111,10 +146,17 @@
     var layers = '';
     var MR = root.MonsterRenderer;
     if (options.showBackground && MR && MR.renderBackdropSvg) {
-      layers += '<div style="position:absolute;inset:0;z-index:0;border-radius:16px;overflow:hidden;">' + MR.renderBackdropSvg(equipped.background || 'bg-meadow') + '</div>';
+      var bgName = String(equipped.background || 'bg-meadow').replace(/^bg-/, '');
+      var bgInner = BG_IMG.indexOf(bgName) !== -1 ? '<img src="assets/monsters/bg-art/bg_' + bgName + '.webp" alt="" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;" />' : MR.renderBackdropSvg(equipped.background || 'bg-meadow');
+      layers += '<div style="position:absolute;inset:0;z-index:0;border-radius:16px;overflow:hidden;">' + bgInner + '</div>';
     }
     if (MR && MR.renderAuraSvg && equipped.aura && equipped.aura !== 'none') {
-      layers += '<div style="position:absolute;inset:0;z-index:1;pointer-events:none;">' + MR.renderAuraSvg(equipped.aura, stage, options.color || equipped.body) + '</div>';
+      var auraName = String(equipped.aura).replace(/^aura-/, '');
+      if (AURA_IMG.indexOf(auraName) !== -1) {
+        layers += '<div style="position:absolute;inset:0;z-index:1;pointer-events:none;display:flex;align-items:center;justify-content:center;border-radius:16px;overflow:hidden;"><img src="assets/monsters/aura-art/aura_' + auraName + '.webp" alt="" draggable="false" style="width:116%;height:116%;max-width:none;flex:none;transform:translateY(2%);" /></div>';
+      } else {
+        layers += '<div style="position:absolute;inset:0;z-index:1;pointer-events:none;">' + MR.renderAuraSvg(equipped.aura, stage, options.color || equipped.body) + '</div>';
+      }
     }
 
     var items = '';
@@ -150,6 +192,11 @@
     speciesForColor: speciesForColor,
     hasArt: function (color, stage) { var s = speciesForColor(color); return !!(root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[s + '_' + normStage(stage)]); },
     supportedItem: function (id) { return !!FILE[id]; },
-    isHiddenByBaked: isHiddenByBaked
+    isHiddenByBaked: isHiddenByBaked,
+    isArtOnly: function (id) { return ART_ONLY.indexOf(id) !== -1; },
+    itemPicture: function (id) { return FILE[id] ? ITEMS + 'item_' + FILE[id] + '.webp' : ''; },
+    // one of: cheer, think, oops, sleepy (the monster in its 'growing' pose with that expression)
+    emotionUrl: function (color, emotion) { return ART + speciesForColor(color) + '_growing_' + emotion + '.webp'; },
+    eggUrl: function (color, cracking) { return ART + speciesForColor(color) + (cracking ? '_cracking' : '_egg') + '.webp'; }
   };
 })(typeof window !== 'undefined' ? window : this);
