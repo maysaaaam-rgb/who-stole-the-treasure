@@ -137,7 +137,7 @@ var audioCtx = null;
 function getAudioContext() {
   if (!audioCtx) {
     var AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (AudioContextClass) audioCtx = new AudioContextClass();
+    if (AudioContextClass) { audioCtx = new AudioContextClass(); if (window.SFX) SFX.init(audioCtx); }
   }
   if (audioCtx && audioCtx.state === 'suspended') {
     audioCtx.resume();
@@ -213,6 +213,7 @@ function sfx(name) {
   sfxLast[name] = nowMs;
   var ctx = getAudioContext();
   if (!ctx) return;
+  if (window.SFX && SFX.play(name)) return;   // the new sound set (sfx.js); the old code below is only a fallback
 
   switch (name) {
     case 'click':
