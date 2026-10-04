@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telephone Pictionary Sheet</title>
+<style>
+  @page { size:A4; margin:8mm; }
+  * { box-sizing:border-box; }
+  body { font-family:Arial,Helvetica,sans-serif; color:#1a1a1a; margin:0; font-size:13px; background:#fff; }
+  .page { max-width:194mm; margin:0 auto; }
+  .head { display:flex; justify-content:space-between; align-items:center; border:2px solid #7c3aed; background:#fffbeb; border-radius:10px; padding:5px 12px; margin-bottom:4mm; }
+  h1 { font-size:19px; margin:0; color:#5b21b6; }
+  .how { font-size:11.5px; color:#444; }
+  .fields { display:flex; gap:12px; font-weight:bold; } .fields span { width:34mm; border-bottom:1.5px solid #1a1a1a; }
+  .panel { height:38mm; border:2px solid #7c3aed; border-radius:8px; padding:3px 10px; margin-bottom:0; position:relative; display:flex; flex-direction:column; }
+  .panel.write { background:#eff6ff; } .panel.draw { background:#fdf2f8; border-color:#db2777; }
+  .panel b { font-size:13px; display:flex; justify-content:space-between; }
+  .panel b span { font-weight:normal; font-size:11px; }
+  .lines { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; }
+  .lines i { border-bottom:1.5px solid #1a1a1a; height:1px; display:block; }
+  .box { flex:1; background:#fff; border:1.5px dashed #db2777; border-radius:6px; margin-top:2px; }
+  .fold { height:6mm; display:flex; align-items:center; font-size:10.5px; color:#777; border-top:1.5px dashed #888; margin-top:0; justify-content:center; }
+  .fold:before { content:"✂ fold here ✂"; }
+  .cut { border-top:2px dotted #dc2626; color:#dc2626; font-weight:bold; font-size:11px; text-align:center; padding:1mm 0; margin:2mm 0; }
+  @media screen { body { padding:10px; background:#f3f4f6; } .page { background:#fff; padding:6mm; box-shadow:0 2px 12px rgba(0,0,0,.2); } }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <div><h1>📞 Telephone Pictionary: Draw &amp; Pass</h1><div class="how">Fill in your square. Then <b>fold the paper back</b> so the next pupil sees only your work. Pass it on!</div></div>
+    <div class="fields"><span>Group:</span></div>
+  </div>
+
+  <div class="panel write"><b>1 ✏️ WRITE one short sentence <span>Name: ______________</span></b><div class="lines"><i></i><i></i></div></div>
+  <div class="fold"></div>
+  <div class="panel draw"><b>2 🎨 DRAW the sentence <span>Name: ______________</span></b><div class="box"></div></div>
+  <div class="fold"></div>
+  <div class="panel write"><b>3 👀 WRITE what you see <span>Name: ______________</span></b><div class="lines"><i></i><i></i></div></div>
+  <div class="fold"></div>
+  <div class="panel draw"><b>4 🎨 DRAW the sentence <span>Name: ______________</span></b><div class="box"></div></div>
+  <div class="cut">✂ Groups of 4: stop and cut here. Groups of 6: keep going! ✂</div>
+  <div class="panel write"><b>5 👀 WRITE what you see <span>Name: ______________</span></b><div class="lines"><i></i><i></i></div></div>
+  <div class="fold"></div>
+  <div class="panel draw"><b>6 🎨 DRAW the sentence <span>Name: ______________</span></b><div class="box"></div></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telephone Pictionary · Draw &amp; Pass</title>
+<style>
+  :root { --ink:#26215c; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing:border-box; margin:0; }
+  html, body { height:100%; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); background:linear-gradient(180deg,#fde68a 0%,#fbcfe8 50%,#bae6fd 100%); display:flex; flex-direction:column; padding:2vh 3vw; gap:1.6vh; overflow:hidden; }
+  h1 { font-size:clamp(24px,5vh,54px); text-align:center; }
+  .sub { text-align:center; font-weight:600; color:#6d5fd1; font-size:clamp(14px,2.4vh,26px); }
+  .screen { flex:1; min-height:0; display:none; flex-direction:column; gap:1.6vh; align-items:center; justify-content:center; }
+  .screen.on { display:flex; }
+  .card { background:#fff; border:5px solid var(--ink); border-radius:28px; box-shadow:0 8px 0 rgba(38,33,92,.25); padding:2vh 2.4vw; width:100%; max-width:1100px; }
+  .row { display:flex; gap:1vw; justify-content:center; flex-wrap:wrap; align-items:center; }
+  .lab { font-weight:700; font-size:clamp(14px,2.4vh,26px); min-width:5.5em; text-align:right; }
+  .chip { font:inherit; font-weight:700; font-size:clamp(14px,2.6vh,28px); color:var(--ink); background:#f1f5f9; border:4px solid #cbd5e1; border-bottom-width:7px; border-radius:22px; padding:.4em 1em; cursor:pointer; transition:transform .15s var(--spring); }
+  .chip.sel { background:#fde047; border-color:var(--ink); }
+  .chip:active, .btn:active { transform:translateY(4px); border-bottom-width:3px; }
+  .btn { font:inherit; font-weight:800; font-size:clamp(18px,3.4vh,38px); color:#fff; border:4px solid var(--ink); border-bottom-width:8px; border-radius:24px; padding:.45em 1.2em; cursor:pointer; background:#22c55e; text-shadow:0 2px 0 rgba(0,0,0,.25); transition:transform .15s var(--spring); }
+  .btn.blue { background:#3b82f6; } .btn.gold { background:#f59e0b; } .btn.purple { background:#a855f7; } .btn.grey { background:#64748b; font-size:clamp(14px,2.4vh,26px); }
+  .btn:disabled { opacity:.5; }
+  .big { font-size:clamp(34px,10vh,120px); font-weight:800; text-align:center; line-height:1.1; }
+  .phase { font-size:clamp(20px,4vh,46px); font-weight:800; padding:.3em 1em; border-radius:999px; border:4px solid var(--ink); color:#fff; }
+  .p-write { background:#3b82f6; } .p-draw { background:#ec4899; } .p-see { background:#22c55e; }
+  .starters { display:grid; gap:1.2vh; width:100%; }
+  .starter { font:inherit; font-weight:700; font-size:clamp(18px,3.4vh,40px); text-align:left; color:var(--ink); background:#fffbeb; border:4px solid #fcd34d; border-bottom-width:7px; border-radius:20px; padding:.5em .8em; cursor:pointer; display:flex; gap:.6em; align-items:center; }
+  .starter i { font-style:normal; font-size:1.3em; }
+  .timer { font-size:clamp(60px,20vh,220px); font-weight:800; font-variant-numeric:tabular-nums; line-height:1; }
+  .timer.low { color:#dc2626; }
+  .bar { width:100%; max-width:900px; height:2.4vh; background:#e2e8f0; border:3px solid var(--ink); border-radius:999px; overflow:hidden; }
+  .bar b { display:block; height:100%; width:100%; background:linear-gradient(90deg,#22c55e,#facc15); transform-origin:left; transition:transform 1s linear; }
+  .steps { display:flex; gap:.6vw; justify-content:center; flex-wrap:wrap; }
+  .step { width:clamp(30px,5.4vh,56px); height:clamp(30px,5.4vh,56px); border-radius:50%; border:4px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size:clamp(14px,2.6vh,28px); font-weight:800; background:#fff; }
+  .step.now { background:#fde047; transform:scale(1.2); } .step.done { background:#bbf7d0; }
+  .groups { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2vh 1vw; width:100%; }
+  .group { border:4px solid var(--ink); border-radius:20px; padding:1vh 1vw; background:#f0f9ff; font-weight:600; font-size:clamp(14px,2.4vh,26px); }
+  .group b { display:block; font-size:1.15em; margin-bottom:.2em; }
+  textarea { width:100%; font:inherit; font-size:clamp(14px,2.4vh,24px); border:4px solid #cbd5e1; border-radius:16px; padding:.5em; resize:none; }
+  .tips { font-size:clamp(14px,2.4vh,26px); font-weight:600; text-align:center; max-width:1000px; }
+  #confetti { position:fixed; inset:0; pointer-events:none; }
+</style>
+</head>
+<body>
+<h1>📞 Telephone Pictionary: Draw &amp; Pass</h1>
+<div class="sub" id="sub">Write, draw, fold, pass. See how the sentence changes!</div>
+
+<!-- SETUP -->
+<div class="screen on" id="s-setup">
+  <div class="card">
+    <div class="row"><span class="lab">Grade</span><button class="chip sel" data-k="g" data-v="3">🌾 Grade 3</button><button class="chip" data-k="g" data-v="4">🌲 Grade 4</button></div>
+    <div class="row" style="margin-top:1.2vh"><span class="lab">Unit</span><button class="chip" data-k="u" data-v="1">Unit 1</button><button class="chip sel" data-k="u" data-v="2">Unit 2</button><button class="chip" data-k="u" data-v="0">Both</button></div>
+    <div class="row" style="margin-top:1.2vh"><span class="lab">Group size</span><button class="chip sel" data-k="n" data-v="4">4 pupils</button><button class="chip" data-k="n" data-v="6">6 pupils</button></div>
+    <div class="row" style="margin-top:1.2vh"><span class="lab">Time</span><button class="chip" data-k="t" data-v="0">⏱️ Short</button><button class="chip sel" data-k="t" data-v="1">⏱️ Normal</button><button class="chip" data-k="t" data-v="2">⏱️ Long</button></div>
+  </div>
+  <div class="row"><button class="btn blue" id="goGroups">👥 Make groups</button><button class="btn" id="goStart">▶ Start the game</button><a class="btn gold" href="sheet.html" target="_blank" style="text-decoration:none">🖨️ Print the sheet</a></div>
+  <div class="tips">Each group gets one folded sheet per pupil. Pupil 1 writes, Pupil 2 draws, Pupil 3 writes, and so on. Everyone folds and passes!</div>
+</div>
+
+<!-- GROUPS -->
+<div class="screen" id="s-groups">
+  <div class="card"><div id="groupsBox" class="groups"></div></div>
+  <div class="card" style="max-width:700px"><div class="tips" style="margin-bottom:.8vh">No class list loaded? Type names, one per line:</div><textarea id="names" rows="3" placeholder="Ali&#10;Zeynep&#10;Mert"></textarea></div>
+  <div class="row"><button class="btn blue" id="regroup">🔀 Mix again</button><button class="btn" id="groupsOk">▶ Start the game</button><button class="btn grey" id="groupsBack">⬅ Back</button></div>
+</div>
+
+<!-- STARTER -->
+<div class="screen" id="s-starter">
+  <div class="phase p-write">✏️ Pupil 1: choose a sentence to write</div>
+  <div class="starters" id="starters" style="max-width:1100px"></div>
+  <div class="row"><button class="btn blue" id="moreStart">🔀 Other ideas</button><button class="btn" id="startRound">▶ Start round 1</button></div>
+  <div class="tips">Pupil 1 can use one of these or make their own sentence. Click a sentence to hear it. Only write it on the paper, do not say it!</div>
+</div>
+
+<!-- ROUND -->
+<div class="screen" id="s-round">
+  <div class="steps" id="steps"></div>
+  <div class="phase" id="phase"></div>
+  <div class="big" id="instr"></div>
+  <div class="timer" id="timer">0:00</div>
+  <div class="bar"><b id="barf"></b></div>
+  <div class="row"><button class="btn gold" id="pause">⏸ Pause</button><button class="btn" id="next">Fold &amp; pass ➡️</button></div>
+</div>
+
+<!-- PASS -->
+<div class="screen" id="s-pass">
+  <div class="big">📄➡️ Fold the paper!</div>
+  <div class="big" style="font-size:clamp(24px,6vh,72px)" id="passMsg"></div>
+  <div class="row"><button class="btn" id="passOk">▶ Next round</button></div>
+</div>
+
+<!-- REVEAL -->
+<div class="screen" id="s-reveal">
+  <div class="big">🎉 Open the papers!</div>
+  <div class="card">
+    <div class="tips" style="text-align:left;font-size:clamp(16px,3vh,32px);line-height:1.6">
+      1. Open your paper slowly, one square at a time.<br>
+      2. Read the <b>first sentence</b> aloud: <i>“The first sentence was …”</i><br>
+      3. Look at the <b>last picture</b>. Say a sentence: <i>“The last picture shows …”</i><br>
+      4. Look at the pictures. Which one changed the idea? <i>“The picture changed it.”</i><br>
+      5. Count one point for every good English sentence your group wrote!
+    </div>
+  </div>
+  <div class="row"><button class="btn gold" id="again">🔁 Play again</button><button class="btn blue" id="home">⬅ Settings</button></div>
+</div>
+<canvas id="confetti"></canvas>
+
+<script>
+/* ---------- sentence banks (drawable, from the units; no Turkish) ---------- */
+var BANK = {
+  3: {
+    1: ['I can see a parachute.', 'My monster has got big claws.', 'Look at the green frog.', 'This is a red kite.', 'Clara builds a machine.', 'My room is a mess.', 'Monsters have got three eyes.', 'The machine cleans the room.'],
+    2: ['Chuseok is a big harvest festival.', 'There are two cats on the mat.', 'The family has a feast under the moon.', 'The farmer grows crops in a greenhouse.', 'There is a red cloth on the table.', 'We are thankful for the harvest.', 'There are three ancestors in the picture.', 'The girl weaves a soft cloth.']
+  },
+  4: {
+    1: ['The eraser cleans the paper.', 'Monsters have got big claws.', 'Clara invents a clean-up machine.', 'My room is a big mess.', 'The machine puts the toys away.', 'She tries again with a new plan.', 'A frog sits on the green mirror.', 'The monster has got a parachute.'],
+    2: ['The bear lives in the forest.', 'The fox hides in the tall grass.', 'The rabbit jumped over the log.', 'The owl can see in the dark.', 'They walked to the river.', 'The deer ate leaves instead of grass.', 'The squirrel climbs the old tree.', 'The frog sat on a big leaf.']
+  }
+};
+var EMO = ['🌟','🎈','🍎','🐸','🚀','🎨','🦊','🍉'];
+var cfg = {g:'3', u:'2', n:4, t:1}, TIMES = [[25, 40, 25], [40, 60, 40], [60, 90, 60]];
+var $ = function (id) { return document.getElementById(id); };
+var st = {round: 0, left: 0, total: 0, paused: false, iv: null, groups: []};
+function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function show(id) { document.querySelectorAll('.screen').forEach(function (s) { s.classList.toggle('on', s.id === id); }); }
+
+/* ---------- audio (chords only) + speech ---------- */
+var AC = null;
+function ctx() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+function chord(freqs, dur, gap) {
+  var a = ctx(); if (!a) return;
+  freqs.forEach(function (f, i) {
+    var t0 = a.currentTime + i * (gap || .09);
+    [1, 2.005].forEach(function (m, k) { var o = a.createOscillator(), g = a.createGain(); o.type = k ? 'triangle' : 'sine'; o.frequency.value = f * m; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(k ? .05 : .13, t0 + .02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur); o.connect(g); g.connect(a.destination); o.start(t0); o.stop(t0 + dur + .05); });
+  });
+}
+function sfx(k) { if (k === 'click') chord([523.25, 659.25], .18, .05); else if (k === 'go') chord([523.25, 659.25, 783.99, 1046.5], .5); else if (k === 'end') chord([783.99, 659.25, 523.25], .6, .14); else if (k === 'soft') chord([246.94, 220], .5, .18); }
+function speak(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.rate = .88; u.pitch = 1.05; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {} }
+
+/* ---------- confetti ---------- */
+function confetti(n) {
+  var c = $('confetti'), x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
+  var ps = []; for (var i = 0; i < n; i++) ps.push({x: Math.random() * c.width, y: -20 - Math.random() * c.height * .4, v: 3 + Math.random() * 5, r: 5 + Math.random() * 8, h: Math.random() * 360, s: Math.random() * 6 - 3});
+  var f = 0; (function step() { x.clearRect(0, 0, c.width, c.height); ps.forEach(function (p) { p.y += p.v; p.x += p.s; x.fillStyle = 'hsl(' + p.h + ',90%,60%)'; x.fillRect(p.x, p.y, p.r, p.r * 1.6); }); if (++f < 150) requestAnimationFrame(step); else x.clearRect(0, 0, c.width, c.height); })();
+}
+
+/* ---------- setup ---------- */
+document.querySelectorAll('.chip').forEach(function (b) { b.onclick = function () { sfx('click'); var k = b.dataset.k; document.querySelectorAll('.chip[data-k="' + k + '"]').forEach(function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); cfg[k] = (k === 'g' || k === 'u') ? b.dataset.v : Number(b.dataset.v); }; });
+var gq = location.search.match(/grade=([34])/); if (gq) { cfg.g = gq[1]; document.querySelectorAll('.chip[data-k="g"]').forEach(function (x) { x.classList.toggle('sel', x.dataset.v === cfg.g); }); }
+
+/* ---------- groups: class list from the platform, else typed names ---------- */
+function roster() {
+  var out = [];
+  try { var s = window.opener && window.opener.schoolStore; if (s && s.getStudents) { var a = s.getStudents(); (a || []).forEach(function (p) { if (p && p.name) out.push(p.name.split(' ')[0]); }); if (out.length) return out; } } catch (e) {}
+  try { var d = JSON.parse(localStorage.getItem('eaa_master_school_v6') || '{}'); var cid = d.activeClassId; (d.students || []).forEach(function (p) { if (p && p.name && (!cid || p.classId === cid)) out.push(String(p.name).split(' ')[0]); }); } catch (e) {}
+  return out;
+}
+function typedNames() { return $('names').value.split(/\n|,/).map(function (s) { return s.trim(); }).filter(Boolean); }
+function makeGroups() {
+  var people = typedNames(); if (!people.length) people = roster();
+  var box = $('groupsBox');
+  if (!people.length) { box.innerHTML = '<div class="tips">No names yet. Type them below, then press “Mix again”.</div>'; return; }
+  var sh = shuffle(people), k = Math.max(1, Math.round(sh.length / cfg.n)), gs = []; for (var i = 0; i < k; i++) gs.push([]);
+  sh.forEach(function (p, i) { gs[i % k].push(p); });
+  st.groups = gs;
+  box.innerHTML = gs.map(function (g, i) { return '<div class="group"><b>Group ' + (i + 1) + ' ' + EMO[i % EMO.length] + '</b>' + g.join(', ') + '</div>'; }).join('');
+}
+$('goGroups').onclick = function () { sfx('click'); show('s-groups'); makeGroups(); };
+$('regroup').onclick = function () { sfx('click'); makeGroups(); };
+$('groupsBack').onclick = function () { sfx('click'); show('s-setup'); };
+$('groupsOk').onclick = function () { sfx('go'); toStarter(); };
+$('goStart').onclick = function () { sfx('go'); toStarter(); };
+
+/* ---------- starter sentences ---------- */
+function pool() { var b = BANK[cfg.g]; return cfg.u === '0' ? b[1].concat(b[2]) : b[cfg.u]; }
+function toStarter() {
+  show('s-starter'); var list = shuffle(pool()).slice(0, 4);
+  $('starters').innerHTML = ''; list.forEach(function (s, i) { var b = document.createElement('button'); b.className = 'starter'; b.innerHTML = '<i>' + EMO[(i + 2) % EMO.length] + '</i><span></span>'; b.lastChild.textContent = s; b.onclick = function () { sfx('click'); speak(s); }; $('starters').appendChild(b); });
+}
+$('moreStart').onclick = function () { sfx('click'); toStarter(); };
+$('startRound').onclick = function () { sfx('go'); st.round = 0; runRound(); };
+
+/* ---------- rounds ---------- */
+function kind(i) { return i % 2 === 0 ? 'write' : 'draw'; }
+function runRound() {
+  clearInterval(st.iv); var i = st.round, k = kind(i), last = i === cfg.n - 1, tt = TIMES[cfg.t];
+  var secs = i === 0 ? tt[0] : (k === 'draw' ? tt[1] : tt[2]);
+  st.total = secs; st.left = secs; st.paused = false; $('pause').textContent = '⏸ Pause';
+  var ph = $('phase'); ph.className = 'phase ' + (k === 'draw' ? 'p-draw' : (i === 0 ? 'p-write' : 'p-see'));
+  ph.textContent = 'Pupil ' + (i + 1) + (k === 'draw' ? ' · 🎨 Draw' : (i === 0 ? ' · ✏️ Write' : ' · 👀 Write what you see'));
+  $('instr').textContent = k === 'draw' ? 'Read the sentence. Draw it!' : (i === 0 ? 'Write one short sentence.' : 'Look at the drawing. Write one sentence.');
+  $('steps').innerHTML = ''; for (var s = 0; s < cfg.n; s++) { var d = document.createElement('div'); d.className = 'step ' + (s < i ? 'done' : s === i ? 'now' : ''); d.textContent = s + 1; $('steps').appendChild(d); }
+  $('next').textContent = last ? '🎉 Finish' : 'Fold & pass ➡️';
+  show('s-round'); drawTime();
+  st.iv = setInterval(function () { if (st.paused) return; st.left--; drawTime(); if (st.left <= 0) { clearInterval(st.iv); sfx('end'); $('instr').textContent = '⏰ Time is up! Finish and fold.'; } }, 1000);
+}
+function drawTime() { var m = Math.floor(Math.max(0, st.left) / 60), s = Math.max(0, st.left) % 60; $('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s; $('timer').classList.toggle('low', st.left <= 10); $('barf').style.transform = 'scaleX(' + Math.max(0, st.left / st.total) + ')'; }
+$('pause').onclick = function () { sfx('click'); st.paused = !st.paused; $('pause').textContent = st.paused ? '▶ Go on' : '⏸ Pause'; };
+$('next').onclick = function () {
+  clearInterval(st.iv); sfx('click');
+  if (st.round >= cfg.n - 1) { sfx('go'); confetti(160); show('s-reveal'); return; }
+  var k = kind(st.round + 1);
+  $('passMsg').textContent = st.round === 0 ? 'Pass it to the next pupil. They ' + (k === 'draw' ? 'draw the sentence.' : 'write.') : (k === 'draw' ? 'Fold so only the words show. The next pupil draws.' : 'Fold so only the drawing shows. The next pupil writes.');
+  show('s-pass');
+};
+$('passOk').onclick = function () { sfx('go'); st.round++; runRound(); };
+$('again').onclick = function () { sfx('click'); toStarter(); };
+$('home').onclick = function () { sfx('click'); show('s-setup'); };
+</script>
+</body>
+</html>
