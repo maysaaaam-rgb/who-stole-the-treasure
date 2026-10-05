@@ -2062,6 +2062,16 @@
   /* the boss is the biggest character */
   #bin-boss-zone { width: clamp(160px, 29vh, 330px); height: clamp(150px, 30vh, 340px); right: 3vw; }
   .bin-boss-sprite { width: clamp(160px, 29vh, 330px); height: clamp(160px, 29vh, 330px); }
+
+  /* ===== Easy mode: calm, clear, big ===== */
+  #auto-aim-btn { display: none; align-self: center; font-size: clamp(18px, 3.4vh, 34px); padding: 0.5em 1.6em; background: #22c55e; }
+  body.easy-mode #auto-aim-btn { display: inline-block; }
+  body.easy-mode .hud-actions-row, body.easy-mode #wind-flag, body.easy-mode .wind-leaves, body.easy-mode .hud-wind, body.easy-mode #wind-value-txt, body.easy-mode #wind-arrow-icon, body.easy-mode #wind-meter-fill, body.easy-mode .fence-level-badge, body.easy-mode #streak-banner { display: none !important; }
+  body.easy-mode .wind-display { display: none !important; }
+  body.easy-mode #fence-wrap { height: 22vh !important; }
+  body.easy-mode .char-wrapper { width: clamp(110px, 21vh, 240px); height: clamp(110px, 21vh, 240px); }
+  body.easy-mode #moving-obstacle, body.easy-mode #trampoline-prop, body.easy-mode #mystery-crate { display: none !important; }
+  body.easy-mode .q-card { font-size: 120%; }
 </style>
 </head>
 <body>
@@ -2092,6 +2102,11 @@
     </div>
 
     <!-- Game Mode -->
+    <div class="setup-row">
+      <span class="setup-label">Level</span>
+      <button class="chip sel" data-easy="1">🙂 Easy (best for class)</button>
+      <button class="chip" data-easy="0">🔥 Challenge (wind, tricks)</button>
+    </div>
     <div class="setup-row">
       <span class="setup-label">Mode</span>
       <button class="chip sel" data-mode="team">⚔️ Team Battle</button>
@@ -2414,6 +2429,7 @@
         <span id="aim-wind-hint" style="color:#b45309; font-weight:800;">💨 Account for the wind!</span>
       </div>
       <div id="ammo-row"></div>
+      <button type="button" class="btn" id="auto-aim-btn">🎯 Help me aim!</button>
       <div class="aim-grid">
         <!-- Angle Control -->
         <div class="aim-ctrl-col">
@@ -2495,8 +2511,8 @@
 <!-- EXTERNAL DATA BANKS -->
 <script src="../bamboozle/data.js"></script>
 <script src="../unit2-arcade/data.js"></script>
-<script src="extra.js"></script>
+<script src="extra.js?v=2"></script>
 <script src="sfx.js?v=1"></script>
-<script src="gameplay.js"></script>
+<script src="gameplay.js?v=2"></script>
 </body>
 </html>
