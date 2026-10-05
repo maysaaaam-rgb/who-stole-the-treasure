@@ -38,6 +38,7 @@ class AcademySoundEngine {
 
   // Award XP / Positive Points
   playCoin() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playCoinReward) return window.classSoundboard.playCoinReward();
     this.init();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -56,12 +57,14 @@ class AcademySoundEngine {
 
   // Team Swap / Trap Card / Baamboozle effect
   playWhoosh() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playWhoosh) return window.classSoundboard.playWhoosh();
     this.playChord([220, 277.18, 329.63], "triangle", 0.4, 0.18);
   }
 
   // Mechanical micro-click for active button presses
   playSnap() {
     if (!this.enabled) return;
+    if (window.classSoundboard && window.classSoundboard.playCardFlip) return window.classSoundboard.playCardFlip();
     this.init();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -80,11 +83,13 @@ class AcademySoundEngine {
 
   // Soft Fail / Try Again
   playSoftFail() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playTryAgain) return window.classSoundboard.playTryAgain();
     this.playChord([246.94, 220.00], "sine", 0.28, 0.2);
   }
 
   // Level Up / Victory Fanfare
   playFanfare() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playFanfare) return window.classSoundboard.playFanfare();
     const melody = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
     melody.forEach((freq, idx) => {
       setTimeout(() => this.playChord([freq, freq * 1.5], "triangle", 0.3, 0.15), idx * 110);
@@ -93,10 +98,12 @@ class AcademySoundEngine {
 
   // Timer Tick & Alarm
   playTimerTick() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playTick) return window.classSoundboard.playTick();
     this.playChord([1200], "sine", 0.04, 0.05);
   }
 
   playTimerAlarm() {
+    if (this.enabled && window.classSoundboard && window.classSoundboard.playCountdownBuzzer) return window.classSoundboard.playCountdownBuzzer();
     for (let i = 0; i < 3; i++) {
       setTimeout(() => this.playChord([880, 1760], "triangle", 0.2, 0.25), i * 220);
     }
