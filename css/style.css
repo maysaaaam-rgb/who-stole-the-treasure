@@ -1147,3 +1147,58 @@ header.app-header,
   border-bottom-width: 1px !important;
   box-shadow: 0 1px 4px rgba(16, 185, 129, 0.2) !important;
 }
+
+/* ============================================================
+   CLASSROOM SOUNDBOARD v2: dock flyout + Sound Lab page
+   ============================================================ */
+.sfx-flyout-menu {
+  min-width: min(600px, 92vw) !important;
+  max-width: 92vw !important;
+  max-height: 74vh !important;
+  overflow-y: auto !important;
+  padding: 12px !important;
+  gap: 4px !important;
+}
+.sfx-group-title {
+  font-size: 0.7rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #7dd3fc; margin: 8px 2px 2px;
+}
+.sfx-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.sfx-flyout-menu .sfx-flyout-item { white-space: normal !important; min-width: 0; }
+.sfx-flyout-menu .sfx-flyout-item.is-running { border-color: #f59e0b !important; background: rgba(245, 158, 11, 0.22) !important; }
+.sfx-emo { font-size: 1.25rem; line-height: 1; }
+.sfx-lab { flex: 1; }
+.sfx-kbd {
+  font: inherit; font-size: 0.68rem; font-weight: 900; color: #cbd5e1; background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #475569; border-bottom-width: 3px; border-radius: 6px; padding: 1px 7px; min-width: 22px; text-align: center;
+}
+.sfx-controls { display: flex; align-items: center; gap: 10px; padding: 4px 2px 8px; flex-wrap: wrap; }
+.sfx-vol { flex: 1; min-width: 120px; accent-color: #38bdf8; height: 6px; }
+.sfx-mute-btn, .sfx-stop-btn {
+  font: inherit; font-size: 0.8rem; font-weight: 800; color: #fff; cursor: pointer;
+  background: #334155; border: 0; border-bottom: 4px solid #1e293b; border-radius: 10px; padding: 6px 12px;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.sfx-mute-btn.is-muted { background: #9f1239; border-bottom-color: #4c0519; }
+.sfx-stop-btn { background: #b45309; border-bottom-color: #78350f; }
+.sfx-mute-btn:active, .sfx-stop-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
+.sfx-flyout-item.is-active-press { transform: scale(0.97) !important; border-color: #fde047 !important; }
+
+/* Sound Lab page */
+.sfx-lab-wrap { background: var(--bg-canvas, #0b1220); border-radius: 16px; border: 1px solid var(--border-light, #1e293b); padding: 22px 20px; }
+.sfx-lab-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.sfx-lab-head h3 { margin: 0; font-size: 1.25rem; font-weight: 900; color: var(--text-main, #f8fafc); }
+.sfx-lab-head p { margin: 3px 0 0; font-size: 0.84rem; color: var(--text-muted, #94a3b8); }
+.sfx-lab-keys { font-size: 0.8rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 5px 12px; border-radius: 999px; }
+.sfx-lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.sfx-card {
+  background: #111a2e; border: 1px solid rgba(56, 189, 248, 0.3); border-bottom: 4px solid rgba(15, 23, 42, 0.9); border-radius: 14px; padding: 14px;
+  cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.15s;
+}
+.sfx-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+.sfx-card:active, .sfx-card.is-active-press { transform: translateY(2px); border-bottom-width: 1px; border-color: #fde047; }
+.sfx-card-top { display: flex; justify-content: space-between; align-items: center; }
+.sfx-card-emo { font-size: 2rem; line-height: 1.1; }
+.sfx-card strong { font-size: 1.02rem; color: #f8fafc; }
+.sfx-card span { font-size: 0.78rem; color: #94a3b8; }
+@media (max-width: 640px) { .sfx-grid { grid-template-columns: 1fr; } }

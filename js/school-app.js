@@ -14038,6 +14038,7 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   function renderToolkitSoundsView() {
+    if (window.classSoundboard && window.classSoundboard.renderLabHTML) return window.classSoundboard.renderLabHTML();
     return '' +
       '<div style="background:var(--bg-canvas); border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:24px 20px;">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">' +
