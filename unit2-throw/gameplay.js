@@ -1318,7 +1318,7 @@ function openAimingTray(maxPowerCap) {
 
   var pupil = getActivePupilName();
   var charName = (state.activeSide === 'cat') ? 'Cat' : 'Dog';
-  $('aim-guide-txt').textContent = cfg.easy ? ('👆 ' + pupil + ': pull back and let go, or press the green button!') : ('👆 ' + pupil + ': touch, pull back and let go!');
+  $('aim-guide-txt').textContent = cfg.easy ? ('👆 ' + pupil + ': pull back and let go!') : ('👆 ' + pupil + ': touch, pull back and let go!');
 
   // Comeback assist check
   var myEnergy = state.energy[state.activeSide];
@@ -1478,7 +1478,7 @@ function drawPreviewArc() {
 
   var curX = startX, curY = startY;
   // Arc displays initial portion of flight
-  var stubSteps = cfg.easy ? 90 : ((state.level === 1) ? 5 : 2);
+  var stubSteps = cfg.easy ? 20 : ((state.level === 1) ? 5 : 2);   // Easy: a medium line, about a third of the flight
   for (var i = 0; i < stubSteps; i++) {
     var gustF = (state.level === 3) ? 1 + 0.3 * Math.sin((performance.now() - flightStart) / 330) : 1;
     vx += aw * gustF * dt;
@@ -1487,7 +1487,7 @@ function drawPreviewArc() {
     curY += vy * dt;
     var pt = toCanvasCoords(curX, curY);
     ctx.lineTo(pt.x, pt.y);
-    if (cfg.easy && (curY >= PG.groundY || curX < -20 || curX > 1020)) break;   // the line stops where the throw lands
+    if (curY >= PG.groundY || curX < -20 || curX > 1020) break;   // the line stops where the throw lands
   }
   ctx.stroke();
   ctx.restore();
