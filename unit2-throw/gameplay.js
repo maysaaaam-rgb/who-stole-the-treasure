@@ -35,6 +35,7 @@ var cfg = {
   sound: (savedSettings.sound !== undefined) ? savedSettings.sound : true,
   music: (savedSettings.music !== undefined) ? savedSettings.music : false,
   calm: (savedSettings.calm !== undefined) ? savedSettings.calm : false,
+  easy: (savedSettings.easy !== undefined) ? !!savedSettings.easy : true,   // Easy mode is the default: simple and friendly for 8 to 10 year olds
   turnTimer: Number(savedSettings.turnTimer) || 0 // 0: off, 20, 40
 };
 
@@ -60,6 +61,7 @@ function saveConfig() {
       sound: cfg.sound,
       music: cfg.music,
       calm: cfg.calm,
+      easy: cfg.easy,
       turnTimer: cfg.turnTimer
     }));
   } catch (e) {}
@@ -824,7 +826,10 @@ function randomWind(minAbs, maxAbs) {
 
 function updateDifficultyRamp() {
   var prevLevel = state.level;
-  if (state.turnCount <= 3) {
+  if (cfg.easy) {
+    state.level = 1;
+    state.wind = 0;                                       // Easy: no wind at all
+  } else if (state.turnCount <= 3) {
     state.level = 1;
     state.wind = Math.floor(Math.random() * 5) - 2;      // -2 .. +2
   } else if (state.turnCount <= 8) {
@@ -864,7 +869,7 @@ function updateDifficultyRamp() {
   // Mystery crate (Every 3-4 turns)
   var crate = $('mystery-crate');
   if (crate) {
-    if (state.turnCount > 1 && state.turnCount % 3 === 0 && !state.crateBonusGiven) {
+    if (!cfg.easy && state.turnCount > 1 && state.turnCount % 3 === 0 && !state.crateBonusGiven) {
       crate.style.display = 'flex';
       state.crateActive = true;
     } else {
@@ -928,7 +933,9 @@ function startTurn() {
 
 function getNextTask() {
   var enabled = [];
-  if (cfg.qType === 'all') {
+  if (cfg.qType === 'all' && cfg.easy) {
+    enabled = ['listen', 'word_pic', 'grammar'];          // Easy: quick pick-an-answer questions only
+  } else if (cfg.qType === 'all') {
     enabled = ['listen', 'word_pic', 'builder', 'spelling', 'speaking', 'grammar', 'reading'];
   } else {
     enabled = [cfg.qType];
@@ -1281,6 +1288,7 @@ function startTurnTimer(seconds) {
 function buildAmmoPicker() {
   var row = $('ammo-row');
   if (!row) return;
+  if (cfg.easy) { state.ammo.cat = 'fish'; state.ammo.dog = 'ball'; row.innerHTML = ''; var hn = $('aim-wind-hint'); if (hn) hn.textContent = ''; return; }
   var side = state.activeSide, keys = AMMO_BY_SIDE[side] || AMMO_BY_SIDE.cat;
   if (keys.indexOf(state.ammo[side]) < 0) state.ammo[side] = keys[0];
   row.innerHTML = '';
@@ -1310,7 +1318,7 @@ function openAimingTray(maxPowerCap) {
 
   var pupil = getActivePupilName();
   var charName = (state.activeSide === 'cat') ? 'Cat' : 'Dog';
-  $('aim-guide-txt').textContent = '👆 ' + pupil + ': touch, pull back and let go!';
+  $('aim-guide-txt').textContent = cfg.easy ? ('👆 ' + pupil + ': pull back and let go, or press the green button!') : ('👆 ' + pupil + ': touch, pull back and let go!');
 
   // Comeback assist check
   var myEnergy = state.energy[state.activeSide];
@@ -1470,7 +1478,7 @@ function drawPreviewArc() {
 
   var curX = startX, curY = startY;
   // Arc displays initial portion of flight
-  var stubSteps = (state.level === 1) ? 5 : 2;
+  var stubSteps = cfg.easy ? 90 : ((state.level === 1) ? 5 : 2);
   for (var i = 0; i < stubSteps; i++) {
     var gustF = (state.level === 3) ? 1 + 0.3 * Math.sin((performance.now() - flightStart) / 330) : 1;
     vx += aw * gustF * dt;
@@ -1479,9 +1487,40 @@ function drawPreviewArc() {
     curY += vy * dt;
     var pt = toCanvasCoords(curX, curY);
     ctx.lineTo(pt.x, pt.y);
+    if (cfg.easy && (curY >= PG.groundY || curX < -20 || curX > 1020)) break;   // the line stops where the throw lands
   }
   ctx.stroke();
   ctx.restore();
+}
+
+/* ---------- Easy mode: "Help me aim" ---------- */
+function easyHelperShot(fromCat) {
+  var G = getGeom(fromCat), key = state.ammo[state.activeSide] || (fromCat ? 'fish' : 'ball'), AM = AMMO[key] || AMMO.fish, hits = [];
+  for (var p = 20; p <= 95; p += 5) for (var a = 25; a <= 65; a += 2) {
+    var sf = (state.currentReward === 'quick') ? 1.25 : ((state.currentReward === 'big') ? 0.88 : 1.0);
+    var rad = a * Math.PI / 180, v0 = (500 + p / 100 * 650) * sf * AM.speed, vx = (fromCat ? 1 : -1) * v0 * Math.cos(rad), vy = -v0 * Math.sin(rad), x = G.start.x, y = G.start.y, g = 950 * AM.grav, res = '';
+    for (var t = 0; t < 6 && !res; t += 0.008) {
+      vy += g * 0.008; if (state.currentReward === 'curve') vy -= 260 * 0.008; x += vx * 0.008; y += vy * 0.008;
+      var sx = G.r.left + x / 1000 * G.r.width, sy = G.r.top + y / 600 * G.r.height;
+      if (Math.hypot((sx - G.opp.cx) / (G.opp.rx * 1.9 * ((state.currentReward === 'big') ? 1.35 : 1)), (sy - G.opp.cy) / (G.opp.ry * 1.9 * ((state.currentReward === 'big') ? 1.35 : 1))) <= 1) res = 'hit';
+      else if (x >= G.fence.x1 && x <= G.fence.x2 && y >= G.fence.topY) res = 'fence';
+      else if (y >= G.groundY || x < -50 || x > 1050 || y < -120) res = 'miss';   // too high counts as a miss too
+    }
+    if (res === 'hit') hits.push({ a: a, p: p });
+  }
+  if (!hits.length) return { a: 50, p: 70 };
+  var best = hits[Math.floor(hits.length / 2)];
+  if (Math.random() < 0.25) best = { a: Math.max(20, Math.min(80, best.a + (Math.random() < 0.5 ? -9 : 9))), p: best.p };   // sometimes it just misses: still fun, still fair
+  return best;
+}
+function helpMeAim() {
+  if (!state.isAiming || state.isFlying) return;
+  hidePullZone();
+  var shot = easyHelperShot(state.activeSide === 'cat');
+  state.angle = shot.a; state.power = shot.p;
+  drawPreviewArc();
+  var g = $('aim-guide-txt'); if (g) g.textContent = '🎯 Here it goes!';
+  setTimeout(function () { if (state.isAiming && !state.isFlying) launchFling(); }, 900);
 }
 
 function launchFling() {
@@ -1529,6 +1568,7 @@ function launchFling() {
   var opponentY = G.opp.vy;
   var hitScale = (state.currentReward === 'big') ? 1.35 :
     (state.comebackAssist[state.activeSide] ? 1.2 : 1.0);
+  if (cfg.easy) hitScale *= 1.9;                          // Easy: a big, forgiving target
   function oppNorm(px, py) {
     var sx = G.r.left + px / 1000 * G.r.width, sy = G.r.top + py / 600 * G.r.height;
     var ddx = (sx - G.opp.cx) / (G.opp.rx * hitScale), ddy = (sy - G.opp.cy) / (G.opp.ry * hitScale);
@@ -2068,6 +2108,20 @@ function setupEventHandlers() {
     };
   });
 
+  // Easy / Challenge
+  document.querySelectorAll('button[data-easy]').forEach(function (btn) {
+    btn.classList.toggle('sel', (btn.dataset.easy === '1') === !!cfg.easy);
+    btn.onclick = function () {
+      sfx('click');
+      document.querySelectorAll('button[data-easy]').forEach(function (b) { b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      cfg.easy = btn.dataset.easy === '1';
+      saveConfig();
+    };
+  });
+  var aab = $('auto-aim-btn');
+  if (aab) aab.onclick = function () { sfx('click'); helpMeAim(); };
+
   // Class Selection & Custom Names
   var cs = $('class-select');
   if (cs) {
@@ -2584,6 +2638,7 @@ function setupCharacterDrag(charEl, isCatChar) {
 }
 
 function resetGameState() {
+  document.body.classList.toggle('easy-mode', !!cfg.easy);
   state.turnCount = 0;
   state.maxTurns = (cfg.mode === 'practice') ? 9999 : (cfg.turnsEach * 2);
   state.activeSide = 'cat';
