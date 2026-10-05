@@ -1,0 +1,61 @@
+/* Grade 3 extras: moon legend, thankful cards, lantern wall, farm and Mars reveal, dictation cards */
+.hook-stage.moonhook { background: radial-gradient(circle at 70% 25%, #78350f 0, #0b1220 55%); }
+.hook-stage.farmhook { background: radial-gradient(circle at 50% 100%, #14532d, #0b1220 75%); }
+
+.moonpanel { position: relative; flex: 1; min-height: 24vh; border-radius: 2vh; background: linear-gradient(#0b1220, #1e1b4b 70%, #312e81); overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; }
+.moon { position: absolute; right: 8%; top: 8%; width: 20vh; height: 20vh; border-radius: 50%; background: #fef9c3; overflow: hidden; box-shadow: 0 0 2vh rgba(254, 249, 195, 0.35); transition: box-shadow 1.2s; z-index: 2; }
+.moon.full { box-shadow: 0 0 6vh rgba(254, 249, 195, 0.9), 0 0 14vh rgba(254, 240, 138, 0.5); }
+.moon .shade { position: absolute; inset: 0; background: #11172e; transition: transform 1.6s ease; }
+.moon.small { position: static; width: 9vh; height: 9vh; }
+.bigscene { font-size: 16vh; z-index: 3; text-shadow: 0 1vh 2vh rgba(0, 0, 0, 0.5); animation: bob 3s ease-in-out infinite; text-align: center; line-height: 1.1; }
+.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 24%; background: linear-gradient(#14532d, #052e16); border-top-left-radius: 50% 40%; border-top-right-radius: 50% 40%; }
+
+.tgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1vh; }
+.tcardx { display: flex; flex-direction: column; align-items: center; padding: 0.6vh 0.3vh !important; font-size: 0.85em; }
+.tcardx .em { font-size: 5vh; line-height: 1.1; }
+
+.moonwall { display: flex; gap: 2vh; align-items: center; padding: 1vh 1.6vh; border-radius: 2vh; background: linear-gradient(#0b1220, #1e1b4b); border: 1px solid rgba(255, 255, 255, 0.15); min-height: 12vh; }
+.wall { display: flex; flex-wrap: wrap; gap: 0.4vh; flex: 1; font-size: 4.6vh; }
+.lant { animation: pop 0.6s var(--spring-snap) both, bob 3s ease-in-out infinite; display: inline-block; }
+.countrow { display: flex; flex-wrap: wrap; gap: 1vh; justify-content: center; font-size: 8vh; line-height: 1.1; }
+
+.crops { display: flex; gap: 2vh; justify-content: center; flex-wrap: wrap; z-index: 2; position: relative; }
+.crop { display: flex; flex-direction: column; align-items: center; animation: pop 0.6s var(--spring-snap); }
+.crop small { font-weight: 800; font-size: 0.75em; color: #e2e8f0; }
+
+.farmpanel { flex: 1; min-height: 24vh; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 1.6vh; }
+.win { position: relative; border-radius: 2vh; overflow: hidden; border: 4px solid #94a3b8; transition: background 1.6s; min-height: 20vh; }
+.win.earth { background: linear-gradient(#7dd3fc, #bbf7d0 70%); } .win.mars { background: linear-gradient(#7c2d12, #fb923c 75%); }
+.win .hill { position: absolute; left: 0; right: 0; bottom: 0; height: 28%; background: #22c55e; border-top-left-radius: 50% 60%; border-top-right-radius: 50% 60%; transition: background 1.6s; }
+.win.mars .hill { background: #9a3412; }
+.win .sunmars { position: absolute; top: 10%; right: 12%; font-size: 8vh; }
+.win .marstag { position: absolute; left: 0; right: 0; top: 40%; text-align: center; font-size: 6vh; font-weight: 900; color: #fff; text-shadow: 0 0.6vh 0 #7f1d1d; opacity: 0; transition: opacity 1s; }
+.win.mars .marstag { opacity: 1; animation: bump 0.8s var(--spring-snap); }
+.inside { position: relative; border-radius: 2vh; background: linear-gradient(#1e293b, #0f172a); border: 2px solid rgba(255, 255, 255, 0.15); padding: 1.6vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-height: 20vh; }
+.fam { font-size: 7vh; line-height: 1.1; }
+
+.dgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1vh; }
+.dcard { background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.45); border-radius: 1.6vh; padding: 0.8vh; text-align: center; display: flex; flex-direction: column; gap: 0.6vh; align-items: center; }
+.dn { font-weight: 900; color: #fde047; font-size: 0.8em; } .dbody { font-size: 0.75em; min-height: 8vh; font-weight: 700; }
+.drow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; font-size: 3vh; } .drow small { font-size: 0.5em; width: 100%; }
+
+.arcadesign { text-align: center; font-size: 2em; font-weight: 900; color: #fde047; text-shadow: 0 0 2vh rgba(253, 224, 71, 0.5); background: linear-gradient(90deg, rgba(168, 85, 247, 0.25), rgba(14, 165, 233, 0.25)); border: 3px solid #fde047; border-radius: 2vh; padding: 0.6vh; letter-spacing: 0.08em; }
+.stations { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2vh; }
+.station { font: inherit; color: inherit; background: rgba(168, 85, 247, 0.16); border: 2px solid rgba(168, 85, 247, 0.6); border-radius: 1.8vh; padding: 1vh; text-align: center; font-weight: 800; transition: transform 0.2s var(--spring-snap); }
+.station:active { transform: scale(0.95); } .station .em { font-size: 6vh; line-height: 1.1; }
+.planbox { background: rgba(245, 158, 11, 0.1); border: 2px dashed var(--amber); border-radius: 1.6vh; padding: 1vh 1.6vh; font-size: 0.82em; line-height: 1.5; }
+.bigclock { text-align: center; font-size: 8em; line-height: 1; font-weight: 900; color: #7dd3fc; font-variant-numeric: tabular-nums; }
+.bigclock.rotate { color: #fde047; animation: pulse 0.6s infinite; }
+.votes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vh; align-items: end; min-height: 22vh; }
+.vote { display: flex; flex-direction: column; align-items: center; gap: 0.6vh; }
+.votebtn { display: flex; flex-direction: column; align-items: center; padding: 0.4em 0.6em !important; } .votebtn .em { font-size: 5vh; line-height: 1.1; }
+.vbar { height: 12vh; width: 7vh; background: #1e293b; border-radius: 1vh; display: flex; align-items: flex-end; overflow: hidden; } .vbar i { display: block; width: 100%; background: linear-gradient(#a855f7, #38bdf8); transition: height 0.5s var(--spring-snap); }
+@media (max-width: 900px) { .stations, .votes { grid-template-columns: repeat(3, 1fr); } .bigclock { font-size: 5em; } }
+@media (max-width: 900px) { .farmpanel { grid-template-columns: 1fr; } .tgrid, .dgrid { grid-template-columns: repeat(3, 1fr); } }
+
+/* keep the header inside the screen with three lesson tabs */
+.hud { flex-wrap: wrap; row-gap: 0.6vh; }
+.hud h1 { white-space: normal; }
+.hud .tabs { flex-wrap: nowrap; }
+.hud .tab { white-space: nowrap; }
+.bigclock { font-size: 5.2em !important; }
