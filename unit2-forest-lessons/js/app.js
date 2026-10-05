@@ -21,6 +21,19 @@
   function shuffle(a) { var b = a.slice(), i, j, t; for (i = b.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
   function sfx(n) { A.play(n); }
   function sayBtn(text, label) { return h('button', { type: 'button', class: 'btn small ghost say', text: '🔊 ' + (label || 'Say it'), onclick: function () { A.speak(text); } }); }
+  /* real pictures instead of emoji: ART maps an emoji (or pair) to a file in art/ */
+  var ART = {
+    '🐻': 'bear_awake', '🐇': 'hare_white', '🦌': 'deer', '🐿️': 'squirrel', '🐺': 'wolf', '🦉': 'owl', '✉️': 'envelope_sealed', '🌰': 'seed_gold',
+    '🌲': 'tree_pine_green', '🌳': 'tree_oak_summer', '🍂': 'tree_oak_autumn', '🥶': 'thermometer_cold',
+    '👨': 'father', '🧑‍⚕️': 'vet', '🧒': 'wen_shu_jealous', '👦': 'go_ne_happy', '🐦': 'mother_swallow', '🐤': 'baby_swallow',
+    '🏠': 'house_roof', '🪺': 'nest_eggs', '🍊': 'fruit_gold', '🚲': 'bicycle', '💰': 'coins', '🚂': 'train_rain',
+    '🔨🪺': 'nest_eggs', '🐤⬇️': 'baby_swallow', '🤲✨': 'seed_gold', '🌱⬆️': 'fruit_gold', '🚲🐦': 'bicycle', '🏠🎁': 'gift_box',
+    '🐤🪺': 'baby_swallow', '🧒🪙': 'wen_shu_jealous', '🧒💔': 'wen_shu_sorry'
+  };
+  function pic(e, cls) { var f = ART[e]; return f ? h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + f + '.webp', alt: '', draggable: 'false' }) : null; }
+  function fill(el, e, cls) { var im = pic(e, cls); if (im) el.appendChild(im); else el.textContent = e; return el; }
+  function icoHTML(e) { var f = ART[e]; return f ? '<img class="pic inl" src="art/' + f + '.webp" alt="">' : e; }
+  function art(name, cls) { return h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + name + '.webp', alt: '', draggable: 'false' }); }
   function btn(text, cls, fn) { return h('button', { type: 'button', class: 'btn ' + (cls || ''), text: text, onclick: fn }); }
 
   var state = { lesson: 1, idx: 0, scores: D.teams.map(function () { return 0; }), done: {}, cleanups: [] };
@@ -72,25 +85,33 @@
 
   /* ---------- forest picture (used by lesson 1) ---------- */
   function buildForest() {
-    var season = 'summer', animals = {};
+    var season = 'summer', animals = {}, oaks = [], pines = [];
     var forests = h('div', { class: 'forests', 'data-season': season });
-    function mkPine(left, scale) { return h('div', { class: 'pine', style: 'left:' + left + '%;transform:scale(' + scale + ');transform-origin:bottom' }, [h('div', { class: 'trunk' }), h('div', { class: 'tier t1' }), h('div', { class: 'tier t2' }), h('div', { class: 'tier t3' })]); }
-    function mkTree(left, scale) { return h('div', { class: 'tree', style: 'left:' + left + '%;transform:scale(' + scale + ')' }, [h('div', { class: 'trunk' }), h('div', { class: 'branch b1' }), h('div', { class: 'branch b2' }), h('div', { class: 'branch b3' }), h('div', { class: 'crown' })]); }
+    function mkPine(left, scale) { var im = art('tree_pine_green'); pines.push(im); return h('div', { class: 'pine', style: 'left:' + left + '%;transform:scale(' + scale + ');transform-origin:bottom' }, [im]); }
+    function mkTree(left, scale) { var im = art('tree_oak_summer'); oaks.push(im); return h('div', { class: 'tree', style: 'left:' + left + '%;transform:scale(' + scale + ')' }, [im]); }
     function mkParts(kind, emoji, n) { var p = h('div', { class: 'parts' }), k; for (k = 0; k < n; k++) p.appendChild(h('i', { class: kind, text: emoji, style: 'left:' + (Math.random() * 96) + '%;font-size:' + (2 + Math.random() * 1.6) + 'vh;animation-duration:' + (5 + Math.random() * 5) + 's;animation-delay:-' + (Math.random() * 8) + 's' })); return p; }
     function mkAn(id, emoji, style, cls) {
-      var b = h('button', { type: 'button', class: 'an ' + (cls || ''), style: style, text: emoji });
+      var b = h('button', { type: 'button', class: 'an ' + (cls || ''), style: style });
+      fill(b, emoji); b._img = b.querySelector('img');
       b.addEventListener('click', function () { sfx('tap'); A.speak(id); }); animals[id] = b; return b;
     }
     var t1 = mkTree(3, 1), p1 = mkPine(4, 1.05);
-    var deci = h('div', { class: 'forest deci' }, [h('div', { class: 'tag', text: '🍂 Deciduous forest' }), h('div', { class: 'ground' }), t1, mkTree(68, 0.85), h('div', { class: 'den' }), h('div', { class: 'zzz', text: 'Zzz' }),
-      mkAn('bear', '🐻', 'left:21%;bottom:21%', 'bear'), mkAn('deer', '🦌', 'left:80%;bottom:20%', ''), mkAn('squirrel', '🐿️', 'left:38%;bottom:22%;font-size:6vh', ''), mkParts('leaf', '🍂', 12), mkParts('flake', '❄️', 12)]);
-    var coni = h('div', { class: 'forest' }, [h('div', { class: 'tag', text: '🌲 Coniferous forest' }), h('div', { class: 'ground' }), p1, mkPine(34, 0.8), mkPine(70, 1),
-      mkAn('hare', '🐇', 'left:50%;bottom:19%', 'hare'), mkAn('wolf', '🐺', 'left:20%;bottom:19%;font-size:8vh', ''), mkAn('owl', '🦉', 'left:76%;top:12%;font-size:6.5vh', ''), mkParts('flake', '❄️', 14)]);
+    var deci = h('div', { class: 'forest deci' }, [h('div', { class: 'tag', text: '🍂 Deciduous forest' }), t1, mkTree(68, 0.85), h('div', { class: 'zzz', text: 'Zzz' }),
+      mkAn('bear', '🐻', 'left:21%;bottom:21%', 'bear'), mkAn('deer', '🦌', 'left:80%;bottom:20%', ''), mkAn('squirrel', '🐿️', 'left:38%;bottom:22%', 'sq'), mkParts('leaf', '🍂', 12), mkParts('flake', '❄️', 12)]);
+    var coni = h('div', { class: 'forest' }, [h('div', { class: 'tag', text: '🌲 Coniferous forest' }), p1, mkPine(34, 0.8), mkPine(70, 1),
+      mkAn('hare', '🐇', 'left:50%;bottom:19%', 'hare'), mkAn('wolf', '🐺', 'left:20%;bottom:19%', 'wolf'), mkAn('owl', '🦉', 'left:76%;top:12%', 'owl'), mkParts('flake', '❄️', 14)]);
     forests.appendChild(deci); forests.appendChild(coni);
+    animals.hare._img.src = 'art/hare_brown.webp';
     var focusEls = { bear: animals.bear, hare: animals.hare, tree: t1, pine: p1 };
     return {
       root: forests,
-      set: function (s) { season = s; forests.setAttribute('data-season', s); },
+      set: function (s) {
+        season = s; forests.setAttribute('data-season', s);
+        oaks.forEach(function (im) { im.src = 'art/tree_oak_' + s + '.webp'; });
+        pines.forEach(function (im) { im.src = 'art/' + (s === 'winter' ? 'tree_pine_snow' : 'tree_pine_green') + '.webp'; });
+        animals.bear._img.src = 'art/' + (s === 'winter' ? 'bear_sleeping' : 'bear_awake') + '.webp';
+        animals.hare._img.src = 'art/' + (s === 'winter' ? 'hare_white' : 'hare_brown') + '.webp';
+      },
       spot: function (id) { Object.keys(focusEls).forEach(function (k) { focusEls[k].classList.remove('spot'); }); if (id && focusEls[id]) focusEls[id].classList.add('spot'); }
     };
   }
@@ -100,8 +121,8 @@
     var body = c.body, i = -1;
     var sky = h('div', { class: 'hook-stage' }), paper = h('div', { class: 'letter', style: 'display:none' }), mis = h('div', { class: 'missions', style: 'display:none' });
     sky.appendChild(h('div', { class: 'stars-bg' })); sky.appendChild(paper); body.appendChild(sky);
-    var env = h('div', { class: 'envelope', text: '✉️' });
-    sky.appendChild(env);
+    var env = fill(h('div', { class: 'envelope' }), '✉️');
+    sky.appendChild(env); sky.appendChild(h('div', { class: 'rosa' }, [art('ranger_rosa_point')]));
     var nextBtn = btn('✉ Open the letter', 'amber big', function () {
       i++;
       if (i === 0) { env.style.display = 'none'; paper.style.display = 'block'; sfx('page'); }
@@ -156,7 +177,7 @@
       if (i >= D.walk.length - 1) { info.textContent = '🏁 Mission complete! Everyone back to your seats.'; sfx('win'); confetti(); return; }
       i++; draw();
     });
-    function draw() { revealed = false; Object.keys(z).forEach(function (k) { z[k].classList.remove('hit'); }); var w = D.walk[i]; card.innerHTML = ''; card.appendChild(h('div', { class: 'em', text: w.e })); card.appendChild(h('div', { class: 'tx', text: w.t })); card.appendChild(h('div', { class: 'pill amber', text: 'Card ' + (i + 1) + ' of ' + D.walk.length })); info.textContent = '🚶 Walk to your forest! Stand on the line for BOTH.'; sfx('page'); }
+    function draw() { revealed = false; Object.keys(z).forEach(function (k) { z[k].classList.remove('hit'); }); var w = D.walk[i]; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'em' }), w.e)); card.appendChild(h('div', { class: 'tx', text: w.t })); card.appendChild(h('div', { class: 'pill amber', text: 'Card ' + (i + 1) + ' of ' + D.walk.length })); info.textContent = '🚶 Walk to your forest! Stand on the line for BOTH.'; sfx('page'); }
     body.appendChild(card); body.appendChild(zones); body.appendChild(info);
     body.appendChild(h('div', { class: 'row' }, [rev, nxt, btn('🔊 Read card', 'small ghost', function () { A.speak(D.walk[i].t); })]));
     body.appendChild(pointsRow());
@@ -166,8 +187,8 @@
   function l1Interview(c) {
     var body = c.body, sel = D.interview[0], qi = 2;
     var rep = h('div', { class: 'bubble left' }), ans = h('div', { class: 'bubble right' }), grid = h('div', { class: 'agrid' });
-    function show() { rep.innerHTML = '<small>🎤 Ranger Reporter</small>' + D.reporterQs[qi]; ans.innerHTML = '<small>' + sel.e + ' ' + sel.n + '</small>' + sel.a; }
-    D.interview.forEach(function (a) { grid.appendChild(h('button', { type: 'button', class: 'btn acard', onclick: function () { sel = a; show(); sfx('tap'); A.speak(a.n); } }, [h('span', { class: 'em', text: a.e }), h('span', { text: a.n })])); });
+    function show() { rep.innerHTML = '<small>🎤 Ranger Reporter</small>' + D.reporterQs[qi]; ans.innerHTML = '<small>' + icoHTML(sel.e) + sel.n + '</small>' + sel.a; }
+    D.interview.forEach(function (a) { grid.appendChild(h('button', { type: 'button', class: 'btn acard', onclick: function () { sel = a; show(); sfx('tap'); A.speak(a.n); } }, [fill(h('span', { class: 'em' }), a.e), h('span', { text: a.n })])); });
     var qrow = h('div', { class: 'row' }); D.reporterQs.forEach(function (q, k) { qrow.appendChild(btn('Q' + (k + 1), 'small ghost', function () { qi = k; show(); A.speak(q); })); });
     var swap = btn('🔁 Swap roles!', 'coral', function () { sfx('season'); swap.textContent = '🔁 Swapped! Go!'; setTimeout(function () { swap.textContent = '🔁 Swap roles!'; }, 2200); });
     body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 180), swap, btn('🔊 Model it', 'small amber', function () { A.speakSeq([D.reporterQs[qi], sel.a]); })]));
@@ -218,13 +239,13 @@
     body.appendChild(rowb); sfx('win'); confetti();
   }
   function l1Wrap(c) {
-    c.body.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank', text: '🌲' }), h('div', { class: 'score', text: 'Ranger Badge Ceremony' }), btn('🏆 See the scores', 'green big', function () { wrap(c, 1); })]));
+    c.body.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank' }, [art('ranger_rosa_wave')]), h('div', { class: 'score', text: 'Ranger Badge Ceremony' }), btn('🏆 See the scores', 'green big', function () { wrap(c, 1); })]));
   }
 
   /* ============================== LESSON 2 ============================== */
   function l2Hook(c) {
     var body = c.body, i = -1;
-    var stage = h('div', { class: 'hook-stage seed' }, [h('div', { class: 'stars-bg' }), h('div', { class: 'seedbig', text: '🌰' })]);
+    var stage = h('div', { class: 'hook-stage seed' }, [h('div', { class: 'stars-bg' }), fill(h('div', { class: 'seedbig' }), '🌰')]);
     var list = h('div', { class: 'clues' }), mis = h('div', { class: 'missions', style: 'display:none' });
     var nextBtn = btn('🔍 First question', 'amber big', function () {
       i++;
@@ -242,7 +263,7 @@
       var b = D.beats[i], revealed = false;
       body.innerHTML = '';
       var set = h('div', { class: 'stage-set' }), acts = [];
-      b.actors.forEach(function (a) { var e = h('div', { class: 'act', text: a.e, style: 'left:' + a.x + '%;top:' + a.y + '%;font-size:' + a.s + 'vh' }); acts.push(e); set.appendChild(e); });
+      b.actors.forEach(function (a) { var e = fill(h('div', { class: 'act', style: 'left:' + a.x + '%;top:' + a.y + '%;font-size:' + a.s + 'vh' }), a.e); acts.push(e); set.appendChild(e); });
       body.appendChild(set);
       var gap = h('span', { class: 'gap', text: '?' });
       body.appendChild(h('div', { class: 'beat-line' }, [b.pre + ' ', gap, ' ' + b.post]));
@@ -270,7 +291,7 @@
   function l2Freeze(c) {
     var body = c.body, groups = shuffle([1, 2, 3, 4, 5, 6]), dealt = false, grid = h('div', { class: 'fgrid' }), spotlight = h('div', { class: 'spotlight' }), cards = [];
     D.freeze.forEach(function (f, k) {
-      var el = h('div', { class: 'fcard' }, [h('div', { class: 'em', text: f.e }), h('div', { class: 'ft', text: f.t }), h('div', { class: 'gbadge', text: '?' })]);
+      var el = h('div', { class: 'fcard' }, [fill(h('div', { class: 'em' }), f.e), h('div', { class: 'ft', text: f.t }), h('div', { class: 'gbadge', text: '?' })]);
       var go = btn('▶ Perform', 'small cyan', function () { perform(k, el); }); go.style.display = 'none'; el.appendChild(go); el._go = go; cards.push(el); grid.appendChild(el);
     });
     var deal = btn('🃏 Deal the scenes', 'amber', function () {
@@ -293,7 +314,7 @@
 
   function l2Case(c) {
     var body = c.body, seen = {}, out = {}, els = {};
-    var sus = h('div', { class: 'suspects' }); D.suspects.forEach(function (s) { var el = h('button', { type: 'button', class: 'suspect', onclick: function () { solve(s, el); } }, [h('div', { class: 'em', text: s.e }), h('div', { text: s.n })]); els[s.id] = el; sus.appendChild(el); });
+    var sus = h('div', { class: 'suspects' }); D.suspects.forEach(function (s) { var el = h('button', { type: 'button', class: 'suspect', onclick: function () { solve(s, el); } }, [fill(h('div', { class: 'em' }), s.e), h('div', { text: s.n })]); els[s.id] = el; sus.appendChild(el); });
     var board = h('div', { class: 'clueboard' }), msg = h('div', { class: 'msg', text: '🔎 Case: someone left a gift on Go Ne’s roof. WHO? Witnesses: tell your clue out loud. Do not show your card!' });
     D.clues.forEach(function (cl, k) {
       var line = h('div', { class: 'cl' }), b = btn('Witness ' + cl.w, 'small cyan', function () {
@@ -315,7 +336,7 @@
 
   function l2Train(c) {
     var body = c.body, i = 0, order = shuffle(D.aiPairs.map(function (p, k) { return k; })), word = '', pair = null;
-    var train = h('div', { class: 'train' }, [h('div', { class: 'engine', text: '🚂' })]);
+    var train = h('div', { class: 'train' }, [fill(h('div', { class: 'engine' }), '🚂')]);
     D.aiWords.forEach(function (w) { train.appendChild(h('button', { type: 'button', class: 'btn car', html: w.replace('ai', '<b>ai</b>'), onclick: function () { sfx('tap'); A.speak(w); } })); });
     train.appendChild(btn('🎵 Chant + clap', 'amber small', function () { A.speak(D.aiChant.join(' ')); }));
     train.appendChild(btn('🐌 Snail Rap', 'violet small', function () { openRap(c); }));
@@ -353,7 +374,7 @@
       main.innerHTML = '';
       main.appendChild(h('div', { class: 'prompt', text: '🎤 A pupil is Wen Shu. The class asks the questions!' }));
       var q = h('div', { class: 'bubble left' }), a = h('div', { class: 'bubble right', style: 'visibility:hidden' }), cur = 0;
-      function show() { q.innerHTML = '<small>🙋 Class asks</small>' + D.hotseat[cur].q; a.style.visibility = 'hidden'; a.innerHTML = '<small>🧒 Wen Shu</small>' + D.hotseat[cur].a; A.speak(D.hotseat[cur].q); }
+      function show() { q.innerHTML = '<small>🙋 Class asks</small>' + D.hotseat[cur].q; a.style.visibility = 'hidden'; a.innerHTML = '<small>' + icoHTML('🧒') + 'Wen Shu</small>' + D.hotseat[cur].a; A.speak(D.hotseat[cur].q); }
       var list = h('div', { class: 'row' }); D.hotseat.forEach(function (x, k) { list.appendChild(btn('Q' + (k + 1), 'small ghost', function () { cur = k; show(); })); });
       main.appendChild(h('div', { class: 'dialog' }, [q, a])); main.appendChild(list);
       main.appendChild(h('div', { class: 'row' }, [btn('💡 Show a model answer', 'amber', function () { a.style.visibility = 'visible'; A.speak(D.hotseat[cur].a); sfx('correct'); }), btn('Next question ▶', 'green', function () { cur = (cur + 1) % D.hotseat.length; show(); })]));
@@ -364,13 +385,13 @@
       function fork() {
         var f = D.forks[i], viewed = {}, got = false; main.innerHTML = '';
         main.appendChild(h('div', { class: 'pill amber', style: 'align-self:flex-start', text: 'Vote ' + (i + 1) + ' of ' + D.forks.length + '   • hands up for A or B!' }));
-        main.appendChild(h('div', { class: 'center', style: 'font-size:9vh;line-height:1', text: f.scene })); main.appendChild(h('div', { class: 'prompt', text: f.q }));
+        main.appendChild(fill(h('div', { class: 'center', style: 'font-size:11vh;line-height:1' }), f.scene)); main.appendChild(h('div', { class: 'prompt', text: f.q }));
         var meter = h('div', { class: 'meter' }, [h('i', { style: 'width:' + Math.max(8, Math.min(100, 50 + kindness * 16)) + '%' })]), outEl = h('div'), after = h('div', { class: 'row' }), fk = h('div', { class: 'fork' });
         [['A', f.a], ['B', f.b]].forEach(function (p) {
           fk.appendChild(h('button', { type: 'button', class: 'btn opt', text: p[0] + ': ' + p[1].t, onclick: function () {
             sfx(p[1].kind > 0 ? 'correct' : 'soft'); if (!viewed[p[0]]) { viewed[p[0]] = 1; kindness += p[1].kind; }
             meter.firstChild.style.width = Math.max(8, Math.min(100, 50 + kindness * 16)) + '%'; outEl.innerHTML = ''; outEl.appendChild(h('div', { class: 'outcome', text: (p[1].kind > 0 ? '❤️ ' : '💔 ') + p[1].out }));
-            if (p[1].kind > 0 && !got) { got = true; after.appendChild(h('div', { class: 'sentence', text: f.say })); after.appendChild(sayBtn(f.say)); var last = i === D.forks.length - 1; after.appendChild(btn(last ? 'Finish ✔' : 'Next vote ▶', 'green', function () { if (last) { sfx('win'); confetti(); main.innerHTML = ''; main.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank', text: '❤️' }), h('div', { class: 'score', text: 'Kindness grows friendship!' })])); } else { i++; fork(); } })); }
+            if (p[1].kind > 0 && !got) { got = true; after.appendChild(h('div', { class: 'sentence', text: f.say })); after.appendChild(sayBtn(f.say)); var last = i === D.forks.length - 1; after.appendChild(btn(last ? 'Finish ✔' : 'Next vote ▶', 'green', function () { if (last) { sfx('win'); confetti(); main.innerHTML = ''; main.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank' }, [art('wen_shu_sorry')]), h('div', { class: 'score', text: 'Kindness grows friendship!' })])); } else { i++; fork(); } })); }
           } }));
         });
         main.appendChild(fk); main.appendChild(h('div', { class: 's-intro', text: '❤️ Kindness meter' })); main.appendChild(meter); main.appendChild(outEl); main.appendChild(after);

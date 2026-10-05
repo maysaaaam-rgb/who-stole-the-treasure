@@ -21,6 +21,16 @@
   function shuffle(a) { var b = a.slice(), i, j, t; for (i = b.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
   function sfx(n) { A.play(n); }
   function sayBtn(text, label) { return h('button', { type: 'button', class: 'btn small ghost say', text: '🔊 ' + (label || 'Say it'), onclick: function () { A.speak(text); } }); }
+  /* real pictures instead of emoji: ART maps an emoji (or a pair) to a file in art/ */
+  var ART = {
+    '🌕': 'moon_full', '🌙': 'moon_full', '💌': 'envelope_invite', '🍡': 'songpyeon', '🍽️': 'feast_table', '🍡 🍽️': 'feast_table', '💃': 'circle_dance',
+    '👨‍👩‍👧‍👦': 'family_travel', '🙇': 'bow_ancestors', '🏮': 'lantern', '🚗': 'family_travel', '👘': 'min_ji', '👑': 'king', '👑 👀': 'king', '🧵 🧵': 'loom_weaving',
+    '🥔': 'pink_potatoes', '🌽': 'purple_corn', '🥕': 'purple_carrots', '🫛': 'orange_peas', '🍅': 'striped_tomatoes',
+    '🌧️': 'rain_cloud', '🧑‍🚀': 'august_spacesuit', '🏜️': 'red_rocks', '🍎': 'apple_tree', '🌱': 'seedling_sun', '🔵': 'sky_blue_sun', '🌬️': 'ruth_spacesuit'
+  };
+  function pic(e, cls) { var f = ART[e]; return f ? h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + f + '.webp', alt: '', draggable: 'false' }) : null; }
+  function fill(el, e, cls) { var im = pic(e, cls); if (im) el.appendChild(im); else el.textContent = e; return el; }
+  function art(name, cls) { return h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + name + '.webp', alt: '', draggable: 'false' }); }
   function btn(text, cls, fn) { return h('button', { type: 'button', class: 'btn ' + (cls || ''), text: text, onclick: fn }); }
   function lc(t) { return t.charAt(0).toLowerCase() + t.slice(1); }
 
@@ -76,7 +86,7 @@
     var body = c.body, i = -1;
     var sky = h('div', { class: 'hook-stage ' + (bgClass || '') }), paper = h('div', { class: 'letter', style: 'display:none' }), mis = h('div', { class: 'missions', style: 'display:none' });
     sky.appendChild(h('div', { class: 'stars-bg' })); sky.appendChild(paper); body.appendChild(sky);
-    var env = h('div', { class: 'envelope', text: envEmoji }); sky.appendChild(env);
+    var env = fill(h('div', { class: 'envelope' }), envEmoji); sky.appendChild(env);
     var nextBtn = btn('✉ Open the invitation', 'amber big', function () {
       i++;
       if (i === 0) { env.style.display = 'none'; paper.style.display = 'block'; sfx('page'); }
@@ -124,7 +134,7 @@
       if (i >= cards.length - 1) { info.textContent = '🏁 Mission complete! Back to your seats, please.'; sfx('win'); confetti(); return; }
       i++; draw();
     });
-    function draw() { revealed = false; Object.keys(z).forEach(function (k) { z[k].classList.remove('hit'); }); var w = cards[i]; card.innerHTML = ''; card.appendChild(h('div', { class: 'em', text: w.e })); card.appendChild(h('div', { class: 'tx', text: w.t })); card.appendChild(h('div', { class: 'pill amber', text: 'Card ' + (i + 1) + ' of ' + cards.length })); info.textContent = intro; sfx('page'); }
+    function draw() { revealed = false; Object.keys(z).forEach(function (k) { z[k].classList.remove('hit'); }); var w = cards[i]; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'em' }), w.e)); card.appendChild(h('div', { class: 'tx', text: w.t })); card.appendChild(h('div', { class: 'pill amber', text: 'Card ' + (i + 1) + ' of ' + cards.length })); info.textContent = intro; sfx('page'); }
     body.appendChild(card); body.appendChild(zonesEl); body.appendChild(info);
     body.appendChild(h('div', { class: 'row' }, [rev, nxt, btn('🔊 Read card', 'small ghost', function () { A.speak(cards[i].t); })]));
     body.appendChild(pointsRow());
@@ -144,7 +154,7 @@
       revealed = false; var r = rounds[i]; box.textContent = ''; stim.innerHTML = '';
       stim.appendChild(h('div', { class: 'pill amber', text: 'Round ' + (i + 1) + ' of ' + rounds.length }));
       if (r.type === 'scramble') { stim.appendChild(h('div', { class: 'prompt', text: '✍️ Write the sentence on your mini whiteboard!' })); stim.appendChild(h('div', { class: 'scr' }, shuffle(r.words).map(function (w) { return h('span', { class: 'tile2', text: w }); }))); }
-      else if (r.type === 'count') { stim.appendChild(h('div', { class: 'prompt', text: '👀 Count and write: There is… / There are…' })); var em = h('div', { class: 'countrow' }); for (var k = 0; k < r.n; k++) em.appendChild(h('span', { text: r.emoji })); stim.appendChild(em); }
+      else if (r.type === 'count') { stim.appendChild(h('div', { class: 'prompt', text: '👀 Count and write: There is… / There are…' })); var em = h('div', { class: 'countrow' }); for (var k = 0; k < r.n; k++) em.appendChild(fill(h('span'), r.emoji)); stim.appendChild(em); }
       else { stim.appendChild(h('div', { class: 'prompt', text: '🔤 Make a word with the letters. It ends with -st!' })); stim.appendChild(h('div', { class: 'scr' }, shuffle(r.letters).map(function (w) { return h('span', { class: 'tile2', text: w }); }))); }
       sfx('page');
     }
@@ -163,24 +173,24 @@
     body.appendChild(rowb); sfx('win'); confetti();
   }
   function wrapStart(c, lesson, emoji, title) {
-    c.body.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank', text: emoji }), h('div', { class: 'score', text: title }), btn('🏆 See the scores', 'green big', function () { wrapScreen(c, lesson); })]));
+    c.body.appendChild(h('div', { class: 'report' }, [fill(h('div', { class: 'rank' }), emoji), h('div', { class: 'score', text: title }), btn('🏆 See the scores', 'green big', function () { wrapScreen(c, lesson); })]));
   }
 
   /* ============================== LESSON 1 ============================== */
   function l1Story(c) {
     var body = c.body;
-    var moon = h('div', { class: 'moon' }, [h('div', { class: 'shade' })]), scene = h('div', { class: 'bigscene', text: '🌾' });
+    var moon = h('div', { class: 'moon' }, [h('div', { class: 'shade' })]), scene = h('div', { class: 'bigscene' }, [art('king')]);
     var sky = h('div', { class: 'moonpanel' }, [h('div', { class: 'stars-bg' }), moon, scene, h('div', { class: 'hills' })]);
     function setMoon(p) { moon.firstChild.style.transform = 'translateX(' + Math.round((1 - p) * 100) + '%)'; moon.classList.toggle('full', p >= 1); }
     setMoon(0.02);
     body.appendChild(sky);
-    runStory(c, D.legend, function (ch) { if (!ch) { setMoon(1); scene.textContent = '🌕'; return; } setMoon(ch.phase); scene.textContent = ch.scene; }, 'Stand up, friends! We are going to act out the legend of the moon.', '🎬 Now tell the legend to your partner! Use: They weave… The king gives a feast…');
+    runStory(c, D.legend, function (ch) { scene.innerHTML = ''; if (!ch) { setMoon(1); fill(scene, '🌕'); return; } setMoon(ch.phase); fill(scene, ch.scene); }, 'Stand up, friends! We are going to act out the legend of the moon.', '🎬 Now tell the legend to your partner! Use: They weave… The king gives a feast…');
   }
 
   function l1Mingle(c) {
     var body = c.body;
     var grid = h('div', { class: 'tgrid' });
-    D.thanks.forEach(function (t) { grid.appendChild(h('button', { type: 'button', class: 'btn tcardx', onclick: function () { sfx('tap'); A.speak(t.n); } }, [h('span', { class: 'em', text: t.e }), h('span', { text: t.n })])); });
+    D.thanks.forEach(function (t) { grid.appendChild(h('button', { type: 'button', class: 'btn tcardx', onclick: function () { sfx('tap'); A.speak(t.n); } }, [h('span', { class: 'em' }, [art('thanks_' + t.n)]), h('span', { text: t.n })])); });
     var q = h('div', { class: 'bubble left' }), a = h('div', { class: 'bubble right' });
     q.innerHTML = '<small>🙋 Friend 1</small>What are you thankful for?'; a.innerHTML = '<small>🙂 Friend 2</small>I am thankful for my <b>family</b>.';
     var model = btn('🔊 Model it', 'small amber', function () { A.speakSeq(['What are you thankful for?', 'I am thankful for my family.', 'because I love them.']); });
@@ -194,7 +204,7 @@
   function l1Lantern(c) {
     var body = c.body, n = 0;
     var wall = h('div', { class: 'wall' }), cnt = h('span', { class: 'pill amber', text: '🏮 0 lanterns' });
-    var add = btn('🏮 Add a lantern to the Moon Wall', 'violet', function () { n++; cnt.textContent = '🏮 ' + n + ' lantern' + (n === 1 ? '' : 's'); wall.appendChild(h('span', { class: 'lant', text: '🏮', style: 'animation-delay:' + (Math.random() * 0.4) + 's' })); sfx('coin'); if (n % 6 === 0) confetti(); });
+    var add = btn('🏮 Add a lantern to the Moon Wall', 'violet', function () { n++; cnt.textContent = '🏮 ' + n + ' lantern' + (n === 1 ? '' : 's'); wall.appendChild(fill(h('span', { class: 'lant', style: 'animation-delay:' + (Math.random() * 0.4) + 's' }), '🏮')); sfx('coin'); if (n % 6 === 0) confetti(); });
     var bank = h('div', { class: 'bank' }, D.thanks.map(function (t) { return h('button', { type: 'button', class: 'chip2', text: t.e + ' ' + t.n, onclick: function () { sfx('tap'); A.speak(t.n); } }); }));
     body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 240), add, btn('🎉 Applause!', 'green', function () { sfx('win'); confetti(); }), cnt]));
     body.appendChild(h('div', { class: 'frame-big', html: 'I am thankful for my <b>__________</b> because <b>__________</b>.' }));
@@ -204,7 +214,7 @@
   /* ============================== LESSON 2 ============================== */
   function cropRow(n, size) {
     var row = h('div', { class: 'crops' });
-    D.crops.slice(0, n).forEach(function (cr) { row.appendChild(h('div', { class: 'crop' }, [h('span', { class: 'ce', text: cr.e, style: 'filter:' + cr.f + ';font-size:' + (size || 9) + 'vh' }), h('small', { text: cr.c + ' ' + cr.n })])); });
+    D.crops.slice(0, n).forEach(function (cr) { row.appendChild(h('div', { class: 'crop' }, [fill(h('span', { class: 'ce', style: 'font-size:' + (size || 9) + 'vh' }), cr.e), h('small', { text: cr.c + ' ' + cr.n })])); });
     return row;
   }
   function l2Hook(c) {
@@ -223,8 +233,10 @@
 
   function l2Story(c) {
     var body = c.body;
-    var view = h('div', { class: 'win earth' }, [h('div', { class: 'sunmars', text: '☀️' }), h('div', { class: 'hill' }), h('div', { class: 'marstag', text: 'MARS!' })]);
-    var inside = h('div', { class: 'inside' }), fam = h('div', { class: 'fam', text: '👨 👩 👦 👧' }), cropsEl = h('div');
+    var view = h('div', { class: 'win earth' }, [fill(h('div', { class: 'sunmars' }), '🔵'), h('div', { class: 'hill' }), h('div', { class: 'rocks' }, [art('red_rocks')]), h('div', { class: 'marstag', text: 'MARS!' })]);
+    var inside = h('div', { class: 'inside' }), fam = h('div', { class: 'fam' }), cropsEl = h('div');
+    function famPics(suits) { fam.innerHTML = ''; (suits ? ['mom_spacesuit', 'ruth_spacesuit', 'august_spacesuit'] : ['mom_kind', 'dad_worried', 'ruth_happy', 'august_happy']).forEach(function (n) { fam.appendChild(art(n)); }); }
+    famPics(false);
     inside.appendChild(cropsEl); inside.appendChild(fam);
     var farm = h('div', { class: 'farmpanel' }, [view, inside]);
     body.appendChild(farm);
@@ -232,8 +244,8 @@
     setCrops(0);
     runStory(c, D.farm, function (ch) {
       if (!ch) { return; }
-      setCrops(ch.show || 0); fam.textContent = ch.suits ? '🧑‍🚀 🧑‍🚀 🧑‍🚀 🧑‍🚀' : '👨 👩 👦 👧';
-      var mars = !!ch.mars; view.className = 'win ' + (mars ? 'mars' : 'earth'); view.querySelector('.sunmars').textContent = mars ? '🪐' : '☀️';
+      setCrops(ch.show || 0); famPics(!!ch.suits);
+      var mars = !!ch.mars; view.className = 'win ' + (mars ? 'mars' : 'earth'); var sm = view.querySelector('.sunmars'); sm.innerHTML = ''; sm.appendChild(art(mars ? 'planet_mars' : 'sky_blue_sun'));
       if (mars) { sfx('win'); }
     }, 'Stand up, friends! Listen carefully. Where is this farm? Do not shout the answer yet!', '🎬 Now tell the story to your partner. Where is the farm? What are the colours?');
   }
@@ -262,7 +274,7 @@
       var el = h('div', { class: 'dcard' }, [h('div', { class: 'dn', text: 'Card ' + d.id }), h('div', { class: 'dbody', text: '?' })]);
       var rb = btn('Reveal', 'small cyan', function () {
         var body2 = el.querySelector('.dbody'); body2.innerHTML = '';
-        d.items.forEach(function (it) { var cr = D.crops.filter(function (x) { return x.n === it[1]; })[0]; var row = h('div', { class: 'drow' }); for (var k = 0; k < it[2]; k++) row.appendChild(h('span', { text: cr.e, style: 'filter:' + cr.f })); row.appendChild(h('small', { text: ' ' + it[0] + ' ' + it[1] })); body2.appendChild(row); });
+        d.items.forEach(function (it) { var cr = D.crops.filter(function (x) { return x.n === it[1]; })[0]; var row = h('div', { class: 'drow' }); for (var k = 0; k < it[2]; k++) row.appendChild(fill(h('span'), cr.e)); row.appendChild(h('small', { text: ' ' + it[0] + ' ' + it[1] })); body2.appendChild(row); });
         sfx('tap'); rb.disabled = true;
       });
       el.appendChild(rb); grid.appendChild(el);

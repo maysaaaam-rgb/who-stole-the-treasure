@@ -59,3 +59,21 @@
 .hud .tabs { flex-wrap: nowrap; }
 .hud .tab { white-space: nowrap; }
 .bigclock { font-size: 5.2em !important; }
+
+/* ---- real pictures (art/) ---- */
+.pic { height: 1em; width: auto; max-width: none; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.hook-stage.moonhook { background: #0b1220 url(../art/bg_moon_village.webp) center / cover; }
+.hook-stage .stars-bg { display: none; }
+.envelope .pic { height: 1.15em; }
+.moonpanel { background: #0b1220 url(../art/bg_moon_village.webp) center bottom / cover; } .moonpanel .hills { display: none; }
+.moonwall { background: #1e1b4b url(../art/bg_festival_yard.webp) center / cover; }
+.bigscene .pic { height: 1.35em; filter: drop-shadow(0 1vh 1vh rgba(0, 0, 0, 0.4)); }
+.tcardx .em { font-size: 7vh; } .tcardx .pic { height: 1.3em; }
+.lant .pic { height: 1.15em; } .countrow .pic { height: 1.25em; }
+.walkcard .em { font-size: 12vh; } .walkcard .pic { height: 1.4em; }
+.crop .pic { height: 1.2em; filter: drop-shadow(0 0.5vh 0.5vh rgba(0, 0, 0, 0.35)); } .drow .pic { height: 1.5em; }
+.win.earth { background: #7dd3fc url(../art/bg_window_earth.webp) center / cover; } .win.earth .hill { display: none; }
+.win .sunmars { top: 6%; right: 6%; font-size: 14vh; } .win .sunmars .pic { height: 1em; }
+.win .rocks { position: absolute; left: 4%; bottom: 3%; font-size: 12vh; opacity: 0; transition: opacity 1.2s; } .win .rocks .pic { height: 1em; } .win.mars .rocks { opacity: 1; }
+.fam { display: flex; gap: 1vh; align-items: flex-end; justify-content: center; font-size: 15vh; } .fam .pic { height: 1em; }
+.rank .pic { height: 2.4em; }

@@ -101,3 +101,33 @@
 .rapblock.chorus p { font-size: 1.4em; font-weight: 800; }
 .aiw { color: #fde047; text-shadow: 0 0 1.2vh rgba(253, 224, 71, 0.6); }
 @media (max-width: 900px) { .dialog, .zones, .fgrid { grid-template-columns: 1fr; } .agrid, .suspects { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---- real pictures (art/) ---- */
+.pic { height: 1em; width: auto; max-width: none; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.pic.inl { height: 1.6em; margin-right: 0.3em; vertical-align: -0.4em; }
+.forest { background-size: cover; background-position: center bottom; }
+.forests[data-season="spring"] .deci { background-image: url(../art/bg_decid_spring.webp); }
+.forests[data-season="summer"] .deci { background-image: url(../art/bg_decid_summer.webp); }
+.forests[data-season="autumn"] .deci { background-image: url(../art/bg_decid_autumn.webp); }
+.forests[data-season="winter"] .deci { background-image: url(../art/bg_decid_winter.webp); }
+.forests[data-season="spring"] .forest:not(.deci) { background-image: url(../art/bg_conif_spring.webp); }
+.forests[data-season="summer"] .forest:not(.deci) { background-image: url(../art/bg_conif_summer.webp); }
+.forests[data-season="autumn"] .forest:not(.deci) { background-image: url(../art/bg_conif_autumn.webp); }
+.forests[data-season="winter"] .forest:not(.deci) { background-image: url(../art/bg_conif_winter.webp); }
+.forest .ground, .forest .den { display: none; }
+.tree, .pine { width: auto; height: 34vh; bottom: 14%; }
+.tree .pic, .pine .pic { height: 100%; filter: drop-shadow(0 0.6vh 0.6vh rgba(0, 0, 0, 0.3)); }
+.an .pic { height: 2.6em; filter: drop-shadow(0 0.5vh 0.5vh rgba(0, 0, 0, 0.3)); }
+.an.sq .pic { height: 2em; } .an.owl .pic { height: 2.2em; } .an.wolf .pic { height: 3em; }
+.forests[data-season="winter"] .bear, .forests[data-season="winter"] .hare { filter: none; }
+.hook-stage:not(.seed) { background: #0b1220 url(../art/bg_hook_night.webp) center / cover; }
+.hook-stage.seed { background: #0b1220 url(../art/bg_seed_glow.webp) center / cover; }
+.hook-stage .stars-bg { display: none; }
+.envelope .pic { height: 1.1em; } .seedbig { filter: drop-shadow(0 0 3vh #fbbf24); } .seedbig .pic { height: 1.2em; }
+.rosa { position: absolute; left: 3%; bottom: 0; height: 88%; z-index: 3; display: flex; align-items: flex-end; font-size: 1vh; }
+.rosa .pic { height: 85vh; max-height: 100%; }
+.walkcard .pic { height: 1.5em; } .acard .pic { height: 1.35em; } .suspect .pic { height: 1.55em; } .fcard .pic { height: 1.5em; }
+.stage-set { background: #86efac url(../art/bg_village_day.webp) center bottom / cover; }
+.rank .pic { height: 2.4em; } .engine .pic { height: 1.8em; } .center .pic { height: 1em; }
+.walkcard .em { font-size: 12vh; } .acard .em { font-size: 9vh; } .acard { padding: 1vh 0.4vh !important; }
+.act .pic { height: 1.25em; }
