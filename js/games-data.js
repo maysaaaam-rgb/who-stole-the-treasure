@@ -8629,6 +8629,492 @@ const GAMES_REGISTRY = [
     "formula": "I am thankful for my family. There are pink potatoes.",
     "url": "unit2-throw/index.html",
     "worksheetUrl": null
+  },
+  {
+    "id": "forest-rangers-g4",
+    "title": "🌲 Forest Rangers: Unit 2 Lesson 1 (Grade 4)",
+    "description": "A 40-minute teacher-led smartboard lesson, not a quiz. Rangers get a letter from Ranger Rosa, act out one year in the forest with a gesture for \"so they can\", walk to the deciduous or coniferous side of the room, interview each other as winter animals (info-gap pairs), invent a survivor on mini whiteboards and race in teams to beat the blizzard. Four teams score all lesson. Printable cut-out cards included.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🌲 Unit 2 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (Grade 4)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "forests",
+      "so they can",
+      "instead of",
+      "headings"
+    ],
+    "learningObjectives": [
+      "Compare deciduous and coniferous forests",
+      "Explain how animals and trees adapt with \"so they can\"",
+      "Contrast with \"instead of\"",
+      "Use headings and author’s purpose to understand a text"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the floor signs and animal cards. Work through the 7 steps: each step shows a mode (Think, Act, Move, Talk, Create, Team race), what the pupils do, a timer where needed and teacher tips behind the Teacher button. Pupils use mini whiteboards. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Stand up, act it out, walk, talk and draw!",
+    "route": "unit2-forest-lessons/index.html?lesson=1",
+    "worksheet": "unit2-forest-lessons/worksheet.html",
+    "worksheetRoute": "unit2-forest-lessons/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "needles",
+        "cones"
+      ],
+      "supporting": [
+        "biome",
+        "evergreen",
+        "heading",
+        "author’s purpose",
+        "inform",
+        "entertain",
+        "persuade"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "so they can… / instead of…",
+      "formula": "The hare turns white so it can hide in the snow.",
+      "formulas": [
+        "Trees drop their leaves so they can save water.",
+        "Coniferous trees have needles instead of leaves."
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here?",
+    "clilTheme": "Unit 2: What Lives Here?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌲",
+    "formula": "The hare turns white so it can hide in the snow.",
+    "url": "unit2-forest-lessons/index.html?lesson=1",
+    "worksheetUrl": "unit2-forest-lessons/worksheet.html",
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #10b981 100%)"
+  },
+  {
+    "id": "swallow-gift-g4",
+    "title": "🕊️ The Swallow’s Gift: Unit 2 Lesson 2 (Grade 4)",
+    "description": "A 40-minute teacher-led smartboard lesson on A New Friend, not a quiz. Pupils shout the missing past verb and do an action for each (built, fell, gave, grew, hit, paid), plan freeze-frame scenes in groups, solve the Roof Mystery from witness clues (past tense speaking), ride the Rain Train for the ai sound, question Wen Shu in the hot seat, vote on kindness and retell the story. Four teams score all lesson. Printable witness and scene cards included.",
+    "type": "game",
+    "category": "Story & Literature",
+    "categoryLabel": "🕊️ Unit 2 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Grammar",
+      "Reading",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (Grade 4)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "irregular past verbs; ai sound; First, Then, At the end",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with drama, detective talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "story",
+      "past tense",
+      "phonics",
+      "kindness"
+    ],
+    "learningObjectives": [
+      "Use the irregular past verbs built, fell, gave, grew, hit, paid",
+      "Hear and read the ai sound (rain, tail, paid)",
+      "Put a story in order and retell it in three sentences",
+      "Talk about kindness and saying sorry"
+    ],
+    "teacherInstructions": "Open on the smartboard after the pupils have read A New Friend. Press Cards (top) to print the witness cards and scene cards. Work through the 7 steps: pupils shout the verbs, act in groups, solve the case, listen for the ai sound, question Wen Shu and retell. Teacher tips are behind the Teacher button. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Shout the verb, act the scene, solve the case!",
+    "route": "unit2-forest-lessons/index.html?lesson=2",
+    "worksheet": "unit2-forest-lessons/worksheet.html",
+    "worksheetRoute": "unit2-forest-lessons/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "swallow",
+        "nest",
+        "roof",
+        "slingshot",
+        "vet",
+        "paid",
+        "gave",
+        "grew"
+      ],
+      "supporting": [
+        "coins",
+        "seed",
+        "sorry",
+        "friends",
+        "kind"
+      ],
+      "phonics": [
+        "ai (rain, train, tail, mail, paid, snail)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "irregular past verbs",
+      "formula": "The mother swallow gave Go Ne a gold seed.",
+      "formulas": [
+        "A baby bird fell out of the nest.",
+        "Go Ne paid the vet with his gold coins."
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here?",
+    "clilTheme": "Unit 2: What Lives Here?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕊️",
+    "formula": "The mother swallow gave Go Ne a gold seed.",
+    "url": "unit2-forest-lessons/index.html?lesson=2",
+    "worksheetUrl": "unit2-forest-lessons/worksheet.html",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a8a 55%, #f59e0b 100%)"
+  },
+  {
+    "id": "chuseok-moon-g3",
+    "title": "🌕 Chuseok Moon Feast: Unit 2 Lesson 1 (Grade 3)",
+    "description": "A 40-minute teacher-led smartboard lesson, not a quiz. Pupils get a moon invitation from Korea, act out the legend of the weaving contest while the moon grows, walk to the FOOD, DANCE or FAMILY corner, mingle to ask \"What are you thankful for?\", make thank-you lanterns for a class Moon Wall and race in teams (There is / There are). Four teams score all lesson. Printable signs, mingle sheet and lanterns included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "thankful",
+      "there is there are"
+    ],
+    "learningObjectives": [
+      "Retell the Chuseok legend with key words (weave, cloth, contest, feast, harvest, ancestors)",
+      "Say \"I am thankful for my … because …\"",
+      "Use There is / There are with numbers",
+      "Talk about festivals and gratitude"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the corner signs, the mingle sheet and the lanterns. Work through the 7 steps: each shows a mode (Think, Act, Move, Talk, Create, Team race), what the pupils do, a timer where needed and teacher tips behind the Teacher button. Pupils use mini whiteboards. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Stand up, act, walk, ask your friends and make a lantern!",
+    "route": "unit2-g3-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "weave",
+        "cloth",
+        "contest",
+        "festival",
+        "harvest",
+        "ancestors",
+        "feast",
+        "songpyeon"
+      ],
+      "supporting": [
+        "full moon",
+        "thankful",
+        "family",
+        "dance",
+        "bow"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I am thankful for… / There is… There are…",
+      "formula": "I am thankful for my family because I love them.",
+      "formulas": [
+        "They weave cloth for a month.",
+        "There are five songpyeon."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌕",
+    "formula": "I am thankful for my family because I love them.",
+    "url": "unit2-g3-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #312e81 55%, #fde68a 100%)"
+  },
+  {
+    "id": "first-harvest-g3",
+    "title": "🚀 First Harvest: Unit 2 Lesson 2 (Grade 3)",
+    "description": "A 40-minute teacher-led smartboard lesson on First Harvest, not a quiz. A strange farm with pink potatoes and purple carrots: where is it? Pupils act out the story and keep the secret until the Mars reveal, walk to EARTH, MARS or BOTH to find the setting, stop their hands at the -st sound, describe and draw farm cards in pairs (There are three pink potatoes) and win the Mars mission race. Four teams score all lesson. Printable signs and farm cards included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🚀 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Reading",
+      "Phonics"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "There is / There are; Can we go outside?; setting; -st sound (fast, last, best, first)",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "mars",
+      "setting",
+      "st sound"
+    ],
+    "learningObjectives": [
+      "Understand setting (time and place) and find clues for Earth or Mars",
+      "Describe things with There is / There are and colours",
+      "Hear and say the final -st sound (fast, last, best, first, harvest)",
+      "Use \"Can we …?\" for permission"
+    ],
+    "teacherInstructions": "Open on the smartboard after the pupils have read First Harvest. Press Cards (top) to print the signs and farm cards. Do NOT tell pupils the farm is on Mars: the reveal is part of the story. Work through the 7 steps. Teacher tips are behind the Teacher button. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Listen, act, find the setting and draw the farm!",
+    "route": "unit2-g3-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "pick",
+        "worried",
+        "grow",
+        "believe",
+        "stripes",
+        "space suit",
+        "setting"
+      ],
+      "supporting": [
+        "farm",
+        "Mars",
+        "Earth",
+        "water",
+        "air",
+        "helmet"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "There is / There are; Can we…?",
+      "formula": "There are purple carrots. Can we go outside?",
+      "formulas": [
+        "There are pink potatoes.",
+        "Can we go outside?"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚀",
+    "formula": "There are purple carrots. Can we go outside?",
+    "url": "unit2-g3-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #7c2d12 55%, #fb923c 100%)"
+  },
+  {
+    "id": "chuseok-arcade-g3",
+    "title": "🎮 Chuseok Games Arcade Day: Unit 2 Lesson (Grade 3)",
+    "description": "A 40-minute teacher-led smartboard lesson to check the Chuseok folk games the pupils made at home (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori). Pupils host classmates at their stations in English, visit three stations, cheer in English and sign visitor logs. The board runs three 9-minute rounds with a 3-minute rotation timer and a host and visitor guide, then a favourite-game vote. Four teams score all lesson.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "Game rules; Can I play?; cheering phrases (Great job!, Try again!); My favourite game was … because …",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "arcade",
+      "speaking",
+      "homework check"
+    ],
+    "learningObjectives": [
+      "Host classmates and explain the rules of a game in English",
+      "Use polite requests and cheering phrases (Can I play? Great job!)",
+      "Say a favourite game with a reason (because …)"
+    ],
+    "teacherInstructions": "Pupils bring the game and rulebook they made at home. Open the lesson on the smartboard, enter the number of pupils present, and work through the 6 steps: set up, three 9-minute rounds (host, swap, open arcade) with the 3-minute rotation timer, then the favourite-game vote and the door pass. Walk around and listen; give team points for good hosting and cheering. Works offline.",
+    "studentInstructions": "Host your game, visit three stations, cheer and sign the logs!",
+    "route": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "host",
+        "visitor",
+        "rules",
+        "game",
+        "cheer",
+        "win"
+      ],
+      "supporting": [
+        "Ddakji",
+        "Paengi",
+        "Gonggi",
+        "Jegichagi",
+        "Yut Nori"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Can I…? / game rules / because",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
   }
 ];
 

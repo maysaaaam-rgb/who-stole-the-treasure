@@ -31,6 +31,7 @@
 
   <div class="card"><h2>🖨️ Printable worksheets (about 15 minutes each)</h2><div class="grid" id="ws"></div></div>
   <div class="card"><h2>📝 Unit 2 check paper (50 marks)</h2><div class="grid" id="chk"></div></div>
+  <div class="card play" id="lessonsCard" style="display:none"><h2>📖 Smartboard lessons (teach it first)</h2><div class="grid" id="lessons"></div></div>
   <div class="card play"><h2>🎮 Smartboard games</h2><div class="grid" id="games"></div></div>
 </div>
 <script>
@@ -43,6 +44,13 @@ function draw() {
   document.getElementById('ws').innerHTML = names.map(function (n, i) { return item((i + 1) + '. ' + n, topics[i] + ' · 15 marks', [{t: '🖨️ Open &amp; print', h: pre + '-' + files[i] + '.html'}]); }).join('') + item('🧩 Puzzle pack (word search and word scramble)', 'Two puzzles, 22 marks, great for early finishers or a quiet starter', [{t: '🖨️ Open &amp; print', h: pre + '-puzzles.html'}, {t: '🔑 Answers', h: pre + '-puzzles-answers.html', c: 'grey'}])
     + item('✅ Answers for all four', 'Teacher answers and marking notes', [{t: '🔑 Open answers', h: pre + '-worksheets-answers.html', c: 'grey'}]);
   document.getElementById('chk').innerHTML = item('Unit 2 progress check', 'Listening, vocabulary, grammar, phonics, reading, writing (38 marks, about 38 minutes) plus speaking (12 marks, done with the teacher)', [{t: '🖨️ Open &amp; print', h: pre + '-check50.html'}]) + item('Teacher guide', 'Answers, listening script to read aloud twice, marking rules, speaking rubric, score bands and a class record table', [{t: '🔑 Open guide', h: pre + '-check50-teacher.html', c: 'grey'}]);
+  var lc = document.getElementById('lessonsCard'); lc.style.display = '';
+  document.getElementById('lessons').innerHTML = G === '3' ?
+    item('🌕 Lesson 1: Chuseok Moon Feast', 'Moon legend, festival corners, thankful mingle, lanterns · 40 min', [{t: '▶ Play', h: '../unit2-g3-lessons/index.html?lesson=1', c: 'blue'}, {t: '🖨️ Cards', h: '../unit2-g3-lessons/cards.html', c: 'grey'}]) +
+    item('🚀 Lesson 2: First Harvest', 'Mystery farm, Mars reveal, setting, -st sound, describe and draw · 40 min', [{t: '▶ Play', h: '../unit2-g3-lessons/index.html?lesson=2', c: 'pink'}, {t: '🖨️ Cards', h: '../unit2-g3-lessons/cards.html', c: 'grey'}]) +
+    item('🎮 Arcade Day: check the Chuseok games', 'Host, visit, cheer and sign the logs · rotation timer · 40 min', [{t: '▶ Play', h: '../unit2-g3-lessons/index.html?lesson=3', c: 'gold'}, {t: '🖨️ Signs', h: '../unit2-g3-lessons/cards.html', c: 'grey'}]) : G === '4' ?
+    item('🌲 Lesson 1: Forest Rangers', 'Act it out, walk the forest, animal interviews, team race · 40 min', [{t: '▶ Play', h: '../unit2-forest-lessons/index.html?lesson=1', c: 'blue'}, {t: '🖨️ Cards', h: '../unit2-forest-lessons/cards.html', c: 'grey'}]) +
+    item('🕊️ Lesson 2: The Swallow’s Gift', 'Verb actions, freeze-frames, detective case, hot seat, retell · 40 min', [{t: '▶ Play', h: '../unit2-forest-lessons/index.html?lesson=2', c: 'pink'}, {t: '🖨️ Cards', h: '../unit2-forest-lessons/cards.html', c: 'grey'}]) : '';
   var q = '?grade=' + G;
   document.getElementById('games').innerHTML =
     item('🏔️ Mountain Race', 'Quiz race for teams · 55 questions', [{t: '▶ Play', h: '../unit2-revision/index.html' + q, c: 'blue'}]) +
