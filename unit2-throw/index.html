@@ -2065,7 +2065,7 @@
 
   /* ===== Easy mode: calm, clear, big ===== */
   #auto-aim-btn { display: none; align-self: center; font-size: clamp(18px, 3.4vh, 34px); padding: 0.5em 1.6em; background: #22c55e; }
-  body.easy-mode #auto-aim-btn { display: inline-block; }
+  body.easy-mode #auto-aim-btn { display: none !important; }   /* Help me aim is switched off: Easy is easy enough without it */
   body.easy-mode .hud-actions-row, body.easy-mode #wind-flag, body.easy-mode .wind-leaves, body.easy-mode .hud-wind, body.easy-mode #wind-value-txt, body.easy-mode #wind-arrow-icon, body.easy-mode #wind-meter-fill, body.easy-mode .fence-level-badge, body.easy-mode #streak-banner { display: none !important; }
   body.easy-mode .wind-display { display: none !important; }
   body.easy-mode #fence-wrap { height: 22vh !important; }
@@ -2513,6 +2513,6 @@
 <script src="../unit2-arcade/data.js"></script>
 <script src="extra.js?v=2"></script>
 <script src="sfx.js?v=1"></script>
-<script src="gameplay.js?v=2"></script>
+<script src="gameplay.js?v=3"></script>
 </body>
 </html>
