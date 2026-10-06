@@ -9785,3 +9785,47 @@ body.curriculum-drawer-open {
 /* Mystery box prize card: the two buttons stack so neither is cut off */
 .reward-modal-actions { flex-wrap: wrap; }
 .reward-modal-actions .btn-3d { flex: 1 1 100%; }
+
+/* ===== Dashboard v2: dark glass panels, readable cards (fixes squeezed text and white-on-dark clash) ===== */
+.dashboard-hero-grid { align-items: start; }
+.dashboard-hero-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2); }
+.dashboard-hero-panel .hero-panel-title { color: #f8fafc; }
+.hero-tiles-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); align-items: stretch; }
+.dashboard-hero-panel .hero-tile-card { background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); gap: 14px; }
+.dashboard-hero-panel .hero-tile-card:not(.next-lesson-tile) .hero-tile-heading { color: #f8fafc; }
+.dashboard-hero-panel .hero-tile-card:not(.next-lesson-tile) .hero-tile-sub, .dashboard-hero-panel .hero-tile-tag { color: #94a3b8; }
+.dashboard-hero-panel .hero-tile-card.next-lesson-tile { background: linear-gradient(135deg, rgba(30, 64, 175, 0.55), rgba(15, 23, 42, 0.9)); }
+.roll-call-action-btn, .assignment-tile .btn-3d { width: fit-content; border-radius: 12px; padding: 9px 18px; font-weight: 800; font-size: 0.88rem; }
+.chip-info { background: rgba(56, 189, 248, 0.15) !important; color: #7dd3fc !important; border-color: rgba(56, 189, 248, 0.45) !important; }
+.lesson-launch-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.lesson-launch { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #f8fafc; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14); border-bottom: 4px solid rgba(0, 0, 0, 0.35); border-radius: 12px; padding: 9px 12px; font-size: 0.86rem; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s; }
+.lesson-launch b { flex: 1; font-weight: 800; }
+.lesson-launch i { font-style: normal; color: #38bdf8; font-size: 0.8rem; }
+.lesson-launch:hover { background: rgba(56, 189, 248, 0.18); }
+.lesson-launch:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+.dashboard-hero-panel .needs-attention-card { flex-direction: column; align-items: stretch; gap: 8px; background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); }
+.dashboard-hero-panel .needs-attention-card:hover { transform: none; }
+.needs-attention-card.alert-ok { border-left: 4px solid #10b981; }
+.na-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.dashboard-hero-panel .needs-title { color: #f8fafc; font-size: 0.95rem; }
+.dashboard-hero-panel .needs-desc { color: #cbd5e1; font-size: 0.82rem; margin-top: 4px; }
+.dashboard-hero-panel .needs-status-badge.badge-ruby { background: rgba(239, 68, 68, 0.16); color: #fca5a5; border-color: rgba(239, 68, 68, 0.45); }
+.dashboard-hero-panel .needs-status-badge.badge-amber { background: rgba(245, 158, 11, 0.16); color: #fcd34d; border-color: rgba(245, 158, 11, 0.45); }
+.dashboard-hero-panel .needs-status-badge.badge-violet { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.45); }
+.dashboard-hero-panel .needs-status-badge.badge-ok { background: rgba(16, 185, 129, 0.16); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.45); }
+.dashboard-hero-panel .needs-action-link.link-ruby { background: rgba(239, 68, 68, 0.16); color: #fca5a5; }
+.dashboard-hero-panel .needs-action-link.link-amber { background: rgba(245, 158, 11, 0.16); color: #fcd34d; }
+.dashboard-hero-panel .needs-action-link.link-violet { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+
+/* dashboard stats strip: same dark glass as the panels below it */
+.dashboard-stats-hud-container { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2); }
+.dashboard-stats-hud-container .stats-hud-label { color: #94a3b8; }
+.dashboard-stats-hud-container .stats-hud-number { color: #f8fafc; }
+.dashboard-stats-hud-container .stats-hud-number.text-gradient, .dashboard-stats-hud-container [class*="gradient"] { color: #7dd3fc; }
+.dashboard-stats-hud-container .stats-hud-icon.icon-blue { background: rgba(56, 189, 248, 0.16); color: #7dd3fc; }
+.dashboard-stats-hud-container .stats-hud-icon.icon-emerald { background: rgba(16, 185, 129, 0.16); color: #6ee7b7; }
+.dashboard-stats-hud-container .stats-hud-icon.icon-amber { background: rgba(245, 158, 11, 0.16); color: #fcd34d; }
+.dashboard-stats-hud-container .stats-hud-icon.icon-indigo, .dashboard-stats-hud-container .stats-hud-icon.icon-purple { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+.dashboard-stats-hud-container .stats-hud-micro-badge { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.14); color: #cbd5e1; }
+.dashboard-stats-hud-container .stats-hud-divider { background: rgba(255, 255, 255, 0.1); }

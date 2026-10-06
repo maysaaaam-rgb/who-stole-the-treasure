@@ -151,7 +151,7 @@
     }
     var earn = btn('📝 +8 worksheet coins', 'amber', function () { coins += 8; paintWallet(); draw(); sfx('coin'); msg.className = 'msg'; msg.textContent = '🪙 The worksheet gave 8 coins! Now what can you buy?'; });
     var xp = btn('⭐ +30 XP = +3 coins', 'cyan small', function () { coins += 3; paintWallet(); draw(); sfx('coin'); msg.className = 'msg'; msg.textContent = '⭐ 30 XP became 3 coins.'; });
-    var reset = btn('↺ Reset demo', 'small ghost', function () { coins = D.demoCoins; paintWallet(); draw(); boxStage.style.display = 'none'; msg.className = 'msg'; msg.textContent = 'Demo reset: 12 coins.'; });
+    var reset = btn('↺ Reset demo', 'small ghost', function () { coins = D.demoCoins; paintWallet(); draw(); boxStage.style.display = 'none'; msg.className = 'msg'; msg.textContent = 'Demo reset: ' + D.demoCoins + ' coins.'; });
     body.appendChild(h('div', { class: 'row' }, [wallet, earn, xp, reset]));
     body.appendChild(msg); body.appendChild(boxStage); body.appendChild(shelf);
     msg.textContent = '👀 This is a DEMO. Ask a volunteer: what do you want to buy? Can you? How many more coins do you need?';
@@ -171,7 +171,7 @@
       h('div', { class: 'rule', html: '<b>🏠</b> Practise on the platform at home: more XP = more coins.' }),
       h('div', { class: 'rule', html: '<b>🚪</b> Door pass: say <b>I want … It costs … coins.</b> before you leave!' })
     ]));
-    body.appendChild(h('div', { class: 'row' }, [btn('🔊 Model it', 'amber', function () { A.speakSeq(['I want a special sticker.', 'It costs thirty five coins.', 'I have twelve coins.']); }), btn('🎉 Well done!', 'green', function () { sfx('win'); confetti(); })]));
+    body.appendChild(h('div', { class: 'row' }, [btn('🔊 Model it', 'amber', function () { A.speakSeq(['I want a special sticker.', 'It costs fifteen coins.', 'I have six coins.']); }), btn('🎉 Well done!', 'green', function () { sfx('win'); confetti(); })]));
     c.done();
   }
 
@@ -187,9 +187,9 @@
     { t: 'Mark It Together', mins: '4 min', mode: 'mark', run: sceneMark, intro: 'Swap sheets. Tick the right answers. Then fix your own mistakes.',
       kids: { steps: ['🔄 Swap sheets with your neighbour', '✔ Tick the right answers', '🔢 Write the score: __ / 10', '🖍️ Fix-it with a green pen'], say: [] },
       tip: ['Choose Version A first, then Version B. Press Next answer: the answer shows and is read aloud in a full sentence (this is also revision).', 'Pupils write the score at the top of the sheet. Then 45 seconds of fix-it with a green pen. Coins = correct + fixed ÷ 2, rounded down, maximum 10.', 'Collect the sheets. Later, enter the coins in the platform: Classroom Store, Worksheet coins. Use the score on the sheet.', 'Spot-check three sheets for honest marking.'] },
-    { t: 'Class Store Tour', mins: '9 min', mode: 'store', run: sceneStore, intro: 'A demo pupil has 12 coins. What can they buy? Who needs to save up?',
+    { t: 'Class Store Tour', mins: '9 min', mode: 'store', run: sceneStore, intro: 'A demo pupil has 6 coins. What can they buy? What needs saving up for?',
       kids: { steps: ['👀 Look at the shelves', '🗣️ Say what you want', '🤔 Can the demo pupil buy it?'], say: ['I want …', 'It costs … coins.', 'I need … more coins.'] },
-      tip: ['This is a DEMO with the standard prices: nothing here changes any real pupil. The real prices are in the platform under Classroom Store (they may be different).', 'Ask volunteers to choose: Can they buy it? How many more coins? Press +8 worksheet coins to show that saving works, then buy the Bronze Box and watch it open.', 'Main message: coins come from XP at school AND at home, so homework makes the store bigger. Rewards need your approval; boxes open at once.', 'Pupils then write their own wish list in the next step.'] },
+      tip: ['This is a DEMO: nothing here changes any real pupil. The prices are copied from your real Classroom Store (7 Oct 2026). If you change prices in the platform, tell me and I will update the demo.', 'Ask volunteers to choose: Can they buy it? How many more coins? Start by buying a Bronze or Silver Box (affordable) and watch it open. Then try something dearer: it says how many more coins are needed. Press +8 worksheet coins to show that saving works.', 'Main message: coins come from XP at school AND at home, so homework makes the store bigger. Rewards need your approval; boxes open at once.', 'Pupils then write their own wish list in the next step.'] },
     { t: 'Wish List and Door Pass', mins: '2 min', mode: 'talk', run: sceneWish, intro: 'Write what you want. Say it at the door!',
       kids: { steps: ['📝 Write your wish list', '🚪 Say it at the door'], say: ['I want … It costs … coins. I have … coins.'] },
       tip: ['Pupils fill the sentence frames on the back of the worksheet.', 'Door pass: each pupil says I want … It costs … coins. Their score and coins are entered in the platform afterwards.'] }

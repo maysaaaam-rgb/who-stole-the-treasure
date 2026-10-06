@@ -83,6 +83,11 @@
     '.cb-win{position:fixed;inset:0;z-index:99998;background:rgba(10,5,40,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-family:Fredoka,system-ui,sans-serif;color:#fff;animation:cbFade .2s}' +
     '@keyframes cbFade{from{opacity:0}}.cb-win>div{text-align:center;background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:34px;padding:34px 52px;box-shadow:0 30px 80px rgba(0,0,0,.6)}' +
     '.cb-win img{width:min(260px,50vw);filter:drop-shadow(0 16px 12px rgba(0,0,0,.4))}.cb-win h2{font-size:3rem;font-weight:600;margin:6px 0 14px}.cb-win button{border:0;border-radius:16px;background:#22c55e;color:#fff;font:600 1.1rem Fredoka,system-ui,sans-serif;padding:11px 26px;cursor:pointer;border-bottom:4px solid #15803d}' +
+    '.cb-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;position:relative}.cb-tabs button{border:0;border-bottom:4px solid rgba(0,0,0,.28);background:rgba(255,255,255,.14);color:#fff;font:500 1rem Fredoka,sans-serif;padding:8px 18px;border-radius:14px;cursor:pointer}.cb-tabs button.on{background:#fbbf24;color:#4a2300;border-bottom-color:#b45309}.cb-tabs button:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.cb-today{margin:12px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative}.cb-today .lab{font-weight:600;opacity:.8;margin-right:4px}.cb-today a,.cb-today button{text-decoration:none;color:#fff;background:rgba(34,197,94,.3);border:1px solid #4ade80;border-bottom:4px solid #15803d;border-radius:14px;padding:7px 14px;font:500 .95rem Fredoka,sans-serif;cursor:pointer}.cb-today a em{font-style:normal;color:#fde68a;margin-right:4px}.cb-today button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);border-bottom-color:rgba(0,0,0,.28)}' +
+    '.cb-mn{position:absolute;right:8px;top:44px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.3);color:#fff;font-size:1.1rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}.cb-mn:hover{background:rgba(0,0,0,.5)}' +
+    '.cb-menu{position:absolute;right:6px;top:80px;z-index:30;background:#1e1b4b;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:6px;display:none;flex-direction:column;gap:2px;min-width:190px;box-shadow:0 14px 40px rgba(0,0,0,.55);text-align:left}.cb-menu.open{display:flex}.cb-menu button{border:0;background:none;color:#fff;font:500 .9rem Fredoka,sans-serif;text-align:left;padding:8px 10px;border-radius:9px;cursor:pointer}.cb-menu button:hover{background:rgba(255,255,255,.14)}' +
+    '.cb-grp{position:fixed;inset:0;z-index:99997;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Fredoka,system-ui,sans-serif;color:#fff}.cb-grp>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;text-align:center}.cb-grp h2{margin:0 0 12px;font-weight:600}.cb-gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;text-align:left}.cb-gg div.g{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 16px;border-top:6px solid var(--c)}.cb-gg b{display:block;font-weight:600;margin-bottom:4px;color:#fde68a}.cb-grp .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.cb-grp button{border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:14px;background:#22c55e;color:#fff;font:500 1rem Fredoka,sans-serif;padding:9px 18px;cursor:pointer}.cb-grp button.g2{background:rgba(255,255,255,.2)}' +
     '@media(max-width:1100px){.cb-dock{gap:5px;padding:7px 8px;border-radius:18px}.cb-dock button{padding:7px 10px;font-size:.82rem;border-radius:12px}.cb-dock .sep{display:none}}' +
     '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
   function ensureCss() {
@@ -116,6 +121,19 @@
     el.querySelector('.l').textContent = '🎯 Class goal ' + got + ' / ' + g.target + ' XP';
   }
 
+  function todayChips(cls) {
+    var T = root.Timetable; if (!T) return '';
+    var t = T.today(cls.id);
+    if (!t.set) return '<button onclick="Timetable.edit()">Set my weekly timetable</button>';
+    if (!t.list.length) return '<span style="opacity:.8">no lessons ' + (t.label === 'Today' ? 'today' : 'on Monday') + '</span><button onclick="Timetable.edit()">📅 Edit</button>';
+    return t.list.map(function (e) {
+      var inner = e.icon + ' ' + (e.time ? '<em>' + esc(e.time) + '</em> ' : '') + esc(e.title);
+      return e.route ? '<a href="' + esc(e.route) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
+    }).join('') + '<button onclick="Timetable.edit()">📅</button>';
+  }
+  function closeMenus() { [].slice.call(document.querySelectorAll('.cb-menu.open')).forEach(function (m) { m.classList.remove('open'); }); }
+  if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('.cb-menu') && !e.target.closest('.cb-mn'))) closeMenus(); });
+
   function render(container) {
     ensureCss();
     var cls = S().getActiveClass(); viewCls = cls; loadAbsent(cls);
@@ -124,6 +142,8 @@
     container.innerHTML = '<div class="cb" id="cb-root">' +
       '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
         '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString() + '</b><small>Class XP</small></div></div></div>' +
+      '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
+      '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
       '<div class="cb-mg">' + list.map(function (s) {
         var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
@@ -133,13 +153,22 @@
           '<img src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Click to mark here / absent" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
+          '<button class="cb-mn" title="More" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
+          '<div class="cb-menu" id="cb-menu-' + esc(s.id) + '">' +
+            '<button onclick="ClassBoard.act(\'profile\',\'' + esc(s.id) + '\')">👤 Profile</button>' +
+            '<button onclick="ClassBoard.act(\'history\',\'' + esc(s.id) + '\')">📜 XP history</button>' +
+            '<button onclick="ClassBoard.act(\'fix\',\'' + esc(s.id) + '\')">✏️ Correct XP</button>' +
+            '<button onclick="ClassBoard.act(\'skills\',\'' + esc(s.id) + '\')">🎯 Give XP for a skill</button>' +
+            '<button onclick="ClassBoard.act(\'monster\',\'' + esc(s.id) + '\')">🐾 Customize monster</button>' +
+            '<button onclick="ClassBoard.act(\'edit\',\'' + esc(s.id) + '\')">⚙️ Edit student</button>' +
+          '</div>' +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()">▶ Start</button>' +
         '<button onclick="ClassBoard.preset(60)">1 min</button><button onclick="ClassBoard.preset(180)">3 min</button><button onclick="ClassBoard.preset(300)">5 min</button><button onclick="ClassBoard.preset(600)">10 min</button><button onclick="ClassBoard.reset()">↺</button><span class="sep"></span>' +
-        '<button onclick="ClassBoard.pick()">🎲 Pick a student</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Roll call</button>' +
+        '<button onclick="ClassBoard.pick()">🎲 Pick a student</button><button onclick="ClassBoard.groups()">👥 Groups</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Roll call</button>' +
         '<button onclick="try{classSoundboard.playAttentionBell()}catch(e){}">🔔 Bell</button><button onclick="try{classSoundboard.playApplause()}catch(e){}">👏</button><span class="sep"></span>' +
-        '<button onclick="ClassBoard.full()">⛶ Full screen</button><button onclick="switchView(\'dashboard\')">✕ Exit</button></div></div>';
+        '<button onclick="ClassBoard.addStudent()">➕ Student</button><button onclick="switchView(\'store\')">🛍️ Store</button><button onclick="ClassBoard.full()">⛶ Full screen</button><button onclick="switchView(\'dashboard\')">✕ Exit</button></div></div>';
     paintGoal(); paintClock();
     // pull the newest goal from the cloud, then redraw the bar
     try { if (root.ClassroomStore && root.ClassroomStore.cloud) root.ClassroomStore.cloud.pull().then(function () { paintGoal(); }); } catch (e) { /* offline */ }
@@ -159,6 +188,48 @@
     return false;
   }
   var api = {
+    switchClass: function (id) { S().setActiveClass(id); stopTimer(); timer.left = timer.total; if (root.renderCurrentView) root.renderCurrentView(); },
+    menu: function (id, ev) {
+      if (ev) ev.stopPropagation();
+      var m = document.getElementById('cb-menu-' + id), was = m && m.classList.contains('open');
+      closeMenus(); if (m && !was) m.classList.add('open');
+    },
+    act: function (what, id) {
+      closeMenus();
+      try {
+        if (what === 'profile' && root.openStudentDetail) root.openStudentDetail(id, 'overview');
+        else if (what === 'history' && root.openStudentXPHistoryModal) root.openStudentXPHistoryModal(id);
+        else if (what === 'fix' && root.openDirectXPEdit) root.openDirectXPEdit(id);
+        else if (what === 'skills' && root.openGiveXPSkillsModal) root.openGiveXPSkillsModal('student', id);
+        else if (what === 'monster' && root.openMonsterCreator) root.openMonsterCreator(id);
+        else if (what === 'edit' && root.openStudentModal) root.openStudentModal(id);
+      } catch (e) { if (root.showNotification) root.showNotification('Could not open that. Try the Command Center.', 'error'); }
+    },
+    addStudent: function () { if (root.openStudentModal) root.openStudentModal(); },
+    groups: function () {
+      var list = S().getStudentsByClass(viewCls.id).filter(function (s) { return !absent[s.id]; });
+      if (!list.length) return;
+      var n = parseInt(root.prompt('How many groups?', String(Math.max(2, Math.round(list.length / 4)))), 10);
+      if (!n || n < 2) return; n = Math.min(n, list.length);
+      var colors = ['#f97316', '#8b5cf6', '#06b6d4', '#22c55e', '#f43f5e', '#eab308', '#ec4899', '#14b8a6'], icons = ['🦊', '🦉', '🐻', '🐇', '🐸', '🐧', '🦁', '🐼'];
+      function make() {
+        var a = list.slice(), g = [], i, j, t;
+        for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; }
+        for (i = 0; i < n; i++) g.push([]);
+        a.forEach(function (s, k) { g[k % n].push(s.firstName || s.name); });
+        return g;
+      }
+      function show() {
+        var old = document.querySelector('.cb-grp'); if (old) old.remove();
+        var g = make(), w = document.createElement('div'); w.className = 'cb-grp';
+        w.innerHTML = '<div><h2>👥 ' + n + ' groups · ' + list.length + ' pupils here</h2><div class="cb-gg">' + g.map(function (m, k) { return '<div class="g" style="--c:' + colors[k % colors.length] + '"><b>' + icons[k % icons.length] + ' Group ' + (k + 1) + '</b>' + m.map(esc).join('<br>') + '</div>'; }).join('') + '</div><div class="row"><button class="g2" id="cb-gr">🔀 Shuffle again</button><button id="cb-gc">Done</button></div></div>';
+        document.body.appendChild(w);
+        w.querySelector('#cb-gr').onclick = show; w.querySelector('#cb-gc').onclick = function () { w.remove(); };
+        w.addEventListener('mousedown', function (e) { if (e.target === w) w.remove(); });
+        try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ }
+      }
+      show();
+    },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
       st.giveXP(id, n, 'Quick Classroom Award', 'Teacher', { category: 'positive', icon: '⭐' });

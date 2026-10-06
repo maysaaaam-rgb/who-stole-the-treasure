@@ -783,6 +783,38 @@
       if (createWrap) createWrap.style.display = 'none';
     }
     populateHeaderClassSelect();
+    populateHeaderStudentSelect(role);
+  }
+
+  // Student view: choose which pupil you are looking at (the view used to be stuck on the first pupil)
+  function populateHeaderStudentSelect(role) {
+    var sel = document.getElementById('header-student-select');
+    if (!sel) {
+      var chip = document.getElementById('header-user-chip');
+      if (!chip || !chip.parentNode) return;
+      sel = document.createElement('select');
+      sel.id = 'header-student-select'; sel.className = 'class-switcher-select'; sel.title = 'Choose a pupil to view';
+      sel.addEventListener('change', function (e) {
+        store.setActiveStudent(e.target.value);
+        updateHeaderBadges(); renderNavigation(); renderCurrentView();
+      });
+      chip.parentNode.insertBefore(sel, chip);
+    }
+    if (role !== 'student') { sel.style.display = 'none'; return; }
+    var active = store.getActiveStudent(), classes = (store.getClasses ? store.getClasses() : []) || [];
+    var list = (store.getStudents ? store.getStudents() : []) || [];
+    var nameOf = function (c) { return c ? (c.name || c.id) : ''; };
+    var html = '';
+    classes.filter(function (c) { return !c.archived; }).forEach(function (c) {
+      var kids = list.filter(function (st) { return st.classId === c.id; });
+      if (!kids.length) return;
+      html += '<optgroup label="' + nameOf(c).replace(/"/g, '&quot;') + '">' + kids.map(function (st) {
+        var nm = ((st.firstName || '') + ' ' + (st.lastName || '')).trim() || st.name || st.id;
+        return '<option value="' + st.id + '"' + (active && st.id === active.id ? ' selected' : '') + '>' + nm.replace(/</g, '&lt;') + '</option>';
+      }).join('') + '</optgroup>';
+    });
+    sel.innerHTML = html; sel.style.display = 'inline-block';
+    if (active) sel.value = active.id;
   }
 
   function setupGlobalShortcuts() {
@@ -4031,98 +4063,82 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return '<div class="classroom-groups-grid">' + groupsHtml + addGroupCard + '</div>';
   }
 
-  // 3. Classroom Dashboard Summary Widgets (Today's Classroom + Needs Attention)
+  // 3. Classroom Dashboard Summary Widgets (Today's Classroom + Needs Attention). All numbers and names come from real class data.
   function renderClassroomDashboardWidgets(cls, students) {
     const today = new Date().toISOString().split('T')[0];
     const attRecords = store.getAttendanceRecords(cls.id);
     const todayAttCount = attRecords.filter(r => r.date === today).length;
     const isAttCompleted = todayAttCount > 0;
+    const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    // Lessons the teacher can launch for this grade
+    const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
+    const lessons = grade === 4 ? [
+      ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
+      ['📝', 'Worksheet and Class Store', 'unit12-worksheet-g4/index.html'],
+      ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
+      ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
+    ] : grade === 3 ? [
+      ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
+      ['🌱', 'First Harvest', 'unit2-g3-lessons/index.html?lesson=2'],
+      ['🎮', 'Chuseok Games Arcade Day', 'unit2-g3-lessons/index.html?lesson=3']
+    ] : [['🎯', 'Unit 1 Revision Game', 'unit1-revision/index.html']];
+
+    // Real activity: who has had no XP for 7 days, who is slowing down
+    const DAY = 86400000, now = Date.now(), nudge = [], slow = [];
+    students.forEach(st => {
+      const tx = (store.getXPTransactions(st.id) || []).filter(t => Number(t.amount) > 0);
+      const when = t => { const v = new Date(t.timestamp || t.date).getTime(); return isNaN(v) ? 0 : v; };
+      let latest = 0, last7 = 0, prev7 = 0;
+      tx.forEach(t => { const w = when(t); if (w > latest) latest = w; if (now - w <= 7 * DAY) last7 += Number(t.amount); else if (now - w <= 14 * DAY) prev7 += Number(t.amount); });
+      if (!tx.length || now - latest > 7 * DAY) nudge.push(st);
+      else if (prev7 > 0 && last7 < prev7 / 2) slow.push(st);
+    });
+    const names = (list) => { const n = list.map(x => esc(x.firstName || x.name || '')); return n.length > 6 ? n.slice(0, 6).join(', ') + ' and ' + (n.length - 6) + ' more' : n.join(', '); };
+    let pendingRewards = 0;
+    try { pendingRewards = ((window.ClassroomStore && window.ClassroomStore.data().requests) || []).filter(r => r.status === 'pending').length; } catch (e) { pendingRewards = 0; }
+
+    const asg = (store.getAssignments(cls.id) || []).filter(a => !a.archived && String(a.status || 'ACTIVE').toUpperCase() !== 'COMPLETED')[0];
+
+    const card = (kind, badge, title, desc, link) =>
+      '<div class="needs-attention-card alert-' + kind + '">' +
+        '<div class="na-head"><div class="needs-status-badge badge-' + kind + '">' + badge + '</div>' + (link || '') + '</div>' +
+        '<div class="needs-content"><div class="needs-title">' + title + '</div><div class="needs-desc">' + desc + '</div></div>' +
+      '</div>';
+    const attention = [];
+    if (nudge.length) attention.push(card('ruby', '😴 ' + nudge.length + ' quiet', 'Pupils who need a nudge', names(nudge) + (nudge.length === 1 ? ' has' : ' have') + ' had no XP for 7 days.', '<a href="#" class="needs-action-link link-ruby" onclick="switchView(\'command\'); return false;">Command Center ➔</a>'));
+    if (slow.length) attention.push(card('amber', '📉 ' + slow.length + ' slowing', 'Slowing down', names(slow) + ' earned less than half of last week\u2019s XP.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'command\'); return false;">Command Center ➔</a>'));
+    if (!isAttCompleted) attention.push(card('violet', '📋 Roll call', 'Roll call not done today', 'Record who is here so attendance stays correct.', '<a href="#" class="needs-action-link link-violet" onclick="openFastAttendanceModal(); return false;">Open roll call ➔</a>'));
+    if (pendingRewards) attention.push(card('amber', '🎁 ' + pendingRewards + ' waiting', 'Reward requests', pendingRewards + (pendingRewards === 1 ? ' pupil is' : ' pupils are') + ' waiting for you to approve a Classroom Store reward.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'store\'); return false;">Classroom Store ➔</a>'));
+    if (!attention.length) attention.push(card('ok', '✅ All good', 'Everyone is on track', 'Every pupil has earned XP this week and roll call is done.', ''));
 
     return '' +
       '<div class="dashboard-hero-grid">' +
-        // Today's Classroom Hero Panel
         '<div class="dashboard-hero-panel">' +
-          '<h3 class="hero-panel-title">' +
-            '<span>📅</span> <span>Today in ' + cls.name + '</span>' +
-          '</h3>' +
+          '<h3 class="hero-panel-title"><span>📅</span> <span>Today in ' + esc(cls.name) + '</span></h3>' +
           '<div class="hero-tiles-grid">' +
-            // Rich Preview Tile with Visual Depth for Next Lesson
             '<div class="hero-tile-card next-lesson-tile">' +
-              '<div>' +
-                '<div class="hero-tile-tag"><span>🚀</span> Next Lesson</div>' +
-                '<div class="hero-tile-heading">Fire Station Adventure</div>' +
-                '<div class="hero-tile-sub">A1+ • Emergency &amp; Jobs Vocabulary</div>' +
-              '</div>' +
-              '<a href="firefighter/index.html" class="btn-launch-lesson">' +
-                '<span>▶</span> <span>Start Lesson</span>' +
-              '</a>' +
+              '<div><div class="hero-tile-tag"><span>🚀</span> Today’s lessons</div>' +
+                (window.Timetable ? window.Timetable.todayHtml(cls) : '<div class="lesson-launch-list">' + lessons.map(l => '<a class="lesson-launch" href="' + l[2] + '"><span>' + l[0] + '</span><b>' + esc(l[1]) + '</b><i>▶</i></a>').join('') + '</div>') + '</div>' +
             '</div>' +
-
-            // Interactive Quick-Action Roll Call Card with Status Chips
             '<div class="hero-tile-card roll-call-tile">' +
-              '<div>' +
-                '<div class="hero-tile-tag"><span>📋</span> Roll Call &amp; Attendance</div>' +
+              '<div><div class="hero-tile-tag"><span>📋</span> Roll call</div>' +
                 '<div class="hero-tile-heading">Daily Roll Call</div>' +
-                '<div class="hero-tile-sub">Roster verification for ' + students.length + ' enrolled learners</div>' +
-                (isAttCompleted ? 
-                  '<span class="roll-call-chip chip-completed">✓ Live attendance (' + todayAttCount + ' Logged)</span>' : 
-                  '<span class="roll-call-chip chip-pending">⏱️ Roll call needed today</span>'
-                ) +
-              '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">' +
-                '📋 ' + (isAttCompleted ? 'Edit Roll Call' : 'Open Roll Call') +
-              '</button>' +
+                '<div class="hero-tile-sub">' + students.length + ' enrolled learners</div>' +
+                (isAttCompleted ? '<span class="roll-call-chip chip-completed">✓ Done (' + todayAttCount + ' logged)</span>' : '<span class="roll-call-chip chip-pending">⏱️ Needed today</span>') + '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()">📋 ' + (isAttCompleted ? 'Edit roll call' : 'Open roll call') + '</button>' +
             '</div>' +
-
-            // Active Assignment Card
             '<div class="hero-tile-card assignment-tile">' +
-              '<div>' +
-                '<div class="hero-tile-tag"><span>📝</span> Active Assignment</div>' +
-                '<div class="hero-tile-heading">My Town Prepositions</div>' +
-                '<div class="hero-tile-sub">' + students.length + ' Learners Assigned · Due Friday</div>' +
-                '<span class="roll-call-chip chip-pending" style="background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe;">⏳ In Progress</span>' +
-              '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')" style="width:fit-content; border-radius:12px; padding:9px 18px; font-weight:800; font-size:0.88rem;">View Submissions</button>' +
+              '<div><div class="hero-tile-tag"><span>📝</span> Assignment</div>' +
+                (asg ? '<div class="hero-tile-heading">' + esc(asg.title) + '</div><div class="hero-tile-sub">' + (asg.dueDate ? 'Due ' + esc(asg.dueDate) : 'No due date') + '</div><span class="roll-call-chip chip-pending chip-info">⏳ Active</span>'
+                     : '<div class="hero-tile-heading">No active assignment</div><div class="hero-tile-sub">Create one to give homework.</div>') + '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')">' + (asg ? 'View submissions' : 'Open assignments') + '</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
-
-        // High-Contrast Needs Attention Panel
         '<div class="dashboard-hero-panel">' +
-          '<h3 class="hero-panel-title">' +
-            '<span>⚠️</span> <span>Needs Attention</span>' +
-          '</h3>' +
-          '<div class="needs-attention-list">' +
-            // Speaking Practice: Ruby/Red icon badge with action link
-            '<div class="needs-attention-card alert-ruby">' +
-              '<div class="needs-status-badge badge-ruby">🗣️ Speaking Focus</div>' +
-              '<div class="needs-content">' +
-                '<div class="needs-title">Targeted Pronunciation</div>' +
-                '<div class="needs-desc">2 learners need targeted pronunciation focus on phonics pairs.</div>' +
-              '</div>' +
-              '<a href="#" class="needs-action-link link-ruby" onclick="openClass(\'' + cls.id + '\', \'progress\'); return false;">Practice ➔</a>' +
-            '</div>' +
-
-            // Homework Review: Amber icon badge
-            '<div class="needs-attention-card alert-amber">' +
-              '<div class="needs-status-badge badge-amber">📝 1 Awaiting Review</div>' +
-              '<div class="needs-content">' +
-                '<div class="needs-title">Workbook Submission</div>' +
-                '<div class="needs-desc">1 workbook submission ready for feedback and grading.</div>' +
-              '</div>' +
-              '<a href="#" class="needs-action-link link-amber" onclick="openClass(\'' + cls.id + '\', \'assignments\'); return false;">Review ➔</a>' +
-            '</div>' +
-
-            // Scheduled Quiz: Violet icon badge
-            '<div class="needs-attention-card alert-violet">' +
-              '<div class="needs-status-badge badge-violet">🎯 Quiz Upcoming</div>' +
-              '<div class="needs-content">' +
-                '<div class="needs-title">Prepositions Diagnostic</div>' +
-                '<div class="needs-desc">Assessment quiz scheduled for Thursday morning.</div>' +
-              '</div>' +
-              '<a href="#" class="needs-action-link link-violet" onclick="openQuickAssessmentModal(); return false;">Prepare ➔</a>' +
-            '</div>' +
-          '</div>' +
+          '<h3 class="hero-panel-title"><span>⚠️</span> <span>Needs Attention</span></h3>' +
+          '<div class="needs-attention-list">' + attention.join('') + '</div>' +
         '</div>' +
       '</div>';
   }
@@ -9221,10 +9237,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
         renderNavGroup('my-school', 'My School', [
           { view: 'board', label: 'Class Board', icon: '📺', title: 'Class Board: projector view with timer, picker and points', isActive: currentView === 'board' },
-          { view: 'classes', label: 'Classes', icon: '👥', title: 'Classes', isActive: currentView === 'classes', badge: counts.classes },
-          { view: 'classroom-hub', label: 'Classroom Hub', icon: '🏫', title: 'Classroom Hub', isActive: currentView === 'classroom-hub' || currentView === 'class-detail' },
-          { view: 'students', label: 'Students', icon: '🧒', title: 'Students Directory', isActive: currentView === 'students', badge: counts.students },
-          { view: 'attendance', label: 'Attendance', icon: '📋', title: 'Attendance', isActive: currentView === 'attendance' },
           { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
         ], ['board', 'classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
 
@@ -9240,15 +9252,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         renderNavGroup('assessment', 'Assessment', [
           { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
           { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
-          { view: 'reports', label: 'Reports', icon: '📄', title: 'Reports', isActive: currentView === 'reports', badge: counts.reports },
           { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
         ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
         renderNavGroup('community', 'Community', [
-          { view: 'story', label: 'Class Story', icon: '📸', title: 'Class Story', isActive: currentView === 'story' },
-          { view: 'messages', label: 'Messages', icon: '💬', title: 'Messages', isActive: currentView === 'messages', badge: counts.messages },
           { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
-        ], ['story', 'messages', 'portfolios']) +
+        ], ['portfolios']) +
 
         renderNavGroup('admin', 'Admin & Audit', [
           { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
@@ -9331,6 +9340,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderCurrentView() {
     const container = document.getElementById('app-view-container');
     if (!container) return;
+    container.setAttribute('data-view', currentView);   // lets css/glass-theme.css restyle one page at a time
 
     try {
       renderNavigation();

@@ -920,6 +920,8 @@
       var v = root.prompt ? root.prompt('How many coins? Use a minus sign to take coins away (for example -10).', '10') : null;
       if (v === null) return; ui.give(sid, Number(v));
     },
+    getTimetable: function () { return data().config.timetable || {}; },
+    setTimetable: function (tt) { data().config.timetable = tt || {}; data().config.updatedAt = Date.now(); save(); },
     getBoardGoal: function (classId) { return data().config.boardGoals[classId] || null; },
     setBoardGoal: function (classId, g) { data().config.boardGoals[classId] = g; data().config.updatedAt = Date.now(); save(); },
     setPrice: function (kind, key, v) { v = Math.max(1, Math.round(Number(v) || 1)); (kind === 'item' ? data().config.itemPrices : data().config.boxPrices)[key] = v; data().config.updatedAt = Date.now(); save(); },
@@ -944,7 +946,7 @@
     cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
-    ui: ui, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
+    ui: ui, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
   };
   root.__csRefreshStatus = function () { var el = document.getElementById('cs-cloud-status'); if (el) el.textContent = cloudLabel(); };
