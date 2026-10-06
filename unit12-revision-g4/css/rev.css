@@ -1,0 +1,47 @@
+/* Grade 4 Revision Quest extras */
+.pic { height: 1em; width: auto; max-width: none; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.emo { line-height: 1; }
+.pill.unit.u1 { background: rgba(245, 158, 11, 0.18); border-color: rgba(245, 158, 11, 0.6); color: #fcd34d; }
+.pill.unit.u2 { background: rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.6); color: #6ee7b7; }
+
+/* mission + ceremony goals */
+.goalcols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6vh; }
+.goalcol { border-radius: 2vh; padding: 1.4vh; display: flex; flex-direction: column; gap: 0.9vh; background: rgba(15, 23, 42, 0.8); border: 2px solid; }
+.goalcol.u1 { border-color: rgba(245, 158, 11, 0.6); } .goalcol.u2 { border-color: rgba(16, 185, 129, 0.6); }
+.goalcol .gh { font-weight: 900; font-size: 1.2em; }
+.goal { font: inherit; text-align: left; color: inherit; background: rgba(255, 255, 255, 0.06); border: 0; border-radius: 1.2vh; padding: 1vh 1.2vh; font-weight: 700; font-size: 0.95em; }
+.goal.tick { cursor: pointer; border-bottom: 4px solid rgba(0, 0, 0, 0.35); transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.goal.tick:active { transform: translateY(3px); border-bottom-width: 1px; }
+.goal.tick.on { background: rgba(16, 185, 129, 0.3); }
+.trick { display: flex; align-items: center; justify-content: center; gap: 1.4vh; flex-wrap: wrap; margin: 1.2vh 0; }
+.trick .tk { background: linear-gradient(#7c3aed, #4c1d95); border-radius: 1.6vh; padding: 1.4vh 2vh; font-weight: 900; font-size: 1.1em; border-bottom: 5px solid #2e1065; }
+.trick .tk b { color: #fde047; margin-right: 0.4em; } .trick .ar { font-size: 3vh; color: #fde047; }
+
+/* vanishing sentences */
+.vcard { border-radius: 2.2vh; padding: 2.4vh; text-align: center; background: rgba(15, 23, 42, 0.85); border: 2px solid; }
+.vcard.u1 { border-color: rgba(245, 158, 11, 0.6); } .vcard.u2 { border-color: rgba(16, 185, 129, 0.6); }
+.vpics { display: flex; justify-content: center; align-items: flex-end; gap: 2vh; font-size: 12vh; min-height: 12vh; margin-bottom: 1vh; }
+.vpics .pic { height: 1em; filter: drop-shadow(0 0.6vh 0.6vh rgba(0, 0, 0, 0.35)); }
+.vline { font-size: 3.4vh; font-weight: 800; line-height: 1.7; }
+.vw { display: inline-block; padding: 0 0.3em; border-radius: 0.8vh; transition: all 0.4s; }
+.vw.gone { color: #fde047; letter-spacing: 0.08em; background: rgba(253, 224, 71, 0.12); animation: pop 0.4s var(--spring-snap); }
+
+/* word gym */
+.gym { display: grid; gap: 1.2vh; grid-template-columns: repeat(4, 1fr); }
+.gym.n10 { grid-template-columns: repeat(5, 1fr); }
+.gcard { font: inherit; color: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.4vh; padding: 1vh 0.6vh; border-radius: 1.8vh; background: rgba(15, 23, 42, 0.85); border: 2px solid; border-bottom-width: 5px; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s, box-shadow 0.3s; }
+.gcard.u1 { border-color: rgba(245, 158, 11, 0.6); } .gcard.u2 { border-color: rgba(16, 185, 129, 0.6); }
+.gcard:active { transform: translateY(3px); border-bottom-width: 2px; }
+.gcard .gf { font-size: 8.5vh; line-height: 1.05; height: 9vh; display: flex; align-items: flex-end; } .gcard .gf .pic { height: 1em; filter: drop-shadow(0 0.5vh 0.5vh rgba(0, 0, 0, 0.35)); }
+.gcard .gl { font-size: 1.15em; font-weight: 900; min-height: 1.3em; }
+.gcard.hidden .gl { color: #fde047; }
+.gcard.dim { opacity: 0.25; } .gcard.spot { box-shadow: 0 0 3vh #fde047; transform: scale(1.03); }
+
+/* boss battle */
+.turn { text-align: center; font-weight: 900; font-size: 1.5em; padding: 0.8vh; border-radius: 1.6vh; background: color-mix(in srgb, var(--c, #7c3aed) 35%, #0b1220); border: 2px solid var(--c, #7c3aed); }
+.bosscard { text-align: center; border-radius: 2.2vh; padding: 1.6vh; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(168, 85, 247, 0.6); display: flex; flex-direction: column; gap: 1vh; align-items: center; }
+.bface { font-size: 10vh; line-height: 1; height: 10vh; display: flex; align-items: flex-end; } .bface .pic { height: 1em; filter: drop-shadow(0 0.6vh 0.6vh rgba(0, 0, 0, 0.35)); }
+.cue { font-size: 3.2vh; font-weight: 900; color: #fde047; }
+.bans { display: none; font-size: 2.8vh; font-weight: 800; text-align: center; padding: 1.2vh; border-radius: 1.6vh; background: rgba(16, 185, 129, 0.2); border: 2px solid rgba(16, 185, 129, 0.6); }
+
+@media (max-width: 900px) { .goalcols { grid-template-columns: 1fr; } .gym, .gym.n10 { grid-template-columns: repeat(3, 1fr); } }
