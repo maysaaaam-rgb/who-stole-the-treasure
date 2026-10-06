@@ -85,8 +85,8 @@
     '.cb-win img{width:min(260px,50vw);filter:drop-shadow(0 16px 12px rgba(0,0,0,.4))}.cb-win h2{font-size:3rem;font-weight:600;margin:6px 0 14px}.cb-win button{border:0;border-radius:16px;background:#22c55e;color:#fff;font:600 1.1rem Fredoka,system-ui,sans-serif;padding:11px 26px;cursor:pointer;border-bottom:4px solid #15803d}' +
     '.cb-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;position:relative}.cb-tabs button{border:0;border-bottom:4px solid rgba(0,0,0,.28);background:rgba(255,255,255,.14);color:#fff;font:500 1rem Fredoka,sans-serif;padding:8px 18px;border-radius:14px;cursor:pointer}.cb-tabs button.on{background:#fbbf24;color:#4a2300;border-bottom-color:#b45309}.cb-tabs button:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.cb-today{margin:12px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative}.cb-today .lab{font-weight:600;opacity:.8;margin-right:4px}.cb-today a,.cb-today button{text-decoration:none;color:#fff;background:rgba(34,197,94,.3);border:1px solid #4ade80;border-bottom:4px solid #15803d;border-radius:14px;padding:7px 14px;font:500 .95rem Fredoka,sans-serif;cursor:pointer}.cb-today a em{font-style:normal;color:#fde68a;margin-right:4px}.cb-today button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);border-bottom-color:rgba(0,0,0,.28)}' +
-    '.cb-mn{position:absolute;right:8px;top:44px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.3);color:#fff;font-size:1.1rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}.cb-mn:hover{background:rgba(0,0,0,.5)}' +
-    '.cb-menu{position:absolute;right:6px;top:80px;z-index:30;background:#1e1b4b;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:6px;display:none;flex-direction:column;gap:2px;min-width:190px;box-shadow:0 14px 40px rgba(0,0,0,.55);text-align:left}.cb-menu.open{display:flex}.cb-menu button{border:0;background:none;color:#fff;font:500 .9rem Fredoka,sans-serif;text-align:left;padding:8px 10px;border-radius:9px;cursor:pointer}.cb-menu button:hover{background:rgba(255,255,255,.14)}' +
+    '.cb-st .cb-mn{position:absolute;left:8px;top:8px;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.32);color:#fff;font:700 1rem/1 Fredoka,sans-serif;letter-spacing:1px;cursor:pointer;z-index:2}.cb-st .cb-mn:hover{background:rgba(0,0,0,.55)}.cb-st .cb-an{top:42px}' +
+    '#cb-pop{position:fixed;z-index:99990;background:#1e1b4b;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:200px;box-shadow:0 18px 50px rgba(0,0,0,.6);font-family:Fredoka,system-ui,sans-serif}#cb-pop b{color:#fde68a;font-weight:600;padding:6px 10px 4px;font-size:.95rem}#cb-pop button{border:0;background:none;color:#fff;font:500 .95rem Fredoka,sans-serif;text-align:left;padding:9px 10px;border-radius:9px;cursor:pointer}#cb-pop button:hover{background:rgba(255,255,255,.14)}' +
     '.cb-grp{position:fixed;inset:0;z-index:99997;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Fredoka,system-ui,sans-serif;color:#fff}.cb-grp>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;text-align:center}.cb-grp h2{margin:0 0 12px;font-weight:600}.cb-gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;text-align:left}.cb-gg div.g{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 16px;border-top:6px solid var(--c)}.cb-gg b{display:block;font-weight:600;margin-bottom:4px;color:#fde68a}.cb-grp .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.cb-grp button{border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:14px;background:#22c55e;color:#fff;font:500 1rem Fredoka,sans-serif;padding:9px 18px;cursor:pointer}.cb-grp button.g2{background:rgba(255,255,255,.2)}' +
     '@media(max-width:1100px){.cb-dock{gap:5px;padding:7px 8px;border-radius:18px}.cb-dock button{padding:7px 10px;font-size:.82rem;border-radius:12px}.cb-dock .sep{display:none}}' +
     '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
@@ -131,8 +131,8 @@
       return e.route ? '<a href="' + esc(e.route) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
     }).join('') + '<button onclick="Timetable.edit()">📅</button>';
   }
-  function closeMenus() { [].slice.call(document.querySelectorAll('.cb-menu.open')).forEach(function (m) { m.classList.remove('open'); }); }
-  if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('.cb-menu') && !e.target.closest('.cb-mn'))) closeMenus(); });
+  function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); }
+  if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('#cb-pop') && !e.target.closest('.cb-mn'))) closeMenus(); });
 
   function render(container) {
     ensureCss();
@@ -149,19 +149,11 @@
         var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
         var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal +
+          '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString() + '</span>' +
           '<img src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Click to mark here / absent" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
-          '<button class="cb-mn" title="More" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
-          '<div class="cb-menu" id="cb-menu-' + esc(s.id) + '">' +
-            '<button onclick="ClassBoard.act(\'profile\',\'' + esc(s.id) + '\')">👤 Profile</button>' +
-            '<button onclick="ClassBoard.act(\'history\',\'' + esc(s.id) + '\')">📜 XP history</button>' +
-            '<button onclick="ClassBoard.act(\'fix\',\'' + esc(s.id) + '\')">✏️ Correct XP</button>' +
-            '<button onclick="ClassBoard.act(\'skills\',\'' + esc(s.id) + '\')">🎯 Give XP for a skill</button>' +
-            '<button onclick="ClassBoard.act(\'monster\',\'' + esc(s.id) + '\')">🐾 Customize monster</button>' +
-            '<button onclick="ClassBoard.act(\'edit\',\'' + esc(s.id) + '\')">⚙️ Edit student</button>' +
-          '</div>' +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()">▶ Start</button>' +
@@ -191,8 +183,17 @@
     switchClass: function (id) { S().setActiveClass(id); stopTimer(); timer.left = timer.total; if (root.renderCurrentView) root.renderCurrentView(); },
     menu: function (id, ev) {
       if (ev) ev.stopPropagation();
-      var m = document.getElementById('cb-menu-' + id), was = m && m.classList.contains('open');
-      closeMenus(); if (m && !was) m.classList.add('open');
+      var old = document.getElementById('cb-pop'), same = old && old.dataset.id === id; closeMenus(); if (same) return;
+      var st = S().getStudent ? S().getStudent(id) : null, name = st ? (st.firstName || st.name || '') : '';
+      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student']];
+      var p = document.createElement('div'); p.id = 'cb-pop'; p.dataset.id = id;
+      p.innerHTML = '<b>' + esc(name) + '</b>' + items.map(function (it) { return '<button data-a="' + it[0] + '">' + it[1] + '</button>'; }).join('');
+      p.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) api.act(b.dataset.a, id); });
+      document.body.appendChild(p);
+      var r = ev && ev.currentTarget ? ev.currentTarget.getBoundingClientRect() : { left: innerWidth / 2, bottom: innerHeight / 2, top: innerHeight / 2 };
+      var w = p.offsetWidth, hgt = p.offsetHeight, x = Math.min(Math.max(8, r.left - w + 40), innerWidth - w - 8), y = r.bottom + 6;
+      if (y + hgt > innerHeight - 8) y = Math.max(8, r.top - hgt - 6);
+      p.style.left = x + 'px'; p.style.top = y + 'px';
     },
     act: function (what, id) {
       closeMenus();
