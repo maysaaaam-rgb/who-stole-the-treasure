@@ -8633,7 +8633,7 @@ const GAMES_REGISTRY = [
   {
     "id": "forest-rangers-g4",
     "title": "🌲 Forest Rangers: Unit 2 Lesson 1 (Grade 4)",
-    "description": "A 40-minute teacher-led smartboard lesson, not a quiz. Rangers get a letter from Ranger Rosa, act out one year in the forest with a gesture for \"so they can\", walk to the deciduous or coniferous side of the room, interview each other as winter animals (info-gap pairs), invent a survivor on mini whiteboards and race in teams to beat the blizzard. Four teams score all lesson. Printable cut-out cards included.",
+    "description": "A 35-minute teacher-led smartboard lesson, not a quiz. Rangers get a letter from Ranger Rosa, act out one year in the forest with a gesture for \"so they can\", walk to the deciduous or coniferous side of the room, interview each other as winter animals (info-gap pairs), invent a survivor on mini whiteboards and race in teams to beat the blizzard. Four teams score all lesson. Printable cut-out cards included.",
     "type": "game",
     "category": "Phonics & Language Quests",
     "categoryLabel": "🌲 Unit 2 Lessons",
@@ -8645,9 +8645,9 @@ const GAMES_REGISTRY = [
     "grades": [
       "Grade 4"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 30,
     "skills": [
       "Reading",
@@ -8730,7 +8730,7 @@ const GAMES_REGISTRY = [
   {
     "id": "swallow-gift-g4",
     "title": "🕊️ The Swallow’s Gift: Unit 2 Lesson 2 (Grade 4)",
-    "description": "A 40-minute teacher-led smartboard lesson on A New Friend, not a quiz. Pupils shout the missing past verb and do an action for each (built, fell, gave, grew, hit, paid), plan freeze-frame scenes in groups, solve the Roof Mystery from witness clues (past tense speaking), ride the Rain Train for the ai sound, question Wen Shu in the hot seat, vote on kindness and retell the story. Four teams score all lesson. Printable witness and scene cards included.",
+    "description": "A 35-minute teacher-led smartboard lesson on A New Friend, not a quiz. Pupils shout the missing past verb and do an action for each (built, fell, gave, grew, hit, paid), plan freeze-frame scenes in groups, solve the Roof Mystery from witness clues (past tense speaking), ride the Rain Train for the ai sound, question Wen Shu in the hot seat, vote on kindness and retell the story. Four teams score all lesson. Printable witness and scene cards included.",
     "type": "game",
     "category": "Story & Literature",
     "categoryLabel": "🕊️ Unit 2 Lessons",
@@ -8742,9 +8742,9 @@ const GAMES_REGISTRY = [
     "grades": [
       "Grade 4"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 30,
     "skills": [
       "Listening",
@@ -8828,7 +8828,7 @@ const GAMES_REGISTRY = [
   {
     "id": "chuseok-moon-g3",
     "title": "🌕 Chuseok Moon Feast: Unit 2 Lesson 1 (Grade 3)",
-    "description": "A 40-minute teacher-led smartboard lesson, not a quiz. Pupils get a moon invitation from Korea, act out the legend of the weaving contest while the moon grows, walk to the FOOD, DANCE or FAMILY corner, mingle to ask \"What are you thankful for?\", make thank-you lanterns for a class Moon Wall and race in teams (There is / There are). Four teams score all lesson. Printable signs, mingle sheet and lanterns included.",
+    "description": "A 35-minute teacher-led smartboard lesson, not a quiz. Pupils get a moon invitation from Korea, act out the legend of the weaving contest while the moon grows, walk to the FOOD, DANCE or FAMILY corner, mingle to ask \"What are you thankful for?\", make thank-you lanterns for a class Moon Wall and race in teams (There is / There are). Four teams score all lesson. Printable signs, mingle sheet and lanterns included.",
     "type": "game",
     "category": "Literature & Stories",
     "categoryLabel": "🌕 Unit 2 Lessons",
@@ -8842,9 +8842,9 @@ const GAMES_REGISTRY = [
       "Class 3A",
       "Class 3B"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 30,
     "skills": [
       "Listening",
@@ -8925,7 +8925,7 @@ const GAMES_REGISTRY = [
   {
     "id": "first-harvest-g3",
     "title": "🚀 First Harvest: Unit 2 Lesson 2 (Grade 3)",
-    "description": "A 40-minute teacher-led smartboard lesson on First Harvest, not a quiz. A strange farm with pink potatoes and purple carrots: where is it? Pupils act out the story and keep the secret until the Mars reveal, walk to EARTH, MARS or BOTH to find the setting, stop their hands at the -st sound, describe and draw farm cards in pairs (There are three pink potatoes) and win the Mars mission race. Four teams score all lesson. Printable signs and farm cards included.",
+    "description": "A 35-minute teacher-led smartboard lesson on First Harvest, not a quiz. A strange farm with pink potatoes and purple carrots: where is it? Pupils act out the story and keep the secret until the Mars reveal, walk to EARTH, MARS or BOTH to find the setting, stop their hands at the -st sound, describe and draw farm cards in pairs (There are three pink potatoes) and win the Mars mission race. Four teams score all lesson. Printable signs and farm cards included.",
     "type": "game",
     "category": "Literature & Stories",
     "categoryLabel": "🚀 Unit 2 Lessons",
@@ -8939,9 +8939,9 @@ const GAMES_REGISTRY = [
       "Class 3A",
       "Class 3B"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 30,
     "skills": [
       "Listening",
@@ -9025,7 +9025,7 @@ const GAMES_REGISTRY = [
   {
     "id": "chuseok-arcade-g3",
     "title": "🎮 Chuseok Games Arcade Day: Unit 2 Lesson (Grade 3)",
-    "description": "A 40-minute teacher-led smartboard lesson to check the Chuseok folk games the pupils made at home (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori). Pupils host classmates at their stations in English, visit three stations, cheer in English and sign visitor logs. The board runs three 9-minute rounds with a 3-minute rotation timer and a host and visitor guide, then a favourite-game vote. Four teams score all lesson.",
+    "description": "A 35-minute teacher-led smartboard lesson to check the Chuseok folk games the pupils made at home (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori). Pupils host classmates at their stations in English, visit three stations, cheer in English and sign visitor logs. The board runs three 9-minute rounds with a 3-minute rotation timer and a host and visitor guide, then a favourite-game vote. Four teams score all lesson.",
     "type": "game",
     "category": "Literature & Stories",
     "categoryLabel": "🌕 Unit 2 Lessons",
@@ -9039,9 +9039,9 @@ const GAMES_REGISTRY = [
       "Class 3A",
       "Class 3B"
     ],
-    "duration": 40,
-    "durationText": "40 min",
-    "estimatedMinutes": 40,
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
     "xp": 30,
     "skills": [
       "Speaking",

@@ -202,7 +202,7 @@
     var bank = h('div', { class: 'bank' }, D.bank.map(function (w) { return h('button', { type: 'button', class: 'chip2', text: w, onclick: function () { sfx('tap'); A.speak(w); } }); }));
     var roll = btn('🎲 New challenge', 'violet', function () { var k; do { k = Math.floor(Math.random() * D.challenges.length); } while (k === last && D.challenges.length > 1); last = k; ch.textContent = '🎲 ' + D.challenges[k]; sfx('season'); A.speak(D.challenges[k]); });
     var clap = btn('🎉 Applause!', 'green', function () { sfx('win'); confetti(); });
-    body.appendChild(h('div', { class: 'row' }, [roll, timerBtn(c, 240), clap])); body.appendChild(ch);
+    body.appendChild(h('div', { class: 'row' }, [roll, timerBtn(c, 210), clap])); body.appendChild(ch);
     body.appendChild(h('div', { class: 'frame-big', html: 'This is a <b>__________</b>. It has <b>__________</b> so it can <b>__________</b>.' }));
     body.appendChild(h('div', { class: 'hintbox', text: 'Word bank (tap to hear):' })); body.appendChild(bank);
   }
@@ -438,21 +438,21 @@
   var MODES = { think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', create: '🎨 Create', race: '🏆 Team race', detect: '🔍 Detective', story: '📖 Story' };
   var LESSONS = {
     1: { title: 'Forest Rangers', missions: D.missions1, door: '🚪 Door pass: say ONE sentence with "so it can…" before you leave!', scenes: [
-      { t: 'A Letter from Ranger Rosa', mins: '4 min', mode: 'think', run: l1Hook, intro: 'A mystery message has arrived…',
+      { t: 'A Letter from Ranger Rosa', mins: '3 min', mode: 'think', run: l1Hook, intro: 'A mystery message has arrived…',
         kids: { steps: ['🤫 Listen to the letter', '🤔 Whisper to your partner: which animals live in a forest?'], say: ['I think … live in the forest.'] },
         tip: ['Dim the lights if you can. Press Open the letter and read each line slowly. Pupils guess what the mission will be.', 'Pre-teach nothing. Pupils will meet deciduous and coniferous in the next step, in context.', 'Show the four missions: this is the plan for the lesson.'] },
-      { t: 'One Year in the Forest', mins: '8 min', mode: 'act', run: l1Story, intro: 'Everyone stand up! Act every part with your body.',
+      { t: 'One Year in the Forest', mins: '7 min', mode: 'act', run: l1Story, intro: 'Everyone stand up! Act every part with your body.',
         kids: { steps: ['🧍 Stand up and do the action', '🗣️ Repeat after the teacher (echo)', '🤝 At the end, retell it to a partner'], say: ['… so it can …', '… so they can …'] },
         tip: ['Tell the story in your own words. Pupils do the action first, then you press the next part. The key sentences (gold) contain so they can: repeat them three times.', 'At the 🤔 parts the screen waits: pupils predict with their bodies before you press Reveal. This builds meaning before language.', 'Gesture for so they can: point your arm forward like an arrow. Pupils use it every time they say it.', 'Watch for because instead of so they can. Because looks back; so they can looks forward at the goal.'] },
-      { t: 'Walk to Your Forest', mins: '6 min', mode: 'move', run: l1Walk, intro: 'Stick tape on the floor: the left side is DECIDUOUS, the right side is CONIFEROUS, the line is BOTH.',
+      { t: 'Walk to Your Forest', mins: '5 min', mode: 'move', run: l1Walk, intro: 'Stick tape on the floor: the left side is DECIDUOUS, the right side is CONIFEROUS, the line is BOTH.',
         kids: { steps: ['👀 Read the card', '🚶 Walk to your forest (or stand on the line)', '🗣️ Tell a partner why'], say: ['It is a … forest because …'] },
         tip: ['Print the three signs from the Cards page (or write them). Pupils walk on the count of three. Ask two pupils why: It is a coniferous forest because the trees have needles.', 'Press Show the answer only after they have all chosen. Reward good reasons with team points, not only right answers.', 'Safety: walk, do not run.'] },
-      { t: 'Animal Interviews', mins: '7 min', mode: 'talk', run: l1Interview, intro: 'Pairs: one is a Ranger Reporter and one is a winter animal. Then swap!',
+      { t: 'Animal Interviews', mins: '6 min', mode: 'talk', run: l1Interview, intro: 'Pairs: one is a Ranger Reporter and one is a winter animal. Then swap!',
         kids: { steps: ['🎤 Reporter: ask the 3 questions', '🐾 Animal: answer with your card', '🔁 When the timer rings, swap roles'], say: ['How do you survive winter?', 'I … so I can …'] },
         tip: ['Print the animal cards (Cards page) and cut them. Each pair gets one animal card for Animal. If you cannot print, pupils choose an animal from the board.', 'Model the whole dialogue once with a confident pupil. Then pairs work for 3 minutes. Walk around and listen only.', 'This is the real speaking practice: every pupil speaks at the same time.'] },
-      { t: 'Invent a Survivor', mins: '7 min', mode: 'create', run: l1Create, intro: 'Draw an animal that can survive winter. Use the challenge!',
+      { t: 'Invent a Survivor', mins: '6 min', mode: 'create', run: l1Create, intro: 'Draw an animal that can survive winter. Use the challenge!',
         kids: { steps: ['🎲 Read the challenge', '🎨 Draw your animal on the mini whiteboard', '✍️ Write 2 sentences', '📢 Show and say it'], say: ['This is a … It has … so it can …'] },
-        tip: ['Pairs get 4 minutes. The rule: your animal must have TWO adaptations and the sentences must have so it can.', 'Gallery: pairs hold up their boards while you walk around. Ask three pairs to read aloud, and the class applauds.', 'Praise the language, not the drawing.'] },
+        tip: ['Pairs get 3½ minutes. The rule: your animal must have TWO adaptations and the sentences must have so it can.', 'Gallery: pairs hold up their boards while you walk around. Ask three pairs to read aloud, and the class applauds.', 'Praise the language, not the drawing.'] },
       { t: 'Beat the Blizzard', mins: '5 min', mode: 'race', run: l1Race, intro: 'Teams: write the answer on your mini whiteboard before the blizzard comes!',
         kids: { steps: ['👀 Read the board', '✍️ Team writes the answer', '⬆️ Hold up the board at 0'], say: [] },
         tip: ['Start the timer. Teams write on mini whiteboards and hold them up when the time is over. Press Show the answer.', 'Give a point to every team that is correct, not only the fastest.', 'Rounds mix sentences, headings and author’s purpose, so you also check the reading skills.'] },
@@ -461,22 +461,22 @@
         tip: ['Show the scores and cheer for everyone. Door pass at the door: each pupil says one sentence with so it can before leaving. It is a quick check for you.'] }
     ] },
     2: { title: "The Swallow's Gift", missions: D.missions2, door: '🚪 Door pass: tell me ONE thing that happened in the story, with a past verb!', scenes: [
-      { t: 'The Golden Seed', mins: '4 min', mode: 'think', run: l2Hook, intro: 'A mysterious seed… Today you are Story Detectives.',
+      { t: 'The Golden Seed', mins: '3 min', mode: 'think', run: l2Hook, intro: 'A mysterious seed… Today you are Story Detectives.',
         kids: { steps: ['🤔 Guess with your partner', '🗣️ Share your idea'], say: ['I think a … gave it because …'] },
         tip: ['If you can, bring a real prop: a chocolate coin or a gold-wrapped sweet. Hold it up: What is it? Who gave it? Why?', 'Accept all predictions. Do not say the answer yet. The story will tell.'] },
-      { t: 'A New Friend, with Actions', mins: '8 min', mode: 'listen', run: l2Story, intro: 'Listen. When I stop, SHOUT the verb and do the action!',
+      { t: 'A New Friend, with Actions', mins: '7 min', mode: 'listen', run: l2Story, intro: 'Listen. When I stop, SHOUT the verb and do the action!',
         kids: { steps: ['👂 Listen to the sentence', '🗣️ SHOUT the missing verb', '🙌 Do the action'], say: ['built · fell · gave · grew · hit · paid'] },
         tip: ['Read the sentence and stop at the gap. Pupils shout the verb and do the action; then press Reveal.', 'Press Reveal to show the right form: falled, growed, payed are crossed out. The 🔊 reads the whole sentence.', 'hit does not change: stress it. At the end, say all six verbs with the actions, fast.'] },
-      { t: 'Freeze-Frame Theatre', mins: '7 min', mode: 'act', run: l2Freeze, intro: 'Groups: act a scene without talking. The class guesses the sentence!',
+      { t: 'Freeze-Frame Theatre', mins: '6 min', mode: 'act', run: l2Freeze, intro: 'Groups: act a scene without talking. The class guesses the sentence!',
         kids: { steps: ['🃏 Read your scene', '🧍 Plan a freeze-frame (no talking!)', '❄️ FREEZE on my signal', '🗣️ Class says the sentence'], say: ['He/She/It … (past)'] },
         tip: ['Six groups of 3-4. Press Deal the scenes and start the 90-second timer. Groups plan a still picture with their bodies.', 'Press Perform for each group: 3-2-1 FREEZE. The class guesses the sentence with a past verb. Then press Reveal.', 'Points for the guessing and the acting.'] },
-      { t: 'The Roof Mystery', mins: '8 min', mode: 'detect', run: l2Case, intro: 'Who left the gift on the roof? Listen to the witnesses!',
+      { t: 'The Roof Mystery', mins: '7 min', mode: 'detect', run: l2Case, intro: 'Who left the gift on the roof? Listen to the witnesses!',
         kids: { steps: ['🕵️ Witness: read your clue out loud', '👂 Everyone: listen and cross out suspects', '🤝 Group: solve the case'], say: ['It was not … He/She …'] },
         tip: ['Print the witness cards (Cards page) and give one to each pupil in groups of six. Pupils read their clue aloud and do not show the card. If you cannot print, press the witness buttons.', 'Press the matching Witness button as each clue is told: suspects are crossed out. Clues 4-6 are the proof.', 'Let groups argue and decide before you press a suspect.'] },
       { t: 'The Rain Train', mins: '4 min', mode: 'listen', run: l2Train, intro: 'Listen for the long ai sound. Stand up for ai, sit for short a! Then sing the Snail Rap.',
         kids: { steps: ['👂 Listen', '🧍 Long ai: stand', '🪑 Short a: sit'], say: ['rain · train · tail · mail'] },
         tip: ['Clap the chant: Rain, rain, train, train. Pupils stand for the long ai sound and sit for the short a.', 'Press Snail Rap: play the song once while pupils listen. The chorus is for singing with actions (snail, tail, mail). Ask them to clap every gold ai word.', 'If the voice is missing, say the word yourself and press Reveal.'] },
-      { t: 'Hot Seat and Kindness Vote', mins: '6 min', mode: 'talk', run: l2Court, intro: 'A pupil is Wen Shu. Ask him questions. Then vote!',
+      { t: 'Hot Seat and Kindness Vote', mins: '5 min', mode: 'talk', run: l2Court, intro: 'A pupil is Wen Shu. Ask him questions. Then vote!',
         kids: { steps: ['🙋 Ask Wen Shu questions', '🎤 Wen Shu answers', '✋ Vote with your hands: A or B'], say: ['Why did you …?', 'I think … should … because …'] },
         tip: ['Choose a confident pupil for Wen Shu (or you take the role). The class asks. Wen Shu answers in their own words first.', 'The vote: count hands for A and B. Ask a pupil to explain with because. Let the class try the other path too. The meter shows what kindness does.'] },
       { t: 'Retell and Scores', mins: '3 min', mode: 'talk', run: l2Wrap, intro: 'Build a 3-sentence retell, then tell it to a partner.',
