@@ -34,18 +34,18 @@ window.WsData = (function () {
     ]
   };
 
-  /* Class Store demo: prices copied from the platform defaults (the real store may use different prices). */
-  D.demoCoins = 12;
+  /* Class Store demo: prices copied from the real Classroom Store (checked 7 Oct 2026). If you change prices in the platform, update them here too. */
+  D.demoCoins = 6;
   D.shelves = [
     { id: 'rewards', title: '🎟️ Class rewards', items: [
-      { e: '🌟', n: 'Special sticker', p: 35 }, { e: '🪑', n: 'Sit anywhere for one lesson', p: 30 }, { e: '🎵', n: 'Choose the warm-up song', p: 40 },
-      { e: '🎲', n: 'Pick the next game', p: 60 }, { e: '🧑‍🏫', n: 'Be the teacher’s helper', p: 50 }
+      { e: '🪑', n: 'Sit anywhere for one lesson', p: 10 }, { e: '🎲', n: 'Pick the next game', p: 10 }, { e: '🌟', n: 'Special sticker', p: 15 },
+      { e: '🎵', n: 'Choose the warm-up song', p: 20 }, { e: '🧑‍🏫', n: 'Be the teacher’s helper', p: 20 }, { e: '🎧', n: 'Class DJ for 5 minutes', p: 30 }
     ] },
     { id: 'boxes', title: '🎁 Mystery boxes', items: [
-      { e: '🥉', n: 'Bronze Box', p: 15, box: true }, { e: '🥈', n: 'Silver Box', p: 30, box: true }, { e: '🥇', n: 'Gold Box', p: 80, box: true }, { e: '💎', n: 'Diamond Box', p: 180, box: true }
+      { e: '🥉', n: 'Bronze Box', p: 3, box: true }, { e: '🥈', n: 'Silver Box', p: 5, box: true }, { e: '🥇', n: 'Gold Box', p: 15, box: true }, { e: '💎', n: 'Diamond Box', p: 50, box: true }
     ] },
     { id: 'monster', title: '👾 Monster items', items: [
-      { e: '🎩', n: 'Common item', p: 25 }, { e: '🕶️', n: 'Rare item', p: 60 }, { e: '👑', n: 'Epic item', p: 120 }, { e: '🪽', n: 'Legendary item', p: 250 }
+      { e: '🎩', n: 'Common item', p: 10 }, { e: '🕶️', n: 'Rare item', p: 20 }, { e: '👑', n: 'Epic item', p: 30 }, { e: '🪽', n: 'Legendary item', p: 70 }
     ] }
   ];
   D.boxPrizes = [

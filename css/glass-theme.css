@@ -1,0 +1,81 @@
+/* ==========================================================================
+   GLASS THEME (loaded last): the Teacher pages in the same dark glass look as the Class Board.
+   60% obsidian canvas, 30% glass panels rgba(15,23,42,.8) + blur, 10% vivid accents.
+   Pages opt in one by one through #app-view-container[data-view="..."], so older pages are never broken by accident.
+   ========================================================================== */
+
+/* ---------- sidebar (every Teacher page) ---------- */
+.app-sidebar {
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important;
+}
+.app-sidebar .nav-link-btn { color: #cbd5e1; background: transparent; }
+.app-sidebar .nav-link-btn .nav-label { color: #e2e8f0; }
+.app-sidebar .nav-link-btn:hover { background: rgba(255, 255, 255, 0.07); }
+.app-sidebar .nav-link-btn.is-active { background: rgba(56, 189, 248, 0.16) !important; box-shadow: inset 3px 0 0 #38bdf8; }
+.app-sidebar .nav-link-btn.is-active .nav-label { color: #7dd3fc !important; }
+.app-sidebar .sidebar-section-title, .app-sidebar .sidebar-section-chevron { color: #64748b; }
+.app-sidebar .nav-badge-pill { background: rgba(255, 255, 255, 0.08); color: #94a3b8; border-color: transparent; }
+.app-sidebar .btn-sidebar-collapse, .app-sidebar [class*="collapse"] button { background: rgba(255, 255, 255, 0.06) !important; color: #cbd5e1 !important; border-color: rgba(255, 255, 255, 0.12) !important; }
+.app-sidebar hr, .app-sidebar .sidebar-divider { border-color: rgba(255, 255, 255, 0.08); }
+
+/* ---------- the glass pages ---------- */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) {
+  --bg-card: rgba(15, 23, 42, 0.8);
+  --bg-surface: rgba(15, 23, 42, 0.8);
+  --bg-card-secondary: rgba(30, 41, 59, 0.72);
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
+  --bg-muted: rgba(30, 41, 59, 0.72);
+  --bg-canvas: rgba(30, 41, 59, 0.6);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+}
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) * {
+  --text-main: #f8fafc; --text-primary: #f8fafc; --text-secondary: #dbe4f0; --text-muted: #a8b6cb; --text-subtle: #94a3b8;
+}
+
+/* panels that used to be white: glass + light text */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+  [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
+  [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
+  .curriculum-book-card, .unit-accordion-card, .week-lesson-group, .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important;
+}
+/* boxes inside a glass panel: one step lighter so they still read as separate boxes */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
+  background: rgba(30, 41, 59, 0.72) !important;
+  box-shadow: none !important;
+}
+
+/* dark text written straight into the page: make it light */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+  [style*="color:#0f172a"], [style*="color: #0f172a"], [style*="color:#1e293b"], [style*="color: #1e293b"], [style*="color:#334155"], [style*="color: #334155"],
+  h1, h2, h3, h4, h5, strong, b) { color: #f8fafc !important; }
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+  [style*="color:#475569"], [style*="color: #475569"], [style*="color:#64748b"], [style*="color: #64748b"]) { color: #a8b6cb !important; }
+/* …but keep dark text on light coloured chips and badges */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([class*="badge"], [class*="pill"], [class*="chip"], [class*="tag"]) :is(strong, b) { color: inherit !important; }
+
+/* form controls */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) :is(input, select, textarea, .filter-select) {
+  background: rgba(30, 41, 59, 0.9) !important; color: #f8fafc !important; border: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+#app-view-container :is(input, textarea)::placeholder { color: #94a3b8; }
+
+/* secondary buttons: glass with a tactile lip */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary) {
+  background: rgba(255, 255, 255, 0.08) !important; color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important; border-bottom: 4px solid rgba(0, 0, 0, 0.45) !important;
+}
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary):active { transform: translateY(3px); border-bottom-width: 1px !important; }
+
+/* undo ui-polish's "dark text inside light panels" rule on the glass pages (those panels are dark now) */
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+  [class*="card"], [class*="tile"], [class*="panel"], [class*="kpi"], [class*="toolbar"], [class*="accordion"], [class*="widget"],
+  [class*="list-item"], [class*="row-item"], [class*="table-wrap"], [style*="--bg-"], table) { color: #e2e8f0; }
