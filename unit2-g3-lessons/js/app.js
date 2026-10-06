@@ -305,7 +305,7 @@
   }
 
   function arcadeRound(c, round) {
-    var body = c.body, SEC = window.__arcadeSec || 180, mini = 0, left = SEC, iv = null, G = D.arcade;
+    var body = c.body, SEC = window.__arcadeSec || 150, mini = 0, left = SEC, iv = null, G = D.arcade;
     var roles = [
       ['🏠 HOSTS: stay at your station', '🎮 VISITORS: go to a station', 'Hosts: welcome, say your rules, let the visitors play, cheer for them, and ask them to sign your log.'],
       ['🔁 SWAP! Visitors are now HOSTS', '🏠 Hosts are now VISITORS', 'Roles have changed. New hosts: welcome your visitors and say your rules.'],
@@ -313,7 +313,7 @@
     ][round - 1];
     var r = rotation(pupilsN);
     var clock = h('div', { class: 'bigclock', text: '3:00' }), dots = h('div', { class: 'row', style: 'justify-content:center' });
-    var status = h('div', { class: 'msg' }), go = btn('▶ Start 3 minutes', 'green big', start);
+    var status = h('div', { class: 'msg' }), go = btn('▶ Start ' + (SEC % 60 ? Math.floor(SEC / 60) + '½' : SEC / 60) + ' minutes', 'green big', start);
     function drawDots() { dots.innerHTML = ''; for (var k = 0; k < 3; k++) dots.appendChild(h('span', { class: 'pill ' + (k < mini ? '' : 'amber'), text: (k < mini ? '✓ ' : '') + 'Station time ' + (k + 1) })); }
     function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
     function start() {
@@ -322,7 +322,7 @@
         left--; clock.textContent = fmt(Math.max(0, left));
         if (left <= 0) { clearInterval(iv); iv = null; mini++; drawDots(); sfx('win'); clock.classList.add('rotate'); clock.textContent = '🔔';
           if (mini >= 3) { status.textContent = '🏁 Round ' + round + ' is finished! ' + (round < 3 ? 'Get ready to swap roles.' : 'Arcade closed. Thank you, hosts and visitors!'); confetti(); go.textContent = '✓ Round done'; go.disabled = true; c.done(); }
-          else { status.textContent = '🔔 ROTATE! Visitors, walk clockwise to the next station.'; go.textContent = '▶ Start next 3 minutes'; go.disabled = false; }
+          else { status.textContent = '🔔 ROTATE! Visitors, walk clockwise to the next station.'; go.textContent = '▶ Start next ' + (SEC % 60 ? Math.floor(SEC / 60) + '½' : SEC / 60) + ' minutes'; go.disabled = false; }
         }
       }, 1000);
     }
@@ -355,19 +355,19 @@
   var MODES = { think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', create: '🎨 Create', race: '🏆 Team race', detect: '🔍 Detective', story: '📖 Story' };
   var LESSONS = {
     1: { title: 'Chuseok Moon Feast', missions: D.missions1, door: '🚪 Door pass: say "I am thankful for my ___" before you leave!', scenes: [
-      { t: 'The Moon Invitation', mins: '4 min', mode: 'think', run: function (c) { hookLetter(c, D.letter, D.missions1, '💌', 'moonhook'); }, intro: 'A letter has arrived from a friend in Korea…',
+      { t: 'The Moon Invitation', mins: '3 min', mode: 'think', run: function (c) { hookLetter(c, D.letter, D.missions1, '💌', 'moonhook'); }, intro: 'A letter has arrived from a friend in Korea…',
         kids: { steps: ['🤫 Listen to the invitation', '🤔 Whisper to your partner: what is a festival?'], say: ['A festival has …'] },
         tip: ['Read the invitation line by line. Ask: What is a festival? What festival do you like? Accept one-word answers and sentences.', 'Show the four missions. This is the plan for the lesson.', 'Do not pre-teach Chuseok: pupils meet the words in the story next.'] },
-      { t: 'The Moon Legend', mins: '8 min', mode: 'act', run: l1Story, intro: 'Everyone stand up! Act every part with your body.',
+      { t: 'The Moon Legend', mins: '7 min', mode: 'act', run: l1Story, intro: 'Everyone stand up! Act every part with your body.',
         kids: { steps: ['🧍 Stand up and do the action', '🗣️ Repeat after the teacher (echo)', '🤝 At the end, retell it to a partner'], say: ['They weave cloth.', 'The king gives a feast.'] },
         tip: ['Tell the legend in your own words. Pupils do the action first, then you press the next part. Watch the moon grow as the month goes by.', 'At the 🤔 part the screen waits: pupils guess which team wins before you press Reveal.', 'Key gesture: weave = hands go over and under. Practise it three times. The words weave, cloth, contest, feast, harvest and ancestors all appear here.', 'Ancestors: say "the grandparents of our grandparents" and bow.'] },
-      { t: 'Visit the Festival Corners', mins: '6 min', mode: 'move', run: function (c) { walkScene(c, D.zones1, D.walk1, function (w) { var z = D.zones1.filter(function (x) { return x.k === w.a; })[0]; return z.t + ': ' + w.t; }, '🚶 Walk to the right corner! FOOD, DANCE or FAMILY?', function (w) { return w.t; }); }, intro: 'Stick the three signs on the walls: FOOD, DANCE and FAMILY.',
+      { t: 'Visit the Festival Corners', mins: '5 min', mode: 'move', run: function (c) { walkScene(c, D.zones1, D.walk1, function (w) { var z = D.zones1.filter(function (x) { return x.k === w.a; })[0]; return z.t + ': ' + w.t; }, '🚶 Walk to the right corner! FOOD, DANCE or FAMILY?', function (w) { return w.t; }); }, intro: 'Stick the three signs on the walls: FOOD, DANCE and FAMILY.',
         kids: { steps: ['👀 Read the card', '🚶 Walk to the right corner', '🗣️ Say the sentence to a friend'], say: ['People eat songpyeon.', 'Families travel home.'] },
         tip: ['Print the three corner signs from the Cards page. Pupils walk on the count of three. Ask two pupils to read the sentence aloud, then show the answer.', 'Some cards have more than one possible corner; accept good reasons and give team points for them.', 'Safety: walk, never run.'] },
-      { t: 'What Are You Thankful For?', mins: '7 min', mode: 'talk', run: l1Mingle, intro: 'Walk around the room. Ask three friends. Tick your sheet!',
+      { t: 'What Are You Thankful For?', mins: '6 min', mode: 'talk', run: l1Mingle, intro: 'Walk around the room. Ask three friends. Tick your sheet!',
         kids: { steps: ['🚶 Walk and find a friend', '🗣️ Ask and answer', '✅ Tick the picture, then find a new friend'], say: ['What are you thankful for?', 'I am thankful for my … because …'] },
         tip: ['Print the mingle sheet (Cards page): each pupil ticks the pictures that friends say. Model one dialogue with a pupil first.', 'Stretch: add "because". Support: point to the picture card and say only the word.', 'Start the timer. When it rings press Freeze and everyone sits down.'] },
-      { t: 'Thank-You Lanterns', mins: '7 min', mode: 'create', run: l1Lantern, intro: 'Write and draw a thank-you on your paper lantern.',
+      { t: 'Thank-You Lanterns', mins: '6 min', mode: 'create', run: l1Lantern, intro: 'Write and draw a thank-you on your paper lantern.',
         kids: { steps: ['✍️ Write: I am thankful for my … because …', '🎨 Draw it on your lantern', '📢 Show it and read it to the class'], say: ['I am thankful for my … because …'] },
         tip: ['Give each pupil a paper lantern (Cards page) or a rectangle of paper. Four minutes to write and draw.', 'Each pupil who reads aloud earns an applause; press Add a lantern each time to build the Moon Wall on the board.', 'Stick the real lanterns on the class wall afterwards: a "Gratitude Moon".'] },
       { t: 'Harvest Moon Race', mins: '5 min', mode: 'race', run: function (c) { raceScene(c, D.race1); }, intro: 'Teams: write the answer on your mini whiteboard before the timer ends!',
@@ -378,39 +378,39 @@
         tip: ['Show the scores and cheer for everyone. At the door each pupil says one sentence with I am thankful for my … It is a quick check for you.'] }
     ] },
     2: { title: 'First Harvest', missions: D.missions2, door: '🚪 Door pass: ask me "Can we go outside?" and I will answer!', scenes: [
-      { t: 'A Strange Farm', mins: '4 min', mode: 'think', run: l2Hook, intro: 'Look at this farm. Something is strange…',
+      { t: 'A Strange Farm', mins: '3 min', mode: 'think', run: l2Hook, intro: 'Look at this farm. Something is strange…',
         kids: { steps: ['👀 Look at the colours', '🤔 Guess with your partner: where is this farm?'], say: ['There are … potatoes.', 'I think it is …'] },
         tip: ['Do NOT tell pupils where the farm is. The reveal comes at the end of the story. Accept all guesses (a magic farm, another country, a dream).', 'Ask What colour? and practise There are pink potatoes. Write guesses on the board if you like.'] },
-      { t: 'First Harvest: the Story', mins: '8 min', mode: 'act', run: l2Story, intro: 'Listen and act. Do not shout where the farm is!',
+      { t: 'First Harvest: the Story', mins: '7 min', mode: 'act', run: l2Story, intro: 'Listen and act. Do not shout where the farm is!',
         kids: { steps: ['🧍 Stand up and do the action', '🗣️ Repeat after the teacher (echo)', '🤫 Keep the secret: where is the farm?'], say: ['There are … ', 'Can we go outside?'] },
         tip: ['Press Tell the story. Pupils do each action. At the 🤔 part the screen waits: pupils guess what Mom says before you press Reveal.', 'Press Next to reveal the surprise: the farm is on Mars. Wait for the gasps! Then ask: How do you know? (space suits, air, helmets).', 'Key language: There is not much water. There are pink potatoes. Can we go outside? Check your space suits.', 'Worried: act it out with a worried face. Believe: shake your head: I do not believe it!'] },
-      { t: 'Setting Detectives', mins: '6 min', mode: 'move', run: function (c) { walkScene(c, D.zones2, D.walk2, function (w) { var s = { E: 'Earth', M: 'Mars', B: 'both Earth and Mars' }[w.a]; return 'It is ' + s + ' because ' + lc(w.t); }, '🚶 Where is it? EARTH, MARS or BOTH? Walk to the right place!'); }, intro: 'Stick the signs EARTH, BOTH and MARS on the walls.',
+      { t: 'Setting Detectives', mins: '5 min', mode: 'move', run: function (c) { walkScene(c, D.zones2, D.walk2, function (w) { var s = { E: 'Earth', M: 'Mars', B: 'both Earth and Mars' }[w.a]; return 'It is ' + s + ' because ' + lc(w.t); }, '🚶 Where is it? EARTH, MARS or BOTH? Walk to the right place!'); }, intro: 'Stick the signs EARTH, BOTH and MARS on the walls.',
         kids: { steps: ['👀 Read the card', '🚶 Walk to Earth, Mars or Both', '🗣️ Say why'], say: ['It is Mars because …'] },
         tip: ['Print the signs from the Cards page. The setting is the place and time of a story. Pupils walk, then give a reason with because.', 'Reward the reason, not only the right corner.'] },
       { t: 'The Stop Sound: -st', mins: '5 min', mode: 'listen', run: l2St, intro: 'Listen for the stop sound at the end of the word.',
         kids: { steps: ['👂 Listen to the word', '✋ -st at the end: hand up like STOP', '🙌 No -st: hands down'], say: ['fast · last · best · first'] },
         tip: ['Say the words first: fast, last, lost, best, test, first, harvest, nest. Pupils copy the stop hand.', 'Press Listen: pupils show a stop hand or hands down. Then press Reveal.', 'If the voice does not work, say the word yourself.'] },
-      { t: 'Describe and Draw the Farm', mins: '7 min', mode: 'talk', run: l2Dict, intro: 'Pairs: one describes, one draws. Then swap!',
+      { t: 'Describe and Draw the Farm', mins: '6 min', mode: 'talk', run: l2Dict, intro: 'Pairs: one describes, one draws. Then swap!',
         kids: { steps: ['🗣️ Pupil A: describe your card', '🖍️ Pupil B: draw on the mini whiteboard', '🔁 Swap roles, then check the card'], say: ['There are … … (colour) … (thing).'] },
         tip: ['Print the farm cards (Cards page): six different cards. Pupil A holds a card and describes it with There is / There are and colours; Pupil B draws on the mini whiteboard without looking.', 'Model once with a pupil. Walk around and listen. Use Reveal to show a card on the board for checking.'] },
       { t: 'Mars Mission Race', mins: '6 min', mode: 'race', run: function (c) { raceScene(c, D.race2); }, intro: 'Teams: complete the mission before the timer ends!',
         kids: { steps: ['👀 Read, count or look at the letters', '✍️ Team writes the answer', '⬆️ Hold up the board at 0'], say: [] },
         tip: ['Same routine as Lesson 1. Teams write on mini whiteboards; reveal the answer after each round; give a point to every correct team.', 'This round checks Can we go outside?, There is / There are, and -st words.'] },
-      { t: 'Mission Complete', mins: '4 min', mode: 'think', run: function (c) { wrapStart(c, 2, '🚀', 'First Harvest on Mars'); }, intro: 'You have finished the mission!',
+      { t: 'Mission Complete', mins: '3 min', mode: 'think', run: function (c) { wrapStart(c, 2, '🚀', 'First Harvest on Mars'); }, intro: 'You have finished the mission!',
         kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: Can we go outside?'], say: ['Can we go outside?'] },
         tip: ['At the door each pupil asks "Can we go outside?" and you answer: "Yes, check your space suit!" It checks the question form and the new vocabulary.'] }
     ] },
     3: { title: 'Chuseok Games Arcade Day', missions: D.missions3, door: '🚪 Door pass: say ONE rule of your game in English before you leave!', scenes: [
-      { t: 'The Arcade Opens', mins: '5 min', mode: 'think', run: arcadeOpen, intro: 'Today the pupils are the teachers: they host the games they made at home.',
+      { t: 'The Arcade Opens', mins: '4 min', mode: 'think', run: arcadeOpen, intro: 'Today the pupils are the teachers: they host the games they made at home.',
         kids: { steps: ['🎮 Put your game on your desk', '🏠 Hosts: get your host script ready', '📣 Everybody: practise the cheering phrases'], say: ['Welcome to my game.', 'Great job!'] },
         tip: ['Pupils put their home-made game and rulebook on their desks. Check that every pupil has a game; pair a pupil who forgot with a friend as a co-host.', 'Use the stepper to enter the number of pupils present: the board tells you how many hosts and visitor groups there are.', 'Practise the cheering phrases twice. Say the rules of the day: hosts stay, visitors move at the bell, everybody signs the visitor log.'] },
-      { t: 'Round 1: Hosts and Visitors', mins: '9 min', mode: 'talk', run: function (c) { arcadeRound(c, 1); }, intro: 'Half the class host. Half the class visit. Rotate at the bell!',
+      { t: 'Round 1: Hosts and Visitors', mins: '8 min', mode: 'talk', run: function (c) { arcadeRound(c, 1); }, intro: 'Half the class host. Half the class visit. Rotate at the bell!',
         kids: { steps: ['🏠 Hosts: welcome, say the rules, let them play', '🎮 Visitors: play, cheer and thank the host', '✍️ Host signs the visitor log'], say: ['Can I play?', 'Great job!', 'Thank you for playing!'] },
-        tip: ['Press Start. Three 3-minute station times. At the bell visitor groups walk clockwise to the next host. Press Start again for each station time.', 'Walk around and listen. Do not correct during the games; note good hosting and cheering for team points. Use the Point for buttons below.', 'Listen for: the host says the rules in English, the visitor cheers in English, and the log gets signed.'] },
-      { t: 'Round 2: Swap Roles', mins: '9 min', mode: 'talk', run: function (c) { arcadeRound(c, 2); }, intro: 'Swap! Visitors become hosts. Hosts become visitors.',
+        tip: ['Press Start. Three 2½-minute station times. At the bell visitor groups walk clockwise to the next host. Press Start again for each station time.', 'Walk around and listen. Do not correct during the games; note good hosting and cheering for team points. Use the Point for buttons below.', 'Listen for: the host says the rules in English, the visitor cheers in English, and the log gets signed.'] },
+      { t: 'Round 2: Swap Roles', mins: '8 min', mode: 'talk', run: function (c) { arcadeRound(c, 2); }, intro: 'Swap! Visitors become hosts. Hosts become visitors.',
         kids: { steps: ['🔁 Swap roles', '🏠 New hosts: say your rules', '🎮 New visitors: play and cheer'], say: ['Welcome to my game.', 'That was fun!'] },
         tip: ['Same routine with the roles swapped. Pupils who were hosts take their game to a visitor table first; make sure no game is left behind.', 'Give a point to teams where every pupil is speaking English.'] },
-      { t: 'Round 3: Open Arcade', mins: '9 min', mode: 'move', run: function (c) { arcadeRound(c, 3); }, intro: 'Visit a station you have not visited yet. Everybody can host or visit!',
+      { t: 'Round 3: Open Arcade', mins: '7 min', mode: 'move', run: function (c) { arcadeRound(c, 3); }, intro: 'Visit a station you have not visited yet. Everybody can host or visit!',
         kids: { steps: ['🎯 Choose a NEW station', '🎮 Play, cheer and thank the host', '✍️ Sign the log (aim for 3 visitors)'], say: ['Can I try again?', 'You can do it!'] },
         tip: ['Open arcade: pupils choose where to go. Check the visitor logs: every host should have 3 signatures.', 'This round is for pupils who still need to host or visit. Help quiet pupils to join a station.'] },
       { t: 'My Favourite Game', mins: '5 min', mode: 'talk', run: arcadeShare, intro: 'Tell the class which game you liked best, and why.',
