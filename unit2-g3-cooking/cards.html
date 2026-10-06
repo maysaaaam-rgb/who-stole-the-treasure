@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Cooking Mission: recipe cards and parent letter</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1f2937; margin: 0; background: #e5e7eb; }
+  .bar { position: sticky; top: 0; z-index: 5; background: #1e293b; color: #fff; padding: 8px 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .bar button { font: inherit; font-weight: 700; padding: 6px 12px; border-radius: 8px; border: 0; background: #16a34a; color: #fff; cursor: pointer; }
+  .bar input { font: inherit; padding: 5px 8px; border-radius: 6px; border: 0; }
+  .page { width: 210mm; min-height: 297mm; margin: 10px auto; background: #fff; padding: 12mm; page-break-after: always; box-shadow: 0 2px 8px rgba(0, 0, 0, .2); }
+  @media print { body { background: #fff; } .bar { display: none; } .page { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; } }
+  h1 { font-size: 22px; margin: 0 0 4px; } h2 { font-size: 17px; margin: 14px 0 6px; }
+  .sub { color: #6b7280; margin: 0 0 10px; }
+  .rcard { border: 3px solid #f59e0b; border-radius: 16px; padding: 10px 14px; margin-bottom: 10px; page-break-inside: avoid; }
+  .rcard .top { display: flex; align-items: center; gap: 12px; } .rcard .big { font-size: 46px; }
+  .rcard h3 { margin: 0; font-size: 20px; } .rcard .lvl { color: #047857; font-weight: 700; font-size: 13px; }
+  .need { background: #fff7ed; border-radius: 10px; padding: 6px 10px; margin: 8px 0; font-size: 14px; }
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .steps div { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 6px; text-align: center; font-size: 13px; font-weight: 600; min-height: 74px; }
+  .steps div b { display: block; font-size: 24px; }
+  .safe { font-size: 12px; color: #b45309; font-weight: 700; margin-top: 6px; }
+  .letter p { line-height: 1.55; margin: 6px 0; font-size: 14px; }
+  .letter ul { margin: 4px 0 8px 20px; font-size: 14px; line-height: 1.55; }
+  .tr { border-top: 2px dashed #94a3b8; margin-top: 14px; padding-top: 10px; }
+  .story .line { border-bottom: 2px solid #94a3b8; height: 34px; margin: 6px 0 12px; font-size: 20px; padding-top: 6px; color: #374151; }
+  .story .photo { border: 2px dashed #94a3b8; border-radius: 12px; height: 70mm; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 16px; }
+</style>
+</head>
+<body>
+<div class="bar"><b>Home Cooking Mission</b><button onclick="window.print()">🖨️ Print</button>
+  <label>Deadline: <input id="dl" placeholder="e.g. Friday 17 October" oninput="document.querySelectorAll('.dlv').forEach(function(e){e.textContent=this.value||'________'}.bind(this))"></label>
+  <span>Page 1: recipe cards · Page 2: parent letter (English + Türkçe) · Page 3: My Cooking Story</span></div>
+
+<div class="page">
+  <h1>🍡 Chuseok Cooking: Choose ONE treat!</h1>
+  <p class="sub">Cook it with your family. Take 3 photos and 1 short video. Ask an adult to help!</p>
+
+  <div class="rcard"><div class="top"><span class="big">🍹</span><div><h3>Fruit Punch (hwachae)</h3><span class="lvl">Easy · no cooking</span></div></div>
+    <div class="need"><b>You need:</b> fruit (apple, pear, strawberries or watermelon), apple juice, a little honey, a big bowl</div>
+    <div class="steps"><div><b>🧼</b>Wash the fruit.</div><div><b>🔪</b>An adult cuts the fruit.</div><div><b>🥣</b>Add the fruit to a bowl.</div><div><b>🧃</b>Pour the juice.</div><div><b>🍯</b>Add honey and mix.</div></div></div>
+
+  <div class="rcard"><div class="top"><span class="big">🍙</span><div><h3>Rice Balls (jumeokbap)</h3><span class="lvl">Easy · an adult cooks the rice</span></div></div>
+    <div class="need"><b>You need:</b> cooked rice, a little salt, sesame seeds, a little oil</div>
+    <div class="steps"><div><b>🍚</b>An adult cooks the rice.</div><div><b>🧂</b>Add salt, sesame and oil.</div><div><b>🥄</b>Mix.</div><div><b>🧼</b>Wash your hands.</div><div><b>🤲</b>Roll small balls.</div></div></div>
+
+  <div class="rcard"><div class="top"><span class="big">🍡</span><div><h3>Songpyeon (rice cakes)</h3><span class="lvl">Harder · an adult steams them</span></div></div>
+    <div class="need"><b>You need:</b> rice flour, warm water, honey, sesame seeds (or sugar)</div>
+    <div class="steps"><div><b>🥄</b>Mix rice flour and warm water.</div><div><b>🤲</b>Roll small balls.</div><div><b>🍯</b>Fill with honey and sesame.</div><div><b>🌙</b>Press into half moons.</div><div><b>♨️</b>An adult steams them.</div></div></div>
+  <div class="safe">⚠️ Safety: children never use a knife or the stove alone. Wash your hands first. Check for food allergies.</div>
+</div>
+
+<div class="page letter">
+  <h1>Dear Parents,</h1>
+  <p>This week in English, Grade 3 learned about Chuseok, the Korean harvest festival, and its treats. They learned cooking words: <b>mix, pour, roll, fill, press, steam, add, cut</b>, and how to tell a recipe with <b>First, Then, Finally</b>.</p>
+  <p><b>Home mission:</b> please cook ONE easy treat with your child (fruit punch, rice balls or songpyeon; the recipe card is attached). Your child helps, and an adult does any cutting or cooking on the stove.</p>
+  <ul>
+    <li>📸 Please take <b>3 photos</b>: the ingredients, your child cooking, the finished treat.</li>
+    <li>🎥 And <b>1 short video</b> (under 1 minute): your child says the steps in English: "First, I … Then, I … Finally, I … It is yummy!"</li>
+    <li>📨 Send them to the teacher on <b>K12</b> by <b class="dlv">________</b>.</li>
+  </ul>
+  <p>The photos are used only in our classroom for a short presentation and are not posted online. Thank you for your help!</p>
+  <p>Teacher: ______________________</p>
+
+  <div class="tr">
+    <h1>Sevgili Veliler,</h1>
+    <p>Bu hafta İngilizce derslerinde 3. sınıflar, Kore'nin hasat bayramı Chuseok'u ve bu bayrama özel ikramları öğrendi. Mutfak kelimelerini (<b>mix, pour, roll, fill, press, steam, add, cut</b>) ve bir tarifi <b>First, Then, Finally</b> ile anlatmayı öğrendiler.</p>
+    <p><b>Ev görevi:</b> Lütfen çocuğunuzla birlikte kolay bir ikram hazırlayın (meyve punçu, pirinç topları veya songpyeon; tarif kartı ektedir). Çocuğunuz yardım etsin; bıçak ve ocak kullanımını mutlaka bir yetişkin yapsın.</p>
+    <ul>
+      <li>📸 Lütfen <b>3 fotoğraf</b> çekin: malzemeler, çocuğunuz hazırlarken, hazır ikram.</li>
+      <li>🎥 Ve <b>1 kısa video</b> (1 dakikadan kısa): çocuğunuz adımları İngilizce anlatsın: "First, I … Then, I … Finally, I … It is yummy!"</li>
+      <li>📨 Fotoğraf ve videoyu <b class="dlv">________</b> tarihine kadar <b>K12</b> üzerinden öğretmene gönderin.</li>
+    </ul>
+    <p>Fotoğraflar yalnızca sınıf içi kısa bir sunumda kullanılacak, internette paylaşılmayacaktır. Desteğiniz için teşekkür ederiz!</p>
+  </div>
+</div>
+
+<div class="page story">
+  <h1>🎬 My Cooking Story</h1>
+  <p class="sub">Name: ______________________   Class: ______</p>
+  <div class="photo">Draw or stick a photo of your treat here</div>
+  <div class="line">Today I made ____________________________ .</div>
+  <div class="line">First, I ____________________________ .</div>
+  <div class="line">Then, I ____________________________ .</div>
+  <div class="line">Finally, I ____________________________ .</div>
+  <div class="line">It is sweet / yummy! I like it with my ______________ .</div>
+</div>
+</body>
+</html>

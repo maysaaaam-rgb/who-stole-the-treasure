@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cooking Show: pupil presentations</title>
+<style>
+  :root { --bg: #060911; --glass: rgba(15, 23, 42, 0.85); --amber: #f59e0b; --cyan: #38bdf8; --em: #10b981; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; color: #f8fafc; background: radial-gradient(circle at 50% 30%, #2a1a0d 0%, #060911 70%); }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 18px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 1.6rem; }
+  .note { color: #94a3b8; font-size: 0.9rem; }
+  button, .file { font: inherit; font-weight: 800; cursor: pointer; color: #fff; border: 0; border-radius: 12px; padding: 9px 16px; background: #334155; border-bottom: 5px solid #1e293b; transition: transform .15s cubic-bezier(.175,.885,.32,1.275); }
+  button:active, .file:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .green { background: #16a34a; border-bottom-color: #166534; } .amber { background: #d97706; border-bottom-color: #92400e; }
+  .file input { display: none; }
+  main { padding: 0 18px 18px; }
+  .drop { border: 3px dashed rgba(255, 255, 255, 0.25); border-radius: 20px; padding: 22px; text-align: center; color: #cbd5e1; background: var(--glass); margin-bottom: 14px; }
+  .drop.over { border-color: var(--amber); background: rgba(245, 158, 11, 0.12); }
+  .pupils { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pupils button { background: rgba(255, 255, 255, 0.1); border-bottom-color: rgba(0, 0, 0, 0.4); }
+  .pupils button.on { background: var(--amber); color: #3b1d00; }
+  .stage { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; align-items: start; }
+  .media { background: #000; border-radius: 20px; overflow: hidden; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,.15); }
+  .media img, .media video { width: 100%; height: 100%; object-fit: contain; }
+  .thumbs { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .thumbs .t { width: 92px; height: 64px; border-radius: 10px; overflow: hidden; border: 2px solid transparent; cursor: pointer; background: #111; position: relative; }
+  .thumbs .t.on { border-color: var(--amber); } .thumbs .t img, .thumbs .t video { width: 100%; height: 100%; object-fit: cover; }
+  .thumbs .t span { position: absolute; right: 4px; bottom: 2px; font-size: .8rem; }
+  .panel { background: var(--glass); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 16px; }
+  .panel h2 { margin: 0 0 8px; font-size: 2rem; color: #fde047; }
+  .frame { font-size: 1.35rem; font-weight: 800; padding: 9px 12px; border-radius: 12px; background: rgba(255,255,255,.06); border-left: 6px solid var(--amber); margin-bottom: 8px; }
+  .stars { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .empty { color: #94a3b8; padding: 30px; text-align: center; }
+  @media (max-width: 900px) { .stage { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 Cooking Show</h1>
+  <label class="file green">📂 Add photos and videos<input type="file" id="pick" accept="image/*,video/*" multiple></label>
+  <button id="addPupil" class="amber">➕ New pupil</button>
+  <button id="full">⛶ Full screen</button>
+  <span class="note">Photos stay on this computer only. Nothing is uploaded or saved; closing the page clears them.</span>
+</header>
+<main>
+  <div class="drop" id="drop">Drag one pupil's photos and videos here (from K12 downloads). Then type the pupil's first name.</div>
+  <div class="pupils" id="pupils"></div>
+  <div class="stage" id="stage"><div class="empty">No presentations yet. Add a pupil's photos to start.</div></div>
+</main>
+<script>
+(function () {
+  'use strict';
+  var pupils = [], cur = -1, curMedia = 0;
+  var FRAMES = ['Today I made ___.', 'First, I ___.', 'Then, I ___.', 'Finally, I ___.', 'It is yummy! Do you like it?'];
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function addFiles(files) {
+    files = [].slice.call(files || []).filter(function (f) { return /^image\/|^video\//.test(f.type); });
+    if (!files.length) return;
+    if (cur < 0) newPupil();
+    files.forEach(function (f) { pupils[cur].media.push({ url: URL.createObjectURL(f), video: /^video\//.test(f.type) }); });
+    render();
+  }
+  function newPupil() {
+    var n = prompt('Pupil’s first name?', '') || ('Chef ' + (pupils.length + 1));
+    pupils.push({ name: n.trim().split(/\s+/)[0], media: [], stars: 0 }); cur = pupils.length - 1; curMedia = 0; render();
+  }
+  function render() {
+    $('pupils').innerHTML = pupils.map(function (p, i) { return '<button class="' + (i === cur ? 'on' : '') + '" data-i="' + i + '">' + esc(p.name) + ' (' + p.media.length + ')' + (p.stars ? ' ⭐' + p.stars : '') + '</button>'; }).join('');
+    var p = pupils[cur];
+    if (!p) { $('stage').innerHTML = '<div class="empty">No presentations yet. Add a pupil’s photos to start.</div>'; return; }
+    var m = p.media[curMedia];
+    $('stage').innerHTML = '<div><div class="media">' + (m ? (m.video ? '<video src="' + m.url + '" controls autoplay></video>' : '<img src="' + m.url + '" alt="">') : '<div class="empty">Drag photos for ' + esc(p.name) + ' here.</div>') + '</div>' +
+      '<div class="thumbs">' + p.media.map(function (x, i) { return '<div class="t ' + (i === curMedia ? 'on' : '') + '" data-m="' + i + '">' + (x.video ? '<video src="' + x.url + '" muted></video><span>🎥</span>' : '<img src="' + x.url + '" alt="">') + '</div>'; }).join('') + '</div></div>' +
+      '<div class="panel"><h2>👩‍🍳 Chef ' + esc(p.name) + '</h2>' + FRAMES.map(function (f) { return '<div class="frame">' + f + '</div>'; }).join('') +
+      '<div class="stars"><button class="green" id="star">⭐ Great job!</button><button id="next">Next photo ▶</button><button id="clap">👏 Applause</button></div></div>';
+  }
+  function chime(n) { try { var a = new (window.AudioContext || window.webkitAudioContext)(); [523.25, 659.25, 783.99, 1046.5].slice(0, n).forEach(function (f, i) { var o = a.createOscillator(), g = a.createGain(); o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, a.currentTime + i * 0.12); g.gain.exponentialRampToValueAtTime(0.15, a.currentTime + i * 0.12 + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + i * 0.12 + 0.8); o.connect(g); g.connect(a.destination); o.start(a.currentTime + i * 0.12); o.stop(a.currentTime + i * 0.12 + 0.9); }); } catch (e) { /* sound optional */ } }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-i]'); if (b) { cur = +b.dataset.i; curMedia = 0; render(); return; }
+    var t = e.target.closest('[data-m]'); if (t) { curMedia = +t.dataset.m; render(); return; }
+    if (e.target.id === 'star') { pupils[cur].stars++; chime(4); render(); }
+    if (e.target.id === 'next') { var p = pupils[cur]; if (p && p.media.length) { curMedia = (curMedia + 1) % p.media.length; render(); } }
+    if (e.target.id === 'clap') chime(3);
+  });
+  $('pick').addEventListener('change', function () { addFiles(this.files); this.value = ''; });
+  $('addPupil').addEventListener('click', newPupil);
+  $('full').addEventListener('click', function () { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); });
+  var d = $('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) { d.addEventListener(ev, function (e) { e.preventDefault(); d.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { d.addEventListener(ev, function (e) { e.preventDefault(); d.classList.remove('over'); }); });
+  d.addEventListener('drop', function (e) { addFiles(e.dataTransfer.files); });
+})();
+</script>
+</body>
+</html>

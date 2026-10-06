@@ -9829,3 +9829,12 @@ body.curriculum-drawer-open {
 .dashboard-stats-hud-container .stats-hud-icon.icon-indigo, .dashboard-stats-hud-container .stats-hud-icon.icon-purple { background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
 .dashboard-stats-hud-container .stats-hud-micro-badge { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.14); color: #cbd5e1; }
 .dashboard-stats-hud-container .stats-hud-divider { background: rgba(255, 255, 255, 0.1); }
+
+/* dashboard: every lesson we made for this grade */
+.our-lessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.ol-card { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #f8fafc; background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 4px solid rgba(0, 0, 0, 0.4); border-radius: 14px; padding: 11px 13px; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s; }
+.ol-card:hover { background: rgba(56, 189, 248, 0.16); }
+.ol-card:active { transform: translateY(3px); border-bottom-width: 1px; }
+.ol-card .ol-ic { font-size: 1.5rem; } .ol-card b { flex: 1; font-size: 0.9rem; font-weight: 800; }
+.ol-card em { font-style: normal; font-size: 0.65rem; font-weight: 900; color: #052e16; background: #34d399; border-radius: 999px; padding: 2px 7px; }
+.ol-card i { font-style: normal; color: #38bdf8; }
