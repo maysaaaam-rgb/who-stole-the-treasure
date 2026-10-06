@@ -4,15 +4,18 @@
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var CATALOG = [
-    { id: 'g4-rev', icon: '🧠', title: 'Revision Quest (Units 1 and 2)', route: 'unit12-revision-g4/index.html', g: 4 },
-    { id: 'g4-ws', icon: '📝', title: 'Worksheet and Class Store', route: 'unit12-worksheet-g4/index.html', g: 4 },
-    { id: 'g4-forest', icon: '🌲', title: 'Forest Rangers', route: 'unit2-forest-lessons/index.html?lesson=1', g: 4 },
-    { id: 'g4-swallow', icon: '🕊️', title: 'The Swallow’s Gift', route: 'unit2-forest-lessons/index.html?lesson=2', g: 4 },
-    { id: 'g3-moon', icon: '🌕', title: 'Chuseok Moon Feast', route: 'unit2-g3-lessons/index.html?lesson=1', g: 3 },
-    { id: 'g3-harvest', icon: '🌱', title: 'First Harvest', route: 'unit2-g3-lessons/index.html?lesson=2', g: 3 },
-    { id: 'g3-arcade', icon: '🎮', title: 'Chuseok Games Arcade Day', route: 'unit2-g3-lessons/index.html?lesson=3', g: 3 },
-    { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0 },
-    { id: 'alice', icon: '🫖', title: 'Alice Tea Party practice', route: 'alice-party-home/index.html', g: 4 },
+    { id: 'g3-cook1', icon: '🍡', title: 'Chuseok Treats Kitchen (Week 2, L1)', route: 'unit2-g3-cooking/index.html?lesson=1', g: 3, added: '2026-10-07' },
+    { id: 'g3-cook2', icon: '📺', title: 'Junior Chef Show (Week 2, L2)', route: 'unit2-g3-cooking/index.html?lesson=2', g: 3, added: '2026-10-07' },
+    { id: 'g3-show', icon: '🎬', title: 'Cooking Show presentations', route: 'unit2-g3-cooking/show.html', g: 3, added: '2026-10-07' },
+    { id: 'g4-rev', icon: '🧠', title: 'Revision Quest (Units 1 and 2)', route: 'unit12-revision-g4/index.html', g: 4, added: '2026-10-06' },
+    { id: 'g4-ws', icon: '📝', title: 'Worksheet and Class Store', route: 'unit12-worksheet-g4/index.html', g: 4, added: '2026-10-06' },
+    { id: 'g3-arcade', icon: '🎮', title: 'Chuseok Games Arcade Day', route: 'unit2-g3-lessons/index.html?lesson=3', g: 3, added: '2026-10-05' },
+    { id: 'g4-forest', icon: '🌲', title: 'Forest Rangers', route: 'unit2-forest-lessons/index.html?lesson=1', g: 4, added: '2026-10-05' },
+    { id: 'g4-swallow', icon: '🕊️', title: 'The Swallow’s Gift', route: 'unit2-forest-lessons/index.html?lesson=2', g: 4, added: '2026-10-05' },
+    { id: 'g3-moon', icon: '🌕', title: 'Chuseok Moon Feast', route: 'unit2-g3-lessons/index.html?lesson=1', g: 3, added: '2026-10-05' },
+    { id: 'g3-harvest', icon: '🌱', title: 'First Harvest', route: 'unit2-g3-lessons/index.html?lesson=2', g: 3, added: '2026-10-05' },
+    { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, added: '2026-10-04' },
+    { id: 'alice', icon: '🫖', title: 'Alice Tea Party practice', route: 'alice-party-home/index.html', g: 4, added: '2026-10-03' },
     { id: 'library', icon: '🎮', title: 'Resource Library', view: 'library', g: 0 }
   ];
   function S() { return root.schoolStore || root.store; }
@@ -44,6 +47,16 @@
     if (!t.set) return '<div class="tt-empty">No timetable yet.<br><button type="button" class="tt-btn" onclick="Timetable.edit()">📅 Set my weekly timetable</button></div>';
     if (!t.list.length) return '<div class="tt-empty">No lessons for ' + esc(cls.name) + ' ' + (t.label === 'Today' ? 'today' : 'on Monday') + '.<br><button type="button" class="tt-btn" onclick="Timetable.edit()">📅 Edit timetable</button></div>';
     return '<div class="lesson-launch-list">' + t.list.map(launchHtml).join('') + '</div><button type="button" class="tt-btn small" onclick="Timetable.edit()">📅 Edit timetable</button>';
+  }
+
+  /** Every lesson we have made for this class's grade, newest first (shown on the Classic Dashboard). */
+  function lessonsHtml(cls) {
+    var g = gradeOf(cls), now = Date.now();
+    var list = CATALOG.filter(function (c) { return c.added && (!c.g || !g || c.g === g); }).sort(function (a, b) { return a.added < b.added ? 1 : (a.added > b.added ? -1 : CATALOG.indexOf(a) - CATALOG.indexOf(b)); });
+    return '<div class="our-lessons">' + list.map(function (c) {
+      var isNew = now - new Date(c.added).getTime() < 7 * 86400000;
+      return '<a class="ol-card" href="' + esc(c.route) + '"><span class="ol-ic">' + c.icon + '</span><b>' + esc(c.title) + '</b>' + (isNew ? '<em>NEW</em>' : '') + '<i>▶</i></a>';
+    }).join('') + '</div>';
   }
 
   // ------------------------------------------------------------------ editor
@@ -92,7 +105,7 @@
     document.head.appendChild(st);
   }
   var api = {
-    catalog: CATALOG, today: today, todayHtml: todayHtml,
+    catalog: CATALOG, today: today, todayHtml: todayHtml, lessonsHtml: lessonsHtml,
     edit: function () {
       injectCss();
       var cl = classes(), act = S().getActiveClass ? S().getActiveClass() : cl[0];

@@ -9117,6 +9117,105 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
   },
   {
+    "id": "chuseok-cooking-g3",
+    "title": "🍡 Chuseok Cooking and Treats: Week 2 Lessons (Grade 3)",
+    "description": "Two 35-minute teacher-led smartboard lessons. Lesson 1: mystery treats, the Chuseok Snack Song video, Chef Says kitchen actions, a muted songpyeon cooking video with steps, and the Mix and Make team game. Lesson 2: Kitchen Freeze, Recipe Race, Junior Chef Show and the Home Cooking Mission (recipe cards, parent letter in English and Turkish, and a local presentation page for the photos).",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "2 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Unit 2 Week 2: Chuseok Cooking and Treats (Grade 3)",
+    "topics": [
+      "Unit 2 Week 2: Chuseok Cooking and Treats (Grade 3)"
+    ],
+    "languageFocus": "Treat and food words; kitchen verbs mix, pour, roll, fill, press, steam, add, cut; First, Then, Finally; Add the ___, please!; It is sweet / yummy.",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "cooking",
+      "video",
+      "home project"
+    ],
+    "learningObjectives": [
+      "Name four Chuseok treats and say what they are like (sweet, crispy)",
+      "Understand and act out eight kitchen verbs",
+      "Tell a simple recipe with First, Then, Finally"
+    ],
+    "teacherInstructions": "Lesson 1 (35 min): mystery treats, Snack Song video, Chef Says, muted songpyeon video with steps, Mix and Make. Lesson 2 (35 min): Kitchen Freeze, Recipe Race, Junior Chef Show, Home Cooking Mission. Print the recipe cards and parent letter (Cards). When photos arrive on K12, use the Cooking Show page for presentations.",
+    "studentInstructions": "Watch, act, cook in the game, then cook a real treat at home with your family!",
+    "route": "unit2-g3-cooking/index.html",
+    "worksheet": "unit2-g3-cooking/cards.html",
+    "worksheetRoute": "unit2-g3-cooking/cards.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "mix",
+        "pour",
+        "roll",
+        "fill",
+        "press",
+        "steam",
+        "add",
+        "cut"
+      ],
+      "supporting": [
+        "songpyeon",
+        "gangjeong",
+        "yakgwa",
+        "sikhye",
+        "honey",
+        "rice flour",
+        "sweet",
+        "crispy"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "First, … Then, … Finally, … / Add the ___, please!",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
     "id": "revision-quest-g4-u12",
     "title": "🧠 Revision Quest: Units 1 and 2 (Grade 4)",
     "description": "A 25-minute teacher-led smartboard revision lesson for Grade 4. Pupils memorise the key sentences and words of Unit 1 (Alice, butterflies, the brain) and Unit 2 (forests, the swallow's gift) with vanishing sentences, picture-and-gesture Word Gym, and a team Memory Boss Battle. Four teams, timers, goals ticked at the end.",

@@ -4140,7 +4140,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h3 class="hero-panel-title"><span>⚠️</span> <span>Needs Attention</span></h3>' +
           '<div class="needs-attention-list">' + attention.join('') + '</div>' +
         '</div>' +
-      '</div>';
+      '</div>' +
+      (window.Timetable && window.Timetable.lessonsHtml ? '<div class="dashboard-hero-panel" style="margin-top:20px;"><h3 class="hero-panel-title"><span>📚</span> <span>Our lessons for ' + esc(cls.name) + '</span></h3>' + window.Timetable.lessonsHtml(cls) + '</div>' : '');
   }
 
   // Secondary sub-tab controllers
