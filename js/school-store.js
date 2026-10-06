@@ -16684,39 +16684,7 @@
         this.state.trades = [];
       }
 
-      // Pre-seed default unopened boxes for existing students if empty
-      const students = this.state.students || [];
-      if (this.state.mysteryBoxes.length === 0 && students.length > 0) {
-        students.forEach((s, idx) => {
-          this.state.mysteryBoxes.push({
-            id: 'box-' + s.id + '-wood-1',
-            studentId: s.id,
-            boxTier: 'WOODEN',
-            isOpened: false,
-            openedAt: null,
-            createdAt: new Date().toISOString()
-          });
-          this.state.mysteryBoxes.push({
-            id: 'box-' + s.id + '-gilded-1',
-            studentId: s.id,
-            boxTier: 'GILDED',
-            isOpened: false,
-            openedAt: null,
-            createdAt: new Date().toISOString()
-          });
-          if (idx % 2 === 0) {
-            this.state.mysteryBoxes.push({
-              id: 'box-' + s.id + '-celestial-1',
-              studentId: s.id,
-              boxTier: 'CELESTIAL',
-              isOpened: false,
-              openedAt: null,
-              createdAt: new Date().toISOString()
-            });
-          }
-        });
-        this.saveState();
-      }
+      // (No free starter boxes: pupils only get mystery boxes they earn or that the teacher gives.)
     }
 
     getMysteryBoxes(studentId = null, includeOpened = false) {

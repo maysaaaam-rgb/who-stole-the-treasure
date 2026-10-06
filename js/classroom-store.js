@@ -564,6 +564,59 @@
     }
     return out + (given != null ? ' <span style="font-size:.74rem;font-weight:800;color:#92400e;white-space:nowrap;">✓ ' + given + ' given</span>' : '');
   }
+  // ---- clean-up of items nobody earned: the old automatic starter boxes, what came out of test openings, and test titles
+  var TEST_TITLES = { 'student-3a-224': ['ttl-legend'] };     // added by a platform test on 5 Oct 2026
+  var CLEAN_KEY = 'eaa_unearned_backup_v1';
+  function isSeedBox(b) { return /^box-.+-(wood|gilded|celestial)-1$/.test(String(b.id)); }
+  function findUnearned() {
+    var d = data(), boxes = (store.state.mysteryBoxes || []), inv = store.state.studentInventories || {}, out = { boxes: [], items: [], titles: [], requests: [] };
+    boxes.forEach(function (b) { if (isSeedBox(b) || TEST_TITLES[b.studentId]) out.boxes.push(b); });
+    Object.keys(inv).forEach(function (id) { (inv[id] || []).forEach(function (e) { if (e.source === 'mystery-box' || (TEST_TITLES[id] && (e.source === 'mystery-box' || !e.source))) out.items.push({ studentId: id, entry: e }); }); });
+    Object.keys(TEST_TITLES).forEach(function (id) { var ce = d.cosmetics && d.cosmetics[id]; if (ce) TEST_TITLES[id].forEach(function (t) { if ((ce.owned || []).indexOf(t) >= 0 || (ce.equipped && ce.equipped.title === t)) out.titles.push({ studentId: id, id: t }); }); });
+    d.requests.forEach(function (r) { if (/^FREE:/.test(String(r.name || '')) && !Number(r.price)) out.requests.push(r); });
+    out.total = out.boxes.length + out.items.length + out.titles.length + out.requests.length;
+    out.pupils = {}; out.boxes.concat(out.requests).forEach(function (x) { out.pupils[x.studentId] = 1; }); out.items.concat(out.titles).forEach(function (x) { out.pupils[x.studentId] = 1; });
+    return out;
+  }
+  function touchStudent(id) { var d = data(); if (!d.cosmetics[id]) d.cosmetics[id] = { owned: [], equipped: {}, updatedAt: 0 }; d.cosmetics[id].updatedAt = Date.now(); wallet(id); }
+  function cleanUnearned() {
+    var f = findUnearned(), d = data(); if (!f.total) return 0;
+    var backup = { at: new Date().toISOString(), boxes: f.boxes, items: f.items, titles: f.titles, requests: f.requests, profiles: {} };
+    var boxIds = {}; f.boxes.forEach(function (b) { boxIds[b.id] = 1; });
+    store.state.mysteryBoxes = (store.state.mysteryBoxes || []).filter(function (b) { return !boxIds[b.id]; });
+    f.items.forEach(function (x) {
+      var list = store.state.studentInventories[x.studentId] || [];
+      store.state.studentInventories[x.studentId] = list.filter(function (e) { return e !== x.entry && e.id !== x.entry.id; });
+      var prof = store.getMonsterProfile ? store.getMonsterProfile(x.studentId) : null;
+      if (prof && prof.unlockedItems && prof.unlockedItems.indexOf(x.entry.itemId) >= 0) {
+        if (!backup.profiles[x.studentId]) backup.profiles[x.studentId] = { unlockedItems: prof.unlockedItems.slice(), equipped: JSON.parse(JSON.stringify(prof.equipped || {})) };
+        var eq = JSON.parse(JSON.stringify(prof.equipped || {})); Object.keys(eq).forEach(function (k) { if (eq[k] === x.entry.itemId) eq[k] = 'none'; });
+        store.updateMonsterProfile(x.studentId, { unlockedItems: prof.unlockedItems.filter(function (i) { return i !== x.entry.itemId; }), equipped: eq });
+      }
+    });
+    f.titles.forEach(function (x) { var ce = d.cosmetics[x.studentId]; ce.owned = (ce.owned || []).filter(function (t) { return t !== x.id; }); if (ce.equipped && ce.equipped.title === x.id) delete ce.equipped.title; });
+    var reqIds = {}; f.requests.forEach(function (r) { reqIds[r.id] = 1; });
+    d.requests = d.requests.filter(function (r) { return !reqIds[r.id]; });
+    try { localStorage.setItem(CLEAN_KEY, JSON.stringify(backup)); } catch (e) { /* backup is best effort */ }
+    Object.keys(f.pupils).forEach(touchStudent);
+    save();
+    return f.total;
+  }
+  function undoClean() {
+    var b = null; try { b = JSON.parse(localStorage.getItem(CLEAN_KEY) || 'null'); } catch (e) { b = null; }
+    if (!b) return false;
+    var d = data(), pupils = {};
+    store.state.mysteryBoxes = (store.state.mysteryBoxes || []).concat(b.boxes || []);
+    (b.items || []).forEach(function (x) { (store.state.studentInventories[x.studentId] = store.state.studentInventories[x.studentId] || []).push(x.entry); pupils[x.studentId] = 1; });
+    Object.keys(b.profiles || {}).forEach(function (id) { store.updateMonsterProfile(id, b.profiles[id]); });
+    (b.titles || []).forEach(function (x) { var ce = d.cosmetics[x.studentId] || (d.cosmetics[x.studentId] = { owned: [], equipped: {} }); if ((ce.owned || []).indexOf(x.id) < 0) (ce.owned = ce.owned || []).push(x.id); ce.equipped = ce.equipped || {}; ce.equipped.title = x.id; pupils[x.studentId] = 1; });
+    d.requests = d.requests.concat(b.requests || []);
+    (b.boxes || []).concat(b.requests || []).forEach(function (x) { pupils[x.studentId] = 1; });
+    Object.keys(pupils).forEach(touchStudent);
+    try { localStorage.removeItem(CLEAN_KEY); } catch (e) { /* ignore */ }
+    save(); return true;
+  }
+
   function card(inner, extra) { return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:18px;margin-bottom:16px;' + (extra || '') + '">' + inner + '</div>'; }
   function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:var(--text-main,#0f172a);">' + t + '</div>' + (sub ? '<div style="font-size:.8rem;color:var(--text-muted,#64748b);margin-top:2px;">' + sub + '</div>' : '') + '</div>'; }
   function btn(label, onclick, kind, disabled) {
@@ -601,6 +654,13 @@
       (approved.length ? '<div style="margin-top:10px;font-weight:800;font-size:.82rem;color:var(--text-main,#0f172a);">Approved, not used yet</div>' + approved.map(function (r) {
         return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(r.name) + ' <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('Mark as used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
       }).join('') : ''));
+
+    // items nobody earned (old automatic boxes, test leftovers): the teacher removes them with one press
+    var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
+    if (unearned.total) html += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and a test on 5 October left a title and prizes on Aslıhan. Pupils did not earn these.') +
+      '<div style="font-size:.88rem;color:var(--text-main,#0f172a);margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + unearned.items.length + ' prizes from boxes · ' + unearned.titles.length + ' title · ' + unearned.requests.length + ' free reward · for ' + Object.keys(unearned.pupils).length + ' pupils. Coins and XP are not touched.</div>' +
+      btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border:2px solid #f59e0b;');
+    else if (hasBackup) html += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
 
     // worksheet coins (quick entry)
     html += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
@@ -896,6 +956,12 @@
       var r = decide(rid, 'declined', note || ''); notify(r.success ? 'Declined. Coins given back.' : r.error, r.success ? 'success' : 'error'); rerender();
     },
     give: function (sid, n) { var r = grant(sid, n); notify(r.success ? (r.amount > 0 ? 'Gave ' + r.amount + ' coins' : 'Took ' + (-r.amount) + ' coins') : r.error, r.success ? 'success' : 'error'); rerender(); },
+    cleanUnearned: function () {
+      confirm('Remove items nobody earned?', 'All automatic mystery boxes, the prizes that came out of them, the test title on Aslıhan and the free test reward will be removed. Coins and XP stay the same. A copy is kept on this device so you can undo.', 'Remove them', function () {
+        var n = cleanUnearned(); notify(n ? 'Removed ' + n + ' unearned items.' : 'Nothing to remove.'); rerender();
+      });
+    },
+    undoClean: function () { var ok = undoClean(); notify(ok ? 'Clean-up undone.' : 'No copy found on this device.', ok ? 'success' : 'error'); rerender(); },
     wsName: function (v) { wsName = String(v || '').trim() || 'Revision worksheet'; wsDraft = {}; rerender(); },
     wsPick: function (sid, n) {
       wsDraft[sid] = Math.max(0, Math.min(10, Math.round(Number(n) || 0)));
@@ -946,7 +1012,7 @@
     cosmetics: { equipped: equippedExtras, equip: equipExtra, buy: buyExtra, give: giveExtra, owned: extraOwned, entry: cosEntry, find: findExtra, setTitles: setTitleItems },
     fund: { get: fundFor, set: setFund, donate: donate, reset: resetFund },
     openBox: openBox2, BOX_ODDS: BOX_ODDS, TIERS: TIERS, BOX_INFO: BOX_INFO,
-    ui: ui, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
+    ui: ui, findUnearned: findUnearned, getTimetable: ui.getTimetable, setTimetable: ui.setTimetable, getBoardGoal: ui.getBoardGoal, setBoardGoal: ui.setBoardGoal, data: data, wallet: wallet, balance: balance, grant: grant, buyItem: buyItem, buyBox: buyBox,
     requestPrivilege: requestPrivilege, decide: decide, cloud: { pull: cloudPull, push: cloudPush, bundleFor: bundleFor, adoptDoc: adoptDoc, stampOf: stampOf, id: CLOUD_ID, state: function () { return cloudState; } }, undoPurchase: undoPurchase, shopItems: shopItems, usedThisWeek: usedThisWeek, DEFAULTS: DEFAULTS
   };
   root.__csRefreshStatus = function () { var el = document.getElementById('cs-cloud-status'); if (el) el.textContent = cloudLabel(); };
