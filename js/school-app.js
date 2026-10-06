@@ -4305,6 +4305,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // CURRICULUM MANAGEMENT (Reordering, Units, Lessons, Objectives)
   // =========================================================================
+  // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
+  const LESSON_PLANS = [
+    { title: 'Chuseok Cooking and Treats (Week 2, 2 lessons)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Chuseok-Cooking-Lesson-Plans', word: true },
+    { title: 'Recipe cards and parent letter (cooking home project)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Cooking-Recipe-Cards-and-Letter', word: false, kind: 'Printable' },
+    { title: 'Units 1 and 2 Revision (Revision Quest + Worksheet and Store)', grade: 'Grade 4', date: '2026-10-06', file: 'Grade4-Units1-2-Revision-Lesson-Plans', word: true },
+    { title: 'Revision worksheet A, B and answer key', grade: 'Grade 4', date: '2026-10-06', file: 'Grade4-Revision-Worksheet-A-B-Key', word: false, kind: 'Printable' },
+    { title: 'Chuseok Games Arcade Day', grade: 'Grade 3', date: '2026-10-05', file: 'Grade3-Chuseok-Arcade-Day-Lesson-Plan', word: true },
+    { title: 'Unit 2 lessons: Chuseok Moon Feast and First Harvest', grade: 'Grade 3', date: '2026-10-05', file: 'Grade3-Unit2-Lesson-Plans', word: true },
+    { title: 'Unit 2 lessons: Forest Rangers and The Swallow\u2019s Gift', grade: 'Grade 4', date: '2026-10-05', file: 'Grade4-Unit2-Lesson-Plans', word: true }
+  ];
+  function renderLessonPlansSection() {
+    const now = Date.now();
+    return '' +
+      '<div class="lp-section">' +
+        '<div class="lp-head"><h2>📄 Lesson plans</h2><span>Download for the headteacher or to print. Newest first.</span></div>' +
+        '<div class="lp-grid">' + LESSON_PLANS.map(p => {
+          const isNew = now - new Date(p.date).getTime() < 7 * 86400000;
+          return '<div class="lp-card"><div class="lp-top"><span class="lp-grade">' + p.grade + '</span>' + (p.kind ? '<span class="lp-kind">' + p.kind + '</span>' : '') + (isNew ? '<span class="lp-new">NEW</span>' : '') + '</div>' +
+            '<b>' + p.title + '</b><small>' + new Date(p.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
+            '<div class="lp-btns"><a class="lp-btn pdf" href="lesson-plans/' + p.file + '.pdf" target="_blank" rel="noopener">📄 PDF</a>' +
+            (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>📝 Word</a>' : '') + '</div></div>';
+        }).join('') + '</div>' +
+      '</div>';
+  }
+
   function renderCurriculumView(container) {
     const books = store.getBooks();
     let activeBook = books.find(b => b.id === curriculumActiveBookId);
@@ -4344,6 +4369,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     container.innerHTML = 
       '<div style="max-width:1300px; margin:0 auto; padding-bottom:60px;">' +
+        renderLessonPlansSection() +
         // Page Header
         '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
