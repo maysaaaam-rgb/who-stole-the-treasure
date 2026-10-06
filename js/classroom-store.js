@@ -67,6 +67,7 @@
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
     if (!d.cosmetics || typeof d.cosmetics !== 'object') d.cosmetics = {};
+    if (!d.worksheets || typeof d.worksheets !== 'object') d.worksheets = {};
     return d;
   }
   function save() { store.saveState(); store.notify(); schedulePush(); }
@@ -551,6 +552,18 @@
 
   // ---------------------------------------------------------------- UI (shared)
   var studentTab = 'items', itemFilter = 'all';
+  // ---- worksheet coins: one score (0 to 10) per pupil, given as coins once; pressing again only fixes the difference
+  var wsDraft = {}, wsName = 'Revision worksheet';
+  function wsId() { return String(wsName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'worksheet'; }
+  function wsGiven(sid) { var w = data().worksheets[wsId()]; return w && w.scores && w.scores[sid] != null ? w.scores[sid] : null; }
+  function wsRowHtml(sid) {
+    var cur = wsDraft[sid] != null ? wsDraft[sid] : null, given = wsGiven(sid), out = '', n;
+    for (n = 0; n <= 10; n++) {
+      var on = cur === n;
+      out += '<button type="button" onclick="ClassroomStore.ui.wsPick(\'' + sid + '\',' + n + ')" style="min-width:34px;padding:7px 0;margin:0 2px 2px 0;border-radius:9px;font-weight:900;font-size:.85rem;cursor:pointer;border:' + (on ? '2px solid #16a34a' : '1px solid var(--border-light,#cbd5e1)') + ';background:' + (on ? '#16a34a' : 'transparent') + ';color:' + (on ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + n + '</button>';
+    }
+    return out + (given != null ? ' <span style="font-size:.74rem;font-weight:800;color:#92400e;white-space:nowrap;">✓ ' + given + ' given</span>' : '');
+  }
   function card(inner, extra) { return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:18px;margin-bottom:16px;' + (extra || '') + '">' + inner + '</div>'; }
   function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:var(--text-main,#0f172a);">' + t + '</div>' + (sub ? '<div style="font-size:.8rem;color:var(--text-muted,#64748b);margin-top:2px;">' + sub + '</div>' : '') + '</div>'; }
   function btn(label, onclick, kind, disabled) {
@@ -588,6 +601,14 @@
       (approved.length ? '<div style="margin-top:10px;font-weight:800;font-size:.82rem;color:var(--text-main,#0f172a);">Approved, not used yet</div>' + approved.map(function (r) {
         return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);"><span>' + esc(r.icon) + '</span><div style="flex:1;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(r.name) + ' <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(r.studentId)) + '</span></div>' + btn('Mark as used', "ClassroomStore.ui.decide('" + r.id + "','used')", 'ghost') + '</div>';
       }).join('') : ''));
+
+    // worksheet coins (quick entry)
+    html += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Worksheet name<input id="cs-ws-name" type="text" maxlength="40" value="' + esc(wsName) + '" onchange="ClassroomStore.ui.wsName(this.value)" style="display:block;margin-top:3px;padding:7px;border-radius:9px;border:1px solid var(--border-light,#cbd5e1);width:240px;"></label>' +
+      '<span id="cs-ws-count" style="font-size:.85rem;font-weight:800;color:var(--text-main,#0f172a);">0 scores picked</span>' + btn('🪙 Give coins', 'ClassroomStore.ui.wsGive()') + btn('Clear', 'ClassroomStore.ui.wsClear()', 'ghost') + '</div>' +
+      '<div style="overflow-x:auto;">' + students.map(function (s) {
+        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--border-light,#e2e8f0);flex-wrap:wrap;"><div style="width:130px;font-weight:800;font-size:.85rem;color:var(--text-main,#0f172a);">' + esc(studentName(s.id)) + '</div><div id="cs-ws-' + esc(s.id) + '" style="flex:1;min-width:340px;">' + wsRowHtml(s.id) + '</div></div>';
+      }).join('') + '</div>');
 
     // students & coins
     html += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
@@ -875,6 +896,26 @@
       var r = decide(rid, 'declined', note || ''); notify(r.success ? 'Declined. Coins given back.' : r.error, r.success ? 'success' : 'error'); rerender();
     },
     give: function (sid, n) { var r = grant(sid, n); notify(r.success ? (r.amount > 0 ? 'Gave ' + r.amount + ' coins' : 'Took ' + (-r.amount) + ' coins') : r.error, r.success ? 'success' : 'error'); rerender(); },
+    wsName: function (v) { wsName = String(v || '').trim() || 'Revision worksheet'; wsDraft = {}; rerender(); },
+    wsPick: function (sid, n) {
+      wsDraft[sid] = Math.max(0, Math.min(10, Math.round(Number(n) || 0)));
+      var el = root.document && root.document.getElementById('cs-ws-' + sid); if (el) el.innerHTML = wsRowHtml(sid);
+      var c = root.document && root.document.getElementById('cs-ws-count'); if (c) { var k = Object.keys(wsDraft).length; c.textContent = k + (k === 1 ? ' score picked' : ' scores picked'); }
+    },
+    wsClear: function () { wsDraft = {}; rerender(); },
+    wsGive: function () {
+      var ids = Object.keys(wsDraft); if (!ids.length) { notify('Pick a score for at least one pupil first.', 'error'); return; }
+      var w = data().worksheets, id = wsId();
+      if (!w[id]) w[id] = { name: wsName, scores: {}, created: new Date().toISOString() };
+      var given = 0, coins = 0;
+      ids.forEach(function (sid) {
+        var n = wsDraft[sid], prev = w[id].scores[sid] || 0, diff = n - prev;
+        if (diff !== 0) { var r = grant(sid, diff, 'Worksheet: ' + wsName + ' (' + n + '/10)'); if (!r.success) return; coins += r.amount; given++; }
+        w[id].scores[sid] = n;
+      });
+      w[id].updatedAt = new Date().toISOString(); save();
+      wsDraft = {}; notify('Worksheet coins saved: ' + given + ' pupils changed, ' + coins + ' coins in total.'); rerender();
+    },
     giveCustom: function (sid) {
       var v = root.prompt ? root.prompt('How many coins? Use a minus sign to take coins away (for example -10).', '10') : null;
       if (v === null) return; ui.give(sid, Number(v));

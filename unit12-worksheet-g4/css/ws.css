@@ -1,0 +1,44 @@
+/* Grade 4 Worksheet + Class Store lesson */
+.earn3 { display: flex; align-items: stretch; justify-content: center; gap: 1.2vh; flex-wrap: wrap; }
+.ecard { background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 2vh; padding: 1.4vh 2vh; text-align: center; display: flex; flex-direction: column; align-items: center; min-width: 17vh; }
+.ecard .ei { font-size: 7vh; line-height: 1.1; } .ecard small { font-size: 0.7em; color: #cbd5e1; }
+.ecard.hot { border-color: #f59e0b; background: rgba(245, 158, 11, 0.16); box-shadow: 0 0 2vh rgba(245, 158, 11, 0.35); }
+.earn3 .ar, .earn3 .plus { align-self: center; font-size: 4vh; color: #fde047; font-weight: 900; }
+.rules { display: flex; flex-direction: column; gap: 0.9vh; margin: 1.4vh 0; }
+.rule { background: rgba(255, 255, 255, 0.06); border-radius: 1.4vh; padding: 1vh 1.4vh; font-weight: 700; font-size: 1.05em; } .rule b { color: #fde047; margin-right: 0.3em; }
+
+.worktop { display: flex; align-items: center; gap: 2.4vh; }
+.bigclock { font-size: 15vh; font-weight: 900; line-height: 1; color: #fde047; font-variant-numeric: tabular-nums; background: rgba(15, 23, 42, 0.85); border: 3px solid rgba(253, 224, 71, 0.5); border-radius: 2.4vh; padding: 1.2vh 3vh; }
+.bigclock.low { color: #fb7185; border-color: #fb7185; animation: pulse 1s infinite; }
+.worktop .col { flex: 1; display: flex; flex-direction: column; gap: 1.2vh; }
+.tbar { height: 2vh; border-radius: 99px; background: rgba(255, 255, 255, 0.1); overflow: hidden; } .tbar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #fde047); transition: width 1s linear; }
+.helpboard { border-radius: 2vh; padding: 1.4vh 2vh; background: rgba(56, 189, 248, 0.1); border: 2px solid rgba(56, 189, 248, 0.5); }
+.helpboard .hh { font-weight: 900; color: #7dd3fc; margin-bottom: 0.6vh; } .helpboard .hw { font-size: 1.2em; font-weight: 800; line-height: 1.6; }
+.fast { border-radius: 1.6vh; padding: 1.2vh 1.6vh; background: rgba(168, 85, 247, 0.14); border: 2px dashed rgba(168, 85, 247, 0.6); font-weight: 700; margin-top: 1vh; }
+
+.anslist { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9vh 1.4vh; }
+.ans { display: flex; align-items: center; gap: 1vh; padding: 0.9vh 1.4vh; border-radius: 1.4vh; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(255, 255, 255, 0.15); font-size: 1.1em; font-weight: 800; }
+.ans.u1 { border-left: 6px solid #f59e0b; } .ans.u2 { border-left: 6px solid #10b981; }
+.ans .qn { color: #94a3b8; min-width: 2.4em; } .ans .av { flex: 1; color: #fde047; }
+.ans.open { background: rgba(16, 185, 129, 0.16); animation: pop 0.4s var(--spring-snap); }
+.fixbox { flex: 1; border-radius: 1.6vh; padding: 1vh 1.4vh; background: rgba(16, 185, 129, 0.14); border: 2px solid rgba(16, 185, 129, 0.55); font-weight: 700; }
+
+.wallet { display: flex; align-items: center; gap: 1.4vh; background: rgba(15, 23, 42, 0.9); border: 2px solid rgba(245, 158, 11, 0.6); border-radius: 99px; padding: 0.6vh 2vh; font-weight: 900; font-size: 1.15em; }
+.wallet .wc { color: #fde047; }
+.shelves { display: flex; flex-direction: column; gap: 1.2vh; }
+.shelf .sht { font-weight: 900; font-size: 1.05em; margin-bottom: 0.5vh; }
+.sitems { display: flex; gap: 1.1vh; flex-wrap: wrap; }
+.sitem { font: inherit; color: inherit; cursor: pointer; flex: 1; min-width: 14vh; max-width: 24vh; display: flex; flex-direction: column; align-items: center; gap: 0.3vh; padding: 1vh 0.8vh; border-radius: 1.8vh; background: rgba(15, 23, 42, 0.85); border: 2px solid rgba(255, 255, 255, 0.2); border-bottom-width: 5px; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; }
+.sitem:active { transform: translateY(3px); border-bottom-width: 2px; }
+.sitem.can { border-color: #10b981; box-shadow: 0 0 2vh rgba(16, 185, 129, 0.45); }
+.sitem .se { font-size: 5.5vh; line-height: 1.1; } .sitem .sn { font-size: 0.8em; font-weight: 800; text-align: center; min-height: 2.4em; } .sitem .sp { font-weight: 900; color: #fde047; }
+.sbar { width: 100%; height: 0.9vh; border-radius: 99px; background: rgba(255, 255, 255, 0.12); overflow: hidden; } .sbar i { display: block; height: 100%; background: linear-gradient(90deg, #f59e0b, #10b981); transition: width 0.5s; }
+.boxstage { align-items: center; justify-content: center; gap: 3vh; padding: 1.4vh; border-radius: 2vh; background: rgba(168, 85, 247, 0.14); border: 2px solid rgba(168, 85, 247, 0.5); }
+.bigbox { font-size: 11vh; line-height: 1; } .bigbox.shake { animation: wiggle 0.3s infinite; }
+.prize { font-size: 3.4vh; font-weight: 900; color: #fde047; }
+
+.wish { display: flex; flex-direction: column; gap: 1.6vh; align-items: center; margin: 1vh 0; }
+.wl1 { font-size: 5vh; font-weight: 900; } .wl1 u { text-decoration-color: #fde047; text-underline-offset: 0.6vh; }
+
+@media (max-width: 900px) { .anslist { grid-template-columns: 1fr; } .worktop { flex-direction: column; } }
+.sitem .se { font-size: 4.2vh; } .sitem .sn { min-height: 2.2em; } .sitem { padding: 0.7vh 0.6vh; } .ans { padding: 0.6vh 1.2vh; } .shelves { gap: 0.8vh; }

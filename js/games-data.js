@@ -9115,6 +9115,195 @@ const GAMES_REGISTRY = [
     "url": "unit2-g3-lessons/index.html?lesson=3",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "revision-quest-g4-u12",
+    "title": "🧠 Revision Quest: Units 1 and 2 (Grade 4)",
+    "description": "A 25-minute teacher-led smartboard revision lesson for Grade 4. Pupils memorise the key sentences and words of Unit 1 (Alice, butterflies, the brain) and Unit 2 (forests, the swallow's gift) with vanishing sentences, picture-and-gesture Word Gym, and a team Memory Boss Battle. Four teams, timers, goals ticked at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🧠 Revision",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Units 1 and 2 revision (Grade 4)",
+    "topics": [
+      "Units 1 and 2 revision (Grade 4)"
+    ],
+    "languageFocus": "Past simple (chased, fell, gave, grew, built, hit, paid); Who/Where/Why; so it can / so they can; deciduous, coniferous, hibernate, survive",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "revision",
+      "memory",
+      "unit 1",
+      "unit 2"
+    ],
+    "learningObjectives": [
+      "Say the key Unit 1 and Unit 2 sentences from memory",
+      "Say six irregular past verbs with their gestures",
+      "Use so it can / so they can and Who, Where, Why questions"
+    ],
+    "teacherInstructions": "Run the 7 steps on the smartboard in 25 minutes: goals (2), Unit 1 vanishing sentences (5), Unit 1 Word Gym (4), Unit 2 vanishing sentences (5), Unit 2 Word Gym (4), Memory Boss Battle (4), goals and scores (1). Press Say it, then Hide more; pupils say the sentence again each time. Use the Teacher button for tips. Next lesson: worksheet and Class Store.",
+    "studentInstructions": "Say it, hide it, say it from memory!",
+    "route": "unit12-revision-g4/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Grade 4 Revision",
+    "vocabulary": {
+      "core": [
+        "freeze",
+        "journey",
+        "visualize",
+        "predator",
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive"
+      ],
+      "supporting": [
+        "built",
+        "fell",
+        "gave",
+        "grew",
+        "hit",
+        "paid"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Past simple / so it can / Who-Where-Why",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "worksheet-store-g4-u12",
+    "title": "📝 Worksheet and Class Store: Units 1 and 2 (Grade 4)",
+    "description": "A 35-minute teacher-led lesson after the revision lesson. Pupils do a 10-question worksheet (versions A and B) on paper for up to 10 coins, mark it together on the board with a fix-it round, then see how the Class Store works in a demo (coins, rewards, mystery boxes). Printable worksheet with answer key included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🧠 Revision",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Writing",
+      "Reading",
+      "Vocabulary"
+    ],
+    "topic": "Units 1 and 2 revision (Grade 4)",
+    "topics": [
+      "Units 1 and 2 revision (Grade 4)"
+    ],
+    "languageFocus": "Past simple (chased, fell, gave, grew, built, hit, paid); Who/Where/Why; so it can / so they can; deciduous, coniferous, hibernate, survive",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "worksheet",
+      "class store",
+      "unit 1",
+      "unit 2"
+    ],
+    "learningObjectives": [
+      "Show what they remember from Units 1 and 2 in writing",
+      "Check and correct their own work",
+      "Talk about wants, prices and coins: I want … It costs … coins"
+    ],
+    "teacherInstructions": "Print worksheet.html (A and B on alternate desks). Run the 5 steps: mission (3), worksheet time with the timer (17), mark it together and fix-it (4), Class Store tour demo (9), wish list and door pass (2). Then enter each pupil's coins: Classroom Store, Worksheet coins.",
+    "studentInstructions": "Do the worksheet, mark it, fix your mistakes, then learn how the Class Store works!",
+    "route": "unit12-worksheet-g4/index.html",
+    "worksheet": "unit12-worksheet-g4/worksheet.html",
+    "worksheetRoute": "unit12-worksheet-g4/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Grade 4 Revision",
+    "vocabulary": {
+      "core": [
+        "coins",
+        "price",
+        "cost",
+        "save",
+        "buy",
+        "reward"
+      ],
+      "supporting": [
+        "worksheet",
+        "correct",
+        "mistake"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I want … It costs … coins. I have … coins.",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
   }
 ];
 
