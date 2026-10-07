@@ -250,7 +250,7 @@
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
         '<button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button><span class="sep"></span>' +
-        '<button onclick="ClassBoard.pick()" title="Pick a student">🎲 Pick</button><button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
+        '<button onclick="ClassBoard.pick()" title="Pick a student">🎲 Pick</button><button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button><button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
         '<button class="ic" onclick="try{classSoundboard.playAttentionBell()}catch(e){}" title="Bell">🔔</button><button class="ic" onclick="try{classSoundboard.playApplause()}catch(e){}" title="Applause">👏</button><span class="sep"></span>' +
         '<button class="ic" onclick="ClassBoard.addStudent()" title="Add a student">➕</button><button class="ic" onclick="switchView(\'store\')" title="Classroom Store">🛍️</button><button class="ic" onclick="ClassBoard.full()" title="Full screen">⛶</button><button class="ic" onclick="switchView(\'dashboard\')" title="Exit the board">✕</button></div></div>';
     paintGoal(); paintClock();
@@ -272,6 +272,15 @@
     return false;
   }
   var api = {
+    /** Open the Karaoke Stage with this class: the same names and monsters as the board, away pupils already marked. */
+    karaoke: function () {
+      var cls = viewCls || S().getActiveClass(); if (!cls) return;
+      var list = students(cls).slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'tr'); });
+      var data = { cls: cls.id, label: cls.name, grade: cls.grade || '', kids: list.map(function (s) { return { id: s.id, name: s.name, img: s.img }; }), away: absent, at: Date.now() };
+      try { sessionStorage.setItem('eaa_karaoke_roster', JSON.stringify(data)); }
+      catch (e) { data.kids.forEach(function (k) { k.img = ''; }); try { sessionStorage.setItem('eaa_karaoke_roster', JSON.stringify(data)); } catch (e2) { /* the page reads the class list itself */ } }
+      location.href = 'karaoke-stage/index.html?cls=' + encodeURIComponent(cls.id);
+    },
     switchClass: function (id) { S().setActiveClass(id); stopTimer(); timer.left = timer.total; if (root.renderCurrentView) root.renderCurrentView(); },
     menu: function (id, ev) {
       if (ev) ev.stopPropagation();

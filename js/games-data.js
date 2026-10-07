@@ -9216,6 +9216,73 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
   },
   {
+    "id": "karaoke-stage",
+    "title": "🎤 Karaoke Stage: Read It One by One (Grades 3 and 4)",
+    "description": "A smartboard reading show. A drum roll picks the next pupil, the model voice reads the lines with a bouncing ball, then the ball follows the pupil at a slow, steady pace while they read into the teacher's microphone. The teacher gives 1, 2 or 3 stars. Hide some or all words for a memory challenge. Packs: Alice Tea Party role lines (each pupil reads their own role), Grade 4 Unit 1 and Unit 2 revision sentences, Grade 3 songpyeon steps, recipes and treat clues. Optional 👂 Ears (Chrome or Edge): voice recognition moves the ball with the pupil's voice, heard words turn green, missed words orange, and it suggests a star; the teacher decides. No recordings are kept.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎤 Speaking",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Class 3A",
+      "Class 3B",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 15,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 15,
+    "xp": 15,
+    "skills": [
+      "Speaking",
+      "Reading",
+      "Pronunciation"
+    ],
+    "topic": "Reading aloud: the sentences of Units 1 and 2",
+    "topics": [
+      "Reading aloud",
+      "Alice Tea Party",
+      "Unit 1 and Unit 2 revision",
+      "Chuseok cooking"
+    ],
+    "languageFocus": "Reading the unit sentences aloud with a clear voice and steady pace.",
+    "activityMode": "Whole class, one smartboard, one reader at a time",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Practise",
+    "tags": [
+      "speaking",
+      "reading aloud",
+      "karaoke",
+      "smartboard",
+      "alice",
+      "revision",
+      "cooking"
+    ],
+    "learningObjectives": [
+      "Read short unit sentences aloud with a clear voice",
+      "Follow the words at a steady pace",
+      "Say the sentences from memory when words are hidden"
+    ],
+    "teacherInstructions": "Choose the class (tap pupils who are away), choose a pack, press Start. For each reader: 🔊 Listen (model voice), 🎤 Your turn (the ball moves at the chosen speed; Space moves it word by word), then give 1, 2 or 3 stars (keys 1, 2, 3). 🙈 hides words for a memory challenge. At the end you see everybody's stars; give XP on the Class Board if you like (⭐⭐⭐ +15, ⭐⭐ +10, ⭐ +5).",
+    "studentInstructions": "Listen, then read the words when the ball jumps on them. Big, clear voice!",
+    "route": "karaoke-stage/index.html",
+    "url": "karaoke-stage/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Speaking",
+    "thumbnailIcon": "🎤",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 55%, #38bdf8 100%)"
+  },
+  {
     "id": "revision-quest-g4-u12",
     "title": "🧠 Revision Quest: Units 1 and 2 (Grade 4)",
     "description": "A 25-minute teacher-led smartboard revision lesson for Grade 4. Pupils memorise the key sentences and words of Unit 1 (Alice, butterflies, the brain) and Unit 2 (forests, the swallow's gift) with vanishing sentences, picture-and-gesture Word Gym, and a team Memory Boss Battle. Four teams, timers, goals ticked at the end.",
