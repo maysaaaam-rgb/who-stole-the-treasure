@@ -22,6 +22,25 @@ window.KaraokeData = (function () {
       ['king', 'loom_weaving', 'cloth_roll', 'moon_full', 'feast_table', 'thank_you_kid', 'family_travel', 'bow_ancestors'], G3_ART) });
   packs.sort(function (a, b) { return a.id < b.id ? -1 : 1; });   // Reading 1 before Reading 2
 
+  /* Week Song: the lyrics the teacher pasted in the Week Song page (kept only in this browser, never in the project) */
+  try {
+    var ws = JSON.parse(localStorage.getItem('eaa_weeksong_v1') || 'null');
+    if (ws && ws.lyrics) {
+      var secs = [], cur = null;
+      String(ws.lyrics).split(/\r?\n/).forEach(function (l) {
+        l = l.trim(); if (!l) return; var m = /^\[(.+?)\]$/.exec(l);
+        if (m) { cur = { name: m[1], lines: [] }; secs.push(cur); return; }
+        if (!cur) { cur = { name: 'Song', lines: [] }; secs.push(cur); } cur.lines.push(l);
+      });
+      var picks = Array.isArray(ws.picks) ? ws.picks : secs.map(function (s, i) { return /chorus/i.test(s.name) ? i : -1; }).filter(function (i) { return i >= 0; });
+      if (!picks.length && secs.length) picks = [0];
+      var seen = {}, ls = [];
+      picks.forEach(function (i) { (secs[i] ? secs[i].lines : []).forEach(function (t) { var k = t.toLowerCase(); if (!seen[k]) { seen[k] = 1; ls.push(t); } }); });
+      var cards = []; for (var q = 0; q < ls.length; q += 2) cards.push({ lines: ls.slice(q, q + 2), e: '🎵' });
+      if (cards.length) packs.unshift({ id: 'weeksong', grade: 4, e: '🎵', title: 'Week Song: ' + String(ws.title || 'our song').slice(0, 40), note: 'The lines we teach this week. Two lines each.', cards: cards });
+    }
+  } catch (e) { /* no week song on this computer */ }
+
   /* Grade 4: Alice Tea Party role lines (each pupil reads their own role when the name matches) */
   if (P.roles) {
     packs.push({

@@ -4,6 +4,8 @@
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var CATALOG = [
+    { id: 'watch-bean-g3', icon: '🎬', title: 'Mr Bean: Super Trolley (watch and answer)', route: 'watch-answer/index.html', g: 3, added: '2026-10-07' },
+    { id: 'weeksong-g4', icon: '🎵', title: 'Week Song: learn, move, sing', route: 'week-song-g4/index.html', g: 4, added: '2026-10-07' },
     { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 4, added: '2026-10-07' },
     { id: 'karaoke-g3', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 3, added: '2026-10-07' },
     { id: 'g3-cook1', icon: '🍡', title: 'Chuseok Treats Kitchen (Week 2, L1)', route: 'unit2-g3-cooking/index.html?lesson=1', g: 3, added: '2026-10-07' },

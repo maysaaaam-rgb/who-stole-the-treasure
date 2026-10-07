@@ -4307,6 +4307,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Week Song: learn, move, sing (4 short sessions)', grade: 'Grade 4', date: '2026-10-07', file: 'Grade4-Week-Song-Lesson-Plans', word: true },
+    { title: 'Watch and Answer: Mr Bean, Super Trolley (1 lesson)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Mr-Bean-Watch-and-Answer-Lesson-Plan', word: true },
     { title: 'Chuseok Cooking and Treats (Week 2, 2 lessons)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Chuseok-Cooking-Lesson-Plans', word: true },
     { title: 'Recipe cards and parent letter (cooking home project)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Cooking-Recipe-Cards-and-Letter', word: false, kind: 'Printable' },
     { title: 'Units 1 and 2 Revision (Revision Quest + Worksheet and Store)', grade: 'Grade 4', date: '2026-10-06', file: 'Grade4-Units1-2-Revision-Lesson-Plans', word: true },
@@ -14081,22 +14083,6 @@ window.switchClassroomSubTab = function(subTab) {
                 '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">Talk into your microphone and sound like a chipmunk, robot, dragon, giant, fairy or ghost. Instant, and it works offline. Hold the button (or Space) to talk.</p>' +
               '</div>' +
               '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open()" style="width:100%; background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">🎙️ Open the Voice Changer</button>' +
-            '</div>' +
-          '</div>';
-        break;
-      case 'karaoke':
-        container.innerHTML = '' +
-          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
-            '<div class="toolkit-card" style="max-width:560px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #78350f 55%, #38bdf8 100%); border: 2px solid #f59e0b; border-radius: 16px; padding: 1.5rem; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'karaoke-stage/index.html\', \'_blank\')">' +
-              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
-                '<span style="font-size: 2.4rem;">🎤</span>' +
-                '<span style="background: rgba(245, 158, 11, 0.25); color: #fde68a; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">READ ONE BY ONE</span>' +
-              '</div>' +
-              '<div style="margin: 1rem 0;">' +
-                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Karaoke Stage</h3>' +
-                '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">A drum roll picks the next pupil. The voice reads first with a bouncing ball, then the pupil reads while the ball follows. Give 1, 2 or 3 stars. Unit 2 readings, Alice Tea Party roles and revision sentences. Optional voice recognition (Ears).</p>' +
-              '</div>' +
-              '<button style="background: #f59e0b; color: #1c1004; border: none; border-bottom: 5px solid #92400e; border-radius: 12px; font-weight: 800; padding: 0.8rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">🎤 Open Karaoke Stage</button>' +
             '</div>' +
           '</div>';
         break;

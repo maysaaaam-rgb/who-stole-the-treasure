@@ -9216,6 +9216,129 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
   },
   {
+    "id": "watch-answer-bean-g3",
+    "title": "🎬 Watch and Answer: Mr Bean, Super Trolley (Grade 3)",
+    "description": "A 35-minute video lesson for Grade 3 on the smartboard. The class predicts what a super trolley can do, then watches the cartoon: it stops by itself ten times for a question with picture answers, hints for wrong answers and points for the four teams. Then pupils retell the story in order, and tell a partner with First, Then, Finally. The teacher can change the time and wording of every question. The video plays from YouTube.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎬 Video Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "1 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 20,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary"
+    ],
+    "topic": "Watching a cartoon: what is he doing, where is he, what happens",
+    "topics": [
+      "Present continuous: He is eating",
+      "Places and shop words",
+      "Retelling a story"
+    ],
+    "languageFocus": "What is he doing? He is eating / driving / going. Where is he? He is at the shop. First, Then, Finally.",
+    "activityMode": "Whole class, one smartboard, four teams",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "video",
+      "cartoon",
+      "smartboard",
+      "listening",
+      "retell",
+      "mr bean"
+    ],
+    "learningObjectives": [
+      "Say what a character is doing and where he is",
+      "Answer questions about a short cartoon",
+      "Retell the story with First, Then, Finally"
+    ],
+    "teacherInstructions": "Steps: Settle and pre-teach words (3 min), Predict (2 min), Watch and answer (about 20 min: the video stops itself at each question; tap the answer, the class says the sentence, give a team point, press Keep watching), Retell (5 min), Tell your partner (3 min), wrap-up (2 min). The question times were set by looking at the video; press the gear to change any question or time (changes stay in this browser).",
+    "studentInstructions": "Watch the cartoon. When it stops, look at the pictures and choose the answer!",
+    "route": "watch-answer/index.html",
+    "url": "watch-answer/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "thumbnailIcon": "🎬",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #134e4a 55%, #38bdf8 100%)"
+  },
+  {
+    "id": "week-song-g4",
+    "title": "🎵 Week Song: Learn, Move, Sing (Grade 4)",
+    "description": "The song of the week for Grade 4 on the smartboard. The video plays on the board; the main words get an action; the chorus is learned line by line (listen, echo, hide words); the lyrics follow the video (hand or auto after a one-time sync); and four teams sing in a team show with stars. The teacher pastes the lyrics once; they stay in that browser only and are not stored in the project.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎵 Song of the Week",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 35,
+    "durationText": "2 to 4 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 20,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Pronunciation"
+    ],
+    "topic": "Song of the week: learn, move, sing",
+    "topics": [
+      "Song of the week",
+      "Pronunciation and rhythm",
+      "Action words"
+    ],
+    "languageFocus": "Singing and saying a chorus with clear words and steady rhythm; action words.",
+    "activityMode": "Whole class, one smartboard",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Practise",
+    "tags": [
+      "song",
+      "video",
+      "speaking",
+      "smartboard",
+      "week song"
+    ],
+    "learningObjectives": [
+      "Say the lines of the chorus clearly",
+      "Do the actions for the main words",
+      "Sing the chorus with a team"
+    ],
+    "teacherInstructions": "First time only: press the gear, paste the lyrics (put [Chorus] style headings before each part) and choose the parts to teach. Then use the four steps: Move, Learn, Sing, Show. In Sing, press Sync it once and tap Space when each line starts; after that the lyrics follow the video by themselves. The lyrics stay on this computer only.",
+    "studentInstructions": "Watch, move, learn the lines, and sing with your team!",
+    "route": "week-song-g4/index.html",
+    "url": "week-song-g4/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "thumbnailIcon": "🎵",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #831843 55%, #f59e0b 100%)"
+  },
+  {
     "id": "karaoke-stage",
     "title": "🎤 Karaoke Stage: Read It One by One (Grades 3 and 4)",
     "description": "A smartboard reading show. A drum roll picks the next pupil, the model voice reads the lines with a bouncing ball, then the ball follows the pupil at a slow, steady pace while they read into the teacher's microphone. The teacher gives 1, 2 or 3 stars. Hide some or all words for a memory challenge. Packs: Unit 2 readings for both grades (Grade 3: Chuseok and First Harvest; Grade 4: A Year in the Forest and The Swallow's Gift, read in story order), Alice Tea Party role lines (each pupil reads their own role), Grade 4 Unit 1 and Unit 2 revision sentences, Grade 3 songpyeon steps, recipes and treat clues. Optional 👂 Ears (Chrome or Edge): voice recognition moves the ball with the pupil's voice, heard words turn green, missed words orange, and it suggests a star; the teacher decides. No recordings are kept.",

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch and Answer • English Adventure Academy</title>
+  <link rel="stylesheet" href="../karaoke-stage/css/style.css?v=3">
+  <link rel="stylesheet" href="../week-song-g4/css/song.css?v=4">
+  <link rel="stylesheet" href="css/wa.css?v=1">
+</head>
+<body>
+  <header class="hud">
+    <h1>🎬 Watch and Answer<small id="h-sub">Grade 3 • the cartoon stops, you answer</small></h1>
+    <div class="grow"></div>
+    <button type="button" class="btn small ghost" id="setup" title="Change the questions">⚙️</button>
+    <button type="button" class="btn small ghost" id="snd" title="Sound on / off">🔊</button>
+    <button type="button" class="btn small cyan" id="fs" title="Full screen">📺</button>
+    <a class="btn small ghost" href="../index.html" style="text-decoration:none" title="Back to the platform">🏠</a>
+  </header>
+
+  <main><section id="stage"></section></main>
+
+  <footer class="foot">
+    <button type="button" class="btn ghost" id="back">◀ Back</button>
+    <div class="steps" id="steps"></div>
+    <button type="button" class="btn amber small" id="tipbtn">💡 Teacher</button>
+    <button type="button" class="btn green big" id="next">Next ▶</button>
+  </footer>
+
+  <aside id="tip" hidden></aside>
+  <div id="fx" aria-hidden="true"></div>
+
+  <script src="../karaoke-stage/js/audio.js?v=2"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>
