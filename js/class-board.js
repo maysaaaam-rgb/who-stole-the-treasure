@@ -89,6 +89,17 @@
     '#cb-pop{position:fixed;z-index:99990;background:#1e1b4b;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:200px;box-shadow:0 18px 50px rgba(0,0,0,.6);font-family:Fredoka,system-ui,sans-serif}#cb-pop b{color:#fde68a;font-weight:600;padding:6px 10px 4px;font-size:.95rem}#cb-pop button{border:0;background:none;color:#fff;font:500 .95rem Fredoka,sans-serif;text-align:left;padding:9px 10px;border-radius:9px;cursor:pointer}#cb-pop button:hover{background:rgba(255,255,255,.14)}' +
     '.cb-grp{position:fixed;inset:0;z-index:99997;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Fredoka,system-ui,sans-serif;color:#fff}.cb-grp>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;text-align:center}.cb-grp h2{margin:0 0 12px;font-weight:600}.cb-gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;text-align:left}.cb-gg div.g{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 16px;border-top:6px solid var(--c)}.cb-gg b{display:block;font-weight:600;margin-bottom:4px;color:#fde68a}.cb-grp .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.cb-grp button{border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:14px;background:#22c55e;color:#fff;font:500 1rem Fredoka,sans-serif;padding:9px 18px;cursor:pointer}.cb-grp button.g2{background:rgba(255,255,255,.2)}' +
     '.cb-dock{gap:5px;padding:6px 8px;border-radius:16px;flex-wrap:nowrap;max-width:96vw;overflow-x:auto}.cb-dock button{padding:6px 11px;font-size:.85rem;border-radius:11px;border-bottom-width:3px;white-space:nowrap}.cb-dock button.sm{padding:6px 8px}.cb-dock button.ic{padding:6px 8px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
+    '.cb-goal.won{background:linear-gradient(90deg,rgba(251,191,36,.45),rgba(244,63,94,.45));animation:cbPulse 1.6s infinite}' +
+    '.cb-gm{position:fixed;inset:0;z-index:99996;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Fredoka,system-ui,sans-serif;color:#fff}' +
+    '.cb-gm>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;width:min(720px,96vw);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}' +
+    '.cb-gm h2{margin:0 0 6px;font-weight:600;font-size:1.7rem}.cb-gm p{margin:4px 0 12px;opacity:.85}.cb-gm label{display:block;font-weight:600;margin:12px 0 6px}' +
+    '.cb-gm .opts{display:flex;flex-wrap:wrap;gap:8px}.cb-gm .opts button{border:2px solid rgba(255,255,255,.25);border-bottom-width:4px;background:rgba(255,255,255,.1);color:#fff;border-radius:14px;padding:8px 13px;font:500 .95rem Fredoka,sans-serif;cursor:pointer}' +
+    '.cb-gm .opts button.on{background:#fbbf24;color:#4a2300;border-color:#b45309}.cb-gm input{font:500 1rem Fredoka,sans-serif;padding:9px 12px;border-radius:12px;border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.25);color:#fff;width:100%}' +
+    '.cb-gm .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;justify-content:flex-end}.cb-gm .row button{border:0;border-bottom:5px solid rgba(0,0,0,.3);border-radius:14px;background:#22c55e;color:#fff;font:600 1.05rem Fredoka,sans-serif;padding:10px 20px;cursor:pointer}.cb-gm .row button.g2{background:rgba(255,255,255,.18)}' +
+    '.cb-gm .row button:active,.cb-gm .opts button:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.cb-win2{text-align:center}.cb-win2 .big{font-size:5.5rem;line-height:1;animation:cbPulse 1.2s infinite}.cb-win2 h2{font-size:2.6rem!important;margin:10px 0}.cb-win2 .prize{display:inline-block;background:#fbbf24;color:#4a2300;font-weight:700;font-size:1.6rem;border-radius:18px;padding:10px 22px;margin:6px 0 10px}' +
+    '.cb-win2 .todo{background:rgba(0,0,0,.25);border-radius:16px;padding:10px 14px;text-align:left;margin:10px 0;line-height:1.5}.cb-hist{font-size:.85rem;opacity:.8;margin-top:10px}' +
+    '.cb-conf{position:fixed;inset:0;pointer-events:none;z-index:99997;overflow:hidden}.cb-conf i{position:absolute;top:-6vh;font-style:normal;animation:cbFall 2.6s linear forwards}@keyframes cbFall{to{transform:translateY(112vh) rotate(540deg)}}' +
     '@media(max-width:1100px){.cb-dock{gap:5px;padding:7px 8px;border-radius:18px}.cb-dock button{padding:7px 10px;font-size:.82rem;border-radius:12px}.cb-dock .sep{display:none}}' +
     '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
   function ensureCss() {
@@ -118,8 +129,66 @@
     var g = loadGoal(viewCls), got = goalProgress(viewCls, g), pct = Math.min(100, Math.round(got / g.target * 100));
     var el = document.getElementById('cb-goal'); if (!el) return;
     el.querySelector('i').style.width = pct + '%';
-    el.querySelector('.r').textContent = pct >= 100 ? '🎉 ' + g.label + ' unlocked!' : pct + '% · ' + g.label;
-    el.querySelector('.l').textContent = '🎯 Class goal ' + got + ' / ' + g.target + ' XP';
+    el.querySelector('.r').textContent = pct >= 100 ? '🎉 ' + g.label + ' unlocked! Tap to celebrate' : pct + '% · ' + g.label;
+    el.querySelector('.l').textContent = '🎯 Class goal ' + Math.min(got, g.target) + ' / ' + g.target + ' XP';
+    el.classList.toggle('won', pct >= 100);
+    if (pct >= 100 && !g.reachedAt) { g.reachedAt = Date.now(); g.history = (g.history || []).concat([{ label: g.label, target: g.target, reachedAt: g.reachedAt }]).slice(-20); saveGoal(viewCls, g); celebrate(g); }
+  }
+
+  var PRIZES = [['🍕', 'Pizza party!'], ['🎬', '10-minute movie'], ['🎮', 'Game day'], ['🎧', 'Class DJ for 5 minutes'], ['⚽', 'Extra play time'], ['🎨', 'Drawing time'], ['🧁', 'Snack party'], ['🎟️', 'No-homework day']];
+  function confettiBurst() {
+    var w = document.createElement('div'), em = ['🎉', '⭐', '🍕', '🌟', '✨', '🎊', '🏆']; w.className = 'cb-conf';
+    for (var k = 0; k < 60; k++) { var i = document.createElement('i'); i.textContent = em[k % em.length]; i.style.left = (Math.random() * 98) + '%'; i.style.fontSize = (2 + Math.random() * 2.6) + 'rem'; i.style.animationDelay = (Math.random() * 1.2) + 's'; w.appendChild(i); }
+    document.body.appendChild(w); setTimeout(function () { w.remove(); }, 4200);
+  }
+  /** The big moment: the class reached its goal. */
+  function celebrate(g) {
+    var old = document.querySelector('.cb-gm'); if (old) old.remove();
+    var kids = S().getStudentsByClass(viewCls.id), here = kids.filter(function (s) { return !absent[s.id]; });
+    var bonus = Number(g.bonus) || 0, paid = !!g.bonusPaid;
+    var m = document.createElement('div'); m.className = 'cb-gm';
+    m.innerHTML = '<div class="cb-win2"><div class="big">🏆</div><h2>Class goal reached!</h2><div>' + esc(viewCls.name) + ' earned ' + g.target + ' XP together.</div>' +
+      '<div class="prize">' + esc(g.label) + '</div>' +
+      '<div class="todo"><b>What happens now:</b><br>' + esc(g.plan || 'Tell the class when the prize happens (for example: Friday, last 10 minutes). Everyone who helped is invited!') + '</div>' +
+      (bonus ? '<div class="todo">🪙 Bonus: <b>+' + bonus + ' coins</b> for every pupil here today (' + here.length + ' pupils).' + (paid ? ' <b>Already given ✓</b>' : '') + '</div>' : '') +
+      '<div class="row" style="justify-content:center">' + (bonus && !paid ? '<button id="cb-g-pay">🪙 Give +' + bonus + ' coins to everyone here</button>' : '') +
+      '<button class="g2" id="cb-g-new">🎯 Set the next goal</button><button class="g2" id="cb-g-close">Close</button></div>' +
+      ((g.history || []).length > 1 ? '<div class="cb-hist">Goals reached so far: ' + g.history.map(function (x) { return esc(x.label); }).join(' · ') + '</div>' : '') + '</div>';
+    document.body.appendChild(m);
+    confettiBurst();
+    try { var sb = root.classSoundboard; if (sb) { (sb.playFanfare || sb.playTaDa || function () {}).call(sb); setTimeout(function () { try { (sb.playApplause || function () {}).call(sb); } catch (e) { /* optional */ } }, 1400); } } catch (e) { /* sound optional */ }
+    var pay = m.querySelector('#cb-g-pay');
+    if (pay) pay.onclick = function () {
+      var n = 0; here.forEach(function (s) { try { if (root.ClassroomStore && root.ClassroomStore.grant) { var r = root.ClassroomStore.grant(s.id, bonus, 'Class goal reached: ' + g.label); if (r && r.success) n++; } } catch (e) { /* skip */ } });
+      g.bonusPaid = true; saveGoal(viewCls, g); pay.disabled = true; pay.textContent = '✓ Gave +' + bonus + ' coins to ' + n + ' pupils';
+      try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ }
+    };
+    m.querySelector('#cb-g-new').onclick = function () { m.remove(); goalEditor(); };
+    m.querySelector('#cb-g-close').onclick = function () { m.remove(); };
+  }
+  /** Choose the prize, how much XP the class needs, and an optional coin bonus. */
+  function goalEditor() {
+    var g = loadGoal(viewCls), label = g.reachedAt ? PRIZES[0][1] : g.label, target = g.reachedAt ? g.target : g.target, bonus = g.reachedAt ? (g.bonus || 0) : (g.bonus || 0), plan = g.reachedAt ? '' : (g.plan || '');
+    var old = document.querySelector('.cb-gm'); if (old) old.remove();
+    var m = document.createElement('div'); m.className = 'cb-gm';
+    function opt(list, cur, attr) { return list.map(function (x) { var v = Array.isArray(x) ? x[1] : x, t = Array.isArray(x) ? x[0] + ' ' + x[1] : x; return '<button type="button" data-' + attr + '="' + esc(v) + '" class="' + (String(v) === String(cur) ? 'on' : '') + '">' + esc(t) + '</button>'; }).join(''); }
+    m.innerHTML = '<div><h2>🎯 Class goal for ' + esc(viewCls.name) + '</h2><p>Every point you give on the Class Board fills the bar. When it is full, the board celebrates and shows the prize.</p>' +
+      '<label>1. The prize</label><div class="opts" id="cb-g-p">' + opt(PRIZES, label, 'p') + '</div><input id="cb-g-label" value="' + esc(label) + '" maxlength="40" style="margin-top:8px">' +
+      '<label>2. How much XP the class needs (from now)</label><div class="opts" id="cb-g-t">' + opt([200, 300, 500, 800, 1000], target, 't') + '</div>' +
+      '<label>3. Bonus coins for every pupil when you reach it (optional)</label><div class="opts" id="cb-g-b">' + opt([0, 5, 10, 20], bonus, 'b') + '</div>' +
+      '<label>4. When and how (shown on the celebration screen)</label><input id="cb-g-plan" maxlength="120" placeholder="For example: Friday, the last 10 minutes of the lesson" value="' + esc(plan) + '">' +
+      '<div class="row"><button class="g2" id="cb-g-x">Cancel</button><button id="cb-g-save">Start this goal</button></div></div>';
+    document.body.appendChild(m);
+    function pick(boxId, attr, fn) { m.querySelector(boxId).addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; [].forEach.call(this.children, function (x) { x.classList.remove('on'); }); b.classList.add('on'); fn(b.getAttribute('data-' + attr)); }); }
+    pick('#cb-g-p', 'p', function (v) { m.querySelector('#cb-g-label').value = v; });
+    pick('#cb-g-t', 't', function (v) { target = parseInt(v, 10); });
+    pick('#cb-g-b', 'b', function (v) { bonus = parseInt(v, 10); });
+    m.querySelector('#cb-g-x').onclick = function () { m.remove(); };
+    m.querySelector('#cb-g-save').onclick = function () {
+      var lb = m.querySelector('#cb-g-label').value.trim() || 'Class reward';
+      saveGoal(viewCls, { label: lb, target: target || 500, since: Date.now(), bonus: bonus || 0, plan: m.querySelector('#cb-g-plan').value.trim(), history: g.history || [] });
+      m.remove(); paintGoal();
+    };
   }
 
   function todayChips(cls) {
@@ -261,13 +330,8 @@
     },
     preset: function (sec) { stopTimer(); timer.total = timer.left = sec; paintClock(); api.play(); },
     reset: function () { stopTimer(); timer.left = timer.total; paintClock(); },
-    setGoal: function () {
-      var g = loadGoal(viewCls);
-      var label = root.prompt('What is the class reward?', g.label); if (label === null) return;
-      var target = parseInt(root.prompt('How many class XP to earn it (starting now)?', g.target), 10);
-      if (!target || target < 1) return;
-      saveGoal(viewCls, { label: label.trim() || 'Reward', target: target, since: Date.now() }); paintGoal();
-    },
+    setGoal: function () { var g = loadGoal(viewCls); if (g.reachedAt) celebrate(g); else goalEditor(); },
+    newGoal: function () { goalEditor(); },
     pick: function () {
       if (pickBusy) return;
       var cards = [].slice.call(document.querySelectorAll('.cb-st:not(.off)'));
