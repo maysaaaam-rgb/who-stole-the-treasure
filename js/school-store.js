@@ -11364,6 +11364,8 @@
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
 
+      // The cloud adds this award to ITS number, so a device with an older copy can not save its older total over a newer one.
+      if (s && typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: points });
       if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
         window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
         window.AdventureSupabase.saveStudent(s).catch(() => {});
@@ -11482,6 +11484,8 @@
         window.AdventureAcademy.students = this.state.students;
       }
 
+      // The teacher typed an exact number: the cloud takes it as typed (up or down).
+      if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { absolute: true });
       if (typeof safeBackgroundSupabaseSync === 'function') {
         safeBackgroundSupabaseSync(this.state.students);
       } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
@@ -11632,6 +11636,7 @@
         s.totalXP = s.xp;
         s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
+        if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: -(Number(tx.amount) || 0) });
       }
 
       this.saveState();
@@ -11664,6 +11669,7 @@
         s.totalXP = s.xp;
         s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
+        if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: Number(tx.amount) || 0 });
       }
 
       this.saveState();
@@ -16354,6 +16360,11 @@
             // Neither side has ever recorded an XP change (no stamp): a brand-new device only holds placeholder XP,
             // so it must take the cloud's higher number instead of keeping its own and saving it over the real one.
             if (!cloudIsNewer && remoteStamp === 0 && localStamp === 0 && remoteAct > mergedXP) {
+              mergedXP = remoteAct;
+              folded = true;
+            }
+            // Same change, but the cloud kept the higher number (it protects XP from older copies): catch up to it.
+            if (!cloudIsNewer && remoteStamp > 0 && remoteStamp === localStamp && remoteAct > mergedXP) {
               mergedXP = remoteAct;
               folded = true;
             }

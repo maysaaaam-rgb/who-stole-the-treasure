@@ -270,24 +270,30 @@
 
       const row = toSupabaseRecord(student);
 
-      // Safety net: a device that never changed this student's XP (no stamp) must never lower the XP,
-      // or shorten the XP history, that is already in the cloud (a new device starts with placeholder values).
-      if (!this._xpGuardAt) this._xpGuardAt = {};
-      if (!student.xpUpdatedAt && (Date.now() - (this._xpGuardAt[row.id] || 0)) > 60000) {
-        this._xpGuardAt[row.id] = Date.now();
+      // XP SAFETY: a save may only change the cloud's XP in the way the teacher meant it.
+      //  - an award or a deduction adds to / takes from the number that is IN THE CLOUD right now,
+      //    so a device whose copy is a little behind can no longer save its older number over a newer one;
+      //  - typing an exact number (or voiding an award) is a deliberate teacher change and is written as typed;
+      //  - any other save (a monster change, a name edit...) never lowers the cloud's XP or shortens its history.
+      const intent = _xpIntentOf(student);
+      if (!(intent && intent.absolute)) {
         try {
           const cur = await client.from('students').select('xp,extra_data').eq('id', row.id).maybeSingle();
           const c = cur && cur.data;
-          if (c) {
-            if (typeof c.xp === 'number' && c.xp > row.xp) {
-              row.xp = c.xp;
-              row.level = _cloudStageFor(Object.assign({}, student, { xp: c.xp })).curLvl;
-              row.extra_data.xpUpdatedAt = (c.extra_data && c.extra_data.xpUpdatedAt) || null;
+          if (c && typeof c.xp === 'number') {
+            const safe = _resolveXp(student, row.xp, c.xp);
+            if (safe !== row.xp) {
+              row.xp = safe;
+              row.level = _cloudStageFor(Object.assign({}, student, { xp: safe })).curLvl;
             }
+            // keep the newer stamp and the longer history, so no other device thinks its older number is the newest
+            const cStamp = Date.parse((c.extra_data && c.extra_data.xpUpdatedAt) || '') || 0;
+            if (safe === c.xp && cStamp > (Date.parse(row.extra_data.xpUpdatedAt || '') || 0)) row.extra_data.xpUpdatedAt = c.extra_data.xpUpdatedAt;
             const ch = c.extra_data && c.extra_data.xpHistory;
             if (Array.isArray(ch) && ch.length > (row.extra_data.xpHistory || []).length) row.extra_data.xpHistory = ch;
+            _healLocalXp(student, row.xp);
           }
-        } catch (e) { /* if the check cannot run, save as before */ }
+        } catch (e) { /* if the check cannot run, the save below still never uses a stale number silently: see _safeXp */ }
       }
 
       try {
@@ -544,11 +550,19 @@
 
     async getXPTransactions(studentId = null) {
       const client = this._ensureClient();
-      let query = client.from('xp_transactions').select('*').order('timestamp', { ascending: false });
-      if (studentId) query = query.eq('student_id', String(studentId));
-      const { data, error } = await query;
-      if (error) throw new Error('Supabase getXPTransactions error: ' + error.message);
-      return data || [];
+      // The cloud hands back at most 1000 rows per request, so read page by page. Without this a device
+      // that loads fresh is missing the oldest awards and its totals come out too low.
+      const PAGE = 1000, all = [];
+      for (let from = 0; from < 100000; from += PAGE) {
+        let query = client.from('xp_transactions').select('*').order('timestamp', { ascending: false }).order('id', { ascending: true }).range(from, from + PAGE - 1);
+        if (studentId) query = query.eq('student_id', String(studentId));
+        const { data, error } = await query;
+        if (error) throw new Error('Supabase getXPTransactions error: ' + error.message);
+        const rows = data || [];
+        all.push(...rows);
+        if (rows.length < PAGE) break;
+      }
+      return all;
     }
 
     async deleteXPTransaction(txId) {
@@ -1596,9 +1610,22 @@
       const chunk = list.slice(i, i + 8);
       const results = await Promise.all(chunk.map(s => {
         const total = Math.max(0, Number(s.xp) || 0) + Math.max(0, Number(s.archivedXP ?? s.archived_xp ?? 0) || 0);
-        const level = _cloudStageFor(Object.assign({}, s, { xp: total })).curLvl;
+        const intent = _xpIntentOf(s);
+        const send = async () => {
+          let value = total;
+          if (intent && !intent.absolute) {
+            // an award or deduction: add to the number the cloud has right now, not to this device's older copy
+            const cur = await client.from('students').select('xp').eq('id', String(s.id)).maybeSingle();
+            if (cur && cur.data && typeof cur.data.xp === 'number') { value = _resolveXp(s, total, cur.data.xp); _healLocalXp(s, value); }
+          }
+          const level = _cloudStageFor(Object.assign({}, s, { xp: value })).curLvl;
+          let q = client.from('students').update({ xp: value, level: level, updated_at: now }).eq('id', String(s.id));
+          // Never lower the cloud's XP, unless the teacher typed an exact number or took points away on purpose.
+          if (!(intent && (intent.absolute || intent.delta < 0))) q = q.lte('xp', value);
+          return await q;
+        };
         return Promise.race([
-          client.from('students').update({ xp: total, level: level, updated_at: now }).eq('id', String(s.id)),
+          send(),
           new Promise(resolve => setTimeout(() => resolve({ error: { message: 'timeout' } }), 8000))
         ]).catch(e => ({ error: e }));
       }));
@@ -1607,6 +1634,45 @@
     return failed ? { ok: false, error: failed + '/' + list.length + ' failed: ' + lastErr } : { ok: true, count: list.length };
   }
   root.pushStudentXPBatch = pushStudentXPBatch;
+
+  // ---- XP safety -------------------------------------------------------------------------------------------------
+  // The cloud keeps ONE XP number per pupil, and several devices save it. A device whose copy was a little behind
+  // used to save its older number over a newer one ("newest stamp wins" then spread the lower number everywhere).
+  // Now every save works out the XP from what the cloud holds RIGHT NOW:
+  //   markXpIntent(student, { delta: +10 })    an award (or a deduction with a negative delta): added to the cloud's number
+  //   markXpIntent(student, { absolute: true }) the teacher typed an exact number: written as typed
+  //   no mark                                  any other save: never lowers the cloud's XP
+  // The mark is kept by pupil id (not on the pupil object, which the app replaces when it refreshes from the cloud),
+  // is never saved anywhere, and ends after 30 seconds.
+  const _xpIntents = {};
+  function markXpIntent(student, intent) {
+    if (!student || typeof student !== 'object' || student.id == null) return;
+    _xpIntents[String(student.id)] = Object.assign({ at: Date.now() }, intent);
+  }
+  function _xpIntentOf(s) {
+    if (!s || s.id == null) return null;
+    const k = String(s.id), i = _xpIntents[k];
+    if (i && (Date.now() - i.at) >= 30000) { delete _xpIntents[k]; return null; }
+    return i || null;
+  }
+  function _resolveXp(student, local, cloud) {
+    local = Math.max(0, Number(local) || 0); cloud = Math.max(0, Number(cloud) || 0);
+    const intent = _xpIntentOf(student);
+    if (!intent) return Math.max(local, cloud);                      // a plain save never lowers the cloud
+    if (intent.absolute) return local;                               // typed by the teacher
+    if (typeof intent.target === 'number') return intent.delta >= 0 ? Math.max(intent.target, cloud) : intent.target;   // same award, saved a second time: do not add it twice
+    const viaCloud = Math.max(0, cloud + (Number(intent.delta) || 0));
+    const t = intent.delta >= 0 ? Math.max(local, viaCloud) : viaCloud;
+    intent.target = t;
+    return t;
+  }
+  // When the cloud's number was ahead, bring this device's copy up to it, so it stops being the stale one.
+  function _healLocalXp(student, xp) {
+    if (!student || (Number(student.xp) || 0) === xp) return;
+    student.xp = xp; student.totalXP = xp;
+    try { if (root.schoolStore && root.schoolStore.saveState) root.schoolStore.saveState(); } catch (e) { /* ignore */ }
+  }
+  root.markXpIntent = markXpIntent;
 
   // Derive level/stage from real XP (no artificial Level 3 floor)
   function _cloudStageFor(s) {

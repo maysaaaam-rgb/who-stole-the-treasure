@@ -12297,6 +12297,8 @@ window.switchClassroomSubTab = function(subTab) {
     // 1. Update Student State
     student.xp = newActiveXP;
     student.totalXP = newActiveXP;
+    // "+/- points" is added to the cloud's number; an exact number is written as typed
+    if (window.markXpIntent) window.markXpIntent(student, currentEditMode === 'adjust' ? { delta: newActiveXP - oldActiveXP } : { absolute: true });
 
     // 2. Protect Evolution Stage using Lifetime XP (One-Way Ratchet)
     if (typeof evaluateMonsterStage === 'function') {
@@ -12430,6 +12432,7 @@ window.switchClassroomSubTab = function(subTab) {
     const newXP = parsed;
     st.xp = newXP;
     st.totalXP = newXP;
+    if (window.markXpIntent) window.markXpIntent(st, { absolute: true });
 
     if (storeInstance) {
       if (typeof storeInstance.setStudentXP === 'function') {

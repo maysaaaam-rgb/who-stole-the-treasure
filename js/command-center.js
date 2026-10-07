@@ -146,10 +146,10 @@
 
   function xpBanner(cls) {
     try {
-      if (localStorage.getItem('eaa_xp_recon_hidden')) return '';
+      if (localStorage.getItem('eaa_xp_rescue_hidden_v2')) return '';
       var plan = reconPlan(cls);
-      if (plan.off.length < 3) return '';
-      return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#2e2410;border:1px solid #6b4e12;color:#fde68a;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⚠️ <b>' + plan.off.length + ' students</b> have XP totals that do not match their award history.</span><button class="cc-plus" style="margin-left:auto;padding:7px 14px" onclick="CommandCenter.restoreXp()">Review &amp; restore</button></div>';
+      if (plan.off.length < 1) return '';
+      return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#2e2410;border:1px solid #6b4e12;color:#fde68a;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⚠️ <b>' + plan.off.length + ' students</b> have <b>less XP than their own award history shows</b> (it can be lost when two devices save at the same moment).</span><button class="cc-plus" style="margin-left:auto;padding:7px 14px" onclick="CommandCenter.restoreXp()">Review &amp; restore lost XP</button></div>';
     } catch (e) { return ''; }
   }
 
@@ -245,7 +245,7 @@
       th('check', 'Skills (test)', 'Latest English Progress Check: R reading, L listening, W writing, S speaking (out of 10)') + th('home', 'Home', 'Homework / home practice awards in the last 14 days') + th('status', 'Status') + '<th style="cursor:default"></th></tr></thead><tbody>' +
       rows.map(function (r) {
         var s = STATUS[r.d.status];
-        var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') does not match the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
+        var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
         return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
           '<td>' + r.xp.toLocaleString() + '</td><td>' + (r.a.last ? '+' + r.a.last : '–') + '</td><td>' + spark(r.a.days, r.d.status === 'star' ? 'ok' : r.d.status) + '</td>' +
           '<td>' + skillBars(r.check) + '</td><td>' + (current.classHasHome ? (r.home ? '🏠 ' + r.home : '<span class="cc-dim">0</span>') : '<span class="cc-dim">–</span>') + '</td>' +
@@ -286,7 +286,7 @@
     var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; });
     if (!mism.length && !dup.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
-      (mism.length ? '<div><b>XP does not match the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
+      (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (dup.length ? '<div><b>Same name twice:</b> ' + dup.map(function (r) { return esc(r.name) + ' (' + esc(r.dup.join(' + ')) + ')'; }).join(', ') + '. One may be an old copy: check it in the pupil\u2019s profile.</div>' : '') +
       '</div></div>';
   }
@@ -304,7 +304,7 @@
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
     ovl.innerHTML = '<div class="cc-drp"><div class="cc-drh">' + (r.img ? '<img src="' + esc(r.img) + '" alt="">' : '') + '<div><h2>' + esc(r.name) + '</h2><div class="cc-dim">Level ' + r.level + ' · ' + r.xp.toLocaleString() + ' XP</div></div><button class="cc-x" onclick="document.getElementById(\'cc-drawer\').remove()">✕</button></div>' +
       '<div class="cc-drs"><span class="cc-t ' + st[1] + '">' + st[0] + '</span> <span class="cc-dim">' + esc(r.d.why.join(' · ')) + '</span></div>' +
-      (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') does not match the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
+      (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (r.dup ? '<div class="cc-warn">⧉ This name exists ' + r.dup.length + ' times (' + esc(r.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<h4>Skills (latest test)</h4>' + skills +
       '<h4>Activity</h4><div class="cc-drg"><div><small>This week</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Last week</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Home (14 d)</small><b>' + r.home + '</b></div></div>' +
@@ -374,28 +374,27 @@
 
   // ------------------------------------------------------------- XP restore (history vs shown totals)
   // The shown XP can drift away from the award history (e.g. after a reset). This previews the fix and applies it on request.
-  function activeTx(studentId) {
-    return (S().state.xpTransactions || []).filter(function (t) { return t.studentId === studentId && t.status !== 'voided' && t.status !== 'reverted' && !t.isVoided; });
-  }
-  function reconPlan(cls) {
-    var st = S(), seen = {}, dupes = [], rows = [];
-    st.getStudentsByClass(cls.id).forEach(function (s) {
-      var groups = {};
-      activeTx(s.id).forEach(function (t) {
-        var amt = Number(t.amount) || 0;
-        if (amt > -500) return;
-        var k = [amt, t.reason, String(t.timestamp || '').slice(0, 10)].join('|');
-        (groups[k] = groups[k] || []).push(t);
-      });
-      Object.keys(groups).forEach(function (k) { if (groups[k].length >= 2) groups[k].forEach(function (t) { dupes.push(t); seen[t.id] = true; }); });
+  // The newest balance written in the pupil's OWN award history (voided awards left out).
+  // The list of awards in the cloud is not a safe source: pupils also have XP from before the list existed, and a device
+  // that has not loaded all of it adds up too little. The history balance is what the teacher saw after the last award.
+  function histBalance(s) {
+    var h = Array.isArray(s.xpHistory) ? s.xpHistory : [], best = null, bt = -1;
+    h.forEach(function (e) {
+      if (!e || e.status === 'voided' || e.isVoided) return;
+      var b = Number(e.balanceAfter); if (isNaN(b)) return;
+      var t = Date.parse(e.timestamp || '') || 0;
+      if (t > bt) { bt = t; best = b; }
     });
-    st.getStudentsByClass(cls.id).forEach(function (s) {
-      var target = activeTx(s.id).reduce(function (n, t) { return seen[t.id] ? n : n + (Number(t.amount) || 0); }, 0);
-      target = Math.max(0, Math.round(target));
-      var shown = Number(s.xp) || 0;
+    return best;
+  }
+  // Only ever RAISES a pupil's XP, to the balance their own history shows. Never lowers anything.
+  function reconPlan(cls) {
+    var rows = [];
+    S().getStudentsByClass(cls.id).forEach(function (s) {
+      var shown = Number(s.xp) || 0, hb = histBalance(s), target = hb == null ? shown : Math.max(shown, Math.round(hb));
       rows.push({ id: s.id, name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim(), shown: shown, target: target, diff: target - shown });
     });
-    return { rows: rows, dupes: dupes, off: rows.filter(function (r) { return r.diff !== 0; }) };
+    return { rows: rows, dupes: [], off: rows.filter(function (r) { return r.diff > 0; }) };
   }
   function reconModal() {
     var st = S(), cls = st.getActiveClass(), plan = reconPlan(cls);
@@ -404,15 +403,14 @@
     var ovl = document.createElement('div'); ovl.id = 'cc-recon'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
     var names = {}; st.getStudentsByClass(cls.id).forEach(function (s) { names[s.id] = s.firstName; });
     ovl.innerHTML = '<div class="cc-pal" style="width:min(640px,94vw);padding:20px;max-height:86vh;overflow:auto">' +
-      '<h2 style="font-size:18px;margin:0 0 6px">Restore XP from the award history · ' + esc(cls.name) + '</h2>' +
-      '<p style="color:#8b93a7;margin:0 0 12px">The totals students see do not match the history of awards you gave. This sets each student\'s XP to what the history adds up to. A backup of today\'s numbers is saved first.</p>' +
-      (plan.dupes.length ? '<p style="background:#2e2410;color:#fbbf24;border-radius:8px;padding:8px 10px;margin:0 0 12px">' + plan.dupes.length + ' duplicate large corrections will be removed (' + plan.dupes.map(function (t) { return esc(names[t.studentId] || '') + ' ' + t.amount; }).join(', ') + ').</p>' : '') +
+      '<h2 style="font-size:18px;margin:0 0 6px">Restore lost XP · ' + esc(cls.name) + '</h2>' +
+      '<p style="color:#8b93a7;margin:0 0 12px">These pupils have <b>less XP than their own award history shows</b>. This can happen when two devices save at the same moment. Pressing the button <b>raises</b> each one to the balance in their history. It never lowers anyone. A backup of today\'s numbers is saved first.</p>' +
       '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:#7c8498;text-align:left"><th style="padding:5px 8px">Student</th><th>Shown now</th><th>Will become</th><th>Change</th></tr>' +
-      plan.rows.map(function (r) { return '<tr style="border-top:1px solid #1d2029"><td style="padding:6px 8px">' + esc(r.name) + '</td><td>' + r.shown + '</td><td><b>' + r.target + '</b></td><td style="color:' + (r.diff > 0 ? '#34d399' : r.diff < 0 ? '#f87171' : '#8b93a7') + '">' + (r.diff > 0 ? '+' : '') + r.diff + '</td></tr>'; }).join('') + '</table>' +
+      plan.rows.filter(function (r) { return r.diff > 0; }).map(function (r) { return '<tr style="border-top:1px solid #1d2029"><td style="padding:6px 8px">' + esc(r.name) + '</td><td>' + r.shown + '</td><td><b>' + r.target + '</b></td><td style="color:' + (r.diff > 0 ? '#34d399' : r.diff < 0 ? '#f87171' : '#8b93a7') + '">' + (r.diff > 0 ? '+' : '') + r.diff + '</td></tr>'; }).join('') + '</table>' +
       '<div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end"><button class="cc-plus" id="cc-r-no" style="padding:9px 16px">Not now</button><button class="cc-plus" id="cc-r-hide" style="padding:9px 16px">Don\'t ask again</button><button id="cc-r-go" style="background:#4f46e5;color:#fff;border:0;border-radius:8px;padding:9px 18px;font:700 13px Inter,system-ui,sans-serif;cursor:pointer">Restore these totals</button></div></div>';
     document.body.appendChild(ovl);
     ovl.querySelector('#cc-r-no').onclick = function () { ovl.remove(); };
-    ovl.querySelector('#cc-r-hide').onclick = function () { try { localStorage.setItem('eaa_xp_recon_hidden', '1'); } catch (e) { /* ignore */ } ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); };
+    ovl.querySelector('#cc-r-hide').onclick = function () { try { localStorage.setItem('eaa_xp_rescue_hidden_v2', '1'); } catch (e) { /* ignore */ } ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); };
     ovl.querySelector('#cc-r-go').onclick = function () { applyRecon(plan); ovl.remove(); };
     ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
   }
@@ -420,12 +418,10 @@
     var st = S(), backup = {};
     plan.rows.forEach(function (r) { backup[r.id] = r.shown; });
     try { localStorage.setItem('eaa_xp_backup_' + Date.now(), JSON.stringify(backup)); } catch (e) { /* ignore */ }
-    plan.dupes.forEach(function (t) { st.voidXPTransaction(t.id, 'Duplicate correction removed during XP restore'); });
+    // each pupil gets an ordinary "+N" award, so the cloud adds it to its own number and it shows in the XP history
     plan.rows.forEach(function (r) {
-      var stu = st.getStudent(r.id); if (!stu) return;
-      st.updateStudent(r.id, { xp: r.target, totalXP: r.target, xpUpdatedAt: new Date().toISOString() });
-      if (st.evaluateMonsterStage) st.evaluateMonsterStage(stu);
-      if (st.updateStudent) st.updateStudent(r.id, { level: stu.level, stageName: stu.stageName, levelName: stu.levelName });
+      if (!(r.diff > 0) || !st.getStudent(r.id)) return;
+      st.adjustStudentXP(r.id, { delta: r.diff, reason: 'Lost XP restored from the award history', teacher: 'Teacher', category: 'correction', icon: '🛟' });
     });
     st.saveState(); if (st.notify) st.notify();
     if (root.renderCurrentView) root.renderCurrentView();
