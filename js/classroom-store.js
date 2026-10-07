@@ -592,8 +592,15 @@
       var paid = {}; d.purchases.forEach(function (pp) { if (pp.studentId === id && pp.status !== 'refunded') paid[pp.refId] = 1; });
       (ce.owned || []).forEach(function (x) { if (!paid[x]) out.extras.push({ studentId: id, id: x }); });
     });
-    out.total = out.boxes.length + out.items.length + out.titles.length + out.requests.length + out.coins.length + out.extras.length;
-    out.pupils = {}; out.boxes.concat(out.requests).forEach(function (x) { out.pupils[x.studentId] = 1; }); out.items.concat(out.titles, out.coins, out.extras).forEach(function (x) { out.pupils[x.studentId] = 1; });
+    out.orphans = [];
+    (store.getStudents ? store.getStudents() : []).forEach(function (stu) {
+      var prof = store.getMonsterProfile ? store.getMonsterProfile(stu.id) : null; if (!prof || !prof.unlockedItems) return;
+      var have = {}; (inv[stu.id] || []).forEach(function (e) { have[e.itemId] = 1; });
+      var removing = {}; out.items.forEach(function (x) { if (x.studentId === stu.id) removing[x.entry.itemId] = 1; });
+      prof.unlockedItems.forEach(function (iid) { var it = findItem(iid); if (it && it.unlockType === 'store' && !have[iid] && !removing[iid]) out.orphans.push({ studentId: stu.id, id: iid, name: it.name }); });
+    });
+    out.total = out.boxes.length + out.items.length + out.titles.length + out.requests.length + out.coins.length + out.extras.length + out.orphans.length;
+    out.pupils = {}; out.boxes.concat(out.requests).forEach(function (x) { out.pupils[x.studentId] = 1; }); out.items.concat(out.titles, out.coins, out.extras, out.orphans).forEach(function (x) { out.pupils[x.studentId] = 1; });
     return out;
   }
   function touchStudent(id) { var d = data(); if (!d.cosmetics[id]) d.cosmetics[id] = { owned: [], equipped: {}, updatedAt: 0 }; d.cosmetics[id].updatedAt = Date.now(); wallet(id); }
@@ -611,6 +618,12 @@
         var eq = JSON.parse(JSON.stringify(prof.equipped || {})); Object.keys(eq).forEach(function (k) { if (eq[k] === x.entry.itemId) eq[k] = 'none'; });
         store.updateMonsterProfile(x.studentId, { unlockedItems: prof.unlockedItems.filter(function (i) { return i !== x.entry.itemId; }), equipped: eq });
       }
+    });
+    (f.orphans || []).forEach(function (x) {
+      var prof = store.getMonsterProfile ? store.getMonsterProfile(x.studentId) : null; if (!prof || !prof.unlockedItems) return;
+      if (!backup.profiles[x.studentId]) backup.profiles[x.studentId] = { unlockedItems: prof.unlockedItems.slice(), equipped: JSON.parse(JSON.stringify(prof.equipped || {})) };
+      var eq = JSON.parse(JSON.stringify(prof.equipped || {})); Object.keys(eq).forEach(function (k) { if (eq[k] === x.id) eq[k] = 'none'; });
+      store.updateMonsterProfile(x.studentId, { unlockedItems: prof.unlockedItems.filter(function (i) { return i !== x.id; }), equipped: eq });
     });
     f.titles.concat(f.extras || []).forEach(function (x) { var ce = d.cosmetics[x.studentId]; if (!ce) return; ce.owned = (ce.owned || []).filter(function (t) { return t !== x.id; }); Object.keys(ce.equipped || {}).forEach(function (k) { if (ce.equipped[k] === x.id) delete ce.equipped[k]; }); });
     (f.coins || []).forEach(function (x) { var amt = Number(x.entry.delta) || 0; if (amt > 0) grant(x.studentId, -amt, 'Removed coins from a test mystery box'); });
@@ -679,7 +692,7 @@
     // items nobody earned (old automatic boxes, test leftovers): the teacher removes them with one press
     var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
     if (unearned.total) html += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and the old "test unboxing" buttons opened real boxes for the selected pupil (Aslıhan on 5 October, Demir on 7 October). Pupils did not earn these.') +
-      '<div style="font-size:.88rem;color:var(--text-main,#0f172a);margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + (unearned.items.length + unearned.extras.length + unearned.titles.length) + ' prizes (items, titles, name plates) · ' + unearned.coins.length + ' coin prizes · ' + unearned.requests.length + ' free reward · for: ' + esc(Object.keys(unearned.pupils).map(studentName).join(', ')) + '. XP is not touched; only coins that came out of test boxes are taken back.</div>' +
+      '<div style="font-size:.88rem;color:var(--text-main,#0f172a);margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + (unearned.items.length + unearned.extras.length + unearned.titles.length) + ' prizes (items, titles, name plates) · ' + unearned.orphans.length + ' shop items on monsters without a purchase · ' + unearned.coins.length + ' coin prizes · ' + unearned.requests.length + ' free reward · for: ' + esc(Object.keys(unearned.pupils).map(studentName).join(', ')) + '. XP is not touched; only coins that came out of test boxes are taken back.</div>' +
       btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border:2px solid #f59e0b;');
     else if (hasBackup) html += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
 
