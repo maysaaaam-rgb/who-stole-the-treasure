@@ -14078,12 +14078,9 @@ window.switchClassroomSubTab = function(subTab) {
               '</div>' +
               '<div style="margin: 1rem 0;">' +
                 '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Voice Changer</h3>' +
-                '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">Talk into your microphone and sound like a chipmunk, robot, dragon or giant. <b>Live</b> is instant. <b>Studio</b> turns your voice into a Wise Owl, Dragon, Fairy, Robot, Witch or Hero with ElevenLabs.</p>' +
+                '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">Talk into your microphone and sound like a chipmunk, robot, dragon, giant, fairy or ghost. Instant, and it works offline. Hold the button (or Space) to talk.</p>' +
               '</div>' +
-              '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">' +
-                '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open(\'live\')" style="background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">⚡ Live voices</button>' +
-                '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open(\'studio\')" style="background:#f59e0b; color:#1c1004; border:none; border-bottom:5px solid #92400e; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">✨ Studio (ElevenLabs)</button>' +
-              '</div>' +
+              '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open()" style="width:100%; background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">🎙️ Open the Voice Changer</button>' +
             '</div>' +
           '</div>';
         break;
