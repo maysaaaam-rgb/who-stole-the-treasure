@@ -14,8 +14,14 @@
     // The cloud copy (shared with the Classroom Store save) is the truth; this browser only keeps a fallback.
     try { var cg = root.ClassroomStore && root.ClassroomStore.getBoardGoal(cls.id); if (cg && cg.target) return cg; } catch (e) { /* use fallback */ }
     try { var g = JSON.parse(localStorage.getItem(goalKey(cls))); if (g && g.target) return g; } catch (e) { /* none saved */ }
-    return { label: 'Pizza party!', target: 500, since: new Date().setHours(0, 0, 0, 0) };
+    return { label: '10 coins for everyone!', target: 300, since: new Date().setHours(0, 0, 0, 0), daily: true, bonus: 10 };
   }
+  // daily = the bar starts again every morning; bonus = coins every pupil here gets when the bar is full (default 10)
+  function isDaily(g) { return g.daily !== false; }
+  function bonusOf(g) { return g.bonus == null ? 10 : (Number(g.bonus) || 0); }
+  function todayKey() { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function isWon(g) { return isDaily(g) ? g.wonDay === todayKey() : !!g.reachedAt; }
+  function isPaid(g) { return isDaily(g) ? g.paidDay === todayKey() : !!g.bonusPaid; }
   function saveGoal(cls, g) {
     try { localStorage.setItem(goalKey(cls), JSON.stringify(g)); } catch (e) { /* private mode */ }
     try { if (root.ClassroomStore) root.ClassroomStore.setBoardGoal(cls.id, g); } catch (e) { /* local copy still saved */ }
@@ -43,7 +49,7 @@
     (S().state.xpTransactions || []).forEach(function (t) {
       if (ids[t.studentId] && t.status !== 'voided' && t.status !== 'reverted') {
         var amt = Number(t.amount) || 0, ts = new Date(t.timestamp).getTime();
-        if (amt > 0 && ts >= g.since) sum += amt;
+        if (amt > 0 && ts >= (isDaily(g) ? new Date().setHours(0, 0, 0, 0) : g.since)) sum += amt;
       }
     });
     return sum;
@@ -129,28 +135,46 @@
     var g = loadGoal(viewCls), got = goalProgress(viewCls, g), pct = Math.min(100, Math.round(got / g.target * 100));
     var el = document.getElementById('cb-goal'); if (!el) return;
     el.querySelector('i').style.width = pct + '%';
-    el.querySelector('.r').textContent = pct >= 100 ? '🎉 ' + g.label + ' unlocked! Tap to celebrate' : pct + '% · ' + g.label;
-    el.querySelector('.l').textContent = '🎯 Class goal ' + Math.min(got, g.target) + ' / ' + g.target + ' XP';
+    var bn = bonusOf(g), what = g.label + (bn && g.label.indexOf('coins') < 0 ? ' + ' + bn + ' coins each' : '');
+    el.querySelector('.r').textContent = pct >= 100 ? '🎉 ' + what + ' unlocked! Tap to celebrate' : pct + '% · ' + what;
+    el.querySelector('.l').textContent = '🎯 ' + (isDaily(g) ? 'Today\u2019s goal ' : 'Class goal ') + Math.min(got, g.target) + ' / ' + g.target + ' XP';
     el.classList.toggle('won', pct >= 100);
-    if (pct >= 100 && !g.reachedAt) { g.reachedAt = Date.now(); g.history = (g.history || []).concat([{ label: g.label, target: g.target, reachedAt: g.reachedAt }]).slice(-20); saveGoal(viewCls, g); celebrate(g); }
+    if (pct >= 100 && !isWon(g)) {
+      g.reachedAt = Date.now(); if (isDaily(g)) g.wonDay = todayKey();
+      g.history = (g.history || []).concat([{ label: g.label, target: g.target, reachedAt: g.reachedAt }]).slice(-30);
+      var n = bn && !isPaid(g) ? payBonus(g) : null;
+      saveGoal(viewCls, g); celebrate(g, n);
+    }
   }
 
-  var PRIZES = [['🍕', 'Pizza party!'], ['🎬', '10-minute movie'], ['🎮', 'Game day'], ['🎧', 'Class DJ for 5 minutes'], ['⚽', 'Extra play time'], ['🎨', 'Drawing time'], ['🧁', 'Snack party'], ['🎟️', 'No-homework day']];
+  var PRIZES = [['🪙', '10 coins for everyone!'], ['🍕', 'Pizza party!'], ['🎬', '10-minute movie'], ['🎮', 'Game day'], ['🎧', 'Class DJ for 5 minutes'], ['⚽', 'Extra play time'], ['🎨', 'Drawing time'], ['🧁', 'Snack party'], ['🎟️', 'No-homework day']];
   function confettiBurst() {
     var w = document.createElement('div'), em = ['🎉', '⭐', '🍕', '🌟', '✨', '🎊', '🏆']; w.className = 'cb-conf';
     for (var k = 0; k < 60; k++) { var i = document.createElement('i'); i.textContent = em[k % em.length]; i.style.left = (Math.random() * 98) + '%'; i.style.fontSize = (2 + Math.random() * 2.6) + 'rem'; i.style.animationDelay = (Math.random() * 1.2) + 's'; w.appendChild(i); }
     document.body.appendChild(w); setTimeout(function () { w.remove(); }, 4200);
   }
+  /** Give the bonus coins to every pupil who is here (not marked away). Returns how many got them. */
+  function payBonus(g) {
+    var bonus = bonusOf(g), n = 0; if (!bonus) return 0;
+    S().getStudentsByClass(viewCls.id).filter(function (s) { return !absent[s.id]; }).forEach(function (s) {
+      try { if (root.ClassroomStore && root.ClassroomStore.grant) { var r = root.ClassroomStore.grant(s.id, bonus, 'Class goal reached: ' + g.label); if (r && r.success) n++; } } catch (e) { /* skip */ }
+    });
+    if (isDaily(g)) g.paidDay = todayKey(); else g.bonusPaid = true;
+    g.lastPaid = n;
+    try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ }
+    return n;
+  }
   /** The big moment: the class reached its goal. */
-  function celebrate(g) {
+  function celebrate(g, justPaid) {
     var old = document.querySelector('.cb-gm'); if (old) old.remove();
     var kids = S().getStudentsByClass(viewCls.id), here = kids.filter(function (s) { return !absent[s.id]; });
-    var bonus = Number(g.bonus) || 0, paid = !!g.bonusPaid;
+    var bonus = bonusOf(g), paid = isPaid(g);
     var m = document.createElement('div'); m.className = 'cb-gm';
     m.innerHTML = '<div class="cb-win2"><div class="big">🏆</div><h2>Class goal reached!</h2><div>' + esc(viewCls.name) + ' earned ' + g.target + ' XP together.</div>' +
       '<div class="prize">' + esc(g.label) + '</div>' +
-      '<div class="todo"><b>What happens now:</b><br>' + esc(g.plan || 'Tell the class when the prize happens (for example: Friday, last 10 minutes). Everyone who helped is invited!') + '</div>' +
-      (bonus ? '<div class="todo">🪙 Bonus: <b>+' + bonus + ' coins</b> for every pupil here today (' + here.length + ' pupils).' + (paid ? ' <b>Already given ✓</b>' : '') + '</div>' : '') +
+      '<div class="todo"><b>What happens now:</b><br>' + esc(g.plan || (/coins/i.test(g.label) ? 'Everyone here gets the coins now. Spend them in the Classroom Store!' : 'Tell the class when the prize happens (for example: Friday, last 10 minutes). Everyone who helped is invited!')) + '</div>' +
+      (bonus ? '<div class="todo">🪙 <b>+' + bonus + ' coins</b> for every pupil here today' + (paid ? ': <b>given to ' + (justPaid != null ? justPaid : (g.lastPaid || here.length)) + ' pupils ✓</b>' : ' (' + here.length + ' pupils).') + '</div>' : '') +
+      (isDaily(g) ? '<div class="todo">🌅 Tomorrow the bar starts again from 0. Can we do it again?</div>' : '') +
       '<div class="row" style="justify-content:center">' + (bonus && !paid ? '<button id="cb-g-pay">🪙 Give +' + bonus + ' coins to everyone here</button>' : '') +
       '<button class="g2" id="cb-g-new">🎯 Set the next goal</button><button class="g2" id="cb-g-close">Close</button></div>' +
       ((g.history || []).length > 1 ? '<div class="cb-hist">Goals reached so far: ' + g.history.map(function (x) { return esc(x.label); }).join(' · ') + '</div>' : '') + '</div>';
@@ -158,35 +182,33 @@
     confettiBurst();
     try { var sb = root.classSoundboard; if (sb) { (sb.playFanfare || sb.playTaDa || function () {}).call(sb); setTimeout(function () { try { (sb.playApplause || function () {}).call(sb); } catch (e) { /* optional */ } }, 1400); } } catch (e) { /* sound optional */ }
     var pay = m.querySelector('#cb-g-pay');
-    if (pay) pay.onclick = function () {
-      var n = 0; here.forEach(function (s) { try { if (root.ClassroomStore && root.ClassroomStore.grant) { var r = root.ClassroomStore.grant(s.id, bonus, 'Class goal reached: ' + g.label); if (r && r.success) n++; } } catch (e) { /* skip */ } });
-      g.bonusPaid = true; saveGoal(viewCls, g); pay.disabled = true; pay.textContent = '✓ Gave +' + bonus + ' coins to ' + n + ' pupils';
-      try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* optional */ }
-    };
+    if (pay) pay.onclick = function () { var n = payBonus(g); saveGoal(viewCls, g); pay.disabled = true; pay.textContent = '✓ Gave +' + bonus + ' coins to ' + n + ' pupils'; };
     m.querySelector('#cb-g-new').onclick = function () { m.remove(); goalEditor(); };
     m.querySelector('#cb-g-close').onclick = function () { m.remove(); };
   }
   /** Choose the prize, how much XP the class needs, and an optional coin bonus. */
   function goalEditor() {
-    var g = loadGoal(viewCls), label = g.reachedAt ? PRIZES[0][1] : g.label, target = g.reachedAt ? g.target : g.target, bonus = g.reachedAt ? (g.bonus || 0) : (g.bonus || 0), plan = g.reachedAt ? '' : (g.plan || '');
+    var g = loadGoal(viewCls), label = g.label, target = g.target, bonus = bonusOf(g), plan = g.plan || '', daily = isDaily(g);
     var old = document.querySelector('.cb-gm'); if (old) old.remove();
     var m = document.createElement('div'); m.className = 'cb-gm';
     function opt(list, cur, attr) { return list.map(function (x) { var v = Array.isArray(x) ? x[1] : x, t = Array.isArray(x) ? x[0] + ' ' + x[1] : x; return '<button type="button" data-' + attr + '="' + esc(v) + '" class="' + (String(v) === String(cur) ? 'on' : '') + '">' + esc(t) + '</button>'; }).join(''); }
     m.innerHTML = '<div><h2>🎯 Class goal for ' + esc(viewCls.name) + '</h2><p>Every point you give on the Class Board fills the bar. When it is full, the board celebrates and shows the prize.</p>' +
       '<label>1. The prize</label><div class="opts" id="cb-g-p">' + opt(PRIZES, label, 'p') + '</div><input id="cb-g-label" value="' + esc(label) + '" maxlength="40" style="margin-top:8px">' +
-      '<label>2. How much XP the class needs (from now)</label><div class="opts" id="cb-g-t">' + opt([200, 300, 500, 800, 1000], target, 't') + '</div>' +
-      '<label>3. Bonus coins for every pupil when you reach it (optional)</label><div class="opts" id="cb-g-b">' + opt([0, 5, 10, 20], bonus, 'b') + '</div>' +
-      '<label>4. When and how (shown on the celebration screen)</label><input id="cb-g-plan" maxlength="120" placeholder="For example: Friday, the last 10 minutes of the lesson" value="' + esc(plan) + '">' +
+      '<label>2. Repeat</label><div class="opts" id="cb-g-d">' + opt([['🌅', 'Every day'], ['1️⃣', 'Only once']], daily ? 'Every day' : 'Only once', 'd') + '</div><div style="opacity:.75;font-size:.85rem;margin-top:4px">Every day: the bar starts again from 0 each morning.</div>' +
+      '<label>3. How much XP the class needs</label><div class="opts" id="cb-g-t">' + opt([200, 300, 500, 800, 1000], target, 't') + '</div>' +
+      '<label>4. Coins for every pupil here when the bar is full (given automatically)</label><div class="opts" id="cb-g-b">' + opt([0, 5, 10, 20], bonus, 'b') + '</div>' +
+      '<label>5. When and how (shown on the celebration screen)</label><input id="cb-g-plan" maxlength="120" placeholder="For example: Friday, the last 10 minutes of the lesson" value="' + esc(plan) + '">' +
       '<div class="row"><button class="g2" id="cb-g-x">Cancel</button><button id="cb-g-save">Start this goal</button></div></div>';
     document.body.appendChild(m);
     function pick(boxId, attr, fn) { m.querySelector(boxId).addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; [].forEach.call(this.children, function (x) { x.classList.remove('on'); }); b.classList.add('on'); fn(b.getAttribute('data-' + attr)); }); }
     pick('#cb-g-p', 'p', function (v) { m.querySelector('#cb-g-label').value = v; });
     pick('#cb-g-t', 't', function (v) { target = parseInt(v, 10); });
     pick('#cb-g-b', 'b', function (v) { bonus = parseInt(v, 10); });
+    pick('#cb-g-d', 'd', function (v) { daily = v === 'Every day'; });
     m.querySelector('#cb-g-x').onclick = function () { m.remove(); };
     m.querySelector('#cb-g-save').onclick = function () {
       var lb = m.querySelector('#cb-g-label').value.trim() || 'Class reward';
-      saveGoal(viewCls, { label: lb, target: target || 500, since: Date.now(), bonus: bonus || 0, plan: m.querySelector('#cb-g-plan').value.trim(), history: g.history || [] });
+      saveGoal(viewCls, { label: lb, target: target || 300, since: Date.now(), bonus: bonus || 0, daily: daily, plan: m.querySelector('#cb-g-plan').value.trim(), history: g.history || [], wonDay: daily && isWon(g) ? g.wonDay : undefined, paidDay: daily ? g.paidDay : undefined });
       m.remove(); paintGoal();
     };
   }
@@ -330,7 +352,7 @@
     },
     preset: function (sec) { stopTimer(); timer.total = timer.left = sec; paintClock(); api.play(); },
     reset: function () { stopTimer(); timer.left = timer.total; paintClock(); },
-    setGoal: function () { var g = loadGoal(viewCls); if (g.reachedAt) celebrate(g); else goalEditor(); },
+    setGoal: function () { var g = loadGoal(viewCls); if (isWon(g)) celebrate(g); else goalEditor(); },
     newGoal: function () { goalEditor(); },
     pick: function () {
       if (pickBusy) return;
