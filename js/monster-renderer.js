@@ -1948,13 +1948,21 @@
       C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY} Z`;
   }
 
+  // The older outfits (clothing-*) were drawn for a taller torso, so on these round bodies they started at eye level and covered the face.
+  // They are now moved down to start just below the mouth, and clipped to the body outline. Costume pieces (cs-*) were drawn in place already.
+  const NO_CLIP_OUTFITS = ['clothing-scarf'];
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     const raw = renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage);
-    if (!raw || TORSO_WRAP_OUTFITS.indexOf(String(clothingId)) === -1) return raw;
+    if (!raw) return raw;
+    const id0 = String(clothingId).toLowerCase();
     try {
       const g = getStageGeometry(stage);
-      const id = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
-      return `<clipPath id="${id}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath><g clip-path="url(#${id})">${raw}</g>`;
+      const clipId = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
+      const clip = (inner) => `<clipPath id="${clipId}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath><g clip-path="url(#${clipId})">${inner}</g>`;
+      if (id0.indexOf('cs-') === 0) return TORSO_WRAP_OUTFITS.indexOf(id0) === -1 ? raw : clip(raw);
+      const dy = Math.max(0, Math.round(g.eyeY + 21 - 108)) + (id0 === 'clothing-scarf' ? 8 : 0);   // 108 = where the old outfits begin; the scarf sits a little lower so it never covers the mouth
+      const moved = `<g transform="translate(0 ${dy})">${raw}</g>`;
+      return NO_CLIP_OUTFITS.indexOf(id0) !== -1 ? moved : clip(moved);
     } catch (e) { return raw; }
   }
 
@@ -2038,12 +2046,12 @@
       return `
         <!-- Cozy Winter Scarf -->
         <g filter="url(#mf-shadow)">
-          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="7" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
-          <path d="M ${cX + 8} ${cY + 8} L ${cX + 18} ${cY + ry + 4} L ${cX + 6} ${cY + ry + 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
+          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="6" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
+          <path d="M ${cX + 10} ${cY + 7} L ${cX + 18} ${cY + 24} L ${cX + 8} ${cY + 24} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
           <!-- Scarf fringe -->
-          <line x1="${cX + 7}" y1="${cY + ry + 4}" x2="${cX + 7}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 12}" y1="${cY + ry + 4}" x2="${cX + 12}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 17}" y1="${cY + ry + 4}" x2="${cX + 17}" y2="${cY + ry + 8}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 9}" y1="${cY + 24}" x2="${cX + 9}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 13}" y1="${cY + 24}" x2="${cX + 13}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
+          <line x1="${cX + 17}" y1="${cY + 24}" x2="${cX + 17}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
         </g>
       `;
     }
