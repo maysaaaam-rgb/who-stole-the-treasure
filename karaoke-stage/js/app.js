@@ -187,7 +187,7 @@
         '</div>' +
       '</div>';
     W = lines.map(function (ws, li) { return Array.prototype.slice.call(stage.querySelectorAll('.w[data-l="' + li + '"]')); });
-    pos = null; mode = ''; applyHide();
+    pos = null; mode = ''; applyHide(); fitLyrics();
     stage.querySelectorAll('.w').forEach(function (el) { el.onclick = function () { stopAuto(); A.stop(); mode = 'kid'; light(+el.dataset.l, +el.dataset.i); }; });
     $('lis').onclick = listen; $('go').onclick = go;
     $('spd').onclick = function () { prefs.speed = (prefs.speed + 1) % SPEEDS.length; save(PREF_KEY, prefs); this.textContent = SPEEDS[prefs.speed][0] + ' ' + SPEEDS[prefs.speed][1]; A.play('tap'); };
@@ -202,6 +202,12 @@
     requestAnimationFrame(function () { light(0, 0, true); });
   }
   function $(id) { return document.getElementById(id); }
+  // long story parts: make the words smaller until they fit inside the card
+  function fitLyrics() {
+    var box = $('lyr'), card = box && box.parentNode; if (!box) return;
+    var f = 1; box.style.fontSize = '1em';
+    while (f > 0.45 && (box.scrollHeight > card.clientHeight - 16 || box.scrollWidth > box.clientWidth + 2)) { f -= 0.05; box.style.fontSize = f + 'em'; }
+  }
 
   // hide some words (every third longer word), or all of them except the first word
   function applyHide() {
@@ -510,7 +516,7 @@
   });
   $('snd').onclick = function () { A.setOn(!A.isOn()); this.textContent = A.isOn() ? '🔊' : '🔇'; };
   $('fs').onclick = function () { try { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); } catch (e) { /* not allowed */ } };
-  window.addEventListener('resize', function () { if (pos && $('ball') && $('ball').classList.contains('show')) light(pos.l, pos.i); });
+  window.addEventListener('resize', function () { fitLyrics(); if (pos && $('ball') && $('ball').classList.contains('show')) light(pos.l, pos.i); });
 
   renderSetup();
 })();

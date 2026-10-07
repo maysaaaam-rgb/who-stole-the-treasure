@@ -9218,7 +9218,7 @@ const GAMES_REGISTRY = [
   {
     "id": "karaoke-stage",
     "title": "🎤 Karaoke Stage: Read It One by One (Grades 3 and 4)",
-    "description": "A smartboard reading show. A drum roll picks the next pupil, the model voice reads the lines with a bouncing ball, then the ball follows the pupil at a slow, steady pace while they read into the teacher's microphone. The teacher gives 1, 2 or 3 stars. Hide some or all words for a memory challenge. Packs: Alice Tea Party role lines (each pupil reads their own role), Grade 4 Unit 1 and Unit 2 revision sentences, Grade 3 songpyeon steps, recipes and treat clues. Optional 👂 Ears (Chrome or Edge): voice recognition moves the ball with the pupil's voice, heard words turn green, missed words orange, and it suggests a star; the teacher decides. No recordings are kept.",
+    "description": "A smartboard reading show. A drum roll picks the next pupil, the model voice reads the lines with a bouncing ball, then the ball follows the pupil at a slow, steady pace while they read into the teacher's microphone. The teacher gives 1, 2 or 3 stars. Hide some or all words for a memory challenge. Packs: Unit 2 readings for both grades (Grade 3: Chuseok and First Harvest; Grade 4: A Year in the Forest and The Swallow's Gift, read in story order), Alice Tea Party role lines (each pupil reads their own role), Grade 4 Unit 1 and Unit 2 revision sentences, Grade 3 songpyeon steps, recipes and treat clues. Optional 👂 Ears (Chrome or Edge): voice recognition moves the ball with the pupil's voice, heard words turn green, missed words orange, and it suggests a star; the teacher decides. No recordings are kept.",
     "type": "game",
     "category": "Literature & Stories",
     "categoryLabel": "🎤 Speaking",

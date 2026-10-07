@@ -89,7 +89,8 @@ main { padding: 1.4vh 2vh 2vh; min-height: 0; display: flex; }
 .pic img { max-width: 100%; max-height: 92%; object-fit: contain; border-radius: 1.6vh; position: relative; z-index: 1; animation: bob 3.2s ease-in-out infinite; filter: drop-shadow(0 1.4vh 1.4vh rgba(0, 0, 0, 0.5)); }
 .pic .pe { font-size: 13vh; line-height: 1.1; text-align: center; position: relative; z-index: 1; animation: bob 3.2s ease-in-out infinite; }
 .ped { position: absolute; bottom: 0; left: 15%; right: 15%; height: 3vh; border-radius: 50%; background: radial-gradient(ellipse, rgba(56, 189, 248, 0.45), transparent 70%); }
-.lyrics { position: relative; display: flex; flex-direction: column; gap: 2.2vh; padding-top: 3vh; }
+.card { overflow: hidden; }
+.lyrics { position: relative; max-height: 100%; display: flex; flex-direction: column; gap: 2.2vh; padding-top: 3vh; }
 .ctitle { font-size: 0.75em; color: #fcd34d; font-weight: 800; }
 .ln { font-size: 2.3em; font-weight: 900; line-height: 1.45; color: #e2e8f0; }
 .w { display: inline-block; padding: 0 0.08em; border-radius: 0.3em; transition: transform 0.25s var(--spring-snap), color 0.2s, background 0.2s; cursor: pointer; }
