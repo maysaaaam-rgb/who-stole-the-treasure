@@ -360,9 +360,9 @@
 
       let box = boxId ? (store.getMysteryBoxes(this.activeStudent.id, true) || []).find(b => b.id === boxId) : null;
       if (!box) {
-        // If teacher is previewing or no box passed, create a fresh box
-        const defaultTier = options.tier || 'WOODEN';
-        box = store.grantMysteryBox(this.activeStudent.id, defaultTier);
+        // No real box: this is a teacher PREVIEW. Nothing is saved and no prize is given to any pupil.
+        const defaultTier = String(options.tier || 'WOODEN').toUpperCase();
+        box = { id: 'preview-' + Date.now(), studentId: this.activeStudent.id, boxTier: defaultTier, isOpened: false, preview: true };
       }
 
       this.activeBox = box;
@@ -437,7 +437,12 @@
       this.isUnboxingInProgress = true;
 
       const store = window.store || window.schoolStore;
-      const res = store.openMysteryBox(this.activeBox.id, this.activeStudent.id);
+      const PREVIEW_RARITY = { BRONZE: 'common', WOODEN: 'rare', GILDED: 'epic', CELESTIAL: 'legendary' };
+      const res = this.activeBox.preview
+        ? { success: true, preview: true, isDuplicate: false, bonusCoins: 0, reward: { type: 'preview' },
+            item: { id: 'preview', name: 'Preview only', icon: '🎁', rarity: PREVIEW_RARITY[this.activeBox.boxTier] || 'rare', category: 'Preview',
+                    description: 'This was a preview. Nothing was given to any pupil. Pupils get real boxes in the Classroom Store or when you give one.' } }
+        : store.openMysteryBox(this.activeBox.id, this.activeStudent.id);
       if (!res.success) {
         alert(res.error || 'Failed to open mystery box.');
         this.isUnboxingInProgress = false;
