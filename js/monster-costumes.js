@@ -136,11 +136,11 @@
           '<ellipse cx="14" cy="15" rx="5.5" ry="4.2" fill="#fcd9a0" stroke="#78350f" stroke-width="1.2"/><circle cx="11" cy="10" r="1.7" fill="#1f2937"/><circle cx="17" cy="10" r="1.7" fill="#1f2937"/><ellipse cx="14" cy="14" rx="1.8" ry="1.3" fill="#1f2937"/>' +
           '<ellipse cx="2" cy="28" rx="4" ry="6" fill="#b45309" stroke="#78350f" stroke-width="1.6"/><ellipse cx="26" cy="28" rx="4" ry="6" fill="#b45309" stroke="#78350f" stroke-width="1.6"/>' +
           '<path d="M6 21 Q14 25 22 21 L20 24 Q14 27 8 24 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1"/></g>';
-      case 'cs-medal':
-        return '<g class="monster-acc"><path d="M80 104 L100 138 L120 104 L112 102 L100 124 L88 102 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.8" stroke-linejoin="round"/>' +
-          '<path d="M88 102 L100 124 L97 126 L83 103 Z" fill="#2563eb" opacity="0.85"/>' +
-          '<circle cx="100" cy="140" r="10" fill="#facc15" stroke="#a16207" stroke-width="2.2"/><circle cx="100" cy="140" r="6.6" fill="none" stroke="#fde68a" stroke-width="1.4"/>' +
-          '<polygon points="100,134.5 101.8,138.4 106,138.8 102.8,141.6 103.8,145.6 100,143.4 96.2,145.6 97.2,141.6 94,138.8 98.2,138.4" fill="#f59e0b" stroke="#a16207" stroke-width="0.8"/></g>';
+      case 'cs-medal':   // ribbon starts under the mouth (it used to start at eye level), medal rests on the belly
+        return '<g class="monster-acc"><path d="M86 125 L100 140 L114 125 L108 124 L100 133 L92 124 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round"/>' +
+          '<path d="M92 124 L100 133 L98 135 L87 125 Z" fill="#2563eb" opacity="0.85"/>' +
+          '<circle cx="100" cy="144" r="8.5" fill="#facc15" stroke="#a16207" stroke-width="2"/><circle cx="100" cy="144" r="5.6" fill="none" stroke="#fde68a" stroke-width="1.2"/>' +
+          '<polygon transform="translate(100 144) scale(0.85) translate(-100 -140)" points="100,134.5 101.8,138.4 106,138.8 102.8,141.6 103.8,145.6 100,143.4 96.2,145.6 97.2,141.6 94,138.8 98.2,138.4" fill="#f59e0b" stroke="#a16207" stroke-width="0.8"/></g>';
     }
     return '';
   }
