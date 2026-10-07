@@ -406,7 +406,10 @@
     st.last = null;
   }
 
-  function open() { render(); }
+  function open(which) {
+    if ((which === 'live' || which === 'studio') && tab !== which) { stopMic(); studioStop(); tab = which; }
+    render();
+  }
   function close() { stopMic(); studioStop(); if (panel) { panel.remove(); panel = null; } tab = 'live'; }
   function toggle() { if (panel) close(); else open(); }
 

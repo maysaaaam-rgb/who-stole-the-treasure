@@ -14068,6 +14068,41 @@ window.switchClassroomSubTab = function(subTab) {
       case 'sounds':
         container.innerHTML = renderToolkitSoundsView();
         break;
+      case 'voice':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<div class="toolkit-card" style="max-width:560px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #a855f7 100%); border: 2px solid #a855f7; border-radius: 16px; padding: 1.5rem; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">🎙️</span>' +
+                '<span style="background: rgba(168, 85, 247, 0.25); color: #e9d5ff; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">YOUR MICROPHONE</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Voice Changer</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">Talk into your microphone and sound like a chipmunk, robot, dragon or giant. <b>Live</b> is instant. <b>Studio</b> turns your voice into a Wise Owl, Dragon, Fairy, Robot, Witch or Hero with ElevenLabs.</p>' +
+              '</div>' +
+              '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">' +
+                '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open(\'live\')" style="background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">⚡ Live voices</button>' +
+                '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open(\'studio\')" style="background:#f59e0b; color:#1c1004; border:none; border-bottom:5px solid #92400e; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">✨ Studio (ElevenLabs)</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        break;
+      case 'karaoke':
+        container.innerHTML = '' +
+          '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
+            '<div class="toolkit-card" style="max-width:560px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #78350f 55%, #38bdf8 100%); border: 2px solid #f59e0b; border-radius: 16px; padding: 1.5rem; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'karaoke-stage/index.html\', \'_blank\')">' +
+              '<div style="display: flex; align-items: center; justify-content: space-between;">' +
+                '<span style="font-size: 2.4rem;">🎤</span>' +
+                '<span style="background: rgba(245, 158, 11, 0.25); color: #fde68a; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">READ ONE BY ONE</span>' +
+              '</div>' +
+              '<div style="margin: 1rem 0;">' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Karaoke Stage</h3>' +
+                '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">A drum roll picks the next pupil. The voice reads first with a bouncing ball, then the pupil reads while the ball follows. Give 1, 2 or 3 stars. Unit 2 readings, Alice Tea Party roles and revision sentences. Optional voice recognition (Ears).</p>' +
+              '</div>' +
+              '<button style="background: #f59e0b; color: #1c1004; border: none; border-bottom: 5px solid #92400e; border-radius: 12px; font-weight: 800; padding: 0.8rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">🎤 Open Karaoke Stage</button>' +
+            '</div>' +
+          '</div>';
+        break;
       default:
         container.innerHTML = renderToolkitTimerView();
         break;
