@@ -107,7 +107,10 @@
     document.head.appendChild(s);
   }
 
+  // The ElevenLabs Studio tab is built but switched off. Set STUDIO_ON to true (and finish the Supabase setup) to bring it back.
+  var STUDIO_ON = false;
   function head() {
+    if (!STUDIO_ON) return '<h3>🎙️ Voice Changer<small style="font-weight:500;color:#94a3b8;font-size:.72rem;margin-left:8px">your voice, a funny character</small><button class="x" id="vfx-x" title="Close">✕</button></h3>';
     return '<h3>🎙️ Voice Changer<span class="tabs"><button type="button" data-tab="live" class="' + (tab === 'live' ? 'on' : '') + '">⚡ Live</button><button type="button" data-tab="studio" class="' + (tab === 'studio' ? 'on' : '') + '">✨ Studio</button></span><button class="x" id="vfx-x" title="Close">✕</button></h3>';
   }
   function wireHead() {
@@ -407,6 +410,7 @@
   }
 
   function open(which) {
+    if (which === 'studio' && !STUDIO_ON) which = 'live';
     if ((which === 'live' || which === 'studio') && tab !== which) { stopMic(); studioStop(); tab = which; }
     render();
   }
