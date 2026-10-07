@@ -4,6 +4,8 @@
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var CATALOG = [
+    { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 4, added: '2026-10-07' },
+    { id: 'karaoke-g3', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 3, added: '2026-10-07' },
     { id: 'g3-cook1', icon: '🍡', title: 'Chuseok Treats Kitchen (Week 2, L1)', route: 'unit2-g3-cooking/index.html?lesson=1', g: 3, added: '2026-10-07' },
     { id: 'g3-cook2', icon: '📺', title: 'Junior Chef Show (Week 2, L2)', route: 'unit2-g3-cooking/index.html?lesson=2', g: 3, added: '2026-10-07' },
     { id: 'g3-show', icon: '🎬', title: 'Cooking Show presentations', route: 'unit2-g3-cooking/show.html', g: 3, added: '2026-10-07' },
