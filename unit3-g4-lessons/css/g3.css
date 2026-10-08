@@ -132,3 +132,27 @@
 .qbox { padding: 0.8vh; } .qopts .qopt { min-height: 8vh; } .lane { padding: 0.2vh 1vh; } .row .gmsg { flex: 1; min-height: 1.2em; margin: 0; }
 
 .blk { height: 3.4vh; font-size: 2.4vh; } .qtext { font-size: 1.45em; } .qbox { gap: 0.4vh; } .qopts .qopt { min-height: 7vh; }
+
+.hud { gap: 0.8vh; } .hud .tab { padding: 0.3em 0.7em !important; min-width: 0; } .hud .teams { flex-wrap: nowrap; } html, body { overflow-x: hidden; }
+
+/* ---- Grade 4 Lessons 3-4 ---- */
+.votes { display: grid; gap: 1.4vh; align-items: end; } .vote { display: flex; flex-direction: column; align-items: center; gap: 0.6vh; }
+.vbar { height: 14vh; width: 7vh; background: #1e293b; border-radius: 1vh; display: flex; align-items: flex-end; overflow: hidden; } .vbar i { display: block; width: 100%; background: linear-gradient(#7dd3fc, #0ea5e9); transition: height 0.4s; }
+.vn { font-size: 1.4em; color: #fde047; }
+.votebtn { display: flex; flex-direction: column; align-items: center; padding: 0.4em 0.6em !important; } .votebtn .em { font-size: 6vh; line-height: 1.1; } .votebtn .em .pic { height: 1.3em; } .votebtn small { font-weight: 800; }
+.memgrid.txt { grid-template-columns: repeat(4, 1fr); }
+.memcard.txt { height: 14vh; flex-direction: column; gap: 0.3vh; font-size: 0.9em; } .memcard .mp { font-size: 5vh; line-height: 1; } .memcard .mt { font-weight: 800; font-size: 0.85em; line-height: 1.15; }
+.ngrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1vh; }
+.ngcard { display: flex; flex-direction: column; align-items: center; padding: 0.8vh 0.3vh !important; gap: 0.3vh; } .ngcard .em { font-size: 5.5vh; line-height: 1.1; } .ngcard .em .pic { height: 1.3em; } .ngcard b { font-size: 0.95em; }
+.ngcard.hit { background: #15803d !important; } .ngcard.miss { opacity: 0.4; filter: grayscale(1); }
+.ngbig { text-align: center; font-size: 7vh; font-weight: 900; color: #fde047; line-height: 1; }
+.stnums { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1vh; }
+.stnum { font-size: 2.2em !important; padding: 1vh 0 !important; } .stnum.right { background: #15803d !important; } .stnum.wrong { background: #b91c1c !important; opacity: 0.6; animation: wob 0.5s; }
+.qhint { color: #7dd3fc; font-weight: 800; }
+.perf { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1vh; }
+.perfcard { display: flex; flex-direction: column; align-items: center; padding: 1vh 0.3vh !important; gap: 0.3vh; } .perfcard .pn { font-size: 1.6em; font-weight: 900; color: #fde047; } .perfcard .em { font-size: 5.5vh; line-height: 1.1; }
+.perfcard.on { outline: 4px solid #fde047; transform: translateY(-0.6vh); } .perfcard.seen { background: #1d4ed8; }
+.perfbig { text-align: center; font-size: 1.5em; font-weight: 800; padding: 1.4vh 2vh; border-radius: 2vh; background: rgba(14, 165, 233, 0.14); border: 2px solid rgba(14, 165, 233, 0.5); min-height: 5em; display: flex; align-items: center; justify-content: center; }
+.ocard.wide { min-width: 17vh; max-width: 22vh; } .ocard.wide b { font-size: 0.8em; display: block; }
+.qbox { gap: 0.5vh; } .qopts, .stnums { margin: 0; }
+@media (max-width: 900px) { .ngrid, .stnums, .perf { grid-template-columns: repeat(4, 1fr); } .memgrid.txt { grid-template-columns: repeat(2, 1fr); } }

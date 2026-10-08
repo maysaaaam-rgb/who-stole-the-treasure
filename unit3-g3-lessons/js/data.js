@@ -133,5 +133,97 @@
   ];
   D.budgets = [6, 8, 10];
 
+
+  /* ---------------- LESSON 3: Money Changes (book pp. 44-45) ---------------- */
+  D.missions3 = [
+    { e: '⏳', t: 'Remember the money story' }, { e: '🪙', t: 'From coins to cards' }, { e: '🔎', t: 'Learn six money words' },
+    { e: '📏', t: 'Compare: easier to carry' }, { e: '🚂', t: 'Ride the Time Train' }, { e: '🗳️', t: 'Vote for the next money' }
+  ];
+  D.timeline2 = [
+    { d: '6000 BCE', e: '🐐', a: 'w_bartered', n: 'barter' }, { d: '1200 BCE', e: '🐚', a: 'w_cowrie_shells', n: 'cowrie shells' },
+    { d: '1000 BCE', e: '⚒️', a: 'w_knives_spades', n: 'knives and spades' }, { d: '600 BCE', e: '🪙', a: 'w_lydia_coin', n: 'first coins' },
+    { d: '800-900 CE', e: '💵', a: 'w_paper_money', n: 'paper money' }, { d: '1958', e: '💳', a: 'w_credit_card', n: 'credit card' },
+    { d: '21st century', e: '📱', a: 'w_electronic_money', n: 'electronic money' }
+  ];
+  D.recapPrompts = [
+    'Last lesson we travelled back in time. What did people use before money?',
+    'Which money was easier to carry than goats?',
+    'Today we travel forward in time. What do you think comes next?'
+  ];
+  D.coins = [
+    { say: 'Soon, many countries made their own coins from valuable metals like silver and gold.', act: '🪙 Make a coin with your fingers. Shiny!', scene: '🪙', art: 'w_lydia_coin', at: 3 },
+    { say: 'This made buying and selling easier.', act: '🛒 Buy! Sell! Buy! Sell! Swap your hands.', scene: '🏪', art: 'w_money', at: 3 },
+    { predict: 'Coins are heavy. What can people use that is easier to carry?', say: 'The first paper money came from China, between 800 and 900 CE. It was easier to carry than metal coins!', act: '💵 Fold a note and put it in your pocket. Easy!', scene: '💵', art: 'w_paper_money', at: 4, key: true },
+    { say: 'European countries did not use paper money widely until around 1600 CE.', act: '⏳ Wait… wait… wait… Shrug your shoulders.', scene: '⏳', at: 4 },
+    { say: 'After that, money did not change for many centuries.', act: '😴 Sleep! Zzz… for many centuries.', scene: '😴', at: 4 },
+    { say: 'Then, in 1958, there was the first credit card. People did not have to use paper money or coins.', act: '💳 Tap your card: beep!', scene: '💳', art: 'w_credit_card', at: 5, key: true },
+    { say: 'Today, in the 21st century, many people use electronic money. It is very easy to move around.', act: '📱 Tap your phone to pay!', scene: '📱', art: 'w_electronic_money', at: 6, key: true },
+    { say: 'People often use it to buy things on the internet.', act: '🖱️ Click, click, click! Add to the basket.', scene: '🌐', at: 6 }
+  ];
+  D.words3 = [
+    { w: 'coin', e: '🪙', def: 'round metal money', ex: 'Coins are made of metal.', gap: '______ are made of metal.' },
+    { w: 'paper money', e: '💵', def: 'money made of paper', ex: 'Paper money is easier to carry than metal coins.', gap: '______ is easier to carry than metal coins.' },
+    { w: 'credit card', e: '💳', def: 'a small plastic card you use to pay', ex: 'The first credit card was in 1958.', gap: 'The first ______ was in 1958.' },
+    { w: 'electronic money', e: '📲', def: 'money on a computer or a phone', ex: 'Many people use electronic money today.', gap: 'Many people use ______ today.' },
+    { w: 'internet', e: '🌐', def: 'computers that are connected; we buy things there', ex: 'People buy things on the internet.', gap: 'People buy things on the ______.' },
+    { w: 'century', e: '💯', def: 'one hundred years', ex: 'Money did not change for many centuries.', gap: 'One ______ is 100 years.' }
+  ];
+  D.carryPairs = [
+    { l: '🐚 shells', r: '🐐 goats', s: 'Shells are easier to carry than goats.' },
+    { l: '🪙 coins', r: '⚒️ knives and spades', s: 'Coins are easier to carry than knives and spades.' },
+    { l: '💵 paper money', r: '🪙 metal coins', s: 'Paper money is easier to carry than metal coins.' },
+    { l: '💳 a credit card', r: '💵 paper money', s: 'A credit card is easier to carry than paper money.' },
+    { l: '📱 electronic money', r: '💳 a credit card', s: 'Electronic money is very easy to move around.' }
+  ];
+  D.train = [
+    { q: 'People bartered. What does bartered mean?', o: ['swapped things without money', 'paid with a credit card', 'made coins'], a: 0, say: 'Bartered means they swapped things without money.' },
+    { q: 'Which money was easier to carry than goats?', o: ['cowrie shells', 'big sacks of grain', 'a cow'], a: 0, say: 'Cowrie shells were easier to carry than goats.' },
+    { q: 'The metal knives and spades were money in ______.', o: ['China', 'a shop', 'a school'], a: 0, say: 'The metal knives and spades were money in China.' },
+    { q: 'The first true coins came from ______.', o: ['Lydia', 'London', 'Paris'], a: 0, say: 'The first true coins came from Lydia, which is part of modern-day Turkey.' },
+    { q: 'The first paper money came from ______.', o: ['China', 'a farm', 'the moon'], a: 0, say: 'The first paper money came from China.' },
+    { q: 'The first credit card was in ______.', o: ['1958', '1200 BCE', '600 BCE'], a: 0, say: 'The first credit card was in 1958.' },
+    { q: 'Electronic money is on a ______ or a computer.', o: ['phone', 'goat', 'shell'], a: 0, say: 'Electronic money is on a phone or a computer.' }
+  ];
+  D.vote = [
+    { e: '💳', n: 'cards' }, { e: '📱', n: 'phones' }, { e: '🪙', n: 'coins' }, { e: '⌚', n: 'watches' }, { e: '👆', n: 'fingerprints' }, { e: '❓', n: 'something new' }
+  ];
+
+  /* ---------------- LESSON 4: Design the Next Money (book pp. 46-47) ---------------- */
+  D.missions4 = [
+    { e: '❓', t: 'Is it or was it money?' }, { e: '📊', t: 'Fill the money chart' }, { e: '🐦', t: 'Find a problem and a solution' },
+    { e: '🃏', t: 'Play Problem and Solution Pairs' }, { e: '🎰', t: 'Design the next money' }
+  ];
+  D.zones4 = [{ k: 'M', t: '💰 IS or WAS money', c: '#15803d' }, { k: 'N', t: '❌ NOT money', c: '#b91c1c' }];
+  D.walk4 = [
+    { e: '🐚', t: 'cowrie shells', a: 'M', s: 'Cowrie shells were money.' }, { e: '🍴', t: 'a fork and a knife', a: 'N', s: 'A fork and a knife are not money.' },
+    { e: '⚒️', t: 'an ancient Chinese knife', a: 'M', s: 'An ancient Chinese knife was money.' }, { e: '👛', t: 'a wallet', a: 'N', s: 'A wallet is not money. We keep money in it.' },
+    { e: '💵', t: 'paper money', a: 'M', s: 'Paper money is money.' }, { e: '💳', t: 'a credit card', a: 'M', s: 'A credit card is a way to pay. It is money today.' }
+  ];
+  D.chart = [
+    { type: 'cowrie shells', e: '🐚', when: '1200 BCE', made: 'shells' }, { type: 'knives and spades', e: '⚒️', when: '1000 BCE', made: 'metal' },
+    { type: 'paper money', e: '💵', when: '800-900 CE', made: 'paper' }, { type: 'credit card', e: '💳', when: '1958', made: 'plastic' }
+  ];
+  D.friend = [
+    { say: 'One day, Go Ne and his father helped a baby bird.', act: '🐦 Flap your wings: the baby bird!', scene: '🐦' },
+    { say: 'To say thank you, the mother bird gave them a special seed.', act: '🌰 Hold out your hand: a special seed!', scene: '🌰' },
+    { say: 'Wen Shu wanted a seed too.', act: '🙋 Say: me too! I want one!', scene: '🙋' },
+    { predict: 'Wen Shu used his slingshot. What is the problem?', say: 'The baby bird was hurt! That is the PROBLEM.', act: '😟 Make a sad face. Oh no!', scene: '🤕', key: true, tag: 'PROBLEM' },
+    { say: 'Go Ne and Wen Shu took the bird to the vet. They asked for help.', act: '🏃 Run to the vet!', scene: '🩺' },
+    { say: 'After a long time, the vet came out. The baby bird was OK! That is the SOLUTION.', act: '🎉 Cheer: the bird is OK!', scene: '🕊️', key: true, tag: 'SOLUTION' }
+  ];
+  D.pairs = [
+    { id: 'p1', a: { e: '⏳', t: 'It takes a long time to agree how much things are worth.' }, b: { e: '🪙', t: 'Coins show how much they are worth.' } },
+    { id: 'p2', a: { e: '🐐', t: 'Goats and grain are heavy to carry.' }, b: { e: '🐚', t: 'Shells are easier to carry.' } },
+    { id: 'p3', a: { e: '⚒️', t: 'Knives and spades are difficult to carry.' }, b: { e: '⭕', t: 'People make round money with holes.' } },
+    { id: 'p4', a: { e: '🏋️', t: 'Metal coins are heavy.' }, b: { e: '💵', t: 'Paper money is easier to carry.' } },
+    { id: 'p5', a: { e: '👛', t: 'You need paper money or coins to pay.' }, b: { e: '💳', t: 'A small plastic card can pay for you.' } },
+    { id: 'p6', a: { e: '🛒', t: 'You cannot go to a shop on the internet.' }, b: { e: '📲', t: 'Electronic money is easy to move around.' } }
+  ];
+  D.mm = {
+    mat: ['glass', 'wooden', 'gold', 'plastic', 'paper', 'magic', 'silver', 'rainbow'],
+    shape: ['ring', 'star', 'heart', 'square', 'ball', 'button', 'bracelet', 'circle'],
+    use: ['wear it', 'tap it', 'scan it', 'click it', 'plant it', 'spin it', 'hold it', 'sing to it']
+  };
+
   root.U3G3Data = D;
 })(window);

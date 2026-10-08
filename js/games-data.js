@@ -9974,6 +9974,385 @@ const GAMES_REGISTRY = [
     "url": "unit3-g4-lessons/index.html?lesson=2",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #1e3a5f 55%, #e0f2fe 100%)"
+  },
+  {
+    "id": "money-l3-g3",
+    "title": "🚂 Money Changes: Unit 3 Lesson 3 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out how money changed from coins to paper money to credit cards to phones (a timeline fills as they go), learn six money words, say \"easier to carry than\", ride the team game Time Train through seven stations of money history, and vote for the next type of money. Book pages 44-45.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "history of money",
+      "timeline",
+      "train game"
+    ],
+    "learningObjectives": [
+      "Say how money changed: coins, paper money, credit cards, electronic money",
+      "Use \"… is easier to carry than …\"",
+      "Know the words coin, paper money, credit card, electronic money, internet, century",
+      "Say \"I think the next money will be …\""
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Detective, Talk, Game, Talk). Press Teacher for tips on each step. The game Time Train is played by four teams in turns.",
+    "studentInstructions": "Travel forward in time, learn the money words and ride the Time Train!",
+    "route": "unit3-g3-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "coin",
+        "paper money",
+        "credit card",
+        "electronic money",
+        "internet",
+        "century"
+      ],
+      "supporting": [
+        "carry",
+        "silver",
+        "gold",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "… is easier to carry than … / I think the next money will be …",
+      "formula": "Paper money is easier to carry than metal coins.",
+      "formulas": [
+        "The first credit card was in 1958.",
+        "I think the next money will be phones."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚂",
+    "formula": "Paper money is easier to carry than metal coins.",
+    "url": "unit3-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l4-g3",
+    "title": "🎰 Design the Next Money: Unit 3 Lesson 4 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Is it or was it money? (walk to a corner), fill the money chart, find the problem and the solution in a short story, play the team game Problem and Solution Pairs, and design the next type of money with the Money Machine. Book pages 46-47.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "problem and solution",
+      "design",
+      "pairs game"
+    ],
+    "learningObjectives": [
+      "Say which things are or were money",
+      "Say what each money was made from and when it was used",
+      "Find a problem and its solution",
+      "Design the next money and say \"I think the next type of money will be …\""
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the MONEY / NOT MONEY signs. Work through the 6 steps (Move, Think, Act, Game, Create). Pupils use mini whiteboards for the chart and the design.",
+    "studentInstructions": "Walk to MONEY or NOT MONEY, fill the chart, find problems and solutions, and design your own money!",
+    "route": "unit3-g3-lessons/index.html?lesson=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "problem",
+        "solution",
+        "metal",
+        "paper",
+        "plastic",
+        "design"
+      ],
+      "supporting": [
+        "shells",
+        "card",
+        "wallet",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "was / were used in … / made from … / The problem is … The solution is …",
+      "formula": "I think the next type of money will be a glass ring.",
+      "formulas": [
+        "Cowrie shells were used in 1200 BCE.",
+        "Credit cards are made from plastic."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎰",
+    "formula": "I think the next type of money will be a glass ring.",
+    "url": "unit3-g3-lessons/index.html?lesson=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "ice-l3-g4",
+    "title": "💥 The Ice Cracks: Unit 3 Lesson 3 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out stanzas 5-8 of the poem The Bear and I (the ICE bar melts), learn six poem words, put cause and effect in order, play the team game Cause and Effect Pairs, and vote on how we can help. Book pages 44-45.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "cause and effect",
+      "climate change",
+      "pairs game"
+    ],
+    "learningObjectives": [
+      "Retell stanzas 5-8 of the poem in simple sentences",
+      "Use cause and effect: …, so … / … because …",
+      "Know the words crack, swim, together, danger, hope, once more",
+      "Say \"I can … because …\" about helping the world"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Detective, Think, Game, Talk). Press Teacher for tips on each step. Pupils use mini whiteboards to order the events. The game is played by four teams in turns.",
+    "studentInstructions": "Act out the poem, find the cause and the effect, and say how you can help the Arctic!",
+    "route": "unit3-g4-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "crack",
+        "swim",
+        "together",
+        "danger",
+        "hope",
+        "once more"
+      ],
+      "supporting": [
+        "thin",
+        "trap",
+        "melting",
+        "enemy"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "…, so … / … because … / I can … because …",
+      "formula": "The ice is thin, so it cracks.",
+      "formulas": [
+        "The ice cracks because it is thin.",
+        "I can ride a bike because bikes do not make the air dirty."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💥",
+    "formula": "The ice is thin, so it cracks.",
+    "url": "unit3-g4-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "poem-l4-g4",
+    "title": "🎤 Explore the Poem: Unit 3 Lesson 4 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. True or false (walk to a corner), the -ng sound, the team game Stanza Detective (which stanza has the answer?), are the man and the bear friends (vote with a reason), compare two cars, and perform the whole poem in eight groups. Book pages 46-47.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "phonics -ng",
+      "compare and contrast",
+      "stanza game"
+    ],
+    "learningObjectives": [
+      "Decide if a sentence about the poem is true or false and correct it",
+      "Say words that end with the -ng sound",
+      "Find the stanza that has the answer",
+      "Compare and contrast two things: …, but … / Both …"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the TRUE / FALSE signs. Pupils keep their books open at pp.42-47. Work through the 7 steps (Move, Listen, Game, Talk, Create). The game is played by four teams in turns.",
+    "studentInstructions": "Walk to TRUE or FALSE, say the -ng sound, find the stanza, and perform the poem!",
+    "route": "unit3-g4-lessons/index.html?lesson=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "stanza",
+        "sing",
+        "long",
+        "spring",
+        "young",
+        "fishing",
+        "friends"
+      ],
+      "supporting": [
+        "compare",
+        "contrast",
+        "both",
+        "different"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "I think … because … / …, but … / Both … and …",
+      "formula": "The red car is big, but the white car is small.",
+      "formulas": [
+        "Both cars have four wheels.",
+        "I think they are not friends because the bear takes his fish."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎤",
+    "formula": "I think they are friends because they helped each other.",
+    "url": "unit3-g4-lessons/index.html?lesson=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
   }
 ];
 
