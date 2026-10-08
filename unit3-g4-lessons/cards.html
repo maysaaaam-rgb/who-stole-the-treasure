@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 3 Grade 4 Lesson Cards (print and cut)</title>
+<style>
+  @page { size: A4; margin: 10mm; } * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #e5e7eb; color: #0f172a; }
+  .page { width: 210mm; min-height: 297mm; margin: 8mm auto; background: #fff; padding: 10mm; page-break-after: always; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+  .page:last-child { page-break-after: auto; }
+  h1 { margin: 0 0 1mm; font-size: 18pt; } .sub { color: #475569; font-size: 10pt; margin-bottom: 5mm; }
+  .sign { border: 3px solid #0f172a; border-radius: 6mm; height: 118mm; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 8mm; font-weight: 900; }
+  .sign.s3 { height: 78mm; margin-bottom: 6mm; } .sign .t { font-size: 54pt; } .sign .e { font-size: 56pt; } .s3 .t { font-size: 46pt; } .s3 .e { font-size: 44pt; }
+  .noprint { position: fixed; right: 6mm; top: 6mm; } .noprint button { font: inherit; font-weight: 800; background: #0284c7; color: #fff; border: 0; border-radius: 3mm; padding: 2.5mm 5mm; cursor: pointer; }
+  @media print { body { background: #fff; } .page { margin: 0; box-shadow: none; padding: 0; width: auto; min-height: 0; } .noprint { display: none; } }
+</style></head><body>
+<div class="noprint"><button onclick="window.print()">🖨️ Print</button></div>
+<section class="page"><h1>Lesson 1 · Good Change or Bad Change? · signs</h1><div class="sub">Tape one sign on each side of the classroom.</div>
+  <div class="sign" style="background:#bbf7d0"><span class="e">👍</span><span class="t">GOOD</span></div>
+  <div class="sign" style="background:#fecaca"><span class="e">👎</span><span class="t">BAD</span></div></section>
+<section class="page"><h1>Lesson 2 · Man or Bear or Both? · signs</h1><div class="sub">Tape one sign on each side of the classroom (BOTH in the middle).</div>
+  <div class="sign s3" style="background:#cffafe"><span class="e">🧑</span><span class="t">MAN</span></div>
+  <div class="sign s3" style="background:#e2e8f0"><span class="e">🤝</span><span class="t">BOTH</span></div>
+  <div class="sign s3" style="background:#ddd6fe"><span class="e">🐻‍❄️</span><span class="t">BEAR</span></div></section>
+</body></html>
