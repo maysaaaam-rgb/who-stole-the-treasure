@@ -295,7 +295,7 @@
       if (ev) ev.stopPropagation();
       var old = document.getElementById('cb-pop'), same = old && old.dataset.id === id; closeMenus(); if (same) return;
       var st = S().getStudent ? S().getStudent(id) : null, name = st ? (st.firstName || st.name || '') : '';
-      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student']];
+      var items = [['profile', '👤 Profile'], ['history', '📜 XP history'], ['fix', '✏️ Correct XP'], ['skills', '🎯 Give XP for a skill'], ['monster', '🐾 Customize monster'], ['edit', '⚙️ Edit student'], ['birthday', '🎂 Birthday today']];
       var p = document.createElement('div'); p.id = 'cb-pop'; p.dataset.id = id;
       p.innerHTML = '<b>' + esc(name) + '</b>' + items.map(function (it) { return '<button data-a="' + it[0] + '">' + it[1] + '</button>'; }).join('');
       p.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) api.act(b.dataset.a, id); });
@@ -314,6 +314,7 @@
         else if (what === 'skills' && root.openGiveXPSkillsModal) root.openGiveXPSkillsModal('student', id);
         else if (what === 'monster' && root.openMonsterCreator) root.openMonsterCreator(id);
         else if (what === 'edit' && root.openStudentModal) root.openStudentModal(id);
+        else if (what === 'birthday' && root.Birthday) { root.Birthday.setToday(id); root.Birthday.celebrate(id); }
       } catch (e) { if (root.showNotification) root.showNotification('Could not open that. Try the Command Center.', 'error'); }
     },
     addStudent: function () { if (root.openStudentModal) root.openStudentModal(); },
