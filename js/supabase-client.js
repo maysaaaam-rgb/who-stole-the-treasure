@@ -1321,7 +1321,7 @@
       archived: Boolean(student.archived),
       latest_teacher_note: String(student.latestTeacherNote || ''),
       manual_cefr_overrides: student.manualCefrOverrides || {},
-      monster_profile: student.monsterProfile || {},
+      monster_profile: _slimProfile(student.monsterProfile),
       // The cloud table has no columns for these, so they ride along in extra_data.
       extra_data: {
         lastActive: student.lastActive || null,
@@ -1378,7 +1378,7 @@
       archived: Boolean(row.archived),
       latestTeacherNote: row.latest_teacher_note || '',
       manualCefrOverrides: row.manual_cefr_overrides || {},
-      monsterProfile: row.monster_profile || {},
+      monsterProfile: _slimProfile(row.monster_profile),
       extraData: row.extra_data || {},
       xpUpdatedAt: extra.xpUpdatedAt || null,
       isEgg: false,
@@ -1480,6 +1480,23 @@
     }
 
     const payload = list.map(toSupabaseRecord);
+
+    // XP safety: this bulk save may never lower what the cloud has (a device that is a little behind would
+    // otherwise save every pupil's older number over the newer one). Same rule as every other save.
+    try {
+      const cur = await client.from('students').select('id,xp,extra_data').in('id', payload.map(r => r.id));
+      const byId = {}; ((cur && cur.data) || []).forEach(c => { byId[c.id] = c; });
+      payload.forEach(r => {
+        const c = byId[r.id]; if (!c || typeof c.xp !== 'number') return;
+        const s = list.find(x => String(x.id) === String(r.id));
+        const safe = _resolveXp(s, r.xp, c.xp);
+        if (safe !== r.xp) { r.xp = safe; r.level = _cloudStageFor(Object.assign({}, s, { xp: safe })).curLvl; _healLocalXp(s, safe); }
+        const ch = c.extra_data && c.extra_data.xpHistory;
+        if (Array.isArray(ch) && ch.length > ((r.extra_data && r.extra_data.xpHistory) || []).length) r.extra_data.xpHistory = ch;
+        const cStamp = Date.parse((c.extra_data && c.extra_data.xpUpdatedAt) || '') || 0;
+        if (safe === c.xp && cStamp > (Date.parse((r.extra_data && r.extra_data.xpUpdatedAt) || '') || 0)) r.extra_data.xpUpdatedAt = c.extra_data.xpUpdatedAt;
+      });
+    } catch (e) { console.warn('[AdventureSupabase] XP check before the bulk save could not run:', e && e.message); }
 
     try {
       const { data, error } = await client
@@ -1673,6 +1690,14 @@
     try { if (root.schoolStore && root.schoolStore.saveState) root.schoolStore.saveState(); } catch (e) { /* ignore */ }
   }
   root.markXpIntent = markXpIntent;
+
+  // The app draws the monster picture itself, every time. Saving it (about 46 KB per pupil) only made the data heavy.
+  function _slimProfile(p) {
+    if (!p || typeof p !== 'object') return {};
+    const u = p.custom_avatar_url;
+    if (typeof u === 'string' && u.length > 500 && u.indexOf('eaa-monster-svg') !== -1) { const c = Object.assign({}, p); delete c.custom_avatar_url; return c; }
+    return p;
+  }
 
   // Derive level/stage from real XP (no artificial Level 3 floor)
   function _cloudStageFor(s) {

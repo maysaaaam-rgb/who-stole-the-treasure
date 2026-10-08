@@ -70,7 +70,11 @@
     if (!d.worksheets || typeof d.worksheets !== 'object') d.worksheets = {};
     return d;
   }
-  function save() { store.saveState(); store.notify(); schedulePush(); }
+  // Giving coins to a whole class calls save() once per pupil. Each save writes all the platform's data, so the calls are joined into one.
+  var saveTimer = 0;
+  function flushSave() { saveTimer = 0; store.saveState(); store.notify(); schedulePush(); }
+  function save() { if (!saveTimer) saveTimer = setTimeout(flushSave, 40); }
+  if (typeof window !== 'undefined') window.addEventListener('pagehide', function () { if (saveTimer) { clearTimeout(saveTimer); flushSave(); } });
 
   function wallet(studentId) {
     var d = data();

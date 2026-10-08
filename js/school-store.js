@@ -10847,12 +10847,27 @@
       });
     }
 
+    // Monster pictures drawn by the app (about 46 KB each, stored twice per pupil) filled the browser's storage:
+    // 32 pupils x 2 copies = 2.5 MB, and the whole saved data hit the 5 MB limit, which made every save slow and
+    // triggered the "make room" routine that cuts the XP history. The app always redraws these pictures itself
+    // (see getStudentMonsterAvatarUrl), so they are not saved any more. Pictures a teacher uploaded are kept.
+    _slimGeneratedAvatars() {
+      const gen = u => typeof u === 'string' && u.length > 500 && u.indexOf('eaa-monster-svg') !== -1;
+      const fix = o => { if (o && typeof o === 'object') ['custom_avatar_url', 'custom_avatar'].forEach(k => { if (gen(o[k])) delete o[k]; }); };
+      try {
+        (this.state.students || []).forEach(s => { fix(s); fix(s && s.monsterProfile); });
+        const mp = this.state.monsterProfiles || {};
+        Object.keys(mp).forEach(k => fix(mp[k]));
+      } catch (e) { /* never block a save */ }
+    }
+
     saveState() {
       if (typeof localStorage === 'undefined') {
         this.notify();
         return;
       }
 
+      this._slimGeneratedAvatars();
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
         if (this.state && Array.isArray(this.state.students)) {

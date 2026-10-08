@@ -13911,10 +13911,10 @@ window.switchClassroomSubTab = function(subTab) {
       console.warn('Failed to synthesize custom monster avatar SVG on save:', e);
     }
 
-    if (dataUri) {
-      student.custom_avatar_url = dataUri;
-      student.custom_avatar = dataUri;
-    }
+    // The drawn picture is NOT saved: it is about 46 KB per pupil, the app redraws it from the colour and items every time,
+    // and storing it filled the browser's storage. (dataUri is still used below to tell other pages the monster changed.)
+    delete student.custom_avatar_url;
+    delete student.custom_avatar;
     student.monster_customization = {
       baseColor: monsterCreatorDraft.baseColor,
       equipped: Object.assign({}, monsterCreatorDraft.equipped)
@@ -13923,7 +13923,7 @@ window.switchClassroomSubTab = function(subTab) {
     store.updateMonsterProfile(monsterCreatorStudentId, {
       baseColor: monsterCreatorDraft.baseColor,
       equipped: monsterCreatorDraft.equipped,
-      custom_avatar_url: dataUri || undefined
+      custom_avatar_url: undefined
     });
 
     if (store.saveState) {
