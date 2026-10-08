@@ -11333,7 +11333,7 @@
         this.logMonsterHistory(studentId, {
           type: isHatch ? 'hatch' : 'evolve',
           title: isHatch ? '✨ Egg Hatched into Baby Monster!' : ('🎉 Evolved to Level ' + newLevel + ': ' + newMonsterState.stageName),
-          detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString() + ' XP.'
+          detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString('en-US') + ' XP.'
         });
 
         const allItems = this.getMonsterItems(null, true);

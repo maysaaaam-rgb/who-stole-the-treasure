@@ -241,8 +241,8 @@
     var list = students(cls), present = list.filter(function (s) { return !absent[s.id]; }).length;
     var total = list.reduce(function (n, s) { return n + s.xp; }, 0);
     container.innerHTML = '<div class="cb" id="cb-root">' +
-      '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
-        '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString() + '</b><small>Class XP</small></div></div></div>' +
+      '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
+        '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
@@ -251,7 +251,7 @@
         var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
-          '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString() + '</span>' +
+          '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
           '<img src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Click to mark here / absent" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
@@ -269,7 +269,7 @@
 
   function totals() {
     var list = students(viewCls), t = list.reduce(function (n, s) { return n + s.xp; }, 0);
-    var el = document.getElementById('cb-total'); if (el) el.textContent = t.toLocaleString();
+    var el = document.getElementById('cb-total'); if (el) el.textContent = t.toLocaleString('en-US');
     return list;
   }
   /** Play the victory sound this pupil bought (if any). Returns true when one played. */
@@ -348,7 +348,7 @@
       var list = totals(), me = list.filter(function (s) { return s.id === id; })[0];
       var card = document.getElementById('cb-' + id);
       if (me && card) {
-        document.getElementById('cb-pt-' + id).textContent = me.xp.toLocaleString();
+        document.getElementById('cb-pt-' + id).textContent = me.xp.toLocaleString('en-US');
         var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
         var img = card.querySelector('img'); if (img && me.img && img.getAttribute('src') !== me.img) img.src = me.img;   // monster may have evolved
       }

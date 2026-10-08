@@ -247,7 +247,7 @@
         var s = STATUS[r.d.status];
         var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
         return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
-          '<td>' + r.xp.toLocaleString() + '</td><td>' + (r.a.last ? '+' + r.a.last : '–') + '</td><td>' + spark(r.a.days, r.d.status === 'star' ? 'ok' : r.d.status) + '</td>' +
+          '<td>' + r.xp.toLocaleString('en-US') + '</td><td>' + (r.a.last ? '+' + r.a.last : '–') + '</td><td>' + spark(r.a.days, r.d.status === 'star' ? 'ok' : r.d.status) + '</td>' +
           '<td>' + skillBars(r.check) + '</td><td>' + (current.classHasHome ? (r.home ? '🏠 ' + r.home : '<span class="cc-dim">0</span>') : '<span class="cc-dim">–</span>') + '</td>' +
           '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
           '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
@@ -302,7 +302,7 @@
     var ws = r.ws.length ? r.ws.map(function (w) { return esc(w.name) + ': <b>' + w.score + '/10</b>'; }).join('<br>') : '<span class="cc-dim">No worksheet score entered yet.</span>';
     var tally = []; try { tally = (S().getStudentClassroomSkillsTally(r.id) || []).filter(function (t) { return t.category === 'positive' || !t.category; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3); } catch (e) { tally = []; }
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
-    ovl.innerHTML = '<div class="cc-drp"><div class="cc-drh">' + (r.img ? '<img src="' + esc(r.img) + '" alt="">' : '') + '<div><h2>' + esc(r.name) + '</h2><div class="cc-dim">Level ' + r.level + ' · ' + r.xp.toLocaleString() + ' XP</div></div><button class="cc-x" onclick="document.getElementById(\'cc-drawer\').remove()">✕</button></div>' +
+    ovl.innerHTML = '<div class="cc-drp"><div class="cc-drh">' + (r.img ? '<img src="' + esc(r.img) + '" alt="">' : '') + '<div><h2>' + esc(r.name) + '</h2><div class="cc-dim">Level ' + r.level + ' · ' + r.xp.toLocaleString('en-US') + ' XP</div></div><button class="cc-x" onclick="document.getElementById(\'cc-drawer\').remove()">✕</button></div>' +
       '<div class="cc-drs"><span class="cc-t ' + st[1] + '">' + st[0] + '</span> <span class="cc-dim">' + esc(r.d.why.join(' · ')) + '</span></div>' +
       (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (r.dup ? '<div class="cc-warn">⧉ This name exists ' + r.dup.length + ' times (' + esc(r.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
@@ -333,7 +333,7 @@
     var who = (st.getSchoolSettings && st.getSchoolSettings().teacherName) || 'Mr. Maysam';
     function chip(k, label) { return '<button class="' + (filterKey === k ? 'on' : '') + '" onclick="CommandCenter.filter(\'' + k + '\')">' + label + '</button>'; }
     container.innerHTML = '<div class="cc">' +
-      '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
+      '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) +
       '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'progress-check\')">📊 Progress Check</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'curriculum\')">📚 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
