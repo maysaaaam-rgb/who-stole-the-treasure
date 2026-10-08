@@ -187,7 +187,7 @@
     body.appendChild(h('div', { class: 'row', style: 'justify-content:center' }, L.missions.map(function (m) { return h('span', { class: 'pill amber', text: '✅ ' + m.e + ' ' + m.t }); })));
     body.appendChild(h('div', { class: 'door', text: L.door }));
     var rowb = h('div', { class: 'row', style: 'justify-content:center' });
-    if (lesson === 1) rowb.appendChild(btn('Lesson 2: Before Money Was Money ▶', 'green big', function () { go(2, 0); }));
+    if (LESSONS[lesson + 1]) rowb.appendChild(btn('Lesson ' + (lesson + 1) + ': ' + LESSONS[lesson + 1].title + ' ▶', 'green big', function () { go(lesson + 1, 0); }));
     rowb.appendChild(btn('🎉 Celebrate!', 'amber', function () { sfx('win'); confetti(); }));
     body.appendChild(rowb); sfx('win'); confetti();
   }
@@ -210,9 +210,9 @@
     missions.forEach(function (m, k) { mis.appendChild(h('div', { class: 'mission' }, [h('div', { class: 'num', text: String(k + 1) }), h('div', { class: 'em', text: m.e }), h('div', { text: m.t })])); });
     body.appendChild(mis);
   }
-  function timelineBar() {
+  function timelineBar(list) {
     var bar = h('div', { class: 'tlbar' }), dots = [];
-    D.timeline.forEach(function (t) {
+    (list || D.timeline).forEach(function (t) {
       var d = h('div', { class: 'tld' }, [fill(h('div', { class: 'tle' }), t.e, '', t.a), h('b', { text: t.d }), h('small', { text: t.n })]);
       dots.push(d); bar.appendChild(d);
     });
@@ -298,10 +298,10 @@
     runStory(c, D.history, function (ch, predicting) { scene.innerHTML = ''; if (!ch) { fill(scene, '🪙', '', 'w_lydia_coin'); bar.setAt(3); return; } fill(scene, predicting ? '🤔' : ch.scene, '', predicting ? null : ch.art); bar.setAt(predicting ? bar.cur || -1 : ch.at); if (!predicting) bar.cur = ch.at; }, 'Stand up! We are travelling back in time. Do every action!', 'Money changed because people wanted something easier to carry and easier to count.');
   }
 
-  function l2Words(c) {
-    var body = c.body, clueI = -1;
-    var grid = h('div', { class: 'vgrid' }), box = h('div', { class: 'msg' }), gap = h('div', { class: 'gapbox' });
-    D.words.forEach(function (w) {
+  function l2Words(c, words) {
+    var WL = words || D.words, body = c.body, clueI = -1;
+    var grid = h('div', { class: 'vgrid' + (WL.length > 5 ? ' six' : '') }), box = h('div', { class: 'msg' }), gap = h('div', { class: 'gapbox' });
+    WL.forEach(function (w) {
       var card = h('button', { type: 'button', class: 'btn vcard' }, [fill(h('span', { class: 'em' }), w.e), h('b', { text: w.w })]);
       card.addEventListener('click', function () {
         sfx('tap'); box.innerHTML = '<b>' + w.w + '</b>: ' + w.def + '.<br><i>' + w.ex + '</i>';
@@ -309,10 +309,10 @@
       });
       grid.appendChild(card);
     });
-    var order = shuffle(D.words.map(function (w, k) { return k; })), shown = false;
+    var order = shuffle(WL.map(function (w, k) { return k; })), shown = false;
     var clue = btn('🎲 Clue game', 'violet', function () {
-      if (clueI < 0 || shown) { clueI = (clueI + 1) % order.length; shown = false; var w = D.words[order[clueI]]; gap.textContent = w.gap; A.speak(w.gap.replace(/_+/g, 'blank')); clue.textContent = '👀 Show the word'; sfx('page'); }
-      else { shown = true; var w2 = D.words[order[clueI]]; gap.textContent = w2.ex; A.speak(w2.ex); sfx('correct'); clue.textContent = '🎲 Next clue'; }
+      if (clueI < 0 || shown) { clueI = (clueI + 1) % order.length; shown = false; var w = WL[order[clueI]]; gap.textContent = w.gap; A.speak(w.gap.replace(/_+/g, 'blank')); clue.textContent = '👀 Show the word'; sfx('page'); }
+      else { shown = true; var w2 = WL[order[clueI]]; gap.textContent = w2.ex; A.speak(w2.ex); sfx('correct'); clue.textContent = '🎲 Next clue'; }
     });
     body.appendChild(h('div', { class: 'row' }, [clue, h('span', { class: 'lab', text: 'Tap a word card to hear it.' })]));
     body.appendChild(grid); body.appendChild(box); body.appendChild(gap); body.appendChild(pointsRow());
@@ -335,6 +335,183 @@
     body.appendChild(h('div', { class: 'row' }, [h('span', { class: 'lab', text: 'Easier to carry:' })].concat(D.carryChips.map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s); } }); }))));
     body.appendChild(h('div', { class: 'frame-big', html: '🤔 Why do you think they put <b>holes</b> in the coins? &nbsp; <b>I think … because …</b>' }));
     body.appendChild(h('div', { class: 'row' }, D.holesChips.map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s.replace('…', '')); } }); })));
+    body.appendChild(pointsRow());
+  }
+
+  /* ============================== LESSON 3: Money Changes ============================== */
+  function l3Story(c) {
+    var scene = h('div', { class: 'bigscene' }), bar = timelineBar(D.timeline2);
+    var panel = h('div', { class: 'marketpanel tall' }, [scene]);
+    if (hasArt('bg_ancient_market')) panel.style.background = 'url(art/bg_ancient_market.webp) center / cover';
+    c.body.appendChild(panel); c.body.appendChild(bar); bar.setAt(3); bar.cur = 3; fill(scene, '🪙', '', 'w_lydia_coin');
+    runStory(c, D.coins, function (ch, predicting) {
+      scene.innerHTML = '';
+      if (!ch) { fill(scene, '📱', '', 'w_electronic_money'); bar.setAt(6); return; }
+      fill(scene, predicting ? '🤔' : ch.scene, '', predicting ? null : ch.art);
+      if (!predicting) { bar.setAt(ch.at); bar.cur = ch.at; } else bar.setAt(bar.cur);
+    }, 'Stand up! We travel forward in time. Do every action!', 'Money keeps changing: from coins to paper, from paper to cards, from cards to phones. What will come next?');
+  }
+
+  /* two things side by side: tap a pair and the board says the sentence */
+  function pairBoard(c, pairs, headL, headR, vsText, hint, frame) {
+    var body = c.body;
+    var left = h('div', { class: 'cmp cl' }), right = h('div', { class: 'cmp cr' }), sent = h('div', { class: 'msg gmsg', text: hint });
+    var fr = h('div', { class: 'cmpwrap' }, [h('div', { class: 'cmphead', text: headL }), left, h('div', { class: 'cmpvs', text: vsText }), h('div', { class: 'cmphead', text: headR }), right]);
+    function part(box, txt) { var bits = txt.split(' '); box.innerHTML = ''; box.appendChild(fill(h('div', { class: 'cmpe' }), bits[0])); box.appendChild(h('b', { text: bits.slice(1).join(' ') })); }
+    function show(p) { part(left, p.l); part(right, p.r); sent.textContent = p.s; A.speak(p.s); sfx('page'); }
+    var chips = h('div', { class: 'bank' }, pairs.map(function (p) { return h('button', { type: 'button', class: 'chip2', text: p.l + '  ⇄  ' + p.r, onclick: function () { show(p); } }); }));
+    body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 180)]));
+    body.appendChild(fr); body.appendChild(sent); body.appendChild(chips);
+    body.appendChild(h('div', { class: 'frame-big', html: frame }));
+    body.appendChild(pointsRow());
+    show(pairs[0]);
+  }
+
+  /* GAME (Lesson 3): Time Train. The train stops at 7 stations of money history. A wrong answer goes to the next team. */
+  function l3Train(c) {
+    var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var N = D.train.length, stop = 0, turn = 0, tries = 0, answered = false;
+      var track = h('div', { class: 'track' }), qbox = h('div', { class: 'qbox' }), opts = h('div', { class: 'qopts' }), msg = h('div', { class: 'msg gmsg', text: '' });
+      var stops = D.timeline2.map(function (t, i) {
+        var st = h('div', { class: 'stn' }, [h('div', { class: 'stt' }), fill(h('div', { class: 'ste' }), t.e, '', t.a), h('b', { text: t.d })]);
+        track.appendChild(st); return st;
+      });
+      function place() { stops.forEach(function (st, i) { st.classList.toggle('on', i === stop); st.classList.toggle('past', i < stop); st.querySelector('.stt').textContent = i === stop ? '🚂' : (i < stop ? '✅' : ''); }); }
+      var nxt = btn('Next stop ▶', 'green big', function () { nxt.style.display = 'none'; msg.textContent = ''; ask(); });
+      function ask() {
+        if (stop >= N) { gameFinish(c, host, start); return; }
+        var q = D.train[stop]; answered = false; qbox.innerHTML = ''; opts.innerHTML = ''; nxt.style.display = 'none';
+        qbox.appendChild(h('div', { class: 'qteam', style: '--c:' + D.teams[turn].c, text: teamName(turn) + (tries ? ', your chance to steal!' : ', your question!') }));
+        qbox.appendChild(h('div', { class: 'qtext', text: q.q.replace(/_+/g, '______') }));
+        var say = q.q.replace(/_+/g, 'blank'); A.speak(say); qbox.appendChild(sayBtn(say, 'Read it'));
+        shuffle(q.o.map(function (t, k) { return { t: t, k: k }; })).forEach(function (op) {
+          var b = h('button', { type: 'button', class: 'btn qopt', text: op.t });
+          b.addEventListener('click', function () {
+            if (answered) return;
+            if (op.k === q.a) {
+              answered = true; b.classList.add('right'); addPoint(turn, tries ? 1 : 2); sfx('correct'); msg.textContent = '✔ ' + q.say + ' (+' + (tries ? 1 : 2) + ' points)'; A.speak(q.say);
+              stop++; tries = 0; turn = (turn + 1) % D.teams.length; place(); nxt.textContent = stop >= N ? '🏆 See the winner' : 'Next stop ▶'; nxt.style.display = 'inline-flex';
+            } else if (!tries) {
+              b.classList.add('wrong'); b.disabled = true; tries = 1; sfx('tap'); turn = (turn + 1) % D.teams.length; msg.textContent = 'Not this time. The next team can steal it!'; A.speak('Not this time. Next team!');
+              setTimeout(ask, 1300);
+            } else {
+              answered = true; b.classList.add('wrong'); sfx('tap'); msg.textContent = 'Nobody got it. ' + q.say; A.speak(q.say);
+              stop++; tries = 0; place(); nxt.textContent = stop >= N ? '🏆 See the winner' : 'Next stop ▶'; nxt.style.display = 'inline-flex';
+            }
+          });
+          opts.appendChild(b);
+        });
+      }
+      host.appendChild(h('div', { class: 'row' }, [h('span', { class: 'lab', text: 'Right answer: the train moves (2 points; 1 if you steal). Wrong: the next team can steal.' })]));
+      host.appendChild(track); host.appendChild(qbox); host.appendChild(opts); host.appendChild(h('div', { class: 'row' }, [nxt, msg]));
+      place(); ask();
+    }
+    start();
+  }
+
+  /* a class vote: the teacher taps once for every pupil's choice */
+  function l3Vote(c) {
+    var body = c.body, counts = D.vote.map(function () { return 0; });
+    var grid = h('div', { class: 'votes' }), tot = h('span', { class: 'pill amber', text: '🗳️ 0 votes' });
+    function draw() {
+      var max = Math.max.apply(null, counts.concat([1])), sum = counts.reduce(function (a, b) { return a + b; }, 0);
+      tot.textContent = '🗳️ ' + sum + ' vote' + (sum === 1 ? '' : 's'); grid.innerHTML = '';
+      D.vote.forEach(function (v, k) {
+        grid.appendChild(h('div', { class: 'vote' }, [
+          h('div', { class: 'vbar' }, [h('i', { style: 'height:' + Math.round(counts[k] / max * 100) + '%' })]), h('b', { class: 'vn', text: String(counts[k]) }),
+          h('button', { type: 'button', class: 'btn votebtn', onclick: function () { counts[k]++; sfx('coin'); A.speak('I think the next money will be ' + v.n + '.'); draw(); } }, [fill(h('span', { class: 'em' }), v.e), h('small', { text: v.n })])
+        ]));
+      });
+    }
+    body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 120), tot, btn('↺ Clear', 'small ghost', function () { counts = D.vote.map(function () { return 0; }); draw(); })]));
+    body.appendChild(h('div', { class: 'frame-big', html: '<b>I think the next type of money will be …</b> &nbsp; · &nbsp; Do you wish we used <b>different money</b> today? Why?' }));
+    body.appendChild(grid);
+    body.appendChild(h('div', { class: 'row' }, ['I think the next money will be cards.', 'I wish we used … because …', 'I like coins because …'].map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s.replace(/…/g, '')); } }); })));
+    body.appendChild(pointsRow()); draw();
+  }
+
+  /* ============================== LESSON 4: Design the Next Money ============================== */
+  function l4Chart(c) {
+    var body = c.body, tbl = h('div', { class: 'chart' }), info = h('div', { class: 'msg', text: 'Teams: fill the chart on your mini whiteboard. Then tap a cell to check!' });
+    ['Type of money', 'When it was used', 'What it was made from'].forEach(function (t) { tbl.appendChild(h('div', { class: 'ch hd', text: t })); });
+    D.chart.forEach(function (r) {
+      var c1 = h('div', { class: 'ch' }, [fill(h('span', { class: 'cpic' }), r.e), h('b', { class: 'cq', text: '?' })]);
+      var c2 = h('div', { class: 'ch q', text: '?' }), c3 = h('div', { class: 'ch q', text: '?' });
+      c1.addEventListener('click', function () { c1.querySelector('.cq').textContent = r.type; c1.classList.add('ok'); A.speak(r.type); sfx('correct'); });
+      c2.addEventListener('click', function () { c2.textContent = r.when; c2.classList.add('ok'); A.speak(r.type + ': ' + r.when); sfx('correct'); });
+      c3.addEventListener('click', function () { c3.textContent = r.made; c3.classList.add('ok'); A.speak(r.type + ' was made from ' + r.made); sfx('correct'); });
+      tbl.appendChild(c1); tbl.appendChild(c2); tbl.appendChild(c3);
+    });
+    var all = btn('👀 Show all answers', 'amber', function () { [].forEach.call(tbl.querySelectorAll('.ch.q,.ch .cq'), function (el) { el.click(); }); });
+    body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 180), all])); body.appendChild(tbl); body.appendChild(info);
+    body.appendChild(h('div', { class: 'row' }, ['Cowrie shells were used in 1200 BCE.', 'Knives and spades were made from metal.', 'Credit cards are made from plastic.'].map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s); } }); })));
+    body.appendChild(pointsRow());
+  }
+
+  function l4Friend(c) {
+    var scene = h('div', { class: 'bigscene' }), tag = h('div', { class: 'ptag', style: 'display:none' });
+    var panel = h('div', { class: 'marketpanel tall friendpanel' }, [scene, tag]);
+    c.body.appendChild(panel); fill(scene, '🐦');
+    runStory(c, D.friend, function (ch, predicting) {
+      scene.innerHTML = ''; tag.style.display = 'none';
+      if (!ch) { fill(scene, '🤝'); return; }
+      fill(scene, predicting ? '🤔' : ch.scene);
+      if (!predicting && ch.tag) { tag.textContent = ch.tag === 'PROBLEM' ? '😟 PROBLEM' : '💡 SOLUTION'; tag.className = 'ptag ' + ch.tag.toLowerCase(); tag.style.display = 'block'; }
+    }, 'Stand up! This is a short story about a baby bird. Find the PROBLEM and the SOLUTION.', 'A problem is something difficult. A solution is a way to fix it. Wen Shu learned about being a friend.');
+  }
+
+  /* GAME (Lesson 4): Problem and Solution Pairs. Flip two cards: a problem and the solution that fixes it. A pair = 2 points and another turn. */
+  function l4Pairs(c) {
+    var body = c.body, host = h('div', { class: 'gameroot' }); body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var turn = 0, first = null, lock = false, found = 0, cards = [];
+      D.pairs.forEach(function (p) { cards.push({ id: p.id, kind: 'a', p: p.a }); cards.push({ id: p.id, kind: 'b', p: p.b }); });
+      cards = shuffle(cards);
+      var banner = h('div', { class: 'gturn' }), msg = h('div', { class: 'msg gmsg', text: 'Flip two cards. Find a PROBLEM and the SOLUTION that fixes it!' }), grid = h('div', { class: 'memgrid txt' });
+      function paintBanner() { var t = D.teams[turn]; banner.style.setProperty('--c', t.c); banner.innerHTML = ''; banner.appendChild(h('span', { class: 'tn', text: t.e + ' ' + t.n + '’ turn' })); banner.appendChild(h('span', { class: 'gb', text: '🃏 Pairs: ' + found + ' / ' + D.pairs.length })); }
+      cards.forEach(function (cd) {
+        var el = h('button', { type: 'button', class: 'btn memcard txt' }, [h('span', { class: 'mb', text: '❓' })]);
+        el.addEventListener('click', function () {
+          if (lock || el.classList.contains('up') || el.classList.contains('done')) return;
+          el.classList.add('up'); el.innerHTML = ''; el.appendChild(fill(h('span', { class: 'mp' }), cd.p.e)); el.appendChild(h('span', { class: 'mt', text: cd.p.t }));
+          A.speak(cd.p.t); sfx('tap');
+          if (!first) { first = { cd: cd, el: el }; return; }
+          var a = first; first = null; lock = true;
+          if (a.cd.id === cd.id && a.cd.kind !== cd.kind) {
+            setTimeout(function () { a.el.classList.add('done'); el.classList.add('done'); found++; addPoint(turn, 2); sfx('correct'); msg.textContent = teamName(turn) + ' found a pair! +2 points. Go again!'; paintBanner(); lock = false; if (found === D.pairs.length) { sfx('win'); setTimeout(function () { gameFinish(c, host, start); }, 900); } }, 600);
+          } else {
+            setTimeout(function () { [a.el, el].forEach(function (x) { x.classList.remove('up'); x.innerHTML = ''; x.appendChild(h('span', { class: 'mb', text: '❓' })); }); turn = (turn + 1) % D.teams.length; msg.textContent = 'Not a pair. Next team!'; paintBanner(); lock = false; }, 1500);
+          }
+        });
+        grid.appendChild(el);
+      });
+      host.appendChild(banner); host.appendChild(msg); host.appendChild(grid); paintBanner();
+    }
+    start();
+  }
+
+  /* CREATE (Lesson 4): the Money Machine gives ideas. Pupils draw their design on a mini whiteboard. */
+  function l4Machine(c) {
+    var body = c.body, reels = ['mat', 'shape', 'use'], cur = {}, busy = false;
+    var wrap = h('div', { class: 'slots' }), res = h('div', { class: 'msg gmsg slotres', text: 'Pull the lever to get an idea!' });
+    var els = reels.map(function (k) { var e = h('div', { class: 'reel' }, [h('span', { text: '❓' })]); wrap.appendChild(e); return e; });
+    function sentence() { return 'I think the next type of money will be a ' + cur.mat + ' ' + cur.shape + '. You can ' + cur.use + '.'; }
+    var spin = btn('🎰 Spin!', 'violet big', function () {
+      if (busy) return; busy = true; sfx('page'); var done = 0;
+      reels.forEach(function (k, i) {
+        var list = D.mm[k], iv = setInterval(function () { els[i].firstChild.textContent = list[Math.floor(Math.random() * list.length)]; }, 70);
+        setTimeout(function () { clearInterval(iv); cur[k] = list[Math.floor(Math.random() * list.length)]; els[i].firstChild.textContent = cur[k]; els[i].classList.add('stop'); setTimeout(function () { els[i].classList.remove('stop'); }, 400); sfx('tap'); done++; if (done === 3) { busy = false; res.textContent = sentence(); A.speak(sentence()); } }, 700 + i * 500);
+      });
+    });
+    var say = btn('🔊 Say it', 'small amber', function () { if (cur.mat) A.speak(sentence()); });
+    var counter = 0, cnt = h('span', { class: 'pill amber', text: '🎨 0 designs shared' });
+    var share = btn('📢 A pupil shared!', 'green', function () { counter++; cnt.textContent = '🎨 ' + counter + ' design' + (counter === 1 ? '' : 's') + ' shared'; sfx('coin'); if (counter % 4 === 0) confetti(); });
+    body.appendChild(h('div', { class: 'row' }, [timerBtn(c, 300), spin, say, share, cnt]));
+    body.appendChild(wrap); body.appendChild(res);
+    body.appendChild(h('div', { class: 'frame-big', html: '1. Draw your money on the mini whiteboard. &nbsp; 2. Say: <b>I think the next type of money will be a … .</b> &nbsp; 3. <b>You can … it.</b>' }));
     body.appendChild(pointsRow());
   }
 
@@ -493,6 +670,49 @@
       { t: 'Time Travellers’ Ceremony', mins: '3 min', mode: 'think', run: function (c) { wrapStart(c, 2, '⏳', 'Before Money Was Money'); }, intro: 'You have finished the time travel!',
         kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: one thing people used as money'], say: ['People used … as money.'] },
         tip: ['At the door each pupil says one sentence: "People used shells / coins / … as money." It checks the new vocabulary.'] }
+    ] },
+    3: { title: 'Money Changes', missions: D.missions3, door: '🚪 Door pass: tell me what you think the NEXT type of money will be!', scenes: [
+      { t: 'Remember the Money Story', mins: '3 min', mode: 'think', run: function (c) { hookPrompts(c, [{ e: '🐚', n: 'w_cowrie_shells' }, { e: '🪙', n: 'w_lydia_coin' }, { e: '💵', n: 'w_paper_money' }], D.recapPrompts, D.missions3, 'bg_ancient_market'); }, intro: 'Last lesson we travelled back in time. What do you remember?',
+        kids: { steps: ['👀 Look at the pictures', '🤔 Whisper to your partner: what do you remember?', '✋ Tell the class'], say: ['People bartered.', 'Shells are easier to carry than goats.'] },
+        tip: ['Book link: recap of pp.42-43 (barter, cowrie shells, knives and spades, the first coins) before pp.44-45.', 'Press the button for each question. Accept one-word answers and sentences. Show the six missions at the end.'] },
+      { t: 'From Coins to Cards', mins: '7 min', mode: 'act', run: l3Story, intro: 'Stand up! We travel forward in time. Do every action!',
+        kids: { steps: ['🧍 Stand up and do the action', '🗣️ Repeat after the teacher (echo)', '🤝 At the end, retell it to a partner'], say: ['Paper money is easier to carry.', 'The first credit card was in 1958.'] },
+        tip: ['Book link: pp.44-45, Reading 1 "The History of Money" (coins from silver and gold, the first paper money from China between 800 and 900 CE, Europe around 1600 CE, the first credit card in 1958, electronic money in the 21st century) and the timeline strip on pp.44-45.', 'The timeline fills as the story goes. At the 🤔 part pupils guess what is easier to carry than coins. Press Reveal.', 'CE means "Common Era" (the book asked "Can you guess what CE stands for?" on p.42). Today a pupil may be able to say it.'] },
+      { t: 'Six Money Words', mins: '5 min', mode: 'detect', run: function (c) { l2Words(c, D.words3); }, intro: 'Six words for today. What do you think they mean?',
+        kids: { steps: ['👀 Look at the word card', '🤔 Guess the meaning with your partner', '🗣️ Say the word and the sentence'], say: ['coin', 'credit card', 'electronic money'] },
+        tip: ['Book link: pp.44-45 (coin, paper money, credit card, electronic money, internet, centuries). "Credit card" was a Words in Context word on p.43.', 'Tap a card: the board says the word, the meaning and an example sentence. Then press Clue game: pupils say the missing word.'] },
+      { t: 'Easier to Carry', mins: '4 min', mode: 'talk', run: function (c) { pairBoard(c, D.carryPairs, '😀 Easier', '😓 Harder', 'than', 'Tap a pair. Say the sentence with your partner.', '<b>… is easier to carry than …</b> &nbsp; · &nbsp; Which money do <b>you</b> like? Why?'); }, intro: 'Which money is easier to carry? Say the sentence!',
+        kids: { steps: ['🤝 Tap a pair with your partner', '🗣️ Say: … is easier to carry than …', '💬 Which do you like? Why?'], say: ['… is easier to carry than …', 'I like … because …'] },
+        tip: ['Book link: pp.42-44 (shells easier to carry than goats or bags of grain; paper money easier to carry than metal coins).', 'Model one sentence, then pupils say the rest. Support: say only the two words. Stretch: add "because".'] },
+      { t: 'GAME: Time Train', mins: '9 min', mode: 'game', run: l3Train, intro: 'The Time Train stops at seven stations of money history. Answer the question to move the train!',
+        kids: { steps: ['👂 Listen to the question', '🗣️ Talk with your team, then answer', '🚂 A right answer moves the train'], say: ['I think it is …', 'The answer is …'] },
+        tip: ['Book link: the timeline on pp.44-45 (barter, cowrie shells, knives and spades, first coins, paper money, credit card, electronic money).', 'Teams take turns. The team talks for 10 seconds, then one pupil taps the answer. Right = 2 points and the train moves. Wrong = the next team can steal the question for 1 point. If nobody gets it, the answer is shown and the train moves.', 'Press Next stop after each question. After the last station the winner is shown.'] },
+      { t: 'What Is Next? Vote!', mins: '4 min', mode: 'talk', run: l3Vote, intro: 'What type of money do you think is going to be next? Vote!',
+        kids: { steps: ['🤔 Think: what comes next?', '🗳️ Tell the teacher your vote', '🗣️ Say: I think the next money will be …'], say: ['I think the next money will be …', 'I wish we used … because …'] },
+        tip: ['Book link: p.45 "What type of money do you think is going to be next?" and "Do you wish we used different money today?"', 'Tap the picture once for each pupil\'s vote. Ask two or three pupils to say why with "because". There is no wrong answer.'] },
+      { t: 'Time Travellers’ Ceremony', mins: '3 min', mode: 'think', run: function (c) { wrapStart(c, 3, '🚂', 'Money Changes'); }, intro: 'You have travelled through all of money history!',
+        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: the next type of money'], say: ['I think the next money will be …'] },
+        tip: ['At the door each pupil says one sentence: "I think the next money will be …". It checks the new language and gives you ideas for Lesson 4 (design the next money).'] }
+    ] },
+    4: { title: 'Design the Next Money', missions: D.missions4, door: '🚪 Door pass: show me your money design and say one sentence about it!', scenes: [
+      { t: 'Is It or Was It Money?', mins: '4 min', mode: 'move', run: function (c) { walkScene(c, D.zones4, D.walk4, function (w) { return w.s; }, '🚶 Money or not money? Walk to the right corner.'); }, intro: 'Is it money, or was it money? Walk to the right corner!',
+        kids: { steps: ['👀 Read the card', '🚶 Walk to MONEY or NOT MONEY', '🗣️ Say the sentence'], say: ['… was money.', '… is not money.'] },
+        tip: ['Book link: p.46 A "Think and check. Which of these is or was money?" (cowrie shells, a fork and knife, an ancient Chinese knife, a wallet, paper money, a credit card). Answers: the shells, the Chinese knife, paper money and the credit card are or were money.', 'Print the two corner signs from the Cards page. Pupils walk, then say the sentence. A wallet holds money but is not money.'] },
+      { t: 'The Money Chart', mins: '5 min', mode: 'think', run: l4Chart, intro: 'Complete the chart: which money, when, and what was it made from?',
+        kids: { steps: ['🤝 Talk with your team', '✍️ Fill the chart on the mini whiteboard', '👆 Check: the teacher taps a cell'], say: ['… was used in …', '… was made from …'] },
+        tip: ['Book link: p.46 B "Compare and contrast the types of money. Complete the chart." (Type of Money / When It Was Used / What It Was Made From).', 'Teams draw the chart on mini whiteboards and fill it in from what they know. Tap each cell to check (or Show all answers).', 'Answers: cowrie shells 1200 BCE shells; knives and spades 1000 BCE metal; paper money 800-900 CE paper; credit card 1958 plastic.'] },
+      { t: 'A Problem and a Solution', mins: '6 min', mode: 'act', run: l4Friend, intro: 'A short story about a baby bird. Find the PROBLEM and the SOLUTION.',
+        kids: { steps: ['🧍 Stand up and do the action', '🤔 At the 🤔 part: find the problem', '🗣️ Say: The problem is … The solution is …'], say: ['The problem is …', 'The solution is …'] },
+        tip: ['Book link: p.47 "Identifying Problems and Solutions" (the retelling of A New Friend: Go Ne, his father, Wen Shu, the slingshot, the vet). "A problem is something difficult that happens in stories and in our lives. We can fix problems. A solution is a way to fix the problem."', 'The story is retold in simple words. Pupils then do p.47 A in their books (write the problem and the solution).'] },
+      { t: 'GAME: Problem and Solution Pairs', mins: '9 min', mode: 'game', run: l4Pairs, intro: 'Teams take turns. Find a PROBLEM and the SOLUTION that fixes it. A pair gives 2 points and another turn!',
+        kids: { steps: ['🃏 Flip two cards', '🗣️ Read the card out loud', '🤝 Match the problem and its solution'], say: ['This is a problem.', 'This is the solution.'] },
+        tip: ['Book link: p.47 B "Look at these pictures of early money. What were the problems with them? What solutions did people use?" (barter, metal spade money) and pp.42-45.', 'The team in turn chooses two cards (the whole team shouts a number, one pupil taps). The board reads each card. A pair = 2 points and the team goes again. A wrong pair turns back and the next team plays.', 'Six pairs on the board. When all are found the winner is shown.'] },
+      { t: 'Design the Next Money', mins: '8 min', mode: 'create', run: l4Machine, intro: 'Design the next type of money! Spin the Money Machine for ideas.',
+        kids: { steps: ['🎰 Spin the Money Machine for an idea', '🎨 Draw your money on the mini whiteboard', '📢 Show it: I think the next type of money will be …'], say: ['I think the next type of money will be a …', 'You can … it.'] },
+        tip: ['Book link: p.46 C "Think and discuss. Design the next type of money." Frame: "I think the next type of money will be …".', 'Press Spin for ideas (a pupil may use it or ignore it). Start the timer for drawing. Then pupils show their design and say the frame. Press "A pupil shared!" for each design.', 'Stick the best designs on the wall as the class "Money of the Future".'] },
+      { t: 'Money Designers’ Ceremony', mins: '3 min', mode: 'think', run: function (c) { wrapStart(c, 4, '🎰', 'Design the Next Money'); }, intro: 'Great designs, friends!',
+        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: show your design and say one sentence'], say: ['I think the next type of money will be …'] },
+        tip: ['At the door each pupil shows the design and says "I think the next type of money will be a …". Next lessons: Reading 2, The $100 Bill (pp.48-55).'] }
     ] }
   };
 
@@ -523,7 +743,7 @@
     stage.appendChild(h('div', { class: 's-intro', text: s.intro }));
     var main = h('div', { class: 's-body' }); stage.appendChild(main);
     var kp = kidsPanel(s.kids); if (kp) stage.appendChild(kp);
-    $('tab1').classList.toggle('on', lesson === 1); $('tab2').classList.toggle('on', lesson === 2); 
+    $('tab1').classList.toggle('on', lesson === 1); $('tab2').classList.toggle('on', lesson === 2); $('tab3').classList.toggle('on', lesson === 3); $('tab4').classList.toggle('on', lesson === 4); 
     $('h-title').firstChild.nodeValue = L.title;
     drawSteps(); sfx('page');
     try { s.run(ctxFor(main)); } catch (e) { main.appendChild(h('div', { class: 'msg soft', text: 'Oops, this activity could not start.' })); if (window.console) console.error(e); }
@@ -536,6 +756,8 @@
   }
   $('tab1').addEventListener('click', function () { go(1, 0); });
   $('tab2').addEventListener('click', function () { go(2, 0); });
+  $('tab3').addEventListener('click', function () { go(3, 0); });
+  $('tab4').addEventListener('click', function () { go(4, 0); });
   $('back').addEventListener('click', function () { if (state.idx > 0) go(state.lesson, state.idx - 1); });
   $('next').addEventListener('click', function () { if (state.idx < LESSONS[state.lesson].scenes.length - 1) go(state.lesson, state.idx + 1); });
   $('tipbtn').addEventListener('click', function () { var t = $('tip'); if (t.hidden) { tipHtml(); t.hidden = false; } else t.hidden = true; });
@@ -544,7 +766,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') $('next').click(); else if (e.key === 'ArrowLeft') $('back').click(); });
 
   var q = {}; (location.search || '').replace(/^\?/, '').split('&').forEach(function (p) { var kv = p.split('='); if (kv[0]) q[kv[0]] = decodeURIComponent(kv[1] || ''); });
-  var l0 = q.lesson === '2' ? 2 : 1, s0 = Math.max(0, Math.min(LESSONS[l0].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
+  var l0 = ({ '2': 2, '3': 3, '4': 4 })[q.lesson] || 1, s0 = Math.max(0, Math.min(LESSONS[l0].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
   window.G3Lessons = { state: state, go: go, LESSONS: LESSONS };
   loadManifest(function () { drawTeams(); go(l0, s0); });
 })();

@@ -4074,6 +4074,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Lessons the teacher can launch for this grade
     const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
     const lessons = grade === 4 ? [
+      ['💥', 'The Ice Cracks (Unit 3, Lesson 3)', 'unit3-g4-lessons/index.html?lesson=3'],
+      ['🎤', 'Explore the Poem (Unit 3, Lesson 4)', 'unit3-g4-lessons/index.html?lesson=4'],
       ['🧊', 'It Keeps Changing (Unit 3, Lesson 1)', 'unit3-g4-lessons/index.html?lesson=1'],
       ['🐻‍❄️', 'The Bear and I, part 1 (Unit 3, Lesson 2)', 'unit3-g4-lessons/index.html?lesson=2'],
             ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
@@ -4081,6 +4083,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
+      ['🚂', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
+      ['🎰', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
       ['💰', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
       ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
             ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
@@ -4311,8 +4315,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
-    { title: 'Unit 3 lessons: How Much Is It? and Before Money Was Money (Super Shopper, Money Catcher)', grade: 'Grade 3', date: '2026-10-08', file: 'Grade3-Unit3-Lesson-Plans', word: true },
-    { title: 'Unit 3 lessons: It Keeps Changing and The Bear and I (Arctic Memory, Ice Escape)', grade: 'Grade 4', date: '2026-10-08', file: 'Grade4-Unit3-Lesson-Plans', word: true },
+    { title: 'Unit 3 lessons 1-4: How Much Is It?, Before Money Was Money, Money Changes, Design the Next Money', grade: 'Grade 3', date: '2026-10-08', file: 'Grade3-Unit3-Lesson-Plans', word: true },
+    { title: 'Unit 3 lessons 1-4: It Keeps Changing, The Bear and I, The Ice Cracks, Explore the Poem', grade: 'Grade 4', date: '2026-10-08', file: 'Grade4-Unit3-Lesson-Plans', word: true },
         { title: 'Week Song: learn, move, sing (4 short sessions)', grade: 'Grade 4', date: '2026-10-07', file: 'Grade4-Week-Song-Lesson-Plans', word: true },
     { title: 'Watch and Answer: Mr Bean, Super Trolley (1 lesson)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Mr-Bean-Watch-and-Answer-Lesson-Plan', word: true },
     { title: 'Chuseok Cooking and Treats (Week 2, 2 lessons)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Chuseok-Cooking-Lesson-Plans', word: true },

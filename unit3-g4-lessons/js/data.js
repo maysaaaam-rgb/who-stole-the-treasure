@@ -123,5 +123,98 @@
   ];
   D.steps = 6;
 
+
+  /* ---------------- LESSON 3: The Ice Cracks (book pp. 44-45, stanzas 5-8) ---------------- */
+  D.missions3 = [
+    { e: '🧠', t: 'Remember stanzas 1-4' }, { e: '🎭', t: 'Act out stanzas 5-8' }, { e: '🔎', t: 'Learn six poem words' },
+    { e: '➡️', t: 'Follow the cause and effect' }, { e: '🃏', t: 'Play Cause and Effect Pairs' }, { e: '🌍', t: 'Say how we can help' }
+  ];
+  D.recapPrompts = [
+    'Last lesson we met a man and a giant polar bear. Where is the man from?',
+    'Who was the man’s enemy for many years?',
+    'Today the ice gets thin. What do you think happens?'
+  ];
+  D.poem2 = [
+    { say: 'After many warm winters, the ice on the sea was thin.', act: '🌡️ Fan yourself: so warm! Then make a thin line with your hands.', scene: '🌡️', art: 'w_thin', ice: 55, bg: 1 },
+    { predict: 'One morning, the bear was near the man. The ice is very thin! What do you think happens?', say: 'Crack! The bear and the man fell in!', act: '💥 Clap once: CRACK! Then fall down slowly.', scene: '💥', art: 'w_crack', ice: 25, bg: 1, key: true },
+    { say: 'It was difficult to swim. They were in a trap of ice and sea.', act: '🏊 Swim, swim, swim! It is difficult!', scene: '🏊', art: 'w_swim', ice: 25, bg: 1 },
+    { say: 'But they were in the trap together. They helped each other.', act: '🤝 Hold hands with your partner. Together!', scene: '🤝', ice: 25, bg: 1, key: true },
+    { say: 'The bear was not his enemy any more.', act: '😊 Smile at your partner. Friends!', scene: '😊', ice: 25, bg: 1, key: true },
+    { say: 'From that day on, it was clear: things change as years go by.', act: '📅 Turn the pages of a calendar with your hand.', scene: '📅', ice: 20, bg: 1 },
+    { say: 'There is danger in this changing world, for the bear and for the man.', act: '⚠️ Make a worried face. Danger!', scene: '⚠️', art: 'w_danger', ice: 15, bg: 1, key: true },
+    { say: 'Today the ice is melting, and the man is getting old. But he hopes to see the bear once more, living in the cold.', act: '🙏 Hold your hands together: I hope…', scene: '🙏', art: 'w_hope', ice: 10, bg: 1, key: true }
+  ];
+  D.words3 = [
+    { w: 'crack', e: '💥', def: 'a line or a break, and the sound when ice breaks', ex: 'The ice made a loud crack.', gap: 'The ice made a loud ______.' },
+    { w: 'swim', e: '🏊', def: 'move through water with your arms and legs', ex: 'It was difficult to swim in the cold sea.', gap: 'It was difficult to ______ in the cold sea.' },
+    { w: 'together', e: '🤝', def: 'with each other', ex: 'The man and the bear were in the trap together.', gap: 'The man and the bear were in the trap ______.' },
+    { w: 'danger', e: '⚠️', def: 'something that can hurt you', ex: 'There is danger in this changing world.', gap: 'There is ______ in this changing world.' },
+    { w: 'hope', e: '🙏', def: 'want something good to happen', ex: 'The man hopes to see the bear again.', gap: 'The man ______ to see the bear again.' },
+    { w: 'once more', e: '1️⃣', def: 'one more time', ex: 'He hopes to see the bear once more.', gap: 'He hopes to see the bear ______.' }
+  ];
+  D.chain = [
+    { e: '🌡️', a: 'w_climate_change', n: 'Many warm winters', k: 1 }, { e: '📄', a: 'w_thin', n: 'The ice gets thin', k: 2 },
+    { e: '💥', a: 'w_crack', n: 'The ice cracks', k: 3 }, { e: '🌊', a: 'w_swim', n: 'The man and the bear fall in', k: 4 },
+    { e: '🤝', a: null, n: 'They are in the trap together', k: 5 }
+  ];
+  D.pairs3 = [
+    { id: 'c1', a: { e: '🌡️', t: 'There are many warm winters.' }, b: { e: '📄', t: 'The ice on the sea is thin.' } },
+    { id: 'c2', a: { e: '📄', t: 'The ice is thin.' }, b: { e: '💥', t: 'The ice cracks.' } },
+    { id: 'c3', a: { e: '💥', t: 'The ice cracks.' }, b: { e: '🌊', t: 'The bear and the man fall in.' } },
+    { id: 'c4', a: { e: '🏊', t: 'It is difficult to swim.' }, b: { e: '🪤', t: 'They are in a trap of ice and sea.' } },
+    { id: 'c5', a: { e: '🤝', t: 'They help each other.' }, b: { e: '😊', t: 'The bear is not his enemy.' } },
+    { id: 'c6', a: { e: '🫠', t: 'The ice is melting.' }, b: { e: '⚠️', t: 'There is danger for the bear and the man.' } }
+  ];
+  D.help = [
+    { e: '🚲', n: 'ride a bike', a: 'w_bike' }, { e: '🗑️', n: 'clean up trash', a: 'w_trash' }, { e: '🚶', n: 'walk to school' },
+    { e: '🌳', n: 'plant trees' }, { e: '💡', n: 'turn off lights' }, { e: '🚗', n: 'use clean cars' }
+  ];
+
+  /* ---------------- LESSON 4: Explore the Poem (book pp. 46-47) ---------------- */
+  D.missions4 = [
+    { e: '✅', t: 'True or false?' }, { e: '🔤', t: 'Say the -ng sound' }, { e: '🔎', t: 'Find the stanza' },
+    { e: '🤝', t: 'Are they friends?' }, { e: '🆚', t: 'Compare two cars' }, { e: '🎤', t: 'Perform the poem' }
+  ];
+  D.zones4 = [{ k: 'T', t: '✅ TRUE', c: '#15803d' }, { k: 'F', t: '❌ FALSE', c: '#b91c1c' }];
+  D.walk4 = [
+    { e: '🐻‍❄️', t: 'When the man was young, the bear was his friend.', a: 'F', s: 'False. The bear was his enemy.' },
+    { e: '😋', t: 'The man was hungry.', a: 'T', s: 'True. He was hungry, just like the bear.' },
+    { e: '🌡️', t: 'The ice was thin because the winters were cold.', a: 'F', s: 'False. The ice was thin because the winters were warm.' },
+    { e: '⚠️', t: 'Some of the changes are bad for the man and the bear.', a: 'T', s: 'True. There is danger in the changing world.' },
+    { e: '🙏', t: 'At the end of the poem, the man does not want to see the bear.', a: 'F', s: 'False. He hopes to see the bear once more.' }
+  ];
+  D.ngWords = [
+    { w: 'sing', e: '🎤', ng: true }, { w: 'long', e: '📏', ng: true }, { w: 'reading', e: '📖', ng: true }, { w: 'bang', e: '🎆', ng: true }, { w: 'spring', e: '🌸', ng: true },
+    { w: 'young', e: '👦', ng: true }, { w: 'fishing', e: '🎣', ng: true }, { w: 'morning', e: '🌅', ng: true }, { w: 'melting', e: '🫠', ng: true }, { w: 'changing', e: '🔄', ng: true },
+    { w: 'cold', e: '🥶', ng: false }, { w: 'bear', e: '🐻‍❄️', ng: false }, { w: 'ice', e: '🧊', ng: false }, { w: 'fish', e: '🐟', ng: false }, { w: 'trap', e: '🪤', ng: false }, { w: 'swim', e: '🏊', ng: false }
+  ];
+  D.stanzaQuiz = [
+    { q: 'Where is the man from?', a: 1, say: 'He is from a land of wind and cold. That is in stanza 1.' },
+    { q: 'How big is the polar bear?', a: 3, say: 'The polar bear is twice his size. That is in stanza 3.' },
+    { q: 'Where is the man’s fishing hole?', a: 2, say: 'His fishing hole is in the ice. That is in stanza 2.' },
+    { q: 'What was the bear to the man for many years?', a: 4, say: 'The bear was his enemy. That is in stanza 4.' },
+    { q: 'Why is the ice thin?', a: 5, say: 'The ice is thin after many warm winters. That is in stanza 5.' },
+    { q: 'Why are they in the water?', a: 5, say: 'The ice cracked and they fell in. That is in stanza 5.' },
+    { q: 'What was the bear NOT to the man in the trap?', a: 6, say: 'The bear was not his enemy. That is in stanza 6.' },
+    { q: 'What changes as the years go by?', a: 7, say: 'Things change as years go by. That is in stanza 7.' },
+    { q: 'What does the man hope?', a: 8, say: 'He hopes to see the bear once more. That is in stanza 8.' },
+    { q: 'What is melting today?', a: 8, say: 'Today the ice is melting. That is in stanza 8.' }
+  ];
+  D.friendVote = [{ e: '🤝', n: 'friends' }, { e: '🚫', n: 'not friends' }, { e: '🤔', n: 'not sure' }];
+  D.cars = [
+    { l: '🔴 red car', r: '⚪ white car', s: 'The red car is red, but the white car is white.' },
+    { l: '🚙 big', r: '🚗 small', s: 'The red car is big, but the white car is small.' },
+    { l: '🔊 noisy', r: '🤫 quiet', s: 'The red car is noisy, but the white car is quiet.' },
+    { l: '🛞 four wheels', r: '🛞 four wheels', s: 'Both cars have four wheels.' },
+    { l: '🏎️ fast', r: '🏎️ fast', s: 'Both cars are fast.' }
+  ];
+  D.stanzaRetell = [
+    { n: 1, t: 'A man from a land of wind and cold tells his story.', e: '🏔️' }, { n: 2, t: 'He fishes through a hole in the ice. He meets a giant bear.', e: '🎣' },
+    { n: 3, t: 'The polar bear is twice his size. It is hungry too.', e: '🐻‍❄️' }, { n: 4, t: 'For many years the bear is his enemy.', e: '😠' },
+    { n: 5, t: 'After warm winters the ice is thin. It cracks and they fall in.', e: '💥' }, { n: 6, t: 'They are in a trap together. The bear is not his enemy.', e: '🤝' },
+    { n: 7, t: 'Things change as years go by. There is danger in the world.', e: '⚠️' }, { n: 8, t: 'Today the ice is melting. The man hopes to see the bear once more.', e: '🙏' }
+  ];
+
+
   root.U3G4Data = D;
 })(window);
