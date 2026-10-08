@@ -129,7 +129,7 @@ class ClilCrimeLabEngine {
       this.questionLogs[this.activeCaseId].push({
         question: questionText,
         answer: teacherAnswer, // 'YES' or 'NO'
-        time: new Date().toLocaleTimeString()
+        time: new Date().toLocaleTimeString('en-GB')
       });
       return true;
     }
@@ -169,7 +169,7 @@ class ClilCrimeLabEngine {
       this.accusationHistory[this.activeCaseId].push({
         suspectId,
         evidenceIds: selectedEvidenceIds,
-        timestamp: new Date().toLocaleTimeString()
+        timestamp: new Date().toLocaleTimeString('en-GB')
       });
       return { 
         success: false, 

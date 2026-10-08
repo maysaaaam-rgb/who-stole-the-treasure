@@ -1395,7 +1395,7 @@
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
               '<span>Evolution Progress</span>' +
-              '<span>' + (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve') : 'Ready to evolve!')) + '</span>' +
+              '<span>' + (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!')) + '</span>' +
             '</div>' +
             '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
               '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
@@ -2476,7 +2476,7 @@
       const amtColor = isVoided ? '#94a3b8' : (isPos ? '#10b981' : '#ef4444');
       const amtSign = isPos ? '+' : '';
       const dateStr = tx.timestamp 
-        ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }) 
+        ? new Date(tx.timestamp).toLocaleString('en-GB', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }) 
         : (tx.date || '—');
       const tType = (tx.type || 'participation').toLowerCase();
       const icon = tx.icon || typeIcons[tType] || '⭐';
@@ -2541,7 +2541,7 @@
       if (typeof showNotification === 'function') showNotification('Transaction restored and XP balance updated.');
       const updatedTotal = store.getStudentTotalXP(studentId);
       const lifetimeEl = document.getElementById('ledger-lifetime-xp');
-      if (lifetimeEl) lifetimeEl.innerText = '⭐ ' + updatedTotal.toLocaleString() + ' XP';
+      if (lifetimeEl) lifetimeEl.innerText = '⭐ ' + updatedTotal.toLocaleString('en-US') + ' XP';
       const feed = document.getElementById('xp-history-feed');
       if (feed) feed.innerHTML = window.renderLedgerTimelineFeed(studentId, window.currentLedgerFilter || 'all');
       if (document.getElementById('modal-student-xp-history')?.classList.contains('is-open')) {
@@ -2682,8 +2682,8 @@
                 // Evolution Progress Meter
                 '<div style="margin-top:12px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:4px;">' +
-                    '<span>⭐ ' + totalXP.toLocaleString() + ' Active XP · 🗄️ ' + archivedVal.toLocaleString() + ' Archived XP</span>' +
-                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString() + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
+                    '<span>⭐ ' + totalXP.toLocaleString('en-US') + ' Active XP · 🗄️ ' + archivedVal.toLocaleString('en-US') + ' Archived XP</span>' +
+                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString('en-US') + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
                   '</div>' +
                   '<div style="height:10px; border-radius:5px; background:var(--border-light); overflow:hidden;">' +
                     '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:5px; transition:width 0.4s ease;"></div>' +
@@ -2954,7 +2954,7 @@
               '</div>' +
               '<div style="background:#fff; border:1px solid #e9d5ff; border-radius:10px; padding:10px;">' +
                 '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL ASSESSMENT XP</div>' +
-                '<div style="font-size:1.35rem; font-weight:900; color:#7e22ce;">+' + totalPCAssessmentXP.toLocaleString() + ' ⭐ XP</div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#7e22ce;">+' + totalPCAssessmentXP.toLocaleString('en-US') + ' ⭐ XP</div>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -3133,7 +3133,7 @@
             '<div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:12px 18px; border-radius:12px; margin-bottom:14px; border:1px solid #1e293b;">' +
               '<div>' +
                 '<span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Lifetime Total</span>' +
-                '<h3 style="margin:0; font-size:1.4rem; color:#f59e0b; font-weight:900;" id="ledger-lifetime-xp">⭐ ' + currentLifetimeXP.toLocaleString() + ' XP</h3>' +
+                '<h3 style="margin:0; font-size:1.4rem; color:#f59e0b; font-weight:900;" id="ledger-lifetime-xp">⭐ ' + currentLifetimeXP.toLocaleString('en-US') + ' XP</h3>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
                 '<button class="filter-pill ' + (window.currentLedgerFilter === 'all' ? 'active' : '') + '" onclick="filterLedger(\'all\')">All</button>' +
@@ -3147,15 +3147,15 @@
             '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:14px;">' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center; cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">TOTAL ACTIVE XP</div>' +
-                '<div style="font-size:1.2rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + currentLifetimeXP.toLocaleString() + '</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + currentLifetimeXP.toLocaleString('en-US') + '</div>' +
               '</div>' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">PAST 7 DAYS</div>' +
-                '<div style="font-size:1.2rem; font-weight:900; color:#059669; margin-top:2px;">+' + xpReport.xpThisWeek.toLocaleString() + '</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:#059669; margin-top:2px;">+' + xpReport.xpThisWeek.toLocaleString('en-US') + '</div>' +
               '</div>' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">PAST 30 DAYS</div>' +
-                '<div style="font-size:1.2rem; font-weight:900; color:#2563eb; margin-top:2px;">+' + xpReport.xpThisMonth.toLocaleString() + '</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:#2563eb; margin-top:2px;">+' + xpReport.xpThisMonth.toLocaleString('en-US') + '</div>' +
               '</div>' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">AUDIT TRAIL</div>' +
@@ -3540,7 +3540,7 @@
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
                         '<span>Evolution Progress</span>' +
-                        '<span>' + (!mState.isHatched ? ('🥚 Egg Crack: ' + mState.eggCrackPct + '%') : (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
+                        '<span>' + (!mState.isHatched ? ('🥚 Egg Crack: ' + mState.eggCrackPct + '%') : (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
                       '</div>' +
                       '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ' + progressPct + '%">' +
                         '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + progressPct + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
@@ -3875,7 +3875,7 @@
 
     const cardsHtml = students.map(s => {
       const totalXP = store.getStudentTotalXP(s.id);
-      const formattedXP = totalXP.toLocaleString();
+      const formattedXP = totalXP.toLocaleString('en-US');
       const badge = getStudentBadge(s);
       const activeXP = Number(s.xp) || 0;
       const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
@@ -4030,7 +4030,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' +
                     '<span>' + memberStudents.length + ' Members</span>' +
-                    '<span style="font-weight:800; color:var(--color-primary);">⭐ ' + teamTotalXP.toLocaleString() + ' Total XP</span>' +
+                    '<span style="font-weight:800; color:var(--color-primary);">⭐ ' + teamTotalXP.toLocaleString('en-US') + ' Total XP</span>' +
                   '</div>' +
 
                   '<div class="group-members-pills">' +
@@ -4325,7 +4325,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="lp-grid">' + LESSON_PLANS.map(p => {
           const isNew = now - new Date(p.date).getTime() < 7 * 86400000;
           return '<div class="lp-card"><div class="lp-top"><span class="lp-grade">' + p.grade + '</span>' + (p.kind ? '<span class="lp-kind">' + p.kind + '</span>' : '') + (isNew ? '<span class="lp-new">NEW</span>' : '') + '</div>' +
-            '<b>' + p.title + '</b><small>' + new Date(p.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
+            '<b>' + p.title + '</b><small>' + new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
             '<div class="lp-btns"><a class="lp-btn pdf" href="lesson-plans/' + p.file + '.pdf" target="_blank" rel="noopener">📄 PDF</a>' +
             (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>📝 Word</a>' : '') + '</div></div>';
         }).join('') + '</div>' +
@@ -8893,14 +8893,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 // XP Progress Bar
                 '<div style="max-width:380px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:6px;">' +
-                    '<span>⭐ ' + totalXP.toLocaleString() + ' XP</span>' +
-                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString() + ' / ' + mState.nextLevel.xpRequired.toLocaleString() + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (totalXP.toLocaleString() + ' / ' + (totalXP + mState.xpToNext).toLocaleString() + ' XP') : 'Ready to evolve!'))) + '</span>' +
+                    '<span>⭐ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
+                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString('en-US') + ' / ' + mState.nextLevel.xpRequired.toLocaleString('en-US') + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (totalXP.toLocaleString('en-US') + ' / ' + (totalXP + mState.xpToNext).toLocaleString('en-US') + ' XP') : 'Ready to evolve!'))) + '</span>' +
                   '</div>' +
                   '<div style="background:rgba(255,255,255,0.2); height:10px; border-radius:999px; overflow:hidden;">' +
                     '<div style="background:linear-gradient(90deg, #f59e0b, #fbbf24, #10b981); height:100%; width:' + progressPct + '%; border-radius:999px; transition:width 0.4s ease;"></div>' +
                   '</div>' +
                   '<div style="font-size:0.72rem; color:#94a3b8; margin-top:4px;">' +
-                    (!isHatched ? ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString() + ' XP needed to evolve to next stage') : '👑 Sovereign Ultimate Legend')) +
+                    (!isHatched ? ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP needed to evolve to next stage') : '👑 Sovereign Ultimate Legend')) +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -9049,7 +9049,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">📝 My Learning Missions</h1>' +
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Complete missions and homework to earn XP and evolve your monster!</p>' +
           '</div>' +
-          '<span style="font-weight:800; font-size:0.88rem; background:rgba(245,158,11,0.12); color:#b45309; padding:4px 12px; border-radius:12px;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' XP</span>' +
+          '<span style="font-weight:800; font-size:0.88rem; background:rgba(245,158,11,0.12); color:#b45309; padding:4px 12px; border-radius:12px;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
         '</div>' +
 
         '<div style="display:flex; flex-direction:column; gap:12px;">' +
@@ -9099,7 +9099,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Track your learning milestones and monster transformations.</p>' +
           '</div>' +
           '<div style="font-size:1.1rem; font-weight:900; color:var(--color-primary); background:var(--bg-card); padding:8px 16px; border-radius:14px; border:1px solid var(--border-light);">' +
-            '⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' Total XP' +
+            '⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' Total XP' +
           '</div>' +
         '</div>' +
 
@@ -9118,7 +9118,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '</div>' +
                   '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary);">Lvl ' + l.level + '</div>' +
                   '<div style="font-size:0.8rem; font-weight:800; color:var(--text-main);">' + l.name + '</div>' +
-                  '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">' + l.xpRequired.toLocaleString() + ' XP</div>' +
+                  '<div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">' + l.xpRequired.toLocaleString('en-US') + ' XP</div>' +
                   (isCurrent ? '<div style="margin-top:4px; font-size:0.68rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.15); border-radius:6px; padding:1px 4px;">CURRENT</div>' : '') +
                 '</div>';
             }).join('') +
@@ -9191,7 +9191,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; align-items:center; gap:10px;">' +
-                '<span style="font-weight:900; color:#b45309; font-size:1.05rem;">⭐ ' + totalXP.toLocaleString() + ' XP</span>' +
+                '<span style="font-weight:900; color:#b45309; font-size:1.05rem;">⭐ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
                 (isTeacher ? 
                   '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700;" title="Adjust Student XP">✏️ Adjust XP</button>' +
                   '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700; color:#059669;" title="Award Classroom Skills">+ Award</button>' : ''
@@ -9540,7 +9540,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<input type="checkbox" name="quick-points-student" value="' + s.id + '" ' + (targetSet.size === 0 || targetSet.has(s.id) ? 'checked' : '') + ' />' +
         '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
         '<strong>' + s.firstName + ' ' + s.lastName + '</strong>' +
-        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString() + ' XP</span>' +
+        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
       '</label>'
     ).join('');
 
@@ -11847,7 +11847,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '</div>' +
                 '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
                 '<div style="text-align:right; font-weight:900; font-size:1.1rem; color:var(--color-primary); min-width:90px;">' +
-                  '⭐ ' + xp.toLocaleString() + ' XP' +
+                  '⭐ ' + xp.toLocaleString('en-US') + ' XP' +
                 '</div>' +
               '</div>';
           }).join('') +
@@ -12179,7 +12179,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 42, animated: false });
     if (titleEl) titleEl.innerText = 'Edit XP: ' + (student.name || student.firstName);
     const currentXP = Number(student.xp) || 0;
-    if (currentEl) currentEl.innerText = 'Current Balance: ' + currentXP.toLocaleString() + ' XP';
+    if (currentEl) currentEl.innerText = 'Current Balance: ' + currentXP.toLocaleString('en-US') + ' XP';
     if (amountInput) amountInput.value = '10';
     if (reasonSelect) reasonSelect.value = 'Teacher point correction';
     if (customReasonInput) {
@@ -12547,7 +12547,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 40, animated: false });
     if (nameEl) nameEl.innerText = s.firstName + ' ' + s.lastName + ' — XP Ledger';
     const totalXP = store.getStudentTotalXP(studentId);
-    if (totalEl) totalEl.innerText = 'Active Balance: ' + totalXP.toLocaleString() + ' XP';
+    if (totalEl) totalEl.innerText = 'Active Balance: ' + totalXP.toLocaleString('en-US') + ' XP';
 
     const txs = store.getStudentXPTransactions(studentId);
 
@@ -12572,7 +12572,7 @@ window.switchClassroomSubTab = function(subTab) {
               txs.map(tx => {
                 const isVoided = !!tx.isVoided || tx.status === 'voided';
                 const isPos = tx.amount >= 0;
-                const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+                const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString('en-GB', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
                 const typeStr = (tx.type || tx.category || 'participation');
                 const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : '—';
                 return '' +
@@ -15214,14 +15214,14 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px;">' +
             '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:800; margin-bottom:6px;">' +
               '<span>' + (monsterState.nextLevel ? 'Next Evolution: ' + monsterState.nextLevel.name : 'Ultimate Form Reached! 👑') + '</span>' +
-              '<span style="color:var(--color-primary);">' + monsterState.totalXP.toLocaleString() + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString() + ' XP' : 'MAX') + '</span>' +
+              '<span style="color:var(--color-primary);">' + monsterState.totalXP.toLocaleString('en-US') + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString('en-US') + ' XP' : 'MAX') + '</span>' +
             '</div>' +
             '<div style="height:12px; background:var(--border-light); border-radius:6px; overflow:hidden;">' +
               '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:6px; transition:width 0.4s ease;"></div>' +
             '</div>' +
             '<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:6px;">' +
               '<span>' + (!isHatched ? 'Egg Fissure Progress: ' + monsterState.eggCrackPercent + '%' : 'Growth Momentum') + '</span>' +
-              '<span>' + (monsterState.xpRemainingForNextLevel > 0 ? monsterState.xpRemainingForNextLevel.toLocaleString() + ' XP needed to evolve' : 'Ready to evolve!') + '</span>' +
+              '<span>' + (monsterState.xpRemainingForNextLevel > 0 ? monsterState.xpRemainingForNextLevel.toLocaleString('en-US') + ' XP needed to evolve' : 'Ready to evolve!') + '</span>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -15526,7 +15526,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (subtitleEl) subtitleEl.innerText = 'Congratulations, ' + student.firstName + '! Your monster has evolved into a Level ' + toLvl.level + ' ' + toLvl.name + '!';
 
     const xpInfoEl = document.getElementById('m-levelup-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString() + ' XP Milestone Reached';
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString('en-US') + ' XP Milestone Reached';
 
     // Before Art
     const prevImg = document.getElementById('m-levelup-prev-img');
@@ -15545,7 +15545,7 @@ window.switchClassroomSubTab = function(subTab) {
     const teaserEl = document.getElementById('m-levelup-next-teaser');
     if (teaserEl) {
       teaserEl.innerText = nextLvl 
-        ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString() + ' XP (' + nextLvl.name + ')')
+        ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString('en-US') + ' XP (' + nextLvl.name + ')')
         : '🌟 Peak evolution stage achieved!';
     }
 
@@ -15610,7 +15610,7 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="flex:1;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center;">' +
               '<h4 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main);">' + l.name + '</h4>' +
-              '<span class="badge" style="background:var(--bg-muted); color:var(--text-main); font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;">' + l.xpRequired.toLocaleString() + ' XP</span>' +
+              '<span class="badge" style="background:var(--bg-muted); color:var(--text-main); font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;">' + l.xpRequired.toLocaleString('en-US') + ' XP</span>' +
             '</div>' +
             '<p style="font-size:0.82rem; color:var(--text-muted); margin:4px 0 6px 0;">' + (l.description || '') + '</p>' +
             '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700;">🎁 Rewards: ' + (l.rewards ? l.rewards.join(', ') : 'Cosmetics & evolution perks') + '</div>' +
@@ -15701,7 +15701,7 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>' +
         '<div>' +
           '<h2 style="font-size:1.8rem; font-weight:900; margin:0; color:#ffffff;">' + student.name + '\'s ' + (monsterState.title || 'Monster Companion') + '</h2>' +
-          '<p style="color:#94a3b8; font-size:0.9rem; margin:4px 0 0 0;">Level ' + monsterState.level + ' · ' + (monsterState.badge || 'Explorer') + ' · ' + totalXP.toLocaleString() + ' Total XP</p>' +
+          '<p style="color:#94a3b8; font-size:0.9rem; margin:4px 0 0 0;">Level ' + monsterState.level + ' · ' + (monsterState.badge || 'Explorer') + ' · ' + totalXP.toLocaleString('en-US') + ' Total XP</p>' +
         '</div>' +
 
         (equippedList.length > 0 ? 
@@ -16220,7 +16220,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<div style="margin-bottom:8px;"><strong>📊 Student Roster Progress: ' + activeCls.name + ' (' + totalEnrolled + ' Students)</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Derived directly from persistent classroom records and Unit 1 curriculum tasks:</div>' +
         '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
-          '<div>⭐ <strong>Top XP Achievers:</strong> ' + topStudents.map(s => s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id).toLocaleString() + ' XP)').join(', ') + '</div>' +
+          '<div>⭐ <strong>Top XP Achievers:</strong> ' + topStudents.map(s => s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP)').join(', ') + '</div>' +
           '<div>📚 <strong>Active Curriculum:</strong> ' + (activeCls.grade === 'Grade 4' ? 'Global Readings 3' : 'Global Readings 2') + ' · Unit 1</div>' +
           '<div>🧑‍🤝‍🧑 <strong>Enrolled Learners:</strong> ' + totalEnrolled + ' authentic students (Emine / Batuhan / İlknur / Embiye rosters)</div>' +
         '</div>' +

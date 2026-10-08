@@ -183,7 +183,7 @@
             return '' +
               '<div class="evolution-milestone-node ' + (isUnlocked ? 'is-unlocked ' : '') + (isActiveStage ? 'is-active-stage' : '') + '" ' +
                    'onclick="' + onEditFn + '(\'' + lvl.id + '\')" ' +
-                   'title="Level ' + lvl.level + ': ' + lvl.name + ' (' + lvl.xpRequired.toLocaleString() + ' XP)">' +
+                   'title="Level ' + lvl.level + ': ' + lvl.name + ' (' + lvl.xpRequired.toLocaleString('en-US') + ' XP)">' +
                 
                 '<!-- Sleek Hover Gear/Pencil Icon -->' +
                 '<button type="button" class="milestone-admin-gear" onclick="event.stopPropagation(); ' + onEditFn + '(\'' + lvl.id + '\');" title="Configure Level ' + lvl.level + '">' +
@@ -202,7 +202,7 @@
                 '<div class="milestone-meta-card">' +
                   '<div class="milestone-level-tag">Lvl ' + lvl.level + (isActiveStage ? ' • Current' : isUnlocked ? ' • Unlocked' : '') + '</div>' +
                   '<div class="milestone-title">' + lvl.name + '</div>' +
-                  '<div class="milestone-xp-pill">⭐ ' + lvl.xpRequired.toLocaleString() + ' XP</div>' +
+                  '<div class="milestone-xp-pill">⭐ ' + lvl.xpRequired.toLocaleString('en-US') + ' XP</div>' +
                 '</div>' +
               '</div>';
           }).join('') +
