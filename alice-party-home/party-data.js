@@ -159,6 +159,13 @@ window.PARTY = {
       words: [['mouse', '🐭'], ['sleep', '😴'], ['cup', '☕'], ['bed', '🛏️'], ['night', '🌙'], ['cake', '🍰']],
       askMe: [['Are you tired?', 'Yes, I am. Zzz.'], ['Do you like cake?', 'Yes, I do!']],
       props: ['mouse ears', 'a tiny cup']
+    },
+    oyster: {
+      name: 'LITTLE OYSTER', short: 'the Little Oyster', color: '#a855f7',
+      sentences: ['I am the Little Oyster.', 'I have a shiny pearl.', 'I live in the sea.'],
+      words: [['shell', '🐚'], ['pearl', '⚪'], ['sea', '🌊'], ['fish', '🐟'], ['sand', '🏖️'], ['shine', '✨']],
+      askMe: [['Do you like the sea?', 'Yes, I do!'], ['What do you have?', 'I have a shiny pearl.']],
+      props: ['a paper shell', 'a pearl']
     }
   },
 
@@ -308,6 +315,23 @@ window.PARTY = {
       ['dormouse1', "You are welcome. Let's drink tea together."],
       ['dormouse2', 'Good idea. Then I can sleep again. Zzz...']
     ],
+    /* Class 4A has an odd number of pupils, so the tea party is a trio. Every original Hatter and Alice line is kept word for word. */
+    'hatter-alice-oyster': [
+      ['hatter', 'Hello! I am the Mad Hatter. What is your name?'],
+      ['alice',  'Hello! My name is Alice. I am ten.'],
+      ['oyster', 'Hello! I am the Little Oyster. I have a shiny pearl.'],
+      ['hatter', 'Nice to meet you, Alice. Do you like tea?'],
+      ['alice',  "Yes, I do, but I don't like cold tea."],
+      ['oyster', 'I live in the sea, but I like tea too!'],
+      ['hatter', 'Look! I have a big blue hat. Do you like it?'],
+      ['alice',  'Yes, I do. It is very funny!'],
+      ['hatter', 'Can you sit here? We have tea and cake.'],
+      ['alice',  'Yes, I can. I like cake too!'],
+      ['oyster', 'Can I have some cake, please?'],
+      ['hatter', 'Here is your cup. Have some tea!'],
+      ['alice',  'Thank you, Hatter. This is a nice tea party!'],
+      ['oyster', 'Thank you! Look at my pearl. It is a gift for the party!']
+    ],
     'rq-trio': [
       ['redqueen',     'Stop! Who is making this noise?'],
       ['dragon',       'It is me! I am the Jabberwocky. I have big wings.'],
@@ -328,8 +352,9 @@ window.PARTY = {
     '4a': {
       label: 'Class 4A',
       students: [
-        { id: '4a-ipek',    name: 'İpek',     role: 'alice',        pair: 'hatter-alice',      photo: 'alice.jpg' },
-        { id: '4a-kemal',   name: 'Kemal',    role: 'hatter',       pair: 'hatter-alice',      photo: 'mad-hatter.jpg' },
+        { id: '4a-ipek',    name: 'İpek',     role: 'alice',        pair: 'hatter-alice-oyster', photo: 'alice.jpg' },
+        { id: '4a-kemal',   name: 'Kemal',    role: 'hatter',       pair: 'hatter-alice-oyster', photo: 'mad-hatter.jpg' },
+        { id: '4a-suhan',   name: 'Sühan',    role: 'oyster',       pair: 'hatter-alice-oyster', photo: 'little-oyster.jpg' },
         { id: '4a-bahriye', name: 'Bahriye',  role: 'rabbit',       pair: 'rabbit-whitequeen', photo: 'white-rabbit.jpg' },
         { id: '4a-iclal',   name: 'İclal',    role: 'whitequeen',   pair: 'rabbit-whitequeen', photo: 'white-queen.jpg' },
         { id: '4a-ahmet',   name: 'Ahmet',    role: 'hare',         pair: 'hare-cheshire',     photo: 'march-hare.jpg' },
