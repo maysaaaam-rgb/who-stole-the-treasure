@@ -9593,6 +9593,387 @@ const GAMES_REGISTRY = [
     "url": "unit2-g3-lessons/index.html?lesson=3",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l1-g3",
+    "title": "💰 How Much Is It?: Unit 3 Lesson 1 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils look at two money jars, walk to BUY or GO, act out the two farmers who cannot agree on a price, run the Class Shop with \"How much is it? It’s … dollars.\", make jar labels, and play the team game Super Shopper (stay under your budget). Book pages 40-41.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "how much is it",
+      "prices"
+    ],
+    "learningObjectives": [
+      "Ask and answer \"How much is it? It’s … dollars.\"",
+      "Say what we can buy and where we can go (You can buy … / You can go …)",
+      "Explain why people need money (the farmers’ problem)",
+      "Say \"Do you want a label for …? Of course I do! We both want …\""
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the BUY / GO signs and the price cards. Work through the 7 steps: each shows a mode (Think, Move, Act, Talk, Create, Race). Press Teacher for tips on each step. Pupils use mini whiteboards in the race.",
+    "studentInstructions": "Stand up, act, walk to the right corner, ask \"How much is it?\" and make your own jar labels!",
+    "route": "unit3-g3-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "money",
+        "dollar",
+        "buy",
+        "price",
+        "expensive",
+        "save",
+        "jar",
+        "label"
+      ],
+      "supporting": [
+        "goat",
+        "grain",
+        "farmer",
+        "cookie",
+        "balloon"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "How much is it? / It’s … dollars. / You can buy … / You can go …",
+      "formula": "How much is it? It’s five dollars.",
+      "formulas": [
+        "You can buy bread.",
+        "That’s expensive!",
+        "We both want a label for college."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "How much is it? It’s five dollars.",
+    "url": "unit3-g3-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l2-g3",
+    "title": "⏳ Before Money Was Money: Unit 3 Lesson 2 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Mystery money boxes, travel back in time from barter to cowrie shells, metal money and the first coins (a timeline fills as pupils act), five Words in Context, putting the money in order, problem or solution corners, and the team game Money Catcher (tap the things that are or were money). Book pages 42-43.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "history of money",
+      "barter",
+      "timeline"
+    ],
+    "learningObjectives": [
+      "Say how people paid long ago (bartered, cowrie shells, metal money, first coins)",
+      "Put four kinds of money in time order",
+      "Use the new words: bartered, metal, valuable, credit card, plastic",
+      "Say whether a sentence is a problem or a solution"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the PROBLEM / SOLUTION signs. Work through the 7 steps: each shows a mode (Think, Act, Detective, Move, Race). Press Teacher for tips on each step. Pupils use mini whiteboards to order the money and in the race.",
+    "studentInstructions": "Guess the mystery money, travel back in time, find word meanings and walk to PROBLEM or SOLUTION!",
+    "route": "unit3-g3-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "credit card",
+        "plastic"
+      ],
+      "supporting": [
+        "cowrie shells",
+        "coin",
+        "paper money",
+        "carry",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "People bartered. / … is easier to carry than …",
+      "formula": "Shells are easier to carry than goats.",
+      "formulas": [
+        "People bartered long ago.",
+        "Gold is valuable.",
+        "It is a problem because …"
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "⏳",
+    "formula": "Shells are easier to carry than goats.",
+    "url": "unit3-g3-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a5f 55%, #fcd34d 100%)"
+  },
+  {
+    "id": "changing-l1-g4",
+    "title": "🧊 It Keeps Changing: Unit 3 Lesson 1 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. The pink river (See, Think, Wonder), good and bad changes in nature, comparing the Arctic with our town, a visit to the Arctic where the ice bar melts, and the team game Arctic Memory (match a picture to its word). Book pages 40-41.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "climate change",
+      "arctic",
+      "compare and contrast",
+      "memory game"
+    ],
+    "learningObjectives": [
+      "Describe a picture with I see / I think / I wonder",
+      "Say if a change in nature is good or bad and give a reason with because",
+      "Compare and contrast the Arctic with where we live (In the Arctic … but where I live …)",
+      "Know the words polar bear, ice, hole, melting, thin, crack"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the GOOD / BAD signs. Work through the 6 steps: each shows a mode (Think, Move, Talk, Act, Game). Press Teacher for tips on each step. The game is played by four teams in turns.",
+    "studentInstructions": "Look, think and wonder. Walk to GOOD or BAD. Compare the Arctic with your town. Act out a visit to the Arctic and win the memory game!",
+    "route": "unit3-g4-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "change",
+        "ice",
+        "melting",
+        "polar bear",
+        "Arctic"
+      ],
+      "supporting": [
+        "good",
+        "bad",
+        "snow",
+        "cold",
+        "warm"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I see … / I think … / In the Arctic there is …, but where I live there is …",
+      "formula": "It is very cold in the Arctic, but it is warm where I live.",
+      "formulas": [
+        "The ice is melting.",
+        "It is a bad change because …"
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "In the Arctic there is ice, but where I live there is grass.",
+    "url": "unit3-g4-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "bear-l2-g4",
+    "title": "🐻‍❄️ The Bear and I (part 1): Unit 3 Lesson 2 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out the first four stanzas of the poem The Bear and I, learn six Words in Context (hole, twice, enemy, thin, trap, melting), put the story in order, sort what is true for the man, the bear or both, and play the team game Ice Escape. Book pages 42-43.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "polar bear",
+      "vocabulary",
+      "ice escape game"
+    ],
+    "learningObjectives": [
+      "Retell stanzas 1-4 of the poem in simple sentences",
+      "Use the words hole, twice, enemy, thin, trap, melting",
+      "Put events in order with First / Next / Then / Last",
+      "Compare the man and the bear (The man …, the bear …, both …)"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the MAN / BOTH / BEAR signs. Work through the 7 steps: each shows a mode (Think, Act, Detective, Move, Game). Press Teacher for tips on each step. The game is played by four teams in turns.",
+    "studentInstructions": "Act out the poem, find the word meanings, put the story in order and escape across the ice!",
+    "route": "unit3-g4-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "twice",
+        "enemy",
+        "thin",
+        "trap",
+        "melting"
+      ],
+      "supporting": [
+        "polar bear",
+        "fishing",
+        "hungry",
+        "giant",
+        "fur"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "The bear was twice my size. / First … Next … Then … Last …",
+      "formula": "The bear was twice my size.",
+      "formulas": [
+        "The man has a fishing rod.",
+        "Both the man and the bear are hungry."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐻‍❄️",
+    "formula": "The bear was twice my size.",
+    "url": "unit3-g4-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a5f 55%, #e0f2fe 100%)"
   }
 ];
 
