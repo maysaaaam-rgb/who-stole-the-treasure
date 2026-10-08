@@ -49,7 +49,8 @@
     (S().state.xpTransactions || []).forEach(function (t) {
       if (ids[t.studentId] && t.status !== 'voided' && t.status !== 'reverted') {
         var amt = Number(t.amount) || 0, ts = new Date(t.timestamp).getTime();
-        if (amt > 0 && ts >= (isDaily(g) ? new Date().setHours(0, 0, 0, 0) : g.since)) sum += amt;
+        var from = Math.max(isDaily(g) ? new Date().setHours(0, 0, 0, 0) : (g.since || 0), Number(g.resetAt) || 0);
+        if (amt > 0 && ts >= from) sum += amt;
       }
     });
     return sum;
@@ -176,7 +177,7 @@
       (bonus ? '<div class="todo">🪙 <b>+' + bonus + ' coins</b> for every pupil here today' + (paid ? ': <b>given to ' + (justPaid != null ? justPaid : (g.lastPaid || here.length)) + ' pupils ✓</b>' : ' (' + here.length + ' pupils).') + '</div>' : '') +
       (isDaily(g) ? '<div class="todo">🌅 Tomorrow the bar starts again from 0. Can we do it again?</div>' : '') +
       '<div class="row" style="justify-content:center">' + (bonus && !paid ? '<button id="cb-g-pay">🪙 Give +' + bonus + ' coins to everyone here</button>' : '') +
-      '<button class="g2" id="cb-g-new">🎯 Set the next goal</button><button class="g2" id="cb-g-close">Close</button></div>' +
+      '<button class="g2" id="cb-g-new">🎯 Set the next goal</button><button class="g2" id="cb-g-rst">↺ Reset the bar to 0</button><button class="g2" id="cb-g-close">Close</button></div>' +
       ((g.history || []).length > 1 ? '<div class="cb-hist">Goals reached so far: ' + g.history.map(function (x) { return esc(x.label); }).join(' · ') + '</div>' : '') + '</div>';
     document.body.appendChild(m);
     confettiBurst();
@@ -185,6 +186,12 @@
     if (pay) pay.onclick = function () { var n = payBonus(g); saveGoal(viewCls, g); pay.disabled = true; pay.textContent = '✓ Gave +' + bonus + ' coins to ' + n + ' pupils'; };
     m.querySelector('#cb-g-new').onclick = function () { m.remove(); goalEditor(); };
     m.querySelector('#cb-g-close').onclick = function () { m.remove(); };
+    m.querySelector('#cb-g-rst').onclick = function () { resetBar(); m.remove(); };
+  }
+  /** Start the bar again from 0 now. Coins already paid today are not paid twice. */
+  function resetBar() {
+    var cur = loadGoal(viewCls); cur.resetAt = Date.now(); delete cur.wonDay; delete cur.reachedAt;
+    saveGoal(viewCls, cur); paintGoal();
   }
   /** Choose the prize, how much XP the class needs, and an optional coin bonus. */
   function goalEditor() {
@@ -198,7 +205,7 @@
       '<label>3. How much XP the class needs</label><div class="opts" id="cb-g-t">' + opt([200, 300, 500, 800, 1000], target, 't') + '</div>' +
       '<label>4. Coins for every pupil here when the bar is full (given automatically)</label><div class="opts" id="cb-g-b">' + opt([0, 5, 10, 20], bonus, 'b') + '</div>' +
       '<label>5. When and how (shown on the celebration screen)</label><input id="cb-g-plan" maxlength="120" placeholder="For example: Friday, the last 10 minutes of the lesson" value="' + esc(plan) + '">' +
-      '<div class="row"><button class="g2" id="cb-g-x">Cancel</button><button id="cb-g-save">Start this goal</button></div></div>';
+      '<div class="row"><button class="g2" id="cb-g-reset" style="margin-right:auto">↺ Reset the bar to 0</button><button class="g2" id="cb-g-x">Cancel</button><button id="cb-g-save">Start this goal</button></div></div>';
     document.body.appendChild(m);
     function pick(boxId, attr, fn) { m.querySelector(boxId).addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; [].forEach.call(this.children, function (x) { x.classList.remove('on'); }); b.classList.add('on'); fn(b.getAttribute('data-' + attr)); }); }
     pick('#cb-g-p', 'p', function (v) { m.querySelector('#cb-g-label').value = v; });
@@ -206,9 +213,11 @@
     pick('#cb-g-b', 'b', function (v) { bonus = parseInt(v, 10); });
     pick('#cb-g-d', 'd', function (v) { daily = v === 'Every day'; });
     m.querySelector('#cb-g-x').onclick = function () { m.remove(); };
+    // Reset: the bar counts only XP given from now on. Coins already paid today are not paid twice.
+    m.querySelector('#cb-g-reset').onclick = function () { resetBar(); m.remove(); };
     m.querySelector('#cb-g-save').onclick = function () {
       var lb = m.querySelector('#cb-g-label').value.trim() || 'Class reward';
-      saveGoal(viewCls, { label: lb, target: target || 300, since: Date.now(), bonus: bonus || 0, daily: daily, plan: m.querySelector('#cb-g-plan').value.trim(), history: g.history || [], wonDay: daily && isWon(g) ? g.wonDay : undefined, paidDay: daily ? g.paidDay : undefined });
+      saveGoal(viewCls, { label: lb, target: target || 300, since: Date.now(), bonus: bonus || 0, daily: daily, plan: m.querySelector('#cb-g-plan').value.trim(), history: g.history || [], resetAt: g.resetAt, wonDay: daily && isWon(g) ? g.wonDay : undefined, paidDay: daily ? g.paidDay : undefined });
       m.remove(); paintGoal();
     };
   }
