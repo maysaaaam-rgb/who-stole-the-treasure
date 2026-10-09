@@ -15,6 +15,7 @@
 
     return allLessons.filter(lesson => {
       if (!lesson || lesson.status === 'archived') return false;
+      if (window.LibraryCurate && window.LibraryCurate.isHidden(lesson.id)) return false;
       // If the module is tagged for a specific class, check exact match or multi-class inclusion
       if (lesson.targetClass) {
         if (!currentClass || currentClass === 'All' || currentClass === 'all' || currentClass === 'All Classes') return true;
@@ -552,6 +553,7 @@
               <p class="curriculum-subheadline">Comprehensive CLIL, STEM, Language &amp; Literature modules aligned with Grade 3–4 CEFR standards.</p>
             </div>
             <div class="header-right">
+              <button type="button" class="curriculum-cleanup-btn" onclick="window.LibraryCurate &amp;&amp; window.LibraryCurate.open()" title="Hide the lessons you do not want and keep the good ones">✂ Clean up</button>
               <div class="curriculum-search-box">
                 <span class="search-icon">🔍</span>
                 <input type="text" 
