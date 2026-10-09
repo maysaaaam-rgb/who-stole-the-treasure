@@ -56,3 +56,23 @@ html.class-mode .cb { background: radial-gradient(circle at 12% 8%, rgba(255, 25
 @keyframes cmBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @media (max-width: 1100px) { .cm-cards { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 800px) { .cm-cards { grid-template-columns: repeat(2, 1fr); } html.class-mode .app-layout { grid-template-columns: 1fr !important; } .cm-rail { flex-direction: row; flex-wrap: wrap; justify-content: center; } .cm-b { width: 86px; } }
+
+/* ---- header polish (Class Mode) ---- */
+.cm-classes { display: none; }
+html.class-mode .cm-classes { display: flex; gap: 8px; margin-right: 12px; }
+html.class-mode #header-class-select { display: none !important; }
+.cm-cls { font: inherit; font-weight: 800; font-size: 1.15rem; min-width: 56px; cursor: pointer; border: 0; border-bottom: 5px solid #94a3b8; border-radius: 16px; padding: 8px 14px; background: #fff; color: #0f2a4a; transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.cm-cls:active { transform: translateY(4px); border-bottom-width: 1px; } .cm-cls.on { background: #f59e0b; color: #1c1100; border-bottom-color: #b45309; }
+html.class-mode .app-header .brand-logo-btn span { font-size: 1.25rem; font-weight: 800; }
+html.class-mode .cm-toggle { font-size: 1rem; padding: 10px 16px; }
+
+/* ---- Class Board buttons (Class Mode): big, colourful, tactile ---- */
+html.class-mode .cb-add { gap: 5px; margin-top: 10px; }
+html.class-mode .cb-add button { font: 700 1.05rem Fredoka, sans-serif !important; padding: 7px 10px !important; border-radius: 14px !important; border-bottom: 5px solid rgba(0, 0, 0, 0.35) !important; color: #fff !important; min-width: 0; flex: 1; }
+html.class-mode .cb-add button:nth-child(1) { background: #0ea5e9 !important; } html.class-mode .cb-add button:nth-child(2) { background: #f59e0b !important; color: #1c1100 !important; } html.class-mode .cb-add button:nth-child(3) { background: #f43f5e !important; }
+html.class-mode .cb-add button:active { transform: translateY(4px); border-bottom-width: 1px !important; }
+html.class-mode .cb-tabs button { font-size: 1.15rem !important; padding: 9px 20px !important; border-radius: 16px !important; }
+html.class-mode .cb-dock { padding: 8px 10px; gap: 6px; flex-wrap: wrap !important; justify-content: center; overflow: visible !important; background: rgba(255, 255, 255, 0.92) !important; border: 3px solid #38bdf8; box-shadow: 0 10px 26px -8px rgba(15, 42, 74, 0.5); }
+html.class-mode .cb-dock button { font-size: 0.95rem !important; padding: 9px 12px !important; border-radius: 14px !important; border-bottom: 5px solid rgba(15, 42, 74, 0.3) !important; background: #e0f2fe !important; color: #0f2a4a !important; font-weight: 700; }
+html.class-mode .cb-dock button.p { background: #10b981 !important; color: #fff !important; border-bottom-color: #047857 !important; }
+html.class-mode .cb-dock button:active { transform: translateY(4px); border-bottom-width: 1px !important; }

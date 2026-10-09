@@ -840,7 +840,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -9426,6 +9426,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
         case 'command': if (window.renderCommandCenterView) window.renderCommandCenterView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Command Center is not loaded.</div>'; break;
+        case 'rewards': if (window.renderRewardsHall) window.renderRewardsHall(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Rewards is not loaded.</div>'; break;
         case 'shelf': if (window.renderGameShelf) window.renderGameShelf(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Game Shelf is not loaded.</div>'; break;
         case 'classview': if (window.renderClassView) window.renderClassView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class view is not loaded.</div>'; break;
         case 'board': if (window.renderClassBoardView) window.renderClassBoardView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class Board is not loaded.</div>'; break;
