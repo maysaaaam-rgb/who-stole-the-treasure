@@ -1,0 +1,40 @@
+/* Week 4 lessons: number grid, lanes, request cards, door panel, school map, picture options */
+.numgrid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.8vh; }
+.numcell { padding: 0.5vh 0 !important; font-size: 1.3em !important; font-weight: 900; min-width: 0; background: linear-gradient(#1e3a5f, #0f2744); border-bottom-color: #0a1a30; }
+.numcell.lit { background: linear-gradient(#fde047, #f59e0b); color: #422006; border-bottom-color: #b45309; }
+.numcell.hit { background: #15803d !important; color: #fff !important; }
+.numcell.wob { animation: wob 0.5s; }
+.lanes { display: flex; flex-direction: column; gap: 0.5vh; }
+.lane { display: flex; align-items: center; gap: 1.2vh; background: rgba(0, 0, 0, 0.3); border-radius: 99px; padding: 0.2vh 1.2vh; border: 2px solid var(--c); }
+.lname { font-weight: 900; min-width: 14vh; }
+.ltrack { position: relative; flex: 1; height: 5vh; background: repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 2px, transparent 2px 16.6%); border-radius: 99px; }
+.lrk { position: absolute; top: 0; left: 0; font-size: 4.4vh; line-height: 1; transition: left 0.6s var(--spring-snap, ease); }
+.lrk .pic { height: 1.2em; }
+.lgoal { position: absolute; right: 1%; top: 0; font-size: 4vh; line-height: 1.25; }
+.racecard, .reqcard { text-align: center; padding: 1.4vh 2vh; border-radius: 2vh; background: rgba(14, 165, 233, 0.12); border: 2px solid rgba(14, 165, 233, 0.45); display: flex; flex-direction: column; align-items: center; gap: 0.6vh; animation: pop 0.4s var(--spring-snap, ease); }
+.rq-e { font-size: 7vh; line-height: 1.1; } .rq-e .pic { height: 1.3em; }
+.rq-t { font-size: 1.5em; font-weight: 900; line-height: 1.2; }
+.rq-a { font-weight: 800; color: #fde047; }
+.doorpanel { flex: none; height: 17vh; min-height: 0; background: linear-gradient(#1e3a5f, #0b1220); }
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6vh; }
+.dgroup { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1vh; padding: 1vh; border-radius: 2vh; border: 3px solid; }
+.dgroup.green { border-color: #22c55e; background: rgba(34, 197, 94, 0.12); } .dgroup.red { border-color: #f43f5e; background: rgba(244, 63, 94, 0.12); }
+.dpic { font-size: 8vh; line-height: 1.1; } .dpic .pic { height: 1.4em; }
+.wrapart { height: 26vh; width: auto; border-radius: 2vh; display: block; margin: 0 auto 1vh; }
+.partypanel { min-height: 34vh; }
+/* school map */
+.rooms { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2vh; }
+.room { display: flex; flex-direction: column; align-items: center; gap: 0.3vh; padding: 0.8vh 0.4vh !important; min-height: 14vh; position: relative; }
+.room .re { font-size: 6vh; line-height: 1.1; } .room .re .pic { height: 1.4em; } .room b { font-size: 1em; }
+.room .inroom { display: flex; gap: 0.3vh; min-height: 5vh; flex-wrap: wrap; justify-content: center; }
+.mini { font-size: 5vh; line-height: 1; } .mini .pic { height: 1.4em; } .mini.big { font-size: 8vh; }
+.room.empty { opacity: 0.35; filter: grayscale(0.8); } .room.found { background: #15803d; outline: 4px solid #fde047; }
+.people { display: flex; gap: 1.2vh; justify-content: center; flex-wrap: wrap; }
+.pchip { display: flex; flex-direction: column; align-items: center; padding: 0.5vh 1.2vh !important; } .pchip .pe { font-size: 6vh; line-height: 1.1; } .pchip .pe .pic { height: 1.4em; } .pchip small { font-weight: 800; }
+.pchip.sel { outline: 4px solid #fde047; transform: translateY(-0.6vh); }
+.therebox { text-align: center; padding: 1.4vh; border-radius: 2vh; background: rgba(14, 165, 233, 0.12); border: 2px solid rgba(14, 165, 233, 0.45); }
+.therepics { display: flex; gap: 2vh; justify-content: center; } .therepics .tp { font-size: 12vh; line-height: 1.1; } .therepics .tp .pic { height: 1.3em; }
+.thereq { font-size: 1.9em; font-weight: 900; }
+.qopts.four { grid-template-columns: repeat(4, 1fr); }
+.picopt { display: flex; flex-direction: column; align-items: center; gap: 0.3vh; } .picopt .pe { font-size: 9vh; line-height: 1.1; } .picopt .pe .pic { height: 1.3em; }
+@media (max-width: 900px) { .numgrid { grid-template-columns: repeat(5, 1fr); } .rooms { grid-template-columns: repeat(2, 1fr); } .qopts.four { grid-template-columns: repeat(2, 1fr); } .doors { grid-template-columns: 1fr; } }
