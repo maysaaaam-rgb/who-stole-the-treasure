@@ -1,0 +1,100 @@
+/* Class Mode: the Command Center, Lesson plans and Games/Lessons library.
+   They sit on the same indigo canvas as the Class Board, with translucent white cards and white text, so the whole platform feels like one product.
+   Active only with html.class-mode. Teacher Mode is untouched. */
+html.class-mode {
+  --cp-canvas: radial-gradient(circle at 10% 6%, rgba(255, 255, 255, 0.4), transparent 42%), linear-gradient(180deg, #7e8cf0 0%, #8f7be8 55%, #a98bea 100%);
+  --cp-card: rgba(255, 255, 255, 0.14); --cp-card-2: rgba(255, 255, 255, 0.2); --cp-line: rgba(255, 255, 255, 0.3); --cp-ink: #ffffff; --cp-ink-2: #e6e1ff; --cp-ink-3: #cfc8f6;
+  --cp-orange: #f59e0b; --cp-orange-dk: #b45309; --cp-pop: 0 8px 20px -12px rgba(30, 20, 100, 0.55);
+}
+html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) {
+  background: var(--cp-canvas) !important; border-radius: 24px; padding: 18px 22px 40px; color: var(--cp-ink) !important;
+  --bg-card: var(--cp-card); --bg-surface: var(--cp-card); --bg-card-secondary: var(--cp-card-2); --bg-card-hover: rgba(255, 255, 255, 0.26); --bg-muted: var(--cp-card-2); --bg-canvas: transparent;
+  --border-subtle: var(--cp-line); --border-light: var(--cp-line); --border-strong: rgba(255, 255, 255, 0.45);
+}
+html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) * { --text-main: #fff; --text-primary: #fff; --text-secondary: var(--cp-ink-2); --text-muted: var(--cp-ink-3); --text-subtle: var(--cp-ink-3); }
+
+/* ---------------- Command Center ---------------- */
+html.class-mode .cc { --p: var(--cp-card); --l: var(--cp-line); --t: #fff; --m: var(--cp-ink-3); max-width: none; padding-top: 0; font-family: Fredoka, Nunito, 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; }
+html.class-mode .cc h1 { font-size: 1.9rem; font-weight: 600; letter-spacing: 0; color: #fff !important; }
+html.class-mode .cc .cc-sub { color: var(--cp-ink-2); font-size: 1rem; }
+html.class-mode .cc-cmd { background: rgba(255, 255, 255, 0.9); border: 0; border-bottom: 4px solid rgba(60, 50, 140, 0.35); color: #4b4a8f; border-radius: 14px; }
+html.class-mode .cc-cmd kbd, html.class-mode .cc-pal kbd { border-color: rgba(75, 74, 143, 0.35); color: #4b4a8f; }
+html.class-mode .cc-links { gap: 10px; }
+html.class-mode .cc-links button { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #2f2e6b; border: 0; border-bottom: 5px solid rgba(60, 50, 140, 0.35); border-radius: 16px; padding: 8px 16px 8px 10px; font: 700 0.95rem Fredoka, sans-serif; transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+html.class-mode .cc-links button:hover { background: #fff; color: #2f2e6b; } html.class-mode .cc-links button:active { transform: translateY(4px); border-bottom-width: 1px; }
+html.class-mode .cc-links button img { height: 30px; width: auto; filter: drop-shadow(0 2px 2px rgba(60, 50, 140, 0.3)); }
+html.class-mode .cc-kp, html.class-mode .cc-pn { background: var(--cp-card); border: 1px solid var(--cp-line); border-radius: 20px; box-shadow: var(--cp-pop); backdrop-filter: blur(8px); }
+html.class-mode .cc-kp div { border-right-color: var(--cp-line); } html.class-mode .cc-kp b { font-size: 1.9rem; font-weight: 600; letter-spacing: 0; } html.class-mode .cc-kp small { color: var(--cp-ink-2); font-weight: 600; }
+html.class-mode .cc-pn > h3 { color: #fff; font-size: 0.95rem; font-weight: 600; border-bottom-color: var(--cp-line); }
+html.class-mode .cc-chips button { border-color: rgba(255, 255, 255, 0.4); color: #fff; font-family: Fredoka, sans-serif; }
+html.class-mode .cc-chips button.on { background: var(--cp-orange); border-color: var(--cp-orange-dk); color: #2b1700; }
+html.class-mode .cc-find { background: rgba(255, 255, 255, 0.9); border: 0; color: #2f2e6b; border-radius: 10px; }
+html.class-mode .cc th { color: var(--cp-ink-2); border-bottom-color: var(--cp-line); } html.class-mode .cc th:hover { color: #fff; }
+html.class-mode .cc td { border-bottom-color: rgba(255, 255, 255, 0.14); color: #fff; } html.class-mode .cc tbody tr:hover td { background: rgba(255, 255, 255, 0.14); }
+html.class-mode .cc-nm img { background: rgba(255, 255, 255, 0.28); }
+html.class-mode .cc-lv, html.class-mode .cc-dim, html.class-mode .cc-why, html.class-mode .cc-lvl { color: var(--cp-ink-3) !important; }
+html.class-mode .cc-bar, html.class-mode .cc-csr .b, html.class-mode .cc-hp .b, html.class-mode .cc-dsk .b { background: rgba(255, 255, 255, 0.25); } html.class-mode .cc-bar i, html.class-mode .cc-hp .b i { background: var(--cp-orange); }
+html.class-mode .cc-t1 { background: #d1fae5; color: #065f46; } html.class-mode .cc-t2 { background: #fef3c7; color: #92400e; } html.class-mode .cc-t3 { background: #fee2e2; color: #991b1b; } html.class-mode .cc-t0 { background: #e0e7ff; color: #3730a3; }
+html.class-mode .cc-plus { background: #fff; color: #2f2e6b; border: 0; border-bottom: 4px solid rgba(60, 50, 140, 0.35); border-radius: 10px; padding: 3px 9px; font: 700 0.85rem Fredoka, sans-serif; }
+html.class-mode .cc-plus:hover { background: #fff; } html.class-mode .cc-plus:active { transform: translateY(3px); border-bottom-width: 1px; }
+html.class-mode .cc-plus:last-child { background: var(--cp-orange); color: #2b1700; border-bottom-color: var(--cp-orange-dk); }
+html.class-mode .cc-feed-i { color: var(--cp-ink-2); border-bottom-color: rgba(255, 255, 255, 0.2); } html.class-mode .cc-feed-i small { color: var(--cp-ink-3); }
+html.class-mode .cc-csr .l { color: #fff; } html.class-mode .cc-tip { background: rgba(35, 28, 110, 0.35); border-color: var(--cp-line); color: #fff; }
+html.class-mode .cc-mini { border-color: rgba(255, 255, 255, 0.4); background: rgba(35, 28, 110, 0.35); color: #fff; font-family: Fredoka, sans-serif; } html.class-mode .cc-mini.ok { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+html.class-mode .cc-dc { color: var(--cp-ink-2); }
+
+/* ---------------- Lesson plans ---------------- */
+html.class-mode .lp-section { background: transparent; border: 0; box-shadow: none; padding: 0; color: #fff; }
+html.class-mode .lp-head h2 { color: #fff !important; font: 600 1.9rem Fredoka, sans-serif; display: flex; align-items: center; gap: 10px; } html.class-mode .lp-head h2 img { height: 1.5em; width: auto; }
+html.class-mode .lp-head span { color: var(--cp-ink-2) !important; }
+html.class-mode .lp-card { background: var(--cp-card) !important; border: 1px solid var(--cp-line) !important; border-radius: 20px !important; box-shadow: var(--cp-pop) !important; color: #fff !important; backdrop-filter: blur(8px); }
+html.class-mode .lp-card * { color: inherit; }
+html.class-mode .lp-grade { background: rgba(255, 255, 255, 0.9) !important; color: #3730a3 !important; } html.class-mode .lp-kind { background: #ede9fe !important; color: #5b21b6 !important; }
+html.class-mode .lp-btn { border-radius: 12px !important; border-bottom-width: 4px !important; font-family: Fredoka, sans-serif !important; font-weight: 700 !important; color: #fff !important; }
+html.class-mode .lp-btn.pdf { background: #ef4444 !important; } html.class-mode .lp-btn.word { background: var(--cp-orange) !important; color: #2b1700 !important; border-bottom-color: var(--cp-orange-dk) !important; }
+
+/* ---------------- Games and lessons library ---------------- */
+html.class-mode .curriculum-library-root { font-family: Fredoka, Nunito, 'Plus Jakarta Sans', system-ui, sans-serif; }
+html.class-mode .curriculum-headline { color: #fff !important; font-weight: 600; } html.class-mode .curriculum-subheadline { color: var(--cp-ink-2) !important; }
+html.class-mode .curriculum-status-pill { background: rgba(255, 255, 255, 0.9) !important; color: #3730a3 !important; border: 0 !important; }
+html.class-mode .curriculum-search-box { background: rgba(255, 255, 255, 0.92) !important; border: 0 !important; border-bottom: 4px solid rgba(60, 50, 140, 0.3) !important; border-radius: 16px !important; }
+html.class-mode .curriculum-search-input, html.class-mode .curriculum-search-box input { background: transparent !important; color: #2f2e6b !important; border: 0 !important; } html.class-mode .curriculum-search-input::placeholder { color: #7c7bb5 !important; }
+html.class-mode .curriculum-track-tab-bar, html.class-mode .sticky-glass-bar { background: rgba(255, 255, 255, 0.16) !important; border: 1px solid var(--cp-line) !important; border-radius: 20px !important; }
+html.class-mode .track-tab-btn { background: rgba(255, 255, 255, 0.12) !important; border: 1px solid transparent !important; color: #fff !important; border-radius: 14px !important; font-family: Fredoka, sans-serif; }
+html.class-mode .track-tab-btn.is-active { background: var(--cp-orange) !important; color: #2b1700 !important; border-bottom: 4px solid var(--cp-orange-dk) !important; }
+html.class-mode .track-count-pill { background: rgba(255, 255, 255, 0.9) !important; color: #3730a3 !important; }
+html.class-mode .curriculum-track-banner { background: rgba(255, 255, 255, 0.16) !important; border: 1px solid var(--cp-line) !important; border-radius: 20px !important; color: #fff !important; box-shadow: var(--cp-pop) !important; }
+html.class-mode .curriculum-track-banner * { color: #fff; } html.class-mode .banner-badge { background: rgba(255, 255, 255, 0.9) !important; color: #3730a3 !important; }
+html.class-mode .resource-card-v3 { background: var(--cp-card) !important; border: 1px solid var(--cp-line) !important; border-radius: 22px !important; box-shadow: var(--cp-pop) !important; color: #fff !important; backdrop-filter: blur(8px); }
+html.class-mode .resource-card-v3 .card-title-text { color: #fff !important; font-weight: 600; } html.class-mode .card-track-tag { color: var(--cp-ink-3) !important; }
+html.class-mode .card-cefr-badge { background: rgba(255, 255, 255, 0.92) !important; color: #3730a3 !important; } html.class-mode .card-xp-pill { color: #fde68a !important; }
+html.class-mode .card-formula-chip { background: rgba(35, 28, 110, 0.32) !important; border: 1px solid var(--cp-line) !important; color: #fff !important; border-radius: 14px !important; } html.class-mode .card-formula-chip * { color: #fff !important; }
+html.class-mode .btn-launch-3d { background: #10b981 !important; color: #fff !important; border: 0 !important; border-bottom: 5px solid #047857 !important; border-radius: 14px !important; font-family: Fredoka, sans-serif; }
+html.class-mode .btn-worksheet-3d { background: #fff !important; color: #2f2e6b !important; border: 0 !important; border-bottom: 5px solid rgba(60, 50, 140, 0.35) !important; border-radius: 14px !important; }
+html.class-mode .btn-detail-trigger { color: #fff !important; }
+html.class-mode .btn-launch-3d:active, html.class-mode .btn-worksheet-3d:active { transform: translateY(4px); border-bottom-width: 1px !important; }
+@media (max-width: 1024px) { html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) { padding: 14px 14px 32px; } }
+
+/* ---- contrast and spacing fixes ---- */
+html.class-mode .cc-kp small, html.class-mode .cc-kp em { color: #fff !important; opacity: 0.92; }
+html.class-mode .cc th { color: #fff; opacity: 0.9; }
+html.class-mode .cc td:last-child { white-space: nowrap; } html.class-mode .cc-plus { padding: 2px 7px; font-size: 0.8rem; margin-left: 2px; }
+html.class-mode .lp-head { display: flex; align-items: baseline; gap: 6px 16px; flex-wrap: wrap; margin-bottom: 12px; }
+html.class-mode #app-view-container[data-view="library"] :is(input, select, textarea) { background: rgba(255, 255, 255, 0.94) !important; color: #2f2e6b !important; border: 0 !important; }
+html.class-mode #app-view-container[data-view="library"] input::placeholder { color: #7c7bb5 !important; opacity: 1; }
+html.class-mode .curriculum-search-box .search-icon { color: #4b4a8f !important; }
+html.class-mode .resource-card-v3 .card-track-tag, html.class-mode .resource-card-v3 .card-title-wrap small { color: #fff !important; opacity: 0.85 !important; }
+html.class-mode .btn-detail-trigger { color: #fff !important; opacity: 1 !important; font-weight: 700; }
+html.class-mode .card-xp-pill { color: #fde68a !important; opacity: 1 !important; font-weight: 700; }
+
+html.class-mode .resource-card-v3 .btn-detail-trigger, html.class-mode .resource-card-v3 .btn-detail-trigger * { color: #fff !important; opacity: 1 !important; }
+html.class-mode .resource-card-v3 .card-xp-pill { color: #fff3b0 !important; text-shadow: 0 1px 0 rgba(40, 20, 120, 0.5); }
+
+/* the teacher toolkit dock at the bottom: same lavender glass as the Class Board dock */
+html.class-mode .classroom-unified-dock { background: rgba(246, 244, 255, 0.96) !important; border: 1px solid rgba(91, 91, 214, 0.25) !important; box-shadow: 0 10px 26px -8px rgba(42, 30, 120, 0.5) !important; backdrop-filter: blur(10px); }
+html.class-mode .classroom-unified-dock .dock-pill-btn { background: #fff !important; color: #2f2e6b !important; border: 0 !important; border-bottom: 4px solid rgba(60, 50, 140, 0.3) !important; border-radius: 12px !important; }
+html.class-mode .classroom-unified-dock .dock-pill-btn .dock-btn-label { color: #2f2e6b !important; }
+html.class-mode .classroom-unified-dock .dock-pill-btn.dock-btn-primary { background: #f59e0b !important; color: #2b1700 !important; border-bottom-color: #b45309 !important; }
+html.class-mode .classroom-unified-dock .dock-pill-btn.dock-btn-primary .dock-btn-label { color: #2b1700 !important; }
+html.class-mode .classroom-unified-dock .dock-pill-btn:active { transform: translateY(3px); border-bottom-width: 1px !important; }
+html.class-mode .classroom-unified-dock .dock-divider { background: rgba(91, 91, 214, 0.25) !important; }

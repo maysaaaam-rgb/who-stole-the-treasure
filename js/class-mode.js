@@ -59,6 +59,25 @@
     root.switchView = function () { var r = origSwitch.apply(this, arguments); try { setTimeout(paintChips, 0); } catch (e) { /* optional */ } return r; };
   }
 
+  /* ---------- 3D icons on the teacher pages (Command Center buttons, Lesson plans title) ---------- */
+  var ICONS = { 'Open Class Board': 'm_scoreboard', 'Take attendance': 'h_tick_stamp', 'Progress Check': 'h_calendar', 'Homework': 'h_homework_book', 'Lessons': 'm_lesson', 'Store': 'm_rewards' };
+  function decorate() {
+    if (!on()) return; var c = document.getElementById('app-view-container'); if (!c) return;
+    [].forEach.call(c.querySelectorAll('.cc-links button'), function (b) {
+      if (b.querySelector('img')) return; var t = b.textContent.replace(/^[^A-Za-z]+/, '').trim(), n = ICONS[t];
+      if (n) b.innerHTML = '<img src="' + ART + n + '.webp" alt="" draggable="false">' + esc(t);
+    });
+    [].forEach.call(c.querySelectorAll('.lp-head h2'), function (h) {
+      if (h.querySelector('img')) return; var t = h.textContent.replace(/^[^A-Za-z]+/, '').trim();
+      h.innerHTML = '<img src="' + ART + 'm_lesson.webp" alt="" draggable="false">' + esc(t);
+    });
+  }
+  function watch() {
+    var c = document.getElementById('app-view-container'); if (!c || c.__cmWatch) return; c.__cmWatch = 1;
+    try { new MutationObserver(function () { decorate(); }).observe(c, { childList: true, subtree: false }); } catch (e) { /* optional */ }
+    decorate();
+  }
+
   /* ---------- Game Shelf: big picture cards for lessons and games ---------- */
   var shelf = { grade: null, kind: 'all', q: '' };
   function activeGrade() {
@@ -100,7 +119,7 @@
     on: on, rail: rail, renderShelf: renderShelf,
     cls: function (id) { try { S().setActiveClass(id); } catch (e) { return; } var v = (location.hash || '#classview').replace(/^#/, '').split('/')[0] || 'classview'; if (root.switchView) root.switchView(v); paintChips(); },
     set: function (v) {
-      document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips();
+      document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips(); decorate();
       if (root.switchView) root.switchView(v ? 'classview' : 'command');
     },
     shelf: function (k, v) {
@@ -121,7 +140,7 @@
   root.ClassMode = api; root.renderGameShelf = renderShelf;
 
   if (stored() === '1') document.documentElement.classList.add('class-mode');
-  function init() { ensureToggle(); hookSwitch(); paintChips(); }
+  function init() { ensureToggle(); hookSwitch(); paintChips(); watch(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-  setTimeout(function () { ensureToggle(); hookSwitch(); paintChips(); }, 1500);
+  setTimeout(function () { ensureToggle(); hookSwitch(); paintChips(); watch(); decorate(); }, 1500);
 })(typeof window !== 'undefined' ? window : this);
