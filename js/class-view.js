@@ -86,7 +86,7 @@
       if (id === 'lesson' || id === 'home') { panel = panel === id ? null : id; var p = document.getElementById('cv-panel'); if (p) { p.innerHTML = panelHtml(); if (panel && p.firstChild && p.firstChild.scrollIntoView) p.firstChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } return; }
       panel = null;
       if (id === 'board') { sw && sw('board'); return; }
-      if (id === 'games') { sw && sw('library'); return; }
+      if (id === 'games') { sw && sw('shelf'); return; }
       if (id === 'rewards') { sw && sw('store'); return; }
       if (id === 'teacher') { sw && sw('command'); return; }
       if (id === 'timer') { if (root.openClassroomToolkitModal) root.openClassroomToolkitModal('timer'); return; }

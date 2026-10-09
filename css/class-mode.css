@@ -1,0 +1,58 @@
+/* Class Mode ("Sunny Class"): bright, picture-first skin for the smartboard. Active only with html.class-mode.
+   Sky-to-sun background, white glass panels, big 3D picture buttons, tactile 5px lips, spring bounce. Teacher Mode is untouched. */
+.cm-toggle { font: inherit; font-weight: 800; font-size: 0.85rem; cursor: pointer; border: 0; border-bottom: 4px solid rgba(0, 0, 0, 0.35); border-radius: 12px; padding: 8px 14px; margin-right: 10px; background: #f59e0b; color: #1c1100; transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space: nowrap; }
+.cm-toggle:active { transform: translateY(3px); border-bottom-width: 1px; }
+html.class-mode .cm-toggle { background: #6366f1; color: #fff; }
+
+html.class-mode body { background: linear-gradient(180deg, #9fdcff 0%, #d7f0ff 40%, #fff3c4 100%) fixed !important; color: #0f2a4a; }
+html.class-mode .app-header { background: rgba(255, 255, 255, 0.9) !important; border-bottom: 4px solid #38bdf8 !important; box-shadow: 0 6px 18px -8px rgba(14, 116, 144, 0.35) !important; }
+html.class-mode .app-header .brand-logo-btn span, html.class-mode .app-header .brand-logo-btn { color: #0f2a4a !important; }
+html.class-mode .app-header .role-pill-group, html.class-mode .app-header #header-create-wrap, html.class-mode .app-header [id*="search"], html.class-mode .app-header .header-search-btn, html.class-mode .app-header [class*="cloud"], html.class-mode .app-header [id*="cloud"] { display: none !important; }
+html.class-mode .class-switcher-select { font-weight: 800; font-size: 1.05rem !important; border: 3px solid #38bdf8 !important; border-radius: 14px !important; }
+
+html.class-mode .app-layout { grid-template-columns: 112px 1fr !important; max-width: 1560px; gap: 18px; }
+html.class-mode .app-sidebar { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; backdrop-filter: none !important; top: 76px; }
+.cm-rail { display: flex; flex-direction: column; gap: 7px; }
+.cm-b { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 4px 4px; border: 0; border-bottom: 5px solid color-mix(in srgb, var(--c) 70%, #000); border-radius: 22px; background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--c) 22%, #fff)); cursor: pointer; font: inherit; color: #0f2a4a; box-shadow: 0 6px 14px -6px rgba(15, 42, 74, 0.35); transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.cm-b img { width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.25)); }
+.cm-b span { font-weight: 800; font-size: 0.85rem; line-height: 1.1; }
+.cm-b:hover { transform: translateY(-3px); } .cm-b:active { transform: translateY(4px); border-bottom-width: 1px; }
+.cm-b.is-on { outline: 4px solid var(--c); background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--c) 40%, #fff)); }
+
+html.class-mode .app-main, html.class-mode #app-view-container, html.class-mode .app-layout { background: transparent !important; color: #0f2a4a; }
+html.class-mode #app-view-container[data-view="store"] { color: #0f2a4a; --text-main: #0f2a4a; --text-secondary: #334155; --text-muted: #475569; --text-subtle: #64748b; }
+html.class-mode #app-view-container[data-view="store"] h1, html.class-mode #app-view-container[data-view="store"] h2 { color: #0f2a4a; }
+
+/* Class View tiles in Class Mode: bright */
+html.class-mode .cv { background-color: #e0f2fe; color: #0f2a4a; }
+html.class-mode .cv::before { background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 247, 214, 0.65)); }
+html.class-mode .cv-hd h1, html.class-mode .cv-hd small { color: #0f2a4a; text-shadow: none; }
+html.class-mode .cv-tile { color: #0f2a4a; background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--c) 30%, #fff)); border-bottom-color: color-mix(in srgb, var(--c) 75%, #000); backdrop-filter: none; }
+html.class-mode .cv-tile b { text-shadow: none; }
+html.class-mode .cv-panel { background: rgba(255, 255, 255, 0.92); border-color: rgba(14, 116, 144, 0.25); }
+html.class-mode .cv-panel, html.class-mode .cv-panel h2, html.class-mode .cv-panel b, html.class-mode .cv-panel a:not(.cv-link) { color: #0f2a4a; }
+html.class-mode .cv-key { background: #fff; }
+
+/* Class Board in Class Mode: vivid sky-to-violet */
+html.class-mode .cb { background: radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.35), transparent 40%), radial-gradient(circle at 92% 28%, rgba(255, 220, 120, 0.4), transparent 36%), linear-gradient(180deg, #38bdf8 0%, #6366f1 52%, #a855f7 100%) !important; }
+
+/* Game Shelf */
+.cm-shelf { font-family: Fredoka, Nunito, system-ui, sans-serif; color: #0f2a4a; }
+.cm-shelf-hd { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.cm-shelf h1 { margin: 0; font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-weight: 700; } .cm-shelf small { font-size: 1.05rem; font-weight: 600; opacity: 0.7; }
+.cm-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } .cm-chips i { width: 3px; height: 28px; background: rgba(15, 42, 74, 0.2); border-radius: 3px; margin: 0 4px; }
+.cm-chip { font: inherit; font-weight: 800; font-size: 1.05rem; cursor: pointer; border: 0; border-bottom: 4px solid rgba(15, 42, 74, 0.3); border-radius: 14px; padding: 8px 16px; background: #fff; color: #0f2a4a; transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.cm-chip:active { transform: translateY(3px); border-bottom-width: 1px; } .cm-chip.on { background: #38bdf8; color: #fff; border-bottom-color: #0369a1; }
+.cm-search { margin: 12px 0 4px; } .cm-search input { width: min(100%, 420px); font: inherit; font-size: 1.1rem; padding: 10px 16px; border-radius: 16px; border: 3px solid #bae6fd; background: #fff; color: #0f2a4a; }
+.cm-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 14px; }
+.cm-card { display: flex; flex-direction: column; text-decoration: none; color: #0f2a4a; background: #fff; border-radius: 26px; border-bottom: 6px solid color-mix(in srgb, var(--c) 70%, #000); overflow: hidden; box-shadow: 0 10px 20px -10px rgba(15, 42, 74, 0.45); transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.cm-card:hover { transform: translateY(-4px); } .cm-card:active { transform: translateY(4px); border-bottom-width: 1px; }
+.cm-pic { position: relative; display: flex; align-items: center; justify-content: center; height: 17vh; min-height: 120px; background: linear-gradient(160deg, color-mix(in srgb, var(--c) 55%, #fff), color-mix(in srgb, var(--c) 85%, #000)); }
+.cm-pic span { font-size: clamp(3.6rem, 8vh, 6rem); line-height: 1; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.3)); animation: cmBob 3.2s ease-in-out infinite; }
+.cm-pic em { position: absolute; left: 10px; top: 10px; font-style: normal; font-weight: 900; font-size: 0.75rem; letter-spacing: 0.06em; background: #fff; color: #0f2a4a; border-radius: 99px; padding: 3px 10px; }
+.cm-card b { font-size: 1.15rem; font-weight: 700; line-height: 1.25; padding: 12px 14px 4px; flex: 1; }
+.cm-play { font-style: normal; font-weight: 800; font-size: 1.1rem; text-align: center; margin: 4px 14px 14px; padding: 9px; border-radius: 14px; background: #10b981; color: #fff; border-bottom: 4px solid #047857; }
+.cm-empty { grid-column: 1 / -1; text-align: center; font-size: 1.3rem; padding: 40px; }
+@keyframes cmBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (max-width: 1100px) { .cm-cards { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 800px) { .cm-cards { grid-template-columns: repeat(2, 1fr); } html.class-mode .app-layout { grid-template-columns: 1fr !important; } .cm-rail { flex-direction: row; flex-wrap: wrap; justify-content: center; } .cm-b { width: 86px; } }
