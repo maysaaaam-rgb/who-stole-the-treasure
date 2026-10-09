@@ -153,3 +153,14 @@ html.class-mode .cb-dock button.p { background: var(--pm-orange) !important; col
   html.class-mode .mobile-nav-toggle-btn { display: none !important; }
 }
 @media (max-width: 800px) { html.class-mode .app-sidebar { position: static !important; } }
+
+/* ---- Game Shelf clean-up mode ---- */
+.cm-curbar { display: flex; justify-content: space-between; align-items: center; gap: 10px 16px; flex-wrap: wrap; margin: 10px 0 2px; padding: 10px 14px; border-radius: 16px; background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.5); font-weight: 600; color: #2f2e6b; }
+.cm-card.is-hidden { opacity: 0.55; filter: grayscale(0.6); }
+.cm-card.cur { cursor: default; } .cm-card.cur:hover { transform: none; }
+.cm-starmark { position: absolute; right: 10px; top: 8px; text-decoration: none; font-size: 1.6rem; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3)); }
+.cm-cur { display: flex; gap: 6px; margin: 4px 12px 12px; }
+.cm-cur a, .cm-cur button { flex: 1; font: 700 0.95rem Fredoka, sans-serif; text-align: center; text-decoration: none; cursor: pointer; border: 0; border-bottom: 4px solid rgba(60, 50, 140, 0.3); border-radius: 12px; padding: 7px 4px; background: #fff; color: #2f2e6b; }
+.cm-cur .k.on { background: #f59e0b; color: #2b1700; border-bottom-color: #b45309; } .cm-cur .h { background: #fee2e2; color: #991b1b; border-bottom-color: #fca5a5; } .cm-cur .cm-try { background: #e0e7ff; }
+.cm-cur a:active, .cm-cur button:active { transform: translateY(3px); border-bottom-width: 1px; }
+.curriculum-cleanup-btn { font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px; padding: 8px 14px; margin-right: 10px; background: #f59e0b; color: #2b1700; border: 0; border-bottom: 4px solid #b45309; }

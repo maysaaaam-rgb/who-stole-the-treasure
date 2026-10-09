@@ -79,7 +79,7 @@
   }
 
   /* ---------- Game Shelf: big picture cards for lessons and games ---------- */
-  var shelf = { grade: null, kind: 'all', q: '' };
+  var shelf = { grade: null, kind: 'all', q: '', curate: false, showHidden: false };
   function activeGrade() {
     try { var c = S().getActiveClass && S().getActiveClass(); var m = c && /([34])/.exec(c.name || ''); return m ? Number(m[1]) : 0; } catch (e) { return 0; }
   }
@@ -90,7 +90,8 @@
   function isLesson(g) { return (g.tags || []).indexOf('lesson') >= 0 || /lesson/i.test(g.type || ''); }
   function colorFor(g, i) { return ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#0ea5e9'][i % 6]; }
   function shelfList() {
-    var all = (root.GAMES_DATA || []).filter(function (g) { return g && g.route && g.status !== 'hidden'; });
+    var LC = root.LibraryCurate;
+    var all = (root.GAMES_DATA || []).filter(function (g) { return g && g.route && g.status !== 'hidden' && g.status !== 'archived' && (!LC || (shelf.showHidden ? LC.isHidden(g.id) : !LC.isHidden(g.id))); });
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade;
     return all.filter(function (g) {
       if (gr) { var x = gradeOfGame(g); if (x !== 'both' && x !== gr) return false; }
@@ -98,20 +99,29 @@
       if (shelf.kind === 'game' && isLesson(g)) return false;
       if (shelf.q) { var hay = (g.title + ' ' + (g.tags || []).join(' ') + ' ' + (g.categoryLabel || '')).toLowerCase(); if (hay.indexOf(shelf.q) < 0) return false; }
       return true;
-    }).sort(function (a, b) { return (isLesson(b) ? 1 : 0) - (isLesson(a) ? 1 : 0); });
+    }).sort(function (a, b) { var LC2 = root.LibraryCurate, sa = LC2 && LC2.isStar(a.id) ? 1 : 0, sb = LC2 && LC2.isStar(b.id) ? 1 : 0; return (sb - sa) || ((isLesson(b) ? 1 : 0) - (isLesson(a) ? 1 : 0)); });
   }
   function shelfHtml() {
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade, list = shelfList();
     function chip(label, active, fn) { return '<button type="button" class="cm-chip' + (active ? ' on' : '') + '" onclick="' + fn + '">' + label + '</button>'; }
     return '<div class="cm-shelf"><div class="cm-shelf-hd"><div><h1>Game Shelf</h1><small>' + list.length + ' to play</small></div>' +
       '<div class="cm-chips">' + chip('Grade 3', gr === 3, "ClassMode.shelf('grade',3)") + chip('Grade 4', gr === 4, "ClassMode.shelf('grade',4)") + chip('All', !gr, "ClassMode.shelf('grade',0)") + '<i></i>' +
-      chip('Everything', shelf.kind === 'all', "ClassMode.shelf('kind','all')") + chip('Lessons', shelf.kind === 'lesson', "ClassMode.shelf('kind','lesson')") + chip('Games', shelf.kind === 'game', "ClassMode.shelf('kind','game')") + '</div></div>' +
+      chip('Everything', shelf.kind === 'all', "ClassMode.shelf('kind','all')") + chip('Lessons', shelf.kind === 'lesson', "ClassMode.shelf('kind','lesson')") + chip('Games', shelf.kind === 'game', "ClassMode.shelf('kind','game')") + '<i></i>' + chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div></div>' + curateBar() +
       '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search…" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);
-        return '<a class="cm-card" style="--c:' + c + '" href="' + esc(g.route) + '"><div class="cm-pic"><span>' + esc(g.thumbnailIcon || '🎮') + '</span>' + (isLesson(g) ? '<em>LESSON</em>' : '') + '</div>' +
-          '<b>' + esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, '')) + '</b><i class="cm-play">▶ Play</i></a>';
+        var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id), ttl = esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, ''));
+        var pic = '<div class="cm-pic"><span>' + esc(g.thumbnailIcon || '🎮') + '</span>' + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
+        if (!shelf.curate) return '<a class="cm-card' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '" href="' + esc(g.route) + '">' + pic + '<b>' + ttl + '</b><i class="cm-play">▶ Play</i></a>';
+        return '<div class="cm-card cur' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '">' + pic + '<b>' + ttl + '</b><div class="cm-cur"><a class="cm-try" href="' + esc(g.route) + '" target="_blank" rel="noopener">▶ Try</a>' +
+          (hid ? '<button type="button" onclick="ClassMode.cur(\'restore\',\'' + esc(g.id) + '\')">↺ Restore</button>' : '<button type="button" class="k' + (star ? ' on' : '') + '" onclick="ClassMode.cur(\'star\',\'' + esc(g.id) + '\')">' + (star ? '⭐ Kept' : '⭐ Keep') + '</button><button type="button" class="h" onclick="ClassMode.cur(\'hide\',\'' + esc(g.id) + '\')">🙈 Hide</button>') + '</div></div>';
       }).join('') : '<p class="cm-empty">Nothing here. Try another filter.</p>') + '</div></div>';
+  }
+  function curateBar() {
+    var LC = root.LibraryCurate; if (!shelf.curate || !LC) return '';
+    function b(label, fn, cls) { return '<button type="button" class="cm-chip' + (cls ? ' ' + cls : '') + '" onclick="' + fn + '">' + label + '</button>'; }
+    return '<div class="cm-curbar"><span>✂ Clean up: tap <b>Try</b> to look, then <b>Keep</b> the good ones and <b>Hide</b> the rest. Saved on this device.</span><div class="cm-chips">' +
+      b((shelf.showHidden ? '← Back to the shelf' : '🙈 Hidden (' + LC.hiddenIds().length + ')'), "ClassMode.curate('hidden')", shelf.showHidden ? 'on' : '') + b('📋 Copy list', 'LibraryCurate.copy()') + b('📥 Load list', "LibraryCurate.openImport(function(){ClassMode.shelf('x')})") + b('↺ Restore all', "ClassMode.cur('clear')") + '</div></div>';
   }
   function renderShelf(container) { container.innerHTML = shelfHtml(); }
 
@@ -122,8 +132,19 @@
       document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips(); decorate();
       if (root.switchView) root.switchView(v ? 'classview' : 'command');
     },
+    curate: function (v) {
+      if (v === true) { if (!on()) { document.documentElement.classList.add('class-mode'); setStored('1'); paintToggle(); paintChips(); } shelf.curate = true; if (root.switchView) root.switchView('shelf'); return; }
+      if (v === 'hidden') shelf.showHidden = !shelf.showHidden; else { shelf.curate = !shelf.curate; if (!shelf.curate) shelf.showHidden = false; }
+      var c = document.getElementById('app-view-container'); if (c) renderShelf(c);
+    },
+    cur: function (what, id) {
+      var LC = root.LibraryCurate; if (!LC) return;
+      if (what === 'hide') LC.hide(id); else if (what === 'restore') LC.restore(id); else if (what === 'star') LC.toggleStar(id);
+      else if (what === 'clear') { if (!root.confirm || root.confirm('Restore every hidden lesson and remove all stars on this device?')) LC.clearAll(); else return; }
+      var c = document.getElementById('app-view-container'); if (c) { var y = root.scrollY; renderShelf(c); root.scrollTo(0, y); }
+    },
     shelf: function (k, v) {
-      if (k === 'grade') shelf.grade = Number(v); else if (k === 'kind') shelf.kind = v; else if (k === 'q') shelf.q = String(v || '').toLowerCase();
+      if (k === 'x') { /* just redraw */ } else if (k === 'grade') shelf.grade = Number(v); else if (k === 'kind') shelf.kind = v; else if (k === 'q') shelf.q = String(v || '').toLowerCase();
       var c = document.getElementById('app-view-container'); if (!c) return;
       if (k === 'q') { var cards = c.querySelector('.cm-cards'), tmp = document.createElement('div'); tmp.innerHTML = shelfHtml(); if (cards) cards.innerHTML = tmp.querySelector('.cm-cards').innerHTML; return; }
       renderShelf(c);
