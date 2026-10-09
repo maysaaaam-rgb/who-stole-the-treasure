@@ -76,3 +76,80 @@ html.class-mode .cb-dock { padding: 8px 10px; gap: 6px; flex-wrap: wrap !importa
 html.class-mode .cb-dock button { font-size: 0.95rem !important; padding: 9px 12px !important; border-radius: 14px !important; border-bottom: 5px solid rgba(15, 42, 74, 0.3) !important; background: #e0f2fe !important; color: #0f2a4a !important; font-weight: 700; }
 html.class-mode .cb-dock button.p { background: #10b981 !important; color: #fff !important; border-bottom-color: #047857 !important; }
 html.class-mode .cb-dock button:active { transform: translateY(4px); border-bottom-width: 1px !important; }
+
+/* ---- slimmer header and dock (Class Mode) ---- */
+html.class-mode .app-header .header-inner { min-height: 0 !important; padding-top: 4px !important; padding-bottom: 4px !important; }
+html.class-mode .app-header { border-bottom-width: 3px !important; }
+html.class-mode .app-header .brand-icon-box { width: 30px; height: 30px; }
+html.class-mode .app-header .brand-logo-btn span { font-size: 1.05rem; }
+html.class-mode .cm-classes { gap: 6px; margin-right: 8px; }
+.cm-cls { font-size: 0.95rem; min-width: 44px; padding: 4px 10px; border-bottom-width: 4px; border-radius: 12px; }
+html.class-mode .cm-toggle { font-size: 0.85rem; padding: 6px 12px; border-bottom-width: 4px; border-radius: 12px; }
+html.class-mode .app-header .header-right > * { transform-origin: center; }
+html.class-mode .cb-dock { padding: 5px 8px !important; gap: 4px !important; flex-wrap: nowrap !important; border-width: 2px; border-radius: 18px !important; max-width: 98vw; overflow-x: auto !important; }
+html.class-mode .cb-dock button { font-size: 0.8rem !important; padding: 5px 8px !important; border-radius: 10px !important; border-bottom-width: 3px !important; white-space: nowrap; }
+html.class-mode .cb-dock button.p { padding: 5px 12px !important; }
+html.class-mode .cb-dock .sep { height: 22px; }
+
+/* =====================================================================================================
+   PREMIUM PASS (Class Mode): lavender / indigo / cool blue, orange only for what matters (active class, XP, key actions).
+   Calm navigation, tactile ACTION buttons. Loaded last so it wins over the earlier rules above.
+   ===================================================================================================== */
+html.class-mode {
+  --pm-lav: #ece8fb; --pm-lav-2: #e2dcf7; --pm-ink: #2f2e6b; --pm-ink-2: #5a5a99; --pm-indigo: #5b5bd6; --pm-blue: #4f8df5; --pm-orange: #f59e0b; --pm-orange-dk: #b45309;
+  --pm-line: rgba(91, 91, 214, 0.18); --pm-r: 16px;
+}
+html.class-mode body { background: linear-gradient(180deg, #cddffc 0%, #e9ebff 46%, #fff1da 100%) fixed !important; color: var(--pm-ink); }
+
+/* ---- 1. sidebar: one continuous soft lavender surface, quiet items ---- */
+html.class-mode .app-layout { grid-template-columns: 92px 1fr !important; gap: 20px; }
+html.class-mode .app-sidebar { background: linear-gradient(180deg, #efecfc, var(--pm-lav-2)) !important; border: 1px solid rgba(255, 255, 255, 0.7) !important; border-radius: 24px !important; padding: 10px 6px !important; box-shadow: 0 10px 24px -14px rgba(60, 50, 140, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important; top: 68px; }
+html.class-mode .cm-rail { gap: 2px; }
+html.class-mode .cm-b { position: relative; background: transparent; border: 0; border-radius: 16px; box-shadow: none; padding: 7px 2px 6px; gap: 3px; color: var(--pm-ink-2); outline: 0; transform: none; transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease; }
+html.class-mode .cm-b img { width: 50px; height: 50px; filter: drop-shadow(0 2px 2px rgba(60, 50, 140, 0.28)); transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+html.class-mode .cm-b span { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.01em; }
+html.class-mode .cm-b:hover { background: rgba(91, 91, 214, 0.08); transform: none; }
+html.class-mode .cm-b:hover img { transform: translateY(-2px) scale(1.04); }
+html.class-mode .cm-b:active { background: rgba(91, 91, 214, 0.14); transform: scale(0.97); border-bottom-width: 0; }
+html.class-mode .cm-b:focus-visible { outline: 3px solid var(--pm-orange); outline-offset: 1px; }
+html.class-mode .cm-b.is-on { background: rgba(91, 91, 214, 0.12); outline: 0; color: var(--pm-ink); box-shadow: inset 0 3px 7px rgba(60, 50, 140, 0.26), inset 0 -1px 0 rgba(255, 255, 255, 0.8); }
+html.class-mode .cm-b.is-on span { font-weight: 800; }
+html.class-mode .cm-b.is-on::before { content: ''; position: absolute; left: 3px; top: 22%; bottom: 22%; width: 4px; border-radius: 4px; background: var(--pm-orange); }
+
+/* ---- 2. header: lavender glass, slim, orange only for the active class ---- */
+html.class-mode .app-header { background: rgba(246, 244, 255, 0.94) !important; border-bottom: 1px solid var(--pm-line) !important; box-shadow: 0 6px 18px -12px rgba(60, 50, 140, 0.5) !important; }
+html.class-mode .app-header .brand-logo-btn span { color: var(--pm-ink) !important; }
+html.class-mode .app-header .brand-icon-box { background: var(--pm-indigo); }
+.cm-cls { background: #fff; color: var(--pm-ink-2); border-bottom-color: rgba(91, 91, 214, 0.28); }
+.cm-cls.on { background: var(--pm-orange); color: #2b1700; border-bottom-color: var(--pm-orange-dk); }
+html.class-mode .cm-toggle { background: var(--pm-indigo); color: #fff; border-bottom-color: #3b3ba3; }
+
+/* ---- 3. Class Board: clear hierarchy, compact stats, quiet consistent XP actions ---- */
+html.class-mode .cb { background: radial-gradient(circle at 10% 6%, rgba(255, 255, 255, 0.4), transparent 42%), linear-gradient(180deg, #7e8cf0 0%, #8f7be8 55%, #a98bea 100%) !important; padding: 16px 20px 96px !important; border-radius: 24px !important; }
+html.class-mode .cb-tabs { display: none; }                 /* the class buttons now live in the header */
+html.class-mode .cb-hd h1 { font-size: 1.7rem; }
+html.class-mode .cb-tm > div { padding: 6px 14px !important; border-radius: 14px !important; background: rgba(255, 255, 255, 0.2) !important; }
+html.class-mode .cb-tm > div b { font-size: 1.35rem !important; } html.class-mode .cb-tm > div small { font-size: 0.7rem !important; }
+html.class-mode .cb-goal { padding: 6px 14px !important; border-radius: 14px !important; background: rgba(35, 28, 110, 0.32) !important; }
+html.class-mode .cb-goal .bar { height: 14px !important; } html.class-mode .cb-goal .bar i { background: linear-gradient(90deg, #fbbf24, #fb923c) !important; box-shadow: none !important; }
+html.class-mode .cb-mg { gap: 12px !important; }
+html.class-mode .cb-st { border-radius: 20px !important; background: rgba(255, 255, 255, 0.16) !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
+html.class-mode .cb-pt { background: var(--pm-orange) !important; color: #2b1700 !important; }
+html.class-mode .cb-add { gap: 5px; margin-top: 8px; }
+html.class-mode .cb-add button, html.class-mode .cb-add button:nth-child(n) { background: rgba(255, 255, 255, 0.92) !important; color: var(--pm-ink) !important; font: 700 0.9rem Fredoka, sans-serif !important; padding: 4px 8px !important; border-radius: 11px !important; border-bottom: 4px solid rgba(60, 50, 140, 0.35) !important; min-width: 0; flex: 1; }
+html.class-mode .cb-add button:nth-child(3) { background: var(--pm-orange) !important; color: #2b1700 !important; border-bottom-color: var(--pm-orange-dk) !important; }
+html.class-mode .cb-add button:active { transform: translateY(3px); border-bottom-width: 1px !important; }
+html.class-mode .cb-dock { background: rgba(246, 244, 255, 0.96) !important; border: 1px solid var(--pm-line) !important; }
+html.class-mode .cb-dock button { background: #fff !important; color: var(--pm-ink) !important; border-bottom-color: rgba(60, 50, 140, 0.28) !important; }
+html.class-mode .cb-dock button.p { background: var(--pm-orange) !important; color: #2b1700 !important; border-bottom-color: var(--pm-orange-dk) !important; }
+
+/* ---- 4. responsive: tablet keeps the rail, small screens turn it into a quiet bar ---- */
+@media (max-width: 1100px) { html.class-mode .app-layout { grid-template-columns: 80px 1fr !important; gap: 14px; } html.class-mode .cm-b img { width: 42px; height: 42px; } html.class-mode .cm-b span { font-size: 0.72rem; } html.class-mode .cb-mg { grid-template-columns: repeat(4, 1fr) !important; } }
+@media (max-width: 800px) { html.class-mode .app-layout { grid-template-columns: 1fr !important; } html.class-mode .app-sidebar { position: static; border-radius: 20px !important; } html.class-mode .cm-rail { flex-direction: row; flex-wrap: wrap; justify-content: center; } html.class-mode .cm-b { width: 78px; } html.class-mode .cm-b.is-on::before { left: 22%; right: 22%; top: auto; bottom: 2px; width: auto; height: 4px; } }
+
+/* tablet: keep the picture rail on screen (the normal platform hides the sidebar in a drawer below 1024px) */
+@media (max-width: 1024px) {
+  html.class-mode .app-sidebar { position: sticky !important; top: 68px !important; left: 0 !important; bottom: auto !important; width: auto !important; z-index: 1 !important; overflow: visible !important; }
+  html.class-mode .mobile-nav-toggle-btn { display: none !important; }
+}
+@media (max-width: 800px) { html.class-mode .app-sidebar { position: static !important; } }
