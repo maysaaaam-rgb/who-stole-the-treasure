@@ -10353,6 +10353,206 @@ const GAMES_REGISTRY = [
     "url": "unit3-g4-lessons/index.html?lesson=4",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "week4-g4-captain",
+    "title": "🐧 Captain Quiet’s Space Mission: Classroom Rules (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 1 Classroom Rules, not a quiz. Pupils follow Captain Quiet (act only when he says please), count to fifty with a rocket, ask for permission at the door (green door yes, red door no), make polite requests and race four rockets in the Rule Race. Four team games.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "classroom rules",
+      "permission",
+      "requests",
+      "numbers 1-50",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Follow and give simple classroom instructions with please",
+      "Ask for and give permission: Can/May I come in/go out?",
+      "Make polite requests: Give me the book, please.",
+      "Count to fifty"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Game, Talk, Game, Race). Press Teacher for tips on each step. Teams earn points in the four games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Join Captain Quiet on his space ship, count with the rocket and win the Rule Race!",
+    "route": "week4-g4-captain-quiet/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "please",
+        "come in",
+        "go out",
+        "open",
+        "close",
+        "quiet",
+        "board",
+        "window",
+        "door"
+      ],
+      "supporting": [
+        "pencil",
+        "book",
+        "ruler",
+        "eraser",
+        "place"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Can/May I …? · Give me …, please. · Open/Close …, please.",
+      "formula": "Can I come in?",
+      "formulas": [
+        "Give me the book, please.",
+        "Be quiet, please."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐧",
+    "formula": "Can I come in? - Yes, you can.",
+    "url": "week4-g4-captain-quiet/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "week4-g3-daphne",
+    "title": "🕵️ Daphne the School Detective: School Life (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Theme 1 School Life, not a quiz. Daphne lost her notebook, so pupils meet the people at school, place them on a school map (She’s in the library), play hide and seek (Is she in the gym?), practise Is there …? How many …?, and solve clues in the team game School Detective.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "school life",
+      "people at school",
+      "places at school",
+      "there is / there are",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Name people at school: headteacher, librarian, school nurse, caretaker, classmate",
+      "Name places at school and say where a person is",
+      "Ask and answer: Is there a …? How many … are there?",
+      "Greet and respond: How are you? I’m good, thanks!"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Detective, Explore, Game, Talk, Game). Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Help Daphne find her notebook: meet the people, visit the places and play the detective games!",
+    "route": "week4-g3-daphne/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "headteacher",
+        "librarian",
+        "school nurse",
+        "caretaker",
+        "classmate",
+        "library",
+        "gym",
+        "art room",
+        "music room",
+        "office",
+        "corridor",
+        "sports field",
+        "meeting room"
+      ],
+      "supporting": [
+        "hide",
+        "clue",
+        "notebook"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Where is …? She’s in … · Is there a …? Yes, there is. · How many … are there? There are …",
+      "formula": "Where is Daphne? She’s in the library.",
+      "formulas": [
+        "Is there a nurse at school? Yes, there is.",
+        "How many caretakers are there? There are two."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕵️",
+    "formula": "Where is Daphne? She’s in the library.",
+    "url": "week4-g3-daphne/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
   }
 ];
 

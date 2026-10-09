@@ -17,6 +17,8 @@
     { id: 'g4-forest', icon: '🌲', title: 'Forest Rangers', route: 'unit2-forest-lessons/index.html?lesson=1', g: 4, added: '2026-10-05' },
     { id: 'g4-swallow', icon: '🕊️', title: 'The Swallow’s Gift', route: 'unit2-forest-lessons/index.html?lesson=2', g: 4, added: '2026-10-05' },
     { id: 'g3-moon', icon: '🌕', title: 'Chuseok Moon Feast', route: 'unit2-g3-lessons/index.html?lesson=1', g: 3, added: '2026-10-05' },
+    { id: 'g4-captain', icon: '🐧', title: 'Captain Quiet’s Space Mission (Classroom Rules, Week 4)', route: 'week4-g4-captain-quiet/index.html', g: 4, added: '2026-10-09' },
+    { id: 'g3-daphne', icon: '🕵️', title: 'Daphne the School Detective (School Life, Week 4)', route: 'week4-g3-daphne/index.html', g: 3, added: '2026-10-09' },
     { id: 'g4-ice3', icon: '💥', title: 'The Ice Cracks (Unit 3, Lesson 3)', route: 'unit3-g4-lessons/index.html?lesson=3', g: 4, added: '2026-10-09' },
     { id: 'g4-poem4', icon: '🎤', title: 'Explore the Poem (Unit 3, Lesson 4)', route: 'unit3-g4-lessons/index.html?lesson=4', g: 4, added: '2026-10-09' },
     { id: 'g3-money3', icon: '🚂', title: 'Money Changes (Unit 3, Lesson 3)', route: 'unit3-g3-lessons/index.html?lesson=3', g: 3, added: '2026-10-09' },
