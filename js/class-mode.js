@@ -18,7 +18,7 @@
     { id: 'shelf', pic: 'm_games', t: 'Games', c: '#a855f7', views: ['shelf', 'library'] },
     { id: 'pick', pic: 'm_pick', t: 'Pick', c: '#8b5cf6', views: [] },
     { id: 'timer', pic: 'm_timer', t: 'Timer', c: '#f43f5e', views: [] },
-    { id: 'store', pic: 'm_rewards', t: 'Rewards', c: '#10b981', views: ['store'] },
+    { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981', views: ['rewards', 'store'] },
     { id: 'teacher', pic: 'm_teacher_key', t: 'Teacher', c: '#64748b', views: [] }
   ];
   function rail(view) {
@@ -41,6 +41,22 @@
     var b = document.createElement('button'); b.type = 'button'; b.id = 'cm-toggle'; b.className = 'cm-toggle';
     b.addEventListener('click', function () { api.set(!on()); });
     right.insertBefore(b, right.firstChild); paintToggle();
+  }
+
+  /* ---------- class chips in the header (replace the small drop-down in Class Mode) ---------- */
+  function shortName(n) { var m = /(\d+\s*[A-Za-z]?)\s*$/.exec(String(n || '')); return m ? m[1].replace(/\s+/g, '') : String(n || '').slice(0, 4); }
+  function paintChips() {
+    var right = document.querySelector('.app-header .header-right'), box = document.getElementById('cm-classes'); if (!right) return;
+    if (!on()) { if (box) box.remove(); return; }
+    var st = S(), list = []; try { list = (st.getClasses ? st.getClasses() : []).filter(function (c) { return !c.archived; }); } catch (e) { list = []; }
+    var act = null; try { act = st.getActiveClass && st.getActiveClass(); } catch (e2) { act = null; }
+    if (!box) { box = document.createElement('div'); box.id = 'cm-classes'; box.className = 'cm-classes'; var sel = document.getElementById('header-class-select'); right.insertBefore(box, sel || right.firstChild); }
+    box.innerHTML = list.map(function (c) { return '<button type="button" class="cm-cls' + (act && c.id === act.id ? ' on' : '') + '" onclick="ClassMode.cls(\'' + esc(c.id) + '\')" title="' + esc(c.name) + '">' + esc(shortName(c.name)) + '</button>'; }).join('');
+  }
+  var origSwitch = null;
+  function hookSwitch() {
+    if (origSwitch || !root.switchView) return; origSwitch = root.switchView;
+    root.switchView = function () { var r = origSwitch.apply(this, arguments); try { setTimeout(paintChips, 0); } catch (e) { /* optional */ } return r; };
   }
 
   /* ---------- Game Shelf: big picture cards for lessons and games ---------- */
@@ -82,8 +98,9 @@
 
   var api = {
     on: on, rail: rail, renderShelf: renderShelf,
+    cls: function (id) { try { S().setActiveClass(id); } catch (e) { return; } var v = (location.hash || '#classview').replace(/^#/, '').split('/')[0] || 'classview'; if (root.switchView) root.switchView(v); paintChips(); },
     set: function (v) {
-      document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle();
+      document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips();
       if (root.switchView) root.switchView(v ? 'classview' : 'command');
     },
     shelf: function (k, v) {
@@ -94,7 +111,7 @@
     },
     go: function (id) {
       var sw = root.switchView; if (!sw) return;
-      if (id === 'classview' || id === 'board' || id === 'shelf' || id === 'store') { sw(id); return; }
+      if (id === 'classview' || id === 'board' || id === 'shelf' || id === 'store' || id === 'rewards') { sw(id); return; }
       if (id === 'teacher') { api.set(false); return; }
       if (id === 'timer') { if (root.openClassroomToolkitModal) root.openClassroomToolkitModal('timer'); return; }
       if (id === 'pick') { sw('board'); setTimeout(function () { try { root.ClassBoard && root.ClassBoard.pick(); } catch (e) { /* optional */ } }, 500); return; }
@@ -104,7 +121,7 @@
   root.ClassMode = api; root.renderGameShelf = renderShelf;
 
   if (stored() === '1') document.documentElement.classList.add('class-mode');
-  function init() { ensureToggle(); }
+  function init() { ensureToggle(); hookSwitch(); paintChips(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-  setTimeout(ensureToggle, 1500);
+  setTimeout(function () { ensureToggle(); hookSwitch(); paintChips(); }, 1500);
 })(typeof window !== 'undefined' ? window : this);
