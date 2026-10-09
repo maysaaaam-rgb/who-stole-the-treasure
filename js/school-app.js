@@ -840,7 +840,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board'
+        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -9274,6 +9274,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
       sidebar.innerHTML = 
         '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
+          '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Class View</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
         '</ul>' +
@@ -9424,6 +9425,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
         case 'command': if (window.renderCommandCenterView) window.renderCommandCenterView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Command Center is not loaded.</div>'; break;
+        case 'classview': if (window.renderClassView) window.renderClassView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class view is not loaded.</div>'; break;
         case 'board': if (window.renderClassBoardView) window.renderClassBoardView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class Board is not loaded.</div>'; break;
         case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
