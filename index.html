@@ -16,7 +16,7 @@
   <!-- School Platform Unified Stylesheet -->
   <link rel="stylesheet" href="css/school-platform.css?v=4">
   <link rel="stylesheet" href="css/style.css?v=2">
-  <link rel="stylesheet" href="css/ui-polish.css?v=9">
+  <link rel="stylesheet" href="css/ui-polish.css?v=12">
   <link rel="stylesheet" href="css/glass-theme.css?v=3">
   <link rel="stylesheet" href="css/class-mode.css?v=9">
   <link rel="stylesheet" href="css/class-mode-pages.css?v=6">
@@ -1915,22 +1915,30 @@
         <span class="dock-btn-icon">⏱</span>
         <span class="dock-btn-label">Timer</span>
       </button>
-      <button type="button" class="dock-pill-btn" onclick="openRandomStudentModal()" title="Random Student Picker Wheel">
-        <span class="dock-btn-icon">🎲</span>
-        <span class="dock-btn-label">Random</span>
-      </button>
-      <button type="button" class="dock-pill-btn" onclick="switchClassroomSubTab('groups')" title="Classroom Group Work">
-        <span class="dock-btn-icon">👥</span>
-        <span class="dock-btn-label">Groups</span>
-      </button>
       <button type="button" class="dock-pill-btn" onclick="openFastAttendanceModal()" title="Quick Attendance Roll Call">
         <span class="dock-btn-icon">✓</span>
         <span class="dock-btn-label">Roll Call</span>
       </button>
-      <button type="button" class="dock-pill-btn" onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">
+      <div class="dock-more-wrap" id="dock-more-wrap">
+        <button type="button" class="dock-pill-btn" id="dock-more-trigger" onclick="toggleDockMore(event)" title="More classroom tools: Random picker, Groups, Voice changer" aria-haspopup="true" aria-expanded="false">
+          <span class="dock-btn-icon">⋯</span>
+          <span class="dock-btn-label">More ▾</span>
+        </button>
+        <div class="dock-more-menu" id="dock-more-menu" role="menu">
+      <button type="button" class="dock-pill-btn dock-more-item" onclick="openRandomStudentModal()" title="Random Student Picker Wheel">
+        <span class="dock-btn-icon">🎲</span>
+        <span class="dock-btn-label">Random</span>
+      </button>
+      <button type="button" class="dock-pill-btn dock-more-item" onclick="switchClassroomSubTab('groups')" title="Classroom Group Work">
+        <span class="dock-btn-icon">👥</span>
+        <span class="dock-btn-label">Groups</span>
+      </button>
+      <button type="button" class="dock-pill-btn dock-more-item" onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">
         <span class="dock-btn-icon">🎙️</span>
         <span class="dock-btn-label">Voice</span>
       </button>
+        </div>
+      </div>
       <button type="button" class="dock-pill-btn dock-btn-award" onclick="openGiveFeedbackModal('class')" title="Award Whole Class +XP">
         <span class="dock-btn-icon">⭐</span>
         <span class="dock-btn-label">+XP Class</span>
@@ -3075,8 +3083,8 @@
   <script src="js/voice-fx.js?v=5"></script>
   <script src="js/library-curate.js?v=1"></script>
   <script src="js/class-board.js?v=15"></script>
-  <script src="js/class-view.js?v=5"></script>
-  <script src="js/class-rewards.js?v=2"></script>
+  <script src="js/class-view.js?v=6"></script>
+  <script src="js/class-rewards.js?v=3"></script>
   <script src="js/class-mode.js?v=6"></script>
   <script src="js/birthday.js?v=1"></script>
 
@@ -3093,7 +3101,7 @@
   <script src="js/library.js?v=3.1.2"></script>
   <!-- Thematic Character Companions, Badges & Dual Classroom Themes (Term 2) -->
   <script src="js/theme-badges.js?v=2.0"></script>
-  <script src="js/school-app.js?v=4.25"></script>
+  <script src="js/school-app.js?v=4.26"></script>
   <script src="js/simon-says-game.js?v=4.1"></script>
   <script src="js/classroom-sounds.js?v=2"></script>
   <script src="js/quiz-engine.js?v=1.0"></script>

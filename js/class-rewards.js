@@ -63,8 +63,8 @@
     var top = list.slice(0, 3), order = top.length === 3 ? [top[1], top[0], top[2]] : top, cls3 = { 0: 'p1', 1: 'p2', 2: 'p3' };
     var rank = function (p) { return top.indexOf(p); };
     var pod = order.map(function (p) {
-      var r = rank(p), medal = r === 0 ? 'r_trophy' : 'r_medal';
-      return '<div class="cr-pod ' + cls3[r] + '">' + monsterImg(p, 'mon') + '<img class="med" src="' + ART + medal + '.webp" alt=""><b>' + esc(p.name) + '</b><span class="xp"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span></div>';
+      var r = rank(p), medal = r === 0 ? 'r_trophy' : 'r_medal', place = ['1st', '2nd', '3rd'][r];
+      return '<div class="cr-pod ' + cls3[r] + '">' + (r === 0 ? '<img class="crown" src="' + ART + 'r_badge_crown.webp" alt="">' : '') + '<i class="place">' + place + '</i>' + monsterImg(p, 'mon') + '<img class="med" src="' + ART + medal + '.webp" alt=""><b>' + esc(p.name) + '</b><span class="xp"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span></div>';
     }).join('');
     var fundHtml = fund && fund.goal ? '<div class="cr-fund"><img src="' + ART + 'r_chest.webp" alt=""><div style="flex:1"><b style="font-size:1.4rem">' + esc(fund.name || 'Class party') + '</b><div class="bar"><i style="width:' + Math.min(100, Math.round((fund.raised || 0) / fund.goal * 100)) + '%"></i></div></div><b style="font-size:1.6rem">' + fmt(fund.raised) + ' / ' + fmt(fund.goal) + ' 🪙</b></div>' : '';
     container.innerHTML = '<div class="cr">' +

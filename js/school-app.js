@@ -2586,6 +2586,26 @@
     });
   }
 
+  // "More" menu in the classroom toolbar (Random, Groups, Voice); closes after a choice or a click elsewhere
+  window.toggleDockMore = function(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('dock-more-menu');
+    const trigger = document.getElementById('dock-more-trigger');
+    if (!menu) return;
+    const open = menu.classList.toggle('is-open');
+    if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('dock-more-menu');
+      if (!menu || !menu.classList.contains('is-open')) return;
+      const trigger = document.getElementById('dock-more-trigger');
+      if (e.target.closest && e.target.closest('.dock-more-item')) { menu.classList.remove('is-open'); }
+      else if (!menu.contains(e.target) && (!trigger || !trigger.contains(e.target))) { menu.classList.remove('is-open'); }
+      if (trigger && !menu.classList.contains('is-open')) trigger.setAttribute('aria-expanded', 'false');
+    });
+  }
+
   // =========================================================================
   // 4. STUDENT PROFILE MANAGEMENT CENTER (8 SUB-TABS)
   window.openStudentProfile = function(studentIdOrNumber, activeTab = 'overview') {

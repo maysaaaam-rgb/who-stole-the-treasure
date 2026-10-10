@@ -102,7 +102,7 @@
     container.innerHTML = '<div class="cv" id="cv-root" style="background-image:url(' + ART + 'bg_class_view.webp)">' +
       '<div class="cv-hd"><div><h1>' + (cls ? esc(cls.name) : 'Class') + '</h1><small>' + esc(label) + '</small></div>' +
       '<button type="button" class="cv-key" title="Teacher area (Command Center)" onclick="ClassView.go(\'teacher\')">' + img('m_teacher_key', 'Teacher area') + '</button></div>' +
-      todayHero(cls) + '<div class="cv-grid">' + TILES.map(function (t) { return '<button type="button" class="cv-tile" style="--c:' + t.c + '" onclick="ClassView.go(\'' + t.id + '\')">' + img(t.pic, '') + '<b>' + esc(t.t) + '</b></button>'; }).join('') + '</div>' +
+      todayHero(cls) + '<div class="cv-grid">' + TILES.filter(function (t) { return !(document.documentElement.classList.contains('class-mode') && t.id !== 'home'); }).map(function (t) { return '<button type="button" class="cv-tile" style="--c:' + t.c + '" onclick="ClassView.go(\'' + t.id + '\')">' + img(t.pic, '') + '<b>' + esc(t.t) + '</b></button>'; }).join('') + '</div>' +
       '<div id="cv-panel">' + panelHtml() + '</div></div>';
   }
 
