@@ -348,3 +348,21 @@ button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
 .par-link { align-self: flex-start; background: none; border: 0; padding: 4px 0; color: #7dd3fc; font: inherit; font-size: 0.88rem; font-weight: 800; cursor: pointer; }
 .par-link:hover { text-decoration: underline; }
 .par-foot { text-align: center; color: #a8b6cc; font-size: 0.9rem; margin: 0; }
+
+/* --------------------------------------------------------------------------
+   14. PARENT SUB-PAGES (progress, class story, messages)
+   -------------------------------------------------------------------------- */
+.par-page-head h1 { margin: 6px 0 4px; font-size: clamp(1.3rem, 3.4vw, 1.8rem); font-weight: 900; color: #f8fafc; }
+.par-page-head p { margin: 0; color: #a8b6cc; font-size: 0.92rem; }
+.par-back { background: none; border: 0; padding: 0; color: #7dd3fc; font: inherit; font-size: 0.86rem; font-weight: 800; cursor: pointer; }
+.par-back:hover { text-decoration: underline; }
+.par-skill-card .par-empty { font-size: 0.84rem; }
+.par-story-img { width: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; }
+.par-msgs { display: flex; flex-direction: column; gap: 8px; }
+.par-msg { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 0.92rem; line-height: 1.4; color: #f8fafc; overflow-wrap: anywhere; }
+.par-msg small { display: block; font-size: 0.72rem; color: #a8b6cc; margin-bottom: 2px; }
+.par-msg.is-teacher { align-self: flex-start; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-bottom-left-radius: 4px; }
+.par-msg.is-me { align-self: flex-end; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); border-bottom-right-radius: 4px; }
+.par-reply { display: flex; gap: 10px; flex-wrap: wrap; }
+.par-reply input { flex: 1 1 200px; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.08); color: #f8fafc; font: inherit; font-size: 0.95rem; }
+.par-reply input::placeholder { color: #94a3b8; }
