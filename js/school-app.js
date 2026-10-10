@@ -9222,7 +9222,83 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
 
   function renderParentHomeView(container) {
-    renderStudentAdventureView(container);
+    const s = store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]);
+    if (!s) {
+      container.innerHTML = '<div style="padding:40px; text-align:center;">No child profile found.</div>';
+      return;
+    }
+    const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const first = esc(s.firstName || 'your child');
+    const cls = (store.getClasses ? store.getClasses() : []).find(c => c.id === s.classId);
+    const className = esc((cls && cls.name) || s.grade || '');
+
+    // This week's numbers (each one falls back to a friendly message when there is no data yet)
+    const DAY = 86400000, now = Date.now();
+    const when = t => { const v = new Date(t.timestamp || t.date).getTime(); return isNaN(v) ? 0 : v; };
+    const weekXP = (store.getXPTransactions(s.id) || []).filter(t => Number(t.amount) > 0 && when(t) > 0 && now - when(t) <= 7 * DAY).reduce((a, t) => a + (Number(t.amount) || 0), 0);
+    const totalXP = Number(store.getStudentTotalXP(s.id)) || 0;
+    const attRecords = ((store.state && store.state.attendanceRecords) || []).filter(r => r.studentId === s.id);
+    const attText = attRecords.length ? store.getStudentAttendanceRate(s.id) + '%' : '—';
+    const attNote = attRecords.length ? 'of classes attended' : 'Not recorded yet';
+    const assignments = (store.getAssignments ? store.getAssignments(s.classId) : []).filter(a => !a.archived);
+    const homework = (store.getHomework ? store.getHomework(s.classId) : []).filter(h => !h.archived);
+    const tasks = assignments.slice(0, 3).map(a => ({ icon: '🎯', title: a.title, due: a.dueDate })).concat(homework.slice(0, 3).map(h => ({ icon: '✍️', title: h.title, due: h.dueDate })));
+
+    // Skills as simple bars
+    const skillsRaw = store.getStudentSkills(s.id) || {};
+    const skillRows = ['speaking', 'listening', 'vocabulary', 'reading', 'writing', 'pronunciation'].filter(k => skillsRaw[k]).map(k => {
+      const sk = skillsRaw[k];
+      const has = sk.evidenceCount > 0 || (sk.cefr && sk.cefr !== 'Unassessed');
+      const pct = Math.max(0, Math.min(100, Number(sk.score) || 0));
+      return '<div class="par-skill"><div class="par-skill-top"><span>' + k.charAt(0).toUpperCase() + k.slice(1) + '</span><b>' + (has ? esc(sk.cefr) : 'Not assessed yet') + '</b></div>' +
+        '<div class="par-bar"><i style="width:' + (has ? pct : 0) + '%"></i></div></div>';
+    }).join('');
+
+    // Practice at home: taken from the current unit
+    const isGR3 = (s.grade && String(s.grade).includes('4')) || s.classId === 'class-4b';
+    const units = (store.getUnits ? store.getUnits(isGR3 ? 'book-global-readings-3' : 'book-global-readings-2') : []).filter(u => !u.archived);
+    const unit = units[0];
+    const practice = [];
+    if (unit && unit.reading1) practice.push('📖 Read together: <b>' + esc(unit.reading1) + '</b>');
+    if (unit && unit.reading2) practice.push('📖 Then try: <b>' + esc(unit.reading2) + '</b>');
+    if (unit && unit.readingSkill) practice.push('🎯 Ask your child about: <b>' + esc(unit.readingSkill) + '</b>');
+    practice.push('🗣️ Ask: "Tell me three sentences about your day in English."');
+
+    // Latest class story post and message count
+    const story = (store.getClassStory ? store.getClassStory(s.classId) : [])[0];
+    const threads = (store.getMessageThreads ? store.getMessageThreads() : []) || [];
+
+    container.innerHTML =
+      '<div class="parent-home">' +
+        '<div class="par-hero">' +
+          '<div class="par-avatar">' + (window.renderStudentMonsterAvatar ? window.renderStudentMonsterAvatar(s.id, { size: 96, animated: true }) : '') + '</div>' +
+          '<div class="par-hero-text">' +
+            '<div class="par-kicker">Parent Portal</div>' +
+            '<h1>Hello! Here is how ' + first + ' is doing</h1>' +
+            '<p>' + className + ' · English learner</p>' +
+          '</div>' +
+          '<button type="button" class="btn-3d btn-3d-primary" onclick="switchView(\'parent-messages\')">💬 Message the teacher</button>' +
+        '</div>' +
+
+        '<div class="par-stats">' +
+          '<div class="par-stat"><span>⭐ XP this week</span><strong>' + (weekXP > 0 ? '+' + weekXP : '0') + '</strong><em>' + (weekXP > 0 ? 'Great effort!' : 'A fresh week to start') + '</em></div>' +
+          '<div class="par-stat"><span>🏆 Total XP</span><strong>' + totalXP + '</strong><em>Keeps growing with practice</em></div>' +
+          '<div class="par-stat"><span>📋 Attendance</span><strong>' + attText + '</strong><em>' + attNote + '</em></div>' +
+          '<div class="par-stat"><span>📝 Tasks to do</span><strong>' + tasks.length + '</strong><em>' + (tasks.length ? 'See the list below' : 'All caught up') + '</em></div>' +
+        '</div>' +
+
+        '<div class="par-grid">' +
+          '<section class="par-card"><h3>📊 English skills</h3>' + (skillRows || '<p class="par-empty">Skills appear here after the first assessment.</p>') +
+            '<button type="button" class="par-link" onclick="switchView(\'parent-progress\')">See full progress →</button></section>' +
+          '<section class="par-card"><h3>🏠 Practise at home</h3><ul class="par-list">' + practice.map(x => '<li>' + x + '</li>').join('') + '</ul></section>' +
+          '<section class="par-card"><h3>📝 Homework &amp; tasks</h3>' +
+            (tasks.length ? '<ul class="par-list">' + tasks.map(t => '<li>' + t.icon + ' <b>' + esc(t.title) + '</b>' + (t.due ? '<small>Due ' + esc(t.due) + '</small>' : '') + '</li>').join('') + '</ul>' : '<p class="par-empty">🎉 No tasks right now.</p>') + '</section>' +
+          '<section class="par-card"><h3>📸 From the classroom</h3>' +
+            (story ? '<div class="par-story"><b>' + esc(story.title) + '</b><p>' + esc(story.content) + '</p><small>' + esc(story.timestamp || '') + '</small></div>' : '<p class="par-empty">Class news will appear here.</p>') +
+            '<button type="button" class="par-link" onclick="switchView(\'parent-story\')">Open the class story →</button></section>' +
+        '</div>' +
+        '<p class="par-foot">' + (threads.length ? '💬 You have ' + threads.length + ' message conversation' + (threads.length === 1 ? '' : 's') + ' with the teacher.' : '💬 Have a question? Use "Message the teacher" - we are happy to help.') + '</p>' +
+      '</div>';
   }
 
   function renderParentHomeworkView(container) {
