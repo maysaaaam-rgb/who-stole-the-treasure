@@ -2,16 +2,16 @@
    They sit on the same indigo canvas as the Class Board, with translucent white cards and white text, so the whole platform feels like one product.
    Active only with html.class-mode. Teacher Mode is untouched. */
 html.class-mode {
-  --cp-canvas: radial-gradient(circle at 10% 6%, rgba(255, 255, 255, 0.4), transparent 42%), linear-gradient(180deg, #7e8cf0 0%, #8f7be8 55%, #a98bea 100%);
-  --cp-card: rgba(255, 255, 255, 0.14); --cp-card-2: rgba(255, 255, 255, 0.2); --cp-line: rgba(255, 255, 255, 0.3); --cp-ink: #ffffff; --cp-ink-2: #e6e1ff; --cp-ink-3: #cfc8f6;
+  --cp-canvas: radial-gradient(circle at 10% 6%, rgba(255, 255, 255, 0.4), transparent 42%), linear-gradient(180deg, #6b7be3 0%, #7c68d8 55%, #9170db 100%);
+  --cp-card: rgba(255, 255, 255, 0.14); --cp-card-2: rgba(255, 255, 255, 0.2); --cp-line: rgba(255, 255, 255, 0.3); --cp-ink: #ffffff; --cp-ink-2: #f5f2ff; --cp-ink-3: #ece7ff;
   --cp-orange: #f59e0b; --cp-orange-dk: #b45309; --cp-pop: 0 8px 20px -12px rgba(30, 20, 100, 0.55);
 }
-html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) {
+html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) {
   background: var(--cp-canvas) !important; border-radius: 24px; padding: 18px 22px 40px; color: var(--cp-ink) !important;
   --bg-card: var(--cp-card); --bg-surface: var(--cp-card); --bg-card-secondary: var(--cp-card-2); --bg-card-hover: rgba(255, 255, 255, 0.26); --bg-muted: var(--cp-card-2); --bg-canvas: transparent;
   --border-subtle: var(--cp-line); --border-light: var(--cp-line); --border-strong: rgba(255, 255, 255, 0.45);
 }
-html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) * { --text-main: #fff; --text-primary: #fff; --text-secondary: var(--cp-ink-2); --text-muted: var(--cp-ink-3); --text-subtle: var(--cp-ink-3); }
+html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) * { --text-main: #fff; --text-primary: #fff; --text-secondary: var(--cp-ink-2); --text-muted: var(--cp-ink-3); --text-subtle: var(--cp-ink-3); }
 
 /* ---------------- Command Center ---------------- */
 html.class-mode .cc { --p: var(--cp-card); --l: var(--cp-line); --t: #fff; --m: var(--cp-ink-3); max-width: none; padding-top: 0; font-family: Fredoka, Nunito, 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; }
@@ -73,7 +73,7 @@ html.class-mode .btn-launch-3d { background: #10b981 !important; color: #fff !im
 html.class-mode .btn-worksheet-3d { background: #fff !important; color: #2f2e6b !important; border: 0 !important; border-bottom: 5px solid rgba(60, 50, 140, 0.35) !important; border-radius: 14px !important; }
 html.class-mode .btn-detail-trigger { color: #fff !important; }
 html.class-mode .btn-launch-3d:active, html.class-mode .btn-worksheet-3d:active { transform: translateY(4px); border-bottom-width: 1px !important; }
-@media (max-width: 1024px) { html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"]) { padding: 14px 14px 32px; } }
+@media (max-width: 1024px) { html.class-mode #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) { padding: 14px 14px 32px; } }
 
 /* ---- contrast and spacing fixes ---- */
 html.class-mode .cc-kp small, html.class-mode .cc-kp em { color: #fff !important; opacity: 0.92; }
@@ -98,3 +98,21 @@ html.class-mode .classroom-unified-dock .dock-pill-btn.dock-btn-primary { backgr
 html.class-mode .classroom-unified-dock .dock-pill-btn.dock-btn-primary .dock-btn-label { color: #2b1700 !important; }
 html.class-mode .classroom-unified-dock .dock-pill-btn:active { transform: translateY(3px); border-bottom-width: 1px !important; }
 html.class-mode .classroom-unified-dock .dock-divider { background: rgba(91, 91, 214, 0.25) !important; }
+
+
+/* ---------------- Worksheets, Assignments, Homework ---------------- */
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+  [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
+  [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
+  .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
+  background: var(--cp-card) !important; border-color: var(--cp-line) !important; color: #fff !important; box-shadow: var(--cp-pop) !important; backdrop-filter: blur(8px);
+}
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([style*="--bg-card"], .worksheet-card *, .assignment-card *) :is([style*="--bg-card"]) { background: var(--cp-card-2) !important; box-shadow: none !important; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(h1, h2, h3, h4, h5, strong, b) { color: #fff !important; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(p, small, span, em, label) { color: inherit; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(input, select, textarea) { background: rgba(255, 255, 255, 0.94) !important; color: #2f2e6b !important; border: 0 !important; border-bottom: 4px solid rgba(60, 50, 140, 0.25) !important; border-radius: 14px !important; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) input::placeholder { color: #7c7bb5 !important; opacity: 1; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary) { background: #fff !important; color: #2f2e6b !important; border: 0 !important; border-bottom: 4px solid rgba(60, 50, 140, 0.32) !important; border-radius: 12px !important; font-weight: 700; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-primary-action, .btn-3d-primary, [class*="btn-3d-primary"]) { background: var(--cp-orange) !important; color: #2b1700 !important; border: 0 !important; border-bottom: 5px solid var(--cp-orange-dk) !important; border-radius: 14px !important; font-weight: 700; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary, .btn-primary-action):active { transform: translateY(3px); border-bottom-width: 1px !important; }
+html.class-mode #app-view-container:is([data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([class*="badge"], [class*="pill"], [class*="chip"], [class*="tag"]) { color: #3730a3; }
