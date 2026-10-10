@@ -366,3 +366,23 @@ button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
 .par-reply { display: flex; gap: 10px; flex-wrap: wrap; }
 .par-reply input { flex: 1 1 200px; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.08); color: #f8fafc; font: inherit; font-size: 0.95rem; }
 .par-reply input::placeholder { color: #94a3b8; }
+
+/* --------------------------------------------------------------------------
+   15. CLASS MODE: toolkit dock never clips, assignments page no longer one card in a huge empty area
+   -------------------------------------------------------------------------- */
+.classroom-toolkit-dock { max-width: calc(100vw - 24px); overflow-x: auto; overscroll-behavior-x: contain; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%); }
+.classroom-toolkit-dock > * { flex: 0 0 auto; }
+html.class-mode #app-view-container { padding-bottom: 110px; }
+
+#app-view-container[data-view="assignments"] { min-height: 0 !important; height: fit-content; align-self: flex-start; width: 100%; box-sizing: border-box; }
+.asg-next { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 18px; padding: 18px 20px; border-radius: 16px; background: rgba(255, 255, 255, 0.14); border: 2px dashed rgba(255, 255, 255, 0.4); }
+.asg-next-icon { font-size: 2rem; }
+.asg-next-text { flex: 1 1 220px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.asg-next-text b { font-size: 1.05rem; font-weight: 900; }
+.asg-next-text span { font-size: 0.88rem; opacity: 0.9; }
+.asg-next-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 1100px) {
+  .classroom-toolkit-dock { gap: 5px; padding: 6px 10px; }
+  .classroom-toolkit-dock .dock-pill-btn { padding-inline: 10px; font-size: 0.84rem; }
+  .classroom-toolkit-dock .dock-cluster { gap: 4px; }
+}
