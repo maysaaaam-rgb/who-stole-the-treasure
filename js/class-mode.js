@@ -87,6 +87,17 @@
     var s = (String(g.grade || '') + ' ' + (Array.isArray(g.grades) ? g.grades.join(' ') : String(g.grades || ''))).toLowerCase(), has3 = /\b3\b|grade 3|third/.test(s), has4 = /\b4\b|grade 4|fourth/.test(s);
     return has3 && has4 ? 'both' : (has3 ? 3 : (has4 ? 4 : 'both'));
   }
+  /* Real artwork for the cards that used to show a plain controller emoji (all files are already part of the site). */
+  var THUMBS = {
+    'alley-fling': 'unit2-throw/art/boss.webp',
+    'chuseok-arcade-g3': 'unit2-g3-lessons/art/august_happy.webp',
+    'chuseok-cooking-g3': 'unit2-g3-cooking/art/songpyeon.webp',
+    'revision-quest-g4-u12': 'unit12-revision-g4/art/coins.webp',
+    'worksheet-store-g4-u12': ART + 'h_homework_book.webp',
+    'telephone-pictionary': ART + 'h_pencil.webp',
+    'arcade-g3-u2': ART + 'r_chest.webp',
+    'arcade-g4-u2': ART + 'r_chest.webp'
+  };
   function isLesson(g) { return (g.tags || []).indexOf('lesson') >= 0 || /lesson/i.test(g.type || ''); }
   function colorFor(g, i) { return ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#0ea5e9'][i % 6]; }
   function shelfList() {
@@ -111,7 +122,7 @@
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);
         var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id), ttl = esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, ''));
-        var pic = '<div class="cm-pic"><span>' + esc(g.thumbnailIcon || '🎮') + '</span>' + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
+        var pic = '<div class="cm-pic">' + (THUMBS[g.id] ? '<img class="cm-img" src="' + esc(THUMBS[g.id]) + '" alt="" loading="lazy" draggable="false">' : '<span>' + esc(g.thumbnailIcon || '🎮') + '</span>') + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
         if (!shelf.curate) return '<a class="cm-card' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '" href="' + esc(g.route) + '">' + pic + '<b>' + ttl + '</b><i class="cm-play">▶ Play</i></a>';
         return '<div class="cm-card cur' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '">' + pic + '<b>' + ttl + '</b><div class="cm-cur"><a class="cm-try" href="' + esc(g.route) + '" target="_blank" rel="noopener">▶ Try</a>' +
           (hid ? '<button type="button" onclick="ClassMode.cur(\'restore\',\'' + esc(g.id) + '\')">↺ Restore</button>' : '<button type="button" class="k' + (star ? ' on' : '') + '" onclick="ClassMode.cur(\'star\',\'' + esc(g.id) + '\')">' + (star ? '⭐ Kept' : '⭐ Keep') + '</button><button type="button" class="h" onclick="ClassMode.cur(\'hide\',\'' + esc(g.id) + '\')">🙈 Hide</button>') + '</div></div>';
