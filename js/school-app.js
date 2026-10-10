@@ -840,7 +840,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards'
+        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -9301,6 +9301,98 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>';
   }
 
+  // ---- Parent portal sub-pages (each one shows ONLY the signed-in parent's child) ----
+  function parentEsc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function parentChild() {
+    return store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]) || null;
+  }
+  function parentPageHead(title, sub) {
+    return '<div class="par-page-head"><button type="button" class="par-back" onclick="switchView(\'parent-home\')">← Back to overview</button>' +
+      '<h1>' + title + '</h1>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>';
+  }
+
+  function renderParentProgressView(container) {
+    const s = parentChild();
+    if (!s) { container.innerHTML = '<div style="padding:40px; text-align:center;">No child profile found.</div>'; return; }
+    const levelInfo = {
+      'Pre-A1': 'Just starting out. Recognises a few words and short phrases.',
+      'A1': 'Uses simple everyday words and short sentences with help.',
+      'A1+': 'Understands and says more simple sentences about familiar things.',
+      'A2': 'Talks about familiar topics in short sentences with growing confidence.'
+    };
+    const skills = store.getStudentSkills(s.id) || {};
+    const keys = ['speaking', 'listening', 'vocabulary', 'grammar', 'reading', 'writing', 'pronunciation'].filter(k => skills[k]);
+    const rows = keys.map(k => {
+      const sk = skills[k];
+      const has = sk.evidenceCount > 0 || (sk.cefr && sk.cefr !== 'Unassessed');
+      const pct = Math.max(0, Math.min(100, Number(sk.score) || 0));
+      return '<section class="par-card par-skill-card">' +
+        '<div class="par-skill-top"><span>' + k.charAt(0).toUpperCase() + k.slice(1) + '</span><b>' + (has ? parentEsc(sk.cefr) : 'Not assessed yet') + '</b></div>' +
+        '<div class="par-bar"><i style="width:' + (has ? pct : 0) + '%"></i></div>' +
+        '<p class="par-empty">' + (has ? parentEsc(levelInfo[sk.cefr] || 'Your child is making steady progress.') : 'This skill will appear after the first classroom assessment.') + '</p></section>';
+    }).join('');
+    const legend = Object.keys(levelInfo).map(l => '<li><b>' + l + '</b> ' + levelInfo[l] + '</li>').join('');
+    container.innerHTML =
+      '<div class="parent-home">' +
+        parentPageHead('English progress for ' + parentEsc(s.firstName || 'your child'), 'Levels follow the CEFR scale used by English teachers around the world.') +
+        '<div class="par-grid">' + (rows || '<p class="par-empty">Progress will appear after the first assessment.</p>') + '</div>' +
+        '<section class="par-card"><h3>What do the levels mean?</h3><ul class="par-list">' + legend + '</ul></section>' +
+      '</div>';
+  }
+
+  function renderParentStoryView(container) {
+    const s = parentChild();
+    if (!s) { container.innerHTML = '<div style="padding:40px; text-align:center;">No child profile found.</div>'; return; }
+    const posts = (store.getClassStory ? store.getClassStory(s.classId) : []).filter(p => !p.studentIds || p.studentIds === 'all' || (Array.isArray(p.studentIds) && p.studentIds.includes(s.id)));
+    container.innerHTML =
+      '<div class="parent-home">' +
+        parentPageHead('Class story', 'Moments and news from your child’s classroom.') +
+        (posts.length ? posts.map(p =>
+          '<section class="par-card par-story"><div class="par-skill-top"><b style="color:#f8fafc">' + parentEsc(p.title) + '</b><span>' + parentEsc(p.type || '') + '</span></div>' +
+          (p.mediaUrl ? '<img class="par-story-img" src="' + parentEsc(p.mediaUrl) + '" alt="">' : '') +
+          '<p>' + parentEsc(p.content) + '</p><small>' + parentEsc(p.timestamp || '') + '</small></section>').join('')
+          : '<section class="par-card"><p class="par-empty">No class news yet. Check back soon!</p></section>') +
+      '</div>';
+  }
+
+  function renderParentMessagesView(container) {
+    const s = parentChild();
+    if (!s) { container.innerHTML = '<div style="padding:40px; text-align:center;">No child profile found.</div>'; return; }
+    const threads = (store.getMessageThreads() || []).filter(t => t.studentId === s.id && !t.archived);
+    const bubble = m => {
+      const mine = (m.sender === 'parent' || m.from === 'parent');
+      return '<div class="par-msg ' + (mine ? 'is-me' : 'is-teacher') + '"><small>' + (mine ? 'You' : 'Teacher') + (m.time || m.timestamp ? ' · ' + parentEsc(m.time || m.timestamp) : '') + '</small>' + parentEsc(m.text) + '</div>';
+    };
+    const body = threads.length ? threads.map(t => {
+      const msgs = t.messages || t.threads || [];
+      return '<section class="par-card"><div class="par-msgs">' + msgs.map(bubble).join('') + '</div>' +
+        '<div class="par-reply"><input type="text" id="par-reply-' + parentEsc(t.id) + '" placeholder="Write a message to the teacher..." maxlength="500">' +
+        '<button type="button" class="btn-3d btn-3d-primary" onclick="handleParentSend(\'' + parentEsc(t.id) + '\')">Send</button></div></section>';
+    }).join('') :
+      '<section class="par-card"><p class="par-empty">No messages yet. Say hello to the teacher!</p>' +
+      '<div class="par-reply"><input type="text" id="par-reply-new" placeholder="Write your first message..." maxlength="500">' +
+      '<button type="button" class="btn-3d btn-3d-primary" onclick="handleParentSend()">Send</button></div></section>';
+    container.innerHTML =
+      '<div class="parent-home">' + parentPageHead('Messages with the teacher', 'Only you and the teacher can see this conversation.') + body + '</div>';
+  }
+
+  window.handleParentSend = function(threadId) {
+    const input = document.getElementById('par-reply-' + (threadId || 'new'));
+    const text = input && input.value.trim();
+    if (!text) return;
+    const s = parentChild();
+    let id = threadId;
+    if (!id && s) {
+      const t = store.createMessageThread(s.id, 'Parent', 'Hello! Thank you for connecting with English Adventure Academy.');
+      id = t && t.id;
+    }
+    if (id) store.sendParentMessage(id, text);
+    const container = document.getElementById('app-view-container');
+    if (currentView === 'parent-messages' && container) renderParentMessagesView(container);
+  };
+
   function renderParentHomeworkView(container) {
     renderHomeworkView(container);
   }
@@ -9512,7 +9604,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'board': if (window.renderClassBoardView) window.renderClassBoardView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class Board is not loaded.</div>'; break;
         case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
-        default: renderTeacherDashboard(container); break;
+        case 'parent-progress': renderParentProgressView(container); break;
+        case 'parent-story': renderParentStoryView(container); break;
+        case 'parent-messages': renderParentMessagesView(container); break;
+        default:
+          // never show the teacher dashboard to a parent or student who lands on an unknown page
+          if (store.getRole() === 'parent') renderParentHomeView(container);
+          else if (store.getRole() === 'student') renderStudentAdventureView(container);
+          else renderTeacherDashboard(container);
+          break;
       }
     } catch (viewErr) {
       console.error('Application View Render Error in view [' + currentView + ']:', viewErr);
