@@ -8669,6 +8669,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const students = store.getStudentsByClass(cls.id);
     const assignments = store.getAssignments(cls.id);
     const attRate = store.getClassAttendanceRate(cls.id);
+    const hasAttRecords = ((store.state && store.state.attendanceRecords) || []).some(r => r.classId === cls.id);
 
     const currentHour = new Date().getHours();
     let timeGreeting = 'Good morning';
@@ -8708,8 +8709,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span class="stats-hud-label">Attendance Rate</span>' +
             '<div class="stats-hud-icon icon-emerald">✓</div>' +
           '</div>' +
-          '<div class="stats-hud-number">' + attRate + '%</div>' +
-          '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>' +
+          (hasAttRecords
+            ? '<div class="stats-hud-number">' + attRate + '%</div>' +
+              '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>'
+            : '<div class="stats-hud-number stats-hud-number--empty">—</div>' +
+              '<div class="stats-hud-micro-badge badge-amber">⏱ Roll call not taken yet</div>') +
         '</div>' +
 
         '<div class="stats-hud-divider"></div>' +

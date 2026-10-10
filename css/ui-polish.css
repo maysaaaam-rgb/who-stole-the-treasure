@@ -246,3 +246,40 @@ button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* --------------------------------------------------------------------------
+   11. HOME PAGE POLISH (empty states, header grouping, even grid, dock clearance)
+   -------------------------------------------------------------------------- */
+/* 11a. "Not taken yet" instead of a scary 0% */
+.stats-hud-number--empty { color: #64748b !important; }
+.dashboard-stats-hud-container .stats-hud-micro-badge.badge-amber { background: rgba(245, 158, 11, 0.14); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d; }
+
+/* 11b. Friendly empty timetable card */
+.tt-empty { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 8px; font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #e2e8f0; }
+.tt-empty br { display: none; }
+.tt-btn { border: 1px solid rgba(255, 255, 255, 0.25); border-bottom: 4px solid rgba(0, 0, 0, 0.35); background: rgba(255, 255, 255, 0.12); color: #f8fafc; border-radius: 12px; padding: 8px 14px; font: inherit; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s; }
+.tt-btn:hover { background: rgba(56, 189, 248, 0.22); }
+.tt-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
+
+/* 11c. Top bar: a quiet divider between the main actions and the utility icons */
+.header-right > .icon-circle-btn, .header-right > .user-chip { opacity: 0.92; }
+.header-right > #global-cloud-sync-btn { margin-left: 6px; padding-left: 12px; border-left: 1px solid rgba(255, 255, 255, 0.12); }
+.header-right { gap: 10px; }
+
+/* 11d. Even "Today" grid: tiles share one row height and never leave a hole */
+.hero-tiles-grid { grid-auto-rows: 1fr; }
+.dashboard-hero-panel .hero-tile-card { justify-content: space-between; min-height: 150px; }
+.dashboard-hero-panel .hero-tile-card.next-lesson-tile { grid-row: span 1; }
+.dashboard-hero-panel .hero-tile-heading { overflow-wrap: anywhere; }
+
+/* 11e. Lesson cards: fewer tall, narrow titles */
+.our-lessons { grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+.our-lessons > * { min-width: 0; }
+
+/* 11f. The floating tool dock never hides the last row of content */
+.app-main { padding-bottom: 110px; }
+.classroom-toolkit-dock { scrollbar-width: none; }
+.classroom-toolkit-dock::-webkit-scrollbar { display: none; }
+@media (max-width: 900px) {
+  .classroom-toolkit-dock { left: 8px; right: 8px; transform: none; max-width: none; justify-content: flex-start; }
+}
