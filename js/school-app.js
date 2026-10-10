@@ -9640,6 +9640,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</details>' +
         '</div>';
     }
+
+    // The toolkit dock starts hidden in index.html; show it on the first render too (not only after switchView)
+    const toolkitDock = document.getElementById('classroom-floating-toolkit');
+    if (toolkitDock && store.getRole() === 'teacher' &&
+        ['dashboard', 'command', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'].includes(currentView)) {
+      toolkitDock.style.display = 'flex';
+    }
   }
 
 window.switchClassroomSubTab = function(subTab) {
