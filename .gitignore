@@ -2,3 +2,9 @@ node_modules/
 scratch/
 .system_generated/
 *.log
+
+# local scratch (never deployed)
+/_tmp/
+/voice-test/
+/unit2-throw/screens/
+/library-audit/out/
