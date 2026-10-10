@@ -29,7 +29,11 @@
   ];
   var mc = null; // { id, tab, draft:{baseColor, equipped}, orig, state }
 
-  function students() { var c = S().getActiveClass(); return c ? S().getStudentsByClass(c.id) : []; }
+  function students() {
+    var st = S(), role = st.getRole ? st.getRole() : 'teacher';
+    if (role === 'student') { var me = st.getActiveStudent ? st.getActiveStudent() : null; return me ? [me] : []; }   /* a pupil dresses only their own monster */
+    var c = st.getActiveClass(); return c ? st.getStudentsByClass(c.id) : [];
+  }
   function monsterState(id) { try { return S().calculateMonsterState(id) || {}; } catch (e) { return {}; } }
   function reqLevel(item) { return (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1; }
   function owns(id, item) {
@@ -129,9 +133,9 @@
     var list = students(); if (!list.length) { container.innerHTML = '<div style="padding:40px;text-align:center">No pupils in this class yet.</div>'; return; }
     var want = (root.MonsterCloset && root.MonsterCloset.pupil) || (mc && mc.id); if (!list.some(function (s) { return s.id === want; })) want = list[0].id;
     if (!mc || mc.id !== want) setPupil(want);
-    var st = S(), name = nameOf(mc.id);
-    container.innerHTML = '<div class="mc"><div class="mc-top"><h1><img src="' + ART + 'r_chest.webp" alt="">Monster Closet</h1><div class="mc-btns" style="margin:0"><button type="button" class="mc-btn" onclick="switchView(\'rewards\')">← Rewards</button></div></div>' +
-      '<div class="mc-pupils">' + list.map(function (s) {
+    var st = S(), name = nameOf(mc.id), isStu = (st.getRole && st.getRole() === 'student'), backView = isStu ? 'monster' : 'rewards', backLabel = isStu ? 'My monster' : 'Rewards';
+    container.innerHTML = '<div class="mc"><div class="mc-top"><h1><img src="' + ART + 'r_chest.webp" alt="">Monster Closet</h1><div class="mc-btns" style="margin:0"><button type="button" class="mc-btn" onclick="switchView(\'' + backView + '\')">← ' + backLabel + '</button></div></div>' +
+      (list.length > 1 ? '<div class="mc-pupils">' : '<div class="mc-pupils" style="display:none">') + list.map(function (s) {
         var m = monsterState(s.id), prof = st.getMonsterProfile(s.id), img = ''; try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
         return '<button type="button" class="mc-p' + (s.id === mc.id ? ' on' : '') + '" onclick="MonsterCloset.who(\'' + esc(s.id) + '\')">' + (img ? '<img src="' + esc(img) + '" alt="">' : '<span style="font-size:2rem">🐾</span>') + '<span>' + esc(s.firstName || s.name || '') + '</span></button>';
       }).join('') + '</div>' +

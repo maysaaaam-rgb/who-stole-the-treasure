@@ -15349,6 +15349,7 @@ window.switchClassroomSubTab = function(subTab) {
               students.map(s => '<option value="' + s.id + '" ' + (s.id === student.id ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id) + ' XP)</option>').join('') +
             '</select>' +
             '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+            ((window.EAA_ILLUSTRATED_MONSTERS === true && window.MonsterCloset) ? '<button type="button" class="btn-primary-action" style="font-weight:800;" onclick="MonsterCloset.open(\'' + student.id + '\')">👗 Open the Monster Closet</button>' : '') +
           '</div>' +
         '</div>' +
 
