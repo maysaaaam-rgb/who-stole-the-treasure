@@ -6397,6 +6397,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
             '</div>';
         }).join('') +
+      '</div>' +
+      '<div class="asg-next">' +
+        '<div class="asg-next-icon">🎯</div>' +
+        '<div class="asg-next-text"><b>' + (assignments.length === 0 ? 'No assignments yet' : 'Ready for the next one?') + '</b>' +
+          '<span>' + (assignments.length === 0 ? 'Give your class a game or a task to finish by a due date.' : 'Pick a game from the shelf and set a due date to keep the class practising.') + '</span></div>' +
+        '<div class="asg-next-actions">' +
+          '<button type="button" class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'shelf\')">🎮 Browse the Game Shelf</button>' +
+        '</div>' +
       '</div>';
   }
 
