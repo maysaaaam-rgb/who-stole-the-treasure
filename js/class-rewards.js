@@ -69,7 +69,7 @@
     var fundHtml = fund && fund.goal ? '<div class="cr-fund"><img src="' + ART + 'r_chest.webp" alt=""><div style="flex:1"><b style="font-size:1.4rem">' + esc(fund.name || 'Class party') + '</b><div class="bar"><i style="width:' + Math.min(100, Math.round((fund.raised || 0) / fund.goal * 100)) + '%"></i></div></div><b style="font-size:1.6rem">' + fmt(fund.raised) + ' / ' + fmt(fund.goal) + ' 🪙</b></div>' : '';
     container.innerHTML = '<div class="cr">' +
       '<div class="cr-hd"><div><h1><img src="' + ART + 'r_trophy.webp" alt="">Rewards</h1><small>' + esc(cls.name) + ' · ' + fmt(totalXP) + ' XP together · ' + fmt(totalCoins) + ' coins</small></div>' +
-      '<div><button type="button" class="cr-btn" onclick="switchView(\'board\')">⭐ Give points</button> <button type="button" class="cr-btn" onclick="switchView(\'store\')">🛍️ Teacher store</button></div></div>' +
+      '<div>' + (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="cr-btn" onclick="MonsterCloset.open()">👗 Dress up</button> ' : '') + '<button type="button" class="cr-btn" onclick="switchView(\'board\')">⭐ Give points</button> <button type="button" class="cr-btn" onclick="switchView(\'store\')">🛍️ Teacher store</button></div></div>' +
       fundHtml +
       (list.length >= 1 ? '<div class="cr-podium">' + pod + '</div>' : '') +
       '<div class="cr-legend">' + TIERS.slice().reverse().map(function (t) { return '<span><img src="' + ART + t.pic + '.webp" alt="">' + t.name + (t.min > 1 ? ' · level ' + t.min + '+' : ' · levels 1-3') + '</span>'; }).join('') + '</div>' +
@@ -84,7 +84,7 @@
     show: function (id) {
       var cls = S().getActiveClass(), p = pupils(cls).filter(function (x) { return x.id === id; })[0]; if (!p) return;
       var t = tierOf(p.level), w = document.createElement('div'); w.className = 'cr-burst';
-      w.innerHTML = '<div class="cr-big">' + monsterImg(p, 'mon') + '<br><img class="bdg" src="' + ART + t.pic + '.webp" alt=""><h2>' + esc(p.name) + '</h2><p>' + t.name + ' · level ' + p.level + '</p><p><img src="' + ART + 'r_xp_gem.webp" alt="" style="height:1.4em;vertical-align:middle"> ' + fmt(p.xp) + ' XP &nbsp; 🪙 ' + fmt(p.coins) + '</p></div>';
+      w.innerHTML = '<div class="cr-big">' + monsterImg(p, 'mon') + '<br><img class="bdg" src="' + ART + t.pic + '.webp" alt=""><h2>' + esc(p.name) + '</h2><p>' + t.name + ' · level ' + p.level + '</p><p><img src="' + ART + 'r_xp_gem.webp" alt="" style="height:1.4em;vertical-align:middle"> ' + fmt(p.xp) + ' XP &nbsp; 🪙 ' + fmt(p.coins) + '</p>' + (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="cr-btn" style="margin-top:6px" onclick="this.closest(\'.cr-burst\').remove();MonsterCloset.open(\'' + esc(p.id) + '\')">👗 Dress up</button>' : '') + '</div>';
       w.addEventListener('click', function () { w.remove(); }); document.body.appendChild(w);
       try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ }
       try { if (root.speechSynthesis) { var u = new SpeechSynthesisUtterance('Well done, ' + p.name + '!'); u.rate = 0.88; u.pitch = 1.05; u.lang = 'en-US'; root.speechSynthesis.cancel(); root.speechSynthesis.speak(u); } } catch (e2) { /* optional */ }
