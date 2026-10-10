@@ -283,3 +283,34 @@ button.btn-card-more-3dots.card-menu-btn { color: #475569 !important; }
 @media (max-width: 900px) {
   .classroom-toolkit-dock { left: 8px; right: 8px; transform: none; max-width: none; justify-content: flex-start; }
 }
+
+/* --------------------------------------------------------------------------
+   12. STUDENT HOME: the white cards join the dark glass look of the hero card
+   (variables cascade into the inline var(--...) styles, so no markup rewrite)
+   -------------------------------------------------------------------------- */
+.stu-glass {
+  --bg-surface: rgba(30, 41, 59, 0.78);
+  --bg-canvas: rgba(15, 23, 42, 0.55);
+  --text-main: #f8fafc;
+  --text-muted: #a8b6cc;
+  --border-light: rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.8) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important;
+  color: #f8fafc;
+}
+.stu-glass .btn-sm-secondary { background: rgba(255, 255, 255, 0.1); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.22); border-bottom: 3px solid rgba(0, 0, 0, 0.35); }
+.stu-glass .btn-sm-secondary:hover { background: rgba(56, 189, 248, 0.22); }
+.stu-glass [style*="opacity:0.8"] { opacity: 1 !important; }                 /* upcoming weeks stay readable */
+.stu-glass [style*="#059669"] { color: #6ee7b7 !important; }
+.stu-glass [style*="#b45309"] { color: #fcd34d !important; background: rgba(245, 158, 11, 0.16) !important; }
+
+/* inner light surfaces inside a dark glass card must keep light text (beats the section-1 reset) */
+.app-main[class*="theme-"] .stu-glass, .app-main[class*="theme-"] .stu-glass [style*="--bg-surface"], .app-main[class*="theme-"] .stu-glass [style*="--bg-canvas"] {
+  --text-main: #f8fafc; --text-secondary: #cbd5e1; --text-muted: #a8b6cc;
+}
+.stu-glass [style*="--color-primary"] { color: #7dd3fc !important; }
+.stu-glass .btn-primary-action { background: linear-gradient(180deg, #3b82f6, #2563eb); color: #fff; border-bottom: 4px solid #1e3a8a; }
+.stu-glass [style*="border:2px solid var(--color-primary)"] { border-color: #38bdf8 !important; }

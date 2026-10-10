@@ -8903,7 +8903,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<div>' +
                 '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
                   '<span style="background:rgba(234,179,8,0.25); color:#fef08a; border:1px solid rgba(234,179,8,0.5); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">LEVEL ' + mState.currentLevel + ' · ' + String(mState.stageName || '').replace(/^Level \d+\s*[-•]\s*/i, '').toUpperCase() + '</span>' +
-                  '<span style="background:rgba(255,255,255,0.15); color:#ffffff; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px;">🔥 ' + streak + '-Day Streak</span>' +
+                  '<span style="background:rgba(255,255,255,0.15); color:#ffffff; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px;">🔥 ' + (Number(streak) > 0 ? streak + '-Day Streak' : 'Start your streak today!') + '</span>' +
                   '<span style="background:rgba(59,130,246,0.3); color:#93c5fd; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">' + (s.overallCefr || 'A1') + ' Explorer</span>' +
                 '</div>' +
                 '<h1 style="font-size:2rem; font-weight:900; margin:0 0 6px 0; letter-spacing:-0.02em;">' + petName + '</h1>' +
@@ -8939,7 +8939,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
 
         // 2. My Learning Journey (Macmillan Anthology Road)
-        '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:24px; box-shadow:var(--shadow-sm);">' +
+        '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:24px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:8px;">' +
@@ -8997,9 +8997,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
 
         // 3. Missions & Games Grid (Two Columns)
-        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">' +
+        '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; align-items:start;">' +
           // Missions Column
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
               '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>📝</span> <span>My Missions</span></h3>' +
               '<button type="button" class="btn-sm-secondary" onclick="switchView(\'tasks\')" style="font-size:0.78rem;">View All (' + (assignments.length + homework.length) + ')</button>' +
@@ -9029,7 +9029,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
 
           // Featured Games Column
-          '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
+          '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
               '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>🎮</span> <span>Adventure Games</span></h3>' +
               '<button type="button" class="btn-sm-secondary" onclick="switchView(\'library\')" style="font-size:0.78rem;">Game Library (15+)</button>' +
