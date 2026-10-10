@@ -840,7 +840,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards'
+        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards', 'closet'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -1225,8 +1225,8 @@
   // A species is listed in "ready" only when its final art is in the folder.
   const MONSTER_ART = {
     base: 'assets/monsters/art/',
-    ready: ['aquafind', 'florasprout', 'astralight', 'emberwing', 'sparktail'],
-    speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' }
+    ready: ['aquafind', 'florasprout', 'astralight', 'emberwing', 'sparktail', 'frostfluff', 'breezefin', 'terrashell'],
+    speciesByColor: { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout', white: 'frostfluff', teal: 'breezefin', brown: 'terrashell' }
   };
   window.MONSTER_ART = MONSTER_ART;
   window.getIllustratedMonsterUrl = function (baseColor, mState) { return getIllustratedMonsterUrl(baseColor, mState); };
@@ -9627,6 +9627,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
         case 'command': if (window.renderCommandCenterView) window.renderCommandCenterView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Command Center is not loaded.</div>'; break;
+        case 'closet': if (window.renderMonsterCloset) window.renderMonsterCloset(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Monster Closet is not loaded.</div>'; break;
         case 'rewards': if (window.renderRewardsHall) window.renderRewardsHall(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Rewards is not loaded.</div>'; break;
         case 'shelf': if (window.renderGameShelf) window.renderGameShelf(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Game Shelf is not loaded.</div>'; break;
         case 'classview': if (window.renderClassView) window.renderClassView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class view is not loaded.</div>'; break;

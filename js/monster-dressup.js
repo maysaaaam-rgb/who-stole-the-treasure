@@ -10,7 +10,7 @@
 
   var ART = 'assets/monsters/art/';
   var ITEMS = 'assets/monsters/item-art/';
-  var SPECIES_BY_COLOR = { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout' };
+  var SPECIES_BY_COLOR = { orange: 'emberwing', blue: 'aquafind', green: 'florasprout', purple: 'astralight', gold: 'sparktail', yellow: 'sparktail', pink: 'florasprout', white: 'frostfluff', teal: 'breezefin', brown: 'terrashell' };
   var STAGES = ['egg', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'];
 
   // equipped id -> picture name (without "item_")
@@ -194,6 +194,7 @@
   root.MonsterDressUp = {
     render: render,
     speciesForColor: speciesForColor,
+    lists: { backgrounds: BG_IMG, auras: AURA_IMG, stages: STAGES },
     hasArt: function (color, stage) { if (root.EAA_ILLUSTRATED_MONSTERS !== true) return false; var s = speciesForColor(color); return !!(root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[s + '_' + normStage(stage)]); },
     supportedItem: function (id) { return !!FILE[id]; },
     isHiddenByBaked: isHiddenByBaked,
