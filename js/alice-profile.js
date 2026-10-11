@@ -147,9 +147,9 @@
     var r1 = remoteHw(partyId, CFG.homework || 'alice-tea-party-a1plus'), r2 = remoteHw(partyId, 'alice-tea-party-w2');
     if (r1 && r1.finished) w1 = 'done';
     try { var a = JSON.parse(localStorage.getItem('eaa_party_home_a1plus_v1') || '{}'); if (a.done && a.done[partyId]) w1 = 'done'; } catch (e) { /* none */ }
-    try { var b = JSON.parse(localStorage.getItem('eaa_party_w2_v1') || '{}'); var d = (b.done && b.done[partyId]) || {}; n2 = ['t1', 't2', 't3', 't4', 't5'].filter(function (t) { return d[t]; }).length; } catch (e2) { /* none */ }
+    try { var b = JSON.parse(localStorage.getItem('eaa_party_w2_v1') || '{}'); var d = (b.done && b.done[partyId]) || {}; n2 = ['t1', 't2', 't3'].filter(function (t) { return d[t]; }).length; } catch (e2) { /* none */ }
     if (r2 && r2.steps > n2) n2 = r2.steps;
-    w2 = n2 >= 5 ? 'done' : (n2 ? 'started' : 'none');
+    w2 = n2 >= 3 ? 'done' : (n2 ? 'started' : 'none');
     return { w1: w1, w2: w2, n2: n2 };
   }
   function pupilPage(partyId) {
@@ -206,7 +206,7 @@
         '<div><b>Week 1 · Meet your character</b><div style="font-size:0.8rem; color:#64748b;">5 steps: meet, words, order, say, party' + (ctx.w1date ? ' · ' + esc(ctx.w1date) : '') + '</div></div>' +
         '<div style="display:flex; gap:8px; align-items:center;">' + chip(w1) + '<a href="' + R + 'alice-party-home/index.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
       '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; border:1px solid #e2e8f0; border-radius:12px; padding:10px 14px; background:#fff;">' +
-        '<div><b>Week 2 · Say it, prop and phrases</b><div style="font-size:0.8rem; color:#64748b;">5 small tasks: read, say with family, record, prop, phrases · due 15 Oct</div></div>' +
+        '<div><b>Week 2 · Say it and record it</b><div style="font-size:0.8rem; color:#64748b;">3 short tasks: read, say with family, record 30 seconds · due 15 Oct</div></div>' +
         '<div style="display:flex; gap:8px; align-items:center;">' + chip(w2) + (ctx.n2 && w2 === 'started' ? '<span style="font-size:0.8rem; color:#b45309; font-weight:800;">' + ctx.n2 + '/5</span>' : '') + '<a href="' + R + 'alice-party-home/week2.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
       '</div></div>';
 
