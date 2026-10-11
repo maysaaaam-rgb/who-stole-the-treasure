@@ -40,7 +40,8 @@
 </div>
 
 <script src="party-data.js"></script>
-<script src="../js/alice-profile.js?v=4"></script>
+<script src="../js/monster-renderer.js?v=1"></script>
+<script src="../js/alice-profile.js?v=5"></script>
 <script>
 (function () {
   'use strict';
@@ -53,6 +54,7 @@
     document.getElementById('back').style.display = 'inline-flex';
     document.title = me.name + ' • My Alice Profile';
     stage.innerHTML = window.AliceProfile.pupilPage(id);
+    window.AliceProfile.wire(stage, id);
     return;
   }
   var keys = Object.keys(P.classes), cur = keys[0];
