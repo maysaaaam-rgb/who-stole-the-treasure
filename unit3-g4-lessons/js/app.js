@@ -555,6 +555,172 @@
 
 
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', create: '🎨 Create', race: '🏆 Team race', detect: '🔍 Detective', story: '📖 Story' };
+  /* ============================== LESSON 5: Clean Cars ============================== */
+  function carPic(car, cls) { return fill(h('span', { class: 'cpic ' + (cls || '') }), '🚗', '', car.a); }
+  function symPic(car) { return fill(h('span', { class: 'spic' }), car.sym, '', car.sa); }
+  function carByKey(k) { return D.cars5.filter(function (x) { return x.k === k; })[0]; }
+
+  /* 1. name the five cars */
+  function l5Cars(c) {
+    var body = c.body, seen = {};
+    var cap = h('div', { class: 'msg gmsg l5cap', text: 'What kind of car is it? Say it, then tap the car.' });
+    var grid = h('div', { class: 'l5cars' });
+    D.cars5.forEach(function (car) {
+      var card = h('button', { type: 'button', class: 'l5card', onclick: function () {
+        sfx('tap'); card.classList.add('on'); card.querySelector('.l5name').textContent = car.n;
+        cap.textContent = 'This is ' + car.art + '.'; A.speak('This is ' + car.art + '.');
+        seen[car.k] = 1; if (Object.keys(seen).length === D.cars5.length) { sfx('win'); c.done(); }
+      } }, [carPic(car), h('span', { class: 'l5name', text: '?' })]);
+      grid.appendChild(card);
+    });
+    body.appendChild(h('div', { class: 'row' }, [sayBtn('What kind of car is it?', 'Ask the question'), btn('👀 Show all the names', 'small ghost', function () {
+      [].forEach.call(grid.children, function (el, i) { el.classList.add('on'); el.querySelector('.l5name').textContent = D.cars5[i].n; });
+      cap.textContent = 'gasoline · biofuel · electric · air · solar'; A.speak('A gasoline car. A biofuel car. An electric car. An air car. A solar car.'); c.done();
+    })]));
+    body.appendChild(cap); body.appendChild(grid); body.appendChild(pointsRow());
+  }
+
+  /* 2. match each car with its symbol */
+  function l5Match(c) {
+    var body = c.body, sel = null, done = 0, carEls = {};
+    var msg = h('div', { class: 'msg gmsg l5cap', text: 'Tap a car. Then tap the symbol for its energy.' });
+    var left = h('div', { class: 'l5col' }), right = h('div', { class: 'l5col' });
+    D.cars5.forEach(function (car) {
+      var ce = h('button', { type: 'button', class: 'l5card sm', onclick: function () {
+        if (ce.classList.contains('ok')) return;
+        if (sel) carEls[sel].classList.remove('sel');
+        sel = car.k; ce.classList.add('sel'); sfx('tap'); A.speak(car.n);
+      } }, [carPic(car), h('span', { class: 'l5name', text: car.n })]);
+      carEls[car.k] = ce; left.appendChild(ce);
+    });
+    shuffle(D.cars5).forEach(function (car) {
+      var se = h('button', { type: 'button', class: 'l5card sm sym', onclick: function () {
+        if (se.classList.contains('ok')) return;
+        if (!sel) { msg.textContent = 'First tap a car 👆'; sfx('soft'); return; }
+        if (sel === car.k) {
+          se.classList.add('ok'); carEls[sel].classList.add('ok'); carEls[sel].classList.remove('sel'); sel = null; done++;
+          se.querySelector('.l5name').textContent = car.en; sfx('correct'); msg.textContent = '✔ ' + car.uses; A.speak(car.uses);
+          if (done === D.cars5.length) { confetti(); c.done(); }
+        } else { se.classList.add('bad'); setTimeout(function () { se.classList.remove('bad'); }, 600); sfx('soft'); msg.textContent = 'Not this one. Think! Try again.'; }
+      } }, [symPic(car), h('span', { class: 'l5name', text: '' })]);
+      right.appendChild(se);
+    });
+    body.appendChild(msg);
+    body.appendChild(h('div', { class: 'l5match' }, [left, h('div', { class: 'l5mid', text: '🔗' }), right]));
+    body.appendChild(pointsRow());
+  }
+
+  /* 3. five closed doors: read the clue, choose the car */
+  function l5Doors(c) {
+    var body = c.body, order = shuffle(D.cars5), opened = 0, cur = -1;
+    var msg = h('div', { class: 'msg gmsg l5cap', text: 'Tap a door. Listen to the clue. Which car is behind it?' });
+    var doors = h('div', { class: 'l5doors' }), panel = h('div', { class: 'l5clue' });
+    var doorEls = order.map(function (car, i) {
+      var d = h('button', { type: 'button', class: 'l5door', onclick: function () {
+        if (d.classList.contains('open')) return;
+        cur = i; sfx('page'); doorEls.forEach(function (el) { el.classList.remove('sel'); }); d.classList.add('sel'); showClue();
+      } }, [h('span', { class: 'dn', text: String(i + 1) }), h('span', { class: 'dcar' })]);
+      doors.appendChild(d); return d;
+    });
+    function showClue() {
+      var car = order[cur]; panel.innerHTML = '';
+      panel.appendChild(h('div', { class: 'qtext', text: '🚪 Door ' + (cur + 1) + ': “' + car.clue + '”' })); A.speak(car.clue);
+      panel.appendChild(sayBtn(car.clue, 'Read the clue again'));
+      var opts = h('div', { class: 'qopts' });
+      shuffle(D.cars5).forEach(function (o) {
+        var b = h('button', { type: 'button', class: 'btn qopt', text: o.n });
+        b.addEventListener('click', function () {
+          var d = doorEls[cur]; if (d.classList.contains('open')) return;
+          if (o.k === car.k) {
+            b.classList.add('right'); d.classList.add('open'); d.querySelector('.dcar').appendChild(carPic(car)); sfx('correct');
+            msg.textContent = '✔ It is ' + car.art + '!'; A.speak('It is ' + car.art + '.'); opened++;
+            if (opened === D.cars5.length) { confetti(); c.done(); }
+          } else { b.classList.add('wrong'); sfx('soft'); msg.textContent = 'Not this car. Listen to the clue again!'; }
+        });
+        opts.appendChild(b);
+      });
+      panel.appendChild(opts);
+    }
+    body.appendChild(msg); body.appendChild(doors); body.appendChild(panel); body.appendChild(pointsRow());
+  }
+
+  /* 4. GAME: a car appears, choose its energy, say the sentence */
+  function l5Energy(c) {
+    var body = c.body, host = h('div', { class: 'gameroot' }); body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var rounds = shuffle(D.cars5).concat(shuffle(D.cars5).slice(0, 3)), ri = 0, turn = 0, tries = 0, answered = false;
+      var big = h('div', { class: 'l5big' }), q = h('div', { class: 'qtext' }), syms = h('div', { class: 'l5syms' }), msg = h('div', { class: 'msg gmsg', text: '' });
+      var sent = h('div', { class: 'frame-big l5sent', text: 'A … car uses … .' }), nextB = btn('Next car ▶', 'green big', function () { ri++; turn = (turn + 1) % D.teams.length; round(); });
+      nextB.style.display = 'none';
+      function round() {
+        if (ri >= rounds.length) { finish(); return; }
+        var car = rounds[ri]; answered = false; tries = 0; nextB.style.display = 'none'; msg.textContent = '';
+        big.innerHTML = ''; big.appendChild(carPic(car, 'big'));
+        q.textContent = teamName(turn) + ': which energy does this car use?'; sent.textContent = 'A … car uses … .'; A.speak('Which energy does this car use?');
+        syms.innerHTML = '';
+        shuffle(D.cars5).forEach(function (o) {
+          var b = h('button', { type: 'button', class: 'btn l5symbtn' }, [symPic(o), h('small', { text: o.en })]);
+          b.addEventListener('click', function () {
+            if (answered) return; tries++;
+            if (o.k === car.k) {
+              answered = true; b.classList.add('right'); sfx('correct'); sent.textContent = car.uses; A.speak(car.uses);
+              if (tries === 1) { addPoint(turn, 1); msg.textContent = '✔ First try! +1 point for ' + teamName(turn); } else msg.textContent = '✔ Yes! Say the sentence together.';
+              nextB.style.display = '';
+            } else { b.classList.add('wrong'); sfx('soft'); msg.textContent = 'Not this energy. Think about the car and try again!'; }
+          });
+          syms.appendChild(b);
+        });
+      }
+      function finish() { host.innerHTML = ''; podium(host); host.appendChild(h('div', { class: 'row', style: 'justify-content:center' }, [btn('↺ Play again', 'amber', start)])); sfx('win'); confetti(); c.done(); }
+      host.appendChild(h('div', { class: 'row' }, [q, sayBtn('Which energy does this car use?', 'Read it')]));
+      host.appendChild(h('div', { class: 'l5stage' }, [big, syms])); host.appendChild(sent); host.appendChild(h('div', { class: 'row' }, [msg, nextB]));
+      round();
+    }
+    start();
+  }
+
+  /* 5. the city calls: remove the cars that make the air dirty; trees and flowers grow */
+  function l5City(c) {
+    var body = c.body, dirtyLeft = D.city5.filter(function (x) { return x.d; }).length, total = dirtyLeft, TREES = ['🌳', '🌸', '🌷', '🌳', '🌻', '🌼', '🌳'], ti = 0;
+    var msg = h('div', { class: 'msg gmsg l5cap', text: '' }), count = h('span', { class: 'pill amber', text: '' });
+    var city = h('div', { class: 'l5city' }), haze = h('div', { class: 'l5haze' }), road = h('div', { class: 'l5road' });
+    if (hasArt('bg_city_traffic')) city.style.background = 'url(art/bg_city_traffic.webp) center / cover';
+    function hazeNow() { haze.style.opacity = String(0.62 * dirtyLeft / total); count.textContent = '💨 Dirty cars left: ' + dirtyLeft; }
+    D.city5.forEach(function (it) {
+      var car = carByKey(it.k);
+      var slot = h('div', { class: 'l5slot' }), smoke = it.d ? fill(h('span', { class: 'l5smoke' }), '💨', '', 'w_smoke') : h('span', { class: 'l5smoke none' });
+      var b = h('button', { type: 'button', class: 'l5ccar', onclick: function () {
+        if (b.classList.contains('gone')) return;
+        if (it.d) {
+          b.classList.add('gone'); smoke.classList.add('gone'); dirtyLeft--; sfx('correct');
+          setTimeout(function () { slot.appendChild(h('span', { class: 'l5tree', text: TREES[ti++ % TREES.length] })); }, 450);
+          msg.textContent = '✔ ' + car.n.charAt(0).toUpperCase() + car.n.slice(1) + 's make the air dirty. Bye bye, smoke!'; A.speak(car.n + 's make the air dirty.');
+          hazeNow();
+          if (dirtyLeft === 0) {
+            setTimeout(function () {
+              if (hasArt('bg_clean_city')) city.style.background = 'url(art/bg_clean_city.webp) center / cover';
+              haze.style.opacity = '0'; msg.textContent = '🌳 The city is clean! Clean cars are one way to have a clean world.'; A.speak('The city is clean! Clean cars are one way to have a clean world.');
+              sfx('win'); confetti(); c.done();
+            }, 900);
+          }
+        } else { b.classList.add('wob'); setTimeout(function () { b.classList.remove('wob'); }, 600); sfx('soft'); msg.textContent = 'This ' + car.n + ' is clean. It does not make the air dirty. Find another car!'; A.speak('This car is clean.'); }
+      } }, [carPic(car, 'road')]);
+      slot.appendChild(smoke); slot.appendChild(b); road.appendChild(slot);
+    });
+    var game = h('div', { style: 'display:none' });
+    var intro = h('div', { class: 'l5call' }, [
+      h('div', { class: 'ring', text: '📞' }),
+      h('div', { class: 'qtext', text: 'Help! The air in our city is dirty! Find the cars that make the air dirty. Then our city can be clean again.' }),
+      btn('☎ Answer the call', 'amber big', function () { sfx('tap'); A.speak('Help! The air in our city is dirty! Find the cars that make the air dirty.'); intro.style.display = 'none'; game.style.display = ''; hazeNow(); msg.textContent = 'Tap the cars that make the air dirty.'; })
+    ]);
+    city.appendChild(haze); city.appendChild(road);
+    game.appendChild(h('div', { class: 'row' }, [count, btn('↺ Start again', 'small ghost', function () { body.innerHTML = ''; l5City(c); })]));
+    game.appendChild(msg); game.appendChild(city);
+    body.appendChild(intro); body.appendChild(game); body.appendChild(pointsRow());
+  }
+
+
   var LESSONS = {
     1: { title: 'It Keeps Changing', missions: D.missions1, door: '🚪 Door pass: tell me ONE change in nature (good or bad) before you leave!', scenes: [
       { t: 'The Pink River', mins: '3 min', mode: 'think', run: function (c) { hookPrompts(c, [{ e: '🧑‍🔬', n: 'c_scientist' }], D.stwPrompts, D.missions1, 'bg_pink_river'); }, intro: 'Look at this picture. What do you see? What do you think? What do you wonder?',
@@ -645,6 +811,30 @@
         kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: a word that ends with -ng'], say: ['sing', 'long', 'spring'] },
         tip: ['At the door each pupil says one word that ends with -ng (sing, long, spring, young, fishing, morning, melting, changing). Next lessons: Reading 2, Clean Cars (pp.48-55).'] }
     ] }
+    ,
+    5: { title: 'Clean Cars', missions: D.missions5, door: '🚪 Door pass: say ONE sentence: “I like the … car because it’s …”', scenes: [
+      { t: 'Five Kinds of Cars', mins: '4 min', mode: 'think', run: l5Cars, intro: 'Look at the five cars. What kind of car is it? Say it, then tap the car.',
+        kids: { steps: ['👀 Look at the car', '🗣️ Say the name before you tap', '🔊 Listen: This is a … car'], say: ['This is a gasoline car.', 'This is an electric car.', 'This is a solar car.'] },
+        tip: ['Book link: pp.48-53 Clean Cars (gasoline, biofuel, electric, air and solar cars) and the car pictures on p.54 A.', 'Ask “What kind of car is it?” before you tap each card. Pupils guess first. The board then says the name. Accept any attempt; the real names are gasoline, biofuel, electric, air, solar.', 'Say a / an: a gasoline car, a biofuel car, an electric car, an air car, a solar car.'] },
+      { t: 'Match the Car and Its Symbol', mins: '5 min', mode: 'talk', run: l5Match, intro: 'Every car has a symbol for its energy. Tap a car, then tap its symbol!',
+        kids: { steps: ['🚗 Tap a car', '🔎 Think: which symbol is its energy?', '🔗 Tap the symbol. Say the sentence'], say: ['A solar car uses energy from the sun.', 'An electric car uses electricity.', 'A gasoline car uses gasoline.'] },
+        tip: ['Book link: p.49 “Gasoline comes from oil in the ground”, “use … for energy”; p.50 biofuels come from plants like corn; p.51 electric cars use electricity; p.52 air cars use air; p.53 solar cars use energy from the sun.', 'Symbols: ⛽ gasoline, 🌽 plants (corn) for biofuel, ⚡ electricity, 🌬️ air, ☀️ the sun. The symbol has no label until pupils match it. A right match says the full sentence, repeat it together.', 'Pupils can work as teams: one pupil taps the car, a partner taps the symbol.'] },
+      { t: 'The Five Doors', mins: '6 min', mode: 'detect', run: l5Doors, intro: 'Five closed doors. A car is behind every door. Listen to the clue and choose the car!',
+        kids: { steps: ['🚪 Tap a door', '👂 Listen to the clue', '🤔 Choose the car with your team'], say: ['I use gasoline. I am fast, but I am noisy.', 'It is an electric car.'] },
+        tip: ['Book link: pp.49-53 and p.54 B “Good things / Bad things” (gasoline: fast, noisy, dirty; biofuel: fast, very noisy; electric: fast, quiet, clean, expensive; air: quiet, clean, small, slow; solar: not noisy, not dirty, can be expensive).', 'The clues use the book’s words (fast, noisy, quiet, clean, dirty, expensive, small, slow). Let the team talk for 10 seconds, then one pupil taps the answer.', 'A wrong answer turns red; the clue can be read again. Give a point to the team that answers first.'] },
+      { t: 'GAME: Find the Right Energy', mins: '9 min', mode: 'game', run: l5Energy, intro: 'A car appears. Which energy does it use? Choose the symbol and say the sentence!',
+        kids: { steps: ['🚗 Look at the car', '⚡ Choose its energy (talk with your team)', '🗣️ Say: A … car uses …'], say: ['An electric car uses electricity.', 'A solar car uses energy from the sun.', 'An air car uses air.'] },
+        tip: ['Book link: pp.49-53 (use … for energy; comes from …; Solar cars use energy from the sun p.53).', 'Teams take turns. The team talks, then one pupil taps the energy. A right answer on the first try gives 1 point. Then everybody says the full sentence with the board (A / An + car + uses + energy).', 'Eight cars in total. At the end the board shows the podium. “Play again” starts a new game.'] },
+      { t: 'Help! Clean the City', mins: '8 min', mode: 'move', run: l5City, intro: 'A call from the city! The air is dirty. Which cars make the air dirty?',
+        kids: { steps: ['📞 Listen to the call', '🔎 Find the cars that make the air dirty', '🌳 Tap them. Trees and flowers grow!'], say: ['Gasoline cars make the air dirty.', 'The city is clean!', 'Clean cars are one way to have a clean world.'] },
+        tip: ['Book link: p.49 (gasoline cars make the air dirty; dirty air is bad for animals, plants and people and changes our climate), p.50 (biofuel cars: the air is a little dirty) and the ending on p.53 “Clean cars are one way to have a clean world.” Link to the unit question on p.55: How can we make good changes in our world?', 'Pupils answer the call, then come to the board and tap the cars that make the air dirty (gasoline and biofuel cars). Each dirty car disappears with its smoke and a tree or a flower grows. Clean cars (electric, air, solar) wobble and say “This car is clean”.', 'Ask: Why is the air dirty? (Gasoline cars make the air dirty.) What is one solution? (Clean cars.) When every dirty car is gone the sky turns blue and the city is clean.'] },
+      { t: 'My Favourite Clean Car', mins: '4 min', mode: 'talk', run: function (c) { voteBoard(c, D.favCars, '<b>I like the … car because it’s … and …</b> &nbsp; · &nbsp; Which clean car is your favourite? Why?', ['I like the solar car because it’s fast and quiet.', 'I like the electric car because it’s quiet.', 'I like the air car because it’s clean.'], function (v) { return 'I like the ' + v.n + '.'; }); }, intro: 'Which clean car do you like? Why?',
+        kids: { steps: ['🤔 Think: which clean car?', '🗳️ Tell the teacher your vote', '🗣️ Say: I like the … car because …'], say: ['I like the solar car because it’s fast and quiet.'] },
+        tip: ['Book link: p.54 D “Which clean car is your favorite? Why?” with the frame “I like the solar car because it’s fast and quiet.”', 'Tap once for each pupil’s vote. Pupils say the full sentence with because. Use words from the doors: quiet, clean, fast, small, slow, expensive.'] },
+      { t: 'Clean Cars Ceremony', mins: '2 min', mode: 'think', run: function (c) { wrapStart(c, 5, '🚗', 'Clean Cars'); }, intro: 'Well done, clean city helpers!',
+        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: I like the … car because …'], say: ['I like the electric car because it’s quiet.'] },
+        tip: ['At the door each pupil says one sentence with because about a clean car (for example “I like the solar car because it’s quiet.”). Next: p.54 A-C in the book (label the cars, the good/bad table, the main idea) and p.55 Think Together.'] }
+    ] }
   };
 
   /* ---------- shell ---------- */
@@ -674,7 +864,7 @@
     stage.appendChild(h('div', { class: 's-intro', text: s.intro }));
     var main = h('div', { class: 's-body' }); stage.appendChild(main);
     var kp = kidsPanel(s.kids); if (kp) stage.appendChild(kp);
-    $('tab1').classList.toggle('on', lesson === 1); $('tab2').classList.toggle('on', lesson === 2); $('tab3').classList.toggle('on', lesson === 3); $('tab4').classList.toggle('on', lesson === 4); 
+    $('tab1').classList.toggle('on', lesson === 1); $('tab2').classList.toggle('on', lesson === 2); $('tab3').classList.toggle('on', lesson === 3); $('tab4').classList.toggle('on', lesson === 4); $('tab5').classList.toggle('on', lesson === 5); 
     $('h-title').firstChild.nodeValue = L.title;
     drawSteps(); sfx('page');
     try { s.run(ctxFor(main)); } catch (e) { main.appendChild(h('div', { class: 'msg soft', text: 'Oops, this activity could not start.' })); if (window.console) console.error(e); }
@@ -689,6 +879,7 @@
   $('tab2').addEventListener('click', function () { go(2, 0); });
   $('tab3').addEventListener('click', function () { go(3, 0); });
   $('tab4').addEventListener('click', function () { go(4, 0); });
+  $('tab5').addEventListener('click', function () { go(5, 0); });
   $('back').addEventListener('click', function () { if (state.idx > 0) go(state.lesson, state.idx - 1); });
   $('next').addEventListener('click', function () { if (state.idx < LESSONS[state.lesson].scenes.length - 1) go(state.lesson, state.idx + 1); });
   $('tipbtn').addEventListener('click', function () { var t = $('tip'); if (t.hidden) { tipHtml(); t.hidden = false; } else t.hidden = true; });
@@ -697,7 +888,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') $('next').click(); else if (e.key === 'ArrowLeft') $('back').click(); });
 
   var q = {}; (location.search || '').replace(/^\?/, '').split('&').forEach(function (p) { var kv = p.split('='); if (kv[0]) q[kv[0]] = decodeURIComponent(kv[1] || ''); });
-  var l0 = ({ '2': 2, '3': 3, '4': 4 })[q.lesson] || 1, s0 = Math.max(0, Math.min(LESSONS[l0].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
+  var l0 = ({ '2': 2, '3': 3, '4': 4, '5': 5 })[q.lesson] || 1, s0 = Math.max(0, Math.min(LESSONS[l0].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
   window.G3Lessons = { state: state, go: go, LESSONS: LESSONS };
   loadManifest(function () { drawTeams(); go(l0, s0); });
 })();
