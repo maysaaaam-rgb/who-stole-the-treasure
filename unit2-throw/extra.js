@@ -70,7 +70,7 @@
     ['3', '4'].forEach(function (grade) {
       var arcWords = (ARC_DATA && ARC_DATA[grade] && ARC_DATA[grade].words) ? ARC_DATA[grade].words : [];
       var arcBuilders = (ARC_DATA && ARC_DATA[grade] && ARC_DATA[grade].builders) ? ARC_DATA[grade].builders : [];
-      var bqUnit2 = (BQ_DATA && BQ_DATA[grade] && BQ_DATA[grade]['2']) ? BQ_DATA[grade]['2'] : [];
+      var bqUnit2 = (BQ_DATA && BQ_DATA[grade] && BQ_DATA[grade][window.EAA_UNIT || '2']) ? BQ_DATA[grade][window.EAA_UNIT || '2'] : [];   /* ?unit=3 uses the Unit 3 bank */
 
       var allWordStrings = arcWords.map(function (w) { return w.w; });
       var allEmojis = arcWords.map(function (w) { return w.e; });

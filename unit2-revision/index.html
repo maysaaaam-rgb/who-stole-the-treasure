@@ -160,6 +160,7 @@
 <div class="pop" id="pop"><div class="popbox card"><div id="popbig" style="font-size:clamp(60px,16vh,180px)">🎲</div><div id="poptext" style="font-size:clamp(24px,5.4vh,64px);font-weight:800"></div><button class="btn" id="popok" style="margin-top:2vh">OK!</button></div></div>
 
 <script src="revision-data.js"></script>
+<script src="../unit3-data/data.js"></script>
 <script>
 var TEAMS = [
   {n:'Fox', e:'🦊', c:'#f97316'}, {n:'Frog', e:'🐸', c:'#22c55e'}, {n:'Panda', e:'🐼', c:'#64748b'},
@@ -320,5 +321,11 @@ function memeFor(kind, idx, extraCap) {
 
 </script>
 <div id="meme"><div id="memePic"></div><div id="memeCap"></div></div>
+<script>
+/* Unit 3 edition (open with ?unit=3): same race, Unit 3 questions */
+(function () { if (window.EAA_UNIT !== '3') return; document.title = 'Animal Mountain Race: Unit 3 Revision';
+  var a = document.querySelector('.chip[data-g="3"]'), b = document.querySelector('.chip[data-g="4"]');
+  if (a) a.textContent = '💰 Grade 3 · How Much Is It?'; if (b) b.textContent = '🧊 Grade 4 · It Keeps Changing'; })();
+</script>
 </body>
 </html>

@@ -11,3 +11,17 @@ scratch/
 
 # raw Gemini pictures for the Alice profile (large, green background); the cut-out versions in assets/alice-cut are what we publish
 /assets/alice/
+
+# kept on this computer but not published (the site was over GitHub's 1 GB limit): page scans, cut pieces and card picture folders nobody links to
+/assets/tea-party-cards/raw/
+/assets/tea-party-cards/extracted/
+/monster day/story/mouse/pokemon/firefighter/NH/assets/tea-party-cards/raw/
+/monster day/story/mouse/pokemon/firefighter/NH/assets/tea-party-cards/extracted/
+/tea-party-cards/output/cards_png/
+/tea-party-cards/output/class_4a_png/
+/tea-party-cards/output/class_4b_png/
+/monster day/story/mouse/pokemon/firefighter/NH/tea-party-cards/output/cards_png/
+/monster day/story/mouse/pokemon/firefighter/NH/tea-party-cards/output/class_4a_png/
+/monster day/story/mouse/pokemon/firefighter/NH/tea-party-cards/output/class_4b_png/
+/monster day/story/mouse/pokemon/firefighter/NH/alice-cards-4a/output/class_4a_png/
+/monster day/story/mouse/pokemon/firefighter/NH/alice-cards-4b/output/class_4b_png/

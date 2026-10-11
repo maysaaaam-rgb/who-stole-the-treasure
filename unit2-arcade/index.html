@@ -139,6 +139,8 @@
 <div id="tools"><button class="btn purple" id="mus" title="Music">🎵</button><button class="btn blue" id="snd" title="Sound">🔊</button><button class="btn blue" id="full" title="Full screen">⛶</button></div>
 
 <script src="data.js"></script>
+<script src="../unit3-data/data.js"></script>
+<script>if (window.EAA_UNIT === '3') { document.title = 'Unit 3 Arcade · Smartboard'; }</script>
 <script>
 var TEAMS = [{n:'Fox',k:'fox',e:'🦊',c:'#f97316'},{n:'Frog',k:'frog',e:'🐸',c:'#16a34a'},{n:'Panda',k:'panda',e:'🐼',c:'#64748b'},{n:'Lion',k:'lion',e:'🦁',c:'#ca8a04'},{n:'Octopus',k:'octopus',e:'🐙',c:'#db2777'},{n:'Unicorn',k:'unicorn',e:'🦄',c:'#7c3aed'}];
 var cfg = {g:'3', t:4, l:'n', h:'snow', game:'memory'}, S = {scores:[], turn:0};
@@ -328,6 +330,13 @@ $('next').onclick = function () {
   else if (cfg.game === 'wheel') { G.spins++; if (G.spins >= G.max) { G.spins = 0; return levelDone(readyWheel); } readyWheel(); }
 };
 (function () { var q = (location.search.match(/grade=([34])/) || [])[1]; if (q) { cfg.g = q; document.querySelectorAll('.chip[data-g]').forEach(function (x) { x.classList.toggle('sel', x.dataset.g === q); }); } })();
+</script>
+<script>
+/* Unit 3 edition (open with ?unit=3): same game, Unit 3 words */
+(function () { if (window.EAA_UNIT !== '3') return; document.title = 'Unit 3 Arcade · Smartboard';
+  var t = document.getElementById('mtitle'); if (t) t.textContent = 'Unit 3 Arcade!';
+  var a = document.querySelector('.chip[data-g="3"]'), b = document.querySelector('.chip[data-g="4"]');
+  if (a) a.textContent = '💰 Grade 3 · How Much Is It?'; if (b) b.textContent = '🧊 Grade 4 · It Keeps Changing'; })();
 </script>
 </body>
 </html>
