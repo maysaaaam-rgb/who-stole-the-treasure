@@ -392,7 +392,7 @@ html.class-mode #app-view-container { padding-bottom: 110px; }
 /* --------------------------------------------------------------------------
    16. GAME SHELF: real artwork instead of a plain controller emoji
    -------------------------------------------------------------------------- */
-.cm-pic .cm-img { height: 86%; max-height: 15vh; min-height: 96px; width: auto; max-width: 70%; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.3)); animation: cmBob 3.2s ease-in-out infinite; pointer-events: none; }
+.cm-pic .cm-img { height: 86%; max-height: 15vh; min-height: 96px; width: auto; max-width: 86%; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.3)); animation: cmBob 3.2s ease-in-out infinite; pointer-events: none; }
 
 
 /* --------------------------------------------------------------------------
