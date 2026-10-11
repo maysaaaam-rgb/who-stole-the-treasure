@@ -224,10 +224,13 @@
   function titles() { try { return JSON.parse(get(TITLE_KEY) || '{}'); } catch (e) { return {}; } }
   function saveTitle(key) { var t = titles(); t[slug(key)] = TITLE; set(TITLE_KEY, JSON.stringify(t)); }
   function titleFor(keyOrName) { return titles()[slug(keyOrName)] || ''; }
-  function vipNames() { try { var a = JSON.parse(get(VIP_KEY) || 'null'); if (Array.isArray(a)) return a; } catch (e) { /* default */ } return ['öykü çiğdem', 'oyku cigdem']; }
+  /* every pupil gets the grand ceremony at 1,000 XP; enableFor(['name', ...]) can narrow it to chosen pupils (this browser only) */
+  function vipNames() { try { var a = JSON.parse(get(VIP_KEY) || 'null'); if (Array.isArray(a)) return a; } catch (e) { /* default */ } return null; }
   function isVip(student) {
+    var list = vipNames();
+    if (!list) return !!student;
     var n = String((student && (student.firstName || student.name)) || '').toLowerCase() + ' ' + String((student && student.lastName) || '').toLowerCase();
-    return vipNames().some(function (v) { v = String(v).toLowerCase().trim().split(/\s+/)[0]; return v && n.indexOf(v) === 0; });
+    return list.some(function (v) { v = String(v).toLowerCase().trim().split(/\s+/)[0]; return v && n.indexOf(v) === 0; });
   }
   function enableFor(names) { set(VIP_KEY, JSON.stringify(names)); }
 
