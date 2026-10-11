@@ -89,8 +89,9 @@
       var base = location.href.replace(/[#?].*$/, '').replace(/[^/]*$/, '');
       return '<div class="cv-panel"><h2>Home view: homework for pupils</h2><div class="cv-row">' +
         '<a class="cv-link g3" href="home-view/index.html?g=3" target="_blank" rel="noopener">Grade 3 home page</a>' +
-        '<a class="cv-link" href="home-view/index.html?g=4" target="_blank" rel="noopener">Grade 4 home page</a></div>' +
-        '<div class="cv-hint">Send this link to the parents: ' + esc(base) + 'home-view/index.html?g=3 (Grade 3) or ?g=4 (Grade 4)</div></div>';
+        '<a class="cv-link" href="home-view/index.html?g=4" target="_blank" rel="noopener">Grade 4 home page</a>' +
+        '<a class="cv-link g3" href="chuseok-cooking/index.html" target="_blank" rel="noopener">Grade 3 Week 2: Chuseok cooking homework</a></div>' +
+        '<div class="cv-hint">Send this link to the parents: ' + esc(base) + 'home-view/index.html?g=3 (Grade 3) or ?g=4 (Grade 4). Chuseok cooking homework: chuseok-cooking/index.html</div></div>';
     }
     return '';
   }
