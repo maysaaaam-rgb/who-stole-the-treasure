@@ -3220,10 +3220,10 @@
         const availableRewards = store.getRewards();
         return '' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-            '<div>' +
+            '<div style="display:flex; align-items:center; gap:12px;">' + (window.MilestoneCeremony ? window.MilestoneCeremony.avatarHtml(student, 46) : '') + '<div>' +
               '<h4 style="font-weight:800; margin:0;">Classroom Reward Redemptions</h4>' +
               '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Student has ⭐ ' + totalXP + ' available XP</p>' +
-            '</div>' +
+            '</div></div>' +
             '<button class="btn-primary-action" onclick="openStudentRedeemRewardModal(\'' + student.id + '\')">🎁 Redeem New Reward</button>' +
           '</div>' +
           (studentRewards.length === 0 ? '<p style="color:var(--text-muted); font-size:0.84rem; padding:20px; text-align:center; background:var(--bg-canvas); border-radius:var(--radius-md);">No classroom rewards redeemed yet.</p>' :
