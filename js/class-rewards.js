@@ -7,6 +7,16 @@
   var ART = 'platform-art/';
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  /* "Golden Adventurer" tag for a pupil who has had the 1,000 XP ceremony (kept in this browser only) */
+  /* the pupil's own cartoon avatar or picture (kept only in this browser), shown as a small round "me" picture */
+  function avatarOf(p) {
+    var M = root.MilestoneCeremony, u = M && (M.photos.get(p.id) || M.photos.get(p.name));
+    return u ? '<img class="cr-av' + (M.isAvatar(u) ? ' is-cartoon' : '') + '" src="' + esc(u) + '" alt="">' : '';
+  }
+  function goldTitle(p) {
+    var M = root.MilestoneCeremony, t = M && (M.titleFor(p.id) || M.titleFor(p.name));
+    return t ? '<span class="cr-gold">🏅 ' + esc(t) + '</span>' : '';
+  }
   function fmt(n) { return Number(n || 0).toLocaleString('en-US'); }
 
   var TIERS = [
@@ -47,6 +57,8 @@
       '.cr-card b.n{font-size:1.2rem;font-weight:700}.cr-card .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}' +
       '.cr-pill{display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:99px;padding:2px 12px 2px 6px;font-weight:700;font-size:1.05rem;border:2px solid rgba(15,42,74,.12)}.cr-pill img{height:1.5em}' +
       '.cr-fund{display:flex;align-items:center;gap:1.4vw;background:rgba(255,255,255,.85);border-radius:26px;padding:1.6vh 2vw;margin-bottom:2vh;border-bottom:6px solid #10b981}.cr-fund img{height:11vh}.cr-fund .bar{flex:1;height:2.6vh;border-radius:99px;background:#d1fae5;overflow:hidden}.cr-fund .bar i{display:block;height:100%;background:linear-gradient(90deg,#10b981,#fde047);border-radius:99px}' +
+      '.cr-av{position:absolute;right:8px;top:8px;width:9vh;height:9vh;min-width:56px;min-height:56px;border-radius:50%;object-fit:cover;border:3px solid #f59e0b;background:#fff;box-shadow:0 .4vh .8vh rgba(0,0,0,.3)}.cr-av.is-cartoon{object-fit:contain;background:#fff7d6}' +
+      '.cr-gold{font-size:.78rem;font-weight:900;letter-spacing:.04em;padding:2px 10px;border-radius:99px;color:#2b1700;background:linear-gradient(180deg,#fef08a,#f59e0b);border-bottom:3px solid #b45309}' +
       '.cr-empty{text-align:center;font-size:1.3rem;padding:4vh}' +
       '.cr-burst{position:fixed;inset:0;z-index:99999;background:rgba(15,42,74,.55);display:flex;align-items:center;justify-content:center;animation:crFade .25s}' +
       '.cr-big{background:#fff;border-radius:34px;border-bottom:8px solid #38bdf8;padding:3vh 4vw;text-align:center;font-family:Fredoka,Nunito,sans-serif;color:#0f2a4a;animation:crPop .45s cubic-bezier(.175,.885,.32,1.275)}.cr-big .mon{height:26vh;width:auto}.cr-big .bdg{height:14vh;width:auto}.cr-big h2{margin:.6vh 0;font-size:2.4rem}.cr-big p{margin:0 0 1vh;font-size:1.3rem;font-weight:700}' +
@@ -75,8 +87,8 @@
       '<div class="cr-legend">' + TIERS.slice().reverse().map(function (t) { return '<span><img src="' + ART + t.pic + '.webp" alt="">' + t.name + (t.min > 1 ? ' · level ' + t.min + '+' : ' · levels 1-3') + '</span>'; }).join('') + '</div>' +
       '<div class="cr-grid">' + (list.length ? list.map(function (p) {
         var t = tierOf(p.level);
-        return '<button type="button" class="cr-card" style="--c:' + t.c + '" onclick="ClassRewards.show(\'' + esc(p.id) + '\')"><img class="bdg" src="' + ART + t.pic + '.webp" alt="' + t.name + '">' + monsterImg(p, 'mon') +
-          '<b class="n">' + esc(p.name) + '</b><div class="row"><span class="cr-pill"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span><span class="cr-pill">🪙 ' + fmt(p.coins) + '</span></div></button>';
+        return '<button type="button" class="cr-card" style="--c:' + t.c + '" onclick="ClassRewards.show(\'' + esc(p.id) + '\')"><img class="bdg" src="' + ART + t.pic + '.webp" alt="' + t.name + '">' + avatarOf(p) + monsterImg(p, 'mon') +
+          '<b class="n">' + esc(p.name) + '</b>' + goldTitle(p) + '<div class="row"><span class="cr-pill"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span><span class="cr-pill">🪙 ' + fmt(p.coins) + '</span></div></button>';
       }).join('') : '<p class="cr-empty">No pupils in this class yet.</p>') + '</div></div>';
   }
 
