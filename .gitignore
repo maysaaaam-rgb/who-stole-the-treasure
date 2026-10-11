@@ -8,3 +8,6 @@ scratch/
 /voice-test/
 /unit2-throw/screens/
 /library-audit/out/
+
+# raw Gemini pictures for the Alice profile (large, green background); the cut-out versions in assets/alice-cut are what we publish
+/assets/alice/

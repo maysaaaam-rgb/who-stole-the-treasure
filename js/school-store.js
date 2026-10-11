@@ -3541,6 +3541,37 @@
         'student-4a-313': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
         'student-4b-301': { status: 'IN_PROGRESS', attempted: 2, correct: 2, score: 40, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 2 of 5 steps so far (from the Results sheet)' }
       }
+    },
+    {
+      id: 'hw-alice-tea-party-w2',
+      syncSubmissions: true,
+      title: '☕ Alice Tea Party: Home Practice (Week 2)',
+      description: 'Get ready for the tea party: read your dialogue, say it with someone at home, record it, make your prop and learn three tea-party phrases. Five small tasks.',
+      subject: 'English',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-4a',
+      className: 'Grade 4',
+      studentIds: 'all',
+      dueDate: 'Oct 15, 2026',
+      estimatedTime: '25 minutes',
+      xpReward: 80,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-alice-party-w2', type: 'game', title: 'Tea Party Home Practice 2', url: 'alice-party-home/week2.html' }
+      ],
+      instructions: [
+        '1. Read your dialogue and listen to every line',
+        '2. Say it with someone at home',
+        '3. Record it and show it in class',
+        '4. Make your paper prop and bring it',
+        '5. Learn the 3 tea-party phrases'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
     }
   ];
 
