@@ -97,7 +97,7 @@
   <div class="setupbox card">
     <div class="title"><span>S</span><span>i</span><span>m</span><span>o</span><span>n</span> Says! 🦉</div>
     <div class="sub">Listen carefully! Only do it if Simon says!</div>
-    <div class="gcards"><button class="gcard sel" data-g="3"><b>🔧 Grade 3</b><span>Inventors · Monsters · Harvest</span></button><button class="gcard" data-g="4"><b>🌲 Grade 4</b><span>Alice · Brain · Forests</span></button></div>
+    <div class="gcards"><button class="gcard sel" data-g="3"><b>🔧 Grade 3</b><span>Inventors · Monsters · Harvest · Kitchen</span></button><button class="gcard" data-g="4"><b>🌲 Grade 4</b><span>Alice · Brain · Forests</span></button></div>
     <div class="row"><span class="lab">Class</span><select id="clsSel" class="chip"></select><span id="pupilInfo" class="sub"></span><button class="chip" id="typeBtn">✏️ Type names</button></div>
     <textarea id="typed" placeholder="Type one name on each line"></textarea>
     <div class="row"><span class="lab">Playing</span><div id="roster"></div></div>
@@ -301,7 +301,8 @@ function end() {
   var seen = {}, done = []; (G.log || []).forEach(function (c) { if (!seen[c.t] && c.l < 3) { seen[c.t] = 1; done.push(c); } });
   $('wordsDone').innerHTML = done.map(function (c) { return '<span>' + c.i + ' ' + c.t + '</span>'; }).join('');
 }
-(function () { var q = (location.search.match(/grade=([34])/) || [])[1]; if (q) { document.querySelectorAll('.gcard').forEach(function (x) { x.classList.toggle('sel', x.dataset.g === q); }); cfg.g = q; } })();
+(function () { var cq = (location.search.match(/cat=([a-z]+)/) || [])[1]; if (cq && SIMON[3].cats[cq] && /grade=3/.test(location.search)) { cfg.g = '3'; cfg.cats = {}; cfg.cats[cq] = true; cfg._g = '3'; var sb = document.querySelector('#setup .sub'); if (sb && cq === 'cook') sb.textContent = '👩‍🍳 Chuseok Kitchen edition · Listen carefully! Only do it if Simon says!'; }
+  var q = (location.search.match(/grade=([34])/) || [])[1]; if (q) { document.querySelectorAll('.gcard').forEach(function (x) { x.classList.toggle('sel', x.dataset.g === q); }); cfg.g = q; } })();
 drawCats(); fillClasses();
 </script>
 </body>
