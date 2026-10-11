@@ -2511,8 +2511,20 @@
 <!-- EXTERNAL DATA BANKS -->
 <script src="../bamboozle/data.js"></script>
 <script src="../unit2-arcade/data.js"></script>
-<script src="extra.js?v=2"></script>
+<script src="../unit3-data/data.js"></script>
+<script src="extra.js?v=3"></script>
 <script src="sfx.js?v=1"></script>
 <script src="gameplay.js?v=3"></script>
+<script>
+/* Unit 3 edition (open with ?unit=3): same game, Unit 3 questions and words */
+(function () { if (window.EAA_UNIT !== '3') return;
+  var cards = document.querySelectorAll('.grade-card');
+  if (cards[0]) { var s0 = cards[0].querySelector('span'); if (s0) s0.textContent = 'Unit 3 · How Much Is It? · Money'; var b0 = cards[0].querySelector('b'); if (b0) b0.textContent = '💰 Grade 3'; }
+  if (cards[1]) { var s1 = cards[1].querySelector('span'); if (s1) s1.textContent = 'Unit 3 · It Keeps Changing · Ice & Clean Cars'; var b1 = cards[1].querySelector('b'); if (b1) b1.textContent = '🧊 Grade 4'; }
+  var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n, hits = [];
+  while ((n = w.nextNode())) { if (/Unit 2/.test(n.nodeValue) && !/Unit 3/.test(n.nodeValue)) hits.push(n); }
+  hits.forEach(function (x) { x.nodeValue = x.nodeValue.replace(/Unit 2/g, 'Unit 3'); });
+  document.title = document.title.replace(/Unit 2/g, 'Unit 3'); })();
+</script>
 </body>
 </html>

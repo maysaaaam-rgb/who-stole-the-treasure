@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop Counter: How Much Is It? • Unit 3 Grade 3</title>
+<style>
+  :root { --void: #060911; --glass: rgba(15, 23, 42, 0.82); --line: rgba(148, 163, 184, 0.25); --cyan: #38bdf8; --amber: #f59e0b; --emerald: #10b981; --coral: #f43f5e; --violet: #a855f7; --ink: #f8fafc; --mute: #94a3b8; --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body { font-family: 'Segoe UI', 'Trebuchet MS', system-ui, sans-serif; color: var(--ink); background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%); background-color: var(--void); overflow: hidden; user-select: none; }
+  .screen { display: none; height: 100%; padding: 2vh 2.4vw; flex-direction: column; gap: 1.6vh; overflow-y: auto; }
+  .screen.on { display: flex; }
+  .glass { background: var(--glass); border: 1px solid var(--line); border-radius: 2.4vh; backdrop-filter: blur(14px); box-shadow: 0 4px 20px -2px rgba(0, 0, 0, .4), 0 2px 6px -1px rgba(0, 0, 0, .2); }
+  .btn { --bg: #334155; --lip: #1e293b; font: inherit; font-weight: 800; font-size: clamp(15px, 2.6vh, 30px); color: #fff; background: var(--bg); border: 0; border-bottom: 5px solid var(--lip); border-radius: 1.8vh; padding: 1.1vh 1.6vw; cursor: pointer;
+    transition: transform .2s var(--spring), border-bottom-width .2s var(--spring), filter .2s; }
+  .btn:hover { filter: brightness(1.1); } .btn:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .btn.green { --bg: #059669; --lip: #064e3b; } .btn.amber { --bg: #d97706; --lip: #78350f; } .btn.cyan { --bg: #0284c7; --lip: #0c4a6e; } .btn.coral { --bg: #e11d48; --lip: #881337; } .btn.violet { --bg: #7c3aed; --lip: #4c1d95; }
+  .btn.sel { outline: 3px solid #fde047; } .btn:disabled { opacity: .4; cursor: not-allowed; }
+  h1 { font-size: clamp(26px, 6.4vh, 70px); line-height: 1.05; } .sub { color: var(--mute); font-size: clamp(14px, 2.4vh, 26px); font-weight: 600; }
+  .row { display: flex; gap: 1vw; align-items: center; justify-content: center; flex-wrap: wrap; } .row[hidden] { display: none; } .lab { color: var(--mute); font-weight: 800; min-width: 5em; text-align: right; }
+  #setup { align-items: center; justify-content: center; text-align: center; }
+  .setupbox { padding: 3vh 3vw; width: min(980px, 96vw); display: flex; flex-direction: column; gap: 2vh; }
+  /* play */
+  .hud { display: flex; gap: 1vw; align-items: stretch; }
+  .team { flex: 1; padding: 1vh 1vw; text-align: center; border-radius: 2vh; border: 3px solid var(--c); background: rgba(15, 23, 42, .7); transition: transform .25s var(--spring); }
+  .team.turn { transform: scale(1.06); box-shadow: 0 0 2.4vh var(--c); background: rgba(30, 41, 59, .95); } .team b { display: block; font-size: clamp(18px, 3.8vh, 42px); } .team span { font-weight: 800; color: var(--mute); }
+  .counter { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2vh; flex: 1; min-height: 0; }
+  .customer { padding: 2vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2vh; text-align: center; }
+  .speech { font-size: clamp(18px, 3.6vh, 40px); font-weight: 800; background: #fff; color: #0f172a; border-radius: 2vh; padding: 1.2vh 1.6vw; position: relative; }
+  .item { font-size: clamp(60px, 18vh, 200px); line-height: 1; filter: drop-shadow(0 1.4vh 1.2vh rgba(0, 0, 0, .5)); animation: bob 2.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-1.2vh); } }
+  .tag { background: #fde047; color: #422006; font-weight: 900; font-size: clamp(30px, 8vh, 90px); border-radius: 1.6vh; padding: .2em .7em; border-bottom: 5px solid #a16207; transform: rotate(-3deg); }
+  .till { padding: 2vh; display: flex; flex-direction: column; gap: 1.6vh; }
+  .total { text-align: center; font-size: clamp(34px, 9vh, 100px); font-weight: 900; color: #fde047; min-height: 1.1em; }
+  .tray { min-height: 11vh; display: flex; flex-wrap: wrap; gap: .8vh; justify-content: center; align-items: center; background: rgba(2, 6, 23, .55); border-radius: 1.8vh; padding: 1vh; border: 2px dashed var(--line); }
+  .tray i { font-style: normal; font-weight: 900; font-size: clamp(16px, 3.2vh, 34px); border-radius: 1vh; padding: .2em .5em; animation: drop .25s var(--spring); } @keyframes drop { from { transform: translateY(-3vh) scale(.6); opacity: 0; } }
+  .money { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2vh; }
+  .m { --bg: #166534; --lip: #052e16; display: flex; flex-direction: column; align-items: center; gap: .4vh; font-size: clamp(20px, 4.2vh, 46px); padding: 1.4vh .4vw !important; }
+  .m small { font-size: .5em; opacity: .85; font-weight: 700; } .m.c { --bg: #a16207; --lip: #451a03; } .m.b5 { --bg: #1d4ed8; --lip: #1e3a8a; } .m.b10 { --bg: #7e22ce; --lip: #3b0764; }
+  .msg { text-align: center; min-height: 1.4em; font-weight: 800; font-size: clamp(16px, 3vh, 34px); } .msg.ok { color: #6ee7b7; } .msg.hint { color: #fda4af; }
+  .sentence { text-align: center; font-size: clamp(20px, 4.2vh, 46px); font-weight: 900; color: #67e8f9; min-height: 1.2em; }
+  .bump { animation: bump .45s var(--spring); } @keyframes bump { 40% { transform: scale(1.18); } }
+  .wob { animation: wob .5s; } @keyframes wob { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+  .podium { display: flex; gap: 1.6vw; align-items: flex-end; justify-content: center; min-height: 34vh; }
+  .pod { width: 14vw; text-align: center; font-weight: 900; border-radius: 1.8vh 1.8vh 0 0; background: var(--c); padding: 1vh; color: #0f172a; font-size: clamp(16px, 3vh, 34px); } .pod .em { font-size: 1.8em; }
+  #conf { position: fixed; inset: 0; pointer-events: none; z-index: 9; overflow: hidden; } #conf i { position: absolute; top: -6vh; animation: fall linear forwards; } @keyframes fall { to { transform: translateY(115vh) rotate(540deg); } }
+  @media (max-width: 800px) { .counter { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="conf"></div>
+
+<section id="setup" class="screen on">
+  <div class="setupbox glass">
+    <h1>🛒 Shop Counter</h1>
+    <div class="sub">How much is it? Pay the right money, then say: It is … dollars!</div>
+    <div class="row"><span class="lab">Teams</span><button class="btn" data-t="2">2</button><button class="btn sel" data-t="3">3</button><button class="btn" data-t="4">4</button></div>
+    <div class="row"><span class="lab">Level</span><button class="btn green" data-l="1">🌱 Easy · up to $9</button><button class="btn amber sel" data-l="2">🌿 Medium · up to $20</button><button class="btn coral" data-l="3">🔥 Hard · up to $30</button></div>
+    <div class="row"><span class="lab">Customers</span><button class="btn" data-n="6">6</button><button class="btn sel" data-n="9">9</button><button class="btn" data-n="12">12</button></div>
+    <div class="row"><button class="btn green" id="go" style="font-size:clamp(20px,4vh,44px);padding:1.4vh 3vw">▶ Open the shop!</button><button class="btn" id="snd">🔊</button><button class="btn cyan" id="full">📺</button><a class="btn" href="../index.html" style="text-decoration:none">🏠</a></div>
+    <div class="sub">Unit 3 · Grade 3 · How Much Is It? Teams take turns. Tap the money to pay the exact price.</div>
+  </div>
+</section>
+
+<section id="play" class="screen">
+  <div class="hud" id="hud"></div>
+  <div class="counter">
+    <div class="customer glass">
+      <div class="speech" id="speech">How much is it?</div>
+      <div class="item" id="item">🍎</div>
+      <div class="tag" id="tag">$2</div>
+      <button class="btn small" id="hear" style="font-size:clamp(14px,2.4vh,26px)">🔊 Hear it again</button>
+    </div>
+    <div class="till glass">
+      <div class="sub" id="turnTxt" style="text-align:center"></div>
+      <div class="total" id="total">$0</div>
+      <div class="tray" id="tray"></div>
+      <div class="money" id="money"></div>
+      <div class="row"><button class="btn violet" id="clear">↺ Clear</button><button class="btn green" id="pay" style="font-size:clamp(18px,3.4vh,38px)">💸 Pay!</button></div>
+      <div class="msg" id="msg"></div>
+      <div class="sentence" id="sentence"></div>
+      <div class="row" id="after" hidden><button class="btn amber" id="nextC">Next customer ▶</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="end" class="screen" style="align-items:center;justify-content:center;text-align:center">
+  <h1 id="endT">🎉 The shop is closed!</h1>
+  <div class="podium" id="podium"></div>
+  <div class="row"><button class="btn green" id="again">↺ Play again</button><button class="btn" id="home">⚙ Settings</button></div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var TEAMS = [{ n: 'Foxes', e: '🦊', c: '#f97316' }, { n: 'Owls', e: '🦉', c: '#8b5cf6' }, { n: 'Bears', e: '🐻', c: '#a16207' }, { n: 'Hares', e: '🐇', c: '#06b6d4' }];
+  var NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+  function words(n) { if (n <= 20) return NUM[n]; var t = ['', '', 'twenty', 'thirty'][Math.floor(n / 10)], o = n % 10; return o ? t + '-' + NUM[o] : t; }
+  var ITEMS = [
+    { e: '🍌', n: 'banana', p: [1, 2] }, { e: '🍪', n: 'cookie', p: [1, 3] }, { e: '🍎', n: 'apple', p: [2, 3] }, { e: '🧃', n: 'juice', p: [3, 4] }, { e: '⚽', n: 'ball', p: [4, 8] },
+    { e: '📖', n: 'book', p: [5, 9] }, { e: '🧢', n: 'hat', p: [6, 9] }, { e: '🚗', n: 'toy car', p: [7, 12] }, { e: '🍰', n: 'cake', p: [8, 12] }, { e: '🧸', n: 'teddy bear', p: [13, 17] },
+    { e: '🎒', n: 'backpack', p: [15, 22] }, { e: '👟', n: 'shoes', p: [18, 24] }, { e: '🎧', n: 'headphones', p: [20, 28] }, { e: '🪁', n: 'kite', p: [9, 14] }, { e: '🚲', n: 'bike', p: [25, 30] }
+  ];
+  var cfg = { t: 3, l: 2, n: 9 }, S = null, soundOn = true, AC = null;
+
+  /* ---- sound: chords only (no raw beeps), started by the first tap ---- */
+  function ctx() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { /* no audio */ } } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
+  function note(f, t, d, v) { var a = ctx(); if (!a || !soundOn) return;
+    [['sine', 0], ['triangle', 4]].forEach(function (p) { var o = a.createOscillator(), g = a.createGain(); o.type = p[0]; o.frequency.value = f; o.detune.value = p[1]; var s = a.currentTime + t;
+      g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(v, s + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, s + d); o.connect(g); g.connect(a.destination); o.start(s); o.stop(s + d + 0.05); }); }
+  function sfx(k) { if (k === 'tap') { note(523.25, 0, 0.12, 0.06); note(659.25, 0.04, 0.12, 0.04); } else if (k === 'coin') { note(987.77, 0, 0.18, 0.08); note(1318.5, 0.1, 0.4, 0.08); }
+    else if (k === 'ok') { [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { note(f, i * 0.09, 0.55, 0.11); }); } else if (k === 'soft') { note(246.94, 0, 0.4, 0.1); note(220, 0.2, 0.55, 0.1); }
+    else if (k === 'win') { [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach(function (f, i) { note(f, i * 0.14, 1.0, 0.12); }); } }
+  function say(text) { if (!soundOn || !('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
+  function confetti(n) { var bits = ['🪙', '⭐', '💵', '🎉', '✨', '🛍️'], w = $('conf'), k; for (k = 0; k < (n || 24); k++) { var d = document.createElement('i'); d.textContent = bits[k % bits.length]; d.style.left = Math.random() * 96 + 'vw'; d.style.fontSize = (2.4 + Math.random() * 3) + 'vh'; d.style.animationDuration = (1.8 + Math.random() * 1.6) + 's'; w.appendChild(d); (function (x) { setTimeout(function () { x.remove(); }, 3600); })(d); } }
+  function show(id) { ['setup', 'play', 'end'].forEach(function (s) { $(s).classList.toggle('on', s === id); }); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  /* ---- setup ---- */
+  function bind(attr, key) { document.querySelectorAll('[data-' + attr + ']').forEach(function (b) { b.onclick = function () { sfx('tap'); document.querySelectorAll('[data-' + attr + ']').forEach(function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); cfg[key] = Number(b.dataset[attr]); }; }); }
+  bind('t', 't'); bind('l', 'l'); bind('n', 'n');
+  $('snd').onclick = function () { soundOn = !soundOn; $('snd').textContent = soundOn ? '🔊' : '🔇'; if (!soundOn && 'speechSynthesis' in window) speechSynthesis.cancel(); };
+  $('full').onclick = function () { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { /* ignore */ } };
+  $('go').onclick = function () { ctx(); sfx('tap'); start(); }; $('again').onclick = start; $('home').onclick = function () { show('setup'); };
+
+  /* ---- the game ---- */
+  var MAXP = { 1: 9, 2: 20, 3: 30 };
+  function makeCustomers() {
+    var cap = MAXP[cfg.l], pool = ITEMS.filter(function (it) { return it.p[0] <= cap; }), out = [], used = {};
+    while (out.length < cfg.n) {
+      var it = pick(pool), lo = it.p[0], hi = Math.min(it.p[1], cap), price = lo + Math.floor(Math.random() * (hi - lo + 1)), key = it.n + price;
+      if (used[key] && Object.keys(used).length < pool.length * 2) continue; used[key] = 1; out.push({ e: it.e, n: it.n, price: price });
+    }
+    return out;
+  }
+  function start() {
+    S = { cust: makeCustomers(), i: 0, turn: 0, scores: TEAMS.slice(0, cfg.t).map(function () { return 0; }), total: 0, pile: [], tries: 0, paid: false };
+    drawHud(); show('play'); customer();
+  }
+  function drawHud() {
+    $('hud').innerHTML = TEAMS.slice(0, cfg.t).map(function (t, i) { return '<div class="team ' + (i === S.turn ? 'turn' : '') + '" style="--c:' + t.c + '"><b>' + t.e + ' ' + t.n + '</b><span>⭐ ' + S.scores[i] + '</span></div>'; }).join('');
+  }
+  function bills() { var l = cfg.l; return l === 1 ? [1, 2, 5] : [1, 2, 5, 10]; }
+  function drawMoney() {
+    var b = bills();
+    $('money').style.gridTemplateColumns = 'repeat(' + b.length + ', 1fr)';
+    $('money').innerHTML = b.map(function (v) { return '<button class="btn m ' + (v === 1 || v === 2 ? 'c' : v === 5 ? 'b5' : 'b10') + '" data-v="' + v + '">' + (v < 5 ? '🪙' : '💵') + ' $' + v + '<small>' + words(v) + '</small></button>'; }).join('');
+    document.querySelectorAll('.m').forEach(function (el) { el.onclick = function () { if (S.paid) return; var v = Number(el.dataset.v); S.total += v; S.pile.push(v); sfx('coin'); say(words(S.total)); drawTill(); }; });
+  }
+  function drawTill() {
+    $('total').textContent = '$' + S.total; $('total').classList.remove('bump'); void $('total').offsetWidth; $('total').classList.add('bump');
+    $('tray').innerHTML = S.pile.map(function (v) { return '<i style="background:' + (v < 5 ? '#fde047' : v === 5 ? '#93c5fd' : '#d8b4fe') + ';color:#0f172a">' + (v < 5 ? '🪙' : '💵') + '$' + v + '</i>'; }).join('') || '<span class="sub">Tap the money to pay</span>';
+  }
+  function customer() {
+    var c = S.cust[S.i]; S.total = 0; S.pile = []; S.tries = 0; S.paid = false;
+    $('item').textContent = c.e; $('tag').textContent = '$' + c.price; $('speech').textContent = 'How much is the ' + c.n + '? It is ' + words(c.price) + ' dollars.';
+    $('turnTxt').textContent = TEAMS[S.turn].e + ' ' + TEAMS[S.turn].n + ': pay ' + words(c.price) + ' dollars (customer ' + (S.i + 1) + ' of ' + S.cust.length + ')';
+    $('msg').textContent = ''; $('msg').className = 'msg'; $('sentence').textContent = ''; $('after').hidden = true; $('pay').disabled = false; $('clear').disabled = false;
+    drawHud(); drawMoney(); drawTill(); sfx('tap'); say('How much is the ' + c.n + '?');
+  }
+  $('hear').onclick = function () { var c = S.cust[S.i]; say('How much is the ' + c.n + '? It is ' + words(c.price) + ' dollars.'); };
+  $('clear').onclick = function () { if (S.paid) return; S.total = 0; S.pile = []; sfx('tap'); drawTill(); $('msg').textContent = ''; };
+  $('pay').onclick = function () {
+    if (S.paid) return; var c = S.cust[S.i];
+    if (S.total === 0) { $('msg').textContent = 'Tap some money first 👆'; $('msg').className = 'msg hint'; sfx('soft'); return; }
+    S.tries++;
+    if (S.total === c.price) {
+      S.paid = true; var pts = S.tries === 1 ? 2 : 1; S.scores[S.turn] += pts; $('pay').disabled = true; $('clear').disabled = true;
+      var sentence = 'It is ' + words(c.price) + ' dollars.'; $('sentence').textContent = sentence;
+      $('msg').textContent = '✔ Right! +' + pts + (pts === 1 ? ' point' : ' points') + ' for ' + TEAMS[S.turn].n + '. Say it with the board!'; $('msg').className = 'msg ok';
+      sfx('ok'); confetti(18); say('Thank you! ' + sentence); drawHud(); $('after').hidden = false;
+      $('nextC').textContent = S.i + 1 >= S.cust.length ? '🏆 See the scores' : 'Next customer ▶';
+    } else {
+      sfx('soft'); var t = $('till') || document.querySelector('.till'); t.classList.remove('wob'); void t.offsetWidth; t.classList.add('wob');
+      $('msg').className = 'msg hint';
+      $('msg').textContent = S.total < c.price ? 'A little more! You paid $' + S.total + '. The price is $' + c.price + '.' : 'That is too much. Clear and try again.';
+      say(S.total < c.price ? 'A little more.' : 'That is too much.');
+    }
+  };
+  $('nextC').onclick = function () { sfx('tap'); S.i++; S.turn = (S.turn + 1) % cfg.t; if (S.i >= S.cust.length) { finish(); return; } customer(); };
+  function finish() {
+    show('end'); sfx('win'); confetti(60);
+    var order = TEAMS.slice(0, cfg.t).map(function (t, i) { return { t: t, s: S.scores[i] }; }).sort(function (a, b) { return b.s - a.s; }), medals = ['🥇', '🥈', '🥉', '⭐'];
+    $('podium').innerHTML = order.map(function (o, k) { return '<div class="pod" style="--c:' + o.t.c + ';height:' + (30 - k * 5) + 'vh"><div class="em">' + medals[k] + ' ' + o.t.e + '</div>' + o.t.n + '<br>⭐ ' + o.s + '</div>'; }).join('');
+    $('endT').textContent = order[0].s === (order[1] ? order[1].s : -1) ? '🎉 What a close shop day!' : '🎉 ' + order[0].t.n + ' are the best shoppers!';
+  }
+  document.addEventListener('keydown', function (e) { if ($('play').classList.contains('on') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); if (!$('after').hidden) $('nextC').click(); else $('pay').click(); } });
+})();
+</script>
+</body>
+</html>

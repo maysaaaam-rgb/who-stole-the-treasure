@@ -8719,6 +8719,827 @@ const GAMES_REGISTRY = [
     "worksheetUrl": null
   },
   {
+    "id": "bamboozle-g3-u3",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: How Much Is It? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "bamboozle/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "shop-counter-g3-u3",
+    "title": "🛒 Shop Counter: How Much Is It? (Unit 3, Grade 3)",
+    "description": "A whole-class smartboard shop game for Unit 3. A customer asks “How much is it?”. The team in turn pays the exact price by tapping $1, $2, $5 and $10 money, then the class says the sentence: It is … dollars. Three levels (up to $9, $20 and $30), teams take turns, a wrong try only means try again, and the board says the numbers aloud.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Numbers",
+      "Speaking",
+      "Listening",
+      "Vocabulary",
+      "Money"
+    ],
+    "topic": "Unit 3: How Much Is It? (money, prices, buying and paying)",
+    "topics": [
+      "Unit 3: How Much Is It? (money, prices, buying and paying)",
+      "Numbers to 30"
+    ],
+    "languageFocus": "How much is it? It is … dollars. buy, pay, expensive",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "shop",
+      "money",
+      "numbers",
+      "team-game",
+      "smartboard",
+      "grade-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Ask and answer: How much is it? It is … dollars.",
+      "Say numbers to 30 in English",
+      "Use the words buy, pay, money, expensive and coin",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 4 teams, the level and the number of customers. Each customer shows an item and its price. The team in turn taps the money to pay the exact price and presses Pay. Everyone then says the sentence with the board. First try = 2 points, later tries = 1 point. A wrong try gives a hint (a little more / too much) and never takes points away.",
+    "studentInstructions": "Look at the price. Tap the money to pay the right amount. Say: It is … dollars!",
+    "route": "unit3-shop/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "money",
+        "coin",
+        "bill",
+        "buy",
+        "pay",
+        "expensive",
+        "dollars",
+        "price"
+      ],
+      "supporting": [
+        "shop",
+        "customer",
+        "change",
+        "cost"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "How much is it? It is … dollars.",
+      "formula": "How much is the book? It is five dollars.",
+      "formulas": [
+        "How much is it? It is seven dollars.",
+        "That is expensive."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🛒",
+    "formula": "How much is the book? It is five dollars.",
+    "url": "unit3-shop/index.html",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g3-u3",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
+    "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-arcade/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g3-u3",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 3)",
+    "description": "Team quiz race for the smartboard with 55 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-revision/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u3",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: It Keeps Changing or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "bamboozle/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g4-u3",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
+    "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "unit2-arcade/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g4-u3",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 4)",
+    "description": "Team quiz race for the smartboard with 56 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "unit2-revision/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "alley-fling-u3",
+    "title": "🐱🐶 Alley Fling: Cats vs Dogs (Unit 3, Grades 3 and 4)",
+    "description": "A whole-class aim-and-throw game on the smartboard. Teams earn each throw by answering Unit 3 English questions (listening, words, sentence builder, spelling, speaking, grammar, reading). Then a pupil pulls back and lets go like a slingshot. Choose rock, fish, yarn, bone or ball, and watch the wind. Team Battle, Friendly Co-op against the Bin Boss, Quick Quiz and Practice, with a skill report and words to practise at the end.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Vocabulary",
+      "Sentence building",
+      "Spelling",
+      "Speaking",
+      "Grammar",
+      "Reading"
+    ],
+    "topic": "Unit 3 review (Grade 3: How Much Is It?; Grade 4: It Keeps Changing)",
+    "topics": [
+      "Unit 3 review (money; the Arctic poem and Clean Cars)"
+    ],
+    "languageFocus": "Unit 3 vocabulary, sentences and grammar",
+    "activityMode": "Two teams, whole class",
+    "interactionType": "Team quiz game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "game",
+      "teams",
+      "smartboard",
+      "review",
+      "speaking",
+      "spelling"
+    ],
+    "learningObjectives": [
+      "Recall Unit 3 words and sentence patterns",
+      "Practise all skills: listening, speaking, reading and writing",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose the grade, mode and arena. The class is split into Cats and Dogs. You can tap a name to move a pupil, press the cross if someone is absent, or press \"I pick the teams\". Each turn a pupil answers a question; for Speak It, you tap Good English or Try Again. Then the pupil touches the scene, pulls back and lets go to throw. Wrong answers only mean a second try. At the end, review the skill report and the words to practise.",
+    "studentInstructions": "Answer the question, then pull back and let go to throw!",
+    "route": "unit2-throw/index.html?unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)",
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple; easier than; because / but; was / is melting",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet."
+      ]
+    },
+    "clilDomain": "Unit 3 (money; climate change and clean cars)",
+    "clilTheme": "Unit 3 (money; climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-throw/index.html?unit=3",
+    "worksheetUrl": null
+  },
+  {
     "id": "forest-rangers-g4",
     "title": "🌲 Forest Rangers: Unit 2 Lesson 1 (Grade 4)",
     "description": "A 35-minute teacher-led smartboard lesson, not a quiz. Rangers get a letter from Ranger Rosa, act out one year in the forest with a gesture for \"so they can\", walk to the deciduous or coniferous side of the room, interview each other as winter animals (info-gap pairs), invent a survivor on mini whiteboards and race in teams to beat the blizzard. Four teams score all lesson. Printable cut-out cards included.",
@@ -10441,6 +11262,107 @@ const GAMES_REGISTRY = [
     "url": "unit3-g4-lessons/index.html?lesson=4",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "cars-l5-g4",
+    "title": "🚗 Clean Cars: Unit 3 Lesson 5 (Grade 4)",
+    "description": "A 40-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils name the five kinds of cars (gasoline, biofuel, electric, air, solar), match each car with its energy symbol, open five doors by reading clues, and play the energy game. Then a call from the city: the air is dirty! Pupils find the cars that make the air dirty, and trees and flowers grow when the city gets clean.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "clean cars",
+      "energy",
+      "pollution",
+      "doors game",
+      "city game"
+    ],
+    "learningObjectives": [
+      "Name five kinds of cars: gasoline, biofuel, electric, air and solar",
+      "Say what each car uses: An electric car uses electricity.",
+      "Use fast, slow, noisy, quiet, clean, dirty and expensive to describe cars",
+      "Say which cars make the air dirty and give one solution: clean cars",
+      "Give an opinion with because: I like the solar car because it is quiet."
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps: each shows a mode (Think, Talk, Detective, Game, Move). Press Teacher for tips on each step. Steps 3 (the five doors) and 5 (the city) are played at the board with the whole class. The lesson follows the reading Clean Cars on pp.48-55 of the book.",
+    "studentInstructions": "Name the cars, match each car with its energy, open the five doors, and clean up the city!",
+    "route": "unit3-g4-lessons/index.html?lesson=5",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "biofuel",
+        "noisy",
+        "quiet",
+        "clean",
+        "dirty",
+        "expensive"
+      ],
+      "supporting": [
+        "oil",
+        "air",
+        "wheels",
+        "fast",
+        "slow"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "A … car uses … / … cars are …, but … / I like the … car because …",
+      "formula": "A solar car uses energy from the sun.",
+      "formulas": [
+        "An electric car uses electricity.",
+        "Gasoline cars are fast, but they are noisy.",
+        "I like the solar car because it is quiet."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚗",
+    "formula": "An electric car uses electricity. Gasoline cars make the air dirty.",
+    "url": "unit3-g4-lessons/index.html?lesson=5",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #bbf7d0 100%)"
   },
   {
     "id": "week4-g4-captain",
