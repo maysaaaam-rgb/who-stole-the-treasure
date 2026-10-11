@@ -45,8 +45,8 @@
     hat_wizard:    { z: 60, at: 'hatBase', from: 'bottom', base: 'hatWidth', w: 0.84, dyk: 'eyeGap', dy: 0.29 },
     hat_bow:       { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.50, dx: 0.28, dy: 0.1 },
     hat_starclip:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.26, dx: -0.30, dy: 0.12 },
-    hat_flower:    { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 1.00, dy: 0.2 },
-    hat_headband:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.98, dy: 0.32 },
+    hat_flower:    { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 1.00, dyk: 'eyeGap', dy: 0.22 },
+    hat_headband:  { z: 60, at: 'hatBase', from: 'center', base: 'hatWidth', w: 0.98, dyk: 'eyeGap', dy: 0.27 },
     glasses_round:   { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.92 },
     glasses_goggles: { z: 50, at: 'eyeCenter', from: 'center', base: 'glassesWidth', w: 0.84 },
     neck_star:     { z: 40, at: 'neck', from: 'top', base: 'neckWidth', w: 0.62, dy: -0.12 },
@@ -104,7 +104,8 @@
   // Items hidden because the monster already wears something similar in that picture.
   function isHiddenByBaked(id, baked) {
     baked = baked || [];
-    if (baked.indexOf('scarf') !== -1 && (id === 'clothing-scarf' || id === 'clothing-hoodie' || id === 'neck-bandana')) return true;
+    // the equipped red scarf is drawn over the small painted neckerchief, so it never looks like the scarf failed to equip
+    if (baked.indexOf('scarf') !== -1 && (id === 'clothing-hoodie' || id === 'neck-bandana')) return true;
     if (baked.indexOf('satchel') !== -1 && /^bp-/.test(id)) return true;
     if (baked.indexOf('badge') !== -1 && id === 'neck-badge') return true;
     if (baked.indexOf('crown') !== -1 && /^hat-/.test(id)) return true;
