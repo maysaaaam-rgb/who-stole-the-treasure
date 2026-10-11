@@ -6395,6 +6395,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   /* ---- Weekly Assignments & Homework: one place, grouped by week, with every pupil's status ---- */
   let asgWeekFilter = 'all';
   window.setAsgWeek = function (v) { asgWeekFilter = v || 'all'; renderCurrentView(); };
+  let asgShowOld = false;
+  window.setAsgOld = function (on) { asgShowOld = !!on; renderCurrentView(); };
 
   function asgEsc(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function asgWeekStart(dateStr) {
@@ -6495,6 +6497,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       .concat(homework.map(h => ({ kind: 'homework', due: h.dueDate, h: h })));
     items.forEach(it => { it.week = asgWeekStart(it.due); it.ts = it.week ? it.week.getTime() : 0; });
     items.sort((x, y) => y.ts - x.ts);
+    /* only the recent weeks are shown; older and undated items stay saved but are tucked away */
+    const cutoff = Date.now() - 14 * 86400000;
+    const isOld = it => !it.week || (it.week.getTime() + 6 * 86400000) < cutoff;
+    const oldCount = items.filter(isOld).length;
+    if (!asgShowOld) { for (let i = items.length - 1; i >= 0; i--) if (isOld(items[i])) items.splice(i, 1); }
     const weeks = [];
     items.forEach(it => { if (!weeks.some(w => w.ts === it.ts)) weeks.push({ ts: it.ts, label: asgWeekLabel(it.week) }); });
     if (asgWeekFilter !== 'all' && !weeks.some(w => String(w.ts) === asgWeekFilter)) asgWeekFilter = 'all';
@@ -6530,15 +6537,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
       (shown.length ? body : '<div style="margin-top:20px; padding:20px; border:1px dashed var(--border-subtle); border-radius:14px; color:var(--text-muted);">Nothing is assigned for this class yet.</div>') +
-      '<div class="asg-next">' +
-        '<div class="asg-next-icon">🎯</div>' +
-        '<div class="asg-next-text"><b>' + (items.length === 0 ? 'No assignments yet' : 'Ready for the next one?') + '</b>' +
-          '<span>' + (items.length === 0 ? 'Give your class a game or a task to finish by a due date.' : 'Pick a game from the shelf and set a due date to keep the class practising.') + '</span></div>' +
-        '<div class="asg-next-actions">' +
-          '<button type="button" class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchView(\'shelf\')">🎮 Browse the Game Shelf</button>' +
-        '</div>' +
-      '</div>';
+      (oldCount ? '<div style="margin-top:26px; text-align:center;"><button type="button" class="btn-sm-secondary" onclick="setAsgOld(' + (asgShowOld ? 'false' : 'true') + ')">' + (asgShowOld ? 'Hide older items' : 'Show older items (' + oldCount + ')') + '</button></div>' : '');
   }
 
   // =========================================================================
