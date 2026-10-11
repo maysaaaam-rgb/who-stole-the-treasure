@@ -3492,6 +3492,54 @@
       submittedCount: 0,
       archived: false,
       submissions: {}
+    },
+    {
+      id: 'hw-alice-tea-party-w1',
+      syncSubmissions: true,
+      title: '☕ Alice Tea Party: Home Practice (Week 1)',
+      description: 'Learn your Alice in Wonderland character: meet them, learn 6 words, put the sentences in order, say them out loud and practise the party conversation. Finished all 5 steps = ready for the tea party!',
+      subject: 'English',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-4a',
+      className: 'Grade 4',
+      studentIds: 'all',
+      dueDate: 'Oct 10, 2026',
+      estimatedTime: '15 minutes',
+      xpReward: 60,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-alice-party-home', type: 'game', title: 'Tea Party Home Practice', url: 'alice-party-home/index.html' },
+        { id: 'res-alice-party-cards', type: 'worksheet', title: 'Tea Party Printable Cards', url: 'alice-party-home/cards.html' }
+      ],
+      instructions: [
+        '1. Open the Tea Party home practice',
+        '2. Meet your character and listen to the sentences',
+        '3. Learn the 6 picture words and put the sentences in order',
+        '4. Say your sentences out loud',
+        '5. Practise the party conversation and win your card'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 11,
+      archived: false,
+      submissions: {
+        'student-4a-311': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 9, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-312': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 8, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-343': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 8, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-320': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 9, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-346': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-338': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-316': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-307': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-305': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-208': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-309': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 10, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-300': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
+        'student-4b-306': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
+        'student-4a-313': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
+        'student-4b-301': { status: 'IN_PROGRESS', attempted: 2, correct: 2, score: 40, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 2 of 5 steps so far (from the Results sheet)' }
+      }
     }
   ];
 
@@ -10217,6 +10265,16 @@
                     }
                   });
                   if (!existing.submissions) existing.submissions = JSON.parse(JSON.stringify(defHw.submissions || {}));
+                  // Weekly sync from the Results sheet: add new submissions, and upgrade a started one to finished (never remove anything)
+                  if (defHw.syncSubmissions && defHw.submissions) {
+                    Object.keys(defHw.submissions).forEach(sid => {
+                      const have = existing.submissions[sid], want = defHw.submissions[sid];
+                      if (!have || (have.status !== 'COMPLETED' && want.status === 'COMPLETED') || (have.status !== 'COMPLETED' && (Number(want.attempted) || 0) > (Number(have.attempted) || 0))) {
+                        existing.submissions[sid] = JSON.parse(JSON.stringify(want));
+                      }
+                    });
+                    existing.submittedCount = Object.values(existing.submissions).filter(x => x.status === 'COMPLETED').length;
+                  }
                   if (!existing.submittedCount && defHw.submittedCount) existing.submittedCount = defHw.submittedCount;
                 }
               });
