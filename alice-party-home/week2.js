@@ -155,7 +155,8 @@
     const y = window.scrollY; renderSteps();
     const n = doneCount();
     let out = '<section class="panel"><div class="plan-hd"><img src="assets/' + esc(ST.photo) + '" alt="' + esc(ROLE.short) + '"><div><h1>My Tea Party Plan</h1><div class="goal" style="margin:0">' + esc(ST.name) + ' · ' + esc(ROLE.short) + ' · ' + n + ' of 5 done</div></div></div>' +
-      '<p class="goal">Do the five tasks in any order. Each one takes about 5 minutes. A little every day is best!</p></section>';
+      '<p class="goal">Do the five tasks in any order. Each one takes about 5 minutes. A little every day is best!</p>' +
+      '<a class="btn ghost" href="profile.html?s=' + esc(ST.id) + '" style="text-decoration:none">🫖 My Alice profile</a></section>';
     TASKS.forEach((t, i) => {
       out += '<article class="task ' + (mine[t.id] ? 'done' : '') + '" data-t="' + t.id + '"><div class="th"><div class="ico">' + t.ico + '</div><div><div class="tn">Task ' + (i + 1) + (mine[t.id] ? ' · done ✓' : '') + '</div><h2>' + esc(t.t) + '</h2></div></div>' +
         t.body() + '<div class="row"><button class="btn green wide donebtn" data-t="' + t.id + '"' + (t.need && !t.need() ? ' disabled' : '') + '>' + (mine[t.id] ? '✓ Done' : t.btn) + '</button></div></article>';
