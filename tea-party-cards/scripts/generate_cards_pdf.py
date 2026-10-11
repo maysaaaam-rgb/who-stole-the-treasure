@@ -229,14 +229,14 @@ CHARACTERS_4A = [
         "id": "absolem", "num": 15, "name": "ABSOLEM", "actor": "Elif",
         "role": "Omniscient Oracle of the Sacred Mushroom", "act": "Act II & III: The Mushroom Forest",
         "tp": 91, "mad": 96, "courage": 86,
-        "ability": "Chrysalis Metamorphosis: Blows smoke rings of prophecy, asking 'Who... are... you?'",
-        "vocal": "Deep, languid, hypnotic, stretching vowels like smoke rings.",
+        "ability": "Chrysalis Metamorphosis: Blows shimmering bubbles of prophecy, asking 'Who... are... you?'",
+        "vocal": "Deep, slow and dreamy, with long stretched vowels.",
         "quote": "Who... are... you? The chrysalis always breaks. One side makes you grow taller, the other shorter!",
-        "action": "Perched regally on mushroom cushion, drawing slowly on hookah pipe and blowing mist rings.",
+        "action": "Sits on the mushroom cushion, blowing soap bubbles.",
         "speech": "Challenges Alice's identity, chides her for forgetting who she is, and offers guidance on transformation.",
-        "cue": "When Alice sighs 'I hardly know who I am!', lean forward through smoke: 'Who... are... you?'",
+        "cue": "When Alice sighs 'I hardly know who I am!', lean forward through the bubbles: 'Who... are... you?'",
         "costume": ["Iridescent royal blue & emerald velvet robe", "Multi-layered silk ascot & antennae headpiece"],
-        "props": ["Antique carved hookah pipe / bubble wand", "Miniature illuminated mushroom & prophecy scroll"]
+        "props": ["A big round bubble wand", "Miniature illuminated mushroom & prophecy scroll"]
     },
     {
         "id": "march-hare", "num": 16, "name": "MARCH HARE", "actor": "Ahmet",

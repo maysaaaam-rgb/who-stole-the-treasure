@@ -58,8 +58,6 @@
     '4b-elisa': "alice-cards-4b/output/class_4b_png/class_4b_18_elisa_front.png",
     '4b-oyku': "alice-cards-4b/output/class_4b_png/class_4b_19_öykü_front.png"
   };
-  /* roles whose card picture shows a hookah and smoke: not shown to children until a safe picture exists */
-  var HIDE_PIC = { absolem: true };
   var PROP_ART = [['hat', 'prop_hat_big'], ['rabbit', 'prop_ears_hare'], ['long paper ears', 'prop_ears_hare'], ['cat ears', 'prop_ears_cat'], ['dog ears', 'prop_ears_dog'],
     ['mouse ears', 'prop_ears_mouse'], ['red paper crown', 'prop_crown_red'], ['crown', 'prop_crown_white'], ['watch', 'prop_watch'], ['big key', 'prop_key_big'], ['key', 'prop_key'],
     ['wings', 'prop_wings'], ['claws', 'prop_claws'], ['carrot', 'prop_carrot'], ['teapot', 'prop_teapot'], ['teacup', 'prop_teacup'], ['tiny cup', 'prop_cup_tiny'], ['small cup', 'prop_cup_tiny'],
@@ -177,13 +175,13 @@
 
     /* ---- header: avatar + character ---- */
     var emo = ROLE_EMOJI[key] || '🫖';
-    /* left picture: the character picture from the cards (Sühan's is the picture she sent). Absolem's shows a hookah, so it uses an emoji until a safe picture exists. */
-    var useCard = key !== 'absolem';
+    /* left picture: the character picture from the cards (Sühan's is the picture she sent). */
+    var useCard = true;
     var cardPhoto = esc(encodeURI(CARD_ + party.photo));
     var cartoonAv = esc(ART_ + 'avatars/a_' + key + '.webp'), cartoonCh = esc(ART_ + 'characters/c_' + key + '.webp');
     var avatar = useCard
       ? '<img src="' + cardPhoto + '" alt="" data-fb="' + cartoonAv + '|' + emo + '" style="width:100%; height:100%; object-fit:cover; object-position:50% 14%;" onerror="AliceProfile.fb(this)">'
-      : (key === 'absolem' ? emo : '<img src="' + cartoonAv + '" alt="" data-fb="' + cartoonCh + '|' + emo + '" data-zoom="1" style="width:100%; height:100%; object-fit:cover;" onerror="AliceProfile.fb(this)">');
+      : ('<img src="' + cartoonAv + '" alt="" data-fb="' + cartoonCh + '|' + emo + '" data-zoom="1" style="width:100%; height:100%; object-fit:cover;" onerror="AliceProfile.fb(this)">');
     var big = '<img src="' + esc(ART_ + 'characters/c_' + key + '.webp') + '" alt="' + esc(role.short) + '" data-fb="' + emo + '" style="display:block; width:100%; height:auto; max-height:230px; object-fit:contain;" onerror="AliceProfile.fb(this)">';
     var head = '<div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:linear-gradient(135deg,#fff7d6,#ffe4f1); border:2px solid #f59e0b; border-radius:18px; padding:16px;">' +
       '<div style="width:110px; height:110px; border-radius:50%; border:4px solid #f59e0b; background:#fff; overflow:hidden; flex:none; display:grid; place-items:center; font-size:3.4rem;">' + avatar + '</div>' +
