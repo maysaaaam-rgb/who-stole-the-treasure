@@ -69,7 +69,7 @@
     app.appendChild(h('section', { class: 'card hero' }, [h('div', { class: 'moon', text: '🌕' }), h('h1', { text: 'Chuseok Cooking & Treats (추석)' }), h('p', { text: 'Cook a Chuseok treat with your family. Write about it. Send it to your teacher!' }), h('div', { class: 'chips' }, chips)]));
     app.appendChild(h('section', { class: 'card safety' }, [h('div', { class: 'ic', text: '🔪🔥' }), h('div', {}, [h('b', { text: 'No cooking alone!' }), h('span', { text: 'An adult helps with knives and heat.' })])]));
     app.appendChild(h('section', { class: 'card' }, [h('h2', { text: '🏠 Your mission' }), h('ol', { class: 'mission' }, [
-      h('li', { text: 'Choose ONE dish below.' }), h('li', { text: 'Cook it with an adult.' }), h('li', { text: 'Take a photo or a short video of your dish.' }), h('li', { text: 'Write 3 short answers, add your photo and send.' })])]));
+      h('li', { text: 'Choose ONE dish below.' }), h('li', { text: 'Cook it with an adult.' }), h('li', { text: 'Take a photo or a short video of your dish.' }), h('li', { text: 'Write 3 short answers, add your photo (or upload it on K12) and send.' })])]));
 
     /* who are you */
     refs.tabs = h('div', { class: 'tabs' }, Object.keys(D.ROSTERS).map(function (c) {
@@ -108,7 +108,7 @@
     refs.fileInput = h('input', { type: 'file', accept: 'image/*,video/*', style: 'display:none', onchange: function () { pickFile(this); } });
     refs.fileTxt = h('p', { class: 'hint', style: 'text-align:center;font-weight:700' });
     refs.thumb = h('img', { alt: 'My photo', style: 'display:none;max-width:220px;max-height:220px;margin:10px auto 0;border-radius:16px;border:3px solid #10b981' });
-    form.appendChild(h('div', { class: 'box' }, [h('h3', { text: '📷 4. My photo or short video' }), h('p', { text: 'Show your dish! Take a photo (best) or a short video.' }),
+    form.appendChild(h('div', { class: 'box' }, [h('h3', { text: '📷 4. My photo or short video' }), h('p', { text: 'Show your dish! Add a photo here, or upload it on the school K12 site.' }),
       h('div', { class: 'cta', style: 'margin:0' }, [h('button', { type: 'button', class: 'btn amber', text: '📷 Add my photo or video', onclick: function () { A.tap(); refs.fileInput.click(); } })]), refs.fileInput, refs.fileTxt, refs.thumb]));
     refs.msg = h('p', { class: 'msg', role: 'status' });
     refs.send = h('button', { type: 'button', class: 'btn big', onclick: send, text: '🚀 Send my homework & claim +' + CFG.xp + ' XP' });
@@ -157,7 +157,6 @@
     if (!st.dish) { nudge('Please choose the dish you made.'); return; }
     var short = D.BOXES.filter(function (b) { return String(st.ans[b.id] || '').trim().length < 12; })[0];
     if (short) { nudge('Please write a little more in box ' + short.title.charAt(0) + '. Use the yellow starters to help you.'); return; }
-    if (!st.file && !st.sent) { nudge('Please add a photo or a short video of your dish.'); return; }
     st.busy = true; refs.send.disabled = true; refs.send.textContent = 'Sending...';
     var r = recipe(st.dish), payload = {
       token: CFG.token, homework: CFG.homework, className: 'Class ' + st.cls, studentName: st.name, dish: r.n,
