@@ -2652,6 +2652,7 @@
     const profileTabs = [
       { id: 'overview', label: 'Overview' },
       { id: 'monster', label: '👾 Monster & Evolution' },
+      { id: 'alice', label: '🫖 Alice' },
       { id: 'progress', label: 'Progress & CEFR' },
       { id: 'assignments', label: 'Assignments (' + assignments.length + ')' },
       { id: 'assessments', label: 'Assessments (' + (assessments.length + pcSubsForCount.length) + ')' },
@@ -2756,6 +2757,8 @@
 
   function renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords) {
     switch (studentProfileActiveTab) {
+      case 'alice':
+        return (window.AliceProfile ? window.AliceProfile.html(student) : '<p style="padding:20px; color:var(--text-muted);">Alice profile is not loaded.</p>');
       case 'overview':
         return '' +
           ((typeof renderStudentThemeBadge === 'function') ? renderStudentThemeBadge(student) : '') +
