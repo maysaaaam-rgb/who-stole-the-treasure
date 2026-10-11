@@ -370,7 +370,37 @@
           .eaa-monster-animated .monster-pedestal-stage {
             animation: daisGlowPulse 3.2s ease-in-out infinite;
           }
+          .eaa-monster-animated .mon-eye { transform-box: fill-box; transform-origin: 50% 58%; animation: monBlink 5.4s infinite; }
+          @keyframes monBlink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.06); } }
+          .eaa-monster-animated .mon-body-breathe { transform-box: fill-box; transform-origin: 50% 100%; animation: monBreathe 3.6s ease-in-out infinite; }
+          @keyframes monBreathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.02); } }
+          .eaa-monster-animated .mon-twinkle { transform-box: fill-box; transform-origin: center; animation: monTwinkle 2.6s ease-in-out infinite; }
+          @keyframes monTwinkle { 0%, 100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.15); } }
         </style>
+        <!-- Rim light on the body (cool top-left, warm bounce bottom-right) -->
+        <linearGradient id="mon-rim-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+          <stop offset="38%" stop-color="#ffffff" stop-opacity="0" />
+          <stop offset="64%" stop-color="${palette.primaryLight}" stop-opacity="0" />
+          <stop offset="100%" stop-color="${palette.cheek}" stop-opacity="0.65" />
+        </linearGradient>
+        <!-- Pearly egg sheen -->
+        <linearGradient id="mon-pearl-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+          <stop offset="45%" stop-color="#ffffff" stop-opacity="0" />
+          <stop offset="75%" stop-color="${palette.purple || '#c084fc'}" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="${palette.cheek}" stop-opacity="0.35" />
+        </linearGradient>
+        <linearGradient id="mon-fin-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="45%" stop-color="${palette.purple || '#c084fc'}" />
+          <stop offset="100%" stop-color="${palette.purpleDark || '#7c3aed'}" />
+        </linearGradient>
+        <linearGradient id="mon-flame" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stop-color="#dc2626" />
+          <stop offset="55%" stop-color="#fb923c" />
+          <stop offset="100%" stop-color="#fde047" />
+        </linearGradient>
       </defs>
     `;
   }
@@ -484,7 +514,8 @@
         const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
         const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
         const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-        baseBodyMarkup = `${feetMarkup}${torsoMarkup}${clothingMarkup}`.trim();
+        const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
+        baseBodyMarkup = `${crest.back}${feetMarkup}${torsoMarkup}${crest.front}${clothingMarkup}`.trim();
       }
     } catch (e) {
       baseBodyMarkup = '';
@@ -790,6 +821,7 @@
       try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
       try { feetMarkup = renderGroundedFeet(palette, colorKey, cX, g); } catch (e) {}
       try { torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped); } catch (e) {}
+      const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
       // Pass false to omit horns from body layer so they render in layer-horns (z-60)
       try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, false); } catch (e) {}
 
@@ -799,8 +831,10 @@
           ${pedestalMarkup}
           ${contactShadowMarkup}
           ${underBodyMarkup}
+          ${crest.back}
           ${feetMarkup}
           ${torsoMarkup}
+          ${crest.front}
           ${overBodyMarkup}
         </svg>
       `;
@@ -1259,6 +1293,9 @@
         <circle cx="132" cy="132" r="7" fill="${palette.primaryLight}" opacity="0.8" />
         <circle cx="86" cy="68" r="4.5" fill="${palette.purple || '#c084fc'}" opacity="0.45" />
 
+        <!-- Pearly sheen + the creature's own motif -->
+        <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z" fill="url(#mon-pearl-${colorKey})" />
+        ${speciesMotif(colorKey, 100, 112, 3.4, '#ffffff', 0.6)}
         <!-- 11 O'Clock Glossy Specular Sheen Arc -->
         <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
         <circle cx="80" cy="50" r="2.5" fill="#ffffff" opacity="0.9" />
@@ -1275,6 +1312,7 @@
         <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z"
               fill="url(#plush-egg-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="3.2" stroke-linejoin="round" />
 
+        <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z" fill="url(#mon-pearl-${colorKey})" />
         <!-- Glowing Fissure Seams -->
         <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.8" filter="url(#plush-glow)" />
         <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
@@ -1561,6 +1599,94 @@
   }
 
   // --- STAGE GEOMETRY PROPORTIONS ---
+  // --- SPECIES SIGNATURE LOOK (a small crest, soft patterns and sparkles so each colour is its own creature) ---
+  // Motifs: blue = bubbles, orange = flame, green = leaf, purple = star, gold = lightning bolt, pink = heart.
+  function speciesMotif(key, x, y, s, fill, op) {
+    const f = `fill="${fill}" opacity="${op}"`;
+    switch (key) {
+      case 'orange':
+        return `<path d="M ${x} ${y - 6 * s} C ${x + 5 * s} ${y - 2 * s} ${x + 5 * s} ${y + 4 * s} ${x} ${y + 6 * s} C ${x - 5 * s} ${y + 4 * s} ${x - 5 * s} ${y - 1 * s} ${x - 1 * s} ${y - 3 * s} C ${x - 1 * s} ${y - 1 * s} ${x} ${y} ${x + 1 * s} ${y} C ${x + 1 * s} ${y - 3 * s} ${x - 1 * s} ${y - 4 * s} ${x} ${y - 6 * s} Z" ${f} />`;
+      case 'green':
+        return `<path d="M ${x - 5 * s} ${y + 5 * s} C ${x - 6 * s} ${y - 3 * s} ${x + 1 * s} ${y - 8 * s} ${x + 6 * s} ${y - 6 * s} C ${x + 6 * s} ${y + 1 * s} ${x + 1 * s} ${y + 7 * s} ${x - 5 * s} ${y + 5 * s} Z" ${f} />`;
+      case 'purple':
+        return `<path d="M ${x} ${y - 6 * s} L ${x + 1.8 * s} ${y - 1.8 * s} L ${x + 6 * s} ${y} L ${x + 1.8 * s} ${y + 1.8 * s} L ${x} ${y + 6 * s} L ${x - 1.8 * s} ${y + 1.8 * s} L ${x - 6 * s} ${y} L ${x - 1.8 * s} ${y - 1.8 * s} Z" ${f} />`;
+      case 'gold':
+        return `<path d="M ${x + 2 * s} ${y - 6 * s} L ${x - 4 * s} ${y + 1 * s} L ${x - 0.5 * s} ${y + 1 * s} L ${x - 2 * s} ${y + 6 * s} L ${x + 4 * s} ${y - 1.5 * s} L ${x + 0.5 * s} ${y - 1.5 * s} Z" ${f} />`;
+      case 'pink':
+        return `<path d="M ${x} ${y + 5 * s} C ${x - 8 * s} ${y - 1 * s} ${x - 5 * s} ${y - 7 * s} ${x} ${y - 3 * s} C ${x + 5 * s} ${y - 7 * s} ${x + 8 * s} ${y - 1 * s} ${x} ${y + 5 * s} Z" ${f} />`;
+      default:
+        return `<circle cx="${x}" cy="${y}" r="${3.2 * s}" fill="none" stroke="${fill}" stroke-width="${1.2 * s}" opacity="${op}" /><circle cx="${x + 5 * s}" cy="${y + 4 * s}" r="${1.8 * s}" fill="none" stroke="${fill}" stroke-width="${1.0 * s}" opacity="${op}" /><circle cx="${x - 3 * s}" cy="${y + 6 * s}" r="${1.2 * s}" ${f} />`;
+    }
+  }
+
+  // Soft patterns on the body (drawn inside the body outline only)
+  function renderSpeciesPattern(colorKey, palette, cX, g) {
+    const t = g.topY, c = g.cW;
+    return `
+      <g class="mon-pattern">
+        ${speciesMotif(colorKey, cX - c * 0.62, t + 24, 0.8, '#ffffff', 0.42)}
+        ${speciesMotif(colorKey, cX + c * 0.66, t + 34, 0.62, '#ffffff', 0.34)}
+        ${speciesMotif(colorKey, cX - c * 0.8, g.botY - 22, 0.7, '#ffffff', 0.3)}
+        ${speciesMotif(colorKey, cX + c * 0.78, g.botY - 14, 0.6, '#ffffff', 0.28)}
+      </g>`;
+  }
+
+  // Crest on top of the head (and fins at the sides for blue). Only drawn when no horns or ears are equipped.
+  function renderSpeciesCrest(colorKey, stage, palette, cX, g) {
+    const s = g.earScale * 1.2, topY = g.topY, cW = g.cW;
+    let back = '';
+    let front = '';
+    if (colorKey === 'blue') {
+      for (const sg of [-1, 1]) {
+        for (let i = 0; i < 3; i++) {
+          const bx = cX + sg * cW * 0.92, by = topY + 22 + i * 8;
+          const tx = cX + sg * (cW * (1.46 + i * 0.07) + 6 * s), ty = topY + 10 + i * 9;
+          back += `<path d="M ${bx} ${by} Q ${cX + sg * cW * 1.3} ${ty - 7} ${tx} ${ty} Q ${cX + sg * cW * 1.36} ${by + 5} ${bx} ${by + 8} Z" fill="url(#mon-fin-${colorKey})" stroke="${palette.purpleDark}" stroke-width="1.5" stroke-linejoin="round" opacity="0.95" />`;
+        }
+      }
+    } else if (colorKey === 'orange') {
+      const tongue = (x, h, w) => `<path d="M ${x - w} ${topY + 5} C ${x - w} ${topY - h * 0.35} ${x - w * 0.2} ${topY - h * 0.55} ${x} ${topY - h} C ${x + w * 0.2} ${topY - h * 0.5} ${x + w} ${topY - h * 0.3} ${x + w} ${topY + 5} Z" fill="url(#mon-flame)" stroke="#c2410c" stroke-width="1.4" stroke-linejoin="round" />`;
+      front = `<g class="mon-crest" filter="url(#plush-shadow)">${tongue(cX - 8, 12 * s, 5)}${tongue(cX + 8, 12 * s, 5)}${tongue(cX, 19 * s, 6.5)}</g>`;
+    } else if (colorKey === 'green') {
+      front = `<g class="mon-crest" filter="url(#plush-shadow)">
+        <path d="M ${cX} ${topY + 4} Q ${cX - 1.5} ${topY - 5 * s} ${cX} ${topY - 12 * s}" fill="none" stroke="${palette.accent}" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M ${cX} ${topY - 10 * s} C ${cX + 10 * s} ${topY - 26 * s} ${cX + 24 * s} ${topY - 16 * s} ${cX + 4} ${topY - 8 * s} Z" fill="${palette.primaryLight}" stroke="${palette.accent}" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M ${cX} ${topY - 8 * s} C ${cX - 10 * s} ${topY - 24 * s} ${cX - 22 * s} ${topY - 12 * s} ${cX - 4} ${topY - 5 * s} Z" fill="${palette.primary}" stroke="${palette.accent}" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M ${cX + 3} ${topY - 10 * s} Q ${cX + 10 * s} ${topY - 15 * s} ${cX + 16 * s} ${topY - 14 * s}" fill="none" stroke="${palette.accent}" stroke-width="1" opacity="0.6" />
+      </g>`;
+    } else if (colorKey === 'purple') {
+      front = `<g class="mon-crest" filter="url(#plush-shadow)">
+        <path d="M ${cX} ${topY + 3} A 9 9 0 1 0 ${cX + 7.5} ${topY + 17} A 7.2 7.2 0 1 1 ${cX} ${topY + 3} Z" fill="#fde68a" stroke="#d97706" stroke-width="1.4" stroke-linejoin="round" />
+      </g>`;
+    } else if (colorKey === 'gold') {
+      front = `<g class="mon-crest" filter="url(#plush-shadow)">
+        <path d="M ${cX + 5} ${topY - 18 * s} L ${cX - 9} ${topY + 3} L ${cX - 1.5} ${topY + 2.5} L ${cX - 6} ${topY + 14} L ${cX + 9} ${topY - 5} L ${cX + 1.5} ${topY - 4} Z" fill="#fde047" stroke="#ca8a04" stroke-width="1.6" stroke-linejoin="round" />
+      </g>`;
+    } else if (colorKey === 'pink') {
+      front = `<g class="mon-crest" filter="url(#plush-shadow)">
+        <path d="M ${cX} ${topY + 6} C ${cX - 17 * s} ${topY - 6 * s} ${cX - 12 * s} ${topY - 22 * s} ${cX} ${topY - 12 * s} C ${cX + 12 * s} ${topY - 22 * s} ${cX + 17 * s} ${topY - 6 * s} ${cX} ${topY + 6} Z" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" />
+      </g>`;
+    }
+
+    // Twinkling sparkles around bigger monsters
+    let sparkles = '';
+    if (stage === 'advanced' || stage === 'ultimate') {
+      const spots = [[cX - cW - 12, topY + 8, 0.9, '0s'], [cX + cW + 12, topY + 2, 0.7, '0.8s'], [cX + cW + 16, topY + 36, 0.6, '1.5s']];
+      if (stage === 'ultimate') { spots.push([cX - cW - 16, topY + 40, 0.65, '0.4s'], [cX, topY - 24 * s, 0.7, '1.1s']); }
+      sparkles = spots.map(p => `<g class="mon-twinkle" style="animation-delay:${p[3]}">${speciesMotif('purple', p[0], p[1], p[2], '#fde047', 0.95)}</g>`).join('');
+    }
+    return { back, front: front + sparkles };
+  }
+
+  // Crest only when no horns or ears are equipped (those take the same spot on the head)
+  function speciesCrestFor(colorKey, stage, palette, cX, g, equipped) {
+    const hornEq = equipped && equipped.horns, earEq = equipped && (equipped.ears || equipped.ear);
+    const noHorns = !hornEq || hornEq === 'none' || hornEq === 'horns-none' || hornEq === 'no_horns' || hornEq === 'null';
+    const noEars = !earEq || earEq === 'none' || earEq === 'no_ears';
+    if (!noHorns || !noEars) return { back: '', front: '' };
+    try { return renderSpeciesCrest(colorKey, stage, palette, cX, g); } catch (e) { return { back: '', front: '' }; }
+  }
+
   function getStageGeometry(stage) {
     if (stage === 'baby') {
       return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
@@ -1863,6 +1989,17 @@
       <circle cx="${cX - cW * 0.28}" cy="${topY + 9}" r="2.2" fill="#ffffff" opacity="0.9" />
     `;
 
+    // Rim light + soft species pattern, clipped to the body outline
+    const clipId = `mon-clip-${colorKey}-${stage}`;
+    const detailMarkup = `
+      <clipPath id="${clipId}"><path d="${bodyPath}" /></clipPath>
+      <g clip-path="url(#${clipId})">
+        <path d="${bodyPath}" fill="none" stroke="url(#mon-rim-${colorKey})" stroke-width="8" opacity="0.8" />
+        ${renderSpeciesPattern(colorKey, palette, cX, g)}
+        <ellipse cx="${cX}" cy="${botY - 18}" rx="${bW * 0.5}" ry="10" fill="#ffffff" opacity="0.16" />
+      </g>
+    `;
+
     // Front Arms / Paws
     let armsMarkup = '';
     if (stage === 'baby') {
@@ -1895,10 +2032,11 @@
 
     return `
       <!-- Main Organic Torso with Volumetric Shading -->
-      <g filter="url(#plush-shadow)">
-        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
+      <g filter="url(#plush-shadow)" class="mon-body-breathe">
+        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" />
         <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
         ${aoCrescent}
+        ${detailMarkup}
         ${specularArc}
         ${armsMarkup}
       </g>
@@ -1916,14 +2054,17 @@
     const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
     const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
+    const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
     const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
     const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
 
     return `
       ${underBodyMarkup}
+      ${crest.back}
       ${feetMarkup}
       ${torsoMarkup}
+      ${crest.front}
       ${overBodyMarkup}
       ${clothingMarkup}
       ${faceMarkup}
@@ -2365,9 +2506,10 @@
       // Default: Living Glossy Eyes (11 O'Clock Keylit Glass Spheres)
       eyesMarkup = `
         <!-- Living Glossy Left Eye -->
-        <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
+        <g class="mon-eye" transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
           <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
           <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="7.6" ry="9.3" fill="none" stroke="${palette.primaryLight}" stroke-width="0.8" opacity="0.22" />
           <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
           <!-- Dominant 11 O'Clock Primary Reflection Dot (Real Glass Sphere) -->
           <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
@@ -2379,9 +2521,10 @@
         </g>
 
         <!-- Living Glossy Right Eye -->
-        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
+        <g class="mon-eye" transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
           <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
           <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="7.6" ry="9.3" fill="none" stroke="${palette.primaryLight}" stroke-width="0.8" opacity="0.22" />
           <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
           <!-- Dominant 11 O'Clock Primary Reflection Dot -->
           <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
