@@ -11,7 +11,21 @@ const TOKEN = 'eaa-tea-4f7c9d2b81a6';          // must match config.js (keeps ra
 const SHEET_NAME = 'Results';
 const HEADERS = ['Last update', 'Class', 'Student', 'Character', 'Steps done (of 5)', 'Finished?', 'XP', 'Homework', 'Student ID', 'First start', 'Device'];
 
-function doGet() {
+function doGet(e) {
+  // ?action=status&token=...  gives every pupil's progress (so the pupils' Alice page shows it on any phone). Nothing is changed.
+  if (e && e.parameter && e.parameter.action === 'status') {
+    if (e.parameter.token !== TOKEN) return reply({ ok: false, error: 'bad token' });
+    const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const out = {};
+    if (sh && sh.getLastRow() > 1) {
+      sh.getRange(2, 1, sh.getLastRow() - 1, HEADERS.length).getValues().forEach(r => {
+        const id = String(r[8] || ''), hw = String(r[7] || '');
+        if (!id || !hw) return;
+        (out[id] = out[id] || {})[hw] = { steps: Number(r[4]) || 0, finished: r[5] === 'YES' };
+      });
+    }
+    return reply({ ok: true, status: out });
+  }
   return ContentService.createTextOutput('Tea Party receiver is ready ✓');
 }
 

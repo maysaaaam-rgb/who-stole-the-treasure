@@ -42,7 +42,7 @@
 <script src="config.js"></script>
 <script src="party-data.js"></script>
 <script src="../js/monster-renderer.js?v=1"></script>
-<script src="../js/alice-profile.js?v=8"></script>
+<script src="../js/alice-profile.js?v=9"></script>
 <script>
 (function () {
   'use strict';
@@ -56,6 +56,7 @@
     document.title = me.name + ' • My Alice Profile';
     stage.innerHTML = window.AliceProfile.pupilPage(id);
     window.AliceProfile.wire(stage, id);
+    window.AliceProfile.loadStatus(function () { stage.innerHTML = window.AliceProfile.pupilPage(id); window.AliceProfile.wire(stage, id); });
     return;
   }
   var keys = Object.keys(P.classes), cur = keys[0];

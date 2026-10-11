@@ -142,9 +142,14 @@
 
   /* on the pupils' own page (alice-party-home/profile.html): statuses come from this device */
   function localStatus(partyId) {
-    var w1 = 'none', w2 = 'none', n2 = 0;
+    var w1 = W1_DONE.indexOf(partyId) >= 0 ? 'done' : 'none', w2 = 'none', n2 = 0;
+    var CFG = root.PARTY_CONFIG || {};
+    var r1 = remoteHw(partyId, CFG.homework || 'alice-tea-party-a1plus'), r2 = remoteHw(partyId, 'alice-tea-party-w2');
+    if (r1 && r1.finished) w1 = 'done';
     try { var a = JSON.parse(localStorage.getItem('eaa_party_home_a1plus_v1') || '{}'); if (a.done && a.done[partyId]) w1 = 'done'; } catch (e) { /* none */ }
-    try { var b = JSON.parse(localStorage.getItem('eaa_party_w2_v1') || '{}'); var d = (b.done && b.done[partyId]) || {}; n2 = ['t1', 't2', 't3', 't4', 't5'].filter(function (t) { return d[t]; }).length; w2 = n2 >= 5 ? 'done' : (n2 ? 'started' : 'none'); } catch (e2) { /* none */ }
+    try { var b = JSON.parse(localStorage.getItem('eaa_party_w2_v1') || '{}'); var d = (b.done && b.done[partyId]) || {}; n2 = ['t1', 't2', 't3', 't4', 't5'].filter(function (t) { return d[t]; }).length; } catch (e2) { /* none */ }
+    if (r2 && r2.steps > n2) n2 = r2.steps;
+    w2 = n2 >= 5 ? 'done' : (n2 ? 'started' : 'none');
     return { w1: w1, w2: w2, n2: n2 };
   }
   function pupilPage(partyId) {
@@ -232,6 +237,18 @@
      The costume closet opens for pupils who finished the Week 1 practice (list below, or finished on this device).
      The look is saved on this device and sent to the teacher's Google sheet (tab "Look"), so it can be copied into the platform.
      Costume items use pictures from assets/alice-cut/wear/ (made by Gemini). Items whose picture does not exist yet are not offered. */
+  /* Pupils who finished the Week 1 practice (from the Results sheet, 11 Oct). Updated by hand each week until the live status link is switched on. */
+  var W1_DONE = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku'];
+  var REMOTE = null;   /* progress of every pupil from the sheet, once loaded: { partyId: { homework: { steps, finished } } } */
+  function loadStatus(cb) {
+    var CFG = root.PARTY_CONFIG || {};
+    if (!CFG.submitUrl || !CFG.statusSync || typeof fetch !== 'function') return;
+    fetch(CFG.submitUrl + '?action=status&token=' + encodeURIComponent(CFG.token || ''))
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (j && j.ok && j.status) { REMOTE = j.status; if (cb) cb(); } })
+      .catch(function () { /* offline: the saved list and this device's progress are used */ });
+  }
+  function remoteHw(partyId, hw) { return REMOTE && REMOTE[partyId] && REMOTE[partyId][hw] ? REMOTE[partyId][hw] : null; }
   var DRESS_KEY = 'eaa_alice_dress_v1';
   var LOOK_PENDING_KEY = 'eaa_alice_look_pending_v1';
   var UNLOCKED = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku', '4a-ruzgar'];
@@ -290,9 +307,7 @@
     });
     return out;
   }
-  function hasWeek1(partyId) {
-    try { var a = JSON.parse(localStorage.getItem('eaa_party_home_a1plus_v1') || '{}'); return !!(a.done && a.done[partyId]); } catch (e) { return false; }
-  }
+  function hasWeek1(partyId) { return localStatus(partyId).w1 === 'done'; }
 
   function studioHtml() {
     return '<div id="al-studio" style="margin-top:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
@@ -398,5 +413,5 @@
     }
   }
 
-  root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, map: MAP, unlocked: UNLOCKED };
+  root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, loadStatus: loadStatus, map: MAP, unlocked: UNLOCKED };
 })(window);
