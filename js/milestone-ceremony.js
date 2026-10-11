@@ -181,7 +181,7 @@
       wrap.innerHTML = '<div class="mc-final"><div class="mc-photo' + (isAvatar(photo) ? ' mc-av' : '') + '">' + (photo ? '<img src="' + esc(photo) + '" alt="">' : '<div>&#11088;</div>') + '</div><div class="mc-mon pop glow">' + monster(color, 'adventurer', 400) + '</div></div>' +
         '<div class="mc-name">' + esc(name) + '</div><div class="mc-badge">&#127942; ' + TITLE.toUpperCase() + ' &#127942;</div>' +
         '<div class="mc-sub">Level 5 &bull; ' + xp.toLocaleString('en-US') + ' XP &bull; New gold, star and hero items unlocked in the Monster Studio</div>' +
-        '<div class="mc-btns"><button class="mc-btn gold" id="mc-print">&#127891; Print certificate</button><button class="mc-btn" id="mc-photo">&#128247; ' + (photo ? 'Change picture' : 'Add her picture') + '</button><button class="mc-btn plain" id="mc-again">&#8635; Play again</button><button class="mc-btn plain" id="mc-close">Close</button></div>';
+        '<div class="mc-btns"><button class="mc-btn gold" id="mc-print">&#127891; Print certificate</button><button class="mc-btn" id="mc-photo">&#128247; ' + (photo ? 'Change picture' : 'Add a picture') + '</button><button class="mc-btn plain" id="mc-again">&#8635; Play again</button><button class="mc-btn plain" id="mc-close">Close</button></div>';
       ov.querySelector('.mc-skip').style.display = 'none';
       for (var k = 0; k < 3; k++) { fx.burst(); await sleep(450, st); }
       saveTitle(key);
@@ -201,7 +201,7 @@
     var c = document.createElement('div'); c.id = 'mc-cert';
     c.innerHTML = '<div class="mc-cert-in"><div><div class="k">English Adventure Academy</div><h1>Certificate of Achievement</h1></div>' +
       '<div><div style="font-size:6mm">This certificate is proudly awarded to</div><div class="mc-cert-name">' + esc(o.name) + '</div>' +
-      '<div style="font-size:7mm;max-width:200mm">for reaching <b>' + (o.xp || 1000).toLocaleString('en-US') + ' XP</b> and evolving into an <b>Adventurer Monster (Level 5)</b>.<br>Her hard work, curiosity and brave English make everyone proud!</div></div>' +
+      '<div style="font-size:7mm;max-width:200mm">for reaching <b>' + (o.xp || 1000).toLocaleString('en-US') + ' XP</b> and evolving into an <b>Adventurer Monster (Level 5)</b>.<br>Such hard work, curiosity and brave English make everyone proud!</div></div>' +
       '<div class="mc-cert-row">' + (photo ? '<img class="mc-cert-photo' + (isAvatar(photo) ? ' av' : '') + '" src="' + esc(photo) + '" alt="">' : '') + '<div class="mc-cert-mon">' + monster(o.color || 'blue', 'adventurer', 300) + '</div><div style="font-size:8mm;font-weight:bold;color:#b45309;max-width:55mm">&#127942; ' + TITLE + '</div></div>' +
       '<div class="mc-cert-sign"><div>' + esc(d) + '</div><div>' + esc(o.teacher || 'Mr. Maysam') + ', Teacher</div></div></div>';
     document.body.appendChild(c);

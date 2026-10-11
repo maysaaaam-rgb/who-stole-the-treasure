@@ -35,7 +35,7 @@
     </div>
     <div class="row" style="margin-top:16px">
       <div class="photo" id="photo-box"></div>
-      <button type="button" class="plain" id="b-photo">📷 Add her picture or avatar</button>
+      <button type="button" class="plain" id="b-photo">📷 Add a picture or avatar</button>
       <button type="button" class="plain" id="b-nophoto">Remove photo</button>
     </div>
     <p class="note">🔒 The photo or cartoon avatar is shrunk and kept <b>only in this browser on this computer</b>. It is never uploaded and is not part of the website or GitHub.</p>
@@ -49,13 +49,13 @@
   <div class="card">
     <h2>🎁 Real-world surprise ideas</h2>
     <ul class="prizes">
-      <li><b>Class parade:</b> she is "Adventurer of the Week" and leads the line, with a paper crown the class makes.</li>
-      <li><b>VIP seat for a week:</b> the teacher's special chair, a cushion and her own name card on the desk.</li>
-      <li><b>Pick the class game:</b> she chooses the next game or song for the whole class.</li>
+      <li><b>Class parade:</b> the pupil is "Adventurer of the Week" and leads the line, with a paper crown the class makes.</li>
+      <li><b>VIP seat for a week:</b> the teacher's special chair, a cushion and their own name card on the desk.</li>
+      <li><b>Pick the class game:</b> they choose the next game or song for the whole class.</li>
       <li><b>Little helper job:</b> "Monster Captain" for a day, with a badge, handing out stickers or choosing who goes next.</li>
-      <li><b>Gold sticker pack and a monster badge pin</b> to wear on her bag.</li>
-      <li><b>Message to her parent:</b> a short photo note ("Today Öykü reached 1,000 XP!") with the printed certificate.</li>
-      <li><b>Class applause tunnel:</b> everyone lines up and gives a high five as she walks through.</li>
+      <li><b>Gold sticker pack and a monster badge pin</b> to wear on their bag.</li>
+      <li><b>Message to the parent:</b> a short photo note ("Today [name] reached 1,000 XP!") with the printed certificate.</li>
+      <li><b>Class applause tunnel:</b> everyone lines up and gives a high five as they walk through.</li>
       <li><b>Mystery box:</b> a small box with a pencil, notebook and a handwritten note from you.</li>
     </ul>
   </div>
@@ -73,7 +73,7 @@
   function showPhoto() {
     var p = MC.photos.get(opts().id), box = document.getElementById('photo-box');
     box.innerHTML = p ? '<img' + (MC.isAvatar(p) ? ' class="av"' : '') + ' src="' + p + '" alt="">' : '<div>🙂</div>';
-    document.getElementById('b-photo').textContent = p ? '📷 Change her picture' : '📷 Add her picture or avatar';
+    document.getElementById('b-photo').textContent = p ? '📷 Change the picture' : '📷 Add a picture or avatar';
   }
   ['name', 'color', 'teacher'].forEach(function (k) { f[k].addEventListener('input', function () { save(); showPhoto(); }); });
   document.getElementById('b-photo').onclick = function () { MC.photos.pick(opts().id, function (d, ok) { if (ok === false) alert('This browser could not save the photo (storage is blocked or full).'); showPhoto(); }); };
