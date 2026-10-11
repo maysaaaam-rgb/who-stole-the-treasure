@@ -126,12 +126,13 @@
     var hw1 = hwList.filter(function (h) { return h.id === 'hw-alice-tea-party-w1'; })[0] || null;
     var hw2 = hwList.filter(function (h) { return h.id === 'hw-alice-tea-party-w2'; })[0] || null;
     var w1sub = hw1 && hw1.submissions && hw1.submissions[student.id];
+    var look = (root.ALICE_LOOKS || {})[student.id] || null;
     var mon = '';
     try { mon = root.renderStudentMonsterAvatar ? root.renderStudentMonsterAvatar(student.id, { size: 130, animated: true }) : ''; } catch (e) { mon = ''; }
     var monster = '<div style="margin-top:16px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
-      '<div style="width:140px; height:140px; display:grid; place-items:center; flex:none;">' + mon + '</div>' +
+      '<div style="position:relative; width:140px; height:140px; display:grid; place-items:center; flex:none;"><div style="position:absolute; inset:0; display:grid; place-items:center; z-index:2;">' + mon + '</div>' + lookLayers(look && look.items, ART) + '</div>' +
       '<div style="flex:1; min-width:220px;"><h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
-        '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Change the colour, face and accessories of your monster. Alice costumes (hats, ears, crowns, bow ties) will appear here soon.</p>' +
+        '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Change the colour, face and accessories of your monster.' + (look && look.items && Object.keys(look.items).length ? ' <b>Alice costume chosen by the pupil:</b> ' + Object.keys(look.items).map(function (c) { return esc(String(look.items[c]).replace(/^wear_/, '').replace(/_/g, ' ')); }).join(', ') + '.' : ' Alice costumes chosen by the pupil on their own page will show here.') + '</p>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
           '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + esc(student.id) + '\')">🎨 Edit my monster</button>' +
           '<button type="button" class="btn-sm-secondary" onclick="switchStudentProfileTab(\'monster\')">👾 Monster &amp; Evolution</button>' +
@@ -168,9 +169,15 @@
     var w1 = ctx.w1 || 'none', w2 = ctx.w2 || 'none';
     var earned = { ready: w1 === 'done', star: w2 === 'done' };
 
-    /* ---- header: avatar + character (cartoon pictures, never photos of children) ---- */
+    /* ---- header: avatar + character ---- */
     var emo = ROLE_EMOJI[key] || '🫖';
-    var avatar = '<img src="' + esc(ART_ + 'avatars/a_' + key + '.webp') + '" alt="" data-fb="' + esc(ART_ + 'characters/c_' + key + '.webp') + '|' + emo + '" data-zoom="1" style="width:100%; height:100%; object-fit:cover;" onerror="AliceProfile.fb(this)">';
+    /* left picture: the character picture from the cards. Sühan's card is a real photo of a child and Absolem's shows a hookah, so they use the cartoon / an emoji. */
+    var useCard = key !== 'oyster' && key !== 'absolem';
+    var cardPhoto = esc(encodeURI(CARD_ + party.photo));
+    var cartoonAv = esc(ART_ + 'avatars/a_' + key + '.webp'), cartoonCh = esc(ART_ + 'characters/c_' + key + '.webp');
+    var avatar = useCard
+      ? '<img src="' + cardPhoto + '" alt="" data-fb="' + cartoonAv + '|' + emo + '" style="width:100%; height:100%; object-fit:cover; object-position:50% 14%;" onerror="AliceProfile.fb(this)">'
+      : (key === 'absolem' ? emo : '<img src="' + cartoonAv + '" alt="" data-fb="' + cartoonCh + '|' + emo + '" data-zoom="1" style="width:100%; height:100%; object-fit:cover;" onerror="AliceProfile.fb(this)">');
     var big = '<img src="' + esc(ART_ + 'characters/c_' + key + '.webp') + '" alt="' + esc(role.short) + '" data-fb="' + emo + '" style="display:block; width:100%; height:auto; max-height:230px; object-fit:contain;" onerror="AliceProfile.fb(this)">';
     var head = '<div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap; background:linear-gradient(135deg,#fff7d6,#ffe4f1); border:2px solid #f59e0b; border-radius:18px; padding:16px;">' +
       '<div style="width:110px; height:110px; border-radius:50%; border:4px solid #f59e0b; background:#fff; overflow:hidden; flex:none; display:grid; place-items:center; font-size:3.4rem;">' + avatar + '</div>' +
@@ -221,10 +228,13 @@
   }
 
   /* ------------------------------------------------------------------------------------------------
-     Pupil monster studio (pupil page only): the pupil's monster, a colour to pick, Alice costume items to put on it,
-     and a Wonderland friend to stand beside it. Everything is saved on this device only.
-     Costume items use pictures from assets/alice-cut/wear/ (made by Gemini). Items whose picture does not exist yet are simply not offered. */
+     Pupil monster studio (pupil page only): the pupil's monster, a colour to pick and Alice costume items to put on it.
+     The costume closet opens for pupils who finished the Week 1 practice (list below, or finished on this device).
+     The look is saved on this device and sent to the teacher's Google sheet (tab "Look"), so it can be copied into the platform.
+     Costume items use pictures from assets/alice-cut/wear/ (made by Gemini). Items whose picture does not exist yet are not offered. */
   var DRESS_KEY = 'eaa_alice_dress_v1';
+  var LOOK_PENDING_KEY = 'eaa_alice_look_pending_v1';
+  var UNLOCKED = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku', '4a-ruzgar'];
   var COLORS = [['blue', '#38bdf8'], ['orange', '#fb923c'], ['green', '#4ade80'], ['purple', '#a78bfa'], ['gold', '#facc15'], ['pink', '#f472b6']];
   var WEAR = [
     ['hat', 'wear_hat_hatter', 'Hatter hat'], ['hat', 'wear_hat_mini_top', 'Tiny top hat'], ['hat', 'wear_hat_teacup', 'Teacup hat'], ['hat', 'wear_hat_crown_white', 'White crown'],
@@ -239,7 +249,7 @@
     ['held', 'wear_held_bottle', 'Magic bottle'], ['held', 'wear_held_cake', 'Cake'], ['held', 'wear_held_stick', 'Walking stick'], ['held', 'wear_held_book', 'Book'], ['held', 'wear_held_bell', 'Bell'],
     ['back', 'wear_back_wings_dragon', 'Dragon wings'], ['back', 'wear_back_wings_butterfly', 'Butterfly wings'], ['back', 'wear_back_cape_red', 'Red cape'], ['back', 'wear_back_shell', 'Shell']
   ];
-  /* where each kind of item sits on the monster picture (percent of the 260 px stage) */
+  /* where each kind of item sits on the monster picture (percent of the monster box) */
   var ANCHOR = {
     back: { top: 12, left: 50, w: 118, z: 1 }, glasses: { top: 30, left: 50, w: 50, z: 5 }, neck: { top: 58, left: 50, w: 44, z: 5 },
     hat: { top: -4, left: 50, w: 60, z: 6 }, held: { top: 52, left: 82, w: 34, z: 7 }
@@ -253,33 +263,47 @@
     absolem: ['wear_hat_antennae'], hamish: ['wear_hat_top_tall', 'wear_held_stick'], lowell: ['wear_hat_top_tall', 'wear_neck_watch'], dum: ['wear_hat_propeller_green'], dee: ['wear_hat_propeller_green', 'wear_neck_bell'],
     dormouse1: ['wear_hat_ears_mouse', 'wear_held_teacup'], dormouse2: ['wear_hat_ears_mouse'], oyster: ['wear_back_shell', 'wear_neck_pearl']
   };
-  var FRIENDS = ['alice', 'hatter', 'rabbit', 'whitequeen', 'redqueen', 'hare', 'cheshire', 'cat', 'bayard', 'dragon', 'bandersnatch', 'sister', 'mother', 'twosister1', 'twosister2', 'hamish', 'lowell', 'dum', 'dee', 'dormouse1', 'dormouse2', 'oyster'];
 
   function dressLoad(partyId) {
     var all = {};
     try { all = JSON.parse(localStorage.getItem(DRESS_KEY) || '{}') || {}; } catch (e) { all = {}; }
     var me = all[partyId] || {};
-    return { all: all, me: { color: me.color || 'blue', items: me.items || {}, friend: me.friend || '' } };
+    return { all: all, me: { color: me.color || 'blue', items: me.items || {} } };
   }
   function dressSave(partyId, st) {
     st.all[partyId] = st.me;
     try { localStorage.setItem(DRESS_KEY, JSON.stringify(st.all)); } catch (e) { /* storage may be blocked */ }
   }
-  function monsterSvg(color) {
+  function monsterSvg(color, size) {
     try {
-      if (root.MonsterRenderer && root.MonsterRenderer.renderMonsterSVG) return root.MonsterRenderer.renderMonsterSVG({ stage: 'growing', color: color, equipped: {}, size: 260, animated: true, isAvatar: true });
+      if (root.MonsterRenderer && root.MonsterRenderer.renderMonsterSVG) return root.MonsterRenderer.renderMonsterSVG({ stage: 'growing', color: color, equipped: {}, size: size || 260, animated: true, isAvatar: true });
     } catch (e) { /* fall through */ }
     return '<div style="font-size:7rem; text-align:center;">👾</div>';
   }
+  /* the Alice costume pictures for a look, positioned over a monster box (used here and by the platform tab) */
+  function lookLayers(items, base) {
+    var out = '';
+    Object.keys(items || {}).forEach(function (cat) {
+      var id = items[cat], a = ANCHOR[cat];
+      if (!id || !a) return;
+      out += '<img src="' + esc(base + 'wear/' + id + '.webp') + '" alt="" draggable="false" onerror="this.remove()" style="position:absolute; top:' + a.top + '%; left:' + a.left + '%; width:' + a.w + '%; transform:translateX(-50%); z-index:' + a.z + '; pointer-events:none;">';
+    });
+    return out;
+  }
+  function hasWeek1(partyId) {
+    try { var a = JSON.parse(localStorage.getItem('eaa_party_home_a1plus_v1') || '{}'); return !!(a.done && a.done[partyId]); } catch (e) { return false; }
+  }
+
   function studioHtml() {
     return '<div id="al-studio" style="margin-top:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
       '<h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
-      '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Choose a colour. Add Alice things if you want. Your look is saved on this device. (Your teacher can also change your monster in the school platform.)</p>' +
+      '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Choose a colour. Put on Alice things if you want. Your look is saved and your teacher can see it.</p>' +
       '<div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">' +
-        '<div id="al-stage" style="position:relative; width:360px; max-width:100%; height:260px; flex:none; margin:0 auto;"></div>' +
+        '<div id="al-stage" style="position:relative; width:260px; height:260px; flex:none; margin:0 auto;"></div>' +
         '<div style="flex:1; min-width:240px;"><div id="al-colors" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>' +
           '<div id="al-closet"></div></div></div></div>';
   }
+
   function wire(host, partyId) {
     var el = host && host.querySelector ? host.querySelector('#al-studio') : null;
     if (!el) return;
@@ -287,20 +311,39 @@
     var ART_ = '../' + ART;
     var st = dressLoad(partyId), avail = {};   /* wear id -> true once its picture loaded */
     var stage = el.querySelector('#al-stage'), colorsEl = el.querySelector('#al-colors'), closet = el.querySelector('#al-closet');
-    var friendIds = [];
+    var unlocked = UNLOCKED.indexOf(partyId) >= 0 || hasWeek1(partyId);
 
-    function save() { dressSave(partyId, st); }
-    function layer(id, cat) {
-      var a = ANCHOR[cat];
-      return '<img src="' + esc(ART_ + 'wear/' + id + '.webp') + '" alt="" draggable="false" style="position:absolute; top:' + a.top + '%; left:' + a.left + '%; width:' + a.w + '%; transform:translateX(-50%); z-index:' + a.z + '; pointer-events:none;">';
+    /* send the look to the teacher's Google sheet (kept and retried if there is no internet) */
+    var CFG = root.PARTY_CONFIG || {};
+    function pendingGet() { try { return JSON.parse(localStorage.getItem(LOOK_PENDING_KEY) || '{}'); } catch (e) { return {}; } }
+    function pendingSet(o) { try { localStorage.setItem(LOOK_PENDING_KEY, JSON.stringify(o)); } catch (e) { /* ignore */ } }
+    function flush() {
+      if (!CFG.submitUrl) return;
+      var p = pendingGet();
+      Object.keys(p).forEach(function (id) {
+        fetch(CFG.submitUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p[id]) })
+          .then(function () { var cur = pendingGet(); if (JSON.stringify(cur[id]) === JSON.stringify(p[id])) { delete cur[id]; pendingSet(cur); } })
+          .catch(function () { /* retry later */ });
+      });
     }
+    var sendTimer = null;
+    function sendLook() {
+      if (!CFG.submitUrl || !CFG.lookSync) return;   /* lookSync is switched on in alice-party-home/config.js once the sheet script has been updated */
+      clearTimeout(sendTimer);
+      sendTimer = setTimeout(function () {
+        var p = pendingGet();
+        p[partyId] = { token: CFG.token, type: 'look', studentId: partyId, name: party.name, classLabel: party.classLabel, character: party.role.short, color: st.me.color, items: st.me.items, at: new Date().toISOString() };
+        pendingSet(p); flush();
+      }, 1200);
+    }
+    function save() { dressSave(partyId, st); sendLook(); }
+    window.addEventListener('online', flush);
+
     function drawStage() {
-      var layers = '';
-      Object.keys(st.me.items).forEach(function (cat) { var id = st.me.items[cat]; if (id && avail[id] && ANCHOR[cat]) layers += layer(id, cat); });
-      var friend = st.me.friend ? '<img src="' + esc(ART_ + 'characters/c_' + st.me.friend + '.webp') + '" alt="" draggable="false" style="position:absolute; right:0; bottom:0; width:112px; z-index:3; filter:drop-shadow(0 6px 6px rgba(0,0,0,.3));" onerror="this.remove()">' : '';
-      stage.innerHTML = '<div style="position:absolute; left:0; top:0; width:260px; height:260px;">' +
-        '<div style="position:absolute; left:14%; right:14%; bottom:2%; height:12%; background:radial-gradient(ellipse at center, rgba(245,158,11,.45), transparent 70%);"></div>' +
-        '<div style="position:absolute; inset:0; z-index:2;">' + monsterSvg(st.me.color) + '</div>' + layers + '</div>' + friend;
+      var items = {};
+      Object.keys(st.me.items).forEach(function (cat) { var id = st.me.items[cat]; if (id && avail[id]) items[cat] = id; });
+      stage.innerHTML = '<div style="position:absolute; left:14%; right:14%; bottom:2%; height:12%; background:radial-gradient(ellipse at center, rgba(245,158,11,.45), transparent 70%);"></div>' +
+        '<div style="position:absolute; inset:0; z-index:2;">' + monsterSvg(st.me.color, 260) + '</div>' + lookLayers(items, ART_);
     }
     function drawColors() {
       colorsEl.innerHTML = COLORS.map(function (c) {
@@ -308,11 +351,15 @@
       }).join('');
       colorsEl.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { st.me.color = b.getAttribute('data-c'); save(); drawColors(); drawStage(); }); });
     }
-    function btn(label, on, attrs) {
-      return '<button type="button" ' + attrs + ' style="font:inherit; font-weight:800; font-size:0.85rem; padding:6px 12px; border-radius:12px; cursor:pointer; margin:3px; border:2px solid ' + (on ? '#f59e0b' : '#cbd5e1') + '; background:' + (on ? '#fff7d6' : '#fff') + '; color:#1e1b4b;">' + label + '</button>';
+    function btn(label, attrs) {
+      return '<button type="button" ' + attrs + ' style="font:inherit; font-weight:800; font-size:0.85rem; padding:6px 12px; border-radius:12px; cursor:pointer; margin:3px; border:2px solid #cbd5e1; background:#fff; color:#1e1b4b;">' + label + '</button>';
     }
     function drawCloset() {
-      friendIds.sort(function (a, b) { return FRIENDS.indexOf(a) - FRIENDS.indexOf(b); });
+      if (!unlocked) {
+        closet.innerHTML = '<div style="padding:12px 14px; border:2px dashed #f59e0b; border-radius:12px; background:#fffbeb; color:#92400e; font-weight:700;">🔒 Alice costumes open when you finish the Week 1 practice.' +
+          '<div style="margin-top:8px;"><a class="btn-sm-secondary" href="index.html?s=' + esc(partyId) + '" style="text-decoration:none;">Open Week 1</a></div></div>';
+        return;
+      }
       var cats = [['hat', '🎩 Hats and ears'], ['glasses', '🕶️ Glasses'], ['neck', '🎀 Neck'], ['held', '🫖 In my hand'], ['back', '🦋 Wings and capes']];
       var html = '', any = false;
       cats.forEach(function (c) {
@@ -326,29 +373,30 @@
           }).join('') + '</div>';
       });
       if (!any) html += '<div style="padding:10px 12px; border:2px dashed #cbd5e1; border-radius:12px; color:#64748b; font-size:0.9rem;">🎩 Alice hats, ears, crowns and bow ties are coming soon!</div>';
-      else html += '<div>' + btn('✨ My character set', false, 'data-set="1"') + btn('🧹 Take all off', false, 'data-clear="1"') + '</div>';
-      html += '<div style="margin-top:10px; font-weight:800; font-size:0.85rem; color:#7c2d12;">🫖 A Wonderland friend beside my monster</div><div>' +
-        btn('None', !st.me.friend, 'data-f=""') + friendIds.map(function (f) { return btn(esc((P.roles[f] || {}).short || f), st.me.friend === f, 'data-f="' + f + '"'); }).join('') + '</div>';
+      else html += '<div>' + btn('✨ My character set', 'data-set="1"') + btn('🧹 Take all off', 'data-clear="1"') + '</div>';
       closet.innerHTML = html;
       closet.querySelectorAll('button[data-w]').forEach(function (b) { b.addEventListener('click', function () {
         var cat = b.getAttribute('data-cat'), id = b.getAttribute('data-w');
         if (st.me.items[cat] === id) delete st.me.items[cat]; else st.me.items[cat] = id;
         save(); drawCloset(); drawStage();
       }); });
-      closet.querySelectorAll('button[data-f]').forEach(function (b) { b.addEventListener('click', function () { st.me.friend = b.getAttribute('data-f'); save(); drawCloset(); drawStage(); }); });
       var set = closet.querySelector('button[data-set]'); if (set) set.addEventListener('click', function () {
         st.me.items = {}; (CHAR_SET[key] || []).forEach(function (id) { var w = WEAR.filter(function (x) { return x[1] === id; })[0]; if (w && avail[id]) st.me.items[w[0]] = id; });
         save(); drawCloset(); drawStage();
       });
       var clr = closet.querySelector('button[data-clear]'); if (clr) clr.addEventListener('click', function () { st.me.items = {}; save(); drawCloset(); drawStage(); });
     }
-    /* which friends and costume pictures exist yet? (they are added as Gemini finishes them) */
-    var pending = WEAR.length + FRIENDS.length;
-    function done() { pending--; if (pending === 0) { drawCloset(); drawStage(); } }
-    drawColors(); drawStage(); drawCloset();
-    WEAR.forEach(function (w) { var im = new Image(); im.onload = function () { avail[w[1]] = true; done(); }; im.onerror = done; im.src = ART_ + 'wear/' + w[1] + '.webp'; });
-    FRIENDS.forEach(function (f) { var im = new Image(); im.onload = function () { friendIds.push(f); done(); }; im.onerror = done; im.src = ART_ + 'characters/c_' + f + '.webp'; });
+    drawColors(); drawStage(); drawCloset(); flush();
+    if (unlocked) {
+      var pending = WEAR.length;
+      WEAR.forEach(function (w) {
+        var im = new Image();
+        im.onload = function () { avail[w[1]] = true; if (--pending === 0) { drawCloset(); drawStage(); } };
+        im.onerror = function () { if (--pending === 0) { drawCloset(); drawStage(); } };
+        im.src = ART_ + 'wear/' + w[1] + '.webp';
+      });
+    }
   }
 
-  root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, map: MAP };
+  root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, map: MAP, unlocked: UNLOCKED };
 })(window);

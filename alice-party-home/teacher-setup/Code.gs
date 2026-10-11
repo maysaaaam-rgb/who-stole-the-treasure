@@ -22,6 +22,7 @@ function doPost(e) {
     const d = JSON.parse(e.postData.contents);
     if (d.token !== TOKEN) return reply({ ok: false, error: 'bad token' });
     if (!d.studentId) return reply({ ok: false, error: 'no student' });
+    if (d.type === 'look') { upsertLook(d); return reply({ ok: true }); }   // monster look chosen on the pupil's Alice page
     upsert(d);
     return reply({ ok: true });
   } catch (err) {
@@ -63,6 +64,27 @@ function colour(sh) {
   const vals = sh.getRange(2, 6, n, 1).getValues();
   const bg = vals.map(v => [v[0] === 'YES' ? '#d1fae5' : '#fef9c3']);
   sh.getRange(2, 1, n, HEADERS.length).setBackgrounds(bg.map(c => Array(HEADERS.length).fill(c[0])));
+}
+
+// ---------- Monster look from the pupil's Alice profile page: one row per pupil on the "Look" tab ----------
+const LOOK_SHEET = 'Look';
+const LOOK_HEADERS = ['Last update', 'Class', 'Student', 'Character', 'Student ID', 'Colour', 'Hat', 'Glasses', 'Neck', 'In hand', 'Back'];
+
+function upsertLook(d) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName(LOOK_SHEET) || ss.insertSheet(LOOK_SHEET);
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(LOOK_HEADERS);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, LOOK_HEADERS.length).setFontWeight('bold').setBackground('#7c2d12').setFontColor('#ffffff');
+  }
+  const it = d.items || {};
+  const clip = v => String(v || '').slice(0, 80);
+  const row = [new Date(), clip(d.classLabel), clip(d.name), clip(d.character), clip(d.studentId), clip(d.color), clip(it.hat), clip(it.glasses), clip(it.neck), clip(it.held), clip(it.back)];
+  const ids = sh.getLastRow() > 1 ? sh.getRange(2, 5, sh.getLastRow() - 1, 1).getValues() : [];
+  let idx = -1;
+  for (let i = 0; i < ids.length; i++) { if (String(ids[i][0]) === String(d.studentId)) { idx = i; break; } }
+  sh.getRange(idx === -1 ? sh.getLastRow() + 1 : idx + 2, 1, 1, row.length).setValues([row]);
 }
 
 function reply(obj) {
