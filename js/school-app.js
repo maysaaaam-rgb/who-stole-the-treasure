@@ -2673,6 +2673,7 @@
                   '<div>' +
                     '<div style="display:flex; align-items:center; gap:8px;">' +
                       '<span class="badge" style="background:var(--color-primary); color:#fff; font-weight:800; font-size:0.75rem; padding:2px 10px; border-radius:12px;">Level ' + monsterState.currentLevel + '</span>' +
+                      (window.MilestoneCeremony ? window.MilestoneCeremony.avatarHtml(student, 54) : '') +
                       '<h2 style="font-size:1.45rem; font-weight:900; margin:0; color:var(--text-main);">' + student.firstName.toUpperCase() + ' ' + student.lastName.toUpperCase() + '</h2>' +
                       '<span class="badge-cefr badge-cefr-' + student.overallCefr.toLowerCase().replace('+', '-plus') + '">' + student.overallCefr + '</span>' +
                     '</div>' +

@@ -251,5 +251,27 @@
   install();
   if (document.readyState !== 'complete') root.addEventListener('load', install);
 
-  root.MilestoneCeremony = { isAvatar: isAvatar, play: play, printCertificate: printCertificate, photos: photos, titleFor: titleFor, enableFor: enableFor, isVip: isVip, TITLE: TITLE, CFG_KEY: CFG_KEY };
+  /* ---------- the pupil's own picture on profile pages (kept only in this browser) ---------- */
+  function pictureOf(student) {
+    if (!student) return '';
+    var full = ((student.firstName || '') + ' ' + (student.lastName || '')).trim();
+    return photos.get(student.id) || photos.get(student.firstName) || photos.get(full) || '';
+  }
+  function avatarHtml(student, size) {
+    var u = pictureOf(student), n = size || 54, id = esc(student && student.id);
+    var st = 'width:' + n + 'px;height:' + n + 'px;border-radius:50%;flex:0 0 auto;';
+    if (u) {
+      var cart = isAvatar(u);
+      return '<img src="' + esc(u) + '" alt="" title="Change picture" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;)" style="' + st + 'object-fit:' + (cart ? 'contain' : 'cover') + ';border:3px solid #f59e0b;background:' + (cart ? '#fff7d6' : '#fff') + ';cursor:pointer;">';
+    }
+    return '<button type="button" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;)" title="Add a cartoon picture (kept only in this browser)" style="' + st + 'border:2px dashed #94a3b8;background:transparent;cursor:pointer;font-size:' + Math.round(n / 2.4) + 'px;padding:0;">&#128247;</button>';
+  }
+  function setAvatar(studentId) {
+    photos.pick(studentId, function (data, ok) {
+      if (ok === false) { alert('This browser could not save the picture (storage is blocked or full).'); return; }
+      if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
+    });
+  }
+
+  root.MilestoneCeremony = { avatarHtml: avatarHtml, setAvatar: setAvatar, pictureOf: pictureOf, isAvatar: isAvatar, play: play, printCertificate: printCertificate, photos: photos, titleFor: titleFor, enableFor: enableFor, isVip: isVip, TITLE: TITLE, CFG_KEY: CFG_KEY };
 })(window);
