@@ -17,13 +17,13 @@ window.CookHW = (function () {
 
   /* adult: true = an adult must do this step */
   var RECIPES = [
-    { id: 'punch', e: '🍹', n: 'Fruit Punch', kr: '화채 (hwachae)', color: '#38bdf8', level: 'Easy · no cooking', lc: 'easy',
+    { id: 'punch', video: 'https://www.youtube.com/watch?v=UposxyM0uwA', e: '🍹', n: 'Fruit Punch', kr: '화채 (hwachae)', color: '#38bdf8', level: 'Easy · no cooking', lc: 'easy',
       need: 'fruit (apple, pear, strawberries or watermelon), apple juice, honey',
       steps: [{ t: 'Wash the fruit.' }, { t: 'An adult cuts the fruit.', adult: true }, { t: 'Put the fruit in a bowl.' }, { t: 'Pour in the juice.' }, { t: 'Add a little honey and mix.' }] },
-    { id: 'balls', e: '🍙', n: 'Rice Balls', kr: '주먹밥 (jumeokbap)', color: '#10b981', level: 'Easy · an adult cooks the rice', lc: 'mid',
+    { id: 'balls', video: 'https://www.youtube.com/watch?v=xZ1_a5fpNM0', videoLabel: '▶ Watch a rice ball video (this one has tuna)', e: '🍙', n: 'Rice Balls', kr: '주먹밥 (jumeokbap)', color: '#10b981', level: 'Easy · an adult cooks the rice', lc: 'mid',
       need: 'cooked rice, a little salt, sesame seeds, a little oil',
       steps: [{ t: 'An adult cooks the rice.', adult: true }, { t: 'Add the salt, sesame and oil.' }, { t: 'Mix.' }, { t: 'Wash your hands.' }, { t: 'Roll small balls.' }] },
-    { id: 'songpyeon', e: '🍡', pic: '../unit2-g3-cooking/art/songpyeon.webp', n: 'Songpyeon', kr: '송편 (rice cakes)', color: '#f59e0b', level: 'Harder · an adult steams them', lc: 'hard',
+    { id: 'songpyeon', video: 'https://www.youtube.com/watch?v=dtBS5rCK40c', e: '🍡', pic: '../unit2-g3-cooking/art/songpyeon.webp', n: 'Songpyeon', kr: '송편 (rice cakes)', color: '#f59e0b', level: 'Harder · an adult steams them', lc: 'hard',
       need: 'rice flour, warm water, honey, sesame (or sugar)',
       steps: [{ t: 'Mix the rice flour and warm water.' }, { t: 'Roll small balls.' }, { t: 'Fill with honey and sesame.' }, { t: 'Press into half moons.' }, { t: 'An adult steams them.', adult: true }] }
   ];

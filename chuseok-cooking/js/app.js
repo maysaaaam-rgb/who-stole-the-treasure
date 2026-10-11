@@ -87,6 +87,7 @@
         h('div', { class: 'rh' }, [h('div', { class: 'pic' }, [r.pic ? h('img', { src: r.pic, alt: r.n }) : h('span', { text: r.e })]), h('div', {}, [h('h3', { text: r.n }), h('small', { text: r.kr }), h('span', { class: 'lvl ' + r.lc, text: r.level })])]),
         h('div', { class: 'need' }, [h('b', { text: 'You need: ' }), r.need]),
         h('ol', { class: 'rsteps' }, r.steps.map(function (s) { return h('li', { class: s.adult ? 'adult' : '' }, [h('span', { text: s.t })]); })),
+        r.video ? h('a', { class: 'btn amber watch', href: r.video, target: '_blank', rel: 'noopener', text: r.videoLabel || '▶ Watch how to make it' }) : null,
         btn
       ]);
       refs.recipes[r.id] = { card: card, btn: btn }; app.appendChild(card);

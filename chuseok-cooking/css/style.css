@@ -57,7 +57,7 @@ textarea { min-height: 96px; resize: vertical; font-size: 1.05rem; }
 .rsteps li::before { content: counter(r); flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--amber); color: #3b2a00; }
 .rsteps li.adult { border: 2px solid var(--coral); background: rgba(244, 63, 94, .12); }
 .rsteps li.adult::after { content: '👩‍🍳 Adult'; margin-left: auto; flex: 0 0 auto; font-size: .82rem; font-weight: 800; color: #fecdd3; }
-.choose { justify-self: start; }
+.choose, .watch { justify-self: start; }
 /* writing boxes */
 .box { display: grid; gap: 8px; margin-top: 16px; }
 .box h3 { font-size: clamp(1.05rem, 4vw, 1.3rem); color: #7dd3fc; }
