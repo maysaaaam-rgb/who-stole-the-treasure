@@ -6418,6 +6418,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (st === 'COMPLETED' || st === 'COMPLETE') return 'done';
     return 'started';
   }
+  /* Grade 4 has two classes. Every pupil is filed under class-4a in the store, so the real class comes from the pupil id
+     (student-4a-... / student-4b-...), with two corrections taken from the teacher's class lists. */
+  const ASG_CLASS_FIX = { 'student-4a-319': '4B', 'student-4b-208': '4A' };
+  function asgClassOf(st) {
+    if (ASG_CLASS_FIX[st.id]) return ASG_CLASS_FIX[st.id];
+    const m = /^student-(\d)([ab])-/.exec(st.id || '');
+    return m ? (m[1] + m[2]).toUpperCase() : '';
+  }
+  function asgGradeKey(classId) { return /^class-4[ab]$/.test(classId || '') ? 'grade-4' : (classId || ''); }
   function asgPupilsHtml(h, students) {
     const groups = { done: [], started: [], none: [] };
     students.forEach(st => { groups[asgStatusOf((h.submissions || {})[st.id])].push(st); });
@@ -6440,22 +6449,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     /* grade-wide homework: also count pupils who finished it but sit in a sister class list */
     students = students.slice();
     Object.keys(h.submissions || {}).forEach(id => { if (!students.some(st => st.id === id)) { const extra = store.getStudent ? store.getStudent(id) : null; if (extra && !extra.archived) students.push(extra); } });
-    const done = students.filter(st => asgStatusOf((h.submissions || {})[st.id]) === 'done').length;
-    const started = students.filter(st => asgStatusOf((h.submissions || {})[st.id]) === 'started').length;
-    const total = students.length || 1;
-    const pct = Math.round(done / total * 100);
+    const isDone = st => asgStatusOf((h.submissions || {})[st.id]) === 'done';
+    const isStarted = st => asgStatusOf((h.submissions || {})[st.id]) === 'started';
+    const done = students.filter(isDone).length;
+    const started = students.filter(isStarted).length;
+    const labels = []; students.forEach(st => { const c = asgClassOf(st); if (c && labels.indexOf(c) < 0) labels.push(c); });
+    labels.sort();
+    const bar = (d, n) => '<div style="height:10px; border-radius:6px; background:rgba(148,163,184,0.25); overflow:hidden; margin-top:8px;"><div style="height:100%; width:' + Math.round(d / (n || 1) * 100) + '%; background:linear-gradient(90deg,#10b981,#38bdf8); border-radius:6px;"></div></div>';
+    let sections;
+    if (labels.length > 1) {
+      sections = labels.map(lb => {
+        const grp = students.filter(st => asgClassOf(st) === lb);
+        const d = grp.filter(isDone).length, sN = grp.filter(isStarted).length;
+        return '<div style="margin-top:12px; padding:10px 12px; border:1px solid var(--border-subtle); border-radius:12px;">' +
+          '<div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-weight:800;"><span>Class ' + lb + '</span><span>' + d + ' of ' + grp.length + ' finished' + (sN ? ' · <span style="color:#b45309;">' + sN + ' started</span>' : '') + '</span></div>' +
+          bar(d, grp.length) +
+          '<details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:var(--color-primary);">Show every pupil in ' + lb + '</summary>' + asgPupilsHtml(h, grp) + '</details></div>';
+      }).join('');
+    } else {
+      sections = bar(done, students.length) + '<details style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700; color:var(--color-primary);">Show every pupil</summary>' + asgPupilsHtml(h, students) + '</details>';
+    }
+    const clsName = asgGradeKey(h.classId) === 'grade-4' ? 'Grade 4 (4A and 4B)' : (cls ? cls.name : (h.className || 'All Classes'));
     return '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:16px 18px;">' +
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">' +
         '<div style="min-width:0;">' +
           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;"><span style="font-weight:800; font-size:1.05rem;">' + asgEsc(h.title) + '</span>' +
             '<span style="font-size:0.72rem; background:rgba(16,185,129,0.12); color:#047857; padding:2px 8px; border-radius:999px; font-weight:800;">HOMEWORK</span>' +
-            '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(cls ? cls.name : (h.className || 'All Classes')) + '</span></div>' +
+            '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(clsName) + '</span></div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' · ⭐ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
         '</div>' +
         '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + '</div>' +
-      '</div>' +
-      '<div style="height:10px; border-radius:6px; background:rgba(148,163,184,0.25); overflow:hidden; margin-top:10px;"><div style="height:100%; width:' + pct + '%; background:linear-gradient(90deg,#10b981,#38bdf8); border-radius:6px;"></div></div>' +
-      '<details style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700; color:var(--color-primary);">Show every pupil</summary>' + asgPupilsHtml(h, students) + '</details>' +
+      '</div>' + sections +
     '</div>';
   }
   function asgAssignmentCard(a, classes) {
@@ -6487,10 +6511,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function renderAssignmentsView(container) {
     const activeClass = store.getActiveClass();
     const classes = store.getClasses();
-    const students = activeClass ? (store.getStudents(activeClass.id) || []) : (store.getStudents() || []);
-    const assignments = store.getAssignments().filter(a => !activeClass || !a.classId || a.classId === 'all' || a.classId === activeClass.id);
+    const activeKey = activeClass ? asgGradeKey(activeClass.id) : '';
+    const sameClass = cid => !activeClass || !cid || cid === 'all' || asgGradeKey(cid) === activeKey;
+    const students = !activeClass ? (store.getStudents() || [])
+      : activeKey === 'grade-4' ? (store.getStudents('class-4a') || []).concat(store.getStudents('class-4b') || [])
+      : (store.getStudents(activeClass.id) || []);
+    const assignments = store.getAssignments().filter(a => sameClass(a.classId));
     let homework = [];
-    try { homework = (store.getHomework(activeClass ? activeClass.id : null) || []).filter(h => !h.archived); } catch (e) { homework = []; }
+    try { homework = (store.getHomework() || []).filter(h => !h.archived && sameClass(h.classId)); } catch (e) { homework = []; }
 
     /* one list, newest week first */
     const items = assignments.map(a => ({ kind: 'assignment', due: a.dueDate, a: a }))
@@ -6525,7 +6553,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Weekly Assignments &amp; Homework</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + asgEsc(activeClass ? activeClass.name : 'All classes') + ' · everything given each week, and who has finished it.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + asgEsc(activeKey === 'grade-4' ? 'Grade 4 (4A and 4B)' : (activeClass ? activeClass.name : 'All classes')) + ' · everything given each week, and who has finished it.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">' +
           '<select onchange="setAsgWeek(this.value)" aria-label="Choose a week" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-subtle); background:var(--bg-card); color:var(--text-main); font-weight:700;">' +
