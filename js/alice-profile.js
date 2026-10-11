@@ -171,8 +171,8 @@
 
     /* ---- header: avatar + character ---- */
     var emo = ROLE_EMOJI[key] || '🫖';
-    /* left picture: the character picture from the cards. Sühan's card is a real photo of a child and Absolem's shows a hookah, so they use the cartoon / an emoji. */
-    var useCard = key !== 'oyster' && key !== 'absolem';
+    /* left picture: the character picture from the cards (Sühan's is the picture she sent). Absolem's shows a hookah, so it uses an emoji until a safe picture exists. */
+    var useCard = key !== 'absolem';
     var cardPhoto = esc(encodeURI(CARD_ + party.photo));
     var cartoonAv = esc(ART_ + 'avatars/a_' + key + '.webp'), cartoonCh = esc(ART_ + 'characters/c_' + key + '.webp');
     var avatar = useCard
