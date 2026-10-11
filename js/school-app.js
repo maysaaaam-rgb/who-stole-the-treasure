@@ -758,6 +758,20 @@
     ).join('');
   }
 
+  // The pupil's own cartoon picture (kept only in this browser) replaces the initials in the top-bar chip
+  function setHeaderPicture(el, student) {
+    var url = (window.MilestoneCeremony && window.MilestoneCeremony.pictureOf) ? window.MilestoneCeremony.pictureOf(student) : '';
+    if (url) {
+      el.textContent = '';
+      el.style.backgroundImage = 'url("' + url + '")';
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center top';
+      el.style.border = '2px solid #fde047'; el.style.width = el.style.height = '34px';
+    } else {
+      el.style.backgroundImage = ''; el.style.backgroundSize = ''; el.style.backgroundPosition = ''; el.style.border = ''; el.style.width = el.style.height = '';
+    }
+  }
+
   function updateHeaderBadges() {
     const role = store.getRole();
     const userName = document.getElementById('header-user-name');
@@ -767,24 +781,27 @@
 
     if (role === 'teacher') {
       if (userName) userName.textContent = 'Mr. Maysam';
-      if (userInitials) userInitials.textContent = 'MM';
+      if (userInitials) userInitials.textContent = 'MM'; if (userInitials) setHeaderPicture(userInitials, null);
       if (classSelect) classSelect.style.display = 'inline-block';
       if (createWrap) createWrap.style.display = 'block';
     } else if (role === 'student') {
       const student = store.getActiveStudent();
       if (userName) userName.textContent = (student.firstName + ' ' + student.lastName);
       if (userInitials) userInitials.textContent = student.firstName[0] + student.lastName[0];
+      if (userInitials) setHeaderPicture(userInitials, student);
       if (classSelect) classSelect.style.display = 'none';
       if (createWrap) createWrap.style.display = 'none';
     } else if (role === 'parent') {
       if (userName) userName.textContent = 'Mr. Chen (Parent)';
-      if (userInitials) userInitials.textContent = 'PC';
+      if (userInitials) userInitials.textContent = 'PC'; if (userInitials) setHeaderPicture(userInitials, null);
       if (classSelect) classSelect.style.display = 'none';
       if (createWrap) createWrap.style.display = 'none';
     }
     populateHeaderClassSelect();
     populateHeaderStudentSelect(role);
   }
+
+  window.updateHeaderBadges = updateHeaderBadges;
 
   // Student view: choose which pupil you are looking at (the view used to be stuck on the first pupil)
   function populateHeaderStudentSelect(role) {

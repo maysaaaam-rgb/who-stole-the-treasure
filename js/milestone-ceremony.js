@@ -269,6 +269,7 @@
   function setAvatar(studentId) {
     photos.pick(studentId, function (data, ok) {
       if (ok === false) { alert('This browser could not save the picture (storage is blocked or full).'); return; }
+      if (typeof root.updateHeaderBadges === 'function') { try { root.updateHeaderBadges(); } catch (e) { /* header refresh is optional */ } }
       if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
     });
   }
