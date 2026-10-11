@@ -619,21 +619,21 @@ const CLASS_4A_CARDS_DATA = [
     stats: { teaPower: 91, madness: 96, courage: 86 },
     specialAbility: {
       name: "Chrysalis Metamorphosis",
-      description: "Blows ethereal rings of smoke that reveal the future, asking the eternal question that shatters illusions: 'Who... are... you?'"
+      description: "Blows shimmering soap bubbles that reveal the future, asking the eternal question that shatters illusions: 'Who... are... you?'"
     },
-    vocalTone: "Deep, languid, hypnotic, stretching vowels like billowing smoke rings.",
+    vocalTone: "Deep, languid, hypnotic, stretching vowels like bubbles floating up.",
     keyLines: [
       "Who... are... you?",
       "You’re not Alice yet... but you will be. The chrysalis always breaks.",
       "One side will make you grow taller, the other side will make you grow shorter. Of the mushroom, of course!"
     ],
     speakingPrompt: "Challenges Alice’s identity as she stumbles into the glade, chides her for forgetting who she is, and recites prophecy before curling into a chrysalis.",
-    stageAction: "Sits perched regally on an oversized mushroom cushion, slowly drawing on a hookah pipe and blowing smoke rings into the air.",
+    stageAction: "Sits perched regally on an oversized mushroom cushion, slowly blowing shiny soap bubbles through a bubble wand into the air.",
     openingLine: "Who... are... you?",
     interactionCue: {
       triggerCharacter: "Alice (İpek)",
       triggerLine: "I hardly know who I am just at present, sir!",
-      actionInstruction: "Take a slow, languid draw from your hookah pipe, lean forward through the smoke rings, and intone:",
+      actionInstruction: "Take a slow breath, blow a soap bubble from your bubble wand, lean forward through the bubbles, and intone:",
       responseLine: "Who... are... you?"
     },
     costume: [
@@ -642,7 +642,7 @@ const CLASS_4A_CARDS_DATA = [
       "Curled blue velvet antennae headpiece"
     ],
     props: [
-      "Antique carved brass and glass hookah pipe (or stage bubble wand)",
+      "A big round bubble wand",
       "Miniature illuminated mushroom prop",
       "Blue parchment scroll of Underland prophecy"
     ],

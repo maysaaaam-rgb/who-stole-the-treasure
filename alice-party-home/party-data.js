@@ -114,7 +114,7 @@ window.PARTY = {
     absolem: {
       name: 'ABSOLEM', short: 'Absolem', color: '#1d4ed8',
       sentences: ['I am Absolem.', 'I am a blue caterpillar.', 'I always ask: Who are you?'],
-      words: [['caterpillar', '🐛'], ['mushroom', '🍄'], ['smoke', '💨'], ['butterfly', '🦋'], ['question', '❓'], ['blue', '🔵']],
+      words: [['caterpillar', '🐛'], ['mushroom', '🍄'], ['bubble', '🫧'], ['butterfly', '🦋'], ['question', '❓'], ['blue', '🔵']],
       askMe: [['Do you like mushrooms?', 'Yes, I do.'], ['Are you big?', 'No, I am small.']],
       props: ['blue paper antennae', 'a mushroom']
     },
