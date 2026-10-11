@@ -239,7 +239,7 @@
      The look is saved on this device and sent to the teacher's Google sheet (tab "Look"), so it can be copied into the platform.
      Costume items use pictures from assets/alice-cut/wear/ (made by Gemini). Items whose picture does not exist yet are not offered. */
   /* Pupils who finished the Week 1 practice (from the Results sheet, 11 Oct). Updated by hand each week until the live status link is switched on. */
-  var W1_DONE = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku'];
+  var W1_DONE = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku', '4a-ruzgar', '4b-elifberen', '4a-ada', '4b-ozanm', '4a-esila'];
   var REMOTE = null;   /* progress of every pupil from the sheet, once loaded: { partyId: { homework: { steps, finished } } } */
   function loadStatus(cb) {
     var CFG = root.PARTY_CONFIG || {};
