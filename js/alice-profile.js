@@ -253,34 +253,23 @@
   var LOOK_PENDING_KEY = 'eaa_alice_look_pending_v1';
   var UNLOCKED = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku', '4a-ruzgar'];
   var COLORS = [['blue', '#38bdf8'], ['orange', '#fb923c'], ['green', '#4ade80'], ['purple', '#a78bfa'], ['gold', '#facc15'], ['pink', '#f472b6']];
-  var WEAR = [
-    ['hat', 'wear_hat_hatter', 'Hatter hat'], ['hat', 'wear_hat_mini_top', 'Tiny top hat'], ['hat', 'wear_hat_teacup', 'Teacup hat'], ['hat', 'wear_hat_crown_white', 'White crown'],
-    ['hat', 'wear_hat_crown_red', 'Red crown'], ['hat', 'wear_hat_ears_bunny', 'Bunny ears'], ['hat', 'wear_hat_ears_cat', 'Cat ears'], ['hat', 'wear_hat_ears_dog', 'Dog ears'],
-    ['hat', 'wear_hat_ears_mouse', 'Mouse ears'], ['hat', 'wear_hat_propeller_green', 'Green cap'], ['hat', 'wear_hat_bowler_green', 'Green bowler'], ['hat', 'wear_hat_top_tall', 'Tall hat'],
-    ['hat', 'wear_hat_flower_crown', 'Flower crown'], ['hat', 'wear_hat_mushroom', 'Mushroom hat'], ['hat', 'wear_hat_antennae', 'Antennae'], ['hat', 'wear_hat_horns_dragon', 'Dragon horns'],
-    ['hat', 'wear_hat_bow_blue', 'Blue bow'],
-    ['glasses', 'wear_glasses_monocle', 'Monocle'], ['glasses', 'wear_glasses_round_rabbit', 'Round glasses'], ['glasses', 'wear_glasses_heart', 'Heart glasses'],
-    ['neck', 'wear_neck_bowtie_check', 'Check bow tie'], ['neck', 'wear_neck_bowtie_hatter', 'Spotty bow tie'], ['neck', 'wear_neck_watch', 'Pocket watch'], ['neck', 'wear_neck_key', 'Key'],
-    ['neck', 'wear_neck_bell', 'Bell collar'], ['neck', 'wear_neck_heart', 'Heart medal'], ['neck', 'wear_neck_pearl', 'Pearls'], ['neck', 'wear_neck_ribbon_blue', 'Blue ribbon'],
-    ['held', 'wear_held_teacup', 'Teacup'], ['held', 'wear_held_teapot', 'Teapot'], ['held', 'wear_held_key', 'Key'], ['held', 'wear_held_card', 'Heart card'], ['held', 'wear_held_carrot', 'Carrot'],
-    ['held', 'wear_held_bottle', 'Magic bottle'], ['held', 'wear_held_cake', 'Cake'], ['held', 'wear_held_stick', 'Walking stick'], ['held', 'wear_held_book', 'Book'], ['held', 'wear_held_bell', 'Bell'],
-    ['back', 'wear_back_wings_dragon', 'Dragon wings'], ['back', 'wear_back_wings_butterfly', 'Butterfly wings'], ['back', 'wear_back_cape_red', 'Red cape'], ['back', 'wear_back_shell', 'Shell']
+  /* The closet: 12 things from Gemini's pictures. [id, slot, label, week that unlocks it]. Week 1 opens 4, Week 2 opens 4 more, the last 4 wait for Week 3.
+     A picture named wear_* is in assets/alice-cut/wear/, one named prop_* in assets/alice-cut/props/. */
+  var ITEMS = [
+    ['wear_hat_hatter', 'hat', 'Hatter hat', 1], ['wear_hat_mini_top', 'hat', 'Tiny top hat', 1], ['prop_ears_hare', 'hat', 'Hare ears', 1], ['prop_cake_plate', 'held', 'Cake', 1],
+    ['prop_ears_cat', 'hat', 'Cat ears', 2], ['prop_crown_red', 'hat', 'Red crown', 2], ['prop_hat_green', 'hat', 'Green cap', 2], ['prop_card', 'held', 'Heart card', 2],
+    ['wear_hat_teacup', 'hat', 'Teacup hat', 3], ['prop_crown_white', 'hat', 'White crown', 3], ['prop_antennae', 'hat', 'Antennae', 3], ['prop_carrot', 'held', 'Carrot', 3]
   ];
+  var LAST_WEEK = 2;   /* weeks that exist so far; week 3 items show "coming soon" */
+  var itemPath = function (id) { return (id.indexOf('prop_') === 0 ? 'props/' : 'wear/') + id + '.webp'; };
+  /* per-item size and place when the standard one does not suit (percent of the monster box): [top, width] */
+  var FIT = { wear_hat_hatter: [-4, 56], wear_hat_mini_top: [1, 50], prop_ears_hare: [-20, 38], prop_ears_cat: [-14, 50], prop_crown_red: [-3, 50], prop_hat_green: [-10, 52],
+    wear_hat_teacup: [1, 52], prop_crown_white: [-3, 50], prop_antennae: [-14, 46] };
   /* where each kind of item sits on the monster picture (percent of the monster box) */
   var ANCHOR = {
     back: { top: 12, left: 50, w: 118, z: 1 }, glasses: { top: 30, left: 50, w: 50, z: 5 }, neck: { top: 58, left: 50, w: 44, z: 5 },
     hat: { top: -4, left: 50, w: 60, z: 6 }, held: { top: 52, left: 82, w: 34, z: 7 }
   };
-  /* a starting costume for each story character */
-  var CHAR_SET = {
-    alice: ['wear_hat_bow_blue', 'wear_held_key'], hatter: ['wear_hat_hatter', 'wear_neck_bowtie_hatter', 'wear_held_teacup'], rabbit: ['wear_hat_ears_bunny', 'wear_neck_watch', 'wear_glasses_round_rabbit'],
-    whitequeen: ['wear_hat_crown_white', 'wear_held_bottle'], redqueen: ['wear_hat_crown_red', 'wear_neck_heart', 'wear_held_card'], hare: ['wear_hat_ears_bunny', 'wear_held_carrot', 'wear_held_teapot'],
-    cheshire: ['wear_hat_ears_cat'], cat: ['wear_hat_ears_cat', 'wear_neck_bell'], bayard: ['wear_hat_ears_dog'], dragon: ['wear_hat_horns_dragon', 'wear_back_wings_dragon'],
-    bandersnatch: ['wear_held_key'], sister: ['wear_held_book'], mother: ['wear_held_cake'], twosister1: ['wear_hat_bowler_green'], twosister2: ['wear_hat_bowler_green', 'wear_neck_bell'],
-    absolem: ['wear_hat_antennae'], hamish: ['wear_hat_top_tall', 'wear_held_stick'], lowell: ['wear_hat_top_tall', 'wear_neck_watch'], dum: ['wear_hat_propeller_green'], dee: ['wear_hat_propeller_green', 'wear_neck_bell'],
-    dormouse1: ['wear_hat_ears_mouse', 'wear_held_teacup'], dormouse2: ['wear_hat_ears_mouse'], oyster: ['wear_back_shell', 'wear_neck_pearl']
-  };
-
   function dressLoad(partyId) {
     var all = {};
     try { all = JSON.parse(localStorage.getItem(DRESS_KEY) || '{}') || {}; } catch (e) { all = {}; }
@@ -303,7 +292,8 @@
     Object.keys(items || {}).forEach(function (cat) {
       var id = items[cat], a = ANCHOR[cat];
       if (!id || !a) return;
-      out += '<img src="' + esc(base + 'wear/' + id + '.webp') + '" alt="" draggable="false" onerror="this.remove()" style="position:absolute; top:' + a.top + '%; left:' + a.left + '%; width:' + a.w + '%; transform:translateX(-50%); z-index:' + a.z + '; pointer-events:none;">';
+      if (FIT[id]) a = { top: FIT[id][0], left: a.left, w: FIT[id][1], z: a.z };
+      out += '<img src="' + esc(base + itemPath(id)) + '" alt="" draggable="false" onerror="this.remove()" style="position:absolute; top:' + a.top + '%; left:' + a.left + '%; width:' + a.w + '%; transform:translateX(-50%); z-index:' + a.z + '; pointer-events:none;">';
     });
     return out;
   }
@@ -369,48 +359,40 @@
     function btn(label, attrs) {
       return '<button type="button" ' + attrs + ' style="font:inherit; font-weight:800; font-size:0.85rem; padding:6px 12px; border-radius:12px; cursor:pointer; margin:3px; border:2px solid #cbd5e1; background:#fff; color:#1e1b4b;">' + label + '</button>';
     }
+    var week2 = localStatus(partyId).w2 === 'done';
+    function open(w) { return w === 1 ? unlocked : (w === 2 ? week2 : false); }
     function drawCloset() {
-      if (!unlocked) {
-        closet.innerHTML = '<div style="padding:12px 14px; border:2px dashed #f59e0b; border-radius:12px; background:#fffbeb; color:#92400e; font-weight:700;">🔒 Alice costumes open when you finish the Week 1 practice.' +
-          '<div style="margin-top:8px;"><a class="btn-sm-secondary" href="index.html?s=' + esc(partyId) + '" style="text-decoration:none;">Open Week 1</a></div></div>';
-        return;
-      }
-      var cats = [['hat', '🎩 Hats and ears'], ['glasses', '🕶️ Glasses'], ['neck', '🎀 Neck'], ['held', '🫖 In my hand'], ['back', '🦋 Wings and capes']];
-      var html = '', any = false;
-      cats.forEach(function (c) {
-        var items = WEAR.filter(function (w) { return w[0] === c[0] && avail[w[1]]; });
-        if (!items.length) return;
-        any = true;
-        html += '<div style="margin-bottom:8px;"><div style="font-weight:800; font-size:0.85rem; color:#7c2d12;">' + c[1] + '</div>' +
-          items.map(function (w) {
-            var on = st.me.items[c[0]] === w[1];
-            return '<button type="button" data-w="' + w[1] + '" data-cat="' + c[0] + '" title="' + esc(w[2]) + '" style="width:62px; height:62px; padding:2px; margin:3px; border-radius:12px; cursor:pointer; background:' + (on ? '#fff7d6' : '#fff') + '; border:2px solid ' + (on ? '#f59e0b' : '#cbd5e1') + ';"><img src="' + esc(ART_ + 'wear/' + w[1] + '.webp') + '" alt="' + esc(w[2]) + '" style="width:100%; height:100%; object-fit:contain;"></button>';
-          }).join('') + '</div>';
+      var nOpen = ITEMS.filter(function (w) { return open(w[3]); }).length;
+      var html = '<div style="font-weight:800; font-size:0.9rem; color:#7c2d12; margin-bottom:6px;">🎩 My Alice closet · ' + nOpen + ' of ' + ITEMS.length + ' open</div>' +
+        '<div style="font-size:0.8rem; color:#64748b; margin-bottom:6px;">Finish Week 1 to open 4 things. Finish Week 2 to open 4 more.</div><div style="display:flex; flex-wrap:wrap;">';
+      ITEMS.forEach(function (w) {
+        if (!avail[w[0]]) return;
+        var ok = open(w[3]), on = st.me.items[w[1]] === w[0];
+        var lock = ok ? '' : '<span style="position:absolute; left:0; right:0; bottom:2px; font-size:0.62rem; font-weight:800; color:#92400e;">🔒 ' + (w[3] > LAST_WEEK ? 'Soon' : 'Week ' + w[3]) + '</span>';
+        html += '<button type="button" data-w="' + w[0] + '" data-cat="' + w[1] + '" ' + (ok ? '' : 'disabled ') + 'title="' + esc(w[2]) + '" style="position:relative; width:70px; height:76px; padding:2px 2px 14px; margin:3px; border-radius:12px; cursor:' + (ok ? 'pointer' : 'not-allowed') + '; background:' + (on ? '#fff7d6' : '#fff') + '; border:2px solid ' + (on ? '#f59e0b' : '#cbd5e1') + '; opacity:' + (ok ? 1 : 0.5) + ';">' +
+          '<img src="' + esc(ART_ + itemPath(w[0])) + '" alt="' + esc(w[2]) + '" style="width:100%; height:100%; object-fit:contain;' + (ok ? '' : ' filter:grayscale(0.8);') + '">' + lock + '</button>';
       });
-      if (!any) html += '<div style="padding:10px 12px; border:2px dashed #cbd5e1; border-radius:12px; color:#64748b; font-size:0.9rem;">🎩 Alice hats, ears, crowns and bow ties are coming soon!</div>';
-      else html += '<div>' + btn('✨ My character set', 'data-set="1"') + btn('🧹 Take all off', 'data-clear="1"') + '</div>';
+      html += '</div>';
+      if (!ITEMS.some(function (w) { return avail[w[0]]; })) html = '<div style="padding:10px 12px; border:2px dashed #cbd5e1; border-radius:12px; color:#64748b; font-size:0.9rem;">🎩 Alice hats, ears and crowns are coming soon!</div>';
+      else if (!unlocked) html += '<div style="margin-top:8px;"><a class="btn-sm-secondary" href="index.html?s=' + esc(partyId) + '" style="text-decoration:none;">Open Week 1</a></div>';
+      else if (!week2) html += '<div style="margin-top:8px;"><a class="btn-sm-secondary" href="week2.html?s=' + esc(partyId) + '" style="text-decoration:none;">Open Week 2</a></div>';
+      if (Object.keys(st.me.items).length) html += '<div>' + btn('🧹 Take all off', 'data-clear="1"') + '</div>';
       closet.innerHTML = html;
       closet.querySelectorAll('button[data-w]').forEach(function (b) { b.addEventListener('click', function () {
         var cat = b.getAttribute('data-cat'), id = b.getAttribute('data-w');
         if (st.me.items[cat] === id) delete st.me.items[cat]; else st.me.items[cat] = id;
         save(); drawCloset(); drawStage();
       }); });
-      var set = closet.querySelector('button[data-set]'); if (set) set.addEventListener('click', function () {
-        st.me.items = {}; (CHAR_SET[key] || []).forEach(function (id) { var w = WEAR.filter(function (x) { return x[1] === id; })[0]; if (w && avail[id]) st.me.items[w[0]] = id; });
-        save(); drawCloset(); drawStage();
-      });
       var clr = closet.querySelector('button[data-clear]'); if (clr) clr.addEventListener('click', function () { st.me.items = {}; save(); drawCloset(); drawStage(); });
     }
     drawColors(); drawStage(); drawCloset(); flush();
-    if (unlocked) {
-      var pending = WEAR.length;
-      WEAR.forEach(function (w) {
-        var im = new Image();
-        im.onload = function () { avail[w[1]] = true; if (--pending === 0) { drawCloset(); drawStage(); } };
-        im.onerror = function () { if (--pending === 0) { drawCloset(); drawStage(); } };
-        im.src = ART_ + 'wear/' + w[1] + '.webp';
-      });
-    }
+    var pending = ITEMS.length;
+    ITEMS.forEach(function (w) {
+      var im = new Image();
+      im.onload = function () { avail[w[0]] = true; if (--pending === 0) { drawCloset(); drawStage(); } };
+      im.onerror = function () { if (--pending === 0) { drawCloset(); drawStage(); } };
+      im.src = ART_ + itemPath(w[0]);
+    });
   }
 
   root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, loadStatus: loadStatus, map: MAP, unlocked: UNLOCKED };
