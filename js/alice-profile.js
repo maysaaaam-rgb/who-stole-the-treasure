@@ -253,7 +253,6 @@
   var DRESS_KEY = 'eaa_alice_dress_v1';
   var LOOK_PENDING_KEY = 'eaa_alice_look_pending_v1';
   var UNLOCKED = ['4a-alya', '4a-belis', '4a-ipek', '4a-suhan', '4b-ozan', '4b-ali', '4b-derin', '4b-egehan', '4b-elif', '4b-kerem', '4b-utku', '4a-ruzgar'];
-  var COLORS = [['blue', '#38bdf8'], ['orange', '#fb923c'], ['green', '#4ade80'], ['purple', '#a78bfa'], ['gold', '#facc15'], ['pink', '#f472b6']];
   /* The closet uses the platform's own monster customization (the drawn monsters), with only Alice things in the menu.
      [item id in the platform, slot, name, emoji, week that unlocks it]. Week 1 opens 4, Week 2 opens 4 more, the last 4 wait for Week 3. */
   var ITEMS = [
@@ -268,7 +267,8 @@
     try { all = JSON.parse(localStorage.getItem(DRESS_KEY) || '{}') || {}; } catch (e) { all = {}; }
     var me = all[partyId] || {}, items = {};
     Object.keys(me.items || {}).forEach(function (slot) { var w = itemOf(me.items[slot]); if (w && w[1] === slot) items[slot] = w[0]; });   /* only Alice items */
-    return { all: all, me: { color: me.color || 'blue', items: items } };
+    var own = (root.ALICE_MONSTER_COLORS || {})[partyId];
+    return { all: all, me: { color: own || me.color || 'blue', items: items } };
   }
   function dressSave(partyId, st) {
     st.all[partyId] = st.me;
@@ -286,10 +286,10 @@
   function studioHtml() {
     return '<div id="al-studio" style="margin-top:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
       '<h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
-      '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Choose a colour. Put on Alice things if you want. Your look is saved and your teacher can see it.</p>' +
+      '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">This is your own monster. Put on Alice things if you want. Your look is saved and your teacher can see it.</p>' +
       '<div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">' +
         '<div id="al-stage" style="position:relative; width:260px; height:260px; flex:none; margin:0 auto;"></div>' +
-        '<div style="flex:1; min-width:240px;"><div id="al-colors" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>' +
+        '<div style="flex:1; min-width:240px;">' +
           '<div id="al-closet"></div></div></div></div>';
   }
 
@@ -298,7 +298,7 @@
     if (!el) return;
     var P = root.PARTY, party = P && P.find(partyId), key = party ? party.roleKey : '';
     var st = dressLoad(partyId);
-    var stage = el.querySelector('#al-stage'), colorsEl = el.querySelector('#al-colors'), closet = el.querySelector('#al-closet');
+    var stage = el.querySelector('#al-stage'), closet = el.querySelector('#al-closet');
     var unlocked = UNLOCKED.indexOf(partyId) >= 0 || hasWeek1(partyId);
 
     /* send the look to the teacher's Google sheet (kept and retried if there is no internet) */
@@ -330,12 +330,6 @@
     function drawStage() {
       stage.innerHTML = '<div style="position:absolute; inset:0; z-index:2;">' + monsterSvg(st.me.color, 260, st.me.items) + '</div>';
     }
-    function drawColors() {
-      colorsEl.innerHTML = COLORS.map(function (c) {
-        return '<button type="button" data-c="' + c[0] + '" aria-label="' + c[0] + '" style="width:40px; height:40px; border-radius:50%; background:' + c[1] + '; border:3px solid ' + (st.me.color === c[0] ? '#7c2d12' : '#fff') + '; box-shadow:0 0 0 2px #cbd5e1; cursor:pointer;"></button>';
-      }).join('');
-      colorsEl.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { st.me.color = b.getAttribute('data-c'); save(); drawColors(); drawStage(); }); });
-    }
     function btn(label, attrs) {
       return '<button type="button" ' + attrs + ' style="font:inherit; font-weight:800; font-size:0.85rem; padding:6px 12px; border-radius:12px; cursor:pointer; margin:3px; border:2px solid #cbd5e1; background:#fff; color:#1e1b4b;">' + label + '</button>';
     }
@@ -363,7 +357,7 @@
       }); });
       var clr = closet.querySelector('button[data-clear]'); if (clr) clr.addEventListener('click', function () { st.me.items = {}; save(); drawCloset(); drawStage(); });
     }
-    drawColors(); drawStage(); drawCloset(); flush();
+    drawStage(); drawCloset(); flush();
   }
 
   root.AliceProfile = { html: html, pupilPage: pupilPage, wire: wire, fb: fb, loadStatus: loadStatus, map: MAP, unlocked: UNLOCKED };
