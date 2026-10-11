@@ -417,3 +417,17 @@ html.class-mode #app-view-container { padding-bottom: 110px; }
 /* small supporting text on the lavender Class Mode pages: bigger and heavier so it reads from the back of the room */
 html.class-mode .cc small, html.class-mode .cc em, html.class-mode .cc .cc-dim, html.class-mode .cc-kp small { font-size: 0.86rem !important; font-weight: 600; opacity: 1 !important; color: #fff !important; text-shadow: 0 1px 2px rgba(30, 20, 90, 0.45); }
 html.class-mode { --cp-ink-3: #fff; }
+
+/* 18. Student profile: tidy header buttons, Creator tag above the pedestal, readable companion card */
+.student-profile-monster-hero .card-more-menu-wrap { position: relative; display: flex; }
+.student-profile-monster-hero .btn-card-more {
+  position: static !important; width: 36px; height: 32px; min-width: 36px; padding: 0;
+  background: #fff; color: #334155; border: 1px solid #cbd5e1; border-bottom-width: 3px; border-radius: 10px;
+  backdrop-filter: none; box-shadow: none;
+}
+.student-profile-monster-hero .card-dropdown-menu { right: 0; left: auto; top: 100%; z-index: 30; }
+.student-profile-monster-hero [onclick*="openMonsterCreator"] > span { z-index: 6; }
+.thematic-companion-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; }
+.thematic-companion-card .thematic-tag { color: #cbd5e1; }
+.thematic-companion-card .thematic-quote { color: #e2e8f0; }
+.thematic-companion-card .thematic-char-role { color: #e2e8f0; }
