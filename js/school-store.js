@@ -3522,7 +3522,7 @@
       ],
       status: 'ACTIVE',
       published: true,
-      submittedCount: 11,
+      submittedCount: 16,
       archived: false,
       submissions: {
         'student-4a-311': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 9, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
@@ -3536,10 +3536,11 @@
         'student-4b-305': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4a-319': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-309': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 10, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
-        'student-4a-300': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
-        'student-4b-306': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
-        'student-4a-313': { status: 'IN_PROGRESS', attempted: 1, correct: 1, score: 20, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 1 of 5 steps so far (from the Results sheet)' },
-        'student-4b-301': { status: 'IN_PROGRESS', attempted: 2, correct: 2, score: 40, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 2 of 5 steps so far (from the Results sheet)' }
+        'student-4a-300': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4b-306': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4a-313': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4b-301': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4a-317': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' }
       }
     },
     {
