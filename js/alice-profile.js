@@ -179,7 +179,10 @@
     var useCard = true;
     var cardPhoto = esc(encodeURI(CARD_ + party.photo));
     var cartoonAv = esc(ART_ + 'avatars/a_' + key + '.webp'), cartoonCh = esc(ART_ + 'characters/c_' + key + '.webp');
-    var avatar = useCard
+    var girlAv = key === 'absolem' ? esc(ART_ + 'avatars/a_absolem_girl.webp') : '';   /* Absolem is played by a girl: her own picture in the round frame */
+    var avatar = girlAv
+      ? '<img src="' + girlAv + '" alt="" data-fb="' + cardPhoto + '|' + emo + '" style="width:100%; height:100%; object-fit:cover; object-position:50% 20%;" onerror="AliceProfile.fb(this)">'
+      : useCard
       ? '<img src="' + cardPhoto + '" alt="" data-fb="' + cartoonAv + '|' + emo + '" style="width:100%; height:100%; object-fit:cover; object-position:50% 14%;" onerror="AliceProfile.fb(this)">'
       : ('<img src="' + cartoonAv + '" alt="" data-fb="' + cartoonCh + '|' + emo + '" data-zoom="1" style="width:100%; height:100%; object-fit:cover;" onerror="AliceProfile.fb(this)">');
     var big = '<img src="' + esc(ART_ + 'characters/c_' + key + '.webp') + '" alt="' + esc(role.short) + '" data-fb="' + emo + '" style="display:block; width:100%; height:auto; max-height:230px; object-fit:contain;" onerror="AliceProfile.fb(this)">';
