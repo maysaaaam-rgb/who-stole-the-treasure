@@ -1,7 +1,8 @@
-/* Alice Tea Party: home practice 2. Five small tasks per pupil, in any order:
-   1 Read your dialogue   2 Say it with someone at home   3 Record it (show it in class)
-   4 Make your prop       5 Learn three tea-party phrases
-   Progress stays on this device. Each task done is reported to the teacher's Google Sheet (same sheet as practice 1). */
+/* Alice Tea Party: home practice 2. Three short tasks per pupil, in any order:
+   1 Read your dialogue   2 Say it with someone at home   3 Record 30 seconds and send it to the teacher
+   (The prop and the three phrases moved to next week.)
+   Progress stays on this device. Each task done is reported to the teacher's Google Sheet (same sheet as practice 1);
+   the recording goes to the teacher's Google Drive through the same script. */
 (function () {
   'use strict';
   const P = window.PARTY;
@@ -51,7 +52,7 @@
         '<div class="tabs">' + keys.map(k => '<button class="btn ghost ' + (k === cur ? 'on' : '') + '" data-k="' + k + '">' + P.classes[k].label + '</button>').join('') + '</div>' +
         '<div class="grid">' + P.classes[cur].students.map(s => {
           const n = Object.keys(save.done[s.id] || {}).filter(t => save.done[s.id][t]).length;
-          return '<a class="btn stu ' + (n >= 5 ? 'done' : '') + '" href="?s=' + s.id + '" style="text-decoration:none">' + esc(s.name) + '<small>' + esc(P.roles[s.role].short) + (n ? ' · ' + n + '/5' : '') + '</small></a>';
+          return '<a class="btn stu ' + (n >= 3 ? 'done' : '') + '" href="?s=' + s.id + '" style="text-decoration:none">' + esc(s.name) + '<small>' + esc(P.roles[s.role].short) + (n ? ' · ' + n + '/3' : '') + '</small></a>';
         }).join('') + '</div></section>');
       stage.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { cur = b.dataset.k; try { localStorage.setItem('eaa_party_class', cur); } catch (e) { /* ignore */ } draw(); }));
     }
@@ -64,8 +65,9 @@
   if (!save.done[ST.id]) save.done[ST.id] = {};
   const mine = save.done[ST.id];
   $('#sub').textContent = ST.name + ' · ' + ROLE.short;
-  const doneCount = () => ['t1', 't2', 't3', 't4', 't5'].filter(t => mine[t]).length;
-  const xpNow = () => doneCount() * 12 + (doneCount() >= 5 ? 20 : 0);   // 5 tasks x 12 + 20 bonus = 80 XP
+  const TOTAL = 3;
+  const doneCount = () => ['t1', 't2', 't3'].filter(t => mine[t]).length;
+  const xpNow = () => doneCount() * 20 + (doneCount() >= TOTAL ? 20 : 0);   // 3 tasks x 20 + 20 bonus = 80 XP
 
   /* ---------- tell the teacher (Google Sheet). Works offline: unsent reports are kept and retried. ---------- */
   const CFG = window.PARTY_CONFIG || {};
@@ -87,7 +89,7 @@
     if (!CFG.submitUrl || !doneCount()) return;
     const p = pendingGet();
     p[ST.id] = { token: CFG.token, homework: HOMEWORK, studentId: ST.id, name: ST.name, classLabel: ST.classLabel, character: ROLE.short,
-      steps: doneCount(), xp: xpNow(), device: (navigator.userAgent || '').slice(0, 60), at: new Date().toISOString() };
+      steps: doneCount() >= TOTAL ? 5 : doneCount(), xp: xpNow(), device: (navigator.userAgent || '').slice(0, 60), at: new Date().toISOString() };
     pendingSet(p); flushReports();
   }
   window.addEventListener('online', flushReports);
@@ -115,6 +117,90 @@
     return '<li class="line ' + (isMine ? 'mine' : '') + '"><span class="t"><span class="w">' + esc(labelOverride || (P.roles[who] ? P.roles[who].short : who)) + (isMine ? ' (you)' : '') + '</span>' + esc(text) +
       '</span><button class="btn amber speak" data-say="' + esc(text) + '" aria-label="Listen">🔊</button></li>';
   }
+
+  /* ---------- task 3: record up to 30 seconds in the page and send it to the teacher's Drive ---------- */
+  const REC_MAX = 30, FILE_MAX = 12 * 1024 * 1024;
+  const rec = { state: 'idle', blob: null, mime: '', url: '', secs: 0, mr: null, timer: null, stream: null, msg: '' };
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  function recordHtml() {
+    return '<p>Say your lines. <b>30 seconds</b> is enough. Press the red button, speak, then send it to your teacher.</p>' +
+      '<div id="rec"></div><div class="safe">Only your teacher can listen to it. You can record again.</div>';
+  }
+  function recPaint() {
+    const box = $('#rec'); if (!box) return;
+    const big = 'min-height:56px;font-size:1.05rem;width:100%;margin:6px 0;';
+    let h = '';
+    if (rec.state === 'recording') {
+      h = '<div style="text-align:center;font-weight:900;font-size:1.4rem;color:#fecaca">● ' + rec.secs + ' / ' + REC_MAX + ' s</div>' +
+        '<button class="btn recstop" style="' + big + 'background:#dc2626;border-bottom-color:#7f1d1d">⏹ Stop</button>';
+    } else if (rec.state === 'ready' || rec.state === 'fail') {
+      h = '<audio controls src="' + rec.url + '" style="width:100%"></audio>' +
+        (rec.state === 'fail' ? '<div class="safe">It did not send. Check the internet and try again.</div>' : '') +
+        '<button class="btn green recsend" style="' + big + '">📤 Send to my teacher</button>' +
+        '<button class="btn ghost recagain" style="' + big + '">🔁 Record again</button>';
+    } else if (rec.state === 'sending') {
+      h = '<div style="text-align:center;font-weight:800">Sending… please wait ⏳</div>';
+    } else if (mine.t3) {
+      h = '<div style="text-align:center;font-weight:900;font-size:1.1rem">✅ Sent to your teacher!</div>' +
+        '<button class="btn ghost recagain" style="' + big + '">🔁 Send a new one</button>';
+    } else {
+      h = (canRecord ? '<button class="btn recgo" style="' + big + 'background:#dc2626;border-bottom-color:#7f1d1d">🎤 Record 30 seconds</button>' : '') +
+        '<label class="btn ghost" style="' + big + 'cursor:pointer">📁 ' + (canRecord ? 'Or choose a recording' : 'Choose a recording from my phone') +
+        '<input type="file" class="recfile" accept="audio/*,video/*" style="display:none"></label>' + (rec.msg ? '<div class="safe">' + esc(rec.msg) + '</div>' : '');
+    }
+    box.innerHTML = h;
+    const q = (c, f) => { const e = box.querySelector(c); if (e) e.addEventListener('click', f); };
+    q('.recgo', recStart); q('.recstop', recStop); q('.recsend', recSend); q('.recagain', () => { recReset(); recPaint(); });
+    const fi = box.querySelector('.recfile');
+    if (fi) fi.addEventListener('change', () => {
+      const f = fi.files && fi.files[0]; if (!f) return;
+      if (f.size > FILE_MAX) { rec.msg = 'That file is too big. Please record 30 seconds only.'; recPaint(); return; }
+      recSet(f, f.type || 'audio/mp4');
+    });
+  }
+  function recReset() {
+    clearInterval(rec.timer); if (rec.stream) rec.stream.getTracks().forEach(t => t.stop());
+    if (rec.url) { try { URL.revokeObjectURL(rec.url); } catch (e) { /* ignore */ } }
+    rec.state = 'idle'; rec.blob = null; rec.url = ''; rec.secs = 0; rec.mr = null; rec.stream = null; rec.msg = '';
+  }
+  function recSet(blob, mime) { rec.blob = blob; rec.mime = mime; rec.url = URL.createObjectURL(blob); rec.state = 'ready'; rec.msg = ''; recPaint(); }
+  async function recStart() {
+    audio();
+    try {
+      rec.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+      const mt = types.filter(t => window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t))[0];
+      const chunks = [];
+      rec.mr = mt ? new MediaRecorder(rec.stream, { mimeType: mt, audioBitsPerSecond: 48000 }) : new MediaRecorder(rec.stream);
+      rec.mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.mr.onstop = () => {
+        clearInterval(rec.timer); rec.stream.getTracks().forEach(t => t.stop());
+        const mime = rec.mr.mimeType || mt || 'audio/webm';
+        recSet(new Blob(chunks, { type: mime }), mime);
+      };
+      rec.secs = 0; rec.state = 'recording'; rec.mr.start(); recPaint();
+      rec.timer = setInterval(() => { rec.secs++; if (rec.secs >= REC_MAX) recStop(); else recPaint(); }, 1000);
+    } catch (e) {
+      recReset(); rec.msg = 'I cannot use the microphone. Allow the microphone, or choose a recording from your phone.'; recPaint();
+    }
+  }
+  function recStop() { clearInterval(rec.timer); if (rec.mr && rec.mr.state !== 'inactive') rec.mr.stop(); }
+  function toBase64(blob) {
+    return new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = no; r.readAsDataURL(blob); });
+  }
+  async function recSend() {
+    if (!CFG.submitUrl || !rec.blob) return;
+    rec.state = 'sending'; recPaint();
+    try {
+      const ext = /mp4|m4a|aac/.test(rec.mime) ? 'm4a' : /ogg/.test(rec.mime) ? 'ogg' : /video/.test(rec.mime) ? 'mp4' : 'webm';
+      const data = await toBase64(rec.blob);
+      await fetch(CFG.submitUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ token: CFG.token, type: 'recording', homework: HOMEWORK, studentId: ST.id, name: ST.name, classLabel: ST.classLabel, character: ROLE.short,
+          file: { name: ST.classLabel + ' - ' + ST.name + ' - week 2.' + ext, mime: rec.mime, data: data } }) });
+      recReset(); mine.t3 = true; persist(); report(); sfxCorrect(); draw(true);
+    } catch (e) { rec.state = 'fail'; recPaint(); }
+  }
+
   const TASKS = [
     { id: 't1', ico: pic('', '📖'), t: 'Read your dialogue', body: () =>
       '<p>Tap 🔊 to listen. Your lines are yellow. Read the whole conversation once.</p>' +
@@ -129,24 +215,8 @@
       [['1', '⭐ I read the card'], ['2', '⭐⭐ I looked at the card only sometimes'], ['3', '⭐⭐⭐ I said it without the card!']].map(l => '<button class="btn ghost lvbtn ' + (save.level[ST.id] === l[0] ? 'on' : '') + '" data-l="' + l[0] + '">' + l[1] + '</button>').join('') + '</div>' +
       '<label class="chk"><input type="checkbox" data-c="1"> Loud voice</label><label class="chk"><input type="checkbox" data-c="2"> I look up</label><label class="chk"><input type="checkbox" data-c="3"> I smile</label>',
       btn: '✅ I said it with someone', need: () => save.level[ST.id] },
-    { id: 't3', ico: pic('tool_phone_record', '📱'), t: 'Record it', body: () =>
-      '<p>Use a phone. Press record. Say your lines (about 1 minute). Keep the video or voice message. <b>Show it in class.</b></p>' +
-      '<div class="safe">You can record a voice message if you do not want a video.</div>',
-      btn: '✅ I recorded it' },
-    { id: 't4', ico: pic('', '✂️'), t: 'Make your prop', body: () => {
-      const props = ROLE.props || [];
-      return '<p>Make ONE prop from paper. Bring it to class. Wear it for the dialogue!</p>' +
-        props.map(p => '<div class="propbox"><div class="pi">' + pic(propArt(p), propEmoji(p)) + '</div><div><b>' + esc(p) + '</b></div></div>').join('') +
-        '<div class="craft"><span>1. Draw</span><span>2. Cut</span><span>3. Fold and tape</span></div>' +
-        '<p>Say it: <b>"This is my ' + esc(String(props[0] || 'prop').replace(/^(a|an) /, '')) + '. It is big and funny."</b> <button class="btn amber speak" data-say="This is my ' + esc(String(props[0] || 'prop').replace(/^(a|an) /, '')) + '. It is big and funny." aria-label="Listen" style="min-height:44px;width:52px;padding:0">🔊</button></p>' +
-        '<div class="safe">Ask an adult to help with scissors.</div>';
-    }, btn: '✅ I made my prop' },
-    { id: 't5', ico: pic('tea_would_you_like', '🫖'), t: 'Learn 3 tea-party phrases', body: () =>
-      '<p>Tap 🔊, then say each phrase out loud. Practise with a cup and a plate at home!</p>' +
-      PHRASES.map((p, k) => '<div class="propbox"><div class="pi">' + pic(p.art, p.e) + '</div><div style="flex:1"><b>' + esc(p.say) + '</b><br><small>' + esc(p.tip) + '</small></div>' +
-        '<div style="display:grid;gap:6px"><button class="btn amber speak" data-say="' + esc(p.say.split(' / ')[0]) + '" aria-label="Listen" style="min-height:44px;width:52px;padding:0">🔊</button>' +
-        '<button class="btn ' + (save.said[ST.id + k] ? 'green' : 'ghost') + ' saidbtn" data-k="' + k + '" style="min-height:44px;padding:0 6px;font-size:.85rem">' + (save.said[ST.id + k] ? '✓' : 'I said it') + '</button></div></div>').join(''),
-      btn: '✅ I know the 3 phrases', need: () => PHRASES.every((p, k) => save.said[ST.id + k]) }
+    { id: 't3', ico: pic('tool_phone_record', '🎤'), t: 'Record 30 seconds and send it', body: () => recordHtml(),
+      btn: '✅ Done', need: () => !!(mine.t3 || rec.sent) }
   ];
 
   /* ---------- draw ---------- */
@@ -154,16 +224,16 @@
   function draw(keepScroll) {
     const y = window.scrollY; renderSteps();
     const n = doneCount();
-    let out = '<section class="panel"><div class="plan-hd"><img src="assets/' + esc(ST.photo) + '" alt="' + esc(ROLE.short) + '"><div><h1>My Tea Party Plan</h1><div class="goal" style="margin:0">' + esc(ST.name) + ' · ' + esc(ROLE.short) + ' · ' + n + ' of 5 done</div></div></div>' +
-      '<p class="goal">Do the five tasks in any order. Each one takes about 5 minutes. A little every day is best!</p>' +
+    let out = '<section class="panel"><div class="plan-hd"><img src="assets/' + esc(ST.photo) + '" alt="' + esc(ROLE.short) + '"><div><h1>My Tea Party Plan</h1><div class="goal" style="margin:0">' + esc(ST.name) + ' · ' + esc(ROLE.short) + ' · ' + n + ' of 3 done</div></div></div>' +
+      '<p class="goal">Do the three tasks in any order. It takes about 10 minutes. A little every day is best!</p>' +
       '<a class="btn ghost" href="profile.html?s=' + esc(ST.id) + '" style="text-decoration:none">🫖 My Alice profile</a></section>';
     TASKS.forEach((t, i) => {
       out += '<article class="task ' + (mine[t.id] ? 'done' : '') + '" data-t="' + t.id + '"><div class="th"><div class="ico">' + t.ico + '</div><div><div class="tn">Task ' + (i + 1) + (mine[t.id] ? ' · done ✓' : '') + '</div><h2>' + esc(t.t) + '</h2></div></div>' +
-        t.body() + '<div class="row"><button class="btn green wide donebtn" data-t="' + t.id + '"' + (t.need && !t.need() ? ' disabled' : '') + '>' + (mine[t.id] ? '✓ Done' : t.btn) + '</button></div></article>';
+        t.body() + (t.id === 't3' ? '' : '<div class="row"><button class="btn green wide donebtn" data-t="' + t.id + '"' + (t.need && !t.need() ? ' disabled' : '') + '>' + (mine[t.id] ? '✓ Done' : t.btn) + '</button></div>') + '</article>';
     });
-    if (n >= 5) out += winHtml();
+    if (n >= TOTAL) out += winHtml();
     html(out);
-    wire();
+    wire(); recPaint();
     if (keepScroll) window.scrollTo(0, y);
   }
   function winHtml() {
@@ -179,11 +249,11 @@
     stage.querySelectorAll('.donebtn').forEach(b => b.addEventListener('click', () => {
       const t = TASKS.filter(x => x.id === b.dataset.t)[0];
       if (t.need && !t.need()) { sfxSoft(); return; }
-      const was = doneCount() >= 5;
+      const was = doneCount() >= TOTAL;
       mine[t.id] = !mine[t.id]; persist(); report();
-      if (mine[t.id]) { if (doneCount() >= 5 && !was) { sfxWin(); speak('Well done! You are a Tea Party Star!', 0.8); } else sfxCorrect(); }
+      if (mine[t.id]) { if (doneCount() >= TOTAL && !was) { sfxWin(); speak('Well done! You are a Tea Party Star!', 0.8); } else sfxCorrect(); }
       draw(true);
-      if (doneCount() >= 5 && !was) { const w = $('#win'); if (w && w.scrollIntoView) w.scrollIntoView({ behavior: 'smooth' }); }
+      if (doneCount() >= TOTAL && !was) { const w = $('#win'); if (w && w.scrollIntoView) w.scrollIntoView({ behavior: 'smooth' }); }
     }));
   }
   draw(false);

@@ -36,6 +36,7 @@ function doPost(e) {
     const d = JSON.parse(e.postData.contents);
     if (d.token !== TOKEN) return reply({ ok: false, error: 'bad token' });
     if (!d.studentId) return reply({ ok: false, error: 'no student' });
+    if (d.type === 'recording') { saveRecording(d); return reply({ ok: true }); }   // 30-second recording from the Week 2 page
     if (d.type === 'look') { upsertLook(d); return reply({ ok: true }); }   // monster look chosen on the pupil's Alice page
     upsert(d);
     return reply({ ok: true });
@@ -100,6 +101,29 @@ function upsertLook(d) {
   for (let i = 0; i < ids.length; i++) { if (String(ids[i][0]) === String(d.studentId)) { idx = i; break; } }
   sh.getRange(idx === -1 ? sh.getLastRow() + 1 : idx + 2, 1, 1, row.length).setValues([row]);
 }
+
+// ---------- Week 2: the pupil's 30-second recording is saved in Drive (folder "Tea Party Recordings", private) and listed on the "Recordings" tab ----------
+function saveRecording(d) {
+  if (!d.file || !d.file.data) throw new Error('no recording');
+  const mime = String(d.file.mime || 'audio/webm').split(';')[0];
+  if (!/^(audio|video)\//.test(mime)) throw new Error('not audio or video');
+  const folders = DriveApp.getFoldersByName('Tea Party Recordings');
+  const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder('Tea Party Recordings');
+  const name = String(d.file.name || (d.name + ' - week 2')).replace(/[\/:*?"<>|]/g, '-').slice(0, 120);
+  const link = folder.createFile(Utilities.newBlob(Utilities.base64Decode(d.file.data), mime, name)).getUrl();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName('Recordings') || ss.insertSheet('Recordings');
+  if (sh.getLastRow() === 0) {
+    sh.appendRow(['Time', 'Class', 'Student', 'Character', 'Student ID', 'Recording']);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, 6).setFontWeight('bold').setBackground('#7c2d12').setFontColor('#ffffff');
+    sh.setColumnWidth(6, 360);
+  }
+  sh.appendRow([new Date(), String(d.classLabel || '').slice(0, 40), String(d.name || '').slice(0, 60), String(d.character || '').slice(0, 40), String(d.studentId || '').slice(0, 40), link]);
+}
+
+// Run this once from the editor (Run > authorizeDrive) so Google asks for permission to use Drive.
+function authorizeDrive() { DriveApp.getRootFolder(); }
 
 function reply(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);

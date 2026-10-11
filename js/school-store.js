@@ -3546,7 +3546,7 @@
       id: 'hw-alice-tea-party-w2',
       syncSubmissions: true,
       title: '☕ Alice Tea Party: Home Practice (Week 2)',
-      description: 'Get ready for the tea party: read your dialogue, say it with someone at home, record it, make your prop and learn three tea-party phrases. Five small tasks.',
+      description: 'Get ready for the tea party: read your dialogue, say it with someone at home, and record 30 seconds and send it to your teacher. Three short tasks.',
       subject: 'English',
       skill: 'Speaking',
       cefrLevel: 'A1+',
@@ -3554,7 +3554,7 @@
       className: 'Grade 4',
       studentIds: 'all',
       dueDate: 'Oct 15, 2026',
-      estimatedTime: '25 minutes',
+      estimatedTime: '10 minutes',
       xpReward: 80,
       optionalChallenge: false,
       resources: [
@@ -3563,9 +3563,7 @@
       instructions: [
         '1. Read your dialogue and listen to every line',
         '2. Say it with someone at home',
-        '3. Record it and show it in class',
-        '4. Make your paper prop and bring it',
-        '5. Learn the 3 tea-party phrases'
+        '3. Record 30 seconds and send it to your teacher'
       ],
       status: 'ACTIVE',
       published: true,
@@ -13523,10 +13521,12 @@
       // Items that only have a picture for the illustrated monsters stay hidden while the drawn monsters are in use.
       const D = (typeof window !== 'undefined') ? window.MonsterDressUp : null;
       const hideArtOnly = (typeof window === 'undefined' || window.EAA_ILLUSTRATED_MONSTERS !== true) && D && typeof D.isArtOnly === 'function';
+      const show3dOnly = (typeof window !== 'undefined' && window.EAA_ILLUSTRATED_MONSTERS === true) && D && typeof D.showsOn3d === 'function';
       return this.state.monsterItems.filter(item => {
         const matchCat = !category || item.category === category;
         const matchArchived = includeArchived || item.status !== 'archived';
         if (hideArtOnly && D.isArtOnly(item.id)) return false;
+        if (show3dOnly && !D.showsOn3d(item)) return false;   // with 3D on, only offer things a 3D monster can actually wear
         return matchCat && matchArchived;
       });
     }
