@@ -6392,54 +6392,148 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
   // ASSIGNMENTS VIEW (Complete CRUD)
   // =========================================================================
+  /* ---- Weekly Assignments & Homework: one place, grouped by week, with every pupil's status ---- */
+  let asgWeekFilter = 'all';
+  window.setAsgWeek = function (v) { asgWeekFilter = v || 'all'; renderCurrentView(); };
+
+  function asgEsc(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function asgWeekStart(dateStr) {
+    const t = Date.parse(dateStr);
+    if (isNaN(t)) return null;
+    const d = new Date(t); d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));   // Monday
+    return d;
+  }
+  function asgWeekLabel(d) {
+    if (!d) return 'Ongoing homework, no due date';
+    const e = new Date(d); e.setDate(e.getDate() + 6);
+    const f = x => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return 'Week of ' + f(d) + ' – ' + f(e);
+  }
+  function asgStatusOf(sub) {
+    if (!sub) return 'none';
+    const st = String(sub.status || '').toUpperCase();
+    if (st === 'COMPLETED' || st === 'COMPLETE') return 'done';
+    return 'started';
+  }
+  function asgPupilsHtml(h, students) {
+    const groups = { done: [], started: [], none: [] };
+    students.forEach(st => { groups[asgStatusOf((h.submissions || {})[st.id])].push(st); });
+    const nm = st => asgEsc(((st.firstName || '') + ' ' + (st.lastName || '')).trim() || st.name || st.id);
+    const chip = (st, kind) => {
+      const sub = (h.submissions || {})[st.id] || {};
+      const style = kind === 'done' ? 'background:rgba(16,185,129,0.15); color:#047857; border:1px solid rgba(16,185,129,0.5);'
+        : kind === 'started' ? 'background:rgba(245,158,11,0.15); color:#b45309; border:1px solid rgba(245,158,11,0.5);'
+        : 'background:rgba(148,163,184,0.12); color:var(--text-muted); border:1px solid var(--border-subtle);';
+      const tip = sub.notes ? ' title="' + asgEsc(sub.notes) + '"' : '';
+      const mark = kind === 'done' ? '✓ ' : (kind === 'started' ? '⏳ ' : '');
+      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + '</span>';
+    };
+    const block = (label, kind) => groups[kind].length
+      ? '<div style="margin-top:8px;"><div style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">' + label + ' (' + groups[kind].length + ')</div>' + groups[kind].map(st => chip(st, kind)).join('') + '</div>'
+      : '';
+    return block('Finished', 'done') + block('Started, not finished', 'started') + block('Not started yet', 'none');
+  }
+  function asgHomeworkCard(h, students, cls) {
+    /* grade-wide homework: also count pupils who finished it but sit in a sister class list */
+    students = students.slice();
+    Object.keys(h.submissions || {}).forEach(id => { if (!students.some(st => st.id === id)) { const extra = store.getStudent ? store.getStudent(id) : null; if (extra && !extra.archived) students.push(extra); } });
+    const done = students.filter(st => asgStatusOf((h.submissions || {})[st.id]) === 'done').length;
+    const started = students.filter(st => asgStatusOf((h.submissions || {})[st.id]) === 'started').length;
+    const total = students.length || 1;
+    const pct = Math.round(done / total * 100);
+    return '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:16px 18px;">' +
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">' +
+        '<div style="min-width:0;">' +
+          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;"><span style="font-weight:800; font-size:1.05rem;">' + asgEsc(h.title) + '</span>' +
+            '<span style="font-size:0.72rem; background:rgba(16,185,129,0.12); color:#047857; padding:2px 8px; border-radius:999px; font-weight:800;">HOMEWORK</span>' +
+            '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(cls ? cls.name : (h.className || 'All Classes')) + '</span></div>' +
+          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' · ⭐ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
+        '</div>' +
+        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + '</div>' +
+      '</div>' +
+      '<div style="height:10px; border-radius:6px; background:rgba(148,163,184,0.25); overflow:hidden; margin-top:10px;"><div style="height:100%; width:' + pct + '%; background:linear-gradient(90deg,#10b981,#38bdf8); border-radius:6px;"></div></div>' +
+      '<details style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700; color:var(--color-primary);">Show every pupil</summary>' + asgPupilsHtml(h, students) + '</details>' +
+    '</div>';
+  }
+  function asgAssignmentCard(a, classes) {
+    const cls = classes.find(c => c.id === a.classId) || { name: 'All Classes' };
+    const res = store.getResource(a.gameId);
+    return '' +
+      '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+        '<div>' +
+          '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            '<span style="font-weight:800; font-size:1.05rem;">' + asgEsc(a.title) + '</span>' +
+            '<span style="font-size:0.72rem; background:rgba(56,189,248,0.15); color:#0369a1; padding:2px 8px; border-radius:999px; font-weight:800;">ASSIGNMENT</span>' +
+            '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(cls.name) + '</span>' +
+          '</div>' +
+          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' +
+            'Due: ' + asgEsc(a.dueDate || 'No deadline') + ((res || a.gameId) ? ' · Game: ' + asgEsc(res ? res.title : a.gameId) : '') +
+            (a.assignedCount ? ' · ' + (Number(a.completedCount) || 0) + ' of ' + a.assignedCount + ' done' : '') +
+          '</div>' +
+          (a.instructions ? '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">"' + asgEsc(a.instructions) + '"</div>' : '') +
+        '</div>' +
+        '<div style="display:flex; align-items:center; gap:8px;">' +
+          (res ? '<a href="' + asgEsc(res.route) + '" class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem; text-decoration:none;">▶ Play</a>' : '') +
+          '<button class="btn-sm-secondary" onclick="openEditAssignmentModal(\'' + asgEsc(a.id) + '\')">✏️ Edit</button>' +
+          '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + asgEsc(a.id) + '\')">📋</button>' +
+          '<button class="btn-sm-secondary" onclick="handleArchiveAssignment(\'' + asgEsc(a.id) + '\')" style="color:var(--color-danger);">📦</button>' +
+        '</div>' +
+      '</div>';
+  }
+
   function renderAssignmentsView(container) {
     const activeClass = store.getActiveClass();
-    const allAssignments = store.getAssignments();
     const classes = store.getClasses();
-    const assignments = allAssignments.filter(a => {
-      if (!activeClass) return true;
-      if (a.classId && a.classId !== 'all' && a.classId !== activeClass.id) return false;
-      return true;
+    const students = activeClass ? (store.getStudents(activeClass.id) || []) : (store.getStudents() || []);
+    const assignments = store.getAssignments().filter(a => !activeClass || !a.classId || a.classId === 'all' || a.classId === activeClass.id);
+    let homework = [];
+    try { homework = (store.getHomework(activeClass ? activeClass.id : null) || []).filter(h => !h.archived); } catch (e) { homework = []; }
+
+    /* one list, newest week first */
+    const items = assignments.map(a => ({ kind: 'assignment', due: a.dueDate, a: a }))
+      .concat(homework.map(h => ({ kind: 'homework', due: h.dueDate, h: h })));
+    items.forEach(it => { it.week = asgWeekStart(it.due); it.ts = it.week ? it.week.getTime() : 0; });
+    items.sort((x, y) => y.ts - x.ts);
+    const weeks = [];
+    items.forEach(it => { if (!weeks.some(w => w.ts === it.ts)) weeks.push({ ts: it.ts, label: asgWeekLabel(it.week) }); });
+    if (asgWeekFilter !== 'all' && !weeks.some(w => String(w.ts) === asgWeekFilter)) asgWeekFilter = 'all';
+    const shown = items.filter(it => asgWeekFilter === 'all' || String(it.ts) === asgWeekFilter);
+
+    let body = '';
+    weeks.filter(w => asgWeekFilter === 'all' || String(w.ts) === asgWeekFilter).forEach(w => {
+      const list = shown.filter(it => it.ts === w.ts);
+      const cards = list.map(it => it.kind === 'homework'
+          ? asgHomeworkCard(it.h, students, classes.find(c => c.id === it.h.classId))
+          : asgAssignmentCard(it.a, classes)).join('');
+      const count = list.length + (list.length === 1 ? ' task' : ' tasks');
+      if (!w.ts && asgWeekFilter === 'all') {
+        body += '<details style="margin-top:22px;"><summary style="cursor:pointer; font-size:1.1rem; font-weight:800; color:var(--text-main);">Ongoing homework, no due date <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">· ' + count + '</span></summary><div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">' + cards + '</div></details>';
+      } else {
+        body += '<div style="margin-top:22px;"><h2 style="font-size:1.1rem; font-weight:800; margin:0 0 10px; color:var(--text-main);">' + asgEsc(w.ts ? w.label : 'Ongoing homework, no due date') + ' <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">· ' + count + '</span></h2><div style="display:flex; flex-direction:column; gap:12px;">' + cards + '</div></div>';
+      }
     });
 
-    container.innerHTML = 
-      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
+    container.innerHTML =
+      '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Class Assignments</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage assigned digital tasks, deadlines, and submissions.</p>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Weekly Assignments &amp; Homework</h1>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + asgEsc(activeClass ? activeClass.name : 'All classes') + ' · everything given each week, and who has finished it.</p>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">' +
+          '<select onchange="setAsgWeek(this.value)" aria-label="Choose a week" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-subtle); background:var(--bg-card); color:var(--text-main); font-weight:700;">' +
+            '<option value="all"' + (asgWeekFilter === 'all' ? ' selected' : '') + '>All weeks</option>' +
+            weeks.map(w => '<option value="' + w.ts + '"' + (String(w.ts) === asgWeekFilter ? ' selected' : '') + '>' + asgEsc(w.label) + '</option>').join('') +
+          '</select>' +
+          '<button class="btn-sm-secondary" onclick="switchView(\'homework\')">✍️ Homework details</button>' +
+          '<button class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
+        '</div>' +
       '</div>' +
-
-      '<div style="display:flex; flex-direction:column; gap:14px;">' +
-        assignments.map(a => {
-          const cls = classes.find(c => c.id === a.classId) || { name: 'All Classes' };
-          const res = store.getResource(a.gameId);
-          return '' +
-            '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; box-shadow:var(--shadow-sm);">' +
-              '<div>' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span style="font-weight:800; font-size:1.05rem;">' + a.title + '</span>' +
-                  '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + cls.name + '</span>' +
-                '</div>' +
-                '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' +
-                  'Due: ' + (a.dueDate || 'No deadline') + ((res || a.gameId) ? ' · Game: ' + (res ? res.title : a.gameId) : '') +
-                '</div>' +
-                (a.instructions ? '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">"' + a.instructions + '"</div>' : '') +
-              '</div>' +
-              '<div style="display:flex; align-items:center; gap:8px;">' +
-                (res ? '<a href="' + res.route + '" class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem; text-decoration:none;">▶ Play</a>' : '') +
-                '<button class="btn-sm-secondary" onclick="openEditAssignmentModal(\'' + a.id + '\')">✏️ Edit</button>' +
-                '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + a.id + '\')">📋</button>' +
-                '<button class="btn-sm-secondary" onclick="handleArchiveAssignment(\'' + a.id + '\')" style="color:var(--color-danger);">📦</button>' +
-              '</div>' +
-            '</div>';
-        }).join('') +
-      '</div>' +
+      (shown.length ? body : '<div style="margin-top:20px; padding:20px; border:1px dashed var(--border-subtle); border-radius:14px; color:var(--text-muted);">Nothing is assigned for this class yet.</div>') +
       '<div class="asg-next">' +
         '<div class="asg-next-icon">🎯</div>' +
-        '<div class="asg-next-text"><b>' + (assignments.length === 0 ? 'No assignments yet' : 'Ready for the next one?') + '</b>' +
-          '<span>' + (assignments.length === 0 ? 'Give your class a game or a task to finish by a due date.' : 'Pick a game from the shelf and set a due date to keep the class practising.') + '</span></div>' +
+        '<div class="asg-next-text"><b>' + (items.length === 0 ? 'No assignments yet' : 'Ready for the next one?') + '</b>' +
+          '<span>' + (items.length === 0 ? 'Give your class a game or a task to finish by a due date.' : 'Pick a game from the shelf and set a due date to keep the class practising.') + '</span></div>' +
         '<div class="asg-next-actions">' +
           '<button type="button" class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
           '<button type="button" class="btn-sm-secondary" onclick="switchView(\'shelf\')">🎮 Browse the Game Shelf</button>' +
