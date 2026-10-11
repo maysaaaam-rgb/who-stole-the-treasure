@@ -156,3 +156,55 @@
 .ocard.wide { min-width: 17vh; max-width: 22vh; } .ocard.wide b { font-size: 0.8em; display: block; }
 .qbox { gap: 0.5vh; } .qopts, .stnums { margin: 0; }
 @media (max-width: 900px) { .ngrid, .stnums, .perf { grid-template-columns: repeat(4, 1fr); } .memgrid.txt { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- Lesson 5: Clean Cars ---------- */
+.l5cars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vh; margin: 0.8vh 0; } .l5cars > *, .l5doors > *, .l5syms > * { min-width: 0; }
+.l5card { --bg: #1e293b; --lip: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5vh; padding: 0.8vh 0.6vh; min-height: 18vh; min-width: 0;
+  background: var(--bg); color: #fff; border: 2px solid rgba(148, 163, 184, 0.3); border-bottom: 5px solid var(--lip); border-radius: 2vh; cursor: pointer; font: inherit; font-size: 2.4vh; font-weight: 800;
+  transition: transform 0.2s var(--spring-snap), border-color 0.2s, background 0.2s; }
+.l5card:active { transform: translateY(4px); border-bottom-width: 1px; }
+.l5card.on { border-color: #38bdf8; background: #0c4a6e; }
+.l5card.sel { border-color: #f59e0b; background: #78350f; transform: scale(1.04); }
+.l5card.ok { border-color: #10b981; background: #064e3b; cursor: default; }
+.l5card.bad { animation: wob 0.5s; border-color: #f43f5e; }
+.l5card.sm { min-height: 6.6vh; flex-direction: row; justify-content: flex-start; padding: 0.4vh 1.4vh; gap: 1.4vh; font-size: 2.2vh; }
+.l5card.sym { justify-content: center; }
+.cpic .pic { height: 11vh; width: auto; filter: drop-shadow(0 1vh 1vh rgba(0, 0, 0, 0.45)); }
+.l5card.sm .cpic .pic { height: 5.4vh; }
+.cpic.big .pic { height: 20vh; } .cpic.road .pic { height: 11vh; }
+.spic { font-size: 5vh; line-height: 1; } .spic .pic { height: 5.4vh; }
+.l5name { min-height: 1.2em; text-align: center; }
+.l5match { display: grid; grid-template-columns: 1fr 6vh 1fr; gap: 1.4vh; align-items: center; margin-top: 1vh; }
+.l5col { display: grid; gap: 0.5vh; } .l5mid { font-size: 5vh; text-align: center; }
+.l5doors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vh; margin: 0.8vh 0; }
+.l5door { position: relative; min-height: 15vh; border: 0; border-bottom: 5px solid #4a2c0b; border-radius: 1.6vh 1.6vh 0.6vh 0.6vh; cursor: pointer; font: inherit;
+  background: linear-gradient(135deg, #b45309, #92400e); box-shadow: inset 0 0 0 0.7vh #78350f; transition: transform 0.25s var(--spring-snap); display: grid; place-items: center; overflow: hidden; }
+.l5door:active { transform: translateY(4px); }
+.l5door .dn { font-size: 6vh; font-weight: 900; color: #fde68a; text-shadow: 0 0.5vh 0 #451a03; }
+.l5door .dcar { position: absolute; inset: 0; display: none; place-items: center; background: radial-gradient(circle, #fef9c3, #fde047); }
+.l5door.sel { transform: translateY(-1vh); box-shadow: inset 0 0 0 0.7vh #f59e0b, 0 0 2vh rgba(245, 158, 11, 0.7); }
+.l5door.open .dn { display: none; } .l5door.open .dcar { display: grid; } .l5door.open { border-bottom-color: #15803d; }
+.l5door .dcar .pic { height: 10vh; }
+.l5clue { margin-top: 1vh; }
+.l5stage { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 2vh; align-items: center; margin: 1vh 0; }
+.l5big { display: grid; place-items: center; background: rgba(15, 23, 42, 0.7); border-radius: 2vh; min-height: 24vh; border: 1px solid rgba(148, 163, 184, 0.25); }
+.l5syms { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.4vh; }
+.l5symbtn { display: flex !important; flex-direction: column; align-items: center; gap: 0.6vh; padding: 1vh 0.4vh !important; min-height: 15vh; }
+.l5symbtn small { font-size: 2vh; text-align: center; line-height: 1.15; }
+.l5symbtn.right { background: #15803d !important; } .l5symbtn.wrong { background: #b91c1c !important; animation: wob 0.5s; }
+.l5sent { text-align: center; }
+.l5call { display: grid; justify-items: center; gap: 2vh; padding: 4vh; background: rgba(15, 23, 42, 0.8); border-radius: 2.4vh; border: 2px solid #f59e0b; text-align: center; }
+.l5call .ring { font-size: 12vh; animation: pulse 1s infinite; }
+.l5city { position: relative; min-height: 38vh; border-radius: 2vh; overflow: hidden; background: #1e293b; border: 1px solid rgba(148, 163, 184, 0.3); display: flex; align-items: flex-end; transition: background 0.8s; }
+.l5haze { position: absolute; inset: 0; background: linear-gradient(#78716c, #a8a29e 70%, #d6d3d1); opacity: 0.6; pointer-events: none; transition: opacity 0.9s; z-index: 1; }
+.l5road { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(8, 1fr); width: 100%; padding: 0 1vh 2.4vh; gap: 0.4vh; align-items: end; }
+.l5slot { position: relative; display: grid; justify-items: center; align-items: end; min-height: 19vh; }
+.l5ccar { background: none; border: 0; cursor: pointer; padding: 0; transition: transform 0.45s, opacity 0.45s; }
+.l5ccar.gone { transform: translateY(-3vh) scale(0.2); opacity: 0; pointer-events: none; }
+.l5ccar.wob { animation: wob 0.5s; }
+.l5smoke { position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 5vh; opacity: 0.85; animation: l5puff 2.4s ease-out infinite; pointer-events: none; }
+@keyframes l5puff { from { transform: translateX(-50%) translateY(0); opacity: 0.9; } to { transform: translateX(-50%) translateY(-5vh); opacity: 0.1; } }
+.l5smoke .pic { height: 6vh; } .l5smoke.none { display: none; }
+.l5smoke.gone { opacity: 0 !important; transition: opacity 0.4s; animation: none; }
+.l5tree { position: absolute; bottom: 0; font-size: 9vh; animation: pop 0.5s var(--spring-snap); }
+@media (max-width: 900px) { .l5cars, .l5doors { grid-template-columns: repeat(3, 1fr); } .l5syms { grid-template-columns: repeat(3, 1fr); } .l5stage { grid-template-columns: 1fr; } }

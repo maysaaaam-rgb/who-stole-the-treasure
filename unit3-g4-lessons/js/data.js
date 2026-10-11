@@ -215,6 +215,31 @@
     { n: 7, t: 'Things change as years go by. There is danger in the world.', e: '⚠️' }, { n: 8, t: 'Today the ice is melting. The man hopes to see the bear once more.', e: '🙏' }
   ];
 
+  /* ---------------- LESSON 5: Clean Cars (book pp. 48-55; facts from the Clean Cars reading) ---------------- */
+  D.missions5 = [
+    { e: '🚗', t: 'Name the cars' }, { e: '🔗', t: 'Match car and symbol' }, { e: '🚪', t: 'Open the doors' },
+    { e: '⚡', t: 'Find the right energy' }, { e: '🌳', t: 'Clean the city' }, { e: '💚', t: 'Pick a clean car' }
+  ];
+  /* the five cars of the reading: picture, name, symbol (energy), what it uses, clue sentences (book facts) and whether it makes the air dirty */
+  D.cars5 = [
+    { k: 'gasoline', a: 'car_gasoline', n: 'gasoline car', art: 'a gasoline car', sym: '⛽', sa: 'w_gasoline', en: 'gasoline', uses: 'A gasoline car uses gasoline.', dirty: true,
+      clue: 'I use gasoline. I am fast, but I am noisy. I make the air dirty.' },
+    { k: 'biofuel', a: 'car_biofuel', n: 'biofuel car', art: 'a biofuel car', sym: '🌽', sa: 'w_corn', en: 'biofuel from plants', uses: 'A biofuel car uses biofuel from plants like corn.', dirty: true,
+      clue: 'I use biofuel from plants like corn. I am fast, but I am very noisy.' },
+    { k: 'electric', a: 'car_electric', n: 'electric car', art: 'an electric car', sym: '⚡', sa: 'w_electricity', en: 'electricity', uses: 'An electric car uses electricity.', dirty: false,
+      clue: 'I use electricity. I am fast and quiet. I am clean, but I am expensive.' },
+    { k: 'air', a: 'car_air', n: 'air car', art: 'an air car', sym: '💨', sa: '', en: 'air', uses: 'An air car uses air.', dirty: false,
+      clue: 'I use air for energy. I am quiet and clean. I am small and slow.' },
+    { k: 'solar', a: 'car_solar', n: 'solar car', art: 'a solar car', sym: '☀️', sa: 'w_solar_panel', en: 'energy from the sun', uses: 'A solar car uses energy from the sun.', dirty: false,
+      clue: 'I use energy from the sun. I am not noisy and I am not dirty. I can be expensive.' }
+  ];
+  D.favCars = [
+    { e: '⚡', n: 'electric car', a: 'car_electric', k: 'electric' }, { e: '💨', n: 'air car', a: 'car_air', k: 'air' }, { e: '☀️', n: 'solar car', a: 'car_solar', k: 'solar' }
+  ];
+  /* the city: which cars are on the road (d = dirty) */
+  D.city5 = [
+    { k: 'gasoline', d: 1 }, { k: 'electric', d: 0 }, { k: 'gasoline', d: 1 }, { k: 'solar', d: 0 }, { k: 'biofuel', d: 1 }, { k: 'air', d: 0 }, { k: 'gasoline', d: 1 }, { k: 'electric', d: 0 }
+  ];
 
   root.U3G4Data = D;
 })(window);
