@@ -100,23 +100,60 @@
     return st === 'COMPLETED' || st === 'COMPLETE' ? 'done' : 'started';
   }
 
+  /* inside the platform: statuses come from the store, the monster block can edit the monster */
   function html(student) {
     var P = root.PARTY, store = root.schoolStore || root.store;
-    var party = P && MAP[student.id] ? P.find(MAP[student.id]) : null;
-    if (!party) {
-      return '<div style="padding:24px; text-align:center; color:var(--text-muted);"><div style="font-size:2.4rem;">🫖</div><b>No Alice in Wonderland character yet</b>' +
-        '<p style="margin:6px 0 0;">This pupil has not been given a story character. Add them in <code>alice-party-home/party-data.js</code>.</p></div>';
-    }
-    var role = party.role, key = party.roleKey, partyId = party.id;
-    var partners = P.partners(party);
-    var photo = CARD + party.photo;
-    var front = CARDFRONT[partyId] || photo;
-    var hidePic = !!HIDE_PIC[key];
-    var hw1 = null, hwList = [];
+    var partyId = MAP[student.id];
+    if (!P || !partyId || !P.find(partyId)) return noCharacter();
+    var hwList = [];
     try { hwList = (store.getHomework ? store.getHomework() : []).filter(function (h) { return String(h.id).indexOf('hw-alice-tea-party') === 0; }); } catch (e) { hwList = []; }
-    hw1 = hwList.filter(function (h) { return h.id === 'hw-alice-tea-party-w1'; })[0] || null;
+    var hw1 = hwList.filter(function (h) { return h.id === 'hw-alice-tea-party-w1'; })[0] || null;
     var hw2 = hwList.filter(function (h) { return h.id === 'hw-alice-tea-party-w2'; })[0] || null;
-    var w1 = hwStatus(hw1, student.id), w2 = hwStatus(hw2, student.id);
+    var w1sub = hw1 && hw1.submissions && hw1.submissions[student.id];
+    var mon = '';
+    try { mon = root.renderStudentMonsterAvatar ? root.renderStudentMonsterAvatar(student.id, { size: 130, animated: true }) : ''; } catch (e) { mon = ''; }
+    var monster = '<div style="margin-top:16px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
+      '<div style="width:140px; height:140px; display:grid; place-items:center; flex:none;">' + mon + '</div>' +
+      '<div style="flex:1; min-width:220px;"><h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
+        '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Change the colour, face and accessories of your monster. Alice costumes (hats, ears, crowns, bow ties) will appear here soon.</p>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+          '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + esc(student.id) + '\')">🎨 Edit my monster</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="switchStudentProfileTab(\'monster\')">👾 Monster &amp; Evolution</button>' +
+        '</div></div></div>';
+    return build(partyId, { R: '', w1: hwStatus(hw1, student.id), w2: hwStatus(hw2, student.id), w1date: w1sub && w1sub.completedDate, monster: monster });
+  }
+
+  /* on the pupils' own page (alice-party-home/profile.html): statuses come from this device */
+  function localStatus(partyId) {
+    var w1 = 'none', w2 = 'none', n2 = 0;
+    try { var a = JSON.parse(localStorage.getItem('eaa_party_home_a1plus_v1') || '{}'); if (a.done && a.done[partyId]) w1 = 'done'; } catch (e) { /* none */ }
+    try { var b = JSON.parse(localStorage.getItem('eaa_party_w2_v1') || '{}'); var d = (b.done && b.done[partyId]) || {}; n2 = ['t1', 't2', 't3', 't4', 't5'].filter(function (t) { return d[t]; }).length; w2 = n2 >= 5 ? 'done' : (n2 ? 'started' : 'none'); } catch (e2) { /* none */ }
+    return { w1: w1, w2: w2, n2: n2 };
+  }
+  function pupilPage(partyId) {
+    var P = root.PARTY;
+    if (!P || !P.find(partyId)) return noCharacter();
+    var st = localStatus(partyId);
+    var monster = '<div style="margin-top:16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;"><h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
+      '<p style="margin:0; color:#475569; font-size:0.95rem;">Your monster lives in the school platform. Your teacher will show you how to change its look in class. Alice costumes are coming soon!</p></div>';
+    return build(partyId, { R: '../', w1: st.w1, w2: st.w2, n2: st.n2, monster: monster });
+  }
+  function noCharacter() {
+    return '<div style="padding:24px; text-align:center; color:#64748b;"><div style="font-size:2.4rem;">🫖</div><b>No Alice in Wonderland character yet</b>' +
+      '<p style="margin:6px 0 0;">This pupil has not been given a story character. Add them in <code>alice-party-home/party-data.js</code>.</p></div>';
+  }
+
+  /* the profile itself; R is the path from the page to the project root ('' in the platform, '../' on the pupil page) */
+  function build(partyId, ctx) {
+    var P = root.PARTY, R = ctx.R || '';
+    var party = P.find(partyId);
+    var ART_ = R + ART, CARD_ = R + CARD;
+    var role = party.role, key = party.roleKey;
+    var partners = P.partners(party);
+    var photo = CARD_ + party.photo;
+    var front = CARDFRONT[partyId] ? R + CARDFRONT[partyId] : photo;
+    var hidePic = !!HIDE_PIC[key];
+    var w1 = ctx.w1 || 'none', w2 = ctx.w2 || 'none';
     var earned = { ready: w1 === 'done', star: w2 === 'done' };
 
     /* ---- header: avatar + character + my card ---- */
@@ -139,49 +176,36 @@
         : st === 'started' ? '<span style="background:rgba(245,158,11,0.15); color:#b45309; border:1px solid rgba(245,158,11,0.5); border-radius:999px; padding:3px 12px; font-weight:800; font-size:0.8rem;">⏳ Started</span>'
         : '<span style="background:rgba(148,163,184,0.15); color:#64748b; border:1px solid #cbd5e1; border-radius:999px; padding:3px 12px; font-weight:800; font-size:0.8rem;">Not started</span>';
     };
-    var w1sub = hw1 && hw1.submissions && hw1.submissions[student.id];
     var homework = '<div style="margin-top:16px;"><h3 style="margin:0 0 8px; font-size:1.05rem;">📚 Tea Party homework</h3><div style="display:grid; gap:8px;">' +
       '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; border:1px solid #e2e8f0; border-radius:12px; padding:10px 14px; background:#fff;">' +
-        '<div><b>Week 1 · Meet your character</b><div style="font-size:0.8rem; color:#64748b;">5 steps: meet, words, order, say, party' + (w1sub && w1sub.completedDate ? ' · ' + esc(w1sub.completedDate) : '') + '</div></div>' +
-        '<div style="display:flex; gap:8px; align-items:center;">' + chip(w1) + '<a href="alice-party-home/index.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
+        '<div><b>Week 1 · Meet your character</b><div style="font-size:0.8rem; color:#64748b;">5 steps: meet, words, order, say, party' + (ctx.w1date ? ' · ' + esc(ctx.w1date) : '') + '</div></div>' +
+        '<div style="display:flex; gap:8px; align-items:center;">' + chip(w1) + '<a href="' + R + 'alice-party-home/index.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
       '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; border:1px solid #e2e8f0; border-radius:12px; padding:10px 14px; background:#fff;">' +
         '<div><b>Week 2 · Say it, prop and phrases</b><div style="font-size:0.8rem; color:#64748b;">5 small tasks: read, say with family, record, prop, phrases · due 15 Oct</div></div>' +
-        '<div style="display:flex; gap:8px; align-items:center;">' + chip(w2) + '<a href="alice-party-home/week2.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
+        '<div style="display:flex; gap:8px; align-items:center;">' + chip(w2) + (ctx.n2 && w2 === 'started' ? '<span style="font-size:0.8rem; color:#b45309; font-weight:800;">' + ctx.n2 + '/5</span>' : '') + '<a href="' + R + 'alice-party-home/week2.html?s=' + esc(partyId) + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="text-decoration:none;">Open</a></div></div>' +
       '</div></div>';
 
     /* ---- props and words ---- */
     var props = (role.props || []).map(function (p) {
       return '<div style="display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px;"><div style="width:56px; height:56px; display:grid; place-items:center; font-size:2rem; flex:none;">' +
-        pic(ART + 'props/' + propFile(p) + '.webp', propEmoji(p), '', 'width:100%; height:100%; object-fit:contain;') + '</div><b>' + esc(p) + '</b></div>';
+        pic(ART_ + 'props/' + propFile(p) + '.webp', propEmoji(p), '', 'width:100%; height:100%; object-fit:contain;') + '</div><b>' + esc(p) + '</b></div>';
     }).join('');
     var words = (role.words || []).map(function (w) { return '<span style="display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid #e2e8f0; border-radius:999px; padding:4px 12px; margin:3px; font-weight:700;"><span style="font-size:1.3rem;">' + esc(w[1]) + '</span>' + esc(w[0]) + '</span>'; }).join('');
     var propsWords = '<div style="margin-top:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;">' +
       '<div><h3 style="margin:0 0 8px; font-size:1.05rem;">✂️ My props</h3><div style="display:grid; gap:8px;">' + props + '</div></div>' +
       '<div><h3 style="margin:0 0 8px; font-size:1.05rem;">🔤 My 6 words</h3><div>' + words + '</div></div></div>';
 
-    /* ---- monster ---- */
-    var mon = '';
-    try { mon = root.renderStudentMonsterAvatar ? root.renderStudentMonsterAvatar(student.id, { size: 130, animated: true }) : ''; } catch (e) { mon = ''; }
-    var monster = '<div style="margin-top:16px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px;">' +
-      '<div style="width:140px; height:140px; display:grid; place-items:center; flex:none;">' + mon + '</div>' +
-      '<div style="flex:1; min-width:220px;"><h3 style="margin:0 0 4px; font-size:1.05rem;">👾 My monster</h3>' +
-        '<p style="margin:0 0 10px; color:#475569; font-size:0.9rem;">Change the colour, face and accessories of your monster. Alice costumes (hats, ears, crowns, bow ties) will appear here soon.</p>' +
-        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-          '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + esc(student.id) + '\')">🎨 Edit my monster</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="switchStudentProfileTab(\'monster\')">👾 Monster &amp; Evolution</button>' +
-        '</div></div></div>';
-
     /* ---- badges ---- */
     var badges = '<div style="margin-top:16px;"><h3 style="margin:0 0 8px; font-size:1.05rem;">🏅 Alice badges</h3><div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:10px;">' +
       BADGES.map(function (b) {
         var on = !!earned[b.id];
         return '<div title="' + esc(b.how) + '" style="text-align:center; background:#fff; border:2px solid ' + (on ? '#f59e0b' : '#e2e8f0') + '; border-radius:14px; padding:10px 6px; ' + (on ? '' : 'opacity:0.45; filter:grayscale(0.8);') + '">' +
-          '<div style="width:64px; height:64px; margin:0 auto; display:grid; place-items:center; font-size:2.2rem;">' + pic(ART + 'badges/' + b.file + '.webp', b.e, '', 'width:100%; height:100%; object-fit:contain;') + '</div>' +
+          '<div style="width:64px; height:64px; margin:0 auto; display:grid; place-items:center; font-size:2.2rem;">' + pic(ART_ + 'badges/' + b.file + '.webp', b.e, '', 'width:100%; height:100%; object-fit:contain;') + '</div>' +
           '<div style="font-weight:800; font-size:0.82rem; margin-top:4px;">' + esc(b.t) + '</div><div style="font-size:0.7rem; color:#64748b;">' + (on ? 'Earned!' : esc(b.how)) + '</div></div>';
       }).join('') + '</div></div>';
 
-    return head + homework + propsWords + monster + badges;
+    return head + homework + propsWords + (ctx.monster || '') + badges;
   }
 
-  root.AliceProfile = { html: html, map: MAP };
+  root.AliceProfile = { html: html, pupilPage: pupilPage, map: MAP };
 })(window);
