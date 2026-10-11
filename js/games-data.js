@@ -3497,6 +3497,94 @@ const GAMES_REGISTRY = [
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
+    "id": "simon-says-grade3-cooking",
+    "title": "👩‍🍳 Simon Says: Chuseok Kitchen (Grade 3)",
+    "description": "Whole-class smartboard Simon Says with kitchen actions for Grade 3: wash, mix, pour, roll, press, fill, steam, taste. Songpyeon, gangjeong, yakgwa and sikhye too. Pupils who slip are out and tap back in as helpers. The game gets harder with sneaky tricks and First, Then, Finally commands. Uses your class list.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🗣️ Speaking Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–20 min",
+    "estimatedMinutes": 20,
+    "xp": 25,
+    "skills": [
+      "Listening",
+      "Physical Response",
+      "Vocabulary",
+      "Focus",
+      "Action Verbs"
+    ],
+    "topic": "Unit 2 Chuseok Cooking and Treats",
+    "topics": [
+      "Kitchen actions: wash, mix, pour, add, roll, fill, press, steam, taste",
+      "Chuseok foods: songpyeon, gangjeong, yakgwa, sikhye",
+      "First, Then, Finally"
+    ],
+    "languageFocus": "Kitchen imperatives (mix, pour, roll, fill, press, steam, add); First, Then, Finally; Simon says rules",
+    "activityMode": "Classroom / Physical Whole Group",
+    "interactionType": "Teacher-Led Smartboard Physical Activity",
+    "difficulty": "All Levels (Adaptive Speed)",
+    "tags": [
+      "simon-says",
+      "tpr",
+      "listening",
+      "smartboard",
+      "grade-3",
+      "unit-2",
+      "cooking",
+      "chuseok",
+      "names-elimination"
+    ],
+    "learningObjectives": [
+      "Respond to spoken kitchen imperatives (wash, mix, pour, roll, press, steam)",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow a three-step command with First, Then, Finally",
+      "Name Chuseok foods: songpyeon, gangjeong, yakgwa, sikhye"
+    ],
+    "teacherInstructions": "Open from the library on the smartboard: it starts with only the Chuseok kitchen topic. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. Pupils only MIME the actions (no real knives or heat). The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=3&cat=cook",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "TPR Action Quests",
+    "vocabulary": {
+      "core": ["wash", "mix", "pour", "add", "roll", "fill", "press", "steam", "taste"],
+      "supporting": ["apron", "dough", "rice flour", "honey", "sesame", "songpyeon", "gangjeong", "yakgwa", "sikhye"],
+      "phonics": ["-ow: pour", "sh: wash", "st: stir, steam"]
+    },
+    "grammar": {
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Mix the flour! / Roll small balls!",
+      "formulas": [
+        "Simon says + kitchen action: do it",
+        "No Simon says: do not move",
+        "First…, Then…, Finally…"
+      ]
+    },
+    "clilDomain": "Kinesiology & Auditory Processing",
+    "clilTheme": "Kinesiology & Auditory Processing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👩‍🍳",
+    "formula": "Simon says: Pour the juice! Then stir!",
+    "url": "simon-says/index.html?grade=3&cat=cook",
+    "worksheetUrl": null
+  },
+  {
     "id": "simon-says-grade4",
     "title": "🦉 Simon Says: Alice, Brain & Forests (Grade 4)",
     "description": "Whole-class smartboard Simon Says for Grade 4. Commands come from Unit 1 (Alice in Wonderland, the brain, reading) and Unit 2 (forest animals, A New Friend, ai words). Pupils who slip are out and can become helpers. The game adds two-step and past-tense commands. Uses your class list.",
