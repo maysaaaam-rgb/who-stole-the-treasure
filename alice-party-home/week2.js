@@ -113,8 +113,16 @@
   const BONUS = [['Host', 'Would you like some tea?'], ['Guest', 'Yes, please. Pass the cake, please.'], ['Host', 'Here you are. Have some cake!'], ['Guest', 'Thank you. This is a nice tea party!']];
 
   /* ---------- the five tasks ---------- */
+  const FACE_EMOJI = { alice: '👧', hatter: '🎩', rabbit: '🐰', whitequeen: '👑', redqueen: '♥️', hare: '🐇', cheshire: '😸', cat: '🐈‍⬛', bayard: '🐕', dragon: '🐲', bandersnatch: '🧸',
+    sister: '📖', mother: '👒', twosister1: '🎀', twosister2: '🎀', absolem: '🐛', hamish: '🎩', lowell: '🎩', dum: '🟢', dee: '🟢', dormouse1: '🐭', dormouse2: '🐭', oyster: '🦪' };
+  // a small round picture of whoever is speaking (Host / Guest lines use a teapot / cup)
+  function faceHtml(who, label) {
+    const e = who ? (FACE_EMOJI[who] || '🙂') : (label === 'Host' ? '🫖' : '☕');
+    if (!who || who === 'absolem') return '<span class="av">' + e + '</span>';
+    return '<span class="av"><img src="../assets/alice-cut/avatars/a_' + esc(who) + '.webp" alt="" data-e="' + e + '" onerror="this.replaceWith(document.createTextNode(this.dataset.e))"></span>';
+  }
   function lineHtml(who, text, isMine, k, labelOverride) {
-    return '<li class="line ' + (isMine ? 'mine' : '') + '"><span class="t"><span class="w">' + esc(labelOverride || (P.roles[who] ? P.roles[who].short : who)) + (isMine ? ' (you)' : '') + '</span>' + esc(text) +
+    return '<li class="line ' + (isMine ? 'mine' : '') + '">' + faceHtml(who, labelOverride) + '<span class="t"><span class="w">' + esc(labelOverride || (P.roles[who] ? P.roles[who].short : who)) + (isMine ? ' (you)' : '') + '</span>' + esc(text) +
       '</span><button class="btn amber speak" data-say="' + esc(text) + '" aria-label="Listen">🔊</button></li>';
   }
 
