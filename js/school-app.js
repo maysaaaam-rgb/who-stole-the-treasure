@@ -4125,6 +4125,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
+      ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
+      ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
       ['🕵️', 'Daphne the School Detective (School Life)', 'week4-g3-daphne/index.html'],
       ['🚂', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
       ['🎰', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
@@ -4358,6 +4360,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Unit 3: Arctic Words and Word City (Grade 3 smartboard lessons)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Arctic-Words-and-Word-City-Plans', word: true },
     { title: 'Week 4: Daphne the School Detective (School Life)', grade: 'Grade 3', date: '2026-10-09', file: 'Grade3-Week4-School-Life-Lesson-Plan', word: true },
     { title: 'Unit 3 lessons 1-4: How Much Is It?, Before Money Was Money, Money Changes, Design the Next Money', grade: 'Grade 3', date: '2026-10-08', file: 'Grade3-Unit3-Lesson-Plans', word: true },
     { title: 'Week 4: Captain Quiet’s Space Mission (Classroom Rules)', grade: 'Grade 4', date: '2026-10-09', file: 'Grade4-Week4-Classroom-Rules-Lesson-Plan', word: true },

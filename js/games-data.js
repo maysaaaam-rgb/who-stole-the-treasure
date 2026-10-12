@@ -11563,6 +11563,203 @@ const GAMES_REGISTRY = [
     "url": "week4-g3-daphne/index.html",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "u3-g3-arctic-words",
+    "title": "🐻‍❄️ Arctic Words: The Bear and I (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils match Arctic words to pictures, understand sentences from context, build sentences so the bear walks to the fish, walk to MAN, BEAR or BOTH, and feed the hungry bear with words that end with -ng.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "arctic",
+      "poem",
+      "phonics -ng",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Match the words ice, hole, enemy and crack to pictures",
+      "Understand a word from the sentence (thin, hungry)",
+      "Put words in order to make a sentence",
+      "Compare the man and the bear",
+      "Say words that end with the -ng sound"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps. Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Match the words, build sentences and feed the hungry bear!",
+    "route": "unit3-g3-arctic-words/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "ice",
+        "polar bear",
+        "fish",
+        "hole",
+        "thin",
+        "enemy",
+        "crack"
+      ],
+      "supporting": [
+        "hungry",
+        "fishing",
+        "sing",
+        "long",
+        "spring"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The … is … / There is a … in the …",
+      "formula": "There is a hole in the ice.",
+      "formulas": [
+        "The ice is thin.",
+        "The bear eats fish."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐻‍❄️",
+    "formula": "The ice is thin. There is a hole in the ice.",
+    "url": "unit3-g3-arctic-words/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "u3-g3-word-city",
+    "title": "🏙️ Word City: Find, Build and Open the Gate (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Teams explore a city to find hidden words (hole, trap, enemy, thin), fix the letter factory (sing, long, spring), catch the -ng balloons, load the word trains, and build sentences to open the magic gate.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "word city",
+      "phonics -ng",
+      "sentences",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Say and use the words hole, trap, enemy and thin",
+      "Build words with the -ng ending: sing, long, spring",
+      "Sort words by type: things and places, people, describing words",
+      "Build short sentences with the new words"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps. Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Explore Word City, fix the factory and open the magic gate!",
+    "route": "unit3-g3-word-city/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "trap",
+        "enemy",
+        "thin",
+        "sing",
+        "long",
+        "spring"
+      ],
+      "supporting": [
+        "king",
+        "ring",
+        "bang"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "There is a … in the … / The … is …",
+      "formula": "There is a hole in the ground.",
+      "formulas": [
+        "The road is long.",
+        "Flowers grow in spring."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏙️",
+    "formula": "There is a hole in the ground.",
+    "url": "unit3-g3-word-city/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
   }
 ];
 

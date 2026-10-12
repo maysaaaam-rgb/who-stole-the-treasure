@@ -1,0 +1,39 @@
+/* Unit 3 Grade 3 lessons: Arctic Words and Word City (extra styles on top of the shared lesson css) */
+.strack { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 1.4vh 2vw; border-radius: 2vh; background: linear-gradient(#bae6fd, #7dd3fc); border: 3px solid #0369a1; min-height: 9vh; }
+.sstop { font-size: 4.4vh; opacity: 0.5; transition: all .4s; } .sstop.lit { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 1vh #fde047); }
+.swalker { position: absolute; top: 0.6vh; left: 0; font-size: 6vh; transition: left .8s cubic-bezier(.175,.885,.32,1.275); }
+.sline { min-height: 8vh; display: flex; gap: 1vh; flex-wrap: wrap; justify-content: center; align-items: center; padding: 1vh; border-radius: 2vh; background: rgba(255,255,255,.1); border: 3px dashed rgba(255,255,255,.4); }
+.sw { background: #fde047; color: #422006; font-weight: 900; font-size: 2.6vh; border-radius: 1.2vh; padding: .3em .8em; animation: pop .3s var(--spring-snap, ease); }
+.sbank { display: flex; gap: 1.2vh; flex-wrap: wrap; justify-content: center; } .stile { font-size: 2.6vh !important; padding: 1.2vh 2vh !important; } .stile.used { opacity: .25; pointer-events: none; }
+.feedrow { display: grid; grid-template-columns: 1fr 26vh; gap: 2vh; align-items: stretch; }
+.pond { position: relative; min-height: 34vh; border-radius: 2.4vh; overflow: hidden; background: linear-gradient(#e0f2fe 0 22%, #38bdf8 22%, #0369a1); border: 3px solid #0c4a6e; }
+.fishbtn { position: absolute; left: -22%; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; font-size: 6vh; line-height: 1; color: #fff; animation: swim 8s linear infinite; }
+.fishbtn i { font-style: normal; font-weight: 900; font-size: 2.4vh; text-shadow: 0 .3vh 0 #0c4a6e; margin-top: -.6vh; }
+.fishbtn.jump { animation-play-state: paused; transform: translateY(-4vh) scale(1.25); z-index: 3; } .fishbtn.gone { display: none; }
+@keyframes swim { from { left: -22%; } to { left: 108%; } }
+.feedside { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1vh; }
+.bigword { display: none; font-size: 7vh; font-weight: 900; color: #fde047; text-shadow: 0 .5vh 0 rgba(0,0,0,.5); text-align: center; animation: pop .35s var(--spring-snap, ease); }
+.bearmouth { display: flex; flex-direction: column; align-items: center; padding: 1.4vh 1vh !important; } .bearpic { font-size: 14vh; line-height: 1.05; } .bearmouth b { font-size: 2.4vh; }
+.citygrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4vh; }
+.place { position: relative; display: flex; flex-direction: column; align-items: center; gap: .4vh; padding: 1.4vh 1vh !important; min-height: 15vh; } .plc { font-size: 8vh; line-height: 1; transition: transform .6s; } .plc.walk { transform: translateY(-1.5vh) scale(1.1); } .place b { font-size: 2.2vh; }
+.place.seen { background: #1e293b; } .foundcard { display: flex; align-items: center; gap: 1vh; background: #fde047; color: #422006; border-radius: 1.4vh; padding: .2em .8em; font-weight: 900; font-size: 2.6vh; animation: pop .4s var(--spring-snap, ease); } .foundcard .fe { font-size: 5vh; } .foundcard.empty { background: #64748b; color: #fff; }
+.backpack { display: flex; gap: 1vh; flex-wrap: wrap; align-items: center; padding: 1vh 1.6vh; border-radius: 1.8vh; background: rgba(0,0,0,.3); border: 2px dashed rgba(255,255,255,.3); min-height: 6vh; }
+.machine { display: flex; gap: 1.4vh; justify-content: center; padding: 1.6vh; border-radius: 2vh; background: linear-gradient(#475569, #1e293b); border: 4px solid #94a3b8; } .machine.lit { box-shadow: 0 0 4vh #fde047; border-color: #fde047; }
+.slot { width: 9vh; height: 10vh; display: flex; align-items: center; justify-content: center; font-size: 6vh; font-weight: 900; border-radius: 1.2vh; background: #0f172a; border: 3px solid #64748b; color: #fde047; } .slot.on { background: #14532d; border-color: #22c55e; animation: pop .3s var(--spring-snap, ease); }
+.belt { display: flex; gap: 2vh; justify-content: center; flex-wrap: wrap; padding: 2vh; border-radius: 2vh; background: repeating-linear-gradient(90deg, #334155 0 3vh, #1e293b 3vh 6vh); min-height: 14vh; }
+.letter { width: 10vh; height: 10vh; font-size: 6vh !important; font-weight: 900; padding: 0 !important; display: flex; align-items: center; justify-content: center; animation: bob 2.6s ease-in-out infinite; transform: rotate(-4deg); } .letter:nth-child(even) { transform: rotate(5deg); } .letter.used { opacity: .15; pointer-events: none; }
+.fclue { display: flex; align-items: center; gap: 2vh; justify-content: center; } .fce { font-size: 9vh; line-height: 1.1; }
+.balloonfield { position: relative; height: 36vh; border-radius: 2.4vh; overflow: hidden; border: 3px solid rgba(255,255,255,.25); background: linear-gradient(#60a5fa, #bfdbfe 70%, #86efac); }
+.balloon { position: absolute; bottom: -16vh; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; padding: 0; animation: balloonup 5s linear forwards; z-index: 2; }
+.balloon i { font-style: normal; font-size: 13vh; line-height: 1; filter: drop-shadow(0 .8vh .8vh rgba(0,0,0,.25)); } .balloon b { position: absolute; top: 3.4vh; font-size: 3vh; color: #fff; text-shadow: 0 .3vh 0 rgba(0,0,0,.6); }
+@keyframes balloonup { from { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-22vh) rotate(4deg); } to { transform: translateY(-58vh) rotate(-3deg); } }
+.balloon.pop { animation: popout .26s forwards; } .balloon.oops { animation: wob .26s; opacity: .45; filter: grayscale(1); }
+.trainword { display: flex; align-items: center; gap: 2vh; justify-content: center; padding: 1vh; } .trainword .twe { font-size: 10vh; line-height: 1.1; } .trainword b { font-size: 6vh; color: #fde047; }
+.cars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6vh; } .car { display: flex; flex-direction: column; align-items: center; gap: .6vh; padding: 1.4vh 1vh !important; border-bottom-color: color-mix(in srgb, var(--c) 40%, #000) !important; background: color-mix(in srgb, var(--c) 45%, #0f172a) !important; min-height: 20vh; }
+.car .ce { font-size: 8vh; line-height: 1; } .car b { font-size: 2.2vh; text-align: center; } .cargo { display: flex; flex-wrap: wrap; gap: .5vh; justify-content: center; }
+@media (max-width: 900px) { .feedrow { grid-template-columns: 1fr; } .citygrid { grid-template-columns: repeat(2, 1fr); } .cars { grid-template-columns: 1fr; } }
+
+.hasbg { padding: 1.4vh; border-radius: 2.2vh; box-shadow: inset 0 0 0 100vh rgba(15, 23, 42, 0.35); }
+.car .ce .pic { height: 1.1em; width: auto; } .car .ce { font-size: 7vh; }
+.bearpic .pic { height: 1.1em; } .swalker .pic { height: 1.1em; } .fishbtn .pic { height: 1em; }
+.plc .pic { height: 1em; } .fe .pic { height: 1em; }
