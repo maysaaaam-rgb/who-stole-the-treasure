@@ -25,7 +25,7 @@
     ac = new AC();
     var comp = ac.createDynamicsCompressor();
     comp.threshold.value = -16; comp.ratio.value = 6;
-    master = ac.createGain(); master.gain.value = 0.7;
+    master = ac.createGain(); master.gain.value = 1.0;
     master.connect(comp); comp.connect(ac.destination);
     return ac;
   }
@@ -41,7 +41,7 @@
       o.frequency.setValueAtTime(f, t0);
       if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
       g.gain.setValueAtTime(0.0001, t0);
-      g.gain.exponentialRampToValueAtTime(vol * cfg[2], t0 + 0.03);
+      g.gain.exponentialRampToValueAtTime(vol * cfg[2] * 2.4, t0 + 0.03);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
       o.connect(g); g.connect(master);
       o.start(t0); o.stop(t0 + dur + 0.05);
@@ -53,7 +53,7 @@
     for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
     var s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
     s.buffer = buf; f.type = 'lowpass'; f.frequency.value = freq;
-    g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    g.gain.setValueAtTime(vol * 1.8, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     s.connect(f); f.connect(g); g.connect(master); s.start(t0);
   }
 
@@ -77,22 +77,12 @@
     var list = root.speechSynthesis.getVoices();
     if (!list || !list.length) return;
     voicesTried = true;
-    voice = list.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0] || list.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+    voice = list.filter(function (v) { return /^en[-_]US/i.test(v.lang) && /Aria|Jenny|Natural|Google US|Samantha|Zira/i.test(v.name); })[0] || list.filter(function (v) { return /^en[-_]US/i.test(v.lang); })[0] || list.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
   }
   if (root.speechSynthesis) { try { root.speechSynthesis.onvoiceschanged = pickVoice; } catch (e) { /* ignore */ } pickVoice(); }
 
-  function ttsSpeak(text, onend) {
-    if (!root.speechSynthesis) { lastMode = 'none'; if (onend) onend(); return false; }
-    try {
-      lastMode = 'tts';
-      var u = new root.SpeechSynthesisUtterance(String(text));
-      u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05;
-      if (voice) u.voice = voice;
-      if (onend) { u.onend = onend; u.onerror = onend; }
-      root.speechSynthesis.speak(u);
-      return true;
-    } catch (e) { if (onend) onend(); return false; }
-  }
+  // no computer voice: the game only plays recorded sentences (assets/voice). A sentence with no recording stays silent.
+  function ttsSpeak(text, onend) { lastMode = 'none'; if (onend) onend(); return false; }
   function stop() {
     seqToken++;
     if (cur) { try { cur.pause(); cur.onended = null; cur.onerror = null; } catch (e) { /* ignore */ } cur = null; }
