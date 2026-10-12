@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3 Board Game • English Adventure Academy</title>
+  <link rel="stylesheet" href="css/board.css?v=3">
+</head>
+<body>
+  <div id="app">
+    <header class="hud">
+      <h1 id="h-title">Board Game<small id="h-sub"></small></h1>
+      <div class="round" id="round"></div>
+      <button type="button" class="btn small ghost" id="snd">🔊</button>
+      <button type="button" class="btn small cyan" id="fs">📺</button>
+      <button type="button" class="btn small amber" id="endnow">🏁 Finish</button>
+      <a class="btn small ghost" href="../index.html" style="text-decoration:none">🏠</a>
+    </header>
+    <main class="play">
+      <section class="board" id="board"></section>
+      <aside class="side" id="side"></aside>
+    </main>
+  </div>
+  <div id="overlay" class="overlay"></div>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=2"></script>
+</body>
+</html>

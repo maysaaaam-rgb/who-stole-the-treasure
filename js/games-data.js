@@ -8720,7 +8720,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "bamboozle-g3-u3",
-    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3)",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 4)",
     "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: How Much Is It? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -8729,9 +8729,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3"
+      "Grade 4"
     ],
     "duration": 25,
     "durationText": "15–25 min",
@@ -8824,7 +8824,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "shop-counter-g3-u3",
-    "title": "🛒 Shop Counter: How Much Is It? (Unit 3, Grade 3)",
+    "title": "🛒 Shop Counter: How Much Is It? (Unit 3, Grade 4)",
     "description": "A whole-class smartboard shop game for Unit 3. A customer asks “How much is it?”. The team in turn pays the exact price by tapping $1, $2, $5 and $10 money, then the class says the sentence: It is … dollars. Three levels (up to $9, $20 and $30), teams take turns, a wrong try only means try again, and the board says the numbers aloud.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -8833,9 +8833,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3"
+      "Grade 4"
     ],
     "duration": 25,
     "durationText": "15–25 min",
@@ -8922,7 +8922,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "arcade-g3-u3",
-    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
     "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -8931,9 +8931,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3"
+      "Grade 4"
     ],
     "duration": 20,
     "durationText": "10–20 min",
@@ -9024,7 +9024,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "race-g3-u3",
-    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 3)",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 4)",
     "description": "Team quiz race for the smartboard with 55 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -9033,9 +9033,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3"
+      "Grade 4"
     ],
     "duration": 20,
     "durationText": "15–25 min",
@@ -9126,7 +9126,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "bamboozle-g4-u3",
-    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 4)",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3)",
     "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: It Keeps Changing or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -9135,9 +9135,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 25,
     "durationText": "15–25 min",
@@ -9230,7 +9230,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "arcade-g4-u3",
-    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
     "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -9239,9 +9239,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 20,
     "durationText": "10–20 min",
@@ -9332,7 +9332,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "race-g4-u3",
-    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 4)",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 3)",
     "description": "Team quiz race for the smartboard with 56 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -9341,9 +9341,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 20,
     "durationText": "15–25 min",
@@ -9443,10 +9443,10 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3",
-      "Grade 4"
+      "Grade 4",
+      "Grade 3"
     ],
     "duration": 25,
     "durationText": "15–25 min",
@@ -9461,7 +9461,7 @@ const GAMES_REGISTRY = [
       "Grammar",
       "Reading"
     ],
-    "topic": "Unit 3 review (Grade 3: How Much Is It?; Grade 4: It Keeps Changing)",
+    "topic": "Unit 3 review (Grade 4: How Much Is It?; Grade 3: It Keeps Changing)",
     "topics": [
       "Unit 3 review (money; the Arctic poem and Clean Cars)"
     ],
@@ -10505,7 +10505,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "money-l1-g3",
-    "title": "💰 How Much Is It?: Unit 3 Lesson 1 (Grade 3)",
+    "title": "💰 How Much Is It?: Unit 3 Lesson 1 (Grade 4)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils look at two money jars, walk to BUY or GO, act out the two farmers who cannot agree on a price, run the Class Shop with \"How much is it? It’s … dollars.\", make jar labels, and play the team game Super Shopper (stay under your budget). Book pages 40-41.",
     "type": "game",
     "category": "Literature & Stories",
@@ -10514,9 +10514,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3",
+      "Grade 4",
       "Class 3A",
       "Class 3B"
     ],
@@ -10532,7 +10532,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: How Much Is It? (money)",
     "topics": [
-      "Unit 2: Thank You (Grade 3)"
+      "Unit 2: Thank You (Grade 4)"
     ],
     "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -10560,7 +10560,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
     "vocabulary": {
       "core": [
         "money",
@@ -10603,7 +10603,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "money-l2-g3",
-    "title": "⏳ Before Money Was Money: Unit 3 Lesson 2 (Grade 3)",
+    "title": "⏳ Before Money Was Money: Unit 3 Lesson 2 (Grade 4)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Mystery money boxes, travel back in time from barter to cowrie shells, metal money and the first coins (a timeline fills as pupils act), five Words in Context, putting the money in order, problem or solution corners, and the team game Money Catcher (tap the things that are or were money). Book pages 42-43.",
     "type": "game",
     "category": "Literature & Stories",
@@ -10612,9 +10612,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3",
+      "Grade 4",
       "Class 3A",
       "Class 3B"
     ],
@@ -10630,7 +10630,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: How Much Is It? (money)",
     "topics": [
-      "Unit 2: Thank You (Grade 3)"
+      "Unit 2: Thank You (Grade 4)"
     ],
     "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -10659,7 +10659,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
     "vocabulary": {
       "core": [
         "bartered",
@@ -10699,7 +10699,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "changing-l1-g4",
-    "title": "🧊 It Keeps Changing: Unit 3 Lesson 1 (Grade 4)",
+    "title": "🧊 It Keeps Changing: Unit 3 Lesson 1 (Grade 3)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. The pink river (See, Think, Wonder), good and bad changes in nature, comparing the Arctic with our town, a visit to the Arctic where the ice bar melts, and the team game Arctic Memory (match a picture to its word). Book pages 40-41.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -10708,9 +10708,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 35,
     "durationText": "35 min",
@@ -10724,7 +10724,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: It Keeps Changing (climate change)",
     "topics": [
-      "Unit 2: What Lives Here? (Grade 4)"
+      "Unit 2: What Lives Here? (Grade 3)"
     ],
     "languageFocus": "so they can…; instead of…; headings; author’s purpose",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -10753,7 +10753,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
     "vocabulary": {
       "core": [
         "change",
@@ -10792,7 +10792,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "bear-l2-g4",
-    "title": "🐻‍❄️ The Bear and I (part 1): Unit 3 Lesson 2 (Grade 4)",
+    "title": "🐻‍❄️ The Bear and I (part 1): Unit 3 Lesson 2 (Grade 3)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out the first four stanzas of the poem The Bear and I, learn six Words in Context (hole, twice, enemy, thin, trap, melting), put the story in order, sort what is true for the man, the bear or both, and play the team game Ice Escape. Book pages 42-43.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -10801,9 +10801,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 35,
     "durationText": "35 min",
@@ -10817,7 +10817,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: It Keeps Changing (climate change)",
     "topics": [
-      "Unit 2: What Lives Here? (Grade 4)"
+      "Unit 2: What Lives Here? (Grade 3)"
     ],
     "languageFocus": "so they can…; instead of…; headings; author’s purpose",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -10846,7 +10846,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
     "vocabulary": {
       "core": [
         "hole",
@@ -10886,7 +10886,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "money-l3-g3",
-    "title": "🚂 Money Changes: Unit 3 Lesson 3 (Grade 3)",
+    "title": "🚂 Money Changes: Unit 3 Lesson 3 (Grade 4)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out how money changed from coins to paper money to credit cards to phones (a timeline fills as they go), learn six money words, say \"easier to carry than\", ride the team game Time Train through seven stations of money history, and vote for the next type of money. Book pages 44-45.",
     "type": "game",
     "category": "Literature & Stories",
@@ -10895,9 +10895,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3",
+      "Grade 4",
       "Class 3A",
       "Class 3B"
     ],
@@ -10913,7 +10913,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: How Much Is It? (money)",
     "topics": [
-      "Unit 2: Thank You (Grade 3)"
+      "Unit 2: Thank You (Grade 4)"
     ],
     "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -10942,7 +10942,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
     "vocabulary": {
       "core": [
         "coin",
@@ -10981,7 +10981,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "money-l4-g3",
-    "title": "🎰 Design the Next Money: Unit 3 Lesson 4 (Grade 3)",
+    "title": "🎰 Design the Next Money: Unit 3 Lesson 4 (Grade 4)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Is it or was it money? (walk to a corner), fill the money chart, find the problem and the solution in a short story, play the team game Problem and Solution Pairs, and design the next type of money with the Money Machine. Book pages 46-47.",
     "type": "game",
     "category": "Literature & Stories",
@@ -10990,9 +10990,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–9",
     "ageGroup": "8-9",
-    "grade": "Grade 3",
+    "grade": "Grade 4",
     "grades": [
-      "Grade 3",
+      "Grade 4",
       "Class 3A",
       "Class 3B"
     ],
@@ -11008,7 +11008,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: How Much Is It? (money)",
     "topics": [
-      "Unit 2: Thank You (Grade 3)"
+      "Unit 2: Thank You (Grade 4)"
     ],
     "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -11037,7 +11037,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
     "vocabulary": {
       "core": [
         "problem",
@@ -11076,7 +11076,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "ice-l3-g4",
-    "title": "💥 The Ice Cracks: Unit 3 Lesson 3 (Grade 4)",
+    "title": "💥 The Ice Cracks: Unit 3 Lesson 3 (Grade 3)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out stanzas 5-8 of the poem The Bear and I (the ICE bar melts), learn six poem words, put cause and effect in order, play the team game Cause and Effect Pairs, and vote on how we can help. Book pages 44-45.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -11085,9 +11085,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 35,
     "durationText": "35 min",
@@ -11101,7 +11101,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: It Keeps Changing (climate change)",
     "topics": [
-      "Unit 2: What Lives Here? (Grade 4)"
+      "Unit 2: What Lives Here? (Grade 3)"
     ],
     "languageFocus": "so they can…; instead of…; headings; author’s purpose",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -11130,7 +11130,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
     "vocabulary": {
       "core": [
         "crack",
@@ -11169,7 +11169,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "poem-l4-g4",
-    "title": "🎤 Explore the Poem: Unit 3 Lesson 4 (Grade 4)",
+    "title": "🎤 Explore the Poem: Unit 3 Lesson 4 (Grade 3)",
     "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. True or false (walk to a corner), the -ng sound, the team game Stanza Detective (which stanza has the answer?), are the man and the bear friends (vote with a reason), compare two cars, and perform the whole poem in eight groups. Book pages 46-47.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -11178,9 +11178,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 35,
     "durationText": "35 min",
@@ -11194,7 +11194,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: It Keeps Changing (climate change)",
     "topics": [
-      "Unit 2: What Lives Here? (Grade 4)"
+      "Unit 2: What Lives Here? (Grade 3)"
     ],
     "languageFocus": "so they can…; instead of…; headings; author’s purpose",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -11223,7 +11223,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
     "vocabulary": {
       "core": [
         "stanza",
@@ -11265,7 +11265,7 @@ const GAMES_REGISTRY = [
   },
   {
     "id": "cars-l5-g4",
-    "title": "🚗 Clean Cars: Unit 3 Lesson 5 (Grade 4)",
+    "title": "🚗 Clean Cars: Unit 3 Lesson 5 (Grade 3)",
     "description": "A 40-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils name the five kinds of cars (gasoline, biofuel, electric, air, solar), match each car with its energy symbol, open five doors by reading clues, and play the energy game. Then a call from the city: the air is dirty! Pupils find the cars that make the air dirty, and trees and flowers grow when the city gets clean.",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -11274,9 +11274,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1+",
     "age": "Ages 9–10",
     "ageGroup": "9-10",
-    "grade": "Grade 4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 35,
     "durationText": "35 min",
@@ -11290,7 +11290,7 @@ const GAMES_REGISTRY = [
     ],
     "topic": "Unit 3: It Keeps Changing (climate change)",
     "topics": [
-      "Unit 2: What Lives Here? (Grade 4)"
+      "Unit 2: What Lives Here? (Grade 3)"
     ],
     "languageFocus": "so they can…; instead of…; headings; author’s purpose",
     "activityMode": "Whole class, one smartboard + mini whiteboards",
@@ -11321,7 +11321,7 @@ const GAMES_REGISTRY = [
     "supportsAssignment": true,
     "supportsProgress": true,
     "featured": true,
-    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
     "vocabulary": {
       "core": [
         "gasoline",
@@ -11591,7 +11591,7 @@ const GAMES_REGISTRY = [
       "Vocabulary",
       "Writing"
     ],
-    "topic": "Unit 3: How Much Is It? (money)",
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
     "topics": [
       "Unit 2: Thank You (Grade 3)"
     ],
@@ -11653,8 +11653,8 @@ const GAMES_REGISTRY = [
         "The bear eats fish."
       ]
     },
-    "clilDomain": "Unit 3: How Much Is It?",
-    "clilTheme": "Unit 3: How Much Is It?",
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
     "status": "active",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
@@ -11691,7 +11691,7 @@ const GAMES_REGISTRY = [
       "Vocabulary",
       "Writing"
     ],
-    "topic": "Unit 3: How Much Is It? (money)",
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
     "topics": [
       "Unit 2: Thank You (Grade 3)"
     ],
@@ -11750,8 +11750,8 @@ const GAMES_REGISTRY = [
         "Flowers grow in spring."
       ]
     },
-    "clilDomain": "Unit 3: How Much Is It?",
-    "clilTheme": "Unit 3: How Much Is It?",
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
     "status": "active",
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
@@ -11760,6 +11760,196 @@ const GAMES_REGISTRY = [
     "url": "unit3-g3-word-city/index.html",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "board-u3-g3-bear",
+    "title": "Arctic Board Game (Unit 3, The Bear and I)",
+    "description": "A question-to-buy board game for 3 or 4 teams. Roll the dice, move, answer a word question to buy the square, collect rent, draw Chance cards. About 25 minutes with a podium and XP at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
+    "topics": [
+      "Unit 3: The Bear and I (Grade 3)"
+    ],
+    "languageFocus": "hole, trap, thin, enemy, twice, melting, crack, swim, danger, hope; -ng words",
+    "activityMode": "Whole class, 3 or 4 teams, one smartboard",
+    "interactionType": "Team board game",
+    "difficulty": "Review and play",
+    "tags": [
+      "board game",
+      "smartboard",
+      "team game",
+      "unit 3",
+      "the bear and i",
+      "review"
+    ],
+    "learningObjectives": [
+      "Say and recognise the Bear and I words",
+      "Choose the right word or meaning",
+      "Practise -ng words and short sentences"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 3 or 4 teams and the number of rounds (7 rounds is about 25 minutes). A team rolls, moves, and answers a question to buy the square. Other teams pay rent when they land on it (answer right to pay half). At the end, give the team XP shown on the podium.",
+    "studentInstructions": "Roll, move, answer right to buy the word. Collect the most valuable words!",
+    "route": "unit3-board-game/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "trap",
+        "thin",
+        "enemy",
+        "twice",
+        "melting",
+        "crack",
+        "swim",
+        "danger",
+        "hope"
+      ],
+      "supporting": [
+        "together",
+        "once more"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The … is …",
+      "formula": "The ice is thin.",
+      "formulas": [
+        "The bear is hungry."
+      ]
+    },
+    "clilDomain": "Unit 3: The Bear and I",
+    "clilTheme": "Unit 3: The Bear and I",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎲",
+    "formula": "The ice is thin.",
+    "url": "unit3-board-game/index.html?grade=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #38bdf8 100%)"
+  },
+  {
+    "id": "board-u3-g4-money",
+    "title": "Money Board Game (Unit 3, How Much Is It?)",
+    "description": "A question-to-buy board game for 3 or 4 teams about money: coins, paper money, credit cards, bartering. Roll, move, answer to buy, collect rent. About 25 minutes with a podium and XP at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 3: How Much Is It? (Grade 4)"
+    ],
+    "languageFocus": "bartered, metal, valuable, coin, paper money, credit card, plastic, electronic money, belong to; easier than",
+    "activityMode": "Whole class, 3 or 4 teams, one smartboard",
+    "interactionType": "Team board game",
+    "difficulty": "Review and play",
+    "tags": [
+      "board game",
+      "smartboard",
+      "team game",
+      "unit 3",
+      "money",
+      "review"
+    ],
+    "learningObjectives": [
+      "Say and recognise the money words",
+      "Choose the right word or meaning",
+      "Use easier than and belongs to"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 3 or 4 teams and the number of rounds (7 rounds is about 25 minutes). A team rolls, moves, and answers a question to buy the square. Other teams pay rent when they land on it (answer right to pay half). At the end, give the team XP shown on the podium.",
+    "studentInstructions": "Roll, move, answer right to buy the word. Collect the most valuable words!",
+    "route": "unit3-board-game/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "coin",
+        "paper money",
+        "credit card",
+        "plastic",
+        "electronic money",
+        "belong to"
+      ],
+      "supporting": [
+        "problem",
+        "solution",
+        "century"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "… is easier to … than …",
+      "formula": "Paper money is easier to carry than coins.",
+      "formulas": [
+        "This wallet belongs to Paige."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎲",
+    "formula": "Paper money is easier to carry than coins.",
+    "url": "unit3-board-game/index.html?grade=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #92400e 55%, #fde047 100%)"
   }
 ];
 
