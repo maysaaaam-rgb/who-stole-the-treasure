@@ -6491,6 +6491,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   function asgAssignmentCard(a, classes) {
     const cls = classes.find(c => c.id === a.classId) || { name: 'All Classes' };
     const res = store.getResource(a.gameId);
+    const wsId = a.worksheetId || '';
     return '' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
         '<div>' +
@@ -6500,13 +6501,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(cls.name) + '</span>' +
           '</div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' +
-            'Due: ' + asgEsc(a.dueDate || 'No deadline') + ((res || a.gameId) ? ' · Game: ' + asgEsc(res ? res.title : a.gameId) : '') +
+            'Due: ' + asgEsc(a.dueDate || 'No deadline') + (wsId ? ' · Worksheet' : ((res || a.gameId) ? ' · Game: ' + asgEsc(res ? res.title : a.gameId) : '')) +
             (a.assignedCount ? ' · ' + (Number(a.completedCount) || 0) + ' of ' + a.assignedCount + ' done' : '') +
           '</div>' +
           (a.instructions ? '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">"' + asgEsc(a.instructions) + '"</div>' : '') +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:8px;">' +
           (res ? '<a href="' + asgEsc(res.route) + '" class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem; text-decoration:none;">▶ Play</a>' : '') +
+          (wsId ? '<button class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem;" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\')">👁️ Open</button><button class="btn-sm-secondary" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\', true)">🖨️ Print</button>' : '') +
           '<button class="btn-sm-secondary" onclick="openEditAssignmentModal(\'' + asgEsc(a.id) + '\')">✏️ Edit</button>' +
           '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + asgEsc(a.id) + '\')">📋</button>' +
           '<button class="btn-sm-secondary" onclick="handleArchiveAssignment(\'' + asgEsc(a.id) + '\')" style="color:var(--color-danger);">📦</button>' +
@@ -6572,6 +6574,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>' +
       (shown.length ? body : '<div style="margin-top:20px; padding:20px; border:1px dashed var(--border-subtle); border-radius:14px; color:var(--text-muted);">Nothing is assigned for this class yet.</div>') +
       (oldCount ? '<div style="margin-top:26px; text-align:center;"><button type="button" class="btn-sm-secondary" onclick="setAsgOld(' + (asgShowOld ? 'false' : 'true') + ')">' + (asgShowOld ? 'Hide older items' : 'Show older items (' + oldCount + ')') + '</button></div>' : '');
+    if (window.WorksheetSync) { try { window.WorksheetSync.mount(container, activeClass); } catch (e) { /* optional */ } }
   }
 
   // =========================================================================
