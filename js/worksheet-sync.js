@@ -45,7 +45,7 @@
       '<div style="min-width:0;flex:1"><div style="font-weight:800;font-size:.92rem">' + esc(ws.title) + '</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">' + status + link + '</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">' + btns + '</div></div>';
   }
 
-  var open = true;
+  var open = false;   // collapsed by default: the Assignments page shows the current homework first
   function panelHtml(grade) {
     root.__wsGrade = grade;
     var list = wsFor(grade), due = defaultDue();

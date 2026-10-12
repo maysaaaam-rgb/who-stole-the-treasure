@@ -3571,6 +3571,35 @@
       submittedCount: 0,
       archived: false,
       submissions: {}
+    },
+    {
+      id: 'hw-chuseok-w2-cooking',
+      syncSubmissions: true,
+      title: '🍲 Chuseok Cooking and Treats: Home Project (Week 2)',
+      description: 'Cook or make a Chuseok treat with your family, write three sentences about it, and send a photo or video to your teacher.',
+      subject: 'English',
+      skill: 'Writing',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3',
+      studentIds: 'all',
+      dueDate: 'Oct 15, 2026',
+      estimatedTime: '30 minutes',
+      xpReward: 50,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-chuseok-cooking', type: 'game', title: 'Chuseok Cooking Page', url: 'chuseok-cooking/index.html' }
+      ],
+      instructions: [
+        '1. Choose a Chuseok dish and make it with your family',
+        '2. Write what you made, how you made it and how it tasted',
+        '3. Send a photo or a short video'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
     }
   ];
 

@@ -12,8 +12,27 @@ const SHEET_NAME = 'Cooking';
 const FOLDER_NAME = 'Chuseok Cooking Uploads';
 const HEADERS = ['Last update', 'Class', 'Student', 'Dish', 'What I made and used', 'How I made it', 'How it tasted', 'Photo / video link', 'XP to add'];
 
-function doGet() {
+function doGet(e) {
+  // read-only list for the teacher's platform (Assignments > Sync): who has sent the cooking homework. Needs the same token.
+  if (e && e.parameter && e.parameter.action === 'status' && e.parameter.token === TOKEN) return reply({ ok: true, status: statusMap() });
   return ContentService.createTextOutput('Chuseok cooking receiver is ready ✓');
+}
+
+function slug(s) { return String(s || '').toLowerCase().replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9]+/g, ''); }
+function statusMap() {
+  const sh = getBook().getSheetByName(SHEET_NAME), out = {};
+  if (!sh || sh.getLastRow() < 2) return out;
+  const rows = sh.getRange(2, 1, sh.getLastRow() - 1, 3).getValues();
+  const firsts = {};
+  rows.forEach(r => { const m = /([34][ab])/i.exec(String(r[1])); if (m) { const f = slug(String(r[2]).split(' ')[0]); const k = m[1].toLowerCase() + '-' + f; firsts[k] = (firsts[k] || 0) + 1; } });
+  rows.forEach(r => {
+    const m = /([34][ab])/i.exec(String(r[1])); if (!m) return;
+    const parts = String(r[2]).trim().split(/s+/), first = slug(parts[0]), last = slug(parts[parts.length - 1]);
+    const cls = m[1].toLowerCase(), base = cls + '-' + first;
+    const id = firsts[base] > 1 && parts.length > 1 ? base + last.charAt(0) : base;   // two pupils with the same first name: add the first letter of the surname
+    out[id] = { 'chuseok-w2-cooking': { steps: 1, finished: true } };
+  });
+  return out;
 }
 
 function doPost(e) {
