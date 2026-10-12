@@ -13,8 +13,20 @@
   /* which homework card each sheet key feeds, and how many steps there are */
   var SOURCES = [
     { hw: 'hw-alice-tea-party-w1', key: 'alice-tea-party-a1plus', steps: 5, label: 'Week 1' },
-    { hw: 'hw-alice-tea-party-w2', key: 'alice-tea-party-w2', steps: 3, label: 'Week 2' }
+    { hw: 'hw-alice-tea-party-w2', key: 'alice-tea-party-w2', steps: 3, label: 'Week 2' },
+    { hw: 'hw-chuseok-w2-cooking', key: 'chuseok-w2-cooking', steps: 1, label: 'Chuseok cooking', src: 'cook' }
   ];
+  /* The cooking sheet has its own receiver. Until its status link is switched on, the pupils who had a row in the sheet on 12 Oct 2026
+     are used (a pupil with a row has sent the cooking homework). Names are the sheet-style ids "class-firstname[+initial]". */
+  var COOK = {
+    submitUrl: 'https://script.google.com/macros/s/AKfycbwKTNXOxf9tGkYRPxhqFRrlhaky-XY3juEb2pblzVJ0ELiIQTTy-KP18v7tFWYk0hblvw/exec', token: 'eaa-cook-305208ffc123',
+    snapshot: ['3a-ates', '3b-denizk', '3b-deniza', '3b-demir']
+  };
+  function cookStatus() {
+    var snap = {}; COOK.snapshot.forEach(function (id) { snap[id] = { 'chuseok-w2-cooking': { steps: 1, finished: true } }; });
+    return fetch(COOK.submitUrl + '?action=status&token=' + encodeURIComponent(COOK.token), { cache: 'no-store' }).then(function (r) { return r.json(); })
+      .then(function (d) { return d && d.ok && d.status ? d.status : snap; }, function () { return snap; });
+  }
   var CLASS_FIX = { 'student-4a-319': '4b', 'student-4b-208': '4a' };    // pupils whose id says the other class
   var last = { at: 0, text: '' };
 
@@ -57,10 +69,11 @@
   function sync() {
     var btn = document.getElementById('sheet-sync-btn'); if (btn) { btn.disabled = true; btn.textContent = '⏳ Reading the sheet…'; }
     var url = CFG.submitUrl + '?action=status&token=' + encodeURIComponent(CFG.token || '');
-    return fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+    return Promise.all([fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }), cookStatus()]).then(function (res) {
+      var d = res[0], cook = res[1];
       if (!d || !d.ok) throw new Error((d && d.error) || 'The sheet did not answer.');
       var students = (S().getStudents() || []).filter(function (s) { return !s.archived; }), rep = { changed: 0, finished: 0, started: 0, unmatched: [], missing: [] };
-      SOURCES.forEach(function (src) { apply(src.hw, src.key, src.steps, d.status || {}, students, rep); });
+      SOURCES.forEach(function (src) { apply(src.hw, src.key, src.steps, src.src === 'cook' ? cook : (d.status || {}), students, rep); });
       try { if (S().saveState) S().saveState(); } catch (e) { /* optional */ }
       last.at = Date.now();
       last.text = rep.changed ? ('Updated ' + rep.changed + ' pupil' + (rep.changed === 1 ? '' : 's') + ': ' + rep.finished + ' newly finished, ' + rep.started + ' started.') : 'Already up to date.';
@@ -81,7 +94,7 @@
       var host = container.querySelector('#ws-sync') || (container.querySelector('h1') && container.querySelector('h1').parentNode); if (!host) return;
       var bar = document.createElement('div'); bar.id = 'sheet-sync-bar';
       bar.style.cssText = 'display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--bg-card);border:1px solid var(--border-subtle,rgba(148,163,184,.3));border-radius:16px;padding:10px 16px;margin:12px 0 4px';
-      bar.innerHTML = '<div style="flex:1;min-width:220px"><div style="font-weight:900">📊 Google Sheet homework</div><div style="font-size:.8rem;opacity:.8;margin-top:2px">Brings who started and who finished the Alice Tea Party homework (Weeks 1 and 2) into the cards below. Nothing in the sheet is changed.' + (last.at ? ' <b>Last sync: ' + new Date(last.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + '. ' + esc(last.text) + '</b>' : '') + '</div></div>' +
+      bar.innerHTML = '<div style="flex:1;min-width:220px"><div style="font-weight:900">📊 Google Sheet homework</div><div style="font-size:.8rem;opacity:.8;margin-top:2px">Brings who started and who finished the Alice Tea Party homework (Weeks 1 and 2) and the Chuseok cooking homework into the cards below. Nothing in the sheet is changed.' + (last.at ? ' <b>Last sync: ' + new Date(last.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + '. ' + esc(last.text) + '</b>' : '') + '</div></div>' +
         '<button type="button" id="sheet-sync-btn" class="btn-primary-action" style="padding:8px 16px" onclick="SheetSync.sync()">🔄 Sync from Google Sheets</button>';
       host.parentNode.insertBefore(bar, host);
     },

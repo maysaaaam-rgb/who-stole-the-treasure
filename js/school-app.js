@@ -4363,6 +4363,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
     { title: 'Unit 3: Arctic Words and Word City (Grade 3 smartboard lessons)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Arctic-Words-and-Word-City-Plans', word: true },
+    { title: 'Unit 3: Arctic Board Game (It Keeps Changing, The Bear and I)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Board-Game-Lesson-Plan', word: true },
+    { title: 'Unit 3: Money Board Game (How Much Is It?)', grade: 'Grade 4', date: '2026-10-12', file: 'Grade4-Unit3-Board-Game-Lesson-Plan', word: true },
     { title: 'Week 4: Daphne the School Detective (School Life)', grade: 'Grade 3', date: '2026-10-09', file: 'Grade3-Week4-School-Life-Lesson-Plan', word: true },
     { title: 'Unit 3 lessons 1-4: How Much Is It?, Before Money Was Money, Money Changes, Design the Next Money', grade: 'Grade 4', date: '2026-10-08', file: 'Grade3-Unit3-Lesson-Plans', word: true },
     { title: 'Week 4: Captain Quiet’s Space Mission (Classroom Rules)', grade: 'Grade 4', date: '2026-10-09', file: 'Grade4-Week4-Classroom-Rules-Lesson-Plan', word: true },
