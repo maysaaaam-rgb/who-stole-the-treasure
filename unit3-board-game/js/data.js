@@ -11,7 +11,7 @@
 
   /* ---------------- Grade 3: The Bear and I ---------------- */
   var G3 = {
-    grade: 3, title: 'Arctic Board Game', sub: 'Unit 3 · It Keeps Changing (The Bear and I) · Grade 3', bg: 'linear-gradient(160deg,#0c4a6e,#0e7490 55%,#164e63)',
+    grade: 3, theme: { bg: 'bg_arctic' }, title: 'Arctic Board Game', sub: 'Unit 3 · It Keeps Changing (The Bear and I) · Grade 3', bg: 'linear-gradient(160deg,#0c4a6e,#0e7490 55%,#164e63)',
     corners: { start: { n: 'START', art: 'i_start', e: '⛺', say: 'Start. The Arctic camp.' }, rest: { n: 'Cocoa Stop', art: 'i_rest', e: '☕', coins: 50 }, bonus: { n: 'Sing Stage', art: 'i_bonus', e: '🎤' }, treat: { n: 'Fish Feast', art: 'i_treat', e: '🍣', coins: 50 } },
     groups: [
       { id: 'A', name: 'Ice Fishing', color: '#38bdf8', price: 60, props: [
@@ -50,7 +50,7 @@
 
   /* ---------------- Grade 4: Money ---------------- */
   var G4 = {
-    grade: 4, title: 'Money Board Game', sub: 'Unit 3 · How Much Is It? · Grade 4', bg: 'linear-gradient(160deg,#422006,#92400e 55%,#78350f)',
+    grade: 4, theme: { bg: 'bg_market' }, title: 'Money Board Game', sub: 'Unit 3 · How Much Is It? · Grade 4', bg: 'linear-gradient(160deg,#422006,#92400e 55%,#78350f)',
     corners: { start: { n: 'START', art: 'i_start', e: '🏦', say: 'Start. The bank.' }, rest: { n: 'Piggy Bank', art: 'i_rest', e: '🐷', coins: 50 }, bonus: { n: 'Money Quiz', art: 'i_bonus', e: '🎯' }, treat: { n: 'Treasure Chest', art: 'i_treat', e: '🧰', coins: 50 } },
     groups: [
       { id: 'A', name: 'Barter Market', color: '#f59e0b', price: 60, props: [
@@ -86,5 +86,6 @@
     bonusQ: [Q('Paper money is ___ to carry than coins.', ['easier', 'harder', 'blue'], 0, 'Paper money is easier to carry than coins.'), Q('Electronic money is on a …', ['phone', 'goat', 'rock'], 0, 'Electronic money is on a phone.'),
       Q('People bartered before they used …', ['coins', 'phones', 'cars'], 0, 'People bartered before they used coins.'), Q('A credit card is made from …', ['plastic', 'metal', 'paper'], 0, 'A credit card is made from plastic.')]
   };
+  G4.corners.start.art = ''; G4.corners.rest.art = ''; G4.corners.bonus.art = '';   // the pictures we have fit the Arctic board; Money uses emoji for these corners until new art exists
   root.BoardData = { teams: TEAMS, 3: G3, 4: G4 };
 })(window);

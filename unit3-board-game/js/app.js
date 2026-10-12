@@ -18,7 +18,7 @@
   function btn(text, cls, fn) { var b = h('button', { type: 'button', class: 'btn ' + (cls || ''), text: text }); b.addEventListener('click', fn); return b; }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function sfx(n) { try { A.play(n); } catch (e) { /* optional */ } }
-  function say(t) { try { if (t) A.speak(t); } catch (e) { /* optional */ } }
+  function say(t) { try { if (!t) return; if (Array.isArray(t)) A.speakSeq(t); else A.speak(t); } catch (e) { /* optional */ } }
   function num(v) { v = Number(v); return isFinite(v) ? v : 0; }
 
   /* ---------- the 20 squares ---------- */
@@ -60,8 +60,9 @@
         e.appendChild(h('div', { class: 'band' })).style.background = q.g.color;
         var pic = h('div', { class: 'pic' }); pic.appendChild(artEl(q.p.art, q.p.e)); e.appendChild(pic);
         e.appendChild(h('div', { class: 'nm', text: q.p.w })); e.appendChild(h('div', { class: 'pr', text: '🪙 ' + q.price }));
+        e.style.setProperty('--g', q.g.color);
         var o = S.owner[q.i];
-        if (o != null) { e.style.borderColor = S.teams[o].c; e.appendChild(h('div', { class: 'own', text: S.teams[o].e })); }
+        if (o != null) { e.style.borderColor = S.teams[o].c; e.classList.add('owned'); e.style.setProperty('--oc', S.teams[o].c); e.appendChild(h('div', { class: 'own' }, [tokEl(S.teams[o])])); }
       } else if (q.type === 'chance') {
         var cp = h('div', { class: 'pic' }); cp.appendChild(artEl('i_chance', '❓')); e.appendChild(cp); e.appendChild(h('div', { class: 'nm', text: 'Chance' }));
       } else {
@@ -80,8 +81,8 @@
     S.teams.forEach(function (t, k) {
       var dots = h('div', { class: 'dots' });
       squares.forEach(function (q) { if (q.type === 'prop' && S.owner[q.i] === t.i) dots.appendChild(h('i')).style.background = q.g.color; });
-      var d = h('div', { class: 'tm' + (k === S.turn ? ' on' : '') }, [h('div', { class: 'n' }, [tokEl(t), document.createTextNode(' ' + t.n)]), h('div', { class: 'co', text: '🪙 ' + t.coins }), h('div', { class: 'sm', text: 'Worth ' + worth(t) }), dots]);
-      d.style.setProperty('--c', t.c); s.appendChild(d);
+      var d = h('div', { class: 'tm' + (k === S.turn ? ' on' : '') }, [h('div', { class: 'n' }, [tokEl(t), document.createTextNode(' ' + t.n)]), h('div', { class: 'co' + (t.shown !== undefined && t.shown !== t.coins ? ' bump' : ''), text: '🪙 ' + t.coins }), h('div', { class: 'sm', text: 'Worth ' + worth(t) }), dots]);
+      d.style.setProperty('--c', t.c); s.appendChild(d); t.shown = t.coins;
     });
     $('round').textContent = 'Round ' + Math.min(S.round, S.rounds) + ' of ' + S.rounds;
   }
@@ -90,10 +91,13 @@
   function whoBadge() { var t = cur(), w = h('div', { class: 'who', text: t.e + ' ' + t.n + ' team' }); w.style.setProperty('--c', t.c); return w; }
 
   /* ---------- turn flow ---------- */
+  var PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+  function setDie(el, n) { el.innerHTML = ''; el.dataset.n = n; for (var i = 0; i < 9; i++) el.appendChild(h('i', { class: PIPS[n].indexOf(i) >= 0 ? 'on' : '' })); }
+  function die(n) { var d = h('span', { class: 'die' }); setDie(d, n); return d; }
   function showRoll() {
     refresh();
     var t = cur();
-    centre([whoBadge(), h('div', { class: 'msg', text: 'Your turn! Roll the dice.' }), h('div', { class: 'dice', id: 'dice' }, [h('span', { text: '🎲' }), h('span', { text: '🎲' })]),
+    centre([whoBadge(), h('div', { class: 'msg', text: 'Your turn! Roll the dice.' }), h('div', { class: 'dice', id: 'dice' }, [die(5), die(3)]),
       btn('🎲 Roll', 'big', roll)]);
     say(t.n + ' team, roll the dice.');
   }
@@ -103,8 +107,8 @@
     var a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6);
     if (S.force) { a = S.force[0]; b = S.force[1]; S.force = null; }
     var tick = 0, iv = setInterval(function () {
-      dice.children[0].textContent = 1 + Math.floor(Math.random() * 6); dice.children[1].textContent = 1 + Math.floor(Math.random() * 6); sfx('page');
-      if (++tick >= 5) { clearInterval(iv); dice.classList.remove('roll'); dice.children[0].textContent = a; dice.children[1].textContent = b; setTimeout(function () { move(a + b); }, 500); }
+      setDie(dice.children[0], 1 + Math.floor(Math.random() * 6)); setDie(dice.children[1], 1 + Math.floor(Math.random() * 6)); sfx('page');
+      if (++tick >= 5) { clearInterval(iv); dice.classList.remove('roll'); setDie(dice.children[0], a); setDie(dice.children[1], b); setTimeout(function () { move(a + b); }, 500); }
     }, S.fast ? 5 : 120);
   }
   function move(steps) {
@@ -150,15 +154,16 @@
     var opts = shuffle(qd.o.map(function (o, k) { return { o: o, k: k }; })), done = false, box = h('div', { class: 'opts' });
     var holder = h('div');
     opts.forEach(function (x) {
-      var b = h('button', { type: 'button', class: 'btn opt', text: x.o });
+      var b = h('button', { type: 'button', class: 'btn opt' }, [h('span', { class: 'lt', text: 'ABC'.charAt(opts.indexOf(x)) }), h('span', { text: x.o })]); b.dataset.o = x.o;
       b.addEventListener('click', function () {
         if (done) return;
         if (x.k === qd.a) { done = true; b.classList.add('right'); sfx('correct'); say(qd.say || qd.o[qd.a]); setTimeout(function () { onDone(true); }, S.fast ? 5 : 1700); }
-        else { b.classList.add('wobble'); b.disabled = true; sfx('soft'); say('Try again. Think about the word.'); misses++; if (misses >= 2) { done = true; Array.prototype.forEach.call(box.children, function (c) { if (c.textContent === qd.o[qd.a]) c.classList.add('right'); }); say(qd.say || qd.o[qd.a]); setTimeout(function () { onDone(false); }, S.fast ? 5 : 2200); } }
+        else { b.classList.add('wobble'); b.disabled = true; sfx('soft'); say('Try again. Think about the word.'); misses++; if (misses >= 2) { done = true; Array.prototype.forEach.call(box.children, function (c) { if (c.dataset.o === qd.o[qd.a]) c.classList.add('right'); }); say(qd.say || qd.o[qd.a]); setTimeout(function () { onDone(false); }, S.fast ? 5 : 2200); } }
       });
       box.appendChild(b);
     });
     var misses = 0;
+    try { A.speakSeq([qd.q.replace(/___/g, 'blank')].concat(opts.map(function (x) { return x.o; }))); } catch (e) { /* optional */ }
     return [h('div', { class: 'q', text: qd.q }), btn('🔊 Read it', 'small ghost', function () { say(qd.q.replace(/___/g, 'blank')); }), box, holder, label ? h('div', { class: 'msg', text: label }) : null];
   }
 
@@ -168,7 +173,7 @@
       h('div', { class: 'msg', html: 'Answer right to <b>buy</b> it for 🪙 ' + q.price + (can ? '' : ' — not enough coins yet!') }),
       can ? btn('❓ Show the question', 'big violet', function () { askBuy(q); }) : btn('Next team ➜', '', endTurn),
       can ? btn('Pass', 'small ghost', endTurn) : null]);
-    say(q.p.w + '. Answer to buy it.');
+    say([q.p.w, 'Answer to buy it.']);
   }
   function askBuy(q) {
     var t = cur(), qd = q.p.qs[Math.floor(Math.random() * q.p.qs.length)];
@@ -181,7 +186,7 @@
     var t = cur(); t.coins += 10; sfx('coin'); refresh();
     centre([whoBadge(), h('div', { class: 'card' }, [h('div', { class: 'pic', style: 'font-size:3.5rem' }, [artEl(q.p.art, q.p.e)]), h('h2', { text: q.p.w })]),
       h('div', { class: 'msg', html: 'Your own word! Say it loud. <b>+10 coins</b>' }), btn('🔊 Say it', 'small ghost', function () { say(q.p.w); }), btn('Next team ➜', '', endTurn)]);
-    say('Your word! ' + q.p.w);
+    say(['Your word!', q.p.w]);
   }
   function rent(q, owner) {
     var t = cur(), r = rentOf(q, owner);
@@ -192,11 +197,11 @@
         centre([whoBadge()].concat(ask(qd, function (ok) { payRent(q, owner, ok ? Math.ceil(r / 2) : r, ok); })));
       }),
       btn('Pay full rent', 'small ghost', function () { payRent(q, owner, r, false); })]);
-    say(q.p.w + ' belongs to ' + owner.n + '.');
+    say([q.p.w, 'This word belongs to the ' + owner.n + '.']);
   }
   function payRent(q, owner, amt, half) {
     var t = cur(), pay = Math.min(t.coins, amt); t.coins -= pay; owner.coins += pay; sfx('coin'); refresh();
-    info('🪙', 'Rent: ' + pay + ' coins', t.n + ' pays ' + pay + ' to ' + owner.n + (half ? ' (half price, well done!)' : '') + '.', 'Rent. ' + pay + ' coins.');
+    info('🪙', 'Rent: ' + pay + ' coins', t.n + ' pays ' + pay + ' to ' + owner.n + (half ? ' (half price, well done!)' : '') + '.', 'Pay the rent.');
   }
   function bonus() {
     var t = cur(), qd = G.bonusQ[Math.floor(Math.random() * G.bonusQ.length)];
@@ -226,7 +231,7 @@
 
   /* ---------- start and finish ---------- */
   function setup() {
-    $('h-title').firstChild.nodeValue = G.title; $('h-sub').textContent = G.sub;
+    $('h-title').firstChild.nodeValue = G.title; if (G.theme && G.theme.bg) document.body.style.background = 'linear-gradient(rgba(6,9,17,.82),rgba(6,9,17,.9)), url(art/' + G.theme.bg + '.webp) center / cover fixed, #060911'; $('h-sub').textContent = G.sub;
     var nTeams = 4, rounds = 7, ov = $('overlay'); ov.className = 'overlay on';
     var panel = h('div', { class: 'panel' }), tBox = h('div', { class: 'pick' }), rBox = h('div', { class: 'pick' });
     function draw() {
