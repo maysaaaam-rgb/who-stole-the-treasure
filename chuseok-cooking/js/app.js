@@ -20,6 +20,12 @@
   function key() { return 'eaa_cook_w2_' + slug(st.name); }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage may be blocked */ } }
+  /* tell the teacher's sheet that this pupil opened the homework (once per pupil and dish on this device); it never blocks the child */
+  function ping() {
+    if (!st.name || !/^https:\/\//i.test(String(CFG.submitUrl || ''))) return;
+    var k = 'eaa_cook_w2_ping_' + slug(st.name) + '_' + (st.dish || 'none'); if (lsGet(k)) return; lsSet(k, '1');
+    try { fetch(CFG.submitUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, mode: 'no-cors', body: JSON.stringify({ token: CFG.token, type: 'started', homework: CFG.homework, className: 'Class ' + st.cls, studentName: st.name, dish: st.dish ? recipe(st.dish).n : '' }) }).catch(function () { /* ignore */ }); } catch (e) { /* ignore */ }
+  }
   function saveDraft() { if (st.name) lsSet(key(), JSON.stringify({ cls: st.cls, dish: st.dish, ans: st.ans, sent: st.sent })); }
   function loadDraft() {
     st.dish = ''; st.ans = { made: '', how: '', taste: '' }; st.file = null; st.sent = false;
@@ -75,14 +81,14 @@
     refs.tabs = h('div', { class: 'tabs' }, Object.keys(D.ROSTERS).map(function (c) {
       return h('button', { type: 'button', class: 'tab', 'data-c': c, text: 'Class ' + c + ' (' + D.ROSTERS[c].length + ')', onclick: function () { A.tap(); st.cls = c; st.name = ''; loadDraft(); fillNames(); refresh(); } });
     }));
-    refs.sel = h('select', { 'aria-label': 'Choose your name', autocomplete: 'off', onchange: function () { A.tap(); st.name = this.value; if (st.name) lsSet('eaa_cook_w2_last', JSON.stringify({ cls: st.cls, name: st.name })); loadDraft(); refresh(); } });
+    refs.sel = h('select', { 'aria-label': 'Choose your name', autocomplete: 'off', onchange: function () { A.tap(); st.name = this.value; if (st.name) lsSet('eaa_cook_w2_last', JSON.stringify({ cls: st.cls, name: st.name })); loadDraft(); refresh(); ping(); } });
     app.appendChild(h('section', { class: 'card' }, [h('h2', { text: '👤 Who are you?' }), refs.tabs, refs.sel, h('p', { class: 'hint', text: 'Your answers are saved on this device while you write.' })]));
 
     /* recipes */
     app.appendChild(h('p', { class: 'hint', style: 'margin:0 4px', text: 'Pick the dish you like. You only need to make one.' }));
     refs.recipes = {};
     D.RECIPES.forEach(function (r) {
-      var btn = h('button', { type: 'button', class: 'btn choose', onclick: function () { A.tap(); st.dish = r.id; saveDraft(); refresh(); A.speak('I make ' + r.n + '.'); } });
+      var btn = h('button', { type: 'button', class: 'btn choose', onclick: function () { A.tap(); st.dish = r.id; saveDraft(); refresh(); ping(); A.speak('I make ' + r.n + '.'); } });
       var card = h('section', { class: 'card recipe', style: '--c:' + r.color }, [
         h('div', { class: 'rh' }, [h('div', { class: 'pic' }, [r.pic ? h('img', { src: r.pic, alt: r.n }) : h('span', { text: r.e })]), h('div', {}, [h('h3', { text: r.n }), h('small', { text: r.kr }), h('span', { class: 'lvl ' + r.lc, text: r.level })])]),
         h('div', { class: 'need' }, [h('b', { text: 'You need: ' }), r.need]),
