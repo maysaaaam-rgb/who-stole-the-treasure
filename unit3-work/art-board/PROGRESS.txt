@@ -1,0 +1,13 @@
+t_fox.png OK
+t_owl.png OK
+t_bear.png OK (1st try was furry and did not match the glossy figurine style of the other tokens; regenerated on 2nd try)
+t_hare.png OK
+i_dice.png OK (upper die shows 5, lower die shows 3)
+i_chance.png OK (golden question mark is the only symbol)
+i_start.png OK
+i_rest.png OK
+i_bonus.png OK
+i_treat.png OK
+i_coins.png OK (tries 1-2 had misshapen stars on the stack tops; 3rd try has plain stack tops and clean stars on the front coins)
+i_trophy.png OK
+12/12 OK

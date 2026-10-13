@@ -1,0 +1,16 @@
+breezefin_cracking.png: OK
+breezefin_growing_cheer.png: OK
+breezefin_growing_oops.png: OK
+breezefin_growing_sleepy.png: OK
+breezefin_growing_think.png: OK
+frostfluff_cracking.png: OK
+frostfluff_growing_cheer.png: OK
+frostfluff_growing_oops.png: OK
+frostfluff_growing_sleepy.png: OK
+frostfluff_growing_think.png: OK
+terrashell_cracking.png: OK
+terrashell_growing_cheer.png: OK
+terrashell_growing_oops.png: OK
+terrashell_growing_sleepy.png: OK
+terrashell_growing_think.png: OK
+15/15 OK

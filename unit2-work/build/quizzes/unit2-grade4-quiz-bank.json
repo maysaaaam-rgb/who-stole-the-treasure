@@ -1,0 +1,1094 @@
+{
+  "title": "Grade 4 Unit 2 Comprehensive Quiz Bank: What Lives Here?",
+  "grade": 4,
+  "totalQuestions": 60,
+  "skillsSummary": {
+    "vocabulary": 12,
+    "reading": 12,
+    "phonics": 12,
+    "grammar": 12,
+    "listening": 12
+  },
+  "questions": [
+    {
+      "id": 1,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What does the word 'DECIDUOUS' mean?",
+      "options": [
+        "trees that lose their leaves every year in autumn",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "trees that lose their leaves every year in autumn",
+      "explanation": "'deciduous' means trees that lose their leaves every year in autumn. Example: Deciduous trees drop broad leaves in autumn.",
+      "hintTurkish": "Türkçe karşılığı: yaprak döken ağaç",
+      "page": "26",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 2,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Coniferous forests grow in cold northern biomes.'",
+      "options": [
+        "coniferous",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "coniferous",
+      "explanation": "'coniferous' means trees with sharp needles and cones that stay green all year. Example: Coniferous forests grow in cold northern biomes.",
+      "hintTurkish": "Türkçe karşılığı: iğne yapraklı ağaç",
+      "page": "28",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 3,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What does the word 'HIBERNATE' mean?",
+      "options": [
+        "to sleep deeply through the winter to save energy",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "to sleep deeply through the winter to save energy",
+      "explanation": "'hibernate' means to sleep deeply through the winter to save energy. Example: Bears hibernate in underground dens.",
+      "hintTurkish": "Türkçe karşılığı: kış uykusuna yatmak",
+      "page": "27",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 4,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Animals adapt so they can _____ winter.'",
+      "options": [
+        "survive",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "survive",
+      "explanation": "'survive' means to continue to live through harsh or difficult conditions. Example: Animals adapt so they can survive winter.",
+      "hintTurkish": "Türkçe karşılığı: hayatta kalmak",
+      "page": "26",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 5,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What does the word 'ADAPT' mean?",
+      "options": [
+        "to change behavior or body features to fit an environment",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "to change behavior or body features to fit an environment",
+      "explanation": "'adapt' means to change behavior or body features to fit an environment. Example: Hares adapt by turning white in winter.",
+      "hintTurkish": "Türkçe karşılığı: uyum sağlamak, adapte olmak",
+      "page": "27",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 6,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'A _____ built its nest under the tiled roof.'",
+      "options": [
+        "swallow",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "swallow",
+      "explanation": "'swallow' means a small migratory bird with pointed wings and a forked tail. Example: A swallow built its nest under the tiled roof.",
+      "hintTurkish": "Türkçe karşılığı: kırlangıç",
+      "page": "32",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 7,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What does the word 'SLINGSHOT' mean?",
+      "options": [
+        "a Y-shaped stick with elastic used to shoot small stones",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "a Y-shaped stick with elastic used to shoot small stones",
+      "explanation": "'slingshot' means a Y-shaped stick with elastic used to shoot small stones. Example: Wen Shu used a slingshot to hit the baby bird.",
+      "hintTurkish": "Türkçe karşılığı: sapan",
+      "page": "34",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 8,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Go Ne _____ the vet with golden coins.'",
+      "options": [
+        "paid",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "paid",
+      "explanation": "'paid' means past tense of pay: gave money for goods or care. Example: Go Ne paid the vet with golden coins.",
+      "hintTurkish": "Türkçe karşılığı: ödedi",
+      "page": "33",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 9,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What does the word 'VET' mean?",
+      "options": [
+        "a doctor who treats sick or injured animals",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "a doctor who treats sick or injured animals",
+      "explanation": "'vet' means a doctor who treats sick or injured animals. Example: He carried the injured swallow to the vet.",
+      "hintTurkish": "Türkçe karşılığı: veteriner",
+      "page": "33",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 10,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'The swallows lived under the wooden _____.'",
+      "options": [
+        "roof",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "roof",
+      "explanation": "'roof' means the top protective covering of a house. Example: The swallows lived under the wooden roof.",
+      "hintTurkish": "Türkçe karşılığı: çatı",
+      "page": "32",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 11,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What does the word 'NEEDLE' mean?",
+      "options": [
+        "a thin, stiff, sharp leaf of a coniferous tree",
+        "A vehicle for deep ocean travel",
+        "A tool for baking sweet bread",
+        "A musical instrument with strings"
+      ],
+      "answer": "a thin, stiff, sharp leaf of a coniferous tree",
+      "explanation": "'needle' means a thin, stiff, sharp leaf of a coniferous tree. Example: Pine needles prevent water loss in freezing air.",
+      "hintTurkish": "Türkçe karşılığı: iğne yaprak",
+      "page": "28",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 12,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'The _____ in a science text is to inform.'",
+      "options": [
+        "author's purpose",
+        "bicycle",
+        "umbrella",
+        "backpack"
+      ],
+      "answer": "author's purpose",
+      "explanation": "'author's purpose' means the main reason an author writes: to inform, entertain, or persuade. Example: The author's purpose in a science text is to inform.",
+      "hintTurkish": "Türkçe karşılığı: yazarın amacı",
+      "page": "30",
+      "canDo": "I can understand and apply Grade 4 academic vocabulary."
+    },
+    {
+      "id": 13,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "How many seasons does a deciduous forest have?",
+      "options": [
+        "Four distinct seasons",
+        "Only one wet season",
+        "Two cold seasons",
+        "No seasons"
+      ],
+      "answer": "Four distinct seasons",
+      "explanation": "Deciduous forests experience spring, summer, autumn, and winter.",
+      "hintTurkish": "Dört mevsim yaşanır.",
+      "page": "26",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 14,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Why do deciduous trees drop their leaves in autumn?",
+      "options": [
+        "To save water and energy during winter",
+        "Because they are sick",
+        "To feed birds on the ground",
+        "Because of high heat"
+      ],
+      "answer": "To save water and energy during winter",
+      "explanation": "Dropping broad leaves helps the tree conserve water in freezing weather.",
+      "hintTurkish": "Kışın su ve enerji tasarrufu sağlamak için.",
+      "page": "26",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 15,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "How cold can coniferous forests get in winter?",
+      "options": [
+        "Below -50 degrees Celsius",
+        "Never below 0 degrees",
+        "Always 25 degrees",
+        "Around 10 degrees"
+      ],
+      "answer": "Below -50 degrees Celsius",
+      "explanation": "Winter temperatures can plunge below -50°C.",
+      "hintTurkish": "Eksi 50 derecenin altına inebilir.",
+      "page": "28",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 16,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Why do coniferous trees have cones instead of fruit?",
+      "options": [
+        "To protect their seeds from freezing cold",
+        "To look pretty for birds",
+        "To make maple syrup",
+        "To absorb sunlight"
+      ],
+      "answer": "To protect their seeds from freezing cold",
+      "explanation": "Hard woody cones shield seeds from sub-zero temperatures.",
+      "hintTurkish": "Tohumları dondurucu soğuktan korumak için.",
+      "page": "28",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 17,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Under which heading would you find facts about bears sleeping?",
+      "options": [
+        "Surviving the Cold Winter",
+        "Spring Flowers",
+        "Ocean Animals",
+        "Desert Plants"
+      ],
+      "answer": "Surviving the Cold Winter",
+      "explanation": "Headings help readers locate specific facts quickly.",
+      "hintTurkish": "'Surviving the Cold Winter' başlığı altında.",
+      "page": "27",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 18,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What is the author's purpose in 'Two Different Forests'?",
+      "options": [
+        "To inform readers with science facts",
+        "To make readers laugh with fairy tales",
+        "To sell timber wood",
+        "To write a song"
+      ],
+      "answer": "To inform readers with science facts",
+      "explanation": "Nonfiction science texts are written to inform.",
+      "hintTurkish": "Bilimsel gerçeklerle bilgilendirmek (to inform).",
+      "page": "30",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 19,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Who was gentle and kind to animals in 'A New Friend'?",
+      "options": [
+        "Go Ne",
+        "Wen Shu",
+        "The king",
+        "The doctor"
+      ],
+      "answer": "Go Ne",
+      "explanation": "Go Ne cared for animals with a gentle heart.",
+      "hintTurkish": "Merhametli komşu Go Ne idi.",
+      "page": "32",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 20,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "How did Go Ne travel to the vet with the injured bird?",
+      "options": [
+        "He rode his bicycle",
+        "He flew an airplane",
+        "He took a train",
+        "He walked for days"
+      ],
+      "answer": "He rode his bicycle",
+      "explanation": "Go Ne placed the swallow gently and rode his bicycle.",
+      "hintTurkish": "Bisikletine binerek veterinere gitti.",
+      "page": "33",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 21,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What did the mother swallow bring Go Ne in the spring?",
+      "options": [
+        "A magical golden seed",
+        "A silver clock",
+        "A wooden basket",
+        "A sack of rice"
+      ],
+      "answer": "A magical golden seed",
+      "explanation": "The mother swallow returned with a magical golden seed.",
+      "hintTurkish": "Büyülü altın bir tohum getirdi.",
+      "page": "33",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 22,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Why did Wen Shu shoot a swallow with his slingshot?",
+      "options": [
+        "Because he was greedy and wanted gold",
+        "Because he was scared",
+        "Because he was hungry",
+        "By accident"
+      ],
+      "answer": "Because he was greedy and wanted gold",
+      "explanation": "Wen Shu wanted to copy Go Ne to become rich.",
+      "hintTurkish": "Çünkü açgözlüydü ve altın istiyordu.",
+      "page": "34",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 23,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What came out of Wen Shu's plant?",
+      "options": [
+        "Monsters and weeds",
+        "Glittering gold coins",
+        "Sweet apples",
+        "Warm clothes"
+      ],
+      "answer": "Monsters and weeds",
+      "explanation": "His selfish greed produced monsters and weeds.",
+      "hintTurkish": "Açgözlülüğünün cezası olarak canavarlar ve yabani otlar çıktı.",
+      "page": "35",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 24,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What is the author's purpose in the folk tale 'A New Friend'?",
+      "options": [
+        "To entertain readers and teach kindness",
+        "To teach computer programming",
+        "To explain tree needles",
+        "To test spelling"
+      ],
+      "answer": "To entertain readers and teach kindness",
+      "explanation": "Folk tales entertain while delivering a moral lesson.",
+      "hintTurkish": "Eğlendirmek ve iyiliği öğretmek (to entertain & teach).",
+      "page": "36",
+      "canDo": "I can locate facts using headings and identify the author's purpose."
+    },
+    {
+      "id": 25,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Which word contains the vowel team 'ai' making the /eɪ/ sound?",
+      "options": [
+        "train",
+        "trap",
+        "tram",
+        "trip"
+      ],
+      "answer": "train",
+      "explanation": "Train contains the 'ai' vowel digraph.",
+      "hintTurkish": "'ai' ses grubu olan kelime: train.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 26,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Which word is a minimal pair with PAN (short /æ/) having the /eɪ/ sound?",
+      "options": [
+        "pain",
+        "pin",
+        "pen",
+        "pun"
+      ],
+      "answer": "pain",
+      "explanation": "Pan vs pain is a classic short a vs long ai pair.",
+      "hintTurkish": "Pan (tava) vs Pain (acı/ağrı).",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 27,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete with an 'ai' word: 'Water drops falling from clouds are _____.'",
+      "options": [
+        "rain",
+        "ran",
+        "ring",
+        "rug"
+      ],
+      "answer": "rain",
+      "explanation": "Rain is spelled with 'ai'.",
+      "hintTurkish": "Yağmur: rain.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 28,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Minimal pair: 'The dog ran (past) / The _____ fell all morning.'",
+      "options": [
+        "rain",
+        "run",
+        "rein",
+        "ray"
+      ],
+      "answer": "rain",
+      "explanation": "Ran (short a) vs rain (long ai).",
+      "hintTurkish": "Ran (koştu) vs Rain (yağmur).",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 29,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete: 'The friendly puppy wagged its long _____.'",
+      "options": [
+        "tail",
+        "tall",
+        "tell",
+        "toll"
+      ],
+      "answer": "tail",
+      "explanation": "Tail is spelled with 'ai'.",
+      "hintTurkish": "Kuyruk: tail.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 30,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete: 'The letter carrier brought letters in the morning _____.'",
+      "options": [
+        "mail",
+        "mill",
+        "meal",
+        "mole"
+      ],
+      "answer": "mail",
+      "explanation": "Mail means postal letters.",
+      "hintTurkish": "Posta/mektup: mail.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 31,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete: 'We used a brush and blue _____ to make the poster.'",
+      "options": [
+        "paint",
+        "pant",
+        "pin",
+        "point"
+      ],
+      "answer": "paint",
+      "explanation": "Paint has the vowel team 'ai'.",
+      "hintTurkish": "Boya: paint.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 32,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete: 'Please _____ at the station until the train arrives.'",
+      "options": [
+        "wait",
+        "wet",
+        "wit",
+        "watt"
+      ],
+      "answer": "wait",
+      "explanation": "Wait means staying until an event occurs.",
+      "hintTurkish": "Beklemek: wait.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 33,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Which word means the most important road or idea?",
+      "options": [
+        "main",
+        "man",
+        "men",
+        "mean"
+      ],
+      "answer": "main",
+      "explanation": "Main means primary or principal.",
+      "hintTurkish": "Ana, başlıca: main.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 34,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Which word means metal rings connected together?",
+      "options": [
+        "chain",
+        "chin",
+        "cane",
+        "clan"
+      ],
+      "answer": "chain",
+      "explanation": "Chain has 'ch' + 'ai' + 'n'.",
+      "hintTurkish": "Zincir: chain.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 35,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Which word rhymes with 'MAIL' and 'TAIL'?",
+      "options": [
+        "sail",
+        "sell",
+        "sole",
+        "seal"
+      ],
+      "answer": "sail",
+      "explanation": "Sail belongs to the -ail family.",
+      "hintTurkish": "-ail ile kafiyeli: sail.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 36,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Which word does NOT have the long /eɪ/ sound?",
+      "options": [
+        "cat",
+        "paid",
+        "sailed",
+        "claim"
+      ],
+      "answer": "cat",
+      "explanation": "Cat has short /æ/, while the others have /eɪ/.",
+      "hintTurkish": "Cat sözcüğü kısa 'a' sesidir.",
+      "page": "38",
+      "canDo": "I can pronounce and spell words with vowel team 'ai' (/eɪ/)."
+    },
+    {
+      "id": 37,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Complete: 'Coniferous trees have needles _____ of broad leaves.'",
+      "options": [
+        "instead",
+        "because",
+        "so",
+        "why"
+      ],
+      "answer": "instead",
+      "explanation": "Use 'instead of' to show replacement.",
+      "hintTurkish": "'Geniş yapraklar YERİNE': instead of.",
+      "page": "29",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 38,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Complete: 'Pine trees produce cones instead _____ flowers.'",
+      "options": [
+        "of",
+        "to",
+        "for",
+        "at"
+      ],
+      "answer": "of",
+      "explanation": "'instead' always pairs with preposition 'of'.",
+      "hintTurkish": "'Instead' her zaman 'of' ile kullanılır.",
+      "page": "29",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 39,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete: 'Animals grow thick winter fur _____ they can stay warm.'",
+      "options": [
+        "so",
+        "instead",
+        "because",
+        "or"
+      ],
+      "answer": "so",
+      "explanation": "'so they can' expresses purpose/adaptation.",
+      "hintTurkish": "Sıcak kalabilsinler diye: so they can.",
+      "page": "27",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 40,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete: 'Bears hibernate in winter dens so they _____ save energy.'",
+      "options": [
+        "can",
+        "are",
+        "do",
+        "have"
+      ],
+      "answer": "can",
+      "explanation": "Modal 'can' follows 'so they'.",
+      "hintTurkish": "Enerji tasarrufu yapabilsinler diye: so they can.",
+      "page": "27",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 41,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What is the past tense of the irregular verb BUILD?",
+      "options": [
+        "built",
+        "builded",
+        "building",
+        "builds"
+      ],
+      "answer": "built",
+      "explanation": "Build -> built (irregular).",
+      "hintTurkish": "Build fiilinin geçmiş zamanı: built.",
+      "page": "33",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 42,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "What is the past tense of the irregular verb FALL?",
+      "options": [
+        "fell",
+        "falled",
+        "falling",
+        "falls"
+      ],
+      "answer": "fell",
+      "explanation": "Fall -> fell (irregular).",
+      "hintTurkish": "Fall fiilinin geçmiş zamanı: fell.",
+      "page": "33",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 43,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What is the past tense of the irregular verb GROW?",
+      "options": [
+        "grew",
+        "growed",
+        "growing",
+        "grows"
+      ],
+      "answer": "grew",
+      "explanation": "Grow -> grew (irregular).",
+      "hintTurkish": "Grow fiilinin geçmiş zamanı: grew.",
+      "page": "33",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 44,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "What is the past tense of the irregular verb PAY?",
+      "options": [
+        "paid",
+        "payed",
+        "peid",
+        "paying"
+      ],
+      "answer": "paid",
+      "explanation": "Pay -> paid (irregular).",
+      "hintTurkish": "Pay fiilinin geçmiş zamanı: paid.",
+      "page": "33",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 45,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What is the past tense of the irregular verb HIT?",
+      "options": [
+        "hit",
+        "hitted",
+        "hitting",
+        "hits"
+      ],
+      "answer": "hit",
+      "explanation": "Hit remains hit in past tense.",
+      "hintTurkish": "Hit fiili geçmiş zamanda değişmez: hit.",
+      "page": "34",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 46,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "What is the past tense of the irregular verb GIVE?",
+      "options": [
+        "gave",
+        "gived",
+        "giving",
+        "gives"
+      ],
+      "answer": "gave",
+      "explanation": "Give -> gave (irregular).",
+      "hintTurkish": "Give fiilinin geçmiş zamanı: gave.",
+      "page": "33",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 47,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "order",
+      "question": "Order the words: [needles / They / have / of / leaves / instead]",
+      "options": [
+        "They have needles instead of leaves",
+        "Instead of leaves needles they have",
+        "They needles have instead of leaves",
+        "Leaves instead of they have needles"
+      ],
+      "answer": "They have needles instead of leaves",
+      "explanation": "Subject + verb + noun + instead of + noun.",
+      "hintTurkish": "They have needles instead of leaves.",
+      "page": "29",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 48,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete: 'The author wrote this text to _____ readers about biomes.'",
+      "options": [
+        "inform",
+        "informs",
+        "informing",
+        "informed"
+      ],
+      "answer": "inform",
+      "explanation": "After 'to', use base verb 'inform'.",
+      "hintTurkish": "To inform (bilgilendirmek için).",
+      "page": "30",
+      "canDo": "I can use 'so they can', 'instead of', and past irregular verbs accurately."
+    },
+    {
+      "id": 49,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /p-eɪ-n/",
+      "options": [
+        "pain",
+        "pan",
+        "pin",
+        "pen"
+      ],
+      "answer": "pain",
+      "explanation": "Audio pronunciation of pain with long /eɪ/.",
+      "hintTurkish": "Pain sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 50,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /t-r-eɪ-n/",
+      "options": [
+        "train",
+        "tram",
+        "track",
+        "trip"
+      ],
+      "answer": "train",
+      "explanation": "Audio pronunciation of train.",
+      "hintTurkish": "Train sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 51,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and identify the adaptation: 'The snowshoe hare turns white so it can hide in the snow.'",
+      "options": [
+        "hide in the snow",
+        "swim across rivers",
+        "fly south",
+        "eat pinecones"
+      ],
+      "answer": "hide in the snow",
+      "explanation": "The audio explains: 'so it can hide in the snow'.",
+      "hintTurkish": "Karda saklanabilmek için beyazlaşır.",
+      "page": "27",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 52,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and identify the tree feature: 'Evergreen trees have sharp needles instead of broad leaves.'",
+      "options": [
+        "sharp needles",
+        "broad leaves",
+        "red flowers",
+        "sweet fruit"
+      ],
+      "answer": "sharp needles",
+      "explanation": "The audio highlights 'sharp needles'.",
+      "hintTurkish": "Keskin iğne yapraklar.",
+      "page": "28",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 53,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and identify the past verb: 'The swallow fell from its high nest.'",
+      "options": [
+        "fell",
+        "fall",
+        "flew",
+        "fixed"
+      ],
+      "answer": "fell",
+      "explanation": "Audio says 'fell'.",
+      "hintTurkish": "Geçmiş zaman: fell.",
+      "page": "33",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 54,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and identify the payment: 'Go Ne paid the animal doctor with three gold coins.'",
+      "options": [
+        "three gold coins",
+        "paper money",
+        "two apples",
+        "silver rings"
+      ],
+      "answer": "three gold coins",
+      "explanation": "Go Ne paid with three gold coins.",
+      "hintTurkish": "Üç altın para ile ödeme yaptı.",
+      "page": "33",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 55,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and identify the temperature: 'In winter, the coniferous forest can reach minus fifty degrees.'",
+      "options": [
+        "-50°C",
+        "-15°C",
+        "0°C",
+        "-5°C"
+      ],
+      "answer": "-50°C",
+      "explanation": "Audio clearly states 'minus fifty degrees'.",
+      "hintTurkish": "Eksi 50 derece (-50°C).",
+      "page": "28",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 56,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /s-eɪ-l/",
+      "options": [
+        "sail",
+        "sell",
+        "seal",
+        "sole"
+      ],
+      "answer": "sail",
+      "explanation": "Audio pronunciation of sail.",
+      "hintTurkish": "Sail sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 57,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and choose the purpose: 'The author wrote this story to entertain us.'",
+      "options": [
+        "to entertain",
+        "to inform",
+        "to test",
+        "to complain"
+      ],
+      "answer": "to entertain",
+      "explanation": "Audio says 'to entertain us'.",
+      "hintTurkish": "Eğlendirmek amacıyla (to entertain).",
+      "page": "36",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 58,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and identify the tool: 'Wen Shu aimed at the nest with a wooden slingshot.'",
+      "options": [
+        "wooden slingshot",
+        "metal hammer",
+        "sharp stick",
+        "rope"
+      ],
+      "answer": "wooden slingshot",
+      "explanation": "Audio mentions 'wooden slingshot'.",
+      "hintTurkish": "Ahşap sapan.",
+      "page": "34",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 59,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and identify the animal home: 'Bears sleep through winter in cozy underground dens.'",
+      "options": [
+        "underground dens",
+        "tree branches",
+        "open fields",
+        "river beds"
+      ],
+      "answer": "underground dens",
+      "explanation": "Bears hibernate in underground dens.",
+      "hintTurkish": "Yer altındaki inlerinde (dens).",
+      "page": "27",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    },
+    {
+      "id": 60,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /w-eɪ-t/",
+      "options": [
+        "wait",
+        "wet",
+        "white",
+        "weight"
+      ],
+      "answer": "wait",
+      "explanation": "Audio pronunciation of wait.",
+      "hintTurkish": "Wait sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can discriminate long /eɪ/ phonemes and extract details from spoken narrative and expository English."
+    }
+  ]
+}

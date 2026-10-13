@@ -1,0 +1,665 @@
+{
+  "gameName": "The -st Sound Vault",
+  "grade": 3,
+  "pitch": "Crack the secret phonetic vault by identifying, sorting, and pronouncing sharp final -st blends without adding extra vowels.",
+  "targetFormula": "The [fast/best] runner was first, not last!",
+  "topic": "Final consonant blend -st: fast, last, lost, best, test, harvest, first; setting & festival integration",
+  "arc": {
+    "discovery": "Phase 1: Sound Radar detects whispering code words locked in the ancient gold vault.",
+    "workbench": "Phase 2: The Phoneme Lockbox challenges teams to separate minimal pairs (gas vs past, bus vs bust) and lock in final -st blends.",
+    "karaoke": "Phase 3: The Vault Speaker teleprompter requires team champions to chant rapid-fire -st sentences with crisp ending stops."
+  },
+  "mechanics": "Interactive smartboard safe-cracking game. When teams pick words ending in sharp /st/, the dial spins. If pupils accidentally add an epenthetic vowel (e.g. 'fast-ı'), the dial wobbles with an encouraging audio clue.",
+  "feedback": {
+    "correct": [
+      "Click! Vault lock turns! +5 XP! 🔐",
+      "Sharp /st/ sound detected! Super! 💎",
+      "Gold gears rotating! ⚙️",
+      "Crisp ending, Explorer! 🌟",
+      "Master Phonetic Safe-Cracker! 🏆"
+    ],
+    "softFail": [
+      "Stop the /t/ sharply! No extra sound at the end! 🤫",
+      "Listen closely: is it 'pass' or 'past'? 👂",
+      "Keep the /s/ and /t/ together like a zipper! 🤐",
+      "Check the vowel before the blend! 💡",
+      "Try once more with quick breath! 💨"
+    ],
+    "levelUp": "The Main Vault Door swings open! You unlocked the Master Phonetic Crown! 👑"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Pupils spin safe dials, drag golden -st keys into lock slots, and tap audio speaker bubbles.",
+    "classParticipation": "Pupils tap their desks sharply on the final /t/ sound: 'FA-ST [tap]! LA-ST [tap]!'",
+    "version15min": "10 rounds focusing on minimal pair recognition and word building.",
+    "version30min": "Full 30-round championship with audio discrimination, sentence completions, and rapid-fire vault chants."
+  },
+  "words": [
+    {
+      "word": "fast",
+      "emoji": "⚡",
+      "turkish": "hızlı",
+      "definition": "Moving with great speed.",
+      "exampleSentence": "The rabbit is very fast."
+    },
+    {
+      "word": "last",
+      "emoji": "🏁",
+      "turkish": "son, sonuncu",
+      "definition": "Coming after all others in time or order.",
+      "exampleSentence": "December is the last month of the year."
+    },
+    {
+      "word": "lost",
+      "emoji": "🧭❓",
+      "turkish": "kayıp, kaybolmuş",
+      "definition": "Unable to find one's way or not knowing where something is.",
+      "exampleSentence": "He lost his golden key in the grass."
+    },
+    {
+      "word": "best",
+      "emoji": "🥇",
+      "turkish": "en iyi",
+      "definition": "Of the highest quality or excellence.",
+      "exampleSentence": "She is my best friend."
+    },
+    {
+      "word": "test",
+      "emoji": "📝",
+      "turkish": "test, deneme",
+      "definition": "A set of questions or tasks to measure knowledge.",
+      "exampleSentence": "We passed our science test."
+    },
+    {
+      "word": "harvest",
+      "emoji": "🌾",
+      "turkish": "hasat",
+      "definition": "The time when crops are cut and gathered.",
+      "exampleSentence": "Autumn is the harvest season."
+    },
+    {
+      "word": "first",
+      "emoji": "🥇1️⃣",
+      "turkish": "ilk, birinci",
+      "definition": "Coming before all others.",
+      "exampleSentence": "This is our first harvest on Mars."
+    },
+    {
+      "word": "nest",
+      "emoji": "🪺",
+      "turkish": "yuva",
+      "definition": "A structure built by birds to hold eggs.",
+      "exampleSentence": "The bird flew back to its nest."
+    }
+  ],
+  "rounds": [
+    {
+      "type": "choose",
+      "prompt": "Which word ends with the /st/ sound?",
+      "options": [
+        "fast",
+        "fan",
+        "fat",
+        "far"
+      ],
+      "answer": "fast",
+      "hintEnglish": "Listen for the /s/ and /t/ blend at the end.",
+      "hintTurkish": "Sonunda /st/ ses birleşimi olan sözcüğü seçin.",
+      "audioText": "Which word ends with the st sound?",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Match the opposite: FIRST <---> _____",
+      "options": [
+        "last",
+        "lost",
+        "fast",
+        "best"
+      ],
+      "answer": "last",
+      "hintEnglish": "The opposite of first.",
+      "hintTurkish": "First (ilk) sözcüğünün zıttı: last (son).",
+      "audioText": "What is the opposite of first?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "We study hard to do well on our English _____.",
+      "options": [
+        "test",
+        "tent",
+        "ten",
+        "tea"
+      ],
+      "answer": "test",
+      "hintEnglish": "An exam or quiz.",
+      "hintTurkish": "Sınav veya test anlamındaki kelime.",
+      "audioText": "We study hard to do well on our English test.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose the word you hear: /b-e-s-t/",
+      "options": [
+        "best",
+        "bet",
+        "bed",
+        "bell"
+      ],
+      "answer": "best",
+      "hintEnglish": "Superlative of good.",
+      "hintTurkish": "'Best' sesini dinleyin.",
+      "audioText": "best",
+      "skill": "listening"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which word has a final -st blend?",
+      "options": [
+        "harvest",
+        "holiday",
+        "happy",
+        "honey"
+      ],
+      "answer": "harvest",
+      "hintEnglish": "Gathering crops.",
+      "hintTurkish": "Sonunda -st olan kelime: harvest.",
+      "audioText": "Which word has a final st blend?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Oh no! I cannot find my keys. They are _____.",
+      "options": [
+        "lost",
+        "lot",
+        "log",
+        "lock"
+      ],
+      "answer": "lost",
+      "hintEnglish": "Cannot be found.",
+      "hintTurkish": "Kaybolmuş, kayıp: lost.",
+      "audioText": "They are lost.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Minimal pair: The rocket is very _____ (quick).",
+      "options": [
+        "fast",
+        "fat",
+        "fan",
+        "fax"
+      ],
+      "answer": "fast",
+      "hintEnglish": "Quick speed with -st.",
+      "hintTurkish": "Hızlı anlamında: fast.",
+      "audioText": "The rocket is very fast.",
+      "skill": "phonics"
+    },
+    {
+      "type": "sort",
+      "prompt": "Which word does NOT belong to the -st group?",
+      "options": [
+        "rain",
+        "first",
+        "last",
+        "test"
+      ],
+      "answer": "rain",
+      "hintEnglish": "Rain ends with /n/, not /st/.",
+      "hintTurkish": "Rain -st ile bitmez.",
+      "audioText": "Which word does not belong to the st group?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Who came in first place?'",
+      "options": [
+        "Who came in first place?",
+        "Who came in fast place?",
+        "Who came in fish place?",
+        "Who came in fresh place?"
+      ],
+      "answer": "Who came in first place?",
+      "hintEnglish": "Number one in line.",
+      "hintTurkish": "İlk sıraya kim geldi?",
+      "audioText": "Who came in first place?",
+      "skill": "listening"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "This apple pie is the _____ dessert in the world!",
+      "options": [
+        "best",
+        "bet",
+        "beg",
+        "bed"
+      ],
+      "answer": "best",
+      "hintEnglish": "Number one quality.",
+      "hintTurkish": "En iyisi: the best.",
+      "audioText": "This apple pie is the best dessert in the world!",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Match word to definition: HARVEST",
+      "options": [
+        "Gathering crops from fields",
+        "Running very fast",
+        "Taking a math quiz",
+        "Sleeping in bed"
+      ],
+      "answer": "Gathering crops from fields",
+      "hintEnglish": "Autumn harvest.",
+      "hintTurkish": "Ekinleri tarladan toplamak.",
+      "audioText": "What does harvest mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Pronunciation check: Do we say 'fast-uh' or 'fast'?",
+      "options": [
+        "fast (sharp stop)",
+        "fast-uh (extra vowel)",
+        "fas-ee",
+        "fa-tu"
+      ],
+      "answer": "fast (sharp stop)",
+      "hintEnglish": "Stop the /t/ sound sharply without adding 'uh'.",
+      "hintTurkish": "Türkçe ses benzeşmesi yapmayın, t sesinde net durun.",
+      "audioText": "How do we pronounce fast?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "We celebrate our _____ harvest feast on Mars.",
+      "options": [
+        "first",
+        "fast",
+        "fist",
+        "fit"
+      ],
+      "answer": "first",
+      "hintEnglish": "Number one harvest.",
+      "hintTurkish": "Mars'taki İLK hasatımız: first.",
+      "audioText": "We celebrate our first harvest feast on Mars.",
+      "skill": "reading"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [The] [cheetah] [is] [fast.]",
+      "options": [
+        "The cheetah is fast.",
+        "Fast cheetah the is.",
+        "Is fast the cheetah.",
+        "The fast is cheetah."
+      ],
+      "answer": "The cheetah is fast.",
+      "hintEnglish": "Subject + verb + adjective.",
+      "hintTurkish": "The cheetah is fast.",
+      "audioText": "The cheetah is fast.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which word rhymes with NEST and TEST?",
+      "options": [
+        "best",
+        "last",
+        "lost",
+        "fast"
+      ],
+      "answer": "best",
+      "hintEnglish": "Same -est ending sound.",
+      "hintTurkish": "-est sesiyle kafiyeli: best.",
+      "audioText": "Which word rhymes with nest and test?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which word rhymes with FAST and LAST?",
+      "options": [
+        "past",
+        "pest",
+        "post",
+        "pot"
+      ],
+      "answer": "past",
+      "hintEnglish": "Same -ast ending sound.",
+      "hintTurkish": "-ast sesiyle kafiyeli: past.",
+      "audioText": "Which word rhymes with fast and last?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "I looked everywhere, but my book is still _____.",
+      "options": [
+        "lost",
+        "lot",
+        "long",
+        "loss"
+      ],
+      "answer": "lost",
+      "hintEnglish": "Missing.",
+      "hintTurkish": "Kayıp: lost.",
+      "audioText": "My book is still lost.",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: LAST",
+      "options": [
+        "At the very end",
+        "At the very start",
+        "In the center",
+        "Around the outside"
+      ],
+      "answer": "At the very end",
+      "hintEnglish": "Final in sequence.",
+      "hintTurkish": "En sonda, sonuncu.",
+      "audioText": "What does last mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'The test was not hard.'",
+      "options": [
+        "The test was not hard.",
+        "The tent was not hard.",
+        "The text was not hard.",
+        "The desk was not hard."
+      ],
+      "answer": "The test was not hard.",
+      "hintEnglish": "Listen for /test/.",
+      "hintTurkish": "Test kelimesini dinleyin.",
+      "audioText": "The test was not hard.",
+      "skill": "listening"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ a big harvest celebration tonight.",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "am"
+      ],
+      "answer": "is",
+      "hintEnglish": "One celebration = singular.",
+      "hintTurkish": "Tekil kutlama: There is.",
+      "audioText": "There is a big harvest celebration tonight.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Identify the -st word in: 'The astronaut ran fast.'",
+      "options": [
+        "fast",
+        "The",
+        "ran",
+        "astronaut"
+      ],
+      "answer": "fast",
+      "hintEnglish": "Word ending in -st.",
+      "hintTurkish": "-st ile biten sözcük: fast.",
+      "audioText": "Identify the st word in the astronaut ran fast.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Identify the -st word in: 'Autumn is harvest time.'",
+      "options": [
+        "harvest",
+        "Autumn",
+        "time",
+        "is"
+      ],
+      "answer": "harvest",
+      "hintEnglish": "Contains -st at the end.",
+      "hintTurkish": "Hasat sözcüğü: harvest.",
+      "audioText": "Identify the st word in autumn is harvest time.",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "He was the _____ boy to arrive at school this morning.",
+      "options": [
+        "first",
+        "fast",
+        "fist",
+        "fish"
+      ],
+      "answer": "first",
+      "hintEnglish": "Earliest in time.",
+      "hintTurkish": "İlk gelen: first.",
+      "audioText": "He was the first boy to arrive.",
+      "skill": "phonics"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [This] [is] [the] [best] [day.]",
+      "options": [
+        "This is the best day.",
+        "The best day this is.",
+        "Is this the best day.",
+        "Best day is this the."
+      ],
+      "answer": "This is the best day.",
+      "hintEnglish": "Start with This is.",
+      "hintTurkish": "This is the best day.",
+      "audioText": "This is the best day.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which letter comes before -st in LOST?",
+      "options": [
+        "o",
+        "a",
+        "e",
+        "i"
+      ],
+      "answer": "o",
+      "hintEnglish": "Short o sound.",
+      "hintTurkish": "O harfi.",
+      "audioText": "Which letter comes before st in lost?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which letter comes before -st in BEST?",
+      "options": [
+        "e",
+        "a",
+        "o",
+        "u"
+      ],
+      "answer": "e",
+      "hintEnglish": "Short e sound.",
+      "hintTurkish": "E harfi.",
+      "audioText": "Which letter comes before st in best?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which letter comes before -st in FAST?",
+      "options": [
+        "a",
+        "e",
+        "i",
+        "o"
+      ],
+      "answer": "a",
+      "hintEnglish": "Short a sound.",
+      "hintTurkish": "A harfi.",
+      "audioText": "Which letter comes before st in fast?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The little bird flew safely to its _____.",
+      "options": [
+        "nest",
+        "net",
+        "neck",
+        "next"
+      ],
+      "answer": "nest",
+      "hintEnglish": "Bird home ending in -st.",
+      "hintTurkish": "Kuş yuvası: nest.",
+      "audioText": "The little bird flew safely to its nest.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Who is your best friend?'",
+      "options": [
+        "Who is your best friend?",
+        "Who is your bed friend?",
+        "Who is your belt friend?",
+        "Who is your bell friend?"
+      ],
+      "answer": "Who is your best friend?",
+      "hintEnglish": "Listen for /best/.",
+      "hintTurkish": "En iyi arkadaşın kim?",
+      "audioText": "Who is your best friend?",
+      "skill": "listening"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Autumn] [brings] [a] [bountiful] [harvest.]",
+      "options": [
+        "Autumn brings a bountiful harvest.",
+        "A bountiful harvest autumn brings.",
+        "Harvest autumn brings a bountiful.",
+        "Brings autumn a bountiful harvest."
+      ],
+      "answer": "Autumn brings a bountiful harvest.",
+      "hintEnglish": "Subject + verb + object.",
+      "hintTurkish": "Autumn brings a bountiful harvest.",
+      "audioText": "Autumn brings a bountiful harvest.",
+      "skill": "grammar"
+    }
+  ],
+  "sentenceBuilder": [
+    {
+      "tiles": [
+        "runner",
+        "fast.",
+        "is",
+        "The"
+      ],
+      "answer": "The runner is fast."
+    },
+    {
+      "tiles": [
+        "lost",
+        "He",
+        "his",
+        "key."
+      ],
+      "answer": "He lost his key."
+    },
+    {
+      "tiles": [
+        "was",
+        "She",
+        "first",
+        "line.",
+        "in"
+      ],
+      "answer": "She was first in line."
+    },
+    {
+      "tiles": [
+        "is",
+        "This",
+        "the",
+        "day!",
+        "best"
+      ],
+      "answer": "This is the best day!"
+    },
+    {
+      "tiles": [
+        "took",
+        "a",
+        "We",
+        "test.",
+        "math"
+      ],
+      "answer": "We took a math test."
+    },
+    {
+      "tiles": [
+        "celebrate",
+        "We",
+        "harvest.",
+        "autumn",
+        "the"
+      ],
+      "answer": "We celebrate the autumn harvest."
+    },
+    {
+      "tiles": [
+        "last",
+        "December",
+        "month.",
+        "is",
+        "the"
+      ],
+      "answer": "December is the last month."
+    },
+    {
+      "tiles": [
+        "built",
+        "The",
+        "bird",
+        "nest.",
+        "a"
+      ],
+      "answer": "The bird built a nest."
+    },
+    {
+      "tiles": [
+        "Mars.",
+        "first",
+        "The",
+        "was",
+        "harvest",
+        "on"
+      ],
+      "answer": "The first harvest was on Mars."
+    },
+    {
+      "tiles": [
+        "did",
+        "my",
+        "I",
+        "best.",
+        "very"
+      ],
+      "answer": "I did my very best."
+    }
+  ],
+  "speaking": {
+    "scaffold": "Listen to my final -st sounds!",
+    "formula1": "The fast runner finished first, not last.",
+    "formula2": "We celebrate our best harvest feast with joy.",
+    "exampleAnswer": "Listen to my final -st sounds! The fast runner finished first, not last. We celebrate our best harvest feast with joy."
+  },
+  "assets": [
+    "An ancient steampunk vault door made of polished bronze with rotating phonetic letter tumblers. Image prompt: A giant bank vault circular steel door with glowing brass dials showing letter combinations, dramatic cyan lighting, 16:9 glassmorphic game backdrop.",
+    "A golden key shaped like the letters ST with sparkling gems. Image prompt: A glowing golden fantasy key with the letters S and T engraved on the bow, 3D game item render, transparent background.",
+    "A chest overflowing with golden alphabet coins and glowing jewels. Image prompt: A pirate treasure chest open wide, filled with glowing golden coins stamped with letters, 3D game asset render.",
+    "A joyful detective owl wearing a brass monocle holding a safe stethoscope. Image prompt: Cartoon scholar owl wearing a steampunk monocle and detective coat holding a golden magnifying glass."
+  ]
+}

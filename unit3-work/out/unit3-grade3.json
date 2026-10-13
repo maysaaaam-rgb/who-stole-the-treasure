@@ -1,0 +1,709 @@
+{
+  "book": "Global Readings 2",
+  "grade": 3,
+  "unitNumber": 3,
+  "unitTitle": "How Much Is It?",
+  "pages": "40-55",
+  "bigIdea": "Why do we need money, and how has the way we buy and pay for things changed over time?",
+  "readingSkill": "Reading Informational Text (Chronological sequence / timeline) & Reading Fiction (Identifying Problem and Solution)",
+  "contentArea": "Social Studies, History & Financial Literacy",
+  "selFocus": "Responsible decision-making, generosity, gratitude, and empathy for family working hard",
+  "phonicsFocus": "Spelling pattern ar (/ɑːr/ sound: car, park, hard, farm, card, smart, star, barter)",
+  "grammarOrLanguageFocus": "Past simple verbs (bartered, started, invented, found), modals for choices (could, should), and asking prices ('How much is it? / It is...').",
+  "writingTask": "Writing a Problem and Solution story map or short paragraph about saving money to help family",
+  "reading1": {
+    "title": "The History of Money",
+    "type": "nonfiction",
+    "pages": "42-45",
+    "summary": "Long ago, people did not have paper money or coins. When they wanted something, they bartered by trading goods they had, like grain for a goat. Later, people used rare items like cowrie shells as money. Around 1000 BCE, people in China made small metal knives and spades to trade. In Lydia around 600 BCE, people made the first stamped metal coins from silver and gold. Because heavy coins were hard to carry, paper money was invented in China around 800 CE. Today, we use plastic credit cards and computers to pay for things quickly.",
+    "keySentences": [
+      "Thousands of years ago, people did not use money. They bartered.",
+      "In China around 1000 BCE, people made small tools from metal to use as money.",
+      "Today, people use plastic credit cards and computers to pay for things."
+    ],
+    "characters": [],
+    "setting": "Ancient world (China, Lydia/Anatolia) to the modern digital world",
+    "sequenceOfEvents": [
+      "1. Long ago (6000 BCE): People bartered goods like grain, cows, and goats without coins or bills.",
+      "2. Around 1200 BCE: People in many places used valuable cowrie shells as money.",
+      "3. Around 1000 BCE: People in China made small metal tools (knives and spades) to trade.",
+      "4. Around 600 BCE: People in Lydia made the first round metal coins stamped with pictures.",
+      "5. Around 800-900 CE: China invented paper money because metal coins were too heavy to carry.",
+      "6. In 1958 to today: People started using plastic credit cards and electronic internet payments."
+    ]
+  },
+  "reading2": {
+    "title": "The $100 Bill",
+    "type": "fiction",
+    "pages": "48-53",
+    "summary": "Paige watches her classmates Jodie and Nina show off their new smartphones after school. Paige feels left out because she does not have a smartphone. Walking home through the park, Paige notices a wet green $100 bill hidden under autumn leaves. At first, Paige thinks about buying a shiny new phone with the money. But she remembers that money is tight at home and her dad is tired from working long hours. Paige decides to use the money to surprise her dad with a warm pizza dinner. Seeing her father smile and enjoy the meal brings Paige more happiness than a phone ever could.",
+    "keySentences": [
+      "Paige looked at Jodie's shiny new phone. Her friends could text and play games.",
+      "Under a pile of wet leaves, Paige saw something green. It was a $100 bill!",
+      "Dad smiled as the warm pizza arrived. Paige knew she had made the right choice."
+    ],
+    "characters": [
+      "Paige (main character)",
+      "Jodie (classmate)",
+      "Nina (classmate)",
+      "Paige's Dad",
+      "Pizza restaurant waiter"
+    ],
+    "setting": "School yard, park path with autumn leaves, Paige's home, pizza restaurant",
+    "sequenceOfEvents": [
+      "1. Jodie and Nina show off their new smartphones at school, making Paige wish she had one.",
+      "2. Paige walks home through the park and finds a wet $100 bill under fallen leaves.",
+      "3. Paige puts the money in her pocket and imagines buying her own smartphone.",
+      "4. Paige remembers money is tight at home and notices how exhausted her dad looks after work.",
+      "5. Paige decides not to buy the phone and takes her dad to a pizza restaurant instead.",
+      "6. Dad and Paige share a warm pizza dinner, laugh together, and Paige feels proud of her choice."
+    ]
+  },
+  "vocabulary": [
+    {
+      "word": "bartered",
+      "page": 42,
+      "partOfSpeech": "verb (past)",
+      "simpleDefinition": "Traded goods or services without using money.",
+      "exampleSentence": "Thousands of years ago, people did not use money. They bartered.",
+      "tr": "takas etti",
+      "emoji": "🔄",
+      "pictureIdea": "Two ancient people exchanging a bag of wheat for a goat"
+    },
+    {
+      "word": "metal",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A hard, shiny material like gold, silver, bronze, or iron.",
+      "exampleSentence": "People made small tools from metal to use as money.",
+      "tr": "metal",
+      "emoji": "🪙",
+      "pictureIdea": "Shiny gold and bronze ancient coins and tools"
+    },
+    {
+      "word": "valuable",
+      "page": 42,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Worth a lot of money or very important to people.",
+      "exampleSentence": "Cowrie shells were valuable because they were rare and pretty.",
+      "tr": "değerli",
+      "emoji": "💎",
+      "pictureIdea": "A glowing gemstone and shiny gold coins"
+    },
+    {
+      "word": "credit card",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A small rectangular plastic card used to buy things and pay later.",
+      "exampleSentence": "Today, people use plastic credit cards to pay for things.",
+      "tr": "kredi kartı",
+      "emoji": "💳",
+      "pictureIdea": "A modern plastic credit card with a microchip"
+    },
+    {
+      "word": "plastic",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A light and strong material made by people that can be shaped into many things.",
+      "exampleSentence": "The cards are made of plastic.",
+      "tr": "plastik",
+      "emoji": "🏷️",
+      "pictureIdea": "A flexible plastic card and plastic bottle"
+    },
+    {
+      "word": "belong to",
+      "page": 48,
+      "partOfSpeech": "verb phrase",
+      "simpleDefinition": "To be the property of a specific person.",
+      "exampleSentence": "Whom does this lost money belong to?",
+      "tr": "birine ait olmak",
+      "emoji": "🏷️",
+      "pictureIdea": "A backpack with a child's name tag on it"
+    },
+    {
+      "word": "return",
+      "page": 48,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To give something back to its owner or put it back in its place.",
+      "exampleSentence": "Paige wanted to know if she could return the money to someone.",
+      "tr": "geri vermek, iade etmek",
+      "emoji": "↩️",
+      "pictureIdea": "A person handing a lost wallet back to someone with a smile"
+    },
+    {
+      "word": "pocket",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A small pouch sewn into pants, jackets, or shirts to hold things.",
+      "exampleSentence": "Paige slipped the folded bill into her coat pocket.",
+      "tr": "cep",
+      "emoji": "👖",
+      "pictureIdea": "A coat pocket with a note slipping inside"
+    },
+    {
+      "word": "restaurant",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A place where people sit down, order food, and pay to eat.",
+      "exampleSentence": "Paige took her dad to a warm pizza restaurant.",
+      "tr": "restoran, lokanta",
+      "emoji": "🍕",
+      "pictureIdea": "A cozy restaurant with tables, checkered tablecloths, and pizza"
+    },
+    {
+      "word": "money is tight",
+      "page": 48,
+      "partOfSpeech": "idiom",
+      "simpleDefinition": "There is not much extra money to spend freely.",
+      "exampleSentence": "Things were difficult at home because money was tight.",
+      "tr": "para sıkışık, bütçe dar",
+      "emoji": "👛",
+      "pictureIdea": "An empty coin purse with only a single coin left"
+    }
+  ],
+  "extraWordsNeeded": [
+    {
+      "word": "trade",
+      "why": "Needed to explain the concept of bartering in Reading 1",
+      "simpleDefinition": "To give something and get something else in exchange.",
+      "tr": "ticaret yapmak, takas etmek"
+    },
+    {
+      "word": "coin",
+      "why": "Core concept across the entire money timeline",
+      "simpleDefinition": "A round piece of metal used as money.",
+      "tr": "madeni para"
+    },
+    {
+      "word": "bill",
+      "why": "Title of Reading 2 ($100 Bill) and paper money concept",
+      "simpleDefinition": "A piece of paper money representing a set amount.",
+      "tr": "banknot, kağıt para"
+    },
+    {
+      "word": "save",
+      "why": "Key unit opener concept (Save jar on page 40)",
+      "simpleDefinition": "To keep money to use later instead of spending it now.",
+      "tr": "biriktirmek, tasarruf etmek"
+    },
+    {
+      "word": "donate",
+      "why": "Key unit opener concept (Donate jar on page 40)",
+      "simpleDefinition": "To give money or goods to help people in need.",
+      "tr": "bağışlamak"
+    },
+    {
+      "word": "spend",
+      "why": "Core economic decision concept in both readings",
+      "simpleDefinition": "To use money to pay for goods or services.",
+      "tr": "harcamak"
+    },
+    {
+      "word": "tired",
+      "why": "Key emotional motivator for Paige's decision in Reading 2",
+      "simpleDefinition": "Needing rest or sleep after hard work.",
+      "tr": "yorgun"
+    },
+    {
+      "word": "treat",
+      "why": "Explains Paige buying dinner for her dad as a gift",
+      "simpleDefinition": "To pay for someone else's food or entertainment as a kind gift.",
+      "tr": "ısmarlamak, ikram etmek"
+    },
+    {
+      "word": "smartphone",
+      "why": "Object of desire in Reading 2 causing conflict and peer pressure",
+      "simpleDefinition": "A mobile phone that can connect to the internet and play games.",
+      "tr": "akıllı telefon"
+    }
+  ],
+  "pageByPage": [
+    {
+      "page": 40,
+      "section": "Unit Opener",
+      "whatIsOnIt": "Title 'How Much Is It?' with photograph of two glass jars labeled 'Save' and 'Donate' containing coins and dollar bills.",
+      "activityType": "Warm-up Discussion & Visual Exploration",
+      "instructionsAsWritten": "Look at the picture. What are the jars for? Why do people save money?",
+      "items": [
+        "1. What do you see in the jars?",
+        "2. What is the difference between saving and donating?",
+        "3. How do you get money?"
+      ],
+      "answers": [
+        "Coins and paper money (bills)",
+        "Saving is keeping money for the future; donating is giving money to help others",
+        "Open (allowances, chores, gifts, work)"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 41,
+      "section": "Before You Read / Big Idea",
+      "whatIsOnIt": "Discussion questions connecting money to everyday wants and needs, with images of store price tags.",
+      "activityType": "Speaking & Concept Activation",
+      "instructionsAsWritten": "Think about things you buy. Can you buy everything you want? Talk with a partner.",
+      "items": [
+        "1. Name three things you buy with money.",
+        "2. Is money easy or hard to earn?",
+        "3. Big Idea: Why do we need money?"
+      ],
+      "answers": [
+        "Open (e.g., food, toys, books, clothes)",
+        "Hard to earn because people must work hours for it",
+        "We need money to buy food, clothes, a home, and things we need to live"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 42,
+      "section": "Words in Context & Before You Read",
+      "whatIsOnIt": "Pre-reading vocabulary box with 5 words: bartered, metal, valuable, credit card, plastic, with contextual photo cards.",
+      "activityType": "Vocabulary Pre-teaching & Prediction",
+      "instructionsAsWritten": "Read the words. Look at the pictures. Match each word with its meaning.",
+      "items": [
+        "1. bartered",
+        "2. metal",
+        "3. valuable",
+        "4. credit card",
+        "5. plastic"
+      ],
+      "answers": [
+        "1. traded goods without money",
+        "2. hard, shiny material like gold or iron",
+        "3. worth a lot of money",
+        "4. small card used to pay later",
+        "5. light, strong man-made material"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 43,
+      "section": "Reading 1: The History of Money (Part 1)",
+      "whatIsOnIt": "Nonfiction history text about bartering in 6000 BCE (trading grain and goats), cowrie shells in 1200 BCE, and Chinese metal knives/spades in 1000 BCE.",
+      "activityType": "Choral & Guided Reading",
+      "instructionsAsWritten": "Read the text. How did people buy things before coins were made?",
+      "items": [
+        "Paragraph 1: Trading grain for animals (barter)",
+        "Paragraph 2: Using cowrie shells as money",
+        "Paragraph 3: Chinese metal tool money"
+      ],
+      "answers": [
+        "People bartered by trading what they had for what they needed, or used shells"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 44,
+      "section": "Reading 1: The History of Money (Part 2)",
+      "whatIsOnIt": "Text and historical illustrations about Lydia stamped metal coins (600 BCE) and the invention of paper money in China (800-900 CE).",
+      "activityType": "Close Reading & Timeline Analysis",
+      "instructionsAsWritten": "Read and find out: Why did people invent paper money?",
+      "items": [
+        "Paragraph 4: Metal coins with pictures in Lydia",
+        "Paragraph 5: Heavy bags of coins causing problems",
+        "Paragraph 6: The invention of light paper money in China"
+      ],
+      "answers": [
+        "Because metal coins were too heavy to carry in large amounts"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 45,
+      "section": "Reading 1: The History of Money (Part 3)",
+      "whatIsOnIt": "Modern money: plastic credit cards (1958) and digital computer payments, concluding with a full chronological timeline from 6000 BCE to today.",
+      "activityType": "Timeline Review & Critical Thinking",
+      "instructionsAsWritten": "Follow the timeline from left to right. What do people use today?",
+      "items": [
+        "Timeline step 1: Barter (6000 BCE)",
+        "Timeline step 2: Cowrie shells (1200 BCE)",
+        "Timeline step 3: Metal tools (1000 BCE)",
+        "Timeline step 4: Lydia coins (600 BCE)",
+        "Timeline step 5: Paper money (800 CE)",
+        "Timeline step 6: Credit cards & computers (1958-now)"
+      ],
+      "answers": [
+        "Plastic credit cards, smartphones, and computers"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 46,
+      "section": "After You Read: Check the Facts",
+      "whatIsOnIt": "True/False and matching questions based on the History of Money timeline.",
+      "activityType": "Fact Retrieval & Comprehension Check",
+      "instructionsAsWritten": "Read the sentences. Circle T for True or F for False. Match the dates to the money type.",
+      "items": [
+        "1. People in 6000 BCE paid with paper bills. (T/F)",
+        "2. Cowrie shells were valuable long ago. (T/F)",
+        "3. The first metal coins were made in Lydia. (T/F)",
+        "4. Paper money was invented because metal coins were too light. (T/F)",
+        "5. Match: 1958 -> Credit cards"
+      ],
+      "answers": [
+        "1. F (They bartered)",
+        "2. T",
+        "3. T",
+        "4. F (They were too heavy)",
+        "5. Credit cards"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 47,
+      "section": "Reading Skill: Problem and Solution",
+      "whatIsOnIt": "Graphic organizer showing historical problems and how new forms of money solved them.",
+      "activityType": "Graphic Organizer Completion",
+      "instructionsAsWritten": "Complete the Problem and Solution chart using information from the text.",
+      "items": [
+        "Problem 1: Someone had grain but wanted a goat, and the other person did not want grain. -> Solution: ?",
+        "Problem 2: Carrying thousands of metal coins was heavy and dangerous. -> Solution: ?"
+      ],
+      "answers": [
+        "Solution 1: People used valuable items everyone accepted, like shells and metal coins.",
+        "Solution 2: People invented light paper money."
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 48,
+      "section": "Words in Context (Reading 2)",
+      "whatIsOnIt": "Vocabulary introduction for fiction story: belong to, return, pocket, restaurant, money is tight.",
+      "activityType": "Context Clues & Sentence Matching",
+      "instructionsAsWritten": "Read the sentences. Choose the correct word for each blank.",
+      "items": [
+        "1. The coat has a deep ___ for keys.",
+        "2. Does this lost notebook ___ you?",
+        "3. We ate dinner at an Italian ___.",
+        "4. Please ___ the library book on time.",
+        "5. We cannot buy new shoes now because ___."
+      ],
+      "answers": [
+        "1. pocket",
+        "2. belong to",
+        "3. restaurant",
+        "4. return",
+        "5. money is tight"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 49,
+      "section": "Reading 2: The $100 Bill (Part 1)",
+      "whatIsOnIt": "Story start: Paige walking with Jodie and Nina, friends boasting about smartphones, Paige wishing she had one.",
+      "activityType": "Narrative Reading & Character Perspective",
+      "instructionsAsWritten": "Read the story. Why does Paige feel sad at school?",
+      "items": [
+        "Scene 1: Jodie and Nina showing their new phones",
+        "Question: How does Paige feel?"
+      ],
+      "answers": [
+        "She feels left out and wishes she had a smartphone like her friends"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 50,
+      "section": "Reading 2: The $100 Bill (Part 2)",
+      "whatIsOnIt": "Story development: Paige walks home through the park, kicks autumn leaves, spots something green under a bench.",
+      "activityType": "Reading for Key Details",
+      "instructionsAsWritten": "What did Paige find in the park? What did it look like?",
+      "items": [
+        "Scene 2: Paige walking alone in the park",
+        "Discovery: A wet $100 bill under fallen leaves"
+      ],
+      "answers": [
+        "A real, wet $100 bill"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 51,
+      "section": "Reading 2: The $100 Bill (Part 3)",
+      "whatIsOnIt": "Internal conflict: Paige slips the bill into her pocket, dreams of buying a smartphone, but remembers her family's tight budget.",
+      "activityType": "Inference & Moral Dilemma Analysis",
+      "instructionsAsWritten": "What does Paige think about doing with the money? What makes her stop and think?",
+      "items": [
+        "Paige's dream: Buying a phone",
+        "Paige's memory: Her dad working late, looking exhausted, saying money is tight"
+      ],
+      "answers": [
+        "She wants to buy a phone, but remembers her dad works hard and money is tight"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 52,
+      "section": "Reading 2: The $100 Bill (Part 4)",
+      "whatIsOnIt": "Climax: Paige makes her choice. She invites her dad out to a warm neighborhood pizza restaurant.",
+      "activityType": "Sequential Reading & Cause and Effect",
+      "instructionsAsWritten": "Where does Paige take her dad? Why does she choose this?",
+      "items": [
+        "Scene 4: Paige bringing her dad to the pizza restaurant",
+        "Dad's surprise: Asking how they can afford it"
+      ],
+      "answers": [
+        "To a pizza restaurant, to give her tired dad a nice treat and make him happy"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 53,
+      "section": "Reading 2: The $100 Bill (Part 5)",
+      "whatIsOnIt": "Resolution: The steaming pizza arrives, dad laughs and smiles, Paige feels warm and confident in her decision.",
+      "activityType": "Theme Identification & Concluding Discussion",
+      "instructionsAsWritten": "Read the ending. Was Paige happy with her decision? Why?",
+      "items": [
+        "Dad's reaction: Smiling and relaxing",
+        "Theme: Making someone happy is worth more than a phone"
+      ],
+      "answers": [
+        "Yes, because seeing her dad smile made her happier than having a phone"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 54,
+      "section": "After You Read: Story Map",
+      "whatIsOnIt": "Graphic organizer: Story title, setting, characters, problem 1, problem 2, and solution.",
+      "activityType": "Story Mapping & Synthesis",
+      "instructionsAsWritten": "Complete the story map for 'The $100 Bill'.",
+      "items": [
+        "Title: The $100 Bill",
+        "Setting: School, park, pizza restaurant",
+        "Characters: Paige, Jodie, Nina, Dad",
+        "Problem 1: Paige wants a phone, but money is tight.",
+        "Problem 2: She finds $100 and must decide how to spend it.",
+        "Solution: She treats her hardworking dad to dinner."
+      ],
+      "answers": [
+        "Paige / Park & Restaurant / Money is tight / Found $100 / Treats dad to pizza"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 55,
+      "section": "Think Together & Phonics",
+      "whatIsOnIt": "Discussion on money choices + Phonics focus on spelling pattern 'ar' (car, park, hard, farm, card, smart).",
+      "activityType": "Phonics Word Sort & Group Speaking",
+      "instructionsAsWritten": "Listen and repeat the words with 'ar'. Write each word under the correct picture. Talk with your partner: What would you do with $100?",
+      "items": [
+        "Phonics words: car, park, hard, farm, card, smart",
+        "Speaking prompt: If I had $100, I would save / spend / donate..."
+      ],
+      "answers": [
+        "Phonics: /ɑːr/ sound practice; Speaking: open creative answers"
+      ],
+      "needsAudio": true
+    }
+  ],
+  "comprehensionQuestions": [
+    {
+      "page": 43,
+      "question": "What did people do before money was invented?",
+      "answer": "They bartered by trading things they had for things they needed.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 43,
+      "question": "Why were cowrie shells used as money?",
+      "answer": "Because they were rare, beautiful, and valuable to people.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 44,
+      "question": "Where were the first stamped metal coins made?",
+      "answer": "In Lydia, around 600 BCE.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 44,
+      "question": "Why did people in China invent paper money?",
+      "answer": "Because metal coins were too heavy to carry around.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 45,
+      "question": "What are credit cards made of?",
+      "answer": "They are made of plastic.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 49,
+      "question": "Why was Paige sad at the beginning of the story?",
+      "answer": "Her friends had new smartphones and she did not have one.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 50,
+      "question": "Where did Paige find the $100 bill?",
+      "answer": "Under wet leaves in the park.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 51,
+      "question": "What does 'money is tight' mean in Paige's family?",
+      "answer": "There is not much extra money to buy things like new phones.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 52,
+      "question": "What did Paige decide to do with the $100 bill?",
+      "answer": "She took her tired dad to a pizza restaurant for dinner.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 53,
+      "question": "How did Paige feel when she saw her dad smile?",
+      "answer": "She felt happy and knew she had made the right choice.",
+      "skill": "opinion",
+      "fromBook": true
+    }
+  ],
+  "phonics": {
+    "focus": "Spelling pattern 'ar' (/ɑːr/ vowel sound)",
+    "words": [
+      "car",
+      "park",
+      "hard",
+      "farm",
+      "card",
+      "barter",
+      "smart",
+      "star",
+      "part",
+      "sharp"
+    ],
+    "minimalPairs": [
+      [
+        "cat",
+        "cart"
+      ],
+      [
+        "hat",
+        "heart"
+      ],
+      [
+        "pack",
+        "park"
+      ],
+      [
+        "bad",
+        "bard"
+      ],
+      [
+        "back",
+        "bark"
+      ]
+    ]
+  },
+  "grammarPoints": [
+    {
+      "pattern": "Asking and telling prices ('How much is it? / It is ___ dollars.')",
+      "bookExamples": [
+        "How much is it?",
+        "It is five dollars.",
+        "How much are the books? They are ten dollars."
+      ],
+      "simpleRule": "Use 'How much is' for one thing, and 'How much are' for two or more things."
+    },
+    {
+      "pattern": "Modals for choices and suggestions ('could' and 'should')",
+      "bookExamples": [
+        "Paige could buy a new phone.",
+        "What should Paige do with the money?",
+        "She should help her family."
+      ],
+      "simpleRule": "Use 'could' to talk about things you can do, and 'should' for the best thing to do."
+    },
+    {
+      "pattern": "Past simple verbs for storytelling (regular -ed and irregular)",
+      "bookExamples": [
+        "Thousands of years ago, people bartered.",
+        "People started using metal coins.",
+        "Paige found a wet bill and felt happy."
+      ],
+      "simpleRule": "Add -ed to regular action words to talk about yesterday, or use special past words like found and saw."
+    }
+  ],
+  "speakingSentences": [
+    "How much is it?",
+    "It is five dollars.",
+    "I save my coins.",
+    "Coins are made of metal.",
+    "Paige found a wet bill.",
+    "Money is tight this month.",
+    "She put money in her pocket.",
+    "What should Paige do now?",
+    "People bartered cows and grain.",
+    "Dad smiled at the warm pizza."
+  ],
+  "sentenceFrames": [
+    "How much is the ___? It is ___ dollars.",
+    "I want to save money for ___.",
+    "Long ago, people used ___ as money.",
+    "Paige could ___, but she decided to ___."
+  ],
+  "cultureOrContentFacts": [
+    "The world's first stamped metal coins were made in Lydia, which is in modern-day Turkey, around 600 BCE!",
+    "Before paper money, people in China had to carry long heavy strings of thousands of metal coins.",
+    "A single cowrie shell was so valuable in ancient times that you could buy food and clothing with just a few shells.",
+    "Credit cards were invented in 1958 in the United States so people didn't need to carry heavy paper cash everywhere."
+  ],
+  "pictureNotes": [
+    {
+      "page": 40,
+      "describe": "Two clear glass jars filled with coins and bills labeled 'Save' and 'Donate', introducing kids to budgeting and generosity."
+    },
+    {
+      "page": 41,
+      "describe": "Price tags and items in a store, helping students practice asking 'How much is it?'"
+    },
+    {
+      "page": 43,
+      "describe": "Ancient marketplace illustrations showing bartering with grain and goats, cowrie shells, and Chinese spade/knife tools."
+    },
+    {
+      "page": 45,
+      "describe": "A full chronological timeline diagram connecting barter, shells, coins, paper bills, and credit cards."
+    },
+    {
+      "page": 49,
+      "describe": "Two girls showing off modern smartphones while Paige watches quietly with an empty pocket."
+    },
+    {
+      "page": 51,
+      "describe": "A close-up of a wet green $100 bill hidden beneath damp autumn leaves on the ground."
+    },
+    {
+      "page": 53,
+      "describe": "Paige and her smiling dad sitting together enjoying a hot, cheesy pizza in a restaurant."
+    }
+  ],
+  "difficultyFlags": [
+    {
+      "item": "The idiom 'money is tight'",
+      "problem": "A1 Turkish learners understand 'tight' literally (dar, sıkı, like tight shoes).",
+      "simplerAlternative": "Explain as: 'There is not much extra money right now' or 'We have to be careful with spending.'"
+    },
+    {
+      "item": "BCE and CE historical dates (e.g. 1000 BCE, 600 BCE)",
+      "problem": "Counting backward in BCE confuses 8-year-old primary students.",
+      "simplerAlternative": "Use relative phrases like 'Long, long ago' or '3,000 years ago' alongside visual timeline arrows."
+    },
+    {
+      "item": "The concept of Barter",
+      "problem": "Modern students only know physical money or contactless cards, making trade without currency abstract.",
+      "simplerAlternative": "Do a quick classroom demo: trade a pencil for an eraser with a classmate."
+    }
+  ]
+}

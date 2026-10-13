@@ -1,0 +1,49 @@
+# UNIT 2 BUILD PROGRESS LOG
+Auditor / Architect: Antigravity
+Learner Target: Grade 3 & Grade 4 (CEFR A1 / A1+, L1: Turkish)
+Classroom Setup: 7 lessons/week, 40 min each, single interactive smartboard, whole-class participation
+
+## FILES STATUS:
+[OK] lessons/unit2-grade3-final-week.md
+[OK] lessons/unit2-grade4-final-week.md
+[OK] worksheets/unit2-grade3-check50.html
+[OK] worksheets/unit2-grade3-check50-teacher.html
+[OK] worksheets/unit2-grade4-check50.html
+[OK] worksheets/unit2-grade4-check50-teacher.html
+[OK] worksheets/unit2-grade3-ws1-vocabulary.html
+[OK] worksheets/unit2-grade3-ws2-reading.html
+[OK] worksheets/unit2-grade3-ws3-phonics.html
+[OK] worksheets/unit2-grade3-ws4-grammar-writing.html
+[OK] worksheets/unit2-grade3-worksheets-answers.html
+[OK] worksheets/unit2-grade4-ws1-vocabulary.html
+[OK] worksheets/unit2-grade4-ws2-reading.html
+[OK] worksheets/unit2-grade4-ws3-phonics.html
+[OK] worksheets/unit2-grade4-ws4-grammar-writing.html
+[OK] worksheets/unit2-grade4-worksheets-answers.html
+[OK] games/unit2-grade3-game-1.json
+[OK] games/unit2-grade3-game-2.json
+[OK] games/unit2-grade4-game-1.json
+[OK] games/unit2-grade4-game-2.json
+[OK] games/unit2-grade3-game-3.json
+[OK] games/unit2-grade4-game-3.json
+[OK] games/GAME-BRIEFS.md
+[OK] quizzes/unit2-grade3-quiz-bank.json
+[OK] quizzes/unit2-grade4-quiz-bank.json
+[OK] lessons/unit2-grade3-lesson-plans.md
+[OK] lessons/unit2-grade4-lesson-plans.md
+[OK] ideas/unit2-grade3-ideas.md
+[OK] ideas/unit2-grade4-ideas.md
+[OK] language/unit2-turkish-support.md
+[OK] language/unit2-flashcards.json
+[OK] family/unit2-homework-and-letter.md
+[OK] README-HANDOVER.md
+
+Total Expected Files: 33
+Completed Files: 33 / 33 (100% COMPLETE)
+
+## [CHECK] ITEMS LIST (Turkish vocabulary or facts to verify):
+1. [check] Songpyeon Cultural Accuracy: Songpyeon (송편) is half-moon shaped (representing crescent growth), traditionally eaten with pine needles at Chuseok. Worksheets and games reflect this.
+2. [check] Mars Farm Science Plausibility: Indoor sealed greenhouse dome on Mars; pink potatoes and purple corn caused by hydroponics and light spectrum; exterior air is lethal without spacesuits.
+3. [check] Coniferous Forest Freezing Threshold: Winter sub-zero threshold reaches below -50°C in taiga biomes; needles reduce water loss via waxy cuticle.
+4. [check] Folk Tale Regional Origin: "A New Friend" is adapted from the Korean folk tale Heungbu and Nolbu (흥부와 놀부), simplified as Go Ne and Wen Shu.
+5. [check] Phonics Epenthesis: Turkish pupils tend to pronounce final -st with an added vowel (e.g. fast-ı). All lessons and phonics activities include explicit stop drills.

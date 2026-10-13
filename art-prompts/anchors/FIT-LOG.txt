@@ -1,0 +1,37 @@
+emberwing_baby: PASS
+emberwing_growing: PASS
+emberwing_adventurer: PASS
+emberwing_advanced: PASS
+emberwing_ultimate: PASS
+aquafind_baby: PASS
+aquafind_growing: PASS
+aquafind_adventurer: PASS
+aquafind_advanced: PASS
+aquafind_ultimate: PASS
+florasprout_baby: PASS
+florasprout_growing: PASS
+florasprout_adventurer: PASS
+florasprout_advanced: PASS
+florasprout_ultimate: PASS
+astralight_baby: PASS
+astralight_growing: PASS
+astralight_adventurer: PASS
+astralight_advanced: PASS
+astralight_ultimate: PASS
+sparktail_baby: PASS
+sparktail_growing: PASS
+sparktail_adventurer: PASS
+sparktail_advanced: PASS
+sparktail_ultimate: PASS
+
+SUMMARY:
+Total monsters evaluated: 25
+Passing monsters: 25 / 25 (100%)
+
+Weakest Items Overall:
+1. Backpacks (bp_explorer, bp_book, bp_miniwings, bp_adventure):
+   All 25 monsters possess chibi proportions with heads nearly as wide as the canvas (400-500px). When backpacks are anchored at bodyCenter behind the torso, head geometry blocks most of the backpack body. With w=1.60 and dy=-0.65, top straps, buckles, and rolled gear peek out above the shoulders, but lower pack compartments remain occluded.
+2. Torso items on quadrupeds (Sparktail):
+   Sparktail has a 3/4 quadrupedal posture with a long horizontal spine. Standard top/neck torso items (vest, cape) hang vertically from the neck anchor, appearing slightly rotated relative to Sparktail horizontal body axis.
+3. Capes behind extra-wide heads (Astralight):
+   Astralight wide cosmic head flairs obscure the neck base; cape width had to be expanded to w=1.70 * bodyWidth so that the billowing cape folds emerge visibly at the sides.

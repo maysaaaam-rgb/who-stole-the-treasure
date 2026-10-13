@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>All hats (offline)</title>
+<style>body{margin:0;background:#0b1020;color:#fff;font:600 11px system-ui;padding:6px}
+.row{display:flex;gap:4px;margin-bottom:4px;align-items:center}.lab{width:92px;flex:none}
+.cell{background:#eef;border-radius:8px;width:190px;flex:none}</style></head><body>
+<div id="g"></div>
+<script src="js/monster-renderer.js"></script><script src="js/monster-anchors.js"></script><script src="js/monster-dressup.js"></script>
+<script>
+var q=new URLSearchParams(location.search);
+var hats=(q.get('hats')||'hat-crown,hat-explorer,hat-scholar,hat-wizard,hat-bow,hat-star-clip,hat-flower,hat-headband,hat-party,hat-chef,hat-pirate,hat-cowboy,hat-tophat,hat-santa,hat-beanie,hat-propeller,hat-sailor,hat-astro').split(',');
+var st=q.get('stage');var ms=st?['blue','purple','gold','green','orange'].map(function(c){return [c,st]}):[['blue','baby'],['purple','baby'],['gold','growing'],['green','growing'],['orange','baby']];
+document.getElementById('g').innerHTML=hats.map(function(h){
+ return '<div class="row"><div class="lab">'+h+'</div>'+ms.map(function(m){return '<div class="cell">'+MonsterDressUp.render({color:m[0],stage:m[1],equipped:{hat:h},size:190,animated:false})+'</div>'}).join('')+'</div>';}).join('');
+</script></body></html>

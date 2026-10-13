@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redesign preview – English Adventure Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --panel2:#f8f9fd; --ink:#16203a; --muted:#6b7694; --line:#e6e9f2;
+  --brand:#5b5bf0; --brand-ink:#fff; --brand-soft:#ececff;
+  --green:#16a34a; --green-soft:#e3f8ea; --amber:#d97706; --amber-soft:#fff3d9; --rose:#e11d48; --rose-soft:#ffe5ec; --sky:#0284c7; --sky-soft:#e0f2fe;
+  --shadow:0 1px 2px rgba(22,32,58,.06),0 8px 24px -8px rgba(22,32,58,.10);
+  --rail:#ffffff; --hero1:#4f46e5; --hero2:#7c3aed;
+}
+:root[data-theme=dark]{
+  --bg:#0b1020; --panel:#141b30; --panel2:#19213a; --ink:#eef1fb; --muted:#97a2c3; --line:#252e4b;
+  --brand:#7c83ff; --brand-ink:#0b1020; --brand-soft:#232a52;
+  --green:#4ade80; --green-soft:#12301f; --amber:#fbbf24; --amber-soft:#33270c; --rose:#fb7185; --rose-soft:#3a1521; --sky:#38bdf8; --sky-soft:#0e2a3b;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -10px rgba(0,0,0,.6); --rail:#10162a;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
+.bar{position:sticky;top:0;z-index:50;background:#16203a;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;font-weight:700;font-size:13px}
+.bar b{background:#ffd54a;color:#16203a;padding:3px 10px;border-radius:99px}
+.bar button{margin-left:auto;background:#fff;color:#16203a;border:0;border-radius:99px;padding:7px 14px;font-weight:800;cursor:pointer;font-family:inherit}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 44px)}
+/* rail */
+.rail{background:var(--rail);border-right:1px solid var(--line);padding:18px 14px;position:sticky;top:44px;height:calc(100vh - 44px);overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;font-family:Fredoka;font-weight:600;font-size:18px;margin:2px 8px 18px}
+.logo i{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--hero1),var(--hero2));display:grid;place-items:center;color:#fff;font-style:normal}
+.grp{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin:16px 10px 6px;text-transform:uppercase}
+.nav a{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;color:var(--muted);font-weight:700;text-decoration:none;margin-bottom:2px}
+.nav a span{width:22px;text-align:center}
+.nav a:hover{background:var(--panel2);color:var(--ink)}
+.nav a.on{background:var(--brand-soft);color:var(--brand)}
+.nav em{margin-left:auto;font-style:normal;font-size:11px;background:var(--rose);color:#fff;border-radius:99px;padding:1px 7px}
+/* main */
+.main{padding:22px 28px 60px;max-width:1240px;width:100%}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.chips{display:flex;gap:6px;background:var(--panel);padding:4px;border-radius:13px;box-shadow:var(--shadow)}
+.chips button{border:0;background:transparent;font:inherit;font-weight:800;color:var(--muted);padding:7px 13px;border-radius:10px;cursor:pointer}
+.chips button.on{background:var(--brand);color:var(--brand-ink)}
+.search{flex:1;max-width:340px;margin-left:auto;background:var(--panel);border-radius:13px;padding:9px 14px;color:var(--muted);box-shadow:var(--shadow)}
+.av{width:38px;height:38px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:800}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);margin-top:2px}
+.grid{display:grid;gap:16px}
+.card{background:var(--panel);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+.card h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.card h3 small{margin-left:auto;font-weight:700;color:var(--brand);font-size:12px}
+/* kpis */
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0}
+.kpi{display:flex;align-items:center;gap:14px}
+.ring{--p:70;--c:var(--brand);width:58px;height:58px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+.ring b{width:44px;height:44px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:15px}
+.kpi .n{font-size:24px;font-weight:800;line-height:1}
+.kpi .l{color:var(--muted);font-weight:700;font-size:12px;margin-top:3px}
+/* hero */
+.row{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+.hero{position:relative;overflow:hidden;color:#fff;padding:24px;min-height:228px;display:flex;flex-direction:column;justify-content:flex-end;
+ background:linear-gradient(100deg,rgba(30,27,100,.92) 0%,rgba(30,27,100,.55) 60%,rgba(30,27,100,.2) 100%),url(assets/themes/grade-4/alice-wonderland.jpeg) center/cover}
+.hero .tag{position:absolute;top:18px;left:24px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:5px 11px;border-radius:99px;font-weight:800;font-size:12px}
+.hero h2{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.hero p{opacity:.85;margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:13px;padding:11px 18px;font:inherit;font-weight:800;cursor:pointer;background:var(--brand);color:var(--brand-ink);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.btn.w{background:#fff;color:#2b2a8f}
+.btn.g{background:var(--panel2);color:var(--ink);box-shadow:none;border:1px solid var(--line)}
+.hero .btns{display:flex;gap:10px;flex-wrap:wrap}
+.todo{display:flex;flex-direction:column;gap:10px}
+.item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2)}
+.ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;flex:none}
+.item b{display:block;font-weight:800}
+.item span{color:var(--muted);font-size:12.5px}
+.pill{margin-left:auto;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap}
+/* monsters */
+.mons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.mon{background:var(--panel2);border-radius:16px;padding:10px 8px 12px;text-align:center;position:relative}
+.mon img{width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 8px 8px rgba(0,0,0,.18))}
+.mon b{display:block;font-weight:800;margin-top:4px}
+.mon span{font-size:12px;color:var(--muted);font-weight:700}
+.rk{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--amber-soft);color:var(--amber)}
+.xp{height:6px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:9px}
+/* chart */
+.bars{display:flex;align-items:flex-end;gap:12px;height:130px;padding-top:8px}
+.bars div{flex:1;text-align:center;font-size:11.5px;color:var(--muted);font-weight:700}
+.bars i{display:block;border-radius:9px 9px 4px 4px;background:linear-gradient(180deg,var(--brand),var(--brand-soft));margin-bottom:6px}
+.attn .item{background:transparent;border:1px solid var(--line)}
+.note{margin:26px 0 0;padding:16px 18px;border-radius:16px;background:var(--panel);box-shadow:var(--shadow)}
+.note h4{font-weight:800;margin-bottom:8px}
+.note li{margin:4px 0 4px 18px;color:var(--muted)}
+.note li b{color:var(--ink)}
+@media(max-width:1000px){.app{grid-template-columns:1fr}.rail{display:none}.kpis{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}.mons{grid-template-columns:repeat(3,1fr)}.main{padding:16px}.search{display:none}}
+</style>
+</head>
+<body>
+<div class="bar">🎨 PREVIEW ONLY — nothing in your real platform has changed <b>proposal</b><button onclick="const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'">☀️ / 🌙 Switch light / dark</button></div>
+<div class="app">
+  <aside class="rail">
+    <div class="logo"><i>🎓</i>Adventure Academy</div>
+    <nav class="nav">
+      <div class="grp">Teach</div>
+      <a class="on" href="#"><span>🏠</span>Today</a>
+      <a href="#"><span>📚</span>Lessons &amp; Games</a>
+      <a href="#"><span>📝</span>Homework<em>2</em></a>
+      <a href="#"><span>📋</span>Attendance</a>
+      <div class="grp">My class</div>
+      <a href="#"><span>👧</span>Students</a>
+      <a href="#"><span>📈</span>Progress</a>
+      <a href="#"><span>🏆</span>Leaderboard</a>
+      <div class="grp">Rewards</div>
+      <a href="#"><span>🐾</span>Monsters</a>
+      <a href="#"><span>🛍️</span>Classroom Store</a>
+      <a href="#"><span>⚙️</span>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div class="chips"><button>3A</button><button>3B</button><button>4A</button><button class="on">4B</button></div>
+      <div class="search">🔍 Search students, lessons, games…</div>
+      <div class="av">MM</div>
+    </div>
+
+    <h1>Good morning, Mr. Maysam 👋</h1>
+    <p class="sub">Grade 4B · 19 learners · here's your day at a glance.</p>
+
+    <section class="grid kpis">
+      <div class="card kpi"><div class="ring" style="--p:100;--c:var(--brand)"><b>19</b></div><div><div class="n">19</div><div class="l">Learners</div></div></div>
+      <div class="card kpi"><div class="ring" style="--p:0;--c:var(--green)"><b>0%</b></div><div><div class="n">0%</div><div class="l">Attendance today</div></div></div>
+      <div class="card kpi"><div class="ring" style="--p:40;--c:var(--amber)"><b>1</b></div><div><div class="n">1</div><div class="l">Homework due</div></div></div>
+      <div class="card kpi"><div class="ring" style="--p:72;--c:var(--sky)"><b>A2</b></div><div><div class="n">A2</div><div class="l">CEFR target</div></div></div>
+    </section>
+
+    <section class="row">
+      <div class="card hero">
+        <span class="tag">🚀 NEXT LESSON</span>
+        <h2>Fire Station Adventure</h2>
+        <p>A1+ · Emergency &amp; Jobs vocabulary · 25 min</p>
+        <div class="btns"><button class="btn w">▶ Start lesson</button><button class="btn" style="background:rgba(255,255,255,.18);box-shadow:none">Preview</button></div>
+      </div>
+      <div class="card">
+        <h3>✅ To do today <small>3 tasks</small></h3>
+        <div class="todo">
+          <div class="item"><div class="ico" style="background:var(--amber-soft)">📋</div><div><b>Daily roll call</b><span>19 learners</span></div><button class="btn g pill" style="padding:6px 12px">Open</button></div>
+          <div class="item"><div class="ico" style="background:var(--sky-soft)">📝</div><div><b>My Town Prepositions</b><span>Due Friday</span></div><span class="pill" style="background:var(--sky-soft);color:var(--sky)">19 assigned</span></div>
+          <div class="item"><div class="ico" style="background:var(--rose-soft)">🎤</div><div><b>Pronunciation practice</b><span>2 learners need help</span></div><span class="pill" style="background:var(--rose-soft);color:var(--rose)">Practice</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:16px">
+      <h3>🏆 Top monsters this week <small>See leaderboard →</small></h3>
+      <div class="mons">
+        <div class="mon"><span class="rk">1</span><img src="assets/monsters/art/aquafind_growing.webp" alt=""><b>İlay</b><span>520 XP · Lvl 4</span><div class="xp"><i style="width:84%"></i></div></div>
+        <div class="mon"><span class="rk">2</span><img src="assets/monsters/art/florasprout_baby.webp" alt=""><b>Derin</b><span>450 XP · Lvl 3</span><div class="xp"><i style="width:72%"></i></div></div>
+        <div class="mon"><span class="rk">3</span><img src="assets/monsters/art/emberwing_baby.webp" alt=""><b>Ali İhsan</b><span>410 XP · Lvl 3</span><div class="xp"><i style="width:62%"></i></div></div>
+        <div class="mon"><span class="rk">4</span><img src="assets/monsters/art/astralight_baby.webp" alt=""><b>Elisa</b><span>340 XP · Lvl 3</span><div class="xp"><i style="width:48%"></i></div></div>
+        <div class="mon"><span class="rk">5</span><img src="assets/monsters/art/sparktail_baby.webp" alt=""><b>Defne</b><span>300 XP · Lvl 3</span><div class="xp"><i style="width:36%"></i></div></div>
+      </div>
+    </section>
+
+    <section class="row">
+      <div class="card">
+        <h3>📈 Class XP this week</h3>
+        <div class="bars">
+          <div><i style="height:48px"></i>Mon</div><div><i style="height:82px"></i>Tue</div><div><i style="height:60px"></i>Wed</div><div><i style="height:110px"></i>Thu</div><div><i style="height:36px"></i>Fri</div>
+        </div>
+      </div>
+      <div class="card attn">
+        <h3>⚠️ Needs attention</h3>
+        <div class="todo">
+          <div class="item"><div class="ico" style="background:var(--amber-soft)">📬</div><div><b>1 workbook to review</b><span>Submitted yesterday</span></div><span class="pill" style="background:var(--amber-soft);color:var(--amber)">Review</span></div>
+          <div class="item"><div class="ico" style="background:var(--green-soft)">⭐</div><div><b>3 learners near evolving</b><span>Within 50 XP</span></div><span class="pill" style="background:var(--green-soft);color:var(--green)">Boost</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="note">
+      <h4>What changes vs. today</h4>
+      <ul>
+        <li><b>One consistent look.</b> Today the page is a dark background with white boxes on top; this is one calm family of colours, with a light mode for the classroom projector and a dark mode.</li>
+        <li><b>Left menu, grouped</b> (Teach · My class · Rewards) instead of a hamburger and a long list. On a phone it becomes a bottom bar.</li>
+        <li><b>Class switcher always visible</b> as 3A / 3B / 4A / 4B buttons, one tap.</li>
+        <li><b>A "today" focus.</b> The next lesson is one big picture card; roll call, homework and help needed sit beside it as a short to-do list.</li>
+        <li><b>Your monsters are the stars</b>: the new illustrated art in the leaderboard strip, with XP bars.</li>
+        <li><b>Rounded rings and bars</b> in place of flat numbers; fewer borders, more breathing room, one font family.</li>
+      </ul>
+    </div>
+  </main>
+</div>
+</body>
+</html>

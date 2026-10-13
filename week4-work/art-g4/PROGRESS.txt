@@ -1,0 +1,15 @@
+c_captain_quiet.png: OK
+c_captain_wave.png: OK
+c_sam.png: OK
+c_ayla.png: OK
+c_robot.png: OK
+o_green_door.png: OK
+o_red_door.png: OK
+o_please_star.png: OK
+n_rocket.png: OK
+bg_space_class.png: OK
+bg_launch_pad.png: OK
+s_late_at_door.png: OK
+s_pass_book.png: OK
+s_quiet_class.png: OK
+14/14 OK

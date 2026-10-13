@@ -1,0 +1,173 @@
+[
+  {
+    "id": 1,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 9031,
+    "find": "question: 'Which tool does a firefighter use to put out water?',",
+    "replace": "question: 'Which tool does a firefighter use to put out a fire?',",
+    "reason": "Firefighters use water to put out fires; they do not put out water."
+  },
+  {
+    "id": 2,
+    "severity": "HIGH",
+    "file": "quiz-briefing/index.html",
+    "line": 1393,
+    "find": "              <div class=\"interactive-row\">\n                <span>3. Kingfisher Bird &amp; Bullet Train</span>\n                <select class=\"quiz-select\"><option>Match Text...</option><option value=\"C\">C. Both Texts: Inventions &amp; Ideas</option><option value=\"A\">A. Nonfiction</option><option value=\"B\">B. Fiction</option></select>\n              </div>\n              <div class=\"interactive-row\">\n                <span>4. Alarm Clock Pillow</span>\n                <select class=\"quiz-select\"><option>Match Text...</option><option value=\"B\">B. Fiction: \"The After-School Inventor\"</option><option value=\"A\">A. Nonfiction</option><option value=\"C\">C. Both Texts</option></select>\n              </div>\n            </div>\n            <div class=\"quiz-answer-reveal\">\n              🔑 <strong>Key:</strong> 1 = B (Fiction) • 2 = A (Nonfiction: Edison) • 3 = C (Both: Kingfisher/Train) • 4 = B (Fiction: Pillow)\n            </div>",
+    "replace": "              <div class=\"interactive-row\">\n                <span>3. Kingfisher Bird &amp; Bullet Train</span>\n                <select class=\"quiz-select\"><option>Match Text...</option><option value=\"A\">A. Nonfiction: \"My Good Ideas Book\"</option><option value=\"B\">B. Fiction: \"The After-School Inventor\"</option><option value=\"C\">C. Both Texts</option></select>\n              </div>\n              <div class=\"interactive-row\">\n                <span>4. Alarm Clock Pillow</span>\n                <select class=\"quiz-select\"><option>Match Text...</option><option value=\"B\">B. Fiction: \"The After-School Inventor\"</option><option value=\"A\">A. Nonfiction</option><option value=\"C\">C. Both Texts</option></select>\n              </div>\n            </div>\n            <div class=\"quiz-answer-reveal\">\n              🔑 <strong>Key:</strong> 1 = B (Fiction) • 2 = A (Nonfiction: Edison) • 3 = A (Nonfiction: Biomimicry) • 4 = B (Fiction: Pillow)\n            </div>",
+    "reason": "Kingfisher Bird & Bullet Train appears exclusively in the Nonfiction text 'My Good Ideas Book' (biomimicry); Clara Doodle's story never mentions birds or trains."
+  },
+  {
+    "id": 3,
+    "severity": "HIGH",
+    "file": "quiz-briefing/index.html",
+    "line": 1360,
+    "find": "          \"Prototype Tester (Timeline Lead)\",\n          \"The Mad Hatter (Tea Master)\",\n          \"Alice (Explorer)\",\n          \"The White Rabbit (Time Keeper)\",\n          \"The Cheshire Cat (Riddle Purr)\"\n        ],",
+    "replace": "          \"Prototype Tester (Timeline Lead)\",\n          \"Safety Inspector (Quality Control)\",\n          \"Patent Officer (Legal Protection)\",\n          \"Presentation Speaker (Pitch Lead)\",\n          \"Flight Engineer (Aerodynamics)\"\n        ],",
+    "reason": "Grade 4 Alice in Wonderland characters were accidentally pasted into Grade 3 Inventions role draft."
+  },
+  {
+    "id": 4,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 8948,
+    "find": "          id: \"quiz-g3-u1-after-school-inventor\",\n          title: \"🛠️ Unit 1 Master Quest: The After-School Inventor\",\n          subtitle: \"Diagnostic Progress Check & Wonderland Tea Party Qualifier\",",
+    "replace": "          id: \"quiz-g3-u1-after-school-inventor\",\n          title: \"🛠️ Unit 1 Master Quest: The After-School Inventor\",\n          subtitle: \"Diagnostic Progress Check & Young Inventor Showcase Qualifier\",",
+    "reason": "Grade 3 Inventor quest incorrectly listed Grade 4 Wonderland Tea Party as its qualifier subtitle."
+  },
+  {
+    "id": 5,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 6209,
+    "find": "          { num: 6, prompt: \"Put the story events in order (1, 2, 3):\", options: [\"[ ] Tom tests the robot\", \"[ ] Tom collects materials\", \"[ ] Tom paints it blue\"], key: \"Order: 2 -> 1 -> 3\", points: 2 },",
+    "replace": "          { num: 6, prompt: \"Put the story events in order (1, 2, 3):\", options: [\"[ ] Tom tests the robot\", \"[ ] Tom collects materials\", \"[ ] Tom paints it blue\"], key: \"Order: 2 -> 3 -> 1\", points: 2 },",
+    "reason": "Chronological order in the passage is: Tom collects materials (2), paints it blue (3), then tests it (1)."
+  },
+  {
+    "id": 6,
+    "severity": "MEDIUM",
+    "file": "clara-inventor/js/clara-data.js",
+    "line": 403,
+    "find": "      tabletSteps: [\n        {\n          stepNumber: 1,\n          label: \"FIRST\",\n          action: \"Press play.\",\n          altAction: \"Press on.\",\n          icon: \"▶️\",\n          desc: \"Tap the play button to begin!\"\n        },\n        {\n          stepNumber: 2,\n          label: \"SECOND\",\n          action: \"Type password.\",\n          icon: \"🔢\",\n          desc: \"Type the 4-digit security code (1-2-3-4)!\"\n        },\n        {\n          stepNumber: 3,\n          label: \"THIRD\",\n          action: \"Play the game.\",\n          altAction: \"Press play.\",\n          icon: \"🎮\",\n          desc: \"Start your game adventure!\"\n        },\n        {\n          stepNumber: 4,\n          label: \"LAST\",\n          action: \"Press on.\",\n          altAction: \"Play the game.\",\n          icon: \"🔘\",\n          desc: \"Switch on power and jump into the bunny carrot hop!\"\n        }\n      ],",
+    "replace": "      tabletSteps: [\n        {\n          stepNumber: 1,\n          label: \"FIRST\",\n          action: \"Press on.\",\n          altAction: \"Power on.\",\n          icon: \"🔘\",\n          desc: \"Switch on power to light up the screen!\"\n        },\n        {\n          stepNumber: 2,\n          label: \"SECOND\",\n          action: \"Type password.\",\n          icon: \"🔢\",\n          desc: \"Type the 4-digit security code (1-2-3-4)!\"\n        },\n        {\n          stepNumber: 3,\n          label: \"THIRD\",\n          action: \"Press play.\",\n          altAction: \"Tap app.\",\n          icon: \"▶️\",\n          desc: \"Tap the play button to begin the game!\"\n        },\n        {\n          stepNumber: 4,\n          label: \"LAST\",\n          action: \"Play the game.\",\n          altAction: \"Enjoy.\",\n          icon: \"🎮\",\n          desc: \"Start your adventure and jump into the bunny carrot hop!\"\n        }\n      ],",
+    "reason": "Tablet operating sequence reversed steps 1 and 4, telling students to press play before switching power on."
+  },
+  {
+    "id": 7,
+    "severity": "MEDIUM",
+    "file": "clara-inventor/js/clara-data.js",
+    "line": 781,
+    "find": "          answerKey: \"1. Press play, 2. Type password, 3. Play the game, 4. Press on (or Power On -> Pin -> Play -> Hop).\",\n          expectedResponses: \"First, press play! Second, type password! Third, play the game! Last, press on!\",",
+    "replace": "          answerKey: \"1. Press on, 2. Type password, 3. Press play, 4. Play the game.\",\n          expectedResponses: \"First, press on! Second, type password! Third, press play! Last, play the game!\",",
+    "reason": "Alters teacher guidance and expected responses to match logical chronological tablet startup order."
+  },
+  {
+    "id": 8,
+    "severity": "HIGH",
+    "file": "good-ideas-lab/index.html",
+    "line": 6,
+    "find": "  <title>The Inventor’s Odyssey: My Good Ideas Lab 💡 | مختبر الأفكار الرائعة</title>",
+    "replace": "  <title>The Inventor’s Odyssey: My Good Ideas Lab 💡</title>",
+    "reason": "Remove accidental Arabic script from page title for Turkish primary ESL learners."
+  },
+  {
+    "id": 9,
+    "severity": "HIGH",
+    "file": "good-ideas-lab/index.html",
+    "line": 150,
+    "find": "        <p class=\"text-xs text-cyan-400 font-bold uppercase tracking-wider\">My Good Ideas Lab • مختبر الأفكار</p>",
+    "replace": "        <p class=\"text-xs text-cyan-400 font-bold uppercase tracking-wider\">My Good Ideas Lab • Inventions &amp; Biomimicry</p>",
+    "reason": "Replace Arabic header text with appropriate English topic subtitle."
+  },
+  {
+    "id": 10,
+    "severity": "HIGH",
+    "file": "brain-hackers/index.html",
+    "line": 142,
+    "find": "        <p class=\"text-xs text-cyan-400 font-bold tracking-wider\">Same Brain. A Brighter You! • مختبر الدماغ</p>",
+    "replace": "        <p class=\"text-xs text-cyan-400 font-bold tracking-wider\">Same Brain. A Brighter You! • Brain Science Lab</p>",
+    "reason": "Remove accidental Arabic script from header subtitle."
+  },
+  {
+    "id": 11,
+    "severity": "LOW",
+    "file": "freeze-game/js/freeze-data.js",
+    "line": 47,
+    "find": "        roleInThinking: 'Processes images, recognizes colors, and creates mental mental pictures.',",
+    "replace": "        roleInThinking: 'Processes images, recognizes colors, and creates mental pictures.',",
+    "reason": "Remove duplicated word 'mental mental'."
+  },
+  {
+    "id": 12,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 1290,
+    "find": "        id: 'lesson-gr2-1-1',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 1: See, Think, Wonder (Everyday Inventions)',\n        order: 1,\n        sourcePages: '8–9',\n        sourceBook: 'Global Readings 2',\n        objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',\n        duration: 25,\n        gameRoute: 'monster-day/index.html',",
+    "replace": "        id: 'lesson-gr2-1-1',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 1: See, Think, Wonder (Everyday Inventions)',\n        order: 1,\n        sourcePages: '8–9',\n        sourceBook: 'Global Readings 2',\n        objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',\n        duration: 25,\n        gameRoute: 'inventor-lab/index.html',",
+    "reason": "Route Lesson 1 to the actual See-Think-Wonder game (inventor-lab) instead of Monster Day body parts."
+  },
+  {
+    "id": 13,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 1394,
+    "find": "        id: 'lesson-gr2-1-5',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 5: Sequencing Activity: First, Second, Third, Last',\n        order: 5,\n        sourcePages: '17',\n        sourceBook: 'Global Readings 2',\n        objective: 'Recognize and use sequence words (First, Second, Third, Last) to describe chronological order in instructions and inventing.',\n        duration: 25,\n        gameRoute: 'predictions/index.html',",
+    "replace": "        id: 'lesson-gr2-1-5',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 5: Sequencing Activity: First, Second, Third, Last',\n        order: 5,\n        sourcePages: '17',\n        sourceBook: 'Global Readings 2',\n        objective: 'Recognize and use sequence words (First, Second, Third, Last) to describe chronological order in instructions and inventing.',\n        duration: 25,\n        gameRoute: 'clara-inventor/index.html',",
+    "reason": "Route Lesson 5 to Clara's sequence builder game instead of unrelated A2 predictions game."
+  },
+  {
+    "id": 14,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 1452,
+    "find": "        id: 'lesson-gr2-1-7',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 7: Problem Solving & Improving Your Idea',\n        order: 7,\n        sourcePages: '20–22',\n        sourceBook: 'Global Readings 2',\n        objective: \"Understand the 5-step engineering feedback loop and peer testing using Leonardo da Vinci's drawings and Karl Benz's motorcar.\",\n        duration: 30,\n        gameRoute: 'advice/index.html',",
+    "replace": "        id: 'lesson-gr2-1-7',\n        unitId: 'unit-gr2-1',\n        title: 'Lesson 7: Problem Solving & Improving Your Idea',\n        order: 7,\n        sourcePages: '20–22',\n        sourceBook: 'Global Readings 2',\n        objective: \"Understand the 5-step engineering feedback loop and peer testing using Leonardo da Vinci's drawings and Karl Benz's motorcar.\",\n        duration: 30,\n        gameRoute: 'inventor-forge/index.html',",
+    "reason": "Route Lesson 7 to Inventor Forge (engineering loops and historical inventors) instead of unrelated advice game."
+  },
+  {
+    "id": 15,
+    "severity": "HIGH",
+    "file": "js/school-store.js",
+    "line": 2043,
+    "find": "        id: 'lesson-gr3-1-8',\n        unitId: 'unit-gr3-1',\n        title: 'Lesson 8: Brain Facts, Final -er Spelling & Reading Journal',\n        order: 8,\n        weekNumber: 4,\n        sourcePages: '22–23',\n        sourceBook: 'Global Readings 3',\n        objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',\n        duration: 35,\n        gameRoute: 'monster-day/index.html',",
+    "replace": "        id: 'lesson-gr3-1-8',\n        unitId: 'unit-gr3-1',\n        title: 'Lesson 8: Brain Facts, Final -er Spelling & Reading Journal',\n        order: 8,\n        weekNumber: 4,\n        sourcePages: '22–23',\n        sourceBook: 'Global Readings 3',\n        objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',\n        duration: 35,\n        gameRoute: 'brain-explorers/index.html',",
+    "reason": "Route Grade 4 Lesson 8 to Brain Explorers instead of Monster Day customizer."
+  },
+  {
+    "id": 16,
+    "severity": "LOW",
+    "file": "js/school-store.js",
+    "line": 1848,
+    "find": "objective: 'Read story on animal camoflague, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',",
+    "replace": "objective: 'Read story on animal camouflage, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',",
+    "reason": "Fix spelling of 'camouflage'."
+  },
+  {
+    "id": 17,
+    "severity": "LOW",
+    "file": "js/school-store.js",
+    "line": 9777,
+    "find": "description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (RG2).',",
+    "replace": "description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (Global Readings 3).',",
+    "reason": "Correct textbook reference from RG2 to Global Readings 3."
+  },
+  {
+    "id": 18,
+    "severity": "LOW",
+    "file": "brain/js/brain-data.js",
+    "line": 11,
+    "find": "    unit: \"Unit 1 Page 17 (RG2)\",",
+    "replace": "    unit: \"Unit 1 Page 17 (Global Readings 3)\",",
+    "reason": "Correct textbook acronym to Global Readings 3."
+  },
+  {
+    "id": 19,
+    "severity": "MEDIUM",
+    "file": "young-inventor/js/young-inventor-data.js",
+    "line": 15,
+    "find": "      unit: 'Global Readings 3 \\u2014 Unit 1: Inventions',",
+    "replace": "      unit: 'Global Readings 2 \\u2014 Unit 1: Inventions',",
+    "reason": "Unit 1 Inventions belongs to Global Readings 2 (Grade 3); Global Readings 3 Unit 1 is 'I Love Reading'."
+  }
+]

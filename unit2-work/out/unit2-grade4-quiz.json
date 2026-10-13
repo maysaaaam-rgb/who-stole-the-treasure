@@ -1,0 +1,105 @@
+{
+  "title": "Unit 2 Progress Quiz: What Lives Here?",
+  "grade": 4,
+  "book": "Global Readings 3",
+  "totalQuestions": 12,
+  "totalMarks": 20,
+  "questions": [
+    {
+      "id": 1,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'Trees that lose their leaves every autumn are called ___ trees.' (coniferous / deciduous / evergreen)",
+      "answer": "deciduous",
+      "marks": 1,
+      "canDoStatement": "I can identify and define specific forest biome terminology."
+    },
+    {
+      "id": 2,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'Bears sleep through the cold winter to save energy; this means they ___.' (adapt / hibernate / survive)",
+      "answer": "hibernate",
+      "marks": 1,
+      "canDoStatement": "I can explain animal behavioral adaptations using target science vocabulary."
+    },
+    {
+      "id": 3,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'Thick white fur helps animals ___ in the snowy coniferous forest.' (survive / weave / paid)",
+      "answer": "survive",
+      "marks": 1,
+      "canDoStatement": "I can use verbs related to ecological survival in context."
+    },
+    {
+      "id": 4,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'Wen Shu used a wooden ___ to shoot a stone at the swallows' nest.' (slingshot / roof / chrysalis)",
+      "answer": "slingshot",
+      "marks": 1,
+      "canDoStatement": "I can recall specific objects and actions from a literary text."
+    },
+    {
+      "id": 5,
+      "category": "reading_comprehension",
+      "question": "How do coniferous trees adapt to freezing winter temperatures as low as -50°C?",
+      "answer": "They have thin, dark green needles and cones instead of broad leaves or flowers, allowing them to remain evergreen without drying out.",
+      "marks": 2,
+      "canDoStatement": "I can explain physical plant adaptations in informational science texts."
+    },
+    {
+      "id": 6,
+      "category": "reading_comprehension",
+      "question": "In 'A New Friend', why did the mother swallow give Go Ne a magical gold seed?",
+      "answer": "She gave it to him as a reward of gratitude because Go Ne and his father saved her baby bird when it fell from the nest.",
+      "marks": 2,
+      "canDoStatement": "I can identify character motivations and cause-and-effect relationships in a folk tale."
+    },
+    {
+      "id": 7,
+      "category": "reading_comprehension",
+      "question": "What was the author's purpose for writing 'Two Different Forests' compared to 'A New Friend'?",
+      "answer": "'Two Different Forests' was written to teach/inform readers about forest biomes, while 'A New Friend' was written to entertain and teach a moral lesson about kindness.",
+      "marks": 2,
+      "canDoStatement": "I can analyze and contrast author's purpose (to inform vs. to entertain) across different genres."
+    },
+    {
+      "id": 8,
+      "category": "phonics",
+      "question": "Which word is spelled with the vowel team 'ai'? (stay / rain / plane / lake)",
+      "answer": "rain",
+      "marks": 1,
+      "canDoStatement": "I can identify the 'ai' spelling pattern for the long-a sound."
+    },
+    {
+      "id": 9,
+      "category": "phonics",
+      "question": "Fill in the missing 'ai' spelling pattern to complete these two words from the reading: 1. p___d (gave money) 2. s___led (traveled through the air)",
+      "answer": "1. paid, 2. sailed",
+      "marks": 1,
+      "canDoStatement": "I can accurately spell words containing the 'ai' vowel digraph."
+    },
+    {
+      "id": 10,
+      "category": "grammar",
+      "question": "Combine the ideas using 'so they can': 'Some animals change color in winter. They hide in the snow.'",
+      "answer": "Some animals change color in winter so they can hide in the snow.",
+      "marks": 2,
+      "canDoStatement": "I can form complex sentences expressing purpose and adaptation using 'so (that) + subject + can'."
+    },
+    {
+      "id": 11,
+      "category": "grammar",
+      "question": "Fill in the blank using 'instead of': 'Coniferous trees have cones ___ flowers or fruit.'",
+      "answer": "instead of",
+      "marks": 2,
+      "canDoStatement": "I can use the prepositional phrase 'instead of' to express ecological contrast."
+    },
+    {
+      "id": 12,
+      "category": "writing",
+      "question": "Write 2 or 3 sentences about how an animal adapts to survive in its habitat (OR describe a time when kindness helped solve a problem).",
+      "answer": "Accept any coherent 2-3 sentence response using target concepts (e.g., 'The snowshoe hare lives in a cold coniferous forest. It grows thick white fur so it can hide from wolves in the winter snow. This helps it survive.'). Criteria: 2 marks content/accuracy, 1 mark grammar/sentence structure, 1 mark spelling/punctuation.",
+      "marks": 4,
+      "canDoStatement": "I can compose short scientific or moral explanation paragraphs applying unit vocabulary and grammar."
+    }
+  ]
+}

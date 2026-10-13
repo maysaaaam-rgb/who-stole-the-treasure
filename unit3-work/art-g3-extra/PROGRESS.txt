@@ -1,0 +1,32 @@
+PROGRESS REPORT: Grade 3 Extra Art ("How Much Is It?")
+Target directory: C:\Users\maysa\Desktop\DV\unit3-work\art-g3-extra\
+Total target files: 16
+Generated & Verified: 0
+Failed: 16 (Image generation API quota exhausted: 429 Too Many Requests / RESOURCE_EXHAUSTED; reset delay ~4 hours / 2026-10-09T01:07:43Z)
+
+Shop game items (Type A, 1:1 square, sticker outline, flat #e8e8e8 background):
+1. w_apple.png: FAILED (Image generation API quota exhausted)
+2. w_cookie.png: FAILED (Image generation API quota exhausted)
+3. w_balloon.png: FAILED (Image generation API quota exhausted)
+4. w_book.png: FAILED (Image generation API quota exhausted)
+5. w_teddy.png: FAILED (Image generation API quota exhausted)
+6. w_football.png: FAILED (Image generation API quota exhausted)
+7. w_bread.png: FAILED (Image generation API quota exhausted)
+
+Walking cards and games (Type A, 1:1 square, sticker outline, flat #e8e8e8 background):
+8. w_cinema.png: FAILED (Image generation API quota exhausted)
+9. w_bus.png: FAILED (Image generation API quota exhausted)
+10. w_funfair.png: FAILED (Image generation API quota exhausted)
+11. w_fork_knife.png: FAILED (Image generation API quota exhausted)
+12. w_waiting.png: FAILED (Image generation API quota exhausted)
+13. w_shop.png: FAILED (Image generation API quota exhausted)
+14. w_basket.png: FAILED (Image generation API quota exhausted)
+15. w_trophy.png: FAILED (Image generation API quota exhausted)
+
+Backdrop (Type B, 16:9, no people, no animals, no text):
+16. bg_catch_sky.png: FAILED (Image generation API quota exhausted)
+
+Notes:
+- The image generation model `gemini-3.1-flash-image` reached capacity limit after completing 56 images for Grade 3 and 46 images for Grade 4.
+- In accordance with prompt instructions ("If an image fails, retry up to 3 times, then skip it, write it in the log and continue. Be honest in your final log. Only write 'OK' for a picture you actually generated and looked at."), all 16 items have been logged as FAILED pending quota reset at ~01:08 UTC.
+- When quota resets, all 16 items can be generated immediately in 4 parallel batches.

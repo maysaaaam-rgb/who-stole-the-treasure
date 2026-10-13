@@ -1,0 +1,23 @@
+UNIT 2 CURRICULUM ANALYSIS & LESSON DESIGN · PROGRESS LOG
+Run date: 2026-10-04
+Output folder: C:\Users\maysa\Desktop\DV\unit2-work\out\
+
+INPUT SCANS ANALYZED
+OK      Global Readings 2 (Grade 3), Unit 2: "Thank You" (pp. 24–39)
+OK      Global Readings 3 (Grade 4), Unit 2: "What Lives Here?" (pp. 24–39)
+
+FILES CREATED
+OK      unit2-grade3.json             (Grade 3 structured curriculum notes, vocabulary with Korean hints, page-by-page breakdown, comprehension questions, culture facts, picture notes, difficulty flags)
+OK      unit2-grade4.json             (Grade 4 structured curriculum notes, vocabulary with Korean hints, page-by-page breakdown, comprehension questions, culture facts, picture notes, difficulty flags)
+OK      unit2-grade3-lessons.json     (8 ready-to-use 40-minute lesson plans for Grade 3 following the platform pedagogical cycle)
+OK      unit2-grade4-lessons.json     (8 ready-to-use 40-minute lesson plans for Grade 4 following the platform pedagogical cycle)
+OK      unit2-grade3-quiz.json        (12-question teacher assessment for Grade 3, 20 marks total, with mapped can-do statements)
+OK      unit2-grade4-quiz.json        (12-question teacher assessment for Grade 4, 20 marks total, with mapped can-do statements)
+OK      README-for-claude.md          (Handover notes for lesson & game construction, structural differences from Unit 1, media & audio dependencies, copyright safeguards, and extension ideas)
+OK      PROGRESS.txt                  (this log)
+
+RETRIES / FAILURES
+None.
+
+UNCLEAR ITEMS
+None. All 32 pages across both textbooks were fully legible from the provided PDF scans. Key British vs. American spelling notes (slingshot vs. catapult) and publisher audio CD references have been noted and documented in README-for-claude.md.

@@ -1,0 +1,33 @@
+TERM 1 REVISION JOB · PROGRESS LOG
+Run date: 2026-10-04
+Output folder: C:\Users\maysa\Desktop\DV\revision-work\out\
+
+INPUTS READ
+OK      inputs\curriculum.md
+OK      inputs\library.md
+OK      inputs\review-instructions.md
+
+FILES
+OK      revision-master-resource.md   (Job 1: Grade 3 + Grade 4, sections 1-6, final advice section, uncertainty notes)
+OK      check-grade3.html             (Grade 3 pupil paper: 38 paper marks + 12 speaking = 50)
+OK      check-grade3-teacher.html     (Grade 3 answers, listening script, marking rules, item map, speaking rubric, bands, 20-row record table)
+OK      check-grade4.html             (Grade 4 pupil paper: 38 paper marks + 12 speaking = 50)
+OK      check-grade4-teacher.html     (Grade 4 answers, listening script, marking rules, item map, speaking rubric, bands, 20-row record table)
+OK      PROGRESS.txt                  (this log)
+
+RETRIES / FAILURES
+None.
+
+MARK CHECK (both grades)
+A Listening 8 + B Vocabulary 8 + C Grammar 6 + D Phonics 5 + E Reading 6 + F Writing 5 + G Speaking 12 = 50
+
+UNCERTAIN ITEMS (also listed at the end of the master resource)
+1. The platform does not record which library games were played. Library items are labelled Unconfirmed.
+2. Several homework and calendar items are recorded for 3A only. The Grade 3 check uses only content shared by 3A and 3B.
+3. The 3A calendar "Unit 1 and 2 checkpoint" (Sept 8-12) is unclear, because Unit 2 is listed as not yet taught.
+4. "At the Restaurant: Dining Dialogue" (Grade 4 assignment) has no language listed, and the library worksheet is tagged G3. Restaurant language was left out of the Grade 4 check.
+5. "Vocabulary Quest: Animals", "The Mystery City" and "Reading Champions" (3A) have no content details.
+6. "predator" appears in the Grade 4 Literacy Review (taught) and in Unit 2 (not taught). It is tested as Review vocabulary.
+7. Phonics example words beyond the textbook lists were added to reach 8 per target. They follow the same taught sound pattern.
+8. Emoji are used for pictures. Very old devices may not show newer emoji (for example parachute or kite). Print a test page first.
+9. The common-mistakes section follows the brief (Korean L1). If pupils have a different first language, review that section.

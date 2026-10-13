@@ -1,0 +1,12 @@
+rexling_baby.png: OK
+rexling_growing.png: OK
+rexling_adventurer.png: OK
+rexling_advanced.png: OK
+rexling_ultimate.png: OK
+rexling_egg.png: OK
+rexling_cracking.png: OK
+rexling_growing_cheer.png: OK
+rexling_growing_oops.png: OK
+rexling_growing_sleepy.png: OK
+rexling_growing_think.png: OK
+11/11 OK

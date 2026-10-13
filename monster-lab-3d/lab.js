@@ -12,6 +12,36 @@
   var SLOTS = [['hat', 'Hats'], ['glasses', 'Glasses'], ['accessory', 'Extras'], ['backpack', 'Backpacks'], ['clothing', 'Outfits']];
   var st = { species: 'aquafind', stage: 'growing', bg: 'none', aura: 'none', slot: 'hat', worn: {}, view: 'one', showAll: false };
   var extraAnchors = {};
+  /* ---- Tune fit: per species (and optional per stage) height/size/sideways shifts for hats, glasses, necklaces ---- */
+  var BASE_FIT = JSON.parse(JSON.stringify(window.MONSTER_OVERRIDES || {}));   /* the automatic fit from js/monster-fit.js */
+  var tune = {};
+  try { tune = JSON.parse(localStorage.getItem('eaa_lab_tune') || '{}') || {}; } catch (e) { tune = {}; }
+  function tv(sp, stg, cat, prop) {
+    var a = (tune[sp] && tune[sp]._all && tune[sp]._all[cat] && tune[sp]._all[cat][prop]) || 0;
+    var b = (tune[sp] && tune[sp][stg] && tune[sp][stg][cat] && tune[sp][stg][cat][prop]) || 0;
+    return a + b;
+  }
+  function catOfName(n) { var m = /^(hat|glasses|neck|outfit|bp|held)_/.exec(n); return m ? m[1] : ''; }
+  function buildOverrides() {
+    var ov = JSON.parse(JSON.stringify(BASE_FIT)), A = window.MONSTER_ANCHORS || {};
+    Object.keys(A).forEach(function (key) {
+      if (!A[key] || A[key].kind !== 'monster') return;
+      var sp = key.split('_')[0], stg = key.split('_')[1];
+      ITEMS.forEach(function (it) {
+        var n = D.fileName(it.id); if (!n) return;
+        var c = catOfName(n); if (!c) return;
+        var dy = tv(sp, stg, c, 'dy'), dw = tv(sp, stg, c, 'dw'), dx = tv(sp, stg, c, 'dx');
+        if (!dy && !dw && !dx) return;
+        var b = (ov[key] && ov[key][n]) || { dy: 0, dx: 0, dw: 1 };
+        (ov[key] = ov[key] || {})[n] = { dy: +((b.dy || 0) + dy).toFixed(3), dx: +((b.dx || 0) + dx).toFixed(3), dw: +((b.dw || 1) * (1 + dw)).toFixed(3) };
+      });
+    });
+    return ov;
+  }
+  function applyTune() {
+    window.MONSTER_OVERRIDES = buildOverrides();
+    try { localStorage.setItem('eaa_lab_tune', JSON.stringify(tune)); } catch (e) { /* optional */ }
+  }
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function hasFit(sp, stg) { var A = window.MONSTER_ANCHORS || {}; var a = A[sp + '_' + stg]; return !!(a && a.kind === 'monster'); }
@@ -64,6 +94,23 @@
     }).join('') + '</div>';
   }
 
+  function slider(label, cat, prop, min, max, step) {
+    var scope = (st.tuneStage || 'all') === 'all' ? '_all' : st.tuneStage;
+    var cur = (tune[st.species] && tune[st.species][scope] && tune[st.species][scope][cat] && tune[st.species][scope][cat][prop]) || 0;
+    return '<label class="sl">' + label + ' <input type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + cur + '" oninput="Lab.tune(' + "'" + cat + "','" + prop + "'" + ',this.value,this)"><b>' + cur + '</b></label>';
+  }
+  function viewTune() {
+    var stages = ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'];
+    var scopeSel = '<select onchange="Lab.set(' + "'tuneStage'" + ',this.value)">' + opt(['all'].concat(stages), st.tuneStage || 'all') + '</select>';
+    var minis = stages.map(function (g) { return '<div class="cell"><div class="stage s">' + monster(st.species, g, eq(), '100%', false) + '</div><span>' + g + '</span></div>'; }).join('');
+    return '<p class="hint">Tuning <b>' + esc(nameOfSpecies()) + '</b>. With "Applies to" = all, a change affects every stage of this monster; pick one stage to adjust only that stage on top. Wear a hat, glasses and a necklace first (Dress up view).</p>' +
+      '<div class="bar"><label>Applies to ' + scopeSel + '</label></div>' +
+      '<div class="tuneh">' + slider('Hat height (+ lower)', 'hat', 'dy', -0.6, 1.2, 0.02) + slider('Hat size', 'hat', 'dw', -0.5, 0.6, 0.02) + slider('Hat sideways', 'hat', 'dx', -0.4, 0.4, 0.01) +
+      slider('Glasses height (+ lower)', 'glasses', 'dy', -0.4, 0.4, 0.01) + slider('Glasses size', 'glasses', 'dw', -0.5, 0.5, 0.02) + slider('Glasses sideways', 'glasses', 'dx', -0.3, 0.3, 0.01) +
+      slider('Necklace height (+ lower)', 'neck', 'dy', -0.4, 0.4, 0.01) + slider('Necklace size', 'neck', 'dw', -0.5, 0.5, 0.02) +
+      slider('Outfit height', 'outfit', 'dy', -0.4, 0.4, 0.01) + slider('Backpack height', 'bp', 'dy', -0.4, 0.4, 0.01) + slider('Held item height', 'held', 'dy', -0.4, 0.4, 0.01) + '</div>' +
+      '<div class="row"><button class="btn" onclick="Lab.resetTune()">↺ Reset this monster</button><button class="btn go" onclick="Lab.copyTune()">📋 Copy all overrides</button></div><div class="mini big">' + minis + '</div>';
+  }
   function importBox() {
     return '<details class="imp"' + (Object.keys(extraAnchors).length ? ' open' : '') + '><summary>📥 Preview new fit measurements (anchors3.json from Gemini)</summary>' +
       '<p>Paste the whole <b>anchors3.json</b>. Numbers are in 512-pixel space; the lab doubles them to match the platform. This only changes this page, not the platform.</p>' +
@@ -72,17 +119,27 @@
 
   function draw() {
     var v = st.view;
-    var body = v === 'one' ? viewOne() : (v === 'fit' ? viewFit() : (v === 'species' ? viewSpecies() : viewStages()));
+    var body = v === 'one' ? viewOne() : (v === 'fit' ? viewFit() : (v === 'species' ? viewSpecies() : (v === 'tune' ? viewTune() : viewStages())));
     var bgs = ['none'].concat(D.lists.backgrounds), auras = ['none'].concat(D.lists.auras);
     $('app').innerHTML = '<section class="bar"><label>Monster <select onchange="Lab.set(\'species\',this.value)">' + opt(SPECIES, st.species) + '</select></label>' +
       '<label>Stage <select onchange="Lab.set(\'stage\',this.value)">' + opt(STAGES, st.stage) + '</select></label>' +
       '<label>World <select onchange="Lab.set(\'bg\',this.value)">' + opt(bgs, st.bg) + '</select></label>' +
       '<label>Aura <select onchange="Lab.set(\'aura\',this.value)">' + opt(auras, st.aura) + '</select></label></section>' +
-      '<nav class="views">' + [['one', '👗 Dress up'], ['fit', '🔎 Fit check (every item)'], ['species', '🐾 One outfit, all species'], ['stages', '📈 One outfit, all stages']].map(function (x) { return '<button class="tab' + (v === x[0] ? ' on' : '') + '" onclick="Lab.view(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('') + '</nav>' +
+      '<nav class="views">' + [['one', '👗 Dress up'], ['fit', '🔎 Fit check (every item)'], ['species', '🐾 One outfit, all species'], ['stages', '📈 One outfit, all stages'], ['tune', '🎚 Tune fit']].map(function (x) { return '<button class="tab' + (v === x[0] ? ' on' : '') + '" onclick="Lab.view(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('') + '</nav>' +
       body + importBox();
   }
 
   window.Lab = {
+    tune: function (cat, prop, val, el) {
+      var scope = (st.tuneStage || 'all') === 'all' ? '_all' : st.tuneStage;
+      var t = tune[st.species] = tune[st.species] || {}; t[scope] = t[scope] || {}; t[scope][cat] = t[scope][cat] || {}; t[scope][cat][prop] = +val;
+      if (el && el.nextSibling) el.nextSibling.textContent = val;
+      applyTune(); var y = window.scrollY; draw(); window.scrollTo(0, y);
+    },
+    resetTune: function () { delete tune[st.species]; applyTune(); draw(); },
+    copyTune: function () { var t = JSON.stringify(buildOverrides()); try { navigator.clipboard.writeText(t); } catch (e) { window.prompt('Copy:', t); } },
+    getOverrides: buildOverrides,
+    setTune: function (sp, scope, cat, prop, val) { var t = tune[sp] = tune[sp] || {}; t[scope] = t[scope] || {}; t[scope][cat] = t[scope][cat] || {}; t[scope][cat][prop] = val; applyTune(); },
     set: function (k, v) { st[k] = v; draw(); },
     view: function (v) { st.view = v; draw(); },
     slot: function (s) { st.slot = s; draw(); },
@@ -107,5 +164,5 @@
       try { navigator.clipboard.writeText(t); $('impmsg').textContent = 'Copied ' + Object.keys(extraAnchors).length + ' fit sets (1024 space).'; } catch (e) { window.prompt('Copy this:', t); }
     }
   };
-  draw();
+  applyTune(); draw();
 })();

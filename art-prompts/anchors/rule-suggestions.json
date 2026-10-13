@@ -1,0 +1,128 @@
+{
+  "hat_crown": {
+    "base": "hatWidth",
+    "w": 0.8,
+    "dx": 0,
+    "dy": 0.14,
+    "from": "bottom",
+    "at": "hatBase",
+    "reason": "Increase width from 0.72 to 0.80 to fit head circumference with brim sitting snugly across skull top."
+  },
+  "hat_explorer": {
+    "base": "hatWidth",
+    "w": 1.0,
+    "dx": 0,
+    "dy": 0.12,
+    "from": "bottom",
+    "at": "hatBase",
+    "reason": "Reduce dy from 0.28 to 0.12 so brim does not sink down covering the monster eyes; w 1.00 fits full head width."
+  },
+  "hat_scholar": {
+    "base": "hatWidth",
+    "w": 0.95,
+    "dx": 0,
+    "dy": 0.14,
+    "from": "bottom",
+    "at": "hatBase",
+    "reason": "Slightly wider base (w 0.95) to balance the mortarboard flat cap over monster heads."
+  },
+  "hat_wizard": {
+    "base": "hatWidth",
+    "w": 0.9,
+    "dx": 0,
+    "dy": 0.2,
+    "from": "bottom",
+    "at": "hatBase",
+    "reason": "Adjust dy from 0.22 to 0.20 and w 0.90 for cone hat brim to rest directly on head crest."
+  },
+  "glasses_round": {
+    "base": "eyeSpan",
+    "w": 1.85,
+    "dx": 0,
+    "dy": 0,
+    "from": "center",
+    "at": "eyeCenter",
+    "reason": "Switch base to eyeSpan with w 1.85 so each round lens covers the eye with a 10% outer margin across all eye shapes."
+  },
+  "glasses_goggles": {
+    "base": "eyeSpan",
+    "w": 1.85,
+    "dx": 0,
+    "dy": 0,
+    "from": "center",
+    "at": "eyeCenter",
+    "reason": "Switch base to eyeSpan with w 1.85 so goggles strap and lens align evenly with eye centers."
+  },
+  "outfit_scarf": {
+    "base": "neckWidth",
+    "w": 0.95,
+    "dx": 0,
+    "dy": -0.15,
+    "from": "top",
+    "at": "neck",
+    "reason": "Adjust dy from -0.22 to -0.15 so scarf folds wrap collar seam without overlapping into lower mouth."
+  },
+  "outfit_vest": {
+    "base": "bodyWidth",
+    "w": 0.68,
+    "dx": 0,
+    "dy": 0.0,
+    "from": "top",
+    "at": "neck",
+    "reason": "Switch base to bodyWidth (w 0.68) so vest fits torso width without hanging past the belly like a giant coat."
+  },
+  "outfit_hoodie": {
+    "base": "bodyWidth",
+    "w": 0.78,
+    "dx": 0,
+    "dy": -0.05,
+    "from": "top",
+    "at": "neck",
+    "reason": "Switch base to bodyWidth (w 0.78) for cozy sweater fit across chest with hood collar at chin."
+  },
+  "outfit_cape": {
+    "base": "bodyWidth",
+    "w": 1.7,
+    "dx": 0,
+    "dy": -0.05,
+    "from": "top",
+    "at": "neck",
+    "reason": "Switch base to bodyWidth (w 1.70) so cape spreads wide behind shoulders and flanks rather than getting hidden behind chibi head."
+  },
+  "bp_explorer": {
+    "base": "bodyHeight",
+    "w": 1.6,
+    "dx": 0,
+    "dy": -0.65,
+    "from": "center",
+    "at": "bodyCenter",
+    "reason": "Increase w to 1.60 and shift dy to -0.65 so pack body and top straps peek out visibly past large chibi head."
+  },
+  "bp_book": {
+    "base": "bodyHeight",
+    "w": 1.6,
+    "dx": 0,
+    "dy": -0.65,
+    "from": "center",
+    "at": "bodyCenter",
+    "reason": "Increase w to 1.60 and shift dy to -0.65 to ensure backpack flanks are visible behind torso."
+  },
+  "bp_miniwings": {
+    "base": "bodyHeight",
+    "w": 1.7,
+    "dx": 0,
+    "dy": -0.65,
+    "from": "center",
+    "at": "bodyCenter",
+    "reason": "Increase w to 1.70 and dy to -0.65 so mini wingtips spread out beyond shoulder contours."
+  },
+  "bp_adventure": {
+    "base": "bodyHeight",
+    "w": 1.6,
+    "dx": 0,
+    "dy": -0.65,
+    "from": "center",
+    "at": "bodyCenter",
+    "reason": "Increase w to 1.60 and dy to -0.65 so pack handles and rolled mat emerge behind neck/head."
+  }
+}

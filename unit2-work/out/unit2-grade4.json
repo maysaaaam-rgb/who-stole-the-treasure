@@ -1,0 +1,418 @@
+{
+  "book": "Global Readings 3",
+  "grade": 4,
+  "unitTitle": "Unit 2: What Lives Here?",
+  "pages": "24-39",
+  "bigIdea": "How are plants, animals, and humans connected in different biomes?",
+  "readingSkill": "Understanding Headings (identifying section topics) & Understanding the Author's Purpose (entertain, inform, or persuade)",
+  "contentArea": "Ecology & Folk Literature (Forest Biomes, Wildlife Adaptations, and Moral Storytelling)",
+  "selFocus": "Responsible Decision-Making & Empathy (compassion toward animals, making amends, and sharing resources)",
+  "phonicsFocus": "Spelling pattern ai (rain, main, mail, pain, pail, tail, train, chain, claim, paid)",
+  "grammarOrLanguageFocus": "Cause and effect ('so they can [verb]'), contrast with 'instead of', and past simple irregular narrative verbs (built, fell, grew, paid)",
+  "reading1": {
+    "title": "Two Different Forests",
+    "type": "nonfiction",
+    "summary": "This informational text compares deciduous and coniferous forest biomes. Deciduous forests grow across North America, Europe, and China, with four distinct seasons. In autumn, their leaves turn orange, brown, and red before falling to the ground. Animals like bears, raccoons, deer, and squirrels live here, and some hibernate when winter comes and food is scarce. Coniferous forests grow in colder regions with freezing winters reaching -50°C. Coniferous trees have cones and thin evergreen needles instead of broad leaves or flowers. Animals such as hares, lynx, wolves, and owls adapt to the cold and snow by growing thick white fur or feathers for warmth and camouflage.",
+    "keySentences": [
+      "Deciduous trees grow all over the world. They grow in parts of North America, Europe, and China.",
+      "We call these forests coniferous because the trees have cones instead of flowers or fruit.",
+      "Some of them have thick white fur, not brown fur. This is one way they adapt."
+    ],
+    "pages": "26-29"
+  },
+  "reading2": {
+    "title": "A New Friend",
+    "type": "fiction",
+    "summary": "In this adaptation of a traditional Korean folk tale, kind Go Ne loves the swallows nesting under his family's roof. When a baby bird falls, Go Ne and his father return it safely. In gratitude, the mother swallow gives Go Ne a mysterious gold seed that grows into a giant fruit filled with gold coins. Jealous neighbor Wen Shu deliberately uses a slingshot to injure a swallow so he can get a gold seed too. Go Ne rushes the wounded bird to the vet. Wen Shu feels guilty and follows them, watching Go Ne spend his gold coins to save the bird. Regretful of his actions, Wen Shu leaves a gift to fix Go Ne's roof, and the two boys become friends.",
+    "keySentences": [
+      "Every spring, a swallow built its nest under Go Ne's roof.",
+      "After a few weeks, there was a big, round fruit. ... It was full of gold coins. They were rich!",
+      "Later that day, Wen Shu went to Go Ne's house. He left a special gift so they could fix the roof."
+    ],
+    "pages": "32-37"
+  },
+  "vocabulary": [
+    {
+      "word": "deciduous",
+      "page": 27,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Losing leaves every year in the autumn season.",
+      "exampleSentence": "Deciduous trees lose their leaves before winter.",
+      "l1Hint": "yaprak döken",
+      "l1": "Turkish"
+    },
+    {
+      "word": "hibernate",
+      "page": 27,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To sleep through the entire winter to save energy.",
+      "exampleSentence": "Some animals hibernate when it is cold and food is scarce.",
+      "l1Hint": "kış uykusuna yatmak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "coniferous",
+      "page": 27,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Trees that produce cones and have thin evergreen needles.",
+      "exampleSentence": "Pine trees are coniferous trees that stay green all year.",
+      "l1Hint": "kozalaklı, iğne yapraklı",
+      "l1": "Turkish"
+    },
+    {
+      "word": "survive",
+      "page": 27,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To stay alive in difficult, cold, or dangerous conditions.",
+      "exampleSentence": "Thick white fur helps the hare survive freezing winters.",
+      "l1Hint": "hayatta kalmak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "adapt",
+      "page": 27,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To change body features or behavior to live successfully in an environment.",
+      "exampleSentence": "Animals adapt to changes in their biomes to survive.",
+      "l1Hint": "uyum sağlamak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "swallow",
+      "page": 33,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A small migratory bird with long wings and a split tail.",
+      "exampleSentence": "Every spring, a swallow built its nest under the roof.",
+      "l1Hint": "kırlangıç",
+      "l1": "Turkish"
+    },
+    {
+      "word": "roof",
+      "page": 33,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "The top outside structure that covers a building.",
+      "exampleSentence": "The family needed money to fix their leaking roof.",
+      "l1Hint": "çatı",
+      "l1": "Turkish"
+    },
+    {
+      "word": "hit",
+      "page": 33,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To strike something with force using an object or weapon.",
+      "exampleSentence": "A flying stone hit the swallows' nest.",
+      "l1Hint": "vurmak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "slingshot",
+      "page": 33,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A Y-shaped stick with elastic bands used for shooting small stones (British: catapult).",
+      "exampleSentence": "Wen Shu pulled his slingshot back and let the stone fly.",
+      "l1Hint": "sapan",
+      "l1": "Turkish"
+    },
+    {
+      "word": "paid",
+      "page": 33,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "Past tense of pay; gave money for goods or help.",
+      "exampleSentence": "Go Ne paid the animal doctor with his gold coins.",
+      "l1Hint": "ödedi (pay fiilinin geçmişi)",
+      "l1": "Turkish"
+    },
+    {
+      "word": "biome",
+      "page": 24,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A large natural area with specific climate, plants, and animals.",
+      "exampleSentence": "The forest is a cold biome with many trees.",
+      "l1Hint": "biyom, yaşam bölgesi",
+      "l1": "Turkish"
+    },
+    {
+      "word": "evergreen",
+      "page": 28,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Having green leaves throughout the entire year.",
+      "exampleSentence": "Coniferous trees are evergreen because their needles don't fall.",
+      "l1Hint": "her dem yeşil",
+      "l1": "Turkish"
+    },
+    {
+      "word": "author's purpose",
+      "page": 31,
+      "partOfSpeech": "noun phrase",
+      "simpleDefinition": "The main reason why an author writes a text (to inform, entertain, or persuade).",
+      "exampleSentence": "The author's purpose is to teach us about forest biomes.",
+      "l1Hint": "yazarın amacı",
+      "l1": "Turkish"
+    },
+    {
+      "word": "vet",
+      "page": 36,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "An animal doctor who treats sick or injured animals.",
+      "exampleSentence": "The vet cared for the baby swallow until it was healthy.",
+      "l1Hint": "veteriner",
+      "l1": "Turkish"
+    }
+  ],
+  "pageByPage": [
+    {
+      "page": 24,
+      "whatIsOnIt": "Unit 2 title 'What Lives Here?' and photograph of researchers in cold-weather gear navigating a boat through icy mist.",
+      "activityType": "discussion",
+      "instructionsAsWritten": "Activating Prior Knowledge About Biomes",
+      "answersIfDeterminable": "Open discussion on harsh cold biomes and scientific observation."
+    },
+    {
+      "page": 25,
+      "whatIsOnIt": "Discussion bubbles (A-D) discussing photos, researchers, and climate. Pre-reading matching (E) previewing article headings.",
+      "activityType": "inquiry",
+      "instructionsAsWritten": "A Look at the picture. What do you see? B What do you think? C What do you wonder? D Think and discuss. What kinds of plants and animals do you have in your area? E Read and check. These two headings are from the article. Why do you think the author used them? Deciduous Forests / Coniferous Forests: 1 To explain why coniferous trees are better than deciduous forests. 2 To compare two types of forest. 3 To describe the trees that grow nearby.",
+      "answersIfDeterminable": "E answer: 2 To compare two types of forest."
+    },
+    {
+      "page": 26,
+      "whatIsOnIt": "Reading 1 part 1: 'Two Different Forests' (Nonfiction). Heading 'Deciduous Forests'. Photos of an apple tree in blossom and vibrant autumn leaves.",
+      "activityType": "story",
+      "instructionsAsWritten": "Reading an Informational Text (Headings tell us what the reading is going to be about).",
+      "answersIfDeterminable": "Sidebar: 'Do you have a favorite kind of tree?' (Personal response)."
+    },
+    {
+      "page": 27,
+      "whatIsOnIt": "Reading 1 part 2: Text on deciduous animals. Photos of bears, raccoons, coyote, deer, and squirrel. Words in Context box.",
+      "activityType": "vocab_definitions",
+      "instructionsAsWritten": "Find these words in the reading. What do you think they mean? deciduous, hibernate, coniferous, survive, adapt.",
+      "answersIfDeterminable": "Sidebar: 'Why are the animals that live in deciduous forests usually brown?' (Camouflage against tree trunks, dirt, and fallen autumn leaves)."
+    },
+    {
+      "page": 28,
+      "whatIsOnIt": "Reading 1 part 3: Heading 'Coniferous Forests'. Photos of pine cones, evergreen needles, and thermometer showing sub-zero temperatures.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read about cones, evergreen needles, and winter cold dropping to -50°C.",
+      "answersIfDeterminable": "Fact box: In some coniferous forests, the winter temperature can drop to -50°C!"
+    },
+    {
+      "page": 29,
+      "whatIsOnIt": "Reading 1 part 4: Photos of snowshoe hare leaping in snow, Canada lynx, wolf, and snowy owl. Adaptations of white fur.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read how animals survive freezing winters with thick white fur.",
+      "answersIfDeterminable": "Sidebar: 'Why do animals in coniferous forests often have thick white fur or feathers in winter?' (To stay warm and camouflage in white snow)."
+    },
+    {
+      "page": 30,
+      "whatIsOnIt": "Explore the Reading. Activity A: Classification checklist. Activity B: Matching tree/animal adaptations. Activity C: Seasonal adaptation chart.",
+      "activityType": "matching",
+      "instructionsAsWritten": "A Read and check (Deciduous Forests vs Coniferous Forests). 1 Trees don't lose leaves in autumn. 2 Winters are shorter here. 3 Animals find food in the trees. 4 Leaves stay the same color in autumn. 5 Some animals change color in winter. 6 Leaves of these trees are not thin. B Read and match. How do trees and animals adapt to the cold? (Coniferous trees, Deciduous trees, Bears, Hares). C Think and write. How do you adapt to your environment?",
+      "answersIfDeterminable": "A: 1 Coniferous; 2 Deciduous; 3 Deciduous; 4 Coniferous; 5 Coniferous; 6 Deciduous. B: Coniferous trees -> a (have thin leaves); Deciduous trees -> b (lose leaves in autumn and grow again in spring); Bears -> d (hibernate and wake up in spring); Hares -> c (change from brown to white)."
+    },
+    {
+      "page": 31,
+      "whatIsOnIt": "Get Ready to Read. Activity A: Multiple-choice on Lewis Carroll's purpose. Strategy box on Author's Purpose. Activity B: Passage and questions on 'A New Friend'. Activity C: Personal writing purpose.",
+      "activityType": "questions",
+      "instructionsAsWritten": "A Think and check. Why did the author write The Beginning of Alice's Adventures? (teach about rabbits / understand Alice / help me have fun). Strategy: Authors usually write to teach something, change someone's opinion, or entertain. B Read and write Yes or No. Then write the author's purpose. C Think and discuss. Think about something you wrote. Why did you write it?",
+      "answersIfDeterminable": "A: help me have fun (entertain). B1: Yes (entertain). B2: No. B3: No. B4: To entertain and teach a lesson about kindness."
+    },
+    {
+      "page": 32,
+      "whatIsOnIt": "Reading 2 part 1: 'A New Friend' (Fiction / Reading a Folk Tale). Illustration of young Go Ne watching a swallow fly to its nest under the tiled roof.",
+      "activityType": "story",
+      "instructionsAsWritten": "Reading a Folk Tale",
+      "answersIfDeterminable": "Sidebar: 'Do you like spring? Why?' (Personal response)."
+    },
+    {
+      "page": 33,
+      "whatIsOnIt": "Reading 2 part 2: Baby swallow rescued by Go Ne and father. Mother swallow gives a gold seed. Seed grows dark green stem. Words in Context box.",
+      "activityType": "vocab_definitions",
+      "instructionsAsWritten": "Find these words in the reading. What do you think they mean? swallow, roof, hit, slingshot, paid.",
+      "answersIfDeterminable": "Definitions as listed in glossary."
+    },
+    {
+      "page": 34,
+      "whatIsOnIt": "Reading 2 part 3: Family cutting open giant round fruit spilling gold coins. Neighbor Wen Shu watching secretly through window.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read how Go Ne's family becomes rich and Wen Shu plans an idea.",
+      "answersIfDeterminable": "Sidebar: 'What else can they do with the coins?' (Fix the roof, buy food, share with neighbors)."
+    },
+    {
+      "page": 35,
+      "whatIsOnIt": "Reading 2 part 4: Wen Shu using a slingshot (catapult) to hit the swallows' nest. Injured baby swallow falls. Go Ne rushes with bicycle to rescue it.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read about Wen Shu's cruel act and Go Ne's rescue.",
+      "answersIfDeterminable": "Sidebar: 'Why did Wen Shu do that?' (He wanted a magic gold seed to get rich too)."
+    },
+    {
+      "page": 36,
+      "whatIsOnIt": "Reading 2 part 5: Go Ne and Wen Shu waiting anxiously at the animal clinic while the vet heals the baby swallow.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read how Wen Shu feels sorry and the vet cures the bird.",
+      "answersIfDeterminable": "Wen Shu dialogue: 'Please make the baby bird better!'"
+    },
+    {
+      "page": 37,
+      "whatIsOnIt": "Reading 2 part 6: Go Ne paying the vet with gold coins. Mother asking why he spent roof money. Wen Shu secretly leaving a gift to repair their roof.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read conclusion where Wen Shu makes amends.",
+      "answersIfDeterminable": "Sidebar: 'What do you do when you're sorry?' (Apologize, do something kind to make it right)."
+    },
+    {
+      "page": 38,
+      "whatIsOnIt": "Explore the Reading. Activity A: Short answer questions (1-5). Activity B: Character matching (Wen Shu vs Go Ne). Activity C: Theme check. Spelling Pattern 'ai'.",
+      "activityType": "phonics_box",
+      "instructionsAsWritten": "A Read and answer. 1 What is Go Ne's favorite season? 2 How did Go Ne's father put the baby swallow back? 3 What did Go Ne do with the gold seed? 4 What did Wen Shu want? 5 How did Wen Shu feel about what happened to the bird? B Look and read. Match sentences to Wen Shu or Go Ne. C Think and check. What else did you learn from the story? Spelling Pattern ai: Listen and write (r___, m___, p___, t___, c___). Find more words spelled with ai in the reading.",
+      "answersIfDeterminable": "A1: Spring. A2: Climbed up and put it back in the nest. A3: Planted it in a pot. A4: A gold seed (gold coins). A5: Really sorry / guilty. B Go Ne: 2, 3, 5; Wen Shu: 1, 4, 6. C: Check 'Be kind to animals and people.' Spelling ai: rain, mail (or main), paid (or pain), tail (or train), chain (or claim). Reading words with ai: paid, sailed."
+    },
+    {
+      "page": 39,
+      "whatIsOnIt": "Think Together. Essential Question: 'How are plants, animals, and humans connected?'. Activity A: Graphic organizer inside tree leaves. Activity B: Roundtable discussion. My Reading Journal.",
+      "activityType": "reading_journal",
+      "instructionsAsWritten": "A Think and write. What do trees and plants give to people and animals? B Imagine a world without trees or plants. What happens? Make a list together. Do a Roundtable. C Think and discuss. What's on your list? My Reading Journal: Which places in this unit do you want to visit? What do you want to see? What is one thing you learned about plants or animals?",
+      "answersIfDeterminable": "A: Fruit to eat, wood to build houses, shade from sun, oxygen to breathe, homes for animals. B/C: Without trees, birds can't build nests; without plants, animals have no food."
+    }
+  ],
+  "comprehensionQuestions": [
+    {
+      "page": 30,
+      "question": "Why do coniferous trees keep their needles in the winter?",
+      "answer": "Their thin, waxy needles survive freezing cold weather without losing moisture, so they stay evergreen all year.",
+      "skill": "recall"
+    },
+    {
+      "page": 30,
+      "question": "How does the snowshoe hare adapt to winter in the coniferous forest?",
+      "answer": "Its fur changes from brown in summer to thick white in winter to blend into the snow and stay warm.",
+      "skill": "recall"
+    },
+    {
+      "page": 30,
+      "question": "Why do bears hibernate in the deciduous forest during winter?",
+      "answer": "Deciduous trees lose their leaves and fruit in autumn, so there is not much food available during winter.",
+      "skill": "inference"
+    },
+    {
+      "page": 31,
+      "question": "What was the author's main purpose for writing 'Two Different Forests'?",
+      "answer": "To inform and teach readers about the differences between deciduous and coniferous forest biomes.",
+      "skill": "inference"
+    },
+    {
+      "page": 38,
+      "question": "Why did the mother swallow give Go Ne a magical gold seed?",
+      "answer": "She was grateful because Go Ne and his father saved her baby bird when it fell out of the nest.",
+      "skill": "recall"
+    },
+    {
+      "page": 38,
+      "question": "Why did Wen Shu shoot the swallow's nest with his slingshot?",
+      "answer": "He was jealous of Go Ne's wealth and wanted to force a swallow to give him a gold seed too.",
+      "skill": "inference"
+    },
+    {
+      "page": 38,
+      "question": "What important lesson does 'A New Friend' teach about kindness?",
+      "answer": "It teaches us to be kind to animals and people, and that if we make a mistake, we should apologize and help fix the problem.",
+      "skill": "opinion"
+    }
+  ],
+  "phonicsWords": [
+    "rain",
+    "main",
+    "mail",
+    "pain",
+    "pail",
+    "tail",
+    "train",
+    "chain",
+    "claim",
+    "paid",
+    "sailed"
+  ],
+  "grammarPoints": [
+    {
+      "pattern": "Subject + verb + so that / so + subject + can + base verb (Expressing Purpose & Adaptation)",
+      "examples": [
+        "Animals change color in the winter so they can hide in the snow.",
+        "Wen Shu left a gift so they could fix the roof."
+      ]
+    },
+    {
+      "pattern": "Subject + have/use + [noun A] + instead of + [noun B] (Contrast)",
+      "examples": [
+        "Coniferous trees have cones instead of flowers or fruit.",
+        "We used warm wood instead of stone."
+      ]
+    },
+    {
+      "pattern": "Past Simple Narrative Verbs (Regular & Irregular)",
+      "examples": [
+        "A swallow built its nest, and one baby bird fell to the ground.",
+        "Go Ne paid the vet with gold coins from the plant."
+      ]
+    },
+    {
+      "pattern": "The author wrote this text to + [base verb: teach / entertain / persuade]",
+      "examples": [
+        "The author wrote this article to compare two types of forest.",
+        "The author wrote this story to entertain us and teach a lesson."
+      ]
+    }
+  ],
+  "cultureOrContentFacts": [
+    "Deciduous trees lose all their broad leaves in autumn, which helps them conserve water through freezing winter months.",
+    "Coniferous (taiga/boreal) forests cover vast parts of Canada, Scandinavia, and Siberia where winter temperatures drop below -50°C.",
+    "'A New Friend' is a modern retelling of 'Heungbu and Nolbu' (흥부와 놀부), one of Korea's most cherished traditional folk tales about brotherly kindness versus greed.",
+    "Swallows (제비) in Korean culture are beloved heralds of spring and symbols of good fortune that return to build nests under human eaves.",
+    "In British English, a Y-shaped shooting toy is called a 'catapult', while American English calls it a 'slingshot' (noted on p. 35)."
+  ],
+  "pictureNotes": [
+    {
+      "page": 24,
+      "describe": "Cold-weather expedition boat moving across a foggy, freezing northern river with passengers wearing thick parkas and protective goggles."
+    },
+    {
+      "page": 26,
+      "describe": "Contrast between an apple tree blooming with pink blossoms and hillside deciduous trees blazing with vivid yellow, orange, and red autumn leaves."
+    },
+    {
+      "page": 27,
+      "describe": "Forest wildlife collage: mother bear with cubs, raccoons peering from a hollow tree trunk, howling coyote, white-tailed deer, and red squirrel."
+    },
+    {
+      "page": 28,
+      "describe": "Macro photograph of a woody pine cone nestled in sharp, dark green pine needles, with a round dial thermometer reading -50 degrees Celsius."
+    },
+    {
+      "page": 29,
+      "describe": "Coniferous predators and prey: pure white snowshoe hare mid-leap, spotted Canada lynx, grey wolf portrait, and camouflaged snowy owl."
+    },
+    {
+      "page": 32,
+      "describe": "Traditional Korean village setting with curved tiled roofs, paper doors, and young Go Ne admiring a swallow swooping overhead in spring."
+    },
+    {
+      "page": 34,
+      "describe": "Excited family sawing open a massive ripe golden gourd at a wooden table, revealing sparkling piles of ancient gold coins while neighbor watches."
+    },
+    {
+      "page": 35,
+      "describe": "Wen Shu aiming a wooden slingshot toward swallow nest, and Go Ne gently wrapping the injured fallen chick in a blue cloth inside his bicycle basket."
+    },
+    {
+      "page": 36,
+      "describe": "Doctor in eyeglasses and white coat examining the blue baby swallow while Go Ne and regretful Wen Shu wait closely on a wooden clinic bench."
+    },
+    {
+      "page": 37,
+      "describe": "Go Ne offering gold coins to the smiling vet, and Wen Shu secretly placing a roof repair parcel outside Go Ne's gate in the afternoon sunlight."
+    }
+  ],
+  "difficultyFlags": [
+    "deciduous vs coniferous: Difficult scientific vocabulary for A1+; use the 'leaf-dropper' vs 'cone-maker' mnemonic with tactile pine cone and leaf realia.",
+    "slingshot vs catapult: Clarify US vs UK terminology (slingshot = catapult in Britain) so students are not confused by book notes.",
+    "author's purpose: Abstract reading strategy; use simple 3-finger category anchors: 1. Teach/Inform (like science text), 2. Entertain/Fun (like story), 3. Persuade (change mind).",
+    "irregular past verbs: Verbs like built, fell, grew, paid, sailed need explicit timeline reinforcement."
+  ]
+}

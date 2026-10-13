@@ -1,0 +1,326 @@
+{
+  "_about": "Unit 3, Grade 4. Checked by Claude against the 16 page photos in unit3-work/pages (g4_p40-g4_p55). 'book' = printed on that page, word for word. 'added' = teacher-planning suggestion, not in the book. Quotes are kept short on purpose (no full transcription of the poem or article).",
+  "book": "Global Readings 3",
+  "grade": 4,
+  "unit": 3,
+  "unitTitle": "It Keeps Changing",
+  "pages": "40-55",
+  "bigQuestion": { "text": "How can we make good changes in our world?", "source": "book p.55 (Think Together heading)" },
+  "topic": "Climate change: changes in the Arctic (a poem about a man and a polar bear) and clean cars.",
+  "readingSkill": { "name": "Compare and contrast", "source": "book p.47", "bookDefinition": "Compare means find the similarities, or things that are the same. Contrast means find the differences, or things that aren't the same." },
+  "valuesFocus": { "name": "Social awareness", "source": "book p.46 (page footer)" },
+  "phonics": { "pattern": "final -ng", "source": "book p.46" },
+
+  "pageMap": [
+    { "page": 40, "section": "Unit opener: Activating Prior Knowledge About Climate Change", "contains": "Title 'It Keeps Changing'. Photo: a person pours bright pink colour into a fast river. No caption." },
+    { "page": 41, "section": "See, Think, Wonder", "contains": "A What do you see? ('I see a lot of pink.' 'There are so many rocks!') B What do you think? ('There's paint in the water.' 'I don't think he's safe.') C What do you wonder? ('Is it juice?' 'What is he doing?') D Think and discuss: good and bad changes in nature. E Compare and contrast a snowy setting (picture of a house in snow) to where you live. Banner: Now read The Bear and I." },
+    { "page": 42, "section": "Reading 1 (Fiction, poem): The Bear and I - stanzas 1-2", "contains": "A man from a land of wind and cold; as a young man his fishing hole was in the ice; he meets a giant arctic bear. Question: 'How many stanzas does this poem have?'" },
+    { "page": 43, "section": "Reading 1 stanzas 3-4 + Words in Context", "contains": "The bear is twice his size, takes his fish; for many years the bear is his enemy near his fishing hole. Label color (US) / colour (UK). Question: 'What are the dangers for the man in the poem?' Words in Context: hole, twice, enemy, thin, trap, melting." },
+    { "page": 44, "section": "Reading 1 stanzas 5-6", "contains": "After many warm winters the sea ice was thin; it cracked and the bear and the man fell in; they were in a trap of ice and sea together; the bear was not his enemy. Question: 'Why do you think the ice was a trap?'" },
+    { "page": 45, "section": "Reading 1 stanzas 7-8", "contains": "Things change as years go by; danger in this changing world; today the ice is melting, the man is old and hopes to see the bear once more. Question: 'Does the man change his mind about the bear?'" },
+    { "page": 46, "section": "Explore the Reading; Social Awareness; Phonics -ng", "contains": "A 5 True/False items (item 1 done: False). B Question / Answer / Stanza table (item 1 done: 'a land of wind and cold', stanza 1). C Are the man and the bear friends at the end? frame 'I think they're not friends because the bear takes his fish.' Phonics -ng: sing, long, reading, bang, spring; find more -ng words in the reading." },
+    { "page": 47, "section": "Compare and Contrast", "contains": "A check bear / man for 6 features (eats fish done for both). Definition box. B two cars (red: 'It's red and has four wheels. It's big, noisy, and fast.' white: 'This car is small, fast, and quiet. It's white and has four wheels.') circle same, underline different. C What do we use cars for? Banner: Now read Clean Cars." },
+    { "page": 48, "section": "Reading 2 (Nonfiction): Clean Cars", "contains": "Cars are everywhere; we use them to go shopping, go to school and go on vacation. Question: 'What are good and bad things about cars?'" },
+    { "page": 49, "section": "Reading 2 continued + Words in Context", "contains": "Gasoline comes from oil in the ground; gasoline cars are fast but noisy and make the air dirty; dirty air is bad for animals, plants and people and changes our climate. Label gasoline (US) / petrol (UK). Question: 'What does your body use for energy?' Words in Context: gasoline, energy, oil, noisy, electricity, expensive." },
+    { "page": 50, "section": "Reading 2 continued", "contains": "Biofuel cars: biofuels come from plants like corn; the plants need big fields and a lot of water; the air is only a little dirty; fast but very noisy." },
+    { "page": 51, "section": "Reading 2 continued", "contains": "Electric cars use electricity like a TV or a lamp; fast and quiet; clean but expensive. Fact box: 'Electric cars aren't new. The first car to go 100 km. per hour was an electric car in 1899.'" },
+    { "page": 52, "section": "Reading 2 continued", "contains": "Air cars use air for energy; not very expensive; quiet and clean but small and slow." },
+    { "page": 53, "section": "Reading 2 end", "contains": "Solar cars use energy from the sun; some are fast; there are races; not noisy or dirty but can be expensive; not many people have them. Ending: 'Clean cars are one way to have a clean world.' Question: 'Do you like cars? Why or why not?'" },
+    { "page": 54, "section": "Explore the Reading; Science Link", "contains": "A label 4 car pictures. B table Type of car / Good things / Bad things with word box fast, slow, noisy, quiet, dirty, clean, small, expensive (gasoline good: fast done). C main idea (3 options). D 'Which clean car is your favorite? Why?' frame 'I like the solar car because it's fast and quiet.'" },
+    { "page": 55, "section": "Think Together: How can we make good changes in our world? + My Reading Journal", "contains": "A: What problems does climate change make for people and animals? (two clouds: People / Animals). B: Numbered Heads Together; frames 'I can clean up trash because trash is a danger for animals.' 'I can ride a bike to school because bikes don't make the air dirty.' Journal: Now I know some new things about polar bears / life in the Arctic / clean cars / climate change (yes/no); 'I feel ...' write and draw." }
+  ],
+
+  "objectives": {
+    "source": "added (the book does not print objectives; written from the page content)",
+    "unit": [
+      "Pupils will be able to retell the poem The Bear and I in 5 simple sentences (young man, bear takes fish, thin ice, fall in, ice is melting).",
+      "Pupils will be able to compare and contrast two things (the man and the bear; two cars) using 'Both ...' and 'The bear ..., but the man ...'.",
+      "Pupils will be able to describe 5 kinds of cars (gasoline, biofuel, electric, air, solar) with fast/slow, noisy/quiet, clean/dirty, expensive.",
+      "Pupils will be able to give a reason with 'because' (I like the solar car because it's quiet.).",
+      "Pupils will be able to say one change they can make to keep the world clean (I can ... because ...).",
+      "Pupils will be able to read and say words ending in -ng (sing, long, spring, melting, fishing)."
+    ],
+    "canDo": [
+      "I can tell the story of the man and the bear.",
+      "I can say how two things are the same and different.",
+      "I can talk about clean cars and dirty cars.",
+      "I can say why with 'because'.",
+      "I can say how I can help our world.",
+      "I can say words that end in -ng."
+    ],
+    "successCriteria": [
+      "Sorts the 6 features on p.47 correctly (bear / man / both).",
+      "Completes the p.54 table with at least 2 good and 1 bad thing for 3 cars.",
+      "Says one 'I like ... because ...' sentence and one 'I can ... because ...' sentence."
+    ]
+  },
+
+  "readings": [
+    {
+      "title": "The Bear and I",
+      "genre": "Fiction - a poem (8 stanzas of 4 lines, 2 stanzas per page)",
+      "pages": "42-45",
+      "speaker": "a man who lives in the Arctic (he tells the story as 'I')",
+      "characters": [
+        { "name": "the man ('I')", "about": "young at the start, old at the end; fishes through a hole in the ice; hungry" },
+        { "name": "the polar bear", "about": "giant, twice his size, white fur; takes his fish; hungry, just like him" }
+      ],
+      "setting": "a land of wind and cold, fields of ice and snow, the frozen sea (the Arctic)",
+      "stanzaSummaryAdded": [
+        "1 (p.42) The man is from a cold, windy land. His story starts when he was young.",
+        "2 (p.42) He fished through a hole in the ice. One day he met a giant bear.",
+        "3 (p.43) The bear was twice his size. It ate his fish, and he ran away.",
+        "4 (p.43) For many years the bear was his enemy. It was hungry, like him.",
+        "5 (p.44) After warm winters the ice was thin. It cracked and they fell in.",
+        "6 (p.44) They were in a trap of ice and sea together. The bear was not his enemy.",
+        "7 (p.45) Things change. The changing world is dangerous for them both.",
+        "8 (p.45) Today the ice is melting and the man is old. He hopes to see the bear again."
+      ],
+      "keyLinesBook": [
+        { "page": 42, "stanza": 1, "text": "I'm from a land of wind and cold," },
+        { "page": 43, "stanza": 3, "text": "The polar bear was twice my size," },
+        { "page": 43, "stanza": 4, "text": "The bear was my enemy." },
+        { "page": 44, "stanza": 5, "text": "The ice on the sea was thin." },
+        { "page": 44, "stanza": 6, "text": "The bear was not my enemy." },
+        { "page": 45, "stanza": 8, "text": "Today the ice is melting," }
+      ],
+      "causeAndEffectAdded": [
+        "Warm winters → thin ice (p.44)",
+        "Thin ice → it cracked, the man and the bear fell in (p.44)",
+        "In the water together → the bear was not his enemy (p.44)",
+        "The ice is melting → danger for the bear and the man (p.45)"
+      ],
+      "message": "Things change as years go by; the changing world is dangerous for people and animals (book p.45 idea)."
+    },
+    {
+      "title": "Clean Cars",
+      "genre": "Nonfiction - informational text",
+      "pages": "48-53",
+      "mainIdea": { "text": "Clean cars are good for the world.", "source": "book p.54 C, option 2 (answer); ending line p.53: 'Clean cars are one way to have a clean world.'" },
+      "carTable": [
+        { "car": "gasoline car", "energy": "gasoline (from oil in the ground)", "good": ["fast"], "bad": ["noisy", "makes the air dirty", "changes our climate"], "page": 49 },
+        { "car": "biofuel car", "energy": "biofuels from plants like corn", "good": ["fast", "air only a little dirty"], "bad": ["very noisy", "plants need big fields and a lot of water"], "page": 50 },
+        { "car": "electric car", "energy": "electricity (like a TV or a lamp)", "good": ["fast", "quiet", "clean"], "bad": ["expensive"], "page": 51 },
+        { "car": "air car", "energy": "air", "good": ["not very expensive", "quiet", "clean"], "bad": ["small", "slow"], "page": 52 },
+        { "car": "solar car", "energy": "energy from the sun", "good": ["some are fast", "not noisy", "not dirty"], "bad": ["can be expensive", "not many people have them"], "page": 53 }
+      ],
+      "keyLinesBook": [
+        { "page": 48, "text": "Cars are everywhere!" },
+        { "page": 49, "text": "Gasoline comes from oil in the ground." },
+        { "page": 49, "text": "Dirty air is bad for animals, plants, and people." },
+        { "page": 51, "text": "They are clean, but they are expensive." },
+        { "page": 53, "text": "Clean cars are one way to have a clean world." }
+      ],
+      "funFact": { "text": "Electric cars aren't new. The first car to go 100 km. per hour was an electric car in 1899.", "source": "book p.51" }
+    }
+  ],
+
+  "vocabulary": {
+    "mustKnow": [
+      { "word": "hole", "pos": "noun", "def": "an opening; here, a hole in the ice for fishing", "page": 42, "bookContext": "My fishing hole was in the ice,", "highlighted": true, "emoji": "🕳️" },
+      { "word": "twice", "pos": "adverb", "def": "two times (twice my size = two times bigger than me)", "page": 43, "bookContext": "twice my size", "highlighted": true, "emoji": "✌️" },
+      { "word": "enemy", "pos": "noun", "def": "someone who is against you; not a friend", "page": 43, "bookContext": "The bear was my enemy.", "highlighted": true, "emoji": "😠" },
+      { "word": "thin", "pos": "adjective", "def": "not thick; easy to break", "page": 44, "bookContext": "The ice on the sea was thin.", "highlighted": true, "emoji": "📄" },
+      { "word": "trap", "pos": "noun", "def": "a place you cannot get out of", "page": 44, "bookContext": "In a trap of ice and sea.", "highlighted": true, "emoji": "🪤" },
+      { "word": "melting", "pos": "verb (-ing)", "def": "turning from ice into water", "page": 45, "bookContext": "Today the ice is melting,", "highlighted": true, "emoji": "🫠" },
+      { "word": "gasoline", "pos": "noun", "def": "fuel for cars (UK: petrol)", "page": 49, "bookContext": "A lot of cars use gasoline for energy.", "highlighted": true, "emoji": "⛽" },
+      { "word": "energy", "pos": "noun", "def": "the power that makes things move or work", "page": 49, "bookContext": "use gasoline for energy", "highlighted": true, "emoji": "⚡" },
+      { "word": "oil", "pos": "noun", "def": "a thick black liquid from under the ground", "page": 49, "bookContext": "Gasoline comes from oil in the ground.", "highlighted": true, "emoji": "🛢️" },
+      { "word": "noisy", "pos": "adjective", "def": "making a lot of sound", "page": 49, "bookContext": "they are noisy", "highlighted": true, "emoji": "🔊" },
+      { "word": "electricity", "pos": "noun", "def": "the energy for lamps, TVs and electric cars", "page": 51, "bookContext": "These cars use electricity, just like a TV or a lamp.", "highlighted": true, "emoji": "🔌" },
+      { "word": "expensive", "pos": "adjective", "def": "costs a lot of money", "page": 51, "bookContext": "they are expensive", "highlighted": true, "emoji": "💸" },
+      { "word": "change / changing", "pos": "verb", "def": "become different", "page": 45, "bookContext": "Things change as years go by.", "highlighted": false, "emoji": "🔄" },
+      { "word": "climate change", "pos": "noun", "def": "the world's weather slowly getting different (warmer)", "page": 55, "bookContext": "What problems does climate change make for people and animals?", "highlighted": false, "emoji": "🌡️" },
+      { "word": "polar bear", "pos": "noun", "def": "a big white bear that lives in the Arctic", "page": 43, "bookContext": "The polar bear was twice my size,", "highlighted": false, "emoji": "🐻‍❄️" },
+      { "word": "ice", "pos": "noun", "def": "frozen water", "page": 42, "bookContext": "With fields of ice and snow.", "highlighted": false, "emoji": "🧊" },
+      { "word": "quiet", "pos": "adjective", "def": "making little sound", "page": 51, "bookContext": "They are fast and quiet.", "highlighted": false, "emoji": "🤫" },
+      { "word": "clean / dirty", "pos": "adjective", "def": "not dirty / not clean", "page": 49, "bookContext": "make the air dirty; They are clean (p.51)", "highlighted": false, "emoji": "✨" },
+      { "word": "fast / slow", "pos": "adjective", "def": "quick / not quick", "page": 49, "bookContext": "Gasoline cars are fast; small and slow (p.52)", "highlighted": false, "emoji": "🏎️" },
+      { "word": "compare / contrast", "pos": "verb", "def": "find what is the same / find what is different", "page": 47, "bookContext": "Compare means find the similarities", "highlighted": false, "emoji": "⚖️" }
+    ],
+    "shouldKnow": [
+      { "word": "land", "pos": "noun", "def": "a country or area", "page": 42, "bookContext": "a land of wind and cold", "emoji": "🗺️" },
+      { "word": "wind", "pos": "noun", "def": "moving air", "page": 42, "bookContext": "a land of wind and cold", "emoji": "🌬️" },
+      { "word": "snow", "pos": "noun", "def": "soft white frozen rain", "page": 42, "bookContext": "fields of ice and snow", "emoji": "❄️" },
+      { "word": "young / old", "pos": "adjective", "def": "not old / not young", "page": 42, "bookContext": "when I was young; I am getting old (p.45)", "emoji": "👦" },
+      { "word": "fishing / fish", "pos": "noun / verb", "def": "catching fish", "page": 42, "bookContext": "My fishing hole", "emoji": "🎣" },
+      { "word": "face to face", "pos": "expression", "def": "very near and looking at each other", "page": 42, "bookContext": "I was face to face", "emoji": "👀" },
+      { "word": "giant", "pos": "adjective", "def": "very, very big", "page": 42, "bookContext": "a giant arctic bear", "emoji": "🦣" },
+      { "word": "fur", "pos": "noun", "def": "the hair on an animal", "page": 43, "bookContext": "Its fur was the color of the snow.", "emoji": "🐾" },
+      { "word": "chance", "pos": "noun", "def": "a good time to do something", "page": 43, "bookContext": "It was my chance to go.", "emoji": "🏃" },
+      { "word": "hungry", "pos": "adjective", "def": "wanting food", "page": 43, "bookContext": "It was hungry, just like me.", "emoji": "🍽️" },
+      { "word": "warm / cold", "pos": "adjective", "def": "a little hot / not warm", "page": 44, "bookContext": "After many warm winters,", "emoji": "🌡️" },
+      { "word": "winter", "pos": "noun", "def": "the coldest season", "page": 44, "bookContext": "many warm winters", "emoji": "⛄" },
+      { "word": "crack", "pos": "noun / verb", "def": "the sound and line when something breaks", "page": 44, "bookContext": "Crack! The bear and I fell in.", "emoji": "💥" },
+      { "word": "fell in", "pos": "verb (past of fall in)", "def": "went down into the water", "page": 44, "bookContext": "The bear and I fell in.", "emoji": "🌊" },
+      { "word": "swim", "pos": "verb", "def": "move through water", "page": 44, "bookContext": "It was difficult to swim", "emoji": "🏊" },
+      { "word": "together", "pos": "adverb", "def": "with each other", "page": 44, "bookContext": "we were in the trap together", "emoji": "🤝" },
+      { "word": "danger", "pos": "noun", "def": "something that can hurt you", "page": 45, "bookContext": "There is danger in this changing world,", "emoji": "⚠️" },
+      { "word": "hope", "pos": "verb", "def": "want something good to happen", "page": 45, "bookContext": "But I hope to see the bear once more,", "emoji": "🙏" },
+      { "word": "the Arctic", "pos": "noun", "def": "the very cold area at the top of the world", "page": 47, "bookContext": "lives in the Arctic", "emoji": "🧭" },
+      { "word": "scary", "pos": "adjective", "def": "making you afraid", "page": 47, "bookContext": "is big and scary", "emoji": "😨" },
+      { "word": "wheels", "pos": "noun", "def": "the round parts a car moves on", "page": 47, "bookContext": "has four wheels", "emoji": "🛞" },
+      { "word": "air", "pos": "noun", "def": "what we breathe", "page": 49, "bookContext": "make the air dirty", "emoji": "💨" },
+      { "word": "climate", "pos": "noun", "def": "the usual weather of a place", "page": 49, "bookContext": "It changes our climate, too.", "emoji": "🌍" },
+      { "word": "biofuels", "pos": "noun", "def": "fuel made from plants", "page": 50, "bookContext": "Biofuels come from plants like corn,", "emoji": "🌽" },
+      { "word": "plants / corn / fields", "pos": "noun", "def": "things that grow / a yellow food plant / big areas of land for plants", "page": 50, "bookContext": "these plants need big fields and a lot of water", "emoji": "🌱" },
+      { "word": "solar", "pos": "adjective", "def": "using energy from the sun", "page": 53, "bookContext": "Solar cars use energy from the sun.", "emoji": "☀️" },
+      { "word": "race", "pos": "noun", "def": "a competition to see who is fastest", "page": 53, "bookContext": "There are even races!", "emoji": "🏁" },
+      { "word": "trash", "pos": "noun", "def": "things we throw away (UK: rubbish)", "page": 55, "bookContext": "I can clean up trash", "emoji": "🗑️" },
+      { "word": "ride a bike", "pos": "verb phrase", "def": "go on a bicycle", "page": 55, "bookContext": "I can ride a bike to school", "emoji": "🚲" }
+    ],
+    "niceToKnow": [
+      { "word": "stanza", "pos": "noun", "def": "a group of lines in a poem (like a paragraph)", "page": 42, "emoji": "📜" },
+      { "word": "paint / juice / rocks / safe", "pos": "noun / adjective", "def": "words from the See-Think-Wonder bubbles", "page": 41, "emoji": "🎨" },
+      { "word": "nature", "pos": "noun", "def": "plants, animals, water, weather", "page": 41, "emoji": "🌿" },
+      { "word": "setting", "pos": "noun", "def": "where a story happens", "page": 41, "emoji": "🏔️" },
+      { "word": "similarities / differences", "pos": "noun", "def": "things that are the same / not the same", "page": 47, "emoji": "🟰" },
+      { "word": "go shopping / go on vacation", "pos": "verb phrase", "def": "go to shops / go on a holiday", "page": 48, "emoji": "🛍️" },
+      { "word": "everywhere", "pos": "adverb", "def": "in all places", "page": 48, "emoji": "🌐" },
+      { "word": "ground", "pos": "noun", "def": "the earth under us", "page": 49, "emoji": "⛰️" },
+      { "word": "lamp", "pos": "noun", "def": "a light in a room", "page": 51, "emoji": "💡" },
+      { "word": "km per hour", "pos": "unit", "def": "kilometres in one hour (speed)", "page": 51, "emoji": "⏱️" },
+      { "word": "main idea", "pos": "noun", "def": "what a text is mostly about", "page": 54, "emoji": "🎯" },
+      { "word": "danger for animals", "pos": "noun phrase", "def": "something that can hurt animals", "page": 55, "emoji": "🐢" }
+    ]
+  },
+
+  "chunks": [
+    { "chunk": "I'm from ...", "function": "saying where you come from", "page": 42, "bookExample": "I'm from a land of wind and cold," },
+    { "chunk": "Many years ago / One day / One morning", "function": "story time phrases", "page": 42, "bookExample": "Many years ago. (p.42); One morning, the bear was near me, (p.44)" },
+    { "chunk": "face to face (with)", "function": "describing meeting someone close", "page": 42, "bookExample": "But one day I was face to face," },
+    { "chunk": "twice my size", "function": "comparing size", "page": 43, "bookExample": "The polar bear was twice my size," },
+    { "chunk": "just like me", "function": "saying something is the same", "page": 43, "bookExample": "It was hungry, just like me." },
+    { "chunk": "From that day on", "function": "time phrase (after that day)", "page": 43, "bookExample": "From that day on, for many years," },
+    { "chunk": "fell in", "function": "describing an accident", "page": 44, "bookExample": "Crack! The bear and I fell in." },
+    { "chunk": "as years go by", "function": "talking about time passing", "page": 45, "bookExample": "Things change as years go by." },
+    { "chunk": "once more", "function": "one more time", "page": 45, "bookExample": "But I hope to see the bear once more," },
+    { "chunk": "use ... for energy", "function": "saying what gives power", "page": 49, "bookExample": "A lot of cars use gasoline for energy." },
+    { "chunk": "comes from ...", "function": "saying where something starts", "page": 49, "bookExample": "Gasoline comes from oil in the ground." },
+    { "chunk": "is bad for ...", "function": "saying something hurts", "page": 49, "bookExample": "Dirty air is bad for animals, plants, and people." },
+    { "chunk": "just like a ...", "function": "comparing", "page": 51, "bookExample": "These cars use electricity, just like a TV or a lamp." },
+    { "chunk": "..., but ...", "function": "contrast (good and bad)", "page": 51, "bookExample": "They are clean, but they are expensive." },
+    { "chunk": "not very ...", "function": "softening an adjective", "page": 52, "bookExample": "They are not very expensive." },
+    { "chunk": "Not many people ...", "function": "saying a small number", "page": 53, "bookExample": "Not many people have them." },
+    { "chunk": "one way to ...", "function": "giving a solution", "page": 53, "bookExample": "Clean cars are one way to have a clean world." },
+    { "chunk": "I like ... because ...", "function": "opinion with reason", "page": 54, "bookExample": "I like the solar car because it's fast and quiet." },
+    { "chunk": "I can ... because ...", "function": "saying what you can do and why", "page": 55, "bookExample": "I can ride a bike to school because bikes don't make the air dirty." },
+    { "chunk": "I think ... because ...", "function": "opinion with reason", "page": 46, "bookExample": "I think they're not friends because the bear takes his fish." },
+    { "chunk": "I see ... / There are so many ...!", "function": "describing a picture", "page": 41, "bookExample": "I see a lot of pink. / There are so many rocks!" },
+    { "chunk": "I don't think ...", "function": "negative opinion", "page": 41, "bookExample": "I don't think he's safe." }
+  ],
+
+  "speakingFramesFromBook": [
+    { "page": 41, "frame": "I see ... / There's ... / I don't think ... / Is it ...? / What is he doing?" },
+    { "page": 46, "frame": "I think they're (not) friends because ..." },
+    { "page": 54, "frame": "I like the ... car because it's ... and ..." },
+    { "page": 55, "frame": "I can ... because ..." },
+    { "page": 55, "frame": "I feel ..." }
+  ],
+
+  "grammar": [
+    { "pattern": "Past simple: was / were and irregular verbs", "bookExamples": ["My fishing hole was in the ice, (p.42)", "Each morning, fish were there. (p.42)", "Crack! The bear and I fell in. (p.44)"], "ruleAdded": "The poem tells the past: was, were, fell." },
+    { "pattern": "Present continuous for change now", "bookExamples": ["Today the ice is melting, (p.45)", "And I am getting old, (p.45)"], "ruleAdded": "am/is/are + -ing = it is happening now." },
+    { "pattern": "Present simple for facts", "bookExamples": ["Gasoline comes from oil in the ground. (p.49)", "Solar cars use energy from the sun. (p.53)"], "ruleAdded": "Facts use the present simple; he/she/it adds -s (comes)." },
+    { "pattern": "Adjectives after be (They are ...), with and / but", "bookExamples": ["They are fast and quiet. (p.51)", "They are clean, but they are expensive. (p.51)", "They are quiet and clean, but they are small and slow. (p.52)"], "ruleAdded": "and = same kind of idea; but = the opposite idea." },
+    { "pattern": "not very / very + adjective", "bookExamples": ["They are not very expensive. (p.52)", "They are very noisy. (p.50)"], "ruleAdded": "very makes it stronger; not very makes it softer." },
+    { "pattern": "because (reason)", "bookExamples": ["I think they're not friends because the bear takes his fish. (p.46)", "I can clean up trash because trash is a danger for animals. (p.55)"], "ruleAdded": "because answers 'Why?'." },
+    { "pattern": "can / can be", "bookExamples": ["they can be expensive (p.53)", "I can ride a bike to school (p.55)"], "ruleAdded": "can + base verb." },
+    { "pattern": "There is / There are", "bookExamples": ["There are so many rocks! (p.41)", "There is danger in this changing world, (p.45)", "There are even races! (p.53)"], "ruleAdded": "There is + one; There are + many." },
+    { "pattern": "Comparing with 'Both' and 'but' (skill language, added)", "bookExamples": [], "ruleAdded": "Not printed as sentences in the book. Suggested frames for p.47: 'Both the bear and the man eat fish.' 'The bear lives on the ice, but the man lives in a house.'", "source": "added" }
+  ],
+  "grammarNote": "The book does NOT use '-er than' comparatives or 'instead of' in this unit (earlier AI notes said it did; that was wrong).",
+
+  "phonicsDetail": {
+    "pattern": "final -ng",
+    "bookWords": ["sing", "long", "reading", "bang", "spring"],
+    "ngWordsInThePoemAndText": ["young (p.42)", "fishing (p.42)", "morning (p.42, p.44)", "changing (p.45)", "melting (p.45)", "getting (p.45)", "living (p.45)", "things (p.45)", "shopping (p.48)", "Changing (unit title p.40)"],
+    "noteAdded": "Say the -ng sound at the back of the mouth; do not add a hard 'g' at the end."
+  },
+
+  "answerKeys": {
+    "p46A": [
+      { "item": "1 When the man was young, the bear was his friend.", "answer": "False (printed in the book)" },
+      { "item": "2 The man was hungry.", "answer": "True ('It was hungry, just like me.' p.43)" },
+      { "item": "3 The ice was thin because the winters were cold.", "answer": "False (the winters were warm)" },
+      { "item": "4 Some of the changes are bad for the man and the bear.", "answer": "True" },
+      { "item": "5 At the end of the poem, the man doesn't want to see the bear.", "answer": "False (he hopes to see it once more)" }
+    ],
+    "p46B": [
+      { "q": "1 Where is the man from?", "a": "a land of wind and cold (printed)", "stanza": 1 },
+      { "q": "2 How big is the polar bear?", "a": "twice his size", "stanza": 3 },
+      { "q": "3 Why is the ice thin?", "a": "after many warm winters", "stanza": 5 },
+      { "q": "4 Why are they in the water?", "a": "the thin ice cracked and they fell in", "stanza": 5 },
+      { "q": "5 What does the man hope?", "a": "to see the bear once more, living in the cold", "stanza": 8 }
+    ],
+    "p47A": [
+      { "feature": "eats fish", "bear": true, "man": true, "note": "printed (done)" },
+      { "feature": "is big and scary", "bear": true, "man": false },
+      { "feature": "lives in the Arctic", "bear": true, "man": true },
+      { "feature": "is hungry", "bear": true, "man": true },
+      { "feature": "falls in the water", "bear": true, "man": true },
+      { "feature": "lives in a house", "bear": false, "man": true }
+    ],
+    "p47B": { "same": ["four wheels", "fast"], "different": ["red / white", "big / small", "noisy / quiet"] },
+    "p54A": ["1 a solar car", "2 an electric car", "3 a biofuel car", "4 a gasoline car"],
+    "p54B": [
+      { "car": "gasoline", "good": "fast (printed)", "bad": "noisy, dirty" },
+      { "car": "biofuel", "good": "fast", "bad": "noisy, dirty (a little)" },
+      { "car": "electric", "good": "fast, quiet, clean", "bad": "expensive" },
+      { "car": "air", "good": "quiet, clean", "bad": "small, slow" },
+      { "car": "solar", "good": "fast, quiet, clean", "bad": "expensive" }
+    ],
+    "p54C": "2 Clean cars are good for the world."
+  },
+
+  "discussionQuestionsFromBook": [
+    { "page": 41, "q": "What good and bad changes in nature do you know about?" },
+    { "page": 41, "q": "Compare and contrast this setting to where you live." },
+    { "page": 42, "q": "How many stanzas does this poem have?" },
+    { "page": 43, "q": "What are the dangers for the man in the poem?" },
+    { "page": 44, "q": "Why do you think the ice was a trap?" },
+    { "page": 45, "q": "Does the man change his mind about the bear?" },
+    { "page": 46, "q": "Do you think the man and the bear are friends at the end of the poem? Why or why not?" },
+    { "page": 47, "q": "What do we use cars for?" },
+    { "page": 48, "q": "What are good and bad things about cars?" },
+    { "page": 49, "q": "What does your body use for energy?" },
+    { "page": 53, "q": "Do you like cars? Why or why not?" },
+    { "page": 54, "q": "Which clean car is your favorite? Why?" },
+    { "page": 55, "q": "What problems does climate change make for people and animals?" },
+    { "page": 55, "q": "What changes can you make to keep our world clean?" }
+  ],
+
+  "valuesAndThinking": [
+    { "value": "Social awareness / empathy", "where": "p.44-46: the man and the bear are in the same danger; p.46 C" },
+    { "value": "Caring for the planet", "where": "pp.49-55: dirty air, clean cars, clean up trash, ride a bike" },
+    { "value": "Compare and contrast thinking", "where": "p.41 E, p.47, p.54" }
+  ],
+
+  "classroomRoutinesInBook": ["See, Think, Wonder (p.41)", "Numbered Heads Together (p.55)", "My Reading Journal (p.55)"],
+
+  "needsAudio": ["p.42 poem (audio icon)", "p.43 Words in Context", "p.46 Phonics listen and say", "p.48 article (audio icon)", "p.49 Words in Context"],
+
+  "speakingSentencesAdded": [
+    "The bear was twice my size.",
+    "The ice was thin.",
+    "The ice is melting.",
+    "Gasoline cars are fast but noisy.",
+    "Electric cars are quiet and clean.",
+    "Air cars are small and slow.",
+    "Solar cars use energy from the sun.",
+    "I like the electric car because it's quiet.",
+    "I can ride a bike to school.",
+    "Clean cars are good for the world."
+  ],
+
+  "lessonIdeasAdded": [
+    { "n": 1, "pages": "40-41", "focus": "See, Think, Wonder (pink river photo); good and bad changes in nature; snowy setting vs where we live" },
+    { "n": 2, "pages": "42-43", "focus": "Poem stanzas 1-4: the man, the fishing hole, the giant bear; Words in Context" },
+    { "n": 3, "pages": "44-45", "focus": "Poem stanzas 5-8: warm winters, thin ice, trap, melting; was/were vs is melting" },
+    { "n": 4, "pages": "46", "focus": "True/False, question-answer-stanza table, friends or not?; phonics -ng" },
+    { "n": 5, "pages": "47", "focus": "Compare and contrast: bear vs man, two cars; what we use cars for" },
+    { "n": 6, "pages": "48-50", "focus": "Clean Cars part 1: gasoline and biofuel; Words in Context" },
+    { "n": 7, "pages": "51-54", "focus": "Clean Cars part 2: electric, air, solar; good/bad table; main idea; favourite car + because" },
+    { "n": 8, "pages": "55", "focus": "Think Together: problems of climate change; I can ... because ...; Reading Journal" }
+  ]
+}

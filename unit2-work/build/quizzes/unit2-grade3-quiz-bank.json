@@ -1,0 +1,1094 @@
+{
+  "title": "Grade 3 Unit 2 Comprehensive Quiz Bank: Thank You",
+  "grade": 3,
+  "totalQuestions": 60,
+  "skillsSummary": {
+    "vocabulary": 12,
+    "reading": 12,
+    "phonics": 12,
+    "grammar": 12,
+    "listening": 12
+  },
+  "questions": [
+    {
+      "id": 1,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What does the word 'HARVEST' mean?",
+      "options": [
+        "gathering food and crops from fields",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "gathering food and crops from fields",
+      "explanation": "'harvest' means gathering food and crops from fields. Example: Farmers gather their crops during the autumn harvest.",
+      "hintTurkish": "Türkçe karşılığı: hasat",
+      "page": "26",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 2,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Two teams had a contest to _____ fine cloth.'",
+      "options": [
+        "weave",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "weave",
+      "explanation": "'weave' means to make cloth by crossing threads over and under. Example: Two teams had a contest to weave fine cloth.",
+      "hintTurkish": "Türkçe karşılığı: dokumak",
+      "page": "27",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 3,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What does the word 'CLOTH' mean?",
+      "options": [
+        "material made by weaving threads",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "material made by weaving threads",
+      "explanation": "'cloth' means material made by weaving threads. Example: They made beautiful red cloth on the loom.",
+      "hintTurkish": "Türkçe karşılığı: kumaş",
+      "page": "27",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 4,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Who won the weaving _____?'",
+      "options": [
+        "contest",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "contest",
+      "explanation": "'contest' means a competition where people try to win. Example: Who won the weaving contest?",
+      "hintTurkish": "Türkçe karşılığı: yarışma",
+      "page": "27",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 5,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What does the word 'FESTIVAL' mean?",
+      "options": [
+        "a special day or celebration with food and music",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "a special day or celebration with food and music",
+      "explanation": "'festival' means a special day or celebration with food and music. Example: Chuseok is Korea's harvest festival.",
+      "hintTurkish": "Türkçe karşılığı: festival, bayram",
+      "page": "26",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 6,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Families hold a ceremony to remember their _____.'",
+      "options": [
+        "ancestors",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "ancestors",
+      "explanation": "'ancestors' means family members who lived long ago. Example: Families hold a ceremony to remember their ancestors.",
+      "hintTurkish": "Türkçe karşılığı: atalar",
+      "page": "28",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 7,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What does the word 'FEAST' mean?",
+      "options": [
+        "a large special meal with lots of food",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "a large special meal with lots of food",
+      "explanation": "'feast' means a large special meal with lots of food. Example: The king invited everyone to a royal feast.",
+      "hintTurkish": "Türkçe karşılığı: ziyafet",
+      "page": "27",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 8,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Families eat delicious _____ at Chuseok.'",
+      "options": [
+        "songpyeon",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "songpyeon",
+      "explanation": "'songpyeon' means half-moon shaped Korean rice cakes. Example: Families eat delicious songpyeon at Chuseok.",
+      "hintTurkish": "Türkçe karşılığı: yarım ay pirinç keki",
+      "page": "28",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 9,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What does the word 'WORRIED' mean?",
+      "options": [
+        "feeling anxious or unhappy about a problem",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "feeling anxious or unhappy about a problem",
+      "explanation": "'worried' means feeling anxious or unhappy about a problem. Example: Dad was worried because water was limited.",
+      "hintTurkish": "Türkçe karşılığı: endişeli",
+      "page": "33",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 10,
+      "skill": "vocabulary",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Water on the space base was _____.'",
+      "options": [
+        "limited",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "limited",
+      "explanation": "'limited' means only a small amount available. Example: Water on the space base was limited.",
+      "hintTurkish": "Türkçe karşılığı: sınırlı, kısıtlı",
+      "page": "33",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 11,
+      "skill": "vocabulary",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What does the word 'STRIPES' mean?",
+      "options": [
+        "long narrow colored lines",
+        "A machine that flies to the moon",
+        "A game played with a round ball",
+        "A cold drink with sugar"
+      ],
+      "answer": "long narrow colored lines",
+      "explanation": "'stripes' means long narrow colored lines. Example: The strange vegetables had purple and green stripes.",
+      "hintTurkish": "Türkçe karşılığı: çizgiler",
+      "page": "34",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 12,
+      "skill": "vocabulary",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete the sentence: 'Check your _____ before going outside.'",
+      "options": [
+        "space suit",
+        "pencil",
+        "blanket",
+        "computer"
+      ],
+      "answer": "space suit",
+      "explanation": "'space suit' means protective clothing worn by astronauts. Example: Check your space suit before going outside.",
+      "hintTurkish": "Türkçe karşılığı: uzay giysisi",
+      "page": "36",
+      "canDo": "I can recognize and use key Unit 2 vocabulary in context."
+    },
+    {
+      "id": 13,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What does the festival of Chuseok celebrate in Korea?",
+      "options": [
+        "The autumn harvest",
+        "The winter snow",
+        "A sports race",
+        "A new school year"
+      ],
+      "answer": "The autumn harvest",
+      "explanation": "Chuseok is Korea's harvest festival.",
+      "hintTurkish": "Chuseok sonbahar hasadını kutlar.",
+      "page": "26",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 14,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "In ancient times, who chose the winning weaving team?",
+      "options": [
+        "The king",
+        "A teacher",
+        "A robot",
+        "The children"
+      ],
+      "answer": "The king",
+      "explanation": "The king judged the cloth contest under the full moon.",
+      "hintTurkish": "Kazanan dokuma takımını kral seçerdi.",
+      "page": "27",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 15,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What shape are songpyeon rice cakes?",
+      "options": [
+        "Half-moon shape",
+        "Square box shape",
+        "Star shape",
+        "Triangle shape"
+      ],
+      "answer": "Half-moon shape",
+      "explanation": "Songpyeon are special half-moon shaped rice cakes.",
+      "hintTurkish": "Yarım ay şeklindedir.",
+      "page": "28",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 16,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Why do Korean families hold a ceremony during Chuseok?",
+      "options": [
+        "To remember and thank their ancestors",
+        "To watch television",
+        "To clean the street",
+        "To buy new cars"
+      ],
+      "answer": "To remember and thank their ancestors",
+      "explanation": "Families remember and thank ancestors who lived long ago.",
+      "hintTurkish": "Atalarını anmak ve teşekkür etmek için.",
+      "page": "28",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 17,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What circle dance do women and girls perform under the full moon?",
+      "options": [
+        "Ganggangsullae",
+        "Ballet",
+        "Salsa",
+        "Hip-hop"
+      ],
+      "answer": "Ganggangsullae",
+      "explanation": "Ganggangsullae is the traditional circle dance under the full moon.",
+      "hintTurkish": "Ganggangsullae halk dansı.",
+      "page": "29",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 18,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Where does the family grow their food in 'First Harvest'?",
+      "options": [
+        "In an indoor dome greenhouse",
+        "In an outdoor muddy river",
+        "On top of a skyscraper",
+        "In a dark basement"
+      ],
+      "answer": "In an indoor dome greenhouse",
+      "explanation": "Crops grow inside a sealed dome greenhouse.",
+      "hintTurkish": "Kapalı bir sera kubbesinde yetiştirirler.",
+      "page": "32",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 19,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Why was the father worried about the crops?",
+      "options": [
+        "Water was limited",
+        "It was too noisy",
+        "The soil was too hot",
+        "Insects ate the corn"
+      ],
+      "answer": "Water was limited",
+      "explanation": "Dad worried because fresh water was limited.",
+      "hintTurkish": "Su kısıtlı ve az olduğu için.",
+      "page": "33",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 20,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What unusual colors were the vegetables in the greenhouse?",
+      "options": [
+        "Pink potatoes and purple corn",
+        "Blue bananas and red grass",
+        "Black apples and silver peas",
+        "White carrots and gold beans"
+      ],
+      "answer": "Pink potatoes and purple corn",
+      "explanation": "The plants grew with unexpected pink and purple colors.",
+      "hintTurkish": "Pembe patatesler ve mor mısırlar.",
+      "page": "34",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 21,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What did Ruth suggest doing to celebrate their crops?",
+      "options": [
+        "Having a feast with everyone",
+        "Selling them at the supermarket",
+        "Throwing them away",
+        "Going to sleep early"
+      ],
+      "answer": "Having a feast with everyone",
+      "explanation": "Ruth said: 'Let's get everyone together. We can have a feast!'",
+      "hintTurkish": "Herkesle birlikte bir ziyafet vermeyi önerdi.",
+      "page": "35",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 22,
+      "skill": "reading",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "What did Mom remind the children to check before going outside?",
+      "options": [
+        "Their space suits and air supply",
+        "Their sunglasses and beach towels",
+        "Their umbrellas and raincoats",
+        "Their bicycle helmets"
+      ],
+      "answer": "Their space suits and air supply",
+      "explanation": "Mom tells them to check space suits and air before going outside.",
+      "hintTurkish": "Uzay giysilerini ve oksijenlerini kontrol etmelerini söyledi.",
+      "page": "36",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 23,
+      "skill": "reading",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "What is the surprise SETTING of 'First Harvest'?",
+      "options": [
+        "A colony base on the planet Mars",
+        "A farm in London",
+        "An island in the Pacific",
+        "A school in Seoul"
+      ],
+      "answer": "A colony base on the planet Mars",
+      "explanation": "The story takes place on Mars in the future.",
+      "hintTurkish": "Sürpriz ortam Mars gezegenindeki bir tarım üssüdür.",
+      "page": "37",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 24,
+      "skill": "reading",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What does the reading skill 'Understanding Setting' mean?",
+      "options": [
+        "Knowing WHERE and WHEN a story takes place",
+        "Counting how many words are on a page",
+        "Knowing the name of the illustrator",
+        "Finding rhyming words"
+      ],
+      "answer": "Knowing WHERE and WHEN a story takes place",
+      "explanation": "Setting tells us where and when the story happens.",
+      "hintTurkish": "Hikayenin nerede ve ne zaman geçtiğini bilmek.",
+      "page": "30",
+      "canDo": "I can understand story facts and identify the setting."
+    },
+    {
+      "id": 25,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Which word ends with the consonant blend -st?",
+      "options": [
+        "fast",
+        "fall",
+        "farm",
+        "fan"
+      ],
+      "answer": "fast",
+      "explanation": "Fast ends with the sharp -st blend.",
+      "hintTurkish": "Sonunda -st olan kelime: fast (hızlı).",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 26,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete the sentence with an -st word: 'The rabbit ran very _____.'",
+      "options": [
+        "fast",
+        "fat",
+        "far",
+        "fan"
+      ],
+      "answer": "fast",
+      "explanation": "Fast describes high speed.",
+      "hintTurkish": "Hızlı anlamında -st kelimesi: fast.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 27,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "What is the opposite of 'first'?",
+      "options": [
+        "last",
+        "lost",
+        "fast",
+        "best"
+      ],
+      "answer": "last",
+      "explanation": "Last comes after all others.",
+      "hintTurkish": "First (ilk) kelimesinin zıttı: last (son).",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 28,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete: 'Oh no, I cannot find my compass! It is _____.'",
+      "options": [
+        "lost",
+        "lot",
+        "log",
+        "lock"
+      ],
+      "answer": "lost",
+      "explanation": "Lost means unable to find.",
+      "hintTurkish": "Kayıp anlamında: lost.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 29,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete: 'She studied hard and got the _____ score in class!'",
+      "options": [
+        "best",
+        "bet",
+        "beg",
+        "bed"
+      ],
+      "answer": "best",
+      "explanation": "Best means number one quality.",
+      "hintTurkish": "En iyi anlamında: best.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 30,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete: 'Tomorrow we have an English _____ at school.'",
+      "options": [
+        "test",
+        "tent",
+        "ten",
+        "tell"
+      ],
+      "answer": "test",
+      "explanation": "Test means an exam or quiz.",
+      "hintTurkish": "Sınav anlamında: test.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 31,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Which word means gathering crops and ends in -st?",
+      "options": [
+        "harvest",
+        "holiday",
+        "hero",
+        "hand"
+      ],
+      "answer": "harvest",
+      "explanation": "Harvest ends with the -st blend.",
+      "hintTurkish": "Hasat kelimesi: harvest.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 32,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete: 'This is our very _____ harvest on Mars.'",
+      "options": [
+        "first",
+        "fast",
+        "fist",
+        "fit"
+      ],
+      "answer": "first",
+      "explanation": "First means number one in order.",
+      "hintTurkish": "İlk anlamında: first.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 33,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Which pair of words are minimal pairs contrasting -s and -st?",
+      "options": [
+        "pass and past",
+        "dog and cat",
+        "run and jump",
+        "sun and moon"
+      ],
+      "answer": "pass and past",
+      "explanation": "Pass ends in /s/, past ends in /st/.",
+      "hintTurkish": "Minimal çift: pass ve past.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 34,
+      "skill": "phonics",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "How should a Turkish speaker pronounce the word 'FAST'?",
+      "options": [
+        "Stop sharply on /t/ without adding an extra vowel",
+        "Say 'fast-ı' with a vowel at the end",
+        "Drop the 't' and say 'fas'",
+        "Say 'fa-set'"
+      ],
+      "answer": "Stop sharply on /t/ without adding an extra vowel",
+      "explanation": "Do not add an epenthetic Turkish vowel at the end.",
+      "hintTurkish": "Sonuna 'ı' sesi eklemeyin, t sesinde kesin.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 35,
+      "skill": "phonics",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Which word rhymes with 'BEST' and 'TEST'?",
+      "options": [
+        "nest",
+        "last",
+        "fast",
+        "lost"
+      ],
+      "answer": "nest",
+      "explanation": "Nest shares the -est rhyme family.",
+      "hintTurkish": "-est ile kafiyeli: nest.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 36,
+      "skill": "phonics",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Which letter comes right before -st in the word 'LOST'?",
+      "options": [
+        "o",
+        "a",
+        "e",
+        "u"
+      ],
+      "answer": "o",
+      "explanation": "L-O-S-T has the short vowel o.",
+      "hintTurkish": "O harfi.",
+      "page": "38",
+      "canDo": "I can pronounce, spell, and identify words with the final -st blend."
+    },
+    {
+      "id": 37,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Choose the correct preposition: 'I am thankful _____ my kind teacher.'",
+      "options": [
+        "for",
+        "to",
+        "at",
+        "on"
+      ],
+      "answer": "for",
+      "explanation": "We say 'thankful for [noun]'.",
+      "hintTurkish": "'Thankful' sözcüğünden sonra 'for' gelir.",
+      "page": "31",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 38,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Choose the correct preposition: 'They are thankful _____ the delicious food.'",
+      "options": [
+        "for",
+        "with",
+        "in",
+        "by"
+      ],
+      "answer": "for",
+      "explanation": "Thankful takes the preposition 'for'.",
+      "hintTurkish": "Yiyecekler için minnettar: thankful for.",
+      "page": "31",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 39,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete: 'There _____ a bright full moon in the sky tonight.'",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "am"
+      ],
+      "answer": "is",
+      "explanation": "One moon = singular, use 'There is'.",
+      "hintTurkish": "Tek bir ay var, tekil için 'There is' kullanılır.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 40,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete: 'There _____ two teams weaving cloth.'",
+      "options": [
+        "are",
+        "is",
+        "was",
+        "be"
+      ],
+      "answer": "are",
+      "explanation": "Two teams = plural, use 'There are'.",
+      "hintTurkish": "İki takım çoğuldur, 'There are' kullanılır.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 41,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Complete: 'There _____ pink potatoes under the soil.'",
+      "options": [
+        "are",
+        "is",
+        "am",
+        "was"
+      ],
+      "answer": "are",
+      "explanation": "Potatoes is plural, use 'There are'.",
+      "hintTurkish": "Patatesler çoğul olduğu için 'There are' gelir.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 42,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete: 'There _____ a red pineapple on the table.'",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "be"
+      ],
+      "answer": "is",
+      "explanation": "A pineapple = singular, use 'There is'.",
+      "hintTurkish": "Bir ananas tekildir, 'There is' gelir.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 43,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Which sentence is grammatically correct?",
+      "options": [
+        "There are three space suits in the room.",
+        "There is three space suits in the room.",
+        "There are a space suit in the room.",
+        "There be three space suits."
+      ],
+      "answer": "There are three space suits in the room.",
+      "explanation": "Plural noun 'space suits' agrees with 'There are'.",
+      "hintTurkish": "Çoğul nesne ile 'There are' uyumu.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 44,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "fill_blank",
+      "question": "Which sentence correctly expresses gratitude?",
+      "options": [
+        "We are thankful for our warm home.",
+        "We are thankful at our warm home.",
+        "We thankful for our warm home.",
+        "We are thank for our warm home."
+      ],
+      "answer": "We are thankful for our warm home.",
+      "explanation": "Subject + be + thankful for + noun.",
+      "hintTurkish": "Doğru kalıp: We are thankful for...",
+      "page": "31",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 45,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Complete the polite question: 'Can we _____ outside, Mom?'",
+      "options": [
+        "go",
+        "goes",
+        "going",
+        "went"
+      ],
+      "answer": "go",
+      "explanation": "After modal 'can', use base verb 'go'.",
+      "hintTurkish": "Can kalıbından sonra fiil yalın gelir: go.",
+      "page": "36",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 46,
+      "skill": "grammar",
+      "difficulty": 1,
+      "type": "fill_blank",
+      "question": "Complete: 'Why are they happy? _____ harvest time is here.'",
+      "options": [
+        "Because",
+        "So",
+        "Instead",
+        "Why"
+      ],
+      "answer": "Because",
+      "explanation": "'Because' answers the question 'Why?'.",
+      "hintTurkish": "'Why' sorusuna 'Because' (çünkü) ile cevap verilir.",
+      "page": "31",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 47,
+      "skill": "grammar",
+      "difficulty": 2,
+      "type": "order",
+      "question": "Put the words in correct order: [is / There / a / greenhouse / big]",
+      "options": [
+        "There is a big greenhouse",
+        "A big greenhouse there is",
+        "There a big greenhouse is",
+        "Is there a greenhouse big"
+      ],
+      "answer": "There is a big greenhouse",
+      "explanation": "Standard structure: There is + a/an + adjective + noun.",
+      "hintTurkish": "There is a big greenhouse.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 48,
+      "skill": "grammar",
+      "difficulty": 3,
+      "type": "fill_blank",
+      "question": "Complete: 'There _____ many stars visible from Mars.'",
+      "options": [
+        "are",
+        "is",
+        "am",
+        "was"
+      ],
+      "answer": "are",
+      "explanation": "Many stars = plural noun, takes 'are'.",
+      "hintTurkish": "Yıldızlar çoğuldur: There are.",
+      "page": "35",
+      "canDo": "I can use 'thankful for' and 'There is / There are' accurately."
+    },
+    {
+      "id": 49,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and choose what the speaker is thankful for: 'I am thankful for my little sister.'",
+      "options": [
+        "my little sister",
+        "my big dog",
+        "my school bag",
+        "my new bike"
+      ],
+      "answer": "my little sister",
+      "explanation": "The audio explicitly states: 'my little sister'.",
+      "hintTurkish": "Küçük kız kardeşi için teşekkür ediyor.",
+      "page": "31",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 50,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and identify the number: 'There are five songpyeon cakes on the plate.'",
+      "options": [
+        "5",
+        "3",
+        "8",
+        "2"
+      ],
+      "answer": "5",
+      "explanation": "The speaker mentions five rice cakes.",
+      "hintTurkish": "Tabakta 5 pirinç keki olduğunu dinleyin.",
+      "page": "28",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 51,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /f-æ-s-t/",
+      "options": [
+        "fast",
+        "first",
+        "fat",
+        "farm"
+      ],
+      "answer": "fast",
+      "explanation": "Audio pronunciation of fast.",
+      "hintTurkish": "Fast sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 52,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /b-e-s-t/",
+      "options": [
+        "best",
+        "bed",
+        "bet",
+        "belt"
+      ],
+      "answer": "best",
+      "explanation": "Audio pronunciation of best.",
+      "hintTurkish": "Best sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 53,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and identify the vegetable: 'Look, there is a giant purple corn!'",
+      "options": [
+        "purple corn",
+        "pink potato",
+        "orange pea",
+        "green tomato"
+      ],
+      "answer": "purple corn",
+      "explanation": "Audio mentions purple corn.",
+      "hintTurkish": "Mor mısır ifadesini dinleyin.",
+      "page": "34",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 54,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and identify the setting: 'Check your space suits before opening the airlock.'",
+      "options": [
+        "A space station on Mars",
+        "A beach in summer",
+        "A farm in Turkey",
+        "A supermarket"
+      ],
+      "answer": "A space station on Mars",
+      "explanation": "Space suits and airlocks identify the space setting.",
+      "hintTurkish": "Uzay giysisi ve hava kilidi Mars ortamını belirtir.",
+      "page": "36",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 55,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and choose: 'The weaving contest lasted for one month.' How long was it?",
+      "options": [
+        "One month",
+        "One week",
+        "One day",
+        "One year"
+      ],
+      "answer": "One month",
+      "explanation": "The contest lasted one month.",
+      "hintTurkish": "Dokuma yarışması 1 ay sürmüştü.",
+      "page": "27",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 56,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and choose the word you hear: /l-ɒ-s-t/",
+      "options": [
+        "lost",
+        "lot",
+        "log",
+        "lock"
+      ],
+      "answer": "lost",
+      "explanation": "Audio pronunciation of lost.",
+      "hintTurkish": "Lost sözcüğü telaffuz ediliyor.",
+      "page": "38",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 57,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and identify the emotion: 'Dad felt worried because water was limited.'",
+      "options": [
+        "worried",
+        "happy",
+        "angry",
+        "sleepy"
+      ],
+      "answer": "worried",
+      "explanation": "Dad felt worried.",
+      "hintTurkish": "Endişeli (worried) hissetti.",
+      "page": "33",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 58,
+      "skill": "listening",
+      "difficulty": 1,
+      "type": "multiple_choice",
+      "question": "Listen and choose: 'Can we go outside and play under the dome?'",
+      "options": [
+        "outside and play",
+        "inside and sleep",
+        "to the shop",
+        "to school"
+      ],
+      "answer": "outside and play",
+      "explanation": "The children ask to go outside and play.",
+      "hintTurkish": "Dışarı çıkıp oynamak istiyorlar.",
+      "page": "36",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 59,
+      "skill": "listening",
+      "difficulty": 2,
+      "type": "multiple_choice",
+      "question": "Listen and identify the ending sound: 'h-a-r-v-e-s-t'",
+      "options": [
+        "-st",
+        "-nt",
+        "-nd",
+        "-mp"
+      ],
+      "answer": "-st",
+      "explanation": "Harvest ends in -st blend.",
+      "hintTurkish": "Kelime -st ile bitiyor.",
+      "page": "38",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    },
+    {
+      "id": 60,
+      "skill": "listening",
+      "difficulty": 3,
+      "type": "multiple_choice",
+      "question": "Listen and choose: 'There is a big feast under the full moon.'",
+      "options": [
+        "There is a big feast",
+        "There are big feasts",
+        "Here is a feast",
+        "It was a big feast"
+      ],
+      "answer": "There is a big feast",
+      "explanation": "Audio begins with 'There is a big feast'.",
+      "hintTurkish": "There is a big feast cümlesini dinleyin.",
+      "page": "27",
+      "canDo": "I can understand spoken sentences and discriminate phonetic sounds."
+    }
+  ]
+}

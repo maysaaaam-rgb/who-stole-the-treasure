@@ -1,0 +1,105 @@
+{
+  "title": "Unit 2 Progress Quiz: Thank You",
+  "grade": 3,
+  "book": "Global Readings 2",
+  "totalQuestions": 12,
+  "totalMarks": 20,
+  "questions": [
+    {
+      "id": 1,
+      "category": "vocabulary",
+      "question": "Choose the correct word to complete the sentence: 'At the end of summer, farmers gather their crops during the ___.' (contest / harvest / cloth)",
+      "answer": "harvest",
+      "marks": 1,
+      "canDoStatement": "I can identify and use target vocabulary related to harvest celebrations."
+    },
+    {
+      "id": 2,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'In ancient times, two teams had a contest to ___ soft cloth.' (weave / pick / believe)",
+      "answer": "weave",
+      "marks": 1,
+      "canDoStatement": "I can use action verbs related to crafting and traditions."
+    },
+    {
+      "id": 3,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'Dad was ___ because there was not much water for the plants.' (worried / tidy / proud)",
+      "answer": "worried",
+      "marks": 1,
+      "canDoStatement": "I can identify emotion adjectives in a story context."
+    },
+    {
+      "id": 4,
+      "category": "vocabulary",
+      "question": "Choose the correct word: 'The strange space tomatoes have red and green ___.' (ancestors / stripes / machines)",
+      "answer": "stripes",
+      "marks": 1,
+      "canDoStatement": "I can use descriptive nouns to identify visual patterns."
+    },
+    {
+      "id": 5,
+      "category": "reading_comprehension",
+      "question": "According to 'Chuseok: Korea's Harvest Festival', what did the king give to both teams after the month-long weaving contest?",
+      "answer": "He gave a big feast for both teams.",
+      "marks": 2,
+      "canDoStatement": "I can recall specific historical facts from an informational text."
+    },
+    {
+      "id": 6,
+      "category": "reading_comprehension",
+      "question": "Why do Korean families hold a special ceremony and bow during Chuseok?",
+      "answer": "To remember and honor their ancestors and give thanks for the harvest.",
+      "marks": 2,
+      "canDoStatement": "I can explain cultural reasons and purposes described in a text."
+    },
+    {
+      "id": 7,
+      "category": "reading_comprehension",
+      "question": "What is the secret setting of 'First Harvest', and how do we know at the end of the story?",
+      "answer": "The setting is an indoor farm on Mars. We know because Mom reminds the children to check their space suits and air supply, and their helmets say MARS 3000.",
+      "marks": 2,
+      "canDoStatement": "I can identify the time and place (setting) of a science fiction story using text clues."
+    },
+    {
+      "id": 8,
+      "category": "phonics",
+      "question": "Which of the following words ends with the -st blend? (flag / nest / frog / tree)",
+      "answer": "nest",
+      "marks": 1,
+      "canDoStatement": "I can identify words ending in the consonant blend -st."
+    },
+    {
+      "id": 9,
+      "category": "phonics",
+      "question": "Write two words from 'First Harvest' that end with the letters -st: 1. h___ 2. f___",
+      "answer": "1. harvest, 2. first",
+      "marks": 1,
+      "canDoStatement": "I can decode and write words with final -st from a reading selection."
+    },
+    {
+      "id": 10,
+      "category": "grammar",
+      "question": "Complete the sentence using 'is' or 'are': 'There ___ pink potatoes, and there ___ a red pineapple on the table.'",
+      "answer": "are / is",
+      "marks": 2,
+      "canDoStatement": "I can correctly use 'There is' with singular nouns and 'There are' with plural nouns."
+    },
+    {
+      "id": 11,
+      "category": "grammar",
+      "question": "Put the words in the correct order to make a sentence expressing thankfulness: [the harvest / We / for / are / thankful / food .]",
+      "answer": "We are thankful for the harvest food.",
+      "marks": 2,
+      "canDoStatement": "I can form correct sentences using the pattern 'be thankful for [noun]'."
+    },
+    {
+      "id": 12,
+      "category": "writing",
+      "question": "Write 2 or 3 complete sentences about what you are thankful for and what special food you like to share with your family.",
+      "answer": "Accept any coherent 2-3 sentence response using target themes (e.g., 'I am thankful for my family and my home. We eat delicious rice cakes together at our feast.'). Criteria: 2 marks content & vocabulary, 1 mark grammar, 1 mark capitalization and periods.",
+      "marks": 4,
+      "canDoStatement": "I can write short descriptive sentences expressing personal gratitude and family celebrations."
+    }
+  ]
+}
