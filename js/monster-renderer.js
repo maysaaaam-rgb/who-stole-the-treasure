@@ -519,7 +519,7 @@
         const ry = (g.botY - g.topY) / 2;
         const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
         const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-        baseBodyMarkup = `${parts.back}${parts.feet}${parts.torso}${parts.front}${clothingMarkup}`.trim();
+        baseBodyMarkup = `${parts.back}${parts.feet}${parts.torso}${parts.front}${clothingMarkup}${parts.arms || ''}`.trim();
       }
     } catch (e) {
       baseBodyMarkup = '';
@@ -543,11 +543,16 @@
     // Layer 6: Fore Accessories Layer
     let foreAccessoriesMarkup = '';
     try {
+      const petMarkup = (equipped.pet && equipped.pet !== 'none' && typeof window !== 'undefined' && window.MonsterPets)
+        ? window.MonsterPets.renderSvg(equipped.pet)
+        : '';
       if (stage !== 'egg' && stage !== 'cracking_egg') {
         const g = getStageGeometry(stage);
         const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, 100, g);
         const fgAccessories = renderForegroundAccessories(stage, equipped, palette);
-        foreAccessoriesMarkup = `${overBodyMarkup}${fgAccessories}`.trim();
+        foreAccessoriesMarkup = `${overBodyMarkup}${fgAccessories}${petMarkup}`.trim();
+      } else {
+        foreAccessoriesMarkup = petMarkup.trim();
       }
     } catch (e) {
       foreAccessoriesMarkup = '';
@@ -664,6 +669,15 @@
       }
     }
 
+    let petLayer = '';
+    if (equipped.pet && equipped.pet !== 'none' && typeof window !== 'undefined' && window.MonsterPets) {
+      try {
+        petLayer = window.MonsterPets.renderSvg(equipped.pet) || '';
+      } catch (e) {
+        petLayer = '';
+      }
+    }
+
     const nearGlow = options.nearEvolve ? renderNearEvolveGlow(stage) : '';
     const bobGroup = `
       <g class="monster-bob-group">
@@ -684,6 +698,7 @@
         ${pedestalMarkup}
         ${contactShadowMarkup}
         ${bobGroup}
+        ${petLayer}
       </svg>
     `.trim();
   }
@@ -834,6 +849,11 @@
 
     // 3. Base Monster Body & Fur (Pedestal, Contact shadow, Feet, Torso)
     let bodySvg = '';
+    let stageArmsMarkup = '';
+    let clothingMarkupForStage = '';
+    if (stage !== 'egg' && stage !== 'cracking_egg') {
+      try { clothingMarkupForStage = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage) || ''; } catch (e) { clothingMarkupForStage = ''; }
+    }
     if (stage === 'egg') {
       bodySvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${renderPedestalDais()}${renderContactShadow(stage)}${renderEggWhole(palette, colorKey)}</svg>`;
     } else if (stage === 'cracking_egg') {
@@ -847,7 +867,7 @@
       let overBodyMarkup = '';
       try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
       let crest = { back: '', front: '' };
-      try { const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped); feetMarkup = parts.feet; torsoMarkup = parts.torso; crest = { back: parts.back, front: parts.front }; } catch (e) {}
+      try { const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped); feetMarkup = parts.feet; torsoMarkup = parts.torso; stageArmsMarkup = parts.arms || ''; crest = { back: parts.back, front: parts.front }; } catch (e) {}
       // Pass false to omit horns from body layer so they render in layer-horns (z-60)
       try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, false); } catch (e) {}
 
@@ -860,6 +880,7 @@
           ${crest.back}
           ${feetMarkup}
           ${torsoMarkup}
+          ${!clothingMarkupForStage ? stageArmsMarkup : ''}
           ${crest.front}
           ${overBodyMarkup}
         </svg>
@@ -868,13 +889,8 @@
 
     // 4. Clothing & Outfits wrapped to torso (z-30)
     let clothingSvg = '';
-    if (stage !== 'egg' && stage !== 'cracking_egg') {
-      try {
-        const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-        if (clothingMarkup) {
-          clothingSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${clothingMarkup}</svg>`;
-        }
-      } catch (e) {}
+    if (stage !== 'egg' && stage !== 'cracking_egg' && clothingMarkupForStage) {
+      clothingSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${clothingMarkupForStage}${stageArmsMarkup}</svg>`;
     }
 
     // 5. Face Features & Expressions rendered OVER clothing (z-40)
@@ -907,9 +923,9 @@
     // 8. Headwear (Hats, Caps, Crowns) (z-70)
     let headwearSvg = '';
     const hatId = equipped.hat || equipped.hats;
-    if (stage !== 'egg' && stage !== 'cracking_egg') {
-      try {
-        let fg = '';
+    try {
+      let fg = '';
+      if (stage !== 'egg' && stage !== 'cracking_egg') {
         if (hatId && hatId !== 'none') {
           fg += renderForegroundAccessories(stage, { hat: hatId }, palette) || '';
         }
@@ -918,9 +934,12 @@
         } else if (isSatchelId(equipped.backpack)) {
           fg += renderSatchelFront(stage, equipped.backpack);
         }
-        if (fg) headwearSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${fg}</svg>`;
-      } catch (e) {}
-    }
+      }
+      if (equipped.pet && equipped.pet !== 'none' && typeof window !== 'undefined' && window.MonsterPets) {
+        fg += window.MonsterPets.renderSvg(equipped.pet) || '';
+      }
+      if (fg) headwearSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${fg}</svg>`;
+    } catch (e) {}
 
     return `
       <div class="monster-composite-stage ${animClass}" id="monster-composite-stage" style="position: relative; width: 280px; height: 280px; margin: 0 auto;">
@@ -1598,7 +1617,9 @@
   }
   function renderSatchelFront(stage, backpackId) {
     if (stage === 'egg' || stage === 'cracking_egg' || !isSatchelId(backpackId)) return '';
-    const g = getStageGeometry(stage), sx = 100 + g.bW * 0.48, sy = g.botY - 24, s0 = `M ${100 - g.cW * 0.95} ${g.shoulderY != null ? g.shoulderY - 2 : g.eyeY + 13} Q ${100 - 4} ${g.eyeY + 27} ${sx + 9} ${sy + 1}`;
+    const g = getStageGeometry(stage), sx = 100 + g.bW * 0.45, sy = g.botY - 22;
+    const x0 = 100 - g.cW * 0.90, y0 = g.shoulderY != null ? g.shoulderY : (g.eyeY + 19);
+    const s0 = `M ${x0} ${y0} Q 98 ${g.botY - 6} ${sx + 9} ${sy + 2}`;
     return `
       <g class="monster-backpack-layer" filter="url(#mf-shadow)">
         <path d="${s0}" stroke="#78350f" stroke-width="4.5" fill="none" stroke-linecap="round" />
@@ -1889,6 +1910,14 @@
       ${dragonClaws(x, b + 4, 1, 1.15)}`;
     return `<g class="plush-feet" filter="url(#plush-shadow)">${foot(cX - f)}${foot(cX + f)}</g>`;
   }
+  function renderDragonArms(palette, colorKey, cX, g) {
+    const arm = (k) => `
+      <path d="M ${cX + k * (g.cW - 4)} ${g.pawY - 15} C ${cX + k * (g.cW + 9)} ${g.pawY - 9} ${cX + k * (g.cW + 10)} ${g.pawY + 6} ${cX + k * (g.cW - 1)} ${g.pawY + 9}
+               C ${cX + k * (g.cW - 8)} ${g.pawY + 6} ${cX + k * (g.cW - 8)} ${g.pawY - 5} ${cX + k * (g.cW - 4)} ${g.pawY - 15} Z"
+            fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+      ${dragonClaws(cX + k * (g.cW + 0.5), g.pawY + 7.5, 1, 0.8)}`;
+    return `<g filter="url(#plush-shadow)" class="mon-body-breathe drg-arms">${arm(-1)}${arm(1)}</g>`;
+  }
   function renderDragonTorso(stage, palette, colorKey, cX, g) {
     const bodyPath = dragonBodyPath(g, cX), headPath = dragonHeadPath(g, cX);
     const sY = g.shoulderY, b = g.botY, R = g.headRX, H = g.headRY, hy = g.headCY;
@@ -1904,12 +1933,6 @@
     let scales = '', headScales = '';
     for (let i = -2; i <= 2; i++) headScales += `<path d="M ${cX + i * 9 - 4} ${hy - H + 10 + Math.abs(i) * 2} q 4 4 8 0" fill="none" stroke="${palette.primaryDark}" stroke-width="1.2" opacity="0.35" />`;
     for (const k of [-1, 1]) for (let j = 0; j < 3; j++) scales += `<path d="M ${cX + k * (g.bW * 0.78) - 4} ${sY + 10 + j * 8} q 4 4 8 0" fill="none" stroke="${palette.primaryDark}" stroke-width="1.2" opacity="0.3" />`;
-    // Arms with little claws
-    const arm = (k) => `
-      <path d="M ${cX + k * (g.cW - 4)} ${g.pawY - 15} C ${cX + k * (g.cW + 9)} ${g.pawY - 9} ${cX + k * (g.cW + 10)} ${g.pawY + 6} ${cX + k * (g.cW - 1)} ${g.pawY + 9}
-               C ${cX + k * (g.cW - 8)} ${g.pawY + 6} ${cX + k * (g.cW - 8)} ${g.pawY - 5} ${cX + k * (g.cW - 4)} ${g.pawY - 15} Z"
-            fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-      ${dragonClaws(cX + k * (g.cW + 0.5), g.pawY + 7.5, 1, 0.8)}`;
     return `
       ${DRAGON_HORN_DEFS}
       <g filter="url(#plush-shadow)" class="mon-body-breathe drg-body">
@@ -1923,7 +1946,6 @@
         <clipPath id="${clipP}"><path d="${plates}" /></clipPath>
         <g clip-path="url(#${clipP})">${bands}</g>
         <g clip-path="url(#${clipB})">${scales}</g>
-        ${arm(-1)}${arm(1)}
       </g>
       <g filter="url(#plush-shadow)" class="drg-head">
         <path d="${headPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" />
@@ -2050,11 +2072,18 @@
         back: renderDragonFins(palette, colorKey, cX, g),
         feet: renderDragonFeet(palette, colorKey, cX, g),
         torso: renderDragonTorso(stage, palette, colorKey, cX, g),
+        arms: renderDragonArms(palette, colorKey, cX, g),
         front: (noHorns && noEars) ? DRAGON_HORN_DEFS + renderDragonHorns(palette, cX, g) : ''
       };
     }
     const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
-    return { back: crest.back, feet: renderGroundedFeet(palette, colorKey, cX, g), torso: renderChibiTorso(stage, palette, colorKey, cX, g, equipped), front: crest.front };
+    return {
+      back: crest.back,
+      feet: renderGroundedFeet(palette, colorKey, cX, g),
+      torso: renderChibiTorso(stage, palette, colorKey, cX, g, equipped),
+      arms: renderChibiArms(stage, palette, colorKey, cX, g),
+      front: crest.front
+    };
   }
   function isOwnPart(id, kind) {
     return !id || id === 'default' || id === 'none' || id === kind + '-none' || id === 'null';
@@ -2153,18 +2182,8 @@
     }
 
     if (hornId === 'horns-ears' || hornId === 'signature-ears' || hornId === 'ears') {
-      const cW = g.cW;
-      const scale = g.earScale;
-      return `
-        <!-- Signature Floppy Ears Layer -->
-        <g filter="url(#plush-shadow)" class="monster-ear-front">
-          <path d="M ${cX + cW * 0.24 * scale} ${topY + 5 * scale}
-                   C ${cX + cW * 0.40 * scale} ${topY - 8 * scale} ${cX + cW * 0.65 * scale} ${topY - 34 * scale} ${cX + cW * 0.92 * scale} ${topY - 28 * scale}
-                   C ${cX + cW * 1.30 * scale} ${topY - 16 * scale} ${cX + cW * 0.90} ${topY + 2 * scale} ${cX + cW * 0.44} ${topY + 12 * scale}
-                   C ${cX + cW * 0.38 * scale} ${topY + 11 * scale} ${cX + cW * 0.32 * scale} ${topY + 9 * scale} ${cX + cW * 0.24 * scale} ${topY + 5 * scale} Z"
-                fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="2.8" stroke-linejoin="round" />
-        </g>
-      `;
+      // Floppy ears are rendered with full 3D fur & pink inner-ear shading in renderOverBodyAccessories / renderUnderBodyAccessories
+      return '';
     }
 
     if (hornId === 'horns-small' || hornId === 'horns-nub') {
@@ -2323,6 +2342,35 @@
     `;
   }
 
+  // --- FRONT ARMS / PAWS (rendered over clothing so outfits never swallow the monster's hands) ---
+  function renderChibiArms(stage, palette, colorKey, cX, g) {
+    const cW = g.cW;
+    if (stage === 'baby') {
+      return `
+        <g filter="url(#plush-shadow)" class="mon-body-breathe">
+          <path d="M ${cX - cW + 4} ${g.pawY - 10} C ${cX - cW - 6} ${g.pawY - 5} ${cX - cW - 8} ${g.pawY + 6} ${cX - cW + 3} ${g.pawY + 9} C ${cX - cW + 8} ${g.pawY + 6} ${cX - cW + 7} ${g.pawY - 3} ${cX - cW + 4} ${g.pawY - 10} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <circle cx="${cX - cW - 1}" cy="${g.pawY + 4}" r="2.6" fill="${palette.cheek}" opacity="0.85" />
+
+          <path d="M ${cX + cW - 4} ${g.pawY - 10} C ${cX + cW + 6} ${g.pawY - 5} ${cX + cW + 8} ${g.pawY + 6} ${cX + cW - 3} ${g.pawY + 9} C ${cX + cW - 8} ${g.pawY + 6} ${cX + cW - 7} ${g.pawY - 3} ${cX + cW - 4} ${g.pawY - 10} Z"
+                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+          <circle cx="${cX + cW + 1}" cy="${g.pawY + 4}" r="2.6" fill="${palette.cheek}" opacity="0.85" />
+        </g>
+      `;
+    }
+    return `
+      <g filter="url(#plush-shadow)" class="mon-body-breathe">
+        <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+        <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
+
+        <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+        <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
+      </g>
+    `;
+  }
+
   // --- ORGANIC PEAR / JELLY-BEAN TORSO WITH VOLUMETRIC VECTOR LIGHTING ---
   function renderChibiTorso(stage, palette, colorKey, cX, g, equipped) {
     const topY = g.topY;
@@ -2355,13 +2403,13 @@
       Z
     `;
 
-    // Ambient Occlusion Crescent along lower-right inner rim
+    // Ambient Occlusion Crescent along lower-right inner rim (softly clipped inside body)
     const aoCrescent = `
-      <path d="M ${cX - 10} ${botY}
-               C ${cX + 18} ${botY} ${cX + bW * 0.88} ${botY + 2} ${cX + bW} ${botY - 10}
-               C ${cX + bW * 1.06} ${botY - 24} ${cX + cW * 1.05} ${cheekY + 14} ${cX + cW} ${cheekY}
-               C ${cX + cW - 5} ${cheekY + 14} ${cX + bW - 7} ${botY - 20} ${cX - 10} ${botY} Z"
-            fill="${palette.shadowDark || palette.shadow}" opacity="0.26" />
+      <path d="M ${cX} ${botY + 2}
+               C ${cX + 20} ${botY + 2} ${cX + bW * 0.92} ${botY + 2} ${cX + bW * 1.04} ${botY - 12}
+               C ${cX + bW * 1.08} ${botY - 26} ${cX + cW * 1.10} ${cheekY + 14} ${cX + cW * 1.06} ${cheekY}
+               C ${cX + cW * 0.88} ${cheekY + 18} ${cX + bW * 0.78} ${botY - 16} ${cX} ${botY + 2} Z"
+            fill="${palette.shadowDark || palette.shadow}" opacity="0.14" />
     `;
 
     // Top Specular Highlight Arc along crown curve
@@ -2377,51 +2425,20 @@
     const detailMarkup = `
       <clipPath id="${clipId}"><path d="${bodyPath}" /></clipPath>
       <g clip-path="url(#${clipId})">
+        ${aoCrescent}
         <path d="${bodyPath}" fill="none" stroke="url(#mon-rim-${colorKey})" stroke-width="8" opacity="0.8" />
         ${renderSpeciesPattern(colorKey, palette, cX, g)}
         <ellipse cx="${cX}" cy="${botY - 18}" rx="${bW * 0.5}" ry="10" fill="#ffffff" opacity="0.16" />
       </g>
     `;
 
-    // Front Arms / Paws
-    let armsMarkup = '';
-    if (stage === 'baby') {
-      // Tiny baby paws curled happily on belly
-      armsMarkup = `
-        <g filter="url(#plush-shadow)">
-          <path d="M ${cX - 16} ${g.pawY - 4} C ${cX - 10} ${g.pawY - 7} ${cX - 6} ${g.pawY} ${cX - 6} ${g.pawY + 6} C ${cX - 8} ${g.pawY + 9} ${cX - 16} ${g.pawY + 8} ${cX - 18} ${g.pawY + 4} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <ellipse cx="${cX - 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
-
-          <path d="M ${cX + 16} ${g.pawY - 4} C ${cX + 10} ${g.pawY - 7} ${cX + 6} ${g.pawY} ${cX + 6} ${g.pawY + 6} C ${cX + 8} ${g.pawY + 9} ${cX + 16} ${g.pawY + 8} ${cX + 18} ${g.pawY + 4} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <ellipse cx="${cX + 11}" cy="${g.pawY + 2}" rx="3.5" ry="2.5" fill="${palette.primaryLight}" opacity="0.8" />
-        </g>
-      `;
-    } else {
-      // Growing, Adventurer, Advanced, Ultimate arms
-      armsMarkup = `
-        <g filter="url(#plush-shadow)">
-          <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-          <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-
-          <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-          <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-        </g>
-      `;
-    }
-
     return `
       <!-- Main Organic Torso with Volumetric Shading -->
       <g filter="url(#plush-shadow)" class="mon-body-breathe">
         <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" />
         <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
-        ${aoCrescent}
         ${detailMarkup}
         ${specularArc}
-        ${armsMarkup}
       </g>
     `;
   }
@@ -2436,7 +2453,7 @@
 
     const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
-    const feetMarkup = parts.feet, torsoMarkup = parts.torso, crest = { back: parts.back, front: parts.front };
+    const feetMarkup = parts.feet, torsoMarkup = parts.torso, armsMarkup = parts.arms || '', crest = { back: parts.back, front: parts.front };
     const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
     const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
@@ -2449,6 +2466,7 @@
       ${crest.front}
       ${overBodyMarkup}
       ${clothingMarkup}
+      ${armsMarkup}
       ${faceMarkup}
     `;
   }
@@ -2472,9 +2490,9 @@
       C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY} Z`;
   }
 
-  // The older outfits (clothing-*) were drawn for a taller torso, so on these round bodies they started at eye level and covered the face.
-  // They are now moved down to start just below the mouth, and clipped to the body outline. Costume pieces (cs-*) were drawn in place already.
-  const NO_CLIP_OUTFITS = ['clothing-scarf', 'clothing-cape'];
+  // Both legacy outfits (clothing-*) and costume sets (cs-*) were drawn on y=108..150, which starts at eye level on chibi bodies.
+  // We position them cleanly below the mouth (topClothY .. botY+2) and clip them to the round body silhouette so faces stay 100% clear.
+  const NO_CLIP_OUTFITS = ['clothing-scarf', 'clothing-cape', 'cs-scarf'];
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     const raw = renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage);
     if (!raw) return raw;
@@ -2484,11 +2502,21 @@
       const clipId = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
       const chin = g.creature === 'dragon' ? `<clipPath id="${clipId}-chin"><rect x="0" y="${g.headCY + g.headRY - 1}" width="200" height="200" /></clipPath>` : '';
       const clip = (inner) => `<clipPath id="${clipId}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath>${chin ? `${chin}<g clip-path="url(#${clipId}-chin)">` : ''}<g clip-path="url(#${clipId})">${inner}</g>${chin ? '</g>' : ''}`;
-      if (g.creature === 'dragon' && id0 === 'clothing-scarf') {   // the dragon wears its scarf round the neck, just under the chin
-        return `<g transform="translate(0 ${Math.round(g.neckY - 1 - cY)})">${renderClothingLayerRaw(clothingId, cX, cY, g.cW * 0.95, ry, palette, stage)}</g>`;
+      if (id0 === 'clothing-scarf') {
+        const topClothY = g.clothTop != null ? g.clothTop : (g.eyeY + 16);
+        return `<g transform="translate(0 ${Math.round(topClothY - 108)})">${raw}</g>`;
       }
-      if (id0.indexOf('cs-') === 0) return TORSO_WRAP_OUTFITS.indexOf(id0) === -1 ? raw : clip(raw);
-      const dy = (g.clothTop != null ? Math.round(g.clothTop - 108) : Math.max(0, Math.round(g.eyeY + 21 - 108))) + (id0 === 'clothing-scarf' ? 8 : 0);   // 108 = where the old outfits begin; the scarf sits a little lower so it never covers the mouth
+      if (id0.indexOf('cs-') === 0) {
+        const topClothY = g.clothTop != null ? g.clothTop : (g.eyeY + 16);
+        if (id0 === 'cs-scarf') {
+          return `<g transform="translate(0 ${Math.round(topClothY - 110)})">${raw}</g>`;
+        }
+        const sy = Math.round((((g.botY + 2) - topClothY) / 42) * 1000) / 1000;
+        const sx = Math.round((((g.bW || 44) / 34)) * 1000) / 1000;
+        const fitted = `<g transform="translate(${cX} ${topClothY}) scale(${sx} ${sy}) translate(${-cX} -108)">${raw}</g>`;
+        return clip(fitted);
+      }
+      const dy = g.clothTop != null ? Math.round(g.clothTop - 108) : Math.max(0, Math.round(g.eyeY + 18 - 108));
       const moved = `<g transform="translate(0 ${dy})">${raw}</g>`;
       return NO_CLIP_OUTFITS.indexOf(id0) !== -1 ? moved : clip(moved);
     } catch (e) { return raw; }
@@ -2573,15 +2601,16 @@
     }
 
     if (clothingId === 'clothing-scarf') {
+      const sw = Math.round(rx * 0.66);
       return `
         <!-- Cozy Winter Scarf -->
         <g filter="url(#mf-shadow)">
-          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.75}" ry="6" fill="#ef4444" stroke="#b91c1c" stroke-width="2" />
-          <path d="M ${cX + 10} ${cY + 7} L ${cX + 18} ${cY + 24} L ${cX + 8} ${cY + 24} Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.5" />
-          <!-- Scarf fringe -->
-          <line x1="${cX + 9}" y1="${cY + 24}" x2="${cX + 9}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 13}" y1="${cY + 24}" x2="${cX + 13}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
-          <line x1="${cX + 17}" y1="${cY + 24}" x2="${cX + 17}" y2="${cY + 28}" stroke="#fef08a" stroke-width="1.5" />
+          <path d="M ${cX + 9} 111 L ${cX + 20} 123 L ${cX + 10} 124 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1.6" stroke-linejoin="round" />
+          <line x1="${cX + 11}" y1="124" x2="${cX + 11}" y2="127.5" stroke="#fef08a" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="${cX + 15}" y1="123.5" x2="${cX + 15.5}" y2="127" stroke="#fef08a" stroke-width="1.5" stroke-linecap="round" />
+          <line x1="${cX + 19}" y1="123" x2="${cX + 20}" y2="126.5" stroke="#fef08a" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M ${cX - sw} 105 Q ${cX} 113 ${cX + sw} 105 L ${cX + sw + 1} 113 Q ${cX} 121 ${cX - sw - 1} 113 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2" stroke-linejoin="round" />
+          <path d="M ${cX - sw + 3} 109 Q ${cX} 116.5 ${cX + sw - 3} 109" fill="none" stroke="#fef08a" stroke-width="1.8" stroke-dasharray="4 3" stroke-linecap="round" opacity="0.9" />
         </g>
       `;
     }
@@ -3302,36 +3331,41 @@
     if (!glassesMarkup && glassesId !== 'none') glassesMarkup = extraGlassesMarkup(glassesId, leftEyeX, rightEyeX, gY);
 
     // Handheld & Special Accessories & Neckwear
+    const nY = g.neckY != null ? g.neckY : (g.eyeY + 17);
+    const neckShift = Math.round(nY - 122);
     if (accId === 'neck-star') {
       accessoryMarkup += `
         <!-- Star Necklace -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 86 122 Q 100 134 114 122" stroke="#ca8a04" stroke-width="1.8" fill="none" />
-          <polygon points="100,132 101.5,136 106,136 102.5,138.5 104,143 100,140 96,143 97.5,138.5 94,136 98.5,136" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
+        <g filter="url(#mf-shadow)" transform="translate(0, ${neckShift})">
+          <path d="M 86 122 Q 100 132 114 122" stroke="#ca8a04" stroke-width="1.8" fill="none" />
+          <polygon points="100,130 101.5,134 106,134 102.5,136.5 104,141 100,138 96,141 97.5,136.5 94,134 98.5,134" fill="#facc15" stroke="#ca8a04" stroke-width="0.8" />
         </g>
       `;
     } else if (accId === 'neck-medal') {
       accessoryMarkup += `
         <!-- Adventure Medal -->
-        <g filter="url(#mf-shadow)">
-          <polygon points="96,122 100,132 104,122" fill="#2563eb" />
-          <circle cx="100" cy="136" r="6" fill="#d97706" stroke="#78350f" stroke-width="1.5" />
-          <circle cx="100" cy="136" r="3" fill="#facc15" />
+        <g filter="url(#mf-shadow)" transform="translate(0, ${neckShift})">
+          <polygon points="96,122 100,131 104,122" fill="#2563eb" />
+          <circle cx="100" cy="135" r="6" fill="#d97706" stroke="#78350f" stroke-width="1.5" />
+          <circle cx="100" cy="135" r="3" fill="#facc15" />
         </g>
       `;
     } else if (accId === 'neck-pendant') {
       accessoryMarkup += `
         <!-- Magic Pendant -->
-        <g filter="url(#mf-shadow)">
-          <path d="M 88 122 Q 100 132 112 122" stroke="#94a3b8" stroke-width="1.8" fill="none" />
-          <polygon points="100,130 106,137 100,144 94,137" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" filter="url(#mf-glow)" />
+        <g filter="url(#mf-shadow)" transform="translate(0, ${neckShift})">
+          <path d="M 88 122 Q 100 131 112 122" stroke="#94a3b8" stroke-width="1.8" fill="none" />
+          <polygon points="100,129 105.5,135.5 100,142 94.5,135.5" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" filter="url(#mf-glow)" />
         </g>
       `;
     } else if (accId === 'neck-badge') {
       accessoryMarkup += `
         <!-- Academy Crest Badge -->
-        <g filter="url(#mf-shadow)">
-          <polygon points="95,124 105,124 105,132 100,136 95,132" fill="#eab308" stroke="#a16207" stroke-width="1.5" />
+        <g filter="url(#mf-shadow)" transform="translate(0, ${neckShift})">
+          <path d="M 92 122 L 100 130 L 108 122" stroke="#1d4ed8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M 93.5 128 L 106.5 128 L 106.5 135 C 106.5 139.5 100 142.5 100 142.5 C 100 142.5 93.5 139.5 93.5 135 Z" fill="#facc15" stroke="#a16207" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M 95.5 130 L 104.5 130 L 104.5 134.8 C 104.5 138 100 140.2 100 140.2 C 100 140.2 95.5 138 95.5 134.8 Z" fill="#1e3a8a" />
+          <polygon points="100,131.2 101,133.4 103.3,133.6 101.6,135.1 102.1,137.4 100,136.1 97.9,137.4 98.4,135.1 96.7,133.6 99,133.4" fill="#fde047" />
         </g>
       `;
     } else if (accId === 'acc-microphone') {
@@ -3452,6 +3486,10 @@
     if (!item) return '';
     const size = options.size || 56;
     if (item.id && String(item.id).indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const ct = window.MonsterCostumes.thumbnail(item, size); if (ct) return ct; }
+    if (item.category === 'pet' && !item.isNone && !String(item.id).endsWith('-none') && typeof window !== 'undefined' && window.MonsterPets && typeof window.MonsterPets.thumbnailHtml === 'function') {
+      const pt = window.MonsterPets.thumbnailHtml(item, size);
+      if (pt) return pt;
+    }
     const colorKey = options.colorKey || 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
     if (item.category === 'creature') {   // a creature card shows the whole creature (the "none" card shows the bunny monster)

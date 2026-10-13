@@ -7371,6 +7371,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/ates-1-smiling.webp',
           parentName: 'Parent of Ateş Özenci',
           parentContact: '+90 (555) 229-0001',
           parentEmail: 'parent229@example.com',
@@ -7531,6 +7532,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/fatih-1-smiling.webp',
           parentName: 'Parent of Fatih Yetkin Yılmaz',
           parentContact: '+90 (555) 209-0001',
           parentEmail: 'parent209@example.com',
@@ -8415,6 +8417,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/derin-1-smiling.webp',
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
@@ -8477,6 +8480,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/elif-beren-1-smiling.webp',
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
@@ -8701,6 +8705,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/oyku-1-smiling.webp',
           parentName: 'Parent of Öykü Çiğdem Akar',
           parentContact: '+90 (555) 322-0001',
           parentEmail: 'parent322@example.com',
@@ -10495,6 +10500,7 @@
                         backpack: 'none',
                         accessory: 'none',
                         aura: 'none',
+                        pet: 'none',
                         background: 'bg-meadow'
                       },
                       unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
@@ -13553,6 +13559,9 @@
 
     getMonsterItems(category = null, includeArchived = false) {
       if (!this.state.monsterItems) this.state.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+      if (typeof window !== 'undefined' && window.MonsterPets && typeof window.MonsterPets.install === 'function') {
+        window.MonsterPets.install(this);
+      }
       // Items that only have a picture for the illustrated monsters stay hidden while the drawn monsters are in use.
       const D = (typeof window !== 'undefined') ? window.MonsterDressUp : null;
       const hideArtOnly = (typeof window === 'undefined' || window.EAA_ILLUSTRATED_MONSTERS !== true) && D && typeof D.isArtOnly === 'function';
@@ -13567,6 +13576,9 @@
     }
 
     getMonsterItem(id) {
+      if (typeof window !== 'undefined' && window.MonsterPets && typeof window.MonsterPets.install === 'function') {
+        window.MonsterPets.install(this);
+      }
       return (this.state.monsterItems || []).find(item => item.id === id);
     }
 
@@ -13666,6 +13678,7 @@
               backpack: 'none',
               accessory: 'none',
               aura: 'none',
+              pet: 'none',
               background: 'bg-meadow'
             },
             unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
@@ -13706,6 +13719,7 @@
         prof.monsterName = prof.petName;
       }
       if (!prof.equipped) prof.equipped = {};
+      if (!prof.equipped.pet) prof.equipped.pet = 'none';
       return prof;
     }
 

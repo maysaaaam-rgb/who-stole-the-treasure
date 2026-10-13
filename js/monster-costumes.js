@@ -93,10 +93,12 @@
           '<path d="M76 ' + (t - 10) + ' Q100 ' + (t - 2) + ' 128 ' + (t - 8) + ' M72 ' + (t - 1) + ' Q100 ' + (t + 6) + ' 130 ' + (t) + '" fill="none" stroke="#dbeafe" stroke-width="4" opacity="0.85"/>' +
           '<rect x="64" y="' + (t) + '" width="72" height="11" rx="5.5" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>' +
           '<circle cx="146" cy="' + (t + 24) + '" r="8" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/></g>';
-      case 'cs-headband':
-        return '<g class="monster-hat"><path d="M62 ' + (t + 20) + ' Q100 ' + (t + 6) + ' 138 ' + (t + 20) + ' L138 ' + (t + 30) + ' Q100 ' + (t + 16) + ' 62 ' + (t + 30) + ' Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2"/>' +
-          '<path d="M64 ' + (t + 24) + ' Q100 ' + (t + 10) + ' 136 ' + (t + 24) + '" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.9"/>' +
-          '<path d="M138 ' + (t + 24) + ' L152 ' + (t + 18) + ' L148 ' + (t + 30) + ' Z M138 ' + (t + 26) + ' L150 ' + (t + 36) + ' L142 ' + (t + 34) + ' Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round"/></g>';
+      case 'cs-headband': {
+        var w1 = Math.round((g.cW || 40) * 0.85), w2 = Math.round((g.cW || 40) * 0.95);
+        return '<g class="monster-hat"><path d="M' + (100 - w1) + ' ' + (t + 16) + ' Q100 ' + (t + 4) + ' ' + (100 + w1) + ' ' + (t + 16) + ' L' + (100 + w2) + ' ' + (t + 26) + ' Q100 ' + (t + 14) + ' ' + (100 - w2) + ' ' + (t + 26) + ' Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2" stroke-linejoin="round"/>' +
+          '<path d="M' + (100 - w1 + 2) + ' ' + (t + 20) + ' Q100 ' + (t + 8) + ' ' + (100 + w1 - 2) + ' ' + (t + 20) + '" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.9"/>' +
+          '<path d="M' + (100 + w2) + ' ' + (t + 20) + ' L' + (100 + w2 + 14) + ' ' + (t + 14) + ' L' + (100 + w2 + 10) + ' ' + (t + 26) + ' Z M' + (100 + w2) + ' ' + (t + 22) + ' L' + (100 + w2 + 12) + ' ' + (t + 32) + ' L' + (100 + w2 + 4) + ' ' + (t + 30) + ' Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round"/></g>';
+      }
     }
     return '';
   }
@@ -137,10 +139,10 @@
           '<ellipse cx="2" cy="28" rx="4" ry="6" fill="#b45309" stroke="#78350f" stroke-width="1.6"/><ellipse cx="26" cy="28" rx="4" ry="6" fill="#b45309" stroke="#78350f" stroke-width="1.6"/>' +
           '<path d="M6 21 Q14 25 22 21 L20 24 Q14 27 8 24 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1"/></g>';
       case 'cs-medal':   // ribbon starts under the mouth (it used to start at eye level), medal rests on the belly
-        return '<g class="monster-acc"><path d="M86 125 L100 140 L114 125 L108 124 L100 133 L92 124 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round"/>' +
-          '<path d="M92 124 L100 133 L98 135 L87 125 Z" fill="#2563eb" opacity="0.85"/>' +
-          '<circle cx="100" cy="144" r="8.5" fill="#facc15" stroke="#a16207" stroke-width="2"/><circle cx="100" cy="144" r="5.6" fill="none" stroke="#fde68a" stroke-width="1.2"/>' +
-          '<polygon transform="translate(100 144) scale(0.85) translate(-100 -140)" points="100,134.5 101.8,138.4 106,138.8 102.8,141.6 103.8,145.6 100,143.4 96.2,145.6 97.2,141.6 94,138.8 98.2,138.4" fill="#f59e0b" stroke="#a16207" stroke-width="0.8"/></g>';
+        return '<g class="monster-acc" transform="translate(0, 4)"><path d="M86 125 L100 138 L114 125 L108 124 L100 132 L92 124 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round"/>' +
+          '<path d="M92 124 L100 132 L98 134 L87 125 Z" fill="#2563eb" opacity="0.85"/>' +
+          '<circle cx="100" cy="142" r="8" fill="#facc15" stroke="#a16207" stroke-width="2"/><circle cx="100" cy="142" r="5.2" fill="none" stroke="#fde68a" stroke-width="1.2"/>' +
+          '<polygon transform="translate(100 142) scale(0.8) translate(-100 -140)" points="100,134.5 101.8,138.4 106,138.8 102.8,141.6 103.8,145.6 100,143.4 96.2,145.6 97.2,141.6 94,138.8 98.2,138.4" fill="#f59e0b" stroke="#a16207" stroke-width="0.8"/></g>';
     }
     return '';
   }
