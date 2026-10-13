@@ -1,0 +1,45 @@
+# AUDIT PROGRESS LOG — UNIT 1 AUDIT
+Date: October 4, 2026
+Auditor: Antigravity (Principal Primary ESL Curriculum Specialist)
+Learner Target: Grade 3 & Grade 4 (CEFR A1 / A1+, L1: Turkish)
+Textbooks: Global Readings 2 (Grade 3), Global Readings 3 (Grade 4)
+
+## 1. FILES INSPECTED
+- js\school-store.js:
+  * Grade 3 Phonics & Unit 1 Lessons (lines 1240-1490): OK
+  * Grade 4 Literacy Review & Unit 1 Lessons (lines 1840-2058): OK
+  * Grade 3 & Grade 4 Unit Records (unit-gr2-1, unit-gr3-1): OK
+  * Quizzes: quiz-unit1-wonderland-brain, quiz-g3-u1-after-school-inventor, quiz-1 (lines 8865-9045): OK
+  * Progress Checks: DEFAULT_PROGRESS_CHECKS (lines 6172-6343): OK
+  * Homework & Resource Links (lines 2800-2970): OK
+  * Ready-to-Print Worksheets (lines 9590-9850): OK
+- js\progress-check.js: OK
+- quiz-briefing\index.html (lines 1340-1760): OK
+
+Grade 3 Content Folders:
+- clara-inventor\js\clara-data.js & index.html: OK
+- inventor-lab\js\inventor-data.js & index.html: OK
+- good-ideas-lab\index.html: OK (Detected Arabic script leak)
+- inventor-forge\js\inventor-data.js & index.html: OK
+- inventors-odyssey\index.html: OK (Redirect stub)
+- young-inventor\js\young-inventor-data.js & index.html: OK
+- monster-day\index.html & js\*: OK (Off-topic: Unit 2 body/emotions clinic)
+- phonics\index.html: OK
+
+Grade 4 Content Folders:
+- brain\js\brain-data.js & index.html: OK
+- brain-explorers\js\brain-data.js & index.html: OK
+- brain-hackers\js\brain-hackers-data.js & index.html: OK (Detected Arabic script leak & university neurology)
+- freeze-game\js\freeze-data.js & index.html: OK
+- alice-quest\js\alice-data.js & index.html: OK
+- alice-wonderland\index.html: OK (Redirect stub)
+- alice-cards-4a\js\data.js: OK (Contains student rosters)
+- alice-cards-4b\js\data.js: OK (Contains student rosters)
+- alice-party-home\party-data.js & index.html: OK
+
+## 2. OUTPUT FILES STATUS
+- revision-work\audit\unit1-audit.md: OK
+- revision-work\audit\unit1-fixes.json: OK (Validated via node JSON.parse: 19 clean items)
+- revision-work\audit\unit1-keep-merge-retire.md: OK
+- revision-work\audit\turkish-learner-notes.md: OK
+- revision-work\audit\PROGRESS.txt: OK

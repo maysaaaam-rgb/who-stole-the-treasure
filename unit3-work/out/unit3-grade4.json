@@ -1,0 +1,715 @@
+{
+  "book": "Global Readings 3",
+  "grade": 4,
+  "unitNumber": 3,
+  "unitTitle": "It Keeps Changing",
+  "pages": "40-55",
+  "bigIdea": "How do changes in nature, climate, and technology affect humans and animals, and how can we protect our planet?",
+  "readingSkill": "Reading a Poem (sensory imagery, rhythm, stanza structure) & Reading an Informational Science Text (Compare and contrast, Cause and effect)",
+  "contentArea": "Science, Ecology & Technology (Climate Change, Arctic Wildlife, Renewable Energy and Clean Cars)",
+  "selFocus": "Environmental empathy, respect for wildlife, responsible choices for the future",
+  "phonicsFocus": "Final consonant blend -ng (/ŋ/ sound: sing, long, reading, bang, spring, ring, wing, strong)",
+  "grammarOrLanguageFocus": "Comparative adjectives (cleaner, quieter, more expensive), cause and effect with 'because' and 'so', and contrast with 'instead of' / 'but'.",
+  "writingTask": "Writing a comparison paragraph between gasoline cars and electric cars, or an action plan to help protect Arctic animals",
+  "reading1": {
+    "title": "The Bear and I",
+    "type": "poem",
+    "pages": "42-45",
+    "summary": "An Arctic fisherman waits quietly on the ice by a fishing hole in the freezing cold. Suddenly, a giant polar bear appears walking across the frozen sea. Both the man and the bear are hungry hunters looking for fish to survive. However, unusually warm weather has made the sea ice dangerously thin and melting quickly. The ice begins to crack under the bear's heavy weight, trapping both hunters on a breaking ice floe. Instead of attacking each other as enemies, they share a moment of mutual understanding and fear. The fisherman steps back gently, giving the bear room. The bear snatches a fish from the hole and plunges into the water to swim away safely.",
+    "keySentences": [
+      "I sit by the hole in the ice, waiting for fish in the freezing wind.",
+      "The great white bear steps near; the ice is thin and begins to crack.",
+      "We are not enemies today; the warm sun has made a trap for us both."
+    ],
+    "characters": [
+      "The fisherman / speaker",
+      "The polar bear"
+    ],
+    "setting": "Arctic sea ice, fishing hole, freezing cold winter day with melting ice",
+    "sequenceOfEvents": [
+      "1. The fisherman waits patiently by a round hole in the ice to catch fish.",
+      "2. A large hungry polar bear walks across the ice toward the same spot.",
+      "3. The ice warms up and begins to crack because the climate is changing and ice is melting.",
+      "4. The cracking ice creates a dangerous trap for both the man and the bear.",
+      "5. The fisherman realizes they are both just trying to survive and gives the bear space.",
+      "6. The bear catches a fish and jumps into the open sea, swimming safely away."
+    ]
+  },
+  "reading2": {
+    "title": "Clean Cars",
+    "type": "nonfiction",
+    "pages": "48-53",
+    "summary": "Most traditional cars use gasoline, which comes from crude oil pumped from deep underground. When gasoline burns, cars produce loud noise and dirty exhaust smoke that pollutes the air and warms the earth. To stop pollution, scientists and car makers have created clean cars. Biofuel cars run on fuel made from plants like corn and sugar. Electric cars use large rechargeable batteries and electric motors; they do not burn gasoline and produce zero exhaust fumes. Solar cars have solar panels on their roofs that turn bright sunlight into clean power. While electric and solar cars can be expensive to make and buy today, they keep cities quiet, keep our air clean, and help protect animals and people from global warming.",
+    "keySentences": [
+      "Traditional cars burn gasoline, which makes dirty exhaust smoke and pollutes the air.",
+      "Electric cars do not use gasoline; they run on powerful batteries and make no smoke.",
+      "Clean cars help protect our planet and keep the air fresh for everyone."
+    ],
+    "characters": [],
+    "setting": "Modern cities, highways, automotive laboratories, sunny roads",
+    "sequenceOfEvents": [
+      "1. Traditional cars burn oil and gasoline, creating dirty exhaust smoke and engine noise.",
+      "2. Air pollution from millions of cars warms the planet and harms wildlife and human health.",
+      "3. Inventors develop biofuel cars that run on fuel made from plants instead of oil.",
+      "4. Engineers build electric cars powered by rechargeable batteries that produce zero emissions.",
+      "5. Designers build solar-powered cars that collect clean energy directly from the sun.",
+      "6. People and cities begin choosing clean vehicles to protect the environment for the future."
+    ]
+  },
+  "vocabulary": [
+    {
+      "word": "hole",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "An opening into or through something.",
+      "exampleSentence": "I cut a round hole in the ice to fish.",
+      "tr": "delik",
+      "emoji": "🕳️",
+      "pictureIdea": "A circular hole cut into thick blue-white sea ice"
+    },
+    {
+      "word": "twice",
+      "page": 42,
+      "partOfSpeech": "adverb",
+      "simpleDefinition": "Two times.",
+      "exampleSentence": "The bear looked at me twice before stepping closer.",
+      "tr": "iki kez, iki defa",
+      "emoji": "2️⃣",
+      "pictureIdea": "A clock or tally mark showing two times"
+    },
+    {
+      "word": "enemy",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A person or animal that fights against another; not a friend.",
+      "exampleSentence": "We are not enemies today; we both just want to survive.",
+      "tr": "düşman",
+      "emoji": "⚔️",
+      "pictureIdea": "Two wild animals facing each other before stepping back peacefully"
+    },
+    {
+      "word": "thin",
+      "page": 42,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Not thick; having a small distance between opposite sides.",
+      "exampleSentence": "The ice was too thin to hold heavy weight.",
+      "tr": "ince",
+      "emoji": "📏",
+      "pictureIdea": "A thin sheet of ice cracking under a heavy boot"
+    },
+    {
+      "word": "trap",
+      "page": 42,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A dangerous place or situation that you cannot easily escape from.",
+      "exampleSentence": "The melting ice made a dangerous trap for the bear and me.",
+      "tr": "tuzak; kapana kıstırmak",
+      "emoji": "🪤",
+      "pictureIdea": "An ice floe surrounded by water with no way to walk back to land"
+    },
+    {
+      "word": "melting",
+      "page": 42,
+      "partOfSpeech": "verb / adjective",
+      "simpleDefinition": "Changing from solid ice or snow into liquid water because of heat.",
+      "exampleSentence": "Warmer temperatures caused the sea ice to start melting.",
+      "tr": "eriyen, erime",
+      "emoji": "💧",
+      "pictureIdea": "An ice cube or iceberg turning into dripping water under warm sunshine"
+    },
+    {
+      "word": "gasoline",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A liquid fuel made from petroleum oil used to power cars and trucks.",
+      "exampleSentence": "Most traditional cars need gasoline to run.",
+      "tr": "benzin",
+      "emoji": "⛽",
+      "pictureIdea": "A gas pump nozzle filling a car fuel tank"
+    },
+    {
+      "word": "energy",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "The power to do work, produce heat, or make machines move.",
+      "exampleSentence": "Clean cars get their energy from electricity or sunlight.",
+      "tr": "enerji",
+      "emoji": "⚡",
+      "pictureIdea": "A lightning bolt icon powering a car battery"
+    },
+    {
+      "word": "oil",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A thick, dark liquid found deep underground, used to make fuels and plastics.",
+      "exampleSentence": "Gasoline comes from crude oil found under the ground.",
+      "tr": "petrol, yağ",
+      "emoji": "🛢️",
+      "pictureIdea": "A black oil drum and an oil pump jack"
+    },
+    {
+      "word": "noisy",
+      "page": 48,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Making a lot of loud, unpleasant sound.",
+      "exampleSentence": "Gasoline engines can be very noisy in city streets.",
+      "tr": "gürültülü",
+      "emoji": "📢",
+      "pictureIdea": "A car honking with loud sound waves coming from its engine"
+    },
+    {
+      "word": "electricity",
+      "page": 48,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A form of energy carried through cables or stored in batteries to power devices.",
+      "exampleSentence": "Electric cars use electricity stored in large batteries.",
+      "tr": "elektrik",
+      "emoji": "🔋",
+      "pictureIdea": "An electric car plugged into a charging station"
+    },
+    {
+      "word": "expensive",
+      "page": 48,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Costing a large amount of money; not cheap.",
+      "exampleSentence": "Electric cars are still expensive for many families to buy.",
+      "tr": "pahalı",
+      "emoji": "🏷️",
+      "pictureIdea": "A price tag with lots of dollar signs or high numbers"
+    }
+  ],
+  "extraWordsNeeded": [
+    {
+      "word": "polar bear",
+      "why": "Main character and subject of Reading 1",
+      "simpleDefinition": "A large white bear that lives on the Arctic sea ice.",
+      "tr": "kutup ayısı"
+    },
+    {
+      "word": "climate change",
+      "why": "Overarching theme of the unit across both readings",
+      "simpleDefinition": "The warming of Earth's air and oceans over time.",
+      "tr": "iklim değişikliği"
+    },
+    {
+      "word": "pollution",
+      "why": "Core environmental problem addressed in Reading 2 Clean Cars",
+      "simpleDefinition": "Harmful smoke, chemicals, or trash that makes air, water, or soil dirty.",
+      "tr": "kirlilik, çevre kirliliği"
+    },
+    {
+      "word": "solar panel",
+      "why": "Key clean technology in Reading 2",
+      "simpleDefinition": "A dark board that absorbs sunlight to make electricity.",
+      "tr": "güneş paneli"
+    },
+    {
+      "word": "battery",
+      "why": "Power storage source for electric cars in Reading 2",
+      "simpleDefinition": "A container that stores electrical energy.",
+      "tr": "pil, batarya, akü"
+    },
+    {
+      "word": "exhaust",
+      "why": "Describes dirty car fumes in Reading 2",
+      "simpleDefinition": "The dirty gas and smoke sent out by a running engine.",
+      "tr": "egzoz gazı / dumanı"
+    },
+    {
+      "word": "crack",
+      "why": "Dramatic climax event in the poem 'The Bear and I'",
+      "simpleDefinition": "To break with a sharp sound without completely separating.",
+      "tr": "çatlamak; çatlak"
+    },
+    {
+      "word": "survive",
+      "why": "Explains why the bear and man need fish and why climate change is dangerous",
+      "simpleDefinition": "To continue living through danger, cold, or hardship.",
+      "tr": "hayatta kalmak"
+    }
+  ],
+  "pageByPage": [
+    {
+      "page": 40,
+      "section": "Unit Opener",
+      "whatIsOnIt": "Unit title 'It Keeps Changing' with large photo of a river colored bright pink from non-toxic scientist dye tracking water melt currents.",
+      "activityType": "Visual Wonder & Brainstorming",
+      "instructionsAsWritten": "Look at the photo. Why is the water pink? How is our planet changing?",
+      "items": [
+        "1. What color is the river water?",
+        "2. Why did scientists put pink dye in the river?",
+        "3. What happens when ice and snow melt fast?"
+      ],
+      "answers": [
+        "Bright pink",
+        "To track water currents and see how fast melted snow and ice flow to the ocean",
+        "Water levels rise and habitats change"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 41,
+      "section": "Before You Read / Big Idea",
+      "whatIsOnIt": "Discussion questions and diagrams about temperature rise, melting Arctic ice, and animal habitats.",
+      "activityType": "Concept Activation & Prediction",
+      "instructionsAsWritten": "Think about nature and weather. How do changes affect people and animals?",
+      "items": [
+        "1. How does warm weather change ice?",
+        "2. Which animals live in cold, frozen places?",
+        "3. Big Idea: How can we help protect our changing world?"
+      ],
+      "answers": [
+        "Warm weather melts ice into liquid water",
+        "Polar bears, penguins, seals, Arctic hares, snowy owls",
+        "By saving energy, walking or cycling, and using clean cars"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 42,
+      "section": "Words in Context & Before You Read",
+      "whatIsOnIt": "Pre-reading vocabulary box with 6 words: hole, twice, enemy, thin, trap, melting, paired with Arctic photo cards.",
+      "activityType": "Vocabulary Pre-teaching & Definition Matching",
+      "instructionsAsWritten": "Read the words. Look at the pictures. Match each word with its meaning.",
+      "items": [
+        "1. hole",
+        "2. twice",
+        "3. enemy",
+        "4. thin",
+        "5. trap",
+        "6. melting"
+      ],
+      "answers": [
+        "1. an opening through something",
+        "2. two times",
+        "3. not a friend; a rival or fighter",
+        "4. not thick; easily cracked",
+        "5. a dangerous place you cannot escape",
+        "6. changing from ice to water"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 43,
+      "section": "Reading 1: The Bear and I (Stanzas 1-2)",
+      "whatIsOnIt": "Poem opening: An Arctic fisherman sitting quietly in the cold wind, watching a fishing hole in the ice.",
+      "activityType": "Choral Reading & Imagery Exploration",
+      "instructionsAsWritten": "Listen and read along. Where is the fisherman? What is he doing?",
+      "items": [
+        "Stanza 1: Sitting in the freezing Arctic wind",
+        "Stanza 2: Watching the hole in the ice for fish"
+      ],
+      "answers": [
+        "On the Arctic sea ice, fishing through an ice hole"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 44,
+      "section": "Reading 1: The Bear and I (Stanzas 3-4)",
+      "whatIsOnIt": "Poem climax: A giant white bear arrives; the sun has warmed the ice; the ice becomes thin and cracks loudly.",
+      "activityType": "Expressive Reading & Tension Analysis",
+      "instructionsAsWritten": "Read stanzas 3 and 4. What danger do both the fisherman and the bear face?",
+      "items": [
+        "Stanza 3: Heavy footsteps of the polar bear approaching",
+        "Stanza 4: The loud crack of thin melting ice trapping them both"
+      ],
+      "answers": [
+        "The ice is thin and cracking, creating a dangerous trap where both could fall into freezing water"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 45,
+      "section": "Reading 1: The Bear and I (Stanzas 5-6)",
+      "whatIsOnIt": "Poem resolution: Understanding each other; fisherman backs away gently; bear catches a fish and dives into open water.",
+      "activityType": "Reflective Reading & Moral Discussion",
+      "instructionsAsWritten": "Why does the fisherman say 'We are not enemies today'? What does the bear do?",
+      "items": [
+        "Stanza 5: Recognizing shared danger and stepping back",
+        "Stanza 6: The bear catching a fish and swimming safely away"
+      ],
+      "answers": [
+        "They both just want to survive the melting ice; the bear grabs a fish and swims away"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 46,
+      "section": "After You Read: Poetry Comprehension & Compare",
+      "whatIsOnIt": "Comprehension questions on the poem and a Venn diagram comparing the fisherman and the polar bear.",
+      "activityType": "Venn Diagram & Analysis",
+      "instructionsAsWritten": "Complete the Venn diagram. Write what is true for the fisherman, the bear, or both.",
+      "items": [
+        "Fisherman only: human, uses tools, wears clothes",
+        "Polar bear only: wild animal, thick white fur, sharp claws",
+        "Both: hunters, need fish to eat, feel cold, trapped by thin ice"
+      ],
+      "answers": [
+        "Fisherman / Bear / Both: hunters, hungry, trapped by thin ice"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 47,
+      "section": "Word Work & Phonics (Final -ng)",
+      "whatIsOnIt": "Phonics box focusing on final consonant blend -ng (sing, long, reading, bang, spring) + intro to car comparison.",
+      "activityType": "Phonics Chanting & Sound Identification",
+      "instructionsAsWritten": "Listen and repeat the words with -ng. Circle the -ng words in the sentences.",
+      "items": [
+        "1. The fisherman was singing a song.",
+        "2. The spring season brings melting ice.",
+        "3. A loud bang sounded as the ice cracked.",
+        "Intro: Look at the red car and the white car. Which car is cleaner?"
+      ],
+      "answers": [
+        "1. singing, song",
+        "2. spring, melting",
+        "3. bang",
+        "The white electric car"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 48,
+      "section": "Words in Context (Reading 2)",
+      "whatIsOnIt": "Pre-reading vocabulary box with 6 words: gasoline, energy, oil, noisy, electricity, expensive, paired with photos of cars and fuel.",
+      "activityType": "Vocabulary Matching & Concept Check",
+      "instructionsAsWritten": "Read the sentences. Choose the best word for each sentence.",
+      "items": [
+        "1. Cars burn ___ to make the engine move.",
+        "2. Crude ___ is pumped from deep under the ground.",
+        "3. The engine was very loud and ___.",
+        "4. Solar panels make clean ___ from sunlight.",
+        "5. Electric cars use ___ stored in batteries.",
+        "6. A new electric car can be very ___ to buy."
+      ],
+      "answers": [
+        "1. gasoline",
+        "2. oil",
+        "3. noisy",
+        "4. energy",
+        "5. electricity",
+        "6. expensive"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 49,
+      "section": "Reading 2: Clean Cars (Part 1)",
+      "whatIsOnIt": "Informational text about traditional cars burning gasoline from crude oil, generating noise, exhaust smoke, and air pollution.",
+      "activityType": "Informational Reading & Identifying Problems",
+      "instructionsAsWritten": "Read about traditional cars. What two problems do gasoline cars cause?",
+      "items": [
+        "Paragraph 1: Where gasoline comes from (crude oil underground)",
+        "Paragraph 2: Smoke, air pollution, and noise in cities"
+      ],
+      "answers": [
+        "They make dirty exhaust smoke that pollutes the air and they are very noisy"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 50,
+      "section": "Reading 2: Clean Cars (Part 2)",
+      "whatIsOnIt": "Biofuel cars: running on fuel made from plants like corn and sugar instead of petroleum oil.",
+      "activityType": "Guided Reading & Process Mapping",
+      "instructionsAsWritten": "What are biofuel cars? What plants can be used to make fuel?",
+      "items": [
+        "Paragraph 3: Growing plants to make biofuel",
+        "Corn and sugarcane being turned into fuel"
+      ],
+      "answers": [
+        "Biofuel cars run on plant-based fuel like corn or sugarcane instead of petroleum oil"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 51,
+      "section": "Reading 2: Clean Cars (Part 3)",
+      "whatIsOnIt": "Electric cars: powered by large rechargeable batteries and quiet electric motors; producing zero exhaust emissions.",
+      "activityType": "Close Reading & Technology Comparison",
+      "instructionsAsWritten": "How do electric cars work? Why are they better for the air?",
+      "items": [
+        "Paragraph 4: Rechargeable batteries and electric motors",
+        "Benefit: No exhaust smoke and very quiet operation"
+      ],
+      "answers": [
+        "They use electricity stored in batteries; they produce zero smoke and keep air clean"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 52,
+      "section": "Reading 2: Clean Cars (Part 4)",
+      "whatIsOnIt": "Solar cars and experimental air cars: using solar panels on roofs to collect sunlight, and compressed air to turn engine pistons.",
+      "activityType": "Exploratory Reading & Innovation Highlights",
+      "instructionsAsWritten": "Where do solar cars get their energy? Can air move a car?",
+      "items": [
+        "Paragraph 5: Solar panels on car roofs",
+        "Paragraph 6: Compressed air cars"
+      ],
+      "answers": [
+        "From the sun; yes, compressed air can push engine pistons"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 53,
+      "section": "Reading 2: Clean Cars (Part 5)",
+      "whatIsOnIt": "Conclusion: Clean cars cost more now, but they reduce global warming, clean city air, and help protect animals like polar bears.",
+      "activityType": "Synthesizing Ideas & Future Impact",
+      "instructionsAsWritten": "Read the conclusion. Why do we need clean cars in the future?",
+      "items": [
+        "Paragraph 7: Cost vs long-term benefit",
+        "Connection: Cleaner air stops ice from melting and protects polar bears"
+      ],
+      "answers": [
+        "They keep the air clean and stop the earth from getting too warm, protecting animals and people"
+      ],
+      "needsAudio": true
+    },
+    {
+      "page": 54,
+      "section": "After You Read: Car Features Matrix",
+      "whatIsOnIt": "Comparison table of car types: Gasoline, Biofuel, Electric, Solar (Fuel type, Noise, Smoke, Cost).",
+      "activityType": "Data Table Analysis & Classification",
+      "instructionsAsWritten": "Complete the table with words from the box: clean, noisy, quiet, expensive, gasoline, sun, electricity.",
+      "items": [
+        "Gasoline car: uses gasoline, noisy, produces smoke, cheaper",
+        "Electric car: uses electricity, quiet, zero smoke, expensive",
+        "Solar car: uses sun, quiet, zero smoke, very expensive"
+      ],
+      "answers": [
+        "Gasoline: oil/gas, noisy, smoke / Electric: battery/electricity, quiet, clean / Solar: sun, quiet, clean"
+      ],
+      "needsAudio": false
+    },
+    {
+      "page": 55,
+      "section": "Think Together & Action Plan",
+      "whatIsOnIt": "Graphic organizer connecting human climate choices to polar bear survival, plus group speaking discussion.",
+      "activityType": "Cause-and-Effect Organizer & Group Speaking",
+      "instructionsAsWritten": "Work in pairs. How can clean cars help polar bears? Write two ideas.",
+      "items": [
+        "Idea 1: Less smoke means the air does not get too warm.",
+        "Idea 2: Colder temperatures mean sea ice stays thick so polar bears can hunt."
+      ],
+      "answers": [
+        "Clean cars make less pollution -> Earth stays cooler -> Arctic ice does not melt as fast -> Polar bears survive"
+      ],
+      "needsAudio": false
+    }
+  ],
+  "comprehensionQuestions": [
+    {
+      "page": 43,
+      "question": "Where is the fisherman sitting in the poem?",
+      "answer": "He is sitting on the ice by a fishing hole in the Arctic.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 44,
+      "question": "Why does the ice begin to crack?",
+      "answer": "Because the ice is thin and melting, and the bear is very heavy.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 44,
+      "question": "What makes the situation a 'trap' for both the man and the bear?",
+      "answer": "The cracked ice floe is surrounded by freezing water so neither can easily escape.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 45,
+      "question": "Why does the fisherman say 'We are not enemies today'?",
+      "answer": "Because both are hungry hunters trying to survive the dangerous melting ice.",
+      "skill": "opinion",
+      "fromBook": true
+    },
+    {
+      "page": 45,
+      "question": "What does the bear do before swimming away?",
+      "answer": "It catches a fish from the hole and dives into the water.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 49,
+      "question": "Where does gasoline come from?",
+      "answer": "It comes from crude oil found deep underground.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 49,
+      "question": "What two problems do traditional cars cause?",
+      "answer": "They make loud engine noise and dirty exhaust smoke that pollutes the air.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 50,
+      "question": "What can people make biofuel from?",
+      "answer": "They can make it from plants like corn and sugar.",
+      "skill": "recall",
+      "fromBook": true
+    },
+    {
+      "page": 51,
+      "question": "Why are electric cars cleaner than gasoline cars?",
+      "answer": "They use batteries and electric motors, producing zero dirty exhaust smoke.",
+      "skill": "inference",
+      "fromBook": true
+    },
+    {
+      "page": 53,
+      "question": "How do clean cars help polar bears?",
+      "answer": "They produce less pollution, helping keep the earth cooler so Arctic ice does not melt.",
+      "skill": "inference",
+      "fromBook": true
+    }
+  ],
+  "phonics": {
+    "focus": "Final consonant blend -ng (/ŋ/ sound)",
+    "words": [
+      "sing",
+      "long",
+      "reading",
+      "bang",
+      "spring",
+      "ring",
+      "wing",
+      "strong",
+      "king",
+      "song"
+    ],
+    "minimalPairs": [
+      [
+        "thin",
+        "thing"
+      ],
+      [
+        "sin",
+        "sing"
+      ],
+      [
+        "win",
+        "wing"
+      ],
+      [
+        "ran",
+        "rang"
+      ],
+      [
+        "ban",
+        "bang"
+      ]
+    ]
+  },
+  "grammarPoints": [
+    {
+      "pattern": "Comparative adjectives with short and long words (-er vs more)",
+      "bookExamples": [
+        "Electric cars are cleaner and quieter than gasoline cars.",
+        "Solar cars are more expensive than traditional cars.",
+        "The ice is thinner today."
+      ],
+      "simpleRule": "Add -er to short words (clean -> cleaner), and use 'more' before longer words (more expensive)."
+    },
+    {
+      "pattern": "Cause and effect with 'because' and 'so'",
+      "bookExamples": [
+        "The ice cracked because it was thin and warm.",
+        "Electric cars do not burn gasoline, so they make no smoke."
+      ],
+      "simpleRule": "Use 'because' to tell why something happened, and 'so' to tell the result."
+    },
+    {
+      "pattern": "Contrasting ideas with 'instead of' and 'but'",
+      "bookExamples": [
+        "Biofuel cars use plants instead of oil.",
+        "Clean cars are expensive, but they protect our planet."
+      ],
+      "simpleRule": "Use 'instead of' when choosing one thing over another, and 'but' to connect two different ideas."
+    }
+  ],
+  "speakingSentences": [
+    "The ice is thin.",
+    "The water is melting.",
+    "Polar bears need ice.",
+    "This car runs on electricity.",
+    "Electric cars are very quiet.",
+    "Gasoline makes dirty exhaust smoke.",
+    "Solar cars use light from the sun.",
+    "The bear and I are not enemies.",
+    "Clean cars help protect our planet.",
+    "The ice cracked because the weather was warm."
+  ],
+  "sentenceFrames": [
+    "The ___ is melting because ___.",
+    "Electric cars are cleaner than ___.",
+    "We can protect animals by ___.",
+    "Cars can use ___ instead of gasoline."
+  ],
+  "cultureOrContentFacts": [
+    "Polar bears rely on sea ice to hunt seals; when the ice melts too early in spring, they go hungry.",
+    "Scientists add non-toxic bright pink dye to glacial rivers to trace how fast melted ice travels to the sea.",
+    "Electric cars are so quiet that regulations in many countries require them to play an artificial sound at low speeds for pedestrian safety.",
+    "Solar cars have raced across 3,000 kilometers of the Australian desert using only energy from the sun."
+  ],
+  "pictureNotes": [
+    {
+      "page": 40,
+      "describe": "A researcher pouring bright pink eco-friendly dye into a rushing river to measure meltwater velocity."
+    },
+    {
+      "page": 41,
+      "describe": "Photos of melting glaciers and polar bears on floating ice sheets, visualizing Arctic climate change."
+    },
+    {
+      "page": 43,
+      "describe": "An Arctic fisherman dressed in a heavy fur parka kneeling near a circular hole in the ice."
+    },
+    {
+      "page": 44,
+      "describe": "A huge white polar bear standing near the fisherman as dark cracks spread through the melting ice."
+    },
+    {
+      "page": 45,
+      "describe": "The polar bear swimming through icy blue Arctic waters with a fish in its jaws."
+    },
+    {
+      "page": 49,
+      "describe": "Heavy city traffic with dark exhaust smoke billowing from car tailpipes."
+    },
+    {
+      "page": 51,
+      "describe": "A sleek electric car connected by a green cable to an outdoor electric charging station."
+    },
+    {
+      "page": 53,
+      "describe": "A futuristic solar car with dark blue solar cells covering its flat roof driving along a sunny road."
+    }
+  ],
+  "difficultyFlags": [
+    {
+      "item": "The poetic expression 'We are not enemies today'",
+      "problem": "A1/A1+ Turkish learners struggle with abstract poetic metaphors of truce.",
+      "simplerAlternative": "Explain as: 'The man and the bear were both scared of falling into the icy water, so they did not fight.'"
+    },
+    {
+      "item": "The scientific term 'biofuel'",
+      "problem": "Children aged 9-10 find the Greek root 'bio-' and chemical fuel synthesis confusing.",
+      "simplerAlternative": "Call it 'plant fuel' made from corn, sugar, or vegetable plants."
+    },
+    {
+      "item": "Distinguishing 'quieter' vs 'more expensive'",
+      "problem": "Primary ESL learners frequently overgeneralize to 'more quiet' or 'expensiver'.",
+      "simplerAlternative": "Use a simple visual syllable rule: 1 syllable = add -er; 3 syllables = use 'more'."
+    }
+  ]
+}

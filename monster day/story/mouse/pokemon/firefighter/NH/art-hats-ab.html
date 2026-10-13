@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Worn hats A vs B (offline)</title>
+<style>body{margin:0;background:#0b1020;color:#fff;font:600 11px system-ui;padding:6px}
+.row{display:flex;gap:4px;margin-bottom:6px;align-items:center}.lab{width:70px;flex:none}
+.cell{background:#eef;border-radius:8px;width:150px;flex:none;position:relative}
+.tag{position:absolute;left:4px;top:2px;color:#223;font-size:10px;z-index:99}</style></head><body>
+<div id="g"></div>
+<script src="js/monster-renderer.js"></script><script src="js/monster-anchors.js"></script><script src="js/monster-dressup.js"></script>
+<script>
+var q=new URLSearchParams(location.search);
+var hats=(q.get('hats')||'hat-beanie,hat-chef,hat-santa,hat-sailor,hat-propeller,hat-astro,hat-party,hat-pirate,hat-scholar').split(',');
+var stage=q.get('stage')||'growing';
+var file={'hat-beanie':'hat_beanie','hat-chef':'hat_chef','hat-santa':'hat_santa','hat-sailor':'hat_sailor','hat-propeller':'hat_propeller','hat-astro':'hat_astronaut_cap','hat-party':'hat_party','hat-pirate':'hat_pirate','hat-scholar':'hat_scholar'};
+var colors=['blue','purple','gold','green','orange'];
+function cell(h,v,c){window.MONSTER_ITEM_VARIANT=v?(function(){var o={};o[file[h]]=v;return o})():{};
+ return '<div class="cell"><span class="tag">'+(v||'old')+'</span>'+MonsterDressUp.render({color:c,stage:stage,equipped:{hat:h},size:150,animated:false})+'</div>';}
+document.getElementById('g').innerHTML=hats.map(function(h){
+ return ['','_a','_b'].map(function(v){return '<div class="row"><div class="lab">'+h+'<br>'+(v||'old')+'</div>'+colors.map(function(c){return cell(h,v,c)}).join('')+'</div>'}).join('');}).join('');
+window.MONSTER_ITEM_VARIANT={};
+</script></body></html>

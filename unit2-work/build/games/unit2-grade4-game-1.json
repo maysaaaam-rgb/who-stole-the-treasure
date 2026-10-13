@@ -1,0 +1,673 @@
+{
+  "gameName": "Two Forests: Biome Explorer",
+  "grade": 4,
+  "pitch": "Trek through deciduous and coniferous biomes, matching animal adaptations with 'so they can' and 'instead of'.",
+  "targetFormula": "Animals adapt so they can survive. They have [A] instead of [B].",
+  "topic": "Two Different Forests nonfiction, deciduous vs coniferous trees, 4 seasons, leaf loss, needles, cones, hibernation, temperature",
+  "arc": {
+    "discovery": "Phase 1: Biome Satellite Scan tracks temperatures and seasonal foliage across deciduous and coniferous biomes.",
+    "workbench": "Phase 2: Ranger Field Station tests pupil teams on animal adaptations, heading identification, and contrast grammar.",
+    "karaoke": "Phase 3: The Forest Ranger Teleprompter challenges teams to broadcast a 3-sentence wildlife adaptation briefing."
+  },
+  "mechanics": "Smartboard biome expedition. Teams toggle between green deciduous woods and snowy coniferous taiga. Correct choices advance the rover. Soft-fail offers an ecological clue without deducting team points.",
+  "feedback": {
+    "correct": [
+      "Field observation verified! +5 XP! 🌲",
+      "Snowshoe hare spotted! Camouflage active! 🐇",
+      "Ranger compass aligned! 🧭",
+      "Great ecological discovery, Team! 🦌",
+      "Biome Master Rank unlocked! 🏆"
+    ],
+    "softFail": [
+      "Check the temperature! Is it mild or below minus 50? ❄️",
+      "Think: do these trees have broad leaves or needles? 🍃",
+      "Remember: 'instead of' replaces the second item! 🔄",
+      "'So they can' explains the reason or purpose! 🎯",
+      "Reread the section heading for the clue! 📖"
+    ],
+    "levelUp": "Forest Ranger Station upgraded to Senior Biome Warden! 🌲👑"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Ranger teams tap large branch cards, sort animals into biome zones, and drag sentence connecting tiles.",
+    "classParticipation": "Desks show 'D' (Deciduous) or 'C' (Coniferous) with arm signals before the board player confirms.",
+    "version15min": "10 rounds covering forest characteristics and adaptation matching.",
+    "version30min": "Full 30-round championship with heading navigation, temperature charts, and teleprompter ranger briefings."
+  },
+  "words": [
+    {
+      "word": "deciduous",
+      "emoji": "🍂🌳",
+      "turkish": "yaprak döken",
+      "definition": "Trees that lose their broad leaves every autumn.",
+      "exampleSentence": "Deciduous trees change color in autumn."
+    },
+    {
+      "word": "coniferous",
+      "emoji": "🌲❄️",
+      "turkish": "iğne yapraklı",
+      "definition": "Trees with sharp green needles and cones that stay green all year.",
+      "exampleSentence": "Coniferous forests grow in cold places."
+    },
+    {
+      "word": "hibernate",
+      "emoji": "🐻💤",
+      "turkish": "kış uykusuna yatmak",
+      "definition": "To sleep deeply through the cold winter to save energy.",
+      "exampleSentence": "Bears hibernate in winter dens."
+    },
+    {
+      "word": "survive",
+      "emoji": "🛡️",
+      "turkish": "hayatta kalmak",
+      "definition": "To continue to live through harsh or dangerous conditions.",
+      "exampleSentence": "Animals adapt so they can survive."
+    },
+    {
+      "word": "needle",
+      "emoji": "🪡🌲",
+      "turkish": "iğne yaprak",
+      "definition": "A thin, sharp, stiff leaf of an evergreen tree.",
+      "exampleSentence": "Pine trees have needles instead of leaves."
+    },
+    {
+      "word": "cone",
+      "emoji": "🪵",
+      "turkish": "kozalak",
+      "definition": "The hard, dry seed case of a pine or fir tree.",
+      "exampleSentence": "Coniferous trees produce cones."
+    },
+    {
+      "word": "biome",
+      "emoji": "🌍",
+      "turkish": "biyom (büyük yaşam alanı)",
+      "definition": "A large community of plants and animals in a specific climate.",
+      "exampleSentence": "The coniferous forest is a cold biome."
+    },
+    {
+      "word": "evergreen",
+      "emoji": "🌲🟢",
+      "turkish": "her dem yeşil",
+      "definition": "Having green leaves or needles throughout the entire year.",
+      "exampleSentence": "Fir trees are evergreen."
+    }
+  ],
+  "rounds": [
+    {
+      "type": "choose",
+      "prompt": "How many seasons do deciduous forests experience?",
+      "options": [
+        "Four distinct seasons",
+        "Only one hot season",
+        "Only two rainy seasons",
+        "Zero seasons"
+      ],
+      "answer": "Four distinct seasons",
+      "hintEnglish": "Spring, summer, autumn, and winter.",
+      "hintTurkish": "Dört belirgin mevsim yaşanır.",
+      "audioText": "How many seasons do deciduous forests experience?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "What happens to deciduous leaves in autumn?",
+      "options": [
+        "They change color and drop off",
+        "They turn into pinecones",
+        "They grow sharp needles",
+        "They turn into ice"
+      ],
+      "answer": "They change color and drop off",
+      "hintEnglish": "Leaves turn red, yellow, and fall.",
+      "hintTurkish": "Renk değiştirir ve sonbaharda dökülürler.",
+      "audioText": "What happens to deciduous leaves in autumn?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: CONIFEROUS",
+      "options": [
+        "Trees with needles and cones",
+        "Trees with broad flat leaves",
+        "Trees that grow underwater",
+        "Plants in desert sand"
+      ],
+      "answer": "Trees with needles and cones",
+      "hintEnglish": "Pines and firs.",
+      "hintTurkish": "İğne yapraklı ve kozalaklı ağaçlar.",
+      "audioText": "What are coniferous trees?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Coniferous trees have needles _____ of broad leaves.",
+      "options": [
+        "instead",
+        "because",
+        "so",
+        "why"
+      ],
+      "answer": "instead",
+      "hintEnglish": "Use 'instead of' to show replacement.",
+      "hintTurkish": "'Instead of' -in yerine demektir.",
+      "audioText": "Coniferous trees have needles instead of broad leaves.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Animals grow thick fur _____ they can stay warm in the winter.",
+      "options": [
+        "so",
+        "because",
+        "instead",
+        "or"
+      ],
+      "answer": "so",
+      "hintEnglish": "Use 'so they can' for purpose.",
+      "hintTurkish": "'So they can' -ebilmek için amaç bildirir.",
+      "audioText": "Animals grow thick fur so they can stay warm in the winter.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "How cold can coniferous forests get in winter?",
+      "options": [
+        "Below -50 degrees Celsius",
+        "Always 20 degrees Celsius",
+        "Never below freezing",
+        "Hot like a desert"
+      ],
+      "answer": "Below -50 degrees Celsius",
+      "hintEnglish": "Extreme freezing temperatures.",
+      "hintTurkish": "Eksi 50 derecenin altına inebilir.",
+      "audioText": "How cold can coniferous forests get in winter?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: HIBERNATE",
+      "options": [
+        "Sleep deeply through the winter",
+        "Fly south to the beach",
+        "Hunt all night long",
+        "Grow green needles"
+      ],
+      "answer": "Sleep deeply through the winter",
+      "hintEnglish": "Bears and chipmunks do this.",
+      "hintTurkish": "Kış boyunca derin uykuya yatmak.",
+      "audioText": "What does hibernate mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why does the snowshoe hare turn white in winter?",
+      "options": [
+        "So it can hide in the white snow",
+        "So it can fly high",
+        "So it can swim faster",
+        "Because it is scared"
+      ],
+      "answer": "So it can hide in the white snow",
+      "hintEnglish": "Camouflage in the snow.",
+      "hintTurkish": "Karda kamufle olup saklanabilmek için.",
+      "audioText": "Why does the snowshoe hare turn white in winter?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Pine trees have cones instead _____ flowers.",
+      "options": [
+        "of",
+        "for",
+        "to",
+        "at"
+      ],
+      "answer": "of",
+      "hintEnglish": "'instead' always pairs with 'of'.",
+      "hintTurkish": "'Instead' her zaman 'of' ile kullanılır.",
+      "audioText": "Pine trees have cones instead of flowers.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What reading skill uses text titles above paragraphs to find facts?",
+      "options": [
+        "Understanding Headings",
+        "Rhyming sounds",
+        "Checking page numbers",
+        "Counting sentences"
+      ],
+      "answer": "Understanding Headings",
+      "hintEnglish": "Headings tell what each section is about.",
+      "hintTurkish": "Bölüm başlıklarını anlama becerisi.",
+      "audioText": "What reading skill uses text titles above paragraphs to find facts?",
+      "skill": "reading"
+    },
+    {
+      "type": "sort",
+      "prompt": "Sort: Where do BEARS hibernate in winter?",
+      "options": [
+        "In dens under rocks or trees",
+        "On top of tall telephone poles",
+        "In ocean coral reefs",
+        "Inside airplanes"
+      ],
+      "answer": "In dens under rocks or trees",
+      "hintEnglish": "Sheltered underground dens.",
+      "hintTurkish": "Kaya veya ağaç altındaki inlerinde.",
+      "audioText": "Where do bears hibernate in winter?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Deer have brown coats _____ they can hide among autumn trees.",
+      "options": [
+        "so",
+        "instead",
+        "why",
+        "but"
+      ],
+      "answer": "so",
+      "hintEnglish": "So they can = purpose.",
+      "hintTurkish": "'So' bağlacı: saklanabilsinler diye.",
+      "audioText": "Deer have brown coats so they can hide among autumn trees.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What do coniferous trees use to protect their seeds?",
+      "options": [
+        "Hard woody cones",
+        "Soft juicy berries",
+        "Paper boxes",
+        "Glass jars"
+      ],
+      "answer": "Hard woody cones",
+      "hintEnglish": "Cones protect the seeds.",
+      "hintTurkish": "Sert odunsu kozalaklar.",
+      "audioText": "What do coniferous trees use to protect their seeds?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: SURVIVE",
+      "options": [
+        "To stay alive in tough conditions",
+        "To lose a board game",
+        "To sleep late on Sunday",
+        "To cook soup"
+      ],
+      "answer": "To stay alive in tough conditions",
+      "hintEnglish": "Continue living.",
+      "hintTurkish": "Zorlu koşullarda hayatta kalmak.",
+      "audioText": "What does survive mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Animals adapt so they can survive.'",
+      "options": [
+        "Animals adapt so they can survive.",
+        "Animals sleep so they can survive.",
+        "Animals run so they can survive.",
+        "Animals eat so they can survive."
+      ],
+      "answer": "Animals adapt so they can survive.",
+      "hintEnglish": "Listen for 'adapt'.",
+      "hintTurkish": "Hayvanlar hayatta kalabilmek için uyum sağlarlar.",
+      "audioText": "Animals adapt so they can survive.",
+      "skill": "listening"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Coniferous trees keep their needles all year, so they are _____.",
+      "options": [
+        "evergreen",
+        "deciduous",
+        "colorful",
+        "naked"
+      ],
+      "answer": "evergreen",
+      "hintEnglish": "Always green.",
+      "hintTurkish": "Her mevsim yeşil: evergreen.",
+      "audioText": "They are evergreen.",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [They] [have] [needles] [instead] [of] [leaves.]",
+      "options": [
+        "They have needles instead of leaves.",
+        "Instead of leaves needles they have.",
+        "They needles have of instead leaves.",
+        "Leaves instead of they have needles."
+      ],
+      "answer": "They have needles instead of leaves.",
+      "hintEnglish": "Subject + verb + noun + instead of + noun.",
+      "hintTurkish": "They have needles instead of leaves.",
+      "audioText": "They have needles instead of leaves.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Under which heading would you find information about winter sleep?",
+      "options": [
+        "Surviving the Cold Winter",
+        "Summer Flowers and Fruit",
+        "How to Build a Boat",
+        "City Parks and Roads"
+      ],
+      "answer": "Surviving the Cold Winter",
+      "hintEnglish": "Look for heading related to winter survival.",
+      "hintTurkish": "Kış uykusu 'Surviving the Cold Winter' başlığı altında bulunur.",
+      "audioText": "Under which heading would you find information about winter sleep?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Birds migrate south in winter _____ they can find food.",
+      "options": [
+        "so",
+        "because",
+        "instead",
+        "or"
+      ],
+      "answer": "so",
+      "hintEnglish": "Expresses purpose: so they can.",
+      "hintTurkish": "Yiyecek bulabilsinler diye: so they can.",
+      "audioText": "Birds migrate south in winter so they can find food.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What shape are leaves on deciduous trees?",
+      "options": [
+        "Broad and flat",
+        "Sharp and pointed like pins",
+        "Round like glass marbles",
+        "Square like boxes"
+      ],
+      "answer": "Broad and flat",
+      "hintEnglish": "Wide leaves that catch sunlight.",
+      "hintTurkish": "Geniş ve yassı yapraklar.",
+      "audioText": "What shape are leaves on deciduous trees?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: BIOME",
+      "options": [
+        "A large habitat with specific plants and climate",
+        "A tiny house pet",
+        "A fast sports car",
+        "A type of pencil"
+      ],
+      "answer": "A large habitat with specific plants and climate",
+      "hintEnglish": "Ecological community.",
+      "hintTurkish": "Belirli iklim ve canlı topluluğu olan büyük yaşam alanı.",
+      "audioText": "What is a biome?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Bears] [hibernate] [so] [they] [can] [save] [energy.]",
+      "options": [
+        "Bears hibernate so they can save energy.",
+        "So they can save energy bears hibernate.",
+        "Hibernate bears save energy so they can.",
+        "Bears save energy hibernate so they can."
+      ],
+      "answer": "Bears hibernate so they can save energy.",
+      "hintEnglish": "Start with Bears hibernate.",
+      "hintTurkish": "Bears hibernate so they can save energy.",
+      "audioText": "Bears hibernate so they can save energy.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why do coniferous trees have narrow needles?",
+      "options": [
+        "To prevent water loss in freezing weather",
+        "To look like Christmas trees",
+        "To feed hungry monkeys",
+        "To make loud sounds"
+      ],
+      "answer": "To prevent water loss in freezing weather",
+      "hintEnglish": "Needles lose less water than broad leaves.",
+      "hintTurkish": "Donma koşullarında su kaybını önlemek için.",
+      "audioText": "Why do coniferous trees have narrow needles?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Some animals store nuts _____ of sleeping all winter.",
+      "options": [
+        "instead",
+        "so",
+        "why",
+        "to"
+      ],
+      "answer": "instead",
+      "hintEnglish": "'instead of' doing something else.",
+      "hintTurkish": "Bütün kış uyumak yerine fındık depolarlar.",
+      "audioText": "Some animals store nuts instead of sleeping all winter.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Coniferous trees have cones instead of fruit.'",
+      "options": [
+        "Coniferous trees have cones instead of fruit.",
+        "Coniferous trees have fruit instead of cones.",
+        "Deciduous trees have cones instead of leaves.",
+        "Evergreen trees have flowers instead of cones."
+      ],
+      "answer": "Coniferous trees have cones instead of fruit.",
+      "hintEnglish": "Listen for 'cones instead of fruit'.",
+      "hintTurkish": "Meyve yerine kozalakları vardır cümlesini dinleyin.",
+      "audioText": "Coniferous trees have cones instead of fruit.",
+      "skill": "listening"
+    },
+    {
+      "type": "choose",
+      "prompt": "What is the AUTHOR'S PURPOSE in 'Two Different Forests'?",
+      "options": [
+        "To inform and explain forest biomes",
+        "To make readers laugh with silly jokes",
+        "To sell toy animals",
+        "To scare readers with monster stories"
+      ],
+      "answer": "To inform and explain forest biomes",
+      "hintEnglish": "Informational nonfiction.",
+      "hintTurkish": "Yazarın amacı bilgi vermek ve açıklamaktır (to inform).",
+      "audioText": "What is the author's purpose in Two Different Forests?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The hare changes its fur color _____ it can blend into the snow.",
+      "options": [
+        "so",
+        "instead",
+        "or",
+        "but"
+      ],
+      "answer": "so",
+      "hintEnglish": "Purpose: so it can blend.",
+      "hintTurkish": "Kara karışabilsin diye: so it can blend.",
+      "audioText": "The hare changes its fur color so it can blend into the snow.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which tree drops all its leaves before winter?",
+      "options": [
+        "Oak tree (deciduous)",
+        "Pine tree (coniferous)",
+        "Fir tree (coniferous)",
+        "Spruce tree (coniferous)"
+      ],
+      "answer": "Oak tree (deciduous)",
+      "hintEnglish": "Oak is a deciduous tree.",
+      "hintTurkish": "Meşe ağacı yaprak döken (deciduous) bir ağaçtır.",
+      "audioText": "Which tree drops all its leaves before winter?",
+      "skill": "reading"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Animals] [adapt] [to] [the] [cold] [climate.]",
+      "options": [
+        "Animals adapt to the cold climate.",
+        "To the cold climate animals adapt.",
+        "Cold climate animals adapt to the.",
+        "Animals to the cold climate adapt."
+      ],
+      "answer": "Animals adapt to the cold climate.",
+      "hintEnglish": "Subject + verb + prepositional phrase.",
+      "hintTurkish": "Animals adapt to the cold climate.",
+      "audioText": "Animals adapt to the cold climate.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Complete: Coniferous forests are found in _____ parts of the world.",
+      "options": [
+        "colder northern",
+        "tropical warm",
+        "desert sand",
+        "underwater ocean"
+      ],
+      "answer": "colder northern",
+      "hintEnglish": "Northern taiga and cold regions.",
+      "hintTurkish": "Dünyanın daha soğuk kuzey bölgelerinde.",
+      "audioText": "Coniferous forests are found in colder northern parts of the world.",
+      "skill": "reading"
+    }
+  ],
+  "sentenceBuilder": [
+    {
+      "tiles": [
+        "needles",
+        "have",
+        "Trees",
+        "cones.",
+        "and"
+      ],
+      "answer": "Trees have needles and cones."
+    },
+    {
+      "tiles": [
+        "hibernate",
+        "can",
+        "they",
+        "Bears",
+        "so",
+        "survive."
+      ],
+      "answer": "Bears hibernate so they can survive."
+    },
+    {
+      "tiles": [
+        "instead",
+        "needles",
+        "They",
+        "have",
+        "leaves.",
+        "of"
+      ],
+      "answer": "They have needles instead of leaves."
+    },
+    {
+      "tiles": [
+        "turns",
+        "The",
+        "hare",
+        "in",
+        "white",
+        "winter."
+      ],
+      "answer": "The hare turns white in winter."
+    },
+    {
+      "tiles": [
+        "drop",
+        "Trees",
+        "leaves",
+        "autumn.",
+        "their",
+        "in"
+      ],
+      "answer": "Trees drop their leaves in autumn."
+    },
+    {
+      "tiles": [
+        "stay",
+        "green",
+        "all",
+        "Evergreens",
+        "year."
+      ],
+      "answer": "Evergreens stay green all year."
+    },
+    {
+      "tiles": [
+        "so",
+        "Animals",
+        "adapt",
+        "can",
+        "they",
+        "live."
+      ],
+      "answer": "Animals adapt so they can live."
+    },
+    {
+      "tiles": [
+        "protect",
+        "Hard",
+        "cones",
+        "seeds.",
+        "the"
+      ],
+      "answer": "Hard cones protect the seeds."
+    },
+    {
+      "tiles": [
+        "author",
+        "wrote",
+        "to",
+        "The",
+        "inform.",
+        "us"
+      ],
+      "answer": "The author wrote to inform us."
+    },
+    {
+      "tiles": [
+        "is",
+        "coniferous",
+        "The",
+        "very",
+        "cold.",
+        "forest"
+      ],
+      "answer": "The coniferous forest is very cold."
+    }
+  ],
+  "speaking": {
+    "scaffold": "Welcome to our forest biome expedition!",
+    "formula1": "Coniferous trees have needles instead of broad leaves.",
+    "formula2": "Animals hibernate and grow thick fur so they can survive the freezing winter.",
+    "exampleAnswer": "Welcome to our forest biome expedition! Coniferous trees have needles instead of broad leaves. Animals hibernate and grow thick fur so they can survive the freezing winter."
+  },
+  "assets": [
+    "A split panoramic view showing a vibrant golden deciduous forest on the left and a snowy coniferous forest on the right. Image prompt: A breathtaking dual landscape featuring colorful autumn deciduous trees with orange leaves on one side, and deep green pine trees heavy with snow on the other side, 16:9 glassmorphic game backdrop.",
+    "A snowshoe hare in pure white winter coat resting on powdery snow. Image prompt: A cute snowshoe hare with fluffy white winter fur and black ear tips sitting in deep snow, 3D game item render, transparent background.",
+    "A detailed evergreen pine branch with sharp needles and a brown woody cone. Image prompt: A crisp 3D render of an evergreen pine sprig with frost-covered needles and a pinecone, transparent background.",
+    "A cheerful park ranger in uniform with binoculars and a wildlife field guide. Image prompt: Friendly cartoon wildlife ranger holding a notepad and binoculars, ready to guide young nature detectives."
+  ]
+}

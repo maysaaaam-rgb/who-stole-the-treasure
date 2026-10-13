@@ -1,0 +1,670 @@
+{
+  "gameName": "The Golden Swallow's Gift",
+  "grade": 4,
+  "pitch": "Follow the folk tale of kind Go Ne and greedy Wen Shu, practicing past irregular verbs and story purpose.",
+  "targetFormula": "The bird fell from its nest, so Go Ne helped it.",
+  "topic": "A New Friend folk tale, kind Go Ne, injured baby swallow, magical seed, gold coins, greedy Wen Shu, slingshot, roof repair, reconciliation",
+  "arc": {
+    "discovery": "Phase 1: Storybook Scroll unrolls the Korean village where two neighbors have very different hearts.",
+    "workbench": "Phase 2: The Vet Clinic Workbench requires teams to match past tense verbs (built, fell, grew, paid, hit, gave) and sequence story events.",
+    "karaoke": "Phase 3: The Storyteller Stage teleprompter prompts student teams to narrate the moral of the tale with emotional expression."
+  },
+  "mechanics": "Storybook smartboard game. Tapping correct past verbs mends the swallow's wing and makes the golden vine grow. Soft-fail plays a gentle harp flutter with a reminder of irregular verb forms.",
+  "feedback": {
+    "correct": [
+      "The swallow's wing is healed! +5 XP! 🕊️",
+      "A golden fruit blossomed on the vine! 🪙",
+      "Kindness rewarded with gold! 🌟",
+      "True friendship restored, Team! 🤝",
+      "Master Storyteller Rank achieved! 📜"
+    ],
+    "softFail": [
+      "Look closely: is it present or past tense? ⏳",
+      "Remember: 'fall' becomes 'fell' in the past! 🍂",
+      "Think about who helped the bird! 💡",
+      "Why did Go Ne ride his bicycle to the vet? 🚲",
+      "Check the story sequence once more! 📖"
+    ],
+    "levelUp": "The Golden Vine reaches the sky! Level Up to Royal Tale Weaver! 🌿👑"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Pupils touch story illustration tiles, drag golden coins to pay the vet, and order chronological timeline cards.",
+    "classParticipation": "Pupils signal Thumbs Up (Kindness) or Thumbs Down (Greed) as story choices appear.",
+    "version15min": "10 rounds focusing on key past tense verbs and story comprehension.",
+    "version30min": "Full 30-round championship including moral deduction, dialogue ordering, and teleprompter performance."
+  },
+  "words": [
+    {
+      "word": "swallow",
+      "emoji": "🕊️",
+      "turkish": "kırlangıç",
+      "definition": "A small migratory bird with a forked tail and pointed wings.",
+      "exampleSentence": "A swallow built its nest under the roof."
+    },
+    {
+      "word": "nest",
+      "emoji": "🪺",
+      "turkish": "yuva",
+      "definition": "A home built by a bird using twigs and mud.",
+      "exampleSentence": "The baby swallow fell out of the nest."
+    },
+    {
+      "word": "slingshot",
+      "emoji": "🪵🎯",
+      "turkish": "sapan",
+      "definition": "A Y-shaped stick with an elastic band used to shoot small stones.",
+      "exampleSentence": "Wen Shu used a slingshot to hit the bird."
+    },
+    {
+      "word": "paid",
+      "emoji": "💰",
+      "turkish": "ödedi (pay geçmiş zaman)",
+      "definition": "Past tense of pay: gave money for goods or medical care.",
+      "exampleSentence": "Go Ne paid the vet with gold coins."
+    },
+    {
+      "word": "vet",
+      "emoji": "🩺👨‍⚕️",
+      "turkish": "veteriner",
+      "definition": "An animal doctor who treats sick or injured animals.",
+      "exampleSentence": "He rode his bicycle to the vet."
+    },
+    {
+      "word": "roof",
+      "emoji": "🏠",
+      "turkish": "çatı",
+      "definition": "The top covering of a building or house.",
+      "exampleSentence": "The swallows nested under the wooden roof."
+    },
+    {
+      "word": "hit",
+      "emoji": "💥",
+      "turkish": "vurdu (hit geçmiş zaman)",
+      "definition": "Past tense of hit: struck something with force.",
+      "exampleSentence": "The stone hit the swallow's wing."
+    },
+    {
+      "word": "author's purpose",
+      "emoji": "🎯📚",
+      "turkish": "yazarın amacı",
+      "definition": "The reason an author wrote a text: to inform, entertain, or persuade.",
+      "exampleSentence": "The author's purpose is to entertain us with a folk tale."
+    }
+  ],
+  "rounds": [
+    {
+      "type": "choose",
+      "prompt": "Who was kind to the animals in the village?",
+      "options": [
+        "Go Ne",
+        "Wen Shu",
+        "The king",
+        "The baker"
+      ],
+      "answer": "Go Ne",
+      "hintEnglish": "He loved and helped animals.",
+      "hintTurkish": "Hayvanlara karşı merhametli olan komşu Go Ne idi.",
+      "audioText": "Who was kind to the animals in the village?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "A swallow _____ its nest under the roof.",
+      "options": [
+        "built",
+        "build",
+        "building",
+        "builded"
+      ],
+      "answer": "built",
+      "hintEnglish": "Past tense of build.",
+      "hintTurkish": "Build fiilinin geçmiş zaman hali 'built'tir.",
+      "audioText": "A swallow built its nest under the roof.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "One stormy day, a baby swallow _____ out of the nest.",
+      "options": [
+        "fell",
+        "fall",
+        "falled",
+        "falling"
+      ],
+      "answer": "fell",
+      "hintEnglish": "Past tense of fall.",
+      "hintTurkish": "Fall fiilinin geçmiş zaman hali 'fell'dir.",
+      "audioText": "One stormy day, a baby swallow fell out of the nest.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "How did Go Ne take the hurt baby bird to the vet?",
+      "options": [
+        "On his bicycle",
+        "In an airplane",
+        "By train",
+        "On a horse"
+      ],
+      "answer": "On his bicycle",
+      "hintEnglish": "Two-wheeled pedal vehicle.",
+      "hintTurkish": "Bisikletiyle veterinere götürdü.",
+      "audioText": "How did Go Ne take the hurt baby bird to the vet?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match present and past: PAY <---> _____",
+      "options": [
+        "paid",
+        "payed",
+        "peid",
+        "pays"
+      ],
+      "answer": "paid",
+      "hintEnglish": "Irregular past of pay.",
+      "hintTurkish": "Pay fiilinin düzensiz geçmiş zamanı: paid.",
+      "audioText": "What is the past tense of pay?",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What gift did the mother swallow bring back in the spring?",
+      "options": [
+        "A magical golden seed",
+        "A silver clock",
+        "A toy car",
+        "A box of candy"
+      ],
+      "answer": "A magical golden seed",
+      "hintEnglish": "A seed that grew into gold.",
+      "hintTurkish": "Büyülü altın bir tohum getirdi.",
+      "audioText": "What gift did the mother swallow bring back in the spring?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The magical seed _____ into a tall plant with golden fruit.",
+      "options": [
+        "grew",
+        "grow",
+        "growed",
+        "growing"
+      ],
+      "answer": "grew",
+      "hintEnglish": "Past tense of grow.",
+      "hintTurkish": "Grow fiilinin geçmiş zaman hali 'grew'dur.",
+      "audioText": "The magical seed grew into a tall plant.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why was Wen Shu jealous?",
+      "options": [
+        "Because Go Ne became rich and happy",
+        "Because Go Ne had a dog",
+        "Because he wanted an apple",
+        "Because it was raining"
+      ],
+      "answer": "Because Go Ne became rich and happy",
+      "hintEnglish": "Jealous of his neighbor's good fortune.",
+      "hintTurkish": "Çünkü Go Ne zengin ve mutlu olmuştu.",
+      "audioText": "Why was Wen Shu jealous?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Wen Shu used a slingshot and _____ a baby swallow.",
+      "options": [
+        "hit",
+        "hitted",
+        "hitting",
+        "hits"
+      ],
+      "answer": "hit",
+      "hintEnglish": "Past tense of hit stays hit.",
+      "hintTurkish": "Hit fiilinin geçmiş zamanı değişmez: hit.",
+      "audioText": "Wen Shu used a slingshot and hit a baby swallow.",
+      "skill": "grammar"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: SLINGSHOT",
+      "options": [
+        "A Y-shaped stick with rubber to shoot stones",
+        "A doctor's tool",
+        "A musical instrument",
+        "A cooking pot"
+      ],
+      "answer": "A Y-shaped stick with rubber to shoot stones",
+      "hintEnglish": "Tool Wen Shu used.",
+      "hintTurkish": "Taş atmak için kullanılan sapan.",
+      "audioText": "What is a slingshot?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "What happened when Wen Shu planted his seed?",
+      "options": [
+        "Monsters and weeds came out",
+        "Gold coins rained down",
+        "Sweet apples grew",
+        "Nothing happened"
+      ],
+      "answer": "Monsters and weeds came out",
+      "hintEnglish": "Greed was punished.",
+      "hintTurkish": "Açgözlülüğü yüzünden canavarlar ve yabani otlar çıktı.",
+      "audioText": "What happened when Wen Shu planted his seed?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The doctor _____ Go Ne that the bird would fly again.",
+      "options": [
+        "told",
+        "tell",
+        "telled",
+        "telling"
+      ],
+      "answer": "told",
+      "hintEnglish": "Past tense of tell.",
+      "hintTurkish": "Tell fiilinin geçmiş zaman hali 'told'dur.",
+      "audioText": "The doctor told Go Ne that the bird would fly again.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "How did Go Ne pay the vet for medicine?",
+      "options": [
+        "With gold coins from his harvest plant",
+        "With paper money from the bank",
+        "With apples",
+        "He did not pay"
+      ],
+      "answer": "With gold coins from his harvest plant",
+      "hintEnglish": "Coins from the magical fruit.",
+      "hintTurkish": "Büyülü meyveden çıkan altın paralarla ödedi.",
+      "audioText": "How did Go Ne pay the vet for medicine?",
+      "skill": "reading"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Go Ne] [paid] [the] [vet] [kindly.]",
+      "options": [
+        "Go Ne paid the vet kindly.",
+        "Paid Go Ne kindly the vet.",
+        "The vet paid Go Ne kindly.",
+        "Kindly paid Go Ne the vet."
+      ],
+      "answer": "Go Ne paid the vet kindly.",
+      "hintEnglish": "Subject + verb + object.",
+      "hintTurkish": "Go Ne paid the vet kindly.",
+      "audioText": "Go Ne paid the vet kindly.",
+      "skill": "grammar"
+    },
+    {
+      "type": "match",
+      "prompt": "Match present and past: GIVE <---> _____",
+      "options": [
+        "gave",
+        "gived",
+        "given",
+        "gives"
+      ],
+      "answer": "gave",
+      "hintEnglish": "Irregular past of give.",
+      "hintTurkish": "Give fiilinin geçmiş zamanı: gave.",
+      "audioText": "What is the past tense of give?",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What did Wen Shu leave at Go Ne's house after learning his lesson?",
+      "options": [
+        "A gift to help fix the roof",
+        "A snake",
+        "An empty box",
+        "A noisy drum"
+      ],
+      "answer": "A gift to help fix the roof",
+      "hintEnglish": "A gift of friendship and repair.",
+      "hintTurkish": "Çatıyı onarmak için bir hediye bıraktı.",
+      "audioText": "What did Wen Shu leave at Go Ne's house after learning his lesson?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "What is the Author's Purpose of 'A New Friend'?",
+      "options": [
+        "To entertain and teach kindness",
+        "To teach math equations",
+        "To sell bicycles",
+        "To explain space rockets"
+      ],
+      "answer": "To entertain and teach kindness",
+      "hintEnglish": "A folk tale to entertain and share a moral.",
+      "hintTurkish": "Eğlendirmek ve iyilik ahlakını öğretmek (entertain & teach).",
+      "audioText": "What is the author's purpose of A New Friend?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The mother bird _____ Go Ne a shiny seed.",
+      "options": [
+        "gave",
+        "give",
+        "gived",
+        "giving"
+      ],
+      "answer": "gave",
+      "hintEnglish": "Past tense of give.",
+      "hintTurkish": "Geçmiş zaman: gave.",
+      "audioText": "The mother bird gave Go Ne a shiny seed.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'The kind man helped the injured swallow.'",
+      "options": [
+        "The kind man helped the injured swallow.",
+        "The bad man helped the injured swallow.",
+        "The kind man caught the injured swallow.",
+        "The tall man hurt the injured swallow."
+      ],
+      "answer": "The kind man helped the injured swallow.",
+      "hintEnglish": "Listen for 'helped the injured swallow'.",
+      "hintTurkish": "Merhametli adam yaralı kırlangıca yardım etti.",
+      "audioText": "The kind man helped the injured swallow.",
+      "skill": "listening"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: VET",
+      "options": [
+        "A doctor who treats animals",
+        "A person who builds roofs",
+        "A pilot who flies planes",
+        "A farmer who grows corn"
+      ],
+      "answer": "A doctor who treats animals",
+      "hintEnglish": "Animal doctor.",
+      "hintTurkish": "Hayvan doktoru, veteriner.",
+      "audioText": "What does vet mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [The] [bird] [fell] [from] [the] [nest.]",
+      "options": [
+        "The bird fell from the nest.",
+        "From the nest fell the bird.",
+        "The nest fell from the bird.",
+        "Fell the bird from the nest."
+      ],
+      "answer": "The bird fell from the nest.",
+      "hintEnglish": "Subject + verb + prepositional phrase.",
+      "hintTurkish": "The bird fell from the nest.",
+      "audioText": "The bird fell from the nest.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The baby swallows lived under the wooden _____.",
+      "options": [
+        "roof",
+        "room",
+        "rug",
+        "river"
+      ],
+      "answer": "roof",
+      "hintEnglish": "Top of the house.",
+      "hintTurkish": "Ahşap çatının altında.",
+      "audioText": "The baby swallows lived under the wooden roof.",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why did Go Ne help the swallow?",
+      "options": [
+        "Because he had a kind and gentle heart",
+        "Because he wanted gold",
+        "Because he was bored",
+        "Because the king ordered him"
+      ],
+      "answer": "Because he had a kind and gentle heart",
+      "hintEnglish": "Pure compassion.",
+      "hintTurkish": "Çünkü merhametli ve iyi kalpli bir insandı.",
+      "audioText": "Why did Go Ne help the swallow?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "present": "fly",
+      "prompt": "Match present and past: FLY <---> _____",
+      "options": [
+        "flew",
+        "flied",
+        "flow",
+        "flying"
+      ],
+      "answer": "flew",
+      "hintEnglish": "Irregular past of fly.",
+      "hintTurkish": "Fly fiilinin geçmiş zaman hali: flew.",
+      "audioText": "What is the past tense of fly?",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What lesson does the story teach us?",
+      "options": [
+        "Kindness brings true happiness",
+        "Greed makes you rich",
+        "Birds should live in cages",
+        "Bicycles are dangerous"
+      ],
+      "answer": "Kindness brings true happiness",
+      "hintEnglish": "Moral of the folk tale.",
+      "hintTurkish": "İyilik gerçek mutluluk ve dostluk getirir.",
+      "audioText": "What lesson does the story teach us?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Wen Shu felt sorry, so he _____ to be a good friend.",
+      "options": [
+        "decided",
+        "decide",
+        "deciding",
+        "decides"
+      ],
+      "answer": "decided",
+      "hintEnglish": "Past tense of decide.",
+      "hintTurkish": "İyi bir arkadaş olmaya karar verdi (decided).",
+      "audioText": "He decided to be a good friend.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'He paid the doctor with gold coins.'",
+      "options": [
+        "He paid the doctor with gold coins.",
+        "He played with the doctor and gold coins.",
+        "He gave the doctor silver coins.",
+        "He praised the doctor with gold coins."
+      ],
+      "answer": "He paid the doctor with gold coins.",
+      "hintEnglish": "Listen for 'paid the doctor'.",
+      "hintTurkish": "Doktora altın paralarla ödeme yaptı.",
+      "audioText": "He paid the doctor with gold coins.",
+      "skill": "listening"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Kindness] [is] [better] [than] [greed.]",
+      "options": [
+        "Kindness is better than greed.",
+        "Greed is better than kindness.",
+        "Is kindness better than greed.",
+        "Better than greed is kindness."
+      ],
+      "answer": "Kindness is better than greed.",
+      "hintEnglish": "Moral statement.",
+      "hintTurkish": "Kindness is better than greed.",
+      "audioText": "Kindness is better than greed.",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Wen Shu was sorry that he _____ the little bird.",
+      "options": [
+        "hurt",
+        "hurted",
+        "hurting",
+        "hurts"
+      ],
+      "answer": "hurt",
+      "hintEnglish": "Past tense of hurt stays hurt.",
+      "hintTurkish": "Hurt fiilinin geçmiş zamanı: hurt.",
+      "audioText": "Wen Shu was sorry that he hurt the little bird.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "At the end of the story, Go Ne and Wen Shu became _____.",
+      "options": [
+        "true friends",
+        "angry enemies",
+        "strangers",
+        "doctors"
+      ],
+      "answer": "true friends",
+      "hintEnglish": "Reconciliation and friendship.",
+      "hintTurkish": "Sonunda gerçek dost oldular.",
+      "audioText": "At the end of the story, Go Ne and Wen Shu became true friends.",
+      "skill": "reading"
+    }
+  ],
+  "sentenceBuilder": [
+    {
+      "tiles": [
+        "built",
+        "A",
+        "swallow",
+        "nest.",
+        "its"
+      ],
+      "answer": "A swallow built its nest."
+    },
+    {
+      "tiles": [
+        "fell",
+        "The",
+        "baby",
+        "down.",
+        "bird"
+      ],
+      "answer": "The baby bird fell down."
+    },
+    {
+      "tiles": [
+        "bird",
+        "Go",
+        "the",
+        "Ne",
+        "took",
+        "to",
+        "the",
+        "vet."
+      ],
+      "answer": "Go Ne took the bird to the vet."
+    },
+    {
+      "tiles": [
+        "paid",
+        "Go Ne",
+        "gold",
+        "coins.",
+        "with"
+      ],
+      "answer": "Go Ne paid with gold coins."
+    },
+    {
+      "tiles": [
+        "gave",
+        "The",
+        "bird",
+        "seed.",
+        "a",
+        "golden"
+      ],
+      "answer": "The bird gave a golden seed."
+    },
+    {
+      "tiles": [
+        "grew",
+        "The",
+        "plant",
+        "fast.",
+        "very"
+      ],
+      "answer": "The plant grew very fast."
+    },
+    {
+      "tiles": [
+        "hit",
+        "Wen Shu",
+        "a",
+        "slingshot.",
+        "with"
+      ],
+      "answer": "Wen Shu hit with a slingshot."
+    },
+    {
+      "tiles": [
+        "entertain.",
+        "author",
+        "The",
+        "to",
+        "wrote"
+      ],
+      "answer": "The author wrote to entertain."
+    },
+    {
+      "tiles": [
+        "fixed",
+        "the",
+        "Together",
+        "roof.",
+        "they"
+      ],
+      "answer": "Together they fixed the roof."
+    },
+    {
+      "tiles": [
+        "became",
+        "They",
+        "friends.",
+        "true"
+      ],
+      "answer": "They became true friends."
+    }
+  ],
+  "speaking": {
+    "scaffold": "Listen to the folk tale of the two neighbors.",
+    "formula1": "A baby swallow fell from the roof, and kind Go Ne helped it.",
+    "formula2": "He paid the vet with gold coins, and Wen Shu learned that kindness is best.",
+    "exampleAnswer": "Listen to the folk tale of the two neighbors. A baby swallow fell from the roof, and kind Go Ne helped it. He paid the vet with gold coins, and Wen Shu learned that kindness is best."
+  },
+  "assets": [
+    "A traditional Korean hanok village scene with swallows flying under tiled eaves and a golden blossoming vine. Image prompt: A heartwarming storybook illustration of a traditional Korean courtyard with swallows flying around tiled rooftops and a glowing magical vine, 16:9 glassmorphic game backdrop.",
+    "A ceramic medicine jar with herbal ointment and bandage rolls. Image prompt: A cute traditional ceramic medicine jar with herbal herbs and clean bandage rolls, 3D game item render, transparent background.",
+    "A shiny golden melon fruit bursting open to reveal glittering gold coins. Image prompt: A magical golden melon fruit splitting open on a vine with radiant gold coins glowing inside, 3D game asset render.",
+    "A gentle Korean man holding a tiny injured bird wrapped in soft cloth with a smiling swallow above. Image prompt: Gentle storybook character holding a baby swallow with a bandaged wing with love and care."
+  ]
+}

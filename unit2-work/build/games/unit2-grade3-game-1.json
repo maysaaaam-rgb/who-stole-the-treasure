@@ -1,0 +1,108 @@
+{
+  "gameName": "Chuseok Full Moon Weavers",
+  "grade": 3,
+  "pitch": "Weave festive cloth and gather harvest gifts under the full moon while mastering gratitude formulas.",
+  "targetFormula": "I am thankful for [noun] because [reason].",
+  "topic": "Chuseok Korean Harvest Festival, weaving contest, full moon, songpyeon rice cakes, and ancestors",
+  "arc": {
+    "discovery": "Phase 1: The Moonlight Radar spots festival artifacts (cloth loom, moon, rice cakes, ancestors) across ancient Korea.",
+    "workbench": "Phase 2: The Royal Weaving Loom requires teams to sequence festival steps, sort harvest items, and build sentences.",
+    "karaoke": "Phase 3: The Celebration Stage teleprompter guides team champions to deliver a 3-sentence harvest festival speech."
+  },
+  "mechanics": "Whole-class smartboard arcade where teams take turns tapping high-contrast buttons while desks vote with cards. Soft-fail system plays an encouraging chime and displays a hint with no point deductions. Team with highest stars earns the Golden Loom Trophy.",
+  "feedback": {
+    "correct": [
+      "Splendid weaving! 🌟",
+      "The King smiles upon your team! 👑",
+      "Harvest stars unlocked! 🌾",
+      "Full moon brightness +5 XP! 🌕",
+      "Perfect teamwork, Explorers! 🎉"
+    ],
+    "softFail": [
+      "Almost there! Look at the full moon clue! 🌙",
+      "Check the word ending and try once more! 💡",
+      "Think about who weaves the cloth! 🧵",
+      "Remember: 'for' goes after thankful! 🤝",
+      "Listen closely to the festival sound! 👂"
+    ],
+    "levelUp": "The Royal Weaving Loom glows gold! Level Up to Master Harvest Weaver! 🏆"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Team representative taps large 72px answer pills, drags loom shuttles, or triggers voice hints.",
+    "classParticipation": "All students at desks display Red/Green cards or 1-4 finger votes simultaneously before the board player taps.",
+    "version15min": "10 core rounds covering vocabulary matching and gratitude sentence building.",
+    "version30min": "Full 30-round tournament including listening challenges, story chronology, and live teleprompter pitches."
+  },
+  "words": [
+    { "word": "festival", "emoji": "🎉", "turkish": "festival, şenlik", "definition": "A special day or celebration with food and music.", "exampleSentence": "Chuseok is a big harvest festival." },
+    { "word": "harvest", "emoji": "🌾", "turkish": "hasat", "definition": "Gathering food and crops from the fields.", "exampleSentence": "People give thanks for the harvest." },
+    { "word": "weave", "emoji": "🧵", "turkish": "dokumak", "definition": "To make cloth by crossing threads over and under.", "exampleSentence": "Two teams weave cloth for a month." },
+    { "word": "cloth", "emoji": "🧣", "turkish": "kumaş", "definition": "Material made by weaving, used for clothes.", "exampleSentence": "They weaved beautiful red cloth." },
+    { "word": "contest", "emoji": "🏆", "turkish": "yarışma", "definition": "A game where people try to win.", "exampleSentence": "Who won the weaving contest?" },
+    { "word": "ancestors", "emoji": "👴👵", "turkish": "atalar", "definition": "Family members who lived long ago.", "exampleSentence": "Families remember their ancestors." },
+    { "word": "feast", "emoji": "🍲", "turkish": "ziyafet", "definition": "A large celebration meal with lots of food.", "exampleSentence": "The king gave a huge feast." },
+    { "word": "moon", "emoji": "🌕", "turkish": "ay, dolunay", "definition": "The bright round light in the night sky.", "exampleSentence": "They danced under the full moon." }
+  ],
+  "rounds": [
+    { "type": "choose", "prompt": "What does Chuseok celebrate in Korea?", "options": ["The winter snow", "The autumn harvest", "The summer beach", "The spring flower"], "answer": "The autumn harvest", "hintEnglish": "Look at crops gathered in autumn.", "hintTurkish": "Sonbahar hasadını düşünün.", "audioText": "What does Chuseok celebrate in Korea?", "skill": "reading" },
+    { "type": "match", "prompt": "Match the word to its meaning: WEAVE", "options": ["Make cloth with thread", "Bake an apple pie", "Fly a rocket", "Sleep all winter"], "answer": "Make cloth with thread", "hintEnglish": "Crossing threads over and under.", "hintTurkish": "İpliklerle kumaş dokumak.", "audioText": "What does weave mean?", "skill": "vocabulary" },
+    { "type": "fillgap", "prompt": "Two teams had a month-long _____ to make cloth.", "options": ["contest", "nap", "dinner", "book"], "answer": "contest", "hintEnglish": "A competition to see who wins.", "hintTurkish": "Kimin kazanacağını görmek için yarışma.", "audioText": "Two teams had a month-long contest to make cloth.", "skill": "vocabulary" },
+    { "type": "choose", "prompt": "Who chose the winning team under the full moon?", "options": ["The king", "A robot", "A pilot", "The teacher"], "answer": "The king", "hintEnglish": "The royal ruler of the land.", "hintTurkish": "Ülkeyi yöneten kral.", "audioText": "Who chose the winning team under the full moon?", "skill": "reading" },
+    { "type": "choose", "prompt": "What special rice cakes do families eat at Chuseok?", "options": ["Songpyeon", "Pizza", "Pancakes", "Burgers"], "answer": "Songpyeon", "hintEnglish": "Half-moon shaped Korean rice cakes.", "hintTurkish": "Yarım ay şeklindeki pirinç keki.", "audioText": "What special rice cakes do families eat at Chuseok?", "skill": "vocabulary" },
+    { "type": "fillgap", "prompt": "Families hold a ceremony to remember their _____.", "options": ["ancestors", "cars", "pencils", "desks"], "answer": "ancestors", "hintEnglish": "Family who lived long ago.", "hintTurkish": "Uzun zaman önce yaşamış aile büyükleri, atalar.", "audioText": "Families hold a ceremony to remember their ancestors.", "skill": "vocabulary" },
+    { "type": "choose", "prompt": "Complete: I am thankful _____ my warm home.", "options": ["for", "to", "at", "on"], "answer": "for", "hintEnglish": "Use 'thankful for'.", "hintTurkish": "'Thankful' sözcüğünden sonra 'for' gelir.", "audioText": "I am thankful for my warm home.", "skill": "grammar" },
+    { "type": "choose", "prompt": "Complete: There _____ a big full moon in the sky.", "options": ["is", "are", "were", "be"], "answer": "is", "hintEnglish": "One moon = singular.", "hintTurkish": "Tekil nesneler için 'There is' kullanılır.", "audioText": "There is a big full moon in the sky.", "skill": "grammar" },
+    { "type": "choose", "prompt": "Complete: There _____ many rice cakes on the plate.", "options": ["are", "is", "was", "be"], "answer": "are", "hintEnglish": "Many rice cakes = plural.", "hintTurkish": "Çoğul nesneler için 'There are' kullanılır.", "audioText": "There are many rice cakes on the plate.", "skill": "grammar" },
+    { "type": "listen", "prompt": "Listen and choose the picture: 'cloth'", "options": ["🧣 Cloth", "🚀 Rocket", "🥕 Carrot", "⏰ Clock"], "answer": "🧣 Cloth", "hintEnglish": "Woven material for clothing.", "hintTurkish": "Dokunmuş kumaş.", "audioText": "cloth", "skill": "listening" },
+    { "type": "order", "prompt": "Order the steps of Chuseok history (1 to 3):", "options": ["1. Two teams weave cloth", "2. The king gives a feast", "3. People celebrate every year"], "answer": "1. Two teams weave cloth", "hintEnglish": "The weaving contest started first.", "hintTurkish": "Önce dokuma yarışması başladı.", "audioText": "First, two teams weave cloth. Next, the king gives a feast. Finally, people celebrate every year.", "skill": "reading" },
+    { "type": "choose", "prompt": "Why do families travel home at Chuseok?", "options": ["To be together and give thanks", "To buy computers", "To paint walls", "To go to school"], "answer": "To be together and give thanks", "hintEnglish": "Chuseok is a family holiday.", "hintTurkish": "Bir arada olmak ve şükran duymak için.", "audioText": "Why do families travel home at Chuseok?", "skill": "reading" },
+    { "type": "fillgap", "prompt": "The king invited both teams to a huge _____.", "options": ["feast", "test", "door", "hat"], "answer": "feast", "hintEnglish": "A grand celebration dinner.", "hintTurkish": "Büyük bir ziyafet yemeği.", "audioText": "The king invited both teams to a huge feast.", "skill": "vocabulary" },
+    { "type": "choose", "prompt": "Which dance do women do in a circle under the moon?", "options": ["Ganggangsullae", "Salsa", "Ballet", "Hip hop"], "answer": "Ganggangsullae", "hintEnglish": "The Korean full-moon circle dance.", "hintTurkish": "Geleneksel Kore çember dansı.", "audioText": "Which dance do women do in a circle under the moon?", "skill": "reading" },
+    { "type": "choose", "prompt": "Complete: Why do we celebrate? _____ we are thankful for food.", "options": ["Because", "Why", "When", "What"], "answer": "Because", "hintEnglish": "Answer 'Why' with 'Because'.", "hintTurkish": "'Why' sorusuna 'Because' ile başlanır.", "audioText": "Why do we celebrate? Because we are thankful for food.", "skill": "grammar" },
+    { "type": "sort", "prompt": "Sort: Is 'songpyeon' singular or plural?", "options": ["Singular (one cake)", "Plural (many cakes)"], "answer": "Singular (one cake)", "hintEnglish": "One piece of songpyeon.", "hintTurkish": "Bir adet pirinç keki tekildir.", "audioText": "Is songpyeon singular or plural?", "skill": "grammar" },
+    { "type": "choose", "prompt": "What do people wear for Chuseok?", "options": ["New clean clothes", "Winter ski boots", "Pajamas", "Swimsuits"], "answer": "New clean clothes", "hintEnglish": "Fresh festival attire.", "hintTurkish": "Temiz ve yeni bayram kıyafetleri.", "audioText": "What do people wear for Chuseok?", "skill": "reading" },
+    { "type": "listen", "prompt": "Listen and select: 'harvest'", "options": ["🌾 Harvest", "🌊 Ocean", "🚗 Car", "🪖 Helmet"], "answer": "🌾 Harvest", "hintEnglish": "Gathering autumn crops.", "hintTurkish": "Ekinleri toplama zamanı, hasat.", "audioText": "harvest", "skill": "listening" },
+    { "type": "fillgap", "prompt": "The bright round _____ shone in the dark sky.", "options": ["moon", "sun", "cloud", "tree"], "answer": "moon", "hintEnglish": "Shines at night.", "hintTurkish": "Gece parlayan ay.", "audioText": "The bright round moon shone in the dark sky.", "skill": "vocabulary" },
+    { "type": "choose", "prompt": "How long was the ancient weaving contest?", "options": ["One month", "One hour", "One year", "Two days"], "answer": "One month", "hintEnglish": "From one moon to the next.", "hintTurkish": "Tam bir ay sürdü.", "audioText": "How long was the ancient weaving contest?", "skill": "reading" },
+    { "type": "choose", "prompt": "Complete: We are thankful _____ our wonderful teacher.", "options": ["for", "at", "in", "by"], "answer": "for", "hintEnglish": "Thankful for someone.", "hintTurkish": "Birine veya bir şeye şükran duymak: thankful for.", "audioText": "We are thankful for our wonderful teacher.", "skill": "grammar" },
+    { "type": "choose", "prompt": "Complete: There _____ three days in the Chuseok holiday.", "options": ["are", "is", "was", "has"], "answer": "are", "hintEnglish": "Three days = plural.", "hintTurkish": "Üç gün çoğuldur: There are.", "audioText": "There are three days in the Chuseok holiday.", "skill": "grammar" },
+    { "type": "match", "prompt": "Match the festival element: CHARYE", "options": ["Ancestor memorial ceremony", "Fast running race", "Making pizza", "Planting trees"], "answer": "Ancestor memorial ceremony", "hintEnglish": "Bowing and offering food to ancestors.", "hintTurkish": "Ataları anma töreni.", "audioText": "What is Charye?", "skill": "vocabulary" },
+    { "type": "choose", "prompt": "What season does Chuseok happen in?", "options": ["Autumn (End of summer)", "Cold winter", "Early spring", "Hot mid-summer"], "answer": "Autumn (End of summer)", "hintEnglish": "Harvest season in September/October.", "hintTurkish": "Yaz sonu ve sonbahar hasat dönemi.", "audioText": "What season does Chuseok happen in?", "skill": "reading" },
+    { "type": "fillgap", "prompt": "Who can weave the _____ cloth? Two teams tried to win.", "options": ["most", "least", "short", "bad"], "answer": "most", "hintEnglish": "The biggest amount of cloth.", "hintTurkish": "En çok kumaşı kim dokuyabilir?", "audioText": "Who can weave the most cloth?", "skill": "reading" },
+    { "type": "choose", "prompt": "Which sentence is correct?", "options": ["I am thankful for my family.", "I am thankful to my family.", "I am thank for family.", "I thankful my family."], "answer": "I am thankful for my family.", "hintEnglish": "Subject + am + thankful + for + noun.", "hintTurkish": "Doğru kalıp: I am thankful for my family.", "audioText": "I am thankful for my family.", "skill": "grammar" },
+    { "type": "listen", "prompt": "Listen and identify: 'ancestors'", "options": ["👴👵 Ancestors", "👶 Baby", "🐶 Puppy", "🚗 Car"], "answer": "👴👵 Ancestors", "hintEnglish": "Grandparents and family from long ago.", "hintTurkish": "Atalar, geçmiş büyükler.", "audioText": "ancestors", "skill": "listening" },
+    { "type": "choose", "prompt": "What shape is a songpyeon rice cake?", "options": ["Half-moon shape", "Square box shape", "Star shape", "Triangle shape"], "answer": "Half-moon shape", "hintEnglish": "Like the moon in the sky.", "hintTurkish": "Yarım ay şeklinde.", "audioText": "What shape is a songpyeon rice cake?", "skill": "reading" },
+    { "type": "fillgap", "prompt": "There _____ delicious food on the festival table.", "options": ["is", "are", "were", "be"], "answer": "is", "hintEnglish": "Food is an uncountable noun.", "hintTurkish": "'Food' sayılamaz kabul edilir: There is food.", "audioText": "There is delicious food on the festival table.", "skill": "grammar" },
+    { "type": "choose", "prompt": "Why was the king happy?", "options": ["Because both teams worked hard", "Because he went to sleep", "Because it rained", "Because he lost his crown"], "answer": "Because both teams worked hard", "hintEnglish": "He rewarded both teams with a feast.", "hintTurkish": "Çünkü her iki takım da çok çalıştı.", "audioText": "Why was the king happy? Because both teams worked hard.", "skill": "reading" }
+  ],
+  "sentenceBuilder": [
+    { "tiles": ["celebrate", "We", "harvest.", "the"], "answer": "We celebrate the harvest." },
+    { "tiles": ["thankful", "am", "I", "family.", "my", "for"], "answer": "I am thankful for my family." },
+    { "tiles": ["cloth.", "Two", "weave", "teams"], "answer": "Two teams weave cloth." },
+    { "tiles": ["full", "There", "moon.", "is", "a"], "answer": "There is a full moon." },
+    { "tiles": ["delicious", "are", "There", "cakes.", "rice"], "answer": "There are delicious rice cakes." },
+    { "tiles": ["remember", "Families", "ancestors.", "their"], "answer": "Families remember their ancestors." },
+    { "tiles": ["feast.", "gave", "king", "The", "a"], "answer": "The king gave a feast." },
+    { "tiles": ["thankful", "We", "food.", "are", "for"], "answer": "We are thankful for food." },
+    { "tiles": ["travel", "home.", "holiday", "They", "the", "for"], "answer": "They travel home for the holiday." },
+    { "tiles": ["together.", "Families", "eat", "dance", "and"], "answer": "Families eat and dance together." }
+  ],
+  "speaking": {
+    "scaffold": "Hello class! Today we celebrate Chuseok.",
+    "formula1": "There is a bright full moon and delicious songpyeon.",
+    "formula2": "I am thankful for my family because they take care of me.",
+    "exampleAnswer": "Hello class! Today we celebrate Chuseok. There is a bright full moon and delicious songpyeon. I am thankful for my family because they take care of me."
+  },
+  "assets": [
+    "A glowing full moon over a traditional Korean village with lantern banners. Image prompt: A vibrant cartoon illustration of a traditional Korean village during Chuseok, with a huge glowing harvest full moon, lanterns, and autumn foliage, 16:9 glassmorphic game backdrop.",
+    "A wooden weaving loom with colorful thread shuttles. Image prompt: A 3D isometric wooden traditional weaving loom with bright red and blue silk threads, game item render, transparent background.",
+    "A plate of half-moon songpyeon rice cakes. Image prompt: A festive plate of steaming Korean songpyeon rice cakes in pastel green, pink, and white, 3D game asset render.",
+    "A smiling cartoon Korean king wearing a golden crown offering a feast. Image prompt: Friendly cartoon royal king in traditional robes with open arms welcoming children to a harvest feast."
+  ]
+}

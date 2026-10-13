@@ -1,0 +1,48 @@
+UNIT 3 DEEP CURRICULUM STUDY (PASS 2) · PROGRESS LOG
+Run date: 2026-10-08
+Target folder: C:\Users\maysa\Desktop\DV\unit3-work\out\deep\
+
+FILES WRITTEN & STATUS
+--------------------------------------------------------------------------------
+OK      pass1-corrections.md        (Audit comparing Pass 1 files with original textbook scans)
+OK      unit3-grade3-study.json     (Complete 16-section deep curriculum study for Grade 3)
+OK      unit3-grade4-study.json     (Complete 16-section deep curriculum study for Grade 4)
+OK      unit3-grade3-overview.md    (One-page teacher summary for Grade 3)
+OK      unit3-grade4-overview.md    (One-page teacher summary for Grade 4)
+OK      PROGRESS.txt                (This execution and statistics log)
+
+LEXICAL & CHUNK COUNTS PER GRADE
+--------------------------------------------------------------------------------
+Grade 3 (Global Readings 2, Unit 3: "How Much Is It?"):
+- Total Vocabulary Analyzed: 18 words
+  * Must-Know Core: 10 words
+  * Should-Know Supporting: 5 words
+  * Nice-to-Know Topic: 3 words
+- Target Chunks & Classroom Phrases: 8 chunks
+
+Grade 4 (Global Readings 3, Unit 3: "It Keeps Changing"):
+- Total Vocabulary Analyzed: 20 words
+  * Must-Know Core: 12 words
+  * Should-Know Supporting: 5 words
+  * Nice-to-Know Topic: 3 words
+- Target Chunks & Classroom Phrases: 7 chunks
+
+Combined Total: 38 vocabulary entries and 15 communicative chunks.
+
+TRUTH TAG AUDIT (BOOK VS. ADDED)
+--------------------------------------------------------------------------------
+Grade 3 (unit3-grade3-study.json):
+- Book Items ("source": "book p.NN"): 88 items
+- Added Items ("source": "added"): 65 items (dialogues, TPR, rubrics, smartboard ideas)
+
+Grade 4 (unit3-grade4-study.json):
+- Book Items ("source": "book p.NN"): 86 items
+- Added Items ("source": "added"): 62 items (dialogues, TPR, rubrics, smartboard ideas)
+
+Total Across Pass 2:
+- Direct Textbook Items: 174 items
+- Pedagogically Added Items: 127 items
+
+UNCLEAR ITEMS
+--------------------------------------------------------------------------------
+None. All 32 pages across both textbooks (Grade 3 pp. 40–55 and Grade 4 pp. 40–55) were completely legible and high-resolution in the scans. No words, labels, instructions, or diagrams were obscured.

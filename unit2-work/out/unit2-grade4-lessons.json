@@ -1,0 +1,263 @@
+[
+  {
+    "title": "Lesson 1: See, Think, Wonder: Biomes & Mysterious Forests",
+    "order": 1,
+    "sourcePages": "24-25",
+    "objective": "Students will observe cold-weather biome expeditions, share what they see, think, and wonder, and preview informational article headings.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "inquiry",
+        "title": "See-Think-Wonder: Arctic Water Expedition",
+        "prompt": "Display page 24 showing scientists in heavy gear navigating an icy river. Lead students through See, Think, Wonder prompts.",
+        "text": "Look at the photograph on page 24. What do you see? What do you think the scientists are doing? What do you wonder about this cold biome?",
+        "answer": "Students observe the boat, thick coats, foggy river, and wonder why the researchers are taking photos and exploring."
+      },
+      {
+        "type": "discussion",
+        "title": "Local Nature Connections",
+        "prompt": "Discuss prompt D on page 25: What kinds of plants and animals live in your local area?",
+        "text": "What trees grow near your school or home? What animals do you see in each season?",
+        "answer": "Pair discussion and teacher recording on the whiteboard."
+      },
+      {
+        "type": "matching",
+        "title": "Heading Detective: Predicting Text Structure",
+        "prompt": "Direct students to Activity E on page 25: Deciduous Forests and Coniferous Forests.",
+        "text": "Why did the author use these two headings? Choose 1, 2, or 3.",
+        "answer": "Option 2: To compare two types of forest."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 2: Reading 1: Deciduous Forests & Seasonal Changes",
+    "order": 2,
+    "sourcePages": "26-27",
+    "objective": "Students will read aloud and track details of deciduous forest biomes, four seasons, and animal survival.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "story",
+        "title": "Informational Read Aloud: Four Seasons of Leaves",
+        "prompt": "Read page 26 aloud. Have students track headings and paragraphs with pencils.",
+        "text": "Deciduous trees grow in North America, Europe, and China. They have four seasons: spring, summer, autumn, and winter. In autumn, leaves turn yellow, orange, and red before falling.",
+        "answer": "Students identify the four seasons and explain what happens to deciduous leaves before winter."
+      },
+      {
+        "type": "questions",
+        "title": "Wildlife of the Deciduous Forest",
+        "prompt": "Read page 27 together. Identify the 5 pictured animals: bears, raccoons, coyotes, deer, and squirrels.",
+        "text": "What do animals eat in the deciduous forest? Why do bears and other animals hibernate in winter?",
+        "answer": "They eat plants, fruit, and seeds; they sleep (hibernate) through winter when it is cold and food is scarce."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 3: Words in Context: Ecology & Adaptations",
+    "order": 3,
+    "sourcePages": "27-28",
+    "objective": "Students will define and use key ecological vocabulary words (deciduous, hibernate, coniferous, survive, adapt).",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "vocab_definitions",
+        "title": "Vocabulary Lab: Surviving and Adapting",
+        "prompt": "Examine the Words in Context box on page 27 with simple definitions and physical actions.",
+        "words": [
+          {
+            "word": "deciduous",
+            "def": "Trees that lose their leaves every autumn."
+          },
+          {
+            "word": "hibernate",
+            "def": "To sleep through the cold winter to save energy."
+          },
+          {
+            "word": "coniferous",
+            "def": "Evergreen trees that have cones and needle leaves."
+          },
+          {
+            "word": "survive",
+            "def": "To stay alive in harsh or dangerous conditions."
+          },
+          {
+            "word": "adapt",
+            "def": "To change features or behavior to live in an environment."
+          }
+        ],
+        "answer": "Students match each word with real-life examples (pine trees, sleeping bears, winter coats)."
+      },
+      {
+        "type": "matching",
+        "title": "Sentence Builder: Ecology Formulas",
+        "prompt": "Have students complete sentences using 'adapt' and 'survive'.",
+        "text": "1. Trees ___ to the cold by losing leaves. 2. Thick white fur helps animals ___ in deep snow.",
+        "answer": "1. adapt; 2. survive."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 4: Comprehension: Coniferous Forests & Winter Camouflage",
+    "order": 4,
+    "sourcePages": "28-30",
+    "objective": "Students will contrast coniferous and deciduous adaptations and complete the classification chart on page 30.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "story",
+        "title": "Reading Deep Freeze: Sub-Zero Needles and White Fur",
+        "prompt": "Read pages 28-29 aloud. Note the -50°C thermometer and the snowshoe hare, lynx, wolf, and snowy owl.",
+        "text": "Why are coniferous trees called evergreen? How do animals like hares and lynx adapt to the snow?",
+        "answer": "Their needles stay green all year; hares grow thick white fur to stay warm and blend into the snow."
+      },
+      {
+        "type": "matching",
+        "title": "Explore the Reading: Forest Classification Checklist",
+        "prompt": "Guide students to complete Activity A on page 30 (Deciduous vs Coniferous).",
+        "text": "1. Trees don't lose leaves in autumn. 2. Winters are shorter here. 3. Animals find food in the trees. 4. Leaves stay the same color in autumn. 5. Animals change color in winter. 6. Leaves are broad/not thin.",
+        "answer": "1. Coniferous; 2. Deciduous; 3. Deciduous; 4. Coniferous; 5. Coniferous; 6. Deciduous."
+      },
+      {
+        "type": "matching",
+        "title": "Matching Adaptations",
+        "prompt": "Complete Activity B on page 30 matching trees and animals to their survival adaptations.",
+        "text": "Match Coniferous trees, Deciduous trees, Bears, and Hares to descriptions a-d.",
+        "answer": "Coniferous trees -> a (thin leaves); Deciduous trees -> b (lose leaves); Bears -> d (hibernate); Hares -> c (change brown to white)."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 5: Reading Skill: Understanding the Author's Purpose",
+    "order": 5,
+    "sourcePages": "31-32",
+    "objective": "Students will identify three main author's purposes (to entertain, to inform/teach, to persuade) and apply them to stories and articles.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "inquiry",
+        "title": "Strategy Focus: Why Do Authors Write?",
+        "prompt": "Review the strategy box on page 31: 'Authors usually write to teach something, change someone's opinion, or entertain.'",
+        "text": "Why did the author write 'Two Different Forests'? Why did Lewis Carroll write 'Alice's Adventures'?",
+        "answer": "Two Different Forests = to teach/inform; Alice = to entertain."
+      },
+      {
+        "type": "questions",
+        "title": "Pre-Reading Analysis: 'A New Friend'",
+        "prompt": "Complete Activity B on page 31 about the upcoming swallow story.",
+        "text": "1. Does the author want to entertain me? 2. Teach me about birds? 3. Change my opinion? 4. What is the author's purpose?",
+        "answer": "1. Yes; 2. No; 3. No; 4. To entertain and teach an inspiring moral lesson about kindness."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 6: Reading 2: A New Friend (The Folk Tale)",
+    "order": 6,
+    "sourcePages": "32-35",
+    "objective": "Students will read and track 'A New Friend', contrasting Go Ne's kindness with Wen Shu's greedy actions.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "story",
+        "title": "Folk Tale Reading: Part 1 - The Gold Seed",
+        "prompt": "Read pages 32-34 aloud. Track Go Ne's rescue of the baby swallow, the gift of the gold seed, and the harvest of gold coins.",
+        "text": "Every spring, a swallow built its nest under Go Ne's roof. What happened to the baby bird? What did the mother swallow give Go Ne?",
+        "answer": "The baby bird fell out; Go Ne returned it safely; the mother bird gave a gold seed that grew into a fruit full of gold coins."
+      },
+      {
+        "type": "vocab_definitions",
+        "title": "Words in Context: Story Verbs and Tools",
+        "prompt": "Review target vocabulary on page 33.",
+        "words": [
+          {
+            "word": "swallow",
+            "def": "A small bird that nests under roofs."
+          },
+          {
+            "word": "roof",
+            "def": "The top of a house."
+          },
+          {
+            "word": "hit",
+            "def": "To strike something with force."
+          },
+          {
+            "word": "slingshot",
+            "def": "A Y-shaped tool with elastic for shooting stones."
+          },
+          {
+            "word": "paid",
+            "def": "Gave money to buy or fix something."
+          }
+        ],
+        "answer": "Students practice pronunciation and explain what a slingshot (catapult) does."
+      },
+      {
+        "type": "story",
+        "title": "Folk Tale Reading: Part 2 - The Slingshot Attack",
+        "prompt": "Read page 35. Examine Wen Shu's actions and Go Ne's rescue on his bicycle.",
+        "text": "Why did Wen Shu use a slingshot? What happened to the baby bird? What did Go Ne do?",
+        "answer": "Wen Shu wanted a gold seed too; his stone injured a baby bird; Go Ne put the bird in his bike basket to get help."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 7: Skill Practice & Speaking: Remorse, Kindness, and Spelling Pattern 'ai'",
+    "order": 7,
+    "sourcePages": "36-38",
+    "objective": "Students will evaluate character choices, practice the 'ai' spelling pattern, and match character actions.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "story",
+        "title": "The Climax & Resolution: At the Vet's Clinic",
+        "prompt": "Read pages 36-37 aloud. Highlight Wen Shu's remorse and Go Ne paying the vet.",
+        "text": "How did Wen Shu feel at the vet's clinic? What did Go Ne use his gold coins for? How did Wen Shu fix his mistake?",
+        "answer": "Wen Shu felt really sorry; Go Ne paid the vet to save the bird; Wen Shu left a gift to repair Go Ne's roof."
+      },
+      {
+        "type": "matching",
+        "title": "Character Action Matching",
+        "prompt": "Complete Activity B on page 38 matching actions to Wen Shu or Go Ne.",
+        "text": "1. Left things in the yard. 2. Family needed to fix roof. 3. Always helped birds. 4. Hurt the baby bird. 5. Took baby bird to the vet. 6. Was sorry for what he did.",
+        "answer": "Wen Shu: 1, 4, 6. Go Ne: 2, 3, 5."
+      },
+      {
+        "type": "phonics_box",
+        "title": "Spelling Lab: The 'ai' Long Vowel Team",
+        "prompt": "Drill the 'ai' words on page 38: rain, mail/main, pain/paid, tail/train, chain/claim.",
+        "text": "Write words with 'ai': r___, m___, p___, t___, c___. Find words in 'A New Friend' spelled with 'ai'!",
+        "answer": "rain, mail, paid, tail, chain; story words: paid, sailed."
+      }
+    ]
+  },
+  {
+    "title": "Lesson 8: Think Together: Ecological Connections & Reading Journal",
+    "order": 8,
+    "sourcePages": "38-39",
+    "objective": "Students will synthesize how plants, animals, and humans are connected, write their reading journal, and complete an exit check.",
+    "duration": 40,
+    "activities": [
+      {
+        "type": "inquiry",
+        "title": "Think Together: How Are Living Things Connected?",
+        "prompt": "Examine the leaf organizer on page 39: What do trees and plants give to people and animals?",
+        "text": "Complete the leaves: fruit to eat, wood to build houses, shade from heat, oxygen to breathe, homes for animals.",
+        "answer": "Students write benefits of trees in each leaf graphic."
+      },
+      {
+        "type": "round_robin",
+        "title": "Roundtable: A World Without Trees",
+        "prompt": "Conduct a cooperative roundtable discussion on prompt B on page 39.",
+        "text": "Imagine a world without trees or plants. What happens? Use the sentence starters: 'Without trees, birds can't... / Without plants, people can't...'",
+        "answer": "Students share in circles: animals lose shelters, air gets dirty, food chains collapse."
+      },
+      {
+        "type": "reading_journal",
+        "title": "My Reading Journal & 10-Minute Exit Check",
+        "prompt": "Complete My Reading Journal on page 39 and finish with a 3-question exit ticket.",
+        "text": "1. What is the difference between deciduous and coniferous trees? 2. Why did Go Ne pay the vet? 3. Write one word with the 'ai' spelling.",
+        "answer": "1. Deciduous lose leaves; coniferous have cones and evergreen needles. 2. To heal the injured baby swallow. 3. rain / paid / train."
+      }
+    ]
+  }
+]

@@ -1,0 +1,408 @@
+{
+  "book": "Global Readings 2",
+  "grade": 3,
+  "unitTitle": "Unit 2: Thank You",
+  "pages": "24-39",
+  "bigIdea": "Why do we celebrate harvests and give thanks?",
+  "readingSkill": "Understanding the Setting (identifying time and place, and how setting affects characters)",
+  "contentArea": "Social Studies & Science Fiction (Cultural Harvest Traditions and Space Agriculture)",
+  "selFocus": "Self-Awareness & Thankfulness (recognizing what we appreciate in family, community, and daily life)",
+  "phonicsFocus": "Final consonant blend -st (fast, last, lost, best, test, harvest, first)",
+  "grammarOrLanguageFocus": "Expressing gratitude ('thankful for [noun]'), descriptive 'There is / There are', and reasons with 'Why / Because'",
+  "reading1": {
+    "title": "Chuseok: Korea's Harvest Festival",
+    "type": "nonfiction",
+    "summary": "Long ago in Korea, two teams had a month-long weaving contest to make cloth. On the full moon night, the king chose the winning team and gave a huge feast for both teams, starting Chuseok. Today, Chuseok remains an important three-day holiday at the end of summer. Families travel home to spend time together and celebrate the harvest. People eat special half-moon rice cakes called songpyeon, wear new clothes, and dance in circles. Families also hold a memorial ceremony where they bow and offer harvest food to honor their ancestors.",
+    "keySentences": [
+      "Who can weave the most cloth? Two teams have a contest to find out.",
+      "Today, the festival of Chuseok is still an important holiday in Korea.",
+      "Chuseok is also a time for Koreans to remember their ancestors."
+    ],
+    "pages": "26-29"
+  },
+  "reading2": {
+    "title": "First Harvest",
+    "type": "fiction",
+    "summary": "A family works hard on an indoor farm, digging up vegetables and picking colorful fruit. The father worries because water is limited, but their crops grow into pink potatoes, purple corn, and orange peas. Mom suggests making an apple pie and inviting everyone to celebrate their very first harvest feast. The children, Ruth and August, ask if they can go outside to play first. Mom tells them to check their space suits and make sure they have plenty of air. The surprise setting is revealed to be a farming base on Mars!",
+    "keySentences": [
+      "Harvest time is here. The family works hard on the farm.",
+      "“I know, let's get everyone together. We can have a feast!” says Ruth.",
+      "“Check your space suits before you go,” Mom says. “And make sure you have a lot of air.”"
+    ],
+    "pages": "32-37"
+  },
+  "vocabulary": [
+    {
+      "word": "weave",
+      "page": 27,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To make cloth by crossing threads over and under.",
+      "exampleSentence": "Two teams weave cloth for a whole month.",
+      "l1Hint": "dokumak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "cloth",
+      "page": 27,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "Material made by weaving threads, used for clothes or blankets.",
+      "exampleSentence": "Who can weave the most cloth?",
+      "l1Hint": "kumaş",
+      "l1": "Turkish"
+    },
+    {
+      "word": "contest",
+      "page": 27,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A game or competition where people try to win.",
+      "exampleSentence": "Two teams have a contest to see who wins.",
+      "l1Hint": "yarışma",
+      "l1": "Turkish"
+    },
+    {
+      "word": "festival",
+      "page": 27,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A special celebration with food, music, or games.",
+      "exampleSentence": "Chuseok is an important festival in Korea.",
+      "l1Hint": "festival, şenlik",
+      "l1": "Turkish"
+    },
+    {
+      "word": "harvest",
+      "page": 27,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "The time when crops and fruits are gathered from fields.",
+      "exampleSentence": "People give thanks for the food from the harvest.",
+      "l1Hint": "hasat",
+      "l1": "Turkish"
+    },
+    {
+      "word": "ancestors",
+      "page": 27,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "Family members who lived a long time ago.",
+      "exampleSentence": "Families remember their ancestors and offer food.",
+      "l1Hint": "atalar",
+      "l1": "Turkish"
+    },
+    {
+      "word": "pick",
+      "page": 33,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To pull fruit or vegetables from a plant with your hands.",
+      "exampleSentence": "They pick fruit and dig up vegetables on the farm.",
+      "l1Hint": "toplamak, koparmak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "worried",
+      "page": 33,
+      "partOfSpeech": "adjective",
+      "simpleDefinition": "Feeling unhappy or afraid that something bad might happen.",
+      "exampleSentence": "Dad was worried because there wasn't much water.",
+      "l1Hint": "endişeli",
+      "l1": "Turkish"
+    },
+    {
+      "word": "grow",
+      "page": 33,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To become bigger or develop from a seed into a plant.",
+      "exampleSentence": "It is hard for plants to grow on Mars.",
+      "l1Hint": "büyümek, yetişmek",
+      "l1": "Turkish"
+    },
+    {
+      "word": "believe",
+      "page": 33,
+      "partOfSpeech": "verb",
+      "simpleDefinition": "To think that something is true or real.",
+      "exampleSentence": "I don't believe it! These carrots are beautiful.",
+      "l1Hint": "inanmak",
+      "l1": "Turkish"
+    },
+    {
+      "word": "stripes",
+      "page": 33,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "Long, narrow lines of color.",
+      "exampleSentence": "There are tomatoes with red and green stripes.",
+      "l1Hint": "çizgiler, şeritler",
+      "l1": "Turkish"
+    },
+    {
+      "word": "feast",
+      "page": 26,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "A big, special meal for many people to celebrate.",
+      "exampleSentence": "We can have a feast with all our friends.",
+      "l1Hint": "ziyafet, şölen",
+      "l1": "Turkish"
+    },
+    {
+      "word": "songpyeon",
+      "page": 28,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "Special half-moon shaped Korean rice cakes eaten at Chuseok.",
+      "exampleSentence": "People make special rice cakes called songpyeon.",
+      "l1Hint": "songpyeon (Kore pirinç keki)",
+      "l1": "Turkish"
+    },
+    {
+      "word": "space suit",
+      "page": 37,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "Special protective clothing astronauts wear in space.",
+      "exampleSentence": "Check your space suits before you go outside.",
+      "l1Hint": "uzay giysisi",
+      "l1": "Turkish"
+    },
+    {
+      "word": "setting",
+      "page": 31,
+      "partOfSpeech": "noun",
+      "simpleDefinition": "The time and place where a story happens.",
+      "exampleSentence": "The setting of the story is an indoor farm on Mars.",
+      "l1Hint": "mekân ve zaman (hikâyenin geçtiği yer)",
+      "l1": "Turkish"
+    }
+  ],
+  "pageByPage": [
+    {
+      "page": 24,
+      "whatIsOnIt": "Unit 2 title 'Thank You' and full-page illustration showing pairs of hands holding a game controller, a soccer ball, glowing sunlight, candies, and a house.",
+      "activityType": "discussion",
+      "instructionsAsWritten": "Activating Prior Knowledge About Thankfulness",
+      "answersIfDeterminable": "Open discussion on things people are thankful for (toys, sports, warm sunshine, treats, family home)."
+    },
+    {
+      "page": 25,
+      "whatIsOnIt": "Discussion prompts (A-E) and a photograph of a smiling Korean family in traditional hanbok with harvest fruits and grains.",
+      "activityType": "inquiry",
+      "instructionsAsWritten": "A Look at the picture. Why are they holding these things? Think about it. B Talk with your partner. C Share with the class. D Think and discuss. When do you say 'thank you'? E Look at the picture. Where do you think it is?",
+      "answersIfDeterminable": "A/B/C: They hold things they are grateful for. D: When receiving gifts or help. E: In Korea (wearing hanbok)."
+    },
+    {
+      "page": 26,
+      "whatIsOnIt": "Reading 1 part 1: 'Chuseok: Korea's Harvest Festival' (Nonfiction). Illustrated ancient Korean weaving contest and king arriving under full moon.",
+      "activityType": "story",
+      "instructionsAsWritten": "Reading an Informational Text",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 27,
+      "whatIsOnIt": "Reading 1 part 2: Modern Chuseok description. Photo of mother, father, and daughter in hanbok. Sidebar question: 'Why do people all around the world celebrate the harvest?'. Target vocabulary box: 'Words in Context'.",
+      "activityType": "vocab_definitions",
+      "instructionsAsWritten": "Find these words in the reading. What do you think they mean? weave, cloth, contest, festival, harvest, ancestors.",
+      "answersIfDeterminable": "Definitions as listed in unit glossary."
+    },
+    {
+      "page": 28,
+      "whatIsOnIt": "Reading 1 part 3: Photos of colorful songpyeon rice cakes and a large group performing Ganggangsullae (circle dance) outdoors.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read and track text about food, new clothes, and circle dances.",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 29,
+      "whatIsOnIt": "Reading 1 part 4: Photo of a man in traditional robe offering food at a charye ancestor memorial table. Sidebar: 'Is there a holiday like Chuseok in your country?'.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read about honoring ancestors and family ceremonies.",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 30,
+      "whatIsOnIt": "Explore the Reading. Activity A: Graphic organizer shaped like songpyeon. Activity B: Sentence completion. Activity C: Think and discuss.",
+      "activityType": "matching",
+      "instructionsAsWritten": "A Read and answer. How do people celebrate Chuseok? B Read and complete. Chuseok is about being thankful. What are Korean people thankful for? 1 They are thankful for ___. 2 They are also thankful for ___. C Think and discuss. What holidays or traditions do you have to show thanks?",
+      "answersIfDeterminable": "A: buy new clothes, eat songpyeon, dance and play games, remember ancestors / have a ceremony. B: 1 the food from the harvest; 2 their family / ancestors."
+    },
+    {
+      "page": 31,
+      "whatIsOnIt": "Get Ready to Read. Activity A: Table matching setting with Clara's action and feeling. Concept note on setting. Activity B: Venn diagram comparing kitchen vs farm. Activity C: Discussion on harvest time.",
+      "activityType": "questions",
+      "instructionsAsWritten": "A Look and complete. How does each place make the character act and feel? B Look and complete. Compare and contrast the settings. C Think and discuss. When is the harvest in your country?",
+      "answersIfDeterminable": "A: 1 climbing outside -> scared; 2 sitting on sofa -> laughing / happy; 3 looking out window -> crying / sad. B: In the kitchen (family, inside, bowls); On the farm (outside, plants); Both (vegetables, fruit)."
+    },
+    {
+      "page": 32,
+      "whatIsOnIt": "Reading 2 part 1: 'First Harvest' (Science Fiction). Illustration of Dad and Ruth holding strange purple carrots inside a greenhouse dome under a starry sky.",
+      "activityType": "story",
+      "instructionsAsWritten": "Reading Science Fiction",
+      "answersIfDeterminable": "Sidebar: 'What do you think the setting is?' (A farm under a dome in space / on Mars)."
+    },
+    {
+      "page": 33,
+      "whatIsOnIt": "Reading 2 part 2: Kitchen table filled with exotic colorful crops. Words in Context box (pick, worried, grow, believe, stripes).",
+      "activityType": "vocab_definitions",
+      "instructionsAsWritten": "Find these words in the reading. What do you think they mean? pick, worried, grow, believe, stripes.",
+      "answersIfDeterminable": "Sidebar: 'Why is the family so happy about the harvest?' (Because they worked hard and now have plenty of food)."
+    },
+    {
+      "page": 34,
+      "whatIsOnIt": "Reading 2 part 3: Illustration of the family and community gathering for a big buffet feast.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read dialogue between Mom and Ruth proposing a community feast.",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 35,
+      "whatIsOnIt": "Reading 2 part 4: Dad looking at oxygen gauge (O2) on the wall and dome view outside. Mom suggests making apple pie.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read dialogue about making apple pie for their very first harvest.",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 36,
+      "whatIsOnIt": "Reading 2 part 5: Ruth and August asking to play outside first. Dad waving and saying 'Oh, all right.'",
+      "activityType": "story",
+      "instructionsAsWritten": "Read dialogue asking permission to play outside.",
+      "answersIfDeterminable": "N/A (reading text)."
+    },
+    {
+      "page": 37,
+      "whatIsOnIt": "Reading 2 part 6: Mom reminding kids to check space suits and air supply. Children putting on helmets labeled 'MARS 3000' overlooking red Martian landscape.",
+      "activityType": "story",
+      "instructionsAsWritten": "Read about space suits and discover the true setting.",
+      "answersIfDeterminable": "Setting confirmed: Mars."
+    },
+    {
+      "page": 38,
+      "whatIsOnIt": "Explore the Reading. Activity A: Comprehension questions (1-5). Activity B: Mind map 'Why is it hard to grow food on Mars?'. Activity C: Draw setting on Mars. Phonics box: -st endings.",
+      "activityType": "phonics_box",
+      "instructionsAsWritten": "A Look and read. Answer the questions. B Think, write, and discuss. Why is it hard to grow food on Mars? C Imagine you live on Mars. What's different? How does it make you feel? Phonics -st: Listen and say. fast, last, lost, best, test. Now find more words ending with -st in the reading.",
+      "answersIfDeterminable": "A1: On the farm (in the dome). A2: Carrots / potatoes / corn / peas. A3: An indoor farm on Mars. A4: Ruth and August. A5: Space suits and air. B: No water, no air, cold temperatures, lots of rocks. Phonics in reading: harvest, first."
+    },
+    {
+      "page": 39,
+      "whatIsOnIt": "Think Together. Activity A: Compare and contrast chart (What's the Same? / What's Different?). Activity B: Farmer role-play. My Reading Journal: continue the story.",
+      "activityType": "reading_journal",
+      "instructionsAsWritten": "A Think and write. Compare and contrast the two harvest stories in this unit. B Think and discuss. Imagine you are a farmer. Make a table about your harvest and your celebration. My Reading Journal: Be the author. Choose Chuseok or First Harvest. Read the ending again. Write and draw what happens next.",
+      "answersIfDeterminable": "A Same: both have families, celebrate harvest, have big feasts, give thanks. Different: Chuseok is in Korea (Earth); First Harvest is on Mars (science fiction)."
+    }
+  ],
+  "comprehensionQuestions": [
+    {
+      "page": 30,
+      "question": "What was the prize for the winning team in the ancient weaving contest?",
+      "answer": "A big feast for both teams given by the king.",
+      "skill": "recall"
+    },
+    {
+      "page": 30,
+      "question": "What are two things Korean families are thankful for during Chuseok?",
+      "answer": "The food from the harvest and their family / ancestors.",
+      "skill": "recall"
+    },
+    {
+      "page": 30,
+      "question": "Why do you think families travel to their hometowns for Chuseok?",
+      "answer": "They want to celebrate together, share food, and honor their ancestors.",
+      "skill": "inference"
+    },
+    {
+      "page": 38,
+      "question": "Where does the family grow their food in 'First Harvest'?",
+      "answer": "On the farm inside a greenhouse dome on Mars.",
+      "skill": "recall"
+    },
+    {
+      "page": 38,
+      "question": "What special clothing do Ruth and August need before going outside?",
+      "answer": "They need their space suits (with helmets and air).",
+      "skill": "recall"
+    },
+    {
+      "page": 38,
+      "question": "Why was Dad worried at the beginning of 'First Harvest'?",
+      "answer": "It is hard for plants to grow there because there isn't much water.",
+      "skill": "inference"
+    },
+    {
+      "page": 39,
+      "question": "How are Chuseok and the harvest celebration on Mars similar?",
+      "answer": "Both celebrations bring families together to enjoy a feast and give thanks for their hard work and food.",
+      "skill": "opinion"
+    }
+  ],
+  "phonicsWords": [
+    "fast",
+    "last",
+    "lost",
+    "best",
+    "test",
+    "harvest",
+    "first"
+  ],
+  "grammarPoints": [
+    {
+      "pattern": "Subject + be + thankful for + [noun phrase]",
+      "examples": [
+        "They are thankful for the food from the harvest.",
+        "We are thankful for our family and our home."
+      ]
+    },
+    {
+      "pattern": "There is + singular noun / There are + plural noun",
+      "examples": [
+        "There is a red pineapple on the table.",
+        "There are pink potatoes and purple corn."
+      ]
+    },
+    {
+      "pattern": "Can we + base verb? (Polite requests)",
+      "examples": [
+        "Can we go outside and play first, please?",
+        "Can we have a feast together?"
+      ]
+    }
+  ],
+  "cultureOrContentFacts": [
+    "Chuseok is Korea's traditional mid-autumn harvest festival, celebrated on the 15th day of the 8th lunar month under the full moon.",
+    "Songpyeon are traditional rice cakes shaped like half-moons and filled with sweet sesame seeds, honey, or beans.",
+    "Ganggangsullae is an ancient Korean circle dance performed by women holding hands under the harvest moon.",
+    "Charye is a traditional memorial service where families set a table with fresh harvest foods and bow to thank ancestors.",
+    "Growing food on Mars requires pressurized greenhouses, artificial heating, recycled water, and soil enrichment because Mars is cold and dry."
+  ],
+  "pictureNotes": [
+    {
+      "page": 24,
+      "describe": "Illustrated hands presenting symbols of gratitude: video game controller, soccer ball, glowing sun, house, and assorted wrapped candies."
+    },
+    {
+      "page": 25,
+      "describe": "Photograph of a smiling mother, father, and young daughter dressed in vibrant hanbok behind a table of fresh harvest fruits and grains."
+    },
+    {
+      "page": 26,
+      "describe": "Two groups of women in traditional hanbok weaving cloth on wooden looms, and an ancient king arriving in red imperial robes."
+    },
+    {
+      "page": 28,
+      "describe": "Close-up photo of colorful green, white, and pink songpyeon, and a wide photo of dozens of women dancing Ganggangsullae in a giant circle."
+    },
+    {
+      "page": 29,
+      "describe": "Photograph of a man in traditional white coat and black hat arranging fruit, fish, and dishes on an ancestral charye table."
+    },
+    {
+      "page": 32,
+      "describe": "Father and daughter in futuristic blue and pink jumpsuits examining harvested purple carrots inside a geodesic transparent greenhouse dome."
+    },
+    {
+      "page": 35,
+      "describe": "Kitchen scene showing an oxygen meter on the wall marked 'O2' and a circular portal window looking out onto Martian domes."
+    },
+    {
+      "page": 37,
+      "describe": "Children putting on white and pink space helmets labeled 'MARS 3000' with reflections of the red planet's cratered surface."
+    }
+  ],
+  "difficultyFlags": [
+    "ancestors: Concept can be abstract for A1; explain simply as 'grandparents of our grandparents' with family tree visuals.",
+    "weave / cloth: Distinguish noun (cloth) from verb (weave); demonstrate with interlaced fingers.",
+    "setting: Students may focus only on place; remind them that setting includes both time (past, future, season) and place (Korea, Mars).",
+    "science fiction twist: Some young learners might miss that Ruth and August are on Mars until page 37; scaffold with dome and space helmet clues."
+  ]
+}

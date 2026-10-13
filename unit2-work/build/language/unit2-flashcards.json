@@ -1,0 +1,352 @@
+[
+  {
+    "word": "harvest",
+    "grade": 3,
+    "emoji": "🌾🍎",
+    "turkish": "hasat",
+    "definition": "The time of year when crops and fruits are gathered from fields.",
+    "exampleSentence": "Families celebrate the autumn harvest with delicious food.",
+    "pictureNote": "Farmers gathering golden wheat and ripe red apples under a warm sun.",
+    "imagePrompt": "A vibrant child-friendly cartoon of children in autumn clothes holding a woven basket overflowing with red apples and golden ears of wheat, bright sunny autumn day, clean transparent background."
+  },
+  {
+    "word": "weave",
+    "grade": 3,
+    "emoji": "🧵",
+    "turkish": "dokumak",
+    "definition": "To make cloth by crossing threads over and under each other on a loom.",
+    "exampleSentence": "Two teams weave colorful cloth for a month.",
+    "pictureNote": "Hands moving a wooden shuttle through bright red and blue threads.",
+    "imagePrompt": "A cute 3D cartoon wooden traditional weaving loom with colorful red, blue, and yellow silk threads being woven together, transparent background."
+  },
+  {
+    "word": "cloth",
+    "grade": 3,
+    "emoji": "🧣",
+    "turkish": "kumaş",
+    "definition": "Soft material made by weaving threads, used for making clothes.",
+    "exampleSentence": "They weaved beautiful red cloth for the king.",
+    "pictureNote": "A roll of finely woven patterned silk cloth.",
+    "imagePrompt": "A neat roll of brightly colored silk fabric with traditional geometric patterns, soft texture, 3D game icon render, transparent background."
+  },
+  {
+    "word": "contest",
+    "grade": 3,
+    "emoji": "🏆",
+    "turkish": "yarışma",
+    "definition": "A competition between teams to see who does the best work.",
+    "exampleSentence": "Who will win the royal weaving contest?",
+    "pictureNote": "Two friendly teams competing near a gleaming golden trophy.",
+    "imagePrompt": "A shining golden trophy cup with colorful confetti bursting around it, 3D game reward asset, transparent background."
+  },
+  {
+    "word": "festival",
+    "grade": 3,
+    "emoji": "🎉🏮",
+    "turkish": "festival, bayram",
+    "definition": "A special public celebration with music, dancing, and feasts.",
+    "exampleSentence": "Chuseok is Korea's harvest festival.",
+    "pictureNote": "People in festive dress dancing beneath glowing lanterns.",
+    "imagePrompt": "A cheerful village festival square decorated with glowing paper lanterns, colorful ribbons, and smiling cartoon children dancing, 3D asset render."
+  },
+  {
+    "word": "ancestors",
+    "grade": 3,
+    "emoji": "👴👵",
+    "turkish": "atalar",
+    "definition": "Family members who lived long ago in the past.",
+    "exampleSentence": "Families hold a ceremony to remember their ancestors.",
+    "pictureNote": "A framed historical picture of smiling grandparents surrounded by flowers.",
+    "imagePrompt": "A golden ornate vintage picture frame showing smiling traditional cartoon grandparents, warm glowing lanterns beside it, transparent background."
+  },
+  {
+    "word": "feast",
+    "grade": 3,
+    "emoji": "🍲🍗",
+    "turkish": "ziyafet, şölen",
+    "definition": "A large celebration meal with lots of delicious food.",
+    "exampleSentence": "The king gave a grand feast under the full moon.",
+    "pictureNote": "A long table laden with roasted dishes, fruit bowls, and sweet cakes.",
+    "imagePrompt": "A banquet table filled with delicious roast dishes, fresh fruit bowls, and steaming rice cakes on ceramic platters, 3D game render, transparent background."
+  },
+  {
+    "word": "songpyeon",
+    "grade": 3,
+    "emoji": "🥟🌕",
+    "turkish": "yarım ay pirinç keki",
+    "definition": "Traditional Korean half-moon shaped rice cakes filled with sweet sesame or beans.",
+    "exampleSentence": "We eat colorful songpyeon at Chuseok.",
+    "pictureNote": "Pastel pink, green, and white crescent rice cakes on pine needles.",
+    "imagePrompt": "A traditional ceramic dish with pastel pink, green, and white half-moon Korean rice cakes garnished with pine needles, clean 3D render, transparent background."
+  },
+  {
+    "word": "worried",
+    "grade": 3,
+    "emoji": "😟",
+    "turkish": "endişeli",
+    "definition": "Feeling unhappy and anxious because of a difficult problem.",
+    "exampleSentence": "Dad was worried because water was limited.",
+    "pictureNote": "A cartoon father looking with furrowed brows at an empty water tank.",
+    "imagePrompt": "A cute cartoon astronaut looking worried while holding an empty water gauge, soft lighting, 3D character render, transparent background."
+  },
+  {
+    "word": "limited",
+    "grade": 3,
+    "emoji": "⏳💧",
+    "turkish": "sınırlı, kısıtlı",
+    "definition": "Only a small amount available; not unlimited.",
+    "exampleSentence": "Water on the Mars base is limited.",
+    "pictureNote": "A glass measuring tube with only three blue drops of water remaining.",
+    "imagePrompt": "A futuristic glowing water canister showing a low level indicator with three glowing blue water drops, 3D game asset render, transparent background."
+  },
+  {
+    "word": "stripes",
+    "grade": 3,
+    "emoji": "🦓",
+    "turkish": "çizgiler",
+    "definition": "Long narrow bands of different colors.",
+    "exampleSentence": "The space peppers had bright yellow stripes.",
+    "pictureNote": "A round green bell pepper with bold yellow racing stripes.",
+    "imagePrompt": "A whimsical cartoon vegetable shaped like a green pepper with vibrant neon-yellow stripes painted down its sides, 3D game asset render, transparent background."
+  },
+  {
+    "word": "space suit",
+    "grade": 3,
+    "emoji": "👨‍🚀",
+    "turkish": "uzay giysisi",
+    "definition": "Special pressurized clothing that provides oxygen to astronauts.",
+    "exampleSentence": "Check your space suit before opening the airlock.",
+    "pictureNote": "A child astronaut in a sleek white space suit with orange safety patches.",
+    "imagePrompt": "A cute, friendly child-sized white astronaut suit with cyan LED lines and an orange backpack, 3D character asset render, transparent background."
+  },
+  {
+    "word": "helmet",
+    "grade": 3,
+    "emoji": "🪖✨",
+    "turkish": "kask",
+    "definition": "A hard protective head covering with an oxygen visor.",
+    "exampleSentence": "Lock your helmet so you can breathe fresh air.",
+    "pictureNote": "An astronaut helmet with a shiny gold reflective bubble visor.",
+    "imagePrompt": "A rounded white space helmet with a glowing golden glass visor reflecting distant stars, 3D game item render, transparent background."
+  },
+  {
+    "word": "setting",
+    "grade": 3,
+    "emoji": "🗺️⏰",
+    "turkish": "olay yeri ve zamanı",
+    "definition": "Where and when a story takes place.",
+    "exampleSentence": "The surprise setting of the story is Mars in the year 3000.",
+    "pictureNote": "A treasure map crossed with a ticking clock showing location and time.",
+    "imagePrompt": "An antique compass resting on a futuristic holographic star map, representing place and time, 3D icon render, transparent background."
+  },
+  {
+    "word": "fast",
+    "grade": 3,
+    "emoji": "⚡🐇",
+    "turkish": "hızlı",
+    "definition": "Moving with great speed.",
+    "exampleSentence": "The white rabbit was very fast.",
+    "pictureNote": "A cartoon hare running with lightning dust behind its heels.",
+    "imagePrompt": "A cute white cartoon bunny running with swift motion blur and lightning bolts around its paws, 3D render, transparent background."
+  },
+  {
+    "word": "last",
+    "grade": 3,
+    "emoji": "🏁",
+    "turkish": "son, sonuncu",
+    "definition": "Coming after all others at the end.",
+    "exampleSentence": "December is the last month of the year.",
+    "pictureNote": "A black and white checkered finish flag.",
+    "imagePrompt": "A waving checkered finish line flag crossed with a golden trophy medal, 3D game asset render, transparent background."
+  },
+  {
+    "word": "best",
+    "grade": 3,
+    "emoji": "🥇",
+    "turkish": "en iyi",
+    "definition": "Of the highest quality or excellence.",
+    "exampleSentence": "She is my best friend in the class.",
+    "pictureNote": "A sparkling number one gold ribbon medal.",
+    "imagePrompt": "A shiny number 1 gold medal with a blue silk ribbon, sparkling stars, 3D game asset render, transparent background."
+  },
+  {
+    "word": "test",
+    "grade": 3,
+    "emoji": "📝⭐",
+    "turkish": "test, sınav",
+    "definition": "An exam or exercise to check knowledge.",
+    "exampleSentence": "We passed our English test with 100 points.",
+    "pictureNote": "A paper quiz with an A+ star grade stamped at the top.",
+    "imagePrompt": "A neat test paper with checkmarks and a red A+ star stamp, 3D icon render, transparent background."
+  },
+  {
+    "word": "deciduous",
+    "grade": 4,
+    "emoji": "🍂🌳",
+    "turkish": "yaprak döken ağaç",
+    "definition": "Trees that lose their broad flat leaves every year in autumn.",
+    "exampleSentence": "Deciduous trees turn orange and yellow before winter.",
+    "pictureNote": "A magnificent oak tree covered in golden, orange, and red autumn leaves.",
+    "imagePrompt": "A majestic cartoon oak tree in peak autumn foliage with swirling red, orange, and yellow leaves falling gently to the ground, 3D render, transparent background."
+  },
+  {
+    "word": "coniferous",
+    "grade": 4,
+    "emoji": "🌲❄️",
+    "turkish": "iğne yapraklı ağaç",
+    "definition": "Evergreen trees with sharp needles and cones that survive freezing cold.",
+    "exampleSentence": "Coniferous forests grow in cold northern regions.",
+    "pictureNote": "A tall triangular pine tree covered in white frost and snow.",
+    "imagePrompt": "A tall triangular evergreen pine tree dusted with pristine white snow, sharp needles and brown cones visible, 3D render, transparent background."
+  },
+  {
+    "word": "hibernate",
+    "grade": 4,
+    "emoji": "🐻💤",
+    "turkish": "kış uykusuna yatmak",
+    "definition": "To sleep deeply throughout the winter to conserve energy.",
+    "exampleSentence": "Bears hibernate in underground dens until spring.",
+    "pictureNote": "A cozy cartoon brown bear sleeping curled up inside a dark rock den.",
+    "imagePrompt": "A sweet cartoon brown bear curled up asleep in a cozy den made of dry leaves and moss, with snow outside, 3D render, transparent background."
+  },
+  {
+    "word": "survive",
+    "grade": 4,
+    "emoji": "🛡️🌱",
+    "turkish": "hayatta kalmak",
+    "definition": "To continue to live through harsh weather or difficult conditions.",
+    "exampleSentence": "Animals adapt so they can survive the sub-zero winter.",
+    "pictureNote": "A green sprout pushing bravely through thick winter ice.",
+    "imagePrompt": "A resilient green plant sprout growing through a crack in blue winter ice, surrounded by a glowing protective golden shield, 3D render, transparent background."
+  },
+  {
+    "word": "adapt",
+    "grade": 4,
+    "emoji": "🐇🤍",
+    "turkish": "uyum sağlamak",
+    "definition": "To change body features or behavior to fit a new climate.",
+    "exampleSentence": "The snowshoe hare adapts by turning pure white in winter.",
+    "pictureNote": "A hare showing half brown summer fur and half white winter fur.",
+    "imagePrompt": "A cute snowshoe hare sitting on snow with thick white winter camouflage fur, 3D game character render, transparent background."
+  },
+  {
+    "word": "swallow",
+    "grade": 4,
+    "emoji": "🕊️",
+    "turkish": "kırlangıç kuşu",
+    "definition": "A small migratory songbird with long pointed wings and a forked tail.",
+    "exampleSentence": "A swallow built its mud nest under the roof.",
+    "pictureNote": "A graceful blue-black bird with a red throat and forked tail in flight.",
+    "imagePrompt": "A graceful cartoon swallow bird with deep glossy blue feathers, a reddish throat, and a distinct forked tail flying gracefully, 3D render, transparent background."
+  },
+  {
+    "word": "slingshot",
+    "grade": 4,
+    "emoji": "🪵🎯",
+    "turkish": "sapan",
+    "definition": "A Y-shaped wooden stick with an elastic band used to shoot stones.",
+    "exampleSentence": "Wen Shu aimed at the nest with a wooden slingshot.",
+    "pictureNote": "A smooth carved Y-shaped wooden toy slingshot with red rubber band.",
+    "imagePrompt": "A carved wooden Y-shaped toy slingshot with a red rubber elastic band, 3D game item render, transparent background."
+  },
+  {
+    "word": "paid",
+    "grade": 4,
+    "emoji": "💰",
+    "turkish": "ödedi",
+    "definition": "Past tense of pay: gave money for medicine or care.",
+    "exampleSentence": "Go Ne paid the vet with gold coins from the plant.",
+    "pictureNote": "A hand placing three gleaming gold coins into a doctor's palm.",
+    "imagePrompt": "A small brown leather coin purse spilling out gleaming golden coins, 3D game item render, transparent background."
+  },
+  {
+    "word": "vet",
+    "grade": 4,
+    "emoji": "🩺🐕",
+    "turkish": "veteriner",
+    "definition": "An animal doctor who cures and cares for sick pets and wildlife.",
+    "exampleSentence": "He rode his bicycle to the vet to heal the bird.",
+    "pictureNote": "A kind doctor wearing a green coat and stethoscope holding a puppy.",
+    "imagePrompt": "A smiling cartoon animal doctor wearing a white lab coat with a stethoscope around their neck, holding a tiny wrapped bandage, 3D render, transparent background."
+  },
+  {
+    "word": "roof",
+    "grade": 4,
+    "emoji": "🏠",
+    "turkish": "çatı",
+    "definition": "The top wooden or tiled covering of a house.",
+    "exampleSentence": "The swallows nested safely under the wooden roof.",
+    "pictureNote": "A traditional tiled eave of a cozy village cottage.",
+    "imagePrompt": "The tiled eaves and roof of a cozy wooden village house with a little swallow nest tucked under the edge, 3D asset render, transparent background."
+  },
+  {
+    "word": "needle",
+    "grade": 4,
+    "emoji": "🪡🌲",
+    "turkish": "iğne yaprak",
+    "definition": "The thin, sharp, waxy leaf of a pine or spruce tree.",
+    "exampleSentence": "Coniferous trees have needles instead of broad leaves.",
+    "pictureNote": "A close-up sprig of green pine needles with frost crystals.",
+    "imagePrompt": "A crisp close-up of dark green pine needles covered in sparkling morning frost crystals, 3D render, transparent background."
+  },
+  {
+    "word": "cone",
+    "grade": 4,
+    "emoji": "🪵",
+    "turkish": "kozalak",
+    "definition": "The hard, woody fruit of a pine tree that protects seeds.",
+    "exampleSentence": "Pine trees produce hard cones instead of flowers.",
+    "pictureNote": "A brown woody pinecone with open symmetrical scales.",
+    "imagePrompt": "A detailed brown pinecone with symmetrical woody scales, resting on a pine sprig, 3D game asset render, transparent background."
+  },
+  {
+    "word": "biome",
+    "grade": 4,
+    "emoji": "🌍🌲",
+    "turkish": "biyom (büyük yaşam alanı)",
+    "definition": "A large community of plants and animals living in a specific climate.",
+    "exampleSentence": "The taiga is a vast coniferous forest biome.",
+    "pictureNote": "A small globe with forest, desert, and ocean zones clearly marked.",
+    "imagePrompt": "A miniature floating 3D planet showing half lush green forest and half snowy white evergreen trees, glowing softly, transparent background."
+  },
+  {
+    "word": "rain",
+    "grade": 4,
+    "emoji": "🌧️",
+    "turkish": "yağmur",
+    "definition": "Water falling in drops from clouds in the sky.",
+    "exampleSentence": "The cool autumn rain fell on the forest floor.",
+    "pictureNote": "A cute blue cloud raining soft blue drops over a green sprout.",
+    "imagePrompt": "A charming cartoon raincloud with sparkling blue raindrops falling onto a cheerful green leaf, 3D render, transparent background."
+  },
+  {
+    "word": "train",
+    "grade": 4,
+    "emoji": "🚂",
+    "turkish": "tren",
+    "definition": "A steam locomotive pulling railway cars on iron tracks.",
+    "exampleSentence": "We rode the fast train through the mountain valley.",
+    "pictureNote": "A vintage steam engine blowing white puffs of smoke.",
+    "imagePrompt": "A colorful steam train engine chugging on tracks with cheerful puffs of white steam coming from the chimney, 3D render, transparent background."
+  },
+  {
+    "word": "mail",
+    "grade": 4,
+    "emoji": "✉️",
+    "turkish": "posta, mektup",
+    "definition": "Letters and packages sent through a post carrier.",
+    "exampleSentence": "The postal carrier delivered a letter in the morning mail.",
+    "pictureNote": "A white envelope sealed with a red wax heart stamp.",
+    "imagePrompt": "A classic white paper postal envelope with a golden postage stamp and red wax seal, 3D icon render, transparent background."
+  },
+  {
+    "word": "tail",
+    "grade": 4,
+    "emoji": "🐕",
+    "turkish": "kuyruk",
+    "definition": "The flexible back part of an animal's body.",
+    "exampleSentence": "The happy puppy wagged its fluffy tail.",
+    "pictureNote": "A golden retriever puppy wagging its soft bushy tail.",
+    "imagePrompt": "A playful golden cartoon puppy looking back with a happy smile while wagging its fluffy tail, 3D character render, transparent background."
+  }
+]

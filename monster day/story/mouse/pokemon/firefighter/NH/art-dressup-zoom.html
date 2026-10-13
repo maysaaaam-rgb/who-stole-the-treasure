@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Dress-up zoom (offline)</title>
+<style>body{margin:0;background:#0b1020;color:#fff;font:600 12px system-ui;padding:8px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.cell{background:linear-gradient(#f3ecff,#e6f0ff);border-radius:12px;color:#223;padding:4px;text-align:center}</style></head><body>
+<div class="grid" id="g"></div>
+<script src="js/monster-renderer.js"></script><script src="js/monster-anchors.js"></script><script src="js/monster-dressup.js"></script>
+<script>
+var q=new URLSearchParams(location.search);
+var items=(q.get('items')||'').split(',').filter(Boolean);            // e.g. hat-crown,glasses-round
+var color=(q.get('colors')||'blue,green,purple,orange').split(',');
+var stage=q.get('stage')||'baby';
+var slot={hat:'hat',glasses:'glasses',neck:'accessory',acc:'accessory',bp:'backpack',clothing:'clothing'};
+var eq={};items.forEach(function(i){eq[slot[i.split('-')[0]]]=i;});if(q.get('bg'))eq.background='bg-'+q.get('bg');if(q.get('aura'))eq.aura='aura-'+q.get('aura');
+document.getElementById('g').innerHTML=color.map(function(c){return '<div class="cell">'+MonsterDressUp.render({color:c,stage:stage,equipped:eq,size:420,animated:false,showBackground:!!q.get('bg')})+'<div>'+c+' / '+stage+'</div></div>'}).join('');
+</script></body></html>

@@ -1,0 +1,63 @@
+envelope_invite.png: OK - Cream envelope with full-moon golden wax seal, zero text, clean sticker outline on #e8e8e8.
+min_ji.png: OK - 8-year-old Korean girl in authentic pastel yellow and pink hanbok, warm wave, bright smile.
+king.png: OK - Kind elderly Korean king in red gonryongpo robe and black winged cap, hand raised in gentle choosing gesture.
+loom_weaving.png: OK - Traditional wooden handloom with half-woven striped cloth (red, blue, yellow) and wooden shuttle.
+cloth_roll.png: OK - Rolled bolt of colorful traditional striped fabric tied with a golden ribbon bow.
+moon_full.png: OK - Luminous full harvest moon with soft craters and warm golden-yellow glow.
+feast_table.png: OK - Low wooden table overflowing with songpyeon, persimmons, rice, stew, and chestnuts.
+songpyeon.png: OK - Ceramic dish with half-moon rice cakes in pastel pink, green, and white over fresh pine needles.
+family_travel.png: OK - Korean family of four in holiday hanbok walking together carrying bojagi gift bundles.
+circle_dance.png: OK - Five children in colorful hanbok holding hands dancing in a circle (Ganggangsullae) from top angle.
+bow_ancestors.png: OK - Respectful ceremonial deep bow before a low table of apples and songpyeon, gentle and solemn.
+lantern.png: OK - Glowing round red-orange silk paper lantern with golden knot tassel.
+thank_you_kid.png: OK - Smiling child with hands clasped together in gratitude, wearing pastel hanbok top.
+thanks_family.png: OK - Loving family of four embracing in warm knit sweaters with happy smiles.
+thanks_friends.png: OK - Two best friends holding hands, smiling at each other in casual hoodies and jeans.
+thanks_food.png: OK - Steaming bowl of white rice with chopsticks resting on the rim beside a shiny red apple.
+thanks_home.png: OK - Cozy cottage with a glowing warm heart-shaped front window and terracotta roof.
+thanks_school.png: OK - Cheerful schoolhouse with bell tower and waving blank flag, zero words or text.
+thanks_pets.png: OK - Fluffy golden puppy and ginger kitten snuggling affectionately side by side.
+thanks_toys.png: OK - Plush brown teddy bear sitting beside a toy wooden block with star/heart shapes (no letters).
+thanks_books.png: OK - Stack of three clean hardcover books in red, green, and blue with a ribbon bookmark, no text.
+thanks_music.png: OK - Colorful toy drum with wooden drumsticks and floating 3D musical note shapes (no letters).
+thanks_sun.png: OK - Smiling golden-yellow cartoon sun with rosy cheeks and rounded sunbeams.
+thanks_sports.png: OK - Classic black-and-white soccer ball with clean pentagon pattern and no logos.
+thanks_teacher.png: OK - Friendly teacher with glasses holding a blank-cover book and waving warmly.
+bg_moon_village.png: OK - Peaceful 16:9 night hanok village with glowing windows, no characters, empty sky on upper right for moon.
+bg_harvest_field.png: OK - 16:9 expansive golden terraced rice paddies with calm footway under autumn blue sky.
+bg_festival_yard.png: OK - 16:9 traditional courtyard decorated with overhead strings of glowing paper lanterns at twilight.
+pink_potatoes.png: OK - Three bright hot-pink potatoes with cute cartoon eyes and garden soil specks.
+purple_corn.png: OK - Exactly two ears of deep purple corn with peeling green husks.
+purple_carrots.png: OK - Three bright purple carrots with bushy green tops and cheerful little smiles.
+orange_peas.png: OK - Three open green pea pods displaying plump neon-orange peas inside.
+striped_tomatoes.png: OK - Three plump tomatoes with distinct red-and-green vertical stripes and green stems.
+apple_pie.png: OK - Fresh-baked golden apple pie with lattice crust, one slice cut out, and rising steam.
+mom_kind.png: OK - Kind 38-year-old mother with brown ponytail in practical farmer shirt, trousers, and boots.
+dad_worried.png: OK - Thoughtful 40-year-old father with hand on chin in gentle concern, wearing a work vest.
+ruth_happy.png: OK - 9-year-old girl with curly brown hair, denim overalls, and big excited smile waving.
+august_happy.png: OK - 7-year-old boy in yellow t-shirt and green cargo shorts with a big grin waving.
+ruth_spacesuit.png: OK - Same curly-haired Ruth in clean white spacesuit and clear round helmet with zero text/markings.
+august_spacesuit.png: OK - Same August in clean white spacesuit and clear round helmet, waving hand.
+mom_spacesuit.png: OK - Same mother with brown ponytail in white spacesuit and clear round helmet, smiling gently.
+dome_greenhouse.png: OK - Geodesic transparent glass dome full of green tomato plants on Martian red soil.
+water_tank_low.png: OK - Transparent water cylinder with shallow puddle at bottom and cute worried water-drop face.
+planet_earth.png: OK - Stylized 3D clay globe with blue oceans, green continents, and puffy white clouds.
+planet_mars.png: OK - Stylized 3D clay Mars globe with rusty-red surface, dark canyon patches, and white ice cap.
+rain_cloud.png: OK - Soft grey cartoon cloud with smiling face and falling blue raindrops.
+apple_tree.png: OK - Sturdy cartoon apple tree loaded with shiny red apples and lush green foliage.
+red_rocks.png: OK - Cluster of terracotta-red Martian boulders and dusty rusty sand.
+seedling_sun.png: OK - Tiny green sprout with glistening water drop on a soil mound under warm sunbeams.
+sky_blue_sun.png: OK - Cheerful smiling sun next to a happy white cloud in a patch of blue sky.
+bg_window_earth.png: OK - 16:9 Earth landscape of green rolling hills and a single apple tree under clear blue sky, no window frame.
+bg_window_mars.png: FAILED - Generation halted due to upstream model capacity quota exhaustion (HTTP 429: quota resets in ~1h20m).
+bg_mars_surface.png: FAILED - Generation skipped due to upstream model capacity quota exhaustion (HTTP 429).
+bg_farm_inside.png: FAILED - Generation skipped due to upstream model capacity quota exhaustion (HTTP 429).
+
+Summary:
+- Total pictures: 54
+- OK: 51
+- FAILED: 3 (bg_window_mars.png, bg_mars_surface.png, bg_farm_inside.png due to API capacity quota exhaustion after generating 51 images)
+- Weakest looking pictures among OK set (honest critique for potential re-roll):
+  1. thanks_school.png: Clean and friendly, but has a small rainbow flag rather than a school pennant.
+  2. seedling_sun.png: Sticker contour wraps the beam of sunlight in a somewhat angular corner at the top left.
+  3. mom_spacesuit.png: Looks great and matches the ponytail, but hands are held slightly rigid at waist level.

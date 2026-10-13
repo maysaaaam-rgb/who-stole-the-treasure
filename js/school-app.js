@@ -4373,22 +4373,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
-    { title: 'Unit 3: Arctic Words and Word City (Grade 3 smartboard lessons)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Arctic-Words-and-Word-City-Plans', word: true },
+    { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
+    { title: 'Unit 3 homework launch: The Arctic Rescue (How Much Is It?)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Arctic-Rescue-Homework-Plan', word: true },
+    { title: 'Unit 3 homework launch: The Arctic Rescue (The Bear and I)', grade: 'Grade 3', date: '2026-10-13', file: 'Grade3-Unit3-Arctic-Rescue-Homework-Plan', word: true },
+    { title: 'Unit 3: Arctic Words (Grade 3 smartboard lesson)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Arctic-Words-Lesson-Plan', word: true },
+    { title: 'Unit 3: Word City (Grade 3 smartboard lesson)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Word-City-Lesson-Plan', word: true },
     { title: 'Unit 3: Arctic Board Game (It Keeps Changing, The Bear and I)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Board-Game-Lesson-Plan', word: true },
-    { title: 'Unit 3: Money Board Game (How Much Is It?)', grade: 'Grade 4', date: '2026-10-12', file: 'Grade4-Unit3-Board-Game-Lesson-Plan', word: true },
-    { title: 'Week 4: Daphne the School Detective (School Life)', grade: 'Grade 3', date: '2026-10-09', file: 'Grade3-Week4-School-Life-Lesson-Plan', word: true },
-    { title: 'Unit 3 lessons 1-4: How Much Is It?, Before Money Was Money, Money Changes, Design the Next Money', grade: 'Grade 4', date: '2026-10-08', file: 'Grade3-Unit3-Lesson-Plans', word: true },
-    { title: 'Week 4: Captain Quiet’s Space Mission (Classroom Rules)', grade: 'Grade 4', date: '2026-10-09', file: 'Grade4-Week4-Classroom-Rules-Lesson-Plan', word: true },
-    { title: 'Unit 3 lessons 1-4: It Keeps Changing, The Bear and I, The Ice Cracks, Explore the Poem', grade: 'Grade 3', date: '2026-10-08', file: 'Grade4-Unit3-Lesson-Plans', word: true },
-        { title: 'Week Song: learn, move, sing (4 short sessions)', grade: 'Grade 4', date: '2026-10-07', file: 'Grade4-Week-Song-Lesson-Plans', word: true },
-    { title: 'Watch and Answer: Mr Bean, Super Trolley (1 lesson)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Mr-Bean-Watch-and-Answer-Lesson-Plan', word: true },
-    { title: 'Chuseok Cooking and Treats (Week 2, 2 lessons)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Chuseok-Cooking-Lesson-Plans', word: true },
-    { title: 'Recipe cards and parent letter (cooking home project)', grade: 'Grade 3', date: '2026-10-07', file: 'Grade3-Cooking-Recipe-Cards-and-Letter', word: false, kind: 'Printable' },
-    { title: 'Units 1 and 2 Revision (Revision Quest + Worksheet and Store)', grade: 'Grade 4', date: '2026-10-06', file: 'Grade4-Units1-2-Revision-Lesson-Plans', word: true },
-    { title: 'Revision worksheet A, B and answer key', grade: 'Grade 4', date: '2026-10-06', file: 'Grade4-Revision-Worksheet-A-B-Key', word: false, kind: 'Printable' },
-    { title: 'Chuseok Games Arcade Day', grade: 'Grade 3', date: '2026-10-05', file: 'Grade3-Chuseok-Arcade-Day-Lesson-Plan', word: true },
-    { title: 'Unit 2 lessons: Chuseok Moon Feast and First Harvest', grade: 'Grade 3', date: '2026-10-05', file: 'Grade3-Unit2-Lesson-Plans', word: true },
-    { title: 'Unit 2 lessons: Forest Rangers and The Swallow\u2019s Gift', grade: 'Grade 4', date: '2026-10-05', file: 'Grade4-Unit2-Lesson-Plans', word: true }
+    { title: 'Unit 3: Money Board Game (How Much Is It?)', grade: 'Grade 4', date: '2026-10-12', file: 'Grade4-Unit3-Board-Game-Lesson-Plan', word: true }
   ];
   function renderLessonPlansSection() {
     const now = Date.now();

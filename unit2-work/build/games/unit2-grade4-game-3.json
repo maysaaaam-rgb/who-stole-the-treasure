@@ -1,0 +1,666 @@
+{
+  "gameName": "The 'ai' Rain Train",
+  "grade": 4,
+  "pitch": "Fuel the steam locomotive across phonetic bridges by matching vowel team 'ai' words (/eɪ/) and author's purpose signals.",
+  "targetFormula": "The rain on the train made the snail wait on the main trail.",
+  "topic": "Vowel team 'ai' (/eɪ/): rain, train, mail, tail, nail, sail, paint, wait, main, chain; contrast with short a; author's purpose",
+  "arc": {
+    "discovery": "Phase 1: Steam Gauge Radar scans train stations for cargo boxes marked with vowel team 'ai'.",
+    "workbench": "Phase 2: Track Switching Workbench requires teams to sort minimal pairs (ran vs rain, pan vs pain) and fix railway signals.",
+    "karaoke": "Phase 3: The Train Conductor Teleprompter prompts team drivers to announce station arrivals with rich long-a vowel clarity."
+  },
+  "mechanics": "High-energy train navigation arcade on the smartboard. Correct vowel choices pump steam into the boiler (+5 XP). Confusing short /æ/ and long /eɪ/ makes the train whistle blow a soft steam puff with a helpful vowel hint.",
+  "feedback": {
+    "correct": [
+      "All aboard! Choo-choo! +5 XP! 🚂",
+      "Steam pressure at maximum power! 💨",
+      "Vowel track switch cleared! 🛤️",
+      "Clear long /eɪ/ sound, Engineer! 🌟",
+      "Master Train Conductor unlocked! 🏆"
+    ],
+    "softFail": [
+      "Listen closely! Is it short /æ/ like 'pan' or long /eɪ/ like 'pain'? 👂",
+      "Remember: 'A' and 'I' together say the long A sound! 🅰️",
+      "Look at the spelling: does it have 'ai' in the middle? 🔎",
+      "Keep the sound long and smooth like a train whistle! 🎶",
+      "Check the author's purpose clue! 💡"
+    ],
+    "levelUp": "Golden Express Engine unlocked! Level Up to Chief Railway Engineer! 🚂👑"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Team conductors pull interactive whistle cords, flip track switches, and load cargo crates labeled with 'ai'.",
+    "classParticipation": "Desks pull imaginary train whistles 'Choo-choo!' and make long /eɪ/ gestures when a target word appears.",
+    "version15min": "10 rounds focusing on minimal pair recognition and word building.",
+    "version30min": "Full 30-round championship including author's purpose classification, listening discernment, and live announcements."
+  },
+  "words": [
+    {
+      "word": "rain",
+      "emoji": "🌧️",
+      "turkish": "yağmur",
+      "definition": "Water falling in drops from clouds in the sky.",
+      "exampleSentence": "The heavy rain fell on the forest."
+    },
+    {
+      "word": "train",
+      "emoji": "🚂",
+      "turkish": "tren",
+      "definition": "A line of connected railway cars pulled by an engine.",
+      "exampleSentence": "We rode the fast train across the valley."
+    },
+    {
+      "word": "mail",
+      "emoji": "✉️",
+      "turkish": "posta, mektup",
+      "definition": "Letters and packages sent through a postal service.",
+      "exampleSentence": "The postman delivered our mail."
+    },
+    {
+      "word": "tail",
+      "emoji": "🐕",
+      "turkish": "kuyruk",
+      "definition": "The flexible back part of an animal's body.",
+      "exampleSentence": "The happy puppy wagged its tail."
+    },
+    {
+      "word": "paint",
+      "emoji": "🎨",
+      "turkish": "boyamak, boya",
+      "definition": "Colored liquid used to decorate surfaces or create art.",
+      "exampleSentence": "We will paint the classroom wall."
+    },
+    {
+      "word": "wait",
+      "emoji": "⏳",
+      "turkish": "beklemek",
+      "definition": "To stay in a place until an event occurs.",
+      "exampleSentence": "Please wait at the station platform."
+    },
+    {
+      "word": "main",
+      "emoji": "⭐",
+      "turkish": "ana, başlıca",
+      "definition": "Most important or primary.",
+      "exampleSentence": "This is the main road through the village."
+    },
+    {
+      "word": "chain",
+      "emoji": "⛓️",
+      "turkish": "zincir",
+      "definition": "A series of connected metal rings or links.",
+      "exampleSentence": "The bicycle has a metal chain."
+    }
+  ],
+  "rounds": [
+    {
+      "type": "choose",
+      "prompt": "Which word has the vowel team 'ai' (/eɪ/ sound)?",
+      "options": [
+        "train",
+        "trap",
+        "tram",
+        "track"
+      ],
+      "answer": "train",
+      "hintEnglish": "Listen for the long /eɪ/ sound.",
+      "hintTurkish": "'ai' ses grubu olan kelime: train.",
+      "audioText": "Which word has the vowel team ai?",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Minimal pair: PAN (short a) <---> _____ (long ai)",
+      "options": [
+        "pain",
+        "pin",
+        "pen",
+        "pun"
+      ],
+      "answer": "pain",
+      "hintEnglish": "Hurting feeling with 'ai'.",
+      "hintTurkish": "Pan (tava) sözcüğünün 'ai' ile olan minimal çifti: pain (ağrı/acı).",
+      "audioText": "What is the minimal pair for pan with ai?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Water falling from the clouds is called _____.",
+      "options": [
+        "rain",
+        "ran",
+        "ring",
+        "rug"
+      ],
+      "answer": "rain",
+      "hintEnglish": "Weather word with 'ai'.",
+      "hintTurkish": "Bulutlardan düşen su: rain.",
+      "audioText": "Water falling from the clouds is called rain.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Minimal pair: RAN (past of run) <---> _____ (weather)",
+      "options": [
+        "rain",
+        "rein",
+        "run",
+        "ray"
+      ],
+      "answer": "rain",
+      "hintEnglish": "Sounds like /reɪn/.",
+      "hintTurkish": "Ran (koştu) vs Rain (yağmur).",
+      "audioText": "What word contrasts with ran?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which animal has a bushy _____? (dog, fox, squirrel)",
+      "options": [
+        "tail",
+        "tall",
+        "tell",
+        "toll"
+      ],
+      "answer": "tail",
+      "hintEnglish": "Body part ending.",
+      "hintTurkish": "Kuyruk: tail.",
+      "audioText": "Which animal has a bushy tail?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The letter carrier brings the morning _____.",
+      "options": [
+        "mail",
+        "mill",
+        "meal",
+        "mall"
+      ],
+      "answer": "mail",
+      "hintEnglish": "Letters in an envelope.",
+      "hintTurkish": "Mektup ve posta: mail.",
+      "audioText": "The letter carrier brings the morning mail.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "What sound does the vowel team 'ai' make in 'rain' and 'sail'?",
+      "options": [
+        "Long A (/eɪ/)",
+        "Short A (/æ/)",
+        "Long E (/iː/)",
+        "Short O (/ɒ/)"
+      ],
+      "answer": "Long A (/eɪ/)",
+      "hintEnglish": "Like the letter name A.",
+      "hintTurkish": "İngilizcedeki 'A' harfinin adı gibi: /eɪ/ sesi.",
+      "audioText": "What sound does the vowel team ai make?",
+      "skill": "phonics"
+    },
+    {
+      "type": "sort",
+      "prompt": "Which word does NOT have the vowel team 'ai'?",
+      "options": [
+        "cat",
+        "sail",
+        "nail",
+        "mail"
+      ],
+      "answer": "cat",
+      "hintEnglish": "Cat has a short /æ/ sound.",
+      "hintTurkish": "Cat kelimesinde 'ai' yoktur.",
+      "audioText": "Which word does not have the vowel team ai?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'The train arrived on time.'",
+      "options": [
+        "The train arrived on time.",
+        "The tram arrived on time.",
+        "The track arrived on time.",
+        "The rain arrived on time."
+      ],
+      "answer": "The train arrived on time.",
+      "hintEnglish": "Listen for /treɪn/.",
+      "hintTurkish": "Train kelimesini dinleyin.",
+      "audioText": "The train arrived on time.",
+      "skill": "listening"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "We use a brush and colorful _____ to make pictures.",
+      "options": [
+        "paint",
+        "pant",
+        "pin",
+        "pot"
+      ],
+      "answer": "paint",
+      "hintEnglish": "Liquid art color.",
+      "hintTurkish": "Boya yapmak: paint.",
+      "audioText": "We use paint to make pictures.",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Minimal pair: TAIL <---> TALE",
+      "options": [
+        "Same pronunciation /eɪ/, different spelling and meaning",
+        "Completely different sounds",
+        "Opposite meanings",
+        "Both mean bird"
+      ],
+      "answer": "Same pronunciation /eɪ/, different spelling and meaning",
+      "hintEnglish": "Homophones.",
+      "hintTurkish": "Sesteş (homofon): Okunuşları aynı, yazılışları ve anlamları farklı.",
+      "audioText": "What is true about tail and tale?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "When an author writes a science book about forest biomes, what is their purpose?",
+      "options": [
+        "To inform readers with facts",
+        "To make readers laugh with silly jokes",
+        "To write a song",
+        "To sell toys"
+      ],
+      "answer": "To inform readers with facts",
+      "hintEnglish": "Share information.",
+      "hintTurkish": "Gerçek bilgilerle bilgilendirmek (to inform).",
+      "audioText": "What is the author's purpose in a science book?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Please _____ on the platform until the train stops.",
+      "options": [
+        "wait",
+        "wet",
+        "wit",
+        "watt"
+      ],
+      "answer": "wait",
+      "hintEnglish": "Stay until ready.",
+      "hintTurkish": "Beklemek: wait.",
+      "audioText": "Please wait on the platform.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which word means the primary or most important idea?",
+      "options": [
+        "main",
+        "man",
+        "men",
+        "mean"
+      ],
+      "answer": "main",
+      "hintEnglish": "Main idea = most important.",
+      "hintTurkish": "Ana, başlıca: main.",
+      "audioText": "Which word means primary or most important?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [The] [steam] [train] [is] [fast.]",
+      "options": [
+        "The steam train is fast.",
+        "Steam train is fast the.",
+        "Is fast the steam train.",
+        "The is fast steam train."
+      ],
+      "answer": "The steam train is fast.",
+      "hintEnglish": "Subject + verb + adjective.",
+      "hintTurkish": "The steam train is fast.",
+      "audioText": "The steam train is fast.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Do you like to walk in the rain?'",
+      "options": [
+        "Do you like to walk in the rain?",
+        "Do you like to walk in the ran?",
+        "Do you like to walk in the lane?",
+        "Do you like to walk in the pain?"
+      ],
+      "answer": "Do you like to walk in the rain?",
+      "hintEnglish": "Listen for /reɪn/.",
+      "hintTurkish": "Yağmurda yürümeyi sever misin?",
+      "audioText": "Do you like to walk in the rain?",
+      "skill": "listening"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "A ship with big white sheets can _____ across the sea.",
+      "options": [
+        "sail",
+        "sell",
+        "seal",
+        "sole"
+      ],
+      "answer": "sail",
+      "hintEnglish": "Travel on water with wind.",
+      "hintTurkish": "Yelken açmak: sail.",
+      "audioText": "A ship can sail across the sea.",
+      "skill": "phonics"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: CHAIN",
+      "options": [
+        "Metal rings linked together",
+        "A wooden spoon",
+        "A paper envelope",
+        "A glass cup"
+      ],
+      "answer": "Metal rings linked together",
+      "hintEnglish": "Linked metal.",
+      "hintTurkish": "Birbirine bağlı metal halkalar, zincir.",
+      "audioText": "What is a chain?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "When an author tells an exciting story about a magic swallow, what is their purpose?",
+      "options": [
+        "To entertain the readers",
+        "To give a math quiz",
+        "To explain how to build a car",
+        "To test spelling"
+      ],
+      "answer": "To entertain the readers",
+      "hintEnglish": "Provide enjoyment and story moral.",
+      "hintTurkish": "Okuyucuları eğlendirmek (to entertain).",
+      "audioText": "When an author tells an exciting story, what is their purpose?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "We used a hammer and a sharp metal _____ to hang the picture.",
+      "options": [
+        "nail",
+        "nil",
+        "null",
+        "net"
+      ],
+      "answer": "nail",
+      "hintEnglish": "Metal fastener.",
+      "hintTurkish": "Çivi: nail.",
+      "audioText": "We used a hammer and a nail.",
+      "skill": "phonics"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [I] [got] [a] [letter] [in] [the] [mail.]",
+      "options": [
+        "I got a letter in the mail.",
+        "In the mail I got a letter.",
+        "A letter got I in the mail.",
+        "The mail in got I a letter."
+      ],
+      "answer": "I got a letter in the mail.",
+      "hintEnglish": "Subject + verb + object.",
+      "hintTurkish": "I got a letter in the mail.",
+      "audioText": "I got a letter in the mail.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which two words rhyme?",
+      "options": [
+        "rain and train",
+        "rain and ran",
+        "train and tram",
+        "sail and sell"
+      ],
+      "answer": "rain and train",
+      "hintEnglish": "Both end in -ain.",
+      "hintTurkish": "İkisi de -ain ile bitip kafiyelidir: rain ve train.",
+      "audioText": "Which two words rhyme?",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which two words rhyme?",
+      "options": [
+        "mail and tail",
+        "mail and mill",
+        "tail and tall",
+        "snail and seal"
+      ],
+      "answer": "mail and tail",
+      "hintEnglish": "Both end in -ail.",
+      "hintTurkish": "İkisi de -ail ile biter: mail ve tail.",
+      "audioText": "Which two words rhyme?",
+      "skill": "phonics"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "A slow _____ carries its shell on its back.",
+      "options": [
+        "snail",
+        "sail",
+        "soil",
+        "sole"
+      ],
+      "answer": "snail",
+      "hintEnglish": "Creature with shell.",
+      "hintTurkish": "Salyangoz: snail.",
+      "audioText": "A slow snail carries its shell.",
+      "skill": "phonics"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'The painter used red and blue.'",
+      "options": [
+        "The painter used red and blue.",
+        "The panther used red and blue.",
+        "The printer used red and blue.",
+        "The planter used red and blue."
+      ],
+      "answer": "The painter used red and blue.",
+      "hintEnglish": "Listen for 'painter'.",
+      "hintTurkish": "Ressam kırmızı ve mavi kullandı.",
+      "audioText": "The painter used red and blue.",
+      "skill": "listening"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: AUTHOR'S PURPOSE",
+      "options": [
+        "The reason why an author writes",
+        "The title of a poem",
+        "The last page in a book",
+        "The price of a book"
+      ],
+      "answer": "The reason why an author writes",
+      "hintEnglish": "To inform, entertain, or persuade.",
+      "hintTurkish": "Yazarın metni yazma amacı (bilgilendirmek, eğlendirmek vb.).",
+      "audioText": "What is an author's purpose?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The little dog wagged its _____ happily.",
+      "options": [
+        "tail",
+        "tile",
+        "tool",
+        "tall"
+      ],
+      "answer": "tail",
+      "hintEnglish": "Wags when happy.",
+      "hintTurkish": "Kuyruk: tail.",
+      "audioText": "The dog wagged its tail.",
+      "skill": "phonics"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [We] [can] [sail] [on] [the] [blue] [sea.]",
+      "options": [
+        "We can sail on the blue sea.",
+        "On the blue sea we can sail.",
+        "Sail we can on the blue sea.",
+        "The blue sea we can sail on."
+      ],
+      "answer": "We can sail on the blue sea.",
+      "hintEnglish": "Subject + modal + verb.",
+      "hintTurkish": "We can sail on the blue sea.",
+      "audioText": "We can sail on the blue sea.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What word completes the phrase: '_____ and shine!' (morning greeting)",
+      "options": [
+        "Rise",
+        "Rain",
+        "Train",
+        "Paint"
+      ],
+      "answer": "Rise",
+      "hintEnglish": "Idiom for wake up.",
+      "hintTurkish": "Uyanma deyimi: Rise and shine!",
+      "audioText": "Rise and shine!",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Wait for the train in the rain.'",
+      "options": [
+        "Wait for the train in the rain.",
+        "Wait for the tram in the rain.",
+        "Walk for the train in the lane.",
+        "Wait for the truck in the rain."
+      ],
+      "answer": "Wait for the train in the rain.",
+      "hintEnglish": "Three 'ai' words: wait, train, rain.",
+      "hintTurkish": "Wait, train ve rain sözcüklerini dinleyin.",
+      "audioText": "Wait for the train in the rain.",
+      "skill": "listening"
+    }
+  ],
+  "sentenceBuilder": [
+    {
+      "tiles": [
+        "rain",
+        "The",
+        "fell",
+        "down."
+      ],
+      "answer": "The rain fell down."
+    },
+    {
+      "tiles": [
+        "rode",
+        "We",
+        "train.",
+        "the",
+        "fast"
+      ],
+      "answer": "We rode the fast train."
+    },
+    {
+      "tiles": [
+        "mail.",
+        "brought",
+        "postman",
+        "The",
+        "our"
+      ],
+      "answer": "The postman brought our mail."
+    },
+    {
+      "tiles": [
+        "wagged",
+        "puppy",
+        "its",
+        "The",
+        "tail."
+      ],
+      "answer": "The puppy wagged its tail."
+    },
+    {
+      "tiles": [
+        "picture.",
+        "will",
+        "We",
+        "a",
+        "paint"
+      ],
+      "answer": "We will paint a picture."
+    },
+    {
+      "tiles": [
+        "station.",
+        "at",
+        "Wait",
+        "the"
+      ],
+      "answer": "Wait at the station."
+    },
+    {
+      "tiles": [
+        "sail",
+        "Boats",
+        "on",
+        "water.",
+        "the"
+      ],
+      "answer": "Boats sail on the water."
+    },
+    {
+      "tiles": [
+        "road.",
+        "is",
+        "the",
+        "This",
+        "main"
+      ],
+      "answer": "This is the main road."
+    },
+    {
+      "tiles": [
+        "wrote",
+        "author",
+        "The",
+        "to",
+        "inform."
+      ],
+      "answer": "The author wrote to inform."
+    },
+    {
+      "tiles": [
+        "slow",
+        "A",
+        "snail",
+        "on",
+        "moved",
+        "trail.",
+        "the"
+      ],
+      "answer": "A slow snail moved on the trail."
+    }
+  ],
+  "speaking": {
+    "scaffold": "All aboard the vowel team express!",
+    "formula1": "The rain fell hard while we waited for the steam train.",
+    "formula2": "The author wrote this story to entertain us on the main trail.",
+    "exampleAnswer": "All aboard the vowel team express! The rain fell hard while we waited for the steam train. The author wrote this story to entertain us on the main trail."
+  },
+  "assets": [
+    "A retro-futuristic steampunk steam locomotive traveling across a glowing rainbow trestle bridge in the rain. Image prompt: A magical steam train chugging across a scenic viaduct bridge in gentle rain, glowing lanterns, rich cyan and amber sparks from the smokestack, 16:9 glassmorphic game backdrop.",
+    "A brass conductor train whistle with musical sound waves radiating outward. Image prompt: A shiny polished brass train whistle with sparkles and musical notes, 3D game item render, transparent background.",
+    "A wooden cargo train wagon filled with colorful alphabet letter blocks showing A and I. Image prompt: A cute miniature wooden train flatbed car holding glowing letters A and I, 3D game asset render.",
+    "A friendly cartoon train conductor in blue uniform waving a green signal lantern. Image prompt: Smiling animal conductor character holding a glowing lantern and a golden pocket watch."
+  ]
+}

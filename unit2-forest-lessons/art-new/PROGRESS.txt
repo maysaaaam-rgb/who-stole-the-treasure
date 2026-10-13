@@ -1,0 +1,56 @@
+hare_brown.png: OK - Alert posture, summer brown coat, big hind feet, clear white sticker outline on #e8e8e8.
+hare_white.png: OK - Matching snowshoe hare in winter coat with dark ear tips, identical seated pose.
+bear_awake.png: OK - Friendly chubby brown bear on all fours, open mouth, cheerful expression.
+bear_sleeping.png: OK - Same bear curled peacefully asleep, soft cloud-like breathing puffs without letters.
+wolf.png: OK - Grey wolf sitting calmly with curious gentle eyes, plush winter fur coat.
+owl.png: OK - Snowy-grey owl with wide golden eyes, perched posture, cute feather detailing.
+squirrel.png: OK - Red squirrel sitting upright clutching an acorn, fluffy tail curled up behind.
+deer.png: OK - Sweet young fawn standing calmly with tiny budding antlers and gentle eyes.
+ranger_rosa_wave.png: OK - Smiling young ranger in green jacket and hat, waving warmly with backpack on.
+ranger_rosa_point.png: OK - Same Ranger Rosa pointing forward excitedly, consistent uniform and hat.
+envelope_sealed.png: OK - Cream stationery envelope with crisp pine-tree stamped green wax seal, no text.
+thermometer_cold.png: OK - Big round bulb with low red level, frost crystals and snowflakes, no numbers.
+cones_needles.png: OK - Coniferous evergreen branch with needle bundles and two textured brown pine cones.
+tree_oak_spring.png: OK - Deciduous oak with fresh light-green foliage and tiny pink blossoms, sturdy trunk.
+tree_oak_summer.png: OK - Same oak silhouette with full, lush, deep dark-green canopy and no blossoms.
+tree_oak_autumn.png: OK - Same oak with vibrant orange, red, and yellow autumn leaves and drifting leaves.
+tree_oak_winter.png: OK - Same oak architecture completely bare with soft blankets of snow on branches.
+tree_pine_green.png: OK - Symmetrical evergreen pine tree with layered needle tiers and hanging cones.
+tree_pine_snow.png: OK - Same pine tree structure heavily laden with soft snow pillows on each tier.
+bg_hook_night.png: OK - Serene 16:9 night clearing with winding dirt path, crescent moon, stars, calm foreground.
+bg_decid_spring.png: OK - Empty rolling meadow in spring with fresh green grass and soft blurred distant oaks.
+bg_decid_summer.png: OK - Same meadow in summer with deeper saturated green turf and warm daylight.
+bg_decid_autumn.png: OK - Same meadow in autumn with fallen golden leaves and warm orange-tinted foliage.
+bg_decid_winter.png: OK - Same meadow blanketed in smooth white snow under a pale winter sky.
+bg_conif_spring.png: OK - Coniferous northern forest ground with moss, pine needles, cool blue-green morning light.
+bg_conif_summer.png: OK - Same northern forest clearing with warm sunbeams breaking through tall pine trees.
+bg_conif_autumn.png: OK - Same northern forest clearing with dried brown moss, fallen needles, amber dusk sky.
+bg_conif_winter.png: OK - Same northern forest clearing buried in thick snow, frosty pines, icy blue sky.
+go_ne_happy.png: OK - Friendly 10-year-old Korean boy in sky-blue hanbok vest waving with a big warm smile.
+wen_shu_jealous.png: OK - Same age boy in terracotta vest with arms crossed, pouting and one raised eyebrow.
+wen_shu_sorry.png: OK - Same Wen Shu with head down, shy apologetic smile, and hands clasped together.
+father.png: OK - Kind Korean father in traditional cream/grey countryside clothes with a gentle smile.
+vet.png: OK - Friendly human veterinarian in mint clinic jacket holding a round leather doctor satchel.
+mother_swallow.png: OK - Glossy blue-black barn swallow with reddish throat, creamy belly, and forked tail.
+baby_swallow.png: OK - Fluffy downy chick with big innocent eyes and tiny wings, extremely cute.
+nest_eggs.png: OK - Mud-and-straw swallow nest cup holding three speckled cream bird eggs.
+house_roof.png: OK - Small Korean countryside hanok with curved grey-brown tile roof and wooden framework.
+seed_gold.png: OK - Glistening golden melon seed with warm radiating light and soft sparkle particles.
+fruit_gold.png: OK - Large golden gourd fruit split open revealing a glistening mound of gold coins.
+coins.png: OK - Tidy pile of round gold game coins with star emblems and sparkle accents, no numbers.
+slingshot_stone.png: OK - Small carved wooden Y-toy with elastic band resting innocently beside a smooth river stone.
+bicycle.png: OK - Vintage turquoise step-through bicycle with brown seat and front wicker basket.
+gift_box.png: OK - Smooth cedar wooden gift box tied with an emerald green cloth bow.
+snail_letter.png: OK - Cheerful snail with rainbow shell beside a red mailbox with a heart-sealed blank envelope.
+train_rain.png: OK - Cute cartoon steam train chugging under a raincloud with raindrops, no letters or numbers.
+bg_village_day.png: OK - 16:9 Korean village landscape with rolling terraced fields, dirt path, and far tiled cottages.
+bg_seed_glow.png: OK - 16:9 dark amber-brown woodland ambiance with a radiant golden burst and sparkles at center.
+
+Summary:
+- Total pictures: 47
+- OK: 47
+- FAILED: 0
+- Weakest looking pictures (honest critique for potential re-roll):
+  1. vet.png: Very clean and friendly human vet with doctor satchel, but has a paw ID lanyard rather than a cross symbol.
+  2. tree_oak_winter.png: Matches trunk geometry nicely, though branch ends are stylized slightly thicker than spring/summer twig tips.
+  3. bg_seed_glow.png: Features subtle tree silhouettes on left/right flanks framing the central golden burst, which gives drama but leaves slightly less flat floor than the other meadows.

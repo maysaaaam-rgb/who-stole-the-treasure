@@ -1,0 +1,35 @@
+{
+  "3": {
+    "weave": "dokumak",
+    "cloth": "kumaş",
+    "contest": "yarışma",
+    "festival": "festival, şenlik",
+    "harvest": "hasat",
+    "ancestors": "atalar",
+    "pick": "toplamak, koparmak",
+    "worried": "endişeli",
+    "grow": "büyümek, yetişmek",
+    "believe": "inanmak",
+    "stripes": "çizgiler, şeritler",
+    "feast": "ziyafet, şölen",
+    "songpyeon": "songpyeon (Kore pirinç keki)",
+    "space suit": "uzay giysisi",
+    "setting": "mekân ve zaman (hikâyenin geçtiği yer)"
+  },
+  "4": {
+    "deciduous": "yaprak döken",
+    "hibernate": "kış uykusuna yatmak",
+    "coniferous": "kozalaklı, iğne yapraklı",
+    "survive": "hayatta kalmak",
+    "adapt": "uyum sağlamak",
+    "swallow": "kırlangıç",
+    "roof": "çatı",
+    "hit": "vurmak",
+    "slingshot": "sapan",
+    "paid": "ödedi (pay fiilinin geçmişi)",
+    "biome": "biyom, yaşam bölgesi",
+    "evergreen": "her dem yeşil",
+    "author's purpose": "yazarın amacı",
+    "vet": "veteriner"
+  }
+}

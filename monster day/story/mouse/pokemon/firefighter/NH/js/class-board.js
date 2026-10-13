@@ -252,7 +252,7 @@
       '<div class="cb-mg">' + list.map(function (s) {
         var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
         var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
-        var avBadge = s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
+        var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal + avBadge +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +

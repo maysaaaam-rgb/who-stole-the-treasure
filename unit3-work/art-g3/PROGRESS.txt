@@ -1,0 +1,69 @@
+# Grade 3 Art Generation Progress Log
+# Unit 3: How Much Is It?
+# Total Expected: 56 images
+
+w_bartered.png: OK
+w_metal.png: OK
+w_valuable.png: OK
+w_credit_card.png: OK
+w_plastic.png: OK
+w_belong_to.png: OK
+w_return.png: OK
+w_pocket.png: OK
+w_restaurant.png: OK
+w_money_tight.png: OK
+w_money.png: OK
+w_coin.png: OK
+w_bill.png: OK
+w_save.png: OK
+w_expensive.png: OK
+w_cell_phone.png: OK
+w_goat.png: OK
+w_grain.png: OK
+w_cowrie_shells.png: OK
+w_knives_spades.png: OK
+w_round_holed_coin.png: OK
+w_lydia_coin.png: OK
+w_paper_money.png: OK
+w_electronic_money.png: OK
+w_wallet.png: OK
+w_jar_donate.png: OK
+w_jar_saving.png: OK
+w_pizza.png: OK
+w_cashier.png: OK
+w_tired.png: OK
+w_hug.png: OK
+w_park.png: OK
+c_paige.png: OK
+c_dad.png: OK
+c_jodie.png: OK
+c_nina.png: OK
+c_cashier.png: OK
+c_farmer_a.png: OK
+c_farmer_b.png: OK
+bg_ancient_market.png: OK
+bg_autumn_park.png: OK
+bg_phone_shop.png: OK
+bg_kitchen.png: OK
+bg_restaurant_inside.png: OK
+bg_school_steps_rain.png: OK
+bg_money_timeline.png: OK
+s_phone_laugh.png: OK
+s_find_bill.png: OK
+s_pocket_it.png: OK
+s_phone_window.png: OK
+s_cashier_no.png: OK
+s_dad_kitchen.png: OK
+s_show_money.png: OK
+s_pizza_dinner.png: OK
+s_barter_farmers.png: OK
+s_shell_market.png: OK
+
+## Verification Notes
+- 56 / 56 images generated and visually inspected.
+- Fixed character models (Paige, Dad, Jodie, Nina, Cashier, Farmer A, Farmer B) strictly matched across all cards and story scenes.
+- Zero text, zero letters, zero numbers, and zero currency marks present in any image.
+- Type A assets include clean thick white sticker outline contours on #e8e8e8 flat background.
+- Type B backdrops have no people, no animals, no text, and calm lower-third foregrounds.
+- Type C story scenes clearly communicate narrative actions in 4:3 ratio.
+- 0 failed, 0 skipped.

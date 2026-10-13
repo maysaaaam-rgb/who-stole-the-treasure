@@ -1,0 +1,667 @@
+{
+  "gameName": "The Mars Greenhouse Mystery",
+  "grade": 3,
+  "pitch": "Investigate the strange dome farm and solve crop clues using 'There is' and 'There are' to unlock the secret space setting.",
+  "targetFormula": "There is a [singular] / There are [plural] on the farm.",
+  "topic": "First Harvest story, indoor greenhouse on Mars, pink potatoes, purple corn, limited water, space suits, helmets",
+  "arc": {
+    "discovery": "Phase 1: Biosphere Scanner inspects the mysterious indoor greenhouse, scanning glowing plants and odd purple crops.",
+    "workbench": "Phase 2: Oxygen Workbench requires sorting singular and plural supplies, diagnosing crop problems, and assembling space sentences.",
+    "karaoke": "Phase 3: The Airlock Stage teleprompter prompts student teams to present their Mars harvest report before suiting up."
+  },
+  "mechanics": "Whole-class smartboard arcade where teams take turns tapping large touch cards while desks signal singular (1 finger) or plural (2 fingers). Soft-fail plays a gentle airlock chime and highlights clue words without XP loss.",
+  "feedback": {
+    "correct": [
+      "Airlock oxygen stable! +5 XP! 🚀",
+      "The purple corn is growing fast! 🌽",
+      "Dome pressure 100% optimal! 🌟",
+      "Super greenhouse detective work! 🔍",
+      "Space harvest saved, Team! 🥔"
+    ],
+    "softFail": [
+      "Check the ending! Is there one or more than one? 💡",
+      "Look closely at the dome clue! 🔎",
+      "Remember: use 'There is' for ONE item! ☝️",
+      "Use 'There are' when counting many things! ✌️",
+      "Listen carefully to the spacesuit alert! 🎧"
+    ],
+    "levelUp": "Dome Airlock Unlocked! Level Up to Chief Mars Agronomist! 🏆"
+  },
+  "xp": {
+    "perCorrect": 5,
+    "bonus": 20,
+    "max": 100
+  },
+  "smartboard": {
+    "teamCount": "2 to 6 teams",
+    "boardActions": "Team captain taps large 72px buttons, drags crops into singular/plural baskets, or clicks the oxygen intercom.",
+    "classParticipation": "Desk teams hold up 1 finger (There is) or 2 fingers (There are) before the board student touches the screen.",
+    "version15min": "10 core rounds focusing on There is / There are sorting and Mars crop vocabulary.",
+    "version30min": "Full 30-round championship including setting deduction, listening alerts, and airlock speech challenges."
+  },
+  "words": [
+    {
+      "word": "greenhouse",
+      "emoji": "🏡🌱",
+      "turkish": "sera",
+      "definition": "A glass or plastic building where plants grow protected inside.",
+      "exampleSentence": "The family grows vegetables in a greenhouse."
+    },
+    {
+      "word": "crop",
+      "emoji": "🌾",
+      "turkish": "ekin, ürün",
+      "definition": "Plants grown in large amounts for food.",
+      "exampleSentence": "Their crops grew with bright colors."
+    },
+    {
+      "word": "worried",
+      "emoji": "😟",
+      "turkish": "endişeli",
+      "definition": "Feeling unhappy and afraid because of a problem.",
+      "exampleSentence": "Dad was worried because water was limited."
+    },
+    {
+      "word": "limited",
+      "emoji": "⏳",
+      "turkish": "sınırlı, kısıtlı",
+      "definition": "Only a small amount available.",
+      "exampleSentence": "Water on the base is limited."
+    },
+    {
+      "word": "believe",
+      "emoji": "😲",
+      "turkish": "inanmak",
+      "definition": "To feel sure that something is real or true.",
+      "exampleSentence": "I cannot believe my eyes!"
+    },
+    {
+      "word": "stripes",
+      "emoji": "🦓",
+      "turkish": "çizgiler",
+      "definition": "Long narrow lines of color.",
+      "exampleSentence": "The green peppers had yellow stripes."
+    },
+    {
+      "word": "space suit",
+      "emoji": "👨‍🚀",
+      "turkish": "uzay giysisi",
+      "definition": "Special protective clothing worn by astronauts in space.",
+      "exampleSentence": "Put on your space suit before opening the door."
+    },
+    {
+      "word": "helmet",
+      "emoji": "🪖",
+      "turkish": "kask",
+      "definition": "A hard hat that protects the head and gives air.",
+      "exampleSentence": "Check your helmet for fresh air."
+    },
+    {
+      "word": "setting",
+      "emoji": "🗺️",
+      "turkish": "olay yeri ve zamanı",
+      "definition": "Where and when a story takes place.",
+      "exampleSentence": "The surprise setting is the planet Mars!"
+    }
+  ],
+  "rounds": [
+    {
+      "type": "choose",
+      "prompt": "Where does the family grow their food in the story?",
+      "options": [
+        "In an outdoor river",
+        "In an indoor dome greenhouse",
+        "Under a deep ocean cave",
+        "On an airplane"
+      ],
+      "answer": "In an indoor dome greenhouse",
+      "hintEnglish": "It is a protected building for plants.",
+      "hintTurkish": "Bitkileri koruyan kapalı bir sera kubbesi.",
+      "audioText": "Where does the family grow their food in the story?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why was Dad worried at the beginning?",
+      "options": [
+        "Water was limited",
+        "It was too noisy",
+        "The kids were sleeping",
+        "He lost his pencil"
+      ],
+      "answer": "Water was limited",
+      "hintEnglish": "They only had a small amount of water.",
+      "hintTurkish": "Çünkü su miktarı sınırlıydı.",
+      "audioText": "Why was Dad worried at the beginning?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ pink potatoes growing under the soil.",
+      "options": [
+        "are",
+        "is",
+        "was",
+        "am"
+      ],
+      "answer": "are",
+      "hintEnglish": "Potatoes is plural (more than one).",
+      "hintTurkish": "Çoğul nesneler için There are kullanılır.",
+      "audioText": "There are pink potatoes growing under the soil.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ a red pineapple on the kitchen table.",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "be"
+      ],
+      "answer": "is",
+      "hintEnglish": "One pineapple = singular.",
+      "hintTurkish": "Tekil nesne için There is kullanılır.",
+      "audioText": "There is a red pineapple on the kitchen table.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What strange color was the corn on the farm?",
+      "options": [
+        "Purple",
+        "Black",
+        "Silver",
+        "White"
+      ],
+      "answer": "Purple",
+      "hintEnglish": "A mix of blue and red color.",
+      "hintTurkish": "Mor mısırlar yetişmişti.",
+      "audioText": "What strange color was the corn on the farm?",
+      "skill": "reading"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: LIMITED",
+      "options": [
+        "Only a small amount available",
+        "Infinite like the sea",
+        "Very loud noise",
+        "Sweet like sugar"
+      ],
+      "answer": "Only a small amount available",
+      "hintEnglish": "Not enough to waste.",
+      "hintTurkish": "Sadece az bir miktar var, sınırlı.",
+      "audioText": "What does limited mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "What did Mom suggest making for their first feast?",
+      "options": [
+        "An apple pie",
+        "A fish soup",
+        "A chocolate cake",
+        "A cold soda"
+      ],
+      "answer": "An apple pie",
+      "hintEnglish": "A warm baked fruit dessert.",
+      "hintTurkish": "Elmalı turta pişirmeyi önerdi.",
+      "audioText": "What did Mom suggest making for their first feast?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "Ruth and August wanted to go outside to _____ first.",
+      "options": [
+        "play",
+        "sleep",
+        "cry",
+        "fight"
+      ],
+      "answer": "play",
+      "hintEnglish": "Have fun with friends.",
+      "hintTurkish": "Dışarı çıkıp oynamak istediler.",
+      "audioText": "Ruth and August wanted to go outside to play first.",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "What did Mom tell the children to check before going outside?",
+      "options": [
+        "Their space suits and air",
+        "Their sunglasses",
+        "Their swimming shorts",
+        "Their umbrella"
+      ],
+      "answer": "Their space suits and air",
+      "hintEnglish": "Special clothing for astronauts.",
+      "hintTurkish": "Uzay giysilerini ve oksijenlerini kontrol etmelerini söyledi.",
+      "audioText": "What did Mom tell the children to check before going outside?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "What is the surprise SETTING of this story?",
+      "options": [
+        "A farm on the planet Mars",
+        "A farm in London",
+        "A zoo in New York",
+        "A school in Tokyo"
+      ],
+      "answer": "A farm on the planet Mars",
+      "hintEnglish": "The red planet in space.",
+      "hintTurkish": "Mars gezegenindeki bir üs!",
+      "audioText": "What is the surprise setting of this story?",
+      "skill": "reading"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ two astronauts checking the oxygen tank.",
+      "options": [
+        "are",
+        "is",
+        "am",
+        "was"
+      ],
+      "answer": "are",
+      "hintEnglish": "Two astronauts = plural.",
+      "hintTurkish": "İki astronot çoğuldur, There are gelir.",
+      "audioText": "There are two astronauts checking the oxygen tank.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ a large glass dome over the crops.",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "be"
+      ],
+      "answer": "is",
+      "hintEnglish": "One glass dome = singular.",
+      "hintTurkish": "Bir cam kubbe tekildir, There is gelir.",
+      "audioText": "There is a large glass dome over the crops.",
+      "skill": "grammar"
+    },
+    {
+      "type": "sort",
+      "prompt": "Which item belongs to the MARS setting?",
+      "options": [
+        "Space helmet",
+        "Rain umbrella",
+        "Sun hat",
+        "Bicycle bell"
+      ],
+      "answer": "Space helmet",
+      "hintEnglish": "You need this to breathe on Mars.",
+      "hintTurkish": "Mars ortamında nefes almak için kask gerekir.",
+      "audioText": "Which item belongs to the Mars setting?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "Can we _____ outside, Mom?",
+      "options": [
+        "go",
+        "goes",
+        "going",
+        "went"
+      ],
+      "answer": "go",
+      "hintEnglish": "After 'can we', use base verb.",
+      "hintTurkish": "Can we kalıbından sonra fiilin yalın hali gelir.",
+      "audioText": "Can we go outside, Mom?",
+      "skill": "grammar"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: BELIEVE",
+      "options": [
+        "To think that something is true",
+        "To run very quickly",
+        "To throw a heavy rock",
+        "To cook spicy food"
+      ],
+      "answer": "To think that something is true",
+      "hintEnglish": "Feel confident it is real.",
+      "hintTurkish": "Gerçek olduğuna inanmak.",
+      "audioText": "What does believe mean?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Which sentence describes PLURAL vegetables?",
+      "options": [
+        "There are orange peas in the pod.",
+        "There is an orange pea in the pod.",
+        "There was a pea.",
+        "There is one pea."
+      ],
+      "answer": "There are orange peas in the pod.",
+      "hintEnglish": "Look for 'peas' with an -s.",
+      "hintTurkish": "Çoğul olanı seçin: There are peas.",
+      "audioText": "Which sentence describes plural vegetables?",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The green peppers had yellow _____ on them.",
+      "options": [
+        "stripes",
+        "shoes",
+        "windows",
+        "clocks"
+      ],
+      "answer": "stripes",
+      "hintEnglish": "Colored lines.",
+      "hintTurkish": "Sarı çizgiler vardı.",
+      "audioText": "The green peppers had yellow stripes on them.",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why do astronauts need helmets on Mars?",
+      "options": [
+        "Because there is no air to breathe",
+        "Because it is too sunny",
+        "Because of rain drops",
+        "Because they want to sleep"
+      ],
+      "answer": "Because there is no air to breathe",
+      "hintEnglish": "Humans need oxygen.",
+      "hintTurkish": "Çünkü Mars'ta solunacak hava yoktur.",
+      "audioText": "Why do astronauts need helmets on Mars?",
+      "skill": "reading"
+    },
+    {
+      "type": "order",
+      "prompt": "Put in order: [There] [are] [purple] [carrots.]",
+      "options": [
+        "There are purple carrots.",
+        "Purple carrots There are.",
+        "Are There carrots purple.",
+        "Carrots are purple There."
+      ],
+      "answer": "There are purple carrots.",
+      "hintEnglish": "Start with 'There are'.",
+      "hintTurkish": "'There are' ile başlayın.",
+      "audioText": "There are purple carrots.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "There _____ a small robot watering the plants.",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "am"
+      ],
+      "answer": "is",
+      "hintEnglish": "One robot = singular.",
+      "hintTurkish": "Bir robot tekildir: There is.",
+      "audioText": "There is a small robot watering the plants.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What word means where and when a story happens?",
+      "options": [
+        "Setting",
+        "Harvest",
+        "Weave",
+        "Pie"
+      ],
+      "answer": "Setting",
+      "hintEnglish": "Place and time of story.",
+      "hintTurkish": "Hikayenin geçtiği yer ve zaman.",
+      "audioText": "What word means where and when a story happens?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Look! There are red pineapples!'",
+      "options": [
+        "There are red pineapples",
+        "There is red pineapple",
+        "Here are red apples",
+        "They have red pineapples"
+      ],
+      "answer": "There are red pineapples",
+      "hintEnglish": "Listen for plural pineapples.",
+      "hintTurkish": "Çoğul pineapples sözcüğünü dinleyin.",
+      "audioText": "Look! There are red pineapples!",
+      "skill": "listening"
+    },
+    {
+      "type": "match",
+      "prompt": "Match: CROP",
+      "options": [
+        "Plants grown for food",
+        "A piece of furniture",
+        "A musical song",
+        "A fast vehicle"
+      ],
+      "answer": "Plants grown for food",
+      "hintEnglish": "Wheat, corn, or potatoes.",
+      "hintTurkish": "Yiyecek için yetiştirilen ekinler.",
+      "audioText": "What is a crop?",
+      "skill": "vocabulary"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The family is thankful _____ their delicious harvest.",
+      "options": [
+        "for",
+        "to",
+        "at",
+        "with"
+      ],
+      "answer": "for",
+      "hintEnglish": "Thankful takes 'for'.",
+      "hintTurkish": "'Thankful' için 'for' kullanılır.",
+      "audioText": "The family is thankful for their delicious harvest.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Complete: There _____ many bright stars outside the dome.",
+      "options": [
+        "are",
+        "is",
+        "was",
+        "am"
+      ],
+      "answer": "are",
+      "hintEnglish": "Many stars = plural.",
+      "hintTurkish": "Yıldızlar çoğul: There are.",
+      "audioText": "There are many bright stars outside the dome.",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "Why did the family have a feast?",
+      "options": [
+        "To celebrate their first harvest",
+        "To buy a new car",
+        "To build a swimming pool",
+        "To fix the TV"
+      ],
+      "answer": "To celebrate their first harvest",
+      "hintEnglish": "They were thankful for their food.",
+      "hintTurkish": "İlk hasatlarını kutlamak için ziyafet verdiler.",
+      "audioText": "Why did the family have a feast?",
+      "skill": "reading"
+    },
+    {
+      "type": "order",
+      "prompt": "Order: [Check] [your] [space suit] [first.]",
+      "options": [
+        "Check your space suit first.",
+        "Your check space suit first.",
+        "First space suit your check.",
+        "Space suit check your first."
+      ],
+      "answer": "Check your space suit first.",
+      "hintEnglish": "Start with 'Check'.",
+      "hintTurkish": "Check your space suit first.",
+      "audioText": "Check your space suit first.",
+      "skill": "grammar"
+    },
+    {
+      "type": "fillgap",
+      "prompt": "The children asked: 'Can we _____ our friends?'",
+      "options": [
+        "invite",
+        "invites",
+        "inviting",
+        "invited"
+      ],
+      "answer": "invite",
+      "hintEnglish": "Base verb after 'can we'.",
+      "hintTurkish": "'Can we' kalıbından sonra yalın fiil gelir.",
+      "audioText": "Can we invite our friends?",
+      "skill": "grammar"
+    },
+    {
+      "type": "choose",
+      "prompt": "What color were the potatoes in the dome greenhouse?",
+      "options": [
+        "Pink",
+        "Blue",
+        "Black",
+        "Green"
+      ],
+      "answer": "Pink",
+      "hintEnglish": "A light reddish color.",
+      "hintTurkish": "Pembe patatesler!",
+      "audioText": "What color were the potatoes in the dome greenhouse?",
+      "skill": "reading"
+    },
+    {
+      "type": "choose",
+      "prompt": "Listen and choose: 'Check your helmet before you go.'",
+      "options": [
+        "Check your helmet before you go.",
+        "Wash your helmet before you go.",
+        "Leave your helmet before you go.",
+        "Take your hat before you go."
+      ],
+      "answer": "Check your helmet before you go.",
+      "hintEnglish": "Safety first before entering Mars.",
+      "hintTurkish": "Çıkmadan önce kaskını kontrol et.",
+      "audioText": "Check your helmet before you go.",
+      "skill": "listening"
+    }
+  ],
+  "sentenceBuilder": [
+    {
+      "tiles": [
+        "pink",
+        "There",
+        "potatoes.",
+        "are"
+      ],
+      "answer": "There are pink potatoes."
+    },
+    {
+      "tiles": [
+        "is",
+        "There",
+        "pineapple.",
+        "red",
+        "a"
+      ],
+      "answer": "There is a red pineapple."
+    },
+    {
+      "tiles": [
+        "water",
+        "The",
+        "limited.",
+        "is"
+      ],
+      "answer": "The water is limited."
+    },
+    {
+      "tiles": [
+        "grow",
+        "dome.",
+        "Crops",
+        "the",
+        "in"
+      ],
+      "answer": "Crops grow in the dome."
+    },
+    {
+      "tiles": [
+        "suits.",
+        "their",
+        "They",
+        "check",
+        "space"
+      ],
+      "answer": "They check their space suits."
+    },
+    {
+      "tiles": [
+        "air.",
+        "need",
+        "Astronauts",
+        "fresh"
+      ],
+      "answer": "Astronauts need fresh air."
+    },
+    {
+      "tiles": [
+        "celebrate",
+        "We",
+        "harvest.",
+        "our"
+      ],
+      "answer": "We celebrate our harvest."
+    },
+    {
+      "tiles": [
+        "outside?",
+        "we",
+        "Can",
+        "play"
+      ],
+      "answer": "Can we play outside?"
+    },
+    {
+      "tiles": [
+        "purple",
+        "There",
+        "corn.",
+        "is"
+      ],
+      "answer": "There is purple corn."
+    },
+    {
+      "tiles": [
+        "food.",
+        "for",
+        "thankful",
+        "are",
+        "They"
+      ],
+      "answer": "They are thankful for food."
+    }
+  ],
+  "speaking": {
+    "scaffold": "Look at our farm inside the Mars dome greenhouse.",
+    "formula1": "There is purple corn and there are pink potatoes.",
+    "formula2": "We wear space suits because there is no air outside.",
+    "exampleAnswer": "Look at our farm inside the Mars dome greenhouse. There is purple corn and there are pink potatoes. We wear space suits because there is no air outside."
+  },
+  "assets": [
+    "A high-tech greenhouse dome on the red rocky surface of Mars with purple corn and pink potatoes. Image prompt: A futuristic geodesic greenhouse dome sitting on the red dusty surface of Mars, with glowing hydroponic racks holding bright purple corn and pink potatoes, Earth visible in the black starry sky, 16:9 glassmorphic game backdrop.",
+    "A child-sized astronaut space helmet with a glowing oxygen visor. Image prompt: A futuristic astronaut space helmet with a golden visor and cyan glowing LED lights, 3D game item render, transparent background.",
+    "A basket of glowing purple corn and pink striped potatoes. Image prompt: A sleek titanium harvest crate filled with glowing pink potatoes and exotic purple corn cobs, 3D game asset render.",
+    "Two smiling child astronauts in white and orange space suits giving a thumbs up. Image prompt: Friendly cartoon boy and girl astronauts in sleek space suits inside an airlock chamber, welcoming players."
+  ]
+}

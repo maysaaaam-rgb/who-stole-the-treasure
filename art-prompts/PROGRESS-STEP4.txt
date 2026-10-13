@@ -1,0 +1,103 @@
+=== TIER 1: Cracking eggs ===
+assets/monsters/new/emberwing_cracking.png: OK
+assets/monsters/new/aquafind_cracking.png: OK
+assets/monsters/new/florasprout_cracking.png: OK
+assets/monsters/new/astralight_cracking.png: OK
+assets/monsters/new/sparktail_cracking.png: OK
+
+=== TIER 2: New accessory items ===
+assets/monsters/items/item_hat_party.png: OK
+assets/monsters/items/item_hat_chef.png: OK
+assets/monsters/items/item_hat_pirate.png: OK
+assets/monsters/items/item_hat_cowboy.png: OK
+assets/monsters/items/item_hat_tophat.png: OK
+assets/monsters/items/item_hat_santa.png: OK
+assets/monsters/items/item_hat_beanie.png: OK
+assets/monsters/items/item_hat_propeller.png: OK
+assets/monsters/items/item_hat_sailor.png: OK
+assets/monsters/items/item_hat_astronaut_cap.png: OK
+assets/monsters/items/item_glasses_sun.png: OK
+assets/monsters/items/item_glasses_star.png: OK
+assets/monsters/items/item_glasses_heart.png: OK
+assets/monsters/items/item_neck_bowtie.png: OK
+assets/monsters/items/item_neck_bandana.png: OK
+assets/monsters/items/item_neck_bell.png: OK
+assets/monsters/items/item_held_balloon.png: OK
+assets/monsters/items/item_held_icecream.png: OK
+assets/monsters/items/item_held_ball.png: OK
+assets/monsters/items/item_held_paintbrush.png: OK
+assets/monsters/items/item_held_pencil.png: OK
+assets/monsters/items/item_held_magnifier.png: OK
+assets/monsters/items/item_held_umbrella.png: OK
+
+=== TIER 3: Illustrated backgrounds ===
+assets/monsters/backgrounds-new/bg_meadow.png: OK
+assets/monsters/backgrounds-new/bg_castle.png: OK
+assets/monsters/backgrounds-new/bg_forest.png: OK
+assets/monsters/backgrounds-new/bg_volcano.png: OK
+assets/monsters/backgrounds-new/bg_beach.png: OK
+assets/monsters/backgrounds-new/bg_moonlit.png: OK
+assets/monsters/backgrounds-new/bg_winter.png: OK
+assets/monsters/backgrounds-new/bg_cosmos.png: OK
+assets/monsters/backgrounds-new/bg_desert.png: OK
+assets/monsters/backgrounds-new/bg_underwater.png: OK
+assets/monsters/backgrounds-new/bg_rainbow.png: OK
+assets/monsters/backgrounds-new/bg_cloud.png: OK
+assets/monsters/backgrounds-new/bg_crystal.png: OK
+
+=== TIER 4: Aura effects ===
+assets/monsters/auras-new/aura_sparkle.png: OK
+assets/monsters/auras-new/aura_flame.png: OK
+assets/monsters/auras-new/aura_ice.png: OK
+assets/monsters/auras-new/aura_rainbow.png: OK
+assets/monsters/auras-new/aura_cosmic.png: OK
+assets/monsters/auras-new/aura_lightning.png: OK
+assets/monsters/auras-new/aura_blossom.png: OK
+assets/monsters/auras-new/aura_star.png: OK
+assets/monsters/auras-new/aura_dragon.png: OK
+assets/monsters/auras-new/aura_royal.png: OK
+
+=== TIER 5: Emotions for lessons ===
+assets/monsters/new/emberwing_growing_cheer.png: OK
+assets/monsters/new/emberwing_growing_think.png: OK
+assets/monsters/new/emberwing_growing_oops.png: OK
+assets/monsters/new/emberwing_growing_sleepy.png: OK
+assets/monsters/new/aquafind_growing_cheer.png: OK
+assets/monsters/new/aquafind_growing_think.png: OK
+assets/monsters/new/aquafind_growing_oops.png: OK
+assets/monsters/new/aquafind_growing_sleepy.png: OK
+assets/monsters/new/florasprout_growing_cheer.png: OK
+assets/monsters/new/florasprout_growing_think.png: OK
+assets/monsters/new/florasprout_growing_oops.png: OK
+assets/monsters/new/florasprout_growing_sleepy.png: OK
+assets/monsters/new/astralight_growing_cheer.png: OK
+assets/monsters/new/astralight_growing_think.png: OK
+assets/monsters/new/astralight_growing_oops.png: OK
+assets/monsters/new/astralight_growing_sleepy.png: OK
+assets/monsters/new/sparktail_growing_cheer.png: OK
+assets/monsters/new/sparktail_growing_think.png: OK
+assets/monsters/new/sparktail_growing_oops.png: OK
+assets/monsters/new/sparktail_growing_sleepy.png: OK
+
+=== TIER 6: Stage pedestal ===
+assets/monsters/ui-new/pedestal.png: OK
+
+=== TIER 7: Three new species ===
+assets/monsters/new/terrashell_egg.png: OK
+assets/monsters/new/terrashell_baby.png: OK
+assets/monsters/new/terrashell_growing.png: OK
+assets/monsters/new/terrashell_adventurer.png: OK
+assets/monsters/new/terrashell_advanced.png: OK
+assets/monsters/new/terrashell_ultimate.png: OK
+assets/monsters/new/frostfluff_egg.png: OK
+assets/monsters/new/frostfluff_baby.png: OK
+assets/monsters/new/frostfluff_growing.png: OK
+assets/monsters/new/frostfluff_adventurer.png: OK
+assets/monsters/new/frostfluff_advanced.png: OK
+assets/monsters/new/frostfluff_ultimate.png: OK
+assets/monsters/new/breezefin_egg.png: OK
+assets/monsters/new/breezefin_baby.png: OK
+assets/monsters/new/breezefin_growing.png: OK
+assets/monsters/new/breezefin_adventurer.png: OK
+assets/monsters/new/breezefin_advanced.png: OK
+assets/monsters/new/breezefin_ultimate.png: OK
