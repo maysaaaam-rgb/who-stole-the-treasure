@@ -27,7 +27,7 @@
       { id: 'p-hwpass', icon: '🎟️', name: 'Homework pass (one small task)', price: 150, weeklyLimit: 1, active: true }
     ]
   };
-  var SELL_CATEGORIES = ['hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
+  var SELL_CATEGORIES = ['hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body', 'creature'];
   // Four kinds of mystery box. The saved ids stay WOODEN / GILDED / CELESTIAL (old boxes keep working); they are shown as Silver / Gold / Diamond.
   var TIERS = ['BRONZE', 'WOODEN', 'GILDED', 'CELESTIAL'];
   var BOX_INFO = {
@@ -373,7 +373,7 @@
     }
   }
   function rewardItem(studentId, rarity) {
-    var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i); });
+    var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i) && i.category !== 'creature'; });   // creatures are bought with coins, never found in a box
     var pool = all.filter(function (i) { return i.rarity === rarity; });
     if (!pool.length) pool = all;
     if (!pool.length) return null;
@@ -794,8 +794,8 @@
 
     if (studentTab === 'items') {
       var list = shopItems(s.id);
-      var cats = ['all', 'sets', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
-      var catLabel = { all: 'All', sets: '🎭 Costume sets', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
+      var cats = ['all', 'sets', 'creature', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
+      var catLabel = { all: 'All', sets: '🎭 Costume sets', creature: '🐉 Creatures', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
       var present = cats.filter(function (c) { return c === 'all' || (c === 'sets' && root.MonsterCostumes) || list.some(function (x) { return x.item.category === c; }); });
       html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">' + present.map(function (c) {
         return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:800;cursor:pointer;border:1px solid var(--border-light,#cbd5e1);background:' + (itemFilter === c ? '#0f172a' : 'transparent') + ';color:' + (itemFilter === c ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + catLabel[c] + '</button>';

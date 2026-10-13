@@ -13534,6 +13534,7 @@ window.switchClassroomSubTab = function(subTab) {
 
   const MONSTER_CREATOR_TABS = [
     { id: 'colors', label: 'Colors', icon: '🎨', title: 'Fur Colors & Palette' },
+    { id: 'creatures', label: 'Creature', icon: '🐉', title: 'Creature Body' },
     { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
     { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
     { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings & Gliders' },
@@ -13676,6 +13677,9 @@ window.switchClassroomSubTab = function(subTab) {
       items = allItems.filter(i => i.category === 'eyes');
     } else if (sub === 'mouths') {
       items = allItems.filter(i => i.category === 'mouth');
+    } else if (sub === 'creatures') {
+      noneOptions.push({ id: 'creature-none', category: 'creature', name: 'Bunny Monster', isNone: true });   // switching back is always free
+      items = allItems.filter(i => i.category === 'creature');
     } else if (sub === 'horns') {
       noneOptions.push({ id: 'horns-none', category: 'horns', name: 'No Horns', isNone: true });
       items = allItems.filter(i => i.category === 'horns');

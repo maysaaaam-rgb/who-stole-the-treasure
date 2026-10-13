@@ -3659,6 +3659,9 @@
     { id: 'tail-flame', name: 'Flame Tail', category: 'tail', subCategory: 'tails', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
     { id: 'tail-star', name: 'Star Tail', category: 'tail', subCategory: 'tails', description: 'Glowing star-tipped adventurer tail', icon: '🌟', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
+    // Creatures: bought with coins in the store. Wearing one changes the whole body; switching back to the bunny monster is free.
+    { id: 'creature-dragon', name: 'Sky Dragon', category: 'creature', subCategory: 'creatures', description: 'Your monster becomes a Sky Dragon: horns, wings and a spiked tail that grow with every level', icon: '🐉', unlockType: 'store', unlockRequirement: { level: 1, label: 'Buy it in the Store 🪙' }, rarity: 'epic', status: 'active' },
+
     // Features - Hats & Head Accessories
     { id: 'hat-crown', name: 'Royal Crown', category: 'hat', subCategory: 'hats', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
     { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', subCategory: 'hats', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
