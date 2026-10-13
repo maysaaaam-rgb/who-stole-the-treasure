@@ -58,8 +58,8 @@
       var have = hw.submissions[pupil.id], n = Number(v.steps) || 0;
       if (v.finished) {
         if (!have || have.status !== 'COMPLETED') { hw.submissions[pupil.id] = { status: 'COMPLETED', attempted: steps, correct: steps, score: 100, completedDate: today(), optionalDone: false, xpAwarded: (have && have.xpAwarded) || 0, notes: 'From the Results sheet (sync ' + today() + ').' }; report.finished++; report.changed++; }
-      } else if (n > 0) {
-        if (!have) { hw.submissions[pupil.id] = { status: 'IN_PROGRESS', attempted: n, correct: n, score: Math.round(n / steps * 100), completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'From the Results sheet (sync ' + today() + '): ' + n + ' of ' + steps + ' steps.' }; report.started++; report.changed++; }
+      } else if (n > 0 || v.started) {   // v.started: the pupil opened the page (cooking) but has not sent it
+        if (!have) { hw.submissions[pupil.id] = { status: 'IN_PROGRESS', attempted: n, correct: n, score: Math.round(n / steps * 100), completedDate: '', optionalDone: false, xpAwarded: 0, notes: n > 0 ? 'From the Results sheet (sync ' + today() + '): ' + n + ' of ' + steps + ' steps.' : 'Opened the homework page (sync ' + today() + '), not sent yet.' }; report.started++; report.changed++; }
         else if (have.status !== 'COMPLETED' && n > (Number(have.attempted) || 0)) { have.attempted = n; have.correct = n; have.score = Math.round(n / steps * 100); report.started++; report.changed++; }
       }
     });
