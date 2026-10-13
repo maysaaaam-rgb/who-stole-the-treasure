@@ -14,9 +14,45 @@
   function slug(name) { return String(name || '').toLowerCase().replace(/[^a-z0-9À-ɏ]+/g, '-'); }
   function sleep(ms, st) { return new Promise(function (res) { var t = setTimeout(res, st && st.fast ? 20 : ms); if (st) st.timers.push(t); }); }
 
-  /* ---------- photo: stored only in this browser, shrunk to 600px ---------- */
+  /* ---------- built-in 3D cartoon sticker avatars (3 poses each: smiling, laughing, thumbs-up) ---------- */
+  var POSE_KEY = 'eaa_avatar_pose_';
+  var BUILTIN_SETS = {
+    'ates': ['assets/avatars/ates-1-smiling.webp', 'assets/avatars/ates-2-laughing.webp', 'assets/avatars/ates-3-thumbs-up.webp'],
+    'derin': ['assets/avatars/derin-1-smiling.webp', 'assets/avatars/derin-2-laughing.webp', 'assets/avatars/derin-3-thumbs-up.webp'],
+    'elif-beren': ['assets/avatars/elif-beren-1-smiling.webp', 'assets/avatars/elif-beren-2-laughing.webp', 'assets/avatars/elif-beren-3-thumbs-up.webp'],
+    'fatih': ['assets/avatars/fatih-1-smiling.webp', 'assets/avatars/fatih-2-laughing.webp', 'assets/avatars/fatih-3-thumbs-up.webp'],
+    'oyku': ['assets/avatars/oyku-1-smiling.webp', 'assets/avatars/oyku-2-laughing.webp', 'assets/avatars/oyku-3-thumbs-up.webp']
+  };
+  var BUILTIN_ALIASES = {
+    'student-3a-229': 'ates', 'ates': 'ates', 'ates-ozenci': 'ates',
+    'student-4b-338': 'derin', 'derin': 'derin', 'derin-kucuk': 'derin',
+    'student-4b-306': 'elif-beren', 'elif-beren': 'elif-beren', 'elif-beren-alper': 'elif-beren',
+    'student-3a-209': 'fatih', 'fatih': 'fatih', 'fatih-yetkin': 'fatih', 'fatih-yetkin-yilmaz': 'fatih',
+    'student-4b-322': 'oyku', 'oyku': 'oyku', 'oyku-cigdem': 'oyku', 'oyku-cigdem-akar': 'oyku'
+  };
+  function asciiSlug(s) {
+    return String(s || '').toLowerCase()
+      .replace(/i̇/g, 'i').replace(/[ç]/g, 'c').replace(/[ğ]/g, 'g')
+      .replace(/[ı]/g, 'i').replace(/[ö]/g, 'o').replace(/[ş]/g, 's').replace(/[ü]/g, 'u')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function builtinKeyOf(key) {
+    var a = asciiSlug(key);
+    return BUILTIN_ALIASES[a] || '';
+  }
+  function builtinUrlFor(key, forcePose) {
+    var bk = builtinKeyOf(key);
+    if (!bk || !BUILTIN_SETS[bk]) return '';
+    var list = BUILTIN_SETS[bk];
+    var idx = forcePose != null ? Number(forcePose) : (parseInt(get(POSE_KEY + bk) || '0', 10) || 0);
+    var rel = list[((idx % list.length) + list.length) % list.length];
+    var prefix = (root.location && String(root.location.pathname || '').indexOf('/milestone-1000/') >= 0) ? '../' : '';
+    return prefix + rel;
+  }
+
+  /* ---------- photo: stored in this browser or resolved from built-in cartoon avatars ---------- */
   var photos = {
-    get: function (key) { return get(PHOTO_KEY + slug(key)) || ''; },
+    get: function (key) { return get(PHOTO_KEY + slug(key)) || builtinUrlFor(key) || ''; },
     remove: function (key) { del(PHOTO_KEY + slug(key)); },
     pick: function (key, done) {
       var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
@@ -38,7 +74,10 @@
     }
   };
 
-  function isAvatar(url) { return String(url || '').indexOf('data:image/png') === 0; }
+  function isAvatar(url) {
+    var s = String(url || '');
+    return s.indexOf('data:image/png') === 0 || /\.(webp|png)(\?|$)/i.test(s);
+  }
 
   /* ---------- sound: polyphonic chords, two oscillators each, ADSR (no raw beeps) ---------- */
   var AC = null;
@@ -254,28 +293,72 @@
   install();
   if (document.readyState !== 'complete') root.addEventListener('load', install);
 
-  /* ---------- the pupil's own picture on profile pages (kept only in this browser) ---------- */
+  /* ---------- the pupil's own picture on profile pages (synced online via Supabase) ---------- */
+  function resolvePath(u) {
+    if (!u || typeof u !== 'string') return '';
+    if (u.indexOf('data:') === 0 || u.indexOf('http') === 0 || u.indexOf('../') === 0 || u.indexOf('/') === 0) return u;
+    var p = (root.location && String(root.location.pathname || '')) || '';
+    var inSub = /\/(milestone-1000|unit3-money-mission|unit3-g3-lessons|home-view|karaoke-stage|bamboozle|dino-dig|monster-lab|young-inventor|adventure-engine)\//i.test(p);
+    return (inSub ? '../' : '') + u;
+  }
+  function syncAvatarToCloud(studentId, avatarUrl) {
+    try {
+      var st = root.schoolStore || root.store;
+      var s = st && st.getStudent ? st.getStudent(studentId) : null;
+      if (s && avatarUrl) {
+        s.avatarUrl = avatarUrl;
+        if (!s.extraData || typeof s.extraData !== 'object') s.extraData = {};
+        s.extraData.avatarUrl = avatarUrl;
+        if (typeof st.saveState === 'function') st.saveState();
+        if (root.AdventureSupabase && root.AdventureSupabase.isConfigured && typeof root.AdventureSupabase.saveStudent === 'function') {
+          root.AdventureSupabase.saveStudent(s).catch(function () {});
+        }
+      }
+    } catch (e) { /* offline fallback */ }
+  }
   function pictureOf(student) {
     if (!student) return '';
-    var full = ((student.firstName || '') + ' ' + (student.lastName || '')).trim();
-    return photos.get(student.id) || photos.get(student.firstName) || photos.get(full) || '';
+    var full = ((student.firstName || student.name || '') + ' ' + (student.lastName || '')).trim();
+    var localCustom = get(PHOTO_KEY + slug(student.id)) || get(PHOTO_KEY + slug(student.firstName || student.name)) || get(PHOTO_KEY + slug(full));
+    if (localCustom) return localCustom;
+    var cloudUrl = student.avatarUrl || (student.extraData && student.extraData.avatarUrl) || '';
+    if (cloudUrl) return resolvePath(cloudUrl);
+    return photos.get(student.id) || photos.get(student.firstName || student.name) || photos.get(full) || '';
   }
   function avatarHtml(student, size) {
     var u = pictureOf(student), n = size || 54, id = esc(student && student.id);
     var st = 'width:' + n + 'px;height:' + n + 'px;border-radius:50%;flex:0 0 auto;';
     if (u) {
-      var cart = isAvatar(u);
-      return '<img src="' + esc(u) + '" alt="" title="Change picture" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;)" style="' + st + 'object-fit:' + (cart ? 'contain' : 'cover') + ';border:3px solid #f59e0b;background:' + (cart ? '#fff7d6' : '#fff') + ';cursor:pointer;">';
+      var cart = isAvatar(u), hasPoses = !!builtinKeyOf(student && student.id);
+      var tip = hasPoses ? 'Click to switch pose (Smiling / Laughing / Thumbs Up) · Shift+Click to upload picture' : 'Change picture';
+      return '<img src="' + esc(u) + '" alt="" title="' + tip + '" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;, event)" style="' + st + 'object-fit:' + (cart ? 'contain' : 'cover') + ';border:3px solid #f59e0b;background:' + (cart ? '#fff7d6' : '#fff') + ';cursor:pointer;">';
     }
-    return '<button type="button" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;)" title="Add a cartoon picture (kept only in this browser)" style="' + st + 'border:2px dashed #94a3b8;background:transparent;cursor:pointer;font-size:' + Math.round(n / 2.4) + 'px;padding:0;">&#128247;</button>';
+    return '<button type="button" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;, event)" title="Add a cartoon picture (synced to cloud)" style="' + st + 'border:2px dashed #94a3b8;background:transparent;cursor:pointer;font-size:' + Math.round(n / 2.4) + 'px;padding:0;">&#128247;</button>';
   }
-  function setAvatar(studentId) {
+  function setAvatar(studentId, ev) {
+    var bk = builtinKeyOf(studentId);
+    if (bk && !(ev && ev.shiftKey) && !get(PHOTO_KEY + slug(studentId))) {
+      var list = BUILTIN_SETS[bk] || [];
+      var st = root.schoolStore || root.store;
+      var s = st && st.getStudent ? st.getStudent(studentId) : null;
+      var curUrl = (s && (s.avatarUrl || (s.extraData && s.extraData.avatarUrl))) || '';
+      var curIdx = list.indexOf(curUrl);
+      if (curIdx < 0) curIdx = parseInt(get(POSE_KEY + bk) || '0', 10) || 0;
+      var nextIdx = (curIdx + 1) % (list.length || 3);
+      set(POSE_KEY + bk, String(nextIdx));
+      var nextRelUrl = list[nextIdx] || list[0] || '';
+      if (nextRelUrl) syncAvatarToCloud(studentId, nextRelUrl);
+      if (typeof root.updateHeaderBadges === 'function') { try { root.updateHeaderBadges(); } catch (e) { /* header refresh is optional */ } }
+      if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
+      return;
+    }
     photos.pick(studentId, function (data, ok) {
       if (ok === false) { alert('This browser could not save the picture (storage is blocked or full).'); return; }
+      if (data) syncAvatarToCloud(studentId, data);
       if (typeof root.updateHeaderBadges === 'function') { try { root.updateHeaderBadges(); } catch (e) { /* header refresh is optional */ } }
       if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
     });
   }
 
-  root.MilestoneCeremony = { avatarHtml: avatarHtml, setAvatar: setAvatar, pictureOf: pictureOf, isAvatar: isAvatar, play: play, printCertificate: printCertificate, photos: photos, titleFor: titleFor, enableFor: enableFor, isVip: isVip, TITLE: TITLE, CFG_KEY: CFG_KEY };
+  root.MilestoneCeremony = { avatarHtml: avatarHtml, setAvatar: setAvatar, pictureOf: pictureOf, isAvatar: isAvatar, play: play, printCertificate: printCertificate, photos: photos, titleFor: titleFor, enableFor: enableFor, isVip: isVip, TITLE: TITLE, CFG_KEY: CFG_KEY, BUILTIN_SETS: BUILTIN_SETS };
 })(window);

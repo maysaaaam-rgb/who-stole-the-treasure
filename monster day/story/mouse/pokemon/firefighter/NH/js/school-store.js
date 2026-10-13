@@ -1287,7 +1287,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Observe classroom and everyday technology, stimulate inquiry, and discuss: Why do people invent things?',
         duration: 25,
-        gameRoute: 'monster-day/index.html',
+        gameRoute: 'inventor-lab/index.html',
         activities: [
           { type: 'discussion', prompt: 'Look at the picture. What do you see? What tools are they using?' },
           { type: 'inquiry', prompt: 'Think: What problems do these tools solve in our daily life?' },
@@ -1391,7 +1391,7 @@
         sourceBook: 'Global Readings 2',
         objective: 'Recognize and use sequence words (First, Second, Third, Last) to describe chronological order in instructions and inventing.',
         duration: 25,
-        gameRoute: 'predictions/index.html',
+        gameRoute: 'clara-inventor/index.html',
         activities: [
           {
             type: 'sequence_device',
@@ -1449,7 +1449,7 @@
         sourceBook: 'Global Readings 2',
         objective: "Understand the 5-step engineering feedback loop and peer testing using Leonardo da Vinci's drawings and Karl Benz's motorcar.",
         duration: 30,
-        gameRoute: 'advice/index.html',
+        gameRoute: 'inventor-forge/index.html',
         activities: [
           { type: 'design_cycle', steps: ['1. Have a good idea', '2. Make a drawing', '3. Share your idea', '4. Test your idea', '5. Try again and improve'] },
           { type: 'history_spotlight', inventor: 'Karl Benz (1844–1929)', invention: 'First motorcar (1885)', feedback: '"No horses? Good idea!" / "Only three wheels?"' },
@@ -1845,7 +1845,7 @@
         weekNumber: 1,
         sourcePages: '4–5',
         sourceBook: 'Global Readings 3',
-        objective: 'Read story on animal camoflague, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
+        objective: 'Read story on animal camouflage, decode final -st (nest, past, fast) and initial tr- (tree, trip, trail).',
         duration: 35,
         gameRoute: 'camp-mystery/index.html',
         tasks: [
@@ -2040,7 +2040,7 @@
         sourceBook: 'Global Readings 3',
         objective: 'Consolidate unit learning: practice final -er spelling patterns, conduct Round Robin, and complete Reading Journal reflections.',
         duration: 35,
-        gameRoute: 'monster-day/index.html',
+        gameRoute: 'brain-explorers/index.html',
         activities: [
           { type: 'phonics_box', title: 'Spelling Pattern: Agent / Comparative final -er', words: ['reader', 'learner', 'thinker', 'writer', 'faster', 'stronger', 'helper', 'speaker'] },
           { type: 'round_robin', topic: 'Why is reading important for your imagination, memory, and everyday life?' },
@@ -2122,24 +2122,26 @@
   // Single Source of Truth: Evaluated strictly from student.xp
   // =========================================================================
 
+  // XP for each level comes from js/evolution-levels.js (one list for the whole platform); the same numbers are kept here as a fallback.
+  const XPL = (typeof window !== 'undefined' && Array.isArray(window.EAA_EVOLUTION_XP) && window.EAA_EVOLUTION_XP.length === 7) ? window.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
   const EVOLUTION_TIERS = [
-    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: XPL[0], maxXP: XPL[1] - 1, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: XPL[1], maxXP: XPL[2] - 1, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: XPL[2], maxXP: XPL[3] - 1, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: XPL[3], maxXP: XPL[4] - 1, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: XPL[4], maxXP: XPL[5] - 1, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: XPL[5], maxXP: XPL[6] - 1, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: XPL[6], maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
   // 1. Strict Stage Thresholds using Lifetime Cumulative XP (Active + Archived)
   const EVOLUTION_THRESHOLDS = [
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, isEgg: false },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, isEgg: false },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, isEgg: false },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, isEgg: false },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, isEgg: false },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, isEgg: true },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: XPL[6], isEgg: false },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: XPL[5], isEgg: false },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: XPL[4], isEgg: false },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: XPL[3], isEgg: false },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: XPL[2], isEgg: false },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: XPL[1], isEgg: true },
     { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, isEgg: true }
   ];
 
@@ -2313,9 +2315,9 @@
     student.progress = stage.progressPct;
     student.remainingXP = stage.xpToNext;
     student.xpToNext = stage.xpToNext;
-    student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - 30) / (200 - 30)) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
+    student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - XPL[1]) / (XPL[2] - XPL[1])) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
     const nextTier = EVOLUTION_THRESHOLDS.find(t => t.level === stage.level + 1);
-    student.nextThreshold = stage.level >= 7 ? 5000 : (nextTier ? nextTier.minXP : 5000);
+    student.nextThreshold = stage.level >= 7 ? XPL[6] : (nextTier ? nextTier.minXP : XPL[6]);
 
     if (stage.isEgg) {
       student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
@@ -2693,7 +2695,7 @@
       level: 1,
       name: 'Mystery Egg',
       stageKey: 'egg',
-      xpRequired: 0,
+      xpRequired: XPL[0],
       description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
       subtitle: 'A new adventure begins...',
       image: 'assets/monsters/stage-1-mystery-egg.png',
@@ -2706,7 +2708,7 @@
       level: 2,
       name: 'Cracking Egg',
       stageKey: 'cracking_egg',
-      xpRequired: 30,
+      xpRequired: XPL[1],
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
       subtitle: 'Life is waking up!',
       image: 'assets/monsters/stage-2-cracking-egg.png',
@@ -2719,7 +2721,7 @@
       level: 3,
       name: 'Baby Monster',
       stageKey: 'baby',
-      xpRequired: 200,
+      xpRequired: XPL[2],
       description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
       subtitle: 'Small steps, big dreams!',
       image: 'assets/packs/characters/emberwing_stage_baby.png',
@@ -2732,7 +2734,7 @@
       level: 4,
       name: 'Growing Monster',
       stageKey: 'growing',
-      xpRequired: 500,
+      xpRequired: XPL[3],
       description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
       subtitle: 'Stronger every day!',
       image: 'assets/monsters/stage-4-growing-monster.png',
@@ -2745,7 +2747,7 @@
       level: 5,
       name: 'Adventurer Monster',
       stageKey: 'adventurer',
-      xpRequired: 1000,
+      xpRequired: XPL[4],
       description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
       subtitle: 'Ready for bigger quests!',
       image: 'assets/monsters/stage-5-adventurer-monster.png',
@@ -2758,7 +2760,7 @@
       level: 6,
       name: 'Advanced Monster',
       stageKey: 'advanced',
-      xpRequired: 2000,
+      xpRequired: XPL[5],
       description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
       subtitle: 'New powers, new places!',
       image: 'assets/monsters/stage-6-advanced-monster.png',
@@ -2771,7 +2773,7 @@
       level: 7,
       name: 'Ultimate Monster',
       stageKey: 'ultimate',
-      xpRequired: 5000,
+      xpRequired: XPL[6],
       description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
       subtitle: 'A true hero!',
       image: 'assets/monsters/stage-7-ultimate-monster.png',
@@ -3492,6 +3494,114 @@
       submittedCount: 0,
       archived: false,
       submissions: {}
+    },
+    {
+      id: 'hw-alice-tea-party-w1',
+      syncSubmissions: true,
+      removeSubmissions: ['student-4b-208'],   // entered by mistake on 11 Oct (Simal Koyun); only removed when it carries the sync note
+      title: '☕ Alice Tea Party: Home Practice (Week 1)',
+      description: 'Learn your Alice in Wonderland character: meet them, learn 6 words, put the sentences in order, say them out loud and practise the party conversation. Finished all 5 steps = ready for the tea party!',
+      subject: 'English',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-4a',
+      className: 'Grade 4',
+      studentIds: 'all',
+      dueDate: 'Oct 10, 2026',
+      estimatedTime: '15 minutes',
+      xpReward: 60,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-alice-party-home', type: 'game', title: 'Tea Party Home Practice', url: 'alice-party-home/index.html' },
+        { id: 'res-alice-party-cards', type: 'worksheet', title: 'Tea Party Printable Cards', url: 'alice-party-home/cards.html' }
+      ],
+      instructions: [
+        '1. Open the Tea Party home practice',
+        '2. Meet your character and listen to the sentences',
+        '3. Learn the 6 picture words and put the sentences in order',
+        '4. Say your sentences out loud',
+        '5. Practise the party conversation and win your card'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 16,
+      archived: false,
+      submissions: {
+        'student-4a-311': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 9, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-312': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 8, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-343': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 8, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-320': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 9, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-346': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-338': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-316': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-307': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-305': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-319': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-309': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 10, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4a-300': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4b-306': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4a-313': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4b-301': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
+        'student-4a-317': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' }
+      }
+    },
+    {
+      id: 'hw-alice-tea-party-w2',
+      syncSubmissions: true,
+      title: '☕ Alice Tea Party: Home Practice (Week 2)',
+      description: 'Get ready for the tea party: read your dialogue, say it with someone at home, and record 30 seconds and send it to your teacher. Three short tasks.',
+      subject: 'English',
+      skill: 'Speaking',
+      cefrLevel: 'A1+',
+      classId: 'class-4a',
+      className: 'Grade 4',
+      studentIds: 'all',
+      dueDate: 'Oct 15, 2026',
+      estimatedTime: '10 minutes',
+      xpReward: 80,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-alice-party-w2', type: 'game', title: 'Tea Party Home Practice 2', url: 'alice-party-home/week2.html' }
+      ],
+      instructions: [
+        '1. Read your dialogue and listen to every line',
+        '2. Say it with someone at home',
+        '3. Record 30 seconds and send it to your teacher'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
+    },
+    {
+      id: 'hw-chuseok-w2-cooking',
+      syncSubmissions: true,
+      title: '🍲 Chuseok Cooking and Treats: Home Project (Week 2)',
+      description: 'Cook or make a Chuseok treat with your family, write three sentences about it, and send a photo or video to your teacher.',
+      subject: 'English',
+      skill: 'Writing',
+      cefrLevel: 'A1',
+      classId: 'class-3a',
+      className: 'Grade 3',
+      studentIds: 'all',
+      dueDate: 'Oct 15, 2026',
+      estimatedTime: '30 minutes',
+      xpReward: 50,
+      optionalChallenge: false,
+      resources: [
+        { id: 'res-chuseok-cooking', type: 'game', title: 'Chuseok Cooking Page', url: 'chuseok-cooking/index.html' }
+      ],
+      instructions: [
+        '1. Choose a Chuseok dish and make it with your family',
+        '2. Write what you made, how you made it and how it tasted',
+        '3. Send a photo or a short video'
+      ],
+      status: 'ACTIVE',
+      published: true,
+      submittedCount: 0,
+      archived: false,
+      submissions: {}
     }
   ];
 
@@ -3549,6 +3659,9 @@
     { id: 'tail-flame', name: 'Flame Tail', category: 'tail', subCategory: 'tails', description: 'Tail blazing with persistent fire', icon: '🔥', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'legendary', status: 'active' },
     { id: 'tail-star', name: 'Star Tail', category: 'tail', subCategory: 'tails', description: 'Glowing star-tipped adventurer tail', icon: '🌟', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'epic', status: 'active' },
 
+    // Creatures: bought with coins in the store. Wearing one changes the whole body; switching back to the bunny monster is free.
+    { id: 'creature-dragon', name: 'Sky Dragon', category: 'creature', subCategory: 'creatures', description: 'Your monster becomes a Sky Dragon: horns, wings and a spiked tail that grow with every level', icon: '🐉', unlockType: 'store', unlockRequirement: { level: 1, label: 'Buy it in the Store 🪙' }, rarity: 'epic', status: 'active' },
+
     // Features - Hats & Head Accessories
     { id: 'hat-crown', name: 'Royal Crown', category: 'hat', subCategory: 'hats', description: 'Pure gold crown set with rubies and sapphires', icon: '👑', unlockType: 'level', unlockRequirement: { level: 7 }, rarity: 'legendary', status: 'active' },
     { id: 'hat-explorer', name: 'Explorer Fedora', category: 'hat', subCategory: 'hats', description: 'Sturdy field hat for world expeditions', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
@@ -3558,6 +3671,31 @@
     { id: 'hat-star-clip', name: 'Star Clip', category: 'hat', subCategory: 'hats', description: 'Gleaming golden star hair clip', icon: '⭐', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
     { id: 'hat-flower', name: 'Blossom Flower', category: 'hat', subCategory: 'hats', description: 'Fresh blooming cherry blossom', icon: '🌸', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
     { id: 'hat-headband', name: 'Hero Headband', category: 'hat', subCategory: 'hats', description: 'Red heroic training headband', icon: '🎗️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+
+    // Illustrated-monster items (second art batch)
+    { id: 'hat-party', name: 'Party Hat', category: 'hat', subCategory: 'hats', description: 'Striped cone hat with a fluffy pom-pom', icon: '🎉', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-beanie', name: 'Cosy Beanie', category: 'hat', subCategory: 'hats', description: 'Warm knitted winter beanie', icon: '🧶', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'hat-chef', name: 'Chef Hat', category: 'hat', subCategory: 'hats', description: 'Tall puffy white chef hat', icon: '👨‍🍳', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'hat-sailor', name: 'Sailor Cap', category: 'hat', subCategory: 'hats', description: 'Classic white sailor cap', icon: '⚓', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'hat-propeller', name: 'Propeller Cap', category: 'hat', subCategory: 'hats', description: 'Colourful cap with a spinning propeller', icon: '🚁', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'hat-cowboy', name: 'Cowboy Hat', category: 'hat', subCategory: 'hats', description: 'Brown cowboy hat with a red band', icon: '🤠', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-pirate', name: 'Pirate Hat', category: 'hat', subCategory: 'hats', description: 'Friendly pirate hat with a gold star', icon: '🏴‍☠️', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-santa', name: 'Santa Hat', category: 'hat', subCategory: 'hats', description: 'Red and white holiday hat', icon: '🎅', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-tophat', name: 'Top Hat', category: 'hat', subCategory: 'hats', description: 'Black top hat with a purple ribbon', icon: '🎩', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
+    { id: 'hat-astro', name: 'Space Cap', category: 'hat', subCategory: 'hats', description: 'Silver explorer cap with a golden star', icon: '🚀', unlockType: 'level', unlockRequirement: { level: 6 }, rarity: 'epic', status: 'active' },
+    { id: 'glasses-star', name: 'Star Glasses', category: 'glasses', subCategory: 'accessories', description: 'Pink star-shaped party glasses', icon: '🌟', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'glasses-heart', name: 'Heart Glasses', category: 'glasses', subCategory: 'accessories', description: 'Red heart-shaped glasses', icon: '❤️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'glasses-sun', name: 'Cool Sunglasses', category: 'glasses', subCategory: 'accessories', description: 'Round dark sunglasses with golden frames', icon: '😎', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'neck-bowtie', name: 'Polka Bow Tie', category: 'accessory', subCategory: 'accessories', description: 'Red bow tie with white dots', icon: '🎀', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'neck-bell', name: 'Bell Collar', category: 'accessory', subCategory: 'accessories', description: 'Green collar with a tiny golden bell', icon: '🔔', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'neck-bandana', name: 'Blue Bandana', category: 'accessory', subCategory: 'accessories', description: 'Blue bandana with white dots', icon: '🧣', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'acc-balloon', name: 'Red Balloon', category: 'accessory', subCategory: 'accessories', description: 'A bouncy red balloon on a string', icon: '🎈', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'acc-icecream', name: 'Ice Cream', category: 'accessory', subCategory: 'accessories', description: 'Two scoops with sprinkles', icon: '🍦', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'acc-pencil', name: 'Big Pencil', category: 'accessory', subCategory: 'accessories', description: 'A big friendly yellow pencil', icon: '✏️', unlockType: 'level', unlockRequirement: { level: 2 }, rarity: 'common', status: 'active' },
+    { id: 'acc-ball', name: 'Football', category: 'accessory', subCategory: 'accessories', description: 'A colourful football', icon: '⚽', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'acc-paintbrush', name: 'Paintbrush', category: 'accessory', subCategory: 'accessories', description: 'Rainbow paintbrush for creative monsters', icon: '🖌️', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'acc-umbrella', name: 'Rainbow Umbrella', category: 'accessory', subCategory: 'accessories', description: 'A small folded rainbow umbrella', icon: '🌂', unlockType: 'level', unlockRequirement: { level: 3 }, rarity: 'common', status: 'active' },
+    { id: 'acc-magnifier', name: 'Magnifying Glass', category: 'accessory', subCategory: 'accessories', description: 'Golden magnifying glass for word detectives', icon: '🔍', unlockType: 'level', unlockRequirement: { level: 4 }, rarity: 'rare', status: 'active' },
 
     // Features - Backpacks
     { id: 'bp-explorer', name: 'Explorer Backpack', category: 'backpack', subCategory: 'backpacks', description: 'Leather field pack with compass brass', icon: '🎒', unlockType: 'level', unlockRequirement: { level: 5 }, rarity: 'rare', status: 'active' },
@@ -6181,7 +6319,7 @@
           { num: 3, prompt: "What can the robot do?", options: ["fly in the air", "sing songs", "move and carry things"], correct: "c", key: "c move and carry things", points: 1.5 },
           { num: 4, prompt: "When does Tom work on his inventions?", options: ["before school", "after school", "at night"], correct: "b", key: "b after school", points: 1.5 },
           { num: 5, prompt: "True or False: Tom's robot works.", options: ["True", "False"], correct: "True", key: "True", points: 1 },
-          { num: 6, prompt: "Put the story events in order (1, 2, 3):", options: ["[ ] Tom tests the robot", "[ ] Tom collects materials", "[ ] Tom paints it blue"], key: "Order: 2 -> 1 -> 3", points: 2 },
+          { num: 6, prompt: "Put the story events in order (1, 2, 3):", options: ["[ ] Tom tests the robot", "[ ] Tom collects materials", "[ ] Tom paints it blue"], key: "Order: 2 -> 3 -> 1", points: 2 },
           { num: 7, prompt: "Where does Tom go after school?", answer: "Tom goes to his room", key: "Tom goes to his room", points: 1 },
           { num: 8, prompt: "Why is Tom happy at the end?", answer: "He is happy because his robot works", key: "He is happy because his robot works", points: 1 }
         ]
@@ -7233,6 +7371,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/ates-1-smiling.webp',
           parentName: 'Parent of Ateş Özenci',
           parentContact: '+90 (555) 229-0001',
           parentEmail: 'parent229@example.com',
@@ -7393,6 +7532,7 @@
           grade: 'Grade 3',
           overallCefr: 'A1',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/fatih-1-smiling.webp',
           parentName: 'Parent of Fatih Yetkin Yılmaz',
           parentContact: '+90 (555) 209-0001',
           parentEmail: 'parent209@example.com',
@@ -8277,6 +8417,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/derin-1-smiling.webp',
           parentName: 'Parent of Derin Küçük',
           parentContact: '+90 (555) 338-0001',
           parentEmail: 'parent338@example.com',
@@ -8339,6 +8480,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/elif-beren-1-smiling.webp',
           parentName: 'Parent of Elif Beren Alper',
           parentContact: '+90 (555) 306-0001',
           parentEmail: 'parent306@example.com',
@@ -8563,6 +8705,7 @@
           grade: 'Grade 4',
           overallCefr: 'A2',
           avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          avatarUrl: 'assets/avatars/oyku-1-smiling.webp',
           parentName: 'Parent of Öykü Çiğdem Akar',
           parentContact: '+90 (555) 322-0001',
           parentEmail: 'parent322@example.com',
@@ -8920,7 +9063,7 @@
         {
           id: "quiz-g3-u1-after-school-inventor",
           title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
-          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          subtitle: "Diagnostic Progress Check & Young Inventor Showcase Qualifier",
           type: "diagnostic-quiz",
           section: "quizzes-and-tests",
           category: "Unit Progress Checks",
@@ -9003,7 +9146,7 @@
           questions: [
             {
               id: 'q-1',
-              question: 'Which tool does a firefighter use to put out water?',
+              question: 'Which tool does a firefighter use to put out a fire?',
               options: ['A water hose', 'A frying pan', 'A paint brush'],
               correctIndex: 0
             },
@@ -9749,7 +9892,7 @@
           pdfUrl: 'brain/worksheets.html',
           worksheetRoute: 'brain/worksheets.html',
           answerKey: '1. How Your Brain Learns; 2. Think, Learn, Remember, Imagine',
-          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (RG2).',
+          description: 'A 5-sheet interactive skimming and metacognition workbook for Grade 4 Unit 1 Page 17 (Global Readings 3).',
           archived: false
         },
         {
@@ -10068,32 +10211,21 @@
       this._pushRestoredRosterToCloud();
     }
 
-    // Push restored (archive-folded) balances to Supabase so cloud archived_xp is cleared.
+    // Push restored (archive-folded) balances to Supabase.
     // Only students folded during this boot are sent, so stale devices can't overwrite newer cloud XP.
+    // Uses the single schema-safe push path (the old upsert wrote columns that don't exist in the cloud table).
     _pushRestoredRosterToCloud(attempt = 0) {
       if (typeof window === 'undefined') return;
       if (!this._restoredStudentIds || !this._restoredStudentIds.size) return;
-      if (!window.supabaseClient) {
+      if (!window.supabaseClient || typeof window.pushStudentXPBatch !== 'function') {
         if (attempt < 10) setTimeout(() => this._pushRestoredRosterToCloud(attempt + 1), 1500);
         return;
       }
       try {
         const students = (this.state && Array.isArray(this.state.students)) ? this.state.students : [];
-        const payload = students.filter(s => s && s.id != null && this._restoredStudentIds.has(String(s.id))).map(s => {
-          const st = getStudentStage({ xp: Number(s.xp) || 0 });
-          return {
-            id: String(s.id),
-            name: s.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student',
-            grade: s.grade || '4A',
-            xp: Number(s.xp) || 0,
-            archived_xp: 0,
-            level: st.level,
-            stage_name: st.stageName,
-            updated_at: new Date().toISOString()
-          };
-        });
-        window.supabaseClient.from('students').upsert(payload, { onConflict: 'id' })
-          .then(res => { if (res && res.error) console.warn('Restored roster cloud push failed:', res.error.message); })
+        const restored = students.filter(s => s && s.id != null && this._restoredStudentIds.has(String(s.id)));
+        window.pushStudentXPBatch(window.supabaseClient, restored)
+          .then(res => { if (res && !res.ok) console.warn('Restored roster cloud push failed:', res.error); })
           .catch(err => console.warn('Restored roster cloud push failed:', err && err.message));
       } catch (e) {
         console.warn('Restored roster cloud push skipped:', e && e.message);
@@ -10203,6 +10335,20 @@
                     }
                   });
                   if (!existing.submissions) existing.submissions = JSON.parse(JSON.stringify(defHw.submissions || {}));
+                  // Weekly sync from the Results sheet: add new submissions, and upgrade a started one to finished (never remove anything)
+                  if (defHw.syncSubmissions && defHw.submissions) {
+                    Object.keys(defHw.submissions).forEach(sid => {
+                      const have = existing.submissions[sid], want = defHw.submissions[sid];
+                      if (!have || (have.status !== 'COMPLETED' && want.status === 'COMPLETED') || (have.status !== 'COMPLETED' && (Number(want.attempted) || 0) > (Number(have.attempted) || 0))) {
+                        existing.submissions[sid] = JSON.parse(JSON.stringify(want));
+                      }
+                    });
+                    (defHw.removeSubmissions || []).forEach(sid => {
+                      const old = existing.submissions[sid];
+                      if (old && String(old.notes || '').indexOf('from the Results sheet') >= 0) delete existing.submissions[sid];
+                    });
+                    existing.submittedCount = Object.values(existing.submissions).filter(x => x.status === 'COMPLETED').length;
+                  }
                   if (!existing.submittedCount && defHw.submittedCount) existing.submittedCount = defHw.submittedCount;
                 }
               });
@@ -10301,7 +10447,7 @@
               // Ensure standardized progression thresholds are applied
               merged.progressionLevels.forEach(lvl => {
                 const def = DEFAULT_PROGRESSION_LEVELS.find(d => d.id === lvl.id || d.level === lvl.level);
-                if (def && (lvl.level <= 4 || lvl.id === 'lvl-2' || lvl.id === 'lvl-3' || lvl.id === 'lvl-4' || lvl.id === 'lvl-1')) {
+                if (def && /^lvl-[1-7]$/.test(String(def.id || ''))) {   // all 7 standard levels follow js/evolution-levels.js (Level 7 moved to 3,500 on 2026-10-13)
                   lvl.xpRequired = def.xpRequired;
                 }
               });
@@ -10354,6 +10500,7 @@
                         backpack: 'none',
                         accessory: 'none',
                         aura: 'none',
+                        pet: 'none',
                         background: 'bg-meadow'
                       },
                       unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
@@ -10833,12 +10980,27 @@
       });
     }
 
+    // Monster pictures drawn by the app (about 46 KB each, stored twice per pupil) filled the browser's storage:
+    // 32 pupils x 2 copies = 2.5 MB, and the whole saved data hit the 5 MB limit, which made every save slow and
+    // triggered the "make room" routine that cuts the XP history. The app always redraws these pictures itself
+    // (see getStudentMonsterAvatarUrl), so they are not saved any more. Pictures a teacher uploaded are kept.
+    _slimGeneratedAvatars() {
+      const gen = u => typeof u === 'string' && u.length > 500 && u.indexOf('eaa-monster-svg') !== -1;
+      const fix = o => { if (o && typeof o === 'object') ['custom_avatar_url', 'custom_avatar'].forEach(k => { if (gen(o[k])) delete o[k]; }); };
+      try {
+        (this.state.students || []).forEach(s => { fix(s); fix(s && s.monsterProfile); });
+        const mp = this.state.monsterProfiles || {};
+        Object.keys(mp).forEach(k => fix(mp[k]));
+      } catch (e) { /* never block a save */ }
+    }
+
     saveState() {
       if (typeof localStorage === 'undefined') {
         this.notify();
         return;
       }
 
+      this._slimGeneratedAvatars();
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
         if (this.state && Array.isArray(this.state.students)) {
@@ -11246,6 +11408,7 @@
         const updatedXP = Math.max(0, curActive + points);
         s.xp = updatedXP;
         s.totalXP = updatedXP;
+        s.xpUpdatedAt = new Date().toISOString();
         tx.balanceAfter = s.xp;
         if (!Array.isArray(s.xpHistory)) s.xpHistory = [];
         const now = new Date();
@@ -11303,7 +11466,7 @@
         this.logMonsterHistory(studentId, {
           type: isHatch ? 'hatch' : 'evolve',
           title: isHatch ? '✨ Egg Hatched into Baby Monster!' : ('🎉 Evolved to Level ' + newLevel + ': ' + newMonsterState.stageName),
-          detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString() + ' XP.'
+          detail: 'Earned ' + (numAmount >= 0 ? '+' : '') + numAmount + ' XP (' + (reason || 'Activity') + '). New total: ' + newMonsterState.totalXP.toLocaleString('en-US') + ' XP.'
         });
 
         const allItems = this.getMonsterItems(null, true);
@@ -11349,6 +11512,8 @@
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
 
+      // The cloud adds this award to ITS number, so a device with an older copy can not save its older total over a newer one.
+      if (s && typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: points });
       if (typeof window !== 'undefined' && window.AdventureSupabase && window.AdventureSupabase.isConfigured) {
         window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
         window.AdventureSupabase.saveStudent(s).catch(() => {});
@@ -11406,6 +11571,7 @@
       const oldXP = Number(s.xp) || 0;
       s.xp = parsedXP;
       s.totalXP = parsedXP;
+      s.xpUpdatedAt = new Date().toISOString();
 
       evaluateMonsterStage(s);
 
@@ -11466,6 +11632,8 @@
         window.AdventureAcademy.students = this.state.students;
       }
 
+      // The teacher typed an exact number: the cloud takes it as typed (up or down).
+      if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { absolute: true });
       if (typeof safeBackgroundSupabaseSync === 'function') {
         safeBackgroundSupabaseSync(this.state.students);
       } else if (typeof window !== 'undefined' && typeof window.safeBackgroundSupabaseSync === 'function') {
@@ -11614,11 +11782,14 @@
         }
         s.xp = Math.max(0, (Number(s.xp) || 0) - (Number(tx.amount) || 0));
         s.totalXP = s.xp;
+        s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
+        if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: -(Number(tx.amount) || 0) });
       }
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+      this.pushXPChange(tx, s);
       return true;
     }
 
@@ -11644,12 +11815,24 @@
         }
         s.xp = Math.max(0, (Number(s.xp) || 0) + (Number(tx.amount) || 0));
         s.totalXP = s.xp;
+        s.xpUpdatedAt = new Date().toISOString();
         evaluateMonsterStage(s);
+        if (typeof window !== 'undefined' && window.markXpIntent) window.markXpIntent(s, { delta: Number(tx.amount) || 0 });
       }
 
       this.saveState();
       this.notify('xp', this.state.xpTransactions);
+      this.pushXPChange(tx, s);
       return true;
+    }
+
+    /** Send a changed XP entry and its student to the cloud so every device sees the same thing. */
+    pushXPChange(tx, s) {
+      try {
+        if (typeof window === 'undefined' || !window.AdventureSupabase || !window.AdventureSupabase.isConfigured) return;
+        if (tx) window.AdventureSupabase.saveXPTransaction(tx).catch(() => {});
+        if (s) window.AdventureSupabase.saveStudent(s).catch(() => {});
+      } catch (e) { /* offline: the next sync sends it */ }
     }
 
     updateXPTransaction(txId, updates) {
@@ -12985,7 +13168,7 @@
         const g3Quiz = {
           id: "quiz-g3-u1-after-school-inventor",
           title: "🛠️ Unit 1 Master Quest: The After-School Inventor",
-          subtitle: "Diagnostic Progress Check & Wonderland Tea Party Qualifier",
+          subtitle: "Diagnostic Progress Check & Young Inventor Showcase Qualifier",
           type: "diagnostic-quiz",
           section: "quizzes-and-tests",
           category: "Unit Progress Checks",
@@ -13376,14 +13559,26 @@
 
     getMonsterItems(category = null, includeArchived = false) {
       if (!this.state.monsterItems) this.state.monsterItems = JSON.parse(JSON.stringify(DEFAULT_MONSTER_ITEMS));
+      if (typeof window !== 'undefined' && window.MonsterPets && typeof window.MonsterPets.install === 'function') {
+        window.MonsterPets.install(this);
+      }
+      // Items that only have a picture for the illustrated monsters stay hidden while the drawn monsters are in use.
+      const D = (typeof window !== 'undefined') ? window.MonsterDressUp : null;
+      const hideArtOnly = (typeof window === 'undefined' || window.EAA_ILLUSTRATED_MONSTERS !== true) && D && typeof D.isArtOnly === 'function';
+      const show3dOnly = (typeof window !== 'undefined' && window.EAA_ILLUSTRATED_MONSTERS === true) && D && typeof D.showsOn3d === 'function';
       return this.state.monsterItems.filter(item => {
         const matchCat = !category || item.category === category;
         const matchArchived = includeArchived || item.status !== 'archived';
+        if (hideArtOnly && D.isArtOnly(item.id)) return false;
+        if (show3dOnly && !D.showsOn3d(item)) return false;   // with 3D on, only offer things a 3D monster can actually wear
         return matchCat && matchArchived;
       });
     }
 
     getMonsterItem(id) {
+      if (typeof window !== 'undefined' && window.MonsterPets && typeof window.MonsterPets.install === 'function') {
+        window.MonsterPets.install(this);
+      }
       return (this.state.monsterItems || []).find(item => item.id === id);
     }
 
@@ -13483,6 +13678,7 @@
               backpack: 'none',
               accessory: 'none',
               aura: 'none',
+              pet: 'none',
               background: 'bg-meadow'
             },
             unlockedItems: ['body-' + assignedColor, 'eyes-sparkle', 'mouth-smile', 'horns-ears', 'tail-puff', 'bg-meadow'],
@@ -13523,6 +13719,7 @@
         prof.monsterName = prof.petName;
       }
       if (!prof.equipped) prof.equipped = {};
+      if (!prof.equipped.pet) prof.equipped.pet = 'none';
       return prof;
     }
 
@@ -16276,6 +16473,7 @@
         if (!this.state.classes) this.state.classes = [];
         cloudData.classes.forEach(remoteClass => {
           if (!remoteClass || !remoteClass.id) return;
+          if (remoteClass.grade === 'System') return;   // hidden sync rows are not real classes
           const localIdx = this.state.classes.findIndex(c => c.id === remoteClass.id);
           if (localIdx !== -1) {
             this.state.classes[localIdx] = Object.assign({}, this.state.classes[localIdx], remoteClass);
@@ -16306,16 +16504,40 @@
             // Local is authoritative so teacher edits (up or down) stick. Only absorb a stale cloud archive once.
             let mergedXP = Math.max(0, Number(local.xp) || 0);
             let folded = !!local.xpArchiveFolded;
-            if (remoteArch > 0 && !folded) {
+            // The newest XP change wins, so a device with old numbers can never undo a newer change made elsewhere.
+            const remoteStamp = Date.parse(remoteStudent.xpUpdatedAt || '') || 0;
+            const localStamp = Date.parse(local.xpUpdatedAt || '') || 0;
+            const cloudIsNewer = remoteStamp > localStamp;
+            if (cloudIsNewer) {
+              mergedXP = remoteAct;
+              folded = true;
+            } else if (remoteArch > 0 && !folded) {
               mergedXP = Math.max(mergedXP, remoteFolded);
               folded = true;
             }
+            // Neither side has ever recorded an XP change (no stamp): a brand-new device only holds placeholder XP,
+            // so it must take the cloud's higher number instead of keeping its own and saving it over the real one.
+            if (!cloudIsNewer && remoteStamp === 0 && localStamp === 0 && remoteAct > mergedXP) {
+              mergedXP = remoteAct;
+              folded = true;
+            }
+            // Same change, but the cloud kept the higher number (it protects XP from older copies): catch up to it.
+            if (!cloudIsNewer && remoteStamp > 0 && remoteStamp === localStamp && remoteAct > mergedXP) {
+              mergedXP = remoteAct;
+              folded = true;
+            }
+
+            const mergedAvatarUrl = remoteStudent.avatarUrl || local.avatarUrl || (remoteStudent.extraData && remoteStudent.extraData.avatarUrl) || (local.extraData && local.extraData.avatarUrl) || null;
+            const mergedAvatarPoses = remoteStudent.avatarPoses || local.avatarPoses || (remoteStudent.extraData && remoteStudent.extraData.avatarPoses) || (local.extraData && local.extraData.avatarPoses) || null;
 
             const mergedStudent = Object.assign({}, local, remoteStudent, {
+              avatarUrl: mergedAvatarUrl,
+              avatarPoses: mergedAvatarPoses,
               xp: mergedXP,
               totalXP: mergedXP,
               archivedXP: 0,
-              xpArchiveFolded: folded
+              xpArchiveFolded: folded,
+              xpUpdatedAt: (cloudIsNewer ? remoteStudent.xpUpdatedAt : local.xpUpdatedAt) || remoteStudent.xpUpdatedAt || null
             });
             delete mergedStudent.archived_xp;
             evaluateMonsterStage(mergedStudent);
@@ -16433,9 +16655,13 @@
         if (!this.state.xpTransactions) this.state.xpTransactions = [];
         cloudData.xpTransactions.forEach(tx => {
           if (!tx || !tx.id) return;
-          const exists = this.state.xpTransactions.some(t => t.id === tx.id);
-          if (!exists) {
+          const existing = this.state.xpTransactions.find(t => t.id === tx.id);
+          if (!existing) {
             this.state.xpTransactions.push(tx);
+            modified = true;
+          } else if (tx.status === 'voided' && existing.status !== 'voided') {
+            existing.status = 'voided';
+            existing.isVoided = true;
             modified = true;
           }
         });
@@ -16632,39 +16858,7 @@
         this.state.trades = [];
       }
 
-      // Pre-seed default unopened boxes for existing students if empty
-      const students = this.state.students || [];
-      if (this.state.mysteryBoxes.length === 0 && students.length > 0) {
-        students.forEach((s, idx) => {
-          this.state.mysteryBoxes.push({
-            id: 'box-' + s.id + '-wood-1',
-            studentId: s.id,
-            boxTier: 'WOODEN',
-            isOpened: false,
-            openedAt: null,
-            createdAt: new Date().toISOString()
-          });
-          this.state.mysteryBoxes.push({
-            id: 'box-' + s.id + '-gilded-1',
-            studentId: s.id,
-            boxTier: 'GILDED',
-            isOpened: false,
-            openedAt: null,
-            createdAt: new Date().toISOString()
-          });
-          if (idx % 2 === 0) {
-            this.state.mysteryBoxes.push({
-              id: 'box-' + s.id + '-celestial-1',
-              studentId: s.id,
-              boxTier: 'CELESTIAL',
-              isOpened: false,
-              openedAt: null,
-              createdAt: new Date().toISOString()
-            });
-          }
-        });
-        this.saveState();
-      }
+      // (No free starter boxes: pupils only get mystery boxes they earn or that the teacher gives.)
     }
 
     getMysteryBoxes(studentId = null, includeOpened = false) {
@@ -16678,8 +16872,11 @@
 
     grantMysteryBox(studentId, boxTier = 'WOODEN') {
       this._ensureMysteryBoxState();
-      const validTiers = ['WOODEN', 'GILDED', 'CELESTIAL'];
-      const tier = validTiers.includes(String(boxTier).toUpperCase()) ? String(boxTier).toUpperCase() : 'WOODEN';
+      // Box kinds: BRONZE, WOODEN (shown as Silver), GILDED (shown as Gold), CELESTIAL (shown as Diamond)
+      const validTiers = ['BRONZE', 'WOODEN', 'GILDED', 'CELESTIAL'];
+      const tierAlias = { SILVER: 'WOODEN', GOLD: 'GILDED', DIAMOND: 'CELESTIAL' };
+      const wanted = String(boxTier).toUpperCase();
+      const tier = validTiers.includes(tierAlias[wanted] || wanted) ? (tierAlias[wanted] || wanted) : 'WOODEN';
       const box = {
         id: 'box-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
         studentId: studentId,
@@ -16783,7 +16980,7 @@
           if (!profile.unlockedItems) profile.unlockedItems = [];
           if (!profile.unlockedItems.includes(item.id)) {
             profile.unlockedItems.push(item.id);
-            this.saveMonsterProfile(studentId, profile);
+            this.updateMonsterProfile(studentId, { unlockedItems: profile.unlockedItems });
           }
         }
       }
@@ -16817,6 +17014,12 @@
       const entry = inv.find(e => e.itemId === itemId);
       const item = this.getMonsterItem(itemId);
       if (!item) return false;
+      // Shop-only items can only be worn by a student who bought or won them
+      if (item.unlockType === 'store') {
+        const pr = this.getMonsterProfile(studentId);
+        const owned = !!entry || !!(pr && pr.unlockedItems && pr.unlockedItems.includes(item.id));
+        if (!owned) return false;
+      }
 
       // Un-equip previous of same category in inventory
       inv.forEach(e => {
@@ -16831,7 +17034,7 @@
         profile.equipped[item.category] = item.id;
         if (!profile.unlockedItems) profile.unlockedItems = [];
         if (!profile.unlockedItems.includes(item.id)) profile.unlockedItems.push(item.id);
-        this.saveMonsterProfile(studentId, profile);
+        this.updateMonsterProfile(studentId, { unlockedItems: profile.unlockedItems, equipped: Object.assign({}, profile.equipped) });
       }
       this.saveState();
       this.notify();

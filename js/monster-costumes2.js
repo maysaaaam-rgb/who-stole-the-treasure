@@ -67,11 +67,11 @@
       <rect x="72" y="${t - 6}" width="56" height="8" fill="#fbbf24" opacity="0.95" stroke="#a16207" stroke-width="1.4"/>
       <polygon points="96,${t - 20} 98,${t - 15} 103,${t - 15} 99,${t - 12} 100.5,${t - 7} 96,${t - 10} 91.5,${t - 7} 93,${t - 12} 89,${t - 15} 94,${t - 15}" fill="#fde047"/>
       <circle cx="108" cy="${t - 34}" r="2.4" fill="#fde047"/><circle cx="88" cy="${t - 4}" r="1.8" fill="#fef9c3"/></g>`; };
-  H['cs-ninja-band'] = function (g) { var t = g.topY;
-    return `<g class="monster-hat"><path d="M60 ${t + 20} Q100 ${t + 6} 140 ${t + 20} L140 ${t + 31} Q100 ${t + 17} 60 ${t + 31} Z" fill="#111827" stroke="#000" stroke-width="2"/>
-      <rect x="86" y="${t + 14}" width="28" height="13" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.8"/>
-      <path d="M92 ${t + 20} L100 ${t + 16} L108 ${t + 20} L100 ${t + 25} Z" fill="#475569"/>
-      <path d="M140 ${t + 24} Q154 ${t + 20} 160 ${t + 32} Q150 ${t + 30} 142 ${t + 30} Z M140 ${t + 26} Q152 ${t + 36} 158 ${t + 48} Q146 ${t + 40} 140 ${t + 31} Z" fill="#111827" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></g>`; };
+  H['cs-ninja-band'] = function (g) { var t = g.topY, w1 = Math.round((g.cW || 40) * 0.85), w2 = Math.round((g.cW || 40) * 0.95);
+    return `<g class="monster-hat"><path d="M${100 - w1} ${t + 15} Q100 ${t + 4} ${100 + w1} ${t + 15} L${100 + w2} ${t + 25} Q100 ${t + 14} ${100 - w2} ${t + 25} Z" fill="#111827" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="86" y="${t + 10}" width="28" height="12" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.8"/>
+      <path d="M92 ${t + 16} L100 ${t + 12.5} L108 ${t + 16} L100 ${t + 20} Z" fill="#475569"/>
+      <path d="M${100 + w2 - 1} ${t + 19} Q${100 + w2 + 13} ${t + 15} ${100 + w2 + 19} ${t + 27} Q${100 + w2 + 9} ${t + 25} ${100 + w2 + 1} ${t + 25} Z M${100 + w2 - 1} ${t + 21} Q${100 + w2 + 11} ${t + 30} ${100 + w2 + 16} ${t + 41} Q${100 + w2 + 5} ${t + 34} ${100 + w2 - 1} ${t + 25} Z" fill="#111827" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></g>`; };
   H['cs-knight-helm'] = function (g) { var t = g.topY, e = g.eyeY;
     return `<g class="monster-hat"><path d="M58 ${e + 20} L58 ${t + 8} Q58 ${t - 22} 100 ${t - 24} Q142 ${t - 22} 142 ${t + 8} L142 ${e + 20} L128 ${e + 24} L128 ${t + 10} L72 ${t + 10} L72 ${e + 24} Z" fill="#cbd5e1" stroke="#334155" stroke-width="2.6" stroke-linejoin="round"/>
       <path d="M64 ${t - 2} Q100 ${t - 16} 136 ${t - 2}" fill="none" stroke="#f8fafc" stroke-width="3" opacity="0.8"/>
@@ -83,10 +83,10 @@
       <circle cx="100" cy="${t - 42}" r="7" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.8"/><circle cx="98" cy="${t - 44}" r="2.2" fill="#fecaca"/>
       <circle cx="100" cy="${t + 3}" r="5" fill="#94a3b8" stroke="#334155" stroke-width="1.8"/>
       <rect x="80" y="${t + 14}" width="40" height="8" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.8" opacity="0.95"/><circle cx="90" cy="${t + 18}" r="1.8" fill="#22c55e"/><circle cx="100" cy="${t + 18}" r="1.8" fill="#facc15"/><circle cx="110" cy="${t + 18}" r="1.8" fill="#38bdf8"/></g>`; };
-  H['cs-rock-bandana'] = function (g) { var t = g.topY;
-    return `<g class="monster-hat"><path d="M60 ${t + 14} Q100 ${t - 2} 140 ${t + 14} L140 ${t + 28} Q100 ${t + 12} 60 ${t + 28} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.2" stroke-linejoin="round"/>
-      <circle cx="76" cy="${t + 16}" r="2.4" fill="#fff"/><circle cx="90" cy="${t + 13}" r="2.4" fill="#fff"/><circle cx="104" cy="${t + 13}" r="2.4" fill="#fff"/><circle cx="118" cy="${t + 16}" r="2.4" fill="#fff"/><circle cx="84" cy="${t + 23}" r="2.4" fill="#fff"/><circle cx="98" cy="${t + 21}" r="2.4" fill="#fff"/><circle cx="112" cy="${t + 22}" r="2.4" fill="#fff"/>
-      <path d="M140 ${t + 20} L156 ${t + 12} L152 ${t + 28} Z M140 ${t + 24} L154 ${t + 38} L145 ${t + 32} Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.8" stroke-linejoin="round"/></g>`; };
+  H['cs-rock-bandana'] = function (g) { var t = g.topY, w1 = Math.round((g.cW || 40) * 0.85), w2 = Math.round((g.cW || 40) * 0.95);
+    return `<g class="monster-hat"><path d="M${100 - w1} ${t + 14} Q100 ${t} ${100 + w1} ${t + 14} L${100 + w2} ${t + 26} Q100 ${t + 12} ${100 - w2} ${t + 26} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.2" stroke-linejoin="round"/>
+      <circle cx="76" cy="${t + 16}" r="2.4" fill="#fff"/><circle cx="90" cy="${t + 13}" r="2.4" fill="#fff"/><circle cx="104" cy="${t + 13}" r="2.4" fill="#fff"/><circle cx="118" cy="${t + 16}" r="2.4" fill="#fff"/><circle cx="84" cy="${t + 22}" r="2.4" fill="#fff"/><circle cx="98" cy="${t + 20}" r="2.4" fill="#fff"/><circle cx="112" cy="${t + 21}" r="2.4" fill="#fff"/>
+      <path d="M${100 + w2} ${t + 19} L${100 + w2 + 15} ${t + 12} L${100 + w2 + 11} ${t + 26} Z M${100 + w2} ${t + 22} L${100 + w2 + 13} ${t + 35} L${100 + w2 + 4} ${t + 30} Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.8" stroke-linejoin="round"/></g>`; };
   H['cs-beanie'] = function (g) { var t = g.topY;
     return `<g class="monster-hat"><path d="M66 ${t + 12} Q68 ${t - 22} 100 ${t - 24} Q132 ${t - 22} 134 ${t + 12} Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="2.2"/>
       <path d="M70 ${t - 8} Q100 ${t} 130 ${t - 8} M68 ${t + 1} Q100 ${t + 9} 132 ${t + 1}" fill="none" stroke="#ffffff" stroke-width="4.4" opacity="0.92"/>
@@ -105,9 +105,10 @@
   GL['cs-pirate-patch'] = function (g) { var y = g.eyeY, s = g.eyeSpacing;
     return `<g class="monster-glasses"><path d="M${100 - s - 20} ${y - 22} L${100 + s + 18} ${y + 12}" stroke="#111827" stroke-width="2.6" stroke-linecap="round"/>
       <ellipse cx="${100 + s}" cy="${y}" rx="12.5" ry="11" fill="#111827" stroke="#000" stroke-width="2"/><path d="M${100 + s - 6} ${y - 5} Q${100 + s} ${y - 8} ${100 + s + 6} ${y - 5}" fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round"/></g>`; };
-  GL['cs-ninja-mask'] = function (g) { var y = g.eyeY, s = g.eyeSpacing, w = s + 21;
-    return `<g class="monster-glasses"><path fill-rule="evenodd" d="M${100 - w} ${y - 9} Q100 ${y - 16} ${100 + w} ${y - 9} L${100 + w} ${y + 10} Q100 ${y + 15} ${100 - w} ${y + 10} Z M${100 - s - 9} ${y - 1} Q${100 - s} ${y - 6} ${100 - s + 9} ${y - 2} L${100 - s + 8} ${y + 4} Q${100 - s} ${y + 6} ${100 - s - 9} ${y + 3} Z M${100 + s - 9} ${y - 2} Q${100 + s} ${y - 6} ${100 + s + 9} ${y - 1} L${100 + s + 9} ${y + 3} Q${100 + s} ${y + 6} ${100 + s - 8} ${y + 4} Z" fill="#111827" stroke="#000" stroke-width="2"/>
-      <path d="M${100 - w + 2} ${y - 6} L${100 - s - 12} ${y - 3} M${100 + w - 2} ${y - 6} L${100 + s + 12} ${y - 3}" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round"/></g>`; };
+  GL['cs-ninja-mask'] = function (g) { var y = g.eyeY, s = g.eyeSpacing, w = s + 16, h = 11.5;
+    function eyeHole(cx) { return `M${cx - 9.8} ${y + 0.5} A9.8 10.2 0 1 0 ${cx + 9.8} ${y + 0.5} A9.8 10.2 0 1 0 ${cx - 9.8} ${y + 0.5} Z`; }
+    return `<g class="monster-glasses"><path fill-rule="evenodd" d="M${100 - w} ${y - 3} Q${100 - s} ${y - h - 4} 100 ${y - 7} Q${100 + s} ${y - h - 4} ${100 + w} ${y - 3} Q${100 + s + 6} ${y + h + 1.5} 100 ${y + 1.5} Q${100 - s - 6} ${y + h + 1.5} ${100 - w} ${y - 3} Z ${eyeHole(100 - s)} ${eyeHole(100 + s)}" fill="#111827" stroke="#000" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M${100 - w + 3} ${y - 4} L${100 - s - 10} ${y - 6} M${100 + w - 3} ${y - 4} L${100 + s + 10} ${y - 6}" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round"/></g>`; };
   GL['cs-robot-visor'] = function (g) { var y = g.eyeY, s = g.eyeSpacing, w = s + 19;
     return `<g class="monster-glasses"><rect x="${100 - w}" y="${y - 11}" width="${w * 2}" height="22" rx="10" fill="#0f172a" stroke="#475569" stroke-width="2.6"/>
       <rect x="${100 - w + 5}" y="${y - 6}" width="${w * 2 - 10}" height="12" rx="6" fill="#22d3ee" opacity="0.88"/>

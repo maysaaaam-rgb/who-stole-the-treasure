@@ -291,6 +291,8 @@
             if (safe === c.xp && cStamp > (Date.parse(row.extra_data.xpUpdatedAt || '') || 0)) row.extra_data.xpUpdatedAt = c.extra_data.xpUpdatedAt;
             const ch = c.extra_data && c.extra_data.xpHistory;
             if (Array.isArray(ch) && ch.length > (row.extra_data.xpHistory || []).length) row.extra_data.xpHistory = ch;
+            if (!row.extra_data.avatarUrl && c.extra_data && c.extra_data.avatarUrl) row.extra_data.avatarUrl = c.extra_data.avatarUrl;
+            if (!row.extra_data.avatarPoses && c.extra_data && c.extra_data.avatarPoses) row.extra_data.avatarPoses = c.extra_data.avatarPoses;
             _healLocalXp(student, row.xp);
           }
         } catch (e) { /* if the check cannot run, the save below still never uses a stale number silently: see _safeXp */ }
@@ -1329,6 +1331,8 @@
         stageName: student.stageName || student.levelName || null,
         aliceCharacter: student.aliceCharacter || student.alice_character || null,
         koreanRole: student.koreanRole || student.korean_role || null,
+        avatarUrl: student.avatarUrl || (student.extraData && student.extraData.avatarUrl) || null,
+        avatarPoses: student.avatarPoses || (student.extraData && student.extraData.avatarPoses) || null,
         customIcon: activeIcon,
         avatarConfig: { ...avatarConfig, customIcon: activeIcon },
         xpHistory: student.xpHistory || student.xp_history || [],
@@ -1358,6 +1362,8 @@
       grade: row.grade || '4A',
       overallCefr: row.overall_cefr || 'A1',
       avatar: row.avatar || { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+      avatarUrl: extra.avatarUrl || row.avatar_url || null,
+      avatarPoses: extra.avatarPoses || null,
       parentName: row.parent_name || '',
       parentContact: row.parent_contact || '',
       parentEmail: row.parent_email || '',
@@ -1495,6 +1501,8 @@
         if (Array.isArray(ch) && ch.length > ((r.extra_data && r.extra_data.xpHistory) || []).length) r.extra_data.xpHistory = ch;
         const cStamp = Date.parse((c.extra_data && c.extra_data.xpUpdatedAt) || '') || 0;
         if (safe === c.xp && cStamp > (Date.parse((r.extra_data && r.extra_data.xpUpdatedAt) || '') || 0)) r.extra_data.xpUpdatedAt = c.extra_data.xpUpdatedAt;
+        if (r.extra_data && !r.extra_data.avatarUrl && c.extra_data && c.extra_data.avatarUrl) r.extra_data.avatarUrl = c.extra_data.avatarUrl;
+        if (r.extra_data && !r.extra_data.avatarPoses && c.extra_data && c.extra_data.avatarPoses) r.extra_data.avatarPoses = c.extra_data.avatarPoses;
       });
     } catch (e) { console.warn('[AdventureSupabase] XP check before the bulk save could not run:', e && e.message); }
 

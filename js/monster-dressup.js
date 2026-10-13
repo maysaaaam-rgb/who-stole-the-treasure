@@ -175,6 +175,9 @@
       });
     }
 
+    var petOverlay = (equipped.pet && equipped.pet !== 'none' && root.MonsterPets && root.MonsterPets.renderHtml)
+      ? root.MonsterPets.renderHtml(equipped.pet)
+      : '';
     var bob = options.animated === false ? '' : 'animation:eaaDressBob 3.2s ease-in-out infinite;';
     return '<div class="eaa-dressup" data-monster="' + key + '" style="position:relative;' + sizeCss + 'margin:0 auto;">' +
       layers +
@@ -182,6 +185,7 @@
         items +
         '<img src="' + ART + key + '.webp" alt="" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:20;" />' +
       '</div>' +
+      petOverlay +
       '</div>';
   }
 
@@ -197,10 +201,22 @@
     speciesForColor: speciesForColor,
     lists: { backgrounds: BG_IMG, auras: AURA_IMG, stages: STAGES },
     hasArt: function (color, stage) { if (root.EAA_ILLUSTRATED_MONSTERS !== true) return false; var s = speciesForColor(color); return !!(root.MONSTER_ANCHORS && root.MONSTER_ANCHORS[s + '_' + normStage(stage)]); },
-    supportedItem: function (id) { return !!FILE[id]; },
+    supportedItem: function (id) { return !!(FILE[id] || (root.MonsterPets && root.MonsterPets.byId(id))); },
+    fileName: function (id) { return FILE[id] || ''; },
+    /* true when a 3D monster can show this catalogue item (a picture exists). Body colours and companion pets stay. */
+    showsOn3d: function (item) {
+      if (!item) return false; var id = String(item.id || ''), cat = item.category;
+      if (cat === 'body' || cat === 'pet') return true;
+      if (cat === 'aura') return AURA_IMG.indexOf(id.replace(/^aura-/, '')) !== -1;
+      if (cat === 'background') return BG_IMG.indexOf(id.replace(/^bg-/, '')) !== -1;
+      return !!FILE[id];
+    },
     isHiddenByBaked: isHiddenByBaked,
     isArtOnly: function (id) { return ART_ONLY.indexOf(id) !== -1; },
-    itemPicture: function (id) { return (root.EAA_ILLUSTRATED_MONSTERS === true && FILE[id]) ? ITEMS + 'item_' + FILE[id] + '.webp' : ''; },
+    itemPicture: function (id) {
+      if (root.MonsterPets && root.MonsterPets.byId(id)) return root.MonsterPets.getDataUri(id);
+      return (root.EAA_ILLUSTRATED_MONSTERS === true && FILE[id]) ? ITEMS + 'item_' + FILE[id] + '.webp' : '';
+    },
     // one of: cheer, think, oops, sleepy (the monster in its 'growing' pose with that expression)
     emotionUrl: function (color, emotion) { return ART + speciesForColor(color) + '_growing_' + emotion + '.webp'; },
     eggUrl: function (color, cracking) { return ART + speciesForColor(color) + (cracking ? '_cracking' : '_egg') + '.webp'; }

@@ -758,7 +758,14 @@
     ).join('');
   }
 
-  // The pupil's own cartoon picture (kept only in this browser) replaces the initials in the top-bar chip
+  function studentMiniAvatarHtml(s, sz) {
+    var url = (window.MilestoneCeremony && window.MilestoneCeremony.pictureOf) ? window.MilestoneCeremony.pictureOf(s) : '';
+    if (!url) return '';
+    var n = sz || 36;
+    return '<img src="' + url + '" alt="" style="width:' + n + 'px;height:' + n + 'px;border-radius:50%;object-fit:contain;background:#fff7d6;border:2px solid #f59e0b;flex-shrink:0;box-shadow:0 2px 6px rgba(245,158,11,0.35);">';
+  }
+
+  // The pupil's own cartoon picture replaces the initials in the top-bar chip
   function setHeaderPicture(el, student) {
     var url = (window.MilestoneCeremony && window.MilestoneCeremony.pictureOf) ? window.MilestoneCeremony.pictureOf(student) : '';
     if (url) {
@@ -1271,7 +1278,7 @@
       if (!D.hasArt(color, stage)) return img;
       const eq = Object.assign({}, profile.equipped || {});
       delete eq.background; delete eq.aura;
-      const wearing = [eq.hat, eq.glasses, eq.accessory, eq.backpack, eq.clothing].some(function (id) { return id && D.supportedItem(id); });
+      const wearing = [eq.hat, eq.glasses, eq.accessory, eq.backpack, eq.clothing, eq.pet].some(function (id) { return id && D.supportedItem(id); });
       if (!wearing) return img;
       return '<div class="eaa-card-dressed" style="width:100%;max-height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;">' +
         D.render({ color: color, stage: stage, equipped: eq, size: '100%', animated: false }) + '</div>';
@@ -1409,8 +1416,8 @@
 
         // Card Content: Info, Progress & Dominant 3D Button
         '<div class="student-card-content">' +
-          '<div class="student-name-row">' +
-            '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words">' + studentName + '</h3>' +
+          '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+            '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0;">' + studentName + '</h3></div>' +
             '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
@@ -3578,8 +3585,8 @@
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
                   '<div class="student-card-content">' +
-                    '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
-                      '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3>' +
+                    '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+                      '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3></div>' +
                       '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
@@ -4007,8 +4014,8 @@
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
           '<div class="student-card-content">' +
-            '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
-              '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3>' +
+            '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+              '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3></div>' +
               '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
@@ -13535,6 +13542,7 @@ window.switchClassroomSubTab = function(subTab) {
   const MONSTER_CREATOR_TABS = [
     { id: 'colors', label: 'Colors', icon: '🎨', title: 'Fur Colors & Palette' },
     { id: 'creatures', label: 'Creature', icon: '🐉', title: 'Creature Body' },
+    { id: 'pets', label: 'Pets', icon: '🐾', title: 'Companion Pets' },
     { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
     { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
     { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings & Gliders' },
@@ -13560,6 +13568,7 @@ window.switchClassroomSubTab = function(subTab) {
   ];
 
   window.openMonsterCreator = function(studentId) {
+    if (window.EAA_ILLUSTRATED_MONSTERS === true && window.MonsterCloset && studentId) { window.MonsterCloset.open(studentId); return; }   // 3D monsters are dressed in the Monster Closet
     if (!studentId) return;
     monsterCreatorStudentId = studentId;
     const student = store.getStudent(studentId);
@@ -13680,6 +13689,9 @@ window.switchClassroomSubTab = function(subTab) {
     } else if (sub === 'creatures') {
       noneOptions.push({ id: 'creature-none', category: 'creature', name: 'Bunny Monster', isNone: true });   // switching back is always free
       items = allItems.filter(i => i.category === 'creature');
+    } else if (sub === 'pets') {
+      noneOptions.push({ id: 'pet-none', category: 'pet', name: 'No Pet', isNone: true });
+      items = allItems.filter(i => i.category === 'pet');
     } else if (sub === 'horns') {
       noneOptions.push({ id: 'horns-none', category: 'horns', name: 'No Horns', isNone: true });
       items = allItems.filter(i => i.category === 'horns');
@@ -13731,7 +13743,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     const gridStage = (mState && (mState.stageKey === 'egg' || mState.stageKey === 'cracking_egg')) ? 'baby' : ((mState && mState.stageKey) || 'baby');
     const illustratedMode = !!(window.MonsterDressUp && window.MonsterDressUp.hasArt(monsterCreatorDraft.baseColor, gridStage));
-    const ART_FREE_CATEGORIES = ['body', 'background', 'aura'];
+    const ART_FREE_CATEGORIES = ['body', 'background', 'aura', 'pet'];
 
     grid.innerHTML = fullList.map(item => {
       const cat = item.category;
@@ -13990,7 +14002,7 @@ window.switchClassroomSubTab = function(subTab) {
     const svgContent = item.svgMarkup || assetObj.svgMarkup;
     const imageSrc = item.imageSrc || assetObj.imageSrc;
 
-    if (layerTarget && (svgContent || imageSrc)) {
+    if (layerTarget && category !== 'pet' && (svgContent || imageSrc)) {
       if (svgContent) {
         layerTarget.innerHTML = svgContent.trim().startsWith('<svg')
           ? svgContent
@@ -14030,7 +14042,7 @@ window.switchClassroomSubTab = function(subTab) {
       }
     }
 
-    if (isNone || itemId === 'horns-none' || itemId === 'no_horns' || itemId === 'none' || itemId === 'hat-none' || itemId === 'wings-none' || itemId === 'tail-none') {
+    if (isNone || itemId === 'horns-none' || itemId === 'no_horns' || itemId === 'none' || itemId === 'hat-none' || itemId === 'wings-none' || itemId === 'tail-none' || itemId === 'pet-none') {
       if (category === 'accessory') {
         monsterCreatorDraft.equipped.accessory = 'none';
         monsterCreatorDraft.equipped.glasses = 'none';
@@ -14069,6 +14081,8 @@ window.switchClassroomSubTab = function(subTab) {
       equipItem('wings', targetItem);
     } else if (category === 'tail' || (itemId && itemId.startsWith('tail-'))) {
       equipItem('tail', targetItem);
+    } else if (category === 'pet' || (itemId && itemId.startsWith('pet-'))) {
+      equipItem('pet', targetItem);
     } else {
       equipItem(category, targetItem);
     }
@@ -14221,6 +14235,7 @@ window.switchClassroomSubTab = function(subTab) {
 
       const layers = [
         { label: 'Fur Color', val: monsterCreatorDraft.baseColor, name: monsterCreatorDraft.baseColor.charAt(0).toUpperCase() + monsterCreatorDraft.baseColor.slice(1), icon: '🎨', tab: 'monster', sub: 'colors', canRemove: false },
+        { label: 'Pet', val: eq.pet, name: getItemName(eq.pet, 'None'), icon: '🐾', tab: 'pets', sub: 'pets', canRemove: true, cat: 'pet' },
         { label: 'Eyes', val: eq.eyes, name: getItemName(eq.eyes, 'Default Eyes'), icon: '👀', tab: 'face', sub: 'eyes', canRemove: false },
         { label: 'Mouth', val: eq.mouth, name: getItemName(eq.mouth, 'Default Smile'), icon: '👄', tab: 'face', sub: 'mouths', canRemove: false },
         { label: 'Horns', val: eq.horns, name: getItemName(eq.horns, 'Signature Ears'), icon: '🪶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },

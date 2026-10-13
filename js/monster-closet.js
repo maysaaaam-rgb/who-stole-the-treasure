@@ -13,6 +13,7 @@
 
   var TABS = [
     { id: 'species', label: 'Monster', icon: 'species' },
+    { id: 'pet', label: 'Pets', cat: 'pet', slot: 'pet' },
     { id: 'hat', label: 'Hats', cat: 'hat', slot: 'hat' },
     { id: 'glasses', label: 'Glasses', cat: 'glasses', slot: 'glasses' },
     { id: 'accessory', label: 'Extras', cat: 'accessory', slot: 'accessory' },
@@ -81,13 +82,17 @@
       '.mc-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 8px;border:0;border-bottom:5px solid rgba(60,50,140,.3);border-radius:18px;background:rgba(255,255,255,.92);color:#2f2e6b;font:700 .85rem Fredoka,sans-serif;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}' +
       '.mc-card:hover{transform:translateY(-2px)}.mc-card:active{transform:translateY(4px);border-bottom-width:1px}.mc-card img{height:76px;width:100%;object-fit:contain}.mc-card .none{height:76px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;opacity:.6}' +
       '.mc-card.on{outline:4px solid #f59e0b;background:#fff7e0}.mc-card.lock{opacity:.5;filter:grayscale(.7);pointer-events:none;cursor:not-allowed}' +
-      '.mc-note{background:rgba(255,255,255,.9);color:#2f2e6b;border-radius:18px;padding:18px 20px;font-weight:700;font-size:1.1rem}.mc-pill{font:700 .7rem Fredoka,sans-serif;background:#3730a3;color:#fff;border-radius:99px;padding:1px 8px}.mc-card.wob{animation:mcWob .45s}' +
+      '.mc-note{background:rgba(255,255,255,.9);color:#2f2e6b;border-radius:18px;padding:18px 20px;font-weight:700;font-size:1.1rem}.mc-card.more{background:rgba(255,255,255,.55);border-bottom-style:dashed}.mc-pill{font:700 .7rem Fredoka,sans-serif;background:#3730a3;color:#fff;border-radius:99px;padding:1px 8px}.mc-card.wob{animation:mcWob .45s}' +
       '@keyframes mcWob{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}' +
       '@media(max-width:900px){.mc-main{grid-template-columns:1fr}.mc-prev{position:static}}';
     document.head.appendChild(st);
   }
 
-  function open(id) { root.MonsterCloset.pupil = id; if (root.switchView) root.switchView('closet'); }
+  function open(id) {
+    var h = String(location.hash || '').replace(/^#/, '').split('/')[0];
+    if (h && h !== 'closet') root.MonsterCloset.from = h;
+    root.MonsterCloset.pupil = id; if (root.switchView) root.switchView('closet');
+  }
   function dirty() { return JSON.stringify(mc.draft) !== JSON.stringify(mc.orig); }
 
   function setPupil(id) {
@@ -110,14 +115,16 @@
   function gridHtml() {
     var tab = TABS.filter(function (t) { return t.id === mc.tab; })[0], dr = D();
     var canWear = dr.hasArt(mc.draft.baseColor, mc.stage === 'cracking_egg' ? 'egg' : mc.stage) && mc.stage !== 'egg';
-    if (tab.id !== 'species' && tab.id !== 'aura' && tab.id !== 'background' && !canWear) return '<div class="mc-note">🥚 This monster cannot wear things yet' + (mc.stage === 'egg' || mc.stage === 'cracking_egg' ? ' (it is still an egg).' : ' (its fit is still being measured). Pick another monster, or choose an aura or a world.') + '</div>';
+    if (tab.id !== 'species' && tab.id !== 'pet' && tab.id !== 'aura' && tab.id !== 'background' && !canWear) return '<div class="mc-note">🥚 This monster cannot wear things yet' + (mc.stage === 'egg' || mc.stage === 'cracking_egg' ? ' (it is still an egg).' : ' (its fit is still being measured). Pick another monster, or choose a pet, aura, or world.') + '</div>';
     if (tab.id === 'species') {
       var curSp = dr.speciesForColor(mc.draft.baseColor);
       return '<div class="mc-grid">' + SPECIES.map(function (sp) {
         return '<button type="button" class="mc-card' + (sp.species === curSp ? ' on' : '') + '" onclick="MonsterCloset.pickSpecies(\'' + sp.color + '\')"><img src="assets/monsters/art/' + sp.species + '_baby.webp" alt="" draggable="false"><span>' + esc(sp.name) + '</span></button>';
       }).join('') + '</div>';
     }
-    var cards = itemsFor(tab).map(function (e) { return cardHtml(tab, e); }).join('');
+    var all = itemsFor(tab), avail = all.filter(function (e) { return reqLevel(e.item) <= mc.level && owns(mc.id, e.item); }), locked = all.filter(function (e) { return avail.indexOf(e) === -1; });
+    var cards = avail.map(function (e) { return cardHtml(tab, e); }).join('');
+    if (locked.length) cards += (mc.showLocked ? locked.map(function (e) { return cardHtml(tab, e); }).join('') : '') + '<button type="button" class="mc-card more" onclick="MonsterCloset.toggleLocked()"><div class="none">' + (mc.showLocked ? '▲' : '🔒') + '</div><span>' + (mc.showLocked ? 'Hide locked' : 'Show ' + locked.length + ' locked') + '</span></button>';
     var none = '<button type="button" class="mc-card' + ((!mc.draft.equipped[tab.slot] || mc.draft.equipped[tab.slot] === 'none') ? ' on' : '') + '" onclick="MonsterCloset.pick(\'' + tab.id + '\',\'none\')"><div class="none">✕</div><span>None</span></button>';
     return '<div class="mc-grid">' + none + cards + '</div>';
   }
@@ -133,7 +140,7 @@
     var list = students(); if (!list.length) { container.innerHTML = '<div style="padding:40px;text-align:center">No pupils in this class yet.</div>'; return; }
     var want = (root.MonsterCloset && root.MonsterCloset.pupil) || (mc && mc.id); if (!list.some(function (s) { return s.id === want; })) want = list[0].id;
     if (!mc || mc.id !== want) setPupil(want);
-    var st = S(), name = nameOf(mc.id), isStu = (st.getRole && st.getRole() === 'student'), backView = isStu ? 'monster' : 'rewards', backLabel = isStu ? 'My monster' : 'Rewards';
+    var st = S(), name = nameOf(mc.id), isStu = (st.getRole && st.getRole() === 'student'), backView = (root.MonsterCloset.from && root.MonsterCloset.from !== 'closet') ? root.MonsterCloset.from : (isStu ? 'monster' : 'rewards'), backLabel = ({ board: 'Class Board', rewards: 'Rewards', monster: 'My monster', command: 'Command Center', students: 'Students', leaderboard: 'Leaderboard' })[backView] || 'Back';
     container.innerHTML = '<div class="mc"><div class="mc-top"><h1><img src="' + ART + 'r_chest.webp" alt="">Monster Closet</h1><div class="mc-btns" style="margin:0"><button type="button" class="mc-btn" onclick="switchView(\'' + backView + '\')">← ' + backLabel + '</button></div></div>' +
       (list.length > 1 ? '<div class="mc-pupils">' : '<div class="mc-pupils" style="display:none">') + list.map(function (s) {
         var m = monsterState(s.id), prof = st.getMonsterProfile(s.id), img = ''; try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
@@ -155,13 +162,14 @@
     pupil: null, render: render, open: open, on3d: on3d,
     who: function (id) { if (mc && mc.id !== id && dirty() && root.confirm && !root.confirm('Leave without saving?')) return; root.MonsterCloset.pupil = id; mc = null; var c = document.getElementById('app-view-container'); if (c) render(c); },
     tab: function (id) { mc.tab = id; refresh(); },
+    toggleLocked: function () { mc.showLocked = !mc.showLocked; refresh(); },
     pickSpecies: function (color) { mc.draft.baseColor = color; mc.draft.equipped.body = 'body-' + color; refresh(); },
     pick: function (tabId, itemId) {
       var tab = TABS.filter(function (t) { return t.id === tabId; })[0]; if (!tab) return;
       if (itemId === 'none') { mc.draft.equipped[tab.slot] = 'none'; refresh(); return; }
       var it = S().getMonsterItem ? S().getMonsterItem(itemId) : null; if (!it) return;
       if (reqLevel(it) > mc.level || !owns(mc.id, it)) return;            // locked or not owned: never wear it
-      if (tab.id !== 'aura' && tab.id !== 'background' && !D().hasArt(mc.draft.baseColor, mc.stage)) return;
+      if (tab.id !== 'pet' && tab.id !== 'aura' && tab.id !== 'background' && !D().hasArt(mc.draft.baseColor, mc.stage)) return;
       mc.draft.equipped[tab.slot] = itemId; refresh();
     },
     undo: function () { mc.draft = clone(mc.orig); refresh(); },
