@@ -1,0 +1,1103 @@
+/**
+ * UNIT 3 ("HOW MUCH IS IT?") SMARTBOARD REVISION MISSION — STYLESHEET
+ * 60-30-10 Cyber-Glassmorphism + Smartboard Ergonomics (Top 45% Visuals / Bottom 55% Tap Targets)
+ */
+
+:root {
+  --bg-void: #060911;
+  --bg-glass: rgba(15, 23, 42, 0.8);
+  --bg-glass-strong: rgba(15, 23, 42, 0.92);
+  --border-glass: rgba(148, 163, 184, 0.24);
+  --cyan: #38bdf8;
+  --cyan-dark: #0284c7;
+  --amber: #f59e0b;
+  --amber-dark: #b45309;
+  --emerald: #10b981;
+  --emerald-dark: #047857;
+  --coral: #f43f5e;
+  --coral-dark: #be123c;
+  --violet: #a855f7;
+  --violet-dark: #6d28d9;
+  --blue-team: #3b82f6;
+  --blue-team-dark: #1d4ed8;
+  --orange-team: #f97316;
+  --orange-team-dark: #c2410c;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-void);
+  background-image: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+  color: var(--text-main);
+  font-family: 'Fredoka', 'Segoe UI', 'Trebuchet MS', system-ui, sans-serif;
+}
+
+/* Subtle animated starfield backdrop */
+.space-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(2px 2px at 38% 72%, rgba(56,189,248,0.65), transparent),
+    radial-gradient(2.5px 2.5px at 66% 24%, rgba(245,158,11,0.7), transparent),
+    radial-gradient(2px 2px at 84% 58%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 24% 86%, rgba(16,185,129,0.65), transparent),
+    radial-gradient(2px 2px at 91% 14%, rgba(168,85,247,0.7), transparent);
+}
+
+/* Structural Glass Panel */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-glass);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Tactile 3D Push-Buttons */
+.btn-3d {
+  font-family: inherit;
+  font-weight: 800;
+  color: #ffffff;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 5px solid #0f172a;
+  border-radius: 14px;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.14s var(--spring-snap), filter 0.14s ease, box-shadow 0.14s ease;
+  text-decoration: none;
+  line-height: 1.1;
+}
+
+.btn-3d:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-3d:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.btn-3d:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-cyan {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border-bottom: 5px solid #075985;
+}
+
+.btn-amber {
+  background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+  border-bottom: 5px solid #78350f;
+  color: #0f172a;
+}
+
+.btn-emerald {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+  border-bottom: 5px solid #064e3b;
+}
+
+.btn-coral {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
+  border-bottom: 5px solid #881337;
+}
+
+.btn-violet {
+  background: linear-gradient(180deg, #c084fc 0%, #7c3aed 100%);
+  border-bottom: 5px solid #4c1d95;
+}
+
+/* Master App Shell: Strict 45% Top / 55% Bottom Ergonomic Split */
+.mission-shell {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  gap: 10px;
+}
+
+/* =========================================================================
+   TOP 45% ZONE: HUD + CREW BAR + ACTIVE STUDENT MONSTER + HIGH-RES JPEG CLUE
+   ========================================================================= */
+.top-viewport-zone {
+  height: 45%;
+  min-height: 270px;
+  max-height: 46%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Top HUD Row */
+.mission-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-crew-icon {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+  animation: idleBob 2.6s ease-in-out infinite;
+}
+
+.hud-title-block h1 {
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 900;
+  color: #f8fafc;
+  letter-spacing: 0.3px;
+}
+
+.hud-title-block p {
+  font-size: 0.76rem;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+/* Crew Task Progress Bar (0% -> 100%) + Stage Tabs */
+.hud-progress-cluster {
+  flex: 1;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.crew-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #cbd5e1;
+}
+
+.crew-bar-track {
+  position: relative;
+  height: 16px;
+  background: rgba(2, 6, 23, 0.85);
+  border: 2px solid rgba(56, 189, 248, 0.45);
+  border-radius: 99px;
+  overflow: hidden;
+  display: flex;
+}
+
+.crew-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 60%, #38bdf8 100%);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+  transition: width 0.55s var(--spring-snap);
+}
+
+.crew-bar-segments {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  pointer-events: none;
+}
+
+.crew-bar-segments span {
+  border-right: 2px solid rgba(15, 23, 42, 0.85);
+}
+
+.stage-tabs-row {
+  display: flex;
+  gap: 5px;
+}
+
+.stage-tab-btn {
+  flex: 1;
+  font-size: 0.72rem;
+  padding: 5px 8px;
+  border-radius: 10px;
+  border-bottom-width: 4px;
+  background: rgba(30, 41, 59, 0.85);
+  color: #cbd5e1;
+}
+
+.stage-tab-btn.active {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border-bottom-color: #075985;
+  color: #fff;
+}
+
+.stage-tab-btn.boss-tab.active {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  border-bottom-color: #78350f;
+  color: #0f172a;
+}
+
+/* Class Switcher + Utility Controls */
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.class-pills {
+  display: flex;
+  gap: 4px;
+  background: rgba(2, 6, 23, 0.65);
+  padding: 3px;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass);
+}
+
+.class-pill {
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 5px 9px;
+  border-radius: 9px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.class-pill.active {
+  background: var(--cyan);
+  color: #060911;
+  border-bottom-color: var(--cyan-dark);
+}
+
+/* Upper Showcase Stage (Picture Card + Prompt + Active Crewmate Monster Card) */
+.upper-showcase-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 12px;
+}
+
+/* Framed High-Res JPEG Clue Card */
+.visual-clue-stage {
+  display: grid;
+  grid-template-columns: minmax(220px, 38%) 1fr;
+  gap: 14px;
+  padding: 10px 14px;
+  align-items: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 65% Full-Bleed Artwork Frame Rule with Dark Glassmorphic Caption Tray */
+.framed-jpg-card {
+  position: relative;
+  height: 100%;
+  max-height: 235px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid rgba(56, 189, 248, 0.6);
+  background: #0f172a;
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.65), 0 0 16px rgba(56, 189, 248, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.framed-jpg-viewport {
+  height: 74%;
+  width: 100%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.framed-jpg-viewport img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.framed-jpg-caption {
+  height: 26%;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(56, 189, 248, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  text-align: center;
+}
+
+.prompt-narrative-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  padding-right: 6px;
+}
+
+.task-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.prompt-headline {
+  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.prompt-headline .blank-slot {
+  display: inline-block;
+  min-width: 110px;
+  padding: 0 10px;
+  border-bottom: 4px solid var(--amber);
+  color: var(--amber);
+  text-align: center;
+}
+
+.prompt-subtext {
+  font-size: clamp(0.85rem, 1.3vw, 1.05rem);
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+/* Active Crewmate Student + Monster Badge Card */
+.crewmate-roster-card {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.crewmate-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crewmate-monster-stage {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crewmate-monster-sprite {
+  width: 72px;
+  height: 72px;
+  animation: idleBob 2.8s ease-in-out infinite;
+  z-index: 2;
+}
+
+.pedestal-disc {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.55) 0%, rgba(56, 189, 248, 0) 75%);
+  z-index: 1;
+}
+
+.crewmate-student-avatar {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #fbbf24;
+  background: #fff7d6;
+  object-fit: contain;
+  z-index: 5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+.crewmate-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.crewmate-role-tag {
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.crewmate-name {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crewmate-xp-line {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--emerald);
+}
+
+.xp-quick-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.btn-xp {
+  font-size: 0.8rem;
+  padding: 6px 4px;
+  border-radius: 10px;
+}
+
+/* =========================================================================
+   BOTTOM 55% ZONE: ERGONOMIC SMARTBOARD TAP TARGETS
+   ========================================================================= */
+.bottom-interactive-zone {
+  height: 55%;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+}
+
+/* -------------------------------------------------------------------------
+   TASK 1: ELECTRICAL WIRES WORKBENCH
+   ------------------------------------------------------------------------- */
+.wires-workbench {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 280px 1fr 440px;
+  align-items: center;
+  gap: 8px;
+}
+
+.wires-svg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.wire-column-left,
+.wire-column-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  gap: 8px;
+  z-index: 5;
+}
+
+.wire-terminal-btn {
+  position: relative;
+  width: 100%;
+  min-height: 62px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 3px solid var(--wire-color, #38bdf8);
+  border-bottom: 6px solid var(--wire-color, #38bdf8);
+  border-radius: 16px;
+  padding: 8px 16px;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.14s var(--spring-snap), box-shadow 0.15s ease;
+}
+
+.wire-terminal-btn.selected {
+  transform: scale(1.04);
+  box-shadow: 0 0 22px var(--wire-color, #38bdf8);
+  background: rgba(30, 41, 59, 0.98);
+}
+
+.wire-terminal-btn.matched {
+  opacity: 0.88;
+  background: rgba(6, 78, 59, 0.7);
+  cursor: default;
+}
+
+.wire-socket-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--wire-color, #38bdf8);
+  border: 3px solid #fff;
+  box-shadow: 0 0 10px var(--wire-color, #38bdf8);
+  flex-shrink: 0;
+}
+
+.wire-target-card {
+  position: relative;
+  width: 100%;
+  min-height: 64px;
+  max-height: 82px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 2px solid rgba(148, 163, 184, 0.45);
+  border-bottom: 5px solid #020617;
+  border-radius: 16px;
+  padding: 6px 10px;
+  color: #f8fafc;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  transition: transform 0.14s var(--spring-snap), border-color 0.15s ease;
+}
+
+.wire-target-card:active:not(.matched) {
+  transform: translateY(4px);
+}
+
+.wire-target-card.matched {
+  border-color: var(--emerald);
+  background: rgba(6, 78, 59, 0.65);
+  cursor: default;
+}
+
+.wire-target-thumb {
+  width: 68px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.wire-target-meaning {
+  font-size: clamp(0.84rem, 1.25vw, 1.02rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #f1f5f9;
+}
+
+/* -------------------------------------------------------------------------
+   TASK 2: CLEAR ASTEROIDS WORKBENCH
+   ------------------------------------------------------------------------- */
+.asteroids-field {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.09) 0%, rgba(6, 9, 17, 0.85) 75%),
+    repeating-linear-gradient(0deg, rgba(16, 185, 129, 0.06) 0 1px, transparent 1px 36px),
+    repeating-linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0 1px, transparent 1px 36px);
+  border: 2px solid rgba(16, 185, 129, 0.45);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 14px;
+  padding: 16px 24px;
+  align-items: center;
+  justify-items: center;
+}
+
+.reticle-crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.22;
+}
+
+.reticle-ring {
+  width: 240px;
+  height: 240px;
+  border: 2px dashed #10b981;
+  border-radius: 50%;
+}
+
+.asteroid-btn {
+  position: relative;
+  z-index: 3;
+  width: min(360px, 92%);
+  min-height: 82px;
+  background: radial-gradient(circle at 35% 30%, #475569 0%, #1e293b 70%, #0f172a 100%);
+  border: 3px solid #64748b;
+  border-bottom: 7px solid #090d16;
+  border-radius: 28px;
+  padding: 12px 20px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: clamp(1.3rem, 2.3vw, 1.95rem);
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+  animation: asteroidDrift 3.6s ease-in-out infinite;
+  transition: transform 0.14s var(--spring-snap), border-color 0.15s, background 0.2s;
+}
+
+.asteroid-btn:nth-child(2) { animation-delay: -0.9s; }
+.asteroid-btn:nth-child(3) { animation-delay: -1.8s; }
+.asteroid-btn:nth-child(4) { animation-delay: -2.7s; }
+
+.asteroid-btn:hover {
+  border-color: var(--emerald);
+}
+
+.asteroid-btn:active {
+  transform: translateY(4px) scale(0.97);
+}
+
+.asteroid-btn.blasted {
+  background: linear-gradient(135deg, #10b981, #38bdf8) !important;
+  border-color: #fff !important;
+  transform: scale(1.12);
+}
+
+/* -------------------------------------------------------------------------
+   TASK 3: REACTOR SEQUENCE SENTENCE BUILDER
+   ------------------------------------------------------------------------- */
+.reactor-workbench {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reactor-output-tray {
+  min-height: 86px;
+  background: rgba(2, 6, 23, 0.82);
+  border: 3px dashed rgba(56, 189, 248, 0.55);
+  border-radius: 18px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reactor-word-pool {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px;
+}
+
+.reactor-cell-btn {
+  font-family: inherit;
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 900;
+  color: #ffffff;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  border: 2px solid #60a5fa;
+  border-bottom: 6px solid #1e3a8a;
+  border-radius: 16px;
+  padding: 12px 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  transition: transform 0.14s var(--spring-snap), opacity 0.15s;
+}
+
+.reactor-cell-btn:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.reactor-cell-btn.placed {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  border-color: #6ee7b7;
+  border-bottom-color: #064e3b;
+}
+
+.reactor-cell-btn.used {
+  opacity: 0.22;
+  pointer-events: none;
+  transform: scale(0.92);
+}
+
+/* -------------------------------------------------------------------------
+   STEP 3: BOSS FINALE — 2-PLAYER MONSTER BRIDGE TUG-OF-WAR
+   ------------------------------------------------------------------------- */
+.tug-top-arena {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 12px;
+}
+
+.bridge-stage-card {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.22) 0%, rgba(15, 23, 42, 0.92) 80%);
+}
+
+.bridge-fighters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+}
+
+.fighter-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 0.92rem;
+}
+
+.fighter-pill.p1 {
+  background: rgba(59, 130, 246, 0.22);
+  border: 2px solid var(--blue-team);
+  color: #93c5fd;
+}
+
+.fighter-pill.p2 {
+  background: rgba(249, 115, 22, 0.22);
+  border: 2px solid var(--orange-team);
+  color: #fdba74;
+}
+
+.bridge-scene {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.island-cliff {
+  width: 96px;
+  height: 36px;
+  border-radius: 14px 14px 4px 4px;
+  background: linear-gradient(180deg, #10b981 0%, #047857 45%, #78350f 46%, #451a03 100%);
+  border-bottom: 4px solid #270e02;
+  align-self: flex-end;
+  margin-bottom: 6px;
+  z-index: 2;
+}
+
+.rope-track {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  bottom: 22px;
+  height: 10px;
+  background: repeating-linear-gradient(45deg, #d97706 0 8px, #92400e 8px 16px);
+  border-radius: 99px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  z-index: 1;
+}
+
+.rope-steps-dots {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3;
+}
+
+.step-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.35);
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+.step-marker.active-knot {
+  width: 22px;
+  height: 22px;
+  background: #fde047;
+  border: 3px solid #fff;
+  box-shadow: 0 0 14px #fde047;
+}
+
+.tug-fighters-carriage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  z-index: 4;
+  transition: transform 0.42s var(--spring-snap);
+}
+
+.tug-monster-box {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tug-monster-box.p2-flip .tug-monster-svg {
+  transform: scaleX(-1);
+}
+
+.tug-knot-flag {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde047 0%, #f59e0b 100%);
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 0 18px #f59e0b;
+}
+
+/* Split-Screen Simultaneous 2-Player Touch Controls (Bottom 55%) */
+.tug-split-controls {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.player-pad {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 18px;
+}
+
+.player-pad.p1-pad {
+  background: rgba(30, 58, 138, 0.32);
+  border: 2px solid rgba(59, 130, 246, 0.55);
+}
+
+.player-pad.p2-pad {
+  background: rgba(124, 45, 18, 0.32);
+  border: 2px solid rgba(249, 115, 22, 0.55);
+}
+
+.pad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.pad-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.tug-opt-btn {
+  font-family: inherit;
+  font-size: clamp(0.95rem, 1.45vw, 1.25rem);
+  font-weight: 900;
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  transition: transform 0.12s var(--spring-snap), filter 0.15s;
+}
+
+.tug-opt-btn.blue-opt {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  border: 2px solid #93c5fd;
+  border-bottom: 6px solid #1e3a8a;
+}
+
+.tug-opt-btn.orange-opt {
+  background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+  border: 2px solid #fdba74;
+  border-bottom: 6px solid #7c2d12;
+}
+
+.tug-opt-btn:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.tug-opt-btn.correct-flash {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%) !important;
+  border-color: #ffffff !important;
+  transform: scale(1.04);
+}
+
+/* Soft-Fail Elastic Wobble */
+.soft-wobble {
+  animation: elasticWobble 0.42s ease;
+}
+
+@keyframes elasticWobble {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}
+
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes asteroidDrift {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-7px) rotate(1.5deg); }
+}
+
+/* Celebration & XP Modal Overlay */
+.mission-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(6, 9, 17, 0.82);
+  backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.mission-modal-backdrop.open {
+  display: flex;
+}
+
+.mission-modal-card {
+  width: min(560px, 94vw);
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  border: 2px solid var(--cyan);
+}
+
+/* Toast Notification */
+.xp-toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  z-index: 200;
+  background: linear-gradient(90deg, #059669, #10b981);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.05rem;
+  padding: 10px 22px;
+  border-radius: 99px;
+  border: 2px solid #a7f3d0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: transform 0.35s var(--spring-snap);
+  pointer-events: none;
+}
+
+.xp-toast.show {
+  transform: translateX(-50%) translateY(0);
+}

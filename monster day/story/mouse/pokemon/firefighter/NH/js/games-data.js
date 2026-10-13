@@ -34,7 +34,7 @@ const CURRICULUM_TRACKS = [
     "label": "📖 Literature & Tests",
     "title": "Track 4: 📖 Literature, Story Quests & Diagnostic Tests",
     "subtitle": "Classic storyboards (Alice in Wonderland, Wizard of Oz), timed reading quests, and diagnostic vaults.",
-    "count": 17
+    "count": 20
   },
   {
     "id": "all",
@@ -1100,113 +1100,6 @@ const GAMES_REGISTRY = [
     "status": "active",
     "worksheetUrl": "eco-engineers/worksheet.html",
     "url": "eco-engineers/index.html"
-  },
-  {
-    "id": "baamboozle",
-    "aliases": [
-      "academy-bamboozle",
-      "bamboozle"
-    ],
-    "title": "⚡ Baamboozle Arena: STEM Showdown",
-    "description": "High-energy classroom team showdown with mystery cards, problem-solving questions, and sudden game-changing power-ups (Swap, Steal, and Double Points)!",
-    "type": "game",
-    "category": "Engineering & Inventions",
-    "categoryLabel": "⚡ Team Quiz Show",
-    "level": "A1–A2",
-    "cefrLevel": "A1–A2",
-    "age": "Ages 7–12",
-    "ageGroup": "7-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 15,
-    "durationText": "15 min",
-    "estimatedMinutes": 15,
-    "xp": 100,
-    "skills": [
-      "Speaking",
-      "Quick Recall",
-      "Team Collaboration"
-    ],
-    "topic": "Inventions, Tools & Problem Solving",
-    "topics": [
-      "Inventors & Inventions",
-      "Classroom Game Show",
-      "Team Communication"
-    ],
-    "languageFocus": "Why did people invent...? People invented... to [verb].",
-    "activityMode": "Whole Class Team Arena (Red Team vs Blue Team)",
-    "interactionType": "Interactive Mystery Grid, Power-up Reveal, Team Scoreboard",
-    "difficulty": "All Levels (A1–A2+)",
-    "tags": [
-      "baamboozle",
-      "bamboozle",
-      "game-show",
-      "quiz",
-      "team-battle",
-      "inventions",
-      "speaking",
-      "review"
-    ],
-    "learningObjectives": [
-      "Review and master primary science and invention vocabulary in high-energy team tournament format",
-      "Formulate fast affirmative and interrogative responses under time pressure",
-      "Distinguish between problems, tools, and technological solutions",
-      "Collaborate with peers using strategic gameplay and respectful sportsmanship"
-    ],
-    "teacherInstructions": "Divide the classroom into Red Team and Blue Team. Project on the main screen. Take turns choosing mystery boxes, revealing answers, and resolving power-up bamboozles!",
-    "studentInstructions": "Pick a box, answer the invention question, or bamboozle the opposing team to claim victory!",
-    "route": "baamboozle/index.html",
-    "featured": true,
-    "thumbnailIcon": "🎮",
-    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "thumbnailSvg": "<svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n      <defs>\n        <linearGradient id=\"baamboozleGrad\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n          <stop offset=\"0%\" stop-color=\"#1e1b4b\"/>\n          <stop offset=\"50%\" stop-color=\"#312e81\"/>\n          <stop offset=\"100%\" stop-color=\"#4338ca\"/>\n        </linearGradient>\n      </defs>\n      <rect width=\"200\" height=\"140\" fill=\"url(#baamboozleGrad)\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"44\" fill=\"#f59e0b\" opacity=\"0.25\"/>\n      <circle cx=\"100\" cy=\"70\" r=\"28\" fill=\"#38bdf8\" opacity=\"0.6\"/>\n      <text x=\"100\" y=\"78\" font-size=\"34\" text-anchor=\"middle\">⚡</text>\n    </svg>",
-    "categoryGroup": "Invention Game Show",
-    "vocabulary": {
-      "core": [
-        "inventor",
-        "invention",
-        "machine",
-        "blueprint",
-        "experiment",
-        "solution"
-      ],
-      "supporting": [
-        "gadget",
-        "teamwork",
-        "score",
-        "power-up",
-        "challenge"
-      ],
-      "phonics": [
-        "/v/ in inventor",
-        "/bl/ in blueprint"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Who invented the [item]? / What does it do?",
-      "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
-      "formulas": [
-        "Subject + was invented in [Year] by [Inventor]",
-        "It is used to + Base Verb"
-      ]
-    },
-    "clilDomain": "History of Technology & Team Problem Solving",
-    "clilTheme": "History of Technology & Team Problem Solving",
-    "trackId": "track-2",
-    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
-    "trackOrder": 3,
-    "formula": "The [item] was invented in [year] by [inventor] to solve [problem].",
-    "worksheetRoute": "baamboozle/worksheet.html",
-    "status": "active",
-    "worksheetUrl": "baamboozle/worksheet.html",
-    "url": "baamboozle/index.html"
   },
   {
     "id": "cat-vs-dog",
@@ -3488,24 +3381,19 @@ const GAMES_REGISTRY = [
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
   },
   {
-    "id": "simon-says-classroom",
-    "title": "Simon Says: Physical Classroom Game",
-    "description": "Teacher-led physical listening and reaction activity for the interactive smartboard. Features massive projector-friendly command displays, valid vs trick logic, procedural audio cues, natural TTS speech pronunciation, and +25 XP champion celebration.",
+    "id": "simon-says-grade3",
+    "title": "🦉 Simon Says: Inventors, Monsters & Harvest (Grade 3)",
+    "description": "Whole-class smartboard Simon Says for Grade 3. Commands come from Unit 1 (inventions, sound moves), Monster Day and Unit 2 (harvest, Chuseok, Mars). Pupils who slip are out and tap back in as helpers. The game gets harder with sneaky tricks. Uses your class list.",
     "type": "game",
     "category": "Phonics & Language Quests",
     "categoryLabel": "🗣️ Speaking Games",
-    "level": "Pre-A1–A2",
-    "cefrLevel": "Pre-A1–A2",
-    "age": "Ages 5–12",
-    "ageGroup": "5-12",
-    "grade": "Grades 1–6",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 1",
-      "Grade 2",
-      "Grade 3",
-      "Grade 4",
-      "Grade 5",
-      "Grade 6"
+      "Grade 3"
     ],
     "duration": 20,
     "durationText": "15–20 min",
@@ -3518,36 +3406,35 @@ const GAMES_REGISTRY = [
       "Focus",
       "Action Verbs"
     ],
-    "topic": "Action Verbs, Body Parts & Imperatives",
+    "topic": "Unit 1 Inventions, Monster Parts & Unit 2 Harvest",
     "topics": [
-      "Total Physical Response (TPR)",
-      "Action Verbs & Body Movement",
-      "Listening Skills"
+      "Unit 1: plan, build, test, try again, tidy, mess, machine, invent",
+      "Monster Day: tail, claws, fangs, wings, horns",
+      "Unit 2: pick, dig, weave, bow, harvest, space suit, helmet"
     ],
-    "languageFocus": "Imperatives (Touch, Jump, Turn, Raise, Freeze) & Simon Says Conditional Rules",
+    "languageFocus": "Imperatives with Unit 1 and Unit 2 words; First, Second, Third, Last commands; Simon says rules",
     "activityMode": "Classroom / Physical Whole Group",
     "interactionType": "Teacher-Led Smartboard Physical Activity",
     "difficulty": "All Levels (Adaptive Speed)",
     "tags": [
       "simon-says",
-      "listening",
-      "speaking",
-      "total-physical-response",
       "tpr",
-      "movement",
+      "listening",
       "smartboard",
-      "projector",
-      "toolkit"
+      "grade-3",
+      "unit-1",
+      "unit-2",
+      "names-elimination"
     ],
     "learningObjectives": [
-      "Respond physically to oral imperative command structures with speed and accuracy (TPR)",
-      "Distinguish between valid commands ('Simon says...') and false commands without Simon",
-      "Identify and execute action verbs and body part physical movements",
-      "Exercise self-regulation, auditory attention, and inhibitory control"
+      "Respond to spoken imperatives using Unit 1 and Unit 2 vocabulary",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow a two- or four-step command with First, Second, Third, Last",
+      "Practise -st, sh, fl and fr sounds in context"
     ],
-    "teacherInstructions": "Launch on your interactive whiteboard or projector. Have all students stand up. Tap any student to eliminate them when you observe them moving on a trick or performing the wrong action.",
-    "studentInstructions": "Listen carefully! Only do the action if Simon says! If you move without Simon says, you are out!",
-    "route": "#simon-says",
+    "teacherInstructions": "Open from the library on the smartboard. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. The game gets harder every few rounds. The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=3",
     "worksheet": null,
     "worksheetRoute": "unit-1-diagnostic/worksheet.html",
     "teacherGuide": true,
@@ -3558,32 +3445,45 @@ const GAMES_REGISTRY = [
     "categoryGroup": "TPR Action Quests",
     "vocabulary": {
       "core": [
-        "touch",
-        "jump",
-        "clap",
-        "turn around",
-        "stand up",
-        "sit down"
+        "plan",
+        "build",
+        "test",
+        "try again",
+        "tidy",
+        "mess",
+        "machine",
+        "invent",
+        "pick",
+        "harvest",
+        "bow",
+        "celebrate"
       ],
       "supporting": [
-        "shoulders",
-        "knees",
-        "toes",
-        "whisper",
-        "freeze",
-        "hop"
+        "mirror",
+        "parachute",
+        "tail",
+        "claws",
+        "fangs",
+        "wings",
+        "horns",
+        "space suit",
+        "helmet",
+        "weave",
+        "songpyeon"
       ],
       "phonics": [
-        "/cl/ in clap",
-        "/t/ in touch"
+        "-st: stand, stamp, stir, stretch",
+        "sh: shake, shut",
+        "fl / fr: flap, freeze, frog"
       ]
     },
     "grammar": {
-      "focusPattern": "Simon says, [Imperative Verb + Object]!",
-      "formula": "Simon says: Touch your [body part] and jump [number] times!",
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Build a machine! / Pick the fruit!",
       "formulas": [
-        "Imperative Formula: Verb + Noun Phrase (e.g., 'Touch your nose')",
-        "Simon says + [Imperative] vs. [Imperative] (Do not move!)"
+        "Simon says + imperative: do it",
+        "No Simon says: do not move",
+        "First…, Second…, Third…, Last…"
       ]
     },
     "clilDomain": "Kinesiology & Auditory Processing",
@@ -3593,8 +3493,1179 @@ const GAMES_REGISTRY = [
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "👑",
     "formula": "Simon says: Touch your [body part] and jump [number] times!",
-    "url": "#simon-says",
+    "url": "simon-says/index.html?grade=3",
     "worksheetUrl": "unit-1-diagnostic/worksheet.html"
+  },
+  {
+    "id": "simon-says-grade3-cooking",
+    "title": "👩‍🍳 Simon Says: Chuseok Kitchen (Grade 3)",
+    "description": "Whole-class smartboard Simon Says with kitchen actions for Grade 3: wash, mix, pour, roll, press, fill, steam, taste. Songpyeon, gangjeong, yakgwa and sikhye too. Pupils who slip are out and tap back in as helpers. The game gets harder with sneaky tricks and First, Then, Finally commands. Uses your class list.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🗣️ Speaking Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–20 min",
+    "estimatedMinutes": 20,
+    "xp": 25,
+    "skills": [
+      "Listening",
+      "Physical Response",
+      "Vocabulary",
+      "Focus",
+      "Action Verbs"
+    ],
+    "topic": "Unit 2 Chuseok Cooking and Treats",
+    "topics": [
+      "Kitchen actions: wash, mix, pour, add, roll, fill, press, steam, taste",
+      "Chuseok foods: songpyeon, gangjeong, yakgwa, sikhye",
+      "First, Then, Finally"
+    ],
+    "languageFocus": "Kitchen imperatives (mix, pour, roll, fill, press, steam, add); First, Then, Finally; Simon says rules",
+    "activityMode": "Classroom / Physical Whole Group",
+    "interactionType": "Teacher-Led Smartboard Physical Activity",
+    "difficulty": "All Levels (Adaptive Speed)",
+    "tags": [
+      "simon-says",
+      "tpr",
+      "listening",
+      "smartboard",
+      "grade-3",
+      "unit-2",
+      "cooking",
+      "chuseok",
+      "names-elimination"
+    ],
+    "learningObjectives": [
+      "Respond to spoken kitchen imperatives (wash, mix, pour, roll, press, steam)",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow a three-step command with First, Then, Finally",
+      "Name Chuseok foods: songpyeon, gangjeong, yakgwa, sikhye"
+    ],
+    "teacherInstructions": "Open from the library on the smartboard: it starts with only the Chuseok kitchen topic. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. Pupils only MIME the actions (no real knives or heat). The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=3&cat=cook",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "TPR Action Quests",
+    "vocabulary": {
+      "core": ["wash", "mix", "pour", "add", "roll", "fill", "press", "steam", "taste"],
+      "supporting": ["apron", "dough", "rice flour", "honey", "sesame", "songpyeon", "gangjeong", "yakgwa", "sikhye"],
+      "phonics": ["-ow: pour", "sh: wash", "st: stir, steam"]
+    },
+    "grammar": {
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Mix the flour! / Roll small balls!",
+      "formulas": [
+        "Simon says + kitchen action: do it",
+        "No Simon says: do not move",
+        "First…, Then…, Finally…"
+      ]
+    },
+    "clilDomain": "Kinesiology & Auditory Processing",
+    "clilTheme": "Kinesiology & Auditory Processing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👩‍🍳",
+    "formula": "Simon says: Pour the juice! Then stir!",
+    "url": "simon-says/index.html?grade=3&cat=cook",
+    "worksheetUrl": null
+  },
+  {
+    "id": "simon-says-grade4",
+    "title": "🦉 Simon Says: Alice, Brain & Forests (Grade 4)",
+    "description": "Whole-class smartboard Simon Says for Grade 4. Commands come from Unit 1 (Alice in Wonderland, the brain, reading) and Unit 2 (forest animals, A New Friend, ai words). Pupils who slip are out and can become helpers. The game adds two-step and past-tense commands. Uses your class list.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🗣️ Speaking Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–20 min",
+    "estimatedMinutes": 20,
+    "xp": 25,
+    "skills": [
+      "Listening",
+      "Physical Response",
+      "Vocabulary",
+      "Focus",
+      "Action Verbs"
+    ],
+    "topic": "Unit 1 Alice & the Brain, Unit 2 Forests & A New Friend",
+    "topics": [
+      "Unit 1: fall, chase, shelves, sleepy, visualize, skim",
+      "Unit 2: hibernate, freeze, shiver, nest, roof, vet",
+      "Spelling pattern ai: sail, wait, paint, train, tail"
+    ],
+    "languageFocus": "Imperatives with Unit 1 and 2 words; two-step commands; past simple story verbs; so they can / instead of",
+    "activityMode": "Classroom / Physical Whole Group",
+    "interactionType": "Teacher-Led Smartboard Physical Activity",
+    "difficulty": "All Levels (Adaptive Speed)",
+    "tags": [
+      "simon-says",
+      "tpr",
+      "listening",
+      "smartboard",
+      "grade-4",
+      "unit-1",
+      "unit-2",
+      "names-elimination"
+    ],
+    "learningObjectives": [
+      "Respond to spoken imperatives using Unit 1 and Unit 2 vocabulary",
+      "Tell a real Simon command from a sneaky one (no Simon, or a different name)",
+      "Follow two-step and past-tense story commands",
+      "Practise the ai spelling pattern words in context"
+    ],
+    "teacherInstructions": "Open from the library on the smartboard. Choose your class and tap away any absent pupils. During the game tap the name of any pupil who moves by mistake: they are out and can become a helper who reads the next command. The game gets harder every few rounds. The last pupil standing wins, and you can give them +25 XP when you open the game from the platform.",
+    "studentInstructions": "Listen carefully! Only do the action if Simon says! If Simon does not say it, freeze!",
+    "route": "simon-says/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": "unit-1-diagnostic/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "TPR Action Quests",
+    "vocabulary": {
+      "core": [
+        "fall",
+        "chase",
+        "visualize",
+        "skim",
+        "hibernate",
+        "survive",
+        "adapt",
+        "nest",
+        "roof",
+        "vet"
+      ],
+      "supporting": [
+        "shelves",
+        "sleepy",
+        "creative",
+        "shiver",
+        "tiptoe",
+        "howl",
+        "hoot",
+        "pine tree",
+        "gold coins",
+        "predator"
+      ],
+      "phonics": [
+        "ai: sail, wait, paint, train, tail"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Simon says + [imperative]!",
+      "formula": "Simon says: Hibernate like a bear!",
+      "formulas": [
+        "Simon says + imperative: do it",
+        "Two-step commands: First…, then…",
+        "Hide so the wolf cannot see you (so…can)",
+        "Wave with your feet instead of your hands (instead of)"
+      ]
+    },
+    "clilDomain": "Kinesiology & Auditory Processing",
+    "clilTheme": "Kinesiology & Auditory Processing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "👑",
+    "formula": "Simon says: Touch your [body part] and jump [number] times!",
+    "url": "simon-says/index.html?grade=4",
+    "worksheetUrl": "unit-1-diagnostic/worksheet.html"
+  },
+  {
+    "id": "bamboozle-g3-u1",
+    "title": "🎲 Bamboozle: Unit 1 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 1: What Does It Do? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "topics": [
+      "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+      "Team quiz review"
+    ],
+    "languageFocus": "has got / have got; What does it do? It cleans…; First, Second, Third, Last",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-1"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 1: What Does It Do?",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "invent",
+        "plan",
+        "build",
+        "test",
+        "try again",
+        "mess",
+        "tidy",
+        "machine"
+      ],
+      "supporting": [
+        "mirror",
+        "parachute",
+        "problem",
+        "solution",
+        "First, Second, Third, Last"
+      ],
+      "phonics": [
+        "sh, ch, fr, magic e (ship, frog, kite, bone)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "has got / have got; What does it do? It cleans…; First, Second, Third, Last",
+      "formula": "What does the machine do? It cleans the paper.",
+      "formulas": [
+        "has got / have got; What does it do? It cleans…; First, Second, Third, Last"
+      ]
+    },
+    "clilDomain": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "clilTheme": "Unit 1: What Does It Do? (inventions, sequence words, phonics review)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🔧",
+    "formula": "What does the machine do? It cleans the paper.",
+    "url": "bamboozle/index.html?grade=3&unit=1",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g3-u2",
+    "title": "🎲 Bamboozle: Unit 2 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 2: Thank You or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+      "Team quiz review"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-2"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌾",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "bamboozle/index.html?grade=3&unit=2",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u1",
+    "title": "🎲 Bamboozle: Unit 1 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 1: I Love Reading or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "topics": [
+      "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Who / Where / Why questions; past simple (chased, fell)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-1"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 1: I Love Reading",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "fall",
+        "chase",
+        "sleepy",
+        "visualize",
+        "skim",
+        "freeze",
+        "journey",
+        "creative"
+      ],
+      "supporting": [
+        "predator",
+        "monarch",
+        "caterpillar",
+        "shelves",
+        "cells",
+        "lobes"
+      ],
+      "phonics": [
+        "-st, -nd, -ng, tr-, -er"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Who / Where / Why questions; past simple (chased, fell)",
+      "formula": "Why was Alice sleepy? Because she was bored.",
+      "formulas": [
+        "Who / Where / Why questions; past simple (chased, fell)"
+      ]
+    },
+    "clilDomain": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "clilTheme": "Unit 1: I Love Reading (Alice in Wonderland, the brain, skimming)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "📖",
+    "formula": "Why was Alice sleepy? Because she was bored.",
+    "url": "bamboozle/index.html?grade=4&unit=1",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u2",
+    "title": "🎲 Bamboozle: Unit 2 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 2: What Lives Here? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+      "Team quiz review"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-2"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: What Lives Here?",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, animal adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌲",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "bamboozle/index.html?grade=4&unit=2",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g3-u2",
+    "title": "🕹️ Unit 2 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
+    "description": "Four whole-class smartboard mini games for Unit 2: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-arcade/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g3-u2",
+    "title": "🏔️ Mountain Race: Unit 2 Revision (Grade 3)",
+    "description": "Team quiz race for the smartboard with 55 Unit 2 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏔️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-revision/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "print-g3-u2",
+    "title": "🖨️ Unit 2 Print & Play: Worksheets & Check Paper (Grade 3)",
+    "description": "Printable Unit 2 pack: four worksheets (vocabulary, reading, phonics, grammar and writing), a 50-mark check paper with listening script and speaking rubric, answer keys, and quick links to all the Unit 2 smartboard games.",
+    "type": "worksheet",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 30,
+    "durationText": "15–40 min",
+    "estimatedMinutes": 30,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Reading",
+      "Phonics",
+      "Grammar",
+      "Writing"
+    ],
+    "topic": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "topics": [
+      "Unit 2: Thank You (Chuseok, First Harvest, setting)"
+    ],
+    "languageFocus": "thankful for…; There is / There are; Why / Because",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "printable",
+      "worksheet",
+      "check",
+      "assessment"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Choose a worksheet, open it and print. Teacher answers are on the answer pages.",
+    "studentInstructions": "Do your best and write full sentences!",
+    "route": "unit2-print/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🖨️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-print/index.html?grade=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g4-u2",
+    "title": "🕹️ Unit 2 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
+    "description": "Four whole-class smartboard mini games for Unit 2: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-arcade/index.html?grade=4",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g4-u2",
+    "title": "🏔️ Mountain Race: Unit 2 Revision (Grade 4)",
+    "description": "Team quiz race for the smartboard with 56 Unit 2 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏔️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-revision/index.html?grade=4",
+    "worksheetUrl": null
+  },
+  {
+    "id": "print-g4-u2",
+    "title": "🖨️ Unit 2 Print & Play: Worksheets & Check Paper (Grade 4)",
+    "description": "Printable Unit 2 pack: four worksheets (vocabulary, reading, phonics, grammar and writing), a 50-mark check paper with listening script and speaking rubric, answer keys, and quick links to all the Unit 2 smartboard games.",
+    "type": "worksheet",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "15–40 min",
+    "estimatedMinutes": 30,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Reading",
+      "Phonics",
+      "Grammar",
+      "Writing"
+    ],
+    "topic": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "topics": [
+      "Unit 2: What Lives Here? (forests, adaptations, A New Friend)"
+    ],
+    "languageFocus": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "printable",
+      "worksheet",
+      "check",
+      "assessment"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words and sentence patterns of Unit 2: Thank You",
+      "Answer listening, word, sentence, sound and reading questions",
+      "Cooperate in teams and show good sportsmanship with surprise cards"
+    ],
+    "teacherInstructions": "Choose a worksheet, open it and print. Teacher answers are on the answer pages.",
+    "studentInstructions": "Do your best and write full sentences!",
+    "route": "unit2-print/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "swallow",
+        "slingshot",
+        "vet"
+      ],
+      "supporting": [
+        "roof",
+        "needles",
+        "biome",
+        "author's purpose",
+        "headings",
+        "evergreen"
+      ],
+      "phonics": [
+        "ai (rain, tail, mail, sail, paint, wait, train)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "so they can…; instead of…; irregular past (built, fell, grew, paid)",
+      "formula": "Coniferous trees have needles instead of leaves.",
+      "formulas": [
+        "so they can…; instead of…; irregular past (built, fell, grew, paid)"
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "clilTheme": "Unit 2: What Lives Here? (forests, adaptations, A New Friend)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🖨️",
+    "formula": "Coniferous trees have needles instead of leaves.",
+    "url": "unit2-print/index.html?grade=4",
+    "worksheetUrl": null
   },
   {
     "id": "yesterday-detectives",
@@ -6151,96 +7222,6 @@ const GAMES_REGISTRY = [
     "worksheetUrl": "alice-homework-quest/index.html"
   },
   {
-    "id": "bamboozle",
-    "title": "🎮 Bamboozle Meme Arena",
-    "description": "High-octane classroom quiz battle arena. 16 mystery tiles, animated meme power-ups, swap scores, point steals, and curriculum trivia.",
-    "category": "Engineering & Inventions",
-    "categoryGroup": "Invention Game Show",
-    "level": "A1 / A2",
-    "cefrLevel": "A1+",
-    "age": "Ages 7–12",
-    "ageGroup": "7-12",
-    "grade": "Grade 3–5",
-    "grades": [
-      "Grade 3",
-      "Grade 4",
-      "Grade 5"
-    ],
-    "duration": 30,
-    "durationText": "30 min",
-    "estimatedMinutes": 30,
-    "xp": 150,
-    "skills": [
-      "Speaking",
-      "Listening",
-      "Vocabulary Recall",
-      "Team Collaboration"
-    ],
-    "topic": "Invention Trivia, Science Facts & Rapid Problem Solving",
-    "topics": [
-      "Team Trivia",
-      "Inventions",
-      "Engineering Quiz"
-    ],
-    "languageFocus": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-    "learningObjectives": [
-      "Answer fast-paced team quiz questions across science and historical inventors",
-      "Communicate strategically using swap, trap, and 2x points power-ups",
-      "Articulate team consensus answers within 20-second countdowns"
-    ],
-    "teacherInstructions": "Split class into 2 to 4 teams. Teams take turns picking tiles, answering questions, and triggering wacky game-show power-ups.",
-    "studentInstructions": "Pick a lucky tile for your team, answer the curriculum question correctly, and dodge the score-swapping traps!",
-    "route": "bamboozle/index.html",
-    "worksheet": "bamboozle/index.html",
-    "worksheetRoute": "bamboozle/index.html",
-    "teacherGuide": true,
-    "supportsAssignment": true,
-    "supportsProgress": true,
-    "featured": true,
-    "thumbnailIcon": "⚡",
-    "gradient": "linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%)",
-    "tags": [
-      "bamboozle",
-      "quiz",
-      "game-show",
-      "speaking",
-      "teamwork"
-    ],
-    "vocabulary": {
-      "core": [
-        "points",
-        "swap",
-        "team",
-        "challenge",
-        "power-up"
-      ],
-      "supporting": [
-        "bonus",
-        "double",
-        "steal",
-        "mystery",
-        "congratulations"
-      ]
-    },
-    "grammar": {
-      "focusPattern": "Wh- Questions & Modal Answers (Can we swap? / It is...)",
-      "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-      "formulas": [
-        "Which inventor created the light bulb?",
-        "Can Team Red swap points with Team Blue?",
-        "If we get this right, we will earn fifty bonus points!"
-      ]
-    },
-    "clilDomain": "Interactive EdTech Game Mechanics",
-    "clilTheme": "Competitive Classroom Engagement & Knowledge Retrieval",
-    "status": "active",
-    "trackId": "track-2",
-    "trackTitle": "🛠️ Applied STEM & Creative Engineering",
-    "formula": "We choose Card [number]. We believe the answer is [answer] because [reason].",
-    "url": "bamboozle/index.html",
-    "worksheetUrl": "bamboozle/index.html"
-  },
-  {
     "id": "monster-lab",
     "title": "🧪 Monster Morphology & Bio Lab",
     "description": "Interactive genetic creature builder. Combine animal traits, balance biological stats, and articulate physical anatomy in English.",
@@ -7244,6 +8225,3840 @@ const GAMES_REGISTRY = [
     "gradient": "linear-gradient(135deg, #060911 0%, #064e3b 50%, #10b981 100%)",
     "trackId": "track-1",
     "trackTitle": "🚀 Science & Space Exploration"
+  },
+  {
+    "id": "alice-party-home-4a",
+    "aliases": [
+      "alice-party-home-4a",
+      "tea-party-home-4a",
+      "party-home-4a",
+      "alice-party-home",
+      "tea-party-home"
+    ],
+    "title": "🫖 Alice Tea Party: Home Practice + Cards (Class 4A)",
+    "description": "A1+ home practice for the Class 4A tea party. Every student gets a personal character card and a 10-minute practice app (meet, words, word order, speaking, pair role-play) to prepare a 1-minute conversation with a partner. Printable A5 double-sided cards for all 18 students; works offline on phones.",
+    "type": "game",
+    "category": "Literature & Story Quests",
+    "categoryGroup": "Alice Series",
+    "categoryLabel": "🎩 Literature & Roleplay",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4A",
+    "grades": [
+      "Grade 4",
+      "Grade 4A"
+    ],
+    "duration": 10,
+    "durationText": "10 min at home + 1 min at the party",
+    "estimatedMinutes": 10,
+    "xp": 60,
+    "targetClass": "4A",
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Sentence Building",
+      "Role-play with a Partner"
+    ],
+    "topic": "Alice in Wonderland: The Mad Tea Party",
+    "topics": [
+      "Alice in Wonderland",
+      "Role-play",
+      "Home Practice"
+    ],
+    "languageFocus": "I am… / I have… / I can… / I like… / Do you like…? Yes, I do. / Can you…? Yes, I can.",
+    "activityMode": "Home practice app + printable A5 double-sided character cards",
+    "interactionType": "Listen, match, order, say; pair role-play (1 minute)",
+    "route": "alice-party-home/index.html?class=4a",
+    "url": "alice-party-home/index.html?class=4a",
+    "path": "alice-party-home/index.html?class=4a",
+    "worksheetUrl": "alice-party-home/cards.html?class=4a",
+    "worksheetRoute": "alice-party-home/cards.html?class=4a",
+    "thumbnailIcon": "🫖",
+    "thumbnailUrl": "alice-party-home/assets/alice.jpg",
+    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "Home practice → 1-minute pair conversation (8–10 short lines)",
+    "grammar": {
+      "focusPattern": "Be / have / can / like + Yes–No questions",
+      "formula": "Do you like…? Yes, I do. / Can you…? Yes, I can."
+    },
+    "learningObjectives": [
+      "Understand and say 3 short sentences about a character (I am / I have / I like).",
+      "Recognise and use 6 picture words for the character.",
+      "Listen to a partner and choose and say the correct reply in a 1-minute conversation."
+    ],
+    "vocabulary": {
+      "core": [
+        "ball",
+        "bed",
+        "bell",
+        "blue",
+        "bone",
+        "book",
+        "bow",
+        "butter",
+        "butterfly",
+        "button",
+        "cake",
+        "card",
+        "carrot",
+        "castle",
+        "cat",
+        "caterpillar",
+        "chair",
+        "claws",
+        "clock",
+        "coat",
+        "crown",
+        "cup",
+        "dog",
+        "door",
+        "dragon",
+        "dress",
+        "drum",
+        "ears",
+        "eyes",
+        "fire",
+        "fish",
+        "flower",
+        "forest",
+        "friend",
+        "garden",
+        "hat",
+        "heart",
+        "hurry",
+        "key",
+        "letter",
+        "magic",
+        "milk",
+        "money",
+        "monster",
+        "mouse",
+        "mushroom",
+        "night",
+        "nose",
+        "party",
+        "paw",
+        "potion",
+        "purple",
+        "question",
+        "rabbit",
+        "rose",
+        "run",
+        "shield",
+        "sister",
+        "smile",
+        "smoke",
+        "star",
+        "stick",
+        "sun",
+        "sword",
+        "tail",
+        "tea",
+        "teacup",
+        "teapot",
+        "tree",
+        "watch",
+        "yarn"
+      ]
+    },
+    "badges": [
+      "Class 4A Cast",
+      "A1+ Home Practice",
+      "Printable A5 Cards",
+      "18 Student Cards",
+      "Pair Role-play"
+    ]
+  },
+  {
+    "id": "alice-party-home-4b",
+    "aliases": [
+      "alice-party-home-4b",
+      "tea-party-home-4b",
+      "party-home-4b"
+    ],
+    "title": "🫖 Alice Tea Party: Home Practice + Cards (Class 4B)",
+    "description": "A1+ home practice for the Class 4B tea party. Every student gets a personal character card and a 10-minute practice app (meet, words, word order, speaking, pair role-play) to prepare a 1-minute conversation with a partner. Printable A5 double-sided cards for all 19 students; works offline on phones.",
+    "type": "game",
+    "category": "Literature & Story Quests",
+    "categoryGroup": "Alice Series",
+    "categoryLabel": "🎩 Literature & Roleplay",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4B",
+    "grades": [
+      "Grade 4",
+      "Grade 4B"
+    ],
+    "duration": 10,
+    "durationText": "10 min at home + 1 min at the party",
+    "estimatedMinutes": 10,
+    "xp": 60,
+    "targetClass": "4B",
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Sentence Building",
+      "Role-play with a Partner"
+    ],
+    "topic": "Alice in Wonderland: The Mad Tea Party",
+    "topics": [
+      "Alice in Wonderland",
+      "Role-play",
+      "Home Practice"
+    ],
+    "languageFocus": "I am… / I have… / I can… / I like… / Do you like…? Yes, I do. / Can you…? Yes, I can.",
+    "activityMode": "Home practice app + printable A5 double-sided character cards",
+    "interactionType": "Listen, match, order, say; pair role-play (1 minute)",
+    "route": "alice-party-home/index.html?class=4b",
+    "url": "alice-party-home/index.html?class=4b",
+    "path": "alice-party-home/index.html?class=4b",
+    "worksheetUrl": "alice-party-home/cards.html?class=4b",
+    "worksheetRoute": "alice-party-home/cards.html?class=4b",
+    "thumbnailIcon": "🫖",
+    "thumbnailUrl": "alice-party-home/assets/alice.jpg",
+    "gradient": "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "formula": "Home practice → 1-minute pair conversation (8–10 short lines)",
+    "grammar": {
+      "focusPattern": "Be / have / can / like + Yes–No questions",
+      "formula": "Do you like…? Yes, I do. / Can you…? Yes, I can."
+    },
+    "learningObjectives": [
+      "Understand and say 3 short sentences about a character (I am / I have / I like).",
+      "Recognise and use 6 picture words for the character.",
+      "Listen to a partner and choose and say the correct reply in a 1-minute conversation."
+    ],
+    "vocabulary": {
+      "core": [
+        "ball",
+        "bed",
+        "bell",
+        "bone",
+        "book",
+        "bow",
+        "butter",
+        "button",
+        "cake",
+        "card",
+        "carrot",
+        "castle",
+        "cat",
+        "chair",
+        "cheese",
+        "claws",
+        "clock",
+        "coat",
+        "crown",
+        "cup",
+        "dog",
+        "door",
+        "dragon",
+        "dress",
+        "drum",
+        "ears",
+        "eyes",
+        "father",
+        "fire",
+        "fish",
+        "flower",
+        "forest",
+        "friend",
+        "garden",
+        "hat",
+        "heart",
+        "hurry",
+        "key",
+        "letter",
+        "magic",
+        "milk",
+        "money",
+        "monster",
+        "mouse",
+        "night",
+        "nose",
+        "party",
+        "paw",
+        "potion",
+        "purple",
+        "rabbit",
+        "rose",
+        "run",
+        "same",
+        "shield",
+        "sleep",
+        "smile",
+        "star",
+        "stick",
+        "sun",
+        "sword",
+        "tail",
+        "tea",
+        "teacup",
+        "teapot",
+        "tree",
+        "twin",
+        "watch",
+        "yarn"
+      ]
+    },
+    "badges": [
+      "Class 4B Cast",
+      "A1+ Home Practice",
+      "Printable A5 Cards",
+      "19 Student Cards",
+      "Pair Role-play"
+    ]
+  },
+  {
+    "id": "telephone-pictionary",
+    "title": "📞 Telephone Pictionary: Draw & Pass (Grades 3 and 4)",
+    "description": "A paper and smartboard group game: write a sentence, draw it, fold and pass, write what you see, and so on. The smartboard shows sentence ideas from Units 1 and 2, a timer for every turn, the groups, and a funny reveal. A printable folding sheet is included.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "20–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Writing",
+      "Vocabulary",
+      "Speaking",
+      "Teamwork"
+    ],
+    "topic": "Unit 1 and Unit 2 sentences",
+    "topics": [
+      "Unit 1 and Unit 2 sentences"
+    ],
+    "languageFocus": "Short sentences from Units 1 and 2; describing a picture",
+    "activityMode": "Small groups of 4 to 6",
+    "interactionType": "Paper game with a smartboard timer",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "drawing",
+      "writing",
+      "group",
+      "paper",
+      "smartboard"
+    ],
+    "learningObjectives": [
+      "Write a short correct sentence from the unit",
+      "Describe what a picture shows",
+      "Work together and enjoy the funny changes"
+    ],
+    "teacherInstructions": "Print the sheet (one per pupil in each group). Open the helper on the smartboard, make groups, and press start. Pupil 1 writes, Pupil 2 draws, Pupil 3 writes what they see, and so on. After each turn the paper is folded and passed. At the end each group opens the paper and reads the first sentence and what the last picture shows.",
+    "studentInstructions": "Write or draw. Fold the paper. Pass it on. Open it at the end and laugh!",
+    "route": "telephone-pictionary/index.html",
+    "worksheet": "telephone-pictionary/sheet.html",
+    "worksheetRoute": "telephone-pictionary/sheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "telephone-pictionary/index.html",
+    "worksheetUrl": "telephone-pictionary/sheet.html"
+  },
+  {
+    "id": "alley-fling",
+    "title": "🐱🐶 Alley Fling: Cats vs Dogs (Unit 2, Grades 3 and 4)",
+    "description": "A whole-class aim-and-throw game on the smartboard. Teams earn each throw by answering Unit 2 English questions (listening, words, sentence builder, spelling, speaking, grammar, reading). Then a pupil pulls back and lets go like a slingshot. Choose rock, fish, yarn, bone or ball, and watch the wind. Team Battle, Friendly Co-op against the Bin Boss, Quick Quiz and Practice, with a skill report and words to practise at the end.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Vocabulary",
+      "Sentence building",
+      "Spelling",
+      "Speaking",
+      "Grammar",
+      "Reading"
+    ],
+    "topic": "Unit 2 review (Grade 3: Thank You; Grade 4: What Lives Here?)",
+    "topics": [
+      "Unit 2 review"
+    ],
+    "languageFocus": "Unit 2 vocabulary, sentences and grammar",
+    "activityMode": "Two teams, whole class",
+    "interactionType": "Team quiz game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "game",
+      "teams",
+      "smartboard",
+      "review",
+      "speaking",
+      "spelling"
+    ],
+    "learningObjectives": [
+      "Recall Unit 2 words and sentence patterns",
+      "Practise all skills: listening, speaking, reading and writing",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose the grade, mode and arena. The class is split into Cats and Dogs. You can tap a name to move a pupil, press the cross if someone is absent, or press \"I pick the teams\". Each turn a pupil answers a question; for Speak It, you tap Good English or Try Again. Then the pupil touches the scene, pulls back and lets go to throw. Wrong answers only mean a second try. At the end, review the skill report and the words to practise.",
+    "studentInstructions": "Answer the question, then pull back and let go to throw!",
+    "route": "unit2-throw/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "festival",
+        "ancestors",
+        "feast",
+        "weave",
+        "cloth",
+        "contest",
+        "setting"
+      ],
+      "supporting": [
+        "songpyeon",
+        "space suit",
+        "helmet",
+        "worried",
+        "stripes",
+        "limited"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "thankful for…; There is / There are; Why / Because",
+      "formula": "I am thankful for my family. There are pink potatoes.",
+      "formulas": [
+        "thankful for…; There is / There are; Why / Because"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "clilTheme": "Unit 2: Thank You (Chuseok, First Harvest, setting)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "I am thankful for my family. There are pink potatoes.",
+    "url": "unit2-throw/index.html",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g3-u3",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 4)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: How Much Is It? or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-3",
+      "unit-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "bamboozle/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "shop-counter-g3-u3",
+    "title": "🛒 Shop Counter: How Much Is It? (Unit 3, Grade 4)",
+    "description": "A whole-class smartboard shop game for Unit 3. A customer asks “How much is it?”. The team in turn pays the exact price by tapping $1, $2, $5 and $10 money, then the class says the sentence: It is … dollars. Three levels (up to $9, $20 and $30), teams take turns, a wrong try only means try again, and the board says the numbers aloud.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Numbers",
+      "Speaking",
+      "Listening",
+      "Vocabulary",
+      "Money"
+    ],
+    "topic": "Unit 3: How Much Is It? (money, prices, buying and paying)",
+    "topics": [
+      "Unit 3: How Much Is It? (money, prices, buying and paying)",
+      "Numbers to 30"
+    ],
+    "languageFocus": "How much is it? It is … dollars. buy, pay, expensive",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "shop",
+      "money",
+      "numbers",
+      "team-game",
+      "smartboard",
+      "grade-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Ask and answer: How much is it? It is … dollars.",
+      "Say numbers to 30 in English",
+      "Use the words buy, pay, money, expensive and coin",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 4 teams, the level and the number of customers. Each customer shows an item and its price. The team in turn taps the money to pay the exact price and presses Pay. Everyone then says the sentence with the board. First try = 2 points, later tries = 1 point. A wrong try gives a hint (a little more / too much) and never takes points away.",
+    "studentInstructions": "Look at the price. Tap the money to pay the right amount. Say: It is … dollars!",
+    "route": "unit3-shop/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "money",
+        "coin",
+        "bill",
+        "buy",
+        "pay",
+        "expensive",
+        "dollars",
+        "price"
+      ],
+      "supporting": [
+        "shop",
+        "customer",
+        "change",
+        "cost"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "How much is it? It is … dollars.",
+      "formula": "How much is the book? It is five dollars.",
+      "formulas": [
+        "How much is it? It is seven dollars.",
+        "That is expensive."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🛒",
+    "formula": "How much is the book? It is five dollars.",
+    "url": "unit3-shop/index.html",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g3-u3",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 4)",
+    "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-arcade/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g3-u3",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 4)",
+    "description": "Team quiz race for the smartboard with 55 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+    "topics": [
+      "Unit 3: How Much Is It? (the history of money, The $100 Bill)",
+      "Team quiz review"
+    ],
+    "languageFocus": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: How Much Is It? (money, bartered, coin, bill, credit card)",
+      "Answer listening, word, sentence, sound and reading questions about money and The $100 Bill",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=3&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "valuable",
+        "pocket",
+        "restaurant",
+        "expensive"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "internet",
+        "goat",
+        "grain",
+        "shell"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple (walked, saw, paid, did not); easier than; should / could; Let’s…",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "should: I should save the money."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It? (money)",
+    "clilTheme": "Unit 3: How Much Is It? (money)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-revision/index.html?grade=3&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "bamboozle-g4-u3",
+    "title": "🎲 Bamboozle: Unit 3 Mystery Cards (Grade 3)",
+    "description": "Whole-class smartboard Bamboozle. Teams take turns to pick a numbered mystery card. Each card hides a question from Unit 3: It Keeps Changing or a surprise: gift, double power, extra turn, jackpot, steal or swap. Right answer = 10 stars, a second try = 5, and nothing is ever taken away for a wrong answer. At the end it shows what the class found hard.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "bamboozle",
+      "team-quiz",
+      "review",
+      "smartboard",
+      "grade-4",
+      "unit-3",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 2 to 6 teams and the number of cards. Teams take turns to pick a number. Everyone writes the answer on a mini whiteboard before the team taps it. Use \"Friendly\" to remove steal and swap cards. The end screen shows which skills need more practice.",
+    "studentInstructions": "Pick a card. Answer the question to win stars. Surprise cards can help you or trick you!",
+    "route": "bamboozle/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "bamboozle/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "arcade-g4-u3",
+    "title": "🕹️ Unit 3 Arcade: Memory, Sentences, Letters & Wheel (Grade 3)",
+    "description": "Four whole-class smartboard mini games for Unit 3: Memory Match (picture and word), Sentence Relay (put the words in order), Hangman (guess the letters and save the balloons), and the Speaking Wheel (spin a word and say a sentence). Three levels, a Champions Cup that plays all four, a second try is always allowed, and funny reaction stickers pop up.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Spelling",
+      "Sentence building",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "arcade",
+      "memory",
+      "sentence-builder",
+      "speaking",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard, choose teams, then pick a game. Everyone answers on mini whiteboards. In the Speaking Wheel the teacher awards stars for the sentence.",
+    "studentInstructions": "Take turns. Match, build, spell and speak!",
+    "route": "unit2-arcade/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "unit2-arcade/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "race-g4-u3",
+    "title": "🏔️ Mountain Race: Unit 3 Revision (Grade 3)",
+    "description": "Team quiz race for the smartboard with 56 Unit 3 questions: words, sentences, sounds, reading and listening. Animal teams climb a mountain, with double-star power-ups, streaks and mystery boxes. The end screen shows which skills need more practice.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 20,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 20,
+    "xp": 30,
+    "skills": [
+      "Vocabulary",
+      "Grammar",
+      "Phonics",
+      "Reading",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+    "topics": [
+      "Unit 3: It Keeps Changing (The Bear and I, Clean Cars)",
+      "Team quiz review"
+    ],
+    "languageFocus": "was / is melting; because / but; not very; use … for energy",
+    "activityMode": "Whole class / teams",
+    "interactionType": "Team quiz on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "quiz",
+      "race",
+      "revision",
+      "smartboard",
+      "unit-3"
+    ],
+    "learningObjectives": [
+      "Recall and use the key words of Unit 3: It Keeps Changing (ice, melting, gasoline, electricity, solar)",
+      "Answer listening, word, sentence, sound and reading questions about the Arctic poem and Clean Cars",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Let's play. Teams take turns, everyone writes the answer on a mini whiteboard first, and the team taps it.",
+    "studentInstructions": "Answer to climb the mountain first!",
+    "route": "unit2-revision/index.html?grade=4&unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "noisy",
+        "quiet",
+        "expensive",
+        "melting"
+      ],
+      "supporting": [
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate",
+        "thin",
+        "trap",
+        "enemy",
+        "danger"
+      ],
+      "phonics": [
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "was / is melting; because / but; not very; use … for energy",
+      "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+      "formulas": [
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet.",
+        "use … for energy: A solar car uses energy from the sun."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "clilTheme": "Unit 3: It Keeps Changing (climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "Electric cars are clean, but they are expensive. I like the solar car because it is quiet.",
+    "url": "unit2-revision/index.html?grade=4&unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "alley-fling-u3",
+    "title": "🐱🐶 Alley Fling: Cats vs Dogs (Unit 3, Grades 3 and 4)",
+    "description": "A whole-class aim-and-throw game on the smartboard. Teams earn each throw by answering Unit 3 English questions (listening, words, sentence builder, spelling, speaking, grammar, reading). Then a pupil pulls back and lets go like a slingshot. Choose rock, fish, yarn, bone or ball, and watch the wind. Team Battle, Friendly Co-op against the Bin Boss, Quick Quiz and Practice, with a skill report and words to practise at the end.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🎲 Team Quiz Games",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "15–25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Vocabulary",
+      "Sentence building",
+      "Spelling",
+      "Speaking",
+      "Grammar",
+      "Reading"
+    ],
+    "topic": "Unit 3 review (Grade 4: How Much Is It?; Grade 3: It Keeps Changing)",
+    "topics": [
+      "Unit 3 review (money; the Arctic poem and Clean Cars)"
+    ],
+    "languageFocus": "Unit 3 vocabulary, sentences and grammar",
+    "activityMode": "Two teams, whole class",
+    "interactionType": "Team quiz game on the smartboard",
+    "difficulty": "Mixed (review)",
+    "tags": [
+      "game",
+      "teams",
+      "smartboard",
+      "review",
+      "speaking",
+      "spelling"
+    ],
+    "learningObjectives": [
+      "Recall Unit 3 words and sentence patterns",
+      "Practise all skills: listening, speaking, reading and writing",
+      "Cooperate in teams and take turns"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose the grade, mode and arena. The class is split into Cats and Dogs. You can tap a name to move a pupil, press the cross if someone is absent, or press \"I pick the teams\". Each turn a pupil answers a question; for Speak It, you tap Good English or Try Again. Then the pupil touches the scene, pulls back and lets go to throw. Wrong answers only mean a second try. At the end, review the skill report and the words to practise.",
+    "studentInstructions": "Answer the question, then pull back and let go to throw!",
+    "route": "unit2-throw/index.html?unit=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": false,
+    "thumbnailSvg": "\n      <svg viewBox=\"0 0 200 140\" width=\"100%\" height=\"100%\" xmlns=\"http://www.w3.org/2000/svg\">\n        <defs>\n          <linearGradient id=\"simonCardBg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n            <stop offset=\"0%\" stop-color=\"#064e3b\"/>\n            <stop offset=\"100%\" stop-color=\"#022c22\"/>\n          </linearGradient>\n        </defs>\n        <rect width=\"200\" height=\"140\" fill=\"url(#simonCardBg)\"/>\n        <rect x=\"20\" y=\"20\" width=\"160\" height=\"100\" rx=\"14\" fill=\"#042f2e\" stroke=\"#10b981\" stroke-width=\"2.5\"/>\n        <circle cx=\"100\" cy=\"55\" r=\"22\" fill=\"#10b981\" opacity=\"0.25\"/>\n        <text x=\"100\" y=\"62\" font-size=\"28\" text-anchor=\"middle\">🗣️</text>\n        <rect x=\"35\" y=\"86\" width=\"130\" height=\"22\" rx=\"11\" fill=\"#059669\"/>\n        <text x=\"100\" y=\"101\" font-family=\"sans-serif\" font-weight=\"900\" font-size=\"11\" fill=\"#ffffff\" text-anchor=\"middle\" letter-spacing=\"0.5\">SIMON SAYS 🏆</text>\n      </svg>",
+    "categoryGroup": "Review Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "coin",
+        "bill",
+        "credit card",
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar"
+      ],
+      "supporting": [
+        "metal",
+        "plastic",
+        "cashier",
+        "store",
+        "oil",
+        "biofuel",
+        "wheels",
+        "climate"
+      ],
+      "phonics": [
+        "ar (park, card, car, hard, farm)",
+        "-ng (sing, long, spring, young, fishing, morning)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past simple; easier than; because / but; was / is melting",
+      "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+      "formulas": [
+        "Past simple: Paige walked through the park. She saw a bill.",
+        "easier than: Paper money is easier to carry than coins.",
+        "but: They are clean, but they are expensive.",
+        "because: I like the solar car because it is quiet."
+      ]
+    },
+    "clilDomain": "Unit 3 (money; climate change and clean cars)",
+    "clilTheme": "Unit 3 (money; climate change and clean cars)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕹️",
+    "formula": "Paige put the money in her pocket. Coins are easier to carry than goats.",
+    "url": "unit2-throw/index.html?unit=3",
+    "worksheetUrl": null
+  },
+  {
+    "id": "forest-rangers-g4",
+    "title": "🌲 Forest Rangers: Unit 2 Lesson 1 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson, not a quiz. Rangers get a letter from Ranger Rosa, act out one year in the forest with a gesture for \"so they can\", walk to the deciduous or coniferous side of the room, interview each other as winter animals (info-gap pairs), invent a survivor on mini whiteboards and race in teams to beat the blizzard. Four teams score all lesson. Printable cut-out cards included.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🌲 Unit 2 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (Grade 4)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "forests",
+      "so they can",
+      "instead of",
+      "headings"
+    ],
+    "learningObjectives": [
+      "Compare deciduous and coniferous forests",
+      "Explain how animals and trees adapt with \"so they can\"",
+      "Contrast with \"instead of\"",
+      "Use headings and author’s purpose to understand a text"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the floor signs and animal cards. Work through the 7 steps: each step shows a mode (Think, Act, Move, Talk, Create, Team race), what the pupils do, a timer where needed and teacher tips behind the Teacher button. Pupils use mini whiteboards. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Stand up, act it out, walk, talk and draw!",
+    "route": "unit2-forest-lessons/index.html?lesson=1",
+    "worksheet": "unit2-forest-lessons/worksheet.html",
+    "worksheetRoute": "unit2-forest-lessons/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive",
+        "adapt",
+        "needles",
+        "cones"
+      ],
+      "supporting": [
+        "biome",
+        "evergreen",
+        "heading",
+        "author’s purpose",
+        "inform",
+        "entertain",
+        "persuade"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "so they can… / instead of…",
+      "formula": "The hare turns white so it can hide in the snow.",
+      "formulas": [
+        "Trees drop their leaves so they can save water.",
+        "Coniferous trees have needles instead of leaves."
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here?",
+    "clilTheme": "Unit 2: What Lives Here?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌲",
+    "formula": "The hare turns white so it can hide in the snow.",
+    "url": "unit2-forest-lessons/index.html?lesson=1",
+    "worksheetUrl": "unit2-forest-lessons/worksheet.html",
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #10b981 100%)"
+  },
+  {
+    "id": "swallow-gift-g4",
+    "title": "🕊️ The Swallow’s Gift: Unit 2 Lesson 2 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson on A New Friend, not a quiz. Pupils shout the missing past verb and do an action for each (built, fell, gave, grew, hit, paid), plan freeze-frame scenes in groups, solve the Roof Mystery from witness clues (past tense speaking), ride the Rain Train for the ai sound, question Wen Shu in the hot seat, vote on kindness and retell the story. Four teams score all lesson. Printable witness and scene cards included.",
+    "type": "game",
+    "category": "Story & Literature",
+    "categoryLabel": "🕊️ Unit 2 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Grammar",
+      "Reading",
+      "Speaking"
+    ],
+    "topic": "Unit 2: What Lives Here? (Grade 4)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "irregular past verbs; ai sound; First, Then, At the end",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with drama, detective talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "story",
+      "past tense",
+      "phonics",
+      "kindness"
+    ],
+    "learningObjectives": [
+      "Use the irregular past verbs built, fell, gave, grew, hit, paid",
+      "Hear and read the ai sound (rain, tail, paid)",
+      "Put a story in order and retell it in three sentences",
+      "Talk about kindness and saying sorry"
+    ],
+    "teacherInstructions": "Open on the smartboard after the pupils have read A New Friend. Press Cards (top) to print the witness cards and scene cards. Work through the 7 steps: pupils shout the verbs, act in groups, solve the case, listen for the ai sound, question Wen Shu and retell. Teacher tips are behind the Teacher button. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Shout the verb, act the scene, solve the case!",
+    "route": "unit2-forest-lessons/index.html?lesson=2",
+    "worksheet": "unit2-forest-lessons/worksheet.html",
+    "worksheetRoute": "unit2-forest-lessons/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "swallow",
+        "nest",
+        "roof",
+        "slingshot",
+        "vet",
+        "paid",
+        "gave",
+        "grew"
+      ],
+      "supporting": [
+        "coins",
+        "seed",
+        "sorry",
+        "friends",
+        "kind"
+      ],
+      "phonics": [
+        "ai (rain, train, tail, mail, paid, snail)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "irregular past verbs",
+      "formula": "The mother swallow gave Go Ne a gold seed.",
+      "formulas": [
+        "A baby bird fell out of the nest.",
+        "Go Ne paid the vet with his gold coins."
+      ]
+    },
+    "clilDomain": "Unit 2: What Lives Here?",
+    "clilTheme": "Unit 2: What Lives Here?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕊️",
+    "formula": "The mother swallow gave Go Ne a gold seed.",
+    "url": "unit2-forest-lessons/index.html?lesson=2",
+    "worksheetUrl": "unit2-forest-lessons/worksheet.html",
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a8a 55%, #f59e0b 100%)"
+  },
+  {
+    "id": "chuseok-moon-g3",
+    "title": "🌕 Chuseok Moon Feast: Unit 2 Lesson 1 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson, not a quiz. Pupils get a moon invitation from Korea, act out the legend of the weaving contest while the moon grows, walk to the FOOD, DANCE or FAMILY corner, mingle to ask \"What are you thankful for?\", make thank-you lanterns for a class Moon Wall and race in teams (There is / There are). Four teams score all lesson. Printable signs, mingle sheet and lanterns included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "thankful",
+      "there is there are"
+    ],
+    "learningObjectives": [
+      "Retell the Chuseok legend with key words (weave, cloth, contest, feast, harvest, ancestors)",
+      "Say \"I am thankful for my … because …\"",
+      "Use There is / There are with numbers",
+      "Talk about festivals and gratitude"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the corner signs, the mingle sheet and the lanterns. Work through the 7 steps: each shows a mode (Think, Act, Move, Talk, Create, Team race), what the pupils do, a timer where needed and teacher tips behind the Teacher button. Pupils use mini whiteboards. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Stand up, act, walk, ask your friends and make a lantern!",
+    "route": "unit2-g3-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "weave",
+        "cloth",
+        "contest",
+        "festival",
+        "harvest",
+        "ancestors",
+        "feast",
+        "songpyeon"
+      ],
+      "supporting": [
+        "full moon",
+        "thankful",
+        "family",
+        "dance",
+        "bow"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I am thankful for… / There is… There are…",
+      "formula": "I am thankful for my family because I love them.",
+      "formulas": [
+        "They weave cloth for a month.",
+        "There are five songpyeon."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🌕",
+    "formula": "I am thankful for my family because I love them.",
+    "url": "unit2-g3-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #312e81 55%, #fde68a 100%)"
+  },
+  {
+    "id": "first-harvest-g3",
+    "title": "🚀 First Harvest: Unit 2 Lesson 2 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson on First Harvest, not a quiz. A strange farm with pink potatoes and purple carrots: where is it? Pupils act out the story and keep the secret until the Mars reveal, walk to EARTH, MARS or BOTH to find the setting, stop their hands at the -st sound, describe and draw farm cards in pairs (There are three pink potatoes) and win the Mars mission race. Four teams score all lesson. Printable signs and farm cards included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🚀 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Reading",
+      "Phonics"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "There is / There are; Can we go outside?; setting; -st sound (fast, last, best, first)",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "mars",
+      "setting",
+      "st sound"
+    ],
+    "learningObjectives": [
+      "Understand setting (time and place) and find clues for Earth or Mars",
+      "Describe things with There is / There are and colours",
+      "Hear and say the final -st sound (fast, last, best, first, harvest)",
+      "Use \"Can we …?\" for permission"
+    ],
+    "teacherInstructions": "Open on the smartboard after the pupils have read First Harvest. Press Cards (top) to print the signs and farm cards. Do NOT tell pupils the farm is on Mars: the reveal is part of the story. Work through the 7 steps. Teacher tips are behind the Teacher button. Tap a team to give a point at any time. Works offline.",
+    "studentInstructions": "Listen, act, find the setting and draw the farm!",
+    "route": "unit2-g3-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "harvest",
+        "pick",
+        "worried",
+        "grow",
+        "believe",
+        "stripes",
+        "space suit",
+        "setting"
+      ],
+      "supporting": [
+        "farm",
+        "Mars",
+        "Earth",
+        "water",
+        "air",
+        "helmet"
+      ],
+      "phonics": [
+        "-st (fast, last, lost, best, test, first, harvest)"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "There is / There are; Can we…?",
+      "formula": "There are purple carrots. Can we go outside?",
+      "formulas": [
+        "There are pink potatoes.",
+        "Can we go outside?"
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚀",
+    "formula": "There are purple carrots. Can we go outside?",
+    "url": "unit2-g3-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #7c2d12 55%, #fb923c 100%)"
+  },
+  {
+    "id": "chuseok-arcade-g3",
+    "title": "🎮 Chuseok Games Arcade Day: Unit 2 Lesson (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson to check the Chuseok folk games the pupils made at home (Ddakji, Paengi, Gonggi, Jegichagi, Yut Nori). Pupils host classmates at their stations in English, visit three stations, cheer in English and sign visitor logs. The board runs three 9-minute rounds with a 3-minute rotation timer and a host and visitor guide, then a favourite-game vote. Four teams score all lesson.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Unit 2: Thank You (Grade 3)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "Game rules; Can I play?; cheering phrases (Great job!, Try again!); My favourite game was … because …",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "arcade",
+      "speaking",
+      "homework check"
+    ],
+    "learningObjectives": [
+      "Host classmates and explain the rules of a game in English",
+      "Use polite requests and cheering phrases (Can I play? Great job!)",
+      "Say a favourite game with a reason (because …)"
+    ],
+    "teacherInstructions": "Pupils bring the game and rulebook they made at home. Open the lesson on the smartboard, enter the number of pupils present, and work through the 6 steps: set up, three 9-minute rounds (host, swap, open arcade) with the 3-minute rotation timer, then the favourite-game vote and the door pass. Walk around and listen; give team points for good hosting and cheering. Works offline.",
+    "studentInstructions": "Host your game, visit three stations, cheer and sign the logs!",
+    "route": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "host",
+        "visitor",
+        "rules",
+        "game",
+        "cheer",
+        "win"
+      ],
+      "supporting": [
+        "Ddakji",
+        "Paengi",
+        "Gonggi",
+        "Jegichagi",
+        "Yut Nori"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Can I…? / game rules / because",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "chuseok-cooking-g3",
+    "title": "🍡 Chuseok Cooking and Treats: Week 2 Lessons (Grade 3)",
+    "description": "Two 35-minute teacher-led smartboard lessons. Lesson 1: mystery treats, the Chuseok Snack Song video, Chef Says kitchen actions, a muted songpyeon cooking video with steps, and the Mix and Make team game. Lesson 2: Kitchen Freeze, Recipe Race, Junior Chef Show and the Home Cooking Mission (recipe cards, parent letter in English and Turkish, and a local presentation page for the photos).",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🌕 Unit 2 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "2 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Unit 2 Week 2: Chuseok Cooking and Treats (Grade 3)",
+    "topics": [
+      "Unit 2 Week 2: Chuseok Cooking and Treats (Grade 3)"
+    ],
+    "languageFocus": "Treat and food words; kitchen verbs mix, pour, roll, fill, press, steam, add, cut; First, Then, Finally; Add the ___, please!; It is sweet / yummy.",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "chuseok",
+      "cooking",
+      "video",
+      "home project"
+    ],
+    "learningObjectives": [
+      "Name four Chuseok treats and say what they are like (sweet, crispy)",
+      "Understand and act out eight kitchen verbs",
+      "Tell a simple recipe with First, Then, Finally"
+    ],
+    "teacherInstructions": "Lesson 1 (35 min): mystery treats, Snack Song video, Chef Says, muted songpyeon video with steps, Mix and Make. Lesson 2 (35 min): Kitchen Freeze, Recipe Race, Junior Chef Show, Home Cooking Mission. Print the recipe cards and parent letter (Cards). When photos arrive on K12, use the Cooking Show page for presentations.",
+    "studentInstructions": "Watch, act, cook in the game, then cook a real treat at home with your family!",
+    "route": "unit2-g3-cooking/index.html",
+    "worksheet": "unit2-g3-cooking/cards.html",
+    "worksheetRoute": "unit2-g3-cooking/cards.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "mix",
+        "pour",
+        "roll",
+        "fill",
+        "press",
+        "steam",
+        "add",
+        "cut"
+      ],
+      "supporting": [
+        "songpyeon",
+        "gangjeong",
+        "yakgwa",
+        "sikhye",
+        "honey",
+        "rice flour",
+        "sweet",
+        "crispy"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "First, … Then, … Finally, … / Add the ___, please!",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "watch-answer-bean-g3",
+    "title": "🎬 Watch and Answer: Mr Bean, Super Trolley (Grade 3)",
+    "description": "A 35-minute video lesson for Grade 3 on the smartboard. The class predicts what a super trolley can do, then watches the cartoon: it stops by itself ten times for a question with picture answers, hints for wrong answers and points for the four teams. Then pupils retell the story in order, and tell a partner with First, Then, Finally. The teacher can change the time and wording of every question. The video plays from YouTube.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎬 Video Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "1 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 20,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary"
+    ],
+    "topic": "Watching a cartoon: what is he doing, where is he, what happens",
+    "topics": [
+      "Present continuous: He is eating",
+      "Places and shop words",
+      "Retelling a story"
+    ],
+    "languageFocus": "What is he doing? He is eating / driving / going. Where is he? He is at the shop. First, Then, Finally.",
+    "activityMode": "Whole class, one smartboard, four teams",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "video",
+      "cartoon",
+      "smartboard",
+      "listening",
+      "retell",
+      "mr bean"
+    ],
+    "learningObjectives": [
+      "Say what a character is doing and where he is",
+      "Answer questions about a short cartoon",
+      "Retell the story with First, Then, Finally"
+    ],
+    "teacherInstructions": "Steps: Settle and pre-teach words (3 min), Predict (2 min), Watch and answer (about 20 min: the video stops itself at each question; tap the answer, the class says the sentence, give a team point, press Keep watching), Retell (5 min), Tell your partner (3 min), wrap-up (2 min). The question times were set by looking at the video; press the gear to change any question or time (changes stay in this browser).",
+    "studentInstructions": "Watch the cartoon. When it stops, look at the pictures and choose the answer!",
+    "route": "watch-answer/index.html",
+    "url": "watch-answer/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 3)",
+    "thumbnailIcon": "🎬",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #134e4a 55%, #38bdf8 100%)"
+  },
+  {
+    "id": "week-song-g4",
+    "title": "🎵 Week Song: Learn, Move, Sing (Grade 4)",
+    "description": "The song of the week for Grade 4 on the smartboard. The video plays on the board; the main words get an action; the chorus is learned line by line (listen, echo, hide words); the lyrics follow the video (hand or auto after a one-time sync); and four teams sing in a team show with stars. The teacher pastes the lyrics once; they stay in that browser only and are not stored in the project.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎵 Song of the Week",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 35,
+    "durationText": "2 to 4 × 35 min",
+    "estimatedMinutes": 35,
+    "xp": 20,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Pronunciation"
+    ],
+    "topic": "Song of the week: learn, move, sing",
+    "topics": [
+      "Song of the week",
+      "Pronunciation and rhythm",
+      "Action words"
+    ],
+    "languageFocus": "Singing and saying a chorus with clear words and steady rhythm; action words.",
+    "activityMode": "Whole class, one smartboard",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Practise",
+    "tags": [
+      "song",
+      "video",
+      "speaking",
+      "smartboard",
+      "week song"
+    ],
+    "learningObjectives": [
+      "Say the lines of the chorus clearly",
+      "Do the actions for the main words",
+      "Sing the chorus with a team"
+    ],
+    "teacherInstructions": "First time only: press the gear, paste the lyrics (put [Chorus] style headings before each part) and choose the parts to teach. Then use the four steps: Move, Learn, Sing, Show. In Sing, press Sync it once and tap Space when each line starts; after that the lyrics follow the video by themselves. The lyrics stay on this computer only.",
+    "studentInstructions": "Watch, move, learn the lines, and sing with your team!",
+    "route": "week-song-g4/index.html",
+    "url": "week-song-g4/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 2 Lessons (Grade 4)",
+    "thumbnailIcon": "🎵",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #831843 55%, #f59e0b 100%)"
+  },
+  {
+    "id": "karaoke-stage",
+    "title": "🎤 Karaoke Stage: Read It One by One (Grades 3 and 4)",
+    "description": "A smartboard reading show. A drum roll picks the next pupil, the model voice reads the lines with a bouncing ball, then the ball follows the pupil at a slow, steady pace while they read into the teacher's microphone. The teacher gives 1, 2 or 3 stars. Hide some or all words for a memory challenge. Packs: Unit 2 readings for both grades (Grade 3: Chuseok and First Harvest; Grade 4: A Year in the Forest and The Swallow's Gift, read in story order), Alice Tea Party role lines (each pupil reads their own role), Grade 4 Unit 1 and Unit 2 revision sentences, Grade 3 songpyeon steps, recipes and treat clues. Optional 👂 Ears (Chrome or Edge): voice recognition moves the ball with the pupil's voice, heard words turn green, missed words orange, and it suggests a star; the teacher decides. No recordings are kept.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🎤 Speaking",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4",
+      "Class 3A",
+      "Class 3B",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 15,
+    "durationText": "10–20 min",
+    "estimatedMinutes": 15,
+    "xp": 15,
+    "skills": [
+      "Speaking",
+      "Reading",
+      "Pronunciation"
+    ],
+    "topic": "Reading aloud: the sentences of Units 1 and 2",
+    "topics": [
+      "Reading aloud",
+      "Alice Tea Party",
+      "Unit 1 and Unit 2 revision",
+      "Chuseok cooking"
+    ],
+    "languageFocus": "Reading the unit sentences aloud with a clear voice and steady pace.",
+    "activityMode": "Whole class, one smartboard, one reader at a time",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Practise",
+    "tags": [
+      "speaking",
+      "reading aloud",
+      "karaoke",
+      "smartboard",
+      "alice",
+      "revision",
+      "cooking"
+    ],
+    "learningObjectives": [
+      "Read short unit sentences aloud with a clear voice",
+      "Follow the words at a steady pace",
+      "Say the sentences from memory when words are hidden"
+    ],
+    "teacherInstructions": "Choose the class (tap pupils who are away), choose a pack, press Start. For each reader: 🔊 Listen (model voice), 🎤 Your turn (the ball moves at the chosen speed; Space moves it word by word), then give 1, 2 or 3 stars (keys 1, 2, 3). 🙈 hides words for a memory challenge. At the end you see everybody's stars; give XP on the Class Board if you like (⭐⭐⭐ +15, ⭐⭐ +10, ⭐ +5).",
+    "studentInstructions": "Listen, then read the words when the ball jumps on them. Big, clear voice!",
+    "route": "karaoke-stage/index.html",
+    "url": "karaoke-stage/index.html",
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Speaking",
+    "thumbnailIcon": "🎤",
+    "status": "active",
+    "gradient": "linear-gradient(135deg, #060911 0%, #78350f 55%, #38bdf8 100%)"
+  },
+  {
+    "id": "revision-quest-g4-u12",
+    "title": "🧠 Revision Quest: Units 1 and 2 (Grade 4)",
+    "description": "A 25-minute teacher-led smartboard revision lesson for Grade 4. Pupils memorise the key sentences and words of Unit 1 (Alice, butterflies, the brain) and Unit 2 (forests, the swallow's gift) with vanishing sentences, picture-and-gesture Word Gym, and a team Memory Boss Battle. Four teams, timers, goals ticked at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🧠 Revision",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Listening",
+      "Vocabulary"
+    ],
+    "topic": "Units 1 and 2 revision (Grade 4)",
+    "topics": [
+      "Units 1 and 2 revision (Grade 4)"
+    ],
+    "languageFocus": "Past simple (chased, fell, gave, grew, built, hit, paid); Who/Where/Why; so it can / so they can; deciduous, coniferous, hibernate, survive",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "revision",
+      "memory",
+      "unit 1",
+      "unit 2"
+    ],
+    "learningObjectives": [
+      "Say the key Unit 1 and Unit 2 sentences from memory",
+      "Say six irregular past verbs with their gestures",
+      "Use so it can / so they can and Who, Where, Why questions"
+    ],
+    "teacherInstructions": "Run the 7 steps on the smartboard in 25 minutes: goals (2), Unit 1 vanishing sentences (5), Unit 1 Word Gym (4), Unit 2 vanishing sentences (5), Unit 2 Word Gym (4), Memory Boss Battle (4), goals and scores (1). Press Say it, then Hide more; pupils say the sentence again each time. Use the Teacher button for tips. Next lesson: worksheet and Class Store.",
+    "studentInstructions": "Say it, hide it, say it from memory!",
+    "route": "unit12-revision-g4/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Grade 4 Revision",
+    "vocabulary": {
+      "core": [
+        "freeze",
+        "journey",
+        "visualize",
+        "predator",
+        "deciduous",
+        "coniferous",
+        "hibernate",
+        "survive"
+      ],
+      "supporting": [
+        "built",
+        "fell",
+        "gave",
+        "grew",
+        "hit",
+        "paid"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Past simple / so it can / Who-Where-Why",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "worksheet-store-g4-u12",
+    "title": "📝 Worksheet and Class Store: Units 1 and 2 (Grade 4)",
+    "description": "A 35-minute teacher-led lesson after the revision lesson. Pupils do a 10-question worksheet (versions A and B) on paper for up to 10 coins, mark it together on the board with a fix-it round, then see how the Class Store works in a demo (coins, rewards, mystery boxes). Printable worksheet with answer key included.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "🧠 Revision",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 4A",
+      "Class 4B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Writing",
+      "Reading",
+      "Vocabulary"
+    ],
+    "topic": "Units 1 and 2 revision (Grade 4)",
+    "topics": [
+      "Units 1 and 2 revision (Grade 4)"
+    ],
+    "languageFocus": "Past simple (chased, fell, gave, grew, built, hit, paid); Who/Where/Why; so it can / so they can; deciduous, coniferous, hibernate, survive",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "worksheet",
+      "class store",
+      "unit 1",
+      "unit 2"
+    ],
+    "learningObjectives": [
+      "Show what they remember from Units 1 and 2 in writing",
+      "Check and correct their own work",
+      "Talk about wants, prices and coins: I want … It costs … coins"
+    ],
+    "teacherInstructions": "Print worksheet.html (A and B on alternate desks). Run the 5 steps: mission (3), worksheet time with the timer (17), mark it together and fix-it (4), Class Store tour demo (9), wish list and door pass (2). Then enter each pupil's coins: Classroom Store, Worksheet coins.",
+    "studentInstructions": "Do the worksheet, mark it, fix your mistakes, then learn how the Class Store works!",
+    "route": "unit12-worksheet-g4/index.html",
+    "worksheet": "unit12-worksheet-g4/worksheet.html",
+    "worksheetRoute": "unit12-worksheet-g4/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Grade 4 Revision",
+    "vocabulary": {
+      "core": [
+        "coins",
+        "price",
+        "cost",
+        "save",
+        "buy",
+        "reward"
+      ],
+      "supporting": [
+        "worksheet",
+        "correct",
+        "mistake"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I want … It costs … coins. I have … coins.",
+      "formula": "Can I play? Great job! My favourite game was Yut Nori because it is fun.",
+      "formulas": [
+        "Welcome to my game.",
+        "Throw the sticks. Move your piece."
+      ]
+    },
+    "clilDomain": "Unit 2: Thank You",
+    "clilTheme": "Unit 2: Thank You",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎮",
+    "formula": "Can I play? Great job!",
+    "url": "unit2-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #581c87 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l1-g3",
+    "title": "💰 How Much Is It?: Unit 3 Lesson 1 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils look at two money jars, walk to BUY or GO, act out the two farmers who cannot agree on a price, run the Class Shop with \"How much is it? It’s … dollars.\", make jar labels, and play the team game Super Shopper (stay under your budget). Book pages 40-41.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 4)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "how much is it",
+      "prices"
+    ],
+    "learningObjectives": [
+      "Ask and answer \"How much is it? It’s … dollars.\"",
+      "Say what we can buy and where we can go (You can buy … / You can go …)",
+      "Explain why people need money (the farmers’ problem)",
+      "Say \"Do you want a label for …? Of course I do! We both want …\""
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the BUY / GO signs and the price cards. Work through the 7 steps: each shows a mode (Think, Move, Act, Talk, Create, Race). Press Teacher for tips on each step. Pupils use mini whiteboards in the race.",
+    "studentInstructions": "Stand up, act, walk to the right corner, ask \"How much is it?\" and make your own jar labels!",
+    "route": "unit3-g3-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "money",
+        "dollar",
+        "buy",
+        "price",
+        "expensive",
+        "save",
+        "jar",
+        "label"
+      ],
+      "supporting": [
+        "goat",
+        "grain",
+        "farmer",
+        "cookie",
+        "balloon"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "How much is it? / It’s … dollars. / You can buy … / You can go …",
+      "formula": "How much is it? It’s five dollars.",
+      "formulas": [
+        "You can buy bread.",
+        "That’s expensive!",
+        "We both want a label for college."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💰",
+    "formula": "How much is it? It’s five dollars.",
+    "url": "unit3-g3-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l2-g3",
+    "title": "⏳ Before Money Was Money: Unit 3 Lesson 2 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Mystery money boxes, travel back in time from barter to cowrie shells, metal money and the first coins (a timeline fills as pupils act), five Words in Context, putting the money in order, problem or solution corners, and the team game Money Catcher (tap the things that are or were money). Book pages 42-43.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 4)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "history of money",
+      "barter",
+      "timeline"
+    ],
+    "learningObjectives": [
+      "Say how people paid long ago (bartered, cowrie shells, metal money, first coins)",
+      "Put four kinds of money in time order",
+      "Use the new words: bartered, metal, valuable, credit card, plastic",
+      "Say whether a sentence is a problem or a solution"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the PROBLEM / SOLUTION signs. Work through the 7 steps: each shows a mode (Think, Act, Detective, Move, Race). Press Teacher for tips on each step. Pupils use mini whiteboards to order the money and in the race.",
+    "studentInstructions": "Guess the mystery money, travel back in time, find word meanings and walk to PROBLEM or SOLUTION!",
+    "route": "unit3-g3-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "credit card",
+        "plastic"
+      ],
+      "supporting": [
+        "cowrie shells",
+        "coin",
+        "paper money",
+        "carry",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "People bartered. / … is easier to carry than …",
+      "formula": "Shells are easier to carry than goats.",
+      "formulas": [
+        "People bartered long ago.",
+        "Gold is valuable.",
+        "It is a problem because …"
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "⏳",
+    "formula": "Shells are easier to carry than goats.",
+    "url": "unit3-g3-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a5f 55%, #fcd34d 100%)"
+  },
+  {
+    "id": "changing-l1-g4",
+    "title": "🧊 It Keeps Changing: Unit 3 Lesson 1 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. The pink river (See, Think, Wonder), good and bad changes in nature, comparing the Arctic with our town, a visit to the Arctic where the ice bar melts, and the team game Arctic Memory (match a picture to its word). Book pages 40-41.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 3)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "climate change",
+      "arctic",
+      "compare and contrast",
+      "memory game"
+    ],
+    "learningObjectives": [
+      "Describe a picture with I see / I think / I wonder",
+      "Say if a change in nature is good or bad and give a reason with because",
+      "Compare and contrast the Arctic with where we live (In the Arctic … but where I live …)",
+      "Know the words polar bear, ice, hole, melting, thin, crack"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the GOOD / BAD signs. Work through the 6 steps: each shows a mode (Think, Move, Talk, Act, Game). Press Teacher for tips on each step. The game is played by four teams in turns.",
+    "studentInstructions": "Look, think and wonder. Walk to GOOD or BAD. Compare the Arctic with your town. Act out a visit to the Arctic and win the memory game!",
+    "route": "unit3-g4-lessons/index.html?lesson=1",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "change",
+        "ice",
+        "melting",
+        "polar bear",
+        "Arctic"
+      ],
+      "supporting": [
+        "good",
+        "bad",
+        "snow",
+        "cold",
+        "warm"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "I see … / I think … / In the Arctic there is …, but where I live there is …",
+      "formula": "It is very cold in the Arctic, but it is warm where I live.",
+      "formulas": [
+        "The ice is melting.",
+        "It is a bad change because …"
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🧊",
+    "formula": "In the Arctic there is ice, but where I live there is grass.",
+    "url": "unit3-g4-lessons/index.html?lesson=1",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "bear-l2-g4",
+    "title": "🐻‍❄️ The Bear and I (part 1): Unit 3 Lesson 2 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out the first four stanzas of the poem The Bear and I, learn six Words in Context (hole, twice, enemy, thin, trap, melting), put the story in order, sort what is true for the man, the bear or both, and play the team game Ice Escape. Book pages 42-43.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 3)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "polar bear",
+      "vocabulary",
+      "ice escape game"
+    ],
+    "learningObjectives": [
+      "Retell stanzas 1-4 of the poem in simple sentences",
+      "Use the words hole, twice, enemy, thin, trap, melting",
+      "Put events in order with First / Next / Then / Last",
+      "Compare the man and the bear (The man …, the bear …, both …)"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the MAN / BOTH / BEAR signs. Work through the 7 steps: each shows a mode (Think, Act, Detective, Move, Game). Press Teacher for tips on each step. The game is played by four teams in turns.",
+    "studentInstructions": "Act out the poem, find the word meanings, put the story in order and escape across the ice!",
+    "route": "unit3-g4-lessons/index.html?lesson=2",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "twice",
+        "enemy",
+        "thin",
+        "trap",
+        "melting"
+      ],
+      "supporting": [
+        "polar bear",
+        "fishing",
+        "hungry",
+        "giant",
+        "fur"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "The bear was twice my size. / First … Next … Then … Last …",
+      "formula": "The bear was twice my size.",
+      "formulas": [
+        "The man has a fishing rod.",
+        "Both the man and the bear are hungry."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐻‍❄️",
+    "formula": "The bear was twice my size.",
+    "url": "unit3-g4-lessons/index.html?lesson=2",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #1e3a5f 55%, #e0f2fe 100%)"
+  },
+  {
+    "id": "money-l3-g3",
+    "title": "🚂 Money Changes: Unit 3 Lesson 3 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out how money changed from coins to paper money to credit cards to phones (a timeline fills as they go), learn six money words, say \"easier to carry than\", ride the team game Time Train through seven stations of money history, and vote for the next type of money. Book pages 44-45.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 4)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "history of money",
+      "timeline",
+      "train game"
+    ],
+    "learningObjectives": [
+      "Say how money changed: coins, paper money, credit cards, electronic money",
+      "Use \"… is easier to carry than …\"",
+      "Know the words coin, paper money, credit card, electronic money, internet, century",
+      "Say \"I think the next money will be …\""
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Detective, Talk, Game, Talk). Press Teacher for tips on each step. The game Time Train is played by four teams in turns.",
+    "studentInstructions": "Travel forward in time, learn the money words and ride the Time Train!",
+    "route": "unit3-g3-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "coin",
+        "paper money",
+        "credit card",
+        "electronic money",
+        "internet",
+        "century"
+      ],
+      "supporting": [
+        "carry",
+        "silver",
+        "gold",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "… is easier to carry than … / I think the next money will be …",
+      "formula": "Paper money is easier to carry than metal coins.",
+      "formulas": [
+        "The first credit card was in 1958.",
+        "I think the next money will be phones."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚂",
+    "formula": "Paper money is easier to carry than metal coins.",
+    "url": "unit3-g3-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "money-l4-g3",
+    "title": "🎰 Design the Next Money: Unit 3 Lesson 4 (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Is it or was it money? (walk to a corner), fill the money chart, find the problem and the solution in a short story, play the team game Problem and Solution Pairs, and design the next type of money with the Money Machine. Book pages 46-47.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 4)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "money",
+      "problem and solution",
+      "design",
+      "pairs game"
+    ],
+    "learningObjectives": [
+      "Say which things are or were money",
+      "Say what each money was made from and when it was used",
+      "Find a problem and its solution",
+      "Design the next money and say \"I think the next type of money will be …\""
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the MONEY / NOT MONEY signs. Work through the 6 steps (Move, Think, Act, Game, Create). Pupils use mini whiteboards for the chart and the design.",
+    "studentInstructions": "Walk to MONEY or NOT MONEY, fill the chart, find problems and solutions, and design your own money!",
+    "route": "unit3-g3-lessons/index.html?lesson=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "problem",
+        "solution",
+        "metal",
+        "paper",
+        "plastic",
+        "design"
+      ],
+      "supporting": [
+        "shells",
+        "card",
+        "wallet",
+        "worth"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "was / were used in … / made from … / The problem is … The solution is …",
+      "formula": "I think the next type of money will be a glass ring.",
+      "formulas": [
+        "Cowrie shells were used in 1200 BCE.",
+        "Credit cards are made from plastic."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎰",
+    "formula": "I think the next type of money will be a glass ring.",
+    "url": "unit3-g3-lessons/index.html?lesson=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "ice-l3-g4",
+    "title": "💥 The Ice Cracks: Unit 3 Lesson 3 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils act out stanzas 5-8 of the poem The Bear and I (the ICE bar melts), learn six poem words, put cause and effect in order, play the team game Cause and Effect Pairs, and vote on how we can help. Book pages 44-45.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 3)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "cause and effect",
+      "climate change",
+      "pairs game"
+    ],
+    "learningObjectives": [
+      "Retell stanzas 5-8 of the poem in simple sentences",
+      "Use cause and effect: …, so … / … because …",
+      "Know the words crack, swim, together, danger, hope, once more",
+      "Say \"I can … because …\" about helping the world"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Detective, Think, Game, Talk). Press Teacher for tips on each step. Pupils use mini whiteboards to order the events. The game is played by four teams in turns.",
+    "studentInstructions": "Act out the poem, find the cause and the effect, and say how you can help the Arctic!",
+    "route": "unit3-g4-lessons/index.html?lesson=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "crack",
+        "swim",
+        "together",
+        "danger",
+        "hope",
+        "once more"
+      ],
+      "supporting": [
+        "thin",
+        "trap",
+        "melting",
+        "enemy"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "…, so … / … because … / I can … because …",
+      "formula": "The ice is thin, so it cracks.",
+      "formulas": [
+        "The ice cracks because it is thin.",
+        "I can ride a bike because bikes do not make the air dirty."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "💥",
+    "formula": "The ice is thin, so it cracks.",
+    "url": "unit3-g4-lessons/index.html?lesson=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "poem-l4-g4",
+    "title": "🎤 Explore the Poem: Unit 3 Lesson 4 (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. True or false (walk to a corner), the -ng sound, the team game Stanza Detective (which stanza has the answer?), are the man and the bear friends (vote with a reason), compare two cars, and perform the whole poem in eight groups. Book pages 46-47.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 3)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "poem",
+      "phonics -ng",
+      "compare and contrast",
+      "stanza game"
+    ],
+    "learningObjectives": [
+      "Decide if a sentence about the poem is true or false and correct it",
+      "Say words that end with the -ng sound",
+      "Find the stanza that has the answer",
+      "Compare and contrast two things: …, but … / Both …"
+    ],
+    "teacherInstructions": "Open on the smartboard and press Cards (top) to print the TRUE / FALSE signs. Pupils keep their books open at pp.42-47. Work through the 7 steps (Move, Listen, Game, Talk, Create). The game is played by four teams in turns.",
+    "studentInstructions": "Walk to TRUE or FALSE, say the -ng sound, find the stanza, and perform the poem!",
+    "route": "unit3-g4-lessons/index.html?lesson=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "stanza",
+        "sing",
+        "long",
+        "spring",
+        "young",
+        "fishing",
+        "friends"
+      ],
+      "supporting": [
+        "compare",
+        "contrast",
+        "both",
+        "different"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "I think … because … / …, but … / Both … and …",
+      "formula": "The red car is big, but the white car is small.",
+      "formulas": [
+        "Both cars have four wheels.",
+        "I think they are not friends because the bear takes his fish."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎤",
+    "formula": "I think they are friends because they helped each other.",
+    "url": "unit3-g4-lessons/index.html?lesson=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "cars-l5-g4",
+    "title": "🚗 Clean Cars: Unit 3 Lesson 5 (Grade 3)",
+    "description": "A 40-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils name the five kinds of cars (gasoline, biofuel, electric, air, solar), match each car with its energy symbol, open five doors by reading clues, and play the energy game. Then a call from the city: the air is dirty! Pupils find the cars that make the air dirty, and trees and flowers grow when the city gets clean.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 3)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "clean cars",
+      "energy",
+      "pollution",
+      "doors game",
+      "city game"
+    ],
+    "learningObjectives": [
+      "Name five kinds of cars: gasoline, biofuel, electric, air and solar",
+      "Say what each car uses: An electric car uses electricity.",
+      "Use fast, slow, noisy, quiet, clean, dirty and expensive to describe cars",
+      "Say which cars make the air dirty and give one solution: clean cars",
+      "Give an opinion with because: I like the solar car because it is quiet."
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps: each shows a mode (Think, Talk, Detective, Game, Move). Press Teacher for tips on each step. Steps 3 (the five doors) and 5 (the city) are played at the board with the whole class. The lesson follows the reading Clean Cars on pp.48-55 of the book.",
+    "studentInstructions": "Name the cars, match each car with its energy, open the five doors, and clean up the city!",
+    "route": "unit3-g4-lessons/index.html?lesson=5",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "solar",
+        "biofuel",
+        "noisy",
+        "quiet",
+        "clean",
+        "dirty",
+        "expensive"
+      ],
+      "supporting": [
+        "oil",
+        "air",
+        "wheels",
+        "fast",
+        "slow"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "A … car uses … / … cars are …, but … / I like the … car because …",
+      "formula": "A solar car uses energy from the sun.",
+      "formulas": [
+        "An electric car uses electricity.",
+        "Gasoline cars are fast, but they are noisy.",
+        "I like the solar car because it is quiet."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚗",
+    "formula": "An electric car uses electricity. Gasoline cars make the air dirty.",
+    "url": "unit3-g4-lessons/index.html?lesson=5",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #bbf7d0 100%)"
+  },
+  {
+    "id": "week4-g4-captain",
+    "title": "🐧 Captain Quiet’s Space Mission: Classroom Rules (Grade 4)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 1 Classroom Rules, not a quiz. Pupils follow Captain Quiet (act only when he says please), count to fifty with a rocket, ask for permission at the door (green door yes, red door no), make polite requests and race four rockets in the Rule Race. Four team games.",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryLabel": "🧊 Unit 3 Lessons",
+    "level": "A1+",
+    "cefrLevel": "A1+",
+    "age": "Ages 9–10",
+    "ageGroup": "9-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Reading",
+      "Vocabulary",
+      "Grammar",
+      "Speaking"
+    ],
+    "topic": "Unit 3: It Keeps Changing (climate change)",
+    "topics": [
+      "Unit 2: What Lives Here? (Grade 4)"
+    ],
+    "languageFocus": "so they can…; instead of…; headings; author’s purpose",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led lesson with movement, pair talk and team points",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "classroom rules",
+      "permission",
+      "requests",
+      "numbers 1-50",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Follow and give simple classroom instructions with please",
+      "Ask for and give permission: Can/May I come in/go out?",
+      "Make polite requests: Give me the book, please.",
+      "Count to fifty"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Act, Game, Talk, Game, Race). Press Teacher for tips on each step. Teams earn points in the four games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Join Captain Quiet on his space ship, count with the rocket and win the Rule Race!",
+    "route": "week4-g4-captain-quiet/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "please",
+        "come in",
+        "go out",
+        "open",
+        "close",
+        "quiet",
+        "board",
+        "window",
+        "door"
+      ],
+      "supporting": [
+        "pencil",
+        "book",
+        "ruler",
+        "eraser",
+        "place"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Can/May I …? · Give me …, please. · Open/Close …, please.",
+      "formula": "Can I come in?",
+      "formulas": [
+        "Give me the book, please.",
+        "Be quiet, please."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐧",
+    "formula": "Can I come in? - Yes, you can.",
+    "url": "week4-g4-captain-quiet/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #bae6fd 100%)"
+  },
+  {
+    "id": "week4-g3-daphne",
+    "title": "🕵️ Daphne the School Detective: School Life (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Theme 1 School Life, not a quiz. Daphne lost her notebook, so pupils meet the people at school, place them on a school map (She’s in the library), play hide and seek (Is she in the gym?), practise Is there …? How many …?, and solve clues in the team game School Detective.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "school life",
+      "people at school",
+      "places at school",
+      "there is / there are",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Name people at school: headteacher, librarian, school nurse, caretaker, classmate",
+      "Name places at school and say where a person is",
+      "Ask and answer: Is there a …? How many … are there?",
+      "Greet and respond: How are you? I’m good, thanks!"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps (Think, Detective, Explore, Game, Talk, Game). Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Help Daphne find her notebook: meet the people, visit the places and play the detective games!",
+    "route": "week4-g3-daphne/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "headteacher",
+        "librarian",
+        "school nurse",
+        "caretaker",
+        "classmate",
+        "library",
+        "gym",
+        "art room",
+        "music room",
+        "office",
+        "corridor",
+        "sports field",
+        "meeting room"
+      ],
+      "supporting": [
+        "hide",
+        "clue",
+        "notebook"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "Where is …? She’s in … · Is there a …? Yes, there is. · How many … are there? There are …",
+      "formula": "Where is Daphne? She’s in the library.",
+      "formulas": [
+        "Is there a nurse at school? Yes, there is.",
+        "How many caretakers are there? There are two."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🕵️",
+    "formula": "Where is Daphne? She’s in the library.",
+    "url": "week4-g3-daphne/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "u3-g3-arctic-words",
+    "title": "🐻‍❄️ Arctic Words: The Bear and I (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Pupils match Arctic words to pictures, understand sentences from context, build sentences so the bear walks to the fish, walk to MAN, BEAR or BOTH, and feed the hungry bear with words that end with -ng.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "arctic",
+      "poem",
+      "phonics -ng",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Match the words ice, hole, enemy and crack to pictures",
+      "Understand a word from the sentence (thin, hungry)",
+      "Put words in order to make a sentence",
+      "Compare the man and the bear",
+      "Say words that end with the -ng sound"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps. Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Match the words, build sentences and feed the hungry bear!",
+    "route": "unit3-g3-arctic-words/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "ice",
+        "polar bear",
+        "fish",
+        "hole",
+        "thin",
+        "enemy",
+        "crack"
+      ],
+      "supporting": [
+        "hungry",
+        "fishing",
+        "sing",
+        "long",
+        "spring"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The … is … / There is a … in the …",
+      "formula": "There is a hole in the ice.",
+      "formulas": [
+        "The ice is thin.",
+        "The bear eats fish."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐻‍❄️",
+    "formula": "The ice is thin. There is a hole in the ice.",
+    "url": "unit3-g3-arctic-words/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "u3-g3-word-city",
+    "title": "🏙️ Word City: Find, Build and Open the Gate (Grade 3)",
+    "description": "A 35-minute teacher-led smartboard lesson for Unit 3, not a quiz. Teams explore a city to find hidden words (hole, trap, enemy, thin), fix the letter factory (sing, long, spring), catch the -ng balloons, load the word trains, and build sentences to open the magic gate.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 30,
+    "skills": [
+      "Listening",
+      "Speaking",
+      "Vocabulary",
+      "Writing"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
+    "topics": [
+      "Unit 2: Thank You (Grade 3)"
+    ],
+    "languageFocus": "I am thankful for my…; There is / There are; weave, cloth, contest, feast, harvest, ancestors",
+    "activityMode": "Whole class, one smartboard + mini whiteboards",
+    "interactionType": "Teacher-led smartboard lesson",
+    "difficulty": "Teach and practise",
+    "tags": [
+      "lesson",
+      "smartboard",
+      "word city",
+      "phonics -ng",
+      "sentences",
+      "team games"
+    ],
+    "learningObjectives": [
+      "Say and use the words hole, trap, enemy and thin",
+      "Build words with the -ng ending: sing, long, spring",
+      "Sort words by type: things and places, people, describing words",
+      "Build short sentences with the new words"
+    ],
+    "teacherInstructions": "Open on the smartboard. Work through the 7 steps. Press Teacher for tips on each step. Four teams earn points in the games. Book page numbers are placeholders (p. ___) in the tips.",
+    "studentInstructions": "Explore Word City, fix the factory and open the magic gate!",
+    "route": "unit3-g3-word-city/index.html",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Lessons (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "trap",
+        "enemy",
+        "thin",
+        "sing",
+        "long",
+        "spring"
+      ],
+      "supporting": [
+        "king",
+        "ring",
+        "bang"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "There is a … in the … / The … is …",
+      "formula": "There is a hole in the ground.",
+      "formulas": [
+        "The road is long.",
+        "Flowers grow in spring."
+      ]
+    },
+    "clilDomain": "Unit 3: It Keeps Changing",
+    "clilTheme": "Unit 3: It Keeps Changing",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🏙️",
+    "formula": "There is a hole in the ground.",
+    "url": "unit3-g3-word-city/index.html",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #14532d 55%, #fde047 100%)"
+  },
+  {
+    "id": "board-u3-g3-bear",
+    "title": "Arctic Board Game (Unit 3, The Bear and I)",
+    "description": "A question-to-buy board game for 3 or 4 teams. Roll the dice, move, answer a word question to buy the square, collect rent, draw Chance cards. About 25 minutes with a podium and XP at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Listening"
+    ],
+    "topic": "Unit 3: It Keeps Changing (The Bear and I)",
+    "topics": [
+      "Unit 3: The Bear and I (Grade 3)"
+    ],
+    "languageFocus": "hole, trap, thin, enemy, twice, melting, crack, swim, danger, hope; -ng words",
+    "activityMode": "Whole class, 3 or 4 teams, one smartboard",
+    "interactionType": "Team board game",
+    "difficulty": "Review and play",
+    "tags": [
+      "board game",
+      "smartboard",
+      "team game",
+      "unit 3",
+      "the bear and i",
+      "review"
+    ],
+    "learningObjectives": [
+      "Say and recognise the Bear and I words",
+      "Choose the right word or meaning",
+      "Practise -ng words and short sentences"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 3 or 4 teams and the number of rounds (7 rounds is about 25 minutes). A team rolls, moves, and answers a question to buy the square. Other teams pay rent when they land on it (answer right to pay half). At the end, give the team XP shown on the podium.",
+    "studentInstructions": "Roll, move, answer right to buy the word. Collect the most valuable words!",
+    "route": "unit3-board-game/index.html?grade=3",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games (Grade 3)",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "trap",
+        "thin",
+        "enemy",
+        "twice",
+        "melting",
+        "crack",
+        "swim",
+        "danger",
+        "hope"
+      ],
+      "supporting": [
+        "together",
+        "once more"
+      ],
+      "phonics": [
+        "-ng"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "The … is …",
+      "formula": "The ice is thin.",
+      "formulas": [
+        "The bear is hungry."
+      ]
+    },
+    "clilDomain": "Unit 3: The Bear and I",
+    "clilTheme": "Unit 3: The Bear and I",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎲",
+    "formula": "The ice is thin.",
+    "url": "unit3-board-game/index.html?grade=3",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #0c4a6e 55%, #38bdf8 100%)"
+  },
+  {
+    "id": "board-u3-g4-money",
+    "title": "Money Board Game (Unit 3, How Much Is It?)",
+    "description": "A question-to-buy board game for 3 or 4 teams about money: coins, paper money, credit cards, bartering. Roll, move, answer to buy, collect rent. About 25 minutes with a podium and XP at the end.",
+    "type": "game",
+    "category": "Literature & Stories",
+    "categoryLabel": "💰 Unit 3 Lessons",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 3",
+      "Class 3A",
+      "Class 3B"
+    ],
+    "duration": 35,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 30,
+    "skills": [
+      "Speaking",
+      "Vocabulary",
+      "Listening"
+    ],
+    "topic": "Unit 3: How Much Is It? (money)",
+    "topics": [
+      "Unit 3: How Much Is It? (Grade 4)"
+    ],
+    "languageFocus": "bartered, metal, valuable, coin, paper money, credit card, plastic, electronic money, belong to; easier than",
+    "activityMode": "Whole class, 3 or 4 teams, one smartboard",
+    "interactionType": "Team board game",
+    "difficulty": "Review and play",
+    "tags": [
+      "board game",
+      "smartboard",
+      "team game",
+      "unit 3",
+      "money",
+      "review"
+    ],
+    "learningObjectives": [
+      "Say and recognise the money words",
+      "Choose the right word or meaning",
+      "Use easier than and belongs to"
+    ],
+    "teacherInstructions": "Open on the smartboard. Choose 3 or 4 teams and the number of rounds (7 rounds is about 25 minutes). A team rolls, moves, and answers a question to buy the square. Other teams pay rent when they land on it (answer right to pay half). At the end, give the team XP shown on the podium.",
+    "studentInstructions": "Roll, move, answer right to buy the word. Collect the most valuable words!",
+    "route": "unit3-board-game/index.html?grade=4",
+    "worksheet": null,
+    "worksheetRoute": null,
+    "teacherGuide": true,
+    "supportsAssignment": false,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games (Grade 4)",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "coin",
+        "paper money",
+        "credit card",
+        "plastic",
+        "electronic money",
+        "belong to"
+      ],
+      "supporting": [
+        "problem",
+        "solution",
+        "century"
+      ],
+      "phonics": []
+    },
+    "grammar": {
+      "focusPattern": "… is easier to … than …",
+      "formula": "Paper money is easier to carry than coins.",
+      "formulas": [
+        "This wallet belongs to Paige."
+      ]
+    },
+    "clilDomain": "Unit 3: How Much Is It?",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🎲",
+    "formula": "Paper money is easier to carry than coins.",
+    "url": "unit3-board-game/index.html?grade=4",
+    "worksheetUrl": null,
+    "gradient": "linear-gradient(135deg, #060911 0%, #92400e 55%, #fde047 100%)"
+  },
+  {
+    "id": "unit3-money-mission",
+    "aliases": [
+      "how-much-is-it-mission",
+      "unit3-smartboard-mission",
+      "money-mission"
+    ],
+    "title": "🚀 Unit 3 Mission: How Much Is It? (Among Us + 2P Tug-of-War)",
+    "description": "Smartboard Revision Mission for Unit 3 ('How Much Is It?', pp. 40–55). Complete 3 Among Us Crew Tasks (Electrical Wires, Clear Asteroids -ar spelling, and Reactor Sequence sentence builder) with real textbook illustrations to unlock the 2-Player Monster Bridge Tug-of-War Finale!",
+    "type": "game",
+    "category": "Unit 3 Smartboard Mission",
+    "categoryLabel": "🚀 Unit 3: How Much Is It?",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": [
+      "Vocabulary & History Timeline",
+      "-ar Phonics & Spelling",
+      "Problem & Solution Sentence Building",
+      "Reading Comprehension"
+    ],
+    "topic": "The History of Money & The $100 Bill (Unit 3, pp. 40–55)",
+    "topics": [
+      "History of Money (6000 BCE to 21st Century)",
+      "The $100 Bill Story",
+      "Identifying Problems & Solutions",
+      "-ar Spelling Pattern"
+    ],
+    "languageFocus": "bartered, valuable, credit card, plastic, belong to, return, pocket, restaurant, money is tight. Past simple & easier to carry than.",
+    "activityMode": "Classroom Smartboard Mission + Simultaneous 2-Player Finale",
+    "interactionType": "Electrical Wires Matcher, Laser Asteroid Shooter, Reactor Word Unscrambler, 2-Player Monster Bridge Tug-of-War",
+    "difficulty": "Grade 3–4 (A1–A2)",
+    "tags": [
+      "unit3",
+      "money",
+      "how-much-is-it",
+      "among-us",
+      "tug-of-war",
+      "smartboard",
+      "revision"
+    ],
+    "learningObjectives": [
+      "Match core Unit 3 vocabulary and History of Money timeline dates (6000 BCE to 21st century)",
+      "Spell words with the -ar pattern (bartered, card, park, hard, started) and core Unit 3 vocabulary",
+      "Build grammatical sentences describing problems and solutions from 'The History of Money', 'A New Friend', and 'The $100 Bill'",
+      "Compete head-to-head on the Smartboard in the 15-question 2-Player Monster Bridge Tug-of-War"
+    ],
+    "teacherInstructions": "Open on the Smartboard. Use '🎲 Pick Next Crewmate' to call 1 student at a time for Tasks 1–3 and award +1 / +5 / +10 XP directly on their monster card. Once the Crew Bar hits 100% (or anytime via the stage tabs), launch the 2-Player Monster Bridge Tug-of-War and tap '🎲 Pick 2 Challengers'!",
+    "studentInstructions": "Connect the Electrical Wires, blast the right spelling Asteroids, stabilize the Reactor sentences, and pull your monster across the Rope Bridge!",
+    "route": "unit3-money-mission/index.html",
+    "url": "unit3-money-mission/index.html",
+    "worksheet": "unit3-money-mission/worksheet.html",
+    "worksheetUrl": "unit3-money-mission/worksheet.html",
+    "worksheetRoute": "unit3-money-mission/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "credit card",
+        "plastic",
+        "belong to",
+        "return",
+        "pocket",
+        "restaurant",
+        "money is tight"
+      ],
+      "supporting": [
+        "cowrie shells",
+        "spades",
+        "electronic money",
+        "slingshot",
+        "vet"
+      ],
+      "phonics": [
+        "-ar pattern: bartered, card, park, hard, started"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past Simple & Comparatives (easier to carry than)",
+      "formula": "People paid for a goat with grain. / Cowrie shells were easier to carry.",
+      "formulas": [
+        "Paige found a hundred dollars in the leaves.",
+        "Paige did not buy the ninety-five dollar phone."
+      ]
+    },
+    "clilDomain": "History & Financial Literacy",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚀",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0284c7 55%, #10b981 100%)"
   }
 ];
 

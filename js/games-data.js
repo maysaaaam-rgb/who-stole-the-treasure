@@ -11950,6 +11950,115 @@ const GAMES_REGISTRY = [
     "url": "unit3-board-game/index.html?grade=4",
     "worksheetUrl": null,
     "gradient": "linear-gradient(135deg, #060911 0%, #92400e 55%, #fde047 100%)"
+  },
+  {
+    "id": "unit3-money-mission",
+    "aliases": [
+      "how-much-is-it-mission",
+      "unit3-smartboard-mission",
+      "money-mission"
+    ],
+    "title": "🚀 Unit 3 Mission: How Much Is It? (Among Us + 2P Tug-of-War)",
+    "description": "Smartboard Revision Mission for Unit 3 ('How Much Is It?', pp. 40–55). Complete 3 Among Us Crew Tasks (Electrical Wires, Clear Asteroids -ar spelling, and Reactor Sequence sentence builder) with real textbook illustrations to unlock the 2-Player Monster Bridge Tug-of-War Finale!",
+    "type": "game",
+    "category": "Unit 3 Smartboard Mission",
+    "categoryLabel": "🚀 Unit 3: How Much Is It?",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 30,
+    "durationText": "30 min",
+    "estimatedMinutes": 30,
+    "xp": 150,
+    "skills": [
+      "Vocabulary & History Timeline",
+      "-ar Phonics & Spelling",
+      "Problem & Solution Sentence Building",
+      "Reading Comprehension"
+    ],
+    "topic": "The History of Money & The $100 Bill (Unit 3, pp. 40–55)",
+    "topics": [
+      "History of Money (6000 BCE to 21st Century)",
+      "The $100 Bill Story",
+      "Identifying Problems & Solutions",
+      "-ar Spelling Pattern"
+    ],
+    "languageFocus": "bartered, valuable, credit card, plastic, belong to, return, pocket, restaurant, money is tight. Past simple & easier to carry than.",
+    "activityMode": "Classroom Smartboard Mission + Simultaneous 2-Player Finale",
+    "interactionType": "Electrical Wires Matcher, Laser Asteroid Shooter, Reactor Word Unscrambler, 2-Player Monster Bridge Tug-of-War",
+    "difficulty": "Grade 3–4 (A1–A2)",
+    "tags": [
+      "unit3",
+      "money",
+      "how-much-is-it",
+      "among-us",
+      "tug-of-war",
+      "smartboard",
+      "revision"
+    ],
+    "learningObjectives": [
+      "Match core Unit 3 vocabulary and History of Money timeline dates (6000 BCE to 21st century)",
+      "Spell words with the -ar pattern (bartered, card, park, hard, started) and core Unit 3 vocabulary",
+      "Build grammatical sentences describing problems and solutions from 'The History of Money', 'A New Friend', and 'The $100 Bill'",
+      "Compete head-to-head on the Smartboard in the 15-question 2-Player Monster Bridge Tug-of-War"
+    ],
+    "teacherInstructions": "Open on the Smartboard. Use '🎲 Pick Next Crewmate' to call 1 student at a time for Tasks 1–3 and award +1 / +5 / +10 XP directly on their monster card. Once the Crew Bar hits 100% (or anytime via the stage tabs), launch the 2-Player Monster Bridge Tug-of-War and tap '🎲 Pick 2 Challengers'!",
+    "studentInstructions": "Connect the Electrical Wires, blast the right spelling Asteroids, stabilize the Reactor sentences, and pull your monster across the Rope Bridge!",
+    "route": "unit3-money-mission/index.html",
+    "url": "unit3-money-mission/index.html",
+    "worksheet": "unit3-money-mission/worksheet.html",
+    "worksheetUrl": "unit3-money-mission/worksheet.html",
+    "worksheetRoute": "unit3-money-mission/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "credit card",
+        "plastic",
+        "belong to",
+        "return",
+        "pocket",
+        "restaurant",
+        "money is tight"
+      ],
+      "supporting": [
+        "cowrie shells",
+        "spades",
+        "electronic money",
+        "slingshot",
+        "vet"
+      ],
+      "phonics": [
+        "-ar pattern: bartered, card, park, hard, started"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past Simple & Comparatives (easier to carry than)",
+      "formula": "People paid for a goat with grain. / Cowrie shells were easier to carry.",
+      "formulas": [
+        "Paige found a hundred dollars in the leaves.",
+        "Paige did not buy the ninety-five dollar phone."
+      ]
+    },
+    "clilDomain": "History & Financial Literacy",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🚀",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0284c7 55%, #10b981 100%)"
   }
 ];
 

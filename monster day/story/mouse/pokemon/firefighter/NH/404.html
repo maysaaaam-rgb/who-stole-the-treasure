@@ -222,6 +222,9 @@
       } else if (pathname.includes('clara') || pathname.includes('inventor')) {
         targetUrl = basePrefix + 'inventor-lab/index.html';
         targetName = 'Inventor Lab';
+      } else if (pathname.includes('alice-party-home') || pathname.includes('tea-party-home') || pathname.includes('party-home')) {
+        targetUrl = basePrefix + 'alice-party-home/index.html' + (pathname.includes('4b') ? '?class=4b' : pathname.includes('4a') ? '?class=4a' : '');
+        targetName = 'Alice Tea Party: Home Practice (A1+)';
       } else if (pathname.includes('alice-cards-4a')) {
         targetUrl = basePrefix + 'alice-cards-4a/index.html';
         targetName = 'Alice Mad Tea Party Cards (4A)';
@@ -238,8 +241,8 @@
         targetUrl = basePrefix + 'nasa-mission/index.html';
         targetName = 'NASA Mission: Find a New Planet';
       } else if (pathname.includes('baamboozle') || pathname.includes('bamboozle')) {
-        targetUrl = basePrefix + 'baamboozle/index.html';
-        targetName = 'Baamboozle Arena: Young Inventors';
+        targetUrl = basePrefix + 'bamboozle/index.html';
+        targetName = 'Bamboozle: Mystery Cards';
       } else if (pathname.includes('meme') || pathname.includes('imperative') || pathname.includes('rules')) {
         targetUrl = basePrefix + 'meme-rules/index.html';
         targetName = 'Classroom Meme Rules: Imperatives in Action';
@@ -285,6 +288,9 @@
       } else if (pathname.includes('fantasy-creatures') || pathname.includes('fantasy') || pathname.includes('mythical') || pathname.includes('unicorn') || pathname.includes('griffin')) {
         targetUrl = basePrefix + 'fantasy-creatures/index.html';
         targetName = '🐉 Fantasy Creatures & Magical Habitats';
+      } else if (pathname.includes('unit3-money-mission') || pathname.includes('money-mission') || pathname.includes('how-much-is-it')) {
+        targetUrl = basePrefix + 'unit3-money-mission/index.html';
+        targetName = '🚀 Unit 3 Smartboard Revision Mission: How Much Is It?';
       } else if (pathname.includes('ocean-cleaners') || pathname.includes('ocean') || pathname.includes('skimmer') || pathname.includes('reef-rover')) {
         targetUrl = basePrefix + 'ocean-cleaners/index.html';
         targetName = '🌊 Eco-Engineers: Ocean Cleaners & Reef Rescue';

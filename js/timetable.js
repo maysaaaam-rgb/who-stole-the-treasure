@@ -4,6 +4,7 @@
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var CATALOG = [
+    { id: 'u3-money-mission', icon: '🚀', title: 'Unit 3 Smartboard Mission: How Much Is It? (Among Us + 2P Tug-of-War)', route: 'unit3-money-mission/index.html', g: 0, added: '2026-10-13' },
     { id: 'watch-bean-g3', icon: '🎬', title: 'Mr Bean: Super Trolley (watch and answer)', route: 'watch-answer/index.html', g: 3, added: '2026-10-07' },
     { id: 'weeksong-g4', icon: '🎵', title: 'Week Song: learn, move, sing', route: 'week-song-g4/index.html', g: 4, added: '2026-10-07' },
     { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 4, added: '2026-10-07' },
