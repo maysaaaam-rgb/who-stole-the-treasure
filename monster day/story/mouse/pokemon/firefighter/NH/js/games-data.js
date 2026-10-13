@@ -12059,6 +12059,120 @@ const GAMES_REGISTRY = [
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🚀",
     "gradient": "linear-gradient(135deg, #060911 0%, #0284c7 55%, #10b981 100%)"
+  },
+  {
+    "id": "unit3-arctic-homework",
+    "aliases": [
+      "arctic-rescue",
+      "unit3-homework",
+      "arctic-homework"
+    ],
+    "title": "🏔️ Unit 3 Homework: The Arctic Rescue (No-Fail Story Adventure)",
+    "description": "Branching, no-fail homework adventure for Unit 3. Students log in (3A/3B/4A/4B), choose to play as the Explorer or help the Polar Bear, then explore 3 open Arctic zones in any order with their own monster companion: Footprints & Buried Artifacts, the Frozen Lagoon, and the Obstacle Pass. Wrong choices lead to a gentle Snowy Dead End with a hint. Covers both 'The Bear and I' / 'Clean Cars' and 'The History of Money' / 'The $100 Bill' with real textbook artwork. XP and completion sync to the student profile.",
+    "type": "game",
+    "category": "Unit 3 Homework",
+    "categoryLabel": "🏔️ Unit 3 Homework",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 200,
+    "skills": [
+      "Reading Comprehension",
+      "Compare & Contrast",
+      "Vocabulary in Context",
+      "-ar / -ng Phonics",
+      "Problem & Solution"
+    ],
+    "topic": "The Bear and I, Clean Cars, The History of Money & The $100 Bill (Unit 3, pp. 40–55)",
+    "topics": [
+      "Man vs. Polar Bear traits",
+      "Changing Arctic ice & clean energy",
+      "History of Money timeline",
+      "Responsible money decisions"
+    ],
+    "languageFocus": "hole, twice, enemy, thin, trap, melting, gasoline, energy, electricity, expensive; bartered, valuable, credit card, belong to, return, pocket, money is tight.",
+    "activityMode": "Individual Homework (home device or smartboard)",
+    "interactionType": "Non-linear 3-zone hub map, branching choices, useful/useless sorting, story decisions",
+    "difficulty": "Grade 3–4 (A1–A2)",
+    "tags": [
+      "unit3",
+      "homework",
+      "arctic",
+      "bear-and-i",
+      "money",
+      "no-fail",
+      "story"
+    ],
+    "learningObjectives": [
+      "Compare and contrast the Man and the Polar Bear using text evidence",
+      "Use location and reading clues to solve problems in the story",
+      "Sort useful vs. useless items and choose responsible solutions",
+      "Review Unit 3 vocabulary, the History of Money timeline, and -ar / -ng spelling"
+    ],
+    "teacherInstructions": "Assign as homework. Students pick their class and name, choose a perspective, and solve the 3 zones in any order. Use the HUD book toggle to limit content to one book ('The Bear and I' or 'How Much Is It?'). Completion adds the 'Arctic Explorer' badge and XP to the student profile.",
+    "studentInstructions": "Choose your class and name, pick the Explorer or the Polar Bear, and explore all 3 zones to reach the Safe Place. You can't lose — if you hit a Snowy Dead End, turn back and try another trail!",
+    "route": "unit3-arctic-homework/index.html",
+    "url": "unit3-arctic-homework/index.html",
+    "worksheet": "unit3-arctic-homework/worksheet.html",
+    "worksheetUrl": "unit3-arctic-homework/worksheet.html",
+    "worksheetRoute": "unit3-arctic-homework/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "vocabulary": {
+      "core": [
+        "hole",
+        "twice",
+        "enemy",
+        "thin",
+        "trap",
+        "melting",
+        "bartered",
+        "valuable",
+        "belong to",
+        "return",
+        "pocket",
+        "money is tight"
+      ],
+      "supporting": [
+        "gasoline",
+        "energy",
+        "electricity",
+        "expensive",
+        "credit card",
+        "restaurant"
+      ],
+      "phonics": [
+        "-ar pattern: bartered, card, park, hard, started",
+        "-ng pattern: sing, long, reading, bang, spring"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past Simple & Compare/Contrast",
+      "formula": "The bear was twice my size. / Both the Man and the Bear eat fish.",
+      "formulas": [
+        "The bear was not my enemy.",
+        "Paige gave the money to her dad."
+      ]
+    },
+    "clilDomain": "Science (Climate & Habitats) + Financial Literacy",
+    "clilTheme": "Unit 3: It Keeps Changing / How Much Is It?",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🏔️",
+    "gradient": "linear-gradient(135deg, #060911 0%, #0ea5e9 50%, #a855f7 100%)"
   }
 ];
 
