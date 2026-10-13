@@ -10,8 +10,8 @@
   /* "Golden Adventurer" tag for a pupil who has had the 1,000 XP ceremony (kept in this browser only) */
   /* the pupil's own cartoon avatar or picture (kept only in this browser), shown as a small round "me" picture */
   function avatarOf(p) {
-    var M = root.MilestoneCeremony, u = M && (M.photos.get(p.id) || M.photos.get(p.name));
-    return u ? '<img class="cr-av' + (M.isAvatar(u) ? ' is-cartoon' : '') + '" src="' + esc(u) + '" alt="">' : '';
+    var M = root.MilestoneCeremony, u = (M && M.pictureOf ? M.pictureOf(p) : (M && (M.photos.get(p.id) || M.photos.get(p.name)))) || p.avatarUrl || '';
+    return u ? '<img class="cr-av' + (M && M.isAvatar(u) ? ' is-cartoon' : '') + '" src="' + esc(u) + '" alt="">' : '';
   }
   function goldTitle(p) {
     var M = root.MilestoneCeremony, t = M && (M.titleFor(p.id) || M.titleFor(p.name));
@@ -32,7 +32,7 @@
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {}, prof = st.getMonsterProfile ? st.getMonsterProfile(s.id) : null, img = '';
       try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
       var coins = 0; try { coins = CS && CS.balance ? CS.balance(s.id) : 0; } catch (e2) { coins = 0; }
-      return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, level: Number(m.currentLevel) || 1, img: img, coins: coins };
+      return { id: s.id, name: s.firstName || s.name || 'Student', firstName: s.firstName, lastName: s.lastName, avatarUrl: s.avatarUrl, extraData: s.extraData, xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, level: Number(m.currentLevel) || 1, img: img, coins: coins };
     }).sort(function (a, b) { return b.xp - a.xp; });
   }
 
@@ -45,7 +45,7 @@
       '.cr-hd small{display:block;font-size:1.05rem;font-weight:600;opacity:.7}' +
       '.cr-btn{font:inherit;font-weight:800;font-size:1.05rem;cursor:pointer;border:0;border-bottom:5px solid #475569;border-radius:16px;padding:10px 18px;background:#fff;color:#0f2a4a;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}.cr-btn:active{transform:translateY(4px);border-bottom-width:1px}' +
       '.cr-podium{display:flex;align-items:flex-end;justify-content:center;gap:2vw;margin:2.4vh 0 1vh;min-height:30vh}' +
-      '.cr-pod{display:flex;flex-direction:column;align-items:center;width:clamp(120px,19vw,210px);padding:1vh 1vw;border-radius:26px 26px 12px 12px;border-bottom:6px solid rgba(0,0,0,.28);background:linear-gradient(180deg,#fff,var(--c));box-shadow:0 10px 22px -10px rgba(15,42,74,.5)}' +
+      '.cr-pod{position:relative;display:flex;flex-direction:column;align-items:center;width:clamp(120px,19vw,210px);padding:1vh 1vw;border-radius:26px 26px 12px 12px;border-bottom:6px solid rgba(0,0,0,.28);background:linear-gradient(180deg,#fff,var(--c));box-shadow:0 10px 22px -10px rgba(15,42,74,.5)}' +
       '.cr-pod .mon{height:13vh;width:auto;object-fit:contain;filter:drop-shadow(0 .8vh .8vh rgba(0,0,0,.3));animation:crBob 3s ease-in-out infinite}.cr-pod .med{height:6.5vh;margin-top:-1vh}.cr-pod b{font-size:1.25rem;font-weight:700}.cr-pod .xp{display:flex;align-items:center;gap:6px;font-weight:700;font-size:1.1rem}.cr-pod .xp img{height:1.5em}' +
       '.cr-pod.p1{--c:#fde68a;min-height:31vh}.cr-pod.p2{--c:#e2e8f0;min-height:26vh}.cr-pod.p3{--c:#fed7aa;min-height:23vh}' +
       '.cr-legend{display:flex;gap:2vw;justify-content:center;flex-wrap:wrap;margin:1vh 0 2vh;background:rgba(255,255,255,.75);border-radius:22px;padding:1vh 2vw}.cr-legend span{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem}.cr-legend img{height:5vh}' +
@@ -76,7 +76,7 @@
     var rank = function (p) { return top.indexOf(p); };
     var pod = order.map(function (p) {
       var r = rank(p), medal = r === 0 ? 'r_trophy' : 'r_medal', place = ['1st', '2nd', '3rd'][r];
-      return '<div class="cr-pod ' + cls3[r] + '">' + (r === 0 ? '<img class="crown" src="' + ART + 'r_badge_crown.webp" alt="">' : '') + '<i class="place">' + place + '</i>' + monsterImg(p, 'mon') + '<img class="med" src="' + ART + medal + '.webp" alt=""><b>' + esc(p.name) + '</b><span class="xp"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span></div>';
+      return '<div class="cr-pod ' + cls3[r] + '">' + (r === 0 ? '<img class="crown" src="' + ART + 'r_badge_crown.webp" alt="">' : '') + avatarOf(p) + '<i class="place">' + place + '</i>' + monsterImg(p, 'mon') + '<img class="med" src="' + ART + medal + '.webp" alt=""><b>' + esc(p.name) + '</b><span class="xp"><img src="' + ART + 'r_xp_gem.webp" alt="">' + fmt(p.xp) + '</span></div>';
     }).join('');
     var fundHtml = fund && fund.goal ? '<div class="cr-fund"><img src="' + ART + 'r_chest.webp" alt=""><div style="flex:1"><b style="font-size:1.4rem">' + esc(fund.name || 'Class party') + '</b><div class="bar"><i style="width:' + Math.min(100, Math.round((fund.raised || 0) / fund.goal * 100)) + '%"></i></div></div><b style="font-size:1.6rem">' + fmt(fund.raised) + ' / ' + fmt(fund.goal) + ' 🪙</b></div>' : '';
     container.innerHTML = '<div class="cr">' +

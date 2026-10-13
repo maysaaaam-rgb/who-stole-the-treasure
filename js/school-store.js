@@ -16527,7 +16527,12 @@
               folded = true;
             }
 
+            const mergedAvatarUrl = remoteStudent.avatarUrl || local.avatarUrl || (remoteStudent.extraData && remoteStudent.extraData.avatarUrl) || (local.extraData && local.extraData.avatarUrl) || null;
+            const mergedAvatarPoses = remoteStudent.avatarPoses || local.avatarPoses || (remoteStudent.extraData && remoteStudent.extraData.avatarPoses) || (local.extraData && local.extraData.avatarPoses) || null;
+
             const mergedStudent = Object.assign({}, local, remoteStudent, {
+              avatarUrl: mergedAvatarUrl,
+              avatarPoses: mergedAvatarPoses,
               xp: mergedXP,
               totalXP: mergedXP,
               archivedXP: 0,

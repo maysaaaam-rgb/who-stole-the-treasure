@@ -293,11 +293,37 @@
   install();
   if (document.readyState !== 'complete') root.addEventListener('load', install);
 
-  /* ---------- the pupil's own picture on profile pages ---------- */
+  /* ---------- the pupil's own picture on profile pages (synced online via Supabase) ---------- */
+  function resolvePath(u) {
+    if (!u || typeof u !== 'string') return '';
+    if (u.indexOf('data:') === 0 || u.indexOf('http') === 0 || u.indexOf('../') === 0 || u.indexOf('/') === 0) return u;
+    var p = (root.location && String(root.location.pathname || '')) || '';
+    var inSub = /\/(milestone-1000|unit3-money-mission|unit3-g3-lessons|home-view|karaoke-stage|bamboozle|dino-dig|monster-lab|young-inventor|adventure-engine)\//i.test(p);
+    return (inSub ? '../' : '') + u;
+  }
+  function syncAvatarToCloud(studentId, avatarUrl) {
+    try {
+      var st = root.schoolStore || root.store;
+      var s = st && st.getStudent ? st.getStudent(studentId) : null;
+      if (s && avatarUrl) {
+        s.avatarUrl = avatarUrl;
+        if (!s.extraData || typeof s.extraData !== 'object') s.extraData = {};
+        s.extraData.avatarUrl = avatarUrl;
+        if (typeof st.saveState === 'function') st.saveState();
+        if (root.AdventureSupabase && root.AdventureSupabase.isConfigured && typeof root.AdventureSupabase.saveStudent === 'function') {
+          root.AdventureSupabase.saveStudent(s).catch(function () {});
+        }
+      }
+    } catch (e) { /* offline fallback */ }
+  }
   function pictureOf(student) {
     if (!student) return '';
     var full = ((student.firstName || student.name || '') + ' ' + (student.lastName || '')).trim();
-    return photos.get(student.id) || photos.get(student.firstName || student.name) || photos.get(full) || student.avatarUrl || '';
+    var localCustom = get(PHOTO_KEY + slug(student.id)) || get(PHOTO_KEY + slug(student.firstName || student.name)) || get(PHOTO_KEY + slug(full));
+    if (localCustom) return localCustom;
+    var cloudUrl = student.avatarUrl || (student.extraData && student.extraData.avatarUrl) || '';
+    if (cloudUrl) return resolvePath(cloudUrl);
+    return photos.get(student.id) || photos.get(student.firstName || student.name) || photos.get(full) || '';
   }
   function avatarHtml(student, size) {
     var u = pictureOf(student), n = size || 54, id = esc(student && student.id);
@@ -307,20 +333,28 @@
       var tip = hasPoses ? 'Click to switch pose (Smiling / Laughing / Thumbs Up) · Shift+Click to upload picture' : 'Change picture';
       return '<img src="' + esc(u) + '" alt="" title="' + tip + '" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;, event)" style="' + st + 'object-fit:' + (cart ? 'contain' : 'cover') + ';border:3px solid #f59e0b;background:' + (cart ? '#fff7d6' : '#fff') + ';cursor:pointer;">';
     }
-    return '<button type="button" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;, event)" title="Add a cartoon picture (kept only in this browser)" style="' + st + 'border:2px dashed #94a3b8;background:transparent;cursor:pointer;font-size:' + Math.round(n / 2.4) + 'px;padding:0;">&#128247;</button>';
+    return '<button type="button" onclick="MilestoneCeremony.setAvatar(&quot;' + id + '&quot;, event)" title="Add a cartoon picture (synced to cloud)" style="' + st + 'border:2px dashed #94a3b8;background:transparent;cursor:pointer;font-size:' + Math.round(n / 2.4) + 'px;padding:0;">&#128247;</button>';
   }
   function setAvatar(studentId, ev) {
     var bk = builtinKeyOf(studentId);
     if (bk && !(ev && ev.shiftKey) && !get(PHOTO_KEY + slug(studentId))) {
       var list = BUILTIN_SETS[bk] || [];
-      var cur = parseInt(get(POSE_KEY + bk) || '0', 10) || 0;
-      set(POSE_KEY + bk, String((cur + 1) % (list.length || 3)));
+      var st = root.schoolStore || root.store;
+      var s = st && st.getStudent ? st.getStudent(studentId) : null;
+      var curUrl = (s && (s.avatarUrl || (s.extraData && s.extraData.avatarUrl))) || '';
+      var curIdx = list.indexOf(curUrl);
+      if (curIdx < 0) curIdx = parseInt(get(POSE_KEY + bk) || '0', 10) || 0;
+      var nextIdx = (curIdx + 1) % (list.length || 3);
+      set(POSE_KEY + bk, String(nextIdx));
+      var nextRelUrl = list[nextIdx] || list[0] || '';
+      if (nextRelUrl) syncAvatarToCloud(studentId, nextRelUrl);
       if (typeof root.updateHeaderBadges === 'function') { try { root.updateHeaderBadges(); } catch (e) { /* header refresh is optional */ } }
       if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
       return;
     }
     photos.pick(studentId, function (data, ok) {
       if (ok === false) { alert('This browser could not save the picture (storage is blocked or full).'); return; }
+      if (data) syncAvatarToCloud(studentId, data);
       if (typeof root.updateHeaderBadges === 'function') { try { root.updateHeaderBadges(); } catch (e) { /* header refresh is optional */ } }
       if (typeof root.openStudentDetail === 'function') root.openStudentDetail(studentId);
     });
