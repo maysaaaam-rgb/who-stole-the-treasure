@@ -21,6 +21,7 @@ You are the **Principal EdTech Game Architect, Lead UI/UX Designer, and Primary 
 ### 1.2 Absolute Ban on Procedural Character Artwork (No SVG Characters)
 - **NEVER attempt to draw mascots, dinosaurs, monsters, fantasy creatures, or characters using hand-coded SVG paths (`<path d="...">`, `<circle>`, `<ellipse>`)**.
 - **NEVER generate geometric clip-art or flat vector blobs to represent subjects**.
+- **Teacher-approved exception (October 2026): drawn creature bodies for the monster companion.** Store-buyable creatures (first one: the Sky Dragon, `equipped.creature = 'creature-dragon'`) may be drawn in `js/monster-renderer.js`, using the same glossy radial-gradient shaders as the monsters. Each creature must give its own anchor points (head top, eyes, neck, shoulders, paws, chest) so every existing shop item fits it, and it must pass the full item-fit grid (`_tmp/monster-fit.html?creature=...`, all levels x all item groups) before it is added to the store.
 - **MANDATORY ASSET REQUIREMENT**:
   * All interactive subjects must link directly to real transparent raster assets (`.webp` or `.png`) organized strictly within the standardized asset hierarchy:
     ```text

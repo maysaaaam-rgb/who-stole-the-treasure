@@ -1294,8 +1294,11 @@
     if (illustrated) return illustrated;
     const hasEquipped = Object.values(equipped).some(v => v && v !== 'none' && v !== 'default');
     const isCustomFur = baseColor && baseColor !== 'blue';
+    // Look-only bonus: a Growing Monster with 750+ XP (js/evolution-levels.js) glows a little because it is close to Level 5
+    const lifeXP = (Number(student && student.xp) || 0) + (Number(student && (student.archivedXP != null ? student.archivedXP : student.archived_xp)) || 0);
+    const nearEvolve = !!(mState && mState.stageKey === 'growing' && lifeXP >= (window.EAA_NEAR_EVOLVE_XP || 750));
 
-    if ((hasEquipped || isCustomFur) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+    if ((hasEquipped || isCustomFur || nearEvolve) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
       const stageKey = (mState && mState.stageKey && mState.stageKey !== 'egg' && mState.stageKey !== 'cracking_egg') ? mState.stageKey : 'baby';
       try {
         const svgMarkup = window.MonsterRenderer.renderMonsterSVG({
@@ -1304,7 +1307,8 @@
           equipped: equipped,
           size: 240,
           animated: true,
-          isAvatar: true
+          isAvatar: true,
+          nearEvolve: nearEvolve
         });
         if (svgMarkup) {
           const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
@@ -13530,6 +13534,7 @@ window.switchClassroomSubTab = function(subTab) {
 
   const MONSTER_CREATOR_TABS = [
     { id: 'colors', label: 'Colors', icon: '🎨', title: 'Fur Colors & Palette' },
+    { id: 'creatures', label: 'Creature', icon: '🐉', title: 'Creature Body' },
     { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
     { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
     { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings & Gliders' },
@@ -13672,6 +13677,9 @@ window.switchClassroomSubTab = function(subTab) {
       items = allItems.filter(i => i.category === 'eyes');
     } else if (sub === 'mouths') {
       items = allItems.filter(i => i.category === 'mouth');
+    } else if (sub === 'creatures') {
+      noneOptions.push({ id: 'creature-none', category: 'creature', name: 'Bunny Monster', isNone: true });   // switching back is always free
+      items = allItems.filter(i => i.category === 'creature');
     } else if (sub === 'horns') {
       noneOptions.push({ id: 'horns-none', category: 'horns', name: 'No Horns', isNone: true });
       items = allItems.filter(i => i.category === 'horns');

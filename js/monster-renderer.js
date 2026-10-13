@@ -376,6 +376,10 @@
           @keyframes monBreathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.02); } }
           .eaa-monster-animated .mon-twinkle { transform-box: fill-box; transform-origin: center; animation: monTwinkle 2.6s ease-in-out infinite; }
           @keyframes monTwinkle { 0%, 100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.15); } }
+          .eaa-monster-animated .mon-near-glow { transform-box: fill-box; transform-origin: center; animation: monNearGlow 2.8s ease-in-out infinite; }
+          @keyframes monNearGlow { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 0.95; transform: scale(1.04); } }
+          .eaa-monster-animated .mon-near-spark { transform-box: fill-box; transform-origin: center; animation: monNearSpark 3.2s ease-in infinite; }
+          @keyframes monNearSpark { 0% { opacity: 0; transform: translateY(6px) scale(0.6); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px) scale(1.1); } }
         </style>
         <!-- Rim light on the body (cool top-left, warm bounce bottom-right) -->
         <linearGradient id="mon-rim-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -453,7 +457,8 @@
    * 5. layer-face (eyes, blush, snout dome, button nose, mouth)
    * 6. layer-fore-accessories (front horns, front ear, hats, eyewear, handheld gear)
    */
-  function renderMonsterViewport(options = {}) {
+  function renderMonsterViewport(options = {}) { return withCreature(options, renderMonsterViewportBase); }
+  function renderMonsterViewportBase(options = {}) {
     const stage = normalizeStageKey(options.stage);
     let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
@@ -493,7 +498,8 @@
         const g = getStageGeometry(stage);
         rearUnderBody = renderUnderBodyAccessories(stage, palette, colorKey, equipped, 100, g);
       }
-      rearAccessoriesMarkup = `${auraLayer}${wingsLayer}${tailLayer}${backpackLayer}${rearUnderBody}`.trim();
+      const nearGlow = options.nearEvolve ? renderNearEvolveGlow(stage) : '';
+      rearAccessoriesMarkup = `${nearGlow}${auraLayer}${wingsLayer}${tailLayer}${backpackLayer}${rearUnderBody}`.trim();
     } catch (e) {
       rearAccessoriesMarkup = '';
     }
@@ -511,11 +517,9 @@
         const cY = (g.topY + g.botY) / 2;
         const rx = g.bW;
         const ry = (g.botY - g.topY) / 2;
-        const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
-        const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
+        const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
         const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
-        const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
-        baseBodyMarkup = `${crest.back}${feetMarkup}${torsoMarkup}${crest.front}${clothingMarkup}`.trim();
+        baseBodyMarkup = `${parts.back}${parts.feet}${parts.torso}${parts.front}${clothingMarkup}`.trim();
       }
     } catch (e) {
       baseBodyMarkup = '';
@@ -573,10 +577,30 @@
     `.trim();
   }
 
+  /* A look-only bonus: a Growing Monster close to Level 5 (750+ XP, see js/evolution-levels.js) gets a soft golden glow and rising sparkles.
+     It changes no level, ceremony or certificate, and it is drawn on its own layer, so it never replaces an aura the pupil wears. */
+  function renderNearEvolveGlow(stage) {
+    if (stage !== 'growing') return '';
+    const g = getStageGeometry(stage), cy = (g.topY + g.botY) / 2 + 4;
+    const spark = (x, y, d, r) => `<g class="mon-near-spark" style="animation-delay:${d}s"><polygon points="${x},${y - r} ${x + r * 0.3},${y - r * 0.3} ${x + r},${y} ${x + r * 0.3},${y + r * 0.3} ${x},${y + r} ${x - r * 0.3},${y + r * 0.3} ${x - r},${y} ${x - r * 0.3},${y - r * 0.3}" fill="#fde047" /></g>`;
+    return `
+      <g class="monster-near-evolve" pointer-events="none">
+        <radialGradient id="mon-near-glow-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fef3c7" stop-opacity="0.95" />
+          <stop offset="50%" stop-color="#fcd34d" stop-opacity="0.55" />
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+        </radialGradient>
+        <ellipse class="mon-near-glow" cx="100" cy="${cy}" rx="${g.bW + 30}" ry="${(g.botY - g.topY) / 2 + 28}" fill="url(#mon-near-glow-grad)" />
+        <ellipse class="mon-near-glow" cx="100" cy="${g.botY + 9}" rx="${g.bW + 12}" ry="8" fill="none" stroke="#fde047" stroke-width="2.4" opacity="0.9" />
+        ${spark(100 - g.bW - 8, g.botY - 30, 0, 4.2)}${spark(100 + g.bW + 6, g.botY - 44, 1.1, 3.8)}${spark(100 - g.bW + 2, g.topY + 18, 2.0, 3.4)}${spark(100 + g.bW - 2, g.topY + 6, 0.6, 3.6)}
+      </g>`;
+  }
+
   /**
    * Monolithic SVG Single-element Renderer (rawSvg fallback)
    */
-  function renderMonsterSingleSVG(options = {}) {
+  function renderMonsterSingleSVG(options = {}) { return withCreature(options, renderMonsterSingleSVGBase); }
+  function renderMonsterSingleSVGBase(options = {}) {
     const stage = normalizeStageKey(options.stage);
     let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
@@ -640,8 +664,10 @@
       }
     }
 
+    const nearGlow = options.nearEvolve ? renderNearEvolveGlow(stage) : '';
     const bobGroup = `
       <g class="monster-bob-group">
+        ${nearGlow}
         ${auraLayer}
         ${wingsLayer}
         ${tailLayer}
@@ -760,7 +786,8 @@
    * #layer-headwear (z-60)
    * #layer-held (z-70)
    */
-  function renderMonsterLiveStage(options = {}) {
+  function renderMonsterLiveStage(options = {}) { return withCreature(options, renderMonsterLiveStageBase); }
+  function renderMonsterLiveStageBase(options = {}) {
     const stage = normalizeStageKey(options.stage);
     let colorKey = String(options.color || (options.equipped && options.equipped.body) || 'blue').toLowerCase().trim().replace(/^body-/, '');
     if (!MONSTER_PALETTES[colorKey]) colorKey = 'blue';
@@ -819,9 +846,8 @@
       let torsoMarkup = '';
       let overBodyMarkup = '';
       try { underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g); } catch (e) {}
-      try { feetMarkup = renderGroundedFeet(palette, colorKey, cX, g); } catch (e) {}
-      try { torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped); } catch (e) {}
-      const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
+      let crest = { back: '', front: '' };
+      try { const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped); feetMarkup = parts.feet; torsoMarkup = parts.torso; crest = { back: parts.back, front: parts.front }; } catch (e) {}
       // Pass false to omit horns from body layer so they render in layer-horns (z-60)
       try { overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g, false); } catch (e) {}
 
@@ -888,7 +914,9 @@
           fg += renderForegroundAccessories(stage, { hat: hatId }, palette) || '';
         }
         if (equipped.accessory && equipped.accessory !== 'none') {
-          fg += renderForegroundAccessories(stage, { accessory: equipped.accessory }, palette) || '';
+          fg += renderForegroundAccessories(stage, { accessory: equipped.accessory, backpack: equipped.backpack }, palette) || '';
+        } else if (isSatchelId(equipped.backpack)) {
+          fg += renderSatchelFront(stage, equipped.backpack);
         }
         if (fg) headwearSvg = `<svg viewBox="10 10 180 180" width="100%" height="100%">${defs}${fg}</svg>`;
       } catch (e) {}
@@ -1295,7 +1323,7 @@
 
         <!-- Pearly sheen + the creature's own motif -->
         <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z" fill="url(#mon-pearl-${colorKey})" />
-        ${speciesMotif(colorKey, 100, 112, 3.4, '#ffffff', 0.6)}
+        ${CUR_CREATURE === 'dragon' ? renderDragonEggScales(palette, colorKey) : speciesMotif(colorKey, 100, 112, 3.4, '#ffffff', 0.6)}
         <!-- 11 O'Clock Glossy Specular Sheen Arc -->
         <path d="M 74 54 C 66 68 64 88 66 110" stroke="#ffffff" stroke-width="4.2" stroke-linecap="round" fill="none" opacity="0.85" />
         <circle cx="80" cy="50" r="2.5" fill="#ffffff" opacity="0.9" />
@@ -1313,6 +1341,7 @@
               fill="url(#plush-egg-${colorKey})" stroke="${palette.shadowDark || palette.shadow}" stroke-width="3.2" stroke-linejoin="round" />
 
         <path d="M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z" fill="url(#mon-pearl-${colorKey})" />
+        ${CUR_CREATURE === 'dragon' ? renderDragonEggScales(palette, colorKey) : ''}
         <!-- Glowing Fissure Seams -->
         <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#fef08a" stroke-width="2.8" filter="url(#plush-glow)" />
         <path d="M 100 42 L 95 62 L 105 76 L 96 95 L 105 106" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" />
@@ -1352,6 +1381,7 @@
           <circle cx="106.5" cy="110.8" r="3.6" fill="#ffffff" />
           <circle cx="111.5" cy="117.2" r="1.8" fill="#ffffff" opacity="0.95" />
         </g>
+        ${CUR_CREATURE === 'dragon' ? renderDragonEggPeek(palette, colorKey) : ''}
       </g>
     `;
   }
@@ -1362,6 +1392,14 @@
 
   // --- WINGS LAYER ---
   function renderWingsLayer(stage, wingsId, palette) {
+    if (CUR_CREATURE === 'dragon' && stage !== 'egg' && stage !== 'cracking_egg') {
+      if (isOwnPart(wingsId, 'wings')) return renderDragonWings(stage, palette);
+      const shop = renderWingsLayerBase(stage, wingsId, palette), dy = getStageGeometry(stage).shoulderY - 108;   // shop wings were drawn for shoulders at y 108
+      return shop ? `<g transform="translate(0 ${dy})">${shop}</g>` : '';
+    }
+    return renderWingsLayerBase(stage, wingsId, palette);
+  }
+  function renderWingsLayerBase(stage, wingsId, palette) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effectiveWings = wingsId;
@@ -1452,6 +1490,10 @@
 
   // --- TAIL LAYER ---
   function renderTailLayer(stage, tailId, palette) {
+    if (CUR_CREATURE === 'dragon' && stage !== 'egg' && stage !== 'cracking_egg' && isOwnPart(tailId, 'tail')) return renderDragonTail(stage, palette);
+    return renderTailLayerBase(stage, tailId, palette);
+  }
+  function renderTailLayerBase(stage, tailId, palette) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effectiveTail = tailId;
@@ -1533,7 +1575,41 @@
   }
 
   // --- BACKPACK LAYER ---
+  function isSatchelId(id) { return ['bp-adv-bag', 'backpack-adv-bag', 'backpack-satchel', 'satchel', 'bp-satchel', 'satchel-explorer'].indexOf(id) !== -1; }
+  // The bags were drawn at one fixed spot, so on the bigger stages they hid completely behind the body.
+  // Now they are moved to peek out from behind the left shoulder of every stage; the satchel is worn in front (renderSatchelFront).
   function renderBackpackLayer(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg') return '';
+    if (isSatchelId(backpackId)) return '';
+    const inner = renderBackpackLayerRaw(stage, backpackId);
+    if (!inner || String(backpackId || '').indexOf('cs-') === 0) return inner;
+    const g = getStageGeometry(stage), edge = 100 - g.cW * 1.08;          // left edge of the body at the shoulders
+    const dx = Math.round((edge + 7 - 68) * 10) / 10, dy = Math.round((g.cheekY - 2 - 106) * 10) / 10;
+    return `<g transform="translate(${dx} ${dy})">${inner}</g>`;
+  }
+  function renderBackpackFrontStraps(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg' || !backpackId || backpackId === 'none' || isSatchelId(backpackId) || String(backpackId).indexOf('cs-') === 0 || backpackId === 'bp-mini-wings') return '';
+    if (['bp-explorer', 'backpack-explorer', 'bp-book', 'backpack-book'].indexOf(backpackId) === -1) return '';
+    const g = getStageGeometry(stage), col = backpackId.indexOf('book') !== -1 ? '#1d4ed8' : '#78350f', y0 = g.cheekY + 4, y1 = g.pawY - 8;
+    return `<g class="monster-backpack-straps" opacity="0.95">
+      <path d="M ${100 - g.cW * 0.86} ${y0} Q ${100 - g.cW * 0.72} ${(y0 + y1) / 2} ${100 - g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
+      <path d="M ${100 + g.cW * 0.86} ${y0} Q ${100 + g.cW * 0.72} ${(y0 + y1) / 2} ${100 + g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>`;
+  }
+  function renderSatchelFront(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg' || !isSatchelId(backpackId)) return '';
+    const g = getStageGeometry(stage), sx = 100 + g.bW * 0.48, sy = g.botY - 24, s0 = `M ${100 - g.cW * 0.95} ${g.shoulderY != null ? g.shoulderY - 2 : g.eyeY + 13} Q ${100 - 4} ${g.eyeY + 27} ${sx + 9} ${sy + 1}`;
+    return `
+      <g class="monster-backpack-layer" filter="url(#mf-shadow)">
+        <path d="${s0}" stroke="#78350f" stroke-width="4.5" fill="none" stroke-linecap="round" />
+        <path d="${s0}" stroke="#b45309" stroke-width="2.4" fill="none" stroke-linecap="round" />
+        <rect x="${sx}" y="${sy}" width="21" height="24" rx="5" fill="#92400e" stroke="#5c2606" stroke-width="2" />
+        <path d="M ${sx} ${sy} L ${sx + 21} ${sy} L ${sx + 19.5} ${sy + 10} L ${sx + 1.5} ${sy + 10} Z" fill="#b45309" stroke="#5c2606" stroke-width="1.6" />
+        <rect x="${sx + 8}" y="${sy + 7.5}" width="5.5" height="6" rx="1.5" fill="#facc15" stroke="#a16207" stroke-width="1.1" />
+      </g>`;
+  }
+
+  function renderBackpackLayerRaw(stage, backpackId) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effBackpack = backpackId;
@@ -1688,6 +1764,7 @@
   }
 
   function getStageGeometry(stage) {
+    if (CUR_CREATURE === 'dragon') return dragonGeometry(stage);
     if (stage === 'baby') {
       return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
     } else if (stage === 'growing') {
@@ -1700,6 +1777,309 @@
       return { topY: 44, botY: 150, cW: 44, bW: 48, cheekY: 88, eyeY: 106, eyeSpacing: 18, earScale: 1.22, pawY: 128, footSpacing: 24 };
     }
     return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
+  }
+
+
+  // --- STORE CREATURES: THE SKY DRAGON ---
+  // equipped.creature = 'creature-dragon' (bought with coins in the store) turns the monster into a Sky Dragon: its own head on a neck,
+  // a snout with tiny fangs, curved horns, head fins, ridged chest plates, clawed feet, wings and a spiked tail that grow with each level.
+  // Its head, neck, shoulders and paws sit at their own anchor points (DRAGON_GEO), and every shop item reads its place from these
+  // anchors (topY, eyeY, neckY, shoulderY, pawY, clothTop), so the old items fit the new body. Shop wings / tail / horns replace its own.
+  let CUR_CREATURE = '';
+  function creatureOf(equipped) {
+    const c = String((equipped && equipped.creature) || '').toLowerCase().replace(/^creature-/, '');
+    return c === 'dragon' ? 'dragon' : '';
+  }
+  function withCreature(options, fn) {
+    const prev = CUR_CREATURE;
+    CUR_CREATURE = creatureOf(options && options.equipped);
+    if (CUR_CREATURE === 'dragon') {
+      // Every pupil starts with free bunny ears and a puff tail: on the dragon these starter parts become its own horns and spiked tail.
+      const eq = Object.assign({}, options.equipped);
+      if (['horns-ears', 'signature-ears', 'ears', 'default'].indexOf(eq.horns) !== -1) eq.horns = 'none';
+      if (['tail-puff', 'default'].indexOf(eq.tail) !== -1) eq.tail = 'none';
+      options = Object.assign({}, options, { equipped: eq });
+    }
+    try { return fn(options); } finally { CUR_CREATURE = prev; }
+  }
+  function paletteKey(palette) {
+    for (const k in MONSTER_PALETTES) if (MONSTER_PALETTES[k] === palette) return k;
+    return 'blue';
+  }
+  // hs = horn size, wing = wing size, tail = tail length, spikes = spikes on the tail, glow = glowing wings (Levels 6 and 7)
+  const DRAGON_GEO = {
+    baby:       { headCY: 100, headRX: 33, headRY: 27, bodyTop: 122, cW: 27, bW: 36, pawY: 139, footSpacing: 18, eyeSpacing: 14.5, earScale: 0.9,  hs: 0.55, wing: 0.5,  tail: 24, spikes: 2, glow: 0 },
+    growing:    { headCY: 93,  headRX: 34, headRY: 27, bodyTop: 119, cW: 29, bW: 39, pawY: 135, footSpacing: 20, eyeSpacing: 15.5, earScale: 1.0,  hs: 0.72, wing: 0.64, tail: 32, spikes: 3, glow: 0 },
+    adventurer: { headCY: 86,  headRX: 34, headRY: 26, bodyTop: 116, cW: 31, bW: 42, pawY: 132, footSpacing: 21, eyeSpacing: 16,   earScale: 1.08, hs: 0.88, wing: 0.8,  tail: 40, spikes: 3, glow: 0 },
+    advanced:   { headCY: 79,  headRX: 35, headRY: 26, bodyTop: 113, cW: 32, bW: 44, pawY: 130, footSpacing: 22, eyeSpacing: 16.5, earScale: 1.15, hs: 1.0,  wing: 0.98, tail: 48, spikes: 4, glow: 1 },
+    ultimate:   { headCY: 72,  headRX: 36, headRY: 26, bodyTop: 109, cW: 33, bW: 46, pawY: 127, footSpacing: 23, eyeSpacing: 17,   earScale: 1.22, hs: 1.12, wing: 1.1,  tail: 56, spikes: 5, glow: 2 }
+  };
+  function dragonGeometry(stage) {
+    const d = DRAGON_GEO[stage] || DRAGON_GEO.baby;
+    const shoulderY = d.bodyTop + 7, chinY = d.headCY + d.headRY;
+    return Object.assign({}, d, {
+      creature: 'dragon', topY: d.headCY - d.headRY, botY: 150, eyeY: d.headCY + 1,
+      cheekY: shoulderY - 6, shoulderY: shoulderY, neckY: chinY - 1, clothTop: Math.max(chinY - 2, d.bodyTop) + 3
+    });
+  }
+  function dragonHeadPath(g, cX) {
+    const R = g.headRX, H = g.headRY, y = g.headCY;
+    return `M ${cX} ${y - H}
+      C ${cX + R * 0.62} ${y - H} ${cX + R} ${y - H * 0.55} ${cX + R} ${y - H * 0.02}
+      C ${cX + R * 1.03} ${y + H * 0.48} ${cX + R * 0.68} ${y + H} ${cX} ${y + H}
+      C ${cX - R * 0.68} ${y + H} ${cX - R * 1.03} ${y + H * 0.48} ${cX - R} ${y - H * 0.02}
+      C ${cX - R} ${y - H * 0.55} ${cX - R * 0.62} ${y - H} ${cX} ${y - H} Z`;
+  }
+  // Neck + body (no head): also the outline that clothes are clipped to
+  function dragonBodyPath(g, cX) {
+    const nW = g.headRX * 0.36, nTop = g.headCY + g.headRY * 0.3, sY = g.shoulderY, b = g.botY;
+    return `M ${cX - nW} ${nTop}
+      C ${cX - nW} ${g.bodyTop - 1} ${cX - g.cW * 0.9} ${g.bodyTop + 1} ${cX - g.cW} ${sY}
+      C ${cX - g.cW * 1.12} ${sY + 12} ${cX - g.bW * 1.04} ${b - 20} ${cX - g.bW * 0.9} ${b - 8}
+      C ${cX - g.bW * 0.74} ${b + 3} ${cX - 20} ${b + 2} ${cX} ${b + 2}
+      C ${cX + 20} ${b + 2} ${cX + g.bW * 0.74} ${b + 3} ${cX + g.bW * 0.9} ${b - 8}
+      C ${cX + g.bW * 1.04} ${b - 20} ${cX + g.cW * 1.12} ${sY + 12} ${cX + g.cW} ${sY}
+      C ${cX + g.cW * 0.9} ${g.bodyTop + 1} ${cX + nW} ${g.bodyTop - 1} ${cX + nW} ${nTop} Z`;
+  }
+  const DRAGON_HORN_DEFS = `
+    <linearGradient id="drg-horn" x1="0" y1="1" x2="0.4" y2="0">
+      <stop offset="0%" stop-color="#b98a3e" /><stop offset="45%" stop-color="#f5deb0" /><stop offset="100%" stop-color="#fffbeb" />
+    </linearGradient>`;
+  function dragonClaws(x, y, dir, s) {
+    // three little cream claws pointing down (dir = 1) at x, y
+    s = s || 1;
+    let out = '';
+    for (const k of [-1, 0, 1]) {
+      const cx = x + k * 3.6 * s;
+      out += `<path d="M ${cx - 1.6 * s} ${y} L ${cx + 1.6 * s} ${y} L ${cx + 0.2 * s} ${y + dir * 4.2 * s} Z" fill="#fffbeb" stroke="#a8875a" stroke-width="0.9" stroke-linejoin="round" />`;
+    }
+    return out;
+  }
+  // Head fins (behind the head, at its sides)
+  function renderDragonFins(palette, colorKey, cX, g) {
+    const R = g.headRX, H = g.headRY, y = g.headCY, s = g.earScale;
+    const fin = (k) => `<path d="M ${cX + k * R * 0.9} ${y - H * 0.42}
+        L ${cX + k * (R + 13 * s)} ${y - H * 0.72} Q ${cX + k * (R + 6 * s)} ${y - H * 0.38} ${cX + k * (R + 4)} ${y - H * 0.24}
+        L ${cX + k * (R + 12 * s)} ${y - H * 0.08} Q ${cX + k * (R + 5 * s)} ${y + H * 0.1} ${cX + k * (R + 2)} ${y + H * 0.2}
+        L ${cX + k * (R + 8 * s)} ${y + H * 0.42} Q ${cX + k * R} ${y + H * 0.42} ${cX + k * R * 0.92} ${y + H * 0.3} Z"
+        fill="url(#mon-fin-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" />`;
+    return `<g class="drg-fins" filter="url(#plush-shadow)">${fin(-1)}${fin(1)}</g>`;
+  }
+  // Its own horns (only when no shop horns or ears are worn)
+  function renderDragonHorns(palette, cX, g) {
+    const R = g.headRX, top = g.topY, s = g.hs;
+    const horn = (k) => {
+      const bx1 = cX + k * R * 0.36, bx2 = cX + k * R * 0.66, by = top + 7;
+      const tx = cX + k * (R * 0.72 + 15 * s), ty = top - 24 * s;
+      return `<path d="M ${bx1} ${by} C ${bx1 + k * 1} ${top - 8 * s} ${tx - k * 12 * s} ${ty - 2 * s} ${tx} ${ty}
+          C ${tx - k * 4 * s} ${ty + 10 * s} ${bx2 + k * 2} ${top - 2 * s} ${bx2} ${by + 3} Z"
+          fill="url(#drg-horn)" stroke="#8a6a35" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M ${bx1 + k * 4} ${top + 1} Q ${(bx1 + bx2) / 2 + k * 2} ${top - 2} ${bx2 - k * 1} ${top + 3}" fill="none" stroke="#a8875a" stroke-width="1.1" opacity="0.8" />
+        <path d="M ${bx1 + k * 5 * s + k * 2} ${top - 6 * s} Q ${bx1 + k * 9 * s + k * 3} ${top - 9 * s} ${bx2 + k * 2 * s} ${top - 5 * s}" fill="none" stroke="#a8875a" stroke-width="1" opacity="0.7" />
+        <path d="M ${bx1 + k * 2} ${by - 3} C ${bx1 + k * 3} ${top - 6 * s} ${tx - k * 12 * s} ${ty + 2 * s} ${tx - k * 2 * s} ${ty + 2.5 * s}" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.7" />`;
+    };
+    return `<g class="drg-horns" filter="url(#plush-shadow)">${horn(-1)}${horn(1)}</g>`;
+  }
+  function renderDragonFeet(palette, colorKey, cX, g) {
+    const b = g.botY, f = g.footSpacing;
+    const foot = (x) => `
+      <path d="M ${x - 13} ${b - 4} C ${x - 15} ${b + 4} ${x - 8} ${b + 6} ${x} ${b + 6} C ${x + 8} ${b + 6} ${x + 15} ${b + 4} ${x + 13} ${b - 4}
+               C ${x + 8} ${b - 9} ${x - 8} ${b - 9} ${x - 13} ${b - 4} Z"
+            fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+      ${dragonClaws(x, b + 4, 1, 1.15)}`;
+    return `<g class="plush-feet" filter="url(#plush-shadow)">${foot(cX - f)}${foot(cX + f)}</g>`;
+  }
+  function renderDragonTorso(stage, palette, colorKey, cX, g) {
+    const bodyPath = dragonBodyPath(g, cX), headPath = dragonHeadPath(g, cX);
+    const sY = g.shoulderY, b = g.botY, R = g.headRX, H = g.headRY, hy = g.headCY;
+    // Ridged chest plates: a light belly with curved bands
+    const pw = g.bW * 0.5, pTop = Math.max(sY - 4, hy + H - 6);
+    const plates = `M ${cX} ${pTop} C ${cX + pw * 0.7} ${pTop} ${cX + pw} ${pTop + 10} ${cX + pw} ${b - 12}
+      C ${cX + pw * 0.85} ${b} ${cX + 10} ${b} ${cX} ${b} C ${cX - 10} ${b} ${cX - pw * 0.85} ${b} ${cX - pw} ${b - 12}
+      C ${cX - pw} ${pTop + 10} ${cX - pw * 0.7} ${pTop} ${cX} ${pTop} Z`;
+    let bands = '';
+    for (let y = pTop + 7; y < b - 3; y += 6.5) bands += `<path d="M ${cX - pw} ${y} Q ${cX} ${y + 4} ${cX + pw} ${y}" fill="none" stroke="${palette.primaryDark}" stroke-width="1.3" opacity="0.4" />`;
+    const clipB = `drg-body-clip-${colorKey}-${stage}`, clipP = `drg-plate-clip-${colorKey}-${stage}`, clipH = `drg-head-clip-${colorKey}-${stage}`;
+    // Small scales on the head and the sides of the body
+    let scales = '', headScales = '';
+    for (let i = -2; i <= 2; i++) headScales += `<path d="M ${cX + i * 9 - 4} ${hy - H + 10 + Math.abs(i) * 2} q 4 4 8 0" fill="none" stroke="${palette.primaryDark}" stroke-width="1.2" opacity="0.35" />`;
+    for (const k of [-1, 1]) for (let j = 0; j < 3; j++) scales += `<path d="M ${cX + k * (g.bW * 0.78) - 4} ${sY + 10 + j * 8} q 4 4 8 0" fill="none" stroke="${palette.primaryDark}" stroke-width="1.2" opacity="0.3" />`;
+    // Arms with little claws
+    const arm = (k) => `
+      <path d="M ${cX + k * (g.cW - 4)} ${g.pawY - 15} C ${cX + k * (g.cW + 9)} ${g.pawY - 9} ${cX + k * (g.cW + 10)} ${g.pawY + 6} ${cX + k * (g.cW - 1)} ${g.pawY + 9}
+               C ${cX + k * (g.cW - 8)} ${g.pawY + 6} ${cX + k * (g.cW - 8)} ${g.pawY - 5} ${cX + k * (g.cW - 4)} ${g.pawY - 15} Z"
+            fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
+      ${dragonClaws(cX + k * (g.cW + 0.5), g.pawY + 7.5, 1, 0.8)}`;
+    return `
+      ${DRAGON_HORN_DEFS}
+      <g filter="url(#plush-shadow)" class="mon-body-breathe drg-body">
+        <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" />
+        <clipPath id="${clipB}"><path d="${bodyPath}" /></clipPath>
+        <g clip-path="url(#${clipB})">
+          <path d="${bodyPath}" fill="none" stroke="url(#mon-rim-${colorKey})" stroke-width="8" opacity="0.8" />
+          <path d="M ${cX - 10} ${b} C ${cX + 18} ${b} ${cX + g.bW * 0.88} ${b + 2} ${cX + g.bW} ${b - 10} C ${cX + g.bW * 1.06} ${b - 24} ${cX + g.cW * 1.05} ${sY + 10} ${cX + g.cW} ${sY} C ${cX + g.cW - 5} ${sY + 12} ${cX + g.bW - 7} ${b - 20} ${cX - 10} ${b} Z" fill="${palette.shadowDark || palette.shadow}" opacity="0.24" />
+        </g>
+        <path d="${plates}" fill="url(#plush-belly-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.2" stroke-opacity="0.35" />
+        <clipPath id="${clipP}"><path d="${plates}" /></clipPath>
+        <g clip-path="url(#${clipP})">${bands}</g>
+        <g clip-path="url(#${clipB})">${scales}</g>
+        ${arm(-1)}${arm(1)}
+      </g>
+      <g filter="url(#plush-shadow)" class="drg-head">
+        <path d="${headPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" />
+        <clipPath id="${clipH}"><path d="${headPath}" /></clipPath>
+        <g clip-path="url(#${clipH})">
+          <path d="${headPath}" fill="none" stroke="url(#mon-rim-${colorKey})" stroke-width="7" opacity="0.75" />
+          <ellipse cx="${cX + R * 0.5}" cy="${hy + H * 0.55}" rx="${R * 0.7}" ry="${H * 0.5}" fill="${palette.shadowDark || palette.shadow}" opacity="0.14" />
+          ${headScales}
+        </g>
+        <path d="M ${cX - R * 0.45} ${hy - H + 6} C ${cX - R * 0.2} ${hy - H + 2} ${cX + R * 0.2} ${hy - H + 2} ${cX + R * 0.45} ${hy - H + 6}" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" opacity="0.75" />
+        <circle cx="${cX - R * 0.3}" cy="${hy - H + 9}" r="2.1" fill="#ffffff" opacity="0.9" />
+      </g>`;
+  }
+  // Snout with nostrils and two tiny fangs (drawn under the eyes; the mouth sits on the snout)
+  function renderDragonSnout(palette, colorKey, cX, g) {
+    const y = g.eyeY;
+    return `
+      <ellipse cx="${cX}" cy="${y + 12}" rx="17" ry="9.2" fill="url(#plush-snout-${colorKey})" filter="url(#plush-shadow)" />
+      <ellipse cx="${cX - 4.6}" cy="${y + 8}" rx="1.7" ry="1.2" fill="#0f172a" opacity="0.85" />
+      <ellipse cx="${cX + 4.6}" cy="${y + 8}" rx="1.7" ry="1.2" fill="#0f172a" opacity="0.85" />`;
+  }
+  function renderDragonFangs(cX, g) {
+    const y = g.eyeY + 14.5;
+    return `<g class="drg-fangs">
+      <path d="M ${cX - 7} ${y - 0.5} L ${cX - 3.6} ${y - 0.5} L ${cX - 5.4} ${y + 4.2} Z" fill="#ffffff" stroke="#94a3b8" stroke-width="0.8" stroke-linejoin="round" />
+      <path d="M ${cX + 3.6} ${y - 0.5} L ${cX + 7} ${y - 0.5} L ${cX + 5.4} ${y + 4.2} Z" fill="#ffffff" stroke="#94a3b8" stroke-width="0.8" stroke-linejoin="round" />
+    </g>`;
+  }
+  // Its own wings: membrane wings on finger bones, bigger each level; at Levels 6-7 they glow
+  function renderDragonWings(stage, palette) {
+    const g = dragonGeometry(stage), s = g.wing, key = paletteKey(palette);
+    const gid = `drg-wing-${key}`;
+    const membrane = 'M 0 6 Q 12 -24 34 -40 L 60 -46 Q 58 -30 54 -16 Q 47 -20 42 -10 Q 35 -14 30 -2 Q 22 -6 16 8 Q 8 4 0 10 Z';
+    const bones = 'M 0 5 Q 12 -24 34 -40 L 60 -46 M 34 -40 L 54 -16 M 34 -40 L 42 -10 M 34 -40 L 30 -2 M 34 -40 L 16 8';
+    const one = (k) => {
+      const x = 100 + k * g.cW * 0.5, y = g.shoulderY + 3;
+      const glow = g.glow ? `<path d="${membrane}" fill="none" stroke="#fde68a" stroke-width="${g.glow === 2 ? 7 : 5}" vector-effect="non-scaling-stroke" opacity="0.75" filter="url(#mf-glow)" class="mon-near-glow" />` : '';
+      return `<g transform="translate(${x} ${y}) scale(${k * s} ${s})">
+        ${glow}
+        <path d="${membrane}" fill="url(#${gid})" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+        <path d="${bones}" fill="none" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+        <path d="M 4 2 Q 14 -22 33 -36" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.6" vector-effect="non-scaling-stroke" />
+        <path d="M 60 -46 l 4 -3 l -1 5 Z" fill="#fffbeb" stroke="#a8875a" stroke-width="0.8" vector-effect="non-scaling-stroke" />
+      </g>`;
+    };
+    let sparkles = '';
+    if (g.glow === 2) {
+      const tipY = g.shoulderY + 3 - 46 * s;
+      sparkles = [[100 - g.cW * 0.5 - 62 * s, tipY - 6, '0s'], [100 + g.cW * 0.5 + 62 * s, tipY - 4, '0.9s'], [100 - g.cW * 0.5 - 40 * s, tipY + 30, '1.6s']]
+        .map(p => `<g class="mon-twinkle" style="animation-delay:${p[2]}">${speciesMotif('purple', p[0], p[1], 0.7, '#fde047', 0.95)}</g>`).join('');
+    }
+    return `
+      <g class="monster-wings-layer drg-wings" filter="url(#mf-shadow)">
+        <linearGradient id="${gid}" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stop-color="${palette.primaryLight}" />
+          <stop offset="55%" stop-color="${palette.purple || palette.primaryLight}" />
+          <stop offset="100%" stop-color="${palette.purpleDark || palette.primaryDark}" />
+        </linearGradient>
+        ${one(-1)}${one(1)}
+      </g>${sparkles}`;
+  }
+  // Its own tail: a tapering tail with spikes on top and a spade tip; longer with more spikes each level
+  function renderDragonTail(stage, palette) {
+    const g = dragonGeometry(stage), key = paletteKey(palette), L = g.tail;
+    const p0 = [100 + g.bW * 0.55, 145], p1 = [p0[0] + L * 0.9, 153], p2 = [p0[0] + L, 145 - L * 0.78];
+    const at = (t) => [(1 - t) * (1 - t) * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0], (1 - t) * (1 - t) * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1]];
+    const tan = (t) => { const x = 2 * (1 - t) * (p1[0] - p0[0]) + 2 * t * (p2[0] - p1[0]), y = 2 * (1 - t) * (p1[1] - p0[1]) + 2 * t * (p2[1] - p1[1]), n = Math.hypot(x, y) || 1; return [x / n, y / n]; };
+    const w = (t) => 7.5 * (1 - t) + 1.8;
+    const up = [], dn = [];
+    for (let i = 0; i <= 14; i++) {
+      const t = i / 14, p = at(t), d = tan(t), nx = d[1], ny = -d[0];   // (nx, ny) points to the upper/outer side
+      up.push([p[0] + nx * w(t), p[1] + ny * w(t)]); dn.push([p[0] - nx * w(t), p[1] - ny * w(t)]);
+    }
+    const f = (q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+    const body = `M ${f(up[0])} ` + up.slice(1).map(q => `L ${f(q)}`).join(' ') + ' ' + dn.reverse().map(q => `L ${f(q)}`).join(' ') + ' Z';
+    let spikes = '';
+    for (let i = 0; i < g.spikes; i++) {
+      const t = 0.2 + i * (0.62 / Math.max(1, g.spikes - 1)), d = tan(t), nx = d[1], ny = -d[0];
+      const a = at(t - 0.045), c = at(t + 0.045), m = at(t), h = w(t) + 5.5 * (1 - t * 0.3);
+      const wa = w(t - 0.045) * 0.8, wc = w(t + 0.045) * 0.8;
+      spikes += `<path d="M ${f([a[0] + nx * wa, a[1] + ny * wa])} L ${f([m[0] + nx * h + d[0] * 2, m[1] + ny * h + d[1] * 2])} L ${f([c[0] + nx * wc, c[1] + ny * wc])} Z" fill="${palette.purple || palette.primaryLight}" stroke="${palette.purpleDark || palette.primaryDark}" stroke-width="1.3" stroke-linejoin="round" />`;
+    }
+    const d2 = tan(1), nx2 = d2[1], ny2 = -d2[0], e = p2;
+    const spade = `M ${f([e[0] - d2[0] * 2, e[1] - d2[1] * 2])} L ${f([e[0] + nx2 * 6.5 + d2[0] * 2, e[1] + ny2 * 6.5 + d2[1] * 2])} L ${f([e[0] + d2[0] * 11, e[1] + d2[1] * 11])} L ${f([e[0] - nx2 * 6.5 + d2[0] * 2, e[1] - ny2 * 6.5 + d2[1] * 2])} Z`;
+    return `
+      <g class="monster-tail-layer drg-tail" filter="url(#plush-shadow)">
+        ${spikes}
+        <path d="${body}" fill="url(#plush-fur-${key})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" />
+        <path d="${spade}" fill="${palette.purple || palette.primaryLight}" stroke="${palette.purpleDark || palette.primaryDark}" stroke-width="1.6" stroke-linejoin="round" />
+      </g>`;
+  }
+  // Dragon egg: the same egg with soft scales; at the cracking stage a horn bud pokes out of the top and a snout peeks out under the eyes
+  const EGG_PATH = 'M 100 42 C 64 42 54 112 58 146 C 62 162 78 168 100 168 C 122 168 138 162 142 146 C 146 112 136 42 100 42 Z';
+  function renderDragonEggScales(palette, colorKey) {
+    let rows = '';
+    for (let r = 0; r < 11; r++) {
+      const y = 50 + r * 11, off = (r % 2) * 7;
+      for (let x = 50 + off; x < 150; x += 14) rows += `<path d="M ${x} ${y} q 7 8 14 0" fill="none" stroke="${palette.shadowDark || palette.primaryDark}" stroke-width="1.6" opacity="0.32" /><path d="M ${x + 3} ${y + 2.5} q 4 3.5 8 0" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.35" />`;
+    }
+    return `<clipPath id="drg-egg-clip-${colorKey}"><path d="${EGG_PATH}" /></clipPath><g class="drg-egg-scales" clip-path="url(#drg-egg-clip-${colorKey})">${rows}</g>`;
+  }
+  function renderDragonEggPeek(palette, colorKey) {
+    return `
+      <g class="drg-egg-peek">
+        <path d="M 89 52 L 93 46 L 97 50 L 101 44 L 105 49 L 110 47 L 111 54 Q 100 58 89 52 Z" fill="#020617" />
+        <g filter="url(#plush-shadow)">
+          ${DRAGON_HORN_DEFS}
+          <path d="M 94 54 C 94 44 98 36 104 30 C 104 38 106 46 106 54 Z" fill="url(#drg-horn)" stroke="#8a6a35" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M 96 47 Q 100 45 104 47" fill="none" stroke="#a8875a" stroke-width="1" />
+        </g>
+        <ellipse cx="100" cy="125" rx="11" ry="6.2" fill="url(#plush-snout-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.2" />
+        <ellipse cx="96.6" cy="123.6" rx="1.3" ry="1" fill="#0f172a" />
+        <ellipse cx="103.4" cy="123.6" rx="1.3" ry="1" fill="#0f172a" />
+        <path d="M 95.4 128.4 L 97.6 128.4 L 96.5 131.2 Z M 102.4 128.4 L 104.6 128.4 L 103.5 131.2 Z" fill="#ffffff" />
+      </g>`;
+  }
+  // The body parts of the chosen creature (used by all three renderers)
+  function renderCreatureParts(stage, palette, colorKey, cX, g, equipped) {
+    if (g.creature === 'dragon') {
+      const hornEq = equipped && equipped.horns, earEq = equipped && (equipped.ears || equipped.ear);
+      const noHorns = !hornEq || hornEq === 'none' || hornEq === 'horns-none' || hornEq === 'no_horns' || hornEq === 'null' || hornEq === 'default';
+      const noEars = !earEq || earEq === 'none' || earEq === 'no_ears';
+      return {
+        back: renderDragonFins(palette, colorKey, cX, g),
+        feet: renderDragonFeet(palette, colorKey, cX, g),
+        torso: renderDragonTorso(stage, palette, colorKey, cX, g),
+        front: (noHorns && noEars) ? DRAGON_HORN_DEFS + renderDragonHorns(palette, cX, g) : ''
+      };
+    }
+    const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
+    return { back: crest.back, feet: renderGroundedFeet(palette, colorKey, cX, g), torso: renderChibiTorso(stage, palette, colorKey, cX, g, equipped), front: crest.front };
+  }
+  function isOwnPart(id, kind) {
+    return !id || id === 'default' || id === 'none' || id === kind + '-none' || id === 'null';
+  }
+
+  // --- CAPE CLOTH (behind the body) ---
+  // The cape hangs from the shoulders behind the monster: it shows around the sides and below, never across the belly.
+  function isCapeId(id) { const n = String(id || '').toLowerCase(); return n === 'clothing-cape' || n === 'cape' || n === 'hero_cape'; }
+  function renderCapeBack(cX, g) {
+    const shY = g.cheekY + 6, shX = g.cW * 0.9, hemW = g.bW + 22, hemY = g.botY + 3, midY = (shY + hemY) / 2;
+    const side = (k) => `C ${cX + k * (g.cW + 12)} ${shY + 6} ${cX + k * (hemW + 2)} ${midY} ${cX + k * hemW} ${hemY}`;
+    return `
+      <g class="monster-cape-back" filter="url(#plush-shadow)">
+        <path d="M ${cX - shX} ${shY} ${side(-1)}
+                 Q ${cX - hemW * 0.66} ${hemY + 6} ${cX - hemW * 0.33} ${hemY}
+                 Q ${cX} ${hemY + 7} ${cX + hemW * 0.33} ${hemY}
+                 Q ${cX + hemW * 0.66} ${hemY + 6} ${cX + hemW} ${hemY}
+                 C ${cX + hemW + 2} ${midY} ${cX + g.cW + 12} ${shY + 6} ${cX + shX} ${shY} Z"
+              fill="#dc2626" stroke="#7f1d1d" stroke-width="2.4" stroke-linejoin="round" />
+        <path d="M ${cX - hemW + 7} ${hemY - 3} C ${cX - hemW + 3} ${midY} ${cX - g.cW - 6} ${shY + 10} ${cX - shX - 2} ${shY + 4}"
+              fill="none" stroke="#fca5a5" stroke-width="2.4" stroke-linecap="round" opacity="0.65" />
+        <path d="M ${cX + hemW - 7} ${hemY - 3} C ${cX + hemW - 3} ${midY} ${cX + g.cW + 6} ${shY + 10} ${cX + shX + 2} ${shY + 4}"
+              fill="none" stroke="#7f1d1d" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+      </g>
+    `;
   }
 
   // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
@@ -1753,7 +2133,10 @@
       }
     }
 
+    const capeBack = (equipped && isCapeId(equipped.clothing)) ? renderCapeBack(cX, g) : '';
+
     return `
+      ${capeBack}
       ${rearEarMarkup}
       ${rearHornMarkup}
     `;
@@ -2052,9 +2435,8 @@
     const ry = (g.botY - g.topY) / 2;
 
     const underBodyMarkup = renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g);
-    const feetMarkup = renderGroundedFeet(palette, colorKey, cX, g);
-    const torsoMarkup = renderChibiTorso(stage, palette, colorKey, cX, g, equipped);
-    const crest = speciesCrestFor(colorKey, stage, palette, cX, g, equipped);
+    const parts = renderCreatureParts(stage, palette, colorKey, cX, g, equipped);
+    const feetMarkup = parts.feet, torsoMarkup = parts.torso, crest = { back: parts.back, front: parts.front };
     const overBodyMarkup = renderOverBodyAccessories(stage, palette, colorKey, equipped, cX, g);
     const clothingMarkup = renderClothingLayer(equipped.clothing, cX, cY, rx, ry, palette, stage);
     const faceMarkup = renderFaceElements(stage, palette, colorKey, equipped, cX, g);
@@ -2079,6 +2461,7 @@
     'clothing-royal', 'clothing-robe', 'clothing-space', 'clothing-hero', 'clothing-winter', 'clothing-dragon-armor', 'clothing-knight-armor'];
 
   function bodyOutlinePath(g, cX) {
+    if (g.creature === 'dragon') return dragonBodyPath(g, cX);
     const topY = g.topY, botY = g.botY, cW = g.cW, bW = g.bW, cheekY = g.cheekY;
     return `M ${cX} ${topY}
       C ${cX + cW * 0.56} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
@@ -2091,7 +2474,7 @@
 
   // The older outfits (clothing-*) were drawn for a taller torso, so on these round bodies they started at eye level and covered the face.
   // They are now moved down to start just below the mouth, and clipped to the body outline. Costume pieces (cs-*) were drawn in place already.
-  const NO_CLIP_OUTFITS = ['clothing-scarf'];
+  const NO_CLIP_OUTFITS = ['clothing-scarf', 'clothing-cape'];
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     const raw = renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage);
     if (!raw) return raw;
@@ -2099,9 +2482,13 @@
     try {
       const g = getStageGeometry(stage);
       const clipId = 'eaa-torso-clip-' + String(stage).replace(/[^a-z0-9]/gi, '');
-      const clip = (inner) => `<clipPath id="${clipId}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath><g clip-path="url(#${clipId})">${inner}</g>`;
+      const chin = g.creature === 'dragon' ? `<clipPath id="${clipId}-chin"><rect x="0" y="${g.headCY + g.headRY - 1}" width="200" height="200" /></clipPath>` : '';
+      const clip = (inner) => `<clipPath id="${clipId}"><path d="${bodyOutlinePath(g, cX)}" /></clipPath>${chin ? `${chin}<g clip-path="url(#${clipId}-chin)">` : ''}<g clip-path="url(#${clipId})">${inner}</g>${chin ? '</g>' : ''}`;
+      if (g.creature === 'dragon' && id0 === 'clothing-scarf') {   // the dragon wears its scarf round the neck, just under the chin
+        return `<g transform="translate(0 ${Math.round(g.neckY - 1 - cY)})">${renderClothingLayerRaw(clothingId, cX, cY, g.cW * 0.95, ry, palette, stage)}</g>`;
+      }
       if (id0.indexOf('cs-') === 0) return TORSO_WRAP_OUTFITS.indexOf(id0) === -1 ? raw : clip(raw);
-      const dy = Math.max(0, Math.round(g.eyeY + 21 - 108)) + (id0 === 'clothing-scarf' ? 8 : 0);   // 108 = where the old outfits begin; the scarf sits a little lower so it never covers the mouth
+      const dy = (g.clothTop != null ? Math.round(g.clothTop - 108) : Math.max(0, Math.round(g.eyeY + 21 - 108))) + (id0 === 'clothing-scarf' ? 8 : 0);   // 108 = where the old outfits begin; the scarf sits a little lower so it never covers the mouth
       const moved = `<g transform="translate(0 ${dy})">${raw}</g>`;
       return NO_CLIP_OUTFITS.indexOf(id0) !== -1 ? moved : clip(moved);
     } catch (e) { return raw; }
@@ -2131,8 +2518,10 @@
       return `
         <!-- Hero Adventure Cape -->
         <g filter="url(#mf-shadow)">
-          <path d="M 60 110 L 40 160 L 160 160 L 140 110 Z" fill="#dc2626" opacity="0.9" />
-          <circle cx="100" cy="110" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <!-- the cape cloth itself is drawn behind the body (renderCapeBack); in front only the collar and the gold clasp show -->
+          <path d="M 84 106 Q 92 112 100 112 Q 108 112 116 106 L 112 115 Q 100 119 88 115 Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <circle cx="100" cy="113" r="4.2" fill="#facc15" stroke="#a16207" stroke-width="1.5" />
+          <circle cx="98.8" cy="111.8" r="1.2" fill="#fffbeb" opacity="0.9" />
         </g>
       `;
     }
@@ -2397,6 +2786,7 @@
       <circle cx="${cX - 0.9}" cy="${eyeY + 3.8}" r="1.0" fill="#ffffff" opacity="0.9" />
     `;
 
+    const isDragon = g.creature === 'dragon';
     let eyesMarkup = '';
     if (eyesId === 'eyes-wink' || eyesId === 'eyes-curious') {
       eyesMarkup = `
@@ -2582,14 +2972,178 @@
       <!-- Living Glossy Chibi Face Elements -->
       <g class="plush-face">
         ${cheeks}
-        ${snoutDome}
+        ${isDragon ? renderDragonSnout(palette, colorKey, cX, g) : snoutDome}
         ${eyesMarkup}
         ${mouthMarkup}
+        ${isDragon ? renderDragonFangs(cX, g) : ''}
       </g>
     `;
   }
 
   // --- FOREGROUND ACCESSORIES ---
+  // --- SHOP ITEMS THAT ONLY HAD A 3D PICTURE ---
+  // These hats, glasses, neckwear and hand items are sold in the store but were drawn only for the illustrated (3D) monsters,
+  // so on the drawn monsters they were invisible. They are drawn here, placed from the same head / eye / neck / paw points as the others.
+  function extraHatMarkup(hatId, ht) {
+    const wrap = (inner, f) => `<g class="monster-hat" filter="url(#${f || 'mf-shadow'})">${inner}</g>`;
+    switch (hatId) {
+      case 'hat-party':
+        return wrap(`
+          <polygon points="82,${ht + 5} 100,${ht - 34} 118,${ht + 5}" fill="#ec4899" stroke="#9d174d" stroke-width="2" stroke-linejoin="round" />
+          <path d="M 88 ${ht - 8} L 112 ${ht - 4} M 93 ${ht - 20} L 108 ${ht - 17}" stroke="#fde047" stroke-width="3.2" stroke-linecap="round" />
+          <circle cx="92" cy="${ht - 1}" r="1.8" fill="#67e8f9" /><circle cx="106" cy="${ht - 11}" r="1.8" fill="#67e8f9" />
+          <circle cx="100" cy="${ht - 36}" r="5" fill="#fde047" stroke="#ca8a04" stroke-width="1.4" />
+          <ellipse cx="100" cy="${ht + 5}" rx="19" ry="3" fill="#9d174d" opacity="0.5" />`);
+      case 'hat-beanie':
+        return wrap(`
+          <path d="M 72 ${ht + 9} C 72 ${ht - 24} 128 ${ht - 24} 128 ${ht + 9} Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.2" />
+          <path d="M 86 ${ht - 12} Q 100 ${ht - 18} 114 ${ht - 12}" stroke="#fca5a5" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.8" />
+          <rect x="70" y="${ht + 1}" width="60" height="11" rx="5" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.8" />
+          <path d="M 76 ${ht + 3} V ${ht + 10} M 84 ${ht + 3} V ${ht + 10} M 92 ${ht + 3} V ${ht + 10} M 100 ${ht + 3} V ${ht + 10} M 108 ${ht + 3} V ${ht + 10} M 116 ${ht + 3} V ${ht + 10} M 124 ${ht + 3} V ${ht + 10}" stroke="#7f1d1d" stroke-width="1.2" opacity="0.6" />
+          <circle cx="100" cy="${ht - 20}" r="6.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4" />`);
+      case 'hat-chef':
+        return wrap(`
+          <circle cx="86" cy="${ht - 16}" r="11" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <circle cx="114" cy="${ht - 16}" r="11" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <circle cx="100" cy="${ht - 24}" r="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <rect x="80" y="${ht - 12}" width="40" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <path d="M 90 ${ht - 8} V ${ht + 2} M 100 ${ht - 8} V ${ht + 2} M 110 ${ht - 8} V ${ht + 2}" stroke="#e2e8f0" stroke-width="1.6" />
+          <circle cx="94" cy="${ht - 30}" r="3" fill="#ffffff" opacity="0.9" />`);
+      case 'hat-sailor':
+        return wrap(`
+          <path d="M 74 ${ht + 7} Q 100 ${ht - 18} 126 ${ht + 7} Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+          <rect x="74" y="${ht}" width="52" height="9" rx="4" fill="#1e3a8a" stroke="#172554" stroke-width="1.6" />
+          <path d="M 96 ${ht - 9} Q 100 ${ht - 12} 104 ${ht - 9} M 100 ${ht - 12} V ${ht - 4} M 96 ${ht - 5} Q 100 ${ht - 2} 104 ${ht - 5}" stroke="#1e3a8a" stroke-width="1.8" fill="none" stroke-linecap="round" />`);
+      case 'hat-propeller':
+        return wrap(`
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="#facc15" stroke="#a16207" stroke-width="2" />
+          <path d="M 100 ${ht - 13} C 90 ${ht - 13} 84 ${ht - 4} 84 ${ht + 7} L 100 ${ht + 7} Z" fill="#ef4444" />
+          <path d="M 100 ${ht - 13} C 110 ${ht - 13} 116 ${ht - 4} 116 ${ht + 7} L 100 ${ht + 7} Z" fill="#3b82f6" />
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="none" stroke="#a16207" stroke-width="2" />
+          <line x1="100" y1="${ht - 13}" x2="100" y2="${ht - 21}" stroke="#475569" stroke-width="2.4" />
+          <ellipse cx="89" cy="${ht - 22}" rx="11" ry="3.2" fill="#22c55e" stroke="#15803d" stroke-width="1.2" />
+          <ellipse cx="111" cy="${ht - 22}" rx="11" ry="3.2" fill="#a855f7" stroke="#7e22ce" stroke-width="1.2" />
+          <circle cx="100" cy="${ht - 22}" r="2.6" fill="#f8fafc" stroke="#475569" stroke-width="1" />`);
+      case 'hat-cowboy':
+        return wrap(`
+          <path d="M 54 ${ht + 4} Q 100 ${ht + 18} 146 ${ht + 4} Q 140 ${ht + 13} 100 ${ht + 14} Q 60 ${ht + 13} 54 ${ht + 4} Z" fill="#a16207" stroke="#713f12" stroke-width="2" />
+          <path d="M 78 ${ht + 7} C 76 ${ht - 22} 90 ${ht - 20} 100 ${ht - 13} C 110 ${ht - 20} 124 ${ht - 22} 122 ${ht + 7} Z" fill="#ca8a04" stroke="#713f12" stroke-width="2" />
+          <rect x="78" y="${ht}" width="44" height="6" fill="#451a03" />
+          <polygon points="100,${ht - 1} 102,${ht + 3} 98,${ht + 3}" fill="#facc15" />`);
+      case 'hat-pirate':
+        return wrap(`
+          <path d="M 62 ${ht + 6} Q 70 ${ht - 22} 100 ${ht - 26} Q 130 ${ht - 22} 138 ${ht + 6} Q 100 ${ht - 4} 62 ${ht + 6} Z" fill="#111827" stroke="#000000" stroke-width="2" />
+          <path d="M 66 ${ht + 3} Q 100 ${ht - 7} 134 ${ht + 3}" stroke="#facc15" stroke-width="2.2" fill="none" />
+          <circle cx="100" cy="${ht - 12}" r="5" fill="#f8fafc" />
+          <circle cx="98" cy="${ht - 13}" r="1.2" fill="#111827" /><circle cx="102" cy="${ht - 13}" r="1.2" fill="#111827" />
+          <path d="M 93 ${ht - 4} L 107 ${ht - 9} M 93 ${ht - 9} L 107 ${ht - 4}" stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" />`);
+      case 'hat-santa':
+        return wrap(`
+          <path d="M 76 ${ht + 6} C 78 ${ht - 26} 120 ${ht - 34} 134 ${ht - 12} C 128 ${ht - 14} 124 ${ht - 8} 124 ${ht + 6} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+          <rect x="72" y="${ht + 1}" width="56" height="10" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.6" />
+          <circle cx="134" cy="${ht - 12}" r="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.4" />`);
+      case 'hat-tophat':
+        return wrap(`
+          <ellipse cx="100" cy="${ht + 5}" rx="28" ry="5.5" fill="#111827" stroke="#000000" stroke-width="1.8" />
+          <rect x="83" y="${ht - 28}" width="34" height="33" rx="2" fill="#1f2937" stroke="#000000" stroke-width="1.8" />
+          <ellipse cx="100" cy="${ht - 28}" rx="17" ry="3.5" fill="#374151" stroke="#000000" stroke-width="1.4" />
+          <rect x="83" y="${ht - 5}" width="34" height="6" fill="#dc2626" />
+          <line x1="88" y1="${ht - 24}" x2="88" y2="${ht - 8}" stroke="#ffffff" stroke-width="1.6" opacity="0.35" />`);
+      case 'hat-astro':
+        return wrap(`
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+          <path d="M 100 ${ht + 7} Q 128 ${ht + 4} 140 ${ht + 10} Q 126 ${ht + 13} 100 ${ht + 11} Z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.8" />
+          <rect x="74" y="${ht + 3}" width="52" height="5" fill="#f97316" />
+          <polygon points="100,${ht - 14} 102.5,${ht - 8} 108.5,${ht - 8} 103.5,${ht - 4.5} 105.5,${ht + 1.5} 100,${ht - 2} 94.5,${ht + 1.5} 96.5,${ht - 4.5} 91.5,${ht - 8} 97.5,${ht - 8}" fill="#facc15" stroke="#ca8a04" stroke-width="1" />`);
+    }
+    return '';
+  }
+
+  function extraGlassesMarkup(glassesId, lx, rx, gY) {
+    if (glassesId === 'glasses-heart') {
+      const heart = (x) => `<path d="M ${x} ${gY + 9} C ${x - 15} ${gY - 1} ${x - 12} ${gY - 13} ${x} ${gY - 6} C ${x + 12} ${gY - 13} ${x + 15} ${gY - 1} ${x} ${gY + 9} Z" fill="#f43f5e" fill-opacity="0.85" stroke="#9f1239" stroke-width="2" />
+        <ellipse cx="${x - 5}" cy="${gY - 4}" rx="2.6" ry="1.6" fill="#ffffff" opacity="0.7" />`;
+      return `<g class="monster-eyewear" filter="url(#mf-shadow)">
+        <line x1="${lx + 10}" y1="${gY - 2}" x2="${rx - 10}" y2="${gY - 2}" stroke="#9f1239" stroke-width="2.4" stroke-linecap="round" />
+        ${heart(lx)}${heart(rx)}</g>`;
+    }
+    return '';
+  }
+
+  function extraAccessoryMarkup(accId, g) {
+    const neckY = g.neckY != null ? g.neckY : g.eyeY + 13, ht = g.topY, hx = 100 + g.cW + 2, hy = g.pawY - 2;   // neck point, head top, right paw
+    const wrap = (inner, f) => `<g class="monster-accessory" filter="url(#${f || 'mf-shadow'})">${inner}</g>`;
+    switch (accId) {
+      case 'neck-bowtie':
+        return wrap(`
+          <path d="M 100 ${neckY + 4} L 86 ${neckY - 3} L 86 ${neckY + 11} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M 100 ${neckY + 4} L 114 ${neckY - 3} L 114 ${neckY + 11} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <circle cx="90" cy="${neckY + 1}" r="1.4" fill="#ffffff" /><circle cx="90" cy="${neckY + 7}" r="1.4" fill="#ffffff" />
+          <circle cx="110" cy="${neckY + 1}" r="1.4" fill="#ffffff" /><circle cx="110" cy="${neckY + 7}" r="1.4" fill="#ffffff" />
+          <rect x="96.5" y="${neckY}" width="7" height="8" rx="2" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.4" />`);
+      case 'neck-bell':
+        return wrap(`
+          <path d="M 80 ${neckY - 2} Q 100 ${neckY + 9} 120 ${neckY - 2}" stroke="#dc2626" stroke-width="5" fill="none" stroke-linecap="round" />
+          <circle cx="100" cy="${neckY + 10}" r="5.5" fill="#facc15" stroke="#a16207" stroke-width="1.6" />
+          <line x1="95" y1="${neckY + 10}" x2="105" y2="${neckY + 10}" stroke="#a16207" stroke-width="1.2" />
+          <circle cx="100" cy="${neckY + 13}" r="1.2" fill="#78350f" /><circle cx="98" cy="${neckY + 8}" r="1.3" fill="#fffbeb" opacity="0.9" />`);
+      case 'neck-bandana':
+        return wrap(`
+          <path d="M 82 ${neckY - 3} Q 100 ${neckY + 3} 118 ${neckY - 3} L 100 ${neckY + 15} Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.8" stroke-linejoin="round" />
+          <circle cx="95" cy="${neckY + 3}" r="1.3" fill="#ffffff" /><circle cx="104" cy="${neckY + 2}" r="1.3" fill="#ffffff" /><circle cx="100" cy="${neckY + 8}" r="1.3" fill="#ffffff" />
+          <path d="M 118 ${neckY - 3} L 124 ${neckY - 8} M 118 ${neckY - 3} L 125 ${neckY}" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" />`);
+      case 'acc-balloon':
+        return wrap(`
+          <path d="M ${hx} ${hy} Q ${hx + 10} ${hy - 22} ${hx + 6} ${ht + 14}" stroke="#94a3b8" stroke-width="1.2" fill="none" />
+          <ellipse cx="${hx + 6}" cy="${ht + 1}" rx="11" ry="13" fill="#ef4444" stroke="#991b1b" stroke-width="1.8" />
+          <polygon points="${hx + 4},${ht + 14} ${hx + 8},${ht + 14} ${hx + 6},${ht + 11}" fill="#991b1b" />
+          <ellipse cx="${hx + 2}" cy="${ht - 4}" rx="3" ry="4.5" fill="#ffffff" opacity="0.55" />`);
+      case 'acc-icecream':
+        return wrap(`
+          <polygon points="${hx - 6},${hy - 10} ${hx + 6},${hy - 10} ${hx},${hy + 6}" fill="#f59e0b" stroke="#b45309" stroke-width="1.4" stroke-linejoin="round" />
+          <path d="M ${hx - 4} ${hy - 7} L ${hx + 3} ${hy - 1} M ${hx + 4} ${hy - 7} L ${hx - 3} ${hy - 1}" stroke="#b45309" stroke-width="0.9" />
+          <circle cx="${hx}" cy="${hy - 14}" r="7" fill="#f9a8d4" stroke="#db2777" stroke-width="1.4" />
+          <circle cx="${hx}" cy="${hy - 23}" r="5.5" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" />
+          <circle cx="${hx + 1}" cy="${hy - 29}" r="2" fill="#dc2626" />`);
+      case 'acc-ball':
+        return wrap(`
+          <circle cx="${100 - g.bW - 6}" cy="${g.botY - 6}" r="9" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+          <polygon points="${100 - g.bW - 6},${g.botY - 10} ${100 - g.bW - 2},${g.botY - 7} ${100 - g.bW - 3.5},${g.botY - 2.5} ${100 - g.bW - 8.5},${g.botY - 2.5} ${100 - g.bW - 10},${g.botY - 7}" fill="#1e293b" />
+          <path d="M ${100 - g.bW - 6} ${g.botY - 10} V ${g.botY - 15} M ${100 - g.bW - 2} ${g.botY - 7} L ${100 - g.bW + 3} ${g.botY - 8} M ${100 - g.bW - 10} ${g.botY - 7} L ${100 - g.bW - 15} ${g.botY - 8}" stroke="#334155" stroke-width="1.1" />`);
+      case 'acc-paintbrush':
+        return wrap(`
+          <g transform="translate(${hx - 2}, ${hy - 26}) rotate(18)">
+            <rect x="-2" y="10" width="4.5" height="24" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1" />
+            <rect x="-2.5" y="6" width="5.5" height="5" fill="#cbd5e1" stroke="#64748b" stroke-width="0.8" />
+            <path d="M -3 6 Q 0 -6 3.5 6 Z" fill="#8b5cf6" stroke="#5b21b6" stroke-width="1" />
+          </g>`);
+      case 'acc-pencil':
+        return wrap(`
+          <g transform="translate(${hx - 2}, ${hy - 26}) rotate(20)">
+            <rect x="-3" y="4" width="6.5" height="26" fill="#facc15" stroke="#a16207" stroke-width="1" />
+            <rect x="-3" y="28" width="6.5" height="5" fill="#f472b6" stroke="#be185d" stroke-width="0.8" />
+            <polygon points="-3,4 3.5,4 0.25,-5" fill="#fde68a" stroke="#a16207" stroke-width="0.8" />
+            <polygon points="-1,-1.5 1.5,-1.5 0.25,-5" fill="#334155" />
+          </g>`);
+      case 'acc-umbrella': {
+        const ux = hx + 4, uy = ht + 8;
+        return wrap(`
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux + 24} ${uy} Z" fill="#ef4444" />
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux - 8} ${uy - 20} L ${ux} ${uy} Z" fill="#f97316" />
+          <path d="M ${ux - 8} ${uy - 20} A 24 22 0 0 1 ${ux + 8} ${uy - 20} L ${ux} ${uy} Z" fill="#facc15" />
+          <path d="M ${ux + 8} ${uy - 20} A 24 22 0 0 1 ${ux + 24} ${uy} L ${ux} ${uy} Z" fill="#22c55e" />
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux + 24} ${uy}" fill="none" stroke="#1e293b" stroke-width="1.6" />
+          <path d="M ${ux} ${uy} V ${hy + 2} Q ${ux} ${hy + 7} ${ux - 5} ${hy + 6}" stroke="#475569" stroke-width="2.2" fill="none" stroke-linecap="round" />`);
+      }
+      case 'acc-magnifier':
+        return wrap(`
+          <line x1="${hx}" y1="${hy + 4}" x2="${hx + 6}" y2="${hy - 10}" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+          <circle cx="${hx + 9}" cy="${hy - 18}" r="9" fill="#bae6fd" fill-opacity="0.6" stroke="#475569" stroke-width="2.6" />
+          <path d="M ${hx + 4} ${hy - 22} Q ${hx + 7} ${hy - 25} ${hx + 11} ${hy - 24}" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round" />`);
+    }
+    return '';
+  }
+
   function renderForegroundAccessories(stage, equipped, palette) {
     let hatMarkup = '';
     let glassesMarkup = '';
@@ -2609,7 +3163,7 @@
       else hatId = 'none';
     }
 
-    const glassesId = equipped.glasses || 'none';
+    const glassesId = equipped.glasses === 'glasses-sun' ? 'glasses-sunglasses' : (equipped.glasses || 'none');   // the store calls the dark shades glasses-sun
     const accId = equipped.accessory || 'none';
 
     // Hats dynamically positioned on creature crown
@@ -2691,6 +3245,8 @@
       `;
     }
 
+    if (!hatMarkup && hatId && hatId !== 'none') hatMarkup = extraHatMarkup(hatId, headTop);
+
     // Glasses & Eyewear dynamically centered over the eyes (aligned squarely over eye line)
     const gY = eyeY - 2.5;
     if (glassesId === 'glasses-round' || glassesId === 'acc-glasses-round' || glassesId === 'glasses-wire' || glassesId === 'round_glasses') {
@@ -2742,6 +3298,8 @@
         </g>
       `;
     }
+
+    if (!glassesMarkup && glassesId !== 'none') glassesMarkup = extraGlassesMarkup(glassesId, leftEyeX, rightEyeX, gY);
 
     // Handheld & Special Accessories & Neckwear
     if (accId === 'neck-star') {
@@ -2858,6 +3416,16 @@
       `;
     }
 
+    if (accessoryMarkup && g.creature === 'dragon') {
+      let sx = 0, sy = 0;
+      if (['neck-star', 'neck-medal', 'neck-pendant', 'neck-badge'].indexOf(accId) !== -1) sy = g.neckY - 121;
+      else if (['acc-microphone', 'acc-wand', 'acc-trophy'].indexOf(accId) !== -1) { sx = g.cW - 40; sy = g.pawY - 132; }
+      else if (['acc-book', 'acc-compass'].indexOf(accId) !== -1) sy = g.pawY - 132;
+      if (sx || sy) accessoryMarkup = `<g transform="translate(${sx} ${sy})">${accessoryMarkup}</g>`;
+    }
+    if (!accessoryMarkup && accId !== 'none') accessoryMarkup = extraAccessoryMarkup(accId, g);
+    accessoryMarkup = renderSatchelFront(stage, equipped.backpack) + accessoryMarkup;
+
     // New costume sets (js/monster-costumes.js)
     if (typeof window !== 'undefined' && window.MonsterCostumes) {
       try {
@@ -2886,6 +3454,9 @@
     if (item.id && String(item.id).indexOf('cs-') === 0 && typeof window !== 'undefined' && window.MonsterCostumes) { const ct = window.MonsterCostumes.thumbnail(item, size); if (ct) return ct; }
     const colorKey = options.colorKey || 'blue';
     const palette = MONSTER_PALETTES[colorKey] || MONSTER_PALETTES.blue;
+    if (item.category === 'creature') {   // a creature card shows the whole creature (the "none" card shows the bunny monster)
+      return renderMonsterSingleSVG({ stage: 'growing', color: colorKey, equipped: item.isNone ? {} : { creature: item.id }, size: size, animated: false, isAvatar: true });
+    }
 
     if (item.isNone || item.id.endsWith('-none')) {
       return `
@@ -3457,14 +4028,17 @@
   }
 
   function renderMonsterEvolutionStagesBanner() {
+    // the XP numbers come from js/evolution-levels.js so the showcase always matches the real levels
+    const XPL = (typeof window !== 'undefined' && Array.isArray(window.EAA_EVOLUTION_XP) && window.EAA_EVOLUTION_XP.length === 7) ? window.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
+    const xpLabel = (i) => Number(XPL[i]).toLocaleString('en-US') + ' XP';
     const stages = [
-      { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
-      { level: 2, name: 'Cracking Egg', xp: '30 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
-      { level: 3, name: 'Baby Monster', xp: '200 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
-      { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
-      { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
-      { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
-      { level: 7, name: 'Ultimate Monster', xp: '5,000 XP', sub: 'A true hero!', stageKey: 'ultimate' }
+      { level: 1, name: 'Mystery Egg', xp: xpLabel(0), sub: 'A new adventure begins...', stageKey: 'egg' },
+      { level: 2, name: 'Cracking Egg', xp: xpLabel(1), sub: 'Life is waking up!', stageKey: 'cracking_egg' },
+      { level: 3, name: 'Baby Monster', xp: xpLabel(2), sub: 'Small steps, big dreams!', stageKey: 'baby' },
+      { level: 4, name: 'Growing Monster', xp: xpLabel(3), sub: 'Stronger every day!', stageKey: 'growing' },
+      { level: 5, name: 'Adventurer Monster', xp: xpLabel(4), sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
+      { level: 6, name: 'Advanced Monster', xp: xpLabel(5), sub: 'New powers, new places!', stageKey: 'advanced' },
+      { level: 7, name: 'Ultimate Monster', xp: xpLabel(6), sub: 'A true hero!', stageKey: 'ultimate' }
     ];
 
     return `
