@@ -1294,8 +1294,11 @@
     if (illustrated) return illustrated;
     const hasEquipped = Object.values(equipped).some(v => v && v !== 'none' && v !== 'default');
     const isCustomFur = baseColor && baseColor !== 'blue';
+    // Look-only bonus: a Growing Monster with 750+ XP (js/evolution-levels.js) glows a little because it is close to Level 5
+    const lifeXP = (Number(student && student.xp) || 0) + (Number(student && (student.archivedXP != null ? student.archivedXP : student.archived_xp)) || 0);
+    const nearEvolve = !!(mState && mState.stageKey === 'growing' && lifeXP >= (window.EAA_NEAR_EVOLVE_XP || 750));
 
-    if ((hasEquipped || isCustomFur) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
+    if ((hasEquipped || isCustomFur || nearEvolve) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
       const stageKey = (mState && mState.stageKey && mState.stageKey !== 'egg' && mState.stageKey !== 'cracking_egg') ? mState.stageKey : 'baby';
       try {
         const svgMarkup = window.MonsterRenderer.renderMonsterSVG({
@@ -1304,7 +1307,8 @@
           equipped: equipped,
           size: 240,
           animated: true,
-          isAvatar: true
+          isAvatar: true,
+          nearEvolve: nearEvolve
         });
         if (svgMarkup) {
           const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);

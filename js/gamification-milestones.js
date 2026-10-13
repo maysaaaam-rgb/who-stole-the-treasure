@@ -14,14 +14,16 @@
   // =========================================================================
   // MONSTER EVOLUTION TIERS & XP DYNAMIC SYNCHRONIZATION (SINGLE SOURCE OF TRUTH)
   // =========================================================================
+  // XP for each level comes from js/evolution-levels.js (one list for the whole platform); the same numbers are kept here as a fallback.
+  const XPL = (Array.isArray(root.EAA_EVOLUTION_XP) && root.EAA_EVOLUTION_XP.length === 7) ? root.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
   const EVOLUTION_TIERS = [
-    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: XPL[0], maxXP: XPL[1] - 1, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: XPL[1], maxXP: XPL[2] - 1, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: XPL[2], maxXP: XPL[3] - 1, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: XPL[3], maxXP: XPL[4] - 1, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: XPL[4], maxXP: XPL[5] - 1, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: XPL[5], maxXP: XPL[6] - 1, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: XPL[6], maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
   function getStageFromXP(rawXP, studentObj = null) {
@@ -129,13 +131,13 @@
    */
   function renderEvolutionJourney(levels, activeLevel = 1, options = {}) {
     const safeLevels = Array.isArray(levels) && levels.length > 0 ? levels : [
-      { id: 'lvl-1', level: 1, name: 'Mystery Egg', stageKey: 'egg', xpRequired: 0, description: 'Dormant speckled egg.' },
-      { id: 'lvl-2', level: 2, name: 'Cracking Egg', stageKey: 'cracking_egg', xpRequired: 30, description: 'Glowing fissures appear.' },
-      { id: 'lvl-3', level: 3, name: 'Baby Monster', stageKey: 'baby', xpRequired: 200, description: 'Hatched baby monster.' },
-      { id: 'lvl-4', level: 4, name: 'Growing Monster', stageKey: 'growing', xpRequired: 500, description: 'Stronger and taller.' },
-      { id: 'lvl-5', level: 5, name: 'Adventurer Monster', stageKey: 'adventurer', xpRequired: 1000, description: 'Equipped with explorer fedora.' },
-      { id: 'lvl-6', level: 6, name: 'Advanced Monster', stageKey: 'advanced', xpRequired: 2000, description: 'Majestic sweeping dragon wings.' },
-      { id: 'lvl-7', level: 7, name: 'Ultimate Monster', stageKey: 'ultimate', xpRequired: 5000, description: 'The legendary sovereign form.' }
+      { id: 'lvl-1', level: 1, name: 'Mystery Egg', stageKey: 'egg', xpRequired: XPL[0], description: 'Dormant speckled egg.' },
+      { id: 'lvl-2', level: 2, name: 'Cracking Egg', stageKey: 'cracking_egg', xpRequired: XPL[1], description: 'Glowing fissures appear.' },
+      { id: 'lvl-3', level: 3, name: 'Baby Monster', stageKey: 'baby', xpRequired: XPL[2], description: 'Hatched baby monster.' },
+      { id: 'lvl-4', level: 4, name: 'Growing Monster', stageKey: 'growing', xpRequired: XPL[3], description: 'Stronger and taller.' },
+      { id: 'lvl-5', level: 5, name: 'Adventurer Monster', stageKey: 'adventurer', xpRequired: XPL[4], description: 'Equipped with explorer fedora.' },
+      { id: 'lvl-6', level: 6, name: 'Advanced Monster', stageKey: 'advanced', xpRequired: XPL[5], description: 'Majestic sweeping dragon wings.' },
+      { id: 'lvl-7', level: 7, name: 'Ultimate Monster', stageKey: 'ultimate', xpRequired: XPL[6], description: 'The legendary sovereign form.' }
     ];
 
     const currentLevelNum = Number(activeLevel) || 1;

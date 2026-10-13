@@ -376,6 +376,10 @@
           @keyframes monBreathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.02); } }
           .eaa-monster-animated .mon-twinkle { transform-box: fill-box; transform-origin: center; animation: monTwinkle 2.6s ease-in-out infinite; }
           @keyframes monTwinkle { 0%, 100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.15); } }
+          .eaa-monster-animated .mon-near-glow { transform-box: fill-box; transform-origin: center; animation: monNearGlow 2.8s ease-in-out infinite; }
+          @keyframes monNearGlow { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 0.95; transform: scale(1.04); } }
+          .eaa-monster-animated .mon-near-spark { transform-box: fill-box; transform-origin: center; animation: monNearSpark 3.2s ease-in infinite; }
+          @keyframes monNearSpark { 0% { opacity: 0; transform: translateY(6px) scale(0.6); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px) scale(1.1); } }
         </style>
         <!-- Rim light on the body (cool top-left, warm bounce bottom-right) -->
         <linearGradient id="mon-rim-${colorKey}" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -493,7 +497,8 @@
         const g = getStageGeometry(stage);
         rearUnderBody = renderUnderBodyAccessories(stage, palette, colorKey, equipped, 100, g);
       }
-      rearAccessoriesMarkup = `${auraLayer}${wingsLayer}${tailLayer}${backpackLayer}${rearUnderBody}`.trim();
+      const nearGlow = options.nearEvolve ? renderNearEvolveGlow(stage) : '';
+      rearAccessoriesMarkup = `${nearGlow}${auraLayer}${wingsLayer}${tailLayer}${backpackLayer}${rearUnderBody}`.trim();
     } catch (e) {
       rearAccessoriesMarkup = '';
     }
@@ -573,6 +578,25 @@
     `.trim();
   }
 
+  /* A look-only bonus: a Growing Monster close to Level 5 (750+ XP, see js/evolution-levels.js) gets a soft golden glow and rising sparkles.
+     It changes no level, ceremony or certificate, and it is drawn on its own layer, so it never replaces an aura the pupil wears. */
+  function renderNearEvolveGlow(stage) {
+    if (stage !== 'growing') return '';
+    const g = getStageGeometry(stage), cy = (g.topY + g.botY) / 2 + 4;
+    const spark = (x, y, d, r) => `<g class="mon-near-spark" style="animation-delay:${d}s"><polygon points="${x},${y - r} ${x + r * 0.3},${y - r * 0.3} ${x + r},${y} ${x + r * 0.3},${y + r * 0.3} ${x},${y + r} ${x - r * 0.3},${y + r * 0.3} ${x - r},${y} ${x - r * 0.3},${y - r * 0.3}" fill="#fde047" /></g>`;
+    return `
+      <g class="monster-near-evolve" pointer-events="none">
+        <radialGradient id="mon-near-glow-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fef3c7" stop-opacity="0.95" />
+          <stop offset="50%" stop-color="#fcd34d" stop-opacity="0.55" />
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+        </radialGradient>
+        <ellipse class="mon-near-glow" cx="100" cy="${cy}" rx="${g.bW + 30}" ry="${(g.botY - g.topY) / 2 + 28}" fill="url(#mon-near-glow-grad)" />
+        <ellipse class="mon-near-glow" cx="100" cy="${g.botY + 9}" rx="${g.bW + 12}" ry="8" fill="none" stroke="#fde047" stroke-width="2.4" opacity="0.9" />
+        ${spark(100 - g.bW - 8, g.botY - 30, 0, 4.2)}${spark(100 + g.bW + 6, g.botY - 44, 1.1, 3.8)}${spark(100 - g.bW + 2, g.topY + 18, 2.0, 3.4)}${spark(100 + g.bW - 2, g.topY + 6, 0.6, 3.6)}
+      </g>`;
+  }
+
   /**
    * Monolithic SVG Single-element Renderer (rawSvg fallback)
    */
@@ -640,8 +664,10 @@
       }
     }
 
+    const nearGlow = options.nearEvolve ? renderNearEvolveGlow(stage) : '';
     const bobGroup = `
       <g class="monster-bob-group">
+        ${nearGlow}
         ${auraLayer}
         ${wingsLayer}
         ${tailLayer}
@@ -1533,7 +1559,41 @@
   }
 
   // --- BACKPACK LAYER ---
+  function isSatchelId(id) { return ['bp-adv-bag', 'backpack-adv-bag', 'backpack-satchel', 'satchel', 'bp-satchel', 'satchel-explorer'].indexOf(id) !== -1; }
+  // The bags were drawn at one fixed spot, so on the bigger stages they hid completely behind the body.
+  // Now they are moved to peek out from behind the left shoulder of every stage; the satchel is worn in front (renderSatchelFront).
   function renderBackpackLayer(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg') return '';
+    if (isSatchelId(backpackId)) return '';
+    const inner = renderBackpackLayerRaw(stage, backpackId);
+    if (!inner || String(backpackId || '').indexOf('cs-') === 0) return inner;
+    const g = getStageGeometry(stage), edge = 100 - g.cW * 1.08;          // left edge of the body at the shoulders
+    const dx = Math.round((edge + 7 - 68) * 10) / 10, dy = Math.round((g.cheekY - 2 - 106) * 10) / 10;
+    return `<g transform="translate(${dx} ${dy})">${inner}</g>`;
+  }
+  function renderBackpackFrontStraps(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg' || !backpackId || backpackId === 'none' || isSatchelId(backpackId) || String(backpackId).indexOf('cs-') === 0 || backpackId === 'bp-mini-wings') return '';
+    if (['bp-explorer', 'backpack-explorer', 'bp-book', 'backpack-book'].indexOf(backpackId) === -1) return '';
+    const g = getStageGeometry(stage), col = backpackId.indexOf('book') !== -1 ? '#1d4ed8' : '#78350f', y0 = g.cheekY + 4, y1 = g.pawY - 8;
+    return `<g class="monster-backpack-straps" opacity="0.95">
+      <path d="M ${100 - g.cW * 0.86} ${y0} Q ${100 - g.cW * 0.72} ${(y0 + y1) / 2} ${100 - g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
+      <path d="M ${100 + g.cW * 0.86} ${y0} Q ${100 + g.cW * 0.72} ${(y0 + y1) / 2} ${100 + g.cW * 0.66} ${y1}" stroke="${col}" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>`;
+  }
+  function renderSatchelFront(stage, backpackId) {
+    if (stage === 'egg' || stage === 'cracking_egg' || !isSatchelId(backpackId)) return '';
+    const g = getStageGeometry(stage), sx = 100 + g.bW * 0.48, sy = g.botY - 24, s0 = `M ${100 - g.cW * 0.95} ${g.eyeY + 13} Q ${100 - 4} ${g.eyeY + 27} ${sx + 9} ${sy + 1}`;
+    return `
+      <g class="monster-backpack-layer" filter="url(#mf-shadow)">
+        <path d="${s0}" stroke="#78350f" stroke-width="4.5" fill="none" stroke-linecap="round" />
+        <path d="${s0}" stroke="#b45309" stroke-width="2.4" fill="none" stroke-linecap="round" />
+        <rect x="${sx}" y="${sy}" width="21" height="24" rx="5" fill="#92400e" stroke="#5c2606" stroke-width="2" />
+        <path d="M ${sx} ${sy} L ${sx + 21} ${sy} L ${sx + 19.5} ${sy + 10} L ${sx + 1.5} ${sy + 10} Z" fill="#b45309" stroke="#5c2606" stroke-width="1.6" />
+        <rect x="${sx + 8}" y="${sy + 7.5}" width="5.5" height="6" rx="1.5" fill="#facc15" stroke="#a16207" stroke-width="1.1" />
+      </g>`;
+  }
+
+  function renderBackpackLayerRaw(stage, backpackId) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effBackpack = backpackId;
@@ -1702,6 +1762,28 @@
     return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
   }
 
+  // --- CAPE CLOTH (behind the body) ---
+  // The cape hangs from the shoulders behind the monster: it shows around the sides and below, never across the belly.
+  function isCapeId(id) { const n = String(id || '').toLowerCase(); return n === 'clothing-cape' || n === 'cape' || n === 'hero_cape'; }
+  function renderCapeBack(cX, g) {
+    const shY = g.cheekY + 6, shX = g.cW * 0.9, hemW = g.bW + 22, hemY = g.botY + 3, midY = (shY + hemY) / 2;
+    const side = (k) => `C ${cX + k * (g.cW + 12)} ${shY + 6} ${cX + k * (hemW + 2)} ${midY} ${cX + k * hemW} ${hemY}`;
+    return `
+      <g class="monster-cape-back" filter="url(#plush-shadow)">
+        <path d="M ${cX - shX} ${shY} ${side(-1)}
+                 Q ${cX - hemW * 0.66} ${hemY + 6} ${cX - hemW * 0.33} ${hemY}
+                 Q ${cX} ${hemY + 7} ${cX + hemW * 0.33} ${hemY}
+                 Q ${cX + hemW * 0.66} ${hemY + 6} ${cX + hemW} ${hemY}
+                 C ${cX + hemW + 2} ${midY} ${cX + g.cW + 12} ${shY + 6} ${cX + shX} ${shY} Z"
+              fill="#dc2626" stroke="#7f1d1d" stroke-width="2.4" stroke-linejoin="round" />
+        <path d="M ${cX - hemW + 7} ${hemY - 3} C ${cX - hemW + 3} ${midY} ${cX - g.cW - 6} ${shY + 10} ${cX - shX - 2} ${shY + 4}"
+              fill="none" stroke="#fca5a5" stroke-width="2.4" stroke-linecap="round" opacity="0.65" />
+        <path d="M ${cX + hemW - 7} ${hemY - 3} C ${cX + hemW - 3} ${midY} ${cX + g.cW + 6} ${shY + 10} ${cX + shX + 2} ${shY + 4}"
+              fill="none" stroke="#7f1d1d" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+      </g>
+    `;
+  }
+
   // --- UNDER-BODY LAYER: REAR ACCESSORIES (Depth Stacking: Darker Tint & Parallax) ---
   function renderUnderBodyAccessories(stage, palette, colorKey, equipped, cX, g) {
     const topY = g.topY;
@@ -1753,7 +1835,10 @@
       }
     }
 
+    const capeBack = (equipped && isCapeId(equipped.clothing)) ? renderCapeBack(cX, g) : '';
+
     return `
+      ${capeBack}
       ${rearEarMarkup}
       ${rearHornMarkup}
     `;
@@ -2091,7 +2176,7 @@
 
   // The older outfits (clothing-*) were drawn for a taller torso, so on these round bodies they started at eye level and covered the face.
   // They are now moved down to start just below the mouth, and clipped to the body outline. Costume pieces (cs-*) were drawn in place already.
-  const NO_CLIP_OUTFITS = ['clothing-scarf'];
+  const NO_CLIP_OUTFITS = ['clothing-scarf', 'clothing-cape'];
   function renderClothingLayer(clothingId, cX, cY, rx, ry, palette, stage) {
     const raw = renderClothingLayerRaw(clothingId, cX, cY, rx, ry, palette, stage);
     if (!raw) return raw;
@@ -2131,8 +2216,10 @@
       return `
         <!-- Hero Adventure Cape -->
         <g filter="url(#mf-shadow)">
-          <path d="M 60 110 L 40 160 L 160 160 L 140 110 Z" fill="#dc2626" opacity="0.9" />
-          <circle cx="100" cy="110" r="4" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+          <!-- the cape cloth itself is drawn behind the body (renderCapeBack); in front only the collar and the gold clasp show -->
+          <path d="M 84 106 Q 92 112 100 112 Q 108 112 116 106 L 112 115 Q 100 119 88 115 Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <circle cx="100" cy="113" r="4.2" fill="#facc15" stroke="#a16207" stroke-width="1.5" />
+          <circle cx="98.8" cy="111.8" r="1.2" fill="#fffbeb" opacity="0.9" />
         </g>
       `;
     }
@@ -2590,6 +2677,169 @@
   }
 
   // --- FOREGROUND ACCESSORIES ---
+  // --- SHOP ITEMS THAT ONLY HAD A 3D PICTURE ---
+  // These hats, glasses, neckwear and hand items are sold in the store but were drawn only for the illustrated (3D) monsters,
+  // so on the drawn monsters they were invisible. They are drawn here, placed from the same head / eye / neck / paw points as the others.
+  function extraHatMarkup(hatId, ht) {
+    const wrap = (inner, f) => `<g class="monster-hat" filter="url(#${f || 'mf-shadow'})">${inner}</g>`;
+    switch (hatId) {
+      case 'hat-party':
+        return wrap(`
+          <polygon points="82,${ht + 5} 100,${ht - 34} 118,${ht + 5}" fill="#ec4899" stroke="#9d174d" stroke-width="2" stroke-linejoin="round" />
+          <path d="M 88 ${ht - 8} L 112 ${ht - 4} M 93 ${ht - 20} L 108 ${ht - 17}" stroke="#fde047" stroke-width="3.2" stroke-linecap="round" />
+          <circle cx="92" cy="${ht - 1}" r="1.8" fill="#67e8f9" /><circle cx="106" cy="${ht - 11}" r="1.8" fill="#67e8f9" />
+          <circle cx="100" cy="${ht - 36}" r="5" fill="#fde047" stroke="#ca8a04" stroke-width="1.4" />
+          <ellipse cx="100" cy="${ht + 5}" rx="19" ry="3" fill="#9d174d" opacity="0.5" />`);
+      case 'hat-beanie':
+        return wrap(`
+          <path d="M 72 ${ht + 9} C 72 ${ht - 24} 128 ${ht - 24} 128 ${ht + 9} Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.2" />
+          <path d="M 86 ${ht - 12} Q 100 ${ht - 18} 114 ${ht - 12}" stroke="#fca5a5" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.8" />
+          <rect x="70" y="${ht + 1}" width="60" height="11" rx="5" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.8" />
+          <path d="M 76 ${ht + 3} V ${ht + 10} M 84 ${ht + 3} V ${ht + 10} M 92 ${ht + 3} V ${ht + 10} M 100 ${ht + 3} V ${ht + 10} M 108 ${ht + 3} V ${ht + 10} M 116 ${ht + 3} V ${ht + 10} M 124 ${ht + 3} V ${ht + 10}" stroke="#7f1d1d" stroke-width="1.2" opacity="0.6" />
+          <circle cx="100" cy="${ht - 20}" r="6.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4" />`);
+      case 'hat-chef':
+        return wrap(`
+          <circle cx="86" cy="${ht - 16}" r="11" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <circle cx="114" cy="${ht - 16}" r="11" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <circle cx="100" cy="${ht - 24}" r="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <rect x="80" y="${ht - 12}" width="40" height="17" rx="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8" />
+          <path d="M 90 ${ht - 8} V ${ht + 2} M 100 ${ht - 8} V ${ht + 2} M 110 ${ht - 8} V ${ht + 2}" stroke="#e2e8f0" stroke-width="1.6" />
+          <circle cx="94" cy="${ht - 30}" r="3" fill="#ffffff" opacity="0.9" />`);
+      case 'hat-sailor':
+        return wrap(`
+          <path d="M 74 ${ht + 7} Q 100 ${ht - 18} 126 ${ht + 7} Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+          <rect x="74" y="${ht}" width="52" height="9" rx="4" fill="#1e3a8a" stroke="#172554" stroke-width="1.6" />
+          <path d="M 96 ${ht - 9} Q 100 ${ht - 12} 104 ${ht - 9} M 100 ${ht - 12} V ${ht - 4} M 96 ${ht - 5} Q 100 ${ht - 2} 104 ${ht - 5}" stroke="#1e3a8a" stroke-width="1.8" fill="none" stroke-linecap="round" />`);
+      case 'hat-propeller':
+        return wrap(`
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="#facc15" stroke="#a16207" stroke-width="2" />
+          <path d="M 100 ${ht - 13} C 90 ${ht - 13} 84 ${ht - 4} 84 ${ht + 7} L 100 ${ht + 7} Z" fill="#ef4444" />
+          <path d="M 100 ${ht - 13} C 110 ${ht - 13} 116 ${ht - 4} 116 ${ht + 7} L 100 ${ht + 7} Z" fill="#3b82f6" />
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="none" stroke="#a16207" stroke-width="2" />
+          <line x1="100" y1="${ht - 13}" x2="100" y2="${ht - 21}" stroke="#475569" stroke-width="2.4" />
+          <ellipse cx="89" cy="${ht - 22}" rx="11" ry="3.2" fill="#22c55e" stroke="#15803d" stroke-width="1.2" />
+          <ellipse cx="111" cy="${ht - 22}" rx="11" ry="3.2" fill="#a855f7" stroke="#7e22ce" stroke-width="1.2" />
+          <circle cx="100" cy="${ht - 22}" r="2.6" fill="#f8fafc" stroke="#475569" stroke-width="1" />`);
+      case 'hat-cowboy':
+        return wrap(`
+          <path d="M 54 ${ht + 4} Q 100 ${ht + 18} 146 ${ht + 4} Q 140 ${ht + 13} 100 ${ht + 14} Q 60 ${ht + 13} 54 ${ht + 4} Z" fill="#a16207" stroke="#713f12" stroke-width="2" />
+          <path d="M 78 ${ht + 7} C 76 ${ht - 22} 90 ${ht - 20} 100 ${ht - 13} C 110 ${ht - 20} 124 ${ht - 22} 122 ${ht + 7} Z" fill="#ca8a04" stroke="#713f12" stroke-width="2" />
+          <rect x="78" y="${ht}" width="44" height="6" fill="#451a03" />
+          <polygon points="100,${ht - 1} 102,${ht + 3} 98,${ht + 3}" fill="#facc15" />`);
+      case 'hat-pirate':
+        return wrap(`
+          <path d="M 62 ${ht + 6} Q 70 ${ht - 22} 100 ${ht - 26} Q 130 ${ht - 22} 138 ${ht + 6} Q 100 ${ht - 4} 62 ${ht + 6} Z" fill="#111827" stroke="#000000" stroke-width="2" />
+          <path d="M 66 ${ht + 3} Q 100 ${ht - 7} 134 ${ht + 3}" stroke="#facc15" stroke-width="2.2" fill="none" />
+          <circle cx="100" cy="${ht - 12}" r="5" fill="#f8fafc" />
+          <circle cx="98" cy="${ht - 13}" r="1.2" fill="#111827" /><circle cx="102" cy="${ht - 13}" r="1.2" fill="#111827" />
+          <path d="M 93 ${ht - 4} L 107 ${ht - 9} M 93 ${ht - 9} L 107 ${ht - 4}" stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round" />`);
+      case 'hat-santa':
+        return wrap(`
+          <path d="M 76 ${ht + 6} C 78 ${ht - 26} 120 ${ht - 34} 134 ${ht - 12} C 128 ${ht - 14} 124 ${ht - 8} 124 ${ht + 6} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+          <rect x="72" y="${ht + 1}" width="56" height="10" rx="5" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.6" />
+          <circle cx="134" cy="${ht - 12}" r="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.4" />`);
+      case 'hat-tophat':
+        return wrap(`
+          <ellipse cx="100" cy="${ht + 5}" rx="28" ry="5.5" fill="#111827" stroke="#000000" stroke-width="1.8" />
+          <rect x="83" y="${ht - 28}" width="34" height="33" rx="2" fill="#1f2937" stroke="#000000" stroke-width="1.8" />
+          <ellipse cx="100" cy="${ht - 28}" rx="17" ry="3.5" fill="#374151" stroke="#000000" stroke-width="1.4" />
+          <rect x="83" y="${ht - 5}" width="34" height="6" fill="#dc2626" />
+          <line x1="88" y1="${ht - 24}" x2="88" y2="${ht - 8}" stroke="#ffffff" stroke-width="1.6" opacity="0.35" />`);
+      case 'hat-astro':
+        return wrap(`
+          <path d="M 74 ${ht + 7} C 74 ${ht - 20} 126 ${ht - 20} 126 ${ht + 7} Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+          <path d="M 100 ${ht + 7} Q 128 ${ht + 4} 140 ${ht + 10} Q 126 ${ht + 13} 100 ${ht + 11} Z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.8" />
+          <rect x="74" y="${ht + 3}" width="52" height="5" fill="#f97316" />
+          <polygon points="100,${ht - 14} 102.5,${ht - 8} 108.5,${ht - 8} 103.5,${ht - 4.5} 105.5,${ht + 1.5} 100,${ht - 2} 94.5,${ht + 1.5} 96.5,${ht - 4.5} 91.5,${ht - 8} 97.5,${ht - 8}" fill="#facc15" stroke="#ca8a04" stroke-width="1" />`);
+    }
+    return '';
+  }
+
+  function extraGlassesMarkup(glassesId, lx, rx, gY) {
+    if (glassesId === 'glasses-heart') {
+      const heart = (x) => `<path d="M ${x} ${gY + 9} C ${x - 15} ${gY - 1} ${x - 12} ${gY - 13} ${x} ${gY - 6} C ${x + 12} ${gY - 13} ${x + 15} ${gY - 1} ${x} ${gY + 9} Z" fill="#f43f5e" fill-opacity="0.85" stroke="#9f1239" stroke-width="2" />
+        <ellipse cx="${x - 5}" cy="${gY - 4}" rx="2.6" ry="1.6" fill="#ffffff" opacity="0.7" />`;
+      return `<g class="monster-eyewear" filter="url(#mf-shadow)">
+        <line x1="${lx + 10}" y1="${gY - 2}" x2="${rx - 10}" y2="${gY - 2}" stroke="#9f1239" stroke-width="2.4" stroke-linecap="round" />
+        ${heart(lx)}${heart(rx)}</g>`;
+    }
+    return '';
+  }
+
+  function extraAccessoryMarkup(accId, g) {
+    const neckY = g.eyeY + 13, ht = g.topY, hx = 100 + g.cW + 2, hy = g.pawY - 2;   // neck point, head top, right paw
+    const wrap = (inner, f) => `<g class="monster-accessory" filter="url(#${f || 'mf-shadow'})">${inner}</g>`;
+    switch (accId) {
+      case 'neck-bowtie':
+        return wrap(`
+          <path d="M 100 ${neckY + 4} L 86 ${neckY - 3} L 86 ${neckY + 11} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M 100 ${neckY + 4} L 114 ${neckY - 3} L 114 ${neckY + 11} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.6" stroke-linejoin="round" />
+          <circle cx="90" cy="${neckY + 1}" r="1.4" fill="#ffffff" /><circle cx="90" cy="${neckY + 7}" r="1.4" fill="#ffffff" />
+          <circle cx="110" cy="${neckY + 1}" r="1.4" fill="#ffffff" /><circle cx="110" cy="${neckY + 7}" r="1.4" fill="#ffffff" />
+          <rect x="96.5" y="${neckY}" width="7" height="8" rx="2" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.4" />`);
+      case 'neck-bell':
+        return wrap(`
+          <path d="M 80 ${neckY - 2} Q 100 ${neckY + 9} 120 ${neckY - 2}" stroke="#dc2626" stroke-width="5" fill="none" stroke-linecap="round" />
+          <circle cx="100" cy="${neckY + 10}" r="5.5" fill="#facc15" stroke="#a16207" stroke-width="1.6" />
+          <line x1="95" y1="${neckY + 10}" x2="105" y2="${neckY + 10}" stroke="#a16207" stroke-width="1.2" />
+          <circle cx="100" cy="${neckY + 13}" r="1.2" fill="#78350f" /><circle cx="98" cy="${neckY + 8}" r="1.3" fill="#fffbeb" opacity="0.9" />`);
+      case 'neck-bandana':
+        return wrap(`
+          <path d="M 82 ${neckY - 3} Q 100 ${neckY + 3} 118 ${neckY - 3} L 100 ${neckY + 15} Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.8" stroke-linejoin="round" />
+          <circle cx="95" cy="${neckY + 3}" r="1.3" fill="#ffffff" /><circle cx="104" cy="${neckY + 2}" r="1.3" fill="#ffffff" /><circle cx="100" cy="${neckY + 8}" r="1.3" fill="#ffffff" />
+          <path d="M 118 ${neckY - 3} L 124 ${neckY - 8} M 118 ${neckY - 3} L 125 ${neckY}" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" />`);
+      case 'acc-balloon':
+        return wrap(`
+          <path d="M ${hx} ${hy} Q ${hx + 10} ${hy - 22} ${hx + 6} ${ht + 14}" stroke="#94a3b8" stroke-width="1.2" fill="none" />
+          <ellipse cx="${hx + 6}" cy="${ht + 1}" rx="11" ry="13" fill="#ef4444" stroke="#991b1b" stroke-width="1.8" />
+          <polygon points="${hx + 4},${ht + 14} ${hx + 8},${ht + 14} ${hx + 6},${ht + 11}" fill="#991b1b" />
+          <ellipse cx="${hx + 2}" cy="${ht - 4}" rx="3" ry="4.5" fill="#ffffff" opacity="0.55" />`);
+      case 'acc-icecream':
+        return wrap(`
+          <polygon points="${hx - 6},${hy - 10} ${hx + 6},${hy - 10} ${hx},${hy + 6}" fill="#f59e0b" stroke="#b45309" stroke-width="1.4" stroke-linejoin="round" />
+          <path d="M ${hx - 4} ${hy - 7} L ${hx + 3} ${hy - 1} M ${hx + 4} ${hy - 7} L ${hx - 3} ${hy - 1}" stroke="#b45309" stroke-width="0.9" />
+          <circle cx="${hx}" cy="${hy - 14}" r="7" fill="#f9a8d4" stroke="#db2777" stroke-width="1.4" />
+          <circle cx="${hx}" cy="${hy - 23}" r="5.5" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" />
+          <circle cx="${hx + 1}" cy="${hy - 29}" r="2" fill="#dc2626" />`);
+      case 'acc-ball':
+        return wrap(`
+          <circle cx="${100 - g.bW - 6}" cy="${g.botY - 6}" r="9" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+          <polygon points="${100 - g.bW - 6},${g.botY - 10} ${100 - g.bW - 2},${g.botY - 7} ${100 - g.bW - 3.5},${g.botY - 2.5} ${100 - g.bW - 8.5},${g.botY - 2.5} ${100 - g.bW - 10},${g.botY - 7}" fill="#1e293b" />
+          <path d="M ${100 - g.bW - 6} ${g.botY - 10} V ${g.botY - 15} M ${100 - g.bW - 2} ${g.botY - 7} L ${100 - g.bW + 3} ${g.botY - 8} M ${100 - g.bW - 10} ${g.botY - 7} L ${100 - g.bW - 15} ${g.botY - 8}" stroke="#334155" stroke-width="1.1" />`);
+      case 'acc-paintbrush':
+        return wrap(`
+          <g transform="translate(${hx - 2}, ${hy - 26}) rotate(18)">
+            <rect x="-2" y="10" width="4.5" height="24" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1" />
+            <rect x="-2.5" y="6" width="5.5" height="5" fill="#cbd5e1" stroke="#64748b" stroke-width="0.8" />
+            <path d="M -3 6 Q 0 -6 3.5 6 Z" fill="#8b5cf6" stroke="#5b21b6" stroke-width="1" />
+          </g>`);
+      case 'acc-pencil':
+        return wrap(`
+          <g transform="translate(${hx - 2}, ${hy - 26}) rotate(20)">
+            <rect x="-3" y="4" width="6.5" height="26" fill="#facc15" stroke="#a16207" stroke-width="1" />
+            <rect x="-3" y="28" width="6.5" height="5" fill="#f472b6" stroke="#be185d" stroke-width="0.8" />
+            <polygon points="-3,4 3.5,4 0.25,-5" fill="#fde68a" stroke="#a16207" stroke-width="0.8" />
+            <polygon points="-1,-1.5 1.5,-1.5 0.25,-5" fill="#334155" />
+          </g>`);
+      case 'acc-umbrella': {
+        const ux = hx + 4, uy = ht + 8;
+        return wrap(`
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux + 24} ${uy} Z" fill="#ef4444" />
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux - 8} ${uy - 20} L ${ux} ${uy} Z" fill="#f97316" />
+          <path d="M ${ux - 8} ${uy - 20} A 24 22 0 0 1 ${ux + 8} ${uy - 20} L ${ux} ${uy} Z" fill="#facc15" />
+          <path d="M ${ux + 8} ${uy - 20} A 24 22 0 0 1 ${ux + 24} ${uy} L ${ux} ${uy} Z" fill="#22c55e" />
+          <path d="M ${ux - 24} ${uy} A 24 22 0 0 1 ${ux + 24} ${uy}" fill="none" stroke="#1e293b" stroke-width="1.6" />
+          <path d="M ${ux} ${uy} V ${hy + 2} Q ${ux} ${hy + 7} ${ux - 5} ${hy + 6}" stroke="#475569" stroke-width="2.2" fill="none" stroke-linecap="round" />`);
+      }
+      case 'acc-magnifier':
+        return wrap(`
+          <line x1="${hx}" y1="${hy + 4}" x2="${hx + 6}" y2="${hy - 10}" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+          <circle cx="${hx + 9}" cy="${hy - 18}" r="9" fill="#bae6fd" fill-opacity="0.6" stroke="#475569" stroke-width="2.6" />
+          <path d="M ${hx + 4} ${hy - 22} Q ${hx + 7} ${hy - 25} ${hx + 11} ${hy - 24}" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round" />`);
+    }
+    return '';
+  }
+
   function renderForegroundAccessories(stage, equipped, palette) {
     let hatMarkup = '';
     let glassesMarkup = '';
@@ -2609,7 +2859,7 @@
       else hatId = 'none';
     }
 
-    const glassesId = equipped.glasses || 'none';
+    const glassesId = equipped.glasses === 'glasses-sun' ? 'glasses-sunglasses' : (equipped.glasses || 'none');   // the store calls the dark shades glasses-sun
     const accId = equipped.accessory || 'none';
 
     // Hats dynamically positioned on creature crown
@@ -2691,6 +2941,8 @@
       `;
     }
 
+    if (!hatMarkup && hatId && hatId !== 'none') hatMarkup = extraHatMarkup(hatId, headTop);
+
     // Glasses & Eyewear dynamically centered over the eyes (aligned squarely over eye line)
     const gY = eyeY - 2.5;
     if (glassesId === 'glasses-round' || glassesId === 'acc-glasses-round' || glassesId === 'glasses-wire' || glassesId === 'round_glasses') {
@@ -2742,6 +2994,8 @@
         </g>
       `;
     }
+
+    if (!glassesMarkup && glassesId !== 'none') glassesMarkup = extraGlassesMarkup(glassesId, leftEyeX, rightEyeX, gY);
 
     // Handheld & Special Accessories & Neckwear
     if (accId === 'neck-star') {
@@ -2857,6 +3111,9 @@
         </g>
       `;
     }
+
+    if (!accessoryMarkup && accId !== 'none') accessoryMarkup = extraAccessoryMarkup(accId, g);
+    accessoryMarkup = renderSatchelFront(stage, equipped.backpack) + accessoryMarkup;
 
     // New costume sets (js/monster-costumes.js)
     if (typeof window !== 'undefined' && window.MonsterCostumes) {
@@ -3457,14 +3714,17 @@
   }
 
   function renderMonsterEvolutionStagesBanner() {
+    // the XP numbers come from js/evolution-levels.js so the showcase always matches the real levels
+    const XPL = (typeof window !== 'undefined' && Array.isArray(window.EAA_EVOLUTION_XP) && window.EAA_EVOLUTION_XP.length === 7) ? window.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
+    const xpLabel = (i) => Number(XPL[i]).toLocaleString('en-US') + ' XP';
     const stages = [
-      { level: 1, name: 'Mystery Egg', xp: '0 XP', sub: 'A new adventure begins...', stageKey: 'egg' },
-      { level: 2, name: 'Cracking Egg', xp: '30 XP', sub: 'Life is waking up!', stageKey: 'cracking_egg' },
-      { level: 3, name: 'Baby Monster', xp: '200 XP', sub: 'Small steps, big dreams!', stageKey: 'baby' },
-      { level: 4, name: 'Growing Monster', xp: '500 XP', sub: 'Stronger every day!', stageKey: 'growing' },
-      { level: 5, name: 'Adventurer Monster', xp: '1,000 XP', sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
-      { level: 6, name: 'Advanced Monster', xp: '2,000 XP', sub: 'New powers, new places!', stageKey: 'advanced' },
-      { level: 7, name: 'Ultimate Monster', xp: '5,000 XP', sub: 'A true hero!', stageKey: 'ultimate' }
+      { level: 1, name: 'Mystery Egg', xp: xpLabel(0), sub: 'A new adventure begins...', stageKey: 'egg' },
+      { level: 2, name: 'Cracking Egg', xp: xpLabel(1), sub: 'Life is waking up!', stageKey: 'cracking_egg' },
+      { level: 3, name: 'Baby Monster', xp: xpLabel(2), sub: 'Small steps, big dreams!', stageKey: 'baby' },
+      { level: 4, name: 'Growing Monster', xp: xpLabel(3), sub: 'Stronger every day!', stageKey: 'growing' },
+      { level: 5, name: 'Adventurer Monster', xp: xpLabel(4), sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
+      { level: 6, name: 'Advanced Monster', xp: xpLabel(5), sub: 'New powers, new places!', stageKey: 'advanced' },
+      { level: 7, name: 'Ultimate Monster', xp: xpLabel(6), sub: 'A true hero!', stageKey: 'ultimate' }
     ];
 
     return `

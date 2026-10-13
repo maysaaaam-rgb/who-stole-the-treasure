@@ -2122,24 +2122,26 @@
   // Single Source of Truth: Evaluated strictly from student.xp
   // =========================================================================
 
+  // XP for each level comes from js/evolution-levels.js (one list for the whole platform); the same numbers are kept here as a fallback.
+  const XPL = (typeof window !== 'undefined' && Array.isArray(window.EAA_EVOLUTION_XP) && window.EAA_EVOLUTION_XP.length === 7) ? window.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
   const EVOLUTION_TIERS = [
-    { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, maxXP: 29, isEgg: true, spriteType: "egg" },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, maxXP: 199, isEgg: true, spriteType: "cracking_egg" },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, maxXP: 499, isEgg: false, spriteType: "baby" },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, maxXP: 999, isEgg: false, spriteType: "growing" },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, maxXP: 1999, isEgg: false, spriteType: "adventurer" },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, maxXP: 4999, isEgg: false, spriteType: "advanced" },
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
+    { level: 1, name: "Level 1 • Mystery Egg", minXP: XPL[0], maxXP: XPL[1] - 1, isEgg: true, spriteType: "egg" },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: XPL[1], maxXP: XPL[2] - 1, isEgg: true, spriteType: "cracking_egg" },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: XPL[2], maxXP: XPL[3] - 1, isEgg: false, spriteType: "baby" },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: XPL[3], maxXP: XPL[4] - 1, isEgg: false, spriteType: "growing" },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: XPL[4], maxXP: XPL[5] - 1, isEgg: false, spriteType: "adventurer" },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: XPL[5], maxXP: XPL[6] - 1, isEgg: false, spriteType: "advanced" },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: XPL[6], maxXP: Infinity, isEgg: false, spriteType: "ultimate" }
   ];
 
   // 1. Strict Stage Thresholds using Lifetime Cumulative XP (Active + Archived)
   const EVOLUTION_THRESHOLDS = [
-    { level: 7, name: "Level 7 • Ultimate Monster", minXP: 5000, isEgg: false },
-    { level: 6, name: "Level 6 • Advanced Monster", minXP: 2000, isEgg: false },
-    { level: 5, name: "Level 5 • Adventurer Monster", minXP: 1000, isEgg: false },
-    { level: 4, name: "Level 4 • Growing Monster", minXP: 500, isEgg: false },
-    { level: 3, name: "Level 3 • Baby Monster", minXP: 200, isEgg: false },
-    { level: 2, name: "Level 2 • Cracking Egg", minXP: 30, isEgg: true },
+    { level: 7, name: "Level 7 • Ultimate Monster", minXP: XPL[6], isEgg: false },
+    { level: 6, name: "Level 6 • Advanced Monster", minXP: XPL[5], isEgg: false },
+    { level: 5, name: "Level 5 • Adventurer Monster", minXP: XPL[4], isEgg: false },
+    { level: 4, name: "Level 4 • Growing Monster", minXP: XPL[3], isEgg: false },
+    { level: 3, name: "Level 3 • Baby Monster", minXP: XPL[2], isEgg: false },
+    { level: 2, name: "Level 2 • Cracking Egg", minXP: XPL[1], isEgg: true },
     { level: 1, name: "Level 1 • Mystery Egg", minXP: 0, isEgg: true }
   ];
 
@@ -2313,9 +2315,9 @@
     student.progress = stage.progressPct;
     student.remainingXP = stage.xpToNext;
     student.xpToNext = stage.xpToNext;
-    student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - 30) / (200 - 30)) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
+    student.crackProgress = stage.level >= 3 ? 100 : (stage.level === 2 ? Math.min(100, Math.round(((stage.lifetimeXP - XPL[1]) / (XPL[2] - XPL[1])) * 100)) : Math.min(95, Math.round((stage.lifetimeXP / 30) * 100)));
     const nextTier = EVOLUTION_THRESHOLDS.find(t => t.level === stage.level + 1);
-    student.nextThreshold = stage.level >= 7 ? 5000 : (nextTier ? nextTier.minXP : 5000);
+    student.nextThreshold = stage.level >= 7 ? XPL[6] : (nextTier ? nextTier.minXP : XPL[6]);
 
     if (stage.isEgg) {
       student.equippedMonster = stage.level === 1 ? 'Mystery Egg' : 'Cracking Egg';
@@ -2693,7 +2695,7 @@
       level: 1,
       name: 'Mystery Egg',
       stageKey: 'egg',
-      xpRequired: 0,
+      xpRequired: XPL[0],
       description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
       subtitle: 'A new adventure begins...',
       image: 'assets/monsters/stage-1-mystery-egg.png',
@@ -2706,7 +2708,7 @@
       level: 2,
       name: 'Cracking Egg',
       stageKey: 'cracking_egg',
-      xpRequired: 30,
+      xpRequired: XPL[1],
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
       subtitle: 'Life is waking up!',
       image: 'assets/monsters/stage-2-cracking-egg.png',
@@ -2719,7 +2721,7 @@
       level: 3,
       name: 'Baby Monster',
       stageKey: 'baby',
-      xpRequired: 200,
+      xpRequired: XPL[2],
       description: 'Hatched! A cute, chubby baby monster pops out into the English Adventure world.',
       subtitle: 'Small steps, big dreams!',
       image: 'assets/packs/characters/emberwing_stage_baby.png',
@@ -2732,7 +2734,7 @@
       level: 4,
       name: 'Growing Monster',
       stageKey: 'growing',
-      xpRequired: 500,
+      xpRequired: XPL[3],
       description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
       subtitle: 'Stronger every day!',
       image: 'assets/monsters/stage-4-growing-monster.png',
@@ -2745,7 +2747,7 @@
       level: 5,
       name: 'Adventurer Monster',
       stageKey: 'adventurer',
-      xpRequired: 1000,
+      xpRequired: XPL[4],
       description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
       subtitle: 'Ready for bigger quests!',
       image: 'assets/monsters/stage-5-adventurer-monster.png',
@@ -2758,7 +2760,7 @@
       level: 6,
       name: 'Advanced Monster',
       stageKey: 'advanced',
-      xpRequired: 2000,
+      xpRequired: XPL[5],
       description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
       subtitle: 'New powers, new places!',
       image: 'assets/monsters/stage-6-advanced-monster.png',
@@ -2771,7 +2773,7 @@
       level: 7,
       name: 'Ultimate Monster',
       stageKey: 'ultimate',
-      xpRequired: 5000,
+      xpRequired: XPL[6],
       description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
       subtitle: 'A true hero!',
       image: 'assets/monsters/stage-7-ultimate-monster.png',
@@ -10437,7 +10439,7 @@
               // Ensure standardized progression thresholds are applied
               merged.progressionLevels.forEach(lvl => {
                 const def = DEFAULT_PROGRESSION_LEVELS.find(d => d.id === lvl.id || d.level === lvl.level);
-                if (def && (lvl.level <= 4 || lvl.id === 'lvl-2' || lvl.id === 'lvl-3' || lvl.id === 'lvl-4' || lvl.id === 'lvl-1')) {
+                if (def && /^lvl-[1-7]$/.test(String(def.id || ''))) {   // all 7 standard levels follow js/evolution-levels.js (Level 7 moved to 3,500 on 2026-10-13)
                   lvl.xpRequired = def.xpRequired;
                 }
               });
