@@ -50,7 +50,7 @@
     { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' },
     { id: 'arctic', label: 'Arctic Rescue', title: 'Unit 3 homework: The Arctic Rescue (game)', grade: 0, kind: 'xp' }
   ];
-  var sheet = { data: null, error: '' }, classGrade = 0;
+  var sheet = { data: null, error: '' }, classGrade = 0, classQuiet = 0;   // classQuiet: days since ANY pupil of the class got XP (only when that is 7 or more)
   function gradeOfClass(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
   function hwList() { return HW.filter(function (h) { return !h.grade || h.grade === classGrade; }); }
   /** One pupil, one homework: { k: done | part | open | none | wait, txt (short, for the table), say (full words) } */
@@ -85,7 +85,8 @@
   /** One status from what really happened: XP over the days and the homework from the sheets. (The old English Progress Check scores are no longer used.) */
   function diagnose(r) {
     var why = [], status = 'ok', missing = [], sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; });
-    if (r.a.since >= 7) { status = 'help'; why.push(r.a.since >= 999 ? 'No XP yet' : 'No XP for ' + r.a.since + ' days'); }
+    if (r.a.since >= 7 && classQuiet) { status = 'quiet'; why.push('The whole class has had no XP for ' + classQuiet + ' days'); }
+    else if (r.a.since >= 7) { status = 'help'; why.push(r.a.since >= 999 ? 'No XP yet' : 'No XP for ' + r.a.since + ' days'); }
     else if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
     if (sheet.data) sheetHw.forEach(function (h) { if (hwState(r, h).k !== 'done') missing.push(h); });
     if (status === 'ok' && sheet.data && sheetHw.length && !missing.length && r.a.last > 0) { status = 'star'; why.push('All homework done and active this week'); }
@@ -109,13 +110,15 @@
         ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
       };
     });
+    var newest = rows.length ? Math.min.apply(null, rows.map(function (r) { return r.a.since; })) : 0;
+    classQuiet = rows.length && newest >= 7 && newest < 999 ? newest : 0;
     rows.forEach(function (r) { r.d = diagnose(r); });
     return rows;
   }
 
   // ------------------------------------------------------------- pieces
-  var STATUS = { star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'] };
-  var STATUS_ORDER = { help: 0, slow: 1, ok: 2, star: 3 };
+  var STATUS = { star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'], quiet: ['No XP lately', 'cc-t4'] };
+  var STATUS_ORDER = { help: 0, slow: 1, quiet: 2, ok: 3, star: 4 };
   function ago(ts) {
     var d = Math.floor((dayStart(Date.now()) - dayStart(ts)) / DAY);
     return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
@@ -174,7 +177,7 @@
     '.cc-pal ul{list-style:none;margin:0;padding:6px;max-height:340px;overflow:auto}.cc-pal li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:#aab1c3;font-weight:500}' +
     '.cc-pal li.on{background:#1a1d2e;color:#fff}.cc-pal li small{margin-left:auto;color:#6b7387}' +
     '.cc td,.cc th,.cc table,.cc tbody tr{color:var(--t);background:transparent}.cc th{color:#7c8498}.cc button,.cc input{font-family:Inter,system-ui,sans-serif}.cc-lv{color:#8b93a7!important}' +
-    '.cc-t0{background:#1d2450;color:#a5b4fc}.cc-dim{color:#7c8498;font-size:12px}.cc-why{color:#7c8498;font-size:11px;margin-top:3px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.cc-t0{background:#1d2450;color:#a5b4fc}.cc-t4{background:#1b1e2a;color:#9aa3b8}.cc-dim{color:#7c8498;font-size:12px}.cc-why{color:#7c8498;font-size:11px;margin-top:3px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '.cc-nm{min-width:170px}.cc td,.cc th{padding-left:9px!important;padding-right:9px!important}.cc-grid{grid-template-columns:minmax(0,2.3fr) minmax(0,1fr)!important}.cc-lvl{white-space:nowrap}.cc-why{max-width:120px}' +
     '.cc-lvl{display:flex;align-items:center;gap:6px;font-weight:500;font-size:11px;color:#7c8498;margin-top:3px}.cc-lvl .cc-bar{display:inline-block;margin:0;width:60px}.cc-bar i{display:block}' +
     '.cc-flag{margin-left:6px;color:#fbbf24;font-size:12px;cursor:help}.cc-nm span{min-width:0}' +
@@ -329,7 +332,8 @@
     var ws = r.ws.length ? r.ws.map(function (w) { return esc(w.name) + ': <b>' + w.score + '/10</b>'; }).join('<br>') : '<span class="cc-dim">No worksheet score entered yet.</span>';
     var tally = []; try { tally = (S().getStudentClassroomSkillsTally(r.id) || []).filter(function (t) { return t.category === 'positive' || !t.category; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3); } catch (e) { tally = []; }
     var tips = [];
-    if (r.a.since >= 7) tips.push('<b>No XP for ' + (r.a.since >= 999 ? 'a long time' : r.a.since + ' days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
+    if (r.a.since >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
+    else if (r.a.since >= 7) tips.push('<b>No XP for ' + (r.a.since >= 999 ? 'a long time' : r.a.since + ' days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
     else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
@@ -349,6 +353,12 @@
     ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
   }
 
+  /** When NO pupil of the class got XP for a week, say it once for the class instead of marking every pupil "needs help". */
+  function quietBanner(cls) {
+    if (!classQuiet) return '';
+    var last = new Date(dayStart(Date.now()) - classQuiet * DAY).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#14182b;border:1px solid #2a3057;color:#c7cdf5;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⏸ <b>' + esc(cls.name) + ' has had no XP for ' + classQuiet + ' days</b> (the last award was on ' + last + '). Pupils are shown as "No XP lately" instead of "Needs help". If you taught this class since then, the XP may simply not have been entered yet.</span></div>';
+  }
   function kpiHtml() {
     var cls = S().getActiveClass(), attRecs = S().getAttendanceRecords ? (S().getAttendanceRecords(cls.id) || []) : [];
     var att = S().getClassAttendanceRate ? S().getClassAttendanceRate(cls.id) : 0;
@@ -393,13 +403,13 @@
     container.innerHTML = '<div class="cc">' +
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
-      (xpBanner(cls)) +
+      (xpBanner(cls)) + quietBanner(cls) +
       '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
         '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + '</span>' +
-        '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + chip('star', 'Doing great') + '</span></h3>' +
+        '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + (classQuiet ? chip('quiet', 'No XP lately') : '') + chip('star', 'Doing great') + '</span></h3>' +
         '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done · 👀 opened only · 🎤 sent a recording. Click a pupil for the full picture.</div></div>' +
       '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml() + '</div>';
     loadSheet();
