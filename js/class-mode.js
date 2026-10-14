@@ -96,7 +96,11 @@
     'worksheet-store-g4-u12': ART + 'h_homework_book.webp',
     'telephone-pictionary': ART + 'h_pencil.webp',
     'arcade-g3-u2': ART + 'r_chest.webp',
-    'arcade-g4-u2': ART + 'r_chest.webp'
+    'arcade-g4-u2': ART + 'r_chest.webp',
+    'unit3-g4-money-quiz-4skills': 'unit3-g3-lessons/art/w_jar_saving.webp',
+    'lingo-g3-u3-review': 'lingo-g3-u3-review/cast/bubbles_idle.webp',
+    'unit3-money-mission': 'unit3-g3-lessons/art/s_find_bill.webp',
+    'unit3-arctic-homework': 'unit3-g4-lessons/art/c_polar_bear.webp'
   };
   /* One picture per card in assets/shelf/<card id>.webp (transparent 3D stickers); a card without a file keeps its emoji. */
   var SHELF_ART = [
