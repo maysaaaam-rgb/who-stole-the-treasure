@@ -13,7 +13,7 @@
   /* which homework card each sheet key feeds, and how many steps there are */
   var SOURCES = [
     { hw: 'hw-alice-tea-party-w1', key: 'alice-tea-party-a1plus', steps: 5, label: 'Week 1' },
-    { hw: 'hw-alice-tea-party-w2', key: 'alice-tea-party-w2', steps: 3, label: 'Week 2' },
+    { hw: 'hw-alice-tea-party-w2', key: 'alice-tea-party-w2', steps: 3, label: 'Week 2', recordings: true },
     { hw: 'hw-chuseok-w2-cooking', key: 'chuseok-w2-cooking', steps: 1, label: 'Chuseok cooking', src: 'cook' }
   ];
   /* The cooking sheet has its own receiver. Until its status link is switched on, the pupils who had a row in the sheet on 12 Oct 2026
@@ -27,7 +27,27 @@
     return fetch(COOK.submitUrl + '?action=status&token=' + encodeURIComponent(COOK.token), { cache: 'no-store' }).then(function (r) { return r.json(); })
       .then(function (d) { return d && d.ok && d.status ? d.status : snap; }, function () { return snap; });
   }
-  var CLASS_FIX = { 'student-4a-319': '4b' };    // pupils whose id says the other class (Ozan T., 208, is in 4B: checked with the teacher 14 Oct)
+  /* Pupils on the sheet's "Recordings" tab on 14 Oct 2026 (sheet id: [count, last date]). Used until the sheet's script sends recordings itself. */
+  var REC_SNAPSHOT = { '4b-ali': [1, '12 Oct'], '4a-defne': [1, '12 Oct'], '4b-utku': [1, '13 Oct'], '4a-belis': [1, '13 Oct'], '4b-ertugrul': [1, '13 Oct'],
+    '4a-emire': [1, '13 Oct'], '4b-kerem': [1, '13 Oct'], '4b-mina': [1, '14 Oct'], '4b-ozan': [1, '14 Oct'], '4a-emirb': [1, '14 Oct'] };
+  function recordingsOf(status) {
+    var out = {}, fromSheet = false;
+    Object.keys(status || {}).forEach(function (sid) { var r = status[sid] && status[sid].recordings; if (r && r.count) { fromSheet = true; out[sid] = { count: Number(r.count) || 1, last: r.last || '' }; } });
+    if (!fromSheet) Object.keys(REC_SNAPSHOT).forEach(function (sid) { out[sid] = { count: REC_SNAPSHOT[sid][0], last: REC_SNAPSHOT[sid][1] }; });
+    return out;
+  }
+  function applyRecordings(hwId, recs, students, report) {
+    var hw = (S().getHomework() || []).filter(function (h) { return h.id === hwId; })[0] || (S().getHomework(true) || []).filter(function (h) { return h.id === hwId; })[0]; if (!hw) return;
+    hw.submissions = hw.submissions || {};
+    Object.keys(recs).forEach(function (sid) {
+      var p = mapId(sid, students); if (!p) { if (report.unmatched.indexOf(sid) < 0) report.unmatched.push(sid); return; }
+      var sub = hw.submissions[p.id];
+      if (!sub) sub = hw.submissions[p.id] = { status: 'IN_PROGRESS', attempted: 0, correct: 0, score: 0, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Sent a recording (sync ' + today() + ')' };
+      var r = recs[sid], had = sub.recording && sub.recording.count;
+      if (!had || had < r.count) { sub.recording = { count: r.count, last: r.last }; report.recordings++; report.changed++; }
+    });
+  }
+  var CLASS_FIX = {};    // the ids now match the classes (Ozan T. 208 = 4B, Simal 319 = 4A: checked with the teacher 14 Oct)
   /* sheet names that fit two pupils, matched by the teacher (14 Oct 2026) */
   var ALIAS = { '4b-ozan': 'student-4b-208', '4a-ada': 'student-4a-310', '4a-emirb': 'student-4a-342', '4b-elif': 'student-4b-307', '3b-ece': 'student-3b-217' };
   var last = { at: 0, text: '' };
@@ -75,11 +95,12 @@
     return Promise.all([fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }), cookStatus()]).then(function (res) {
       var d = res[0], cook = res[1];
       if (!d || !d.ok) throw new Error((d && d.error) || 'The sheet did not answer.');
-      var students = (S().getStudents() || []).filter(function (s) { return !s.archived; }), rep = { changed: 0, finished: 0, started: 0, unmatched: [], missing: [] };
+      var students = (S().getStudents() || []).filter(function (s) { return !s.archived; }), rep = { changed: 0, finished: 0, started: 0, recordings: 0, unmatched: [], missing: [] };
       SOURCES.forEach(function (src) { apply(src.hw, src.key, src.steps, src.src === 'cook' ? cook : (d.status || {}), students, rep); });
+      SOURCES.forEach(function (src) { if (src.recordings) applyRecordings(src.hw, recordingsOf(d.status || {}), students, rep); });
       try { if (S().saveState) S().saveState(); } catch (e) { /* optional */ }
       last.at = Date.now();
-      last.text = rep.changed ? ('Updated ' + rep.changed + ' pupil' + (rep.changed === 1 ? '' : 's') + ': ' + rep.finished + ' newly finished, ' + rep.started + ' started.') : 'Already up to date.';
+      last.text = rep.changed ? ('Updated ' + rep.changed + ' pupil' + (rep.changed === 1 ? '' : 's') + ': ' + rep.finished + ' newly finished, ' + rep.started + ' started' + (rep.recordings ? ', ' + rep.recordings + ' recording' + (rep.recordings === 1 ? '' : 's') + ' 🎤' : '') + '.') : 'Already up to date.';
       if (rep.unmatched.length) last.text += ' Could not match: ' + rep.unmatched.join(', ') + '.';
       if (root.showNotification) root.showNotification(last.text, rep.unmatched.length ? 'warning' : 'success');
       if (root.renderCurrentView) root.renderCurrentView();

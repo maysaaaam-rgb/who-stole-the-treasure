@@ -11,10 +11,10 @@
   var MAP = {
     'student-4a-343': '4a-ipek', 'student-4a-341': '4a-kemal', 'student-4a-320': '4a-suhan', 'student-4a-310': '4a-bahriye', 'student-4a-314': '4a-iclal',
     'student-4a-441': '4a-ahmet', 'student-4a-311': '4a-alya', 'student-4a-315': '4a-emirali', 'student-4a-345': '4a-efe', 'student-4a-109': '4a-derin',
-    'student-4a-342': '4a-emirb', 'student-4b-208': '4a-simal', 'student-4a-300': '4a-ruzgar', 'student-4a-312': '4a-belis', 'student-4a-313': '4a-ada',
+    'student-4a-342': '4a-emirb', 'student-4a-319': '4a-simal', 'student-4a-300': '4a-ruzgar', 'student-4a-312': '4a-belis', 'student-4a-313': '4a-ada',
     'student-4a-344': '4a-defne', 'student-4a-317': '4a-esila', 'student-4a-321': '4a-elif', 'student-4a-302': '4a-emire',
     'student-4b-338': '4b-derin', 'student-4b-301': '4b-ozanm', 'student-4b-439': '4b-mina', 'student-4b-303': '4b-ilay', 'student-4b-305': '4b-kerem',
-    'student-4b-306': '4b-elifberen', 'student-4b-304': '4b-nilda', 'student-4a-319': '4b-ozan', 'student-4b-322': '4b-oyku', 'student-4b-346': '4b-ali',
+    'student-4b-306': '4b-elifberen', 'student-4b-304': '4b-nilda', 'student-4b-208': '4b-ozan', 'student-4b-322': '4b-oyku', 'student-4b-346': '4b-ali',
     'student-4b-349': '4b-lina', 'student-4b-307': '4b-elif', 'student-4b-348': '4b-elisa', 'student-4b-316': '4b-egehan', 'student-4b-339': '4b-uras',
     'student-4b-309': '4b-utku', 'student-4b-318': '4b-ertugrul', 'student-4b-308': '4b-yagmur', 'student-4b-440': '4b-nisa'
   };
