@@ -112,7 +112,43 @@
     });
   }
 
+  /* Read-only snapshot of the Google Sheets for the Command Center (nothing is written anywhere, nothing in the platform changes).
+     Resolves { pupils: { pupilId: { tea1: {steps, finished}, tea2: {steps, finished, rec: {count, last}}, cook: {steps, finished} } }, unmatched: [...] }.
+     The answer is kept for 90 seconds so that opening the page again does not call the sheets again. */
+  var snap = { at: 0, p: null };
+  function snapshot(force) {
+    if (!force && snap.p && Date.now() - snap.at < 90000) return snap.p;
+    snap.at = Date.now();
+    var url = CFG.submitUrl + '?action=status&token=' + encodeURIComponent(CFG.token || '');
+    snap.p = Promise.all([fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }), cookStatus()]).then(function (res) {
+      var d = res[0], cook = res[1];
+      if (!d || !d.ok) throw new Error((d && d.error) || 'The sheet did not answer.');
+      var students = (S().getStudents() || []).filter(function (s) { return !s.archived; }), pupils = {}, unmatched = [];
+      function owners(status) {   // two sheet names that point to the same pupil are ambiguous: skipped
+        var own = {}, clash = {};
+        Object.keys(status).forEach(function (sid) { var p = mapId(sid, students); if (!p) return; if (own[p.id] && own[p.id] !== sid) { clash[sid] = 1; clash[own[p.id]] = 1; } else own[p.id] = sid; });
+        return clash;
+      }
+      function add(status, key, id) {
+        var clash = owners(status);
+        Object.keys(status).forEach(function (sid) {
+          var v = status[sid] && status[sid][key]; if (!v) return;
+          var p = mapId(sid, students);
+          if (!p || clash[sid]) { if (!/^TEST/i.test(sid) && unmatched.indexOf(sid) < 0) unmatched.push(sid); return; }
+          (pupils[p.id] = pupils[p.id] || {})[id] = { steps: Number(v.steps) || 0, finished: !!v.finished };
+        });
+      }
+      var tea = d.status || {};
+      add(tea, 'alice-tea-party-a1plus', 'tea1'); add(tea, 'alice-tea-party-w2', 'tea2'); add(cook || {}, 'chuseok-w2-cooking', 'cook');
+      var recs = recordingsOf(tea);
+      Object.keys(recs).forEach(function (sid) { var p = mapId(sid, students); if (!p) return; var e = (pupils[p.id] = pupils[p.id] || {}); e.tea2 = e.tea2 || { steps: 0, finished: false }; e.tea2.rec = recs[sid]; });
+      return { pupils: pupils, unmatched: unmatched, at: Date.now() };
+    }).catch(function (e) { snap.p = null; throw e; });
+    return snap.p;
+  }
+
   var api = {
+    snapshot: snapshot,
     mount: function (container) {
       if (container.querySelector('#sheet-sync-bar')) return;
       var host = container.querySelector('#ws-sync') || (container.querySelector('h1') && container.querySelector('h1').parentNode); if (!host) return;
