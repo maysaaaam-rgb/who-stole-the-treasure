@@ -98,6 +98,7 @@
     'arcade-g3-u2': ART + 'r_chest.webp',
     'arcade-g4-u2': ART + 'r_chest.webp',
     'unit3-g4-money-quiz-4skills': 'unit3-g3-lessons/art/w_jar_saving.webp',
+    'unit3-g3-quiz': 'unit3-g4-lessons/art/c_polar_bear.webp',
     'lingo-g3-u3-review': 'lingo-g3-u3-review/cast/bubbles_idle.webp',
     'unit3-money-mission': 'unit3-g3-lessons/art/s_find_bill.webp',
     'unit3-arctic-homework': 'unit3-g4-lessons/art/c_polar_bear.webp'

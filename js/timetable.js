@@ -4,8 +4,9 @@
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var CATALOG = [
+    { id: 'u3-g3-quiz', icon: '📄', title: 'Unit 3 Paper Quiz: It Keeps Changing (Forms A and B, 100 points)', route: 'unit3-g3-quiz/index.html', g: 3, added: '2026-10-15' },
     { id: 'u3-money-quiz-4skills', icon: '🪙', title: 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (25 Min • 2 Pages)', route: 'unit3-money-mission/quiz-4skills.html', g: 4, added: '2026-10-14' },
-    { id: 'lingo-g3-u3-review', icon: '🐲', title: 'It Keeps Changing: Monster Cast Journey Review (Unit 3)', route: 'lingo-g3-u3-review/index.html', g: 0, added: '2026-10-14' },
+    { id: 'lingo-g3-u3-review', icon: '🐲', title: 'It Keeps Changing: Monster Cast Journey Review (Unit 3)', route: 'lingo-g3-u3-review/index.html', g: 3, added: '2026-10-14' },
     { id: 'u3-arctic-hw', icon: '🏔️', title: 'Unit 3 Homework: The Arctic Rescue (no-fail story adventure)', route: 'unit3-arctic-homework/index.html', g: 0, added: '2026-10-13' },
     { id: 'u3-money-mission', icon: '🚀', title: 'Unit 3 Smartboard Mission: How Much Is It? (Among Us + 2P Tug-of-War)', route: 'unit3-money-mission/index.html', g: 0, added: '2026-10-13' },
     { id: 'watch-bean-g3', icon: '🎬', title: 'Mr Bean: Super Trolley (watch and answer)', route: 'watch-answer/index.html', g: 3, added: '2026-10-07' },

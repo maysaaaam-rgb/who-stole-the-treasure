@@ -825,6 +825,7 @@
       <button type="button" class="t-btn amber" onclick="playListeningTrack('all')">🔊 Play All Listening (A1–A2)</button>
       <button type="button" class="t-btn" onclick="playListeningTrack('a1')">🔊 A1 Only</button>
       <button type="button" class="t-btn" onclick="playListeningTrack('a2')">🔊 A2 Quotes</button>
+      <button type="button" class="t-btn" onclick="stopListening()">⏹ Stop</button>
       <button type="button" class="t-btn emerald" onclick="toggleShowAnswers()" id="btn-answers">👁️ Reveal Answers (Green Pen)</button>
       <button type="button" class="t-btn violet" onclick="toggleTeacherSheet()" id="btn-tg">🔑 Teacher Script &amp; Key</button>
       <button type="button" class="t-btn coral" onclick="printTwoPages()">🖨️ Print 2 Student Pages</button>
@@ -1413,33 +1414,37 @@
       } catch (e) {}
     }
 
+    /* Recorded teacher voices (no computer voice): audio/g4_a1_1..4.mp3 and audio/g4_a2_5..6.mp3. Each item is played twice. */
+    const LISTENING_CLIPS = {
+      a1: ['audio/g4_a1_1.mp3', 'audio/g4_a1_2.mp3', 'audio/g4_a1_3.mp3', 'audio/g4_a1_4.mp3'],
+      a2: ['audio/g4_a2_5.mp3', 'audio/g4_a2_6.mp3']
+    };
+    let listeningPlayer = null, listeningRun = 0;
+    function stopListening() {
+      listeningRun++;
+      if (listeningPlayer) { try { listeningPlayer.pause(); } catch (e) {} listeningPlayer = null; }
+    }
     function playListeningTrack(part) {
-      if (!('speechSynthesis' in window)) {
-        alert('Speech Synthesis is not supported in this browser.');
-        return;
-      }
-      window.speechSynthesis.cancel();
+      stopListening();
       playChime();
-
-      let lines = [];
-      if (part === 'a1') lines = LISTENING_SCRIPTS.a1;
-      else if (part === 'a2') lines = LISTENING_SCRIPTS.a2;
-      else lines = LISTENING_SCRIPTS.a1.concat(LISTENING_SCRIPTS.a2);
-
-      let idx = 0;
-      function speakNext() {
-        if (idx >= lines.length) return;
-        const u = new SpeechSynthesisUtterance(lines[idx]);
-        u.lang = 'en-US';
-        u.rate = 0.88;
-        u.pitch = 1.05;
-        u.onend = function() {
-          idx++;
-          setTimeout(speakNext, 1400);
+      const files = part === 'a1' ? LISTENING_CLIPS.a1 : part === 'a2' ? LISTENING_CLIPS.a2 : LISTENING_CLIPS.a1.concat(LISTENING_CLIPS.a2);
+      const run = listeningRun;
+      let idx = 0, round = 1, warned = false;
+      function next() {
+        if (run !== listeningRun || idx >= files.length) return;
+        const a = new Audio(files[idx]);
+        listeningPlayer = a;
+        a.onerror = function () {
+          if (!warned) { warned = true; alert('The recording is not ready yet. Please read the Teacher Listening Script aloud (twice).'); }
         };
-        window.speechSynthesis.speak(u);
+        a.onended = function () {
+          if (run !== listeningRun) return;
+          if (round < 2) { round++; setTimeout(next, 3500); }
+          else { round = 1; idx++; setTimeout(next, 2500); }
+        };
+        a.play().catch(function () {});
       }
-      setTimeout(speakNext, 500);
+      setTimeout(next, 600);
     }
 
     function toggleShowAnswers() {

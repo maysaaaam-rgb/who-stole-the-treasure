@@ -4140,6 +4140,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
       ['🐲', 'It Keeps Changing: Monster Cast Review (Unit 3)', 'lingo-g3-u3-review/index.html'],
+      ['📄', 'Unit 3 Paper Quiz: It Keeps Changing (Forms A and B)', 'unit3-g3-quiz/index.html'],
       ['🎲', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
       ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
       ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
@@ -4376,6 +4377,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
+    { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
     { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
     { title: 'Unit 3 homework launch: The Arctic Rescue (How Much Is It?)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Arctic-Rescue-Homework-Plan', word: true },
     { title: 'Unit 3 homework launch: The Arctic Rescue (The Bear and I)', grade: 'Grade 3', date: '2026-10-13', file: 'Grade3-Unit3-Arctic-Rescue-Homework-Plan', word: true },
