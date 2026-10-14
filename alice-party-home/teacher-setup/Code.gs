@@ -24,6 +24,15 @@ function doGet(e) {
         (out[id] = out[id] || {})[hw] = { steps: Number(r[4]) || 0, finished: r[5] === 'YES' };
       });
     }
+    // Week 2 recordings: how many each pupil sent and the date of the last one (no links, nothing private)
+    const rec = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Recordings');
+    if (rec && rec.getLastRow() > 1) {
+      rec.getRange(2, 1, rec.getLastRow() - 1, 5).getValues().forEach(r => {
+        const id = String(r[4] || ''); if (!id) return;
+        const o = (out[id] = out[id] || {}), d = r[0] instanceof Date ? Utilities.formatDate(r[0], 'Europe/Istanbul', 'd MMM') : '';
+        o.recordings = { count: ((o.recordings && o.recordings.count) || 0) + 1, last: d || (o.recordings && o.recordings.last) || '' };
+      });
+    }
     return reply({ ok: true, status: out });
   }
   return ContentService.createTextOutput('Tea Party receiver is ready ✓');

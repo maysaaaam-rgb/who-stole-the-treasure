@@ -3498,7 +3498,7 @@
     {
       id: 'hw-alice-tea-party-w1',
       syncSubmissions: true,
-      removeSubmissions: ['student-4b-208'],   // entered by mistake on 11 Oct (Simal Koyun); only removed when it carries the sync note
+      removeSubmissions: ['student-4a-319'],   // Simal Koyun (319, 4A) did not do Week 1: Ozan's result was filed under her id before the ids were corrected
       title: '☕ Alice Tea Party: Home Practice (Week 1)',
       description: 'Learn your Alice in Wonderland character: meet them, learn 6 words, put the sentences in order, say them out loud and practise the party conversation. Finished all 5 steps = ready for the tea party!',
       subject: 'English',
@@ -3536,7 +3536,7 @@
         'student-4b-316': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-307': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-305': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
-        'student-4a-319': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-208': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-309': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 10, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4a-300': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
         'student-4b-306': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },

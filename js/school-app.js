@@ -6432,7 +6432,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
   /* Grade 4 has two classes. Every pupil is filed under class-4a in the store, so the real class comes from the pupil id
      (student-4a-... / student-4b-...), with two corrections taken from the teacher's class lists. */
-  const ASG_CLASS_FIX = { 'student-4a-319': '4B', 'student-4b-208': '4A' };
+  const ASG_CLASS_FIX = {};   // the two pupils whose id named the other class were corrected in the records (Ozan T. 208 = 4B, Simal 319 = 4A)
   function asgClassOf(st) {
     if (ASG_CLASS_FIX[st.id]) return ASG_CLASS_FIX[st.id];
     const m = /^student-(\d)([ab])-/.exec(st.id || '');
@@ -6448,9 +6448,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       const style = kind === 'done' ? 'background:rgba(16,185,129,0.15); color:#047857; border:1px solid rgba(16,185,129,0.5);'
         : kind === 'started' ? 'background:rgba(245,158,11,0.15); color:#b45309; border:1px solid rgba(245,158,11,0.5);'
         : 'background:rgba(148,163,184,0.12); color:var(--text-muted); border:1px solid var(--border-subtle);';
-      const tip = sub.notes ? ' title="' + asgEsc(sub.notes) + '"' : '';
+      const rec = sub.recording ? 'Sent a recording' + (sub.recording.count > 1 ? ' (' + sub.recording.count + ')' : '') + (sub.recording.last ? ' on ' + sub.recording.last : '') : '';
+      const tipText = [sub.notes || '', rec].filter(Boolean).join(' · ');
+      const tip = tipText ? ' title="' + asgEsc(tipText) + '"' : '';
       const mark = kind === 'done' ? '✓ ' : (kind === 'started' ? '⏳ ' : '');
-      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + '</span>';
+      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + (rec ? ' 🎤' : '') + '</span>';
     };
     const block = (label, kind) => groups[kind].length
       ? '<div style="margin-top:8px;"><div style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">' + label + ' (' + groups[kind].length + ')</div>' + groups[kind].map(st => chip(st, kind)).join('') + '</div>'
@@ -6465,6 +6467,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const isStarted = st => asgStatusOf((h.submissions || {})[st.id]) === 'started';
     const done = students.filter(isDone).length;
     const started = students.filter(isStarted).length;
+    const recs = students.filter(st => ((h.submissions || {})[st.id] || {}).recording).length;   // pupils who sent a recording (Tea Party Week 2)
     const labels = []; students.forEach(st => { const c = asgClassOf(st); if (c && labels.indexOf(c) < 0) labels.push(c); });
     labels.sort();
     const bar = (d, n) => '<div style="height:10px; border-radius:6px; background:rgba(148,163,184,0.25); overflow:hidden; margin-top:8px;"><div style="height:100%; width:' + Math.round(d / (n || 1) * 100) + '%; background:linear-gradient(90deg,#10b981,#38bdf8); border-radius:6px;"></div></div>';
@@ -6490,7 +6493,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(clsName) + '</span></div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' · ⭐ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
         '</div>' +
-        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + '</div>' +
+        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + (recs ? '<div style="font-size:0.78rem; color:#7c3aed;">🎤 ' + recs + ' sent a recording</div>' : '') + '</div>' +
       '</div>' + sections +
     '</div>';
   }
