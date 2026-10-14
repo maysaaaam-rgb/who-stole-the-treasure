@@ -1,4 +1,4 @@
-/* Command Center: a dense, calm teacher overview (class stats, student table with 7-day trend, activity feed, Ctrl+K jump bar).
+/* Command Center: a dense, calm teacher overview (class stats, the XP each pupil earned day by day, homework of the last two weeks from the Google Sheets, activity feed, Ctrl+K jump bar).
    Reads live data from the school store. Adds the view "command". */
 (function (root) {
   'use strict';
@@ -21,51 +21,52 @@
     }
     return out;
   }
+  var RANGE = 7;   // days shown in the table: 7 or 14
+  /* XP the pupil EARNED day by day (14 days). Repairs ("Lost XP restored from the award history") are not XP earned that day, so they are left out. */
   function analyse(student) {
-    var now = Date.now(), today = dayStart(now), days = [0, 0, 0, 0, 0, 0, 0], prev = 0, last = 0, lastTs = 0;
+    var now = Date.now(), today = dayStart(now), days = [], prev = 0, last = 0, lastTs = 0, arctic = { n: 0, xp: 0 };
+    for (var i = 0; i < 14; i++) days.push(0);
     txOf(student.id).forEach(function (t) {
       var amt = Number(t.amount != null ? t.amount : (t.points != null ? t.points : t.xp)) || 0;
       var ts = new Date(t.timestamp || t.date || 0).getTime();
-      if (!ts || isNaN(ts) || amt <= 0) return;
+      if (!ts || isNaN(ts) || amt <= 0 || t.category === 'correction') return;
       if (ts > lastTs) lastTs = ts;
       var ago = Math.floor((today - dayStart(ts)) / DAY);       // 0 = today
-      if (ago >= 0 && ago < 7) { days[6 - ago] += amt; last += amt; }
-      else if (ago >= 7 && ago < 14) prev += amt;
+      if (ago >= 0 && ago < 14) { days[13 - ago] += amt; if (t.source === 'Homework') { arctic.n++; arctic.xp += amt; } }
+      if (ago >= 0 && ago < 7) last += amt; else if (ago >= 7 && ago < 14) prev += amt;
     });
     var since = lastTs ? Math.floor((today - dayStart(lastTs)) / DAY) : 999;
     var status = 'ok';
     if (since >= 7) status = 'help';
     else if (prev > 0 && last < prev * 0.5) status = 'slow';
-    return { days: days, last: last, prev: prev, since: since, status: status };
+    return { days: days, last: last, prev: prev, since: since, status: status, arctic: arctic };
   }
-  var SKILLS = [['reading', 'R', 'Reading'], ['listening', 'L', 'Listening'], ['writing', 'W', 'Writing'], ['speaking', 'S', 'Speaking']];
-  var TIPS = {
-    reading: 'Read a short text together and ask Who / Where / Why. Match pictures to sentences.',
-    listening: 'Listen-and-point or listen-and-draw. Simon Says. Dictate 3 key words.',
-    writing: 'Give sentence frames (I can… / It has…). Copy and complete, then 3 sentences with a word bank.',
-    speaking: 'Pair dialogues with frames, Hot Seat, and give this pupil speaking turns with points.'
-  };
-  /** Latest English Progress Check for a pupil: { pct, total, max, date, title, skills: {reading: 0-10, …} } or null. */
-  function checkOf(studentId) {
-    var st = S(); if (!st.getProgressCheckSubmissions) return null;
-    var list = (st.getProgressCheckSubmissions(null, studentId) || []).filter(function (x) { return x && x.scores; });
-    if (!list.length) return null;
-    list.sort(function (a, b) { return String(b.updatedAt || b.date || '').localeCompare(String(a.updatedAt || a.date || '')); });
-    // a skill with 0 points is treated as "not entered" (many checks only have the speaking part filled in)
-    var x = list[0], sk = {}, got = 0, max = 0, missing = [];
-    SKILLS.forEach(function (k) { var v = x.scores[k[0]]; if (v && v.total && Number(v.correct) > 0) { sk[k[0]] = Math.round((v.correct / v.total) * 10); got += Number(v.correct); max += Number(v.total); } else missing.push(k[2]); });
-    if (!max) return null;
-    return { pct: Math.round(got / max * 100), total: got, max: max, date: x.date || '', title: x.unitTitle || 'Progress Check', skills: sk, missing: missing };
+
+  /* ---- homework of the last two weeks. Tea Party and Chuseok cooking come straight from the Google Sheets (read only, checked every time the page opens);
+     The Arctic Rescue is a game that gives the XP itself, so it is counted from the XP history (source "Homework"). */
+  var HW = [
+    { id: 'tea1', label: 'Tea Party 1', title: 'Alice Tea Party: Home Practice, Week 1', grade: 4, steps: 5, due: 'Oct 10', kind: 'sheet' },
+    { id: 'tea2', label: 'Tea Party 2', title: 'Alice Tea Party: Home Practice, Week 2 (with a recording)', grade: 4, steps: 3, due: 'Oct 15', kind: 'sheet' },
+    { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' },
+    { id: 'arctic', label: 'Arctic Rescue', title: 'Unit 3 homework: The Arctic Rescue (game)', grade: 0, kind: 'xp' }
+  ];
+  var sheet = { data: null, error: '' }, classGrade = 0;
+  function gradeOfClass(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
+  function hwList() { return HW.filter(function (h) { return !h.grade || h.grade === classGrade; }); }
+  /** One pupil, one homework: { k: done | part | open | none | wait, txt (short, for the table), say (full words) } */
+  function hwState(r, h) {
+    if (h.kind === 'xp') {
+      var a = r.a.arctic;
+      return a.n ? { k: 'part', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP' } : { k: 'none', txt: '–', say: 'has not played yet' };
+    }
+    if (!sheet.data) return { k: 'wait', txt: sheet.error ? '?' : '…', say: sheet.error ? 'the Google Sheet could not be read' : 'reading the Google Sheet' };
+    var v = (sheet.data.pupils[r.id] || {})[h.id];
+    if (!v) return { k: 'none', txt: '–', say: 'not started' };
+    if (v.finished) return { k: 'done', txt: '✓', say: 'finished' };
+    if (v.steps > 0) return { k: 'part', txt: v.steps + '/' + h.steps, say: v.steps + ' of ' + h.steps + ' done' };
+    return { k: 'open', txt: '👀', say: 'opened the page, not started' };
   }
-  /** Home practice = XP you gave for homework / home tasks in the last 14 days. */
-  function homeOf(studentId) {
-    var n = 0, now = Date.now();
-    txOf(studentId).forEach(function (t) {
-      var ts = new Date(t.timestamp || t.date || 0).getTime(), amt = Number(t.amount) || 0;
-      if (amt > 0 && now - ts <= 14 * DAY && /home|ödev|odev|tea party|alice/i.test(String(t.reason || '') + ' ' + String(t.category || ''))) n++;
-    });
-    return n;
-  }
+  function recOf(r, h) { var v = sheet.data && (sheet.data.pupils[r.id] || {})[h.id]; return v && v.rec ? v.rec : null; }
   function worksheetsOf(studentId) {
     var out = [];
     try { var w = root.ClassroomStore && root.ClassroomStore.data().worksheets || {}; Object.keys(w).forEach(function (k) { var sc = w[k].scores && w[k].scores[studentId]; if (sc != null) out.push({ name: w[k].name, score: sc }); }); } catch (e) { /* no worksheets */ }
@@ -81,25 +82,20 @@
     Object.keys(seen).forEach(function (k) { if (seen[k].length > 1) seen[k].forEach(function (s) { out[s.id] = seen[k].map(function (x) { var c = st.getClass ? st.getClass(x.classId) : null; return (c && c.name) || x.classId || '?'; }); }); });
     return out;
   }
-  /** Combine activity, test scores and home practice into one status with plain reasons. */
-  function diagnose(r, classHasHome) {
-    var why = [], needs = [], status = 'ok';
+  /** One status from what really happened: XP over the days and the homework from the sheets. (The old English Progress Check scores are no longer used.) */
+  function diagnose(r) {
+    var why = [], status = 'ok', missing = [], sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; });
     if (r.a.since >= 7) { status = 'help'; why.push(r.a.since >= 999 ? 'No XP yet' : 'No XP for ' + r.a.since + ' days'); }
-    if (r.check && r.check.pct < 50) { status = 'help'; why.push('Progress Check ' + r.check.total + '/' + r.check.max); }
-    var weak = SKILLS.filter(function (k) { return r.check && r.check.skills[k[0]] != null && r.check.skills[k[0]] <= 4; });
-    weak.forEach(function (k) { needs.push(k[0]); });
-    if (status !== 'help') {
-      if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
-      if (weak.length) { status = 'slow'; why.push('Weak ' + weak.map(function (k) { return k[2].toLowerCase(); }).join(', ')); }
-    }
-    if (status === 'ok' && r.check && r.check.pct >= 85 && r.a.last > 0) { status = 'star'; why.push('Strong test and active this week'); }
+    else if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
+    if (sheet.data) sheetHw.forEach(function (h) { if (hwState(r, h).k !== 'done') missing.push(h); });
+    if (status === 'ok' && sheet.data && sheetHw.length && !missing.length && r.a.last > 0) { status = 'star'; why.push('All homework done and active this week'); }
     if (!why.length) why.push('Active and on track');
-    if (classHasHome && !r.home) why.push('No home practice in 14 days');
-    if (r.check) { var low = SKILLS.filter(function (k) { return r.check.skills[k[0]] != null; }).sort(function (a, b) { return r.check.skills[a[0]] - r.check.skills[b[0]]; })[0]; if (low && needs.indexOf(low[0]) < 0 && r.check.skills[low[0]] <= 6) needs.push(low[0]); }
-    return { status: status, why: why, needs: needs };
+    if (missing.length) why.push('Homework not finished: ' + missing.map(function (h) { return h.label; }).join(', '));
+    return { status: status, why: why, missing: missing };
   }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
+    classGrade = gradeOfClass(cls);
     try { reconPlan(cls).rows.forEach(function (x) { if (x.diff !== 0) mism[x.id] = x; }); } catch (e) { /* optional */ }
     var rows = st.getStudentsByClass(cls.id).map(function (s) {
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {};
@@ -110,24 +106,16 @@
         id: s.id, first: s.firstName || s.name || 'Student', name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || s.name || 'Student',
         xp: Number(m.totalXP != null ? m.totalXP : (s.xp || 0)) || 0, level: m.currentLevel || s.level || 1,
         pct: m.progressPct || 0, img: img, a: a, att: st.getStudentAttendanceRate ? st.getStudentAttendanceRate(s.id) : null,
-        check: checkOf(s.id), home: homeOf(s.id), ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
+        ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
       };
     });
-    var classHasHome = rows.some(function (r) { return r.home > 0; });
-    rows.forEach(function (r) { r.d = diagnose(r, classHasHome); });
-    rows.classHasHome = classHasHome;
+    rows.forEach(function (r) { r.d = diagnose(r); });
     return rows;
   }
 
   // ------------------------------------------------------------- pieces
   var STATUS = { star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'] };
   var STATUS_ORDER = { help: 0, slow: 1, ok: 2, star: 3 };
-  function spark(days, status) {
-    var max = Math.max.apply(null, days.concat([1])), w = 72, h = 22;
-    var pts = days.map(function (v, i) { return (i * (w / 6)).toFixed(1) + ',' + (h - 2 - (v / max) * (h - 5)).toFixed(1); }).join(' ');
-    var col = status === 'ok' ? '#34d399' : status === 'slow' ? '#fbbf24' : '#f87171';
-    return '<svg width="72" height="22" viewBox="0 0 72 22" aria-hidden="true"><polyline fill="none" stroke="' + col + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="' + pts + '"/></svg>';
-  }
   function ago(ts) {
     var d = Math.floor((dayStart(Date.now()) - dayStart(ts)) / DAY);
     return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
@@ -135,7 +123,7 @@
   function feedFor(cls) {
     var st = S(), names = {};
     st.getStudentsByClass(cls.id).forEach(function (s) { names[s.id] = s.firstName || s.name || 'Student'; });
-    return (st.state.xpTransactions || []).filter(function (t) { return names[t.studentId] && Number(t.amount) > 0; })
+    return (st.state.xpTransactions || []).filter(function (t) { return names[t.studentId] && Number(t.amount) > 0 && t.category !== 'correction' && t.status !== 'voided'; })
       .sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); }).slice(0, 8)
       .map(function (t) {
         var why = String(t.reason || 'XP award').replace(/\s*\(\+\d+ XP\)\s*$/, '');
@@ -149,7 +137,7 @@
       if (localStorage.getItem('eaa_xp_rescue_hidden_v2')) return '';
       var plan = reconPlan(cls);
       if (plan.off.length < 1) return '';
-      return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#2e2410;border:1px solid #6b4e12;color:#fde68a;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⚠️ <b>' + plan.off.length + ' students</b> have <b>less XP than their own award history shows</b> (it can be lost when two devices save at the same moment).</span><button class="cc-plus" style="margin-left:auto;padding:7px 14px" onclick="CommandCenter.restoreXp()">Review &amp; restore lost XP</button></div>';
+      return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#2e2410;border:1px solid #6b4e12;color:#fde68a;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⚠️ <b>' + plan.off.length + (plan.off.length === 1 ? ' student</b> has <b>' : ' students</b> have <b>') + 'less XP than their own award history shows</b> (it can be lost when two devices save at the same moment).</span><button class="cc-plus" style="margin-left:auto;padding:7px 14px" onclick="CommandCenter.restoreXp()">Review &amp; restore lost XP</button></div>';
     } catch (e) { return ''; }
   }
 
@@ -208,80 +196,115 @@
     '.cc-dra{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.cc-dra .cc-plus{padding:7px 11px}.cc-plus.pri{background:#232850;border-color:#4b52c4;color:#fff}' +
     '@media(max-width:1100px){.cc-grid{grid-template-columns:minmax(0,1fr)}.cc-kp5{grid-template-columns:repeat(3,minmax(0,1fr))}}' +
     '@media(max-width:900px){.cc-grid{grid-template-columns:minmax(0,1fr)}.cc-kp{grid-template-columns:repeat(2,minmax(0,1fr))}.cc-kp div:nth-child(2){border-right:0}.cc-kp div:nth-child(-n+2){border-bottom:1px solid var(--l)}.cc-cmd{min-width:0;flex:1}}';
+  /* XP-per-day table, homework columns and the lower panels (added when the English Progress Check "skills" and old "home practice" were removed) */
+  var CSS2 = '' +
+    '.cc table{min-width:0}.cc-rng{margin-left:auto}.cc-rng+.cc-chips{margin-left:8px!important}' +
+    '.cc th.cc-d,.cc td.cc-d{text-align:center;padding-left:2px!important;padding-right:2px!important;width:36px;min-width:34px}' +
+    '.cc th.cc-d small{display:block;font-weight:500;color:#5b6377;margin-top:1px}.cc th.cc-d.today{color:#a5b4fc}.cc th.cc-d.today small{color:#a5b4fc}.cc th.cc-d.we,.cc td.cc-d.we{opacity:.7}' +
+    '.cc-xp{display:inline-block;min-width:30px;padding:3px 0;border-radius:7px;font-weight:700;font-size:12px;color:#fff}.cc-dot{color:#2c3140}' +
+    '.cc td.cc-tt{font-weight:700;color:#a5b4fc;white-space:nowrap}' +
+    '.cc th.cc-hh{text-align:center;font-size:10.5px;line-height:1.15;max-width:64px;white-space:normal}.cc td.cc-h{text-align:center;white-space:nowrap}' +
+    '.cc-hw{display:inline-block;min-width:34px;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}' +
+    '.cc-hw-ok{background:#10291f;color:#34d399}.cc-hw-mid{background:#2e2410;color:#fbbf24}.cc-hw-no{background:#14161d;color:#5b6377}.cc-hw-wait{color:#5b6377}' +
+    '.cc tfoot td{border-top:1px solid #2a2f3d;font-weight:700;background:#0f1117!important;cursor:default;color:#cbd2e1}.cc tfoot td.cc-d{text-align:center;font-size:12px}' +
+    '.cc-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}' +
+    '.cc-hwi{padding:12px 14px;border-bottom:1px dashed var(--l);line-height:1.45;color:#cbd2e1}.cc-hwi:last-child{border:0}.cc-hwi .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.cc-hwi .t b{color:#e6e8ee}' +
+    '.cc-hwi .b{height:8px;background:#1d2029;border-radius:9px;overflow:hidden;margin:7px 0}.cc-hwi .b i{display:block;height:100%;background:#818cf8;border-radius:9px}' +
+    '.cc-bars{display:flex;align-items:flex-end;gap:5px;height:190px;padding:20px 14px 6px}.cc-bars>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0}' +
+    '.cc-bars b{font-size:10px;color:#aab1c3;font-weight:700;height:14px}.cc-bars i{display:block;width:100%;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#818cf8,#4f46e5)}.cc-bars i.we{opacity:.55}' +
+    '.cc-bars small,.cc-dbars small{font-size:9.5px;color:#6b7387;text-align:center;line-height:1.15;height:22px}.cc-bars small.today,.cc-dbars small.today{color:#a5b4fc;font-weight:700}' +
+    '.cc-dbars{display:flex;align-items:flex-end;gap:3px;height:120px}.cc-dbars>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;min-width:0}' +
+    '.cc-dbars b{font-size:9px;color:#aab1c3;height:12px}.cc-dbars i{display:block;width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#818cf8,#4f46e5)}.cc-dbars i.we{opacity:.55}' +
+    '.cc-dhw{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--l)}.cc-dhw:last-child{border:0}.cc-dhw b.cc-hw{white-space:normal;text-align:right}' +
+    '.cc-t14 th.cc-d,.cc-t14 td.cc-d{width:29px;min-width:27px}.cc-t14 .cc-xp{min-width:25px;font-size:10.5px;padding:3px 0;border-radius:6px}.cc-t14 .cc-why{display:none}.cc-t14 .cc-nm{min-width:0;gap:7px}.cc-t14 .cc-nm img{width:26px;height:26px}' +
+    '.cc-t14 .cc-lvl .cc-bar{width:36px}.cc-t14 td,.cc-t14 th{padding-left:6px!important;padding-right:6px!important}.cc-t14 th.cc-d,.cc-t14 td.cc-d{padding-left:1px!important;padding-right:1px!important}.cc-t14 .cc-hw{min-width:0;padding:3px 6px}.cc-t14 .cc-plus{padding:3px 5px}' +
+    '@media(max-width:1100px){.cc-grid3{grid-template-columns:minmax(0,1fr)}}';
+
   function ensureCss() {
     if (document.getElementById('cc-css')) return;
-    var el = document.createElement('style'); el.id = 'cc-css'; el.textContent = CSS; document.head.appendChild(el);
+    var el = document.createElement('style'); el.id = 'cc-css'; el.textContent = CSS + CSS2; document.head.appendChild(el);
   }
 
   // ------------------------------------------------------------- view
-  var current = [], skillFilter = '';
-  function skillBars(c) {
-    if (!c) return '<span class="cc-dim" title="No Progress Check yet">not tested</span>';
-    return '<div class="cc-sk" title="' + esc(c.title + ': ' + c.total + '/' + c.max) + '">' + SKILLS.map(function (k) {
-      var v = c.skills[k[0]]; if (v == null) return '<span title="' + k[2] + ': not entered"><i style="height:8%;background:#2a2f3d"></i><b>' + k[1] + '</b></span>';
-      var col = v >= 8 ? '#34d399' : v >= 5 ? '#fbbf24' : '#f87171';
-      return '<span><i style="height:' + Math.max(8, v * 10) + '%;background:' + col + '"></i><b>' + k[1] + '</b></span>';
-    }).join('') + '<em>' + c.pct + '%</em></div>';
+  var current = [];
+  function sum(a) { return a.reduce(function (n, v) { return n + v; }, 0); }
+  function dayLabels(n) {
+    var today = dayStart(Date.now()), out = [];
+    for (var i = n - 1; i >= 0; i--) { var d = new Date(today); d.setDate(d.getDate() - i); out.push({ wd: d.toLocaleDateString('en-GB', { weekday: 'short' }), n: d.getDate(), mon: d.toLocaleDateString('en-GB', { month: 'short' }), today: i === 0, weekend: d.getDay() === 0 || d.getDay() === 6 }); }
+    return out;
+  }
+  function xpCell(v, d) {
+    if (!v) return '<td class="cc-d' + (d.weekend ? ' we' : '') + '"><span class="cc-dot">·</span></td>';
+    var a = Math.min(0.85, 0.2 + v / 80 * 0.65);
+    return '<td class="cc-d"><span class="cc-xp" style="background:rgba(99,102,241,' + a.toFixed(2) + ')" title="' + v + ' XP on ' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + v + '</span></td>';
+  }
+  function hwCell(r, h) {
+    var s = hwState(r, h), cl = { done: 'ok', part: 'mid', open: 'mid', none: 'no', wait: 'wait' }[s.k], rec = recOf(r, h);
+    return '<td class="cc-h"><span class="cc-hw cc-hw-' + cl + '" title="' + esc(h.title + ': ' + s.say + (rec ? ' · sent ' + (rec.count > 1 ? rec.count + ' recordings' : 'a recording') + (rec.last ? ' (' + rec.last + ')' : '') : '')) + '">' + s.txt + (rec ? ' 🎤' : '') + '</span></td>';
   }
   function tableHtml() {
-    var rows = current.slice();
+    var rows = current.slice(), labels = dayLabels(RANGE), hws = hwList();
     if (filterKey !== 'all') rows = rows.filter(function (r) { return r.d.status === filterKey; });
-    if (skillFilter) rows = rows.filter(function (r) { return r.check && r.check.skills[skillFilter] != null && r.check.skills[skillFilter] <= 6; });
     if (query) { var q = query.toLowerCase(); rows = rows.filter(function (r) { return r.name.toLowerCase().indexOf(q) !== -1; }); }
+    function tot(r) { return sum(r.a.days.slice(14 - RANGE)); }
     rows.sort(function (a, b) {
       var x, y;
       if (sortKey === 'name') { return sortDir * a.name.localeCompare(b.name); }
       if (sortKey === 'status') { x = STATUS_ORDER[a.d.status]; y = STATUS_ORDER[b.d.status]; }
-      else if (sortKey === 'week') { x = a.a.last; y = b.a.last; }
+      else if (sortKey === 'week') { x = tot(a); y = tot(b); }
       else if (sortKey === 'level') { x = a.level; y = b.level; }
-      else if (sortKey === 'check') { x = a.check ? a.check.pct : -1; y = b.check ? b.check.pct : -1; }
-      else if (sortKey === 'home') { x = a.home; y = b.home; }
       else { x = a.xp; y = b.xp; }
       return sortDir * (x - y) || a.name.localeCompare(b.name);
     });
     if (!rows.length) return '<div class="cc-empty">No students match.</div>';
     function th(k, label, tip) { return '<th onclick="CommandCenter.sort(\'' + k + '\')"' + (tip ? ' title="' + tip + '"' : '') + '>' + label + (sortKey === k ? (sortDir < 0 ? ' ↓' : ' ↑') : '') + '</th>'; }
-    return '<div class="cc-wrap"><table><thead><tr>' + th('name', 'Student') + th('xp', 'XP') + th('week', 'This week') + '<th style="cursor:default">7-day trend</th>' +
-      th('check', 'Skills (test)', 'Latest English Progress Check: R reading, L listening, W writing, S speaking (out of 10)') + th('home', 'Home', 'Homework / home practice awards in the last 14 days') + th('status', 'Status') + '<th style="cursor:default"></th></tr></thead><tbody>' +
-      rows.map(function (r) {
-        var s = STATUS[r.d.status];
-        var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
-        return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
-          '<td>' + r.xp.toLocaleString('en-US') + '</td><td>' + (r.a.last ? '+' + r.a.last : '–') + '</td><td>' + spark(r.a.days, r.d.status === 'star' ? 'ok' : r.d.status) + '</td>' +
-          '<td>' + skillBars(r.check) + '</td><td>' + (current.classHasHome ? (r.home ? '🏠 ' + r.home : '<span class="cc-dim">0</span>') : '<span class="cc-dim">–</span>') + '</td>' +
-          '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
-          '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
-      }).join('') + '</tbody></table></div>';
+    var head = '<tr>' + th('name', 'Student') + th('xp', 'XP', 'All the XP the pupil has') +
+      labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
+      th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
+      hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
+      th('status', 'Status') + '<th style="cursor:default"></th></tr>';
+    var body = rows.map(function (r) {
+      var s = STATUS[r.d.status];
+      var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
+      var t = tot(r);
+      return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
+        '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(14 - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
+        '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
+        '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
+        '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
+    }).join('');
+    var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
+      labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[14 - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
+      '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 2) + '"></td></tr>';
+    return '<div class="cc-wrap"><table' + (RANGE === 14 ? ' class="cc-t14"' : '') + '><thead>' + head + '</thead><tbody>' + body + '</tbody><tfoot>' + foot + '</tfoot></table></div>';
   }
   function refreshTable() { var el = document.getElementById('cc-table'); if (el) el.innerHTML = tableHtml(); var c = document.getElementById('cc-count'); if (c) c.textContent = current.length; }
 
-  /** Class-level diagnosis from the latest Progress Check of every pupil. */
-  function classSkillsHtml() {
-    var tested = current.filter(function (r) { return r.check; });
-    if (!tested.length) return '<div class="cc-empty">No English Progress Check results for this class yet.<br><button class="cc-plus" style="margin-top:8px" onclick="switchView(\'progress-check\')">Open English Progress Check</button></div>';
-    var avg = SKILLS.map(function (k) {
-      var vals = tested.map(function (r) { return r.check.skills[k[0]]; }).filter(function (v) { return v != null; });
-      var a = vals.length ? vals.reduce(function (n, v) { return n + v; }, 0) / vals.length : null;
-      var low = tested.filter(function (r) { return r.check.skills[k[0]] != null && r.check.skills[k[0]] <= 4; });
-      return { k: k, avg: a, low: low, n: vals.length };
-    });
-    var weakest = avg.filter(function (x) { return x.avg != null; }).sort(function (a, b) { return a.avg - b.avg; })[0];
-    return '<div class="cc-cs">' + avg.map(function (x) {
-      if (x.avg == null) return '<div class="cc-csr"><span class="l">' + x.k[2] + '</span><div class="b"></div><b>–</b><span class="cc-mini ok" style="background:#1d2029;border-color:#2a2f3d;color:#7c8498">not entered</span></div>';
-      var col = x.avg >= 8 ? '#34d399' : x.avg >= 5 ? '#fbbf24' : '#f87171';
-      return '<div class="cc-csr' + (x === weakest ? ' weak' : '') + '"><span class="l">' + x.k[2] + '</span><div class="b" title="' + x.n + ' pupils have a ' + x.k[2].toLowerCase() + ' score"><i style="width:' + Math.round(x.avg * 10) + '%;background:' + col + '"></i></div><b>' + x.avg.toFixed(1) + '</b>' +
-        (x.low.length ? '<button class="cc-mini" onclick="CommandCenter.skill(\'' + x.k[0] + '\')" title="Show pupils with ' + x.k[2].toLowerCase() + ' 6/10 or lower">' + x.low.length + ' weak</button>' : '<span class="cc-mini ok">ok</span>') + '</div>';
-    }).join('') + '</div>' +
-      (weakest ? '<div class="cc-tip"><b>Class focus: ' + weakest.k[2] + '</b> (average ' + weakest.avg.toFixed(1) + '/10). ' + esc(TIPS[weakest.k[0]]) + '</div>' : '') +
-      '<div class="cc-dim" style="padding:0 14px 12px">' + tested.length + ' of ' + current.length + ' pupils tested' + (tested.length < current.length ? ' · not tested: ' + esc(current.filter(function (r) { return !r.check; }).map(function (r) { return r.first; }).join(', ')) : '') + '</div>';
+  /** Homework of the last two weeks for this class: how many finished, halfway, not started. */
+  function homeworkHtml() {
+    var n = current.length, hws = hwList();
+    var note = !sheet.data && !sheet.error ? '<div class="cc-dim" style="padding:10px 14px">Reading the Google Sheets…</div>'
+      : sheet.error ? '<div class="cc-warn" style="margin:10px 14px">Could not read the Google Sheet (' + esc(sheet.error) + '). Check the internet and open the page again.</div>' : '';
+    return note + hws.map(function (h) {
+      var groups = { done: [], part: [], open: [], none: [], wait: [] }, rec = 0;
+      current.forEach(function (r) { groups[hwState(r, h).k].push(r); if (recOf(r, h)) rec++; });
+      var isXp = h.kind === 'xp', did = isXp ? groups.part.length : groups.done.length;
+      var line = isXp ? '<b>' + did + ' of ' + n + '</b> played'
+        : '<b>' + did + ' of ' + n + '</b> finished' + (groups.part.length ? ' · ' + groups.part.length + ' halfway' : '') + (groups.open.length ? ' · ' + groups.open.length + ' opened only' : '') + (rec ? ' · 🎤 ' + rec + ' sent a recording' : '');
+      var todo = isXp ? groups.none : groups.none.concat(groups.open);
+      return '<div class="cc-hwi"><div class="t"><b>' + esc(h.title) + '</b>' + (h.due ? '<span class="cc-dim">due ' + esc(h.due) + '</span>' : '') + '</div>' +
+        '<div class="b"><i style="width:' + Math.round(did / (n || 1) * 100) + '%"></i></div><div>' + line + '</div>' +
+        (sheet.data || isXp ? (todo.length ? '<div class="cc-dim" style="margin-top:4px">' + (isXp ? 'Not yet: ' : 'Not started: ') + esc(todo.map(function (r) { return r.first; }).join(', ')) + '</div>' : '<div class="cc-dim" style="margin-top:4px">Everyone has started 🎉</div>') : '') + '</div>';
+    }).join('');
   }
-  function homePanelHtml() {
-    if (!current.classHasHome) return '<div class="cc-empty">No homework or home-practice XP in the last 14 days. When you give XP with the reason "homework" or "home", it shows here.</div>';
-    var none = current.filter(function (r) { return !r.home; });
-    var did = current.length - none.length;
-    return '<div class="cc-hp"><div class="b"><i style="width:' + Math.round(did / current.length * 100) + '%"></i></div><b>' + did + ' of ' + current.length + '</b> practised at home (14 days)</div>' +
-      (none.length ? '<div class="cc-dim" style="padding:0 14px 12px">Not yet: ' + esc(none.map(function (r) { return r.first; }).join(', ')) + '</div>' : '<div class="cc-dim" style="padding:0 14px 12px">Everyone practised at home. 🎉</div>');
+  /** Class XP for each of the last 14 days (bars). */
+  function perDayHtml() {
+    var labels = dayLabels(14), tot = labels.map(function (d, i) { return sum(current.map(function (r) { return r.a.days[i]; })); }), max = Math.max.apply(null, tot.concat([1]));
+    return '<div class="cc-bars">' + labels.map(function (d, i) {
+      return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + tot[i] + ' XP"><b>' + (tot[i] || '') + '</b><i style="height:' + Math.max(tot[i] ? 6 : 1, Math.round(tot[i] / max * 100)) + '%"' + (d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.wd.slice(0, 2) + '<br>' + d.n + '</small></div>';
+    }).join('') + '</div><div class="cc-dim" style="padding:0 14px 12px">XP given to this class each day. Repairs of lost XP are not counted.</div>';
   }
+
   function dataChecksHtml() {
     var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; });
     if (!mism.length && !dup.length) return '';
@@ -291,67 +314,95 @@
       '</div></div>';
   }
 
-  // ---- one pupil: the diagnosis card
   function drawer(id) {
     var r = current.filter(function (x) { return x.id === id; })[0]; if (!r) return;
     var old = document.getElementById('cc-drawer'); if (old) old.remove();
-    var st = STATUS[r.d.status], c = r.check;
-    var skills = c ? SKILLS.map(function (k) { var v = c.skills[k[0]]; if (v == null) return ''; var col = v >= 8 ? '#34d399' : v >= 5 ? '#fbbf24' : '#f87171'; return '<div class="cc-dsk"><span>' + k[2] + '</span><div class="b"><i style="width:' + v * 10 + '%;background:' + col + '"></i></div><b>' + v + '/10</b></div>'; }).join('') + '<div class="cc-dim">' + esc(c.title) + ' · ' + c.total + '/' + c.max + ' in the parts entered' + (c.date ? ' · ' + esc(c.date) : '') + (c.missing.length ? '<br>Not entered: ' + esc(c.missing.join(', ')) : '') + '</div>'
-      : '<div class="cc-dim">No English Progress Check yet.</div>';
-    var tips = r.d.needs.length ? r.d.needs.map(function (k) { return '<li><b>' + k.charAt(0).toUpperCase() + k.slice(1) + ':</b> ' + esc(TIPS[k]) + '</li>'; }).join('') : '<li>Keep going: give a stretch task (a longer answer, or helping a friend).</li>';
+    var st = STATUS[r.d.status], labels = dayLabels(14), max = Math.max.apply(null, r.a.days.concat([1]));
+    var bars = '<div class="cc-dbars">' + r.a.days.map(function (v, i) {
+      var d = labels[i];
+      return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + v + ' XP"><b>' + (v || '') + '</b><i style="height:' + Math.max(v ? 8 : 2, Math.round(v / max * 100)) + '%"' + (d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.n + '</small></div>';
+    }).join('') + '</div>';
+    var hw = hwList().map(function (h) {
+      var s = hwState(r, h), cl = { done: 'ok', part: 'mid', open: 'mid', none: 'no', wait: 'wait' }[s.k], rec = recOf(r, h);
+      return '<div class="cc-dhw"><span>' + esc(h.label) + (h.due ? ' <small class="cc-dim">due ' + esc(h.due) + '</small>' : '') + '</span><b class="cc-hw cc-hw-' + cl + '">' + esc(s.say.charAt(0).toUpperCase() + s.say.slice(1)) + (rec ? ' · 🎤 sent a recording' + (rec.last ? ' (' + esc(rec.last) + ')' : '') : '') + '</b></div>';
+    }).join('');
     var ws = r.ws.length ? r.ws.map(function (w) { return esc(w.name) + ': <b>' + w.score + '/10</b>'; }).join('<br>') : '<span class="cc-dim">No worksheet score entered yet.</span>';
     var tally = []; try { tally = (S().getStudentClassroomSkillsTally(r.id) || []).filter(function (t) { return t.category === 'positive' || !t.category; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3); } catch (e) { tally = []; }
+    var tips = [];
+    if (r.a.since >= 7) tips.push('<b>No XP for ' + (r.a.since >= 999 ? 'a long time' : r.a.since + ' days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
+    else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
+    r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
+    if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
     ovl.innerHTML = '<div class="cc-drp"><div class="cc-drh">' + (r.img ? '<img src="' + esc(r.img) + '" alt="">' : '') + '<div><h2>' + esc(r.name) + '</h2><div class="cc-dim">Level ' + r.level + ' · ' + r.xp.toLocaleString('en-US') + ' XP</div></div><button class="cc-x" onclick="document.getElementById(\'cc-drawer\').remove()">✕</button></div>' +
       '<div class="cc-drs"><span class="cc-t ' + st[1] + '">' + st[0] + '</span> <span class="cc-dim">' + esc(r.d.why.join(' · ')) + '</span></div>' +
       (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (r.dup ? '<div class="cc-warn">⧉ This name exists ' + r.dup.length + ' times (' + esc(r.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
-      '<h4>Skills (latest test)</h4>' + skills +
-      '<h4>Activity</h4><div class="cc-drg"><div><small>This week</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Last week</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Home (14 d)</small><b>' + r.home + '</b></div></div>' +
+      '<h4>XP earned each day (14 days)</h4>' + bars +
+      '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + r.a.days.filter(function (v) { return v > 0; }).length + ' of 14</b></div></div>' +
       (tally.length ? '<div class="cc-dim" style="margin-top:6px">Most XP for: ' + tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') +
+      '<h4>Homework (last two weeks)</h4>' + hw +
       '<h4>Worksheets</h4><div>' + ws + '</div>' +
-      '<h4>What to do next</h4><ul class="cc-tips">' + tips + '</ul>' +
+      '<h4>What to do next</h4><ul class="cc-tips">' + tips.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
       '<div class="cc-dra"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5 XP</button><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10 XP</button><button class="cc-plus" onclick="openGiveXPSkillsModal && openGiveXPSkillsModal(\'student\',\'' + esc(r.id) + '\')">🎯 XP for a skill</button><button class="cc-plus pri" onclick="document.getElementById(\'cc-drawer\').remove(); openStudentDetail(\'' + esc(r.id) + '\')">Open full profile</button></div></div>';
     document.body.appendChild(ovl);
     ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+  }
+
+  function kpiHtml() {
+    var cls = S().getActiveClass(), attRecs = S().getAttendanceRecords ? (S().getAttendanceRecords(cls.id) || []) : [];
+    var att = S().getClassAttendanceRate ? S().getClassAttendanceRate(cls.id) : 0;
+    var active = current.filter(function (r) { return r.a.last > 0; }).length;
+    var wk = sum(current.map(function (r) { return r.a.last; })), pv = sum(current.map(function (r) { return r.a.prev; }));
+    var helpN = current.filter(function (r) { return r.d.status === 'help'; }).length, slowN = current.filter(function (r) { return r.d.status === 'slow'; }).length, starN = current.filter(function (r) { return r.d.status === 'star'; }).length;
+    var sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; }), latest = sheetHw[sheetHw.length - 1], hwTxt = '–<em>reading the sheet…</em>';
+    if (latest && sheet.data) hwTxt = current.filter(function (r) { return hwState(r, latest).k === 'done'; }).length + '<em>of ' + current.length + ' · ' + esc(latest.label) + '</em>';
+    else if (latest && sheet.error) hwTxt = '–<em>sheet not available</em>';
+    return '<div><small>Attendance</small><b>' + (attRecs.length ? att + '%' : '–') + '<em>' + (attRecs.length ? 'all days' : 'no roll call yet') + '</em></b></div>' +
+      '<div><small>Active this week</small><b>' + active + '<em>of ' + current.length + '</em></b></div>' +
+      '<div><small>XP this week</small><b>+' + wk.toLocaleString('en-US') + '<em>' + (pv ? 'week before +' + pv.toLocaleString('en-US') : 'last 7 days') + '</em></b></div>' +
+      '<div><small>Homework finished</small><b>' + hwTxt + '</b></div>' +
+      '<div><small>Need help · watch</small><b><span style="color:#f87171">' + helpN + '</span><em>·</em><span style="color:#fbbf24">' + slowN + '</span><em>' + starN + ' doing great</em></b></div>';
+  }
+  function panelsHtml() {
+    var cls = S().getActiveClass();
+    return '<div class="cc-pn"><h3>📚 Homework · last two weeks</h3><div id="cc-hwp">' + homeworkHtml() + '</div></div>' +
+      '<div class="cc-pn"><h3>📈 Class XP each day</h3>' + perDayHtml() + '</div>' +
+      '<div class="cc-pn"><h3>Recent activity</h3><div class="cc-feed">' + feedFor(cls) + '</div></div>';
+  }
+  /** After the Google Sheets answered (or failed): the homework columns, the status words and the numbers are filled in. */
+  function refreshAll() {
+    refreshTable();
+    var k = document.getElementById('cc-kp'); if (k) k.innerHTML = kpiHtml();
+    var p = document.getElementById('cc-hwp'); if (p) p.innerHTML = homeworkHtml();
+  }
+  function loadSheet() {
+    if (!root.SheetSync || !root.SheetSync.snapshot) { sheet.error = 'sheet link not loaded'; refreshAll(); return; }
+    root.SheetSync.snapshot().then(function (d) { sheet.data = d; sheet.error = ''; }, function (e) { sheet.data = null; sheet.error = (e && e.message) || 'no answer'; })
+      .then(function () { if (!document.getElementById('cc-table')) return; current.forEach(function (r) { r.d = diagnose(r); }); refreshAll(); });
   }
 
   function render(container) {
     ensureCss();
     var st = S(), cls = st.getActiveClass(), now = new Date();
     current = rowsFor(cls);
-    var attRecs = st.getAttendanceRecords ? (st.getAttendanceRecords(cls.id) || []) : [];
-    var att = st.getClassAttendanceRate ? st.getClassAttendanceRate(cls.id) : 0;
-    var active = current.filter(function (r) { return r.a.last > 0; }).length;
-    var tested = current.filter(function (r) { return r.check; });
-    var testAvg = tested.length ? Math.round(tested.reduce(function (n, r) { return n + r.check.pct; }, 0) / tested.length) : null;
-    var homeN = current.filter(function (r) { return r.home > 0; }).length;
-    var helpN = current.filter(function (r) { return r.d.status === 'help'; }).length;
-    var slowN = current.filter(function (r) { return r.d.status === 'slow'; }).length;
-    var starN = current.filter(function (r) { return r.d.status === 'star'; }).length;
     var hour = now.getHours(), greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     var who = (st.getSchoolSettings && st.getSchoolSettings().teacherName) || 'Mr. Maysam';
     function chip(k, label) { return '<button class="' + (filterKey === k ? 'on' : '') + '" onclick="CommandCenter.filter(\'' + k + '\')">' + label + '</button>'; }
+    function rng(n) { return '<button class="' + (RANGE === n ? 'on' : '') + '" onclick="CommandCenter.range(' + n + ')">' + n + ' days</button>'; }
     container.innerHTML = '<div class="cc">' +
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) +
-      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'progress-check\')">📊 Progress Check</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'curriculum\')">📚 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
-      '<div class="cc-kp cc-kp5">' +
-        '<div><small>Attendance</small><b>' + (attRecs.length ? att + '%' : '–') + '<em>' + (attRecs.length ? 'all days' : 'no roll call yet') + '</em></b></div>' +
-        '<div><small>Active this week</small><b>' + active + '<em>of ' + current.length + '</em></b></div>' +
-        '<div><small>Progress Check average</small><b>' + (testAvg != null ? testAvg + '%' : '–') + '<em>' + tested.length + ' tested</em></b></div>' +
-        '<div><small>Home practice (14 days)</small><b>' + (current.classHasHome ? homeN + '<em>of ' + current.length + '</em>' : '–<em>none recorded</em>') + '</b></div>' +
-        '<div><small>Need help · watch</small><b><span style="color:#f87171">' + helpN + '</span><em>·</em><span style="color:#fbbf24">' + slowN + '</span><em>' + starN + ' doing great</em></b></div></div>' +
-      '<div class="cc-grid"><div class="cc-pn"><h3>Students' +
+      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
+      '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
+      '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
-        '<select class="cc-find" style="width:auto" onchange="CommandCenter.skill(this.value)"><option value="">All skills</option>' + SKILLS.map(function (k) { return '<option value="' + k[0] + '"' + (skillFilter === k[0] ? ' selected' : '') + '>Weak in ' + k[2].toLowerCase() + '</option>'; }).join('') + '</select>' +
-        '<span class="cc-chips">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + chip('star', 'Doing great') + '</span></h3>' +
-        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Click a pupil for the full diagnosis. Hover a status to see why.</div></div>' +
-        '<div><div class="cc-pn"><h3>📊 Class skills (latest Progress Check)</h3>' + classSkillsHtml() + '</div>' +
-          '<div class="cc-pn" style="margin-top:16px"><h3>🏠 Home practice</h3>' + homePanelHtml() + '</div>' +
-          dataChecksHtml() +
-          '<div class="cc-pn" style="margin-top:16px"><h3>Recent activity</h3><div class="cc-feed">' + feedFor(cls) + '</div></div></div></div></div>';
+        '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + '</span>' +
+        '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + chip('star', 'Doing great') + '</span></h3>' +
+        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done · 👀 opened only · 🎤 sent a recording. Click a pupil for the full picture.</div></div>' +
+      '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml() + '</div>';
+    loadSheet();
   }
 
   // ------------------------------------------------------------- actions
@@ -360,12 +411,12 @@
     filter: function (f) { filterKey = f; if (root.renderCurrentView) root.renderCurrentView(); },
     find: function (v) { query = v || ''; refreshTable(); },
     open: function (id) { drawer(id); },
-    skill: function (k) { skillFilter = k || ''; var sel = document.querySelector('.cc select.cc-find'); if (sel) sel.value = skillFilter; refreshTable(); },
+    range: function (n) { RANGE = n === 14 ? 14 : 7; if (root.renderCurrentView) root.renderCurrentView(); },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
       st.giveXP(id, n, 'Quick Classroom Award', 'Teacher', { category: 'positive', icon: '⭐' });
       try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* sound is optional */ }
-      var cls = st.getActiveClass(); current = rowsFor(cls); refreshTable();
+      var cls = st.getActiveClass(); current = rowsFor(cls); refreshAll();
       var dr = document.getElementById('cc-drawer'); if (dr) drawer(id);
     },
     palette: function () { openPalette(); }
