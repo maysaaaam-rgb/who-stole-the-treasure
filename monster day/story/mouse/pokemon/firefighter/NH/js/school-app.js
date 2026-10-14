@@ -4126,17 +4126,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Lessons the teacher can launch for this grade
     const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
     const lessons = grade === 4 ? [
+      ['🪙', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
+      ['🚀', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
       ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
       ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
       ['💰', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
       ['🎰', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
       ['🚂', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
       ['🎲', 'Money Board Game (Unit 3, How Much Is It?)', 'unit3-board-game/index.html?grade=4'],
-            ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
+      ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
       ['📝', 'Worksheet and Class Store', 'unit12-worksheet-g4/index.html'],
       ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
+      ['🐲', 'It Keeps Changing: Monster Cast Review (Unit 3)', 'lingo-g3-u3-review/index.html'],
       ['🎲', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
       ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
       ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
@@ -4145,7 +4148,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🎤', 'Explore the Poem (Unit 3, Lesson 4)', 'unit3-g4-lessons/index.html?lesson=4'],
       ['🧊', 'It Keeps Changing (Unit 3, Lesson 1)', 'unit3-g4-lessons/index.html?lesson=1'],
       ['🐻‍❄️', 'The Bear and I, part 1 (Unit 3, Lesson 2)', 'unit3-g4-lessons/index.html?lesson=2'],
-            ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
+      ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
       ['🌱', 'First Harvest', 'unit2-g3-lessons/index.html?lesson=2'],
       ['🎮', 'Chuseok Games Arcade Day', 'unit2-g3-lessons/index.html?lesson=3']
     ] : [['🎯', 'Unit 1 Revision Game', 'unit1-revision/index.html']];
@@ -6432,7 +6435,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   }
   /* Grade 4 has two classes. Every pupil is filed under class-4a in the store, so the real class comes from the pupil id
      (student-4a-... / student-4b-...), with two corrections taken from the teacher's class lists. */
-  const ASG_CLASS_FIX = { 'student-4a-319': '4B', 'student-4b-208': '4A' };
+  const ASG_CLASS_FIX = {};   // the two pupils whose id named the other class were corrected in the records (Ozan T. 208 = 4B, Simal 319 = 4A)
   function asgClassOf(st) {
     if (ASG_CLASS_FIX[st.id]) return ASG_CLASS_FIX[st.id];
     const m = /^student-(\d)([ab])-/.exec(st.id || '');
@@ -6448,9 +6451,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       const style = kind === 'done' ? 'background:rgba(16,185,129,0.15); color:#047857; border:1px solid rgba(16,185,129,0.5);'
         : kind === 'started' ? 'background:rgba(245,158,11,0.15); color:#b45309; border:1px solid rgba(245,158,11,0.5);'
         : 'background:rgba(148,163,184,0.12); color:var(--text-muted); border:1px solid var(--border-subtle);';
-      const tip = sub.notes ? ' title="' + asgEsc(sub.notes) + '"' : '';
+      const rec = sub.recording ? 'Sent a recording' + (sub.recording.count > 1 ? ' (' + sub.recording.count + ')' : '') + (sub.recording.last ? ' on ' + sub.recording.last : '') : '';
+      const tipText = [sub.notes || '', rec].filter(Boolean).join(' · ');
+      const tip = tipText ? ' title="' + asgEsc(tipText) + '"' : '';
       const mark = kind === 'done' ? '✓ ' : (kind === 'started' ? '⏳ ' : '');
-      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + '</span>';
+      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + (rec ? ' 🎤' : '') + '</span>';
     };
     const block = (label, kind) => groups[kind].length
       ? '<div style="margin-top:8px;"><div style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">' + label + ' (' + groups[kind].length + ')</div>' + groups[kind].map(st => chip(st, kind)).join('') + '</div>'
@@ -6465,6 +6470,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const isStarted = st => asgStatusOf((h.submissions || {})[st.id]) === 'started';
     const done = students.filter(isDone).length;
     const started = students.filter(isStarted).length;
+    const recs = students.filter(st => ((h.submissions || {})[st.id] || {}).recording).length;   // pupils who sent a recording (Tea Party Week 2)
     const labels = []; students.forEach(st => { const c = asgClassOf(st); if (c && labels.indexOf(c) < 0) labels.push(c); });
     labels.sort();
     const bar = (d, n) => '<div style="height:10px; border-radius:6px; background:rgba(148,163,184,0.25); overflow:hidden; margin-top:8px;"><div style="height:100%; width:' + Math.round(d / (n || 1) * 100) + '%; background:linear-gradient(90deg,#10b981,#38bdf8); border-radius:6px;"></div></div>';
@@ -6490,7 +6496,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(clsName) + '</span></div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' · ⭐ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
         '</div>' +
-        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + '</div>' +
+        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + (recs ? '<div style="font-size:0.78rem; color:#7c3aed;">🎤 ' + recs + ' sent a recording</div>' : '') + '</div>' +
       '</div>' + sections +
     '</div>';
   }
@@ -6685,39 +6691,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<option value="completed" ' + (hwFilterStatus === 'completed' ? 'selected' : '') + '>Completed</option>' +
               '<option value="overdue" ' + (hwFilterStatus === 'overdue' ? 'selected' : '') + '>Overdue</option>' +
             '</select>' +
-          '</div>' +
-        '</div>' +
-
-        // Featured Space Cadet Mission Showcase Banner
-        '<div style="background: linear-gradient(135deg, #0b132b 0%, #0f172a 45%, #0369a1 85%, #0284c7 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 16px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
-          '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #38bdf8; cursor: pointer; box-shadow: 0 6px 20px rgba(56,189,248,0.35);" onclick="openModal(\'modal-space-cadet-poster\')">' +
-            '<img src="assets/homework/space-cadet-mission-poster.jpg" alt="Space Cadet Mission" style="width:100%; height:100%; object-fit: cover;" />' +
-            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
-          '</div>' +
-          '<div style="flex: 1; min-width: 260px;">' +
-            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
-              '<span style="background: #38bdf8; color: #0b132b; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">FEATURED STEM &amp; CLIL QUEST</span>' +
-              '<span style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">CEFR A2 • +50 XP</span>' +
-              '<span style="background: rgba(16,185,129,0.25); color: #34d399; font-size: 0.72rem; font-weight: 800; padding: 2px 9px; border-radius: 999px;">3-PANEL INTERACTIVE DOSSIER</span>' +
-            '</div>' +
-            '<h2 style="font-size: 1.35rem; font-weight: 900; margin: 0 0 4px 0; color: #fff; line-height: 1.2;">🚀 Space Cadet Mission: Blueprint &amp; Report Card</h2>' +
-            '<p style="font-size: 0.86rem; color: #cbd5e1; margin: 0 0 12px 0; line-height: 1.35;">' +
-              '&ldquo;Big Ideas • Brighter Tomorrow!&rdquo; Build mission sentences, draw your spacecraft blueprint on the engineering canvas, and deliver your Show &amp; Tell mission report with voice recording.' +
-            '</p>' +
-            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
-              '<button type="button" onclick="window.open(\'space-cadet/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(2,132,199,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
-                '🚀 Launch Space Cadet Dossier' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-space-cadet-poster\')" style="background: #38bdf8; color: #0b132b; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
-                '🖼️ View High-Res Poster' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-space-cadet\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '👥 Submissions (9)' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '⭐ Award Mission XP' +
-              '</button>' +
-            '</div>' +
           '</div>' +
         '</div>' +
 

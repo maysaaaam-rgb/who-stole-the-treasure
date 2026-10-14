@@ -12173,6 +12173,187 @@ const GAMES_REGISTRY = [
     "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
     "thumbnailIcon": "🏔️",
     "gradient": "linear-gradient(135deg, #060911 0%, #0ea5e9 50%, #a855f7 100%)"
+  },
+  {
+    "id": "unit3-g4-money-quiz-4skills",
+    "aliases": [
+      "unit3-money-quiz",
+      "quiz-4skills",
+      "how-much-is-it-quiz"
+    ],
+    "title": "🪙 Unit 3 4-Skills Paper Game Quiz: How Much Is It? (25 Min • 2 Pages)",
+    "description": "Funny 2-page printable 25-minute 4-Skills Paper Game Quiz for Grade 4 Unit 3 ('How Much Is It?', pp. 40–55) hosted by the 3D Monster Cast (Bubbles, Blaze, Sprout, Nova, Rosie) with textbook illustrations! Includes Skill 1 Listening ('Blaze's Broken Time-Machine Market' + Detective Ear quotes with Smartboard TTS audio), Skill 2 Reading ('Nova's Silly Fake-News Buster' + Problem & Solution Coin Dominoes), Skill 3 Writing ('Sprout's Magic Money Jars', 2099 Money Inventor doodle & Comic Strip speech bubbles), and Skill 4 Speaking ('Rosie's Rock-Paper-Scissors Market Quest' 2-player tabletop board game).",
+    "type": "lesson",
+    "category": "Unit 3 Printable Quiz & Paper Game",
+    "categoryLabel": "🪙 Unit 3: 4-Skills Paper Quiz",
+    "level": "A1 / A2",
+    "cefrLevel": "A1–A2",
+    "age": "Ages 9–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 4",
+    "grades": [
+      "Grade 4",
+      "Grade 3"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 150,
+    "skills": [
+      "Listening & -ar Phonics",
+      "Reading Fake-News Buster & Dominoes",
+      "Creative Writing (Jars & Comic Strip)",
+      "Speaking (Rock-Paper-Scissors Board Game)"
+    ],
+    "topic": "The History of Money & The $100 Bill (Unit 3, pp. 40–55)",
+    "topics": [
+      "History of Money (6000 BCE to 2099)",
+      "The $100 Bill Story & Quotes",
+      "Identifying Problems & Solutions",
+      "-ar Spelling Pattern"
+    ],
+    "languageFocus": "bartered, hard, card, park, valuable, worth, belong to, return, pocket, expensive, restaurant, money is tight, save, donate.",
+    "activityMode": "2-Page Printable A4 Quiz + Smartboard Audio, Timer & Green-Pen Key",
+    "interactionType": "Time-Machine Listening, Fake-News Buster, Coin Dominoes, Comic Writing, Rock-Paper-Scissors Speaking Board Game",
+    "difficulty": "Grade 4 (A1–A2)",
+    "tags": [
+      "unit3",
+      "lesson",
+      "quiz",
+      "worksheet",
+      "printable",
+      "money",
+      "how-much-is-it",
+      "4-skills",
+      "board-game",
+      "grade4"
+    ],
+    "learningObjectives": [
+      "Listen and identify key historical money facts, character quotes, and spell -ar words (bartered, hard, card, park)",
+      "Spot and correct silly reading comprehension lies and match problems to solutions from Unit 3",
+      "Write purposeful sentences for Saving/Donating money jars, invent 2099 money, and complete comic strip speech bubbles",
+      "Play a 2-player Rock-Paper-Scissors speaking board game in pairs using target Unit 3 questions and answers"
+    ],
+    "teacherInstructions": "Click '🖨️ Print 2 Student Pages' to print Page 1 and Page 2 on A4 (double-sided or 2 pages). Use the top Smartboard dock in class to play the Listening audio ('🔊 Play All Listening'), start the 25:00 countdown timer, and click '👁️ Reveal Answers (Green Pen)' at the end for peer checking!",
+    "studentInstructions": "Complete Page 1 (Listening & Reading Detective) and Page 2 (Writing Jars, Comic Strip & Rock-Paper-Scissors Speaking Board Game with your partner) to collect up to 25 Gold Coins!",
+    "route": "unit3-money-mission/quiz-4skills.html",
+    "url": "unit3-money-mission/quiz-4skills.html",
+    "worksheet": "unit3-money-mission/worksheet.html",
+    "worksheetUrl": "unit3-money-mission/worksheet.html",
+    "worksheetRoute": "unit3-money-mission/worksheet.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "vocabulary": {
+      "core": [
+        "bartered",
+        "metal",
+        "valuable",
+        "credit card",
+        "plastic",
+        "belong to",
+        "return",
+        "pocket",
+        "restaurant",
+        "money is tight"
+      ],
+      "supporting": [
+        "cowrie shells",
+        "knives and spades",
+        "worth",
+        "expensive",
+        "save",
+        "donate"
+      ],
+      "phonics": [
+        "-ar pattern: bartered, hard, card, park, jar"
+      ]
+    },
+    "grammar": {
+      "focusPattern": "Past Simple, Comparatives (easier to carry) & Advice/Imagining (should / would)",
+      "formula": "If I found a $100 bill in the park, I would... / We should save our money!",
+      "formulas": [
+        "How much is the black phone? It's $95! That's expensive!",
+        "Who does the $100 bill belong to? There is no way to return it!"
+      ]
+    },
+    "clilDomain": "History & Financial Literacy",
+    "clilTheme": "Unit 3: How Much Is It?",
+    "status": "active",
+    "trackId": "track-4",
+    "trackTitle": "📖 Literature, Story Quests & Diagnostic Tests",
+    "thumbnailIcon": "🪙",
+    "gradient": "linear-gradient(135deg, #060911 0%, #f59e0b 50%, #10b981 100%)"
+  },
+  {
+    "id": "lingo-g3-u3-review",
+    "aliases": [
+      "monster-cast-review",
+      "it-keeps-changing-review"
+    ],
+    "title": "🐲 It Keeps Changing: Monster Cast Journey Review (Unit 3)",
+    "description": "Voiced interactive 5-station journey map hosted by the animated 3D Monster Cast (Bubbles, Blaze, Sprout, Nova, Rosie — blinking and talking!). Covers Ice Words, The Bear and I, the -ng sound, Clean Cars, and Good Changes.",
+    "type": "lesson",
+    "category": "Unit 3 Monster Cast Review",
+    "categoryLabel": "🐲 Unit 3: Monster Cast Review",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3–4",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 150,
+    "skills": [
+      "Listening & Speaking",
+      "Vocabulary & Reading",
+      "-ng Phonics"
+    ],
+    "topic": "It Keeps Changing: The Bear and I & Clean Cars (Unit 3, pp. 40–55)",
+    "topics": [
+      "Ice Words",
+      "The Bear and I",
+      "-ng Sound",
+      "Clean Cars"
+    ],
+    "languageFocus": "hole, twice, enemy, thin, trap, melting, gasoline, energy, electricity, expensive.",
+    "activityMode": "Smartboard Interactive Journey with Talking Monster Cast",
+    "interactionType": "5-Station Journey Map, Picture Choices, Voiced Monster Dialogue",
+    "difficulty": "Grade 3–4 (A1)",
+    "tags": [
+      "unit3",
+      "lesson",
+      "review",
+      "monster-cast",
+      "arctic",
+      "clean-cars"
+    ],
+    "learningObjectives": [
+      "Review Unit 3 vocabulary and story comprehension with the animated Monster Cast",
+      "Practice the -ng phonics sound and clean energy concepts"
+    ],
+    "teacherInstructions": "Launch on the Smartboard and tap '▶ Let's go!' to travel through the 5 stations with Bubbles, Blaze, Sprout, Nova, and Rosie.",
+    "studentInstructions": "Listen to the monsters, tap the right pictures, and earn stars at every station!",
+    "route": "lingo-g3-u3-review/index.html",
+    "url": "lingo-g3-u3-review/index.html",
+    "worksheetUrl": null,
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "🐲",
+    "gradient": "linear-gradient(135deg, #060911 0%, #38bdf8 50%, #10b981 100%)"
   }
 ];
 

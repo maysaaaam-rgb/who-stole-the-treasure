@@ -4126,17 +4126,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Lessons the teacher can launch for this grade
     const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
     const lessons = grade === 4 ? [
+      ['🪙', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
+      ['🚀', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
       ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
       ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
       ['💰', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
       ['🎰', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
       ['🚂', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
       ['🎲', 'Money Board Game (Unit 3, How Much Is It?)', 'unit3-board-game/index.html?grade=4'],
-            ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
+      ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
       ['📝', 'Worksheet and Class Store', 'unit12-worksheet-g4/index.html'],
       ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
+      ['🐲', 'It Keeps Changing: Monster Cast Review (Unit 3)', 'lingo-g3-u3-review/index.html'],
       ['🎲', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
       ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
       ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
@@ -4145,7 +4148,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🎤', 'Explore the Poem (Unit 3, Lesson 4)', 'unit3-g4-lessons/index.html?lesson=4'],
       ['🧊', 'It Keeps Changing (Unit 3, Lesson 1)', 'unit3-g4-lessons/index.html?lesson=1'],
       ['🐻‍❄️', 'The Bear and I, part 1 (Unit 3, Lesson 2)', 'unit3-g4-lessons/index.html?lesson=2'],
-            ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
+      ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
       ['🌱', 'First Harvest', 'unit2-g3-lessons/index.html?lesson=2'],
       ['🎮', 'Chuseok Games Arcade Day', 'unit2-g3-lessons/index.html?lesson=3']
     ] : [['🎯', 'Unit 1 Revision Game', 'unit1-revision/index.html']];
