@@ -27,7 +27,9 @@
     return fetch(COOK.submitUrl + '?action=status&token=' + encodeURIComponent(COOK.token), { cache: 'no-store' }).then(function (r) { return r.json(); })
       .then(function (d) { return d && d.ok && d.status ? d.status : snap; }, function () { return snap; });
   }
-  var CLASS_FIX = { 'student-4a-319': '4b', 'student-4b-208': '4a' };    // pupils whose id says the other class
+  var CLASS_FIX = { 'student-4a-319': '4b' };    // pupils whose id says the other class (Ozan T., 208, is in 4B: checked with the teacher 14 Oct)
+  /* sheet names that fit two pupils, matched by the teacher (14 Oct 2026) */
+  var ALIAS = { '4b-ozan': 'student-4b-208', '4a-ada': 'student-4a-310', '4a-emirb': 'student-4a-342', '4b-elif': 'student-4b-307', '3b-ece': 'student-3b-217' };
   var last = { at: 0, text: '' };
 
   function slug(s) { return String(s || '').toLowerCase().replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9]+/g, ''); }
@@ -35,6 +37,7 @@
 
   /* "4a-ruzgar" -> the platform pupil of class 4A named Rüzgar. Returns null when there is no single match (never guesses). */
   function mapId(sheetId, students) {
+    if (ALIAS[sheetId]) return students.filter(function (s) { return s.id === ALIAS[sheetId]; })[0] || null;
     var m = /^([0-9][ab])-(.+)$/.exec(String(sheetId || '')); if (!m) return null;
     var cls = m[1], nm = m[2];
     var inClass = students.filter(function (s) { return realClass(s) === cls; });
