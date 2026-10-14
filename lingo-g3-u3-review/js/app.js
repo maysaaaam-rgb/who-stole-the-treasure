@@ -26,7 +26,8 @@
   function monPic(who, pose) {
     var c = D.cast[who];
     if (castArt[who + '_' + pose]) return { src: 'cast/' + who + '_' + pose + '.webp', tint: '' };
-    if (pose === 'talk' || pose === 'blink') return null;                       // the old pictures have no talking / blinking frames
+    if (pose === 'talk' || pose === 'blink') return null;
+    if (castArt[who + '_idle']) return { src: 'cast/' + who + '_idle.webp', tint: '' };   // the new cast cheers and wobbles with movement (no extra picture needed)                       // the old pictures have no talking / blinking frames
     var map = { idle: '_growing', cheer: '_growing_cheer', oops: '_growing_oops', think: '_growing_think' };
     return { src: MON + c.species + (map[pose] || '_growing') + '.webp', tint: c.tint || '' };
   }
@@ -74,8 +75,19 @@
       else talker.style.transform = 'scale(' + (1 + lv * 0.05) + ',' + (1 - lv * 0.03) + ') translateY(' + (-lv * 6) + 'px)';
     });
     return played.then(function (ok) {
+      if (!ok) {   // no recording yet: the mouth moves while the words are shown, so the monster still "talks"
+        var ms = FAST ? 30 : Math.max(1200, line[1].length * 55), t0 = Date.now(), open = false;
+        return new Promise(function (res) {
+          (function flap() {
+            if (Date.now() - t0 >= ms) { show.talking = false; talker.style.transform = ''; if (show.pose === 'idle') frame('idle'); return res(); }
+            open = !open && Math.random() > 0.15;
+            if (hasMouth) { if (show.pose === 'idle' || show.pose === 'talk') frame(open ? 'talk' : 'idle'); }
+            else talker.style.transform = open ? 'scale(1.03,.98) translateY(-3px)' : '';
+            setTimeout(flap, 110 + Math.random() * 90);
+          })();
+        });
+      }
       show.talking = false; talker.style.transform = ''; if (show.pose === 'idle') frame('idle');
-      if (!ok) return wait(FAST ? 30 : Math.max(1200, line[1].length * 55));   // no recording yet: give time to read the bubble
     });
   }
   function hideBubble() { $('bubble').classList.remove('on'); }
@@ -155,7 +167,8 @@
     function round() {
       if (!alive()) return Promise.resolve(false);
       if (k >= rounds.length) return Promise.resolve(true);
-      var r = rounds[k], opts = shuffle([r.a].concat(shuffle(pool.filter(function (a) { return a !== r.a; })).slice(0, 2)));
+      var r = rounds[k], twins = { w_thin: 'w_crack', w_crack: 'w_thin', w_ice: 'w_melting', w_melting: 'w_ice' };   // pictures that look too alike never appear together
+      var opts = shuffle([r.a].concat(shuffle(pool.filter(function (a) { return a !== r.a && a !== twins[r.a]; })).slice(0, 2)));
       p.innerHTML = ''; p.appendChild(progress(rounds.length, k));
       var row = el('div', { class: 'choices' }); p.appendChild(row);
       return new Promise(function (resolve) {
