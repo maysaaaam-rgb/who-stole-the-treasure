@@ -50,7 +50,7 @@ td img, th img { width: 8mm; height: 8mm; object-fit: contain; vertical-align: m
 .foot { margin-top: auto; border: 2px solid #111827; border-radius: 3mm; padding: 1.6mm 4mm; font-weight: 800; font-size: 3.2mm; display: flex; justify-content: space-between; background: #f1f5f9; }
 .bar { width: 210mm; margin: 8px auto; background: #0f172a; color: #fff; border-radius: 8px; padding: 8px 14px; font: 700 13px Arial; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; } .bar a, .bar button { background: #22c55e; color: #052e16; border: 0; border-radius: 6px; padding: 6px 12px; font: 800 12px Arial; cursor: pointer; text-decoration: none; }
 .opt.ok{border-color:#dc2626;color:#dc2626;background:#fef2f2}</style></head><body>
-    <div class="bar noprint">TEACHER ANSWER KEY (red) · Form A · A4, 2 pages · Print: margins None, Background graphics ON <button onclick="window.print()">🖨️ Print</button> <a href="index.html" style="background:#38bdf8">All files</a></div><div class="sheet">
+    <div class="bar noprint">TEACHER ANSWER KEY (red) · Form A · A4, 2 pages · Print: margins None, Background graphics ON <button onclick="window.print()">🖨️ Print</button> <button onclick="playListen()" style="background:#f59e0b">🔊 Play listening (Part 4)</button> <button onclick="stopListen()" style="background:#e2e8f0">⏹ Stop</button> <a href="index.html" style="background:#38bdf8">All files</a></div><div class="sheet">
     <div class="head"><img src="../lingo-g3-u3-review/cast/nova_idle.webp" alt=""><div class="t"><h1>Unit 3 Quiz: It Keeps Changing</h1><p>Grade 3 English · The Bear and I · Clean Cars · Form A</p></div><div class="score">SCORE<br>____ / 100</div></div>
     <div class="who"><span>Name:</span><span>Class: 3-</span><span>Date:</span></div>
     <div class="sec"><div class="sh"><div class="n"><b>GAME 1</b>The Ice-Bridge Stones</div><div class="p">15 points · 3 each</div></div>
@@ -79,4 +79,17 @@ td img, th img { width: 8mm; height: 8mm; object-fit: contain; vertical-align: m
       <div class="sec"><div class="sh"><div class="n"><b>BONUS</b>Think Together (p. 55)</div><div class="p">+5 points</div></div><div class="ins">How can we make good changes in our world? Finish the sentence.</div>
       <div style="display:flex;gap:2mm;align-items:flex-end"><img src="../lingo-g3-u3-review/cast/sprout_idle.webp" alt="" style="width:19mm;height:19mm;object-fit:contain"><div style="flex:1;font-weight:800;font-size:3.3mm;line-height:2.3">I can <span class="blank" style="min-width:48mm"></span><br>because <span class="blank" style="min-width:48mm"></span></div></div></div></div>
     <div class="foot"><span>★ Great job, world changer! You finished the Unit 3 quiz.</span><span>Page 2 of 2 · Form A</span></div>
-    </div></body></html>
+    </div><script>
+var L = ['audio/l1.mp3', 'audio/l2.mp3', 'audio/l3.mp3', 'audio/l4.mp3'], run = 0, cur = null;
+function stopListen() { run++; if (cur) { try { cur.pause(); } catch (e) {} cur = null; } }
+function playListen() {
+  stopListen(); var my = run, i = 0, round = 1, warned = false;
+  (function next() {
+    if (my !== run || i >= L.length) return;
+    var a = new Audio(L[i]); cur = a;
+    a.onerror = function () { if (!warned) { warned = true; alert('The recording is not ready yet. Please read the listening script on the Teacher page aloud (twice).'); } };
+    a.onended = function () { if (my !== run) return; if (round < 2) { round++; setTimeout(next, 3500); } else { round = 1; i++; setTimeout(next, 2500); } };
+    a.play().catch(function () {});
+  })();
+}
+</script></body></html>

@@ -12192,8 +12192,7 @@ const GAMES_REGISTRY = [
     "ageGroup": "8-10",
     "grade": "Grade 4",
     "grades": [
-      "Grade 4",
-      "Grade 3"
+      "Grade 4"
     ],
     "duration": 25,
     "durationText": "25 min",
@@ -12302,10 +12301,9 @@ const GAMES_REGISTRY = [
     "cefrLevel": "A1",
     "age": "Ages 8–10",
     "ageGroup": "8-10",
-    "grade": "Grade 3–4",
+    "grade": "Grade 3",
     "grades": [
-      "Grade 3",
-      "Grade 4"
+      "Grade 3"
     ],
     "duration": 25,
     "durationText": "25 min",
@@ -12353,6 +12351,53 @@ const GAMES_REGISTRY = [
     "trackId": "track-3",
     "trackTitle": "🗣️ Language Mechanics & Communication Quests",
     "thumbnailIcon": "🐲",
+    "gradient": "linear-gradient(135deg, #060911 0%, #38bdf8 50%, #10b981 100%)"
+  },
+  {
+    "id": "unit3-g3-quiz",
+    "aliases": ["unit3-quiz-g3", "it-keeps-changing-quiz", "polar-bear-quiz"],
+    "title": "📄 Unit 3 Paper Quiz: It Keeps Changing (Forms A and B, 2 pages, 100 points)",
+    "description": "Printable 2-page A4 quiz for Grade 3 with 3 games (Ice-Bridge Stones, Changing-World Maze and Word Match, Snake and -ng Sound), listening with recorded teacher voice, poem and Clean Cars comparison tables, reading summary, teacher-station speaking and a bonus. Form B has a different maze exit, snake path and answer order so neighbours cannot copy. Includes answer keys and a teacher page.",
+    "type": "worksheet",
+    "category": "Unit 3 Printable Quiz & Paper Game",
+    "categoryLabel": "📄 Unit 3: Paper Quiz",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3",
+    "grades": ["Grade 3"],
+    "duration": 25,
+    "durationText": "25 min",
+    "estimatedMinutes": 25,
+    "xp": 150,
+    "skills": ["Reading", "Listening", "Vocabulary", "-ng Phonics", "Speaking"],
+    "topic": "It Keeps Changing: The Bear and I & Clean Cars (Unit 3, pp. 40–55)",
+    "topics": ["The Bear and I", "Compare and Contrast", "Clean Cars", "-ng Sound"],
+    "languageFocus": "hole, twice, enemy, thin, trap, melting, gasoline, energy, electricity, expensive, noisy, quiet, clean, dirty.",
+    "activityMode": "Printable A4 quiz (2 pages) + recorded listening + teacher station speaking",
+    "interactionType": "Paper quiz with 3 games",
+    "difficulty": "Grade 3 (A1)",
+    "tags": ["unit3", "quiz", "worksheet", "printable", "it-keeps-changing", "grade3"],
+    "learningObjectives": [
+      "Show knowledge of the poem The Bear and I and the text Clean Cars",
+      "Compare and contrast the bear and the man, and five kinds of cars",
+      "Hear and say the -ng sound"
+    ],
+    "teacherInstructions": "Print Form A and Form B (A4, both pages, margins none, background graphics on) and give them to neighbours alternately. Use the orange Play listening button for Part 4. Mark with the Teacher page.",
+    "studentInstructions": "Read, think and circle. Work alone. You can try again.",
+    "route": "unit3-g3-quiz/index.html",
+    "url": "unit3-g3-quiz/index.html",
+    "worksheetUrl": "unit3-g3-quiz/quiz-a.html",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": false,
+    "featured": true,
+    "categoryGroup": "Unit 3 Games",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "thumbnailIcon": "📄",
     "gradient": "linear-gradient(135deg, #060911 0%, #38bdf8 50%, #10b981 100%)"
   }
 ];
