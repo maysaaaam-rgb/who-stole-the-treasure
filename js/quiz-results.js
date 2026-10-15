@@ -4,8 +4,8 @@
 (function (root) {
   'use strict';
   var DATA = {"229": [62.0, 5, "a", 0], "219": [55.0, 0, "a", 0], "224": [52.0, 0, "a", 0], "353": [46.0, 0, "b", 0], "354": [43.0, 3, "a", 0], "222": [40.0, 3, "a", 0], "213": [41.5, 0, "b", 0], "228": [41.0, 3, "b", 0], "206": [40.5, 3, "a", 0], "215": [38.0, 0, "b", 0], "352": [39.0, 0, "b", 0], "216": [36.5, 0, "b", 0], "211": [36.0, 5, "a", 0], "220": [34.0, 3, "b", 0], "207": [31.0, 0, "a", 0], "209": [34.0, 3, "a", 0], "201": [29.5, 3, "b", 0], "217": [26.0, 3, "b", 0], "200": [30.5, 3, "b", 0], "202": [28.0, 0, "a", 0], "205": [27.0, 0, "b", 0], "351": [25.0, 0, "a", 0], "212": [26.0, 0, "b", 0], "214": [23.5, 0, "a", 0], "203": [22.5, 3, "a", 0], "204": [22.0, 0, "a", 0], "221": [20.0, 3, "b", 1], "223": [19.5, 3, "a", 0], "218": [19.0, 0, "b", 0], "227": [27.5, 0, "a", 0], "230": [6.0, 0, "b", 0]};
-  /* Grade 4 money quiz: school number -> [score out of 19 (listening + reading + writing), 1 if page 1 is missing]. Speaking (0 to 6 coins) is added by the teacher on the card. */
-  var DATA4 = {"319":[6.5,0],"310":[17.5,0],"300":[2.5,0],"341":[8.5,0],"314":[12,0],"317":[1.5,1],"342":[1.5,0],"345":[6.5,0],"321":[3,0],"311":[11,0],"1789469351603":[14,0],"312":[5,0],"343":[14.5,0],"320":[5.5,0],"315":[7,0],"302":[4,0]};
+  /* Grade 4 money quiz: school number -> [score out of 19 (listening + reading + writing), 1 if page 1 is missing, optional maximum when the pupil handed in only one page: then that page counts as 100%]. Speaking (0 to 6 coins) is added by the teacher on the card. */
+  var DATA4 = {"319":[6.5,0],"310":[17.5,0],"300":[2.5,0],"341":[8.5,0],"314":[12,0],"317":[1.5,0,6],"342":[1.5,0,6],"345":[6.5,0],"321":[3,0],"311":[11,0],"1789469351603":[14,0],"312":[5,0],"343":[14.5,0],"320":[5.5,0],"315":[7,0],"302":[4,0]};
   var G = '3', R3 = 'Unit 3 paper quiz (It Keeps Changing)', R4 = 'Unit 3 paper quiz (How Much Is It)';
   function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
@@ -43,11 +43,11 @@
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
       if (G === '4') {
-        var k4 = '4-' + p.num, has4 = SPK[k4] != null, sp4 = has4 ? +SPK[k4] : 0, tot4 = d[0] + sp4, max4 = has4 ? 25 : 19, pc4 = Math.min(100, Math.round(tot4 / max4 * 100)), g4 = given(st);
+        var k4 = '4-' + p.num, has4 = SPK[k4] != null, sp4 = has4 ? +SPK[k4] : 0, tot4 = d[0] + sp4, max4 = (d[2] || 19) + (has4 ? 6 : 0), pc4 = Math.min(100, Math.round(tot4 / max4 * 100)), g4 = given(st);
         var sel4 = '<select class="qr-sp" onchange="QuizResults.speak(\'' + k4 + '\',this.value)"><option value="">Speaking: not yet</option>' + [0, 1, 2, 3, 4, 5, 6].map(function (n) { return '<option value="' + n + '"' + (has4 && sp4 === n ? ' selected' : '') + '>' + n + ' / 6 coins</option>'; }).join('') + '</select>';
         return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
           '<div class="qr-score qr-hid" data-s="' + tot4 + '" data-m="' + max4 + '" data-b="0" data-p="' + pc4 + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' + sel4 +
-          '<div class="qr-note">' + (d[1] ? 'page 1 missing' : '') + '</div>' +
+          '<div class="qr-note">' + (d[1] ? 'page 1 missing' : d[2] ? 'only the writing page was handed in: it counts as 100%' : '') + '</div>' +
           (g4 ? '<div class="qr-done">✓ XP given</div>' : '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + (30 + Math.round(tot4 / max4 * 70)) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
       }
       var sp = SPK[p.num], hasSp = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hasSp ? sp : 0), tot = hasSp ? Math.round(raw / 92 * 1000) / 10 : raw, max = hasSp ? 100 : 82;
@@ -71,7 +71,7 @@
     var num = m[1], d;
     if (g[1] === '4') {
       d = DATA4[num]; if (!d || d[1]) return null;
-      var k4 = '4-' + num, h4 = SPK[k4] != null, t4 = d[0] + (h4 ? +SPK[k4] : 0), x4 = h4 ? 25 : 19;
+      var k4 = '4-' + num, h4 = SPK[k4] != null, t4 = d[0] + (h4 ? +SPK[k4] : 0), x4 = (d[2] || 19) + (h4 ? 6 : 0);
       return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4 };
     }
     d = DATA[num]; if (!d || d[3]) return null;
