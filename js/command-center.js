@@ -65,12 +65,11 @@
   }
 
   /* ---- homework of the last two weeks. Tea Party and Chuseok cooking come straight from the Google Sheets (read only, checked every time the page opens);
-     The Arctic Rescue is a game that gives the XP itself, so it is counted from the XP history (source "Homework"). */
+     (The Arctic Rescue game was taken out of this list on 15 Oct 2026: the teacher does not want it in the Command Center.) */
   var HW = [
     { id: 'tea1', label: 'Tea Party 1', title: 'Alice Tea Party: Home Practice, Week 1', grade: 4, steps: 5, due: 'Oct 10', kind: 'sheet' },
     { id: 'tea2', label: 'Tea Party 2', title: 'Alice Tea Party: Home Practice, Week 2 (with a recording)', grade: 4, steps: 3, due: 'Oct 15', kind: 'sheet' },
-    { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' },
-    { id: 'arctic', label: 'Arctic Rescue', title: 'Unit 3 homework: The Arctic Rescue (game)', grade: 0, kind: 'xp' }
+    { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' }
   ];
   var sheet = { data: null, error: '' }, classGrade = 0, classQuiet = 0;   // classQuiet: days since ANY pupil of the class got XP (only when that is 7 or more)
   function gradeOfClass(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
