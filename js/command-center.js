@@ -238,7 +238,7 @@
     '.cc-drh{display:flex;align-items:center;gap:12px}.cc-drh img{width:58px;height:58px;object-fit:contain;background:#171a23;border-radius:12px}.cc-drh h2{margin:0;font-size:18px}.cc-x{margin-left:auto;background:none;border:0;color:#8b93a7;font-size:18px;cursor:pointer}' +
     '.cc-drs{margin:12px 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.cc-drp h4{margin:16px 0 8px;font-size:12px;color:#aab1c3;text-transform:uppercase;letter-spacing:.06em}' +
     '.cc-dsk{display:grid;grid-template-columns:80px 1fr 44px;gap:8px;align-items:center;margin-bottom:7px}' +
-    '.cc-drg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.cc-drg div{background:#14161d;border:1px solid #1d2029;border-radius:9px;padding:8px}.cc-drg small{color:#7c8498;display:block}.cc-drg b{font-size:14px}' +
+    '.cc-drg{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:8px}.cc-dbars{gap:2px}.cc-drg div{background:#14161d;border:1px solid #1d2029;border-radius:9px;padding:8px}.cc-drg small{color:#7c8498;display:block}.cc-drg b{font-size:14px}' +
     '.cc-tips{margin:0;padding-left:18px;line-height:1.5;color:#cbd2e1}.cc-warn{background:#2e2410;color:#fde68a;border-radius:9px;padding:8px 10px;margin-top:8px}' +
     '.cc-dra{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.cc-dra .cc-plus{padding:7px 11px}.cc-plus.pri{background:#232850;border-color:#4b52c4;color:#fff}' +
     '@media(max-width:1100px){.cc-grid{grid-template-columns:minmax(0,1fr)}.cc-kp5{grid-template-columns:repeat(3,minmax(0,1fr))}}' +
@@ -369,7 +369,7 @@
   function drawer(id) {
     var r = current.filter(function (x) { return x.id === id; })[0]; if (!r) return;
     var old = document.getElementById('cc-drawer'); if (old) old.remove();
-    var st = STATUS[r.d.status], labels = dayLabels(14), days14 = r.a.days.slice(NDAYS - 14), max = Math.max.apply(null, days14.concat([1]));
+    var st = STATUS[r.d.status], labels = dayLabels(30), days14 = r.a.days.slice(NDAYS - 30), max = Math.max.apply(null, days14.concat([1]));
     var bars = '<div class="cc-dbars">' + days14.map(function (v, i) {
       var d = labels[i];
       return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + v + ' XP"><b>' + (v || '') + '</b><i style="height:' + Math.max(v ? 8 : 2, Math.round(v / max * 100)) + '%"' + (d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.n + '</small></div>';
@@ -392,8 +392,8 @@
       '<div class="cc-drs"><span class="cc-t ' + st[1] + '">' + st[0] + '</span> <span class="cc-dim">' + esc(r.d.why.join(' · ')) + '</span></div>' +
       (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (r.dup ? '<div class="cc-warn">⧉ This name exists ' + r.dup.length + ' times (' + esc(r.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
-      '<h4>XP earned each day (14 days)</h4>' + bars +
-      '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + days14.filter(function (v) { return v > 0; }).length + ' of 14</b></div></div>' +
+      '<h4>XP earned each day (30 days)</h4>' + bars +
+      '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + days14.filter(function (v) { return v > 0; }).length + ' of 30</b></div><div><small>Last 30 days</small><b>+' + sum(days14) + ' XP</b></div></div>' +
       (tally.length ? '<div class="cc-dim" style="margin-top:6px">Most XP for: ' + tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') +
       (r.q ? '<h4>Unit 3 quiz</h4><div class="cc-dim" style="padding:0 0 8px"><b>' + r.q.pct + '%</b> (' + esc(r.q.text) + (r.q.speaking ? ', with speaking' : ', speaking not added yet') + ')</div>' : '') + '<h4>Homework (last two weeks)</h4>' + hw +
       '<h4>Worksheets</h4><div>' + ws + '</div>' +
