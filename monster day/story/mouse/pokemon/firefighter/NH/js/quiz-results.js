@@ -4,22 +4,25 @@
 (function (root) {
   'use strict';
   var DATA = {"229": [62.0, 5, "a", 0], "219": [55.0, 0, "a", 0], "224": [52.0, 0, "a", 0], "353": [46.0, 0, "b", 0], "354": [43.0, 3, "a", 0], "222": [40.0, 3, "a", 0], "213": [41.5, 0, "b", 0], "228": [41.0, 3, "b", 0], "206": [40.5, 3, "a", 0], "215": [38.0, 0, "b", 0], "352": [39.0, 0, "b", 0], "216": [36.5, 0, "b", 0], "211": [36.0, 5, "a", 0], "220": [34.0, 3, "b", 0], "207": [31.0, 0, "a", 0], "209": [34.0, 3, "a", 0], "201": [29.5, 3, "b", 0], "217": [26.0, 3, "b", 0], "200": [30.5, 3, "b", 0], "202": [28.0, 0, "a", 0], "205": [27.0, 0, "b", 0], "351": [25.0, 0, "a", 0], "212": [26.0, 0, "b", 0], "214": [23.5, 0, "a", 0], "203": [22.5, 3, "a", 0], "204": [22.0, 0, "a", 0], "221": [20.0, 3, "b", 1], "223": [19.5, 3, "a", 0], "218": [19.0, 0, "b", 0], "227": [27.5, 0, "a", 0], "230": [6.0, 0, "b", 0]};
-  var REASON = 'Unit 3 paper quiz (It Keeps Changing)';
+  /* Grade 4 money quiz: school number -> [score out of 19 (listening + reading + writing), 1 if page 1 is missing]. Speaking (0 to 6 coins) is added by the teacher on the card. */
+  var DATA4 = {"319":[6.5,0],"310":[17.5,0],"300":[2.5,0],"341":[8.5,0],"314":[12,0],"317":[1.5,1],"342":[1.5,1],"345":[6.5,0],"321":[3,0],"311":[11,0],"1789469351603":[14,0],"312":[5,0],"343":[14.5,0],"320":[5.5,0],"315":[7,0],"302":[4,0]};
+  var G = '3', R3 = 'Unit 3 paper quiz (It Keeps Changing)', R4 = 'Unit 3 paper quiz (How Much Is It)';
+  function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
   try { SPK = JSON.parse(localStorage.getItem('qr-speaking-v1') || '{}') || {}; } catch (e) { SPK = {}; }
   function saveSpk() { try { localStorage.setItem('qr-speaking-v1', JSON.stringify(SPK)); } catch (e) {} }
   function store() { return root.schoolStore; }
   function pupils(c) {
     var s = store(); if (!s) return [];
-    return s.getStudents('class-3' + c).map(function (st) {
-      var m = /(\d+)$/.exec(String(st.id)), num = m ? m[1] : '', d = DATA[num];
+    return s.getStudents('class-' + G + c).map(function (st) {
+      var m = /(\d+)$/.exec(String(st.id)), num = m ? m[1] : '', d = G === '4' ? DATA4[num] : DATA[num];
       return { st: st, num: num, d: d || null };
     });
   }
   function xpFor(d, sp) { return d ? 30 + Math.round((sp ? (d[0] + sp) / 92 * 100 : d[0]) + d[1]) : 0; }
   function given(st) {
     var tx = (store().state.xpTransactions || []).concat(st.xpHistory || []);
-    return tx.some(function (t) { return t && String(t.reason || '').indexOf(REASON) === 0 && (!t.studentId || t.studentId === st.id) && t.status !== 'voided'; });
+    return tx.some(function (t) { return t && String(t.reason || '').indexOf(reason()) === 0 && (!t.studentId || t.studentId === st.id) && t.status !== 'voided'; });
   }
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function css() {
@@ -39,6 +42,14 @@
     var cards = list.map(function (p) {
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
+      if (G === '4') {
+        var k4 = '4-' + p.num, has4 = SPK[k4] != null, sp4 = has4 ? +SPK[k4] : 0, tot4 = d[0] + sp4, max4 = has4 ? 25 : 19, pc4 = Math.min(100, Math.round(tot4 / max4 * 100)), g4 = given(st);
+        var sel4 = '<select class="qr-sp" onchange="QuizResults.speak(\'' + k4 + '\',this.value)"><option value="">Speaking: not yet</option>' + [0, 1, 2, 3, 4, 5, 6].map(function (n) { return '<option value="' + n + '"' + (has4 && sp4 === n ? ' selected' : '') + '>' + n + ' / 6 coins</option>'; }).join('') + '</select>';
+        return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
+          '<div class="qr-score qr-hid" data-s="' + tot4 + '" data-m="' + max4 + '" data-b="0" data-p="' + pc4 + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' + sel4 +
+          '<div class="qr-note">' + (d[1] ? 'page 1 missing' : '') + '</div>' +
+          (g4 ? '<div class="qr-done">✓ XP given</div>' : '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + (30 + Math.round(tot4 / max4 * 70)) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
+      }
       var sp = SPK[p.num], hasSp = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hasSp ? sp : 0), tot = hasSp ? Math.round(raw / 92 * 1000) / 10 : raw, max = hasSp ? 100 : 82;
       var pct = Math.min(100, Math.round((tot + d[1]) / max * 100)), isGiven = given(st);
       var sel = '<select class="qr-sp" onchange="QuizResults.speak(\'' + p.num + '\',this.value)"><option value="">Speaking: not yet</option>' + [[10, 'Great 10'], [7, 'Good 7'], [4, 'Try 4']].map(function (o) { return '<option value="' + o[0] + '"' + (sp === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
@@ -48,24 +59,24 @@
         (isGiven ? '<div class="qr-done">✓ XP given</div>' :
           '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d, hasSp ? sp : 0) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
     }).join('');
-    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results</h2><div class="qr-sub">Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra. Tap a card to show the result, then give XP.</div></div></div>' +
-      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">3-A</button><button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' +
+    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results (Grade ' + G + ')</h2><div class="qr-sub">' + (G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' Tap a card to show the result, then give XP.</div></div></div>' +
+      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '') +
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
   }
   var Q = root.QuizResults = {
-    open: function (c) { css(); cls = c || cls; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
+    open: function (c, g) { css(); G = g === '4' ? '4' : '3'; cls = c || 'a'; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
     close: function () { if (box) box.style.display = 'none'; },
     cls: function (c) { cls = c; render(); },
     reveal: function (el) { var s = +el.dataset.s, b = +el.dataset.b; el.classList.remove('qr-hid'); el.removeAttribute('onclick'); el.style.cursor = 'default'; el.innerHTML = s + '<small style="font-size:.9rem"> / ' + el.dataset.m + '</small>' + (b ? '<div style="font-size:.9rem;color:#38bdf8">+' + b + ' bonus</div>' : '') + '<div>' + stars(+el.dataset.p) + '</div>'; },
     revealAll: function () { [].slice.call(box.querySelectorAll('.qr-hid')).forEach(Q.reveal); },
     hideAll: function () { render(); },
-    speak: function (num, v) { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; saveSpk(); render(); },
+    speak: function (num, v) { if (String(num).indexOf('4-') === 0) { if (v === '') delete SPK[num]; else SPK[num] = parseInt(v, 10); } else { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; } saveSpk(); render(); },
     give: function (id, btn) {
       var s = store(), st = s && s.getStudent(id); if (!st || given(st)) return;
       var card = btn.closest('.qr-card'), v = Math.max(0, Math.min(200, parseInt(card.querySelector('.qr-xp').value, 10) || 0));
       if (!v) return; btn.disabled = true;
-      s.awardXP(id, v, 'participation', REASON);
+      s.awardXP(id, v, 'participation', reason());
       card.querySelector('.qr-xp').parentNode.outerHTML = '<div class="qr-done">✓ +' + v + ' XP given</div>';
     }
   };

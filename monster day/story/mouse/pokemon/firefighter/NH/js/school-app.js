@@ -911,6 +911,7 @@
       }
     }
     if (res && res.route === '#quiz-results' && window.QuizResults) { window.QuizResults.open(); return; }
+    if (res && res.route === '#quiz-results-g4' && window.QuizResults) { window.QuizResults.open('a', '4'); return; }
     if (res && res.route) {
       if (res.route === '#simon-says') {
         if (typeof window.openSimonSaysModal === 'function') {
