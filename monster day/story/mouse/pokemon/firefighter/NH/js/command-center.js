@@ -117,7 +117,7 @@
     var weak = [];
     if (r.a.status === 'slow') weak.push('XP');
     if (sheet.data && sheetHw.length && missing.length >= Math.ceil(sheetHw.length / 2)) weak.push('homework');
-    if (r.q && r.q.pct < QUIZ_WEAK) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), under ' + QUIZ_WEAK + '%'); }
+    if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
     if (status === 'ok' || status === 'star') {
       if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
       else if (weak.length === 1) { status = 'slow'; if (weak[0] !== 'quiz') why.unshift('Weak in ' + weak[0]); }
@@ -129,7 +129,7 @@
     return { status: status, why: why, missing: missing };
   }
   /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
-  var QUIZ_WEAK = 40;
+  var QUIZ_GAP = 15, quizAvg = 0;   // a quiz is weak when it is 15 points or more under the class average (so one hard quiz does not flag half the class)
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
@@ -149,6 +149,9 @@
     });
     var newest = rows.length ? Math.min.apply(null, rows.map(function (r) { return r.a.sSince; })) : 0;
     classQuiet = rows.length && newest >= 7 && newest < 999 ? newest : 0;
+    var qs = rows.filter(function (r) { return r.q; });
+    quizAvg = qs.length ? Math.round(qs.reduce(function (a, r) { return a + r.q.pct; }, 0) / qs.length) : 0;
+    rows.forEach(function (r) { r.qWeak = !!(r.q && r.q.pct <= quizAvg - QUIZ_GAP); });
     rows.forEach(function (r) { r.d = diagnose(r); });
     return rows;
   }
@@ -306,7 +309,7 @@
       labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + (d.paused ? ' cc-pz' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
       th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
       hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
-      '<th class="cc-hh" style="cursor:default" title="Unit 3 paper quiz (percent). Under ' + QUIZ_WEAK + '% counts as weak.">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
+      '<th class="cc-hh" style="cursor:default" title="Unit 3 paper quiz (percent). Weak = ' + QUIZ_GAP + ' points or more under the class average (' + quizAvg + '%).">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
     var body = rows.map(function (r) {
       var s = STATUS[r.d.status];
       var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
@@ -314,7 +317,7 @@
       return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
         '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(NDAYS - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
-        '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.q.pct < QUIZ_WEAK ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="Unit 3 quiz ' + esc(r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
+        '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="Unit 3 quiz ' + esc(r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
         '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
     }).join('');
@@ -377,7 +380,7 @@
     if (r.a.sSince >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' lesson days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
     else if (r.a.sSince >= 7) tips.push('<b>No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
     else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
-    if (r.q && r.q.pct < QUIZ_WEAK) tips.push('<b>Unit 3 quiz ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
+    if (r.qWeak) tips.push('<b>Unit 3 quiz ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
