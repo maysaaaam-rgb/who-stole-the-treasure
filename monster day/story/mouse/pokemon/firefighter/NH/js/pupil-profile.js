@@ -33,6 +33,7 @@
       '.pp-more{margin-top:6px}.pp-more details{background:rgba(15,23,42,.85);border:1px solid #232a3d;border-radius:14px;margin-bottom:8px;overflow:hidden}' +
       '.pp-more summary{cursor:pointer;padding:12px 16px;font-weight:800;font-size:.9rem;color:#dbe3f5;list-style:none;display:flex;justify-content:space-between}.pp-more summary::-webkit-details-marker{display:none}.pp-more summary:after{content:"▾";color:#6b7387}.pp-more details[open] summary:after{content:"▴"}' +
       '.pp-light{background:var(--bg-surface,#fff);color:var(--text-main,#0f172a);border-radius:12px;margin:0 12px 12px;padding:14px}' +
+      '.pp-parts{display:grid;gap:7px}.pp-part{display:grid;grid-template-columns:130px 1fr 70px;gap:10px;align-items:center;font-size:.85rem}.pp-part b{text-align:right}.pp-pbar{height:9px;border-radius:5px;background:#1b2234;overflow:hidden}.pp-pbar i{display:block;height:100%;border-radius:5px}@media(max-width:520px){.pp-part{grid-template-columns:100px 1fr 60px}}' +
       '.pp-dim{color:#8b94a8}';
     document.head.appendChild(s);
   }
@@ -91,10 +92,23 @@
     }).join('') : '<div class="pp-dim">No homework in the list for this class.</div>';
     var ws = d.ws && d.ws.length ? d.ws.map(function (w) { return '<div class="pp-row"><span>' + esc(w.name) + '</span><b>' + w.score + '/10</b></div>'; }).join('') : '<div class="pp-dim">No worksheet score entered yet.</div>';
 
+    var qd = null; try { qd = root.QuizResults && root.QuizResults.detailOf ? root.QuizResults.detailOf(id) : null; } catch (e) { qd = null; }
+    var quizCard = '';
+    if (qd) {
+      var best = null, worst = null;
+      qd.parts.forEach(function (x) { x.r = x.max ? x.score / x.max : 0; if (!best || x.r > best.r) best = x; if (!worst || x.r < worst.r) worst = x; });
+      quizCard = '<div class="pp-card"><h3>' + esc(qd.title) + (qd.pct != null ? ' · <span style="color:' + (d.qWeak ? '#f87171' : '#34d399') + '">' + qd.pct + '%</span> <span class="pp-dim" style="font-weight:600">(' + esc(qd.text) + (qd.speaking ? ', with speaking' : ', speaking not added yet') + (qd.bonus ? ' · +' + qd.bonus + ' bonus' : '') + ')</span>' : '') + '</h3>' +
+        (qd.note ? '<div class="pp-dim" style="margin-bottom:8px;font-size:.8rem">' + esc(qd.note) + '</div>' : '') +
+        '<div class="pp-parts">' + qd.parts.map(function (x) {
+          var pc = Math.round(x.r * 100), col = pc >= 70 ? '#34d399' : pc >= 40 ? '#fbbf24' : '#f87171';
+          return '<div class="pp-part"><span>' + esc(x.label) + '</span><div class="pp-pbar"><i style="width:' + Math.max(2, pc) + '%;background:' + col + '"></i></div><b>' + x.score + '<small class="pp-dim"> / ' + x.max + '</small></b></div>';
+        }).join('') + '</div>' +
+        (best && worst && best !== worst ? '<div class="pp-dim" style="margin-top:8px;font-size:.82rem">Strongest: <b style="color:#34d399">' + esc(best.label) + '</b> · Weakest: <b style="color:#f87171">' + esc(worst.label) + '</b></div>' : '') + '</div>';
+    }
     html += (d.mism ? '<div class="pp-warn">⚠ XP shown (' + d.mism.shown + ') is lower than the award history (' + d.mism.target + '). <button class="pp-b o" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (d.dup ? '<div class="pp-warn">⧉ This name exists ' + d.dup.length + ' times (' + esc(d.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<div class="pp-card"><h3>XP earned each day · last 30 days</h3>' + bars + (d.tally.length ? '<div class="pp-dim" style="margin-top:8px;font-size:.8rem">Most XP for: ' + d.tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') + '</div>' +
-      '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
+      quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
     return html;
   }
 
