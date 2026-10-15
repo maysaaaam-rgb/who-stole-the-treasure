@@ -106,6 +106,12 @@
     return out;
   }
   /** One status from what really happened: XP over the days and the homework from the sheets. (The old English Progress Check scores are no longer used.) */
+  /** A homework only counts as missing once its due day is over (due 'Oct 15' counts from 16 Oct). */
+  function overdue(h) {
+    if (!h.due) return true;
+    var d = new Date(h.due + ' ' + new Date().getFullYear() + ' 23:59:59');
+    return isNaN(d.getTime()) || Date.now() > d.getTime();
+  }
   function diagnose(r) {
     var why = [], status = 'ok', missing = [], sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; });
     if (r.a.sSince >= 7 && classQuiet) { status = 'quiet'; why.push('The whole class has had no XP for ' + classQuiet + ' lesson days'); }
@@ -116,7 +122,7 @@
     // XP, homework and the quiz are weighed together: one weak thing = Watch, two = Needs help (a pupil with no XP for 7 lesson days is already Needs help)
     var weak = [];
     if (r.xpSlow) weak.push('XP');
-    if (sheet.data && sheetHw.length >= 2 && missing.length === sheetHw.length) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
+    if (sheet.data && sheetHw.length >= 2 && missing.length === sheetHw.length && missing.every(overdue)) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
     if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
     if (status === 'ok' || status === 'star' || status === 'slow') {
       if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
@@ -129,7 +135,7 @@
     return { status: status, why: why, missing: missing };
   }
   /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
-  var QUIZ_GAP = 15, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 15 points or more under the class average (so one hard quiz does not flag half the class)
+  var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
