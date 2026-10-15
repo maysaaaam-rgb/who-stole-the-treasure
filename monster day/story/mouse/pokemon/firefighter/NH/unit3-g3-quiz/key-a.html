@@ -80,14 +80,15 @@ td img, th img { width: 8mm; height: 8mm; object-fit: contain; vertical-align: m
       <div style="display:flex;gap:2mm;align-items:flex-end"><img src="../lingo-g3-u3-review/cast/sprout_idle.webp" alt="" style="width:19mm;height:19mm;object-fit:contain"><div style="flex:1;font-weight:800;font-size:3.3mm;line-height:2.3">I can <span class="blank" style="min-width:48mm"></span><br>because <span class="blank" style="min-width:48mm"></span></div></div></div></div>
     <div class="foot"><span>★ Great job, world changer! You finished the Unit 3 quiz.</span><span>Page 2 of 2 · Form A</span></div>
     </div><script>
-var L = ['audio/l1.mp3', 'audio/l2.mp3', 'audio/l3.mp3', 'audio/l4.mp3'], run = 0, cur = null;
+var L = ['audio/l1.mp3', 'audio/l2.mp3', 'audio/l3.mp3', 'audio/l4.mp3'], T = ["Listening 1. A young man fished through a hole in the ice. One day, a giant polar bear took his fish.","Listening 2. The winters were warm, so the ice was thin. The man and the bear fell into the water.","Listening 3. Gasoline cars are fast, but they are noisy. They make the air dirty.","Listening 4. Electric cars and solar cars are both clean and quiet."], run = 0, cur = null;
 function stopListen() { run++; if (cur) { try { cur.pause(); } catch (e) {} cur = null; } }
 function playListen() {
-  stopListen(); var my = run, i = 0, round = 1, warned = false;
+  stopListen(); var my = run, i = 0, round = 1, missing = [];
   (function next() {
-    if (my !== run || i >= L.length) return;
-    var a = new Audio(L[i]); cur = a;
-    a.onerror = function () { if (!warned) { warned = true; alert('The recording is not ready yet. Please read the listening script on the Teacher page aloud (twice).'); } };
+    if (my !== run) return;
+    if (i >= L.length) { if (missing.length) { var NL = String.fromCharCode(10); alert('Please read aloud (twice):' + NL + NL + missing.join(NL + NL)); } return; }
+    var a = new Audio(L[i]), at = i; cur = a;
+    a.onerror = function () { if (my !== run) return; missing.push(T[at]); round = 1; i = at + 1; setTimeout(next, 300); };   // no recording for this part: it is read aloud by the teacher
     a.onended = function () { if (my !== run) return; if (round < 2) { round++; setTimeout(next, 3500); } else { round = 1; i++; setTimeout(next, 2500); } };
     a.play().catch(function () {});
   })();
