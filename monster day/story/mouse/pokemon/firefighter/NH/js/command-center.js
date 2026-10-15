@@ -79,7 +79,7 @@
   function hwState(r, h) {
     if (h.kind === 'xp') {
       var a = r.a.arctic;
-      return a.n ? { k: 'done', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP (counted as done)' } : { k: 'none', txt: '–', say: 'has not played yet' };
+      return a.n ? { k: 'part', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP' } : { k: 'none', txt: '–', say: 'has not played yet' };
     }
     if (!sheet.data) return { k: 'wait', txt: sheet.error ? '?' : '…', say: sheet.error ? 'the Google Sheet could not be read' : 'reading the Google Sheet' };
     var v = (sheet.data.pupils[r.id] || {})[h.id];
@@ -334,7 +334,7 @@
     return note + hws.map(function (h) {
       var groups = { done: [], part: [], open: [], none: [], wait: [] }, rec = 0;
       current.forEach(function (r) { groups[hwState(r, h).k].push(r); if (recOf(r, h)) rec++; });
-      var isXp = h.kind === 'xp', did = groups.done.length;
+      var isXp = h.kind === 'xp', did = isXp ? groups.part.length : groups.done.length;
       var line = isXp ? '<b>' + did + ' of ' + n + '</b> played'
         : '<b>' + did + ' of ' + n + '</b> did it (finished, or opened and did something)' + (groups.open.length ? ' · ' + groups.open.length + ' opened only' : '') + (rec ? ' · 🎤 ' + rec + ' sent a recording' : '');
       var todo = isXp ? groups.none : groups.none.concat(groups.open);
