@@ -16,7 +16,7 @@
       return { st: st, num: num, d: d || null };
     });
   }
-  function xpFor(d, sp) { return d ? 30 + Math.round(d[0] + d[1] + (sp || 0)) : 0; }
+  function xpFor(d, sp) { return d ? 30 + Math.round((sp ? (d[0] + sp) / 92 * 100 : d[0]) + d[1]) : 0; }
   function given(st) {
     var tx = (store().state.xpTransactions || []).concat(st.xpHistory || []);
     return tx.some(function (t) { return t && String(t.reason || '').indexOf(REASON) === 0 && (!t.studentId || t.studentId === st.id) && t.status !== 'voided'; });
@@ -39,7 +39,7 @@
     var cards = list.map(function (p) {
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
-      var sp = SPK[p.num], hasSp = sp === 4 || sp === 7 || sp === 10, tot = d[0] + (hasSp ? sp : 0), max = hasSp ? 92 : 82;
+      var sp = SPK[p.num], hasSp = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hasSp ? sp : 0), tot = hasSp ? Math.round(raw / 92 * 1000) / 10 : raw, max = hasSp ? 100 : 82;
       var pct = Math.min(100, Math.round((tot + d[1]) / max * 100)), isGiven = given(st);
       var sel = '<select class="qr-sp" onchange="QuizResults.speak(\'' + p.num + '\',this.value)"><option value="">Speaking: not yet</option>' + [[10, 'Great 10'], [7, 'Good 7'], [4, 'Try 4']].map(function (o) { return '<option value="' + o[0] + '"' + (sp === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
       return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
@@ -48,7 +48,7 @@
         (isGiven ? '<div class="qr-done">✓ XP given</div>' :
           '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d, hasSp ? sp : 0) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
     }).join('');
-    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results</h2><div class="qr-sub">Out of 82 (no maze). Choose a speaking mark on a card and it becomes out of 92. Bonus is extra. Tap a card to show the result, then give XP.</div></div></div>' +
+    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results</h2><div class="qr-sub">Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra. Tap a card to show the result, then give XP.</div></div></div>' +
       '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">3-A</button><button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' +
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
