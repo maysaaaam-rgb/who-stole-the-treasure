@@ -5,7 +5,9 @@
   'use strict';
   var DATA = {"229": [62.0, 5, "a", 0], "219": [55.0, 0, "a", 0], "224": [52.0, 0, "a", 0], "353": [46.0, 0, "b", 0], "354": [43.0, 3, "a", 0], "222": [40.0, 3, "a", 0], "213": [41.5, 0, "b", 0], "228": [41.0, 3, "b", 0], "206": [40.5, 3, "a", 0], "215": [38.0, 0, "b", 0], "352": [39.0, 0, "b", 0], "216": [36.5, 0, "b", 0], "211": [36.0, 5, "a", 0], "220": [34.0, 3, "b", 0], "207": [31.0, 0, "a", 0], "209": [34.0, 3, "a", 0], "201": [29.5, 3, "b", 0], "217": [26.0, 3, "b", 0], "200": [30.5, 3, "b", 0], "202": [28.0, 0, "a", 0], "205": [27.0, 0, "b", 0], "351": [25.0, 0, "a", 0], "212": [26.0, 0, "b", 0], "214": [23.5, 0, "a", 0], "203": [22.5, 3, "a", 0], "204": [22.0, 0, "a", 0], "221": [20.0, 3, "b", 1], "223": [19.5, 3, "a", 0], "218": [19.0, 0, "b", 0], "227": [27.5, 0, "a", 0], "230": [6.0, 0, "b", 0]};
   var REASON = 'Unit 3 paper quiz (It Keeps Changing)';
-  var cls = 'a', box = null;
+  var cls = 'a', box = null, SPK = {};
+  try { SPK = JSON.parse(localStorage.getItem('qr-speaking-v1') || '{}') || {}; } catch (e) { SPK = {}; }
+  function saveSpk() { try { localStorage.setItem('qr-speaking-v1', JSON.stringify(SPK)); } catch (e) {} }
   function store() { return root.schoolStore; }
   function pupils(c) {
     var s = store(); if (!s) return [];
@@ -14,7 +16,7 @@
       return { st: st, num: num, d: d || null };
     });
   }
-  function xpFor(d) { return d ? 30 + Math.round(d[0] + d[1]) : 0; }
+  function xpFor(d, sp) { return d ? 30 + Math.round(d[0] + d[1] + (sp || 0)) : 0; }
   function given(st) {
     var tx = (store().state.xpTransactions || []).concat(st.xpHistory || []);
     return tx.some(function (t) { return t && String(t.reason || '').indexOf(REASON) === 0 && (!t.studentId || t.studentId === st.id) && t.status !== 'voided'; });
@@ -28,7 +30,7 @@
       '.qr-btn:active{transform:translateY(4px);border-bottom-width:1px}.qr-btn.off{background:#334155;border-bottom-color:#1e293b;color:#cbd5e1}.qr-btn.go{background:#10b981;border-bottom-color:#047857}.qr-btn:disabled{opacity:.5;cursor:default}' +
       '.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.qr-card{background:rgba(15,23,42,.85);backdrop-filter:blur(14px);border-radius:16px;padding:12px;text-align:center;box-shadow:0 4px 20px -2px rgba(0,0,0,.4)}' +
       '.qr-nm{font-weight:800;margin-bottom:8px}.qr-score{font-size:2rem;font-weight:900;color:#f59e0b;min-height:2.6rem}.qr-hid{color:#64748b;cursor:pointer;font-size:1.1rem;padding-top:8px}.qr-note{font-size:.78rem;opacity:.7;min-height:1.1rem}' +
-      '.qr-xp{width:64px;text-align:center;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#fff;padding:4px;font-weight:700}.qr-done{color:#10b981;font-weight:800;margin-top:6px}';
+      '.qr-xp{width:64px;text-align:center;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#fff;padding:4px;font-weight:700}.qr-sp{margin:4px 0;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#cbd5e1;padding:3px 6px;font-size:.78rem}.qr-done{color:#10b981;font-weight:800;margin-top:6px}';
     document.head.appendChild(s);
   }
   function stars(p) { var v = p >= 75 ? 3 : p >= 50 ? 2 : 1, o = ''; while (v--) o += '⭐'; return o; }
@@ -37,14 +39,16 @@
     var cards = list.map(function (p) {
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
-      var pct = Math.min(100, Math.round((d[0] + d[1]) / 82 * 100)), isGiven = given(st);
+      var sp = SPK[p.num], hasSp = sp === 4 || sp === 7 || sp === 10, tot = d[0] + (hasSp ? sp : 0), max = hasSp ? 92 : 82;
+      var pct = Math.min(100, Math.round((tot + d[1]) / max * 100)), isGiven = given(st);
+      var sel = '<select class="qr-sp" onchange="QuizResults.speak(\'' + p.num + '\',this.value)"><option value="">Speaking: not yet</option>' + [[10, 'Great 10'], [7, 'Good 7'], [4, 'Try 4']].map(function (o) { return '<option value="' + o[0] + '"' + (sp === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
       return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
-        '<div class="qr-score qr-hid" data-s="' + d[0] + '" data-b="' + d[1] + '" data-p="' + pct + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' +
+        '<div class="qr-score qr-hid" data-s="' + tot + '" data-m="' + max + '" data-b="' + d[1] + '" data-p="' + pct + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' + sel +
         '<div class="qr-note">' + (d[3] ? 'page 1 missing' : '') + '</div>' +
         (isGiven ? '<div class="qr-done">✓ XP given</div>' :
-          '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
+          '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d, hasSp ? sp : 0) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
     }).join('');
-    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results</h2><div class="qr-sub">Out of 82 (no maze or speaking), plus bonus. Tap a card to show the result, then give XP.</div></div></div>' +
+    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results</h2><div class="qr-sub">Out of 82 (no maze). Choose a speaking mark on a card and it becomes out of 92. Bonus is extra. Tap a card to show the result, then give XP.</div></div></div>' +
       '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">3-A</button><button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' +
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
@@ -53,9 +57,10 @@
     open: function (c) { css(); cls = c || cls; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
     close: function () { if (box) box.style.display = 'none'; },
     cls: function (c) { cls = c; render(); },
-    reveal: function (el) { var s = +el.dataset.s, b = +el.dataset.b; el.classList.remove('qr-hid'); el.removeAttribute('onclick'); el.style.cursor = 'default'; el.innerHTML = s + '<small style="font-size:.9rem"> / 82</small>' + (b ? '<div style="font-size:.9rem;color:#38bdf8">+' + b + ' bonus</div>' : '') + '<div>' + stars(+el.dataset.p) + '</div>'; },
+    reveal: function (el) { var s = +el.dataset.s, b = +el.dataset.b; el.classList.remove('qr-hid'); el.removeAttribute('onclick'); el.style.cursor = 'default'; el.innerHTML = s + '<small style="font-size:.9rem"> / ' + el.dataset.m + '</small>' + (b ? '<div style="font-size:.9rem;color:#38bdf8">+' + b + ' bonus</div>' : '') + '<div>' + stars(+el.dataset.p) + '</div>'; },
     revealAll: function () { [].slice.call(box.querySelectorAll('.qr-hid')).forEach(Q.reveal); },
     hideAll: function () { render(); },
+    speak: function (num, v) { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; saveSpk(); render(); },
     give: function (id, btn) {
       var s = store(), st = s && s.getStudent(id); if (!st || given(st)) return;
       var card = btn.closest('.qr-card'), v = Math.max(0, Math.min(200, parseInt(card.querySelector('.qr-xp').value, 10) || 0));
