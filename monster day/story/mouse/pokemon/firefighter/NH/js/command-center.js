@@ -71,7 +71,7 @@
     { id: 'tea2', label: 'Tea Party 2', title: 'Alice Tea Party: Home Practice, Week 2 (with a recording)', grade: 4, steps: 3, due: 'Oct 15', kind: 'sheet' },
     { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' }
   ];
-  var sheet = { data: null, error: '' }, classGrade = 0, classQuiet = 0;   // classQuiet: days since ANY pupil of the class got XP (only when that is 7 or more)
+  var sheetLoading = false, sheet = { data: null, error: '' }, classGrade = 0, classQuiet = 0;   // classQuiet: days since ANY pupil of the class got XP (only when that is 7 or more)
   function gradeOfClass(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
   function hwList() { return HW.filter(function (h) { return !h.grade || h.grade === classGrade; }); }
   /** One pupil, one homework: { k: done | part | open | none | wait, txt (short, for the table), say (full words) } */
@@ -484,6 +484,37 @@
       try { root.classSoundboard && root.classSoundboard.playCoinReward && root.classSoundboard.playCoinReward(); } catch (e) { /* sound is optional */ }
       var cls = st.getActiveClass(); current = rowsFor(cls); refreshAll();
       var dr = document.getElementById('cc-drawer'); if (dr) drawer(id);
+    },
+    /** Everything the pupil profile (js/pupil-profile.js) needs about one pupil, built with the SAME rules as the table: status + reason, 30 days of XP, quiz, homework, advice. */
+    profileData: function (id, onSheet) {
+      var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return null;
+      var cls = st.getClass ? st.getClass(pupil.classId) : null; if (!cls) return null;
+      if (!sheet.data && !sheet.error && !sheetLoading && root.SheetSync && root.SheetSync.snapshot) {
+        sheetLoading = true;
+        root.SheetSync.snapshot().then(function (d) { sheet.data = d; sheet.error = ''; }, function (e) { sheet.data = null; sheet.error = (e && e.message) || 'no answer'; }).then(function () { sheetLoading = false; if (onSheet) onSheet(); });
+      }
+      var keep = { g: classGrade, q: classQuiet, pk: pausedKeys, pc: pausedClass, qa: quizAvg, mx: classMedXp };
+      try {
+        var r = rowsFor(cls).filter(function (x) { return x.id === id; })[0]; if (!r) return null;
+        var labels = dayLabels(30), days = r.a.days.slice(NDAYS - 30);
+        var hw = hwList().map(function (h) {
+          var hs = hwState(r, h), rec = recOf(r, h);
+          return { label: h.label, due: h.due || '', k: hs.k, say: hs.say, rec: rec ? (rec.last || 'sent') : '' };
+        });
+        var tally = []; try { tally = (S().getStudentClassroomSkillsTally(r.id) || []).filter(function (t) { return t.category === 'positive' || !t.category; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3); } catch (e) { tally = []; }
+        var tips = [];
+        if (r.a.sSince >= 7 && classQuiet) tips.push('The whole class has had no XP for ' + classQuiet + ' lesson days: enter the XP for your last lessons, then check this pupil again.');
+        else if (r.a.sSince >= 7) tips.push('No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ': have a quick friendly chat and give an easy win today (a speaking turn with a point).');
+        else if (r.xpSlow) tips.push('Much less XP than the rest of the class: set one small goal for the next lesson and praise it.');
+        if (r.qWeak) tips.push('Unit 3 quiz ' + r.q.pct + '% (class ' + quizAvg + '%): go through the questions they missed and give a short re-do.');
+        r.d.missing.forEach(function (h) { if (overdue(h)) tips.push('Remind about ' + h.label + (h.due ? ' (due ' + h.due + ')' : '') + '.'); });
+        if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
+        return {
+          id: r.id, name: r.name, img: r.img, xpSlow: !!r.xpSlow, level: r.level, xp: r.xp, statusKey: r.d.status, status: STATUS[r.d.status][0], statusCls: STATUS[r.d.status][1], why: r.d.why.slice(),
+          days: days, labels: labels, last: r.a.last, prev: r.a.prev, since: r.a.since, sSince: r.a.sSince, active: days.filter(function (v) { return v > 0; }).length, month: sum(days),
+          q: r.q, qWeak: !!r.qWeak, quizAvg: quizAvg, hw: hw, hwReady: !!sheet.data || !!sheet.error, tally: tally, tips: tips, ws: r.ws, mism: r.mism, dup: r.dup, classMedXp: classMedXp
+        };
+      } finally { classGrade = keep.g; classQuiet = keep.q; pausedKeys = keep.pk; pausedClass = keep.pc; quizAvg = keep.qa; classMedXp = keep.mx; }
     },
     palette: function () { openPalette(); }
   };
