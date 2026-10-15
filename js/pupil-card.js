@@ -55,11 +55,11 @@
     var qpct = 0; try { var q = root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; qpct = q ? q.pct : 0; } catch (e) { qpct = 0; }
     var prof = null; try { prof = st.getMonsterProfile(id); } catch (e) { prof = null; }
     var eq = (prof && prof.equipped) || {};
-    var best = bestOf(id);
+    var best = bestOf(id), nw = d && d.nw ? d.nw.n : 0;
     var aura = String(eq.aura || '').replace(/^aura-/, ''), bg = String(eq.background || '').replace(/^bg-/, '');
     return {
       id: id, first: s.firstName || s.name || 'Pupil', level: level, stage: (ms.stageName || '').replace(/^Level \d+ [•·-] /, '') || 'Monster',
-      atk: Math.min(9950, r50(400 + xp * 2.5)), def: Math.min(9950, r50(300 + hwDone * 350 + team * 25 + streak * 100 + qpct * 8)),
+      atk: Math.min(9950, r50(400 + xp * 2.5)), def: Math.max(100, Math.min(9950, r50(300 + hwDone * 350 + team * 25 + streak * 100 + qpct * 8 - nw * 100))),
       best: best, move: MOVES[best] || 'Power Up', rarity: rarityOf(level), num: s.studentIdNumber || '',
       cls: (st.getClass && st.getClass(s.classId) ? st.getClass(s.classId).name : '') || s.grade || '',
       flavor: FLAVOR[(parseInt(String(s.studentIdNumber || id).replace(/\D/g, ''), 10) || 0) % FLAVOR.length],
