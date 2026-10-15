@@ -79,13 +79,15 @@
   function hwState(r, h) {
     if (h.kind === 'xp') {
       var a = r.a.arctic;
-      return a.n ? { k: 'part', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP' } : { k: 'none', txt: '–', say: 'has not played yet' };
+      return a.n ? { k: 'done', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP (counted as done)' } : { k: 'none', txt: '–', say: 'has not played yet' };
     }
     if (!sheet.data) return { k: 'wait', txt: sheet.error ? '?' : '…', say: sheet.error ? 'the Google Sheet could not be read' : 'reading the Google Sheet' };
     var v = (sheet.data.pupils[r.id] || {})[h.id];
     if (!v) return { k: 'none', txt: '–', say: 'not started' };
     if (v.finished) return { k: 'done', txt: '✓', say: 'finished' };
-    if (v.steps > 0) return { k: 'part', txt: v.steps + '/' + h.steps, say: v.steps + ' of ' + h.steps + ' done' };
+    // opened the link AND did something (a step or a recording) counts as done: some pupils had technical trouble and could not finish
+    if (v.steps > 0) return { k: 'done', txt: v.steps + '/' + h.steps, say: v.steps + ' of ' + h.steps + ' steps done (counted as done)' };
+    if (v.rec) return { k: 'done', txt: '🎤', say: 'sent a recording (counted as done)' };
     return { k: 'open', txt: '👀', say: 'opened the page, not started' };
   }
   function recOf(r, h) { var v = sheet.data && (sheet.data.pupils[r.id] || {})[h.id]; return v && v.rec ? v.rec : null; }
@@ -332,9 +334,9 @@
     return note + hws.map(function (h) {
       var groups = { done: [], part: [], open: [], none: [], wait: [] }, rec = 0;
       current.forEach(function (r) { groups[hwState(r, h).k].push(r); if (recOf(r, h)) rec++; });
-      var isXp = h.kind === 'xp', did = isXp ? groups.part.length : groups.done.length;
+      var isXp = h.kind === 'xp', did = groups.done.length;
       var line = isXp ? '<b>' + did + ' of ' + n + '</b> played'
-        : '<b>' + did + ' of ' + n + '</b> finished' + (groups.part.length ? ' · ' + groups.part.length + ' halfway' : '') + (groups.open.length ? ' · ' + groups.open.length + ' opened only' : '') + (rec ? ' · 🎤 ' + rec + ' sent a recording' : '');
+        : '<b>' + did + ' of ' + n + '</b> did it (finished, or opened and did something)' + (groups.open.length ? ' · ' + groups.open.length + ' opened only' : '') + (rec ? ' · 🎤 ' + rec + ' sent a recording' : '');
       var todo = isXp ? groups.none : groups.none.concat(groups.open);
       return '<div class="cc-hwi"><div class="t"><b>' + esc(h.title) + '</b>' + (h.due ? '<span class="cc-dim">due ' + esc(h.due) + '</span>' : '') + '</div>' +
         '<div class="b"><i style="width:' + Math.round(did / (n || 1) * 100) + '%"></i></div><div>' + line + '</div>' +
@@ -452,7 +454,7 @@
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
         '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + rng(30) + '</span>' +
         '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + (classQuiet ? chip('quiet', 'No XP lately') : '') + chip('star', 'Doing great') + '</span></h3>' +
-        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done · 👀 opened only · 🎤 sent a recording. Click a pupil for the full picture.' + (pausedClass ? '<br>⏸ ' + esc(cls.name) + ': ' + new Date(pausedClass.from + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' to ' + new Date(pausedClass.to + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' is left out (' + esc(pausedClass.note) + '): the hatched days do not count against any pupil.' : '') + '</div></div>' +
+        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done (counts as done, some pupils had technical trouble) · 🎤 sent a recording · 👀 opened only (does not count). Click a pupil for the full picture.' + (pausedClass ? '<br>⏸ ' + esc(cls.name) + ': ' + new Date(pausedClass.from + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' to ' + new Date(pausedClass.to + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' is left out (' + esc(pausedClass.note) + '): the hatched days do not count against any pupil.' : '') + '</div></div>' +
       '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml() + '</div>';
     loadSheet();
   }
