@@ -64,7 +64,22 @@
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
   }
+  /* For the Command Center: the quiz result of one pupil, or null (no sheet, or page 1 missing). pct counts the speaking mark when the teacher entered it. */
+  function scoreOf(studentId) {
+    var s = store(), st = s && s.getStudent(studentId); if (!st) return null;
+    var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
+    var num = m[1], d;
+    if (g[1] === '4') {
+      d = DATA4[num]; if (!d || d[1]) return null;
+      var k4 = '4-' + num, h4 = SPK[k4] != null, t4 = d[0] + (h4 ? +SPK[k4] : 0), x4 = h4 ? 25 : 19;
+      return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4 };
+    }
+    d = DATA[num]; if (!d || d[3]) return null;
+    var sp = SPK[num], hs = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hs ? sp : 0), mx = hs ? 92 : 82;
+    return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs };
+  }
   var Q = root.QuizResults = {
+    scoreOf: scoreOf,
     open: function (c, g) { css(); G = g === '4' ? '4' : '3'; cls = c || 'a'; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
     close: function () { if (box) box.style.display = 'none'; },
     cls: function (c) { cls = c; render(); },

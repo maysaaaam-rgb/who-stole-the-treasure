@@ -112,10 +112,24 @@
     else if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
     if (sheet.data) sheetHw.forEach(function (h) { if (hwState(r, h).k !== 'done') missing.push(h); });
     if (status === 'ok' && sheet.data && sheetHw.length && !missing.length && r.a.last > 0) { status = 'star'; why.push('All homework done and active this week'); }
+    // XP, homework and the quiz are weighed together: one weak thing = Watch, two = Needs help (a pupil with no XP for 7 lesson days is already Needs help)
+    var weak = [];
+    if (r.a.status === 'slow') weak.push('XP');
+    if (sheet.data && sheetHw.length && missing.length >= Math.ceil(sheetHw.length / 2)) weak.push('homework');
+    if (r.q && r.q.pct < QUIZ_WEAK) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), under ' + QUIZ_WEAK + '%'); }
+    if (status === 'ok' || status === 'star') {
+      if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
+      else if (weak.length === 1) { status = 'slow'; if (weak[0] !== 'quiz') why.unshift('Weak in ' + weak[0]); }
+      else if (r.q && r.q.pct >= 70 && status === 'ok' && sheet.data && !missing.length && r.a.last > 0) { status = 'star'; }
+    }
+    if (status === 'star' && r.q && r.q.pct < 70) status = 'ok';
     if (!why.length) why.push('Active and on track');
     if (missing.length) why.push('Homework not finished: ' + missing.map(function (h) { return h.label; }).join(', '));
     return { status: status, why: why, missing: missing };
   }
+  /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
+  var QUIZ_WEAK = 40;
+  function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
     classGrade = gradeOfClass(cls); setPaused(cls.id);
@@ -128,7 +142,7 @@
       return {
         id: s.id, first: s.firstName || s.name || 'Student', name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || s.name || 'Student',
         xp: Number(m.totalXP != null ? m.totalXP : (s.xp || 0)) || 0, level: m.currentLevel || s.level || 1,
-        pct: m.progressPct || 0, img: img, a: a, att: st.getStudentAttendanceRate ? st.getStudentAttendanceRate(s.id) : null,
+        pct: m.progressPct || 0, img: img, a: a, q: quizOf(s.id), att: st.getStudentAttendanceRate ? st.getStudentAttendanceRate(s.id) : null,
         ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
       };
     });
@@ -291,7 +305,7 @@
       labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + (d.paused ? ' cc-pz' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
       th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
       hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
-      th('status', 'Status') + '<th style="cursor:default"></th></tr>';
+      '<th class="cc-hh" style="cursor:default" title="Unit 3 paper quiz (percent). Under ' + QUIZ_WEAK + '% counts as weak.">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
     var body = rows.map(function (r) {
       var s = STATUS[r.d.status];
       var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
@@ -299,12 +313,13 @@
       return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
         '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(NDAYS - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
+        '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.q.pct < QUIZ_WEAK ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="Unit 3 quiz ' + esc(r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
         '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
     }).join('');
     var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
       labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[NDAYS - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
-      '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 2) + '"></td></tr>';
+      '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 3) + '"></td></tr>';
     return '<div class="cc-wrap"><table' + (RANGE === 14 ? ' class="cc-t14"' : RANGE === 30 ? ' class="cc-t30"' : '') + '><thead>' + head + '</thead><tbody>' + body + '</tbody><tfoot>' + foot + '</tfoot></table></div>';
   }
   function refreshTable() { var el = document.getElementById('cc-table'); if (el) el.innerHTML = tableHtml(); var c = document.getElementById('cc-count'); if (c) c.textContent = current.length; }
@@ -361,6 +376,7 @@
     if (r.a.sSince >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' lesson days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
     else if (r.a.sSince >= 7) tips.push('<b>No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
     else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
+    if (r.q && r.q.pct < QUIZ_WEAK) tips.push('<b>Unit 3 quiz ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
@@ -371,7 +387,7 @@
       '<h4>XP earned each day (14 days)</h4>' + bars +
       '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + days14.filter(function (v) { return v > 0; }).length + ' of 14</b></div></div>' +
       (tally.length ? '<div class="cc-dim" style="margin-top:6px">Most XP for: ' + tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') +
-      '<h4>Homework (last two weeks)</h4>' + hw +
+      (r.q ? '<h4>Unit 3 quiz</h4><div class="cc-dim" style="padding:0 0 8px"><b>' + r.q.pct + '%</b> (' + esc(r.q.text) + (r.q.speaking ? ', with speaking' : ', speaking not added yet') + ')</div>' : '') + '<h4>Homework (last two weeks)</h4>' + hw +
       '<h4>Worksheets</h4><div>' + ws + '</div>' +
       '<h4>What to do next</h4><ul class="cc-tips">' + tips.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
       '<div class="cc-dra"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5 XP</button><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10 XP</button><button class="cc-plus" onclick="openGiveXPSkillsModal && openGiveXPSkillsModal(\'student\',\'' + esc(r.id) + '\')">🎯 XP for a skill</button><button class="cc-plus pri" onclick="document.getElementById(\'cc-drawer\').remove(); openStudentDetail(\'' + esc(r.id) + '\')">Open full profile</button></div></div>';
