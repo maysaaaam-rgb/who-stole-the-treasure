@@ -25,7 +25,7 @@
   var NDAYS = 30;  // days of XP kept for every pupil
   /* Days a class is left out when pupils are judged (no lessons, XP not entered). The day boxes show them hatched, and nobody is marked
      "needs help" or "less XP than last week" because of them. 3B: 6 to 14 October 2026. */
-  var PAUSED = { 'class-3b': { from: '2026-10-06', to: '2026-10-14', note: 'no lessons, no XP entered' } };
+  var PAUSED = {};   // 3B's dead week (6 to 14 Oct 2026) was taken out on 15 Oct 2026 at the teacher's request: every day counts. Example entry: { 'class-3b': { from: '2026-10-06', to: '2026-10-14', note: 'no lessons' } }
   var pausedKeys = {}, pausedClass = null;
   function dayKey(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function setPaused(classId) {
