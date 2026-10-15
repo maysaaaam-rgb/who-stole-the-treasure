@@ -54,6 +54,7 @@
         (d ? '<div class="pp-st"><span class="pp-chip ' + stCls + '">' + esc(d.status) + '</span><span class="pp-why">' + esc(d.why.join(' · ')) + '</span></div>' : '') +
         '<div class="pp-act">' +
           '<button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',5)">+5 XP</button><button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',10)">+10 XP</button>' +
+          '<button class="pp-b o" style="color:#fbbf24" onclick="CommandCenter.needsWork(\'' + esc(id) + '\')">⚠ Needs work</button>' +
           '<button class="pp-b" onclick="openGiveXPSkillsModal(\'student\',\'' + esc(id) + '\')">⭐ Custom XP</button>' +
           '<button class="pp-b o" onclick="openStudentModal(\'' + esc(id) + '\')">✏️ Edit pupil</button>' +
           '<button class="pp-b o" onclick="openMonsterCreator(\'' + esc(id) + '\')">🎨 Monster</button>' +
@@ -106,10 +107,13 @@
         }).join('') + '</div>' +
         (best && worst && best !== worst ? '<div class="pp-dim" style="margin-top:8px;font-size:.82rem">Strongest: <b style="color:#34d399">' + esc(best.label) + '</b> · Weakest: <b style="color:#f87171">' + esc(worst.label) + '</b></div>' : '') + '</div>';
     }
+    var nwList = d.nw && d.nw.list ? d.nw.list.slice().sort(function (a, b) { return b.ts - a.ts; }) : [];
+    var discCard = '<div class="pp-card"><h3>Discipline · last 2 weeks' + (nwList.length ? ' · <span style="color:' + (nwList.length >= 3 ? '#f87171' : '#fbbf24') + '">' + nwList.length + ' "Needs work"</span>' : '') + '</h3>' +
+      (nwList.length ? nwList.map(function (x) { return '<div class="pp-row"><span>' + esc(x.reason) + '</span><span class="pp-dim">' + new Date(x.ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' · ' + x.amt + ' XP</span></div>'; }).join('') : '<div class="pp-dim">No "Needs work" awards in the last 2 weeks. 👍</div>') + '</div>';
     html += (d.mism ? '<div class="pp-warn">⚠ XP shown (' + d.mism.shown + ') is lower than the award history (' + d.mism.target + '). <button class="pp-b o" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (d.dup ? '<div class="pp-warn">⧉ This name exists ' + d.dup.length + ' times (' + esc(d.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<div class="pp-card"><h3>XP earned each day · last 30 days</h3>' + bars + (d.tally.length ? '<div class="pp-dim" style="margin-top:8px;font-size:.8rem">Most XP for: ' + d.tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') + '</div>' +
-      quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
+      discCard + quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
     return html;
   }
 

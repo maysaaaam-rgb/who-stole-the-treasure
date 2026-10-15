@@ -35,11 +35,12 @@
   }
   /* XP the pupil EARNED day by day (30 days). Repairs ("Lost XP restored from the award history") are not XP earned that day, so they are left out. */
   function analyse(student) {
-    var now = Date.now(), today = dayStart(now), days = [], prev = 0, last = 0, lastTs = 0, arctic = { n: 0, xp: 0 }, byAgo = {};
+    var now = Date.now(), today = dayStart(now), days = [], prev = 0, last = 0, lastTs = 0, arctic = { n: 0, xp: 0 }, byAgo = {}, nw = { n: 0, list: [] };
     for (var i = 0; i < NDAYS; i++) days.push(0);
     txOf(student.id).forEach(function (t) {
       var amt = Number(t.amount != null ? t.amount : (t.points != null ? t.points : t.xp)) || 0;
       var ts = new Date(t.timestamp || t.date || 0).getTime();
+      if (t.category === 'needs_work' && amt < 0 && ts && !isNaN(ts) && Math.floor((today - dayStart(ts)) / DAY) < 14) { nw.n++; nw.list.push({ ts: ts, reason: t.reason || 'Needs work', amt: amt }); }   // discipline: the last 14 days
       if (!ts || isNaN(ts) || amt <= 0 || t.category === 'correction') return;
       if (ts > lastTs) lastTs = ts;
       var ago = Math.floor((today - dayStart(ts)) / DAY);       // 0 = today
@@ -61,7 +62,7 @@
     var status = 'ok';
     if (sSince >= 7) status = 'help';
     else if (sPrev > 0 && sLast < sPrev * 0.5) status = 'slow';
-    return { days: days, last: last, prev: prev, since: since, sSince: sSince, sLast: sLast, sPrev: sPrev, status: status, arctic: arctic };
+    return { days: days, last: last, prev: prev, since: since, sSince: sSince, sLast: sLast, sPrev: sPrev, status: status, arctic: arctic, nw: nw };
   }
 
   /* ---- homework of the last two weeks. Tea Party and Chuseok cooking come straight from the Google Sheets (read only, checked every time the page opens);
@@ -123,6 +124,7 @@
     var weak = [];
     if (r.xpSlow) weak.push('XP');
     if (sheet.data && sheetHw.length >= 2 && missing.length === sheetHw.length && missing.every(overdue)) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
+    if (r.a.nw && r.a.nw.n >= NW_WEAK) { weak.push('discipline'); why.push(r.a.nw.n + ' "Needs work" awards in the last 2 weeks'); }
     if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
     if (status === 'ok' || status === 'star' || status === 'slow') {
       if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
@@ -135,6 +137,7 @@
     return { status: status, why: why, missing: missing };
   }
   /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
+  var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
@@ -274,6 +277,7 @@
     '.cc td.cc-pz,.cc th.cc-pz{background:repeating-linear-gradient(135deg,#12141b,#12141b 3px,#1b1f2c 3px,#1b1f2c 6px)!important}.cc-bars i.pz{background:repeating-linear-gradient(135deg,#232838,#232838 3px,#2e3448 3px,#2e3448 6px);opacity:.9}' +
     '.cc-t30 th.cc-d,.cc-t30 td.cc-d{width:21px;min-width:19px;padding-left:0!important;padding-right:0!important}.cc-t30 .cc-xp{min-width:19px;font-size:9px;padding:3px 0;border-radius:5px}.cc-t30 th.cc-d{font-size:9px}.cc-t30 .cc-why{display:none}.cc-t30 .cc-nm{min-width:0;gap:6px}.cc-t30 .cc-nm img{width:24px;height:24px}' +
     '.cc-t30 .cc-lvl{display:none}.cc-t30 td,.cc-t30 th{padding-left:5px!important;padding-right:5px!important}.cc-t30 .cc-hw{min-width:0;padding:3px 5px}.cc-t30 .cc-plus{padding:3px 4px;font-size:10px}.cc-bars30{gap:2px}.cc-bars30 b{font-size:8px}.cc-bars30 small{font-size:8px}' +
+    '.cc-nwb{color:#fbbf24!important}.cc-nwb sup{font-size:8px;margin-left:1px}.cc-mini.on{background:#4f46e5;color:#fff}.cc-nwl{display:grid;gap:6px}.cc-nwr{background:#14161d;border:1px solid #2a2f3d;color:#e6e8ee;border-radius:9px;padding:9px 12px;text-align:left;cursor:pointer;font-size:13px}.cc-nwr:hover{background:#1d2030;border-color:#f59e0b}' +
     '@media(max-width:1100px){.cc-grid3{grid-template-columns:minmax(0,1fr)}}';
 
   function ensureCss() {
@@ -329,7 +333,7 @@
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
         '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="Unit 3 quiz ' + esc(r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
-        '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
+        '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button> <button class="cc-plus cc-nwb" title="Needs work (discipline)" onclick="CommandCenter.needsWork(\'' + esc(r.id) + '\')">⚠' + (r.a.nw && r.a.nw.n ? '<sup>' + r.a.nw.n + '</sup>' : '') + '</button></td></tr>';
     }).join('');
     var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
       labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[NDAYS - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
@@ -511,11 +515,44 @@
         if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
         var classDays = []; for (var di = 0; di < 30; di++) classDays.push(sum(rowsAll.map(function (x) { return x.a.days[NDAYS - 30 + di]; })));
         return {
-          classDays: classDays, id: r.id, name: r.name, img: r.img, xpSlow: !!r.xpSlow, level: r.level, xp: r.xp, statusKey: r.d.status, status: STATUS[r.d.status][0], statusCls: STATUS[r.d.status][1], why: r.d.why.slice(),
+          classDays: classDays, id: r.id, name: r.name, img: r.img, xpSlow: !!r.xpSlow, nw: r.a.nw, level: r.level, xp: r.xp, statusKey: r.d.status, status: STATUS[r.d.status][0], statusCls: STATUS[r.d.status][1], why: r.d.why.slice(),
           days: days, labels: labels, last: r.a.last, prev: r.a.prev, since: r.a.since, sSince: r.a.sSince, active: days.filter(function (v) { return v > 0; }).length, month: sum(days),
           q: r.q, qWeak: !!r.qWeak, quizAvg: quizAvg, hw: hw, hwReady: !!sheet.data || !!sheet.error, tally: tally, tips: tips, ws: r.ws, mism: r.mism, dup: r.dup, classMedXp: classMedXp
         };
       } finally { classGrade = keep.g; classQuiet = keep.q; pausedKeys = keep.pk; pausedClass = keep.pc; quizAvg = keep.qa; classMedXp = keep.mx; }
+    },
+    /** One 'Needs work' award with a reason (negative XP, category needs_work). Undo voids it. */
+    needsWork: function (id) {
+      var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return;
+      var old = document.getElementById('cc-nw'); if (old) old.remove();
+      var skills = []; try { skills = (st.getXPSkills ? st.getXPSkills('needs_work') : []) || []; } catch (e) { skills = []; }
+      var reasons = skills.map(function (k) { return { name: k.name, icon: k.icon || '⚠️', skill: k.id }; });
+      ['No homework', 'Not listening', 'Disturbing others', 'Unkind words'].forEach(function (n) { if (!reasons.some(function (x) { return x.name === n; })) reasons.push({ name: n, icon: '⚠️', skill: '' }); });
+      var ovl = document.createElement('div'); ovl.id = 'cc-nw'; ovl.className = 'cc-ovl';
+      var amt = 5;
+      ovl.innerHTML = '<div class="cc-pal" style="padding:16px;max-width:420px"><div style="font-weight:800;font-size:15px;margin-bottom:4px">⚠️ Needs work: ' + esc(pupil.firstName || pupil.name) + '</div>' +
+        '<div class="cc-dim" style="margin-bottom:10px">Pick the reason. It takes XP away and shows in the discipline count (last 2 weeks).</div>' +
+        '<div style="display:flex;gap:6px;margin-bottom:10px"><button class="cc-mini" data-a="1">−1 XP</button><button class="cc-mini on" data-a="5">−5 XP</button><button class="cc-mini" data-a="10">−10 XP</button></div>' +
+        '<div class="cc-nwl">' + reasons.map(function (x, i) { return '<button class="cc-nwr" data-i="' + i + '">' + esc(x.icon) + ' ' + esc(x.name) + '</button>'; }).join('') + '</div>' +
+        '<input class="cc-nwi" placeholder="Or type your own reason and press Enter" style="width:100%;margin-top:10px;background:#0b0d13;border:1px solid #2a2f3d;color:#e6e8ee;border-radius:8px;padding:8px"></div>';
+      document.body.appendChild(ovl);
+      function give(reason, skillId) {
+        var res = st.giveXP(id, -amt, reason, 'Teacher', { category: 'needs_work', skillId: skillId || null, icon: '⚠️' });
+        var txId = res && (res.transaction && res.transaction.id || res.id);
+        ovl.remove();
+        var cls = st.getActiveClass(); current = rowsFor(cls); refreshAll();
+        var dr = document.getElementById('cc-drawer'); if (dr) drawer(id);
+        var toast = document.createElement('div'); toast.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2f1519;color:#fecaca;border:1px solid #7f1d1d;border-radius:12px;padding:10px 16px;z-index:100001;font:13px Inter,system-ui,sans-serif;display:flex;gap:12px;align-items:center';
+        toast.innerHTML = '<span>⚠️ ' + esc(pupil.firstName || '') + ': −' + amt + ' XP, ' + esc(reason) + '</span><button style="background:#fecaca;color:#2f1519;border:0;border-radius:8px;padding:4px 10px;font-weight:800;cursor:pointer">Undo</button>';
+        toast.querySelector('button').onclick = function () { if (txId && st.voidXPTransaction) st.voidXPTransaction(txId, 'Undone right away'); toast.remove(); var c2 = st.getActiveClass(); current = rowsFor(c2); refreshAll(); };
+        document.body.appendChild(toast); setTimeout(function () { toast.remove(); }, 7000);
+      }
+      ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+      ovl.addEventListener('click', function (e) {
+        var a = e.target.closest('[data-a]'); if (a) { amt = Number(a.dataset.a); [].forEach.call(ovl.querySelectorAll('[data-a]'), function (b) { b.classList.toggle('on', b === a); }); return; }
+        var r = e.target.closest('.cc-nwr'); if (r) { var x = reasons[Number(r.dataset.i)]; give(x.name, x.skill); }
+      });
+      ovl.querySelector('.cc-nwi').addEventListener('keydown', function (e) { if (e.key === 'Enter' && this.value.trim()) give(this.value.trim().slice(0, 60), ''); });
     },
     palette: function () { openPalette(); }
   };
