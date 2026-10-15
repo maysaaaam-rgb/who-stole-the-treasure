@@ -110,12 +110,12 @@
     var why = [], status = 'ok', missing = [], sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; });
     if (r.a.sSince >= 7 && classQuiet) { status = 'quiet'; why.push('The whole class has had no XP for ' + classQuiet + ' lesson days'); }
     else if (r.a.sSince >= 7) { status = 'help'; why.push(r.a.sSince >= 999 ? 'No XP yet' : 'No XP for ' + r.a.sSince + ' lesson days'); }
-    else if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
+    else if (r.xpSlow) { status = 'slow'; why.push('Much less XP than the class this week (' + r.a.sLast + ' against ' + classMedXp + ')'); }
     if (sheet.data) sheetHw.forEach(function (h) { if (hwState(r, h).k !== 'done') missing.push(h); });
     if (status === 'ok' && sheet.data && sheetHw.length && !missing.length && r.a.last > 0) { status = 'star'; why.push('All homework done and active this week'); }
     // XP, homework and the quiz are weighed together: one weak thing = Watch, two = Needs help (a pupil with no XP for 7 lesson days is already Needs help)
     var weak = [];
-    if (r.a.status === 'slow') weak.push('XP');
+    if (r.xpSlow) weak.push('XP');
     if (sheet.data && sheetHw.length && missing.length >= Math.ceil(sheetHw.length / 2)) weak.push('homework');
     if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
     if (status === 'ok' || status === 'star') {
@@ -129,7 +129,7 @@
     return { status: status, why: why, missing: missing };
   }
   /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
-  var QUIZ_GAP = 15, quizAvg = 0;   // a quiz is weak when it is 15 points or more under the class average (so one hard quiz does not flag half the class)
+  var QUIZ_GAP = 15, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 15 points or more under the class average (so one hard quiz does not flag half the class)
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
@@ -149,6 +149,10 @@
     });
     var newest = rows.length ? Math.min.apply(null, rows.map(function (r) { return r.a.sSince; })) : 0;
     classQuiet = rows.length && newest >= 7 && newest < 999 ? newest : 0;
+    // XP is judged against the class (the 7 lesson days): a week nobody had XP, or a class with few lessons, hurts nobody. Weak = under half of the class median.
+    var lasts = rows.map(function (r) { return r.a.sLast; }).sort(function (a, b) { return a - b; });
+    classMedXp = lasts.length ? (lasts.length % 2 ? lasts[(lasts.length - 1) / 2] : Math.round((lasts[lasts.length / 2 - 1] + lasts[lasts.length / 2]) / 2)) : 0;
+    rows.forEach(function (r) { r.xpSlow = classMedXp > 0 && r.a.sLast < classMedXp * 0.5; });
     var qs = rows.filter(function (r) { return r.q; });
     quizAvg = qs.length ? Math.round(qs.reduce(function (a, r) { return a + r.q.pct; }, 0) / qs.length) : 0;
     rows.forEach(function (r) { r.qWeak = !!(r.q && r.q.pct <= quizAvg - QUIZ_GAP); });
@@ -379,7 +383,7 @@
     var tips = [];
     if (r.a.sSince >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' lesson days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
     else if (r.a.sSince >= 7) tips.push('<b>No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
-    else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
+    else if (r.xpSlow) tips.push('<b>Much less XP than the rest of the class:</b> set one small goal for the next lesson and praise it.');
     if (r.qWeak) tips.push('<b>Unit 3 quiz ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
