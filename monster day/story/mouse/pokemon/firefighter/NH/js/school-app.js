@@ -9149,6 +9149,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
         '</div>' +
 
+        // 1b. My Monster Card (js/pupil-card.js): the pupil's trading card, from their real work and monster level
+        (window.PupilCard ? '<div style="background:linear-gradient(135deg,#0d1527,#060911); border:1px solid rgba(56,189,248,0.35); border-radius:24px; padding:24px; color:#e8eefc; box-shadow:var(--shadow-lg);">' + window.PupilCard.panel(s.id) + '</div>' : '') +
+
         // 2. My Learning Journey (Macmillan Anthology Road)
         '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:24px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">' +

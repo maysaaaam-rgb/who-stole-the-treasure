@@ -460,7 +460,7 @@
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) + quietBanner(cls) +
-      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
+      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
@@ -495,7 +495,7 @@
       }
       var keep = { g: classGrade, q: classQuiet, pk: pausedKeys, pc: pausedClass, qa: quizAvg, mx: classMedXp };
       try {
-        var r = rowsFor(cls).filter(function (x) { return x.id === id; })[0]; if (!r) return null;
+        var rowsAll = rowsFor(cls), r = rowsAll.filter(function (x) { return x.id === id; })[0]; if (!r) return null;
         var labels = dayLabels(30), days = r.a.days.slice(NDAYS - 30);
         var hw = hwList().map(function (h) {
           var hs = hwState(r, h), rec = recOf(r, h);
@@ -509,8 +509,9 @@
         if (r.qWeak) tips.push('Unit 3 quiz ' + r.q.pct + '% (class ' + quizAvg + '%): go through the questions they missed and give a short re-do.');
         r.d.missing.forEach(function (h) { if (overdue(h)) tips.push('Remind about ' + h.label + (h.due ? ' (due ' + h.due + ')' : '') + '.'); });
         if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
+        var classDays = []; for (var di = 0; di < 30; di++) classDays.push(sum(rowsAll.map(function (x) { return x.a.days[NDAYS - 30 + di]; })));
         return {
-          id: r.id, name: r.name, img: r.img, xpSlow: !!r.xpSlow, level: r.level, xp: r.xp, statusKey: r.d.status, status: STATUS[r.d.status][0], statusCls: STATUS[r.d.status][1], why: r.d.why.slice(),
+          classDays: classDays, id: r.id, name: r.name, img: r.img, xpSlow: !!r.xpSlow, level: r.level, xp: r.xp, statusKey: r.d.status, status: STATUS[r.d.status][0], statusCls: STATUS[r.d.status][1], why: r.d.why.slice(),
           days: days, labels: labels, last: r.a.last, prev: r.a.prev, since: r.a.since, sSince: r.a.sSince, active: days.filter(function (v) { return v > 0; }).length, month: sum(days),
           q: r.q, qWeak: !!r.qWeak, quizAvg: quizAvg, hw: hw, hwReady: !!sheet.data || !!sheet.error, tally: tally, tips: tips, ws: r.ws, mism: r.mism, dup: r.dup, classMedXp: classMedXp
         };
