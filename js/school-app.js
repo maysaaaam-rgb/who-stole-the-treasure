@@ -910,6 +910,7 @@
         return;
       }
     }
+    if (res && res.route === '#quiz-results' && window.QuizResults) { window.QuizResults.open(); return; }
     if (res && res.route) {
       if (res.route === '#simon-says') {
         if (typeof window.openSimonSaysModal === 'function') {
