@@ -6,6 +6,9 @@
   var DATA = {"229": [62.0, 5, "a", 0], "219": [55.0, 0, "a", 0], "224": [52.0, 0, "a", 0], "353": [46.0, 0, "b", 0], "354": [43.0, 3, "a", 0], "222": [40.0, 3, "a", 0], "213": [41.5, 0, "b", 0], "228": [41.0, 3, "b", 0], "206": [40.5, 3, "a", 0], "215": [38.0, 0, "b", 0], "352": [39.0, 0, "b", 0], "216": [36.5, 0, "b", 0], "211": [36.0, 5, "a", 0], "220": [34.0, 3, "b", 0], "207": [31.0, 0, "a", 0], "209": [34.0, 3, "a", 0], "201": [29.5, 3, "b", 0], "217": [26.0, 3, "b", 0], "200": [30.5, 3, "b", 0], "202": [28.0, 0, "a", 0], "205": [27.0, 0, "b", 0], "351": [25.0, 0, "a", 0], "212": [26.0, 0, "b", 0], "214": [23.5, 0, "a", 0], "203": [22.5, 3, "a", 0], "204": [22.0, 0, "a", 0], "221": [20.0, 3, "b", 1], "223": [19.5, 3, "a", 0], "218": [19.0, 0, "b", 0], "227": [27.5, 0, "a", 0], "230": [6.0, 0, "b", 0]};
   /* Grade 4 money quiz: school number -> [score out of 19 (listening + reading + writing), 1 if page 1 is missing, optional maximum when the pupil handed in only one page: then that page counts as 100%]. Speaking (0 to 6 coins) is added by the teacher on the card. */
   var DATA4 = {"319":[6.5,0],"310":[17.5,0],"300":[2.5,0],"341":[8.5,0],"314":[12,0],"317":[1.5,0,6],"342":[1.5,0,6],"345":[6.5,0],"321":[3,0],"311":[11,0],"1789469351603":[14,0],"312":[5,0],"343":[14.5,0],"320":[5.5,0],"315":[7,0],"302":[4,0]};
+  /* The marks of each part (no names): Grade 3 = [game1 /15, match /12, snake /10, -ng /5, listening /12, poem table /8, car table /10, summary /10]; Grade 4 = [listening /6, reading /7, writing /6] (null = page not handed in). */
+  var PARTS3 = {"229":[15.0,10.0,2.0,3.0,12.0,8.0,4.0,8.0],"219":[12.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"224":[9.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"353":[12.0,12.0,0.5,0.0,12.0,5.5,4.0,0.0],"354":[15.0,4.0,1.0,0.0,9.0,8.0,2.0,4.0],"222":[6.0,12.0,0.5,0.0,6.0,5.5,4.0,6.0],"213":[9.0,6.0,1.0,3.0,9.0,5.5,8.0,0.0],"228":[15.0,8.0,1.5,0.0,9.0,5.5,2.0,0.0],"206":[9.0,8.0,1.0,0.0,9.0,5.5,6.0,2.0],"215":[12.0,6.0,0.5,0.0,9.0,2.5,8.0,0.0],"352":[15.0,6.0,1.5,0.0,9.0,5.5,2.0,0.0],"216":[12.0,4.0,0.5,0.0,12.0,4.0,4.0,0.0],"211":[6.0,2.0,5.0,0.0,9.0,8.0,6.0,0.0],"220":[9.0,4.0,1.5,0.0,9.0,2.5,4.0,4.0],"207":[9.0,4.0,0.5,0.0,9.0,2.5,4.0,2.0],"209":[6.0,6.0,0.5,0.0,9.0,6.5,2.0,4.0],"201":[6.0,8.0,0.5,0.0,9.0,4.0,0.0,2.0],"217":[9.0,4.0,0.5,0.0,9.0,1.5,2.0,0.0],"200":[6.0,10.0,1.5,0.0,3.0,4.0,4.0,2.0],"202":[15.0,6.0,0.0,0.0,3.0,0.0,4.0,0.0],"205":[9.0,8.0,1.5,0.0,0.0,2.5,6.0,0.0],"351":[6.0,4.0,1.5,0.0,6.0,5.5,0.0,2.0],"212":[9.0,0.0,1.5,0.0,9.0,2.5,0.0,4.0],"214":[9.0,0.0,0.5,0.0,6.0,0.0,4.0,4.0],"203":[9.0,2.0,0.0,0.0,6.0,1.5,4.0,0.0],"204":[12.0,0.0,1.0,0.0,3.0,4.0,2.0,0.0],"223":[9.0,2.0,0.5,2.0,6.0,0.0,0.0,0.0],"218":[6.0,0.0,1.5,0.0,9.0,2.5,0.0,0.0],"227":[15.0,0.0,1.0,0.0,9.0,2.5,0.0,0.0],"230":[0.0,0.0,0.0,0.0,6.0,0.0,0.0,0.0]};
+  var PARTS4 = {"319":[3.5,3.0,0.0],"310":[4.5,7.0,6.0],"300":[2.5,0.0,0.0],"341":[3.5,2.0,3.0],"314":[4.0,6.0,2.0],"317":[null,null,1.5],"342":[null,null,1.5],"345":[4.0,0.5,2.0],"321":[2.0,0.0,1.0],"311":[4.5,3.5,3.0],"1789469351603":[4.0,6.5,3.5],"312":[2.0,0.5,2.5],"343":[4.5,5.0,5.0],"320":[1.5,0.5,3.5],"315":[1.5,2.0,3.5],"302":[1.5,2.0,0.5]};
   var G = '3', R3 = 'Unit 3 paper quiz (It Keeps Changing)', R4 = 'Unit 3 paper quiz (How Much Is It)';
   function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
@@ -78,7 +81,25 @@
     var sp = SPK[num], hs = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hs ? sp : 0), mx = hs ? 92 : 82;
     return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs };
   }
+  /* For the pupil profile: the quiz title, total and every part with its maximum. */
+  function detailOf(studentId) {
+    var sc = scoreOf(studentId), s = store(), st = s && s.getStudent(studentId); if (!st) return null;
+    var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
+    var num = m[1];
+    if (g[1] === '4') {
+      var a = PARTS4[num]; if (!a) return null;
+      var L = [['Listening', 6], ['Reading', 7], ['Writing', 6]];
+      return { title: 'Unit 3 money quiz', text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: 0,
+        parts: L.map(function (l, i) { return { label: l[0], score: a[i], max: l[1] }; }).filter(function (x) { return x.score != null; }),
+        note: DATA4[num] && DATA4[num][2] ? 'Only the writing page was handed in: it counts as 100%.' : '' };
+    }
+    var b = PARTS3[num]; if (!b) return null;
+    var L3 = [['Ice-bridge stones', 15], ['Word match', 12], ['Snake', 10], ['-ng sound', 5], ['Listening', 12], ['Poem table', 8], ['Car table', 10], ['Reading summary', 10]];
+    return { title: 'Unit 3 quiz: It Keeps Changing', text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: DATA[num] ? DATA[num][1] : 0,
+      parts: L3.map(function (l, i) { return { label: l[0], score: b[i], max: l[1] }; }), note: '' };
+  }
   var Q = root.QuizResults = {
+    detailOf: detailOf,
     scoreOf: scoreOf,
     open: function (c, g) { css(); G = g === '4' ? '4' : '3'; cls = c || 'a'; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
     close: function () { if (box) box.style.display = 'none'; },
