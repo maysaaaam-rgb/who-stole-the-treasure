@@ -118,9 +118,9 @@
     if (r.xpSlow) weak.push('XP');
     if (sheet.data && sheetHw.length >= 2 && missing.length === sheetHw.length) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
     if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
-    if (status === 'ok' || status === 'star') {
+    if (status === 'ok' || status === 'star' || status === 'slow') {
       if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
-      else if (weak.length === 1) { status = 'slow'; if (weak[0] !== 'quiz') why.unshift('Weak in ' + weak[0]); }
+      else if (weak.length === 1) { status = 'slow'; if (weak[0] !== 'quiz' && weak[0] !== 'XP') why.unshift('Weak in ' + weak[0]); }
       else if (r.q && r.q.pct >= 70 && status === 'ok' && sheet.data && !missing.length && r.a.last > 0) { status = 'star'; }
     }
     if (status === 'star' && r.q && r.q.pct < 70) status = 'ok';
