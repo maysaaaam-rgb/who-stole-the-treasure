@@ -116,7 +116,7 @@
     // XP, homework and the quiz are weighed together: one weak thing = Watch, two = Needs help (a pupil with no XP for 7 lesson days is already Needs help)
     var weak = [];
     if (r.xpSlow) weak.push('XP');
-    if (sheet.data && sheetHw.length >= 2 && missing.length >= Math.ceil(sheetHw.length / 2)) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
+    if (sheet.data && sheetHw.length >= 2 && missing.length === sheetHw.length) weak.push('homework');   // one homework alone (3B: Cooking) is shown but never makes a pupil Watch
     if (r.qWeak) { weak.push('quiz'); why.push('Quiz ' + r.q.pct + '% (' + r.q.text + '), class average ' + quizAvg + '%'); }
     if (status === 'ok' || status === 'star') {
       if (weak.length >= 2) { status = 'help'; why.unshift('Weak in ' + weak.join(' and ')); }
