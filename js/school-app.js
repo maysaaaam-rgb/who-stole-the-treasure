@@ -7677,6 +7677,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // QUIZZES & QUESTION BUILDER VIEW (Complete CRUD)
   // =========================================================================
+  /** Every paper quiz / exam version in one place, grouped by grade: papers, answer keys, teacher pages, lesson plans and the results boards. */
+  function paperQuizShelfHtml() {
+    const link = (href, label, kind) => '<a href="' + href + '" target="_blank" rel="noopener" class="' + (kind === 'key' ? 'btn-sm-secondary' : 'btn-primary-action') + '" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;padding:7px 12px;font-size:0.82rem;border-radius:10px;">' + label + '</a>';
+    const board = (g, label) => '<button type="button" class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669);padding:7px 12px;font-size:0.82rem;border-radius:10px;" onclick="QuizResults && QuizResults.open(\'a\', \'' + g + '\')">' + label + '</button>';
+    const card = (title, note, links) => '<div style="background:rgba(15,23,42,0.85);backdrop-filter:blur(14px);border:1px solid rgba(56,189,248,0.35);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 20px -2px rgba(0,0,0,0.4);">' +
+      '<div><div style="font-weight:900;font-size:1.02rem;color:#fff;">' + title + '</div><div style="font-size:0.8rem;color:#94a3b8;margin-top:3px;">' + note + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;">' + links.join('') + '</div></div>';
+    const grade = (g, color, cards) => '<div style="margin-bottom:22px;"><div style="display:inline-block;background:' + color + ';color:#000;font-weight:900;font-size:0.8rem;padding:4px 12px;border-radius:999px;margin-bottom:10px;">GRADE ' + g + '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;">' + cards.join('') + '</div></div>';
+    return '<div id="paper-quiz-shelf" style="margin-bottom:26px;"><h2 style="font-size:1.25rem;font-weight:900;margin:0 0 4px;color:var(--text-main);">📄 Paper quizzes &amp; exams (all versions)</h2>' +
+      '<p style="font-size:0.84rem;color:var(--text-muted);margin:0 0 14px;">Print the papers, mark with the keys, then tap Results to show each pupil their score and give XP.</p>' +
+      grade(3, 'linear-gradient(135deg,#0284c7,#38bdf8)', [
+        card('Unit 3 · It Keeps Changing (100 points)', 'Two forms so neighbours cannot copy: Form B has a different maze, snake and answer order. Recorded teacher voice for the listening.', [
+          link('unit3-g3-quiz/quiz-a.html', '🖨️ Form A'), link('unit3-g3-quiz/quiz-b.html', '🖨️ Form B'),
+          link('unit3-g3-quiz/key-a.html', '🔑 Key A', 'key'), link('unit3-g3-quiz/key-b.html', '🔑 Key B', 'key'),
+          link('unit3-g3-quiz/teacher.html', '👩‍🏫 Teacher page', 'key'), link('unit3-g3-quiz/index.html', '🎧 Listening player', 'key'),
+          link('lesson-plans/Grade3-Unit3-Monster-Journey-and-Quiz-Plan.pdf', '📘 Lesson plan', 'key'), board('3', '📊 Results (3-A, 3-B)')]),
+        card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade3.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade3-key.html', '🔑 Key', 'key')])
+      ]) +
+      grade(4, 'linear-gradient(135deg,#f59e0b,#d97706)', [
+        card('Unit 3 · Time-Travel Money Quest (25 coins)', '4 skills: listening and -ar words, reading, writing, speaking board game. The teacher key and script are on the last page of the quiz.', [
+          link('unit3-money-mission/quiz-4skills.html', '🖨️ Quiz + key + script'), link('unit3-money-mission/worksheet.html', '🖨️ Student pages'),
+          link('lesson-plans/Grade4-Unit3-Money-Quiz-Lesson-Plan.pdf', '📘 Lesson plan', 'key'), board('4', '📊 Results (4-A)')]),
+        card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade4.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade4-key.html', '🔑 Key', 'key')])
+      ]) + '<h2 style="font-size:1.1rem;font-weight:900;margin:6px 0 12px;color:var(--text-main);">🧩 Interactive quizzes</h2></div>';
+  }
   function renderQuizzesView(container) {
     const quizzes = store.getQuizzes();
 
@@ -7692,6 +7717,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '</div>' +
       '</div>' +
 
+      paperQuizShelfHtml() +
       '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
         quizzes.map(q => {
           const qCount = (q.questions || []).length;
