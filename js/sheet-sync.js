@@ -42,10 +42,12 @@
     Object.keys(recs).forEach(function (sid) {
       var p = mapId(sid, students); if (!p) { if (report.unmatched.indexOf(sid) < 0) report.unmatched.push(sid); return; }
       var sub = hw.submissions[p.id];
-      if (!sub) sub = hw.submissions[p.id] = { status: 'IN_PROGRESS', attempted: 0, correct: 0, score: 0, completedDate: '', optionalDone: false, xpAwarded: 0, notes: 'Sent a recording (sync ' + today() + ')' };
+      if (!sub) sub = hw.submissions[p.id] = { status: 'COMPLETED', attempted: 0, correct: 0, score: 0, completedDate: today(), optionalDone: false, xpAwarded: 0, notes: 'Counted as done: sent a recording (sync ' + today() + ')' };
+      else if (sub.status !== 'COMPLETED') { sub.status = 'COMPLETED'; sub.completedDate = today(); sub.notes = (sub.notes ? sub.notes + ' ' : '') + 'Counted as done: sent a recording.'; report.changed++; }
       var r = recs[sid], had = sub.recording && sub.recording.count;
       if (!had || had < r.count) { sub.recording = { count: r.count, last: r.last }; report.recordings++; report.changed++; }
     });
+    hw.submittedCount = Object.keys(hw.submissions).filter(function (k) { return hw.submissions[k].status === 'COMPLETED'; }).length;
   }
   var CLASS_FIX = {};    // the ids now match the classes (Ozan T. 208 = 4B, Simal 319 = 4A: checked with the teacher 14 Oct)
   /* sheet names that fit two pupils, matched by the teacher (14 Oct 2026) */
@@ -81,7 +83,9 @@
       var have = hw.submissions[pupil.id], n = Number(v.steps) || 0;
       if (v.finished) {
         if (!have || have.status !== 'COMPLETED') { hw.submissions[pupil.id] = { status: 'COMPLETED', attempted: steps, correct: steps, score: 100, completedDate: today(), optionalDone: false, xpAwarded: (have && have.xpAwarded) || 0, notes: 'From the Results sheet (sync ' + today() + ').' }; report.finished++; report.changed++; }
-      } else if (n > 0 || v.started) {   // v.started: the pupil opened the page (cooking) but has not sent it
+      } else if (n > 0) {   // opened the link and did at least one step: counted as done (some pupils had technical trouble)
+        if (!have || have.status !== 'COMPLETED') { hw.submissions[pupil.id] = { status: 'COMPLETED', attempted: n, correct: n, score: Math.round(n / steps * 100), completedDate: today(), optionalDone: false, xpAwarded: (have && have.xpAwarded) || 0, notes: 'Counted as done: ' + n + ' of ' + steps + ' steps in the Results sheet (sync ' + today() + '); the pupil had technical trouble.' }; report.finished++; report.changed++; }
+      } else if (v.started) {   // v.started: the pupil opened the page (cooking) but has not sent it
         if (!have) { hw.submissions[pupil.id] = { status: 'IN_PROGRESS', attempted: n, correct: n, score: Math.round(n / steps * 100), completedDate: '', optionalDone: false, xpAwarded: 0, notes: n > 0 ? 'From the Results sheet (sync ' + today() + '): ' + n + ' of ' + steps + ' steps.' : 'Opened the homework page (sync ' + today() + '), not sent yet.' }; report.started++; report.changed++; }
         else if (have.status !== 'COMPLETED' && n > (Number(have.attempted) || 0)) { have.attempted = n; have.correct = n; have.score = Math.round(n / steps * 100); report.started++; report.changed++; }
       }
