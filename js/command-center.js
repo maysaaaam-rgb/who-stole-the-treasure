@@ -21,25 +21,47 @@
     }
     return out;
   }
-  var RANGE = 7;   // days shown in the table: 7 or 14
-  /* XP the pupil EARNED day by day (14 days). Repairs ("Lost XP restored from the award history") are not XP earned that day, so they are left out. */
+  var RANGE = 7;   // days shown in the table: 7, 14 or 30
+  var NDAYS = 30;  // days of XP kept for every pupil
+  /* Days a class is left out when pupils are judged (no lessons, XP not entered). The day boxes show them hatched, and nobody is marked
+     "needs help" or "less XP than last week" because of them. 3B: 6 to 14 October 2026. */
+  var PAUSED = { 'class-3b': { from: '2026-10-06', to: '2026-10-14', note: 'no lessons, no XP entered' } };
+  var pausedKeys = {}, pausedClass = null;
+  function dayKey(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function setPaused(classId) {
+    pausedKeys = {}; pausedClass = null; var p = PAUSED[classId]; if (!p) return;
+    pausedClass = p; var a = new Date(p.from + 'T12:00:00'), b = new Date(p.to + 'T12:00:00');
+    for (var d = a; d <= b; d.setDate(d.getDate() + 1)) pausedKeys[dayKey(d)] = p.note;
+  }
+  /* XP the pupil EARNED day by day (30 days). Repairs ("Lost XP restored from the award history") are not XP earned that day, so they are left out. */
   function analyse(student) {
-    var now = Date.now(), today = dayStart(now), days = [], prev = 0, last = 0, lastTs = 0, arctic = { n: 0, xp: 0 };
-    for (var i = 0; i < 14; i++) days.push(0);
+    var now = Date.now(), today = dayStart(now), days = [], prev = 0, last = 0, lastTs = 0, arctic = { n: 0, xp: 0 }, byAgo = {};
+    for (var i = 0; i < NDAYS; i++) days.push(0);
     txOf(student.id).forEach(function (t) {
       var amt = Number(t.amount != null ? t.amount : (t.points != null ? t.points : t.xp)) || 0;
       var ts = new Date(t.timestamp || t.date || 0).getTime();
       if (!ts || isNaN(ts) || amt <= 0 || t.category === 'correction') return;
       if (ts > lastTs) lastTs = ts;
       var ago = Math.floor((today - dayStart(ts)) / DAY);       // 0 = today
-      if (ago >= 0 && ago < 14) { days[13 - ago] += amt; if (t.source === 'Homework') { arctic.n++; arctic.xp += amt; } }
+      if (ago >= 0 && ago < 60) byAgo[ago] = (byAgo[ago] || 0) + amt;
+      if (ago >= 0 && ago < NDAYS) { days[NDAYS - 1 - ago] += amt; if (ago < 14 && t.source === 'Homework') { arctic.n++; arctic.xp += amt; } }
       if (ago >= 0 && ago < 7) last += amt; else if (ago >= 7 && ago < 14) prev += amt;
     });
     var since = lastTs ? Math.floor((today - dayStart(lastTs)) / DAY) : 999;
+    // the numbers behind the status words skip the paused days of the class: "the last 7 lesson days" against "the 7 before"
+    var sLast = 0, sPrev = 0, sSince = null, taken = 0;
+    for (var k = 0; k < 60; k++) {
+      var dd = new Date(today); dd.setDate(dd.getDate() - k);
+      if (pausedKeys[dayKey(dd)]) continue;
+      taken++; var v = byAgo[k] || 0;
+      if (v > 0 && sSince === null) sSince = taken - 1;
+      if (taken <= 7) sLast += v; else if (taken <= 14) sPrev += v;
+    }
+    if (sSince === null) sSince = since >= 60 ? since : 999;
     var status = 'ok';
-    if (since >= 7) status = 'help';
-    else if (prev > 0 && last < prev * 0.5) status = 'slow';
-    return { days: days, last: last, prev: prev, since: since, status: status, arctic: arctic };
+    if (sSince >= 7) status = 'help';
+    else if (sPrev > 0 && sLast < sPrev * 0.5) status = 'slow';
+    return { days: days, last: last, prev: prev, since: since, sSince: sSince, sLast: sLast, sPrev: sPrev, status: status, arctic: arctic };
   }
 
   /* ---- homework of the last two weeks. Tea Party and Chuseok cooking come straight from the Google Sheets (read only, checked every time the page opens);
@@ -85,8 +107,8 @@
   /** One status from what really happened: XP over the days and the homework from the sheets. (The old English Progress Check scores are no longer used.) */
   function diagnose(r) {
     var why = [], status = 'ok', missing = [], sheetHw = hwList().filter(function (h) { return h.kind === 'sheet'; });
-    if (r.a.since >= 7 && classQuiet) { status = 'quiet'; why.push('The whole class has had no XP for ' + classQuiet + ' days'); }
-    else if (r.a.since >= 7) { status = 'help'; why.push(r.a.since >= 999 ? 'No XP yet' : 'No XP for ' + r.a.since + ' days'); }
+    if (r.a.sSince >= 7 && classQuiet) { status = 'quiet'; why.push('The whole class has had no XP for ' + classQuiet + ' lesson days'); }
+    else if (r.a.sSince >= 7) { status = 'help'; why.push(r.a.sSince >= 999 ? 'No XP yet' : 'No XP for ' + r.a.sSince + ' lesson days'); }
     else if (r.a.status === 'slow') { status = 'slow'; why.push('Less XP than last week'); }
     if (sheet.data) sheetHw.forEach(function (h) { if (hwState(r, h).k !== 'done') missing.push(h); });
     if (status === 'ok' && sheet.data && sheetHw.length && !missing.length && r.a.last > 0) { status = 'star'; why.push('All homework done and active this week'); }
@@ -96,7 +118,7 @@
   }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
-    classGrade = gradeOfClass(cls);
+    classGrade = gradeOfClass(cls); setPaused(cls.id);
     try { reconPlan(cls).rows.forEach(function (x) { if (x.diff !== 0) mism[x.id] = x; }); } catch (e) { /* optional */ }
     var rows = st.getStudentsByClass(cls.id).map(function (s) {
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {};
@@ -110,7 +132,7 @@
         ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
       };
     });
-    var newest = rows.length ? Math.min.apply(null, rows.map(function (r) { return r.a.since; })) : 0;
+    var newest = rows.length ? Math.min.apply(null, rows.map(function (r) { return r.a.sSince; })) : 0;
     classQuiet = rows.length && newest >= 7 && newest < 999 ? newest : 0;
     rows.forEach(function (r) { r.d = diagnose(r); });
     return rows;
@@ -221,6 +243,9 @@
     '.cc-dhw{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--l)}.cc-dhw:last-child{border:0}.cc-dhw b.cc-hw{white-space:normal;text-align:right}' +
     '.cc-t14 th.cc-d,.cc-t14 td.cc-d{width:29px;min-width:27px}.cc-t14 .cc-xp{min-width:25px;font-size:10.5px;padding:3px 0;border-radius:6px}.cc-t14 .cc-why{display:none}.cc-t14 .cc-nm{min-width:0;gap:7px}.cc-t14 .cc-nm img{width:26px;height:26px}' +
     '.cc-t14 .cc-lvl .cc-bar{width:36px}.cc-t14 td,.cc-t14 th{padding-left:6px!important;padding-right:6px!important}.cc-t14 th.cc-d,.cc-t14 td.cc-d{padding-left:1px!important;padding-right:1px!important}.cc-t14 .cc-hw{min-width:0;padding:3px 6px}.cc-t14 .cc-plus{padding:3px 5px}' +
+    '.cc td.cc-pz,.cc th.cc-pz{background:repeating-linear-gradient(135deg,#12141b,#12141b 3px,#1b1f2c 3px,#1b1f2c 6px)!important}.cc-bars i.pz{background:repeating-linear-gradient(135deg,#232838,#232838 3px,#2e3448 3px,#2e3448 6px);opacity:.9}' +
+    '.cc-t30 th.cc-d,.cc-t30 td.cc-d{width:21px;min-width:19px;padding-left:0!important;padding-right:0!important}.cc-t30 .cc-xp{min-width:19px;font-size:9px;padding:3px 0;border-radius:5px}.cc-t30 th.cc-d{font-size:9px}.cc-t30 .cc-why{display:none}.cc-t30 .cc-nm{min-width:0;gap:6px}.cc-t30 .cc-nm img{width:24px;height:24px}' +
+    '.cc-t30 .cc-lvl{display:none}.cc-t30 td,.cc-t30 th{padding-left:5px!important;padding-right:5px!important}.cc-t30 .cc-hw{min-width:0;padding:3px 5px}.cc-t30 .cc-plus{padding:3px 4px;font-size:10px}.cc-bars30{gap:2px}.cc-bars30 b{font-size:8px}.cc-bars30 small{font-size:8px}' +
     '@media(max-width:1100px){.cc-grid3{grid-template-columns:minmax(0,1fr)}}';
 
   function ensureCss() {
@@ -233,10 +258,11 @@
   function sum(a) { return a.reduce(function (n, v) { return n + v; }, 0); }
   function dayLabels(n) {
     var today = dayStart(Date.now()), out = [];
-    for (var i = n - 1; i >= 0; i--) { var d = new Date(today); d.setDate(d.getDate() - i); out.push({ wd: d.toLocaleDateString('en-GB', { weekday: 'short' }), n: d.getDate(), mon: d.toLocaleDateString('en-GB', { month: 'short' }), today: i === 0, weekend: d.getDay() === 0 || d.getDay() === 6 }); }
+    for (var i = n - 1; i >= 0; i--) { var d = new Date(today); d.setDate(d.getDate() - i); out.push({ paused: pausedKeys[dayKey(d)] || '', wd: d.toLocaleDateString('en-GB', { weekday: 'short' }), n: d.getDate(), mon: d.toLocaleDateString('en-GB', { month: 'short' }), today: i === 0, weekend: d.getDay() === 0 || d.getDay() === 6 }); }
     return out;
   }
   function xpCell(v, d) {
+    if (!v && d.paused) return '<td class="cc-d cc-pz" title="' + esc(d.wd + ' ' + d.n + ' ' + d.mon + ': ' + d.paused) + '"><span class="cc-dot">·</span></td>';
     if (!v) return '<td class="cc-d' + (d.weekend ? ' we' : '') + '"><span class="cc-dot">·</span></td>';
     var a = Math.min(0.85, 0.2 + v / 80 * 0.65);
     return '<td class="cc-d"><span class="cc-xp" style="background:rgba(99,102,241,' + a.toFixed(2) + ')" title="' + v + ' XP on ' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + v + '</span></td>';
@@ -249,7 +275,7 @@
     var rows = current.slice(), labels = dayLabels(RANGE), hws = hwList();
     if (filterKey !== 'all') rows = rows.filter(function (r) { return r.d.status === filterKey; });
     if (query) { var q = query.toLowerCase(); rows = rows.filter(function (r) { return r.name.toLowerCase().indexOf(q) !== -1; }); }
-    function tot(r) { return sum(r.a.days.slice(14 - RANGE)); }
+    function tot(r) { return sum(r.a.days.slice(NDAYS - RANGE)); }
     rows.sort(function (a, b) {
       var x, y;
       if (sortKey === 'name') { return sortDir * a.name.localeCompare(b.name); }
@@ -262,7 +288,7 @@
     if (!rows.length) return '<div class="cc-empty">No students match.</div>';
     function th(k, label, tip) { return '<th onclick="CommandCenter.sort(\'' + k + '\')"' + (tip ? ' title="' + tip + '"' : '') + '>' + label + (sortKey === k ? (sortDir < 0 ? ' ↓' : ' ↑') : '') + '</th>'; }
     var head = '<tr>' + th('name', 'Student') + th('xp', 'XP', 'All the XP the pupil has') +
-      labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
+      labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + (d.paused ? ' cc-pz' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
       th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
       hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
       th('status', 'Status') + '<th style="cursor:default"></th></tr>';
@@ -271,15 +297,15 @@
       var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
       var t = tot(r);
       return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
-        '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(14 - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
+        '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(NDAYS - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
         '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button></td></tr>';
     }).join('');
     var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
-      labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[14 - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
+      labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[NDAYS - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
       '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 2) + '"></td></tr>';
-    return '<div class="cc-wrap"><table' + (RANGE === 14 ? ' class="cc-t14"' : '') + '><thead>' + head + '</thead><tbody>' + body + '</tbody><tfoot>' + foot + '</tfoot></table></div>';
+    return '<div class="cc-wrap"><table' + (RANGE === 14 ? ' class="cc-t14"' : RANGE === 30 ? ' class="cc-t30"' : '') + '><thead>' + head + '</thead><tbody>' + body + '</tbody><tfoot>' + foot + '</tfoot></table></div>';
   }
   function refreshTable() { var el = document.getElementById('cc-table'); if (el) el.innerHTML = tableHtml(); var c = document.getElementById('cc-count'); if (c) c.textContent = current.length; }
 
@@ -302,10 +328,10 @@
   }
   /** Class XP for each of the last 14 days (bars). */
   function perDayHtml() {
-    var labels = dayLabels(14), tot = labels.map(function (d, i) { return sum(current.map(function (r) { return r.a.days[i]; })); }), max = Math.max.apply(null, tot.concat([1]));
-    return '<div class="cc-bars">' + labels.map(function (d, i) {
-      return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + tot[i] + ' XP"><b>' + (tot[i] || '') + '</b><i style="height:' + Math.max(tot[i] ? 6 : 1, Math.round(tot[i] / max * 100)) + '%"' + (d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.wd.slice(0, 2) + '<br>' + d.n + '</small></div>';
-    }).join('') + '</div><div class="cc-dim" style="padding:0 14px 12px">XP given to this class each day. Repairs of lost XP are not counted.</div>';
+    var n = Math.max(RANGE, 14), labels = dayLabels(n), tot = labels.map(function (d, i) { return sum(current.map(function (r) { return r.a.days[NDAYS - n + i]; })); }), max = Math.max.apply(null, tot.concat([1]));
+    return '<div class="cc-bars' + (n > 14 ? ' cc-bars30' : '') + '">' + labels.map(function (d, i) {
+      return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + tot[i] + ' XP' + (d.paused && !tot[i] ? ' (' + esc(d.paused) + ')' : '') + '"><b>' + (tot[i] || '') + '</b><i style="height:' + Math.max(tot[i] ? 6 : 1, Math.round(tot[i] / max * 100)) + '%"' + (d.paused ? ' class="pz"' : d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.wd.slice(0, 2) + '<br>' + d.n + '</small></div>';
+    }).join('') + '</div><div class="cc-dim" style="padding:0 14px 12px">XP given to this class each day. Repairs of lost XP are not counted.' + (pausedClass ? ' Hatched days are left out: ' + esc(pausedClass.note) + '.' : '') + '</div>';
   }
 
   function dataChecksHtml() {
@@ -320,8 +346,8 @@
   function drawer(id) {
     var r = current.filter(function (x) { return x.id === id; })[0]; if (!r) return;
     var old = document.getElementById('cc-drawer'); if (old) old.remove();
-    var st = STATUS[r.d.status], labels = dayLabels(14), max = Math.max.apply(null, r.a.days.concat([1]));
-    var bars = '<div class="cc-dbars">' + r.a.days.map(function (v, i) {
+    var st = STATUS[r.d.status], labels = dayLabels(14), days14 = r.a.days.slice(NDAYS - 14), max = Math.max.apply(null, days14.concat([1]));
+    var bars = '<div class="cc-dbars">' + days14.map(function (v, i) {
       var d = labels[i];
       return '<div title="' + d.wd + ' ' + d.n + ' ' + d.mon + ': ' + v + ' XP"><b>' + (v || '') + '</b><i style="height:' + Math.max(v ? 8 : 2, Math.round(v / max * 100)) + '%"' + (d.weekend ? ' class="we"' : '') + '></i><small' + (d.today ? ' class="today"' : '') + '>' + d.n + '</small></div>';
     }).join('') + '</div>';
@@ -332,8 +358,8 @@
     var ws = r.ws.length ? r.ws.map(function (w) { return esc(w.name) + ': <b>' + w.score + '/10</b>'; }).join('<br>') : '<span class="cc-dim">No worksheet score entered yet.</span>';
     var tally = []; try { tally = (S().getStudentClassroomSkillsTally(r.id) || []).filter(function (t) { return t.category === 'positive' || !t.category; }).sort(function (a, b) { return b.count - a.count; }).slice(0, 3); } catch (e) { tally = []; }
     var tips = [];
-    if (r.a.since >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
-    else if (r.a.since >= 7) tips.push('<b>No XP for ' + (r.a.since >= 999 ? 'a long time' : r.a.since + ' days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
+    if (r.a.sSince >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' lesson days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
+    else if (r.a.sSince >= 7) tips.push('<b>No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
     else if (r.a.status === 'slow') tips.push('<b>Less XP than last week:</b> set one small goal for the next lesson and praise it.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
@@ -343,7 +369,7 @@
       (r.mism ? '<div class="cc-warn">⚠ XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + '). <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (r.dup ? '<div class="cc-warn">⧉ This name exists ' + r.dup.length + ' times (' + esc(r.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<h4>XP earned each day (14 days)</h4>' + bars +
-      '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + r.a.days.filter(function (v) { return v > 0; }).length + ' of 14</b></div></div>' +
+      '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + days14.filter(function (v) { return v > 0; }).length + ' of 14</b></div></div>' +
       (tally.length ? '<div class="cc-dim" style="margin-top:6px">Most XP for: ' + tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') +
       '<h4>Homework (last two weeks)</h4>' + hw +
       '<h4>Worksheets</h4><div>' + ws + '</div>' +
@@ -408,9 +434,9 @@
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
-        '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + '</span>' +
+        '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + rng(30) + '</span>' +
         '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + (classQuiet ? chip('quiet', 'No XP lately') : '') + chip('star', 'Doing great') + '</span></h3>' +
-        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done · 👀 opened only · 🎤 sent a recording. Click a pupil for the full picture.</div></div>' +
+        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done · 👀 opened only · 🎤 sent a recording. Click a pupil for the full picture.' + (pausedClass ? '<br>⏸ ' + esc(cls.name) + ': ' + new Date(pausedClass.from + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' to ' + new Date(pausedClass.to + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' is left out (' + esc(pausedClass.note) + '): the hatched days do not count against any pupil.' : '') + '</div></div>' +
       '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml() + '</div>';
     loadSheet();
   }
@@ -421,7 +447,7 @@
     filter: function (f) { filterKey = f; if (root.renderCurrentView) root.renderCurrentView(); },
     find: function (v) { query = v || ''; refreshTable(); },
     open: function (id) { drawer(id); },
-    range: function (n) { RANGE = n === 14 ? 14 : 7; if (root.renderCurrentView) root.renderCurrentView(); },
+    range: function (n) { RANGE = n === 30 ? 30 : n === 14 ? 14 : 7; if (root.renderCurrentView) root.renderCurrentView(); },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
       st.giveXP(id, n, 'Quick Classroom Award', 'Teacher', { category: 'positive', icon: '⭐' });
