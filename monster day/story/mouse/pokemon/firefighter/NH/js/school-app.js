@@ -2677,6 +2677,30 @@
       { id: 'notes', label: 'Notes (' + notes.length + ')' }
     ];
 
+    if (window.PupilProfile) {
+      // new one-page dark profile (js/pupil-profile.js); the older tabs are folded sections that load when opened
+      const prevDlg = modal.querySelector('.modal-dialog'), prevScroll = prevDlg && modal.classList.contains('is-open') ? prevDlg.scrollTop : 0;
+      const msNew = store.calculateMonsterState(student.id);
+      const counts = { assignments: assignments.length, assessments: assessments.length + pcSubsForCount.length, badges: studentAwards.length, attendance: attRecords.length ? attRate + '%' : '–', xp: totalXP, notes: notes.length };
+      window.ppSectionHtml = function(tab) {
+        studentProfileActiveTab = tab;
+        return renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords);
+      };
+      modal.innerHTML = '<div class="modal-dialog pp-dlg"><button class="modal-close-btn" onclick="closeAllModals()">✕</button>' +
+        window.PupilProfile.top(student, {
+          monsterState: msNew, totalXP: totalXP, attRate: attRate, hasAtt: attRecords.length > 0,
+          avatar: window.renderStudentMonsterAvatar(student.id, { size: 96, animated: true }),
+          onSheet: function() { if (modal.classList.contains('is-open') && window.currentProfileStudentId === studentId) window.openStudentDetail(studentId, activeTab); }
+        }) + window.PupilProfile.more(counts, activeTab !== 'overview' ? activeTab : '') + '</div>';
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      const dlgNew = modal.querySelector('.modal-dialog');
+      modal.querySelectorAll('details[open]').forEach(function(d) { window.PupilProfile.toggle(d); });
+      if (dlgNew && prevScroll) dlgNew.scrollTop = prevScroll;
+      else if (activeTab !== 'overview') { const sec = modal.querySelector('details[data-tab="' + activeTab + '"]'); if (sec && sec.scrollIntoView) sec.scrollIntoView({ block: 'center' }); }
+      return;
+    }
+
     modal.innerHTML = 
       '<div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">' +
         '<button class="modal-close-btn" onclick="closeAllModals()">✕</button>' +
