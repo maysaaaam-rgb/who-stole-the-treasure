@@ -64,7 +64,7 @@
     }).join('');
     box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results (Grade ' + G + ')</h2><div class="qr-sub">' + (G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' Tap a card to show the result, then give XP.</div></div></div>' +
       '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '') +
-      '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
+      '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn go" title="Build the 4 skills of every pupil and save them to the reports" onclick="QuizResults.skills()">🧩 4 skills → reports</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
   }
   /* For the Command Center: the quiz result of one pupil, or null (no sheet, or page 1 missing). pct counts the speaking mark when the teacher entered it. */
@@ -89,17 +89,20 @@
     if (g[1] === '4') {
       var a = PARTS4[num]; if (!a) return null;
       var L = [['Listening', 6], ['Reading', 7], ['Writing', 6]];
-      return { title: 'Unit 3 money quiz', text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: 0,
+      var k4s = '4-' + num, sp4 = SPK[k4s] != null ? { score: +SPK[k4s], max: 6 } : null;
+      return { title: 'Unit 3 money quiz', grade: 4, spk: sp4, text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: 0,
         parts: L.map(function (l, i) { return { label: l[0], score: a[i], max: l[1] }; }).filter(function (x) { return x.score != null; }),
         note: DATA4[num] && DATA4[num][2] ? 'Only the writing page was handed in: it counts as 100%.' : '' };
     }
     var b = PARTS3[num]; if (!b) return null;
     var only2 = !!(DATA[num] && DATA[num][3]);
     var L3 = [['Ice-bridge stones', 15], ['Word match', 12], ['Snake', 10], ['-ng sound', 5], ['Listening', 12], ['Poem table', 8], ['Car table', 10], ['Reading summary', 10]];
-    return { title: 'Unit 3 quiz: It Keeps Changing', text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: DATA[num] ? DATA[num][1] : 0,
+    var spv = SPK[num], sp3 = (spv === 4 || spv === 7 || spv === 10) ? { score: spv, max: 10 } : null;
+    return { title: 'Unit 3 quiz: It Keeps Changing', grade: 3, spk: sp3, text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: sc ? sc.speaking : false, bonus: DATA[num] ? DATA[num][1] : 0,
       parts: L3.map(function (l, i) { return { label: l[0], score: b[i], max: l[1] }; }).filter(function (x) { return x.score != null; }), note: only2 ? 'Only page 2 was handed in (page 1 is missing), so there is no total.' : '' };
   }
   var Q = root.QuizResults = {
+    skills: function () { if (root.QuizSkills) root.QuizSkills.open(G, cls); },
     detailOf: detailOf,
     scoreOf: scoreOf,
     open: function (c, g) { css(); G = g === '4' ? '4' : '3'; cls = c || 'a'; if (!box) { box = document.createElement('div'); box.id = 'qr-box'; document.body.appendChild(box); } box.style.display = 'block'; render(); },
