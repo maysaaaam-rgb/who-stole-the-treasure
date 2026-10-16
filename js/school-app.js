@@ -9683,7 +9683,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         renderNavGroup('assessment', 'Assessment', [
           { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
           { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
-          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' }
+          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' },
+          { view: 'reports', label: 'Student Reports (for parents)', icon: '🧾', title: 'Student Reports: print a report card for a parent', isActive: currentView === 'reports' }
         ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
         renderNavGroup('community', 'Community', [
