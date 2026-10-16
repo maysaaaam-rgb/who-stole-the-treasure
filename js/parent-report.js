@@ -46,19 +46,19 @@
   function comment(x) {
     var en = [], tr = [], f = x.first;
     var hwDone = x.hw.filter(function (h) { return h.k === 'done'; }).length, hwTot = x.hw.length;
-    en.push(f + ' is part of our English Adventure Academy and has earned ' + x.xp.toLocaleString('en-US') + ' adventure points so far' + (x.last30 > 0 && x.last30 <= x.xp ? ', ' + x.last30 + ' of them in the last month.' : '.'));
-    tr.push(f + ' İngilizce Macera Akademisi\'nin bir üyesi ve şimdiye kadar ' + x.xp.toLocaleString('tr-TR') + ' macera puanı topladı' + (x.last30 > 0 && x.last30 <= x.xp ? ', bunun ' + x.last30 + ' puanı son bir ayda.' : '.'));
+    var cap = function (k) { return k[0].toUpperCase() + k.slice(1); };
+    en.push(f + ' is a valued member of our class and has earned ' + x.xp.toLocaleString('en-US') + ' adventure points.');
+    tr.push(f + ', sınıfımızın değerli bir üyesi ve şimdiye kadar ' + x.xp.toLocaleString('tr-TR') + ' macera puanı topladı.');
     if (x.best) {
-      en.push('Strongest skill: ' + x.best + '. ' + (x.worst ? 'Next step: a little more ' + x.worst.toLowerCase() + ' practice at home will help (for example ' + (x.worst === 'speaking' ? 'saying three sentences about the day in English' : x.worst === 'writing' ? 'writing three short sentences about the lesson' : x.worst === 'reading' ? 'reading one short text aloud' : 'listening to the lesson songs and stories again') + ').' : ''));
-      tr.push('En güçlü olduğu beceri: ' + TR[x.best[0].toUpperCase() + x.best.slice(1)].toLowerCase() + '. ' + (x.worst ? 'Sonraki adım: evde biraz daha ' + TR[x.worst[0].toUpperCase() + x.worst.slice(1)].toLowerCase() + ' çalışması faydalı olur (örneğin ' + (x.worst === 'speaking' ? 'günü İngilizce üç cümleyle anlatmak' : x.worst === 'writing' ? 'dersle ilgili üç kısa cümle yazmak' : x.worst === 'reading' ? 'kısa bir metni sesli okumak' : 'ders şarkı ve hikayelerini tekrar dinlemek') + ').' : ''));
+      en.push(cap(x.best) + ' is a real strength' + (x.worst ? ', and a little ' + x.worst + ' practice at home may help even more.' : '.'));
+      tr.push(TR[cap(x.best)] + ' en güçlü becerisi' + (x.worst ? '; evde biraz ' + TR[cap(x.worst)].toLowerCase() + ' çalışması daha da faydalı olabilir.' : '.'));
     }
     if (hwTot) {
-      if (hwDone === hwTot) { en.push('All current homework has been done. Well done!'); tr.push('Güncel ödevlerin hepsi tamamlandı. Tebrikler!'); }
-      else if (hwDone > 0) { en.push('Homework: ' + hwDone + ' of ' + hwTot + ' done. Please help ' + f + ' finish the rest when possible.'); tr.push('Ödev: ' + hwTot + ' ödevden ' + hwDone + ' tanesi tamamlandı. Mümkünse kalanları tamamlaması için ' + f + '\'e destek olmanızı rica ederiz.'); }
-      else { en.push('We would love to see more homework from ' + f + '. Short and regular practice makes a big difference.'); tr.push(f + '\'in ödevlerini daha çok görmek isteriz. Kısa ama düzenli çalışma büyük fark yaratır.'); }
+      if (hwDone === hwTot) { en.push('Thank you for the homework!'); tr.push('Ödevler için teşekkür ederiz!'); }
+      else { en.push('A little regular practice at home helps ' + f + ' shine.'); tr.push('Evde düzenli küçük çalışmalar ' + f + '\'in parlamasına yardımcı olur.'); }
     }
-    if (x.nw >= 3) { en.push('We are also working together on listening carefully and waiting for our turn to speak.'); tr.push('Ayrıca dikkatle dinlemek ve konuşma sırasını beklemek üzerinde birlikte çalışıyoruz.'); }
-    en.push('Thank you for your support at home!'); tr.push('Evdeki desteğiniz için teşekkür ederiz!');
+    en.push('We look forward to seeing you at the parent meeting on Saturday 17 October.');
+    tr.push('17 Ekim Cumartesi günkü veli toplantısında görüşmek üzere.');
     return { en: en.join(' '), tr: tr.join(' ') };
   }
 
