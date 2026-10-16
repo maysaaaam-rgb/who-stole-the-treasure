@@ -191,7 +191,7 @@
     portalCard: function (id) {
       var rep = reportOf(id);
       if (!rep) return '<section class="par-card"><h3>🧾 Term report</h3><p class="par-empty">The teacher will share the term report here soon.</p></section>';
-      return '<section class="par-card"><h3>🧾 Term report</h3><p>' + esc(rep.term) + ' · ' + esc(rep.date) + '</p><button type="button" class="par-link" onclick="ParentReport.open(\'' + esc(rep.id) + '\')">Open the report →</button></section>';
+      return '<section class="par-card"><h3>🧾 Term report</h3><p class="par-empty" style="color:#cbd5e1">' + esc(rep.term) + ' · ' + esc(rep.date) + '</p><button type="button" class="par-link" onclick="ParentReport.open(\'' + esc(rep.id) + '\')">Open the report →</button></section>';
     }
   };
 })(typeof window !== 'undefined' ? window : this);
