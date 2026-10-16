@@ -13,6 +13,10 @@
   function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
   try { SPK = JSON.parse(localStorage.getItem('qr-speaking-v1') || '{}') || {}; } catch (e) { SPK = {}; }
+  /* Grade 3 speaking marks (Great 10 / Good 7 / Try 4) that were given on 16 Oct 2026, read back from the XP each pupil received (the board adds the speaking mark to the suggested XP,
+     and every pupil's XP matches exactly one mark). They fill in only where this browser has no mark of its own. Beren and Demir had none. */
+  var SPK_D3 = {"353":10,"224":7,"229":10,"200":4,"354":10,"203":4,"227":4,"201":4,"202":4,"214":10,"213":10,"220":7,"217":4,"352":10,"215":7,"222":7,"216":4,"209":7,"219":10,"206":10,"204":7,"223":4,"351":7,"211":7,"228":4,"212":4,"218":4,"205":4};
+  Object.keys(SPK_D3).forEach(function (k) { if (SPK[k] == null) SPK[k] = SPK_D3[k]; });
   function saveSpk() { try { localStorage.setItem('qr-speaking-v1', JSON.stringify(SPK)); } catch (e) {} }
   function store() { return root.schoolStore; }
   function pupils(c) {
