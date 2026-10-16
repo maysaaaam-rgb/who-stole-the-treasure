@@ -60,6 +60,33 @@
     });
   }
 
+  /** Grade 3 is applied by itself when the platform opens on a teacher computer, so the skills are already in place whenever a report is generated (a report keeps a snapshot
+      of the skills at the moment it is made). It only writes what is new or changed, so opening the platform again changes nothing. */
+  function sameScores(a, b) { var ka = Object.keys(a || {}), kb = Object.keys(b || {}); return ka.length === kb.length && ka.every(function (k) { return a[k] === b[k]; }); }
+  function auto(grade) {
+    var st = S(); if (!st || !st.getStudents || !Array.isArray(st.state && st.state.assessments)) return 0;
+    var n = 0;
+    plan(grade).forEach(function (r) {
+      if (!r.k) return;
+      var cur = st.state.assessments.filter(function (a) { return a.studentId === r.s.id && a.syncTag === TAG; })[0], rub = {};
+      Object.keys(r.k.skills).forEach(function (key) { rub[key] = r.k.skills[key].v; });
+      if (cur && sameScores(cur.rubricScores, rub)) return;
+      write(r.s, r.k); n++;
+    });
+    if (n) { st.saveState(); if (st.notify) st.notify(); }
+    return n;
+  }
+  (function startAuto() {
+    var tries = 0, t = setInterval(function () {
+      tries++;
+      var st = S();
+      if (st && st.getStudents && (st.getStudents('class-3a') || []).length && root.QuizResults && root.QuizResults.detailOf) {
+        clearInterval(t);
+        try { if (!st.getRole || st.getRole() === 'teacher') auto('3'); } catch (e) { /* the button still works */ }
+      } else if (tries > 60) clearInterval(t);
+    }, 1000);
+  })();
+
   function css() {
     if (document.getElementById('qs-css')) return;
     var s = document.createElement('style'); s.id = 'qs-css';
@@ -72,6 +99,7 @@
   function cell(x) { if (!x) return '<span style="color:#475569">–</span>'; var c = cefr(x.v), cl = c === 'A2' ? 'qs-a2' : c === 'A1+' ? 'qs-a1p' : c === 'A1' ? 'qs-a1' : 'qs-p'; return x.pct + '% <span class="qs-c ' + cl + '">' + c + '</span>'; }
 
   var QS = root.QuizSkills = {
+    auto: auto,
     skillsOf: skillsOf,
     open: function (grade) {
       css(); var g = grade === '4' ? '4' : '3', rows = plan(g);
