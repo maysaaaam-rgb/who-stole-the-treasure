@@ -120,8 +120,17 @@
       var have = Object.keys(names()).length;
       box.innerHTML = '<div class="pr-noprint" style="color:#e8eefc;font-family:Inter,system-ui,sans-serif;max-width:780px;margin:0 auto 14px"><h2 style="margin:0 0 6px">🧾 Parent reports for all four classes</h2>' +
         '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b>' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
-        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
+        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
       box.style.display = 'block';
+      box.querySelector('#pr-file').onchange = function () {
+        var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          try { var o = JSON.parse(String(rd.result)), n = Object.keys(o).length; if (!n) throw new Error('empty'); localStorage.setItem(KEY, JSON.stringify(o)); msg.textContent = '✓ Parents’ names loaded for ' + n + ' pupils (kept only on this computer). Now press "Make / update all reports".'; }
+          catch (e) { msg.textContent = 'That file could not be read. Pick the parents.json file.'; }
+        };
+        rd.readAsText(f);
+      };
       box.querySelector('#pr-make').onclick = function () {
         var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading the homework from the Google Sheet…'; this.disabled = true;
         waitSheet(function () {
