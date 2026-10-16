@@ -47,7 +47,7 @@
     try { var ms = st.calculateMonsterState(id) || {}; level = (ms.stageName || '').replace(/^Level \d+ [•·-] /, ''); } catch (e) { level = ''; }
     var att = null; try { var recs = (st.state.attendanceRecords || []).filter(function (r) { return r.studentId === id; }); att = recs.length ? st.getStudentAttendanceRate(id) : null; } catch (e) { att = null; }
     return { id: id, first: s.firstName || 'your child', name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim(), cls: (st.getClass && st.getClass(s.classId) || {}).name || s.grade || '', grade: s.grade || '',
-      xp: Number(st.getStudentTotalXP(id)) || 0, last30: d ? d.month : 0, activeDays: d ? d.active : 0, att: att, skills: sk, best: best, worst: worst, quizBand: band, quizBandTr: bandTr, quizText: q ? q.title : '',
+      xp: Number(st.getStudentTotalXP(id)) || 0, last30: d ? d.month : 0, activeDays: d ? d.active : 0, att: att, skills: sk, best: best, worst: worst, quizBand: band, quizBandTr: bandTr, quizText: q ? q.title : '', quizScore: sc ? sc.text : '', quizPct: sc ? sc.pct : null, quizBonus: q && q.bonus ? q.bonus : 0, quizNote: q && q.note ? q.note : '', quizSpeak: sc ? !!sc.speaking : false, quizParts: q ? q.parts.map(function (p) { return { label: p.label, score: p.score, max: p.max }; }) : [],
       hw: hw, hwReady: !!(d && d.hwReady), nw: d && d.nw ? d.nw.n : 0, pos30: pos30, nw30: nw30, level: level, parents: parentsOf(id), cefr: s.overallCefr || '' };
   }
 
@@ -94,7 +94,9 @@
       '<div class="pr-info"><div><span>Pupil</span><b>' + esc(x.name) + '</b></div><div><span>Class</span><b>' + esc(x.cls) + '</b></div><div><span>Adventure points</span><b>⭐ ' + (x.xp || 0).toLocaleString('en-US') + '</b></div><div><span>Attendance</span><b>' + (x.att != null ? x.att + '%' : 'not recorded') + '</b></div></div>' +
       '<div class="pr-h">POINTS AND CLASSROOM BEHAVIOUR · PUANLAR VE SINIF DAVRANIŞI</div><div class="pr-info" style="grid-template-columns:repeat(4,1fr)"><div><span>Points this month · Bu ay puan</span><b>' + (x.month > 0 && x.month <= (x.xp || 0) ? '+' + x.month.toLocaleString('en-US') : '–') + '</b></div><div><span>Monster level · Canavar seviyesi</span><b>' + esc(x.level || '–') + '</b></div><div><span>Positive awards · Olumlu ödül</span><b>' + (x.pos30 || 0) + '</b></div><div><span>Reminders · Uyarı</span><b>' + (x.nw30 || 0) + '</b></div></div><div style="font-size:11px;color:#64748b">Last 30 days. Reminders are "needs work" notes such as talking out of turn or being unprepared. · Son 30 gün. Uyarılar, sırasız konuşma veya hazırlıksız gelme gibi "geliştirilmeli" notlarıdır.</div>' +
       '<div class="pr-h">THE FOUR SKILLS · DÖRT BECERİ</div><div class="pr-sk">' + sk + '</div>' +
-      (x.quizBand ? '<div class="pr-h">UNIT 3 QUIZ · ÜNİTE 3 SINAVI</div><div>Result: <b>' + esc(x.quizBand) + ' / ' + esc(x.quizBandTr) + '</b>' + (x.best ? ' · strongest skill: <b>' + esc(x.best) + '</b>' : '') + '</div>' : '') +
+      (x.quizBand ? '<div class="pr-h">UNIT 3 QUIZ · ÜNİTE 3 SINAVI</div><div>Score · Puan: <b>' + esc(x.quizScore || '') + '</b>' + (x.quizPct != null ? ' (' + x.quizPct + '%)' : '') + (x.quizBonus ? ' + ' + x.quizBonus + ' bonus' : '') + ' · <b>' + esc(x.quizBand) + ' / ' + esc(x.quizBandTr) + '</b>' + (x.best ? ' · strongest skill: <b>' + esc(x.best) + '</b>' : '') + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:3px">' + (x.quizSpeak ? 'Includes the speaking mark. · Konuşma notu dahildir.' : 'Speaking and the maze are not counted yet. · Konuşma ve labirent henüz dahil değil.') + (x.quizNote ? ' ' + esc(x.quizNote) : '') + '</div>' +
+        ((x.quizParts || []).length ? '<div class="pr-hw" style="margin-top:6px">' + x.quizParts.map(function (p) { return '<span>' + esc(p.label) + ' ' + p.score + '/' + p.max + '</span>'; }).join('') + '</div>' : '') : '') +
       (hw ? '<div class="pr-h">HOMEWORK · ÖDEV</div><div class="pr-hw">' + hw + '</div>' : '') +
       '<div class="pr-h">TEACHER\'S COMMENT · ÖĞRETMENİN YORUMU</div><div class="pr-c">' + esc(c.en) + '</div><div class="pr-c">' + esc(c.tr) + '</div>' +
       '<div class="pr-sig"><div>Mr. Maysam (English teacher)</div><div>Parent signature / Veli imzası</div></div></div>';
@@ -103,7 +105,7 @@
   function build(id) {
     var x = data(id); if (!x) return null;
     var c = comment(x);
-    return { first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, hw: x.hw, parents: x.parents, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
+    return { first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, quizTitle: x.quizText, quizScore: x.quizScore, quizPct: x.quizPct, quizBonus: x.quizBonus, quizNote: x.quizNote, quizSpeak: x.quizSpeak, quizParts: x.quizParts, hw: x.hw, parents: x.parents, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
   }
 
   /** Saves one report for a pupil (replaces this term's earlier parent report of that pupil). */
