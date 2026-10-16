@@ -368,10 +368,11 @@
   }
 
   function dataChecksHtml() {
-    var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; });
-    if (!mism.length && !dup.length) return '';
+    var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; }), badQ = badQuizTx(S().getActiveClass());
+    if (!mism.length && !dup.length && !badQ.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
       (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
+      (badQ.length ? '<div><b>' + badQ.length + ' quiz XP awards have an impossible date</b> (before the quiz existed, for example ' + esc(new Date(badQ[0].timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })) + '). The computer that gave them probably has the wrong clock. <button class="cc-mini" onclick="CommandCenter.redateQuizXp()">Fix the dates</button></div>' : '') +
       (dup.length ? '<div><b>Same name twice:</b> ' + dup.map(function (r) { return esc(r.name) + ' (' + esc(r.dup.join(' + ')) + ')'; }).join(', ') + '. One may be an old copy: check it in the pupil\u2019s profile.</div>' : '') +
       '</div></div>';
   }
@@ -612,6 +613,54 @@
     st.saveState(); if (st.notify) st.notify();
     if (root.renderCurrentView) root.renderCurrentView();
   }
+  // ------------------------------------------------------------- re-date quiz XP that was saved with a wrong computer clock
+  // The Unit 3 quiz did not exist before 15 Oct 2026, so a quiz award dated earlier has the wrong date. Only those awards are touched, only their date; the XP amount never changes.
+  var QUIZ_FIRST_DAY = '2026-10-15', QUIZ_REDATE_TO = '2026-10-16';
+  function badQuizTx(cls) {
+    var st = S(), ids = {}; if (!cls) return [];
+    st.getStudentsByClass(cls.id).forEach(function (p) { ids[p.id] = p; });
+    return (st.state.xpTransactions || []).filter(function (t) { return ids[t.studentId] && t.status !== 'voided' && /^Unit 3 paper quiz/.test(t.reason || '') && String(t.timestamp || '').slice(0, 10) < QUIZ_FIRST_DAY; });
+  }
+  function redateModal() {
+    var st = S(), cls = st.getActiveClass(), list = badQuizTx(cls); ensureCss();
+    var old = document.getElementById('cc-redate'); if (old) old.remove();
+    if (!list.length) return;
+    var ovl = document.createElement('div'); ovl.id = 'cc-redate'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
+    function fmt(ts) { return new Date(ts).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+    ovl.innerHTML = '<div class="cc-pal" style="width:min(640px,94vw);padding:20px;max-height:86vh;overflow:auto"><h2 style="font-size:18px;margin:0 0 6px">Fix the dates of the quiz XP · ' + esc(cls.name) + '</h2>' +
+      '<p style="color:#8b93a7;margin:0 0 12px">These ' + list.length + ' awards are dated before the quiz existed. Pressing the button moves each one to <b>16 Oct 2026</b> (same time of day). <b>The XP amounts do not change</b>, no pupil gets or loses a point. A backup file of the old dates is downloaded first.</p>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:#7c8498;text-align:left"><th style="padding:5px 8px">Pupil</th><th>XP</th><th>Now</th><th>Will be</th></tr>' +
+      list.map(function (t) { var p = st.getStudent(t.studentId) || {}, nts = QUIZ_REDATE_TO + String(t.timestamp).slice(10); return '<tr style="border-top:1px solid #1d2029"><td style="padding:6px 8px">' + esc((p.firstName || '') + ' ' + (p.lastName || '')) + '</td><td>' + esc(t.amount) + '</td><td>' + fmt(t.timestamp) + '</td><td><b>' + fmt(nts) + '</b></td></tr>'; }).join('') + '</table>' +
+      '<div style="color:#fbbf24;font-size:12px;margin-top:10px">Tip: fix the clock of the computer first (Windows date and time), or new points will get the wrong date again. Do this on the computer that gave the points.</div>' +
+      '<div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end"><button class="cc-plus" id="cc-d-no" style="padding:9px 16px">Not now</button><button class="cc-plus" id="cc-d-go" style="padding:9px 16px;background:#10b981;color:#06101f;font-weight:800">Fix ' + list.length + ' dates</button></div><div id="cc-d-msg" class="cc-dim" style="margin-top:10px"></div></div>';
+    document.body.appendChild(ovl);
+    ovl.querySelector('#cc-d-no').onclick = function () { ovl.remove(); };
+    ovl.querySelector('#cc-d-go').onclick = function () { applyRedate(list, ovl); };
+    ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+  }
+  function applyRedate(list, ovl) {
+    var st = S(), msg = ovl.querySelector('#cc-d-msg'), go = ovl.querySelector('#cc-d-go');
+    go.disabled = true;
+    var backup = list.map(function (t) { return { id: t.id, studentId: t.studentId, amount: t.amount, reason: t.reason, timestamp: t.timestamp, date: t.date }; });
+    try { localStorage.setItem('eaa_redate_backup_' + Date.now(), JSON.stringify(backup)); } catch (e) { /* the downloaded file is the main backup */ }
+    try {
+      var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }), a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'quiz-xp-old-dates-' + Date.now() + '.json'; document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { /* no download: the browser copy above is kept */ }
+    var byId = {}; list.forEach(function (t) { byId[t.id] = true; });
+    list.forEach(function (t) {
+      var nts = QUIZ_REDATE_TO + String(t.timestamp).slice(10), nd = new Date(nts);
+      t.timestamp = nts; t.date = nd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      var p = st.getStudent(t.studentId);
+      if (p && Array.isArray(p.xpHistory)) p.xpHistory.forEach(function (h) { if (h && h.id === t.id) { h.timestamp = nts; h.date = nd.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); } });
+    });
+    st.saveState(); if (st.notify) st.notify();
+    msg.textContent = 'Dates fixed on this computer. Saving to the cloud…';
+    var cloud = root.SchoolCloudSync && root.SchoolCloudSync.saveXPTransactions ? root.SchoolCloudSync.saveXPTransactions(list) : Promise.reject(new Error('cloud not connected'));
+    cloud.then(function () { msg.textContent = '✓ Fixed and saved to the cloud (' + list.length + ' awards).'; setTimeout(function () { ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); }, 1800); },
+      function (e) { msg.innerHTML = '<span style="color:#fbbf24">Fixed on this computer, but the cloud did not answer (' + esc((e && e.message) || 'no answer') + '). Check the internet and press the button again.</span>'; });
+  }
+  api.redateQuizXp = redateModal;
   api.restoreXp = reconModal;
 
   // ------------------------------------------------------------- Ctrl+K palette
