@@ -8038,7 +8038,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Student Term Reports</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Dynamic report cards compiled from live attendance, XP ledger, and CEFR mastery data.</p>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="openReportGeneratorModal()">📄 + Generate New Report</button>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="ParentReport && ParentReport.openAll()">🧾 Parent reports: all classes</button><button class="btn-primary-action" onclick="openReportGeneratorModal()">📄 + Generate New Report</button></div>' +
       '</div>' +
 
       '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
@@ -9504,6 +9504,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="par-grid">' +
           '<section class="par-card"><h3>📊 English skills</h3>' + (skillRows || '<p class="par-empty">Skills appear here after the first assessment.</p>') +
             '<button type="button" class="par-link" onclick="switchView(\'parent-progress\')">See full progress →</button></section>' +
+          (window.ParentReport ? window.ParentReport.portalCard(s.id) : '') +
           '<section class="par-card"><h3>🏠 Practise at home</h3><ul class="par-list">' + practice.map(x => '<li>' + x + '</li>').join('') + '</ul></section>' +
           '<section class="par-card"><h3>📝 Homework &amp; tasks</h3>' +
             (tasks.length ? '<ul class="par-list">' + tasks.map(t => '<li>' + t.icon + ' <b>' + esc(t.title) + '</b>' + (t.due ? '<small>Due ' + esc(t.due) + '</small>' : '') + '</li>').join('') + '</ul>' : '<p class="par-empty">🎉 No tasks right now.</p>') + '</section>' +
@@ -11185,6 +11186,7 @@ window.switchClassroomSubTab = function(subTab) {
   window.viewPrintableReportCard = function(reportId) {
     const rep = store.getReport(reportId);
     if (!rep) return;
+    if (rep.extra && window.ParentReport) { window.ParentReport.open(rep.id); return; }   // parent reports have their own card (js/parent-report.js)
 
     const s = store.getStudent(rep.studentId);
     const snap = rep.dataSnapshot || {};
