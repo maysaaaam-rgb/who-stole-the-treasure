@@ -62,7 +62,8 @@
     return { en: en.join(' '), tr: tr.join(' ') };
   }
 
-  var CSS = '.pr-page{background:#fff;color:#0f172a;max-width:780px;margin:0 auto 18px;padding:34px 38px;border:2px solid #0f172a;border-radius:10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;box-sizing:border-box}' +
+  var CSS = '.ph-wide{grid-column:1/-1}.ph-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}.ph-list li{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.05);border-radius:12px;padding:9px 12px;color:#e8eefc}.ph-list li em{font-style:normal;color:#94a3b8;font-size:.82rem}.ph-list li b{font-weight:800}.ph-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#64748b}.ph-dot.ph-done{background:#34d399}.ph-dot.ph-part{background:#fbbf24}.ph-sk{display:grid;gap:4px;margin-bottom:6px}.ph-skt{display:flex;justify-content:space-between;gap:8px;font-size:.88rem;color:#e8eefc}.ph-skt b{color:#a5b4fc}' +
+    '.pr-page{background:#fff;color:#0f172a;max-width:780px;margin:0 auto 18px;padding:34px 38px;border:2px solid #0f172a;border-radius:10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;box-sizing:border-box}' +
     '.pr-top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #0f172a;padding-bottom:12px;margin-bottom:14px}.pr-top b{font-size:20px;letter-spacing:.02em}.pr-top small{color:#64748b;display:block}' +
     '.pr-to{background:#f1f5f9;border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.55}.pr-info{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.pr-info div{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px}.pr-info span{display:block;font-size:10px;color:#64748b;text-transform:uppercase}' +
     '.pr-h{font-weight:800;font-size:12px;letter-spacing:.04em;margin:14px 0 6px;color:#1e293b}.pr-sk{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.pr-s{border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px}.pr-s b{display:flex;justify-content:space-between}.pr-bar{height:7px;border-radius:4px;background:#e2e8f0;margin-top:5px;overflow:hidden}.pr-bar i{display:block;height:100%;background:#2563eb}' +
@@ -143,8 +144,40 @@
     return n;
   }
 
+  /* ---- the Parent Portal home page: what a parent needs, in Turkish and English ---- */
+  var EVENTS = [ { date: '2026-10-17', tr: 'İngilizce bireysel veli toplantısı (Cumartesi)', en: 'English parent meeting (Saturday)' } ];   // the teacher tells me more dates
+  var HELP = {
+    listening: { tr: ['Birlikte İngilizce bir şarkı veya hikaye dinleyin ve duyduğu 3 kelimeyi söylesin.', 'Dinlediği kısa bir cümleyi tekrar etmesini isteyin.'], en: ['Listen to an English song or story together and ask for 3 words he or she heard.', 'Ask your child to repeat one short sentence after listening.'] },
+    reading: { tr: ['Günde 5 dakika kısa bir İngilizce metni sesli okusun.', 'Okuduğu metinden bir kelimeyi gösterip anlamını sorun.'], en: ['Read one short English text aloud for 5 minutes a day.', 'Point to one word and ask what it means.'] },
+    writing: { tr: ['Derste öğrendiği 3 kelimeyle üç kısa cümle yazsın.', 'Günün olayını tek bir İngilizce cümleyle yazmasını isteyin.'], en: ['Write three short sentences with 3 words from class.', 'Ask for one English sentence about the day.'] },
+    speaking: { tr: ['Akşam yemeğinde "Tell me three sentences about your day" deyin.', 'Sevdiği bir oyuncağı veya yemeği İngilizce anlatsın.'], en: ['At dinner ask: "Tell me three sentences about your day."', 'Ask for a few English words about a favourite toy or food.'] }
+  };
+  function homeHtml(id, rerender) {
+    var st = S(), s0 = st.getStudent(id); if (!s0) return '<div style="padding:40px;text-align:center">No child profile found.</div>';
+    var x = data(id, rerender), first = esc(x.first), rep = reportOf(id);
+    var skillRows = ['listening', 'reading', 'writing', 'speaking'].map(function (k) {
+      var v = x.skills[k], nm = k[0].toUpperCase() + k.slice(1);
+      return '<div class="ph-sk"><div class="ph-skt"><span>' + TR[nm] + ' · ' + nm + '</span><b>' + (v ? esc(LEVEL_TR[v.level] + ' · ' + LEVEL_TXT[v.level]) : 'henüz değerlendirilmedi · not assessed yet') + '</b></div><div class="par-bar"><i style="width:' + (v ? Math.max(6, Math.min(100, v.v)) : 0) + '%"></i></div></div>';
+    }).join('');
+    var weak = x.worst || (function () { var w = null; Object.keys(x.skills).forEach(function (k) { if (x.skills[k] && (!w || x.skills[k].v < x.skills[w].v)) w = k; }); return w; })() || 'speaking';
+    var help = HELP[weak] || HELP.speaking, wnm = weak[0].toUpperCase() + weak.slice(1);
+    var hw = !x.hwReady ? '<p class="par-empty">Ödevler okunuyor… · Reading the homework…</p>' : (x.hw.length ? '<ul class="ph-list">' + x.hw.map(function (h) { return '<li><span><span class="ph-dot ph-' + h.k + '"></span><b>' + esc(h.label) + '</b></span><em>' + (h.k === 'done' ? 'tamamlandı · done ✓' : h.k === 'part' ? 'kısmen yapıldı · partly done' : 'henüz teslim edilmedi · not handed in yet') + '</em></li>'; }).join('') + '</ul>' : '<p class="par-empty">Şu an ödev yok. · No homework right now.</p>');
+    var now = Date.now(), ev = EVENTS.filter(function (e) { return new Date(e.date + 'T23:59:59').getTime() >= now - 86400000; }).map(function (e) {
+      var d = new Date(e.date + 'T12:00:00'); return '<li><span><b>' + d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' }) + '</b> ' + esc(e.tr) + '</span><em>' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) + ' · ' + esc(e.en) + '</em></li>'; }).join('');
+    return '<div class="parent-home ph">' +
+      '<div class="par-hero"><div class="par-avatar">' + (root.renderStudentMonsterAvatar ? root.renderStudentMonsterAvatar(id, { size: 88, animated: true }) : '') + '</div><div class="par-hero-text"><div class="par-kicker">VELİ SAYFASI · PARENT PAGE</div><h1>' + first + '\'in İngilizce durumu<br><small style="font-size:.6em;font-weight:700;opacity:.85">How ' + first + ' is doing in English</small></h1><p>' + esc(x.cls) + (x.att != null ? ' · devam / attendance ' + x.att + '%' : '') + '</p></div>' +
+        '<button type="button" class="btn-3d btn-3d-primary" onclick="switchView(' + "'" + 'parent-messages' + "'" + ')">💬 Öğretmene yaz · Message the teacher</button></div>' +
+      '<div class="par-grid">' +
+        '<section class="par-card ph-wide"><h3>🧾 Dönem raporu · Term report</h3>' + (rep ? '<p class="par-empty" style="color:#cbd5e1">' + esc(rep.term) + ' · ' + esc(rep.date) + '</p><button type="button" class="btn-3d btn-3d-primary" onclick="ParentReport.open(' + "'" + esc(rep.id) + "'" + ')">Raporu aç ve yazdır · Open and print the report →</button>' : '<p class="par-empty">Öğretmeniniz raporu yakında burada paylaşacak. · Your teacher will share the report here soon.</p>') + '</section>' +
+        '<section class="par-card"><h3>📝 Bu haftanın ödevleri · Homework</h3>' + hw + '</section>' +
+        '<section class="par-card"><h3>📊 Dört beceri · The four skills</h3>' + skillRows + '</section>' +
+        '<section class="par-card"><h3>🏠 Evde nasıl yardım edebilirsiniz · How to help at home</h3><p class="par-empty" style="color:#cbd5e1">En çok destek gereken beceri: <b>' + TR[wnm] + '</b> · Focus: <b>' + wnm + '</b></p><ul class="ph-list">' + help.tr.map(function (t, i) { return '<li><span><b>' + esc(t) + '</b></span><em>' + esc(help.en[i]) + '</em></li>'; }).join('') + '</ul></section>' +
+        '<section class="par-card"><h3>📅 Tarihler · Dates</h3>' + (ev ? '<ul class="ph-list">' + ev + '</ul>' : '<p class="par-empty">Yeni bir tarih yok. · No new dates.</p>') + '</section>' +
+      '</div></div>';
+  }
+
   var PR = root.ParentReport = {
-    cloudUp: cloudUp, cloudDown: cloudDown,
+    homeHtml: homeHtml, cloudUp: cloudUp, cloudDown: cloudDown,
     names: names, parentsOf: parentsOf, build: build, save: save, reportOf: reportOf, cardHtml: cardHtml,
     /** Pupils of the four classes. */
     pupils: function () { var st = S(), out = []; ['class-3a', 'class-3b', 'class-4a', 'class-4b'].forEach(function (c) { (st.getStudents(c) || []).forEach(function (p) { out.push(p); }); }); return out; },

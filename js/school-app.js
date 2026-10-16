@@ -9441,6 +9441,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       container.innerHTML = '<div style="padding:40px; text-align:center;">No child profile found.</div>';
       return;
     }
+    if (window.ParentReport && window.ParentReport.homeHtml) {   // the new parent page (js/parent-report.js): report, homework, skills, how to help, dates
+      container.innerHTML = window.ParentReport.homeHtml(s.id, function () { if (currentView === 'parent-home' && document.body.contains(container)) renderParentHomeView(container); });
+      return;
+    }
     const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const first = esc(s.firstName || 'your child');
     const cls = (store.getClasses ? store.getClasses() : []).find(c => c.id === s.classId);
@@ -9725,8 +9729,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">Parent Portal</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Child Overview</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-progress' ? 'is-active' : '') + '" onclick="switchView(\'parent-progress\')" title="CEFR Progress"><span class="nav-item-left"><span class="nav-icon">📈</span> <span class="nav-label">CEFR Progress</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Çocuğum · My child</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
         '</ul>' +
