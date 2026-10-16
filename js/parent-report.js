@@ -111,7 +111,40 @@
     (function poll() { var d = null; try { d = root.CommandCenter.profileData(first.id, function () {}); } catch (e) { d = null; } if ((d && d.hwReady) || Date.now() - t0 > 20000) return cb(); setTimeout(poll, 700); })();
   }
 
+  /* ---- private cloud copy (never the parents' names: those stay on the teacher's computer and are put back from the local file) ---- */
+  var CLOUD_ID = 'class-parent-reports-sync';
+  function cloudClient() { var A = root.AdventureSupabase; if (!A || !A.isConfigured) return null; try { return A.client || (A._ensureClient && A._ensureClient()) || null; } catch (e) { return null; } }
+  function strip(rep) {
+    var x = JSON.parse(JSON.stringify(rep.extra || {})); delete x.parents;
+    return { id: rep.id, studentId: rep.studentId, term: rep.term, date: rep.date, reportType: rep.reportType, classId: rep.classId, className: rep.className, studentName: rep.studentName, extra: x };
+  }
+  function allReports() { return (S().state.reports || []).filter(function (r) { return r.extra && r.reportType === TYPE && !r.archived; }); }
+  async function cloudUp() {
+    var c = cloudClient(); if (!c) throw new Error('not connected to the cloud');
+    var doc = { v: 1, at: new Date().toISOString(), reports: allReports().map(strip) };
+    var up = await c.from('classes').upsert({ id: CLOUD_ID, name: 'Parent Reports Sync', grade: 'System', teacher: 'System', description: JSON.stringify(doc), archived: true, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+    if (up && up.error) throw up.error;
+    return doc.reports.length;
+  }
+  async function cloudDown() {
+    var c = cloudClient(); if (!c) throw new Error('not connected to the cloud');
+    var res = await c.from('classes').select('description').eq('id', CLOUD_ID).maybeSingle();
+    if (res && res.error) throw res.error;
+    var doc = null; try { doc = res && res.data && res.data.description ? JSON.parse(res.data.description) : null; } catch (e) { doc = null; }
+    if (!doc || !Array.isArray(doc.reports)) return 0;
+    var st = S(), n = 0; st.state.reports = st.state.reports || [];
+    doc.reports.forEach(function (cr) {
+      if (!st.getStudent(cr.studentId)) return;
+      var mine = st.state.reports.filter(function (r) { return r.studentId === cr.studentId && r.reportType === TYPE && r.term === cr.term && r.extra; })[0];
+      if (mine) return;   // this computer already has its own report for this pupil: never overwritten
+      cr.extra.parents = parentsOf(cr.studentId); cr.archived = false; st.state.reports.unshift(cr); n++;
+    });
+    if (n) { st.saveState(); if (st.notify) st.notify(); }
+    return n;
+  }
+
   var PR = root.ParentReport = {
+    cloudUp: cloudUp, cloudDown: cloudDown,
     names: names, parentsOf: parentsOf, build: build, save: save, reportOf: reportOf, cardHtml: cardHtml,
     /** Pupils of the four classes. */
     pupils: function () { var st = S(), out = []; ['class-3a', 'class-3b', 'class-4a', 'class-4b'].forEach(function (c) { (st.getStudents(c) || []).forEach(function (p) { out.push(p); }); }); return out; },
@@ -120,7 +153,7 @@
       var have = Object.keys(names()).length;
       box.innerHTML = '<div class="pr-noprint" style="color:#e8eefc;font-family:Inter,system-ui,sans-serif;max-width:780px;margin:0 auto 14px"><h2 style="margin:0 0 6px">🧾 Parent reports for all four classes</h2>' +
         '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b>' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
-        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
+        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
       box.style.display = 'block';
       box.querySelector('#pr-file').onchange = function () {
         var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
@@ -131,6 +164,8 @@
         };
         rd.readAsText(f);
       };
+      box.querySelector('#pr-up').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Saving to the cloud…'; cloudUp().then(function (n) { msg.textContent = '✓ ' + n + ' reports saved to the cloud (without the parents’ names).'; }, function (e) { msg.textContent = 'Could not save to the cloud: ' + ((e && e.message) || 'no answer') + '. Nothing was lost; it is still on this computer.'; }); };
+      box.querySelector('#pr-down').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading from the cloud…'; cloudDown().then(function (n) { msg.textContent = n ? '✓ ' + n + ' reports loaded from the cloud.' : 'Nothing new in the cloud (this computer has all of them, or none were saved yet).'; if (n) { var ps = PR.pupils(); box.querySelector('#pr-list').innerHTML = ps.map(function (p) { var rr = reportOf(p.id); return rr ? cardHtml(rr) : ''; }).join(''); box.querySelector('#pr-print').disabled = false; box.querySelector('#pr-print').onclick = function () { window.print(); }; } }, function (e) { msg.textContent = 'Could not read the cloud: ' + ((e && e.message) || 'no answer') + '.'; }); };
       box.querySelector('#pr-make').onclick = function () {
         var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading the homework from the Google Sheet…'; this.disabled = true;
         waitSheet(function () {
