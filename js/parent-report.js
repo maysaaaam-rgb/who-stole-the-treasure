@@ -37,10 +37,18 @@
     var band = !sc ? '' : sc.pct >= 70 ? 'Excellent' : sc.pct >= 50 ? 'Good' : sc.pct >= 30 ? 'Getting there' : 'Needs more practice';
     var bandTr = { 'Excellent': 'Mükemmel', 'Good': 'İyi', 'Getting there': 'Gelişiyor', 'Needs more practice': 'Daha fazla pratik gerekiyor', '': '' }[band];
     var hw = d && d.hwReady ? d.hw.map(function (h) { return { label: h.label, k: h.k === 'done' ? 'done' : (h.k === 'part' ? 'part' : 'none') }; }) : [];
+    var pos30 = 0, nw30 = 0, since = Date.now() - 30 * 86400000, level = '';
+    try { (st.getXPTransactions(id) || []).forEach(function (t) {
+      if (t.status === 'voided' || t.category === 'correction') return;
+      var ts = new Date(t.timestamp || t.date).getTime(), amt = Number(t.amount != null ? t.amount : t.points) || 0;
+      if (!ts || ts < since) return;
+      if (t.category === 'needs_work' && amt < 0) nw30++; else if (amt > 0) pos30++;
+    }); } catch (e) { pos30 = 0; nw30 = 0; }
+    try { var ms = st.calculateMonsterState(id) || {}; level = (ms.stageName || '').replace(/^Level \d+ [•·-] /, ''); } catch (e) { level = ''; }
     var att = null; try { var recs = (st.state.attendanceRecords || []).filter(function (r) { return r.studentId === id; }); att = recs.length ? st.getStudentAttendanceRate(id) : null; } catch (e) { att = null; }
     return { id: id, first: s.firstName || 'your child', name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim(), cls: (st.getClass && st.getClass(s.classId) || {}).name || s.grade || '', grade: s.grade || '',
       xp: Number(st.getStudentTotalXP(id)) || 0, last30: d ? d.month : 0, activeDays: d ? d.active : 0, att: att, skills: sk, best: best, worst: worst, quizBand: band, quizBandTr: bandTr, quizText: q ? q.title : '',
-      hw: hw, hwReady: !!(d && d.hwReady), nw: d && d.nw ? d.nw.n : 0, parents: parentsOf(id), cefr: s.overallCefr || '' };
+      hw: hw, hwReady: !!(d && d.hwReady), nw: d && d.nw ? d.nw.n : 0, pos30: pos30, nw30: nw30, level: level, parents: parentsOf(id), cefr: s.overallCefr || '' };
   }
 
   function comment(x) {
@@ -84,6 +92,7 @@
     return '<div class="pr-page"><div class="pr-top"><div><b>ENGLISH ADVENTURE ACADEMY</b><small>Parent report · Veli raporu</small></div><div style="text-align:right"><b style="font-size:15px">' + esc(rep.term) + '</b><small>' + esc(rep.date) + '</small></div></div>' +
       '<div class="pr-to">' + to + '<br>This is how <b>' + esc(x.first) + '</b> is doing in English. / <b>' + esc(x.first) + '</b>\'in İngilizce\'deki durumu aşağıdadır.</div>' +
       '<div class="pr-info"><div><span>Pupil</span><b>' + esc(x.name) + '</b></div><div><span>Class</span><b>' + esc(x.cls) + '</b></div><div><span>Adventure points</span><b>⭐ ' + (x.xp || 0).toLocaleString('en-US') + '</b></div><div><span>Attendance</span><b>' + (x.att != null ? x.att + '%' : 'not recorded') + '</b></div></div>' +
+      '<div class="pr-h">POINTS AND CLASSROOM BEHAVIOUR · PUANLAR VE SINIF DAVRANIŞI</div><div class="pr-info" style="grid-template-columns:repeat(4,1fr)"><div><span>Points this month · Bu ay puan</span><b>' + (x.month > 0 && x.month <= (x.xp || 0) ? '+' + x.month.toLocaleString('en-US') : '–') + '</b></div><div><span>Monster level · Canavar seviyesi</span><b>' + esc(x.level || '–') + '</b></div><div><span>Positive awards · Olumlu ödül</span><b>' + (x.pos30 || 0) + '</b></div><div><span>Reminders · Uyarı</span><b>' + (x.nw30 || 0) + '</b></div></div><div style="font-size:11px;color:#64748b">Last 30 days. Reminders are "needs work" notes such as talking out of turn or being unprepared. · Son 30 gün. Uyarılar, sırasız konuşma veya hazırlıksız gelme gibi "geliştirilmeli" notlarıdır.</div>' +
       '<div class="pr-h">THE FOUR SKILLS · DÖRT BECERİ</div><div class="pr-sk">' + sk + '</div>' +
       (x.quizBand ? '<div class="pr-h">UNIT 3 QUIZ · ÜNİTE 3 SINAVI</div><div>Result: <b>' + esc(x.quizBand) + ' / ' + esc(x.quizBandTr) + '</b>' + (x.best ? ' · strongest skill: <b>' + esc(x.best) + '</b>' : '') + '</div>' : '') +
       (hw ? '<div class="pr-h">HOMEWORK · ÖDEV</div><div class="pr-hw">' + hw + '</div>' : '') +
@@ -94,7 +103,7 @@
   function build(id) {
     var x = data(id); if (!x) return null;
     var c = comment(x);
-    return { first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, hw: x.hw, parents: x.parents, comment: c };
+    return { first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, hw: x.hw, parents: x.parents, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
   }
 
   /** Saves one report for a pupil (replaces this term's earlier parent report of that pupil). */
