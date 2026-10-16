@@ -78,8 +78,10 @@
   /** One pupil, one homework: { k: done | part | open | none | wait, txt (short, for the table), say (full words) } */
   /* Pupils who sent the homework on the school's k12 site (attachment + update date, checked by the teacher on 16 Oct 2026) and not through the Google Sheet. Keyed by school number. */
   var K12_DONE = { cook: { '224': 'k12', '205': 'k12', '352': 'k12', '201': 'teacher' }, tea2: { '345': 'k12' } };   // 201 = Begüm: her parent sent the work another way (WhatsApp); the teacher counted it on 16 Oct 2026
+  var TEACHER_PART = { cook: { '217': 1 } };   // marked "partially did" by the teacher (16 Oct 2026): Ece Aras opened the page and tried
   function hwState(r, h) {
     var mnum = /(\d+)$/.exec(String(r.id)); if (mnum && K12_DONE[h.id] && K12_DONE[h.id][mnum[1]]) return { k: 'done', txt: '✓', say: (K12_DONE[h.id][mnum[1]] === 'teacher' ? 'counted as done by the teacher' : 'sent on the k12 site (counted as done)') };
+    if (mnum && TEACHER_PART[h.id] && TEACHER_PART[h.id][mnum[1]] && !(K12_DONE[h.id] && K12_DONE[h.id][mnum[1]])) return { k: 'part', txt: '½', say: 'partly done (marked by the teacher)' };
     if (h.kind === 'xp') {
       var a = r.a.arctic;
       return a.n ? { k: 'part', txt: '+' + a.xp, say: 'played the game: ' + a.n + ' awards, ' + a.xp + ' XP' } : { k: 'none', txt: '–', say: 'has not played yet' };
