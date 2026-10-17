@@ -378,7 +378,7 @@
     if (!mism.length && !dup.length && !badQ.length && !pend.length && !lost.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
       (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
-      (lost.length ? '<div><b>' + lost.reduce(function (a, g) { return a + g.items.length; }, 0) + ' awards are stamped 2 Oct but look like they were given on 12 to 14 Oct</b> (3B\'s lost week; the school computer clock was wrong). <button class="cc-mini" onclick="CommandCenter.moveLostWeek()">Move them to the right days</button></div>' : '') +
+      (lost.length ? '<div><b>' + lost.reduce(function (a, g) { return a + g.items.length; }, 0) + ' awards are on the wrong day (2, 13 or 14 Oct) and look like they belong to 6 to 12 Oct</b> (3B\'s lost week; the school computer clock was wrong). <button class="cc-mini" onclick="CommandCenter.moveLostWeek()">Move them to the right days</button></div>' : '') +
       (pend.length ? '<div><b>' + pend.length + ' quiz XP awards were fixed on this computer but are not saved to the cloud yet.</b> <button class="cc-mini" id="cc-rp-btn" onclick="CommandCenter.saveRedatePending()">Save to the cloud</button></div>' : '') +
       (badQ.length ? '<div><b>' + badQ.length + ' quiz XP awards have an impossible date</b> (before the quiz existed, for example ' + esc(new Date(badQ[0].timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })) + '). The computer that gave them probably has the wrong clock. <button class="cc-mini" onclick="CommandCenter.redateQuizXp()">Fix the dates</button></div>' : '') +
       (dup.length ? '<div><b>Same name twice:</b> ' + dup.map(function (r) { return esc(r.name) + ' (' + esc(r.dup.join(' + ')) + ')'; }).join(', ') + '. One may be an old copy: check it in the pupil\u2019s profile.</div>' : '') +
@@ -699,12 +699,13 @@
   api.redateQuizXp = redateModal;
 
   // ------------------------------------------------------------- 3B's lost week: awards given on 12-14 Oct with the school computer's wrong clock (stamped 2 Oct)
-  var LOST = { 'class-3b': { stamped: '2026-10-02', afterUtcMin: 12 * 60 + 40, choices: ['2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-02'], defaults: ['2026-10-13', '2026-10-14', '2026-10-14'] } };
+  // The four sittings were stamped 2 Oct, then moved on 17 Oct to 13/14 Oct as a first guess; the teacher says they belong to 6-12 Oct, so awards on any of these three days are offered again (nothing else is touched).
+  var LOST = { 'class-3b': { stamped: ['2026-10-02', '2026-10-13', '2026-10-14'], afterUtcMin: 12 * 60 + 40, choices: ['2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15'], defaults: ['2026-10-06', '2026-10-07', '2026-10-08', '2026-10-12'] } };
   function lostGroups(cls) {
     var cfg = cls && LOST[cls.id]; if (!cfg) return [];
     var st = S(), ids = {}; st.getStudentsByClass(cls.id).forEach(function (p) { ids[p.id] = 1; });
     var list = (st.state.xpTransactions || []).filter(function (t) {
-      if (!ids[t.studentId] || t.status === 'voided' || t.category === 'correction' || String(t.timestamp || '').slice(0, 10) !== cfg.stamped) return false;
+      if (!ids[t.studentId] || t.status === 'voided' || t.category === 'correction' || cfg.stamped.indexOf(String(t.timestamp || '').slice(0, 10)) < 0) return false;
       var h = new Date(t.timestamp), m = h.getUTCHours() * 60 + h.getUTCMinutes();
       return m >= cfg.afterUtcMin && !/^Unit 3 paper quiz/.test(t.reason || '');
     }).sort(function (a, b) { return new Date(a.timestamp) - new Date(b.timestamp); });
@@ -725,10 +726,10 @@
     function fd(d) { return new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }); }
     var rows = groups.map(function (g, i) {
       var xp = g.items.reduce(function (a, t) { return a + (Number(t.amount) || 0); }, 0), def = cfg.defaults[Math.min(i, cfg.defaults.length - 1)];
-      return '<tr style="border-top:1px solid #1d2029"><td style="padding:7px 8px"><b>Group ' + (i + 1) + '</b><br><span class="cc-dim">' + tm(g.items[0].timestamp) + ' to ' + tm(g.items[g.items.length - 1].timestamp) + '</span></td><td>' + g.items.length + ' awards<br><span class="cc-dim">' + xp + ' XP</span></td><td><select data-g="' + i + '" style="background:#0b0d13;color:#e6e8ee;border:1px solid #2a2f3d;border-radius:8px;padding:6px">' + cfg.choices.map(function (d) { return '<option value="' + d + '"' + (d === def ? ' selected' : '') + '>' + (d === cfg.stamped ? 'keep ' : '') + fd(d) + '</option>'; }).join('') + '</select></td></tr>';
+      return '<tr style="border-top:1px solid #1d2029"><td style="padding:7px 8px"><b>Group ' + (i + 1) + '</b><br><span class="cc-dim">' + tm(g.items[0].timestamp) + ' to ' + tm(g.items[g.items.length - 1].timestamp) + '</span></td><td>' + g.items.length + ' awards<br><span class="cc-dim">' + xp + ' XP</span></td><td><select data-g="' + i + '" style="background:#0b0d13;color:#e6e8ee;border:1px solid #2a2f3d;border-radius:8px;padding:6px">' + cfg.choices.map(function (d) { return '<option value="' + d + '"' + (d === def ? ' selected' : '') + '>' + fd(d) + '</option>'; }).join('') + '<option value="keep">keep as it is now</option></select></td></tr>';
     }).join('');
     ovl.innerHTML = '<div class="cc-pal" style="width:min(640px,94vw);padding:20px;max-height:86vh;overflow:auto"><h2 style="font-size:18px;margin:0 0 6px">3B\'s lost week · move the awards to the right days</h2>' +
-      '<p style="color:#8b93a7;margin:0 0 12px">These ' + groups.reduce(function (a, g) { return a + g.items.length; }, 0) + ' awards are stamped <b>2 Oct</b>, but they were given while the school computer had the wrong date. For each group pick the day it was really given (the time of day stays). <b>No XP amount changes.</b> A backup file of the old dates is downloaded first.</p>' +
+      '<p style="color:#8b93a7;margin:0 0 12px">These ' + groups.reduce(function (a, g) { return a + g.items.length; }, 0) + ' awards sit on 2, 13 or 14 Oct, but they were given while the school computer had the wrong date. For each group pick the day it was really given (the time of day stays). <b>No XP amount changes.</b> A backup file of the old dates is downloaded first.</p>' +
       '<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:#7c8498;text-align:left"><th style="padding:5px 8px">Group</th><th>Awards</th><th>Real day</th></tr>' + rows + '</table>' +
       '<div style="display:flex;gap:10px;margin-top:16px;justify-content:flex-end"><button class="cc-plus" id="cc-l-no" style="padding:9px 16px">Not now</button><button class="cc-plus" id="cc-l-go" style="padding:9px 16px;background:#10b981;color:#06101f;font-weight:800">Move the awards</button></div><div id="cc-l-msg" class="cc-dim" style="margin-top:10px"></div></div>';
     document.body.appendChild(ovl);
@@ -737,10 +738,10 @@
     ovl.querySelector('#cc-l-go').onclick = function () {
       var go = this, msg = ovl.querySelector('#cc-l-msg'), moved = [];
       [].forEach.call(ovl.querySelectorAll('select[data-g]'), function (sel) {
-        var g = groups[Number(sel.dataset.g)]; if (!g || sel.value === cfg.stamped) return;
+        var g = groups[Number(sel.dataset.g)]; if (!g || sel.value === 'keep') return;
         g.items.forEach(function (t) { moved.push({ t: t, to: sel.value }); });
       });
-      if (!moved.length) { msg.textContent = 'Nothing to move: every group is set to keep 2 Oct.'; return; }
+      if (!moved.length) { msg.textContent = 'Nothing to move: every group is set to keep its date.'; return; }
       go.disabled = true;
       var backup = moved.map(function (m) { return { id: m.t.id, studentId: m.t.studentId, amount: m.t.amount, reason: m.t.reason, timestamp: m.t.timestamp, date: m.t.date }; });
       try { localStorage.setItem('eaa_redate_backup_' + Date.now(), JSON.stringify(backup)); } catch (e) { /* the file below is the main backup */ }
