@@ -112,7 +112,7 @@
     { id: 't1', ico: '🎭', t: 'Get your prop', body: () =>
       '<p>Your prop makes you ' + esc(ROLE.short) + '. Tick it when you have it. No prop? Print the paper template and cut it out with a grown-up.</p>' +
       props.map((p, i) => '<div class="propbox"><div class="pi">' + propImg(p) + '</div><div style="flex:1"><b>' + esc(p) + '</b><div class="craft"><span>✂️ paper</span><span>🧷 tape</span><span>🖍️ colours</span></div>' +
-        '<a class="btn ghost" style="min-height:44px;padding:6px 14px;font-size:.95rem;text-decoration:none" href="../alice-party-print/prop-templates.html?role=' + esc(ROLEKEY) + '">🖨️ Paper template</a></div>' +
+        '<a class="btn ghost" style="min-height:44px;padding:6px 14px;font-size:.95rem;text-decoration:none" href="../alice-party-print/prop-templates.html?role=' + esc(ROLEKEY) + '">🖨️ Paper template</a> <a class="btn amber" style="min-height:44px;padding:6px 14px;font-size:.95rem;text-decoration:none" href="../alice-party-print/craft-guides.html?role=' + esc(ROLEKEY) + '">🛠️ How to make it</a></div>' +
         '<button class="btn ' + (save.have[ST.id + ':' + i] ? 'green' : 'ghost') + ' havebtn" data-i="' + i + '" style="min-height:56px">' + (save.have[ST.id + ':' + i] ? '✓ I have it' : 'I have it') + '</button></div>').join(''),
       btn: '✅ I have my props', need: () => props.length && props.every((p, i) => save.have[ST.id + ':' + i]) },
     { id: 't2', ico: pic('tool_stars_three', '🫖'), t: 'Learn the 3 tea-party phrases', body: () =>
