@@ -218,7 +218,7 @@
     sfxWin();
     stage.innerHTML = '<section class="panel"><h2 style="text-align:center">' + (dress ? '🎭 Dress rehearsal finished!' : '🎉 What a Tea Party!') + '</h2>' +
       (dress ? '<div class="pairs">' + SH.order.map(function (p) { var n = s[cls + ':' + p]; return '<div class="pc"><b>' + SH.map[p].map(function (x) { return esc(x.name); }).join(' + ') + '</b><div class="stars">' + (n != null ? '⭐'.repeat(n) || '·' : '·') + '</div></div>'; }).join('') + '</div><p class="muted" style="text-align:center">Wishes for tomorrow: ask each pair what they will practise.</p>'
-        : '<p style="text-align:center;font-size:1.3rem">Thank you, Alice! Thank you, everyone!</p><div class="row"><a class="btn amber" href="../alice-party-print/certificates.html">🏅 Print the certificates</a></div>') +
+        : '<p style="text-align:center;font-size:1.3rem">Everyone together: <b>“' + esc(P.finale || 'This is a nice tea party!') + '”</b></p><p style="text-align:center;font-size:1.1rem" class="muted">Thank you, Alice! Thank you, everyone!</p><div class="row"><a class="btn amber" href="../alice-party-print/certificates.html">🏅 Print the certificates</a></div>') +
       '<div class="row"><button class="btn green" id="again">🔁 Start again</button></div></section>';
     $('#again').onclick = function () { show(SH.mode); };
   }

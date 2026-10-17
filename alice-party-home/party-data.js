@@ -415,3 +415,30 @@ window.PARTY.partners = function (st) {
   var list = window.PARTY.classes[st.classKey].students;
   return list.filter(function (o) { return o.pair === st.pair && o.id !== st.id; });
 };
+
+/* Story scene "The Missing Cake" (added 18 Oct 2026). It happens at the tea party itself: the big cake has disappeared and every pair adds
+   2 short lines (one per pupil, a trio has 3) to the clue hunt, in the order of the running order. The last pair finds the cake, then everyone says P.finale.
+   The lines come AFTER the original 10-line dialogues, which stay word for word. */
+(function () {
+  var P = window.PARTY;
+  if (!P || P.sceneAdded) return;
+  var CAKE = {
+    'hatter-alice': [['hatter', 'Oh no! The big cake is gone!'], ['alice', "Don't worry. We can find it!"]],
+    'hatter-alice-oyster': [['hatter', 'Oh no! The big cake is gone!'], ['alice', "Don't worry. We can find it!"], ['oyster', "I have a pearl. Let's look!"]],
+    'rabbit-whitequeen': [['rabbit', 'I can see a small footprint.'], ['whitequeen', "Let's ask the March Hare."]],
+    'hare-cheshire': [['hare', "I don't like cake. I like carrots!"], ['cheshire', 'I see everything. Ask the dog.']],
+    'cat-dog': [['bayard', "I can smell cake. It's near the roses!"], ['cat', "Let's look together."]],
+    'redqueen-dragon': [['redqueen', 'Who took my cake?'], ['dragon', 'It was not me.']],
+    'rq-trio': [['redqueen', 'Who took my cake?'], ['dragon', 'It was not me.'], ['bandersnatch', 'I did not take it, Queen!']],
+    'wq2-bandersnatch': [['whitequeen', 'Please be kind. We are all hungry.'], ['bandersnatch', "Let's look under the table."]],
+    'sister-mother': [['mother', 'Children, please be quiet. I hear a noise.'], ['sister', 'I can hear a snore!']],
+    'twosisters': [['twosister1', 'Look at the big mushroom!'], ['twosister2', 'Something is on top!']],
+    'absolem-hamish': [['absolem', "Here is the cake! It's on the mushroom."], ['hamish', "Hooray! Let's have tea together!"]],
+    'tweedles': [['dum', 'A snore? Look at the big cake plate!'], ['dee', 'Something is sleeping there.']],
+    'hamish-lowell': [['hamish', 'Shh! Walk quietly.'], ['lowell', 'Count to three: one, two, three!']],
+    'dormice': [['dormouse1', 'Wake up! You are on the cake!'], ['dormouse2', 'Oh, sorry. I was sleepy... and hungry!']]
+  };
+  Object.keys(CAKE).forEach(function (k) { if (P.dialogues[k]) P.dialogues[k] = P.dialogues[k].concat(CAKE[k]); });
+  P.finale = 'This is a nice tea party!';
+  P.sceneAdded = true;
+})();
