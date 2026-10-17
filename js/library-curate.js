@@ -5,22 +5,24 @@
 (function (root) {
   'use strict';
   var KEY = 'eaa_lib_curate';
-  var st = { hidden: {}, star: {} };
-  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') { st.hidden = s.hidden || {}; st.star = s.star || {}; } } catch (e) { /* storage may be blocked */ } }
+  var st = { hidden: {}, star: {}, restored: {} };
+  // Hidden for everyone from 17 Oct 2026 (teacher: focus on the new Tea Party work). Press "restore" on one to see it again; nothing is deleted.
+  var DEFAULT_HIDDEN = ['alice-cards-4a', 'alice-cards-4b', 'alice-quest', 'story-engine-alice', 'alice-homework', 'wonderland-lesson1', 'wonderland-lesson2', 'wonderland-lesson3', 'wonderland-quiz-briefing'];
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && typeof s === 'object') { st.hidden = s.hidden || {}; st.star = s.star || {}; st.restored = s.restored || {}; } } catch (e) { /* storage may be blocked */ } }
   function persist() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* storage may be blocked */ } }
   function known(id) { return (root.GAMES_DATA || []).some(function (g) { return g && g.id === id; }); }
   function msg(t, type) { if (root.showNotification) root.showNotification(t, type || 'success'); }
   load();
 
   var api = {
-    isHidden: function (id) { return !!st.hidden[id]; },
+    isHidden: function (id) { return !!st.hidden[id] || (DEFAULT_HIDDEN.indexOf(id) >= 0 && !st.restored[id]); },
     isStar: function (id) { return !!st.star[id]; },
-    hide: function (id) { st.hidden[id] = 1; delete st.star[id]; persist(); },
-    restore: function (id) { delete st.hidden[id]; persist(); },
+    hide: function (id) { st.hidden[id] = 1; delete st.restored[id]; delete st.star[id]; persist(); },
+    restore: function (id) { delete st.hidden[id]; if (DEFAULT_HIDDEN.indexOf(id) >= 0) st.restored[id] = 1; persist(); },
     toggleStar: function (id) { if (st.star[id]) delete st.star[id]; else { st.star[id] = 1; delete st.hidden[id]; } persist(); },
-    hiddenIds: function () { return Object.keys(st.hidden); },
+    hiddenIds: function () { var o = {}; Object.keys(st.hidden).forEach(function (k) { o[k] = 1; }); DEFAULT_HIDDEN.forEach(function (k) { if (!st.restored[k]) o[k] = 1; }); return Object.keys(o); },
     starIds: function () { return Object.keys(st.star); },
-    clearAll: function () { st.hidden = {}; st.star = {}; persist(); },
+    clearAll: function () { st.hidden = {}; st.star = {}; st.restored = {}; DEFAULT_HIDDEN.forEach(function (k) { st.restored[k] = 1; }); persist(); },
     copy: function () {
       var text = JSON.stringify({ hide: api.hiddenIds(), star: api.starIds() }, null, 1);
       function fallback() { try { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); msg('Copied ' + api.hiddenIds().length + ' hidden ids.'); } catch (e) { root.prompt && root.prompt('Copy this list:', text); } }
