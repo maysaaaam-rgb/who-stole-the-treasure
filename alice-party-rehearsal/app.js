@@ -6,7 +6,7 @@
   var P = window.PARTY;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var stage = $('#stage');
-  var AV = '../assets/alice-cut/avatars/a_', PR = '../assets/alice-cut/props/', ART = '../alice-party-home/week2-art/';
+  var AV = '../assets/alice-cut/avatars/a_', PR = '../assets/alice-cut/props/', ART = '../alice-party-home/week2-art/', LART = '../alice-party-home/lesson-art/';
   var ORDER_KEY = 'eaa_party_order_v1', STARS_KEY = 'eaa_party_rehearsal_v1';
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
@@ -36,16 +36,34 @@
     { say: 'Yes, please.', art: 'tea_yes_please', e: '☕', tip: 'Guest: say yes politely.' },
     { say: 'No, thank you.', art: 'tea_no_thanks', e: '✋', tip: 'Guest: say no politely.' },
     { say: 'Pass the cake, please.', art: 'tea_pass_cake', e: '🍰', tip: 'Ask nicely. Say please!' },
-    { say: 'Here you are.', art: '', e: '🎁', tip: 'Give something to a friend.' },
-    { say: 'Thank you very much!', art: '', e: '😊', tip: 'Always say thank you.' },
-    { say: 'You are welcome.', art: '', e: '🤝', tip: 'The answer to thank you.' },
-    { say: 'This is a nice tea party!', art: '', e: '🎉', tip: 'Say it at the end.' }
+    { say: 'Here you are.', art: 'tea_here_you_are', e: '🎁', tip: 'Give something to a friend.' },
+    { say: 'Thank you very much!', art: 'tea_thank_you', e: '😊', tip: 'Always say thank you.' },
+    { say: 'You are welcome.', art: 'tea_welcome', e: '🤝', tip: 'The answer to thank you.' },
+    { say: 'This is a nice tea party!', art: 'tea_nice_party', e: '🎉', tip: 'Say it at the end.' }
   ];
   var SITUATIONS = [
     ['The tea is ready. You offer it to a friend.', 0], ['Your friend offers you tea. You want it.', 1], ['Your friend offers you tea. You do not want it.', 2], ['You want a piece of cake.', 3],
     ['You give a cup to your friend.', 4], ['A friend gives you a cup.', 5], ['Your friend says "Thank you!"', 6], ['The party is great. You say it.', 7]
   ];
   function pic(file, emoji) { return file ? '<img src="' + ART + file + '.png" alt="" onerror="this.replaceWith(document.createTextNode(\'' + emoji + '\'))">' : emoji; }
+  /* pictures that Gemini makes: shown when the file exists, otherwise nothing or an emoji (so the lesson always works) */
+  function hero(name) { return '<img class="hero" src="' + LART + 'hero_' + name + '.webp" alt="" onerror="this.remove()">'; }
+  var TEAM_PIC = ['team_teapot', 'team_cupcake', 'team_hatter', 'team_rabbit'];
+  function tIcon(t) { return '<img class="ti" src="' + LART + TEAM_PIC[t.k] + '.png" alt="" onerror="this.replaceWith(document.createTextNode(\'' + t.i + '\'))">'; }
+  function setBg(file) {
+    var b = document.body;
+    if (!file) { b.style.backgroundImage = ''; b.style.backgroundSize = ''; return; }
+    var im = new Image(); im.onload = function () { b.style.backgroundImage = 'linear-gradient(rgba(6,9,17,.8),rgba(6,9,17,.8)), url(' + ART + file + ')'; b.style.backgroundSize = 'cover'; b.style.backgroundAttachment = 'fixed'; }; im.src = ART + file;
+  }
+  /* the 7 lessons of the party week for each class (from the k12 timetable, 19-23 Oct 2026): [day, title, lesson number in this page] */
+  var PLAN = {
+    '4a': [['Mon 19', 'Phrases', 1], ['Mon 19', 'Pairs: read', 2], ['Tue 20', 'Pairs: by heart', 2], ['Wed 21', 'Dress rehearsal', 3], ['Wed 21', 'Props and fixes', 3], ['Thu 22', 'Final run', 3], ['Thu 22', 'Party day', 4]],
+    '4b': [['Mon 19', 'Phrases', 1], ['Tue 20', 'Pairs: read', 2], ['Tue 20', 'Pairs: by heart', 2], ['Wed 21', 'Dress rehearsal', 3], ['Wed 21', 'Props and fixes', 3], ['Fri 23', 'Final run', 3], ['Fri 23', 'Party day', 4]]
+  };
+  function planStrip() {
+    var p = PLAN[cls]; if (!p) return '';
+    return '<div class="plan7">' + p.map(function (x, i) { return '<button class="btn sm ' + (x[2] === lesson ? 'on' : 'ghost') + '" data-w="' + x[2] + '"><small>' + (i + 1) + ' · ' + x[0] + '</small>' + esc(x[1]) + '</button>'; }).join('') + '</div>';
+  }
   function avatar(role, label) { return '<span class="av"><img src="' + AV + esc(role) + '.webp" alt="" onerror="this.replaceWith(document.createTextNode(\'🙂\'))"></span>'; }
 
   var PLANS = {
@@ -65,14 +83,16 @@
       '<span style="flex:1"></span><a class="btn violet sm" href="../alice-party-print/running-order.html">📋 Running order</a><a class="btn violet sm" href="../alice-party-print/prop-templates.html">🖨️ Prop templates</a>' +
       '<a class="btn violet sm" href="../alice-party-print/certificates.html">🏅 Certificates</a>';
     [].forEach.call($('#tabs').querySelectorAll('button'), function (b) { b.onclick = function () { go(+b.dataset.l); }; });
+    $('#week').innerHTML = planStrip();
+    [].forEach.call($('#week').querySelectorAll('button'), function (b) { b.onclick = function () { go(+b.dataset.w); }; });
   }
-  function go(n) { lesson = n; head(); if (n === 1) l1(); else if (n === 2) l2(); else show(n === 3 ? 'dress' : 'party'); window.scrollTo(0, 0); }
+  function go(n) { lesson = n; head(); setBg(n === 3 ? 'bg_tea_table.webp' : n === 4 ? 'bg_tea_party_night.webp' : ''); if (n === 1) l1(); else if (n === 2) l2(); else show(n === 3 ? 'dress' : 'party'); window.scrollTo(0, 0); }
 
   /* ---------------- lesson 1: phrases + team game ---------------- */
   var G = null;
   function l1() {
     G = null;
-    stage.innerHTML = planHtml() + '<section class="panel"><h2>The 8 tea-party phrases</h2><p class="muted">Tap 🔊, say it together, then whisper it.</p><div class="cards">' +
+    stage.innerHTML = hero('phrases') + planHtml() + '<section class="panel"><h2>The 8 tea-party phrases</h2><p class="muted">Tap 🔊, say it together, then whisper it.</p><div class="cards">' +
       PHRASES.map(function (p) { return '<div class="pc"><div class="pic">' + pic(p.art, p.e) + '</div><div class="say">' + esc(p.say) + '</div><div class="tip">' + esc(p.tip) + '</div><button class="btn amber sm sp" data-s="' + esc(p.say) + '">🔊 Listen</button></div>'; }).join('') + '</div></section>' +
       '<section class="panel"><h2>🏆 Tea Time Challenge</h2><p class="muted">How many teams?</p><div class="row">' + [2, 3, 4].map(function (n) { return '<button class="btn green go" data-n="' + n + '">' + n + ' teams</button>'; }).join('') + '</div></section>';
     [].forEach.call(stage.querySelectorAll('.sp'), function (b) { b.onclick = function () { audio(); speak(b.dataset.s); }; });
@@ -83,10 +103,10 @@
     shuffle(SITUATIONS).slice(0, 6).forEach(function (s) { qs.push({ t: 'sit', text: s[0], right: s[1] }); });
     var roles = shuffle(P.classes[cls].students.map(function (s) { return s.role; }).filter(function (v, i, a) { return a.indexOf(v) === i; }));
     roles.slice(0, 6).forEach(function (r) { var sent = P.roles[r].sentences[Math.floor(Math.random() * 3)]; qs.push({ t: 'who', text: sent, right: r }); });
-    G = { teams: names.slice(0, n).map(function (x, i) { return { n: x, i: icons[i], p: 0 }; }), qs: shuffle(qs), r: 0, tries: 0 };
+    G = { teams: names.slice(0, n).map(function (x, i) { return { n: x, i: icons[i], k: i, p: 0 }; }), qs: shuffle(qs), r: 0, tries: 0 };
     askQ();
   }
-  function scoreBar() { return '<div class="teams">' + G.teams.map(function (t, i) { return '<div class="team ' + (i === G.r % G.teams.length ? 'now' : '') + '"><b>' + t.i + ' ' + esc(t.n) + '</b><span>' + t.p + '</span></div>'; }).join('') + '</div>'; }
+  function scoreBar() { return '<div class="teams">' + G.teams.map(function (t, i) { return '<div class="team ' + (i === G.r % G.teams.length ? 'now' : '') + '"><b>' + tIcon(t) + ' ' + esc(t.n) + '</b><span>' + t.p + '</span></div>'; }).join('') + '</div>'; }
   function askQ() {
     if (G.r >= G.qs.length) return endGame();
     var q = G.qs[G.r], team = G.teams[G.r % G.teams.length], opts, html;
@@ -94,11 +114,11 @@
     if (q.t === 'sit') {
       var wrong = shuffle(PHRASES.map(function (_, i) { return i; }).filter(function (i) { return i !== q.right; })).slice(0, 2);
       opts = shuffle([q.right].concat(wrong)).map(function (i) { return { id: i, label: PHRASES[i].say }; });
-      html = '<div class="q"><small>' + team.i + ' ' + esc(team.n) + ': what do you say?</small>' + esc(q.text) + '</div>';
+      html = '<div class="q"><small>' + tIcon(team) + ' ' + esc(team.n) + ': what do you say?</small>' + esc(q.text) + '</div>';
     } else {
       var others = shuffle(P.classes[cls].students.map(function (s) { return s.role; }).filter(function (v, i, a) { return a.indexOf(v) === i && v !== q.right; })).slice(0, 2);
       opts = shuffle([q.right].concat(others)).map(function (r) { return { id: r, label: P.roles[r].short, role: r }; });
-      html = '<div class="q"><small>' + team.i + ' ' + esc(team.n) + ': who says it?</small>“' + esc(q.text) + '”</div>';
+      html = '<div class="q"><small>' + tIcon(team) + ' ' + esc(team.n) + ': who says it?</small>“' + esc(q.text) + '”</div>';
     }
     stage.innerHTML = '<section class="panel">' + scoreBar() + html + '<div class="choices c3">' + opts.map(function (o) { return '<button class="btn choice" data-id="' + esc(o.id) + '">' + (o.role ? avatar(o.role) : '') + esc(o.label) + '</button>'; }).join('') + '</div>' +
       '<div class="msg" id="msg">Round ' + (G.r + 1) + ' of ' + G.qs.length + '</div></section>';
@@ -116,7 +136,7 @@
   function endGame() {
     var sorted = G.teams.slice().sort(function (a, b) { return b.p - a.p; });
     sfxWin();
-    stage.innerHTML = '<section class="panel"><h2 style="text-align:center">🎉 Well done, everyone!</h2><div class="podium">' + sorted.map(function (t, i) { return '<div>' + ['🥇', '🥈', '🥉', '⭐'][i] + '<br>' + t.i + ' ' + esc(t.n) + '<br>' + t.p + '</div>'; }).join('') + '</div>' +
+    stage.innerHTML = '<section class="panel"><h2 style="text-align:center">🎉 Well done, everyone!</h2><div class="podium">' + sorted.map(function (t, i) { return '<div>' + ['🥇', '🥈', '🥉', '⭐'][i] + '<br>' + tIcon(t) + ' ' + esc(t.n) + '<br>' + t.p + '</div>'; }).join('') + '</div>' +
       '<p class="muted" style="text-align:center">Every team is a Tea Party star. Now say your 3 sentences to your partner!</p><div class="row"><button class="btn green" id="again">🔁 Play again</button></div></section>';
     $('#again').onclick = l1;
   }
@@ -157,7 +177,7 @@
   /* ---------------- lesson 2: pairs ---------------- */
   function l2() {
     var g = orderOf(cls), s = stars();
-    stage.innerHTML = planHtml() + '<section class="panel"><h2>Choose a pair or trio</h2><p class="muted">Read together first, then hide a pupil’s lines and say them by heart. Give a star for each: loud voice, look up, smile, prop.</p><div class="pairs">' +
+    stage.innerHTML = hero('pairs') + planHtml() + '<section class="panel"><h2>Choose a pair or trio</h2><p class="muted">Read together first, then hide a pupil’s lines and say them by heart. Give a star for each: loud voice, look up, smile, prop.</p><div class="pairs">' +
       g.order.map(function (p, i) { var st = g.map[p], n = s[cls + ':' + p]; return '<button class="btn pair ' + (n != null ? 'done' : '') + '" data-p="' + esc(p) + '"><span>' + (i + 1) + '. ' + st.map(function (x) { return esc(x.name); }).join(' + ') + '</span><small>' + st.map(function (x) { return esc(P.roles[x.role].short); }).join(' + ') + (n != null ? ' · ' + '⭐'.repeat(n) : '') + '</small></button>'; }).join('') + '</div></section>';
     [].forEach.call(stage.querySelectorAll('.pair'), function (b) {
       b.onclick = function () { audio(); perform(b.dataset.p, { hideable: true, chips: CHIPS, finish: 'Save and choose next pair ✓', head: '<div class="row" style="margin:0 0 10px"><button class="btn ghost sm" id="all">⬅ All pairs</button></div>' }, function (n) { setStars(b.dataset.p, n); l2(); }); var a = $('#all'); if (a) a.onclick = l2; };
@@ -172,7 +192,7 @@
   }
   function showIntro() {
     var dress = SH.mode === 'dress';
-    stage.innerHTML = planHtml() + '<section class="panel"><h2>' + (dress ? '🎭 Dress rehearsal' : '🫖 Party day') + ' · ' + esc(P.classes[cls].label) + '</h2><p class="muted">' + (dress ? 'Props on. Each pair performs one minute. The class says two stars and one wish.' : 'The real show! Press Next performance, then applause.') + '</p>' +
+    stage.innerHTML = hero(dress ? 'dress' : 'party') + planHtml() + '<section class="panel"><h2>' + (dress ? '🎭 Dress rehearsal' : '🫖 Party day') + ' · ' + esc(P.classes[cls].label) + '</h2><p class="muted">' + (dress ? 'Props on. Each pair performs one minute. The class says two stars and one wish.' : 'The real show! Press Next performance, then applause.') + '</p>' +
       '<p>Order: ' + SH.order.map(function (p, i) { return (i + 1) + '. ' + SH.map[p].map(function (x) { return esc(x.name); }).join(' + '); }).join(' · ') + '</p>' +
       '<div class="row"><button class="btn green" id="go">▶ Start the show</button><a class="btn ghost" href="../alice-party-print/running-order.html">Change the order</a></div></section>';
     $('#go').onclick = function () { audio(); sfxWin(); SH.i = 0; propCheck(); };

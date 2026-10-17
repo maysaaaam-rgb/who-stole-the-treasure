@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alice's Tea Party – my plan</title>
+<style>
+  :root { --void:#060911; --glass:rgba(15,23,42,.82); --line:rgba(148,163,184,.25); --text:#f8fafc; --muted:#cbd5e1; --cyan:#38bdf8; --cyan-d:#0369a1; --amber:#f59e0b; --amber-d:#b45309; --green:#10b981; --green-d:#047857; --violet:#a855f7; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body { min-height: 100vh; background: radial-gradient(circle at 50% 10%, #1b1440 0%, var(--void) 100%); color: var(--text); font-family: "Trebuchet MS","Segoe UI",system-ui,sans-serif; font-size: 20px; line-height: 1.45; padding: 16px 16px 50px; }
+  .app { max-width: 600px; margin: 0 auto; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .brand { font-weight: 900; font-size: 1.15rem; } .brand small { display: block; font-weight: 600; color: var(--muted); font-size: .8rem; }
+  .pill { background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 800; color: var(--amber); white-space: nowrap; }
+  .panel { background: var(--glass); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 22px; padding: 18px; box-shadow: 0 4px 20px -2px rgba(0,0,0,.4); margin-bottom: 14px; animation: pop .4s var(--spring); }
+  @keyframes pop { from { transform: translateY(14px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+  h1 { font-size: 1.6rem; margin: 0 0 6px; line-height: 1.15; } h2 { margin: 0; font-size: 1.25rem; } .goal { color: var(--muted); margin: 0 0 14px; font-size: 1.02rem; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; padding: 10px 20px; font: inherit; font-weight: 800; color: #fff; text-decoration: none; cursor: pointer; border: 0; border-radius: 16px; background: var(--cyan-d); border-bottom: 5px solid #0c4a6e; transition: transform .12s var(--spring), border-bottom-width .12s; }
+  .btn:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .btn.green { background: var(--green); border-bottom-color: var(--green-d); } .btn.amber { background: var(--amber); border-bottom-color: var(--amber-d); color: #1c1203; } .btn.ghost { background: #334155; border-bottom-color: #1e293b; } .btn.on { background: var(--cyan-d); }
+  .btn.sm { min-height: 46px; padding: 6px 14px; font-size: .95rem; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; } .tabs .btn { flex: 1; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stu { min-height: 64px; flex-direction: column; gap: 0; font-size: 1.12rem; background: #1e293b; border-bottom-color: #0f172a; position: relative; }
+  .stu small { font-size: .78rem; font-weight: 600; color: var(--muted); text-align: center; }
+  .stu .tk { position: absolute; top: 4px; right: 8px; font-size: .95rem; letter-spacing: -.1em; }
+  .stu.all { border: 2px solid var(--green); }
+  .hero { display: flex; gap: 14px; align-items: center; }
+  .hero img { width: 92px; height: 92px; border-radius: 18px; object-fit: cover; object-position: 50% 14%; border: 2px solid var(--amber); flex: none; }
+  .bar { height: 14px; border-radius: 999px; background: rgba(148,163,184,.25); overflow: hidden; margin: 12px 0 4px; } .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--green), var(--cyan)); border-radius: 999px; transition: width .5s; }
+  .week { border-radius: 22px; padding: 16px; margin-bottom: 14px; background: var(--glass); border: 1px solid var(--line); box-shadow: 0 4px 20px -2px rgba(0,0,0,.4); }
+  .week.done { border-color: var(--green); background: rgba(16,185,129,.1); } .week.now { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(245,158,11,.2), 0 4px 20px -2px rgba(0,0,0,.4); }
+  .wk { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; } .wk .no { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 1.9rem; background: rgba(2,6,23,.55); flex: none; }
+  .wk .d { color: var(--amber); font-weight: 800; font-size: .82rem; } .wk h2 { line-height: 1.15; }
+  .state { font-weight: 900; margin: 6px 0 10px; } .state.ok { color: var(--green); } .state.part { color: var(--amber); } .state.no { color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .note { color: var(--muted); font-size: .9rem; text-align: center; margin-top: 8px; }
+  .soon { opacity: .75; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div class="brand">🫖 Alice’s Tea Party<small id="sub">My plan, week by week</small></div><div class="pill" id="pill"></div></div>
+  <main id="stage"></main>
+</div>
+<script src="config.js"></script>
+<script src="party-data.js"></script>
+<script src="party.js?v=1"></script>
+</body>
+</html>
