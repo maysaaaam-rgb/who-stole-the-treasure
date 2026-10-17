@@ -140,7 +140,7 @@
       '<div><h1>' + esc(r.name) + '</h1><div class="who">' + esc(pupilsOf(key).join(', ')) + '</div></div></div>' +
       '<div class="wear"><b>👗 What to wear:</b> ' + esc(w[0]) + '<div class="tr">🇹🇷 ' + esc(w[1]) + '</div></div>' +
       (r.props || []).map(item).join('') +
-      '<div class="foot">✨ Simple is perfect. Make it big and bright so we can see it from the back. No time? Print the picture from the prop template page and stick it on card. Ask a grown-up to help with scissors. Bring it to school on the day your teacher says.</div></section>';
+      '<div class="foot">📐 Pattern to print and cut: <b>blueprints.html?role=' + esc(key) + '</b> (open the page “Blueprints” and choose this character).<br>✨ Simple is perfect. Make it big and bright so we can see it from the back. No time? Print the picture from the prop template page and stick it on card. Ask a grown-up to help with scissors. Bring it to school on the day your teacher says.</div></section>';
   }
   var sel = document.getElementById('role'), keys = Object.keys(P.roles);
   sel.innerHTML = '<option value="">All characters</option>' + keys.map(function (k) { return '<option value="' + k + '">' + esc(P.roles[k].name) + '</option>'; }).join('');
