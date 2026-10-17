@@ -671,6 +671,9 @@
   function when(ts) { try { return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
   function studentName(id) { var s = store.getStudent ? store.getStudent(id) : null; return s ? ((s.firstName || '') + ' ' + (s.lastName || '')).trim() : 'Student'; }
 
+  var teacherDrawerOpen = false;
+  var shopStudentId = null;
+
   // ---------------------------------------------------------------- UI (teacher)
   function renderTeacher(container) {
     var d = data(), cfg = d.config;
@@ -679,14 +682,23 @@
     var pending = d.requests.filter(function (r) { return r.status === 'pending'; });
     var approved = d.requests.filter(function (r) { return r.status === 'approved'; });
 
+    var curStu = (shopStudentId && students.filter(function (x) { return x.id === shopStudentId; })[0]) ||
+      (store.getActiveStudent && students.filter(function (x) { var a = store.getActiveStudent(); return a && x.id === a.id; })[0]) ||
+      students[0] || (store.getActiveStudent ? store.getActiveStudent() : null);
+    if (curStu) shopStudentId = curStu.id;
+
     var html = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' +
-      '<div style="margin-bottom:18px;"><div style="font-size:1.6rem;font-weight:900;color:var(--text-main,#0f172a);">🛍️ Classroom Store</div>' +
-      '<div style="font-size:.88rem;color:var(--text-muted,#64748b);margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level. ' +
-      'Back-pay: everyone already started with their current XP ÷ ' + cfg.coinsPerXp + '.</div>' +
-      '<div id="cs-cloud-status" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--text-muted,#64748b);">' + cloudLabel() + '</div></div>';
+      '<div style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">' +
+        '<div><div style="font-size:1.6rem;font-weight:900;color:var(--text-main,#0f172a);">🛍️ Classroom Store</div>' +
+        '<div style="font-size:.88rem;color:var(--text-muted,#64748b);margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level.</div>' +
+        '<div id="cs-cloud-status" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--text-muted,#64748b);">' + cloudLabel() + '</div></div>' +
+        '<button type="button" id="cs-teacher-drawer-btn" onclick="ClassroomStore.ui.toggleDrawer()" style="padding:10px 18px;min-height:56px;border-radius:14px;font-weight:900;font-size:.95rem;cursor:pointer;border:0;border-bottom:5px solid #1e293b;background:#334155;color:#fff;transition:transform .12s cubic-bezier(.175,.885,.32,1.275);">📄 Worksheet coins (teacher)' + (pending.length ? ' · ' + pending.length : '') + (teacherDrawerOpen ? ' ▲' : ' ▼') + '</button>' +
+      '</div>';
+
+    var drawerHtml = '<div id="cs-teacher-drawer" style="display:' + (teacherDrawerOpen ? 'block' : 'none') + ';margin-bottom:24px;padding:16px;border-radius:20px;background:rgba(15,23,42,.06);border:2px dashed var(--border-light,#cbd5e1);">';
 
     // pending requests
-    html += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
+    drawerHtml += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
       (pending.length ? pending.map(function (r) {
         return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--border-light,#e2e8f0);">' +
           '<span style="font-size:1.5rem;">' + esc(r.icon) + '</span><div style="flex:1;min-width:200px;"><div style="font-weight:800;color:var(--text-main,#0f172a);">' + esc(r.name) + '</div>' +
@@ -699,13 +711,13 @@
 
     // items nobody earned (old automatic boxes, test leftovers): the teacher removes them with one press
     var unearned = findUnearned(), hasBackup = false; try { hasBackup = !!localStorage.getItem(CLEAN_KEY); } catch (e) { hasBackup = false; }
-    if (unearned.total) html += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and the old "test unboxing" buttons opened real boxes for the selected pupil (Aslıhan on 5 October, Demir on 7 October). Pupils did not earn these.') +
+    if (unearned.total) drawerHtml += card(h2('🧹 Items nobody earned (' + unearned.total + ')', 'The platform used to give every pupil free mystery boxes on a new device, and the old "test unboxing" buttons opened real boxes for the selected pupil (Aslıhan on 5 October, Demir on 7 October). Pupils did not earn these.') +
       '<div style="font-size:.88rem;color:var(--text-main,#0f172a);margin-bottom:10px;">' + unearned.boxes.length + ' mystery boxes · ' + (unearned.items.length + unearned.extras.length + unearned.titles.length) + ' prizes (items, titles, name plates) · ' + unearned.orphans.length + ' shop items on monsters without a purchase · ' + unearned.coins.length + ' coin prizes · ' + unearned.requests.length + ' free reward · for: ' + esc(Object.keys(unearned.pupils).map(studentName).join(', ')) + '. XP is not touched; only coins that came out of test boxes are taken back.</div>' +
       btn('🧹 Remove them', 'ClassroomStore.ui.cleanUnearned()', 'danger'), 'border:2px solid #f59e0b;');
-    else if (hasBackup) html += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
+    else if (hasBackup) drawerHtml += card(h2('🧹 Clean-up done', 'Unearned boxes, prizes and the test title were removed. A copy is kept on this device in case you need it back.') + btn('Undo the clean-up', 'ClassroomStore.ui.undoClean()', 'ghost'));
 
     // worksheet coins (quick entry)
-    html += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
+    drawerHtml += card(h2('📝 Worksheet coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), '1 coin for each correct answer, 0 to 10. Tap a score for every pupil who did the sheet, then press Give coins. Pupils you skip get nothing. Pressing it again only fixes the difference, so nobody is paid twice.') +
       '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Worksheet name<input id="cs-ws-name" type="text" maxlength="40" value="' + esc(wsName) + '" onchange="ClassroomStore.ui.wsName(this.value)" style="display:block;margin-top:3px;padding:7px;border-radius:9px;border:1px solid var(--border-light,#cbd5e1);width:240px;"></label>' +
       '<span id="cs-ws-count" style="font-size:.85rem;font-weight:800;color:var(--text-main,#0f172a);">0 scores picked</span>' + btn('🪙 Give coins', 'ClassroomStore.ui.wsGive()') + btn('Clear', 'ClassroomStore.ui.wsClear()', 'ghost') + '</div>' +
       '<div style="overflow-x:auto;">' + students.map(function (s) {
@@ -713,7 +725,7 @@
       }).join('') + '</div>');
 
     // students & coins
-    html += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
+    drawerHtml += card(h2('🪙 Students and coins' + (cls ? ' · ' + esc(cls.name || cls.id) : ''), 'Use the class menu at the top to switch class.') +
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.85rem;">' +
       '<thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:6px 8px;">Student</th><th style="padding:6px 8px;">XP</th><th style="padding:6px 8px;">Coins</th><th style="padding:6px 8px;">Wearing</th><th style="padding:6px 8px;">Give or take</th></tr></thead><tbody>' +
       students.map(function (s) {
@@ -727,7 +739,7 @@
       }).join('') + '</tbody></table></div>');
 
     // settings
-    html += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
+    drawerHtml += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;">' +
       ['common', 'rare', 'epic', 'legendary'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + k + ' item<input type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') +
       TIERS.map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + BOX_INFO[k].name + '<input type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') + '</div>' +
@@ -743,7 +755,7 @@
     // class party fund
     if (cls) {
       var fund = fundFor(cls.id);
-      html += card(h2('🎉 Class party fund' + ' · ' + esc(cls.name || cls.id), 'Pupils give coins together toward a class goal, like a game day or a movie. The goal bar shows on their Party fund tab.') +
+      drawerHtml += card(h2('🎉 Class party fund' + ' · ' + esc(cls.name || cls.id), 'Pupils give coins together toward a class goal, like a game day or a movie. The goal bar shows on their Party fund tab.') +
         '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;"><label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">What is it for?<input id="cs-fund-name" type="text" maxlength="40" value="' + esc(fund ? fund.name : 'Class game day') + '" style="display:block;width:220px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
         '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">Goal (coins)<input id="cs-fund-goal" type="number" min="1" value="' + (fund && fund.goal ? fund.goal : 200) + '" style="display:block;width:100px;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>' +
         btn(fund && fund.goal ? 'Save changes' : 'Start the fund', "ClassroomStore.ui.setFund('" + cls.id + "')") + (fund && fund.goal ? ' ' + btn('Start again', "ClassroomStore.ui.resetFund('" + cls.id + "')", 'ghost') : '') + '</div>' +
@@ -751,7 +763,7 @@
     }
 
     // mystery box odds (information for the teacher)
-    html += card(h2('🎁 What a mystery box can hold', 'Never something the pupil already has. Free rewards show up in “Approved, not used yet” above for you to honour.') +
+    drawerHtml += card(h2('🎁 What a mystery box can hold', 'Never something the pupil already has. Free rewards show up in “Approved, not used yet” above for you to honour.') +
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:var(--text-main,#0f172a);"><thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Monster item</th><th style="padding:5px 8px;">Sound / title / animal / plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
       TIERS.map(function (t) {
         var o = {}; BOX_ODDS[t].forEach(function (r) { o[r[0]] = r[1]; });
@@ -760,13 +772,23 @@
 
     // history
     var recent = d.purchases.slice(0, 15);
-    html += card(h2('🧾 Recent purchases', 'Undo gives the coins back and removes the item or unopened box.') +
+    drawerHtml += card(h2('🧾 Recent purchases', 'Undo gives the coins back and removes the item or unopened box.') +
       (recent.length ? recent.map(function (p) {
         return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);font-size:.85rem;"><span style="font-size:1.2rem;">' + esc(p.icon) + '</span><div style="flex:1;min-width:180px;"><b>' + esc(p.name) + '</b> <span style="color:var(--text-muted,#64748b);">· ' + esc(studentName(p.studentId)) + ' · ' + when(p.ts) + '</span></div>' + coinPill(p.price) +
           (p.status === 'done' ? btn('Undo', "ClassroomStore.ui.undo('" + p.id + "')", 'ghost') : '<span style="font-size:.75rem;color:var(--text-muted,#64748b);">refunded</span>') + '</div>';
       }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing bought yet.</div>'));
 
-    container.innerHTML = html + '</div>';
+    drawerHtml += '</div>';
+
+    var pupilPickerHtml = students.length ? '<div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+      '<span style="font-weight:900;font-size:.88rem;color:var(--text-main,#0f172a);">🧑‍🎓 Shopping as:</span>' +
+      students.map(function (stu) {
+        var on = curStu && stu.id === curStu.id;
+        return '<button type="button" onclick="ClassroomStore.ui.pickStudent(\'' + esc(stu.id) + '\')" style="padding:7px 13px;border-radius:999px;font-weight:800;font-size:.84rem;cursor:pointer;border:0;border-bottom:4px solid ' + (on ? '#0369a1' : '#cbd5e1') + ';background:' + (on ? '#38bdf8' : 'var(--bg-surface,#fff)') + ';color:' + (on ? '#06101f' : 'var(--text-main,#0f172a)') + ';">' + esc(stu.firstName || stu.name) + ' (🪙 ' + balance(stu.id) + ')</button>';
+      }).join('') + '</div>' : '';
+
+    html += drawerHtml + pupilPickerHtml + (curStu ? shopBodyHtml(curStu) : '') + '</div>';
+    container.innerHTML = html;
   }
 
   // ---------------------------------------------------------------- UI (student)
@@ -786,14 +808,11 @@
     }
     return '<div style="font-size:2.4rem;line-height:72px;height:72px;">' + esc(item.icon || '🎁') + '</div>';
   }
-  function renderStudent(container) {
-    var s = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents() || [])[0];
-    if (!s) { container.innerHTML = '<div style="padding:40px;text-align:center;">No active student profile found.</div>'; return; }
+  function shopBodyHtml(s) {
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
     var tabs = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
-    var html = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' +
-      '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:20px;padding:20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
-      '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.8rem;font-weight:800;color:#92400e;">YOUR COINS</div><div style="font-size:2.4rem;font-weight:900;color:#78350f;line-height:1;">' + bal + '</div>' +
+    var html = '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:20px;padding:20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
+      '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.8rem;font-weight:800;color:#92400e;">' + esc((s.firstName || s.name || 'YOUR').toUpperCase()) + '\'S COINS</div><div style="font-size:2.4rem;font-weight:900;color:#78350f;line-height:1;">' + bal + '</div>' +
       '<div style="font-size:.8rem;color:#92400e;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
         var on = studentTab === t[0];
@@ -864,7 +883,12 @@
         card(h2('What you bought') + (buys.length ? buys.map(function (p) { return '<div style="display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);font-size:.88rem;color:var(--text-main,#0f172a);"><span>' + esc(p.icon) + '</span><div style="flex:1;">' + esc(p.name) + '</div>' + coinPill(p.price) + (p.status === 'refunded' ? '<i>refunded</i>' : '') + '</div>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Nothing yet.</div>')) +
         card(h2('Coin history') + (w.ledger.length ? w.ledger.slice(0, 12).map(function (l) { return '<div style="display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--border-light,#e2e8f0);font-size:.82rem;color:var(--text-main,#0f172a);"><div style="flex:1;">' + esc(l.reason) + '</div><b style="color:' + (l.delta >= 0 ? '#16a34a' : '#dc2626') + ';">' + (l.delta >= 0 ? '+' : '') + l.delta + '</b></div>'; }).join('') : '<div style="font-size:.85rem;color:var(--text-muted,#64748b);">Your coins come from XP, and from your teacher.</div>'));
     }
-    container.innerHTML = html + '</div>';
+    return html;
+  }
+  function renderStudent(container) {
+    var s = store.getActiveStudent ? store.getActiveStudent() : (store.getStudents() || [])[0];
+    if (!s) { container.innerHTML = '<div style="padding:40px;text-align:center;">No active student profile found.</div>'; return; }
+    container.innerHTML = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' + shopBodyHtml(s) + '</div>';
   }
 
   /** The four kind cards shown on the teacher's Mystery Boxes screen. */
@@ -943,12 +967,20 @@
   }
 
   // ---------------------------------------------------------------- UI actions
-  function activeStudentId() { var s = store.getActiveStudent ? store.getActiveStudent() : null; return s ? s.id : null; }
+  function activeStudentId() {
+    var role = store.getRole ? store.getRole() : 'teacher';
+    if (role !== 'student' && shopStudentId) return shopStudentId;
+    var s = store.getActiveStudent ? store.getActiveStudent() : null;
+    return s ? s.id : null;
+  }
   function confirm(title, message, confirmText, fn) {
     if (root.confirmAction) root.confirmAction({ title: title, message: message, confirmText: confirmText, isDanger: false, onConfirm: fn });
     else if (root.confirm && root.confirm(title + '\n' + message)) fn();
   }
   var ui = {
+    toggleDrawer: function () { teacherDrawerOpen = !teacherDrawerOpen; rerender(); },
+    openDrawer: function () { teacherDrawerOpen = true; rerender(); },
+    pickStudent: function (sid) { shopStudentId = sid; if (store.setActiveStudent) store.setActiveStudent(sid); rerender(); },
     tab: function (t) { studentTab = t; rerender(); },
     extraKind: function (k) { extraKind = k; rerender(); },
     previewSound: function (id) { if (root.ClassroomCosmetics) root.ClassroomCosmetics.playSound(id); },

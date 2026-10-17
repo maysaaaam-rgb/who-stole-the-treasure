@@ -440,8 +440,10 @@ button, input, select, textarea {
   margin: 10px 6px;
 }
 
-.app-main {
+.app-main,
+#app-view-container {
   min-width: 0;
+  padding-bottom: 110px;
 }
 
 /* ==========================================================================

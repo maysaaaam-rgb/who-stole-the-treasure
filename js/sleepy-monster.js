@@ -55,6 +55,7 @@
     awake: SCENE_DIR + 'scene-awake.webp',
     yawn: SCENE_DIR + 'scene-yawn.webp',
     calm: SCENE_DIR + 'scene-calm.webp',
+    calmChar: CHAR_DIR + 'mio-calm-happy.webp',
     zzz: CHAR_DIR + 'zzz.webp',
     pillow: CHAR_DIR + 'moon-pillow.webp',
     bubble: CHAR_DIR + 'sleep-bubble.webp',
@@ -76,6 +77,10 @@
     var img = document.getElementById('sm-mio-img');
     if (img && MIO_ART[pose]) img.src = MIO_ART[pose];
   }
+  function fmtMMSS(sec) {
+    sec = Math.max(0, Math.floor(sec || 0));
+    return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
+  }
 
   // ---- page
   var CSS = '' +
@@ -86,8 +91,9 @@
     '#sm-root .sm-top,#sm-root .sm-stage,#sm-root .sm-blame{position:relative;z-index:2}' +
     '#sm-root .sm-top{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;box-sizing:border-box;background:rgba(6,9,17,.45);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}' +
     '#sm-root h1{margin:0;font-size:1.5rem;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,.6)}' +
-    '#sm-root .sm-btn{border:0;border-bottom:5px solid var(--b,#1e3a8a);background:var(--c,#38bdf8);color:#06101f;font-weight:900;font-size:1rem;padding:10px 18px;border-radius:14px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s;display:inline-flex;align-items:center;gap:6px}' +
-    '#sm-root .sm-btn:active{transform:translateY(4px);border-bottom-width:1px}' +
+    '#sm-root .sm-btn{border:0;border-bottom:5px solid var(--b,#1e3a8a);background:var(--c,#38bdf8);color:#06101f;font-weight:900;font-size:1rem;min-height:56px;padding:10px 18px;border-radius:14px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s,opacity .15s;display:inline-flex;align-items:center;gap:6px}' +
+    '#sm-root .sm-btn:active:not(:disabled){transform:translateY(4px);border-bottom-width:1px}' +
+    '#sm-root .sm-btn:disabled{opacity:.48;filter:grayscale(.6);cursor:not-allowed}' +
     '#sm-root .sm-btn-icon{width:22px;height:22px;object-fit:contain;pointer-events:none}' +
     '#sm-root .sm-scene{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(56.25vw,100vh);transform:translate(-50%,-50%);z-index:0}' +
     '#sm-root .sm-mon{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:flex;align-items:center;justify-content:center}' +
@@ -99,9 +105,18 @@
     '#sm-root.awake .sm-mon img{animation:smJump .55s var(--spring,cubic-bezier(.175,.885,.32,1.275)) 1}' +
     '#sm-root .sm-zzz{position:absolute;left:56%;top:17%;width:5.5%;pointer-events:none;animation:smZ 3.2s ease-in-out infinite;z-index:2}' +
     '#sm-root .sm-zzz img{width:100%;height:auto;display:block}' +
+    '#sm-root .sm-sparkles{position:absolute;inset:0;pointer-events:none;z-index:3;display:none;align-items:center;justify-content:center}' +
+    '#sm-root .sm-sparkles.on{display:flex}' +
+    '#sm-root .sm-sparkles .sm-calm-pop{background:rgba(15,23,42,.82);backdrop-filter:blur(12px);border:2px solid #fbbf24;border-radius:28px;padding:16px 28px;display:flex;align-items:center;gap:16px;box-shadow:0 16px 40px rgba(0,0,0,.6);animation:smPopIn .35s cubic-bezier(.175,.885,.32,1.275)}' +
+    '#sm-root .sm-sparkles .sm-calm-pop img{width:96px;height:96px;object-fit:contain}' +
+    '#sm-root .sm-sparkles .sm-calm-pop b{font-size:1.5rem;color:#fde68a;display:block}' +
+    '@keyframes smPopIn{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}' +
     '#sm-root .sm-bubble{display:none}' +
     '#sm-root .sm-stage{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:34px 16px 8px;background:linear-gradient(180deg,rgba(6,9,17,0) 0%,rgba(6,9,17,.78) 55%,rgba(6,9,17,.9) 100%);pointer-events:none}' +
     '#sm-root .sm-stage button,#sm-root .sm-stage .sm-blame{pointer-events:auto}' +
+    '#sm-root .sm-quiet-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;pointer-events:auto}' +
+    '#sm-root.awake .sm-quiet-bar{display:none}' +
+    '#sm-root .sm-streak{background:rgba(15,23,42,.82);backdrop-filter:blur(10px);border:1.5px solid rgba(56,189,248,.35);border-radius:14px;padding:8px 16px;font-weight:800;font-size:1rem;color:#38bdf8;font-variant-numeric:tabular-nums}' +
     '@keyframes smBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}' +
     '@keyframes smStir{0%,100%{transform:scale(1.01) translateX(0)}25%{transform:scale(1.01) translateX(-4px)}75%{transform:scale(1.01) translateX(4px)}}' +
     '@keyframes smJump{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}' +
@@ -133,6 +148,7 @@
     st.alive = false;
     if (st.raf) cancelAnimationFrame(st.raf);
     if (st.yawnTimer) clearTimeout(st.yawnTimer);
+    if (st.calmTimer) clearTimeout(st.calmTimer);
     if (st.stream) { try { st.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) { /* ignore */ } }
     if (st.key) document.removeEventListener('keydown', st.key, true);
     var el = document.getElementById('sm-root'); if (el) el.remove();
@@ -149,6 +165,7 @@
     var el = document.createElement('div'); el.id = 'sm-root'; el.className = 'asleep';
     el.innerHTML = '' +
       '<div class="sm-scene"><div class="sm-zzz"><img src="' + MIO_ART.zzz + '" alt="Zzz"></div>' +
+      '<div class="sm-sparkles" id="sm-sparkles"><div class="sm-calm-pop"><img src="' + MIO_ART.calmChar + '" alt=""><div><b>✨ +5 XP to the quiet class! ✨</b><span>Mio is having sweet dreams</span></div></div></div>' +
       '<div class="sm-mon" id="sm-mon"><div class="sm-shadow"></div><img id="sm-mio-img" src="' + MIO_ART.asleep + '" alt="Sleepy Mio"></div></div>' +
       '<div class="sm-top"><h1>😴 Sleepy Monster' + (cls ? ' · ' + esc(cls.name || cls.id) : '') + '</h1>' +
       '<div class="sm-set"><label>Sensitivity <input id="sm-sens" type="range" min="10" max="90" value="50"></label>' +
@@ -156,6 +173,10 @@
       '<div class="sm-stage">' +
       '<div class="sm-msg" id="sm-msg">Shhh… let Mio sleep</div><div class="sm-sub" id="sm-sub">Keep the room quiet</div>' +
       '<div class="sm-bar"><div class="sm-fill" id="sm-fill"></div></div>' +
+      '<div class="sm-quiet-bar">' +
+        '<span class="sm-streak" id="sm-streak">🌙 Quiet streak 00:00</span>' +
+        '<button type="button" class="sm-btn" id="sm-reward" style="--c:#f59e0b;--b:#b45309">⭐ Reward the quiet class</button>' +
+      '</div>' +
       '<div class="sm-live" id="sm-live">Starting the microphone…</div>' +
       '<button class="sm-btn sm-loud" id="sm-loud" style="--c:#f59e0b;--b:#92400e;margin-top:10px">🔊 Too loud! (or press Space)</button>' +
       '<div class="sm-acts"><button class="sm-btn" id="sm-sleep" style="--c:#10b981;--b:#065f46"><img class="sm-btn-icon" src="' + MIO_ART.pillow + '" alt=""> Whisper him back to sleep (all together)</button>' +
@@ -163,7 +184,7 @@
       '<div class="sm-blame" id="sm-blame"></div></div>';
     document.body.appendChild(el);
 
-    st = { alive: true, wake: 0, level: 0, sens: 50, awake: false, yawning: false, pose: 'asleep', mic: false, loudUntil: 0, pupils: pupils };
+    st = { alive: true, wake: 0, level: 0, sens: 50, awake: false, yawning: false, rewarding: false, quietSec: 0, rewardCooldownUntil: 0, pose: 'asleep', mic: false, loudUntil: 0, cls: cls, pupils: pupils };
     var mioImg = document.getElementById('sm-mio-img');
     if (mioImg) {
       mioImg.onerror = function () {
@@ -175,6 +196,7 @@
     el.querySelector('#sm-sens').oninput = function () { st.sens = parseInt(this.value, 10) || 50; };
     function loud() { ctx(); st.loudUntil = Date.now() + 700; }
     el.querySelector('#sm-loud').onclick = loud;
+    el.querySelector('#sm-reward').onclick = rewardQuietClass;
     st.key = function (e) { if (e.code === 'Space') { e.preventDefault(); e.stopPropagation(); loud(); } else if (e.key === 'Escape') { close(); } };
     document.addEventListener('keydown', st.key, true);
     el.querySelector('#sm-sleep').onclick = sleepAgain;
@@ -199,6 +221,35 @@
     st.raf = requestAnimationFrame(tick);
   }
 
+  function rewardQuietClass() {
+    if (!st || st.awake) return;
+    var nowMs = Date.now();
+    if (nowMs < st.rewardCooldownUntil) return;
+    st.rewardCooldownUntil = nowMs + 60000;
+    var store = S();
+    var away = {};
+    try { if (st.cls) away = JSON.parse(sessionStorage.getItem('eaa_board_absent_' + st.cls.id) || '{}') || {}; } catch (e) { away = {}; }
+    var presentPupils = (st.pupils || []).filter(function (p) { return !away[p.id]; });
+    if (store && store.giveXP) {
+      presentPupils.forEach(function (p) {
+        store.giveXP(p.id, 5, 'Quiet class reward', 'Teacher', { category: 'positive', icon: '⭐' });
+      });
+    }
+    sndBlame();
+    st.rewarding = true;
+    setMioPose('calm');
+    var sp = document.getElementById('sm-sparkles');
+    if (sp) sp.classList.add('on');
+    if (st.calmTimer) clearTimeout(st.calmTimer);
+    st.calmTimer = setTimeout(function () {
+      if (!st || !st.alive) return;
+      st.rewarding = false;
+      var sp2 = document.getElementById('sm-sparkles');
+      if (sp2) sp2.classList.remove('on');
+      if (!st.awake && !st.yawning) setMioPose(st.wake > 55 ? 'stirring' : 'asleep');
+    }, 3000);
+  }
+
   function readLevel() {
     if (st.mic && st.an) {
       st.an.getByteTimeDomainData(st.data);
@@ -221,8 +272,22 @@
       var root_ = document.getElementById('sm-root'), fill = document.getElementById('sm-fill'), msg = document.getElementById('sm-msg'), sub = document.getElementById('sm-sub');
       if (fill) fill.style.width = Math.round(st.wake) + '%';
       var stirring = st.wake > 55;
+      if (stirring) st.quietSec = 0; else st.quietSec += dt;
+      var streakEl = document.getElementById('sm-streak');
+      if (streakEl) streakEl.textContent = '🌙 Quiet streak ' + fmtMMSS(st.quietSec);
+      var rBtn = document.getElementById('sm-reward');
+      if (rBtn) {
+        var rem = Math.ceil((st.rewardCooldownUntil - Date.now()) / 1000);
+        if (rem > 0) {
+          rBtn.disabled = true;
+          rBtn.textContent = '⭐ Reward the quiet class (' + rem + 's)';
+        } else {
+          rBtn.disabled = false;
+          rBtn.textContent = '⭐ Reward the quiet class';
+        }
+      }
       if (root_) { root_.classList.toggle('stirring', stirring); root_.classList.toggle('asleep', !stirring); }
-      if (!st.yawning) setMioPose(stirring ? 'stirring' : 'asleep');
+      if (!st.yawning && !st.rewarding) setMioPose(stirring ? 'stirring' : 'asleep');
       if (msg) msg.textContent = st.wake > 80 ? 'Mio is waking up!' : stirring ? 'Mio is stirring…' : 'Shhh… let Mio sleep';
       if (sub) sub.textContent = st.wake > 80 ? 'Quiet, quiet, quiet!' : stirring ? 'Too much noise. Whisper, please' : 'Keep the room quiet';
       if (st.wake >= 100) wakeUp();
@@ -232,7 +297,9 @@
 
   function wakeUp() {
     if (st.yawnTimer) { clearTimeout(st.yawnTimer); st.yawnTimer = null; }
-    st.yawning = false;
+    if (st.calmTimer) { clearTimeout(st.calmTimer); st.calmTimer = null; }
+    st.yawning = false; st.rewarding = false; st.quietSec = 0;
+    var sp = document.getElementById('sm-sparkles'); if (sp) sp.classList.remove('on');
     st.awake = true; st.wake = 100;
     var root_ = document.getElementById('sm-root'); if (!root_) return;
     root_.classList.remove('asleep', 'stirring'); root_.classList.add('awake');
@@ -245,7 +312,7 @@
   function sleepAgain() {
     if (!st) return;
     if (st.yawnTimer) { clearTimeout(st.yawnTimer); st.yawnTimer = null; }
-    st.awake = false; st.wake = 0; st.level = 0; st.yawning = true;
+    st.awake = false; st.wake = 0; st.level = 0; st.quietSec = 0; st.yawning = true;
     var root_ = document.getElementById('sm-root'); if (!root_) return;
     root_.classList.remove('awake', 'stirring', 'showwho'); root_.classList.add('asleep');
     setMioPose('yawn');
