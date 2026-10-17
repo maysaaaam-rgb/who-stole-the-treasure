@@ -49,14 +49,14 @@
   var CHAR_DIR = 'assets/packs/characters/sleepy-mio/';
   var BG_DIR = 'assets/packs/backgrounds/';
   var MIO_ART = {
-    asleep: CHAR_DIR + 'mio-asleep.png',
-    stirring: CHAR_DIR + 'mio-stirring.png',
-    awake: CHAR_DIR + 'mio-awake-grumpy.png',
-    yawn: CHAR_DIR + 'mio-yawn.png',
-    calm: CHAR_DIR + 'mio-calm-happy.png',
-    zzz: CHAR_DIR + 'zzz.png',
-    pillow: CHAR_DIR + 'moon-pillow.png',
-    bubble: CHAR_DIR + 'sleep-bubble.png',
+    asleep: CHAR_DIR + 'mio-asleep.webp',
+    stirring: CHAR_DIR + 'mio-stirring.webp',
+    awake: CHAR_DIR + 'mio-awake-grumpy.webp',
+    yawn: CHAR_DIR + 'mio-yawn.webp',
+    calm: CHAR_DIR + 'mio-calm-happy.webp',
+    zzz: CHAR_DIR + 'zzz.webp',
+    pillow: CHAR_DIR + 'moon-pillow.webp',
+    bubble: CHAR_DIR + 'sleep-bubble.webp',
     bgNight: BG_DIR + 'sleepy-night-room.webp',
     bgAwake: BG_DIR + 'sleepy-awake-room.webp'
   };
@@ -120,7 +120,8 @@
     '#sm-root .sm-pup .c{position:absolute;top:4px;right:6px;background:#f43f5e;color:#fff;border-radius:10px;padding:1px 7px;font-size:.72rem}' +
     '#sm-root .sm-set{display:flex;gap:14px;align-items:center;color:#e2e8f0;font-size:.85rem;font-weight:700}' +
     '#sm-root.awake .sm-mon{width:min(28vh,250px);height:min(28vh,250px)}' +
-    '#sm-root.asleep .sm-blame,#sm-root.stirring .sm-blame{display:none}' +
+    '#sm-root .sm-blame{display:none}#sm-root.showwho .sm-blame{display:block}' +
+    '#sm-root .sm-acts{display:none;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}#sm-root.awake .sm-acts{display:flex}' +
     '#sm-root.awake .sm-bar,#sm-root.awake .sm-live{display:none}' +
     '#sm-root .sm-loud{display:none}' +
     '#sm-root.nomic .sm-loud{display:inline-flex}#sm-root.awake .sm-loud{display:none!important}';
@@ -157,7 +158,9 @@
       '<div class="sm-msg" id="sm-msg">Shhh… let Mio sleep</div><div class="sm-sub" id="sm-sub">Keep the room quiet</div>' +
       '<div class="sm-bar"><div class="sm-fill" id="sm-fill"></div></div>' +
       '<div class="sm-live" id="sm-live">Starting the microphone…</div>' +
-      '<button class="sm-btn sm-loud" id="sm-loud" style="--c:#f59e0b;--b:#92400e;margin-top:10px">🔊 Too loud! (or press Space)</button></div>' +
+      '<button class="sm-btn sm-loud" id="sm-loud" style="--c:#f59e0b;--b:#92400e;margin-top:10px">🔊 Too loud! (or press Space)</button>' +
+      '<div class="sm-acts"><button class="sm-btn" id="sm-sleep" style="--c:#10b981;--b:#065f46"><img class="sm-btn-icon" src="' + MIO_ART.pillow + '" alt=""> Whisper him back to sleep (all together)</button>' +
+      '<button class="sm-btn" id="sm-who" style="--c:#475569;--b:#1e293b;color:#e6edf7">🔒 Teacher: private note</button></div></div>' +
       '<div class="sm-blame" id="sm-blame"></div>';
     document.body.appendChild(el);
 
@@ -175,7 +178,8 @@
     el.querySelector('#sm-loud').onclick = loud;
     st.key = function (e) { if (e.code === 'Space') { e.preventDefault(); e.stopPropagation(); loud(); } else if (e.key === 'Escape') { close(); } };
     document.addEventListener('keydown', st.key, true);
-    renderBlame();
+    el.querySelector('#sm-sleep').onclick = sleepAgain;
+    el.querySelector('#sm-who').onclick = function () { el.classList.toggle('showwho'); renderBlame(); };
 
     // the microphone only starts after this click (the dock button), so it counts as the user gesture
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -235,8 +239,8 @@
     root_.classList.remove('asleep', 'stirring'); root_.classList.add('awake');
     setMioPose('awake');
     document.getElementById('sm-msg').textContent = 'Mio woke up! 😠';
-    document.getElementById('sm-sub').textContent = 'Who woke the monster? Tap their name';
-    sndWake(); renderBlame();
+    document.getElementById('sm-sub').textContent = 'The whole class can help: whisper him back to sleep';
+    sndWake();
   }
 
   function sleepAgain() {
@@ -244,7 +248,7 @@
     if (st.yawnTimer) { clearTimeout(st.yawnTimer); st.yawnTimer = null; }
     st.awake = false; st.wake = 0; st.level = 0; st.yawning = true;
     var root_ = document.getElementById('sm-root'); if (!root_) return;
-    root_.classList.remove('awake', 'stirring'); root_.classList.add('asleep');
+    root_.classList.remove('awake', 'stirring', 'showwho'); root_.classList.add('asleep');
     setMioPose('yawn');
     var msg = document.getElementById('sm-msg'), sub = document.getElementById('sm-sub');
     if (msg) msg.textContent = 'Yaaawn… Mio is getting sleepy';
@@ -254,7 +258,7 @@
       st.yawning = false;
       if (!st.awake && st.wake <= 55) setMioPose('asleep');
     }, 1800);
-    sndLullaby(); renderBlame();
+    sndLullaby();
   }
 
   function blame(id) {
@@ -263,33 +267,18 @@
     t[d][id] = todayCount(t, id) + 1;
     saveTally(t);
     sndBlame();
-    setMioPose('calm');
-    var sub = document.getElementById('sm-sub');
-    if (sub) sub.innerHTML = '<b>' + esc(p ? p.name : 'Someone') + '</b> woke Mio (' + t[d][id] + ' today). Now sing him back to sleep!';
-    var msg = document.getElementById('sm-msg'); if (msg) msg.textContent = '🤫 Shhh… Lullaby time';
-    renderBlame(true);
+    renderBlame();
   }
-  function blameAll() {
-    setMioPose('calm');
-    var sub = document.getElementById('sm-sub'); if (sub) sub.textContent = 'The whole class woke Mio. Teamwork: whisper him back to sleep!';
-    var msg = document.getElementById('sm-msg'); if (msg) msg.textContent = '🤫 Shhh… Lullaby time';
-    sndBlame(); renderBlame(true);
-  }
-
-  function renderBlame(afterBlame) {
+  function renderBlame() {
     var box = document.getElementById('sm-blame'); if (!box || !st) return;
     var t = loadTally();
-    var top = st.pupils.map(function (p) { return { p: p, n: todayCount(t, p.id) }; }).filter(function (x) { return x.n > 0; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 3);
-    box.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><b>' + (afterBlame ? 'Mio is calm again?' : 'Who woke Mio?') + '</b>' +
-      '<span style="color:#9fb0cc;font-size:.85rem">' + (top.length ? 'Today: ' + top.map(function (x) { return esc((x.p.name || '').split(' ')[0]) + ' ×' + x.n; }).join(' · ') : 'Nobody has woken Mio yet today') + '</span>' +
-      '<span><button class="sm-btn" id="sm-all" style="--c:#a855f7;--b:#581c87">👥 The whole class</button> <button class="sm-btn" id="sm-sleep" style="--c:#10b981;--b:#065f46"><img class="sm-btn-icon" src="' + MIO_ART.pillow + '" alt=""> Lullaby: back to sleep</button></span></div>' +
+    box.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><b>🔒 Private note for the teacher: who made noise just now?</b>' +
+      '<span style="color:#9fb0cc;font-size:.8rem">Kept only on this computer. Turn the projector off first. Nobody loses XP.</span></div>' +
       '<div class="sm-grid">' + st.pupils.map(function (p) {
         var n = todayCount(t, p.id);
         return '<button class="sm-pup" data-id="' + esc(p.id) + '">' + (n ? '<span class="c">' + n + '</span>' : '') + '<span class="m">' + pupilMonster(p, 74) + '</span><span class="n">' + esc(p.name || '') + '</span></button>';
       }).join('') + '</div>';
     [].forEach.call(box.querySelectorAll('.sm-pup'), function (b) { b.onclick = function () { blame(b.getAttribute('data-id')); }; });
-    box.querySelector('#sm-sleep').onclick = sleepAgain;
-    box.querySelector('#sm-all').onclick = blameAll;
   }
 
   root.SleepyMonster = { open: open, close: close };
