@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party: prop templates</title>
+<link rel="stylesheet" href="print.css">
+<style>
+  .role-hd { display: flex; align-items: center; gap: 6mm; border-bottom: 1mm solid var(--violet); padding-bottom: 3mm; margin-bottom: 5mm; }
+  .role-hd img { width: 26mm; height: 26mm; object-fit: cover; object-position: 50% 14%; border-radius: 4mm; border: 0.6mm solid var(--gold); }
+  .role-hd h1 { margin: 0; font-size: 24pt; color: var(--violet); }
+  .role-hd .who { font-size: 11pt; color: #475569; }
+  .prop { text-align: center; }
+  .prop img.pic { width: 100%; max-height: 82mm; object-fit: contain; }
+  .prop .pn { font-weight: 800; font-size: 14pt; margin-top: 2mm; }
+  .steps { margin: 4mm 0 0; padding-left: 7mm; font-size: 12.5pt; line-height: 1.5; }
+  .strip { height: 26mm; border: 0.4mm dashed #64748b; border-radius: 3mm; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 11pt; margin-top: 5mm; }
+  .tip { background: var(--soft); border-radius: 3mm; padding: 3mm 4mm; margin-top: 4mm; font-size: 11.5pt; }
+</style>
+</head>
+<body>
+<div class="bar"><h1>🖨️ Prop templates</h1>
+  <select id="role"></select>
+  <button onclick="window.print()">Print</button>
+  <span class="hint">Print the picture, cut around the white edge, stick it on card or a headband. One page per character.</span>
+</div>
+<main id="out"></main>
+<script src="../alice-party-home/party-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PARTY, PROPS = '../assets/alice-cut/props/';
+  var PIC = {
+    'a paper key': 'prop_key', 'a teacup': 'prop_teacup', 'a big paper hat': 'prop_hat_big', 'a teapot': 'prop_teapot', 'a paper watch': 'prop_watch', 'a letter': 'prop_letter',
+    'a paper crown': 'prop_crown_white', 'a small bottle': 'prop_bottle', 'long paper ears': 'prop_ears_hare', 'a carrot': 'prop_carrot', 'cat ears': 'prop_ears_cat',
+    'a ball of yarn': 'prop_yarn', 'dog ears': 'prop_ears_dog', 'a paper bone': 'prop_bone', 'a red paper crown': 'prop_crown_red', 'a playing card': 'prop_card',
+    'paper wings': 'prop_wings', 'a toy sword': 'prop_sword_toy', 'paper claws': 'prop_claws', 'a big key': 'prop_key_big', 'a book': 'prop_book', 'a flower': 'prop_flower',
+    'a nice hat': 'prop_hat_nice', 'a plate of cake': 'prop_cake_plate', 'a big button': 'prop_button', 'a green hat': 'prop_hat_green', 'a small bell': 'prop_bell',
+    'blue paper antennae': 'prop_antennae', 'a mushroom': 'prop_mushroom', 'a tall hat': 'prop_hat_tall', 'a walking stick': 'prop_stick', 'a green coat': 'prop_coat_green',
+    'a button': 'prop_button', 'mouse ears': 'prop_ears_mouse', 'a small cup': 'prop_cup_tiny', 'a tiny cup': 'prop_cup_tiny', 'a paper shell': 'prop_shell', 'a pearl': 'prop_pearl'
+  };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  var wearable = function (t) { return /ears|crown|hat|antennae|wings|claws|shell/.test(t); };
+  function pupilsOf(key) {
+    var out = [];
+    Object.keys(P.classes).forEach(function (c) { P.classes[c].students.forEach(function (s) { if (s.role === key) out.push(s.name + ' (' + P.classes[c].label.replace('Class ', '') + ')'); }); });
+    return out;
+  }
+  function photoOf(key) {
+    for (var c in P.classes) { var l = P.classes[c].students; for (var i = 0; i < l.length; i++) if (l[i].role === key) return l[i].photo; }
+    return '';
+  }
+  function page(key) {
+    var r = P.roles[key], ph = photoOf(key);
+    var props = (r.props || []).map(function (t) {
+      var f = PIC[t];
+      var art = f ? '<img class="pic" src="' + PROPS + f + '.webp" alt="" onerror="this.outerHTML=\'<div class=deco>🎭</div>\'">' : '<div class="deco">😁</div>';
+      var how = f ? '' : '<div class="tip">Draw a big funny smile on a piece of paper. Cut it out and hold it up.</div>';
+      var strip = wearable(t) ? '<div class="strip">✂ headband strip: cut a paper strip about 4 cm x 55 cm, stick the prop on it, then tape it to fit your head</div>' : '';
+      return '<div class="prop cut">' + art + '<div class="pn">' + esc(t) + '</div>' + how + strip + '</div>';
+    }).join('');
+    return '<section class="sheet"><div class="role-hd">' + (ph ? '<img src="../alice-party-home/assets/' + esc(ph) + '" alt="">' : '') +
+      '<div><h1>' + esc(r.name) + '</h1><div class="who">' + esc(pupilsOf(key).join(', ')) + '</div></div></div>' +
+      '<div class="grid2">' + props + '</div>' +
+      '<ol class="steps"><li><b>Print</b> this page in colour (or colour it yourself).</li><li><b>Cut</b> along the dashed line, or around the white edge of the picture.</li><li><b>Stick</b> it on thin card. Add a headband strip if you need one.</li><li><b>Wear it</b> or hold it at the tea party!</li></ol>' +
+      '<div class="tip">Ask a grown-up to help with the scissors. You can also draw and make your own prop. Make it big so we can see it!</div></section>';
+  }
+  var sel = document.getElementById('role'), keys = Object.keys(P.roles);
+  sel.innerHTML = '<option value="">All characters</option>' + keys.map(function (k) { return '<option value="' + k + '">' + esc(P.roles[k].name) + '</option>'; }).join('');
+  var want = new URLSearchParams(location.search).get('role') || '';
+  if (keys.indexOf(want) >= 0) sel.value = want;
+  function draw() { document.getElementById('out').innerHTML = (sel.value ? [sel.value] : keys).map(page).join(''); }
+  sel.onchange = draw; draw();
+})();
+</script>
+</body>
+</html>

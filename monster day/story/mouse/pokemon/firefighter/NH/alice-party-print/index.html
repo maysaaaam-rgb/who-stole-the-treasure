@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alice Tea Party: party week hub</title>
+<style>
+  :root { --void:#060911; --glass:rgba(15,23,42,.82); --line:rgba(148,163,184,.25); --text:#f8fafc; --muted:#cbd5e1; --cyan:#38bdf8; --amber:#f59e0b; --green:#10b981; --violet:#a855f7; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(circle at 50% 10%, #1b1440 0%, var(--void) 100%); color: var(--text); font-family: "Trebuchet MS","Segoe UI",system-ui,sans-serif; font-size: 18px; }
+  .app { max-width: 1100px; margin: 0 auto; padding: 18px 16px 50px; }
+  h1 { margin: 0 0 4px; font-size: 1.9rem; } h2 { margin: 24px 0 8px; font-size: 1.3rem; color: var(--amber); }
+  .muted { color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  a.card { display: block; text-decoration: none; color: inherit; background: var(--glass); border: 1px solid var(--line); border-radius: 18px; padding: 16px; border-bottom: 5px solid #0f172a; transition: transform .12s var(--spring), border-bottom-width .12s; }
+  a.card:active { transform: translateY(4px); border-bottom-width: 1px; }
+  a.card .i { font-size: 2.2rem; } a.card b { display: block; margin: 4px 0 2px; } a.card span { color: var(--muted); font-size: .9rem; }
+  .box { background: var(--glass); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; margin: 8px 0; }
+  .box pre { white-space: pre-wrap; margin: 6px 0 0; font: inherit; font-size: .95rem; color: #e2e8f0; }
+  button { font: inherit; font-weight: 800; color: #06101f; background: var(--cyan); border: 0; border-bottom: 4px solid #0369a1; border-radius: 12px; padding: 8px 14px; cursor: pointer; }
+  button:active { transform: translateY(3px); border-bottom-width: 1px; }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; } th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); } th { color: var(--cyan); }
+  .todo li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🫖 Alice’s Tea Party · party week hub</h1>
+  <p class="muted">Everything for the week of 19–23 October in one place. Grade 4 only (4/A and 4/B).</p>
+
+  <h2>Smartboard lessons</h2>
+  <div class="grid">
+    <a class="card" href="../alice-party-rehearsal/index.html"><div class="i">🎭</div><b>Rehearsal lessons (4)</b><span>Phrases game, pair rehearsal, dress rehearsal, party day</span></a>
+    <a class="card" href="../alice-party-print/running-order.html"><div class="i">📋</div><b>Running order</b><span>Order of pairs for each class, with times</span></a>
+  </div>
+
+  <h2>Home practice (pupils)</h2>
+  <div class="grid">
+    <a class="card" href="../alice-party-home/props.html?class=4a"><div class="i">🎭</div><b>Practice 3 · 4/A</b><span>Prop + 3 phrases + 3 sentences</span></a>
+    <a class="card" href="../alice-party-home/props.html?class=4b"><div class="i">🎭</div><b>Practice 3 · 4/B</b><span>Prop + 3 phrases + 3 sentences</span></a>
+    <a class="card" href="../alice-party-home/week2.html?class=4a"><div class="i">📖</div><b>Catch-up · 4/A</b><span>Practice 2 for pupils who have not done it</span></a>
+    <a class="card" href="../alice-party-home/week2.html?class=4b"><div class="i">📖</div><b>Catch-up · 4/B</b><span>Practice 2 for pupils who have not done it</span></a>
+  </div>
+
+  <h2>Print</h2>
+  <div class="grid">
+    <a class="card" href="../alice-party-print/prop-templates.html"><div class="i">🖨️</div><b>Prop templates</b><span>One page per character: picture to cut out</span></a>
+    <a class="card" href="../alice-party-print/garden-signs.html"><div class="i">🌿</div><b>Garden signs and table cards</b><span>Signs, table words, phrase cards, place cards, bunting</span></a>
+    <a class="card" href="../alice-party-print/bring-list.html"><div class="i">🧺</div><b>What the teacher brings</b><span>Checklist with tick boxes</span></a>
+    <a class="card" href="../alice-party-print/certificates.html"><div class="i">🏅</div><b>Certificates</b><span>One for every pupil</span></a>
+    <a class="card" href="../alice-party-print/parent-note.html"><div class="i">✉️</div><b>Note for parents</b><span>English and Turkish; fill date, time, place</span></a>
+  </div>
+
+  <h2>Suggested lessons for 19–23 October (both classes have 7)</h2>
+  <div class="box"><table><thead><tr><th>#</th><th>Lesson</th><th>Use</th></tr></thead><tbody>
+    <tr><td>1</td><td>Tea party phrases</td><td>Rehearsal lesson 1 (phrases + Tea Time Challenge)</td></tr>
+    <tr><td>2</td><td>Pair rehearsal: lines visible</td><td>Lesson 2</td></tr>
+    <tr><td>3</td><td>Pair rehearsal: say it by heart</td><td>Lesson 2 (hide lines)</td></tr>
+    <tr><td>4</td><td>Dress rehearsal with props</td><td>Lesson 3</td></tr>
+    <tr><td>5</td><td>Fix the wishes, props and craft</td><td>Lesson 3 for the weaker pairs; print templates</td></tr>
+    <tr><td>6</td><td>Final run and garden set-up</td><td>Lesson 3, then signs and tables</td></tr>
+    <tr><td>7</td><td>Party day</td><td>Lesson 4, certificates</td></tr>
+  </tbody></table>
+  <p class="muted">Grade 3 (3/A, 3/B): not part of the party. Keep the Unit 3 review, the board game or the Word City lessons.</p></div>
+
+  <h2>Text to paste into k12 (check and change before sending)</h2>
+  <div class="box"><b>New assignment: title</b> <button data-c="t1">Copy</button><pre id="t1">Alice Harikalar Diyarında: Çay Partisi – 3. Hafta Hazırlık</pre></div>
+  <div class="box"><b>Preamble (message to families)</b> <button data-c="t2">Copy</button><pre id="t2">Merhaba! Çay Partisi için son hazırlık: çocuğunuzun karakter aksesuarını hazırlaması gerekiyor (kâğıttan şapka, kulak, taç vb.; basit olması yeterli). Uygulama sayfasında aksesuarın resmi, yazdırılabilir şablonu ve 3 parti cümlesi var. Sınıfta birlikte prova yapacağız, bu yüzden kayıt gerekmiyor. Yaklaşık 10 dakika yeterli.
+
+Hello! Last preparation for the Tea Party: your child needs a simple prop for their character (paper hat, ears, crown...). The practice page shows the picture, a printable template and the 3 party phrases. We rehearse together in class, so there is nothing to record. About 10 minutes is enough.</pre></div>
+
+  <h2>Still to do</h2>
+  <ul class="todo">
+    <li>Gemini pictures: <code>art-prompts/GEMINI-ALICE-WEEK2-ART.md</code> (the 4 phrase pictures + tools) and <code>art-prompts/GEMINI-ALICE-PARTY-DECO-ART.md</code> (garden decoration). Until then the pages show emoji for them.</li>
+    <li>Fill the party date, time and place on the parent note and print it.</li>
+    <li>Post the k12 assignment and send the practice 3 links.</li>
+  </ul>
+</div>
+<script>
+  [].forEach.call(document.querySelectorAll('button[data-c]'), function (b) {
+    b.onclick = function () { var t = document.getElementById(b.dataset.c).innerText; try { navigator.clipboard.writeText(t); b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); } catch (e) { /* select manually */ } };
+  });
+</script>
+</body>
+</html>
