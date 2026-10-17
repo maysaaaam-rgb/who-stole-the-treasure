@@ -9619,6 +9619,25 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // SIDEBAR NAVIGATION (With Admin & Settings)
   // =========================================================================
+  // Menus the teacher chose to hide (17 Oct 2026): pages and tools that were repeated or not used. Nothing is deleted: the pages and their data still exist.
+  // To bring one back, remove its word from these two lists.
+  var HIDDEN_MENU_VIEWS = ['classview', 'dashboard', 'board', 'assessments', 'progress', 'progress-check', 'assignments', 'portfolios', 'gamification', 'health'];
+  var HIDDEN_DOCK_TOOLS = ['openRandomStudentModal', "switchClassroomSubTab('groups')", 'VoiceFX.toggle'];
+  function hideUnusedTeacherMenus(sidebar) {
+    try {
+      [].forEach.call(sidebar.querySelectorAll('li'), function (li) {
+        var b = li.querySelector('button[onclick]'); if (!b) return;
+        var m = /switchView\('([a-z0-9-]+)'\)/.exec(b.getAttribute('onclick') || '');
+        if (m && HIDDEN_MENU_VIEWS.indexOf(m[1]) >= 0) li.remove();
+      });
+      [].forEach.call(sidebar.querySelectorAll('.sidebar-group'), function (g) { if (!g.querySelector('li')) g.remove(); });
+      [].forEach.call(document.querySelectorAll('#dock-more-menu .dock-more-item'), function (b) {
+        var o = b.getAttribute('onclick') || '';
+        if (HIDDEN_DOCK_TOOLS.some(function (t) { return o.indexOf(t) >= 0; })) b.style.display = 'none';
+      });
+    } catch (e) { /* the menu simply stays complete */ }
+  }
+
   function renderNavigation() {
     const sidebar = document.getElementById('app-sidebar-nav');
     if (!sidebar) return;
@@ -9709,6 +9728,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
           '</button>' +
         '</div>';
+      hideUnusedTeacherMenus(sidebar);
     } else if (role === 'student') {
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">My Adventure</div>' +
