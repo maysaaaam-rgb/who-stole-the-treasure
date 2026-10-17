@@ -9,12 +9,14 @@
   var panel = null; // which info panel is open: 'lesson' | 'home' | null
 
   var TILES = [
-    { id: 'board', pic: 'm_scoreboard', t: 'Scoreboard', c: '#f59e0b' },
+    { id: 'board', pic: 'm_scoreboard', t: 'Scoreboard', c: '#f59e0b', cm: true },
+    { id: 'sleepy', pic: 'assets/packs/characters/sleepy-mio/mio-asleep.webp', t: '😴 Sleepy Mio', c: '#6366f1', cm: true },
+    { id: 'pick', pic: 'm_pick', t: 'Pick a pupil', c: '#8b5cf6', cm: true },
+    { id: 'karaoke', pic: 'h_mic', t: 'Karaoke', c: '#ec4899', cm: true },
+    { id: 'home', pic: 'm_home', t: 'Home view', c: '#0ea5e9', cm: true },
     { id: 'timer', pic: 'm_timer', t: 'Timer', c: '#f43f5e' },
     { id: 'games', pic: 'm_games', t: 'Games', c: '#a855f7' },
-    { id: 'pick', pic: 'm_pick', t: 'Pick a pupil', c: '#8b5cf6' },
-    { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981' },
-    { id: 'home', pic: 'm_home', t: 'Home view', c: '#0ea5e9' }
+    { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981' }
   ];
 
   function css() {
@@ -28,8 +30,8 @@
       '.cv-hd h1{margin:0;font-size:clamp(1.6rem,3.4vw,2.6rem);font-weight:600}.cv-hd small{display:block;font-size:clamp(.9rem,1.5vw,1.2rem);opacity:.8;font-weight:500}' +
       '.cv-key{width:clamp(48px,6vw,72px);height:clamp(48px,6vw,72px);border-radius:18px;border:0;border-bottom:5px solid rgba(0,0,0,.45);background:rgba(15,23,42,.8);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px;backdrop-filter:blur(14px);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}' +
       '.cv-key:active{transform:translateY(4px);border-bottom-width:1px}.cv-key img{width:100%;height:100%;object-fit:contain}' +
-      '.cv-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:2vh 1.6vw;margin-top:2.4vh}' +
-      '.cv-tile{flex:0 0 calc(16.66% - 1.4vw);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vh;min-height:19vh;padding:1.2vh 1vw;border:0;border-bottom:5px solid color-mix(in srgb,var(--c) 45%,#000);border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 38%,rgba(15,23,42,.92)),rgba(15,23,42,.88));backdrop-filter:blur(14px);box-shadow:0 4px 20px -2px rgba(0,0,0,.4),0 2px 6px -1px rgba(0,0,0,.2);cursor:pointer;color:#fff;font:inherit;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),box-shadow .12s}' +
+      '.cv-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:2vh 1.4vw;margin-top:2.4vh}' +
+      '.cv-tile{flex:1 1 calc(18% - 1.4vw);min-width:155px;max-width:235px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vh;min-height:19vh;padding:1.2vh 1vw;border:0;border-bottom:5px solid color-mix(in srgb,var(--c) 45%,#000);border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 38%,rgba(15,23,42,.92)),rgba(15,23,42,.88));backdrop-filter:blur(14px);box-shadow:0 4px 20px -2px rgba(0,0,0,.4),0 2px 6px -1px rgba(0,0,0,.2);cursor:pointer;color:#fff;font:inherit;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),box-shadow .12s}' +
       '.cv-tile:hover{transform:translateY(-3px)}.cv-tile:active{transform:translateY(4px);border-bottom-width:1px}' +
       '.cv-tile img{height:11vh;width:auto;max-width:90%;object-fit:contain;filter:drop-shadow(0 1vh 1vh rgba(0,0,0,.4));animation:cvBob 3.2s ease-in-out infinite}' +
       '.cv-tile:nth-child(2n) img{animation-delay:.5s}.cv-tile:nth-child(3n) img{animation-delay:1s}' +
@@ -54,7 +56,7 @@
   }
 
   function activeClass() { try { return S().getActiveClass && S().getActiveClass(); } catch (e) { return null; } }
-  function img(n, alt) { return '<img src="' + ART + n + '.webp" alt="' + (alt || '') + '" draggable="false">'; }
+  function img(n, alt) { return '<img src="' + (n.indexOf('/') >= 0 ? n : ART + n + '.webp') + '" alt="' + (alt || '') + '" draggable="false">'; }
 
   var COLORS = ['#38bdf8', '#f59e0b', '#10b981', '#a855f7', '#f43f5e', '#0ea5e9'];
   function gradeOf(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
@@ -103,7 +105,7 @@
     container.innerHTML = '<div class="cv" id="cv-root" style="background-image:url(' + ART + 'bg_class_view.webp)">' +
       '<div class="cv-hd"><div><h1>' + (cls ? esc(cls.name) : 'Class') + '</h1><small>' + esc(label) + '</small></div>' +
       '<button type="button" class="cv-key" title="Teacher area (Command Center)" onclick="ClassView.go(\'teacher\')">' + img('m_teacher_key', 'Teacher area') + '</button></div>' +
-      todayHero(cls) + '<div class="cv-grid">' + TILES.filter(function (t) { return !(document.documentElement.classList.contains('class-mode') && t.id !== 'home'); }).map(function (t) { return '<button type="button" class="cv-tile" style="--c:' + t.c + '" onclick="ClassView.go(\'' + t.id + '\')">' + img(t.pic, '') + '<b>' + esc(t.t) + '</b></button>'; }).join('') + '</div>' +
+      todayHero(cls) + '<div class="cv-grid">' + TILES.filter(function (t) { return !document.documentElement.classList.contains('class-mode') || t.cm; }).map(function (t) { return '<button type="button" class="cv-tile" data-tile="' + esc(t.id) + '" style="--c:' + t.c + '" onclick="ClassView.go(\'' + t.id + '\')">' + img(t.pic, '') + '<b>' + esc(t.t) + '</b></button>'; }).join('') + '</div>' +
       '<div id="cv-panel">' + panelHtml() + '</div></div>';
   }
 
@@ -112,6 +114,8 @@
       var sw = root.switchView;
       if (id === 'lesson' || id === 'home') { panel = panel === id ? null : id; var p = document.getElementById('cv-panel'); if (p) { p.innerHTML = panelHtml(); if (panel && p.firstChild && p.firstChild.scrollIntoView) p.firstChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } return; }
       panel = null;
+      if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
+      if (id === 'karaoke') { if (root.ClassBoard && root.ClassBoard.karaoke) root.ClassBoard.karaoke(); else location.href = 'karaoke-stage/index.html'; return; }
       if (id === 'board') { sw && sw('board'); return; }
       if (id === 'games') { sw && sw('shelf'); return; }
       if (id === 'rewards') { sw && sw('rewards'); return; }

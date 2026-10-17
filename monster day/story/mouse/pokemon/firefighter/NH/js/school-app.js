@@ -120,7 +120,7 @@
   async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
-      currentView = 'command';
+      currentView = document.documentElement.classList.contains('class-mode') ? 'classview' : 'command';
       window.__pendingDashboardOpen = false;
     }
     const initialClass = store.getActiveClass();
@@ -183,6 +183,13 @@
         if (menu) menu.classList.remove('is-open');
       }
 
+      // Role dropdown
+      const roleWrap = document.getElementById('role-dropdown-wrap');
+      if (roleWrap && !roleWrap.contains(e.target)) {
+        const roleMenu = document.getElementById('role-dropdown-menu');
+        if (roleMenu) roleMenu.classList.remove('is-open');
+      }
+
       // Card ⋯ dropdowns
       if (activeCardMenuId && !e.target.closest('.card-more-menu-wrap') && !e.target.closest('.row-more-menu-wrap')) {
         closeAllCardMenus();
@@ -213,9 +220,17 @@
           const menu = document.getElementById('header-create-menu');
           if (menu) menu.classList.remove('is-open');
         }
+        const roleMenu = document.getElementById('role-dropdown-menu');
+        if (roleMenu) roleMenu.classList.remove('is-open');
       }
     });
   }
+
+  window.toggleRoleDropdown = function(event) {
+    if (event) event.stopPropagation();
+    const roleMenu = document.getElementById('role-dropdown-menu');
+    if (roleMenu) roleMenu.classList.toggle('is-open');
+  };
 
   // Role Switcher Setup
   function setupRoleSwitcher() {
@@ -227,9 +242,12 @@
         const role = btn.getAttribute('data-role');
         store.setRole(role);
 
-        if (role === 'teacher') currentView = 'command';
+        if (role === 'teacher') currentView = document.documentElement.classList.contains('class-mode') ? 'classview' : 'command';
         else if (role === 'student') currentView = 'adventure';
         else if (role === 'parent') currentView = 'parent-home';
+
+        const roleMenu = document.getElementById('role-dropdown-menu');
+        if (roleMenu) roleMenu.classList.remove('is-open');
 
         renderNavigation();
         updateHeaderBadges();

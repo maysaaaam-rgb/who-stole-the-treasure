@@ -14,7 +14,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%232563eb%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M22 10v6M2 10l10-5 10 5-10 5z%22/><path d=%22M6 12v5c3 3 9 3 12 0v-5%22/></svg>">
 
   <!-- School Platform Unified Stylesheet -->
-  <link rel="stylesheet" href="css/school-platform.css?v=4">
+  <link rel="stylesheet" href="css/school-platform.css?v=5">
   <link rel="stylesheet" href="css/style.css?v=2">
   <link rel="stylesheet" href="css/ui-polish.css?v=14">
   <link rel="stylesheet" href="css/glass-theme.css?v=3">
@@ -65,12 +65,14 @@
             }, 250);
           }
 
-          // Open main teacher dashboard
+          // Open main teacher view: respect URL hash if given, otherwise classview in Class Mode or command
           if (window.schoolStore) {
             window.schoolStore.setRole('teacher');
           }
+          const hashPart = (window.location.hash || '').replace(/^#[/]*/, '').trim().split('/')[0];
+          const targetView = hashPart || (document.documentElement.classList.contains('class-mode') ? 'classview' : 'command');
           if (typeof window.switchView === 'function') {
-            window.switchView('dashboard');
+            window.switchView(targetView, !hashPart);
           } else {
             window.__pendingDashboardOpen = true;
           }
@@ -352,7 +354,7 @@
     <div class="header-inner">
       <div class="brand-section">
         <button class="mobile-nav-toggle-btn" onclick="toggleMobileSidebar()" aria-label="Toggle navigation" style="display:none; background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--text-main); padding:4px 8px; margin-right:8px;">☰</button>
-        <div class="brand-logo-btn" onclick="switchView('dashboard')" title="English Adventure Academy">
+        <div class="brand-logo-btn" onclick="switchView(document.documentElement.classList.contains('class-mode') ? 'classview' : 'command')" title="English Adventure Academy">
           <div class="brand-icon-box">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -362,17 +364,22 @@
           <span>Adventure Academy</span>
         </div>
 
-        <!-- Role Switcher (Teacher · Student · Parent) -->
-        <nav class="role-pill-group" aria-label="Role Switcher">
-          <button class="role-pill-btn is-active" data-role="teacher" title="Switch to Teacher Dashboard">
-            <span>👩‍🏫</span> <span>Teacher</span>
+        <!-- Compact Role Switcher (View as ▾) -->
+        <nav class="role-pill-group create-dropdown-wrap" id="role-dropdown-wrap" aria-label="Role Switcher" style="background:transparent;padding:0;border:none;">
+          <button type="button" class="btn-sm-secondary" id="btn-role-dropdown" onclick="if(window.toggleRoleDropdown)toggleRoleDropdown(event)" title="Switch View Role (Teacher, Student, Parent)" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:0.8rem;font-weight:800;">
+            <span>👁</span> <span id="role-dropdown-label">View as</span> <span>▾</span>
           </button>
-          <button class="role-pill-btn" data-role="student" title="Switch to Student Learning Adventure">
-            <span>🧒</span> <span>Student</span>
-          </button>
-          <button class="role-pill-btn" data-role="parent" title="Switch to Parent Portal">
-            <span>👨‍👩‍👧</span> <span>Parent</span>
-          </button>
+          <div class="create-dropdown-menu" id="role-dropdown-menu" style="left:0;right:auto;width:170px;">
+            <button type="button" class="dropdown-item-btn role-pill-btn is-active" data-role="teacher" title="Switch to Teacher View">
+              <span>👩‍🏫</span> <span>Teacher</span>
+            </button>
+            <button type="button" class="dropdown-item-btn role-pill-btn" data-role="student" title="Switch to Student View">
+              <span>🧒</span> <span>Student</span>
+            </button>
+            <button type="button" class="dropdown-item-btn role-pill-btn" data-role="parent" title="Switch to Parent View">
+              <span>👨‍👩‍👧</span> <span>Parent</span>
+            </button>
+          </div>
         </nav>
       </div>
 
@@ -383,42 +390,16 @@
           <!-- Dynamically populated by school-app.js -->
         </select>
 
-        <!-- Prominent + Create Dropdown Quick Action -->
+        <!-- Prominent + Create Dropdown Quick Action (3 School-Day Actions) -->
         <div class="create-dropdown-wrap" id="header-create-wrap">
           <button class="btn-header-create btn-3d btn-3d-primary" id="btn-header-create" onclick="toggleCreateDropdown(event)" title="Quick Action Menu">
             <span>+ Create</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <div class="create-dropdown-menu" id="header-create-menu" style="max-height:420px; overflow-y:auto; width:220px;">
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Classroom & Students</div>
-            <button class="dropdown-item-btn" onclick="openStudentModal()"><span>👧</span> <span>+ Student</span></button>
-            <button class="dropdown-item-btn" onclick="openClassModal()"><span>👥</span> <span>+ Class</span></button>
-            <button class="dropdown-item-btn" onclick="openCreateGroupModal()"><span>👥</span> <span>+ Group</span></button>
-            
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Curriculum & Content</div>
-            <button class="dropdown-item-btn" onclick="openAddBookModal()"><span>📖</span> <span>+ Book</span></button>
-            <button class="dropdown-item-btn" onclick="openAddUnitModal()"><span>📑</span> <span>+ Unit</span></button>
-            <button class="dropdown-item-btn" onclick="openAddLessonModal()"><span>📝</span> <span>+ Lesson</span></button>
-            <button class="dropdown-item-btn" onclick="openAddObjectiveModal()"><span>🎯</span> <span>+ Objective</span></button>
-            <button class="dropdown-item-btn" onclick="openResourceEditor()"><span>🎮</span> <span>+ Game / Activity</span></button>
-            <button class="dropdown-item-btn" onclick="openWorksheetEditor()"><span>📄</span> <span>+ Worksheet</span></button>
-
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Teaching & Assessment</div>
-            <button class="dropdown-item-btn" onclick="openModal('modal-create-assignment')"><span>📝</span> <span>+ Assignment</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-homework-editor')"><span>✍️</span> <span>+ Homework</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-quiz-builder')"><span>🧩</span> <span>+ Quiz</span></button>
-            <button class="dropdown-item-btn" onclick="openRubricEditorModal()"><span>🎯</span> <span>+ Assessment Rubric</span></button>
-            <button class="dropdown-item-btn" onclick="switchView('progress-check')"><span>📊</span> <span>Four-Skill Progress Check</span></button>
-            <button class="dropdown-item-btn" onclick="openModal('modal-story-post')"><span>📸</span> <span>+ Class Story Post</span></button>
-            <button class="dropdown-item-btn" onclick="openGamificationEditorModal()"><span>🏆</span> <span>+ Badge / Achievement</span></button>
-            <button class="dropdown-item-btn" onclick="openCalendarEventModal()"><span>📅</span> <span>+ Calendar Event</span></button>
-            <button class="dropdown-item-btn" onclick="openPortfolioItemModal()"><span>🎨</span> <span>+ Portfolio Item</span></button>
-            <button class="dropdown-item-btn" onclick="openNewMessageThreadModal()"><span>💬</span> <span>+ Family Message</span></button>
-
-            <div style="padding:6px 12px; font-size:0.72rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Admin &amp; Archive</div>
-            <button class="dropdown-item-btn" onclick="openArchivedManagerModal()"><span>🗄️</span> <span>Archived Items &amp; Restore</span></button>
-            <button class="dropdown-item-btn" onclick="openSchoolSettingsModal()"><span>⚙️</span> <span>School Settings</span></button>
-            <button class="dropdown-item-btn" onclick="lockPlatformSession()" style="color:#ef4444;"><span>🔒</span> <span>Lock Platform (Log Out)</span></button>
+          <div class="create-dropdown-menu" id="header-create-menu" style="width:210px;">
+            <button class="dropdown-item-btn" onclick="if(window.Timetable&&Timetable.edit)Timetable.edit();document.getElementById('header-create-menu').classList.remove('is-open');"><span>📅</span> <span>Edit Timetable</span></button>
+            <button class="dropdown-item-btn" onclick="if(window.openGiveFeedbackModal)openGiveFeedbackModal('class');document.getElementById('header-create-menu').classList.remove('is-open');"><span>⭐</span> <span>Give Class XP</span></button>
+            <button class="dropdown-item-btn" onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();document.getElementById('header-create-menu').classList.remove('is-open');"><span>😴</span> <span>Sleepy Mio</span></button>
           </div>
         </div>
 
@@ -3082,18 +3063,18 @@
   <script src="js/monster-costumes2.js?v=2"></script>
   <script src="js/monster-pets.js?v=1"></script>
   <script src="js/classroom-cosmetics.js?v=1"></script>
-  <script src="js/classroom-store.js?v=17"></script>
+  <script src="js/classroom-store.js?v=18"></script>
   <script src="js/timetable.js?v=16"></script>
   <script src="js/unit2-content.js?v=26"></script>
   <script src="js/command-center.js?v=41"></script>
-  <script src="js/sleepy-monster.js?v=1"></script>
+  <script src="js/sleepy-monster.js?v=2"></script>
   <script src="js/voice-fx.js?v=5"></script>
   <script src="js/library-curate.js?v=1"></script>
-  <script src="js/class-board.js?v=17"></script>
-  <script src="js/class-view.js?v=7"></script>
-  <script src="js/class-rewards.js?v=7"></script>
+  <script src="js/class-board.js?v=18"></script>
+  <script src="js/class-view.js?v=8"></script>
+  <script src="js/class-rewards.js?v=8"></script>
   <script src="js/monster-closet.js?v=6"></script>
-  <script src="js/class-mode.js?v=9"></script>
+  <script src="js/class-mode.js?v=10"></script>
   <script src="js/birthday.js?v=1"></script>
 
   <!-- Global Sound System (Harmonic Web Audio) -->
@@ -3120,7 +3101,7 @@
   <script src="js/daily-report.js?v=1"></script>
   <script src="js/pupil-profile.js?v=6"></script>
   <script src="js/pupil-card.js?v=6"></script>
-  <script src="js/school-app.js?v=4.49"></script>
+  <script src="js/school-app.js?v=4.50"></script>
   <script src="js/milestone-ceremony.js?v=9"></script>
   <script src="js/simon-says-game.js?v=4.1"></script>
   <script src="js/classroom-sounds.js?v=2"></script>

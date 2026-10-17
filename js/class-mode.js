@@ -16,6 +16,7 @@
     { id: 'lesson', pic: 'm_lesson', t: 'Lesson', c: '#0ea5e9', views: [] },
     { id: 'board', pic: 'm_scoreboard', t: 'Scores', c: '#f59e0b', views: ['board'] },
     { id: 'shelf', pic: 'm_games', t: 'Games', c: '#a855f7', views: ['shelf', 'library'] },
+    { id: 'sleepy', pic: 'assets/packs/characters/sleepy-mio/mio-asleep.webp', t: '😴 Sleepy Mio', c: '#6366f1', views: [] },
     { id: 'pick', pic: 'm_pick', t: 'Pick', c: '#8b5cf6', views: [] },
     { id: 'timer', pic: 'm_timer', t: 'Timer', c: '#f43f5e', views: [] },
     { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981', views: ['rewards', 'store'] },
@@ -23,9 +24,9 @@
   ];
   function rail(view) {
     return '<nav class="cm-rail" aria-label="Class menu">' + RAIL.map(function (r) {
-      var act = r.views.indexOf(view) >= 0;
-      return '<button type="button" class="cm-b' + (act ? ' is-on' : '') + '" style="--c:' + r.c + '" onclick="ClassMode.go(\'' + r.id + '\')" title="' + esc(r.t) + '">' +
-        '<img src="' + ART + r.pic + '.webp" alt="" draggable="false"><span>' + esc(r.t) + '</span></button>';
+      var act = r.views.indexOf(view) >= 0, src = r.pic.indexOf('/') >= 0 ? r.pic : ART + r.pic + '.webp';
+      return '<button type="button" class="cm-b' + (act ? ' is-on' : '') + '" data-rail="' + esc(r.id) + '" style="--c:' + r.c + '" onclick="ClassMode.go(\'' + r.id + '\')" title="' + esc(r.t) + '">' +
+        '<img src="' + src + '" alt="" draggable="false"><span>' + esc(r.t) + '</span></button>';
     }).join('') + '</nav>';
   }
 
@@ -273,6 +274,7 @@
       renderShelf(c);
     },
     go: function (id) {
+      if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       var sw = root.switchView; if (!sw) return;
       if (id === 'classview' || id === 'board' || id === 'shelf' || id === 'store' || id === 'rewards') { sw(id); return; }
       if (id === 'teacher') { api.set(false); return; }

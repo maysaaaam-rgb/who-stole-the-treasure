@@ -7,6 +7,7 @@
 
   var timer = { total: 300, left: 300, running: false, h: null };
   var absent = {};            // studentId -> true (this session only, does not touch the attendance records)
+  var pickedHat = {};         // classId -> { studentId: true } (this session only, fair-pick hat)
   var pickBusy = false;
 
   function goalKey(cls) { return 'eaa_board_goal_' + cls.id; }
@@ -72,7 +73,9 @@
     '.cb-mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;position:relative}' +
     '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s}' +
     '.cb-st:hover{transform:translateY(-5px);background:rgba(255,255,255,.2)}' +
-    '.cb-st img.cb-mon{width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 10px 8px rgba(0,0,0,.35));cursor:pointer}' +
+    '.cb-st img.cb-mon{width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 10px 8px rgba(0,0,0,.35));cursor:pointer;transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}' +
+    '.cb-st img.cb-mon.cb-bounce{animation:cbMonBounce .45s cubic-bezier(.175,.885,.32,1.275)}' +
+    '@keyframes cbMonBounce{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-12px) scale(1.08)}75%{transform:translateY(2px) scale(.97)}}' +
     '.cb-st img.cb-av{position:absolute;right:8px;top:38px;width:44px;height:44px;border-radius:50%;object-fit:contain;background:#fff7d6;border:2.5px solid #f59e0b;box-shadow:0 4px 10px rgba(0,0,0,.4);z-index:3;cursor:pointer;transition:transform .15s}' +
     '.cb-st img.cb-av:hover{transform:scale(1.12)}' +
     '.cb-st b.n{display:block;font-weight:600;font-size:1.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
@@ -80,7 +83,7 @@
     '.cb-add{display:flex;gap:6px;justify-content:center;margin-top:8px}.cb-add button{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:99px;padding:5px 11px;font:500 .9rem Fredoka,sans-serif;cursor:pointer;border-bottom:3px solid rgba(0,0,0,.2)}' +
     '.cb-add button:hover{background:#22c55e}.cb-add button:active{transform:translateY(2px);border-bottom-width:1px}' +
     '.cb-ti{display:block;margin:3px auto 0;max-width:96%;font-size:.74rem;font-weight:600;background:rgba(251,191,36,.95);color:#4a2300;border-radius:99px;padding:1px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.cb-an{position:absolute;left:6px;top:6px;width:38px;height:38px;border-radius:50%;background:#fff center/contain no-repeat;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.35)}' +
+    '.cb-an{position:absolute;left:6px;top:42px;width:38px;height:38px;border-radius:50%;background:#fff center/contain no-repeat;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.35)}' +
     '.cb-st.plated .cb-pt{box-shadow:0 2px 6px rgba(0,0,0,.35)}' +
     '.cb-st.plated .cb-add button{background:rgba(38,33,92,.78);color:#fff}.cb-st.plated .cb-add button:hover{background:#16a34a}' +
     '.cb-st.off{opacity:.42;filter:grayscale(.7)}.cb-st.off .cb-add{visibility:hidden}.cb-st.pick{animation:cbPick .25s infinite alternate;background:rgba(251,191,36,.45);border-color:#fbbf24}' +
@@ -91,13 +94,29 @@
     '.cb-dock button{border:0;border-radius:16px;background:rgba(255,255,255,.13);color:#fff;font:500 .95rem Fredoka,sans-serif;padding:10px 14px;cursor:pointer;display:flex;gap:6px;align-items:center;border-bottom:4px solid rgba(0,0,0,.25);white-space:nowrap}' +
     '.cb-dock button:hover{background:rgba(255,255,255,.22)}.cb-dock button:active{transform:translateY(3px);border-bottom-width:1px}.cb-dock button.p{background:#22c55e;border-bottom-color:#15803d}.cb-dock .sep{width:1px;background:rgba(255,255,255,.2);margin:4px 2px}' +
     '.cb-win{position:fixed;inset:0;z-index:99998;background:rgba(10,5,40,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-family:Fredoka,system-ui,sans-serif;color:#fff;animation:cbFade .2s}' +
-    '@keyframes cbFade{from{opacity:0}}.cb-win>div{text-align:center;background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:34px;padding:34px 52px;box-shadow:0 30px 80px rgba(0,0,0,.6)}' +
-    '.cb-win img{width:min(260px,50vw);filter:drop-shadow(0 16px 12px rgba(0,0,0,.4))}.cb-win img.cb-win-av{width:110px;height:110px;border-radius:50%;object-fit:contain;background:#fff7d6;border:4px solid #f59e0b;margin-right:12px}.cb-win h2{font-size:3rem;font-weight:600;margin:6px 0 14px}.cb-win button{border:0;border-radius:16px;background:#22c55e;color:#fff;font:600 1.1rem Fredoka,system-ui,sans-serif;padding:11px 26px;cursor:pointer;border-bottom:4px solid #15803d}' +
+    '@keyframes cbFade{from{opacity:0}}.cb-win>div{text-align:center;background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:34px;padding:34px 42px;max-width:94vw;box-shadow:0 30px 80px rgba(0,0,0,.6)}' +
+    '.cb-win img{width:min(240px,42vw);filter:drop-shadow(0 16px 12px rgba(0,0,0,.4))}.cb-win img.cb-win-av{width:110px;height:110px;border-radius:50%;object-fit:contain;background:#fff7d6;border:4px solid #f59e0b;margin-right:12px}.cb-win h2{font-size:2.6rem;font-weight:600;margin:6px 0 14px}' +
+    '.cb-win .cb-wbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px}' +
+    '.cb-win button{border:0;border-radius:16px;background:#22c55e;color:#fff;font:700 1.15rem Fredoka,system-ui,sans-serif;min-height:56px;padding:12px 24px;cursor:pointer;border-bottom:5px solid #15803d;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s}' +
+    '.cb-win button:active{transform:translateY(4px);border-bottom-width:1px}' +
+    '.cb-win button.b10{background:#f59e0b;color:#2b1700;border-bottom-color:#b45309}' +
+    '.cb-win button.bnext{background:#38bdf8;color:#06101f;border-bottom-color:#0369a1}' +
+    '.cb-win .cb-vs{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:12px}' +
+    '.cb-win .cb-fighter{display:flex;flex-direction:column;align-items:center;min-width:180px}' +
+    '.cb-win .cb-fighter.f1 img.cb-fmon{transform:scaleX(-1)}' +
+    '.cb-win .cb-vs-tag{font-size:2.2rem;font-weight:800;color:#fbbf24;text-shadow:0 4px 12px rgba(0,0,0,.5)}' +
     '.cb-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;position:relative}.cb-tabs button{border:0;border-bottom:4px solid rgba(0,0,0,.28);background:rgba(255,255,255,.14);color:#fff;font:500 1rem Fredoka,sans-serif;padding:8px 18px;border-radius:14px;cursor:pointer}.cb-tabs button.on{background:#fbbf24;color:#4a2300;border-bottom-color:#b45309}.cb-tabs button:active{transform:translateY(3px);border-bottom-width:1px}' +
     '.cb-today{margin:12px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative}.cb-today .lab{font-weight:600;opacity:.8;margin-right:4px}.cb-today a,.cb-today button{text-decoration:none;color:#fff;background:rgba(34,197,94,.3);border:1px solid #4ade80;border-bottom:4px solid #15803d;border-radius:14px;padding:7px 14px;font:500 .95rem Fredoka,sans-serif;cursor:pointer}.cb-today a em{font-style:normal;color:#fde68a;margin-right:4px}.cb-today button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);border-bottom-color:rgba(0,0,0,.28)}' +
-    '.cb-st .cb-mn{position:absolute;left:8px;top:8px;width:30px;height:30px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.32);color:#fff;font:700 1rem/1 Fredoka,sans-serif;letter-spacing:1px;cursor:pointer;z-index:2}.cb-st .cb-mn:hover{background:rgba(0,0,0,.55)}.cb-st .cb-an{top:42px}' +
+    '.cb-st .cb-att{position:absolute;left:8px;top:8px;height:28px;padding:0 9px;border:0;border-bottom:3px solid rgba(0,0,0,.35);border-radius:99px;background:rgba(16,185,129,.88);color:#fff;font:700 .78rem/1 Fredoka,sans-serif;cursor:pointer;z-index:2;display:inline-flex;align-items:center;justify-content:center;transition:transform .12s cubic-bezier(.175,.885,.32,1.275)}' +
+    '.cb-st .cb-att:active{transform:translateY(2px);border-bottom-width:1px}' +
+    '.cb-st.off .cb-att{background:rgba(244,63,94,.9);color:#fff}' +
+    '.cb-st .cb-mn{position:absolute;left:44px;top:8px;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.32);color:#fff;font:700 .95rem/1 Fredoka,sans-serif;letter-spacing:1px;cursor:pointer;z-index:2}.cb-st.off .cb-mn{left:64px}.cb-st .cb-mn:hover{background:rgba(0,0,0,.55)}' +
     '#cb-pop{position:fixed;z-index:99990;background:#1e1b4b;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:6px;display:flex;flex-direction:column;gap:2px;min-width:200px;box-shadow:0 18px 50px rgba(0,0,0,.6);font-family:Fredoka,system-ui,sans-serif}#cb-pop b{color:#fde68a;font-weight:600;padding:6px 10px 4px;font-size:.95rem}#cb-pop button{border:0;background:none;color:#fff;font:500 .95rem Fredoka,sans-serif;text-align:left;padding:9px 10px;border-radius:9px;cursor:pointer}#cb-pop button:hover{background:rgba(255,255,255,.14)}' +
-    '.cb-grp{position:fixed;inset:0;z-index:99997;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Fredoka,system-ui,sans-serif;color:#fff}.cb-grp>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;text-align:center}.cb-grp h2{margin:0 0 12px;font-weight:600}.cb-gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;text-align:left}.cb-gg div.g{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 16px;border-top:6px solid var(--c)}.cb-gg b{display:block;font-weight:600;margin-bottom:4px;color:#fde68a}.cb-grp .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.cb-grp button{border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:14px;background:#22c55e;color:#fff;font:500 1rem Fredoka,sans-serif;padding:9px 18px;cursor:pointer}.cb-grp button.g2{background:rgba(255,255,255,.2)}' +
+    '.cb-grp{position:fixed;inset:0;z-index:99997;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px;font-family:Fredoka,system-ui,sans-serif;color:#fff}.cb-grp>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;text-align:center}.cb-grp h2{margin:0 0 12px;font-weight:600}.cb-gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;text-align:left}.cb-gg div.g{background:rgba(255,255,255,.14);border-radius:18px;padding:12px 16px;border-top:6px solid var(--c)}.cb-gg b{display:block;font-weight:600;margin-bottom:4px;color:#fde68a}.cb-grp .row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}.cb-grp button{border:0;border-bottom:5px solid rgba(0,0,0,.35);border-radius:14px;background:#22c55e;color:#fff;font:600 1rem Fredoka,sans-serif;min-height:56px;padding:10px 20px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s}.cb-grp button:active{transform:translateY(4px);border-bottom-width:1px}.cb-grp button.g2{background:rgba(255,255,255,.2)}' +
+    '.cb-gnums{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:14px 0 18px}' +
+    '.cb-gnums button.cb-gnum{min-width:78px;min-height:72px;font-size:1.85rem;font-weight:800;border-radius:20px;background:#38bdf8;color:#06101f;border-bottom:5px solid #0369a1}' +
+    '.cb-gnums button.cb-gnum.on{background:#f59e0b;color:#2b1700;border-bottom-color:#b45309}' +
+    '.cb-hat{font-size:.78rem;font-weight:700;color:#cbd5e1;padding:0 6px;white-space:nowrap;align-self:center}' +
     '.cb-dock{gap:5px;padding:6px 8px;border-radius:16px;flex-wrap:nowrap;max-width:96vw;overflow-x:auto}.cb-dock button{padding:6px 11px;font-size:.85rem;border-radius:11px;border-bottom-width:3px;white-space:nowrap}.cb-dock button.sm{padding:6px 8px}.cb-dock button.ic{padding:6px 8px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
     '.cb-goal.won{background:linear-gradient(90deg,rgba(251,191,36,.45),rgba(244,63,94,.45));animation:cbPulse 1.6s infinite}' +
     '.cb-gm{position:fixed;inset:0;z-index:99996;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Fredoka,system-ui,sans-serif;color:#fff}' +
@@ -238,6 +257,19 @@
   function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); }
   if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('#cb-pop') && !e.target.closest('.cb-mn'))) closeMenus(); });
 
+  function hatFor(cls) {
+    var id = (cls && cls.id) || 'default';
+    if (!pickedHat[id]) pickedHat[id] = {};
+    return pickedHat[id];
+  }
+  function paintHat() {
+    var el = document.getElementById('cb-hat-info'); if (!el || !viewCls) return;
+    var present = S().getStudentsByClass(viewCls.id).filter(function (s) { return !absent[s.id]; });
+    var hat = hatFor(viewCls);
+    var pickedCount = present.filter(function (s) { return !!hat[s.id]; }).length;
+    el.textContent = pickedCount + ' of ' + present.length + ' picked';
+  }
+
   function render(container) {
     ensureCss();
     var cls = S().getActiveClass(); viewCls = cls; loadAbsent(cls);
@@ -254,19 +286,25 @@
         var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal + avBadge +
+          '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
-          '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Click to mark here / absent" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' +
+          '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
         '<button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button><span class="sep"></span>' +
-        '<button onclick="ClassBoard.pick()" title="Pick a student">🎲 Pick</button><button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button><button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button><button onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">🎙️ Voice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
+        '<button onclick="ClassBoard.pick()" title="Pick a student (no repeats until everyone is picked)">🎲 Pick</button>' +
+        '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
+        '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span>' +
+        '<button class="sm" onclick="ClassBoard.resetHat()" title="Reset the fair-pick hat">↺ Reset hat</button><span class="sep"></span>' +
+        '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
+        '<button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button><button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button><button onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">🎙️ Voice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
         '<button class="ic" onclick="try{classSoundboard.playAttentionBell()}catch(e){}" title="Bell">🔔</button><button class="ic" onclick="try{classSoundboard.playApplause()}catch(e){}" title="Applause">👏</button><span class="sep"></span>' +
-        '<button class="ic" onclick="ClassBoard.addStudent()" title="Add a student">➕</button><button class="ic" onclick="switchView(\'store\')" title="Classroom Store">🛍️</button><button class="ic" onclick="ClassBoard.full()" title="Full screen">⛶</button><button class="ic" onclick="switchView(\'dashboard\')" title="Exit the board">✕</button></div></div>';
-    paintGoal(); paintClock();
+        '<button class="ic" onclick="ClassBoard.addStudent()" title="Add a student">➕</button><button class="ic" onclick="switchView(\'store\')" title="Classroom Store">🛍️</button><button class="ic" onclick="ClassBoard.full()" title="Full screen">⛶</button><button class="ic" onclick="switchView(\'command\')" title="Exit the board">✕</button></div></div>';
+    paintGoal(); paintClock(); paintHat();
     // pull the newest goal from the cloud, then redraw the bar
     try { if (root.ClassroomStore && root.ClassroomStore.cloud) root.ClassroomStore.cloud.pull().then(function () { paintGoal(); }); } catch (e) { /* offline */ }
   }
@@ -322,29 +360,41 @@
       } catch (e) { if (root.showNotification) root.showNotification('Could not open that. Try the Command Center.', 'error'); }
     },
     addStudent: function () { if (root.openStudentModal) root.openStudentModal(); },
-    groups: function () {
+    groups: function (chosenN) {
       var list = S().getStudentsByClass(viewCls.id).filter(function (s) { return !absent[s.id]; });
       if (!list.length) return;
-      var n = parseInt(root.prompt('How many groups?', String(Math.max(2, Math.round(list.length / 4)))), 10);
-      if (!n || n < 2) return; n = Math.min(n, list.length);
       var colors = ['#f97316', '#8b5cf6', '#06b6d4', '#22c55e', '#f43f5e', '#eab308', '#ec4899', '#14b8a6'], icons = ['🦊', '🦉', '🐻', '🐇', '🐸', '🐧', '🦁', '🐼'];
-      function make() {
+      var n = chosenN ? Math.min(Math.max(2, parseInt(chosenN, 10) || 2), Math.max(2, list.length)) : null;
+      function make(cnt) {
         var a = list.slice(), g = [], i, j, t;
         for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; }
-        for (i = 0; i < n; i++) g.push([]);
-        a.forEach(function (s, k) { g[k % n].push(s.firstName || s.name); });
+        for (i = 0; i < cnt; i++) g.push([]);
+        a.forEach(function (s, k) { g[k % cnt].push(s.firstName || s.name); });
         return g;
       }
-      function show() {
+      function show(cnt) {
+        n = cnt;
         var old = document.querySelector('.cb-grp'); if (old) old.remove();
-        var g = make(), w = document.createElement('div'); w.className = 'cb-grp';
-        w.innerHTML = '<div><h2>👥 ' + n + ' groups · ' + list.length + ' pupils here</h2><div class="cb-gg">' + g.map(function (m, k) { return '<div class="g" style="--c:' + colors[k % colors.length] + '"><b>' + icons[k % icons.length] + ' Group ' + (k + 1) + '</b>' + m.map(esc).join('<br>') + '</div>'; }).join('') + '</div><div class="row"><button class="g2" id="cb-gr">🔀 Shuffle again</button><button id="cb-gc">Done</button></div></div>';
+        var w = document.createElement('div'); w.className = 'cb-grp';
+        var numBtns = '<div class="cb-gnums">' + [2, 3, 4, 5, 6].map(function (num) {
+          return '<button type="button" class="cb-gnum' + (n === num ? ' on' : '') + '" data-gn="' + num + '">' + num + '</button>';
+        }).join('') + '</div>';
+        if (!n) {
+          w.innerHTML = '<div><h2>👥 How many groups?</h2><p style="margin:0 0 8px;opacity:.85">' + list.length + ' pupils here today — tap a number:</p>' + numBtns + '<div class="row"><button class="g2" id="cb-gc">Cancel</button></div></div>';
+        } else {
+          var g = make(Math.min(n, list.length));
+          w.innerHTML = '<div><h2>👥 ' + n + ' groups · ' + list.length + ' pupils here</h2>' + numBtns + '<div class="cb-gg">' + g.map(function (m, k) { return '<div class="g" style="--c:' + colors[k % colors.length] + '"><b>' + icons[k % icons.length] + ' Group ' + (k + 1) + '</b>' + m.map(esc).join('<br>') + '</div>'; }).join('') + '</div><div class="row"><button class="g2" id="cb-gr">🔀 Shuffle again</button><button id="cb-gc">Done</button></div></div>';
+        }
         document.body.appendChild(w);
-        w.querySelector('#cb-gr').onclick = show; w.querySelector('#cb-gc').onclick = function () { w.remove(); };
+        [].forEach.call(w.querySelectorAll('.cb-gnum'), function (b) {
+          b.onclick = function () { show(parseInt(b.getAttribute('data-gn'), 10)); };
+        });
+        var gr = w.querySelector('#cb-gr'); if (gr) gr.onclick = function () { show(n); };
+        w.querySelector('#cb-gc').onclick = function () { w.remove(); };
         w.addEventListener('mousedown', function (e) { if (e.target === w) w.remove(); });
-        try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ }
+        if (n) { try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ } }
       }
-      show();
+      show(n);
     },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
@@ -359,14 +409,34 @@
       }
       paintGoal();
     },
+    tapMonster: function (id, imgEl) {
+      if (imgEl) {
+        imgEl.classList.remove('cb-bounce');
+        void imgEl.offsetWidth;
+        imgEl.classList.add('cb-bounce');
+      }
+      if (!pupilSound(id)) {
+        try {
+          if (root.classSoundboard && root.classSoundboard.playQuietChime) root.classSoundboard.playQuietChime();
+          else if (root.classSoundboard && root.classSoundboard.playCardFlip) root.classSoundboard.playCardFlip();
+        } catch (e) { /* optional */ }
+      }
+    },
     toggleAbsent: function (id) {
       if (absent[id]) delete absent[id]; else absent[id] = true;
       saveAbsent(viewCls);
       var c = document.getElementById('cb-' + id); if (c) {
         c.classList.toggle('off', !!absent[id]);
+        var attBtn = c.querySelector('.cb-att'); if (attBtn) attBtn.textContent = absent[id] ? 'Away' : '✓';
         var nm = c.querySelector('b.n'); nm.textContent = nm.textContent.replace(' · away', '') + (absent[id] ? ' · away' : '');
       }
       var here = document.getElementById('cb-here'); if (here) here.textContent = S().getStudentsByClass(viewCls.id).filter(function (s) { return !absent[s.id]; }).length;
+      paintHat();
+    },
+    resetHat: function () {
+      if (viewCls) pickedHat[viewCls.id] = {};
+      paintHat();
+      try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ }
     },
     play: function () {
       if (timer.running) { stopTimer(); paintClock(); return; }
@@ -379,25 +449,110 @@
     newGoal: function () { goalEditor(); },
     pick: function () {
       if (pickBusy) return;
+      var oldW = document.querySelector('.cb-win'); if (oldW) oldW.remove();
       var cards = [].slice.call(document.querySelectorAll('.cb-st:not(.off)'));
       if (!cards.length) return;
-      pickBusy = true; var n = 0, steps = 18 + Math.floor(Math.random() * 10), prev = null;
+      var hat = hatFor(viewCls);
+      var pool = cards.filter(function (c) { return !hat[c.dataset.id]; });
+      if (!pool.length) {
+        pickedHat[viewCls.id] = {};
+        hat = hatFor(viewCls);
+        pool = cards.slice();
+      }
+      var winner = pool[Math.floor(Math.random() * pool.length)];
+      hat[winner.dataset.id] = true;
+      paintHat();
+      pickBusy = true; var n = 0, steps = 14 + Math.floor(Math.random() * 6), prev = null;
       (function step() {
         if (prev) prev.classList.remove('pick');
-        var c = cards[Math.floor(Math.random() * cards.length)]; if (cards.length > 1 && c === prev) c = cards[(cards.indexOf(c) + 1) % cards.length];
+        var c = (n + 1 >= steps) ? winner : cards[Math.floor(Math.random() * cards.length)];
+        if (n + 1 < steps && cards.length > 1 && c === prev) c = cards[(cards.indexOf(c) + 1) % cards.length];
         c.classList.add('pick'); prev = c; n++;
         try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ }
-        if (n < steps) return setTimeout(step, 60 + n * 9);
+        if (n < steps) return setTimeout(step, 55 + n * 8);
         setTimeout(function () {
-          c.classList.remove('pick'); pickBusy = false;
+          winner.classList.remove('pick'); pickBusy = false;
           var w = document.createElement('div'); w.className = 'cb-win';
-          var ti = c.querySelector('.cb-ti'), pl = c.getAttribute('style') || '', avEl = c.querySelector('img.cb-av'), monEl = c.querySelector('img.cb-mon') || c.querySelector('img');
-          w.innerHTML = '<div' + (pl ? ' style="' + esc(pl) + '"' : '') + '>' + (avEl ? '<img class="cb-win-av" src="' + esc(avEl.getAttribute('src')) + '" alt="">' : '') + '<img src="' + esc(monEl.getAttribute('src')) + '" alt=""><h2>' + c.querySelector('b.n').textContent.replace(' · away', '') + '!</h2>' + (ti ? '<div class="cb-ti" style="font-size:1.2rem;margin:-4px auto 14px;display:inline-block;padding:3px 16px">' + ti.textContent + '</div><br>' : '') + '<button>Give +5 and close</button></div>';
+          var ti = winner.querySelector('.cb-ti'), pl = winner.getAttribute('style') || '', avEl = winner.querySelector('img.cb-av'), monEl = winner.querySelector('img.cb-mon') || winner.querySelector('img');
+          var winId = winner.dataset.id;
+          w.innerHTML = '<div' + (pl ? ' style="' + esc(pl) + '"' : '') + '>' +
+            (avEl ? '<img class="cb-win-av" src="' + esc(avEl.getAttribute('src')) + '" alt="">' : '') +
+            '<img src="' + esc(monEl.getAttribute('src')) + '" alt="">' +
+            '<h2>' + esc(winner.querySelector('b.n').textContent.replace(' · away', '')) + '!</h2>' +
+            (ti ? '<div class="cb-ti" style="font-size:1.2rem;margin:-4px auto 14px;display:inline-block;padding:3px 16px">' + esc(ti.textContent) + '</div><br>' : '') +
+            '<div class="cb-wbtns">' +
+              '<button type="button" id="cb-w-5">⭐ +5</button>' +
+              '<button type="button" class="b10" id="cb-w-10">🌟 +10</button>' +
+              '<button type="button" class="bnext" id="cb-w-next">🔄 Pick another</button>' +
+            '</div></div>';
           document.body.appendChild(w);
-          if (!pupilSound(c.dataset.id)) { try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ } }
-          w.querySelector('button').onclick = function () { api.award(c.dataset.id, 5); w.remove(); };
+          if (!pupilSound(winId)) { try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ } }
+          w.querySelector('#cb-w-5').onclick = function () { api.award(winId, 5); w.remove(); };
+          w.querySelector('#cb-w-10').onclick = function () { api.award(winId, 10); w.remove(); };
+          w.querySelector('#cb-w-next').onclick = function () { w.remove(); api.pick(); };
           w.addEventListener('mousedown', function (e) { if (e.target === w) w.remove(); });
-        }, 250);
+        }, 220);
+      })();
+    },
+    pick2: function () {
+      if (pickBusy) return;
+      var oldW = document.querySelector('.cb-win'); if (oldW) oldW.remove();
+      var cards = [].slice.call(document.querySelectorAll('.cb-st:not(.off)'));
+      if (cards.length < 2) { if (cards.length === 1) api.pick(); return; }
+      var hat = hatFor(viewCls);
+      var pool = cards.filter(function (c) { return !hat[c.dataset.id]; });
+      if (!pool.length) {
+        pickedHat[viewCls.id] = {};
+        hat = hatFor(viewCls);
+        pool = cards.slice();
+      }
+      var first = pool[Math.floor(Math.random() * pool.length)];
+      hat[first.dataset.id] = true;
+      var pool2 = cards.filter(function (c) { return c !== first && !hat[c.dataset.id]; });
+      if (!pool2.length) {
+        pickedHat[viewCls.id] = {};
+        hat = hatFor(viewCls);
+        hat[first.dataset.id] = true;
+        pool2 = cards.filter(function (c) { return c !== first; });
+      }
+      var second = pool2[Math.floor(Math.random() * pool2.length)];
+      hat[second.dataset.id] = true;
+      paintHat();
+      pickBusy = true; var n = 0, steps = 12, prev1 = null, prev2 = null;
+      (function step() {
+        if (prev1) prev1.classList.remove('pick');
+        if (prev2) prev2.classList.remove('pick');
+        var c1 = (n + 1 >= steps) ? first : cards[Math.floor(Math.random() * cards.length)];
+        var c2 = (n + 1 >= steps) ? second : cards[(cards.indexOf(c1) + 1 + Math.floor(Math.random() * (cards.length - 1))) % cards.length];
+        c1.classList.add('pick'); c2.classList.add('pick'); prev1 = c1; prev2 = c2; n++;
+        try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ }
+        if (n < steps) return setTimeout(step, 60 + n * 8);
+        setTimeout(function () {
+          first.classList.remove('pick'); second.classList.remove('pick'); pickBusy = false;
+          var w = document.createElement('div'); w.className = 'cb-win';
+          var m1 = (first.querySelector('img.cb-mon') || first.querySelector('img')).getAttribute('src');
+          var m2 = (second.querySelector('img.cb-mon') || second.querySelector('img')).getAttribute('src');
+          var n1 = first.querySelector('b.n').textContent.replace(' · away', '');
+          var n2 = second.querySelector('b.n').textContent.replace(' · away', '');
+          var id1 = first.dataset.id, id2 = second.dataset.id;
+          w.innerHTML = '<div>' +
+            '<div class="cb-vs">' +
+              '<div class="cb-fighter f1"><img class="cb-fmon" src="' + esc(m1) + '" alt=""><h2>' + esc(n1) + '</h2></div>' +
+              '<div class="cb-vs-tag">⚔️ VS ⚔️</div>' +
+              '<div class="cb-fighter f2"><img class="cb-fmon" src="' + esc(m2) + '" alt=""><h2>' + esc(n2) + '</h2></div>' +
+            '</div>' +
+            '<div class="cb-wbtns">' +
+              '<button type="button" id="cb-w2-5">⭐ Award both +5</button>' +
+              '<button type="button" class="b10" id="cb-w2-10">🌟 Award both +10</button>' +
+              '<button type="button" class="bnext" id="cb-w2-next">🔄 Pick 2 more</button>' +
+            '</div></div>';
+          document.body.appendChild(w);
+          try { root.classSoundboard && root.classSoundboard.playFanfare && root.classSoundboard.playFanfare(); } catch (e) { /* optional */ }
+          w.querySelector('#cb-w2-5').onclick = function () { api.award(id1, 5); api.award(id2, 5); w.remove(); };
+          w.querySelector('#cb-w2-10').onclick = function () { api.award(id1, 10); api.award(id2, 10); w.remove(); };
+          w.querySelector('#cb-w2-next').onclick = function () { w.remove(); api.pick2(); };
+          w.addEventListener('mousedown', function (e) { if (e.target === w) w.remove(); });
+        }, 220);
       })();
     },
     full: function () {
