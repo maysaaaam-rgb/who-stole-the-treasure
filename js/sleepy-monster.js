@@ -48,12 +48,13 @@
   // ---- Mio art assets
   var CHAR_DIR = 'assets/packs/characters/sleepy-mio/';
   var BG_DIR = 'assets/packs/backgrounds/';
+  var SCENE_DIR = 'assets/packs/backgrounds/sleepy-scenes/';
   var MIO_ART = {
-    asleep: CHAR_DIR + 'mio-asleep.webp',
-    stirring: CHAR_DIR + 'mio-stirring.webp',
-    awake: CHAR_DIR + 'mio-awake-grumpy.webp',
-    yawn: CHAR_DIR + 'mio-yawn.webp',
-    calm: CHAR_DIR + 'mio-calm-happy.webp',
+    asleep: SCENE_DIR + 'scene-asleep.webp',
+    stirring: SCENE_DIR + 'scene-stirring.webp',
+    awake: SCENE_DIR + 'scene-awake.webp',
+    yawn: SCENE_DIR + 'scene-yawn.webp',
+    calm: SCENE_DIR + 'scene-calm.webp',
     zzz: CHAR_DIR + 'zzz.webp',
     pillow: CHAR_DIR + 'moon-pillow.webp',
     bubble: CHAR_DIR + 'sleep-bubble.webp',
@@ -79,31 +80,31 @@
   // ---- page
   var CSS = '' +
     '#sm-root{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;color:#e6edf7;font-family:inherit;background:#060911;overflow:hidden}' +
-    '#sm-root::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(10,15,30,.22) 0%,rgba(6,9,17,.68) 100%);pointer-events:none;z-index:0;transition:background .45s ease}' +
-    '#sm-root .sm-scene{background:url("' + MIO_ART.bgNight + '") center/100% 100% no-repeat}#sm-root.awake .sm-scene{background-image:url("' + MIO_ART.bgAwake + '")}' +
-    '#sm-root.awake::before{background:radial-gradient(circle at 50% 42%,rgba(74,29,42,.25) 0%,rgba(18,6,9,.72) 100%)}' +
-    '#sm-root .sm-top,#sm-root .sm-stage,#sm-root .sm-blame{position:relative;z-index:1}' +
+    '#sm-root::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(10,15,30,.18) 0%,rgba(6,9,17,.58) 100%);pointer-events:none;z-index:1;transition:background .45s ease}' +
+    '#sm-root .sm-scene{background:url("' + MIO_ART.asleep + '") center/100% 100% no-repeat}#sm-root.awake .sm-scene{background-image:url("' + MIO_ART.awake + '")}' +
+    '#sm-root.awake::before{background:radial-gradient(circle at 50% 42%,rgba(74,29,42,.2) 0%,rgba(18,6,9,.62) 100%)}' +
+    '#sm-root .sm-top,#sm-root .sm-stage,#sm-root .sm-blame{position:relative;z-index:2}' +
     '#sm-root .sm-top{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;box-sizing:border-box;background:rgba(6,9,17,.45);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}' +
     '#sm-root h1{margin:0;font-size:1.5rem;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,.6)}' +
     '#sm-root .sm-btn{border:0;border-bottom:5px solid var(--b,#1e3a8a);background:var(--c,#38bdf8);color:#06101f;font-weight:900;font-size:1rem;padding:10px 18px;border-radius:14px;cursor:pointer;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s;display:inline-flex;align-items:center;gap:6px}' +
     '#sm-root .sm-btn:active{transform:translateY(4px);border-bottom-width:1px}' +
     '#sm-root .sm-btn-icon{width:22px;height:22px;object-fit:contain;pointer-events:none}' +
     '#sm-root .sm-scene{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(56.25vw,100vh);transform:translate(-50%,-50%);z-index:0}' +
-    '#sm-root .sm-mon{position:absolute;left:50%;bottom:25.5%;width:24%;transform:translateX(-50%);z-index:1}' +
-    '#sm-root .sm-mon img,#sm-root .sm-mon svg{display:block;width:100%;height:auto;position:relative;z-index:1;transform-origin:50% 96%;user-select:none;-webkit-user-drag:none}' +
-    '#sm-root .sm-shadow{position:absolute;left:8%;right:8%;bottom:-3%;height:11%;background:radial-gradient(ellipse at 50% 50%,rgba(8,4,22,.78) 0%,rgba(8,4,22,.42) 45%,rgba(8,4,22,0) 72%);filter:blur(3px);z-index:0}' +
-    '#sm-root.asleep .sm-mon img{filter:brightness(.9) saturate(.95);animation:smBreathe 4s ease-in-out infinite}' +
-    '#sm-root.stirring .sm-mon img{animation:smStir .5s ease-in-out infinite}' +
-    '#sm-root.awake .sm-mon img{filter:brightness(1.06) saturate(1.1);animation:smJump .6s var(--spring,cubic-bezier(.175,.885,.32,1.275)) 1}' +
-    '#sm-root.awake .sm-mon{width:25%}' +
+    '#sm-root .sm-mon{position:absolute;inset:0;width:100%;height:100%;z-index:1;display:flex;align-items:center;justify-content:center}' +
+    '#sm-root .sm-mon img{display:block;width:100%;height:100%;object-fit:cover;position:relative;z-index:1;transform-origin:50% 62%;user-select:none;-webkit-user-drag:none}' +
+    '#sm-root .sm-mon svg{display:block;width:380px;height:auto;position:relative;z-index:1}' +
+    '#sm-root .sm-shadow{display:none}' +
+    '#sm-root.asleep .sm-mon img{animation:smBreathe 4.2s ease-in-out infinite}' +
+    '#sm-root.stirring .sm-mon img{animation:smStir .55s ease-in-out infinite}' +
+    '#sm-root.awake .sm-mon img{animation:smJump .55s var(--spring,cubic-bezier(.175,.885,.32,1.275)) 1}' +
     '#sm-root .sm-zzz{position:absolute;left:56%;top:17%;width:5.5%;pointer-events:none;animation:smZ 3.2s ease-in-out infinite;z-index:2}' +
     '#sm-root .sm-zzz img{width:100%;height:auto;display:block}' +
     '#sm-root .sm-bubble{display:none}' +
     '#sm-root .sm-stage{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:34px 16px 8px;background:linear-gradient(180deg,rgba(6,9,17,0) 0%,rgba(6,9,17,.78) 55%,rgba(6,9,17,.9) 100%);pointer-events:none}' +
     '#sm-root .sm-stage button,#sm-root .sm-stage .sm-blame{pointer-events:auto}' +
-    '@keyframes smBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}' +
-    '@keyframes smStir{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-6px) rotate(-2deg)}75%{transform:translateX(6px) rotate(2deg)}}' +
-    '@keyframes smJump{0%{transform:translateY(0)}40%{transform:translateY(-40px) scale(1.1)}100%{transform:translateY(0)}}' +
+    '@keyframes smBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}' +
+    '@keyframes smStir{0%,100%{transform:scale(1.01) translateX(0)}25%{transform:scale(1.01) translateX(-4px)}75%{transform:scale(1.01) translateX(4px)}}' +
+    '@keyframes smJump{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}' +
     '@keyframes smZ{0%{opacity:0;transform:translate(0,18px) scale(.65)}30%{opacity:1}100%{opacity:0;transform:translate(26px,-44px) scale(1.18)}}' +
     '@keyframes smBubble{0%,100%{transform:scale(.75);opacity:.65}50%{transform:scale(1.18);opacity:.95}}' +
     '#sm-root.awake .sm-zzz,#sm-root.stirring .sm-zzz,#sm-root.awake .sm-bubble,#sm-root.stirring .sm-bubble{display:none}' +
@@ -252,10 +253,18 @@
     if (msg) msg.textContent = 'Yaaawn… Mio is getting sleepy';
     if (sub) sub.textContent = 'Shhh… keep the room quiet';
     st.yawnTimer = setTimeout(function () {
-      if (!st || !st.alive) return;
-      st.yawning = false;
-      if (!st.awake && st.wake <= 55) setMioPose('asleep');
-    }, 1800);
+      if (!st || !st.alive || st.awake) return;
+      if (st.wake <= 55) {
+        setMioPose('calm');
+        var m2 = document.getElementById('sm-msg');
+        if (m2) m2.textContent = 'Cuddling the moon pillow…';
+      }
+      st.yawnTimer = setTimeout(function () {
+        if (!st || !st.alive) return;
+        st.yawning = false;
+        if (!st.awake && st.wake <= 55) setMioPose('asleep');
+      }, 1500);
+    }, 1500);
     sndLullaby();
   }
 
