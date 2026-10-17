@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party: how to make your costume at home</title>
+<link rel="stylesheet" href="print.css">
+<style>
+  .hd { display: flex; align-items: center; gap: 6mm; border-bottom: 1mm solid var(--violet); padding-bottom: 3mm; margin-bottom: 4mm; }
+  .hd img { width: 24mm; height: 24mm; object-fit: cover; object-position: 50% 14%; border-radius: 4mm; border: 0.6mm solid var(--gold); }
+  .hd h1 { margin: 0; font-size: 22pt; color: var(--violet); } .hd .who { font-size: 11pt; color: #475569; }
+  .wear { background: #fef3c7; border-radius: 3mm; padding: 3mm 4mm; font-size: 12pt; margin-bottom: 4mm; } .wear .tr { color: #78350f; font-size: 10.5pt; }
+  .item { display: grid; grid-template-columns: 38mm 1fr; gap: 5mm; padding: 3mm; margin-bottom: 5mm; }
+  .item .pic { text-align: center; } .item .pic img { width: 100%; max-height: 46mm; object-fit: contain; } .item .pic .e { font-size: 44pt; }
+  .item h2 { margin: 0 0 1mm; font-size: 14pt; } .item .mat { font-size: 10.5pt; color: #334155; margin-bottom: 1mm; } .item .time { font-size: 10pt; color: var(--gold); font-weight: 800; }
+  .item ol { margin: 1mm 0 0; padding-left: 6mm; font-size: 11.5pt; line-height: 1.45; } .item .tr { font-size: 10pt; color: #64748b; margin-top: 1.5mm; border-top: 0.3mm dotted #cbd5e1; padding-top: 1.5mm; }
+  .foot { font-size: 10.5pt; color: #475569; margin-top: 3mm; background: var(--soft); border-radius: 3mm; padding: 2.5mm 4mm; }
+</style>
+</head>
+<body>
+<div class="bar"><h1>🛠️ Make it at home</h1><select id="role"></select><button onclick="window.print()">Print</button>
+  <span class="hint">One page per character: what to wear and how to make each prop. Simple is perfect. Adults help with scissors.</span></div>
+<main id="out"></main>
+<script src="../alice-party-home/party-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PARTY, PROPS = '../assets/alice-cut/props/', AV = '../assets/alice-cut/avatars/a_';
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+  /* what to wear: [English, Turkish] */
+  var WEAR = {
+    alice: ['A blue dress or a blue shirt, a white apron or white cloth, a ribbon in your hair.', 'Mavi elbise veya mavi tişört, beyaz önlük ya da beyaz bez, saça kurdele.'],
+    hatter: ['A waistcoat or jacket, a big bow tie (paper is fine), a bright shirt.', 'Yelek veya ceket, büyük papyon (kâğıt olabilir), canlı renkli gömlek.'],
+    rabbit: ['A white or grey shirt, a small waistcoat if you have one, a paper bow tie.', 'Beyaz veya gri gömlek, varsa küçük yelek, kâğıttan papyon.'],
+    whitequeen: ['White or light clothes, a white scarf or cloth as a cape.', 'Beyaz veya açık renk kıyafet, pelerin yerine beyaz eşarp ya da bez.'],
+    hare: ['Brown or grey clothes. A tail made of a cotton ball on your back.', 'Kahverengi veya gri kıyafet. Arkaya pamuktan kuyruk.'],
+    cheshire: ['Purple or grey clothes, stripes if you have them. Make a long tail from a scarf.', 'Mor veya gri kıyafet, varsa çizgili. Eşarptan uzun kuyruk.'],
+    cat: ['All black clothes. A tail from a black sock or scarf.', 'Tamamen siyah kıyafet. Siyah çorap veya eşarptan kuyruk.'],
+    bayard: ['Brown clothes. A tail from a brown scarf.', 'Kahverengi kıyafet. Kahverengi eşarptan kuyruk.'],
+    redqueen: ['Red clothes. A paper collar or a red cloth as a cape.', 'Kırmızı kıyafet. Kâğıt yaka ya da kırmızı bez pelerin.'],
+    dragon: ['Green or dark clothes. A long green tail from a scarf.', 'Yeşil veya koyu kıyafet. Eşarptan uzun yeşil kuyruk.'],
+    bandersnatch: ['Dark clothes (brown, black or dark green). A fluffy scarf for fur.', 'Koyu kıyafet (kahverengi, siyah, koyu yeşil). Tüy yerine tüylü eşarp.'],
+    sister: ['A pretty dress or a light shirt, a ribbon or scarf.', 'Güzel bir elbise veya açık renk gömlek, kurdele veya eşarp.'],
+    mother: ['A long skirt or a smart jacket, a shawl, a necklace made of paper.', 'Uzun etek veya şık ceket, şal, kâğıttan kolye.'],
+    twosister1: ['Matching clothes with your sister: same colour. A green hat.', 'Kardeşinizle aynı renk kıyafet. Yeşil şapka.'],
+    twosister2: ['Matching clothes with your sister: same colour. A green hat.', 'Kardeşinizle aynı renk kıyafet. Yeşil şapka.'],
+    absolem: ['Blue clothes. Stripes on your arms with paper or tape.', 'Mavi kıyafet. Kolların üzerine kâğıt veya bantla çizgiler.'],
+    hamish: ['A jacket or waistcoat, a tie, smart trousers.', 'Ceket veya yelek, kravat, şık pantolon.'],
+    lowell: ['A green coat or cardigan, a tie, smart trousers.', 'Yeşil mont veya hırka, kravat, şık pantolon.'],
+    dum: ['Green clothes. A cushion under your shirt for a round tummy.', 'Yeşil kıyafet. Yuvarlak karın için tişörtün altına küçük yastık.'],
+    dee: ['Green clothes. A cushion under your shirt for a round tummy.', 'Yeşil kıyafet. Yuvarlak karın için tişörtün altına küçük yastık.'],
+    dormouse1: ['Grey or brown pyjamas or clothes. A thin tail from string.', 'Gri veya kahverengi pijama/kıyafet. İpten ince kuyruk.'],
+    dormouse2: ['Pyjamas! A sleepy face. A thin tail from string.', 'Pijama! Uykulu bir yüz. İpten ince kuyruk.'],
+    oyster: ['Pink or white clothes. A big collar like a shell from card.', 'Pembe veya beyaz kıyafet. Kartondan deniz kabuğu şeklinde büyük yaka.']
+  };
+
+  /* how to make: type -> materials, time, steps (English), summary (Turkish) */
+  var TYPES = {
+    ears: { m: 'card, scissors, tape or stapler, colours', t: '15 min',
+      s: ['Cut a strip of card 4 cm x 55 cm for the headband.', 'Draw 2 ears on card. Make them big. Cut them out.', 'Colour them. Add a different colour inside.', 'Tape the ears to the strip. Fold the bottom 2 cm to stand them up.', 'Wrap the strip around your head. Tape the ends.'],
+      tr: 'Karttan 4x55 cm bir şerit kesin (taç bandı). Karttan 2 büyük kulak kesip boyayın, şeride bantlayın. Şeridi başa göre ayarlayıp uçlarını yapıştırın.' },
+    crown: { m: 'card or paper, scissors, tape, colours, stars or hearts', t: '15 min',
+      s: ['Cut a strip of card 8 cm x 55 cm.', 'Cut a zig-zag along one long side to make points.', 'Colour it and decorate with stars or hearts.', 'Wrap it around your head. Tape the ends.'],
+      tr: 'Karttan 8x55 cm bir şerit kesin, bir kenarını zikzak kesin. Yıldız veya kalp ile süsleyin. Başa göre ayarlayıp uçlarını bantlayın.' },
+    antennae: { m: 'headband or card strip, 2 pipe cleaners or thin card strips, 2 paper balls, tape, blue colour', t: '10 min',
+      s: ['Make a headband from a card strip (4 cm x 55 cm).', 'Take 2 pipe cleaners or 2 thin card strips. Colour them blue.', 'Crumple 2 small paper balls and tape one on the end of each.', 'Tape the antennae to the headband.'],
+      tr: 'Karttan taç bandı yapın. İki ince kart şeridi (veya tel) maviye boyayın, uçlarına kâğıttan top yapıştırın, banda bantlayın.' },
+    tophat: { m: 'card, scissors, tape, colours, a ruler', t: '25 min',
+      s: ['Roll a big sheet of card into a tube that fits your head. Tape it. This is the top of the hat.', 'Put the tube on a sheet of card. Draw a big circle around it (about 8 cm wider). Cut it out.', 'Cut a small circle inside for the tube. Cut small tabs at the bottom of the tube and tape them to the brim.', 'Cut a circle of card for the top and tape it on.', 'Colour the hat. Add a band. Add a paper card in the band.'],
+      tr: 'Kalın kartı başa uyacak şekilde silindir yapın. Altına geniş bir kenar (şapka kenarı) yapıştırın, üstünü kapatın. Boyayın, bir şerit ekleyin.' },
+    cap: { m: 'a paper bowl or card, scissors, tape, green colour', t: '15 min',
+      s: ['Take a paper bowl (or cut a half-circle of card and roll it into a cap).', 'Cut the bottom of the bowl open so it fits on your head.', 'Colour it green.', 'Add a small card button or a paper propeller on top.'],
+      tr: 'Kâğıt kase veya kartı kasket şeklinde yapın, başa uyacak şekilde kesin, yeşile boyayın, üstüne küçük bir süs ekleyin.' },
+    sunhat: { m: 'a paper plate, a paper bowl, tape, colours, paper flowers', t: '20 min',
+      s: ['Turn a paper bowl upside down on a paper plate.', 'Tape them together. Cut a small hole in the plate for your head size if needed.', 'Colour the hat in a nice colour.', 'Make paper flowers and stick them around the hat. Add a ribbon.'],
+      tr: 'Kâğıt kaseyi ters çevirip kâğıt tabağa yapıştırın. Güzel bir renge boyayın, kâğıt çiçekler ve kurdele ekleyin.' },
+    wings: { m: 'big sheets of card, scissors, tape, ribbon or elastic, green colour', t: '25 min',
+      s: ['Draw one big wing on card (like a bat wing with 3 points at the bottom). Cut it out.', 'Trace it to make a second wing (flip it over).', 'Colour both wings. Draw lines for the bones.', 'Tape 2 ribbon loops to the back of each wing, big enough for your arms.', 'Put your arms through the loops.'],
+      tr: 'Karttan iki büyük kanat çizip kesin (yarasa kanadı gibi), yeşile boyayın. Arka tarafa kollarınızın geçeceği iki kurdele halka bantlayın.' },
+    claws: { m: 'old gloves or card, scissors, tape, dark colour', t: '15 min',
+      s: ['Cut 10 small triangles from card (each about 4 cm long).', 'Colour them dark.', 'Tape 5 triangles on the finger tips of each glove (or make small paper rings).', 'Wear the gloves. Be careful with your friends!'],
+      tr: 'Karttan 10 küçük üçgen kesin, koyu renge boyayın, eldivenin parmak uçlarına bantlayın (eldiven yoksa kâğıt yüzük yapın).' },
+    flat: { m: 'card, scissors, colours, string or tape', t: '10 min',
+      s: ['Look at the picture. Draw it BIG on card.', 'Cut it out.', 'Colour it. Make it bright and shiny (paper foil or yellow marker for gold).', 'Tape it to a stick, or add a string to hang around your neck.'],
+      tr: 'Resme bakıp kartın üzerine büyük çizin, kesin, boyayın. Çubuğa bantlayın veya boyna asmak için ip ekleyin.' },
+    real: { m: 'something from home (a plastic or paper one), a paper tag', t: '5 min',
+      s: ['Find a real one at home: use a plastic or paper cup, a small teapot or a plate. Never real hot tea!', 'Clean it. If it breaks easily, make a paper one (draw, cut, colour).', 'Bring it to school in a bag.'],
+      tr: 'Evde gerçeğini bulun (plastik veya kâğıt bardak, küçük çaydanlık, tabak). Sıcak çay koymayın! Kırılgansa kâğıttan yapın.' },
+    carrot: { m: 'orange card, green paper, tape, scissors', t: '10 min',
+      s: ['Cut a big orange triangle from card.', 'Roll it into a cone. Tape it.', 'Cut green paper into thin leaves.', 'Tape the leaves inside the wide end.'],
+      tr: 'Turuncu karttan büyük bir üçgen kesip koni yapın. Yeşil kâğıttan yapraklar kesip geniş uca yapıştırın.' },
+    smile: { m: 'white card, scissors, black marker, a stick or a paper plate', t: '10 min',
+      s: ['Draw a very big smile on white card (a long curve with teeth).', 'Cut it out.', 'Tape it to a stick, or on a paper plate.', 'Hold it up and smile!'],
+      tr: 'Beyaz karta çok büyük bir gülümseme (kavisli, dişli) çizin, kesin, çubuğa veya kâğıt tabağa yapıştırın.' },
+    bottle: { m: 'a small clean plastic bottle with a lid, water, blue colour, a paper tag', t: '10 min',
+      s: ['Use a small clean plastic bottle.', 'Fill it with water. Add a little blue colour or a blue sweet water drink.', 'Close the lid. Tape it shut!', 'Make a paper tag. Hang it on the bottle.'],
+      tr: 'Küçük, temiz plastik şişeye su doldurun, biraz mavi boya veya mavi şeker suyu ekleyin, kapağı kapatıp bantlayın, kâğıt etiket asın. İçmeyin!' },
+    mushroom: { m: 'a paper plate or card, a toilet roll, white and red paper, tape', t: '15 min',
+      s: ['Colour a paper plate red.', 'Stick white paper circles on it for spots.', 'Take a toilet roll. This is the stalk.', 'Tape the plate on the top of the roll.'],
+      tr: 'Kâğıt tabağı kırmızıya boyayın, beyaz daireler yapıştırın, tuvalet kâğıdı rulosunun üstüne bantlayın.' },
+    coat: { m: 'a green cardigan or jacket from home, card or paper buttons, tape', t: '5 min',
+      s: ['Find a green cardigan, coat or jacket at home.', 'No green one? Wear any smart jacket and tape on a green paper collar.', 'Add big paper buttons.'],
+      tr: 'Evde yeşil bir hırka veya ceket bulun. Yoksa herhangi bir ceket giyip yeşil kâğıt yaka bantlayın. Büyük kâğıt düğmeler ekleyin.' },
+    ball: { m: 'wool or string, or paper', t: '10 min',
+      s: ['Take wool or string.', 'Wind it round and round into a ball. Tie the end.', 'No wool? Crumple paper into a ball and tie string round it.'],
+      tr: 'Yün veya iple yumak yapın. Yün yoksa buruşturulmuş kâğıdın etrafına ip sarın.' },
+    shell: { m: 'card, scissors, pink or white colour', t: '15 min',
+      s: ['Cut 2 big shell shapes from card (a fan with a curved edge).', 'Colour them pink or white. Draw lines to look like a shell.', 'Tape them together at one side, so they open like a book.', 'Wear a string to hang it on your chest or hold it.'],
+      tr: 'Karttan iki büyük deniz kabuğu şekli kesin, boyayın, bir kenardan kitap gibi yapıştırın, ip takın.' },
+    pearl: { m: 'a white button, a bead, or a paper ball; white paint or card', t: '5 min',
+      s: ['Find a big white bead or button.', 'No bead? Crumple white paper into a ball.', 'Paint it white and add a little silver shine (a marker or foil).'],
+      tr: 'Büyük beyaz boncuk veya düğme bulun. Yoksa beyaz kâğıdı top yapın, beyaz boyayın, parlak bir dokunuş ekleyin.' },
+    bell: { m: 'a small real bell or a ball of foil, ribbon', t: '5 min',
+      s: ['Use a small real bell if you have one.', 'No bell? Make a ball of foil. Tie a ribbon round it.', 'Hang it on your wrist or neck.'],
+      tr: 'Gerçek küçük bir zil kullanın. Yoksa alüminyum folyodan top yapıp kurdele bağlayın, bileğe veya boyna takın.' }
+  };
+  /* prop text -> picture, type */
+  var PROP = {
+    'a paper key': ['prop_key', 'flat'], 'a teacup': ['prop_teacup', 'real'], 'a big paper hat': ['prop_hat_big', 'tophat'], 'a teapot': ['prop_teapot', 'real'], 'a paper watch': ['prop_watch', 'flat'],
+    'a letter': ['prop_letter', 'flat'], 'a paper crown': ['prop_crown_white', 'crown'], 'a small bottle': ['prop_bottle', 'bottle'], 'long paper ears': ['prop_ears_hare', 'ears'], 'a carrot': ['prop_carrot', 'carrot'],
+    'cat ears': ['prop_ears_cat', 'ears'], 'a big smile': ['', 'smile'], 'a ball of yarn': ['prop_yarn', 'ball'], 'dog ears': ['prop_ears_dog', 'ears'], 'a paper bone': ['prop_bone', 'flat'],
+    'a red paper crown': ['prop_crown_red', 'crown'], 'a playing card': ['prop_card', 'flat'], 'paper wings': ['prop_wings', 'wings'], 'a toy sword': ['prop_sword_toy', 'flat'], 'paper claws': ['prop_claws', 'claws'],
+    'a big key': ['prop_key_big', 'flat'], 'a book': ['prop_book', 'flat'], 'a flower': ['prop_flower', 'flat'], 'a nice hat': ['prop_hat_nice', 'sunhat'], 'a plate of cake': ['prop_cake_plate', 'real'],
+    'a big button': ['prop_button', 'flat'], 'a green hat': ['prop_hat_green', 'cap'], 'a small bell': ['prop_bell', 'bell'], 'blue paper antennae': ['prop_antennae', 'antennae'], 'a mushroom': ['prop_mushroom', 'mushroom'],
+    'a tall hat': ['prop_hat_tall', 'tophat'], 'a walking stick': ['prop_stick', 'flat'], 'a green coat': ['prop_coat_green', 'coat'], 'a button': ['prop_button', 'flat'], 'mouse ears': ['prop_ears_mouse', 'ears'],
+    'a small cup': ['prop_cup_tiny', 'real'], 'a tiny cup': ['prop_cup_tiny', 'real'], 'a paper shell': ['prop_shell', 'shell'], 'a pearl': ['prop_pearl', 'pearl']
+  };
+  function photoOf(key) { for (var c in P.classes) { var l = P.classes[c].students; for (var i = 0; i < l.length; i++) if (l[i].role === key) return l[i].photo; } return ''; }
+  function pupilsOf(key) { var o = []; Object.keys(P.classes).forEach(function (c) { P.classes[c].students.forEach(function (s) { if (s.role === key) o.push(s.name + ' (' + P.classes[c].label.replace('Class ', '') + ')'); }); }); return o; }
+  function item(t) {
+    var pt = PROP[t] || ['', 'flat'], ty = TYPES[pt[1]] || TYPES.flat;
+    return '<div class="item cut"><div class="pic">' + (pt[0] ? '<img src="' + PROPS + pt[0] + '.webp" alt="" onerror="this.outerHTML=\'<div class=e>🎭</div>\'">' : '<div class="e">😁</div>') + '</div>' +
+      '<div><h2>' + esc(t) + '</h2><div class="mat">You need: ' + esc(ty.m) + '</div><div class="time">⏱ about ' + esc(ty.t) + '</div>' +
+      '<ol>' + ty.s.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol><div class="tr"><b>Veliler için:</b> ' + esc(ty.tr) + '</div></div></div>';
+  }
+  function page(key) {
+    var r = P.roles[key], ph = photoOf(key), w = WEAR[key] || ['Simple clothes in the colour of your character.', 'Karakterinizin renginde basit kıyafetler.'];
+    return '<section class="sheet"><div class="hd">' + (ph ? '<img src="../alice-party-home/assets/' + esc(ph) + '" alt="">' : '') +
+      '<div><h1>' + esc(r.name) + '</h1><div class="who">' + esc(pupilsOf(key).join(', ')) + '</div></div></div>' +
+      '<div class="wear"><b>👗 What to wear:</b> ' + esc(w[0]) + '<div class="tr">🇹🇷 ' + esc(w[1]) + '</div></div>' +
+      (r.props || []).map(item).join('') +
+      '<div class="foot">✨ Simple is perfect. Make it big and bright so we can see it from the back. No time? Print the picture from the prop template page and stick it on card. Ask a grown-up to help with scissors. Bring it to school on the day your teacher says.</div></section>';
+  }
+  var sel = document.getElementById('role'), keys = Object.keys(P.roles);
+  sel.innerHTML = '<option value="">All characters</option>' + keys.map(function (k) { return '<option value="' + k + '">' + esc(P.roles[k].name) + '</option>'; }).join('');
+  var want = new URLSearchParams(location.search).get('role') || ''; if (keys.indexOf(want) >= 0) sel.value = want;
+  function draw() { document.getElementById('out').innerHTML = (sel.value ? [sel.value] : keys).map(page).join(''); }
+  sel.onchange = draw; draw();
+})();
+</script>
+</body>
+</html>
