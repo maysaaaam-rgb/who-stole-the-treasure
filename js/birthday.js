@@ -5,7 +5,7 @@
 (function (root) {
   'use strict';
   var KEY = 'eaa_birthdays_v1', DAYS_AFTER = 2;
-  var BUILT_IN = [{ first: 'uras', last: 'tekay', md: '10-08' }];
+  var BUILT_IN = [{ first: 'uras', last: 'tekay', md: '10-09' }];   // k12 sent the message for 09 Oct
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(s) { return String(s || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').trim(); }
@@ -109,8 +109,81 @@
     }
   }, true);
 
+
+  /* ---------- sync from k12: the school system sends a "Birthday Students" message the day before and on the day.
+     The daily school check collects them in _tmp/k12-birthdays.json; "Load k12 file" matches the names to the pupils and keeps the dates on this device only. ---------- */
+  function matchStudent(name, cls) {
+    var n = norm(name), c = String(cls || '').replace(/[^a-z0-9]/gi, '').toLowerCase(), list = S().getStudents ? S().getStudents() : [];
+    return list.filter(function (s) { return norm((s.firstName || '') + ' ' + (s.lastName || '')) === n || norm(s.name) === n; })
+      .filter(function (s) { return !c || String(s.classId || '').replace(/[^a-z0-9]/gi, '').toLowerCase().slice(-c.length) === c; })[0] || null;
+  }
+  function importList(arr) {
+    var m = load(), ok = 0, miss = [];
+    (Array.isArray(arr) ? arr : []).forEach(function (r) {
+      var md_ = String(r && r.md || ''), st = r && r.name ? matchStudent(r.name, r.class) : null;
+      if (!/^\d\d-\d\d$/.test(md_)) return;
+      if (st) { m[st.id] = md_; ok++; } else miss.push(String(r.name || '?'));
+    });
+    save(m); return { ok: ok, miss: miss };
+  }
+  function daysUntil(bmd) {
+    var now = new Date(), t = new Date(now.getFullYear(), now.getMonth(), now.getDate()), p = String(bmd).split('-'), d = new Date(now.getFullYear(), parseInt(p[0], 10) - 1, parseInt(p[1], 10));
+    if (d < t) d = new Date(now.getFullYear() + 1, d.getMonth(), d.getDate());
+    return Math.round((d - t) / 86400000);
+  }
+  function known() {
+    var map = load(), out = [];
+    (S().getStudents ? S().getStudents() : []).forEach(function (s) {
+      var f = norm(s.firstName || s.name), l = norm(s.lastName), v = map[s.id];
+      if (!v) BUILT_IN.forEach(function (b) { if (f.indexOf(b.first) === 0 && (!b.last || l.indexOf(b.last) === 0)) v = b.md; });
+      if (v) out.push({ s: s, md: v });
+    });
+    return out.sort(function (a, b) { return daysUntil(a.md) - daysUntil(b.md); });
+  }
+  function manage() {
+    var old = document.getElementById('bd-manage'); if (old) old.remove();
+    var st = S(), cls = st.getActiveClass && st.getActiveClass(), pupils = cls && st.getStudentsByClass ? st.getStudentsByClass(cls.id) : [];
+    var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function fmt(v) { var p = v.split('-'); return parseInt(p[1], 10) + ' ' + MON[parseInt(p[0], 10) - 1]; }
+    var w = document.createElement('div'); w.id = 'bd-manage';
+    w.style.cssText = 'position:fixed;inset:0;z-index:100001;background:rgba(2,6,23,.72);display:flex;align-items:center;justify-content:center;padding:14px;font-family:inherit';
+    function draw() {
+      var list = known(), mine = list.filter(function (x) { return pupils.some(function (p) { return p.id === x.s.id; }); });
+      w.innerHTML = '<div style="background:#0f172a;color:#e6edf7;border:1px solid #334155;border-radius:20px;padding:18px;width:min(640px,96vw);max-height:90vh;overflow:auto">' +
+        '<h2 style="margin:0 0 4px;font-size:1.3rem">🎂 Birthdays</h2><p style="margin:0 0 10px;color:#94a3b8;font-size:.9rem">The dates stay on this computer only. k12 sends a "Birthday Students" message; the daily check collects them. On the day (and 2 days after) press a pupil\'s monster or name to celebrate.</p>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><label class="bdm-b" style="cursor:pointer">📂 Load k12 file<input id="bdm-file" type="file" accept=".json,application/json" style="display:none"></label><button class="bdm-b" id="bdm-x">Close</button></div>' +
+        '<div id="bdm-msg" style="min-height:1.2em;color:#fbbf24;font-size:.85rem;margin-bottom:6px"></div>' +
+        '<b style="font-size:.9rem">Next birthdays (all classes)</b><div style="margin:6px 0 12px">' + (list.length ? list.slice(0, 8).map(function (x) { var d = daysUntil(x.md); return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1e293b"><span>' + esc((x.s.firstName || '') + ' ' + (x.s.lastName || '')) + '</span><span style="color:#fbbf24">' + fmt(x.md) + (d === 0 ? ' · today 🎉' : d < 8 ? ' · in ' + d + ' d' : '') + '</span></div>'; }).join('') : '<div style="color:#94a3b8">No birthday saved yet.</div>') + '</div>' +
+        '<b style="font-size:.9rem">Set a date by hand · ' + esc(cls ? cls.name : '') + '</b>' +
+        '<div style="display:grid;gap:6px;margin-top:6px">' + pupils.map(function (p) {
+          var cur = (mine.filter(function (x) { return x.s.id === p.id; })[0] || {}).md || '';
+          return '<div style="display:flex;gap:8px;align-items:center"><span style="flex:1">' + esc((p.firstName || '') + ' ' + (p.lastName || '')) + '</span><input data-id="' + esc(p.id) + '" type="text" placeholder="DD-MM" maxlength="5" value="' + (cur ? cur.split('-')[1] + '-' + cur.split('-')[0] : '') + '" style="width:80px;padding:6px;border-radius:8px;border:1px solid #334155;background:#0b1220;color:#e6edf7;text-align:center"></div>';
+        }).join('') + '</div>' +
+        '<style>.bdm-b{border:0;border-bottom:4px solid #0c4a6e;border-radius:12px;background:#0369a1;color:#fff;font:700 .95rem inherit;padding:8px 14px;cursor:pointer}.bdm-b:active{transform:translateY(3px);border-bottom-width:1px}</style></div>';
+      w.querySelector('#bdm-x').onclick = function () { w.remove(); };
+      w.querySelector('#bdm-file').onchange = function () {
+        var f = this.files && this.files[0]; if (!f) return;
+        var r = new FileReader();
+        r.onload = function () {
+          var res; try { res = importList(JSON.parse(String(r.result))); } catch (e) { w.querySelector('#bdm-msg').textContent = 'That file is not a birthday list.'; return; }
+          draw(); w.querySelector('#bdm-msg').textContent = 'Loaded ' + res.ok + ' birthdays' + (res.miss.length ? '. Not matched: ' + res.miss.join(', ') : '.');
+        };
+        r.readAsText(f);
+      };
+      [].forEach.call(w.querySelectorAll('input[data-id]'), function (inp) {
+        inp.onchange = function () {
+          var m = /^\s*(\d{1,2})[-./](\d{1,2})\s*$/.exec(inp.value), map = load();
+          if (!inp.value.trim()) { delete map[inp.dataset.id]; save(map); draw(); return; }
+          if (!m || +m[1] < 1 || +m[1] > 31 || +m[2] < 1 || +m[2] > 12) { w.querySelector('#bdm-msg').textContent = 'Write the day and month like 18-10.'; return; }
+          map[inp.dataset.id] = ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2); save(map); draw();
+        };
+      });
+    }
+    document.body.appendChild(w); draw();
+  }
+
   root.Birthday = {
-    celebrate: celebrate, isBirthday: isBirthday,
+    celebrate: celebrate, isBirthday: isBirthday, manage: manage, importList: importList, known: known,
     setToday: function (id) { var m = load(); m[id] = md(new Date()); save(m); return m[id]; },
     set: function (id, mmdd) { var m = load(); m[id] = mmdd; save(m); },
     clear: function (id) { var m = load(); delete m[id]; save(m); }
