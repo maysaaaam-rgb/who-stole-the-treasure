@@ -374,9 +374,11 @@
 
   function dataChecksHtml() {
     var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; }), badQ = badQuizTx(S().getActiveClass());
-    if (!mism.length && !dup.length && !badQ.length) return '';
+    var pend = pendingRedate();
+    if (!mism.length && !dup.length && !badQ.length && !pend.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
       (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
+      (pend.length ? '<div><b>' + pend.length + ' quiz XP awards were fixed on this computer but are not saved to the cloud yet.</b> <button class="cc-mini" id="cc-rp-btn" onclick="CommandCenter.saveRedatePending()">Save to the cloud</button></div>' : '') +
       (badQ.length ? '<div><b>' + badQ.length + ' quiz XP awards have an impossible date</b> (before the quiz existed, for example ' + esc(new Date(badQ[0].timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })) + '). The computer that gave them probably has the wrong clock. <button class="cc-mini" onclick="CommandCenter.redateQuizXp()">Fix the dates</button></div>' : '') +
       (dup.length ? '<div><b>Same name twice:</b> ' + dup.map(function (r) { return esc(r.name) + ' (' + esc(r.dup.join(' + ')) + ')'; }).join(', ') + '. One may be an old copy: check it in the pupil\u2019s profile.</div>' : '') +
       '</div></div>';
@@ -643,6 +645,34 @@
     ovl.querySelector('#cc-d-go').onclick = function () { applyRedate(list, ovl); };
     ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
   }
+  /** Writes ONLY these awards (their id, amount and new date) to the cloud table of XP awards. */
+  function saveRedateToCloud(list) {
+    var A = root.AdventureSupabase;
+    if (!A || !A.saveXPTransactions) return Promise.reject(new Error('the cloud service is not loaded'));
+    return Promise.resolve(A.saveXPTransactions(list)).then(function () {
+      try { localStorage.removeItem('eaa_redate_pending'); var done = JSON.parse(localStorage.getItem('eaa_redate_saved') || '[]') || []; list.forEach(function (t) { if (done.indexOf(t.id) < 0) done.push(t.id); }); localStorage.setItem('eaa_redate_saved', JSON.stringify(done)); } catch (e) { /* ignore */ }
+    });
+  }
+  function pendingRedate() {
+    var ids = []; try { ids = JSON.parse(localStorage.getItem('eaa_redate_pending') || '[]') || []; } catch (e) { ids = []; }
+    if (!ids.length) {   // an earlier version fixed the dates here but never saved them: its backup copy in this browser lists those awards
+      try {
+        var saved = JSON.parse(localStorage.getItem('eaa_redate_saved') || '[]') || [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i); if (!k || k.indexOf('eaa_redate_backup_') !== 0) continue;
+          (JSON.parse(localStorage.getItem(k) || '[]') || []).forEach(function (b) { if (b && b.id && saved.indexOf(b.id) < 0 && ids.indexOf(b.id) < 0) ids.push(b.id); });
+        }
+      } catch (e) { ids = []; }
+    }
+    var want = {}; ids.forEach(function (i) { want[i] = 1; });
+    return ids.length ? (S().state.xpTransactions || []).filter(function (t) { return want[t.id]; }) : [];
+  }
+  api.saveRedatePending = function () {
+    var list = pendingRedate(), btn = document.getElementById('cc-rp-btn'); if (!list.length) return;
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+    saveRedateToCloud(list).then(function () { if (root.renderCurrentView) root.renderCurrentView(); },
+      function (e) { if (btn) { btn.disabled = false; btn.textContent = 'Could not save (' + ((e && e.message) || 'no answer') + '). Try again'; } });
+  };
   function applyRedate(list, ovl) {
     var st = S(), msg = ovl.querySelector('#cc-d-msg'), go = ovl.querySelector('#cc-d-go');
     go.disabled = true;
@@ -660,10 +690,10 @@
       if (p && Array.isArray(p.xpHistory)) p.xpHistory.forEach(function (h) { if (h && h.id === t.id) { h.timestamp = nts; h.date = nd.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); } });
     });
     st.saveState(); if (st.notify) st.notify();
+    try { localStorage.setItem('eaa_redate_pending', JSON.stringify(list.map(function (t) { return t.id; }))); } catch (e) { /* the banner just will not come back */ }
     msg.textContent = 'Dates fixed on this computer. Saving to the cloud…';
-    var cloud = root.SchoolCloudSync && root.SchoolCloudSync.saveXPTransactions ? root.SchoolCloudSync.saveXPTransactions(list) : Promise.reject(new Error('cloud not connected'));
-    cloud.then(function () { msg.textContent = '✓ Fixed and saved to the cloud (' + list.length + ' awards).'; setTimeout(function () { ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); }, 1800); },
-      function (e) { msg.innerHTML = '<span style="color:#fbbf24">Fixed on this computer, but the cloud did not answer (' + esc((e && e.message) || 'no answer') + '). Check the internet and press the button again.</span>'; });
+    saveRedateToCloud(list).then(function () { msg.textContent = '✓ Fixed and saved to the cloud (' + list.length + ' awards).'; setTimeout(function () { ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); }, 1800); },
+      function (e) { msg.innerHTML = '<span style="color:#fbbf24">Fixed on this computer, but the cloud did not save it (' + esc((e && e.message) || 'no answer') + '). Close this window: a yellow note in Data checks will let you save it to the cloud again.</span>'; });
   }
   api.redateQuizXp = redateModal;
   api.restoreXp = reconModal;
