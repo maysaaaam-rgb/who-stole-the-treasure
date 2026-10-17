@@ -54,6 +54,9 @@
   .props { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin: 10px 0; } .props .pp { width: 120px; text-align: center; font-size: .85rem; } .props img { height: 84px; object-fit: contain; }
   .podium { display: flex; gap: 12px; justify-content: center; align-items: flex-end; margin: 18px 0; } .podium div { text-align: center; padding: 12px 18px; border-radius: 16px; background: rgba(245,158,11,.18); border: 2px solid var(--amber); font-weight: 900; }
   .link-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hero { display: block; width: 100%; max-height: 210px; object-fit: cover; border-radius: 20px; margin-bottom: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.45); }
+  .ti { height: 1.5em; width: auto; vertical-align: -0.35em; }
+  .plan7 { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 12px; margin-bottom: 4px; } .plan7 .btn { flex: none; flex-direction: column; gap: 0; min-height: 56px; padding: 6px 12px; font-size: .9rem; } .plan7 small { font-weight: 600; opacity: .8; font-size: .72rem; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -64,6 +67,7 @@
     <div id="clsbtns" style="display:flex;gap:8px"></div>
   </div>
   <div class="tabs" id="tabs"></div>
+  <div id="week"></div>
   <div id="stage"></div>
 </div>
 <script src="../alice-party-home/party-data.js"></script>

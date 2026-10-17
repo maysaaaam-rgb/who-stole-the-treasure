@@ -1,0 +1,26 @@
+tea_would_you_like.png | OK | Checked 1024x1024 soft 3D cartoon sticker of the boy in a blue bow tie pouring tea for the girl with a purple ribbon on a plain #e8e8e8 background with thick white sticker outline and zero text.
+tea_yes_please.png | OK | Checked 1024x1024 soft 3D cartoon sticker of the girl with a purple ribbon holding out her teacup with both hands and smiling on a plain #e8e8e8 background with thick white sticker outline and zero text.
+tea_no_thanks.png | OK | Checked 1024x1024 soft 3D cartoon sticker of the girl with a purple ribbon holding up one hand politely with a full teacup on the table, thick white sticker outline on #e8e8e8, and zero text.
+tea_pass_cake.png | OK | Checked 1024x1024 soft 3D cartoon sticker of the boy in a blue bow tie passing a plate of strawberry cake to the girl with a purple ribbon, thick white sticker outline on #e8e8e8, and zero text.
+prop_hat.png | OK | Checked 1024x1024 paper-craft blue top hat with visible paper folds, craft tape, yellow band, and a completely blank cream paper card with zero writing, thick white sticker outline on #e8e8e8.
+prop_ears_rabbit.png | OK | Checked 1024x1024 paper-craft white and pink rabbit ears on a folded paper headband with craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_ears_cat.png | OK | Checked 1024x1024 paper-craft pointed grey-purple cat ears on a folded paper headband with craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_ears_dog.png | OK | Checked 1024x1024 paper-craft floppy brown dog ears on a folded paper headband with craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_crown_white.png | OK | Checked 1024x1024 paper-craft white crown with silver paper stars, visible fold creases and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_crown_red.png | OK | Checked 1024x1024 paper-craft red scalloped crown with glued paper hearts and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_watch.png | OK | Checked 1024x1024 paper-craft gold pocket watch on a paper chain with plain black tick marks only and strictly zero numbers or letters, thick white sticker outline on #e8e8e8.
+prop_key.png | OK | Checked 1024x1024 paper-craft golden-brass key with a heart-shaped top, visible paper folds and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_wings.png | OK | Checked 1024x1024 paper-craft accordion-folded green dragon wings with a simple paper strap and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_claws.png | OK | Checked 1024x1024 paper-craft playful dark-teal paper gloves with long folded paper claws and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_carrot.png | OK | Checked 1024x1024 paper-craft folded orange carrot with cut-out green paper leaves and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+prop_teapot.png | OK | Checked 1024x1024 paper-craft round blue-and-white teapot with curved spout, cut-out blue paper flowers, and craft tape, thick white sticker outline on #e8e8e8, and zero text.
+star_card_frame.png | OK | Checked 1200x1600 (3:4) golden ornate card frame with corner hearts and spades, stars, and a clean plain cream empty centre with thick white sticker outline on #e8e8e8 and zero text.
+star_badge.png | OK | Checked 1024x1024 round gold Tea Party Star medal badge with central gold star, small teacup, and two-tailed ribbon, thick white sticker outline on #e8e8e8, and zero text.
+tea_table_cut.png | OK | Checked 1024x1024 round wooden tea table with pastel teapot, two cups, tiered strawberry cupcake stand (regenerated and verified free of any tags or text), and spotted mushroom stool on #e8e8e8.
+bg_tea_table.png | OK | Checked 1600x800 (2:1) wide soft 3D Wonderland garden tea table backdrop with mismatched teacups, checkerboard floor, calm lower third, no people, no outline, and zero text.
+bg_tea_party_night.png | OK | Checked 1600x800 (2:1) wide golden-evening version of the same Wonderland garden tea table with hanging glowing paper lanterns, calm lower third, no people, no outline, and zero text.
+tool_mic.png | OK | Checked 1024x1024 friendly round microphone wearing a tiny blue top hat, thick white sticker outline on #e8e8e8, and zero text.
+tool_phone_record.png | OK | Checked 1024x1024 friendly smartphone with only a glowing red record dot and small pink heart on screen, thick white sticker outline on #e8e8e8, and zero text or numbers.
+tool_stars_three.png | OK | Checked 1024x1024 row of three glossy gold stars with the third star slightly larger, thick white sticker outline on #e8e8e8, and zero text.
+
+Total OK: 24 / 24
