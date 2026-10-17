@@ -142,6 +142,18 @@
     return { status: status, why: why, missing: missing };
   }
   /** The Unit 3 paper quiz of this pupil (from quiz-results.js), or null. Under 40% counts as weak. */
+  // ---- support plan: a private flag and note per pupil, kept ONLY in this browser (never in the cloud, never in reports or parent pages). No diagnosis is typed anywhere.
+  var SUPPORT_KEY = 'eaa_support_v1';
+  function supportAll() { try { var o = JSON.parse(localStorage.getItem(SUPPORT_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
+  function supportOn(id) { var o = supportAll()[id]; return !!(o && o.on); }
+  function supportGet(id) { var o = supportAll()[id] || {}; return { on: !!o.on, note: String(o.note || '') }; }
+  function supportSet(id, patch) {
+    var all = supportAll(), o = all[id] || { on: false, note: '' };
+    if (patch && 'on' in patch) o.on = !!patch.on;
+    if (patch && 'note' in patch) o.note = String(patch.note || '').slice(0, 4000);
+    all[id] = o; try { localStorage.setItem(SUPPORT_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ }
+    return o;
+  }
   var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
@@ -170,12 +182,12 @@
     var qs = rows.filter(function (r) { return r.q; });
     quizAvg = qs.length ? Math.round(qs.reduce(function (a, r) { return a + r.q.pct; }, 0) / qs.length) : 0;
     rows.forEach(function (r) { r.qWeak = !!(r.q && r.q.pct <= quizAvg - QUIZ_GAP); });
-    rows.forEach(function (r) { r.d = diagnose(r); });
+    rows.forEach(function (r) { r.d = diagnose(r); if (supportOn(r.id) && (r.d.status === 'help' || r.d.status === 'slow' || r.d.status === 'quiet')) { r.d.status = 'build'; r.d.why = ['Working at their own pace (support plan)']; } });
     return rows;
   }
 
   // ------------------------------------------------------------- pieces
-  var STATUS = { star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'], quiet: ['No XP lately', 'cc-t4'] };
+  var STATUS = { build: ['🌱 Building', 'cc-t1'], star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'], quiet: ['No XP lately', 'cc-t4'] };
   var STATUS_ORDER = { help: 0, slow: 1, quiet: 2, ok: 3, star: 4 };
   function ago(ts) {
     var d = Math.floor((dayStart(Date.now()) - dayStart(ts)) / DAY);
@@ -761,6 +773,8 @@
     };
   }
   api.moveLostWeek = lostModal;
+  api.supportGet = supportGet;
+  api.supportSet = function (id, patch) { var o = supportSet(id, patch); if (patch && 'on' in patch) { try { current = rowsFor(S().getActiveClass()); refreshAll(); } catch (e) { /* the table updates next time */ } } return o; };
   api.restoreXp = reconModal;
 
   // ------------------------------------------------------------- Ctrl+K palette

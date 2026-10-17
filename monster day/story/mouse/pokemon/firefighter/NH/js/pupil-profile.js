@@ -113,8 +113,17 @@
     html += (d.mism ? '<div class="pp-warn">⚠ XP shown (' + d.mism.shown + ') is lower than the award history (' + d.mism.target + '). <button class="pp-b o" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (d.dup ? '<div class="pp-warn">⧉ This name exists ' + d.dup.length + ' times (' + esc(d.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<div class="pp-card"><h3>XP earned each day · last 30 days</h3>' + bars + (d.tally.length ? '<div class="pp-dim" style="margin-top:8px;font-size:.8rem">Most XP for: ' + d.tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') + '</div>' +
-      discCard + quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
+      supportCard(id) + discCard + quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
     return html;
+  }
+
+  /** Private support plan (teacher only, this browser only): a flag that swaps Watch / Needs help for a neutral "Building" label, plus free notes. Never printed, never sent to the cloud. */
+  function supportCard(id) {
+    var s = root.CommandCenter && root.CommandCenter.supportGet ? root.CommandCenter.supportGet(id) : null; if (!s) return '';
+    var q = "'" + esc(id) + "'";
+    return '<div class="pp-card"><h3>🌱 Support plan <span class="pp-dim" style="font-weight:600;font-size:.75rem">private · only on this computer · never in reports or parent pages</span></h3>' +
+      '<label style="display:flex;gap:8px;align-items:center;font-size:.9rem;margin:6px 0"><input type="checkbox" ' + (s.on ? 'checked ' : '') + 'onchange="CommandCenter.supportSet(' + q + ',{on:this.checked})"> Show this pupil as <b>Building</b> instead of Watch / Needs help</label>' +
+      '<textarea rows="4" style="width:100%;box-sizing:border-box;background:#0b0d13;color:#e6e8ee;border:1px solid #2a2f3d;border-radius:10px;padding:8px;font:inherit" placeholder="What helps this pupil, what to say to the family, meeting notes… (no diagnosis needed)" oninput="CommandCenter.supportSet(' + q + ',{note:this.value})">' + esc(s.note) + '</textarea></div>';
   }
 
   var SECTIONS = [
