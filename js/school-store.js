@@ -13896,7 +13896,7 @@
         currentLevelObj,
         nextLevelObj,
         highestUnlockedLevel: stage.level,
-        profile
+        profile: (typeof window !== 'undefined' && window.AliceWeek) ? window.AliceWeek.view(studentId, profile) : profile   // Tea Party week: drawn with the Alice look, never saved
       };
     }
 
