@@ -5,7 +5,9 @@
 (function (root) {
   'use strict';
   var KEY = 'eaa_birthdays_v1', DAYS_AFTER = 2;
-  var BUILT_IN = [{ first: 'uras', last: 'tekay', md: '10-09' }];   // k12 sent the message for 09 Oct
+  // Dates taken from k12's "Birthday Students" messages (teacher said to sync them into the platform, 18 Oct 2026). More can be added with "Load k12 file" or by hand.
+  var BUILT_IN = [{ first: 'buglem', last: 'arioz', md: '09-05' }, { first: 'ali', last: 'bicakci', md: '09-08' }, { first: 'ece', last: 'aras', md: '09-15' },
+    { first: 'uras', last: 'tekay', md: '10-09' }, { first: 'ege', last: 'tas', md: '10-18' }];
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function norm(s) { return String(s || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').trim(); }
