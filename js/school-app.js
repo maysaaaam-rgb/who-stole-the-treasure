@@ -1306,6 +1306,10 @@
   }
 
   function getStudentMonsterAvatarUrl(student, profile, mState) {
+    const base = getStudentMonsterAvatarUrlCore(student, profile, mState);
+    return window.AliceWeek && window.AliceWeek.wrapUrl ? window.AliceWeek.wrapUrl(student, base) : base;   // Tea Party week: character picture / both
+  }
+  function getStudentMonsterAvatarUrlCore(student, profile, mState) {
     // A saved avatar made by an older version of the monster drawing is stale: always redraw those.
     const isGenerated = u => typeof u === 'string' && u.indexOf('eaa-monster-svg') !== -1;
     if (student && student.custom_avatar_url && !isGenerated(student.custom_avatar_url)) return student.custom_avatar_url;
