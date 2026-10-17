@@ -1,0 +1,36 @@
+/* Printable Tea Party pages: screen = a tidy preview with a Print button, paper = clean A4. */
+:root { --ink: #1e1b4b; --gold: #b45309; --violet: #6d28d9; --soft: #f5f3ff; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif; color: var(--ink); background: #e5e7eb; }
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 16px; background: #0f172a; color: #f8fafc; }
+.bar h1 { margin: 0 12px 0 0; font-size: 1.05rem; }
+.bar select, .bar button, .bar a { font: inherit; font-weight: 700; border-radius: 12px; border: 0; padding: 9px 16px; cursor: pointer; text-decoration: none; }
+.bar button, .bar a.b { background: #38bdf8; color: #06101f; border-bottom: 4px solid #0369a1; }
+.bar button:active { transform: translateY(3px); border-bottom-width: 1px; }
+.bar .hint { color: #cbd5e1; font-size: .85rem; }
+.sheet { width: 210mm; min-height: 297mm; margin: 14px auto; padding: 12mm; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.25); position: relative; page-break-after: always; overflow: hidden; }
+.sheet.land { width: 297mm; min-height: 210mm; }
+.sheet.land .frame { min-height: 184mm; } .sheet:not(.land) .frame { min-height: 271mm; }
+.frame { border: 3mm double var(--gold); border-radius: 6mm; padding: 8mm; min-height: calc(100% - 0mm); height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(180deg, #fffbeb, #fff7ed); }
+.big { font-size: 46pt; font-weight: 900; line-height: 1.05; margin: 4mm 0; color: var(--violet); }
+.mid { font-size: 22pt; font-weight: 700; margin: 3mm 0; }
+.small { font-size: 12pt; color: #475569; }
+.deco { font-size: 70pt; line-height: 1; margin: 2mm; }
+.deco img { height: 60mm; width: auto; object-fit: contain; }
+.sheet h2 { margin: 0 0 4mm; font-size: 18pt; color: var(--violet); }
+.cut { border: 0.4mm dashed #64748b; border-radius: 3mm; padding: 3mm; position: relative; }
+.cut::before { content: "✂"; position: absolute; top: -4mm; left: 6mm; background: #fff; padding: 0 2mm; color: #64748b; font-size: 10pt; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+.empty { color: #64748b; text-align: center; padding: 20mm; }
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: #fff; }
+  .bar, .noprint { display: none !important; }
+  .sheet { margin: 0; box-shadow: none; }
+  .sheet.land { page: land; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+@page land { size: A4 landscape; margin: 0; }

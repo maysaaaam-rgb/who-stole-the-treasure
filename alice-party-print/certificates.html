@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party: certificates</title>
+<link rel="stylesheet" href="print.css">
+<style>
+  .cert .frame { background: linear-gradient(180deg, #fffbeb, #fef3c7); border: 3mm double var(--gold); gap: 3mm; }
+  .cert .badge { font-size: 64pt; line-height: 1; } .cert .badge img { height: 42mm; }
+  .cert .kicker { font-size: 18pt; letter-spacing: .25em; color: var(--gold); font-weight: 800; }
+  .cert .name { font-size: 48pt; font-weight: 900; color: var(--violet); margin: 2mm 0; }
+  .cert .line { font-size: 18pt; }
+  .cert .sig { display: flex; gap: 40mm; margin-top: 12mm; font-size: 12pt; color: #475569; }
+  .cert .sig div { border-top: 0.4mm solid #475569; padding-top: 2mm; min-width: 55mm; }
+  .cert .wish { font-size: 14pt; margin-top: 2mm; color: #334155; }
+  .bar label { display: flex; gap: 6px; align-items: center; font-size: .9rem; }
+  .bar input[type=text] { font: inherit; padding: 8px 10px; border-radius: 10px; border: 0; width: 160px; }
+</style>
+</head>
+<body>
+<div class="bar"><h1>🏅 Certificates</h1>
+  <select id="cls"></select><select id="who"></select>
+  <label>Date <input id="date" type="text" placeholder="25 October 2026"></label>
+  <label>Wish <input id="wish" type="text" placeholder="You were wonderful!"></label>
+  <button onclick="window.print()">Print</button>
+  <span class="hint">One certificate per pupil, landscape.</span>
+</div>
+<main id="out"></main>
+<script src="../alice-party-home/party-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PARTY, DECO = '../assets/party-deco/';
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  var cls = document.getElementById('cls'), who = document.getElementById('who'), date = document.getElementById('date'), wish = document.getElementById('wish');
+  var keys = Object.keys(P.classes);
+  cls.innerHTML = keys.map(function (k) { return '<option value="' + k + '">' + esc(P.classes[k].label) + '</option>'; }).join('');
+  try { date.value = localStorage.getItem('eaa_party_cert_date') || ''; wish.value = localStorage.getItem('eaa_party_cert_wish') || ''; } catch (e) { /* ignore */ }
+  function fillWho() { who.innerHTML = '<option value="">All pupils of the class</option>' + P.classes[cls.value].students.map(function (s) { return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join(''); }
+  function draw() {
+    try { localStorage.setItem('eaa_party_cert_date', date.value); localStorage.setItem('eaa_party_cert_wish', wish.value); } catch (e) { /* ignore */ }
+    var list = P.classes[cls.value].students.filter(function (s) { return !who.value || s.id === who.value; });
+    document.getElementById('out').innerHTML = list.map(function (s) {
+      var r = P.roles[s.role];
+      return '<section class="sheet land cert"><div class="frame"><div class="badge"><img src="' + DECO + 'star_badge.webp" alt="" onerror="this.replaceWith(document.createTextNode(\'🌟\'))"></div>' +
+        '<div class="kicker">TEA PARTY STAR</div><div class="line">This certificate is for</div><div class="name">' + esc(s.name) + '</div>' +
+        '<div class="line">who was <b>' + esc(r.name) + '</b> in Alice’s Tea Party.</div>' +
+        '<div class="wish">' + esc(wish.value || 'Great speaking, great teamwork, great English!') + '</div>' +
+        '<div class="sig"><div>Mr. Maysam, English teacher</div><div>Date: ' + esc(date.value || '____________') + '</div></div></div></section>';
+    }).join('') || '<p class="empty">No pupils.</p>';
+  }
+  cls.onchange = function () { fillWho(); draw(); }; who.onchange = draw; date.oninput = draw; wish.oninput = draw;
+  fillWho(); draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party: what the teacher brings</title>
+<link rel="stylesheet" href="print.css">
+<style>
+  .list h3 { margin: 6mm 0 2mm; color: var(--violet); font-size: 14pt; border-bottom: 0.4mm solid #c4b5fd; }
+  .list label { display: flex; gap: 3mm; align-items: center; padding: 1.4mm 0; font-size: 12.5pt; }
+  .list input { width: 5mm; height: 5mm; flex: none; }
+  .list .who { margin-left: auto; color: #64748b; font-size: 10pt; }
+</style>
+</head>
+<body>
+<div class="bar"><h1>🧺 What to bring (teacher)</h1><button onclick="window.print()">Print</button><span class="hint">Tick the boxes on the screen or print and tick on paper. Your ticks stay on this computer.</span></div>
+<section class="sheet list" id="list"></section>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'eaa_party_bring_v1', saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var G = [
+    ['Table', ['Long table or 3 small tables', 'Tablecloths (mismatched colours are perfect)', '6 or more teapots (empty or with warm water)', 'Mismatched teacups and saucers (paper cups are fine)', 'Plates and cake stands', 'Spoons, napkins, a jug of water', 'A small clock stopped at six o’clock']],
+    ['Food and drink (check allergies first)', ['Biscuits or small cakes', 'Fruit or sandwiches', 'Juice or warm tea (not too hot)', 'Rubbish bag and wet wipes']],
+    ['Decoration', ['Print: garden signs, table cards, place cards, bunting', 'String or ribbon and tape for the bunting', 'Paper lanterns or fairy lights', 'Flowers (red and white roses made of paper)', 'A “Drink me” bottle with water and a “Eat me” cake (for the photo)', 'Mushroom stools or cushions']],
+    ['Props and craft', ['Printed prop templates (spare copies)', 'Scissors, tape, glue sticks, colours', 'Thin card and paper strips for headbands', 'A box of spare props for pupils who forget']],
+    ['Show', ['Running order printed or on the smartboard', 'Phone or camera for photos (check parent permission)', 'Speaker (soft music, optional)', 'Certificates printed and a pen to sign them', 'Stars or stickers for every pupil']],
+    ['Safety and care', ['Warm, not hot, drinks', 'Check allergies', 'A calm corner for pupils who need a break', 'Someone to help with seating']]
+  ];
+  var el = document.getElementById('list'), h = '<h2>🫖 Alice’s Tea Party: what to bring</h2><p class="small">Date: ____________ &nbsp; Place: ____________ &nbsp; Time: ____________</p>';
+  G.forEach(function (g, gi) {
+    h += '<h3>' + g[0] + '</h3>' + g[1].map(function (t, i) { var k = gi + '-' + i; return '<label><input type="checkbox" data-k="' + k + '"' + (saved[k] ? ' checked' : '') + '> ' + t + '<span class="who">____</span></label>'; }).join('');
+  });
+  el.innerHTML = h;
+  el.addEventListener('change', function (e) { var k = e.target && e.target.dataset && e.target.dataset.k; if (!k) return; saved[k] = e.target.checked; try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (x) { /* not remembered */ } });
+})();
+</script>
+</body>
+</html>

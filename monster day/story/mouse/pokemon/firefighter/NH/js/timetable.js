@@ -39,6 +39,8 @@
     { id: 'g3-harvest', icon: '🌱', title: 'First Harvest', route: 'unit2-g3-lessons/index.html?lesson=2', g: 3, added: '2026-10-05' },
     { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, added: '2026-10-04' },
     { id: 'alice', icon: '🫖', title: 'Alice Tea Party practice', route: 'alice-party-home/index.html', g: 4, added: '2026-10-03' },
+    { id: 'alice-rehearsal', icon: '🎭', title: 'Alice Tea Party: rehearsal lessons', route: 'alice-party-rehearsal/index.html', g: 4, added: '2026-10-17' },
+    { id: 'alice-hub', icon: '🧺', title: 'Tea Party week: print and plan', route: 'alice-party-print/index.html', g: 4, added: '2026-10-17' },
     { id: 'library', icon: '🎮', title: 'Resource Library', view: 'library', g: 0 }
   ];
   function S() { return root.schoolStore || root.store; }
