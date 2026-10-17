@@ -1313,7 +1313,7 @@
     if (student && student.custom_avatar) return student.custom_avatar;
 
     const baseColor = (profile && profile.baseColor) || (student && student.element) || '';
-    const equipped = (profile && profile.equipped) || {};
+    const equipped = window.AliceWeek ? window.AliceWeek.equippedFor(student && student.id, (profile && profile.equipped) || {}) : ((profile && profile.equipped) || {});   // Tea Party week look
 
     // Illustrated monster art: species follows the colour the student picked, stage follows their level.
     // Monster Studio still shows the dress-up (hats, glasses, clothes) on the drawn version.

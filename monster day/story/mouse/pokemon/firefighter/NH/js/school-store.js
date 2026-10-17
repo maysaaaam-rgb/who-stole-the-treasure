@@ -3498,7 +3498,7 @@
     {
       id: 'hw-alice-tea-party-w1',
       syncSubmissions: true,
-      removeSubmissions: ['student-4b-208'],   // entered by mistake on 11 Oct (Simal Koyun); only removed when it carries the sync note
+      removeSubmissions: ['student-4a-319'],   // Simal Koyun (319, 4A) did not do Week 1: Ozan's result was filed under her id before the ids were corrected
       title: '☕ Alice Tea Party: Home Practice (Week 1)',
       description: 'Learn your Alice in Wonderland character: meet them, learn 6 words, put the sentences in order, say them out loud and practise the party conversation. Finished all 5 steps = ready for the tea party!',
       subject: 'English',
@@ -3536,7 +3536,7 @@
         'student-4b-316': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-307': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 6, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-305': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 7, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
-        'student-4a-319': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
+        'student-4b-208': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4b-309': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 10, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: 5 of 5 steps (from the Results sheet)' },
         'student-4a-300': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
         'student-4b-306': { status: 'COMPLETED', attempted: 5, correct: 5, score: 100, completedDate: 'Oct 11, 2026', optionalDone: false, xpAwarded: 0, notes: 'Tea Party home practice: started it, marked complete by the teacher' },
@@ -3604,6 +3604,10 @@
       submissions: {}
     }
   ];
+  // Old sample homework and assignments the teacher removed on 14 Oct 2026 (backup: _tmp/backups/old-homework-assignments-2026-10-14.json).
+  // They are left out of the built-in list and removed from saved data when the platform loads, so they do not come back.
+  const RETIRED_WORK_IDS = ['hw-animals', 'hw-phonics', 'hw-self', 'hw-city', 'hw-reading', 'hw-space-cadet', 'asg-3a-1', 'asg-3b-1', 'asg-4a-1', 'asg-4b-1'];
+  for (let i = DEFAULT_HOMEWORK_QUESTS.length - 1; i >= 0; i--) if (RETIRED_WORK_IDS.indexOf(DEFAULT_HOMEWORK_QUESTS[i].id) !== -1) DEFAULT_HOMEWORK_QUESTS.splice(i, 1);
 
   const DEFAULT_MONSTER_ITEMS = [
     // Body Colors
@@ -10317,6 +10321,8 @@
               merged.studentAwards = [];
             }
             if (!merged.portfolios) merged.portfolios = initial.portfolios || [];
+            if (Array.isArray(merged.homework)) merged.homework = merged.homework.filter(h => !h || RETIRED_WORK_IDS.indexOf(h.id) === -1);
+            if (Array.isArray(merged.assignments)) merged.assignments = merged.assignments.filter(a => !a || RETIRED_WORK_IDS.indexOf(a.id) === -1);
 
             // Synchronize canonical homework quests (ensure all 5 quests exist with full metadata)
             if (!merged.homework || !Array.isArray(merged.homework) || merged.homework.length === 0) {
@@ -12865,6 +12871,9 @@
     // 5. ASSIGNMENTS & HOMEWORK CRUD
     // =========================================================================
     getAssignments(classId = null, includeArchived = false) {
+      if (Array.isArray(this.state.assignments) && this.state.assignments.some(a => a && RETIRED_WORK_IDS.indexOf(a.id) !== -1)) {
+        this.state.assignments = this.state.assignments.filter(a => !a || RETIRED_WORK_IDS.indexOf(a.id) === -1);   // removed by the teacher (14 Oct 2026)
+      }
       return this.state.assignments.filter(a => {
         const matchClass = !classId || a.classId === classId;
         const matchArchived = includeArchived || !a.archived;
@@ -12957,6 +12966,9 @@
 
     getHomework(classId = null, filterStatus = null) {
       if (!this.state.homework) this.state.homework = JSON.parse(JSON.stringify(DEFAULT_HOMEWORK_QUESTS));
+      if (this.state.homework.some(h => h && RETIRED_WORK_IDS.indexOf(h.id) !== -1)) {
+        this.state.homework = this.state.homework.filter(h => !h || RETIRED_WORK_IDS.indexOf(h.id) === -1);   // removed by the teacher (14 Oct 2026)
+      }
       return this.state.homework.filter(h => {
         if (h.archived) return false;
         if (classId && classId !== 'all' && h.classId && h.classId !== 'all' && h.classId !== classId) return false;
@@ -13884,7 +13896,7 @@
         currentLevelObj,
         nextLevelObj,
         highestUnlockedLevel: stage.level,
-        profile
+        profile: (typeof window !== 'undefined' && window.AliceWeek) ? window.AliceWeek.view(studentId, profile) : profile   // Tea Party week: drawn with the Alice look, never saved
       };
     }
 
