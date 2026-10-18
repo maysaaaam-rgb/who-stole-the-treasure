@@ -22,10 +22,10 @@
     ['2026-10-22', '09:45', 'class-3a', 'unit4', 'Unit 4 · lesson 5'], ['2026-10-23', '10:30', 'class-3a', 'unit4', 'Unit 4 · review game'], ['2026-10-23', '11:15', 'class-3a', 'quiz', 'Unit 4 QUIZ (print the sheets)'],
     ['2026-10-19', '16:05', 'class-3b', 'unit4', 'Unit 4 · lesson 1'], ['2026-10-21', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 2'], ['2026-10-21', '11:15', 'class-3b', 'unit4', 'Unit 4 · lesson 3'], ['2026-10-22', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 4'],
     ['2026-10-22', '11:15', 'class-3b', 'unit4', 'Unit 4 · lesson 5'], ['2026-10-23', '09:00', 'class-3b', 'unit4', 'Unit 4 · review game'], ['2026-10-23', '09:45', 'class-3b', 'quiz', 'Unit 4 QUIZ (print the sheets)'],
-    ['2026-10-19', '10:30', 'class-4a', 'unit4', 'U4-1 Team Players: Think-Pair-Share, sports words, Sparks story (book pp. 56-61)'], ['2026-10-19', '11:15', 'class-4a', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '15:20', 'class-4a', 'unit4', 'U4-2 Reading 1: Teamwork Makes the Dream Work + spelling or (pp. 58-60)'], ['2026-10-21', '14:15', 'class-4a', 'alice', 'Alice 2 · pairs by heart'],
-    ['2026-10-21', '15:20', 'class-4a', 'unit4', 'U4-3 Reading 2: Late for the Show, the play (pp. 61-70)'], ['2026-10-22', '16:05', 'class-4a', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-22', '16:55', 'class-4a', 'quiz', 'U4-4 Think Together (p. 71) + review + QUIZ'],
-    ['2026-10-19', '09:45', 'class-4b', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '09:00', 'class-4b', 'unit4', 'U4-1 Team Players: Think-Pair-Share, sports words, Sparks story (book pp. 56-61)'], ['2026-10-20', '09:45', 'class-4b', 'unit4', 'U4-2 Reading 1: Teamwork Makes the Dream Work + spelling or (pp. 58-60)'], ['2026-10-21', '12:45', 'class-4b', 'alice', 'Alice 2 · pairs by heart'],
-    ['2026-10-21', '13:30', 'class-4b', 'unit4', 'U4-3 Reading 2: Late for the Show, the play (pp. 61-70)'], ['2026-10-23', '14:15', 'class-4b', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-23', '15:20', 'class-4b', 'quiz', 'U4-4 Think Together (p. 71) + review + QUIZ'],
+    ['2026-10-19', '10:30', 'class-4a', 'unit4', 'U4-1 Team Players'], ['2026-10-19', '11:15', 'class-4a', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '15:20', 'class-4a', 'unit4', 'U4-2 Reading 1: Dream Work'], ['2026-10-21', '14:15', 'class-4a', 'alice', 'Alice 2 · pairs by heart'],
+    ['2026-10-21', '15:20', 'class-4a', 'unit4', 'U4-3 Reading 2: Late for the Show'], ['2026-10-22', '16:05', 'class-4a', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-22', '16:55', 'class-4a', 'quiz', 'U4-4 Think Together + QUIZ'],
+    ['2026-10-19', '09:45', 'class-4b', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '09:00', 'class-4b', 'unit4', 'U4-1 Team Players'], ['2026-10-20', '09:45', 'class-4b', 'unit4', 'U4-2 Reading 1: Dream Work'], ['2026-10-21', '12:45', 'class-4b', 'alice', 'Alice 2 · pairs by heart'],
+    ['2026-10-21', '13:30', 'class-4b', 'unit4', 'U4-3 Reading 2: Late for the Show'], ['2026-10-23', '14:15', 'class-4b', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-23', '15:20', 'class-4b', 'quiz', 'U4-4 Think Together + QUIZ'],
     ['2026-10-19', '', '', 'task', 'Post Alice practice 3 on k12 and print the parent note'], ['2026-10-24', '', '', 'meeting', 'English parent meeting (individual, 10 minutes each)'], ['2026-10-25', '', '', 'alice', 'Alice Tea Party (date to be confirmed)']
   ];
   var st = { y: 0, m: 0, mode: 'month', cls: 'all', sel: '', wk: '' };
@@ -53,9 +53,17 @@
   function retitleOnce() {
     try {
       if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed2')) return;
-      var M = {'class-4a|2026-10-19|10:30': 'U4-1 Team Players: Think-Pair-Share, sports words, Sparks story (book pp. 56-61)', 'class-4a|2026-10-20|15:20': 'U4-2 Reading 1: Teamwork Makes the Dream Work + spelling or (pp. 58-60)', 'class-4a|2026-10-21|15:20': 'U4-3 Reading 2: Late for the Show, the play (pp. 61-70)', 'class-4a|2026-10-22|16:55': 'U4-4 Think Together (p. 71) + review + QUIZ', 'class-4b|2026-10-20|09:00': 'U4-1 Team Players: Think-Pair-Share, sports words, Sparks story (book pp. 56-61)', 'class-4b|2026-10-20|09:45': 'U4-2 Reading 1: Teamwork Makes the Dream Work + spelling or (pp. 58-60)', 'class-4b|2026-10-21|13:30': 'U4-3 Reading 2: Late for the Show, the play (pp. 61-70)', 'class-4b|2026-10-23|15:20': 'U4-4 Think Together (p. 71) + review + QUIZ'}, list = customEvents().slice(), n = 0;
+      var M = {'class-4a|2026-10-19|10:30': 'U4-1 Team Players', 'class-4a|2026-10-20|15:20': 'U4-2 Reading 1: Dream Work', 'class-4a|2026-10-21|15:20': 'U4-3 Reading 2: Late for the Show', 'class-4a|2026-10-22|16:55': 'U4-4 Think Together + QUIZ', 'class-4b|2026-10-20|09:00': 'U4-1 Team Players', 'class-4b|2026-10-20|09:45': 'U4-2 Reading 1: Dream Work', 'class-4b|2026-10-21|13:30': 'U4-3 Reading 2: Late for the Show', 'class-4b|2026-10-23|15:20': 'U4-4 Think Together + QUIZ'}, list = customEvents().slice(), n = 0;
       list.forEach(function (e) { var k = e.classId + '|' + e.date + '|' + e.time; if (/^seed1-/.test(e.id) && M[k] && /^Unit 4 /.test(e.title)) { e.title = M[k]; n++; } });
       if (n) saveEvents(list); store().setCalendarFlag('seed2');
+    } catch (e) { /* ignore */ }
+  }
+  function shortenOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed3')) return;
+      var LONG = {'U4-1 Team Players: Think-Pair-Share, sports words, Sparks story (book pp. 56-61)': 'U4-1 Team Players', 'U4-2 Reading 1: Teamwork Makes the Dream Work + spelling or (pp. 58-60)': 'U4-2 Reading 1: Dream Work', 'U4-3 Reading 2: Late for the Show, the play (pp. 61-70)': 'U4-3 Reading 2: Late for the Show', 'U4-4 Think Together (p. 71) + review + QUIZ': 'U4-4 Think Together + QUIZ'}, N = {'U4-1 Team Players': 'Book pp. 56-61: Think-Pair-Share, sports words, the Sparks story', 'U4-2 Reading 1: Dream Work': 'Book pp. 58-60: Teamwork Makes the Dream Work + spelling pattern or', 'U4-3 Reading 2: Late for the Show': 'Book pp. 61-70: the play, sequence of events, story map', 'U4-4 Think Together + QUIZ': 'Book p. 71: Venn diagram and speaking, then review and the 20-mark quiz'}, list = customEvents().slice(), n = 0;
+      list.forEach(function (e) { if (/^seed1-/.test(e.id) && LONG[e.title]) { e.note = N[LONG[e.title]]; e.title = LONG[e.title]; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed3');
     } catch (e) { /* ignore */ }
   }
   function lessonsOn(date, classId) {
@@ -176,7 +184,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce();
+    seedOnce(); retitleOnce(); shortenOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
