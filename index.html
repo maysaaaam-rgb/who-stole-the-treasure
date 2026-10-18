@@ -26,7 +26,19 @@
   <script>
     (function() {
       'use strict';
-      const PLATFORM_ACCESS_PIN = '3515149460';
+      // The PIN is no longer written in this page: only a salted hash (PBKDF2, 150,000 rounds) is kept, so reading the page source does not show it.
+      const PIN_SALT = 'eaa-lock-v1-', PIN_ROUNDS = 150000, PIN_HASH = 'c1fd7ce3808d6099e7e39353940ea3ee25b566bef988410a92675c8c8d5de809';
+      function pinMatches(value) {
+        try {
+          const enc = new TextEncoder();
+          return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
+            return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
+          }).then(function (bits) {
+            const hex = Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+            return hex === PIN_HASH;
+          }).catch(function () { return false; });
+        } catch (e) { return Promise.resolve(false); }
+      }
 
       // Immediate lock check (prevents any flash of lesson content)
       try {
@@ -47,7 +59,12 @@
         if (!input) return false;
 
         const val = (input.value || '').trim();
-        if (val === PLATFORM_ACCESS_PIN) {
+        pinMatches(val).then(function (ok) { finishPinCheck(ok, input, err); });
+        return false;
+      };
+
+      function finishPinCheck(ok, input, err) {
+        if (ok) {
           window.__eaa_auth_unlocked = true;
           try {
             sessionStorage.setItem('eaa_auth_unlocked', 'true');
@@ -92,7 +109,7 @@
           input.select();
           return false;
         }
-      };
+      }
 
       window.togglePlatformPasswordVisibility = function() {
         const input = document.getElementById('platform-password-input');
@@ -3070,7 +3087,7 @@
   <script src="js/sleepy-monster.js?v=2"></script>
   <script src="js/voice-fx.js?v=5"></script>
   <script src="js/library-curate.js?v=2"></script>
-  <script src="js/class-board.js?v=18"></script>
+  <script src="js/class-board.js?v=19"></script>
   <script src="js/class-view.js?v=8"></script>
   <script src="js/class-rewards.js?v=8"></script>
   <script src="js/monster-closet.js?v=6"></script>
@@ -3093,7 +3110,7 @@
   <script src="alice-party-home/party-data.js?v=2"></script>
   <script src="js/alice-looks.js?v=1"></script>
   <script src="js/alice-profile.js?v=17"></script>
-  <script src="js/alice-week.js?v=5"></script>
+  <script src="js/alice-week.js?v=6"></script>
   <script src="js/sheet-sync.js?v=9"></script>
   <script src="js/worksheet-sync.js?v=4"></script>
   <script src="js/quiz-results.js?v=11"></script>
@@ -3102,7 +3119,7 @@
   <script src="js/daily-report.js?v=1"></script>
   <script src="js/pupil-profile.js?v=6"></script>
   <script src="js/pupil-card.js?v=6"></script>
-  <script src="js/school-app.js?v=4.53"></script>
+  <script src="js/school-app.js?v=4.54"></script>
   <script src="js/milestone-ceremony.js?v=10"></script>
   <script src="js/simon-says-game.js?v=4.1"></script>
   <script src="js/classroom-sounds.js?v=2"></script>
