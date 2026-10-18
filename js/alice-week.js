@@ -91,9 +91,11 @@
     var role = roleKeyOf(student.id); if (!role) return base;
     if (m === 'characters') return charPath(role);
     if (!chars[role]) { loadChars(); return base; }
-    if (String(base).indexOf('data:') !== 0) return charPath(role);   // an illustrated monster is a file, which cannot sit inside a picture: show the character
-    var k = role + '|' + hash(String(base));
-    return comp[k] || (comp[k] = compose(chars[role], String(base)));
+    var monster = String(base);
+    if (monster.indexOf('blob:') === 0 && root.EAA_MONSTER_SVG && root.EAA_MONSTER_SVG.get(monster)) monster = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(root.EAA_MONSTER_SVG.get(monster));   // the monster's drawing, to put inside the picture
+    if (monster.indexOf('data:') !== 0) return charPath(role);   // an illustrated monster is a file, which cannot sit inside a picture: show the character
+    var k = role + '|' + hash(monster);
+    return comp[k] || (comp[k] = compose(chars[role], monster));
   }
   var LABEL = { both: '🎭 Look: character + my monster', characters: '🎭 Look: characters only', costume: '🎭 Look: monsters in costume', monsters: '🎭 Look: my monsters (normal)' };
   function setMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* not remembered */ } comp = {}; paintChip(); refresh(); }

@@ -25,3 +25,13 @@ scratch/
 /monster day/story/mouse/pokemon/firefighter/NH/tea-party-cards/output/class_4b_png/
 /monster day/story/mouse/pokemon/firefighter/NH/alice-cards-4a/output/class_4a_png/
 /monster day/story/mouse/pokemon/firefighter/NH/alice-cards-4b/output/class_4b_png/
+
+# removed from the published site on 2026-10-18 (kept on this computer): work folders, the stale mirror copy and decompiled files
+/unit3-work/
+/src/
+/week4-work/
+/monster-work/
+/platform-work/
+/lingo-work/
+/build/
+/monster day/

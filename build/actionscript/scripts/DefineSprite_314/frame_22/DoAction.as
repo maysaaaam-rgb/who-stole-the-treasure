@@ -1,5 +1,0 @@
-tellTarget("..")
-{
-   gotoAndStop("cam");
-   play();
-}

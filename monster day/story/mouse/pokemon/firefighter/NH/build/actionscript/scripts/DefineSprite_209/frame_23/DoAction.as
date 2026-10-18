@@ -1,5 +1,0 @@
-tellTarget("..")
-{
-   gotoAndStop("perrogano");
-   play();
-}

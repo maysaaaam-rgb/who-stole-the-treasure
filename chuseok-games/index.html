@@ -1525,7 +1525,18 @@
        ADMIN VS PARENT/STUDENT VIEW LOGIC
        ========================================================= */
     // --- TEACHER ACCESS & PARENT VIEW SYSTEM ---
-    const TEACHER_PASSWORD = "3515149460";
+    // The passcode is not written in this page any more: only a salted hash is kept.
+    const PIN_SALT = 'eaa-lock-v1-', PIN_ROUNDS = 150000, PIN_HASH = 'c1fd7ce3808d6099e7e39353940ea3ee25b566bef988410a92675c8c8d5de809';
+    function pinMatches(value) {
+      try {
+        const enc = new TextEncoder();
+        return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
+          return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
+        }).then(function (bits) {
+          return Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('') === PIN_HASH;
+        }).catch(function () { return false; });
+      } catch (e) { return Promise.resolve(false); }
+    }
 
     function checkAdminStatus() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -1568,14 +1579,17 @@
     // Teacher Unlock Trigger (Lock Icon in footer or header)
     function openTeacherAuth() {
       const enteredPass = prompt("Enter Teacher Passcode:");
-      if (enteredPass === TEACHER_PASSWORD) {
-        soundEngine.playChime();
-        alert("Teacher access unlocked!");
-        enableTeacherMode();
-      } else if (enteredPass !== null) {
-        soundEngine.playClick();
-        alert("Incorrect passcode.");
-      }
+      if (enteredPass === null) return;
+      pinMatches(enteredPass).then(function (ok) {
+        if (ok) {
+          soundEngine.playChime();
+          alert("Teacher access unlocked!");
+          enableTeacherMode();
+        } else {
+          soundEngine.playClick();
+          alert("Incorrect passcode.");
+        }
+      });
     }
 
     function updateAdminUI() {
@@ -1635,15 +1649,17 @@
 
     function submitPasscode() {
       const code = document.getElementById('passcode-input').value.trim();
-      if (code === TEACHER_PASSWORD) {
-        soundEngine.playChime();
-        enableTeacherMode();
-        closePasscodeModal();
-        showToast("Teacher access unlocked!");
-      } else {
-        soundEngine.playClick();
-        document.getElementById('passcode-error').classList.remove('hidden');
-      }
+      pinMatches(code).then(function (ok) {
+        if (ok) {
+          soundEngine.playChime();
+          enableTeacherMode();
+          closePasscodeModal();
+          showToast("Teacher access unlocked!");
+        } else {
+          soundEngine.playClick();
+          document.getElementById('passcode-error').classList.remove('hidden');
+        }
+      });
     }
 
     /* =========================================================

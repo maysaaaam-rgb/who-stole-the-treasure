@@ -77,6 +77,8 @@ Copy-Item -Path "<root-relative-path>" -Destination "monster day\story\mouse\pok
 ```
 *Never mark a task complete without confirming that both paths are 100% in sync.*
 
+> **Update 18 Oct 2026:** the mirror folder `monster day/.../NH` is no longer tracked in git or published (it was 494 MB and weeks out of date; the site was over GitHub's size limit). It stays on this computer as a local copy and is listed in `.gitignore`. Do not `git add -f` it any more. Large work folders (`unit3-work`, `src`, `week4-work`, `monster-work`, `platform-work`, `lingo-work`, `build`) are also kept local and ignored: never publish textbook page photos.
+
 ### 2.2 Syntax Verification Before Commit
 Never commit unverified code. Always run static syntax checks via Node.js on all touched JavaScript files in both directories:
 ```powershell

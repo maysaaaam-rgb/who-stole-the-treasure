@@ -1347,8 +1347,8 @@
         });
         if (svgMarkup) {
           let uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
-          try { uri = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' })); } catch (e2) { /* keep the data address */ }
-          if (MONSTER_URL_CACHE.size > 400) { MONSTER_URL_CACHE.forEach(u => { try { if (u.indexOf('blob:') === 0) URL.revokeObjectURL(u); } catch (e3) { /* ignore */ } }); MONSTER_URL_CACHE.clear(); }
+          try { uri = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' })); (window.EAA_MONSTER_SVG = window.EAA_MONSTER_SVG || new Map()).set(uri, svgMarkup); } catch (e2) { /* keep the data address */ }
+          if (MONSTER_URL_CACHE.size > 400) { MONSTER_URL_CACHE.forEach(u => { try { if (u.indexOf('blob:') === 0) URL.revokeObjectURL(u); } catch (e3) { /* ignore */ } }); MONSTER_URL_CACHE.clear(); if (window.EAA_MONSTER_SVG) window.EAA_MONSTER_SVG.clear(); }
           MONSTER_URL_CACHE.set(cacheKey, uri);
           return uri;
         }
