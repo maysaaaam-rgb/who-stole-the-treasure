@@ -4200,6 +4200,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🎲', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
       ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
       ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
+      ['🌕', 'Chuseok Moon Song (folk song festival)', 'chuseok-moon-song/index.html'],
+      ['🏠', 'Moon Song Homework (5 minutes)', 'chuseok-moon-homework/index.html'],
       ['🖼️', 'Unit 4 Case File 2: Where Is She? (What Happened?)', 'unit4-g3-lessons/index.html?lesson=2'],
       ['🕵️', 'Unit 4 Case File 1: A Picture on the Wall (What Happened?)', 'unit4-g3-lessons/index.html?lesson=1'],
       ['🕵️', 'Daphne the School Detective (School Life)', 'week4-g3-daphne/index.html'],
