@@ -11,8 +11,8 @@
 
   /* Lesson 1 ---------------------------------------------------------- */
   D.l1missions = [
-    { e: '🤝', t: 'Talk about teamwork' }, { e: '🏀', t: 'Learn 5 sports words' }, { e: '📖', t: 'Hear the Sparks story' },
-    { e: '✅', t: 'True or False Court' }, { e: '🔢', t: 'Put events in order' }
+    { e: '🧊', t: 'Freeze Frame' }, { e: '🏀', t: 'Court Shootout' }, { e: '🎙️', t: 'Live Commentary' },
+    { e: '🔢', t: 'Morning Relay' }, { e: '🎴', t: 'Disaster Cards' }
   ];
   D.l1hook = [
     'Welcome to Team Week! Look at the pictures. Do you see a team?',
@@ -75,12 +75,27 @@
   /* Order the events (first, then, after that, finally) */
   D.order = [
     { title: 'A basketball game', e: '🏀', steps: ['The players come on the court.', 'They pass the ball to each other.', 'A player shoots at the basket.', 'The team scores. Everyone cheers!'] },
-    { title: 'A morning at home', e: '☀️', steps: ['I wake up.', 'I eat breakfast.', 'I put on my school bag.', 'I walk to school with my friends.'] },
+    { title: 'Paige’s morning at home', e: '☀️', steps: ['I wake up.', 'I eat breakfast.', 'I put on my school bag.', 'I walk to school with my friends.'] },
     { title: 'Making a team poster', e: '🎨', steps: ['We choose the team name.', 'We draw a big picture.', 'We write the words.', 'We show the poster to the class.'] }
   ];
   D.orderWords = ['First,', 'Then,', 'After that,', 'Finally,'];
 
   D.wrapSay = ['I am on a team and I …', 'Last year, I did …', 'Teamwork makes the dream work!'];
+
+  /* Dream Team League: the five roles in every team and the problem cards */
+  D.roles = [
+    { e: '🧢', n: 'Captain', job: 'Speaks for the team' }, { e: '🧠', n: 'Coach', job: 'Checks the words' },
+    { e: '🎙️', n: 'Commentator', job: 'Tells what is happening' }, { e: '🔢', n: 'Scorer', job: 'Counts the points in English' },
+    { e: '🐾', n: 'Mascot', job: 'Cheers for the team' }
+  ];
+  D.disasters = [
+    { e: '🚦', t: 'Traffic jam! The car is not moving.', a: 'Why don’t we take the train?' },
+    { e: '🚆', t: 'The train has stopped. Everyone must get off!', a: 'Why don’t we wait on the platform?' },
+    { e: '🎭', t: 'We are late for the show. The audience is waiting!', a: 'Why don’t we perform here, now?' },
+    { e: '🧥', t: 'Oh no! My costume is at home!', a: 'Why don’t we use a coat and a hat?' },
+    { e: '😰', t: 'I am nervous. I cannot remember my words!', a: 'Don’t worry. We can do it together!' },
+    { e: '🌧️', t: 'It is raining and the bus is late.', a: 'Why don’t we call the teacher?' }
+  ];
 
   root.U4G4Data = D;
 })(window);
