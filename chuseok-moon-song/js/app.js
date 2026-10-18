@@ -377,10 +377,10 @@
   var LESSONS = {
     1: { title: 'Chuseok Moon Song', missions: D.missions, door: '🚪 Door pass: sing me ONE leader line (for example "We dance under the moon.") and I will answer: Ganggangsullae!', scenes: [
       { t: 'A Night of the Full Moon', mins: '3 min', mode: 'think', run: moonOpen, intro: 'It is Chuseok night. Look at the big, round moon!',
-        kids: { steps: ['🌕 Look at the moon', '🤔 Whisper: what do we do at Chuseok?', '✋ Tell the class'], say: ['The moon is big.', 'We eat songpyeon.'] },
+        kids: { steps: ['🌕 Look at the moon', '🤔 Whisper: what do we do at Chuseok?', '✋ Tell the class'], say: ['The moon is big.', 'We sing together.'] },
         tip: ['Chuseok festival: the Korean harvest festival under the full moon. The class fills one shared Moon Glow bar (20 = the moon shines bright) while four teams also score.', 'Make 4 teams (Moons, Stars, Rabbits, Lanterns). Press the button for each question; accept one word or a sentence, Turkish first is fine.'] },
-      { t: 'Moon Words', mins: '5 min', mode: 'listen', run: moonWords, intro: 'Six words for our song: moon, circle, hold hands, harvest, dance, songpyeon.',
-        kids: { steps: ['👆 Tap a card and listen', '🗣️ Say the word and the sentence', '🎲 Clue game: which word is missing?'], say: ['moon', 'circle', 'hold hands', 'harvest', 'dance', 'songpyeon'] },
+      { t: 'Moon Words', mins: '5 min', mode: 'listen', run: moonWords, intro: 'Six words for our song: moon, circle, hold hands, harvest, dance, lantern.',
+        kids: { steps: ['👆 Tap a card and listen', '🗣️ Say the word and the sentence', '🎲 Clue game: which word is missing?'], say: ['moon', 'circle', 'hold hands', 'harvest', 'dance', 'lantern'] },
         tip: ['Tap each card (word, meaning, sentence), then the clue game. Pupils do a small action for each word (circle with arms, hold hands, dance).'] },
       { t: 'Learn the Song: Call and Response', mins: '8 min', mode: 'song', run: callResponse, intro: 'The leader calls. The whole circle answers: Ganggangsullae!',
         kids: { steps: ['🎤 Leader: sing the line', '👥 Circle: answer Ganggangsullae!', '🥁 Move with the drum'], say: ['We dance under the moon.', 'Ganggangsullae!'] },

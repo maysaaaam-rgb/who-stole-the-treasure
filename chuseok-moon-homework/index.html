@@ -51,11 +51,11 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   /* settings: the same Google Sheet receiver as the Tea Party homework (only the name of the homework changes) */
   var CFG = { submitUrl: 'https://script.google.com/macros/s/AKfycbzW5c8cvntKtAtcM4pDQiwhQpC8sctJJNntK8cpaP6AEtmHu2mz4TNrzdsLy0X0TiDQzQ/exec', token: 'eaa-tea-4f7c9d2b81a6', homework: 'chuseok-moon-song-hw' };
   var KEY = 'eaa_moon_hw_v1', PEND = 'eaa_moon_hw_pending_v1';
-  var LINES = ['The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.', 'We say thank you for the harvest.', 'We eat songpyeon together.'];
+  var LINES = ['The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.', 'We say thank you for the harvest.', 'We sing with our family.'];
   var QUIZ = [
     { s: 'The ____ is big and round.', o: ['moon', 'sun', 'tree'], a: 0 }, { s: 'We hold ____ in a circle.', o: ['hands', 'books', 'pens'], a: 0 },
     { s: 'We ____ under the moon.', o: ['dance', 'sleep', 'swim'], a: 0 }, { s: 'We say thank you for the ____.', o: ['harvest', 'homework', 'rain'], a: 0 },
-    { s: 'We eat ____ together.', o: ['songpyeon', 'shoes', 'chairs'], a: 0 }
+    { s: 'We sing with our ____.', o: ['family', 'shoes', 'chairs'], a: 0 }
   ];
   var VERBS = ['dance', 'sing', 'walk', 'clap', 'jump', 'laugh', 'look at the stars', 'hold hands'];
   function $(id) { return document.getElementById(id); }

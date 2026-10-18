@@ -26,15 +26,15 @@
     { w: 'moon', e: '🌕', def: 'the big round light in the night sky', ex: 'The moon is big and round.', gap: 'The ____ is big and round.' },
     { w: 'circle', e: '⭕', def: 'a round shape', ex: 'We stand in a circle.', gap: 'We stand in a ____.' },
     { w: 'hold hands', e: '🤝', def: 'to take someone’s hand', ex: 'We hold hands in a circle.', gap: 'We ____ in a circle.' },
-    { w: 'harvest', e: '🌾', def: 'the time when farmers pick the food', ex: 'We say thank you for the harvest.', gap: 'We say thank you for the ____.' },
+    { w: 'harvest', e: '🌾', def: 'the time when farmers bring in what they grew', ex: 'We say thank you for the harvest.', gap: 'We say thank you for the ____.' },
     { w: 'dance', e: '💃', def: 'to move to music', ex: 'We dance under the moon.', gap: 'We ____ under the moon.' },
-    { w: 'songpyeon', e: '🥟', def: 'a sweet rice cake for Chuseok', ex: 'We eat songpyeon together.', gap: 'We eat ____ together.' }
+    { w: 'lantern', e: '🏮', def: 'a light you carry in the dark', ex: 'We carry a lantern at night.', gap: 'We carry a ____ at night.' }
   ];
 
   /* the leader's lines (call). The whole circle answers with the refrain. */
   D.calls = [
     'The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.',
-    'We say thank you for the harvest.', 'We eat songpyeon together.'
+    'We say thank you for the harvest.', 'We sing with our family.'
   ];
 
   /* Circle Commander: do the action with the beat */
