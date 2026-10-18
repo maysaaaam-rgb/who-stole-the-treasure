@@ -882,7 +882,7 @@
         'curriculum', 'library', 'worksheets', 'assignments', 'homework',
         'quizzes', 'assessments', 'progress', 'reports', 'story', 'messages',
         'portfolios', 'health', 'system-health', 'gamification', 'adventure', 'tasks', 'badges',
-        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards', 'closet'
+        'leaderboard', 'parent-home', 'parent-progress', 'parent-story', 'parent-messages', 'archived', 'settings', 'monster', 'store', 'command', 'board', 'classview', 'shelf', 'rewards', 'closet', 'calendar'
       ];
       if (primaryView === 'simon-says' || primaryView === 'simon') {
         if (typeof window.openSimonSaysModal === 'function') {
@@ -9716,6 +9716,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
           '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Class View</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Calendar: lessons, quizzes, birthdays, meetings"><span class="nav-item-left"><span class="nav-icon">📅</span> <span class="nav-label">Calendar</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
         '</ul>' +
 
@@ -9865,6 +9866,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'tasks': renderStudentTasksView(container); break;
         case 'badges': renderStudentBadgesView(container); break;
         case 'leaderboard': renderLeaderboardView(container); break;
+        case 'calendar': if (window.renderCalendarView) window.renderCalendarView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The calendar is not loaded.</div>'; break;
         case 'command': if (window.renderCommandCenterView) window.renderCommandCenterView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Command Center is not loaded.</div>'; break;
         case 'closet': if (window.renderMonsterCloset) window.renderMonsterCloset(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Monster Closet is not loaded.</div>'; break;
         case 'rewards': if (window.renderRewardsHall) window.renderRewardsHall(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Rewards is not loaded.</div>'; break;

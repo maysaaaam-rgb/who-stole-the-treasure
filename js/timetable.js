@@ -154,5 +154,6 @@
       if (root.renderCurrentView) root.renderCurrentView();
     }
   };
+  api.titleOf = function (id) { var c = find(id); return c ? c.icon + ' ' + c.title : ''; };
   root.Timetable = api;
 })(typeof window !== 'undefined' ? window : this);
