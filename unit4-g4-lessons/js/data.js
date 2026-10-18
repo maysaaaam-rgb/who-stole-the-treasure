@@ -11,8 +11,9 @@
 
   /* Lesson 1 ---------------------------------------------------------- */
   D.l1missions = [
-    { e: '🧊', t: 'Freeze Frame' }, { e: '🏀', t: 'Court Shootout' }, { e: '🎙️', t: 'Live Commentary' },
-    { e: '🔢', t: 'Morning Relay' }, { e: '🎴', t: 'Disaster Cards' }
+    { e: '🧊', t: 'Freeze Frame', a: 'o_dancers' }, { e: '🏀', t: 'Court Shootout', a: 'o_shooting' },
+    { e: '🎙️', t: 'Live Commentary', a: 'o_basketball' }, { e: '🔢', t: 'Morning Relay', a: 'o_score' },
+    { e: '🎴', t: 'Disaster Cards', a: 'o_team_hands' }
   ];
   D.l1hook = [
     'Welcome to Team Week! Look at the pictures. Do you see a team?',
@@ -25,9 +26,9 @@
     { who: 'The dancers', ing: 'are moving with the music', e: '💃', a: 'o_dancers' },
     { who: 'The musicians', ing: 'are playing the music together', e: '🎻', a: 'o_orchestra' },
     { who: 'The football players', ing: 'are passing the ball', e: '⚽', a: 'o_football' },
-    { who: 'The basketball players', ing: 'are shooting at the basket', e: '🏀' },
-    { who: 'The actors', ing: 'are learning their words', e: '🎭' },
-    { who: 'The singers', ing: 'are singing in a choir', e: '🎤' }
+    { who: 'The basketball players', ing: 'are shooting at the basket', e: '🏀', a: 'o_shooting' },
+    { who: 'The actors', ing: 'are learning their words', e: '🎭', a: 'o_team_hands' },
+    { who: 'The singers', ing: 'are singing in a choir', e: '🎤', a: 'o_orchestra' }
   ];
   D.tpsLines = [
     'Think: I look at the picture. I think about it for ten seconds.',
@@ -46,37 +47,37 @@
 
   /* Reading 1 told in short parts (pupils hear it first; the book text is read in the next lesson) */
   D.sparks = [
-    { say: 'This is a basketball league. It has twelve teams.', act: '🏆 Hold up twelve fingers (ten and two).', scene: '🏆' },
-    { say: 'In a game, five players from each team are on the court.', act: '🖐️ Show five fingers. Count to ten.', scene: '🏟️' },
-    { say: 'Players shoot the ball into the basket to score points.', act: '🏀 Pretend to shoot a ball!', scene: '🏀' },
-    { say: 'Most baskets are worth two points. Baskets from far away are worth three.', act: '✌️ Show two fingers. Then three fingers.', scene: '🔢' },
-    { say: 'One day, the Sparks play the Lynx. It is a very big game!', act: '👏 Clap for the Sparks. Clap for the Lynx.', scene: '👏' },
+    { say: 'This is a basketball league. It has twelve teams.', act: '🏆 Hold up twelve fingers (ten and two).', scene: '🏆', art: 'o_league' },
+    { say: 'In a game, five players from each team are on the court.', act: '🖐️ Show five fingers. Count to ten.', scene: '🏟️', art: 'o_court' },
+    { say: 'Players shoot the ball into the basket to score points.', act: '🏀 Pretend to shoot a ball!', scene: '🏀', art: 'o_shooting' },
+    { say: 'Most baskets are worth two points. Baskets from far away are worth three.', act: '✌️ Show two fingers. Then three fingers.', scene: '🔢', art: 'o_score' },
+    { say: 'One day, the Sparks play the Lynx. It is a very big game!', act: '👏 Clap for the Sparks. Clap for the Lynx.', scene: '👏', art: 'o_basketball' },
     { predict: 'The game is almost over. The Sparks are losing by five points. What can the team do?',
-      say: 'Chelsea Gray shoots from far away. She scores three points!', act: '🙌 Jump up and cheer!', scene: '🎯', key: true },
-    { say: 'But three points are not enough. The Lynx win the game.', act: '😔 Make a sad face. It is okay!', scene: '😔' },
-    { say: 'The Sparks work even harder. That year, they win the championship!', act: '🏆 Lift your arms. You are the champions!', scene: '🏆' },
-    { say: 'Winning is important. But working together is part of the game.', act: '🤝 Shake hands with your partner.', scene: '🤝', key: true }
+      say: 'Chelsea Gray shoots from far away. She scores three points!', act: '🙌 Jump up and cheer!', scene: '🎯', art: 'o_shooting', key: true },
+    { say: 'But three points are not enough. The Lynx win the game.', act: '😔 Make a sad face. It is okay!', scene: '😔', art: 'o_basket' },
+    { say: 'The Sparks work even harder. That year, they win the championship!', act: '🏆 Lift your arms. You are the champions!', scene: '🏆', art: 'o_league' },
+    { say: 'Winning is important. But working together is part of the game.', act: '🤝 Shake hands with your partner.', scene: '🤝', art: 'o_team_hands', key: true }
   ];
 
   /* True or False Court (statements about the Sparks story) */
   D.tf = [
-    { s: 'The league has twelve teams.', a: true, e: '🏆', fix: 'Yes! Twelve teams.' },
-    { s: 'Ten players are on the court: five from each team.', a: true, e: '🏟️', fix: 'Yes! Five and five.' },
-    { s: 'A basket from far away is worth four points.', a: false, e: '🔢', fix: 'No. It is worth three points.' },
-    { s: 'The Sparks play the Lynx in a big game.', a: true, e: '🏀', fix: 'Yes!' },
-    { s: 'Chelsea Gray scores a three-pointer.', a: true, e: '🎯', fix: 'Yes! She scores three points.' },
-    { s: 'The Lynx win the big game.', a: true, e: '😔', fix: 'Yes, they win it. But the Sparks win the championship later!' },
-    { s: 'The Sparks stop working hard.', a: false, e: '💪', fix: 'No. They work even harder.' },
-    { s: 'In basketball you play alone.', a: false, e: '🤝', fix: 'No. You work with your team.' },
-    { s: 'The WNBA started in 1996.', a: true, e: '📅', fix: 'Yes! In nineteen ninety-six.' },
-    { s: 'Players throw the ball into the basket to score.', a: true, e: '🧺', fix: 'Yes!' }
+    { s: 'The league has twelve teams.', a: true, e: '🏆', art: 'o_league', fix: 'Yes! Twelve teams.' },
+    { s: 'Ten players are on the court: five from each team.', a: true, e: '🏟️', art: 'o_court', fix: 'Yes! Five and five.' },
+    { s: 'A basket from far away is worth four points.', a: false, e: '🔢', art: 'o_score', fix: 'No. It is worth three points.' },
+    { s: 'The Sparks play the Lynx in a big game.', a: true, e: '🏀', art: 'o_basketball', fix: 'Yes!' },
+    { s: 'Chelsea Gray scores a three-pointer.', a: true, e: '🎯', art: 'o_shooting', fix: 'Yes! She scores three points.' },
+    { s: 'The Lynx win the big game.', a: true, e: '😔', art: 'o_basket', fix: 'Yes, they win it. But the Sparks win the championship later!' },
+    { s: 'The Sparks stop working hard.', a: false, e: '💪', art: 'o_team_hands', fix: 'No. They work even harder.' },
+    { s: 'In basketball you play alone.', a: false, e: '🤝', art: 'o_team_hands', fix: 'No. You work with your team.' },
+    { s: 'The WNBA started in 1996.', a: true, e: '📅', art: 'o_league', fix: 'Yes! In nineteen ninety-six.' },
+    { s: 'Players throw the ball into the basket to score.', a: true, e: '🧺', art: 'o_basket', fix: 'Yes!' }
   ];
 
   /* Order the events (first, then, after that, finally) */
   D.order = [
-    { title: 'A basketball game', e: '🏀', steps: ['The players come on the court.', 'They pass the ball to each other.', 'A player shoots at the basket.', 'The team scores. Everyone cheers!'] },
-    { title: 'Paige’s morning at home', e: '☀️', steps: ['I wake up.', 'I eat breakfast.', 'I put on my school bag.', 'I walk to school with my friends.'] },
-    { title: 'Making a team poster', e: '🎨', steps: ['We choose the team name.', 'We draw a big picture.', 'We write the words.', 'We show the poster to the class.'] }
+    { title: 'A basketball game', e: '🏀', a: 'o_basketball', steps: ['The players come on the court.', 'They pass the ball to each other.', 'A player shoots at the basket.', 'The team scores. Everyone cheers!'] },
+    { title: 'Paige’s morning at home', e: '☀️', a: 'o_team_hands', steps: ['I wake up.', 'I eat breakfast.', 'I put on my school bag.', 'I walk to school with my friends.'] },
+    { title: 'Making a team poster', e: '🎨', a: 'o_league', steps: ['We choose the team name.', 'We draw a big picture.', 'We write the words.', 'We show the poster to the class.'] }
   ];
   D.orderWords = ['First,', 'Then,', 'After that,', 'Finally,'];
 
@@ -89,12 +90,12 @@
     { e: '🐾', n: 'Mascot', job: 'Cheers for the team' }
   ];
   D.disasters = [
-    { e: '🚦', t: 'Traffic jam! The car is not moving.', a: 'Why don’t we take the train?' },
-    { e: '🚆', t: 'The train has stopped. Everyone must get off!', a: 'Why don’t we wait on the platform?' },
-    { e: '🎭', t: 'We are late for the show. The audience is waiting!', a: 'Why don’t we perform here, now?' },
-    { e: '🧥', t: 'Oh no! My costume is at home!', a: 'Why don’t we use a coat and a hat?' },
-    { e: '😰', t: 'I am nervous. I cannot remember my words!', a: 'Don’t worry. We can do it together!' },
-    { e: '🌧️', t: 'It is raining and the bus is late.', a: 'Why don’t we call the teacher?' }
+    { e: '🚦', a: 'o_team_hands', t: 'Traffic jam! The car is not moving.', aText: 'Why don’t we take the train?', ans: 'Why don’t we take the train?' },
+    { e: '🚆', a: 'o_team_hands', t: 'The train has stopped. Everyone must get off!', aText: 'Why don’t we wait on the platform?', ans: 'Why don’t we wait on the platform?' },
+    { e: '🎭', a: 'o_dancers', t: 'We are late for the show. The audience is waiting!', aText: 'Why don’t we perform here, now?', ans: 'Why don’t we perform here, now?' },
+    { e: '🧥', a: 'o_orchestra', t: 'Oh no! My costume is at home!', aText: 'Why don’t we use a coat and a hat?', ans: 'Why don’t we use a coat and a hat?' },
+    { e: '😰', a: 'o_team_hands', t: 'I am nervous. I cannot remember my words!', aText: 'Don’t worry. We can do it together!', ans: 'Don’t worry. We can do it together!' },
+    { e: '🌧️', a: 'o_football', t: 'It is raining and the bus is late.', aText: 'Why don’t we call the teacher?', ans: 'Why don’t we call the teacher?' }
   ];
 
   root.U4G4Data = D;
