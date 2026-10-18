@@ -7,7 +7,7 @@
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var TYPES = {
     lesson: ['📖', 'Lesson', '#94a3b8'], unit4: ['📘', 'Unit 4', '#38bdf8'], alice: ['🫖', 'Alice', '#f472b6'], quiz: ['📝', 'Quiz', '#f59e0b'],
-    birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], other: ['📌', 'Other', '#cbd5e1']
+    birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
   };
   // k12 timetable (19-23 Oct 2026; the same every week): classId -> weekday (1=Mon) -> start times
   var K12 = {
@@ -18,15 +18,15 @@
   };
   // the plan of the week 19-23 Oct (added once to the calendar; every entry can be edited or deleted)
   var SEED = [
-    ['2026-10-19', '13:30', 'class-3a', 'unit4', 'U4-1 Case File 1: Picture on the Wall'], ['2026-10-19', '14:15', 'class-3a', 'unit4', 'U4-2 Case File 2: Where Is She?'], ['2026-10-20', '10:30', 'class-3a', 'unit4', 'Unit 4 · lesson 3'], ['2026-10-20', '11:15', 'class-3a', 'unit4', 'Unit 4 · lesson 4'],
+    ['2026-10-19', '13:30', 'class-3a', 'unit4', 'U4-1 Case File 1: Picture on the Wall'], ['2026-10-19', '14:15', 'class-3a', 'unit4', 'U4-2 Case File 2: Where Is She?'], ['2026-10-20', '10:30', 'class-3a', 'unit4', 'Unit 4 · lesson 3'], ['2026-10-20', '11:15', 'class-3a', 'chuseok', 'Chuseok Moon Song (Week 3)'],
     ['2026-10-22', '09:45', 'class-3a', 'unit4', 'Unit 4 · lesson 5'], ['2026-10-23', '10:30', 'class-3a', 'unit4', 'Unit 4 · review game'], ['2026-10-23', '11:15', 'class-3a', 'quiz', 'Unit 4 QUIZ (print the sheets)'],
-    ['2026-10-19', '16:05', 'class-3b', 'unit4', 'U4-1 Case File 1: Picture on the Wall'], ['2026-10-21', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 2'], ['2026-10-21', '11:15', 'class-3b', 'unit4', 'Unit 4 · lesson 3'], ['2026-10-22', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 4'],
+    ['2026-10-19', '16:05', 'class-3b', 'unit4', 'U4-1 Case File 1: Picture on the Wall'], ['2026-10-21', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 2'], ['2026-10-21', '11:15', 'class-3b', 'chuseok', 'Chuseok Moon Song (Week 3)'], ['2026-10-22', '10:30', 'class-3b', 'unit4', 'Unit 4 · lesson 4'],
     ['2026-10-22', '11:15', 'class-3b', 'unit4', 'Unit 4 · lesson 5'], ['2026-10-23', '09:00', 'class-3b', 'unit4', 'Unit 4 · review game'], ['2026-10-23', '09:45', 'class-3b', 'quiz', 'Unit 4 QUIZ (print the sheets)'],
     ['2026-10-19', '10:30', 'class-4a', 'unit4', 'U4-1 Team Players'], ['2026-10-19', '11:15', 'class-4a', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '15:20', 'class-4a', 'unit4', 'U4-2 Reading 1: Dream Work'], ['2026-10-21', '14:15', 'class-4a', 'alice', 'Alice 2 · pairs by heart'],
     ['2026-10-21', '15:20', 'class-4a', 'unit4', 'U4-3 Reading 2: Late for the Show'], ['2026-10-22', '16:05', 'class-4a', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-22', '16:55', 'class-4a', 'quiz', 'U4-4 Think Together + QUIZ'],
     ['2026-10-19', '09:45', 'class-4b', 'alice', 'Alice 1 · phrases'], ['2026-10-20', '09:00', 'class-4b', 'unit4', 'U4-1 Team Players'], ['2026-10-20', '09:45', 'class-4b', 'unit4', 'U4-2 Reading 1: Dream Work'], ['2026-10-21', '12:45', 'class-4b', 'alice', 'Alice 2 · pairs by heart'],
     ['2026-10-21', '13:30', 'class-4b', 'unit4', 'U4-3 Reading 2: Late for the Show'], ['2026-10-23', '14:15', 'class-4b', 'alice', 'Alice 3 · dress rehearsal'], ['2026-10-23', '15:20', 'class-4b', 'quiz', 'U4-4 Think Together + QUIZ'],
-    ['2026-10-19', '', '', 'task', 'Post Alice practice 3 on k12 and print the parent note'], ['2026-10-24', '', '', 'meeting', 'English parent meeting (individual, 10 minutes each)'], ['2026-10-25', '', '', 'alice', 'Alice Tea Party (date to be confirmed)']
+    ['2026-10-19', '', '', 'task', 'Post Alice practice 3 on k12 and print the parent note'], ['2026-10-22', '', '', 'chuseok', 'Moon Song homework due (3/A and 3/B): send the link chuseok-moon-homework'], ['2026-10-24', '', '', 'meeting', 'English parent meeting (individual, 10 minutes each)'], ['2026-10-25', '', '', 'alice', 'Alice Tea Party (date to be confirmed)']
   ];
   var st = { y: 0, m: 0, mode: 'month', cls: 'all', sel: '', wk: '' };
   function S() { return root.schoolStore || root.store; }
@@ -72,6 +72,16 @@
       var M = {'class-3a|2026-10-19|13:30': ['U4-1 Case File 1: Picture on the Wall', 'Book pp. 56-57, 59: Think-Pair-Share, spot the changes, case words, sneak game, past tense, timeline'], 'class-3a|2026-10-19|14:15': ['U4-2 Case File 2: Where Is She?', 'Book pp. 58-64: act out the robbery, newspaper race, quiz show, four corners debate, draw two faces'], 'class-3b|2026-10-19|16:05': ['U4-1 Case File 1: Picture on the Wall', 'Book pp. 56-57, 59: Think-Pair-Share, spot the changes, case words, sneak game, past tense, timeline']}, list = customEvents().slice(), n = 0;
       list.forEach(function (e) { var v = M[e.classId + '|' + e.date + '|' + e.time]; if (v && /^seed1-/.test(e.id) && /^Unit 4 /.test(e.title)) { e.title = v[0]; e.note = v[1]; n++; } });
       if (n) saveEvents(list); store().setCalendarFlag('seed4');
+    } catch (e) { /* ignore */ }
+  }
+  function moonOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed5')) return;
+      var list = customEvents().slice(), n = 0, note = 'Week 3 of the Chuseok festival: circle song with a drum, circle dance, make a verse, concert. Lesson: chuseok-moon-song. Homework due Thu 22.';
+      var M = { 'class-3a|2026-10-20|11:15': 1, 'class-3b|2026-10-21|11:15': 1 };
+      list.forEach(function (e) { if (M[e.classId + '|' + e.date + '|' + e.time] && /^seed1-/.test(e.id) && e.type === 'unit4') { e.type = 'chuseok'; e.title = 'Chuseok Moon Song (Week 3)'; e.note = note; n++; } });
+      if (!list.some(function (e) { return e.id === 'seed5-hw'; })) { list.push({ id: 'seed5-hw', date: '2026-10-22', time: '', classId: '', type: 'chuseok', title: 'Moon Song homework due (3/A and 3/B): send the link chuseok-moon-homework', note: '' }); n++; }
+      if (n) saveEvents(list); store().setCalendarFlag('seed5');
     } catch (e) { /* ignore */ }
   }
   function lessonsOn(date, classId) {
@@ -192,7 +202,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
