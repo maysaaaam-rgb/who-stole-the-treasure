@@ -1305,6 +1305,7 @@
     } catch (e) { return img; }
   }
 
+  const MONSTER_URL_CACHE = new Map();
   function getStudentMonsterAvatarUrl(student, profile, mState) {
     const base = getStudentMonsterAvatarUrlCore(student, profile, mState);
     return window.AliceWeek && window.AliceWeek.wrapUrl ? window.AliceWeek.wrapUrl(student, base) : base;   // Tea Party week: character picture / both
@@ -1331,6 +1332,9 @@
 
     if ((hasEquipped || isCustomFur || nearEvolve) && window.MonsterRenderer && typeof window.MonsterRenderer.renderMonsterSVG === 'function') {
       const stageKey = (mState && mState.stageKey && mState.stageKey !== 'egg' && mState.stageKey !== 'cracking_egg') ? mState.stageKey : 'baby';
+      // Speed: the same monster is drawn once and kept as a short blob address (a board with 19 pupils was about 1 MB of HTML and 19 redraws per click)
+      const cacheKey = JSON.stringify([stageKey, baseColor || 'blue', equipped, !!nearEvolve]);
+      if (MONSTER_URL_CACHE.has(cacheKey)) return MONSTER_URL_CACHE.get(cacheKey);
       try {
         const svgMarkup = window.MonsterRenderer.renderMonsterSVG({
           stage: stageKey,
@@ -1342,7 +1346,10 @@
           nearEvolve: nearEvolve
         });
         if (svgMarkup) {
-          const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
+          let uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgMarkup);
+          try { uri = URL.createObjectURL(new Blob([svgMarkup], { type: 'image/svg+xml' })); } catch (e2) { /* keep the data address */ }
+          if (MONSTER_URL_CACHE.size > 400) { MONSTER_URL_CACHE.forEach(u => { try { if (u.indexOf('blob:') === 0) URL.revokeObjectURL(u); } catch (e3) { /* ignore */ } }); MONSTER_URL_CACHE.clear(); }
+          MONSTER_URL_CACHE.set(cacheKey, uri);
           return uri;
         }
       } catch (e) {
