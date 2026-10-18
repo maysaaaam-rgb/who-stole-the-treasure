@@ -27,7 +27,7 @@
     (function() {
       'use strict';
       // The PIN is no longer written in this page: only a salted hash (PBKDF2, 150,000 rounds) is kept, so reading the page source does not show it.
-      const PIN_SALT = 'eaa-lock-v1-', PIN_ROUNDS = 150000, PIN_HASH = 'c1fd7ce3808d6099e7e39353940ea3ee25b566bef988410a92675c8c8d5de809';
+      const PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
       function pinMatches(value) {
         try {
           const enc = new TextEncoder();
