@@ -24,7 +24,7 @@
   /* real pictures: ART maps an emoji to a picture name; HAS lists the pictures that exist in art/ (art/manifest.json).
      A missing picture falls back to the emoji, so the lessons work with any number of pictures. */
   var HAS = {};
-  var ART = { '🏀': 'o_basketball', '🎻': 'o_orchestra', '⚽': 'o_football', '🤝': 'o_team_hands', '🏆': 'o_league' };
+  var ART = { '🏀': 'o_basketball', '🎻': 'o_orchestra', '⚽': 'o_football', '🤝': 'o_team_hands', '🏆': 'o_league', '💃': 'o_dancers', '🏟️': 'o_court', '🧺': 'o_basket', '🔢': 'o_score', '🎯': 'o_shooting' };
   function hasArt(name) { return !!(name && HAS[name]); }
   function imgEl(name, e, cls) {
     var im = h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + name + '.webp', alt: '', draggable: 'false' });
@@ -63,11 +63,7 @@
     state.scores[i] = Math.max(0, state.scores[i] + n); sfx(n > 0 ? 'coin' : 'tap');
     var el = $('tm' + i); if (el) { el.querySelector('b').textContent = state.scores[i]; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
   }
-  function pointsRow() {
-    var row = h('div', { class: 'row points' }, [h('span', { class: 'lab', text: '⭐ Point for:' })]);
-    D.teams.forEach(function (t, i) { row.appendChild(h('button', { type: 'button', class: 'btn small', style: '--bg:' + t.c + ';--lip:rgba(0,0,0,.4)', text: t.e + ' +1', onclick: function () { addPoint(i, 1); } })); });
-    return row;
-  }
+  function pointsRow() { return document.createDocumentFragment(); }
 
   /* ---------- helpers ---------- */
   function confetti() {
@@ -209,9 +205,13 @@
     var WL = words || D.words, body = c.body, clueI = -1;
     var grid = h('div', { class: 'vgrid' + (WL.length > 5 ? ' six' : '') }), box = h('div', { class: 'msg' }), gap = h('div', { class: 'gapbox' });
     WL.forEach(function (w) {
-      var card = h('button', { type: 'button', class: 'btn vcard' }, [fill(h('span', { class: 'em' }), w.e, '', w.a), h('b', { text: w.w })]);
+      var kids = [];
+      if (w.pos) kids.push(h('span', { class: 'pos-badge', style: 'background:' + (w.posColor || '#38bdf8'), text: w.pos }));
+      kids.push(fill(h('span', { class: 'em' }), w.e, '', w.a));
+      kids.push(h('b', { text: w.w }));
+      var card = h('button', { type: 'button', class: 'btn vcard' }, kids);
       card.addEventListener('click', function () {
-        sfx('tap'); box.innerHTML = '<b>' + w.w + '</b>: ' + w.def + '.<br><i>' + w.ex + '</i>';
+        sfx('tap'); box.innerHTML = '<b>' + w.w + '</b>' + (w.pos ? ' <small>(' + w.pos + ')</small>' : '') + ': ' + w.def + '.<br><i>' + w.ex + '</i>';
         A.speakSeq([w.w, w.def, w.ex]); [].forEach.call(grid.children, function (el) { el.classList.remove('sel'); }); card.classList.add('sel');
       });
       grid.appendChild(card);
@@ -222,7 +222,7 @@
       else { shown = true; var w2 = WL[order[clueI]]; gap.textContent = w2.ex; A.speak(w2.ex); sfx('correct'); clue.textContent = '🎲 Next clue'; }
     });
     body.appendChild(h('div', { class: 'row' }, [clue, h('span', { class: 'lab', text: 'Tap a word card to hear it.' })]));
-    body.appendChild(grid); body.appendChild(box); body.appendChild(gap); body.appendChild(pointsRow());
+    body.appendChild(grid); body.appendChild(box); body.appendChild(gap);
   }
 
   function teamName(i) { return D.teams[i].e + ' ' + D.teams[i].n; }
@@ -289,14 +289,14 @@
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
         cur = deck[round % deck.length]; shown = false;
         var nb = teamBanner(acting(), '🧊 Round ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
-        card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '❓' })); card.appendChild(h('div', { class: 'rq-t', text: 'Captain: look at the card. Team: FREEZE like this team!' }));
+        card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), '🤝', '', 'o_team_hands')); card.appendChild(h('div', { class: 'rq-t', text: 'Captain: look at the card. Team: FREEZE like this team!' }));
         msg.textContent = 'Other teams: Think, Pair, Share. How are they working together?';
         guessRow.innerHTML = ''; guessRow.appendChild(h('span', { class: 'lab', text: '🙋 Guessed with the sentence:' }));
         D.teams.forEach(function (t, i) { if (i !== acting()) guessRow.appendChild(h('button', { type: 'button', class: 'btn small', style: '--bg:' + t.c + ';--lip:rgba(0,0,0,.4)', text: t.e + ' +2', onclick: function () { addPoint(i, 2); addPoint(acting(), 1); meter[i]['Commentator'] = true; round++; draw(); } })); });
       }
       var peek = btn('👀 Show the card to the Captain (3 s)', 'amber', function () {
         card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e, '', cur.a)); card.appendChild(h('div', { class: 'rq-t', text: cur.who.replace('The ', '').toUpperCase() })); sfx('page');
-        setTimeout(function () { if (!shown) { card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '🧊' })); card.appendChild(h('div', { class: 'rq-t', text: 'FREEZE! Guess the team.' })); } }, 3000);
+        setTimeout(function () { if (!shown) { card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), '🤝', '', 'o_team_hands')); card.appendChild(h('div', { class: 'rq-t', text: 'FREEZE! Guess the team.' })); } }, 3000);
       });
       var reveal = btn('💡 Reveal', 'violet', function () {
         shown = true; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e, '', cur.a)); var s = cur.who + ' ' + cur.ing + '.'; card.appendChild(h('div', { class: 'rq-t', text: s })); A.speak(s); sfx('correct');
@@ -323,15 +323,21 @@
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
         word = deck[round]; shot = 0; ball.className = 'ball'; setPhase('clue');
         var nb = teamBanner(turn, '🏟️ Shot ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
-        clue.innerHTML = ''; clue.appendChild(h('div', { class: 'rq-e', text: '❓' })); clue.appendChild(h('div', { class: 'rq-t', text: word.gap })); clue.appendChild(h('div', { class: 'rq-a', text: 'Team: talk, then answer. Right = you shoot a paper ball into the bin!' }));
+        clue.innerHTML = ''; clue.appendChild(fill(h('div', { class: 'rq-e' }), word.e, '', word.a)); clue.appendChild(h('div', { class: 'rq-t', text: word.gap })); clue.appendChild(h('div', { class: 'rq-a', text: 'Team: talk, then answer. Right = you shoot a paper ball into the bin!' }));
         msg.textContent = mFull(turn) ? '⚡ The Teamwork Meter is FULL: you may call a 3-POINT shot!' : 'Fill the meter (all five badges) to unlock the 3-point shot.'; A.speak(word.gap.replace(/_+/g, 'blank'));
       }
       function next() { round++; turn = (turn + 1) % D.teams.length; draw(); }
       bShow.onclick = function () { clue.innerHTML = ''; clue.appendChild(fill(h('div', { class: 'rq-e' }), word.e, '', word.a)); clue.appendChild(h('div', { class: 'rq-t', text: word.w + ': ' + word.ex })); A.speakSeq([word.w, word.ex]); sfx('correct'); };
       b2.onclick = function () { shot = 2; msg.textContent = '🏀 Shoot the paper ball! Basket = 2 points.'; setPhase('shot'); sfx('tap'); };
-      b3.onclick = function () { if (!mFull(turn)) { msg.textContent = '⚡ Light all five badges first! Every pupil must speak.'; sfx('tap'); return; } shot = 3; msg.textContent = '🔥 THREE-POINTER from the far line! Basket = 3 points.'; setPhase('shot'); sfx('tap'); };
+      b3.onclick = function () {
+        if (!mFull(turn)) {
+          b3.classList.remove('wob', 'wobble'); void b3.offsetWidth; b3.classList.add('wobble');
+          msg.textContent = '⚡ Light all five badges first! Every pupil must speak.'; sfx('soft'); return;
+        }
+        shot = 3; msg.textContent = '🔥 THREE-POINTER from the far line! Basket = 3 points.'; setPhase('shot'); sfx('tap');
+      };
       bIn.onclick = function () { ball.className = 'ball fly'; addPoint(turn, shot); if (shot === 3) { meter[turn] = {}; mp.repaint(); } sfx('win'); confetti(); msg.textContent = '🎉 SWISH! ' + shot + ' points for ' + D.teams[turn].n + '!'; setTimeout(next, 1400); };
-      bMiss.onclick = function () { ball.className = 'ball miss'; sfx('tap'); msg.textContent = 'So close! Great try. Next team!'; setTimeout(next, 1100); };
+      bMiss.onclick = function () { ball.className = 'ball miss'; sfx('soft'); msg.textContent = 'So close! Great try. Next team!'; setTimeout(next, 1100); };
       bSkip.onclick = next;
       banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 20), bShow, b2, b3, bIn, bMiss, bSkip]));
       host.appendChild(banner); host.appendChild(clue); host.appendChild(court); host.appendChild(msg); host.appendChild(mp);
@@ -347,7 +353,7 @@
     runStory(c, D.sparks, function (ch, predicting) {
       scene.innerHTML = '';
       if (!ch) { fill(scene, '🏆', '', 'o_league'); return; }
-      fill(scene, predicting ? '🤔' : ch.scene, '', predicting ? null : ch.art);
+      fill(scene, predicting ? '🏀' : ch.scene, '', predicting ? 'o_shooting' : ch.art);
     }, '🎙️ Commentators: read each part like a sports reporter! Teams: act it out!', 'What a game! Teams win and lose together.');
     c.body.appendChild(meterPanel());
   }
@@ -364,13 +370,20 @@
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
         set = D.order[round]; placed = 0;
         var nb = teamBanner(turn, set.e + ' Story ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
-        title.textContent = 'Tap the sentences in the right order: ' + set.title; line.textContent = ''; rowDone.innerHTML = ''; list.innerHTML = '';
+        title.textContent = 'Tap the sentences in the right order: ' + set.title; line.textContent = ''; rowDone.innerHTML = '';
+        rowDone.appendChild(fill(h('div', { class: 'rq-e' }), set.e, '', set.a || 'o_basketball'));
+        list.innerHTML = '';
         shuffle(set.steps.map(function (s, k) { return { s: s, k: k }; })).forEach(function (o) {
           var tile = h('button', { type: 'button', class: 'btn tile2 chip2', text: o.s, onclick: function () { pick(tile, o); } }); list.appendChild(tile);
         });
       }
       function pick(tile, o) {
-        if (o.k !== placed) { tile.classList.remove('wobble'); void tile.offsetWidth; tile.classList.add('wobble'); sfx('tap'); line.textContent = 'Almost! Look again. What happens ' + D.orderWords[placed].toLowerCase().replace(',', '') + '?'; A.speak('Try again.'); return; }
+        if (o.k !== placed) {
+          tile.classList.remove('wob', 'wobble'); void tile.offsetWidth; tile.classList.add('wobble');
+          sfx('soft');
+          line.textContent = 'Almost! Look again. What happens ' + D.orderWords[placed].toLowerCase().replace(',', '') + '?';
+          A.speak('Try again.'); return;
+        }
         var text = D.orderWords[placed] + ' ' + o.s.charAt(0).toLowerCase() + o.s.slice(1);
         rowDone.appendChild(h('div', { class: 'rq-t', text: placed + 1 + '. ' + text })); tile.style.display = 'none'; A.speak(text); sfx('correct'); placed++;
         if (placed >= set.steps.length) { addPoint(turn, 3); confetti(); line.textContent = '⭐ +3 points for ' + D.teams[turn].n + '! Now the Scorer retells it: First, … Then, …'; sfx('win'); round++; turn = (turn + 1) % D.teams.length; nb2.style.display = ''; }
@@ -392,15 +405,15 @@
       var ROUNDS = 8, round = 0, deck = shuffle(D.disasters), cur = null;
       var banner = h('div'), card = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' });
       function turn() { return round % D.teams.length; }
-      function back() { cur = null; card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '🎴' })); card.appendChild(h('div', { class: 'rq-t', text: 'Press DRAW. A problem happens! Help each other.' })); }
+      function back() { cur = null; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), '🤝', '', 'o_team_hands')); card.appendChild(h('div', { class: 'rq-t', text: 'Press DRAW. A problem happens! Help each other.' })); }
       function draw() {
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
         var nb = teamBanner(turn(), '🎭 Problem ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb; back(); msg.textContent = 'Say: “Why don’t we …?” Every pupil gives one idea!';
       }
       var drawBtn = btn('🎴 DRAW a problem card', 'amber big', function () {
-        cur = deck[round % deck.length]; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e)); card.appendChild(h('div', { class: 'rq-t', text: cur.t })); A.speak(cur.t); sfx('page');
+        cur = deck[round % deck.length]; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e, '', cur.a)); card.appendChild(h('div', { class: 'rq-t', text: cur.t })); A.speak(cur.t); sfx('page');
       });
-      var model = btn('💡 Model sentence', 'violet', function () { if (!cur) return; msg.textContent = '💡 ' + cur.a; A.speak(cur.a); sfx('correct'); });
+      var model = btn('💡 Model sentence', 'violet', function () { if (!cur) return; var ans = cur.ans || cur.aText || cur.a; msg.textContent = '💡 ' + ans; A.speak(ans); sfx('correct'); });
       function done(pts) { if (pts) { addPoint(turn(), pts); if (pts === 2) confetti(); } round++; draw(); }
       banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 30), drawBtn, model, btn('✅ Great idea (+2)', 'green', function () { done(2); }), btn('👍 Good (+1)', 'violet', function () { done(1); }), btn('⏭ Skip', 'small ghost', function () { done(0); })]));
       host.appendChild(banner); host.appendChild(card); host.appendChild(msg); host.appendChild(meterPanel());
@@ -464,8 +477,17 @@
 
   /* ---------- shell ---------- */
   function ctxFor(main) { return { body: main, done: function () { state.done[state.lesson + ':' + state.idx] = true; drawSteps(); }, later: function (fn) { state.cleanups.push(fn); } }; }
+  function drawLessonTabs() {
+    var box = $('lesson-tabs'); if (!box) return; box.innerHTML = '';
+    var keys = Object.keys(LESSONS);
+    if (keys.length <= 1) return;
+    keys.forEach(function (k) {
+      var id = parseInt(k, 10);
+      box.appendChild(h('button', { type: 'button', class: 'btn ltab' + (state.lesson === id ? ' on' : ' ghost'), text: 'Case ' + id, title: LESSONS[id].title, onclick: function () { if (state.lesson !== id) go(id, 0); } }));
+    });
+  }
   function drawSteps() {
-    var L = LESSONS[state.lesson], box = $('steps'); box.innerHTML = '';
+    var L = LESSONS[state.lesson], box = $('steps'); if (!box) return; box.innerHTML = '';
     L.scenes.forEach(function (s, k) {
       var isDone = state.done[state.lesson + ':' + k];
       box.appendChild(h('button', { type: 'button', class: 'dot' + (k === state.idx ? ' on' : '') + (isDone ? ' done' : ''), text: isDone ? '✓' : String(k + 1), title: s.t, onclick: function () { go(state.lesson, k); } }));
@@ -479,17 +501,28 @@
     return h('div', { class: 'youdo' }, [h('div', { class: 'ylab', text: 'YOU DO' }), steps, (k.say && k.say.length) ? h('div', { class: 'ylab say', text: 'SAY' }) : null, (k.say && k.say.length) ? say : null]);
   }
   function go(lesson, idx) {
+    if (!LESSONS[lesson]) lesson = 1;
+    var L = LESSONS[lesson];
+    idx = Math.max(0, Math.min(L.scenes.length - 1, idx || 0));
     if (state.idx >= 0 && state.lesson === lesson && idx > state.idx) state.done[lesson + ':' + state.idx] = true;
     state.cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); state.cleanups = [];
     A.stop();
     state.lesson = lesson; state.idx = idx;
-    var L = LESSONS[lesson], s = L.scenes[idx], stage = $('stage');
+    var s = L.scenes[idx], stage = $('stage');
     stage.className = ''; stage.innerHTML = ''; $('tip').hidden = true;
-    stage.appendChild(h('div', { class: 's-head' }, [h('h2', { text: s.t }), h('span', { class: 'pill mode', text: MODES[s.mode] }), h('span', { class: 'pill', text: '⏱ ' + s.mins }), h('div', { class: 'grow' }), h('span', { class: 'pill amber', text: 'Step ' + (idx + 1) + ' of ' + L.scenes.length })]));
-    stage.appendChild(h('div', { class: 's-intro', text: s.intro }));
+    stage.appendChild(h('div', { class: 's-head' }, [
+      h('h2', { text: s.t }),
+      h('span', { class: 'pill mode', text: MODES[s.mode] }),
+      h('span', { class: 'pill', text: '⏱ ' + s.mins }),
+      h('span', { class: 's-sub', text: s.intro }),
+      h('div', { class: 'grow' }),
+      h('span', { class: 'pill amber', text: 'Step ' + (idx + 1) + ' of ' + L.scenes.length })
+    ]));
     var main = h('div', { class: 's-body' }); stage.appendChild(main);
     var kp = kidsPanel(s.kids); if (kp) stage.appendChild(kp);
     $('h-title').firstChild.nodeValue = L.title;
+    drawLessonTabs();
+    if (typeof updateHudCase === 'function') updateHudCase();
     drawSteps(); sfx('page');
     try { s.run(ctxFor(main)); } catch (e) { main.appendChild(h('div', { class: 'msg soft', text: 'Oops, this activity could not start.' })); if (window.console) console.error(e); }
     try { history.replaceState(null, '', '?lesson=' + lesson + '&scene=' + (idx + 1)); } catch (e) { /* ignore */ }
