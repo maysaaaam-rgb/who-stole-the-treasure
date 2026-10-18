@@ -46,7 +46,7 @@
   /** the equipped items to DRAW for this pupil: the saved ones with the Alice look on top (or the saved ones when the week is over) */
   function equippedFor(studentId, saved) {
     var base = saved || {};
-    if (!studentId || !active()) return base;
+    if (!studentId || !active() || mode() !== 'costume') return base;
     var look = LOOK[roleKeyOf(studentId)]; if (!look) return base;
     var out = Object.assign({}, base);
     Object.keys(look).forEach(function (k) { out[k] = look[k]; });
@@ -54,14 +54,14 @@
   }
   /** a copy of the monster profile for DRAWING (the saved profile object is never changed) */
   function view(studentId, profile) {
-    if (!profile || !studentId || !active()) return profile;
+    if (!profile || !studentId || !active() || mode() !== 'costume') return profile;
     var look = LOOK[roleKeyOf(studentId)]; if (!look) return profile;
     var copy = Object.assign({}, profile); copy.equipped = equippedFor(studentId, profile.equipped); copy.aliceWeek = true;
     return copy;
   }
   /* ---------- the three looks: 'both' (character picture with the monster in a corner circle), 'characters', 'monsters' (the costume look above) ---------- */
   var MODE_KEY = 'eaa_alice_week_mode';
-  function mode() { var m = ''; try { m = localStorage.getItem(MODE_KEY) || ''; } catch (e) { /* default */ } return m === 'characters' || m === 'monsters' ? m : 'both'; }
+  function mode() { var m = ''; try { m = localStorage.getItem(MODE_KEY) || ''; } catch (e) { /* default */ } return m === 'characters' || m === 'monsters' || m === 'costume' ? m : 'both'; }
   var chars = {}, comp = {}, loading = false;      // role -> data URL of the character picture; role|monster -> composed picture
   function charPath(role) { return 'assets/alice-cut/avatars/a_' + role + '.webp'; }
   function hash(str) { var h = 5381, n = Math.min(str.length, 6000); for (var i = 0; i < n; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return h + ':' + str.length; }
@@ -86,7 +86,7 @@
   /** the picture to show for a pupil: the monster as it is, the Alice character, or both */
   function wrapUrl(student, base) {
     if (!student || !base || !active()) return base;
-    var m = mode(); if (m === 'monsters') return base;
+    var m = mode(); if (m === 'monsters' || m === 'costume') return base;
     var role = roleKeyOf(student.id); if (!role) return base;
     if (m === 'characters') return charPath(role);
     if (!chars[role]) { loadChars(); return base; }
@@ -94,7 +94,7 @@
     var k = role + '|' + hash(String(base));
     return comp[k] || (comp[k] = compose(chars[role], String(base)));
   }
-  var LABEL = { both: '🎭 Look: character + monster', characters: '🎭 Look: characters', monsters: '🎭 Look: monsters' };
+  var LABEL = { both: '🎭 Look: character + my monster', characters: '🎭 Look: characters only', costume: '🎭 Look: monsters in costume', monsters: '🎭 Look: my monsters (normal)' };
   function setMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* not remembered */ } comp = {}; paintChip(); refresh(); }
   function paintChip() {
     var c = document.getElementById('aw-chip');
@@ -106,7 +106,7 @@
       c.style.cssText = 'position:fixed;left:12px;bottom:84px;z-index:95;max-width:230px;border:0;border-bottom:5px solid #92400e;border-radius:14px;background:#f59e0b;color:#1c1203;font:800 .9rem/1.1 inherit;padding:9px 14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s';
       c.onmousedown = function () { c.style.transform = 'translateY(4px)'; c.style.borderBottomWidth = '1px'; };
       c.onmouseup = c.onmouseleave = function () { c.style.transform = ''; c.style.borderBottomWidth = '5px'; };
-      c.onclick = function () { var order = ['both', 'characters', 'monsters']; setMode(order[(order.indexOf(mode()) + 1) % 3]); };
+      c.onclick = function () { var order = ['both', 'characters', 'costume', 'monsters']; setMode(order[(order.indexOf(mode()) + 1) % 4]); };
       document.body.appendChild(c);
     }
     c.style.display = ''; c.textContent = LABEL[mode()];
