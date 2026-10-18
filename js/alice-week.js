@@ -81,7 +81,8 @@
       '<image href="' + data + '" x="4" y="4" width="192" height="192" preserveAspectRatio="xMidYMid meet"/>' +
       '<circle cx="150" cy="150" r="46" fill="#0f172a" stroke="#f59e0b" stroke-width="5"/>' +
       '<image href="' + monster + '" x="110" y="110" width="80" height="80" clip-path="url(#c)" preserveAspectRatio="xMidYMid slice"/></svg>';
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    // a short blob address instead of a 100 KB data address: the page stays small (a board with 19 pupils was 3 MB of HTML before)
+    try { return URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })); } catch (e) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
   }
   /** the picture to show for a pupil: the monster as it is, the Alice character, or both */
   function wrapUrl(student, base) {
