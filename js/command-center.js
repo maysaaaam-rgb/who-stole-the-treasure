@@ -387,7 +387,7 @@
   function dataChecksHtml() {
     var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; }), badQ = badQuizTx(S().getActiveClass());
     var pend = pendingRedate(), lost = lostGroups(S().getActiveClass());
-    var rdup = rawDuplicates().filter(function (p) { var ac = S().getActiveClass(); return ac && (p.keep.classId === ac.id || p.drop.classId === ac.id); });
+    var rdup = rawDuplicates().concat(staleSameId().map(function (x) { return { keep: x, drop: x }; })).filter(function (p) { var ac = S().getActiveClass(); return ac && (p.keep.classId === ac.id || p.drop.classId === ac.id); });
     if (!mism.length && !dup.length && !badQ.length && !pend.length && !lost.length && !rdup.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
       (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
@@ -779,9 +779,21 @@
   // ------------------------------------------------------------- the same pupil entered twice (also finds the archived one that the table hides)
   function normName(x) { return String(x || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').replace(/\s+/g, ' ').trim(); }
   function txOf(id) { return (S().state.xpTransactions || []).filter(function (t) { return t.studentId === id; }); }
+  /** old leftovers on THIS computer: two records with the SAME id (the cloud only has one row per id), the older one is the stale copy */
+  function staleSameId() {
+    var byId = {}, out = [];
+    (S().state.students || []).forEach(function (s) { (byId[s.id] = byId[s.id] || []).push(s); });
+    Object.keys(byId).forEach(function (id) {
+      if (byId[id].length < 2) return;
+      var stamp = function (x) { var t = Date.parse(x.updatedAt || x.xpUpdatedAt || '') || 0; return t; };
+      byId[id].slice().sort(function (a, b) { return stamp(b) - stamp(a); }).slice(1).forEach(function (x) { out.push(x); });
+    });
+    return out;
+  }
   function rawDuplicates() {
-    var groups = {};
-    (S().state.students || []).forEach(function (s) { var k = normName((s.firstName || '') + ' ' + (s.lastName || '')); if (k) (groups[k] = groups[k] || []).push(s); });
+    var groups = {}, stale = staleSameId();
+    (S().state.students || []).forEach(function (s) {
+      if (stale.indexOf(s) >= 0) return; var k = normName((s.firstName || '') + ' ' + (s.lastName || '')); if (k) (groups[k] = groups[k] || []).push(s); });
     return Object.keys(groups).filter(function (k) { return groups[k].length === 2; }).map(function (k) {
       var g = groups[k], std = g.filter(function (x) { return /^student-[a-z0-9]+-\d{1,4}$/i.test(String(x.id)); });
       var keep = std.length === 1 ? std[0] : g.slice().sort(function (a, b) { return txOf(b.id).length - txOf(a.id).length; })[0];
@@ -795,8 +807,9 @@
   }
   function mergeModal() {
     ensureCss(); var old = document.getElementById('cc-merge'); if (old) old.remove();
-    var pairs = rawDuplicates(), ovl = document.createElement('div'); ovl.id = 'cc-merge'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
+    var pairs = rawDuplicates(), stale = staleSameId(), ovl = document.createElement('div'); ovl.id = 'cc-merge'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
     ovl.innerHTML = '<div class="cc-pal" style="width:min(780px,96vw);padding:20px;max-height:88vh;overflow:auto"><h2 style="font-size:18px;margin:0 0 6px">🧩 The same pupil entered twice</h2>' +
+      (stale.length ? '<div class="cc-warn" style="margin:0 0 12px"><b>Old leftovers on this computer (' + stale.length + '):</b> ' + stale.map(function (x) { var cl = S().getClass ? S().getClass(x.classId) : null; return esc((x.firstName || '') + ' ' + (x.lastName || '')) + ' (id ' + esc(x.id) + ', class ' + esc(cl ? cl.name : x.classId) + ', ' + (Number(x.xp) || 0) + ' XP, saved ' + esc(String(x.updatedAt || x.xpUpdatedAt || '?').slice(0, 10)) + ')'; }).join('; ') + '. The cloud only has one record for each id, so these are old copies from this browser. <button class="cc-mini" id="cc-stale-go">Remove the old leftovers here</button></div>' : '') +
       (pairs.length ? '<p style="color:#8b93a7;margin:0 0 12px">Each pupil should exist once. The record <b>kept</b> is the one with the school-number id (it matches k12). The other record is removed after its awards are moved. <b>A backup file is downloaded first</b> and nothing is lost: old awards are only marked as voided.</p>' : '<p style="color:#34d399">No pupil is entered twice. 👍</p>') +
       pairs.map(function (pr, i) {
         var pre = pr.keep.archived && !pr.drop.archived ? 'copy' : 'keep';
@@ -808,6 +821,12 @@
       }).join('') + '<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="cc-plus" id="cc-m-close" style="padding:9px 16px">Close</button></div></div>';
     document.body.appendChild(ovl);
     ovl.querySelector('#cc-m-close').onclick = function () { ovl.remove(); };
+    var sg = ovl.querySelector('#cc-stale-go');
+    if (sg) sg.onclick = function () {
+      try { localStorage.setItem('eaa_merge_backup_stale_' + Date.now(), JSON.stringify(stale)); } catch (e) { /* ignore */ }
+      stale.forEach(function (x) { var i = S().state.students.indexOf(x); if (i >= 0) S().state.students.splice(i, 1); });   // this computer only: nothing is sent to the cloud, so the real pupil row is safe
+      S().saveState(); mergeModal();
+    };
     [].forEach.call(ovl.querySelectorAll('.cc-do'), function (b) { b.onclick = function () { var i = +b.dataset.i, ch = (ovl.querySelector('input[name="mx' + i + '"]:checked') || {}).value || 'keep'; b.disabled = true; applyMerge(pairs[i], ch, ovl.querySelector('#cc-m' + i), ovl); }; });
   }
   function applyMerge(pr, choice, msg, ovl) {
