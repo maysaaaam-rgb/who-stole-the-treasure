@@ -24,7 +24,7 @@
   D.team = [
     { who: 'The dancers', ing: 'are moving with the music', e: '💃', a: 'o_dancers' },
     { who: 'The musicians', ing: 'are playing the music together', e: '🎻', a: 'o_orchestra' },
-    { who: 'The football players', ing: 'are passing the ball', e: '⚽' },
+    { who: 'The football players', ing: 'are passing the ball', e: '⚽', a: 'o_football' },
     { who: 'The basketball players', ing: 'are shooting at the basket', e: '🏀' },
     { who: 'The actors', ing: 'are learning their words', e: '🎭' },
     { who: 'The singers', ing: 'are singing in a choir', e: '🎤' }
