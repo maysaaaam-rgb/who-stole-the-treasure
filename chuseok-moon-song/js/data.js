@@ -13,8 +13,8 @@
   D.refrainSay = 'Kahng kahng soo leh!';   // how the computer voice says it
 
   D.missions = [
-    { e: '🌕', t: 'Learn 6 moon words' }, { e: '🎤', t: 'Call and response' }, { e: '💃', t: 'Moon circle dance' },
-    { e: '✍️', t: 'Make your own verse' }, { e: '🎶', t: 'Moon concert' }
+    { e: '🍂', t: 'Learn Chuseok facts' }, { e: '👣', t: 'Learn dance verbs' }, { e: '🎤', t: 'Call and response' },
+    { e: '🥁', t: 'Copy the rhythm' }, { e: '💃', t: 'Build your team dance' }
   ];
   D.hook = [
     'It is Chuseok night. Look at the big, round moon!',
@@ -55,6 +55,38 @@
   ];
 
   D.video = { id: 'BmhVJJY0LEA', title: 'Ganggangsullae Kids Moon Dance (KIZSONG)' };   // the real song, optional (needs the internet)
+  /* ---- new learning (lesson 2.0): Chuseok facts, dance verbs, speed words, rhythm patterns, team dance ---- */
+  D.facts = [
+    { e: '🍂', t: 'Chuseok is in autumn.' }, { e: '🌕', t: 'At Chuseok, the moon is full and round.' }, { e: '👨‍👩‍👧‍👦', t: 'Families come together.' },
+    { e: '👘', t: 'People wear a hanbok. It is a traditional Korean dress.' }, { e: '💃', t: 'People dance in a circle under the moon.' }, { e: '🌾', t: 'People say thank you for the harvest.' }
+  ];
+  D.factQuiz = [
+    { s: 'Chuseok is in spring.', a: false, fix: 'No. It is in autumn.' }, { s: 'People dance in a circle.', a: true, fix: 'Yes! They dance in a circle.' },
+    { s: 'The moon is small at Chuseok.', a: false, fix: 'No. It is full and round.' }, { s: 'Families come together.', a: true, fix: 'Yes! Families come together.' },
+    { s: 'People wear a hanbok.', a: true, fix: 'Yes! A hanbok is a traditional dress.' }, { s: 'People say thank you for the harvest.', a: true, fix: 'Yes! They say thank you.' }
+  ];
+  D.moves = [
+    { w: 'step', e: '👣', def: 'to put one foot in front of the other', ex: 'We step to the left.', gap: 'We ____ to the left.' },
+    { w: 'turn', e: '🔄', def: 'to move round', ex: 'We turn around.', gap: 'We ____ around.' },
+    { w: 'spin', e: '🌀', def: 'to turn round and round fast', ex: 'We spin like the moon.', gap: 'We ____ like the moon.' },
+    { w: 'stamp', e: '🦶', def: 'to hit the floor with your foot', ex: 'We stamp our feet.', gap: 'We ____ our feet.' },
+    { w: 'wave', e: '👋', def: 'to move your hand in the air', ex: 'We wave our hands.', gap: 'We ____ our hands.' },
+    { w: 'hop', e: '🐇', def: 'to jump on one foot', ex: 'We hop like a rabbit.', gap: 'We ____ like a rabbit.' },
+    { w: 'bow', e: '🙇', def: 'to bend forward to say thank you', ex: 'We bow and say thank you.', gap: 'We ____ and say thank you.' },
+    { w: 'sway', e: '🌊', def: 'to move slowly from side to side', ex: 'We sway under the moon.', gap: 'We ____ under the moon.' }
+  ];
+  /* speed words: the drum really changes (bpm) */
+  D.manners = [
+    { w: 'slowly', e: '🐢', bpm: 60 }, { w: 'quickly', e: '⚡', bpm: 108 }, { w: 'softly', e: '🤫', bpm: 70 }, { w: 'loudly', e: '📣', bpm: 92 }
+  ];
+  D.cards = [
+    { v: 'Step', d: 'to the left', m: 'slowly', e: '⬅️' }, { v: 'Step', d: 'to the right', m: 'quickly', e: '➡️' }, { v: 'Step', d: 'forward', e: '⬆️' },
+    { v: 'Step', d: 'back', e: '⬇️' }, { v: 'Turn', d: 'around', m: 'slowly', e: '🔄' }, { v: 'Spin', m: 'quickly', e: '🌀' },
+    { v: 'Stamp', m: 'loudly', e: '🦶' }, { v: 'Clap', m: 'softly', e: '👏' }, { v: 'Wave', d: 'up high', e: '👋' },
+    { v: 'Hop', d: 'forward', m: 'quickly', e: '🐇' }, { v: 'Bow', m: 'slowly', e: '🙇' }, { v: 'Sway', d: 'to the left and to the right', m: 'slowly', e: '🌊' }
+  ];
+  D.seqWords = ['First,', 'Then,', 'Next,', 'Finally,'];
+
   D.hwUrl = 'chuseok-moon-homework/index.html';
   root.MoonData = D;
 })(window);

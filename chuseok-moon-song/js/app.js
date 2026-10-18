@@ -233,7 +233,7 @@
     host.appendChild(h('div', { class: 'row', style: 'justify-content:center' }, [btn('🔁 Play again', 'green big', onAgain), btn('🎉 Celebrate!', 'amber', function () { sfx('win'); confetti(); })]));
   }
 
-  /* ============================== Chuseok Moon Song: call and response circle song ============================== */
+  /* ============================== Chuseok Moon Song: facts, dance verbs, call and response, rhythm, team dance ============================== */
   function bgOf(el, name) { if (el && hasArt(name)) el.style.background = 'url(art/' + name + '.webp) center / cover'; }
   var MB = window.MoonBeat;
   var glow = 0, GOAL = 20, glowDone = false;
@@ -257,8 +257,7 @@
     return box;
   }
   function stopBeat(c) { c.later(function () { if (MB) MB.stop(); }); }
-
-  /* the real song on YouTube (optional, needs the internet): a button opens a player under the buttons */
+  /* the real song on YouTube (optional, needs the internet) */
   function watchBox() {
     var box = h('div', { class: 'watch' }), open = false;
     var b = btn('🎬 Watch the real song', 'violet', function () {
@@ -268,16 +267,46 @@
     });
     return h('div', {}, [h('div', { class: 'row' }, [b, h('span', { class: 'lab', text: 'Optional: needs the internet.' })]), box]);
   }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function cardSentence(k) { return k.v + (k.d ? ' ' + k.d : '') + (k.m ? ' ' + k.m : '') + '.'; }
+  function bpmOf(k) { var m = D.manners.filter(function (x) { return x.w === k.m; })[0]; return m ? m.bpm : 84; }
+
   /* 1. Moon night opening */
   function moonOpen(c) {
     hookPrompts(c, [{ e: '🌕', n: 'o_moon' }, { e: '🏮', n: 'o_lantern' }], D.hook, D.missions, '');
     bgOf(c.body.querySelector('.hook-stage'), 'bg_moon_night'); c.body.appendChild(watchBox()); c.body.appendChild(glowBar());
   }
 
-  /* 2. Moon words */
-  function moonWords(c) { l2Words(c, D.words); c.body.appendChild(glowBar()); }
+  /* 2. Chuseok facts: six things to learn, then a quick true/false walk */
+  function factsScene(c) {
+    var body = c.body, i = -1, shown = false, seen = {};
+    var grid = h('div', { class: 'roles' }), big = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg', text: 'Tap a card to learn a Chuseok fact!' });
+    big.appendChild(h('div', { class: 'rq-e', text: '🍂' })); big.appendChild(h('div', { class: 'rq-t', text: 'Chuseok is a Korean autumn festival.' }));
+    D.facts.forEach(function (f, k) {
+      grid.appendChild(h('button', { type: 'button', class: 'btn vcard', onclick: function () {
+        big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: f.e })); big.appendChild(h('div', { class: 'rq-t', text: f.t })); A.speak(f.t); sfx('page'); if (!seen[k]) { seen[k] = 1; addGlow(1); }
+      } }, [h('span', { class: 'em', text: f.e }), h('b', { text: f.t.split(' ').slice(0, 3).join(' ') + '…' })]));
+    });
+    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    var deck = shuffle(D.factQuiz), q = -1, card = h('div', { class: 'reqcard' }), zones = h('div', { class: 'zones' }, [h('div', { class: 'zone', style: '--c:#22c55e', text: '✅ TRUE' }), h('div', { class: 'zone', style: '--c:#ef4444', text: '❌ FALSE' })]);
+    zones.style.gridTemplateColumns = 'repeat(2, 1fr)';
+    function nextQ() { q = (q + 1) % deck.length; shown = false; [].forEach.call(zones.children, function (z) { z.classList.remove('hit'); }); card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '❓' })); card.appendChild(h('div', { class: 'rq-t', text: deck[q].s })); A.speak(deck[q].s); sfx('page'); }
+    function reveal() { if (q < 0 || shown) return; shown = true; zones.children[deck[q].a ? 0 : 1].classList.add('hit'); msg.textContent = deck[q].fix; A.speak(deck[q].fix); sfx('correct'); }
+    body.appendChild(h('div', { class: 'row' }, [h('span', { class: 'lab', text: '1️⃣ Learn the facts:' })])); body.appendChild(grid); body.appendChild(big);
+    body.appendChild(h('div', { class: 'row' }, [h('span', { class: 'lab', text: '2️⃣ True or false? Walk to a side:' }), btn('❓ Next sentence', 'amber', nextQ), btn('💡 Answer', 'violet', reveal), btn('✅ Team right (+1 glow)', 'green', function () { addGlow(1); sfx('correct'); })]));
+    body.appendChild(card); body.appendChild(zones); body.appendChild(msg); body.appendChild(pointsRow()); body.appendChild(glowBar());
+  }
 
-  /* 3. Learn the call and response with the beat */
+  /* 3. Dance verbs: learn eight moving words (l2Words) + do the action */
+  function verbsScene(c) {
+    l2Words(c, D.moves);
+    var card = h('div', { class: 'reqcard' }), k = -1, order = shuffle(D.moves);
+    card.appendChild(h('div', { class: 'rq-t', text: '💃 Do it! Everybody does the action when the card shows.' }));
+    c.body.appendChild(h('div', { class: 'row' }, [btn('🎴 Do it!', 'violet big', function () { k = (k + 1) % order.length; var w = order[k]; card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: w.e })); card.appendChild(h('div', { class: 'rq-t', text: cap(w.w) + '!' })); A.speak(cap(w.w) + '!'); sfx('page'); }), btn('✅ Everybody did it (+1 glow)', 'green', function () { addGlow(1); sfx('correct'); })]));
+    c.body.appendChild(card); c.body.appendChild(glowBar());
+  }
+
+  /* 4. Learn the song: call and response with the drum */
   function callResponse(c) {
     stopBeat(c);
     var body = c.body, seq = [], idx = -1;
@@ -304,71 +333,109 @@
     body.appendChild(h('div', { class: 'row' }, [btn('✅ The class sang it (+2 glow)', 'green', function () { addGlow(2); sfx('correct'); }), pointsRow()])); body.appendChild(watchBox()); body.appendChild(glowBar());
   }
 
-  /* 4. GAME: Moon Circle Commander (the circle moves with the beat) */
-  function circleCommander(c) {
+  /* 5. GAME: Move Like the Moon: a verb card + direction + SPEED. The drum really gets slower or faster. */
+  function moveCards(c) {
     stopBeat(c);
-    var body = c.body, deck = shuffle(D.commands), i = -1, auto = false, bars = 0;
-    var card = h('div', { class: 'reqcard' }), dots = beatDots(), msg = h('div', { class: 'msg gmsg', text: 'Stand in a big circle. Move with the beat!' });
-    function show(cmd) { card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: cmd.e })); card.appendChild(h('div', { class: 'rq-t', text: cmd.t })); card.appendChild(h('div', { class: 'rq-a', text: cmd.a })); A.speak(cmd.t); sfx('page'); }
-    function next() {
-      i = (i + 1) % deck.length; var cmd = deck[i]; show(cmd);
-      if (/^Freeze/.test(cmd.t) && MB.isOn()) { MB.stop(); msg.textContent = '🧊 FREEZE! The drum stops. Nobody moves...'; setTimeout(function () { if (auto) { MB.start(MB.getBpm(), onBeat); msg.textContent = 'The drum is back!'; } }, 4000); }
+    var body = c.body, deck = shuffle(D.cards), i = -1, auto = false, bars = 0, onTimer = null;
+    var card = h('div', { class: 'reqcard' }), dots = beatDots(), msg = h('div', { class: 'msg gmsg', text: 'Stand in a circle. Do the move! Listen: the drum tells you the speed.' });
+    c.later(function () { if (onTimer) clearTimeout(onTimer); });
+    function show(k) {
+      card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: k.e }));
+      card.appendChild(h('div', { class: 'rq-t', text: cardSentence(k) }));
+      var m = D.manners.filter(function (x) { return x.w === k.m; })[0];
+      card.appendChild(h('div', { class: 'rq-a', text: m ? m.e + ' ' + m.w + ': ' + (m.bpm < 80 ? 'slow drum' : m.bpm > 100 ? 'fast drum' : 'listen to the drum') : 'Move with the drum.' }));
+      A.speak(cardSentence(k)); sfx('page'); MB.setBpm(bpmOf(k)); if (MB.isOn()) { MB.start(bpmOf(k), onBeat); }
     }
-    function onBeat(b) { dots.set(b); if (b === 0) { bars++; if (auto && bars % 2 === 0) next(); } }
+    function next() { i = (i + 1) % deck.length; show(deck[i]); }
+    function onBeat(b) { dots.set(b); if (b === 0) { bars++; if (auto && bars % 3 === 0) next(); } }
     var go = btn('▶ Start the drum', 'green big', function () { auto = true; bars = 0; MB.start(MB.getBpm(), onBeat); go.textContent = '🔁 Restart'; if (i < 0) next(); });
-    body.appendChild(h('div', { class: 'row' }, [go, btn('⏭ Next command', 'amber', next), btn('⏹ Stop', 'small ghost', function () { auto = false; MB.stop(); }), btn('✅ Great circle (+2 glow)', 'violet', function () { addGlow(2); sfx('correct'); })]));
-    body.appendChild(dots); body.appendChild(card); body.appendChild(msg); body.appendChild(pointsRow()); body.appendChild(glowBar());
-    card.appendChild(h('div', { class: 'rq-e', text: '🌕' })); card.appendChild(h('div', { class: 'rq-t', text: 'Press Start. A new command comes every two bars!' }));
+    var legend = h('div', { class: 'row' }, [h('span', { class: 'lab', text: 'Speed words:' })].concat(D.manners.map(function (m) { return h('button', { type: 'button', class: 'chip2', text: m.e + ' ' + m.w, onclick: function () { A.speak(m.w); MB.setBpm(m.bpm); if (MB.isOn()) MB.start(m.bpm, onBeat); sfx('tap'); } }); })));
+    body.appendChild(h('div', { class: 'row' }, [go, btn('⏭ Next move', 'amber', next), btn('⏹ Stop', 'small ghost', function () { auto = false; MB.stop(); }), btn('✅ Great circle (+2 glow)', 'violet', function () { addGlow(2); sfx('correct'); })]));
+    body.appendChild(dots); body.appendChild(card); body.appendChild(legend); body.appendChild(msg); body.appendChild(pointsRow()); body.appendChild(glowBar());
+    card.appendChild(h('div', { class: 'rq-e', text: '🌕' })); card.appendChild(h('div', { class: 'rq-t', text: 'Press Start. A new move comes every three bars!' }));
   }
 
-  /* 5. GAME: Make Your Verse */
-  var verses = {};
-  function makeVerse(c) {
+  /* 6. GAME: Rhythm Echo: listen to the pattern, then copy it with your hands */
+  function rhythmEcho(c) {
     stopBeat(c);
     var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
     function start() {
-      host.innerHTML = ''; verses = {};
-      var turn = 0, pick = null;
-      var banner = h('div'), line = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' }), chips = h('div', { class: 'row' }), dots = beatDots();
-      function sentence() { return 'We ' + (pick ? pick.w : '…') + ' under the moon.'; }
-      function paint() { line.innerHTML = ''; line.appendChild(h('div', { class: 'rq-e', text: pick ? pick.e : '✍️' })); line.appendChild(h('div', { class: 'rq-t', text: sentence() })); line.appendChild(h('div', { class: 'rq-a', text: 'Then the whole circle answers: Ganggangsullae!' })); }
+      host.innerHTML = '';
+      var pats = ['X.X.', 'XXX.', 'X.XX', 'XX..', 'XXXX', '.XX.'], ROUNDS = 6, round = 0, playing = false, timers = [];
+      c.later(function () { timers.forEach(clearTimeout); });
+      var banner = h('div'), boxes = h('div', { class: 'bdots' }), msg = h('div', { class: 'msg gmsg' });
+      function paintBoxes(p, lit) { boxes.innerHTML = ''; p.split('').forEach(function (ch, k) { var b = h('i', { text: ch === 'X' ? '🥁' : '·' }); if (k === lit) b.classList.add('on'); boxes.appendChild(b); }); }
+      function play() {
+        if (round >= ROUNDS) { gameFinish(c, host, start); return; }
+        if (playing) return; playing = true; var p = pats[round]; msg.textContent = '👂 Listen... then clap the same pattern!';
+        var step = 520; p.split('').forEach(function (ch, k) { timers.push(setTimeout(function () { paintBoxes(p, k); if (ch === 'X') MB.hit(k === 0 ? 'dung' : 'deok'); }, 700 + k * step)); });
+        timers.push(setTimeout(function () { paintBoxes(p, -1); msg.textContent = '👏 Your turn! Clap it!'; playing = false; }, 700 + p.length * step + 300));
+      }
+      function draw() { if (round >= ROUNDS) { gameFinish(c, host, start); return; } var nb = teamBanner(round % D.teams.length, '🥁 Pattern ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb; paintBoxes(pats[round], -1); msg.textContent = 'Press Listen. The drum plays a pattern.'; }
+      function done(pts) { if (pts) { addPoint(round % D.teams.length, pts); addGlow(pts); } round++; draw(); }
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [btn('👂 Listen', 'green big', play), btn('🔁 Again', 'amber', function () { playing = false; play(); }), btn('⭐ Perfect (+2)', 'violet', function () { done(2); }), btn('👍 Almost (+1)', 'small', function () { done(1); }), btn('⏭ Next', 'small ghost', function () { done(0); })]));
+      host.appendChild(banner); host.appendChild(boxes); host.appendChild(msg); host.appendChild(glowBar()); draw();
+    }
+    start();
+  }
+
+  /* 7. GAME: Build Your Team Dance: choose 4 moves, say First, Then, Next, Finally, then dance it with the drum */
+  var dances = {};
+  function buildDance(c) {
+    stopBeat(c);
+    var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
+    function start() {
+      host.innerHTML = ''; dances = {};
+      var turn = 0, picks = [];
+      var banner = h('div'), board = h('div', { class: 'reqcard' }), chips = h('div', { class: 'row' }), msg = h('div', { class: 'msg gmsg' }), dots = beatDots();
+      function paint() {
+        board.innerHTML = '';
+        D.seqWords.forEach(function (w, k) { board.appendChild(h('div', { class: 'rq-t', text: w + ' ' + (picks[k] ? cardSentence(picks[k]).toLowerCase() : '…') })); });
+      }
       function draw() {
         if (turn >= D.teams.length) { MB.stop(); gameFinish(c, host, start); return; }
-        pick = null; var nb = teamBanner(turn, '✍️ Verse ' + (turn + 1) + ' of ' + D.teams.length); banner.replaceWith(nb); banner = nb; paint(); msg.textContent = 'Choose a word. Make your own line!';
+        picks = []; var nb = teamBanner(turn, '💃 Dance ' + (turn + 1) + ' of ' + D.teams.length); banner.replaceWith(nb); banner = nb; paint(); msg.textContent = 'Choose 4 moves. Make your team dance!';
       }
-      chips.appendChild(h('span', { class: 'lab', text: 'We … under the moon:' }));
-      D.verbs.forEach(function (v) { chips.appendChild(h('button', { type: 'button', class: 'chip2', text: v.e + ' ' + v.w, onclick: function () { pick = v; paint(); A.speak(sentence()); sfx('tap'); } })); });
-      var perform = btn('▶ Perform with the beat', 'green big', function () {
-        if (!pick) { msg.textContent = 'Choose a word first!'; sfx('tap'); return; }
-        var bar = -1;
-        MB.start(MB.getBpm(), function (b) { dots.set(b); if (b === 0) { bar++; if (bar === 0) A.speak(sentence()); else if (bar === 1) A.speak(D.refrainSay); else { MB.stop(); msg.textContent = '👏 Great verse! Rate it:'; } } });
+      chips.appendChild(h('span', { class: 'lab', text: 'Moves:' }));
+      D.cards.forEach(function (k) { chips.appendChild(h('button', { type: 'button', class: 'chip2', text: k.e + ' ' + cardSentence(k).replace('.', ''), onclick: function () { if (picks.length >= 4) { msg.textContent = 'Four moves is enough! Press Dance.'; sfx('tap'); return; } picks.push(k); paint(); A.speak(cardSentence(k)); sfx('tap'); } })); });
+      var dance = btn('▶ Dance it with the drum', 'green big', function () {
+        if (picks.length < 4) { msg.textContent = 'Choose 4 moves first!'; sfx('tap'); return; }
+        var bar = -1; MB.start(bpmOf(picks[0]), function (b) {
+          dots.set(b);
+          if (b === 0) {
+            bar++; if (bar < 4) { var k = picks[bar]; MB.setBpm(bpmOf(k)); var s = D.seqWords[bar] + ' ' + cardSentence(k).toLowerCase(); msg.textContent = '💃 ' + s; A.speak(s); }
+            else if (bar === 4) { msg.textContent = '👥 Everyone: ' + D.refrain; A.speak(D.refrainSay); }
+            else { MB.stop(); msg.textContent = '👏 What a dance! Rate it:'; }
+          }
+        });
       });
-      function done(pts) { MB.stop(); if (pts) { addPoint(turn, pts); addGlow(pts); } if (pick) verses[turn] = sentence(); turn++; draw(); }
+      function done(pts) { MB.stop(); if (pts) { addPoint(turn, pts); addGlow(pts); } if (picks.length) dances[turn] = picks.slice(); turn++; draw(); }
       banner = h('div');
-      host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 60), perform, btn('⭐ Great (+2)', 'green', function () { done(2); }), btn('👍 Good (+1)', 'violet', function () { done(1); }), btn('⏭ Skip', 'small ghost', function () { done(0); })]));
-      host.appendChild(banner); host.appendChild(line); host.appendChild(chips); host.appendChild(dots); host.appendChild(msg); host.appendChild(glowBar());
+      host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 60), btn('🗑️ Clear', 'small ghost', function () { picks = []; paint(); }), dance, btn('⭐ Great (+2)', 'green', function () { done(2); }), btn('👍 Good (+1)', 'violet', function () { done(1); }), btn('⏭ Skip', 'small ghost', function () { done(0); })]));
+      host.appendChild(banner); host.appendChild(board); host.appendChild(chips); host.appendChild(dots); host.appendChild(msg); host.appendChild(glowBar());
       draw();
     }
     start();
   }
 
-  /* 6. Moon Concert: all verses in a row, the whole circle answers */
+  /* 8. Moon Concert: every team's dance, one after the other, each ends with the circle's answer */
   function moonConcert(c) {
     stopBeat(c);
-    var body = c.body, dots = beatDots(), stage = h('div', { class: 'cr' }), msg = h('div', { class: 'msg gmsg', text: 'Each team sings its verse. The whole class answers: Ganggangsullae!' });
-    var lines = D.teams.map(function (t, i) { return { t: t, s: verses[i] || ('We ' + ['dance', 'sing', 'hold hands', 'clap'][i % 4] + ' under the moon.') }; });
-    var cards = lines.map(function (l) { return h('div', { class: 'cr-card', style: '--c:' + l.t.c }, [h('small', { text: l.t.e + ' ' + l.t.n }), h('b', { text: l.s })]); });
+    var body = c.body, dots = beatDots(), stage = h('div', { class: 'cr' }), msg = h('div', { class: 'msg gmsg', text: 'Each team dances its four moves. Everyone answers: Ganggangsullae!' });
+    var defaults = [[0, 4, 7, 10], [1, 5, 6, 9], [2, 8, 3, 11], [4, 1, 7, 10]];
+    var lines = D.teams.map(function (t, i) { var m = dances[i] || defaults[i % 4].map(function (k) { return D.cards[k]; }); return { t: t, m: m }; });
+    var cards = lines.map(function (l) { return h('div', { class: 'cr-card', style: '--c:' + l.t.c }, [h('small', { text: l.t.e + ' ' + l.t.n }), h('b', { text: l.m.map(function (k) { return k.v; }).join(' · ') })]); });
     cards.forEach(function (x) { stage.appendChild(x); }); stage.style.gridTemplateColumns = 'repeat(2, 1fr)';
     var go = btn('🎶 Start the Moon Concert', 'green big', function () {
-      var bar = -1, step = 0; go.textContent = '🎶 Again';
-      cards.forEach(function (x) { x.classList.remove('on'); });
-      MB.start(MB.getBpm(), function (b) {
+      var bar = -1; go.textContent = '🎶 Again'; cards.forEach(function (x) { x.classList.remove('on'); });
+      MB.start(84, function (b) {
         dots.set(b);
         if (b === 0) {
-          bar++; var team = Math.floor(bar / 2), isRefrain = bar % 2 === 1;
+          bar++; var team = Math.floor(bar / 5), pos = bar % 5;
           if (team >= lines.length) { MB.stop(); cards.forEach(function (x) { x.classList.remove('on'); }); msg.textContent = '🌕 What a night! Happy Chuseok!'; sfx('win'); confetti(); addGlow(4); return; }
           cards.forEach(function (x, k) { x.classList.toggle('on', k === team); });
-          if (isRefrain) { A.speak(D.refrainSay); msg.textContent = '👥 Everyone: ' + D.refrain; } else { A.speak(lines[team].s); msg.textContent = '🎤 ' + lines[team].t.n + ': ' + lines[team].s; }
+          if (pos < 4) { var k = lines[team].m[pos], s = D.seqWords[pos] + ' ' + cardSentence(k).toLowerCase(); MB.setBpm(bpmOf(k)); msg.textContent = '🎤 ' + lines[team].t.n + ': ' + s; A.speak(s); }
+          else { MB.setBpm(84); A.speak(D.refrainSay); msg.textContent = '👥 Everyone: ' + D.refrain; }
         }
       });
     });
@@ -376,7 +443,7 @@
     body.appendChild(dots); body.appendChild(stage); body.appendChild(msg); body.appendChild(glowBar());
   }
 
-  /* 7. Wrap + homework */
+  /* 9. Wrap + homework */
   function wrap(c) {
     wrapStart(c, 1, '🌕', glow >= GOAL ? 'The moon shines bright!' : 'Moon glow: ' + glow);
     var url = (location.href || '').replace(/chuseok-moon-song\/[^?#]*.*$/, '') + D.hwUrl;
@@ -385,28 +452,34 @@
 
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', race: '🏆 Team race', song: '🎶 Song' };
   var LESSONS = {
-    1: { title: 'Chuseok Moon Song', missions: D.missions, door: '🚪 Door pass: sing me ONE leader line (for example "We dance under the moon.") and I will answer: Ganggangsullae!', scenes: [
-      { t: 'A Night of the Full Moon', mins: '3 min', mode: 'think', run: moonOpen, intro: 'It is Chuseok night. Look at the big, round moon!',
+    1: { title: 'Chuseok Moon Song', missions: D.missions, door: '🚪 Door pass: show me ONE move and say it: "Step to the left slowly." or "Spin quickly." (or say one Chuseok fact: "Families come together.")', scenes: [
+      { t: 'A Night of the Full Moon', mins: '2 min', mode: 'think', run: moonOpen, intro: 'It is Chuseok night. Look at the big, round moon!',
         kids: { steps: ['🌕 Look at the moon', '🤔 Whisper: what do we do at Chuseok?', '✋ Tell the class'], say: ['The moon is big.', 'We sing together.'] },
-        tip: ['Chuseok festival: the Korean harvest festival under the full moon. The class fills one shared Moon Glow bar (20 = the moon shines bright) while four teams also score.', 'Make 4 teams (Moons, Stars, Rabbits, Lanterns). Press the button for each question; accept one word or a sentence, Turkish first is fine.'] },
-      { t: 'Moon Words', mins: '5 min', mode: 'listen', run: moonWords, intro: 'Six words for our song: moon, circle, hold hands, harvest, dance, lantern.',
-        kids: { steps: ['👆 Tap a card and listen', '🗣️ Say the word and the sentence', '🎲 Clue game: which word is missing?'], say: ['moon', 'circle', 'hold hands', 'harvest', 'dance', 'lantern'] },
-        tip: ['Tap each card (word, meaning, sentence), then the clue game. Pupils do a small action for each word (circle with arms, hold hands, dance).'] },
-      { t: 'Learn the Song: Call and Response', mins: '8 min', mode: 'song', run: callResponse, intro: 'The leader calls. The whole circle answers: Ganggangsullae!',
+        tip: ['Week 3 of the Chuseok festival: Folk Dance & Rhythms. The class fills one shared Moon Glow bar (20 = the moon shines bright) while four teams also score.', 'Make 4 teams (Moons, Stars, Rabbits, Lanterns). Press the button for each question; accept one word or a sentence, Turkish first is fine. The real song is one button away (needs the internet).'] },
+      { t: 'Chuseok Facts', mins: '3 min', mode: 'listen', run: factsScene, intro: 'Six things about Chuseok. Then: true or false?',
+        kids: { steps: ['👆 Tap a card and listen', '🗣️ Say the fact', '🏃 Walk to TRUE or FALSE'], say: ['Chuseok is in autumn.', 'Families come together.', 'People wear a hanbok.'] },
+        tip: ['New knowledge in simple English: autumn, full moon, families, hanbok (traditional dress), circle dance, thank you for the harvest.', 'Pupils tap the cards and repeat. Then put a TRUE sign and a FALSE sign on two sides of the room: read the sentence, pupils walk to a side, press Answer.'] },
+      { t: 'Dance Verbs', mins: '5 min', mode: 'listen', run: verbsScene, intro: 'Eight new moving words: step, turn, spin, stamp, wave, hop, bow, sway.',
+        kids: { steps: ['👆 Tap a card and listen', '💃 Do the action', '🎲 Clue game: which word is missing?'], say: ['step', 'spin', 'hop', 'sway'] },
+        tip: ['New verbs for the dance: step, turn, spin, stamp, wave, hop, bow, sway. Tap each card (word, meaning, sentence). Then press Do it!: a card shows and everybody does the action fast.'] },
+      { t: 'Learn the Song: Call and Response', mins: '4 min', mode: 'song', run: callResponse, intro: 'The leader calls. The whole circle answers: Ganggangsullae!',
         kids: { steps: ['🎤 Leader: sing the line', '👥 Circle: answer Ganggangsullae!', '🥁 Move with the drum'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
-        tip: ['The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok. Here the leader lines are simple English lines written for this lesson.', 'Press Play with the beat: the drum plays and the lines run by themselves (one bar for the leader, one bar for the circle). Practise slowly first (Slower), then faster. The real song is one button away: Watch the real song (the KIZSONG video of Ganggangsullae, needs the internet).'] },
-      { t: 'GAME: Moon Circle Commander', mins: '6 min', mode: 'move', run: circleCommander, intro: 'Stand in a big circle. Do what the moon says, with the drum!',
-        kids: { steps: ['🤝 Hold hands', '🚶 Move with the drum', '🧊 Freeze when the drum stops'], say: ['Walk to the left.', 'Clap three times.', 'Freeze like the moon!'] },
-        tip: ['Clear space for a circle (or two circles). A new command comes every two bars. At "Freeze like the moon!" the drum stops for 4 seconds and nobody moves. Give +2 glow when the circle is great, or a team point to a team with the best movement.'] },
-      { t: 'GAME: Make Your Verse', mins: '8 min', mode: 'talk', run: makeVerse, intro: 'Each team makes a new line: We ___ under the moon.',
-        kids: { steps: ['✍️ Choose a word', '🎤 Sing your line with the beat', '👥 The circle answers'], say: ['We sing under the moon.', 'We jump under the moon.'] },
-        tip: ['Teams take turns. Choose a word (dance, sing, walk, clap, jump, laugh, look at the stars, hold hands) and press Perform: the drum plays, the board says the line, then the circle answers Ganggangsullae. Great +2, good +1. The verses are kept for the concert.'] },
-      { t: 'The Moon Concert', mins: '4 min', mode: 'song', run: moonConcert, intro: 'All teams sing their verse. The whole class answers!',
-        kids: { steps: ['🎤 Each team: sing your verse', '👥 Everyone: Ganggangsullae!', '👏 Cheer for all teams'], say: ['Ganggangsullae!', 'Happy Chuseok!'] },
-        tip: ['Press Start: the drum runs and each team\'s verse lights up in turn. Record a short video if you want to share it for the festival (with the school\'s photo rules).'] },
-      { t: 'Happy Chuseok!', mins: '1 min', mode: 'think', run: wrap, intro: 'You sang like a real circle!',
-        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: sing your line'], say: ['We dance under the moon.', 'Happy Chuseok!'] },
-        tip: ['Show the scores. Tell the pupils about the 5-minute homework (link shown on the board). At the door each pupil sings or says one leader line and you answer Ganggangsullae!'] }
+        tip: ['The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok. The leader lines are simple English lines written for this lesson.', 'Press Play with the beat: the drum plays and the lines run by themselves (one bar for the leader, one bar for the circle). Practise slowly first (Slower), then faster. The real song is one button away (the KIZSONG Ganggangsullae video, needs the internet).'] },
+      { t: 'GAME: Move Like the Moon', mins: '5 min', mode: 'move', run: moveCards, intro: 'Do the move. Listen to the drum: slowly or quickly?',
+        kids: { steps: ['👀 Read the move card', '🥁 Hear the speed in the drum', '💃 Move like the card'], say: ['Step to the left slowly.', 'Spin quickly.', 'Stamp loudly.'] },
+        tip: ['New language: directions (to the left, to the right, forward, back, around) and speed words (slowly, quickly, softly, loudly). The drum really changes: slowly = slow drum, quickly = fast drum. A new move comes every three bars.', 'Clear space for a circle. Give +2 glow when the circle moves well together.'] },
+      { t: 'GAME: Rhythm Echo', mins: '3 min', mode: 'game', run: rhythmEcho, intro: 'Listen to the drum pattern. Then clap it back!',
+        kids: { steps: ['👂 Listen to the pattern', '👏 Clap it back', '🥁 Keep the beat'], say: ['Listen.', 'Clap it.', 'Again, please.'] },
+        tip: ['Music skill: listening and copying a rhythm. Press Listen: the drum plays 4 beats (🥁 = a hit, · = a rest). Pupils clap the same pattern. Perfect +2, almost +1. Teams take turns.'] },
+      { t: 'GAME: Build Your Team Dance', mins: '7 min', mode: 'talk', run: buildDance, intro: 'Choose four moves. Say: First, then, next, finally. Then dance!',
+        kids: { steps: ['👆 Choose 4 moves', '🗣️ Say: First, … Then, … Next, … Finally, …', '💃 Dance it with the drum'], say: ['First, step to the left slowly.', 'Then, spin quickly.', 'Finally, bow slowly.'] },
+        tip: ['New language: sequence words (first, then, next, finally) with the dance verbs. Each team chooses 4 move cards; the board writes the dance as four sentences, then the drum runs and the board says each move; the circle answers Ganggangsullae at the end. Great +2, good +1. The dances are kept for the concert.'] },
+      { t: 'The Moon Concert', mins: '5 min', mode: 'song', run: moonConcert, intro: 'Every team dances its four moves. Everyone answers!',
+        kids: { steps: ['💃 Each team: dance your moves', '👥 Everyone: Ganggangsullae!', '👏 Cheer for all teams'], say: ['Ganggangsullae!', 'Happy Chuseok!'] },
+        tip: ['Press Start: the drum runs and each team\'s dance lights up in turn (four moves, then the circle\'s answer). Record a short video if you want to share it for the festival (with the school\'s photo rules).'] },
+      { t: 'Happy Chuseok!', mins: '1 min', mode: 'think', run: wrap, intro: 'You danced like a real circle!',
+        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: show one move and say it'], say: ['Step to the left slowly.', 'Happy Chuseok!'] },
+        tip: ['Show the scores. Tell the pupils about the 5-minute homework (link shown on the board). At the door each pupil shows one move and says it, or says one Chuseok fact; you answer Ganggangsullae!'] }
     ] }
   };
 
