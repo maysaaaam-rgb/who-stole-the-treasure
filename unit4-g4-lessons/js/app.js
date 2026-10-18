@@ -233,98 +233,138 @@
     host.appendChild(h('div', { class: 'row', style: 'justify-content:center' }, [btn('🔁 Play again', 'green big', onAgain), btn('🎉 Celebrate!', 'amber', function () { sfx('win'); confetti(); })]));
   }
 
-  /* ============================== Unit 4 Grade 4: We Can Do It ============================== */
+  /* ============================== Unit 4 Grade 4: We Can Do It, The Dream Team League ============================== */
   function bgOf(el, name) { if (el && hasArt(name)) el.style.background = 'url(art/' + name + '.webp) center / cover'; }
 
-  /* 1. Hook */
-  function hook(c) {
-    hookPrompts(c, [{ e: '🏀', n: 'o_basketball' }, { e: '🎻', n: 'o_orchestra' }, { e: '⚽', n: 'o_football' }], D.l1hook, D.l1missions, '');
-    bgOf(c.body.querySelector('.hook-stage'), 'bg_team_stage');
-  }
-
-  /* 2. Think, Pair, Share */
-  function thinkPairShare(c) {
-    var body = c.body, cur = -1, shown = 0;
-    var scene = h('div', { class: 'bigscene' }), panel = h('div', { class: 'marketpanel' }, [scene]);
-    bgOf(panel, 'bg_team_stage'); body.appendChild(panel); fill(scene, '🤝', '', 'o_team_hands');
-    var bubble = h('div', { class: 'bubble left' }), step = h('div', { class: 'msg gmsg', text: D.tpsLines[0] });
-    bubble.innerHTML = '<small>👀 Look at the team</small>Tap a team!';
-    function show(i) {
-      cur = i; var t = D.team[i]; scene.innerHTML = ''; fill(scene, t.e, '', t.a);
-      var s = t.who + ' ' + t.ing + '.'; bubble.innerHTML = '<small>👀 Look at the team</small>' + s; A.speak(s); sfx('tap');
-      bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
+  /* ---------- the Teamwork Meter: a team can only shoot a 3-pointer when ALL five pupils have spoken English ---------- */
+  var meter = D.teams.map(function () { return {}; });
+  function mCount(i) { return D.roles.filter(function (r) { return meter[i][r.n]; }).length; }
+  function mFull(i) { return mCount(i) === D.roles.length; }
+  function meterPanel() {
+    var box = h('div', { class: 'mpanel' });
+    function paint() {
+      box.innerHTML = '';
+      box.appendChild(h('div', { class: 'mtitle', text: '⚡ Teamwork Meter: tap a badge when that pupil speaks English' }));
+      D.teams.forEach(function (t, i) {
+        var row = h('div', { class: 'mrow', style: '--c:' + t.c }, [h('span', { class: 'mname', text: t.e + ' ' + t.n })]);
+        D.roles.forEach(function (r) {
+          row.appendChild(h('button', { type: 'button', class: 'mchip' + (meter[i][r.n] ? ' on' : ''), title: r.n + ': ' + r.job, text: r.e, onclick: function () {
+            var wasFull = mFull(i); meter[i][r.n] = !meter[i][r.n]; sfx('tap'); paint();
+            if (!wasFull && mFull(i)) { sfx('win'); confetti(); A.speak('Teamwork meter full! ' + t.n + ' can shoot a three-pointer.'); }
+          } }));
+        });
+        row.appendChild(h('span', { class: 'mfull' + (mFull(i) ? ' on' : ''), text: mFull(i) ? '⚡ FULL' : mCount(i) + '/' + D.roles.length }));
+        box.appendChild(row);
+      });
     }
-    var chips = h('div', { class: 'row' }, [h('span', { class: 'lab', text: '👥 Teams:' })].concat(D.team.map(function (t, i) { return h('button', { type: 'button', class: 'chip2', text: t.e + ' ' + t.who.replace('The ', ''), onclick: function () { show(i); } }); })));
-    var tm = timerBtn(c, 10);
-    var nb = btn('Think ▶ Pair ▶ Share', 'violet big', function () {
-      shown = (shown + 1) % 3; var l = D.tpsLines[shown]; step.textContent = l; A.speak(l.replace(/[“”]/g, '')); sfx('page');
-    });
-    body.appendChild(h('div', { class: 'row' }, [nb, tm, btn('🔊 Model it', 'small amber', function () { A.speakSeq(['The dancers are moving with the music.', 'The musicians are playing it.', 'We think everyone is listening to one another.']); })]));
-    body.appendChild(step); body.appendChild(h('div', { class: 'dialog' }, [bubble])); body.appendChild(chips); body.appendChild(pointsRow());
-    show(0);
+    paint(); box.repaint = paint; return box;
+  }
+  function teamBanner(i, label) {
+    var t = D.teams[i], b = h('div', { class: 'gturn' });
+    b.style.setProperty('--c', t.c); b.appendChild(h('span', { class: 'tn', text: t.e + ' ' + t.n + '’ turn' })); b.appendChild(h('span', { class: 'gb', text: label }));
+    return b;
   }
 
-  /* 3. Vocabulary: l2Words (league, court, basket, score, shooting) */
-  function vocab(c) { l2Words(c, D.words); }
-
-  /* 4. The Sparks story told in parts */
-  function sparksStory(c) {
-    var scene = h('div', { class: 'bigscene' }), panel = h('div', { class: 'marketpanel tall' }, [scene]);
-    bgOf(panel, 'bg_court'); c.body.appendChild(panel); fill(scene, '🏀', '', 'o_basketball');
-    runStory(c, D.sparks, function (ch, predicting) {
-      scene.innerHTML = '';
-      if (!ch) { fill(scene, '🏆', '', 'o_league'); return; }
-      fill(scene, predicting ? '🤔' : ch.scene, '', predicting ? null : ch.art);
-    }, 'Listen to a true story about a basketball team. Do the actions with me!', 'Well done! Teams win and lose together.');
+  /* 1. Match Day opening: roles + meter */
+  function opening(c) {
+    var body = c.body;
+    var stage = h('div', { class: 'hook-stage' }, [h('div', { class: 'stars-bg' })]); bgOf(stage, 'bg_team_stage');
+    stage.appendChild(h('div', { class: 'mdtitle', text: '🏟️ DREAM TEAM LEAGUE · MATCH DAY 1' }));
+    stage.appendChild(h('div', { class: 'hookq', style: 'display:block', text: 'Welcome, teams! Today we play like the Sparks: nobody wins alone.' }));
+    var roles = h('div', { class: 'roles' }, D.roles.map(function (r) { return h('div', { class: 'role' }, [h('div', { class: 'em', text: r.e }), h('b', { text: r.n }), h('small', { text: r.job })]); }));
+    var lg = leagueRead(), season = h('div', { class: 'msg gmsg', text: lg.days ? '📊 Season so far: ' + lg.line : '📊 This is the first match day of the season!' });
+    body.appendChild(h('div', { class: 'row' }, [btn('🔊 Read the rules', 'amber', function () { A.speakSeq(['Welcome to the Dream Team League.', 'Each team has five roles. Every pupil has a badge.', 'A team can only shoot a three-pointer when all five pupils have spoken English.']); }), h('span', { class: 'lab', text: '5 pupils per team. Give each pupil a badge.' })]));
+    body.appendChild(stage); body.appendChild(roles); body.appendChild(season); body.appendChild(meterPanel());
   }
 
-  /* 5. GAME: True or False Court */
-  function tfGame(c) {
+  /* 2. GAME: Freeze Frame (book p. 57 Think, Pair, Share) */
+  function freezeFrame(c) {
     var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
     function start() {
       host.innerHTML = '';
-      var ROUNDS = 8, round = 0, turn = 0, deck = shuffle(D.tf), cur = null, revealed = false;
-      var banner = h('div', { class: 'gturn' }), card = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg', text: '' });
-      var zones = h('div', { class: 'zones' }, [h('div', { class: 'zone', style: '--c:#22c55e', text: '✅ TRUE: run to the green side' }), h('div', { class: 'zone', style: '--c:#ef4444', text: '❌ FALSE: run to the red side' })]);
-      zones.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      var ROUNDS = 6, round = 0, deck = shuffle(D.team), cur = null, shown = false;
+      var banner = h('div'), card = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' }), guessRow = h('div', { class: 'row points' });
+      function acting() { return round % D.teams.length; }
       function draw() {
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
-        cur = deck[round % deck.length]; revealed = false; var t = D.teams[turn];
-        [].forEach.call(zones.children, function (z) { z.classList.remove('hit'); });
-        banner.style.setProperty('--c', t.c); banner.innerHTML = ''; banner.appendChild(h('span', { class: 'tn', text: t.e + ' ' + t.n + '’ turn' })); banner.appendChild(h('span', { class: 'gb', text: '🏟️ Statement ' + (round + 1) + ' of ' + ROUNDS }));
-        card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e)); card.appendChild(h('div', { class: 'rq-t', text: cur.s }));
-        card.appendChild(h('div', { class: 'rq-a', text: 'The whole team stands on the side they think is right!' }));
-        msg.textContent = ''; A.speak(cur.s);
+        cur = deck[round % deck.length]; shown = false;
+        var nb = teamBanner(acting(), '🧊 Round ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
+        card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '❓' })); card.appendChild(h('div', { class: 'rq-t', text: 'Captain: look at the card. Team: FREEZE like this team!' }));
+        msg.textContent = 'Other teams: Think, Pair, Share. How are they working together?';
+        guessRow.innerHTML = ''; guessRow.appendChild(h('span', { class: 'lab', text: '🙋 Guessed with the sentence:' }));
+        D.teams.forEach(function (t, i) { if (i !== acting()) guessRow.appendChild(h('button', { type: 'button', class: 'btn small', style: '--bg:' + t.c + ';--lip:rgba(0,0,0,.4)', text: t.e + ' +2', onclick: function () { addPoint(i, 2); addPoint(acting(), 1); meter[i]['Commentator'] = true; round++; draw(); } })); });
       }
-      function next(pts) {
-        if (pts > 0) { addPoint(turn, pts); sfx('correct'); if (pts === 2) confetti(); } else sfx('tap');
-        round++; turn = (turn + 1) % D.teams.length; draw();
-      }
-      var show = btn('👀 Show the answer', 'amber', function () {
-        if (revealed) return; revealed = true; zones.children[cur.a ? 0 : 1].classList.add('hit');
-        msg.textContent = (cur.a ? '✅ TRUE. ' : '❌ FALSE. ') + cur.fix; A.speak((cur.a ? 'True. ' : 'False. ') + cur.fix); sfx('page');
+      var peek = btn('👀 Show the card to the Captain (3 s)', 'amber', function () {
+        card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e, '', cur.a)); card.appendChild(h('div', { class: 'rq-t', text: cur.who.replace('The ', '').toUpperCase() })); sfx('page');
+        setTimeout(function () { if (!shown) { card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '🧊' })); card.appendChild(h('div', { class: 'rq-t', text: 'FREEZE! Guess the team.' })); } }, 3000);
       });
-      host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 15), show, btn('✅ Team is right (+2)', 'green', function () { next(2); }), btn('👍 Fixed it nicely (+1)', 'violet', function () { next(1); }), btn('⏭ Skip', 'small ghost', function () { next(0); })]));
-      host.appendChild(banner); host.appendChild(card); host.appendChild(zones); host.appendChild(msg);
+      var reveal = btn('💡 Reveal', 'violet', function () {
+        shown = true; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e, '', cur.a)); var s = cur.who + ' ' + cur.ing + '.'; card.appendChild(h('div', { class: 'rq-t', text: s })); A.speak(s); sfx('correct');
+      });
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 30), peek, reveal, btn('⏭ Skip', 'small ghost', function () { round++; draw(); })]));
+      host.appendChild(banner); host.appendChild(card); host.appendChild(msg); host.appendChild(guessRow); host.appendChild(meterPanel());
       draw();
     }
     start();
   }
 
-  /* 6. GAME: Order the Events (first, then, after that, finally) */
+  /* 3. GAME: Court Shootout (book pp. 58-59 words: league, court, basket, score, shooting) */
+  function courtShootout(c) {
+    var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var ROUNDS = 8, round = 0, turn = 0, deck = shuffle(D.words.concat(D.words)), shot = 0, word = null, phase = 'clue';
+      var banner = h('div'), clue = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' });
+      var court = h('div', { class: 'courtbox' }, [h('div', { class: 'hoop', text: '🏀' }), h('div', { class: 'ball', text: '🟠' })]), ball = court.querySelector('.ball');
+      var mp = meterPanel();
+      var bShow = btn('👀 Show the word', 'amber'), b2 = btn('✅ Right: 2-point shot', 'green'), b3 = btn('⚡ Right: 3-POINT shot', 'violet'), bIn = btn('🏀 BASKET!', 'green big'), bMiss = btn('💨 Miss', 'ghost'), bSkip = btn('⏭ Next team', 'small ghost');
+      function setPhase(p) { phase = p; [bShow, b2, b3, bSkip].forEach(function (b) { b.style.display = p === 'clue' ? '' : 'none'; }); [bIn, bMiss].forEach(function (b) { b.style.display = p === 'shot' ? '' : 'none'; }); }
+      function draw() {
+        if (round >= ROUNDS) { gameFinish(c, host, start); return; }
+        word = deck[round]; shot = 0; ball.className = 'ball'; setPhase('clue');
+        var nb = teamBanner(turn, '🏟️ Shot ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
+        clue.innerHTML = ''; clue.appendChild(h('div', { class: 'rq-e', text: '❓' })); clue.appendChild(h('div', { class: 'rq-t', text: word.gap })); clue.appendChild(h('div', { class: 'rq-a', text: 'Team: talk, then answer. Right = you shoot a paper ball into the bin!' }));
+        msg.textContent = mFull(turn) ? '⚡ The Teamwork Meter is FULL: you may call a 3-POINT shot!' : 'Fill the meter (all five badges) to unlock the 3-point shot.'; A.speak(word.gap.replace(/_+/g, 'blank'));
+      }
+      function next() { round++; turn = (turn + 1) % D.teams.length; draw(); }
+      bShow.onclick = function () { clue.innerHTML = ''; clue.appendChild(fill(h('div', { class: 'rq-e' }), word.e, '', word.a)); clue.appendChild(h('div', { class: 'rq-t', text: word.w + ': ' + word.ex })); A.speakSeq([word.w, word.ex]); sfx('correct'); };
+      b2.onclick = function () { shot = 2; msg.textContent = '🏀 Shoot the paper ball! Basket = 2 points.'; setPhase('shot'); sfx('tap'); };
+      b3.onclick = function () { if (!mFull(turn)) { msg.textContent = '⚡ Light all five badges first! Every pupil must speak.'; sfx('tap'); return; } shot = 3; msg.textContent = '🔥 THREE-POINTER from the far line! Basket = 3 points.'; setPhase('shot'); sfx('tap'); };
+      bIn.onclick = function () { ball.className = 'ball fly'; addPoint(turn, shot); if (shot === 3) { meter[turn] = {}; mp.repaint(); } sfx('win'); confetti(); msg.textContent = '🎉 SWISH! ' + shot + ' points for ' + D.teams[turn].n + '!'; setTimeout(next, 1400); };
+      bMiss.onclick = function () { ball.className = 'ball miss'; sfx('tap'); msg.textContent = 'So close! Great try. Next team!'; setTimeout(next, 1100); };
+      bSkip.onclick = next;
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 20), bShow, b2, b3, bIn, bMiss, bSkip]));
+      host.appendChild(banner); host.appendChild(clue); host.appendChild(court); host.appendChild(msg); host.appendChild(mp);
+      draw();
+    }
+    start();
+  }
+
+  /* 4. Live Commentary: the Sparks story (book pp. 58-60), the Commentator reads, the team acts */
+  function sparksStory(c) {
+    var scene = h('div', { class: 'bigscene' }), panel = h('div', { class: 'marketpanel' }, [scene]);
+    bgOf(panel, 'bg_court'); c.body.appendChild(panel); fill(scene, '🏀', '', 'o_basketball');
+    runStory(c, D.sparks, function (ch, predicting) {
+      scene.innerHTML = '';
+      if (!ch) { fill(scene, '🏆', '', 'o_league'); return; }
+      fill(scene, predicting ? '🤔' : ch.scene, '', predicting ? null : ch.art);
+    }, '🎙️ Commentators: read each part like a sports reporter! Teams: act it out!', 'What a game! Teams win and lose together.');
+    c.body.appendChild(meterPanel());
+  }
+
+  /* 5. GAME: Morning Relay (book p. 61, sequence of events) */
   function orderGame(c) {
     var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
     function start() {
       host.innerHTML = '';
-      var round = 0, turn = 0, placed = 0, ROUNDS = D.order.length, set = null, tiles = [];
-      var banner = h('div', { class: 'gturn' }), title = h('div', { class: 'prompt' }), list = h('div', { class: 'scr' }), line = h('div', { class: 'msg gmsg', text: '' });
+      var round = 0, turn = 0, placed = 0, ROUNDS = D.order.length, set = null;
+      var banner = h('div'), title = h('div', { class: 'prompt' }), list = h('div', { class: 'scr' }), line = h('div', { class: 'msg gmsg', text: '' });
       var rowDone = h('div', { class: 'reqcard' });
       function draw() {
         if (round >= ROUNDS) { gameFinish(c, host, start); return; }
-        set = D.order[round]; placed = 0; var t = D.teams[turn];
-        banner.style.setProperty('--c', t.c); banner.innerHTML = ''; banner.appendChild(h('span', { class: 'tn', text: t.e + ' ' + t.n + '’ turn' })); banner.appendChild(h('span', { class: 'gb', text: set.e + ' Story ' + (round + 1) + ' of ' + ROUNDS }));
-        title.textContent = 'Tap the sentences in the right order: ' + set.title; line.textContent = ''; rowDone.innerHTML = '';
-        list.innerHTML = '';
+        set = D.order[round]; placed = 0;
+        var nb = teamBanner(turn, set.e + ' Story ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
+        title.textContent = 'Tap the sentences in the right order: ' + set.title; line.textContent = ''; rowDone.innerHTML = ''; list.innerHTML = '';
         shuffle(set.steps.map(function (s, k) { return { s: s, k: k }; })).forEach(function (o) {
           var tile = h('button', { type: 'button', class: 'btn tile2 chip2', text: o.s, onclick: function () { pick(tile, o); } }); list.appendChild(tile);
         });
@@ -333,10 +373,10 @@
         if (o.k !== placed) { tile.classList.remove('wobble'); void tile.offsetWidth; tile.classList.add('wobble'); sfx('tap'); line.textContent = 'Almost! Look again. What happens ' + D.orderWords[placed].toLowerCase().replace(',', '') + '?'; A.speak('Try again.'); return; }
         var text = D.orderWords[placed] + ' ' + o.s.charAt(0).toLowerCase() + o.s.slice(1);
         rowDone.appendChild(h('div', { class: 'rq-t', text: placed + 1 + '. ' + text })); tile.style.display = 'none'; A.speak(text); sfx('correct'); placed++;
-        if (placed >= set.steps.length) { addPoint(turn, 3); confetti(); line.textContent = '⭐ +3 points for ' + D.teams[turn].n + '! Now retell it with your partner.'; sfx('win'); round++; turn = (turn + 1) % D.teams.length; setTimeout(function () { nb.style.display = ''; }, 200); nb.style.display = ''; }
+        if (placed >= set.steps.length) { addPoint(turn, 3); confetti(); line.textContent = '⭐ +3 points for ' + D.teams[turn].n + '! Now the Scorer retells it: First, … Then, …'; sfx('win'); round++; turn = (turn + 1) % D.teams.length; nb2.style.display = ''; }
       }
-      var nb = btn('Next story ▶', 'green big', function () { nb.style.display = 'none'; draw(); }); nb.style.display = 'none';
-      host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 45), nb]));
+      var nb2 = btn('Next story ▶', 'green big', function () { nb2.style.display = 'none'; draw(); }); nb2.style.display = 'none';
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 45), nb2]));
       host.appendChild(banner); host.appendChild(title); host.appendChild(list); host.appendChild(rowDone); host.appendChild(line);
       host.appendChild(h('div', { class: 'row' }, D.orderWords.map(function (w) { return h('button', { type: 'button', class: 'chip2', text: w, onclick: function () { A.speak(w.replace(',', '')); } }); })));
       draw();
@@ -344,33 +384,80 @@
     start();
   }
 
-  /* 7. Wrap-up */
-  function wrap(c) { wrapStart(c, 1, '🏆', 'Team Players!'); }
+  /* 6. GAME: Disaster Cards (a taste of the play "Late for the Show": Why don't we ...?) */
+  function disasterCards(c) {
+    var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var ROUNDS = 8, round = 0, deck = shuffle(D.disasters), cur = null;
+      var banner = h('div'), card = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' });
+      function turn() { return round % D.teams.length; }
+      function back() { cur = null; card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '🎴' })); card.appendChild(h('div', { class: 'rq-t', text: 'Press DRAW. A problem happens! Help each other.' })); }
+      function draw() {
+        if (round >= ROUNDS) { gameFinish(c, host, start); return; }
+        var nb = teamBanner(turn(), '🎭 Problem ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb; back(); msg.textContent = 'Say: “Why don’t we …?” Every pupil gives one idea!';
+      }
+      var drawBtn = btn('🎴 DRAW a problem card', 'amber big', function () {
+        cur = deck[round % deck.length]; card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e)); card.appendChild(h('div', { class: 'rq-t', text: cur.t })); A.speak(cur.t); sfx('page');
+      });
+      var model = btn('💡 Model sentence', 'violet', function () { if (!cur) return; msg.textContent = '💡 ' + cur.a; A.speak(cur.a); sfx('correct'); });
+      function done(pts) { if (pts) { addPoint(turn(), pts); if (pts === 2) confetti(); } round++; draw(); }
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 30), drawBtn, model, btn('✅ Great idea (+2)', 'green', function () { done(2); }), btn('👍 Good (+1)', 'violet', function () { done(1); }), btn('⏭ Skip', 'small ghost', function () { done(0); })]));
+      host.appendChild(banner); host.appendChild(card); host.appendChild(msg); host.appendChild(meterPanel());
+      draw();
+    }
+    start();
+  }
+
+  /* 7. League table + Teamwork Cup */
+  function leagueKey() { var m = /[?&]class=([^&]+)/.exec(location.search || ''); return 'u4g4_league_' + (m ? decodeURIComponent(m[1]) : 'all'); }
+  function leagueData() { try { var d = JSON.parse(localStorage.getItem(leagueKey()) || 'null'); if (d && d.md) return d; } catch (e) { /* storage may be blocked */ } return { md: {} }; }
+  function leagueRead() {
+    var d = leagueData(), tot = D.teams.map(function () { return 0; }), days = Object.keys(d.md);
+    days.forEach(function (k) { (d.md[k] || []).forEach(function (v, i) { tot[i] += Number(v) || 0; }); });
+    return { days: days.length, tot: tot, line: D.teams.map(function (t, i) { return t.e + ' ' + tot[i]; }).join('  ') };
+  }
+  function leagueScene(c) {
+    var body = c.body; podium(body);
+    var cup = h('div', { class: 'row', style: 'justify-content:center' }, [h('span', { class: 'lab', text: '🏆 Teamwork Cup (+3 for a FULL meter):' })]);
+    D.teams.forEach(function (t, i) {
+      if (mFull(i)) cup.appendChild(btn(t.e + ' ' + t.n + ' +3', 'green small', function () { addPoint(i, 3); sfx('win'); confetti(); }));
+    });
+    if (cup.children.length === 1) cup.appendChild(h('span', { class: 'lab', text: 'No team had all five badges. Next match day!' }));
+    var table = h('div', { class: 'msg gmsg' });
+    function paint() { var lg = leagueRead(); table.textContent = lg.days ? '📊 League after ' + lg.days + ' match day(s): ' + lg.line : '📊 Press Save to start the league table.'; }
+    paint();
+    var save = btn('💾 Save Match Day 1 to the league', 'amber', function () {
+      var d = leagueData(); d.md['1'] = state.scores.slice(); try { localStorage.setItem(leagueKey(), JSON.stringify(d)); } catch (e) { /* ignore */ } paint(); sfx('win'); save.textContent = '✅ Saved (this computer only)';
+    });
+    body.appendChild(cup); body.appendChild(h('div', { class: 'row', style: 'justify-content:center' }, [save, btn('🎉 Celebrate!', 'violet', function () { sfx('win'); confetti(); })])); body.appendChild(table);
+    body.appendChild(h('div', { class: 'door', text: LESSONS[1].door })); sfx('win'); confetti();
+  }
 
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', race: '🏆 Team race' };
   var LESSONS = {
-    1: { title: 'Team Players', missions: D.l1missions, door: '🚪 Door pass: tell me one sentence: "I am on a team and I …" or one new word (league, court, basket, score, shooting).', scenes: [
-      { t: 'Team Week Starts!', mins: '3 min', mode: 'think', run: hook, intro: 'Welcome to Unit 4! Look at the pictures. Do you see a team?',
-        kids: { steps: ['👀 Look at the three pictures', '🤔 Whisper to your partner: what is a team?', '✋ Tell the class one team you know'], say: ['A team is …', 'I know a team: …'] },
-        tip: ['Book link: Unit 4 "We Can Do It" opener, p. 56.', 'Press the button for each question and accept one word or a sentence. Pupils may answer in Turkish first, then repeat in English. Show the five missions at the end.'] },
-      { t: 'Think, Pair, Share', mins: '7 min', mode: 'talk', run: thinkPairShare, intro: 'Look at each team. How are they working together? Think, tell a partner, share.',
-        kids: { steps: ['🧠 THINK: look at the team (10 seconds)', '🤝 PAIR: tell your partner', '🗣️ SHARE: tell the class'], say: ['The dancers are moving with the music.', 'The musicians are playing it.', 'We think everyone is listening to one another.'] },
-        tip: ['Book link: Think, Pair, Share, p. 57 (A-D).', 'Tap a team to hear the model sentence. Use the 10 second timer for THINK. Frames from the book: "The dancers are moving with the music." and "We think everyone is listening to one another." Pupils make their own sentence with another team.'] },
-      { t: 'Sports Words', mins: '5 min', mode: 'listen', run: vocab, intro: 'Five new words for our reading: league, court, basket, score, shooting.',
-        kids: { steps: ['👆 Tap a card and listen', '🗣️ Say the word and the sentence', '🎲 Clue game: which word is missing?'], say: ['league', 'court', 'basket', 'score', 'shooting'] },
-        tip: ['Book link: Words in Context, p. 58-59 (league, court, basket, score, shooting).', 'Tap each card: the board says the word, the meaning and a sentence. Then play the clue game: read the sentence with a gap and let pupils guess; press again to show the word.'] },
-      { t: 'The Sparks Story', mins: '6 min', mode: 'act', run: sparksStory, intro: 'Listen to a true story about a basketball team. Do the actions with me!',
-        kids: { steps: ['👂 Listen to each part', '🙌 Do the action', '🤔 Guess before the big moment'], say: ['The Sparks are losing.', 'She scores three points!'] },
-        tip: ['Book link: "Teamwork Makes the Dream Work", p. 58-59. This is an oral preview in very simple words; the book text is read in lesson 2.', 'Press the green button for each part. At the 🤔 part let pupils predict with their partner before you reveal.'] },
-      { t: 'GAME: True or False Court', mins: '7 min', mode: 'game', run: tfGame, intro: 'Teams take turns. Is the sentence TRUE or FALSE? Run to the right side!',
-        kids: { steps: ['👂 Listen to the sentence', '🏃 The team stands on TRUE or FALSE', '✏️ If it is false, say the right sentence'], say: ['That is true.', 'That is false. The answer is …'] },
-        tip: ['Book link: Explore the Reading, True or False, p. 60 A.', 'Put a green sign on one side of the room and a red sign on the other. Read the statement, start the 15 second timer, the team stands on a side, then press Show the answer. Right = 2 points; if they say a good corrected sentence press +1.'] },
-      { t: 'GAME: Put It in Order', mins: '5 min', mode: 'game', run: orderGame, intro: 'Tap the sentences in the right order. Use: first, then, after that, finally.',
-        kids: { steps: ['👀 Read the four sentences', '👆 Tap them in the right order', '🗣️ Retell with: First, … Then, …'], say: ['First, the players come on the court.', 'Then, they pass the ball.', 'After that, …', 'Finally, …'] },
-        tip: ['Book link: Understanding the Sequence of Events, p. 61.', 'A wrong tap wobbles softly: no points are lost. When a team finishes, the whole class retells the story with First, Then, After that, Finally.'] },
-      { t: 'Team Players!', mins: '2 min', mode: 'think', run: wrap, intro: 'You are great team players!',
+    1: { title: 'Dream Team League · Match Day 1', missions: D.l1missions, door: '🚪 Door pass: say one sentence: "I am on a team and I …" or "The Sparks were losing, but …" (or one new word: league, court, basket, score, shooting).', scenes: [
+      { t: 'Match Day 1: Meet the Team', mins: '3 min', mode: 'think', run: opening, intro: 'Welcome to the Dream Team League! Get your badge. Nobody wins alone.',
+        kids: { steps: ['🧢 Take a badge: Captain, Coach, Commentator, Scorer or Mascot', '👀 Look at the Teamwork Meter', '🗣️ Every pupil must speak to fill it'], say: ['We are a team.', 'I am the Captain.'] },
+        tip: ['Book link: Unit 4 "We Can Do It" opener, p. 56 (working together).', 'Make 4 teams of 4-5. Give each pupil a role badge (paper card). Explain: a team can only shoot a THREE-POINTER when all five badges are lit. Tap a badge each time that pupil says an English sentence. Roles rotate next lesson.'] },
+      { t: 'GAME: Freeze Frame', mins: '7 min', mode: 'game', run: freezeFrame, intro: 'One team freezes like a team from the book. The others guess and say a sentence.',
+        kids: { steps: ['🧊 The acting team FREEZES in a pose', '🤔 Others: Think, Pair, Share', '🗣️ Guess with a full sentence'], say: ['The dancers are moving with the music.', 'We think everyone is listening to one another.'] },
+        tip: ['Book link: Think, Pair, Share, p. 57 (A-D). Frames: "The dancers are moving with the music." / "We think everyone is listening to one another."', 'Press Show: only the acting Captain looks (3 seconds), then the team freezes. Other teams discuss, then say the sentence. The first right team taps +2 and the Commentator badge lights.'] },
+      { t: 'GAME: Court Shootout', mins: '8 min', mode: 'game', run: courtShootout, intro: 'Answer the word clue, then shoot a paper ball into the bin! Full meter = 3-pointer.',
+        kids: { steps: ['❓ Read the clue and talk in your team', '✅ Right answer = you shoot', '⚡ Full meter = a 3-point shot from far away'], say: ['The answer is court.', 'Ten players are on the court.'] },
+        tip: ['Book link: Words in Context, pp. 58-59 (league, court, basket, score, shooting).', 'Put a bin or box at the front (2-point line) and mark a far line (3-point line) with tape. A right answer lets one pupil shoot a paper ball: BASKET = points. A 3-point shot needs the Teamwork Meter full; it empties after the shot.'] },
+      { t: 'Live Commentary: The Sparks', mins: '6 min', mode: 'act', run: sparksStory, intro: 'Commentators read like sports reporters. The team acts out the game!',
+        kids: { steps: ['🎙️ Commentator: read the part loudly', '🎭 Team: act it out', '🤔 Guess the big moment'], say: ['The Sparks are losing by five points.', 'She scores three points!'] },
+        tip: ['Book link: "Teamwork Makes the Dream Work", pp. 58-59. An oral preview in very simple words; the book text is read in lesson 2.', 'Press the green button for each part. The Commentator of one team repeats in a sports-reporter voice; the team acts. At the 🤔 part let pupils predict, then reveal.'] },
+      { t: 'GAME: Morning Relay', mins: '5 min', mode: 'game', run: orderGame, intro: 'Put the sentences in order. Use: first, then, after that, finally.',
+        kids: { steps: ['👀 Read the four sentences', '👆 Tap them in the right order', '🔢 Scorer retells: First, … Then, …'], say: ['First, I wake up.', 'Then, I eat breakfast.', 'After that, …', 'Finally, …'] },
+        tip: ['Book link: Understanding the Sequence of Events, p. 61 (Paige\'s morning, the first event / after that).', 'A wrong tap wobbles softly: no points lost. When a team finishes, its Scorer retells the story with First, Then, After that, Finally.'] },
+      { t: 'GAME: Disaster Cards', mins: '4 min', mode: 'talk', run: disasterCards, intro: 'A problem happens! Say: Why don\'t we …? Every pupil gives one idea.',
+        kids: { steps: ['🎴 Draw a problem card', '💬 Everyone gives an idea', '🗣️ Say: Why don\'t we …?'], say: ['Why don\'t we take the train?', 'Why don\'t we perform here, now?', 'We can do it together!'] },
+        tip: ['Book link: a first taste of the play "Late for the Show", pp. 62-69 ("Why don\'t we perform the show here, now?").', 'Teams draw problem cards (traffic, train stopped, no costume). Each pupil says one idea with "Why don\'t we …?". +2 for every pupil speaking, +1 if only some do. Light the badges on the meter.'] },
+      { t: 'League Table & Teamwork Cup', mins: '2 min', mode: 'think', run: leagueScene, intro: 'Match Day 1 is over! Who filled the Teamwork Meter?',
         kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: one sentence for the teacher'], say: ['I am on a team and I …', 'Teamwork makes the dream work!'] },
-        tip: ['Show the scores and cheer for everyone. At the door each pupil says "I am on a team and I …" (book p. 71 C) or one of the new words. Quick check for you.'] }
+        tip: ['Show the scores. Teams with a FULL meter get the Teamwork Cup (+3). Save Match Day 1: the league table stays on this computer for the next match days (add ?class=4a to the link to keep a table per class). At the door each pupil says one sentence (book p. 71 C).'] }
     ] }
   };
 
