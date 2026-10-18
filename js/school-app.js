@@ -4437,6 +4437,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? · Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
+    { title: 'Unit 4: Team Players · Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
+    { title: 'Chuseok Moon Song: Ganggangsullae Circle Dance & 5-Minute Homework', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Chuseok-Moon-Song-Lesson-Plan', word: true, launch: 'chuseok-moon-song/index.html' },
     { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
     { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
     { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
@@ -4457,7 +4460,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           return '<div class="lp-card"><div class="lp-top"><span class="lp-grade">' + p.grade + '</span>' + (p.kind ? '<span class="lp-kind">' + p.kind + '</span>' : '') + (isNew ? '<span class="lp-new">NEW</span>' : '') + '</div>' +
             '<b>' + p.title + '</b><small>' + new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
             '<div class="lp-btns"><a class="lp-btn pdf" href="lesson-plans/' + p.file + '.pdf" target="_blank" rel="noopener">📄 PDF</a>' +
-            (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>📝 Word</a>' : '') + '</div></div>';
+            (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>📝 Word</a>' : '') +
+            (p.launch ? '<a class="lp-btn" style="background:#059669;color:#fff;text-decoration:none;" href="' + p.launch + '">▶ Lesson</a>' : '') + '</div></div>';
         }).join('') + '</div>' +
       '</div>';
   }

@@ -34,6 +34,8 @@
       sourceFiles: {
         grade3: [
           'assets/books/global-readings-2/Global-Readings-2.pdf',
+          'lesson-plans/Grade3-Unit4-Case-File-1-and-2-Lesson-Plan.pdf',
+          'lesson-plans/Grade3-Chuseok-Moon-Song-Lesson-Plan.pdf',
           'lesson-plans/archive/Grade3-Unit2-Lesson-Plans.pdf',
           'lesson-plans/archive/Grade3-Chuseok-Cooking-Lesson-Plans.pdf',
           'lesson-plans/archive/Grade3-Cooking-Recipe-Cards-and-Letter.pdf',
@@ -46,6 +48,7 @@
         ],
         grade4: [
           'assets/books/global-readings-3/Global-Readings-3.pdf',
+          'lesson-plans/Grade4-Unit4-Team-Players-Lesson-Plan.pdf',
           'lesson-plans/archive/Grade4-Unit2-Lesson-Plans.pdf',
           'lesson-plans/archive/Grade4-Units1-2-Revision-Lesson-Plans.pdf',
           'lesson-plans/archive/Grade4-Revision-Worksheet-A-B-Key.pdf',
