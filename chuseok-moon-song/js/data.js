@@ -52,6 +52,7 @@
     { w: 'jump', e: '🐇' }, { w: 'laugh', e: '😄' }, { w: 'look at the stars', e: '✨' }, { w: 'hold hands', e: '🤝' }
   ];
 
+  D.video = { id: 'BmhVJJY0LEA', title: 'Ganggangsullae Kids Moon Dance (KIZSONG)' };   // the real song, optional (needs the internet)
   D.hwUrl = 'chuseok-moon-homework/index.html';
   root.MoonData = D;
 })(window);

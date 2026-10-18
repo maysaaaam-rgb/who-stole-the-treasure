@@ -258,10 +258,20 @@
   }
   function stopBeat(c) { c.later(function () { if (MB) MB.stop(); }); }
 
+  /* the real song on YouTube (optional, needs the internet): a button opens a player under the buttons */
+  function watchBox() {
+    var box = h('div', { class: 'watch' }), open = false;
+    var b = btn('🎬 Watch the real song', 'violet', function () {
+      open = !open; box.innerHTML = '';
+      if (open) { box.appendChild(h('iframe', { src: 'https://www.youtube-nocookie.com/embed/' + D.video.id + '?rel=0', title: D.video.title, allow: 'accelerometer; autoplay; encrypted-media; picture-in-picture', allowfullscreen: 'true', loading: 'lazy' })); b.textContent = '✖ Close the video'; MB.stop(); }
+      else b.textContent = '🎬 Watch the real song';
+    });
+    return h('div', {}, [h('div', { class: 'row' }, [b, h('span', { class: 'lab', text: 'Optional: needs the internet.' })]), box]);
+  }
   /* 1. Moon night opening */
   function moonOpen(c) {
     hookPrompts(c, [{ e: '🌕', n: 'o_moon' }, { e: '🏮', n: 'o_lantern' }], D.hook, D.missions, '');
-    bgOf(c.body.querySelector('.hook-stage'), 'bg_moon_night'); c.body.appendChild(glowBar());
+    bgOf(c.body.querySelector('.hook-stage'), 'bg_moon_night'); c.body.appendChild(watchBox()); c.body.appendChild(glowBar());
   }
 
   /* 2. Moon words */
@@ -291,7 +301,7 @@
       btn('🐢 Slower', 'small', function () { MB.setBpm(MB.getBpm() - 8); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.setBpm(MB.getBpm() + 8); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt]));
     body.appendChild(dots); body.appendChild(h('div', { class: 'cr' }, [lead, grp])); body.appendChild(msg);
     body.appendChild(h('div', { class: 'row' }, D.calls.map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s); } }); })));
-    body.appendChild(h('div', { class: 'row' }, [btn('✅ The class sang it (+2 glow)', 'green', function () { addGlow(2); sfx('correct'); }), pointsRow()])); body.appendChild(glowBar());
+    body.appendChild(h('div', { class: 'row' }, [btn('✅ The class sang it (+2 glow)', 'green', function () { addGlow(2); sfx('correct'); }), pointsRow()])); body.appendChild(watchBox()); body.appendChild(glowBar());
   }
 
   /* 4. GAME: Moon Circle Commander (the circle moves with the beat) */
@@ -384,7 +394,7 @@
         tip: ['Tap each card (word, meaning, sentence), then the clue game. Pupils do a small action for each word (circle with arms, hold hands, dance).'] },
       { t: 'Learn the Song: Call and Response', mins: '8 min', mode: 'song', run: callResponse, intro: 'The leader calls. The whole circle answers: Ganggangsullae!',
         kids: { steps: ['🎤 Leader: sing the line', '👥 Circle: answer Ganggangsullae!', '🥁 Move with the drum'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
-        tip: ['The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok. Here the leader lines are simple English lines written for this lesson.', 'Press Play with the beat: the drum plays and the lines run by themselves (one bar for the leader, one bar for the circle). Practise slowly first (Slower), then faster. A real recording of the folk song can play next to it if you have one.'] },
+        tip: ['The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok. Here the leader lines are simple English lines written for this lesson.', 'Press Play with the beat: the drum plays and the lines run by themselves (one bar for the leader, one bar for the circle). Practise slowly first (Slower), then faster. The real song is one button away: Watch the real song (the KIZSONG video of Ganggangsullae, needs the internet).'] },
       { t: 'GAME: Moon Circle Commander', mins: '6 min', mode: 'move', run: circleCommander, intro: 'Stand in a big circle. Do what the moon says, with the drum!',
         kids: { steps: ['🤝 Hold hands', '🚶 Move with the drum', '🧊 Freeze when the drum stops'], say: ['Walk to the left.', 'Clap three times.', 'Freeze like the moon!'] },
         tip: ['Clear space for a circle (or two circles). A new command comes every two bars. At "Freeze like the moon!" the drum stops for 4 seconds and nobody moves. Give +2 glow when the circle is great, or a team point to a team with the best movement.'] },
