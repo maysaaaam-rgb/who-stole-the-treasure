@@ -26,6 +26,7 @@
     { id: 'g3-wordcity', icon: '🏙️', title: 'Word City (Unit 3)', route: 'unit3-g3-word-city/index.html', g: 3, added: '2026-10-12' },
     { id: 'g3-board', icon: '🎲', title: 'Arctic Board Game (Unit 3, The Bear and I)', route: 'unit3-board-game/index.html?grade=3', g: 3, added: '2026-10-12' },
     { id: 'g4-board', icon: '🎲', title: 'Money Board Game (Unit 3, How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, added: '2026-10-12' },
+    { id: 'u4-g4-l1', icon: '🏀', title: 'Unit 4 Team Players (We Can Do It, lesson 1)', route: 'unit4-g4-lessons/index.html', g: 4, added: '2026-10-19' },
     { id: 'g4-captain', icon: '🐧', title: 'Captain Quiet’s Space Mission (Classroom Rules, Week 4)', route: 'week4-g4-captain-quiet/index.html', g: 4, added: '2026-10-09' },
     { id: 'g3-daphne', icon: '🕵️', title: 'Daphne the School Detective (School Life, Week 4)', route: 'week4-g3-daphne/index.html', g: 3, added: '2026-10-09' },
     { id: 'g4-ice3', icon: '💥', title: 'The Ice Cracks (Unit 3, Lesson 3)', route: 'unit3-g4-lessons/index.html?lesson=3', g: 3, added: '2026-10-09' },
