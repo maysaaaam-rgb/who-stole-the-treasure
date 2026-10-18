@@ -1,0 +1,14 @@
+tea_here_you_are.png: OK - Checked 1024x1024 PNG in week2-art; boy hands teacup to girl with both hands, matching glossy 3D storybook style with thick white sticker outline on flat #e8e8e8 background and zero text/watermarks.
+tea_thank_you.png: OK - Checked 1024x1024 PNG in week2-art; girl holds teacup and places hand on heart smiling warmly, matching glossy 3D storybook style with thick white sticker outline on flat #e8e8e8 background and zero text/watermarks.
+tea_welcome.png: OK - Checked 1024x1024 PNG in week2-art; boy opens both hands in friendly welcome gesture with floral teapot beside him, matching glossy 3D storybook style with thick white sticker outline on flat #e8e8e8 background and zero text/watermarks.
+tea_nice_party.png: OK - Checked 1024x1024 PNG in week2-art; boy and girl happily raise teacups together, matching glossy 3D storybook style with thick white sticker outline on flat #e8e8e8 background and zero text/watermarks.
+team_teapot.png: OK - Checked 1024x1024 PNG in lesson-art; round blue-and-white teapot with cute dot eyes and smile filling 80% of frame, thick white sticker outline on flat #e8e8e8 background, zero text/watermarks.
+team_cupcake.png: OK - Checked 1024x1024 PNG in lesson-art; pink frosted cupcake with red cherry and happy tiny face filling 80% of frame, thick white sticker outline on flat #e8e8e8 background, zero text/watermarks.
+team_hatter.png: OK - Checked 1024x1024 PNG in lesson-art; blue top hat with yellow band and completely blank paper card seen from the front with no face, filling 80% of frame, thick white sticker outline on flat #e8e8e8 background, zero text/numbers/watermarks.
+team_rabbit.png: OK - Checked 1024x1024 PNG in lesson-art; friendly white rabbit head with long ears and gold pocket watch hanging below (no numbers on clock face), filling 80% of frame, thick white sticker outline on flat #e8e8e8 background, zero text/watermarks.
+hero_phrases.png: OK - Checked 1600x800 PNG (2:1) in lesson-art; Wonderland garden tea table with mismatched teacups, teapot, cake stand, and four completely empty translucent pale glass speech-bubble shapes floating above, calm bottom third, no people, no outline, zero text.
+hero_pairs.png: OK - Checked 1600x800 PNG (2:1) in lesson-art; two cozy pastel armchairs facing each other at a tiny round tea table in soft golden light with hanging paper stars, calm bottom third, no people, no outline, zero text.
+hero_dress.png: OK - Checked 1600x800 PNG (2:1) in lesson-art; small wooden theatre stage with half-open red-and-gold curtains, costume rack with paper hats and crowns at the side, warm spotlight, calm bottom third, no people, no outline, zero text.
+hero_party.png: OK - Checked 1600x800 PNG (2:1) in lesson-art; Wonderland garden party in golden evening light with long table of teapots and cakes, bunting flags, paper lanterns, and rose bushes, calm bottom third, nobody sitting, no outline, zero text.
+
+Total OK: 12 / 12

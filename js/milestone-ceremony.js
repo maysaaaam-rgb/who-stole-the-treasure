@@ -21,14 +21,30 @@
     'derin': ['assets/avatars/derin-1-smiling.webp', 'assets/avatars/derin-2-laughing.webp', 'assets/avatars/derin-3-thumbs-up.webp'],
     'elif-beren': ['assets/avatars/elif-beren-1-smiling.webp', 'assets/avatars/elif-beren-2-laughing.webp', 'assets/avatars/elif-beren-3-thumbs-up.webp'],
     'fatih': ['assets/avatars/fatih-1-smiling.webp', 'assets/avatars/fatih-2-laughing.webp', 'assets/avatars/fatih-3-thumbs-up.webp'],
-    'oyku': ['assets/avatars/oyku-1-smiling.webp', 'assets/avatars/oyku-2-laughing.webp', 'assets/avatars/oyku-3-thumbs-up.webp']
+    'oyku': ['assets/avatars/oyku-1-smiling.webp', 'assets/avatars/oyku-2-laughing.webp', 'assets/avatars/oyku-3-thumbs-up.webp'],
+    'deniz-kavasoglu': ['assets/avatars/deniz-kavasoglu-1-smiling.webp', 'assets/avatars/deniz-kavasoglu-2-laughing.webp', 'assets/avatars/deniz-kavasoglu-3-thumbs-up.webp'],
+    'ahmet-alhasan': ['assets/avatars/ahmet-alhasan-1-smiling.webp', 'assets/avatars/ahmet-alhasan-2-laughing.webp', 'assets/avatars/ahmet-alhasan-3-thumbs-up.webp'],
+    'ece-yasar': ['assets/avatars/ece-yasar-1-smiling.webp', 'assets/avatars/ece-yasar-2-laughing.webp', 'assets/avatars/ece-yasar-3-thumbs-up.webp'],
+    'gokce-duman': ['assets/avatars/gokce-duman-1-smiling.webp', 'assets/avatars/gokce-duman-2-laughing.webp', 'assets/avatars/gokce-duman-3-thumbs-up.webp'],
+    'ayca-koca': ['assets/avatars/ayca-koca-1-smiling.webp', 'assets/avatars/ayca-koca-2-laughing.webp', 'assets/avatars/ayca-koca-3-thumbs-up.webp'],
+    'melodi-karaca': ['assets/avatars/melodi-karaca-1-smiling.webp', 'assets/avatars/melodi-karaca-2-laughing.webp', 'assets/avatars/melodi-karaca-3-thumbs-up.webp'],
+    'gulce-caliskan': ['assets/avatars/gulce-caliskan-1-smiling.webp', 'assets/avatars/gulce-caliskan-2-laughing.webp', 'assets/avatars/gulce-caliskan-3-thumbs-up.webp'],
+    'aslihan-akin': ['assets/avatars/aslihan-akin-1-smiling.webp', 'assets/avatars/aslihan-akin-2-laughing.webp', 'assets/avatars/aslihan-akin-3-thumbs-up.webp']
   };
   var BUILTIN_ALIASES = {
     'student-3a-229': 'ates', 'ates': 'ates', 'ates-ozenci': 'ates',
     'student-4b-338': 'derin', 'derin': 'derin', 'derin-kucuk': 'derin',
     'student-4b-306': 'elif-beren', 'elif-beren': 'elif-beren', 'elif-beren-alper': 'elif-beren',
     'student-3a-209': 'fatih', 'fatih': 'fatih', 'fatih-yetkin': 'fatih', 'fatih-yetkin-yilmaz': 'fatih',
-    'student-4b-322': 'oyku', 'oyku': 'oyku', 'oyku-cigdem': 'oyku', 'oyku-cigdem-akar': 'oyku'
+    'student-4b-322': 'oyku', 'oyku': 'oyku', 'oyku-cigdem': 'oyku', 'oyku-cigdem-akar': 'oyku',
+    'student-3b-220': 'deniz-kavasoglu', 'deniz-kavasoglu': 'deniz-kavasoglu',
+    'student-3b-353': 'ahmet-alhasan', 'ahmet-alhasan': 'ahmet-alhasan',
+    'student-3b-352': 'ece-yasar', 'ece-yasar': 'ece-yasar',
+    'student-3a-219': 'gokce-duman', 'gokce-duman': 'gokce-duman',
+    'student-3a-354': 'ayca-koca', 'ayca-koca': 'ayca-koca',
+    'student-3a-211': 'melodi-karaca', 'melodi-karaca': 'melodi-karaca',
+    'student-3a-206': 'gulce-caliskan', 'gulce-caliskan': 'gulce-caliskan',
+    'student-3a-224': 'aslihan-akin', 'aslihan-akin': 'aslihan-akin'
   };
   function asciiSlug(s) {
     return String(s || '').toLowerCase()
