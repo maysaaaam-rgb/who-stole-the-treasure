@@ -387,12 +387,14 @@
   function dataChecksHtml() {
     var mism = current.filter(function (r) { return r.mism; }), dup = current.filter(function (r) { return r.dup; }), badQ = badQuizTx(S().getActiveClass());
     var pend = pendingRedate(), lost = lostGroups(S().getActiveClass());
-    if (!mism.length && !dup.length && !badQ.length && !pend.length && !lost.length) return '';
+    var rdup = rawDuplicates().filter(function (p) { var ac = S().getActiveClass(); return ac && (p.keep.classId === ac.id || p.drop.classId === ac.id); });
+    if (!mism.length && !dup.length && !badQ.length && !pend.length && !lost.length && !rdup.length) return '';
     return '<div class="cc-pn" style="margin-top:16px"><h3>⚠️ Data checks</h3><div class="cc-dc">' +
       (mism.length ? '<div><b>XP is lower than the award history</b> for ' + mism.length + ' pupil' + (mism.length > 1 ? 's' : '') + ': ' + mism.map(function (r) { return esc(r.first) + ' (' + r.mism.shown + ' shown, ' + r.mism.target + ' in history)'; }).join(', ') + '. <button class="cc-mini" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (lost.length ? '<div><b>' + lost.reduce(function (a, g) { return a + g.items.length; }, 0) + ' awards are on the wrong day (2, 13 or 14 Oct) and look like they belong to 6 to 12 Oct</b> (3B\'s lost week; the school computer clock was wrong). <button class="cc-mini" onclick="CommandCenter.moveLostWeek()">Move them to the right days</button></div>' : '') +
       (pend.length ? '<div><b>' + pend.length + ' quiz XP awards were fixed on this computer but are not saved to the cloud yet.</b> <button class="cc-mini" id="cc-rp-btn" onclick="CommandCenter.saveRedatePending()">Save to the cloud</button></div>' : '') +
       (badQ.length ? '<div><b>' + badQ.length + ' quiz XP awards have an impossible date</b> (before the quiz existed, for example ' + esc(new Date(badQ[0].timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })) + '). The computer that gave them probably has the wrong clock. <button class="cc-mini" onclick="CommandCenter.redateQuizXp()">Fix the dates</button></div>' : '') +
+      (rdup.length ? '<div><b>' + rdup.map(function (p) { return esc((p.keep.firstName || '') + ' ' + (p.keep.lastName || '')); }).join(', ') + ' is entered twice</b> (one record may be archived and hidden). <button class="cc-mini" onclick="CommandCenter.mergeDuplicates()">Merge them</button></div>' : '') +
       (dup.length ? '<div><b>Same name twice:</b> ' + dup.map(function (r) { return esc(r.name) + ' (' + esc(r.dup.join(' + ')) + ')'; }).join(', ') + '. One may be an old copy: check it in the pupil\u2019s profile.</div>' : '') +
       '</div></div>';
   }
@@ -485,7 +487,7 @@
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) + quietBanner(cls) +
-      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
+      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
@@ -773,6 +775,80 @@
     };
   }
   api.moveLostWeek = lostModal;
+
+  // ------------------------------------------------------------- the same pupil entered twice (also finds the archived one that the table hides)
+  function normName(x) { return String(x || '').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').replace(/\s+/g, ' ').trim(); }
+  function txOf(id) { return (S().state.xpTransactions || []).filter(function (t) { return t.studentId === id; }); }
+  function rawDuplicates() {
+    var groups = {};
+    (S().state.students || []).forEach(function (s) { var k = normName((s.firstName || '') + ' ' + (s.lastName || '')); if (k) (groups[k] = groups[k] || []).push(s); });
+    return Object.keys(groups).filter(function (k) { return groups[k].length === 2; }).map(function (k) {
+      var g = groups[k], std = g.filter(function (x) { return /^student-[a-z0-9]+-\d{1,4}$/i.test(String(x.id)); });
+      var keep = std.length === 1 ? std[0] : g.slice().sort(function (a, b) { return txOf(b.id).length - txOf(a.id).length; })[0];
+      return { keep: keep, drop: g.filter(function (x) { return x !== keep; })[0] };
+    });
+  }
+  function recInfo(s) {
+    var l = txOf(s.id).filter(function (t) { return t.status !== 'voided'; }), last = l.length ? String(l.map(function (t) { return t.timestamp; }).sort().pop()).slice(0, 10) : 'never';
+    var cls = S().getClass ? S().getClass(s.classId) : null;
+    return '<div class="cc-dim" style="line-height:1.55"><b style="color:#e6e8ee;font-size:1rem">' + esc((s.firstName || '') + ' ' + (s.lastName || '')) + '</b><br>id ' + esc(s.id) + '<br>class ' + esc(cls ? cls.name : s.classId) + ' · school no. ' + esc(s.studentIdNumber || '–') + '<br>' + (s.archived ? '<span style="color:#fbbf24">archived (hidden)</span>' : 'active') + '<br><b style="color:#e6e8ee">' + (Number(s.xp) || 0) + ' XP</b> · ' + l.length + ' awards · last ' + esc(last) + '<br>' + esc(s.grade || '') + ', age ' + esc(s.age || '–') + '</div>';
+  }
+  function mergeModal() {
+    ensureCss(); var old = document.getElementById('cc-merge'); if (old) old.remove();
+    var pairs = rawDuplicates(), ovl = document.createElement('div'); ovl.id = 'cc-merge'; ovl.className = 'cc-ovl'; ovl.style.alignItems = 'center';
+    ovl.innerHTML = '<div class="cc-pal" style="width:min(780px,96vw);padding:20px;max-height:88vh;overflow:auto"><h2 style="font-size:18px;margin:0 0 6px">🧩 The same pupil entered twice</h2>' +
+      (pairs.length ? '<p style="color:#8b93a7;margin:0 0 12px">Each pupil should exist once. The record <b>kept</b> is the one with the school-number id (it matches k12). The other record is removed after its awards are moved. <b>A backup file is downloaded first</b> and nothing is lost: old awards are only marked as voided.</p>' : '<p style="color:#34d399">No pupil is entered twice. 👍</p>') +
+      pairs.map(function (pr, i) {
+        var pre = pr.keep.archived && !pr.drop.archived ? 'copy' : 'keep';
+        return '<div style="border-top:1px solid #1d2029;padding:12px 0" data-i="' + i + '"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div><div style="color:#34d399;font-weight:800;margin-bottom:4px">KEEP</div>' + recInfo(pr.keep) + '</div><div><div style="color:#f87171;font-weight:800;margin-bottom:4px">REMOVE</div>' + recInfo(pr.drop) + '</div></div>' +
+          '<div style="margin-top:10px;font-weight:700">Which XP should she/he have?</div>' +
+          ['keep|' + (Number(pr.keep.xp) || 0) + ' XP of the KEEP record (its awards stay, the other record\'s awards are voided)', 'copy|' + (Number(pr.drop.xp) || 0) + ' XP of the REMOVE record (the awards of the KEEP record are voided, this record\'s awards move over)', 'sum|' + ((Number(pr.keep.xp) || 0) + (Number(pr.drop.xp) || 0)) + ' XP (both added together)'].map(function (o) {
+            var v = o.split('|'); return '<label style="display:flex;gap:8px;align-items:center;margin:4px 0;font-size:13px"><input type="radio" name="mx' + i + '" value="' + v[0] + '"' + (v[0] === pre ? ' checked' : '') + '> ' + esc(v[1]) + '</label>'; }).join('') +
+          '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px"><button class="cc-plus cc-do" data-i="' + i + '" style="padding:9px 16px;background:#10b981;color:#06101f;font-weight:800">Merge and remove the copy</button></div><div class="cc-dim cc-m" id="cc-m' + i + '"></div></div>';
+      }).join('') + '<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="cc-plus" id="cc-m-close" style="padding:9px 16px">Close</button></div></div>';
+    document.body.appendChild(ovl);
+    ovl.querySelector('#cc-m-close').onclick = function () { ovl.remove(); };
+    [].forEach.call(ovl.querySelectorAll('.cc-do'), function (b) { b.onclick = function () { var i = +b.dataset.i, ch = (ovl.querySelector('input[name="mx' + i + '"]:checked') || {}).value || 'keep'; b.disabled = true; applyMerge(pairs[i], ch, ovl.querySelector('#cc-m' + i), ovl); }; });
+  }
+  function applyMerge(pr, choice, msg, ovl) {
+    var st = S(), keep = pr.keep, drop = pr.drop, all = st.state.xpTransactions || [], now = new Date().toISOString(), note = 'Pupil entered twice: merged on ' + now.slice(0, 10);
+    var keepTx = all.filter(function (t) { return t.studentId === keep.id; }), dropTx = all.filter(function (t) { return t.studentId === drop.id; });
+    var chosen = choice === 'copy' ? (Number(drop.xp) || 0) : choice === 'sum' ? (Number(keep.xp) || 0) + (Number(drop.xp) || 0) : (Number(keep.xp) || 0);
+    // 1. backup (a file and this browser)
+    var backup = { at: now, choice: choice, keep: JSON.parse(JSON.stringify(keep)), drop: JSON.parse(JSON.stringify(drop)), keepTx: JSON.parse(JSON.stringify(keepTx)), dropTx: JSON.parse(JSON.stringify(dropTx)) };
+    try { localStorage.setItem('eaa_merge_backup_' + Date.now(), JSON.stringify(backup)); } catch (e) { /* the file below is the main backup */ }
+    try { var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'merge-backup-' + normName(keep.firstName + ' ' + keep.lastName).replace(/ /g, '-') + '-' + Date.now() + '.json'; document.body.appendChild(a); a.click(); a.remove(); } catch (e) { /* no download */ }
+    // 2. which awards stop counting, which move over
+    var toVoid = (choice === 'copy' ? keepTx : choice === 'keep' ? dropTx : []).filter(function (t) { return t.status !== 'voided'; }), changed = [];
+    toVoid.forEach(function (t) { t.status = 'voided'; t.isVoided = true; t.voidReason = note; t.voidedAt = now; changed.push(t); });
+    dropTx.forEach(function (t) { t.studentId = keep.id; changed.indexOf(t) < 0 && changed.push(t); });
+    var hist = {}; (keep.xpHistory || []).forEach(function (h) { hist[h.id] = 1; });
+    var moved = (drop.xpHistory || []).filter(function (h) { return !hist[h.id]; }).map(function (h) { if (choice === 'keep') { h.status = 'voided'; h.isVoided = true; h.voidReason = note; } return h; });
+    keep.xpHistory = (keep.xpHistory || []).concat(moved);
+    if (choice === 'copy') (keep.xpHistory || []).forEach(function (h) { if (toVoid.some(function (t) { return t.id === h.id; })) { h.status = 'voided'; h.isVoided = true; h.voidReason = note; } });
+    // 3. the kept record: active, the right school number, and the chosen XP (a small correction award lines the award history up with it)
+    keep.archived = false;
+    var mnum = /-(\d+)$/.exec(String(keep.id)); if (mnum) keep.studentIdNumber = mnum[1];
+    var ledger = all.filter(function (t) { return t.studentId === keep.id && t.status !== 'voided'; }).reduce(function (sum, t) { return sum + (Number(t.amount) || 0); }, 0);
+    keep.xp = Math.max(0, ledger); keep.totalXP = keep.xp;
+    var before = all.length; st.setStudentXP(keep.id, chosen, 'Merge of the same pupil entered twice');
+    all.slice(before).forEach(function (t) { changed.push(t); });
+    st.saveState();
+    // 4. the cloud: awards first, then the pupil, then the removal of the copy (the copy is only removed if the cloud accepted the awards)
+    try { localStorage.setItem('eaa_redate_pending', JSON.stringify(changed.map(function (t) { return t.id; }))); } catch (e) { /* the banner just will not come back */ }
+    msg.textContent = 'Saving ' + changed.length + ' awards to the cloud…';
+    saveRedateToCloud(changed).then(function () {
+      var A = root.AdventureSupabase; return A && A.saveStudent ? A.saveStudent(keep) : null;
+    }).then(function () {
+      st.deleteStudent(drop.id);
+      msg.innerHTML = '<span style="color:#34d399">✓ Merged. ' + esc(keep.firstName) + ' now has ' + (Number(keep.xp) || 0) + ' XP and exists once. The copy is removed.</span>';
+      setTimeout(function () { ovl.remove(); if (root.renderCurrentView) root.renderCurrentView(); }, 2200);
+    }, function (e) {
+      msg.innerHTML = '<span style="color:#fbbf24">Merged on this computer, but the cloud did not answer (' + esc((e && e.message) || 'no answer') + '). The copy was NOT removed yet. Check the internet and press the button again.</span>';
+    });
+  }
+  api.mergeDuplicates = mergeModal;
+
   api.supportGet = supportGet;
   api.supportSet = function (id, patch) { var o = supportSet(id, patch); if (patch && 'on' in patch) { try { current = rowsFor(S().getActiveClass()); refreshAll(); } catch (e) { /* the table updates next time */ } } return o; };
   api.restoreXp = reconModal;
