@@ -43,7 +43,9 @@
     { t: 'Walk to the right.', e: '➡️', a: 'Now go the other way.' }, { t: 'Clap three times.', e: '👏', a: 'Clap, clap, clap!' },
     { t: 'Make a small circle.', e: '🔸', a: 'Everyone steps in.' }, { t: 'Make a big circle.', e: '⭕', a: 'Everyone steps back.' },
     { t: 'Look at the moon.', e: '🌕', a: 'Look up and smile.' }, { t: 'Jump two times.', e: '🐇', a: 'Jump like a moon rabbit!' },
-    { t: 'Turn around.', e: '🔄', a: 'Turn slowly around.' }, { t: 'Freeze like the moon!', e: '🧊', a: 'Stop. Do not move!' }
+    { t: 'Turn around.', e: '🔄', a: 'Turn slowly around.' }, { t: 'Let’s go!', e: '🏃', a: 'Everyone moves round the circle.' }, { t: 'Slow, slow, slow.', e: '🐢', a: 'Move very slowly.' },
+    { t: 'Go in.', e: '⬇️', a: 'Walk into the middle.' }, { t: 'Go out.', e: '⬆️', a: 'Walk back out.' },
+    { t: 'Freeze like the moon!', e: '🧊', a: 'Stop. Do not move!' }
   ];
 
   /* Make Your Verse: "We ___ under the moon." */
