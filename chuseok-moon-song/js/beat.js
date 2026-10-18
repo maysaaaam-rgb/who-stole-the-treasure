@@ -44,7 +44,8 @@
     stop: function () { on = false; if (timer) { clearTimeout(timer); timer = null; } },
     setBpm: function (v) { bpm = Math.max(56, Math.min(120, v)); },
     getBpm: function () { return bpm; },
-    isOn: function () { return on; }
+    isOn: function () { return on; },
+    hit: function (kind) { if (!ensure()) return false; var t = ctx.currentTime + 0.01; if (kind === 'dung') dung(t); else deok(t); return true; }
   };
   root.MoonBeat = api;
 })(window);

@@ -39,9 +39,9 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
     <div class="card" id="s2"><h2><span class="n">2</span> Choose the word</h2><div id="quiz"></div></div>
     <div class="card" id="s3"><h2><span class="n">3</span> Sing it at home</h2>
       <p>Sing the five lines to someone at home. They answer: <b>Ganggangsullae!</b></p><p class="mini">Want to hear the real song? <a href="https://www.youtube.com/watch?v=BmhVJJY0LEA" target="_blank" rel="noopener" style="color:#38bdf8">Watch the Ganggangsullae kids video</a> (ask a grown-up to open it).</p><button class="btn g" id="sang" type="button">🎤 I sang it!</button></div>
-    <div class="card" id="s4"><h2><span class="n">4</span> My own verse</h2>
-      <p>We <b id="vw">…</b> under the moon.</p><div id="verbs"></div>
-      <p class="mini">Draw the moon on paper and write your verse. Show it in class!</p><button class="btn g" id="vdone" type="button">✅ My verse is ready</button></div>
+    <div class="card" id="s4"><h2><span class="n">4</span> My own dance</h2>
+      <p>Choose 3 moves for your dance:</p><p><b id="vw">…</b></p><div id="verbs"></div>
+      <p class="mini">Try your dance at home! Dance it with your family and say the words.</p><button class="btn g" id="vdone" type="button">✅ My dance is ready</button></div>
     <div class="card final" id="fin"><div class="big">🌕🎉</div><h2 style="justify-content:center">Great job!</h2><p>Your teacher can see that you finished. <b>+40 XP</b></p></div>
   </div>
 </div>
@@ -53,20 +53,21 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   var KEY = 'eaa_moon_hw_v1', PEND = 'eaa_moon_hw_pending_v1';
   var LINES = ['The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.', 'We say thank you for the harvest.', 'We sing with our family.'];
   var QUIZ = [
-    { s: 'The ____ is big and round.', o: ['moon', 'sun', 'tree'], a: 0 }, { s: 'We hold ____ in a circle.', o: ['hands', 'books', 'pens'], a: 0 },
-    { s: 'We ____ under the moon.', o: ['dance', 'sleep', 'swim'], a: 0 }, { s: 'We say thank you for the ____.', o: ['harvest', 'homework', 'rain'], a: 0 },
-    { s: 'We sing with our ____.', o: ['family', 'shoes', 'chairs'], a: 0 }
+    { s: 'Chuseok is in ____.', o: ['autumn', 'spring', 'summer'], a: 0 }, { s: 'At Chuseok, the moon is full and ____.', o: ['round', 'square', 'tiny'], a: 0 },
+    { s: 'We ____ around.', o: ['turn', 'eat', 'read'], a: 0 }, { s: 'Step to the left ____.', o: ['slowly', 'table', 'blue'], a: 0 },
+    { s: 'We say thank you for the ____.', o: ['harvest', 'homework', 'rain'], a: 0 }, { s: 'We ____ our feet.', o: ['stamp', 'swim', 'read'], a: 0 }
   ];
-  var VERBS = ['dance', 'sing', 'walk', 'clap', 'jump', 'laugh', 'look at the stars', 'hold hands'];
+  var MOVES = ['step to the left slowly', 'step to the right quickly', 'turn around slowly', 'spin quickly', 'stamp loudly', 'clap softly', 'hop forward', 'bow slowly'];
+  var SEQ = ['First,', 'Then,', 'Finally,'];
   function $(id) { return document.getElementById(id); }
-  var S = { cls: '', name: '', heard: {}, quiz: {}, sang: false, verb: '', vdone: false };
+  var S = { cls: '', name: '', heard: {}, quiz: {}, sang: false, picks: [], vdone: false };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && typeof raw === 'object') S = Object.assign(S, raw); } catch (e) { /* storage may be blocked */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
   function speak(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
   function wob(el) { el.classList.remove('wob'); void el.offsetWidth; el.classList.add('wob'); }
   function done1() { return LINES.every(function (l, i) { return S.heard[i]; }); }
   function done2() { return QUIZ.every(function (q, i) { return S.quiz[i]; }); }
-  function steps() { return [done1(), done2(), S.sang, S.vdone && !!S.verb]; }
+  function steps() { return [done1(), done2(), S.sang, S.vdone && S.picks.length === 3]; }
   function count() { return steps().filter(Boolean).length; }
 
   function drawLines() {
@@ -93,10 +94,14 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
     });
   }
   function drawVerbs() {
-    var box = $('verbs'); box.innerHTML = ''; $('vw').textContent = S.verb || '…';
-    VERBS.forEach(function (v) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + (S.verb === v ? 'sel' : 'off'); b.textContent = v;
-      b.onclick = function () { S.verb = v; save(); speak('We ' + v + ' under the moon.'); drawVerbs(); }; box.appendChild(b);
+    var box = $('verbs'); box.innerHTML = ''; $('vw').innerHTML = SEQ.map(function (w, k) { return w + ' ' + (S.picks[k] || '…'); }).join('<br>');
+    MOVES.forEach(function (v) {
+      var on = S.picks.indexOf(v) >= 0;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + (on ? 'sel' : 'off'); b.textContent = v;
+      b.onclick = function () {
+        if (on) S.picks = S.picks.filter(function (x) { return x !== v; }); else if (S.picks.length < 3) S.picks.push(v); else { wob(b); return; }
+        S.vdone = false; save(); speak(S.picks.length ? (SEQ[S.picks.length - 1] + ' ' + S.picks[S.picks.length - 1]) : ''); drawVerbs();
+      }; box.appendChild(b);
     });
   }
   /* report to the teacher's Google Sheet: works offline, unsent reports are kept and retried */
@@ -125,7 +130,7 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
     S.cls = c; S.name = n; save(); start();
   };
   $('sang').onclick = function () { S.sang = true; save(); speak('Ganggangsullae!'); refresh(); };
-  $('vdone').onclick = function () { if (!S.verb) { wob($('vdone')); return; } S.vdone = true; save(); refresh(); };
+  $('vdone').onclick = function () { if (S.picks.length < 3) { wob($('vdone')); return; } S.vdone = true; save(); speak(S.picks.map(function (m, k) { return SEQ[k] + ' ' + m; }).join('. ')); refresh(); };
   function start() { $('who').style.display = 'none'; $('main').style.display = 'block'; drawLines(); drawQuiz(); drawVerbs(); refresh(); }
   window.addEventListener('online', flush);
   if (S.cls && S.name) { $('cls').value = S.cls; $('nm').value = S.name; start(); }
