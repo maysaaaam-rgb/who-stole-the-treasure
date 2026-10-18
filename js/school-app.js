@@ -4183,6 +4183,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const lessons = grade === 4 ? [
       ['🪙', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
       ['🚀', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
+      ['🏀', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],
       ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
       ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
       ['💰', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
