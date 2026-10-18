@@ -492,7 +492,7 @@
     $('h-title').firstChild.nodeValue = L.title;
     drawSteps(); sfx('page');
     try { s.run(ctxFor(main)); } catch (e) { main.appendChild(h('div', { class: 'msg soft', text: 'Oops, this activity could not start.' })); if (window.console) console.error(e); }
-    try { history.replaceState(null, '', '?scene=' + (idx + 1)); } catch (e) { /* ignore */ }
+    try { history.replaceState(null, '', '?lesson=' + lesson + '&scene=' + (idx + 1)); } catch (e) { /* ignore */ }
   }
   function tipHtml() {
     var s = LESSONS[state.lesson].scenes[state.idx], t = $('tip'); t.innerHTML = '';
@@ -507,7 +507,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') $('next').click(); else if (e.key === 'ArrowLeft') $('back').click(); });
 
   var q = {}; (location.search || '').replace(/^\?/, '').split('&').forEach(function (p) { var kv = p.split('='); if (kv[0]) q[kv[0]] = decodeURIComponent(kv[1] || ''); });
-  var s0 = Math.max(0, Math.min(LESSONS[1].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
+  var L0 = LESSONS[parseInt(q.lesson, 10)] ? parseInt(q.lesson, 10) : 1; var s0 = Math.max(0, Math.min(LESSONS[L0].scenes.length - 1, (parseInt(q.scene, 10) || 1) - 1));
   window.W4Lessons = { state: state, go: go, LESSONS: LESSONS };
-  loadManifest(function () { drawTeams(); go(1, s0); });
+  loadManifest(function () { drawTeams(); go(L0, s0); });
 })();
