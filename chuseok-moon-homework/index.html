@@ -53,11 +53,11 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   var KEY = 'eaa_moon_hw_v1', PEND = 'eaa_moon_hw_pending_v1';
   var LINES = ['The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.', 'We say thank you for the harvest.', 'We sing with our family.'];
   var QUIZ = [
-    { s: 'Chuseok is in ____.', o: ['autumn', 'spring', 'summer'], a: 0 }, { s: 'At Chuseok, the moon is full and ____.', o: ['round', 'square', 'tiny'], a: 0 },
-    { s: 'We ____ around.', o: ['turn', 'eat', 'read'], a: 0 }, { s: 'Step to the left ____.', o: ['slowly', 'table', 'blue'], a: 0 },
-    { s: 'We say thank you for the ____.', o: ['harvest', 'homework', 'rain'], a: 0 }, { s: 'We ____ our feet.', o: ['stamp', 'swim', 'read'], a: 0 }
+    { s: 'The ____ is big and round.', o: ['moon', 'sun', 'tree'], a: 0 }, { s: 'We hold ____ in a circle.', o: ['hands', 'books', 'pens'], a: 0 },
+    { s: 'We ____ around.', o: ['turn', 'eat', 'read'], a: 0 }, { s: 'Step ____.', o: ['slowly', 'table', 'blue'], a: 0 },
+    { s: 'We ____ our hands.', o: ['clap', 'swim', 'read'], a: 0 }, { s: 'We sing with our ____.', o: ['family', 'shoes', 'chairs'], a: 0 }
   ];
-  var MOVES = ['step to the left slowly', 'step to the right quickly', 'turn around slowly', 'spin quickly', 'stamp loudly', 'clap softly', 'hop forward', 'bow slowly'];
+  var MOVES = ['step slowly', 'step quickly', 'turn slowly', 'turn quickly', 'clap slowly', 'hop quickly', 'bow slowly', 'bow quickly'];
   var SEQ = ['First,', 'Then,', 'Finally,'];
   function $(id) { return document.getElementById(id); }
   var S = { cls: '', name: '', heard: {}, quiz: {}, sang: false, picks: [], vdone: false };

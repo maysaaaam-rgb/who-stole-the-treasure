@@ -13,8 +13,8 @@
   D.refrainSay = 'Kahng kahng soo leh!';   // how the computer voice says it
 
   D.missions = [
-    { e: '🍂', t: 'Learn Chuseok facts' }, { e: '👣', t: 'Learn dance verbs' }, { e: '🎤', t: 'Call and response' },
-    { e: '🥁', t: 'Copy the rhythm' }, { e: '💃', t: 'Build your team dance' }
+    { e: '🌕', t: 'Learn 3 moon words' }, { e: '👣', t: 'Learn 5 dance words' }, { e: '🎤', t: 'Sing with the circle' },
+    { e: '🐢', t: 'Move slowly or quickly' }, { e: '💃', t: 'Dance with your team' }
   ];
   D.hook = [
     'It is Chuseok night. Look at the big, round moon!',
@@ -86,6 +86,18 @@
     { v: 'Hop', d: 'forward', m: 'quickly', e: '🐇' }, { v: 'Bow', m: 'slowly', e: '🙇' }, { v: 'Sway', d: 'to the left and to the right', m: 'slowly', e: '🌊' }
   ];
   D.seqWords = ['First,', 'Then,', 'Next,', 'Finally,'];
+
+  /* ---- the simple version: 3 moon words, 5 dance words, 2 speed words ---- */
+  D.words3 = [
+    { w: 'moon', e: '🌕', ex: 'The moon is big and round.' }, { w: 'circle', e: '⭕', ex: 'We stand in a circle.' }, { w: 'family', e: '👨‍👩‍👧‍👦', ex: 'We sing with our family.' }
+  ];
+  D.dance5 = [
+    { w: 'step', e: '👣', ex: 'We step to the left.' }, { w: 'turn', e: '🔄', ex: 'We turn around.' }, { w: 'clap', e: '👏', ex: 'We clap our hands.' },
+    { w: 'hop', e: '🐇', ex: 'We hop like a rabbit.' }, { w: 'bow', e: '🙇', ex: 'We bow and say thank you.' }
+  ];
+  D.speeds = [{ w: 'slowly', e: '🐢', bpm: 60 }, { w: 'quickly', e: '⚡', bpm: 108 }];
+  D.cards5 = [];
+  D.dance5.forEach(function (d) { D.speeds.forEach(function (sp) { D.cards5.push({ v: d.w.charAt(0).toUpperCase() + d.w.slice(1), key: d.w, m: sp.w, mk: sp.w, e: d.e, bpm: sp.bpm }); }); });
 
   D.hwUrl = 'chuseok-moon-homework/index.html';
   root.MoonData = D;
