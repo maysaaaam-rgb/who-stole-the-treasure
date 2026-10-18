@@ -1097,18 +1097,18 @@
         title: 'Unit 4: What Happened?',
         order: 4,
         pages: '56–71',
-        reading1: 'Where Is She?',
+        reading1: 'Where Is She? (The Mona Lisa Robbery, 1911–1913)',
         reading2: 'The Angry Mountain (-nd blend)',
-        readingSkill: 'Cause & Effect',
-        contentArea: 'History: World Events',
-        selFocus: 'Label emotions',
+        readingSkill: 'Cause & Effect · Past Simple Timeline',
+        contentArea: 'History: World Events & Art History',
+        selFocus: 'Label emotions (scared / happy)',
         keyConcept: 'How do events change our lives?',
-        targetVocab: ['volcano', 'eruption', 'mountain', 'escape', 'ash', 'history', 'event'],
+        targetVocab: ['plan', 'steal', 'lifted', 'robbery', 'arrested', 'lined up', 'museum', 'missing'],
         weeks: [
-          { weekNumber: 1, title: 'Week 1: Earth Events & Volcanic Mysteries', focus: 'Geological formations, natural disasters, cause and effect inquiry' },
-          { weekNumber: 2, title: 'Week 2: Reading 1: Where Is She?', focus: 'Suspense narrative following family during a sudden ash storm' },
-          { weekNumber: 3, title: 'Week 3: Reading 2: The Angry Mountain (-nd blend)', focus: 'Nonfiction science link on active volcanoes, -nd blends' },
-          { weekNumber: 4, title: 'Week 4: Cause-Effect Mapping & Assessment', focus: 'Sequence diagrams and emotional resilience reflection' }
+          { weekNumber: 1, title: 'Week 1: Case File 1 · A Picture on the Wall', focus: 'Statue of Liberty opener, Spot the Changes (1911 vs Today), 5 detective words (NOUN/VERB/PAST VERB), Past-Tense Machine (+ed & irregulars)' },
+          { weekNumber: 2, title: 'Week 2: Case File 2 · Where Is She? (Reading 1)', focus: 'Act out the 1911 Mona Lisa robbery, breaking-news headlines (Madrid, Tokyo, New York), Detective Quiz Show, Four Corners Debate & Draw Two Faces' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: The Angry Mountain (-nd blend)', focus: 'Nonfiction science link on active volcanoes, cause and effect, -nd blends' },
+          { weekNumber: 4, title: 'Week 4: Cause-Effect Mapping & Unit 4 Quiz', focus: 'Sequence diagrams, review game, and Unit 4 assessment' }
         ],
         archived: false
       },
@@ -1489,14 +1489,16 @@
       },
 
       // Units 2 to 10 Foundational Lessons
-      { id: 'lesson-gr2-2-1', unitId: 'unit-gr2-2', title: 'Reading 1: Chuseok: Korea’s Harvest Festival', order: 1, sourcePages: '24–31', sourceBook: 'Global Readings 2', objective: 'Explore autumn harvest traditions, family feasts, and cultural celebrations in Korea.', duration: 35, archived: false },
-      { id: 'lesson-gr2-2-2', unitId: 'unit-gr2-2', title: 'Reading 2: First Harvest (-st blend)', order: 2, sourcePages: '32–39', sourceBook: 'Global Readings 2', objective: 'Apply setting analysis skills and practice -st consonant blend words in story context.', duration: 35, archived: false },
+      { id: 'lesson-gr2-2-1', unitId: 'unit-gr2-2', title: 'Reading 1: Chuseok: Korea’s Harvest Festival', order: 1, weekNumber: 1, sourcePages: '24–31', sourceBook: 'Global Readings 2', objective: 'Explore autumn harvest traditions, family feasts, and cultural celebrations in Korea.', duration: 35, gameRoute: 'unit2-g3-lessons/index.html?lesson=1', gameTitle: 'Chuseok Moon Feast', archived: false },
+      { id: 'lesson-gr2-2-2', unitId: 'unit-gr2-2', title: 'Reading 2: First Harvest (-st blend)', order: 2, weekNumber: 2, sourcePages: '32–39', sourceBook: 'Global Readings 2', objective: 'Apply setting analysis skills and practice -st consonant blend words in story context.', duration: 35, gameRoute: 'unit2-g3-lessons/index.html?lesson=2', gameTitle: 'First Harvest', archived: false },
+      { id: 'lesson-gr2-2-3', unitId: 'unit-gr2-2', title: 'Festival Extension: Chuseok Moon Song (Ganggangsullae Circle Dance)', order: 3, weekNumber: 3, sourcePages: '24–31', sourceBook: 'Global Readings 2', objective: 'Learn 3 moon words (moon, circle, family), 5 dance verbs (step, turn, clap, hop, bow), and 2 speed words (slowly, quickly) in a voiced call-and-response circle dance.', duration: 35, gameRoute: 'chuseok-moon-song/index.html', gameTitle: 'Chuseok Moon Song', worksheetRoute: 'lesson-plans/Grade3-Chuseok-Moon-Song-Lesson-Plan.pdf', worksheetTitle: 'Moon Song Lesson Plan (PDF)', archived: false },
 
-      { id: 'lesson-gr2-3-1', unitId: 'unit-gr2-3', title: 'Reading 1: The Bear and I (-ng blend)', order: 1, sourcePages: '40–47', sourceBook: 'Global Readings 2', objective: 'Read narrative on wildlife encounters and decode -ng final nasal blend patterns.', duration: 35, archived: false },
-      { id: 'lesson-gr2-3-2', unitId: 'unit-gr2-3', title: 'Reading 2: Clean Cars (Environmental Science)', order: 2, sourcePages: '48–55', sourceBook: 'Global Readings 2', objective: 'Compare electric and traditional vehicles and discuss how green tech reduces pollution.', duration: 35, archived: false },
+      { id: 'lesson-gr2-3-1', unitId: 'unit-gr2-3', title: 'Reading 1: The Bear and I (-ng blend)', order: 1, weekNumber: 1, sourcePages: '40–47', sourceBook: 'Global Readings 2', objective: 'Read narrative on wildlife encounters and decode -ng final nasal blend patterns.', duration: 35, gameRoute: 'lingo-g3-u3-review/index.html', gameTitle: 'Monster Cast Review', archived: false },
+      { id: 'lesson-gr2-3-2', unitId: 'unit-gr2-3', title: 'Reading 2: Clean Cars (Environmental Science)', order: 2, weekNumber: 2, sourcePages: '48–55', sourceBook: 'Global Readings 2', objective: 'Compare electric and traditional vehicles and discuss how green tech reduces pollution.', duration: 35, gameRoute: 'unit3-g3-quiz/index.html', gameTitle: 'Unit 3 Paper Quiz', archived: false },
 
-      { id: 'lesson-gr2-4-1', unitId: 'unit-gr2-4', title: 'Reading 1: Where Is She?', order: 1, sourcePages: '56–63', sourceBook: 'Global Readings 2', objective: 'Follow story suspense, practice cause and effect identification, and track character actions.', duration: 35, archived: false },
-      { id: 'lesson-gr2-4-2', unitId: 'unit-gr2-4', title: 'Reading 2: The Angry Mountain (-nd blend)', order: 2, sourcePages: '64–71', sourceBook: 'Global Readings 2', objective: 'Understand how volcanic eruptions reshape geography and historical settlements.', duration: 35, archived: false },
+      { id: 'lesson-gr2-4-1', unitId: 'unit-gr2-4', title: 'Lesson 1 · Case File 1: A Picture on the Wall (Mona Lisa Mystery)', order: 1, weekNumber: 1, sourcePages: '56–59', sourceBook: 'Global Readings 2', objective: 'Think-Pair-Share on the Statue of Liberty head, spot 5 changes in the museum (1911 vs Today), learn 5 detective words (plan, steal, lifted, robbery, arrested), build past verbs in the Past-Tense Machine (+ed and took/hid/found), and order the robbery timeline.', duration: 35, gameRoute: 'unit4-g3-lessons/index.html?lesson=1', gameTitle: 'Case File 1 · Smartboard Lesson', worksheetRoute: 'lesson-plans/Grade3-Unit4-Case-File-1-and-2-Lesson-Plan.pdf', worksheetTitle: 'Case File 1 & 2 Lesson Plan (PDF)', archived: false },
+      { id: 'lesson-gr2-4-2', unitId: 'unit-gr2-4', title: 'Lesson 2 · Case File 2: Where Is She? (Reading 1, pp. 58–64)', order: 2, weekNumber: 2, sourcePages: '58–64', sourceBook: 'Global Readings 2', objective: 'Act out the 1911 Mona Lisa robbery in 7 scenes, write breaking-news headlines (Madrid, Tokyo, New York), answer the 5 Detective Quiz Show questions (p. 64 A), debate in Four Corners (p. 64 B), and draw the museum worker’s two faces (p. 64 C).', duration: 35, gameRoute: 'unit4-g3-lessons/index.html?lesson=2', gameTitle: 'Case File 2 · Smartboard Lesson', worksheetRoute: 'lesson-plans/Grade3-Unit4-Case-File-1-and-2-Lesson-Plan.pdf', worksheetTitle: 'Case File 1 & 2 Lesson Plan (PDF)', archived: false },
+      { id: 'lesson-gr2-4-3', unitId: 'unit-gr2-4', title: 'Reading 2: The Angry Mountain (-nd blend)', order: 3, weekNumber: 3, sourcePages: '65–71', sourceBook: 'Global Readings 2', objective: 'Understand cause and effect and how volcanic eruptions reshape geography and historical settlements.', duration: 35, archived: false },
 
       { id: 'lesson-gr2-5-1', unitId: 'unit-gr2-5', title: "Reading 1: The Time Book (-nt blend)", order: 1, sourcePages: '72–79', sourceBook: 'Global Readings 2', objective: 'Explore personal history records and decode -nt consonant clusters.', duration: 35, archived: false },
       { id: 'lesson-gr2-5-2', unitId: 'unit-gr2-5', title: 'Reading 2: Time Capsules (Ancient Civilizations)', order: 2, sourcePages: '80–87', sourceBook: 'Global Readings 2', objective: 'Identify main ideas and supporting details about preserved artifacts from the past.', duration: 35, archived: false },
@@ -1693,18 +1695,18 @@
         title: 'Unit 4: We Can Do It',
         order: 4,
         pages: '56–71',
-        reading1: 'The Bridge Builders',
-        reading2: 'Incredible Animal Cooperation',
-        readingSkill: 'Problem and Solution',
-        contentArea: 'Social Studies: Teamwork',
-        selFocus: 'Relationship Skills & Collaboration',
+        reading1: 'Teamwork Makes the Dream Work (The Sparks Basketball Story)',
+        reading2: 'Late for the Show (Play)',
+        readingSkill: 'Sequence of Events & Problem/Solution',
+        contentArea: 'Social Studies & Sports: Teamwork',
+        selFocus: 'Relationship Skills & Collaboration (Teamwork Meter)',
         keyConcept: 'How does cooperating help us achieve more?',
-        targetVocab: ['teamwork', 'cooperation', 'overcome', 'challenge', 'bridge', 'collective', 'support', 'unity'],
+        targetVocab: ['league', 'court', 'basket', 'score', 'shooting', 'Captain', 'Coach', 'Commentator', 'Scorer', 'Mascot'],
         weeks: [
-          { weekNumber: 1, title: 'Week 1: The Power of Cooperation', focus: 'Teamwork dilemmas, collaborative vocabulary, group goals' },
-          { weekNumber: 2, title: 'Week 2: Reading 1: The Bridge Builders', focus: 'Story of community engineering and persevering together' },
-          { weekNumber: 3, title: 'Week 3: Problem and Solution Matrix', focus: 'Analyzing project obstacles and collaborative solutions' },
-          { weekNumber: 4, title: 'Week 4: Animal Cooperation & Team Assessment', focus: 'Ant and wolf pack cooperation, group reflection project' }
+          { weekNumber: 1, title: 'Week 1: Lesson 1 · Team Players (Dream Team League)', focus: '5 team role badges, Freeze Frame (Present Continuous), Court Shootout (paper ball in bin), Live Commentary: The Sparks, Morning Relay & Disaster Cards' },
+          { weekNumber: 2, title: 'Week 2: Reading 1: Teamwork Makes the Dream Work', focus: 'Basketball match reading, past continuous (was losing, was shooting), -or spelling pattern (pp. 58–60)' },
+          { weekNumber: 3, title: 'Week 3: Reading 2: Late for the Show (Play)', focus: 'Reader’s theater play, story map, and collaborative problem-solving (pp. 62–70)' },
+          { weekNumber: 4, title: 'Week 4: Think Together Venn Diagram & Unit 4 Quiz', focus: 'Comparing teams, group reflection, and Unit 4 assessment (p. 71)' }
         ],
         archived: false
       },
@@ -2062,8 +2064,8 @@
       { id: 'lesson-gr3-3-1', unitId: 'unit-gr3-3', title: 'Reading 1: The Ancient Marketplace (Barter to Coinage)', order: 1, weekNumber: 2, sourcePages: '40–47', sourceBook: 'Global Readings 3', objective: 'Trace evolution of merchant trade routes and early monetary exchange.', duration: 35, archived: false },
       { id: 'lesson-gr3-3-2', unitId: 'unit-gr3-3', title: 'Reading 2: The History of Money (Paper to Digital)', order: 2, weekNumber: 4, sourcePages: '48–55', sourceBook: 'Global Readings 3', objective: 'Evaluate fact vs opinion regarding value, wealth, and banking systems.', duration: 35, archived: false },
 
-      { id: 'lesson-gr3-4-1', unitId: 'unit-gr3-4', title: 'Reading 1: The Bridge Builders (Teamwork in Action)', order: 1, weekNumber: 2, sourcePages: '56–63', sourceBook: 'Global Readings 3', objective: 'Follow community members uniting to design and erect an essential footbridge.', duration: 35, archived: false },
-      { id: 'lesson-gr3-4-2', unitId: 'unit-gr3-4', title: 'Reading 2: Incredible Animal Cooperation', order: 2, weekNumber: 4, sourcePages: '64–71', sourceBook: 'Global Readings 3', objective: 'Analyze problem and solution frameworks in wildlife packs and colonies.', duration: 35, archived: false },
+      { id: 'lesson-gr3-4-1', unitId: 'unit-gr3-4', title: 'Lesson 1 · Team Players: Dream Team League Match Day 1 (pp. 56–64)', order: 1, weekNumber: 1, sourcePages: '56–64', sourceBook: 'Global Readings 3', objective: 'Assign the 5 team roles (Captain, Coach, Commentator, Scorer, Mascot) on the Teamwork Meter, play Freeze Frame (Present Continuous), shoot a paper ball in the Court Shootout (league, court, basket, score, shooting), act out Live Commentary: The Sparks, order the Morning Relay, and solve Disaster Cards (Why don\'t we…?).', duration: 35, gameRoute: 'unit4-g4-lessons/index.html', gameTitle: 'Dream Team League · Smartboard Lesson', worksheetRoute: 'lesson-plans/Grade4-Unit4-Team-Players-Lesson-Plan.pdf', worksheetTitle: 'Team Players Lesson Plan (PDF)', archived: false },
+      { id: 'lesson-gr3-4-2', unitId: 'unit-gr3-4', title: 'Reading 2: Late for the Show (Play & Story Map, pp. 62–70)', order: 2, weekNumber: 3, sourcePages: '62–71', sourceBook: 'Global Readings 3', objective: 'Act out the reader’s theater play and analyze collaborative problem and solution frameworks.', duration: 35, archived: false },
 
       { id: 'lesson-gr3-5-1', unitId: 'unit-gr3-5', title: 'Reading 1: The Rhythm of the Jungle (Sensory Narrative)', order: 1, weekNumber: 2, sourcePages: '72–79', sourceBook: 'Global Readings 3', objective: 'Visualize auditory sensory words depicting rainforest ambient melodies.', duration: 35, archived: false },
       { id: 'lesson-gr3-5-2', unitId: 'unit-gr3-5', title: 'Reading 2: How We Hear Sound (Auditory Anatomy)', order: 2, weekNumber: 4, sourcePages: '80–87', sourceBook: 'Global Readings 3', objective: 'Diagram sound wave propagation through the outer, middle, and inner ear.', duration: 35, archived: false },
