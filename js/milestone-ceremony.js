@@ -29,7 +29,8 @@
     'ayca-koca': ['assets/avatars/ayca-koca-1-smiling.webp', 'assets/avatars/ayca-koca-2-laughing.webp', 'assets/avatars/ayca-koca-3-thumbs-up.webp'],
     'melodi-karaca': ['assets/avatars/melodi-karaca-1-smiling.webp', 'assets/avatars/melodi-karaca-2-laughing.webp', 'assets/avatars/melodi-karaca-3-thumbs-up.webp'],
     'gulce-caliskan': ['assets/avatars/gulce-caliskan-1-smiling.webp', 'assets/avatars/gulce-caliskan-2-laughing.webp', 'assets/avatars/gulce-caliskan-3-thumbs-up.webp'],
-    'aslihan-akin': ['assets/avatars/aslihan-akin-1-smiling.webp', 'assets/avatars/aslihan-akin-2-laughing.webp', 'assets/avatars/aslihan-akin-3-thumbs-up.webp']
+    'aslihan-akin': ['assets/avatars/aslihan-akin-1-smiling.webp', 'assets/avatars/aslihan-akin-2-laughing.webp', 'assets/avatars/aslihan-akin-3-thumbs-up.webp'],
+    'ozan-topcu': ['assets/avatars/ozan-topcu-1-smiling.webp', 'assets/avatars/ozan-topcu-2-laughing.webp', 'assets/avatars/ozan-topcu-3-thumbs-up.webp']
   };
   var BUILTIN_ALIASES = {
     'student-3a-229': 'ates', 'ates': 'ates', 'ates-ozenci': 'ates',
@@ -44,7 +45,8 @@
     'student-3a-354': 'ayca-koca', 'ayca-koca': 'ayca-koca',
     'student-3a-211': 'melodi-karaca', 'melodi-karaca': 'melodi-karaca',
     'student-3a-206': 'gulce-caliskan', 'gulce-caliskan': 'gulce-caliskan',
-    'student-3a-224': 'aslihan-akin', 'aslihan-akin': 'aslihan-akin'
+    'student-3a-224': 'aslihan-akin', 'aslihan-akin': 'aslihan-akin',
+    'student-4b-208': 'ozan-topcu', 'ozan-topcu': 'ozan-topcu'
   };
   function asciiSlug(s) {
     return String(s || '').toLowerCase()
