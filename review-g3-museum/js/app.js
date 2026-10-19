@@ -438,7 +438,7 @@
       function dragify(T, pc, k) {
         pc.addEventListener('pointerdown', function (ev) {
           ev.preventDefault(); try { pc.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
-          var gh = pc.cloneNode(true); gh.className = 'pz-piece pz-ghost'; gh.style.left = ev.clientX + 'px'; gh.style.top = ev.clientY + 'px'; document.body.appendChild(gh); pc.style.opacity = '.3';
+          var gh = pc.cloneNode(true); gh.className = 'pz-piece pz-ghost'; gh.style.width = pc.offsetWidth + 'px'; gh.style.height = pc.offsetHeight + 'px'; gh.style.left = ev.clientX + 'px'; gh.style.top = ev.clientY + 'px'; document.body.appendChild(gh); pc.style.opacity = '.3';
           function move(e) { gh.style.left = e.clientX + 'px'; gh.style.top = e.clientY + 'px'; }
           function up(e) {
             pc.removeEventListener('pointermove', move); pc.removeEventListener('pointerup', up); pc.removeEventListener('pointercancel', up);
