@@ -341,7 +341,7 @@
     }
     playBtn = btn('▶ Sing with the band', 'green big', function () { playBtn.textContent = '▶ Play again'; play(); });
     body.appendChild(h('div', { class: 'row' }, [playBtn, btn('⏹ Stop', 'small ghost', function () { MB.stop(); paint(null); }),
-      btn('🐢 Slower', 'small', function () { MB.setBpm(MB.getBpm() - 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.setBpm(MB.getBpm() + 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt]));
+      btn('🐢 Slower', 'small', function () { MB.stepTempo(-1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.stepTempo(1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt]));
     body.appendChild(dots); body.appendChild(h('div', { class: 'cr' }, [lead, grp])); body.appendChild(msg);
     body.appendChild(h('div', { class: 'row' }, D.calls.map(function (s) { return h('button', { type: 'button', class: 'chip2', text: s, onclick: function () { A.speak(s); } }); })));
     body.appendChild(h('div', { class: 'row' }, [btn('✅ The class sang it (+2 glow)', 'green', function () { addGlow(2); sfx('correct'); }), pointsRow()])); body.appendChild(songBox()); body.appendChild(glowBar());
@@ -357,14 +357,17 @@
     items.forEach(function (x) { lines.appendChild(x); });
     function mark(k) { items.forEach(function (x, j) { x.classList.toggle('on', j === k); }); }
     function listen() {
-      var bar = -1; running = true; MB.start(84, function (b) {
+      var bar = -1; running = true;
+      MB.startSong(MB.getBpm() <= 66 ? 60 : 84, function (b, count) {
         dots.set(b);
         if (b === 0) {
-          bar++; var k = Math.floor(bar / 2);
-          if (k >= D.calls.length) { MB.stop(); running = false; mark(-1); board.textContent = 'Now we learn it line by line!'; sfx('win'); addGlow(1); showPart2(); return; }
-          if (bar % 2 === 0) { mark(k); board.textContent = D.calls[k]; A.speak(D.calls[k]); } else { board.textContent = D.refrain; say('ganggang', D.refrainSay); }
+          bar = Math.floor(count / 4) - 1;                       // bar 0 of the song is the count-in
+          if (bar < 0) { board.textContent = 'Listen... 1 2 3 4'; mark(-1); return; }
+          var k = Math.floor(bar / 2);
+          if (k >= D.calls.length) { MB.finish(); running = false; mark(-1); board.textContent = 'Now we learn it line by line!'; sfx('win'); addGlow(1); showPart2(); return; }
+          if (bar % 2 === 0) { mark(k); board.textContent = D.calls[k]; } else { board.textContent = D.refrain; }
         }
-      });
+      }, 'sung');
     }
     function showPart1() { part = 1; title.className = 'cue ready'; title.textContent = '1️⃣ LISTEN to the whole song'; board.textContent = 'Listen. Do not sing yet. The board sings one time for you.'; mark(-1); row.innerHTML = ''; row.appendChild(btn('▶ PLAY the whole song', 'green big', listen)); row.appendChild(btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; })); }
     function showPart2() {
@@ -401,22 +404,22 @@
     paint('idle');
     function begin() {
       bar = -2; paint('ready');
-      MB.start(MB.getBpm(), function (b) {
+      MB.startSong(MB.getBpm(), function (b) {
         dots.set(b);
         if (b === 0) {
           bar++;
           if (bar < 0) return;
           var k = Math.floor(bar / 2);
-          if (k >= D.calls.length) { MB.stop(); paint('end'); sfx('win'); confetti(); addGlow(3); startBtn.textContent = '▶ START again'; return; }
+          if (k >= D.calls.length) { MB.finish(); paint('end'); sfx('win'); confetti(); addGlow(3); if (SND) SND.playPath('audio/song/moon_song_victory_2bars.mp3', 0.9); startBtn.textContent = '▶ START again'; return; }
           paint(bar % 2 === 0 ? 'sing' : 'answer', k);
         }
-      });
+      }, 'inst');
     }
     var startBtn = btn('▶ START the music', 'green big', begin);
     var bpmTxt = h('span', { class: 'pill amber', text: '♩ ' + MB.getBpm() });
     body.appendChild(cue); body.appendChild(sent); body.appendChild(moveCard); body.appendChild(upnext); body.appendChild(dots);
     body.appendChild(h('div', { class: 'row' }, [startBtn, btn('⏹ STOP', 'small ghost', function () { MB.stop(); paint('idle'); }),
-      btn('🐢 Slower', 'small', function () { MB.setBpm(MB.getBpm() - 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.setBpm(MB.getBpm() + 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt,
+      btn('🐢 Slower', 'small', function () { MB.stepTempo(-1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.stepTempo(1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt,
       btn('✅ Great performance (+2 glow)', 'violet', function () { addGlow(2); sfx('correct'); })]));
   }
 
@@ -443,25 +446,25 @@
     paint('idle');
     function begin() {
       bar = -2; sentence = 0; running = true;
-      MB.start(MB.getBpm(), function (b) {
+      MB.startSong(MB.getBpm(), function (b) {
         dots.set(b); [].forEach.call(pattern.children, function (el, k) { el.classList.toggle('on', k === b); });
         if (b === 0) {
           bar++;
           if (bar === -1) { paint('ready', 'count in'); return; }
           if (bar < 0) { paint('ready', ''); return; }
           sentence = Math.floor(bar / 2);
-          if (sentence >= D.calls.length) { MB.stop(); running = false; paint('end'); sfx('win'); addGlow(2); startBtn.textContent = '▶ START again'; return; }
+          if (sentence >= D.calls.length) { MB.finish(); running = false; paint('end'); sfx('win'); addGlow(2); startBtn.textContent = '▶ START again'; return; }
           if (bar % 2 === 0) { paint('lead'); if (speakOn) A.speak(D.calls[sentence]); }
           else { paint('circle'); sfx('tap'); if (SND && SND.ready('sfx_crowd_clap')) { /* the circles answer with their own voices */ } }
         } else if (bar === -1) { paint('ready', String(b + 1)); }
-      });
+      }, 'nodrum');
     }
     var startBtn = btn('▶ START the music', 'green big', begin);
     var drum = btn('🥁 DRUM (tap with the music)', 'violet big', function () { drumHits++; MB.hit(drumHits % 4 === 1 ? 'dung' : 'deok'); drum.classList.remove('bump'); void drum.offsetWidth; drum.classList.add('bump'); });
     var speakBtn = btn('🔊 Board reads: OFF', 'small ghost', function () { speakOn = !speakOn; speakBtn.textContent = '🔊 Board reads: ' + (speakOn ? 'ON' : 'OFF'); });
     body.appendChild(roles); body.appendChild(cue); body.appendChild(big); body.appendChild(nextUp); body.appendChild(pattern); body.appendChild(dots);
     body.appendChild(h('div', { class: 'row' }, [startBtn, drum, btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; paint('idle'); }),
-      btn('🐢 Slower', 'small', function () { MB.setBpm(MB.getBpm() - 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.setBpm(MB.getBpm() + 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt, speakBtn]));
+      btn('🐢 Slower', 'small', function () { MB.stepTempo(-1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.stepTempo(1); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt, speakBtn]));
     body.appendChild(songBox());
     c.later(function () { if (c_later_audio) c_later_audio.pause(); });
   }
