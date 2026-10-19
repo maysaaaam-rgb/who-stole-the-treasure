@@ -63,11 +63,7 @@
     state.scores[i] = Math.max(0, state.scores[i] + n); sfx(n > 0 ? 'coin' : 'tap');
     var el = $('tm' + i); if (el) { el.querySelector('b').textContent = state.scores[i]; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
   }
-  function pointsRow() {
-    var row = h('div', { class: 'row points' }, [h('span', { class: 'lab', text: '⭐ Point for:' })]);
-    D.teams.forEach(function (t, i) { row.appendChild(h('button', { type: 'button', class: 'btn small', style: '--bg:' + t.c + ';--lip:rgba(0,0,0,.4)', text: t.e + ' +1', onclick: function () { addPoint(i, 1); } })); });
-    return row;
-  }
+  function pointsRow() { return document.createDocumentFragment(); }
 
   /* ---------- helpers ---------- */
   function confetti() {
@@ -209,9 +205,13 @@
     var WL = words || D.words, body = c.body, clueI = -1;
     var grid = h('div', { class: 'vgrid' + (WL.length > 5 ? ' six' : '') }), box = h('div', { class: 'msg' }), gap = h('div', { class: 'gapbox' });
     WL.forEach(function (w) {
-      var card = h('button', { type: 'button', class: 'btn vcard' }, [fill(h('span', { class: 'em' }), w.e, '', w.a), h('b', { text: w.w })]);
+      var kids = [];
+      if (w.pos) kids.push(h('span', { class: 'pos-badge', style: 'background:' + (w.posColor || '#38bdf8'), text: w.pos }));
+      kids.push(fill(h('span', { class: 'em' }), w.e, '', w.a));
+      kids.push(h('b', { text: w.w }));
+      var card = h('button', { type: 'button', class: 'btn vcard' }, kids);
       card.addEventListener('click', function () {
-        sfx('tap'); box.innerHTML = '<b>' + w.w + '</b>: ' + w.def + '.<br><i>' + w.ex + '</i>';
+        sfx('tap'); box.innerHTML = '<b>' + w.w + '</b>' + (w.pos ? ' <small>(' + w.pos + ')</small>' : '') + ': ' + w.def + '.<br><i>' + w.ex + '</i>';
         A.speakSeq([w.w, w.def, w.ex]); [].forEach.call(grid.children, function (el) { el.classList.remove('sel'); }); card.classList.add('sel');
       });
       grid.appendChild(card);
@@ -222,7 +222,7 @@
       else { shown = true; var w2 = WL[order[clueI]]; gap.textContent = w2.ex; A.speak(w2.ex); sfx('correct'); clue.textContent = '🎲 Next clue'; }
     });
     body.appendChild(h('div', { class: 'row' }, [clue, h('span', { class: 'lab', text: 'Tap a word card to hear it.' })]));
-    body.appendChild(grid); body.appendChild(box); body.appendChild(gap); body.appendChild(pointsRow());
+    body.appendChild(grid); body.appendChild(box); body.appendChild(gap);
   }
 
   function teamName(i) { return D.teams[i].e + ' ' + D.teams[i].n; }
@@ -346,6 +346,52 @@
     c.later(function () { if (c_later_audio) c_later_audio.pause(); });
   }
 
+  /* 3b. THE CIRCLE SONG: music only. One pupil is the DRUMMER, one is the LEADER who reads the sentence, the other teams hold hands in circles and answer Ganggangsullae. */
+  function circleSong(c) {
+    stopBeat(c);
+    var body = c.body, bar = -2, speakOn = false, sentence = 0, running = false, drumHits = 0;
+    var roles = h('div', { class: 'roles3' }, [
+      h('div', { class: 'role3 r-drum' }, [h('b', { text: '🥁 DRUMMER' }), h('span', { text: '1 pupil: play the drum with the music' })]),
+      h('div', { class: 'role3 r-lead' }, [h('b', { text: '🎤 LEADER' }), h('span', { text: '1 pupil: read the sentence loudly' })]),
+      h('div', { class: 'role3 r-circle' }, [h('b', { text: '👥 CIRCLES' }), h('span', { text: 'other teams: hold hands, walk, answer!' })])
+    ]);
+    var cue = h('div', { class: 'cue' }), big = h('div', { class: 'bigsent' }), nextUp = h('div', { class: 'nextup' });
+    var pattern = h('div', { class: 'drumpat' }, ['DUNG', 'deok', 'deok', 'deok'].map(function (t, k) { return h('span', { class: k === 0 ? 'hit big' : 'hit', text: t }); }));
+    var dots = beatDots(), bpmTxt = h('span', { class: 'pill amber', text: '♩ ' + MB.getBpm() });
+    function paint(mode, k) {
+      cue.className = 'cue ' + mode;
+      if (mode === 'ready') { cue.textContent = '⏳ Get ready... ' + k; big.textContent = 'Circles: hold hands!'; nextUp.textContent = ''; }
+      else if (mode === 'lead') { cue.textContent = '🎤 LEADER: read the sentence!'; big.textContent = D.calls[sentence]; nextUp.textContent = 'Sentence ' + (sentence + 1) + ' of ' + D.calls.length; }
+      else if (mode === 'circle') { cue.textContent = '👥 CIRCLES: answer!'; big.textContent = D.refrain; nextUp.textContent = 'Everybody together, loud and happy!'; }
+      else if (mode === 'end') { cue.textContent = '🎉 Well done! Swap roles!'; big.textContent = 'New drummer, new leader, new circles.'; nextUp.textContent = ''; }
+      else { cue.textContent = 'Press START'; big.textContent = 'The leader reads. The circles answer: Ganggangsullae!'; nextUp.textContent = ''; }
+    }
+    paint('idle');
+    function begin() {
+      bar = -2; sentence = 0; running = true;
+      MB.start(MB.getBpm(), function (b) {
+        dots.set(b); [].forEach.call(pattern.children, function (el, k) { el.classList.toggle('on', k === b); });
+        if (b === 0) {
+          bar++;
+          if (bar === -1) { paint('ready', 'count in'); return; }
+          if (bar < 0) { paint('ready', ''); return; }
+          sentence = Math.floor(bar / 2);
+          if (sentence >= D.calls.length) { MB.stop(); running = false; paint('end'); sfx('win'); addGlow(2); startBtn.textContent = '▶ START again'; return; }
+          if (bar % 2 === 0) { paint('lead'); if (speakOn) A.speak(D.calls[sentence]); }
+          else { paint('circle'); sfx('tap'); if (SND && SND.ready('sfx_crowd_clap')) { /* the circles answer with their own voices */ } }
+        } else if (bar === -1) { paint('ready', String(b + 1)); }
+      });
+    }
+    var startBtn = btn('▶ START the music', 'green big', begin);
+    var drum = btn('🥁 DRUM (tap with the music)', 'violet big', function () { drumHits++; MB.hit(drumHits % 4 === 1 ? 'dung' : 'deok'); drum.classList.remove('bump'); void drum.offsetWidth; drum.classList.add('bump'); });
+    var speakBtn = btn('🔊 Board reads: OFF', 'small ghost', function () { speakOn = !speakOn; speakBtn.textContent = '🔊 Board reads: ' + (speakOn ? 'ON' : 'OFF'); });
+    body.appendChild(roles); body.appendChild(cue); body.appendChild(big); body.appendChild(nextUp); body.appendChild(pattern); body.appendChild(dots);
+    body.appendChild(h('div', { class: 'row' }, [startBtn, drum, btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; paint('idle'); }),
+      btn('🐢 Slower', 'small', function () { MB.setBpm(MB.getBpm() - 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), btn('🐇 Faster', 'small', function () { MB.setBpm(MB.getBpm() + 12); bpmTxt.textContent = '♩ ' + MB.getBpm(); }), bpmTxt, speakBtn]));
+    body.appendChild(songBox());
+    c.later(function () { if (c_later_audio) c_later_audio.pause(); });
+  }
+
   /* 4. GAME: Move Like the Moon: five verbs, slowly or quickly; the band really changes speed; freeze when the bowl rings */
   function moveCards(c) {
     stopBeat(c);
@@ -448,9 +494,9 @@
       { t: 'Five Dance Words', mins: '6 min', mode: 'listen', run: danceWords, intro: 'Listen and do: step, turn, clap, hop, bow.',
         kids: { steps: ['👆 Tap a card and listen', '💃 Do the action', '🎴 Do it! Fast!'], say: ['step', 'turn', 'clap', 'hop', 'bow'] },
         tip: ['Five verbs only. Tap each card: the teacher voice says the word and the board says a sentence. Then press Do it!: a card shows and everybody does the action.'] },
-      { t: 'Sing the Song', mins: '7 min', mode: 'song', run: songStep, intro: 'The leader calls. The whole circle answers: Ganggangsullae!',
-        kids: { steps: ['🎤 Leader: say the line', '👥 Circle: answer Ganggangsullae!', '🥁 Move with the band'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
-        tip: ['The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok. The leader lines are simple English lines written for this lesson.', 'Press Sing with the band: the folk band plays; one bar for the leader line, one bar for the circle. Practise slowly first (Slower), then faster. Under the buttons you can play the real song file.'] },
+      { t: 'The Circle Song', mins: '7 min', mode: 'song', run: circleSong, intro: 'Music only! A drummer, a leader, and circles that answer: Ganggangsullae!',
+        kids: { steps: ['🥁 Drummer: play with the music', '🎤 Leader: read the sentence', '👥 Circles: hold hands, walk, answer!'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
+        tip: ['A real classroom performance; the board only plays the music and shows the cues. Choose a DRUMMER (a real drum, a box or the desk, or the big DRUM button on the board), a LEADER (reads the sentence from the board, loudly) and make the other pupils CIRCLES: hold hands, walk slowly in a circle, and answer "Ganggangsullae!" together when the board flashes.', 'Press START: a count-in, then for each of the 5 sentences the board shows one bar for the LEADER and one bar for the CIRCLES. At the end swap roles and play again (new drummer, new leader). The board does not speak by default (Board reads: ON if you want it). The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok; the sentences are simple English lines written for this lesson.'] },
       { t: 'GAME: Move Like the Moon', mins: '8 min', mode: 'move', run: moveCards, intro: 'Do the move. Listen to the band: slowly or quickly? Freeze when the bowl rings!',
         kids: { steps: ['👀 Read the move', '🥁 Hear the speed', '💃 Move like the card'], say: ['Step slowly.', 'Hop quickly.', 'Freeze like the moon!'] },
         tip: ['New language: slowly and quickly. The band really changes speed with the card (slow band, fast band). A new move comes every three bars; now and then the singing bowl rings and everybody freezes.', 'Clear space for a circle. Give +2 glow when the circle moves well together.'] },
@@ -466,8 +512,17 @@
 
   /* ---------- shell ---------- */
   function ctxFor(main) { return { body: main, done: function () { state.done[state.lesson + ':' + state.idx] = true; drawSteps(); }, later: function (fn) { state.cleanups.push(fn); } }; }
+  function drawLessonTabs() {
+    var box = $('lesson-tabs'); if (!box) return; box.innerHTML = '';
+    var keys = Object.keys(LESSONS);
+    if (keys.length <= 1) return;
+    keys.forEach(function (k) {
+      var id = parseInt(k, 10);
+      box.appendChild(h('button', { type: 'button', class: 'btn ltab' + (state.lesson === id ? ' on' : ' ghost'), text: 'Case ' + id, title: LESSONS[id].title, onclick: function () { if (state.lesson !== id) go(id, 0); } }));
+    });
+  }
   function drawSteps() {
-    var L = LESSONS[state.lesson], box = $('steps'); box.innerHTML = '';
+    var L = LESSONS[state.lesson], box = $('steps'); if (!box) return; box.innerHTML = '';
     L.scenes.forEach(function (s, k) {
       var isDone = state.done[state.lesson + ':' + k];
       box.appendChild(h('button', { type: 'button', class: 'dot' + (k === state.idx ? ' on' : '') + (isDone ? ' done' : ''), text: isDone ? '✓' : String(k + 1), title: s.t, onclick: function () { go(state.lesson, k); } }));
@@ -481,17 +536,28 @@
     return h('div', { class: 'youdo' }, [h('div', { class: 'ylab', text: 'YOU DO' }), steps, (k.say && k.say.length) ? h('div', { class: 'ylab say', text: 'SAY' }) : null, (k.say && k.say.length) ? say : null]);
   }
   function go(lesson, idx) {
+    if (!LESSONS[lesson]) lesson = 1;
+    var L = LESSONS[lesson];
+    idx = Math.max(0, Math.min(L.scenes.length - 1, idx || 0));
     if (state.idx >= 0 && state.lesson === lesson && idx > state.idx) state.done[lesson + ':' + state.idx] = true;
     state.cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); state.cleanups = [];
     A.stop();
     state.lesson = lesson; state.idx = idx;
-    var L = LESSONS[lesson], s = L.scenes[idx], stage = $('stage');
+    var s = L.scenes[idx], stage = $('stage');
     stage.className = ''; stage.innerHTML = ''; $('tip').hidden = true;
-    stage.appendChild(h('div', { class: 's-head' }, [h('h2', { text: s.t }), h('span', { class: 'pill mode', text: MODES[s.mode] }), h('span', { class: 'pill', text: '⏱ ' + s.mins }), h('div', { class: 'grow' }), h('span', { class: 'pill amber', text: 'Step ' + (idx + 1) + ' of ' + L.scenes.length })]));
-    stage.appendChild(h('div', { class: 's-intro', text: s.intro }));
+    stage.appendChild(h('div', { class: 's-head' }, [
+      h('h2', { text: s.t }),
+      h('span', { class: 'pill mode', text: MODES[s.mode] }),
+      h('span', { class: 'pill', text: '⏱ ' + s.mins }),
+      h('span', { class: 's-sub', text: s.intro }),
+      h('div', { class: 'grow' }),
+      h('span', { class: 'pill amber', text: 'Step ' + (idx + 1) + ' of ' + L.scenes.length })
+    ]));
     var main = h('div', { class: 's-body' }); stage.appendChild(main);
     var kp = kidsPanel(s.kids); if (kp) stage.appendChild(kp);
     $('h-title').firstChild.nodeValue = L.title;
+    drawLessonTabs();
+    if (typeof updateHudCase === 'function') updateHudCase();
     drawSteps(); sfx('page');
     try { s.run(ctxFor(main)); } catch (e) { main.appendChild(h('div', { class: 'msg soft', text: 'Oops, this activity could not start.' })); if (window.console) console.error(e); }
     try { history.replaceState(null, '', '?lesson=' + lesson + '&scene=' + (idx + 1)); } catch (e) { /* ignore */ }

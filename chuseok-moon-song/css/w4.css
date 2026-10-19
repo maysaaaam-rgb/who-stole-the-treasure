@@ -79,3 +79,19 @@
 .watch iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;margin-top:8px;background:#000}
 
 .songbox{background:rgba(15,23,42,.85);border:1px solid #232a3b;border-radius:14px;padding:10px 12px;margin-top:10px}.songbox audio{margin:6px 0}
+
+/* the circle song */
+.roles3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 8px}
+.role3{background:rgba(15,23,42,.85);border:2px solid #232a3b;border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;text-align:center}
+.role3 b{font-size:clamp(16px,3vh,28px)}.role3 span{color:#8b93a7;font-size:clamp(12px,2vh,18px)}
+.r-drum{border-color:#a855f7}.r-lead{border-color:#f59e0b}.r-circle{border-color:#10b981}
+.cue{font-weight:900;font-size:clamp(22px,4.6vh,44px);text-align:center;border-radius:14px;padding:8px;border:3px solid #232a3b;background:rgba(15,23,42,.85)}
+.cue.lead{border-color:#f59e0b;color:#f59e0b;box-shadow:0 0 30px rgba(245,158,11,.45)}
+.cue.circle{border-color:#10b981;color:#10b981;box-shadow:0 0 36px rgba(16,185,129,.55);animation:wob .4s}
+.cue.ready{border-color:#38bdf8;color:#38bdf8}.cue.end{border-color:#a855f7;color:#a855f7}
+.bigsent{font-weight:900;font-size:clamp(30px,7vh,72px);text-align:center;line-height:1.15;padding:6px 10px;min-height:9vh}
+.nextup{text-align:center;color:#8b93a7;font-size:clamp(13px,2.2vh,20px)}
+.drumpat{display:flex;gap:10px;justify-content:center;margin:6px 0}
+.drumpat .hit{padding:6px 18px;border-radius:12px;background:#1e293b;color:#8b93a7;font-weight:800;font-size:clamp(14px,2.6vh,24px);transition:all .1s}
+.drumpat .hit.big{font-size:clamp(18px,3.4vh,32px)}.drumpat .hit.on{background:#a855f7;color:#fff;transform:scale(1.18);box-shadow:0 0 18px #a855f7}
+.btn.bump{animation:wob .25s}
