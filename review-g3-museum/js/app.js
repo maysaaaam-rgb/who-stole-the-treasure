@@ -384,7 +384,7 @@
         T.head = h('div', { class: 'pz-head' }); T.board = h('div', { class: 'pz-board' }); T.q = h('div', { class: 'pz-q' }); T.tray = h('div', { class: 'pz-tray' }); T.msg = h('div', { class: 'pz-msg' });
         T.board.innerHTML = '<svg viewBox="' + (-PAD) + ' ' + (-PAD) + ' ' + VBW + ' ' + VBH + '" xmlns="http://www.w3.org/2000/svg">' +
           '<rect x="0" y="0" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" fill="#111a2e" stroke="#475569" stroke-width="2" stroke-dasharray="8 6"/>' +
-          (useImg ? '<image href="art/painting_mona.webp" x="0" y="0" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" preserveAspectRatio="none" opacity="0.14"/>' : '') +
+          (useImg ? '<image href="art/painting_mona.webp" x="0" y="0" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" preserveAspectRatio="none" opacity="0.24"/>' : '') +
           '<g class="pz-hint"></g><g class="pz-done"></g></svg>';
         T.svg = T.board.firstChild; T.gDone = T.svg.querySelector('.pz-done'); T.gHint = T.svg.querySelector('.pz-hint');
         T.el.appendChild(T.head); T.el.appendChild(h('div', { class: 'pz-body' }, [T.board, h('div', { class: 'pz-side' }, [T.q, T.tray, T.msg])]));
