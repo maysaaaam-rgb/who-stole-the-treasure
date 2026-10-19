@@ -10,7 +10,7 @@
   function norm(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function loadManifest() {
     try {
-      var x = new XMLHttpRequest(); x.open('GET', VOICE_DIR + 'manifest.json?v=2', true);
+      var x = new XMLHttpRequest(); x.open('GET', VOICE_DIR + 'manifest.json?v=3', true);
       x.onload = function () { try { if (x.status === 200) { manifest = JSON.parse(x.responseText); Object.keys(manifest).forEach(function (k) { normMap[norm(k)] = manifest[k]; }); } } catch (e) { manifest = null; } };
       x.send();
     } catch (e) { manifest = null; }
