@@ -50,6 +50,26 @@
     }
     timer = setTimeout(tick, 30);
   }
+  /* ---- the live drum: the recorded hit + a mid-range slap and a thump (small speakers cannot play 150 Hz), through a limiter ---- */
+  var limiter = null, noiseBuf = null;
+  function drumOut() {
+    if (!limiter) { limiter = ctx.createDynamicsCompressor(); limiter.threshold.value = -10; limiter.knee.value = 8; limiter.ratio.value = 12; limiter.attack.value = 0.002; limiter.release.value = 0.12; var g = ctx.createGain(); g.gain.value = 1.25; limiter.connect(g); g.connect(ctx.destination); }
+    return limiter;
+  }
+  function noise() { if (!noiseBuf) { var n = ctx.sampleRate * 0.3, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0), i; for (i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; noiseBuf = b; } return noiseBuf; }
+  function envG(t, peak, dur) { var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); return g; }
+  function punchLayer(kind) {
+    var t = ctx.currentTime + 0.005, out = drumOut(), o, g, n, f;
+    if (kind === 'dung') {
+      o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(52, t + 0.3); g = envG(t, 1.0, 0.45); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.5);
+      o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(360, t); o.frequency.exponentialRampToValueAtTime(150, t + 0.16); g = envG(t, 0.8, 0.2); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.3);
+      n = ctx.createBufferSource(); n.buffer = noise(); f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1700; f.Q.value = 0.9; g = envG(t, 0.9, 0.09); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t + 0.15);
+    } else {
+      o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = 820; g = envG(t, 0.6, 0.1); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.14);
+      o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = 1230; g = envG(t, 0.4, 0.08); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.12);
+      n = ctx.createBufferSource(); n.buffer = noise(); f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 3200; f.Q.value = 1.2; g = envG(t, 0.7, 0.05); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t + 0.1);
+    }
+  }
   /* ---- the timed song tracks (11 bars: a count-in bar + 5 pairs of bars: leader bar, answer bar) ---- */
   var SONG_DIR = 'audio/song/', songSrc = null;
   function loadPath(path) {
@@ -102,10 +122,12 @@
     getBpm: function () { return bpm; },
     isOn: function () { return on || (synth ? synth.isOn() : false); },
     hit: function (kind) {
+      if (!ensure()) return false;
       var n = kind === 'dung' ? 'drum_dung' : 'drum_deok';
-      if (ensure() && bufs[n]) { play(n, 0.9); return true; }
-      load(n).catch(function () { /* fallback below */ });
-      return synth ? synth.hit(kind) : false;
+      try { punchLayer(kind); } catch (e) { /* ignore */ }
+      if (bufs[n]) { var src = ctx.createBufferSource(); src.buffer = bufs[n]; var g = ctx.createGain(); g.gain.value = 1.6; src.connect(g); g.connect(drumOut()); src.start(); return true; }
+      load(n).catch(function () { /* the punch layer already played */ });
+      return true;
     }
   };
   /* voice lines: say('step') plays v_step.mp3; sequences play one after the other; returns a promise */
