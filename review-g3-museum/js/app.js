@@ -300,7 +300,7 @@
     todayScreen(c, 'Today we review your book pages about a famous painting. Three games, and a bonus!', [
       { e: '🔍', t: 'Look, Say, Act', s: 'Five detective words', a: 'o_plan' },
       { e: '🤫', t: 'Sneak to the Mona Lisa', s: 'Tiptoe, freeze, tiptoe', a: 'o_steal' },
-      { e: '🖼️', t: 'Painting Race', s: 'Two teams build the Mona Lisa', a: 'o_mona_frame' }
+      { e: '🖼️', t: 'Painting Race', s: 'Two teams build a Mona Lisa puzzle', a: 'o_mona_frame' }
     ]);
   }
 
@@ -345,23 +345,48 @@
     });
   }
 
-  /* GAME 3: Painting Race. Two teams, two Mona Lisas, at the same time. A right answer wins a piece: drag it to the glowing place. A wrong answer can be stolen by the other team. */
+  /* GAME 3: Painting Race. Two teams, two real jigsaw puzzles of the Mona Lisa, at the same time. A right answer wins a piece: drop it where it belongs. A wrong answer can be stolen by the other team. */
   function paintRace(c) {
-    howTo(c, { icon: '🖼️', title: 'Painting Race', goal: 'Two teams build the Mona Lisa at the same time. Answer a question, win a piece!', pupils: 'One pupil from each team comes to the board. Answer the question on YOUR side. Right = you get a piece: drag it to the glowing place. Wrong = the other team may steal the question!', teacher: 'Both teams play together. Change the pupils at the board every few pieces. Press the speaker to read a question. 18 pieces each; the first painting finished wins.' }, function (host, again) {
-      var N = 18, COLS = 3, ROWS = 6, PAIRS = [[0, 1], [2, 3], [0, 2], [1, 3]], pairAt = 0, won = null, over = false;
+    howTo(c, { icon: '🧩', title: 'Painting Race', goal: 'Two teams build the Mona Lisa puzzle at the same time. Answer a question, win a piece!', pupils: 'One pupil from each team comes to the board. Answer the question on YOUR side. Right = you get a puzzle piece: drag it to the right place in your picture. Wrong = the other team may steal the question!', teacher: 'Both teams play together. Change the pupils at the board every few pieces. Press the speaker to read a question. 24 pieces each; the first puzzle finished wins. If a pupil misses twice, a soft glow shows the place.' }, function (host, again) {
+      var N = 24, COLS = 4, ROWS = 6, CELL = 100, PAD = 30, VBW = COLS * CELL + 2 * PAD, VBH = ROWS * CELL + 2 * PAD;
+      var PAIRS = [[0, 1], [2, 3], [0, 2], [1, 3]], pairAt = 0, won = null, over = false, uid = 0;
       var useImg = hasArt('painting_mona');
-      function slotStyle(i) {
-        var col = i % COLS, row = Math.floor(i / COLS);
-        if (useImg) return 'background-image:url(art/painting_mona.webp);background-size:' + (COLS * 100) + '% ' + (ROWS * 100) + '%;background-position:' + (col / (COLS - 1) * 100) + '% ' + (row / (ROWS - 1) * 100) + '%;';
-        return 'background:linear-gradient(135deg,hsl(' + (28 + i * 6) + ',55%,' + (28 + (i % 5) * 4) + '%),hsl(' + (20 + i * 4) + ',45%,22%));';
+      /* the same knob shapes for every puzzle: tabH[r][c] is the tab of the edge above piece (r, c); tabV[r][c] the tab of the edge left of it (+1 sticks out of the lower / right piece, -1 is a hole) */
+      var seed = 7; function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+      var tabH = [], tabV = [];
+      for (var r0 = 0; r0 < ROWS; r0++) { tabH.push([]); tabV.push([]); for (var c0 = 0; c0 < COLS; c0++) { tabH[r0].push(rnd() < 0.5 ? 1 : -1); tabV[r0].push(rnd() < 0.5 ? 1 : -1); } }
+      function edge(sx, sy, ux, uy, nx, ny, sg) {
+        function P(t, y) { var d = -y * sg; return (sx + ux * t + nx * d).toFixed(1) + ' ' + (sy + uy * t + ny * d).toFixed(1); }
+        if (!sg) return ' L ' + P(100, 0);
+        return ' L ' + P(35, 0) + ' C ' + P(35, 0) + ' ' + P(38, -8) + ' ' + P(40, -12) + ' C ' + P(43, -17) + ' ' + P(38, -28) + ' ' + P(50, -28) + ' C ' + P(62, -28) + ' ' + P(57, -17) + ' ' + P(60, -12) + ' C ' + P(62, -8) + ' ' + P(65, 0) + ' ' + P(65, 0) + ' L ' + P(100, 0);
+      }
+      function piecePath(r, cc) {
+        var top = r > 0 ? tabH[r][cc] : 0, left = cc > 0 ? tabV[r][cc] : 0, bottom = r < ROWS - 1 ? -tabH[r + 1][cc] : 0, right = cc < COLS - 1 ? -tabV[r][cc + 1] : 0;
+        return 'M 0 0' + edge(0, 0, 1, 0, 0, -1, top) + edge(100, 0, 0, 1, 1, 0, right) + edge(100, 100, -1, 0, 0, 1, bottom) + edge(0, 100, 0, -1, -1, 0, left) + ' Z';
+      }
+      function pieceFill(r, cc, i) {
+        if (useImg) return '<image href="art/painting_mona.webp" x="' + (-cc * CELL) + '" y="' + (-r * CELL) + '" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" preserveAspectRatio="none"';
+        return '<rect x="-30" y="-30" width="160" height="160" fill="hsl(' + (28 + i * 7) + ',55%,' + (30 + (i % 5) * 4) + '%)"';
+      }
+      function pieceSvg(r, cc, i, withBox) {   // one piece in its own 160 x 160 box (a cell plus room for the knobs), centred on the cell
+        var id = 'pzc' + (++uid), d = piecePath(r, cc);
+        return '<svg viewBox="' + (-PAD) + ' ' + (-PAD) + ' ' + (CELL + 2 * PAD) + ' ' + (CELL + 2 * PAD) + '" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="' + id + '"><path d="' + d + '"/></clipPath></defs>' + pieceFill(r, cc, i) + ' clip-path="url(#' + id + ')"' + (useImg ? '/>' : '/>') + '<path d="' + d + '" fill="none" stroke="#0b1220" stroke-width="2" stroke-linejoin="round"/><path d="' + d + '" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.35" transform="translate(0.6 0.6)"/></svg>';
+      }
+      function placedG(r, cc, i) {
+        var id = 'pzp' + (++uid), d = piecePath(r, cc);
+        return '<g class="pz-pl" transform="translate(' + (cc * CELL) + ' ' + (r * CELL) + ')"><clipPath id="' + id + '"><path d="' + d + '"/></clipPath>' + pieceFill(r, cc, i) + ' clip-path="url(#' + id + ')"/><path d="' + d + '" fill="none" stroke="#0b1220" stroke-width="1.6" stroke-linejoin="round" opacity="0.75"/></g>';
       }
       function makeTeam(side, idx) {
-        var T = { side: side, idx: idx, placed: [], count: 0, order: shuffle(Array.apply(null, { length: N }).map(function (x, k) { return k; })), bank: shuffle(D.race.slice()), bi: 0, steals: [], pending: null, extra: 0, cur: null, locked: false, done: false };
+        var T = { side: side, idx: idx, placed: [], count: 0, order: shuffle(Array.apply(null, { length: N }).map(function (x, k) { return k; })), bank: shuffle(D.race.slice()), bi: 0, steals: [], pending: null, miss: 0, extra: 0, cur: null, locked: false, done: false };
         for (var i = 0; i < N; i++) T.placed.push(false);
         var t = D.teams[idx];
         T.el = h('div', { class: 'pz-panel' }); T.el.style.setProperty('--c', t.c);
         T.head = h('div', { class: 'pz-head' }); T.board = h('div', { class: 'pz-board' }); T.q = h('div', { class: 'pz-q' }); T.tray = h('div', { class: 'pz-tray' }); T.msg = h('div', { class: 'pz-msg' });
-        for (var k = 0; k < N; k++) { (function (k) { var sl = h('div', { class: 'pz-slot' }); sl.dataset.i = k; if (!useImg) sl.textContent = String(k + 1); sl.addEventListener('click', function () { tryPlace(T, k); }); T.board.appendChild(sl); })(k); }
+        T.board.innerHTML = '<svg viewBox="' + (-PAD) + ' ' + (-PAD) + ' ' + VBW + ' ' + VBH + '" xmlns="http://www.w3.org/2000/svg">' +
+          '<rect x="0" y="0" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" fill="#111a2e" stroke="#475569" stroke-width="2" stroke-dasharray="8 6"/>' +
+          (useImg ? '<image href="art/painting_mona.webp" x="0" y="0" width="' + (COLS * CELL) + '" height="' + (ROWS * CELL) + '" preserveAspectRatio="none" opacity="0.14"/>' : '') +
+          '<g class="pz-hint"></g><g class="pz-done"></g></svg>';
+        T.svg = T.board.firstChild; T.gDone = T.svg.querySelector('.pz-done'); T.gHint = T.svg.querySelector('.pz-hint');
         T.el.appendChild(T.head); T.el.appendChild(h('div', { class: 'pz-body' }, [T.board, h('div', { class: 'pz-side' }, [T.q, T.tray, T.msg])]));
         return T;
       }
@@ -372,7 +397,12 @@
         T.head.appendChild(btn('⏭', 'small ghost', function () { if (!T.locked && !T.done && T.pending === null) nextQuestion(T, true); }));
       }
       function nextPiece(T) { for (var k = 0; k < T.order.length; k++) if (!T.placed[T.order[k]]) return T.order[k]; return null; }
-      function highlight(T) { [].forEach.call(T.board.children, function (sl, k) { sl.classList.toggle('target', T.pending === k); }); }
+      function showHint(T) {
+        T.gHint.innerHTML = '';
+        if (T.pending === null || T.miss < 2) return;
+        var r = Math.floor(T.pending / COLS), cc = T.pending % COLS;
+        T.gHint.innerHTML = '<circle cx="' + (cc * CELL + 50) + '" cy="' + (r * CELL + 50) + '" r="46" fill="#fbbf24" opacity="0.28" class="pz-pulse"/><circle cx="' + (cc * CELL + 50) + '" cy="' + (r * CELL + 50) + '" r="46" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="6 5"/>';
+      }
       function giveQuestion(T) {
         var item = T.steals.length ? T.steals.shift() : null, steal = !!item;
         if (!item) { item = T.bank[T.bi % T.bank.length]; T.bi++; }
@@ -380,14 +410,12 @@
         return { q: item[0], opts: opts, raw: item, steal: steal };
       }
       function nextQuestion(T, skipped) {
-        if (T.done) { T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-done', text: '🎉 Painting finished!' })); return; }
+        if (T.done) { T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-donetxt', text: '🎉 Puzzle finished!' })); return; }
         T.locked = false; T.cur = giveQuestion(T); T.q.innerHTML = ''; T.tray.innerHTML = ''; T.msg.textContent = skipped ? 'New question!' : '';
         if (T.cur.steal) T.q.appendChild(h('div', { class: 'pz-steal', text: '⚡ STEAL! Right answer = 2 pieces' }));
         var art0 = T.cur.raw[4]; if (art0 && hasArt(art0)) T.q.appendChild(h('div', { class: 'pz-pic' }, [art(art0, 'pz-img')]));
         T.q.appendChild(h('div', { class: 'pz-qt', text: T.cur.q }));
-        T.cur.opts.forEach(function (o) {
-          var b = btn(o.t, 'pz-opt', function () { answer(T, o, b); }); T.q.appendChild(b);
-        });
+        T.cur.opts.forEach(function (o) { var b = btn(o.t, 'pz-opt', function () { answer(T, o, b); }); T.q.appendChild(b); });
       }
       function answer(T, o, b) {
         if (T.locked || T.done || over) return;
@@ -403,36 +431,40 @@
       }
       function givePiece(T) {
         var k = nextPiece(T); if (k === null) { finishTeam(T); return; }
-        T.pending = k; T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-qt', text: '✅ Right! Drag the piece to the glowing place.' }));
-        T.tray.innerHTML = ''; var pc = h('div', { class: 'pz-piece' }); pc.style.cssText += slotStyle(k); if (!useImg) pc.textContent = String(k + 1);
-        T.tray.appendChild(pc); highlight(T); dragify(T, pc, k);
+        T.pending = k; T.miss = 0; T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-qt', text: '✅ Right! Drag the piece to its place in the picture.' }));
+        T.tray.innerHTML = ''; var pc = h('div', { class: 'pz-piece' }); pc.innerHTML = pieceSvg(Math.floor(k / COLS), k % COLS, k);
+        T.tray.appendChild(pc); showHint(T); dragify(T, pc, k);
       }
       function dragify(T, pc, k) {
         pc.addEventListener('pointerdown', function (ev) {
           ev.preventDefault(); try { pc.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
-          var gh = pc.cloneNode(true); gh.className = 'pz-piece pz-ghost'; gh.style.left = ev.clientX + 'px'; gh.style.top = ev.clientY + 'px'; document.body.appendChild(gh); pc.style.opacity = '.35';
+          var gh = pc.cloneNode(true); gh.className = 'pz-piece pz-ghost'; gh.style.left = ev.clientX + 'px'; gh.style.top = ev.clientY + 'px'; document.body.appendChild(gh); pc.style.opacity = '.3';
           function move(e) { gh.style.left = e.clientX + 'px'; gh.style.top = e.clientY + 'px'; }
           function up(e) {
             pc.removeEventListener('pointermove', move); pc.removeEventListener('pointerup', up); pc.removeEventListener('pointercancel', up);
-            gh.style.display = 'none'; var el = document.elementFromPoint(e.clientX, e.clientY); var sl = el && el.closest ? el.closest('.pz-slot') : null; gh.remove(); pc.style.opacity = '';
-            if (sl && T.board.contains(sl)) tryPlace(T, parseInt(sl.dataset.i, 10));
+            gh.remove(); pc.style.opacity = '';
+            var rc = T.svg.getBoundingClientRect(), ux = (e.clientX - rc.left) / rc.width * VBW - PAD, uy = (e.clientY - rc.top) / rc.height * VBH - PAD;
+            tryPlace(T, ux, uy);
           }
           pc.addEventListener('pointermove', move); pc.addEventListener('pointerup', up); pc.addEventListener('pointercancel', up);
         });
       }
-      function tryPlace(T, slotIdx) {
+      function tryPlace(T, ux, uy) {
         if (T.pending === null || T.done || over) return;
-        var sl = T.board.children[slotIdx];
-        if (slotIdx !== T.pending) { sl.classList.remove('wobble'); void sl.offsetWidth; sl.classList.add('wobble'); sfx('soft'); T.msg.textContent = 'Almost! Look at the glowing place.'; return; }
-        T.placed[slotIdx] = true; T.count++; T.pending = null; sl.classList.add('filled'); sl.classList.remove('target'); sl.textContent = ''; sl.style.cssText += slotStyle(slotIdx);
-        T.tray.innerHTML = ''; sfx('correct'); paintHead(T);
+        var r = Math.floor(T.pending / COLS), cc = T.pending % COLS, dx = ux - (cc * CELL + 50), dy = uy - (r * CELL + 50);
+        if (Math.sqrt(dx * dx + dy * dy) > 55) {
+          T.miss++; T.board.classList.remove('wobble'); void T.board.offsetWidth; T.board.classList.add('wobble'); sfx('soft');
+          T.msg.textContent = T.miss >= 2 ? 'Look at the glowing circle!' : 'Almost! Look at the picture.'; showHint(T); return;
+        }
+        var k = T.pending; T.placed[k] = true; T.count++; T.pending = null; T.gHint.innerHTML = '';
+        T.gDone.insertAdjacentHTML('beforeend', placedG(r, cc, k)); T.tray.innerHTML = ''; sfx('correct'); paintHead(T); T.msg.textContent = '';
         if (T.count >= N) { finishTeam(T); return; }
         if (T.extra > 0) { T.extra--; T.msg.textContent = '⚡ Bonus piece!'; setTimeout(function () { givePiece(T); }, 500); return; }
         setTimeout(function () { nextQuestion(T); }, 500);
       }
       function finishTeam(T) {
-        T.done = true; T.pending = null; T.q.innerHTML = ''; T.tray.innerHTML = ''; paintHead(T); T.el.classList.add('pz-complete');
-        T.q.appendChild(h('div', { class: 'pz-done', text: '🎉 Painting finished!' }));
+        T.done = true; T.pending = null; T.q.innerHTML = ''; T.tray.innerHTML = ''; T.gHint.innerHTML = ''; paintHead(T); T.el.classList.add('pz-complete');
+        T.q.appendChild(h('div', { class: 'pz-donetxt', text: '🎉 Puzzle finished!' }));
         if (!won) { won = T; addPoint(T.idx, 5); sfx('win'); confetti(); T.msg.textContent = '🏆 First! +5 points'; A.speak('The Mona Lisa is finished! Well done!'); } else { addPoint(T.idx, 3); sfx('win'); T.msg.textContent = '⭐ Finished! +3 points'; }
         if (L.done && R.done) { over = true; setTimeout(function () { gameFinish(c, host, again); }, 2500); }
       }
@@ -465,8 +497,8 @@
         tip: ['Book link: Words in Context, p. 59 (plan, steal, lifted, robbery, arrested).', 'The picture shows first, the pupils guess, then press SAY IT: the board says the word and the sentence, and everybody ACTS the word. Give a point to the team that acts best.'] },
       { t: 'Game 2: Sneak to the Mona Lisa', mins: '10 min', mode: 'move', run: sneak, intro: 'Red light, green light, in the museum.',
         tip: ['A movement game for the new words. Pupils start at the back of the room; the "painting" (a picture) is at the front. The board switches by itself between GO (tiptoe) and FREEZE. A pupil who moves when the guard looks says "I am arrested!" and goes back (no points lost). The first pupil to arrive says "I took the painting!": tap that team (+2).'] },
-      { t: 'Game 3: Painting Race', mins: '12 min', mode: 'race', run: paintRace, intro: 'Two teams build the Mona Lisa at the same time!',
-        tip: ['Book link: past tense (took, lifted, found, hid, was/were) and the case words (plan, steal, lifted, robbery, arrested, museum, thief, guard).', 'Two teams play together, one pupil from each team at the board. A right answer wins one puzzle piece: drag it to the glowing place in the painting. A wrong answer: the other team gets that question next, and a right answer to a stolen question gives 2 pieces. Nobody loses points. 18 pieces each. First painting finished = 5 points, second = 3 points. Press the speaker to read a question; the arrow skips one.', 'Play it twice with the other two teams (button: Other teams).'] },
+      { t: 'Game 3: Painting Race', mins: '14 min', mode: 'race', run: paintRace, intro: 'Two teams build the Mona Lisa at the same time!',
+        tip: ['Book link: past tense (took, lifted, found, hid, was/were) and the case words (plan, steal, lifted, robbery, arrested, museum, thief, guard).', 'Two teams play together, one pupil from each team at the board. A right answer wins one jigsaw piece: drag it to its place in the picture (a faint picture shows the way; after two misses a circle glows). A wrong answer: the other team gets that question next, and a right answer to a stolen question gives 2 pieces. Nobody loses points. 24 pieces each. First puzzle finished = 5 points, second = 3 points. Press the speaker to read a question; the arrow skips one.', 'Play it twice with the other two teams (button: Other teams).'] },
       { t: 'Bonus: Put the story in order', mins: '6 min', mode: 'game', run: storyOrder, intro: 'What happened first? Then? Finally? (only if there is time)',
         tip: ['Book link: the years in the reading (1503, 1911, 1913), pp. 58-63.', 'Each team puts 4 sentences in order (the Mona Lisa timeline and the robbery night). Right order = 3 points. A wrong tap wobbles with a hint. Then the team retells the story with First, Then, After that, Finally.'] },
       { t: 'Case Closed', mins: '5 min', mode: 'think', run: finishG3, intro: 'Scores and one sentence each.',
