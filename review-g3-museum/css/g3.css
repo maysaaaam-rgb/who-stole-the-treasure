@@ -164,3 +164,16 @@
 .pz-msg{font-size:clamp(13px,2.2vh,20px);color:#fbbf24;min-height:1.4em}
 .pz-done{font-weight:900;font-size:clamp(18px,3.4vh,32px);color:#10b981}
 @media (max-width:900px){.pz-arena{grid-template-columns:1fr}}
+
+/* Painting Race v2: real jigsaw pieces (SVG), free placing */
+.pz-panel{--bw:clamp(150px,22vw,250px)}
+.pz-board{display:block;width:var(--bw);aspect-ratio:auto;border:0;padding:0;background:none;line-height:0;flex:none}
+.pz-board svg{display:block;width:100%;height:auto;background:#0b1220;border:2px solid #334155;border-radius:8px}
+.pz-board.wobble{animation:wob .4s}
+.pz-pl{animation:pzflash .5s}@keyframes pzflash{0%{filter:brightness(2)}100%{filter:brightness(1)}}
+.pz-pulse{animation:pzp 1s infinite}@keyframes pzp{50%{opacity:.5}}
+.pz-piece{width:calc(var(--bw)*160/460);height:calc(var(--bw)*160/460);border:0;border-radius:0;display:block;background:none;animation:none}
+.pz-piece svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+.pz-ghost{width:calc(var(--bw)*160/460);height:calc(var(--bw)*160/460)}
+.pz-tray{min-height:calc(var(--bw)*160/460)}
+.pz-donetxt{font-weight:900;font-size:clamp(18px,3.4vh,32px);color:#10b981}
