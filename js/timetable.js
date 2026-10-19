@@ -28,7 +28,7 @@
     { id: 'g4-board', icon: '🎲', title: 'Money Board Game (Unit 3, How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, added: '2026-10-12' },
     { id: 'rev-g4-teamwork', icon: '🏀', title: 'Grade 4 Review: Teamwork (book pp. 56-61): quiz, word shoot, put it in order', route: 'review-g4-teamwork/index.html', g: 4, added: '2026-10-19' },
     { id: 'rev-g3-museum', icon: '🔍', title: 'Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59): look say act, sneak, story order', route: 'review-g3-museum/index.html', g: 3, added: '2026-10-19' },
-    { id: 'moon-song-g3', icon: '🌕', title: 'Chuseok Moon Song: call and response circle song (folk song festival)', route: 'chuseok-moon-song/index.html', g: 3, added: '2026-10-18' },
+    { id: 'moon-song-g3', icon: '🌕', title: 'Chuseok Moon Song: learn the video song, sing it in circles, sing and move (folk song festival)', route: 'chuseok-moon-song/index.html', g: 3, added: '2026-10-18' },
     { id: 'moon-hw-g3', icon: '🏠', title: 'Moon Song Homework (5 minutes, link for the pupils)', route: 'chuseok-moon-homework/index.html', g: 3, added: '2026-10-18' },
     { id: 'u4-g3-l1', icon: '🕵️', title: 'Unit 4 Case File 1: A Picture on the Wall (What Happened?, lesson 1)', route: 'unit4-g3-lessons/index.html?lesson=1', g: 3, added: '2026-10-19' },
     { id: 'u4-g3-l2', icon: '🖼️', title: 'Unit 4 Case File 2: Where Is She? (What Happened?, lesson 2)', route: 'unit4-g3-lessons/index.html?lesson=2', g: 3, added: '2026-10-19' },

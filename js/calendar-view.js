@@ -77,11 +77,23 @@
   function moonOnce() {
     try {
       if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed5')) return;
-      var list = customEvents().slice(), n = 0, note = 'Week 3 of the Chuseok festival: circle song with a drum, circle dance, make a verse, concert. Lesson: chuseok-moon-song. Homework due Thu 22.';
+      var list = customEvents().slice(), n = 0, note = 'Week 3 of the Chuseok festival: learn the video song (11 lines: right/left, in/out, tall/low, fast/slow, done, sit, rest + Ganggangsullae), sing it with a drummer, a leader and circles, then sing and move. Lesson: chuseok-moon-song. Homework due Thu 22.';
       var M = { 'class-3a|2026-10-20|11:15': 1, 'class-3b|2026-10-21|11:15': 1 };
       list.forEach(function (e) { if (M[e.classId + '|' + e.date + '|' + e.time] && /^seed1-/.test(e.id) && e.type === 'unit4') { e.type = 'chuseok'; e.title = 'Chuseok Moon Song (Week 3)'; e.note = note; n++; } });
       if (!list.some(function (e) { return e.id === 'seed5-hw'; })) { list.push({ id: 'seed5-hw', date: '2026-10-22', time: '', classId: '', type: 'chuseok', title: 'Moon Song homework due (3/A and 3/B): send the link chuseok-moon-homework', note: '' }); n++; }
       if (n) saveEvents(list); store().setCalendarFlag('seed5');
+    } catch (e) { /* ignore */ }
+  }
+  /* Moon Song v2 (the video song's 11 lines): refresh the note of the two lessons and the homework reminder once */
+  function moonNoteOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed6')) return;
+      var list = customEvents().slice(), n = 0, note = 'Week 3 of the Chuseok festival: learn the video song (11 lines: right/left, in/out, tall/low, fast/slow, done, sit, rest + Ganggangsullae), sing it with a drummer, a leader and circles, then sing and move. Lesson: chuseok-moon-song. Homework due Thu 22.';
+      list.forEach(function (e) {
+        if (e.type === 'chuseok' && e.title === 'Chuseok Moon Song (Week 3)') { e.note = note; n++; }
+        if (e.id === 'seed5-hw') { e.note = 'Quick 5-minute homework: listen to the 11 song lines, choose the word (opposites), sing it at home, choose 3 moves. Link: chuseok-moon-homework/index.html'; n++; }
+      });
+      if (n) saveEvents(list); store().setCalendarFlag('seed6');
     } catch (e) { /* ignore */ }
   }
   function lessonsOn(date, classId) {
@@ -202,7 +214,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
