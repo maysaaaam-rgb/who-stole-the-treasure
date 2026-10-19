@@ -102,3 +102,10 @@
 .line5.on{border-color:#f59e0b;color:#fff;background:rgba(245,158,11,.18);transform:scale(1.02)}
 .movecard{display:flex;align-items:center;justify-content:center;gap:16px;background:rgba(15,23,42,.85);border:3px solid #a855f7;border-radius:18px;padding:8px 18px;min-height:12vh}
 .mv-e{font-size:clamp(40px,10vh,100px)}.mv-t{font-weight:900;font-size:clamp(20px,4.4vh,42px)}
+
+/* the live drum thumps the whole stage */
+@keyframes thump{0%{transform:scale(1)}25%{transform:scale(1.012) translateY(2px)}100%{transform:scale(1)}}
+#stage.thump{animation:thump .16s ease-out}
+.drumpat .hit.hit2{background:#f59e0b;color:#1c1203}
+.btn.bump{animation:bump .18s}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(.94)}100%{transform:scale(1)}}

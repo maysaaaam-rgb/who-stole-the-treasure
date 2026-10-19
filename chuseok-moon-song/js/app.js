@@ -460,7 +460,7 @@
       }, 'nodrum');
     }
     var startBtn = btn('▶ START the music', 'green big', begin);
-    var drum = btn('🥁 DRUM (tap with the music)', 'violet big', function () { drumHits++; MB.hit(drumHits % 4 === 1 ? 'dung' : 'deok'); drum.classList.remove('bump'); void drum.offsetWidth; drum.classList.add('bump'); });
+    var drum = btn('🥁 DRUM (tap with the music)', 'violet big', function () { drumHits++; MB.hit(drumHits % 4 === 1 ? 'dung' : 'deok'); drum.classList.remove('bump'); void drum.offsetWidth; drum.classList.add('bump'); var st = $('stage'); if (st) { st.classList.remove('thump'); void st.offsetWidth; st.classList.add('thump'); } [].forEach.call(pattern.children, function (el) { el.classList.add('hit2'); setTimeout(function () { el.classList.remove('hit2'); }, 120); }); });
     var speakBtn = btn('🔊 Board reads: OFF', 'small ghost', function () { speakOn = !speakOn; speakBtn.textContent = '🔊 Board reads: ' + (speakOn ? 'ON' : 'OFF'); });
     body.appendChild(roles); body.appendChild(cue); body.appendChild(big); body.appendChild(nextUp); body.appendChild(pattern); body.appendChild(dots);
     body.appendChild(h('div', { class: 'row' }, [startBtn, drum, btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; paint('idle'); }),
