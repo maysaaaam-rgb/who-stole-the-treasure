@@ -50,6 +50,29 @@
     }
     timer = setTimeout(tick, 30);
   }
+  /* ---- the timed song tracks (11 bars: a count-in bar + 5 pairs of bars: leader bar, answer bar) ---- */
+  var SONG_DIR = 'audio/song/', songSrc = null;
+  function loadPath(path) {
+    if (bufs[path]) return Promise.resolve(bufs[path]);
+    if (failed[path]) return Promise.reject(new Error('failed'));
+    if (loading[path]) return loading[path];
+    if (!ensure() || typeof fetch !== 'function') { failed[path] = 1; return Promise.reject(new Error('no audio')); }
+    loading[path] = fetch(path).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.arrayBuffer(); })
+      .then(function (ab) { return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); }); })
+      .then(function (b) { bufs[path] = b; delete loading[path]; return b; });
+    loading[path].catch(function () { failed[path] = 1; delete loading[path]; });
+    return loading[path];
+  }
+  function songPath(variant, tempo) {
+    var t = tempo <= 66 ? 60 : (tempo >= 96 ? 108 : 84);
+    if (variant === 'sung' && t === 108) t = 84;          // the sung demonstration exists at 60 and 84
+    return { path: SONG_DIR + 'moon_song_' + (variant === 'nodrum' ? 'nodrum_' : variant === 'sung' ? 'sung_' : '') + t + '.mp3', bpm: t };
+  }
+  function stopSong(soft) {
+    if (timer) { clearTimeout(timer); timer = null; }
+    on = false;
+    if (songSrc && !soft) { try { songSrc.stop(); } catch (e) { /* already stopped */ } songSrc = null; }
+  }
   var api = {
     start: function (tempo, cb) {
       if (tempo) bpm = Math.max(56, Math.min(120, tempo));
@@ -59,7 +82,22 @@
       load(name).catch(function () { /* the computer drum plays instead */ });
       return synth ? synth.start(bpm, cb) : false;
     },
-    stop: function () { stopLoop(); if (synth) synth.stop(); },
+    /* play a timed song track once; the callback fires on every beat (count 0 = the first count-in click). Falls back to the band loop. */
+    startSong: function (tempo, cb, variant) {
+      api.stop(); var sp = songPath(variant || 'inst', tempo || bpm); bpm = sp.bpm;
+      if (ensure() && bufs[sp.path]) {
+        var src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = bufs[sp.path]; g.gain.value = 0.95; src.connect(g); g.connect(ctx.destination); src.start(ctx.currentTime + 0.03); songSrc = src; on = true;
+        var beatLen = 60000 / sp.bpm, beat = 0, count = 0, now = function () { return typeof performance !== 'undefined' ? performance.now() : Date.now(); }, target = now() + 30;
+        (function tick() { if (!on) return; var b2 = beat, c2 = count; beat = (beat + 1) % 4; count++; if (cb) { try { cb(b2, c2); } catch (e) { /* ignore */ } } target += beatLen; timer = setTimeout(tick, Math.max(0, target - now())); })();
+        return true;
+      }
+      loadPath(sp.path).catch(function () { /* the band loop plays instead */ });
+      return api.start(sp.bpm, cb);
+    },
+    /* the song ended by itself: stop the beat callbacks but let the last chord ring out */
+    finish: function () { if (songSrc) { stopSong(true); songSrc = null; } else { api.stop(); } },
+    stepTempo: function (dir) { var list = [60, 84, 108], i = list.indexOf(songPath('inst', bpm).bpm); i = Math.max(0, Math.min(2, i + dir)); bpm = list[i]; if (synth) synth.setBpm(bpm); return bpm; },
+    stop: function () { stopLoop(); stopSong(false); if (synth) synth.stop(); },
     setBpm: function (v) { bpm = Math.max(56, Math.min(120, v)); if (synth) synth.setBpm(bpm); },
     getBpm: function () { return bpm; },
     isOn: function () { return on || (synth ? synth.isOn() : false); },
@@ -76,8 +114,9 @@
   /* get everything ready after the first click */
   function preload() {
     ['band_slow_60', 'band_soft_70', 'band_mid_84', 'band_loud_92', 'band_fast_108', 'drum_dung', 'drum_deok', 'drum_rim', 'sfx_correct', 'sfx_team_done', 'sfx_cheer', 'sfx_moon_glow', 'sfx_try_again'].forEach(function (n) { load(n).catch(function () { /* optional */ }); });
+    ['moon_song_84', 'moon_song_nodrum_84', 'moon_song_sung_84', 'moon_song_60', 'moon_song_108', 'moon_song_victory_2bars'].forEach(function (n) { loadPath(SONG_DIR + n + '.mp3').catch(function () { /* optional */ }); });
     load('moon_bowl', '.wav').catch(function () { /* optional */ }); load('clap_group', '.wav').catch(function () { /* optional */ });
   }
   if (typeof document !== 'undefined') document.addEventListener('click', function () { ensure(); preload(); }, { once: true });
-  root.MoonBeat = api; root.MoonSnd = { play: play, say: say, sayList: sayList, load: load, preload: preload, ready: function (n) { return !!bufs[n]; }, loaded: function () { return Object.keys(bufs); }, failed: function () { return Object.keys(failed); } };
+  root.MoonBeat = api; root.MoonSnd = { playPath: function (path, vol) { return new Promise(function (resolve) { if (!ensure()) { resolve(false); return; } loadPath(path).then(function (b) { var s2 = ctx.createBufferSource(), g = ctx.createGain(); s2.buffer = b; g.gain.value = vol == null ? 0.9 : vol; s2.connect(g); g.connect(ctx.destination); s2.onended = function () { resolve(true); }; s2.start(); }, function () { resolve(false); }); }); }, play: play, say: say, sayList: sayList, load: load, preload: preload, ready: function (n) { return !!bufs[n]; }, loaded: function () { return Object.keys(bufs); }, failed: function () { return Object.keys(failed); } };
 })(window);
