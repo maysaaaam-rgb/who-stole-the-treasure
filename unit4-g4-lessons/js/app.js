@@ -447,30 +447,73 @@
     body.appendChild(h('div', { class: 'door', text: LESSONS[1].door })); sfx('win'); confetti();
   }
 
+  /* ---- The Final Quarter: the class is 5 points behind and catches up with every point its teams score ---- */
+  function totalPts() { return state.scores.reduce(function (a, b) { return a + b; }, 0); }
+  var fqWon = false;
+  function fqBar(c) {
+    var txt = h('span', { class: 'casetxt' }), fill2 = h('i', { class: 'casefill' }), bar = h('div', { class: 'casebar fq' }, [txt, h('div', { class: 'casetrack' }, [fill2])]);
+    function paint() {
+      var n = totalPts(), r = D.rival; txt.textContent = '🏀 FINAL QUARTER · Class ' + n + ' : ' + r + ' Rivals' + (n >= r ? ' · WE WIN!' : ' · ' + (r - n) + ' to catch up');
+      fill2.style.width = Math.min(100, Math.round(n / r * 100)) + '%';
+      if (n >= r && !fqWon) { fqWon = true; sfx('win'); confetti(); A.speak('We caught up! We win the Final Quarter!'); }
+    }
+    paint(); var iv = setInterval(paint, 500); c.later(function () { clearInterval(iv); });
+    return bar;
+  }
+  function withFq(fn) { return function (c) { c.body.appendChild(fqBar(c)); fn(c); }; }
+
+  /* Team huddle: recall questions about the reading, soft fail (a wrong tap wobbles, no points lost) */
+  function huddleQuiz(c) {
+    var host = h('div', { class: 'gameroot' }); c.body.appendChild(host);
+    function start() {
+      host.innerHTML = '';
+      var deck = shuffle(D.huddle), ROUNDS = deck.length, round = 0, turn = 0, tries = 0, cur = null;
+      var banner = h('div'), card = h('div', { class: 'reqcard' }), opts = h('div', { class: 'row' }), msg = h('div', { class: 'msg gmsg' });
+      function draw() {
+        if (round >= ROUNDS) { gameFinish(c, host, start); return; }
+        cur = deck[round]; tries = 0;
+        var nb = teamBanner(turn, '🏀 Huddle question ' + (round + 1) + ' of ' + ROUNDS); banner.replaceWith(nb); banner = nb;
+        card.innerHTML = ''; card.appendChild(fill(h('div', { class: 'rq-e' }), cur.e)); card.appendChild(h('div', { class: 'rq-t', text: cur.q })); msg.textContent = 'Talk in your team for ten seconds. Then tap the answer!';
+        opts.innerHTML = '';
+        shuffle(cur.o.map(function (t, k) { return { t: t, k: k }; })).forEach(function (o) {
+          var b = btn(o.t, 'amber big', function () {
+            if (o.k === cur.a) { var pts = tries === 0 ? 2 : 1; addPoint(turn, pts); sfx('correct'); if (pts === 2) confetti(); msg.textContent = '✅ ' + cur.q.replace('...', cur.o[cur.a]); A.speak(cur.o[cur.a]); round++; turn = (turn + 1) % D.teams.length; setTimeout(draw, 1500); }
+            else { tries++; b.classList.remove('wob', 'wobble'); void b.offsetWidth; b.classList.add('wobble'); sfx('soft'); msg.textContent = 'Almost! ' + cur.hint; A.speak('Try again.'); }
+          }); opts.appendChild(b);
+        });
+        A.speak(cur.q.replace('...', 'blank'));
+      }
+      banner = h('div'); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 10), btn('🔊 Read it', 'small amber', function () { A.speak(cur.q.replace('...', 'blank')); })]));
+      host.appendChild(banner); host.appendChild(card); host.appendChild(opts); host.appendChild(msg); host.appendChild(meterPanel());
+      draw();
+    }
+    start();
+  }
+  /* the result screen: who won the Final Quarter */
+  function finalWhistle(c) {
+    var n = totalPts(), r = D.rival, won = n >= r;
+    c.body.appendChild(h('div', { class: 'report' }, [h('div', { class: 'rank', text: won ? '🏆' : '🏀' }), h('div', { class: 'score', text: won ? 'WE WIN THE FINAL QUARTER! ' + n + ' : ' + r : 'So close! ' + n + ' : ' + r + '. One more game!' })]));
+    leagueScene(c);
+  }
+
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', race: '🏆 Team race' };
   var LESSONS = {
-    1: { title: 'Dream Team League · Match Day 1', missions: D.l1missions, door: '🚪 Door pass: say one sentence: "I am on a team and I …" or "The Sparks were losing, but …" (or one new word: league, court, basket, score, shooting).', scenes: [
-      { t: 'Match Day 1: Meet the Team', mins: '3 min', mode: 'think', run: opening, intro: 'Welcome to the Dream Team League! Get your badge. Nobody wins alone.',
-        kids: { steps: ['🧢 Take a badge: Captain, Coach, Commentator, Scorer or Mascot', '👀 Look at the Teamwork Meter', '🗣️ Every pupil must speak to fill it'], say: ['We are a team.', 'I am the Captain.'] },
-        tip: ['Book link: Unit 4 "We Can Do It" opener, p. 56 (working together).', 'Make 4 teams of 4-5. Give each pupil a role badge (paper card). Explain: a team can only shoot a THREE-POINTER when all five badges are lit. Tap a badge each time that pupil says an English sentence. Roles rotate next lesson.'] },
-      { t: 'GAME: Freeze Frame', mins: '7 min', mode: 'game', run: freezeFrame, intro: 'One team freezes like a team from the book. The others guess and say a sentence.',
-        kids: { steps: ['🧊 The acting team FREEZES in a pose', '🤔 Others: Think, Pair, Share', '🗣️ Guess with a full sentence'], say: ['The dancers are moving with the music.', 'We think everyone is listening to one another.'] },
-        tip: ['Book link: Think, Pair, Share, p. 57 (A-D). Frames: "The dancers are moving with the music." / "We think everyone is listening to one another."', 'Press Show: only the acting Captain looks (3 seconds), then the team freezes. Other teams discuss, then say the sentence. The first right team taps +2 and the Commentator badge lights.'] },
-      { t: 'GAME: Court Shootout', mins: '8 min', mode: 'game', run: courtShootout, intro: 'Answer the word clue, then shoot a paper ball into the bin! Full meter = 3-pointer.',
+    1: { title: 'The Final Quarter · Dream Team League', missions: D.l1missions, door: '🚪 Door pass: say one sentence: "I am on a team and I …" or "The Sparks were losing, but …" (or one new word: league, court, basket, score, shooting).', scenes: [
+      { t: 'Team Huddle', mins: '5 min', mode: 'think', run: withFq(huddleQuiz), intro: 'It is the Final Quarter! The class is 5 points behind. Every right answer closes the gap!',
+        kids: { steps: ['🤝 Talk in your team', '👆 Tap the answer', '🏀 Close the gap'], say: ['The league has twelve teams.', 'Chelsea Gray scored three points.'] },
+        tip: ['Review of the reading (book pp. 56-61), no teaching: the pupils have just done these pages. Make 4 teams of 4-5 and give each pupil a role badge (Captain, Coach, Commentator, Scorer, Mascot). Tap a badge whenever that pupil speaks English: all five lit = the team may shoot a 3-pointer later.', 'A wrong tap wobbles softly with a hint: no points lost. The Final Quarter bar shows how far the class is from catching the rivals (40).'] },
+      { t: 'GAME: Shoot the Basket', mins: '9 min', mode: 'game', run: withFq(courtShootout), intro: 'Answer the word clue, then shoot a paper ball into the bin! Full meter = 3-pointer.',
         kids: { steps: ['❓ Read the clue and talk in your team', '✅ Right answer = you shoot', '⚡ Full meter = a 3-point shot from far away'], say: ['The answer is court.', 'Ten players are on the court.'] },
         tip: ['Book link: Words in Context, pp. 58-59 (league, court, basket, score, shooting).', 'Put a bin or box at the front (2-point line) and mark a far line (3-point line) with tape. A right answer lets one pupil shoot a paper ball: BASKET = points. A 3-point shot needs the Teamwork Meter full; it empties after the shot.'] },
-      { t: 'Live Commentary: The Sparks', mins: '6 min', mode: 'act', run: sparksStory, intro: 'Commentators read like sports reporters. The team acts out the game!',
-        kids: { steps: ['🎙️ Commentator: read the part loudly', '🎭 Team: act it out', '🤔 Guess the big moment'], say: ['The Sparks are losing by five points.', 'She scores three points!'] },
-        tip: ['Book link: "Teamwork Makes the Dream Work", pp. 58-59. An oral preview in very simple words; the book text is read in lesson 2.', 'Press the green button for each part. The Commentator of one team repeats in a sports-reporter voice; the team acts. At the 🤔 part let pupils predict, then reveal.'] },
-      { t: 'GAME: Morning Relay', mins: '5 min', mode: 'game', run: orderGame, intro: 'Put the sentences in order. Use: first, then, after that, finally.',
-        kids: { steps: ['👀 Read the four sentences', '👆 Tap them in the right order', '🔢 Scorer retells: First, … Then, …'], say: ['First, I wake up.', 'Then, I eat breakfast.', 'After that, …', 'Finally, …'] },
-        tip: ['Book link: Understanding the Sequence of Events, p. 61 (Paige\'s morning, the first event / after that).', 'A wrong tap wobbles softly: no points lost. When a team finishes, its Scorer retells the story with First, Then, After that, Finally.'] },
-      { t: 'GAME: Disaster Cards', mins: '4 min', mode: 'talk', run: disasterCards, intro: 'A problem happens! Say: Why don\'t we …? Every pupil gives one idea.',
-        kids: { steps: ['🎴 Draw a problem card', '💬 Everyone gives an idea', '🗣️ Say: Why don\'t we …?'], say: ['Why don\'t we take the train?', 'Why don\'t we perform here, now?', 'We can do it together!'] },
-        tip: ['Book link: a first taste of the play "Late for the Show", pp. 62-69 ("Why don\'t we perform the show here, now?").', 'Teams draw problem cards (traffic, train stopped, no costume). Each pupil says one idea with "Why don\'t we …?". +2 for every pupil speaking, +1 if only some do. Light the badges on the meter.'] },
-      { t: 'League Table & Teamwork Cup', mins: '2 min', mode: 'think', run: leagueScene, intro: 'Match Day 1 is over! Who filled the Teamwork Meter?',
+      { t: 'Sports Radio: Freeze Frame', mins: '8 min', mode: 'game', run: withFq(freezeFrame), intro: 'You are the sports radio team! One team freezes like a team from the book. The others describe it.',
+        kids: { steps: ['🧊 The acting team FREEZES in a pose', '🎙️ Reporters: describe it on the radio', '🗣️ Say a full sentence'], say: ['The dancers are moving with the music.', 'They are working together.'] },
+        tip: ['Book link: Think, Pair, Share, p. 57 (A-D). Frames: "The dancers are moving with the music." / "We think everyone is listening to one another."', 'Press Show: only the acting Captain looks (3 seconds), then the team freezes. The other teams act as sports reporters and say the sentence. The first right team taps +2 and the Commentator badge lights.'] },
+      { t: 'Replay the Game', mins: '8 min', mode: 'game', run: withFq(orderGame), intro: 'The referee wants a replay! Put the moments in order: first, then, after that, finally.',
+        kids: { steps: ['👀 Read the four moments', '👆 Tap them in the right order', '🔢 Scorer retells: First, … Then, …'], say: ['First, the Sparks played the Lynx.', 'Then, they were losing.', 'Finally, they won the championship.'] },
+        tip: ['Book link: Understanding the Sequence of Events, p. 61. Round 1 is the Sparks game from the reading; rounds 2 and 3 are everyday sequences.', 'A wrong tap wobbles softly: no points lost. When a team finishes, its Scorer retells the story with First, Then, After that, Finally.'] },
+      { t: 'Final Whistle', mins: '5 min', mode: 'think', run: finalWhistle, intro: 'The whistle blows! Did the class catch up with the rivals? Who filled the Teamwork Meter?',
         kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: one sentence for the teacher'], say: ['I am on a team and I …', 'Teamwork makes the dream work!'] },
-        tip: ['Show the scores. Teams with a FULL meter get the Teamwork Cup (+3). Save Match Day 1: the league table stays on this computer for the next match days (add ?class=4a to the link to keep a table per class). At the door each pupil says one sentence (book p. 71 C).'] }
+        tip: ['Show the result: the class total against the rivals (40). Teams with a FULL meter get the Teamwork Cup (+3). Save Match Day 1: the league table stays on this computer (add ?class=4a to keep a table per class). At the door each pupil says one sentence (book p. 71 C).'] }
     ] }
   };
 

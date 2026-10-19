@@ -664,3 +664,6 @@ main {
   border-radius: 1.2vh;
   padding: 0.4vh 1.4vh;
 }
+
+/* the Final Quarter scoreboard stays visible at the top of the stage */
+.s-body > .casebar.fq{display:flex !important;margin:0 0 6px;padding:5px 12px;border-color:#f59e0b}.casebar.fq .casetxt{font-size:clamp(13px,2.2vh,20px)}
