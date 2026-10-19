@@ -95,3 +95,10 @@
 .drumpat .hit{padding:6px 18px;border-radius:12px;background:#1e293b;color:#8b93a7;font-weight:800;font-size:clamp(14px,2.6vh,24px);transition:all .1s}
 .drumpat .hit.big{font-size:clamp(18px,3.4vh,32px)}.drumpat .hit.on{background:#a855f7;color:#fff;transform:scale(1.18);box-shadow:0 0 18px #a855f7}
 .btn.bump{animation:wob .25s}
+
+/* learn the song / sing and move */
+.lines5{display:flex;flex-direction:column;gap:6px;margin:6px auto;max-width:900px;width:100%}
+.line5{background:rgba(15,23,42,.85);border:2px solid #232a3b;border-radius:12px;padding:6px 14px;font-size:clamp(16px,3vh,28px);color:#8b93a7;transition:all .2s}
+.line5.on{border-color:#f59e0b;color:#fff;background:rgba(245,158,11,.18);transform:scale(1.02)}
+.movecard{display:flex;align-items:center;justify-content:center;gap:16px;background:rgba(15,23,42,.85);border:3px solid #a855f7;border-radius:18px;padding:8px 18px;min-height:12vh}
+.mv-e{font-size:clamp(40px,10vh,100px)}.mv-t{font-weight:900;font-size:clamp(20px,4.4vh,42px)}
