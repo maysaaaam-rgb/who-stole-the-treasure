@@ -72,12 +72,12 @@
       <rect x="86" y="${t + 10}" width="28" height="12" rx="3" fill="#94a3b8" stroke="#334155" stroke-width="1.8"/>
       <path d="M92 ${t + 16} L100 ${t + 12.5} L108 ${t + 16} L100 ${t + 20} Z" fill="#475569"/>
       <path d="M${100 + w2 - 1} ${t + 19} Q${100 + w2 + 13} ${t + 15} ${100 + w2 + 19} ${t + 27} Q${100 + w2 + 9} ${t + 25} ${100 + w2 + 1} ${t + 25} Z M${100 + w2 - 1} ${t + 21} Q${100 + w2 + 11} ${t + 30} ${100 + w2 + 16} ${t + 41} Q${100 + w2 + 5} ${t + 34} ${100 + w2 - 1} ${t + 25} Z" fill="#111827" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></g>`; };
-  H['cs-knight-helm'] = function (g) { var t = g.topY, e = g.eyeY;
-    return `<g class="monster-hat"><path d="M58 ${e + 20} L58 ${t + 8} Q58 ${t - 22} 100 ${t - 24} Q142 ${t - 22} 142 ${t + 8} L142 ${e + 20} L128 ${e + 24} L128 ${t + 10} L72 ${t + 10} L72 ${e + 24} Z" fill="#cbd5e1" stroke="#334155" stroke-width="2.6" stroke-linejoin="round"/>
-      <path d="M64 ${t - 2} Q100 ${t - 16} 136 ${t - 2}" fill="none" stroke="#f8fafc" stroke-width="3" opacity="0.8"/>
-      <rect x="72" y="${t + 8}" width="56" height="7" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.6"/>
+  H['cs-knight-helm'] = function (g) { var t = g.topY, e = g.eyeY, hw = g.creature === 'dragon' ? g.headRX + 8 : 42, L = 100 - hw, R = 100 + hw, vl = L + 14, vr = R - 14;   // the helmet follows the head width (the slim Sky Dragon gets a snug helmet)
+    return `<g class="monster-hat"><path d="M${L} ${e + 20} L${L} ${t + 8} Q${L} ${t - 22} 100 ${t - 24} Q${R} ${t - 22} ${R} ${t + 8} L${R} ${e + 20} L${vr} ${e + 24} L${vr} ${t + 10} L${vl} ${t + 10} L${vl} ${e + 24} Z" fill="#cbd5e1" stroke="#334155" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M${L + 6} ${t - 2} Q100 ${t - 16} ${R - 6} ${t - 2}" fill="none" stroke="#f8fafc" stroke-width="3" opacity="0.8"/>
+      <rect x="${vl}" y="${t + 8}" width="${vr - vl}" height="7" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="1.6"/>
       <path d="M100 ${t - 24} Q116 ${t - 48} 132 ${t - 36} Q122 ${t - 30} 112 ${t - 20} Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.8" stroke-linejoin="round"/>
-      <circle cx="64" cy="${t + 6}" r="2.2" fill="#64748b"/><circle cx="136" cy="${t + 6}" r="2.2" fill="#64748b"/></g>`; };
+      <circle cx="${L + 6}" cy="${t + 6}" r="2.2" fill="#64748b"/><circle cx="${R - 6}" cy="${t + 6}" r="2.2" fill="#64748b"/></g>`; };
   H['cs-robot-antenna'] = function (g) { var t = g.topY;
     return `<g class="monster-hat"><path d="M100 ${t + 2} L100 ${t - 14} Q92 ${t - 20} 104 ${t - 26} Q96 ${t - 32} 100 ${t - 38}" fill="none" stroke="#64748b" stroke-width="3.4" stroke-linecap="round"/>
       <circle cx="100" cy="${t - 42}" r="7" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.8"/><circle cx="98" cy="${t - 44}" r="2.2" fill="#fecaca"/>
