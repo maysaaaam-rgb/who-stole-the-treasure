@@ -63,7 +63,18 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   var S = { cls: '', name: '', heard: {}, quiz: {}, sang: false, picks: [], vdone: false };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && typeof raw === 'object') S = Object.assign(S, raw); } catch (e) { /* storage may be blocked */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
-  function speak(t) { try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
+  /* Gemini's recorded teacher voice first (audio/*.mp3); the computer voice only if a file is missing */
+  var VOICE = {"the moon is big and round": "ms_calls_1", "we hold hands in a circle": "ms_calls_2", "we dance under the moon": "ms_calls_3", "we say thank you for the harvest": "ms_calls_4", "we sing with our family": "ms_calls_5", "we turn around": "ms_h_3", "step slowly": "ms_h_4", "we clap our hands": "ms_h_5", "ganggangsullae": "ms_refrain", "try again": "ms_try_again", "first": "ms_first", "then": "ms_then", "finally": "ms_finally", "good job": "ms_good", "hm:step slowly": "ms_hm_step_slowly", "hm:step quickly": "ms_hm_step_quickly", "hm:turn slowly": "ms_hm_turn_slowly", "hm:turn quickly": "ms_hm_turn_quickly", "hm:clap slowly": "ms_hm_clap_slowly", "hm:hop quickly": "ms_hm_hop_quickly", "hm:bow slowly": "ms_hm_bow_slowly", "hm:bow quickly": "ms_hm_bow_quickly"}, cur = null, seqId = 0;
+  function norm(t) { return String(t).toLowerCase().replace(/[^a-z0-9: ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function tts(t) { try { if (!window.speechSynthesis || !t) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
+  function stopVoice() { seqId++; if (cur) { try { cur.pause(); } catch (e) { /* ignore */ } cur = null; } try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* ignore */ } }
+  function playOne(t, done) {
+    var f = VOICE[norm(t)];
+    if (!f) { tts(String(t).replace(/^hm:/, '')); if (done) setTimeout(done, 900); return; }
+    try { var a = new Audio('audio/' + f + '.mp3'); cur = a; a.onended = function () { if (done) done(); }; a.onerror = function () { tts(String(t).replace(/^hm:/, '')); if (done) done(); }; var p = a.play(); if (p && p.catch) p.catch(function () { tts(String(t).replace(/^hm:/, '')); if (done) done(); }); } catch (e) { tts(t); if (done) done(); }
+  }
+  function speak(t) { stopVoice(); if (t) playOne(t, null); }
+  function speakSeq(list) { stopVoice(); var my = seqId, k = 0; (function next() { if (my !== seqId || k >= list.length) return; playOne(list[k++], function () { setTimeout(next, 120); }); })(); }
   function wob(el) { el.classList.remove('wob'); void el.offsetWidth; el.classList.add('wob'); }
   function done1() { return LINES.every(function (l, i) { return S.heard[i]; }); }
   function done2() { return QUIZ.every(function (q, i) { return S.quiz[i]; }); }
@@ -100,7 +111,7 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
       var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + (on ? 'sel' : 'off'); b.textContent = v;
       b.onclick = function () {
         if (on) S.picks = S.picks.filter(function (x) { return x !== v; }); else if (S.picks.length < 3) S.picks.push(v); else { wob(b); return; }
-        S.vdone = false; save(); speak(S.picks.length ? (SEQ[S.picks.length - 1] + ' ' + S.picks[S.picks.length - 1]) : ''); drawVerbs();
+        S.vdone = false; save(); (S.picks.length ? speakSeq([SEQ[S.picks.length - 1], 'hm:' + S.picks[S.picks.length - 1]]) : stopVoice()); drawVerbs();
       }; box.appendChild(b);
     });
   }
@@ -130,7 +141,7 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
     S.cls = c; S.name = n; save(); start();
   };
   $('sang').onclick = function () { S.sang = true; save(); speak('Ganggangsullae!'); refresh(); };
-  $('vdone').onclick = function () { if (S.picks.length < 3) { wob($('vdone')); return; } S.vdone = true; save(); speak(S.picks.map(function (m, k) { return SEQ[k] + ' ' + m; }).join('. ')); refresh(); };
+  $('vdone').onclick = function () { if (S.picks.length < 3) { wob($('vdone')); return; } S.vdone = true; save(); speakSeq([].concat.apply([], S.picks.map(function (m, k) { return [SEQ[k], 'hm:' + m]; }))); refresh(); };
   function start() { $('who').style.display = 'none'; $('main').style.display = 'block'; drawLines(); drawQuiz(); drawVerbs(); refresh(); }
   window.addEventListener('online', flush);
   if (S.cls && S.name) { $('cls').value = S.cls; $('nm').value = S.name; start(); }

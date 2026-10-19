@@ -244,8 +244,10 @@
     var m = map[n];
     if (SND && m && SND.ready(m[0])) SND.play(m[0], m[1]); else A.play(n);
   }
-  function say(key, text) { if (SND && SND.ready('v_' + key)) return SND.say(key); A.speak(text || key); return Promise.resolve(); }
-  function sayList(keys, text) { if (SND && keys.every(function (k) { return SND.ready('v_' + k); })) return SND.sayList(keys); A.speak(text || keys.join(' ')); return Promise.resolve(); }
+  var SAYMAP = { ganggang: 'Ganggangsullae!', freeze: 'Freeze like the moon!', happy_chuseok: 'Happy Chuseok!' };
+  /* Gemini's recorded teacher voice first (through the sentence list in audio/voice/manifest.json), the computer voice only as a fallback */
+  function say(key, text) { var t = text || SAYMAP[key] || key; return new Promise(function (res) { A.speak(t, res); }); }
+  function sayList(keys, text) { if (text) return say(null, text); return new Promise(function (res) { A.speakSeq(keys); setTimeout(res, 1500); }); }
   function addGlow(n) {
     glow = Math.min(GOAL, glow + n);
     [].forEach.call(document.querySelectorAll('.casefill'), function (el) { el.style.width = (glow / GOAL * 100) + '%'; });
