@@ -1414,7 +1414,7 @@
     if (CUR_CREATURE === 'dragon' && stage !== 'egg' && stage !== 'cracking_egg') {
       if (isOwnPart(wingsId, 'wings')) return renderDragonWings(stage, palette);
       const shop = renderWingsLayerBase(stage, wingsId, palette), dy = getStageGeometry(stage).shoulderY - 108;   // shop wings were drawn for shoulders at y 108
-      return shop ? `<g transform="translate(0 ${dy})">${shop}</g>` : '';
+      return shop ? `<g transform="translate(100 ${dy}) scale(0.74 1) translate(-100 0)">${shop}</g>` : '';   // narrower than on the other monsters: the dragon is slim and the wings must stay in the card
     }
     return renderWingsLayerBase(stage, wingsId, palette);
   }
@@ -1484,8 +1484,13 @@
       return `
         <!-- Shadow Bat Wings -->
         <g class="monster-wings-layer wings-bat" filter="url(#mf-shadow)">
-          <path d="M 64 96 C 24 64 12 90 20 122 C 34 114 46 122 52 134 C 58 122 62 118 68 116 Z" fill="#312e81" stroke="#1e1b4b" stroke-width="2" />
-          <path d="M 136 96 C 176 64 188 90 180 122 C 166 114 154 122 148 134 C 142 122 138 118 132 116 Z" fill="#312e81" stroke="#1e1b4b" stroke-width="2" />
+          <linearGradient id="mg-wing-bat" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#4c3fb8" /><stop offset="55%" stop-color="#7c6ff0" /><stop offset="100%" stop-color="#a99cff" /></linearGradient>
+          <path d="M 64 96 C 24 64 12 90 20 122 C 34 114 46 122 52 134 C 58 122 62 118 68 116 Z" fill="url(#mg-wing-bat)" stroke="#1e1b4b" stroke-width="2" stroke-linejoin="round" />
+          <path d="M 64 96 C 36 74 22 84 22 112 M 64 98 C 42 96 30 104 34 120 M 64 100 C 52 106 50 118 52 130" fill="none" stroke="#1e1b4b" stroke-width="1.6" stroke-linecap="round" opacity="0.55" />
+          <path d="M 62 94 C 34 70 22 80 21 100" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity="0.45" />
+          <path d="M 136 96 C 176 64 188 90 180 122 C 166 114 154 122 148 134 C 142 122 138 118 132 116 Z" fill="url(#mg-wing-bat)" stroke="#1e1b4b" stroke-width="2" stroke-linejoin="round" />
+          <path d="M 136 96 C 164 74 178 84 178 112 M 136 98 C 158 96 170 104 166 120 M 136 100 C 148 106 150 118 148 130" fill="none" stroke="#1e1b4b" stroke-width="1.6" stroke-linecap="round" opacity="0.55" />
+          <path d="M 138 94 C 166 70 178 80 179 100" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity="0.45" />
         </g>
       `;
     }
@@ -1829,11 +1834,11 @@
   }
   // hs = horn size, wing = wing size, tail = tail length, spikes = spikes on the tail, glow = glowing wings (Levels 6 and 7)
   const DRAGON_GEO = {
-    baby:       { headCY: 100, headRX: 33, headRY: 27, bodyTop: 122, cW: 27, bW: 36, pawY: 139, footSpacing: 18, eyeSpacing: 14.5, earScale: 0.9,  hs: 0.55, wing: 0.5,  tail: 24, spikes: 2, glow: 0 },
-    growing:    { headCY: 93,  headRX: 34, headRY: 27, bodyTop: 119, cW: 29, bW: 39, pawY: 135, footSpacing: 20, eyeSpacing: 15.5, earScale: 1.0,  hs: 0.72, wing: 0.64, tail: 32, spikes: 3, glow: 0 },
-    adventurer: { headCY: 86,  headRX: 34, headRY: 26, bodyTop: 116, cW: 31, bW: 42, pawY: 132, footSpacing: 21, eyeSpacing: 16,   earScale: 1.08, hs: 0.88, wing: 0.8,  tail: 40, spikes: 3, glow: 0 },
-    advanced:   { headCY: 79,  headRX: 35, headRY: 26, bodyTop: 113, cW: 32, bW: 44, pawY: 130, footSpacing: 22, eyeSpacing: 16.5, earScale: 1.15, hs: 1.0,  wing: 0.98, tail: 48, spikes: 4, glow: 1 },
-    ultimate:   { headCY: 72,  headRX: 36, headRY: 26, bodyTop: 109, cW: 33, bW: 46, pawY: 127, footSpacing: 23, eyeSpacing: 17,   earScale: 1.22, hs: 1.12, wing: 1.1,  tail: 56, spikes: 5, glow: 2 }
+    baby:       { headCY: 100, headRX: 30, headRY: 27, bodyTop: 122, cW: 25, bW: 31, pawY: 139, footSpacing: 17, eyeSpacing: 13.5, earScale: 0.9,  hs: 0.55, wing: 0.5,  tail: 24, spikes: 2, glow: 0 },
+    growing:    { headCY: 93,  headRX: 31, headRY: 27, bodyTop: 119, cW: 26, bW: 33, pawY: 135, footSpacing: 18, eyeSpacing: 14.5, earScale: 1.0,  hs: 0.72, wing: 0.64, tail: 32, spikes: 3, glow: 0 },
+    adventurer: { headCY: 86,  headRX: 31, headRY: 26, bodyTop: 116, cW: 27, bW: 35, pawY: 132, footSpacing: 19, eyeSpacing: 15,   earScale: 1.08, hs: 0.88, wing: 0.8,  tail: 40, spikes: 3, glow: 0 },
+    advanced:   { headCY: 79,  headRX: 32, headRY: 26, bodyTop: 113, cW: 28, bW: 37, pawY: 130, footSpacing: 20, eyeSpacing: 15.5, earScale: 1.15, hs: 1.0,  wing: 0.98, tail: 48, spikes: 4, glow: 1 },
+    ultimate:   { headCY: 72,  headRX: 33, headRY: 26, bodyTop: 109, cW: 29, bW: 39, pawY: 127, footSpacing: 21, eyeSpacing: 16,   earScale: 1.22, hs: 1.12, wing: 1.1,  tail: 56, spikes: 5, glow: 2 }
   };
   function dragonGeometry(stage) {
     const d = DRAGON_GEO[stage] || DRAGON_GEO.baby;
@@ -1980,12 +1985,15 @@
     const gid = `drg-wing-${key}`;
     const membrane = 'M 0 6 Q 12 -24 34 -40 L 60 -46 Q 58 -30 54 -16 Q 47 -20 42 -10 Q 35 -14 30 -2 Q 22 -6 16 8 Q 8 4 0 10 Z';
     const bones = 'M 0 5 Q 12 -24 34 -40 L 60 -46 M 34 -40 L 54 -16 M 34 -40 L 42 -10 M 34 -40 L 30 -2 M 34 -40 L 16 8';
+    const WX = 0.66, WY = 1.12;   // narrower and taller: the dragon stays slim, the wings stay inside the card
     const one = (k) => {
       const x = 100 + k * g.cW * 0.5, y = g.shoulderY + 3;
       const glow = g.glow ? `<path d="${membrane}" fill="none" stroke="#fde68a" stroke-width="${g.glow === 2 ? 7 : 5}" vector-effect="non-scaling-stroke" opacity="0.75" filter="url(#mf-glow)" class="mon-near-glow" />` : '';
-      return `<g transform="translate(${x} ${y}) scale(${k * s} ${s})">
+      return `<g transform="translate(${x} ${y}) scale(${k * s * WX} ${s * WY})">
         ${glow}
         <path d="${membrane}" fill="url(#${gid})" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+        <path d="M 34 -40 L 54 -16 Q 47 -20 42 -10 Z M 34 -40 L 30 -2 Q 22 -6 16 8 Z" fill="#ffffff" opacity="0.2" />
+        <path d="M 12 2 Q 30 -14 54 -30" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.35" vector-effect="non-scaling-stroke" />
         <path d="${bones}" fill="none" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
         <path d="M 4 2 Q 14 -22 33 -36" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.6" vector-effect="non-scaling-stroke" />
         <path d="M 60 -46 l 4 -3 l -1 5 Z" fill="#fffbeb" stroke="#a8875a" stroke-width="0.8" vector-effect="non-scaling-stroke" />
@@ -1993,16 +2001,16 @@
     };
     let sparkles = '';
     if (g.glow === 2) {
-      const tipY = g.shoulderY + 3 - 46 * s;
-      sparkles = [[100 - g.cW * 0.5 - 62 * s, tipY - 6, '0s'], [100 + g.cW * 0.5 + 62 * s, tipY - 4, '0.9s'], [100 - g.cW * 0.5 - 40 * s, tipY + 30, '1.6s']]
+      const tipY = g.shoulderY + 3 - 46 * s * 1.12;
+      sparkles = [[100 - g.cW * 0.5 - 42 * s, tipY - 6, '0s'], [100 + g.cW * 0.5 + 42 * s, tipY - 4, '0.9s'], [100 - g.cW * 0.5 - 28 * s, tipY + 30, '1.6s']]
         .map(p => `<g class="mon-twinkle" style="animation-delay:${p[2]}">${speciesMotif('purple', p[0], p[1], 0.7, '#fde047', 0.95)}</g>`).join('');
     }
     return `
       <g class="monster-wings-layer drg-wings" filter="url(#mf-shadow)">
         <linearGradient id="${gid}" x1="0" y1="1" x2="1" y2="0">
           <stop offset="0%" stop-color="${palette.primaryLight}" />
-          <stop offset="55%" stop-color="${palette.purple || palette.primaryLight}" />
-          <stop offset="100%" stop-color="${palette.purpleDark || palette.primaryDark}" />
+          <stop offset="60%" stop-color="${palette.primary || palette.primaryLight}" />
+          <stop offset="100%" stop-color="${palette.primaryLight}" />
         </linearGradient>
         ${one(-1)}${one(1)}
       </g>${sparkles}`;
