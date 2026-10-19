@@ -297,23 +297,39 @@
     c.later(function () { if (c_later_audio) c_later_audio.pause(); });
   }
 
-  /* 2. Five dance words with the teacher's voice */
+  /* 2. Opposites: right / left, in / out, tall / low, fast / slow (the pairs inside the song) + the Opposite Game */
   function danceWords(c) {
     stopBeat(c);
-    var body = c.body, big = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg', text: 'Tap a card. Listen. Then do the action!' }), seen = {};
-    big.appendChild(h('div', { class: 'rq-e', text: '💃' })); big.appendChild(h('div', { class: 'rq-t', text: 'Five dance words' }));
-    var grid = h('div', { class: 'roles' }, D.dance5.map(function (w, k) {
-      return h('button', { type: 'button', class: 'btn vcard', onclick: function () {
-        big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: w.e })); big.appendChild(h('div', { class: 'rq-t', text: w.w.toUpperCase() })); big.appendChild(h('div', { class: 'rq-a', text: w.ex }));
-        say(w.w).then(function () { A.speak(w.ex); }); if (!seen[k]) { seen[k] = 1; addGlow(1); }
-      } }, [h('span', { class: 'em', text: w.e }), h('b', { text: w.w })]);
+    var body = c.body, big = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg', text: 'Tap a card. Listen. Do the action. Find the opposite!' }), seen = {};
+    big.appendChild(h('div', { class: 'rq-e', text: '↔️' })); big.appendChild(h('div', { class: 'rq-t', text: 'Opposites' }));
+    function show(w) {
+      big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: w.e })); big.appendChild(h('div', { class: 'rq-t', text: w.w.toUpperCase() })); big.appendChild(h('div', { class: 'rq-a', text: D.calls[w.i] }));
+      A.speak(D.calls[w.i]); if (!seen[w.i]) { seen[w.i] = 1; addGlow(1); }
+    }
+    var flat = [];
+    D.pairs.forEach(function (p) { flat.push(p.a); flat.push(p.b); });
+    var grid = h('div', { class: 'roles' }, flat.map(function (w) {
+      return h('button', { type: 'button', class: 'btn vcard', onclick: function () { sfx('tap'); show(w); } }, [h('span', { class: 'em', text: w.e }), h('b', { text: w.w })]);
     }));
-    grid.style.gridTemplateColumns = 'repeat(5, 1fr)';
-    var order = shuffle(D.dance5), k = -1;
-    var doit = btn('🎴 Do it!', 'violet big', function () { k = (k + 1) % order.length; var w = order[k]; big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: w.e })); big.appendChild(h('div', { class: 'rq-t', text: w.w.toUpperCase() + '!' })); say(w.w); });
-    body.appendChild(grid); body.appendChild(big);
-    body.appendChild(h('div', { class: 'row' }, [doit, btn('✅ Everybody did it (+1 glow)', 'green', function () { addGlow(1); sfx('correct'); })]));
-    body.appendChild(msg); body.appendChild(pointsRow()); body.appendChild(glowBar());
+    grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    /* the Opposite Game: the board shows a word, everybody does it, then the opposite appears */
+    var order = shuffle(flat.map(function (w, k) { return k; })), k = -1, half = false;
+    var game = btn('🎴 Opposite game: next word', 'violet big', function () {
+      if (!half) {
+        k = (k + 1) % order.length; var w = flat[order[k]]; half = true;
+        big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: w.e })); big.appendChild(h('div', { class: 'rq-t', text: w.w.toUpperCase() + '!' })); big.appendChild(h('div', { class: 'rq-a', text: 'Everybody do it. Then: what is the OPPOSITE?' }));
+        A.speak(D.calls[w.i]); game.textContent = '↔️ Now the OPPOSITE!';
+      } else {
+        var cur = flat[order[k]], opp = flat[order[k] % 2 === 0 ? order[k] + 1 : order[k] - 1]; half = false;
+        big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: opp.e })); big.appendChild(h('div', { class: 'rq-t', text: cur.w.toUpperCase() + ' ↔ ' + opp.w.toUpperCase() })); big.appendChild(h('div', { class: 'rq-a', text: D.calls[opp.i] }));
+        A.speak(D.calls[opp.i]); sfx('correct'); addGlow(1); game.textContent = '🎴 Opposite game: next word';
+      }
+    });
+    var ends = h('div', { class: 'row' }, [h('span', { class: 'lab', text: 'The ending of the song:' })].concat([8, 9, 10].map(function (i) {
+      var m = D.songMoves[i]; return h('button', { type: 'button', class: 'chip2', text: m.e + ' ' + D.calls[i], onclick: function () { sfx('tap'); big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: m.e })); big.appendChild(h('div', { class: 'rq-t', text: m.v.toUpperCase() })); big.appendChild(h('div', { class: 'rq-a', text: D.calls[i] })); A.speak(D.calls[i]); } });
+    })));
+    body.appendChild(grid); body.appendChild(big); body.appendChild(h('div', { class: 'row' }, [game, btn('✅ Everybody did it (+1 glow)', 'green', function () { addGlow(1); sfx('correct'); })]));
+    body.appendChild(ends); body.appendChild(msg); body.appendChild(pointsRow()); body.appendChild(glowBar());
   }
 
   /* 3. The song: the leader calls, the circle answers Ganggangsullae */
@@ -369,18 +385,22 @@
         }
       }, 'sung');
     }
-    function showPart1() { part = 1; title.className = 'cue ready'; title.textContent = '1️⃣ LISTEN to the whole song'; board.textContent = 'Listen. Do not sing yet. The board sings one time for you.'; mark(-1); row.innerHTML = ''; row.appendChild(btn('▶ PLAY the whole song', 'green big', listen)); row.appendChild(btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; })); }
+    function showPart1() { part = 1; title.className = 'cue ready'; title.textContent = '1️⃣ LISTEN to the whole song'; board.textContent = 'Listen. Do not sing yet. The board sings the whole song one time for you.'; mark(-1); row.innerHTML = ''; row.appendChild(btn('▶ PLAY the whole song', 'green big', listen)); row.appendChild(btn('⏹ STOP', 'small ghost', function () { MB.stop(); running = false; })); }
     function showPart2() {
-      part = 2; idx = -1; title.className = 'cue lead'; title.textContent = '2️⃣ LINE BY LINE: the board says it, you ECHO!'; row.innerHTML = '';
-      var next = btn('▶ NEXT line', 'amber big', function () {
-        idx++; if (idx >= D.calls.length) { showPart3(); return; }
-        mark(idx); board.textContent = D.calls[idx]; A.speak(D.calls[idx]); title.textContent = '🗣️ ECHO: say it with me!'; next.textContent = idx === D.calls.length - 1 ? '➡️ ALL TOGETHER' : '▶ NEXT line';
+      part = 2; idx = -2; title.className = 'cue lead'; title.textContent = '2️⃣ LINE BY LINE: the board says it, you ECHO!'; row.innerHTML = '';
+      var next = btn('▶ NEXT lines', 'amber big', function () {
+        idx += 2; if (idx < 0) idx = 0; if (idx >= D.calls.length) { showPart3(); return; }
+        var two = [idx]; if (idx + 1 < D.calls.length) two.push(idx + 1);
+        items.forEach(function (x, j) { x.classList.toggle('on', two.indexOf(j) >= 0); });
+        board.textContent = two.map(function (j) { return D.calls[j]; }).join('   ');
+        A.speakSeq(two.map(function (j) { return D.calls[j]; })); title.textContent = '🗣️ ECHO: say it with me!';
+        next.textContent = idx + 2 >= D.calls.length ? '➡️ ALL TOGETHER' : '▶ NEXT lines';
       });
-      row.appendChild(next); row.appendChild(btn('🔁 Say it again', 'small ghost', function () { if (idx >= 0) A.speak(D.calls[idx]); }));
-      board.textContent = 'Press NEXT line. The board says the line, the class echoes it.';
+      row.appendChild(next); row.appendChild(btn('🔁 Say them again', 'small ghost', function () { if (idx >= 0) { var two = [D.calls[idx]]; if (idx + 1 < D.calls.length) two.push(D.calls[idx + 1]); A.speakSeq(two); } }));
+      board.textContent = 'Press NEXT lines. The board says two lines, the class echoes them.';
     }
     function showPart3() {
-      part = 3; title.className = 'cue circle'; title.textContent = '3️⃣ ALL TOGETHER: the whole class says all five lines!'; board.textContent = D.refrain; mark(-1); row.innerHTML = '';
+      part = 3; title.className = 'cue circle'; title.textContent = '3️⃣ ALL TOGETHER: the whole class says all 11 lines!'; board.textContent = D.refrain; mark(-1); row.innerHTML = '';
       row.appendChild(btn('✅ We said it! (+2 glow)', 'green big', function () { addGlow(2); sfx('correct'); confetti(); }));
       row.appendChild(btn('🔁 Do the lines again', 'small ghost', showPart2));
       row.appendChild(btn('🥁 Next step: sing with the band ▶', 'amber', function () { $('next').click(); }));
@@ -564,25 +584,25 @@
 
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', race: '🏆 Team race', song: '🎶 Song' };
   var LESSONS = {
-    1: { title: 'Chuseok Moon Song', missions: D.missions, door: '🚪 Door pass: sing me ONE sentence and show its move (for example "We say thank you for the harvest." + bow).', scenes: [
-      { t: 'The Moon Night', mins: '4 min', mode: 'listen', run: moonOpen, intro: 'It is Chuseok night. Look at the moon! Three words.',
+    1: { title: 'Chuseok Moon Song', missions: D.missions, door: '🚪 Door pass: say ONE line of the song and show its move (for example "Walk low in a circle!" + walk low). You answer Ganggangsullae!', scenes: [
+      { t: 'The Moon Night', mins: '3 min', mode: 'listen', run: moonOpen, intro: 'It is Chuseok night. Look at the moon! Three words.',
         kids: { steps: ['🌕 Look and listen', '👆 Tap a word', '🎵 Listen to our song'], say: ['moon', 'circle', 'family'] },
         tip: ['Week 3 of the Chuseok festival: Folk Dance & Rhythms. Make 4 teams (Moons, Stars, Rabbits, Lanterns). The class also fills one shared Moon Glow bar.', 'Three words only: moon, circle, family. You can play the real song file under the buttons; the video is optional and needs the internet.'] },
-      { t: 'Five Dance Words', mins: '5 min', mode: 'listen', run: danceWords, intro: 'Listen and do: step, turn, clap, hop, bow.',
-        kids: { steps: ['👆 Tap a card and listen', '💃 Do the action', '🎴 Do it! Fast!'], say: ['step', 'turn', 'clap', 'hop', 'bow'] },
-        tip: ['These five moves are used in the song. Tap each card: the voice says the word and the board says a sentence. Then press Do it!: a card shows and everybody does the action.'] },
+      { t: 'Opposites in the Song', mins: '6 min', mode: 'listen', run: danceWords, intro: 'Right and left, in and out, tall and low, fast and slow. Do it and find the opposite!',
+        kids: { steps: ['👆 Tap a card and listen', '💃 Do the action', '↔️ Find the opposite!'], say: ['Right, right, right you go!', 'Left, left, left you go!'] },
+        tip: ['The song is made of four pairs of opposites: right/left, in/out, tall/low, fast/slow, plus three ending lines (we are done, sit down, have a rest). Tap each card: the voice says the song line, everybody does the action.', 'Opposite game: the board shows one word, the class does it, then you press "Now the OPPOSITE!" and the pair appears.'] },
       { t: 'Learn the Song', mins: '8 min', mode: 'song', run: learnSong, intro: 'First listen to the whole song. Then learn it line by line. Then say it all together.',
-        kids: { steps: ['👂 Listen to the whole song', '🗣️ Echo each line', '👥 Say it all together'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
-        tip: ['Part 1: press PLAY: the folk band plays and the board "sings" the five lines and the answer once. Part 2: line by line, the board says a line and the class echoes it (NEXT line each time). Part 3: all together.', 'The refrain "Ganggangsullae" belongs to the traditional Korean circle-dance song sung at Chuseok; the five lines are simple English sentences written for this lesson.'] },
-      { t: 'Sing It!', mins: '6 min', mode: 'song', run: circleSong, intro: 'Music only! A drummer, a leader, and circles that answer: Ganggangsullae!',
-        kids: { steps: ['🥁 Drummer: play with the music', '🎤 Leader: read the sentence', '👥 Circles: hold hands, walk, answer!'], say: ['We dance under the moon.', 'Ganggangsullae!'] },
-        tip: ['Choose a DRUMMER (a real drum, a box or the desk, or the big DRUM button on the board), a LEADER (reads the sentence from the board, loudly) and make the other pupils CIRCLES: hold hands, walk slowly in a circle and answer "Ganggangsullae!" together when the board flashes.', 'Press START: a count-in, then for each of the 5 sentences one bar for the LEADER and one for the CIRCLES. At the end swap roles and play again. The board does not speak (Board reads: ON if you want it).'] },
-      { t: 'Sing and Move', mins: '9 min', mode: 'move', run: singMove, intro: 'Now sing the whole song and do ONE MOVE for each sentence, all together!',
-        kids: { steps: ['🎶 Everybody sings the sentence', '💃 Do the move for the sentence', '🙌 Answer: Ganggangsullae!'], say: ['We hold hands in a circle.', 'We say thank you for the harvest.'] },
-        tip: ['The whole class sings with the band and moves: sentence 1 = turn, 2 = step to the left holding hands, 3 = hop, 4 = bow, 5 = clap; the answer "Ganggangsullae!" = hands up. The board shows the move for each sentence. Slow it down first (Slower), then faster. Record a short video for the festival if you wish (with the school\'s photo rules).'] },
+        kids: { steps: ['👂 Listen to the whole song', '🗣️ Echo the lines', '👥 Say it all together'], say: ['Walk tall in a circle!', 'Ganggangsullae!'] },
+        tip: ['Part 1: press PLAY: the folk band plays and the board "sings" the 11 lines and the answer once. Part 2: two lines at a time, the board says them and the class echoes (NEXT lines each time). Part 3: all together.', 'The refrain "Ganggangsullae" is the traditional refrain of the Korean circle-dance song sung at Chuseok. The 11 lines follow the kids video song; they were checked against the video.'] },
+      { t: 'Sing It!', mins: '7 min', mode: 'song', run: circleSong, intro: 'Music only! A drummer, a leader, and circles that answer: Ganggangsullae!',
+        kids: { steps: ['🥁 Drummer: play with the music', '🎤 Leader: read the line', '👥 Circles: hold hands, walk, answer!'], say: ['Fast, fast, fast, fast!', 'Ganggangsullae!'] },
+        tip: ['Choose a DRUMMER (a real drum, a box or the desk, or the big DRUM button on the board), a LEADER (reads the line from the board, loudly) and make the other pupils CIRCLES: hold hands, walk in a circle and answer "Ganggangsullae!" together when the board flashes.', 'Press START: a count-in, then for each of the 11 lines one bar for the LEADER and one for the CIRCLES. At the end swap roles and play again. The board does not speak (Board reads: ON if you want it).'] },
+      { t: 'Sing and Move', mins: '8 min', mode: 'move', run: singMove, intro: 'Now sing the whole song and do ONE MOVE for each line, all together!',
+        kids: { steps: ['🎶 Everybody sings the line', '💃 Do the move for the line', '🙌 Answer: Ganggangsullae!'], say: ['Walk low in a circle!', 'Sit down, sit down!'] },
+        tip: ['The whole class sings with the band and moves: right = step right, left = step left, in / out = walk in and out, tall / low = walk tall / low, fast / slow = walk fast / slow, we are done = clap, sit down = sit, have a rest = rest. The answer "Ganggangsullae!" = hands up. The board shows the move for each line. Slow it down first (Slower), then faster.'] },
       { t: 'Happy Chuseok!', mins: '3 min', mode: 'think', run: wrap, intro: 'You sang and danced like a real circle!',
-        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: sing one sentence and show its move'], say: ['We say thank you for the harvest.', 'Happy Chuseok!'] },
-        tip: ['Show the scores. Tell the pupils about the 5-minute homework (link shown on the board). At the door each pupil sings one sentence and shows its move; you answer Ganggangsullae!'] }
+        kids: { steps: ['🏆 Cheer for every team', '🚪 Door pass: say one line and show its move'], say: ['Have a rest, have a rest!', 'Happy Chuseok!'] },
+        tip: ['Show the scores. Tell the pupils about the 5-minute homework (link shown on the board). At the door each pupil says one line of the song and shows its move; you answer Ganggangsullae!'] }
     ] }
   };
 

@@ -4,8 +4,8 @@
  "We dance under the moon.": "ms_calls_3.mp3",
  "We say thank you for the harvest.": "ms_calls_4.mp3",
  "We sing with our family.": "ms_calls_5.mp3",
- "Ganggangsullae!": "ms_refrain.mp3",
- "Kahng kahng soo leh!": "ms_refrain.mp3",
+ "Ganggangsullae!": "ms2_answer.mp3",
+ "Kahng kahng soo leh!": "ms2_answer.mp3",
  "It is Chuseok night. Look at the big, round moon!": "ms_hook_1.mp3",
  "At Chuseok, families sing and dance in a circle under the moon.": "ms_hook_2.mp3",
  "Tonight we sing a call-and-response song. The leader calls, and the circle answers!": "ms_hook_3.mp3",
@@ -49,5 +49,16 @@
  "The moon is shining bright! Happy Chuseok!": "ms_moon_shines.mp3",
  "Happy Chuseok!": "ms_happy.mp3",
  "What a night! Happy Chuseok!": "ms_what_night.mp3",
- "We caught up! We win the Final Quarter!": "ms_great.mp3"
+ "We caught up! We win the Final Quarter!": "ms_great.mp3",
+ "Right, right, right you go!": "ms2_line_1.mp3",
+ "Left, left, left you go!": "ms2_line_2.mp3",
+ "In, in, in, in!": "ms2_line_3.mp3",
+ "Out, out, out, out!": "ms2_line_4.mp3",
+ "Walk tall in a circle!": "ms2_line_5.mp3",
+ "Walk low in a circle!": "ms2_line_6.mp3",
+ "Fast, fast, fast, fast!": "ms2_line_7.mp3",
+ "Slow, slow, slow, slow!": "ms2_line_8.mp3",
+ "We are done, we are done!": "ms2_line_9.mp3",
+ "Sit down, sit down!": "ms2_line_10.mp3",
+ "Have a rest, have a rest!": "ms2_line_11.mp3"
 }

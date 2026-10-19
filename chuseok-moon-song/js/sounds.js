@@ -77,7 +77,7 @@
     if (failed[path]) return Promise.reject(new Error('failed'));
     if (loading[path]) return loading[path];
     if (!ensure() || typeof fetch !== 'function') { failed[path] = 1; return Promise.reject(new Error('no audio')); }
-    loading[path] = fetch(path).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.arrayBuffer(); })
+    loading[path] = fetch(path + '?v=2').then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.arrayBuffer(); })
       .then(function (ab) { return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); }); })
       .then(function (b) { bufs[path] = b; delete loading[path]; return b; });
     loading[path].catch(function () { failed[path] = 1; delete loading[path]; });

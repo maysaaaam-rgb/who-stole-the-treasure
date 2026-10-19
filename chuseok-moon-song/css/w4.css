@@ -109,3 +109,8 @@
 .drumpat .hit.hit2{background:#f59e0b;color:#1c1203}
 .btn.bump{animation:bump .18s}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(.94)}100%{transform:scale(1)}}
+
+/* 11-line song: two columns, never overlap the board */
+.bigsent{flex:none}
+.lines5{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 10px;max-width:1100px;flex:none}
+.line5{font-size:clamp(14px,2.5vh,24px);padding:4px 12px}

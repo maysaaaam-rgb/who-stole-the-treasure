@@ -35,12 +35,12 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   <div id="main" style="display:none">
     <div class="bar"><i id="prog"></i></div>
     <div class="card" id="s1"><h2><span class="n">1</span> Listen to the song lines</h2>
-      <p class="mini">Tap each 🔊. Listen and say it after the voice.</p><div id="lines"></div></div>
+      <p class="mini">Tap each 🔊. Listen and say it after the voice. The circle answers <b>Ganggangsullae!</b> after every line.</p><div id="lines"></div></div>
     <div class="card" id="s2"><h2><span class="n">2</span> Choose the word</h2><div id="quiz"></div></div>
     <div class="card" id="s3"><h2><span class="n">3</span> Sing it at home</h2>
-      <p>Sing the five lines to someone at home. They answer: <b>Ganggangsullae!</b></p><p class="mini">Want to hear the real song? <a href="https://www.youtube.com/watch?v=BmhVJJY0LEA" target="_blank" rel="noopener" style="color:#38bdf8">Watch the Ganggangsullae kids video</a> (ask a grown-up to open it).</p><button class="btn g" id="sang" type="button">🎤 I sang it!</button></div>
+      <p>Sing the song lines to someone at home. Do the moves! They answer: <b>Ganggangsullae!</b></p><p class="mini">Want to hear the real song? <a href="https://www.youtube.com/watch?v=BmhVJJY0LEA" target="_blank" rel="noopener" style="color:#38bdf8">Watch the Ganggangsullae kids video</a> (ask a grown-up to open it).</p><button class="btn g" id="sang" type="button">🎤 I sang it!</button></div>
     <div class="card" id="s4"><h2><span class="n">4</span> My own dance</h2>
-      <p>Choose 3 moves for your dance:</p><p><b id="vw">…</b></p><div id="verbs"></div>
+      <p>Choose 3 moves from the song for your dance:</p><p><b id="vw">…</b></p><div id="verbs"></div>
       <p class="mini">Try your dance at home! Dance it with your family and say the words.</p><button class="btn g" id="vdone" type="button">✅ My dance is ready</button></div>
     <div class="card final" id="fin"><div class="big">🌕🎉</div><h2 style="justify-content:center">Great job!</h2><p>Your teacher can see that you finished. <b>+40 XP</b></p></div>
   </div>
@@ -51,20 +51,20 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
   /* settings: the same Google Sheet receiver as the Tea Party homework (only the name of the homework changes) */
   var CFG = { submitUrl: 'https://script.google.com/macros/s/AKfycbzW5c8cvntKtAtcM4pDQiwhQpC8sctJJNntK8cpaP6AEtmHu2mz4TNrzdsLy0X0TiDQzQ/exec', token: 'eaa-tea-4f7c9d2b81a6', homework: 'chuseok-moon-song-hw' };
   var KEY = 'eaa_moon_hw_v1', PEND = 'eaa_moon_hw_pending_v1';
-  var LINES = ['The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.', 'We say thank you for the harvest.', 'We sing with our family.'];
+  var LINES = ["Right, right, right you go!", "Left, left, left you go!", "In, in, in, in!", "Out, out, out, out!", "Walk tall in a circle!", "Walk low in a circle!", "Fast, fast, fast, fast!", "Slow, slow, slow, slow!", "We are done, we are done!", "Sit down, sit down!", "Have a rest, have a rest!"];
   var QUIZ = [
-    { s: 'The ____ is big and round.', o: ['moon', 'sun', 'tree'], a: 0 }, { s: 'We hold ____ in a circle.', o: ['hands', 'books', 'pens'], a: 0 },
-    { s: 'We ____ around.', o: ['turn', 'eat', 'read'], a: 0 }, { s: 'Step ____.', o: ['slowly', 'table', 'blue'], a: 0 },
-    { s: 'We ____ our hands.', o: ['clap', 'swim', 'read'], a: 0 }, { s: 'We sing with our ____.', o: ['family', 'shoes', 'chairs'], a: 0 }
+    { s: 'The opposite of RIGHT is ____.', o: ['fast', 'left', 'low'], a: 1 }, { s: 'The opposite of IN is ____.', o: ['out', 'tall', 'slow'], a: 0 },
+    { s: 'The opposite of FAST is ____.', o: ['left', 'out', 'slow'], a: 2 }, { s: 'The opposite of TALL is ____.', o: ['in', 'low', 'right'], a: 1 },
+    { s: 'Sit ____, sit down!', o: ['red', 'down', 'fish'], a: 1 }, { s: 'Have a ____, have a rest!', o: ['rest', 'book', 'door'], a: 0 }
   ];
-  var MOVES = ['step slowly', 'step quickly', 'turn slowly', 'turn quickly', 'clap slowly', 'hop quickly', 'bow slowly', 'bow quickly'];
+  var MOVES = ["right", "left", "in", "out", "walk tall", "walk low", "fast", "slow"];
   var SEQ = ['First,', 'Then,', 'Finally,'];
   function $(id) { return document.getElementById(id); }
   var S = { cls: '', name: '', heard: {}, quiz: {}, sang: false, picks: [], vdone: false };
   try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && typeof raw === 'object') S = Object.assign(S, raw); } catch (e) { /* storage may be blocked */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
   /* Gemini's recorded teacher voice first (audio/*.mp3); the computer voice only if a file is missing */
-  var VOICE = {"the moon is big and round": "ms_calls_1", "we hold hands in a circle": "ms_calls_2", "we dance under the moon": "ms_calls_3", "we say thank you for the harvest": "ms_calls_4", "we sing with our family": "ms_calls_5", "we turn around": "ms_h_3", "step slowly": "ms_h_4", "we clap our hands": "ms_h_5", "ganggangsullae": "ms_refrain", "try again": "ms_try_again", "first": "ms_first", "then": "ms_then", "finally": "ms_finally", "good job": "ms_good", "hm:step slowly": "ms_hm_step_slowly", "hm:step quickly": "ms_hm_step_quickly", "hm:turn slowly": "ms_hm_turn_slowly", "hm:turn quickly": "ms_hm_turn_quickly", "hm:clap slowly": "ms_hm_clap_slowly", "hm:hop quickly": "ms_hm_hop_quickly", "hm:bow slowly": "ms_hm_bow_slowly", "hm:bow quickly": "ms_hm_bow_quickly"}, cur = null, seqId = 0;
+  var VOICE = {"right right right you go": "ms2_line_1", "left left left you go": "ms2_line_2", "in in in in": "ms2_line_3", "out out out out": "ms2_line_4", "walk tall in a circle": "ms2_line_5", "walk low in a circle": "ms2_line_6", "fast fast fast fast": "ms2_line_7", "slow slow slow slow": "ms2_line_8", "we are done we are done": "ms2_line_9", "sit down sit down": "ms2_line_10", "have a rest have a rest": "ms2_line_11", "hm:right": "ms2_line_1", "hm:left": "ms2_line_2", "hm:in": "ms2_line_3", "hm:out": "ms2_line_4", "hm:walk tall": "ms2_line_5", "hm:walk low": "ms2_line_6", "hm:fast": "ms2_line_7", "hm:slow": "ms2_line_8", "ganggangsullae": "ms2_answer", "try again": "ms2_try_again", "good job": "ms2_good_job", "first": "ms2_first", "then": "ms2_then", "finally": "ms2_finally"}, cur = null, seqId = 0;
   function norm(t) { return String(t).toLowerCase().replace(/[^a-z0-9: ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function tts(t) { try { if (!window.speechSynthesis || !t) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.88; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
   function stopVoice() { seqId++; if (cur) { try { cur.pause(); } catch (e) { /* ignore */ } cur = null; } try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) { /* ignore */ } }
@@ -98,7 +98,7 @@ input,select{font:inherit;border-radius:12px;border:1px solid #334155;background
       var row = document.createElement('div');
       q.o.forEach(function (o, k) {
         var b = document.createElement('button'); b.type = 'button'; b.className = 'btn off'; b.textContent = o;
-        b.onclick = function () { if (k === q.a) { S.quiz[i] = 1; save(); speak(q.s.replace('____', q.o[q.a])); drawQuiz(); refresh(); } else { wob(b); speak('Try again.'); } };
+        b.onclick = function () { if (k === q.a) { S.quiz[i] = 1; save(); speak('Good job.'); drawQuiz(); refresh(); } else { wob(b); speak('Try again.'); } };
         row.appendChild(b);
       });
       box.appendChild(row);

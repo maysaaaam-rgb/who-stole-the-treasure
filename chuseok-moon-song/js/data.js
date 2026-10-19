@@ -1,6 +1,6 @@
 /* Chuseok Moon Song - Grade 3 smartboard lesson (35 minutes): a call-and-response circle song for the Chuseok festival.
    The refrain "Ganggangsullae" is the traditional refrain of the Korean circle-dance folk song sung under the full moon at Chuseok.
-   All English lines here are written for this lesson in very simple A1 English. No song lyrics are copied. */
+   The 11 call lines are the simple English movement words of the kids' video song (KIZSONG), taught and sung in class; they are checked against the video by the teacher. */
 (function (root) {
   'use strict';
   var D = {};
@@ -13,8 +13,8 @@
   D.refrainSay = 'Kahng kahng soo leh!';   // how the computer voice says it
 
   D.missions = [
-    { e: '🌕', t: 'Learn 3 moon words' }, { e: '👣', t: 'Learn 5 dance words' }, { e: '🎤', t: 'Sing with the circle' },
-    { e: '🐢', t: 'Move slowly or quickly' }, { e: '💃', t: 'Dance with your team' }
+    { e: '👂', t: 'Listen to the whole song' }, { e: '↔️', t: 'Learn 4 pairs of opposites' }, { e: '🎤', t: 'Sing the 11 lines' },
+    { e: '🥁', t: 'Drummer, leader and circles' }, { e: '💃', t: 'Sing and move together' }
   ];
   D.hook = [
     'It is Chuseok night. Look at the big, round moon!',
@@ -33,8 +33,15 @@
 
   /* the leader's lines (call). The whole circle answers with the refrain. */
   D.calls = [
-    'The moon is big and round.', 'We hold hands in a circle.', 'We dance under the moon.',
-    'We say thank you for the harvest.', 'We sing with our family.'
+    'Right, right, right you go!', 'Left, left, left you go!', 'In, in, in, in!', 'Out, out, out, out!', 'Walk tall in a circle!', 'Walk low in a circle!',
+    'Fast, fast, fast, fast!', 'Slow, slow, slow, slow!', 'We are done, we are done!', 'Sit down, sit down!', 'Have a rest, have a rest!'
+  ];
+  /* the opposite pairs inside the song (index = the call line) */
+  D.pairs = [
+    { a: { w: 'right', e: '➡️', i: 0 }, b: { w: 'left', e: '⬅️', i: 1 } },
+    { a: { w: 'in', e: '⬇️', i: 2 }, b: { w: 'out', e: '⬆️', i: 3 } },
+    { a: { w: 'tall', e: '🧍', i: 4 }, b: { w: 'low', e: '🧎', i: 5 } },
+    { a: { w: 'fast', e: '⚡', i: 6 }, b: { w: 'slow', e: '🐢', i: 7 } }
   ];
 
   /* Circle Commander: do the action with the beat */
@@ -99,15 +106,15 @@
   D.cards5 = [];
   D.dance5.forEach(function (d) { D.speeds.forEach(function (sp) { D.cards5.push({ v: d.w.charAt(0).toUpperCase() + d.w.slice(1), key: d.w, m: sp.w, mk: sp.w, e: d.e, bpm: sp.bpm }); }); });
 
-  /* the Sing and Move step: one move for each sentence, and one for the answer */
+  /* the Sing and Move step: one move for each call line, and one for the answer */
   D.songMoves = [
-    { v: 'turn', e: '🔄', t: 'Turn slowly. You are the moon.' },
-    { v: 'step', e: '👣', t: 'Hold hands. Step to the left.' },
-    { v: 'hop', e: '🐇', t: 'Hop like a moon rabbit.' },
-    { v: 'bow', e: '🙇', t: 'Bow and say thank you.' },
-    { v: 'clap', e: '👏', t: 'Clap together with your family.' }
+    { v: 'right', e: '➡️', t: 'Hold hands. Step to the right.' }, { v: 'left', e: '⬅️', t: 'Hold hands. Step to the left.' },
+    { v: 'in', e: '⬇️', t: 'Walk into the middle, hands up.' }, { v: 'out', e: '⬆️', t: 'Walk back out, hands down.' },
+    { v: 'tall', e: '🧍', t: 'Walk tall. Stretch up high!' }, { v: 'low', e: '🧎', t: 'Walk low. Bend your knees.' },
+    { v: 'fast', e: '⚡', t: 'Walk fast in the circle.' }, { v: 'slow', e: '🐢', t: 'Walk very slowly.' },
+    { v: 'done', e: '👏', t: 'Clap and cheer. We are done!' }, { v: 'sit', e: '🪑', t: 'Sit down on the floor.' }, { v: 'rest', e: '😌', t: 'Have a rest. Close your eyes.' }
   ];
-  D.answerMove = { v: 'jump', e: '🙌', t: 'Hands up! Everybody answers!' };
+  D.answerMove = { v: 'answer', e: '🙌', t: 'Hands up! Everybody answers!' };
   D.hwUrl = 'chuseok-moon-homework/index.html';
   root.MoonData = D;
 })(window);
