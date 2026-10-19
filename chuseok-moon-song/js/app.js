@@ -322,7 +322,7 @@
       } else {
         var cur = flat[order[k]], opp = flat[order[k] % 2 === 0 ? order[k] + 1 : order[k] - 1]; half = false;
         big.innerHTML = ''; big.appendChild(h('div', { class: 'rq-e', text: opp.e })); big.appendChild(h('div', { class: 'rq-t', text: cur.w.toUpperCase() + ' ↔ ' + opp.w.toUpperCase() })); big.appendChild(h('div', { class: 'rq-a', text: D.calls[opp.i] }));
-        A.speak(D.calls[opp.i]); sfx('correct'); addGlow(1); game.textContent = '🎴 Opposite game: next word';
+        A.speakSeq(['Now the opposite!', D.calls[opp.i]]); sfx('correct'); addGlow(1); game.textContent = '🎴 Opposite game: next word';
       }
     });
     var ends = h('div', { class: 'row' }, [h('span', { class: 'lab', text: 'The ending of the song:' })].concat([8, 9, 10].map(function (i) {
