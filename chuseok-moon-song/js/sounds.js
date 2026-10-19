@@ -75,8 +75,7 @@
   function sayList(keys) { return keys.reduce(function (p, k) { return p.then(function () { return say(k); }); }, Promise.resolve()); }
   /* get everything ready after the first click */
   function preload() {
-    ['band_slow_60', 'band_soft_70', 'band_mid_84', 'band_loud_92', 'band_fast_108', 'drum_dung', 'drum_deok', 'drum_rim', 'sfx_correct', 'sfx_team_done', 'sfx_cheer', 'sfx_moon_glow', 'sfx_try_again',
-      'v_step', 'v_turn', 'v_clap', 'v_hop', 'v_bow', 'v_slowly', 'v_quickly', 'v_freeze', 'v_ganggang', 'v_happy_chuseok'].forEach(function (n) { load(n).catch(function () { /* optional */ }); });
+    ['band_slow_60', 'band_soft_70', 'band_mid_84', 'band_loud_92', 'band_fast_108', 'drum_dung', 'drum_deok', 'drum_rim', 'sfx_correct', 'sfx_team_done', 'sfx_cheer', 'sfx_moon_glow', 'sfx_try_again'].forEach(function (n) { load(n).catch(function () { /* optional */ }); });
     load('moon_bowl', '.wav').catch(function () { /* optional */ }); load('clap_group', '.wav').catch(function () { /* optional */ });
   }
   if (typeof document !== 'undefined') document.addEventListener('click', function () { ensure(); preload(); }, { once: true });

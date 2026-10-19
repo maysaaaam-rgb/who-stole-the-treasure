@@ -5,7 +5,7 @@
 (function (root) {
   'use strict';
   var ac = null, master = null, on = true, voice = null, voicesTried = false;
-  var VOICE_DIR = '../assets/voice/', manifest = null, normMap = {}, cur = null, seqToken = 0, lastMode = 'none';
+  var VOICE_DIR = 'audio/voice/', manifest = null, normMap = {}, cur = null, seqToken = 0, lastMode = 'none';
 
   function norm(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function loadManifest() {
