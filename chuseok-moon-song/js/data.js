@@ -99,6 +99,15 @@
   D.cards5 = [];
   D.dance5.forEach(function (d) { D.speeds.forEach(function (sp) { D.cards5.push({ v: d.w.charAt(0).toUpperCase() + d.w.slice(1), key: d.w, m: sp.w, mk: sp.w, e: d.e, bpm: sp.bpm }); }); });
 
+  /* the Sing and Move step: one move for each sentence, and one for the answer */
+  D.songMoves = [
+    { v: 'turn', e: '🔄', t: 'Turn slowly. You are the moon.' },
+    { v: 'step', e: '👣', t: 'Hold hands. Step to the left.' },
+    { v: 'hop', e: '🐇', t: 'Hop like a moon rabbit.' },
+    { v: 'bow', e: '🙇', t: 'Bow and say thank you.' },
+    { v: 'clap', e: '👏', t: 'Clap together with your family.' }
+  ];
+  D.answerMove = { v: 'jump', e: '🙌', t: 'Hands up! Everybody answers!' };
   D.hwUrl = 'chuseok-moon-homework/index.html';
   root.MoonData = D;
 })(window);
