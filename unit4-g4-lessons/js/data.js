@@ -11,10 +11,10 @@
 
   /* Lesson 1 ---------------------------------------------------------- */
   D.l1missions = [
-    { e: '🧊', t: 'Freeze Frame', a: 'o_dancers' }, { e: '🏀', t: 'Court Shootout', a: 'o_shooting' },
-    { e: '🎙️', t: 'Live Commentary', a: 'o_basketball' }, { e: '🔢', t: 'Morning Relay', a: 'o_score' },
-    { e: '🎴', t: 'Disaster Cards', a: 'o_team_hands' }
+    { e: '🏀', t: 'Team huddle quiz' }, { e: '🎯', t: 'Shoot the basket' }, { e: '🎙️', t: 'Sports radio' },
+    { e: '🔢', t: 'Replay the game' }, { e: '🏆', t: 'Win the Final Quarter' }
   ];
+  D.rival = 40;   // the rival team's score: the class must catch up
   D.l1hook = [
     'Welcome to Team Week! Look at the pictures. Do you see a team?',
     'Teams work together. What teams do you know?',
@@ -74,8 +74,17 @@
   ];
 
   /* Order the events (first, then, after that, finally) */
+  /* Team huddle: questions about the reading we just did (book pp. 56-61), own wording */
+  D.huddle = [
+    { q: 'How many teams are in the league?', o: ['twelve', 'five', 'two'], a: 0, e: '🏆', hint: 'Think of the league: a big group of teams.' },
+    { q: 'How many players from each team are on the court?', o: ['five', 'ten', 'two'], a: 0, e: '🏟️', hint: 'Ten players in all: how many for each team?' },
+    { q: 'A basket from far away is worth ...', o: ['three points', 'two points', 'five points'], a: 0, e: '🎯', hint: 'From far away is harder, so it is worth more.' },
+    { q: 'Who scored the three-pointer?', o: ['Chelsea Gray', 'Harry', 'Mr. Williams'], a: 0, e: '🙌', hint: 'She plays for the Sparks.' },
+    { q: 'The Sparks were losing by ...', o: ['five points', 'one point', 'twenty points'], a: 0, e: '😬', hint: 'The game was almost over.' },
+    { q: 'What did the Sparks win that year?', o: ['the championship', 'a ball', 'a bus'], a: 0, e: '🏆', hint: 'They worked even harder!' }
+  ];
   D.order = [
-    { title: 'A basketball game', e: '🏀', a: 'o_basketball', steps: ['The players come on the court.', 'They pass the ball to each other.', 'A player shoots at the basket.', 'The team scores. Everyone cheers!'] },
+    { title: 'The Sparks game', e: '🏀', a: 'o_basketball', steps: ['The Sparks played the Lynx in a big game.', 'The Sparks were losing by five points.', 'Chelsea Gray scored a three-pointer.', 'The Sparks worked harder and won the championship.'] },
     { title: 'Paige’s morning at home', e: '☀️', a: 'o_team_hands', steps: ['I wake up.', 'I eat breakfast.', 'I put on my school bag.', 'I walk to school with my friends.'] },
     { title: 'Making a team poster', e: '🎨', a: 'o_league', steps: ['We choose the team name.', 'We draw a big picture.', 'We write the words.', 'We show the poster to the class.'] }
   ];
