@@ -96,6 +96,17 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed6');
     } catch (e) { /* ignore */ }
   }
+  /* Grade 3 Mona Lisa review lesson (after the book pages): title and note on the 3/A and 3/B lesson once */
+  function monaOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed7')) return;
+      var list = customEvents().slice(), n = 0;
+      var M = { 'class-3a|2026-10-20|10:30': 1, 'class-3b|2026-10-21|10:30': 1 };
+      var note = 'Review after the book pages pp. 56-59. Games: Look Say Act (case words), Sneak to the Mona Lisa, Painting Race (two teams build a Mona Lisa jigsaw by answering past tense and word questions; wrong answers can be stolen), story order bonus. Lesson: review-g3-museum.';
+      list.forEach(function (e) { if (M[e.classId + '|' + e.date + '|' + e.time] && /^seed1-/.test(e.id)) { e.title = 'U4 Review: Mona Lisa Mystery (Painting Race)'; e.type = 'unit4'; e.note = note; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed7');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -214,7 +225,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
