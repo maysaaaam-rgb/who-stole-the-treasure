@@ -2009,8 +2009,8 @@
       <g class="monster-wings-layer drg-wings" filter="url(#mf-shadow)">
         <linearGradient id="${gid}" x1="0" y1="1" x2="1" y2="0">
           <stop offset="0%" stop-color="${palette.primaryLight}" />
-          <stop offset="60%" stop-color="${palette.primary || palette.primaryLight}" />
-          <stop offset="100%" stop-color="${palette.primaryLight}" />
+          <stop offset="55%" stop-color="${palette.purple || palette.primaryLight}" />
+          <stop offset="100%" stop-color="${palette.purpleDark || palette.primaryDark}" />
         </linearGradient>
         ${one(-1)}${one(1)}
       </g>${sparkles}`;
