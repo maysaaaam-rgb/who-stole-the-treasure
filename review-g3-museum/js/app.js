@@ -297,10 +297,10 @@
 
   /* ============================== Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59) ============================== */
   function todayG3(c) {
-    todayScreen(c, 'Today we review your book pages about a famous painting. Three games!', [
+    todayScreen(c, 'Today we review your book pages about a famous painting. Three games, and a bonus!', [
       { e: '🔍', t: 'Look, Say, Act', s: 'Five detective words', a: 'o_plan' },
       { e: '🤫', t: 'Sneak to the Mona Lisa', s: 'Tiptoe, freeze, tiptoe', a: 'o_steal' },
-      { e: '🔢', t: 'Put the story in order', s: 'What happened first?', a: 'o_mona_frame' }
+      { e: '🖼️', t: 'Painting Race', s: 'Two teams build the Mona Lisa', a: 'o_mona_frame' }
     ]);
   }
 
@@ -345,7 +345,113 @@
     });
   }
 
-  /* GAME 3: Put the story in order */
+  /* GAME 3: Painting Race. Two teams, two Mona Lisas, at the same time. A right answer wins a piece: drag it to the glowing place. A wrong answer can be stolen by the other team. */
+  function paintRace(c) {
+    howTo(c, { icon: '🖼️', title: 'Painting Race', goal: 'Two teams build the Mona Lisa at the same time. Answer a question, win a piece!', pupils: 'One pupil from each team comes to the board. Answer the question on YOUR side. Right = you get a piece: drag it to the glowing place. Wrong = the other team may steal the question!', teacher: 'Both teams play together. Change the pupils at the board every few pieces. Press the speaker to read a question. 18 pieces each; the first painting finished wins.' }, function (host, again) {
+      var N = 18, COLS = 3, ROWS = 6, PAIRS = [[0, 1], [2, 3], [0, 2], [1, 3]], pairAt = 0, won = null, over = false;
+      var useImg = hasArt('painting_mona');
+      function slotStyle(i) {
+        var col = i % COLS, row = Math.floor(i / COLS);
+        if (useImg) return 'background-image:url(art/painting_mona.webp);background-size:' + (COLS * 100) + '% ' + (ROWS * 100) + '%;background-position:' + (col / (COLS - 1) * 100) + '% ' + (row / (ROWS - 1) * 100) + '%;';
+        return 'background:linear-gradient(135deg,hsl(' + (28 + i * 6) + ',55%,' + (28 + (i % 5) * 4) + '%),hsl(' + (20 + i * 4) + ',45%,22%));';
+      }
+      function makeTeam(side, idx) {
+        var T = { side: side, idx: idx, placed: [], count: 0, order: shuffle(Array.apply(null, { length: N }).map(function (x, k) { return k; })), bank: shuffle(D.race.slice()), bi: 0, steals: [], pending: null, extra: 0, cur: null, locked: false, done: false };
+        for (var i = 0; i < N; i++) T.placed.push(false);
+        var t = D.teams[idx];
+        T.el = h('div', { class: 'pz-panel' }); T.el.style.setProperty('--c', t.c);
+        T.head = h('div', { class: 'pz-head' }); T.board = h('div', { class: 'pz-board' }); T.q = h('div', { class: 'pz-q' }); T.tray = h('div', { class: 'pz-tray' }); T.msg = h('div', { class: 'pz-msg' });
+        for (var k = 0; k < N; k++) { (function (k) { var sl = h('div', { class: 'pz-slot' }); sl.dataset.i = k; if (!useImg) sl.textContent = String(k + 1); sl.addEventListener('click', function () { tryPlace(T, k); }); T.board.appendChild(sl); })(k); }
+        T.el.appendChild(T.head); T.el.appendChild(h('div', { class: 'pz-body' }, [T.board, h('div', { class: 'pz-side' }, [T.q, T.tray, T.msg])]));
+        return T;
+      }
+      function paintHead(T) {
+        var t = D.teams[T.idx]; T.head.innerHTML = '';
+        T.head.appendChild(h('b', { text: t.e + ' ' + t.n })); T.head.appendChild(h('span', { class: 'pz-count', text: T.count + ' / ' + N }));
+        T.head.appendChild(btn('🔊', 'small ghost', function () { if (T.cur) A.speak(T.cur.q.replace(/____/g, 'blank')); }));
+        T.head.appendChild(btn('⏭', 'small ghost', function () { if (!T.locked && !T.done && T.pending === null) nextQuestion(T, true); }));
+      }
+      function nextPiece(T) { for (var k = 0; k < T.order.length; k++) if (!T.placed[T.order[k]]) return T.order[k]; return null; }
+      function highlight(T) { [].forEach.call(T.board.children, function (sl, k) { sl.classList.toggle('target', T.pending === k); }); }
+      function giveQuestion(T) {
+        var item = T.steals.length ? T.steals.shift() : null, steal = !!item;
+        if (!item) { item = T.bank[T.bi % T.bank.length]; T.bi++; }
+        var opts = shuffle([{ t: item[1], ok: true }, { t: item[2], ok: false }, { t: item[3], ok: false }]);
+        return { q: item[0], opts: opts, raw: item, steal: steal };
+      }
+      function nextQuestion(T, skipped) {
+        if (T.done) { T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-done', text: '🎉 Painting finished!' })); return; }
+        T.locked = false; T.cur = giveQuestion(T); T.q.innerHTML = ''; T.tray.innerHTML = ''; T.msg.textContent = skipped ? 'New question!' : '';
+        if (T.cur.steal) T.q.appendChild(h('div', { class: 'pz-steal', text: '⚡ STEAL! Right answer = 2 pieces' }));
+        var art0 = T.cur.raw[4]; if (art0 && hasArt(art0)) T.q.appendChild(h('div', { class: 'pz-pic' }, [art(art0, 'pz-img')]));
+        T.q.appendChild(h('div', { class: 'pz-qt', text: T.cur.q }));
+        T.cur.opts.forEach(function (o) {
+          var b = btn(o.t, 'pz-opt', function () { answer(T, o, b); }); T.q.appendChild(b);
+        });
+      }
+      function answer(T, o, b) {
+        if (T.locked || T.done || over) return;
+        if (o.ok) {
+          T.locked = true; sfx('correct'); b.classList.add('good'); [].forEach.call(T.q.querySelectorAll('.pz-opt'), function (x) { x.disabled = true; });
+          T.extra = T.cur.steal ? 1 : 0; setTimeout(function () { givePiece(T); }, 450);
+        } else {
+          b.classList.add('wobble', 'bad'); b.disabled = true; sfx('soft');
+          T.locked = true; T.msg.textContent = 'Not this time!';
+          var O = other(T); if (O && !O.done) { O.steals.push(T.cur.raw); O.msg.textContent = '⚡ A question to STEAL is coming!'; }
+          setTimeout(function () { nextQuestion(T); }, 1100);
+        }
+      }
+      function givePiece(T) {
+        var k = nextPiece(T); if (k === null) { finishTeam(T); return; }
+        T.pending = k; T.q.innerHTML = ''; T.q.appendChild(h('div', { class: 'pz-qt', text: '✅ Right! Drag the piece to the glowing place.' }));
+        T.tray.innerHTML = ''; var pc = h('div', { class: 'pz-piece' }); pc.style.cssText += slotStyle(k); if (!useImg) pc.textContent = String(k + 1);
+        T.tray.appendChild(pc); highlight(T); dragify(T, pc, k);
+      }
+      function dragify(T, pc, k) {
+        pc.addEventListener('pointerdown', function (ev) {
+          ev.preventDefault(); try { pc.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ }
+          var gh = pc.cloneNode(true); gh.className = 'pz-piece pz-ghost'; gh.style.left = ev.clientX + 'px'; gh.style.top = ev.clientY + 'px'; document.body.appendChild(gh); pc.style.opacity = '.35';
+          function move(e) { gh.style.left = e.clientX + 'px'; gh.style.top = e.clientY + 'px'; }
+          function up(e) {
+            pc.removeEventListener('pointermove', move); pc.removeEventListener('pointerup', up); pc.removeEventListener('pointercancel', up);
+            gh.style.display = 'none'; var el = document.elementFromPoint(e.clientX, e.clientY); var sl = el && el.closest ? el.closest('.pz-slot') : null; gh.remove(); pc.style.opacity = '';
+            if (sl && T.board.contains(sl)) tryPlace(T, parseInt(sl.dataset.i, 10));
+          }
+          pc.addEventListener('pointermove', move); pc.addEventListener('pointerup', up); pc.addEventListener('pointercancel', up);
+        });
+      }
+      function tryPlace(T, slotIdx) {
+        if (T.pending === null || T.done || over) return;
+        var sl = T.board.children[slotIdx];
+        if (slotIdx !== T.pending) { sl.classList.remove('wobble'); void sl.offsetWidth; sl.classList.add('wobble'); sfx('soft'); T.msg.textContent = 'Almost! Look at the glowing place.'; return; }
+        T.placed[slotIdx] = true; T.count++; T.pending = null; sl.classList.add('filled'); sl.classList.remove('target'); sl.textContent = ''; sl.style.cssText += slotStyle(slotIdx);
+        T.tray.innerHTML = ''; sfx('correct'); paintHead(T);
+        if (T.count >= N) { finishTeam(T); return; }
+        if (T.extra > 0) { T.extra--; T.msg.textContent = '⚡ Bonus piece!'; setTimeout(function () { givePiece(T); }, 500); return; }
+        setTimeout(function () { nextQuestion(T); }, 500);
+      }
+      function finishTeam(T) {
+        T.done = true; T.pending = null; T.q.innerHTML = ''; T.tray.innerHTML = ''; paintHead(T); T.el.classList.add('pz-complete');
+        T.q.appendChild(h('div', { class: 'pz-done', text: '🎉 Painting finished!' }));
+        if (!won) { won = T; addPoint(T.idx, 5); sfx('win'); confetti(); T.msg.textContent = '🏆 First! +5 points'; A.speak('The Mona Lisa is finished! Well done!'); } else { addPoint(T.idx, 3); sfx('win'); T.msg.textContent = '⭐ Finished! +3 points'; }
+        if (L.done && R.done) { over = true; setTimeout(function () { gameFinish(c, host, again); }, 2500); }
+      }
+      function other(T) { return T === L ? R : L; }
+      var L, R, arena = h('div', { class: 'pz-arena' }), ctrl = h('div', { class: 'row' });
+      function start() {
+        won = null; over = false; arena.innerHTML = ''; var pr = PAIRS[pairAt];
+        L = makeTeam('L', pr[0]); R = makeTeam('R', pr[1]); arena.appendChild(L.el); arena.appendChild(R.el);
+        [L, R].forEach(function (T) { paintHead(T); nextQuestion(T); });
+      }
+      ctrl.appendChild(btn('👥 Other teams', 'small ghost', function () { pairAt = (pairAt + 1) % PAIRS.length; start(); }));
+      ctrl.appendChild(btn('🔁 Restart', 'small ghost', function () { start(); }));
+      ctrl.appendChild(btn('🏁 Finish', 'small ghost', function () { over = true; gameFinish(c, host, again); }));
+      host.appendChild(arena); host.appendChild(ctrl);
+      start();
+    });
+  }
+
+  /* BONUS GAME: Put the story in order */
   function storyOrder(c) { orderRace(c, D.order, 3); }
 
   function finishG3(c) { finishScreen(c, 'Case closed', ['Peruggia took the painting.', 'The police found it.', 'The Mona Lisa went home.'], '🚪 Door pass: say one sentence: "Peruggia took the painting." or one new word (plan, steal, lifted, robbery, arrested).'); }
@@ -359,7 +465,9 @@
         tip: ['Book link: Words in Context, p. 59 (plan, steal, lifted, robbery, arrested).', 'The picture shows first, the pupils guess, then press SAY IT: the board says the word and the sentence, and everybody ACTS the word. Give a point to the team that acts best.'] },
       { t: 'Game 2: Sneak to the Mona Lisa', mins: '10 min', mode: 'move', run: sneak, intro: 'Red light, green light, in the museum.',
         tip: ['A movement game for the new words. Pupils start at the back of the room; the "painting" (a picture) is at the front. The board switches by itself between GO (tiptoe) and FREEZE. A pupil who moves when the guard looks says "I am arrested!" and goes back (no points lost). The first pupil to arrive says "I took the painting!": tap that team (+2).'] },
-      { t: 'Game 3: Put the story in order', mins: '8 min', mode: 'game', run: storyOrder, intro: 'What happened first? Then? Finally?',
+      { t: 'Game 3: Painting Race', mins: '12 min', mode: 'race', run: paintRace, intro: 'Two teams build the Mona Lisa at the same time!',
+        tip: ['Book link: past tense (took, lifted, found, hid, was/were) and the case words (plan, steal, lifted, robbery, arrested, museum, thief, guard).', 'Two teams play together, one pupil from each team at the board. A right answer wins one puzzle piece: drag it to the glowing place in the painting. A wrong answer: the other team gets that question next, and a right answer to a stolen question gives 2 pieces. Nobody loses points. 18 pieces each. First painting finished = 5 points, second = 3 points. Press the speaker to read a question; the arrow skips one.', 'Play it twice with the other two teams (button: Other teams).'] },
+      { t: 'Bonus: Put the story in order', mins: '6 min', mode: 'game', run: storyOrder, intro: 'What happened first? Then? Finally? (only if there is time)',
         tip: ['Book link: the years in the reading (1503, 1911, 1913), pp. 58-63.', 'Each team puts 4 sentences in order (the Mona Lisa timeline and the robbery night). Right order = 3 points. A wrong tap wobbles with a hint. Then the team retells the story with First, Then, After that, Finally.'] },
       { t: 'Case Closed', mins: '5 min', mode: 'think', run: finishG3, intro: 'Scores and one sentence each.',
         tip: ['Show the scores and cheer for everyone. Each team says one sentence. At the door each pupil says one past sentence or one new word.'] }
