@@ -14,6 +14,8 @@
     halloween: { id: 'halloween', name: 'Halloween', e: '🎃', sign: 'linear-gradient(180deg,#6d28d9,#3b0764)', ink: '#ffedd5', plinth: ['#fdba74', '#c2410c'], rest: '⛺',
       bg: 'radial-gradient(circle at 82% 15%,#fde68a 0 4.5%,rgba(253,230,138,.35) 5.5%,transparent 17%),linear-gradient(180deg,#1b0b33 0%,#3b1470 52%,#7c2d12 100%)', deco: 'radial-gradient(circle at 10% 16%,rgba(255,255,255,.65) 0 .25%,transparent .4%),radial-gradient(circle at 40% 8%,rgba(255,255,255,.6) 0 .25%,transparent .4%)' }
   };
+  /* the colour of the ground under the picture, so a long class continues the scene smoothly */
+  var GROUND = { meadow: '#58b84a', alice: '#cfe9e2', chuseok: '#8a6a43', halloween: '#4b2a85' };
   /* first matching rule wins; the teacher can always override with the scene picker */
   var RULES = [
     { theme: 'halloween', from: '2026-10-26', to: '2026-11-01' },
@@ -39,7 +41,7 @@
     out += '.cb.scene-on{background-size:cover!important}';
     for (k in THEMES) {
       t = THEMES[k];
-      out += '.cb.scene-' + k + '{--sign:' + t.sign + ';--ink:' + t.ink + ';--p1:' + t.plinth[0] + ';--p2:' + t.plinth[1] + ';background:url(' + a + 'bg_' + k + '.webp) center/cover no-repeat,' + t.deco + ',' + t.bg + '!important}';
+      out += '.cb.scene-' + k + '{--sign:' + t.sign + ';--ink:' + t.ink + ';--p1:' + t.plinth[0] + ';--p2:' + t.plinth[1] + ';background:url(' + a + 'bg_' + k + '.webp) center top/100% auto no-repeat!important;background-color:' + GROUND[k] + '!important}';
       out += '.cb.scene-' + k + ' .cb-ped{background-image:url(' + a + 'ped_' + k + '.webp),radial-gradient(ellipse at 50% 35%,var(--p1),var(--p2))}';
       out += '.cb.scene-' + k + ' .cb-st.off .cb-pw::after{content:"' + t.rest + '";background-image:url(' + a + 'rest_' + k + '.webp)}';
       out += 'body[data-cb-scene="' + k + '"] .cb-win>div,body[data-cb-scene="' + k + '"] .cb-grp>div{background:' + t.bg + ';border-color:rgba(255,255,255,.45)}';

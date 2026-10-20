@@ -204,8 +204,120 @@
     "description": "A brilliant chief medical officer pet wearing a crisp white coat and head mirror.",
     "imageSrc": "assets/monsters/pets/pet-crew-blue-doctor.png",
     "status": "active"
+  },
+  {
+    "id": "pet-hal-ghost",
+    "name": "Friendly Ghost Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "👻",
+    "rarity": "rare",
+    "price": 50,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A shy round ghost with rosy cheeks and a tiny purple bow tie.",
+    "imageSrc": "assets/monsters/pets/pet-hal-ghost.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-bat",
+    "name": "Little Bat Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🦇",
+    "rarity": "rare",
+    "price": 50,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A small purple bat with big ears who wraps up in its wings like a cape.",
+    "imageSrc": "assets/monsters/pets/pet-hal-bat.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-pumpkin",
+    "name": "Pumpkin Pal",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🎃",
+    "rarity": "common",
+    "price": 30,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A chubby orange pumpkin on two little feet with a curly stem and a big smile.",
+    "imageSrc": "assets/monsters/pets/pet-hal-pumpkin.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-cat",
+    "name": "Witch Cat Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🐈‍⬛",
+    "rarity": "epic",
+    "price": 70,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A black cat in a floppy purple witch hat with a gold buckle.",
+    "imageSrc": "assets/monsters/pets/pet-hal-cat.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-skeleton",
+    "name": "Bony Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "💀",
+    "rarity": "epic",
+    "price": 70,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A tiny friendly skeleton with a big smile and a cosy orange scarf.",
+    "imageSrc": "assets/monsters/pets/pet-hal-skeleton.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-spider",
+    "name": "Spider Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🕷️",
+    "rarity": "common",
+    "price": 30,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A small friendly spider with big shiny eyes and a red bow.",
+    "imageSrc": "assets/monsters/pets/pet-hal-spider.png",
+    "status": "active"
   }
 ];
+
+  /* Halloween things appear from 26 October 2026 (add ?halloween=1 to the address, or set localStorage eaa_preview_halloween, to preview them earlier) */
+  var HAL_ON = (function () { try { if (/[?&]halloween=1/.test(root.location.search) || localStorage.getItem('eaa_preview_halloween')) return true; } catch (e) { /* ignore */ } var d = new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate() >= 20261026; })();
+  if (!HAL_ON) PET_ITEMS = PET_ITEMS.filter(function (p) { return !/^pet-hal-/.test(p.id); });
 
   var PET_DATA_URIS = {
   "pet-crew-orange": "data:image/webp;base64,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",

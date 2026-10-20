@@ -7,7 +7,7 @@
   var W = 520, H = 640, PEG = 7, DISC = 24, SLOT_Y = 560, NCOL = 10, SLOTS = [10, 20, 50, 20, 10], G = 1300;
 
   GM.modes.plinko = {
-    id: 'plinko', name: 'Plink-oh!', e: '🎃', desc: 'Answer right to drop your pumpkin. It bounces through the pegs into a points slot!',
+    id: 'plinko', name: 'Plink-oh!', nameClassic: 'Plink-oh!', e: '🎃', desc: 'Answer right to drop your pumpkin. It bounces through the pegs into a points slot!', descClassic: 'Answer right to drop your monster disc. It bounces through the pegs into a points slot!',
     fields: [{ key: 'q', label: 'Drops for each team', opts: [[2, '2'], [3, '3'], [4, '4'], [6, '6'], [8, '8']], def: 3 }],
     start: function (ctx) {
       var cfg = ctx.cfg, st = GM.state, rootEl = ctx.root, rounds = (+cfg.q || 3) * st.teams.length, round = 0, turn = 0, busy = false, hal = st.theme === 'halloween';
