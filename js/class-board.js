@@ -276,6 +276,8 @@
     var list = students(cls), present = list.filter(function (s) { return !absent[s.id]; }).length;
     var total = list.reduce(function (n, s) { return n + s.xp; }, 0);
     var BS = root.BoardScenes, sceneOn = !!BS && BS.viewMode() === 'scene', theme = BS ? BS.resolve(cls) : 'meadow';
+    // Scene view: no ranking. Every pupil keeps a fixed place (A to Z), so nobody moves up or down when points are given.
+    if (sceneOn) list = list.slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'tr'); });
     try { document.body.setAttribute('data-cb-scene', sceneOn ? theme : ''); } catch (e) { /* ignore */ }
     var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (sceneOn ? '' : 'on') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
     container.innerHTML = '<div class="cb' + (sceneOn ? ' scene-on scene-' + theme : '') + '" id="cb-root">' +
