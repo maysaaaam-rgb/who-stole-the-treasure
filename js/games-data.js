@@ -48,6 +48,123 @@ const CURRICULUM_TRACKS = [
 
 const GAMES_REGISTRY = [
   {
+    "id": "cat-meme-posters",
+    "aliases": [
+      "cat-meme-posters",
+      "cat-meme-grammar-posters",
+      "cat-memes",
+      "pronoun-posters",
+      "demonstrative-posters"
+    ],
+    "title": "🐱 Cat Meme Grammar Posters: Pronouns & Demonstratives (4× A4 Wall Set)",
+    "description": "Printable 4-page A4 classroom grammar wall posters starring real viral internet cat memes! Page 1: Singular Pronouns (HE = Sheikh Cat in shemagh, SHE = Flower Crown Princess Cat, IT = Cat in a Box). Page 2: Direct Address & Groups (YOU = Pointing Cat, THEY = Subject doing action, THEM = Object receiving treats). Page 3: Singular Pointing (THIS = 1 close in hand vs. THAT = 1 far on roof). Page 4: Plural Pointing (THESE = 2+ close on desk vs. THOSE = 2+ far across yard).",
+    "type": "game",
+    "category": "Phonics & Language Quests",
+    "categoryGroup": "Grammar & Communication",
+    "categoryLabel": "🐱 Printable Grammar Wall Posters",
+    "level": "A1–A1+",
+    "cefrLevel": "A1",
+    "age": "Ages 6–11",
+    "ageGroup": "6-11",
+    "grade": "Grade 2–4",
+    "grades": [
+      "Grade 2",
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 20,
+    "durationText": "4× A4 Print",
+    "estimatedMinutes": 20,
+    "xp": 100,
+    "skills": [
+      "Personal Pronouns (He, She, It, You, They, Them)",
+      "Demonstrative Pronouns (This, That, These, Those)",
+      "Singular vs. Plural & Near vs. Far Visual Anchor",
+      "Classroom Wall Reference & Choral Drilling"
+    ],
+    "topic": "Pronouns (He/She/It/You/They/Them) & Demonstratives (This/That/These/Those)",
+    "topics": [
+      "Pronouns",
+      "Demonstratives",
+      "Grammar Posters",
+      "Classroom Printables"
+    ],
+    "languageFocus": "He is wearing a shemagh. / She is a lovely princess. / IT is a box! / Yes, YOU! / THEY are planning a secret. / Give the treats to THEM! / THIS kitten (1 close) vs. THAT cat (1 far) / THESE kittens (2+ close) vs. THOSE cats (2+ far).",
+    "activityMode": "4× A4 Full-Color Printable Classroom Wall Posters & Smartboard Visual Reference",
+    "interactionType": "1-Click A4 Print Engine, Downloadable PDF & Real Cat Meme Visual Anchors",
+    "difficulty": "Grade 2–4 (A1)",
+    "tags": [
+      "cat-memes",
+      "grammar-posters",
+      "pronouns",
+      "this-that-these-those",
+      "he-she-it",
+      "they-them",
+      "printable",
+      "a4-posters"
+    ],
+    "learningObjectives": [
+      "Distinguish singular personal pronouns: HE (male), SHE (female), and IT (1 object/thing).",
+      "Use direct address YOU, subject pronoun THEY (doing the action), and object pronoun THEM (receiving the action).",
+      "Point to singular and plural items near and far using THIS (1 close), THAT (1 far), THESE (2+ close), and THOSE (2+ far)."
+    ],
+    "teacherInstructions": "Display on the smartboard for choral grammar warm-ups or click 'Print 4× A4' / 'Open PDF' to print full-color A4 wall posters for the classroom.",
+    "studentInstructions": "Meet the 10 viral grammar cats! Check the badges and arrows to master HE, SHE, IT, YOU, THEY, THEM, THIS, THAT, THESE, and THOSE!",
+    "route": "cat-meme-posters/index.html",
+    "url": "cat-meme-posters/index.html",
+    "path": "cat-meme-posters/index.html",
+    "worksheet": "cat-meme-posters/cat-meme-grammar-posters.pdf",
+    "worksheetUrl": "cat-meme-posters/cat-meme-grammar-posters.pdf",
+    "worksheetRoute": "cat-meme-posters/cat-meme-grammar-posters.pdf",
+    "teacherGuide": true,
+    "supportsAssignment": true,
+    "supportsProgress": true,
+    "featured": true,
+    "thumbnailIcon": "🐱",
+    "thumbnailUrl": "cat-meme-posters/art/he.webp",
+    "gradient": "linear-gradient(135deg, #2b70e4 0%, #7950f2 50%, #f59f00 100%)",
+    "status": "active",
+    "trackId": "track-3",
+    "trackTitle": "🗣️ Language Mechanics & Communication Quests",
+    "trackOrder": 0,
+    "formula": "HE / SHE / IT • YOU / THEY / THEM • THIS / THAT / THESE / THOSE",
+    "grammar": {
+      "focusPattern": "Personal & Demonstrative Pronouns",
+      "formula": "HE / SHE / IT • YOU / THEY / THEM • THIS / THAT / THESE / THOSE",
+      "formulas": [
+        "He is wearing a shemagh. / She is a lovely princess. / IT is a box!",
+        "Yes, YOU! / THEY are planning a secret. / Give the treats to THEM!",
+        "THIS kitten is in my hand! / THAT grumpy cat is on the roof!",
+        "THESE kittens are right on my desk! / THOSE cats are across the yard!"
+      ]
+    },
+    "vocabulary": {
+      "core": [
+        "he",
+        "she",
+        "it",
+        "you",
+        "they",
+        "them",
+        "this",
+        "that",
+        "these",
+        "those"
+      ],
+      "supporting": [
+        "shemagh",
+        "princess",
+        "box",
+        "secret",
+        "treats",
+        "kitten",
+        "roof",
+        "desk",
+        "yard"
+      ]
+    }
+  },
+  {
     "id": "alice-cards-4a",
     "aliases": [
       "alice-cards-4a",

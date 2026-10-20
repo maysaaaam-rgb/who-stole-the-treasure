@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cat Meme Grammar Posters - 4x A4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #555;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  /* A4 Canvas Sizing */
+  .a4-page {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+    padding: 10mm 12mm;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    page-break-after: always;
+    overflow: hidden;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  @media print {
+    body {
+      background: none;
+      padding: 0;
+      gap: 0;
+    }
+    .a4-page {
+      box-shadow: none;
+      width: 210mm;
+      height: 297mm;
+      page-break-after: always;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* Shared Poster Header */
+  .poster-header {
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 1px;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0px #111;
+    flex-shrink: 0;
+  }
+  .poster-header h1 { font-size: 25pt; margin: 0; line-height: 1.08; }
+  .poster-header p { font-size: 12.5pt; margin-top: 3px; font-weight: 900; opacity: 0.95; font-family: 'Nunito', sans-serif; }
+
+  /* Content Grids */
+  .grid-2x1 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+  .grid-vertical {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Meme Cards */
+  .meme-card {
+    border-radius: 18px;
+    border: 4px solid #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    text-align: center;
+    background: #fafafa;
+    position: relative;
+    box-shadow: 4px 4px 0px #111;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .badge {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28pt;
+    padding: 3px 18px;
+    border-radius: 50px;
+    color: #fff;
+    display: inline-block;
+    border: 3px solid #111;
+    margin-bottom: 4px;
+    box-shadow: 3px 3px 0px #111;
+    line-height: 1.05;
+    flex-shrink: 0;
+  }
+
+  .rule-tag {
+    font-size: 10.5pt;
+    font-weight: 900;
+    text-transform: uppercase;
+    background: #fff;
+    border: 2.5px solid #111;
+    padding: 3px 12px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+
+  .illustration {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 4px 0 6px 0;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 3px solid #111;
+    background: #fff;
+  }
+
+  .illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .caption-bubble {
+    width: 100%;
+    background: #ffffff;
+    border: 3px solid #111;
+    border-radius: 14px;
+    padding: 7px 10px;
+    box-shadow: 2px 2px 0px #111;
+    flex-shrink: 0;
+  }
+  .caption-bubble .speech {
+    font-size: 13pt;
+    font-weight: 900;
+    color: #111;
+  }
+  .caption-bubble .example {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #444;
+    margin-top: 2px;
+  }
+
+  /* Color Schemes */
+  .bg-blue { background-color: #2b70e4; }
+  .bg-pink { background-color: #e83e8c; }
+  .bg-amber { background-color: #f59f00; }
+  .bg-purple { background-color: #7950f2; }
+  .bg-green { background-color: #2fb344; }
+  .bg-red { background-color: #d63939; }
+  .bg-teal { background-color: #0ca678; }
+
+  /* Poster Specific Customizations */
+  .p1-header { background: #2b70e4; }
+  .p2-header { background: #7950f2; }
+  .p3-header { background: #0ca678; }
+  .p4-header { background: #f59f00; }
+
+  .card-he { background: #e7f5ff; border-color: #1c7ed6; }
+  .card-she { background: #fff0f6; border-color: #d6336c; }
+  .card-it { background: #fff9db; border-color: #f08c00; }
+
+  .card-you { background: #f3f0ff; border-color: #7048e8; }
+  .card-they { background: #e6fcf5; border-color: #0ca678; }
+  .card-them { background: #fff4e6; border-color: #fd7e14; }
+
+  .card-this { background: #ebfbee; border-color: #2b8a3e; }
+  .card-that { background: #fff5f5; border-color: #c92a2a; }
+
+  .card-these { background: #e6fcf5; border-color: #099268; }
+  .card-those { background: #fff0f6; border-color: #a61e4d; }
+
+  .full-width-card {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 16px;
+    padding: 12px 16px;
+  }
+  .full-width-card .illustration {
+    width: 48%;
+    height: 100%;
+    margin: 0;
+  }
+  .full-width-card .card-content {
+    width: 52%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================== -->
+<!-- POSTER 1: HE / SHE / IT                     -->
+<!-- ========================================== -->
+<div class="a4-page">
+  <div class="poster-header p1-header">
+    <h1>Singular Pronouns</h1>
+    <p>1 Boy • 1 Girl • 1 Thing</p>
+  </div>
+
+  <div class="grid-2x1" style="flex: 1.25;">
+    <!-- HE CARD -->
+    <div class="meme-card card-he">
+      <div class="badge bg-blue">HE</div>
+      <div class="rule-tag">1 Boy / Male</div>
+      <div class="illustration">
+        <img src="art/he.webp" alt="Gentleman cat wearing a red-and-white shemagh">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"He is wearing a shemagh."</div>
+        <div class="example">He = A handsome gentleman cat!</div>
+      </div>
+    </div>
+
+    <!-- SHE CARD -->
+    <div class="meme-card card-she">
+      <div class="badge bg-pink">SHE</div>
+      <div class="rule-tag">1 Girl / Female</div>
+      <div class="illustration">
+        <img src="art/she.webp" alt="Fluffy white princess cat wearing a flower crown">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"She is a lovely princess."</div>
+        <div class="example">She = One fabulous girl cat!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IT CARD (Full Width) -->
+  <div class="meme-card card-it full-width-card" style="margin-top: 12px; flex: 0.9;">
+    <div class="illustration">
+      <img src="art/it.webp" alt="Cat sitting inside a cardboard box with red arrow pointing at the box">
+    </div>
+    <div class="card-content">
+      <div class="badge bg-amber">IT</div>
+      <div class="rule-tag">1 Object / Thing / Box</div>
+      <div class="caption-bubble" style="margin-top: 4px;">
+        <div class="speech">"What is the cat inside? IT is a box!"</div>
+        <div class="example">Use <b>IT</b> for things, places, and toys.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- POSTER 2: YOU / THEY / THEM                 -->
+<!-- ========================================== -->
+<div class="a4-page">
+  <div class="poster-header p2-header">
+    <h1>Talking To &amp; Groups</h1>
+    <p>Direct Address • Subjects • Objects</p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0;">
+    <!-- YOU CARD (Full Width) -->
+    <div class="meme-card card-you full-width-card" style="flex: 0.9;">
+      <div class="illustration">
+        <img src="art/you.webp" alt="Cat pointing directly at the camera">
+      </div>
+      <div class="card-content">
+        <div class="badge bg-purple">YOU</div>
+        <div class="rule-tag">Looking Right At The Reader</div>
+        <div class="caption-bubble">
+          <div class="speech">"Yes, YOU! Pay attention!"</div>
+          <div class="example">I am talking directly to <b>YOU</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THEY & THEM SIDE BY SIDE -->
+    <div class="grid-2x1" style="flex: 1.3;">
+      <!-- THEY CARD -->
+      <div class="meme-card card-they">
+        <div class="badge bg-teal">THEY</div>
+        <div class="rule-tag">Doing The Action (Subject)</div>
+        <div class="illustration">
+          <img src="art/they.webp" alt="Three cool cats in sunglasses planning a secret">
+        </div>
+        <div class="caption-bubble">
+          <div class="speech">"THEY are planning a secret."</div>
+          <div class="example"><b>They</b> do the action!</div>
+        </div>
+      </div>
+
+      <!-- THEM CARD -->
+      <div class="meme-card card-them">
+        <div class="badge bg-amber">THEM</div>
+        <div class="rule-tag">Receiving The Action (Object)</div>
+        <div class="illustration">
+          <img src="art/them.webp" alt="Hand giving treats to hungry begging cats">
+        </div>
+        <div class="caption-bubble">
+          <div class="speech">"Give the treats to THEM!"</div>
+          <div class="example">The snack goes to <b>them</b>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- POSTER 3: THIS vs. THAT (Singular)          -->
+<!-- ========================================== -->
+<div class="a4-page">
+  <div class="poster-header p3-header">
+    <h1>Pointing: 1 Thing</h1>
+    <p>Close vs. Far Away</p>
+  </div>
+
+  <div class="grid-vertical">
+    <!-- THIS CARD -->
+    <div class="meme-card card-this">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
+        <div class="badge bg-green">THIS</div>
+        <div class="rule-tag" style="background: #2b8a3e; color: #fff;">🟢 1 ITEM + CLOSE</div>
+      </div>
+      <div class="illustration">
+        <img src="art/this.webp" alt="Hands holding a tiny white kitten right up close">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"THIS kitten is in my hand!"</div>
+        <div class="example">Use <b>THIS</b> for 1 thing that is near to you.</div>
+      </div>
+    </div>
+
+    <!-- THAT CARD -->
+    <div class="meme-card card-that">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
+        <div class="badge bg-red">THAT</div>
+        <div class="rule-tag" style="background: #c92a2a; color: #fff;">🔴 1 ITEM + FAR AWAY</div>
+      </div>
+      <div class="illustration">
+        <img src="art/that.webp" alt="Hand pointing to a single grumpy orange cat far away on a roof">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"THAT grumpy cat is on the roof!"</div>
+        <div class="example">Use <b>THAT</b> for 1 thing that is far away.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- POSTER 4: THESE vs. THOSE (Plural)         -->
+<!-- ========================================== -->
+<div class="a4-page">
+  <div class="poster-header p4-header">
+    <h1>Pointing: 2+ Things</h1>
+    <p>Plural Close vs. Plural Far Away</p>
+  </div>
+
+  <div class="grid-vertical">
+    <!-- THESE CARD -->
+    <div class="meme-card card-these">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
+        <div class="badge bg-teal">THESE</div>
+        <div class="rule-tag" style="background: #099268; color: #fff;">🟢 2+ ITEMS + CLOSE</div>
+      </div>
+      <div class="illustration">
+        <img src="art/these.webp" alt="Three cuddly kittens in a basket right on the desk">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"THESE kittens are right on my desk!"</div>
+        <div class="example">Use <b>THESE</b> for many things close to you.</div>
+      </div>
+    </div>
+
+    <!-- THOSE CARD -->
+    <div class="meme-card card-those">
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
+        <div class="badge bg-pink">THOSE</div>
+        <div class="rule-tag" style="background: #a61e4d; color: #fff;">🔴 2+ ITEMS + FAR AWAY</div>
+      </div>
+      <div class="illustration">
+        <img src="art/those.webp" alt="Hand pointing to cats sitting far away across the yard">
+      </div>
+      <div class="caption-bubble">
+        <div class="speech">"THOSE cats are across the yard!"</div>
+        <div class="example">Use <b>THOSE</b> for many things far away.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
