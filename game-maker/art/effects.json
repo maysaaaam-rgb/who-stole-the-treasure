@@ -1,0 +1,114 @@
+{
+ "fx_bat_swarm": {
+  "file": "fx_bat_swarm.webp",
+  "frames": 16,
+  "frameWidth": 512,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ },
+ "fx_coin_shower": {
+  "file": "fx_coin_shower.webp",
+  "frames": 14,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_confetti_burst": {
+  "file": "fx_confetti_burst.webp",
+  "frames": 16,
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_ghost_trail": {
+  "file": "fx_ghost_trail.webp",
+  "frames": 12,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ },
+ "fx_glow_ring": {
+  "file": "fx_glow_ring.webp",
+  "frames": 10,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ },
+ "fx_heart_float": {
+  "file": "fx_heart_float.webp",
+  "frames": 12,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_impact_star": {
+  "file": "fx_impact_star.webp",
+  "frames": 8,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_lightbulb": {
+  "file": "fx_lightbulb.webp",
+  "frames": 8,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_pumpkin_splash": {
+  "file": "fx_pumpkin_splash.webp",
+  "frames": 10,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_rocket_trail": {
+  "file": "fx_rocket_trail.webp",
+  "frames": 12,
+  "frameWidth": 128,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ },
+ "fx_slip_stars": {
+  "file": "fx_slip_stars.webp",
+  "frames": 10,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ },
+ "fx_smoke_puff": {
+  "file": "fx_smoke_puff.webp",
+  "frames": 10,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_sparkle_burst": {
+  "file": "fx_sparkle_burst.webp",
+  "frames": 12,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": false
+ },
+ "fx_star_twirl": {
+  "file": "fx_star_twirl.webp",
+  "frames": 12,
+  "frameWidth": 256,
+  "frameHeight": 256,
+  "fps": 12,
+  "loop": true
+ }
+}

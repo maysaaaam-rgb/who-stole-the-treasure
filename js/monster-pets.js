@@ -204,6 +204,114 @@
     "description": "A brilliant chief medical officer pet wearing a crisp white coat and head mirror.",
     "imageSrc": "assets/monsters/pets/pet-crew-blue-doctor.png",
     "status": "active"
+  },
+  {
+    "id": "pet-hal-ghost",
+    "name": "Friendly Ghost Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "👻",
+    "rarity": "rare",
+    "price": 50,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A shy round ghost with rosy cheeks and a tiny purple bow tie.",
+    "imageSrc": "assets/monsters/pets/pet-hal-ghost.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-bat",
+    "name": "Little Bat Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🦇",
+    "rarity": "rare",
+    "price": 50,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A small purple bat with big ears who wraps up in its wings like a cape.",
+    "imageSrc": "assets/monsters/pets/pet-hal-bat.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-pumpkin",
+    "name": "Pumpkin Pal",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🎃",
+    "rarity": "common",
+    "price": 30,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A chubby orange pumpkin on two little feet with a curly stem and a big smile.",
+    "imageSrc": "assets/monsters/pets/pet-hal-pumpkin.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-cat",
+    "name": "Witch Cat Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🐈‍⬛",
+    "rarity": "epic",
+    "price": 70,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A black cat in a floppy purple witch hat with a gold buckle.",
+    "imageSrc": "assets/monsters/pets/pet-hal-cat.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-skeleton",
+    "name": "Bony Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "💀",
+    "rarity": "epic",
+    "price": 70,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A tiny friendly skeleton with a big smile and a cosy orange scarf.",
+    "imageSrc": "assets/monsters/pets/pet-hal-skeleton.png",
+    "status": "active"
+  },
+  {
+    "id": "pet-hal-spider",
+    "name": "Spider Buddy",
+    "category": "pet",
+    "subCategory": "pets",
+    "icon": "🕷️",
+    "rarity": "common",
+    "price": 30,
+    "unlockLevel": 1,
+    "unlockType": "store",
+    "unlockRequirement": {
+      "level": 1,
+      "label": "Buy it in the Shop 🛒 or find it in a Mystery Box"
+    },
+    "description": "A small friendly spider with big shiny eyes and a red bow.",
+    "imageSrc": "assets/monsters/pets/pet-hal-spider.png",
+    "status": "active"
   }
 ];
 

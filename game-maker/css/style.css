@@ -122,8 +122,6 @@ body.th-classic .gm-hcell{background:linear-gradient(180deg,#2a6b3a,#154824)}
 
 /* Gemini art (used only when the file exists; otherwise the gradients above show) */
 body.th-halloween{background-image:url(../art/bg_halloween_board.webp),radial-gradient(circle at 50% 25%,var(--bg2,#0d1527) 0%,var(--void) 100%);background-size:cover;background-position:center}
-body.th-halloween .gm-tile{background-image:url(../art/tile_halloween.webp),linear-gradient(180deg,color-mix(in srgb,var(--tile) 85%,#fff),var(--tile));background-size:cover}
-body.th-classic .gm-tile{background-image:url(../art/tile_classic.webp),linear-gradient(180deg,color-mix(in srgb,var(--tile) 85%,#fff),var(--tile));background-size:cover}
 body.th-halloween .gm-hunt{background-image:url(../art/bg_pumpkin_patch.webp);background-size:cover;background-position:center}
 .gm-pumpk img,.gm-pumpk.gm-art{max-width:90%;max-height:90%}
 .gm-sprite{position:fixed;background-repeat:no-repeat;pointer-events:none}
