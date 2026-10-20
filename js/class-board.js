@@ -133,7 +133,7 @@
     '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
   function ensureCss() {
     if (document.getElementById('cb-css')) return;
-    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS; document.head.appendChild(el);
+    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
   }
 
   function fmt(sec) { sec = Math.max(0, Math.round(sec)); return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
@@ -275,13 +275,16 @@
     var cls = S().getActiveClass(); viewCls = cls; loadAbsent(cls);
     var list = students(cls), present = list.filter(function (s) { return !absent[s.id]; }).length;
     var total = list.reduce(function (n, s) { return n + s.xp; }, 0);
-    container.innerHTML = '<div class="cb" id="cb-root">' +
+    var BS = root.BoardScenes, sceneOn = !!BS && BS.viewMode() === 'scene', theme = BS ? BS.resolve(cls) : 'meadow';
+    try { document.body.setAttribute('data-cb-scene', sceneOn ? theme : ''); } catch (e) { /* ignore */ }
+    var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (sceneOn ? '' : 'on') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
+    container.innerHTML = '<div class="cb' + (sceneOn ? ' scene-on scene-' + theme : '') + '" id="cb-root">' +
       '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
         '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
-      '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
+      '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + switcher + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
-      '<div class="cb-mg">' + list.map(function (s) {
+      '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s) {
         var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
         var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
@@ -289,7 +292,7 @@
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
-          '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
+          (sceneOn ? '<div class="cb-pw"><i class="cb-ped"></i>' : '') + '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' + (sceneOn ? '</div>' : '') +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
@@ -332,6 +335,8 @@
       catch (e) { data.kids.forEach(function (k) { k.img = ''; }); try { sessionStorage.setItem('eaa_karaoke_roster', JSON.stringify(data)); } catch (e2) { /* the page reads the class list itself */ } }
       location.href = 'karaoke-stage/index.html?cls=' + encodeURIComponent(cls.id);
     },
+    setView: function (v) { if (root.BoardScenes) root.BoardScenes.setViewMode(v); if (root.renderCurrentView) root.renderCurrentView(); },
+    setScene: function (v) { if (root.BoardScenes) root.BoardScenes.setPref(v); if (root.renderCurrentView) root.renderCurrentView(); },
     switchClass: function (id) { S().setActiveClass(id); stopTimer(); timer.left = timer.total; if (root.renderCurrentView) root.renderCurrentView(); },
     menu: function (id, ev) {
       if (ev) ev.stopPropagation();

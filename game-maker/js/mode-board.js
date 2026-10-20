@@ -57,7 +57,7 @@
         var team = st.teams[turn], res = await U().ask(tl.item, team, { timer: +cfg.timer || 0, label: 'Tile ' + (tl.i + 1) });
         tl.used = true; tl.el.classList.add('used'); left--;
         if (res.ok) {
-          U().addScore(turn, 10); U().floatText('+10', tl.el, 'good'); tl.el.textContent = '✓';
+          U().addScore(turn, 10); U().floatText('+10', tl.el, 'good'); tl.el.textContent = '✓'; U().fx('smoke_puff', tl.el);
           if (tl.pu) await reveal(tl, tl.pu);
         } else { tl.el.textContent = '·'; }
         if (left <= 0) { await U().sleep(500); ctx.end(); return; }
@@ -67,7 +67,7 @@
         var pu = GM.powerups.filter(function (p) { return p.id === id; })[0], T = st.teams, target = -1;
         var over = U().h('div', { class: 'gm-over' }), card = U().h('div', { class: 'gm-card gm-glass gm-pucard' }, [U().h('div', { class: 'gm-pu-ic' }, [U().art('pu_' + id, pu.e)]), U().h('h2', { text: pu.n + '!' }), U().h('div', { class: 'gm-q', text: pu.d })]), msg = U().h('div', { class: 'gm-qmsg' });
         card.appendChild(msg); over.appendChild(card); document.getElementById('gm-stage').appendChild(over);
-        A().play(SND[id] || 'pu_good'); U().confetti(10);
+        A().play(SND[id] || 'pu_good'); U().confetti(10); U().fx(id === 'gold' ? 'coin_shower' : id === 'heart' ? 'heart_float' : id === 'rocket' ? 'rocket_trail' : 'sparkle_burst', card, 1.6);
         await U().sleep(900);
         if (pu.needs && T.length > 2) { over.style.display = 'none'; target = await U().chooseTeam(pu.n + ': choose a team', T, turn); over.style.display = ''; }
         var text = applyPU(id, turn, target); msg.textContent = text; U().teamBar(T, turn); U().wobble(document.getElementById('gm-team-' + turn));

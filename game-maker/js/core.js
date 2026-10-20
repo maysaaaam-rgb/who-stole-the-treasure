@@ -25,7 +25,17 @@
     try { var x = new XMLHttpRequest(); x.open('GET', 'art/manifest.json?v=' + Date.now(), true); x.onload = function () { try { if (x.status === 200) JSON.parse(x.responseText).forEach(function (n) { ART[n] = 1; }); } catch (e) { /* none */ } }; x.send(); } catch (e) { /* offline file */ }
   }
   function art(name, emoji, cls) { return ART[name] ? h('img', { class: 'gm-art ' + (cls || ''), src: 'art/' + name + '.webp', alt: '' }) : h('span', { class: 'gm-art-emoji ' + (cls || ''), text: emoji || '' }); }
-  loadArt();
+  var FX = {};
+  function loadFx() { try { var x = new XMLHttpRequest(); x.open('GET', 'art/effects.json?v=' + Date.now(), true); x.onload = function () { try { if (x.status === 200) FX = JSON.parse(x.responseText) || {}; } catch (e) { /* none */ } }; x.send(); } catch (e) { /* offline file */ } }
+  loadArt(); loadFx();
+  /* play a sprite strip (a horizontal row of frames) at a screen point or on an element; does nothing when the strip is not there */
+  function fx(name, where, scale) {
+    var d = FX[name] || FX['fx_' + name]; if (!d || !d.file) return; var layer = document.getElementById('gm-fx'); if (!layer) return;
+    var r = where && where.getBoundingClientRect ? where.getBoundingClientRect() : { left: where.x, top: where.y, width: 0, height: 0 }, sc = scale || 1, w = d.frameWidth * sc, hh = d.frameHeight * sc, n = d.frames, secs = n / (d.fps || 12);
+    var e = h('div', { class: 'gm-sprite' }); e.style.cssText = 'left:' + (r.left + r.width / 2 - w / 2) + 'px;top:' + (r.top + r.height / 2 - hh / 2) + 'px;width:' + w + 'px;height:' + hh + 'px;background-image:url(art/' + d.file + ');background-size:' + (w * n) + 'px ' + hh + 'px;--end:' + (-w * n) + 'px;animation:gmsprite ' + secs + 's steps(' + n + ') ' + (d.loop ? 'infinite' : '1 forwards');
+    layer.appendChild(e); if (!d.loop) setTimeout(function () { if (e.parentNode) e.parentNode.removeChild(e); }, secs * 1000 + 100);
+    return e;
+  }
 
   /* ---- effects ---- */
   function confetti(n) {
@@ -61,7 +71,7 @@
     return new Promise(function (resolve) {
       var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-card gm-glass' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
       var head = h('div', { class: 'gm-qhead' }, [monFace(team.mon, 54), h('b', { text: team.name + (opts.label ? '  ·  ' + opts.label : '') }), h('span', { class: 'gm-grow' })]);
-      head.style.setProperty('--c', team.color);
+      head.style.setProperty('--c', team.color); if (GM.state && GM.state.theme === 'halloween') head.appendChild(art('c_pumpkin', '🎃', 'gm-corner'));
       var timerEl = h('span', { class: 'gm-timer', text: '' }); head.appendChild(timerEl);
       head.appendChild(btn('🔊', 'sm', function () { A().speak(item.q); }));
       var choice = null, tm = null, left = 0, done = false;
@@ -72,7 +82,7 @@
       function finish(ok) {
         if (done) return; done = true; clearInterval(tm);
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); });
-        if (ok) { A().play('right'); confetti(14); msg.textContent = '✅ Well done!'; } else { A().play('soft'); wobble(card); msg.textContent = 'Almost! The answer is “' + item.a + '”. Good try!'; }
+        if (ok) { A().play('right'); confetti(14); fx('sparkle_burst', card, 1.4); msg.textContent = '✅ Well done!'; } else { A().play('soft'); wobble(card); msg.textContent = 'Almost! The answer is “' + item.a + '”. Good try!'; }
         setTimeout(function () { if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: ok }); }, ok ? 900 : 1700);
       }
       var show = btn('👀 Show the answers', 'big amber', function () {
@@ -109,5 +119,5 @@
     A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900);
   }
 
-  GM.u = { h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
+  GM.u = { fx: fx, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
 })(window);

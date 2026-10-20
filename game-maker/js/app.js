@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v1', CKEY = 'eaa_gm_sets_v1';
-  var SOON = [['⚾', 'Baseball'], ['🎳', 'Bowling'], ['🥔', 'Pass the Pumpkin'], ['⭕', 'Tic-Tac-Toe'], ['🔴', 'Connect 4'], ['🧩', 'Jigsaw Race'], ['🎲', 'Snakes and Ladders'], ['🧠', 'Memory']];
+  var SOON = [['⚾', 'Baseball'], ['🧩', 'Jigsaw Race'], ['🎲', 'Snakes and Ladders'], ['🧠', 'Memory']];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
   var S = GM.state = { step: 1, setId: 'halloween', modeId: 'board', theme: 'halloween', classId: '', cfg: { teams: 2, timer: 0, pu: {} }, teams: [], theme_: 'halloween' };
   var customSets = [], stage, headSteps;
@@ -71,8 +71,9 @@
   }
   function stepSetup() {
     var m = GM.modes[S.modeId], wrap = h('div', { class: 'gm-panel' }, [h('h2', { text: '3 · Set up the game: ' + m.name })]);
-    wrap.appendChild(choiceRow('Theme', Object.keys(GM.themes).map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; applyTheme(); save(); render(); }));
-    wrap.appendChild(choiceRow('Number of teams', [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) { return [n, String(n)]; }), S.cfg.teams, function (v) { S.cfg.teams = v; S.teams = []; save(); render(); }));
+    wrap.appendChild(choiceRow('Theme', Object.keys(GM.themes).map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; S.teams = []; applyTheme(); save(); render(); }));
+    if (m.teams) { if (S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; } wrap.appendChild(h('div', { class: 'gm-field' }, [h('div', { class: 'gm-flabel', text: 'Teams' }), h('div', { class: 'gm-hint', text: m.name + ' is played by ' + m.teams + ' teams.' })])); }
+    else wrap.appendChild(choiceRow('Number of teams', [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) { return [n, String(n)]; }), S.cfg.teams, function (v) { S.cfg.teams = v; S.teams = []; save(); render(); }));
     m.fields.forEach(function (f) {
       var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur;
       wrap.appendChild(choiceRow(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); }));

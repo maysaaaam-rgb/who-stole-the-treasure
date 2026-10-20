@@ -29,11 +29,12 @@
       return { id: s.id, name: String(s.firstName || '').trim() || String(s.name || '').trim().split(/\s+/)[0] || 'Pupil', color: p.baseColor || COLORS[i % COLORS.length], equipped: p.equipped || {}, stage: STAGES[lv - 1] || 'baby' };
     });
   }
-  function themeHat(theme, i) { return theme === 'halloween' ? ['hat-wizard', 'none', 'hat-party', 'none'][i % 4] : 'none'; }
+  var HAL_HATS = ['cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap'], HAL_CAPES = ['cs-witch-cape', 'none', 'cs-vamp-cape', 'none', 'cs-witch-cape', 'none', 'cs-vamp-cape', 'none'];
+  function themeHat(theme, i) { return theme === 'halloween' ? HAL_HATS[i % 8] : 'none'; }
   /* n default monsters, dressed for the theme */
   function defaults(n, theme) {
     var out = [], stages = ['growing', 'adventurer', 'advanced', 'growing', 'adventurer', 'advanced', 'growing', 'adventurer'];
-    for (var i = 0; i < n; i++) out.push({ name: '', color: COLORS[i % COLORS.length], stage: stages[i], equipped: { hat: themeHat(theme, i) } });
+    for (var i = 0; i < n; i++) out.push({ name: '', color: COLORS[i % COLORS.length], stage: stages[i], equipped: theme === 'halloween' ? { hat: themeHat(theme, i), backpack: HAL_CAPES[i % 8] } : { hat: 'none' } });
     return out;
   }
   function svg(m, size) {

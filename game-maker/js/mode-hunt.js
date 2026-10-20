@@ -15,6 +15,7 @@
       rootEl.innerHTML = '';
       var info = U().h('div', { class: 'gm-info' }), field = U().h('div', { class: 'gm-hunt' }), layer = U().h('div', { class: 'gm-hlayer' }), box = U().h('div', { class: 'gm-huntbox' }, [field, layer]);
       var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, box]); rootEl.appendChild(wrap);
+      if (hal) { box.appendChild(U().art('c_bat', '🦇', 'gm-deco l')); box.appendChild(U().art('c_spider' in {} ? 'c_spider' : 'o_spider', '🕷️', 'gm-deco r')); }
       field.style.gridTemplateColumns = 'repeat(' + COLS + ', 1fr)'; field.style.gridTemplateRows = 'repeat(' + ROWS + ', 1fr)';
       /* the perimeter, clockwise: teams start evenly spaced around it */
       var per = [], r, c, i;
@@ -26,7 +27,7 @@
       var weights = [14, 10, 6, 2, 12], bag = []; PRIZES.forEach(function (p, k) { for (var z = 0; z < weights[k]; z++) bag.push(p); }); bag = U().shuffle(bag);
       free = U().shuffle(free); free.forEach(function (cl, k) { cl.prize = bag[k % bag.length]; });
       cells.forEach(function (row) { row.forEach(function (cl) {
-        var b = U().h('button', { type: 'button', class: 'gm-hcell' + (cl.dug ? ' dug' : '') }, [cl.dug ? null : U().h('span', { class: 'gm-pumpk', text: hal ? '🎃' : '🌿' })]); cl.el = b; field.appendChild(b);
+        var b = U().h('button', { type: 'button', class: 'gm-hcell' + (cl.dug ? ' dug' : '') }, [cl.dug ? null : U().art('o_hunt_pumpkin_blank', hal ? '🎃' : '🌿', 'gm-pumpk')]); cl.el = b; field.appendChild(b);
         b.addEventListener('click', function () { choose(cl); });
       }); });
       function place(m, k) { var s = 100 / COLS, t = 100 / ROWS; m.el.style.left = (m.c * s) + '%'; m.el.style.top = (m.r * t) + '%'; m.el.style.width = s + '%'; m.el.style.height = t + '%'; }
@@ -57,8 +58,8 @@
         for (var k = 0; k < path.length; k++) {
           var p = path[k]; A().play('hunt_step'); m.r = p.r; m.c = p.c; place(m, turn); await U().sleep(340);
           if (!p.dug) {
-            p.dug = true; A().play('hunt_rustle'); await U().sleep(160); A().play('hunt_dig'); p.el.classList.add('dug'); p.el.innerHTML = ''; p.el.appendChild(U().h('span', { class: 'gm-prize', text: p.prize.e }));
-            if (p.prize.v > 0) { A().play('hunt_prize'); U().addScore(turn, p.prize.v); U().floatText('+' + p.prize.v, p.el, 'good'); if (p.prize.v >= 20) { U().confetti(14); if (hal) A().play('witch'); } }
+            p.dug = true; A().play('hunt_rustle'); await U().sleep(160); A().play('hunt_dig'); p.el.classList.add('dug'); U().fx('smoke_puff', p.el); p.el.innerHTML = ''; p.el.appendChild(U().h('span', { class: 'gm-prize', text: p.prize.e }));
+            if (p.prize.v > 0) { A().play('hunt_prize'); U().addScore(turn, p.prize.v); U().floatText('+' + p.prize.v, p.el, 'good'); if (p.prize.v >= 20) { U().confetti(14); U().fx('coin_shower', p.el, 1.2); if (hal) A().play('witch'); } }
             else { A().play('hunt_empty'); U().floatText('boo!', p.el, 'soft'); if (hal) A().play('ghost'); }
             await U().sleep(380);
           }

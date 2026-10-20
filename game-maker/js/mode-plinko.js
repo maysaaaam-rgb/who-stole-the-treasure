@@ -15,6 +15,7 @@
       var info = U().h('div', { class: 'gm-info' }), board = U().h('div', { class: 'gm-pl' }), box = U().h('div', { class: 'gm-plbox' }, [board]), cols = U().h('div', { class: 'gm-plcols' });
       var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, box]);
       rootEl.appendChild(wrap);
+      if (hal) { box.appendChild(U().art('c_ghost', '👻', 'gm-deco l')); box.appendChild(U().art('c_cat_witch', '🐈‍⬛', 'gm-deco r')); }
       board.style.width = W + 'px'; board.style.height = H + 'px';
       var pegs = [], r, i, x, y;
       for (r = 0; r < 6; r++) { y = 150 + r * 62; var n = r % 2 ? 6 : 5; for (i = 0; i < n; i++) { x = (r % 2 ? 40 : 84) + i * 88; pegs.push({ x: x, y: y }); } }
@@ -69,7 +70,7 @@
           var si = Math.max(0, Math.min(4, Math.floor(x / (W / 5)))), v = SLOTS[si] * (bonus ? 2 : 1), el = slotEls[si];
           disc.style.left = (si * W / 5 + W / 10 - DISC) + 'px'; disc.style.top = (SLOT_Y + 14) + 'px'; disc.style.transform = 'none'; el.classList.add('win');
           A().play(SLOTS[si] >= 50 ? 'slot_high' : SLOTS[si] >= 20 ? 'slot_mid' : 'slot_low'); if (hal) A().play(SLOTS[si] >= 50 ? 'witch' : 'ghost');
-          U().addScore(turn, v); U().floatText('+' + v + (bonus ? ' ✨×2' : ''), el, 'good'); U().confetti(SLOTS[si] >= 50 ? 24 : 8); U().wobble(document.getElementById('gm-team-' + turn));
+          U().addScore(turn, v); U().floatText('+' + v + (bonus ? ' ✨×2' : ''), el, 'good'); U().confetti(SLOTS[si] >= 50 ? 24 : 8); if (SLOTS[si] >= 50) U().fx('confetti_burst', el, 1.2); else U().fx('sparkle_burst', el); U().wobble(document.getElementById('gm-team-' + turn));
           await U().sleep(1600); el.classList.remove('win'); busy = false; next();
         }
       }

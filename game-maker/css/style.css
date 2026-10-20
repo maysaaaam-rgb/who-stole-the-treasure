@@ -119,3 +119,41 @@ body.th-classic .gm-hcell{background:linear-gradient(180deg,#2a6b3a,#154824)}
 .gm-bump{animation:gmbump .35s var(--spring)}@keyframes gmbump{40%{transform:scale(1.35)}}
 .gm-art{max-height:100%}.gm-art-emoji{font-size:inherit}
 @media (max-width:760px){.gm-head h1{display:none}.gm-opts{grid-template-columns:1fr}}
+
+/* Gemini art (used only when the file exists; otherwise the gradients above show) */
+body.th-halloween{background-image:url(../art/bg_halloween_board.webp),radial-gradient(circle at 50% 25%,var(--bg2,#0d1527) 0%,var(--void) 100%);background-size:cover;background-position:center}
+body.th-halloween .gm-tile{background-image:url(../art/tile_halloween.webp),linear-gradient(180deg,color-mix(in srgb,var(--tile) 85%,#fff),var(--tile));background-size:cover}
+body.th-classic .gm-tile{background-image:url(../art/tile_classic.webp),linear-gradient(180deg,color-mix(in srgb,var(--tile) 85%,#fff),var(--tile));background-size:cover}
+body.th-halloween .gm-hunt{background-image:url(../art/bg_pumpkin_patch.webp);background-size:cover;background-position:center}
+.gm-pumpk img,.gm-pumpk.gm-art{max-width:90%;max-height:90%}
+.gm-sprite{position:fixed;background-repeat:no-repeat;pointer-events:none}
+@keyframes gmsprite{to{background-position-x:var(--end)}}
+
+body.th-halloween .gm-peg{background:url(../art/o_plinko_peg.webp) center/contain no-repeat;box-shadow:none;width:20px;height:20px;margin:-3px}
+body.th-halloween .gm-peg.hit{filter:brightness(2) drop-shadow(0 0 8px #fff);transform:scale(1.4)}
+.gm-corner{height:56px;margin-left:6px}
+.gm-deco{position:absolute;bottom:4%;height:min(30vh,240px);pointer-events:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5));animation:gmfloat 3s ease-in-out infinite alternate}
+.gm-deco.l{left:clamp(0px,4vw,70px)}.gm-deco.r{right:clamp(0px,4vw,70px)}
+@keyframes gmfloat{to{transform:translateY(-10px)}}
+@media (max-width:900px){.gm-deco{display:none}}
+
+/* Tic-Tac-Toe, Connect 4, Pass the Pumpkin, Bowling */
+.gm-tttbox{flex:1;min-height:0;display:flex;justify-content:center;align-items:center}
+.gm-wins{margin-left:auto;font-weight:900;color:var(--amber)}
+.gm-ttt.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;height:100%;aspect-ratio:1;max-width:100%;background:rgba(15,23,42,.7);padding:10px;border-radius:22px;border:3px solid var(--tile)}
+.gm-sq{border:0;border-radius:16px;background:linear-gradient(180deg,#334155,#1e293b);border-bottom:5px solid rgba(0,0,0,.4);cursor:pointer;display:grid;place-items:center}.gm-sq:active{transform:translateY(3px)}
+.gm-sq.mine{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 40%,#1e293b),#1e293b);cursor:default}.gm-sq.win{animation:gmwin .6s infinite alternate;box-shadow:0 0 22px #fde047}
+.gm-mark{border-radius:50%;box-shadow:0 0 0 4px var(--c)}
+.gm-ttt.c4{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;height:100%;aspect-ratio:7/6.6;max-width:100%;background:linear-gradient(180deg,#1d4ed8,#1e3a8a);padding:10px;border-radius:22px;border:3px solid #60a5fa}
+.gm-ccol{grid-row:1;border:0;border-radius:10px;background:var(--accent);color:#1c1203;font-weight:900;cursor:pointer;min-height:34px}.gm-ccol:hover{filter:brightness(1.15)}
+.gm-hole{border-radius:50%;background:#0b1220;display:grid;place-items:center;aspect-ratio:1;box-shadow:inset 0 4px 10px rgba(0,0,0,.6)}.gm-hole.win{box-shadow:0 0 18px #fde047,inset 0 0 0 4px #fde047}
+.gm-dropin{animation:gmdrop .5s cubic-bezier(.4,.1,.7,1)}@keyframes gmdrop{from{transform:translateY(-320px)}}
+.gm-passbox{flex:1;min-height:0;position:relative}.gm-passring{position:absolute;inset:0}
+.gm-seat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--c);transition:transform .2s}.gm-seat.hold{transform:translate(-50%,-50%) scale(1.18);filter:drop-shadow(0 0 14px var(--c))}
+.gm-pumpkin{position:absolute;transform:translate(-50%,-50%);font-size:5rem;line-height:1;transition:left .5s var(--spring),top .5s var(--spring);z-index:3}.gm-pumpimg{height:clamp(80px,16vh,140px)}
+.gm-lane{position:relative;flex:1;min-height:0;background:linear-gradient(180deg,#78350f,#b45309);border:4px solid #451a03;border-radius:18px;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
+.gm-pins{position:absolute;left:30%;right:30%;top:6%;height:44%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(4,1fr);align-items:center;justify-items:center}
+.gm-pin{font-size:clamp(1.6rem,6vh,3.4rem);transition:transform .5s,opacity .5s}.gm-pin.down{transform:translateY(-40px) rotate(80deg) scale(.7);opacity:0}
+.gm-ball{position:absolute;width:clamp(44px,8vh,72px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fdba74,#f97316 55%,#7c2d12);transform:translateX(-50%);box-shadow:0 8px 16px rgba(0,0,0,.5)}
+.gm-aim{position:relative;height:30px;border-radius:999px;background:linear-gradient(90deg,#ef4444 0,#f59e0b 25%,#10b981 40%,#10b981 60%,#f59e0b 75%,#ef4444 100%);flex:none;margin:0 6%}.gm-aim i{position:absolute;top:-6px;width:12px;height:42px;background:#fff;border-radius:6px;transform:translateX(-50%);box-shadow:0 0 10px #fff}
+.gm-bres{min-height:1.6em;text-align:center;font-size:1.4rem;font-weight:900;color:var(--amber);flex:none}
