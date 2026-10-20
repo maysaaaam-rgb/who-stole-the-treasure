@@ -107,6 +107,17 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed7');
     } catch (e) { /* ignore */ }
   }
+  /* Grade 4 Reading 2 review lesson (after the book pages 62-70): title and note on the 4/B and 4/A lesson once */
+  function showOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed8')) return;
+      var list = customEvents().slice(), n = 0;
+      var M = { 'class-4b|2026-10-21|13:30': 1, 'class-4a|2026-10-21|15:20': 1 };
+      var note = 'Review after the book pages 62-70 (Late for the Show). Games: Curtain Up (show, calm, platform, sank, alive), Get Harry to the Stage (put the events in order, the train moves), Spotlight (who said it?), Excuse Round (I was late because...). Lesson: review-g4-show.';
+      list.forEach(function (e) { if (M[e.classId + '|' + e.date + '|' + e.time] && /^seed1-/.test(e.id)) { e.title = 'U4-3 Review: Late for the Show'; e.note = note; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed8');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -225,7 +236,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
