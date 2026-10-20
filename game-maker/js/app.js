@@ -4,7 +4,7 @@
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v1', CKEY = 'eaa_gm_sets_v1';
   var SOON = [['⚾', 'Baseball'], ['🧩', 'Jigsaw Race'], ['🎲', 'Snakes and Ladders'], ['🧠', 'Memory']];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
-  var S = GM.state = { step: 1, setId: 'halloween', modeId: 'board', theme: 'halloween', classId: '', cfg: { teams: 2, timer: 0, pu: {} }, teams: [], theme_: 'halloween' };
+  var S = GM.state = { step: 1, setId: GM.halloweenOn ? 'halloween' : 'mona-g3', modeId: 'board', theme: GM.halloweenOn ? 'halloween' : 'classic', classId: '', cfg: { teams: 2, timer: 0, pu: {} }, teams: [], theme_: 'halloween' };
   var customSets = [], stage, headSteps;
 
   function load() {
@@ -13,9 +13,9 @@
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify({ setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId, cfg: S.cfg })); } catch (e) { /* ignore */ } }
   function saveSets() { try { localStorage.setItem(CKEY, JSON.stringify(customSets)); } catch (e) { /* ignore */ } }
-  function allSets() { return GM.sets.concat(customSets); }
+  function allSets() { return GM.sets.filter(function (s) { return GM.halloweenOn || s.id !== 'halloween'; }).concat(customSets); }
   function curSet() { return allSets().filter(function (s) { return s.id === S.setId; })[0] || GM.sets[0]; }
-  function applyTheme() { document.body.className = 'th-' + S.theme; }
+  function applyTheme() { if (!GM.halloweenOn && S.theme === 'halloween') S.theme = 'classic'; document.body.className = 'th-' + S.theme; }
 
   /* ---------- header ---------- */
   function drawHead() {
@@ -55,7 +55,7 @@
   function stepGame() {
     var wrap = h('div', { class: 'gm-panel' }, [h('h2', { text: '2 · Choose the game' })]), grid = h('div', { class: 'gm-cards' });
     Object.keys(GM.modes).forEach(function (id) {
-      var m = GM.modes[id], c = h('button', { type: 'button', class: 'gm-card2 gm-glass gm-mode' + (id === S.modeId ? ' sel' : '') }, [h('span', { class: 'gm-bigart' }, [U.art('m_mode_' + id, m.e)]), h('b', { text: m.name }), h('small', { text: m.desc })]);
+      var m = GM.modes[id], c = h('button', { type: 'button', class: 'gm-card2 gm-glass gm-mode' + (id === S.modeId ? ' sel' : '') }, [h('span', { class: 'gm-bigart' }, [U.art('m_mode_' + id, m.e)]), h('b', { text: (!GM.halloweenOn && m.nameClassic) || m.name }), h('small', { text: (!GM.halloweenOn && m.descClassic) || m.desc })]);
       c.addEventListener('click', function () { A.play('tap'); S.modeId = id; save(); render(); }); grid.appendChild(c);
     });
     SOON.forEach(function (s) { grid.appendChild(h('div', { class: 'gm-card2 gm-glass gm-locked' }, [h('span', { class: 'gm-big', text: s[0] }), h('b', { text: s[1] }), h('span', { class: 'gm-lock', text: '🔒 Coming soon' })])); });
@@ -71,7 +71,7 @@
   }
   function stepSetup() {
     var m = GM.modes[S.modeId], wrap = h('div', { class: 'gm-panel' }, [h('h2', { text: '3 · Set up the game: ' + m.name })]);
-    wrap.appendChild(choiceRow('Theme', Object.keys(GM.themes).map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; S.teams = []; applyTheme(); save(); render(); }));
+    wrap.appendChild(choiceRow('Theme', Object.keys(GM.themes).filter(function (k) { return GM.halloweenOn || k !== 'halloween'; }).map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; S.teams = []; applyTheme(); save(); render(); }));
     if (m.teams) { if (S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; } wrap.appendChild(h('div', { class: 'gm-field' }, [h('div', { class: 'gm-flabel', text: 'Teams' }), h('div', { class: 'gm-hint', text: m.name + ' is played by ' + m.teams + ' teams.' })])); }
     else wrap.appendChild(choiceRow('Number of teams', [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) { return [n, String(n)]; }), S.cfg.teams, function (v) { S.cfg.teams = v; S.teams = []; save(); render(); }));
     m.fields.forEach(function (f) {

@@ -8,7 +8,7 @@
   var PRIZES = [{ v: 5, e: '🪙' }, { v: 10, e: '💎' }, { v: 20, e: '🏆' }, { v: 50, e: '👑' }, { v: 0, e: '👻' }];
 
   GM.modes.hunt = {
-    id: 'hunt', name: 'Pumpkin Hunt', e: '🔦', desc: 'Your monster digs a line of pumpkins to find hidden prizes. A right answer says how far!',
+    id: 'hunt', name: 'Pumpkin Hunt', nameClassic: 'Treasure Hunt', e: '🔦', desc: 'Your monster digs a line of pumpkins to find hidden prizes. A right answer says how far!', descClassic: 'Your monster digs a line of bushes to find hidden prizes. A right answer says how far!',
     fields: [{ key: 'q', label: 'Turns for each team', opts: [[2, '2'], [3, '3'], [4, '4'], [6, '6'], [8, '8']], def: 4 }],
     start: function (ctx) {
       var cfg = ctx.cfg, st = GM.state, rootEl = ctx.root, nt = st.teams.length, rounds = (+cfg.q || 4) * nt, round = 0, turn = 0, busy = false, hal = st.theme === 'halloween';

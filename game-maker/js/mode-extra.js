@@ -62,33 +62,33 @@
 
   /* ================= Pass the Pumpkin (hot potato) ================= */
   GM.modes.pass = {
-    id: 'pass', name: 'Pass the Pumpkin', e: '🥔', desc: 'A pumpkin ticks and passes from team to team. Answer right to pass it on. When it pops, the team holding it is out of that round!',
+    id: 'pass', name: 'Pass the Pumpkin', nameClassic: 'Pass the Bomb', e: '🥔', desc: 'A pumpkin ticks and passes from team to team. Answer right to pass it on. When it pops, the team holding it is out of that round!', descClassic: 'A ticking pumpkin passes from team to team. Answer right to pass it on. When it pops, the team holding it misses out!',
     fields: [{ key: 'rounds', label: 'Rounds', opts: [[3, '3'], [5, '5'], [8, '8']], def: 5 }],
     start: function (ctx) {
-      var st = GM.state, rootEl = ctx.root, nt = st.teams.length, rounds = +ctx.cfg.rounds || 5, round = 0, holder = 0, alive = true, fuse = 0, tickT = null, busy = false;
+      var st = GM.state, hal = st.theme === 'halloween', thing = hal ? 'pumpkin' : 'bomb', rootEl = ctx.root, nt = st.teams.length, rounds = +ctx.cfg.rounds || 5, round = 0, holder = 0, alive = true, fuse = 0, tickT = null, busy = false;
       rootEl.innerHTML = '';
       var info = U().h('div', { class: 'gm-info' }), stage = U().h('div', { class: 'gm-passbox' }), pump = U().h('div', { class: 'gm-pumpkin' }), ring = U().h('div', { class: 'gm-passring' });
       var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, stage]); stage.appendChild(ring); stage.appendChild(pump); rootEl.appendChild(wrap);
-      pump.appendChild(U().art('c_pumpkin', '🎃', 'gm-pumpimg'));
+      pump.appendChild(U().art(hal ? 'c_pumpkin' : 'pu_boom', hal ? '🎃' : '💣', 'gm-pumpimg'));
       var seats = st.teams.map(function (t, i) { var s = U().h('div', { class: 'gm-seat' }, [U().monFace(t.mon, 76), U().h('b', { text: t.name })]); var a = (i / nt) * Math.PI * 2 - Math.PI / 2; s.style.left = (50 + 40 * Math.cos(a)) + '%'; s.style.top = (46 + 38 * Math.sin(a)) + '%'; s.style.setProperty('--c', t.color); ring.appendChild(s); return s; });
       function place() { var a = (holder / nt) * Math.PI * 2 - Math.PI / 2; pump.style.left = (50 + 22 * Math.cos(a)) + '%'; pump.style.top = (46 + 21 * Math.sin(a)) + '%'; seats.forEach(function (s, i) { s.classList.toggle('hold', i === holder); }); }
       function tick() { if (!alive) return; fuse--; pump.classList.remove('gm-bump'); void pump.offsetWidth; pump.classList.add('gm-bump'); A().play('tick'); if (fuse <= 0) { pop(); return; } tickT = setTimeout(tick, fuse < 4 ? 450 : 900); }
       async function pop() {
         alive = false; clearTimeout(tickT); pump.textContent = '💥'; A().play('pu_boom'); U().confetti(30); U().wobble(seats[holder]); U().fx('smoke_puff', pump, 2);
         var others = st.teams.map(function (t, i) { return i; }).filter(function (i) { return i !== holder; });
-        info.innerHTML = ''; info.appendChild(U().h('b', { text: '💥 The pumpkin popped on ' + st.teams[holder].name + '! Everybody else wins 10 points.' }));
+        info.innerHTML = ''; info.appendChild(U().h('b', { text: '💥 The ' + thing + ' popped on ' + st.teams[holder].name + '! Everybody else wins 10 points.' }));
         others.forEach(function (i) { U().addScore(i, 10); }); await U().sleep(2600); round++; if (round >= rounds) { ctx.end(); return; } holder = round % nt; startRound();
       }
-      function startRound() { alive = true; fuse = U().rand(8, 16) + nt; pump.textContent = ''; pump.appendChild(U().art('c_pumpkin', '🎃', 'gm-pumpimg')); place(); showTurn(); clearTimeout(tickT); tickT = setTimeout(tick, 900); busy = false; }
+      function startRound() { alive = true; fuse = U().rand(8, 16) + nt; pump.textContent = ''; pump.appendChild(U().art(hal ? 'c_pumpkin' : 'pu_boom', hal ? '🎃' : '💣', 'gm-pumpimg')); place(); showTurn(); clearTimeout(tickT); tickT = setTimeout(tick, 900); busy = false; }
       function showTurn() {
-        var t = st.teams[holder]; info.innerHTML = ''; info.style.setProperty('--c', t.color); info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: t.name + ' has the pumpkin! Answer to pass it on.  (round ' + (round + 1) + ' of ' + rounds + ')' }));
+        var t = st.teams[holder]; info.innerHTML = ''; info.style.setProperty('--c', t.color); info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: t.name + ' has the ' + thing + '! Answer to pass it on.  (round ' + (round + 1) + ' of ' + rounds + ')' }));
         info.appendChild(U().btn('❓ Ask me', 'big amber', ask)); U().teamBar(st.teams, holder);
       }
       async function ask() {
         if (busy || !alive) return; busy = true; var t = st.teams[holder], res = await U().ask(ctx.nextItem(), t, { timer: Math.min(+ctx.cfg.timer || 0, 20) || 0, label: 'Pass it!' });
         if (!alive) return;
         if (res.ok) { A().play('witch'); holder = (holder + 1) % nt; place(); showTurn(); busy = false; }
-        else { info.innerHTML = ''; info.appendChild(U().h('b', { text: 'Not yet! ' + t.name + ' still holds the pumpkin...' })); await U().sleep(800); showTurn(); busy = false; }
+        else { info.innerHTML = ''; info.appendChild(U().h('b', { text: 'Not yet! ' + t.name + ' still holds the ' + thing + '...' })); await U().sleep(800); showTurn(); busy = false; }
       }
       ctx.onEnd(function () { alive = false; clearTimeout(tickT); });
       startRound();
@@ -97,7 +97,7 @@
 
   /* ================= Bowling ================= */
   GM.modes.bowling = {
-    id: 'bowling', name: 'Pumpkin Bowling', e: '🎳', desc: 'Answer right, then stop the aim bar in the middle. Knock down as many ghost pins as you can!',
+    id: 'bowling', name: 'Pumpkin Bowling', nameClassic: 'Bowling', e: '🎳', desc: 'Answer right, then stop the aim bar in the middle. Knock down as many ghost pins as you can!', descClassic: 'Answer right, then stop the aim bar in the middle. Knock down as many pins as you can!',
     fields: [{ key: 'frames', label: 'Frames for each team', opts: [[2, '2'], [3, '3'], [5, '5'], [8, '8']], def: 3 }],
     start: function (ctx) {
       var st = GM.state, rootEl = ctx.root, nt = st.teams.length, frames = (+ctx.cfg.frames || 3) * nt, f = 0, turn = 0, busy = false, hal = st.theme === 'halloween';

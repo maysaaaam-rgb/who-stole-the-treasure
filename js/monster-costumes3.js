@@ -3,6 +3,9 @@
 (function (root) {
   'use strict';
   if (!root.MonsterCostumes || !root.MonsterCostumes.extend) return;
+  /* Halloween things appear from 26 October 2026 (add ?halloween=1 to the address, or set localStorage eaa_preview_halloween, to preview them earlier) */
+  var HAL_ON = (function () { try { if (/[?&]halloween=1/.test(root.location.search) || localStorage.getItem('eaa_preview_halloween')) return true; } catch (e) { /* ignore */ } var d = new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate() >= 20261026; })();
+  if (!HAL_ON) return;
 
   var SETS = {
     witch: { name: 'Friendly Witch', icon: '🧙‍♀️', title: 'Friendly Witch', pieces: ['cs-witch-hat', 'cs-witch-cape', 'cs-witch-broom'] },
