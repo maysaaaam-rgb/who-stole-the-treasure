@@ -12771,16 +12771,88 @@ const GAMES_REGISTRY = [
     "thumbnailIcon": "🌕",
     "gradient": "linear-gradient(135deg, #060911 0%, #1e1b4b 50%, #f59e0b 100%)"
   }
+,
+  {
+  "id": "u4-g3-l3-mountain",
+  "title": "🌋 Unit 4 Lesson 3: The Angry Mountain (Book pp. 65–69)",
+  "description": "Hybrid Pro 5-station smartboard lesson with animated 3D monster hosts (Nova, Blaze, Bubbles, Rosie, Sprout): Island Explorer Map (thunder, bark, ash, dream, sunrise), Cause & Effect Gear Machine (BECAUSE / SO), 5-Scene Interactive Story Theater (Mount Tambora 1815), and Sail to the Rescue Ship!",
+  "type": "game",
+  "category": "Story & Literature",
+  "categoryLabel": "🌋 Unit 4 Reading & Cause-Effect",
+  "level": "A1",
+  "cefrLevel": "A1",
+  "age": "Ages 8–9",
+  "ageGroup": "8-9",
+  "grade": "Grade 3",
+  "grades": [
+    "Grade 3"
+  ],
+  "duration": 35,
+  "durationText": "35 min",
+  "estimatedMinutes": 35,
+  "xp": 120,
+  "skills": [
+    "Reading",
+    "Vocabulary",
+    "Cause & Effect",
+    "Speaking",
+    "TPR"
+  ],
+  "topic": "Unit 4 What Happened? — Reading 2: The Angry Mountain (pp. 65–69)",
+  "topics": [
+    "Volcanoes",
+    "Cause and Effect",
+    "Historical Fiction (1815)"
+  ],
+  "languageFocus": "thunder, bark, ash, dream, sunrise; Cause & Effect with 'because' and 'so'; Past Simple story events",
+  "route": "unit4-g3-angry-mountain/index.html",
+  "url": "unit4-g3-angry-mountain/index.html",
+  "worksheet": "unit4-g3-angry-mountain/worksheet.html",
+  "worksheetRoute": "unit4-g3-angry-mountain/worksheet.html",
+  "worksheetUrl": "unit4-g3-angry-mountain/worksheet.html",
+  "featured": true,
+  "thumbnailIcon": "🌋",
+  "status": "active"
+},
+  {
+  "id": "u4-g3-l4-phonics",
+  "title": "🔤 Unit 4 Lesson 4: Phonics (-nd) & Think Together (Book pp. 70–71)",
+  "description": "Hybrid Pro 5-station smartboard lesson with animated 3D monster hosts: Explore the Reading Check (p. 70 A–B), Volcano Freeze & 4 Feeling Corners (Scared, Safe, Thankful, Happy + excited/surprised/upset), The -nd Phonics Letter Factory (wind, hand, stand, send, find, end), Pop the -nd Balloons Arcade, and Two-Story Train & 3-Step Interview (p. 71).",
+  "type": "game",
+  "category": "Phonics & Speaking",
+  "categoryLabel": "🔤 Unit 4 Phonics & Think Together",
+  "level": "A1",
+  "cefrLevel": "A1",
+  "age": "Ages 8–9",
+  "ageGroup": "8-9",
+  "grade": "Grade 3",
+  "grades": [
+    "Grade 3"
+  ],
+  "duration": 35,
+  "durationText": "35 min",
+  "estimatedMinutes": 35,
+  "xp": 120,
+  "skills": [
+    "Phonics (-nd)",
+    "Speaking",
+    "Reading Comprehension",
+    "Compare & Contrast"
+  ],
+  "topic": "Unit 4 What Happened? — Explore the Reading, -nd Blend & Think Together (pp. 70–71)",
+  "topics": [
+    "Final Blend -nd",
+    "Feelings & Reasons",
+    "Comparing Unit Readings"
+  ],
+  "languageFocus": "-nd blend (end, stand, wind, send, find, hand); 'In 1815, I felt [feeling] because...'; 'I liked [story] because...'",
+  "route": "unit4-g3-phonics-think/index.html",
+  "url": "unit4-g3-phonics-think/index.html",
+  "worksheet": "unit4-g3-phonics-think/worksheet.html",
+  "worksheetRoute": "unit4-g3-phonics-think/worksheet.html",
+  "worksheetUrl": "unit4-g3-phonics-think/worksheet.html",
+  "featured": true,
+  "thumbnailIcon": "🔤",
+  "status": "active"
+}
 ];
-
-const GAMES_DATA = GAMES_REGISTRY;
-
-if (typeof window !== "undefined") {
-  window.CURRICULUM_TRACKS = CURRICULUM_TRACKS;
-  window.GAMES_REGISTRY = GAMES_REGISTRY;
-  window.GAMES_DATA = GAMES_DATA;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = { CURRICULUM_TRACKS, GAMES_REGISTRY, GAMES_DATA };
-}

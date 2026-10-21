@@ -136,6 +136,21 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed9');
     } catch (e) { /* ignore */ }
   }
+  /* Grade 3 standalone Lesson 3 (unit4-g3-angry-mountain) & Lesson 4 (unit4-g3-phonics-think) */
+  function mountainSplitOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed10')) return;
+      var list = customEvents().slice(), n = 0;
+      var M = {
+        'class-3a|2026-10-22|09:45': ['U4-3 Reading 2: The Angry Mountain (pp. 65-69)', 'Standalone Pro Lesson 3 (unit4-g3-angry-mountain): Island Explorer Map (thunder, bark, ash, dream, sunrise), Cause & Effect Gear Machine (BECAUSE/SO), 5-Scene Story Theater, Sail to the Rescue Ship!'],
+        'class-3b|2026-10-22|11:15': ['U4-3 Reading 2: The Angry Mountain (pp. 65-69)', 'Standalone Pro Lesson 3 (unit4-g3-angry-mountain): Island Explorer Map (thunder, bark, ash, dream, sunrise), Cause & Effect Gear Machine (BECAUSE/SO), 5-Scene Story Theater, Sail to the Rescue Ship!'],
+        'class-3a|2026-10-23|10:30': ['U4-4 Phonics (-nd) & Think Together (pp. 70-71)', 'Standalone Pro Lesson 4 (unit4-g3-phonics-think): Explore the Reading Check, Volcano Freeze & 4 Feeling Corners, -nd Phonics Letter Factory, Pop the -nd Balloons, Two-Story Train & 3-Step Interview + Game Maker (angry-g3).'],
+        'class-3b|2026-10-23|09:00': ['U4-4 Phonics (-nd) & Think Together (pp. 70-71)', 'Standalone Pro Lesson 4 (unit4-g3-phonics-think): Explore the Reading Check, Volcano Freeze & 4 Feeling Corners, -nd Phonics Letter Factory, Pop the -nd Balloons, Two-Story Train & 3-Step Interview + Game Maker (angry-g3).']
+      };
+      list.forEach(function (e) { var v = M[e.classId + '|' + e.date + '|' + e.time]; if (v && /^seed1-/.test(e.id)) { e.title = v[0]; e.note = v[1]; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed10');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -254,7 +269,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
