@@ -76,3 +76,12 @@ body.gm-small-pods .gm-pod.on::after{top:-16px}
 body.gm-small-pods .gm-info{padding-top:3px;padding-bottom:3px}
 .gm-cannonbox{padding:0 4px}
 .gm-cannonbox{align-items:stretch}.gm-cannon-cv{width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto}
+
+/* the monsters' legs move when they run, cheer or wait for their turn */
+.gm-leg{transform-box:fill-box;transform-origin:50% 0}
+.gm-runner.gm-run .gm-leg:nth-child(1){animation:gmlegA .22s ease-in-out infinite alternate}
+.gm-runner.gm-run .gm-leg:nth-child(2){animation:gmlegB .22s ease-in-out infinite alternate}
+.gm-pod.on .gm-leg:nth-child(1),.gm-act-cheer .gm-leg:nth-child(1){animation:gmlegA .35s ease-in-out infinite alternate}
+.gm-pod.on .gm-leg:nth-child(2),.gm-act-cheer .gm-leg:nth-child(2){animation:gmlegB .35s ease-in-out infinite alternate}
+@keyframes gmlegA{from{transform:rotate(-22deg)}to{transform:rotate(18deg)}}
+@keyframes gmlegB{from{transform:rotate(18deg)}to{transform:rotate(-22deg)}}
