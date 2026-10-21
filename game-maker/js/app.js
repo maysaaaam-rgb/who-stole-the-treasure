@@ -5,10 +5,10 @@
 (function (root) {
   'use strict';
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v2', CKEY = 'eaa_gm_sets_v1';
-  var SOON = [['⚾', 'Baseball', 'card_baseball'], ['🧩', 'Jigsaw Race', 'card_jigsaw'], ['🎲', 'Snakes and Ladders', 'card_snakes'], ['🧠', 'Memory', 'card_memory']];
+  var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
   /* the three games that have the new polished look come first */
-  var ORDER = ['race', 'cannon', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  var ORDER = ['race', 'cannon', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
   var HOW = {
     race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
     cannon: ['Answer right to get a shot.', 'Pull back from the cannon on the board and let go.', 'Pop balloons: 10, 20, 30 or 50 points. Every shot gets at least 5!'],
@@ -18,7 +18,15 @@
     ttt: ['Two teams.', 'Answer right to put your monster on a square.', 'Three in a row wins the round.'],
     connect4: ['Two teams.', 'Answer right to drop your disc in a column.', 'Four in a row wins the round.'],
     bowling: ['Answer right to roll.', 'Stop the aim bar in the green middle.', 'Knock down the pins. Ten is a STRIKE!'],
-    pass: ['A ticking bomb goes round the teams.', 'Answer right to pass it on.', 'When it pops, everybody else wins points.']
+    pass: ['A ticking bomb goes round the teams.', 'Answer right to pass it on.', 'When it pops, everybody else wins points.'],
+    penalty: ['Answer right to step up to the penalty spot.', 'Swipe the football or tap a corner of the goal to shoot.', 'Beat the moving keeper for +20 or +30! Even a save gives +5!'],
+    whack: ['Answer right to start a 15-second Whack-a-Word round.', 'Check the target words at the top of the board.', 'Tap the matching word bubbles as they pop up for +5 each!'],
+    tower: ['Answer right to get crane blocks for your team tower.', 'Tap the board or Drop button to land the swinging block.', 'Each stacked block scores +10, and overhang edges get sliced!'],
+    balloon: ['Read and listen to the question in the top banner.', 'Watch the colourful answer balloons float up into the sky.', 'Pop the balloon with the right answer for +20 points!'],
+    baseball: ['Answer right to step up to Home plate and swing.', 'Stop the moving power bar in the green centre for a big hit.', 'Run the bases with your monsters! Every runner crossing Home scores +20!'],
+    jigsaw: ['Two teams race side-by-side on their own 12-piece puzzle.', 'Answer right to earn a puzzle piece and drag it into place.', 'Wrong answer gives the other team a STEAL question worth 2 pieces!'],
+    snakes: ['Answer right to roll the big 3D dice (1 to 6).', 'Watch your monster hop along the numbered board squares.', 'Climb up ladders for +10 bonus, slide down snakes, and reach the finish!'],
+    memory: ['Take turns flipping two cards on the board.', 'Match each question card with its partner answer card.', 'When you find a match, read the full sentence aloud for +20 and go again!']
   };
   var S = GM.state = { screen: 'home', setId: GM.halloweenOn ? 'halloween' : 'mona-g3', modeId: 'board', theme: GM.halloweenOn ? 'halloween' : 'classic', classId: '', cfg: { teams: 2, timer: 0, pu: {} }, teams: [] };
   var customSets = [], stage;

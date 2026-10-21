@@ -28,6 +28,7 @@
     { id: 'g4-board', icon: '🎲', title: 'Money Board Game (Unit 3, How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, added: '2026-10-12' },
     { id: 'rev-g4-teamwork', icon: '🏀', title: 'Grade 4 Review: Teamwork (book pp. 56-61): quiz, word shoot, put it in order', route: 'review-g4-teamwork/index.html', g: 4, added: '2026-10-19' },
     { id: 'rev-g4-show', icon: '🎭', title: 'Grade 4 Review: Late for the Show (book pp. 62-70): curtain up, get Harry to the stage, spotlight, excuse round', route: 'review-g4-show/index.html', g: 4, added: '2026-10-20' },
+    { id: 'rev-g3-mountain', icon: '🌋', title: 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71): volcano words, cause & effect, sail to safety, -nd blends & think together', route: 'review-g3-mountain/index.html', g: 3, added: '2026-10-21' },
     { id: 'gamemaker-g3', icon: '🎮', title: 'Game Maker: play any question list as a game (tile board, Plink-oh, Pumpkin Hunt) with the class monsters', route: 'game-maker/index.html', g: 3, added: '2026-10-20' },
     { id: 'gamemaker-g4', icon: '🎮', title: 'Game Maker: play any question list as a game (tile board, Plink-oh, Pumpkin Hunt) with the class monsters', route: 'game-maker/index.html', g: 4, added: '2026-10-20' },
     { id: 'rev-g3-museum', icon: '🔍', title: 'Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59): look say act, sneak, Painting Race jigsaw (2 teams), story order bonus', route: 'review-g3-museum/index.html', g: 3, added: '2026-10-19' },

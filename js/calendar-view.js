@@ -118,6 +118,24 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed8');
     } catch (e) { /* ignore */ }
   }
+  /* Grade 3 Reading 2 & Think Together (The Angry Mountain, book pp. 64-71) + Friday review/quiz notes */
+  function mountainOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed9')) return;
+      var list = customEvents().slice(), n = 0;
+      var M = {
+        'class-3a|2026-10-22|09:45': ['U4-3 Reading 2: The Angry Mountain (pp. 64-71)', 'Book pp. 64-71: Explore the Reading (p. 64), Cause & Effect (p. 65), Reading 2 The Angry Mountain (pp. 66-69: thunder, bark, ash, dream, sunrise), -nd blends & feelings (p. 70), Think Together (p. 71). Lesson: review-g3-mountain.'],
+        'class-3b|2026-10-22|10:30': ['U4-2 Case File 2: Where Is She? (pp. 58-64)', 'Book pp. 58-64: act out the robbery, newspaper race, detective quiz show, four corners debate, draw two faces. Lesson: unit4-g3-lessons?lesson=2 & review-g3-mona.'],
+        'class-3b|2026-10-22|11:15': ['U4-3 Reading 2: The Angry Mountain (pp. 64-71)', 'Book pp. 64-71: Explore the Reading (p. 64), Cause & Effect (p. 65), Reading 2 The Angry Mountain (pp. 66-69: thunder, bark, ash, dream, sunrise), -nd blends & feelings (p. 70), Think Together (p. 71). Lesson: review-g3-mountain.'],
+        'class-3a|2026-10-23|10:30': ['U4-4 Think Together + Game Maker Review', 'Book pp. 70-71 (-nd words, excited/surprised/upset, compare the two readings) + Game Maker set: Grade 3 · The Angry Mountain (angry-g3).'],
+        'class-3a|2026-10-23|11:15': ['Unit 4 QUIZ: What Happened? (20 pts)', 'Print unit4-g3-lessons/quiz-grade3.html (Mona Lisa + The Angry Mountain + Past Tense + Cause & Effect + -nd words).'],
+        'class-3b|2026-10-23|09:00': ['U4-4 Think Together + Game Maker Review', 'Book pp. 70-71 (-nd words, excited/surprised/upset, compare the two readings) + Game Maker set: Grade 3 · The Angry Mountain (angry-g3).'],
+        'class-3b|2026-10-23|09:45': ['Unit 4 QUIZ: What Happened? (20 pts)', 'Print unit4-g3-lessons/quiz-grade3.html (Mona Lisa + The Angry Mountain + Past Tense + Cause & Effect + -nd words).']
+      };
+      list.forEach(function (e) { var v = M[e.classId + '|' + e.date + '|' + e.time]; if (v && /^seed1-/.test(e.id)) { e.title = v[0]; e.note = v[1]; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed9');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -236,7 +254,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;

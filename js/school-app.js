@@ -4186,6 +4186,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🏀', 'Grade 4 Review: Teamwork (book pp. 56-61), 3 simple games', 'review-g4-teamwork/index.html'],
       ['🎮', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
       ['🎭', 'Grade 4 Review: Late for the Show (book pp. 62-70), 3 games + excuse round', 'review-g4-show/index.html'],
+      ['🌋', 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71), cause & effect + volcano rescue + -nd blends', 'review-g3-mountain/index.html'],
       ['🏀', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],
       ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
       ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
@@ -7760,6 +7761,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           link('unit3-g3-quiz/key-a.html', '🔑 Key A', 'key'), link('unit3-g3-quiz/key-b.html', '🔑 Key B', 'key'),
           link('unit3-g3-quiz/teacher.html', '👩‍🏫 Teacher page', 'key'), link('unit3-g3-quiz/index.html', '🎧 Listening player', 'key'),
           link('lesson-plans/Grade3-Unit3-Monster-Journey-and-Quiz-Plan.pdf', '📘 Lesson plan', 'key'), board('3', '📊 Results (3-A, 3-B)')]),
+        card('Unit 4 · What Happened? (Mona Lisa & Angry Mountain · 20 pts)', 'Covers Reading 1 (Where Is She?), Reading 2 (The Angry Mountain), past tense, cause & effect, and -nd blends.', [link('unit4-g3-lessons/quiz-grade3.html', '🖨️ Quiz'), link('unit4-g3-lessons/quiz-grade3-key.html', '🔑 Key', 'key'), link('lesson-plans/Grade3-Unit4-Angry-Mountain-Lesson-Plan.pdf', '📘 Lesson plan', 'key')]),
         card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade3.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade3-key.html', '🔑 Key', 'key')])
       ]) +
       grade(4, 'linear-gradient(135deg,#f59e0b,#d97706)', [
