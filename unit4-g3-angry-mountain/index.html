@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 3 · The Angry Mountain</title>
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+  <div class="pro-app">
+    <div class="pro-bg" id="pro-bg"></div>
+    <header class="pro-topbar">
+      <div class="pro-brand">
+        <b id="pro-title">Lesson 3 · The Angry Mountain</b>
+        <small>Grade 3 · Unit 4 (Book pp. 65–69) · Cause & Effect + Words + Story Quest</small>
+      </div>
+      <div class="pro-steps" id="pro-steps"></div>
+      <div class="pro-quest-box">
+        <span id="pro-quest-txt">⭐ 0 / 20</span>
+        <div class="pro-quest-track"><div class="pro-quest-fill" id="pro-quest-fill"></div></div>
+      </div>
+      <div class="pro-teams" id="pro-teams"></div>
+      <div class="pro-top-tools">
+        <button class="pro-icon-btn" id="btn-sound" title="Sound On/Off">🔊</button>
+        <button class="pro-icon-btn" id="btn-tip" title="Teacher Notes">💡</button>
+        <button class="pro-icon-btn" id="btn-fs" title="Fullscreen">⛶</button>
+        <a class="pro-icon-btn" href="../index.html" title="Home" style="text-decoration:none">🏠</a>
+      </div>
+    </header>
+
+    <main class="pro-main">
+      <aside class="pro-host-col" id="host-col">
+        <div class="pro-host-bubble">
+          <div class="pro-host-who">
+            <span id="host-name">NOVA</span>
+            <button class="pro-host-replay" id="host-replay" type="button">🔊 Say Again</button>
+          </div>
+          <div id="host-text">Welcome! Let's play and speak English together!</div>
+        </div>
+        <div class="pro-host-stage" id="host-stage">
+          <img class="pro-host-sprite" id="host-sprite" src="cast/nova_idle.webp" alt="">
+          <div class="pro-host-pedestal"></div>
+        </div>
+        <div style="font-size:0.76rem;color:#cbd5e1;font-weight:800;text-align:center;" id="host-role">Clever Guide</div>
+      </aside>
+
+      <section class="pro-stage-wrap">
+        <div class="pro-stage-head">
+          <h2 id="st-title">Station 1</h2>
+          <span class="pro-pill" id="st-mins">⏱ 7 min</span>
+          <span class="pro-pill amber" id="st-sub">Interactive Station</span>
+        </div>
+        <div class="pro-stage-body" id="stage-body"></div>
+      </section>
+    </main>
+
+    <footer class="pro-bottombar">
+      <div class="pro-youdo-strip" id="youdo-strip"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="pro-btn ghost" id="btn-prev" type="button">◀ Back</button>
+        <button class="pro-btn green" id="btn-next" type="button">Next Station ▶</button>
+      </div>
+    </footer>
+
+    <div class="pro-tip-modal" id="tip-modal" hidden></div>
+  </div>
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>
