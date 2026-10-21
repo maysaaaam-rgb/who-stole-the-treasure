@@ -8,8 +8,10 @@
   var SOON = [['⚾', 'Baseball', 'card_baseball'], ['🧩', 'Jigsaw Race', 'card_jigsaw'], ['🎲', 'Snakes and Ladders', 'card_snakes'], ['🧠', 'Memory', 'card_memory']];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
   /* the three games that have the new polished look come first */
-  var ORDER = ['board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  var ORDER = ['race', 'cannon', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
   var HOW = {
+    race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
+    cannon: ['Answer right to get a shot.', 'Pull back from the cannon on the board and let go.', 'Pop balloons: 10, 20, 30 or 50 points. Every shot gets at least 5!'],
     board: ['A team picks a numbered tile.', 'Answer the question on the card.', 'Some tiles hide power-ups: luck can change everything!'],
     plinko: ['Answer the question right.', 'Pick a column and drop your disc.', 'It bounces into a points slot. The big slot is in the middle!'],
     hunt: ['Answer right to get a digging number.', 'Your monster digs a line of that many squares.', 'Find treasure: coins, gems, trophies and crowns!'],
@@ -138,19 +140,20 @@
   }
 
   /* ---------- play ---------- */
-  var cleanups = [], queue = [];
+  var cleanups = [], queue = [], gameId = 0;
   function nextItem() { if (!queue.length) queue = U.shuffle(curSet().items); return queue.pop(); }
   function startGame() {
-    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; save();
+    cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
+    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; save(); var myGame = ++gameId;
     S.screen = 'play'; applyTheme('play'); document.body.classList.add('gm-mode-' + S.modeId);
     document.getElementById('gm-teams').style.display = ''; A.play('start'); A.musicStart(S.theme);
     stage.innerHTML = ''; var area = h('div', { class: 'gm-area' }); stage.appendChild(area);
     var m = GM.modes[S.modeId], cfg = Object.assign({}, S.cfg);
     U.teamBar(S.teams, 0);
-    var ctx = { root: area, cfg: cfg, nextItem: nextItem, onEnd: function (f) { cleanups.push(f); }, end: function () { cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'end'; applyTheme('end'); U.podium(S.teams, startGame, goHome); } };
+    var ctx = { root: area, cfg: cfg, nextItem: nextItem, onEnd: function (f) { cleanups.push(f); }, end: function () { if (myGame !== gameId || !S.playing) return; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'end'; applyTheme('end'); U.podium(S.teams, startGame, goHome); } };
     m.start(ctx);
   }
-  function goHome() { S.playing = false; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'home'; render(); }
+  function goHome() { S.playing = false; gameId++; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'home'; render(); }
 
   function render() {
     S.playing = false; applyTheme(); stage.innerHTML = '';
