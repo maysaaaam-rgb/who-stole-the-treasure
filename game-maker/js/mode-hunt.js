@@ -27,11 +27,11 @@
       var weights = [14, 10, 6, 2, 12], bag = []; PRIZES.forEach(function (p, k) { for (var z = 0; z < weights[k]; z++) bag.push(p); }); bag = U().shuffle(bag);
       free = U().shuffle(free); free.forEach(function (cl, k) { cl.prize = bag[k % bag.length]; });
       cells.forEach(function (row) { row.forEach(function (cl) {
-        var b = U().h('button', { type: 'button', class: 'gm-hcell' + (cl.dug ? ' dug' : '') }, [cl.dug ? null : U().art('o_hunt_pumpkin_blank', hal ? '🎃' : '🌿', 'gm-pumpk')]); cl.el = b; field.appendChild(b);
+        var b = U().h('button', { type: 'button', class: 'gm-hcell' + (cl.dug ? ' dug' : '') }, [cl.dug ? null : U().art(hal ? 'o_hunt_pumpkin_blank' : 'o_bush', hal ? '🎃' : '🌳', 'gm-pumpk')]); cl.el = b; field.appendChild(b);
         b.addEventListener('click', function () { choose(cl); });
       }); });
       function place(m, k) { var s = 100 / COLS, t = 100 / ROWS; m.el.style.left = (m.c * s) + '%'; m.el.style.top = (m.r * t) + '%'; m.el.style.width = s + '%'; m.el.style.height = t + '%'; }
-      mons.forEach(function (m, k) { var t = st.teams[k]; m.el = U().h('div', { class: 'gm-hmon' }, [U().monFace(t.mon, 58)]); m.el.style.setProperty('--c', t.color); layer.appendChild(m.el); place(m, k); });
+      mons.forEach(function (m, k) { var t = st.teams[k]; m.el = U().h('div', { class: 'gm-hmon' }, [U().monFace(t.mon, Math.round(Math.min(96, Math.max(54, (root.innerHeight || 900) / 13))))]); m.el.style.setProperty('--c', t.color); layer.appendChild(m.el); place(m, k); });
       var rays = [], allowed = false;
       function occupied(r2, c2, me) { return mons.some(function (m, k) { return k !== me && m.r === r2 && m.c === c2; }); }
       function clearRays() { rays = []; allowed = false; cells.forEach(function (row) { row.forEach(function (cl) { cl.el.classList.remove('ray'); cl.ray = -1; }); }); }
@@ -48,7 +48,7 @@
       async function ask() {
         if (busy) return; busy = true; var t = st.teams[turn], res = await U().ask(ctx.nextItem(), t, { timer: +cfg.timer || 0, label: 'Turn ' + (round + 1) });
         if (!res.ok) { info.innerHTML = ''; info.appendChild(U().h('b', { text: 'No digging this time. Next team!' })); await U().sleep(1100); busy = false; next(); return; }
-        var n = U().rand(2, 5); A().play('round'); info.innerHTML = ''; info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('div', { class: 'gm-dice', text: String(n) })); info.appendChild(U().h('b', { text: 'Dig ' + n + ' pumpkins in a line! Tap a glowing line.' }));
+        var n = U().rand(2, 5); A().play('round'); info.innerHTML = ''; info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('div', { class: 'gm-dice', text: String(n) })); info.appendChild(U().h('b', { text: 'Dig ' + n + (hal ? ' pumpkins' : ' squares') + ' in a line! Tap a glowing line.' }));
         if (!showRays(n)) { info.appendChild(U().h('b', { text: ' (No room to dig!)' })); await U().sleep(1200); busy = false; next(); return; }
         busy = false;
       }

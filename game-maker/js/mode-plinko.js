@@ -30,14 +30,14 @@
       for (i = 0; i < NCOL; i++) { (function (k) { var b = U().h('button', { type: 'button', class: 'gm-col', text: sparkle.indexOf(k) >= 0 ? '✨' : String(k + 1) }); b.style.left = (26 + k * 49.5 - 22) + 'px'; b.disabled = true; b.addEventListener('click', function () { drop(k); }); cols.appendChild(b); })(i); }
       function setCols(on) { [].forEach.call(cols.children, function (b) { b.disabled = !on; b.classList.toggle('on', on); }); }
       function showTurn() {
-        var t = st.teams[turn]; info.innerHTML = ''; info.style.setProperty('--c', t.color); info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: t.name + ': answer to drop your pumpkin!  (drop ' + (round + 1) + ' of ' + rounds + ')' }));
+        var t = st.teams[turn]; info.innerHTML = ''; info.style.setProperty('--c', t.color); info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: t.name + ': answer to drop your ' + (hal ? 'pumpkin' : 'disc') + '!  (drop ' + (round + 1) + ' of ' + rounds + ')' }));
         info.appendChild(U().btn('❓ Ask me', 'big amber', ask)); U().teamBar(st.teams, turn);
         disc.className = 'gm-disc' + (hal ? ' hal' : ''); disc.innerHTML = ''; disc.appendChild(U().monFace(t.mon, DISC * 1.9)); disc.style.display = '';
         disc.style.left = (W / 2 - DISC) + 'px'; disc.style.top = '70px'; disc.style.transition = '';
       }
       async function ask() {
         if (busy) return; busy = true; var t = st.teams[turn], res = await U().ask(ctx.nextItem(), t, { timer: +cfg.timer || 0, label: 'Drop ' + (round + 1) });
-        if (res.ok) { info.innerHTML = ''; info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: 'Right! Pick a column to drop the pumpkin!' })); setCols(true); A().play('round'); busy = false; }
+        if (res.ok) { info.innerHTML = ''; info.appendChild(U().monFace(t.mon, 46)); info.appendChild(U().h('b', { text: 'Right! Pick a column to drop the ' + (hal ? 'pumpkin' : 'disc') + '!' })); setCols(true); A().play('round'); busy = false; }
         else { info.innerHTML = ''; info.appendChild(U().h('b', { text: 'No drop this time. Next team!' })); U().wobble(disc); await U().sleep(1100); busy = false; next(); }
       }
       function next() { round++; if (round >= rounds) { U().sleep(400).then(ctx.end); return; } turn = (turn + 1) % st.teams.length; showTurn(); }

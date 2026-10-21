@@ -4,21 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Maker • English Adventure Academy</title>
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body class="th-classic">
+  <div class="gm-bg" aria-hidden="true"></div>
   <header class="gm-head" id="gm-head">
-    <h1>🎮 Game Maker</h1>
-    <nav class="gm-steps" id="gm-steps"></nav>
+    <a class="gm-brand" href="index.html" title="Game Maker home"><span class="gm-brand-ic">🎮</span><b>Game Maker</b></a>
+    <div class="gm-grow"></div>
     <div class="gm-tools">
-      <button type="button" class="gm-btn sm ghost" id="gm-snd" title="Sound on / off">🔊</button>
-      <button type="button" class="gm-btn sm cyan" id="gm-fs" title="Full screen">📺</button>
-      <button type="button" class="gm-btn sm amber" id="gm-home" title="Back to the set-up">☰ Menu</button>
-      <a class="gm-btn sm ghost" href="../index.html" title="Back to the platform">🏠</a>
+      <button type="button" class="gm-btn round ghost" id="gm-snd" title="Sound on / off">🔊</button>
+      <button type="button" class="gm-btn round ghost" id="gm-fs" title="Full screen">⛶</button>
+      <button type="button" class="gm-btn sm amber" id="gm-home" title="Back to the games">☰ Games</button>
+      <a class="gm-btn round ghost" href="../index.html" title="Back to the platform">🏠</a>
     </div>
   </header>
-  <div class="gm-teams" id="gm-teams"></div>
   <main class="gm-stage" id="gm-stage"></main>
+  <div class="gm-teams" id="gm-teams"></div>
   <div class="gm-fx" id="gm-fx" aria-hidden="true"></div>
 
   <script src="../js/evolution-levels.js?v=1"></script>
@@ -30,11 +33,11 @@
   <script src="js/data.js?v=3"></script>
   <script src="js/audio.js?v=1"></script>
   <script src="js/monsters.js?v=1"></script>
-  <script src="js/core.js?v=3"></script>
-  <script src="js/mode-board.js?v=2"></script>
-  <script src="js/mode-plinko.js?v=3"></script>
-  <script src="js/mode-hunt.js?v=3"></script>
-  <script src="js/mode-extra.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/core.js?v=4"></script>
+  <script src="js/mode-board.js?v=3"></script>
+  <script src="js/mode-plinko.js?v=4"></script>
+  <script src="js/mode-hunt.js?v=4"></script>
+  <script src="js/mode-extra.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
