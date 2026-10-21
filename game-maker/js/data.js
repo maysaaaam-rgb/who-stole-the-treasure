@@ -28,6 +28,37 @@
     ['Where did the Mona Lisa go at the end?', 'Home to the museum', 'To a shop', 'To the sea'], ['What did Peruggia hide it under?', 'His coat', 'His bed', 'A tree']
   ];
 
+  var ANGRY = [
+    ['Which word? A loud BOOM sound in a storm.', 'thunder', 'sunrise', 'dream', '⛈️'],
+    ['Which word? The loud sound a dog makes: Woof! Woof!', 'bark', 'ash', 'sunrise', '🐕'],
+    ['Which word? Soft grey powder that falls from a volcano.', 'ash', 'thunder', 'bark', '🌋'],
+    ['Which word? Pictures in your head when you are sleeping.', 'dream', 'ash', 'thunder', '💭'],
+    ['Which word? When the sun comes up in the morning.', 'sunrise', 'dream', 'bark', '🌅'],
+    ['Where was the girl at the start of The Angry Mountain?', 'In a palm tree on the beach', 'In a museum in Paris', 'On a train platform', '🌴'],
+    ['What was the name of the volcano in the story?', 'Mount Tambora', 'Mount Everest', 'Mount Fuji', '🌋'],
+    ['Why did the girl climb down the palm tree?', 'Because she heard a loud BOOM from the mountain', 'Because it started to snow', 'Because her friend called her', '💥'],
+    ['What fell from the dark sky onto the beach?', 'Hot ash and small stones', 'Snowflakes and ice', 'Leaves and flowers', '🪨'],
+    ['How did the girl and her parents escape from the island?', 'In a small wooden boat', 'In a big airplane', 'On a fast train', '⛵'],
+    ['Why did the girl cry in the boat?', 'Because she was scared of the angry mountain', 'Because she lost her toy', 'Because she was hungry', '😢'],
+    ['When the girl woke up at sunrise, what did she see?', 'A big rescue ship', 'A school bus', 'A museum guard', '🚢'],
+    ['How did the family feel when they saw the big ship?', 'Happy and safe', 'Angry and bored', 'Sleepy and cold', '🙌'],
+    ['Cause: It rained heavily. What is the EFFECT?', 'We opened our umbrellas.', 'We ate ice cream.', 'We wore sunglasses.', '☔'],
+    ['Cause: The dog saw a stranger. What is the EFFECT?', 'It started to bark loudly.', 'It flew into the sky.', 'It read a newspaper.', '🐕'],
+    ['Cause: Smoke and ash came from the volcano. What is the EFFECT?', 'The sky turned dark.', 'The water turned into ice.', 'The museum closed.', '🌋'],
+    ['Cause: The family saw a big ship at sunrise. What is the EFFECT?', 'They waved and shouted for help.', 'They climbed a palm tree.', 'They went back to sleep.', '🚢'],
+    ['Which word ends with the -nd blend? (soft yellow beach ground)', 'sand', 'sad', 'sun', '🏖️'],
+    ['Which word ends with the -nd blend? (land with water all around it)', 'island', 'igloo', 'inside', '🏝️'],
+    ['Which word ends with the -nd blend? (moving air that pushes the boat sail)', 'wind', 'win', 'wing', '💨'],
+    ['Which word ends with the -nd blend? (something you hear with your ears)', 'sound', 'soup', 'soap', '🔊'],
+    ['Which word ends with the -nd blend? (at the back of something)', 'behind', 'before', 'begin', '🌳'],
+    ['Which word ends with the -nd blend? (to see or get something that was lost)', 'find', 'fine', 'fish', '🔍'],
+    ['How did the girl feel when the volcano went BOOM?', 'scared and upset', 'excited and sleepy', 'bored and hungry', '😨'],
+    ['How did the family feel when the big ship rescued them?', 'excited and happy', 'angry and scared', 'sad and lonely', '🎉'],
+    ['In Where Is She?, what happened? A man ____ the Mona Lisa.', 'stole', 'climbed', 'sailed', '🖼️'],
+    ['In The Angry Mountain, what happened? A volcano ____!', 'erupted', 'painted', 'laughed', '🌋'],
+    ['Are both stories in Unit 4 about big events from the past?', 'Yes, both tell what happened!', 'No, they are about space.', 'No, they are about cooking.', '📖']
+  ];
+
   var SHOW = [
     ['The ____ starts at six o’clock.', 'show', 'sank', 'calm', '🎭'], ['Please stay ____ and wait here.', 'calm', 'alive', 'platform', '😌'],
     ['We wait for the train on the ____.', 'platform', 'show', 'sank', '🚉'], ['The ship ____ in the storm.', 'sank', 'calm', 'alive', '🚢'],
@@ -70,6 +101,7 @@
 
   GM.sets = [
     { id: 'mona-g3', title: 'Grade 3 · Mona Lisa review', grade: 3, e: '🖼️', items: rows(MONA) },
+    { id: 'angry-g3', title: 'Grade 3 · The Angry Mountain', grade: 3, e: '🌋', items: rows(ANGRY) },
     { id: 'show-g4', title: 'Grade 4 · Late for the Show', grade: 4, e: '🎭', items: rows(SHOW) },
     { id: 'moon-g3', title: 'Grade 3 · Chuseok Moon Song', grade: 3, e: '🌕', items: rows(MOON) },
     { id: 'halloween', title: 'Halloween words and verbs', grade: 0, e: '🎃', items: rows(HAL) }
