@@ -37,12 +37,31 @@
     for (var i = 0; i < n; i++) out.push({ name: '', color: COLORS[i % COLORS.length], stage: stages[i], equipped: theme === 'halloween' ? { hat: themeHat(theme, i), backpack: HAL_CAPES[i % 8] } : { hat: 'none' } });
     return out;
   }
+  /* In the games the monsters stand on their own legs: the pedestal is taken away and two short legs with round feet are drawn
+     behind the body (the Sky Dragon already has its own feet). */
+  var LEG_W = { baby: 11, growing: 12, adventurer: 13, advanced: 14, ultimate: 15 };
+  function withLegs(s, m) {
+    s = s.replace(/<g class="monster-pedestal-stage">[\s\S]*?<\/g>/, '');
+    var eq = m.equipped || {}; if (/dragon/.test(String(eq.creature || '')) || m.stage === 'egg' || m.stage === 'cracking_egg') return s;
+    var P = (root.MonsterRenderer && root.MonsterRenderer.palettes && root.MonsterRenderer.palettes[m.color]) || { primary: '#38bdf8', primaryDark: '#0284c7', shadowDark: '#0c4a6e', primaryLight: '#bae6fd' };
+    var w = LEG_W[m.stage] || 12, gap = w * 1.25, top = 140, foot = 162, line = P.shadowDark || P.primaryDark, legs = '';
+    [-1, 1].forEach(function (k) {
+      var x = 100 + k * gap;
+      legs += '<g class="gm-leg"><rect x="' + (x - w / 2) + '" y="' + top + '" width="' + w + '" height="' + (foot - top) + '" rx="' + (w / 2) + '" fill="' + P.primary + '" stroke="' + line + '" stroke-width="2"/>' +
+        '<ellipse cx="' + (x + k * 2) + '" cy="' + foot + '" rx="' + (w * 0.95) + '" ry="' + (w * 0.55) + '" fill="' + P.primaryDark + '" stroke="' + line + '" stroke-width="2"/>' +
+        '<ellipse cx="' + (x + k * 2 - w * 0.25) + '" cy="' + (foot - w * 0.2) + '" rx="' + (w * 0.35) + '" ry="' + (w * 0.18) + '" fill="#ffffff" opacity="0.35"/></g>';
+    });
+    legs = '<g class="gm-legs">' + legs + '</g>';
+    var i = s.indexOf('monster-contact-shadow-group'), j = i >= 0 ? s.indexOf('</g>', i) : -1;
+    if (j >= 0) return s.slice(0, j + 4) + legs + s.slice(j + 4);
+    var k2 = s.indexOf('>', s.indexOf('<svg')); return s.slice(0, k2 + 1) + legs + s.slice(k2 + 1);
+  }
   function svg(m, size) {
     size = size || 90;
     try {
       if (root.MonsterRenderer && typeof root.MonsterRenderer.renderMonsterSVG === 'function' && m) {
         var s = root.MonsterRenderer.renderMonsterSVG({ stage: m.stage || 'growing', color: m.color || 'blue', equipped: m.equipped || {}, size: size, animated: false });
-        if (s) return s.replace(/href="assets\//g, 'href="../assets/');
+        if (s) return withLegs(s, m).replace(/href="assets\//g, 'href="../assets/');
       }
     } catch (e) { /* fall back to an emoji */ }
     return '<span style="font-size:' + Math.round(size * 0.7) + 'px;line-height:1">👾</span>';

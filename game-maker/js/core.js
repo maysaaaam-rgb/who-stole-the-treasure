@@ -21,8 +21,9 @@
 
   /* ---- art with a fallback: the file is used when it is in art/manifest.json, otherwise the emoji ---- */
   var ART = {};
+  function hasArt(name) { return !!ART[name]; }
   function loadArt() {
-    try { var x = new XMLHttpRequest(); x.open('GET', 'art/manifest.json?v=' + Date.now(), true); x.onload = function () { try { if (x.status === 200) JSON.parse(x.responseText).forEach(function (n) { ART[n] = 1; }); } catch (e) { /* none */ } }; x.send(); } catch (e) { /* offline file */ }
+    try { var x = new XMLHttpRequest(); x.open('GET', 'art/manifest.json?v=' + Date.now(), true); x.onload = function () { try { if (x.status === 200) JSON.parse(x.responseText).forEach(function (n) { ART[n] = 1; }); } catch (e) { /* none */ } try { if (GM.app && GM.state && !GM.state.playing && (GM.state.screen === 'home' || GM.state.screen === 'setup')) GM.app.go(GM.state.screen); } catch (e) { /* ignore */ } }; x.send(); } catch (e) { /* offline file */ }
   }
   function art(name, emoji, cls) { return ART[name] ? h('img', { class: 'gm-art ' + (cls || ''), src: 'art/' + name + '.webp', alt: '' }) : h('span', { class: 'gm-art-emoji ' + (cls || ''), text: emoji || '' }); }
   var FX = {};
@@ -53,47 +54,58 @@
   function wobble(el) { if (!el) return; el.classList.remove('gm-wobble'); void el.offsetWidth; el.classList.add('gm-wobble'); }
   function bump(el) { if (!el) return; el.classList.remove('gm-bump'); void el.offsetWidth; el.classList.add('gm-bump'); }
 
-  /* ---- the team bar (top): monster, name, score; the active team glows ---- */
+  /* ---- the team pods (bottom of the play screen): each team's monster BIG on a pedestal, name and score; the active team jumps ---- */
   function monFace(m, size) { var d = h('div', { class: 'gm-monface', html: GM.mon.svg(m, size * 1.5) }); d.style.width = d.style.height = size + 'px'; return d; }
+  function monFull(m, size) { var d = h('div', { class: 'gm-monfull', html: GM.mon.svg(m, size) }); d.style.width = d.style.height = size + 'px'; return d; }
   function teamBar(teams, active) {
     var bar = document.getElementById('gm-teams'); if (!bar) return; bar.innerHTML = '';
+    var n = teams.length, k = Math.max(0.75, Math.min(1.45, (root.innerHeight || 900) / 900)), size = Math.round((n <= 2 ? 132 : n <= 4 ? 112 : n <= 6 ? 92 : 78) * k);
+    bar.className = 'gm-teams n' + n;
     teams.forEach(function (t, i) {
-      var chip = h('div', { class: 'gm-team' + (i === active ? ' on' : ''), id: 'gm-team-' + i }, [monFace(t.mon, 44), h('div', { class: 'gm-tname' }, [h('b', { text: t.name }), h('span', { class: 'gm-score', text: String(t.score) })])]);
-      chip.style.setProperty('--c', t.color); bar.appendChild(chip);
+      var pod = h('div', { class: 'gm-pod' + (i === active ? ' on' : ''), id: 'gm-team-' + i }, [h('div', { class: 'gm-pod-mon' }, [monFull(t.mon, size)]), h('div', { class: 'gm-pod-plate' }, [h('b', { class: 'gm-pod-name', text: t.name }), h('span', { class: 'gm-score', text: String(t.score) })])]);
+      pod.style.setProperty('--c', t.color); bar.appendChild(pod);
     });
   }
   function setScore(i, n) { var t = GM.state.teams[i]; t.score = Math.max(0, n); var c = document.querySelector('#gm-team-' + i + ' .gm-score'); if (c) { c.textContent = String(t.score); bump(c); } }
   function addScore(i, n) { setScore(i, GM.state.teams[i].score + n); }
 
-  /* ---- THE QUESTION CARD: picture, sentence, Show, four answers, Okay. Resolves { ok } and never takes points away ---- */
+  /* ---- THE QUESTION CARD: picture, sentence, Show, coloured answers A-D, Okay. Resolves { ok } and never takes points away ---- */
+  var LETTERS = ['A', 'B', 'C', 'D'];
   function ask(item, team, opts) {
     opts = opts || {};
     return new Promise(function (resolve) {
-      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-card gm-glass' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
-      var head = h('div', { class: 'gm-qhead' }, [monFace(team.mon, 54), h('b', { text: team.name + (opts.label ? '  ·  ' + opts.label : '') }), h('span', { class: 'gm-grow' })]);
-      head.style.setProperty('--c', team.color); if (GM.state && GM.state.theme === 'halloween') head.appendChild(art('c_pumpkin', '🎃', 'gm-corner'));
-      var timerEl = h('span', { class: 'gm-timer', text: '' }); head.appendChild(timerEl);
-      head.appendChild(btn('🔊', 'sm', function () { A().speak(item.q); }));
+      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
+      var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]), h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: opts.label || '' })]), h('span', { class: 'gm-grow' }), timerEl, btn('🔊', 'round sm', function () { A().speak(item.q); })]);
+      head.style.setProperty('--c', team.color); card.style.setProperty('--c', team.color);
       var choice = null, tm = null, left = 0, done = false;
-      if (!item.pic) picBox.style.display = 'none';
-      card.appendChild(head); card.appendChild(picBox); card.appendChild(q); card.appendChild(optBox); card.appendChild(msg); card.appendChild(foot); over.appendChild(card);
+      if (item.pic) body.appendChild(picBox); else card.classList.add('nopic');
+      body.appendChild(q); card.appendChild(head); card.appendChild(body); card.appendChild(optBox); card.appendChild(msg); card.appendChild(foot); over.appendChild(card);
       document.getElementById('gm-stage').appendChild(over);
-      A().play('flip');
+      A().play('flip'); requestAnimationFrame(function () { card.classList.add('in'); });
       function finish(ok) {
         if (done) return; done = true; clearInterval(tm);
-        [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); });
-        if (ok) { A().play('right'); confetti(14); fx('sparkle_burst', card, 1.4); msg.textContent = '✅ Well done!'; } else { A().play('soft'); wobble(card); msg.textContent = 'Almost! The answer is “' + item.a + '”. Good try!'; }
-        setTimeout(function () { if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: ok }); }, ok ? 900 : 1700);
+        [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
+        okBtn.style.display = 'none';
+        if (ok) { A().play('right'); confetti(14); fx('sparkle_burst', card, 1.6); msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '!'; } else { A().play('soft'); wobble(card); msg.className = 'gm-qmsg soft'; msg.textContent = 'Good try! The answer is \u201c' + item.a + '\u201d.'; }
+        setTimeout(function () { card.classList.remove('in'); card.classList.add('out'); setTimeout(function () { if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: ok }); }, 220); }, ok ? 1000 : 1800);
       }
-      var show = btn('👀 Show the answers', 'big amber', function () {
+      var show = btn('👀  Show the answers', 'huge amber', function () {
         show.style.display = 'none'; A().play('flip');
         var opts2 = shuffle([item.a].concat((item.w || []).slice(0, 3)).filter(Boolean));
-        opts2.forEach(function (t) { var b = h('button', { type: 'button', class: 'gm-opt gm-btn', text: t }); b.dataset.ok = t === item.a ? '1' : '0'; b.addEventListener('click', function () { if (done) return; A().play('tap'); choice = t; [].forEach.call(optBox.children, function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); okBtn.style.display = ''; }); optBox.appendChild(b); });
-        if (opts.timer > 0) { left = opts.timer; timerEl.textContent = '⏱ ' + left; tm = setInterval(function () { left--; timerEl.textContent = '⏱ ' + left; if (left <= 3 && left > 0) A().play('tick'); if (left <= 0) { clearInterval(tm); msg.textContent = '⏰ Time is up!'; finish(false); } }, 1000); }
+        optBox.className = 'gm-opts n' + opts2.length;
+        opts2.forEach(function (t, k) {
+          var b = h('button', { type: 'button', class: 'gm-opt c' + k }, [h('span', { class: 'gm-optl', text: LETTERS[k] }), h('span', { class: 'gm-optt', text: t })]); b.dataset.ok = t === item.a ? '1' : '0';
+          b.addEventListener('click', function () { if (done) return; A().play('tap'); choice = t; [].forEach.call(optBox.children, function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); okBtn.style.display = ''; });
+          b.style.animationDelay = (k * 70) + 'ms'; optBox.appendChild(b);
+        });
+        if (opts.timer > 0) {
+          left = opts.timer; timerEl.innerHTML = '<b>' + left + '</b>'; timerEl.style.setProperty('--p', '100'); timerEl.classList.add('on');
+          tm = setInterval(function () { left--; timerEl.innerHTML = '<b>' + Math.max(0, left) + '</b>'; timerEl.style.setProperty('--p', String(Math.max(0, left) / opts.timer * 100)); if (left <= 3 && left > 0) { A().play('tick'); timerEl.classList.add('low'); } if (left <= 0) { clearInterval(tm); msg.textContent = '⏰ Time is up!'; finish(false); } }, 1000);
+        }
       });
-      var okBtn = btn('✔ Okay!', 'big green', function () { if (choice == null) return; finish(choice === item.a); }); okBtn.style.display = 'none';
+      var okBtn = btn('✔  Okay!', 'huge green', function () { if (choice == null) return; finish(choice === item.a); }); okBtn.style.display = 'none';
       foot.appendChild(show); foot.appendChild(okBtn);
-      foot.appendChild(btn('⏭ Skip', 'sm ghost', function () { if (done) return; done = true; clearInterval(tm); if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: false, skipped: true }); }));
+      foot.appendChild(btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; clearInterval(tm); if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: false, skipped: true }); }));
     });
   }
 
@@ -106,18 +118,23 @@
     });
   }
 
-  /* ---- the end: podium ---- */
+  /* ---- the end: podium with the monsters standing on it ---- */
   function podium(teams, onAgain, onHome) {
     var stage = document.getElementById('gm-stage'); stage.innerHTML = '';
     var order = teams.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) { return b.t.score - a.t.score; });
-    var wrap = h('div', { class: 'gm-end' }, [h('h2', { text: '🏆 Game over!' })]), row = h('div', { class: 'gm-podium' });
-    order.forEach(function (o, k) {
-      var col = h('div', { class: 'gm-pcol r' + k }, [monFace(o.t.mon, k === 0 ? 120 : 84), h('b', { text: o.t.name }), h('span', { class: 'gm-pscore', text: o.t.score + ' points' }), h('div', { class: 'gm-pstep', text: String(k + 1) })]);
-      col.style.setProperty('--c', o.t.color); col.style.setProperty('--h', Math.max(60, 150 - k * 28) + 'px'); row.appendChild(col);
+    var tie = order.length > 1 && order[0].t.score === order[1].t.score;
+    var wrap = h('div', { class: 'gm-end' }, [h('div', { class: 'gm-end-title' }, [art('ui_trophy', '🏆', 'gm-trophy'), h('h2', { text: tie ? 'It is a tie!' : (order[0] ? order[0].t.name + ' wins!' : 'Game over!') })])]);
+    var pod = h('div', { class: 'gm-podium' });
+    [1, 0, 2].forEach(function (k) {
+      var o = order[k]; var col = h('div', { class: 'gm-pcol r' + k + (o ? '' : ' empty') });
+      if (o) { col.style.setProperty('--c', o.t.color); col.appendChild(h('div', { class: 'gm-pmon' }, [monFull(o.t.mon, k === 0 ? 170 : 130)])); col.appendChild(h('b', { class: 'gm-pname', text: o.t.name })); col.appendChild(h('span', { class: 'gm-pscore', text: o.t.score + ' points' })); }
+      col.appendChild(h('div', { class: 'gm-pstep', text: String(k + 1) })); pod.appendChild(col);
     });
-    wrap.appendChild(row); wrap.appendChild(h('div', { class: 'gm-row' }, [btn('🔁 Play again', 'big green', onAgain), btn('🏠 Home', 'ghost', onHome)])); stage.appendChild(wrap);
-    A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900);
+    wrap.appendChild(pod);
+    if (order.length > 3) wrap.appendChild(h('div', { class: 'gm-rest' }, order.slice(3).map(function (o, k) { var r = h('div', { class: 'gm-restrow' }, [h('b', { text: (k + 4) + '.' }), monFace(o.t.mon, 40), h('span', { text: o.t.name }), h('em', { text: o.t.score + ' points' })]); r.style.setProperty('--c', o.t.color); return r; })));
+    wrap.appendChild(h('div', { class: 'gm-row' }, [btn('🔁  Play again', 'huge green', onAgain), btn('☰  Other games', 'big ghost', onHome)])); stage.appendChild(wrap);
+    A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900); setTimeout(function () { fx('sparkle_burst', pod, 2); }, 300);
   }
 
-  GM.u = { fx: fx, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
+  GM.u = { fx: fx, hasArt: hasArt, monFull: monFull, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
 })(window);
