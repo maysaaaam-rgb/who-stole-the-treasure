@@ -44,7 +44,7 @@
     s = s.replace(/<g class="monster-pedestal-stage">[\s\S]*?<\/g>/, '');
     var eq = m.equipped || {}; if (/dragon/.test(String(eq.creature || '')) || m.stage === 'egg' || m.stage === 'cracking_egg') return s;
     var P = (root.MonsterRenderer && root.MonsterRenderer.palettes && root.MonsterRenderer.palettes[m.color]) || { primary: '#38bdf8', primaryDark: '#0284c7', shadowDark: '#0c4a6e', primaryLight: '#bae6fd' };
-    var w = LEG_W[m.stage] || 12, gap = w * 1.25, top = 134, foot = 176, line = P.shadowDark || P.primaryDark, legs = '';
+    var w = LEG_W[m.stage] || 12, gap = w * 1.25, top = 140, foot = 162, line = P.shadowDark || P.primaryDark, legs = '';
     [-1, 1].forEach(function (k) {
       var x = 100 + k * gap;
       legs += '<g class="gm-leg"><rect x="' + (x - w / 2) + '" y="' + top + '" width="' + w + '" height="' + (foot - top) + '" rx="' + (w / 2) + '" fill="' + P.primary + '" stroke="' + line + '" stroke-width="2"/>' +
