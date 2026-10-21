@@ -133,11 +133,11 @@ html.class-mode .cb-tm > div b { font-size: 1.35rem !important; } html.class-mod
 html.class-mode .cb-goal { padding: 6px 14px !important; border-radius: 14px !important; background: rgba(35, 28, 110, 0.32) !important; }
 html.class-mode .cb-goal .bar { height: 14px !important; } html.class-mode .cb-goal .bar i { background: linear-gradient(90deg, #fbbf24, #fb923c) !important; box-shadow: none !important; }
 html.class-mode .cb-mg { gap: 12px !important; }
-html.class-mode .cb-st { border-radius: 20px !important; background: rgba(255, 255, 255, 0.16) !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
+html.class-mode .cb-mg:not(.scene) .cb-st { border-radius: 20px !important; background: rgba(255, 255, 255, 0.16) !important; border: 1px solid rgba(255, 255, 255, 0.35) !important; }
 html.class-mode .cb-pt { background: var(--pm-orange) !important; color: #2b1700 !important; }
 html.class-mode .cb-add { gap: 5px; margin-top: 8px; }
-html.class-mode .cb-add button, html.class-mode .cb-add button:nth-child(n) { background: rgba(255, 255, 255, 0.92) !important; color: var(--pm-ink) !important; font: 700 0.9rem Fredoka, sans-serif !important; padding: 4px 8px !important; border-radius: 11px !important; border-bottom: 4px solid rgba(60, 50, 140, 0.35) !important; min-width: 0; flex: 1; }
-html.class-mode .cb-add button:nth-child(3) { background: var(--pm-orange) !important; color: #2b1700 !important; border-bottom-color: var(--pm-orange-dk) !important; }
+html.class-mode .cb-mg:not(.scene) .cb-add button, html.class-mode .cb-mg:not(.scene) .cb-add button:nth-child(n) { background: rgba(255, 255, 255, 0.92) !important; color: var(--pm-ink) !important; font: 700 0.9rem Fredoka, sans-serif !important; padding: 4px 8px !important; border-radius: 11px !important; border-bottom: 4px solid rgba(60, 50, 140, 0.35) !important; min-width: 0; flex: 1; }
+html.class-mode .cb-mg:not(.scene) .cb-add button:nth-child(3) { background: var(--pm-orange) !important; color: #2b1700 !important; border-bottom-color: var(--pm-orange-dk) !important; }
 html.class-mode .cb-add button:active { transform: translateY(3px); border-bottom-width: 1px !important; }
 html.class-mode .cb-dock { background: rgba(246, 244, 255, 0.96) !important; border: 1px solid var(--pm-line) !important; }
 html.class-mode .cb-dock button { background: #fff !important; color: var(--pm-ink) !important; border-bottom-color: rgba(60, 50, 140, 0.28) !important; }

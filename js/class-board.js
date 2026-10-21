@@ -287,8 +287,8 @@
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
       '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s) {
-        var plate = s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
-        var animal = s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
+        var plate = !sceneOn && s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
+        var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
         return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal + avBadge +
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
