@@ -67,3 +67,12 @@ body.th-halloween .gm-track{background:linear-gradient(180deg,#5a3a9c,#3a2270)}
 .gm-cannon-cv{max-width:100%;max-height:100%;aspect-ratio:16/9;border:5px solid var(--line);border-radius:28px;box-shadow:0 10px 0 rgba(0,0,0,.18);touch-action:none;cursor:crosshair;background:#bfe6ff}
 
 @media (prefers-reduced-motion: reduce){.gm-bg::after,.gm-crowd i,.gm-pod-mon,.gm-logo,.gm-tile,.gm-game{animation:none!important}}
+
+/* cannon: bigger play area, small score plates */
+body.gm-small-pods .gm-pod-mon,body.gm-small-pods .gm-pod::before{display:none}
+body.gm-small-pods .gm-teams{padding-top:12px;margin-top:0}
+body.gm-small-pods .gm-pod.on{transform:translateY(-2px) scale(1.06)}
+body.gm-small-pods .gm-pod.on::after{top:-16px}
+body.gm-small-pods .gm-info{padding-top:3px;padding-bottom:3px}
+.gm-cannonbox{padding:0 4px}
+.gm-cannonbox{align-items:stretch}.gm-cannon-cv{width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto}
