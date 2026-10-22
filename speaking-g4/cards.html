@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speaking practice cards · Grade 4</title>
+<style>
+  @page { size: A4 portrait; margin: 8mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; color: #111827; background: #e2e8f0; font-size: 14pt; }
+  .bar { background: #0f172a; color: #fff; padding: 8px 14px; display: flex; gap: 10px; align-items: center; } .bar a, .bar button { font: inherit; font-weight: 800; color: #fff; background: #0ea5e9; border: 2px solid #fff; border-bottom-width: 5px; border-radius: 10px; padding: 3px 12px; text-decoration: none; cursor: pointer; } .bar button:active { border-bottom-width: 2px; transform: translateY(3px); }
+  .page { width: 210mm; margin: 8px auto; background: #fff; padding: 8mm; }
+  h1 { font-size: 17pt; } .sub { font-size: 12pt; color: #475569; margin: 1mm 0 3mm; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+  .card { border: 2px dashed #111827; border-radius: 3mm; padding: 2.4mm 3mm; min-height: 38mm; break-inside: avoid; }
+  .u { display: inline-block; color: #fff; font-weight: 900; font-size: 9pt; border-radius: 99px; padding: 0 2.4mm; }
+  .pic { font-size: 26pt; line-height: 1.15; } .q { font-weight: 800; line-height: 1.2; } .st { font-size: 12pt; color: #475569; margin-top: 1mm; }
+  .rules { border: 2px solid #111827; border-radius: 3mm; padding: 2mm 3mm; margin-bottom: 3mm; font-size: 12pt; }
+  @media print { body { background: #fff; } .page { margin: 0; padding: 0; width: auto; } .bar { display: none; } }
+</style>
+</head>
+<body>
+<div class="bar"><b>Speaking practice cards</b><a href="index.html">← Speaking check</a><button type="button" onclick="window.print()" style="margin-left:auto">🖨️ Print</button></div>
+<div class="page">
+  <h1>Speaking practice cards · Grade 4 · Units 1–4</h1>
+  <div class="sub">Cut out. Work in pairs. These are practice questions, not the test.</div>
+  <div class="rules"><b>How to play:</b> 1) Pupil A asks the question. 2) Pupil B answers with a FULL sentence. 3) Swap. If you are stuck, use the starter under the question. Do not write; just speak!</div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+(function () {
+  var C = [
+    [1, '🍕🕖🏠', 'What did you eat for dinner yesterday? Tell me two things you did in the evening.', 'Yesterday I … Then I …'],
+    [1, '🏖️🌞🚗', 'Where did you go in the summer holiday? What did you do there?', 'I went to … I …'],
+    [1, '❓🙋❓', 'Ask your partner two questions about last night. Start with Where, Who or Why.', 'Where did you …?'],
+    [2, '🧤❄️🧣', 'Why do we wear gloves in winter? Use SO.', 'We wear gloves so we can …'],
+    [2, '🐿️🌰🌳', 'Why does a squirrel collect nuts in autumn? Use SO.', 'A squirrel collects nuts so it can …'],
+    [2, '🎒🎁📚', 'Tell your partner about something someone gave you. Who gave it? What was it?', 'My … gave me …'],
+    [3, '🥣🛌📺', 'Look at the pictures. What are the people doing?', 'He is … She is …'],
+    [3, '🐢 🐇', 'Compare a turtle and a rabbit. Use BUT.', 'A turtle is …, but a rabbit is …'],
+    [3, '🚌 🚲', 'Compare a bus and a bike. Use noisy, quiet, fast, slow or expensive.', 'A bus is …, but a bike is …'],
+    [4, '😊🎂🥳', 'Were you happy or sad on your last birthday? Why? Use BECAUSE.', 'I was … because …'],
+    [4, '❄️🏠☕', 'It was snowing on Sunday. What did you do? Use SO.', 'It was snowing, so I …'],
+    [4, '🏀🎤🎬', 'Tell your partner about a game, a song or a film. What happened?', 'We played … I watched … It was …']
+  ], COL = { 1: '#0ea5e9', 2: '#10b981', 3: '#a855f7', 4: '#f59e0b' };
+  document.getElementById('grid').innerHTML = C.map(function (c, i) { return '<div class="card"><span class="u" style="background:' + COL[c[0]] + '">UNIT ' + c[0] + '</span> <span style="font-weight:800">' + (i + 1) + '</span><div class="pic">' + c[1] + '</div><div class="q">' + c[2] + '</div><div class="st">Starter: ' + c[3] + '</div></div>'; }).join('');
+})();
+</script>
+</body>
+</html>

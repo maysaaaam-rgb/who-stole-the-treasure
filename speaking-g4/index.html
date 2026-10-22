@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speaking Check · Grade 4</title>
+<style>
+  :root { --void: #060911; --glass: rgba(15, 23, 42, .8); --ink: #e2e8f0; --mute: #94a3b8; --cyan: #38bdf8; --amber: #f59e0b; --emerald: #10b981; --coral: #f43f5e; --violet: #a855f7; --spring: cubic-bezier(.175, .885, .32, 1.275); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; color: var(--ink); background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%); font-size: 18px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 14px 16px 40px; }
+  .glass { background: var(--glass); backdrop-filter: blur(14px); border: 1px solid rgba(148, 163, 184, .22); border-radius: 18px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, .4), 0 2px 6px -1px rgba(0, 0, 0, .2); padding: 14px 16px; }
+  header { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  h1 { font-size: 24px; flex: 1; min-width: 240px; } h1 small { display: block; font-size: 14px; font-weight: 600; color: var(--mute); }
+  .btn { font: inherit; font-weight: 800; color: #fff; background: var(--cyan); border: 0; border-bottom: 5px solid #0369a1; border-radius: 14px; padding: 9px 18px; cursor: pointer; transition: transform .18s var(--spring), border-bottom-width .18s var(--spring); }
+  .btn:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .btn.amber { background: var(--amber); border-bottom-color: #b45309; color: #111827; } .btn.green { background: var(--emerald); border-bottom-color: #047857; } .btn.coral { background: var(--coral); border-bottom-color: #be123c; } .btn.ghost { background: #334155; border-bottom-color: #1e293b; } .btn.violet { background: var(--violet); border-bottom-color: #7e22ce; }
+  .btn.on { outline: 3px solid #fde68a; } .btn.big { font-size: 22px; padding: 12px 26px; } .btn[disabled] { opacity: .45; pointer-events: none; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; } .grow { flex: 1; }
+  select, input[type=text], input[type=number], textarea { font: inherit; color: var(--ink); background: #0f172a; border: 2px solid #334155; border-radius: 10px; padding: 7px 10px; }
+  select { min-width: 180px; } textarea { width: 100%; min-height: 54px; }
+  .chip { display: inline-block; border-radius: 99px; padding: 2px 12px; font-weight: 800; font-size: 14px; color: #fff; }
+  .stage { text-align: center; padding: 20px 14px; margin-top: 10px; }
+  .pic { font-size: 96px; line-height: 1.1; letter-spacing: 6px; } .q { font-size: 34px; font-weight: 800; margin: 8px 0; line-height: 1.2; }
+  .hint { font-size: 24px; color: #fde68a; min-height: 34px; } .mod { color: var(--mute); font-size: 17px; min-height: 24px; }
+  .score { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 12px; } .score .btn { min-width: 150px; font-size: 22px; padding: 12px 20px; } .score small { display: block; font-size: 13px; font-weight: 600; }
+  .timer { font-size: 40px; font-weight: 900; font-variant-numeric: tabular-nums; } .timer.low { color: var(--coral); }
+  .steps { display: flex; gap: 8px; justify-content: center; margin-bottom: 6px; } .dot { width: 14px; height: 14px; border-radius: 50%; background: #334155; } .dot.now { background: var(--amber); } .dot.done { background: var(--emerald); }
+  table { width: 100%; border-collapse: collapse; font-size: 16px; } th, td { border-bottom: 1px solid #334155; padding: 6px 8px; text-align: center; } th { color: var(--mute); font-size: 13px; } td.nm { text-align: left; font-weight: 700; }
+  .L0 { color: #fecaca; } .L1 { color: #fde68a; } .L2 { color: #86efac; } .L3 { color: #5eead4; } td.lv { font-weight: 800; white-space: nowrap; }
+  .plan h3 { margin: 12px 0 4px; color: var(--cyan); } .plan p, .plan li { color: var(--ink); line-height: 1.45; } .plan ul { margin-left: 22px; }
+  .note { color: var(--mute); font-size: 14px; } .hide { display: none !important; }
+  .legend { text-align: left; max-width: 760px; margin: 10px auto 0; color: var(--mute); font-size: 15px; }
+  @media (max-width: 700px) { .pic { font-size: 64px; } .q { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎤 Speaking Check · Grade 4 · Units 1–4<small>One pupil at a time · 4 short tasks · about 1 minute · scored on accuracy</small></h1>
+    <div class="tabs" style="margin:0">
+      <button class="btn on" data-tab="assess" type="button">Assess</button>
+      <button class="btn ghost" data-tab="results" type="button">Results</button>
+      <button class="btn ghost" data-tab="plan" type="button">Lesson plan</button>
+      <a class="btn ghost" href="cards.html" style="text-decoration:none">🖨️ Practice cards</a>
+    </div>
+  </header>
+
+  <section id="tab-assess">
+    <div class="glass row">
+      <label>Class <select id="cls"></select></label>
+      <label>Pupil <select id="pup"></select></label>
+      <label class="note"><input type="checkbox" id="sup"> Support mode: a hint does not lower the mark</label>
+      <button class="btn green" id="start" type="button">▶ Start</button>
+      <button class="btn ghost" id="next" type="button">Next pupil ⏭</button>
+    </div>
+    <div class="glass stage" id="stage">
+      <div class="steps" id="steps"></div>
+      <div class="note" id="where">Choose a pupil and press Start.</div>
+      <div class="pic" id="pic">🎤</div>
+      <div class="q" id="q">Ready?</div>
+      <div class="hint" id="hint"></div>
+      <div class="row" style="justify-content:center;margin:6px 0"><span class="timer" id="timer">0:45</span><button class="btn amber" id="tstart" type="button">⏱ 45 s</button><button class="btn violet" id="hbtn" type="button">💡 Show hint</button><button class="btn ghost" id="mbtn" type="button">👁 Model answer</button><button class="btn ghost" id="back" type="button">↩ Back</button></div>
+      <div class="mod" id="mod"></div>
+      <div class="score">
+        <button class="btn coral" data-s="0" type="button">0<small>no answer</small></button>
+        <button class="btn amber" data-s="1" type="button">1<small>understood, form wrong</small></button>
+        <button class="btn green" data-s="2" type="button">2<small>clear and correct</small></button>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="row" style="justify-content:center;margin-top:10px"><input type="text" id="note" placeholder="English notes (optional): for example went/goed" style="min-width:min(520px,90%)" aria-label="Note"></div>
+    </div>
+    <div class="glass hide" id="done" style="margin-top:10px;text-align:center"></div>
+  </section>
+
+  <section id="tab-results" class="hide">
+    <div class="glass">
+      <div class="row"><b class="grow">Results (kept only on this computer)</b><button class="btn" id="copy" type="button">📋 Copy</button><button class="btn coral" id="clear" type="button">🗑 Clear all</button></div>
+      <p class="note" style="margin:6px 0">Speaking is out of 8. Type the quiz mark (out of 32) to see the combined level out of 40. Keep this private: it is for you, not for the board.</p>
+      <table id="tbl"><thead><tr><th>Pupil</th><th>U1</th><th>U2</th><th>U3</th><th>U4</th><th>Speaking /8</th><th>Level</th><th>Quiz /32</th><th>Together /40</th><th>Level</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <section id="tab-plan" class="hide">
+    <div class="glass plan">
+      <h3>The lesson (35 minutes, one by one)</h3>
+      <ul>
+        <li><b>0–5 min · Rules and model.</b> Tell the class: “You will talk to me for one minute. Four short questions. It is OK to make mistakes.” Model one task with a pupil: show a good answer and a short answer.</li>
+        <li><b>5–10 min · Pair practice.</b> Hand out the printed practice cards (they are NOT the test questions). In pairs: A asks, B answers in a full sentence, then swap.</li>
+        <li><b>10–32 min · The check.</b> Pairs keep practising and change partners every 4 minutes. You sit at the laptop, call one pupil, press Start. Each pupil needs about 1 minute: 4 tasks, 10 to 15 seconds each. Do not correct during the check.</li>
+        <li><b>32–35 min · Close.</b> Everybody stands and says one sentence they are proud of. Tell them the result is private and it helps you choose the next practice.</li>
+      </ul>
+      <h3>How the marks work (each task 0 to 2)</h3>
+      <ul>
+        <li><b>2</b> = a clear full sentence and the target form is correct (small slips are fine).</li>
+        <li><b>1</b> = you understand, but the form is wrong or missing, or the answer is one word or needed the hint.</li>
+        <li><b>0</b> = no answer or not understandable.</li>
+        <li>If you press <b>💡 Show hint</b>, the mark is 1 at most (unless Support mode is on).</li>
+        <li>Speaking levels: 0–2 Below A1 · 3–4 A1 · 5–6 A1+ · 7–8 A1+ strong. These are classroom bands, not an official CEFR result.</li>
+      </ul>
+      <h3>Tips</h3>
+      <ul>
+        <li>Each pupil gets different question versions, so the pupil before cannot pass the answers.</li>
+        <li>Start with a confident pupil, then mix strong and quiet pupils. Smile and wait 5 seconds before showing the hint.</li>
+        <li>Use Support mode for any pupil who needs extra time or help; give extra time and quiet space. Keep notes about English only.</li>
+        <li>Nothing leaves this computer. Press Copy in Results to paste the marks into your own sheet.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'eaa_speak_g4_u4_v1';
+  var UNITS = [{ n: 1, c: '#0ea5e9', t: 'Unit 1 · past simple and questions' }, { n: 2, c: '#10b981', t: 'Unit 2 · so + can, gave, got' }, { n: 3, c: '#a855f7', t: 'Unit 3 · is doing, comparing' }, { n: 4, c: '#f59e0b', t: 'Unit 4 · because, so, past simple' }];
+  /* 3 versions per unit. pic = pictures, q = what you ask, h = hint for the pupil, m = a good model answer, f = what to listen for */
+  var TASKS = [
+    [
+      { pic: '🏠🕔⚽', q: 'What did you do yesterday after school? Tell me TWO things.', h: 'Yesterday I … Then I …', m: 'Yesterday I played football. Then I ate dinner.', f: 'past verbs (played, ate, went)' },
+      { pic: '🗓️🚌🏞️', q: 'Where did you go last weekend? What did you do there?', h: 'I went to … I …', m: 'I went to the park. I played with my friends.', f: 'went + past verb' },
+      { pic: '❓🙋‍♂️❓', q: 'Ask ME two questions about my weekend. Start with Where, Who or Why.', h: 'Where did you …?', m: 'Where did you go? Why did you go there?', f: 'question word + did + base verb' }
+    ],
+    [
+      { pic: '🧥❄️🥶', q: 'Why do we wear coats in winter? Use SO.', h: 'We wear coats so we can …', m: 'We wear coats so we can stay warm.', f: 'so + can + verb' },
+      { pic: '🐻🍯😴', q: 'Why do bears eat a lot in autumn? Use SO.', h: 'Bears eat a lot so they can …', m: 'Bears eat a lot so they can sleep all winter.', f: 'so they can + verb' },
+      { pic: '🎁🎂😊', q: 'Tell me about a present. Who gave it to you? What did you get?', h: 'My … gave me …', m: 'My mother gave me a book for my birthday.', f: 'gave / got / bought' }
+    ],
+    [
+      { pic: '📖🚲🍎', q: 'Look at the pictures. What are the three children doing?', h: 'He is … She is …', m: 'She is reading. He is riding a bike. He is eating an apple.', f: 'is / are + -ing' },
+      { pic: '🚲 🚗', q: 'Compare a bike and a car. Use BUT.', h: 'A bike is …, but a car is …', m: 'A bike is slow, but a car is fast.', f: 'adjectives with but' },
+      { pic: '⚡🚗 ⛽🚗', q: 'Compare an electric car and a gasoline car. Use quiet, noisy, clean, dirty or expensive.', h: 'An electric car is …, but …', m: 'An electric car is quiet, but a gasoline car is noisy.', f: 'adjectives with but / and' }
+    ],
+    [
+      { pic: '😴🏀🥱', q: 'Were you tired or happy last week? Why? Use BECAUSE.', h: 'I was … because …', m: 'I was tired because I played a long match.', f: 'because + clause, was' },
+      { pic: '🌧️🏠🎲', q: 'It was raining on Saturday. What did you do? Use SO.', h: 'It was raining, so I …', m: 'It was raining, so I stayed at home.', f: 'so + past verb' },
+      { pic: '⚽🏆🎭', q: 'Tell me about a match or a show. What happened? Who won or performed?', h: 'We played … We won / lost …', m: 'We played a match. We won three to two.', f: 'past verbs (won, scored, performed)' }
+    ]
+  ];
+  var BAND = ['Below A1', 'A1', 'A1+', 'A1+ strong'];
+  function bandS(m) { return m <= 2 ? 0 : m <= 4 ? 1 : m <= 6 ? 2 : 3; }
+  function bandT(m) { return m <= 11 ? 0 : m <= 21 ? 1 : m <= 31 ? 2 : 3; }
+  function $(id) { return document.getElementById(id); }
+  var data = {}, state = { classId: '', pupils: [], pid: '', task: -1, scores: [], hintUsed: [], hintShown: false, sec: 45, tm: null };
+
+  function load() { try { data = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { data = {}; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* ignore */ } }
+
+  /* classes and pupils from the platform data of this browser (names stay on this computer) */
+  function platform() { try { return JSON.parse(localStorage.getItem('eaa_master_school_v6') || 'null') || {}; } catch (e) { return {}; } }
+  function classes() {
+    var st = platform(), list = Array.isArray(st.classes) ? st.classes.filter(function (c) { return c && !c.archived && !/store-sync/.test(c.id); }).map(function (c) { return { id: c.id, label: String(c.name || c.id) }; }) : [];
+    list.push({ id: '_manual', label: 'Numbers 1–30 (no names)' });
+    return list;
+  }
+  function pupilsOf(cid) {
+    if (cid === '_manual') { var o = []; for (var i = 1; i <= 30; i++) o.push({ id: 'n' + i, name: 'Pupil ' + i }); return o; }
+    var st = platform(), arr = Array.isArray(st.students) ? st.students : [];
+    return arr.filter(function (s) { return s && !s.archived && s.classId === cid; }).map(function (s) { return { id: String(s.id), name: String(s.firstName || '').trim() || String(s.name || '').trim().split(/\s+/)[0] || 'Pupil' }; });
+  }
+  function fillClasses() {
+    var cs = classes(), sel = $('cls'); sel.innerHTML = '';
+    cs.forEach(function (c) { var o = document.createElement('option'); o.value = c.id; o.textContent = c.label; sel.appendChild(o); });
+    var pick = cs.filter(function (c) { return /(^|\D)4\s*[\/-]?\s*a\b/i.test(c.label) || /4a/i.test(c.id); })[0] || cs[0];
+    sel.value = pick.id; state.classId = pick.id; fillPupils();
+  }
+  function fillPupils() {
+    state.pupils = pupilsOf(state.classId); var sel = $('pup'); sel.innerHTML = '';
+    state.pupils.forEach(function (p, i) { var d = data[state.classId + '|' + p.id], o = document.createElement('option'); o.value = p.id; o.textContent = (d && d.t && d.t.length === 4 ? '✔ ' : '') + (i + 1) + '. ' + p.name; sel.appendChild(o); });
+    var first = state.pupils.filter(function (p) { var d = data[state.classId + '|' + p.id]; return !(d && d.t && d.t.length === 4); })[0] || state.pupils[0];
+    if (first) sel.value = first.id; state.pid = sel.value;
+  }
+  function idx() { for (var i = 0; i < state.pupils.length; i++) if (state.pupils[i].id === state.pid) return i; return 0; }
+  function pickTask(t) { var v = (idx() + t * 2) % 3; return TASKS[t][v]; }
+
+  function stepsHtml() { var h = ''; for (var i = 0; i < 4; i++) h += '<span class="dot ' + (i < state.task ? 'done' : i === state.task ? 'now' : '') + '"></span>'; $('steps').innerHTML = h; }
+  function showTask() {
+    stopTimer(); var t = state.task; stepsHtml();
+    if (t < 0 || t > 3) return;
+    var T = pickTask(t), u = UNITS[t];
+    $('where').innerHTML = '<span class="chip" style="background:' + u.c + '">' + u.t + '</span> &nbsp; Task ' + (t + 1) + ' of 4';
+    $('pic').textContent = T.pic; $('q').textContent = T.q; $('hint').textContent = ''; $('mod').textContent = '';
+    $('legend').innerHTML = '<b>Listen for:</b> ' + T.f; state.hintShown = false; $('timer').textContent = '0:45'; $('timer').className = 'timer';
+    $('hbtn').disabled = false; $('mbtn').disabled = false;
+  }
+  function start() {
+    state.pid = $('pup').value; var cur = state.pupils[idx()]; if (!cur) return;
+    state.task = 0; state.scores = []; state.hintUsed = []; $('done').classList.add('hide'); $('stage').classList.remove('hide'); showTask();
+    $('note').value = (data[state.classId + '|' + state.pid] && data[state.classId + '|' + state.pid].note) || '';
+    $('where').insertAdjacentHTML('afterbegin', '<b>' + esc(cur.name) + '</b> &nbsp; ');
+  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function score(s) {
+    if (state.task < 0 || state.task > 3) return;
+    var cap = state.hintShown && !$('sup').checked ? 1 : 2; s = Math.min(s, cap);
+    state.scores[state.task] = s; state.hintUsed[state.task] = state.hintShown;
+    state.task++;
+    if (state.task > 3) finish(); else showTask();
+    var cur = state.pupils[idx()]; if (cur && state.task <= 3) $('where').insertAdjacentHTML('afterbegin', '<b>' + esc(cur.name) + '</b> &nbsp; ');
+  }
+  function finish() {
+    stopTimer(); var fin = state.pid, cur = state.pupils[idx()], total = state.scores.reduce(function (a, b) { return a + b; }, 0), key = state.classId + '|' + state.pid;
+    var old = data[key] || {};
+    data[key] = { name: cur.name, t: state.scores.slice(), hint: state.hintUsed.slice(), sup: $('sup').checked, note: $('note').value.trim(), quiz: old.quiz == null ? null : old.quiz, at: Date.now() };
+    save(); stepsHtml(); $('stage').classList.add('hide'); var d = $('done'); d.classList.remove('hide');
+    d.innerHTML = '<div class="pic" style="font-size:64px">⭐</div><div class="q">' + esc(cur.name) + ': ' + total + ' / 8 · <span class="L' + bandS(total) + '">' + BAND[bandS(total)] + '</span></div><div class="note">Tasks: ' + state.scores.join(' · ') + ' (saved on this computer). Do not show this to the class.</div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn green big" id="nx" type="button">Next pupil ⏭</button><button class="btn ghost" id="again" type="button">Redo this pupil</button></div>';
+    $('nx').addEventListener('click', nextPupil); $('again').addEventListener('click', function () { $('pup').value = fin; state.pid = fin; start(); }); fillPupils();
+  }
+  function nextPupil() {
+    fillPupils(); var cur = $('pup').value; state.pid = cur; $('done').classList.add('hide'); $('stage').classList.remove('hide');
+    state.task = -1; stepsHtml(); $('where').textContent = 'Next: ' + ((state.pupils[idx()] || {}).name || '') + '. Press Start.'; $('pic').textContent = '🎤'; $('q').textContent = 'Ready?'; $('hint').textContent = ''; $('mod').textContent = ''; $('legend').textContent = '';
+  }
+
+  /* timer with a soft two-tone chime (starts only after a click) */
+  var actx = null;
+  function chime() {
+    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); [246.94, 220].forEach(function (f, i) { var o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.28; o.type = 'sine'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.75); }); } catch (e) { /* ignore */ }
+  }
+  function stopTimer() { if (state.tm) { clearInterval(state.tm); state.tm = null; } }
+  function startTimer() {
+    stopTimer(); state.sec = 45; function draw() { var m = Math.floor(state.sec / 60), s = state.sec % 60; $('timer').textContent = m + ':' + (s < 10 ? '0' : '') + s; $('timer').className = 'timer' + (state.sec <= 10 ? ' low' : ''); }
+    draw(); chime();
+    state.tm = setInterval(function () { state.sec--; if (state.sec <= 0) { state.sec = 0; draw(); stopTimer(); chime(); return; } draw(); }, 1000);
+  }
+
+  /* results */
+  function results() {
+    var tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
+    var keys = Object.keys(data).filter(function (k) { return k.indexOf(state.classId + '|') === 0; });
+    state.pupils.forEach(function (p) {
+      var k = state.classId + '|' + p.id, d = data[k], tr = document.createElement('tr');
+      if (!d || !d.t || d.t.length !== 4) { tr.innerHTML = '<td class="nm">' + esc(p.name) + '</td><td colspan="9" class="note" style="text-align:left">not done yet</td>'; tb.appendChild(tr); return; }
+      var tot = d.t.reduce(function (a, b) { return a + b; }, 0), q = d.quiz, both = q == null ? null : tot + q;
+      tr.innerHTML = '<td class="nm">' + esc(p.name) + (d.sup ? ' <span class="note">(support)</span>' : '') + '</td>' + d.t.map(function (x, i) { return '<td>' + x + (d.hint && d.hint[i] ? '*' : '') + '</td>'; }).join('') + '<td><b>' + tot + '</b></td><td class="lv L' + bandS(tot) + '">' + BAND[bandS(tot)] + '</td><td><input type="number" min="0" max="32" style="width:64px" value="' + (q == null ? '' : q) + '" data-k="' + k + '" aria-label="Quiz mark"></td><td>' + (both == null ? '' : '<b>' + both + '</b>') + '</td><td class="lv ' + (both == null ? '' : 'L' + bandT(both)) + '">' + (both == null ? '' : BAND[bandT(both)]) + '</td>';
+      tb.appendChild(tr);
+    });
+    [].forEach.call(tb.querySelectorAll('input[data-k]'), function (inp) { inp.addEventListener('change', function () { var d = data[inp.getAttribute('data-k')]; if (!d) return; var v = inp.value === '' ? null : Math.max(0, Math.min(32, parseInt(inp.value, 10) || 0)); d.quiz = v; save(); results(); }); });
+  }
+  function copyText() {
+    var lines = ['Pupil\tU1\tU2\tU3\tU4\tSpeaking/8\tLevel\tQuiz/32\tTogether/40\tLevel\tNote'];
+    state.pupils.forEach(function (p) { var d = data[state.classId + '|' + p.id]; if (!d || !d.t || d.t.length !== 4) return; var tot = d.t.reduce(function (a, b) { return a + b; }, 0), both = d.quiz == null ? '' : tot + d.quiz; lines.push([p.name].concat(d.t, [tot, BAND[bandS(tot)], d.quiz == null ? '' : d.quiz, both, both === '' ? '' : BAND[bandT(both)], d.note || '']).join('\t')); });
+    var txt = lines.join('\n');
+    try { navigator.clipboard.writeText(txt).then(function () { $('copy').textContent = '✔ Copied'; setTimeout(function () { $('copy').textContent = '📋 Copy'; }, 1500); }, function () { window.prompt('Copy:', txt); }); } catch (e) { window.prompt('Copy:', txt); }
+  }
+
+  /* events */
+  [].forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('[data-tab]'), function (x) { x.classList.toggle('on', x === b); x.classList.toggle('ghost', x !== b); });
+      ['assess', 'results', 'plan'].forEach(function (t) { $('tab-' + t).classList.toggle('hide', t !== b.getAttribute('data-tab')); });
+      if (b.getAttribute('data-tab') === 'results') results();
+    });
+  });
+  $('cls').addEventListener('change', function () { state.classId = $('cls').value; fillPupils(); state.task = -1; nextPupil(); });
+  $('pup').addEventListener('change', function () { state.pid = $('pup').value; state.task = -1; stepsHtml(); $('where').textContent = ((state.pupils[idx()] || {}).name || '') + ': press Start.'; });
+  $('start').addEventListener('click', start);
+  $('next').addEventListener('click', nextPupil);
+  $('back').addEventListener('click', function () { if (state.task > 0) { state.task--; state.scores.length = state.task; showTask(); var cur = state.pupils[idx()]; if (cur) $('where').insertAdjacentHTML('afterbegin', '<b>' + esc(cur.name) + '</b> &nbsp; '); } });
+  $('tstart').addEventListener('click', startTimer);
+  $('hbtn').addEventListener('click', function () { if (state.task < 0 || state.task > 3) return; state.hintShown = true; $('hint').textContent = '💡 ' + pickTask(state.task).h; $('hbtn').disabled = true; });
+  $('mbtn').addEventListener('click', function () { if (state.task < 0 || state.task > 3) return; $('mod').textContent = '👁 Model: ' + pickTask(state.task).m; });
+  [].forEach.call(document.querySelectorAll('[data-s]'), function (b) { b.addEventListener('click', function () { score(parseInt(b.getAttribute('data-s'), 10)); }); });
+  $('copy').addEventListener('click', copyText);
+  $('clear').addEventListener('click', function () { if (window.confirm('Delete ALL speaking results on this computer?')) { data = {}; save(); fillPupils(); results(); } });
+  document.addEventListener('keydown', function (e) {
+    if (/INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return;
+    if (e.key === '0' || e.key === '1' || e.key === '2') score(parseInt(e.key, 10));
+    else if (e.key === 'h' || e.key === 'H') $('hbtn').click(); else if (e.key === 't' || e.key === 'T') startTimer(); else if (e.key === 'Enter' && state.task < 0) start();
+  });
+  load(); fillClasses(); stepsHtml();
+})();
+</script>
+</body>
+</html>

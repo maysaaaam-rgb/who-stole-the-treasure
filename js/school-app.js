@@ -4186,6 +4186,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🏀', 'Grade 4 Review: Teamwork (book pp. 56-61), 3 simple games', 'review-g4-teamwork/index.html'],
       ['🎮', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
       ['🏀', 'Unit 4 Review (Grade 4): remember it, then games in Game Maker', 'review-unit4/index.html?grade=4'],
+      ['🎤', 'Grade 4 Speaking Check, Units 1-4: one pupil at a time, scored on accuracy', 'speaking-g4/index.html'],
       ['🎭', 'Grade 4 Review: Late for the Show (book pp. 62-70), 3 games + excuse round', 'review-g4-show/index.html'],
       ['🏀', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],
       ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
