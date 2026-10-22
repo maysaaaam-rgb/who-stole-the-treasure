@@ -154,11 +154,11 @@
   /* Unit 4 review lesson on Fri 23 Oct (the 'review game' slots of 3/A and 3/B): title and note once */
   function u4ReviewOnce() {
     try {
-      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed9')) return;
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed11')) return;
       var list = customEvents().slice(), n = 0, M = { 'class-3a|2026-10-23|10:30': 1, 'class-3b|2026-10-23|09:00': 1 };
-      var note = 'Part 1: remember the Unit 4 stories (Mona Lisa, The Angry Mountain) and cause and effect. Part 2: games in Game Maker with the Unit 4 questions (race, cannon, tiles, penalty, balloons, snakes, memory). Lesson: review-unit4 (?grade=3).';
+      var note = 'Lesson 1 (remember it, 35 min): story cards, words and acting, put the events in order, cause and effect, reading quiz. Lesson 2 (play, 30 min): games in Game Maker with the Unit 4 questions (race, cannon, tiles, penalty, balloons, snakes, memory). Lesson: review-unit4 (?grade=3).';
       list.forEach(function (e) { if (M[e.classId + '|' + e.date + '|' + e.time]) { e.title = 'U4 Review: remember it, then play'; e.note = note; n++; } });
-      if (n) saveEvents(list); store().setCalendarFlag('seed9');
+      if (n) saveEvents(list); store().setCalendarFlag('seed11');
     } catch (e) { /* ignore */ }
   }
   function lessonsOn(date, classId) {
@@ -279,7 +279,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); u4ReviewOnce(); mountainOnce(); mountainSplitOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
