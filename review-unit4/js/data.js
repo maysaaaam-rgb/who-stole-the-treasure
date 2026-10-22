@@ -118,6 +118,43 @@
     { q: 'Who said: “Why don’t we perform the show here?”', o: ['Lynn', 'Harry’s dad', 'Mr. Williams'], h: 'She had an idea.', e: '💡' },
     { q: 'Which word means not worried?', o: ['calm', 'alive', 'sank'], h: 'Stay ____ and wait.', e: '😌' }
   ];
+
+  /* Speaking check: warm = pictures to talk about, sq = question and answer pairs, happen = 3 pictures (ok = it happened), role = interviews, verbs = verb bank */
+  G3.warm = [
+    { a: 'o_mona_frame', e: '🖼️', q: 'What happened here?', ans: 'Someone stole the painting. The wall is empty.' },
+    { a: 'o_lifted', e: '🏋️', q: 'What did the thief do?', ans: 'He lifted the painting off the wall.' },
+    { a: '', e: '🌋', q: 'What did the mountain do?', ans: 'It made loud noises. Ash and stones fell from the sky.' },
+    { a: '', e: '⛵', q: 'What did the family do?', ans: 'They packed their things and left by boat.' }
+  ];
+  G3.sq = [['What did Peruggia steal?', 'He stole the Mona Lisa.'], ['What did he do with the painting?', 'He lifted it off the wall.'], ['What did people do after the robbery?', 'They lined up to see the empty space.'], ['What did the police do?', 'They arrested Peruggia.'], ['What did the mountain do?', 'It made loud noises and the ground moved.'], ['What fell from the sky?', 'Ash and stones fell from the sky.'], ['Why did the girl climb the tree?', 'She wanted to see more.'], ['How did the family leave the island?', 'They left by boat.']];
+  G3.happen = [
+    { q: 'What did Peruggia do?', items: [{ a: 'o_lifted', e: '🏋️', ok: 1, s: 'He lifted the painting.' }, { a: 'o_train', e: '🚂', s: 'He didn’t take a train.' }, { a: 'o_curtain', e: '🎭', s: 'He didn’t go to a show.' }] },
+    { q: 'What did the police do?', items: [{ a: 'o_arrested', e: '👮', ok: 1, s: 'They arrested Peruggia.' }, { a: 'o_sank', e: '🚢', s: 'They didn’t sail away.' }, { a: 'o_traffic', e: '🚗', s: 'They didn’t sit in traffic.' }] },
+    { q: 'How did the family leave the island?', items: [{ a: '', e: '⛵', ok: 1, s: 'They left by boat.' }, { a: '', e: '🚂', s: 'They didn’t leave by train.' }, { a: '', e: '✈️', s: 'They didn’t leave by plane.' }] }
+  ];
+  G3.role = [
+    { title: '🕵️ Detective and witness (The Mona Lisa)', a: 'Detective', b: 'Witness', qs: ['When did it happen?', 'Who took the painting?', 'What did you see?'], st: ['It happened in 1911.', 'A man took it.', 'I saw him lift the painting.'] },
+    { title: '🎤 Reporter and survivor (The Angry Mountain)', a: 'Reporter', b: 'Survivor', qs: ['What happened to your village?', 'What fell from the sky?', 'How did you leave?'], st: ['The mountain made loud noises.', 'Ash and stones fell down.', 'We left by boat.'] }
+  ];
+  G3.verbs = { reg: 'painted, wanted, lifted, arrested, lined up, climbed, packed, barked, waved', irr: 'stole, took, found, saw, fell, ran, made, left, had' };
+  G4.warm = [
+    { a: 'o_traffic', e: '🚗', q: 'What happened to Harry?', ans: 'His car was stuck in traffic.' },
+    { a: 'o_train', e: '🚇', q: 'What happened to the train?', ans: 'It stopped.' },
+    { a: 'bg_platform', e: '🚉', q: 'What did everybody do?', ans: 'They waited on the platform.' },
+    { a: 'o_curtain', e: '🎭', q: 'What did the friends do?', ans: 'They performed the play.' }
+  ];
+  G4.sq = [['What did Chelsea Gray do?', 'She scored a three-pointer.'], ['What did the Sparks do when they were losing?', 'They worked harder.'], ['What did the Sparks win?', 'They won the championship.'], ['Why was Harry late?', 'His car was stuck in traffic.'], ['What did the train do?', 'It stopped.'], ['Where did everybody wait?', 'They waited on the platform.'], ['What did Lynn have?', 'She had an idea.'], ['What did the friends do on the platform?', 'They performed the play.']];
+  G4.happen = [
+    { q: 'Why was Harry late?', items: [{ a: 'o_traffic', e: '🚗', ok: 1, s: 'His car was stuck in traffic.' }, { a: 'o_sank', e: '🚢', s: 'A ship didn’t sink.' }, { a: 'o_police', e: '👮', s: 'The police didn’t stop him.' }] },
+    { q: 'What did the train do?', items: [{ a: 'o_train', e: '🚇', ok: 1, s: 'It stopped.' }, { a: 'o_sank', e: '🚢', s: 'It didn’t sink.' }, { a: '', e: '✈️', s: 'It didn’t fly away.' }] },
+    { q: 'What did the friends do on the platform?', items: [{ a: 'o_curtain', e: '🎭', ok: 1, s: 'They performed the play.' }, { a: 'o_steal', e: '🥷', s: 'They didn’t steal a painting.' }, { a: 'o_lifted', e: '🏋️', s: 'They didn’t lift a painting.' }] },
+    { q: 'What did the Sparks do?', items: [{ a: '', e: '🏆', ok: 1, s: 'They won the championship.' }, { a: '', e: '😴', s: 'They didn’t sleep.' }, { a: '', e: '🚌', s: 'They didn’t go home.' }] }
+  ];
+  G4.role = [
+    { title: '🎤 Reporter and player (the Sparks)', a: 'Reporter', b: 'Player', qs: ['What did you do when you were losing?', 'What did you win?', 'How did you feel?'], st: ['We worked harder.', 'We won the championship.', 'We felt happy.'] },
+    { title: '🎤 Reporter and Harry (Late for the Show)', a: 'Reporter', b: 'Harry', qs: ['Why were you late?', 'What did the train do?', 'What did Lynn say?'], st: ['My car was stuck in traffic.', 'It stopped.', 'She said: Let’s perform here!'] }
+  ];
+  G4.verbs = { reg: 'scored, worked, performed, waited, stopped, wanted, clapped, arrived', irr: 'won, was, had, said, took, got, ran, sank, lost' };
   D.g = grade === 4 ? G4 : G3;
   D.setId = grade === 4 ? 'u4-g4' : 'u4-g3';
   /* the games in Part 2: Game Maker ids */

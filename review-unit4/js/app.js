@@ -396,6 +396,104 @@
     });
   }
 
+  /* ===== LESSON 3: speaking check ===== */
+  function todaySp(c) {
+    todayScreen(c, 'Speaking check: talk in the PAST. Speak in full sentences!', [
+      { e: '👀', t: 'Look and talk', s: 'What happened here?', a: D.grade === 4 ? 'o_traffic' : 'o_mona_frame' },
+      { e: '🗣️', t: 'Ask and answer', s: 'With your partner', a: '' },
+      { e: '🎤', t: 'Interview', s: 'Reporter and star', a: '' }
+    ]);
+  }
+
+  function warmSp(c) {
+    var i = 0, host = h('div', { class: 'gameinner' }), pic = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' }), row = h('div', { class: 'row' });
+    c.body.appendChild(h('div', { class: 'rulebar' }, [h('b', { text: '👀 Look and talk: ' }), h('span', { text: 'Look at the picture. Say what happened!' })]));
+    function draw() {
+      var w = G.warm[i]; pic.innerHTML = ''; pic.appendChild(fill(h('div', { class: 'rq-e big' }), w.e, '', w.a)); pic.appendChild(h('div', { class: 'rq-t', text: w.q })); msg.textContent = 'Talk with your partner. Then one pair says it.'; A.speak(w.q); row.innerHTML = '';
+      row.appendChild(btn('👀 SHOW the answer', 'amber big', function () { msg.textContent = w.ans; A.speak(w.ans); sfx('correct'); }));
+      row.appendChild(btn('⭐ Pair spoke +1', 'green', function () { addPoint(i % D.teams.length, 1); sfx('correct'); }));
+      row.appendChild(btn(i + 1 < G.warm.length ? 'Next picture ▶' : 'Done ✔', 'ghost', function () { if (i + 1 < G.warm.length) { i++; draw(); } else { msg.textContent = '✅ Good warm-up! Press Next on the right for the next step.'; } }));
+    }
+    c.body.appendChild(host); host.appendChild(pic); host.appendChild(msg); host.appendChild(row); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 20)]));
+    draw();
+  }
+
+  function qaSp(c) {
+    howTo(c, { icon: '🗣️', title: 'Ask and answer', goal: 'Pupil A asks. Pupil B answers in a full past sentence. Then swap!', pupils: 'Ask the question on the board to your partner. Answer with the PAST: He stole... They found... Then swap roles.', teacher: 'Walk around and listen. SHOW the model answer when you want. Press ⭐ for a full correct sentence (+2) or 👍 for a good try (+1). After every four questions: stand up and find a new partner!' }, function (host, again) {
+      var deck = G.sq, round = 0, turn = 0;
+      var banner = h('div'), card = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' }), row = h('div', { class: 'row' });
+      function next(ms) { setTimeout(function () { round++; turn = (turn + 1) % D.teams.length; draw(); }, ms); }
+      function draw() {
+        if (round >= deck.length) { gameFinish(c, host, again); return; }
+        var cur = deck[round], nb = teamBanner(turn, '🗣️ Question ' + (round + 1) + ' of ' + deck.length); banner.replaceWith(nb); banner = nb;
+        card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: '🙋' })); card.appendChild(h('div', { class: 'rq-t', text: cur[0] }));
+        msg.textContent = round > 0 && round % 4 === 0 ? '🔄 Stand up! Find a NEW partner. Then ask this question.' : 'A asks. B answers. Then swap.'; A.speak(cur[0]); row.innerHTML = '';
+        row.appendChild(btn('👀 SHOW model answer', 'ghost', function () { msg.textContent = '💬 ' + cur[1]; A.speak(cur[1]); }));
+        row.appendChild(btn('⭐ Full sentence +2', 'green', function () { addPoint(turn, 2); sfx('win'); confetti(); next(900); }));
+        row.appendChild(btn('👍 Good try +1', 'amber', function () { addPoint(turn, 1); sfx('correct'); next(700); }));
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(card); host.appendChild(msg); host.appendChild(row); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 45)]));
+      draw();
+    });
+  }
+
+  function happenSp(c) {
+    howTo(c, { icon: '🖼️', title: 'It happened... it did not happen', goal: 'Three pictures: ONE really happened. Two did NOT. Say which one happened and what did not.', pupils: 'Look at the three pictures. Say: "(It) ... " for the true one. Then say two things that did NOT happen: "He didn’t ..."', teacher: 'The pair talks. Tap the picture they choose. Right = the card shows all three sentences. Wrong = a hint and try again, nothing lost. Then press ⭐ +3 (all three sentences), 👍 +2 or 💬 +1.' }, function (host, again) {
+      var deck = shuffle(G.happen), round = 0, turn = 0, tries = 0;
+      var banner = h('div'), q = h('div', { class: 'prompt' }), grid = h('div', { class: 'row bigopts' }), msg = h('div', { class: 'msg gmsg' }), rate = h('div', { class: 'row' });
+      function draw() {
+        if (round >= deck.length) { gameFinish(c, host, again); return; }
+        var cur = deck[round]; tries = 0; var nb = teamBanner(turn, '🖼️ Round ' + (round + 1) + ' of ' + deck.length); banner.replaceWith(nb); banner = nb;
+        q.textContent = cur.q; msg.textContent = 'Which one happened? Talk with your partner, then tap it.'; grid.innerHTML = ''; rate.innerHTML = ''; A.speak(cur.q);
+        shuffle(cur.items).forEach(function (it) {
+          var b = h('button', { type: 'button', class: 'btn tile2 chip2 hp' }, [fill(h('div', { class: 'hpic' }), it.e, '', it.a), h('span', { class: 'cap', text: '' })]);
+          b.addEventListener('click', function () {
+            if (!it.ok) { tries++; b.classList.remove('wob', 'wobble'); void b.offsetWidth; b.classList.add('wobble'); sfx('soft'); msg.textContent = 'Almost! Think about the story. What really happened?'; A.speak('Try again.'); return; }
+            sfx('correct'); [].slice.call(grid.children).forEach(function (btn2, k) { btn2.disabled = true; });
+            cur.items.forEach(function (x, k) { var el = [].slice.call(grid.children).filter(function (e2) { return e2.__it === x; })[0]; if (el) { el.querySelector('.cap').textContent = (x.ok ? '✅ ' : '❌ ') + x.s; el.style.opacity = x.ok ? '1' : '.75'; } });
+            msg.textContent = '✅ ' + it.s; A.speak(it.s);
+            rate.innerHTML = '';
+            rate.appendChild(btn('⭐ All three sentences +3', 'green big', function () { addPoint(turn, 3); sfx('win'); confetti(); round++; turn = (turn + 1) % D.teams.length; draw(); }));
+            rate.appendChild(btn('👍 Good +2', 'amber', function () { addPoint(turn, 2); sfx('correct'); round++; turn = (turn + 1) % D.teams.length; draw(); }));
+            rate.appendChild(btn('💬 Tried +1', 'ghost', function () { addPoint(turn, 1); round++; turn = (turn + 1) % D.teams.length; draw(); }));
+          });
+          b.__it = it; grid.appendChild(b);
+        });
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(q); host.appendChild(grid); host.appendChild(msg); host.appendChild(rate); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 45)]));
+      draw();
+    });
+  }
+
+  function roleSp(c) {
+    howTo(c, { icon: '🎤', title: 'Interview role-play', goal: 'One pupil is the reporter. One is the person from the story. Talk in the PAST. Then swap!', pupils: 'The reporter asks the three questions. The star answers. Use the starter lines if you need help. Then swap roles.', teacher: 'Pairs practise for 90 seconds each way. Then ask one pair to show the class. After that ask one pupil to be the narrator and tell it: "The mountain made loud noises. The family packed and left by boat." Score with the sheet.' }, function (host, again) {
+      var deck = G.role, round = 0, turn = 0;
+      var banner = h('div'), title = h('div', { class: 'prompt' }), cards = h('div', { class: 'row' }), msg = h('div', { class: 'msg gmsg' }), row = h('div', { class: 'row' });
+      function draw() {
+        if (round >= deck.length) { gameFinish(c, host, again); return; }
+        var r = deck[round], nb = teamBanner(turn, '🎤 Interview ' + (round + 1) + ' of ' + deck.length); banner.replaceWith(nb); banner = nb;
+        title.textContent = r.title; cards.innerHTML = '';
+        cards.appendChild(h('div', { class: 'reqcard' }, [h('div', { class: 'rq-a', text: '🅰️ ' + r.a + ' asks' })].concat(r.qs.map(function (x) { return h('div', { class: 'rq-t', text: x }); }))));
+        cards.appendChild(h('div', { class: 'reqcard' }, [h('div', { class: 'rq-a', text: '🅱️ ' + r.b + ' answers' })].concat(r.st.map(function (x) { return h('div', { class: 'rq-t', text: x }); }))));
+        msg.textContent = 'Practise. Then swap roles!'; row.innerHTML = '';
+        row.appendChild(btn('🔊 Hear the questions', 'ghost', function () { A.speakSeq(r.qs); }));
+        row.appendChild(btn('⭐ Great interview +3', 'green', function () { addPoint(turn, 3); sfx('win'); confetti(); round++; turn = (turn + 1) % D.teams.length; draw(); }));
+        row.appendChild(btn('👍 Good +2', 'amber', function () { addPoint(turn, 2); sfx('correct'); round++; turn = (turn + 1) % D.teams.length; draw(); }));
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(title); host.appendChild(cards); host.appendChild(msg); host.appendChild(row); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 90)]));
+      draw();
+    });
+  }
+
+  function exitSp(c) {
+    c.body.appendChild(h('div', { class: 'msg gmsg', text: '🎟️ Exit ticket: each pupil says ONE sentence about an event from the unit. Use the verb bank!' }));
+    c.body.appendChild(h('div', { class: 'row bigopts' }, [
+      h('div', { class: 'reqcard' }, [h('div', { class: 'rq-a', text: 'Regular (+ed)' }), h('div', { class: 'rq-t', text: G.verbs.reg })]),
+      h('div', { class: 'reqcard' }, [h('div', { class: 'rq-a', text: 'Irregular' }), h('div', { class: 'rq-t', text: G.verbs.irr })])
+    ]));
+    finishScreen(c, 'Speaking check done', G.say, '🚪 ' + G.doors);
+  }
+
   /* PART 2: the games, in Game Maker, with the Unit 4 questions already loaded */
   function gamesPart(c) {
     var body = c.body;
@@ -431,6 +529,21 @@
     2: { title: 'Unit 4 Review 2 · Grade ' + D.grade, tab: '2 · Play games', missions: [], door: '', scenes: [
       { t: 'Play the games', mins: '30 min', mode: 'race', run: gamesPart, intro: 'Pick a game. It opens in Game Maker with the Unit 4 questions.',
         tip: ['Each button opens Game Maker with this grade\'s Unit 4 questions already chosen and the game ready to set up. Set 2 to 4 teams, press PLAY. Use ☰ Games in Game Maker to choose another game. Play 3 or 4 different games in the lesson.'] }
+    ] }
+,
+    3: { title: 'Unit 4 Speaking Check · Grade ' + D.grade, tab: '3 · Speaking check', missions: [], door: '', scenes: [
+      { t: 'Today: speaking check', mins: '2 min', mode: 'talk', run: todaySp, intro: 'We speak in the PAST today. Full sentences!',
+        tip: ['Open speaking.html?grade=' + D.grade + ' (in this folder) and print the scoring sheet before class: 4 criteria, 1 to 3 each, 12 in all. Make 4 teams. Pupils are scored on paper by you; the board only gives team points.', 'Order: look and talk, ask and answer, happened or not, interview, exit ticket. Praise self-corrections.'] },
+      { t: 'Look and talk', mins: '4 min', mode: 'talk', run: warmSp, intro: 'Look at the picture. What happened?',
+        tip: ['Warm-up for the whole class: show the picture, ask the question, let pairs talk 20 seconds, then one pair says it. Press SHOW to give the model sentence.'] },
+      { t: 'Ask and answer', mins: '8 min', mode: 'talk', run: qaSp, intro: 'A asks. B answers in the PAST.',
+        tip: ['Controlled pair work: did + base verb in the question, past verb in the answer. After four questions pupils stand up and swap partners (mingle). Listen and score on the sheet.'] },
+      { t: 'It happened... it did not', mins: '8 min', mode: 'talk', run: happenSp, intro: 'One picture happened. Two did not.',
+        tip: ['Free-er speaking: the pair says what happened AND two things that did NOT (didn’t + base verb). Tap the picture they choose. Wrong tap = hint, no points lost. Score past tense and fluency on the sheet.'] },
+      { t: 'Interview role-play', mins: '9 min', mode: 'talk', run: roleSp, intro: 'Reporter and star. Past tense!',
+        tip: ['Role-play: reporter asks, star answers; swap after 90 seconds. Then one pupil is the narrator and retells in the past. This is the main score for fluency and listening.'] },
+      { t: 'Exit ticket', mins: '4 min', mode: 'think', run: exitSp, intro: 'One sentence each. Use the verb bank.',
+        tip: ['At the door each pupil says ONE past sentence from the unit. Keep the verb bank on the board for pupils who need support.'] }
     ] }
   };
 
