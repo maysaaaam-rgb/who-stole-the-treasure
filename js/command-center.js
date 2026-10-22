@@ -295,6 +295,14 @@
     '.cc-t30 th.cc-d,.cc-t30 td.cc-d{width:21px;min-width:19px;padding-left:0!important;padding-right:0!important}.cc-t30 .cc-xp{min-width:19px;font-size:9px;padding:3px 0;border-radius:5px}.cc-t30 th.cc-d{font-size:9px}.cc-t30 .cc-why{display:none}.cc-t30 .cc-nm{min-width:0;gap:6px}.cc-t30 .cc-nm img{width:24px;height:24px}' +
     '.cc-t30 .cc-lvl{display:none}.cc-t30 td,.cc-t30 th{padding-left:5px!important;padding-right:5px!important}.cc-t30 .cc-hw{min-width:0;padding:3px 5px}.cc-t30 .cc-plus{padding:3px 4px;font-size:10px}.cc-bars30{gap:2px}.cc-bars30 b{font-size:8px}.cc-bars30 small{font-size:8px}' +
     '.cc-nwb{color:#fbbf24!important}.cc-nwb sup{font-size:8px;margin-left:1px}.cc-mini.on{background:#4f46e5;color:#fff}.cc-nwl{display:grid;gap:6px}.cc-nwr{background:#14161d;border:1px solid #2a2f3d;color:#e6e8ee;border-radius:9px;padding:9px 12px;text-align:left;cursor:pointer;font-size:13px}.cc-nwr:hover{background:#1d2030;border-color:#f59e0b}' +
+    '.cc-links button{border-bottom:3px solid #07080c;transition:transform .12s cubic-bezier(.175,.885,.32,1.275),background-color .15s,border-color .15s}.cc-links button:active{transform:translateY(2px);border-bottom-width:1px}' +
+    '.cc-links button.cc-btn-hero{background:linear-gradient(180deg,#6366f1,#4338ca);border-color:#818cf8;border-bottom:3px solid #312e81;color:#fff;font-weight:700;box-shadow:0 6px 18px -4px rgba(99,102,241,.45)}' +
+    '.cc-links button.cc-btn-hero:hover{background:linear-gradient(180deg,#818cf8,#4f46e5)}' +
+    '.cc-kp5>div:nth-child(1){border-top:3px solid #10b981}.cc-kp5>div:nth-child(1) small{color:#34d399}' +
+    '.cc-kp5>div:nth-child(2){border-top:3px solid #38bdf8}.cc-kp5>div:nth-child(2) small{color:#7dd3fc}' +
+    '.cc-kp5>div:nth-child(3){border-top:3px solid #f59e0b}.cc-kp5>div:nth-child(3) small{color:#fbbf24}' +
+    '.cc-kp5>div:nth-child(4){border-top:3px solid #a855f7}.cc-kp5>div:nth-child(4) small{color:#c084fc}' +
+    '.cc-kp5>div:nth-child(5){border-top:3px solid #f43f5e}.cc-kp5>div:nth-child(5) small{color:#fda4af}' +
     '@media(max-width:1100px){.cc-grid3{grid-template-columns:minmax(0,1fr)}}';
 
   function ensureCss() {
@@ -487,7 +495,7 @@
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) + quietBanner(cls) +
-      '<div class="cc-links"><button onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
+      '<div class="cc-links"><button class="cc-btn-hero" onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +

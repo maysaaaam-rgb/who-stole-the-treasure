@@ -249,6 +249,33 @@
       return true;
     }).sort(function (a, b) { var LC2 = root.LibraryCurate, sa = LC2 && LC2.isStar(a.id) ? 1 : 0, sb = LC2 && LC2.isStar(b.id) ? 1 : 0; return (sb - sa) || ((isLesson(b) ? 1 : 0) - (isLesson(a) ? 1 : 0)); });
   }
+  function spotlightHtml(gr) {
+    if (shelf.q || shelf.curate) return '';
+    var ids = gr === 4
+      ? ['unit4-g4-team-players', 'review-g4-teamwork', 'review-g4-show']
+      : gr === 3
+      ? ['u4-g3-l3-mountain', 'u4-g3-l4-phonics', 'rev-g3-mountain']
+      : ['unit4-g4-team-players', 'u4-g3-l3-mountain', 'u4-g3-l4-phonics'];
+    var all = root.GAMES_DATA || [], picks = [];
+    ids.forEach(function (id) {
+      var found = all.filter(function (g) { return g && g.id === id; })[0];
+      if (found) picks.push(found);
+    });
+    if (!picks.length) return '';
+    var colors = ['#5b5bd6', '#0ea5e9', '#10b981'];
+    return '<div class="cm-spotlight">' +
+      '<div class="cm-spot-hd"><span>⭐ This Week\u2019s Spotlight</span><small>Newest Unit 4 Interactive Smartboard Lessons</small></div>' +
+      '<div class="cm-spot-grid">' + picks.map(function (g, i) {
+        var raw = String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, '');
+        var parts = raw.split(/\s+[—–-]\s+/), main = parts.length > 1 ? parts.slice(1).join(' — ') : raw, sub = parts.length > 1 ? parts[0] : (g.categoryLabel || 'Interactive Lesson');
+        var gTag = gradeOfGame(g) === 4 ? 'GRADE 4' : 'GRADE 3';
+        var art = thumbFor(g);
+        return '<a class="cm-spot-card" style="--sc:' + colors[i % colors.length] + '" href="' + esc(g.route) + '">' +
+          '<div class="cm-spot-pic">' + (art ? '<img src="' + esc(art) + '" alt="" loading="lazy" decoding="async">' : '') + '<i></i></div>' +
+          '<div class="cm-spot-body"><span class="cm-spot-tag">✨ ' + gTag + ' · ' + esc(sub) + '</span><b>' + esc(main) + '</b><span class="cm-spot-cta">▶ Launch Lesson</span></div>' +
+        '</a>';
+      }).join('') + '</div></div>';
+  }
   function shelfHtml() {
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade, list = shelfList();
     function chip(label, active, fn) { return '<button type="button" class="cm-chip' + (active ? ' on' : '') + '" onclick="' + fn + '">' + label + '</button>'; }
@@ -256,6 +283,7 @@
       '<div class="cm-chips">' + chip('Grade 3', gr === 3, "ClassMode.shelf('grade',3)") + chip('Grade 4', gr === 4, "ClassMode.shelf('grade',4)") + chip('All', !gr, "ClassMode.shelf('grade',0)") + '<i></i>' +
       chip('Everything', shelf.kind === 'all', "ClassMode.shelf('kind','all')") + chip('Lessons', shelf.kind === 'lesson', "ClassMode.shelf('kind','lesson')") + chip('Games', shelf.kind === 'game', "ClassMode.shelf('kind','game')") + '<i></i>' + chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div></div>' + curateBar() +
       '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search…" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
+      spotlightHtml(gr) +
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);
         var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id), ttl = esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, ''));
