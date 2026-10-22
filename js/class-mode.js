@@ -26,7 +26,7 @@
     return '<nav class="cm-rail" aria-label="Class menu">' + RAIL.map(function (r) {
       var act = r.views.indexOf(view) >= 0, src = r.pic.indexOf('/') >= 0 ? r.pic : ART + r.pic + '.webp';
       return '<button type="button" class="cm-b' + (act ? ' is-on' : '') + '" data-rail="' + esc(r.id) + '" style="--c:' + r.c + '" onclick="ClassMode.go(\'' + r.id + '\')" title="' + esc(r.t) + '">' +
-        '<img src="' + src + '" alt="" draggable="false"><span>' + esc(r.t) + '</span></button>';
+        '<img src="' + src + '" alt="" decoding="async" draggable="false"><span>' + esc(r.t) + '</span></button>';
     }).join('') + '</nav>';
   }
 
@@ -66,11 +66,11 @@
     if (!on()) return; var c = document.getElementById('app-view-container'); if (!c) return;
     [].forEach.call(c.querySelectorAll('.cc-links button'), function (b) {
       if (b.querySelector('img')) return; var t = b.textContent.replace(/^[^A-Za-z]+/, '').trim(), n = ICONS[t];
-      if (n) b.innerHTML = '<img src="' + ART + n + '.webp" alt="" draggable="false">' + esc(t);
+      if (n) b.innerHTML = '<img src="' + ART + n + '.webp" alt="" decoding="async" draggable="false">' + esc(t);
     });
     [].forEach.call(c.querySelectorAll('.lp-head h2'), function (h) {
       if (h.querySelector('img')) return; var t = h.textContent.replace(/^[^A-Za-z]+/, '').trim();
-      h.innerHTML = '<img src="' + ART + 'm_lesson.webp" alt="" draggable="false">' + esc(t);
+      h.innerHTML = '<img src="' + ART + 'm_lesson.webp" alt="" decoding="async" draggable="false">' + esc(t);
     });
   }
   function watch() {
@@ -102,7 +102,31 @@
     'unit3-g3-quiz': 'unit3-g4-lessons/art/c_polar_bear.webp',
     'lingo-g3-u3-review': 'lingo-g3-u3-review/cast/bubbles_idle.webp',
     'unit3-money-mission': 'unit3-g3-lessons/art/s_find_bill.webp',
-    'unit3-arctic-homework': 'unit3-g4-lessons/art/c_polar_bear.webp'
+    'unit3-arctic-homework': 'unit3-g4-lessons/art/c_polar_bear.webp',
+    'alley-fling-u3': 'unit2-throw/art/boss.webp',
+    'chuseok-moon-song': 'assets/shelf/chuseok-moon-g3.webp',
+    'arcade-g3-u3': ART + 'r_chest.webp',
+    'arcade-g4-u3': ART + 'r_chest.webp',
+    'bamboozle-g3-u3': 'assets/shelf/bamboozle-g3-u2.webp',
+    'bamboozle-g4-u3': 'assets/shelf/bamboozle-g4-u2.webp',
+    'race-g3-u3': 'assets/shelf/race-g3-u2.webp',
+    'race-g4-u3': 'assets/shelf/race-g4-u2.webp',
+    'shop-counter-g3-u3': 'unit3-g3-lessons/art/c_cashier.webp',
+    'cars-l5-g4': 'unit3-g4-lessons/art/car_electric.webp',
+    'u3-g3-arctic-words': 'unit3-g4-lessons/art/w_polar_bear.webp',
+    'u3-g3-word-city': 'unit3-g4-lessons/art/car_solar.webp',
+    'board-u3-g3-bear': 'unit3-g4-lessons/art/c_polar_bear.webp',
+    'board-u3-g4-money': 'unit3-g3-lessons/art/w_jar_saving.webp',
+    'unit3-g3-quiz-results': ART + 'h_tick_stamp.webp',
+    'unit3-g4-quiz-results': ART + 'h_tick_stamp.webp',
+    'cat-meme-posters': 'cat-meme-posters/art/it.webp',
+    'simon-says-grade3-cooking': 'assets/shelf/simon-says-grade3.webp',
+    'unit4-g3-case1': 'unit4-g3-lessons/art/o_mona_frame.webp',
+    'unit4-g3-case2': 'unit4-g3-lessons/art/o_newspaper.webp',
+    'unit4-g4-team-players': 'unit4-g4-lessons/art/o_basketball.webp',
+    'u4-g3-l3-mountain': 'unit4-g3-angry-mountain/art/o_volcano.webp',
+    'u4-g3-l4-phonics': 'unit4-g3-phonics-think/art/o_wind.webp',
+    'rev-g3-mountain': 'unit4-g3-angry-mountain/art/c_family_boat.webp'
   };
   /* One picture per card in assets/shelf/<card id>.webp (transparent 3D stickers); a card without a file keeps its emoji. */
   var SHELF_ART = [
@@ -209,7 +233,7 @@
   ];
   function thumbFor(g) {
     if (THUMBS[g.id]) return THUMBS[g.id];
-    return SHELF_ART.indexOf(g.id) >= 0 ? 'assets/shelf/' + g.id + '.webp' : '';
+    return SHELF_ART.indexOf(g.id) >= 0 ? 'assets/shelf/' + g.id + '.webp' : (g.thumbnailUrl || g.coverImage || '');
   }
   function isLesson(g) { return (g.tags || []).indexOf('lesson') >= 0 || /lesson/i.test(g.type || ''); }
   function colorFor(g, i) { return ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#0ea5e9'][i % 6]; }
@@ -235,7 +259,7 @@
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);
         var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id), ttl = esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, ''));
-        var pic = '<div class="cm-pic">' + (thumbFor(g) ? '<img class="cm-img" src="' + esc(thumbFor(g)) + '" alt="" loading="lazy" draggable="false">' : '<span>' + esc(g.thumbnailIcon || '🎮') + '</span>') + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
+        var pic = '<div class="cm-pic">' + (thumbFor(g) ? '<img class="cm-img" src="' + esc(thumbFor(g)) + '" alt="" loading="lazy" decoding="async" draggable="false">' : '<span>' + esc(g.thumbnailIcon || '🎮') + '</span>') + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
         if (!shelf.curate) return '<a class="cm-card' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '" href="' + esc(g.route) + '">' + pic + '<b>' + ttl + '</b><i class="cm-play">▶ Play</i></a>';
         return '<div class="cm-card cur' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '">' + pic + '<b>' + ttl + '</b><div class="cm-cur"><a class="cm-try" href="' + esc(g.route) + '" target="_blank" rel="noopener">▶ Try</a>' +
           (hid ? '<button type="button" onclick="ClassMode.cur(\'restore\',\'' + esc(g.id) + '\')">↺ Restore</button>' : '<button type="button" class="k' + (star ? ' on' : '') + '" onclick="ClassMode.cur(\'star\',\'' + esc(g.id) + '\')">' + (star ? '⭐ Kept' : '⭐ Keep') + '</button><button type="button" class="h" onclick="ClassMode.cur(\'hide\',\'' + esc(g.id) + '\')">🙈 Hide</button>') + '</div></div>';
