@@ -1,5 +1,5 @@
 /**
- * ENGLISH ADVENTURE ACADEMY â€” MASTER APPLICATION CONTROLLER & ROUTER
+ * ENGLISH ADVENTURE ACADEMY — MASTER APPLICATION CONTROLLER & ROUTER
  * Version 3.0 (Full CRUD & Relational Management)
  * Connects directly to window.schoolStore
  */
@@ -21,7 +21,7 @@
       toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; background:#0f172a; color:#fff; padding:12px 20px; border-radius:10px; font-weight:700; font-size:0.9rem; box-shadow:0 10px 25px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); transition:all 0.3s ease; display:flex; align-items:center; gap:8px; opacity:0; pointer-events:none; transform:translateY(10px);';
       document.body.appendChild(toast);
     }
-    toast.innerHTML = (type === 'error' ? 'âš ï¸ ' : 'âœ“ ') + message;
+    toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
     if (opts && opts.actionLabel && typeof opts.onAction === 'function') {
       const btn = document.createElement('button');
       btn.type = 'button'; btn.className = 'toast-action-btn'; btn.textContent = opts.actionLabel;
@@ -190,7 +190,7 @@
         if (roleMenu) roleMenu.classList.remove('is-open');
       }
 
-      // Card â‹¯ dropdowns
+      // Card ⋯ dropdowns
       if (activeCardMenuId && !e.target.closest('.card-more-menu-wrap') && !e.target.closest('.row-more-menu-wrap')) {
         closeAllCardMenus();
       }
@@ -301,28 +301,28 @@
       const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) || live === 'offline';
 
       if (isOffline) {
-        if (syncIcon) syncIcon.textContent = 'âš ï¸';
+        if (syncIcon) syncIcon.textContent = '⚠️';
         if (syncText) syncText.textContent = 'Offline / Local Mode';
         syncBtn.style.background = '#fef3c7';
         syncBtn.style.color = '#92400e';
         syncBtn.style.borderColor = '#fde68a';
         syncBtn.title = 'Running in offline mode. Local changes are cached safely.';
       } else if (!status.isConfigured || live === 'unconfigured') {
-        if (syncIcon) syncIcon.textContent = 'âš ï¸';
+        if (syncIcon) syncIcon.textContent = '⚠️';
         if (syncText) syncText.textContent = 'Offline / Local Mode';
         syncBtn.style.background = '#f1f5f9';
         syncBtn.style.color = '#475569';
         syncBtn.style.borderColor = '#cbd5e1';
         syncBtn.title = 'Database not configured. Click to configure cloud database.';
       } else if (live === 'error' || status.lastSyncStatus === 'error' || live === 'local') {
-        if (syncIcon) syncIcon.textContent = 'ðŸ’¾';
+        if (syncIcon) syncIcon.textContent = '💾';
         if (syncText) syncText.textContent = 'Saved Locally';
         syncBtn.style.background = '#fef9c3';
         syncBtn.style.color = '#854d0e';
         syncBtn.style.borderColor = '#fde047';
         syncBtn.title = 'Local-First Mode: All changes saved safely on your device. Cloud status: ' + (status.lastError || 'Standby');
       } else if (status.lastSyncStatus === 'syncing') {
-        if (syncIcon) syncIcon.textContent = 'â³';
+        if (syncIcon) syncIcon.textContent = '⏳';
         if (syncText) syncText.textContent = 'Syncing...';
         syncBtn.style.background = '#eff6ff';
         syncBtn.style.color = '#1e40af';
@@ -330,7 +330,7 @@
         syncBtn.title = 'Synchronizing with Supabase PostgreSQL cloud database...';
       } else {
         // Live connected
-        if (syncIcon) syncIcon.textContent = 'â˜ï¸';
+        if (syncIcon) syncIcon.textContent = '☁️';
         if (syncText) syncText.textContent = 'Cloud Connected';
         syncBtn.style.background = '#ecfdf5';
         syncBtn.style.color = '#065f46';
@@ -361,7 +361,7 @@
       syncPromise.then(res => {
         if (res.success) {
           updateBadge({ isConfigured: true, lastSyncStatus: 'success', lastSyncTime: new Date().toISOString() });
-          if (window.showToast) window.showToast('âœ“ Synced with Supabase (' + (res.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students verified)', 'success');
+          if (window.showToast) window.showToast('✓ Synced with Supabase (' + (res.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students verified)', 'success');
         } else {
           updateBadge({ isConfigured: true, lastSyncStatus: 'error', lastError: res.error || res.reason });
           if (window.showToast) window.showToast('Cloud sync warning: ' + (res.error || res.reason), 'error');
@@ -420,22 +420,22 @@
 
     if (isOffline) {
       if (pill) { pill.style.background = '#fef3c7'; pill.style.color = '#92400e'; }
-      if (indicator) indicator.textContent = 'âš ï¸';
+      if (indicator) indicator.textContent = '⚠️';
       if (text) text.textContent = 'Offline / Local Mode';
       if (latencyBadge) latencyBadge.textContent = 'Local Cache Active';
     } else if (live === 'error' || live === 'local') {
       if (pill) { pill.style.background = '#fef9c3'; pill.style.color = '#854d0e'; }
-      if (indicator) indicator.textContent = 'ðŸ’¾';
+      if (indicator) indicator.textContent = '💾';
       if (text) text.textContent = 'Saved Locally';
       if (latencyBadge) latencyBadge.textContent = sb.lastError ? 'Local: ' + sb.lastError : 'Local-First Mode';
     } else if (isConn) {
       if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
-      if (indicator) indicator.textContent = 'ðŸŸ¢';
+      if (indicator) indicator.textContent = '🟢';
       if (text) text.textContent = 'Cloud Connected';
       if (latencyBadge) latencyBadge.textContent = creds.url ? creds.url.replace(/^https?:\/\//, '').split('/')[0] : '';
     } else {
       if (pill) { pill.style.background = '#f1f5f9'; pill.style.color = '#475569'; }
-      if (indicator) indicator.textContent = 'âš ï¸';
+      if (indicator) indicator.textContent = '⚠️';
       if (text) text.textContent = 'Offline / Local Mode';
       if (latencyBadge) latencyBadge.textContent = '';
     }
@@ -467,7 +467,7 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = 'âœ• Connection failed: Please enter both Project URL and Public Anon Key.';
+        feedback.textContent = '✕ Connection failed: Please enter both Project URL and Public Anon Key.';
       }
       return;
     }
@@ -479,7 +479,7 @@
       feedback.style.border = '1px solid #cbd5e1';
       feedback.textContent = 'Testing connection...';
     }
-    if (indicator) indicator.textContent = 'â³';
+    if (indicator) indicator.textContent = '⏳';
     if (text) text.textContent = 'Testing connection...';
 
     const sb = window.AdventureSupabase;
@@ -489,7 +489,7 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = 'âœ• Connection failed: Supabase client library not loaded.';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
       }
       return;
     }
@@ -498,20 +498,20 @@
       const res = await sb.testConnection(url, anonKey);
       if (res.success) {
         if (pill) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; }
-        if (indicator) indicator.textContent = 'ðŸŸ¢';
+        if (indicator) indicator.textContent = '🟢';
         if (text) text.textContent = 'Connected';
-        if (latencyBadge) latencyBadge.textContent = `${res.latencyMs}ms latency Â· ${res.count} records`;
+        if (latencyBadge) latencyBadge.textContent = `${res.latencyMs}ms latency · ${res.count} records`;
         if (feedback) {
           feedback.style.display = 'block';
           feedback.style.background = '#ecfdf5';
           feedback.style.color = '#065f46';
           feedback.style.border = '1px solid #a7f3d0';
-          feedback.textContent = `âœ“ Connection successful (${res.latencyMs}ms latency Â· ${res.count} cloud records verified)`;
+          feedback.textContent = `✓ Connection successful (${res.latencyMs}ms latency · ${res.count} cloud records verified)`;
         }
-        showNotification(`âœ“ Connection successful (${res.latencyMs}ms)`, 'success');
+        showNotification(`✓ Connection successful (${res.latencyMs}ms)`, 'success');
       } else {
         if (pill) { pill.style.background = '#fee2e2'; pill.style.color = '#991b1b'; }
-        if (indicator) indicator.textContent = 'âšª';
+        if (indicator) indicator.textContent = '⚪';
         if (text) text.textContent = 'Not connected';
         if (latencyBadge) latencyBadge.textContent = '';
         if (feedback) {
@@ -519,9 +519,9 @@
           feedback.style.background = '#fef2f2';
           feedback.style.color = '#991b1b';
           feedback.style.border = '1px solid #fecaca';
-          feedback.textContent = `âœ• Connection failed: ${res.error || 'Unable to connect to Supabase'}`;
+          feedback.textContent = `✕ Connection failed: ${res.error || 'Unable to connect to Supabase'}`;
         }
-        showNotification(`âœ• Connection failed`, 'error');
+        showNotification(`✕ Connection failed`, 'error');
       }
     } catch (err) {
       if (feedback) {
@@ -529,9 +529,9 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = `âœ• Connection failed: ${err.message}`;
+        feedback.textContent = `✕ Connection failed: ${err.message}`;
       }
-      showNotification(`âœ• Connection failed: ${err.message}`, 'error');
+      showNotification(`✕ Connection failed: ${err.message}`, 'error');
     }
   };
 
@@ -551,7 +551,7 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = 'âœ• Connection failed: Please provide both Supabase Project URL and Public Anon Key.';
+        feedback.textContent = '✕ Connection failed: Please provide both Supabase Project URL and Public Anon Key.';
       }
       return;
     }
@@ -562,7 +562,7 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = 'âœ• Connection failed: Supabase Project URL must start with https://';
+        feedback.textContent = '✕ Connection failed: Supabase Project URL must start with https://';
       }
       return;
     }
@@ -574,7 +574,7 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = 'âœ• Connection failed: Supabase client library not loaded.';
+        feedback.textContent = '✕ Connection failed: Supabase client library not loaded.';
       }
       return;
     }
@@ -595,9 +595,9 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = `âœ• Connection failed: ${testRes.error || 'Could not verify credentials'}`;
+        feedback.textContent = `✕ Connection failed: ${testRes.error || 'Could not verify credentials'}`;
       }
-      showNotification('âœ• Connection failed: ' + testRes.error, 'error');
+      showNotification('✕ Connection failed: ' + testRes.error, 'error');
       return;
     }
 
@@ -618,7 +618,7 @@
     }
 
     window.closeModal('modal-cloud-sync');
-    showNotification('âœ“ Cloud connected! ' + (syncRes.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students synchronized.', 'success');
+    showNotification('✓ Cloud connected! ' + (syncRes.studentCount || (store.state.students ? store.state.students.length : 0)) + ' students synchronized.', 'success');
     renderCurrentView();
   };
 
@@ -652,7 +652,7 @@
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(fullConnectUrl).then(() => {
-        showNotification('âœ“ Quick-Connect link copied to clipboard! Open on iPad or phone.', 'success');
+        showNotification('✓ Quick-Connect link copied to clipboard! Open on iPad or phone.', 'success');
       }).catch(() => {
         prompt('Copy this 1-click connect URL for iPad/phone:', fullConnectUrl);
       });
@@ -697,9 +697,9 @@
         feedback.style.background = '#ecfdf5';
         feedback.style.color = '#065f46';
         feedback.style.border = '1px solid #a7f3d0';
-        feedback.textContent = `âœ“ Uploaded ${res.studentsCount || res.studentCount || 0} students and ${res.classesCount || 0} classes to Supabase!`;
+        feedback.textContent = `✓ Uploaded ${res.studentsCount || res.studentCount || 0} students and ${res.classesCount || 0} classes to Supabase!`;
       }
-      showNotification('âœ“ Uploaded ' + (res.studentsCount || res.studentCount || 0) + ' students and ' + (res.classesCount || 0) + ' classes to Supabase!', 'success');
+      showNotification('✓ Uploaded ' + (res.studentsCount || res.studentCount || 0) + ' students and ' + (res.classesCount || 0) + ' classes to Supabase!', 'success');
       const latencyBadge = document.getElementById('cloud-latency-badge');
       if (latencyBadge) latencyBadge.textContent = `${res.studentsCount || 0} cloud students`;
     } catch (err) {
@@ -708,9 +708,9 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = `âœ• Upload failed: ${err.message}`;
+        feedback.textContent = `✕ Upload failed: ${err.message}`;
       }
-      showNotification('âœ• Upload failed: ' + err.message, 'error');
+      showNotification('✕ Upload failed: ' + err.message, 'error');
     }
   };
 
@@ -738,9 +738,9 @@
           feedback.style.background = '#ecfdf5';
           feedback.style.color = '#065f46';
           feedback.style.border = '1px solid #a7f3d0';
-          feedback.textContent = `âœ“ Pulled ${res.studentCount || 0} students and ${res.notesCount || 0} notes from cloud!`;
+          feedback.textContent = `✓ Pulled ${res.studentCount || 0} students and ${res.notesCount || 0} notes from cloud!`;
         }
-        showNotification('âœ“ Synchronized ' + (res.studentCount || 0) + ' students from Supabase!', 'success');
+        showNotification('✓ Synchronized ' + (res.studentCount || 0) + ' students from Supabase!', 'success');
         renderCurrentView();
       } else {
         throw new Error(res.error || 'Failed to pull cloud data');
@@ -751,9 +751,9 @@
         feedback.style.background = '#fef2f2';
         feedback.style.color = '#991b1b';
         feedback.style.border = '1px solid #fecaca';
-        feedback.textContent = `âœ• Pull failed: ${err.message}`;
+        feedback.textContent = `✕ Pull failed: ${err.message}`;
       }
-      showNotification('âœ• Pull failed: ' + err.message, 'error');
+      showNotification('✕ Pull failed: ' + err.message, 'error');
     }
   };
 
@@ -1081,7 +1081,7 @@
     if (avatar && avatar.studentId && typeof window.renderMonsterAvatar === 'function') {
       return window.renderMonsterAvatar(avatar.studentId, { size: 28 });
     }
-    return 'ðŸ‘¾';
+    return '👾';
   }
 
   // Helper: compute average mastery percentage across all 7 language skills
@@ -1225,8 +1225,8 @@
   /**
    * Resolve Monster Stage Asset Path
    * Thresholds:
-   * Level 1â€“3: baby
-   * Level 4â€“6: growing
+   * Level 1–3: baby
+   * Level 4–6: growing
    * Level 7+:  ultimate
    */
   function getMonsterAsset(speciesOrArchetype, level) {
@@ -1404,10 +1404,10 @@
         heroMonsterHtml(dynamicSprite, name, profile, mState, 'mascot-sprite-img monster-hero-3d') +
       '</div>';
 
-    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' â€¢ ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-â€¢]\s*/i, ''));
+    const evolutionBadge = options.badgeText || ('Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, ''));
     const streak = s.streak || s.streakDays || 0;
     const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
-    const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? 'ðŸŽ©' : s.aliceCharacter === 'cheshire_cat' ? 'ðŸ˜¸' : 'ðŸ‘—');
+    const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : '👗');
     const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : 'Explorer';
 
     return '' +
@@ -1417,22 +1417,22 @@
           '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + studentId + '\')" title="Click to change companion">' +
             '<span class="role-icon">' + roleIcon + '</span>' +
             '<span class="role-title">' + roleName + '</span>' +
-            '<span class="role-edit">âœŽ</span>' +
+            '<span class="role-edit">✎</span>' +
           '</div>' +
           '<div class="card-pills-cluster card-pills-right">' +
-            (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">ðŸ—„ï¸ ' + archivedVal + ' saved</span>' : '') +
-            (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">ðŸ”¥ ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
-            '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Edit Student XP">âœï¸</button>' +
+            (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+            (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
+            '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Edit Student XP">✏️</button>' +
             '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
-              '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">â€¢â€¢â€¢</button>' +
+              '<button type="button" class="btn-card-more-3dots" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + studentId + '\', event)" title="More Options">•••</button>' +
               '<div class="card-dropdown-menu" id="menu-stud-menu-' + studentId + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 20, event); closeAllCardMenus();">â­ +20 XP</button>' +
-                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 50, event); closeAllCardMenus();">ðŸŒŸ +50 XP</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + studentId + '\'); closeAllCardMenus();">ðŸŽ¯ Award Skill XP</button>' +
-                '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + studentId + '\', event); closeAllCardMenus();">âœï¸ Edit / Correct XP</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + studentId + '\'); closeAllCardMenus();">ðŸ“œ View XP History</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\'); closeAllCardMenus();">ðŸŽ¨ Customize Monster</button>' +
-                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || studentId) + '\', \'overview\'); closeAllCardMenus();">ðŸ‘¤ View Profile</button>' +
+                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + studentId + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + studentId + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
+                '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + studentId + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + studentId + '\'); closeAllCardMenus();">📜 View XP History</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
+                '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || studentId) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -1440,7 +1440,7 @@
 
         // Monster Stage Platform with idleBob & Pedestal Disc
         '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Click to customize monster">' +
-          '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Customize Monster">âœï¸</button>' +
+          '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + studentId + '\')" title="Customize Monster">✏️</button>' +
           avatarMarkup +
           '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">' + evolutionBadge + '</span>' +
         '</div>' +
@@ -1449,12 +1449,12 @@
         '<div class="student-card-content">' +
           '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
             '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0;">' + studentName + '</h3></div>' +
-            '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">â­ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> âœŽ</div>' +
+            '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + studentId + '\', event)" title="Click to edit XP">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
           '</div>' +
           '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
               '<span>Evolution Progress</span>' +
-              '<span>' + (mState.currentLevel >= 7 ? 'ðŸ‘‘ Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!')) + '</span>' +
+              '<span>' + (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!')) + '</span>' +
             '</div>' +
             '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution: ' + (mState.progressPct || 0) + '%">' +
               '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + (mState.progressPct || 0) + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
@@ -1715,7 +1715,7 @@
     const existing = editId ? store.getStudent(editId) : null;
     const avatar = existing && existing.avatar
       ? Object.assign({}, existing.avatar, { hair: avatarHair })
-      : { emoji: 'ðŸ§’', characterId: 'char-default', name: 'Explorer', category: 'explorers', hair: avatarHair, outfit: 'explorer', accessory: 'badge' };
+      : { emoji: '🧒', characterId: 'char-default', name: 'Explorer', category: 'explorers', hair: avatarHair, outfit: 'explorer', accessory: 'badge' };
 
     const payload = {
       firstName,
@@ -1731,10 +1731,10 @@
 
     if (editId) {
       store.updateStudent(editId, payload);
-      showNotification('âœ“ Student ' + firstName + ' updated and synced to Cloud!');
+      showNotification('✓ Student ' + firstName + ' updated and synced to Cloud!');
     } else {
       store.addStudent(payload);
-      showNotification('âœ“ Student ' + firstName + ' added and synced to Cloud!');
+      showNotification('✓ Student ' + firstName + ' added and synced to Cloud!');
     }
 
     window.closeAllModals();
@@ -1816,7 +1816,7 @@
       idInput.value = c.id;
       nameInput.value = c.name;
       gradeInput.value = c.grade;
-      if (yearInput) yearInput.value = c.academicYear || '2026â€“2027';
+      if (yearInput) yearInput.value = c.academicYear || '2026–2027';
       cefrInput.value = c.cefrTarget || 'A1';
       roomInput.value = c.room;
       scheduleInput.value = c.schedule;
@@ -1827,10 +1827,10 @@
       idInput.value = '';
       nameInput.value = '';
       gradeInput.value = 'Grade 3';
-      if (yearInput) yearInput.value = '2026â€“2027';
+      if (yearInput) yearInput.value = '2026–2027';
       cefrInput.value = 'A1';
       roomInput.value = 'Room 204';
-      scheduleInput.value = 'Mon, Wed Â· 10:00 â€“ 10:45';
+      scheduleInput.value = 'Mon, Wed · 10:00 – 10:45';
       if (descInput) descInput.value = '';
     }
 
@@ -1842,7 +1842,7 @@
     const editId = document.getElementById('edit-cls-id').value;
     const name = document.getElementById('new-cls-name').value.trim();
     const grade = document.getElementById('new-cls-grade').value.trim();
-    const academicYear = document.getElementById('new-cls-year') ? document.getElementById('new-cls-year').value.trim() : '2026â€“2027';
+    const academicYear = document.getElementById('new-cls-year') ? document.getElementById('new-cls-year').value.trim() : '2026–2027';
     const cefrTarget = document.getElementById('new-cls-cefr').value;
     const room = document.getElementById('new-cls-room').value.trim();
     const schedule = document.getElementById('new-cls-schedule').value.trim();
@@ -1852,12 +1852,12 @@
 
     if (editId) {
       store.updateClass(editId, payload);
-      showNotification('âœ“ Class ' + name + ' updated!');
+      showNotification('✓ Class ' + name + ' updated!');
       window.closeAllModals();
       renderCurrentView();
     } else {
       const newClass = store.addClass(payload);
-      showNotification('âœ“ Class ' + name + ' created!');
+      showNotification('✓ Class ' + name + ' created!');
       window.closeAllModals();
       window.openClass(newClass.id, 'overview');
     }
@@ -1904,7 +1904,7 @@
       document.getElementById('res-category').value = res.category || 'Classroom Game';
       document.getElementById('res-description').value = res.description || '';
       document.getElementById('res-level').value = res.level || 'A1';
-      document.getElementById('res-ages').value = res.age || res.ages || '7â€“9';
+      document.getElementById('res-ages').value = res.age || res.ages || '7–9';
       document.getElementById('res-grade').value = res.grade || 'Grade 3';
       document.getElementById('res-duration').value = res.duration || 30;
       document.getElementById('res-topic').value = Array.isArray(res.topics) ? res.topics.join(', ') : (res.topics || '');
@@ -1989,41 +1989,41 @@
       try {
         const res = await sb.saveResource(savedResource);
         if (res && res.success) {
-          window.showNotification('â˜ï¸ Saved to Cloud: ' + titleVal, 'success');
+          window.showNotification('☁️ Saved to Cloud: ' + titleVal, 'success');
           if (savedResource) {
             savedResource.cloudStatus = 'saved';
             savedResource.cloudSyncedAt = new Date().toISOString();
             store.saveState();
           }
         } else {
-          window.showNotification('âŒ Cloud save failed: ' + (res.error || 'Database rejected write'), 'error');
+          window.showNotification('❌ Cloud save failed: ' + (res.error || 'Database rejected write'), 'error');
         }
       } catch (err) {
         console.error('[handleSaveResource] Cloud error:', err);
-        window.showNotification('âŒ Cloud save failed: ' + err.message, 'error');
+        window.showNotification('❌ Cloud save failed: ' + err.message, 'error');
       }
     } else {
-      window.showNotification('âš ï¸ Saved locally (Supabase offline / not connected)', 'warning');
+      window.showNotification('⚠️ Saved locally (Supabase offline / not connected)', 'warning');
     }
 
     renderCurrentView();
   };
 
   window.handleSyncLocalLibraryToCloud = async function() {
-    window.showNotification('â˜ï¸ Syncing all games & resources with Supabase cloud...', 'info');
+    window.showNotification('☁️ Syncing all games & resources with Supabase cloud...', 'info');
     try {
       const res = await store.syncLocalLibraryToCloud();
       if (res && res.success) {
         const total = res.totalCloud || res.alreadyOnline || res.found || 28;
-        const msg = `âœ“ All ${total} games and resources are synced online with Supabase cloud!`;
+        const msg = `✓ All ${total} games and resources are synced online with Supabase cloud!`;
         window.showNotification(msg, 'success');
         if (window.showToast) window.showToast(msg, 'success');
       } else {
-        const msg = `âš ï¸ Sync completed with issues: ${res ? res.failed : 0} failed.`;
+        const msg = `⚠️ Sync completed with issues: ${res ? res.failed : 0} failed.`;
         window.showNotification(msg, 'error');
       }
     } catch (err) {
-      window.showNotification('âŒ Library sync error: ' + err.message, 'error');
+      window.showNotification('❌ Library sync error: ' + err.message, 'error');
     }
     renderCurrentView();
   };
@@ -2039,7 +2039,7 @@
       res = store.getWorksheet(resourceId);
     }
     if (!res) return;
-    window.showNotification('â˜ï¸ Syncing "' + res.title + '" to Supabase cloud...', 'info');
+    window.showNotification('☁️ Syncing "' + res.title + '" to Supabase cloud...', 'info');
     try {
       if (window.AdventureSupabase) {
         await window.AdventureSupabase.saveResource(res);
@@ -2047,14 +2047,14 @@
         res.cloudSyncedAt = new Date().toISOString();
         res.cloudSynced = true;
         if (typeof store.saveState === 'function') store.saveState();
-        const msg = 'âœ“ "' + res.title + '" is now synced to Supabase online cloud!';
+        const msg = '✓ "' + res.title + '" is now synced to Supabase online cloud!';
         window.showNotification(msg, 'success');
         if (window.showToast) window.showToast(msg, 'success');
       } else {
-        window.showNotification('âš ï¸ Supabase client not loaded', 'error');
+        window.showNotification('⚠️ Supabase client not loaded', 'error');
       }
     } catch (err) {
-      window.showNotification('âŒ Cloud sync failed: ' + err.message, 'error');
+      window.showNotification('❌ Cloud sync failed: ' + err.message, 'error');
     }
     renderCurrentView();
   };
@@ -2405,7 +2405,7 @@
     if (res && res.evolutionEvent && typeof window.openMonsterLevelUpModal === 'function') {
       window.openMonsterLevelUpModal(studentId, res.evolutionEvent.prevLevel, res.evolutionEvent.newLevel);
     }
-    showNotification('â­ Awarded +' + amount + ' XP (+' + (amount * 10) + ' pts) to ' + (res.student ? res.student.firstName : 'Student') + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
+    showNotification('⭐ Awarded +' + amount + ' XP (+' + (amount * 10) + ' pts) to ' + (res.student ? res.student.firstName : 'Student') + ' for "' + reason + '"! New total: ' + res.newTotalXP + ' XP');
     renderCurrentView();
   };
 
@@ -2430,7 +2430,7 @@
 
     const res = store.recordAssessment(studentId, rubricScores, comment);
     window.closeAllModals();
-    alert('âœ“ Assessment recorded for ' + res.student.firstName + '! Updated Overall CEFR: ' + res.overallCefr);
+    alert('✓ Assessment recorded for ' + res.student.firstName + '! Updated Overall CEFR: ' + res.overallCefr);
     renderCurrentView();
   };
 
@@ -2513,11 +2513,11 @@
     }
 
     const typeIcons = {
-      homework: 'ðŸ“',
-      quiz: 'ðŸ§ ',
-      participation: 'âœ‹',
-      badge: 'ðŸŽ–ï¸',
-      behavior: 'â­'
+      homework: '📝',
+      quiz: '🧠',
+      participation: '✋',
+      badge: '🎖️',
+      behavior: '⭐'
     };
 
     const typePills = {
@@ -2536,9 +2536,9 @@
       const amtSign = isPos ? '+' : '';
       const dateStr = tx.timestamp 
         ? new Date(tx.timestamp).toLocaleString('en-GB', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }) 
-        : (tx.date || 'â€”');
+        : (tx.date || '—');
       const tType = (tx.type || 'participation').toLowerCase();
-      const icon = tx.icon || typeIcons[tType] || 'â­';
+      const icon = tx.icon || typeIcons[tType] || '⭐';
       const pill = typePills[tType] || typePills.participation;
       const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : null;
 
@@ -2556,7 +2556,7 @@
               '</div>' +
               '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">' +
                 '<span>' + dateStr + '</span>' +
-                (balanceStr ? ('<span style="margin: 0 6px;">â€¢</span><span style="color:#cbd5e1;">Balance: <strong style="color:#f59e0b;">' + balanceStr + '</strong></span>') : '') +
+                (balanceStr ? ('<span style="margin: 0 6px;">•</span><span style="color:#cbd5e1;">Balance: <strong style="color:#f59e0b;">' + balanceStr + '</strong></span>') : '') +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -2600,7 +2600,7 @@
       if (typeof showNotification === 'function') showNotification('Transaction restored and XP balance updated.');
       const updatedTotal = store.getStudentTotalXP(studentId);
       const lifetimeEl = document.getElementById('ledger-lifetime-xp');
-      if (lifetimeEl) lifetimeEl.innerText = 'â­ ' + updatedTotal.toLocaleString('en-US') + ' XP';
+      if (lifetimeEl) lifetimeEl.innerText = '⭐ ' + updatedTotal.toLocaleString('en-US') + ' XP';
       const feed = document.getElementById('xp-history-feed');
       if (feed) feed.innerHTML = window.renderLedgerTimelineFeed(studentId, window.currentLedgerFilter || 'all');
       if (document.getElementById('modal-student-xp-history')?.classList.contains('is-open')) {
@@ -2615,7 +2615,7 @@
       return window.getStudentBadge(student);
     }
     const compData = (typeof resolveStudentCompanion === 'function') ? resolveStudentCompanion(student) : null;
-    const compIcon = (student && (student.customIcon || student.custom_icon)) || (compData ? compData.icon : 'âœ¨');
+    const compIcon = (student && (student.customIcon || student.custom_icon)) || (compData ? compData.icon : '✨');
     const compRole = compData ? compData.name : ((student && (student.aliceCharacter || student.koreanRole)) || 'Student');
     return {
       icon: compIcon,
@@ -2693,8 +2693,8 @@
     const pcSubsForCount = store.getStudentProgressCheckHistory ? store.getStudentProgressCheckHistory(studentId) : [];
     const profileTabs = [
       { id: 'overview', label: 'Overview' },
-      { id: 'monster', label: 'ðŸ‘¾ Monster & Evolution' },
-      { id: 'alice', label: 'ðŸ«– Alice' },
+      { id: 'monster', label: '👾 Monster & Evolution' },
+      { id: 'alice', label: '🫖 Alice' },
       { id: 'progress', label: 'Progress & CEFR' },
       { id: 'assignments', label: 'Assignments (' + assignments.length + ')' },
       { id: 'assessments', label: 'Assessments (' + (assessments.length + pcSubsForCount.length) + ')' },
@@ -2710,12 +2710,12 @@
       // new one-page dark profile (js/pupil-profile.js); the older tabs are folded sections that load when opened
       const prevDlg = modal.querySelector('.modal-dialog'), prevScroll = prevDlg && modal.classList.contains('is-open') ? prevDlg.scrollTop : 0;
       const msNew = store.calculateMonsterState(student.id);
-      const counts = { assignments: assignments.length, assessments: assessments.length + pcSubsForCount.length, badges: studentAwards.length, attendance: attRecords.length ? attRate + '%' : 'â€“', xp: totalXP, notes: notes.length };
+      const counts = { assignments: assignments.length, assessments: assessments.length + pcSubsForCount.length, badges: studentAwards.length, attendance: attRecords.length ? attRate + '%' : '–', xp: totalXP, notes: notes.length };
       window.ppSectionHtml = function(tab) {
         studentProfileActiveTab = tab;
         return renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords);
       };
-      modal.innerHTML = '<div class="modal-dialog pp-dlg"><button class="modal-close-btn" onclick="closeAllModals()">âœ•</button>' +
+      modal.innerHTML = '<div class="modal-dialog pp-dlg"><button class="modal-close-btn" onclick="closeAllModals()">✕</button>' +
         window.PupilProfile.top(student, {
           monsterState: msNew, totalXP: totalXP, attRate: attRate, hasAtt: attRecords.length > 0,
           avatar: window.renderStudentMonsterAvatar(student.id, { size: 96, animated: true }),
@@ -2732,7 +2732,7 @@
 
     modal.innerHTML = 
       '<div class="modal-dialog" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">' +
-        '<button class="modal-close-btn" onclick="closeAllModals()">âœ•</button>' +
+        '<button class="modal-close-btn" onclick="closeAllModals()">✕</button>' +
 
         '<!-- Prominent Monster Profile Hero Header -->' +
         (() => {
@@ -2748,7 +2748,7 @@
               // Monster Stage Box
               '<div style="width:130px; height:130px; display:flex; align-items:center; justify-content:center; background:var(--bg-canvas); border-radius:16px; border:2px solid var(--border-light); cursor:pointer; position:relative;" onclick="openMonsterCreator(\'' + student.id + '\')" title="Click to open Monster Creator">' +
                 monsterSvg +
-                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">ðŸŽ¨ Creator</span>' +
+                '<span style="position:absolute; bottom:6px; right:6px; background:var(--color-primary); color:#fff; border-radius:20px; padding:2px 8px; font-size:0.68rem; font-weight:800;">🎨 Creator</span>' +
               '</div>' +
 
               // Details & Controls
@@ -2762,21 +2762,21 @@
                       '<span class="badge-cefr badge-cefr-' + student.overallCefr.toLowerCase().replace('+', '-plus') + '">' + student.overallCefr + '</span>' +
                     '</div>' +
                     '<div style="font-size:0.95rem; font-weight:800; color:var(--color-primary); margin-top:2px;">' + monsterState.stageName + '</div>' +
-                    '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">ID: <strong>' + (student.studentIdNumber || 'EAA-001') + '</strong> Â· ' + student.grade + ' Â· Age ' + student.age + '</div>' +
+                    '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">ID: <strong>' + (student.studentIdNumber || 'EAA-001') + '</strong> · ' + student.grade + ' · Age ' + student.age + '</div>' +
                   '</div>' +
 
                   // Top Action Buttons
                   '<div style="display:flex; gap:6px; flex-wrap:wrap;">' +
-                    '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">ðŸŽ¨ Customize Monster</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreenModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;" title="Open Fullscreen Monster Showcase">âœ¨ Fullscreen</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">â­ Award XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; font-weight:700;">âœï¸ Edit XP</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">ðŸ—ºï¸ Evolution</button>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">âœï¸ Edit</button>' +
+                    '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🎨 Customize Monster</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreenModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;" title="Open Fullscreen Monster Showcase">✨ Fullscreen</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:800; color:#b45309;">⭐ Award XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px; font-weight:700;">✏️ Edit XP</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">🗺️ Evolution</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openStudentModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 10px;">✏️ Edit</button>' +
                     '<div class="card-more-menu-wrap" style="position:relative;">' +
-                      '<button class="btn-card-more" onclick="toggleCardDropdown(\'prof-' + student.id + '\', event)" title="More Management Options">â‹¯</button>' +
+                      '<button class="btn-card-more" onclick="toggleCardDropdown(\'prof-' + student.id + '\', event)" title="More Management Options">⋯</button>' +
                       '<div class="card-dropdown-menu" id="menu-prof-' + student.id + '">' +
-                        '<button class="card-dropdown-item" onclick="openReportGenerator(\'' + student.id + '\')">ðŸ–¨ï¸ Generate Report</button>' +
+                        '<button class="card-dropdown-item" onclick="openReportGenerator(\'' + student.id + '\')">🖨️ Generate Report</button>' +
                         '<button class="card-dropdown-item" onclick="handleRemoveStudentFromClass(\'' + student.id + '\')">Unenroll from Class</button>' +
                         '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveStudent(\'' + student.id + '\')">Archive Student</button>' +
                       '</div>' +
@@ -2787,8 +2787,8 @@
                 // Evolution Progress Meter
                 '<div style="margin-top:12px; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:4px;">' +
-                    '<span>â­ ' + totalXP.toLocaleString('en-US') + ' Active XP Â· ðŸ—„ï¸ ' + archivedVal.toLocaleString('en-US') + ' Archived XP</span>' +
-                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('ðŸ¥š EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString('en-US') + ' XP TO NEXT EVOLUTION') : 'ðŸ‘‘ ULTIMATE FORM')) + '</span>' +
+                    '<span>⭐ ' + totalXP.toLocaleString('en-US') + ' Active XP · 🗄️ ' + archivedVal.toLocaleString('en-US') + ' Archived XP</span>' +
+                    '<span style="color:var(--color-primary);">' + (!monsterState.isHatched ? ('🥚 EGG CRACK: ' + monsterState.eggCrackPct + '%') : (xpToNext > 0 ? (xpToNext.toLocaleString('en-US') + ' XP TO NEXT EVOLUTION') : '👑 ULTIMATE FORM')) + '</span>' +
                   '</div>' +
                   '<div style="height:10px; border-radius:5px; background:var(--border-light); overflow:hidden;">' +
                     '<div style="height:100%; width:' + progressPct + '%; background:linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius:5px; transition:width 0.4s ease;"></div>' +
@@ -2830,13 +2830,13 @@
           ((typeof renderStudentThemeBadge === 'function') ? renderStudentThemeBadge(student) : '') +
           '<div class="kpi-grid" style="margin-bottom:16px;">' +
             '<div class="kpi-card" style="cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
-              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Active XP <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">âœï¸ Edit</button></span>' +
-              '<span class="kpi-val">â­ ' + (Number(student.xp) || 0) + ' XP</span>' +
-              '<span class="kpi-sub">Cold Storage: ðŸ—„ï¸ ' + (student.archivedXP || student.archived_xp || 0) + ' ARCH</span>' +
+              '<span class="kpi-label" style="display:flex; justify-content:space-between; align-items:center;">Active XP <button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.65rem; padding:1px 5px; font-weight:700;">✏️ Edit</button></span>' +
+              '<span class="kpi-val">⭐ ' + (Number(student.xp) || 0) + ' XP</span>' +
+              '<span class="kpi-sub">Cold Storage: 🗄️ ' + (student.archivedXP || student.archived_xp || 0) + ' ARCH</span>' +
             '</div>' +
-            '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">âœ“ Computed from roll call</span></div>' +
+            '<div class="kpi-card"><span class="kpi-label">Attendance Rate</span><span class="kpi-val">' + attRate + '%</span><span class="kpi-sub">✓ Computed from roll call</span></div>' +
             '<div class="kpi-card"><span class="kpi-label">Current CEFR</span><span class="kpi-val" style="color:var(--color-primary);">' + student.overallCefr + '</span><span class="kpi-sub">Target: A1+</span></div>' +
-            '<div class="kpi-card"><span class="kpi-label">Active Streak</span><span class="kpi-val">ðŸ”¥ ' + student.streakDays + '</span><span class="kpi-sub">Consecutive days</span></div>' +
+            '<div class="kpi-card"><span class="kpi-label">Active Streak</span><span class="kpi-val">🔥 ' + student.streakDays + '</span><span class="kpi-sub">Consecutive days</span></div>' +
           '</div>' +
           (() => {
             const pcSubs = store.getStudentProgressCheckHistory ? store.getStudentProgressCheckHistory(student.id) : [];
@@ -2858,44 +2858,44 @@
               '<div style="background:#fff; border:1px solid #d1fae5; border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:0 2px 8px rgba(16,185,129,0.06);">' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border-light); flex-wrap:wrap; gap:8px;">' +
                   '<div style="display:flex; align-items:center; gap:10px;">' +
-                    '<span style="font-size:1.4rem;">ðŸ“Š</span>' +
+                    '<span style="font-size:1.4rem;">📊</span>' +
                     '<div>' +
                       '<div style="display:flex; align-items:center; gap:8px;">' +
                         '<span style="font-size:0.68rem; font-weight:900; text-transform:uppercase; color:#065f46; letter-spacing:0.5px; background:#d1fae5; padding:2px 8px; border-radius:6px;">ASSESSMENT RESULTS</span>' +
                         '<span class="badge" style="background:' + (mastery === 'Strong' ? '#d1fae5; color:#065f46;' : mastery === 'Secure' ? '#dbeafe; color:#1e40af;' : '#fef3c7; color:#92400e;') + ' font-size:0.7rem; font-weight:800;">' + mastery + '</span>' +
                         '<span style="background:#f3e8ff; color:#7e22ce; font-weight:900; font-size:0.75rem; padding:2px 8px; border-radius:8px; border:1px solid #e9d5ff;">+' + Math.round(rawTotal * 10) + ' XP</span>' +
                       '</div>' +
-                      '<div style="font-size:0.86rem; font-weight:800; color:var(--text-main); margin-top:2px;">' + (latestPC.bookTitle || 'Global Readings 2') + ' â€” ' + (latestPC.unitTitle || 'Unit 1: What Does It Do?') + '</div>' +
+                      '<div style="font-size:0.86rem; font-weight:800; color:var(--text-main); margin-top:2px;">' + (latestPC.bookTitle || 'Global Readings 2') + ' — ' + (latestPC.unitTitle || 'Unit 1: What Does It Do?') + '</div>' +
                       '<div style="font-size:0.72rem; color:var(--text-muted);">' + (latestPC.displayDate || latestPC.date || 'September 2026') + '</div>' +
                     '</div>' +
                   '</div>' +
                   '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { if (window.setProgressCheckViewMode) window.setProgressCheckViewMode(\'enter\'); switchView(\'progress-check\'); }" style="font-size:0.75rem; padding:6px 12px; font-weight:800; background:#ecfdf5; color:#059669; border-color:#10b981;">' +
-                    'âœï¸ Gradebook âž”' +
+                    '✏️ Gradebook ➔' +
                   '</button>' +
                 '</div>' +
                 '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(95px, 1fr)); gap:8px; font-size:0.8rem; margin-bottom:12px;">' +
                   '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
-                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">ðŸ“– READING</span>' +
+                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">📖 READING</span>' +
                     '<strong style="font-size:1rem; color:var(--text-main);">' + readScore + '</strong>' +
                   '</div>' +
                   '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
-                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">ðŸ‘‚ LISTENING</span>' +
+                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">👂 LISTENING</span>' +
                     '<strong style="font-size:1rem; color:var(--text-main);">' + listenScore + '</strong>' +
                   '</div>' +
                   '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
-                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">âœï¸ WRITING</span>' +
+                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">✍️ WRITING</span>' +
                     '<strong style="font-size:1rem; color:var(--text-main);">' + writeScore + '</strong>' +
                   '</div>' +
                   '<div style="background:var(--bg-canvas); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light); text-align:center;">' +
-                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">ðŸ—£ï¸ SPEAKING</span>' +
+                    '<span style="color:var(--text-muted); font-size:0.68rem; display:block; font-weight:700;">🗣️ SPEAKING</span>' +
                     '<strong style="font-size:1rem; color:var(--text-main);">' + speakScore + '</strong>' +
                   '</div>' +
                   '<div style="background:#eff6ff; padding:8px 10px; border-radius:8px; border:1px solid #bfdbfe; text-align:center;">' +
-                    '<span style="color:#1e40af; font-size:0.68rem; display:block; font-weight:800;">â­ TOTAL</span>' +
+                    '<span style="color:#1e40af; font-size:0.68rem; display:block; font-weight:800;">⭐ TOTAL</span>' +
                     '<strong style="font-size:1.05rem; color:#1d4ed8;">' + rawTotal + ' / ' + maxTotal + '</strong>' +
                   '</div>' +
                   '<div style="background:#faf5ff; padding:8px 10px; border-radius:8px; border:1px solid #e9d5ff; text-align:center;">' +
-                    '<span style="color:#7e22ce; font-size:0.68rem; display:block; font-weight:800;">âœ¨ EARNED XP</span>' +
+                    '<span style="color:#7e22ce; font-size:0.68rem; display:block; font-weight:800;">✨ EARNED XP</span>' +
                     '<strong style="font-size:1.05rem; color:#7e22ce;">+' + Math.round(rawTotal * 10) + ' XP</strong>' +
                   '</div>' +
                 '</div>' +
@@ -2907,7 +2907,7 @@
                   '<div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-light); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
                     '<span style="font-size:0.75rem; color:var(--text-muted);">Recorded ' + pcSubs.length + ' assessments across curriculum</span>' +
                     '<button type="button" class="btn-sm-secondary" onclick="switchStudentProfileTab(\'assessments\')" style="font-size:0.75rem; font-weight:800; padding:4px 10px; background:#eff6ff; color:#1e40af; border-color:#bfdbfe;">' +
-                      'ðŸ“‹ View All (' + pcSubs.length + ') Assessments History âž”' +
+                      '📋 View All (' + pcSubs.length + ') Assessments History ➔' +
                     '</button>' +
                   '</div>' : '') +
               '</div>';
@@ -2915,7 +2915,7 @@
           '<!-- Dedicated Classroom Skills Breakdown -->' +
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:16px; margin-bottom:16px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
-              '<h4 style="font-weight:800; font-size:0.98rem; margin:0; display:flex; align-items:center; gap:6px;">â­ Classroom Feedback Skills</h4>' +
+              '<h4 style="font-weight:800; font-size:0.98rem; margin:0; display:flex; align-items:center; gap:6px;">⭐ Classroom Feedback Skills</h4>' +
               '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal(\'student\', \'' + student.id + '\')" style="font-size:0.75rem; font-weight:800; color:#b45309;">+ Give Feedback</button>' +
             '</div>' +
             (() => {
@@ -2926,7 +2926,7 @@
               return '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">' +
                 tallies.map(t => '' +
                   '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:10px; padding:10px; text-align:center;">' +
-                    '<div style="font-size:24px;">' + (t.icon || 'â­') + '</div>' +
+                    '<div style="font-size:24px;">' + (t.icon || '⭐') + '</div>' +
                     '<div style="font-size:0.82rem; font-weight:700; color:var(--text-main); margin-top:3px;">' + t.name + '</div>' +
                     '<div style="font-size:0.75rem; font-weight:800; color:' + (t.totalXP >= 0 ? '#059669' : '#dc2626') + '; margin-top:4px;">' +
                       t.count + 'x (' + (t.totalXP >= 0 ? '+' : '') + t.totalXP + ' XP)' +
@@ -2988,7 +2988,7 @@
                 return '' +
                   '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-canvas); border:1px solid var(--border-light); padding:10px 14px; border-radius:var(--radius-md);">' +
                     '<div><strong>' + a.title + '</strong><div style="font-size:0.75rem; color:var(--text-muted);">Due ' + a.dueDate + '</div></div>' +
-                    (res ? '<a href="' + res.route + '" class="btn-sm-secondary">â–¶ Play Activity</a>' : '') +
+                    (res ? '<a href="' + res.route + '" class="btn-sm-secondary">▶ Play Activity</a>' : '') +
                   '</div>';
               }).join('') +
             '</div>');
@@ -2998,18 +2998,18 @@
         return '' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
             '<h4 style="font-weight:800; font-size:1.05rem;">Student Badges &amp; Milestone Awards (' + studAwards.length + ')</h4>' +
-            '<button class="btn-primary-action" onclick="handleAwardBadgeToStudent(null, \'' + student.id + '\')">â­ + Award Badge</button>' +
+            '<button class="btn-primary-action" onclick="handleAwardBadgeToStudent(null, \'' + student.id + '\')">⭐ + Award Badge</button>' +
           '</div>' +
           (studAwards.length === 0 ?
             '<div style="text-align:center; padding:32px 16px; background:var(--bg-canvas); border-radius:var(--radius-md); border:1px solid var(--border-light);">' +
-              '<div style="font-size:32px; margin-bottom:8px;">ðŸ†</div>' +
+              '<div style="font-size:32px; margin-bottom:8px;">🏆</div>' +
               '<div style="font-weight:700;">No badges awarded to this student yet</div>' +
               '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Recognize spoken confidence, teamwork, or milestone achievements.</p>' +
               '<button class="btn-primary-action" style="margin-top:10px;" onclick="handleAwardBadgeToStudent(null, \'' + student.id + '\')">+ Award First Badge</button>' +
             '</div>' :
             '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px;">' +
               studAwards.map(aw => {
-                const badge = store.getBadge(aw.badgeId) || { name: 'Classroom Badge', icon: 'ðŸ†', description: 'Recognized achievement', xpReward: 100 };
+                const badge = store.getBadge(aw.badgeId) || { name: 'Classroom Badge', icon: '🏆', description: 'Recognized achievement', xpReward: 100 };
                 return '' +
                   '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; display:flex; flex-direction:column; justify-content:space-between;">' +
                     '<div>' +
@@ -3017,14 +3017,14 @@
                         '<span style="font-size:2rem;">' + badge.icon + '</span>' +
                         '<div>' +
                           '<div style="font-weight:800; font-size:0.95rem;">' + badge.name + '</div>' +
-                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + badge.xpReward + ' â­ XP</div>' +
+                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + badge.xpReward + ' ⭐ XP</div>' +
                         '</div>' +
                       '</div>' +
                       '<p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">' + (aw.notes || badge.description) + '</p>' +
                       '<div style="font-size:0.72rem; color:var(--text-muted);">Awarded: ' + aw.awardedDate + '</div>' +
                     '</div>' +
                     '<div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top:1px solid var(--border-light); padding-top:8px;">' +
-                      '<button class="btn-sm-secondary" onclick="handleRemoveStudentAward(\'' + aw.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">ðŸ—‘ï¸ Revoke Award</button>' +
+                      '<button class="btn-sm-secondary" onclick="handleRemoveStudentAward(\'' + aw.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">🗑️ Revoke Award</button>' +
                     '</div>' +
                   '</div>';
               }).join('') +
@@ -3047,7 +3047,7 @@
                 '<div style="font-size:1.15rem; font-weight:900; color:var(--text-main); margin-top:2px;">All Curriculum Units &amp; Historical Progress Checks</div>' +
               '</div>' +
               '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="font-size:0.78rem; padding:6px 14px; font-weight:800; background:#059669; border-color:#047857;">' +
-                'âœï¸ Open Whole-Class Gradebook âž”' +
+                '✏️ Open Whole-Class Gradebook ➔' +
               '</button>' +
             '</div>' +
             '<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; text-align:center;">' +
@@ -3057,11 +3057,11 @@
               '</div>' +
               '<div style="background:#fff; border:1px solid #bfdbfe; border-radius:10px; padding:10px;">' +
                 '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CUMULATIVE AVERAGE</div>' +
-                '<div style="font-size:1.35rem; font-weight:900; color:#1e40af;">' + (totalAssessments > 0 ? (avgScore + ' / 40') : 'â€”') + ' <span style="font-size:0.78rem; font-weight:700;">(' + avgPct + '%)</span></div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#1e40af;">' + (totalAssessments > 0 ? (avgScore + ' / 40') : '—') + ' <span style="font-size:0.78rem; font-weight:700;">(' + avgPct + '%)</span></div>' +
               '</div>' +
               '<div style="background:#fff; border:1px solid #e9d5ff; border-radius:10px; padding:10px;">' +
                 '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL ASSESSMENT XP</div>' +
-                '<div style="font-size:1.35rem; font-weight:900; color:#7e22ce;">+' + totalPCAssessmentXP.toLocaleString('en-US') + ' â­ XP</div>' +
+                '<div style="font-size:1.35rem; font-weight:900; color:#7e22ce;">+' + totalPCAssessmentXP.toLocaleString('en-US') + ' ⭐ XP</div>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -3070,13 +3070,13 @@
           '<div style="margin-bottom:24px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">' +
               '<h4 style="font-weight:900; font-size:1.05rem; margin:0; display:flex; align-items:center; gap:8px;">' +
-                '<span>ðŸŽ¯</span> <span>Completed Assessments (' + pcHistory.length + ')</span>' +
+                '<span>🎯</span> <span>Completed Assessments (' + pcHistory.length + ')</span>' +
               '</h4>' +
             '</div>' +
             (pcHistory.length === 0 ?
               '<div style="background:var(--bg-canvas); border:1px dashed var(--border-light); border-radius:12px; padding:24px; text-align:center; color:var(--text-muted); font-size:0.88rem;">' +
                 'No Four-Skill assessments recorded yet for ' + student.firstName + ' across any book or unit.<br>' +
-                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="margin-top:10px; font-size:0.8rem;">âœï¸ Open Gradebook to Enter Scores</button>' +
+                '<button type="button" class="btn-primary-action" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (student.classId || 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="margin-top:10px; font-size:0.8rem;">✏️ Open Gradebook to Enter Scores</button>' +
               '</div>' :
               '<div style="display:flex; flex-direction:column; gap:12px;">' +
                 pcHistory.map(sub => {
@@ -3114,7 +3114,7 @@
                           '<span class="badge" style="background:' + (mastery === 'Strong' ? '#d1fae5; color:#065f46;' : mastery === 'Secure' ? '#dbeafe; color:#1e40af;' : '#fef3c7; color:#92400e;') + ' font-size:0.72rem; font-weight:800;">' + mastery + '</span>' +
                           '<span style="background:#f3e8ff; color:#7e22ce; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:8px; border:1px solid #e9d5ff;">+' + xp + ' XP</span>' +
                           '<button type="button" class="btn-sm-secondary" onclick="closeAllModals(); if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + targetClassId + '\', \'enter\'); } else { switchView(\'progress-check\'); }" style="font-size:0.72rem; padding:4px 8px; font-weight:700;">' +
-                            'âœï¸ Edit in Gradebook' +
+                            '✏️ Edit in Gradebook' +
                           '</button>' +
                         '</div>' +
                       '</div>' +
@@ -3176,7 +3176,7 @@
       case 'attendance':
         return '' +
           '<div style="margin-bottom:12px;">' +
-            '<h4 style="font-weight:800;">Attendance History Â· Cumulative Rate: ' + attRate + '%</h4>' +
+            '<h4 style="font-weight:800;">Attendance History · Cumulative Rate: ' + attRate + '%</h4>' +
           '</div>' +
           '<div style="max-height:220px; overflow-y:auto; border:1px solid var(--border-light); border-radius:var(--radius-md);">' +
             '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
@@ -3198,11 +3198,11 @@
         return '' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
             '<h4 style="font-weight:800; font-size:1.05rem;">Student Work &amp; Creative Artifacts (' + studentPortfolio.length + ')</h4>' +
-            '<button class="btn-primary-action" onclick="openPortfolioItemModal(null, \'' + student.id + '\')">ðŸŽ¨ + Add Artifact</button>' +
+            '<button class="btn-primary-action" onclick="openPortfolioItemModal(null, \'' + student.id + '\')">🎨 + Add Artifact</button>' +
           '</div>' +
           (studentPortfolio.length === 0 ? 
             '<div style="text-align:center; padding:32px 16px; background:var(--bg-canvas); border-radius:var(--radius-md); border:1px solid var(--border-light);">' +
-              '<div style="font-size:32px; margin-bottom:8px;">ðŸŽ¨</div>' +
+              '<div style="font-size:32px; margin-bottom:8px;">🎨</div>' +
               '<div style="font-weight:700;">No creative artifacts recorded yet</div>' +
               '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Add drawings, spoken dialogue recordings, or story projects.</p>' +
               '<button class="btn-primary-action" style="margin-top:10px;" onclick="openPortfolioItemModal(null, \'' + student.id + '\')">+ Add First Artifact</button>' +
@@ -3216,12 +3216,12 @@
                       '<span style="font-size:0.72rem; color:var(--text-muted);">' + (item.date || '') + '</span>' +
                     '</div>' +
                     '<strong style="font-size:0.95rem; display:block; margin-bottom:6px;">' + item.title + '</strong>' +
-                    '<div style="font-size:36px; margin:6px 0; text-align:center;">' + (item.preview || 'ðŸŽ¨') + '</div>' +
+                    '<div style="font-size:36px; margin:6px 0; text-align:center;">' + (item.preview || '🎨') + '</div>' +
                     (item.notes ? '<p style="font-size:0.78rem; font-style:italic; color:var(--text-secondary); margin-top:4px;">"' + item.notes + '"</p>' : '') +
                   '</div>' +
                   '<div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top:1px solid var(--border-light); padding-top:8px;">' +
-                    '<button class="btn-sm-secondary" onclick="openPortfolioItemModal(\'' + item.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem;">âœï¸ Edit</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleDeletePortfolioItem(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">ðŸ—‘ï¸ Delete</button>' +
+                    '<button class="btn-sm-secondary" onclick="openPortfolioItemModal(\'' + item.id + '\', \'' + student.id + '\')" style="padding:2px 8px; font-size:0.72rem;">✏️ Edit</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDeletePortfolioItem(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.72rem; color:var(--color-danger);">🗑️ Delete</button>' +
                   '</div>' +
                 '</div>'
               ).join('') +
@@ -3240,7 +3240,7 @@
             '<div style="display:flex; justify-content:space-between; align-items:center; background:#0f172a; padding:12px 18px; border-radius:12px; margin-bottom:14px; border:1px solid #1e293b;">' +
               '<div>' +
                 '<span style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase;">Lifetime Total</span>' +
-                '<h3 style="margin:0; font-size:1.4rem; color:#f59e0b; font-weight:900;" id="ledger-lifetime-xp">â­ ' + currentLifetimeXP.toLocaleString('en-US') + ' XP</h3>' +
+                '<h3 style="margin:0; font-size:1.4rem; color:#f59e0b; font-weight:900;" id="ledger-lifetime-xp">⭐ ' + currentLifetimeXP.toLocaleString('en-US') + ' XP</h3>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
                 '<button class="filter-pill ' + (window.currentLedgerFilter === 'all' ? 'active' : '') + '" onclick="filterLedger(\'all\')">All</button>' +
@@ -3254,7 +3254,7 @@
             '<div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:14px;">' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center; cursor:pointer;" onclick="openEditStudentXPModal(\'' + student.id + '\')" title="Click to Edit / Adjust Total XP">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">TOTAL ACTIVE XP</div>' +
-                '<div style="font-size:1.2rem; font-weight:900; color:var(--color-primary); margin-top:2px;">â­ ' + currentLifetimeXP.toLocaleString('en-US') + '</div>' +
+                '<div style="font-size:1.2rem; font-weight:900; color:var(--color-primary); margin-top:2px;">⭐ ' + currentLifetimeXP.toLocaleString('en-US') + '</div>' +
               '</div>' +
               '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px; text-align:center;">' +
                 '<div style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">PAST 7 DAYS</div>' +
@@ -3276,9 +3276,9 @@
             '</div>' +
 
             '<div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openStudentXPHistoryModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">ðŸ“œ Open Full Table Ledger View</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openStudentXPHistoryModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">📜 Open Full Table Ledger View</button>' +
               '<div style="display:flex; gap:8px;">' +
-                '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">âœï¸ Adjust Total XP</button>' +
+                '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px; font-weight:700;">✏️ Adjust Total XP</button>' +
                 '<button type="button" class="btn-primary-action" onclick="openGiveXPSkillsModal(\'student\', \'' + student.id + '\')" style="font-size:0.78rem; padding:6px 12px;">+ Award Points</button>' +
               '</div>' +
             '</div>' +
@@ -3291,19 +3291,19 @@
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
             '<div style="display:flex; align-items:center; gap:12px;">' + (window.MilestoneCeremony ? window.MilestoneCeremony.avatarHtml(student, 46) : '') + '<div>' +
               '<h4 style="font-weight:800; margin:0;">Classroom Reward Redemptions</h4>' +
-              '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Student has â­ ' + totalXP + ' available XP</p>' +
+              '<p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Student has ⭐ ' + totalXP + ' available XP</p>' +
             '</div></div>' +
-            '<button class="btn-primary-action" onclick="openStudentRedeemRewardModal(\'' + student.id + '\')">ðŸŽ Redeem New Reward</button>' +
+            '<button class="btn-primary-action" onclick="openStudentRedeemRewardModal(\'' + student.id + '\')">🎁 Redeem New Reward</button>' +
           '</div>' +
           (studentRewards.length === 0 ? '<p style="color:var(--text-muted); font-size:0.84rem; padding:20px; text-align:center; background:var(--bg-canvas); border-radius:var(--radius-md);">No classroom rewards redeemed yet.</p>' :
             '<div style="display:flex; flex-direction:column; gap:8px;">' +
               studentRewards.map(rw => '' +
                 '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">' +
                   '<div style="display:flex; align-items:center; gap:10px;">' +
-                    '<span style="font-size:1.4rem;">' + (rw.icon || 'ðŸŽ') + '</span>' +
+                    '<span style="font-size:1.4rem;">' + (rw.icon || '🎁') + '</span>' +
                     '<div>' +
                       '<div style="font-weight:700; font-size:0.88rem;">' + rw.reason + '</div>' +
-                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + rw.date + ' Â· Approved by ' + (rw.createdBy || 'Teacher') + '</div>' +
+                      '<div style="font-size:0.75rem; color:var(--text-muted);">' + rw.date + ' · Approved by ' + (rw.createdBy || 'Teacher') + '</div>' +
                     '</div>' +
                   '</div>' +
                   '<span style="font-weight:900; color:#7c3aed; font-size:0.92rem;">' + rw.amount + ' XP</span>' +
@@ -3327,7 +3327,7 @@
             '<div style="display:flex; flex-direction:column; gap:8px;">' +
               notes.map(n => '' +
                 '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:10px 14px; display:flex; justify-content:space-between; align-items:flex-start;">' +
-                  '<div><p style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px;">' + n.text + '</p><span style="font-size:0.72rem; color:var(--text-muted);">' + n.author + ' Â· ' + n.date + '</span></div>' +
+                  '<div><p style="font-size:0.85rem; color:var(--text-main); margin-bottom:2px;">' + n.text + '</p><span style="font-size:0.72rem; color:var(--text-muted);">' + n.author + ' · ' + n.date + '</span></div>' +
                   '<div style="display:flex; gap:6px;">' +
                     '<button class="btn-sm-secondary" style="padding:2px 6px; font-size:0.7rem;" onclick="' +
                       'const edit = prompt(\'Edit Note:\', \'' + n.text.replace(/'/g, "\\'") + '\');' +
@@ -3487,14 +3487,14 @@
         // Header
         '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">ðŸ‘§ Students Directory &amp; Monster Companions</h1>' +
+            '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👧 Students Directory &amp; Monster Companions</h1>' +
             '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Real-time overview of all learners, their living evolving monsters, XP progress, and streaks.</p>' +
           '</div>' +
           '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' + (isMultiSelectMode ? 'âœ“ Done Selecting' : 'â˜‘ Select Multiple') + '</button>' +
-            (isMultiSelectMode ? '<button type="button" class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">â˜‘ Select All</button>' : '') +
-            '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give feedback to learners">â­ Give Feedback</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">ðŸ“¥ Export CSV</button>' +
+            '<button type="button" class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' + (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') + '</button>' +
+            (isMultiSelectMode ? '<button type="button" class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All</button>' : '') +
+            '<button type="button" class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give feedback to learners">⭐ Give Feedback</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="exportStudentsCSV()">📥 Export CSV</button>' +
             '<button type="button" class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>' +
           '</div>' +
         '</div>' +
@@ -3511,7 +3511,7 @@
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
           '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
             '<div style="flex:1; min-width:220px; position:relative;">' +
-              '<input type="text" class="search-input" placeholder="ðŸ” Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
+              '<input type="text" class="search-input" placeholder="🔍 Search student name, ID..." value="' + (studentsSearchQuery || '') + '" oninput="handleStudentsSearch(this.value)" style="width:100%;" />' +
             '</div>' +
 
             '<select class="filter-select" onchange="handleStudentsFilterClass(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
@@ -3521,28 +3521,28 @@
 
             '<select class="filter-select" onchange="handleStudentsFilterStage(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="all" ' + (studentsFilterStage === 'all' ? 'selected' : '') + '>All Evolution Stages</option>' +
-              '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>ðŸ¥š Level 1: Mystery Egg</option>' +
-              '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>ðŸ¥šâœ¨ Level 2: Cracking Egg</option>' +
-              '<option value="baby" ' + (studentsFilterStage === 'baby' ? 'selected' : '') + '>ðŸ£ Level 3: Baby Monster</option>' +
-              '<option value="growing" ' + (studentsFilterStage === 'growing' ? 'selected' : '') + '>ðŸ‘¾ Level 4: Growing Monster</option>' +
-              '<option value="adventurer" ' + (studentsFilterStage === 'adventurer' ? 'selected' : '') + '>ðŸ§­ Level 5: Adventurer Monster</option>' +
-              '<option value="advanced" ' + (studentsFilterStage === 'advanced' ? 'selected' : '') + '>ðŸ² Level 6: Advanced Monster</option>' +
-              '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>ðŸ‘‘ Level 7: Ultimate Monster</option>' +
+              '<option value="egg" ' + (studentsFilterStage === 'egg' ? 'selected' : '') + '>🥚 Level 1: Mystery Egg</option>' +
+              '<option value="cracking_egg" ' + (studentsFilterStage === 'cracking_egg' ? 'selected' : '') + '>🥚✨ Level 2: Cracking Egg</option>' +
+              '<option value="baby" ' + (studentsFilterStage === 'baby' ? 'selected' : '') + '>🐣 Level 3: Baby Monster</option>' +
+              '<option value="growing" ' + (studentsFilterStage === 'growing' ? 'selected' : '') + '>👾 Level 4: Growing Monster</option>' +
+              '<option value="adventurer" ' + (studentsFilterStage === 'adventurer' ? 'selected' : '') + '>🧭 Level 5: Adventurer Monster</option>' +
+              '<option value="advanced" ' + (studentsFilterStage === 'advanced' ? 'selected' : '') + '>🐲 Level 6: Advanced Monster</option>' +
+              '<option value="ultimate" ' + (studentsFilterStage === 'ultimate' ? 'selected' : '') + '>👑 Level 7: Ultimate Monster</option>' +
             '</select>' +
 
             '<select class="filter-select" onchange="handleStudentsFilterProgression(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
               '<option value="all" ' + (studentsFilterProgression === 'all' ? 'selected' : '') + '>All Progression</option>' +
-              '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>â­ Near Evolution (&gt;75%)</option>' +
-              '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>ðŸ”¥ Active Streaks (3+ d)</option>' +
-              '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>ðŸ† Has Achievements</option>' +
+              '<option value="near_evolution" ' + (studentsFilterProgression === 'near_evolution' ? 'selected' : '') + '>⭐ Near Evolution (&gt;75%)</option>' +
+              '<option value="streak" ' + (studentsFilterProgression === 'streak' ? 'selected' : '') + '>🔥 Active Streaks (3+ d)</option>' +
+              '<option value="achievements" ' + (studentsFilterProgression === 'achievements' ? 'selected' : '') + '>🏆 Has Achievements</option>' +
             '</select>' +
 
             '<select class="filter-select" onchange="handleStudentsSort(this.value)" style="flex:1 1 120px; min-width:0; max-width:220px; text-overflow:ellipsis;">' +
-              '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>â­ XP: High to Low</option>' +
-              '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>â­ XP: Low to High</option>' +
-              '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>ðŸ‘¾ Level: High to Low</option>' +
-              '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>ðŸ”¤ Name: A to Z</option>' +
-              '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>ðŸ”¥ Streak: High to Low</option>' +
+              '<option value="xp_desc" ' + (studentsSortBy === 'xp_desc' ? 'selected' : '') + '>⭐ XP: High to Low</option>' +
+              '<option value="xp_asc" ' + (studentsSortBy === 'xp_asc' ? 'selected' : '') + '>⭐ XP: Low to High</option>' +
+              '<option value="level_desc" ' + (studentsSortBy === 'level_desc' ? 'selected' : '') + '>👾 Level: High to Low</option>' +
+              '<option value="name_asc" ' + (studentsSortBy === 'name_asc' ? 'selected' : '') + '>🔤 Name: A to Z</option>' +
+              '<option value="streak_desc" ' + (studentsSortBy === 'streak_desc' ? 'selected' : '') + '>🔥 Streak: High to Low</option>' +
             '</select>' +
           '</div>' +
           '<div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">' +
@@ -3554,7 +3554,7 @@
         // Students Cards Grid
         (filtered.length === 0 ?
           '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
-            '<div style="font-size:44px; margin-bottom:10px;">ðŸ”</div>' +
+            '<div style="font-size:44px; margin-bottom:10px;">🔍</div>' +
             '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No students match this filter</h3>' +
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query, class, or evolution stage filter.</p>' +
             '<button type="button" class="btn-sm-secondary" onclick="studentsSearchQuery=\'\'; studentsFilterClass=\'all\'; studentsFilterStage=\'all\'; studentsFilterProgression=\'all\'; renderCurrentView();">Reset Filters</button>' +
@@ -3595,7 +3595,7 @@
               const badge = getStudentBadge(s);
               const activeXP = Number(s.xp) || 0;
               const archivedVal = Number(s.archivedXP ?? s.archived_xp ?? 0);
-              const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? 'ðŸŽ©' : s.aliceCharacter === 'cheshire_cat' ? 'ðŸ˜¸' : (badge && badge.icon ? badge.icon : 'ðŸ‘—'));
+              const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : (badge && badge.icon ? badge.icon : '👗'));
               const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : (badge && badge.role ? badge.role : 'Explorer');
 
               return '' +
@@ -3609,45 +3609,45 @@
                       '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
                         '<span class="role-icon">' + roleIcon + '</span>' +
                         '<span class="role-title">' + roleName + '</span>' +
-                        '<span class="role-edit">âœŽ</span>' +
+                        '<span class="role-edit">✎</span>' +
                       '</div>' +
                     '</div>' +
                     '<div class="card-pills-cluster card-pills-right">' +
-                      (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">ðŸ—„ï¸ ' + archivedVal + ' saved</span>' : '') +
-                      (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">ðŸ”¥ ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
-                      '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">âœï¸</button>' +
+                      (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+                      (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
+                      '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
                       '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
-                        '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">â€¢â€¢â€¢</button>' +
+                        '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                         '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">â­ +20 XP</button>' +
-                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">ðŸŒŸ +50 XP</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">ðŸŽ¯ Award Skill XP</button>' +
-                          '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">âœï¸ Edit / Correct XP</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">ðŸ“œ View XP History</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">ðŸŽ¨ Customize Monster</button>' +
-                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">ðŸ‘¤ View Profile</button>' +
+                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                          '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
+                          '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
+                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
+                          '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
                         '</div>' +
                       '</div>' +
                     '</div>' +
                   '</div>' +
 
                   // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
-                  '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' â€” Click to customize monster">' +
-                    '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">âœï¸</button>' +
+                  '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + mState.currentLevel + ' ' + mState.stageName + ' — Click to customize monster">' +
+                    '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
                     avatarMarkup +
-                    '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + mState.currentLevel + ' â€¢ ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-â€¢]\s*/i, '') + '</span>' +
+                    '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + mState.currentLevel + ' • ' + (mState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
                   '</div>' +
 
                   // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
                   '<div class="student-card-content">' +
                     '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
                       '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName + ' ' + (s.lastName || '') + '</h3></div>' +
-                      '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">â­ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> âœŽ</div>' +
+                      '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
                     '</div>' +
                     '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
                       '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
                         '<span>Evolution Progress</span>' +
-                        '<span>' + (!mState.isHatched ? ('ðŸ¥š Egg Crack: ' + mState.eggCrackPct + '%') : (mState.currentLevel >= 7 ? 'ðŸ‘‘ Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
+                        '<span>' + (!mState.isHatched ? ('🥚 Egg Crack: ' + mState.eggCrackPct + '%') : (mState.currentLevel >= 7 ? '👑 Apex Form' : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
                       '</div>' +
                       '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ' + progressPct + '%">' +
                         '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + progressPct + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
@@ -3697,7 +3697,7 @@
 
       (classes.length === 0 ? 
         '<div style="text-align:center; padding:48px 16px; background:var(--bg-surface); border-radius:var(--radius-lg); border:1px solid var(--border-light);">' +
-          '<div style="font-size:36px; margin-bottom:10px;">ðŸ‘¥</div>' +
+          '<div style="font-size:36px; margin-bottom:10px;">👥</div>' +
           '<h3 style="font-size:1.1rem; font-weight:800;">No classes yet</h3>' +
           '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Create your first class to begin organizing students and assignments.</p>' +
           '<button class="btn-primary-action" style="margin-top:14px;" onclick="openClassModal()">+ Create Class</button>' +
@@ -3711,7 +3711,7 @@
                 '<div class="class-card-header">' +
                   '<div>' +
                     '<h3 class="class-card-name">' + cls.name + '</h3>' +
-                    '<div class="class-card-sub">' + cls.grade + ' Â· ' + cls.room + ' Â· ' + (cls.academicYear || '2026â€“2027') + '</div>' +
+                    '<div class="class-card-sub">' + cls.grade + ' · ' + cls.room + ' · ' + (cls.academicYear || '2026–2027') + '</div>' +
                   '</div>' +
                   '<span class="badge-cefr badge-cefr-' + (cls.cefrTarget || 'A1').toLowerCase().replace('+', '-plus') + '">' + (cls.cefrTarget || 'A1') + '</span>' +
                 '</div>' +
@@ -3722,17 +3722,17 @@
                   '<div class="class-stat-box"><span class="class-stat-num">' + (cls.cefrTarget || 'A1') + '</span><span class="class-stat-lbl">Target</span></div>' +
                 '</div>' +
 
-                '<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;">ðŸ•’ ' + cls.schedule + '</div>' +
+                '<div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;">🕒 ' + cls.schedule + '</div>' +
 
                 '<div class="class-card-actions">' +
-                  '<button class="btn-primary-action" style="flex:1; justify-content:center;" onclick="openClass(\'' + cls.id + '\', \'overview\')">Open Class â†’</button>' +
+                  '<button class="btn-primary-action" style="flex:1; justify-content:center;" onclick="openClass(\'' + cls.id + '\', \'overview\')">Open Class →</button>' +
                   '<div class="card-more-menu-wrap" style="position:relative;">' +
-                    '<button class="btn-card-more" onclick="toggleCardDropdown(\'cls-' + cls.id + '\', event)" title="Class Actions">â‹¯</button>' +
+                    '<button class="btn-card-more" onclick="toggleCardDropdown(\'cls-' + cls.id + '\', event)" title="Class Actions">⋯</button>' +
                     '<div class="card-dropdown-menu" id="menu-cls-' + cls.id + '">' +
-                      '<button class="card-dropdown-item" onclick="openClassModal(\'' + cls.id + '\')">âœï¸ Edit Class</button>' +
-                      '<button class="card-dropdown-item" onclick="openClass(\'' + cls.id + '\', \'students\')">ðŸ‘§ Manage Students</button>' +
-                      '<button class="card-dropdown-item" onclick="handleDuplicateClass(\'' + cls.id + '\')">ðŸ“‹ Duplicate Class</button>' +
-                      '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveClass(\'' + cls.id + '\')">ðŸ—‘ï¸ Archive Class</button>' +
+                      '<button class="card-dropdown-item" onclick="openClassModal(\'' + cls.id + '\')">✏️ Edit Class</button>' +
+                      '<button class="card-dropdown-item" onclick="openClass(\'' + cls.id + '\', \'students\')">👧 Manage Students</button>' +
+                      '<button class="card-dropdown-item" onclick="handleDuplicateClass(\'' + cls.id + '\')">📋 Duplicate Class</button>' +
+                      '<button class="card-dropdown-item" style="color:var(--color-danger);" onclick="handleArchiveClass(\'' + cls.id + '\')">🗑️ Archive Class</button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -3757,7 +3757,7 @@
     if (!cls) {
       container.innerHTML = 
         '<div style="padding:48px 20px; text-align:center; background:var(--bg-surface); border-radius:var(--radius-lg); margin-top:20px; border:1px solid var(--border-light);">' +
-          '<div style="font-size:40px; margin-bottom:12px;">ðŸ«</div>' +
+          '<div style="font-size:40px; margin-bottom:12px;">🏫</div>' +
           '<h2 style="font-size:1.3rem; font-weight:800; color:var(--text-main);">No Class Selected</h2>' +
           '<p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:18px;">Please select or create a class to open the Classroom Hub.</p>' +
           '<button class="btn-primary-action" onclick="openClassModal()">+ Create Class</button>' +
@@ -3782,22 +3782,22 @@
 
     // Top Navigation Tabs for the Class
     const classTabs = [
-      { id: 'classroom', label: 'ðŸ« Classroom' },
-      { id: 'story', label: 'ðŸ“¸ Class Story' },
-      { id: 'assignments', label: 'ðŸ“ Assignments (' + assignments.length + ')' },
-      { id: 'progress', label: 'ðŸ“ˆ Progress' },
-      { id: 'assessments', label: 'ðŸŽ¯ Assessments' },
-      { id: 'calendar', label: 'ðŸ“… Calendar & Schedule' },
-      { id: 'leaderboard', label: 'ðŸ† Leaderboard' },
-      { id: 'rewards', label: 'ðŸ‘‘ Rewards' },
-      { id: 'bigIdeas', label: 'ðŸ’¡ Big Ideas' }
+      { id: 'classroom', label: '🏫 Classroom' },
+      { id: 'story', label: '📸 Class Story' },
+      { id: 'assignments', label: '📝 Assignments (' + assignments.length + ')' },
+      { id: 'progress', label: '📈 Progress' },
+      { id: 'assessments', label: '🎯 Assessments' },
+      { id: 'calendar', label: '📅 Calendar & Schedule' },
+      { id: 'leaderboard', label: '🏆 Leaderboard' },
+      { id: 'rewards', label: '👑 Rewards' },
+      { id: 'bigIdeas', label: '💡 Big Ideas' }
     ];
 
     container.innerHTML = 
       '<div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">' +
-        '<button class="btn-sm-secondary" onclick="switchView(\'classes\')" style="padding:4px 10px; font-size:0.78rem;">â† Back to All Classes</button>' +
+        '<button class="btn-sm-secondary" onclick="switchView(\'classes\')" style="padding:4px 10px; font-size:0.78rem;">← Back to All Classes</button>' +
         (isClassroomSmartboardMode ? 
-          '<button class="btn-primary-action" onclick="toggleSmartboardMode()" style="padding:4px 12px; font-size:0.8rem; background:var(--color-danger);">âœ• Exit Classroom Mode</button>' : '') +
+          '<button class="btn-primary-action" onclick="toggleSmartboardMode()" style="padding:4px 12px; font-size:0.8rem; background:var(--color-danger);">✕ Exit Classroom Mode</button>' : '') +
       '</div>' +
 
       // Classroom Hero Banner (Alice / Korean Traditions Cover)
@@ -3812,23 +3812,23 @@
       '<div class="classroom-header-banner">' +
         '<div>' +
           '<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">' +
-            '<h1 style="font-size:1.65rem; font-weight:900; color:var(--text-main); margin:0;">ðŸŒ ' + cls.name + '</h1>' +
+            '<h1 style="font-size:1.65rem; font-weight:900; color:var(--text-main); margin:0;">🌍 ' + cls.name + '</h1>' +
             '<span class="badge-cefr badge-cefr-' + (cls.cefrTarget || 'A1').toLowerCase().replace('+', '-plus') + '" style="font-size:0.86rem; padding:3px 10px;">' + (cls.cefrTarget || 'A1') + ' Target</span>' +
           '</div>' +
           '<div class="classroom-meta-pills">' +
-            '<span class="classroom-meta-pill">ðŸ‘¥ ' + students.length + ' Students</span>' +
-            '<span class="classroom-meta-pill">ðŸ“‹ ' + attRate + '% Attendance</span>' +
-            '<span class="classroom-meta-pill">ðŸ“ˆ ' + avgMastery + '% Average Mastery</span>' +
-            '<span class="classroom-meta-pill">ðŸ“ ' + (cls.room || 'Room') + ' Â· ' + (cls.schedule || 'Regular schedule') + '</span>' +
+            '<span class="classroom-meta-pill">👥 ' + students.length + ' Students</span>' +
+            '<span class="classroom-meta-pill">📋 ' + attRate + '% Attendance</span>' +
+            '<span class="classroom-meta-pill">📈 ' + avgMastery + '% Average Mastery</span>' +
+            '<span class="classroom-meta-pill">📍 ' + (cls.room || 'Room') + ' · ' + (cls.schedule || 'Regular schedule') + '</span>' +
           '</div>' +
         '</div>' +
 
         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
           '<button class="btn-primary-action" onclick="openStudentModal()" style="font-size:0.86rem; padding:8px 14px;">+ Add Student</button>' +
-          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;" title="Award Points (+10, +20, +50, +100, Custom)">â­ Points</button>' +
-          '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:700;">ðŸ§° Toolkit</button>' +
-          '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="font-size:0.86rem; padding:8px 14px;">âœ“ Attendance</button>' +
-          '<button class="btn-sm-secondary" onclick="toggleSmartboardMode()" style="font-size:0.86rem; padding:8px 14px;">ðŸŽ“ ' + (isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode') + '</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b;" title="Award Points (+10, +20, +50, +100, Custom)">⭐ Points</button>' +
+          '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-size:0.86rem; padding:8px 14px; font-weight:700;">🧰 Toolkit</button>' +
+          '<button class="btn-sm-secondary" onclick="openFastAttendanceModal()" style="font-size:0.86rem; padding:8px 14px;">✓ Attendance</button>' +
+          '<button class="btn-sm-secondary" onclick="toggleSmartboardMode()" style="font-size:0.86rem; padding:8px 14px;">🎓 ' + (isClassroomSmartboardMode ? 'Exit Mode' : 'Classroom Mode') + '</button>' +
         '</div>' +
       '</div>' +
 
@@ -3859,7 +3859,7 @@
         return '' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
             '<h2 style="font-size:1.3rem; font-weight:800;">Class Story Feed</h2>' +
-            '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">ðŸ“¸ + New Post</button>' +
+            '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">📸 + New Post</button>' +
           '</div>' +
           '<div class="story-feed-grid">' +
             ((store.getClassStory && cls && cls.id) ? store.getClassStory(cls.id) : []).map(p => renderStoryPost(p)).join('') +
@@ -3901,25 +3901,25 @@
       unenrolled = [];
     }
 
-    const grCurriculum = (cls && cls.grade === 'Grade 4') ? 'Global Readings 3 Â· Unit 1: I Love Reading' : 'Global Readings 2 Â· Unit 1: What Does It Do?';
+    const grCurriculum = (cls && cls.grade === 'Grade 4') ? 'Global Readings 3 · Unit 1: I Love Reading' : 'Global Readings 2 · Unit 1: What Does It Do?';
 
     return '' +
       // Unit 1 Progress Check Banner Card
       '<div class="card-unit-progress-check" style="background:linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border:2px solid #bfdbfe; border-radius:14px; padding:16px 20px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">' +
         '<div>' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
-            '<span style="font-size:1.6rem;">ðŸ“Š</span>' +
+            '<span style="font-size:1.6rem;">📊</span>' +
             '<h3 style="font-size:1.2rem; font-weight:800; color:var(--text-main); margin:0;">Unit 1 Progress Check</h3>' +
             '<span class="badge" style="background:#10b981; color:#fff; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:8px;">Ready</span>' +
             '<span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:8px;">4-Week Unit Assessment</span>' +
           '</div>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">' + grCurriculum + ' Â· Whole-Class Teacher-Led Assessment</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">' + grCurriculum + ' · Whole-Class Teacher-Led Assessment</p>' +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-          '<button type="button" class="btn-primary-action" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">â–¶ Start Class Assessment</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(3);" style="padding:7px 14px; font-weight:700;">ðŸ–¨ï¸ Print Worksheets</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4); }" style="padding:7px 14px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">ðŸ“ Enter Results</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'view\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(5); }" style="padding:7px 14px; font-weight:700;">ðŸ“ˆ View Class Progress</button>' +
+          '<button type="button" class="btn-primary-action" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(2);" style="padding:7px 14px; font-weight:700;">▶ Start Class Assessment</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'home\'); } else { switchView(\'progress-check\'); } if (window.goToProgressCheckStep) window.goToProgressCheckStep(3);" style="padding:7px 14px; font-weight:700;">🖨️ Print Worksheets</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'enter\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(4); }" style="padding:7px 14px; font-weight:800; background:#fef3c7; color:#92400e; border-color:#f59e0b;">📝 Enter Results</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="if (window.openProgressCheckForClass) { window.openProgressCheckForClass(\'' + (cls ? cls.id : 'class-3a') + '\', \'view\'); } else { switchView(\'progress-check\'); if (window.goToProgressCheckStep) window.goToProgressCheckStep(5); }" style="padding:7px 14px; font-weight:700;">📈 View Class Progress</button>' +
         '</div>' +
       '</div>' +
 
@@ -3927,27 +3927,27 @@
       '<div class="classroom-subtoolbar">' +
         '<div class="classroom-view-toggle-pills">' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'students' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'students\')">' +
-            '<span>ðŸ§’</span> <span>Students (' + safeStudents.length + ')</span>' +
+            '<span>🧒</span> <span>Students (' + safeStudents.length + ')</span>' +
           '</button>' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'groups' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'groups\')">' +
-            '<span>ðŸ‘¥</span> <span>Groups (' + groups.length + ')</span>' +
+            '<span>👥</span> <span>Groups (' + groups.length + ')</span>' +
           '</button>' +
           '<button class="classroom-view-pill-btn ' + (classroomActiveSubTab === 'unenrolled' ? 'is-active' : '') + '" onclick="switchClassroomSubTab(\'unenrolled\')">' +
-            '<span>ðŸšª</span> <span>Unenrolled (' + unenrolled.length + ')</span>' +
+            '<span>🚪</span> <span>Unenrolled (' + unenrolled.length + ')</span>' +
           '</button>' +
         '</div>' +
 
         '<div class="classroom-action-buttons-group">' +
           '<button class="btn-sm-secondary ' + (isMultiSelectMode ? 'is-active' : '') + '" onclick="toggleMultiSelectMode()" style="' + (isMultiSelectMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
-            (isMultiSelectMode ? 'âœ“ Done Selecting' : 'â˜‘ Select Multiple') +
+            (isMultiSelectMode ? '✓ Done Selecting' : '☑ Select Multiple') +
           '</button>' +
           (isMultiSelectMode ?
-            '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">â˜‘ Select All (' + safeStudents.length + ')</button>' +
-            '<button class="btn-sm-secondary" onclick="clearSelectedStudents()" style="font-weight:700;">âœ• Deselect</button>' : ''
+            '<button class="btn-sm-secondary" onclick="selectAllClassStudents()" style="font-weight:700;">☑ Select All (' + safeStudents.length + ')</button>' +
+            '<button class="btn-sm-secondary" onclick="clearSelectedStudents()" style="font-weight:700;">✕ Deselect</button>' : ''
           ) +
-          '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback (â¤ï¸ Helping Others, ðŸ‘ On Task, ðŸ¤ Teamwork)">â­ Give Feedback</button>' +
-          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:700;" title="Award Custom Points">â­ Points</button>' +
-          '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-weight:700;">ðŸ§° Toolkit</button>' +
+          '<button class="btn-sm-secondary" onclick="openGiveFeedbackModal()" style="font-weight:900; color:#92400e; background:#fef3c7; border-color:#f59e0b;" title="Give Class Feedback (❤️ Helping Others, 👍 On Task, 🤝 Teamwork)">⭐ Give Feedback</button>' +
+          '<button class="btn-sm-secondary" onclick="openQuickPointsModal()" style="font-weight:700;" title="Award Custom Points">⭐ Points</button>' +
+          '<button class="btn-sm-secondary" onclick="openClassroomToolkitModal()" style="font-weight:700;">🧰 Toolkit</button>' +
           (classroomActiveSubTab === 'groups' ?
             '<button class="btn-primary-action" onclick="openCreateGroupModal()">+ Create Group</button>' :
             '<button class="btn-primary-action" onclick="openStudentModal()">+ Add Student</button>'
@@ -3973,7 +3973,7 @@
     if (safeStudents.length === 0) {
       return '' +
         '<div class="card-add-student" onclick="openStudentModal()" style="padding:48px 20px; min-height:260px; margin-bottom:24px; text-align:center; cursor:pointer;">' +
-          '<div class="card-add-student-icon" style="font-size:36px; margin-bottom:8px;">ðŸŽ“</div>' +
+          '<div class="card-add-student-icon" style="font-size:36px; margin-bottom:8px;">🎓</div>' +
           '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No students enrolled in this class</h3>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Add your first student or enroll learners from the Unenrolled list to begin tracking learning adventure.</p>' +
           '<button type="button" class="btn-primary-action">+ Add Student</button>' +
@@ -3999,7 +3999,7 @@
       }) : null;
       const isSelected = selectedStudentIds.has(s.id);
       const streak = s.streak || s.streakDays || 0;
-      const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? 'ðŸŽ©' : s.aliceCharacter === 'cheshire_cat' ? 'ðŸ˜¸' : (badge && badge.icon ? badge.icon : 'ðŸ‘—'));
+      const roleIcon = s.customIcon || (s.aliceCharacter === 'mad_hatter' ? '🎩' : s.aliceCharacter === 'cheshire_cat' ? '😸' : (badge && badge.icon ? badge.icon : '👗'));
       const roleName = s.aliceCharacter ? s.aliceCharacter.replace('_', ' ') : (badge && badge.role ? badge.role : 'Explorer');
 
       let elementKey = s.element || (monsterState && monsterState.profile && monsterState.profile.element);
@@ -4038,45 +4038,45 @@
               '<div class="companion-tag char-role-badge" onclick="event.stopPropagation(); openCharacterIconPicker(\'' + s.id + '\')" title="Click to change companion">' +
                 '<span class="role-icon">' + roleIcon + '</span>' +
                 '<span class="role-title">' + roleName + '</span>' +
-                '<span class="role-edit">âœŽ</span>' +
+                '<span class="role-edit">✎</span>' +
               '</div>' +
             '</div>' +
             '<div class="card-pills-cluster card-pills-right">' +
-              (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">ðŸ—„ï¸ ' + archivedVal + ' saved</span>' : '') +
-              (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">ðŸ”¥ ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
-              '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">âœï¸</button>' +
+              (archivedVal > 0 ? '<span class="pill-arch-box arch-pill" title="Saved Term 1 XP: ' + archivedVal + '">🗄️ ' + archivedVal + ' saved</span>' : '') +
+              (streak > 0 ? '<span class="pill-streak-box streak-pill" title="Daily streak: ' + streak + ' days">🔥 ' + streak + ' day' + (streak === 1 ? '' : 's') + '</span>' : '') +
+              '<button type="button" class="btn-card-pencil" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Edit Student XP">✏️</button>' +
               '<div class="card-more-menu-wrap" style="position:relative; display:inline-block;">' +
-                '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">â€¢â€¢â€¢</button>' +
+                '<button type="button" class="btn-card-more-3dots card-menu-btn" onclick="event.stopPropagation(); toggleCardDropdown(\'stud-menu-' + s.id + '\', event)" title="More Options">•••</button>' +
                 '<div class="card-dropdown-menu" id="menu-stud-menu-' + s.id + '" style="min-width:160px; font-size:0.78rem; text-align:left;">' +
-                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">â­ +20 XP</button>' +
-                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">ðŸŒŸ +50 XP</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">ðŸŽ¯ Award Skill XP</button>' +
-                  '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">âœï¸ Edit / Correct XP</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">ðŸ“œ View XP History</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">ðŸŽ¨ Customize Monster</button>' +
-                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">ðŸ‘¤ View Profile</button>' +
+                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 20, event); closeAllCardMenus();">⭐ +20 XP</button>' +
+                  '<button class="card-dropdown-item" onclick="window.addQuickXP(\'' + s.id + '\', 50, event); closeAllCardMenus();">🌟 +50 XP</button>' +
+                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + s.id + '\'); closeAllCardMenus();">🎯 Award Skill XP</button>' +
+                  '<button class="card-dropdown-item" onclick="window.openDirectXPEdit(\'' + s.id + '\', event); closeAllCardMenus();">✏️ Edit / Correct XP</button>' +
+                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentXPHistoryModal(\'' + s.id + '\'); closeAllCardMenus();">📜 View XP History</button>' +
+                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\'); closeAllCardMenus();">🎨 Customize Monster</button>' +
+                  '<button class="card-dropdown-item" onclick="event.stopPropagation(); openStudentDetail(\'' + (s.studentIdNumber || s.id) + '\', \'overview\'); closeAllCardMenus();">👤 View Profile</button>' +
                 '</div>' +
               '</div>' +
             '</div>' +
           '</div>' +
 
           // Full Bleed Top 55-60% Monster Stage Platform with idleBob physics & pedestal disc
-          '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' â€” Click to customize monster">' +
-            '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">âœï¸</button>' +
+          '<div class="monster-stage ' + elementClass + ' pb-2" style="padding-bottom:8px;" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Level ' + monsterState.currentLevel + ' ' + monsterState.stageName + ' — Click to customize monster">' +
+            '<button type="button" class="monster-stage-edit-badge" onclick="event.stopPropagation(); window.openMonsterCreator(\'' + s.id + '\')" title="Customize Monster">✏️</button>' +
             avatarMarkup +
-            '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + monsterState.currentLevel + ' â€¢ ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-â€¢]\s*/i, '') + '</span>' +
+            '<span class="stage-level-badge relative z-0 px-3 py-1 text-xs font-bold rounded-full bg-slate-900 text-white">Lvl ' + monsterState.currentLevel + ' • ' + (monsterState.stageName || 'Growing').replace(/^Level \d+\s*[-•]\s*/i, '') + '</span>' +
           '</div>' +
 
           // Student Info (Bottom 42%: Name, Grade, XP Bar & Dominant 3D Button)
           '<div class="student-card-content">' +
             '<div class="student-name-row" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
               '<div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1;">' + studentMiniAvatarHtml(s, 36) + '<h3 class="student-name line-clamp-2 min-h-[2.5rem] break-words" style="margin:0; min-height:2.5rem;">' + s.firstName.toUpperCase() + (s.lastName ? ' ' + s.lastName.toUpperCase() : '') + '</h3></div>' +
-              '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">â­ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> âœŽ</div>' +
+              '<div class="student-xp-pill-clickable xp-clickable-badge" onclick="window.openDirectXPEdit(\'' + s.id + '\', event)" title="Click to edit points">⭐ <span class="xp-num">' + ((typeof s.xp === 'number' && !isNaN(s.xp)) ? s.xp : 0) + ' XP</span> ✎</div>' +
             '</div>' +
             '<div class="evolution-progress-rail" style="margin:8px 0 6px 0;">' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#64748b; margin-bottom:3px; font-weight:600;">' +
                 '<span>Evolution Progress</span>' +
-                '<span>' + (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.currentLevel >= 7 ? 'ðŸ‘‘ Apex Form' : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
+                '<span>' + (!monsterState.isHatched ? ('Egg Crack: ' + monsterState.eggCrackPct + '%') : (monsterState.currentLevel >= 7 ? '👑 Apex Form' : (monsterState.xpToNext > 0 ? (monsterState.xpToNext + ' XP to evolve') : 'Ready to evolve!'))) + '</span>' +
               '</div>' +
               '<div class="bg-slate-100 h-1.5 rounded-full overflow-hidden my-2 progress-track student-xp-progress-bar" style="height:6px; background:#f1f5f9; border-radius:9999px; overflow:hidden;" title="Evolution Progress: ' + monsterState.progressPct + '%">' +
                 '<div class="bg-indigo-600 h-full rounded-full transition-all progress-fill student-xp-progress-fill" style="width:' + monsterState.progressPct + '%; height:100%; background:#4f46e5; border-radius:9999px;"></div>' +
@@ -4109,7 +4109,7 @@
     if (groups.length === 0) {
       return '' +
         '<div class="card-add-student" onclick="openCreateGroupModal()" style="padding:48px 20px; min-height:240px; margin-bottom:24px;">' +
-          '<div class="card-add-student-icon">ðŸ‘¥</div>' +
+          '<div class="card-add-student-icon">👥</div>' +
           '<h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:var(--text-primary);">No groups yet</h3>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:14px;">Create teams and tables to organize classroom challenges.</p>' +
           '<button class="btn-primary-action">+ Create Group</button>' +
@@ -4130,14 +4130,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                       '<span>' + g.name + '</span>' +
                     '</div>' +
                     '<div style="display:flex; gap:6px;">' +
-                      '<button class="btn-sm-secondary" onclick="openCreateGroupModal(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem;">âœï¸ Edit</button>' +
-                      '<button class="btn-sm-secondary" onclick="handleDeleteGroup(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+                      '<button class="btn-sm-secondary" onclick="openCreateGroupModal(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem;">✏️ Edit</button>' +
+                      '<button class="btn-sm-secondary" onclick="handleDeleteGroup(\'' + g.id + '\')" style="padding:2px 8px; font-size:0.76rem; color:var(--color-danger);">🗑️</button>' +
                     '</div>' +
                   '</div>' +
 
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">' +
                     '<span>' + memberStudents.length + ' Members</span>' +
-                    '<span style="font-weight:800; color:var(--color-primary);">â­ ' + teamTotalXP.toLocaleString('en-US') + ' Total XP</span>' +
+                    '<span style="font-weight:800; color:var(--color-primary);">⭐ ' + teamTotalXP.toLocaleString('en-US') + ' Total XP</span>' +
                   '</div>' +
 
                   '<div class="group-members-pills">' +
@@ -4150,10 +4150,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
                   '<div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">' +
                     '<button class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'group\', \'' + g.id + '\')" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.12); border-color:#f59e0b; padding:6px 12px;">' +
-                      'â­ Award Team' +
+                      '⭐ Award Team' +
                     '</button>' +
                     '<button class="btn-sm-secondary" onclick="openAssignModalForGroup(\'' + g.id + '\')" style="padding:6px 10px; font-size:0.78rem;">' +
-                      'ðŸ“ Assign' +
+                      '📝 Assign' +
                     '</button>' +
                   '</div>' +
                 '</div>' +
@@ -4181,46 +4181,46 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Lessons the teacher can launch for this grade
     const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
     const lessons = grade === 4 ? [
-      ['ðŸª™', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
-      ['ðŸš€', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
-      ['ðŸ€', 'Grade 4 Review: Teamwork (book pp. 56-61), 3 simple games', 'review-g4-teamwork/index.html'],
-      ['ðŸŽ®', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
-      ['ðŸŽ­', 'Grade 4 Review: Late for the Show (book pp. 62-70), 3 games + excuse round', 'review-g4-show/index.html'],
-      ['ðŸŒ‹', 'Unit 4 Lesson 3: The Angry Mountain (book pp. 65-69), Island Map + Cause/Effect Gears + Story + Boat Race', 'unit4-g3-angry-mountain/index.html'],
-      ['ðŸŽˆ', 'Unit 4 Lesson 4: Phonics -nd & Think Together (book pp. 70-71), 4 Corners + Letter Factory + Balloon Pop', 'unit4-g3-phonics-think/index.html'],
-      ['ðŸŒ‹', 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71), cause & effect + volcano rescue + -nd blends', 'review-g3-mountain/index.html'],
-      ['ðŸ€', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],
-      ['ðŸ§', 'Captain Quietâ€™s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
-      ['â³', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
-      ['ðŸ’°', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
-      ['ðŸŽ°', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
-      ['ðŸš‚', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
-      ['ðŸŽ²', 'Money Board Game (Unit 3, How Much Is It?)', 'unit3-board-game/index.html?grade=4'],
-      ['ðŸ§ ', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
-      ['ðŸ“', 'Worksheet and Class Store', 'unit12-worksheet-g4/index.html'],
-      ['ðŸŒ²', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
-      ['ðŸ•Šï¸', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
+      ['🪙', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
+      ['🚀', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
+      ['🏀', 'Grade 4 Review: Teamwork (book pp. 56-61), 3 simple games', 'review-g4-teamwork/index.html'],
+      ['🎮', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
+      ['🎭', 'Grade 4 Review: Late for the Show (book pp. 62-70), 3 games + excuse round', 'review-g4-show/index.html'],
+      ['🏀', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],
+      ['🐧', 'Captain Quiet’s Space Mission (Classroom Rules)', 'week4-g4-captain-quiet/index.html'],
+      ['⏳', 'Before Money Was Money (Unit 3, Lesson 2)', 'unit3-g3-lessons/index.html?lesson=2'],
+      ['💰', 'How Much Is It? (Unit 3, Lesson 1)', 'unit3-g3-lessons/index.html?lesson=1'],
+      ['🎰', 'Design the Next Money (Unit 3, Lesson 4)', 'unit3-g3-lessons/index.html?lesson=4'],
+      ['🚂', 'Money Changes (Unit 3, Lesson 3)', 'unit3-g3-lessons/index.html?lesson=3'],
+      ['🎲', 'Money Board Game (Unit 3, How Much Is It?)', 'unit3-board-game/index.html?grade=4'],
+      ['🧠', 'Revision Quest (Units 1 and 2)', 'unit12-revision-g4/index.html'],
+      ['📝', 'Worksheet and Class Store', 'unit12-worksheet-g4/index.html'],
+      ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
+      ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
-      ['ðŸ²', 'It Keeps Changing: Monster Cast Review (Unit 3)', 'lingo-g3-u3-review/index.html'],
-      ['ðŸ“„', 'Unit 3 Paper Quiz: It Keeps Changing (Forms A and B)', 'unit3-g3-quiz/index.html'],
-      ['ðŸŽ²', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
-      ['ðŸ»â€â„ï¸', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
-      ['ðŸ™ï¸', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
-      ['ðŸŽ®', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
-      ['ðŸ”', 'Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59), 3 simple games', 'review-g3-museum/index.html'],
-      ['ðŸŒ•', 'Chuseok Moon Song (folk song festival)', 'chuseok-moon-song/index.html'],
-      ['ðŸ ', 'Moon Song Homework (5 minutes)', 'chuseok-moon-homework/index.html'],
-      ['ðŸ–¼ï¸', 'Unit 4 Case File 2: Where Is She? (What Happened?)', 'unit4-g3-lessons/index.html?lesson=2'],
-      ['ðŸ•µï¸', 'Unit 4 Case File 1: A Picture on the Wall (What Happened?)', 'unit4-g3-lessons/index.html?lesson=1'],
-      ['ðŸ•µï¸', 'Daphne the School Detective (School Life)', 'week4-g3-daphne/index.html'],
-      ['ðŸ’¥', 'The Ice Cracks (Unit 3, Lesson 3)', 'unit3-g4-lessons/index.html?lesson=3'],
-      ['ðŸŽ¤', 'Explore the Poem (Unit 3, Lesson 4)', 'unit3-g4-lessons/index.html?lesson=4'],
-      ['ðŸ§Š', 'It Keeps Changing (Unit 3, Lesson 1)', 'unit3-g4-lessons/index.html?lesson=1'],
-      ['ðŸ»â€â„ï¸', 'The Bear and I, part 1 (Unit 3, Lesson 2)', 'unit3-g4-lessons/index.html?lesson=2'],
-      ['ðŸŒ•', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
-      ['ðŸŒ±', 'First Harvest', 'unit2-g3-lessons/index.html?lesson=2'],
-      ['ðŸŽ®', 'Chuseok Games Arcade Day', 'unit2-g3-lessons/index.html?lesson=3']
-    ] : [['ðŸŽ¯', 'Unit 1 Revision Game', 'unit1-revision/index.html']];
+      ['🌋', 'Unit 4 Lesson 3: The Angry Mountain (book pp. 65-69), Island Map + Cause/Effect Gears + Story + Boat Race', 'unit4-g3-angry-mountain/index.html'],
+      ['🎈', 'Unit 4 Lesson 4: Phonics -nd & Think Together (book pp. 70-71), 4 Corners + Letter Factory + Balloon Pop', 'unit4-g3-phonics-think/index.html'],
+      ['🌋', 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71), cause & effect + volcano rescue + -nd blends', 'review-g3-mountain/index.html'],
+      ['🐲', 'It Keeps Changing: Monster Cast Review (Unit 3)', 'lingo-g3-u3-review/index.html'],
+      ['📄', 'Unit 3 Paper Quiz: It Keeps Changing (Forms A and B)', 'unit3-g3-quiz/index.html'],
+      ['🎲', 'Arctic Board Game (Unit 3, The Bear and I)', 'unit3-board-game/index.html?grade=3'],
+      ['🐻‍❄️', 'Arctic Words (Unit 3, The Bear and I)', 'unit3-g3-arctic-words/index.html'],
+      ['🏙️', 'Word City (Unit 3)', 'unit3-g3-word-city/index.html'],
+      ['🎮', 'Game Maker: any question list as a game (tile board, Plink-oh, Pumpkin Hunt)', 'game-maker/index.html'],
+      ['🔍', 'Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59), 3 simple games', 'review-g3-museum/index.html'],
+      ['🌕', 'Chuseok Moon Song (folk song festival)', 'chuseok-moon-song/index.html'],
+      ['🏠', 'Moon Song Homework (5 minutes)', 'chuseok-moon-homework/index.html'],
+      ['🖼️', 'Unit 4 Case File 2: Where Is She? (What Happened?)', 'unit4-g3-lessons/index.html?lesson=2'],
+      ['🕵️', 'Unit 4 Case File 1: A Picture on the Wall (What Happened?)', 'unit4-g3-lessons/index.html?lesson=1'],
+      ['🕵️', 'Daphne the School Detective (School Life)', 'week4-g3-daphne/index.html'],
+      ['💥', 'The Ice Cracks (Unit 3, Lesson 3)', 'unit3-g4-lessons/index.html?lesson=3'],
+      ['🎤', 'Explore the Poem (Unit 3, Lesson 4)', 'unit3-g4-lessons/index.html?lesson=4'],
+      ['🧊', 'It Keeps Changing (Unit 3, Lesson 1)', 'unit3-g4-lessons/index.html?lesson=1'],
+      ['🐻‍❄️', 'The Bear and I, part 1 (Unit 3, Lesson 2)', 'unit3-g4-lessons/index.html?lesson=2'],
+      ['🌕', 'Chuseok Moon Feast', 'unit2-g3-lessons/index.html?lesson=1'],
+      ['🌱', 'First Harvest', 'unit2-g3-lessons/index.html?lesson=2'],
+      ['🎮', 'Chuseok Games Arcade Day', 'unit2-g3-lessons/index.html?lesson=3']
+    ] : [['🎯', 'Unit 1 Revision Game', 'unit1-revision/index.html']];
 
     // Real activity: who has had no XP for 7 days, who is slowing down
     const DAY = 86400000, now = Date.now(), nudge = [], slow = [];
@@ -4244,42 +4244,42 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="needs-content"><div class="needs-title">' + title + '</div><div class="needs-desc">' + desc + '</div></div>' +
       '</div>';
     const attention = [];
-    if (nudge.length) attention.push(card('ruby', 'ðŸ˜´ ' + nudge.length + ' quiet', 'Pupils who need a nudge', names(nudge) + (nudge.length === 1 ? ' has' : ' have') + ' had no XP for 7 days.', '<a href="#" class="needs-action-link link-ruby" onclick="switchView(\'command\'); return false;">Command Center âž”</a>'));
-    if (slow.length) attention.push(card('amber', 'ðŸ“‰ ' + slow.length + ' slowing', 'Slowing down', names(slow) + ' earned less than half of last week\u2019s XP.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'command\'); return false;">Command Center âž”</a>'));
-    if (!isAttCompleted) attention.push(card('violet', 'ðŸ“‹ Roll call', 'Roll call not done today', 'Record who is here so attendance stays correct.', '<a href="#" class="needs-action-link link-violet" onclick="openFastAttendanceModal(); return false;">Open roll call âž”</a>'));
-    if (pendingRewards) attention.push(card('amber', 'ðŸŽ ' + pendingRewards + ' waiting', 'Reward requests', pendingRewards + (pendingRewards === 1 ? ' pupil is' : ' pupils are') + ' waiting for you to approve a Classroom Store reward.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'store\'); return false;">Classroom Store âž”</a>'));
-    if (!attention.length) attention.push(card('ok', 'âœ… All good', 'Everyone is on track', 'Every pupil has earned XP this week and roll call is done.', ''));
+    if (nudge.length) attention.push(card('ruby', '😴 ' + nudge.length + ' quiet', 'Pupils who need a nudge', names(nudge) + (nudge.length === 1 ? ' has' : ' have') + ' had no XP for 7 days.', '<a href="#" class="needs-action-link link-ruby" onclick="switchView(\'command\'); return false;">Command Center ➔</a>'));
+    if (slow.length) attention.push(card('amber', '📉 ' + slow.length + ' slowing', 'Slowing down', names(slow) + ' earned less than half of last week\u2019s XP.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'command\'); return false;">Command Center ➔</a>'));
+    if (!isAttCompleted) attention.push(card('violet', '📋 Roll call', 'Roll call not done today', 'Record who is here so attendance stays correct.', '<a href="#" class="needs-action-link link-violet" onclick="openFastAttendanceModal(); return false;">Open roll call ➔</a>'));
+    if (pendingRewards) attention.push(card('amber', '🎁 ' + pendingRewards + ' waiting', 'Reward requests', pendingRewards + (pendingRewards === 1 ? ' pupil is' : ' pupils are') + ' waiting for you to approve a Classroom Store reward.', '<a href="#" class="needs-action-link link-amber" onclick="switchView(\'store\'); return false;">Classroom Store ➔</a>'));
+    if (!attention.length) attention.push(card('ok', '✅ All good', 'Everyone is on track', 'Every pupil has earned XP this week and roll call is done.', ''));
 
     return '' +
       '<div class="dashboard-hero-grid">' +
         '<div class="dashboard-hero-panel">' +
-          '<h3 class="hero-panel-title"><span>ðŸ“…</span> <span>Today in ' + esc(cls.name) + '</span></h3>' +
+          '<h3 class="hero-panel-title"><span>📅</span> <span>Today in ' + esc(cls.name) + '</span></h3>' +
           '<div class="hero-tiles-grid">' +
             '<div class="hero-tile-card next-lesson-tile">' +
-              '<div><div class="hero-tile-tag"><span>ðŸš€</span> Todayâ€™s lessons</div>' +
-                (window.Timetable ? window.Timetable.todayHtml(cls) : '<div class="lesson-launch-list">' + lessons.map(l => '<a class="lesson-launch" href="' + l[2] + '"><span>' + l[0] + '</span><b>' + esc(l[1]) + '</b><i>â–¶</i></a>').join('') + '</div>') + '</div>' +
+              '<div><div class="hero-tile-tag"><span>🚀</span> Today’s lessons</div>' +
+                (window.Timetable ? window.Timetable.todayHtml(cls) : '<div class="lesson-launch-list">' + lessons.map(l => '<a class="lesson-launch" href="' + l[2] + '"><span>' + l[0] + '</span><b>' + esc(l[1]) + '</b><i>▶</i></a>').join('') + '</div>') + '</div>' +
             '</div>' +
             '<div class="hero-tile-card roll-call-tile">' +
-              '<div><div class="hero-tile-tag"><span>ðŸ“‹</span> Roll call</div>' +
+              '<div><div class="hero-tile-tag"><span>📋</span> Roll call</div>' +
                 '<div class="hero-tile-heading">Daily Roll Call</div>' +
                 '<div class="hero-tile-sub">' + students.length + ' enrolled learners</div>' +
-                (isAttCompleted ? '<span class="roll-call-chip chip-completed">âœ“ Done (' + todayAttCount + ' logged)</span>' : '<span class="roll-call-chip chip-pending">â±ï¸ Needed today</span>') + '</div>' +
-              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()">ðŸ“‹ ' + (isAttCompleted ? 'Edit roll call' : 'Open roll call') + '</button>' +
+                (isAttCompleted ? '<span class="roll-call-chip chip-completed">✓ Done (' + todayAttCount + ' logged)</span>' : '<span class="roll-call-chip chip-pending">⏱️ Needed today</span>') + '</div>' +
+              '<button type="button" class="btn-3d btn-3d-secondary roll-call-action-btn" onclick="openFastAttendanceModal()">📋 ' + (isAttCompleted ? 'Edit roll call' : 'Open roll call') + '</button>' +
             '</div>' +
             '<div class="hero-tile-card assignment-tile">' +
-              '<div><div class="hero-tile-tag"><span>ðŸ“</span> Assignment</div>' +
-                (asg ? '<div class="hero-tile-heading">' + esc(asg.title) + '</div><div class="hero-tile-sub">' + (asg.dueDate ? 'Due ' + esc(asg.dueDate) : 'No due date') + '</div><span class="roll-call-chip chip-pending chip-info">â³ Active</span>'
+              '<div><div class="hero-tile-tag"><span>📝</span> Assignment</div>' +
+                (asg ? '<div class="hero-tile-heading">' + esc(asg.title) + '</div><div class="hero-tile-sub">' + (asg.dueDate ? 'Due ' + esc(asg.dueDate) : 'No due date') + '</div><span class="roll-call-chip chip-pending chip-info">⏳ Active</span>'
                      : '<div class="hero-tile-heading">No active assignment</div><div class="hero-tile-sub">Create one to give homework.</div>') + '</div>' +
               '<button type="button" class="btn-3d btn-3d-secondary" onclick="openClass(\'' + cls.id + '\', \'assignments\')">' + (asg ? 'View submissions' : 'Open assignments') + '</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div class="dashboard-hero-panel">' +
-          '<h3 class="hero-panel-title"><span>âš ï¸</span> <span>Needs Attention</span></h3>' +
+          '<h3 class="hero-panel-title"><span>⚠️</span> <span>Needs Attention</span></h3>' +
           '<div class="needs-attention-list">' + attention.join('') + '</div>' +
         '</div>' +
       '</div>' +
-      (window.Timetable && window.Timetable.lessonsHtml ? '<div class="dashboard-hero-panel" style="margin-top:20px;"><h3 class="hero-panel-title"><span>ðŸ“š</span> <span>Our lessons for ' + esc(cls.name) + '</span></h3>' + window.Timetable.lessonsHtml(cls) + '</div>' : '');
+      (window.Timetable && window.Timetable.lessonsHtml ? '<div class="dashboard-hero-panel" style="margin-top:20px;"><h3 class="hero-panel-title"><span>📚</span> <span>Our lessons for ' + esc(cls.name) + '</span></h3>' + window.Timetable.lessonsHtml(cls) + '</div>' : '');
   }
 
   // Secondary sub-tab controllers
@@ -4313,8 +4313,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">' +
         '<h3 style="font-size:1.15rem; font-weight:800;">Classroom Rubric Evaluations</h3>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-primary-action" onclick="openQuickAssessmentModal()">ðŸ“ + Quick Assessment</button>' +
-          '<button class="btn-sm-secondary" onclick="openModal(\'modal-assessment-rubric\')">ðŸŽ¯ Full Rubric</button>' +
+          '<button class="btn-primary-action" onclick="openQuickAssessmentModal()">📝 + Quick Assessment</button>' +
+          '<button class="btn-sm-secondary" onclick="openModal(\'modal-assessment-rubric\')">🎯 Full Rubric</button>' +
         '</div>' +
       '</div>' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px;">' +
@@ -4322,7 +4322,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           (store.state.learningEvidence || []).slice(0, 10).map(ev => '' +
             '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle);">' +
               '<div>' +
-                '<div style="font-weight:700; font-size:0.88rem;">' + ev.activityTitle + ' Â· <span style="color:var(--color-primary);">' + ev.skill + '</span></div>' +
+                '<div style="font-weight:700; font-size:0.88rem;">' + ev.activityTitle + ' · <span style="color:var(--color-primary);">' + ev.skill + '</span></div>' +
                 '<div style="font-size:0.78rem; color:var(--text-muted);">' + (ev.notes || '') + '</div>' +
               '</div>' +
               '<div style="text-align:right;">' +
@@ -4342,17 +4342,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:20px;">Regular class meetings: ' + cls.schedule + ' in ' + cls.room + '</p>' +
         '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">' +
           '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
-            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Monday Â· 10:00</div>' +
+            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Monday · 10:00</div>' +
             '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Unit 1: Fire Station Rescue</div>' +
             '<div style="font-size:0.78rem; color:var(--text-muted);">Emergency calls, speaking drills, action verbs</div>' +
           '</div>' +
           '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
-            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Wednesday Â· 10:00</div>' +
+            '<div style="font-weight:800; font-size:0.92rem; color:var(--color-primary);">Wednesday · 10:00</div>' +
             '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Unit 2: My Town Map Navigation</div>' +
             '<div style="font-size:0.78rem; color:var(--text-muted);">Prepositions of place, giving directions</div>' +
           '</div>' +
           '<div style="background:var(--bg-card-secondary); border-radius:12px; padding:16px; border:1px solid var(--border-subtle);">' +
-            '<div style="font-weight:800; font-size:0.92rem; color:#f59e0b;">Friday Â· Diagnostic Check</div>' +
+            '<div style="font-weight:800; font-size:0.92rem; color:#f59e0b;">Friday · Diagnostic Check</div>' +
             '<div style="font-size:0.88rem; font-weight:700; margin:4px 0;">Prepositions Worksheet &amp; Speech</div>' +
             '<div style="font-size:0.78rem; color:var(--text-muted);">Worksheet scoring + quick formative assessment</div>' +
           '</div>' +
@@ -4375,7 +4375,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<h3 style="font-size:1.15rem; font-weight:800;">Class Attendance Register</h3>' +
             '<div style="font-size:0.82rem; color:var(--text-muted);">Current cohort attendance: ' + store.getClassAttendanceRate(cls.id) + '%</div>' +
           '</div>' +
-          '<button class="btn-primary-action" onclick="openFastAttendanceModal()">ðŸ“‹ Take Today\'s Attendance</button>' +
+          '<button class="btn-primary-action" onclick="openFastAttendanceModal()">📋 Take Today\'s Attendance</button>' +
         '</div>' +
         '<div style="display:flex; flex-direction:column; gap:8px;">' +
           students.map(s => {
@@ -4409,10 +4409,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--bg-card-secondary); border-radius:10px; border:1px solid var(--border-subtle);">' +
               '<div>' +
                 '<div style="font-weight:800; font-size:0.95rem;">' + a.title + '</div>' +
-                '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + (a.gameId ? ' Â· Game: ' + a.gameId : '') + '</div>' +
+                '<div style="font-size:0.8rem; color:var(--text-muted);">Due: ' + (a.dueDate || 'This week') + (a.gameId ? ' · Game: ' + a.gameId : '') + '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster-day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">â–¶ Start</a>' +
+                '<a href="' + (store.getResource(a.gameId) ? store.getResource(a.gameId).route : 'monster-day/index.html') + '" class="btn-primary-action" style="padding:4px 10px; font-size:0.78rem; text-decoration:none;">▶ Start</a>' +
               '</div>' +
             '</div>'
           ).join('') +
@@ -4447,8 +4447,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   const LESSON_PLANS = [
     { title: 'Unit 4 Lesson 4: Phonics -nd & Think Together (What Happened? pp. 70-71)', grade: 'Grade 3', date: '2026-10-23', file: 'Grade3-Unit4-Lesson4-Phonics-and-Think-Together-Plan', word: true, launch: 'unit4-g3-phonics-think/index.html' },
     { title: 'Unit 4 Lesson 3: The Angry Mountain — Cause & Effect + Island Rescue (What Happened? pp. 65-69)', grade: 'Grade 3', date: '2026-10-22', file: 'Grade3-Unit4-Lesson3-Angry-Mountain-Plan', word: true, launch: 'unit4-g3-angry-mountain/index.html' },
-    { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? Â· Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
-    { title: 'Unit 4: Team Players Â· Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
+    { title: 'Grade 3 Reading 2 Review: The Angry Mountain (What Happened? pp. 64-71)', grade: 'Grade 3', date: '2026-10-21', file: 'Grade3-Unit4-Angry-Mountain-Lesson-Plan', word: true, launch: 'review-g3-mountain/index.html' },
+    { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? · Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
+    { title: 'Unit 4: Team Players · Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
     { title: 'Chuseok Moon Song: Ganggangsullae Circle Dance & 5-Minute Homework', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Chuseok-Moon-Song-Lesson-Plan', word: true, launch: 'chuseok-moon-song/index.html' },
     { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
     { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
@@ -4464,14 +4465,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const now = Date.now();
     return '' +
       '<div class="lp-section">' +
-        '<div class="lp-head"><h2>ðŸ“„ Lesson plans</h2><span>Download for the headteacher or to print. Newest first.</span></div>' +
+        '<div class="lp-head"><h2>📄 Lesson plans</h2><span>Download for the headteacher or to print. Newest first.</span></div>' +
         '<div class="lp-grid">' + LESSON_PLANS.map(p => {
           const isNew = now - new Date(p.date).getTime() < 7 * 86400000;
           return '<div class="lp-card"><div class="lp-top"><span class="lp-grade">' + p.grade + '</span>' + (p.kind ? '<span class="lp-kind">' + p.kind + '</span>' : '') + (isNew ? '<span class="lp-new">NEW</span>' : '') + '</div>' +
             '<b>' + p.title + '</b><small>' + new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
-            '<div class="lp-btns"><a class="lp-btn pdf" href="lesson-plans/' + p.file + '.pdf" target="_blank" rel="noopener">ðŸ“„ PDF</a>' +
-            (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>ðŸ“ Word</a>' : '') +
-            (p.launch ? '<a class="lp-btn" style="background:#059669;color:#fff;text-decoration:none;" href="' + p.launch + '">â–¶ Lesson</a>' : '') + '</div></div>';
+            '<div class="lp-btns"><a class="lp-btn pdf" href="lesson-plans/' + p.file + '.pdf" target="_blank" rel="noopener">📄 PDF</a>' +
+            (p.word ? '<a class="lp-btn word" href="lesson-plans/' + p.file + '.docx" download>📝 Word</a>' : '') +
+            (p.launch ? '<a class="lp-btn" style="background:#059669;color:#fff;text-decoration:none;" href="' + p.launch + '">▶ Lesson</a>' : '') + '</div></div>';
         }).join('') + '</div>' +
       '</div>';
   }
@@ -4524,14 +4525,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px;">4-Week Modular Syllabi</span>' +
               '<span class="badge" style="background:rgba(16,185,129,0.15); color:#059669; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:12px;">Source of Truth: Uploaded PDFs</span>' +
             '</div>' +
-            '<h1 style="font-size:1.85rem; font-weight:900; color:var(--text-main); margin:0;">ðŸ“š Curriculum Framework &amp; Scanned Anthologies</h1>' +
+            '<h1 style="font-size:1.85rem; font-weight:900; color:var(--text-main); margin:0;">📚 Curriculum Framework &amp; Scanned Anthologies</h1>' +
             '<p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">Grade 3 (Global Readings 2) and Grade 4 (Global Readings 3) literacy syllabi, 4-week structured unit timelines, authentic textbook scans, and interactive lesson attachments.</p>' +
           '</div>' +
           '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-sm-secondary" onclick="openScopeAndSequenceModal(\'' + (activeBook ? activeBook.id : '') + '\')">ðŸ—ºï¸ Scope &amp; Sequence</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openCurriculumAIModal()" style="background:linear-gradient(135deg, #1e293b, #334155); color:#ffffff; border:1px solid #475569;">ðŸ¤– Curriculum AI</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openAddBookModal()">ðŸ“– + Add Book</button>' +
-            '<button type="button" class="btn-primary-action" onclick="openAddUnitModal(\'' + (activeBook ? activeBook.id : '') + '\')">ðŸ“‘ + Add Unit</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openScopeAndSequenceModal(\'' + (activeBook ? activeBook.id : '') + '\')">🗺️ Scope &amp; Sequence</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openCurriculumAIModal()" style="background:linear-gradient(135deg, #1e293b, #334155); color:#ffffff; border:1px solid #475569;">🤖 Curriculum AI</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openAddBookModal()">📖 + Add Book</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openAddUnitModal(\'' + (activeBook ? activeBook.id : '') + '\')">📑 + Add Unit</button>' +
           '</div>' +
         '</div>' +
 
@@ -4539,7 +4540,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="margin-bottom:28px;">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">' +
             '<h3 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin:0; display:flex; align-items:center; gap:8px;">' +
-              '<span>ðŸ“– Digital Textbook Shelf</span>' +
+              '<span>📖 Digital Textbook Shelf</span>' +
               '<span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">(' + books.length + ' Core Anthologies)</span>' +
             '</h3>' +
             '<span style="font-size:0.78rem; color:var(--text-muted);">Select an anthology to explore its scope, sequence, and 4-week roadmap</span>' +
@@ -4571,9 +4572,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                     '<h4 style="font-size:1.05rem; font-weight:800; margin:0 0 4px 0; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + b.title + '</h4>' +
                     '<p style="font-size:0.78rem; color:var(--text-secondary); margin:0 0 8px 0; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (b.description || 'Comprehensive reading anthology.') + '</p>' +
                     '<div style="display:flex; gap:10px; font-size:0.72rem; color:var(--text-muted);">' +
-                      '<span>ðŸ“š <strong>' + bUnits.length + '</strong> Units</span>' +
-                      '<span>ðŸ—“ï¸ <strong>' + (bUnits.length * 4) + '</strong> Weeks</span>' +
-                      '<span>ðŸ“„ <strong>' + (b.totalPages || 23) + '</strong> Scans</span>' +
+                      '<span>📚 <strong>' + bUnits.length + '</strong> Units</span>' +
+                      '<span>🗓️ <strong>' + (bUnits.length * 4) + '</strong> Weeks</span>' +
+                      '<span>📄 <strong>' + (b.totalPages || 23) + '</strong> Scans</span>' +
                     '</div>' +
                   '</div>' +
                 '</div>';
@@ -4591,34 +4592,34 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<div style="flex:1; min-width:280px;">' +
               '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">' +
                 '<h2 style="font-size:1.45rem; font-weight:900; margin:0; color:var(--text-main);">' + activeBook.title + '</h2>' +
-                '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.78rem; font-weight:800; padding:3px 12px; border-radius:12px;">' + (isGR3 ? 'Grade 4 Â· Level 3' : 'Grade 3 Â· Level 2') + '</span>' +
+                '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.78rem; font-weight:800; padding:3px 12px; border-radius:12px;">' + (isGR3 ? 'Grade 4 · Level 3' : 'Grade 3 · Level 2') + '</span>' +
                 '<span class="badge" style="background:var(--color-success-soft); color:var(--color-success); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px;">' + (activeBook.publisher || 'Macmillan Education') + '</span>' +
                 '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:12px;">4-Week Unit Architecture</span>' +
               '</div>' +
               '<p style="font-size:0.88rem; color:var(--text-secondary); margin:6px 0 10px 0; max-width:880px; line-height:1.5;">' + (activeBook.description || 'Macmillan Primary Literacy Anthology with authentic reading selections, comprehension strategies, vocabulary builders, and cross-curricular science links.') + '</p>' +
               '<div style="display:flex; gap:18px; font-size:0.82rem; color:var(--text-muted); flex-wrap:wrap;">' +
-                '<span>ðŸ“š <strong>' + units.length + ' Units</strong> in Syllabus</span>' +
-                '<span>ðŸ—“ï¸ <strong>' + (units.length * 4) + ' Teaching Weeks</strong> (4 Weeks/Unit)</span>' +
-                '<span>ðŸ“ <strong>' + lessons.filter(l => units.some(u => u.id === l.unitId)).length + ' Assigned Lessons</strong></span>' +
-                '<span>ðŸ“„ <strong>' + (activeBook.totalPages || 23) + ' Original Scanned Pages</strong></span>' +
+                '<span>📚 <strong>' + units.length + ' Units</strong> in Syllabus</span>' +
+                '<span>🗓️ <strong>' + (units.length * 4) + ' Teaching Weeks</strong> (4 Weeks/Unit)</span>' +
+                '<span>📝 <strong>' + lessons.filter(l => units.some(u => u.id === l.unitId)).length + ' Assigned Lessons</strong></span>' +
+                '<span>📄 <strong>' + (activeBook.totalPages || 23) + ' Original Scanned Pages</strong></span>' +
               '</div>' +
             '</div>' +
 
             '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
               '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + activeBook.id + '\')" style="padding:10px 18px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:var(--shadow-sm);">' +
-                '<span>ðŸ“–</span> <span>Open Textbook Viewer</span>' +
+                '<span>📖</span> <span>Open Textbook Viewer</span>' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openScopeAndSequenceModal(\'' + activeBook.id + '\')" style="padding:10px 16px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:6px; background:var(--bg-surface); border:1px solid var(--border-medium); color:var(--text-main);">' +
-                '<span>ðŸ—ºï¸</span> <span>Scope &amp; Sequence</span>' +
+                '<span>🗺️</span> <span>Scope &amp; Sequence</span>' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openCurriculumAIModal()" style="padding:10px 16px; font-size:0.88rem; font-weight:800; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #1e293b, #334155); color:#ffffff; border:1px solid #475569;">' +
-                '<span>ðŸ¤–</span> <span>Curriculum AI</span>' +
+                '<span>🤖</span> <span>Curriculum AI</span>' +
               '</button>' +
               '<a href="' + (activeBook.pdfUrl || (isGR3 ? 'assets/books/global-readings-3/Global-Readings-3.pdf' : 'assets/books/global-readings-2/Global-Readings-2.pdf')) + '" target="_blank" class="btn-sm-secondary" style="padding:10px 16px; font-size:0.88rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">' +
-                '<span>ðŸ“¥</span> <span>Open PDF</span>' +
+                '<span>📥</span> <span>Open PDF</span>' +
               '</a>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openEditBookModal(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem;">âœï¸ Edit</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="handleArchiveBook(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openEditBookModal(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem;">✏️ Edit</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="handleArchiveBook(\'' + activeBook.id + '\')" style="padding:10px 14px; font-size:0.88rem; color:var(--color-danger);">🗑️</button>' +
             '</div>' +
           '</div>' : ''
         ) +
@@ -4627,8 +4628,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="curriculum-toolbar" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:14px 18px; margin-bottom:24px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:space-between; box-shadow:var(--shadow-xs);">' +
           '<div style="display:flex; gap:10px; align-items:center; flex:1; min-width:280px;">' +
             '<div style="position:relative; flex:1;">' +
-              '<input type="text" id="curriculum-search-input" value="' + curriculumSearchQuery.replace(/"/g, '&quot;') + '" placeholder="ðŸ” Search units, readings, skills, concepts, or activities..." oninput="setCurriculumSearchQuery(this.value)" style="width:100%; padding:8px 14px; padding-left:34px; border-radius:10px; border:1px solid var(--border-medium); background:var(--bg-card); font-size:0.85rem; color:var(--text-main);" />' +
-              '<span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:0.88rem; pointer-events:none; color:var(--text-muted);">ðŸ”Ž</span>' +
+              '<input type="text" id="curriculum-search-input" value="' + curriculumSearchQuery.replace(/"/g, '&quot;') + '" placeholder="🔍 Search units, readings, skills, concepts, or activities..." oninput="setCurriculumSearchQuery(this.value)" style="width:100%; padding:8px 14px; padding-left:34px; border-radius:10px; border:1px solid var(--border-medium); background:var(--bg-card); font-size:0.85rem; color:var(--text-main);" />' +
+              '<span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:0.88rem; pointer-events:none; color:var(--text-muted);">🔎</span>' +
             '</div>' +
             (curriculumSearchQuery ? '<button type="button" class="btn-sm-secondary" onclick="setCurriculumSearchQuery(\'\')" style="padding:6px 10px; font-size:0.75rem;">Clear</button>' : '') +
           '</div>' +
@@ -4637,13 +4638,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             // Grade Switcher Pills
             '<div style="display:inline-flex; background:var(--bg-muted); padding:3px; border-radius:8px; border:1px solid var(--border-light);">' +
               '<button type="button" class="btn-sm-secondary" onclick="setCurriculumGradeFilter(\'all\')" style="padding:4px 10px; font-size:0.75rem; font-weight:700; ' + (curriculumGradeFilter === 'all' ? 'background:var(--color-primary); color:#ffffff;' : 'background:transparent; border:none;') + '">All Grades</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="setCurriculumGradeFilter(\'grade-3\')" style="padding:4px 10px; font-size:0.75rem; font-weight:700; ' + (curriculumGradeFilter === 'grade-3' ? 'background:var(--color-primary); color:#ffffff;' : 'background:transparent; border:none;') + '">ðŸ“˜ Grade 3 (GR2)</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="setCurriculumGradeFilter(\'grade-4\')" style="padding:4px 10px; font-size:0.75rem; font-weight:700; ' + (curriculumGradeFilter === 'grade-4' ? 'background:var(--color-primary); color:#ffffff;' : 'background:transparent; border:none;') + '">ðŸ“™ Grade 4 (GR3)</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="setCurriculumGradeFilter(\'grade-3\')" style="padding:4px 10px; font-size:0.75rem; font-weight:700; ' + (curriculumGradeFilter === 'grade-3' ? 'background:var(--color-primary); color:#ffffff;' : 'background:transparent; border:none;') + '">📘 Grade 3 (GR2)</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="setCurriculumGradeFilter(\'grade-4\')" style="padding:4px 10px; font-size:0.75rem; font-weight:700; ' + (curriculumGradeFilter === 'grade-4' ? 'background:var(--color-primary); color:#ffffff;' : 'background:transparent; border:none;') + '">📙 Grade 4 (GR3)</button>' +
             '</div>' +
 
             // Week Filter Dropdown
             '<select class="filter-select" onchange="setCurriculumWeekFilter(this.value)" style="padding:6px 10px; border-radius:8px; font-weight:700; font-size:0.78rem;">' +
-              '<option value="all"' + (curriculumWeekFilter === 'all' ? ' selected' : '') + '>All Weeks (1â€“4)</option>' +
+              '<option value="all"' + (curriculumWeekFilter === 'all' ? ' selected' : '') + '>All Weeks (1–4)</option>' +
               '<option value="1"' + (curriculumWeekFilter === '1' ? ' selected' : '') + '>Week 1: Foundation &amp; Vocab</option>' +
               '<option value="2"' + (curriculumWeekFilter === '2' ? ' selected' : '') + '>Week 2: Core Reading &amp; Comp</option>' +
               '<option value="3"' + (curriculumWeekFilter === '3' ? ' selected' : '') + '>Week 3: Skills &amp; Practice</option>' +
@@ -4656,7 +4657,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</span>' +
 
             (curriculumSearchQuery || curriculumGradeFilter !== 'all' || curriculumWeekFilter !== 'all' ? 
-              '<button type="button" class="btn-sm-secondary" onclick="clearCurriculumFilters()" style="padding:4px 10px; font-size:0.75rem; color:var(--color-danger);">âœ• Reset</button>' : ''
+              '<button type="button" class="btn-sm-secondary" onclick="clearCurriculumFilters()" style="padding:4px 10px; font-size:0.75rem; color:var(--color-danger);">✕ Reset</button>' : ''
             ) +
           '</div>' +
         '</div>' +
@@ -4665,14 +4666,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="curriculum-units-list" style="display:flex; flex-direction:column; gap:24px;">' +
           (filteredUnits.length === 0 ? 
             '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
-              '<div style="font-size:48px; margin-bottom:12px;">ðŸ“‘</div>' +
+              '<div style="font-size:48px; margin-bottom:12px;">📑</div>' +
               '<h3 style="font-size:1.2rem; font-weight:800; margin:0 0 6px 0;">No matching units found</h3>' +
               '<p style="font-size:0.88rem; color:var(--text-muted); margin:0 0 16px 0;">Try adjusting your search query or filters.</p>' +
               '<button type="button" class="btn-sm-secondary" onclick="clearCurriculumFilters()">Clear Filters</button>' +
             '</div>' :
             filteredUnits.map((u, uIdx) => {
               const uLessons = lessons.filter(l => l.unitId === u.id).sort((a, b) => (a.order || 0) - (b.order || 0));
-              const startPage = u.pages ? parseInt(u.pages.split('â€“')[0], 10) : 1;
+              const startPage = u.pages ? parseInt(u.pages.split('–')[0], 10) : 1;
               const allWeeks = u.weeks || [
                 { weekNumber: 1, title: 'Introduction & Vocabulary', focus: 'Thematic introduction and key vocabulary' },
                 { weekNumber: 2, title: 'Main Story & Reading', focus: 'Literary text and guided comprehension' },
@@ -4688,8 +4689,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                     '<div style="display:flex; align-items:flex-start; gap:14px; flex:1; min-width:320px;">' +
                       // Up/Down reorder controls
                       '<div style="display:flex; flex-direction:column; gap:3px; margin-top:2px;">' +
-                        (uIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitUp(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Up">â–²</button>' : '') +
-                        (uIdx < filteredUnits.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitDown(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Down">â–¼</button>' : '') +
+                        (uIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitUp(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Up">▲</button>' : '') +
+                        (uIdx < filteredUnits.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:2px 6px; font-size:0.68rem;" onclick="handleMoveUnitDown(\'' + activeBook.id + '\', \'' + u.id + '\')" title="Move Unit Down">▼</button>' : '') +
                       '</div>' +
 
                       // Unit Title & Core Meta
@@ -4697,18 +4698,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                         '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
                           '<span class="badge" style="background:var(--color-primary); color:#ffffff; font-size:0.75rem; font-weight:800; padding:2px 10px; border-radius:10px;">' + (u.number ? ('Unit ' + u.number) : 'Review') + '</span>' +
                           '<h3 style="font-size:1.25rem; font-weight:900; margin:0; color:var(--text-main);">' + u.title + '</h3>' +
-                          (u.pages ? '<span class="badge" style="background:var(--bg-surface); color:var(--text-secondary); font-size:0.74rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid var(--border-light);">ðŸ“„ p. ' + u.pages + '</span>' : '') +
-                          (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">ðŸŽ¯ ' + u.readingSkill + '</span>' : '') +
-                          (u.contentArea ? '<span class="badge" style="background:rgba(168,85,247,0.12); color:#7e22ce; font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">ðŸ”¬ ' + u.contentArea + '</span>' : '') +
+                          (u.pages ? '<span class="badge" style="background:var(--bg-surface); color:var(--text-secondary); font-size:0.74rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid var(--border-light);">📄 p. ' + u.pages + '</span>' : '') +
+                          (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">🎯 ' + u.readingSkill + '</span>' : '') +
+                          (u.contentArea ? '<span class="badge" style="background:rgba(168,85,247,0.12); color:#7e22ce; font-size:0.74rem; font-weight:800; padding:2px 8px; border-radius:10px;">🔬 ' + u.contentArea + '</span>' : '') +
                         '</div>' +
 
-                        (u.keyConcept ? '<div style="font-size:0.86rem; font-weight:700; color:var(--color-warning); margin-top:5px;">ðŸ’¡ Key Concept: "' + u.keyConcept + '"</div>' : '') +
+                        (u.keyConcept ? '<div style="font-size:0.86rem; font-weight:700; color:var(--color-warning); margin-top:5px;">💡 Key Concept: "' + u.keyConcept + '"</div>' : '') +
 
                         (u.reading1 || u.reading2 ? 
                           '<div style="font-size:0.82rem; color:var(--text-muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:4px;">' +
                             (u.reading1 ? '<span><strong>Reading 1:</strong> ' + u.reading1 + '</span>' : '') +
                             (u.reading2 ? '<span><strong>Reading 2:</strong> ' + u.reading2 + '</span>' : '') +
-                            (u.selFocus ? '<span>ðŸ’– <strong>SEL:</strong> ' + u.selFocus + '</span>' : '') +
+                            (u.selFocus ? '<span>💖 <strong>SEL:</strong> ' + u.selFocus + '</span>' : '') +
                           '</div>' : ''
                         ) +
 
@@ -4722,11 +4723,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
                     // Unit Top Actions
                     '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-                      (u.pages ? '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + startPage + ', \'' + activeBook.id + '\')" style="font-size:0.8rem; padding:6px 14px; font-weight:800; display:inline-flex; align-items:center; gap:6px;" title="View scanned textbook pages"><span>ðŸ“–</span> <span>View Pages</span></button>' : '') +
+                      (u.pages ? '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + startPage + ', \'' + activeBook.id + '\')" style="font-size:0.8rem; padding:6px 14px; font-weight:800; display:inline-flex; align-items:center; gap:6px;" title="View scanned textbook pages"><span>📖</span> <span>View Pages</span></button>' : '') +
                       '<button type="button" class="btn-sm-secondary" onclick="openAddLessonModal(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 12px; font-weight:700;">+ Add Lesson</button>' +
-                      '<button type="button" class="btn-sm-secondary" onclick="openEditUnitModal(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;">âœï¸ Edit</button>' +
-                      '<button type="button" class="btn-sm-secondary" onclick="handleDuplicateUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;" title="Duplicate Unit">ðŸ“‹</button>' +
-                      '<button type="button" class="btn-sm-secondary" onclick="handleArchiveUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px; color:var(--color-danger);" title="Archive Unit">ðŸ“¦</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openEditUnitModal(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;">✏️ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleDuplicateUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px;" title="Duplicate Unit">📋</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="handleArchiveUnit(\'' + u.id + '\')" style="font-size:0.8rem; padding:6px 10px; color:var(--color-danger);" title="Archive Unit">📦</button>' +
                     '</div>' +
                   '</div>' +
 
@@ -4760,14 +4761,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                         return '' +
                           '<div class="week-lesson-group" style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:14px 16px;">' +
                             '<div style="font-size:0.78rem; font-weight:800; color:var(--color-primary); margin-bottom:10px; display:flex; align-items:center; gap:8px;">' +
-                              '<span>ðŸ—“ï¸ Week ' + w.weekNumber + ': ' + w.title + '</span>' +
+                              '<span>🗓️ Week ' + w.weekNumber + ': ' + w.title + '</span>' +
                               '<span style="font-size:0.72rem; color:var(--text-muted); font-weight:600;">(' + weekLessons.length + ' Lesson' + (weekLessons.length > 1 ? 's' : '') + ')</span>' +
                             '</div>' +
 
                             '<div style="display:flex; flex-direction:column; gap:12px;">' +
                               weekLessons.map((l, lIdx) => {
                                 const lObjs = objectives.filter(o => o.lessonId === l.id);
-                                const lStartPage = l.sourcePages ? parseInt(l.sourcePages.split('â€“')[0], 10) : startPage;
+                                const lStartPage = l.sourcePages ? parseInt(l.sourcePages.split('–')[0], 10) : startPage;
                                 const hasTasks = (l.tasks && l.tasks.length > 0) || (l.activities && l.activities.length > 0);
 
                                 return '' +
@@ -4776,20 +4777,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                       '<div style="display:flex; align-items:flex-start; gap:10px; flex:1; min-width:280px;">' +
                                         // Reorder buttons
                                         '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
-                                          (lIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonUp(\'' + u.id + '\', \'' + l.id + '\')">â–²</button>' : '') +
-                                          (lIdx < weekLessons.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonDown(\'' + u.id + '\', \'' + l.id + '\')">â–¼</button>' : '') +
+                                          (lIdx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonUp(\'' + u.id + '\', \'' + l.id + '\')">▲</button>' : '') +
+                                          (lIdx < weekLessons.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.62rem;" onclick="handleMoveLessonDown(\'' + u.id + '\', \'' + l.id + '\')">▼</button>' : '') +
                                         '</div>' +
 
                                         '<div style="flex:1;">' +
                                           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
                                             '<h4 style="font-size:1.02rem; font-weight:900; margin:0; color:var(--text-main);">' + l.title + '</h4>' +
                                             (l.sourceType === 'TEXTBOOK' ? 
-                                              '<span class="badge" style="background:rgba(59,130,246,0.12); color:#2563eb; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">ðŸ“– TEXTBOOK Â· p. ' + (l.sourcePages || u.pages || '') + '</span>' : 
+                                              '<span class="badge" style="background:rgba(59,130,246,0.12); color:#2563eb; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">📖 TEXTBOOK · p. ' + (l.sourcePages || u.pages || '') + '</span>' : 
                                               '<span class="badge" style="background:var(--bg-muted); color:var(--text-secondary); font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:8px;">TEACHER CREATED</span>') +
                                             (l.sourceSection ? '<span class="badge" style="background:var(--bg-muted); color:var(--text-secondary); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:6px;">' + l.sourceSection + '</span>' : '') +
-                                            (l.needsVerification ? '<span class="badge" style="background:rgba(234,179,8,0.18); color:#b45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">âš ï¸ Needs teacher verification</span>' : '') +
-                                            (l.gameRoute ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">ðŸŽ® ' + (l.gameTitle || 'Game Attached') + '</span>' : '') +
-                                            (l.worksheetTitle ? '<span class="badge" style="background:rgba(99,102,241,0.12); color:#4f46e5; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">ðŸ“„ ' + l.worksheetTitle + '</span>' : '') +
+                                            (l.needsVerification ? '<span class="badge" style="background:rgba(234,179,8,0.18); color:#b45309; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">⚠️ Needs teacher verification</span>' : '') +
+                                            (l.gameRoute ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">🎮 ' + (l.gameTitle || 'Game Attached') + '</span>' : '') +
+                                            (l.worksheetTitle ? '<span class="badge" style="background:rgba(99,102,241,0.12); color:#4f46e5; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:8px;">📄 ' + l.worksheetTitle + '</span>' : '') +
                                           '</div>' +
                                           '<div style="font-size:0.84rem; color:var(--text-secondary); margin-top:4px;">' + (l.objective || 'Primary literacy practice and guided comprehension.') + '</div>' +
                                         '</div>' +
@@ -4798,18 +4799,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                       // Primary Interactive Actions
                                       '<div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">' +
                                         (l.sourcePages ? 
-                                          '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + lStartPage + ', \'' + activeBook.id + '\', \'' + l.id + '\')" style="padding:4px 10px; font-size:0.76rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">ðŸ“– View Page</button>' : '') +
+                                          '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(' + lStartPage + ', \'' + activeBook.id + '\', \'' + l.id + '\')" style="padding:4px 10px; font-size:0.76rem; font-weight:800; display:inline-flex; align-items:center; gap:4px;">📖 View Page</button>' : '') +
                                         (l.gameRoute ? 
-                                          '<a href="' + l.gameRoute + '" class="btn-sm-secondary" style="padding:4px 10px; font-size:0.76rem; font-weight:800; color:var(--color-primary); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">â–¶ Play Game</a>' : '') +
-                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachGameModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach or change game">ðŸŽ® Game</button>' +
-                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachWorksheetModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach printable worksheet">ðŸ“„ Worksheet</button>' +
-                                        '<button type="button" class="btn-sm-secondary" onclick="openAssignLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700; color:#b45309;" title="Assign to Class">ðŸ“ Assign</button>' +
+                                          '<a href="' + l.gameRoute + '" class="btn-sm-secondary" style="padding:4px 10px; font-size:0.76rem; font-weight:800; color:var(--color-primary); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">▶ Play Game</a>' : '') +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachGameModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach or change game">🎮 Game</button>' +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAttachWorksheetModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;" title="Attach printable worksheet">📄 Worksheet</button>' +
+                                        '<button type="button" class="btn-sm-secondary" onclick="openAssignLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700; color:#b45309;" title="Assign to Class">📝 Assign</button>' +
                                         (hasTasks ? 
-                                          '<button type="button" class="btn-sm-secondary" onclick="toggleLessonActivities(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">ðŸ“ Tasks (' + ((l.activities && l.activities.length) || (l.tasks && l.tasks.length) || 0) + ')</button>' : '') +
+                                          '<button type="button" class="btn-sm-secondary" onclick="toggleLessonActivities(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">📝 Tasks (' + ((l.activities && l.activities.length) || (l.tasks && l.tasks.length) || 0) + ')</button>' : '') +
                                         '<button class="btn-sm-secondary" onclick="openAddObjectiveModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">+ Obj</button>' +
-                                        '<button class="btn-sm-secondary" onclick="openEditLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">âœï¸</button>' +
-                                        '<button class="btn-sm-secondary" onclick="handleDuplicateLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">ðŸ“‹</button>' +
-                                        '<button class="btn-sm-secondary" onclick="handleArchiveLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; color:var(--color-danger);">ðŸ“¦</button>' +
+                                        '<button class="btn-sm-secondary" onclick="openEditLessonModal(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">✏️</button>' +
+                                        '<button class="btn-sm-secondary" onclick="handleDuplicateLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem;">📋</button>' +
+                                        '<button class="btn-sm-secondary" onclick="handleArchiveLesson(\'' + l.id + '\')" style="padding:4px 8px; font-size:0.75rem; color:var(--color-danger);">📦</button>' +
                                       '</div>' +
                                     '</div>' +
 
@@ -4820,7 +4821,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                           '<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-muted); border:1px solid var(--border-light); padding:2px 8px; border-radius:6px; font-size:0.75rem;">' +
                                             '<strong>' + o.skill + ':</strong> ' + o.text +
                                             (o.sourcePages ? '<span style="color:var(--text-muted); font-size:0.7rem;">(p.' + o.sourcePages + ')</span>' : '') +
-                                            '<button type="button" onclick="handleDeleteObjective(\'' + o.id + '\')" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); font-size:0.72rem; padding:0 2px;">âœ•</button>' +
+                                            '<button type="button" onclick="handleDeleteObjective(\'' + o.id + '\')" style="background:transparent; border:none; cursor:pointer; color:var(--color-danger); font-size:0.72rem; padding:0 2px;">✕</button>' +
                                           '</span>'
                                         ).join('') +
                                       '</div>' : ''
@@ -4830,8 +4831,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                     (hasTasks ?
                                       '<div id="lesson-activities-' + l.id + '" style="display:none; margin-top:12px; padding:14px 16px; background:var(--bg-muted); border-radius:10px; border:1px solid var(--border-light); font-size:0.84rem;">' +
                                         '<div style="font-weight:800; color:var(--text-main); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">' +
-                                          '<span>ðŸ“– Structured Scanned Content &amp; Lesson Activities</span>' +
-                                          '<button type="button" onclick="toggleLessonActivities(\'' + l.id + '\')" style="background:transparent; border:none; cursor:pointer; font-size:0.78rem; color:var(--text-muted);">Close âœ•</button>' +
+                                          '<span>📖 Structured Scanned Content &amp; Lesson Activities</span>' +
+                                          '<button type="button" onclick="toggleLessonActivities(\'' + l.id + '\')" style="background:transparent; border:none; cursor:pointer; font-size:0.78rem; color:var(--text-muted);">Close ✕</button>' +
                                         '</div>' +
                                         (l.tasks ? 
                                           '<div style="display:flex; flex-direction:column; gap:6px;">' +
@@ -4847,17 +4848,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                                               } else if (act.type === 'vocab_definitions') {
                                                 return '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px;">' + act.words.map(w => '<div style="background:var(--bg-surface); padding:8px 10px; border-radius:8px; border:1px solid var(--border-light);"><strong>' + w.word + ':</strong> ' + w.def + '</div>').join('') + '</div>';
                                               } else if (act.type === 'dialects') {
-                                                return '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;"><strong>Dialect Notes:</strong> ' + act.pairs.map(p => '<span class="badge" style="background:var(--bg-surface); border:1px solid var(--border-light); font-size:0.75rem;">ðŸ‡ºðŸ‡¸ ' + p.us + ' = ðŸ‡¬ðŸ‡§ ' + p.uk + '</span>').join('') + '</div>';
+                                                return '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;"><strong>Dialect Notes:</strong> ' + act.pairs.map(p => '<span class="badge" style="background:var(--bg-surface); border:1px solid var(--border-light); font-size:0.75rem;">🇺🇸 ' + p.us + ' = 🇬🇧 ' + p.uk + '</span>').join('') + '</div>';
                                               } else if (act.type === 'matching') {
-                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.pairs.map(p => '<div style="margin:2px 0;">â€¢ <strong>' + p.invention + '</strong> âž” ' + p.function + '</div>').join('') + '</div>';
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.pairs.map(p => '<div style="margin:2px 0;">• <strong>' + p.invention + '</strong> ➔ ' + p.function + '</div>').join('') + '</div>';
                                               } else if (act.type === 'questions') {
-                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.items.map(it => '<div style="margin:4px 0;"><span style="font-weight:600;">' + it.q + '</span><br/><span style="color:var(--color-success); font-weight:700;">âž” ' + it.a + '</span></div>').join('') + '</div>';
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div>' + act.items.map(it => '<div style="margin:4px 0;"><span style="font-weight:600;">' + it.q + '</span><br/><span style="color:var(--color-success); font-weight:700;">➔ ' + it.a + '</span></div>').join('') + '</div>';
                                               } else if (act.type === 'sequence_device' || act.type === 'sequence_inventor') {
                                                 return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">' + act.title + '</div><div style="display:flex; gap:8px; flex-wrap:wrap;">' + act.steps.map(s => '<span style="background:var(--bg-muted); padding:4px 10px; border-radius:6px; font-size:0.75rem;"><strong>' + (s.signal || ('Step ' + s.order)) + ':</strong> ' + s.text + '</span>').join('') + '</div></div>';
                                               } else if (act.type === 'biomimicry') {
-                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">Biomimicry: Nature Inspired Inventions</div>' + act.examples.map(ex => '<div style="margin:2px 0;">ðŸŒ¿ ' + ex.nature + ' âž” ðŸ’¡ <strong>' + ex.invention + '</strong></div>').join('') + '</div>';
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">Biomimicry: Nature Inspired Inventions</div>' + act.examples.map(ex => '<div style="margin:2px 0;">🌿 ' + ex.nature + ' ➔ 💡 <strong>' + ex.invention + '</strong></div>').join('') + '</div>';
                                               } else if (act.type === 'design_cycle') {
-                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">5-Step Engineering Design Loop</div><div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">' + act.steps.map(st => '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:800;">' + st + '</span>').join(' âž” ') + '</div></div>';
+                                                return '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);"><div style="font-weight:800; margin-bottom:4px;">5-Step Engineering Design Loop</div><div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">' + act.steps.map(st => '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.75rem; font-weight:800;">' + st + '</span>').join(' ➔ ') + '</div></div>';
                                               }
                                               return '';
                                             }).join('') +
@@ -4895,17 +4896,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
   window.renderLessonActivityGeneric = function (act) {
     const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const icons = { discussion: 'ðŸ—£ï¸', inquiry: 'ðŸ”', wonder: 'ðŸ’­', reflection: 'ðŸ’­', story: 'ðŸ“–', questions: 'â“', vocab_definitions: 'ðŸ”¤', matching: 'ðŸ§©', phonics_box: 'ðŸ”Š', round_robin: 'ðŸ”', reading_journal: 'ðŸ““', sequence_device: 'ðŸ”¢', skimming_guide: 'ðŸ‘€' };
+    const icons = { discussion: '🗣️', inquiry: '🔍', wonder: '💭', reflection: '💭', story: '📖', questions: '❓', vocab_definitions: '🔤', matching: '🧩', phonics_box: '🔊', round_robin: '🔁', reading_journal: '📓', sequence_device: '🔢', skimming_guide: '👀' };
     const label = String(act.type || 'activity').replace(/_/g, ' ');
     let h = '<div style="background:var(--bg-surface); padding:10px 12px; border-radius:8px; border:1px solid var(--border-light);">' +
-      '<div style="font-weight:800; color:var(--color-primary); margin-bottom:4px;">' + (icons[act.type] || 'ðŸ“Œ') + ' ' + esc(act.title || label.charAt(0).toUpperCase() + label.slice(1)) + '</div>';
+      '<div style="font-weight:800; color:var(--color-primary); margin-bottom:4px;">' + (icons[act.type] || '📌') + ' ' + esc(act.title || label.charAt(0).toUpperCase() + label.slice(1)) + '</div>';
     if (act.prompt) h += '<div style="margin:3px 0; line-height:1.45;"><strong>Teacher:</strong> ' + esc(act.prompt) + '</div>';
     if (act.text) h += '<div style="font-style:italic; margin:3px 0; line-height:1.45;">&ldquo;' + esc(act.text) + '&rdquo;</div>';
     if (Array.isArray(act.words) && act.words.length) {
       h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:6px; margin:6px 0;">' +
         act.words.map(w => '<div style="background:var(--bg-muted); padding:6px 9px; border-radius:7px;"><strong>' + esc(w.word) + ':</strong> ' + esc(w.def) + '</div>').join('') + '</div>';
     }
-    if (act.answer) h += '<div style="margin-top:4px; color:var(--color-success); font-weight:700;">âœ” ' + esc(act.answer) + '</div>';
+    if (act.answer) h += '<div style="margin-top:4px; color:var(--color-success); font-weight:700;">✔ ' + esc(act.answer) + '</div>';
     return h + '</div>';
   };
   // LESSON LIBRARY & WORKSHEETS CATALOG
@@ -5180,7 +5181,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<text x="156" y="67" font-family="sans-serif" font-weight="900" font-size="20" fill="#ffffff" text-anchor="middle">ST</text>' +
         '<path d="M 40 100 Q 100 85 160 100" stroke="#a5b4fc" stroke-width="2.5" fill="none" opacity="0.7"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#0284c7"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">PHONICS ADVENTURE ðŸ”¤</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">PHONICS ADVENTURE 🔤</text>' +
       '</svg>';
     }
 
@@ -5194,9 +5195,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">GLOBAL</text>' +
         '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#1e3a8a" text-anchor="middle">READINGS 2</text>' +
         '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fef3c7"/>' +
-        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#b45309" text-anchor="middle">GRADE 3 â€¢ A1+</text>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#b45309" text-anchor="middle">GRADE 3 • A1+</text>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e40af"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK ðŸ“š</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
       '</svg>';
     }
 
@@ -5210,9 +5211,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<text x="106" y="56" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">GLOBAL</text>' +
         '<text x="106" y="70" font-family="sans-serif" font-weight="900" font-size="11" fill="#831843" text-anchor="middle">READINGS 3</text>' +
         '<rect x="82" y="78" width="48" height="14" rx="3" fill="#fce7f3"/>' +
-        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#9d174d" text-anchor="middle">GRADE 4 â€¢ A2</text>' +
+        '<text x="106" y="89" font-family="sans-serif" font-weight="800" font-size="8" fill="#9d174d" text-anchor="middle">GRADE 4 • A2</text>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#9d174d"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK ðŸ“š</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">STUDENT\'S BOOK 📚</text>' +
       '</svg>';
     }
 
@@ -5224,7 +5225,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<path d="M 100 32 L 132 46 L 132 72 Q 100 96 100 96 Q 68 72 68 72 L 68 46 Z" fill="#dc2626"/>' +
         '<polygon points="100,48 104,59 116,59 106,66 110,78 100,71 90,78 94,66 84,59 96,59" fill="#fbbf24"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#dc2626"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SUPER HERO ACADEMY ðŸ¦¸</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SUPER HERO ACADEMY 🦸</text>' +
       '</svg>';
     }
 
@@ -5241,7 +5242,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<path d="M 76 76 Q 100 96 124 76" fill="#4c1d95" stroke="#ffffff" stroke-width="2"/>' +
         '<polygon points="86,77 92,86 98,78" fill="#ffffff"/><polygon points="102,78 108,86 114,77" fill="#ffffff"/>' +
         '<rect x="25" y="112" width="150" height="20" rx="10" fill="#fde047"/>' +
-        '<text x="100" y="126" font-family="sans-serif" font-weight="900" font-size="9.5" fill="#581c87" text-anchor="middle" letter-spacing="0.5">BUILD YOUR MONSTER! ðŸ‘¾</text>' +
+        '<text x="100" y="126" font-family="sans-serif" font-weight="900" font-size="9.5" fill="#581c87" text-anchor="middle" letter-spacing="0.5">BUILD YOUR MONSTER! 👾</text>' +
       '</svg>';
     }
 
@@ -5254,7 +5255,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<circle cx="35" cy="35" r="1.8" fill="#ffffff"/><circle cx="165" cy="40" r="2.2" fill="#ffffff"/>' +
         '<circle cx="50" cy="95" r="1.5" fill="#ffffff"/><circle cx="155" cy="90" r="2" fill="#ffffff"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#4f46e5"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SPACE EXPLORER ðŸš€</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SPACE EXPLORER 🚀</text>' +
       '</svg>';
     }
 
@@ -5268,7 +5269,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<circle cx="120" cy="62" r="14" fill="#a855f7"/><circle cx="120" cy="62" r="6" fill="#fef08a"/>' +
         '<line x1="120" y1="76" x2="120" y2="104" stroke="#a7f3d0" stroke-width="3"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#047857"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">MAGIC GARDEN ðŸŒ¸</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">MAGIC GARDEN 🌸</text>' +
       '</svg>';
     }
 
@@ -5282,18 +5283,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<line x1="100" y1="52" x2="106" y2="52" stroke="#ffffff" stroke-width="2"/>' +
         '<text x="100" y="84" font-family="sans-serif" font-weight="900" font-size="10" fill="#78350f" text-anchor="middle">DAILY ROUTINES</text>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#b45309"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SCHOOL DAY STORY ðŸ«</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">SCHOOL DAY STORY 🏫</text>' +
       '</svg>';
     }
 
     if (item.isWorksheet || id.startsWith('ws-')) {
       const wsThemes = {
-        'ws-1': { bg: ['#7c2d12', '#ea580c'], icon: 'ðŸ½ï¸', label: 'RESTAURANT DRILL' },
-        'ws-2': { bg: ['#881337', '#e11d48'], icon: 'ðŸš’', label: 'FIRE STATION DRILL' },
-        'ws-3': { bg: ['#134e4a', '#0d9488'], icon: 'ðŸ—ºï¸', label: 'NEIGHBOURHOOD MAP' },
-        'ws-4': { bg: ['#1e1b4b', '#4f46e5'], icon: 'ðŸ•µï¸', label: 'DETECTIVE CLUES' }
+        'ws-1': { bg: ['#7c2d12', '#ea580c'], icon: '🍽️', label: 'RESTAURANT DRILL' },
+        'ws-2': { bg: ['#881337', '#e11d48'], icon: '🚒', label: 'FIRE STATION DRILL' },
+        'ws-3': { bg: ['#134e4a', '#0d9488'], icon: '🗺️', label: 'NEIGHBOURHOOD MAP' },
+        'ws-4': { bg: ['#1e1b4b', '#4f46e5'], icon: '🕵️', label: 'DETECTIVE CLUES' }
       };
-      const t = wsThemes[id] || { bg: ['#0f172a', '#3b82f6'], icon: 'ðŸ“„', label: 'PRACTICE WORKSHEET' };
+      const t = wsThemes[id] || { bg: ['#0f172a', '#3b82f6'], icon: '📄', label: 'PRACTICE WORKSHEET' };
       return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
         '<defs><linearGradient id="bg-' + id + '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="' + t.bg[0] + '"/><stop offset="100%" stop-color="' + t.bg[1] + '"/></linearGradient></defs>' +
         '<rect width="200" height="140" fill="url(#bg-' + id + ')"/>' +
@@ -5305,14 +5306,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<line x1="75" y1="70" x2="120" y2="70" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
         '<line x1="75" y1="80" x2="110" y2="80" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>' +
         '<rect x="25" y="112" width="150" height="18" rx="4" fill="#1e293b"/>' +
-        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="9" fill="#ffffff" text-anchor="middle">' + t.label + ' ðŸ“</text>' +
+        '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="9" fill="#ffffff" text-anchor="middle">' + t.label + ' 📝</text>' +
       '</svg>';
     }
 
     return '<svg viewBox="0 0 200 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
       '<rect width="200" height="140" fill="#1e293b"/>' +
       '<circle cx="100" cy="60" r="28" fill="#3b82f6" opacity="0.8"/>' +
-      '<text x="100" y="68" font-size="24" text-anchor="middle">ðŸŽ®</text>' +
+      '<text x="100" y="68" font-size="24" text-anchor="middle">🎮</text>' +
       '<rect x="25" y="112" width="150" height="18" rx="4" fill="#2563eb"/>' +
       '<text x="100" y="125" font-family="sans-serif" font-weight="900" font-size="10" fill="#ffffff" text-anchor="middle">ADVENTURE LESSON</text>' +
     '</svg>';
@@ -5374,8 +5375,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const objective = (item.learningObjectives && item.learningObjectives[0]) || item.description || "Core communicative practice";
     const grammar = (item.grammar && (item.grammar.focusPattern || item.grammar.pattern || item.grammar.formula)) || item.languageFocus || "Sentence Structure";
     const words = (item.vocabulary && item.vocabulary.core) 
-                  ? item.vocabulary.core.slice(0, 4).join(" â€¢ ") 
-                  : (item.skills ? item.skills.slice(0, 3).join(" â€¢ ") : "");
+                  ? item.vocabulary.core.slice(0, 4).join(" • ") 
+                  : (item.skills ? item.skills.slice(0, 3).join(" • ") : "");
     const topic = (item.topics && item.topics[0]) || item.topic || item.category || "General";
     const thumbnailSvg = typeof getResourceThumbnail === 'function' ? getResourceThumbnail(item) : '';
     const launchRoute = item.isWorksheet ? (item.pdfUrl || item.route || item.id) : (item.route || item.id);
@@ -5384,9 +5385,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       <div class="resource-card-v2" data-id="${item.id}" data-category="${item.category || ''}">
         <div class="card-hero" style="background: ${item.gradient || 'linear-gradient(135deg, #1e1b4b, #090d16)'};">
           ${thumbnailSvg ? `<div class="card-hero-art" style="position:absolute; inset:0; opacity:0.35; pointer-events:none; overflow:hidden;">${thumbnailSvg}</div>` : ''}
-          <span class="card-icon">${item.thumbnailIcon || (item.isWorksheet ? 'ðŸ“„' : 'ðŸŽ®')}</span>
-          <span class="card-level-chip">${item.cefrLevel || item.level || 'A1'} â€¢ +${item.xp || 100} XP</span>
-          <span class="card-sync-pill">ðŸŸ¢ Synced</span>
+          <span class="card-icon">${item.thumbnailIcon || (item.isWorksheet ? '📄' : '🎮')}</span>
+          <span class="card-level-chip">${item.cefrLevel || item.level || 'A1'} • +${item.xp || 100} XP</span>
+          <span class="card-sync-pill">🟢 Synced</span>
         </div>
 
         <div class="card-body">
@@ -5394,31 +5395,31 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           
           <!-- Pillar 1: Objectives -->
           <div class="card-pillar pillar-goal" title="${objective.replace(/"/g, '&quot;')}">
-            ðŸŽ¯ <strong>Goal:</strong> ${objective.length > 68 ? objective.substring(0, 68) + '...' : objective}
+            🎯 <strong>Goal:</strong> ${objective.length > 68 ? objective.substring(0, 68) + '...' : objective}
           </div>
 
           <!-- Pillar 2: Topics -->
           <div class="card-pillar pillar-topic">
-            ðŸ·ï¸ <strong>Topic:</strong> ${topic}
+            🏷️ <strong>Topic:</strong> ${topic}
           </div>
 
           <!-- Pillar 3: Grammar Pattern -->
           <div class="card-pillar pillar-grammar">
-            ðŸ“ <strong>Grammar:</strong> ${grammar}
+            📐 <strong>Grammar:</strong> ${grammar}
           </div>
 
           <!-- Pillar 4: Words / Vocabulary -->
           ${words ? `
             <div class="card-pillar pillar-vocab">
-              ðŸ”¤ <strong>Words:</strong> ${words}
+              🔤 <strong>Words:</strong> ${words}
             </div>
           ` : ''}
 
           <div class="card-actions-bar">
-            <button class="btn-play" onclick="launchResource('${launchRoute}')">â–¶ Start Game</button>
-            <button class="btn-preview" onclick="openResourceInspector('${item.id}')">ðŸ‘ï¸ Details</button>
-            <button class="btn-assign" onclick="openAssignModal('${item.id}')">ðŸ“‹ Assign</button>
-            ${item.worksheetRoute ? `<a href="${item.worksheetRoute}" target="_blank" class="btn-ws" title="Worksheet">ðŸ“„ WS</a>` : ''}
+            <button class="btn-play" onclick="launchResource('${launchRoute}')">▶ Start Game</button>
+            <button class="btn-preview" onclick="openResourceInspector('${item.id}')">👁️ Details</button>
+            <button class="btn-assign" onclick="openAssignModal('${item.id}')">📋 Assign</button>
+            ${item.worksheetRoute ? `<a href="${item.worksheetRoute}" target="_blank" class="btn-ws" title="Worksheet">📄 WS</a>` : ''}
           </div>
         </div>
       </div>
@@ -5432,25 +5433,25 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   const CATALOG_SECTIONS = [
     {
       id: "stem-space",
-      title: "ðŸ”¬ STEM & Science CLIL",
+      title: "🔬 STEM & Science CLIL",
       subtitle: "Hands-on planetary science, biological needs, and physical properties.",
       categoryKey: "CLIL & Science"
     },
     {
       id: "engineering-inventions",
-      title: "ðŸ› ï¸ Engineering, Design & Inventions",
+      title: "🛠️ Engineering, Design & Inventions",
       subtitle: "Hands-on design thinking, biomimicry, historical relics, blueprinting and STEM build labs.",
       categoryKey: "Engineering & Inventions"
     },
     {
       id: "story-literature",
-      title: "ðŸ“– Story, Theatre & Literature",
+      title: "📖 Story, Theatre & Literature",
       subtitle: "Narrative adventures, Wonderland theatre plays, skimming quests and interactive literature.",
       categoryKey: "Story & Literature"
     },
     {
       id: "phonics-language",
-      title: "ðŸ”¤ Phonics, Grammar & Language Quests",
+      title: "🔤 Phonics, Grammar & Language Quests",
       subtitle: "Modal mastery, past tense journeys, phonological awareness and syntactic fluency.",
       categoryKey: "Phonics & Language Quests"
     }
@@ -5460,11 +5461,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!items || items.length === 0) {
       return (
         '<div class="library-empty-state">' +
-          '<div class="library-empty-icon">ðŸ”</div>' +
+          '<div class="library-empty-icon">🔍</div>' +
           '<h3 class="library-empty-title">No resources match your search or filters</h3>' +
           '<p class="library-empty-desc">Try adjusting your keywords, switching tabs, or clearing active filters to see more results.</p>' +
           '<button type="button" class="btn-clear-filters" onclick="clearAllLibFilters()" style="margin:0;">' +
-            '<span>â†º</span> <span>Clear all filters</span>' +
+            '<span>↺</span> <span>Clear all filters</span>' +
           '</button>' +
         '</div>'
       );
@@ -5496,7 +5497,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       html += 
         '<div class="library-category-group" data-category="Printable Worksheets & Practice" id="group-practice">' +
           '<div class="group-header category-group-header">' +
-            '<h3>ðŸ“„ Printable Worksheets &amp; Practice Drills <span class="badge-count">' + remainingItems.length + (remainingItems.length === 1 ? ' Module' : ' Modules') + '</span></h3>' +
+            '<h3>📄 Printable Worksheets &amp; Practice Drills <span class="badge-count">' + remainingItems.length + (remainingItems.length === 1 ? ' Module' : ' Modules') + '</span></h3>' +
             '<p class="group-desc category-group-desc">Classroom review packs, independent skill practice, and diagnostic worksheets.</p>' +
           '</div>' +
           '<div class="resource-cards-grid cards-grid">' +
@@ -5543,13 +5544,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const filteredItems = getFilteredResources();
 
     let tabHeading = 'All Resources';
-    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = 'â­ Favorite Resources';
-    else if (libActiveTab === 'clil') tabHeading = 'ðŸš€ CLIL & Science Exploration';
-    else if (libActiveTab === 'engineering') tabHeading = 'ðŸ› ï¸ Engineering, Design & Inventions';
-    else if (libActiveTab === 'literature') tabHeading = 'ðŸ“– Story, Theatre & Literature';
-    else if (libActiveTab === 'phonics') tabHeading = 'ðŸ”¤ Phonics, Grammar & Language Quests';
-    else if (libActiveTab === 'inventor') tabHeading = 'âš™ï¸ The Small Inventor Resources';
-    else if (libActiveTab === 'brain') tabHeading = 'ðŸ§  The Day Your Brain Quit! (Reading & Skimming)';
+    if (libFilterFavoritesOnly || libActiveTab === 'favorites') tabHeading = '⭐ Favorite Resources';
+    else if (libActiveTab === 'clil') tabHeading = '🚀 CLIL & Science Exploration';
+    else if (libActiveTab === 'engineering') tabHeading = '🛠️ Engineering, Design & Inventions';
+    else if (libActiveTab === 'literature') tabHeading = '📖 Story, Theatre & Literature';
+    else if (libActiveTab === 'phonics') tabHeading = '🔤 Phonics, Grammar & Language Quests';
+    else if (libActiveTab === 'inventor') tabHeading = '⚙️ The Small Inventor Resources';
+    else if (libActiveTab === 'brain') tabHeading = '🧠 The Day Your Brain Quit! (Reading & Skimming)';
     else if (libActiveTab === 'games') tabHeading = 'Interactive Games';
     else if (libActiveTab === 'worksheets') tabHeading = 'Printable Worksheets';
     else if (libActiveTab === 'stories') tabHeading = 'Stories & Reading';
@@ -5563,19 +5564,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="library-title-wrap">' +
           '<div style="display:flex; align-items:center; gap:8px;">' +
             '<h1 class="library-title-main">Educational Resource Library</h1>' +
-            '<span class="library-verified-badge" title="All curriculum resources audited and verified">âœ“ Curated</span>' +
+            '<span class="library-verified-badge" title="All curriculum resources audited and verified">✓ Curated</span>' +
           '</div>' +
           '<p class="library-subtitle">Curated curriculum-aligned games, interactive stories, and printable worksheets for young English learners.</p>' +
         '</div>' +
         '<div class="library-header-actions">' +
           '<button type="button" class="btn-lib-favorites btn-sm-secondary ' + (libFilterFavoritesOnly ? 'is-active-fav' : '') + '" onclick="toggleLibFavoritesOnly()" title="Toggle Favorites">' +
-            '<span>â­</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
+            '<span>⭐</span> <span>Favorites' + (favoritesCount > 0 ? ' (' + favoritesCount + ')' : '') + '</span>' +
           '</button>' +
-          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>â˜ï¸ Sync to Cloud</span></button>' +
-          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">ðŸ“„ + Add Worksheet</button>' +
-          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">ðŸŽ® + Add Resource</button>' +
+          '<button type="button" class="btn-lib-sync btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" title="Sync Local Library to Cloud"><span>☁️ Sync to Cloud</span></button>' +
+          '<button type="button" class="btn-lib-secondary btn-sm-secondary" onclick="openWorksheetEditor()">📄 + Add Worksheet</button>' +
+          '<button type="button" class="btn-lib-primary btn-primary-action" onclick="openResourceEditor()">🎮 + Add Resource</button>' +
           '<button type="button" class="btn-lib-manage btn-sm-secondary" onclick="toggleLibraryManageMode()" style="' + (isLibraryManageMode ? 'background:var(--color-primary); color:#fff;' : '') + '">' +
-            (isLibraryManageMode ? 'âœ“ Done Managing' : 'âš™ï¸ Manage Mode') +
+            (isLibraryManageMode ? '✓ Done Managing' : '⚙️ Manage Mode') +
           '</button>' +
         '</div>' +
       '</div>' +
@@ -5584,48 +5585,48 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       (isLibraryManageMode ? 
         '<div class="library-manage-banner" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<strong style="color:var(--text-main); font-size:0.92rem;">âš™ï¸ Library &amp; Cloud Database Diagnostics</strong>' +
+            '<strong style="color:var(--text-main); font-size:0.92rem;">⚙️ Library &amp; Cloud Database Diagnostics</strong>' +
             '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">' +
-              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> Â· ' +
-              'Total: <strong>' + totalResources + '</strong> Â· Games: <strong>' + gamesCount + '</strong> Â· Worksheets: <strong>' + worksheetsCount + '</strong>' +
+              'Database: <span style="font-weight:700; color:' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? '#059669' : '#dc2626') + ';">' + (window.AdventureSupabase && window.AdventureSupabase.isConfigured ? 'Connected (raraoopavipwypvgpuhe)' : 'Not Connected') + '</span> · ' +
+              'Total: <strong>' + totalResources + '</strong> · Games: <strong>' + gamesCount + '</strong> · Worksheets: <strong>' + worksheetsCount + '</strong>' +
             '</div>' +
           '</div>' +
           '<div style="display:flex; gap:8px;">' +
-            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">â˜ï¸ Sync Local Library to Cloud</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">âš™ï¸ Configure Cloud DB</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="handleSyncLocalLibraryToCloud()" style="font-weight:700; background:#ecfdf5; color:#065f46; border-color:#a7f3d0;">☁️ Sync Local Library to Cloud</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="openCloudDatabaseModal()" style="font-weight:700;">⚙️ Configure Cloud DB</button>' +
           '</div>' +
         '</div>' : '') +
 
       // 2. Prominent Multi-Faceted Controls Bar
       '<div class="library-controls-bar">' +
         '<div class="library-search-wrap">' +
-          '<span class="library-search-icon">ðŸ”</span>' +
+          '<span class="library-search-icon">🔍</span>' +
           '<input type="text" id="lib-search-input" class="library-search-input" placeholder="Search resources, vocabulary, grammar, topics... (Press /)" value="' + libSearchQuery.replace(/"/g, '&quot;') + '" oninput="handleLibSearch(this.value)" />' +
-          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">âœ•</button>' +
+          '<button type="button" id="lib-search-clear-btn" class="library-search-clear ' + (libSearchQuery ? 'is-visible' : '') + '" onclick="clearLibSearch()" title="Clear search">✕</button>' +
         '</div>' +
         '<div class="library-filters-row">' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'category\', this.value)">' +
-              '<option value="all" ' + (libFilterCategory === 'all' ? 'selected' : '') + '>All Categories â–¾</option>' +
-              '<option value="CLIL &amp; Science" ' + (libFilterCategory === 'CLIL & Science' ? 'selected' : '') + '>ðŸ”¬ CLIL &amp; Science</option>' +
-              '<option value="Engineering &amp; Inventions" ' + (libFilterCategory === 'Engineering & Inventions' ? 'selected' : '') + '>ðŸ› ï¸ Engineering &amp; Inventions</option>' +
-              '<option value="Story &amp; Literature" ' + (libFilterCategory === 'Story & Literature' ? 'selected' : '') + '>ðŸ“– Story &amp; Literature</option>' +
-              '<option value="Phonics &amp; Language Quests" ' + (libFilterCategory === 'Phonics & Language Quests' ? 'selected' : '') + '>ðŸ”¤ Phonics &amp; Language Quests</option>' +
+              '<option value="all" ' + (libFilterCategory === 'all' ? 'selected' : '') + '>All Categories ▾</option>' +
+              '<option value="CLIL &amp; Science" ' + (libFilterCategory === 'CLIL & Science' ? 'selected' : '') + '>🔬 CLIL &amp; Science</option>' +
+              '<option value="Engineering &amp; Inventions" ' + (libFilterCategory === 'Engineering & Inventions' ? 'selected' : '') + '>🛠️ Engineering &amp; Inventions</option>' +
+              '<option value="Story &amp; Literature" ' + (libFilterCategory === 'Story & Literature' ? 'selected' : '') + '>📖 Story &amp; Literature</option>' +
+              '<option value="Phonics &amp; Language Quests" ' + (libFilterCategory === 'Phonics & Language Quests' ? 'selected' : '') + '>🔤 Phonics &amp; Language Quests</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'categoryGroup\', this.value)">' +
-              '<option value="all" ' + (libFilterCategoryGroup === 'all' ? 'selected' : '') + '>All Groups â–¾</option>' +
-              '<option value="Science &amp; Engineering" ' + (libFilterCategoryGroup === 'Science & Engineering' ? 'selected' : '') + '>ðŸ”¬ Science &amp; Engineering</option>' +
-              '<option value="Literature &amp; Storytelling" ' + (libFilterCategoryGroup === 'Literature & Storytelling' ? 'selected' : '') + '>ðŸ“– Literature &amp; Storytelling</option>' +
-              '<option value="Communication &amp; Roleplay" ' + (libFilterCategoryGroup === 'Communication & Roleplay' ? 'selected' : '') + '>ðŸŽ­ Communication &amp; Roleplay</option>' +
-              '<option value="Grammar &amp; Phonics" ' + (libFilterCategoryGroup === 'Grammar & Phonics' ? 'selected' : '') + '>ðŸ”¤ Grammar &amp; Phonics</option>' +
-              '<option value="Curriculum &amp; Textbooks" ' + (libFilterCategoryGroup === 'Curriculum & Textbooks' ? 'selected' : '') + '>ðŸ“š Curriculum &amp; Textbooks</option>' +
+              '<option value="all" ' + (libFilterCategoryGroup === 'all' ? 'selected' : '') + '>All Groups ▾</option>' +
+              '<option value="Science &amp; Engineering" ' + (libFilterCategoryGroup === 'Science & Engineering' ? 'selected' : '') + '>🔬 Science &amp; Engineering</option>' +
+              '<option value="Literature &amp; Storytelling" ' + (libFilterCategoryGroup === 'Literature & Storytelling' ? 'selected' : '') + '>📖 Literature &amp; Storytelling</option>' +
+              '<option value="Communication &amp; Roleplay" ' + (libFilterCategoryGroup === 'Communication & Roleplay' ? 'selected' : '') + '>🎭 Communication &amp; Roleplay</option>' +
+              '<option value="Grammar &amp; Phonics" ' + (libFilterCategoryGroup === 'Grammar & Phonics' ? 'selected' : '') + '>🔤 Grammar &amp; Phonics</option>' +
+              '<option value="Curriculum &amp; Textbooks" ' + (libFilterCategoryGroup === 'Curriculum & Textbooks' ? 'selected' : '') + '>📚 Curriculum &amp; Textbooks</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'level\', this.value)">' +
-              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels â–¾</option>' +
+              '<option value="all" ' + (libFilterLevel === 'all' ? 'selected' : '') + '>All Levels ▾</option>' +
               '<option value="Pre-A1" ' + (libFilterLevel === 'Pre-A1' ? 'selected' : '') + '>Pre-A1</option>' +
               '<option value="A1" ' + (libFilterLevel === 'A1' ? 'selected' : '') + '>A1</option>' +
               '<option value="A1+" ' + (libFilterLevel === 'A1+' ? 'selected' : '') + '>A1+</option>' +
@@ -5635,19 +5636,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'type\', this.value)">' +
-              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type â–¾</option>' +
-              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>ðŸŽ® Interactive Game</option>' +
-              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>ðŸ“„ Worksheet</option>' +
-              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>ðŸ“š Story &amp; Reading</option>' +
-              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>ðŸŽ­ Roleplay &amp; Speaking</option>' +
-              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>ðŸ“– Textbook</option>' +
-              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>ðŸ”¤ Phonics</option>' +
-              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>ðŸŒ CLIL / Science</option>' +
+              '<option value="all" ' + (libFilterType === 'all' ? 'selected' : '') + '>Resource Type ▾</option>' +
+              '<option value="game" ' + (libFilterType === 'game' ? 'selected' : '') + '>🎮 Interactive Game</option>' +
+              '<option value="worksheet" ' + (libFilterType === 'worksheet' ? 'selected' : '') + '>📄 Worksheet</option>' +
+              '<option value="story" ' + (libFilterType === 'story' ? 'selected' : '') + '>📚 Story &amp; Reading</option>' +
+              '<option value="roleplay" ' + (libFilterType === 'roleplay' ? 'selected' : '') + '>🎭 Roleplay &amp; Speaking</option>' +
+              '<option value="textbook" ' + (libFilterType === 'textbook' ? 'selected' : '') + '>📖 Textbook</option>' +
+              '<option value="phonics" ' + (libFilterType === 'phonics' ? 'selected' : '') + '>🔤 Phonics</option>' +
+              '<option value="clil" ' + (libFilterType === 'clil' ? 'selected' : '') + '>🌍 CLIL / Science</option>' +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'grade\', this.value)">' +
-              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades â–¾</option>' +
+              '<option value="all" ' + (libFilterGrade === 'all' ? 'selected' : '') + '>All Grades ▾</option>' +
               '<option value="Grade 1" ' + (libFilterGrade === 'Grade 1' ? 'selected' : '') + '>Grade 1</option>' +
               '<option value="Grade 2" ' + (libFilterGrade === 'Grade 2' ? 'selected' : '') + '>Grade 2</option>' +
               '<option value="Grade 3" ' + (libFilterGrade === 'Grade 3' ? 'selected' : '') + '>Grade 3</option>' +
@@ -5658,7 +5659,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'skill\', this.value)">' +
-              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill â–¾</option>' +
+              '<option value="all" ' + (libFilterSkill === 'all' ? 'selected' : '') + '>Skill ▾</option>' +
               '<option value="Speaking" ' + (libFilterSkill === 'Speaking' ? 'selected' : '') + '>Speaking</option>' +
               '<option value="Listening" ' + (libFilterSkill === 'Listening' ? 'selected' : '') + '>Listening</option>' +
               '<option value="Reading" ' + (libFilterSkill === 'Reading' ? 'selected' : '') + '>Reading</option>' +
@@ -5671,20 +5672,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'topic\', this.value)">' +
-              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic â–¾</option>' +
+              '<option value="all" ' + (libFilterTopic === 'all' ? 'selected' : '') + '>Topic ▾</option>' +
               availableTopics.map(t => '<option value="' + t.replace(/"/g, '&quot;') + '" ' + (libFilterTopic === t ? 'selected' : '') + '>' + t + '</option>').join('') +
             '</select>' +
           '</div>' +
           '<div class="filter-dropdown-wrap">' +
             '<select class="library-select" onchange="setLibFilter(\'duration\', this.value)">' +
-              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration â–¾</option>' +
+              '<option value="all" ' + (libFilterDuration === 'all' ? 'selected' : '') + '>Duration ▾</option>' +
               '<option value="short" ' + (libFilterDuration === 'short' ? 'selected' : '') + '>&lt; 25 min</option>' +
-              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25â€“40 min</option>' +
+              '<option value="medium" ' + (libFilterDuration === 'medium' ? 'selected' : '') + '>25–40 min</option>' +
               '<option value="long" ' + (libFilterDuration === 'long' ? 'selected' : '') + '>40+ min</option>' +
             '</select>' +
           '</div>' +
           '<button type="button" id="lib-clear-filters-btn" class="btn-clear-filters" onclick="clearAllLibFilters()" style="' + (hasActiveFilters ? 'display:inline-flex;' : 'display:none;') + '">' +
-            '<span>â†º</span> <span>Clear filters</span>' +
+            '<span>↺</span> <span>Clear filters</span>' +
           '</button>' +
         '</div>' +
       '</div>' +
@@ -5697,30 +5698,30 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span class="cat-pill-count tab-count-badge">' + totalResources + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'clil' ? 'is-active' : '') + '" onclick="setLibTab(\'clil\')">' +
-            '<span>ðŸš€ CLIL &amp; Science</span>' +
+            '<span>🚀 CLIL &amp; Science</span>' +
             '<span class="cat-pill-count tab-count-badge">' + clilCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'engineering' ? 'is-active' : '') + '" onclick="setLibTab(\'engineering\')">' +
-            '<span>ðŸ› ï¸ Engineering</span>' +
+            '<span>🛠️ Engineering</span>' +
             '<span class="cat-pill-count tab-count-badge">' + engCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'literature' ? 'is-active' : '') + '" onclick="setLibTab(\'literature\')">' +
-            '<span>ðŸ“– Literature &amp; Story</span>' +
+            '<span>📖 Literature &amp; Story</span>' +
             '<span class="cat-pill-count tab-count-badge">' + litCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'phonics' ? 'is-active' : '') + '" onclick="setLibTab(\'phonics\')">' +
-            '<span>ðŸ”¤ Phonics &amp; Language</span>' +
+            '<span>🔤 Phonics &amp; Language</span>' +
             '<span class="cat-pill-count tab-count-badge">' + phonicsCount + '</span>' +
           '</button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'worksheets' ? 'is-active' : '') + '" onclick="setLibTab(\'worksheets\')">' +
-            '<span>ðŸ“„ Worksheets</span>' +
+            '<span>📄 Worksheets</span>' +
             '<span class="cat-pill-count tab-count-badge">' + worksheetsCount + '</span>' +
           '</button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>ðŸ§  The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>âš™ï¸ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
-          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>ðŸ‡ Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'brain' ? 'is-active' : '') + '" onclick="setLibTab(\'brain\')" style="border-color:rgba(236,72,153,0.4); background:' + (libActiveTab === 'brain' ? 'linear-gradient(135deg, #831843, #be185d)' : 'rgba(236,72,153,0.1)') + ';"><span>🧠 The Day Your Brain Quit!</span><span class="cat-pill-count tab-count-badge" style="background:#ec4899; color:#fff; font-weight:900;">RG2 p.17</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'inventor' ? 'is-active' : '') + '" onclick="setLibTab(\'inventor\')" style="border-color:rgba(6,182,212,0.4); background:' + (libActiveTab === 'inventor' ? 'linear-gradient(135deg, #0e7490, #0891b2)' : 'rgba(6,182,212,0.1)') + ';"><span>⚙️ The Small Inventor</span><span class="cat-pill-count tab-count-badge" style="background:#06b6d4; color:#0f172a; font-weight:900;">Series</span></button>' +
+          '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'alice' ? 'is-active' : '') + '" onclick="setLibTab(\'alice\')" style="border-color:rgba(139,92,246,0.4); background:' + (libActiveTab === 'alice' ? 'linear-gradient(135deg, #4c1d95, #6d28d9)' : 'rgba(139,92,246,0.1)') + ';"><span>🐇 Alice Wonderland</span><span class="cat-pill-count tab-count-badge" style="background:#a855f7; color:#fff;">Series</span></button>' +
           '<button type="button" class="lib-cat-tab lib-tab-btn ' + (libActiveTab === 'favorites' || libFilterFavoritesOnly ? 'is-active' : '') + '" onclick="setLibTab(\'favorites\')">' +
-            '<span>â­ Favorites</span>' +
+            '<span>⭐ Favorites</span>' +
             '<span class="cat-pill-count tab-count-badge">' + favoritesCount + '</span>' +
           '</button>' +
         '</div>' +
@@ -5735,11 +5736,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="library-section-right">' +
           '<label for="lib-sort-select" class="sort-label">Sort:</label>' +
           '<select id="lib-sort-select" class="library-select-sort" onchange="setLibSort(this.value)">' +
-            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) â–¾</option>' +
-            '<option value="objective" ' + (libSortOrder === 'objective' ? 'selected' : '') + '>ðŸŽ¯ Lesson Objectives (A to Z)</option>' +
-            '<option value="words" ' + (libSortOrder === 'words' ? 'selected' : '') + '>ðŸ”¤ Target Words (A to Z)</option>' +
-            '<option value="grammar" ' + (libSortOrder === 'grammar' ? 'selected' : '') + '>ðŸ“ Grammar Pattern (A to Z)</option>' +
-            '<option value="topic" ' + (libSortOrder === 'topic' ? 'selected' : '') + '>ðŸ·ï¸ CLIL Topic / Category</option>' +
+            '<option value="default" ' + (libSortOrder === 'default' ? 'selected' : '') + '>Default (Curated) ▾</option>' +
+            '<option value="objective" ' + (libSortOrder === 'objective' ? 'selected' : '') + '>🎯 Lesson Objectives (A to Z)</option>' +
+            '<option value="words" ' + (libSortOrder === 'words' ? 'selected' : '') + '>🔤 Target Words (A to Z)</option>' +
+            '<option value="grammar" ' + (libSortOrder === 'grammar' ? 'selected' : '') + '>📐 Grammar Pattern (A to Z)</option>' +
+            '<option value="topic" ' + (libSortOrder === 'topic' ? 'selected' : '') + '>🏷️ CLIL Topic / Category</option>' +
             '<option value="title-asc" ' + (libSortOrder === 'title-asc' ? 'selected' : '') + '>Title (A to Z)</option>' +
             '<option value="title-desc" ' + (libSortOrder === 'title-desc' ? 'selected' : '') + '>Title (Z to A)</option>' +
             '<option value="level" ' + (libSortOrder === 'level' ? 'selected' : '') + '>CEFR Level</option>' +
@@ -5753,44 +5754,44 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       // The Day Your Brain Quit! Series Showcase Shelf
       ((libActiveTab === 'brain' || (libActiveTab === 'all' && !hasActiveFilters)) ?
         '<div class="brain-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c0519 80%, #831843 100%); border:2px solid #ec4899; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(236,72,153,0.25); position:relative; overflow:hidden;">' +
-          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">ðŸ§ </div>' +
+          '<div style="position:absolute; right:-15px; top:-20px; font-size:8.5rem; opacity:0.08; pointer-events:none;">🧠</div>' +
           '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
             '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">ðŸ§ </span>' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #ec4899);">🧠</span>' +
               '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! â€¢ Can You Save Your Brain?</h2>' +
-                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> Â· Grade 4 (CEFR A1/A1+) Â· 35 min</p>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fbcfe8; margin:0; letter-spacing:-0.3px;">The Day Your Brain Quit! • Can You Save Your Brain?</h2>' +
+                '<p style="font-size:0.85rem; color:#fce7f3; margin:2px 0 0 0;">Interactive Skimming &amp; Reading Adventure based on <em>Unit 1 Page 17 RG2 (How Your Brain Learns)</em> · Grade 4 (CEFR A1/A1+) · 35 min</p>' +
               '</div>' +
             '</div>' +
-            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">âš¡ NEW Â· READING &amp; SKIMMING</span>' +
+            '<span class="badge" style="background:#ec4899; color:#ffffff; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(236,72,153,0.5);">⚡ NEW · READING &amp; SKIMMING</span>' +
           '</div>' +
           '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
             '<div style="background:rgba(15,23,42,0.9); border:2px solid #ec4899; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 Â· CEFR A1/A1+ âš¡</span>' +
-                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">â±ï¸ 35 min</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1/A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#fbcfe8; font-weight:800;">⏱️ 35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ§  Interactive 10-Screen Story Adventure</h4>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🧠 Interactive 10-Screen Story Adventure</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">30-second timed skimming challenge, 4 sci-fi doors, interactive detective evidence board, brain job application, and live voice recording.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(236,72,153,0.2); color:#fbcfe8; border:1px solid rgba(236,72,153,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Skimming</span>' +
-                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think Â· Learn Â· Remember Â· Imagine</span>' +
+                  '<span style="font-size:0.7rem; background:rgba(59,130,246,0.2); color:#bfdbfe; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Think · Learn · Remember · Imagine</span>' +
                   '<span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#a7f3d0; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Voice Recorder</span>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">â–¶ Play Brain Adventure</a>' +
-                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">ðŸ–¨ï¸ Worksheets</a>' +
+                '<a href="brain/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #ec4899, #be185d); border:none; box-shadow:0 4px 14px rgba(236,72,153,0.4);">▶ Play Brain Adventure</a>' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Worksheets</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(236,72,153,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
                   '<span style="font-size:0.75rem; font-weight:800; color:#f472b6; background:rgba(244,114,182,0.1); padding:3px 8px; border-radius:6px;">PRINTABLE WORKBOOK</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">ðŸ“„ 5 A4 Pages</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">📄 5 A4 Pages</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ“„ 5-Part Detective Workbook</h4>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📄 5-Part Detective Workbook</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Skimming Evidence Log, 4-Doors Clue Sheet, Brain Job Application Form, Humorous Scenarios Comic Grid, and Brain Defender Gold Certificate.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Print Ready</span>' +
@@ -5798,16 +5799,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">ðŸ–¨ï¸ Open Printables</a>' +
+                '<a href="brain/worksheets.html" target="_blank" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#be185d; border:none;">🖨️ Open Printables</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
                   '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">CURRICULUM SOURCE</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17â€“18)</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 17–18)</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ“– Global Readings 3</h4>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 Global Readings 3</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original textbook pages: Skimming a Text rules (headings, pictures, first sentences) &amp; Learning and Your Brain neuroscience text.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Macmillan RG3</span>' +
@@ -5815,7 +5816,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">ðŸ“– Open Book p.17</button>' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-3\', 17)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.17</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -5824,26 +5825,26 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       // The Small Inventor Series Showcase Shelf
       ((libActiveTab === 'inventor' || (libActiveTab === 'all' && !hasActiveFilters)) ?
         '<div class="inventor-library-shelf" style="background:linear-gradient(135deg, #0f172a 0%, #164e63 45%, #0e7490 80%, #0891b2 100%); border:2px solid #06b6d4; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(6,182,212,0.25); position:relative; overflow:hidden;">' +
-          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">âš™ï¸</div>' +
+          '<div style="position:absolute; right:-20px; top:-20px; font-size:9rem; opacity:0.07; pointer-events:none;">⚙️</div>' +
           '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
             '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">ðŸš€</span>' +
+              '<span style="font-size:2.2rem; filter:drop-shadow(0 0 12px #06b6d4);">🚀</span>' +
               '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor â€¢ Young Inventor Academy</h2>' +
-                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 Â· CEFR A1+) Â· 10 Interactive Missions &amp; Capstone Expo</p>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#67e8f9; margin:0; letter-spacing:-0.3px;">The Small Inventor • Young Inventor Academy</h2>' +
+                '<p style="font-size:0.85rem; color:#cffafe; margin:2px 0 0 0;">Interactive STEM &amp; Invention Adventure based on <em>My Good Ideas Book</em> (Grade 4 · CEFR A1+) · 10 Interactive Missions &amp; Capstone Expo</p>' +
               '</div>' +
             '</div>' +
-            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">ðŸ’¡ STEM &amp; CLIL SERIES</span>' +
+            '<span class="badge" style="background:#06b6d4; color:#0f172a; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem; box-shadow:0 0 12px rgba(6,182,212,0.5);">💡 STEM &amp; CLIL SERIES</span>' +
           '</div>' +
           '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; position:relative; z-index:2;">' +
             '<div style="background:rgba(15,23,42,0.9); border:2px solid #06b6d4; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 Â· CEFR A1+ âš¡</span>' +
-                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">â±ï¸ 35â€“45 min</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:3px 8px; border-radius:6px;">GRADE 4 · CEFR A1+ ⚡</span>' +
+                  '<span style="font-size:0.78rem; color:#67e8f9; font-weight:800;">⏱️ 35–45 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸš€ Young Inventor Academy</h4>' +
-                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem â†’ Idea â†’ Invention â†’ Improvement â†’ Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">🚀 Young Inventor Academy</h4>' +
+                '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">From Problem → Idea → Invention → Improvement → Presentation. 10 connected missions with interactive blueprint canvas, modular assembly pod, stress testing chamber, and Capstone Expo.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(6,182,212,0.2); color:#67e8f9; border:1px solid rgba(6,182,212,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">CAN / CAN\'T</span>' +
                   '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">HAS / HAVE</span>' +
@@ -5852,17 +5853,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">â–¶ Enter Inventor Lab</a>' +
-                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">ðŸ–¨ï¸ Dossier</a>' +
+                '<a href="young-inventor/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #06b6d4, #0891b2); border:none; box-shadow:0 4px 14px rgba(6,182,212,0.4);">▶ Enter Inventor Lab</a>' +
+                '<a href="young-inventor/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ Dossier</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(6,182,212,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 Â· COMPANION</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">â±ï¸ 35 min</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.1); padding:3px 8px; border-radius:6px;">READING 1 · COMPANION</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">⏱️ 35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ’¡ The After-School Inventor</h4>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The After-School Inventor</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Meet Clara Doodle, the smart eraser, alarm clock pillow, and clean-up machine. Practice vocabulary and problem-solution pairs.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Reading 1</span>' +
@@ -5870,17 +5871,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">â–¶ Play Clara\'s Lab</a>' +
-                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">ðŸ–¨ï¸ WS</a>' +
+                '<a href="inventor-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#0e7490; border:none;">▶ Play Clara\'s Lab</a>' +
+                '<a href="inventor-lab/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.9); border:2px solid #f59e0b; border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px; box-shadow:0 8px 20px rgba(0,0,0,0.4);">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:6px;">READING 2 Â· NEW ðŸ’¡</span>' +
-                  '<span style="font-size:0.78rem; color:#fde68a; font-weight:800;">â±ï¸ 30 min</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:6px;">READING 2 · NEW 💡</span>' +
+                  '<span style="font-size:0.78rem; color:#fde68a; font-weight:800;">⏱️ 30 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ’¡ The Inventorâ€™s Odyssey: My Good Ideas Lab</h4>' +
+                '<h4 style="font-size:1.05rem; font-weight:900; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">💡 The Inventor’s Odyssey: My Good Ideas Lab</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Interactive 4-part lesson: Rolling pencil hexagon physics, Biomimicry plant &amp; bird matching, Leonardo da Vinci parachute drop tester, and Karl Benz 1885 motorcar iteration.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid rgba(245,158,11,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">Problem &amp; Solution</span>' +
@@ -5889,16 +5890,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<a href="good-ideas-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; border:none; box-shadow:0 4px 14px rgba(245,158,11,0.4);">â–¶ Play Good Ideas Lab</a>' +
+                '<a href="good-ideas-lab/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; border:none; box-shadow:0 4px 14px rgba(245,158,11,0.4);">▶ Play Good Ideas Lab</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.8); border:1.5px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
                   '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b; background:rgba(245,158,11,0.1); padding:3px 8px; border-radius:6px;">TEXTBOOK SOURCE</span>' +
-                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18â€“21)</span>' +
+                  '<span style="font-size:0.78rem; color:#94a3b8; font-weight:700;">Unit 1 (pp. 18–21)</span>' +
                 '</div>' +
-                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">ðŸ“– My Good Ideas Book</h4>' +
+                '<h4 style="font-size:1.02rem; font-weight:800; color:#ffffff; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">📖 My Good Ideas Book</h4>' +
                 '<p style="font-size:0.8rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;">Explore original curriculum pages: Thomas Edison notebooks, Leonardo da Vinci parachute sketches, Kingfisher biomimicry, and Karl Benz motorcar.</p>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;">' +
                   '<span style="font-size:0.7rem; background:rgba(255,255,255,0.08); color:#cbd5e1; padding:2px 7px; border-radius:4px;">Primary Source</span>' +
@@ -5906,7 +5907,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
               '</div>' +
               '<div style="display:flex; gap:8px;">' +
-                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">ðŸ“– Open Book p.18</button>' +
+                '<button type="button" class="btn-primary-action" onclick="openTextbookReader(\'book-global-readings-2\', 18)" style="flex:1; justify-content:center; padding:10px 14px; font-size:0.88rem; font-weight:800; text-decoration:none; background:#b45309; border:none; cursor:pointer;">📖 Open Book p.18</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -5917,27 +5918,27 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="wonderland-library-shelf" style="background:linear-gradient(135deg, #1e1b4b 0%, #2e1065 50%, #064e3b 100%); border:2px solid #f59e0b; border-radius:18px; padding:20px 24px; margin-bottom:24px; box-shadow:0 12px 30px rgba(0,0,0,0.35); position:relative; overflow:hidden;">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; position:relative; z-index:2;">' +
             '<div style="display:flex; align-items:center; gap:10px;">' +
-              '<span style="font-size:2rem;">ðŸ‡</span>' +
+              '<span style="font-size:2rem;">🐇</span>' +
               '<div>' +
-                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland â€¢ Classroom Play &amp; Prop Unit</h2>' +
+                '<h2 style="font-size:1.35rem; font-weight:900; color:#fef08a; margin:0; letter-spacing:-0.3px;">Alice in Wonderland • Classroom Play &amp; Prop Unit</h2>' +
                 '<p style="font-size:0.85rem; color:#cbd5e1; margin:2px 0 0 0;">3-Lesson Interactive Play Preparation, Theatre Prop Workshops &amp; Story Explorations for Grade 3 (A1/A1+)</p>' +
               '</div>' +
             '</div>' +
-            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">ðŸŽ­ THEATRE SERIES</span>' +
+            '<span class="badge" style="background:#f59e0b; color:#000; font-weight:900; padding:6px 14px; border-radius:20px; font-size:0.82rem;">🎭 THEATRE SERIES</span>' +
           '</div>' +
           '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; position:relative; z-index:2;">' +
             '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 Â· NEW âš¡</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 1 · NEW ⚡</span>' +
                   '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">ðŸ‡ Welcome to Wonderland</h4>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🐇 Welcome to Wonderland</h4>' +
                 '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Scavenger hunt, 9 characters, prop matching, Past Simple discovery, and workshop chest reveal.</p>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">â–¶ Play Lesson 1</a>' +
-                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">ðŸ–¨ï¸ WS</a>' +
+                '<a href="wonderland/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 1</a>' +
+                '<a href="wonderland/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
@@ -5946,12 +5947,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.75rem; font-weight:800; color:#38bdf8;">READING QUEST</span>' +
                   '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">ðŸ” The Skimming Detectives</h4>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🔍 The Skimming Detectives</h4>' +
                 '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">6-event story sequence, 4 feeling monsters, and Eagle Eye Skimming challenge.</p>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
-                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">â–¶ Play Quest</a>' +
-                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">ðŸ–¨ï¸ WS</a>' +
+                '<a href="alice-quest/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Quest</a>' +
+                '<a href="alice-quest/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.85); border:1.5px solid rgba(255,255,255,0.15); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
@@ -5960,37 +5961,37 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.75rem; font-weight:800; color:#c084fc;">STORY THEATRE</span>' +
                   '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">40 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">ðŸ“– Alice Story Engine</h4>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">📖 Alice Story Engine</h4>' +
                 '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Interactive branching story stages with audio narration and character dialogues.</p>' +
               '</div>' +
-              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">â–¶ Open Story Theatre</a>' +
+              '<a href="story-engine/index.html?story=alice" class="btn-primary-action" style="justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Open Story Theatre</a>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #f59e0b; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 Â· NEW âš¡</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f59e0b;">LESSON 2 · NEW ⚡</span>' +
                   '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">â° Wonderland Time Machine</h4>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">⏰ Wonderland Time Machine</h4>' +
                 '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Past Simple, reverse clock spin, story builder, Mad Hatter lie detector, and Time Monster.</p>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">â–¶ Play Lesson 2</a>' +
-                '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">ðŸ–¨ï¸ WS</a>' +
+                '<a href="wonderland-time-machine/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none;">▶ Play Lesson 2</a>' +
+                '<a href="wonderland-time-machine/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
             '<div style="background:rgba(15,23,42,0.85); border:1.5px solid #ec4899; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">' +
               '<div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
-                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 Â· FINALE ðŸŽ­</span>' +
+                  '<span style="font-size:0.75rem; font-weight:800; color:#f472b6;">LESSON 3 · FINALE 🎭</span>' +
                   '<span style="font-size:0.75rem; color:#a7f3d0; font-weight:800;">35 min</span>' +
                 '</div>' +
-                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">ðŸŽ­ We Are the Story!</h4>' +
+                '<h4 style="font-size:1rem; font-weight:800; color:#fff; margin:0 0 4px 0;">🎭 We Are the Story!</h4>' +
                 '<p style="font-size:0.78rem; color:#94a3b8; margin:0; line-height:1.3;">Story sequencer, freeze frame theatre, mini script builder &amp; prop workshop.</p>' +
               '</div>' +
               '<div style="display:flex; gap:6px;">' +
-                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">â–¶ Play Lesson 3</a>' +
-                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">ðŸ–¨ï¸ WS</a>' +
+                '<a href="wonderland-story/index.html" class="btn-primary-action" style="flex:1; justify-content:center; padding:7px 10px; font-size:0.82rem; text-decoration:none; background:#ec4899; border-color:#f472b6;">▶ Play Lesson 3</a>' +
+                '<a href="wonderland-story/worksheet.html" target="_blank" class="btn-sm-secondary" style="padding:7px 10px; font-size:0.82rem; text-decoration:none;">🖨️ WS</a>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -6156,7 +6157,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const isWs = Boolean(res.isWorksheet);
     const rawLevel = res.cefrLevel || res.level || 'A1';
     const levelSlug = rawLevel.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-    const gradeText = Array.isArray(res.grades) ? res.grades.join(', ') : (res.grade || 'Grades 2â€“4');
+    const gradeText = Array.isArray(res.grades) ? res.grades.join(', ') : (res.grade || 'Grades 2–4');
     const durationText = res.estimatedMinutes ? (res.estimatedMinutes + ' min') : (res.duration ? (typeof res.duration === 'number' ? res.duration + ' min' : res.duration) : (isWs ? '20 min' : '35 min'));
     const xpText = (res.xp || (isWs ? 40 : 50)) + ' XP';
     const skillsText = Array.isArray(res.skills) ? res.skills.join(', ') : (res.skill || 'Speaking & Communicative Practice');
@@ -6184,7 +6185,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         : '';
       vocabSection = 
         '<div class="preview-section preview-vocab-box" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; margin-bottom:14px;">' +
-          '<h4 class="preview-section-title" style="margin-top:0;">ðŸ”¤ Target Vocabulary &amp; Lexical Chunks</h4>' +
+          '<h4 class="preview-section-title" style="margin-top:0;">🔤 Target Vocabulary &amp; Lexical Chunks</h4>' +
           (coreChips ? '<div style="margin-bottom:8px;"><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Core Target Words:</strong>' + coreChips + '</div>' : '') +
           (suppChips ? '<div style="margin-bottom:8px;"><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Supporting Vocabulary:</strong>' + suppChips + '</div>' : '') +
           (phonicsChips ? '<div><strong style="font-size:0.8rem; color:#64748b; text-transform:uppercase; letter-spacing:0.04em; display:block; margin-bottom:4px;">Phonics &amp; Sound Cues:</strong>' + phonicsChips + '</div>' : '') +
@@ -6199,23 +6200,23 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         : '';
       grammarSection = 
         '<div class="preview-section preview-grammar-box" style="background:#faf5ff; border:1px solid #f3e8ff; border-radius:10px; padding:12px 16px; margin-bottom:14px;">' +
-          '<h4 class="preview-section-title" style="margin-top:0; color:#6b21a8;">ðŸ“ Grammar Focus &amp; Sentence Formulas</h4>' +
+          '<h4 class="preview-section-title" style="margin-top:0; color:#6b21a8;">📐 Grammar Focus &amp; Sentence Formulas</h4>' +
           (res.grammar.focusPattern ? '<p style="font-weight:700; color:#581c87; margin:0 0 8px 0; font-size:0.92rem;">Target Pattern: &ldquo;' + res.grammar.focusPattern + '&rdquo;</p>' : '') +
           (formulasHtml ? '<div class="preview-formulas-wrap">' + formulasHtml + '</div>' : '') +
         '</div>';
     }
 
-    let launchBtnText = 'â–¶ Start Game';
+    let launchBtnText = '▶ Start Game';
     if (isWs) {
-      launchBtnText = 'ðŸ“„ Open Worksheet';
+      launchBtnText = '📄 Open Worksheet';
     } else if ((res.type || '').includes('story') || (res.category || '').toLowerCase().includes('story')) {
-      launchBtnText = 'ðŸ“– Read Story';
+      launchBtnText = '📖 Read Story';
     } else if ((res.type || '').includes('textbook') || (res.category || '').toLowerCase().includes('textbook')) {
-      launchBtnText = 'ðŸ“š Launch Lesson';
+      launchBtnText = '📚 Launch Lesson';
     }
 
     contentBox.innerHTML = 
-      '<button class="modal-close-btn" onclick="closeModal(\'modal-resource-preview\')" title="Close Preview">âœ•</button>' +
+      '<button class="modal-close-btn" onclick="closeModal(\'modal-resource-preview\')" title="Close Preview">✕</button>' +
       
       // Modal Hero Header
       '<div class="preview-hero-banner">' +
@@ -6225,13 +6226,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="preview-hero-info">' +
           '<div class="preview-hero-badges">' +
             '<span class="cefr-badge cefr-' + levelSlug + ' badge-cefr">' + rawLevel + '</span>' +
-            (res.categoryGroup ? '<span class="preview-group-badge" style="background:#0f172a; color:#38bdf8; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.3);">ðŸ›ï¸ ' + res.categoryGroup + '</span>' : '') +
-            '<span class="preview-grade-badge">ðŸŽ“ ' + gradeText + '</span>' +
-            '<span class="preview-time-badge">â±ï¸ ' + durationText + '</span>' +
-            '<span class="preview-xp-badge">â­ ' + xpText + '</span>' +
+            (res.categoryGroup ? '<span class="preview-group-badge" style="background:#0f172a; color:#38bdf8; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.3);">🏛️ ' + res.categoryGroup + '</span>' : '') +
+            '<span class="preview-grade-badge">🎓 ' + gradeText + '</span>' +
+            '<span class="preview-time-badge">⏱️ ' + durationText + '</span>' +
+            '<span class="preview-xp-badge">⭐ ' + xpText + '</span>' +
           '</div>' +
           '<h2 class="preview-title">' + res.title + '</h2>' +
-          '<p class="preview-category-tag">' + (res.categoryLabel || res.category || 'Classroom Activity') + ' â€¢ ' + (res.activityMode || 'Interactive Classroom Activity') + '</p>' +
+          '<p class="preview-category-tag">' + (res.categoryLabel || res.category || 'Classroom Activity') + ' • ' + (res.activityMode || 'Interactive Classroom Activity') + '</p>' +
         '</div>' +
       '</div>' +
 
@@ -6239,21 +6240,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div class="preview-modal-body">' +
         // Overview
         '<div class="preview-section">' +
-          '<h4 class="preview-section-title">ðŸ“‹ Overview &amp; Curriculum Focus</h4>' +
+          '<h4 class="preview-section-title">📋 Overview &amp; Curriculum Focus</h4>' +
           '<p class="preview-desc-text">' + (res.description || 'Interactive educational classroom lesson and student practice drill.') + '</p>' +
           '<div class="preview-focus-pill-box">' +
-            '<span class="preview-pill"><strong>ðŸŽ¯ Target Skills:</strong> ' + skillsText + '</span>' +
-            '<span class="preview-pill"><strong>ðŸ’¡ Language Focus:</strong> ' + langFocus + '</span>' +
-            (res.clilDomain ? '<span class="preview-pill" style="border-color:#38bdf8; background:rgba(56,189,248,0.06); color:#0369a1;"><strong>ðŸ›ï¸ CLIL Domain:</strong> ' + res.clilDomain + '</span>' : '') +
-            (res.categoryGroup ? '<span class="preview-pill" style="border-color:#a855f7; background:rgba(168,85,247,0.06); color:#6b21a8;"><strong>ðŸ·ï¸ Category Group:</strong> ' + res.categoryGroup + '</span>' : '') +
+            '<span class="preview-pill"><strong>🎯 Target Skills:</strong> ' + skillsText + '</span>' +
+            '<span class="preview-pill"><strong>💡 Language Focus:</strong> ' + langFocus + '</span>' +
+            (res.clilDomain ? '<span class="preview-pill" style="border-color:#38bdf8; background:rgba(56,189,248,0.06); color:#0369a1;"><strong>🏛️ CLIL Domain:</strong> ' + res.clilDomain + '</span>' : '') +
+            (res.categoryGroup ? '<span class="preview-pill" style="border-color:#a855f7; background:rgba(168,85,247,0.06); color:#6b21a8;"><strong>🏷️ Category Group:</strong> ' + res.categoryGroup + '</span>' : '') +
           '</div>' +
         '</div>' +
 
         // Learning Objectives
         '<div class="preview-section">' +
-          '<h4 class="preview-section-title">ðŸŽ¯ Pedagogical Learning Objectives</h4>' +
+          '<h4 class="preview-section-title">🎯 Pedagogical Learning Objectives</h4>' +
           '<ul class="preview-objectives-list">' +
-            objectives.map(obj => '<li><span class="obj-check">âœ“</span> <span>' + obj + '</span></li>').join('') +
+            objectives.map(obj => '<li><span class="obj-check">✓</span> <span>' + obj + '</span></li>').join('') +
           '</ul>' +
         '</div>' +
 
@@ -6263,13 +6264,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
         // Teacher Guide
         '<div class="preview-section preview-guide-box">' +
-          '<h4 class="preview-section-title">ðŸ§‘â€ðŸ« Teacher Implementation Guide</h4>' +
+          '<h4 class="preview-section-title">🧑‍🏫 Teacher Implementation Guide</h4>' +
           '<p class="preview-guide-text">' + teacherGuide + '</p>' +
         '</div>' +
 
         // Student Mission
         '<div class="preview-section preview-mission-box">' +
-          '<h4 class="preview-section-title">ðŸš€ Student Mission Instructions</h4>' +
+          '<h4 class="preview-section-title">🚀 Student Mission Instructions</h4>' +
           '<p class="preview-mission-text">' + studentMission + '</p>' +
         '</div>' +
 
@@ -6277,10 +6278,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         (companionWs && !isWs ? (
           '<div class="preview-companion-banner">' +
             '<div>' +
-              '<strong>ðŸ“„ Printable Worksheet Available</strong>' +
+              '<strong>📄 Printable Worksheet Available</strong>' +
               '<p style="margin:2px 0 0 0; font-size:0.8rem; color:var(--text-muted);">This lesson includes a printable companion worksheet for student practice.</p>' +
             '</div>' +
-            '<a href="' + companionWs + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="white-space:nowrap;">ðŸ“„ Open Worksheet</a>' +
+            '<a href="' + companionWs + '" target="_blank" rel="noopener" class="btn-sm-secondary" style="white-space:nowrap;">📄 Open Worksheet</a>' +
           '</div>'
         ) : '') +
       '</div>' +
@@ -6289,12 +6290,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div class="preview-modal-footer">' +
         '<div class="preview-footer-left">' +
           '<button type="button" class="btn-preview-fav ' + (isFav ? 'is-favorited' : '') + '" onclick="togglePreviewFavorite(\'' + res.id + '\')">' +
-            '<span>' + (isFav ? 'â˜… Favorited' : 'â˜† Add to Favorites') + '</span>' +
+            '<span>' + (isFav ? '★ Favorited' : '☆ Add to Favorites') + '</span>' +
           '</button>' +
         '</div>' +
         '<div class="preview-footer-right">' +
           '<button type="button" class="btn-secondary" onclick="closeModal(\'modal-resource-preview\')">Close</button>' +
-          '<button type="button" class="btn-secondary btn-preview-assign" onclick="closeModal(\'modal-resource-preview\'); openAssignModal(\'' + res.id + '\')">ðŸ“‹ Assign to Class</button>' +
+          '<button type="button" class="btn-secondary btn-preview-assign" onclick="closeModal(\'modal-resource-preview\'); openAssignModal(\'' + res.id + '\')">📋 Assign to Class</button>' +
           '<a href="' + (res.route || res.pdfUrl || '#') + '" class="btn-primary-action btn-preview-launch" ' + (isWs ? 'target="_blank" rel="noopener"' : '') + '>' + launchBtnText + '</a>' +
         '</div>' +
       '</div>';
@@ -6339,7 +6340,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + allWorksheets.length + ' worksheets available for classroom practice, independent review, and home missions.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-primary-action" onclick="openWorksheetEditor()">ðŸ“„ + Create Worksheet</button>' +
+          '<button class="btn-primary-action" onclick="openWorksheetEditor()">📄 + Create Worksheet</button>' +
         '</div>' +
       '</div>' +
 
@@ -6379,21 +6380,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                     '<span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">' + (w.status || 'Ready to Print') + '</span>' +
                   '</div>' +
                   '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:6px;">' + w.title + '</h3>' +
-                  '<div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;"><strong>Topic:</strong> ' + (w.topic || 'General Practice') + ' Â· <strong>Skill:</strong> ' + (w.skill || w.category || 'General') + ' Â· <strong>' + (w.duration || '20 min') + '</strong></div>' +
+                  '<div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;"><strong>Topic:</strong> ' + (w.topic || 'General Practice') + ' · <strong>Skill:</strong> ' + (w.skill || w.category || 'General') + ' · <strong>' + (w.duration || '20 min') + '</strong></div>' +
                   '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (w.description || 'Interactive printable practice.') + '</p>' +
                   '<div style="font-size:0.75rem; background:var(--bg-card-secondary); padding:6px 10px; border-radius:8px; margin-bottom:14px; border:1px solid var(--border-subtle);">' +
-                    '<strong>Questions:</strong> ' + qCount + ' tasks Â· <strong>Created:</strong> ' + (w.createdDate || '2026-09-01') +
+                    '<strong>Questions:</strong> ' + qCount + ' tasks · <strong>Created:</strong> ' + (w.createdDate || '2026-09-01') +
                   '</div>' +
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:6px;">' +
-                    '<button class="btn-primary-action" onclick="openWorksheetPreviewModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">ðŸ‘ï¸ Open</button>' +
-                    '<button class="btn-sm-secondary" onclick="openAssignModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">ðŸ“ Assign</button>' +
+                    '<button class="btn-primary-action" onclick="openWorksheetPreviewModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">👁️ Open</button>' +
+                    '<button class="btn-sm-secondary" onclick="openAssignModal(\'' + w.id + '\')" style="padding:4px 10px; font-size:0.78rem;">📝 Assign</button>' +
                   '</div>' +
                   '<div style="display:flex; gap:6px;">' +
-                    '<button class="btn-sm-secondary" onclick="openWorksheetEditor(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">âœï¸</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleDuplicateWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">ðŸ“‹</button>' +
-                    '<button class="btn-sm-secondary" onclick="handleArchiveWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">ðŸ“¦</button>' +
+                    '<button class="btn-sm-secondary" onclick="openWorksheetEditor(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleDuplicateWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                    '<button class="btn-sm-secondary" onclick="handleArchiveWorksheet(\'' + w.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
                   '</div>' +
                 '</div>' +
               '</div>';
@@ -6413,9 +6414,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const body = document.getElementById('ws-prev-questions-body');
     const answerKey = document.getElementById('ws-prev-answerkey');
 
-    if (badge) badge.textContent = (ws.level || 'A1') + ' Â· ' + (ws.grade || 'Grade 3') + ' Â· ' + (ws.duration || '20 min');
+    if (badge) badge.textContent = (ws.level || 'A1') + ' · ' + (ws.grade || 'Grade 3') + ' · ' + (ws.duration || '20 min');
     if (title) title.textContent = ws.title;
-    if (topic) topic.textContent = 'Topic: ' + (ws.topic || 'General') + ' Â· Skill: ' + (ws.skill || ws.category || 'General');
+    if (topic) topic.textContent = 'Topic: ' + (ws.topic || 'General') + ' · Skill: ' + (ws.skill || ws.category || 'General');
     if (instructions) instructions.textContent = ws.instructions || ws.description || 'Answer each question carefully.';
     if (answerKey) answerKey.textContent = ws.answerKey || 'See individual question guidelines';
 
@@ -6477,7 +6478,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<option value="true_false" ' + (type === 'true_false' ? 'selected' : '') + '>True / False</option>' +
         '<option value="short_answer" ' + (type === 'short_answer' ? 'selected' : '') + '>Short Answer</option>' +
       '</select>' +
-      '<button type="button" class="btn-sm-secondary" onclick="this.closest(\'.ws-question-edit-row\').remove()" style="color:var(--color-danger); padding:2px 8px;">âœ•</button>';
+      '<button type="button" class="btn-sm-secondary" onclick="this.closest(\'.ws-question-edit-row\').remove()" style="color:var(--color-danger); padding:2px 8px;">✕</button>';
 
     container.appendChild(row);
   };
@@ -6502,7 +6503,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!d) return 'Ongoing homework, no due date';
     const e = new Date(d); e.setDate(e.getDate() + 6);
     const f = x => x.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-    return 'Week of ' + f(d) + ' â€“ ' + f(e);
+    return 'Week of ' + f(d) + ' – ' + f(e);
   }
   function asgStatusOf(sub) {
     if (!sub) return 'none';
@@ -6529,10 +6530,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         : kind === 'started' ? 'background:rgba(245,158,11,0.15); color:#b45309; border:1px solid rgba(245,158,11,0.5);'
         : 'background:rgba(148,163,184,0.12); color:var(--text-muted); border:1px solid var(--border-subtle);';
       const rec = sub.recording ? 'Sent a recording' + (sub.recording.count > 1 ? ' (' + sub.recording.count + ')' : '') + (sub.recording.last ? ' on ' + sub.recording.last : '') : '';
-      const tipText = [sub.notes || '', rec].filter(Boolean).join(' Â· ');
+      const tipText = [sub.notes || '', rec].filter(Boolean).join(' · ');
       const tip = tipText ? ' title="' + asgEsc(tipText) + '"' : '';
-      const mark = kind === 'done' ? 'âœ“ ' : (kind === 'started' ? 'â³ ' : '');
-      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + (rec ? ' ðŸŽ¤' : '') + '</span>';
+      const mark = kind === 'done' ? '✓ ' : (kind === 'started' ? '⏳ ' : '');
+      return '<span' + tip + ' style="display:inline-block; ' + style + ' border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">' + mark + nm(st) + (rec ? ' 🎤' : '') + '</span>';
     };
     const block = (label, kind) => groups[kind].length
       ? '<div style="margin-top:8px;"><div style="font-size:0.74rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">' + label + ' (' + groups[kind].length + ')</div>' + groups[kind].map(st => chip(st, kind)).join('') + '</div>'
@@ -6557,7 +6558,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         const grp = students.filter(st => asgClassOf(st) === lb);
         const d = grp.filter(isDone).length, sN = grp.filter(isStarted).length;
         return '<div style="margin-top:12px; padding:10px 12px; border:1px solid var(--border-subtle); border-radius:12px;">' +
-          '<div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-weight:800;"><span>Class ' + lb + '</span><span>' + d + ' of ' + grp.length + ' finished' + (sN ? ' Â· <span style="color:#b45309;">' + sN + ' started</span>' : '') + '</span></div>' +
+          '<div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-weight:800;"><span>Class ' + lb + '</span><span>' + d + ' of ' + grp.length + ' finished' + (sN ? ' · <span style="color:#b45309;">' + sN + ' started</span>' : '') + '</span></div>' +
           bar(d, grp.length) +
           '<details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:var(--color-primary);">Show every pupil in ' + lb + '</summary>' + asgPupilsHtml(h, grp) + '</details></div>';
       }).join('');
@@ -6571,9 +6572,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;"><span style="font-weight:800; font-size:1.05rem;">' + asgEsc(h.title) + '</span>' +
             '<span style="font-size:0.72rem; background:rgba(16,185,129,0.12); color:#047857; padding:2px 8px; border-radius:999px; font-weight:800;">HOMEWORK</span>' +
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(clsName) + '</span></div>' +
-          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' Â· â­ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
+          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">Due: ' + asgEsc(h.dueDate || 'No deadline') + (h.xpReward ? ' · ⭐ ' + asgEsc(h.xpReward) + ' XP' : '') + '</div>' +
         '</div>' +
-        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + (recs ? '<div style="font-size:0.78rem; color:#7c3aed;">ðŸŽ¤ ' + recs + ' sent a recording</div>' : '') + '</div>' +
+        '<div style="text-align:right; font-weight:800;">' + done + ' of ' + students.length + ' finished' + (started ? '<div style="font-size:0.78rem; color:#b45309;">' + started + ' started</div>' : '') + (recs ? '<div style="font-size:0.78rem; color:#7c3aed;">🎤 ' + recs + ' sent a recording</div>' : '') + '</div>' +
       '</div>' + sections +
     '</div>';
   }
@@ -6590,17 +6591,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px; font-weight:700;">' + asgEsc(cls.name) + '</span>' +
           '</div>' +
           '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">' +
-            'Due: ' + asgEsc(a.dueDate || 'No deadline') + (wsId ? ' Â· Worksheet' : ((res || a.gameId) ? ' Â· Game: ' + asgEsc(res ? res.title : a.gameId) : '')) +
-            (a.assignedCount ? ' Â· ' + (Number(a.completedCount) || 0) + ' of ' + a.assignedCount + ' done' : '') +
+            'Due: ' + asgEsc(a.dueDate || 'No deadline') + (wsId ? ' · Worksheet' : ((res || a.gameId) ? ' · Game: ' + asgEsc(res ? res.title : a.gameId) : '')) +
+            (a.assignedCount ? ' · ' + (Number(a.completedCount) || 0) + ' of ' + a.assignedCount + ' done' : '') +
           '</div>' +
           (a.instructions ? '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px; font-style:italic;">"' + asgEsc(a.instructions) + '"</div>' : '') +
         '</div>' +
         '<div style="display:flex; align-items:center; gap:8px;">' +
-          (res ? '<a href="' + asgEsc(res.route) + '" class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem; text-decoration:none;">â–¶ Play</a>' : '') +
-          (wsId ? '<button class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem;" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\')">ðŸ‘ï¸ Open</button><button class="btn-sm-secondary" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\', true)">ðŸ–¨ï¸ Print</button>' : '') +
-          '<button class="btn-sm-secondary" onclick="openEditAssignmentModal(\'' + asgEsc(a.id) + '\')">âœï¸ Edit</button>' +
-          '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + asgEsc(a.id) + '\')">ðŸ“‹</button>' +
-          '<button class="btn-sm-secondary" onclick="handleArchiveAssignment(\'' + asgEsc(a.id) + '\')" style="color:var(--color-danger);">ðŸ“¦</button>' +
+          (res ? '<a href="' + asgEsc(res.route) + '" class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem; text-decoration:none;">▶ Play</a>' : '') +
+          (wsId ? '<button class="btn-primary-action" style="padding:6px 12px; font-size:0.8rem;" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\')">👁️ Open</button><button class="btn-sm-secondary" onclick="openWorksheetPreviewModal(\'' + asgEsc(wsId) + '\', true)">🖨️ Print</button>' : '') +
+          '<button class="btn-sm-secondary" onclick="openEditAssignmentModal(\'' + asgEsc(a.id) + '\')">✏️ Edit</button>' +
+          '<button class="btn-sm-secondary" onclick="handleDuplicateAssignment(\'' + asgEsc(a.id) + '\')">📋</button>' +
+          '<button class="btn-sm-secondary" onclick="handleArchiveAssignment(\'' + asgEsc(a.id) + '\')" style="color:var(--color-danger);">📦</button>' +
         '</div>' +
       '</div>';
   }
@@ -6640,9 +6641,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           : asgAssignmentCard(it.a, classes)).join('');
       const count = list.length + (list.length === 1 ? ' task' : ' tasks');
       if (!w.ts && asgWeekFilter === 'all') {
-        body += '<details style="margin-top:22px;"><summary style="cursor:pointer; font-size:1.1rem; font-weight:800; color:var(--text-main);">Ongoing homework, no due date <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Â· ' + count + '</span></summary><div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">' + cards + '</div></details>';
+        body += '<details style="margin-top:22px;"><summary style="cursor:pointer; font-size:1.1rem; font-weight:800; color:var(--text-main);">Ongoing homework, no due date <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">· ' + count + '</span></summary><div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">' + cards + '</div></details>';
       } else {
-        body += '<div style="margin-top:22px;"><h2 style="font-size:1.1rem; font-weight:800; margin:0 0 10px; color:var(--text-main);">' + asgEsc(w.ts ? w.label : 'Ongoing homework, no due date') + ' <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Â· ' + count + '</span></h2><div style="display:flex; flex-direction:column; gap:12px;">' + cards + '</div></div>';
+        body += '<div style="margin-top:22px;"><h2 style="font-size:1.1rem; font-weight:800; margin:0 0 10px; color:var(--text-main);">' + asgEsc(w.ts ? w.label : 'Ongoing homework, no due date') + ' <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">· ' + count + '</span></h2><div style="display:flex; flex-direction:column; gap:12px;">' + cards + '</div></div>';
       }
     });
 
@@ -6650,14 +6651,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Weekly Assignments &amp; Homework</h1>' +
-          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + asgEsc(activeKey === 'grade-4' ? 'Grade 4 (4A and 4B)' : (activeClass ? activeClass.name : 'All classes')) + ' Â· everything given each week, and who has finished it.</p>' +
+          '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + asgEsc(activeKey === 'grade-4' ? 'Grade 4 (4A and 4B)' : (activeClass ? activeClass.name : 'All classes')) + ' · everything given each week, and who has finished it.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">' +
           '<select onchange="setAsgWeek(this.value)" aria-label="Choose a week" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border-subtle); background:var(--bg-card); color:var(--text-main); font-weight:700;">' +
             '<option value="all"' + (asgWeekFilter === 'all' ? ' selected' : '') + '>All weeks</option>' +
             weeks.map(w => '<option value="' + w.ts + '"' + (String(w.ts) === asgWeekFilter ? ' selected' : '') + '>' + asgEsc(w.label) + '</option>').join('') +
           '</select>' +
-          '<button class="btn-sm-secondary" onclick="switchView(\'homework\')">âœï¸ Homework details</button>' +
+          '<button class="btn-sm-secondary" onclick="switchView(\'homework\')">✍️ Homework details</button>' +
           '<button class="btn-primary-action" onclick="openModal(\'modal-create-assignment\')">+ Create Assignment</button>' +
         '</div>' +
       '</div>' +
@@ -6727,7 +6728,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
             '<h1 style="font-size:1.75rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0; display:flex; align-items:center; gap:8px;">' +
-              '<span>âœï¸</span> <span>Homework &amp; Quests</span>' +
+              '<span>✍️</span> <span>Homework &amp; Quests</span>' +
             '</h1>' +
             '<p style="font-size:0.88rem; color:var(--text-muted); margin:0;">Assign fun English quests, track completion, and reward your students with XP!</p>' +
           '</div>' +
@@ -6742,7 +6743,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:14px; padding:14px 16px; margin-bottom:16px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:12px;">' +
           '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
             '<div style="flex:1; min-width:220px; position:relative;">' +
-              '<input type="text" class="search-input" placeholder="ðŸ” Search homework tasks..." value="' + (hwSearchQuery || '') + '" oninput="hwSearchQuery=this.value; renderCurrentView();" style="width:100%;" />' +
+              '<input type="text" class="search-input" placeholder="🔍 Search homework tasks..." value="' + (hwSearchQuery || '') + '" oninput="hwSearchQuery=this.value; renderCurrentView();" style="width:100%;" />' +
             '</div>' +
 
             '<select class="filter-select" onchange="hwFilterClass=this.value; renderCurrentView();" style="min-width:140px; font-weight:700;">' +
@@ -6775,7 +6776,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #064e3b 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
           '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #fbbf24; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.4);" onclick="openModal(\'modal-alice-poster\')">' +
             '<img src="assets/homework/alice-xp-challenges-poster.jpg" alt="Alice XP Challenges" style="width:100%; height:100%; object-fit: cover;" />' +
-            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">ðŸ”</div>' +
+            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
           '</div>' +
           '<div style="flex: 1; min-width: 260px;">' +
             '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
@@ -6788,19 +6789,19 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '</p>' +
             '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
               '<button type="button" onclick="window.open(\'alice-homework/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(16,185,129,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
-                'ðŸ„ Launch Alice XP Quest Slides & Grading' +
+                '🍄 Launch Alice XP Quest Slides & Grading' +
               '</button>' +
               '<button type="button" class="btn-primary-action" onclick="openAliceQuestGraderModal()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(168,85,247,0.4);">' +
-                'ðŸŽ¯ Single-Student Grader' +
+                '🎯 Single-Student Grader' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
-                'ðŸ–¼ï¸ View High-Res Poster' +
+                '🖼️ View High-Res Poster' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-alice-vocab10\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                'ðŸ‘¥ Whole-Class Roster View' +
+                '👥 Whole-Class Roster View' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                'â­ Award XP to Student' +
+                '⭐ Award XP to Student' +
               '</button>' +
             '</div>' +
           '</div>' +
@@ -6818,7 +6819,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         // Homework Cards Grid
         (filtered.length === 0 ?
           '<div style="text-align:center; padding:60px 20px; background:var(--bg-surface); border-radius:16px; border:1px solid var(--border-light);">' +
-            '<div style="font-size:44px; margin-bottom:10px;">ðŸ“</div>' +
+            '<div style="font-size:44px; margin-bottom:10px;">📝</div>' +
             '<h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0;">No homework tasks found</h3>' +
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:0 0 16px 0;">Create a new homework quest or clear your active filters.</p>' +
             '<button type="button" class="btn-primary-action" onclick="openCreateHomeworkModal()">+ Create Homework</button>' +
@@ -6874,8 +6875,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
                     // XP Badges
                     '<div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">' +
-                      '<span class="hw-xp-pill">â­ +' + (h.xpReward || 20) + ' XP</span>' +
-                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill">âœ¨ +' + (h.optionalChallengeXp || 5) + ' XP (Optional Challenge)</span>' : '') +
+                      '<span class="hw-xp-pill">⭐ +' + (h.xpReward || 20) + ' XP</span>' +
+                      (h.optionalChallenge ? '<span class="hw-bonus-xp-pill">✨ +' + (h.optionalChallengeXp || 5) + ' XP (Optional Challenge)</span>' : '') +
                     '</div>' +
 
                     // Footer Action Buttons
@@ -6884,10 +6885,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                         'Submissions (' + submittedCount + ')' +
                       '</button>' +
                       '<div style="display:flex; gap:4px;">' +
-                        '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:5px 9px; font-size:0.78rem; font-weight:800; color:#3b82f6;" title="Student Quest View">ðŸ‘ï¸ Preview</button>' +
-                        '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Edit">âœï¸</button>' +
-                        '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Duplicate">ðŸ“‹</button>' +
-                        '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">ðŸ“¦</button>' +
+                        '<button class="btn-sm-secondary" onclick="openStudentQuestModal(\'' + h.id + '\')" style="padding:5px 9px; font-size:0.78rem; font-weight:800; color:#3b82f6;" title="Student Quest View">👁️ Preview</button>' +
+                        '<button class="btn-sm-secondary" onclick="openEditHomeworkModal(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleDuplicateHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                        '<button class="btn-sm-secondary" onclick="handleArchiveHomework(\'' + h.id + '\')" style="padding:5px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
                       '</div>' +
                     '</div>' +
                   '</div>' +
@@ -6917,7 +6918,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     if (editIdEl) editIdEl.value = '';
     if (modalTitleEl) modalTitleEl.textContent = 'Create Homework Quest';
-    if (titleEl) titleEl.value = 'ðŸ¾ Animal Habitats Explorer';
+    if (titleEl) titleEl.value = '🐾 Animal Habitats Explorer';
     if (subjEl) subjEl.value = 'Reading & Vocab';
     if (dateEl) dateEl.value = 'Friday, Nov 15';
     if (xpEl) xpEl.value = '20';
@@ -6934,8 +6935,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     }
 
     currentEditingHwResources = [
-      { id: 'res-ws-1', type: 'worksheet', title: 'ðŸ“„ Forest & Ocean Reading (PDF)' },
-      { id: 'res-gm-1', type: 'game', title: 'ðŸŽ® Jungle Animal Explorer' }
+      { id: 'res-ws-1', type: 'worksheet', title: '📄 Forest & Ocean Reading (PDF)' },
+      { id: 'res-gm-1', type: 'game', title: '🎮 Jungle Animal Explorer' }
     ];
     renderAttachedResourceChips();
     updateLiveQuestPreview();
@@ -7006,7 +7007,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     container.innerHTML = currentEditingHwResources.map((r, idx) => 
       '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:12px; padding:4px 10px; font-size:0.75rem; font-weight:800; display:flex; align-items:center; gap:6px;">' +
         '<span>' + (r.title || 'Resource') + '</span>' +
-        '<button type="button" onclick="removeAttachedResource(' + idx + ')" style="background:none; border:none; color:var(--color-danger); cursor:pointer; font-weight:900; font-size:0.8rem;" title="Remove">âœ•</button>' +
+        '<button type="button" onclick="removeAttachedResource(' + idx + ')" style="background:none; border:none; color:var(--color-danger); cursor:pointer; font-weight:900; font-size:0.8rem;" title="Remove">✕</button>' +
       '</div>'
     ).join('');
   };
@@ -7020,10 +7021,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   window.attachQuickResource = function(type) {
     if (type === 'worksheet') {
       const ws = (store.getWorksheets ? store.getWorksheets() : [])[0] || { title: 'Animal Habitats Reading Worksheet (PDF)' };
-      currentEditingHwResources.push({ id: 'res-ws-' + Date.now(), type: 'worksheet', title: 'ðŸ“„ ' + ws.title });
+      currentEditingHwResources.push({ id: 'res-ws-' + Date.now(), type: 'worksheet', title: '📄 ' + ws.title });
     } else {
       const gm = (store.getResources ? store.getResources() : [])[0] || { title: 'Jungle Animal Explorer Game' };
-      currentEditingHwResources.push({ id: 'res-gm-' + Date.now(), type: 'game', title: 'ðŸŽ® ' + gm.title });
+      currentEditingHwResources.push({ id: 'res-gm-' + Date.now(), type: 'game', title: '🎮 ' + gm.title });
     }
     renderAttachedResourceChips();
     updateLiveQuestPreview();
@@ -7048,16 +7049,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const previewStepsList = document.getElementById('preview-steps-list');
     const previewResources = document.getElementById('preview-resources-wrap');
 
-    if (previewTitle && titleEl) previewTitle.textContent = titleEl.value || 'ðŸ¾ New Homework Quest';
+    if (previewTitle && titleEl) previewTitle.textContent = titleEl.value || '🐾 New Homework Quest';
     if (previewSubj && subjEl) previewSubj.textContent = subjEl.value;
     if (previewClass && classEl && classEl.options[classEl.selectedIndex]) previewClass.textContent = classEl.options[classEl.selectedIndex].text;
     if (previewDate && dateEl) previewDate.textContent = 'Due: ' + (dateEl.value || 'Friday, Nov 15');
-    if (previewXP && xpEl) previewXP.textContent = 'â­ +' + (xpEl.value || 20) + ' XP';
+    if (previewXP && xpEl) previewXP.textContent = '⭐ +' + (xpEl.value || 20) + ' XP';
 
     if (previewBonusXP && optToggleEl) {
       if (optToggleEl.checked) {
         previewBonusXP.style.display = 'inline-flex';
-        previewBonusXP.textContent = 'âœ¨ +5 XP Bonus';
+        previewBonusXP.textContent = '✨ +5 XP Bonus';
       } else {
         previewBonusXP.style.display = 'none';
       }
@@ -7069,7 +7070,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (lines.length) {
         previewStepsList.innerHTML = lines.map(line => 
           '<div style="display:flex; align-items:flex-start; gap:8px;">' +
-            '<span style="color:#38bdf8;">âœ“</span>' +
+            '<span style="color:#38bdf8;">✓</span>' +
             '<span>' + line + '</span>' +
           '</div>'
         ).join('');
@@ -7180,15 +7181,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const bonusEl = document.getElementById('student-quest-bonus-pill');
     const descEl = document.getElementById('student-quest-desc');
 
-    if (titleEl) titleEl.textContent = 'ðŸ¾ Quest: ' + hw.title;
+    if (titleEl) titleEl.textContent = '🐾 Quest: ' + hw.title;
     if (tagEl) tagEl.textContent = hw.subject || 'QUEST';
     if (dueEl) dueEl.textContent = 'Due: ' + (hw.dueDate || 'Friday, Nov 15');
-    if (xpEl) xpEl.textContent = 'â­ +' + (hw.xpReward || 20) + ' XP Reward';
+    if (xpEl) xpEl.textContent = '⭐ +' + (hw.xpReward || 20) + ' XP Reward';
 
     if (bonusEl) {
       if (hw.optionalChallenge) {
         bonusEl.style.display = 'inline-flex';
-        bonusEl.textContent = 'âœ¨ +' + (hw.optionalChallengeXp || 5) + ' XP Bonus (Optional)';
+        bonusEl.textContent = '✨ +' + (hw.optionalChallengeXp || 5) + ' XP Bonus (Optional)';
       } else {
         bonusEl.style.display = 'none';
       }
@@ -7211,9 +7212,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       listWrap.innerHTML = steps.map((st, i) => {
         const isStepDone = isCompleted;
         let actionBtn = '';
-        if (i === 0) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-worksheet-preview\')" style="font-size:0.75rem; font-weight:800; color:#3b82f6; border-color:#3b82f6;">ðŸ“„ Open Worksheet</button>';
-        if (i === 1) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-game-preview\')" style="font-size:0.75rem; font-weight:800; color:#059669; border-color:#059669;">ðŸŽ® Open Game</button>';
-        if (i === 2) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="toggleSimulatedAudioRecording()" style="font-size:0.75rem; font-weight:800; color:#ef4444; border-color:#ef4444;">ðŸŽ™ï¸ Record Voice</button>';
+        if (i === 0) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-worksheet-preview\')" style="font-size:0.75rem; font-weight:800; color:#3b82f6; border-color:#3b82f6;">📄 Open Worksheet</button>';
+        if (i === 1) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="window.openModal(\'modal-game-preview\')" style="font-size:0.75rem; font-weight:800; color:#059669; border-color:#059669;">🎮 Open Game</button>';
+        if (i === 2) actionBtn = '<button type="button" class="btn-sm-secondary" onclick="toggleSimulatedAudioRecording()" style="font-size:0.75rem; font-weight:800; color:#ef4444; border-color:#ef4444;">🎙️ Record Voice</button>';
 
         return '' +
           '<div class="quest-checklist-item ' + (isStepDone ? 'is-done' : '') + '" id="quest-item-' + i + '">' +
@@ -7228,7 +7229,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="quest-checklist-item ' + (sub.optionalDone ? 'is-done' : '') + '" id="quest-item-opt" style="border-style:dashed; border-color:#f59e0b; background:rgba(245,158,11,0.03);">' +
           '<input type="checkbox" id="quest-check-optional" class="quest-checklist-check" ' + (sub.optionalDone ? 'checked' : '') + ' onchange="handleQuestChecklistChange(\'opt\', this.checked)" />' +
           '<div style="flex:1;">' +
-            '<div style="font-weight:900; font-size:0.88rem; color:#b45309;">ðŸŒŸ OPTIONAL CHALLENGE (+5 Bonus XP)</div>' +
+            '<div style="font-weight:900; font-size:0.88rem; color:#b45309;">🌟 OPTIONAL CHALLENGE (+5 Bonus XP)</div>' +
             '<div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">' + (hw.optionalChallengeDesc || 'Draw your favorite animal or record a fun bonus fact!') + '</div>' +
           '</div>' +
         '</div>' : ''
@@ -7243,14 +7244,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const recBtn = document.getElementById('btn-audio-record');
     const playBtn = document.getElementById('btn-audio-playback');
     if (recStatus) recStatus.textContent = 'Ready';
-    if (recBtn) recBtn.innerHTML = 'ðŸ”´ Start Recording';
+    if (recBtn) recBtn.innerHTML = '🔴 Start Recording';
     if (playBtn) playBtn.disabled = true;
 
     window.openModal('modal-student-quest');
   };
 
   window.previewCurrentHomeworkAsStudent = function() {
-    const title = document.getElementById('new-hw-title')?.value || 'ðŸ¾ Animal Habitats Explorer';
+    const title = document.getElementById('new-hw-title')?.value || '🐾 Animal Habitats Explorer';
     const subject = document.getElementById('new-hw-subject')?.value || 'Reading & Vocab';
     const dueDate = document.getElementById('new-hw-date')?.value || 'Friday, Nov 15';
     const xpReward = parseInt(document.getElementById('new-hw-xp')?.value, 10) || 20;
@@ -7287,7 +7288,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!simulatedAudioRecordingInterval) {
       // Start recording
       simulatedAudioSeconds = 0;
-      if (recordBtn) recordBtn.innerHTML = 'â¹ï¸ Stop Recording (0:00)';
+      if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:00)';
       if (statusEl) {
         statusEl.textContent = 'Recording Audio...';
         statusEl.style.color = '#ef4444';
@@ -7295,7 +7296,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       simulatedAudioRecordingInterval = setInterval(() => {
         simulatedAudioSeconds++;
         const s = simulatedAudioSeconds < 10 ? '0' + simulatedAudioSeconds : simulatedAudioSeconds;
-        if (recordBtn) recordBtn.innerHTML = 'â¹ï¸ Stop Recording (0:' + s + ')';
+        if (recordBtn) recordBtn.innerHTML = '⏹️ Stop Recording (0:' + s + ')';
         if (simulatedAudioSeconds >= 14) {
           window.toggleSimulatedAudioRecording();
         }
@@ -7305,16 +7306,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       clearInterval(simulatedAudioRecordingInterval);
       simulatedAudioRecordingInterval = null;
       simulatedAudioRecorded = true;
-      if (recordBtn) recordBtn.innerHTML = 'ðŸ”´ Re-Record';
+      if (recordBtn) recordBtn.innerHTML = '🔴 Re-Record';
       if (statusEl) {
         statusEl.textContent = 'Audio Captured (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
         statusEl.style.color = '#059669';
       }
       if (playBtn) {
         playBtn.disabled = false;
-        playBtn.innerHTML = 'â–¶ï¸ Listen to Recording (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
+        playBtn.innerHTML = '▶️ Listen to Recording (0:' + (simulatedAudioSeconds < 10 ? '0' : '') + simulatedAudioSeconds + ')';
       }
-      showNotification('Voice note recorded successfully! ðŸŽ™ï¸');
+      showNotification('Voice note recorded successfully! 🎙️');
       // Mark step 2 as checked
       const step3Check = document.querySelector('#quest-item-2 .quest-checklist-check');
       if (step3Check) {
@@ -7325,7 +7326,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   };
 
   window.playSimulatedAudioPlayback = function() {
-    showNotification('Playing student voice recording... ðŸ”Š');
+    showNotification('Playing student voice recording... 🔊');
   };
 
   window.handleSaveStudentQuestProgress = function() {
@@ -7397,7 +7398,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (nextLabel) {
       nextLabel.textContent = mState.xpToNext > 0
         ? (mState.xpToNext + ' XP to Level ' + (mState.currentLevel + 1) + ' ' + (mState.nextLevel ? mState.nextLevel.name : ''))
-        : 'ðŸŒŸ Peak evolution stage achieved!';
+        : '🌟 Peak evolution stage achieved!';
     }
 
     // Check if evolution triggered!
@@ -7406,12 +7407,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (evo) {
         actionWrap.innerHTML = 
           '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\'); openMonsterLevelUpModal(\'' + student.id + '\', ' + evo.prevLevel + ', ' + evo.newLevel + ');" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:linear-gradient(90deg, #f59e0b, #ef4444); color:#fff; box-shadow:0 6px 20px rgba(245,158,11,0.5);">' +
-            'Evolve Monster Now! ðŸš€' +
+            'Evolve Monster Now! 🚀' +
           '</button>';
       } else {
         actionWrap.innerHTML = 
           '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-quest-completed\')" style="width:100%; justify-content:center; padding:12px; font-size:1rem; font-weight:900; background:#38bdf8; color:#0f172a;">' +
-            'Awesome! ðŸŽ‰' +
+            'Awesome! 🎉' +
           '</button>';
       }
     }
@@ -7433,20 +7434,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const list = document.getElementById('hw-grading-students-list');
     const switcher = document.getElementById('hw-grading-task-switcher');
 
-    if (title) title.textContent = 'ðŸ‘¥ ' + hw.title + ' â€” Submissions & Grading';
+    if (title) title.textContent = '👥 ' + hw.title + ' — Submissions & Grading';
     if (subtitle) {
-      const tierBadge = hw.tier ? '[' + hw.tier + ': Level ' + hw.level + '] Â· ' : '';
-      subtitle.textContent = tierBadge + 'Target Reward: +' + (hw.xpReward || 20) + ' XP Â· Category: ' + (hw.category || hw.subject || 'General');
+      const tierBadge = hw.tier ? '[' + hw.tier + ': Level ' + hw.level + '] · ' : '';
+      subtitle.textContent = tierBadge + 'Target Reward: +' + (hw.xpReward || 20) + ' XP · Category: ' + (hw.category || hw.subject || 'General');
     }
 
     if (switcher) {
       const aliceHw = allHw.filter(h => h.id && h.id.startsWith('hw-alice'));
       const stdHw = allHw.filter(h => !h.id || !h.id.startsWith('hw-alice'));
       switcher.innerHTML = 
-        '<optgroup label="ðŸ“˜ Alice in Wonderland Discrete Tasks">' +
-        aliceHw.map(h => '<option value="' + h.id + '" ' + (h.id === hw.id ? 'selected' : '') + '>' + (h.code ? h.code + ' Â· ' : '') + h.title + ' (+' + (h.xpReward || 10) + ' XP)</option>').join('') +
+        '<optgroup label="📘 Alice in Wonderland Discrete Tasks">' +
+        aliceHw.map(h => '<option value="' + h.id + '" ' + (h.id === hw.id ? 'selected' : '') + '>' + (h.code ? h.code + ' · ' : '') + h.title + ' (+' + (h.xpReward || 10) + ' XP)</option>').join('') +
         '</optgroup>' +
-        '<optgroup label="ðŸ“‹ Standard Homework Quests">' +
+        '<optgroup label="📋 Standard Homework Quests">' +
         stdHw.map(h => '<option value="' + h.id + '" ' + (h.id === hw.id ? 'selected' : '') + '>' + h.title + ' (+' + (h.xpReward || 20) + ' XP)</option>').join('') +
         '</optgroup>';
       switcher.value = hw.id;
@@ -7470,7 +7471,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
               '<div>' +
                 '<div style="font-weight:900; font-size:0.95rem; color:var(--text-main);">' + st.firstName + ' ' + st.lastName + '</div>' +
-                '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Level ' + mState.currentLevel + ' Â· ' + mState.stageName + '</div>' +
+                '<div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
@@ -7480,7 +7481,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<div>' +
                 '<label style="display:block; font-size:0.7rem; font-weight:800; color:var(--text-muted);">Status</label>' +
                 '<select class="filter-select hw-sub-status" style="font-size:0.78rem; padding:4px 8px; font-weight:700;">' +
-                  '<option value="COMPLETED" ' + (isDone ? 'selected' : '') + '>Completed âœ“</option>' +
+                  '<option value="COMPLETED" ' + (isDone ? 'selected' : '') + '>Completed ✓</option>' +
                   '<option value="IN_PROGRESS" ' + (sub.status === 'IN_PROGRESS' || sub.status === 'In Progress' ? 'selected' : '') + '>In Progress</option>' +
                   '<option value="NOT_STARTED" ' + (sub.status === 'NOT_STARTED' || sub.status === 'Not Started' ? 'selected' : '') + '>Not Started</option>' +
                 '</select>' +
@@ -7535,7 +7536,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     if (studentSelect) {
       studentSelect.innerHTML = students.map(s => 
-        '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + ' Â· Level ' + (s.monsterLevel || s.level || 1) + ' (' + (s.xp || 0) + ' XP)</option>'
+        '<option value="' + s.id + '">' + s.firstName + ' ' + s.lastName + ' · Level ' + (s.monsterLevel || s.level || 1) + ' (' + (s.xp || 0) + ' XP)</option>'
       ).join('');
       if (preselectedStudentId) {
         studentSelect.value = preselectedStudentId;
@@ -7568,7 +7569,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '</div>' +
       '<div>' +
         '<div style="font-weight:900; font-size:0.88rem; color:var(--text-main);">' + student.firstName + ' ' + student.lastName + '</div>' +
-        '<div style="font-size:0.75rem; color:#2563eb; font-weight:800;">Level ' + mState.currentLevel + ' Â· ' + mState.stageName + '</div>' +
+        '<div style="font-size:0.75rem; color:#2563eb; font-weight:800;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
         '<div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">' + (student.xp || 0) + ' Total XP</div>' +
       '</div>';
   };
@@ -7604,7 +7605,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       },
       {
         level: 3,
-        title: "Level 3: Big Challenge! ðŸ‘‘",
+        title: "Level 3: Big Challenge! 👑",
         subtitle: "Show your full understanding and creativity.",
         bannerText: "Think deeper. Speak braver. Earn bigger!",
         borderColor: "#a855f7",
@@ -7682,14 +7683,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const submitBtn = document.getElementById('btn-alice-grader-submit');
 
     if (badge) {
-      badge.textContent = count + ' Challenge' + (count === 1 ? '' : 's') + ' Selected Â· +' + totalXP + ' XP';
+      badge.textContent = count + ' Challenge' + (count === 1 ? '' : 's') + ' Selected · +' + totalXP + ' XP';
       badge.style.color = count > 0 ? '#10b981' : '#64748b';
       badge.style.background = count > 0 ? 'rgba(16,185,129,0.12)' : 'rgba(100,116,139,0.1)';
       badge.style.borderColor = count > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(100,116,139,0.2)';
     }
 
     if (submitBtn) {
-      submitBtn.textContent = 'ðŸš€ Award Quest XP (+' + totalXP + ' XP)';
+      submitBtn.textContent = '🚀 Award Quest XP (+' + totalXP + ' XP)';
       submitBtn.disabled = count === 0;
       submitBtn.style.opacity = count === 0 ? '0.5' : '1';
       submitBtn.style.cursor = count === 0 ? 'not-allowed' : 'pointer';
@@ -7757,23 +7758,23 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div><div style="font-weight:900;font-size:1.02rem;color:#fff;">' + title + '</div><div style="font-size:0.8rem;color:#94a3b8;margin-top:3px;">' + note + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;">' + links.join('') + '</div></div>';
     const grade = (g, color, cards) => '<div style="margin-bottom:22px;"><div style="display:inline-block;background:' + color + ';color:#000;font-weight:900;font-size:0.8rem;padding:4px 12px;border-radius:999px;margin-bottom:10px;">GRADE ' + g + '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;">' + cards.join('') + '</div></div>';
-    return '<div id="paper-quiz-shelf" style="margin-bottom:26px;"><h2 style="font-size:1.25rem;font-weight:900;margin:0 0 4px;color:var(--text-main);">ðŸ“„ Paper quizzes &amp; exams (all versions)</h2>' +
+    return '<div id="paper-quiz-shelf" style="margin-bottom:26px;"><h2 style="font-size:1.25rem;font-weight:900;margin:0 0 4px;color:var(--text-main);">📄 Paper quizzes &amp; exams (all versions)</h2>' +
       '<p style="font-size:0.84rem;color:var(--text-muted);margin:0 0 14px;">Print the papers, mark with the keys, then tap Results to show each pupil their score and give XP.</p>' +
       grade(3, 'linear-gradient(135deg,#0284c7,#38bdf8)', [
-        card('Unit 3 Â· It Keeps Changing (100 points)', 'Two forms so neighbours cannot copy: Form B has a different maze, snake and answer order. Recorded teacher voice for the listening.', [
-          link('unit3-g3-quiz/quiz-a.html', 'ðŸ–¨ï¸ Form A'), link('unit3-g3-quiz/quiz-b.html', 'ðŸ–¨ï¸ Form B'),
-          link('unit3-g3-quiz/key-a.html', 'ðŸ”‘ Key A', 'key'), link('unit3-g3-quiz/key-b.html', 'ðŸ”‘ Key B', 'key'),
-          link('unit3-g3-quiz/teacher.html', 'ðŸ‘©â€ðŸ« Teacher page', 'key'), link('unit3-g3-quiz/index.html', 'ðŸŽ§ Listening player', 'key'),
-          link('lesson-plans/Grade3-Unit3-Monster-Journey-and-Quiz-Plan.pdf', 'ðŸ“˜ Lesson plan', 'key'), board('3', 'ðŸ“Š Results (3-A, 3-B)')]),
-        card('Unit 4 Â· What Happened? (Mona Lisa & Angry Mountain Â· 20 pts)', 'Covers Reading 1 (Where Is She?), Reading 2 (The Angry Mountain), past tense, cause & effect, and -nd blends.', [link('unit4-g3-lessons/quiz-grade3.html', 'ðŸ–¨ï¸ Quiz'), link('unit4-g3-lessons/quiz-grade3-key.html', 'ðŸ”‘ Key', 'key'), link('lesson-plans/Grade3-Unit4-Angry-Mountain-Lesson-Plan.pdf', 'ðŸ“˜ Lesson plan', 'key')]),
-        card('Unit 1 Â· Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade3.html', 'ðŸ–¨ï¸ Quiz'), link('unit1-revision/quiz-grade3-key.html', 'ðŸ”‘ Key', 'key')])
+        card('Unit 3 · It Keeps Changing (100 points)', 'Two forms so neighbours cannot copy: Form B has a different maze, snake and answer order. Recorded teacher voice for the listening.', [
+          link('unit3-g3-quiz/quiz-a.html', '🖨️ Form A'), link('unit3-g3-quiz/quiz-b.html', '🖨️ Form B'),
+          link('unit3-g3-quiz/key-a.html', '🔑 Key A', 'key'), link('unit3-g3-quiz/key-b.html', '🔑 Key B', 'key'),
+          link('unit3-g3-quiz/teacher.html', '👩‍🏫 Teacher page', 'key'), link('unit3-g3-quiz/index.html', '🎧 Listening player', 'key'),
+          link('lesson-plans/Grade3-Unit3-Monster-Journey-and-Quiz-Plan.pdf', '📘 Lesson plan', 'key'), board('3', '📊 Results (3-A, 3-B)')]),
+        card('Unit 4 · What Happened? (Mona Lisa & Angry Mountain · 20 pts)', 'Covers Reading 1 (Where Is She?), Reading 2 (The Angry Mountain), past tense, cause & effect, and -nd blends.', [link('unit4-g3-lessons/quiz-grade3.html', '🖨️ Quiz'), link('unit4-g3-lessons/quiz-grade3-key.html', '🔑 Key', 'key'), link('lesson-plans/Grade3-Unit4-Angry-Mountain-Lesson-Plan.pdf', '📘 Lesson plan', 'key')]),
+        card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade3.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade3-key.html', '🔑 Key', 'key')])
       ]) +
       grade(4, 'linear-gradient(135deg,#f59e0b,#d97706)', [
-        card('Unit 3 Â· Time-Travel Money Quest (25 coins)', '4 skills: listening and -ar words, reading, writing, speaking board game. The teacher key and script are on the last page of the quiz.', [
-          link('unit3-money-mission/quiz-4skills.html', 'ðŸ–¨ï¸ Quiz + key + script'), link('unit3-money-mission/worksheet.html', 'ðŸ–¨ï¸ Student pages'),
-          link('lesson-plans/Grade4-Unit3-Money-Quiz-Lesson-Plan.pdf', 'ðŸ“˜ Lesson plan', 'key'), board('4', 'ðŸ“Š Results (4-A)')]),
-        card('Unit 1 Â· Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade4.html', 'ðŸ–¨ï¸ Quiz'), link('unit1-revision/quiz-grade4-key.html', 'ðŸ”‘ Key', 'key')])
-      ]) + '<h2 style="font-size:1.1rem;font-weight:900;margin:6px 0 12px;color:var(--text-main);">ðŸ§© Interactive quizzes</h2></div>';
+        card('Unit 3 · Time-Travel Money Quest (25 coins)', '4 skills: listening and -ar words, reading, writing, speaking board game. The teacher key and script are on the last page of the quiz.', [
+          link('unit3-money-mission/quiz-4skills.html', '🖨️ Quiz + key + script'), link('unit3-money-mission/worksheet.html', '🖨️ Student pages'),
+          link('lesson-plans/Grade4-Unit3-Money-Quiz-Lesson-Plan.pdf', '📘 Lesson plan', 'key'), board('4', '📊 Results (4-A)')]),
+        card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade4.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade4-key.html', '🔑 Key', 'key')])
+      ]) + '<h2 style="font-size:1.1rem;font-weight:900;margin:6px 0 12px;color:var(--text-main);">🧩 Interactive quizzes</h2></div>';
   }
   function renderQuizzesView(container) {
     const quizzes = store.getQuizzes();
@@ -7801,33 +7802,33 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div>' +
                   '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
                     '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
-                      '<span style="background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">ðŸ› ï¸ GRADE 3 UNIT 1 MASTER QUEST</span>' +
-                      '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 3 â€¢ 25 MINS</span>' +
+                      '<span style="background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">🛠️ GRADE 3 UNIT 1 MASTER QUEST</span>' +
+                      '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 3 • 25 MINS</span>' +
                       '<span style="background:rgba(16, 185, 129, 0.15); color:#34d399; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">100 BASE + 20 BONUS XP</span>' +
                       '<span style="background:rgba(168, 85, 247, 0.15); color:#d8b4fe; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">4 VAULTS</span>' +
                     '</div>' +
-                    '<span style="color:#38bdf8; font-weight:800; font-size:0.82rem; display:flex; align-items:center; gap:4px;">ðŸ’¡ Unlocks Inventor &amp; Tea Party Priority Draft</span>' +
+                    '<span style="color:#38bdf8; font-weight:800; font-size:0.82rem; display:flex; align-items:center; gap:4px;">💡 Unlocks Inventor &amp; Tea Party Priority Draft</span>' +
                   '</div>' +
                   '<h2 style="font-size:1.38rem; font-weight:900; margin-bottom:6px; color:#fff;">' + q.title + '</h2>' +
-                  '<p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px;">' + (q.subtitle || '') + ' Â· Global Readings 2 â€¢ Unit 1 (pp. 8â€“23)</p>' +
+                  '<p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px;">' + (q.subtitle || '') + ' · Global Readings 2 • Unit 1 (pp. 8–23)</p>' +
                   '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;">' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(205,127,50,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Bronze Vault (30 XP):</strong><br><span style="color:#94a3b8;">Clara Inventions, cl- Phonics</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(148,163,184,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Silver Vault (40 XP):</strong><br><span style="color:#94a3b8;">4-Step Timeline, Da Vinci, Edison, Benz</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(245,158,11,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Gold Vault (30 XP):</strong><br><span style="color:#94a3b8;">Biomimicry, Problem &amp; Solution</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(56,189,248,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ’Ž Diamond Boss (20 XP):</strong><br><span style="color:#94a3b8;">Blueprint Canvas &amp; Pitch</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(205,127,50,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Bronze Vault (30 XP):</strong><br><span style="color:#94a3b8;">Clara Inventions, cl- Phonics</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(148,163,184,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Silver Vault (40 XP):</strong><br><span style="color:#94a3b8;">4-Step Timeline, Da Vinci, Edison, Benz</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(245,158,11,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Gold Vault (30 XP):</strong><br><span style="color:#94a3b8;">Biomimicry, Problem &amp; Solution</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(56,189,248,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>💎 Diamond Boss (20 XP):</strong><br><span style="color:#94a3b8;">Blueprint Canvas &amp; Pitch</span></div>' +
                   '</div>' +
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">ðŸ“ Check Worksheets (One-by-One)</button>' +
-                    '<a href="quiz-briefing/index.html#g3" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000;">ðŸš€ Launch Smartboard Briefing &amp; Countdown</a>' +
-                    '<a href="quiz-briefing/index.html#g3-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">âš¡ Rapid 8-Task Grader</a>' +
-                    '<a href="quiz-briefing/index.html#g3-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #38bdf8; color:#38bdf8;">ðŸ† Student Check-In &amp; XP Scoring Desk</a>' +
-                    '<a href="quiz-briefing/index.html#g3-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">ðŸ“ Vault Quiz &amp; Answer Keys</a>' +
+                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">📝 Check Worksheets (One-by-One)</button>' +
+                    '<a href="quiz-briefing/index.html#g3" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
+                    '<a href="quiz-briefing/index.html#g3-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">⚡ Rapid 8-Task Grader</a>' +
+                    '<a href="quiz-briefing/index.html#g3-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #38bdf8; color:#38bdf8;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
+                    '<a href="quiz-briefing/index.html#g3-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">📝 Vault Quiz &amp; Answer Keys</a>' +
                   '</div>' +
                   '<div style="display:flex; gap:6px;">' +
-                    '<a href="quiz-briefing/assets/unit1-inventor-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">ðŸ“„ Page 1</a>' +
-                    '<a href="quiz-briefing/assets/unit1-inventor-page2.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 2">ðŸ“„ Page 2</a>' +
+                    '<a href="quiz-briefing/assets/unit1-inventor-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">📄 Page 1</a>' +
+                    '<a href="quiz-briefing/assets/unit1-inventor-page2.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 2">📄 Page 2</a>' +
                   '</div>' +
                 '</div>' +
               '</div>';
@@ -7839,33 +7840,33 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div>' +
                   '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">' +
                     '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
-                      '<span style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">â­ GRADE 4 UNIT 1 MASTER QUEST</span>' +
-                      '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 4 â€¢ 25 MINS</span>' +
+                      '<span style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:900; font-size:0.75rem; padding:4px 10px; border-radius:999px; letter-spacing:0.04em;">⭐ GRADE 4 UNIT 1 MASTER QUEST</span>' +
+                      '<span style="background:rgba(56, 189, 248, 0.15); color:#38bdf8; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">GRADE 4 • 25 MINS</span>' +
                       '<span style="background:rgba(16, 185, 129, 0.15); color:#34d399; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">100 BASE + 20 BONUS XP</span>' +
                       '<span style="background:rgba(168, 85, 247, 0.15); color:#d8b4fe; font-weight:800; font-size:0.75rem; padding:4px 9px; border-radius:999px;">4 VAULTS</span>' +
                     '</div>' +
-                    '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; display:flex; align-items:center; gap:4px;">ðŸ«– Priority Qualifier for Tomorrow\'s Tea Party</span>' +
+                    '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; display:flex; align-items:center; gap:4px;">🫖 Priority Qualifier for Tomorrow\'s Tea Party</span>' +
                   '</div>' +
                   '<h2 style="font-size:1.38rem; font-weight:900; margin-bottom:6px; color:#fff;">' + q.title + '</h2>' +
-                  '<p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px;">' + (q.subtitle || '') + ' Â· Global Readings 3 â€¢ Unit 1 (pp. 8â€“23)</p>' +
+                  '<p style="font-size:0.88rem; color:#cbd5e1; margin-bottom:14px;">' + (q.subtitle || '') + ' · Global Readings 3 • Unit 1 (pp. 8–23)</p>' +
                   '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;">' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(205,127,50,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Bronze Vault (30 XP):</strong><br><span style="color:#94a3b8;">Skim Radar, SEL, -er Phonics</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(148,163,184,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Silver Vault (40 XP):</strong><br><span style="color:#94a3b8;">Storyboard, 4 Lobes, 20% Energy</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(245,158,11,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ“¦ Gold Vault (30 XP):</strong><br><span style="color:#94a3b8;">Dual Crates, Cause &amp; Effect</span></div>' +
-                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(56,189,248,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>ðŸ’Ž Diamond Boss (20 XP):</strong><br><span style="color:#94a3b8;">Neural Canvas &amp; Draft Claim</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(205,127,50,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Bronze Vault (30 XP):</strong><br><span style="color:#94a3b8;">Skim Radar, SEL, -er Phonics</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(148,163,184,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Silver Vault (40 XP):</strong><br><span style="color:#94a3b8;">Storyboard, 4 Lobes, 20% Energy</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(245,158,11,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>📦 Gold Vault (30 XP):</strong><br><span style="color:#94a3b8;">Dual Crates, Cause &amp; Effect</span></div>' +
+                    '<div style="background:rgba(15,23,42,0.65); border:1px solid rgba(56,189,248,0.4); padding:10px 12px; border-radius:10px; font-size:0.82rem;"><strong>💎 Diamond Boss (20 XP):</strong><br><span style="color:#94a3b8;">Neural Canvas &amp; Draft Claim</span></div>' +
                   '</div>' +
                 '</div>' +
                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.12); padding-top:14px; gap:8px; flex-wrap:wrap;">' +
                   '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">ðŸ“ Check Worksheets (One-by-One)</button>' +
-                    '<a href="quiz-briefing/index.html#g4" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;">ðŸš€ Launch Smartboard Briefing &amp; Countdown</a>' +
-                    '<a href="quiz-briefing/index.html#g4-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">âš¡ Rapid 8-Task Grader</a>' +
-                    '<a href="quiz-briefing/index.html#g4-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399;">ðŸ† Student Check-In &amp; XP Scoring Desk</a>' +
-                    '<a href="quiz-briefing/index.html#g4-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">ðŸ“ Vault Quiz &amp; Answer Keys</a>' +
+                    '<button type="button" class="btn-primary-action" onclick="openWorksheetGraderModal()" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:7px 16px; font-size:0.85rem; font-weight:900; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer;">📝 Check Worksheets (One-by-One)</button>' +
+                    '<a href="quiz-briefing/index.html#g4" target="_blank" class="btn-primary-action" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;">🚀 Launch Smartboard Briefing &amp; Countdown</a>' +
+                    '<a href="quiz-briefing/index.html#g4-grader" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399; background:rgba(16,185,129,0.1);">⚡ Rapid 8-Task Grader</a>' +
+                    '<a href="quiz-briefing/index.html#g4-ledger" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800; border:1px solid #10b981; color:#34d399;">🏆 Student Check-In &amp; XP Scoring Desk</a>' +
+                    '<a href="quiz-briefing/index.html#g4-quiz" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding:7px 14px; font-size:0.85rem; font-weight:800;">📝 Vault Quiz &amp; Answer Keys</a>' +
                   '</div>' +
                   '<div style="display:flex; gap:6px;">' +
-                    '<a href="quiz-briefing/assets/unit1-vault-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">ðŸ“„ Page 1</a>' +
-                    '<a href="quiz-briefing/assets/unit1-vault-page2.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 2">ðŸ“„ Page 2</a>' +
+                    '<a href="quiz-briefing/assets/unit1-vault-page1.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 1">📄 Page 1</a>' +
+                    '<a href="quiz-briefing/assets/unit1-vault-page2.jpg" target="_blank" class="btn-sm-secondary" style="display:inline-flex; align-items:center; text-decoration:none; padding:6px 10px; font-size:0.8rem;" title="View Worksheet Page 2">📄 Page 2</a>' +
                   '</div>' +
                 '</div>' +
               '</div>';
@@ -7879,15 +7880,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">' + q.skill + '</span>' +
                 '</div>' +
                 '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">' + q.title + '</h3>' +
-                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">' + qCount + ' Questions Â· ' + subCount + ' Submissions Recorded</div>' +
+                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">' + qCount + ' Questions · ' + subCount + ' Submissions Recorded</div>' +
               '</div>' +
               '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px; gap:6px; flex-wrap:wrap;">' +
-                '<button class="btn-primary-action" onclick="openQuizResultsModal(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">ðŸ“Š Results (' + subCount + ')</button>' +
-                '<button class="btn-sm-secondary" onclick="openQuizQuestionsManager(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">ðŸ§© Questions (' + qCount + ')</button>' +
+                '<button class="btn-primary-action" onclick="openQuizResultsModal(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">📊 Results (' + subCount + ')</button>' +
+                '<button class="btn-sm-secondary" onclick="openQuizQuestionsManager(\'' + q.id + '\')" style="padding:5px 10px; font-size:0.78rem;">🧩 Questions (' + qCount + ')</button>' +
                 '<div style="display:flex; gap:4px;">' +
-                  '<button class="btn-sm-secondary" onclick="openEditQuizModal(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">âœï¸</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleDuplicateQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">ðŸ“‹</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleArchiveQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">ðŸ“¦</button>' +
+                  '<button class="btn-sm-secondary" onclick="openEditQuizModal(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Edit">✏️</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleDuplicateQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem;" title="Duplicate">📋</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleArchiveQuiz(\'' + q.id + '\')" style="padding:4px 8px; font-size:0.78rem; color:var(--color-danger);" title="Archive">📦</button>' +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -7904,8 +7905,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const subtitle = document.getElementById('quiz-results-subtitle');
     const tbody = document.getElementById('quiz-results-tbody');
 
-    if (title) title.textContent = 'ðŸ“Š ' + q.title + ' â€” Results & Overrides';
-    if (subtitle) subtitle.textContent = 'CEFR Level: ' + (q.targetCefr || 'A1') + ' Â· Skill: ' + q.skill + ' Â· Total Questions: ' + (q.questions || []).length;
+    if (title) title.textContent = '📊 ' + q.title + ' — Results & Overrides';
+    if (subtitle) subtitle.textContent = 'CEFR Level: ' + (q.targetCefr || 'A1') + ' · Skill: ' + q.skill + ' · Total Questions: ' + (q.questions || []).length;
 
     const cls = store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
@@ -7926,7 +7927,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<td style="padding:10px 12px; text-align:center;"><span style="font-weight:900; color:' + (sub.percentage >= 80 ? 'var(--color-success)' : sub.percentage >= 60 ? '#b45309' : 'var(--color-danger)') + ';">' + (sub.percentage || 0) + '%</span></td>' +
             '<td style="padding:10px 12px; font-size:0.78rem; color:var(--text-muted);">' + (sub.teacherNotes || (sub.overridden ? 'Teacher override applied' : 'Standard auto-grading')) + '</td>' +
             '<td style="padding:10px 12px; text-align:right;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="handlePromptQuizOverride(\'' + q.id + '\', \'' + st.id + '\')" style="padding:2px 8px; font-size:0.74rem;">âœï¸ Override</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="handlePromptQuizOverride(\'' + q.id + '\', \'' + st.id + '\')" style="padding:2px 8px; font-size:0.74rem;">✏️ Override</button>' +
             '</td>' +
           '</tr>';
       }).join('');
@@ -7975,27 +7976,27 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Multi-skill formative rubric scoring and criteria management.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="openRubricEditorModal()">ðŸŽ¯ + Create Rubric</button>' +
-          '<button class="btn-primary-action" onclick="openModal(\'modal-assessment-rubric\')">ðŸ“ + Record Assessment</button>' +
+          '<button class="btn-sm-secondary" onclick="openRubricEditorModal()">🎯 + Create Rubric</button>' +
+          '<button class="btn-primary-action" onclick="openModal(\'modal-assessment-rubric\')">📝 + Record Assessment</button>' +
         '</div>' +
       '</div>' +
       '<div style="background:linear-gradient(135deg, rgba(37,99,235,0.08) 0%, rgba(16,185,129,0.08) 100%); border:1px solid rgba(37,99,235,0.25); border-radius:14px; padding:14px 18px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
         '<div style="display:flex; align-items:center; gap:12px;">' +
-          '<span style="font-size:1.6rem;">ðŸ“Š</span>' +
+          '<span style="font-size:1.6rem;">📊</span>' +
           '<div>' +
             '<div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">English Progress Check Engine Active</div>' +
             '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Conduct standardized 7-station evaluations across Vocabulary, Listening, Reading, Grammar, Speaking &amp; Writing.</div>' +
           '</div>' +
         '</div>' +
-        '<button type="button" class="btn-primary-action" onclick="switchView(\'progress-check\')" style="padding:6px 14px; font-size:0.82rem;">Open English Progress Check âž”</button>' +
+        '<button type="button" class="btn-primary-action" onclick="switchView(\'progress-check\')" style="padding:6px 14px; font-size:0.82rem;">Open English Progress Check ➔</button>' +
       '</div>' +
 
       '<div style="display:flex; gap:12px; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:4px;">' +
         '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'evaluations' ? 'is-active' : '') + '" onclick="switchAssessmentsSubTab(\'evaluations\')">' +
-          '<span>ðŸŽ¯</span> <span>Student Evaluations (' + assessments.length + ')</span>' +
+          '<span>🎯</span> <span>Student Evaluations (' + assessments.length + ')</span>' +
         '</button>' +
         '<button class="classroom-view-pill-btn ' + (assessmentsActiveSubTab === 'rubrics' ? 'is-active' : '') + '" onclick="switchAssessmentsSubTab(\'rubrics\')">' +
-          '<span>ðŸ“‹</span> <span>Rubric Templates (' + rubrics.length + ')</span>' +
+          '<span>📋</span> <span>Rubric Templates (' + rubrics.length + ')</span>' +
         '</button>' +
       '</div>' +
 
@@ -8016,7 +8017,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
         '<div style="padding:16px 20px; border-bottom:1px solid var(--border-subtle); font-weight:800; font-size:1.05rem;">Recent Multi-Skill Evaluations</div>' +
         '<div style="display:flex; flex-direction:column;">' +
-          (assessments.length === 0 ? emptyStateHTML('ðŸŽ¯', 'No evaluations yet', 'Use â€œ+ Record Assessmentâ€ (top right) to score a student on speaking, listening, reading or writing.') : '') +
+          (assessments.length === 0 ? emptyStateHTML('🎯', 'No evaluations yet', 'Use “+ Record Assessment” (top right) to score a student on speaking, listening, reading or writing.') : '') +
           assessments.map(ass => {
             const s = store.getStudent(ass.studentId) || { firstName: 'Student', lastName: '' };
             return '' +
@@ -8030,7 +8031,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '</div>' +
                 '<div style="display:flex; align-items:center; gap:12px;">' +
                   '<span style="font-size:0.88rem; font-weight:800; color:var(--color-success);">' + (ass.overallScore || '4.0') + ' / 5.0</span>' +
-                  '<button class="btn-sm-secondary" onclick="handleDeleteAssessment(\'' + ass.id + '\')" style="padding:3px 8px; font-size:0.75rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleDeleteAssessment(\'' + ass.id + '\')" style="padding:3px 8px; font-size:0.75rem; color:var(--color-danger);">🗑️</button>' +
                 '</div>' +
               '</div>';
           }).join('') +
@@ -8052,14 +8053,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">' +
                 (r.criteria || []).map(c => '' +
                   '<div style="font-size:0.78rem; background:var(--bg-card-secondary); padding:5px 8px; border-radius:6px; border:1px solid var(--border-subtle);">' +
-                    '<strong>' + c.name + ':</strong> ' + (c.description || '1â€“5 scale evaluation') +
+                    '<strong>' + c.name + ':</strong> ' + (c.description || '1–5 scale evaluation') +
                   '</div>'
                 ).join('') +
               '</div>' +
             '</div>' +
             '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-              '<button class="btn-sm-secondary" onclick="openRubricEditorModal(\'' + r.id + '\')" style="padding:4px 10px; font-size:0.8rem;">âœï¸ Edit Criteria</button>' +
-              '<button class="btn-sm-secondary" onclick="handleArchiveRubric(\'' + r.id + '\')" style="padding:4px 8px; font-size:0.8rem; color:var(--color-danger);">ðŸ“¦ Archive</button>' +
+              '<button class="btn-sm-secondary" onclick="openRubricEditorModal(\'' + r.id + '\')" style="padding:4px 10px; font-size:0.8rem;">✏️ Edit Criteria</button>' +
+              '<button class="btn-sm-secondary" onclick="handleArchiveRubric(\'' + r.id + '\')" style="padding:4px 8px; font-size:0.8rem; color:var(--color-danger);">📦 Archive</button>' +
             '</div>' +
           '</div>'
         ).join('') +
@@ -8087,7 +8088,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Student Term Reports</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Dynamic report cards compiled from live attendance, XP ledger, and CEFR mastery data.</p>' +
         '</div>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="ParentReport && ParentReport.openAll()">ðŸ§¾ Parent reports: all classes</button><button class="btn-primary-action" onclick="openReportGeneratorModal()">ðŸ“„ + Generate New Report</button></div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="ParentReport && ParentReport.openAll()">🧾 Parent reports: all classes</button><button class="btn-primary-action" onclick="openReportGeneratorModal()">📄 + Generate New Report</button></div>' +
       '</div>' +
 
       '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
@@ -8101,16 +8102,16 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.75rem; color:var(--text-muted);">' + rep.date + '</span>' +
                 '</div>' +
                 '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">' + rep.title + '</h3>' +
-                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (rep.className || 'Class 3A') + ' Â· ' + rep.reportType + '</div>' +
+                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (rep.className || 'Class 3A') + ' · ' + rep.reportType + '</div>' +
                 '<div style="background:var(--bg-card-secondary); border-radius:8px; padding:10px; font-size:0.8rem; margin-bottom:14px; border:1px solid var(--border-subtle);">' +
-                  '<div><strong>Total XP:</strong> â­ ' + ((rep.dataSnapshot || {}).totalXP || 0) + '</div>' +
+                  '<div><strong>Total XP:</strong> ⭐ ' + ((rep.dataSnapshot || {}).totalXP || 0) + '</div>' +
                   '<div><strong>Attendance:</strong> ' + (((rep.dataSnapshot || {}).attendanceRate !== undefined) ? (rep.dataSnapshot || {}).attendanceRate : 0) + '%</div>' +
                   '<div><strong>CEFR Level:</strong> ' + ((rep.dataSnapshot || {}).overallCefr || 'Unassessed') + '</div>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
-                '<button class="btn-primary-action" onclick="viewPrintableReportCard(\'' + rep.id + '\')" style="padding:4px 12px; font-size:0.8rem;">ðŸ‘ï¸ View / Print Card</button>' +
-                '<button class="btn-sm-secondary" onclick="handleDeleteReport(\'' + rep.id + '\')" style="padding:4px 8px; font-size:0.8rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+                '<button class="btn-primary-action" onclick="viewPrintableReportCard(\'' + rep.id + '\')" style="padding:4px 12px; font-size:0.8rem;">👁️ View / Print Card</button>' +
+                '<button class="btn-sm-secondary" onclick="handleDeleteReport(\'' + rep.id + '\')" style="padding:4px 8px; font-size:0.8rem; color:var(--color-danger);">🗑️</button>' +
               '</div>' +
             '</div>';
         }).join('') +
@@ -8139,11 +8140,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
     const tabsHtml = 
       '<div style="display:flex; gap:8px; border-bottom:1px solid var(--border-light); margin-bottom:20px; overflow-x:auto;">' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">ðŸ† Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">ðŸ‘¾ Monster Evolution Levels (' + levels.length + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">ðŸŽ¨ Monster Items Catalog (' + allItems.length + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">â­ Classroom XP Skills (' + allSkills.length + ')</button>' +
-        '<button type="button" class="monster-tab-btn ' + (activeTab === 'boxes' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'boxes\')">ðŸŽ Mystery Boxes &amp; Trading (' + unopenedBoxes.length + ' Ready)</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'badges' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'badges\')">🏆 Badges &amp; Achievements (' + (badges.length + achievements.length) + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'levels' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'levels\')">👾 Monster Evolution Levels (' + levels.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'items' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'items\')">🎨 Monster Items Catalog (' + allItems.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'skills' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'skills\')">⭐ Classroom XP Skills (' + allSkills.length + ')</button>' +
+        '<button type="button" class="monster-tab-btn ' + (activeTab === 'boxes' ? 'is-active' : '') + '" onclick="switchGamificationTab(\'boxes\')">🎁 Mystery Boxes &amp; Trading (' + unopenedBoxes.length + ' Ready)</button>' +
       '</div>';
 
     let tabBodyHtml = '';
@@ -8191,7 +8192,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               ).join('') +
             '</div>' +
             '<div style="min-width:200px;">' +
-              '<input type="text" class="filter-input" placeholder="ðŸ” Search items..." value="' + (monsterItemsSearchQuery || '') + '" oninput="searchMonsterItemsCatalog(this.value)" style="width:100%; font-size:0.82rem; padding:6px 10px;" />' +
+              '<input type="text" class="filter-input" placeholder="🔍 Search items..." value="' + (monsterItemsSearchQuery || '') + '" oninput="searchMonsterItemsCatalog(this.value)" style="width:100%; font-size:0.82rem; padding:6px 10px;" />' +
             '</div>' +
           '</div>' +
 
@@ -8204,22 +8205,22 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + '; transition:all 0.15s ease;">' +
                     '<div>' +
                       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">' +
-                        '<span style="font-size:2rem;">' + (item.icon || 'âœ¨') + '</span>' +
+                        '<span style="font-size:2rem;">' + (item.icon || '✨') + '</span>' +
                         '<span style="font-size:0.68rem; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; border:1px solid ' + rarityColor + '; color:' + rarityColor + ';">' + (item.rarity || 'common') + '</span>' +
                       '</div>' +
                       '<div style="font-weight:800; font-size:0.92rem; color:var(--text-main); margin-bottom:2px;">' + item.name + '</div>' +
                       '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700; text-transform:uppercase; margin-bottom:4px;">' + item.category + '</div>' +
                       '<p style="font-size:0.76rem; color:var(--text-muted); margin:0 0 8px 0; line-height:1.3;">' + (item.description || 'Cosmetic item') + '</p>' +
                       '<div style="font-size:0.72rem; font-weight:700; color:#b45309; margin-bottom:8px; background:rgba(245,158,11,0.08); padding:3px 6px; border-radius:6px;">' +
-                        (item.unlockType === 'level' ? ('â­ Reach Level ' + ((item.unlockRequirement && item.unlockRequirement.level) || 1)) :
-                         item.unlockType === 'achievement' ? ('ðŸ† ' + ((item.unlockRequirement && item.unlockRequirement.achievementId) || 'Achievement')) :
-                         'ðŸ”“ Default (Unlocked)') +
+                        (item.unlockType === 'level' ? ('⭐ Reach Level ' + ((item.unlockRequirement && item.unlockRequirement.level) || 1)) :
+                         item.unlockType === 'achievement' ? ('🏆 ' + ((item.unlockRequirement && item.unlockRequirement.achievementId) || 'Achievement')) :
+                         '🔓 Default (Unlocked)') +
                       '</div>' +
                     '</div>' +
                     '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:8px; margin-top:6px;">' +
                       '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
                       '<div style="display:flex; gap:4px;">' +
-                        '<button type="button" class="btn-sm-secondary" onclick="openMonsterItemEditorModal(\'' + item.id + '\')" style="padding:2px 6px; font-size:0.7rem;">âœï¸ Edit</button>' +
+                        '<button type="button" class="btn-sm-secondary" onclick="openMonsterItemEditorModal(\'' + item.id + '\')" style="padding:2px 6px; font-size:0.7rem;">✏️ Edit</button>' +
                         '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveMonsterItem(\'' + item.id + '\')" style="padding:2px 6px; font-size:0.7rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
                       '</div>' +
                     '</div>' +
@@ -8240,14 +8241,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<h3 style="font-size:1.15rem; font-weight:800; margin:0; color:var(--text-main);">Classroom XP Award Skills (' + filteredSkills.length + ' / ' + allSkills.length + ')</h3>' +
               '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Define classroom behaviors and point values. Awarding these skills generates canonical, audited XP transactions.</p>' +
             '</div>' +
-            '<button type="button" class="btn-primary-action" onclick="openXPSkillEditorModal(null)">â­ + Add Skill</button>' +
+            '<button type="button" class="btn-primary-action" onclick="openXPSkillEditorModal(null)">⭐ + Add Skill</button>' +
           '</div>' +
 
           '<!-- Category Filter Pills -->' +
           '<div style="display:flex; gap:6px; margin-bottom:16px;">' +
             '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'all' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'all\')">All (' + allSkills.length + ')</button>' +
-            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'positive' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'positive\')">â­ Positive (+XP)</button>' +
-            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'needs_work' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'needs_work\')">ðŸ’­ Needs Work (-XP)</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'positive' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'positive\')">⭐ Positive (+XP)</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (xpSkillsFilterCategory === 'needs_work' ? 'is-active' : '') + '" onclick="filterXPSkillsCategory(\'needs_work\')">💭 Needs Work (-XP)</button>' +
           '</div>' +
 
           '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px;">' +
@@ -8258,7 +8259,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 '<div style="padding:14px; background:var(--bg-canvas); border-radius:12px; border:1px solid var(--border-light); display:flex; flex-direction:column; justify-content:space-between; opacity:' + (isArchived ? '0.6' : '1') + ';">' +
                   '<div>' +
                     '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">' +
-                      '<span style="font-size:1.8rem;">' + (sk.icon || 'â­') + '</span>' +
+                      '<span style="font-size:1.8rem;">' + (sk.icon || '⭐') + '</span>' +
                       '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
                         (isPos ? '+' : '') + sk.points + ' XP' +
                       '</span>' +
@@ -8269,7 +8270,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:8px;">' +
                     '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
                     '<div style="display:flex; gap:4px;">' +
-                      '<button type="button" class="btn-sm-secondary" onclick="openXPSkillEditorModal(\'' + sk.id + '\')" style="padding:2px 6px; font-size:0.7rem;">âœï¸ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openXPSkillEditorModal(\'' + sk.id + '\')" style="padding:2px 6px; font-size:0.7rem;">✏️ Edit</button>' +
                       '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveXPSkill(\'' + sk.id + '\')" style="padding:2px 6px; font-size:0.7rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
                     '</div>' +
                   '</div>' +
@@ -8285,12 +8286,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:22px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--border-light); padding-bottom:16px;">' +
             '<div>' +
-              '<h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">ðŸŽ Mystery Boxes, Backpacks &amp; Trading Vault</h3>' +
+              '<h3 style="font-size:1.2rem; font-weight:800; margin:0; color:var(--text-main);">🎁 Mystery Boxes, Backpacks &amp; Trading Vault</h3>' +
               '<p style="font-size:0.82rem; color:var(--text-muted); margin:3px 0 0 0;">Weighted drop algorithms, individual/class box grants, live 3D unboxing sequences, and peer exchange.</p>' +
             '</div>' +
             '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-              '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.openTradingCabinet()" style="font-size:0.82rem; padding:8px 14px;">ðŸ¤ Open Trading Cabinet</button>' +
-              '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestDemoUnboxing()" style="font-size:0.82rem; padding:8px 16px;">âœ¨ Test 3D Unboxing Rig</button>' +
+              '<button type="button" class="btn-3d btn-3d-secondary" onclick="window.openTradingCabinet()" style="font-size:0.82rem; padding:8px 14px;">🤝 Open Trading Cabinet</button>' +
+              '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestDemoUnboxing()" style="font-size:0.82rem; padding:8px 16px;">✨ Test 3D Unboxing Rig</button>' +
             '</div>' +
           '</div>' +
 
@@ -8326,7 +8327,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                         '<td style="padding:8px 10px; font-weight:700; color:#38bdf8;">' + sInv.length + ' collectibles</td>' +
                         '<td style="padding:8px 10px; text-align:right;">' +
                           '<button type="button" class="btn-sm-secondary" onclick="window.handleGrantStudentPrompt(\'' + s.id + '\')" style="font-size:0.72rem; padding:3px 8px; margin-right:4px;">+ Grant Box</button>' +
-                          '<button type="button" class="btn-sm-secondary" onclick="window.openTradingCabinet(\'' + s.id + '\')" style="font-size:0.72rem; padding:3px 8px;">ðŸ¤ Cabinet</button>' +
+                          '<button type="button" class="btn-sm-secondary" onclick="window.openTradingCabinet(\'' + s.id + '\')" style="font-size:0.72rem; padding:3px 8px;">🤝 Cabinet</button>' +
                         '</td>' +
                       '</tr>';
                   }).join('') +
@@ -8345,7 +8346,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   const receiver = store.getStudent ? store.getStudent(tr.receiverId) : null;
                   return '' +
                     '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-surface); padding:8px 12px; border-radius:8px; font-size:0.78rem;">' +
-                      '<span><strong>' + (sender ? sender.firstName : 'Student') + '</strong> âž” <strong>' + (receiver ? receiver.firstName : 'Student') + '</strong>: ' + (tr.message || 'Collectible Exchange') + '</span>' +
+                      '<span><strong>' + (sender ? sender.firstName : 'Student') + '</strong> ➔ <strong>' + (receiver ? receiver.firstName : 'Student') + '</strong>: ' + (tr.message || 'Collectible Exchange') + '</span>' +
                       '<span style="font-weight:800; color:' + (tr.status === 'accepted' ? '#10b981' : '#f59e0b') + '; text-transform:uppercase;">' + tr.status + '</span>' +
                     '</div>';
                 }).join('') +
@@ -8359,7 +8360,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Classroom Badges (' + badges.length + ')</h2>' +
-            '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">â­ + Add Badge</button>' +
+            '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
           '</div>' +
           '<div id="badges-grid" class="badges-trading-grid" style="margin-bottom:30px;">' +
             badges.map(b => {
@@ -8375,10 +8376,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<div>' +
                     '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">' +
                       '<div style="display:flex; align-items:center; gap:10px;">' +
-                        '<span style="font-size:2rem;">' + (b.icon || 'â­') + '</span>' +
+                        '<span style="font-size:2rem;">' + (b.icon || '⭐') + '</span>' +
                         '<div>' +
                           '<div style="font-weight:800; font-size:0.95rem;">' + b.name + '</div>' +
-                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' â­ XP</div>' +
+                          '<div style="font-size:0.75rem; color:#b45309; font-weight:700;">+' + b.xpReward + ' ⭐ XP</div>' +
                         '</div>' +
                       '</div>' +
                       '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
@@ -8387,10 +8388,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '</div>' +
                   '<div style="display:flex; justify-content:space-between; gap:6px; border-top:1px solid var(--border-light); padding-top:10px;">' +
                     '<div style="display:flex; gap:4px;">' +
-                      '<button type="button" class="btn-sm-secondary" onclick="openEditBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem;">âœï¸ Edit</button>' +
+                      '<button type="button" class="btn-sm-secondary" onclick="openEditBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem;">✏️ Edit</button>' +
                       '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveBadge(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
                     '</div>' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openAwardBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem; font-weight:700;">ðŸŽ–ï¸ Award</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openAwardBadgeModal(\'' + b.id + '\')" style="padding:3px 8px; font-size:0.72rem; font-weight:700;">🎖️ Award</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -8398,7 +8399,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
             '<h2 style="font-size:1.2rem; font-weight:800; margin:0;">Learning Achievements (' + achievements.length + ')</h2>' +
-            '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">ðŸ† + Add Achievement</button>' +
+            '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
           '</div>' +
           '<div id="achievements-grid" class="achievements-trading-grid">' +
             achievements.map(a => {
@@ -8413,10 +8414,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<div>' +
                     '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">' +
                       '<div style="display:flex; align-items:center; gap:10px;">' +
-                        '<span style="font-size:2rem;">' + (a.icon || 'ðŸ†') + '</span>' +
+                        '<span style="font-size:2rem;">' + (a.icon || '🏆') + '</span>' +
                         '<div>' +
                           '<div style="font-weight:800; font-size:0.95rem;">' + a.name + '</div>' +
-                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">+' + a.xpReward + ' â­ XP</div>' +
+                          '<div style="font-size:0.75rem; color:var(--color-primary); font-weight:700;">+' + a.xpReward + ' ⭐ XP</div>' +
                         '</div>' +
                       '</div>' +
                       '<span style="font-size:0.68rem; font-weight:700; color:' + (isArchived ? '#dc2626' : '#059669') + ';">' + (isArchived ? 'Archived' : 'Active') + '</span>' +
@@ -8424,7 +8425,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                     '<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">' + (a.requirement || a.description || '') + '</p>' +
                   '</div>' +
                   '<div style="display:flex; justify-content:flex-end; gap:6px; border-top:1px solid var(--border-light); padding-top:10px;">' +
-                    '<button type="button" class="btn-sm-secondary" onclick="openEditAchievementModal(\'' + a.id + '\')" style="padding:3px 8px; font-size:0.72rem;">âœï¸ Edit</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="openEditAchievementModal(\'' + a.id + '\')" style="padding:3px 8px; font-size:0.72rem;">✏️ Edit</button>' +
                     '<button type="button" class="btn-sm-secondary" onclick="handleToggleArchiveAchievement(\'' + a.id + '\')" style="padding:3px 8px; font-size:0.72rem; color:' + (isArchived ? 'var(--color-primary)' : 'var(--color-danger)') + ';">' + (isArchived ? 'Restore' : 'Archive') + '</button>' +
                   '</div>' +
                 '</div>';
@@ -8440,9 +8441,9 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage badges, monster evolution stages, modular cosmetics, and XP skills.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-          '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">â­ + Add Badge</button>' +
-          '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">ðŸ† + Add Achievement</button>' +
-          '<button class="btn-sm-secondary" onclick="window.openTradingCabinet()" style="background:rgba(245,158,11,0.12); color:#f59e0b; border-color:rgba(245,158,11,0.4); font-weight:800;">ðŸŽ Trading Cabinet</button>' +
+          '<button class="btn-sm-secondary" onclick="openGamificationEditorModal(\'badge\')">⭐ + Add Badge</button>' +
+          '<button class="btn-primary-action" onclick="openGamificationEditorModal(\'achievement\')">🏆 + Add Achievement</button>' +
+          '<button class="btn-sm-secondary" onclick="window.openTradingCabinet()" style="background:rgba(245,158,11,0.12); color:#f59e0b; border-color:rgba(245,158,11,0.4); font-weight:800;">🎁 Trading Cabinet</button>' +
         '</div>' +
       '</div>' +
       tabsHtml +
@@ -8464,7 +8465,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!tierChoice) return;
     const box = store.grantMysteryBox(studentId, tierChoice.trim().toUpperCase());
     if (window.showNotification) {
-      window.showNotification('ðŸŽ Granted a ' + (window.boxTierInfo ? window.boxTierInfo(box.boxTier).name : box.boxTier) + ' to ' + name + '!', 'success');
+      window.showNotification('🎁 Granted a ' + (window.boxTierInfo ? window.boxTierInfo(box.boxTier).name : box.boxTier) + ' to ' + name + '!', 'success');
     }
     const container = document.getElementById('app-view-container');
     if (container && currentView === 'gamification') renderGamificationView(container);
@@ -8477,7 +8478,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (!confirmed) return;
     store.grantClassMysteryBoxes(cls.id, boxTier);
     if (window.showNotification) {
-      window.showNotification('ðŸŽ‰ Granted a ' + (window.boxTierInfo ? window.boxTierInfo(boxTier).name : boxTier) + ' to the whole class (' + cls.name + ')!', 'success');
+      window.showNotification('🎉 Granted a ' + (window.boxTierInfo ? window.boxTierInfo(boxTier).name : boxTier) + ' to the whole class (' + cls.name + ')!', 'success');
     }
     const container = document.getElementById('app-view-container');
     if (container && currentView === 'gamification') renderGamificationView(container);
@@ -8559,7 +8560,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (id) {
       const lvl = store.getProgressionLevel(id);
       if (!lvl) return;
-      if (title) title.innerText = 'ðŸ‘¾ Edit Progression Level ' + lvl.level;
+      if (title) title.innerText = '👾 Edit Progression Level ' + lvl.level;
       if (idInput) idInput.value = lvl.id;
       if (numInput) numInput.value = String(lvl.level);
       if (nameInput) nameInput.value = lvl.name;
@@ -8571,7 +8572,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       if (rewardXPInput) rewardXPInput.value = String(lvl.rewardXP || 100);
     } else {
       const allLevels = store.getProgressionLevels(true);
-      if (title) title.innerText = 'ðŸ‘¾ Add New Progression Level';
+      if (title) title.innerText = '👾 Add New Progression Level';
       if (idInput) idInput.value = '';
       if (numInput) numInput.value = String(allLevels.length + 1);
       if (nameInput) nameInput.value = 'New Explorer Rank';
@@ -8645,10 +8646,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (id) {
       const item = store.getMonsterItem(id);
       if (!item) return;
-      if (title) title.innerText = 'ðŸŽ¨ Edit Monster Item: ' + item.name;
+      if (title) title.innerText = '🎨 Edit Monster Item: ' + item.name;
       if (idInput) idInput.value = item.id;
       if (nameInput) nameInput.value = item.name;
-      if (iconInput) iconInput.value = item.icon || 'âœ¨';
+      if (iconInput) iconInput.value = item.icon || '✨';
       if (catSelect) catSelect.value = item.category || 'hat';
       if (raritySelect) raritySelect.value = item.rarity || 'common';
       if (descInput) descInput.value = item.description || '';
@@ -8666,10 +8667,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         if (reqInput) reqInput.value = '';
       }
     } else {
-      if (title) title.innerText = 'ðŸŽ¨ Add New Monster Item';
+      if (title) title.innerText = '🎨 Add New Monster Item';
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
-      if (iconInput) iconInput.value = 'âœ¨';
+      if (iconInput) iconInput.value = '✨';
       if (catSelect) catSelect.value = 'hat';
       if (raritySelect) raritySelect.value = 'common';
       if (descInput) descInput.value = '';
@@ -8702,7 +8703,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     e.preventDefault();
     const id = document.getElementById('edit-monster-item-id')?.value;
     const name = document.getElementById('monster-item-name')?.value.trim();
-    const icon = document.getElementById('monster-item-icon')?.value.trim() || 'âœ¨';
+    const icon = document.getElementById('monster-item-icon')?.value.trim() || '✨';
     const category = document.getElementById('monster-item-category')?.value || 'hat';
     const rarity = document.getElementById('monster-item-rarity')?.value || 'common';
     const description = document.getElementById('monster-item-desc')?.value.trim() || '';
@@ -8749,18 +8750,18 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     if (id) {
       const sk = store.getXPSkill ? store.getXPSkill(id) : null;
       if (!sk) return;
-      if (title) title.innerText = 'âœ¨ Edit XP Skill: ' + sk.name;
+      if (title) title.innerText = '✨ Edit XP Skill: ' + sk.name;
       if (idInput) idInput.value = sk.id;
       if (nameInput) nameInput.value = sk.name;
-      if (iconInput) iconInput.value = sk.icon || 'â­';
+      if (iconInput) iconInput.value = sk.icon || '⭐';
       if (ptsSelect) ptsSelect.value = String(sk.points);
       if (catSelect) catSelect.value = sk.category || 'positive';
       if (descInput) descInput.value = sk.description || '';
     } else {
-      if (title) title.innerText = 'âœ¨ Create Custom XP Skill';
+      if (title) title.innerText = '✨ Create Custom XP Skill';
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
-      if (iconInput) iconInput.value = 'â­';
+      if (iconInput) iconInput.value = '⭐';
       if (ptsSelect) ptsSelect.value = '10';
       if (catSelect) catSelect.value = 'positive';
       if (descInput) descInput.value = '';
@@ -8773,7 +8774,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     e.preventDefault();
     const id = document.getElementById('xp-skill-id-val')?.value;
     const name = document.getElementById('xp-skill-name-val')?.value.trim();
-    const icon = document.getElementById('xp-skill-icon-val')?.value.trim() || 'â­';
+    const icon = document.getElementById('xp-skill-icon-val')?.value.trim() || '⭐';
     const points = parseInt(document.getElementById('xp-skill-points-val')?.value, 10) || 10;
     const category = document.getElementById('xp-skill-category-val')?.value || 'positive';
     const description = document.getElementById('xp-skill-desc-val')?.value.trim() || '';
@@ -8854,12 +8855,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">ðŸ“Š System Health &amp; CRUD Audit</h1>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">📊 System Health &amp; CRUD Audit</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Comprehensive operational audit verifying 100% editability and persistence across all all application entities.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">ðŸ’¾ Export JSON Backup</button>' +
-          '<button class="btn-primary-action" onclick="openSchoolSettingsModal()">âš™ï¸ School Settings</button>' +
+          '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">💾 Export JSON Backup</button>' +
+          '<button class="btn-primary-action" onclick="openSchoolSettingsModal()">⚙️ School Settings</button>' +
         '</div>' +
       '</div>' +
 
@@ -8871,14 +8872,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="kpi-card"><span class="kpi-label">Entities Covered</span><span class="kpi-val">31 / 31</span><span class="kpi-sub">100% Operational</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Active Storage Key</span><span class="kpi-val" style="font-size:1.05rem;">' + (store.getStorageKey ? store.getStorageKey() : 'eaa_master_school_v6') + '</span><span class="kpi-sub">Persistent localStorage</span></div>' +
         '<div class="kpi-card"><span class="kpi-label">Total Records</span><span class="kpi-val">' + matrix.reduce((acc, m) => acc + m.count, 0) + '</span><span class="kpi-sub">Live in memory</span></div>' +
-        '<div class="kpi-card"><span class="kpi-label">Academic Year</span><span class="kpi-val" style="color:var(--color-primary);">' + (settings.academicYear || '2026â€“2027') + '</span><span class="kpi-sub">' + settings.schoolName + '</span></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Academic Year</span><span class="kpi-val" style="color:var(--color-primary);">' + (settings.academicYear || '2026–2027') + '</span><span class="kpi-sub">' + settings.schoolName + '</span></div>' +
       '</div>' +
 
       // Live CRUD Matrix Table
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">' +
         '<div style="padding:16px 20px; background:var(--bg-card-secondary); border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">' +
           '<h3 style="font-size:1.1rem; font-weight:800; margin:0;">Global Multi-Entity Operations Matrix (31 Entities)</h3>' +
-          '<span style="font-size:0.8rem; font-weight:800; color:var(--color-success); background:rgba(16,185,129,0.1); padding:2px 10px; border-radius:999px;">âœ“ All Systems Healthy</span>' +
+          '<span style="font-size:0.8rem; font-weight:800; color:var(--color-success); background:rgba(16,185,129,0.1); padding:2px 10px; border-radius:999px;">✓ All Systems Healthy</span>' +
         '</div>' +
         '<div style="overflow-x:auto;">' +
           '<table style="width:100%; border-collapse:collapse; font-size:0.84rem; text-align:left;">' +
@@ -8902,10 +8903,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<td style="padding:10px 16px; font-weight:800;">' + row.name + '</td>' +
                   '<td style="padding:10px 16px; color:var(--text-muted);">' + row.group + '</td>' +
                   '<td style="padding:10px 16px; font-weight:700;">' + row.count + '</td>' +
-                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">âœ“</td>' +
-                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">âœ“</td>' +
-                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">âœ“</td>' +
-                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">âœ“</td>' +
+                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">✓</td>' +
+                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">✓</td>' +
+                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">✓</td>' +
+                  '<td style="padding:10px 16px; text-align:center; color:var(--color-success); font-weight:800;">✓</td>' +
                   '<td style="padding:10px 16px; text-align:center;"><span style="background:rgba(16,185,129,0.12); color:var(--color-success); font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:999px;">Operational</span></td>' +
                 '</tr>'
               ).join('') +
@@ -8919,7 +8920,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const cls = store.getClass(selectedClassDetailId) || store.getActiveClass();
     const students = store.getStudentsByClass(cls.id);
     container.innerHTML = '<div style="max-width:1200px; margin:0 auto; padding-bottom:60px;">' +
-      '<h2 style="font-size:1.5rem; font-weight:900; margin:0 0 4px 0;">ðŸ“‹ Attendance Â· ' + cls.name + '</h2>' +
+      '<h2 style="font-size:1.5rem; font-weight:900; margin:0 0 4px 0;">📋 Attendance · ' + cls.name + '</h2>' +
       '<p style="margin:0 0 16px 0; color:var(--text-muted);">Tap the button to take the register for today.</p>' +
       renderAttendanceTableForClass(cls, students) + '</div>';
   }
@@ -8943,11 +8944,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">' + timeGreeting + ', ' + teacherDisplayName + ' ðŸ‘‹</h1>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">' + timeGreeting + ', ' + teacherDisplayName + ' 👋</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Here is your live classroom command summary for ' + cls.name + '.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-3d btn-3d-primary" onclick="openClass(\'' + cls.id + '\', \'classroom\')">ðŸ« Open Classroom Hub</button>' +
+          '<button class="btn-3d btn-3d-primary" onclick="openClass(\'' + cls.id + '\', \'classroom\')">🏫 Open Classroom Hub</button>' +
         '</div>' +
       '</div>' +
 
@@ -8956,10 +8957,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="stats-hud-item">' +
           '<div class="stats-hud-header">' +
             '<span class="stats-hud-label">Enrolled Learners</span>' +
-            '<div class="stats-hud-icon icon-blue">ðŸ‘¥</div>' +
+            '<div class="stats-hud-icon icon-blue">👥</div>' +
           '</div>' +
           '<div class="stats-hud-number">' + students.length + '</div>' +
-          '<div class="stats-hud-micro-badge badge-blue">ðŸ‘¥ ' + cls.name + ' Active</div>' +
+          '<div class="stats-hud-micro-badge badge-blue">👥 ' + cls.name + ' Active</div>' +
         '</div>' +
 
         '<div class="stats-hud-divider"></div>' +
@@ -8967,13 +8968,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="stats-hud-item">' +
           '<div class="stats-hud-header">' +
             '<span class="stats-hud-label">Attendance Rate</span>' +
-            '<div class="stats-hud-icon icon-emerald">âœ“</div>' +
+            '<div class="stats-hud-icon icon-emerald">✓</div>' +
           '</div>' +
           (hasAttRecords
             ? '<div class="stats-hud-number">' + attRate + '%</div>' +
-              '<div class="stats-hud-micro-badge badge-emerald">âœ“ Live attendance</div>'
-            : '<div class="stats-hud-number stats-hud-number--empty">â€”</div>' +
-              '<div class="stats-hud-micro-badge badge-amber">â± Roll call not taken yet</div>') +
+              '<div class="stats-hud-micro-badge badge-emerald">✓ Live attendance</div>'
+            : '<div class="stats-hud-number stats-hud-number--empty">—</div>' +
+              '<div class="stats-hud-micro-badge badge-amber">⏱ Roll call not taken yet</div>') +
         '</div>' +
 
         '<div class="stats-hud-divider"></div>' +
@@ -8981,7 +8982,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="stats-hud-item">' +
           '<div class="stats-hud-header">' +
             '<span class="stats-hud-label">Active Assignments</span>' +
-            '<div class="stats-hud-icon icon-amber">ðŸ“</div>' +
+            '<div class="stats-hud-icon icon-amber">📝</div>' +
           '</div>' +
           '<div class="stats-hud-number">' + assignments.length + '</div>' +
           '<div class="stats-hud-micro-badge badge-amber">Pending completion</div>' +
@@ -8992,7 +8993,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<div class="stats-hud-item">' +
           '<div class="stats-hud-header">' +
             '<span class="stats-hud-label">Proficiency Target</span>' +
-            '<div class="stats-hud-icon icon-indigo">ðŸŽ¯</div>' +
+            '<div class="stats-hud-icon icon-indigo">🎯</div>' +
           '</div>' +
           '<div class="stats-hud-number" style="color:var(--color-primary);">' + (cls.cefrTarget || 'A2') + ' Level</div>' +
           '<div class="stats-hud-micro-badge badge-indigo">CEFR Target</div>' +
@@ -9025,7 +9026,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Class Story Feed</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Share classroom moments, student work, and announcements with families.</p>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">ðŸ“¸ + New Post</button>' +
+        '<button class="btn-primary-action" onclick="openModal(\'modal-story-post\')">📸 + New Post</button>' +
       '</div>' +
       '<div class="story-feed-grid">' +
         store.getClassStory().map(p => renderStoryPost(p)).join('') +
@@ -9041,8 +9042,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span style="font-size:0.75rem; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:2px 8px; border-radius:999px;">' + p.type + '</span>' +
           '</div>' +
           '<div style="display:flex; gap:6px;">' +
-            '<button class="btn-sm-secondary" onclick="handleLikeStoryPost(\'' + p.id + '\')" style="font-size:0.78rem;">â¤ï¸ ' + (p.likes || 0) + '</button>' +
-            '<button class="btn-sm-secondary" onclick="handleDeleteStoryPost(\'' + p.id + '\')" style="font-size:0.78rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+            '<button class="btn-sm-secondary" onclick="handleLikeStoryPost(\'' + p.id + '\')" style="font-size:0.78rem;">❤️ ' + (p.likes || 0) + '</button>' +
+            '<button class="btn-sm-secondary" onclick="handleDeleteStoryPost(\'' + p.id + '\')" style="font-size:0.78rem; color:var(--color-danger);">🗑️</button>' +
           '</div>' +
         '</div>' +
         '<p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.5; margin-bottom:10px;">' + p.content + '</p>' +
@@ -9058,7 +9059,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Two-way parent messages and student progress check-ins.</p>' +
       '</div>' +
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm);">' +
-        (threads.length === 0 ? emptyStateHTML('ðŸ’¬', 'No family messages yet', 'Use â€œ+ Create â†’ Family Messageâ€ to start a conversation with a parent.') : '') +
+        (threads.length === 0 ? emptyStateHTML('💬', 'No family messages yet', 'Use “+ Create → Family Message” to start a conversation with a parent.') : '') +
         threads.map(t => {
           const msgs = t.messages || t.threads || [];
           const lastMsg = msgs[msgs.length - 1] || {};
@@ -9114,7 +9115,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '<div style="display:flex; flex-wrap:wrap; gap:6px;">' +
                 items.slice(0, 3).map(it => '<span style="background:var(--bg-card-secondary); border:1px solid var(--border-subtle); border-radius:6px; padding:3px 8px; font-size:0.75rem;">' + it.preview + ' ' + it.category + '</span>').join('') +
               '</div>' +
-              '<div style="margin-top:12px; font-size:0.78rem; color:var(--color-primary); font-weight:700;">Open Portfolio â†’</div>' +
+              '<div style="margin-top:12px; font-size:0.78rem; color:var(--color-primary); font-weight:700;">Open Portfolio →</div>' +
             '</div>';
         }).join('') +
       '</div>';
@@ -9141,7 +9142,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const isGR3 = (s.grade && s.grade.includes('4')) || (s.classId === 'class-4b');
     const bookId = isGR3 ? 'book-global-readings-3' : 'book-global-readings-2';
     const bookTitle = isGR3 ? 'Global Readings 3' : 'Global Readings 2';
-    const bookSub = isGR3 ? 'Grade 4 Â· Level 3 Â· CEFR A2' : 'Grade 3 Â· Level 2 Â· CEFR A1+';
+    const bookSub = isGR3 ? 'Grade 4 · Level 3 · CEFR A2' : 'Grade 3 · Level 2 · CEFR A1+';
 
     const units = (store.getUnits ? store.getUnits(bookId) : []).filter(u => !u.archived);
     const activeUnit = units[0] || { number: 1, title: 'What Does It Do?', reading1: 'Modern Inventions', reading2: 'Robots at Work', readingSkill: 'Identify Details', contentArea: 'Technology' };
@@ -9162,8 +9163,8 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               '</div>' +
               '<div>' +
                 '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">' +
-                  '<span style="background:rgba(234,179,8,0.25); color:#fef08a; border:1px solid rgba(234,179,8,0.5); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">LEVEL ' + mState.currentLevel + ' Â· ' + String(mState.stageName || '').replace(/^Level \d+\s*[-â€¢]\s*/i, '').toUpperCase() + '</span>' +
-                  '<span style="background:rgba(255,255,255,0.15); color:#ffffff; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px;">ðŸ”¥ ' + (Number(streak) > 0 ? streak + '-Day Streak' : 'Start your streak today!') + '</span>' +
+                  '<span style="background:rgba(234,179,8,0.25); color:#fef08a; border:1px solid rgba(234,179,8,0.5); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">LEVEL ' + mState.currentLevel + ' · ' + String(mState.stageName || '').replace(/^Level \d+\s*[-•]\s*/i, '').toUpperCase() + '</span>' +
+                  '<span style="background:rgba(255,255,255,0.15); color:#ffffff; font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:999px;">🔥 ' + (Number(streak) > 0 ? streak + '-Day Streak' : 'Start your streak today!') + '</span>' +
                   '<span style="background:rgba(59,130,246,0.3); color:#93c5fd; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px;">' + (s.overallCefr || 'A1') + ' Explorer</span>' +
                 '</div>' +
                 '<h1 style="font-size:2rem; font-weight:900; margin:0 0 6px 0; letter-spacing:-0.02em;">' + petName + '</h1>' +
@@ -9171,14 +9172,14 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 // XP Progress Bar
                 '<div style="max-width:380px;">' +
                   '<div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:800; margin-bottom:6px;">' +
-                    '<span>â­ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
-                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? 'ðŸ‘‘ Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString('en-US') + ' / ' + mState.nextLevel.xpRequired.toLocaleString('en-US') + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (totalXP.toLocaleString('en-US') + ' / ' + (totalXP + mState.xpToNext).toLocaleString('en-US') + ' XP') : 'Ready to evolve!'))) + '</span>' +
+                    '<span>⭐ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
+                    '<span style="color:#fef08a;">' + (mState.currentLevel >= 7 ? '👑 Apex Form Reached!' : (mState.nextLevel ? (totalXP.toLocaleString('en-US') + ' / ' + mState.nextLevel.xpRequired.toLocaleString('en-US') + ' XP (' + progressPct + '%)') : (mState.xpToNext > 0 ? (totalXP.toLocaleString('en-US') + ' / ' + (totalXP + mState.xpToNext).toLocaleString('en-US') + ' XP') : 'Ready to evolve!'))) + '</span>' +
                   '</div>' +
                   '<div style="background:rgba(255,255,255,0.2); height:10px; border-radius:999px; overflow:hidden;">' +
                     '<div style="background:linear-gradient(90deg, #f59e0b, #fbbf24, #10b981); height:100%; width:' + progressPct + '%; border-radius:999px; transition:width 0.4s ease;"></div>' +
                   '</div>' +
                   '<div style="font-size:0.72rem; color:#94a3b8; margin-top:4px;">' +
-                    (!isHatched ? ('ðŸ¥š Egg Crack Progress: ' + mState.eggCrackPct + '%') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP needed to evolve to next stage') : 'ðŸ‘‘ Sovereign Ultimate Legend')) +
+                    (!isHatched ? ('🥚 Egg Crack Progress: ' + mState.eggCrackPct + '%') : (mState.xpToNext > 0 ? (mState.xpToNext.toLocaleString('en-US') + ' XP needed to evolve to next stage') : '👑 Sovereign Ultimate Legend')) +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -9186,13 +9187,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             // Quick Studio Buttons
             '<div style="display:flex; flex-direction:column; gap:10px;">' +
               '<button type="button" class="btn-primary-action" onclick="openMonsterCreator(\'' + s.id + '\')" style="padding:10px 20px; font-weight:800; font-size:0.92rem; justify-content:center; box-shadow:0 4px 14px rgba(37,99,235,0.4);">' +
-                'ðŸŽ¨ Monster Studio' +
+                '🎨 Monster Studio' +
               '</button>' +
               '<button type="button" class="btn-3d btn-3d-primary" onclick="window.openTradingCabinet(\'' + s.id + '\')" style="padding:10px 20px; font-size:0.88rem; font-weight:800; justify-content:center; background:linear-gradient(135deg, #b45309 0%, #f59e0b 100%); border-bottom:4px solid #78350f; color:#ffffff;">' +
-                'ðŸŽ Mystery Chests &amp; Backpack' +
+                '🎁 Mystery Chests &amp; Backpack' +
               '</button>' +
               '<button type="button" class="btn-sm-secondary" onclick="openMonsterFullscreen(\'' + s.id + '\')" style="padding:8px 16px; font-size:0.82rem; background:rgba(255,255,255,0.12); color:#ffffff; border:1px solid rgba(255,255,255,0.25); justify-content:center;">' +
-                'ðŸ‘‘ Inspect Companion' +
+                '👑 Inspect Companion' +
               '</button>' +
             '</div>' +
           '</div>' +
@@ -9206,15 +9207,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:8px;">' +
-                '<span style="font-size:1.4rem;">ðŸ—ºï¸</span>' +
+                '<span style="font-size:1.4rem;">🗺️</span>' +
                 '<h2 style="font-size:1.3rem; font-weight:900; margin:0; color:var(--text-main);">My Reading Anthology Journey</h2>' +
                 '<span style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px;">Macmillan Global Readings</span>' +
               '</div>' +
-              '<p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">' + bookTitle + ' Â· ' + bookSub + '</p>' +
+              '<p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">' + bookTitle + ' · ' + bookSub + '</p>' +
             '</div>' +
             '<div style="display:flex; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openTextbookViewer(1, \'' + bookId + '\')" style="font-weight:700; font-size:0.82rem;">ðŸ“– Open Reader</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openScopeAndSequenceModal(\'' + bookId + '\')" style="font-weight:700; font-size:0.82rem;">ðŸ“‘ Scope &amp; Sequence</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openTextbookViewer(1, \'' + bookId + '\')" style="font-weight:700; font-size:0.82rem;">📖 Open Reader</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openScopeAndSequenceModal(\'' + bookId + '\')" style="font-weight:700; font-size:0.82rem;">📑 Scope &amp; Sequence</button>' +
             '</div>' +
           '</div>' +
 
@@ -9222,21 +9223,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div style="background:var(--bg-canvas); border:1.5px solid var(--border-light); border-radius:16px; padding:18px; margin-bottom:18px;">' +
             '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:14px;">' +
               '<div>' +
-                '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.04em;">Current Module' + (activeUnit.number ? ' Â· Unit ' + activeUnit.number : '') + '</span>' +
+                '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.04em;">Current Module' + (activeUnit.number ? ' · Unit ' + activeUnit.number : '') + '</span>' +
                 '<h3 style="font-size:1.25rem; font-weight:900; margin:2px 0 6px 0; color:var(--text-main);">"' + activeUnit.title + '"</h3>' +
                 '<div style="display:flex; gap:12px; font-size:0.82rem; color:var(--text-muted); flex-wrap:wrap;">' +
-                  (activeUnit.reading1 ? '<span>ðŸ“– Reading 1: <strong>' + activeUnit.reading1 + '</strong></span>' : '') +
-                  (activeUnit.reading2 ? '<span>ðŸ“– Reading 2: <strong>' + activeUnit.reading2 + '</strong></span>' : '') +
-                  (activeUnit.readingSkill ? '<span>ðŸŽ¯ Skill: <strong>' + activeUnit.readingSkill + '</strong></span>' : '') +
+                  (activeUnit.reading1 ? '<span>📖 Reading 1: <strong>' + activeUnit.reading1 + '</strong></span>' : '') +
+                  (activeUnit.reading2 ? '<span>📖 Reading 2: <strong>' + activeUnit.reading2 + '</strong></span>' : '') +
+                  (activeUnit.readingSkill ? '<span>🎯 Skill: <strong>' + activeUnit.readingSkill + '</strong></span>' : '') +
                 '</div>' +
               '</div>' +
-              '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + bookId + '\')" style="font-size:0.84rem; padding:8px 16px;">Read Story Now â†’</button>' +
+              '<button type="button" class="btn-primary-action" onclick="openTextbookViewer(1, \'' + bookId + '\')" style="font-size:0.84rem; padding:8px 16px;">Read Story Now →</button>' +
             '</div>' +
 
             // 4-Week Modular Progress Tracker
             '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px;">' +
               '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:12px; padding:12px; border-left:4px solid #10b981;">' +
-                '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#059669; margin-bottom:4px;"><span>WEEK 1</span> <span>âœ“ DONE</span></div>' +
+                '<div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:800; color:#059669; margin-bottom:4px;"><span>WEEK 1</span> <span>✓ DONE</span></div>' +
                 '<div style="font-size:0.84rem; font-weight:800; color:var(--text-main);">Phonics &amp; Vocab Drill</div>' +
                 '<div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Target words mastery</div>' +
               '</div>' +
@@ -9264,21 +9265,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           // Missions Column
           '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-              '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>ðŸ“</span> <span>My Missions</span></h3>' +
+              '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>📝</span> <span>My Missions</span></h3>' +
               '<button type="button" class="btn-sm-secondary" onclick="switchView(\'tasks\')" style="font-size:0.78rem;">View All (' + (assignments.length + homework.length) + ')</button>' +
             '</div>' +
             '<div style="display:flex; flex-direction:column; gap:10px;">' +
               (assignments.length === 0 && homework.length === 0 ? 
-                '<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:0.85rem;">ðŸŽ‰ All caught up! No pending missions today.</div>' :
-                [...assignments.slice(0, 3).map(a => ({ title: a.title, reward: a.xpReward || 50, type: 'Assignment', icon: 'ðŸŽ¯', id: a.id })),
-                 ...homework.slice(0, 2).map(h => ({ title: h.title, reward: h.xpReward || 30, type: 'Homework', icon: 'âœï¸', id: h.id }))
+                '<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:0.85rem;">🎉 All caught up! No pending missions today.</div>' :
+                [...assignments.slice(0, 3).map(a => ({ title: a.title, reward: a.xpReward || 50, type: 'Assignment', icon: '🎯', id: a.id })),
+                 ...homework.slice(0, 2).map(h => ({ title: h.title, reward: h.xpReward || 30, type: 'Homework', icon: '✍️', id: h.id }))
                 ].map(m => '' +
                   '<div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 14px;">' +
                     '<div style="display:flex; align-items:center; gap:10px;">' +
                       '<span style="font-size:1.4rem;">' + m.icon + '</span>' +
                       '<div>' +
                         '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main);">' + m.title + '</div>' +
-                        '<div style="font-size:0.74rem; color:var(--text-muted);">' + m.type + ' Â· Due this week</div>' +
+                        '<div style="font-size:0.74rem; color:var(--text-muted);">' + m.type + ' · Due this week</div>' +
                       '</div>' +
                     '</div>' +
                     '<div style="display:flex; align-items:center; gap:8px;">' +
@@ -9294,20 +9295,20 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           // Featured Games Column
           '<div class="stu-glass" style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">' +
-              '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>ðŸŽ®</span> <span>Adventure Games</span></h3>' +
+              '<h3 style="font-size:1.15rem; font-weight:900; margin:0; color:var(--text-main); display:flex; align-items:center; gap:8px;"><span>🎮</span> <span>Adventure Games</span></h3>' +
               '<button type="button" class="btn-sm-secondary" onclick="switchView(\'library\')" style="font-size:0.78rem;">Game Library (15+)</button>' +
             '</div>' +
             '<div style="display:flex; flex-direction:column; gap:10px;">' +
               resources.map(g => '' +
                 '<div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 14px;">' +
                   '<div style="display:flex; align-items:center; gap:10px;">' +
-                    '<span style="font-size:1.5rem;">' + (g.icon || 'ðŸ•¹ï¸') + '</span>' +
+                    '<span style="font-size:1.5rem;">' + (g.icon || '🕹️') + '</span>' +
                     '<div>' +
                       '<div style="font-weight:800; font-size:0.88rem; color:var(--text-main);">' + g.title + '</div>' +
-                      '<div style="font-size:0.74rem; color:var(--text-muted);">' + (g.category || 'Vocabulary') + ' Â· ' + (g.cefr || 'A1') + '</div>' +
+                      '<div style="font-size:0.74rem; color:var(--text-muted);">' + (g.category || 'Vocabulary') + ' · ' + (g.cefr || 'A1') + '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + g.id + '\')" style="font-size:0.78rem; padding:5px 12px;">Play âš¡</button>' +
+                  '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + g.id + '\')" style="font-size:0.78rem; padding:5px 12px;">Play ⚡</button>' +
                 '</div>'
               ).join('') +
             '</div>' +
@@ -9327,32 +9328,32 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="max-width:960px; margin:0 auto; padding:20px 20px 40px;">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">ðŸ“ My Learning Missions</h1>' +
+            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">📝 My Learning Missions</h1>' +
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Complete missions and homework to earn XP and evolve your monster!</p>' +
           '</div>' +
-          '<span style="font-weight:800; font-size:0.88rem; background:rgba(245,158,11,0.12); color:#b45309; padding:4px 12px; border-radius:12px;">â­ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
+          '<span style="font-weight:800; font-size:0.88rem; background:rgba(245,158,11,0.12); color:#b45309; padding:4px 12px; border-radius:12px;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
         '</div>' +
 
         '<div style="display:flex; flex-direction:column; gap:12px;">' +
-          [...assignments.map(a => ({ ...a, kind: 'Assignment', icon: 'ðŸŽ¯' })),
-           ...homework.map(h => ({ ...h, kind: 'Homework', icon: 'âœï¸' })),
-           ...worksheets.slice(0, 3).map(w => ({ ...w, kind: 'Worksheet', icon: 'ðŸ“„', xpReward: 20 }))
+          [...assignments.map(a => ({ ...a, kind: 'Assignment', icon: '🎯' })),
+           ...homework.map(h => ({ ...h, kind: 'Homework', icon: '✍️' })),
+           ...worksheets.slice(0, 3).map(w => ({ ...w, kind: 'Worksheet', icon: '📄', xpReward: 20 }))
           ].map(task => '' +
             '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:16px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; box-shadow:var(--shadow-xs);">' +
               '<div style="display:flex; align-items:center; gap:14px;">' +
-                '<span style="font-size:2rem;">' + (task.icon || 'ðŸ“') + '</span>' +
+                '<span style="font-size:2rem;">' + (task.icon || '📝') + '</span>' +
                 '<div>' +
                   '<div style="font-weight:800; font-size:1rem; color:var(--text-main);">' + task.title + '</div>' +
-                  '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">' + task.kind + ' Â· ' + (task.topic || task.description || 'Class Mission') + '</div>' +
+                  '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">' + task.kind + ' · ' + (task.topic || task.description || 'Class Mission') + '</div>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; align-items:center; gap:10px;">' +
                 '<span style="font-weight:800; font-size:0.84rem; color:#059669; background:rgba(16,185,129,0.1); padding:4px 10px; border-radius:10px;">+' + (task.xpReward || 30) + ' XP</span>' +
                 (task.pdfUrl ?
-                  '<a href="' + task.pdfUrl + '" target="_blank" class="btn-primary-action" style="font-size:0.82rem; padding:6px 14px; text-decoration:none;">Open Worksheet ðŸ“„</a>' :
+                  '<a href="' + task.pdfUrl + '" target="_blank" class="btn-primary-action" style="font-size:0.82rem; padding:6px 14px; text-decoration:none;">Open Worksheet 📄</a>' :
                   ((task.gameId || task.activityId) ?
-                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + (task.gameId || task.activityId) + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission ðŸš€</button>' :
-                    '<button type="button" class="btn-primary-action" onclick="switchView(\'library\')" style="font-size:0.82rem; padding:6px 14px;">Start Quest ðŸš€</button>'
+                    '<button type="button" class="btn-primary-action" onclick="launchGame(\'' + (task.gameId || task.activityId) + '\')" style="font-size:0.82rem; padding:6px 14px;">Launch Mission 🚀</button>' :
+                    '<button type="button" class="btn-primary-action" onclick="switchView(\'library\')" style="font-size:0.82rem; padding:6px 14px;">Start Quest 🚀</button>'
                   )
                 ) +
               '</div>' +
@@ -9376,17 +9377,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       '<div style="max-width:960px; margin:0 auto; padding:20px 20px 40px; display:flex; flex-direction:column; gap:24px;">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
           '<div>' +
-            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">ðŸ† Badges &amp; Evolution Stages</h1>' +
+            '<h1 style="font-size:1.65rem; font-weight:900; margin:0; color:var(--text-main);">🏆 Badges &amp; Evolution Stages</h1>' +
             '<p style="font-size:0.86rem; color:var(--text-muted); margin:4px 0 0 0;">Track your learning milestones and monster transformations.</p>' +
           '</div>' +
           '<div style="font-size:1.1rem; font-weight:900; color:var(--color-primary); background:var(--bg-card); padding:8px 16px; border-radius:14px; border:1px solid var(--border-light);">' +
-            'â­ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' Total XP' +
+            '⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' Total XP' +
           '</div>' +
         '</div>' +
 
         // Evolution Stages Track
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">ðŸ‘¾ Monster Evolution Stages</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">👾 Monster Evolution Stages</h3>' +
           '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:10px;">' +
             levels.map(l => {
               const isCurrent = l.level === mState.currentLevel;
@@ -9395,7 +9396,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
               return '' +
                 '<div style="background:' + (isCurrent ? 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))' : 'var(--bg-canvas)') + '; border:' + (isCurrent ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:14px; padding:12px 8px; text-align:center; opacity:' + (isUnlocked ? '1' : '0.5') + ';">' +
                   '<div style="width:50px; height:50px; margin:0 auto 6px auto;">' +
-                    (window.renderMonsterSVG ? window.renderMonsterSVG({ stage: l.stageKey, color: mState.profile.baseColor, equipped: mState.profile.equipped, size: 48, animated: false }) : 'ðŸ‘¾') +
+                    (window.renderMonsterSVG ? window.renderMonsterSVG({ stage: l.stageKey, color: mState.profile.baseColor, equipped: mState.profile.equipped, size: 48, animated: false }) : '👾') +
                   '</div>' +
                   '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary);">Lvl ' + l.level + '</div>' +
                   '<div style="font-size:0.8rem; font-weight:800; color:var(--text-main);">' + l.name + '</div>' +
@@ -9408,17 +9409,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
         // Badges Showcase
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">â­ Earned Badges</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">⭐ Earned Badges</h3>' +
           '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;">' +
             badges.map(b => {
               const isEarned = awardedBadgeIds.has(b.id) || (b.id === 'badge-1' && mState.totalXP >= 1000);
               return '' +
                 '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:14px; padding:14px; text-align:center; opacity:' + (isEarned ? '1' : '0.5') + ';">' +
-                  '<div style="font-size:2.4rem; margin-bottom:6px;">' + (b.icon || 'â­') + '</div>' +
+                  '<div style="font-size:2.4rem; margin-bottom:6px;">' + (b.icon || '⭐') + '</div>' +
                   '<div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">' + b.name + '</div>' +
                   '<div style="font-size:0.74rem; color:var(--text-muted); margin-top:4px;">' + (b.description || 'Classroom achievement') + '</div>' +
                   '<div style="margin-top:8px;">' +
-                    (isEarned ? '<span style="font-size:0.72rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:8px;">âœ“ UNLOCKED</span>' : '<span style="font-size:0.72rem; font-weight:700; color:var(--text-muted); background:var(--bg-surface); padding:2px 8px; border-radius:8px;">ðŸ”’ LOCKED</span>') +
+                    (isEarned ? '<span style="font-size:0.72rem; font-weight:800; color:#059669; background:rgba(16,185,129,0.12); padding:2px 8px; border-radius:8px;">✓ UNLOCKED</span>' : '<span style="font-size:0.72rem; font-weight:700; color:var(--text-muted); background:var(--bg-surface); padding:2px 8px; border-radius:8px;">🔒 LOCKED</span>') +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -9427,7 +9428,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
         // Recent XP History Ledger
         '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:20px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">ðŸ“œ My XP Ledger</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:900; margin:0 0 14px 0;">📜 My XP Ledger</h3>' +
           '<div style="max-height:260px; overflow-y:auto; border:1px solid var(--border-light); border-radius:12px;">' +
             '<table style="width:100%; border-collapse:collapse; font-size:0.84rem; text-align:left;">' +
               '<thead><tr style="background:var(--bg-canvas); border-bottom:1px solid var(--border-light);"><th style="padding:8px 12px;">Date</th><th style="padding:8px 12px;">Reason / Mission</th><th style="padding:8px 12px; text-align:right;">XP</th></tr></thead>' +
@@ -9435,7 +9436,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                 txs.slice(0, 10).map(t => '' +
                   '<tr style="border-bottom:1px solid var(--border-light);">' +
                     '<td style="padding:8px 12px; color:var(--text-muted);">' + (t.date || 'Today') + '</td>' +
-                    '<td style="padding:8px 12px; font-weight:600;">' + (t.icon || 'â­') + ' ' + (t.reason || 'Classroom award') + '</td>' +
+                    '<td style="padding:8px 12px; font-weight:600;">' + (t.icon || '⭐') + ' ' + (t.reason || 'Classroom award') + '</td>' +
                     '<td style="padding:8px 12px; text-align:right; font-weight:800; color:' + (t.amount >= 0 ? '#059669' : '#dc2626') + ';">' + (t.amount >= 0 ? '+' : '') + t.amount + ' XP</td>' +
                   '</tr>'
                 ).join('') +
@@ -9454,7 +9455,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     container.innerHTML = 
       '<div style="max-width:720px; margin:0 auto; padding:20px;">' +
         '<div style="text-align:center; margin-bottom:24px;">' +
-          '<h1 style="font-size:1.8rem; font-weight:900; margin:0 0 6px 0;">ðŸ† ' + cls.name + ' Leaderboard</h1>' +
+          '<h1 style="font-size:1.8rem; font-weight:900; margin:0 0 6px 0;">🏆 ' + cls.name + ' Leaderboard</h1>' +
           '<p style="color:var(--text-muted); font-size:0.88rem; margin:0;">Live classroom rankings driven by active XP transactions</p>' +
         '</div>' +
         '<div style="display:flex; flex-direction:column; gap:10px;">' +
@@ -9464,17 +9465,17 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             return '' +
             '<div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:var(--bg-card); border-radius:14px; border:1px solid var(--border-subtle); box-shadow:var(--shadow-xs); flex-wrap:wrap; gap:10px;">' +
               '<div style="display:flex; align-items:center; gap:12px;">' +
-                '<span style="font-weight:900; font-size:1.25rem; width:28px; text-align:center;">' + (idx === 0 ? 'ðŸ¥‡' : idx === 1 ? 'ðŸ¥ˆ' : idx === 2 ? 'ðŸ¥‰' : ('#' + (idx + 1))) + '</span>' +
+                '<span style="font-weight:900; font-size:1.25rem; width:28px; text-align:center;">' + (idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : ('#' + (idx + 1))) + '</span>' +
                 '<div style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;" onclick="openMonsterCreator(\'' + s.id + '\')" title="Open Monster Studio">' + window.renderStudentMonsterAvatar(s.id, { size: 42, animated: true }) + '</div>' +
                 '<div>' +
                   '<div style="font-weight:800; font-size:1rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div style="font-size:0.75rem; font-weight:700; color:var(--color-primary);">' + String(mState.stageName || '').replace(/^Level \d+\s*[-â€¢]\s*/i, '') + ' Â· Lvl ' + mState.currentLevel + '</div>' +
+                  '<div style="font-size:0.75rem; font-weight:700; color:var(--color-primary);">' + String(mState.stageName || '').replace(/^Level \d+\s*[-•]\s*/i, '') + ' · Lvl ' + mState.currentLevel + '</div>' +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; align-items:center; gap:10px;">' +
-                '<span style="font-weight:900; color:#b45309; font-size:1.05rem;">â­ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
+                '<span style="font-weight:900; color:#b45309; font-size:1.05rem;">⭐ ' + totalXP.toLocaleString('en-US') + ' XP</span>' +
                 (isTeacher ? 
-                  '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700;" title="Adjust Student XP">âœï¸ Adjust XP</button>' +
+                  '<button type="button" class="btn-sm-secondary" onclick="openEditStudentXPModal(\'' + s.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700;" title="Adjust Student XP">✏️ Adjust XP</button>' +
                   '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'student\', \'' + s.id + '\')" style="padding:4px 8px; font-size:0.75rem; font-weight:700; color:#059669;" title="Award Classroom Skills">+ Award</button>' : ''
                 ) +
               '</div>' +
@@ -9505,11 +9506,11 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const weekXP = (store.getXPTransactions(s.id) || []).filter(t => Number(t.amount) > 0 && when(t) > 0 && now - when(t) <= 7 * DAY).reduce((a, t) => a + (Number(t.amount) || 0), 0);
     const totalXP = Number(store.getStudentTotalXP(s.id)) || 0;
     const attRecords = ((store.state && store.state.attendanceRecords) || []).filter(r => r.studentId === s.id);
-    const attText = attRecords.length ? store.getStudentAttendanceRate(s.id) + '%' : 'â€”';
+    const attText = attRecords.length ? store.getStudentAttendanceRate(s.id) + '%' : '—';
     const attNote = attRecords.length ? 'of classes attended' : 'Not recorded yet';
     const assignments = (store.getAssignments ? store.getAssignments(s.classId) : []).filter(a => !a.archived);
     const homework = (store.getHomework ? store.getHomework(s.classId) : []).filter(h => !h.archived);
-    const tasks = assignments.slice(0, 3).map(a => ({ icon: 'ðŸŽ¯', title: a.title, due: a.dueDate })).concat(homework.slice(0, 3).map(h => ({ icon: 'âœï¸', title: h.title, due: h.dueDate })));
+    const tasks = assignments.slice(0, 3).map(a => ({ icon: '🎯', title: a.title, due: a.dueDate })).concat(homework.slice(0, 3).map(h => ({ icon: '✍️', title: h.title, due: h.dueDate })));
 
     // Skills as simple bars
     const skillsRaw = store.getStudentSkills(s.id) || {};
@@ -9526,10 +9527,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const units = (store.getUnits ? store.getUnits(isGR3 ? 'book-global-readings-3' : 'book-global-readings-2') : []).filter(u => !u.archived);
     const unit = units[0];
     const practice = [];
-    if (unit && unit.reading1) practice.push('ðŸ“– Read together: <b>' + esc(unit.reading1) + '</b>');
-    if (unit && unit.reading2) practice.push('ðŸ“– Then try: <b>' + esc(unit.reading2) + '</b>');
-    if (unit && unit.readingSkill) practice.push('ðŸŽ¯ Ask your child about: <b>' + esc(unit.readingSkill) + '</b>');
-    practice.push('ðŸ—£ï¸ Ask: "Tell me three sentences about your day in English."');
+    if (unit && unit.reading1) practice.push('📖 Read together: <b>' + esc(unit.reading1) + '</b>');
+    if (unit && unit.reading2) practice.push('📖 Then try: <b>' + esc(unit.reading2) + '</b>');
+    if (unit && unit.readingSkill) practice.push('🎯 Ask your child about: <b>' + esc(unit.readingSkill) + '</b>');
+    practice.push('🗣️ Ask: "Tell me three sentences about your day in English."');
 
     // Latest class story post and message count
     const story = (store.getClassStory ? store.getClassStory(s.classId) : [])[0];
@@ -9542,30 +9543,30 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div class="par-hero-text">' +
             '<div class="par-kicker">Parent Portal</div>' +
             '<h1>Hello! Here is how ' + first + ' is doing</h1>' +
-            '<p>' + className + ' Â· English learner</p>' +
+            '<p>' + className + ' · English learner</p>' +
           '</div>' +
-          '<button type="button" class="btn-3d btn-3d-primary" onclick="switchView(\'parent-messages\')">ðŸ’¬ Message the teacher</button>' +
+          '<button type="button" class="btn-3d btn-3d-primary" onclick="switchView(\'parent-messages\')">💬 Message the teacher</button>' +
         '</div>' +
 
         '<div class="par-stats">' +
-          '<div class="par-stat"><span>â­ XP this week</span><strong>' + (weekXP > 0 ? '+' + weekXP : '0') + '</strong><em>' + (weekXP > 0 ? 'Great effort!' : 'A fresh week to start') + '</em></div>' +
-          '<div class="par-stat"><span>ðŸ† Total XP</span><strong>' + totalXP + '</strong><em>Keeps growing with practice</em></div>' +
-          '<div class="par-stat"><span>ðŸ“‹ Attendance</span><strong>' + attText + '</strong><em>' + attNote + '</em></div>' +
-          '<div class="par-stat"><span>ðŸ“ Tasks to do</span><strong>' + tasks.length + '</strong><em>' + (tasks.length ? 'See the list below' : 'All caught up') + '</em></div>' +
+          '<div class="par-stat"><span>⭐ XP this week</span><strong>' + (weekXP > 0 ? '+' + weekXP : '0') + '</strong><em>' + (weekXP > 0 ? 'Great effort!' : 'A fresh week to start') + '</em></div>' +
+          '<div class="par-stat"><span>🏆 Total XP</span><strong>' + totalXP + '</strong><em>Keeps growing with practice</em></div>' +
+          '<div class="par-stat"><span>📋 Attendance</span><strong>' + attText + '</strong><em>' + attNote + '</em></div>' +
+          '<div class="par-stat"><span>📝 Tasks to do</span><strong>' + tasks.length + '</strong><em>' + (tasks.length ? 'See the list below' : 'All caught up') + '</em></div>' +
         '</div>' +
 
         '<div class="par-grid">' +
-          '<section class="par-card"><h3>ðŸ“Š English skills</h3>' + (skillRows || '<p class="par-empty">Skills appear here after the first assessment.</p>') +
-            '<button type="button" class="par-link" onclick="switchView(\'parent-progress\')">See full progress â†’</button></section>' +
+          '<section class="par-card"><h3>📊 English skills</h3>' + (skillRows || '<p class="par-empty">Skills appear here after the first assessment.</p>') +
+            '<button type="button" class="par-link" onclick="switchView(\'parent-progress\')">See full progress →</button></section>' +
           (window.ParentReport ? window.ParentReport.portalCard(s.id) : '') +
-          '<section class="par-card"><h3>ðŸ  Practise at home</h3><ul class="par-list">' + practice.map(x => '<li>' + x + '</li>').join('') + '</ul></section>' +
-          '<section class="par-card"><h3>ðŸ“ Homework &amp; tasks</h3>' +
-            (tasks.length ? '<ul class="par-list">' + tasks.map(t => '<li>' + t.icon + ' <b>' + esc(t.title) + '</b>' + (t.due ? '<small>Due ' + esc(t.due) + '</small>' : '') + '</li>').join('') + '</ul>' : '<p class="par-empty">ðŸŽ‰ No tasks right now.</p>') + '</section>' +
-          '<section class="par-card"><h3>ðŸ“¸ From the classroom</h3>' +
+          '<section class="par-card"><h3>🏠 Practise at home</h3><ul class="par-list">' + practice.map(x => '<li>' + x + '</li>').join('') + '</ul></section>' +
+          '<section class="par-card"><h3>📝 Homework &amp; tasks</h3>' +
+            (tasks.length ? '<ul class="par-list">' + tasks.map(t => '<li>' + t.icon + ' <b>' + esc(t.title) + '</b>' + (t.due ? '<small>Due ' + esc(t.due) + '</small>' : '') + '</li>').join('') + '</ul>' : '<p class="par-empty">🎉 No tasks right now.</p>') + '</section>' +
+          '<section class="par-card"><h3>📸 From the classroom</h3>' +
             (story ? '<div class="par-story"><b>' + esc(story.title) + '</b><p>' + esc(story.content) + '</p><small>' + esc(story.timestamp || '') + '</small></div>' : '<p class="par-empty">Class news will appear here.</p>') +
-            '<button type="button" class="par-link" onclick="switchView(\'parent-story\')">Open the class story â†’</button></section>' +
+            '<button type="button" class="par-link" onclick="switchView(\'parent-story\')">Open the class story →</button></section>' +
         '</div>' +
-        '<p class="par-foot">' + (threads.length ? 'ðŸ’¬ You have ' + threads.length + ' message conversation' + (threads.length === 1 ? '' : 's') + ' with the teacher.' : 'ðŸ’¬ Have a question? Use "Message the teacher" - we are happy to help.') + '</p>' +
+        '<p class="par-foot">' + (threads.length ? '💬 You have ' + threads.length + ' message conversation' + (threads.length === 1 ? '' : 's') + ' with the teacher.' : '💬 Have a question? Use "Message the teacher" - we are happy to help.') + '</p>' +
       '</div>';
   }
 
@@ -9577,7 +9578,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     return store.getActiveStudent() || (store.getStudents() && store.getStudents()[0]) || null;
   }
   function parentPageHead(title, sub) {
-    return '<div class="par-page-head"><button type="button" class="par-back" onclick="switchView(\'parent-home\')">â† Back to overview</button>' +
+    return '<div class="par-page-head"><button type="button" class="par-back" onclick="switchView(\'parent-home\')">← Back to overview</button>' +
       '<h1>' + title + '</h1>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>';
   }
 
@@ -9616,7 +9617,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const posts = (store.getClassStory ? store.getClassStory(s.classId) : []).filter(p => !p.studentIds || p.studentIds === 'all' || (Array.isArray(p.studentIds) && p.studentIds.includes(s.id)));
     container.innerHTML =
       '<div class="parent-home">' +
-        parentPageHead('Class story', 'Moments and news from your childâ€™s classroom.') +
+        parentPageHead('Class story', 'Moments and news from your child’s classroom.') +
         (posts.length ? posts.map(p =>
           '<section class="par-card par-story"><div class="par-skill-top"><b style="color:#f8fafc">' + parentEsc(p.title) + '</b><span>' + parentEsc(p.type || '') + '</span></div>' +
           (p.mediaUrl ? '<img class="par-story-img" src="' + parentEsc(p.mediaUrl) + '" alt="">' : '') +
@@ -9631,7 +9632,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const threads = (store.getMessageThreads() || []).filter(t => t.studentId === s.id && !t.archived);
     const bubble = m => {
       const mine = (m.sender === 'parent' || m.from === 'parent');
-      return '<div class="par-msg ' + (mine ? 'is-me' : 'is-teacher') + '"><small>' + (mine ? 'You' : 'Teacher') + (m.time || m.timestamp ? ' Â· ' + parentEsc(m.time || m.timestamp) : '') + '</small>' + parentEsc(m.text) + '</div>';
+      return '<div class="par-msg ' + (mine ? 'is-me' : 'is-teacher') + '"><small>' + (mine ? 'You' : 'Teacher') + (m.time || m.timestamp ? ' · ' + parentEsc(m.time || m.timestamp) : '') + '</small>' + parentEsc(m.text) + '</div>';
     };
     const body = threads.length ? threads.map(t => {
       const msgs = t.messages || t.threads || [];
@@ -9714,7 +9715,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<div class="sidebar-group ' + (isCollapsed ? 'is-collapsed' : '') + '" id="nav-group-' + slug + '">' +
             '<button type="button" class="sidebar-section-header" onclick="toggleNavSection(\'' + slug + '\')" title="Toggle ' + title + '">' +
               '<span class="sidebar-section-title">' + title + '</span>' +
-              '<span class="sidebar-section-chevron">â–¾</span>' +
+              '<span class="sidebar-section-chevron">▾</span>' +
             '</button>' +
             '<ul class="sidebar-nav-list">' +
               items.map(item => '' +
@@ -9734,48 +9735,48 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
       sidebar.innerHTML = 
         '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">ðŸ«</span> <span class="nav-label">Class View</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">ðŸ§­</span> <span class="nav-label">Command Center</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Calendar: lessons, quizzes, birthdays, meetings"><span class="nav-item-left"><span class="nav-icon">ðŸ“…</span> <span class="nav-label">Calendar</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">ðŸ“Š</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Class View</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Calendar: lessons, quizzes, birthdays, meetings"><span class="nav-item-left"><span class="nav-icon">📅</span> <span class="nav-label">Calendar</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
         '</ul>' +
 
         renderNavGroup('my-school', 'My School', [
-          { view: 'board', label: 'Class Board', icon: 'ðŸ“º', title: 'Class Board: projector view with timer, picker and points', isActive: currentView === 'board' },
-          { view: 'store', label: 'Classroom Store', icon: 'ðŸ›ï¸', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
+          { view: 'board', label: 'Class Board', icon: '📺', title: 'Class Board: projector view with timer, picker and points', isActive: currentView === 'board' },
+          { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
         ], ['board', 'classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
 
         renderNavGroup('teaching', 'Teaching', [
-          { view: 'curriculum', label: 'Curriculum', icon: 'ðŸ“š', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
-          { view: 'library', label: 'Resource Library', icon: 'ðŸŽ®', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
-          { view: 'worksheets', label: 'Worksheets', icon: 'ðŸ“„', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
-          { view: 'assignments', label: 'Assignments', icon: 'ðŸ“', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
-          { view: 'homework', label: 'Homework', icon: 'âœï¸', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
-          { view: 'quizzes', label: 'Quizzes & Tests', icon: 'ðŸ§©', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
+          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
+          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
+          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
+          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
+          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
         ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
 
         renderNavGroup('assessment', 'Assessment', [
-          { view: 'assessments', label: 'Assessments & Rubrics', icon: 'ðŸŽ¯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
-          { view: 'progress', label: 'Progress & CEFR', icon: 'ðŸ“ˆ', title: 'Progress & CEFR', isActive: currentView === 'progress' },
-          { view: 'progress-check', label: 'English Progress Check', icon: 'ðŸ“Š', title: 'English Progress Check', isActive: currentView === 'progress-check' },
-          { view: 'reports', label: 'Student Reports (for parents)', icon: 'ðŸ§¾', title: 'Student Reports: print a report card for a parent', isActive: currentView === 'reports' }
+          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
+          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
+          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' },
+          { view: 'reports', label: 'Student Reports (for parents)', icon: '🧾', title: 'Student Reports: print a report card for a parent', isActive: currentView === 'reports' }
         ], ['assessments', 'progress', 'reports', 'progress-check']) +
 
         renderNavGroup('community', 'Community', [
-          { view: 'portfolios', label: 'Portfolios', icon: 'ðŸŽ¨', title: 'Portfolios', isActive: currentView === 'portfolios' }
+          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
         ], ['portfolios']) +
 
         renderNavGroup('admin', 'Admin & Audit', [
-          { view: 'health', label: 'System Health', icon: 'ðŸ“Š', title: 'System Health & CRUD', isActive: currentView === 'health' },
-          { view: 'gamification', label: 'Gamification', icon: 'ðŸ†', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
-          { view: 'archived', label: 'Archived & Restore', icon: 'ðŸ—„ï¸', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
-          { view: 'settings', label: 'School Settings', icon: 'âš™ï¸', title: 'School Settings', isActive: currentView === 'settings' }
+          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
+          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+          { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
+          { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
         ], ['health', 'gamification', 'archived', 'settings']) +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
           '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer; transition:all 0.15s ease;">' +
-            '<span class="collapse-icon">â‡¤</span> <span class="collapse-text">Collapse Sidebar</span>' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
           '</button>' +
         '</div>';
       hideUnusedTeacherMenus(sidebar);
@@ -9783,29 +9784,29 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">My Adventure</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')" title="My Journey"><span class="nav-item-left"><span class="nav-icon">ðŸ—ºï¸</span> <span class="nav-label">My Journey</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Game Library"><span class="nav-item-left"><span class="nav-icon">ðŸŽ®</span> <span class="nav-label">Game Library</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">ðŸ“</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">ðŸ†</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">â­</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'store' ? 'is-active' : '') + '" onclick="switchView(\'store\')" title="Store"><span class="nav-item-left"><span class="nav-icon">ðŸ›ï¸</span> <span class="nav-label">Store</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'adventure' ? 'is-active' : '') + '" onclick="switchView(\'adventure\')" title="My Journey"><span class="nav-item-left"><span class="nav-icon">🗺️</span> <span class="nav-label">My Journey</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'library' ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Game Library"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label">Game Library</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'tasks' ? 'is-active' : '') + '" onclick="switchView(\'tasks\')" title="My Missions"><span class="nav-item-left"><span class="nav-icon">📝</span> <span class="nav-label">My Missions</span></span><span class="nav-badge-pill">' + counts.assignments + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'badges' ? 'is-active' : '') + '" onclick="switchView(\'badges\')" title="Badges & XP"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Badges &amp; XP</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'leaderboard' ? 'is-active' : '') + '" onclick="switchView(\'leaderboard\')" title="Leaderboard"><span class="nav-item-left"><span class="nav-icon">⭐</span> <span class="nav-label">Leaderboard</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'store' ? 'is-active' : '') + '" onclick="switchView(\'store\')" title="Store"><span class="nav-item-left"><span class="nav-icon">🛍️</span> <span class="nav-label">Store</span></span></button></li>' +
         '</ul>' +
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
           '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
-            '<span class="collapse-icon">â‡¤</span> <span class="collapse-text">Collapse</span>' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
           '</button>' +
         '</div>';
     } else {
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">Parent Portal</div>' +
         '<ul class="sidebar-nav-list">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">ðŸ </span> <span class="nav-label">Ã‡ocuÄŸum Â· My child</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">ðŸ“¸</span> <span class="nav-label">Class Story</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">ðŸ’¬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-home' ? 'is-active' : '') + '" onclick="switchView(\'parent-home\')" title="Child Overview"><span class="nav-item-left"><span class="nav-icon">🏠</span> <span class="nav-label">Çocuğum · My child</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-story' ? 'is-active' : '') + '" onclick="switchView(\'parent-story\')" title="Class Story"><span class="nav-item-left"><span class="nav-icon">📸</span> <span class="nav-label">Class Story</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'parent-messages' ? 'is-active' : '') + '" onclick="switchView(\'parent-messages\')" title="Teacher Messages"><span class="nav-item-left"><span class="nav-icon">💬</span> <span class="nav-label">Teacher Messages</span></span><span class="nav-badge-pill">' + counts.messages + '</span></button></li>' +
         '</ul>' +
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
           '<button type="button" class="btn-sidebar-collapse" onclick="toggleSidebarCollapse()" title="Toggle Sidebar Width" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--bg-muted); border:1px solid var(--border-light); border-radius:8px; padding:7px 10px; font-size:0.78rem; font-weight:700; color:var(--text-secondary); cursor:pointer;">' +
-            '<span class="collapse-icon">â‡¤</span> <span class="collapse-text">Collapse</span>' +
+            '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse</span>' +
           '</button>' +
         '</div>';
     }
@@ -9909,12 +9910,12 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       console.error('Application View Render Error in view [' + currentView + ']:', viewErr);
       container.innerHTML = 
         '<div class="error-boundary-box" style="padding:48px 24px; text-align:center; max-width:620px; margin:40px auto; background:var(--bg-surface); border:1px solid var(--border-light); border-radius:18px; box-shadow:var(--shadow-md);">' +
-          '<div style="font-size:3.2rem; margin-bottom:12px;">âš ï¸</div>' +
+          '<div style="font-size:3.2rem; margin-bottom:12px;">⚠️</div>' +
           '<h2 style="font-size:1.45rem; font-weight:900; color:var(--text-main); margin:0 0 8px 0;">Something went wrong loading this page.</h2>' +
           '<p style="font-size:0.88rem; color:var(--text-muted); margin:0 0 24px 0; line-height:1.4;">We encountered an issue rendering this section. Your student data, monster profiles, and XP transactions are completely intact.</p>' +
           '<div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-primary-action" onclick="renderCurrentView()" style="padding:10px 20px;">ðŸ”„ Retry</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="navigateTo(\'dashboard\')" style="padding:10px 20px;">ðŸ  Back to Classroom</button>' +
+            '<button type="button" class="btn-primary-action" onclick="renderCurrentView()" style="padding:10px 20px;">🔄 Retry</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="navigateTo(\'dashboard\')" style="padding:10px 20px;">🏠 Back to Classroom</button>' +
           '</div>' +
           '<details style="margin-top:20px; text-align:left; font-size:0.75rem; color:var(--text-muted); background:var(--bg-canvas); padding:10px 14px; border-radius:8px; border:1px solid var(--border-light);">' +
             '<summary style="cursor:pointer; font-weight:700;">Technical Diagnostics</summary>' +
@@ -10037,7 +10038,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<input type="checkbox" name="quick-points-student" value="' + s.id + '" ' + (targetSet.size === 0 || targetSet.has(s.id) ? 'checked' : '') + ' />' +
         '<span style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">' + window.renderMonsterAvatar(s.id, { size: 24, animated: false }) + '</span>' +
         '<strong>' + s.firstName + ' ' + s.lastName + '</strong>' +
-        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">â­ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
+        '<span style="font-size:0.76rem; color:var(--text-muted); margin-left:auto;">⭐ ' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP</span>' +
       '</label>'
     ).join('');
 
@@ -10112,7 +10113,7 @@ window.switchClassroomSubTab = function(subTab) {
       amount = parseInt(rawVal, 10) || 10;
     }
 
-    const reason = document.getElementById('quick-points-reason-val')?.value || 'ðŸ‘ Great participation';
+    const reason = document.getElementById('quick-points-reason-val')?.value || '👏 Great participation';
     const checkedBoxes = document.querySelectorAll('#quick-points-students-list input[type="checkbox"]:checked');
     const studentIds = Array.from(checkedBoxes).map(c => c.value);
 
@@ -10125,7 +10126,7 @@ window.switchClassroomSubTab = function(subTab) {
     studentIds.forEach(id => {
       const res = store.giveXP(id, amount, reason, 'Teacher', {
         category: 'positive',
-        icon: 'â­'
+        icon: '⭐'
       });
       if (res && res.evolutionEvent && !firstEvolutionEvent) {
         firstEvolutionEvent = res.evolutionEvent;
@@ -10133,7 +10134,7 @@ window.switchClassroomSubTab = function(subTab) {
     });
 
     window.closeAllModals();
-    showNotification('âœ“ Awarded +' + amount + ' XP to ' + studentIds.length + ' student' + (studentIds.length > 1 ? 's' : '') + ' for ' + reason + '!');
+    showNotification('✓ Awarded +' + amount + ' XP to ' + studentIds.length + ' student' + (studentIds.length > 1 ? 's' : '') + ' for ' + reason + '!');
     
     if (firstEvolutionEvent) {
       if (firstEvolutionEvent.isHatch) {
@@ -10162,7 +10163,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (groupId) {
       const g = store.getGroup(groupId);
       if (!g) return;
-      if (title) title.textContent = 'âœï¸ Edit Group: ' + g.name;
+      if (title) title.textContent = '✏️ Edit Group: ' + g.name;
       if (idInput) idInput.value = g.id;
       if (nameInput) nameInput.value = g.name;
       if (submitBtn) submitBtn.textContent = 'Save Changes';
@@ -10180,7 +10181,7 @@ window.switchClassroomSubTab = function(subTab) {
         ).join('');
       }
     } else {
-      if (title) title.textContent = 'ðŸ‘¥ Create Classroom Group';
+      if (title) title.textContent = '👥 Create Classroom Group';
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
       if (submitBtn) submitBtn.textContent = 'Create Group';
@@ -10238,7 +10239,7 @@ window.switchClassroomSubTab = function(subTab) {
     const group = store.getGroup(groupId);
     if (!group) return;
     const txs = store.awardGroupXP(groupId, amount, 'Team Points');
-    alert('âœ“ Awarded +' + amount + ' â­ to all ' + txs.length + ' members of ' + group.name + '!');
+    alert('✓ Awarded +' + amount + ' ⭐ to all ' + txs.length + ' members of ' + group.name + '!');
     renderCurrentView();
   };
 
@@ -10248,7 +10249,7 @@ window.switchClassroomSubTab = function(subTab) {
     const name = document.getElementById('random-student-name');
     const meta = document.getElementById('random-student-meta');
     const rewardBtn = document.getElementById('btn-reward-random');
-    if (avatar) avatar.innerHTML = '<span style="font-size:48px;">ðŸŽ²</span>';
+    if (avatar) avatar.innerHTML = '<span style="font-size:48px;">🎲</span>';
     if (name) name.textContent = 'Ready to Pick!';
     if (meta) meta.textContent = 'Click Spin to select a random learner';
     if (rewardBtn) rewardBtn.style.display = 'none';
@@ -10281,7 +10282,7 @@ window.switchClassroomSubTab = function(subTab) {
     const rewardBtn = document.getElementById('btn-reward-random');
 
     let count = 0;
-    const emojis = ['ðŸ‘§', 'ðŸ‘¦', 'ðŸ§’', 'ðŸ¦¸', 'ðŸ¦Š', 'ðŸ¼', 'ðŸš€', 'â­'];
+    const emojis = ['👧', '👦', '🧒', '🦸', '🦊', '🐼', '🚀', '⭐'];
     const interval = setInterval(() => {
       const rnd = students[Math.floor(Math.random() * students.length)];
       if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(rnd.id, { size: 64, animated: false });
@@ -10299,8 +10300,8 @@ window.switchClassroomSubTab = function(subTab) {
           avatarEl.style.transform = 'scale(1.15)';
           setTimeout(() => { if (avatarEl) avatarEl.style.transform = 'scale(1)'; }, 300);
         }
-        if (nameEl) nameEl.textContent = 'ðŸŽ‰ ' + finalStudent.firstName.toUpperCase() + '!';
-        if (metaEl) metaEl.textContent = cls.name + ' Â· CEFR: ' + (finalStudent.overallCefr || 'A1') + ' Â· â­ ' + store.getStudentTotalXP(finalStudent.id);
+        if (nameEl) nameEl.textContent = '🎉 ' + finalStudent.firstName.toUpperCase() + '!';
+        if (metaEl) metaEl.textContent = cls.name + ' · CEFR: ' + (finalStudent.overallCefr || 'A1') + ' · ⭐ ' + store.getStudentTotalXP(finalStudent.id);
         if (rewardBtn) rewardBtn.style.display = 'inline-flex';
       }
     }, 80);
@@ -10310,8 +10311,8 @@ window.switchClassroomSubTab = function(subTab) {
     if (!lastPickedStudentId) return;
     const s = store.getStudent(lastPickedStudentId);
     if (!s) return;
-    store.giveXP(s.id, 5, 'ðŸŽ² Random Challenger Spotlight', 'Mr. Maysam');
-    alert('âœ“ Awarded +5 â­ to ' + s.firstName + '!');
+    store.giveXP(s.id, 5, '🎲 Random Challenger Spotlight', 'Mr. Maysam');
+    alert('✓ Awarded +5 ⭐ to ' + s.firstName + '!');
     renderCurrentView();
   };
 
@@ -10329,7 +10330,7 @@ window.switchClassroomSubTab = function(subTab) {
     timerIsRunning = false;
     if (timerInterval) clearInterval(timerInterval);
     const startBtn = document.getElementById('btn-timer-start');
-    if (startBtn) startBtn.textContent = 'â–¶ Start';
+    if (startBtn) startBtn.textContent = '▶ Start';
     window.updateTimerDisplay();
 
     const presets = document.querySelectorAll('.timer-preset-btn');
@@ -10352,11 +10353,11 @@ window.switchClassroomSubTab = function(subTab) {
       // Pause
       timerIsRunning = false;
       if (timerInterval) clearInterval(timerInterval);
-      if (startBtn) startBtn.textContent = 'â–¶ Resume';
+      if (startBtn) startBtn.textContent = '▶ Resume';
     } else {
       // Start
       timerIsRunning = true;
-      if (startBtn) startBtn.textContent = 'â¸ Pause';
+      if (startBtn) startBtn.textContent = '⏸ Pause';
       timerInterval = setInterval(() => {
         if (timerRemainingSeconds > 0) {
           timerRemainingSeconds--;
@@ -10364,7 +10365,7 @@ window.switchClassroomSubTab = function(subTab) {
         } else {
           clearInterval(timerInterval);
           timerIsRunning = false;
-          if (startBtn) startBtn.textContent = 'â–¶ Start';
+          if (startBtn) startBtn.textContent = '▶ Start';
           window.playTimerChime();
         }
       }, 1000);
@@ -10376,7 +10377,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (timerInterval) clearInterval(timerInterval);
     timerRemainingSeconds = timerPresetSeconds;
     const startBtn = document.getElementById('btn-timer-start');
-    if (startBtn) startBtn.textContent = 'â–¶ Start';
+    if (startBtn) startBtn.textContent = '▶ Start';
     window.updateTimerDisplay();
   };
 
@@ -10407,7 +10408,7 @@ window.switchClassroomSubTab = function(subTab) {
     } catch (e) {
       console.log('Timer chime:', e);
     }
-    alert('â° Time is up!');
+    alert('⏰ Time is up!');
   };
 
   // Fast Attendance Modal
@@ -10422,7 +10423,7 @@ window.switchClassroomSubTab = function(subTab) {
     const today = new Date().toISOString().split('T')[0];
 
     if (dateDisplay) {
-      dateDisplay.textContent = 'Today Â· ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      dateDisplay.textContent = 'Today · ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
 
     // Read current statuses or default to Present
@@ -10439,10 +10440,10 @@ window.switchClassroomSubTab = function(subTab) {
             '<span style="font-weight:700; font-size:0.92rem;">' + s.firstName + ' ' + s.lastName + '</span>' +
           '</div>' +
           '<div class="classroom-view-toggle-pills" style="gap:2px;">' +
-            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Present' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Present\', this)">âœ“ Present</button>' +
-            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Late' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Late\', this)">â—· Late</button>' +
-            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Absent' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Absent\', this)">âœ• Absent</button>' +
-            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Excused' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Excused\', this)">â—‹ Excused</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Present' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Present\', this)">✓ Present</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Late' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Late\', this)">◷ Late</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Absent' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Absent\', this)">✕ Absent</button>' +
+            '<button type="button" class="classroom-view-pill-btn ' + (status === 'Excused' ? 'is-active' : '') + '" onclick="window.handleToggleStudentAttFast(\'' + s.id + '\', \'Excused\', this)">○ Excused</button>' +
           '</div>' +
         '</div>';
     }).join('');
@@ -10484,7 +10485,7 @@ window.switchClassroomSubTab = function(subTab) {
         else if (text.includes('Absent')) absent++;
       }
     });
-    summary.textContent = present + ' Present Â· ' + late + ' Late Â· ' + absent + ' Absent';
+    summary.textContent = present + ' Present · ' + late + ' Late · ' + absent + ' Absent';
   };
 
   window.handleSaveFastAttendance = function() {
@@ -10505,7 +10506,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     store.recordBulkAttendance(cls.id, today, statusMap);
     window.closeAllModals();
-    alert('âœ“ Attendance saved for ' + Object.keys(statusMap).length + ' students in ' + cls.name + '!');
+    alert('✓ Attendance saved for ' + Object.keys(statusMap).length + ' students in ' + cls.name + '!');
     renderCurrentView();
   };
 
@@ -10518,7 +10519,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     select.innerHTML = students.map(s => '' +
       '<option value="' + s.id + '" ' + (studentId === s.id ? 'selected' : '') + '>' +
-        'ðŸ‘¾ ' + s.firstName + ' ' + s.lastName + ' (' + (s.overallCefr || 'A1') + ')' +
+        '👾 ' + s.firstName + ' ' + s.lastName + ' (' + (s.overallCefr || 'A1') + ')' +
       '</option>'
     ).join('');
 
@@ -10543,7 +10544,7 @@ window.switchClassroomSubTab = function(subTab) {
     });
 
     window.closeAllModals();
-    alert('âœ“ Recorded ' + skill + ' assessment for ' + store.getStudent(studentId).firstName + ' (+10 â­)!');
+    alert('✓ Recorded ' + skill + ' assessment for ' + store.getStudent(studentId).firstName + ' (+10 ⭐)!');
     renderCurrentView();
   };
 
@@ -10592,11 +10593,11 @@ window.switchClassroomSubTab = function(subTab) {
     });
 
     window.closeAllModals();
-    alert('âœ“ Recorded worksheet evidence for ' + scores.length + ' students!');
+    alert('✓ Recorded worksheet evidence for ' + scores.length + ' students!');
     renderCurrentView();
   };
 
-  // Smartboard / ðŸŽ“ Classroom Mode Toggle
+  // Smartboard / 🎓 Classroom Mode Toggle
   window.toggleSmartboardMode = function() {
     isClassroomSmartboardMode = !isClassroomSmartboardMode;
     if (isClassroomSmartboardMode) {
@@ -10736,7 +10737,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (wsId) {
       const ws = store.getWorksheet(wsId);
       if (!ws) return;
-      if (title) title.textContent = 'âœï¸ Edit Worksheet';
+      if (title) title.textContent = '✏️ Edit Worksheet';
       if (idInput) idInput.value = ws.id;
       if (titleInput) titleInput.value = ws.title;
       if (levelSelect) levelSelect.value = ws.level || 'A1';
@@ -10852,7 +10853,7 @@ window.switchClassroomSubTab = function(subTab) {
     const titleEl = document.getElementById('quiz-qm-title');
     const subtitleEl = document.getElementById('quiz-qm-subtitle');
     if (titleEl) titleEl.textContent = 'Manage Questions: ' + q.title;
-    if (subtitleEl) subtitleEl.textContent = q.targetCefr + ' Â· ' + q.skill + ' Diagnostic';
+    if (subtitleEl) subtitleEl.textContent = q.targetCefr + ' · ' + q.skill + ' Diagnostic';
 
     window.renderQuizQuestionsList();
     window.openModal('modal-quiz-questions-manager');
@@ -10872,23 +10873,23 @@ window.switchClassroomSubTab = function(subTab) {
       '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">' +
         '<div style="display:flex; align-items:flex-start; gap:10px;">' +
           '<div style="display:flex; flex-direction:column; gap:2px; margin-top:2px;">' +
-            (idx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.6rem;" onclick="handleMoveQuestionUp(\'' + item.id + '\')">â–²</button>' : '') +
-            (idx < questions.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.6rem;" onclick="handleMoveQuestionDown(\'' + item.id + '\')">â–¼</button>' : '') +
+            (idx > 0 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.6rem;" onclick="handleMoveQuestionUp(\'' + item.id + '\')">▲</button>' : '') +
+            (idx < questions.length - 1 ? '<button type="button" class="btn-sm-secondary" style="padding:1px 5px; font-size:0.6rem;" onclick="handleMoveQuestionDown(\'' + item.id + '\')">▼</button>' : '') +
           '</div>' +
           '<div>' +
             '<div style="font-weight:800; font-size:0.92rem;">' + (idx + 1) + '. ' + item.question + '</div>' +
             '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">' +
               (item.options || []).map((opt, oIdx) => 
                 '<span style="padding:2px 8px; border-radius:4px; font-size:0.75rem; background:' + (oIdx === item.correctIndex ? 'rgba(16,185,129,0.15)' : 'var(--bg-card-secondary)') + '; color:' + (oIdx === item.correctIndex ? 'var(--color-success)' : 'var(--text-secondary)') + '; border:1px solid var(--border-subtle);">' +
-                  (oIdx === item.correctIndex ? 'âœ“ ' : '') + opt +
+                  (oIdx === item.correctIndex ? '✓ ' : '') + opt +
                 '</span>'
               ).join('') +
             '</div>' +
           '</div>' +
         '</div>' +
         '<div style="display:flex; gap:6px;">' +
-          '<button class="btn-sm-secondary" onclick="openEditQuestionForm(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.75rem;">âœï¸</button>' +
-          '<button class="btn-sm-secondary" onclick="handleDeleteQuestion(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+          '<button class="btn-sm-secondary" onclick="openEditQuestionForm(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.75rem;">✏️</button>' +
+          '<button class="btn-sm-secondary" onclick="handleDeleteQuestion(\'' + item.id + '\')" style="padding:2px 8px; font-size:0.75rem; color:var(--color-danger);">🗑️</button>' +
         '</div>' +
       '</div>'
     ).join('');
@@ -11010,7 +11011,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (rubricId) {
       const r = store.getRubric(rubricId);
       if (!r) return;
-      if (title) title.textContent = 'âœï¸ Edit Rubric: ' + r.name;
+      if (title) title.textContent = '✏️ Edit Rubric: ' + r.name;
       if (idInput) idInput.value = r.id;
       if (nameInput) nameInput.value = r.name;
       if (skillSelect) skillSelect.value = r.skill;
@@ -11019,12 +11020,12 @@ window.switchClassroomSubTab = function(subTab) {
           '<div class="rubric-crit-edit-row" style="display:grid; grid-template-columns: 2fr 3fr auto; gap:8px; align-items:center;">' +
             '<input type="text" class="filter-select crit-name-input" value="' + c.name + '" placeholder="Criterion Name" />' +
             '<input type="text" class="filter-select crit-desc-input" value="' + (c.description || '') + '" placeholder="Criterion Descriptor" />' +
-            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">âœ•</button>' +
+            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">✕</button>' +
           '</div>'
         ).join('');
       }
     } else {
-      if (title) title.textContent = 'ðŸŽ¯ Customize Assessment Rubric';
+      if (title) title.textContent = '🎯 Customize Assessment Rubric';
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
       if (container) {
@@ -11032,12 +11033,12 @@ window.switchClassroomSubTab = function(subTab) {
           '<div class="rubric-crit-edit-row" style="display:grid; grid-template-columns: 2fr 3fr auto; gap:8px; align-items:center;">' +
             '<input type="text" class="filter-select crit-name-input" value="Fluency &amp; Spontaneity" placeholder="Criterion Name" />' +
             '<input type="text" class="filter-select crit-desc-input" value="Speaks clearly with natural rhythm" placeholder="Criterion Descriptor" />' +
-            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">âœ•</button>' +
+            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">✕</button>' +
           '</div>' +
           '<div class="rubric-crit-edit-row" style="display:grid; grid-template-columns: 2fr 3fr auto; gap:8px; align-items:center;">' +
             '<input type="text" class="filter-select crit-name-input" value="Vocabulary Accuracy" placeholder="Criterion Name" />' +
             '<input type="text" class="filter-select crit-desc-input" value="Uses target classroom vocabulary accurately" placeholder="Criterion Descriptor" />' +
-            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">âœ•</button>' +
+            '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">✕</button>' +
           '</div>';
       }
     }
@@ -11054,7 +11055,7 @@ window.switchClassroomSubTab = function(subTab) {
     div.innerHTML = '' +
       '<input type="text" class="filter-select crit-name-input" placeholder="New Criterion Name" />' +
       '<input type="text" class="filter-select crit-desc-input" placeholder="Descriptor..." />' +
-      '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">âœ•</button>';
+      '<button type="button" class="btn-sm-secondary" style="color:var(--color-danger);" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
   };
 
@@ -11109,7 +11110,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (itemId) {
       const item = type === 'badge' ? store.getBadge(itemId) : store.getAchievement(itemId);
       if (!item) return;
-      if (title) title.textContent = 'âœï¸ Edit ' + (type === 'badge' ? 'Badge' : 'Achievement');
+      if (title) title.textContent = '✏️ Edit ' + (type === 'badge' ? 'Badge' : 'Achievement');
       if (idInput) idInput.value = item.id;
       if (nameInput) nameInput.value = item.name;
       if (iconInput) iconInput.value = item.icon;
@@ -11117,7 +11118,7 @@ window.switchClassroomSubTab = function(subTab) {
       if (catSelect) catSelect.value = item.category || 'Milestones';
       if (xpInput) xpInput.value = item.xpReward || 150;
     } else {
-      if (title) title.textContent = 'ðŸ† Add Reward ' + (type === 'badge' ? 'Badge' : 'Achievement');
+      if (title) title.textContent = '🏆 Add Reward ' + (type === 'badge' ? 'Badge' : 'Achievement');
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
       if (reqInput) reqInput.value = '';
@@ -11271,8 +11272,8 @@ window.switchClassroomSubTab = function(subTab) {
 
     container.innerHTML = 
       '<div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">' +
-        '<button class="btn-sm-secondary" onclick="switchView(\'reports\')">â† Back to Reports</button>' +
-        '<button class="btn-primary-action" onclick="window.print()">ðŸ–¨ï¸ Print Report Card</button>' +
+        '<button class="btn-sm-secondary" onclick="switchView(\'reports\')">← Back to Reports</button>' +
+        '<button class="btn-primary-action" onclick="window.print()">🖨️ Print Report Card</button>' +
       '</div>' +
 
       '<div class="printable-report-card" style="background:#ffffff; color:#0f172a; border:2px solid #0f172a; border-radius:12px; padding:36px; max-width:760px; margin:0 auto; box-shadow:var(--shadow-lg); font-family:var(--font-sans);">' +
@@ -11305,7 +11306,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div style="border:1px solid #e2e8f0; border-radius:8px; padding:14px; text-align:center;">' +
             '<div style="font-size:0.78rem; color:#64748b; font-weight:700;">TOTAL ADVENTURE XP</div>' +
-            '<div style="font-size:1.6rem; font-weight:900; color:#b45309; margin:4px 0;">â­ ' + (snap.totalXP || 0) + '</div>' +
+            '<div style="font-size:1.6rem; font-weight:900; color:#b45309; margin:4px 0;">⭐ ' + (snap.totalXP || 0) + '</div>' +
             '<div style="font-size:0.72rem; color:#64748b;">Gamification milestones</div>' +
           '</div>' +
           '<div style="border:1px solid #e2e8f0; border-radius:8px; padding:14px; text-align:center;">' +
@@ -11410,7 +11411,7 @@ window.switchClassroomSubTab = function(subTab) {
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">ðŸ—„ï¸ Archived Records &amp; Restore Management</h1>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">🗄️ Archived Records &amp; Restore Management</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">' + archivedItems.length + ' archived items. Restore items back to active rosters or permanently delete configuration records.</p>' +
         '</div>' +
       '</div>' +
@@ -11443,8 +11444,8 @@ window.switchClassroomSubTab = function(subTab) {
                   '<td style="padding:12px 16px; font-weight:700;">' + item.name + '</td>' +
                   '<td style="padding:12px 16px; font-family:monospace; font-size:0.78rem; color:var(--text-muted);">' + item.id + '</td>' +
                   '<td style="padding:12px 16px; text-align:right;">' +
-                    '<button class="btn-primary-action" onclick="handleRestoreEntityFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 10px; font-size:0.78rem; margin-right:6px;">â™»ï¸ Restore</button>' +
-                    '<button class="btn-sm-secondary" onclick="handlePermanentDeleteFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 8px; font-size:0.78rem; color:var(--color-danger);">ðŸ—‘ï¸ Delete Permanently</button>' +
+                    '<button class="btn-primary-action" onclick="handleRestoreEntityFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 10px; font-size:0.78rem; margin-right:6px;">♻️ Restore</button>' +
+                    '<button class="btn-sm-secondary" onclick="handlePermanentDeleteFromPage(\'' + item.type + '\', \'' + item.id + '\')" style="padding:3px 8px; font-size:0.78rem; color:var(--color-danger);">🗑️ Delete Permanently</button>' +
                   '</td>' +
                 '</tr>'
               ).join('') +
@@ -11485,18 +11486,18 @@ window.switchClassroomSubTab = function(subTab) {
     container.innerHTML = 
       '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">' +
         '<div>' +
-          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">âš™ï¸ School Settings &amp; Platform Preferences</h1>' +
+          '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">⚙️ School Settings &amp; Platform Preferences</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Manage school brand identity, academic calendar, classroom gamification controls, and data backups.</p>' +
         '</div>' +
         '<div style="display:flex; gap:8px;">' +
-          '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">ðŸ’¾ Export JSON Backup</button>' +
+          '<button class="btn-sm-secondary" onclick="handleExportStoreJson()">💾 Export JSON Backup</button>' +
         '</div>' +
       '</div>' +
 
       '<form onsubmit="handleSaveSchoolSettingsFromPage(event)" style="display:flex; flex-direction:column; gap:20px; max-width:840px;">' +
         // Section 1: School Identity
         '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">ðŸ« School Identity &amp; Calendar</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">🏫 School Identity &amp; Calendar</h3>' +
           '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">' +
             '<div>' +
               '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">School / Academy Name</label>' +
@@ -11504,7 +11505,7 @@ window.switchClassroomSubTab = function(subTab) {
             '</div>' +
             '<div>' +
               '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Academic Year</label>' +
-              '<input type="text" id="page-set-academic-year" class="filter-select" style="width:100%;" value="' + (s.academicYear || '2026â€“2027') + '" required />' +
+              '<input type="text" id="page-set-academic-year" class="filter-select" style="width:100%;" value="' + (s.academicYear || '2026–2027') + '" required />' +
             '</div>' +
           '</div>' +
           '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
@@ -11528,7 +11529,7 @@ window.switchClassroomSubTab = function(subTab) {
 
         // Section 2: Classroom & Gamification Controls
         '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">ðŸŽ® Classroom &amp; Gamification Controls</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">🎮 Classroom &amp; Gamification Controls</h3>' +
           '<div style="display:flex; flex-direction:column; gap:10px;">' +
             '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
               '<input type="checkbox" id="page-set-xp-enabled" ' + (s.enableXP !== false ? 'checked' : '') + ' />' +
@@ -11540,22 +11541,22 @@ window.switchClassroomSubTab = function(subTab) {
             '</label>' +
             '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
               '<input type="checkbox" id="page-set-streaks-enabled" ' + (s.enableStreaks !== false ? 'checked' : '') + ' />' +
-              '<span>Track Consecutive Daily Learning Streaks ðŸ”¥</span>' +
+              '<span>Track Consecutive Daily Learning Streaks 🔥</span>' +
             '</label>' +
             '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
               '<input type="checkbox" id="page-set-monster-evolution" ' + (s.monsterEvolutionEnabled !== false ? 'checked' : '') + ' />' +
-              '<span><strong>Monster Evolution System</strong> (Egg to Ultimate Monster) ðŸ‘¾</span>' +
+              '<span><strong>Monster Evolution System</strong> (Egg to Ultimate Monster) 👾</span>' +
             '</label>' +
             '<label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.88rem; font-weight:700;">' +
               '<input type="checkbox" id="page-set-xp-progression" ' + (s.xpProgressionEnabled !== false ? 'checked' : '') + ' />' +
-              '<span><strong>XP Progression</strong> (Earn XP across classroom tasks) â­</span>' +
+              '<span><strong>XP Progression</strong> (Earn XP across classroom tasks) ⭐</span>' +
             '</label>' +
           '</div>' +
         '</div>' +
 
         // Section 3: Teacher Preferences
         '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);">' +
-          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">ðŸ‘©â€ðŸ« Teacher Pedagogical Preferences</h3>' +
+          '<h3 style="font-size:1.15rem; font-weight:800; margin-bottom:14px; color:var(--text-main);">👩‍🏫 Teacher Pedagogical Preferences</h3>' +
           '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">' +
             '<div>' +
               '<label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Default Target CEFR</label>' +
@@ -11621,7 +11622,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (schoolNameInput) schoolNameInput.value = s.schoolName || '';
     if (teacherNameInput) teacherNameInput.value = s.teacherName || '';
-    if (yearInput) yearInput.value = s.academicYear || '2026â€“2027';
+    if (yearInput) yearInput.value = s.academicYear || '2026–2027';
     if (cefrSelect) cefrSelect.value = s.primaryCefrTarget || 'A1';
     if (lbCheck) lbCheck.checked = s.leaderboardEnabled !== false;
     if (pvCheck) pvCheck.checked = s.parentStoryVisibility !== false;
@@ -11664,7 +11665,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (headerName) headerName.textContent = teacherName;
 
     window.closeAllModals();
-    alert('âœ“ School settings updated successfully.');
+    alert('✓ School settings updated successfully.');
     renderCurrentView();
   };
 
@@ -11737,7 +11738,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (gameSelect) gameSelect.value = a.activityId || a.gameId || '';
     if (dateInput) dateInput.value = a.dueDate;
     if (instInput) instInput.value = a.instructions || '';
-    if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Assignment';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Assignment';
 
     window.openModal('modal-create-assignment');
   };
@@ -11760,7 +11761,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (classSelect) classSelect.value = h.classId;
     if (dateInput) dateInput.value = h.dueDate;
     if (descInput) descInput.value = h.description || '';
-    if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Homework Task';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Homework Task';
 
     window.openModal('modal-homework-editor');
   };
@@ -11783,7 +11784,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (titleInput) titleInput.value = q.title;
     if (cefrSelect) cefrSelect.value = q.targetCefr || 'A1';
     if (skillSelect) skillSelect.value = q.skill || 'Vocabulary';
-    if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Quiz Details';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Quiz Details';
 
     window.openModal('modal-quiz-builder');
   };
@@ -11815,11 +11816,11 @@ window.switchClassroomSubTab = function(subTab) {
     const reqInput = document.getElementById('reward-requirement');
     const catInput = document.getElementById('reward-category');
 
-    if (title) title.textContent = 'âœï¸ Edit Badge';
+    if (title) title.textContent = '✏️ Edit Badge';
     if (idInput) idInput.value = b.id;
     if (typeSelect) typeSelect.value = 'badge';
     if (nameInput) nameInput.value = b.name;
-    if (iconInput) iconInput.value = b.icon || 'ðŸ…';
+    if (iconInput) iconInput.value = b.icon || '🏅';
     if (reqInput) reqInput.value = b.description || '';
     if (catInput) catInput.value = b.category || 'General';
 
@@ -11837,11 +11838,11 @@ window.switchClassroomSubTab = function(subTab) {
     const reqInput = document.getElementById('reward-requirement');
     const catInput = document.getElementById('reward-category');
 
-    if (title) title.textContent = 'âœï¸ Edit Achievement';
+    if (title) title.textContent = '✏️ Edit Achievement';
     if (idInput) idInput.value = a.id;
     if (typeSelect) typeSelect.value = 'achievement';
     if (nameInput) nameInput.value = a.title || a.name;
-    if (iconInput) iconInput.value = a.icon || 'ðŸ†';
+    if (iconInput) iconInput.value = a.icon || '🏆';
     if (reqInput) reqInput.value = a.description || '';
     if (catInput) catInput.value = a.category || 'Milestones';
 
@@ -11914,7 +11915,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (catSelect) catSelect.value = post.category || 'Announcement';
     if (classSelect) classSelect.value = post.classId || 'all';
     if (contentInput) contentInput.value = post.content || '';
-    if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Class Story Post';
+    if (modalTitle) modalTitle.textContent = '✏️ Edit Class Story Post';
 
     window.openModal('modal-story-post');
   };
@@ -11943,24 +11944,24 @@ window.switchClassroomSubTab = function(subTab) {
     if (eventId) {
       const ev = store.getCalendarEvent(eventId);
       if (!ev) return;
-      if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Calendar Event';
+      if (modalTitle) modalTitle.textContent = '✏️ Edit Calendar Event';
       if (idInput) idInput.value = ev.id;
       if (titleInput) titleInput.value = ev.title;
       if (classSelect) classSelect.value = ev.classId;
       if (typeSelect) typeSelect.value = ev.type || 'Lesson';
       if (daySelect) daySelect.value = ev.dayOfWeek || 'Monday';
-      if (timeInput) timeInput.value = ev.time || '10:00 â€“ 10:45';
+      if (timeInput) timeInput.value = ev.time || '10:00 – 10:45';
       if (roomInput) roomInput.value = ev.room || 'Room 204';
       if (dateInput) dateInput.value = ev.date || '';
       if (topicInput) topicInput.value = ev.topic || '';
     } else {
-      if (modalTitle) modalTitle.textContent = 'ðŸ“… Add Calendar Event';
+      if (modalTitle) modalTitle.textContent = '📅 Add Calendar Event';
       if (idInput) idInput.value = '';
       if (titleInput) titleInput.value = '';
       if (classSelect) classSelect.value = store.getActiveClass().id;
       if (typeSelect) typeSelect.value = 'Lesson';
       if (daySelect) daySelect.value = 'Monday';
-      if (timeInput) timeInput.value = '10:00 â€“ 10:45';
+      if (timeInput) timeInput.value = '10:00 – 10:45';
       if (roomInput) roomInput.value = store.getActiveClass().room || 'Room 204';
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
       if (topicInput) topicInput.value = '';
@@ -12023,20 +12024,20 @@ window.switchClassroomSubTab = function(subTab) {
       const allPortfolios = (store.state.portfolios || []);
       const item = allPortfolios.find(p => p.id === itemId);
       if (!item) return;
-      if (modalTitle) modalTitle.textContent = 'âœï¸ Edit Portfolio Artifact';
+      if (modalTitle) modalTitle.textContent = '✏️ Edit Portfolio Artifact';
       if (idInput) idInput.value = item.id;
       if (studSelect) studSelect.value = item.studentId;
       if (titleInput) titleInput.value = item.title;
       if (catSelect) catSelect.value = item.category || 'Drawing';
-      if (previewInput) previewInput.value = item.preview || 'ðŸŽ¨';
+      if (previewInput) previewInput.value = item.preview || '🎨';
       if (dateInput) dateInput.value = item.date || '';
       if (notesInput) notesInput.value = item.notes || '';
     } else {
-      if (modalTitle) modalTitle.textContent = 'ðŸŽ¨ Add Portfolio Artifact';
+      if (modalTitle) modalTitle.textContent = '🎨 Add Portfolio Artifact';
       if (idInput) idInput.value = '';
       if (titleInput) titleInput.value = '';
       if (catSelect) catSelect.value = 'Drawing';
-      if (previewInput) previewInput.value = 'ðŸŽ¨';
+      if (previewInput) previewInput.value = '🎨';
       if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
       if (notesInput) notesInput.value = '';
     }
@@ -12050,7 +12051,7 @@ window.switchClassroomSubTab = function(subTab) {
     const studentId = document.getElementById('portfolio-student-id').value;
     const title = document.getElementById('portfolio-title').value.trim();
     const category = document.getElementById('portfolio-category').value;
-    const preview = document.getElementById('portfolio-preview').value.trim() || 'ðŸŽ¨';
+    const preview = document.getElementById('portfolio-preview').value.trim() || '🎨';
     const date = document.getElementById('portfolio-date') ? document.getElementById('portfolio-date').value : '';
     const notes = document.getElementById('portfolio-notes') ? document.getElementById('portfolio-notes').value.trim() : '';
 
@@ -12107,7 +12108,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (list.length === 0) {
       container.innerHTML = 
         '<div style="text-align:center; padding:40px 16px; background:var(--bg-card-secondary); border-radius:12px;">' +
-          '<div style="font-size:32px; margin-bottom:8px;">âœ¨</div>' +
+          '<div style="font-size:32px; margin-bottom:8px;">✨</div>' +
           '<div style="font-weight:700; font-size:1rem;">No archived items found</div>' +
           '<p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">When you archive students, lessons, or resources, they will appear here safely for recovery.</p>' +
         '</div>';
@@ -12120,11 +12121,11 @@ window.switchClassroomSubTab = function(subTab) {
           '<span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; background:rgba(79,70,229,0.1); color:var(--color-primary); padding:3px 8px; border-radius:6px;">' + item.type + '</span>' +
           '<div>' +
             '<div style="font-weight:800; font-size:0.95rem;">' + item.title + '</div>' +
-            '<div style="font-size:0.75rem; color:var(--text-muted);">' + item.meta + ' Â· ID: ' + item.id + '</div>' +
+            '<div style="font-size:0.75rem; color:var(--text-muted);">' + item.meta + ' · ID: ' + item.id + '</div>' +
           '</div>' +
         '</div>' +
         '<button class="btn-primary-action" onclick="handleRestoreArchivedItem(\'' + item.type + '\', \'' + item.id + '\')" style="padding:5px 12px; font-size:0.8rem;">' +
-          '<span>â†º</span> <span>Restore Item</span>' +
+          '<span>↺</span> <span>Restore Item</span>' +
         '</button>' +
       '</div>'
     ).join('');
@@ -12265,7 +12266,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (unenrolled.length === 0) {
       return '' +
         '<div style="text-align:center; padding:48px 16px; background:var(--bg-surface); border-radius:var(--radius-lg); border:1px solid var(--border-light); margin-bottom:24px;">' +
-          '<div style="font-size:36px; margin-bottom:10px;">âœ…</div>' +
+          '<div style="font-size:36px; margin-bottom:10px;">✅</div>' +
           '<h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">No unenrolled students</h3>' +
           '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">All students are enrolled in active cohorts. Students removed from classes are kept here safely with full historical records preserved.</p>' +
         '</div>';
@@ -12292,7 +12293,7 @@ window.switchClassroomSubTab = function(subTab) {
               '</div>' +
               '<div class="student-card-name">' + sName + '</div>' +
               '<div class="student-card-meta-row">' +
-                '<span class="student-card-xp-badge">â­ ' + sXP + '</span>' +
+                '<span class="student-card-xp-badge">⭐ ' + sXP + '</span>' +
                 '<span class="student-card-cefr-badge">' + (s.overallCefr || 'A1') + '</span>' +
               '</div>' +
               '<div style="margin-top:10px; width:100%;">' +
@@ -12323,16 +12324,16 @@ window.switchClassroomSubTab = function(subTab) {
       '<div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px; box-shadow:var(--shadow-sm);">' +
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">' +
           '<div>' +
-            '<h2 style="font-size:1.35rem; font-weight:900; margin:0;">ðŸ† ' + cls.name + ' Leaderboard</h2>' +
+            '<h2 style="font-size:1.35rem; font-weight:900; margin:0;">🏆 ' + cls.name + ' Leaderboard</h2>' +
             '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:2px;">Live classroom ranking calculated dynamically from active XP transactions</p>' +
           '</div>' +
-          '<button class="btn-primary-action" onclick="openGiveXPSkillsModal(\'class\', \'' + cls.id + '\')">â­ Award Class XP</button>' +
+          '<button class="btn-primary-action" onclick="openGiveXPSkillsModal(\'class\', \'' + cls.id + '\')">⭐ Award Class XP</button>' +
         '</div>' +
 
         '<div style="display:flex; flex-direction:column; gap:10px;">' +
           sorted.map((s, idx) => {
             const xp = store.getStudentTotalXP(s.id);
-            const medal = idx === 0 ? 'ðŸ¥‡' : idx === 1 ? 'ðŸ¥ˆ' : idx === 2 ? 'ðŸ¥‰' : ('#' + (idx + 1));
+            const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : ('#' + (idx + 1));
             return '' +
               '<div style="display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:var(--radius-md); background:var(--bg-canvas); border:1px solid var(--border-light); cursor:pointer;" onclick="openStudentDetail(\'' + s.id + '\')">' +
                 '<span style="font-size:1.25rem; font-weight:900; width:36px; text-align:center;">' + medal + '</span>' +
@@ -12341,11 +12342,11 @@ window.switchClassroomSubTab = function(subTab) {
                 '</div>' +
                 '<div style="flex:1;">' +
                   '<div style="font-weight:800; font-size:0.96rem; color:var(--text-main);">' + s.firstName + ' ' + s.lastName + '</div>' +
-                  '<div style="font-size:0.78rem; color:var(--text-muted);">' + s.grade + ' Â· ðŸ”¥ ' + (s.streakDays || 0) + '-day streak</div>' +
+                  '<div style="font-size:0.78rem; color:var(--text-muted);">' + s.grade + ' · 🔥 ' + (s.streakDays || 0) + '-day streak</div>' +
                 '</div>' +
                 '<span class="badge-cefr badge-cefr-' + (s.overallCefr || 'A1').toLowerCase().replace('+', '-plus') + '">' + (s.overallCefr || 'A1') + '</span>' +
                 '<div style="text-align:right; font-weight:900; font-size:1.1rem; color:var(--color-primary); min-width:90px;">' +
-                  'â­ ' + xp.toLocaleString('en-US') + ' XP' +
+                  '⭐ ' + xp.toLocaleString('en-US') + ' XP' +
                 '</div>' +
               '</div>';
           }).join('') +
@@ -12358,7 +12359,7 @@ window.switchClassroomSubTab = function(subTab) {
     return '' +
       '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
         '<div>' +
-          '<h2 style="font-size:1.3rem; font-weight:800; margin:0;">ðŸ‘‘ Classroom Rewards Catalog</h2>' +
+          '<h2 style="font-size:1.3rem; font-weight:800; margin:0;">👑 Classroom Rewards Catalog</h2>' +
           '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:2px;">Redeem student XP for exciting classroom privileges and activities</p>' +
         '</div>' +
         '<button class="btn-primary-action" onclick="openCreateRewardForm()">+ Add Reward</button>' +
@@ -12369,7 +12370,7 @@ window.switchClassroomSubTab = function(subTab) {
             '<div>' +
               '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">' +
                 '<div style="width:48px; height:48px; border-radius:12px; background:rgba(245,158,11,0.12); display:flex; align-items:center; justify-content:center; font-size:26px;">' +
-                  (r.icon || 'ðŸŽ') +
+                  (r.icon || '🎁') +
                 '</div>' +
                 '<span style="font-weight:900; font-size:0.95rem; color:#b45309; background:rgba(245,158,11,0.15); padding:3px 10px; border-radius:12px;">' +
                   r.cost + ' XP' +
@@ -12380,9 +12381,9 @@ window.switchClassroomSubTab = function(subTab) {
             '</div>' +
             '<div style="display:flex; gap:8px; border-top:1px solid var(--border-light); padding-top:12px;">' +
               '<button class="btn-primary-action" style="flex:1; font-size:0.8rem; padding:6px 10px;" onclick="openRedeemRewardModalForClass(\'' + r.id + '\')">' +
-                'ðŸŽ Redeem for Student' +
+                '🎁 Redeem for Student' +
               '</button>' +
-              '<button class="btn-sm-secondary" onclick="handleDeleteReward(\'' + r.id + '\')" title="Delete Reward" style="color:var(--color-danger); padding:4px 8px;">ðŸ—‘ï¸</button>' +
+              '<button class="btn-sm-secondary" onclick="handleDeleteReward(\'' + r.id + '\')" title="Delete Reward" style="color:var(--color-danger); padding:4px 8px;">🗑️</button>' +
             '</div>' +
           '</div>'
         ).join('') +
@@ -12394,14 +12395,14 @@ window.switchClassroomSubTab = function(subTab) {
     return '' +
       '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">' +
         '<div>' +
-          '<h2 style="font-size:1.3rem; font-weight:800; margin:0;">ðŸ’¡ Big Ideas Classroom Board</h2>' +
+          '<h2 style="font-size:1.3rem; font-weight:800; margin:0;">💡 Big Ideas Classroom Board</h2>' +
           '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:2px;">Brainstorming, collaborative projects, and creative quest proposals</p>' +
         '</div>' +
         '<button class="btn-primary-action" onclick="openBigIdeasModal(\'' + cls.id + '\')">+ Post Big Idea</button>' +
       '</div>' +
       (ideas.length === 0 ?
         '<div style="padding:48px 16px; text-align:center; background:var(--bg-surface); border-radius:var(--radius-lg); border:1px solid var(--border-light);">' +
-          '<div style="font-size:36px; margin-bottom:10px;">ðŸ’¡</div>' +
+          '<div style="font-size:36px; margin-bottom:10px;">💡</div>' +
           '<h3 style="font-weight:800;">No Big Ideas posted yet</h3>' +
           '<p style="font-size:0.84rem; color:var(--text-muted); margin-top:4px;">Post your first project proposal or classroom quest to spark student imagination.</p>' +
           '<button class="btn-primary-action" style="margin-top:12px;" onclick="openBigIdeasModal(\'' + cls.id + '\')">+ Post Big Idea</button>' +
@@ -12409,7 +12410,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">' +
           ideas.map(idea => '' +
             '<div style="background:var(--bg-card); border:' + (idea.pinned ? '2px solid var(--color-primary)' : '1px solid var(--border-light)') + '; border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; justify-content:space-between; position:relative;">' +
-              (idea.pinned ? '<span style="position:absolute; top:12px; right:12px; font-size:1rem;" title="Pinned Idea">ðŸ“Œ</span>' : '') +
+              (idea.pinned ? '<span style="position:absolute; top:12px; right:12px; font-size:1rem;" title="Pinned Idea">📌</span>' : '') +
               '<div>' +
                 '<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">' +
                   '<span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--color-primary); background:var(--color-primary-soft); padding:2px 8px; border-radius:6px;">' + idea.category + '</span>' +
@@ -12426,15 +12427,15 @@ window.switchClassroomSubTab = function(subTab) {
               '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-light); padding-top:12px;">' +
                 '<div style="display:flex; align-items:center; gap:6px;">' +
                   '<button class="btn-sm-secondary" onclick="handleVoteBigIdea(\'' + idea.id + '\')" title="Vote for this idea" style="padding:3px 8px; font-size:0.78rem;">' +
-                    'ðŸ‘ ' + (idea.votes || 0) + ' Votes' +
+                    '👍 ' + (idea.votes || 0) + ' Votes' +
                   '</button>' +
                   '<button class="btn-sm-secondary" onclick="handlePinBigIdea(\'' + idea.id + '\')" title="' + (idea.pinned ? 'Unpin' : 'Pin') + '" style="padding:3px 6px; font-size:0.78rem;">' +
-                    (idea.pinned ? 'ðŸ“Œ Pinned' : 'Pin') +
+                    (idea.pinned ? '📌 Pinned' : 'Pin') +
                   '</button>' +
                 '</div>' +
                 '<div style="display:flex; gap:4px;">' +
-                  '<button class="btn-sm-secondary" onclick="openEditBigIdeaModal(\'' + idea.id + '\')" title="Edit" style="padding:3px 6px; font-size:0.75rem;">âœï¸</button>' +
-                  '<button class="btn-sm-secondary" onclick="handleDeleteBigIdea(\'' + idea.id + '\')" title="Delete" style="padding:3px 6px; font-size:0.75rem; color:var(--color-danger);">ðŸ—‘ï¸</button>' +
+                  '<button class="btn-sm-secondary" onclick="openEditBigIdeaModal(\'' + idea.id + '\')" title="Edit" style="padding:3px 6px; font-size:0.75rem;">✏️</button>' +
+                  '<button class="btn-sm-secondary" onclick="handleDeleteBigIdea(\'' + idea.id + '\')" title="Delete" style="padding:3px 6px; font-size:0.75rem; color:var(--color-danger);">🗑️</button>' +
                 '</div>' +
               '</div>' +
             '</div>'
@@ -12466,7 +12467,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (storeInstance && typeof storeInstance.giveXP === 'function') {
       res = storeInstance.giveXP(s.id || studentId, parsedAmount, 'Quick Classroom Award', 'Teacher', {
         category: 'positive',
-        icon: 'â­'
+        icon: '⭐'
       });
     } else {
       s.xp = Math.max(0, (Number(s.xp) || 0) + parsedAmount);
@@ -12482,7 +12483,7 @@ window.switchClassroomSubTab = function(subTab) {
       if (xpVal) xpVal.innerText = (s.xp || 0) + ' XP';
       const burst = document.createElement('div');
       burst.className = 'xp-burst-float';
-      burst.innerText = '+' + parsedAmount + ' XP â­';
+      burst.innerText = '+' + parsedAmount + ' XP ⭐';
       card.appendChild(burst);
       setTimeout(() => burst.remove(), 1200);
 
@@ -12515,7 +12516,7 @@ window.switchClassroomSubTab = function(subTab) {
         actionLabel: 'Undo', duration: 6000,
         onAction: function () {
           if (storeInstance && typeof storeInstance.giveXP === 'function') {
-            storeInstance.giveXP(s.id || studentId, -parsedAmount, 'Undo quick award', 'Teacher', { category: 'needs_work', icon: 'â†©ï¸' });
+            storeInstance.giveXP(s.id || studentId, -parsedAmount, 'Undo quick award', 'Teacher', { category: 'needs_work', icon: '↩️' });
           } else {
             s.xp = Math.max(0, (Number(s.xp) || 0) - parsedAmount); s.totalXP = s.xp;
           }
@@ -12625,7 +12626,7 @@ window.switchClassroomSubTab = function(subTab) {
       if (nameEl) nameEl.innerText = student.name || ((student.firstName || '') + ' ' + (student.lastName || '')).trim();
 
       const gradeEl = document.getElementById('edit-xp-student-grade');
-      if (gradeEl) gradeEl.innerText = `${student.grade || student.class_id || student.classId || 'Grade 4A'} â€¢ ID: ${student.id}`;
+      if (gradeEl) gradeEl.innerText = `${student.grade || student.class_id || student.classId || 'Grade 4A'} • ID: ${student.id}`;
 
       const activeEl = document.getElementById('edit-xp-current-active');
       if (activeEl) activeEl.innerText = `${Number(student.xp) || 0} XP`;
@@ -12643,7 +12644,7 @@ window.switchClassroomSubTab = function(subTab) {
         } else if (typeof window.renderMonsterAvatar === 'function') {
           avatarEl.innerHTML = window.renderMonsterAvatar(student.id, { size: 38, animated: false });
         } else {
-          avatarEl.innerHTML = 'ðŸ¦Š';
+          avatarEl.innerHTML = '🦊';
         }
       }
 
@@ -13043,7 +13044,7 @@ window.switchClassroomSubTab = function(subTab) {
     const container = document.getElementById('student-xp-history-table-container');
 
     if (avatarEl) avatarEl.innerHTML = window.renderMonsterAvatar(studentId, { size: 40, animated: false });
-    if (nameEl) nameEl.innerText = s.firstName + ' ' + s.lastName + ' â€” XP Ledger';
+    if (nameEl) nameEl.innerText = s.firstName + ' ' + s.lastName + ' — XP Ledger';
     const totalXP = store.getStudentTotalXP(studentId);
     if (totalEl) totalEl.innerText = 'Active Balance: ' + totalXP.toLocaleString('en-US') + ' XP';
 
@@ -13070,13 +13071,13 @@ window.switchClassroomSubTab = function(subTab) {
               txs.map(tx => {
                 const isVoided = !!tx.isVoided || tx.status === 'voided';
                 const isPos = tx.amount >= 0;
-                const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString('en-GB', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : 'â€”';
+                const dateStr = tx.timestamp ? new Date(tx.timestamp).toLocaleString('en-GB', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
                 const typeStr = (tx.type || tx.category || 'participation');
-                const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : 'â€”';
+                const balanceStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? (tx.balanceAfter + ' XP') : '—';
                 return '' +
                   '<tr style="border-bottom:1px solid var(--border-light); opacity:' + (isVoided ? '0.5; text-decoration:line-through;' : '1') + ';">' +
                     '<td style="padding:8px 10px; white-space:nowrap; color:var(--text-muted);">' + dateStr + '</td>' +
-                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || 'â­') + ' ' + typeStr + '</td>' +
+                    '<td style="padding:8px 10px; font-weight:700;">' + (tx.icon || '⭐') + ' ' + typeStr + '</td>' +
                     '<td style="padding:8px 10px; text-align:right; font-weight:800; color:' + (isVoided ? 'var(--text-muted)' : (isPos ? '#059669' : '#dc2626')) + ';">' +
                       (isPos ? '+' : '') + tx.amount + ' XP' +
                     '</td>' +
@@ -13160,21 +13161,21 @@ window.switchClassroomSubTab = function(subTab) {
       const s = store.getStudent(finalStudentIds[0]);
       const sName = s ? s.firstName : 'Learner';
       if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + sName;
-      if (targetSubEl) targetSubEl.innerText = 'Select skills to award Â· Current: â­ ' + (s ? store.getStudentTotalXP(s.id) : 0) + ' XP';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? window.renderStudentMonsterAvatar(s.id, { size: 48, animated: true }) : 'â­';
+      if (targetSubEl) targetSubEl.innerText = 'Select skills to award · Current: ⭐ ' + (s ? store.getStudentTotalXP(s.id) : 0) + ' XP';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = s ? window.renderStudentMonsterAvatar(s.id, { size: 48, animated: true }) : '⭐';
     } else if (finalTargetType === 'group') {
       const g = store.getGroup(targetId);
       if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to Team ' + (g ? g.name : 'Group') + ' (' + count + ')';
       if (targetSubEl) targetSubEl.innerText = count + ' team members will each receive the awarded feedback & XP';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = 'ðŸ‘¥';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = '👥';
     } else if (finalTargetType === 'multiple') {
       if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + count + ' students';
       if (targetSubEl) targetSubEl.innerText = count + ' selected students will each receive the feedback & XP';
-      if (targetAvatarEl) targetAvatarEl.innerHTML = 'ðŸ‘¥';
+      if (targetAvatarEl) targetAvatarEl.innerHTML = '👥';
     } else {
       if (targetTitleEl) targetTitleEl.innerText = 'Give feedback to ' + count + ' students';
-      if (targetSubEl) targetSubEl.innerText = 'Whole class Â· ' + (activeClass ? activeClass.name + ' (' + (activeClass.teacher || 'Teacher') + ')' : 'All enrolled');
-      if (targetAvatarEl) targetAvatarEl.innerHTML = 'ðŸŒ';
+      if (targetSubEl) targetSubEl.innerText = 'Whole class · ' + (activeClass ? activeClass.name + ' (' + (activeClass.teacher || 'Teacher') + ')' : 'All enrolled');
+      if (targetAvatarEl) targetAvatarEl.innerHTML = '🌍';
     }
 
     currentXPAwardTab = 'positive';
@@ -13226,15 +13227,15 @@ window.switchClassroomSubTab = function(subTab) {
 
       return '' +
         '<div class="xp-skill-card ' + (isPos ? 'is-positive' : 'is-needs-work') + ' ' + (isSelected ? 'is-selected' : '') + '" onclick="toggleSelectFeedbackSkill(\'' + sk.id + '\')" style="cursor:pointer; background:var(--bg-card); border:2px solid ' + (isSelected ? '#3b82f6' : 'var(--border-light)') + '; border-radius:14px; padding:16px 12px; text-align:center; transition:all 0.15s ease; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:6px; min-height:130px; position:relative;">' +
-          '<span class="skill-check-badge">' + (isSelected ? 'âœ“' : '') + '</span>' +
-          '<div style="font-size:38px; line-height:1; margin-bottom:2px;">' + (sk.icon || 'â­') + '</div>' +
+          '<span class="skill-check-badge">' + (isSelected ? '✓' : '') + '</span>' +
+          '<div style="font-size:38px; line-height:1; margin-bottom:2px;">' + (sk.icon || '⭐') + '</div>' +
           '<div style="font-size:0.92rem; font-weight:800; color:var(--text-main); line-height:1.2;">' + sk.name + '</div>' +
           '<div style="display:flex; align-items:center; gap:6px; margin-top:4px;">' +
             '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
               ptsBadge +
             '</span>' +
             '<button type="button" class="btn-sm-secondary btn-card-quick-award" onclick="event.stopPropagation(); handleQuickAwardSingleSkill(\'' + sk.id + '\')" title="Award instantly to all ' + targetCount + ' students" style="font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:8px;">' +
-              'âš¡ Quick' +
+              '⚡ Quick' +
             '</button>' +
           '</div>' +
         '</div>';
@@ -13243,7 +13244,7 @@ window.switchClassroomSubTab = function(subTab) {
     // Append + Add skills card
     html += '' +
       '<div class="xp-skill-card add-skill-card" onclick="openXPSkillEditor()" style="cursor:pointer; border-radius:14px; padding:16px 12px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:130px;">' +
-        '<div style="font-size:34px; color:var(--color-primary);">âž•</div>' +
+        '<div style="font-size:34px; color:var(--color-primary);">➕</div>' +
         '<div style="font-size:0.92rem; font-weight:800; color:var(--color-primary);">+ Add skills</div>' +
         '<span style="font-size:0.72rem; color:var(--text-muted);">Create new</span>' +
       '</div>';
@@ -13288,11 +13289,11 @@ window.switchClassroomSubTab = function(subTab) {
 
     const netXP = selectedSkills.reduce((sum, sk) => sum + (parseInt(sk.points, 10) || 0), 0);
     const sign = netXP >= 0 ? '+' : '';
-    const skillsText = selectedSkills.map(sk => (sk.icon || 'â­') + ' ' + sk.name + ' (' + (sk.points > 0 ? '+' : '') + sk.points + ')').join(', ');
+    const skillsText = selectedSkills.map(sk => (sk.icon || '⭐') + ' ' + sk.name + ' (' + (sk.points > 0 ? '+' : '') + sk.points + ')').join(', ');
     const totalTxs = targetCount * selectedSkills.length;
 
     if (summaryEl) {
-      summaryEl.innerHTML = '<strong>Selected (' + selectedSkills.length + '):</strong> ' + skillsText + ' &nbsp;Â·&nbsp; <strong style="color:' + (netXP >= 0 ? '#059669' : '#dc2626') + ';">' + sign + netXP + ' XP each</strong> (' + totalTxs + ' total txs)';
+      summaryEl.innerHTML = '<strong>Selected (' + selectedSkills.length + '):</strong> ' + skillsText + ' &nbsp;·&nbsp; <strong style="color:' + (netXP >= 0 ? '#059669' : '#dc2626') + ';">' + sign + netXP + ' XP each</strong> (' + totalTxs + ' total txs)';
     }
 
     if (btnEl) {
@@ -13331,7 +13332,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     const totalAwarded = res.totalXPAwardedPerStudent;
     const sign = totalAwarded >= 0 ? '+' : '';
-    showNotification('â­ Awarded ' + skillIds.length + ' skill(s) (' + sign + totalAwarded + ' XP) to ' + targetIds.length + ' learner(s)!');
+    showNotification('⭐ Awarded ' + skillIds.length + ' skill(s) (' + sign + totalAwarded + ' XP) to ' + targetIds.length + ' learner(s)!');
 
     if (res.evolutionEvents && res.evolutionEvents.length > 0) {
       const firstEvo = res.evolutionEvents[0];
@@ -13370,7 +13371,7 @@ window.switchClassroomSubTab = function(subTab) {
     window.closeModal('modal-give-xp-skills');
 
     const ptsSign = skill.points >= 0 ? '+' : '';
-    showNotification('âœ“ ' + (skill.icon || 'â­') + ' ' + skill.name + ' ' + ptsSign + skill.points + ' XP awarded to ' + targetIds.length + ' student(s)!');
+    showNotification('✓ ' + (skill.icon || '⭐') + ' ' + skill.name + ' ' + ptsSign + skill.points + ' XP awarded to ' + targetIds.length + ' student(s)!');
 
     if (res.evolutionEvents && res.evolutionEvents.length > 0) {
       const firstEvo = res.evolutionEvents[0];
@@ -13417,7 +13418,7 @@ window.switchClassroomSubTab = function(subTab) {
     } else {
       if (idInput) idInput.value = '';
       if (nameInput) nameInput.value = '';
-      if (iconInput) iconInput.value = 'â­';
+      if (iconInput) iconInput.value = '⭐';
       if (ptsInput) ptsInput.value = '1';
       if (catInput) catInput.value = 'positive';
       if (descInput) descInput.value = '';
@@ -13430,7 +13431,7 @@ window.switchClassroomSubTab = function(subTab) {
     e.preventDefault();
     const id = document.getElementById('xp-skill-id-val')?.value;
     const name = document.getElementById('xp-skill-name-val')?.value.trim();
-    const icon = document.getElementById('xp-skill-icon-val')?.value.trim() || 'â­';
+    const icon = document.getElementById('xp-skill-icon-val')?.value.trim() || '⭐';
     const points = parseInt(document.getElementById('xp-skill-points-val')?.value, 10) || 1;
     const category = document.getElementById('xp-skill-category-val')?.value || 'positive';
     const description = document.getElementById('xp-skill-desc-val')?.value.trim();
@@ -13498,7 +13499,7 @@ window.switchClassroomSubTab = function(subTab) {
       return '' +
         '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); border:1px solid var(--border-light); border-radius:10px; padding:10px 14px;">' +
           '<div style="display:flex; align-items:center; gap:12px;">' +
-            '<span style="font-size:26px;">' + (sk.icon || 'â­') + '</span>' +
+            '<span style="font-size:26px;">' + (sk.icon || '⭐') + '</span>' +
             '<div>' +
               '<div style="font-weight:800; font-size:0.9rem; color:var(--text-main);">' + sk.name + '</div>' +
               '<div style="font-size:0.75rem; color:var(--text-muted);">' + (sk.description || 'Classroom skill') + '</div>' +
@@ -13508,10 +13509,10 @@ window.switchClassroomSubTab = function(subTab) {
             '<span style="font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:10px; background:' + (isPos ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)') + '; color:' + (isPos ? '#059669' : '#dc2626') + ';">' +
               ptsBadge +
             '</span>' +
-            '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-manage-xp-skills\'); openXPSkillEditor(\'' + sk.id + '\');" style="padding:4px 8px; font-size:0.72rem;">âœï¸ Edit</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-manage-xp-skills\'); openXPSkillEditor(\'' + sk.id + '\');" style="padding:4px 8px; font-size:0.72rem;">✏️ Edit</button>' +
             (!isArchived ?
               '<button type="button" class="btn-sm-secondary" onclick="handleArchiveSkill(\'' + sk.id + '\')" style="padding:4px 8px; font-size:0.72rem; color:var(--color-danger);" title="Archive skill">Archive</button>' :
-              '<button type="button" class="btn-sm-secondary" onclick="handleRestoreSkill(\'' + sk.id + '\')" style="padding:4px 8px; font-size:0.72rem; color:#059669;" title="Restore skill to active">â†©ï¸ Restore</button>'
+              '<button type="button" class="btn-sm-secondary" onclick="handleRestoreSkill(\'' + sk.id + '\')" style="padding:4px 8px; font-size:0.72rem; color:#059669;" title="Restore skill to active">↩️ Restore</button>'
             ) +
           '</div>' +
         '</div>';
@@ -13552,8 +13553,8 @@ window.switchClassroomSubTab = function(subTab) {
     if (detailsCard) {
       detailsCard.innerHTML = 
         '<div style="font-weight:700; margin-bottom:4px;">Recipient: ' + (student ? student.firstName + ' ' + student.lastName : 'Student') + '</div>' +
-        '<div>Reason: <strong>' + (tx.icon || 'â­') + ' ' + tx.reason + '</strong></div>' +
-        '<div>Amount: <strong style="color:var(--color-primary);">' + (tx.amount > 0 ? '+' : '') + tx.amount + ' XP</strong> Â· Date: ' + tx.date + '</div>';
+        '<div>Reason: <strong>' + (tx.icon || '⭐') + ' ' + tx.reason + '</strong></div>' +
+        '<div>Amount: <strong style="color:var(--color-primary);">' + (tx.amount > 0 ? '+' : '') + tx.amount + ' XP</strong> · Date: ' + tx.date + '</div>';
     }
 
     window.openModal('modal-remove-xp-confirm');
@@ -13639,31 +13640,31 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   const MONSTER_CREATOR_TABS = [
-    { id: 'colors', label: 'Colors', icon: 'ðŸŽ¨', title: 'Fur Colors & Palette' },
-    { id: 'creatures', label: 'Creature', icon: 'ðŸ‰', title: 'Creature Body' },
-    { id: 'pets', label: 'Pets', icon: 'ðŸ¾', title: 'Companion Pets' },
-    { id: 'horns', label: 'Horns', icon: 'ðŸª¶', title: 'Horns & Crests' },
-    { id: 'hats', label: 'Hats', icon: 'ðŸŽ©', title: 'Hats & Headwear' },
-    { id: 'wings', label: 'Wings', icon: 'ðŸª½', title: 'Wings & Gliders' },
-    { id: 'tails', label: 'Tails', icon: 'ðŸ¦Ž', title: 'Tails & Crests' },
-    { id: 'auras', label: 'Auras', icon: 'âœ¨', title: 'Magical Auras & Glows' },
-    { id: 'clothing', label: 'Clothing', icon: 'ðŸ‘”', title: 'Clothing & Outfits',
+    { id: 'colors', label: 'Colors', icon: '🎨', title: 'Fur Colors & Palette' },
+    { id: 'creatures', label: 'Creature', icon: '🐉', title: 'Creature Body' },
+    { id: 'pets', label: 'Pets', icon: '🐾', title: 'Companion Pets' },
+    { id: 'horns', label: 'Horns', icon: '🪶', title: 'Horns & Crests' },
+    { id: 'hats', label: 'Hats', icon: '🎩', title: 'Hats & Headwear' },
+    { id: 'wings', label: 'Wings', icon: '🪽', title: 'Wings & Gliders' },
+    { id: 'tails', label: 'Tails', icon: '🦎', title: 'Tails & Crests' },
+    { id: 'auras', label: 'Auras', icon: '✨', title: 'Magical Auras & Glows' },
+    { id: 'clothing', label: 'Clothing', icon: '👔', title: 'Clothing & Outfits',
       subCategories: [
-        { id: 'all_clothing', label: 'All Outfits', icon: 'ðŸ‘”', title: 'All Outfits' },
-        { id: 'adventure', label: 'Adventure', icon: 'ðŸ§­', title: 'Adventure Gear' },
-        { id: 'school', label: 'School', icon: 'ðŸ«', title: 'School Uniforms' },
-        { id: 'special', label: 'Special', icon: 'âœ¨', title: 'Special Outfits' },
-        { id: 'fantasy', label: 'Fantasy', icon: 'ðŸ›¡ï¸', title: 'Fantasy & Armor' }
+        { id: 'all_clothing', label: 'All Outfits', icon: '👔', title: 'All Outfits' },
+        { id: 'adventure', label: 'Adventure', icon: '🧭', title: 'Adventure Gear' },
+        { id: 'school', label: 'School', icon: '🏫', title: 'School Uniforms' },
+        { id: 'special', label: 'Special', icon: '✨', title: 'Special Outfits' },
+        { id: 'fantasy', label: 'Fantasy', icon: '🛡️', title: 'Fantasy & Armor' }
       ]
     },
-    { id: 'accessories', label: 'Accessories', icon: 'ðŸ‘“', title: 'Glasses & Accessories' },
-    { id: 'face', label: 'Face', icon: 'ðŸ‘€', title: 'Face Expressions',
+    { id: 'accessories', label: 'Accessories', icon: '👓', title: 'Glasses & Accessories' },
+    { id: 'face', label: 'Face', icon: '👀', title: 'Face Expressions',
       subCategories: [
-        { id: 'eyes', label: 'Eyes', icon: 'ðŸ‘€', title: 'Eye Expressions' },
-        { id: 'mouths', label: 'Mouths', icon: 'ðŸ‘„', title: 'Mouth Expressions' }
+        { id: 'eyes', label: 'Eyes', icon: '👀', title: 'Eye Expressions' },
+        { id: 'mouths', label: 'Mouths', icon: '👄', title: 'Mouth Expressions' }
       ]
     },
-    { id: 'worlds', label: 'Worlds', icon: 'ðŸŒ', title: 'Adventure Worlds' }
+    { id: 'worlds', label: 'Worlds', icon: '🌍', title: 'Adventure Worlds' }
   ];
 
   window.openMonsterCreator = function(studentId) {
@@ -13690,7 +13691,7 @@ window.switchClassroomSubTab = function(subTab) {
     const animIcon = document.getElementById('monster-animate-icon');
     const animLabel = document.getElementById('monster-animate-label');
     if (animBtn) animBtn.classList.add('is-active');
-    if (animIcon) animIcon.textContent = 'â¸';
+    if (animIcon) animIcon.textContent = '⏸';
     if (animLabel) animLabel.textContent = 'Pause';
 
     window.renderMonsterCreatorNav();
@@ -13873,14 +13874,14 @@ window.switchClassroomSubTab = function(subTab) {
 
       let lockBadge = '';
       if (isLevelLocked) {
-        lockBadge = '<span class="monster-item-lock-pill">ðŸ”’ Level ' + reqLevel + '</span>';
+        lockBadge = '<span class="monster-item-lock-pill">🔒 Level ' + reqLevel + '</span>';
       } else if (!isUnlocked) {
         const lockText = (item.unlockRequirement && item.unlockRequirement.label) || (item.unlockType === 'mystery_box' ? 'Found in Mystery Boxes' : 'Found in Mystery Boxes / Quests');
-        lockBadge = '<span class="monster-item-lock-pill">ðŸ”’ ' + lockText + '</span>';
+        lockBadge = '<span class="monster-item-lock-pill">🔒 ' + lockText + '</span>';
       }
 
       const itemPic = (illustratedMode && !item.isNone && window.MonsterDressUp) ? window.MonsterDressUp.itemPicture(item.id) : '';
-      const thumbSvg = itemPic ? ('<img src="' + itemPic + '" alt="" style="width:44px;height:44px;object-fit:contain;" />') : (thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || 'âœ¨'));
+      const thumbSvg = itemPic ? ('<img src="' + itemPic + '" alt="" style="width:44px;height:44px;object-fit:contain;" />') : (thumbRenderer ? thumbRenderer(item, { size: 48, colorKey: monsterCreatorDraft.baseColor }) : (item.icon || '✨'));
 
       let rarityBadge = '';
       if (item.rarity && item.rarity !== 'common' && !item.isNone) {
@@ -13888,16 +13889,16 @@ window.switchClassroomSubTab = function(subTab) {
       }
 
       if (notForArt && !isLevelLocked && isUnlocked) {
-        lockBadge = '<span class="monster-item-lock-pill">ðŸŽ¨ Drawn monsters only</span>';
+        lockBadge = '<span class="monster-item-lock-pill">🎨 Drawn monsters only</span>';
       } else if (artOnlyItem && !isLevelLocked && isUnlocked) {
-        lockBadge = '<span class="monster-item-lock-pill">ðŸ–¼ï¸ Illustrated monsters only</span>';
+        lockBadge = '<span class="monster-item-lock-pill">🖼️ Illustrated monsters only</span>';
       }
       const isCardLocked = isLevelLocked || !isUnlocked || notForArt || artOnlyItem;
       return '' +
         '<div class="monster-item-card ' + (isSelected ? 'is-selected' : '') + ' ' + (isCardLocked ? 'is-locked' : '') + '" ' +
              (isCardLocked ? 'style="pointer-events:none !important; cursor:not-allowed !important;" ' : 'onclick="handleSelectMonsterItem(\'' + item.id + '\', \'' + cat + '\', ' + (item.isNone ? 'true' : 'false') + ')" ') +
-             'title="' + item.name + (item.description ? ' â€” ' + item.description : '') + '">' +
-          (isSelected ? '<span class="monster-item-check-badge">âœ“</span>' : '') +
+             'title="' + item.name + (item.description ? ' — ' + item.description : '') + '">' +
+          (isSelected ? '<span class="monster-item-check-badge">✓</span>' : '') +
           (isCardLocked ? lockBadge : '') +
           '<div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; margin:2px auto;">' +
             thumbSvg +
@@ -14196,11 +14197,11 @@ window.switchClassroomSubTab = function(subTab) {
     if (btn) {
       if (monsterCreatorIsAnimated) {
         btn.classList.add('is-active');
-        if (iconEl) iconEl.textContent = 'â¸';
+        if (iconEl) iconEl.textContent = '⏸';
         if (labelEl) labelEl.textContent = 'Pause';
       } else {
         btn.classList.remove('is-active');
-        if (iconEl) iconEl.textContent = 'â–¶';
+        if (iconEl) iconEl.textContent = '▶';
         if (labelEl) labelEl.textContent = 'Animate';
       }
     }
@@ -14281,21 +14282,21 @@ window.switchClassroomSubTab = function(subTab) {
 
     if (nameEl) nameEl.textContent = (profile.petName || profile.monsterName || (student ? student.firstName + "'s Monster" : "Student Monster"));
     if (stageEl) {
-      const stageWord = ((mState && mState.stageName) || '').replace(/^Level \d+\s*[-â€¢]\s*/i, '').trim();
-      stageEl.textContent = name + (stageWord ? ' Â· ' + stageWord : '') + ' Â· Level ' + (mState ? mState.currentLevel : 1);
+      const stageWord = ((mState && mState.stageName) || '').replace(/^Level \d+\s*[-•]\s*/i, '').trim();
+      stageEl.textContent = name + (stageWord ? ' · ' + stageWord : '') + ' · Level ' + (mState ? mState.currentLevel : 1);
     }
-    if (descEl) descEl.textContent = 'â­ ' + (student && store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 0) + ' XP Â· ' + (mState && mState.isHatched ? 'Active Companion' : 'Mystery Egg');
+    if (descEl) descEl.textContent = '⭐ ' + (student && store.getStudentTotalXP ? store.getStudentTotalXP(student.id) : 0) + ' XP · ' + (mState && mState.isHatched ? 'Active Companion' : 'Mystery Egg');
 
     // Render Preview Background Swatches
     const bgSwatchesEl = document.getElementById('monster-preview-bg-swatches');
     if (bgSwatchesEl) {
       const bgs = [
-        { id: 'bg-meadow', icon: 'ðŸ•ï¸', label: 'Explorer Camp', bg: '#dcfce7' },
-        { id: 'bg-castle', icon: 'ðŸ°', label: 'Academy Castle', bg: '#fef3c7' },
-        { id: 'bg-forest', icon: 'ðŸŒ²', label: 'Enchanted Forest', bg: '#064e3b' },
-        { id: 'bg-volcano', icon: 'ðŸŒ‹', label: 'Volcano Island', bg: '#451a03' },
-        { id: 'bg-beach', icon: 'ðŸ–ï¸', label: 'Adventure Beach', bg: '#e0f2fe' },
-        { id: 'bg-cosmos', icon: 'ðŸš€', label: 'Space World', bg: '#090d16' }
+        { id: 'bg-meadow', icon: '🏕️', label: 'Explorer Camp', bg: '#dcfce7' },
+        { id: 'bg-castle', icon: '🏰', label: 'Academy Castle', bg: '#fef3c7' },
+        { id: 'bg-forest', icon: '🌲', label: 'Enchanted Forest', bg: '#064e3b' },
+        { id: 'bg-volcano', icon: '🌋', label: 'Volcano Island', bg: '#451a03' },
+        { id: 'bg-beach', icon: '🏖️', label: 'Adventure Beach', bg: '#e0f2fe' },
+        { id: 'bg-cosmos', icon: '🚀', label: 'Space World', bg: '#090d16' }
       ];
       const curBg = monsterCreatorDraft.equipped.background || 'bg-meadow';
       bgSwatchesEl.innerHTML = bgs.map(b => '' +
@@ -14333,20 +14334,20 @@ window.switchClassroomSubTab = function(subTab) {
       };
 
       const layers = [
-        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, name: monsterCreatorDraft.baseColor.charAt(0).toUpperCase() + monsterCreatorDraft.baseColor.slice(1), icon: 'ðŸŽ¨', tab: 'monster', sub: 'colors', canRemove: false },
-        { label: 'Pet', val: eq.pet, name: getItemName(eq.pet, 'None'), icon: 'ðŸ¾', tab: 'pets', sub: 'pets', canRemove: true, cat: 'pet' },
-        { label: 'Eyes', val: eq.eyes, name: getItemName(eq.eyes, 'Default Eyes'), icon: 'ðŸ‘€', tab: 'face', sub: 'eyes', canRemove: false },
-        { label: 'Mouth', val: eq.mouth, name: getItemName(eq.mouth, 'Default Smile'), icon: 'ðŸ‘„', tab: 'face', sub: 'mouths', canRemove: false },
-        { label: 'Horns', val: eq.horns, name: getItemName(eq.horns, 'Signature Ears'), icon: 'ðŸª¶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },
-        { label: 'Wings', val: eq.wings, name: getItemName(eq.wings, 'None'), icon: 'ðŸª½', tab: 'features', sub: 'wings', canRemove: true, cat: 'wings' },
-        { label: 'Tail', val: eq.tail, name: getItemName(eq.tail, 'Puff Tail'), icon: 'ðŸ¦Ž', tab: 'features', sub: 'tails', canRemove: true, cat: 'tail' },
-        { label: 'Clothing', val: eq.clothing, name: getItemName(eq.clothing, 'Explorer Vest'), icon: 'ðŸ‘”', tab: 'clothing', sub: 'adventure', canRemove: true, cat: 'clothing' },
-        { label: 'Hat', val: eq.hat, name: getItemName(eq.hat, 'None'), icon: 'ðŸŽ©', tab: 'features', sub: 'hats', canRemove: true, cat: 'hat' },
-        { label: 'Glasses', val: eq.glasses, name: getItemName(eq.glasses, 'None'), icon: 'ðŸ‘“', tab: 'features', sub: 'accessories', canRemove: true, cat: 'glasses' },
-        { label: 'Backpack', val: eq.backpack, name: getItemName(eq.backpack, 'None'), icon: 'ðŸŽ’', tab: 'features', sub: 'backpacks', canRemove: true, cat: 'backpack' },
-        { label: 'Accessory', val: eq.accessory, name: getItemName(eq.accessory, 'None'), icon: 'ðŸŽ€', tab: 'features', sub: 'accessories', canRemove: true, cat: 'accessory' },
-        { label: 'Aura', val: eq.aura, name: getItemName(eq.aura, 'None'), icon: 'âœ¨', tab: 'features', sub: 'auras', canRemove: true, cat: 'aura' },
-        { label: 'World', val: eq.background, name: getItemName(eq.background, 'Explorer Camp'), icon: 'ðŸŒ', tab: 'world', sub: 'worlds', canRemove: false }
+        { label: 'Fur Color', val: monsterCreatorDraft.baseColor, name: monsterCreatorDraft.baseColor.charAt(0).toUpperCase() + monsterCreatorDraft.baseColor.slice(1), icon: '🎨', tab: 'monster', sub: 'colors', canRemove: false },
+        { label: 'Pet', val: eq.pet, name: getItemName(eq.pet, 'None'), icon: '🐾', tab: 'pets', sub: 'pets', canRemove: true, cat: 'pet' },
+        { label: 'Eyes', val: eq.eyes, name: getItemName(eq.eyes, 'Default Eyes'), icon: '👀', tab: 'face', sub: 'eyes', canRemove: false },
+        { label: 'Mouth', val: eq.mouth, name: getItemName(eq.mouth, 'Default Smile'), icon: '👄', tab: 'face', sub: 'mouths', canRemove: false },
+        { label: 'Horns', val: eq.horns, name: getItemName(eq.horns, 'Signature Ears'), icon: '🪶', tab: 'features', sub: 'horns', canRemove: true, cat: 'horns' },
+        { label: 'Wings', val: eq.wings, name: getItemName(eq.wings, 'None'), icon: '🪽', tab: 'features', sub: 'wings', canRemove: true, cat: 'wings' },
+        { label: 'Tail', val: eq.tail, name: getItemName(eq.tail, 'Puff Tail'), icon: '🦎', tab: 'features', sub: 'tails', canRemove: true, cat: 'tail' },
+        { label: 'Clothing', val: eq.clothing, name: getItemName(eq.clothing, 'Explorer Vest'), icon: '👔', tab: 'clothing', sub: 'adventure', canRemove: true, cat: 'clothing' },
+        { label: 'Hat', val: eq.hat, name: getItemName(eq.hat, 'None'), icon: '🎩', tab: 'features', sub: 'hats', canRemove: true, cat: 'hat' },
+        { label: 'Glasses', val: eq.glasses, name: getItemName(eq.glasses, 'None'), icon: '👓', tab: 'features', sub: 'accessories', canRemove: true, cat: 'glasses' },
+        { label: 'Backpack', val: eq.backpack, name: getItemName(eq.backpack, 'None'), icon: '🎒', tab: 'features', sub: 'backpacks', canRemove: true, cat: 'backpack' },
+        { label: 'Accessory', val: eq.accessory, name: getItemName(eq.accessory, 'None'), icon: '🎀', tab: 'features', sub: 'accessories', canRemove: true, cat: 'accessory' },
+        { label: 'Aura', val: eq.aura, name: getItemName(eq.aura, 'None'), icon: '✨', tab: 'features', sub: 'auras', canRemove: true, cat: 'aura' },
+        { label: 'World', val: eq.background, name: getItemName(eq.background, 'Explorer Camp'), icon: '🌍', tab: 'world', sub: 'worlds', canRemove: false }
       ];
 
       const activeLayers = layers.filter(l => l.val && l.val !== 'none');
@@ -14362,8 +14363,8 @@ window.switchClassroomSubTab = function(subTab) {
             '</div>' +
           '</div>' +
           '<div class="monster-equipped-row-actions">' +
-            (l.canRemove ? '<button type="button" class="monster-unequip-btn" onclick="event.stopPropagation(); handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip">âœ•</button>' : '') +
-            '<span class="monster-equipped-chevron">â€º</span>' +
+            (l.canRemove ? '<button type="button" class="monster-unequip-btn" onclick="event.stopPropagation(); handleRemoveEquippedLayer(\'' + l.cat + '\')" title="Unequip">✕</button>' : '') +
+            '<span class="monster-equipped-chevron">›</span>' +
           '</div>' +
         '</div>'
       ).join('');
@@ -14440,7 +14441,7 @@ window.switchClassroomSubTab = function(subTab) {
       store.saveState();
     }
 
-    showNotification('âœ“ Monster companion updated for ' + student.firstName + '!');
+    showNotification('✓ Monster companion updated for ' + student.firstName + '!');
     window.closeModal('modal-avatar-selector');
 
     renderCurrentView();
@@ -14533,11 +14534,11 @@ window.switchClassroomSubTab = function(subTab) {
         container.innerHTML = '' +
           '<div style="padding:20px 12px; text-align:center;">' +
             '<div style="background:linear-gradient(180deg,#a78bfa 0%,#7dd3fc 60%,#fde68a 100%); color:#26215c; border-radius:22px; padding:24px 16px; box-shadow:0 12px 28px rgba(38,33,92,.22);">' +
-              '<div style="font-size:3rem;">ðŸŽ²</div>' +
+              '<div style="font-size:3rem;">🎲</div>' +
               '<h3 style="font-size:1.7rem; font-weight:900; margin:4px 0;">Bamboozle: Mystery Cards</h3>' +
               '<p style="font-size:0.95rem; font-weight:600; margin:0 auto 16px auto; max-width:520px; color:#3b2f99;">Team quiz for the smartboard. Pick a number, answer the question, and watch out for surprise cards!</p>' +
               '<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; max-width:560px; margin:0 auto;">' +
-                [['3','1','ðŸ”§ Grade 3 Â· Unit 1'],['3','2','ðŸŒ¾ Grade 3 Â· Unit 2'],['4','1','ðŸ“– Grade 4 Â· Unit 1'],['4','2','ðŸŒ² Grade 4 Â· Unit 2']].map(function (x) {
+                [['3','1','🔧 Grade 3 · Unit 1'],['3','2','🌾 Grade 3 · Unit 2'],['4','1','📖 Grade 4 · Unit 1'],['4','2','🌲 Grade 4 · Unit 2']].map(function (x) {
                   return '<button type="button" class="btn-primary-action" onclick="window.open(\'bamboozle/index.html?grade=' + x[0] + '&unit=' + x[1] + '\',\'_blank\')" style="font-size:1.05rem; font-weight:900; padding:14px 10px; border-radius:18px; background:#22c55e;">' + x[2] + '</button>';
                 }).join('') +
               '</div>' +
@@ -14549,15 +14550,15 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
             '<div class="toolkit-card" style="max-width:540px; width:100%; background: linear-gradient(135deg, #0d1527 0%, #1e1b4b 50%, #f59e0b 100%); border: 2px solid #f59e0b; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'good-ideas-lab/index.html\', \'_blank\')">' +
               '<div style="display: flex; align-items: center; justify-content: space-between;">' +
-                '<span style="font-size: 2.4rem;">ðŸ’¡</span>' +
+                '<span style="font-size: 2.4rem;">💡</span>' +
                 '<span style="background: rgba(245, 158, 11, 0.2); color: #fde68a; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">DESIGN THINKING LAB</span>' +
               '</div>' +
               '<div style="margin: 1rem 0;">' +
-                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">The Inventorâ€™s Odyssey: My Good Ideas Lab</h3>' +
+                '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">The Inventor’s Odyssey: My Good Ideas Lab</h3>' +
                 '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">Rolling pencil hexagon physics, Biomimicry matcher, Leonardo da Vinci parachute canopy drop tester &amp; Karl Benz motorcar iteration.</p>' +
               '</div>' +
               '<button style="background: #f59e0b; color: #000; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
-                'ðŸ’¡ Launch Good Ideas Lab' +
+                '💡 Launch Good Ideas Lab' +
               '</button>' +
             '</div>' +
           '</div>';
@@ -14567,7 +14568,7 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
             '<div class="toolkit-card" style="max-width:540px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #8b5cf6 100%); border: 2px solid #8b5cf6; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5);" onclick="window.open(\'brain-hackers/index.html\', \'_blank\')">' +
               '<div style="display: flex; align-items: center; justify-content: space-between;">' +
-                '<span style="font-size: 2.4rem;">ðŸ§ </span>' +
+                '<span style="font-size: 2.4rem;">🧠</span>' +
                 '<span style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">CYBER-BIOLOGY LAB</span>' +
               '</div>' +
               '<div style="margin: 1rem 0;">' +
@@ -14575,7 +14576,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '<p style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.4; margin: 0;">7-Mission neural simulation: 4 cerebrum lobes, activity scanner laser, neuron spark anatomy, synaptic routing, and imagination engine.</p>' +
               '</div>' +
               '<button style="background: #8b5cf6; color: #fff; border: none; border-radius: 8px; font-weight: 800; padding: 0.7rem 1.2rem; cursor: pointer; width: 100%; font-size: 0.95rem;">' +
-                'ðŸ§  Launch Brain Hackers' +
+                '🧠 Launch Brain Hackers' +
               '</button>' +
             '</div>' +
           '</div>';
@@ -14588,14 +14589,14 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="display:flex; justify-content:center; align-items:center; padding:30px 16px;">' +
             '<div class="toolkit-card" style="max-width:560px; width:100%; background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 50%, #a855f7 100%); border: 2px solid #a855f7; border-radius: 16px; padding: 1.5rem; box-shadow: 0 12px 30px rgba(0,0,0,0.5);">' +
               '<div style="display: flex; align-items: center; justify-content: space-between;">' +
-                '<span style="font-size: 2.4rem;">ðŸŽ™ï¸</span>' +
+                '<span style="font-size: 2.4rem;">🎙️</span>' +
                 '<span style="background: rgba(168, 85, 247, 0.25); color: #e9d5ff; font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 999px;">YOUR MICROPHONE</span>' +
               '</div>' +
               '<div style="margin: 1rem 0;">' +
                 '<h3 style="color: #fff; font-size: 1.3rem; font-weight: 800; margin: 0 0 0.35rem 0;">Voice Changer</h3>' +
                 '<p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.45; margin: 0;">Talk into your microphone and sound like a chipmunk, robot, dragon, giant, fairy or ghost. Instant, and it works offline. Hold the button (or Space) to talk.</p>' +
               '</div>' +
-              '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open()" style="width:100%; background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">ðŸŽ™ï¸ Open the Voice Changer</button>' +
+              '<button type="button" onclick="closeModal(\'modal-classroom-toolkit\'); VoiceFX.open()" style="width:100%; background:#a855f7; color:#fff; border:none; border-bottom:5px solid #6b21a8; border-radius:12px; font-weight:800; padding:0.8rem 1rem; cursor:pointer; font-size:0.95rem;">🎙️ Open the Voice Changer</button>' +
             '</div>' +
           '</div>';
         break;
@@ -14614,12 +14615,12 @@ window.switchClassroomSubTab = function(subTab) {
             '<h3 style="font-size:1.25rem; font-weight:900; color:var(--text-main); margin:0;">Classroom Soundboard</h3>' +
             '<p style="font-size:0.84rem; color:var(--text-muted); margin:3px 0 0 0;">Zero-latency Web Audio sound effects for classroom management &amp; celebrations</p>' +
           '</div>' +
-          '<div style="font-size:0.8rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); padding:5px 12px; border-radius:999px;">âŒ¨ï¸ Keyboard Hotkeys Active</div>' +
+          '<div style="font-size:0.8rem; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.12); padding:5px 12px; border-radius:999px;">⌨️ Keyboard Hotkeys Active</div>' +
         '</div>' +
         '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(245,158,11,0.4); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playPartyHorn()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸ¥³</span>' +
+              '<span style="font-size:2rem;">🥳</span>' +
               '<span style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px;">HOTKEY: P / 1</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Party Horn</strong>' +
@@ -14627,7 +14628,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(56,189,248,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playAttentionBell()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸ””</span>' +
+              '<span style="font-size:2rem;">🔔</span>' +
               '<span style="background:#1e293b; color:#38bdf8; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #38bdf8;">HOTKEY: 2</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Attention Bell</strong>' +
@@ -14635,7 +14636,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(56,189,248,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playQuietChime()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸ¤«</span>' +
+              '<span style="font-size:2rem;">🤫</span>' +
               '<span style="background:#1e293b; color:#38bdf8; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #38bdf8;">HOTKEY: 3</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Quiet Chime</strong>' +
@@ -14643,7 +14644,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(239,68,68,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playCountdownBuzzer()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">â°</span>' +
+              '<span style="font-size:2rem;">⏰</span>' +
               '<span style="background:#1e293b; color:#f87171; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #f87171;">HOTKEY: 4</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Countdown Buzzer</strong>' +
@@ -14651,7 +14652,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(16,185,129,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playApplause()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸ‘</span>' +
+              '<span style="font-size:2rem;">👏</span>' +
               '<span style="background:#1e293b; color:#34d399; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #34d399;">HOTKEY: 5</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Applause &amp; Cheer</strong>' +
@@ -14659,7 +14660,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(245,158,11,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playCoinChime()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸª™</span>' +
+              '<span style="font-size:2rem;">🪙</span>' +
               '<span style="background:#1e293b; color:#fbbf24; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #fbbf24;">HOTKEY: 6</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">XP Coin Chime</strong>' +
@@ -14667,7 +14668,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div class="sfx-card" style="background:#111a2e; border:1px solid rgba(168,85,247,0.3); border-radius:14px; padding:16px; cursor:pointer;" onclick="window.classSoundboard.playFanfare()">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
-              '<span style="font-size:2rem;">ðŸŽº</span>' +
+              '<span style="font-size:2rem;">🎺</span>' +
               '<span style="background:#1e293b; color:#c084fc; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:6px; border:1px solid #c084fc;">HOTKEY: 7</span>' +
             '</div>' +
             '<strong style="display:block; font-size:1.05rem; color:#f8fafc;">Victory Fanfare</strong>' +
@@ -14696,10 +14697,10 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>' +
         '<div style="display:flex; gap:12px;">' +
           (isToolkitTimerRunning ?
-            '<button class="btn-primary-action" onclick="pauseToolkitTimer()" style="background:#d97706; border-color:#d97706; padding:10px 24px; font-size:1rem;">â¸ Pause</button>' :
-            '<button class="btn-primary-action" onclick="startToolkitTimer()" style="background:#059669; border-color:#059669; padding:10px 24px; font-size:1rem;">â–¶ Start Timer</button>'
+            '<button class="btn-primary-action" onclick="pauseToolkitTimer()" style="background:#d97706; border-color:#d97706; padding:10px 24px; font-size:1rem;">⏸ Pause</button>' :
+            '<button class="btn-primary-action" onclick="startToolkitTimer()" style="background:#059669; border-color:#059669; padding:10px 24px; font-size:1rem;">▶ Start Timer</button>'
           ) +
-          '<button class="btn-sm-secondary" onclick="resetToolkitTimer()" style="padding:10px 18px; font-size:1rem;">â†º Reset</button>' +
+          '<button class="btn-sm-secondary" onclick="resetToolkitTimer()" style="padding:10px 18px; font-size:1rem;">↺ Reset</button>' +
         '</div>' +
       '</div>';
   }
@@ -14725,7 +14726,7 @@ window.switchClassroomSubTab = function(subTab) {
         clearInterval(toolkitTimerInterval);
         isToolkitTimerRunning = false;
         playClassroomChime();
-        showNotification('â° Time is up!');
+        showNotification('⏰ Time is up!');
         if (container && activeToolkitTool === 'timer') container.innerHTML = renderToolkitTimerView();
       }
     }, 1000);
@@ -14781,12 +14782,12 @@ window.switchClassroomSubTab = function(subTab) {
     return '' +
       '<div style="text-align:center; padding:24px 16px; background:var(--bg-canvas); border-radius:var(--radius-lg); border:1px solid var(--border-light);">' +
         '<div id="random-picker-spotlight" style="min-height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:20px;">' +
-          '<div style="font-size:60px; margin-bottom:10px;">ðŸŽ²</div>' +
+          '<div style="font-size:60px; margin-bottom:10px;">🎲</div>' +
           '<h3 style="font-size:1.3rem; font-weight:800; color:var(--text-main);">Ready to Pick a Student</h3>' +
           '<p style="font-size:0.84rem; color:var(--text-muted);">' + students.length + ' students in ' + cls.name + '</p>' +
         '</div>' +
         '<div style="display:flex; justify-content:center; gap:12px;">' +
-          '<button class="btn-primary-action" style="font-size:1rem; padding:10px 24px;" onclick="runRandomStudentPicker()">ðŸŽ² Pick a Student!</button>' +
+          '<button class="btn-primary-action" style="font-size:1rem; padding:10px 24px;" onclick="runRandomStudentPicker()">🎲 Pick a Student!</button>' +
         '</div>' +
       '</div>';
   }
@@ -14816,10 +14817,10 @@ window.switchClassroomSubTab = function(subTab) {
         spotlight.innerHTML = 
           '<div style="width:110px; height:110px; margin:0 auto 10px auto; animation:pulse 0.4s ease;">' + window.renderStudentMonsterAvatar(finalWinner.id, { size: 110, animated: true }) + '</div>' +
           '<h1 style="font-size:2rem; font-weight:900; color:var(--color-primary); margin-top:8px;">' + finalWinner.firstName.toUpperCase() + ' ' + finalWinner.lastName.toUpperCase() + '</h1>' +
-          '<div style="font-size:1rem; font-weight:800; color:var(--color-primary); margin-top:4px;">Level ' + mState.currentLevel + ' Â· ' + mState.stageName + '</div>' +
-          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">â­ ' + store.getStudentTotalXP(finalWinner.id) + ' XP</div>' +
+          '<div style="font-size:1rem; font-weight:800; color:var(--color-primary); margin-top:4px;">Level ' + mState.currentLevel + ' · ' + mState.stageName + '</div>' +
+          '<div style="font-size:0.82rem; color:var(--text-muted); margin-top:2px;">⭐ ' + store.getStudentTotalXP(finalWinner.id) + ' XP</div>' +
           '<div style="margin-top:14px; display:flex; gap:8px; justify-content:center;">' +
-            '<button class="btn-primary-action" onclick="handleQuickAwardXP(\'' + finalWinner.id + '\', 10); runRandomStudentPicker();">â­ Award +10 XP & Next</button>' +
+            '<button class="btn-primary-action" onclick="handleQuickAwardXP(\'' + finalWinner.id + '\', 10); runRandomStudentPicker();">⭐ Award +10 XP & Next</button>' +
             '<button class="btn-sm-secondary" onclick="openStudentDetail(\'' + finalWinner.id + '\')">View Profile</button>' +
           '</div>';
         playClassroomChime();
@@ -14840,7 +14841,7 @@ window.switchClassroomSubTab = function(subTab) {
             '</select>' +
             '<input type="number" id="group-maker-val" class="filter-input" value="3" min="2" max="10" style="width:64px; text-align:center;" />' +
           '</div>' +
-          '<button class="btn-primary-action" onclick="runToolkitGroupMaker()">âš¡ Generate Teams</button>' +
+          '<button class="btn-primary-action" onclick="runToolkitGroupMaker()">⚡ Generate Teams</button>' +
         '</div>' +
         '<div id="group-maker-results" style="min-height:180px;">' +
           '<p style="color:var(--text-muted); font-size:0.86rem; text-align:center; padding:32px;">Click "Generate Teams" to organize students into balanced groups.</p>' +
@@ -14858,7 +14859,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     // Shuffle students array
     const shuffled = students.slice().sort(() => Math.random() - 0.5);
-    const teamNames = ['ðŸ² Dragon Wings', 'ðŸš€ Space Voyagers', 'ðŸ¤– Cyber Sparks', 'ðŸ¦Š Clever Foxes', 'ðŸ¬ Deep Dolphins', 'ðŸ¦„ Starlight Unicorns', 'ðŸ¦ Safari Lions', 'ðŸ¦… Golden Phoenixes'];
+    const teamNames = ['🐲 Dragon Wings', '🚀 Space Voyagers', '🤖 Cyber Sparks', '🦊 Clever Foxes', '🐬 Deep Dolphins', '🦄 Starlight Unicorns', '🦁 Safari Lions', '🦅 Golden Phoenixes'];
     const teamColors = ['#2563eb', '#10b981', '#f59e0b', '#7c3aed', '#ec4899', '#06b6d4', '#f97316', '#14b8a6'];
 
     let numGroups = mode === 'count' ? num : Math.ceil(shuffled.length / num);
@@ -14894,7 +14895,7 @@ window.switchClassroomSubTab = function(subTab) {
         ).join('') +
       '</div>' +
       '<div style="display:flex; justify-content:flex-end;">' +
-        '<button class="btn-primary-action" onclick="applyGeneratedGroupsToClass()">ðŸ’¾ Save as Class Groups</button>' +
+        '<button class="btn-primary-action" onclick="applyGeneratedGroupsToClass()">💾 Save as Class Groups</button>' +
       '</div>';
   };
 
@@ -14934,7 +14935,7 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>' +
 
         '<div id="noise-meter-label" style="font-size:1.1rem; font-weight:900; color:#059669; margin-bottom:16px;">' +
-          'ðŸŸ¢ Level 1: Quiet Work' +
+          '🟢 Level 1: Quiet Work' +
         '</div>' +
 
         '<div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:14px;">' +
@@ -15002,13 +15003,13 @@ window.switchClassroomSubTab = function(subTab) {
 
     bar.style.width = pct + '%';
     if (pct > 75) {
-      label.innerHTML = 'ðŸ”´ Too Loud! ðŸ¤« Shh! Level 1 Please!';
+      label.innerHTML = '🔴 Too Loud! 🤫 Shh! Level 1 Please!';
       label.style.color = '#dc2626';
     } else if (pct > 45) {
-      label.innerHTML = 'ðŸŸ¡ Level 2: Moderate Conversation';
+      label.innerHTML = '🟡 Level 2: Moderate Conversation';
       label.style.color = '#d97706';
     } else {
-      label.innerHTML = 'ðŸŸ¢ Level 1: Quiet & Focused';
+      label.innerHTML = '🟢 Level 1: Quiet & Focused';
       label.style.color = '#059669';
     }
   }
@@ -15019,11 +15020,11 @@ window.switchClassroomSubTab = function(subTab) {
     return '' +
       '<div style="background:var(--bg-canvas); border-radius:var(--radius-lg); border:1px solid var(--border-light); padding:24px; text-align:center;">' +
         '<div id="dice-display-box" style="display:flex; justify-content:center; gap:20px; margin-bottom:20px;">' +
-          '<div style="width:70px; height:70px; background:#fff; border:2px solid #333; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:900; box-shadow:var(--shadow-md); color:#1e293b;">âš…</div>' +
+          '<div style="width:70px; height:70px; background:#fff; border:2px solid #333; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:900; box-shadow:var(--shadow-md); color:#1e293b;">⚅</div>' +
         '</div>' +
         '<div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px;">' +
-          '<button class="btn-primary-action" onclick="rollClassroomDice(1)">ðŸŽ² Roll 1 Die</button>' +
-          '<button class="btn-sm-secondary" onclick="rollClassroomDice(2)">ðŸŽ² Roll 2 Dice</button>' +
+          '<button class="btn-primary-action" onclick="rollClassroomDice(1)">🎲 Roll 1 Die</button>' +
+          '<button class="btn-sm-secondary" onclick="rollClassroomDice(2)">🎲 Roll 2 Dice</button>' +
         '</div>' +
         '<div style="font-size:0.8rem; color:var(--text-muted);">' +
           'Recent Rolls: ' + (diceHistory.length ? diceHistory.slice(-5).reverse().join(', ') : 'None yet') +
@@ -15035,7 +15036,7 @@ window.switchClassroomSubTab = function(subTab) {
     const box = document.getElementById('dice-display-box');
     if (!box) return;
 
-    const diceFaces = ['âš€', 'âš', 'âš‚', 'âšƒ', 'âš„', 'âš…'];
+    const diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
     let rolls = [];
     let sum = 0;
     for (let i = 0; i < count; i++) {
@@ -15055,7 +15056,7 @@ window.switchClassroomSubTab = function(subTab) {
   };
 
   // TOOL 6: DECISION SPINNER WHEEL
-  const spinnerSlices = ['ðŸŽµ Action Song', 'ðŸ—£ï¸ Dialogue', 'ðŸŽ® Quick Game', 'ðŸ“– Story Quest', 'â­ +5 XP to All', 'ðŸŽ¨ Quick Sketch'];
+  const spinnerSlices = ['🎵 Action Song', '🗣️ Dialogue', '🎮 Quick Game', '📖 Story Quest', '⭐ +5 XP to All', '🎨 Quick Sketch'];
   const sliceColors = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#f97316'];
 
   function renderToolkitSpinnerView() {
@@ -15065,7 +15066,7 @@ window.switchClassroomSubTab = function(subTab) {
           '<div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent; border-top:20px solid #dc2626; z-index:10;"></div>' +
           '<canvas id="toolkit-spinner-canvas" width="260" height="260"></canvas>' +
         '</div>' +
-        '<button class="btn-primary-action" onclick="spinClassroomWheel()" style="font-size:1rem; padding:10px 24px;">ðŸŽ¡ Spin the Wheel!</button>' +
+        '<button class="btn-primary-action" onclick="spinClassroomWheel()" style="font-size:1rem; padding:10px 24px;">🎡 Spin the Wheel!</button>' +
         '<div id="spinner-result-text" style="font-size:1.1rem; font-weight:900; color:var(--color-primary); margin-top:12px; min-height:24px;"></div>' +
       '</div>';
   }
@@ -15126,7 +15127,7 @@ window.switchClassroomSubTab = function(subTab) {
         const arrowAngle = (3 * Math.PI / 2 - normalizedAngle + 2 * Math.PI) % (2 * Math.PI);
         const winningIndex = Math.floor(arrowAngle / ((2 * Math.PI) / numSlices)) % numSlices;
         const winner = spinnerSlices[winningIndex];
-        if (resEl) resEl.innerText = 'ðŸŽ‰ Selected: ' + winner + '!';
+        if (resEl) resEl.innerText = '🎉 Selected: ' + winner + '!';
       }
     }
     anim();
@@ -15139,11 +15140,11 @@ window.switchClassroomSubTab = function(subTab) {
         '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:12px;">Smartboard Classroom Instructions</h3>' +
         '<div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">' +
           '<input type="text" id="smartboard-note-title" class="filter-input" placeholder="Mission Title (e.g. Activity Station Challenge)" value="Today\'s Learning Quest" style="font-weight:800; font-size:1rem;" />' +
-          '<textarea id="smartboard-note-body" class="filter-input" rows="4" style="resize:vertical; font-size:0.92rem;" placeholder="1. Work with your team\n2. Complete worksheet page 4\n3. Be ready for roleplay!">1. Work with your table partner\n2. Complete worksheet questions 1â€“5\n3. Practice your dialogue aloud!</textarea>' +
+          '<textarea id="smartboard-note-body" class="filter-input" rows="4" style="resize:vertical; font-size:0.92rem;" placeholder="1. Work with your team\n2. Complete worksheet page 4\n3. Be ready for roleplay!">1. Work with your table partner\n2. Complete worksheet questions 1–5\n3. Practice your dialogue aloud!</textarea>' +
         '</div>' +
         '<div style="background:var(--bg-card); border:2px dashed var(--color-primary); border-radius:var(--radius-md); padding:16px; text-align:center;">' +
           '<div id="smartboard-preview-title" style="font-size:1.4rem; font-weight:900; color:var(--color-primary); margin-bottom:8px;">Today\'s Learning Quest</div>' +
-          '<div id="smartboard-preview-body" style="font-size:1.05rem; line-height:1.6; color:var(--text-main); white-space:pre-line;">1. Work with your table partner\n2. Complete worksheet questions 1â€“5\n3. Practice your dialogue aloud!</div>' +
+          '<div id="smartboard-preview-body" style="font-size:1.05rem; line-height:1.6; color:var(--text-main); white-space:pre-line;">1. Work with your table partner\n2. Complete worksheet questions 1–5\n3. Practice your dialogue aloud!</div>' +
         '</div>' +
       '</div>';
   }
@@ -15165,7 +15166,7 @@ window.switchClassroomSubTab = function(subTab) {
     const id = document.getElementById('reward-id-val')?.value;
     const title = document.getElementById('reward-title-val')?.value.trim();
     const cost = parseInt(document.getElementById('reward-cost-val')?.value, 10) || 50;
-    const icon = document.getElementById('reward-icon-val')?.value.trim() || 'ðŸŽ';
+    const icon = document.getElementById('reward-icon-val')?.value.trim() || '🎁';
     const description = document.getElementById('reward-desc-val')?.value.trim();
 
     if (id && store.updateReward) {
@@ -15202,9 +15203,9 @@ window.switchClassroomSubTab = function(subTab) {
     ).join('');
 
     const chosenRewardId = prompt(
-      'Redeem Reward for ' + s.firstName + ' (Balance: â­ ' + currentXP + ' XP):\n\n' +
+      'Redeem Reward for ' + s.firstName + ' (Balance: ⭐ ' + currentXP + ' XP):\n\n' +
       rewards.map((r, i) => (i + 1) + '. ' + r.icon + ' ' + r.title + ' [' + r.cost + ' XP]').join('\n') +
-      '\n\nEnter Reward number (1â€“' + rewards.length + '):'
+      '\n\nEnter Reward number (1–' + rewards.length + '):'
     );
 
     if (!chosenRewardId) return;
@@ -15213,7 +15214,7 @@ window.switchClassroomSubTab = function(subTab) {
       const selectedReward = rewards[idx];
       const res = store.redeemReward(studentId, selectedReward.id);
       if (res.success) {
-        showNotification('ðŸŽ Successfully redeemed "' + selectedReward.title + '" for ' + s.firstName + '! New Balance: â­ ' + res.newTotalXP + ' XP');
+        showNotification('🎁 Successfully redeemed "' + selectedReward.title + '" for ' + s.firstName + '! New Balance: ⭐ ' + res.newTotalXP + ' XP');
         renderCurrentView();
         if (currentProfileStudentId === studentId) {
           window.openStudentDetail(studentId, 'rewards');
@@ -15238,7 +15239,7 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     const promptText = 'Select student to redeem "' + r.title + '" (' + r.cost + ' XP):\n\n' +
-      eligible.map((s, i) => (i + 1) + '. ' + s.firstName + ' ' + s.lastName + ' (â­ ' + store.getStudentTotalXP(s.id) + ' XP)').join('\n') +
+      eligible.map((s, i) => (i + 1) + '. ' + s.firstName + ' ' + s.lastName + ' (⭐ ' + store.getStudentTotalXP(s.id) + ' XP)').join('\n') +
       '\n\nEnter student number:';
 
     const chosen = prompt(promptText);
@@ -15248,7 +15249,7 @@ window.switchClassroomSubTab = function(subTab) {
       const stud = eligible[idx];
       const res = store.redeemReward(stud.id, r.id);
       if (res.success) {
-        showNotification('ðŸŽ Redeemed "' + r.title + '" for ' + stud.firstName + '! Remaining: â­ ' + res.newTotalXP + ' XP');
+        showNotification('🎁 Redeemed "' + r.title + '" for ' + stud.firstName + '! Remaining: ⭐ ' + res.newTotalXP + ' XP');
         renderCurrentView();
       }
     }
@@ -15363,7 +15364,7 @@ window.switchClassroomSubTab = function(subTab) {
     // Update modal header title & badges
     const titleEl = document.getElementById('tb-viewer-title');
     if (titleEl) {
-      titleEl.textContent = isGR3 ? 'Global Readings 3 (Grade 4) â€” Textbook Page Viewer' : 'Global Readings 2 (Grade 3) â€” Textbook Page Viewer';
+      titleEl.textContent = isGR3 ? 'Global Readings 3 (Grade 4) — Textbook Page Viewer' : 'Global Readings 2 (Grade 3) — Textbook Page Viewer';
     }
     const pdfLink = document.getElementById('tb-viewer-pdf-link');
     if (pdfLink) {
@@ -15411,7 +15412,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     const subtitle = document.getElementById('tb-viewer-subtitle');
     if (subtitle) {
-      subtitle.textContent = pageData.unit + ' â€¢ ' + pageData.title + (pageData.section ? ' (' + pageData.section + ')' : '');
+      subtitle.textContent = pageData.unit + ' • ' + pageData.title + (pageData.section ? ' (' + pageData.section + ')' : '');
     }
 
     // Update prev/next button disabled state
@@ -15433,7 +15434,7 @@ window.switchClassroomSubTab = function(subTab) {
     const allLessons = store.getLessons();
     const matchingLessons = allLessons.filter(l => {
       if (!l.sourcePages) return false;
-      const parts = l.sourcePages.split('â€“').map(s => parseInt(s.trim(), 10));
+      const parts = l.sourcePages.split('–').map(s => parseInt(s.trim(), 10));
       if (parts.length === 1) return parts[0] === pageData.page;
       if (parts.length === 2) return pageData.page >= parts[0] && pageData.page <= parts[1];
       return false;
@@ -15443,7 +15444,7 @@ window.switchClassroomSubTab = function(subTab) {
       '<div style="border-bottom:1px solid var(--border-light); padding-bottom:12px;">' +
         '<div style="font-size:0.75rem; font-weight:800; color:var(--color-primary); text-transform:uppercase; letter-spacing:0.5px;">Curriculum Alignment</div>' +
         '<h3 style="font-size:1.05rem; font-weight:800; margin:4px 0; color:var(--text-main);">' + pageData.title + '</h3>' +
-        '<div style="font-size:0.8rem; color:var(--text-muted);">' + pageData.unit + ' â€¢ ' + pageData.section + '</div>' +
+        '<div style="font-size:0.8rem; color:var(--text-muted);">' + pageData.unit + ' • ' + pageData.section + '</div>' +
       '</div>';
 
     if (matchingLessons.length > 0) {
@@ -15459,7 +15460,7 @@ window.switchClassroomSubTab = function(subTab) {
                 objs.map(o => '<span style="font-size:0.75rem; background:var(--bg-surface); padding:3px 6px; border-radius:4px; border:1px solid var(--border-light);">' + o.skill + ': ' + o.text + '</span>').join('') +
               '</div>' : ''
             ) +
-            (l.gameRoute ? '<div style="margin-top:8px;"><a href="' + l.gameRoute + '" class="btn-primary-action" style="font-size:0.72rem; padding:3px 8px; text-decoration:none;">â–¶ Launch Game</a></div>' : '') +
+            (l.gameRoute ? '<div style="margin-top:8px;"><a href="' + l.gameRoute + '" class="btn-primary-action" style="font-size:0.72rem; padding:3px 8px; text-decoration:none;">▶ Launch Game</a></div>' : '') +
           '</div>';
       }).join('');
     } else {
@@ -15512,7 +15513,7 @@ window.switchClassroomSubTab = function(subTab) {
     const img = document.getElementById('tb-page-image');
     if (img) img.style.maxWidth = tbIsZoomed ? '160%' : '100%';
     const btn = document.getElementById('tb-zoom-btn');
-    if (btn) btn.textContent = tbIsZoomed ? 'ðŸ” Fit Window' : 'ðŸ” Zoom (160%)';
+    if (btn) btn.textContent = tbIsZoomed ? '🔍 Fit Window' : '🔍 Zoom (160%)';
   };
 
   window.toggleTextbookDrawer = function() {
@@ -15614,7 +15615,7 @@ window.switchClassroomSubTab = function(subTab) {
         // Header with student switcher
         '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">' +
           '<div>' +
-            '<h1 style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">ðŸ‘¾ Monster Evolution &amp; Companion</h1>' +
+            '<h1 style="font-size:1.8rem; font-weight:900; color:var(--text-main); margin:0 0 4px 0;">👾 Monster Evolution &amp; Companion</h1>' +
             '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Grow, hatch, and customize your learning companion through English mastery!</p>' +
           '</div>' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
@@ -15622,8 +15623,8 @@ window.switchClassroomSubTab = function(subTab) {
             '<select class="filter-select" onchange="currentProfileStudentId=this.value; renderMonsterStudentView(document.getElementById(\'app-view-container\'))">' +
               students.map(s => '<option value="' + s.id + '" ' + (s.id === student.id ? 'selected' : '') + '>' + s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id) + ' XP)</option>').join('') +
             '</select>' +
-            '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">ðŸ—ºï¸ Evolution Path</button>' +
-            ((window.EAA_ILLUSTRATED_MONSTERS === true && window.MonsterCloset) ? '<button type="button" class="btn-primary-action" style="font-weight:800;" onclick="MonsterCloset.open(\'' + student.id + '\')">ðŸ‘— Open the Monster Closet</button>' : '') +
+            '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+            ((window.EAA_ILLUSTRATED_MONSTERS === true && window.MonsterCloset) ? '<button type="button" class="btn-primary-action" style="font-weight:800;" onclick="MonsterCloset.open(\'' + student.id + '\')">👗 Open the Monster Closet</button>' : '') +
           '</div>' +
         '</div>' +
 
@@ -15632,11 +15633,11 @@ window.switchClassroomSubTab = function(subTab) {
         // Monster Tabs
         '<div class="monster-tabs-wrap" style="margin-top:28px;">' +
           [
-            { id: 'customize', label: 'ðŸŽ¨ Monster Closet & Customization' },
-            { id: 'progress', label: 'ðŸ“Š Learning Progress & Habits' },
-            { id: 'achievements', label: 'ðŸ† Achievements & Unlocks' },
-            { id: 'collection', label: 'ðŸŽ’ Unlocked Catalog' },
-            { id: 'history', label: 'ðŸ“œ Evolution History' }
+            { id: 'customize', label: '🎨 Monster Closet & Customization' },
+            { id: 'progress', label: '📊 Learning Progress & Habits' },
+            { id: 'achievements', label: '🏆 Achievements & Unlocks' },
+            { id: 'collection', label: '🎒 Unlocked Catalog' },
+            { id: 'history', label: '📜 Evolution History' }
           ].map(t => 
             '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
               t.label +
@@ -15669,11 +15670,11 @@ window.switchClassroomSubTab = function(subTab) {
         renderMonsterHeroCard(student, monsterState, profile) +
         '<div class="monster-tabs-wrap">' +
           [
-            { id: 'customize', label: 'ðŸŽ¨ Customize' },
-            { id: 'progress', label: 'ðŸ“Š Habits & Progress' },
-            { id: 'achievements', label: 'ðŸ† Achievements' },
-            { id: 'collection', label: 'ðŸŽ’ Collection' },
-            { id: 'history', label: 'ðŸ“œ History' }
+            { id: 'customize', label: '🎨 Customize' },
+            { id: 'progress', label: '📊 Habits & Progress' },
+            { id: 'achievements', label: '🏆 Achievements' },
+            { id: 'collection', label: '🎒 Collection' },
+            { id: 'history', label: '📜 History' }
           ].map(t => 
             '<button type="button" class="monster-tab-btn ' + (studentMonsterActiveTab === t.id ? 'is-active' : '') + '" onclick="switchMonsterTab(\'' + t.id + '\')">' +
               t.label +
@@ -15694,7 +15695,7 @@ window.switchClassroomSubTab = function(subTab) {
       equipped: profile.equipped || {},
       size: 190,
       animated: true
-    }) : 'ðŸ‘¾';
+    }) : '👾';
 
     return '' +
       '<div class="my-monster-hero-card">' +
@@ -15714,8 +15715,8 @@ window.switchClassroomSubTab = function(subTab) {
               '<div style="font-size:0.95rem; font-weight:700; color:var(--color-primary); margin-top:3px;">' + monsterState.stageName + '</div>' +
             '</div>' +
             '<div style="display:flex; gap:8px;">' +
-              '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">ðŸ—ºï¸ Evolution Path</button>' +
-              (!isHatched && monsterState.eggCrackPercent >= 100 ? '<button type="button" class="btn-primary-action" onclick="openMonsterHatchModal(\'' + student.id + '\')">âœ¨ HATCH EGG! âœ¨</button>' : '') +
+              '<button type="button" class="btn-sm-secondary" onclick="openEvolutionPathModal(\'' + student.id + '\')">🗺️ Evolution Path</button>' +
+              (!isHatched && monsterState.eggCrackPercent >= 100 ? '<button type="button" class="btn-primary-action" onclick="openMonsterHatchModal(\'' + student.id + '\')">✨ HATCH EGG! ✨</button>' : '') +
             '</div>' +
           '</div>' +
 
@@ -15724,7 +15725,7 @@ window.switchClassroomSubTab = function(subTab) {
           // Progress Bar to next evolution
           '<div style="background:var(--bg-canvas); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px;">' +
             '<div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:800; margin-bottom:6px;">' +
-              '<span>' + (monsterState.nextLevel ? 'Next Evolution: ' + monsterState.nextLevel.name : 'Ultimate Form Reached! ðŸ‘‘') + '</span>' +
+              '<span>' + (monsterState.nextLevel ? 'Next Evolution: ' + monsterState.nextLevel.name : 'Ultimate Form Reached! 👑') + '</span>' +
               '<span style="color:var(--color-primary);">' + monsterState.totalXP.toLocaleString('en-US') + ' / ' + (monsterState.nextLevel ? monsterState.nextLevel.xpRequired.toLocaleString('en-US') + ' XP' : 'MAX') + '</span>' +
             '</div>' +
             '<div style="height:12px; background:var(--border-light); border-radius:6px; overflow:hidden;">' +
@@ -15756,7 +15757,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<div>' +
           // Base Color Palette Selector
           '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:16px; margin-bottom:20px;">' +
-            '<h4 style="margin:0 0 10px 0; font-size:0.9rem; font-weight:800; color:var(--text-main);">ðŸŽ¨ Select Monster Primary Color</h4>' +
+            '<h4 style="margin:0 0 10px 0; font-size:0.9rem; font-weight:800; color:var(--text-main);">🎨 Select Monster Primary Color</h4>' +
             '<div style="display:flex; gap:12px; flex-wrap:wrap;">' +
               paletteColors.map(col => 
                 '<button type="button" onclick="setStudentBaseMonsterColor(\'' + student.id + '\', \'' + col.id + '\')" style="display:flex; align-items:center; gap:8px; padding:6px 14px; border-radius:24px; border:2px solid ' + (profile.baseColor === col.id ? col.hex : 'var(--border-light)') + '; background:var(--bg-canvas); cursor:pointer; font-weight:700; font-size:0.8rem;">' +
@@ -15790,11 +15791,11 @@ window.switchClassroomSubTab = function(subTab) {
                   '<div style="margin-top:auto; width:100%;">' +
                     (isUnlocked ? 
                       (isEquipped ? 
-                        '<button type="button" class="btn-sm-secondary" onclick="equipStudentMonsterItem(\'' + student.id + '\', \'' + item.category + '\', \'none\')" style="width:100%; color:var(--color-primary); font-weight:800;">âœ“ Equipped (Remove)</button>' :
+                        '<button type="button" class="btn-sm-secondary" onclick="equipStudentMonsterItem(\'' + student.id + '\', \'' + item.category + '\', \'none\')" style="width:100%; color:var(--color-primary); font-weight:800;">✓ Equipped (Remove)</button>' :
                         '<button type="button" class="btn-primary-action" onclick="equipStudentMonsterItem(\'' + student.id + '\', \'' + item.category + '\', \'' + item.id + '\')" style="width:100%; font-size:0.75rem; padding:4px 8px;">Equip</button>'
                       ) :
                       '<div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-align:center; padding:4px 0;">' +
-                        'ðŸ”’ ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Unlock Achievement') +
+                        '🔒 ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Unlock Achievement') +
                       '</div>'
                     ) +
                   '</div>' +
@@ -15809,7 +15810,7 @@ window.switchClassroomSubTab = function(subTab) {
       return '' +
         '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">' +
           '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
-            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">ðŸ“š Academic Skill Mastery (Evidence-Based)</h3>' +
+            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">📚 Academic Skill Mastery (Evidence-Based)</h3>' +
             '<div style="display:flex; flex-direction:column; gap:12px;">' +
               ['Reading', 'Speaking', 'Writing', 'Listening', 'Vocabulary'].map(skill => {
                 const skObj = skills[skill.toLowerCase()] || {};
@@ -15830,7 +15831,7 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
 
           '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:16px; padding:20px;">' +
-            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">ðŸŒŸ Classroom Habits &amp; Growth</h3>' +
+            '<h3 style="font-size:1.05rem; font-weight:800; margin:0 0 14px 0; color:var(--text-main);">🌟 Classroom Habits &amp; Growth</h3>' +
             '<div style="display:flex; flex-direction:column; gap:12px;">' +
               [
                 { label: 'Class Participation', pct: 85, gain: '+15% this month' },
@@ -15871,7 +15872,7 @@ window.switchClassroomSubTab = function(subTab) {
                     (hasAch ? '<span class="badge" style="background:rgba(16,185,129,0.15); color:#059669; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:10px;">Unlocked</span>' : '<span class="badge" style="background:var(--bg-muted); color:var(--text-muted); font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:10px;">In Progress</span>') +
                   '</div>' +
                   '<p style="font-size:0.78rem; color:var(--text-muted); margin:4px 0 8px 0;">' + ach.requirement + '</p>' +
-                  '<div style="font-size:0.72rem; font-weight:700; color:var(--color-primary);">ðŸŽ Monster Reward: Unlocks linked cosmetic accessories</div>' +
+                  '<div style="font-size:0.72rem; font-weight:700; color:var(--color-primary);">🎁 Monster Reward: Unlocks linked cosmetic accessories</div>' +
                 '</div>' +
               '</div>';
           }).join('') +
@@ -15889,7 +15890,7 @@ window.switchClassroomSubTab = function(subTab) {
                 '<div class="monster-item-icon">' + item.icon + '</div>' +
                 '<div class="monster-item-name">' + item.name + '</div>' +
                 '<div style="font-size:0.7rem; color:var(--color-primary); font-weight:700;">' + item.category.toUpperCase() + '</div>' +
-                '<div style="font-size:0.68rem; color:var(--text-muted); margin:2px 0;">' + (isUnlocked ? 'âœ“ In Collection' : 'ðŸ”’ ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Special Reward')) + '</div>' +
+                '<div style="font-size:0.68rem; color:var(--text-muted); margin:2px 0;">' + (isUnlocked ? '✓ In Collection' : '🔒 ' + (item.unlockType === 'level' ? 'Reach Level ' + item.unlockRequirement.level : 'Special Reward')) + '</div>' +
               '</div>';
           }).join('') +
         '</div>';
@@ -15906,7 +15907,7 @@ window.switchClassroomSubTab = function(subTab) {
           history.map(ev => 
             '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:14px; padding:14px 18px; display:flex; align-items:center; gap:16px;">' +
               '<div style="font-size:1.6rem; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:var(--bg-muted); flex-shrink:0;">' +
-                (ev.type === 'hatch' ? 'ðŸ£' : ev.type === 'evolve' ? 'ðŸ²' : ev.type === 'unlock' ? 'ðŸŽ' : 'ðŸ¥š') +
+                (ev.type === 'hatch' ? '🐣' : ev.type === 'evolve' ? '🐲' : ev.type === 'unlock' ? '🎁' : '🥚') +
               '</div>' +
               '<div style="flex:1;">' +
                 '<div style="display:flex; justify-content:space-between; align-items:center;">' +
@@ -16031,13 +16032,13 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     const titleEl = document.getElementById('m-levelup-title');
-    if (titleEl) titleEl.innerText = 'ðŸŽ‰ MONSTER EVOLUTION!';
+    if (titleEl) titleEl.innerText = '🎉 MONSTER EVOLUTION!';
 
     const subtitleEl = document.getElementById('m-levelup-subtitle');
     if (subtitleEl) subtitleEl.innerText = 'Congratulations, ' + student.firstName + '! Your monster has evolved into a Level ' + toLvl.level + ' ' + toLvl.name + '!';
 
     const xpInfoEl = document.getElementById('m-levelup-xp-info');
-    if (xpInfoEl) xpInfoEl.innerHTML = 'â­ ' + (toLvl.xpRequired || 0).toLocaleString('en-US') + ' XP Milestone Reached';
+    if (xpInfoEl) xpInfoEl.innerHTML = '⭐ ' + (toLvl.xpRequired || 0).toLocaleString('en-US') + ' XP Milestone Reached';
 
     // Before Art
     const prevImg = document.getElementById('m-levelup-prev-img');
@@ -16057,16 +16058,16 @@ window.switchClassroomSubTab = function(subTab) {
     if (teaserEl) {
       teaserEl.innerText = nextLvl 
         ? ('Next evolution at ' + nextLvl.xpRequired.toLocaleString('en-US') + ' XP (' + nextLvl.name + ')')
-        : 'ðŸŒŸ Peak evolution stage achieved!';
+        : '🌟 Peak evolution stage achieved!';
     }
 
     // Perks
     const perksList = document.getElementById('m-levelup-perks-list');
     if (perksList) {
       perksList.innerHTML = 
-        '<div>ðŸŒŸ <strong>Stronger Companion Aura:</strong> Shines brighter in classroom view</div>' +
-        '<div>ðŸŽ¨ <strong>New Monster Studio Customizations:</strong> ' + (toLvl.unlockedItems ? toLvl.unlockedItems.slice(0, 3).join(', ') : 'Special accessories') + ' unlocked!</div>' +
-        '<div>ðŸ† <strong>Evolution Badge:</strong> ' + toLvl.name + ' Adventurer unlocked!</div>';
+        '<div>🌟 <strong>Stronger Companion Aura:</strong> Shines brighter in classroom view</div>' +
+        '<div>🎨 <strong>New Monster Studio Customizations:</strong> ' + (toLvl.unlockedItems ? toLvl.unlockedItems.slice(0, 3).join(', ') : 'Special accessories') + ' unlocked!</div>' +
+        '<div>🏆 <strong>Evolution Badge:</strong> ' + toLvl.name + ' Adventurer unlocked!</div>';
     }
 
     if (window.playCelebrationSound) window.playCelebrationSound();
@@ -16080,7 +16081,7 @@ window.switchClassroomSubTab = function(subTab) {
 
     // Mark as hatched in store
     if (store.updateMonsterProfile) store.updateMonsterProfile(studentId, { isHatched: true });
-    if (store.logMonsterHistory) store.logMonsterHistory(studentId, 'hatch', 'âœ¨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
+    if (store.logMonsterHistory) store.logMonsterHistory(studentId, 'hatch', '✨ Egg Hatched into Baby Monster!', 'Student reached Level 3 (200+ XP). Companion is now awake!');
 
     // Cinematic Full-Screen Hatching & Evolution Overlay
     if (window.GamificationMilestones && typeof window.GamificationMilestones.triggerEvolutionCeremony === 'function') {
@@ -16111,7 +16112,7 @@ window.switchClassroomSubTab = function(subTab) {
         color: profile ? profile.baseColor : 'blue',
         size: 70,
         animated: isCurrent
-      }) : 'ðŸ‘¾';
+      }) : '👾';
 
       return '' +
         '<div class="evolution-path-card ' + (isCurrent ? 'is-current' : '') + ' ' + (!isReached ? 'is-locked' : '') + '" style="background:var(--bg-card); border:1px solid ' + (isCurrent ? 'var(--color-primary)' : 'var(--border-light)') + '; border-radius:14px; padding:14px; display:flex; align-items:center; gap:14px;">' +
@@ -16124,7 +16125,7 @@ window.switchClassroomSubTab = function(subTab) {
               '<span class="badge" style="background:var(--bg-muted); color:var(--text-main); font-weight:800; font-size:0.75rem; padding:3px 10px; border-radius:12px;">' + l.xpRequired.toLocaleString('en-US') + ' XP</span>' +
             '</div>' +
             '<p style="font-size:0.82rem; color:var(--text-muted); margin:4px 0 6px 0;">' + (l.description || '') + '</p>' +
-            '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700;">ðŸŽ Rewards: ' + (l.rewards ? l.rewards.join(', ') : 'Cosmetics & evolution perks') + '</div>' +
+            '<div style="font-size:0.72rem; color:var(--color-primary); font-weight:700;">🎁 Rewards: ' + (l.rewards ? l.rewards.join(', ') : 'Cosmetics & evolution perks') + '</div>' +
           '</div>' +
           (isCurrent ? '<div class="badge" style="background:var(--color-primary); color:#ffffff; font-weight:800; font-size:0.72rem; padding:4px 10px; border-radius:12px;">Current Stage</div>' : '') +
         '</div>';
@@ -16212,18 +16213,18 @@ window.switchClassroomSubTab = function(subTab) {
         '</div>' +
         '<div>' +
           '<h2 style="font-size:1.8rem; font-weight:900; margin:0; color:#ffffff;">' + student.name + '\'s ' + (monsterState.title || 'Monster Companion') + '</h2>' +
-          '<p style="color:#94a3b8; font-size:0.9rem; margin:4px 0 0 0;">Level ' + monsterState.level + ' Â· ' + (monsterState.badge || 'Explorer') + ' Â· ' + totalXP.toLocaleString('en-US') + ' Total XP</p>' +
+          '<p style="color:#94a3b8; font-size:0.9rem; margin:4px 0 0 0;">Level ' + monsterState.level + ' · ' + (monsterState.badge || 'Explorer') + ' · ' + totalXP.toLocaleString('en-US') + ' Total XP</p>' +
         '</div>' +
 
         (equippedList.length > 0 ? 
           '<div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; max-width:540px;">' +
-            equippedList.map(item => '<span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:#e2e8f0;">âœ¨ ' + item + '</span>').join('') +
+            equippedList.map(item => '<span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:4px 10px; border-radius:12px; font-size:0.75rem; color:#e2e8f0;">✨ ' + item + '</span>').join('') +
           '</div>' : ''
         ) +
 
         '<div style="display:flex; gap:12px; margin-top:8px;">' +
-          '<button type="button" class="btn-primary-action" style="padding:10px 20px; font-size:0.9rem; font-weight:800;" onclick="closeModal(\'modal-monster-fullscreen\'); openMonsterCreator(\'' + student.id + '\')">ðŸŽ¨ Customize Monster</button>' +
-          '<button type="button" class="btn-sm-secondary" style="padding:10px 18px; font-size:0.9rem; background:rgba(255,255,255,0.1); color:#ffffff; border:1px solid rgba(255,255,255,0.2);" onclick="closeModal(\'modal-monster-fullscreen\')">âœ• Close</button>' +
+          '<button type="button" class="btn-primary-action" style="padding:10px 20px; font-size:0.9rem; font-weight:800;" onclick="closeModal(\'modal-monster-fullscreen\'); openMonsterCreator(\'' + student.id + '\')">🎨 Customize Monster</button>' +
+          '<button type="button" class="btn-sm-secondary" style="padding:10px 18px; font-size:0.9rem; background:rgba(255,255,255,0.1); color:#ffffff; border:1px solid rgba(255,255,255,0.2);" onclick="closeModal(\'modal-monster-fullscreen\')">✕ Close</button>' +
         '</div>' +
       '</div>';
 
@@ -16259,11 +16260,11 @@ window.switchClassroomSubTab = function(subTab) {
     // Modal titles and PDF link
     const titleEl = document.getElementById('scope-modal-title');
     if (titleEl) {
-      titleEl.textContent = isGR3 ? 'Global Readings 3 (Grade 4 Â· Level 3) â€” Scope & Sequence' : 'Global Readings 2 (Grade 3 Â· Level 2) â€” Scope & Sequence';
+      titleEl.textContent = isGR3 ? 'Global Readings 3 (Grade 4 · Level 3) — Scope & Sequence' : 'Global Readings 2 (Grade 3 · Level 2) — Scope & Sequence';
     }
     const badgeEl = document.getElementById('scope-modal-badge');
     if (badgeEl) {
-      badgeEl.textContent = isGR3 ? 'Grade 4 Â· Level 3' : 'Grade 3 Â· Level 2';
+      badgeEl.textContent = isGR3 ? 'Grade 4 · Level 3' : 'Grade 3 · Level 2';
     }
     const subEl = document.getElementById('scope-modal-sub');
     if (subEl) {
@@ -16294,28 +16295,28 @@ window.switchClassroomSubTab = function(subTab) {
           '</thead>' +
           '<tbody>' +
             units.map((u, idx) => {
-              const startPage = u.pages ? parseInt(u.pages.split('â€“')[0], 10) : 1;
+              const startPage = u.pages ? parseInt(u.pages.split('–')[0], 10) : 1;
               return '' +
                 '<tr style="border-bottom:1px solid var(--border-light); background:' + (idx % 2 === 0 ? 'var(--bg-surface)' : 'var(--bg-card)') + ';">' +
                   '<td style="padding:12px; vertical-align:top;">' +
                     '<div style="font-weight:800; color:var(--color-primary);">' + (u.number ? ('Unit ' + u.number) : 'Review') + '</div>' +
                     '<div style="font-weight:800; color:var(--text-main); font-size:0.88rem; margin-top:2px;">' + u.title + '</div>' +
-                    (u.pages ? '<span class="badge" style="background:var(--bg-muted); font-size:0.7rem; margin-top:4px;">ðŸ“„ pp. ' + u.pages + '</span>' : '') +
+                    (u.pages ? '<span class="badge" style="background:var(--bg-muted); font-size:0.7rem; margin-top:4px;">📄 pp. ' + u.pages + '</span>' : '') +
                   '</td>' +
-                  '<td style="padding:12px; vertical-align:top; line-height:1.4;">' + (u.reading1 || 'â€”') + '</td>' +
-                  '<td style="padding:12px; vertical-align:top; line-height:1.4;">' + (u.reading2 || 'â€”') + '</td>' +
+                  '<td style="padding:12px; vertical-align:top; line-height:1.4;">' + (u.reading1 || '—') + '</td>' +
+                  '<td style="padding:12px; vertical-align:top; line-height:1.4;">' + (u.reading2 || '—') + '</td>' +
                   '<td style="padding:12px; vertical-align:top;">' +
-                    (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:800; white-space:normal; line-height:1.3; display:inline-block;">' + u.readingSkill + '</span>' : 'â€”') +
+                    (u.readingSkill ? '<span class="badge" style="background:var(--color-primary-soft); color:var(--color-primary); font-size:0.74rem; font-weight:800; white-space:normal; line-height:1.3; display:inline-block;">' + u.readingSkill + '</span>' : '—') +
                   '</td>' +
                   '<td style="padding:12px; vertical-align:top;">' +
-                    (u.contentArea ? '<span class="badge" style="background:rgba(168,85,247,0.12); color:#7e22ce; font-size:0.74rem; font-weight:800;">' + u.contentArea + '</span>' : 'â€”') +
+                    (u.contentArea ? '<span class="badge" style="background:rgba(168,85,247,0.12); color:#7e22ce; font-size:0.74rem; font-weight:800;">' + u.contentArea + '</span>' : '—') +
                   '</td>' +
-                  '<td style="padding:12px; vertical-align:top; font-size:0.78rem; color:var(--text-secondary); line-height:1.35;">' + (u.selFocus || 'â€”') + '</td>' +
-                  '<td style="padding:12px; vertical-align:top; font-size:0.78rem; font-weight:600; color:var(--color-warning); line-height:1.35;">' + (u.keyConcept ? ('ðŸ’¡ "' + u.keyConcept + '"') : 'â€”') + '</td>' +
+                  '<td style="padding:12px; vertical-align:top; font-size:0.78rem; color:var(--text-secondary); line-height:1.35;">' + (u.selFocus || '—') + '</td>' +
+                  '<td style="padding:12px; vertical-align:top; font-size:0.78rem; font-weight:600; color:var(--color-warning); line-height:1.35;">' + (u.keyConcept ? ('💡 "' + u.keyConcept + '"') : '—') + '</td>' +
                   '<td style="padding:12px; vertical-align:top; text-align:center;">' +
                     '<div style="display:flex; flex-direction:column; gap:6px; align-items:center;">' +
-                      (u.pages ? '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-scope-sequence\'); openTextbookViewer(' + startPage + ', \'' + curriculumActiveScopeBookId + '\')" style="padding:4px 10px; font-size:0.74rem; font-weight:800; width:100px;">ðŸ“– View Page</button>' : '') +
-                      '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-scope-sequence\'); switchCurriculumBook(\'' + curriculumActiveScopeBookId + '\')" style="padding:4px 10px; font-size:0.74rem; font-weight:700; width:100px;">ðŸ“‘ Open Unit</button>' +
+                      (u.pages ? '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-scope-sequence\'); openTextbookViewer(' + startPage + ', \'' + curriculumActiveScopeBookId + '\')" style="padding:4px 10px; font-size:0.74rem; font-weight:800; width:100px;">📖 View Page</button>' : '') +
+                      '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-scope-sequence\'); switchCurriculumBook(\'' + curriculumActiveScopeBookId + '\')" style="padding:4px 10px; font-size:0.74rem; font-weight:700; width:100px;">📑 Open Unit</button>' +
                     '</div>' +
                   '</td>' +
                 '</tr>';
@@ -16370,18 +16371,18 @@ window.switchClassroomSubTab = function(subTab) {
     listEl.innerHTML = filtered.map(g => '' +
       '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:12px; padding:12px 16px; display:flex; gap:14px; align-items:center; justify-content:space-between; box-shadow:var(--shadow-xs);">' +
         '<div style="display:flex; gap:12px; align-items:center; min-width:0; flex:1;">' +
-          '<div style="font-size:1.8rem; flex-shrink:0; width:44px; height:44px; border-radius:10px; background:var(--bg-muted); display:flex; align-items:center; justify-content:center;">' + (g.icon || 'ðŸŽ®') + '</div>' +
+          '<div style="font-size:1.8rem; flex-shrink:0; width:44px; height:44px; border-radius:10px; background:var(--bg-muted); display:flex; align-items:center; justify-content:center;">' + (g.icon || '🎮') + '</div>' +
           '<div style="min-width:0; flex:1;">' +
             '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
               '<span style="font-weight:800; font-size:0.92rem; color:var(--text-main);">' + g.title + '</span>' +
               (g.category ? '<span class="badge" style="background:var(--bg-muted); font-size:0.7rem; padding:1px 6px; border-radius:6px;">' + g.category + '</span>' : '') +
-              (g.duration ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.7rem; padding:1px 6px; border-radius:6px;">â±ï¸ ' + g.duration + '</span>' : '') +
+              (g.duration ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#059669; font-size:0.7rem; padding:1px 6px; border-radius:6px;">⏱️ ' + g.duration + '</span>' : '') +
             '</div>' +
             '<div style="font-size:0.76rem; color:var(--text-secondary); margin-top:2px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' + (g.description || 'Interactive ESL practice game.') + '</div>' +
           '</div>' +
         '</div>' +
         '<div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">' +
-          (g.route ? '<a href="' + g.route + '" target="_blank" class="btn-sm-secondary" style="padding:5px 10px; font-size:0.76rem; text-decoration:none;">â–¶ Play</a>' : '') +
+          (g.route ? '<a href="' + g.route + '" target="_blank" class="btn-sm-secondary" style="padding:5px 10px; font-size:0.76rem; text-decoration:none;">▶ Play</a>' : '') +
           '<button type="button" class="btn-primary-action" onclick="handleConfirmAttachGame(\'' + (g.route || '') + '\', \'' + (g.title || '').replace(/'/g, "\\'") + '\')" style="padding:5px 14px; font-size:0.78rem; font-weight:800;">Attach</button>' +
         '</div>' +
       '</div>'
@@ -16417,17 +16418,17 @@ window.switchClassroomSubTab = function(subTab) {
 
     const worksheets = (store && store.getWorksheets) ? store.getWorksheets() : [];
     const defaultSheets = [
-      { id: 'ws-inventions-1', title: 'Great Inventors & Sequencing Graphic Organizer', pages: 'p. 4â€“5', level: 'Grade 4 Â· Level 3', desc: '5-step invention loop and cause-effect worksheet.' },
-      { id: 'ws-space-1', title: 'Living in Space Comprehension & Vocab Sheet', pages: 'p. 16â€“17', level: 'Grade 4 Â· Level 3', desc: 'Microgravity science link and astronaut routines reading practice.' },
-      { id: 'ws-fox-grapes', title: 'The Fox and the Grapes Moral Analysis & Phonics', pages: 'p. 6â€“7', level: 'Grade 3 Â· Level 2', desc: 'Character motivation, moral question prompts, and ee/ea vowel sounds.' },
-      { id: 'ws-earth-changes', title: 'Earth Changes & Landforms Diagram Activity', pages: 'p. 12â€“13', level: 'Grade 4 Â· Level 3', desc: 'Volcanoes, earthquakes, and weathering science vocabulary.' }
+      { id: 'ws-inventions-1', title: 'Great Inventors & Sequencing Graphic Organizer', pages: 'p. 4–5', level: 'Grade 4 · Level 3', desc: '5-step invention loop and cause-effect worksheet.' },
+      { id: 'ws-space-1', title: 'Living in Space Comprehension & Vocab Sheet', pages: 'p. 16–17', level: 'Grade 4 · Level 3', desc: 'Microgravity science link and astronaut routines reading practice.' },
+      { id: 'ws-fox-grapes', title: 'The Fox and the Grapes Moral Analysis & Phonics', pages: 'p. 6–7', level: 'Grade 3 · Level 2', desc: 'Character motivation, moral question prompts, and ee/ea vowel sounds.' },
+      { id: 'ws-earth-changes', title: 'Earth Changes & Landforms Diagram Activity', pages: 'p. 12–13', level: 'Grade 4 · Level 3', desc: 'Volcanoes, earthquakes, and weathering science vocabulary.' }
     ];
     const combined = [...worksheets, ...defaultSheets.filter(d => !worksheets.some(w => w.id === d.id))];
 
     listEl.innerHTML = combined.map(ws => '' +
       '<div style="background:var(--bg-surface); border:1px solid var(--border-light); border-radius:12px; padding:12px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; box-shadow:var(--shadow-xs);">' +
         '<div style="display:flex; gap:10px; align-items:center; min-width:0;">' +
-          '<span style="font-size:1.6rem; flex-shrink:0;">ðŸ“„</span>' +
+          '<span style="font-size:1.6rem; flex-shrink:0;">📄</span>' +
           '<div style="min-width:0;">' +
             '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
               '<span style="font-weight:800; font-size:0.88rem; color:var(--text-main);">' + ws.title + '</span>' +
@@ -16463,7 +16464,7 @@ window.switchClassroomSubTab = function(subTab) {
     if (!lesson) return;
     if (window.populateModalDropdowns) window.populateModalDropdowns();
     const titleInput = document.getElementById('new-asg-title');
-    if (titleInput) titleInput.value = lesson.title + ' â€” Activity';
+    if (titleInput) titleInput.value = lesson.title + ' — Activity';
 
     const gameSelect = document.getElementById('new-asg-game');
     if (gameSelect && lesson.gameRoute) {
@@ -16502,9 +16503,9 @@ window.switchClassroomSubTab = function(subTab) {
       const isUser = msg.role === 'user';
       return '' +
         '<div style="display:flex; gap:12px; align-items:flex-start; justify-content:' + (isUser ? 'flex-end' : 'flex-start') + ';">' +
-          (!isUser ? '<div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #3b82f6, #1d4ed8); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">ðŸ¤–</div>' : '') +
+          (!isUser ? '<div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #3b82f6, #1d4ed8); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">🤖</div>' : '') +
           '<div style="max-width:85%; background:' + (isUser ? 'var(--color-primary)' : 'var(--bg-surface)') + '; color:' + (isUser ? '#ffffff' : 'var(--text-main)') + '; border:1px solid ' + (isUser ? 'var(--color-primary)' : 'var(--border-light)') + '; border-radius:14px; padding:12px 16px; box-shadow:var(--shadow-xs); line-height:1.45; font-size:0.86rem;">' +
-            '<div style="font-size:0.7rem; color:' + (isUser ? 'rgba(255,255,255,0.7)' : 'var(--text-muted)') + '; margin-bottom:4px; font-weight:700;">' + (isUser ? 'You' : 'Assistant') + ' â€¢ ' + (msg.time || 'Just now') + '</div>' +
+            '<div style="font-size:0.7rem; color:' + (isUser ? 'rgba(255,255,255,0.7)' : 'var(--text-muted)') + '; margin-bottom:4px; font-weight:700;">' + (isUser ? 'You' : 'Assistant') + ' • ' + (msg.time || 'Just now') + '</div>' +
             '<div>' + msg.text + '</div>' +
           '</div>' +
           (isUser ? '<div style="width:34px; height:34px; border-radius:10px; background:var(--bg-muted); color:var(--text-main); display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:800; flex-shrink:0;">SJ</div>' : '') +
@@ -16557,7 +16558,7 @@ window.switchClassroomSubTab = function(subTab) {
     }
 
     const isGR3 = targetBookId === 'book-global-readings-3';
-    const bookTitle = isGR3 ? 'Global Readings 3 (Grade 4 Â· Level 3)' : 'Global Readings 2 (Grade 3 Â· Level 2)';
+    const bookTitle = isGR3 ? 'Global Readings 3 (Grade 4 · Level 3)' : 'Global Readings 2 (Grade 3 · Level 2)';
     const units = (store && store.getUnits) ? store.getUnits(targetBookId) : [];
     const lessons = (store && store.getLessons) ? store.getLessons() : [];
 
@@ -16568,9 +16569,9 @@ window.switchClassroomSubTab = function(subTab) {
       const unit = units.find(u => u.number === uNum);
       if (unit) {
         const uLessons = lessons.filter(l => l.unitId === unit.id);
-        const startPage = unit.pages ? parseInt(unit.pages.split('â€“')[0], 10) : 1;
+        const startPage = unit.pages ? parseInt(unit.pages.split('–')[0], 10) : 1;
         return '' +
-          '<div style="margin-bottom:8px;"><strong>ðŸ“– ' + unit.title + '</strong> (' + bookTitle + ')</div>' +
+          '<div style="margin-bottom:8px;"><strong>📖 ' + unit.title + '</strong> (' + bookTitle + ')</div>' +
           '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Scanned Pages: <strong>pp. ' + (unit.pages || 'N/A') + '</strong></div>' +
           '<div style="display:flex; flex-direction:column; gap:4px; font-size:0.82rem;">' +
             '<div><strong>Reading 1:</strong> ' + (unit.reading1 || 'N/A') + '</div>' +
@@ -16583,11 +16584,11 @@ window.switchClassroomSubTab = function(subTab) {
           '</div>' +
           '<div style="margin-top:10px; padding:8px 10px; background:var(--bg-muted); border-radius:8px; font-size:0.8rem;">' +
             '<strong>4-Week Modular Roadmap:</strong><br/>' +
-            (unit.weeks || []).map(w => 'â€¢ <strong>Week ' + w.weekNumber + ':</strong> ' + w.title).join('<br/>') +
+            (unit.weeks || []).map(w => '• <strong>Week ' + w.weekNumber + ':</strong> ' + w.title).join('<br/>') +
           '</div>' +
           '<div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">' +
-            '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openTextbookViewer(' + startPage + ', \'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">ðŸ“– Open Scans (p. ' + startPage + ')</button>' +
-            '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); switchCurriculumBook(\'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">ðŸ“‘ Open Unit in Planner</button>' +
+            '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openTextbookViewer(' + startPage + ', \'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">📖 Open Scans (p. ' + startPage + ')</button>' +
+            '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); switchCurriculumBook(\'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">📑 Open Unit in Planner</button>' +
           '</div>';
       }
     }
@@ -16601,19 +16602,19 @@ window.switchClassroomSubTab = function(subTab) {
       const weekLessons = activeUnit ? lessons.filter(l => l.unitId === activeUnit.id && l.weekNumber === wNum) : [];
 
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ—“ï¸ Week ' + wNum + ' Syllabus Breakdown: ' + (activeUnit ? activeUnit.title : 'Active Unit') + '</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>🗓️ Week ' + wNum + ' Syllabus Breakdown: ' + (activeUnit ? activeUnit.title : 'Active Unit') + '</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">' +
-          'Focus: <strong>' + (weekInfo ? weekInfo.title : 'Core Instruction') + '</strong> â€” ' + (weekInfo ? weekInfo.focus : 'Literacy practice') +
+          'Focus: <strong>' + (weekInfo ? weekInfo.title : 'Core Instruction') + '</strong> — ' + (weekInfo ? weekInfo.focus : 'Literacy practice') +
         '</div>' +
         '<div style="font-size:0.82rem;">' +
           (weekLessons.length > 0 ? 
-            '<strong>Scheduled Lessons:</strong><br/>' + weekLessons.map(l => 'â€¢ <strong>' + l.title + '</strong> (p. ' + (l.sourcePages || 'N/A') + '): ' + (l.objective || '')).join('<br/>') :
-            'â€¢ Core reading comprehension and vocabulary application from the textbook.'
+            '<strong>Scheduled Lessons:</strong><br/>' + weekLessons.map(l => '• <strong>' + l.title + '</strong> (p. ' + (l.sourcePages || 'N/A') + '): ' + (l.objective || '')).join('<br/>') :
+            '• Core reading comprehension and vocabulary application from the textbook.'
           ) +
         '</div>' +
         '<div style="display:flex; gap:8px; margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openTextbookViewer(' + (activeUnit && activeUnit.pages ? activeUnit.pages.split('â€“')[0] : 1) + ', \'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">ðŸ“– View Lesson Scans</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="askCurriculumAI(\'Find games for this lesson\')" style="padding:4px 10px; font-size:0.75rem;">ðŸŽ® Find Aligned Games</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openTextbookViewer(' + (activeUnit && activeUnit.pages ? activeUnit.pages.split('–')[0] : 1) + ', \'' + targetBookId + '\')" style="padding:4px 10px; font-size:0.75rem;">📖 View Lesson Scans</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="askCurriculumAI(\'Find games for this lesson\')" style="padding:4px 10px; font-size:0.75rem;">🎮 Find Aligned Games</button>' +
         '</div>';
     }
 
@@ -16622,20 +16623,20 @@ window.switchClassroomSubTab = function(subTab) {
       const games = (store && store.getResources) ? store.getResources() : [];
       const topGames = games.slice(0, 4);
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸŽ® Recommended Interactive Games from Library (17 Available)</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>🎮 Recommended Interactive Games from Library (17 Available)</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Directly align with reading themes, vocabulary acquisition, and speaking practice:</div>' +
         '<div style="display:flex; flex-direction:column; gap:6px;">' +
           topGames.map(g => '' +
             '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-muted); padding:6px 10px; border-radius:8px; font-size:0.8rem;">' +
-              '<div><strong>' + (g.icon || 'ðŸŽ®') + ' ' + g.title + '</strong> (' + (g.category || 'Game') + ')</div>' +
+              '<div><strong>' + (g.icon || '🎮') + ' ' + g.title + '</strong> (' + (g.category || 'Game') + ')</div>' +
               '<div style="display:flex; gap:6px;">' +
-                (g.route ? '<a href="' + g.route + '" target="_blank" class="btn-sm-secondary" style="padding:2px 8px; font-size:0.72rem; text-decoration:none;">â–¶ Play</a>' : '') +
+                (g.route ? '<a href="' + g.route + '" target="_blank" class="btn-sm-secondary" style="padding:2px 8px; font-size:0.72rem; text-decoration:none;">▶ Play</a>' : '') +
               '</div>' +
             '</div>'
           ).join('') +
         '</div>' +
         '<div style="margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openAttachGameModal(\'' + (lessons[0] ? lessons[0].id : '') + '\')" style="padding:4px 12px; font-size:0.75rem;">ðŸŽ® Connect Game to Active Lesson</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openAttachGameModal(\'' + (lessons[0] ? lessons[0].id : '') + '\')" style="padding:4px 12px; font-size:0.75rem;">🎮 Connect Game to Active Lesson</button>' +
         '</div>';
     }
 
@@ -16643,18 +16644,18 @@ window.switchClassroomSubTab = function(subTab) {
     if (q.includes('create a worksheet') || q.includes('worksheet') || q.includes('printable')) {
       const u = units[1] || units[0];
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ“„ Authentic Worksheet Generation &amp; Alignment</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>📄 Authentic Worksheet Generation &amp; Alignment</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">' +
           'A printable graphic organizer has been mapped for <strong>' + (u ? u.title : 'Current Unit') + '</strong>.' +
         '</div>' +
         '<div style="background:var(--bg-muted); padding:10px; border-radius:8px; font-size:0.8rem; line-height:1.4;">' +
-          'â€¢ <strong>Title:</strong> Great Inventors &amp; Sequencing Graphic Organizer<br/>' +
-          'â€¢ <strong>Focus:</strong> Chronological ordering (First, Second, Third, Last) &amp; problem-solution diagram.<br/>' +
-          'â€¢ <strong>Aligned Scans:</strong> pp. 16â€“17' +
+          '• <strong>Title:</strong> Great Inventors &amp; Sequencing Graphic Organizer<br/>' +
+          '• <strong>Focus:</strong> Chronological ordering (First, Second, Third, Last) &amp; problem-solution diagram.<br/>' +
+          '• <strong>Aligned Scans:</strong> pp. 16–17' +
         '</div>' +
         '<div style="display:flex; gap:8px; margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openAttachWorksheetModal(\'' + (lessons[0] ? lessons[0].id : '') + '\')" style="padding:4px 12px; font-size:0.75rem;">ðŸ“„ Attach Printable Worksheet</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); openWorksheetEditor()" style="padding:4px 12px; font-size:0.75rem;">âœï¸ Custom Worksheet Builder</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openAttachWorksheetModal(\'' + (lessons[0] ? lessons[0].id : '') + '\')" style="padding:4px 12px; font-size:0.75rem;">📄 Attach Printable Worksheet</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); openWorksheetEditor()" style="padding:4px 12px; font-size:0.75rem;">✏️ Custom Worksheet Builder</button>' +
         '</div>';
     }
 
@@ -16676,16 +16677,16 @@ window.switchClassroomSubTab = function(subTab) {
       const topTeam = sorted.filter(item => item.count > 0);
 
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ¤ Teamwork Feedback Leadership: ' + activeCls.name + '</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>🤝 Teamwork Feedback Leadership: ' + activeCls.name + '</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Analysis of real classroom behavior awards:</div>' +
         '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
           (topTeam.length > 0 ? 
-            topTeam.slice(0, 5).map((item, idx) => '<div>' + (idx + 1) + '. <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> â€” ðŸ¤ ' + item.count + 'x Teamwork award' + (item.count > 1 ? 's' : '') + '</div>').join('') :
-            '<div>No teamwork feedback records awarded yet for this class cohort. Use <strong>â­ Give Feedback</strong> during group tasks to recognize collaboration!</div>'
+            topTeam.slice(0, 5).map((item, idx) => '<div>' + (idx + 1) + '. <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> — 🤝 ' + item.count + 'x Teamwork award' + (item.count > 1 ? 's' : '') + '</div>').join('') :
+            '<div>No teamwork feedback records awarded yet for this class cohort. Use <strong>⭐ Give Feedback</strong> during group tasks to recognize collaboration!</div>'
           ) +
         '</div>' +
         '<div style="margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">â­ Award Teamwork to Class</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">⭐ Award Teamwork to Class</button>' +
         '</div>';
     }
 
@@ -16706,17 +16707,17 @@ window.switchClassroomSubTab = function(subTab) {
       const lowPart = Object.values(studentMap).filter(item => item.partCount === 0).slice(0, 5);
 
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ’¡ Participation &amp; Engagement Insight: ' + activeCls.name + '</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>💡 Participation &amp; Engagement Insight: ' + activeCls.name + '</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Students who may benefit from structured turn-taking or gentle question prompts:</div>' +
         '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
           (lowPart.length > 0 ?
-            lowPart.map(item => '<div>â€¢ <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> (ID: ' + (item.student.studentIdNumber || 'N/A') + ') â€” Current: â­ ' + item.totalXP + ' XP</div>').join('') :
+            lowPart.map(item => '<div>• <strong>' + item.student.firstName + ' ' + item.student.lastName + '</strong> (ID: ' + (item.student.studentIdNumber || 'N/A') + ') — Current: ⭐ ' + item.totalXP + ' XP</div>').join('') :
             '<div>All students in ' + activeCls.name + ' have received active participation recognition!</div>'
           ) +
         '</div>' +
         '<div style="margin-top:10px; display:flex; gap:8px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openRandomStudentModal();" style="padding:4px 12px; font-size:0.75rem;">ðŸŽ² Pick Random Student</button>' +
-          '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">â­ Give Feedback</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); openRandomStudentModal();" style="padding:4px 12px; font-size:0.75rem;">🎲 Pick Random Student</button>' +
+          '<button type="button" class="btn-sm-secondary" onclick="closeModal(\'modal-curriculum-ai\'); openGiveFeedbackModal(\'class\');" style="padding:4px 12px; font-size:0.75rem;">⭐ Give Feedback</button>' +
         '</div>';
     }
 
@@ -16728,15 +16729,15 @@ window.switchClassroomSubTab = function(subTab) {
       const totalEnrolled = students.length;
 
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ“Š Student Roster Progress: ' + activeCls.name + ' (' + totalEnrolled + ' Students)</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>📊 Student Roster Progress: ' + activeCls.name + ' (' + totalEnrolled + ' Students)</strong></div>' +
         '<div style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:8px;">Derived directly from persistent classroom records and Unit 1 curriculum tasks:</div>' +
         '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.82rem;">' +
-          '<div>â­ <strong>Top XP Achievers:</strong> ' + topStudents.map(s => s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP)').join(', ') + '</div>' +
-          '<div>ðŸ“š <strong>Active Curriculum:</strong> ' + (activeCls.grade === 'Grade 4' ? 'Global Readings 3' : 'Global Readings 2') + ' Â· Unit 1</div>' +
-          '<div>ðŸ§‘â€ðŸ¤â€ðŸ§‘ <strong>Enrolled Learners:</strong> ' + totalEnrolled + ' authentic students (Emine / Batuhan / Ä°lknur / Embiye rosters)</div>' +
+          '<div>⭐ <strong>Top XP Achievers:</strong> ' + topStudents.map(s => s.firstName + ' ' + s.lastName + ' (' + store.getStudentTotalXP(s.id).toLocaleString('en-US') + ' XP)').join(', ') + '</div>' +
+          '<div>📚 <strong>Active Curriculum:</strong> ' + (activeCls.grade === 'Grade 4' ? 'Global Readings 3' : 'Global Readings 2') + ' · Unit 1</div>' +
+          '<div>🧑‍🤝‍🧑 <strong>Enrolled Learners:</strong> ' + totalEnrolled + ' authentic students (Emine / Batuhan / İlknur / Embiye rosters)</div>' +
         '</div>' +
         '<div style="margin-top:10px;">' +
-          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); switchView(\'progress-check\')" style="padding:4px 12px; font-size:0.75rem;">ðŸ“ˆ Open Progress Check Gradebook</button>' +
+          '<button type="button" class="btn-primary-action" onclick="closeModal(\'modal-curriculum-ai\'); switchView(\'progress-check\')" style="padding:4px 12px; font-size:0.75rem;">📈 Open Progress Check Gradebook</button>' +
         '</div>';
     }
 
@@ -16744,12 +16745,12 @@ window.switchClassroomSubTab = function(subTab) {
     const searchRes = (store && store.searchCurriculum) ? store.searchCurriculum(q) : { units: [], lessons: [] };
     if (searchRes.units.length > 0 || searchRes.lessons.length > 0) {
       return '' +
-        '<div style="margin-bottom:8px;"><strong>ðŸ” Search Results for "' + query + '":</strong></div>' +
+        '<div style="margin-bottom:8px;"><strong>🔍 Search Results for "' + query + '":</strong></div>' +
         (searchRes.units.length > 0 ? 
-          '<div style="font-size:0.82rem; margin-bottom:6px;"><strong>Matching Units:</strong><br/>' + searchRes.units.map(u => 'â€¢ ' + u.title + ' (p. ' + u.pages + ')').join('<br/>') + '</div>' : ''
+          '<div style="font-size:0.82rem; margin-bottom:6px;"><strong>Matching Units:</strong><br/>' + searchRes.units.map(u => '• ' + u.title + ' (p. ' + u.pages + ')').join('<br/>') + '</div>' : ''
         ) +
         (searchRes.lessons.length > 0 ?
-          '<div style="font-size:0.82rem;"><strong>Matching Lessons:</strong><br/>' + searchRes.lessons.slice(0, 4).map(l => 'â€¢ ' + l.title + ' (p. ' + l.sourcePages + ')').join('<br/>') + '</div>' : ''
+          '<div style="font-size:0.82rem;"><strong>Matching Lessons:</strong><br/>' + searchRes.lessons.slice(0, 4).map(l => '• ' + l.title + ' (p. ' + l.sourcePages + ')').join('<br/>') + '</div>' : ''
         );
     }
 
@@ -16868,7 +16869,7 @@ window.switchClassroomSubTab = function(subTab) {
         '<div style="margin-top:16px; background:var(--bg-canvas); border:1.5px solid ' + (allPassed ? '#10b981' : '#ef4444') + '; border-radius:14px; padding:18px; box-shadow:var(--shadow-sm);">' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px;">' +
             '<div style="display:flex; align-items:center; gap:10px;">' +
-              '<span style="font-size:1.6rem;">' + (allPassed ? 'âœ…' : 'âŒ') + '</span>' +
+              '<span style="font-size:1.6rem;">' + (allPassed ? '✅' : '❌') + '</span>' +
               '<div>' +
                 '<h4 style="font-size:1.05rem; font-weight:900; margin:0; color:var(--text-main);">Live Diagnostics Execution Suite</h4>' +
                 '<div style="font-size:0.78rem; color:var(--text-muted);">' + suiteResults.filter(r => r.pass).length + ' / ' + suiteResults.length + ' test suites passed in ' + totalDuration + 'ms</div>' +
@@ -16882,7 +16883,7 @@ window.switchClassroomSubTab = function(subTab) {
             suiteResults.map(r => '' +
               '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; padding:8px 12px; background:var(--bg-surface); border-radius:8px; border:1px solid var(--border-light);">' +
                 '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span>' + (r.pass ? 'ðŸŸ¢' : 'ðŸ”´') + '</span>' +
+                  '<span>' + (r.pass ? '🟢' : '🔴') + '</span>' +
                   '<strong>' + r.entity + ' (' + r.op + '):</strong> ' +
                   '<span style="color:var(--text-muted);">' + r.detail + '</span>' +
                 '</div>' +

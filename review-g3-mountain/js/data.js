@@ -48,12 +48,12 @@
   D.stops = ['First,', 'Then,', 'Next,', 'After that,', 'Soon,', 'Finally,'];
   /* Game 3: Phonics -nd Blends & Feelings Spotlight (p. 70) */
   D.chars = [
-    { k: 'end', n: 'end (-nd)', e: '🏁', a: null },
-    { k: 'stand', n: 'stand (-nd)', e: '🧍', a: null },
-    { k: 'wind', n: 'wind (-nd)', e: '💨', a: null },
-    { k: 'send', n: 'send (-nd)', e: '✉️', a: null },
-    { k: 'find', n: 'find (-nd)', e: '🔍', a: 'c_girl_tree' },
-    { k: 'hand', n: 'hand (-nd)', e: '✋', a: null }
+    { k: 'end', n: 'end (-nd)', e: '🏁', a: 'o_end_finish' },
+    { k: 'stand', n: 'stand (-nd)', e: '🧍', a: 'o_stand' },
+    { k: 'wind', n: 'wind (-nd)', e: '💨', a: 'o_wind' },
+    { k: 'send', n: 'send (-nd)', e: '✉️', a: 'o_send' },
+    { k: 'find', n: 'find (-nd)', e: '🔍', a: 'o_find' },
+    { k: 'hand', n: 'hand (-nd)', e: '✋', a: 'o_hand' }
   ];
   D.lines = [
     { t: 'I needed to ____ Mama and Papa in the village!', who: 'find', act: 'Put your hand above your eyes and look around: FIND!' },

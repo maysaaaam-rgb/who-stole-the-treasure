@@ -12854,5 +12854,47 @@ const GAMES_REGISTRY = [
   "featured": true,
   "thumbnailIcon": "🔤",
   "status": "active"
-}
+},
+  {
+    "id": "rev-g3-mountain",
+    "title": "🌋 Grade 3 Reading 2: The Angry Mountain (Book pp. 64–71)",
+    "description": "35-minute whole-class smartboard review for Mount Tambora (pp. 64–71): Volcano Words (thunder, bark, ash, dream, sunrise), Escape the Island Cause & Effect Relay, Phonics -nd Spotlight (end, stand, wind, send, find, hand), and Feelings Spinner.",
+    "type": "game",
+    "category": "Story & Literature",
+    "categoryLabel": "🌋 Unit 4 Review: The Angry Mountain",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–9",
+    "ageGroup": "8-9",
+    "grade": "Grade 3",
+    "grades": ["Grade 3"],
+    "duration": 35,
+    "durationText": "35 min",
+    "estimatedMinutes": 35,
+    "xp": 120,
+    "skills": ["Reading", "Vocabulary", "Cause & Effect", "Phonics (-nd)", "Speaking"],
+    "topic": "Unit 4 What Happened? — Reading 2 Review: The Angry Mountain (pp. 64–71)",
+    "topics": ["Volcanoes", "Cause and Effect", "Final Blend -nd"],
+    "languageFocus": "thunder, bark, ash, dream, sunrise; end, stand, wind, send, find, hand; 'I felt ... because ...'",
+    "route": "review-g3-mountain/index.html",
+    "url": "review-g3-mountain/index.html",
+    "worksheet": "unit4-g3-lessons/quiz-grade3.html",
+    "worksheetRoute": "unit4-g3-lessons/quiz-grade3.html",
+    "worksheetUrl": "unit4-g3-lessons/quiz-grade3.html",
+    "featured": true,
+    "thumbnailIcon": "🌋",
+    "status": "active"
+  }
 ];
+
+const GAMES_DATA = GAMES_REGISTRY;
+
+if (typeof window !== "undefined") {
+  window.CURRICULUM_TRACKS = CURRICULUM_TRACKS;
+  window.GAMES_REGISTRY = GAMES_REGISTRY;
+  window.GAMES_DATA = GAMES_DATA;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { CURRICULUM_TRACKS, GAMES_REGISTRY, GAMES_DATA };
+}
