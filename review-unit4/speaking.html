@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 4 Speaking Check</title>
+<style>
+  :root { --ink: #0f172a; --line: #94a3b8; --soft: #f1f5f9; --acc: #0ea5e9; --amber: #f59e0b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: var(--ink); background: #fff; font-size: 14px; }
+  .page { max-width: 1050px; margin: 0 auto; padding: 18px 22px; }
+  h1 { margin: 0; font-size: 24px; } h2 { margin: 16px 0 6px; font-size: 17px; border-bottom: 3px solid var(--acc); padding-bottom: 3px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 6px 0 10px; }
+  .bar span { border-bottom: 1px solid var(--ink); min-width: 150px; display: inline-block; height: 18px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 8px; }
+  .tabs button { font: inherit; padding: 6px 14px; border: 2px solid var(--ink); border-bottom-width: 5px; border-radius: 10px; background: #fff; cursor: pointer; font-weight: 700; }
+  .tabs button.on { background: var(--amber); }
+  .tabs button.btn { background: var(--acc); color: #fff; }
+  .tabs button:active { border-bottom-width: 2px; transform: translateY(3px); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .box { border: 2px solid var(--ink); border-radius: 12px; padding: 8px 12px; background: var(--soft); }
+  .box b { display: block; margin-bottom: 3px; }
+  ol, ul { margin: 4px 0 4px 18px; padding: 0; } li { margin: 2px 0; }
+  .ans { color: #475569; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  th, td { border: 1px solid var(--line); padding: 4px 6px; text-align: center; }
+  th { background: var(--soft); font-size: 12px; } td.nm { text-align: left; width: 26%; height: 28px; }
+  td.nt { width: 18%; }
+  .dot { display: inline-block; width: 18px; height: 18px; border: 1.5px solid var(--ink); border-radius: 50%; margin: 0 2px; font-size: 11px; line-height: 15px; }
+  .small { font-size: 12px; color: #475569; }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+  .card { border: 2px dashed var(--ink); border-radius: 10px; padding: 8px; min-height: 70px; font-weight: 600; }
+  .card small { display: block; color: #475569; font-weight: 400; margin-top: 4px; }
+  .noprint { margin-top: 10px; }
+  .tabs button.btn, .btn { font: inherit; padding: 8px 16px; border: 2px solid var(--ink); border-bottom-width: 5px; border-radius: 10px; background: var(--acc); color: #fff; font-weight: 800; cursor: pointer; }
+  .btn:active { border-bottom-width: 2px; transform: translateY(3px); }
+  @media print { .tabs, .noprint { display: none; } .page { padding: 0; } h2 { break-after: avoid; } .box, .card, tr { break-inside: avoid; } }
+  @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } .cards { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 id="ttl">Unit 4 Speaking Check</h1>
+  <div class="tabs noprint"><button id="t3" type="button">Grade 3</button><button id="t4" type="button">Grade 4</button><button class="btn" type="button" onclick="window.print()" style="margin-left:auto">🖨️ Print</button></div>
+  <div class="bar">Class: <span></span> Date: <span style="min-width:110px"></span></div>
+
+  <h2>How it works (about 3 minutes per pair)</h2>
+  <div class="grid2">
+    <div class="box"><b>Task 1 · Question and answer (pair)</b>Pupil A draws a card and asks. Pupil B answers with a full past sentence. Then swap. <span class="small">Listen for: did + base verb in the question, past verb in the answer.</span></div>
+    <div class="box"><b>Task 2 · Tell it (alone, 30 seconds)</b>Choose one story. Say 3 or 4 sentences with <i>First, Then, After that, Finally</i>. <span class="small">Use the verb bank for help.</span></div>
+    <div class="box"><b>Task 3 · Role-play (pair)</b><span id="rp"></span></div>
+    <div class="box"><b>Scoring (1 to 3 for each)</b>1 = needs help · 2 = good · 3 = excellent. Praise self-corrections (“He stoled... no, stole!”). A wrong verb never loses points; it only shows what to practise next.</div>
+  </div>
+
+  <h2>Question cards (cut out)</h2>
+  <div class="cards" id="cards"></div>
+
+  <h2>Verb bank (put on the board)</h2>
+  <div class="grid2"><div class="box"><b>Regular (+ed)</b><span id="reg"></span></div><div class="box"><b>Irregular</b><span id="irr"></span></div></div>
+
+  <h2>Scoring sheet</h2>
+  <table id="sheet"><thead><tr><th>Name</th><th>Past tense<br><span class="small">verbs and did</span></th><th>Words<br><span class="small">unit words</span></th><th>Fluency<br><span class="small">and listening</span></th><th>Sounds<br><span class="small">clear speech</span></th><th>Total<br><span class="small">/12</span></th><th>Note</th></tr></thead><tbody></tbody></table>
+  <p class="small">Keep this sheet private: names and marks are for the teacher only.</p>
+</div>
+<script>
+(function () {
+  var D = {
+    3: {
+      title: 'Unit 4 Speaking Check · Grade 3 (What Happened?)',
+      rp: 'Detective and witness (Mona Lisa): <i>When did it happen? Who took it? What did you see?</i> or Reporter and survivor (The Angry Mountain): <i>What happened to your village? What fell from the sky? How did you leave?</i>',
+      q: [['What did Peruggia steal?', 'He stole the Mona Lisa.'], ['What did he do with the painting?', 'He lifted it off the wall.'], ['What did people do after the robbery?', 'They lined up to see the empty space.'], ['What did the police do?', 'They arrested Peruggia.'], ['What did the mountain do?', 'It made loud noises and the ground moved.'], ['What fell from the sky?', 'Ash and stones fell from the sky.'], ['Why did the girl climb the tree?', 'She wanted to see more.'], ['How did the family leave the island?', 'They left by boat.']],
+      reg: 'painted, wanted, lifted, arrested, lined up, climbed, packed, barked, waved',
+      irr: 'stole, took, found, saw, fell, ran, made, left, had'
+    },
+    4: {
+      title: 'Unit 4 Speaking Check · Grade 4 (We Can Do It)',
+      rp: 'Reporter and player (the Sparks): <i>What did you do when you were losing? What did you win?</i> or Reporter and Harry (Late for the Show): <i>Why were you late? What did the train do? What did Lynn say?</i>',
+      q: [['What did Chelsea Gray do?', 'She scored a three-pointer.'], ['What did the Sparks do when they were losing?', 'They worked harder.'], ['What did the Sparks win?', 'They won the championship.'], ['Why was Harry late?', 'His car was stuck in traffic.'], ['What did the train do?', 'It stopped.'], ['Where did everybody wait?', 'They waited on the platform.'], ['What did Lynn have?', 'She had an idea.'], ['What did the friends do on the platform?', 'They performed the play.']],
+      reg: 'scored, worked, performed, waited, stopped, wanted, clapped, arrived',
+      irr: 'won, was, had, said, took, got, ran, sank, lost'
+    }
+  };
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function draw(g) {
+    var d = D[g];
+    document.getElementById('ttl').textContent = d.title;
+    document.getElementById('rp').innerHTML = d.rp;
+    document.getElementById('reg').textContent = d.reg;
+    document.getElementById('irr').textContent = d.irr;
+    document.getElementById('cards').innerHTML = d.q.map(function (x, i) { return '<div class="card">' + (i + 1) + '. ' + esc(x[0]) + '<small class="ans">' + esc(x[1]) + '</small></div>'; }).join('');
+    var rows = '', dots = '<span class="dot">1</span><span class="dot">2</span><span class="dot">3</span>';
+    for (var i = 0; i < 24; i++) rows += '<tr><td class="nm"></td><td>' + dots + '</td><td>' + dots + '</td><td>' + dots + '</td><td>' + dots + '</td><td></td><td class="nt"></td></tr>';
+    document.querySelector('#sheet tbody').innerHTML = rows;
+    document.getElementById('t3').classList.toggle('on', g === 3);
+    document.getElementById('t4').classList.toggle('on', g === 4);
+    try { history.replaceState(null, '', '?grade=' + g); } catch (e) { /* ignore */ }
+  }
+  var g = 3; try { var m = /[?&]grade=(\d)/.exec(location.search); if (m && m[1] === '4') g = 4; } catch (e) { /* default */ }
+  document.getElementById('t3').onclick = function () { draw(3); };
+  document.getElementById('t4').onclick = function () { draw(4); };
+  draw(g);
+})();
+</script>
+</body>
+</html>
