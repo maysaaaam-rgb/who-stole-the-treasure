@@ -161,6 +161,17 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed11');
     } catch (e) { /* ignore */ }
   }
+  /* 4A on Mon 26 Oct: the Units 1-4 quiz (10:30) and the one-by-one speaking check (11:15); added once, then editable in the calendar */
+  function quizSpeakOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed12')) return;
+      var list = customEvents().slice();
+      list = list.filter(function (e) { return !(e.classId === 'class-4a' && e.date === '2026-10-26' && (e.time === '10:30' || e.time === '11:15')); });
+      list.push({ id: 'seed12-quiz', date: '2026-10-26', time: '10:30', classId: 'class-4a', type: 'quiz', title: 'Units 1-4 QUIZ (A/B): listening, words, reading, writing', note: '25 minutes, 32 marks, print quiz-g4-units1-4 (Version A and B, double-sided). Listening: quiz-g4-units1-4/listening.html. Answers and bands: key.html. Class record: record.html. Lesson plan: Grade4-Units1-4-Quiz-Lesson-Plan.' });
+      list.push({ id: 'seed12-speak', date: '2026-10-26', time: '11:15', classId: 'class-4a', type: 'unit4', title: 'Speaking check, one by one (Units 1-4)', note: 'Open speaking-g4/index.html on your laptop; print the practice cards (speaking-g4/cards.html) for pairs. 4 tasks per pupil, scored 0-2 on accuracy. Lesson plan: Grade4-Speaking-Check-Lesson-Plan.' });
+      saveEvents(list); store().setCalendarFlag('seed12');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -279,7 +290,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
