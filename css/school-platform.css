@@ -9840,3 +9840,29 @@ body.curriculum-drawer-open {
 .ol-card .ol-ic { font-size: 1.5rem; } .ol-card b { flex: 1; font-size: 0.9rem; font-weight: 800; }
 .ol-card em { font-style: normal; font-size: 0.65rem; font-weight: 900; color: #052e16; background: #34d399; border-radius: 999px; padding: 2px 7px; }
 .ol-card i { font-style: normal; color: #38bdf8; }
+
+
+/* ===== Apple-Design & Taste-Skill Platform Polish: Optical Typography, Zero Tap Latency, Reduced Motion & Transparency Fallbacks ===== */
+button, [role="button"], a.btn, .btn, .btn-3d, .nav-item, .ol-card, .lesson-launch, .xp-clickable-badge, .student-xp-pill-clickable {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, .hero-panel-title, .stats-hud-number {
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pedestal-disk, #preview-pedestal, .eaa-monster-artwork-anim, .evolution-sparkle-ray, .roster-monster-sprite {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .dashboard-hero-panel, .dashboard-stats-hud-container, .app-header, .app-sidebar, .classroom-unified-dock {
+    background-color: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
