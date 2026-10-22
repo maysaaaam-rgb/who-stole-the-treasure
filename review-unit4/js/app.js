@@ -298,10 +298,10 @@
   /* ============================== Unit 4 Review: Part 1 remember it, Part 2 play it in Game Maker ============================== */
   var G = D.g;
   function todayU(c) {
-    todayScreen(c, 'Unit 4 review: first we REMEMBER, then we PLAY!', [
-      { e: '📖', t: 'Remember the stories', s: 'Say the missing word', a: D.grade === 4 ? 'o_curtain' : 'o_mona_frame' },
-      { e: '➡️', t: 'Cause and effect', s: 'What happened because...?', a: D.grade === 4 ? 'o_train' : 'o_newspaper' },
-      { e: '🎮', t: 'Play and win', s: 'Games with your monsters', a: '' }
+    todayScreen(c, 'Lesson 1: let us REMEMBER Unit 4. Lesson 2: games!', [
+      { e: '📖', t: 'Stories and words', s: 'Retell it, say it, act it', a: D.grade === 4 ? 'o_curtain' : 'o_mona_frame' },
+      { e: '🔢', t: 'Order and cause', s: 'What happened first? Why?', a: D.grade === 4 ? 'o_train' : 'o_newspaper' },
+      { e: '❓', t: 'Reading quiz', s: 'Think and answer', a: '' }
     ]);
   }
 
@@ -350,6 +350,52 @@
     });
   }
 
+  /* PART 1c: Words: say the missing word, then ACT it */
+  function wordsRecap(c) {
+    howTo(c, { icon: '🔤', title: 'Words from the unit', goal: 'Say the missing word, then ACT the word!', pupils: 'The team says the missing word. Then the whole team acts it for three seconds.', teacher: 'Press SHOW to reveal the word. The board says it and tells the team how to act. 2 points for a great act, 1 for a good try.' }, function (host, again) {
+      var deck = shuffle(G.words), round = 0, turn = 0, word = null, stage = 'clue';
+      var banner = h('div'), clue = h('div', { class: 'reqcard' }), msg = h('div', { class: 'msg gmsg' }), row = h('div', { class: 'row' });
+      function buttons() {
+        row.innerHTML = '';
+        if (stage === 'clue') row.appendChild(btn('👀 SHOW the word', 'amber big', function () { stage = 'act'; clue.innerHTML = ''; clue.appendChild(fill(h('div', { class: 'rq-e' }), word.e, '', word.a)); clue.appendChild(h('div', { class: 'rq-t', text: word.w + ': ' + word.ex.replace(/_+/g, word.w) })); A.speakSeq([word.w, word.ex.replace(/_+/g, word.w)]); sfx('correct'); msg.textContent = '🎭 ACT it: ' + word.act; buttons(); }));
+        else { row.appendChild(btn('⭐ Great act! +2', 'green big', function () { addPoint(turn, 2); sfx('win'); confetti(); next(1000); })); row.appendChild(btn('👍 Good try +1', 'ghost', function () { addPoint(turn, 1); sfx('correct'); next(800); })); }
+      }
+      function next(ms) { setTimeout(function () { round++; turn = (turn + 1) % D.teams.length; draw(); }, ms); }
+      function draw() {
+        if (round >= deck.length) { gameFinish(c, host, again); return; }
+        word = deck[round]; stage = 'clue'; var nb = teamBanner(turn, '🔤 Word ' + (round + 1) + ' of ' + deck.length); banner.replaceWith(nb); banner = nb;
+        clue.innerHTML = ''; clue.appendChild(fill(h('div', { class: 'rq-e' }), '❓', '', null)); clue.appendChild(h('div', { class: 'rq-t', text: word.ex })); msg.textContent = 'Team: talk, then say the word.'; A.speak(word.ex.replace(/_+/g, 'blank')); buttons();
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(clue); host.appendChild(msg); host.appendChild(row); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 20)]));
+      draw();
+    });
+  }
+
+  /* PART 1d: Put the events in order */
+  function orderU(c) { orderRace(c, G.order, 3); }
+
+  /* PART 1e: Reading quiz: questions about the readings */
+  function readingQuiz(c) {
+    howTo(c, { icon: '❓', title: 'Reading quiz', goal: 'Answer questions about the stories. Think, then choose!', pupils: 'Talk with your team for 10 seconds. Then say your answer out loud.', teacher: 'Tap the answer your team says. Right = 1 point. A wrong tap gives a hint and they try again, nothing is lost.' }, function (host, again) {
+      var deck = shuffle(G.quiz), round = 0, turn = 0, tries = 0, cur = null;
+      var banner = h('div'), card = h('div', { class: 'reqcard' }), opts = h('div', { class: 'row bigopts' }), msg = h('div', { class: 'msg gmsg' });
+      function draw() {
+        if (round >= deck.length) { gameFinish(c, host, again); return; }
+        cur = deck[round]; tries = 0; var nb = teamBanner(turn, '❓ Question ' + (round + 1) + ' of ' + deck.length); banner.replaceWith(nb); banner = nb;
+        card.innerHTML = ''; card.appendChild(h('div', { class: 'rq-e', text: cur.e })); card.appendChild(h('div', { class: 'rq-t', text: cur.q })); msg.textContent = ''; opts.innerHTML = '';
+        shuffle(cur.o.map(function (t, k) { return { t: t, k: k }; })).forEach(function (o) {
+          var b = btn(o.t, 'amber big', function () {
+            if (o.k === 0) { if (tries === 0) addPoint(turn, 1); sfx('correct'); msg.textContent = '✅ ' + cur.o[0] + (tries === 0 ? '  +1' : ''); A.speak(cur.o[0]); round++; turn = (turn + 1) % D.teams.length; setTimeout(draw, 1500); }
+            else { tries++; b.classList.remove('wob', 'wobble'); void b.offsetWidth; b.classList.add('wobble'); sfx('soft'); msg.textContent = 'Almost! ' + cur.h; A.speak('Try again.'); }
+          }); opts.appendChild(b);
+        });
+        A.speak(cur.q);
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(card); host.appendChild(opts); host.appendChild(msg); host.appendChild(h('div', { class: 'row' }, [timerBtn(c, 10)]));
+      draw();
+    });
+  }
+
   /* PART 2: the games, in Game Maker, with the Unit 4 questions already loaded */
   function gamesPart(c) {
     var body = c.body;
@@ -366,17 +412,25 @@
 
   var MODES = { game: '🎮 Game', think: '🤔 Think', listen: '👂 Listen', act: '🎭 Act it out', move: '🚶 Move', talk: '🗣️ Talk', race: '🏆 Team race' };
   var LESSONS = {
-    1: { title: 'Unit 4 Review · Grade ' + D.grade, missions: [], door: '', scenes: [
-      { t: 'Today: remember, then play', mins: '2 min', mode: 'think', run: todayU, intro: 'Unit 4 review: Part 1 remember, Part 2 games.',
-        tip: ['Use this AFTER the book pages (Grade ' + D.grade + ', Unit 4, pp. 56-71). It is a review: no new teaching. Make 4 teams. Tap a team name in the top bar for +1 any time.', 'Part 1 (about 14 minutes): the story cards and cause and effect. Part 2 (about 17 minutes): games in Game Maker with the Unit 4 questions. Finish with the door pass.'] },
-      { t: 'Part 1: Remember the stories', mins: '8 min', mode: 'game', run: storyCards, intro: 'Look at the picture. Retell it. Say the missing word.',
+    1: { title: 'Unit 4 Review 1 · Grade ' + D.grade, tab: '1 · Remember it', missions: [], door: '', scenes: [
+      { t: 'Today: remember Unit 4', mins: '2 min', mode: 'think', run: todayU, intro: 'Lesson 1: remember the whole unit. Lesson 2: games.',
+        tip: ['Use this AFTER the pupils finished the book pages (Grade ' + D.grade + ', Unit 4, pp. 56-71). It is a review: no new teaching. Make 4 teams. Tap a team name in the top bar for +1 any time.', 'Lesson 1 order: stories, words, put in order, cause and effect, reading quiz, then the finish screen. Lesson 2 is the games (tab "2 · Play games").'] },
+      { t: 'Remember the stories', mins: '7 min', mode: 'game', run: storyCards, intro: 'Look at the picture. Retell it. Say the missing word.',
         tip: ['Each card shows one moment from the unit. The team retells it, then taps the missing word. SHOW LINE reads the story line. Right = 1 point, a wrong tap gives a hint and no points are lost.'] },
-      { t: 'Part 1: Cause and effect', mins: '6 min', mode: 'game', run: causeEffect, intro: 'A cause is why. An effect is what happens.',
+      { t: 'Words from the unit', mins: '7 min', mode: 'act', run: wordsRecap, intro: 'Say the missing word. Then act it.',
+        tip: ['Book link: Words in Context (Grade 3: plan, steal, lifted, robbery, arrested; thunder, bark, ash, dream, sunrise; the -nd sound. Grade 4: league, court, basket, score, shooting; show, calm, platform, sank, alive). The team says the word, then you press SHOW and everybody acts it.'] },
+      { t: 'Put the events in order', mins: '5 min', mode: 'game', run: orderU, intro: 'What happened first? Then? Finally?',
+        tip: ['Two stories a team each: tap the sentences in the right order. Right order = 3 points. A wrong tap wobbles with a hint. Then the team retells with First, Then, After that, Finally.'] },
+      { t: 'Cause and effect', mins: '5 min', mode: 'game', run: causeEffect, intro: 'A cause is why. An effect is what happens.',
         tip: ['Book link: cause and effect (Grade 3 p. 65 and p. 71; the same idea works for the Grade 4 stories). Ask for full sentences with "because". Right = 2 points.'] },
-      { t: 'Part 2: Play the games', mins: '17 min', mode: 'race', run: gamesPart, intro: 'Pick a game. It opens in Game Maker with the Unit 4 questions.',
-        tip: ['Each button opens Game Maker with this grade\'s Unit 4 questions already chosen and the game ready to set up. Set 2 to 4 teams, press PLAY. Use ☰ Games in Game Maker to choose another game, and the lesson link to come back here for the last step.'] },
-      { t: 'Unit 4 done', mins: '3 min', mode: 'think', run: finishU, intro: 'Scores and one sentence each.',
+      { t: 'Reading quiz', mins: '6 min', mode: 'game', run: readingQuiz, intro: 'Questions about the stories.',
+        tip: ['Book link: Explore the Reading (Grade 3 pp. 64 and 70). The team talks for 10 seconds, you tap the answer they say. Right = 1 point.'] },
+      { t: 'Unit 4 remembered!', mins: '3 min', mode: 'think', run: finishU, intro: 'Scores and one sentence each.',
         tip: ['Show the scores and cheer for everyone. Each team says one sentence. At the door each pupil says one sentence with "because".'] }
+    ] },
+    2: { title: 'Unit 4 Review 2 · Grade ' + D.grade, tab: '2 · Play games', missions: [], door: '', scenes: [
+      { t: 'Play the games', mins: '30 min', mode: 'race', run: gamesPart, intro: 'Pick a game. It opens in Game Maker with the Unit 4 questions.',
+        tip: ['Each button opens Game Maker with this grade\'s Unit 4 questions already chosen and the game ready to set up. Set 2 to 4 teams, press PLAY. Use ☰ Games in Game Maker to choose another game. Play 3 or 4 different games in the lesson.'] }
     ] }
   };
 
@@ -389,7 +443,7 @@
     if (keys.length <= 1) return;
     keys.forEach(function (k) {
       var id = parseInt(k, 10);
-      box.appendChild(h('button', { type: 'button', class: 'btn ltab' + (state.lesson === id ? ' on' : ' ghost'), text: 'Case ' + id, title: LESSONS[id].title, onclick: function () { if (state.lesson !== id) go(id, 0); } }));
+      box.appendChild(h('button', { type: 'button', class: 'btn ltab' + (state.lesson === id ? ' on' : ' ghost'), text: (LESSONS[id].tab || ('Case ' + id)), title: LESSONS[id].title, onclick: function () { if (state.lesson !== id) go(id, 0); } }));
     });
   }
   function drawSteps() {
