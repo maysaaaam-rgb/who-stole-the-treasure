@@ -431,3 +431,50 @@ html.class-mode { --cp-ink-3: #fff; }
 .thematic-companion-card .thematic-tag { color: #cbd5e1; }
 .thematic-companion-card .thematic-quote { color: #e2e8f0; }
 .thematic-companion-card .thematic-char-role { color: #e2e8f0; }
+
+/* --------------------------------------------------------------------------
+   19. IMPECCABLE CRAFT FLOOR & 60FPS ANIMATION PERFORMANCE
+   (Browser surfaces, tabular numerals, origin-aware popovers, touch hover
+    guards, and content-visibility grid virtualization)
+   -------------------------------------------------------------------------- */
+/* 19a. Browser surfaces: themed selection, caret, scrollbars, underline offset */
+::selection { background: rgba(56, 189, 248, 0.32); color: #ffffff; }
+html.class-mode ::selection { background: rgba(91, 91, 214, 0.24); color: #1e1b4b; }
+input, textarea { caret-color: #38bdf8; }
+html.class-mode :is(input, textarea) { caret-color: #5b5bd6; }
+html { scrollbar-width: thin; scrollbar-color: rgba(148, 163, 184, 0.35) transparent; }
+html.class-mode { scrollbar-color: rgba(91, 91, 214, 0.32) transparent; }
+a, .par-link, .par-back { text-underline-offset: 0.22em; }
+
+/* 19b. Tabular numerals on all counters, timers, badges, and leaderboards */
+.xp-num, .xp-clickable-badge, .student-xp-pill-clickable, .stats-hud-number,
+.class-stat-num, .par-stat strong, .cb-pt, .cb-tm b, .cc-kp b, .track-count-pill,
+.nav-badge-pill, #toolkit-timer-display, .cr-pod .place, .pill-streak-box {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 19c. Optical heading balance */
+h1, h2, h3, .card-title-text, .cm-card b, .hero-tile-heading, .empty-state-title {
+  text-wrap: balance;
+}
+
+/* 19d. Origin-aware popovers (scale from trigger, never from center) */
+.create-dropdown-menu, .card-dropdown-menu { transform-origin: top right; }
+#role-dropdown-menu { transform-origin: top left; }
+.dock-more-menu { transform-origin: bottom center; }
+
+/* 19e. Touch-device hover guard: prevent sticky hover lifts on smartboards & tablets */
+@media (hover: none) and (pointer: coarse) {
+  .cm-card:hover, .cm-b:hover, .cm-b:hover img,
+  .resource-card-v3:hover, .student-directory-card:hover,
+  .hero-tile-card:hover, .btn-card-pencil:hover,
+  .xp-clickable-badge:hover, .student-xp-pill-clickable:hover {
+    transform: none !important;
+  }
+}
+
+/* 19f. Off-screen card grid virtualization (138-card Library & Game Shelf) */
+.resource-card-v3, .cm-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
+}
