@@ -170,6 +170,12 @@
   }
   function init() {
     stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'board';
+    /* links from the lessons: ?set=<set id>&game=<game id> opens that question set (and that game's set-up) */
+    try {
+      var qs = location.search, ms = /[?&]set=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs);
+      if (ms && allSets().some(function (x) { return x.id === ms[1]; })) S.setId = ms[1];
+      if (mg && GM.modes[mg[1]]) { S.modeId = mg[1]; S.screen = 'setup'; S.teams = []; }
+    } catch (e) { /* ignore */ }
     document.getElementById('gm-teams').style.display = 'none';
     var snd = document.getElementById('gm-snd'); snd.addEventListener('click', function () { A.setMuted(!A.isMuted()); snd.textContent = A.isMuted() ? '🔇' : '🔊'; if (!A.isMuted()) A.play('tap'); });
     var homeB = document.getElementById('gm-home'), armed = false;
