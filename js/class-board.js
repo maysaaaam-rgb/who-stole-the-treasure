@@ -71,7 +71,8 @@
     '.cb-goal .bar{flex:1;height:22px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.cb-goal .bar i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#fb7185);border-radius:99px;box-shadow:0 0 18px #fbbf24;transition:width .5s}' +
     '.cb-goal b{font-size:1.1rem;font-weight:600;white-space:nowrap}' +
     '.cb-mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;position:relative}' +
-    '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s}' +
+    '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s;animation:cbCardIn .28s cubic-bezier(.175,.885,.32,1.275) backwards;animation-delay:calc(var(--i,0) * 22ms)}' +
+    '@keyframes cbCardIn{from{opacity:0;transform:translateY(10px) scale(.96)}}' +
     '.cb-st:hover{transform:translateY(-5px);background:rgba(255,255,255,.2)}' +
     '.cb-st img.cb-mon{width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 10px 8px rgba(0,0,0,.35));cursor:pointer;transition:transform .18s cubic-bezier(.175,.885,.32,1.275)}' +
     '.cb-st img.cb-mon.cb-bounce{animation:cbMonBounce .45s cubic-bezier(.175,.885,.32,1.275)}' +
@@ -117,7 +118,14 @@
     '.cb-gnums button.cb-gnum{min-width:78px;min-height:72px;font-size:1.85rem;font-weight:800;border-radius:20px;background:#38bdf8;color:#06101f;border-bottom:5px solid #0369a1}' +
     '.cb-gnums button.cb-gnum.on{background:#f59e0b;color:#2b1700;border-bottom-color:#b45309}' +
     '.cb-hat{font-size:.78rem;font-weight:700;color:#cbd5e1;padding:0 6px;white-space:nowrap;align-self:center}' +
-    '.cb-dock{gap:5px;padding:6px 8px;border-radius:16px;flex-wrap:nowrap;max-width:96vw;overflow-x:auto}.cb-dock button{padding:6px 11px;font-size:.85rem;border-radius:11px;border-bottom-width:3px;white-space:nowrap}.cb-dock button.sm{padding:6px 8px}.cb-dock button.ic{padding:6px 8px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
+    '.cb-dock{gap:6px;padding:6px 10px;border-radius:20px;flex-wrap:nowrap;max-width:96vw;overflow:visible}.cb-dock button{padding:7px 12px;font-size:.86rem;border-radius:12px;border-bottom-width:3px;white-space:nowrap}.cb-dock button.sm{padding:5px 8px}.cb-dock button.ic{padding:7px 9px;font-size:1rem}.cb-dock .sep{margin:2px 2px}' +
+    '.cb-tm-pills{display:inline-flex;gap:3px;background:rgba(0,0,0,.18);padding:3px;border-radius:13px;align-items:center}' +
+    '.cb-more-wrap{position:relative;display:inline-flex}' +
+    '.cb-more-menu{position:absolute;right:0;bottom:calc(100% + 10px);background:#1e1b4b;border:1px solid rgba(255,255,255,.26);border-radius:18px;padding:8px;display:none;grid-template-columns:repeat(2,minmax(138px,1fr));gap:6px;box-shadow:0 20px 50px rgba(0,0,0,.6);z-index:80;transform-origin:bottom right;animation:cbPopUp .16s cubic-bezier(.16,1,.3,1)}' +
+    '.cb-more-menu.open{display:grid}' +
+    '@keyframes cbPopUp{from{opacity:0;transform:translateY(6px) scale(.95)}}' +
+    '.cb-dock .cb-more-menu button{justify-content:flex-start;width:100%;background:rgba(255,255,255,.12)!important;color:#fff!important;border-bottom:3px solid rgba(0,0,0,.35)!important;font-size:.85rem!important;padding:8px 11px!important;border-radius:11px!important}' +
+    '.cb-dock .cb-more-menu button:hover{background:rgba(255,255,255,.22)!important}' +
     '.cb-goal.won{background:linear-gradient(90deg,rgba(251,191,36,.45),rgba(244,63,94,.45));animation:cbPulse 1.6s infinite}' +
     '.cb-gm{position:fixed;inset:0;z-index:99996;background:rgba(10,5,40,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Fredoka,system-ui,sans-serif;color:#fff}' +
     '.cb-gm>div{background:linear-gradient(180deg,#5b34c8,#3b2399);border:2px solid rgba(255,255,255,.3);border-radius:28px;padding:22px 26px;width:min(720px,96vw);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.6)}' +
@@ -254,8 +262,8 @@
       return e.route ? '<a href="' + esc(e.route) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
     }).join('') + '<button onclick="Timetable.edit()">📅</button>';
   }
-  function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); }
-  if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('#cb-pop') && !e.target.closest('.cb-mn'))) closeMenus(); });
+  function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); var m = document.getElementById('cb-dock-more'); if (m) m.classList.remove('open'); }
+  if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('#cb-pop') && !e.target.closest('.cb-mn') && !e.target.closest('.cb-more-wrap'))) closeMenus(); });
 
   function hatFor(cls) {
     var id = (cls && cls.id) || 'default';
@@ -286,11 +294,12 @@
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
-      '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s) {
-        var plate = !sceneOn && s.x && s.x.plate && s.x.plate.css ? ' style="' + esc(s.x.plate.css) + '"' : '';
+      '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
+        var plateCss = !sceneOn && s.x && s.x.plate && s.x.plate.css ? s.x.plate.css : '';
+        var stStyle = ' style="--i:' + Math.min(idx, 12) + (plateCss ? ';' + esc(plateCss) : '') + '"';
         var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
-        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plate ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + plate + '>' + animal + avBadge +
+        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge +
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
@@ -300,15 +309,24 @@
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
-        '<button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button><span class="sep"></span>' +
+        '<span class="cb-tm-pills"><button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button></span><span class="sep"></span>' +
         '<button onclick="ClassBoard.pick()" title="Pick a student (no repeats until everyone is picked)">🎲 Pick</button>' +
         '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
-        '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span>' +
-        '<button class="sm" onclick="ClassBoard.resetHat()" title="Reset the fair-pick hat">↺ Reset hat</button><span class="sep"></span>' +
+        '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span><span class="sep"></span>' +
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
-        '<button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button><button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button><button onclick="VoiceFX.toggle()" title="Voice Changer: talk into the microphone and sound like a funny character">🎙️ Voice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
+        '<button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button>' +
+        '<button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
         '<button class="ic" onclick="try{classSoundboard.playAttentionBell()}catch(e){}" title="Bell">🔔</button><button class="ic" onclick="try{classSoundboard.playApplause()}catch(e){}" title="Applause">👏</button><span class="sep"></span>' +
-        '<button class="ic" onclick="ClassBoard.addStudent()" title="Add a student">➕</button><button class="ic" onclick="switchView(\'store\')" title="Classroom Store">🛍️</button><button class="ic" onclick="ClassBoard.full()" title="Full screen">⛶</button><button class="ic" onclick="switchView(\'command\')" title="Exit the board">✕</button></div></div>';
+        '<div class="cb-more-wrap"><button type="button" class="cb-more-btn" onclick="var m=document.getElementById(\'cb-dock-more\');if(m)m.classList.toggle(\'open\')" title="More classroom tools">🧰 Tools ▾</button>' +
+        '<div class="cb-more-menu" id="cb-dock-more">' +
+          '<button onclick="ClassBoard.groups()" title="Make groups">👥 Groups</button>' +
+          '<button onclick="VoiceFX.toggle()" title="Voice Changer">🎙️ Voice FX</button>' +
+          '<button onclick="ClassBoard.resetHat()" title="Reset the fair-pick hat">↺ Reset hat</button>' +
+          '<button onclick="ClassBoard.addStudent()" title="Add a student">➕ Add pupil</button>' +
+          '<button onclick="switchView(\'store\')" title="Classroom Store">🛍️ Store</button>' +
+          '<button onclick="ClassBoard.full()" title="Full screen">⛶ Full screen</button>' +
+          '<button onclick="switchView(\'command\')" title="Exit the board" style="grid-column:1/-1">✕ Exit Class Board</button>' +
+        '</div></div></div></div>';
     paintGoal(); paintClock(); paintHat();
     // pull the newest goal from the cloud, then redraw the bar
     try { if (root.ClassroomStore && root.ClassroomStore.cloud) root.ClassroomStore.cloud.pull().then(function () { paintGoal(); }); } catch (e) { /* offline */ }
