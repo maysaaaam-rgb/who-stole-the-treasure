@@ -164,3 +164,47 @@ html.class-mode .cb-dock button.p { background: var(--pm-orange) !important; col
 .cm-cur .k.on { background: #f59e0b; color: #2b1700; border-bottom-color: #b45309; } .cm-cur .h { background: #fee2e2; color: #991b1b; border-bottom-color: #fca5a5; } .cm-cur .cm-try { background: #e0e7ff; }
 .cm-cur a:active, .cm-cur button:active { transform: translateY(3px); border-bottom-width: 1px; }
 .curriculum-cleanup-btn { font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px; padding: 8px 14px; margin-right: 10px; background: #f59e0b; color: #2b1700; border: 0; border-bottom: 4px solid #b45309; }
+
+/* ---- 5. Apple-Design & Taste-Skill Fluid Polish: zero tap delay, tablet dock wrap, reduced-motion & reduced-transparency ---- */
+.cm-toggle, .cm-b, .cm-cls, .cm-chip, .cm-card, .cm-cur a, .cm-cur button, .curriculum-cleanup-btn, html.class-mode .cb-add button, html.class-mode .cb-dock button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+html.class-mode .app-header {
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+@media (max-width: 1200px) {
+  html.class-mode .cb-dock {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    overflow-x: visible !important;
+    max-width: calc(100vw - 116px) !important;
+    left: auto !important;
+    right: 12px !important;
+    transform: none !important;
+    row-gap: 4px !important;
+  }
+}
+@media (max-width: 800px) {
+  html.class-mode .cb-dock {
+    max-width: 96vw !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-pic span, .cb-mg.scene .cb-st.off .cb-pw::before { animation: none !important; }
+  .cm-toggle, .cm-b, .cm-b img, .cm-chip, .cm-card, .cm-cls, html.class-mode .cb-add button, html.class-mode .cb-dock button {
+    transition: opacity 150ms ease, background-color 150ms ease !important;
+  }
+  .cm-card:hover, .cm-b:hover img, html.class-mode .cb-mg.scene .cb-st:hover { transform: none !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.class-mode .app-header, html.class-mode .cb-dock, html.class-mode .cv-panel {
+    background: #f6f4ff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

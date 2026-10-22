@@ -97,20 +97,29 @@
     var k = role + '|' + hash(monster);
     return comp[k] || (comp[k] = compose(chars[role], monster));
   }
-  var LABEL = { both: '🎭 Look: character + my monster', characters: '🎭 Look: characters only', costume: '🎭 Look: monsters in costume', monsters: '🎭 Look: my monsters (normal)' };
+  var LABEL = { both: '🎭 Look: Character + Monster', characters: '🎭 Look: Characters only', costume: '🎭 Look: Costume Monsters', monsters: '🎭 Look: Normal Monsters' };
   function setMode(m) { try { localStorage.setItem(MODE_KEY, m); } catch (e) { /* not remembered */ } comp = {}; paintChip(); refresh(); }
   function paintChip() {
     var c = document.getElementById('aw-chip');
     var show = active() && !document.documentElement.classList.contains('platform-locked');
     try { if (root.schoolStore && root.schoolStore.getRole && root.schoolStore.getRole() !== 'teacher') show = false; } catch (e) { /* show */ }
+    var vc = document.getElementById('app-view-container');
+    var viewName = (vc && vc.getAttribute('data-view')) || '';
+    var sw = document.querySelector('.cb-sw');
+    if (!sw && viewName && viewName !== 'board' && viewName !== 'classview') show = false;
     if (!show) { if (c) c.style.display = 'none'; return; }
     if (!c) {
       c = document.createElement('button'); c.id = 'aw-chip'; c.type = 'button'; c.title = 'Tea Party week: choose what the pupils\' pictures show (tap to change)';
-      c.style.cssText = 'position:fixed;left:12px;bottom:84px;z-index:95;max-width:230px;border:0;border-bottom:5px solid #92400e;border-radius:14px;background:#f59e0b;color:#1c1203;font:800 .9rem/1.1 inherit;padding:9px 14px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s';
-      c.onmousedown = function () { c.style.transform = 'translateY(4px)'; c.style.borderBottomWidth = '1px'; };
-      c.onmouseup = c.onmouseleave = function () { c.style.transform = ''; c.style.borderBottomWidth = '5px'; };
+      c.onpointerdown = function () { c.style.transform = 'translateY(3px) scale(0.98)'; c.style.borderBottomWidth = '1px'; };
+      c.onpointerup = c.onpointerleave = c.onpointercancel = function () { c.style.transform = ''; c.style.borderBottomWidth = '4px'; };
       c.onclick = function () { var order = ['both', 'characters', 'costume', 'monsters']; setMode(order[(order.indexOf(mode()) + 1) % 4]); };
-      document.body.appendChild(c);
+    }
+    if (sw) {
+      if (c.parentNode !== sw) sw.appendChild(c);
+      c.style.cssText = 'border:0;border-bottom:4px solid #92400e;border-radius:14px;background:#f59e0b;color:#1c1203;font:700 .9rem/1.1 Fredoka,sans-serif;padding:8px 12px;cursor:pointer;white-space:nowrap;touch-action:manipulation;transition:transform .1s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .1s';
+    } else {
+      if (c.parentNode !== document.body) document.body.appendChild(c);
+      c.style.cssText = 'position:fixed;right:16px;bottom:84px;z-index:95;border:0;border-bottom:4px solid #92400e;border-radius:14px;background:#f59e0b;color:#1c1203;font:800 .88rem/1.1 inherit;padding:9px 14px;cursor:pointer;white-space:nowrap;touch-action:manipulation;box-shadow:0 6px 18px rgba(0,0,0,.35);transition:transform .1s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .1s';
     }
     c.style.display = ''; c.textContent = LABEL[mode()];
   }
