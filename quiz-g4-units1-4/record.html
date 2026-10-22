@@ -8,6 +8,9 @@ body { font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; color: #11182
 .head h1 { font-size: 15pt; flex: 1; } .head .v { font-size: 22pt; font-weight: 900; border: 2.4px solid #111827; border-radius: 3mm; padding: 0 4mm; background: #fde68a; }
 .who { display: grid; grid-template-columns: 2.4fr 1fr 1fr; gap: 5mm; font-weight: 800; margin: 3mm 0 1mm; }
 .who span { display: inline-block; border-bottom: 1.4px dotted #111827; min-width: 30mm; }
+.pic { height: 13mm; width: auto; object-fit: contain; flex: none; } .em { font-size: 9mm; line-height: 1; width: 13mm; text-align: center; flex: none; }
+.row { display: flex; gap: 2.4mm; align-items: center; } .row .body { flex: 1; }
+.pics { display: flex; gap: 2mm; justify-content: center; margin-bottom: 1mm; } .pics .pic { height: 12mm; } .wpics { display: flex; gap: 1mm; width: 28mm; justify-content: center; } .wpics .pic { height: 11mm; }
 .note { font-size: 10pt; font-weight: 700; color: #374151; margin: 1mm 0 2mm; }
 .sec { border: 2px solid #111827; border-radius: 3mm; padding: 1.8mm 3.2mm 2mm; margin-top: 2.4mm; break-inside: avoid; }
 .sh { display: flex; justify-content: space-between; gap: 3mm; margin-bottom: 1.6mm; }
@@ -18,7 +21,7 @@ body { font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif; color: #11182
 .it { margin: 1.3mm 0 2mm; break-inside: avoid; } .it .s { font-weight: 700; }
 .opts { display: flex; flex-wrap: wrap; gap: 1.2mm 3.5mm; margin-top: .8mm; font-size: 10.5pt; } .opts span:before { content: '○ '; font-weight: 900; }
 .rd { border: 1.6px solid #111827; border-radius: 2.4mm; padding: 1.6mm 2.4mm; break-inside: avoid; } .rd p { font-size: 10.5pt; margin-bottom: 1mm; }
-.ln { border-bottom: 1.4px solid #94a3b8; height: 5.2mm; } .wr { display: grid; grid-template-columns: 1fr 14mm; gap: 3mm; align-items: end; margin-bottom: .8mm; break-inside: avoid; }
+.ln { border-bottom: 1.4px solid #94a3b8; height: 4.4mm; } .wr { display: grid; grid-template-columns: 1fr 14mm; gap: 3mm; align-items: end; margin-bottom: .8mm; break-inside: avoid; }
 .wr .pr { font-weight: 800; } .wr .pr small { font-weight: 600; color: #475569; display: block; } .mk { border: 1.6px solid #111827; border-radius: 2mm; text-align: center; font-weight: 800; height: 8mm; line-height: 8mm; }
 .tstrip { margin-top: 2mm; border: 2px dashed #64748b; border-radius: 3mm; padding: 2mm 3mm; display: flex; flex-wrap: wrap; gap: 2mm 6mm; font-weight: 800; font-size: 10.5pt; }
 table { border-collapse: collapse; width: 100%; } th, td { border: 1.4px solid #64748b; padding: 1.2mm 2mm; text-align: left; font-size: 10.5pt; } th { background: #f1f5f9; }
