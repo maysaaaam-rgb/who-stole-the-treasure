@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cat Meme Grammar Posters - 4x A4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cat Meme Pronoun Posters — 2×2 Classroom Wall Set</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@800;900&display=swap');
 
   * {
     box-sizing: border-box;
@@ -13,216 +14,17 @@
   }
 
   body {
-    background-color: #555;
-    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(circle at 50% 20%, #1e293b 0%, #090d16 100%);
+    font-family: 'Nunito', system-ui, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    padding: 20px 0;
+    gap: 22px;
+    padding: 20px 0 48px;
+    min-height: 100vh;
   }
 
-  /* A4 Canvas Sizing */
-  .a4-page {
-    width: 210mm;
-    height: 297mm;
-    background: #ffffff;
-    padding: 10mm 12mm;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    page-break-after: always;
-    overflow: hidden;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin: 0;
-  }
-
-  @media print {
-    body {
-      background: none;
-      padding: 0;
-      gap: 0;
-    }
-    .a4-page {
-      box-shadow: none;
-      width: 210mm;
-      height: 297mm;
-      page-break-after: always;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-  }
-
-  /* Shared Poster Header */
-  .poster-header {
-    text-align: center;
-    padding: 8px 10px;
-    border-radius: 16px;
-    margin-bottom: 10px;
-    color: #ffffff;
-    text-transform: uppercase;
-    font-family: 'Fredoka One', cursive;
-    letter-spacing: 1px;
-    border: 3px solid #111;
-    box-shadow: 4px 4px 0px #111;
-    flex-shrink: 0;
-  }
-  .poster-header h1 { font-size: 25pt; margin: 0; line-height: 1.08; }
-  .poster-header p { font-size: 12.5pt; margin-top: 3px; font-weight: 900; opacity: 0.95; font-family: 'Nunito', sans-serif; }
-
-  /* Content Grids */
-  .grid-2x1 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    flex: 1;
-    min-height: 0;
-  }
-  .grid-vertical {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 12px;
-    flex: 1;
-    min-height: 0;
-  }
-
-  /* Meme Cards */
-  .meme-card {
-    border-radius: 18px;
-    border: 4px solid #111;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    text-align: center;
-    background: #fafafa;
-    position: relative;
-    box-shadow: 4px 4px 0px #111;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .badge {
-    font-family: 'Fredoka One', cursive;
-    font-size: 28pt;
-    padding: 3px 18px;
-    border-radius: 50px;
-    color: #fff;
-    display: inline-block;
-    border: 3px solid #111;
-    margin-bottom: 4px;
-    box-shadow: 3px 3px 0px #111;
-    line-height: 1.05;
-    flex-shrink: 0;
-  }
-
-  .rule-tag {
-    font-size: 10.5pt;
-    font-weight: 900;
-    text-transform: uppercase;
-    background: #fff;
-    border: 2.5px solid #111;
-    padding: 3px 12px;
-    border-radius: 10px;
-    margin-bottom: 4px;
-    flex-shrink: 0;
-  }
-
-  .illustration {
-    width: 100%;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 4px 0 6px 0;
-    overflow: hidden;
-    border-radius: 14px;
-    border: 3px solid #111;
-    background: #fff;
-  }
-
-  .illustration img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .caption-bubble {
-    width: 100%;
-    background: #ffffff;
-    border: 3px solid #111;
-    border-radius: 14px;
-    padding: 7px 10px;
-    box-shadow: 2px 2px 0px #111;
-    flex-shrink: 0;
-  }
-  .caption-bubble .speech {
-    font-size: 13pt;
-    font-weight: 900;
-    color: #111;
-  }
-  .caption-bubble .example {
-    font-size: 10.5pt;
-    font-weight: 700;
-    color: #444;
-    margin-top: 2px;
-  }
-
-  /* Color Schemes */
-  .bg-blue { background-color: #2b70e4; }
-  .bg-pink { background-color: #e83e8c; }
-  .bg-amber { background-color: #f59f00; }
-  .bg-purple { background-color: #7950f2; }
-  .bg-green { background-color: #2fb344; }
-  .bg-red { background-color: #d63939; }
-  .bg-teal { background-color: #0ca678; }
-
-  /* Poster Specific Customizations */
-  .p1-header { background: #2b70e4; }
-  .p2-header { background: #7950f2; }
-  .p3-header { background: #0ca678; }
-  .p4-header { background: #f59f00; }
-
-  .card-he { background: #e7f5ff; border-color: #1c7ed6; }
-  .card-she { background: #fff0f6; border-color: #d6336c; }
-  .card-it { background: #fff9db; border-color: #f08c00; }
-
-  .card-you { background: #f3f0ff; border-color: #7048e8; }
-  .card-they { background: #e6fcf5; border-color: #0ca678; }
-  .card-them { background: #fff4e6; border-color: #fd7e14; }
-
-  .card-this { background: #ebfbee; border-color: #2b8a3e; }
-  .card-that { background: #fff5f5; border-color: #c92a2a; }
-
-  .card-these { background: #e6fcf5; border-color: #099268; }
-  .card-those { background: #fff0f6; border-color: #a61e4d; }
-
-  .full-width-card {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    gap: 16px;
-    padding: 12px 16px;
-  }
-  .full-width-card .illustration {
-    width: 48%;
-    height: 100%;
-    margin: 0;
-  }
-  .full-width-card .card-content {
-    width: 52%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
+  /* Floating Top Control Bar (Hidden on Print) */
   .no-print-bar {
     position: sticky;
     top: 12px;
@@ -230,36 +32,41 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    width: 210mm;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: min(96vw, 230mm);
     background: rgba(15, 23, 42, 0.92);
     backdrop-filter: blur(14px);
     color: #fff;
-    padding: 12px 20px;
-    border-radius: 16px;
+    padding: 12px 18px;
+    border-radius: 18px;
     border: 2px solid rgba(56, 189, 248, 0.45);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
   }
   .no-print-bar .bar-title {
     font-family: 'Fredoka One', cursive;
-    font-size: 13.5pt;
+    font-size: 13pt;
     color: #38bdf8;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .no-print-bar .bar-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
     align-items: center;
   }
   .tactile-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 9px 16px;
+    gap: 6px;
+    padding: 8px 14px;
     border-radius: 12px;
     font-family: 'Nunito', sans-serif;
     font-weight: 900;
-    font-size: 10.5pt;
+    font-size: 10pt;
     text-decoration: none;
     cursor: pointer;
     border: 2px solid #111;
@@ -272,217 +79,510 @@
   }
   .btn-print { background: #10b981; color: #fff; }
   .btn-pdf   { background: #f59e0b; color: #111; }
+  .btn-wall  { background: #a855f7; color: #fff; }
   .btn-back  { background: #334155; color: #fff; }
-  @media print {
-    .no-print-bar { display: none !important; }
+
+  /* Poster Sheets Container */
+  .poster-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  /* Giant 2x2 Wall Poster Preview Mode */
+  body.wall-mode .poster-stage {
+    display: grid;
+    grid-template-columns: 210mm 210mm;
+    gap: 6px;
+    padding: 12px;
+    background: #111;
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    transform: scale(0.66);
+    transform-origin: top center;
+    margin-bottom: -200mm;
   }
 
+  /* A4 Sheet Canvas */
+  .a4-page {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+    padding: 7mm;
+    display: flex;
+    flex-direction: column;
+    gap: 5mm;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+  }
+  .a4-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  @media print {
+    body, body.wall-mode {
+      background: none !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+    .no-print-bar {
+      display: none !important;
+    }
+    .poster-stage, body.wall-mode .poster-stage {
+      display: block !important;
+      transform: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: none !important;
+      box-shadow: none !important;
+    }
+    .a4-page {
+      box-shadow: none !important;
+      width: 210mm !important;
+      height: 297mm !important;
+      page-break-after: always !important;
+      break-after: page !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .a4-page:last-child {
+      page-break-after: auto !important;
+      break-after: auto !important;
+    }
+  }
+
+  /* Slim Visual Banner (Words Only, Zero Sentences) */
+  .sheet-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3.5mm 6mm;
+    border-radius: 14px;
+    border: 3.5px solid #111;
+    box-shadow: 0 4px 0 #111;
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .sheet-strip .strip-words {
+    font-size: 22pt;
+    line-height: 1;
+    text-shadow: 2px 2px 0 #111, -1px -1px 0 #111, 1px -1px 0 #111, -1px 1px 0 #111;
+  }
+  .sheet-strip .strip-num {
+    background: #fff;
+    color: #111;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 11pt;
+    padding: 3px 12px;
+    border-radius: 99px;
+    border: 2.5px solid #111;
+  }
+
+  .strip-p1 { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+  .strip-p2 { background: linear-gradient(90deg, #db2777, #7c3aed); }
+  .strip-p3 { background: linear-gradient(90deg, #059669, #0ea5e9); }
+  .strip-p4 { background: linear-gradient(90deg, #d97706, #ef4444); }
+
+  /* 2x2 Full-Bleed Meme Grid */
+  .grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 5.5mm;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Individual Cat Meme Tile */
+  .meme-tile {
+    position: relative;
+    border-radius: 20px;
+    border: 4.5px solid #111;
+    box-shadow: 0 5px 0 #111;
+    overflow: hidden;
+    background: #111;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .meme-tile:hover {
+    transform: translateY(-2px);
+  }
+  .meme-tile:active {
+    transform: translateY(3px);
+  }
+
+  /* Full-bleed Photo Viewport */
+  .meme-photo {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #1e293b;
+  }
+  .meme-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  /* Clean crop for them.webp so only the 2 cats at dinner plates with service bell fill the frame */
+  .meme-photo img.crop-them {
+    object-position: center 54%;
+    transform: scale(1.42);
+  }
+
+  /* Giant Bottom Word Bar (Single Pronoun Word Only — Zero Sentences) */
+  .word-dock {
+    height: 21mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-top: 4.5px solid #111;
+    font-family: 'Fredoka One', cursive;
+    font-size: 34pt;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-shadow:
+      3px 3px 0 #111,
+      -2px -2px 0 #111,
+      2px -2px 0 #111,
+      -2px 2px 0 #111,
+      0 3px 0 #111;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .word-dock.dock-split {
+    font-size: 27pt;
+    gap: 14px;
+  }
+  .word-dock .sep-dot {
+    font-size: 22pt;
+    opacity: 0.85;
+  }
+
+  /* Color Themes for Word Docks */
+  .dock-blue   { background: #2563eb; }
+  .dock-cyan   { background: #0284c7; }
+  .dock-amber  { background: #f59e0b; }
+  .dock-emerald{ background: #10b981; }
+  .dock-indigo { background: #4f46e5; }
+  .dock-pink   { background: #ec4899; }
+  .dock-purple { background: #7c3aed; }
+  .dock-rose   { background: #e11d48; }
+  .dock-teal   { background: #0d9488; }
+  .dock-orange { background: #ea580c; }
+
+  /* Viral Meme On-Subject Word Overlay (Like the "Me / You" hug photo!) */
+  .subj-word {
+    position: absolute;
+    font-family: 'Fredoka One', Impact, sans-serif;
+    font-size: 25pt;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow:
+      3px 3px 0 #000,
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000,
+      0 3px 8px rgba(0,0,0,0.85);
+    pointer-events: none;
+    z-index: 4;
+    letter-spacing: 0.5px;
+  }
+
+  /* Pill Tag with High-Contrast Border */
+  .meme-tag {
+    position: absolute;
+    font-family: 'Fredoka One', Impact, sans-serif;
+    font-size: 20pt;
+    line-height: 1;
+    color: #ffffff;
+    background: rgba(17, 17, 17, 0.85);
+    border: 3px solid #ffffff;
+    padding: 5px 14px;
+    border-radius: 99px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 3;
+  }
+  .meme-tag.tag-yellow { background: #facc15; color: #111; border-color: #111; }
+  .meme-tag.tag-blue   { background: #3b82f6; color: #fff; border-color: #111; }
+  .meme-tag.tag-pink   { background: #ec4899; color: #fff; border-color: #111; }
+  .meme-tag.tag-green  { background: #10b981; color: #fff; border-color: #111; }
+  .meme-tag.tag-red    { background: #ef4444; color: #fff; border-color: #111; }
+  .meme-tag.tag-purple { background: #8b5cf6; color: #fff; border-color: #111; }
+  .meme-tag.tag-cyan   { background: #0284c7; color: #fff; border-color: #111; }
+
+  /* Bold Visual Action Arrow Pill on Photo */
+  .action-arrow {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #facc15;
+    color: #111;
+    border: 3px solid #111;
+    border-radius: 99px;
+    padding: 3px 12px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16pt;
+    box-shadow: 3px 3px 0 #111;
+    z-index: 4;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
 
 <div class="no-print-bar">
-  <div class="bar-title">🐱 Cat Meme Grammar Posters (4× A4 Classroom Wall Set)</div>
+  <div class="bar-title">🐱 2×2 Cat Meme Pronoun Posters (Zero Sentences • Visual Only)</div>
   <div class="bar-actions">
-    <a href="../index.html#library" class="tactile-btn btn-back">⬅ Library</a>
+    <a href="../index.html#shelf" class="tactile-btn btn-back">⬅ Back</a>
+    <button type="button" class="tactile-btn btn-wall" onclick="document.body.classList.toggle('wall-mode'); this.textContent = document.body.classList.contains('wall-mode') ? '📄 A4 Sheet View' : '🖼️ 2×2 Giant Wall Preview'">🖼️ 2×2 Giant Wall Preview</button>
     <a href="cat-meme-grammar-posters.pdf" target="_blank" class="tactile-btn btn-pdf">📄 Open PDF</a>
-    <button onclick="window.print()" class="tactile-btn btn-print">🖨️ Print 4× A4</button>
+    <button type="button" onclick="window.print()" class="tactile-btn btn-print">🖨️ Print Posters</button>
   </div>
 </div>
 
+<div class="poster-stage">
 
-<!-- ========================================== -->
-<!-- POSTER 1: HE / SHE / IT                     -->
-<!-- ========================================== -->
-<div class="a4-page">
-  <div class="poster-header p1-header">
-    <h1>Singular Pronouns</h1>
-    <p>1 Boy • 1 Girl • 1 Thing</p>
-  </div>
-
-  <div class="grid-2x1" style="flex: 1.25;">
-    <!-- HE CARD -->
-    <div class="meme-card card-he">
-      <div class="badge bg-blue">HE</div>
-      <div class="rule-tag">1 Boy / Male</div>
-      <div class="illustration">
-        <img src="art/he.webp" alt="Gentleman cat wearing a red-and-white shemagh">
-      </div>
-      <div class="caption-bubble">
-        <div class="speech">"He is wearing a shemagh."</div>
-        <div class="example">He = A handsome gentleman cat!</div>
-      </div>
+  <!-- ===================================================================== -->
+  <!-- SHEET 1 (TOP-LEFT): I  •  ME  •  YOU  •  ME & YOU                      -->
+  <!-- ===================================================================== -->
+  <div class="a4-page">
+    <div class="sheet-strip strip-p1">
+      <span class="strip-words">I &nbsp;•&nbsp; ME &nbsp;•&nbsp; YOU</span>
+      <span class="strip-num">POSTER 1 / 4</span>
     </div>
 
-    <!-- SHE CARD -->
-    <div class="meme-card card-she">
-      <div class="badge bg-pink">SHE</div>
-      <div class="rule-tag">1 Girl / Female</div>
-      <div class="illustration">
-        <img src="art/she.webp" alt="Fluffy white princess cat wearing a flower crown">
+    <div class="grid-2x2">
+      <!-- 1. I (Siamese cat raising paw in front of blackboard) -->
+      <div class="meme-tile" onclick="speakWord('I')">
+        <div class="meme-photo">
+          <img src="art/upload-i-hand.jpg" alt="Cat raising paw in class">
+          <div class="subj-word" style="bottom: 18%; left: 48%; transform: translateX(-50%); font-size: 32pt;">I</div>
+        </div>
+        <div class="word-dock dock-blue">I</div>
       </div>
-      <div class="caption-bubble">
-        <div class="speech">"She is a lovely princess."</div>
-        <div class="example">She = One fabulous girl cat!</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- IT CARD (Full Width) -->
-  <div class="meme-card card-it full-width-card" style="margin-top: 12px; flex: 0.9;">
-    <div class="illustration">
-      <img src="art/it.webp" alt="Cat sitting inside a cardboard box with red arrow pointing at the box">
-    </div>
-    <div class="card-content">
-      <div class="badge bg-amber">IT</div>
-      <div class="rule-tag">1 Object / Thing / Box</div>
-      <div class="caption-bubble" style="margin-top: 4px;">
-        <div class="speech">"What is the cat inside? IT is a box!"</div>
-        <div class="example">Use <b>IT</b> for things, places, and toys.</div>
+      <!-- 2. ME (Hand lowering salmon treat to begging cat) -->
+      <div class="meme-tile" onclick="speakWord('Me')">
+        <div class="meme-photo">
+          <img src="art/meme-me-fish.jpg" alt="Hand giving salmon treat to begging cat">
+          <div class="action-arrow" style="top: 12%; right: 12%; transform: rotate(130deg);">🐟 ──►</div>
+          <div class="subj-word" style="bottom: 16%; left: 50%; transform: translateX(-50%); font-size: 28pt;">Me</div>
+        </div>
+        <div class="word-dock dock-emerald">ME</div>
+      </div>
+
+      <!-- 3. YOU (Cat pointing giant yellow finger at camera) -->
+      <div class="meme-tile" onclick="speakWord('You')">
+        <div class="meme-photo">
+          <img src="art/you.webp" alt="Cat pointing finger at camera">
+          <div class="subj-word" style="top: 12%; left: 16%; font-size: 28pt;">You</div>
+        </div>
+        <div class="word-dock dock-purple">YOU</div>
+      </div>
+
+      <!-- 4. ME & YOU (Big orange cat "Me" hugging little orange cat "You") -->
+      <div class="meme-tile" onclick="speakWord('Me and You')">
+        <div class="meme-photo">
+          <img src="art/upload-me-you-hug.jpg" alt="Big cat Me hugging little cat You">
+        </div>
+        <div class="word-dock dock-amber dock-split">ME <span class="sep-dot">&amp;</span> YOU</div>
       </div>
     </div>
   </div>
+
+  <!-- ===================================================================== -->
+  <!-- SHEET 2 (TOP-RIGHT): HE  •  SHE  •  HIM  •  HER                        -->
+  <!-- ===================================================================== -->
+  <div class="a4-page">
+    <div class="sheet-strip strip-p2">
+      <span class="strip-words">HE &nbsp;•&nbsp; SHE &nbsp;•&nbsp; HIM &nbsp;•&nbsp; HER</span>
+      <span class="strip-num">POSTER 2 / 4</span>
+    </div>
+
+    <div class="grid-2x2">
+      <!-- 5. HE (Polite white cat in business suit and tie) -->
+      <div class="meme-tile" onclick="speakWord('He')">
+        <div class="meme-photo">
+          <img src="art/upload-he-suit.jpg" alt="Cat wearing a suit and tie">
+          <div class="subj-word" style="top: 10%; left: 50%; transform: translateX(-50%); font-size: 28pt;">He</div>
+        </div>
+        <div class="word-dock dock-blue">HE</div>
+      </div>
+
+      <!-- 6. SHE (Cute cat with pink bow and pink doodles) -->
+      <div class="meme-tile" onclick="speakWord('She')">
+        <div class="meme-photo">
+          <img src="art/upload-she-bow.jpg" alt="Cute cat wearing a pink bow">
+          <div class="subj-word" style="top: 10%; left: 36%; transform: translateX(-50%); font-size: 28pt;">She</div>
+        </div>
+        <div class="word-dock dock-pink">SHE</div>
+      </div>
+
+      <!-- 7. HIM (Cat "I" placing a gold crown on suit-cat "Him") -->
+      <div class="meme-tile" onclick="speakWord('Him')">
+        <div class="meme-photo">
+          <img src="art/meme-him.jpg" alt="Orange cat crowning suit cat">
+          <div class="subj-word" style="top: 44%; left: 22%;">I</div>
+          <div class="action-arrow" style="top: 10%; left: 48%; transform: translateX(-50%);">👑 ──►</div>
+          <div class="subj-word" style="bottom: 12%; right: 16%; color: #93c5fd;">Him</div>
+        </div>
+        <div class="word-dock dock-indigo">HIM</div>
+      </div>
+
+      <!-- 8. HER (Cat "I" giving a pink flower to pink-bow cat "Her") -->
+      <div class="meme-tile" onclick="speakWord('Her')">
+        <div class="meme-photo">
+          <img src="art/meme-her.jpg" alt="Orange cat giving pink flower to bow cat">
+          <div class="subj-word" style="top: 44%; left: 20%;">I</div>
+          <div class="action-arrow" style="top: 12%; left: 48%; transform: translateX(-50%);">🌸 ──►</div>
+          <div class="subj-word" style="bottom: 12%; right: 16%; color: #f9a8d4;">Her</div>
+        </div>
+        <div class="word-dock dock-rose">HER</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SHEET 3 (BOTTOM-LEFT): WE  •  US  •  THEY  •  THEM                     -->
+  <!-- ===================================================================== -->
+  <div class="a4-page">
+    <div class="sheet-strip strip-p3">
+      <span class="strip-words">WE &nbsp;•&nbsp; US &nbsp;•&nbsp; THEY &nbsp;•&nbsp; THEM</span>
+      <span class="strip-num">POSTER 3 / 4</span>
+    </div>
+
+    <div class="grid-2x2">
+      <!-- 9. WE (5 cats on roller coaster taking selfie together) -->
+      <div class="meme-tile" onclick="speakWord('We')">
+        <div class="meme-photo">
+          <img src="art/upload-we-coaster.jpg" alt="Group of cats taking selfie on roller coaster">
+          <div class="subj-word" style="bottom: 10%; left: 18%; font-size: 20pt; color: #fde047;">Me</div>
+          <div class="meme-tag tag-green" style="top: 12px; right: 14px;">✨ WE</div>
+        </div>
+        <div class="word-dock dock-emerald">WE</div>
+      </div>
+
+      <!-- 10. US (Hand giving treats to 3 kittens huddled together) -->
+      <div class="meme-tile" onclick="speakWord('Us')">
+        <div class="meme-photo">
+          <img src="art/meme-us.jpg" alt="Hand giving treats to three huddled kittens">
+          <div class="action-arrow" style="top: 14%; right: 12%;">🍖 ◄──</div>
+          <div class="subj-word" style="bottom: 14%; left: 38%; transform: translateX(-50%); color: #7dd3fc; font-size: 30pt;">Us</div>
+        </div>
+        <div class="word-dock dock-cyan">US</div>
+      </div>
+
+      <!-- 11. THEY (3 cool cats wearing cup-noodle hats) -->
+      <div class="meme-tile" onclick="speakWord('They')">
+        <div class="meme-photo">
+          <img src="art/they.webp" alt="Three cats wearing cup noodle hats">
+          <div class="subj-word" style="bottom: 10%; left: 50%; transform: translateX(-50%); font-size: 28pt;">They</div>
+        </div>
+        <div class="word-dock dock-teal">THEY</div>
+      </div>
+
+      <!-- 12. THEM (2 hungry cats at dinner plates ringing service bell) -->
+      <div class="meme-tile" onclick="speakWord('Them')">
+        <div class="meme-photo">
+          <img class="crop-them" src="art/them.webp" alt="Two cats ringing bell for treats">
+          <div class="action-arrow" style="top: 12%; left: 50%; transform: translateX(-50%);">🐟 ──►</div>
+          <div class="subj-word" style="bottom: 10%; left: 50%; transform: translateX(-50%); color: #fde047; font-size: 28pt;">Them</div>
+        </div>
+        <div class="word-dock dock-orange">THEM</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SHEET 4 (BOTTOM-RIGHT): IT  •  MY  •  HIS / HER  •  OUR / THEIR        -->
+  <!-- ===================================================================== -->
+  <div class="a4-page">
+    <div class="sheet-strip strip-p4">
+      <span class="strip-words">IT &nbsp;•&nbsp; MY &nbsp;•&nbsp; HIS / HER &nbsp;•&nbsp; OUR / THEIR</span>
+      <span class="strip-num">POSTER 4 / 4</span>
+    </div>
+
+    <div class="grid-2x2">
+      <!-- 13. IT (Shocked orange cat pointing paw at cardboard box labeled IT) -->
+      <div class="meme-tile" onclick="speakWord('It')">
+        <div class="meme-photo">
+          <img src="art/meme-it-box.jpg" alt="Shocked cat pointing paw at cardboard box">
+          <div class="action-arrow" style="top: 38%; left: 37%; transform: rotate(155deg);">──►</div>
+          <div class="subj-word" style="bottom: 22%; left: 24%; transform: translateX(-50%); color: #fde047; font-size: 30pt;">It</div>
+        </div>
+        <div class="word-dock dock-amber">IT</div>
+      </div>
+
+      <!-- 14. MY (Dramatic orange cat clutching plush fish tightly) -->
+      <div class="meme-tile" onclick="speakWord('My')">
+        <div class="meme-photo">
+          <img src="art/meme-my.jpg" alt="Orange cat hugging fish toy tightly">
+          <div class="subj-word" style="bottom: 14%; left: 54%; transform: translateX(-50%); color: #fda4af; font-size: 28pt;">My!</div>
+        </div>
+        <div class="word-dock dock-rose">MY</div>
+      </div>
+
+      <!-- 15. HIS • HER (Tie-cat with blue bowl & pink-bow cat with pink bowl) -->
+      <div class="meme-tile" onclick="speakWord('His and Her')">
+        <div class="meme-photo">
+          <img src="art/meme-his-her.jpg" alt="Boy cat with blue bowl and girl cat with pink bowl">
+          <div class="subj-word" style="bottom: 8%; left: 28%; transform: translateX(-50%); color: #93c5fd; font-size: 24pt;">His</div>
+          <div class="subj-word" style="bottom: 8%; right: 26%; transform: translateX(50%); color: #f9a8d4; font-size: 24pt;">Her</div>
+        </div>
+        <div class="word-dock dock-purple dock-split">HIS <span class="sep-dot">•</span> HER</div>
+      </div>
+
+      <!-- 16. OUR • THEIR (2 selfie cats with feast in front vs 3 castle cats in back) -->
+      <div class="meme-tile" onclick="speakWord('Our and Their')">
+        <div class="meme-photo">
+          <img src="art/meme-our-their.jpg" alt="Two cats with feast in foreground and three cats in castle behind">
+          <div class="subj-word" style="top: 8%; left: 52%; transform: translateX(-50%); color: #d8b4fe; font-size: 21pt;">Their</div>
+          <div class="subj-word" style="bottom: 10%; left: 50%; transform: translateX(-50%); color: #6ee7b7; font-size: 26pt;">Our</div>
+        </div>
+        <div class="word-dock dock-teal dock-split">OUR <span class="sep-dot">•</span> THEIR</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ========================================== -->
-<!-- POSTER 2: YOU / THEY / THEM                 -->
-<!-- ========================================== -->
-<div class="a4-page">
-  <div class="poster-header p2-header">
-    <h1>Talking To &amp; Groups</h1>
-    <p>Direct Address • Subjects • Objects</p>
-  </div>
-
-  <div style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0;">
-    <!-- YOU CARD (Full Width) -->
-    <div class="meme-card card-you full-width-card" style="flex: 0.9;">
-      <div class="illustration">
-        <img src="art/you.webp" alt="Cat pointing directly at the camera">
-      </div>
-      <div class="card-content">
-        <div class="badge bg-purple">YOU</div>
-        <div class="rule-tag">Looking Right At The Reader</div>
-        <div class="caption-bubble">
-          <div class="speech">"Yes, YOU! Pay attention!"</div>
-          <div class="example">I am talking directly to <b>YOU</b>.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- THEY & THEM SIDE BY SIDE -->
-    <div class="grid-2x1" style="flex: 1.3;">
-      <!-- THEY CARD -->
-      <div class="meme-card card-they">
-        <div class="badge bg-teal">THEY</div>
-        <div class="rule-tag">Doing The Action (Subject)</div>
-        <div class="illustration">
-          <img src="art/they.webp" alt="Three cool cats in sunglasses planning a secret">
-        </div>
-        <div class="caption-bubble">
-          <div class="speech">"THEY are planning a secret."</div>
-          <div class="example"><b>They</b> do the action!</div>
-        </div>
-      </div>
-
-      <!-- THEM CARD -->
-      <div class="meme-card card-them">
-        <div class="badge bg-amber">THEM</div>
-        <div class="rule-tag">Receiving The Action (Object)</div>
-        <div class="illustration">
-          <img src="art/them.webp" alt="Hand giving treats to hungry begging cats">
-        </div>
-        <div class="caption-bubble">
-          <div class="speech">"Give the treats to THEM!"</div>
-          <div class="example">The snack goes to <b>them</b>.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- POSTER 3: THIS vs. THAT (Singular)          -->
-<!-- ========================================== -->
-<div class="a4-page">
-  <div class="poster-header p3-header">
-    <h1>Pointing: 1 Thing</h1>
-    <p>Close vs. Far Away</p>
-  </div>
-
-  <div class="grid-vertical">
-    <!-- THIS CARD -->
-    <div class="meme-card card-this">
-      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
-        <div class="badge bg-green">THIS</div>
-        <div class="rule-tag" style="background: #2b8a3e; color: #fff;">🟢 1 ITEM + CLOSE</div>
-      </div>
-      <div class="illustration">
-        <img src="art/this.webp" alt="Hands holding a tiny white kitten right up close">
-      </div>
-      <div class="caption-bubble">
-        <div class="speech">"THIS kitten is in my hand!"</div>
-        <div class="example">Use <b>THIS</b> for 1 thing that is near to you.</div>
-      </div>
-    </div>
-
-    <!-- THAT CARD -->
-    <div class="meme-card card-that">
-      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
-        <div class="badge bg-red">THAT</div>
-        <div class="rule-tag" style="background: #c92a2a; color: #fff;">🔴 1 ITEM + FAR AWAY</div>
-      </div>
-      <div class="illustration">
-        <img src="art/that.webp" alt="Hand pointing to a single grumpy orange cat far away on a roof">
-      </div>
-      <div class="caption-bubble">
-        <div class="speech">"THAT grumpy cat is on the roof!"</div>
-        <div class="example">Use <b>THAT</b> for 1 thing that is far away.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- POSTER 4: THESE vs. THOSE (Plural)         -->
-<!-- ========================================== -->
-<div class="a4-page">
-  <div class="poster-header p4-header">
-    <h1>Pointing: 2+ Things</h1>
-    <p>Plural Close vs. Plural Far Away</p>
-  </div>
-
-  <div class="grid-vertical">
-    <!-- THESE CARD -->
-    <div class="meme-card card-these">
-      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
-        <div class="badge bg-teal">THESE</div>
-        <div class="rule-tag" style="background: #099268; color: #fff;">🟢 2+ ITEMS + CLOSE</div>
-      </div>
-      <div class="illustration">
-        <img src="art/these.webp" alt="Three cuddly kittens in a basket right on the desk">
-      </div>
-      <div class="caption-bubble">
-        <div class="speech">"THESE kittens are right on my desk!"</div>
-        <div class="example">Use <b>THESE</b> for many things close to you.</div>
-      </div>
-    </div>
-
-    <!-- THOSE CARD -->
-    <div class="meme-card card-those">
-      <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-shrink: 0;">
-        <div class="badge bg-pink">THOSE</div>
-        <div class="rule-tag" style="background: #a61e4d; color: #fff;">🔴 2+ ITEMS + FAR AWAY</div>
-      </div>
-      <div class="illustration">
-        <img src="art/those.webp" alt="Hand pointing to cats sitting far away across the yard">
-      </div>
-      <div class="caption-bubble">
-        <div class="speech">"THOSE cats are across the yard!"</div>
-        <div class="example">Use <b>THOSE</b> for many things far away.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
+<script>
+  function speakWord(text) {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.88;
+      u.pitch = 1.05;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+</script>
 </body>
 </html>

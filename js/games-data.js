@@ -56,7 +56,7 @@ const GAMES_REGISTRY = [
       "pronoun-posters",
       "demonstrative-posters"
     ],
-    "title": "🐱 Cat Meme Grammar Posters: Pronouns & Demonstratives (4× A4 Wall Set)",
+    "title": "🐱 2×2 Cat Meme Pronoun Posters: I, Me, You, He, Him, She, Her, It, We, Us, They, Them",
     "description": "Printable 4-page A4 classroom grammar wall posters starring real viral internet cat memes! Page 1: Singular Pronouns (HE = Sheikh Cat in shemagh, SHE = Flower Crown Princess Cat, IT = Cat in a Box). Page 2: Direct Address & Groups (YOU = Pointing Cat, THEY = Subject doing action, THEM = Object receiving treats). Page 3: Singular Pointing (THIS = 1 close in hand vs. THAT = 1 far on roof). Page 4: Plural Pointing (THESE = 2+ close on desk vs. THOSE = 2+ far across yard).",
     "type": "game",
     "category": "Phonics & Language Quests",
@@ -121,7 +121,7 @@ const GAMES_REGISTRY = [
     "supportsProgress": true,
     "featured": true,
     "thumbnailIcon": "🐱",
-    "thumbnailUrl": "cat-meme-posters/art/he.webp",
+    "thumbnailUrl": "cat-meme-posters/art/upload-me-you-hug.jpg",
     "gradient": "linear-gradient(135deg, #2b70e4 0%, #7950f2 50%, #f59f00 100%)",
     "status": "active",
     "trackId": "track-3",
