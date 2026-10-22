@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🐱 2×2 Cat Meme Pronoun Posters (Visual Only)</title>
+<title>🐱 2×2 Giant Cat Meme Pronoun Poster (4 A4 Tiled Sheets)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700;800&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
@@ -11,6 +11,9 @@
   :root {
     --ink: #0f172a;
     --paper: #ffffff;
+    --gap: 5mm;
+    --half-gap: 2.5mm;
+    --outer-pad: 6.5mm;
   }
 
   * {
@@ -29,7 +32,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 18px;
   }
 
   /* ─── TOP TOOLBAR (HIDDEN IN PRINT) ─── */
@@ -37,7 +40,7 @@
     position: sticky;
     top: 12px;
     z-index: 999;
-    background: rgba(15, 23, 42, 0.94);
+    background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(14px);
     color: #fff;
     border-radius: 20px;
@@ -48,13 +51,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    width: min(210mm, 95vw);
+    width: min(420mm, 96vw);
   }
 
   .toolbar-left {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .toolbar h1 {
@@ -62,6 +65,12 @@
     font-size: 1.15rem;
     color: #38bdf8;
     letter-spacing: 0.3px;
+  }
+
+  .toolbar p {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    font-weight: 800;
   }
 
   .toolbar-btns {
@@ -113,7 +122,7 @@
     border-bottom: 4px solid #0f172a;
   }
 
-  /* ─── POSTER CONTAINER (4 A4 PAGES OR 2x2 GIANT WALL ASSEMBLY) ─── */
+  /* ─── POSTER CONTAINER (2x2 TILED ASSEMBLY ON SCREEN, 4 A4 SHEETS IN PRINT) ─── */
   .posters-wrapper {
     display: flex;
     flex-direction: column;
@@ -121,17 +130,13 @@
     gap: 24px;
   }
 
-  /* Giant 2x2 Wall Poster Mode on Screen */
-  body.wall-mode .toolbar {
-    width: min(420mm, 96vw);
-  }
-
+  /* Giant 2x2 Wall Poster Mode on Screen: shows the 4 A4 sheets taped together! */
   body.wall-mode .posters-wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0;
-    border: 8px solid #000;
-    border-radius: 16px;
+    background: #fff;
+    border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 28px 80px rgba(0, 0, 0, 0.85);
     max-width: 96vw;
@@ -143,15 +148,25 @@
     height: auto;
     aspect-ratio: 210 / 297;
     box-shadow: none;
-    border: 2px solid #000;
   }
 
-  /* ─── A4 PAGE GEOMETRY ─── */
+  /* Show subtle dashed seam line on screen so teacher sees where the 4 A4 sheets join */
+  body.wall-mode .poster-page.q-tl {
+    border-right: 1.5px dashed rgba(15, 23, 42, 0.28);
+    border-bottom: 1.5px dashed rgba(15, 23, 42, 0.28);
+  }
+  body.wall-mode .poster-page.q-tr {
+    border-bottom: 1.5px dashed rgba(15, 23, 42, 0.28);
+  }
+  body.wall-mode .poster-page.q-bl {
+    border-right: 1.5px dashed rgba(15, 23, 42, 0.28);
+  }
+
+  /* ─── A4 PAGE GEOMETRY (EACH A4 SHEET IS 1 QUADRANT OF THE GIANT 2x2 POSTER) ─── */
   .poster-page {
     width: 210mm;
     height: 297mm;
     background: var(--paper);
-    padding: 6mm;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -159,13 +174,70 @@
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   }
 
-  /* ─── 2x2 MEME GRID (FILLS 100% OF THE A4 SHEET) ─── */
+  /*
+   * SEAMLESS 2x2 TILING PADDING & CONTINUOUS OUTER POSTER FRAME:
+   * Inner edges where sheets meet have half-gap (2.5mm) so 2.5mm + 2.5mm = 5mm (identical to card gap!).
+   * Outer edges have outer-pad (6.5mm) and a bold outer poster frame that wraps all 4 sheets as ONE big poster!
+   */
+  .poster-page.q-tl {
+    padding: var(--outer-pad) var(--half-gap) var(--half-gap) var(--outer-pad);
+    border-top: 6px solid var(--ink);
+    border-left: 6px solid var(--ink);
+    border-right: 1px dashed #94a3b8;
+    border-bottom: 1px dashed #94a3b8;
+  }
+
+  .poster-page.q-tr {
+    padding: var(--outer-pad) var(--outer-pad) var(--half-gap) var(--half-gap);
+    border-top: 6px solid var(--ink);
+    border-right: 6px solid var(--ink);
+    border-left: 1px dashed #94a3b8;
+    border-bottom: 1px dashed #94a3b8;
+  }
+
+  .poster-page.q-bl {
+    padding: var(--half-gap) var(--half-gap) var(--outer-pad) var(--outer-pad);
+    border-bottom: 6px solid var(--ink);
+    border-left: 6px solid var(--ink);
+    border-right: 1px dashed #94a3b8;
+    border-top: 1px dashed #94a3b8;
+  }
+
+  .poster-page.q-br {
+    padding: var(--half-gap) var(--outer-pad) var(--outer-pad) var(--half-gap);
+    border-bottom: 6px solid var(--ink);
+    border-right: 6px solid var(--ink);
+    border-left: 1px dashed #94a3b8;
+    border-top: 1px dashed #94a3b8;
+  }
+
+  /* Tiny corner alignment badge right at the center intersection where the 4 sheets stick together */
+  .seam-badge {
+    position: absolute;
+    z-index: 20;
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    letter-spacing: 0.4px;
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  .q-tl .seam-badge { bottom: 0; right: 0; border-top-left-radius: 6px; }
+  .q-tr .seam-badge { bottom: 0; left: 0;  border-top-right-radius: 6px; }
+  .q-bl .seam-badge { top: 0;    right: 0; border-bottom-left-radius: 6px; }
+  .q-br .seam-badge { top: 0;    left: 0;  border-bottom-right-radius: 6px; }
+
+  /* ─── 2x2 MEME GRID INSIDE EACH A4 QUADRANT ─── */
   .meme-grid-2x2 {
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 4.5mm;
+    gap: var(--gap);
     min-height: 0;
   }
 
@@ -277,6 +349,7 @@
       border: none !important;
       box-shadow: none !important;
       max-width: none !important;
+      border-radius: 0 !important;
     }
 
     .poster-page {
@@ -284,7 +357,6 @@
       height: 297mm !important;
       max-width: none !important;
       box-shadow: none !important;
-      border: none !important;
       margin: 0 !important;
       page-break-after: always !important;
       break-after: page !important;
@@ -302,18 +374,19 @@
   <!-- SCREEN TOOLBAR -->
   <div class="toolbar">
     <div class="toolbar-left">
-      <h1>🐱 2×2 Cat Meme Pronoun Posters (1 Word Per Picture • Zero Sentences)</h1>
+      <h1>🐱 2×2 Tiled Giant Classroom Poster (Print 4 A4 Sheets & Stick 2×2 Together)</h1>
+      <p>✂️ Sheet 1 = Top-Left • Sheet 2 = Top-Right • Sheet 3 = Bottom-Left • Sheet 4 = Bottom-Right (Match the center ➕ corner tags!)</p>
     </div>
     <div class="toolbar-btns">
       <a class="btn btn-back" href="../index.html">⬅ Back</a>
       <button class="btn btn-wall" onclick="document.body.classList.toggle('wall-mode')">
-        🖼️ Toggle 2×2 Wall / A4 Pages
+        🖼️ Toggle Joined 2×2 / Separate A4 Sheets
       </button>
       <a class="btn btn-pdf" href="cat-meme-grammar-posters.pdf" target="_blank">
         📄 Open PDF
       </a>
       <button class="btn btn-print" onclick="window.print()">
-        🖨️ Print Posters
+        🖨️ Print 4 A4 Tiles (2×2 Poster)
       </button>
     </div>
   </div>
@@ -321,9 +394,10 @@
   <div class="posters-wrapper">
 
     <!-- ═══════════════════════════════════════════════════════════════
-         POSTER 1 / 4 (TOP-LEFT QUADRANT): I • ME • YOU • ME & YOU
+         TILE 1 / 4 — TOP-LEFT QUADRANT (I, Me, You, Me & You)
          ═══════════════════════════════════════════════════════════════ -->
-    <section class="poster-page">
+    <section class="poster-page q-tl">
+      <div class="seam-badge">1 • TOP-LEFT ↘</div>
       <div class="meme-grid-2x2">
 
         <!-- 1. I (Siamese cat raising paw in classroom) -->
@@ -353,7 +427,7 @@
           </div>
         </article>
 
-        <!-- 4. ME & YOU (Uploaded viral orange cats hug meme - already has Me & You on cats, no extra duplicate text!) -->
+        <!-- 4. ME & YOU (Uploaded viral orange cats hug meme - already has Me & You on cats) -->
         <article class="meme-card">
           <div class="meme-photo">
             <img src="art/upload-me-you-hug.jpg" alt="Me and You">
@@ -364,9 +438,10 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         POSTER 2 / 4 (TOP-RIGHT QUADRANT): HE • SHE • HIM • HER
+         TILE 2 / 4 — TOP-RIGHT QUADRANT (He, She, Him, Her)
          ═══════════════════════════════════════════════════════════════ -->
-    <section class="poster-page">
+    <section class="poster-page q-tr">
+      <div class="seam-badge">↙ 2 • TOP-RIGHT</div>
       <div class="meme-grid-2x2">
 
         <!-- 5. HE (Polite cat in suit & tie) -->
@@ -411,9 +486,10 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         POSTER 3 / 4 (BOTTOM-LEFT QUADRANT): WE • US • THEY • THEM
+         TILE 3 / 4 — BOTTOM-LEFT QUADRANT (We, Us, They, Them)
          ═══════════════════════════════════════════════════════════════ -->
-    <section class="poster-page">
+    <section class="poster-page q-bl">
+      <div class="seam-badge">3 • BOTTOM-LEFT ↗</div>
       <div class="meme-grid-2x2">
 
         <!-- 9. WE (5 cats taking a roller coaster selfie) -->
@@ -458,9 +534,10 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         POSTER 4 / 4 (BOTTOM-RIGHT QUADRANT): IT • MY • HIS/HER • OUR/THEIR
+         TILE 4 / 4 — BOTTOM-RIGHT QUADRANT (It, My, His/Her, Our/Their)
          ═══════════════════════════════════════════════════════════════ -->
-    <section class="poster-page">
+    <section class="poster-page q-br">
+      <div class="seam-badge">↖ 4 • BOTTOM-RIGHT</div>
       <div class="meme-grid-2x2">
 
         <!-- 13. IT (Shocked cat pointing paw at cardboard box) -->
