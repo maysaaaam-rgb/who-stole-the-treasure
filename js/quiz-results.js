@@ -9,6 +9,21 @@
   /* The marks of each part (no names): Grade 3 = [game1 /15, match /12, snake /10, -ng /5, listening /12, poem table /8, car table /10, summary /10]; Grade 4 = [listening /6, reading /7, writing /6] (null = page not handed in). */
   var PARTS3 = {"221":[null,null,null,null,6,4,10,0],"229":[15.0,10.0,2.0,3.0,12.0,8.0,4.0,8.0],"219":[12.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"224":[9.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"353":[12.0,12.0,0.5,0.0,12.0,5.5,4.0,0.0],"354":[15.0,4.0,1.0,0.0,9.0,8.0,2.0,4.0],"222":[6.0,12.0,0.5,0.0,6.0,5.5,4.0,6.0],"213":[9.0,6.0,1.0,3.0,9.0,5.5,8.0,0.0],"228":[15.0,8.0,1.5,0.0,9.0,5.5,2.0,0.0],"206":[9.0,8.0,1.0,0.0,9.0,5.5,6.0,2.0],"215":[12.0,6.0,0.5,0.0,9.0,2.5,8.0,0.0],"352":[15.0,6.0,1.5,0.0,9.0,5.5,2.0,0.0],"216":[12.0,4.0,0.5,0.0,12.0,4.0,4.0,0.0],"211":[6.0,2.0,5.0,0.0,9.0,8.0,6.0,0.0],"220":[9.0,4.0,1.5,0.0,9.0,2.5,4.0,4.0],"207":[9.0,4.0,0.5,0.0,9.0,2.5,4.0,2.0],"209":[6.0,6.0,0.5,0.0,9.0,6.5,2.0,4.0],"201":[6.0,8.0,0.5,0.0,9.0,4.0,0.0,2.0],"217":[9.0,4.0,0.5,0.0,9.0,1.5,2.0,0.0],"200":[6.0,10.0,1.5,0.0,3.0,4.0,4.0,2.0],"202":[15.0,6.0,0.0,0.0,3.0,0.0,4.0,0.0],"205":[9.0,8.0,1.5,0.0,0.0,2.5,6.0,0.0],"351":[6.0,4.0,1.5,0.0,6.0,5.5,0.0,2.0],"212":[9.0,0.0,1.5,0.0,9.0,2.5,0.0,4.0],"214":[9.0,0.0,0.5,0.0,6.0,0.0,4.0,4.0],"203":[9.0,2.0,0.0,0.0,6.0,1.5,4.0,0.0],"204":[12.0,0.0,1.0,0.0,3.0,4.0,2.0,0.0],"223":[9.0,2.0,0.5,2.0,6.0,0.0,0.0,0.0],"218":[6.0,0.0,1.5,0.0,9.0,2.5,0.0,0.0],"227":[15.0,0.0,1.0,0.0,9.0,2.5,0.0,0.0],"230":[0.0,0.0,0.0,0.0,6.0,0.0,0.0,0.0]};
   var PARTS4 = {"319":[3.5,3.0,0.0],"310":[4.5,7.0,6.0],"300":[2.5,0.0,0.0],"341":[3.5,2.0,3.0],"314":[4.0,6.0,2.0],"317":[null,null,1.5],"342":[null,null,1.5],"345":[4.0,0.5,2.0],"321":[2.0,0.0,1.0],"311":[4.5,3.5,3.0],"1789469351603":[4.0,6.5,3.5],"312":[2.0,0.5,2.5],"343":[4.5,5.0,5.0],"320":[1.5,0.5,3.5],"315":[1.5,2.0,3.5],"302":[1.5,2.0,0.5]};
+  /* Grade 4 Units 1-4 quiz (class 4B, 23 Oct 2026, Version A/B): school number -> [listening /8, words and grammar /8, reading /8, writing /8]. No names. Speaking (0 to 8) comes from the speaking check on the teacher's computer. */
+  var DATA14 = {"309":[5,0,1,2],"439":[7,1,6,3],"348":[3,3,0,2],"307":[6,2,7,0],"316":[8,4,7,2],"322":[3,0,5,3],"306":[8,2,7,4],"349":[8,3,2,0],"346":[8,6,8,6],"304":[5,3,6,5],"440":[2,0,3,0],"301":[7,4,8,4],"308":[4,5,6,1],"208":[8,4,8,4],"305":[6,7,6,0],"339":[3,5,0,3]};
+  var KEY14 = 'eaa_speak_g4_u4_v1';
+  /* the speaking mark (0 to 8) of the Units 1-4 check: typed on the results board, or saved by the speaking check on this computer */
+  function spk14(num, studentId) {
+    if (SPK['14-' + num] != null) return +SPK['14-' + num];
+    try { var d = JSON.parse(localStorage.getItem(KEY14) || '{}') || {}, e = d['class-4b|' + studentId]; if (e && e.t && e.t.length === 4) return e.t.reduce(function (a, b) { return a + (+b || 0); }, 0); } catch (err) { /* none */ }
+    return null;
+  }
+  function q14(studentId) {
+    var m = /(\d+)$/.exec(String(studentId)), num = m ? m[1] : '', st = store() && store().getStudent(studentId), d = DATA14[num];
+    if (!d || !st || st.classId !== 'class-4b') return null;
+    var sp = spk14(num, studentId), t = d[0] + d[1] + d[2] + d[3];
+    return { d: d, sp: sp, total: t, max: sp == null ? 32 : 40, got: sp == null ? t : t + sp };
+  }
   var G = '3', R3 = 'Unit 3 paper quiz (It Keeps Changing)', R4 = 'Unit 3 paper quiz (How Much Is It)';
   function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
@@ -76,20 +91,28 @@
     var s = store(), st = s && s.getStudent(studentId); if (!st) return null;
     var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
     var num = m[1], d;
+    var n14 = g[1] === '4' ? q14(studentId) : null;
+    if (n14) return { pct: Math.round(n14.got / n14.max * 100), text: n14.got + '/' + n14.max, speaking: n14.sp != null, title: 'Units 1-4 quiz' };
     if (g[1] === '4') {
       d = DATA4[num]; if (!d || d[1]) return null;
       var k4 = '4-' + num, h4 = SPK[k4] != null, t4 = d[0] + (h4 ? +SPK[k4] : 0), x4 = (d[2] || 19) + (h4 ? 6 : 0);
-      return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4 };
+      return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4, title: 'Unit 3 quiz' };
     }
     d = DATA[num]; if (!d || d[3]) return null;
     var sp = SPK[num], hs = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hs ? sp : 0), mx = hs ? 92 : 82;
-    return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs };
+    return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs, title: 'Unit 3 quiz' };
   }
   /* For the pupil profile: the quiz title, total and every part with its maximum. */
   function detailOf(studentId) {
     var sc = scoreOf(studentId), s = store(), st = s && s.getStudent(studentId); if (!st) return null;
     var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
     var num = m[1];
+    var n14 = g[1] === '4' ? q14(studentId) : null;
+    if (n14) {
+      var L14 = [['Listening', 8], ['Words and grammar', 8], ['Reading', 8], ['Writing', 8]];
+      return { title: 'Units 1-4 quiz', grade: 4, spk: n14.sp != null ? { score: n14.sp, max: 8 } : null, text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: n14.sp != null, bonus: 0,
+        parts: L14.map(function (l, i) { return { label: l[0], score: n14.d[i], max: l[1] }; }), note: '' };
+    }
     if (g[1] === '4') {
       var a = PARTS4[num]; if (!a) return null;
       var L = [['Listening', 6], ['Reading', 7], ['Writing', 6]];

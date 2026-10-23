@@ -30,7 +30,7 @@
     if (!any) return null;
     var best = null, worst = null;
     Object.keys(sk).forEach(function (k) { if (!best || sk[k].pct > sk[best].pct) best = k; if (!worst || sk[k].pct < sk[worst].pct) worst = k; });
-    var comment = 'Unit 3 quiz: ' + (best ? 'strongest in ' + NAMES[best].toLowerCase() : '') + (worst && worst !== best ? ', needs more practice in ' + NAMES[worst].toLowerCase() : '') + '.' +
+    var comment = (d.title || 'Unit 3 quiz') + ': ' + (best ? 'strongest in ' + NAMES[best].toLowerCase() : '') + (worst && worst !== best ? ', needs more practice in ' + NAMES[worst].toLowerCase() : '') + '.' +
       (sk.speaking ? ' Speaking ' + d.spk.score + '/' + d.spk.max + '.' : ' Speaking not marked yet.') + (d.note ? ' ' + d.note : '');
     return { skills: sk, comment: comment, hasSpeaking: !!sk.speaking };
   }
