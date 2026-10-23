@@ -7773,6 +7773,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         card('Unit 1 · Quick Quiz', 'Short quiz with the answer key.', [link('unit1-revision/quiz-grade3.html', '🖨️ Quiz'), link('unit1-revision/quiz-grade3-key.html', '🔑 Key', 'key')])
       ]) +
       grade(4, 'linear-gradient(135deg,#f59e0b,#d97706)', [
+        card('Units 1–4 · Written quiz (32 marks, 25 min)', 'Listening, words and grammar, reading, writing. Versions A and B, 14 pt, 2 pages. Class 4B results are on the board: XP is 30 + 70% of the score (Give XP to all).', [
+          link('quiz-g4-units1-4/quiz-a.html', '🖨️ Version A'), link('quiz-g4-units1-4/quiz-b.html', '🖨️ Version B'), link('quiz-g4-units1-4/listening.html', '🎧 Listening'),
+          link('quiz-g4-units1-4/key.html', '🔑 Key', 'key'), link('quiz-g4-units1-4/record.html', '📋 Class record', 'key'), link('speaking-g4/index.html', '🎤 Speaking check', 'key'),
+          link('lesson-plans/Grade4-Units1-4-Quiz-Lesson-Plan.pdf', '📘 Lesson plan', 'key'), '<button type="button" class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669);padding:7px 12px;font-size:0.82rem;border-radius:10px;" onclick="QuizResults && QuizResults.open(\'b\', \'4\')">📊 Results + XP (4-B)</button>']),
         card('Unit 3 · Time-Travel Money Quest (25 coins)', '4 skills: listening and -ar words, reading, writing, speaking board game. The teacher key and script are on the last page of the quiz.', [
           link('unit3-money-mission/quiz-4skills.html', '🖨️ Quiz + key + script'), link('unit3-money-mission/worksheet.html', '🖨️ Student pages'),
           link('lesson-plans/Grade4-Unit3-Money-Quiz-Lesson-Plan.pdf', '📘 Lesson plan', 'key'), board('4', '📊 Results (4-A)')]),
