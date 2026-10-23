@@ -14,7 +14,43 @@
   var NOTES_DEFAULT = {
     '343': { en: 'Ipek sent her recording. The device gave no sound for the listening part again, so the homework is counted as done. Thank you for trying!', tr: 'İpek ses kaydını gönderdi. Dinleme kısmında cihazda yine ses çıkmadı; bu yüzden ödev tamamlanmış sayıldı. Denediğiniz için teşekkür ederiz!' },
     '313': { en: 'Ada had a technical problem with the audio. Her homework is counted as done. Thank you for your patience!', tr: 'Ada ses konusunda teknik bir sorun yaşadı. Ödevi tamamlanmış sayıldı. Sabrınız için teşekkür ederiz!' },
-    '201': { en: 'Begum and her family worked very hard on the dango dessert. The effort was rewarded with points and the homework is counted as done.', tr: 'Begüm ve ailesi dango tatlısı için çok emek verdi. Bu çaba puanla ödüllendirildi ve ödev tamamlanmış sayıldı.' }
+    '201': { en: 'Begum and her family worked very hard on the dango dessert. The effort was rewarded with points and the homework is counted as done.', tr: 'Begüm ve ailesi dango tatlısı için çok emek verdi. Bu çaba puanla ödüllendirildi ve ödev tamamlanmış sayıldı.' },
+    '441': { en: 'Ahmet Mete is a calm and thoughtful pupil. We are encouraging him to join in more in class and to wait for his turn when others are speaking. He was away for the quiz, so he will do a make-up quiz.', tr: 'Ahmet Mete sakin ve düşünceli bir öğrenci. Derste daha fazla katılması ve başkaları konuşurken sırasını beklemesi için onu cesaretlendiriyoruz. Sınavda yoktu, bu yüzden telafi sınavı yapacak.' },
+    '311': { en: 'Alya Zeynep: Unit 3 money quiz: 58%. Listening is a strength (75%). Homework is up to date.', tr: 'Alya Zeynep: Ünite 3 sınavı: %58. Dinleme güçlü yönü (%75). Ödevler düzenli.' },
+    '310': { en: 'Bahriye Ada: Unit 3 money quiz: 92%. Reading is a strength (100%). Homework is up to date.', tr: 'Bahriye Ada: Ünite 3 sınavı: %92. Okuma güçlü yönü (%100). Ödevler düzenli.' },
+    '312': { en: 'Belis works hard: she is very active and finishes all her homework. Her quiz result does not show her usual effort, so she will do a short re-do. A few minutes of reading each day will help.', tr: 'Belis çok çalışkan: derste çok aktif ve tüm ödevlerini tamamlıyor. Sınav sonucu her zamanki çabasını göstermiyor, bu yüzden kısa bir tekrar sınavı yapacak. Her gün birkaç dakika okuma yardımcı olur.' },
+    '344': { en: 'Defne: Homework is up to date. No quiz mark yet: a make-up quiz will be arranged.', tr: 'Defne: Ödevler düzenli. Henüz sınav notu yok; telafi sınavı yapılacak.' },
+    '345': { en: 'Efe is energetic and does well in English. He is learning to wait for his turn and to use a calm voice. We would like to agree on one small plan together, in class and at home. His quiz does not show his real ability, so he will do a short re-do.', tr: 'Efe enerjik ve İngilizcede başarılı. Sırasını beklemeyi ve sakin bir ses tonu kullanmayı öğreniyor. Sınıfta ve evde birlikte küçük bir plan yapmak istiyoruz. Sınav sonucu gerçek gücünü göstermiyor, bu yüzden kısa bir tekrar sınavı yapacak.' },
+    '321': { en: 'Elif Su had a much more active week this week, which is great. Her quiz result was 16% (reading was hard for many children): a few minutes of English every day and the Tea Party homework will help.', tr: 'Elif Su bu hafta çok daha aktifti, bu çok güzel. Sınav sonucu %16 oldu (okuma bölümü birçok çocuk için zordu): her gün birkaç dakika İngilizce ve Tea Party ödevi yardımcı olur.' },
+    '315': { en: 'Emir was a focused pupil in the first months. Recently he has been more easily distracted in lessons. We want to bring back his good routine, and your help at home matters.', tr: 'Emir ilk aylarda derse odaklanan bir öğrenciydi. Son zamanlarda derste daha kolay dikkati dağılıyor. Eski güzel düzenini geri kazandırmak istiyoruz; evdeki desteğiniz çok önemli.' },
+    '302': { en: 'Emir has made a great step forward recently: he is more active and his homework is finished. Writing needs practice: a few sentences each week will help.', tr: 'Emir son zamanlarda çok güzel ilerledi: daha aktif ve ödevleri tamam. Yazma için pratik gerekiyor: haftada birkaç cümle yardımcı olur.' },
+    '317': { en: 'Esila Nil: Unit 3 money quiz: 25%. Only the writing page was handed in: the rest will be checked in the next quiz.', tr: 'Esila Nil: Ünite 3 sınavı: %25. Sınavın yalnızca yazma sayfası teslim edildi; kalan bölümlere bir sonraki sınavda bakacağız.' },
+    '314': { en: 'İclal: Unit 3 money quiz: 63%. Reading is a strength (86%). Writing needs regular practice. A very active week this week. Please help your child start the Tea Party homework.', tr: 'İclal: Ünite 3 sınavı: %63. Okuma güçlü yönü (%86). Yazma için düzenli pratik gerekiyor. Bu hafta çok aktifti. Tea Party ödevlerine başlaması için desteğinizi rica ederiz.' },
+    '341': { en: 'Kemal Tahsin: Unit 3 money quiz: 45%. Reading needs regular practice. Homework is up to date.', tr: 'Kemal Tahsin: Ünite 3 sınavı: %45. Okuma için düzenli pratik gerekiyor. Ödevler düzenli.' },
+    '342': { en: 'Melik Emir: Unit 3 money quiz: 25%. Only the writing page was handed in: the rest will be checked in the next quiz.', tr: 'Melik Emir: Ünite 3 sınavı: %25. Sınavın yalnızca yazma sayfası teslim edildi; kalan bölümlere bir sonraki sınavda bakacağız.' },
+    '300': { en: 'Rüzgar: Unit 3 money quiz: 13%. Reading needs regular practice. The reading part was hard for many children; we will check again in the next quiz.', tr: 'Rüzgar: Ünite 3 sınavı: %13. Okuma için düzenli pratik gerekiyor. Okuma bölümü birçok çocuk için zordu; bir sonraki sınavda yeniden bakacağız.' },
+    '320': { en: 'Sühan: Unit 3 money quiz: 29%. Reading needs regular practice. The reading part was hard for many children; we will check again in the next quiz.', tr: 'Sühan: Ünite 3 sınavı: %29. Okuma için düzenli pratik gerekiyor. Okuma bölümü birçok çocuk için zordu; bir sonraki sınavda yeniden bakacağız.' },
+    '319': { en: 'Şimal: Unit 3 money quiz: 34%. Writing needs regular practice.', tr: 'Şimal: Ünite 3 sınavı: %34. Yazma için düzenli pratik gerekiyor.' },
+    '109': { en: 'Zeynep Derin: A very active week this week. Please help your child start the Tea Party homework. No quiz mark yet: a make-up quiz will be arranged.', tr: 'Zeynep Derin: Bu hafta çok aktifti. Tea Party ödevlerine başlaması için desteğinizi rica ederiz. Henüz sınav notu yok; telafi sınavı yapılacak.' },
+    '346': { en: 'Ali İhsan: Units 1-4 quiz: 88%. Listening is a strength (100%). Homework is up to date.', tr: 'Ali İhsan: Ünite 1-4 sınavı: %88. Dinleme güçlü yönü (%100). Ödevler düzenli.' },
+    '338': { en: 'Derin has been one of the most active pupils this term. She was away for the quiz, so we will arrange a make-up quiz. We look forward to having her back.', tr: 'Derin bu dönem en aktif öğrencilerimizden biri. Sınavda yoktu, bu yüzden telafi sınavı yapacağız. Onu tekrar aramızda görmek için sabırsızlanıyoruz.' },
+    '316': { en: 'Egehan is growing in confidence: his points are rising and he did well in the quiz (66%), especially in listening and reading. Writing is the next step.', tr: 'Egehan kendine güveni artıyor: puanları yükseliyor ve sınavda başarılıydı (%66), özellikle dinleme ve okumada. Sıradaki adım yazma.' },
+    '307': { en: 'Elif Asya: Units 1-4 quiz: 47%. Reading is a strength (88%). Writing needs regular practice.', tr: 'Elif Asya: Ünite 1-4 sınavı: %47. Okuma güçlü yönü (%88). Yazma için düzenli pratik gerekiyor.' },
+    '306': { en: 'Elif Beren: Units 1-4 quiz: 66%. Listening is a strength (100%). A very active week this week.', tr: 'Elif Beren: Ünite 1-4 sınavı: %66. Dinleme güçlü yönü (%100). Bu hafta çok aktifti.' },
+    '348': { en: 'We would like to see Elisa take part more regularly. Her quiz result was 25%: a few minutes of English every day will help, and the Tea Party homework is a good start.', tr: 'Elisa\'nın derse daha düzenli katılmasını istiyoruz. Sınav sonucu %25 oldu: her gün birkaç dakika İngilizce yardımcı olur; Tea Party ödevi iyi bir başlangıç.' },
+    '318': { en: 'Ertuğrul: No quiz mark yet: a make-up quiz will be arranged.', tr: 'Ertuğrul: Henüz sınav notu yok; telafi sınavı yapılacak.' },
+    '303': { en: 'İlay\'s points have been very good this term, but she has been less active in the last two weeks. She has no quiz mark yet, so she will do a make-up quiz. We would like to help her get back into her rhythm.', tr: 'İlay\'ın bu dönem puanları çok iyiydi ancak son iki haftadır daha az aktif. Henüz sınav notu yok, telafi sınavı yapacak. Ritmine geri dönmesine yardımcı olmak istiyoruz.' },
+    '305': { en: 'Kerem: Units 1-4 quiz: 59%. Listening is a strength (75%). Writing needs regular practice. Homework is up to date.', tr: 'Kerem: Ünite 1-4 sınavı: %59. Dinleme güçlü yönü (%75). Yazma için düzenli pratik gerekiyor. Ödevler düzenli.' },
+    '349': { en: 'Lina understands spoken English very well (listening 100%). Reading and writing are the next step: three short sentences a week will help.', tr: 'Lina konuşulan İngilizceyi çok iyi anlıyor (dinleme %100). Sıradaki adım okuma ve yazma: haftada üç kısa cümle yardımcı olur.' },
+    '439': { en: 'Mina: Units 1-4 quiz: 53%. Listening is a strength (88%). Writing needs regular practice.', tr: 'Mina: Ünite 1-4 sınavı: %53. Dinleme güçlü yönü (%88). Yazma için düzenli pratik gerekiyor.' },
+    '304': { en: 'Nilda: Units 1-4 quiz: 59%. Reading is a strength (75%). A very active week this week. Homework is up to date.', tr: 'Nilda: Ünite 1-4 sınavı: %59. Okuma güçlü yönü (%75). Bu hafta çok aktifti. Ödevler düzenli.' },
+    '440': { en: 'We would like to see Nisa take part more regularly. Her quiz result was 16%: a few minutes of English every day will help, and the Tea Party homework is a good start.', tr: 'Nisa\'nın derse daha düzenli katılmasını istiyoruz. Sınav sonucu %16 oldu: her gün birkaç dakika İngilizce yardımcı olur; Tea Party ödevi iyi bir başlangıç.' },
+    '301': { en: 'Ozan: Units 1-4 quiz: 72%. Reading is a strength (100%). A very active week this week.', tr: 'Ozan: Ünite 1-4 sınavı: %72. Okuma güçlü yönü (%100). Bu hafta çok aktifti.' },
+    '208': { en: 'Ozan: Units 1-4 quiz: 75%. Listening is a strength (100%). A very active week this week. Homework is up to date.', tr: 'Ozan: Ünite 1-4 sınavı: %75. Dinleme güçlü yönü (%100). Bu hafta çok aktifti. Ödevler düzenli.' },
+    '322': { en: 'Öykü is one of our most active pupils (most points in the class). Her quiz result was lower (34%) and the Tea Party homework has not started. We would like to turn her energy into regular homework and short writing practice.', tr: 'Öykü en aktif öğrencilerimizden biri (sınıfta en çok puan). Sınav sonucu daha düşüktü (%34) ve Tea Party ödevlerine başlanmadı. Enerjisini düzenli ödeve ve kısa yazma çalışmalarına yöneltmek istiyoruz.' },
+    '339': { en: 'Uras: Units 1-4 quiz: 34%. Reading needs regular practice. Please help your child start the Tea Party homework.', tr: 'Uras: Ünite 1-4 sınavı: %34. Okuma için düzenli pratik gerekiyor. Tea Party ödevlerine başlaması için desteğinizi rica ederiz.' },
+    '309': { en: 'Utku finishes all his homework, which shows real effort. His quiz result was 25%: we will practise reading and writing in small steps.', tr: 'Utku tüm ödevlerini tamamlıyor, bu gerçek bir çabayı gösteriyor. Sınav sonucu %25 oldu: okuma ve yazmayı küçük adımlarla çalışacağız.' },
+    '308': { en: 'Yağmur Ada: Units 1-4 quiz: 50%. Reading is a strength (75%). Writing needs regular practice. A very active week this week.', tr: 'Yağmur Ada: Ünite 1-4 sınavı: %50. Okuma güçlü yönü (%75). Yazma için düzenli pratik gerekiyor. Bu hafta çok aktifti.' }
   };
   function notes() { var o = {}; try { o = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}') || {}; } catch (e) { o = {}; } Object.keys(NOTES_DEFAULT).forEach(function (k) { if (!o[k]) o[k] = NOTES_DEFAULT[k]; }); return o; }
   function noteOf(id) { return notes()[schoolNo(id)] || null; }
@@ -154,12 +190,14 @@
   }
   function cardHtml(rep) {
     var x = rep.extra || {}, c = x.comment || { en: '', tr: '' };
+    var par = (x.parents && x.parents.length) ? x.parents : parentsOf(rep.studentId);
+    var nt = x.note || noteOf(rep.studentId);
     var sk = ['listening', 'reading', 'writing', 'speaking'].map(function (k) {
       var v = x.skills && x.skills[k], nm = k[0].toUpperCase() + k.slice(1);
       return '<div class="pr-s"><b><span>' + nm + ' · ' + TR[nm] + '</span><span>' + (v ? esc(LEVEL_TXT[v.level] + ' · ' + LEVEL_TR[v.level]) : 'not assessed yet') + '</span></b><div class="pr-bar"><i style="width:' + (v ? Math.max(6, Math.min(100, v.v)) : 0) + '%"></i></div></div>';
     }).join('');
     var hw = (x.hw || []).map(function (h) { return '<span class="pr-' + (h.k === 'done' ? 'ok' : h.k === 'part' ? 'mid' : 'no') + '">' + esc(h.label) + ': ' + (h.k === 'done' ? 'done ✓' : h.k === 'part' ? 'partly done' : 'not handed in yet') + '</span>'; }).join('');
-    var to = x.parents && x.parents.length ? 'Dear ' + esc(x.parents.join(' and ')) + ' / Sayın ' + esc(x.parents.join(' ve ')) + ',' : 'Dear parents / Sayın velimiz,';
+    var to = par && par.length ? 'Dear ' + esc(par.join(' and ')) + ' / Sayın ' + esc(par.join(' ve ')) + ',' : 'Dear parents / Sayın velimiz,';
     return '<div class="pr-page"><div class="pr-top"><div><b>ENGLISH ADVENTURE ACADEMY</b><small>Parent report · Veli raporu</small></div><div style="text-align:right"><b style="font-size:15px">' + esc(rep.term) + '</b><small>' + esc(rep.date) + '</small></div></div>' +
       '<div class="pr-to">' + to + '<br>This is how <b>' + esc(x.first) + '</b> is doing in English. / <b>' + esc(x.first) + '</b>\'in İngilizce\'deki durumu aşağıdadır.</div>' +
       '<div class="pr-info"' + (x.att != null ? '' : ' style="grid-template-columns:repeat(3,1fr)"') + '><div><span>Pupil</span><b>' + esc(x.name) + '</b></div><div><span>Class</span><b>' + esc(x.cls) + '</b></div><div><span>Adventure points</span><b>⭐ ' + (x.xp || 0).toLocaleString('en-US') + '</b></div>' + (x.att != null ? '<div><span>Attendance</span><b>' + x.att + '%</b></div>' : '') + '</div>' +
@@ -171,7 +209,7 @@
         ((x.quizParts || []).length ? '<div class="pr-hw" style="margin-top:6px">' + x.quizParts.map(function (p) { return '<span>' + esc(p.label) + ' ' + p.score + '/' + p.max + '</span>'; }).join('') + '</div>' : '') : '') +
       (hw ? '<div class="pr-h">HOMEWORK · ÖDEV</div><div class="pr-hw">' + hw + '</div>' : '') +
       '<div class="pr-h">TEACHER\'S COMMENT · ÖĞRETMENİN YORUMU</div><div class="pr-2c"><div class="pr-c">' + esc(c.en) + '</div><div class="pr-c">' + esc(c.tr) + '</div></div>' +
-      (x.note ? '<div class="pr-h">NOTE FROM THE TEACHER · ÖĞRETMENDEN NOT</div><div class="pr-2c"><div class="pr-c">' + esc(x.note.en) + '</div><div class="pr-c">' + esc(x.note.tr) + '</div></div>' : '') +
+      (nt ? '<div class="pr-h">NOTE FROM THE TEACHER · ÖĞRETMENDEN NOT</div><div class="pr-2c"><div class="pr-c">' + esc(nt.en) + '</div><div class="pr-c">' + esc(nt.tr) + '</div></div>' : '') +
       ((x.goalsEn || []).length ? '<div class="pr-h">NEXT MONTH · GELECEK AY HEDEFLERİ</div><ul class="pr-goals">' + x.goalsEn.map(function (g, i) { return '<li>' + esc(g) + ' <i>' + esc((x.goalsTr || [])[i] || '') + '</i></li>'; }).join('') + '</ul>' : '') +
       '<div class="pr-h">HOW HOMEWORK WORKS · ÖDEV NASIL ÇALIŞIR</div><div class="pr-rules">Homework is on the Google Sheet link and on k12; the due day is in the description. If something does not work (sound, link), write to us on k12 and send the recording to the teacher. Adventure points are earned in class and with homework, and the monster grows with them. · Ödevler Google Sheet bağlantısında ve k12\'de yer alır; son gün açıklamada yazar. Ses veya bağlantı çalışmazsa k12\'den yazın ve ses kaydını öğretmene gönderin. Macera puanları derste ve ödevle kazanılır, canavar puanla büyür.</div>' +
       '<div class="pr-write"><div><span>Teacher\'s notes · Öğretmen notları</span></div><div><span>Parent\'s comment · Veli görüşü</span></div></div>' +
@@ -180,9 +218,11 @@
 
   function build(id) {
     var x = data(id); if (!x) return null;
+    var prev = reportOf(id), px = prev && prev.extra ? prev.extra : {};
     var c = comment(x);
-    var gl = goals(x), nt = noteOf(id);
-    return { goalsEn: gl.en, goalsTr: gl.tr, note: nt, first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, quizTitle: x.quizText, quizScore: x.quizScore, quizPct: x.quizPct, quizBonus: x.quizBonus, quizNote: x.quizNote, quizSpeak: x.quizSpeak, quizParts: x.quizParts, cmp: x.cmp, hw: x.hw, parents: x.parents, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
+    var gl = goals(x), nt = noteOf(id) || px.note || null;
+    var par = (x.parents && x.parents.length) ? x.parents : (px.parents || []);
+    return { goalsEn: gl.en, goalsTr: gl.tr, note: nt, first: x.first, name: x.name, cls: x.cls, xp: x.xp, att: x.att, skills: x.skills, best: x.best ? x.best[0].toUpperCase() + x.best.slice(1) : '', quizBand: x.quizBand, quizBandTr: x.quizBandTr, quizTitle: x.quizText, quizScore: x.quizScore, quizPct: x.quizPct, quizBonus: x.quizBonus, quizNote: x.quizNote, quizSpeak: x.quizSpeak, quizParts: x.quizParts, cmp: x.cmp, hw: x.hw, parents: par, month: x.last30, level: x.level, pos30: x.pos30, nw30: x.nw30, comment: c };
   }
 
   /** Saves one report for a pupil (replaces this term's earlier parent report of that pupil). */
@@ -200,17 +240,17 @@
     (function poll() { var d = null; try { d = root.CommandCenter.profileData(first.id, function () {}); } catch (e) { d = null; } if ((d && d.hwReady) || Date.now() - t0 > 20000) return cb(); setTimeout(poll, 700); })();
   }
 
-  /* ---- private cloud copy (never the parents' names: those stay on the teacher's computer and are put back from the local file) ---- */
+  /* ---- private cloud copy ---- */
   var CLOUD_ID = 'class-parent-reports-sync';
   function cloudClient() { var A = root.AdventureSupabase; if (!A || !A.isConfigured) return null; try { return A.client || (A._ensureClient && A._ensureClient()) || null; } catch (e) { return null; } }
   function strip(rep) {
-    var x = JSON.parse(JSON.stringify(rep.extra || {})); delete x.parents;
+    var x = JSON.parse(JSON.stringify(rep.extra || {}));
     return { id: rep.id, studentId: rep.studentId, term: rep.term, date: rep.date, reportType: rep.reportType, classId: rep.classId, className: rep.className, studentName: rep.studentName, extra: x };
   }
   function allReports() { return (S().state.reports || []).filter(function (r) { return r.extra && r.reportType === TYPE && !r.archived; }); }
   async function cloudUp() {
     var c = cloudClient(); if (!c) throw new Error('not connected to the cloud');
-    var doc = { v: 1, at: new Date().toISOString(), reports: allReports().map(strip) };
+    var doc = { v: 1, at: new Date().toISOString(), parents: names(), notes: notes(), reports: allReports().map(strip) };
     var up = await c.from('classes').upsert({ id: CLOUD_ID, name: 'Parent Reports Sync', grade: 'System', teacher: 'System', description: JSON.stringify(doc), archived: true, updated_at: new Date().toISOString() }, { onConflict: 'id' });
     if (up && up.error) throw up.error;
     return doc.reports.length;
@@ -221,12 +261,25 @@
     if (res && res.error) throw res.error;
     var doc = null; try { doc = res && res.data && res.data.description ? JSON.parse(res.data.description) : null; } catch (e) { doc = null; }
     if (!doc || !Array.isArray(doc.reports)) return 0;
+    if (doc.parents && typeof doc.parents === 'object') {
+      try { var curP = names(); Object.keys(doc.parents).forEach(function (k) { if (!curP[k] && doc.parents[k]) curP[k] = doc.parents[k]; }); localStorage.setItem(KEY, JSON.stringify(curP)); } catch (e) { /* ignore */ }
+    }
+    if (doc.notes && typeof doc.notes === 'object') {
+      try { var curN = notes(); Object.keys(doc.notes).forEach(function (k) { if (doc.notes[k]) curN[k] = doc.notes[k]; }); localStorage.setItem(NOTES_KEY, JSON.stringify(curN)); } catch (e) { /* ignore */ }
+    }
     var st = S(), n = 0; st.state.reports = st.state.reports || [];
     doc.reports.forEach(function (cr) {
       if (!st.getStudent(cr.studentId)) return;
       var mine = st.state.reports.filter(function (r) { return r.studentId === cr.studentId && r.reportType === TYPE && r.term === cr.term && r.extra; })[0];
-      if (mine) return;   // this computer already has its own report for this pupil: never overwritten
-      cr.extra.parents = parentsOf(cr.studentId); cr.archived = false; st.state.reports.unshift(cr); n++;
+      cr.extra = cr.extra || {};
+      var par = parentsOf(cr.studentId);
+      if (!par.length && Array.isArray(cr.extra.parents) && cr.extra.parents.length) par = cr.extra.parents;
+      else if (!par.length && mine && mine.extra && Array.isArray(mine.extra.parents) && mine.extra.parents.length) par = mine.extra.parents;
+      cr.extra.parents = par;
+      if (!cr.extra.note) cr.extra.note = noteOf(cr.studentId) || (mine && mine.extra && mine.extra.note) || null;
+      cr.archived = false;
+      st.state.reports = st.state.reports.filter(function (r) { return !(r.studentId === cr.studentId && r.reportType === TYPE && r.term === cr.term); });
+      st.state.reports.unshift(cr); n++;
     });
     if (n) { st.saveState(); if (st.notify) st.notify(); }
     return n;
@@ -273,9 +326,24 @@
       css(); var box = document.getElementById('pr-sheet'); if (!box) { box = document.createElement('div'); box.id = 'pr-sheet'; document.body.appendChild(box); }
       var have = Object.keys(names()).length;
       box.innerHTML = '<div class="pr-noprint" style="color:#e8eefc;font-family:Inter,system-ui,sans-serif;max-width:780px;margin:0 auto 14px"><h2 style="margin:0 0 6px">🧾 Parent reports for all four classes</h2>' +
-        '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b>' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
+        '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b id="pr-have">' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
         '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><label class="pr-btn o" style="display:inline-block">📝 Load teacher notes (file)<input id="pr-notes-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
       box.style.display = 'block';
+      function renderList() {
+        var ps = PR.pupils(), html = ps.map(function (p) { var rr = reportOf(p.id); return rr ? cardHtml(rr) : ''; }).join('');
+        var listEl = box.querySelector('#pr-list'), prBtn = box.querySelector('#pr-print'), haveEl = box.querySelector('#pr-have');
+        if (haveEl) haveEl.textContent = String(Object.keys(names()).length);
+        if (listEl) listEl.innerHTML = html;
+        if (prBtn && html) { prBtn.disabled = false; prBtn.onclick = function () { window.print(); }; }
+      }
+      renderList();
+      cloudDown().then(function (n) {
+        if (n) {
+          renderList();
+          var msg = box.querySelector('#pr-msg');
+          if (msg && !msg.textContent) msg.textContent = '✓ ' + n + ' reports loaded from the cloud.';
+        }
+      }, function () {});
       box.querySelector('#pr-notes-file').onchange = function () {
         var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
         var rd = new FileReader();
@@ -284,6 +352,7 @@
             var o = JSON.parse(String(rd.result)), cur = {}; try { cur = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}') || {}; } catch (e0) { cur = {}; }
             var n = 0; Object.keys(o).forEach(function (k) { if (o[k] && (o[k].en || o[k].tr)) { cur[k] = { en: String(o[k].en || ''), tr: String(o[k].tr || '') }; n++; } });
             if (!n) throw new Error('empty'); localStorage.setItem(NOTES_KEY, JSON.stringify(cur));
+            renderList();
             msg.textContent = '✓ Teacher notes loaded for ' + n + ' pupils (kept only on this computer). Now press "Make / update all reports".';
           } catch (e) { msg.textContent = 'That file could not be read. Pick the parent-notes json file.'; }
         };
@@ -293,23 +362,25 @@
         var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
         var rd = new FileReader();
         rd.onload = function () {
-          try { var o = JSON.parse(String(rd.result)), n = Object.keys(o).length; if (!n) throw new Error('empty'); localStorage.setItem(KEY, JSON.stringify(o)); msg.textContent = '✓ Parents’ names loaded for ' + n + ' pupils (kept only on this computer). Now press "Make / update all reports".'; }
+          try { var o = JSON.parse(String(rd.result)), n = Object.keys(o).length; if (!n) throw new Error('empty'); localStorage.setItem(KEY, JSON.stringify(o)); renderList(); msg.textContent = '✓ Parents’ names loaded for ' + n + ' pupils (kept only on this computer).'; }
           catch (e) { msg.textContent = 'That file could not be read. Pick the parents.json file.'; }
         };
         rd.readAsText(f);
       };
-      box.querySelector('#pr-up').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Saving to the cloud…'; cloudUp().then(function (n) { msg.textContent = '✓ ' + n + ' reports saved to the cloud (without the parents’ names).'; }, function (e) { msg.textContent = 'Could not save to the cloud: ' + ((e && e.message) || 'no answer') + '. Nothing was lost; it is still on this computer.'; }); };
-      box.querySelector('#pr-down').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading from the cloud…'; cloudDown().then(function (n) { msg.textContent = n ? '✓ ' + n + ' reports loaded from the cloud.' : 'Nothing new in the cloud (this computer has all of them, or none were saved yet).'; if (n) { var ps = PR.pupils(); box.querySelector('#pr-list').innerHTML = ps.map(function (p) { var rr = reportOf(p.id); return rr ? cardHtml(rr) : ''; }).join(''); box.querySelector('#pr-print').disabled = false; box.querySelector('#pr-print').onclick = function () { window.print(); }; } }, function (e) { msg.textContent = 'Could not read the cloud: ' + ((e && e.message) || 'no answer') + '.'; }); };
+      box.querySelector('#pr-up').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Saving to the cloud…'; cloudUp().then(function (n) { msg.textContent = '✓ ' + n + ' reports saved to the cloud.'; }, function (e) { msg.textContent = 'Could not save to the cloud: ' + ((e && e.message) || 'no answer') + '. Nothing was lost; it is still on this computer.'; }); };
+      box.querySelector('#pr-down').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading from the cloud…'; cloudDown().then(function (n) { msg.textContent = n ? '✓ ' + n + ' reports loaded from the cloud.' : 'Nothing new in the cloud.'; renderList(); }, function (e) { msg.textContent = 'Could not read the cloud: ' + ((e && e.message) || 'no answer') + '.'; }); };
       box.querySelector('#pr-make').onclick = function () {
         var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading the homework from the Google Sheet…'; this.disabled = true;
         waitSheet(function () {
           var ps = PR.pupils(), n = 0, noName = [];
-          ps.forEach(function (p) { var r = save(p.id); if (r) { n++; if (!(r.extra.parents || []).length) noName.push(p.firstName); } });
+          ps.forEach(function (p) {
+            if ((p.id === 'student-4a-313' || p.id === 'student-1789469351603') && reportOf(p.id)) { n++; return; }
+            var r = save(p.id);
+            if (r) { n++; if (!(r.extra.parents || []).length) noName.push(p.firstName); }
+          });
           try { S().saveState(); if (S().notify) S().notify(); } catch (e) { /* kept in memory at least */ }
           msg.textContent = '✓ ' + n + ' reports made.' + (noName.length ? ' No parent name for: ' + noName.join(', ') + '.' : '');
-          box.querySelector('#pr-print').disabled = false;
-          box.querySelector('#pr-list').innerHTML = ps.map(function (p) { var r = reportOf(p.id); return r ? cardHtml(r) : ''; }).join('');
-          box.querySelector('#pr-print').onclick = function () { window.print(); };
+          renderList();
         });
       };
     },
@@ -328,4 +399,18 @@
       return '<section class="par-card"><h3>🧾 Term report</h3><p class="par-empty" style="color:#cbd5e1">' + esc(rep.term) + ' · ' + esc(rep.date) + '</p><button type="button" class="par-link" onclick="ParentReport.open(\'' + esc(rep.id) + '\')">Open the report →</button></section>';
     }
   };
+
+  /* Automatically load the latest cloud parent reports on startup so the iPad / any browser has all 71 reports ready without pressing any button. */
+  (function autoSync() {
+    var tries = 0;
+    (function poll() {
+      tries++;
+      var st = S();
+      if (st && st.getStudents && (st.getStudents('class-4b') || []).length > 0 && cloudClient()) {
+        cloudDown().catch(function () {});
+        return;
+      }
+      if (tries < 40) setTimeout(poll, 800);
+    })();
+  })();
 })(typeof window !== 'undefined' ? window : this);
