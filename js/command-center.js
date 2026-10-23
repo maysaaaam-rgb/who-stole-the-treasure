@@ -519,7 +519,7 @@
       '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
         '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
       (xpBanner(cls)) + quietBanner(cls) +
-      '<div class="cc-links"><button class="cc-btn-hero" onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
+      '<div class="cc-links"><button class="cc-btn-hero" onclick="switchView(\'board\')">📺 Open Class Board</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="CommandCenter.classReport()">📄 Class report</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
       '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
       '<div class="cc-pn"><h3>Students · XP earned each day' +
         '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
@@ -531,7 +531,69 @@
   }
 
   // ------------------------------------------------------------- actions
+  /* ------------------------------------------------------------- one-page class report (print, A4 landscape) */
+  function crCss() {
+    if (document.getElementById('cc-cr-css')) return;
+    var st = document.createElement('style'); st.id = 'cc-cr-css';
+    st.textContent = '#cc-cr{position:fixed;inset:0;z-index:100000;background:#e2e8f0;overflow:auto;padding:12px;font-family:"Segoe UI",Arial,sans-serif;color:#0f172a}' +
+      '#cc-cr .cr-bar{max-width:297mm;margin:0 auto 8px;display:flex;gap:8px}#cc-cr .cr-bar button{border:0;border-bottom:5px solid #1d4ed8;background:#38bdf8;color:#06101f;font-weight:800;border-radius:12px;padding:8px 16px;cursor:pointer}#cc-cr .cr-bar button:active{transform:translateY(4px);border-bottom-width:1px}#cc-cr .cr-bar button.g{background:#334155;border-bottom-color:#1e293b;color:#e2e8f0}' +
+      '#cc-cr .cr-page{width:297mm;min-height:200mm;margin:0 auto;background:#fff;padding:7mm 9mm;box-shadow:0 4px 20px rgba(0,0,0,.25)}' +
+      '#cc-cr h1{font-size:17pt;margin:0}#cc-cr .cr-sub{color:#475569;font-size:9.5pt;margin:1mm 0 3mm}' +
+      '#cc-cr .cr-sum{display:grid;grid-template-columns:repeat(6,1fr);gap:2.5mm;margin-bottom:3mm}#cc-cr .cr-sum div{border:1.5px solid #0f172a;border-radius:2.5mm;padding:1.4mm 2.4mm;font-size:8.5pt;color:#475569;background:#f8fafc}#cc-cr .cr-sum b{display:block;font-size:14pt;color:#0f172a;line-height:1.15}' +
+      '#cc-cr table{width:100%;border-collapse:collapse;font-size:8.6pt}#cc-cr th,#cc-cr td{border-bottom:1px solid #cbd5e1;padding:.55mm 1.6mm;text-align:center;line-height:1.25}#cc-cr th{background:#f1f5f9;font-size:7.6pt;color:#475569;text-transform:uppercase}#cc-cr td.l,#cc-cr th.l{text-align:left}' +
+      '#cc-cr .lv{display:inline-block;min-width:9mm;border-radius:99px;padding:0 1.6mm;font-weight:800;font-size:8pt}#cc-cr .lv-a2{background:#e0e7ff;color:#3730a3}#cc-cr .lv-a1p{background:#dcfce7;color:#166534}#cc-cr .lv-a1{background:#fef3c7;color:#92400e}#cc-cr .lv-p{background:#fce7f3;color:#9d174d}#cc-cr .lv-n{color:#94a3b8}' +
+      '#cc-cr .st-star{color:#166534;font-weight:800}#cc-cr .st-slow{color:#92400e;font-weight:800}#cc-cr .st-help{color:#b91c1c;font-weight:800}#cc-cr .st-quiet{color:#64748b;font-weight:800}' +
+      '#cc-cr .cr-two{display:grid;grid-template-columns:1.2fr 1fr;gap:3mm;margin-top:3mm}#cc-cr .cr-box{border:1.5px solid #0f172a;border-radius:2.5mm;padding:1.6mm 2.6mm;font-size:8.6pt;line-height:1.35}#cc-cr .cr-box b.h{display:block;font-size:9pt;text-transform:uppercase;color:#0f172a;margin-bottom:.6mm}' +
+      '@media print{@page{size:A4 landscape;margin:7mm}body>*:not(#cc-cr){display:none!important}#cc-cr{position:static;background:#fff;padding:0;overflow:visible}#cc-cr .cr-bar{display:none}#cc-cr .cr-page{width:auto;min-height:0;box-shadow:none;padding:0}}';
+    document.head.appendChild(st);
+  }
+  function crLv(v) { var l = skLevel(v); return l[1] === 'a2' ? ['A2', 'a2'] : l[1] === 'a1p' ? ['A1+', 'a1p'] : l[1] === 'a1' ? ['A1', 'a1'] : ['Pre-A1', 'p']; }
+  function crSkillCell(x) { if (!x) return '<span class="lv-n">–</span>'; var l = crLv(x.v); return x.pct + '% <span class="lv lv-' + l[1] + '">' + l[0] + '</span>'; }
+  function openClassReport() {
+    var st = S(), cls = st.getActiveClass(); if (!cls) return;
+    crCss();
+    var rows = rowsFor(cls).slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name)); });
+    var n = rows.length, week = function (r) { return sum(r.a.days.slice(NDAYS - 7)); };
+    var avgXp = n ? Math.round(sum(rows.map(function (r) { return r.xp; })) / n) : 0, weekTot = sum(rows.map(week));
+    var withQ = rows.filter(function (r) { return r.q; }), qTitle = withQ.length ? (withQ[0].q.title || 'Paper quiz') : '';
+    var help = rows.filter(function (r) { return r.d.status === 'help'; }), watch = rows.filter(function (r) { return r.d.status === 'slow' || r.d.status === 'quiet'; });
+    var avgSk = Object.keys(SKN).map(function (k) {
+      var vs = rows.map(function (r) { return r.sk && r.sk[k] ? r.sk[k] : null; }).filter(Boolean);
+      if (!vs.length) return { k: k, none: true };
+      var v = Math.round(sum(vs.map(function (x) { return x.v; })) / vs.length), p = Math.round(sum(vs.map(function (x) { return x.pct; })) / vs.length);
+      return { k: k, v: v, p: p, n: vs.length };
+    });
+    var skBox = avgSk.map(function (a) { return SKN[a.k][0] + ' ' + (a.none ? '–' : a.p + '%'); }).join(' · ');
+    var weakest = avgSk.filter(function (a) { return !a.none && a.k !== 'speaking'; }).sort(function (a, b) { return a.p - b.p; })[0];
+    var body = rows.map(function (r) {
+      var s = STATUS[r.d.status] || ['', ''], cl = r.d.status === 'star' ? 'st-star' : r.d.status === 'slow' ? 'st-slow' : r.d.status === 'help' ? 'st-help' : r.d.status === 'quiet' ? 'st-quiet' : '';
+      return '<tr><td class="l"><b>' + esc(r.name) + '</b></td><td>' + r.xp.toLocaleString('en-US') + '</td><td>' + (week(r) ? '+' + week(r) : '–') + '</td><td>' + (r.q ? r.q.pct + '%' : '–') + '</td>' +
+        ['listening', 'reading', 'writing', 'speaking'].map(function (k) { return '<td>' + crSkillCell(r.sk && r.sk[k]) + '</td>'; }).join('') +
+        '<td class="l ' + cl + '">' + esc(s[0]) + '</td><td class="l" style="color:#475569">' + esc((r.d.why[0] || '').slice(0, 54)) + '</td></tr>';
+    }).join('');
+    var attn = help.concat(watch).slice(0, 7).map(function (r) { return '<div><b>' + esc(r.first) + '</b>: ' + esc((r.d.why[0] || '').slice(0, 70)) + '</div>'; }).join('') || '<div>Nobody needs special attention this week.</div>';
+    var noQ = rows.filter(function (r) { return !r.q; }).map(function (r) { return r.first; });
+    var weakQ = rows.filter(function (r) { return r.qWeak; }).map(function (r) { return r.first; });
+    var steps = [];
+    if (weakest) steps.push('Practise <b>' + SKN[weakest.k][1].toLowerCase() + '</b> as a class (average ' + weakest.p + '%).');
+    if (weakQ.length) steps.push('Short re-do of the quiz for: ' + esc(weakQ.join(', ')) + '.');
+    if (noQ.length && withQ.length) steps.push('No quiz mark yet: ' + esc(noQ.join(', ')) + '.');
+    if (avgSk[3].none) steps.push('Speaking is not marked yet: do the speaking check.');
+    if (!steps.length) steps.push('Keep going: the class is on track.');
+    var d = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    var ovl = document.getElementById('cc-cr'); if (ovl) ovl.remove();
+    ovl = document.createElement('div'); ovl.id = 'cc-cr';
+    ovl.innerHTML = '<div class="cr-bar"><button type="button" onclick="window.print()">🖨️ Print (A4 landscape)</button><button type="button" class="g" onclick="document.getElementById(\'cc-cr\').remove()">Close ✕</button></div>' +
+      '<div class="cr-page"><h1>Class report · ' + esc(cls.name) + '</h1><div class="cr-sub">' + esc(d) + ' · English · Mr. Maysam' + (qTitle ? ' · latest paper quiz: ' + esc(qTitle) : '') + '</div>' +
+      '<div class="cr-sum"><div>Pupils<b>' + n + '</b></div><div>Average XP<b>' + avgXp.toLocaleString('en-US') + '</b></div><div>XP this week<b>+' + weekTot.toLocaleString('en-US') + '</b></div><div>Quiz average<b>' + (withQ.length ? quizAvg + '%' : '–') + '</b></div><div title="L listening, R reading, W writing, S speaking">Skills: L · R · W · S<b style="font-size:11pt">' + skBox + '</b></div><div>Needs help · Watch<b>' + help.length + ' · ' + watch.length + '</b></div></div>' +
+      '<table><tr><th class="l">Pupil</th><th>XP</th><th>This week</th><th>Quiz</th><th>Listening</th><th>Reading</th><th>Writing</th><th>Speaking</th><th class="l">Status</th><th class="l">Note</th></tr>' + body + '</table>' +
+      '<div class="cr-two"><div class="cr-box"><b class="h">Needs attention</b>' + attn + '</div><div class="cr-box"><b class="h">Next steps</b>' + steps.map(function (x) { return '<div>• ' + x + '</div>'; }).join('') + '</div></div>' +
+      '<div style="font-size:7.6pt;color:#64748b;margin-top:1.6mm">Levels are classroom bands (A2 / A1+ / A1 / Pre-A1) made from the paper quiz. They are not an official CEFR result. Private: for the teacher only.</div></div>';
+    document.body.appendChild(ovl);
+  }
+
   var api = {
+    classReport: openClassReport,
     sort: function (k) { if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } refreshTable(); },
     filter: function (f) { filterKey = f; if (root.renderCurrentView) root.renderCurrentView(); },
     find: function (v) { query = v || ''; refreshTable(); },
