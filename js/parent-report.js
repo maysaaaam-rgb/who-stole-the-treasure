@@ -106,8 +106,11 @@
     en.push(f + ' is a valued member of our class and has earned ' + x.xp.toLocaleString('en-US') + ' adventure points.');
     tr.push(f + ', sınıfımızın değerli bir üyesi ve şimdiye kadar ' + x.xp.toLocaleString('tr-TR') + ' macera puanı topladı.');
     if (x.best) {
-      en.push(cap(x.best) + ' is a real strength' + (x.worst ? ', and a little ' + x.worst + ' practice at home may help even more.' : '.'));
-      tr.push(TR[cap(x.best)] + ' en güçlü becerisi' + (x.worst ? '; evde biraz ' + TR[cap(x.worst)].toLowerCase() + ' çalışması daha da faydalı olabilir.' : '.'));
+      var bl = x.skills && x.skills[x.best] ? x.skills[x.best].level : '', strong = bl === 'A2' || bl === 'A1+';   // only a skill at A1+ or better is called a strength
+      if (strong) en.push(cap(x.best) + ' is a real strength' + (x.worst ? ', and a little ' + x.worst + ' practice at home may help even more.' : '.'));
+      else en.push(cap(x.best) + ' was ' + f + '\'s best skill in the quiz' + (x.worst ? ', and regular ' + x.worst + ' practice at home will help ' + f + ' grow.' : '.'));
+      if (strong) tr.push(TR[cap(x.best)] + ' en güçlü becerisi' + (x.worst ? '; evde biraz ' + TR[cap(x.worst)].toLowerCase() + ' çalışması daha da faydalı olabilir.' : '.'));
+      else tr.push(TR[cap(x.best)] + ' sınavdaki en iyi becerisiydi' + (x.worst ? '; evde düzenli ' + TR[cap(x.worst)].toLowerCase() + ' çalışması ' + f + '\'in gelişmesine yardımcı olacaktır.' : '.'));
     }
     if (hwTot) {
       if (hwDone === hwTot) { en.push('Thank you for the homework!'); tr.push('Ödevler için teşekkür ederiz!'); }
