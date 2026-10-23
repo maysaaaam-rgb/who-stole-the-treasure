@@ -230,7 +230,12 @@
     var st = S(), ex = build(id); if (!ex) return null;
     st.state.reports = (st.state.reports || []).filter(function (r) { return !(r.studentId === id && r.reportType === TYPE && r.term === TERM); });
     var rep = st.generateStudentReport({ studentId: id, term: TERM, reportType: TYPE, customNotes: ex.comment.en });
-    if (rep) { rep.extra = ex; }
+    if (rep) {
+      rep.extra = ex;
+      rep.studentName = rep.studentName || ex.name || 'Student';
+      rep.title = rep.title || (rep.studentName + ' — ' + (rep.term || TERM));
+      rep.dataSnapshot = rep.dataSnapshot || { totalXP: ex.xp != null ? ex.xp : 0, attendanceRate: ex.att != null ? ex.att : 100, overallCefr: ex.quizBand || 'A1' };
+    }
     return rep;
   }
   function reportOf(id) { return (S().state.reports || []).filter(function (r) { return r.studentId === id && r.reportType === TYPE && r.extra && !r.archived; })[0] || null; }
@@ -245,7 +250,7 @@
   function cloudClient() { var A = root.AdventureSupabase; if (!A || !A.isConfigured) return null; try { return A.client || (A._ensureClient && A._ensureClient()) || null; } catch (e) { return null; } }
   function strip(rep) {
     var x = JSON.parse(JSON.stringify(rep.extra || {}));
-    return { id: rep.id, studentId: rep.studentId, term: rep.term, date: rep.date, reportType: rep.reportType, classId: rep.classId, className: rep.className, studentName: rep.studentName, extra: x };
+    return { id: rep.id, studentId: rep.studentId, term: rep.term, date: rep.date, reportType: rep.reportType, classId: rep.classId, className: rep.className, studentName: rep.studentName, title: rep.title, dataSnapshot: rep.dataSnapshot, extra: x };
   }
   function allReports() { return (S().state.reports || []).filter(function (r) { return r.extra && r.reportType === TYPE && !r.archived; }); }
   async function cloudUp() {
@@ -269,7 +274,8 @@
     }
     var st = S(), n = 0; st.state.reports = st.state.reports || [];
     doc.reports.forEach(function (cr) {
-      if (!st.getStudent(cr.studentId)) return;
+      var stu = st.getStudent(cr.studentId);
+      if (!stu) return;
       var mine = st.state.reports.filter(function (r) { return r.studentId === cr.studentId && r.reportType === TYPE && r.term === cr.term && r.extra; })[0];
       cr.extra = cr.extra || {};
       var par = parentsOf(cr.studentId);
@@ -277,6 +283,13 @@
       else if (!par.length && mine && mine.extra && Array.isArray(mine.extra.parents) && mine.extra.parents.length) par = mine.extra.parents;
       cr.extra.parents = par;
       if (!cr.extra.note) cr.extra.note = noteOf(cr.studentId) || (mine && mine.extra && mine.extra.note) || null;
+      cr.studentName = cr.studentName || cr.extra.name || ((stu.firstName || '') + ' ' + (stu.lastName || '')).trim() || 'Student';
+      cr.title = cr.title || (cr.studentName + ' — ' + (cr.term || TERM));
+      cr.dataSnapshot = cr.dataSnapshot || {
+        totalXP: cr.extra.xp != null ? cr.extra.xp : (stu.xp || 0),
+        attendanceRate: cr.extra.att != null ? cr.extra.att : 100,
+        overallCefr: cr.extra.quizBand || stu.overallCefr || 'A1'
+      };
       cr.archived = false;
       st.state.reports = st.state.reports.filter(function (r) { return !(r.studentId === cr.studentId && r.reportType === TYPE && r.term === cr.term); });
       st.state.reports.unshift(cr); n++;
@@ -293,9 +306,14 @@
     writing: { tr: ['Derste öğrendiği 3 kelimeyle üç kısa cümle yazsın.', 'Günün olayını tek bir İngilizce cümleyle yazmasını isteyin.'], en: ['Write three short sentences with 3 words from class.', 'Ask for one English sentence about the day.'] },
     speaking: { tr: ['Akşam yemeğinde "Tell me three sentences about your day" deyin.', 'Sevdiği bir oyuncağı veya yemeği İngilizce anlatsın.'], en: ['At dinner ask: "Tell me three sentences about your day."', 'Ask for a few English words about a favourite toy or food.'] }
   };
+  var homeTriedCloud = {};
   function homeHtml(id, rerender) {
     var st = S(), s0 = st.getStudent(id); if (!s0) return '<div style="padding:40px;text-align:center">No child profile found.</div>';
     var x = data(id, rerender), first = esc(x.first), rep = reportOf(id);
+    if (!rep && !homeTriedCloud[id]) {
+      homeTriedCloud[id] = 1;
+      cloudDown().then(function (n) { if (n && typeof rerender === 'function') rerender(); }, function () {});
+    }
     var skillRows = ['listening', 'reading', 'writing', 'speaking'].map(function (k) {
       var v = x.skills[k], nm = k[0].toUpperCase() + k.slice(1);
       return '<div class="ph-sk"><div class="ph-skt"><span>' + TR[nm] + ' · ' + nm + '</span><b>' + (v ? esc(LEVEL_TR[v.level] + ' · ' + LEVEL_TXT[v.level]) : 'henüz değerlendirilmedi · not assessed yet') + '</b></div><div class="par-bar"><i style="width:' + (v ? Math.max(6, Math.min(100, v.v)) : 0) + '%"></i></div></div>';
@@ -322,27 +340,52 @@
     names: names, parentsOf: parentsOf, build: build, save: save, reportOf: reportOf, cardHtml: cardHtml,
     /** Pupils of the four classes. */
     pupils: function () { var st = S(), out = []; ['class-3a', 'class-3b', 'class-4a', 'class-4b'].forEach(function (c) { (st.getStudents(c) || []).forEach(function (p) { out.push(p); }); }); return out; },
-    openAll: function () {
+    openForStudent: function (id) {
+      var r = reportOf(id);
+      if (r) { PR.open(r.id); return; }
+      cloudDown().then(function () {
+        var r2 = reportOf(id) || save(id);
+        if (r2) PR.open(r2.id);
+      }, function () {
+        var r2 = save(id);
+        if (r2) PR.open(r2.id);
+      });
+    },
+    openAll: function (initialClassFilter) {
       css(); var box = document.getElementById('pr-sheet'); if (!box) { box = document.createElement('div'); box.id = 'pr-sheet'; document.body.appendChild(box); }
-      var have = Object.keys(names()).length;
+      var have = Object.keys(names()).length, curClass = initialClassFilter || 'all';
       box.innerHTML = '<div class="pr-noprint" style="color:#e8eefc;font-family:Inter,system-ui,sans-serif;max-width:780px;margin:0 auto 14px"><h2 style="margin:0 0 6px">🧾 Parent reports for all four classes</h2>' +
         '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b id="pr-have">' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
-        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><label class="pr-btn o" style="display:inline-block">📝 Load teacher notes (file)<input id="pr-notes-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
+        '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center"><span style="font-size:.82rem;color:#94a3b8;font-weight:700;margin-right:4px">Filter class:</span>' +
+        '<button class="pr-btn pr-cls-btn" data-cls="all" style="padding:5px 12px;font-size:.82rem">All 4 classes</button>' +
+        '<button class="pr-btn o pr-cls-btn" data-cls="class-4a" style="padding:5px 12px;font-size:.82rem">4A</button>' +
+        '<button class="pr-btn o pr-cls-btn" data-cls="class-4b" style="padding:5px 12px;font-size:.82rem">4B</button>' +
+        '<button class="pr-btn o pr-cls-btn" data-cls="class-3a" style="padding:5px 12px;font-size:.82rem">3A</button>' +
+        '<button class="pr-btn o pr-cls-btn" data-cls="class-3b" style="padding:5px 12px;font-size:.82rem">3B</button></div>' +
+        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><label class="pr-btn o" style="display:inline-block">📝 Load teacher notes (file)<input id="pr-notes-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print shown</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#34d399;font-weight:700"></div></div><div id="pr-list"></div>';
       box.style.display = 'block';
       function renderList() {
-        var ps = PR.pupils(), html = ps.map(function (p) { var rr = reportOf(p.id); return rr ? cardHtml(rr) : ''; }).join('');
-        var listEl = box.querySelector('#pr-list'), prBtn = box.querySelector('#pr-print'), haveEl = box.querySelector('#pr-have');
+        var ps = PR.pupils().filter(function (p) { return curClass === 'all' || p.classId === curClass; });
+        var cards = [];
+        ps.forEach(function (p) { var rr = reportOf(p.id); if (rr) cards.push(cardHtml(rr)); });
+        var html = cards.join('');
+        var listEl = box.querySelector('#pr-list'), prBtn = box.querySelector('#pr-print'), haveEl = box.querySelector('#pr-have'), msg = box.querySelector('#pr-msg');
         if (haveEl) haveEl.textContent = String(Object.keys(names()).length);
         if (listEl) listEl.innerHTML = html;
-        if (prBtn && html) { prBtn.disabled = false; prBtn.onclick = function () { window.print(); }; }
+        if (prBtn) { prBtn.disabled = !html; if (html) prBtn.onclick = function () { window.print(); }; }
+        [].forEach.call(box.querySelectorAll('.pr-cls-btn'), function (b) {
+          b.className = 'pr-btn pr-cls-btn' + (b.getAttribute('data-cls') === curClass ? '' : ' o');
+        });
+        if (msg && !msg.getAttribute('data-busy') && cards.length) {
+          msg.textContent = '✓ Showing ' + cards.length + ' parent report' + (cards.length === 1 ? '' : 's') + (curClass === 'all' ? ' (all 4 classes)' : '') + ' — with teacher notes, quiz scores & parent names.';
+        }
       }
+      [].forEach.call(box.querySelectorAll('.pr-cls-btn'), function (b) {
+        b.onclick = function () { curClass = b.getAttribute('data-cls') || 'all'; renderList(); };
+      });
       renderList();
       cloudDown().then(function (n) {
-        if (n) {
-          renderList();
-          var msg = box.querySelector('#pr-msg');
-          if (msg && !msg.textContent) msg.textContent = '✓ ' + n + ' reports loaded from the cloud.';
-        }
+        if (n) renderList();
       }, function () {});
       box.querySelector('#pr-notes-file').onchange = function () {
         var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
@@ -367,10 +410,10 @@
         };
         rd.readAsText(f);
       };
-      box.querySelector('#pr-up').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Saving to the cloud…'; cloudUp().then(function (n) { msg.textContent = '✓ ' + n + ' reports saved to the cloud.'; }, function (e) { msg.textContent = 'Could not save to the cloud: ' + ((e && e.message) || 'no answer') + '. Nothing was lost; it is still on this computer.'; }); };
-      box.querySelector('#pr-down').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading from the cloud…'; cloudDown().then(function (n) { msg.textContent = n ? '✓ ' + n + ' reports loaded from the cloud.' : 'Nothing new in the cloud.'; renderList(); }, function (e) { msg.textContent = 'Could not read the cloud: ' + ((e && e.message) || 'no answer') + '.'; }); };
+      box.querySelector('#pr-up').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.setAttribute('data-busy', '1'); msg.textContent = 'Saving to the cloud…'; cloudUp().then(function (n) { msg.removeAttribute('data-busy'); msg.textContent = '✓ ' + n + ' reports saved to the cloud.'; }, function (e) { msg.removeAttribute('data-busy'); msg.textContent = 'Could not save to the cloud: ' + ((e && e.message) || 'no answer') + '. Nothing was lost; it is still on this computer.'; }); };
+      box.querySelector('#pr-down').onclick = function () { var msg = box.querySelector('#pr-msg'); msg.setAttribute('data-busy', '1'); msg.textContent = 'Reading from the cloud…'; cloudDown().then(function (n) { msg.removeAttribute('data-busy'); renderList(); msg.textContent = '✓ ' + (n || allReports().length) + ' reports loaded from the cloud.'; }, function (e) { msg.removeAttribute('data-busy'); msg.textContent = 'Could not read the cloud: ' + ((e && e.message) || 'no answer') + '.'; }); };
       box.querySelector('#pr-make').onclick = function () {
-        var msg = box.querySelector('#pr-msg'); msg.textContent = 'Reading the homework from the Google Sheet…'; this.disabled = true;
+        var msg = box.querySelector('#pr-msg'); msg.setAttribute('data-busy', '1'); msg.textContent = 'Reading the homework from the Google Sheet…'; this.disabled = true;
         waitSheet(function () {
           var ps = PR.pupils(), n = 0, noName = [];
           ps.forEach(function (p) {
@@ -379,8 +422,9 @@
             if (r) { n++; if (!(r.extra.parents || []).length) noName.push(p.firstName); }
           });
           try { S().saveState(); if (S().notify) S().notify(); } catch (e) { /* kept in memory at least */ }
-          msg.textContent = '✓ ' + n + ' reports made.' + (noName.length ? ' No parent name for: ' + noName.join(', ') + '.' : '');
+          msg.removeAttribute('data-busy');
           renderList();
+          msg.textContent = '✓ ' + n + ' reports made.' + (noName.length ? ' No parent name for: ' + noName.join(', ') + '.' : '');
         });
       };
     },
@@ -388,7 +432,7 @@
     open: function (repId) {
       css(); var rep = S().getReport(repId); if (!rep || !rep.extra) return;
       var box = document.getElementById('pr-sheet'); if (!box) { box = document.createElement('div'); box.id = 'pr-sheet'; document.body.appendChild(box); }
-      box.innerHTML = '<div class="pr-noprint" style="max-width:780px;margin:0 auto 12px;display:flex;gap:8px"><button class="pr-btn" onclick="window.print()">🖨️ Print</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div>' + cardHtml(rep);
+      box.innerHTML = '<div class="pr-noprint" style="max-width:780px;margin:0 auto 12px;display:flex;gap:8px"><button class="pr-btn" onclick="window.print()">🖨️ Print</button><button class="pr-btn o" onclick="ParentReport.openAll()">← All 71 reports</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div>' + cardHtml(rep);
       box.style.display = 'block';
     },
     close: function () { var b = document.getElementById('pr-sheet'); if (b) b.style.display = 'none'; },
@@ -407,10 +451,14 @@
       tries++;
       var st = S();
       if (st && st.getStudents && (st.getStudents('class-4b') || []).length > 0 && cloudClient()) {
-        cloudDown().catch(function () {});
+        cloudDown().then(function (n) {
+          if (n && root.renderCurrentView && /reports/i.test(String(location.hash || ''))) {
+            try { root.renderCurrentView(); } catch (e) { /* ignore */ }
+          }
+        }, function () {});
         return;
       }
-      if (tries < 40) setTimeout(poll, 800);
+      if (tries < 60) setTimeout(poll, 500);
     })();
   })();
 })(typeof window !== 'undefined' ? window : this);

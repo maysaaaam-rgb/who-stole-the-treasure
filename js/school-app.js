@@ -8081,6 +8081,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     const activeClass = store.getActiveClass();
     const allReports = store.getReports();
     const students = store.getStudents();
+    if (allReports.filter(r => r && r.extra).length < 70 && window.ParentReport && window.ParentReport.cloudDown && !window.__prPullingReportsView) {
+      window.__prPullingReportsView = true;
+      window.ParentReport.cloudDown().then(function (n) {
+        window.__prPullingReportsView = false;
+        if (n && typeof renderCurrentView === 'function') renderCurrentView();
+      }, function () { window.__prPullingReportsView = false; });
+    }
     const reports = allReports.filter(rep => {
       if (!activeClass) return true;
       if (rep.classId && rep.classId !== activeClass.id) return false;
@@ -8095,12 +8102,21 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
           '<h1 style="font-size:1.65rem; font-weight:800; color:var(--text-main);">Student Term Reports</h1>' +
           '<p style="font-size:0.86rem; color:var(--text-muted); margin-top:4px;">Dynamic report cards compiled from live attendance, XP ledger, and CEFR mastery data.</p>' +
         '</div>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="ParentReport && ParentReport.openAll()">🧾 Parent reports: all classes</button><button class="btn-primary-action" onclick="openReportGeneratorModal()">📄 + Generate New Report</button></div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-primary-action" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="ParentReport && ParentReport.openAll()">🧾 Parent reports: all 4 classes (' + allReports.filter(r => r && r.extra).length + ')</button><button class="btn-primary-action" onclick="openReportGeneratorModal()">📄 + Generate New Report</button></div>' +
       '</div>' +
 
       '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:18px;">' +
         reports.map(rep => {
           const s = students.find(item => item.id === rep.studentId) || { firstName: 'Student', lastName: '' };
+          const ex = rep.extra || {};
+          const sName = rep.studentName || ex.name || ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || 'Student';
+          const title = (rep.title && rep.title !== 'undefined') ? rep.title : (sName + ' — ' + (rep.term || 'Term 1'));
+          const xpVal = ex.xp != null ? ex.xp : ((rep.dataSnapshot || {}).totalXP || s.xp || 0);
+          const attVal = ex.att != null ? (ex.att + '%') : (((rep.dataSnapshot || {}).attendanceRate !== undefined && (rep.dataSnapshot || {}).attendanceRate !== null) ? ((rep.dataSnapshot || {}).attendanceRate + '%') : '100%');
+          const cefrVal = ex.quizBand || (rep.dataSnapshot || {}).overallCefr || s.overallCefr || 'A1';
+          const parTxt = (Array.isArray(ex.parents) && ex.parents.length) ? ('<div><strong>Parents:</strong> 👪 ' + ex.parents.join(' &amp; ') + '</div>') : '';
+          const quizTxt = ex.quizPct != null ? ('<div><strong>' + (ex.quizTitle || 'Quiz') + ':</strong> 📝 ' + ex.quizPct + '%</div>') : '';
+          const noteBadge = ex.note && (ex.note.en || ex.note.tr) ? '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border-subtle);color:#10b981;font-weight:700;font-size:0.76rem;">✓ Teacher note included (EN + TR)</div>' : '';
           return '' +
             '<div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:14px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:var(--shadow-sm);">' +
               '<div>' +
@@ -8108,12 +8124,15 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
                   '<span style="font-size:0.75rem; font-weight:800; color:var(--color-primary); background:rgba(79,70,229,0.1); padding:2px 8px; border-radius:999px;">' + rep.term + '</span>' +
                   '<span style="font-size:0.75rem; color:var(--text-muted);">' + rep.date + '</span>' +
                 '</div>' +
-                '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">' + rep.title + '</h3>' +
-                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (rep.className || 'Class 3A') + ' · ' + rep.reportType + '</div>' +
+                '<h3 style="font-size:1.1rem; font-weight:800; margin-bottom:4px;">' + title + '</h3>' +
+                '<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">' + (rep.className || ex.cls || 'Class') + ' · ' + rep.reportType + '</div>' +
                 '<div style="background:var(--bg-card-secondary); border-radius:8px; padding:10px; font-size:0.8rem; margin-bottom:14px; border:1px solid var(--border-subtle);">' +
-                  '<div><strong>Total XP:</strong> ⭐ ' + ((rep.dataSnapshot || {}).totalXP || 0) + '</div>' +
-                  '<div><strong>Attendance:</strong> ' + (((rep.dataSnapshot || {}).attendanceRate !== undefined) ? (rep.dataSnapshot || {}).attendanceRate : 0) + '%</div>' +
-                  '<div><strong>CEFR Level:</strong> ' + ((rep.dataSnapshot || {}).overallCefr || 'Unassessed') + '</div>' +
+                  parTxt +
+                  '<div><strong>Total XP:</strong> ⭐ ' + xpVal + '</div>' +
+                  quizTxt +
+                  '<div><strong>Attendance:</strong> ' + attVal + '</div>' +
+                  '<div><strong>Level:</strong> ' + cefrVal + '</div>' +
+                  noteBadge +
                 '</div>' +
               '</div>' +
               '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-subtle); padding-top:12px;">' +
