@@ -36,28 +36,28 @@ td.lv { font-weight: 800; white-space: nowrap; } .L0 { background: #fecaca; } .L
 body { font-size: 12pt; }
 </style></head><body><div class="bar noprint"><b>Grade 4 · Units 1–4 Quiz</b> <a href="quiz-a.html">Version A</a><a href="quiz-b.html">Version B</a><a href="listening.html">Listening</a><a href="key.html">Answer key</a><a href="record.html" class="on">Class record</a><button type="button" onclick="window.print()" style="margin-left:auto">🖨️ Print</button></div>
 <div class="page"><div class="head"><h1>Class record · 4A · Units 1–4 Quiz<br><small style="font-size:12pt;color:#475569">Type the marks (0 to 8 for each unit). Levels appear by themselves. Nothing is saved or sent anywhere: print this page before you close it.</small></h1></div>
-<div class="sec"><table id="t"><thead><tr><th>#</th><th>Name</th><th style="background:#0ea5e9;color:#fff">U1<br>/8</th><th style="background:#10b981;color:#fff">U2<br>/8</th><th style="background:#a855f7;color:#fff">U3<br>/8</th><th style="background:#f59e0b;color:#fff">U4<br>/8</th><th>Total<br>/32</th><th>Level</th><th>Weakest unit</th></tr></thead><tbody></tbody></table></div>
+<div class="sec"><table id="t"><thead><tr><th>#</th><th>Name</th><th style="background:#0ea5e9;color:#fff">U1<br>/8</th><th style="background:#10b981;color:#fff">U2<br>/8</th><th style="background:#a855f7;color:#fff">U3<br>/8</th><th style="background:#f59e0b;color:#fff">U4<br>/8</th><th>Total<br>/32</th><th>Score<br>/100</th><th>Level</th><th>Weakest unit</th></tr></thead><tbody></tbody></table></div>
 <div class="sum" id="sum"></div>
-<p class="note" style="margin-top:3mm">Unit levels: 0–2 Below A1 · 3–4 A1 · 5–6 A1+ · 7–8 A1+ strong. Whole quiz: 0–9 Below A1 · 10–17 A1 · 18–25 A1+ · 26–32 A1+ strong. Keep this sheet private (names and marks are for the teacher only).</p></div>
+<p class="note" style="margin-top:3mm">Unit levels: 0–2 Below A1 · 3–4 A1 · 5–6 A1+ · 7–8 A1+ strong. Whole quiz: 0–9 Below A1 · 10–17 A1 · 18–25 A1+ · 26–32 A1+ strong. Score out of 100 = total × 100 ÷ 32, rounded. Keep this sheet private (names and marks are for the teacher only).</p></div>
 <script>
 (function () {
   var tb = document.querySelector('#t tbody'), N = 30, NAMES = ['Below A1', 'A1', 'A1+', 'A1+ strong'], UL = ["Unit 1","Unit 2","Unit 3","Unit 4"];
   function lvT(m) { return m <= 9 ? 0 : m <= 17 ? 1 : m <= 25 ? 2 : 3; }
-  for (var i = 1; i <= N; i++) { var tr = document.createElement('tr'); tr.innerHTML = '<td>' + i + '</td><td><input class="nm" type="text" aria-label="Name ' + i + '"></td>' + [0, 1, 2, 3].map(function (k) { return '<td><input class="m" type="number" min="0" max="8" aria-label="Unit ' + (k + 1) + '"></td>'; }).join('') + '<td class="tt"></td><td class="lv"></td><td class="wk"></td>'; tb.appendChild(tr); }
+  for (var i = 1; i <= N; i++) { var tr = document.createElement('tr'); tr.innerHTML = '<td>' + i + '</td><td><input class="nm" type="text" aria-label="Name ' + i + '"></td>' + [0, 1, 2, 3].map(function (k) { return '<td><input class="m" type="number" min="0" max="8" aria-label="Unit ' + (k + 1) + '"></td>'; }).join('') + '<td class="tt"></td><td class="pc"></td><td class="lv"></td><td class="wk"></td>'; tb.appendChild(tr); }
   function calc() {
     var cnt = [0, 0, 0, 0], tot = [0, 0, 0, 0], n = 0;
     [].forEach.call(tb.rows, function (tr) {
       var ms = [].slice.call(tr.querySelectorAll('input.m')).map(function (x) { return x.value === '' ? null : Math.max(0, Math.min(8, parseInt(x.value, 10) || 0)); });
       var done = ms.every(function (x) { return x !== null; });
-      tr.querySelector('.tt').textContent = ''; tr.querySelector('.lv').textContent = ''; tr.querySelector('.lv').className = 'lv'; tr.querySelector('.wk').textContent = '';
+      tr.querySelector('.tt').textContent = ''; tr.querySelector('.pc').textContent = ''; tr.querySelector('.lv').textContent = ''; tr.querySelector('.lv').className = 'lv'; tr.querySelector('.wk').textContent = '';
       if (!done) return;
       var t = ms.reduce(function (a, b) { return a + b; }, 0), l = lvT(t), lo = Math.min.apply(null, ms);
-      tr.querySelector('.tt').textContent = t; tr.querySelector('.lv').textContent = NAMES[l]; tr.querySelector('.lv').className = 'lv L' + l;
+      tr.querySelector('.tt').textContent = t; tr.querySelector('.pc').textContent = Math.round(t * 100 / 32); tr.querySelector('.lv').textContent = NAMES[l]; tr.querySelector('.lv').className = 'lv L' + l;
       tr.querySelector('.wk').textContent = ms.map(function (m, k) { return m === lo ? UL[k] : null; }).filter(Boolean).join(', ');
       cnt[l]++; n++; ms.forEach(function (m, k) { tot[k] += m; });
     });
-    var s = document.getElementById('sum');
-    s.innerHTML = n ? NAMES.map(function (nm, k) { return '<div class="L' + k + '"><b>' + cnt[k] + '</b>' + nm + '</div>'; }).join('') + UL.map(function (u, k) { return '<div><b>' + (tot[k] / n).toFixed(1) + '</b>' + u + ' average /8</div>'; }).join('') : '<div style="grid-column:1/-1">Type the four marks for a pupil to see levels and the class summary.</div>';
+    var s = document.getElementById('sum'), sumT = 0; [].forEach.call(tb.rows, function (tr) { var v = parseInt(tr.querySelector('.tt').textContent, 10); if (!isNaN(v)) sumT += v; });
+    s.innerHTML = n ? NAMES.map(function (nm, k) { return '<div class="L' + k + '"><b>' + cnt[k] + '</b>' + nm + '</div>'; }).join('') + UL.map(function (u, k) { return '<div><b>' + (tot[k] / n).toFixed(1) + '</b>' + u + ' average /8</div>'; }).join('') + '<div><b>' + Math.round(sumT / n * 100 / 32) + '</b>class average /100</div>' : '<div style="grid-column:1/-1">Type the four marks for a pupil to see levels and the class summary.</div>';
   }
   tb.addEventListener('input', calc); calc();
 })();
