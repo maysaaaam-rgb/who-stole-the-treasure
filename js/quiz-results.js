@@ -9,6 +9,21 @@
   /* The marks of each part (no names): Grade 3 = [game1 /15, match /12, snake /10, -ng /5, listening /12, poem table /8, car table /10, summary /10]; Grade 4 = [listening /6, reading /7, writing /6] (null = page not handed in). */
   var PARTS3 = {"221":[null,null,null,null,6,4,10,0],"229":[15.0,10.0,2.0,3.0,12.0,8.0,4.0,8.0],"219":[12.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"224":[9.0,12.0,2.0,0.0,9.0,8.0,8.0,4.0],"353":[12.0,12.0,0.5,0.0,12.0,5.5,4.0,0.0],"354":[15.0,4.0,1.0,0.0,9.0,8.0,2.0,4.0],"222":[6.0,12.0,0.5,0.0,6.0,5.5,4.0,6.0],"213":[9.0,6.0,1.0,3.0,9.0,5.5,8.0,0.0],"228":[15.0,8.0,1.5,0.0,9.0,5.5,2.0,0.0],"206":[9.0,8.0,1.0,0.0,9.0,5.5,6.0,2.0],"215":[12.0,6.0,0.5,0.0,9.0,2.5,8.0,0.0],"352":[15.0,6.0,1.5,0.0,9.0,5.5,2.0,0.0],"216":[12.0,4.0,0.5,0.0,12.0,4.0,4.0,0.0],"211":[6.0,2.0,5.0,0.0,9.0,8.0,6.0,0.0],"220":[9.0,4.0,1.5,0.0,9.0,2.5,4.0,4.0],"207":[9.0,4.0,0.5,0.0,9.0,2.5,4.0,2.0],"209":[6.0,6.0,0.5,0.0,9.0,6.5,2.0,4.0],"201":[6.0,8.0,0.5,0.0,9.0,4.0,0.0,2.0],"217":[9.0,4.0,0.5,0.0,9.0,1.5,2.0,0.0],"200":[6.0,10.0,1.5,0.0,3.0,4.0,4.0,2.0],"202":[15.0,6.0,0.0,0.0,3.0,0.0,4.0,0.0],"205":[9.0,8.0,1.5,0.0,0.0,2.5,6.0,0.0],"351":[6.0,4.0,1.5,0.0,6.0,5.5,0.0,2.0],"212":[9.0,0.0,1.5,0.0,9.0,2.5,0.0,4.0],"214":[9.0,0.0,0.5,0.0,6.0,0.0,4.0,4.0],"203":[9.0,2.0,0.0,0.0,6.0,1.5,4.0,0.0],"204":[12.0,0.0,1.0,0.0,3.0,4.0,2.0,0.0],"223":[9.0,2.0,0.5,2.0,6.0,0.0,0.0,0.0],"218":[6.0,0.0,1.5,0.0,9.0,2.5,0.0,0.0],"227":[15.0,0.0,1.0,0.0,9.0,2.5,0.0,0.0],"230":[0.0,0.0,0.0,0.0,6.0,0.0,0.0,0.0]};
   var PARTS4 = {"319":[3.5,3.0,0.0],"310":[4.5,7.0,6.0],"300":[2.5,0.0,0.0],"341":[3.5,2.0,3.0],"314":[4.0,6.0,2.0],"317":[null,null,1.5],"342":[null,null,1.5],"345":[4.0,0.5,2.0],"321":[2.0,0.0,1.0],"311":[4.5,3.5,3.0],"1789469351603":[4.0,6.5,3.5],"312":[2.0,0.5,2.5],"343":[4.5,5.0,5.0],"320":[1.5,0.5,3.5],"315":[1.5,2.0,3.5],"302":[1.5,2.0,0.5]};
+  /* Grade 4 Units 1-4 quiz (class 4B, 23 Oct 2026, Version A/B): school number -> [listening /8, words and grammar /8, reading /8, writing /8]. No names. Speaking (0 to 8) comes from the speaking check on the teacher's computer. */
+  var DATA14 = {"309":[5,0,1,2],"439":[7,1,6,3],"348":[3,3,0,2],"307":[6,2,7,0],"316":[8,4,7,2],"322":[3,0,5,3],"306":[8,2,7,4],"349":[8,3,2,0],"346":[8,6,8,6],"304":[5,3,6,5],"440":[2,0,3,0],"301":[7,4,8,4],"308":[4,5,6,1],"208":[8,4,8,4],"305":[6,7,6,0],"339":[3,5,0,3]};
+  var KEY14 = 'eaa_speak_g4_u4_v1';
+  /* the speaking mark (0 to 8) of the Units 1-4 check: typed on the results board, or saved by the speaking check on this computer */
+  function spk14(num, studentId) {
+    if (SPK['14-' + num] != null) return +SPK['14-' + num];
+    try { var d = JSON.parse(localStorage.getItem(KEY14) || '{}') || {}, e = d['class-4b|' + studentId]; if (e && e.t && e.t.length === 4) return e.t.reduce(function (a, b) { return a + (+b || 0); }, 0); } catch (err) { /* none */ }
+    return null;
+  }
+  function q14(studentId) {
+    var m = /(\d+)$/.exec(String(studentId)), num = m ? m[1] : '', st = store() && store().getStudent(studentId), d = DATA14[num];
+    if (!d || !st || st.classId !== 'class-4b') return null;
+    var sp = spk14(num, studentId), t = d[0] + d[1] + d[2] + d[3];
+    return { d: d, sp: sp, total: t, max: sp == null ? 32 : 40, got: sp == null ? t : t + sp };
+  }
   var G = '3', R3 = 'Unit 3 paper quiz (It Keeps Changing)', R4 = 'Unit 3 paper quiz (How Much Is It)';
   function reason() { return G === '4' ? R4 : R3; }
   var cls = 'a', box = null, SPK = {};
@@ -43,10 +58,21 @@
       '.qr-xp{width:64px;text-align:center;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#fff;padding:4px;font-weight:700}.qr-sp{margin:4px 0;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#cbd5e1;padding:3px 6px;font-size:.78rem}.qr-done{color:#10b981;font-weight:800;margin-top:6px}';
     document.head.appendChild(s);
   }
+  /* the 4-B card of the Units 1-4 quiz: tap to see the percentage, optional speaking mark (0 to 8), no XP is given for this quiz */
+  function card14(p) {
+    var st = p.st, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil'), n = q14(st.id);
+    if (!n) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
+    var has = SPK['14-' + p.num] != null, auto = !has && n.sp != null, pc = Math.round(n.got / n.max * 100);
+    var sel = '<select class="qr-sp" onchange="QuizResults.speak(\'14-' + p.num + '\',this.value)"><option value="">Speaking: ' + (auto ? n.sp + '/8 from the check' : 'not yet') + '</option>' + [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function (k) { return '<option value="' + k + '"' + (has && +SPK['14-' + p.num] === k ? ' selected' : '') + '>' + k + ' / 8</option>'; }).join('') + '</select>';
+    return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
+      '<div class="qr-score qr-hid" data-s="' + n.got + '" data-m="' + n.max + '" data-b="0" data-p="' + pc + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' + sel +
+      '<div class="qr-note">Listening ' + n.d[0] + ' · Words ' + n.d[1] + ' · Reading ' + n.d[2] + ' · Writing ' + n.d[3] + ' (each /8)</div></div>';
+  }
   function stars(p) { var v = p >= 75 ? 3 : p >= 50 ? 2 : 1, o = ''; while (v--) o += '⭐'; return o; }
   function render() {
-    var list = pupils(cls);
+    var list = pupils(cls), b14 = G === '4' && cls === 'b';
     var cards = list.map(function (p) {
+      if (b14) return card14(p);
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
       if (G === '4') {
@@ -66,8 +92,8 @@
         (isGiven ? '<div class="qr-done">✓ XP given</div>' :
           '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d, hasSp ? sp : 0) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
     }).join('');
-    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results (Grade ' + G + ')</h2><div class="qr-sub">' + (G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' Tap a card to show the result, then give XP.</div></div></div>' +
-      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '') +
+    box.innerHTML = '<div class="qr-top"><div><h2>📄 ' + (G === '4' && cls === 'b' ? 'Units 1-4 Quiz Results (4-B)' : 'Unit 3 Quiz Results (Grade ' + G + ')') + '</h2><div class="qr-sub">' + (G === '4' && cls === 'b' ? 'Out of 32 (listening, words and grammar, reading, writing, 8 each). Choose a speaking mark (0 to 8) and the total becomes out of 40. The speaking check on this computer fills it in by itself. No XP is given for this quiz.' : G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' ' + (G === '4' && cls === 'b' ? 'Tap a card to show the result.' : 'Tap a card to show the result, then give XP.') + '</div></div></div>' +
+      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">4-B · Units 1-4</button>') +
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn go" title="Build the 4 skills of every pupil and save them to the reports" onclick="QuizResults.skills()">🧩 4 skills → reports</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
   }
@@ -76,20 +102,28 @@
     var s = store(), st = s && s.getStudent(studentId); if (!st) return null;
     var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
     var num = m[1], d;
+    var n14 = g[1] === '4' ? q14(studentId) : null;
+    if (n14) return { pct: Math.round(n14.got / n14.max * 100), text: n14.got + '/' + n14.max, speaking: n14.sp != null, title: 'Units 1-4 quiz' };
     if (g[1] === '4') {
       d = DATA4[num]; if (!d || d[1]) return null;
       var k4 = '4-' + num, h4 = SPK[k4] != null, t4 = d[0] + (h4 ? +SPK[k4] : 0), x4 = (d[2] || 19) + (h4 ? 6 : 0);
-      return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4 };
+      return { pct: Math.round(t4 / x4 * 100), text: t4 + '/' + x4, speaking: h4, title: 'Unit 3 quiz' };
     }
     d = DATA[num]; if (!d || d[3]) return null;
     var sp = SPK[num], hs = sp === 4 || sp === 7 || sp === 10, raw = d[0] + (hs ? sp : 0), mx = hs ? 92 : 82;
-    return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs };
+    return { pct: Math.round(raw / mx * 100), text: (hs ? Math.round(raw / 92 * 1000) / 10 + '/100' : raw + '/82'), speaking: hs, title: 'Unit 3 quiz' };
   }
   /* For the pupil profile: the quiz title, total and every part with its maximum. */
   function detailOf(studentId) {
     var sc = scoreOf(studentId), s = store(), st = s && s.getStudent(studentId); if (!st) return null;
     var g = /class-(\d)/.exec(String(st.classId || '')), m = /(\d+)$/.exec(String(studentId)); if (!g || !m) return null;
     var num = m[1];
+    var n14 = g[1] === '4' ? q14(studentId) : null;
+    if (n14) {
+      var L14 = [['Listening', 8], ['Words and grammar', 8], ['Reading', 8], ['Writing', 8]];
+      return { title: 'Units 1-4 quiz', grade: 4, spk: n14.sp != null ? { score: n14.sp, max: 8 } : null, text: sc ? sc.text : '', pct: sc ? sc.pct : null, speaking: n14.sp != null, bonus: 0,
+        parts: L14.map(function (l, i) { return { label: l[0], score: n14.d[i], max: l[1] }; }), note: '' };
+    }
     if (g[1] === '4') {
       var a = PARTS4[num]; if (!a) return null;
       var L = [['Listening', 6], ['Reading', 7], ['Writing', 6]];
@@ -115,7 +149,7 @@
     reveal: function (el) { var s = +el.dataset.s, b = +el.dataset.b; el.classList.remove('qr-hid'); el.removeAttribute('onclick'); el.style.cursor = 'default'; el.innerHTML = s + '<small style="font-size:.9rem"> / ' + el.dataset.m + '</small>' + (b ? '<div style="font-size:.9rem;color:#38bdf8">+' + b + ' bonus</div>' : '') + '<div>' + stars(+el.dataset.p) + '</div>'; },
     revealAll: function () { [].slice.call(box.querySelectorAll('.qr-hid')).forEach(Q.reveal); },
     hideAll: function () { render(); },
-    speak: function (num, v) { if (String(num).indexOf('4-') === 0) { if (v === '') delete SPK[num]; else SPK[num] = parseInt(v, 10); } else { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; } saveSpk(); render(); },
+    speak: function (num, v) { if (String(num).indexOf('4-') === 0 || String(num).indexOf('14-') === 0) { if (v === '') delete SPK[num]; else SPK[num] = parseInt(v, 10); } else { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; } saveSpk(); render(); },
     give: function (id, btn) {
       var s = store(), st = s && s.getStudent(id); if (!st || given(st)) return;
       var card = btn.closest('.qr-card'), v = Math.max(0, Math.min(200, parseInt(card.querySelector('.qr-xp').value, 10) || 0));

@@ -348,7 +348,7 @@
       labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + (d.paused ? ' cc-pz' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
       th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
       hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
-      '<th class="cc-hh" style="cursor:default" title="Unit 3 paper quiz (percent). Weak = ' + QUIZ_GAP + ' points or more under the class average (' + quizAvg + '%).">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
+      '<th class="cc-hh" style="cursor:default" title="Latest paper quiz (percent). Weak = ' + QUIZ_GAP + ' points or more under the class average (' + quizAvg + '%).">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
     var body = rows.map(function (r) {
       var s = STATUS[r.d.status];
       var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
@@ -356,7 +356,7 @@
       return '<tr onclick="CommandCenter.open(\'' + esc(r.id) + '\')"><td><div class="cc-nm">' + (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy">' : '') + '<span>' + esc(r.name) + flag + '<small class="cc-lvl">Lvl ' + r.level + '<span class="cc-bar"><i style="width:' + Math.max(2, Math.min(100, r.pct)) + '%"></i></span></small></span></div></td>' +
         '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(NDAYS - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
-        '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="Unit 3 quiz ' + esc(r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
+        '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="' + esc((r.q.title || 'Unit 3 quiz') + ' ' + r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
         '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button> <button class="cc-plus cc-nwb" title="Needs work (discipline)" onclick="CommandCenter.needsWork(\'' + esc(r.id) + '\')">⚠' + (r.a.nw && r.a.nw.n ? '<sup>' + r.a.nw.n + '</sup>' : '') + '</button></td></tr>';
     }).join('');
@@ -425,7 +425,7 @@
     if (r.a.sSince >= 7 && classQuiet) tips.push('<b>The whole class has had no XP for ' + classQuiet + ' lesson days:</b> enter the XP for your last lessons, or check the pupil again after the next lesson.');
     else if (r.a.sSince >= 7) tips.push('<b>No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ':</b> have a quick friendly chat and give an easy win today (a speaking turn with a point).');
     else if (r.xpSlow) tips.push('<b>Much less XP than the rest of the class:</b> set one small goal for the next lesson and praise it.');
-    if (r.qWeak) tips.push('<b>Unit 3 quiz ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
+    if (r.qWeak) tips.push('<b>' + (r.q.title || 'Unit 3 quiz') + ' ' + r.q.pct + '%:</b> go through the questions they missed (see the quiz results board) and give a short re-do.');
     r.d.missing.forEach(function (h) { tips.push('<b>Remind about ' + esc(h.label) + '</b>' + (h.due ? ' (due ' + esc(h.due) + ')' : '') + '.'); });
     if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
     var ovl = document.createElement('div'); ovl.id = 'cc-drawer'; ovl.className = 'cc-ovl cc-dr';
@@ -436,7 +436,7 @@
       '<h4>XP earned each day (30 days)</h4>' + bars +
       '<h4>Activity</h4><div class="cc-drg"><div><small>Last 7 days</small><b>' + (r.a.last ? '+' + r.a.last : '0') + ' XP</b></div><div><small>Week before</small><b>' + (r.a.prev ? '+' + r.a.prev : '0') + ' XP</b></div><div><small>Last XP</small><b>' + (r.a.since >= 999 ? 'never' : r.a.since === 0 ? 'today' : r.a.since + ' d ago') + '</b></div><div><small>Active days</small><b>' + days14.filter(function (v) { return v > 0; }).length + ' of 30</b></div><div><small>Last 30 days</small><b>+' + sum(days14) + ' XP</b></div></div>' +
       (tally.length ? '<div class="cc-dim" style="margin-top:6px">Most XP for: ' + tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') +
-      (r.q ? '<h4>Unit 3 quiz</h4><div class="cc-dim" style="padding:0 0 8px"><b>' + r.q.pct + '%</b> (' + esc(r.q.text) + (r.q.speaking ? ', with speaking' : ', speaking not added yet') + ')</div>' : '') + '<h4>Homework (last two weeks)</h4>' + hw +
+      (r.q ? '<h4>' + esc(r.q.title || 'Unit 3 quiz') + '</h4><div class="cc-dim" style="padding:0 0 8px"><b>' + r.q.pct + '%</b> (' + esc(r.q.text) + (r.q.speaking ? ', with speaking' : ', speaking not added yet') + ')</div>' : '') + '<h4>Homework (last two weeks)</h4>' + hw +
       '<h4>Worksheets</h4><div>' + ws + '</div>' +
       '<h4>What to do next</h4><ul class="cc-tips">' + tips.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
       '<div class="cc-dra"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5 XP</button><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10 XP</button><button class="cc-plus" onclick="openGiveXPSkillsModal && openGiveXPSkillsModal(\'student\',\'' + esc(r.id) + '\')">🎯 XP for a skill</button><button class="cc-plus pri" onclick="document.getElementById(\'cc-drawer\').remove(); openStudentDetail(\'' + esc(r.id) + '\')">Open full profile</button></div></div>';
@@ -541,7 +541,7 @@
         if (r.a.sSince >= 7 && classQuiet) tips.push('The whole class has had no XP for ' + classQuiet + ' lesson days: enter the XP for your last lessons, then check this pupil again.');
         else if (r.a.sSince >= 7) tips.push('No XP for ' + (r.a.sSince >= 999 ? 'a long time' : r.a.sSince + ' lesson days') + ': have a quick friendly chat and give an easy win today (a speaking turn with a point).');
         else if (r.xpSlow) tips.push('Much less XP than the rest of the class: set one small goal for the next lesson and praise it.');
-        if (r.qWeak) tips.push('Unit 3 quiz ' + r.q.pct + '% (class ' + quizAvg + '%): go through the questions they missed and give a short re-do.');
+        if (r.qWeak) tips.push((r.q.title || 'Unit 3 quiz') + ' ' + r.q.pct + '% (class ' + quizAvg + '%): go through the questions they missed and give a short re-do.');
         r.d.missing.forEach(function (h) { if (overdue(h)) tips.push('Remind about ' + h.label + (h.due ? ' (due ' + h.due + ')' : '') + '.'); });
         if (!tips.length) tips.push('Keep going: give a stretch task (a longer answer, or helping a friend).');
         var classDays = []; for (var di = 0; di < 30; di++) classDays.push(sum(rowsAll.map(function (x) { return x.a.days[NDAYS - 30 + di]; })));

@@ -6,7 +6,7 @@
    It does NOT recalculate the pupil's overall CEFR (the old rubric code averages in skills that have no data and would pull everybody down). */
 (function (root) {
   'use strict';
-  var TAG = 'unit3-quiz-4skills', TITLE = 'Unit 3 quiz: 4 skills';
+  var TAG = 'unit3-quiz-4skills', TITLE = 'Unit 3 quiz: 4 skills', TAG14 = 'units14-quiz-4skills', TITLE14 = 'Units 1-4 quiz: 4 skills';
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function S() { return root.schoolStore; }
   function scale(pct) { return pct >= 80 ? 90 : pct >= 60 ? 78 : pct >= 40 ? 65 : pct >= 25 ? 55 : 45; }
@@ -30,9 +30,9 @@
     if (!any) return null;
     var best = null, worst = null;
     Object.keys(sk).forEach(function (k) { if (!best || sk[k].pct > sk[best].pct) best = k; if (!worst || sk[k].pct < sk[worst].pct) worst = k; });
-    var comment = 'Unit 3 quiz: ' + (best ? 'strongest in ' + NAMES[best].toLowerCase() : '') + (worst && worst !== best ? ', needs more practice in ' + NAMES[worst].toLowerCase() : '') + '.' +
+    var comment = (d.title || 'Unit 3 quiz') + ': ' + (best ? 'strongest in ' + NAMES[best].toLowerCase() : '') + (worst && worst !== best ? ', needs more practice in ' + NAMES[worst].toLowerCase() : '') + '.' +
       (sk.speaking ? ' Speaking ' + d.spk.score + '/' + d.spk.max + '.' : ' Speaking not marked yet.') + (d.note ? ' ' + d.note : '');
-    return { skills: sk, comment: comment, hasSpeaking: !!sk.speaking };
+    return { skills: sk, comment: comment, hasSpeaking: !!sk.speaking, quiz: d.title === 'Units 1-4 quiz' ? 'u14' : 'u3' };
   }
 
   function pupils(grade) {
@@ -49,14 +49,15 @@
     var st = S();
     if (!Array.isArray(st.state.assessments)) st.state.assessments = [];
     if (!Array.isArray(st.state.learningEvidence)) st.state.learningEvidence = [];
-    st.state.assessments = st.state.assessments.filter(function (a) { return !(a.studentId === student.id && a.syncTag === TAG); });
-    st.state.learningEvidence = st.state.learningEvidence.filter(function (e) { return !(e.studentId === student.id && e.activityId === TAG); });
+    var t14 = k.quiz === 'u14', tag = t14 ? TAG14 : TAG, title = t14 ? TITLE14 : TITLE;
+    st.state.assessments = st.state.assessments.filter(function (a) { return !(a.studentId === student.id && a.syncTag === tag); });
+    st.state.learningEvidence = st.state.learningEvidence.filter(function (e) { return !(e.studentId === student.id && e.activityId === tag); });
     var rubric = {}, date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     Object.keys(k.skills).forEach(function (key) { rubric[key] = k.skills[key].v; });
     // pushed at the END of the list: the pupil's own teacher rubrics (newer, at the start) keep priority in getStudentSkills
-    st.state.assessments.push({ id: 'ass-' + TAG + '-' + student.id, title: TITLE, studentId: student.id, classId: student.classId, date: date, rubricScores: rubric, teacherComment: k.comment, archived: false, syncTag: TAG });
+    st.state.assessments.push({ id: 'ass-' + tag + '-' + student.id, title: title, studentId: student.id, classId: student.classId, date: date, rubricScores: rubric, teacherComment: k.comment, archived: false, syncTag: tag });
     Object.keys(rubric).forEach(function (key) {
-      st.state.learningEvidence.push({ id: 'ev-' + TAG + '-' + student.id + '-' + key, studentId: student.id, activityId: TAG, objectiveId: 'unit3-quiz', skillId: key, score: rubric[key], maxScore: 100, date: date, source: 'Unit 3 quiz' });
+      st.state.learningEvidence.push({ id: 'ev-' + tag + '-' + student.id + '-' + key, studentId: student.id, activityId: tag, objectiveId: t14 ? 'units14-quiz' : 'unit3-quiz', skillId: key, score: rubric[key], maxScore: 100, date: date, source: t14 ? 'Units 1-4 quiz' : 'Unit 3 quiz' });
     });
   }
 
@@ -68,7 +69,7 @@
     var n = 0;
     plan(grade).forEach(function (r) {
       if (!r.k) return;
-      var cur = st.state.assessments.filter(function (a) { return a.studentId === r.s.id && a.syncTag === TAG; })[0], rub = {};
+      var cur = st.state.assessments.filter(function (a) { return a.studentId === r.s.id && a.syncTag === (r.k.quiz === 'u14' ? TAG14 : TAG); })[0], rub = {};
       Object.keys(r.k.skills).forEach(function (key) { rub[key] = r.k.skills[key].v; });
       if (cur && sameScores(cur.rubricScores, rub)) return;
       write(r.s, r.k); n++;
@@ -106,8 +107,8 @@
       var box = document.getElementById('qs-box'); if (!box) { box = document.createElement('div'); box.id = 'qs-box'; document.body.appendChild(box); }
       var ready = rows.filter(function (r) { return r.k; }), noSpeak = ready.filter(function (r) { return !r.k.hasSpeaking; }).length;
       box.dataset.g = g;
-      box.innerHTML = '<h2>🧩 Grade ' + g + ' · the 4 skills from the Unit 3 quiz</h2>' +
-        '<div style="color:#94a3b8;font-size:.88rem">Saving writes these as an assessment for each pupil ("' + esc(TITLE) + '"), so the report, the Progress &amp; CEFR page and the profile show them. ' +
+      box.innerHTML = '<h2>🧩 Grade ' + g + ' · the 4 skills from the paper quizzes</h2>' +
+        '<div style="color:#94a3b8;font-size:.88rem">Saving writes these as an assessment for each pupil ("' + esc(TITLE) + '" for Unit 3, "' + esc(TITLE14) + '" for 4B), so the report, the Progress &amp; CEFR page and the profile show them. ' +
         'Quiz % is mapped gently to the skill scale: 80%+ = A2, 60%+ = A1+, 40%+ = A1, under 40% = Pre-A1. Saving again replaces the earlier save.</div>' +
         '<div class="qs-btns"><button class="qs-b g" onclick="QuizSkills.save()">💾 Save ' + ready.length + ' pupils to the reports</button><button class="qs-b o" style="margin-left:auto" onclick="QuizSkills.close()">Close ✕</button></div>' +
         (noSpeak ? '<div style="color:#fbbf24;font-size:.85rem">⚠ ' + noSpeak + ' pupil' + (noSpeak > 1 ? 's' : '') + ' have no speaking mark yet: their speaking is left out. Add the marks on the results board, then save again.</div>' : '') +
