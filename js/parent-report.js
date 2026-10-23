@@ -90,13 +90,13 @@
       tot.push(Number(st.getStudentTotalXP(p.id)) || 0); mon.push(monthly(p.id).cur);
       try { var q = root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(p.id) : null; if (q) qz.push(q.pct); } catch (e) { /* no quiz */ }
     });
-    var me = monthly(id), myTot = Number(st.getStudentTotalXP(id)) || 0, myQ = null;
-    try { var mq = root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; myQ = mq ? mq.pct : null; } catch (e) { myQ = null; }
+    var me = monthly(id), myTot = Number(st.getStudentTotalXP(id)) || 0, myQ = null, myT = '';
+    try { var mq = root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; myQ = mq ? mq.pct : null; myT = mq && mq.title ? mq.title : ''; } catch (e) { myQ = null; }
     var aT = mean(tot), aM = mean(mon), aQ = mean(qz);
     var monthOk = me.cur <= myTot;   // the 30-day points can never be more than the total: if they are, a record is off and we show nothing for the month
     var trend = !monthOk ? null : (me.prev <= 0 && me.cur <= 0) ? 'same' : me.cur >= me.prev * 1.15 ? 'up' : me.cur <= me.prev * 0.85 ? 'down' : 'same';
     return { total: myTot, avgTotal: aT == null ? null : Math.round(aT), totalWord: word(myTot, aT), month: monthOk ? me.cur : null, avgMonth: aM == null ? null : Math.round(aM), monthWord: monthOk ? word(me.cur, aM) : null, trend: trend,
-      quiz: myQ, avgQuiz: aQ == null ? null : Math.round(aQ), quizWord: myQ == null ? null : word(myQ, aQ), classSize: mates.length };
+      quiz: myQ, avgQuiz: aQ == null ? null : Math.round(aQ), quizWord: myQ == null ? null : word(myQ, aQ), quizTitle: myT, classSize: mates.length };
   }
   var WORD_TR = { 'above': 'üstünde', 'around': 'civarında', 'a little below': 'biraz altında', 'below': 'altında' };
   function comment(x) {
@@ -113,8 +113,12 @@
       if (hwDone === hwTot) { en.push('Thank you for the homework!'); tr.push('Ödevler için teşekkür ederiz!'); }
       else { en.push('A little regular practice at home helps ' + f + ' shine.'); tr.push('Evde düzenli küçük çalışmalar ' + f + '\'in parlamasına yardımcı olur.'); }
     }
-    en.push('We look forward to seeing you at the parent meeting on Saturday 17 October.');
-    tr.push('17 Ekim Cumartesi günkü veli toplantısında görüşmek üzere.');
+    var next = EVENTS.filter(function (e) { return new Date(e.date + 'T23:59:59').getTime() >= Date.now(); })[0];
+    if (next) {
+      var nd = new Date(next.date + 'T12:00:00');
+      en.push('We look forward to seeing you at the parent meeting on ' + nd.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '.');
+      tr.push(nd.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' }) + ' günkü veli toplantısında görüşmek üzere.');
+    }
     return { en: en.join(' '), tr: tr.join(' ') };
   }
 
@@ -138,9 +142,11 @@
       '<div class="pr-cb"><i class="me" style="width:' + Math.max(3, Math.round(me / mx * 100)) + '%"></i><em>' + me.toLocaleString('en-US') + (suffix || '') + '</em></div>' +
       '<div class="pr-cb"><i class="cl" style="width:' + Math.max(3, Math.round(avg / mx * 100)) + '%"></i><em>avg · ort. ' + avg.toLocaleString('en-US') + (suffix || '') + '</em></div></div>';
   }
+  /* the heading of the quiz block: the paper quiz this pupil really did */
+  function quizHead(t) { return /Units 1-4/.test(t || '') ? 'UNITS 1-4 QUIZ · ÜNİTE 1-4 SINAVI' : 'UNIT 3 QUIZ · ÜNİTE 3 SINAVI'; }
   function cmpHtml(c) {
     var tr = c.trend === 'up' ? ' · ↗ more than last month · geçen aydan fazla' : c.trend === 'down' ? ' · ↘ less than last month · geçen aydan az' : c.trend === 'same' ? ' · → about the same as last month · geçen ayla benzer' : '';
-    var rows = cmpRow('Total points', 'Toplam puan', c.total, c.avgTotal, c.totalWord, '') + cmpRow('Points this month', 'Bu ay puan', c.month, c.avgMonth, c.monthWord, '', tr) + cmpRow('Unit 3 quiz', 'Ünite 3 sınavı', c.quiz, c.avgQuiz, c.quizWord, '%');
+    var rows = cmpRow('Total points', 'Toplam puan', c.total, c.avgTotal, c.totalWord, '') + cmpRow('Points this month', 'Bu ay puan', c.month, c.avgMonth, c.monthWord, '', tr) + (/Units 1-4/.test(c.quizTitle || '') ? cmpRow('Units 1-4 quiz', 'Ünite 1-4 sınavı', c.quiz, c.avgQuiz, c.quizWord, '%') : cmpRow('Unit 3 quiz', 'Ünite 3 sınavı', c.quiz, c.avgQuiz, c.quizWord, '%'));
     return rows ? '<div class="pr-h">COMPARED WITH THE CLASS · SINIFLA KARŞILAŞTIRMA</div><div class="pr-cmpg">' + rows + '</div>' : '';
   }
   function cardHtml(rep) {
@@ -157,8 +163,8 @@
       '<div class="pr-h">POINTS AND CLASSROOM BEHAVIOUR · PUANLAR VE SINIF DAVRANIŞI</div><div class="pr-info" style="grid-template-columns:repeat(4,1fr)"><div><span>Points this month · Bu ay puan</span><b>' + (x.month > 0 && x.month <= (x.xp || 0) ? '+' + x.month.toLocaleString('en-US') : '–') + '</b></div><div><span>Monster level · Canavar seviyesi</span><b>' + esc(x.level || '–') + '</b></div><div><span>Positive awards · Olumlu ödül</span><b>' + (x.pos30 || 0) + '</b></div><div><span>Reminders · Uyarı</span><b>' + (x.nw30 || 0) + '</b></div></div><div style="font-size:11px;color:#64748b">Last 30 days; reminders = "needs work" notes (e.g. talking out of turn). · Son 30 gün; uyarı = "geliştirilmeli" notları.</div>' +
       (x.cmp ? cmpHtml(x.cmp) : '') +
       '<div class="pr-h">THE FOUR SKILLS · DÖRT BECERİ</div><div class="pr-sk">' + sk + '</div>' +
-      (x.quizBand ? '<div class="pr-h">UNIT 3 QUIZ · ÜNİTE 3 SINAVI</div><div>Score · Puan: <b>' + esc(x.quizScore || '') + '</b>' + (x.quizPct != null ? ' (' + x.quizPct + '%)' : '') + (x.quizBonus ? ' + ' + x.quizBonus + ' bonus' : '') + ' · <b>' + esc(x.quizBand) + ' / ' + esc(x.quizBandTr) + '</b>' + (x.best ? ' · strongest skill: <b>' + esc(x.best) + '</b>' : '') + '</div>' +
-        '<div style="font-size:11px;color:#64748b;margin-top:3px">' + (x.quizSpeak ? 'Includes the speaking mark. · Konuşma notu dahildir.' : 'Speaking and the maze are not counted yet. · Konuşma ve labirent henüz dahil değil.') + (x.quizNote ? ' ' + esc(x.quizNote) : '') + '</div>' +
+      (x.quizBand ? '<div class="pr-h">' + quizHead(x.quizTitle) + '</div><div>Score · Puan: <b>' + esc(x.quizScore || '') + '</b>' + (x.quizPct != null ? ' (' + x.quizPct + '%)' : '') + (x.quizBonus ? ' + ' + x.quizBonus + ' bonus' : '') + ' · <b>' + esc(x.quizBand) + ' / ' + esc(x.quizBandTr) + '</b>' + (x.best ? ' · strongest skill: <b>' + esc(x.best) + '</b>' : '') + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:3px">' + (x.quizSpeak ? 'Includes the speaking mark. · Konuşma notu dahildir.' : (/Units 1-4/.test(x.quizTitle || '') ? 'Speaking is not counted yet. · Konuşma henüz dahil değil.' : 'Speaking and the maze are not counted yet. · Konuşma ve labirent henüz dahil değil.')) + (x.quizNote ? ' ' + esc(x.quizNote) : '') + '</div>' +
         ((x.quizParts || []).length ? '<div class="pr-hw" style="margin-top:6px">' + x.quizParts.map(function (p) { return '<span>' + esc(p.label) + ' ' + p.score + '/' + p.max + '</span>'; }).join('') + '</div>' : '') : '') +
       (hw ? '<div class="pr-h">HOMEWORK · ÖDEV</div><div class="pr-hw">' + hw + '</div>' : '') +
       '<div class="pr-h">TEACHER\'S COMMENT · ÖĞRETMENİN YORUMU</div><div class="pr-2c"><div class="pr-c">' + esc(c.en) + '</div><div class="pr-c">' + esc(c.tr) + '</div></div>' +
