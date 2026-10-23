@@ -154,6 +154,12 @@
     all[id] = o; try { localStorage.setItem(SUPPORT_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ }
     return o;
   }
+  /* Away: a pupil who is away for a few days is not flagged "Needs help" for having no XP. No reason is stored anywhere, only the word Away.
+     The default list holds ids only. The teacher can switch Away on and off per pupil (profile page); that choice stays in this browser. */
+  var AWAY_KEY = 'eaa_away_v1', AWAY_DEFAULT = { 'student-4b-338': true };
+  function awayAll() { try { var o = JSON.parse(localStorage.getItem(AWAY_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
+  function awayOn(id) { var o = awayAll(); return id in o ? !!o[id] : !!AWAY_DEFAULT[id]; }
+  function awaySet(id, on) { var o = awayAll(); o[id] = !!on; try { localStorage.setItem(AWAY_KEY, JSON.stringify(o)); } catch (e) { /* not remembered */ } return !!on; }
   var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   /* the 4 skills from the paper quiz: { listening: {pct, v}, ... } or null. The same numbers the parent report and the profile show. */
@@ -179,6 +185,13 @@
     return '<span class="cc-sks">' + out.join('') + '</span>';
   }
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
+  /* the status of one row: the diagnosis, then the private Away / support-plan switches (used again when the homework sheet has loaded) */
+  function rediagnose(r) {
+    r.d = diagnose(r);
+    var soft = r.d.status === 'help' || r.d.status === 'slow' || r.d.status === 'quiet';
+    if (soft && awayOn(r.id)) { r.d.status = 'away'; r.d.why = ['Away for a few days: no XP expected']; }
+    else if (soft && supportOn(r.id)) { r.d.status = 'build'; r.d.why = ['Working at their own pace (support plan)']; }
+  }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
     classGrade = gradeOfClass(cls); setPaused(cls.id);
@@ -204,12 +217,12 @@
     var qs = rows.filter(function (r) { return r.q; });
     quizAvg = qs.length ? Math.round(qs.reduce(function (a, r) { return a + r.q.pct; }, 0) / qs.length) : 0;
     rows.forEach(function (r) { r.qWeak = !!(r.q && r.q.pct <= quizAvg - QUIZ_GAP); });
-    rows.forEach(function (r) { r.d = diagnose(r); if (supportOn(r.id) && (r.d.status === 'help' || r.d.status === 'slow' || r.d.status === 'quiet')) { r.d.status = 'build'; r.d.why = ['Working at their own pace (support plan)']; } });
+    rows.forEach(rediagnose);
     return rows;
   }
 
   // ------------------------------------------------------------- pieces
-  var STATUS = { build: ['🌱 Building', 'cc-t1'], star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'], quiet: ['No XP lately', 'cc-t4'] };
+  var STATUS = { away: ['🏠 Away', 'cc-t4'], build: ['🌱 Building', 'cc-t1'], star: ['⭐ Doing great', 'cc-t0'], ok: ['On track', 'cc-t1'], slow: ['Watch', 'cc-t2'], help: ['Needs help', 'cc-t3'], quiet: ['No XP lately', 'cc-t4'] };
   var STATUS_ORDER = { help: 0, slow: 1, quiet: 2, ok: 3, star: 4 };
   function ago(ts) {
     var d = Math.floor((dayStart(Date.now()) - dayStart(ts)) / DAY);
@@ -504,7 +517,7 @@
   function loadSheet() {
     if (!root.SheetSync || !root.SheetSync.snapshot) { sheet.error = 'sheet link not loaded'; refreshAll(); return; }
     root.SheetSync.snapshot().then(function (d) { sheet.data = d; sheet.error = ''; }, function (e) { sheet.data = null; sheet.error = (e && e.message) || 'no answer'; })
-      .then(function () { if (!document.getElementById('cc-table')) return; current.forEach(function (r) { r.d = diagnose(r); }); refreshAll(); });
+      .then(function () { if (!document.getElementById('cc-table')) return; current.forEach(rediagnose); refreshAll(); });
   }
 
   function render(container) {
@@ -963,6 +976,8 @@
   api.mergeDuplicates = mergeModal;
 
   api.supportGet = supportGet;
+  api.awayOn = awayOn;
+  api.awaySet = function (id, on) { awaySet(id, on); try { current = rowsFor(S().getActiveClass()); refreshAll(); } catch (e) { /* the table updates next time */ } return !!on; };
   api.supportSet = function (id, patch) { var o = supportSet(id, patch); if (patch && 'on' in patch) { try { current = rowsFor(S().getActiveClass()); refreshAll(); } catch (e) { /* the table updates next time */ } } return o; };
   api.restoreXp = reconModal;
 

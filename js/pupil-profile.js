@@ -113,11 +113,16 @@
     html += (d.mism ? '<div class="pp-warn">⚠ XP shown (' + d.mism.shown + ') is lower than the award history (' + d.mism.target + '). <button class="pp-b o" onclick="CommandCenter.restoreXp()">Review</button></div>' : '') +
       (d.dup ? '<div class="pp-warn">⧉ This name exists ' + d.dup.length + ' times (' + esc(d.dup.join(', ')) + '). One may be an old copy.</div>' : '') +
       '<div class="pp-card"><h3>XP earned each day · last 30 days</h3>' + bars + (d.tally.length ? '<div class="pp-dim" style="margin-top:8px;font-size:.8rem">Most XP for: ' + d.tally.map(function (t) { return esc(t.name) + ' ×' + t.count; }).join(', ') + '</div>' : '') + '</div>' +
-      supportCard(id) + discCard + quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
+      supportCard(id) + (awayLine(id) ? '<div class="pp-card">' + awayLine(id) + '</div>' : '') + discCard + quizCard + '<div class="pp-2"><div class="pp-card"><h3>Homework</h3>' + hw + '</div><div class="pp-card"><h3>What to do next</h3><ul class="pp-tips">' + d.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul><h3 style="margin-top:14px">Worksheets</h3>' + ws + '</div></div>';
     return html;
   }
 
   /** Private support plan (teacher only, this browser only): a flag that swaps Watch / Needs help for a neutral "Building" label, plus free notes. Never printed, never sent to the cloud. */
+  function awayLine(id) {
+    if (!(root.CommandCenter && root.CommandCenter.awayOn)) return '';
+    var q = "'" + String(id).replace(/'/g, '') + "'";
+    return '<label style="display:flex;gap:8px;align-items:center;font-size:.9rem;margin:6px 0"><input type="checkbox" ' + (root.CommandCenter.awayOn(id) ? 'checked ' : '') + 'onchange="CommandCenter.awaySet(' + q + ',this.checked)"> 🏠 Away for a few days: do not flag this pupil for having no XP</label>';
+  }
   function supportCard(id) {
     var s = root.CommandCenter && root.CommandCenter.supportGet ? root.CommandCenter.supportGet(id) : null; if (!s) return '';
     var q = "'" + esc(id) + "'";
