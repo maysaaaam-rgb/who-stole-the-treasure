@@ -156,6 +156,28 @@
   }
   var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
+  /* the 4 skills from the paper quiz: { listening: {pct, v}, ... } or null. The same numbers the parent report and the profile show. */
+  function skillsOf(id) { try { var k = root.QuizSkills && root.QuizSkills.skillsOf ? root.QuizSkills.skillsOf(id) : null; return k ? k.skills : null; } catch (e) { return null; } }
+  var SKN = { listening: ['L', 'Listening'], reading: ['R', 'Reading'], writing: ['W', 'Writing'], speaking: ['S', 'Speaking'] };
+  function skLevel(v) { return v >= 85 ? ['A2', 'a2'] : v >= 75 ? ['A1+', 'a1p'] : v >= 60 ? ['A1', 'a1'] : ['Pre-A1', 'p']; }
+  /* four small chips: L R W S, coloured by level; a dash when that skill has no mark yet */
+  function skillChips(sk) {
+    if (!sk) return '<span class="cc-dim">–</span>';
+    return '<span class="cc-sks">' + Object.keys(SKN).map(function (k) {
+      var x = sk[k]; if (!x) return '<i class="cc-sk cc-sk-n" title="' + SKN[k][1] + ': not marked yet">' + SKN[k][0] + '</i>';
+      var l = skLevel(x.v); return '<i class="cc-sk cc-sk-' + l[1] + '" title="' + SKN[k][1] + ' ' + x.pct + '% · ' + l[0] + '">' + SKN[k][0] + '</i>';
+    }).join('') + '</span>';
+  }
+  /* the class average of one skill, as a level chip (only pupils who have that skill count) */
+  function classSkills(rows) {
+    var out = Object.keys(SKN).map(function (k) {
+      var vs = rows.map(function (r) { return r.sk && r.sk[k] ? r.sk[k].v : null; }).filter(function (v) { return v != null; });
+      if (!vs.length) return '<i class="cc-sk cc-sk-n" title="' + SKN[k][1] + ': nobody marked yet">' + SKN[k][0] + '</i>';
+      var avg = Math.round(vs.reduce(function (a, b) { return a + b; }, 0) / vs.length), l = skLevel(avg);
+      return '<i class="cc-sk cc-sk-' + l[1] + '" title="' + SKN[k][1] + ': class average ' + l[0] + ' (' + vs.length + ' pupils)">' + SKN[k][0] + '</i>';
+    });
+    return '<span class="cc-sks">' + out.join('') + '</span>';
+  }
   function quizOf(id) { try { return root.QuizResults && root.QuizResults.scoreOf ? root.QuizResults.scoreOf(id) : null; } catch (e) { return null; } }
   function rowsFor(cls) {
     var st = S(), mism = {}, dup = duplicatesMap();
@@ -169,7 +191,7 @@
       return {
         id: s.id, first: s.firstName || s.name || 'Student', name: ((s.firstName || '') + ' ' + (s.lastName || '')).trim() || s.name || 'Student',
         xp: Number(m.totalXP != null ? m.totalXP : (s.xp || 0)) || 0, level: m.currentLevel || s.level || 1,
-        pct: m.progressPct || 0, img: img, a: a, q: quizOf(s.id), att: st.getStudentAttendanceRate ? st.getStudentAttendanceRate(s.id) : null,
+        pct: m.progressPct || 0, img: img, a: a, q: quizOf(s.id), sk: skillsOf(s.id), att: st.getStudentAttendanceRate ? st.getStudentAttendanceRate(s.id) : null,
         ws: worksheetsOf(s.id), mism: mism[s.id] || null, dup: dup[s.id] || null
       };
     });
@@ -278,6 +300,7 @@
     '.cc td.cc-tt{font-weight:700;color:#a5b4fc;white-space:nowrap}' +
     '.cc th.cc-hh{text-align:center;font-size:10.5px;line-height:1.15;max-width:64px;white-space:normal}.cc td.cc-h{text-align:center;white-space:nowrap}' +
     '.cc-hw{display:inline-block;min-width:34px;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:700;white-space:nowrap}' +
+    '.cc-sks{display:inline-flex;gap:3px}.cc-sk{font-style:normal;font-weight:800;font-size:11px;width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center}.cc-sk-a2{background:#1d2450;color:#a5b4fc}.cc-sk-a1p{background:#10291f;color:#34d399}.cc-sk-a1{background:#2e2410;color:#fbbf24}.cc-sk-p{background:#2a1b22;color:#f9a8d4}.cc-sk-n{background:#14161d;color:#5b6377}' +
     '.cc-hw-ok{background:#10291f;color:#34d399}.cc-hw-mid{background:#2e2410;color:#fbbf24}.cc-hw-no{background:#14161d;color:#5b6377}.cc-hw-wait{color:#5b6377}' +
     '.cc tfoot td{border-top:1px solid #2a2f3d;font-weight:700;background:#0f1117!important;cursor:default;color:#cbd2e1}.cc tfoot td.cc-d{text-align:center;font-size:12px}' +
     '.cc-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}' +
@@ -348,7 +371,7 @@
       labels.map(function (d) { return '<th class="cc-d' + (d.today ? ' today' : '') + (d.weekend ? ' we' : '') + (d.paused ? ' cc-pz' : '') + '" style="cursor:default" title="' + d.wd + ' ' + d.n + ' ' + d.mon + '">' + d.wd.slice(0, 3) + '<small>' + d.n + '</small></th>'; }).join('') +
       th('week', 'Total', 'XP earned in these ' + RANGE + ' days') +
       hws.map(function (h) { return '<th class="cc-hh" style="cursor:default" title="' + esc(h.title + (h.due ? ' · due ' + h.due : '')) + '">' + esc(h.label) + '</th>'; }).join('') +
-      '<th class="cc-hh" style="cursor:default" title="Latest paper quiz (percent). Weak = ' + QUIZ_GAP + ' points or more under the class average (' + quizAvg + '%).">Quiz</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
+      '<th class="cc-hh" style="cursor:default" title="Latest paper quiz (percent). Weak = ' + QUIZ_GAP + ' points or more under the class average (' + quizAvg + '%).">Quiz</th><th class="cc-hh" style="cursor:default" title="Listening, Reading, Writing, Speaking from the paper quiz. Colour = level: purple A2, green A1+, amber A1, pink Pre-A1, grey = not marked yet.">Skills</th>' + th('status', 'Status') + '<th style="cursor:default"></th></tr>';
     var body = rows.map(function (r) {
       var s = STATUS[r.d.status];
       var flag = (r.mism && Math.abs(r.mism.diff) >= 50 ? '<span class="cc-flag" title="XP shown (' + r.mism.shown + ') is lower than the award history (' + r.mism.target + ')">⚠</span>' : '') + (r.dup ? '<span class="cc-flag" title="This name exists ' + r.dup.length + ' times: ' + esc(r.dup.join(', ')) + '">⧉</span>' : '');
@@ -357,12 +380,13 @@
         '<td>' + r.xp.toLocaleString('en-US') + '</td>' + r.a.days.slice(NDAYS - RANGE).map(function (v, i) { return xpCell(v, labels[i]); }).join('') +
         '<td class="cc-tt">' + (t ? '+' + t : '<span class="cc-dim">0</span>') + '</td>' + hws.map(function (h) { return hwCell(r, h); }).join('') +
         '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="' + esc((r.q.title || 'Unit 3 quiz') + ' ' + r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
+        '<td class="cc-h">' + skillChips(r.sk) + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
         '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button> <button class="cc-plus cc-nwb" title="Needs work (discipline)" onclick="CommandCenter.needsWork(\'' + esc(r.id) + '\')">⚠' + (r.a.nw && r.a.nw.n ? '<sup>' + r.a.nw.n + '</sup>' : '') + '</button></td></tr>';
     }).join('');
     var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
       labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[NDAYS - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
-      '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 3) + '"></td></tr>';
+      '<td class="cc-tt">+' + sum(rows.map(tot)) + '</td><td colspan="' + (hws.length + 1) + '"></td><td class="cc-h" title="Class average of each skill">' + classSkills(rows) + '</td><td colspan="2"></td></tr>';
     return '<div class="cc-wrap"><table' + (RANGE === 14 ? ' class="cc-t14"' : RANGE === 30 ? ' class="cc-t30"' : '') + '><thead>' + head + '</thead><tbody>' + body + '</tbody><tfoot>' + foot + '</tfoot></table></div>';
   }
   function refreshTable() { var el = document.getElementById('cc-table'); if (el) el.innerHTML = tableHtml(); var c = document.getElementById('cc-count'); if (c) c.textContent = current.length; }
