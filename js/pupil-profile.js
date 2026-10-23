@@ -60,7 +60,7 @@
           '<button class="pp-b o" onclick="openMonsterCreator(\'' + esc(id) + '\')">🎨 Monster</button>' +
           '<button class="pp-b o" onclick="openEvolutionPathModal(\'' + esc(id) + '\')">🗺️ Evolution</button>' +
           '<button class="pp-b o" onclick="PupilCard.open(\'' + esc(id) + '\')">🃏 Card</button>' +
-          '<button class="pp-b o" onclick="openReportGenerator(\'' + esc(id) + '\')">🖨️ Report</button>' +
+          '<button class="pp-b o" onclick="if(window.ParentReport&&ParentReport.openForStudent)ParentReport.openForStudent(\'' + esc(id) + '\');else openReportGenerator(\'' + esc(id) + '\')">🖨️ Report</button>' +
           '<div class="card-more-menu-wrap" style="position:relative;"><button class="pp-b o" onclick="toggleCardDropdown(\'prof-' + esc(id) + '\', event)" title="More">⋯</button>' +
             '<div class="card-dropdown-menu" id="menu-prof-' + esc(id) + '">' +
               '<button class="card-dropdown-item" onclick="openEditStudentXPModal(\'' + esc(id) + '\')">✏️ Edit XP total</button>' +
