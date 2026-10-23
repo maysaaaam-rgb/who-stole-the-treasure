@@ -58,10 +58,21 @@
       '.qr-xp{width:64px;text-align:center;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#fff;padding:4px;font-weight:700}.qr-sp{margin:4px 0;border-radius:8px;border:1px solid #475569;background:#0f172a;color:#cbd5e1;padding:3px 6px;font-size:.78rem}.qr-done{color:#10b981;font-weight:800;margin-top:6px}';
     document.head.appendChild(s);
   }
+  /* the 4-B card of the Units 1-4 quiz: tap to see the percentage, optional speaking mark (0 to 8), no XP is given for this quiz */
+  function card14(p) {
+    var st = p.st, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil'), n = q14(st.id);
+    if (!n) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
+    var has = SPK['14-' + p.num] != null, auto = !has && n.sp != null, pc = Math.round(n.got / n.max * 100);
+    var sel = '<select class="qr-sp" onchange="QuizResults.speak(\'14-' + p.num + '\',this.value)"><option value="">Speaking: ' + (auto ? n.sp + '/8 from the check' : 'not yet') + '</option>' + [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function (k) { return '<option value="' + k + '"' + (has && +SPK['14-' + p.num] === k ? ' selected' : '') + '>' + k + ' / 8</option>'; }).join('') + '</select>';
+    return '<div class="qr-card"><div class="qr-nm">' + name + '</div>' +
+      '<div class="qr-score qr-hid" data-s="' + n.got + '" data-m="' + n.max + '" data-b="0" data-p="' + pc + '" onclick="QuizResults.reveal(this)">Tap to see 👀</div>' + sel +
+      '<div class="qr-note">Listening ' + n.d[0] + ' · Words ' + n.d[1] + ' · Reading ' + n.d[2] + ' · Writing ' + n.d[3] + ' (each /8)</div></div>';
+  }
   function stars(p) { var v = p >= 75 ? 3 : p >= 50 ? 2 : 1, o = ''; while (v--) o += '⭐'; return o; }
   function render() {
-    var list = pupils(cls);
+    var list = pupils(cls), b14 = G === '4' && cls === 'b';
     var cards = list.map(function (p) {
+      if (b14) return card14(p);
       var st = p.st, d = p.d, name = esc(st.firstName || String(st.name || '').split(' ')[0] || 'Pupil');
       if (!d) return '<div class="qr-card"><div class="qr-nm">' + name + '</div><div class="qr-note">No quiz sheet</div></div>';
       if (G === '4') {
@@ -81,8 +92,8 @@
         (isGiven ? '<div class="qr-done">✓ XP given</div>' :
           '<div style="margin-top:8px">+<input class="qr-xp" type="number" min="0" max="200" value="' + xpFor(d, hasSp ? sp : 0) + '"> XP <button class="qr-btn go" style="padding:5px 10px" onclick="QuizResults.give(\'' + esc(st.id) + '\',this)">Give</button></div>') + '</div>';
     }).join('');
-    box.innerHTML = '<div class="qr-top"><div><h2>📄 Unit 3 Quiz Results (Grade ' + G + ')</h2><div class="qr-sub">' + (G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' Tap a card to show the result, then give XP.</div></div></div>' +
-      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '') +
+    box.innerHTML = '<div class="qr-top"><div><h2>📄 ' + (G === '4' && cls === 'b' ? 'Units 1-4 Quiz Results (4-B)' : 'Unit 3 Quiz Results (Grade ' + G + ')') + '</h2><div class="qr-sub">' + (G === '4' && cls === 'b' ? 'Out of 32 (listening, words and grammar, reading, writing, 8 each). Choose a speaking mark (0 to 8) and the total becomes out of 40. The speaking check on this computer fills it in by itself. No XP is given for this quiz.' : G === '4' ? 'Out of 19 (listening, reading, writing). Choose the speaking coins (0 to 6) on a card and the total becomes out of 25.' : 'Out of 82 (no maze). Choose a speaking mark on a card and the total becomes out of 100 (maze not counted, scaled). Bonus is extra.') + ' ' + (G === '4' && cls === 'b' ? 'Tap a card to show the result.' : 'Tap a card to show the result, then give XP.') + '</div></div></div>' +
+      '<div class="qr-top"><button class="qr-btn' + (cls === 'a' ? '' : ' off') + '" onclick="QuizResults.cls(\'a\')">' + G + '-A</button>' + (G === '3' ? '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">3-B</button>' : '<button class="qr-btn' + (cls === 'b' ? '' : ' off') + '" onclick="QuizResults.cls(\'b\')">4-B · Units 1-4</button>') +
       '<button class="qr-btn off" onclick="QuizResults.revealAll()">Show all</button><button class="qr-btn go" title="Build the 4 skills of every pupil and save them to the reports" onclick="QuizResults.skills()">🧩 4 skills → reports</button><button class="qr-btn off" onclick="QuizResults.hideAll()">Hide all</button><button class="qr-btn off" style="margin-left:auto" onclick="QuizResults.close()">Close ✕</button></div>' +
       '<div class="qr-grid">' + (cards || '<div>No pupils found</div>') + '</div>';
   }
@@ -138,7 +149,7 @@
     reveal: function (el) { var s = +el.dataset.s, b = +el.dataset.b; el.classList.remove('qr-hid'); el.removeAttribute('onclick'); el.style.cursor = 'default'; el.innerHTML = s + '<small style="font-size:.9rem"> / ' + el.dataset.m + '</small>' + (b ? '<div style="font-size:.9rem;color:#38bdf8">+' + b + ' bonus</div>' : '') + '<div>' + stars(+el.dataset.p) + '</div>'; },
     revealAll: function () { [].slice.call(box.querySelectorAll('.qr-hid')).forEach(Q.reveal); },
     hideAll: function () { render(); },
-    speak: function (num, v) { if (String(num).indexOf('4-') === 0) { if (v === '') delete SPK[num]; else SPK[num] = parseInt(v, 10); } else { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; } saveSpk(); render(); },
+    speak: function (num, v) { if (String(num).indexOf('4-') === 0 || String(num).indexOf('14-') === 0) { if (v === '') delete SPK[num]; else SPK[num] = parseInt(v, 10); } else { v = parseInt(v, 10); if (v) SPK[num] = v; else delete SPK[num]; } saveSpk(); render(); },
     give: function (id, btn) {
       var s = store(), st = s && s.getStudent(id); if (!st || given(st)) return;
       var card = btn.closest('.qr-card'), v = Math.max(0, Math.min(200, parseInt(card.querySelector('.qr-xp').value, 10) || 0));
