@@ -61,7 +61,7 @@
     });
   }
 
-  /** Grade 3 is applied by itself when the platform opens on a teacher computer, so the skills are already in place whenever a report is generated (a report keeps a snapshot
+  /** Grades 3 and 4 are applied by themselves when the platform opens on a teacher computer, so the skills are already in place whenever a report is generated (a report keeps a snapshot
       of the skills at the moment it is made). It only writes what is new or changed, so opening the platform again changes nothing. */
   function sameScores(a, b) { var ka = Object.keys(a || {}), kb = Object.keys(b || {}); return ka.length === kb.length && ka.every(function (k) { return a[k] === b[k]; }); }
   function auto(grade) {
@@ -83,7 +83,7 @@
       var st = S();
       if (st && st.getStudents && (st.getStudents('class-3a') || []).length && root.QuizResults && root.QuizResults.detailOf) {
         clearInterval(t);
-        try { if (!st.getRole || st.getRole() === 'teacher') auto('3'); } catch (e) { /* the button still works */ }
+        try { if (!st.getRole || st.getRole() === 'teacher') { auto('3'); auto('4'); [7000, 25000].forEach(function (ms) { setTimeout(function () { try { auto('3'); auto('4'); } catch (e) { /* later */ } }, ms); }); } } catch (e) { /* the button still works */ }   /* auto runs again later: the pupils of the other classes can still be arriving from the cloud */
       } else if (tries > 60) clearInterval(t);
     }, 1000);
   })();
