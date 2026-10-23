@@ -828,7 +828,7 @@
 
   window.updateHeaderBadges = updateHeaderBadges;
 
-  // Student view: choose which pupil you are looking at (the view used to be stuck on the first pupil)
+  // Student and parent view: choose which pupil you are looking at (the view used to be stuck on the first pupil)
   function populateHeaderStudentSelect(role) {
     var sel = document.getElementById('header-student-select');
     if (!sel) {
@@ -842,7 +842,7 @@
       });
       chip.parentNode.insertBefore(sel, chip);
     }
-    if (role !== 'student') { sel.style.display = 'none'; return; }
+    if (role !== 'student' && role !== 'parent') { sel.style.display = 'none'; return; }   // the parent page also needs it: choose which child's page you preview
     var active = store.getActiveStudent(), classes = (store.getClasses ? store.getClasses() : []) || [];
     var list = (store.getStudents ? store.getStudents() : []) || [];
     var nameOf = function (c) { return c ? (c.name || c.id) : ''; };
