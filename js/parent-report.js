@@ -162,7 +162,7 @@
     var to = x.parents && x.parents.length ? 'Dear ' + esc(x.parents.join(' and ')) + ' / Sayın ' + esc(x.parents.join(' ve ')) + ',' : 'Dear parents / Sayın velimiz,';
     return '<div class="pr-page"><div class="pr-top"><div><b>ENGLISH ADVENTURE ACADEMY</b><small>Parent report · Veli raporu</small></div><div style="text-align:right"><b style="font-size:15px">' + esc(rep.term) + '</b><small>' + esc(rep.date) + '</small></div></div>' +
       '<div class="pr-to">' + to + '<br>This is how <b>' + esc(x.first) + '</b> is doing in English. / <b>' + esc(x.first) + '</b>\'in İngilizce\'deki durumu aşağıdadır.</div>' +
-      '<div class="pr-info"><div><span>Pupil</span><b>' + esc(x.name) + '</b></div><div><span>Class</span><b>' + esc(x.cls) + '</b></div><div><span>Adventure points</span><b>⭐ ' + (x.xp || 0).toLocaleString('en-US') + '</b></div><div><span>Attendance</span><b>' + (x.att != null ? x.att + '%' : 'not recorded') + '</b></div></div>' +
+      '<div class="pr-info"' + (x.att != null ? '' : ' style="grid-template-columns:repeat(3,1fr)"') + '><div><span>Pupil</span><b>' + esc(x.name) + '</b></div><div><span>Class</span><b>' + esc(x.cls) + '</b></div><div><span>Adventure points</span><b>⭐ ' + (x.xp || 0).toLocaleString('en-US') + '</b></div>' + (x.att != null ? '<div><span>Attendance</span><b>' + x.att + '%</b></div>' : '') + '</div>' +
       '<div class="pr-h">POINTS AND CLASSROOM BEHAVIOUR · PUANLAR VE SINIF DAVRANIŞI</div><div class="pr-info" style="grid-template-columns:repeat(4,1fr)"><div><span>Points this month · Bu ay puan</span><b>' + (x.month > 0 && x.month <= (x.xp || 0) ? '+' + x.month.toLocaleString('en-US') : '–') + '</b></div><div><span>Monster level · Canavar seviyesi</span><b>' + esc(x.level || '–') + '</b></div><div><span>Positive awards · Olumlu ödül</span><b>' + (x.pos30 || 0) + '</b></div><div><span>Reminders · Uyarı</span><b>' + (x.nw30 || 0) + '</b></div></div><div style="font-size:11px;color:#64748b">Last 30 days; reminders = "needs work" notes (e.g. talking out of turn). · Son 30 gün; uyarı = "geliştirilmeli" notları.</div>' +
       (x.cmp ? cmpHtml(x.cmp) : '') +
       '<div class="pr-h">THE FOUR SKILLS · DÖRT BECERİ</div><div class="pr-sk">' + sk + '</div>' +
@@ -274,8 +274,21 @@
       var have = Object.keys(names()).length;
       box.innerHTML = '<div class="pr-noprint" style="color:#e8eefc;font-family:Inter,system-ui,sans-serif;max-width:780px;margin:0 auto 14px"><h2 style="margin:0 0 6px">🧾 Parent reports for all four classes</h2>' +
         '<div style="color:#94a3b8;font-size:.9rem">Parents\' names found on this computer: <b>' + have + '</b>. Reports are made from each pupil\'s real data (skills, quiz in words, homework, points) with a short comment in English and Turkish. Read a few before you print.</div>' +
-        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
+        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><label class="pr-btn o" style="display:inline-block">📂 Load parents’ names (file)<input id="pr-file" type="file" accept=".json,application/json" style="display:none"></label><label class="pr-btn o" style="display:inline-block">📝 Load teacher notes (file)<input id="pr-notes-file" type="file" accept=".json,application/json" style="display:none"></label><button class="pr-btn" id="pr-make">⚙️ Make / update all reports</button><button class="pr-btn o" id="pr-print" disabled>🖨️ Print all</button><button class="pr-btn o" id="pr-up">☁️ Save to the cloud</button><button class="pr-btn o" id="pr-down">☁️ Load from the cloud</button><button class="pr-btn o" style="margin-left:auto" onclick="ParentReport.close()">Close ✕</button></div><div id="pr-msg" style="margin-top:8px;color:#fbbf24"></div></div><div id="pr-list"></div>';
       box.style.display = 'block';
+      box.querySelector('#pr-notes-file').onchange = function () {
+        var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          try {
+            var o = JSON.parse(String(rd.result)), cur = {}; try { cur = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}') || {}; } catch (e0) { cur = {}; }
+            var n = 0; Object.keys(o).forEach(function (k) { if (o[k] && (o[k].en || o[k].tr)) { cur[k] = { en: String(o[k].en || ''), tr: String(o[k].tr || '') }; n++; } });
+            if (!n) throw new Error('empty'); localStorage.setItem(NOTES_KEY, JSON.stringify(cur));
+            msg.textContent = '✓ Teacher notes loaded for ' + n + ' pupils (kept only on this computer). Now press "Make / update all reports".';
+          } catch (e) { msg.textContent = 'That file could not be read. Pick the parent-notes json file.'; }
+        };
+        rd.readAsText(f);
+      };
       box.querySelector('#pr-file').onchange = function () {
         var f = this.files && this.files[0], msg = box.querySelector('#pr-msg'); if (!f) return;
         var rd = new FileReader();
