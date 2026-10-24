@@ -54,7 +54,7 @@
         (d ? '<div class="pp-st"><span class="pp-chip ' + stCls + '">' + esc(d.status) + '</span><span class="pp-why">' + esc(d.why.join(' · ')) + '</span></div>' : '') +
         '<div class="pp-act">' +
           '<button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',5)">+5 XP</button><button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',10)">+10 XP</button>' +
-          '<button class="pp-b o" style="color:#fbbf24" onclick="CommandCenter.needsWork(\'' + esc(id) + '\')">⚠ Needs work</button>' +
+          '<button class="pp-b o" style="color:#fbbf24" onclick="CommandCenter.ladder(\'' + esc(id) + '\')">🪜 Private steps</button>' +
           '<button class="pp-b" onclick="openGiveXPSkillsModal(\'student\',\'' + esc(id) + '\')">⭐ Custom XP</button>' +
           '<button class="pp-b o" onclick="openStudentModal(\'' + esc(id) + '\')">✏️ Edit pupil</button>' +
           '<button class="pp-b o" onclick="openMonsterCreator(\'' + esc(id) + '\')">🎨 Monster</button>' +
