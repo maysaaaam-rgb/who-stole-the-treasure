@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My Class Promise: paper to sign</title>
+<style>
+@page{size:A4 portrait;margin:10mm}*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#0f172a;background:#e2e8f0;font-size:14pt;line-height:1.3}
+.bar{background:#0f172a;color:#fff;padding:8px 14px;display:flex;gap:10px;align-items:center;font-size:11pt}.bar button{font:inherit;font-weight:800;color:#fff;background:#0ea5e9;border:2px solid #fff;border-bottom-width:5px;border-radius:10px;padding:3px 12px;cursor:pointer}
+.page{width:210mm;height:297mm;margin:8px auto;background:#fff;padding:10mm;display:flex;flex-direction:column;gap:6mm;overflow:hidden}
+.copy{flex:1;border:2px dashed #94a3b8;border-radius:4mm;padding:5mm 7mm;display:flex;flex-direction:column}
+h1{font-size:20pt;margin:0}h1 small{display:block;font-size:12pt;color:#475569;font-weight:600}
+.row{display:flex;gap:6mm;align-items:flex-end;margin:2mm 0}.row .l{flex:1;border-bottom:1.5px solid #0f172a;height:7mm}.row .l.s{flex:.5}
+.pr{margin:1.2mm 0;display:flex;gap:3mm}.pr b{font-size:16pt;line-height:1}.pr small{display:block;color:#475569;font-size:11pt}
+.goal{margin-top:2mm}.goal .ln{border-bottom:1.5px solid #0f172a;height:8mm}
+.sign{margin-top:auto;display:flex;gap:6mm}.sign div{flex:1;border-top:1.5px solid #0f172a;padding-top:1mm;font-size:10.5pt;color:#475569}
+.cp h1{font-size:30pt;text-align:center;margin-top:4mm}.cp .big{font-size:18pt;text-align:center;margin:3mm 0}.cp .pr b{font-size:20pt}.cp .pr{font-size:17pt;margin:2.5mm 8mm}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10mm;margin-top:5mm}.grid div{border-bottom:1.5px solid #0f172a;height:11mm;font-size:10pt;color:#94a3b8}
+@media print{body{background:#fff}.bar{display:none}.page{margin:0;width:auto;height:277mm;padding:0;page-break-after:always}.page:last-child{page-break-after:auto}}
+</style></head><body>
+<div class="bar"><b>My Class Promise: print on A4 (2 copies per page) and the class poster</b><button type="button" onclick="window.print()" style="margin-left:auto">🖨️ Print</button></div>
+<div class="page" id="p1"></div>
+<div class="page cp">
+<h1>Our Class Promise · Sınıf Sözümüz</h1>
+<div class="big">Class: ____________ &nbsp;&nbsp; Date: ____________</div>
+<div class="pr"><b>1</b><div>We sit and listen. <small>Oturur ve dinleriz.</small></div></div>
+<div class="pr"><b>2</b><div>We wait for our turn. One voice at a time. <small>Sıramızı bekleriz. Aynı anda tek ses.</small></div></div>
+<div class="pr"><b>3</b><div>We stop when the bell rings. <small>Zil çalınca durur, öğretmene bakarız.</small></div></div>
+<div class="pr"><b>★</b><div>We are a calm team. <small>Sakin bir takımız.</small></div></div>
+<div class="big" style="margin-top:6mm"><b>We sign here · Burayı imzalıyoruz</b></div>
+<div class="grid" id="grid"></div>
+</div>
+<script>
+var copy = '<div class="copy"><h1>My Class Promise<small>Sınıf Sözüm</small></h1>' +
+ '<div class="row"><span>Name:</span><span class="l"></span><span>Class:</span><span class="l s"></span><span>Date:</span><span class="l s"></span></div>' +
+ '<div class="pr"><b>☐</b><div>I sit and listen. <small>Oturur ve dinlerim.</small></div></div>' +
+ '<div class="pr"><b>☐</b><div>I wait for my turn and put my hand up. <small>Sıramı beklerim, parmak kaldırırım.</small></div></div>' +
+ '<div class="pr"><b>☐</b><div>I stop when the bell rings. <small>Zil çalınca dururum.</small></div></div>' +
+ '<div class="goal">My goal this week · <i>Bu haftaki hedefim:</i><div class="ln"></div></div>' +
+ '<div class="sign"><div>My signature · İmzam</div><div>Teacher · Öğretmen</div><div>Parent (seen) · Veli (gördüm)</div></div></div>';
+document.getElementById('p1').innerHTML = copy + copy;
+var g = ''; for (var i = 1; i <= 20; i++) g += '<div>' + i + '</div>'; document.getElementById('grid').innerHTML = g;
+</script>
+</body></html>

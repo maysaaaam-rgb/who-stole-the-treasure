@@ -4190,6 +4190,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🔁', 'Units 1-4 Revision (Grade 3): Remember first, then mixed games', 'game-maker/index.html?set=u14-g3&game=cannon'],
       ['🔁', 'Units 1-4 Revision (Grade 4): Remember first, Smart mix games', 'game-maker/index.html?set=smart-g4&game=cannon'],
       ['✍️', 'Revision 1 (Grade 4): words and writing pack (sheet, answer cards, exit tickets)', 'revision-pack/g4-revision-1.html'],
+      ['✍️', 'My Class Promise: paper to sign and class promise poster', 'class-reset/promise-paper.html'],
       ['🚦', 'Our Class Plan (Monday reset): 3 rules, class traffic light, practice, promise', 'class-reset/index.html'],
       ['🎭', 'Grade 4 Review: Late for the Show (book pp. 62-70), 3 games + excuse round', 'review-g4-show/index.html'],
       ['🏀', 'Unit 4 Team Players (We Can Do It, lesson 1)', 'unit4-g4-lessons/index.html'],

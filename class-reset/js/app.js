@@ -470,7 +470,7 @@
       { t: 'Practice lesson', mins: '5 min', mode: 'act', run: practiceR, intro: 'The light is on. Simon says!',
         tip: ['Press “Start the light clock”. Lead Simon says with the commands. Keep the light green by praising calm behaviour. If it gets loud, press Yellow (10 seconds) and wait with a calm voice. Every full green minute gives +1 to every team.'] },
       { t: 'Our class promise', mins: '2 min', mode: 'talk', run: promiseR, intro: 'Each team makes a promise.',
-        tip: ['Each team chooses one promise and says it loudly and calmly. +2 for each team. Then say: “We have a plan. I know you can do it.”'] },
+        tip: ['Each team chooses one promise and says it loudly and calmly. +2 for each team. Then hand out the promise paper (class-reset/promise-paper.html, 2 per A4): each pupil ticks the three promises, writes one goal for the week and signs; the whole class also signs the big class promise. Then say: “We have a plan. I know you can do it.”'] },
       { t: 'Plan done!', mins: '1 min', mode: 'think', run: finishR, intro: 'Scores and one sentence each.',
         tip: ['Read the scores. Each team says one sentence. At the door each pupil says one rule.'] }
     ] },
