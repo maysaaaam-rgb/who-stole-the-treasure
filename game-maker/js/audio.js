@@ -63,33 +63,86 @@
     hunt_prize: function () { arp([N.G5, N.C6, N.E6], 0.09, 0.6); },
     hunt_empty: function () { var t = ctx.currentTime; tone(N.E5, t, 0.3, { v: 0.16, type2: 'sine' }); tone(N.C5, t + 0.2, 0.4, { v: 0.16, type2: 'sine' }); },
     hunt_step: function () { var t = ctx.currentTime; burst(t, 0.06, { f: 600, v: 0.2 }); },
+    turn_switch: function () { var t = ctx.currentTime + 0.01; tone(N.G4, t, 0.14, { v: 0.14, type2: 'triangle' }); tone(N.D5, t + 0.07, 0.2, { v: 0.16, type2: 'triangle' }); },
+    fuse_tick: function (u) { var k = Math.max(0, Math.min(1, Number(u) || 0)), t = ctx.currentTime; burst(t, 0.04, { f: 2600 + k * 1400, type: 'bandpass', v: 0.14 + k * 0.1, q: 2.5 }); tone(620 + k * 520, t, 0.06, { v: 0.12 + k * 0.08, type2: 'sine' }); },
+    bomb_pass: function () { var t = ctx.currentTime; burst(t, 0.28, { f: 1100, type: 'bandpass', v: 0.18, q: 1.2 }); tone(280, t, 0.26, { glide: 680, v: 0.14, type2: 'sine' }); },
+    bomb_boom: function () { var t = ctx.currentTime; tone(130, t, 0.65, { glide: 36, v: 0.36, type2: 'sine' }); burst(t, 0.45, { f: 420, type: 'lowpass', v: 0.32 }); burst(t + 0.06, 0.35, { f: 2200, type: 'bandpass', v: 0.16, q: 0.9 }); },
+    bowling_roll: function () { var t = ctx.currentTime; burst(t, 0.55, { f: 340, type: 'lowpass', v: 0.22, a: 0.05 }); tone(98, t, 0.5, { glide: 135, v: 0.1, type2: 'sine' }); },
+    pin_hit: function () { var t = ctx.currentTime; burst(t, 0.08, { f: 1900, type: 'bandpass', v: 0.24, q: 1.6 }); tone(520 + Math.random() * 260, t, 0.11, { glide: 280, v: 0.16, type2: 'triangle' }); },
+    bowling_strike: function () { var t = ctx.currentTime + 0.01; for (var i = 0; i < 5; i++) { burst(t + i * 0.04, 0.09, { f: 1700 + i * 220, type: 'bandpass', v: 0.22 }); } arp([N.C5, N.E5, N.G5, N.C6, N.E6], 0.075, 0.6, { v: 0.2 }); },
+    disc_drop: function () { var t = ctx.currentTime; tone(640, t, 0.22, { glide: 240, v: 0.14, type2: 'sine' }); },
+    disc_bounce: function () { var t = ctx.currentTime; tone(220, t, 0.12, { glide: 150, v: 0.2, type2: 'sine' }); tone(180, t + 0.11, 0.09, { glide: 130, v: 0.12, type2: 'sine' }); },
+    line_win: function () { arp([N.C5, N.E5, N.G5, N.A5, N.C6, N.E6], 0.065, 0.55, { v: 0.18 }); },
     ghost: function () { var t = ctx.currentTime; tone(420, t, 1.0, { glide: 620, v: 0.14, type2: 'sine', a: 0.2 }); },
     bat: function () { var t = ctx.currentTime; for (var i = 0; i < 4; i++) burst(t + i * 0.18, 0.1, { f: 1600, type: 'bandpass', v: 0.14, q: 2 }); },
     witch: function () { arp([N.C5, N.E5, N.G5, N.E5, N.G5, N.C6], 0.08, 0.2, { v: 0.12 }); }
   };
 
+  var PRELOAD = ['ui_tap', 'tile_flip', 'answer_right', 'answer_soft', 'turn_switch', 'fuse_tick', 'bomb_pass', 'bomb_boom', 'bowling_roll', 'pin_hit', 'bowling_strike', 'disc_drop', 'disc_bounce', 'line_win', 'plinko_drop', 'plinko_peg_1', 'plinko_peg_2', 'plinko_peg_3', 'hunt_dig', 'hunt_prize', 'hunt_empty', 'hunt_step', 'win_fanfare'];
+  function loadBuf(name) {
+    if (!files[name] || !ensure() || bufs[name] !== undefined) return;
+    if (root.location && root.location.protocol === 'file:') { files[name] = 0; return; }
+    bufs[name] = 0;
+    try {
+      fetch('audio/' + name + '.mp3').then(function (r) {
+        if (!r || !r.ok) throw 0;
+        return r.arrayBuffer();
+      }).then(function (ab) {
+        return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); });
+      }).then(function (b) {
+        bufs[name] = b;
+      }).catch(function () {
+        files[name] = 0;
+        bufs[name] = null;
+      });
+    } catch (e) {
+      files[name] = 0;
+      bufs[name] = null;
+    }
+  }
   function loadManifest() {
+    if (root.location && root.location.protocol === 'file:') return;
     try {
       var x = new XMLHttpRequest(); x.open('GET', 'audio/manifest.json?v=' + Date.now(), true);
-      x.onload = function () { try { if (x.status === 200) { JSON.parse(x.responseText).forEach(function (n) { files[n] = 1; }); } } catch (e) { /* none */ } };
+      x.onload = function () {
+        try {
+          if (x.status === 200) {
+            JSON.parse(x.responseText).forEach(function (n) { files[n] = 1; });
+            if (ctx) PRELOAD.forEach(loadBuf);
+          }
+        } catch (e) { /* none */ }
+      };
       x.send();
     } catch (e) { /* offline file */ }
   }
-  function playFile(name, vol) {
+  function playFile(name, vol, rate) {
     if (!files[name] || !ensure()) return false;
-    if (bufs[name]) { var s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = bufs[name]; g.gain.value = vol == null ? 0.9 : vol; s.connect(g); g.connect(master); s.start(); return true; }
-    if (bufs[name] === 0) return false;
-    bufs[name] = 0;
-    fetch('audio/' + name + '.mp3').then(function (r) { return r.arrayBuffer(); }).then(function (ab) { return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); }); }).then(function (b) { bufs[name] = b; }).catch(function () { files[name] = 0; });
+    if (bufs[name]) {
+      try {
+        var s = ctx.createBufferSource(), g = ctx.createGain();
+        s.buffer = bufs[name];
+        if (rate && rate !== 1 && s.playbackRate) s.playbackRate.value = rate;
+        g.gain.value = vol == null ? 0.9 : vol;
+        s.connect(g); g.connect(master); s.start();
+        return true;
+      } catch (e) { return false; }
+    }
+    if (bufs[name] === undefined) loadBuf(name);
     return false;
   }
   var ALIAS = { right: 'answer_right', soft: 'answer_soft', flip: 'tile_flip', timeup: 'time_up', fanfare: 'win_fanfare', tap: 'ui_tap', back: 'ui_back', start: 'ui_start', round: 'round_start', ghost: 'ghost_woo', bat: 'bat_flutter', witch: 'witch_giggle', slot_low: 'plinko_slot_low', slot_mid: 'plinko_slot_mid', slot_high: 'plinko_slot_high' };
-  function play(name) {
+  function play(name, arg) {
     if (muted) return; if (!ensure()) return;
     try {
       if (name === 'plinko_peg') { if (playFile('plinko_peg_' + (1 + pegStep++ % 3))) return; pegStep--; }
-      if (playFile(ALIAS[name] || name)) return;
-      if (SYN[name]) SYN[name]();
+      var fileKey = ALIAS[name] || name;
+      if (name === 'fuse_tick') {
+        var u = Math.max(0, Math.min(1, Number(arg) || 0));
+        if (playFile(fileKey, 0.72 + u * 0.26, 0.94 + u * 0.52)) return;
+      } else if (arg == null && playFile(fileKey)) {
+        return;
+      }
+      if (SYN[name]) SYN[name](arg);
     } catch (e) { /* never break the game for a sound */ }
   }
   function speak(text) {

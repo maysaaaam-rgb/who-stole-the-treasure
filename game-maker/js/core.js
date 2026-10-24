@@ -71,23 +71,68 @@
 
   /* ---- THE QUESTION CARD: picture, sentence, Show, coloured answers A-D, Okay. Resolves { ok } and never takes points away ---- */
   var LETTERS = ['A', 'B', 'C', 'D'];
+  function fillSentence(qText, ans) {
+    var s = String(qText || '');
+    if (!ans) return h('span', { text: s });
+    if (/_{2,}/.test(s)) {
+      var parts = s.split(/_{2,}/);
+      var wrap = h('span');
+      parts.forEach(function (p, i) {
+        if (p) wrap.appendChild(document.createTextNode(p));
+        if (i < parts.length - 1) wrap.appendChild(h('span', { class: 'gm-qfill', text: ' ' + ans + ' ' }));
+      });
+      return wrap;
+    }
+    return h('span', { text: s });
+  }
   function ask(item, team, opts) {
     opts = opts || {};
     return new Promise(function (resolve) {
       var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
-      var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]), h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: opts.label || '' })]), h('span', { class: 'gm-grow' }), timerEl, btn('🔊', 'round sm', function () { A().speak(item.q); })]);
+      var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]), h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: opts.label || '' })]), h('span', { class: 'gm-grow' }), timerEl, btn('🔊', 'round sm', function () { A().speak(done && item.a && /_{2,}/.test(item.q || '') ? String(item.q).replace(/_{2,}/g, item.a) : item.q); })]);
       head.style.setProperty('--c', team.color); card.style.setProperty('--c', team.color);
-      var choice = null, tm = null, left = 0, done = false;
+      var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false;
       if (item.pic) body.appendChild(picBox); else card.classList.add('nopic');
       body.appendChild(q); card.appendChild(head); card.appendChild(body); card.appendChild(optBox); card.appendChild(msg); card.appendChild(foot); over.appendChild(card);
       document.getElementById('gm-stage').appendChild(over);
-      A().play('flip'); requestAnimationFrame(function () { card.classList.add('in'); });
+      A().play('flip');
+      setTimeout(function () {
+        over.classList.add('in');
+        card.classList.add('in');
+      }, 16);
+      function closeModal(resObj) {
+        if (closed) return;
+        closed = true;
+        clearInterval(tm);
+        clearTimeout(closeTm);
+        over.classList.remove('in');
+        over.classList.add('out');
+        card.classList.remove('in');
+        card.classList.add('out');
+        setTimeout(function () {
+          if (over.parentNode) over.parentNode.removeChild(over);
+          resolve(resObj);
+        }, 260);
+      }
       function finish(ok) {
-        if (done) return; done = true; clearInterval(tm);
+        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm);
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
-        if (ok) { A().play('right'); confetti(14); fx('sparkle_burst', card, 1.6); msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '!'; } else { A().play('soft'); wobble(card); msg.className = 'gm-qmsg soft'; msg.textContent = 'Good try! The answer is \u201c' + item.a + '\u201d.'; }
-        setTimeout(function () { card.classList.remove('in'); card.classList.add('out'); setTimeout(function () { if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: ok }); }, 220); }, ok ? 1000 : 1800);
+        skipBtn.style.display = 'none';
+        nextBtn.style.display = '';
+        if (item.a && /_{2,}/.test(item.q || '')) {
+          q.innerHTML = '';
+          q.appendChild(fillSentence(item.q, item.a));
+        }
+        if (ok) {
+          A().play('right'); confetti(14); fx('sparkle_burst', card, 1.6);
+          msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '!';
+        } else {
+          A().play('soft'); wobble(card);
+          msg.className = 'gm-qmsg soft'; msg.textContent = 'Good try! The answer is \u201c' + item.a + '\u201d.';
+        }
+        var reviewDelay = opts.reviewDelay || (ok ? 1850 : 2800);
+        closeTm = setTimeout(function () { closeModal({ ok: ok }); }, reviewDelay);
       }
       var show = btn('👀  Show the answers', 'huge amber', function () {
         show.style.display = 'none'; A().play('flip');
@@ -104,8 +149,9 @@
         }
       });
       var okBtn = btn('✔  Okay!', 'huge green', function () { if (choice == null) return; finish(choice === item.a); }); okBtn.style.display = 'none';
-      foot.appendChild(show); foot.appendChild(okBtn);
-      foot.appendChild(btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; clearInterval(tm); if (over.parentNode) over.parentNode.removeChild(over); resolve({ ok: false, skipped: true }); }));
+      var nextBtn = btn('Continue ▶', 'big cyan', function () { closeModal({ ok: lastOutcome }); }); nextBtn.style.display = 'none';
+      var skipBtn = btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; closeModal({ ok: false, skipped: true }); });
+      foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(nextBtn); foot.appendChild(skipBtn);
     });
   }
 
@@ -136,5 +182,172 @@
     A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900); setTimeout(function () { fx('sparkle_burst', pod, 2); }, 300);
   }
 
+  /* ---- GameEngineCore (GM.engine): decoupled state machine, 1-8 team rotation, managed timers/RAFs/tweens ---- */
+  var EASE = {
+    linear: function (t) { return t; },
+    outQuad: function (t) { return t * (2 - t); },
+    outCubic: function (t) { return 1 - Math.pow(1 - t, 3); },
+    inOutCubic: function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; },
+    outBack: function (t) { var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+    outElastic: function (t) { return t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1; },
+    outBounce: function (t) {
+      var n1 = 7.5625, d1 = 2.75;
+      if (t < 1 / d1) return n1 * t * t;
+      if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+      if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+      return n1 * (t -= 2.625 / d1) * t + 0.984375;
+    }
+  };
+
+  function createSession(ctx, opts) {
+    opts = opts || {};
+    var teams = (GM.state && GM.state.teams) || [];
+    var nt = Math.max(1, teams.length);
+    var listeners = {}, cleanups = [], rafs = [], timers = [], intervals = [];
+    var state = {
+      phase: opts.initialPhase || 'idle',
+      turn: opts.initialTurn || 0,
+      round: 0,
+      maxRounds: opts.maxRounds || 1,
+      busy: false,
+      alive: true,
+      data: opts.data || {}
+    };
+
+    function on(ev, fn) { (listeners[ev] = listeners[ev] || []).push(fn); return function () { off(ev, fn); }; }
+    function off(ev, fn) { if (listeners[ev]) listeners[ev] = listeners[ev].filter(function (f) { return f !== fn; }); }
+    function emit(ev, payload) { (listeners[ev] || []).slice().forEach(function (fn) { try { fn(payload, state); } catch (e) { /* guard */ } }); }
+
+    function setPhase(p, payload) {
+      if (!state.alive) return;
+      state.phase = p;
+      state.busy = (p !== 'idle' && p !== 'action');
+      emit('phase', { phase: p, detail: payload });
+    }
+
+    function activeTeam() { return teams[state.turn] || teams[0]; }
+
+    function setTurn(idx, silent) {
+      if (!state.alive) return state.turn;
+      state.turn = ((idx % nt) + nt) % nt;
+      teamBar(teams, state.turn);
+      if (!silent) A().play('turn_switch');
+      emit('turn', { turn: state.turn, team: activeTeam() });
+      return state.turn;
+    }
+
+    function nextTurn(silent) { return setTurn(state.turn + 1, silent); }
+
+    function award(teamIdx, pts, originEl, label) {
+      if (!state.alive) return;
+      var cleanPts = Math.max(0, Math.round(Number(pts) || 0));
+      if (originEl && (cleanPts > 0 || label)) {
+        floatText(label || ('+' + cleanPts), originEl, cleanPts > 0 ? 'good' : 'soft');
+      }
+      if (cleanPts > 0) addScore(teamIdx, cleanPts);
+      emit('score', { teamIdx: teamIdx, points: cleanPts, total: teams[teamIdx] ? teams[teamIdx].score : 0 });
+    }
+
+    function timeout(fn, ms) {
+      var id = setTimeout(function () {
+        var idx = timers.indexOf(id); if (idx >= 0) timers.splice(idx, 1);
+        if (state.alive) fn();
+      }, ms);
+      timers.push(id);
+      return function () { clearTimeout(id); };
+    }
+
+    function interval(fn, ms) {
+      var id = setInterval(function () { if (state.alive) fn(); else clearInterval(id); }, ms);
+      intervals.push(id);
+      return function () { clearInterval(id); };
+    }
+
+    function wait(ms) {
+      return new Promise(function (resolve) { timeout(function () { resolve(state.alive); }, ms); });
+    }
+
+    function raf(stepFn) {
+      var active = true, id = 0, last = performance.now();
+      function loop(now) {
+        if (!active || !state.alive) return;
+        var dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+        last = now;
+        if (stepFn(dt, now) !== false && active && state.alive) id = requestAnimationFrame(loop);
+      }
+      id = requestAnimationFrame(loop);
+      var stop = function () { active = false; cancelAnimationFrame(id); };
+      rafs.push(stop);
+      return stop;
+    }
+
+    function tween(durMs, easeName, onUpdate, onDone) {
+      var easeFn = typeof easeName === 'function' ? easeName : (EASE[easeName] || EASE.outCubic);
+      var t0 = performance.now(), dur = Math.max(16, durMs);
+      return raf(function (dt, now) {
+        var u = Math.min(1, (now - t0) / dur);
+        onUpdate(easeFn(u), u);
+        if (u >= 1) { if (onDone && state.alive) onDone(); return false; }
+        return true;
+      });
+    }
+
+    function listen(target, type, handler, options) {
+      if (!target || !target.addEventListener) return function () {};
+      target.addEventListener(type, handler, options);
+      var remove = function () { try { target.removeEventListener(type, handler, options); } catch (e) { /* ignore */ } };
+      cleanups.push(remove);
+      return remove;
+    }
+
+    function askQuestion(item, askOpts) {
+      if (!state.alive) return Promise.resolve({ ok: false, cancelled: true });
+      setPhase('question');
+      var qItem = item || (ctx && ctx.nextItem ? ctx.nextItem() : null);
+      return GM.u.ask(qItem, activeTeam(), Object.assign({ timer: (ctx && ctx.cfg && +ctx.cfg.timer) || 0 }, askOpts || {})).then(function (res) {
+        if (!state.alive) return { ok: false, cancelled: true };
+        return res;
+      });
+    }
+
+    function advanceRound() {
+      if (!state.alive) return false;
+      state.round++;
+      emit('round', { round: state.round, maxRounds: state.maxRounds });
+      if (state.round >= state.maxRounds) { finish(); return false; }
+      return true;
+    }
+
+    function destroy() {
+      if (!state.alive) return;
+      state.alive = false;
+      state.phase = 'ended';
+      timers.forEach(clearTimeout); timers.length = 0;
+      intervals.forEach(clearInterval); intervals.length = 0;
+      rafs.forEach(function (stop) { try { stop(); } catch (e) { /* ignore */ } }); rafs.length = 0;
+      cleanups.forEach(function (fn) { try { fn(); } catch (e) { /* ignore */ } }); cleanups.length = 0;
+      listeners = {};
+    }
+
+    function finish() {
+      if (!state.alive) return;
+      emit('end', state);
+      destroy();
+      if (ctx && typeof ctx.end === 'function') ctx.end();
+    }
+
+    if (ctx && typeof ctx.onEnd === 'function') ctx.onEnd(destroy);
+
+    return {
+      ctx: ctx, state: state, teams: teams, teamCount: nt, ease: EASE,
+      on: on, off: off, emit: emit, setPhase: setPhase,
+      activeTeam: activeTeam, setTurn: setTurn, nextTurn: nextTurn,
+      award: award, timeout: timeout, interval: interval, wait: wait,
+      raf: raf, tween: tween, listen: listen, ask: askQuestion,
+      advanceRound: advanceRound, finish: finish, destroy: destroy
+    };
+  }
+
+  GM.engine = { createSession: createSession, ease: EASE };
   GM.u = { fx: fx, hasArt: hasArt, monFull: monFull, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
 })(window);

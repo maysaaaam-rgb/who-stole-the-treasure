@@ -241,7 +241,28 @@ body.th-halloween .gm-bres{color:#fff}
 @media (max-width:900px){.gm-setup{grid-template-columns:1fr}.gm-setup-l{border-right:0;border-bottom:4px solid var(--line)}.gm-qbody{flex-direction:column;text-align:center}.gm-q{text-align:center}.gm-opts,.gm-opts.n3{grid-template-columns:1fr}.gm-deco{display:none}.gm-brand b{display:none}.gm-hero{flex-direction:column-reverse}}
 @media (max-height:760px){.gm-pod-mon{transform:scale(.78);transform-origin:50% 100%;margin-bottom:-30px}.gm-qpic{width:130px}}
 
-/* polish 1 */
+/* polish 1 & 2: classroom flow, heartbeat urgency, touch-action, 16:9 viewport bounds */
+html,body{height:100%;height:100dvh;max-height:100dvh;overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body.gm-on-play .gm-stage{display:flex;flex-direction:column;overflow:hidden;padding:0 18px 6px}
+body.gm-on-play .gm-area{flex:1;min-height:0;height:auto;overflow:hidden}
+body.gm-on-play .gm-enter{animation:gmenterPlay .32s var(--spring)}
+@keyframes gmenterPlay{from{transform:scale(.97);opacity:0}}
+body.gm-on-play .gm-boardwrap{padding-bottom:10px;overflow:hidden}
+.gm-crowd{overflow:hidden}
+.gm-over{opacity:0;transition:opacity .24s ease;backdrop-filter:blur(4px)}
+.gm-over.in{opacity:1}
+.gm-over.out{opacity:0;pointer-events:none}
+.gm-qcard{transition:transform .34s var(--spring),opacity .24s ease}
+.gm-qcard.out{transform:scale(.92) translateY(14px);opacity:0}
+.gm-qfill{display:inline-block;background:var(--sun);color:var(--navy);border:3px solid var(--line);border-radius:14px;padding:0 .32em;margin:0 .08em;box-shadow:0 4px 0 rgba(0,0,0,.15);animation:gmbump .4s var(--spring)}
+.gm-pod.on.gm-pod-urgent{transform:translateY(-8px) scale(calc(1.08 * var(--hb-scale,1)));filter:drop-shadow(0 0 calc(16px * var(--urg,0)) #ff5d73)}
+.gm-pod.on.gm-pod-urgent .gm-pod-plate{box-shadow:0 0 0 calc(3px * var(--urg,0)) #ffe066,0 5px 0 rgba(0,0,0,.25)}
+.gm-seat.hold.gm-seat-urgent{transform:translate(-50%,-50%) scale(calc(1.18 * var(--hb-scale,1)));filter:drop-shadow(0 0 calc(18px * var(--urg,0)) #ff5d73)}
 .gm-art-emoji.gm-cardimg{width:auto;height:auto}
 .gm-teams{padding-top:20px;margin-top:-12px}
 .gm-hcell .gm-art-emoji{font-size:clamp(1.6rem,5.5vh,3.2rem)}
+.gm-stage,.gm-boardwrap,.gm-btn,.gm-chip,.gm-segb,.gm-game,.gm-tmon,.gm-pu,.gm-tile,.gm-col,.gm-hcell,.gm-sq,.gm-ccol,.gm-hole,.gm-passbox,.gm-pumpkin,.gm-seat,.gm-opt,.gm-pickteam{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+.gm-lane,.gm-aim{touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none}
+.gm-tile.used.won{background:color-mix(in srgb,var(--c,#38bdf8) 28%,#fff)!important;color:var(--c,#16a34a);border-color:color-mix(in srgb,var(--c,#38bdf8) 55%,var(--line))}
+body.th-halloween .gm-tile.used.won{background:color-mix(in srgb,var(--c,#ff8a1f) 32%,#2a1650)!important;color:#ffe066}
+.gm-ccol:disabled{opacity:.35;cursor:not-allowed}
