@@ -32,6 +32,7 @@
     { id: 'rev-u4-g4', icon: '🏀', title: 'Unit 4 Review (Grade 4): remember it (words, order, cause and effect, quiz), games, speaking check', route: 'review-unit4/index.html?grade=4', g: 4, added: '2026-10-22' },
     { id: 'quiz-g4-u14', icon: '📝', title: 'Grade 4 Units 1-4 Quiz (A/B): listening, words, reading, writing', route: 'quiz-g4-units1-4/index.html', g: 4, added: '2026-10-23' },
     { id: 'speak-g4-u4', icon: '🎤', title: 'Grade 4 Speaking Check, Units 1-4: one pupil at a time', route: 'speaking-g4/index.html', g: 4, added: '2026-10-23' },
+    { id: 'class-reset', icon: '🚦', title: 'Our Class Plan (Monday reset): 3 rules, class traffic light, practice, promise', route: 'class-reset/index.html', added: '2026-10-24' },
     { id: 'u4-g3-l3-mountain', icon: '🌋', title: 'Unit 4 Lesson 3: The Angry Mountain (pp. 65-69): volcano words, cause & effect gears, story theater, sail to the rescue ship', route: 'unit4-g3-angry-mountain/index.html', g: 3, added: '2026-10-21' },
     { id: 'u4-g3-l4-phonics', icon: '🔤', title: 'Unit 4 Lesson 4: Phonics -nd & Think Together (pp. 70-71): reading check, 4 feeling corners, -nd letter factory, balloon pop, story train', route: 'unit4-g3-phonics-think/index.html', g: 3, added: '2026-10-21' },
     { id: 'rev-g3-mountain', icon: '🌋', title: 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71): volcano words, cause & effect, sail to safety, -nd blends & think together', route: 'review-g3-mountain/index.html', g: 3, added: '2026-10-21' },
