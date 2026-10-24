@@ -38,9 +38,10 @@
   ];
   /* what the teacher may do, from the pupil's side (private, kind, no names on the board) */
   D.help = [
-    { e: '🗣️', t: 'A quiet word', d: 'My teacher speaks to me quietly at my desk. It is to help me.' },
-    { e: '🪑', t: 'A short reset', d: 'I can sit at a calm spot or in another seat for two minutes. Then I come back.' },
-    { e: '📝', t: 'A short note', d: 'My teacher may write a note to my class teacher or my family. We make a plan together.' },
+    { e: '🗣️', t: 'A warning', d: 'My teacher tells me quietly: this is your warning. I stop and follow the rule.' },
+    { e: '🪑', t: 'Move seat', d: 'I move to another seat for the rest of the lesson. I try again next lesson.' },
+    { e: '📝', t: 'No game turns and a note', d: 'I do not play in the game today. I do a short writing task. My teacher writes a note to my family.' },
+    { e: '🚪', t: 'Out of the lesson', d: 'For a serious problem I go to my class teacher. We make a plan together.' },
     { e: '🙋', t: 'I can ask for help', d: 'I put my hand up. I can say: “Can I have a break?” or “Can you help me?”' }
   ];
   /* the Class Voice Box: four kinds of slips (e = picture, t = name, s = how to start the sentence, tr = Turkish help for the slip) and how the box works */

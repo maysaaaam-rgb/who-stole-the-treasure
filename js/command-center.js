@@ -661,20 +661,20 @@
       var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return;
       var old = document.getElementById('cc-ld'); if (old) old.remove();
       var STEPS = [
-        { k: 1, icon: '1️⃣', t: 'Quiet word at the desk', tip: 'Say it privately and kindly: "I noticed … I know you can …". Then thank them when it works.' },
-        { k: 2, icon: '2️⃣', t: 'Reset or seat change (2 minutes)', tip: 'A calm spot or another seat, not shown to the class. Then welcome them back with no speech.' },
-        { k: 3, icon: '3️⃣', t: 'Note to the class teacher or parents', tip: 'Short and factual: what happened, what you tried, what helps. Offer a plan together.' },
-        { k: 4, icon: '⚫', t: 'Call the class teacher', tip: 'Only for safety or serious cases, and only after you agreed this with the class teacher and the head.' }
+        { k: 1, icon: '1️⃣', t: 'WARNING (private, at the desk)', tip: 'Calm and firm: "You broke the rule: ___. This is your warning. Next time you move seat." Do not argue. Thank them if it stops.' },
+        { k: 2, icon: '2️⃣', t: 'MOVE SEAT for the rest of the lesson', tip: 'Say: "Go to the seat at the front (or back). You stay there until the bell." No speech, no shouting. They may return next lesson.' },
+        { k: 3, icon: '3️⃣', t: 'LOSS + REPAIR TASK + note home', tip: 'No game turns for this lesson (they watch and write). A short repair task at the desk: 5 sentences (what I did, what rule, what I will do). Send a short note to parents. Short, not a long punishment: the English must stay a place they can come back to.' },
+        { k: 4, icon: '⚫', t: 'OUT OF THE LESSON (to the class teacher or the office)', tip: 'Only to the place agreed with the school, and with a note. Never alone in the corridor. Use it for safety, or when step 3 did not work. Tell the class teacher and parents the same day.' }
       ];
       var ovl = document.createElement('div'); ovl.id = 'cc-ld'; ovl.className = 'cc-ovl';
       function when(ts) { var d = new Date(ts), n = new Date(), same = d.toDateString() === n.toDateString(); return (same ? 'today' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
       function draw() {
         var log = ladderGet(id), today = log.filter(function (x) { return new Date(x.t).toDateString() === new Date().toDateString(); }), top = today.reduce(function (a, x) { return Math.max(a, x.s); }, 0);
         ovl.innerHTML = '<div class="cc-pal" style="padding:16px;max-width:460px"><div style="font-weight:800;font-size:15px;margin-bottom:2px">🪜 Private steps: ' + esc(pupil.firstName || pupil.name) + '</div>' +
-          '<div class="cc-dim" style="margin-bottom:10px">Nothing is shown to the class and no XP changes. The log stays on this computer only. ' + (top ? '<b>Today: step ' + (top === 4 ? 'black' : top) + ' so far.</b>' : 'Nothing logged today.') + '</div>' +
+          '<div class="cc-dim" style="margin-bottom:10px">Nothing is shown to the class. Say it calmly and firmly, and never in front of others. The log stays on this computer only. ' + (top ? '<b>Today: step ' + (top === 4 ? 'black' : top) + ' so far.</b>' : 'Nothing logged today.') + ' <b>This week: ' + log.filter(function (x) { return Date.now() - x.t < 7 * 864e5; }).length + ' steps.</b>' + (log.filter(function (x) { return Date.now() - x.t < 7 * 864e5; }).length >= 3 ? ' <b style="color:#f87171">3 or more this week: call or write home.</b>' : '') + '</div>' +
           '<div class="cc-nwl" style="grid-template-columns:1fr">' + STEPS.map(function (x, i) { return '<button class="cc-nwr" data-s="' + x.k + '" style="text-align:left;' + (x.k === 4 ? 'border-color:#475569' : '') + '">' + x.icon + ' ' + esc(x.t) + (top && x.k === top + 1 ? ' <span style="color:#38bdf8">← next</span>' : (!top && x.k === 1 ? ' <span style="color:#38bdf8">← start here</span>' : '')) + '<div class="cc-dim" style="font-weight:500;margin-top:2px">' + esc(x.tip) + '</div></button>'; }).join('') + '</div>' +
           (log.length ? '<div class="cc-dim" style="margin-top:10px"><b>Last steps:</b> ' + log.slice(-5).reverse().map(function (x) { return 'step ' + (x.s === 4 ? 'black' : x.s) + ' · ' + when(x.t); }).join(' · ') + '</div>' : '') +
-          '<div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px"><button class="cc-mini" data-old="1">Also take XP away (old way)</button><button class="cc-mini" data-close="1">Close ✕</button></div></div>';
+          '<div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px"><button class="cc-mini" data-old="1">⭐ Take XP away (with a reason)</button><button class="cc-mini" data-close="1">Close ✕</button></div></div>';
       }
       draw(); document.body.appendChild(ovl);
       ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
