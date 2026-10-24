@@ -160,6 +160,11 @@
   function awayAll() { try { var o = JSON.parse(localStorage.getItem(AWAY_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
   function awayOn(id) { var o = awayAll(); return id in o ? !!o[id] : !!AWAY_DEFAULT[id]; }
   function awaySet(id, on) { var o = awayAll(); o[id] = !!on; try { localStorage.setItem(AWAY_KEY, JSON.stringify(o)); } catch (e) { /* not remembered */ } return !!on; }
+  /* the private ladder log: { pupilId: [ { s: 1-4, t: time } ] }, kept only in this browser */
+  var LADDER_KEY = 'eaa_ladder_v1';
+  function ladderAll() { try { var o = JSON.parse(localStorage.getItem(LADDER_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
+  function ladderGet(id) { var a = ladderAll()[id]; return Array.isArray(a) ? a : []; }
+  function ladderAdd(id, step) { var all = ladderAll(), a = ladderGet(id); a.push({ s: step, t: Date.now() }); all[id] = a.slice(-40); try { localStorage.setItem(LADDER_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ } }
   var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   /* the 4 skills from the paper quiz: { listening: {pct, v}, ... } or null. The same numbers the parent report and the profile show. */
@@ -395,7 +400,7 @@
         '<td class="cc-h">' + (r.q ? '<span class="cc-hw cc-hw-' + (r.qWeak ? 'no' : r.q.pct >= 70 ? 'ok' : 'mid') + '" title="' + esc((r.q.title || 'Unit 3 quiz') + ' ' + r.q.text) + '">' + r.q.pct + '%</span>' : '<span class="cc-dim">–</span>') + '</td>' +
         '<td class="cc-h">' + skillChips(r.sk) + '</td>' +
         '<td><span class="cc-t ' + s[1] + '" title="' + esc(r.d.why.join(' · ')) + '">' + s[0] + '</span><div class="cc-why">' + esc(r.d.why[0]) + '</div></td>' +
-        '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button> <button class="cc-plus" title="Open parent report" onclick="ParentReport && ParentReport.openForStudent(\'' + esc(r.id) + '\')">🧾</button> <button class="cc-plus cc-nwb" title="Needs work (discipline)" onclick="CommandCenter.needsWork(\'' + esc(r.id) + '\')">⚠' + (r.a.nw && r.a.nw.n ? '<sup>' + r.a.nw.n + '</sup>' : '') + '</button></td></tr>';
+        '<td onclick="event.stopPropagation()"><button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',5)">+5</button> <button class="cc-plus" onclick="CommandCenter.award(\'' + esc(r.id) + '\',10)">+10</button> <button class="cc-plus" title="Open parent report" onclick="ParentReport && ParentReport.openForStudent(\'' + esc(r.id) + '\')">🧾</button> <button class="cc-plus cc-nwb" title="Private steps for discipline (quiet word, reset, note). The old XP way is inside." onclick="CommandCenter.ladder(\'' + esc(r.id) + '\')">⚠' + (r.a.nw && r.a.nw.n ? '<sup>' + r.a.nw.n + '</sup>' : '') + '</button></td></tr>';
     }).join('');
     var foot = '<tr><td>Class total</td><td>' + sum(rows.map(function (r) { return r.xp; })).toLocaleString('en-US') + '</td>' +
       labels.map(function (d, i) { var v = sum(rows.map(function (r) { return r.a.days[NDAYS - RANGE + i]; })); return '<td class="cc-d">' + (v || '<span class="cc-dot">·</span>') + '</td>'; }).join('') +
@@ -650,6 +655,34 @@
           q: r.q, qWeak: !!r.qWeak, quizAvg: quizAvg, hw: hw, hwReady: !!sheet.data || !!sheet.error, tally: tally, tips: tips, ws: r.ws, mism: r.mism, dup: r.dup, classMedXp: classMedXp
         };
       } finally { classGrade = keep.g; classQuiet = keep.q; pausedKeys = keep.pk; pausedClass = keep.pc; quizAvg = keep.qa; classMedXp = keep.mx; }
+    },
+    /** Private 3-step ladder for one pupil (nothing is shown to the class, no XP changes, the log stays in THIS browser only). */
+    ladder: function (id) {
+      var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return;
+      var old = document.getElementById('cc-ld'); if (old) old.remove();
+      var STEPS = [
+        { k: 1, icon: '1️⃣', t: 'Quiet word at the desk', tip: 'Say it privately and kindly: "I noticed … I know you can …". Then thank them when it works.' },
+        { k: 2, icon: '2️⃣', t: 'Reset or seat change (2 minutes)', tip: 'A calm spot or another seat, not shown to the class. Then welcome them back with no speech.' },
+        { k: 3, icon: '3️⃣', t: 'Note to the class teacher or parents', tip: 'Short and factual: what happened, what you tried, what helps. Offer a plan together.' },
+        { k: 4, icon: '⚫', t: 'Call the class teacher', tip: 'Only for safety or serious cases, and only after you agreed this with the class teacher and the head.' }
+      ];
+      var ovl = document.createElement('div'); ovl.id = 'cc-ld'; ovl.className = 'cc-ovl';
+      function when(ts) { var d = new Date(ts), n = new Date(), same = d.toDateString() === n.toDateString(); return (same ? 'today' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
+      function draw() {
+        var log = ladderGet(id), today = log.filter(function (x) { return new Date(x.t).toDateString() === new Date().toDateString(); }), top = today.reduce(function (a, x) { return Math.max(a, x.s); }, 0);
+        ovl.innerHTML = '<div class="cc-pal" style="padding:16px;max-width:460px"><div style="font-weight:800;font-size:15px;margin-bottom:2px">🪜 Private steps: ' + esc(pupil.firstName || pupil.name) + '</div>' +
+          '<div class="cc-dim" style="margin-bottom:10px">Nothing is shown to the class and no XP changes. The log stays on this computer only. ' + (top ? '<b>Today: step ' + (top === 4 ? 'black' : top) + ' so far.</b>' : 'Nothing logged today.') + '</div>' +
+          '<div class="cc-nwl" style="grid-template-columns:1fr">' + STEPS.map(function (x, i) { return '<button class="cc-nwr" data-s="' + x.k + '" style="text-align:left;' + (x.k === 4 ? 'border-color:#475569' : '') + '">' + x.icon + ' ' + esc(x.t) + (top && x.k === top + 1 ? ' <span style="color:#38bdf8">← next</span>' : (!top && x.k === 1 ? ' <span style="color:#38bdf8">← start here</span>' : '')) + '<div class="cc-dim" style="font-weight:500;margin-top:2px">' + esc(x.tip) + '</div></button>'; }).join('') + '</div>' +
+          (log.length ? '<div class="cc-dim" style="margin-top:10px"><b>Last steps:</b> ' + log.slice(-5).reverse().map(function (x) { return 'step ' + (x.s === 4 ? 'black' : x.s) + ' · ' + when(x.t); }).join(' · ') + '</div>' : '') +
+          '<div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px"><button class="cc-mini" data-old="1">Also take XP away (old way)</button><button class="cc-mini" data-close="1">Close ✕</button></div></div>';
+      }
+      draw(); document.body.appendChild(ovl);
+      ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
+      ovl.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-s]'); if (b) { ladderAdd(id, Number(b.dataset.s)); draw(); try { current = rowsFor(st.getActiveClass()); refreshAll(); } catch (er) { /* later */ } return; }
+        if (e.target.closest('[data-close]')) { ovl.remove(); return; }
+        if (e.target.closest('[data-old]')) { ovl.remove(); api.needsWork(id); }
+      });
     },
     /** One 'Needs work' award with a reason (negative XP, category needs_work). Undo voids it. */
     needsWork: function (id) {

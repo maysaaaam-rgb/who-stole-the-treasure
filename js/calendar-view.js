@@ -172,6 +172,25 @@
       saveEvents(list); store().setCalendarFlag('seed12');
     } catch (e) { /* ignore */ }
   }
+  function weekPlanOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed13')) return;
+      var list = customEvents().slice();
+      list = list.filter(function (e) { return !(e.id === 'seed12-quiz' || e.id === 'seed12-speak' || (e.type === 'alice' && e.date === '2026-10-25')); });
+      var cp = 'Our Class Plan: rules, class traffic light, Voice Box (open class-reset/index.html; print poster.html)';
+      var tea = 'Alice Tea Party in the garden (running order and props: alice-party-print/index.html). Bell and traffic light rules apply';
+      var rows = [
+        ['2026-10-26', '10:30', 'class-4a', 'unit4', 'Our Class Plan lesson', cp], ['2026-10-26', '11:15', 'class-4a', 'alice', 'Alice rehearsal in class (last run before the party)', ''],
+        ['2026-10-26', '09:45', 'class-4b', 'unit4', 'Our Class Plan lesson', cp],
+        ['2026-10-27', '15:20', 'class-4a', 'alice', 'Alice Tea Party (garden, includes the 10 minute break)', tea],
+        ['2026-10-27', '09:00', 'class-4b', 'alice', 'Alice Tea Party (garden, 2 lessons)', tea], ['2026-10-27', '09:45', 'class-4b', 'alice', 'Alice Tea Party (garden, 2 lessons)', tea],
+        ['2026-10-30', '14:15', 'class-4b', 'unit4', 'Revision skill lesson 1: words and writing (no new content)', 'Groups: Support, Core, Challenge. Everyone writes on an answer card at the same time.'],
+        ['2026-10-30', '15:20', 'class-4b', 'lesson', 'Book lesson (revise the book, no new pages)', '']
+      ];
+      rows.forEach(function (r, i) { list.push({ id: 'seed13-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      saveEvents(list); store().setCalendarFlag('seed13');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -290,7 +309,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
