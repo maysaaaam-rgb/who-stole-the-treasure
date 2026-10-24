@@ -204,6 +204,14 @@
       saveEvents(list); store().setCalendarFlag('seed15');
     } catch (e) { /* ignore */ }
   }
+  function rev1NoteOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed16')) return;
+      var list = customEvents().slice(), n = 0;
+      list.forEach(function (e) { if (e.id === 'seed13-6') { e.title = 'Revision 1: words and writing (no new content)'; e.note = 'Print revision-pack/Grade4-Revision-1-Words-and-Writing-Pack.pdf (writing sheet, answer cards, exit tickets). Remember first, write it on paper, answer-card game, exit ticket. Plan: lesson-plans/Grade4-Revision-1-Words-and-Writing-Lesson-Plan. Open the Command Center, Revision board for groups and pairs.'; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed16');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -322,7 +330,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
