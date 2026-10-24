@@ -66,6 +66,9 @@
       if (s.custom) { var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' }); d.addEventListener('click', function (e) { e.stopPropagation(); if (d.dataset.sure) { customSets = customSets.filter(function (x) { return x.id !== s.id; }); saveSets(); if (S.setId === s.id) S.setId = GM.sets[0].id; render(); } else { d.dataset.sure = 1; d.textContent = 'Delete?'; } }); c.appendChild(d); }
       qrow.appendChild(c);
     });
+    if (GM.rev) wrap.appendChild(h('div', { class: 'gm-qrow gm-revtools' }, [h('span', { class: 'gm-qlab', text: '🔁 Revision' }),
+      btn('🧠 Remember 5 (daily)', 'amber sm', function () { GM.rev.daily(); }), btn('📝 Exit ticket', 'amber sm', function () { GM.rev.exitTicket(curSet().items); }),
+      h('small', { class: 'gm-hint', text: 'Pick the 🧠 Smart mix questions to bring back what the class missed.' })]));
     var builder;
     var nw = h('button', { type: 'button', class: 'gm-chip gm-chip-new' }, [h('span', { text: '➕' }), h('b', { text: 'New set' })]);
     nw.addEventListener('click', function () { A.play('tap'); builder.classList.toggle('open'); });
@@ -131,6 +134,10 @@
     if (classes.length) right.appendChild(seg('Monsters', [['', 'Default']].concat(classes.map(function (c) { return [c.id, c.label]; })), S.classId, function (v) { S.classId = v; S.teams = []; save(); render(); }));
     m.fields.forEach(function (f) { var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur; right.appendChild(seg(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); })); });
     right.appendChild(seg('Timer', TIMERS, S.cfg.timer, function (v) { S.cfg.timer = v; save(); render(); }));
+    if (GM.rev) {
+      right.appendChild(seg('Remember first', [[1, 'On', 'reminder before the game'], [0, 'Off']], S.cfg.rem === 0 ? 0 : 1, function (v) { S.cfg.rem = +v; save(); render(); }));
+      right.appendChild(seg('Answer cards', [[0, 'Off'], [1, 'On', 'everybody answers on paper']], S.cfg.cards ? 1 : 0, function (v) { S.cfg.cards = +v; save(); render(); }));
+    }
     var themes = Object.keys(GM.themes).filter(function (k) { return GM.halloweenOn || k !== 'halloween'; });
     if (themes.length > 1) right.appendChild(seg('Theme', themes.map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; S.teams = []; save(); render(); }));
     if (S.modeId === 'board' && S.cfg.play !== 'quiz') {
@@ -150,7 +157,11 @@
   /* ---------- play ---------- */
   var cleanups = [], queue = [], gameId = 0;
   function nextItem() { if (!queue.length) queue = U.shuffle(curSet().items); return queue.pop(); }
-  function startGame() {
+  function startGame(skipRemember) {
+    if (skipRemember !== true && GM.rev && S.cfg.rem !== 0 && !S.playing && !S.remDone) {
+      buildTeams(); document.getElementById('gm-teams').style.display = 'none';
+      return GM.rev.remember(curSet().items, { points: 8, check: 3 }, function () { S.remDone = true; startGame(true); });
+    }
     cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
     buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; save(); var myGame = ++gameId;
     S.screen = 'play'; applyTheme('play'); document.body.classList.add('gm-mode-' + S.modeId);
@@ -164,7 +175,7 @@
   function goHome() { S.playing = false; gameId++; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'home'; render(); }
 
   function render() {
-    S.playing = false; applyTheme(); stage.innerHTML = '';
+    S.playing = false; if (S.screen !== 'play') S.remDone = false; applyTheme(); stage.innerHTML = '';
     stage.appendChild(S.screen === 'setup' ? setup() : home());
     var back = document.getElementById('gm-home'); if (back) back.style.visibility = S.screen === 'home' ? 'hidden' : 'visible';
   }
@@ -182,7 +193,8 @@
     homeB.addEventListener('click', function () { if (S.playing && !armed) { armed = true; homeB.textContent = '⚠ Tap again to leave'; setTimeout(function () { armed = false; homeB.textContent = '☰ Games'; }, 3000); return; } armed = false; homeB.textContent = '☰ Games'; goHome(); });
     document.getElementById('gm-fs').addEventListener('click', function () { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { /* ignore */ } });
     render();
+    try { if (GM.rev && /[?&]daily=1/.test(location.search)) GM.rev.daily(); else if (GM.rev && /[?&]exit=1/.test(location.search)) GM.rev.exitTicket(curSet().items); } catch (e) { /* ignore */ }
   }
-  GM.app = { go: function (screen) { S.screen = screen; render(); }, start: startGame, home: goHome };
+  GM.app = { go: function (screen) { S.screen = screen; render(); }, start: startGame, home: goHome, setClass: function (id) { S.classId = id; S.teams = []; save(); } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })(window);
