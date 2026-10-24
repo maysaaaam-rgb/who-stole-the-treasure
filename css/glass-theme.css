@@ -22,7 +22,7 @@
 .app-sidebar hr, .app-sidebar .sidebar-divider { border-color: rgba(255, 255, 255, 0.08); }
 
 /* ---------- the glass pages ---------- */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) {
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="library"]) {
   --bg-card: rgba(15, 23, 42, 0.8);
   --bg-surface: rgba(15, 23, 42, 0.8);
   --bg-card-secondary: rgba(30, 41, 59, 0.72);
@@ -33,12 +33,12 @@
   --border-light: rgba(255, 255, 255, 0.1);
   --border-strong: rgba(255, 255, 255, 0.18);
 }
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) * {
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="library"]) * {
   --text-main: #f8fafc; --text-primary: #f8fafc; --text-secondary: #dbe4f0; --text-muted: #a8b6cb; --text-subtle: #94a3b8;
 }
 
 /* panels that used to be white: glass + light text */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
   [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
   [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
   .curriculum-book-card, .unit-accordion-card, .week-lesson-group, .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
@@ -48,35 +48,35 @@
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important;
 }
 /* boxes inside a glass panel: one step lighter so they still read as separate boxes */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
   background: rgba(30, 41, 59, 0.72) !important;
   box-shadow: none !important;
 }
 
 /* dark text written straight into the page: make it light */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
   [style*="color:#0f172a"], [style*="color: #0f172a"], [style*="color:#1e293b"], [style*="color: #1e293b"], [style*="color:#334155"], [style*="color: #334155"],
   h1, h2, h3, h4, h5, strong, b) { color: #f8fafc !important; }
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
   [style*="color:#475569"], [style*="color: #475569"], [style*="color:#64748b"], [style*="color: #64748b"]) { color: #a8b6cb !important; }
 /* …but keep dark text on light coloured chips and badges */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is([class*="badge"], [class*="pill"], [class*="chip"], [class*="tag"]) :is(strong, b) { color: inherit !important; }
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is([class*="badge"], [class*="pill"], [class*="chip"], [class*="tag"]) :is(strong, b) { color: inherit !important; }
 
 /* form controls */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="library"]) :is(input, select, textarea, .filter-select) {
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="library"]) :is(input, select, textarea, .filter-select) {
   background: rgba(30, 41, 59, 0.9) !important; color: #f8fafc !important; border: 1px solid rgba(255, 255, 255, 0.16) !important;
 }
 #app-view-container :is(input, textarea)::placeholder { color: #94a3b8; }
 
 /* secondary buttons: glass with a tactile lip */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary) {
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(.btn-sm-secondary, .btn-3d-secondary) {
   background: rgba(255, 255, 255, 0.08) !important; color: #e2e8f0 !important;
   border: 1px solid rgba(255, 255, 255, 0.16) !important; border-bottom: 4px solid rgba(0, 0, 0, 0.45) !important;
 }
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(.btn-sm-secondary, .btn-3d-secondary):active { transform: translateY(3px); border-bottom-width: 1px !important; }
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(.btn-sm-secondary, .btn-3d-secondary):active { transform: translateY(3px); border-bottom-width: 1px !important; }
 
 /* undo ui-polish's "dark text inside light panels" rule on the glass pages (those panels are dark now) */
-#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"]) :is(
+#app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
   [class*="card"], [class*="tile"], [class*="panel"], [class*="kpi"], [class*="toolbar"], [class*="accordion"], [class*="widget"],
   [class*="list-item"], [class*="row-item"], [class*="table-wrap"], [style*="--bg-"], table) { color: #e2e8f0; }
 
