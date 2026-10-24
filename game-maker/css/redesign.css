@@ -1,0 +1,100 @@
+/* Game Maker redesign, step 1 (design direction A, bright Class theme): game-show question card, clearer feedback,
+   team pods with a glowing active turn, and a celebratory podium. CSS only: no game logic or sound changes.
+   Big-screen sizes start at 1500 x 860 so laptops keep the current sizes. */
+
+/* ---------- question card ---------- */
+.gm-over { background: radial-gradient(circle at 50% 42%, rgba(20, 28, 50, .38), rgba(8, 12, 28, .72)); }
+.gm-qcard {
+  border-radius: 36px;
+  box-shadow: 0 14px 0 rgba(0, 0, 0, .18), 0 40px 80px -24px rgba(0, 0, 0, .6), inset 0 2px 0 rgba(255, 255, 255, .75);
+}
+.gm-qhead {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 78%, #fff) 0%, var(--c) 55%, color-mix(in srgb, var(--c) 88%, #000) 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .35);
+}
+.gm-qwho b { letter-spacing: .01em; }
+.gm-qpic { box-shadow: inset 0 3px 0 rgba(255, 255, 255, .8), 0 6px 0 rgba(0, 0, 0, .08); }
+.gm-q { letter-spacing: -.005em; text-wrap: balance; }
+.gm-opt {
+  border-radius: 24px; min-height: 76px; text-wrap: balance;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .28), 0 6px 14px -6px rgba(0, 0, 0, .35);
+  transition: transform .16s var(--spring, cubic-bezier(.34, 1.56, .64, 1)), filter .2s, opacity .2s;
+}
+.gm-opt:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-2px); }
+.gm-optl { box-shadow: 0 3px 0 rgba(0, 0, 0, .18); }
+/* right answer pops, a wrong pick wobbles softly (no red screen) */
+.gm-opt.good { animation: gmRightPop .6s var(--spring, cubic-bezier(.34, 1.56, .64, 1)); }
+.gm-opt.bad { animation: gmSoftWob .42s ease-in-out; }
+@keyframes gmRightPop { 0% { transform: scale(.96); } 55% { transform: scale(1.07); } 100% { transform: scale(1.03); } }
+@keyframes gmSoftWob { 0%, 100% { transform: translateX(0); } 30% { transform: translateX(-5px); } 60% { transform: translateX(5px); } }
+.gm-qmsg { font-size: clamp(1.3rem, 2.6vh, 2rem); }
+.gm-qmsg.ok, .gm-qmsg.soft { animation: gmMsgIn .35s var(--spring, cubic-bezier(.34, 1.56, .64, 1)); }
+@keyframes gmMsgIn { from { transform: translateY(8px) scale(.94); opacity: 0; } }
+
+/* the whole card always fits the play area: Skip and Continue were cut off at the bottom (you had to scroll) */
+.gm-qcard { display: flex; flex-direction: column; overflow: hidden; }
+.gm-qhead, .gm-opts, .gm-qmsg, .gm-qfoot { flex: none; }
+.gm-qbody { flex: 1 1 auto; min-height: 0; padding-top: clamp(8px, 1.6vh, 20px); padding-bottom: 2px; }
+.gm-qhead { min-height: clamp(62px, 8vh, 104px); padding-top: 4px; padding-bottom: 4px; }
+.gm-qpic { width: clamp(96px, 17vh, 280px); }
+.gm-qpic .gm-emoji { font-size: clamp(3.2rem, 10vh, 8rem); }
+.gm-q { font-size: clamp(1.6rem, 4.8vh, 4.4rem); }
+.gm-opts { padding-top: clamp(6px, 1.2vh, 16px); }
+.gm-opt { min-height: clamp(52px, 8.6vh, 108px); padding-top: 4px; padding-bottom: 4px; font-size: clamp(1.25rem, 3.6vh, 3rem); }
+.gm-qmsg { min-height: 1.3em; padding-top: 2px; padding-bottom: 2px; }
+.gm-qfoot { padding-top: 4px; padding-bottom: clamp(10px, 1.8vh, 20px); }
+
+/* ---------- team pods and the active turn ---------- */
+.gm-pod-plate { box-shadow: 0 5px 0 rgba(0, 0, 0, .25), inset 0 2px 0 rgba(255, 255, 255, .35); }
+.gm-score { font-variant-numeric: tabular-nums; }
+.gm-pod.on .gm-pod-plate {
+  box-shadow: 0 0 0 4px #fff, 0 0 0 8px var(--sun, #ffd23f), 0 0 26px 8px color-mix(in srgb, var(--sun, #ffd23f) 55%, transparent), 0 5px 0 rgba(0, 0, 0, .25);
+  animation: gmTurnGlow 1.6s ease-in-out infinite;
+}
+@keyframes gmTurnGlow {
+  50% { box-shadow: 0 0 0 4px #fff, 0 0 0 8px var(--sun, #ffd23f), 0 0 40px 14px color-mix(in srgb, var(--sun, #ffd23f) 70%, transparent), 0 5px 0 rgba(0, 0, 0, .25); }
+}
+.gm-pod.on::after { top: -14px; box-shadow: 0 4px 0 rgba(0, 0, 0, .2); animation: gmTurnTag 1.2s ease-in-out infinite alternate; }
+@keyframes gmTurnTag { to { transform: translateX(-50%) translateY(-3px) scale(1.06); } }
+
+/* ---------- victory podium ---------- */
+.gm-end-title h2 { animation: gmTitleIn .7s var(--spring, cubic-bezier(.34, 1.56, .64, 1)); }
+@keyframes gmTitleIn { from { transform: scale(.6) translateY(20px); opacity: 0; } }
+.gm-pcol { animation: gmRise .7s var(--spring, cubic-bezier(.34, 1.56, .64, 1)) both; }
+.gm-pcol.r1 { animation-delay: .15s; } .gm-pcol.r0 { animation-delay: .35s; } .gm-pcol.r2 { animation-delay: 0s; }
+@keyframes gmRise { from { transform: translateY(60px); opacity: 0; } }
+.gm-pstep { box-shadow: inset 0 4px 0 rgba(255, 255, 255, .55), 0 10px 24px -8px rgba(0, 0, 0, .45); }
+.gm-pcol.r0 .gm-pstep { position: relative; overflow: hidden; }
+.gm-pcol.r0 .gm-pstep::after {
+  content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+  transform: translateX(-120%); animation: gmShine 2.6s ease-in-out 1s infinite;
+}
+@keyframes gmShine { 60%, 100% { transform: translateX(120%); } }
+.gm-pscore { font-variant-numeric: tabular-nums; }
+.gm-pcol.r0 .gm-pname { box-shadow: 0 0 0 4px #fff, 0 0 22px 6px rgba(255, 210, 63, .7); }
+.gm-restrow { font-variant-numeric: tabular-nums; box-shadow: 0 4px 0 rgba(0, 0, 0, .15); }
+
+/* ---------- big screens (smartboard 1920 x 1080) ---------- */
+@media (min-width: 1500px) and (min-height: 860px) {
+  .gm-qcard { width: min(1560px, 94vw); }
+  .gm-qwho b { font-size: 2.1rem; } .gm-qwho small { font-size: 1.2rem; }
+  .gm-timer { width: 80px; height: 80px; } .gm-timer b { width: 58px; height: 58px; font-size: 1.9rem; }
+  .gm-opts { gap: 16px; padding-left: 30px; padding-right: 30px; }
+  .gm-opt { border-radius: 28px; }
+  .gm-qfoot .gm-btn { font-size: 1.35rem; }
+  .gm-pod-name { font-size: 1.4rem; max-width: 190px; }
+  .gm-score { font-size: 1.9rem; min-width: 72px; }
+  .gm-pod.on::after { font-size: 1.05rem; padding: 2px 14px; }
+  .gm-pcol { width: clamp(220px, 19vw, 320px); }
+  .gm-pname { font-size: 1.7rem; } .gm-pscore { font-size: 1.6rem; }
+  .gm-pstep { font-size: 4rem; }
+  .gm-restrow { font-size: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gm-pod.on .gm-pod-plate, .gm-pod.on::after, .gm-pcol, .gm-pcol.r0 .gm-pstep::after, .gm-end-title h2 { animation: none !important; }
+}
+/* narrow and portrait screens: the picture stacks above the question, so the card may scroll instead of squeezing */
+@media (max-width: 900px) {
+  .gm-qcard { overflow: auto; }
+  .gm-qbody { flex: none; }
+}
