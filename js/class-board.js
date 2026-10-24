@@ -139,9 +139,19 @@
     '.cb-conf{position:fixed;inset:0;pointer-events:none;z-index:99997;overflow:hidden}.cb-conf i{position:absolute;top:-6vh;font-style:normal;animation:cbFall 2.6s linear forwards}@keyframes cbFall{to{transform:translateY(112vh) rotate(540deg)}}' +
     '@media(max-width:1100px){.cb-dock{gap:5px;padding:7px 8px;border-radius:18px}.cb-dock button{padding:7px 10px;font-size:.82rem;border-radius:12px}.cb-dock .sep{display:none}}' +
     '@media(max-width:640px){.cb{padding:14px 12px 120px}.cb-mg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.cb-hd h1{font-size:1.5rem}.cb-tm div{min-width:76px;padding:6px 10px}.cb-tm b{font-size:1.4rem}}';
+  /* Discipline tools (minus points and flags): teacher only, OFF by default, switched off again in Class Mode. Never turn them on while the board is on the projector. */
+  var disc = false; try { disc = sessionStorage.getItem('cb_disc') === '1'; } catch (e) { disc = false; }
+  function discOn() { return disc && !(root.ClassMode && root.ClassMode.on && root.ClassMode.on()); }
+  function flagOf(id) { var t = 0; try { t = root.CommandCenter && root.CommandCenter.ladderTop ? root.CommandCenter.ladderTop(id) : 0; } catch (e) { t = 0; } return t >= 4 ? 'k' : t >= 2 ? 'r' : t === 1 ? 'y' : ''; }
+  var EXTRA_CSS = '.cb-dsc{font:inherit;font-weight:800;border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:12px;padding:6px 12px;cursor:pointer;background:rgba(255,255,255,.7);color:#334155;margin-left:8px}.cb-dsc.on{background:#fecaca;color:#7f1d1d}' +
+    '.cb-dis{display:flex;gap:4px;margin-top:4px}.cb-dis button{flex:1;font:inherit;font-weight:800;font-size:.85rem;border:0;border-bottom:3px solid rgba(0,0,0,.3);border-radius:9px;padding:3px 0;cursor:pointer;background:#fecaca;color:#7f1d1d}.cb-dis button.fl{background:#e2e8f0;color:#0f172a}' +
+    '.cb-fl{position:absolute;left:50%;top:2px;transform:translateX(-50%);font-size:30px;line-height:1;text-shadow:0 0 3px #fff,0 1px 4px rgba(0,0,0,.5);pointer-events:none;z-index:3}.cb-fl.y{color:#facc15}.cb-fl.r{color:#ef4444}.cb-fl.k{color:#0f172a;text-shadow:0 0 4px #fff,0 0 2px #fff}' +
+    '.cb-flagm{position:fixed;z-index:9600;background:#0f172a;color:#fff;border-radius:14px;padding:8px;display:grid;gap:5px;min-width:250px;box-shadow:0 8px 28px rgba(0,0,0,.5);font-family:inherit}.cb-flagm b{font-size:.9rem;padding:2px 6px}' +
+    '.cb-flagm button{font:inherit;font-weight:700;text-align:left;border:0;border-radius:9px;padding:7px 10px;cursor:pointer;background:#1e293b;color:#fff}.cb-flagm button:hover{background:#334155}' +
+    '.cb-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2f1519;color:#fecaca;border:1px solid #7f1d1d;border-radius:12px;padding:10px 16px;z-index:9700;display:flex;gap:12px;align-items:center;font-weight:700}.cb-toast button{background:#fecaca;color:#2f1519;border:0;border-radius:8px;padding:4px 10px;font-weight:800;cursor:pointer}';
   function ensureCss() {
     if (document.getElementById('cb-css')) return;
-    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
+    var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + EXTRA_CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
   }
 
   function fmt(sec) { sec = Math.max(0, Math.round(sec)); return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
@@ -290,7 +300,7 @@
     var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (sceneOn ? '' : 'on') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
     container.innerHTML = '<div class="cb' + (sceneOn ? ' scene-on scene-' + theme : '') + '" id="cb-root">' +
       '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
-        '' + switcher + '<div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
+        '' + switcher + '<button class="cb-dsc' + (discOn() ? ' on' : '') + '" onclick="ClassBoard.disc()" title="Minus points and flags. Teacher only. Keep it OFF while the board is on the projector.">🚩 Discipline: ' + (discOn() ? 'On' : 'Off') + '</button><div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
@@ -299,14 +309,15 @@
         var stStyle = ' style="--i:' + Math.min(idx, 12) + (plateCss ? ';' + esc(plateCss) : '') + '"';
         var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
-        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge +
+        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge + (discOn() && flagOf(s.id) ? '<span class="cb-fl ' + flagOf(s.id) + '" title="Private flag for today">⚑</span>' : '') +
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
           (sceneOn ? '<div class="cb-pw"><i class="cb-ped"></i>' : '') + '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' + (sceneOn ? '</div>' : '') +
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
-          '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div></div>';
+          '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',1)">+1</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',5)">+5</button><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
+          (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',1)" title="Take 1 XP away (Undo is offered)">−1</button><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',5)" title="Take 5 XP away (Undo is offered)">−5</button><button class="fl" onclick="ClassBoard.flag(\'' + esc(s.id) + '\', event)" title="Yellow, red or black flag (private steps)">⚑ Flag</button></div>' : '') + '</div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
         '<span class="cb-tm-pills"><button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button></span><span class="sep"></span>' +
@@ -420,6 +431,35 @@
         if (n) { try { root.classSoundboard && root.classSoundboard.playCardFlip && root.classSoundboard.playCardFlip(); } catch (e) { /* optional */ } }
       }
       show(n);
+    },
+    disc: function () { disc = !discOn(); try { sessionStorage.setItem('cb_disc', disc ? '1' : '0'); } catch (e) { /* ignore */ } if (root.renderCurrentView) root.renderCurrentView(); },
+    minus: function (id, n) {
+      var st = S(); if (!st.giveXP || !discOn()) return;
+      var pupil = st.getStudent && st.getStudent(id), res = st.giveXP(id, -n, 'Needs work (class board)', 'Teacher', { category: 'needs_work', icon: '⚠️' });
+      var txId = res && (res.transaction && res.transaction.id || res.id);
+      function paint() { var me = totals().filter(function (x) { return x.id === id; })[0], el = document.getElementById('cb-pt-' + id); if (me && el) el.textContent = me.xp.toLocaleString('en-US'); paintGoal(); }
+      paint();
+      var old = document.querySelector('.cb-toast'); if (old) old.remove();
+      var t = document.createElement('div'); t.className = 'cb-toast'; t.innerHTML = '<span>⚠️ ' + esc(pupil && (pupil.firstName || pupil.name) || '') + ': −' + n + ' XP</span><button>Undo</button>';
+      t.querySelector('button').onclick = function () { if (txId && st.voidXPTransaction) st.voidXPTransaction(txId, 'Undone right away'); t.remove(); paint(); };
+      document.body.appendChild(t); setTimeout(function () { t.remove(); }, 7000);
+    },
+    flag: function (id, ev) {
+      var CC = root.CommandCenter; if (!CC || !CC.ladderPut || !discOn()) return;
+      var old = document.querySelector('.cb-flagm'); if (old) old.remove();
+      var m = document.createElement('div'); m.className = 'cb-flagm';
+      var pupil = S().getStudent && S().getStudent(id);
+      m.innerHTML = '<b>⚑ Private flag: ' + esc(pupil && (pupil.firstName || pupil.name) || '') + '</b>' +
+        '<button data-s="1">🟨 Yellow · warning (1)</button><button data-s="2">🟥 Red · move seat for the lesson (2)</button><button data-s="3">🟥 Red · no game turns + repair task + note home (3)</button><button data-s="4">⬛ Black · out of the lesson (4)</button><button data-u="1">↩ Undo the last flag today</button><button data-x="1">Close</button>';
+      var r = ev && ev.target && ev.target.getBoundingClientRect ? ev.target.getBoundingClientRect() : { left: 200, top: 200 };
+      m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 270)) + 'px'; m.style.top = Math.max(8, Math.min(r.top - 230, window.innerHeight - 280)) + 'px';
+      m.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.s) CC.ladderPut(id, Number(b.dataset.s)); else if (b.dataset.u) CC.ladderUndo(id);
+        m.remove(); if (!b.dataset.x && root.renderCurrentView) root.renderCurrentView();
+      });
+      document.body.appendChild(m);
+      setTimeout(function () { document.addEventListener('mousedown', function h(e) { if (!m.contains(e.target)) { m.remove(); document.removeEventListener('mousedown', h); } }); }, 50);
     },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
