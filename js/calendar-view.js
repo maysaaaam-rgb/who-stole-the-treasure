@@ -193,15 +193,15 @@
   }
   function mondayG3Once() {
     try {
-      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed14')) return;
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed15')) return;
       var list = customEvents().slice();
       list = list.filter(function (e) { return !(e.date === '2026-10-26' && (e.classId === 'class-3a' || e.classId === 'class-3b')); });
       var cp = 'Our Class Plan: 3 rules, then the class traffic light, moving, helping, Voice Box, practice, promise (35 minutes). Open class-reset/index.html; print poster.html. Teach the rules first, switch the light on after the rules scene.';
-      var g = 'Play, no new content: Game Maker games with the Unit 4 questions (race, cannon, tiles, memory). Open game-maker/index.html?set=u4-g3&game=cannon. Everybody answers on a card. Ordinary cartoon skin, no Halloween.';
-      [['13:30', 'class-3a', 'unit4', 'Our Class Plan lesson', cp], ['14:15', 'class-3a', 'unit4', 'U4 revision games (play)', g], ['16:05', 'class-3b', 'unit4', 'Our Class Plan lesson', cp]].forEach(function (r, i) {
-        list.push({ id: 'seed14-' + i, date: '2026-10-26', time: r[0], classId: r[1], type: r[2], title: r[3], note: r[4] });
+      var g = 'Play, no new content: Game Maker games with mixed questions from Units 1-4 (31 questions: words and sentences). Open game-maker/index.html?set=u14-g3&game=cannon (also race, tiles, memory). Everybody answers on a card. Ordinary cartoon skin, no Halloween.';
+      [['13:30', 'class-3a', 'unit4', 'Our Class Plan lesson', cp], ['14:15', 'class-3a', 'unit4', 'Units 1-4 revision games (play)', g], ['16:05', 'class-3b', 'unit4', 'Our Class Plan lesson', cp]].forEach(function (r, i) {
+        list.push({ id: 'seed15-' + i, date: '2026-10-26', time: r[0], classId: r[1], type: r[2], title: r[3], note: r[4] });
       });
-      saveEvents(list); store().setCalendarFlag('seed14');
+      saveEvents(list); store().setCalendarFlag('seed15');
     } catch (e) { /* ignore */ }
   }
   function lessonsOn(date, classId) {
