@@ -656,6 +656,14 @@
         };
       } finally { classGrade = keep.g; classQuiet = keep.q; pausedKeys = keep.pk; pausedClass = keep.pc; quizAvg = keep.qa; classMedXp = keep.mx; }
     },
+    /** The highest private step logged today for a pupil (0 = none): 1 yellow, 2-3 red, 4 black. */
+    ladderTop: function (id) { return ladderGet(id).filter(function (x) { return new Date(x.t).toDateString() === new Date().toDateString(); }).reduce(function (a, x) { return Math.max(a, x.s); }, 0); },
+    ladderPut: function (id, step) { ladderAdd(id, step); },
+    ladderUndo: function (id) {
+      var all = ladderAll(), a = ladderGet(id), i = a.length - 1;
+      while (i >= 0 && new Date(a[i].t).toDateString() !== new Date().toDateString()) i--;
+      if (i < 0) return false; a.splice(i, 1); all[id] = a; try { localStorage.setItem(LADDER_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ } return true;
+    },
     /** Private 3-step ladder for one pupil (nothing is shown to the class, no XP changes, the log stays in THIS browser only). */
     ladder: function (id) {
       var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return;
