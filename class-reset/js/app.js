@@ -443,7 +443,7 @@
       function draw() {
         if (turn >= D.teams.length) { gameFinish(c, host, again); return; }
         var nb = teamBanner(turn, '✍️ Promise ' + (turn + 1) + ' of ' + D.teams.length); banner.replaceWith(nb); banner = nb; opts.innerHTML = ''; msg.textContent = 'Choose a promise for your team.';
-        D.promises.forEach(function (p) { var b = btn(p.e + ' ' + p.t, 'amber big', function () { addPoint(turn, 2); sfx('win'); confetti(); msg.textContent = '✅ ' + D.teams[turn].n + ': “We promise: ' + p.t.replace(/^I /, 'we ').replace('my turn', 'our turn') + '”'; A.speak('We promise. ' + p.t.replace(/^I /, 'we ')); turn++; setTimeout(draw, 2600); }); opts.appendChild(b); });
+        D.promises.forEach(function (p) { var b = btn(p.e + ' ' + p.t, 'amber big', function () { addPoint(turn, 2); sfx('win'); confetti(); var pt = p.t.replace(/^I /, 'We ').replace('my turn', 'our turn'); msg.textContent = '✅ ' + D.teams[turn].n + ': “We promise: ' + pt.charAt(0).toLowerCase() + pt.slice(1) + '”'; A.speak('We promise. ' + pt); turn++; setTimeout(draw, 2600); }); opts.appendChild(b); });
       }
       banner = h('div'); host.appendChild(banner); host.appendChild(opts); host.appendChild(msg); draw();
     });
