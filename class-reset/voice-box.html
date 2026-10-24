@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Class Voice Box: label and slips</title>
+<style>
+@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}body{margin:0;font-family:'Trebuchet MS','Segoe UI',Arial,sans-serif;color:#0f172a;background:#e2e8f0}
+.bar{background:#0f172a;color:#fff;padding:8px 14px;display:flex;gap:10px;align-items:center}.bar button{font:inherit;font-weight:800;color:#fff;background:#0ea5e9;border:2px solid #fff;border-bottom-width:5px;border-radius:10px;padding:3px 12px;cursor:pointer}
+.page{width:210mm;min-height:297mm;margin:8px auto;background:#fff;padding:8mm}
+.label{border:4px solid #0f172a;border-radius:8mm;padding:8mm;text-align:center}.label h1{font-size:34pt;margin:0}.label .big{font-size:60pt;line-height:1.1}.label p{font-size:13pt;margin:2mm 0}
+.four{display:grid;grid-template-columns:repeat(2,1fr);gap:4mm;margin:4mm 0}.k{border:2px solid #0f172a;border-radius:4mm;padding:3mm;font-size:12pt}.k b{display:block;font-size:15pt}
+.rules{border:2px dashed #0f172a;border-radius:4mm;padding:3mm 5mm;font-size:12pt;text-align:left}.rules div{margin:1mm 0}
+.slips{display:grid;grid-template-columns:repeat(2,1fr);gap:0}.slip{border:1.5px dashed #64748b;padding:2.4mm 3.4mm;height:34.5mm;font-size:10pt;position:relative}
+.slip .h{display:flex;gap:2mm;align-items:center;font-weight:900;font-size:12pt}.slip .h span{font-size:18pt}.slip .tr{color:#475569;font-weight:600;font-size:9pt}
+.slip .ln{border-bottom:1px solid #94a3b8;height:5.6mm}.slip .f{position:absolute;bottom:1.2mm;left:3.4mm;right:3.4mm;font-size:8pt;color:#64748b;display:flex;justify-content:space-between}
+.help{border-color:#0369a1}.tk{border-color:#16a34a}.id{border-color:#d97706}.wr{border-color:#7c3aed}
+.brk{break-before:page}
+@media print{body{background:#fff}.bar{display:none}.page{margin:0;padding:0;width:auto;min-height:0}}
+</style></head><body>
+<div class="bar"><b>Class Voice Box: print page 1 for the box, page 2 for the slips (cut on the dashed lines)</b><button type="button" onclick="window.print()" style="margin-left:auto">🖨️ Print</button></div>
+<div class="page">
+<div class="label"><div class="big">📮</div><h1>Class Voice Box</h1><p>Sınıf Ses Kutusu</p>
+<div class="four">
+<div class="k"><b>🙏 Thank you</b>Teşekkür</div><div class="k"><b>💡 Idea</b>Fikir</div>
+<div class="k"><b>🙋 I need help</b>Yardım istiyorum</div><div class="k"><b>😟 Something is bothering me</b>Beni rahatsız eden bir şey var</div></div>
+<div class="rules"><div>📮 Put a slip in the box. Writing your name is your choice. / <i>İsim yazmak sizin tercihiniz.</i></div><div>📅 The teacher reads the box on Tuesday and on Friday. / <i>Öğretmen kutuyu Salı ve Cuma günleri okur.</i></div><div>🤫 Worries are never read aloud in front of the class. / <i>Endişeler sınıfın önünde okunmaz.</i></div><div>✍️ Write what happened, not who is bad. / <i>Ne olduğunu yazın, kimin kötü olduğunu değil.</i></div><div>🤝 For serious things, the teacher asks the people who can help. / <i>Ciddi konularda öğretmen yardım edebilecek kişilere danışır.</i></div></div>
+</div></div>
+<div class="page brk"><div class="slips" id="slips"></div></div>
+<script>
+(function () {
+  var T = [['tk', '🙏', 'Thank you', 'Teşekkür', 'Thank you, …'], ['id', '💡', 'Idea', 'Fikir', 'I have an idea: …'], ['help', '🙋', 'I need help', 'Yardım istiyorum', 'I need …'], ['wr', '😟', 'Something is bothering me', 'Beni rahatsız eden bir şey var', 'I am worried about …']];
+  var out = '';
+  for (var r = 0; r < 4; r++) T.forEach(function (t) { out += '<div class="slip ' + t[0] + '"><div class="h"><span>' + t[1] + '</span><div>' + t[2] + '<div class="tr">' + t[3] + '</div></div></div><div class="tr" style="margin-top:.6mm">' + t[4] + '</div><div class="ln"></div><div class="ln"></div><div class="f"><span>Date / Tarih: ______</span><span>Name (optional): ________</span></div></div>'; });
+  document.getElementById('slips').innerHTML = out;
+})();
+</script></body></html>

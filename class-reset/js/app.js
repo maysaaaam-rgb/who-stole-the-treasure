@@ -408,6 +408,25 @@
     body.appendChild(h('div', { class: 'row' }, D.kind.map(function (k) { return h('button', { type: 'button', class: 'chip2', text: k.e + ' ' + k.t, onclick: function () { sfx('tap'); A.speak(k.t); } }); })));
   }
 
+  function voiceR(c) {
+    var body = c.body, box = h('div', { class: 'msg gmsg', text: '📮 The Class Voice Box: a place for thank-yous, ideas, help and worries. Tap a slip.' });
+    body.appendChild(box);
+    body.appendChild(h('div', { class: 'today' }, D.voice.map(function (x, i) {
+      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), h('div', { class: 'tn-em', text: x.e }), h('b', { text: x.t }), h('span', { text: x.s })]);
+      card.addEventListener('click', function () { sfx('tap'); box.innerHTML = '<b>' + x.t + '</b>: ' + x.s; A.speakSeq([x.t, x.s]); }); return card;
+    })));
+    body.appendChild(h('div', { class: 'msg gmsg', html: D.voiceRules.join('<br>') }));
+    howTo(c, { icon: '📮', title: 'Finish the sentence', goal: 'Each team picks a slip and says the sentence out loud.', pupils: 'Choose a kind of slip. Start with the words on the card and finish the sentence. Example: “Thank you, Ali, for helping me.”', teacher: 'Tap the slip the team chooses. +1 for every team that says a full sentence. No real worries are said out loud in this game.' }, function (host, again) {
+      var turn = 0, banner = h('div'), msg = h('div', { class: 'msg gmsg', text: '' }), opts = h('div', { class: 'row bigopts' });
+      function draw() {
+        if (turn >= D.teams.length) { gameFinish(c, host, again); return; }
+        var nb = teamBanner(turn, '📮 Slip ' + (turn + 1) + ' of ' + D.teams.length); banner.replaceWith(nb); banner = nb; opts.innerHTML = ''; msg.textContent = 'Choose a slip, then finish the sentence together.';
+        D.voice.slice(0, 3).forEach(function (x) { var b = btn(x.e + ' ' + x.t, 'amber big', function () { addPoint(turn, 1); sfx('correct'); msg.textContent = '✅ ' + x.s; A.speak(x.s.replace(/…/g, '')); turn++; setTimeout(draw, 2600); }); opts.appendChild(b); });
+      }
+      banner = h('div'); host.appendChild(banner); host.appendChild(opts); host.appendChild(msg); draw();
+    });
+  }
+
   function practiceR(c) {
     var body = c.body, big = h('div', { class: 'bigcmd', text: '🎯 Ready?' }), i = -1, turn = 0, hint = h('div', { class: 'msg gmsg', text: 'Practice lesson: the light is ON. The teacher leads “Simon says” with the commands. A calm class earns a bonus every minute of green.' });
     body.appendChild(hint); body.appendChild(lightPanel(c, true)); body.appendChild(big);
@@ -437,15 +456,17 @@
     1: { title: 'Our Class Plan: the new rules', tab: 'Class plan', missions: [], door: '', scenes: [
       { t: 'Today: our class plan', mins: '3 min', mode: 'think', run: todayR, intro: 'A calm class means more English and more fun.',
         tip: ['Say it warmly: “We are starting a new plan so that everybody can learn and feel good.” Do not talk about past problems or about any child. Make 4 teams. Keep your voice calm and slow today.', 'The traffic light is for the whole class. It never shows a name.'] },
-      { t: 'Our 3 rules', mins: '8 min', mode: 'act', run: rulesR, intro: 'Three rules. We practise each one.',
+      { t: 'Our 3 rules', mins: '7 min', mode: 'act', run: rulesR, intro: 'Three rules. We practise each one.',
         tip: ['Tap each rule, read it, and do the action together. Then play the Bell game twice: ring the bell, wait for silence, press the green button. A fast calm class (5 seconds or less) earns +1 for every team.', 'Thank the class when it works. Praise the whole class, not individuals.'] },
       { t: 'The traffic light', mins: '7 min', mode: 'game', run: lightR, intro: 'Green, yellow, red: what do they mean?',
         tip: ['Show each colour and read what we do: green = calm bonus; yellow = ten seconds to be calm; red = stop, sit, silent for one minute. Then play “Which colour?” with the teams. A wrong answer only gives a hint.', 'Say clearly: yellow and red are about the class, not about one pupil.'] },
-      { t: 'Moving in class', mins: '4 min', mode: 'move', run: movingR, intro: 'We stand only in a game round or on the signal.',
+      { t: 'Moving in class', mins: '3 min', mode: 'move', run: movingR, intro: 'We stand only in a game round or on the signal.',
         tip: ['Practise the commands (Stand, Sit, Hands up, Quiet, Eyes on me). Then do one game round: START, move for 20 seconds, STOP: freeze and sit in 5 seconds. Repeat twice.'] },
       { t: 'Helping each other', mins: '4 min', mode: 'talk', run: helpR, intro: 'Everybody can have a hard moment.',
         tip: ['Read the four cards. Explain in simple words that a quiet word or a short reset is to HELP, not a punishment, and that nobody is shown in front of the class. Then say the kind words together.'] },
-      { t: 'Practice lesson', mins: '6 min', mode: 'act', run: practiceR, intro: 'The light is on. Simon says!',
+      { t: 'Our Class Voice Box', mins: '3 min', mode: 'talk', run: voiceR, intro: 'A place for thank-yous, ideas, help and worries.',
+        tip: ['Show the box and the four kinds of slips (print class-reset/voice-box.html). Explain how it works in simple words: the teacher reads it on Tuesday and Friday, worries are never read aloud, and serious things go to the people who can help. Then play “Finish the sentence” with thank-you, idea and help only: do not ask for real worries in front of the class.'] },
+      { t: 'Practice lesson', mins: '5 min', mode: 'act', run: practiceR, intro: 'The light is on. Simon says!',
         tip: ['Press “Start the light clock”. Lead Simon says with the commands. Keep the light green by praising calm behaviour. If it gets loud, press Yellow (10 seconds) and wait with a calm voice. Every full green minute gives +1 to every team.'] },
       { t: 'Our class promise', mins: '2 min', mode: 'talk', run: promiseR, intro: 'Each team makes a promise.',
         tip: ['Each team chooses one promise and says it loudly and calmly. +2 for each team. Then say: “We have a plan. I know you can do it.”'] },

@@ -43,6 +43,20 @@
     { e: '📝', t: 'A short note', d: 'My teacher may write a note to my class teacher or my family. We make a plan together.' },
     { e: '🙋', t: 'I can ask for help', d: 'I put my hand up. I can say: “Can I have a break?” or “Can you help me?”' }
   ];
+  /* the Class Voice Box: four kinds of slips (e = picture, t = name, s = how to start the sentence, tr = Turkish help for the slip) and how the box works */
+  D.voice = [
+    { e: '🙏', t: 'Thank you', s: 'Thank you, …', tr: 'Teşekkür' },
+    { e: '💡', t: 'Idea', s: 'I have an idea: …', tr: 'Fikir' },
+    { e: '🙋', t: 'I need help', s: 'I need …', tr: 'Yardım istiyorum' },
+    { e: '😟', t: 'Something is bothering me', s: 'I am worried about …', tr: 'Beni rahatsız eden bir şey var' }
+  ];
+  D.voiceRules = [
+    '📮 We put a slip in the box. Writing a name is your choice.',
+    '📅 The teacher reads the box on Tuesday and on Friday.',
+    '🤫 We never read a worry aloud in front of the class.',
+    '✍️ Write what happened, not who is bad.',
+    '🤝 For serious things, the teacher asks the people who can help.'
+  ];
   D.promises = [
     { e: '🪑', t: 'I sit and listen.' }, { e: '🤝', t: 'I wait for my turn.' }, { e: '🔔', t: 'I stop when the bell rings.' }
   ];
