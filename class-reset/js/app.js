@@ -24,7 +24,7 @@
   /* real pictures: ART maps an emoji to a picture name; HAS lists the pictures that exist in art/ (art/manifest.json).
      A missing picture falls back to the emoji, so the lessons work with any number of pictures. */
   var HAS = {};
-  var ART = {};
+  var ART = { '🪑': 'o_rule_sit', '🤫': 'o_rule_voice', '🔔': 'o_rule_bell', '📮': 'o_voice_box', '📜': 'o_promise_scroll', '🙏': 'o_slip_thanks', '💡': 'o_slip_idea', '🙋': 'o_slip_help', '😟': 'o_slip_worry' };
   function hasArt(name) { return !!(name && HAS[name]); }
   function imgEl(name, e, cls) {
     var im = h('img', { class: 'pic' + (cls ? ' ' + cls : ''), src: 'art/' + name + '.webp', alt: '', draggable: 'false' });
@@ -301,6 +301,7 @@
     var st = document.createElement('style'); st.id = 'rs-css';
     st.textContent = '.lightwrap{display:flex;gap:3vh;align-items:center;justify-content:center;flex-wrap:wrap;margin:1vh 0}' +
       '.lamp{width:30vh;height:30vh;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7vh;box-shadow:0 0 6vh rgba(0,0,0,.5) inset,0 1vh 3vh rgba(0,0,0,.45);border:1vh solid #0b1220;transition:background .3s}' +
+      '.lamp.haspic{width:auto;height:auto;border:0;border-radius:0;background:none !important;box-shadow:none}.lampimg{height:46vh;width:auto;filter:drop-shadow(0 1vh 2vh rgba(0,0,0,.4))}' +
       '.lamp.green{background:radial-gradient(circle at 35% 30%,#86efac,#16a34a)}.lamp.yellow{background:radial-gradient(circle at 35% 30%,#fde68a,#f59e0b)}.lamp.red{background:radial-gradient(circle at 35% 30%,#fca5a5,#dc2626)}' +
       '.lampcol{display:flex;flex-direction:column;gap:1vh;align-items:flex-start;max-width:46vw}.lamplab{font-size:4.2vh;font-weight:900}.lampinfo{font-size:3vh;opacity:.9}.lamptime{font-size:5vh;font-weight:900;font-variant-numeric:tabular-nums}' +
       '.lightbtns{display:flex;gap:1.4vh;flex-wrap:wrap}.bigcmd{font-size:9vh;text-align:center;margin:2vh 0;font-weight:900}.bigcmd small{display:block;font-size:4.4vh;opacity:.85;font-weight:700}';
@@ -312,7 +313,7 @@
     var mode = 'green', running = false, cd = 0, greenSec = 0, bonus = 0, iv = null;
     var lamp = h('div', { class: 'lamp green' }), lab = h('div', { class: 'lamplab' }), info = h('div', { class: 'lampinfo' }), tm = h('div', { class: 'lamptime' }), bon = h('div', { class: 'lampinfo' });
     function draw() {
-      var L = D.light[mode]; lamp.className = 'lamp ' + mode; lamp.textContent = mode === 'green' ? '🙂' : mode === 'yellow' ? '😮' : '✋';
+      var L = D.light[mode], face = mode === 'green' ? '🙂' : mode === 'yellow' ? '😮' : '✋', lp = hasArt('o_light_' + mode); lamp.className = 'lamp ' + mode + (lp ? ' haspic' : ''); lamp.textContent = ''; if (lp) lamp.appendChild(imgEl('o_light_' + mode, face, 'lampimg')); else lamp.textContent = face;
       lab.textContent = L.t; info.textContent = L.d;
       tm.textContent = mode === 'green' ? '🟢 ' + Math.floor(greenSec / 60) + ':' + ('0' + (greenSec % 60)).slice(-2) : '⏱ ' + Math.floor(cd / 60) + ':' + ('0' + (cd % 60)).slice(-2);
       bon.textContent = withBonus ? '⭐ Calm bonus so far: +' + bonus + ' for every team (each full minute of green)' : '';
@@ -343,7 +344,7 @@
   function rulesR(c) {
     var body = c.body, box = h('div', { class: 'msg gmsg', text: 'Tap a rule. Listen. Then do the action together!' }), best = null, t0 = 0;
     var grid = h('div', { class: 'today' }, D.rules.map(function (r, i) {
-      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), h('div', { class: 'tn-em', text: r.e }), h('b', { text: r.t }), h('span', { text: r.s })]);
+      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), fill(h('div', { class: 'tn-em' }), r.e), h('b', { text: r.t }), h('span', { text: r.s })]);
       card.addEventListener('click', function () { sfx('tap'); box.innerHTML = '<b>' + r.t + '</b><br>' + r.act; A.speakSeq([r.t, r.s]); });
       return card;
     }));
@@ -401,7 +402,7 @@
     var body = c.body, box = h('div', { class: 'msg gmsg', text: 'Everybody can have a hard moment. Here is how we help each other. Tap a card.' });
     body.appendChild(box);
     body.appendChild(h('div', { class: 'today' }, D.help.map(function (x, i) {
-      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), h('div', { class: 'tn-em', text: x.e }), h('b', { text: x.t }), h('span', { text: x.d })]);
+      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), fill(h('div', { class: 'tn-em' }), x.e), h('b', { text: x.t }), h('span', { text: x.d })]);
       card.addEventListener('click', function () { sfx('tap'); A.speak(x.t + '. ' + x.d); }); return card;
     })));
     body.appendChild(h('div', { class: 'msg gmsg', text: '💬 Kind words. Tap and say them together:' }));
@@ -412,7 +413,7 @@
     var body = c.body, box = h('div', { class: 'msg gmsg', text: '📮 The Class Voice Box: a place for thank-yous, ideas, help and worries. Tap a slip.' });
     body.appendChild(box);
     body.appendChild(h('div', { class: 'today' }, D.voice.map(function (x, i) {
-      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), h('div', { class: 'tn-em', text: x.e }), h('b', { text: x.t }), h('span', { text: x.s })]);
+      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), fill(h('div', { class: 'tn-em' }), x.e), h('b', { text: x.t }), h('span', { text: x.s })]);
       card.addEventListener('click', function () { sfx('tap'); box.innerHTML = '<b>' + x.t + '</b>: ' + x.s; A.speakSeq([x.t, x.s]); }); return card;
     })));
     body.appendChild(h('div', { class: 'msg gmsg', html: D.voiceRules.join('<br>') }));
