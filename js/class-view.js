@@ -86,7 +86,7 @@
       '.cv-art::after{content:"";position:absolute;bottom:6px;width:54px;height:10px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.55) 0%,rgba(15,23,42,.35) 65%,transparent 100%)}' +
       '.cv-art img{position:relative;z-index:1;width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 5px rgba(0,0,0,.35));animation:cvBob 3.2s ease-in-out infinite}' +
       '.cv-lesson .tx{flex:1;min-width:0}.cv-lesson .tx b{display:block;font-size:clamp(1.05rem,1.45vw,1.3rem);font-weight:800;line-height:1.22;color:#0f2a4a;text-wrap:balance}' +
-      '.cv-lesson .tx small{display:block;font-size:.86rem;font-weight:600;color:#475569;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.cv-lesson .tx small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:.86rem;font-weight:600;color:#475569;margin-top:3px;overflow:hidden}' +
       '.cv-lesson .tx em{display:inline-block;margin-top:5px;font-style:normal;font-weight:800;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;background:color-mix(in srgb,var(--c) 24%,#fff);color:#0f2a4a;padding:2px 9px;border-radius:99px}' +
       '.cv-lesson .go{flex:0 0 auto;font-style:normal;font-weight:800;font-size:.98rem;background:#10b981;color:#fff;border-radius:14px;border-bottom:4px solid #047857;padding:10px 16px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}' +
       '.cv-set{font:inherit;font-weight:800;font-size:.92rem;cursor:pointer;border:1.5px solid #cbd5e1;border-bottom:4px solid #64748b;border-radius:14px;padding:7px 14px;background:#fff;color:#0f2a4a;transition:transform .12s}' +
@@ -109,7 +109,7 @@
   function lessonCard(e, i, tag) {
     var parts = splitTitle(e.title), art = artForLesson(e);
     var inner = '<div class="cv-art"><img src="' + esc(art) + '" alt="" loading="lazy" decoding="async" draggable="false"></div>' +
-      '<span class="tx"><b>' + esc(parts.head) + '</b>' + (parts.sub ? '<small>' + esc(parts.sub) + '</small>' : '') +
+      '<span class="tx"><b>' + esc(parts.head).replace(/(\d)-(\d)/g, '$1‑$2') + '</b>' + (parts.sub ? '<small>' + esc(parts.sub) + '</small>' : '') +
       (e.time ? '<em>🕐 ' + esc(e.time) + '</em>' : (tag ? '<em>✨ ' + esc(tag) + '</em>' : '')) + '</span>' +
       '<i class="go">▶ Start</i>';
     var st = ' style="--c:' + COLORS[i % COLORS.length] + '"';

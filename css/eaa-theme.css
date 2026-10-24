@@ -1,0 +1,103 @@
+/* =============================================================================
+   English Adventure Academy · design tokens (direction A: one system, two themes)
+   Teacher theme (default): dark, calm, for the teacher's laptop.
+   Class theme: bright and playful, for everything pupils see on the board
+   (html.class-mode, and any page that sets data-eaa-theme="class").
+   Pages opt in by using the --eaa-* variables and the .eaa-* components;
+   nothing else changes because of this file, apart from the "quick wins" at the end.
+   ============================================================================= */
+:root {
+  /* accents (the same in both themes) */
+  --eaa-cyan: #38bdf8;  --eaa-cyan-dark: #0284c7;
+  --eaa-amber: #f59e0b; --eaa-amber-dark: #b45309;
+  --eaa-emerald: #10b981; --eaa-emerald-dark: #047857;
+  --eaa-coral: #f43f5e; --eaa-coral-dark: #be123c;
+  --eaa-violet: #a855f7; --eaa-violet-dark: #7e22ce;
+
+  /* shape */
+  --eaa-radius-sm: 10px; --eaa-radius: 16px; --eaa-radius-lg: 22px; --eaa-radius-pill: 999px;
+  --eaa-lip: 5px;              /* the 3D bottom lip of every button */
+  --eaa-press: 4px;            /* how far a button travels when pressed */
+
+  /* type: one family for the platform, one for play screens */
+  --eaa-font: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --eaa-font-play: 'Fredoka', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+  --eaa-fs-xs: .78rem; --eaa-fs-sm: .9rem; --eaa-fs: 1rem; --eaa-fs-lg: 1.2rem;
+  --eaa-fs-xl: clamp(1.35rem, 1.1rem + .8vw, 1.8rem);
+  --eaa-fs-2xl: clamp(1.7rem, 1.2rem + 1.4vw, 2.6rem);
+  --eaa-fs-board: clamp(1.4rem, 1rem + 1.6vw, 3rem);   /* text pupils read from the back */
+
+  /* motion */
+  --eaa-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --eaa-ease-out: cubic-bezier(.2, .8, .2, 1);
+  --eaa-t-fast: .12s; --eaa-t: .22s;
+
+  /* teacher theme surfaces */
+  --eaa-bg: #060911;
+  --eaa-bg-glow: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+  --eaa-surface: rgba(15, 23, 42, .8);
+  --eaa-surface-2: #111a2e;
+  --eaa-line: rgba(148, 163, 184, .18);
+  --eaa-text: #e6ebf7;
+  --eaa-muted: #94a3b8;
+  --eaa-shadow-1: 0 4px 20px -2px rgba(0, 0, 0, .4), 0 2px 6px -1px rgba(0, 0, 0, .2);
+  --eaa-shadow-2: 0 14px 34px -10px rgba(0, 0, 0, .55), 0 4px 10px -2px rgba(0, 0, 0, .3);
+  --eaa-rim: inset 0 1px 0 rgba(255, 255, 255, .06);
+  --eaa-blur: blur(14px);
+}
+
+/* class theme surfaces (projector) */
+html.class-mode,
+[data-eaa-theme="class"] {
+  --eaa-bg: #f3f0ff;
+  --eaa-bg-glow: radial-gradient(circle at 50% 20%, #ffffff 0%, #ece7ff 100%);
+  --eaa-surface: rgba(255, 255, 255, .88);
+  --eaa-surface-2: #ffffff;
+  --eaa-line: rgba(15, 42, 74, .12);
+  --eaa-text: #0f2a4a;
+  --eaa-muted: #475569;
+  --eaa-shadow-1: 0 10px 24px -12px rgba(15, 42, 74, .35), 0 2px 6px -2px rgba(15, 42, 74, .15);
+  --eaa-shadow-2: 0 22px 40px -16px rgba(15, 42, 74, .45), 0 4px 10px -2px rgba(15, 42, 74, .18);
+  --eaa-rim: inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+/* ---------------------------------------------------------------- components */
+.eaa-card {
+  background: var(--eaa-surface); color: var(--eaa-text);
+  border: 1px solid var(--eaa-line); border-radius: var(--eaa-radius-lg);
+  box-shadow: var(--eaa-shadow-1), var(--eaa-rim);
+  backdrop-filter: var(--eaa-blur); -webkit-backdrop-filter: var(--eaa-blur);
+}
+.eaa-btn {
+  --c: var(--eaa-cyan); --cd: var(--eaa-cyan-dark);
+  font: 800 var(--eaa-fs)/1.1 var(--eaa-font); color: #fff; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: .45em;
+  min-height: 44px; padding: .7em 1.15em; border: 0;
+  border-radius: var(--eaa-radius); background: var(--c);
+  border-bottom: var(--eaa-lip) solid var(--cd);
+  box-shadow: var(--eaa-shadow-1);
+  transition: transform var(--eaa-t-fast) var(--eaa-ease-spring), filter var(--eaa-t-fast);
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.eaa-btn:hover { filter: brightness(1.07); }
+.eaa-btn:active { transform: translateY(var(--eaa-press)); border-bottom-width: 1px; }
+.eaa-btn.amber { --c: var(--eaa-amber); --cd: var(--eaa-amber-dark); color: #1c1100; }
+.eaa-btn.green { --c: var(--eaa-emerald); --cd: var(--eaa-emerald-dark); }
+.eaa-btn.coral { --c: var(--eaa-coral); --cd: var(--eaa-coral-dark); }
+.eaa-btn.violet { --c: var(--eaa-violet); --cd: var(--eaa-violet-dark); }
+.eaa-btn.ghost { --c: var(--eaa-surface-2); --cd: var(--eaa-line); color: var(--eaa-text); }
+.eaa-pill {
+  display: inline-flex; align-items: center; gap: .35em; padding: .2em .7em;
+  border-radius: var(--eaa-radius-pill); font: 700 var(--eaa-fs-xs)/1.4 var(--eaa-font);
+  background: color-mix(in srgb, var(--c, var(--eaa-cyan)) 18%, transparent); color: var(--eaa-text);
+}
+.eaa-num { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- quick wins */
+/* 1. Big screens: the platform used only 1440 px, so a 1920 smartboard kept 40% empty. */
+@media (min-width: 1700px) {
+  .header-inner, .app-layout { max-width: 1840px; }
+  html.class-mode .app-layout.app-layout { max-width: 1880px; }
+}
+/* 2. Smartboards: no double-tap zoom or 300 ms delay on anything you can press. */
+button, a, [role="button"], input[type="button"], input[type="submit"], select, label, summary { touch-action: manipulation; }
