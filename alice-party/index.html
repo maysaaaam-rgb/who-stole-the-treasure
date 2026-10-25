@@ -161,7 +161,8 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
     <div class="box">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>📨 One personal link for each pupil</h3><span class="seg no-print" id="pl-cls"></span></div>
       <p class="muted">Each link opens that pupil's own page: <b>My part on Tuesday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
-      <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button></div>
+      <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button><button class="btn ghost" id="pl-refresh">🔄 Check who opened</button></div>
+      <div id="pl-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
       <div class="ro" id="pl"></div>
     </div>
     <div class="box">
@@ -179,7 +180,8 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
 </div>
 
 <script src="../alice-party-home/party-data.js?v=3"></script>
-<script src="../alice-party-print/props-map.js?v=1"></script>
+<script src="../alice-party-print/props-map.js?v=2"></script>
+<script src="../alice-party-home/config.js"></script>
 <script>
 (function () {
   'use strict';
@@ -218,7 +220,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
       var weak = g.order.filter(function (p) { var n = starsOf(k, p); return n != null && n <= 1; }).length;
       return '<div class="cls"><h2>' + (k === '4b' ? '🌹' : '🎩') + ' ' + esc(P.classes[k].label) + '</h2><div class="when">' + esc(PARTY[k].day) + ' · ' + esc(PARTY[k].label) + '</div>' +
         '<div class="stat"><span class="pill">' + st.length + ' pupils · ' + g.order.length + ' performances</span><span class="pill ' + (props === st.length ? 'ok' : 'warn') + '">🎭 ' + props + ' of ' + st.length + ' props ready</span>' +
-        (away ? '<span class="pill no">' + away + ' away</span>' : '') + (weak ? '<span class="pill warn">' + weak + ' pairs to practise</span>' : '') + '</div>' +
+        (away ? '<span class="pill no">' + away + ' away</span>' : '') + (weak ? '<span class="pill warn">' + weak + ' pairs to practise</span>' : '') + (STATUS ? '<span class="pill">👀 ' + st.filter(function (x) { return dayOf(x.id) > 0; }).length + ' opened their link · ✅ ' + st.filter(function (x) { return dayOf(x.id) >= 4; }).length + ' ready</span>' : '') + '</div>' +
         '<div class="btns"><a class="btn big green" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=4">▶ Start the party show</a><a class="btn teal" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=3">🎭 Dress rehearsal</a><a class="btn ghost" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=1">💬 Party phrases</a></div></div>';
     }).join('');
   }
@@ -342,8 +344,21 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     try { navigator.clipboard.writeText(text).then(ok, function () { prompt('Copy this', text); }); } catch (x) { prompt('Copy this', text); }
   });
 
-  /* ---- one personal link per pupil ---- */
-  var plCls = keys[0];
+  /* ---- one personal link per pupil, and who opened it (from the Google Sheet, homework "alice-party-day") ---- */
+  var plCls = keys[0], CFG = window.PARTY_CONFIG || {}, STATUS = null, STATUS_ERR = false;
+  save('eaa_party_teacher', true);   /* pupil pages opened on this computer are teacher previews: they never report */
+  function fetchStatus() {
+    if (!CFG.submitUrl || typeof fetch !== 'function') { STATUS_ERR = true; personal(); return; }
+    STATUS_ERR = false; document.getElementById('pl-sum').innerHTML = '<span class="pill">Checking…</span>';
+    fetch(CFG.submitUrl + '?action=status&token=' + encodeURIComponent(CFG.token || '')).then(function (r) { return r.json(); })
+      .then(function (j) { STATUS = j && j.ok ? (j.status || {}) : null; STATUS_ERR = !STATUS; personal(); classCards(); }, function () { STATUS_ERR = true; personal(); });
+  }
+  function dayOf(id) { var r = STATUS && STATUS[id] && STATUS[id]['alice-party-day']; return r ? (r.finished ? 4 : Math.min(3, r.steps || 0)) : 0; }
+  function badge(id) {
+    if (!STATUS) return '';
+    var n = dayOf(id);
+    return n >= 4 ? '<span class="pill ok">✅ Ready</span>' : n ? '<span class="pill warn">🟡 Opened · ' + n + ' of 4 steps</span>' : '<span class="pill no">⚪ Not opened</span>';
+  }
   function linkOf(s) { return new URL('../alice-party-home/party.html?s=' + s.id, location.href).href; }
   function personal() {
     var el = document.getElementById('pl-cls');
@@ -351,9 +366,13 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     el.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; plCls = b.dataset.k; personal(); };
     document.getElementById('pl').innerHTML = P.classes[plCls].students.map(function (s) {
       var mates = P.classes[plCls].students.filter(function (o) { return o.pair === s.pair && o.id !== s.id; }).map(function (o) { return esc(o.name); }).join(', ');
-      return '<div class="perf" style="grid-template-columns:54px 1fr auto"><span class="avs">' + av(s) + '</span><span class="who"><b>' + esc(s.name) + '</b><small>' + esc(role(s).short) + (s.guest ? ' · tea guest, no lines' : '') + (mates ? ' · with ' + mates : '') + '</small></span><span class="btns"><button class="btn sm teal" data-plink="' + esc(s.id) + '">📋 Copy link</button><a class="btn sm ghost" href="' + linkOf(s) + '" target="_blank">👀 Open</a></span></div>';
+      return '<div class="perf" style="grid-template-columns:54px 1fr auto"><span class="avs">' + av(s) + '</span><span class="who"><b>' + esc(s.name) + ' ' + badge(s.id) + '</b><small>' + esc(role(s).short) + (s.guest ? ' · tea guest, no lines' : '') + (mates ? ' · with ' + mates : '') + '</small></span><span class="btns"><button class="btn sm teal" data-plink="' + esc(s.id) + '">📋 Copy link</button><a class="btn sm ghost" href="' + linkOf(s) + '&t=1" target="_blank">👀 Preview</a></span></div>';
     }).join('');
+    var st = P.classes[plCls].students, opened = st.filter(function (s) { return dayOf(s.id) > 0; }).length, ready = st.filter(function (s) { return dayOf(s.id) >= 4; }).length;
+    document.getElementById('pl-sum').innerHTML = STATUS ? '<span class="pill">👀 ' + opened + ' of ' + st.length + ' opened their link</span><span class="pill ok">✅ ' + ready + ' ready</span><span class="pill no">⚪ ' + (st.length - opened) + ' not yet</span>'
+      : (STATUS_ERR ? '<span class="pill warn">Could not reach the Google Sheet. Check the internet and press Check again.</span>' : '');
   }
+  document.getElementById('pl-refresh').addEventListener('click', fetchStatus);
   document.getElementById('pl').addEventListener('click', function (e) {
     var b = e.target.closest('[data-plink]'); if (!b) return;
     var s = P.find ? P.find(b.dataset.plink) : null, text = linkOf({ id: b.dataset.plink }), old = b.textContent;
@@ -373,7 +392,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
   });
   try { var t = sessionStorage.getItem('eaa_party_hq_tab'); if (t) { var b = document.querySelector('.tab[data-t="' + t + '"]'); if (b) b.click(); } } catch (x) { /* ignore */ }
 
-  classCards(); runningOrder(); cast(); checklist(); personal();
+  classCards(); runningOrder(); cast(); checklist(); personal(); fetchStatus();
 })();
 </script>
 </body>
