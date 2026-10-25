@@ -82,6 +82,8 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
 .pcard .i{font-size:2rem}.pcard b{font-size:1.05rem}.pcard span{color:var(--ink2);font-size:.9rem}
 .pcard em{font-style:normal;font-weight:700;color:var(--teal-d);font-size:.85rem}
 .old{margin-top:24px}.old summary{cursor:pointer;font-weight:700;color:var(--ink2)}
+.ws{background:linear-gradient(135deg,#fff7ed,#fef3c7);border:2px solid #fcd34d;border-radius:20px;padding:14px 16px;margin:4px 0 14px}.ws h4{margin:0 0 4px;font-size:1.15rem}.ws ol{margin:6px 0 10px 20px;padding:0}.ws li{margin:3px 0}
+.mk{display:inline-block;font-size:.8rem;font-weight:600;border-radius:8px;padding:1px 7px;margin:2px 4px 0 0}.mk.bp{background:#ede9fe;color:#5b21b6}.mk.home{background:#ccfbf1;color:#115e59}
 .copy{font-family:inherit;font-size:.95rem;white-space:pre-wrap;background:#fbf8ff;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin:6px 0}
 @media(max-width:860px){.hero,.classes{grid-template-columns:1fr}.hero img{max-height:160px}.perf{grid-template-columns:40px 1fr auto}.perf .time{display:none}}
 @media print{.tabs,.btns,.hero img,.no-print{display:none!important}body{background:#fff}.panel{display:block!important}.box,.cls{box-shadow:none}}
@@ -131,6 +133,7 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
         <h3>Cast and props</h3><span class="seg no-print" id="cast-cls"></span>
       </div>
       <p class="muted">Tap <b>Prop</b> when a pupil shows their prop, and <b>Here</b> to mark a pupil away on the day (their partner then gets a helper). Pairs with a yellow frame had 0–1 stars in the dress rehearsal: practise them once more. Ticks stay on this computer.</p>
+      <div id="workshop"></div>
       <div id="cast-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
       <div class="cast" id="cast"></div>
     </div>
@@ -170,6 +173,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
 </div>
 
 <script src="../alice-party-home/party-data.js?v=2"></script>
+<script src="../alice-party-print/props-map.js?v=1"></script>
 <script>
 (function () {
   'use strict';
@@ -239,17 +243,40 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     ['End', 'Hand out the certificates, give +10 XP on the Class Board, tidy the garden together.']
   ].map(function (x) { return '<li><b class="t">' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></li>'; }).join('');
 
+  /* ---- how each prop is made: a blueprint page or something from home ---- */
+  var PM = window.PROPS_MAP || { map: {}, titles: {}, home: {}, pagesFor: function () { return []; } };
+  function makeOf(s) {
+    return '<span style="display:block">' + (role(s).props || []).map(function (t) {
+      var pg = PM.map[t];
+      return pg ? '<span class="mk bp" title="Blueprint: ' + esc(pg.map(function (id) { return PM.titles[id] || id; }).join(' + ')) + '">📐 ' + esc(t) + ' · ' + pg.length + (pg.length === 1 ? ' page' : ' pages') + '</span>'
+        : '<span class="mk home">🏠 ' + esc(t) + ': ' + esc(PM.home[t] || 'from home') + '</span>';
+    }).join('') + '</span>';
+  }
+  function sheetsFor(list) { return list.reduce(function (n, s) { return n + PM.pagesFor(role(s).props).length; }, 0); }
+  function workshop(k) {
+    var st = P.classes[k].students, need = st.filter(function (s) { return !hq.props[s.id] && PM.pagesFor(role(s).props).length; });
+    var uniq = []; st.forEach(function (s) { PM.pagesFor(role(s).props).forEach(function (id) { if (uniq.indexOf(id) < 0) uniq.push(id); }); });
+    var BP = '../alice-party-print/blueprints.html?cls=' + k + '&mode=';
+    document.getElementById('workshop').innerHTML = '<div class="ws"><h4>🛠️ Monday: props in 3 easy steps (' + esc(P.classes[k].label) + ')</h4><ol>' +
+      '<li><b>Ask who has their prop.</b> Tap <b>Prop?</b> below for every pupil who shows one (' + st.filter(function (s) { return hq.props[s.id]; }).length + ' of ' + st.length + ' so far).</li>' +
+      '<li><b>Print only what is missing:</b> ' + need.length + ' pupils still need a paper prop, that is <b>' + sheetsFor(need) + ' sheets</b>, each with the pupil’s name on it. Pupils colour and cut them in the lesson or at home.</li>' +
+      '<li><b>Print one spare set</b> (' + uniq.length + ' sheets) for the box on party day, for anybody who forgets.</li></ol>' +
+      '<div class="btns"><a class="btn amber" href="' + BP + 'pupils">🖨️ Print for the ' + need.length + ' pupils (' + sheetsFor(need) + ' sheets)</a><a class="btn ghost" href="' + BP + 'spare">📦 Spare set (' + uniq.length + ' sheets)</a><a class="btn ghost" href="' + BP + 'plan">📋 Prop plan (1 page)</a><a class="btn ghost" href="../alice-party-print/craft-guides.html">🧵 How to make each costume</a></div>' +
+      '<p class="muted" style="margin:8px 0 0">🏠 Some props come from home (cups, teapot, a hat, a jacket): those pupils need no printing. Print at 100% size (the 10 cm line on each sheet must measure 10 cm).</p></div>';
+  }
+
   /* ---- cast and props ---- */
   function cast() {
     seg(document.getElementById('cast-cls'), 'cast', cast);
     var k = cur.cast, o = orderOf(k), st = P.classes[k].students;
+    workshop(k);
     var props = st.filter(function (s) { return hq.props[s.id]; }).length, away = st.filter(function (s) { return hq.away[s.id]; }).length;
     document.getElementById('cast-sum').innerHTML = '<span class="pill ' + (props === st.length ? 'ok' : 'warn') + '">🎭 ' + props + ' of ' + st.length + ' props ready</span><span class="pill' + (away ? ' no' : '') + '">' + away + ' away today</span>';
     document.getElementById('cast').innerHTML = o.order.map(function (pair, i) {
       var ps = o.map[pair], n = starsOf(k, pair), dl = (P.dialogues || {})[pair] || [];
       return '<div class="pair' + (n != null && n <= 1 ? ' need' : '') + '"><div style="display:flex;justify-content:space-between;align-items:center"><b>' + (i + 1) + '. ' + ps.map(function (s) { return esc(role(s).short); }).join(' + ') + '</b><span class="stars">' + (n == null ? '' : '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n)) + '</span></div>' +
         ps.map(function (s) {
-          return '<div class="pupil">' + av(s) + '<span><b>' + esc(s.name) + '</b><small>' + esc(role(s).short) + ' · ' + esc((role(s).props || []).join(', ')) + '</small></span><span style="display:flex;gap:6px"><button class="tick' + (hq.props[s.id] ? ' on' : '') + '" data-prop="' + esc(s.id) + '">' + (hq.props[s.id] ? '✓ Prop' : 'Prop?') + '</button><button class="tick' + (hq.away[s.id] ? ' off' : '') + '" data-away="' + esc(s.id) + '">' + (hq.away[s.id] ? 'Away' : 'Here') + '</button></span></div>';
+          return '<div class="pupil">' + av(s) + '<span><b>' + esc(s.name) + '</b><small>' + esc(role(s).short) + '</small>' + makeOf(s) + '</span><span style="display:flex;gap:6px"><button class="tick' + (hq.props[s.id] ? ' on' : '') + '" data-prop="' + esc(s.id) + '">' + (hq.props[s.id] ? '✓ Prop' : 'Prop?') + '</button><button class="tick' + (hq.away[s.id] ? ' off' : '') + '" data-away="' + esc(s.id) + '">' + (hq.away[s.id] ? 'Away' : 'Here') + '</button></span></div>';
         }).join('') +
         (dl.length ? '<details class="lines"><summary>The lines</summary>' + dl.map(function (l) { var r = P.roles[l[0]] || {}; return '<p><b>' + esc(r.short || l[0]) + ':</b> ' + esc(l[1]) + '</p>'; }).join('') + '</details>' : '') + '</div>';
     }).join('');
