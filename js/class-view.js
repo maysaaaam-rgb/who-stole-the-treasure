@@ -9,7 +9,9 @@
   var panel = null; // which info panel is open: 'lesson' | 'home' | null
 
   var TILES = [
+    { id: 'lesson', pic: 'm_lesson', t: 'All Lessons', c: '#38bdf8', cm: true },
     { id: 'board', pic: 'm_scoreboard', t: 'Scoreboard', c: '#f59e0b', cm: true },
+    { id: 'gamemaker', pic: 'm_games', t: '🎮 Game Maker', c: '#ec4899', cm: true },
     { id: 'sleepy', pic: 'assets/packs/characters/sleepy-mio/mio-asleep.webp', t: '😴 Sleepy Mio', c: '#6366f1', cm: true },
     { id: 'pick', pic: 'm_pick', t: 'Pick a pupil', c: '#8b5cf6', cm: true },
     { id: 'karaoke', pic: 'h_mic', t: 'Karaoke', c: '#ec4899', cm: true },
@@ -24,12 +26,15 @@
     'unit4-g3-angry-mountain/index.html': 'unit4-g3-angry-mountain/art/o_volcano.webp',
     'unit4-g3-phonics-think/index.html': 'unit4-g3-phonics-think/art/o_wind.webp',
     'review-g3-mountain/index.html': 'unit4-g3-angry-mountain/art/c_family_boat.webp',
+    'review-unit4/index.html?grade=3': 'unit4-g3-angry-mountain/art/o_volcano.webp',
     'unit4-g3-lessons/index.html?lesson=1': 'unit4-g3-lessons/art/o_mona_frame.webp',
     'unit4-g3-lessons/index.html?lesson=2': 'unit4-g3-lessons/art/o_newspaper.webp',
     'review-g3-museum/index.html': 'unit4-g3-lessons/art/c_daphne_case.webp',
     'unit4-g4-lessons/index.html': 'unit4-g4-lessons/art/o_basketball.webp',
     'review-g4-teamwork/index.html': 'unit4-g4-lessons/art/o_basketball.webp',
     'review-g4-show/index.html': 'assets/shelf/karaoke-stage.webp',
+    'review-unit4/index.html?grade=4': 'unit4-g4-lessons/art/o_basketball.webp',
+    'class-reset/index.html': ART + 'm_lesson.webp',
     'game-maker/index.html': ART + 'm_games.webp',
     'chuseok-moon-song/index.html': 'assets/shelf/chuseok-moon-g3.webp',
     'chuseok-moon-homework/index.html': ART + 'm_home.webp',
@@ -120,14 +125,23 @@
   }
   function todayHero(cls) {
     var T = root.Timetable, g = gradeOf(cls), sug = [];
-    try { sug = (T.catalog || []).filter(function (c) { return c.added && c.route && (!c.g || !g || c.g === g); }).sort(function (a, b) { return a.added < b.added ? 1 : (a.added > b.added ? -1 : 0); }).slice(0, 4); } catch (e2) { sug = []; }
+    try {
+      // Pick only actual Unit 4 interactive lessons & reviews in teaching order (Lesson 1 -> Review)
+      sug = (T.catalog || []).filter(function (c) {
+        return c.route && (c.kind === 'lesson' || c.kind === 'review') && c.unit === 4 && (!c.g || !g || c.g === g);
+      }).sort(function (a, b) {
+        return (a.order || 99) - (b.order || 99);
+      }).slice(0, 4);
+    } catch (e2) { sug = []; }
     var t = null; try { t = T && cls ? T.today(cls.id) : null; } catch (e) { t = null; }
     var linked = (t && t.list ? t.list : []).filter(function (e) { return e.route || e.view; });
     var generic = (t && t.list ? t.list : []).filter(function (e) { return !e.route && !e.view; });
     var schedBadge = generic.length ? '<span class="cv-sched-pill">🕐 ' + generic.map(function (e) { return (e.time ? esc(e.time) + ' · ' : '') + esc(e.title); }).join(' | ') + '</span>' : '';
-    var cards = linked.length ? linked.map(function (e, i) { return lessonCard(e, i, 'Today'); }) : sug.map(function (e, i) { return lessonCard(e, i, 'This Week'); });
+    var cards = linked.length ? linked.map(function (e, i) { return lessonCard(e, i, 'Today'); }) : sug.map(function (e, i) { return lessonCard(e, i, 'Unit 4'); });
     return '<div class="cv-today"><div class="cv-today-hd"><h2><img src="' + ART + 'm_lesson.webp" alt="" decoding="async">Today’s Lessons</h2>' +
       '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' + schedBadge +
+      '<button type="button" class="cv-set" style="background:linear-gradient(180deg,#ec4899,#db2777);border-color:#f472b6;border-bottom-color:#9d174d;color:#fff" onclick="ClassView.go(\'gamemaker\')">🎮 Game Maker</button>' +
+      '<button type="button" class="cv-set" onclick="ClassView.go(\'lesson\')">📖 All Lessons</button>' +
       '<button type="button" class="cv-set" onclick="Timetable.edit()">📅 ' + (t && t.set ? 'Edit timetable' : 'Set timetable') + '</button></div></div>' +
       '<div class="cv-lessons">' + cards.join('') + '</div></div>';
   }
@@ -140,7 +154,7 @@
       var all = '';
       try { all = cls && root.Timetable ? root.Timetable.lessonsHtml(cls) : ''; } catch (e2) { all = ''; }
       return '<div class="cv-panel"><h2>Today\'s lesson' + (cls ? ' for ' + esc(cls.name) : '') + '</h2>' + (inner || '<div class="cv-hint">No lesson is set for today.</div>') +
-        '<h2 style="margin-top:2vh">All our lessons</h2>' + all + '</div>';
+        '<h2 style="margin-top:2vh">All Lessons (Ordered by Unit & Lesson Sequence)</h2>' + all + '</div>';
     }
     if (panel === 'home') {
       var base = location.href.replace(/[#?].*$/, '').replace(/[^/]*$/, '');
@@ -172,6 +186,7 @@
       var sw = root.switchView;
       if (id === 'lesson' || id === 'home') { panel = panel === id ? null : id; var p = document.getElementById('cv-panel'); if (p) { p.innerHTML = panelHtml(); if (panel && p.firstChild && p.firstChild.scrollIntoView) p.firstChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } return; }
       panel = null;
+      if (id === 'gamemaker') { if (root.openGameMaker) root.openGameMaker(); else location.href = 'game-maker/index.html'; return; }
       if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       if (id === 'karaoke') { if (root.ClassBoard && root.ClassBoard.karaoke) root.ClassBoard.karaoke(); else location.href = 'karaoke-stage/index.html'; return; }
       if (id === 'board') { sw && sw('board'); return; }

@@ -3,6 +3,7 @@
   'use strict';
   var GM = root.GM = root.GM || {};
   var A = function () { return GM.audio; };
+  GM.sessionMissed = GM.sessionMissed || [];
 
   function h(tag, attrs, kids) {
     var el = document.createElement(tag), k;
@@ -57,19 +58,34 @@
   /* ---- the team pods (bottom of the play screen): each team's monster BIG on a pedestal, name and score; the active team jumps ---- */
   function monFace(m, size) { var d = h('div', { class: 'gm-monface', html: GM.mon.svg(m, size * 1.5) }); d.style.width = d.style.height = size + 'px'; return d; }
   function monFull(m, size) { var d = h('div', { class: 'gm-monfull', html: GM.mon.svg(m, size) }); d.style.width = d.style.height = size + 'px'; return d; }
+
+  /* Fair pupil rotation inside a team when a class roster is active */
+  function advanceTeamPupil(t) {
+    if (!t || !Array.isArray(t.roster) || t.roster.length < 2) return;
+    t.rIdx = ((t.rIdx || 0) + 1) % t.roster.length;
+    t.mon = t.roster[t.rIdx];
+  }
+
   function teamBar(teams, active) {
     var bar = document.getElementById('gm-teams'); if (!bar) return; bar.innerHTML = '';
     var n = teams.length, k = Math.max(0.75, Math.min(1.45, (root.innerHeight || 900) / 900)), size = Math.round((n <= 2 ? 132 : n <= 4 ? 112 : n <= 6 ? 92 : 78) * k);
     bar.className = 'gm-teams n' + n;
     teams.forEach(function (t, i) {
-      var pod = h('div', { class: 'gm-pod' + (i === active ? ' on' : ''), id: 'gm-team-' + i }, [h('div', { class: 'gm-pod-mon' }, [monFull(t.mon, size)]), h('div', { class: 'gm-pod-plate' }, [h('b', { class: 'gm-pod-name', text: t.name }), h('span', { class: 'gm-score', text: String(t.score) })])]);
+      var pupilName = (t.mon && t.mon.name) ? ' · ' + t.mon.name : '';
+      var pod = h('div', { class: 'gm-pod' + (i === active ? ' on' : ''), id: 'gm-team-' + i }, [
+        h('div', { class: 'gm-pod-mon' }, [monFull(t.mon, size)]),
+        h('div', { class: 'gm-pod-plate' }, [
+          h('b', { class: 'gm-pod-name', text: t.name + (i === active ? pupilName : '') }),
+          h('span', { class: 'gm-score', text: String(t.score) })
+        ])
+      ]);
       pod.style.setProperty('--c', t.color); bar.appendChild(pod);
     });
   }
   function setScore(i, n) { var t = GM.state.teams[i]; t.score = Math.max(0, n); var c = document.querySelector('#gm-team-' + i + ' .gm-score'); if (c) { c.textContent = String(t.score); bump(c); } }
   function addScore(i, n) { setScore(i, GM.state.teams[i].score + n); }
 
-  /* ---- THE QUESTION CARD: picture, sentence, Show, coloured answers A-D, Okay. Resolves { ok } and never takes points away ---- */
+  /* ---- THE QUESTION CARD: picture, sentence, Show, coloured answers A-D (plus optional word-tile builder), Okay. Resolves { ok } and never takes points away ---- */
   var LETTERS = ['A', 'B', 'C', 'D'];
   function fillSentence(qText, ans) {
     var s = String(qText || '');
@@ -85,21 +101,56 @@
     }
     return h('span', { text: s });
   }
+  function spokenSentenceOf(item) {
+    if (!item) return '';
+    if (item.speak) return String(item.speak);
+    var q = String(item.q || ''), a = String(item.a || '');
+    if (a && /_{2,}/.test(q)) return q.replace(/_{2,}/g, a);
+    return a ? (q + ' ' + a) : q;
+  }
+
   function ask(item, team, opts) {
     opts = opts || {};
+    item = item || { q: 'Ready?', a: 'Yes!', w: ['Not yet'] };
     return new Promise(function (resolve) {
-      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
-      var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]), h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: opts.label || '' })]), h('span', { class: 'gm-grow' }), timerEl, btn('🔊', 'round sm', function () { A().speak(done && item.a && /_{2,}/.test(item.q || '') ? String(item.q).replace(/_{2,}/g, item.a) : item.q); })]);
+      var pupilSub = (team && team.mon && team.mon.name) ? ('👤 ' + team.mon.name + (opts.label ? ' · ' + opts.label : '')) : (opts.label || '');
+      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), qWrap = h('div', { class: 'gm-qstack' }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
+      var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [
+        h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]),
+        h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: pupilSub })]),
+        h('span', { class: 'gm-grow' }),
+        timerEl,
+        btn('🔊', 'round sm', function () { A().speak(done ? spokenSentenceOf(item) : (item.speak || item.pass || item.q)); })
+      ]);
       head.style.setProperty('--c', team.color); card.style.setProperty('--c', team.color);
       var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false;
+
       if (item.pic) body.appendChild(picBox); else card.classList.add('nopic');
-      body.appendChild(q); card.appendChild(head); card.appendChild(body); card.appendChild(optBox); card.appendChild(msg); card.appendChild(foot); over.appendChild(card);
+      if (item.pass) {
+        var passBox = h('div', { class: 'gm-qpass' }, [
+          h('span', { class: 'gm-qpass-tag', text: '📖 Read' }),
+          h('span', { text: ' ' + item.pass })
+        ]);
+        qWrap.appendChild(passBox);
+      }
+      qWrap.appendChild(q);
+      body.appendChild(qWrap);
+
+      /* Optional tap-to-order word-tile tray when item.order is present */
+      var orderTray = null;
+      if (Array.isArray(item.order) && item.order.length >= 3) {
+        orderTray = h('div', { class: 'gm-order-wrap', style: 'display:none' });
+        qWrap.appendChild(orderTray);
+      }
+
+      card.appendChild(head); card.appendChild(body); card.appendChild(optBox); card.appendChild(msg); card.appendChild(foot); over.appendChild(card);
       document.getElementById('gm-stage').appendChild(over);
       A().play('flip');
       setTimeout(function () {
         over.classList.add('in');
         card.classList.add('in');
       }, 16);
+
       function closeModal(resObj) {
         if (closed) return;
         closed = true;
@@ -109,16 +160,22 @@
         over.classList.add('out');
         card.classList.remove('in');
         card.classList.add('out');
+        /* Rotate to next pupil on this team for their next turn */
+        if (team && Array.isArray(team.roster) && team.roster.length > 1 && !(resObj && resObj.skipped)) {
+          advanceTeamPupil(team);
+        }
         setTimeout(function () {
           if (over.parentNode) over.parentNode.removeChild(over);
           resolve(resObj);
         }, 260);
       }
+
       function finish(ok) {
         if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm);
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
         skipBtn.style.display = 'none';
+        sayTogetherBtn.style.display = '';
         nextBtn.style.display = '';
         if (item.a && /_{2,}/.test(item.q || '')) {
           q.innerHTML = '';
@@ -126,16 +183,64 @@
         }
         if (ok) {
           A().play('right'); confetti(14); fx('sparkle_burst', card, 1.6);
-          msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '!';
+          msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '! Say the full sentence together!';
         } else {
           A().play('soft'); wobble(card);
           msg.className = 'gm-qmsg soft'; msg.textContent = 'Good try! The answer is \u201c' + item.a + '\u201d.';
+          if (GM.sessionMissed && item && item.q && !GM.sessionMissed.some(function (x) { return x.q === item.q; })) {
+            GM.sessionMissed.push(item);
+          }
         }
         var reviewDelay = opts.reviewDelay || (ok ? 1850 : 2800);
         closeTm = setTimeout(function () { closeModal({ ok: ok }); }, reviewDelay);
       }
+
       var show = btn('👀  Show the answers', 'huge amber', function () {
         show.style.display = 'none'; A().play('flip');
+        if (item.speak && /^Listen\./i.test(item.q || '')) {
+          try { A().speak(item.speak); } catch (e) { /* ignore */ }
+        }
+        if (orderTray && Array.isArray(item.order)) {
+          orderTray.style.display = '';
+          var picked = [], bankWords = shuffle(item.order.slice());
+          var slotsEl = h('div', { class: 'gm-order-slots' }), chipsEl = h('div', { class: 'gm-order-chips' });
+          function syncOrder() {
+            slotsEl.innerHTML = '';
+            if (!picked.length) {
+              slotsEl.appendChild(h('span', { class: 'gm-order-placeholder', text: 'Tap the words below in order — or pick A / B / C below!' }));
+            } else {
+              picked.forEach(function (wObj, idx) {
+                var sb = h('button', { type: 'button', class: 'gm-order-word on', text: wObj.w });
+                sb.addEventListener('click', function () {
+                  if (done) return;
+                  A().play('tap');
+                  wObj.btn.disabled = false;
+                  picked.splice(idx, 1);
+                  syncOrder();
+                });
+                slotsEl.appendChild(sb);
+              });
+            }
+            if (picked.length === item.order.length) {
+              choice = picked.map(function (x) { return x.w; }).join(' ');
+              okBtn.style.display = '';
+            }
+          }
+          bankWords.forEach(function (w) {
+            var wb = h('button', { type: 'button', class: 'gm-order-word', text: w });
+            wb.addEventListener('click', function () {
+              if (done || wb.disabled) return;
+              A().play('tap');
+              wb.disabled = true;
+              picked.push({ w: w, btn: wb });
+              syncOrder();
+            });
+            chipsEl.appendChild(wb);
+          });
+          orderTray.appendChild(slotsEl);
+          orderTray.appendChild(chipsEl);
+          syncOrder();
+        }
         var opts2 = shuffle([item.a].concat((item.w || []).slice(0, 3)).filter(Boolean));
         optBox.className = 'gm-opts n' + opts2.length;
         opts2.forEach(function (t, k) {
@@ -149,9 +254,14 @@
         }
       });
       var okBtn = btn('✔  Okay!', 'huge green', function () { if (choice == null) return; finish(choice === item.a); }); okBtn.style.display = 'none';
+      var sayTogetherBtn = btn('🗣️ Say it together 🔊', 'big amber', function () {
+        clearTimeout(closeTm);
+        A().speak(spokenSentenceOf(item));
+      });
+      sayTogetherBtn.style.display = 'none';
       var nextBtn = btn('Continue ▶', 'big cyan', function () { closeModal({ ok: lastOutcome }); }); nextBtn.style.display = 'none';
       var skipBtn = btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; closeModal({ ok: false, skipped: true }); });
-      foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(nextBtn); foot.appendChild(skipBtn);
+      foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(sayTogetherBtn); foot.appendChild(nextBtn); foot.appendChild(skipBtn);
     });
   }
 
@@ -164,7 +274,7 @@
     });
   }
 
-  /* ---- the end: podium with the monsters standing on it ---- */
+  /* ---- the end: podium with the monsters standing on it + missed questions replay ---- */
   function podium(teams, onAgain, onHome) {
     var stage = document.getElementById('gm-stage'); stage.innerHTML = '';
     var order = teams.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) { return b.t.score - a.t.score; });
@@ -178,7 +288,20 @@
     });
     wrap.appendChild(pod);
     if (order.length > 3) wrap.appendChild(h('div', { class: 'gm-rest' }, order.slice(3).map(function (o, k) { var r = h('div', { class: 'gm-restrow' }, [h('b', { text: (k + 4) + '.' }), monFace(o.t.mon, 40), h('span', { text: o.t.name }), h('em', { text: o.t.score + ' points' })]); r.style.setProperty('--c', o.t.color); return r; })));
-    wrap.appendChild(h('div', { class: 'gm-row' }, [btn('🔁  Play again', 'huge green', onAgain), btn('☰  Other games', 'big ghost', onHome)])); stage.appendChild(wrap);
+
+    var missed = (GM.sessionMissed || []).slice(0, 6);
+    var actions = [btn('🔁  Play again', 'huge green', onAgain)];
+    if (missed.length && GM.rev && typeof GM.rev.remember === 'function') {
+      actions.push(btn('🧠 Practice ' + missed.length + ' missed question' + (missed.length > 1 ? 's' : ''), 'big amber', function () {
+        GM.sessionMissed = [];
+        GM.rev.remember(missed, { points: missed.length, check: Math.min(3, missed.length) }, function () {
+          podium(teams, onAgain, onHome);
+        });
+      }));
+    }
+    actions.push(btn('☰  Other games', 'big ghost', onHome));
+    wrap.appendChild(h('div', { class: 'gm-row' }, actions));
+    stage.appendChild(wrap);
     A().play('fanfare'); confetti(40); setTimeout(function () { confetti(30); }, 900); setTimeout(function () { fx('sparkle_burst', pod, 2); }, 300);
   }
 
@@ -349,5 +472,5 @@
   }
 
   GM.engine = { createSession: createSession, ease: EASE };
-  GM.u = { fx: fx, hasArt: hasArt, monFull: monFull, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
+  GM.u = { fx: fx, hasArt: hasArt, monFull: monFull, advanceTeamPupil: advanceTeamPupil, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
 })(window);

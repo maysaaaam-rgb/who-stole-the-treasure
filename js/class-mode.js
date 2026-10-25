@@ -1,6 +1,7 @@
 /* Class Mode: a bright, picture-first skin for the whole platform, used on the smartboard.
    A switch in the header turns it on or off (saved on this device). In Class Mode the long text menu becomes a rail of big
-   3D picture buttons, the header is simplified, and "Games" opens the new Game Shelf. Teacher Mode is the normal platform. */
+   3D picture buttons, the header is simplified, and "Games" opens the dedicated Game Shelf (ONLY true games).
+   Lessons, reviews, quizzes, printables, and homework live in Lessons & Library. */
 (function (root) {
   'use strict';
   var KEY = 'eaa_class_mode', ART = 'platform-art/';
@@ -13,15 +14,36 @@
   /* ---------- the picture rail (replaces the sidebar text menu) ---------- */
   var RAIL = [
     { id: 'classview', pic: 'm_home', t: 'Home', c: '#38bdf8', views: ['classview'] },
-    { id: 'lesson', pic: 'm_lesson', t: 'Lesson', c: '#0ea5e9', views: [] },
+    { id: 'lesson', pic: 'm_lesson', t: 'Lesson', c: '#0ea5e9', views: ['library'] },
     { id: 'board', pic: 'm_scoreboard', t: 'Scores', c: '#f59e0b', views: ['board'] },
-    { id: 'shelf', pic: 'm_games', t: 'Games', c: '#a855f7', views: ['shelf', 'library'] },
+    { id: 'gamemaker', pic: 'm_games', t: '🎮 Game Maker', c: '#ec4899', views: [] },
+    { id: 'shelf', pic: 'm_games', t: 'Games', c: '#a855f7', views: ['shelf'] },
     { id: 'sleepy', pic: 'assets/packs/characters/sleepy-mio/mio-asleep.webp', t: '😴 Sleepy Mio', c: '#6366f1', views: [] },
     { id: 'pick', pic: 'm_pick', t: 'Pick', c: '#8b5cf6', views: [] },
     { id: 'timer', pic: 'm_timer', t: 'Timer', c: '#f43f5e', views: [] },
     { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981', views: ['rewards', 'store'] },
     { id: 'teacher', pic: 'm_teacher_key', t: 'Teacher', c: '#64748b', views: [] }
   ];
+  function openGameMaker(opts) {
+    opts = opts || {};
+    var cls = null;
+    try { cls = S().getActiveClass && S().getActiveClass(); } catch (e) { cls = null; }
+    var cid = opts.classId || (cls && cls.id) || '';
+    var g = opts.grade || activeGrade() || (/4/.test(cid) ? 4 : 3);
+    var setId = opts.setId || (g === 4 ? 'u14-g4' : 'u14-g3');
+    try {
+      var cur = JSON.parse(localStorage.getItem('eaa_gm_v2') || '{}') || {};
+      if (cid) cur.classId = cid;
+      cur.qGrade = String(g);
+      if (opts.setId || !cur.setId) cur.setId = setId;
+      if (opts.modeId) cur.modeId = opts.modeId;
+      localStorage.setItem('eaa_gm_v2', JSON.stringify(cur));
+    } catch (e2) { /* ignore */ }
+    var url = 'game-maker/index.html?class=' + encodeURIComponent(cid || 'class-3a') + '&set=' + encodeURIComponent(setId);
+    if (opts.modeId) url += '&game=' + encodeURIComponent(opts.modeId);
+    location.href = url;
+  }
+  root.openGameMaker = openGameMaker;
   function rail(view) {
     return '<nav class="cm-rail" aria-label="Class menu">' + RAIL.map(function (r) {
       var act = r.views.indexOf(view) >= 0, src = r.pic.indexOf('/') >= 0 ? r.pic : ART + r.pic + '.webp';
@@ -37,8 +59,16 @@
     b.title = on() ? 'Back to the normal teacher platform' : 'Bright smartboard look with big picture buttons';
   }
   function ensureToggle() {
-    if (document.getElementById('cm-toggle')) return paintToggle();
     var right = document.querySelector('.app-header .header-right'); if (!right) return;
+    if (!document.getElementById('cm-gm-btn')) {
+      var gm = document.createElement('button'); gm.type = 'button'; gm.id = 'cm-gm-btn'; gm.className = 'cm-toggle cm-gm-btn';
+      gm.innerHTML = '<span>🎮</span> Game Maker';
+      gm.title = 'Open Game Maker with the active class and monsters';
+      gm.style.cssText = 'background:linear-gradient(180deg,#ec4899,#db2777);color:#fff;border:1.5px solid #f472b6;border-bottom:4px solid #9d174d;border-radius:14px;padding:7px 14px;font-weight:800;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(236,72,153,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
+      gm.addEventListener('click', function () { openGameMaker(); });
+      right.insertBefore(gm, right.firstChild);
+    }
+    if (document.getElementById('cm-toggle')) return paintToggle();
     var b = document.createElement('button'); b.type = 'button'; b.id = 'cm-toggle'; b.className = 'cm-toggle';
     b.addEventListener('click', function () { api.set(!on()); });
     right.insertBefore(b, right.firstChild); paintToggle();
@@ -61,7 +91,7 @@
   }
 
   /* ---------- 3D icons on the teacher pages (Command Center buttons, Lesson plans title) ---------- */
-  var ICONS = { 'Open Class Board': 'm_scoreboard', 'Take attendance': 'h_tick_stamp', 'Progress Check': 'h_calendar', 'Homework': 'h_homework_book', 'Lessons': 'm_lesson', 'Store': 'm_rewards' };
+  var ICONS = { 'Open Class Board': 'm_scoreboard', 'Game Maker': 'm_games', 'Take attendance': 'h_tick_stamp', 'Progress Check': 'h_calendar', 'Homework': 'h_homework_book', 'Lessons': 'm_lesson', 'Store': 'm_rewards' };
   function decorate() {
     if (!on()) return; var c = document.getElementById('app-view-container'); if (!c) return;
     [].forEach.call(c.querySelectorAll('.cc-links button'), function (b) {
@@ -79,7 +109,7 @@
     decorate();
   }
 
-  /* ---------- Game Shelf: big picture cards for lessons and games ---------- */
+  /* ---------- Game Shelf: ONLY true games, ordered by gameOrder ---------- */
   var shelf = { grade: null, kind: 'all', q: '', curate: false, showHidden: false };
   function activeGrade() {
     try { var c = S().getActiveClass && S().getActiveClass(); var m = c && /([34])/.exec(c.name || ''); return m ? Number(m[1]) : 0; } catch (e) { return 0; }
@@ -88,8 +118,13 @@
     var s = (String(g.grade || '') + ' ' + (Array.isArray(g.grades) ? g.grades.join(' ') : String(g.grades || ''))).toLowerCase(), has3 = /\b3\b|grade 3|third/.test(s), has4 = /\b4\b|grade 4|fourth/.test(s);
     return has3 && has4 ? 'both' : (has3 ? 3 : (has4 ? 4 : 'both'));
   }
-  /* Real artwork for the cards that used to show a plain controller emoji (all files are already part of the site). */
+  /* Real artwork for cards (all files are already part of the site). */
   var THUMBS = {
+    'gamemaker-g3': ART + 'm_games.webp',
+    'gamemaker-g4': ART + 'm_games.webp',
+    'rev-u14-g3': 'assets/shelf/bamboozle-g3-u2.webp',
+    'rev-u14-g4': 'assets/shelf/bamboozle-g4-u2.webp',
+    'u1-rev': 'assets/shelf/bamboozle-g3-u1.webp',
     'alley-fling': 'unit2-throw/art/boss.webp',
     'chuseok-arcade-g3': 'unit2-g3-lessons/art/august_happy.webp',
     'chuseok-cooking-g3': 'unit2-g3-cooking/art/songpyeon.webp',
@@ -123,7 +158,12 @@
     'simon-says-grade3-cooking': 'assets/shelf/simon-says-grade3.webp',
     'unit4-g3-case1': 'unit4-g3-lessons/art/o_mona_frame.webp',
     'unit4-g3-case2': 'unit4-g3-lessons/art/o_newspaper.webp',
+    'rev-g3-museum': 'unit4-g3-lessons/art/c_daphne_case.webp',
+    'rev-u4-g3': 'unit4-g3-angry-mountain/art/o_volcano.webp',
     'unit4-g4-team-players': 'unit4-g4-lessons/art/o_basketball.webp',
+    'rev-g4-teamwork': 'unit4-g4-lessons/art/o_basketball.webp',
+    'rev-g4-show': 'assets/shelf/karaoke-stage.webp',
+    'rev-u4-g4': 'unit4-g4-lessons/art/o_basketball.webp',
     'u4-g3-l3-mountain': 'unit4-g3-angry-mountain/art/o_volcano.webp',
     'u4-g3-l4-phonics': 'unit4-g3-phonics-think/art/o_wind.webp',
     'rev-g3-mountain': 'unit4-g3-angry-mountain/art/c_family_boat.webp'
@@ -235,27 +275,47 @@
     if (THUMBS[g.id]) return THUMBS[g.id];
     return SHELF_ART.indexOf(g.id) >= 0 ? 'assets/shelf/' + g.id + '.webp' : (g.thumbnailUrl || g.coverImage || '');
   }
-  function isLesson(g) { return (g.tags || []).indexOf('lesson') >= 0 || /lesson/i.test(g.type || ''); }
+  function isPureGame(g) { return g && g.type === 'game'; }
   function colorFor(g, i) { return ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#0ea5e9'][i % 6]; }
+
+  var GAME_KIND_LABEL = {
+    team: 'TEAM & BOARD',
+    arcade: 'ARCADE',
+    speaking: 'SPEAKING & TPR',
+    quest: 'QUEST'
+  };
+
   function shelfList() {
     var LC = root.LibraryCurate;
-    var all = (root.GAMES_DATA || []).filter(function (g) { return g && g.route && g.status !== 'hidden' && g.status !== 'archived' && (!LC || (shelf.showHidden ? LC.isHidden(g.id) : !LC.isHidden(g.id))); });
+    // ONLY true games (g.type === 'game') appear in the Games section!
+    var all = (root.GAMES_DATA || []).filter(function (g) {
+      return isPureGame(g) && g.route && g.status !== 'hidden' && g.status !== 'archived' && (!LC || (shelf.showHidden ? LC.isHidden(g.id) : !LC.isHidden(g.id)));
+    });
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade;
     return all.filter(function (g) {
       if (gr) { var x = gradeOfGame(g); if (x !== 'both' && x !== gr) return false; }
-      if (shelf.kind === 'lesson' && !isLesson(g)) return false;
-      if (shelf.kind === 'game' && isLesson(g)) return false;
-      if (shelf.q) { var hay = (g.title + ' ' + (g.tags || []).join(' ') + ' ' + (g.categoryLabel || '')).toLowerCase(); if (hay.indexOf(shelf.q) < 0) return false; }
+      if (shelf.kind && shelf.kind !== 'all') {
+        if ((g.gameKind || 'arcade') !== shelf.kind) return false;
+      }
+      if (shelf.q) {
+        var hay = (g.title + ' ' + (g.subtitle || '') + ' ' + (g.tags || []).join(' ') + ' ' + (g.categoryLabel || '')).toLowerCase();
+        if (hay.indexOf(shelf.q) < 0) return false;
+      }
       return true;
-    }).sort(function (a, b) { var LC2 = root.LibraryCurate, sa = LC2 && LC2.isStar(a.id) ? 1 : 0, sb = LC2 && LC2.isStar(b.id) ? 1 : 0; return (sb - sa) || ((isLesson(b) ? 1 : 0) - (isLesson(a) ? 1 : 0)); });
+    }).sort(function (a, b) {
+      var LC2 = root.LibraryCurate, sa = LC2 && LC2.isStar(a.id) ? 1 : 0, sb = LC2 && LC2.isStar(b.id) ? 1 : 0;
+      if (sb !== sa) return sb - sa;
+      return (a.gameOrder || 99) - (b.gameOrder || 99);
+    });
   }
+
   function spotlightHtml(gr) {
     if (shelf.q || shelf.curate) return '';
     var ids = gr === 4
-      ? ['unit4-g4-team-players', 'review-g4-teamwork', 'review-g4-show']
+      ? ['gamemaker-g4', 'rev-u14-g4', 'board-u3-g4-money']
       : gr === 3
-      ? ['u4-g3-l3-mountain', 'u4-g3-l4-phonics', 'rev-g3-mountain']
-      : ['unit4-g4-team-players', 'u4-g3-l3-mountain', 'u4-g3-l4-phonics'];
+      ? ['gamemaker-g3', 'rev-u14-g3', 'board-u3-g3-bear']
+      : ['gamemaker-g3', 'gamemaker-g4', 'unit3-money-mission'];
     var all = root.GAMES_DATA || [], picks = [];
     ids.forEach(function (id) {
       var found = all.filter(function (g) { return g && g.id === id; })[0];
@@ -264,34 +324,51 @@
     if (!picks.length) return '';
     var colors = ['#5b5bd6', '#0ea5e9', '#10b981'];
     return '<div class="cm-spotlight">' +
-      '<div class="cm-spot-hd"><span>⭐ This Week\u2019s Spotlight</span><small>Newest Unit 4 Interactive Smartboard Lessons</small></div>' +
+      '<div class="cm-spot-hd"><span>🎮 Featured Smartboard Games</span><small>Team Game Shows, Board Games &amp; Class Battles</small></div>' +
       '<div class="cm-spot-grid">' + picks.map(function (g, i) {
-        var raw = String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, '');
-        var parts = raw.split(/\s+[—–-]\s+/), main = parts.length > 1 ? parts.slice(1).join(' — ') : raw, sub = parts.length > 1 ? parts[0] : (g.categoryLabel || 'Interactive Lesson');
-        var gTag = gradeOfGame(g) === 4 ? 'GRADE 4' : 'GRADE 3';
+        var raw = String(g.title || '').replace(/^[^\w(]+/u, '');
+        if (gr) raw = raw.replace(/\s*\((grade|week)[^)]*\)\s*$/i, '');
+        var sub = g.subtitle || 'Smartboard Team Game';
+        var gTag = gradeOfGame(g) === 4 ? 'GRADE 4' : (gradeOfGame(g) === 3 ? 'GRADE 3' : 'ALL GRADES');
         var art = thumbFor(g);
         return '<a class="cm-spot-card" style="--sc:' + colors[i % colors.length] + '" href="' + esc(g.route) + '">' +
           '<div class="cm-spot-pic">' + (art ? '<img src="' + esc(art) + '" alt="" loading="lazy" decoding="async">' : '') + '<i></i></div>' +
-          '<div class="cm-spot-body"><span class="cm-spot-tag">✨ ' + gTag + ' · ' + esc(sub) + '</span><b>' + esc(main) + '</b><span class="cm-spot-cta">▶ Launch Lesson</span></div>' +
+          '<div class="cm-spot-body"><span class="cm-spot-tag">🎲 ' + gTag + ' · ' + esc(sub) + '</span><b>' + esc(raw) + '</b><span class="cm-spot-cta">▶ Play Game</span></div>' +
         '</a>';
       }).join('') + '</div></div>';
   }
+
   function shelfHtml() {
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade, list = shelfList();
     function chip(label, active, fn) { return '<button type="button" class="cm-chip' + (active ? ' on' : '') + '" onclick="' + fn + '">' + label + '</button>'; }
-    return '<div class="cm-shelf"><div class="cm-shelf-hd"><div><h1>Game Shelf</h1><small>' + list.length + ' to play</small></div>' +
-      '<div class="cm-chips">' + chip('Grade 3', gr === 3, "ClassMode.shelf('grade',3)") + chip('Grade 4', gr === 4, "ClassMode.shelf('grade',4)") + chip('All', !gr, "ClassMode.shelf('grade',0)") + '<i></i>' +
-      chip('Everything', shelf.kind === 'all', "ClassMode.shelf('kind','all')") + chip('Lessons', shelf.kind === 'lesson', "ClassMode.shelf('kind','lesson')") + chip('Games', shelf.kind === 'game', "ClassMode.shelf('kind','game')") + '<i></i>' + chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div></div>' + curateBar() +
-      '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search…" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
+    return '<div class="cm-shelf"><div class="cm-shelf-hd"><div><h1>🎮 Games Shelf</h1><small>' + list.length + ' smartboard games ready to play (Lessons &amp; Reviews are in the Library)</small></div>' +
+      '<div class="cm-chips">' +
+      chip('Grade 3', gr === 3, "ClassMode.shelf('grade',3)") +
+      chip('Grade 4', gr === 4, "ClassMode.shelf('grade',4)") +
+      chip('All Grades', !gr, "ClassMode.shelf('grade',0)") + '<i></i>' +
+      chip('All Games', shelf.kind === 'all', "ClassMode.shelf('kind','all')") +
+      chip('🎲 Team & Board', shelf.kind === 'team', "ClassMode.shelf('kind','team')") +
+      chip('🕹️ Arcade & Action', shelf.kind === 'arcade', "ClassMode.shelf('kind','arcade')") +
+      chip('🗣️ Speaking & TPR', shelf.kind === 'speaking', "ClassMode.shelf('kind','speaking')") +
+      chip('🚀 Quests & RPG', shelf.kind === 'quest', "ClassMode.shelf('kind','quest')") + '<i></i>' +
+      chip('📖 Lessons & Library →', false, "if(window.switchView)window.switchView('library')") +
+      chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div></div>' + curateBar() +
+      '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search games (Bamboozle, Board, Arcade, Simon Says, Race…)" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
       spotlightHtml(gr) +
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
         var c = colorFor(g, i);
-        var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id), ttl = esc(String(g.title || '').replace(/^[^\w(]+/u, '').replace(/\s*\((grade|week)[^)]*\)\s*$/i, ''));
-        var pic = '<div class="cm-pic">' + (thumbFor(g) ? '<img class="cm-img" src="' + esc(thumbFor(g)) + '" alt="" loading="lazy" decoding="async" draggable="false">' : '<span>' + esc(g.thumbnailIcon || '🎮') + '</span>') + (isLesson(g) ? '<em>LESSON</em>' : '') + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
+        var LC3 = root.LibraryCurate, star = LC3 && LC3.isStar(g.id), hid = LC3 && LC3.isHidden(g.id);
+        var cleanTtl = String(g.title || '').replace(/^[^\w(]+/u, '');
+        if (gr) cleanTtl = cleanTtl.replace(/\s*\((grade|week)[^)]*\)\s*$/i, '');
+        var ttl = esc(cleanTtl);
+        var gg = gradeOfGame(g);
+        var gPrefix = gg === 3 ? 'G3 · ' : (gg === 4 ? 'G4 · ' : '');
+        var badgeText = gPrefix + (GAME_KIND_LABEL[g.gameKind] || 'GAME');
+        var pic = '<div class="cm-pic">' + (thumbFor(g) ? '<img class="cm-img" src="' + esc(thumbFor(g)) + '" alt="" loading="lazy" decoding="async" draggable="false">' : '<span>' + esc(g.thumbnailIcon || '🎮') + '</span>') + '<em>' + esc(badgeText) + '</em>' + (star ? '<u class="cm-starmark">⭐</u>' : '') + '</div>';
         if (!shelf.curate) return '<a class="cm-card' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '" href="' + esc(g.route) + '">' + pic + '<b>' + ttl + '</b><i class="cm-play">▶ Play</i></a>';
         return '<div class="cm-card cur' + (hid ? ' is-hidden' : '') + '" style="--c:' + c + '">' + pic + '<b>' + ttl + '</b><div class="cm-cur"><a class="cm-try" href="' + esc(g.route) + '" target="_blank" rel="noopener">▶ Try</a>' +
           (hid ? '<button type="button" onclick="ClassMode.cur(\'restore\',\'' + esc(g.id) + '\')">↺ Restore</button>' : '<button type="button" class="k' + (star ? ' on' : '') + '" onclick="ClassMode.cur(\'star\',\'' + esc(g.id) + '\')">' + (star ? '⭐ Kept' : '⭐ Keep') + '</button><button type="button" class="h" onclick="ClassMode.cur(\'hide\',\'' + esc(g.id) + '\')">🙈 Hide</button>') + '</div></div>';
-      }).join('') : '<p class="cm-empty">Nothing here. Try another filter.</p>') + '</div></div>';
+      }).join('') : '<p class="cm-empty">No games match this filter. Try another category.</p>') + '</div></div>';
   }
   function curateBar() {
     var LC = root.LibraryCurate; if (!shelf.curate || !LC) return '';
@@ -299,7 +376,15 @@
     return '<div class="cm-curbar"><span>✂ Clean up: tap <b>Try</b> to look, then <b>Keep</b> the good ones and <b>Hide</b> the rest. Saved on this device.</span><div class="cm-chips">' +
       b((shelf.showHidden ? '← Back to the shelf' : '🙈 Hidden (' + LC.hiddenIds().length + ')'), "ClassMode.curate('hidden')", shelf.showHidden ? 'on' : '') + b('📋 Copy list', 'LibraryCurate.copy()') + b('📥 Load list', "LibraryCurate.openImport(function(){ClassMode.shelf('x')})") + b('↺ Restore all', "ClassMode.cur('clear')") + '</div></div>';
   }
-  function renderShelf(container) { container.innerHTML = shelfHtml(); }
+  function renderShelf(container) {
+    if (!document.getElementById('cm-shelf-dark-fix')) {
+      var st = document.createElement('style');
+      st.id = 'cm-shelf-dark-fix';
+      st.textContent = 'html:not(.class-mode) .cm-shelf-hd h1{color:#f8fafc!important}html:not(.class-mode) .cm-shelf-hd small{color:#94a3b8!important}';
+      document.head.appendChild(st);
+    }
+    container.innerHTML = shelfHtml();
+  }
 
   var api = {
     on: on, rail: rail, renderShelf: renderShelf,
@@ -316,7 +401,7 @@
     cur: function (what, id) {
       var LC = root.LibraryCurate; if (!LC) return;
       if (what === 'hide') LC.hide(id); else if (what === 'restore') LC.restore(id); else if (what === 'star') LC.toggleStar(id);
-      else if (what === 'clear') { if (!root.confirm || root.confirm('Restore every hidden lesson and remove all stars on this device?')) LC.clearAll(); else return; }
+      else if (what === 'clear') { if (!root.confirm || root.confirm('Restore every hidden game and remove all stars on this device?')) LC.clearAll(); else return; }
       var c = document.getElementById('app-view-container'); if (c) { var y = root.scrollY; renderShelf(c); root.scrollTo(0, y); }
     },
     shelf: function (k, v) {
@@ -326,6 +411,7 @@
       renderShelf(c);
     },
     go: function (id) {
+      if (id === 'gamemaker') { openGameMaker(); return; }
       if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       var sw = root.switchView; if (!sw) return;
       if (id === 'classview' || id === 'board' || id === 'shelf' || id === 'store' || id === 'rewards') { sw(id); return; }

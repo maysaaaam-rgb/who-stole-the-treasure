@@ -1,5 +1,5 @@
-/* Game Maker mode 1: the Tile Board (Quiz, Classic, Classic Jr).
-   Powered by GM.engine (GameEngineCore) with 3D tile flip squash-and-stretch, shockwave bursts, and 1-8 team rotation. */
+/* Game Maker mode 1: the Tile Board (Quiz, Classic, Classic Jr) + Bamboozle Mystery Cards upgrade.
+   Powered by GM.engine (GameEngineCore) with 3D tile flip squash-and-stretch, Mystery Tiles, Streak Bonus, Final Tile Drama, and 1-8 team rotation. */
 (function (root) {
   'use strict';
   var GM = root.GM = root.GM || {}; GM.modes = GM.modes || {};
@@ -35,25 +35,31 @@
   }
 
   GM.modes.board = {
-    id: 'board', name: 'Tile Board', e: '🔢', desc: 'Pick a numbered tile. Answer the question. Some tiles hide power-ups!',
+    id: 'board', name: 'Tile Board', e: '🔢', desc: 'Pick a numbered tile. Answer the question. Some tiles hide power-ups and mystery surprises!',
     fields: [
       { key: 'play', label: 'Game type', opts: [['quiz', 'Quiz', 'Questions only'], ['classic', 'Classic', 'Questions and power-ups'], ['jr', 'Classic Jr', 'Only friendly power-ups']], def: 'classic' },
-      { key: 'grid', label: 'Number of tiles', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 }
+      { key: 'grid', label: 'Number of tiles', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 },
+      { key: 'mystery', label: 'Mystery cards', opts: [['on', 'On', 'Instant mystery boxes + 2x golden tiles'], ['off', 'Off']], def: 'on' }
     ],
     start: function (ctx) {
-      var cfg = ctx.cfg, root0 = ctx.root, n = +cfg.grid || 16, cols = COLS[n] || 4;
+      var cfg = ctx.cfg, root0 = ctx.root, n = +cfg.grid || 16, cols = COLS[n] || 4, mysOn = cfg.mystery !== 'off';
       var eng = E().createSession(ctx, {
         maxRounds: n,
         initialPhase: 'action',
-        data: { left: n, tiles: [] }
+        data: { left: n, tiles: [], streaks: {} }
       });
       var pool = GM.powerups.filter(function (p) { return (cfg.pu || {})[p.id] !== false && (cfg.play === 'jr' ? p.jr : true); });
       var tiles = eng.state.data.tiles, i;
       for (i = 0; i < n; i++) {
+        var hasPu = (cfg.play !== 'quiz' && pool.length && Math.random() < 0.34) ? U().shuffle(pool)[0].id : null;
+        var isInstantMystery = mysOn && cfg.play !== 'quiz' && hasPu && Math.random() < 0.38;
+        var isGolden = mysOn && !isInstantMystery && Math.random() < 0.2;
         tiles.push({
           i: i,
           item: ctx.nextItem(),
-          pu: (cfg.play !== 'quiz' && pool.length && Math.random() < 0.34) ? U().shuffle(pool)[0].id : null,
+          pu: hasPu,
+          instant: isInstantMystery,
+          golden: isGolden,
           used: false,
           el: null
         });
@@ -66,12 +72,29 @@
       grid.style.gridTemplateRows = 'repeat(' + Math.ceil(n / cols) + ', 1fr)';
       root0.appendChild(wrap);
 
+      function highlightFinalTile() {
+        if (eng.state.data.left === 1) {
+          tiles.forEach(function (t) {
+            if (!t.used && t.el) {
+              t.el.classList.add('gm-tile-final');
+              t.golden = true;
+            }
+          });
+        }
+      }
+
       function renderBanner() {
-        var t = eng.activeTeam();
+        var t = eng.activeTeam(), turn = eng.state.turn, st = eng.state.data.streaks[turn] || 0;
+        var isFinal = eng.state.data.left === 1;
         info.innerHTML = '';
         info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', { text: t.name + ', pick a tile!  (' + eng.state.data.left + ' left)' }));
+        info.appendChild(U().h('b', {
+          text: t.name + (t.mon && t.mon.name ? ' (' + t.mon.name + ')' : '') + ', pick a tile!  (' +
+            (isFinal ? '🌟 FINAL TILE — 2× POINTS!' : eng.state.data.left + ' left') +
+            (st >= 2 ? ' · 🔥 ' + st + ' streak' : '') + ')'
+        }));
         info.style.setProperty('--c', t.color);
+        highlightFinalTile();
       }
 
       tiles.forEach(function (tl) {
@@ -89,7 +112,32 @@
 
       async function playTile(tl) {
         var turn = eng.state.turn, team = eng.activeTeam();
-        var res = await eng.ask(tl.item, { label: 'Tile ' + (tl.i + 1) });
+
+        /* Instant Bamboozle Mystery Card: no question needed! */
+        if (tl.instant && tl.pu) {
+          eng.setPhase('animating');
+          tl.used = true;
+          tl.el.classList.add('used', 'won');
+          tl.el.disabled = true;
+          tl.el.style.setProperty('--c', team.color);
+          tl.el.textContent = '🃏';
+          eng.state.data.left--;
+          J().squash(tl.el, 1.25, 0.78, 300);
+          J().shockwave(tl.el, '#ffe066', 130, 460);
+          eng.award(turn, 5, tl.el, '🃏 Mystery +5');
+          await eng.wait(420);
+          if (!eng.state.alive) return;
+          await revealPowerUp(tl, tl.pu, true);
+          if (!eng.state.alive) return;
+          if (!eng.advanceRound()) return;
+          eng.nextTurn();
+          eng.setPhase('action');
+          renderBanner();
+          return;
+        }
+
+        var label = 'Tile ' + (tl.i + 1) + (tl.golden ? ' · 🌟 2× Golden Tile (20 pts)!' : '');
+        var res = await eng.ask(tl.item, { label: label });
         if (!eng.state.alive || res.cancelled) return;
         eng.setPhase('animating');
         tl.used = true;
@@ -98,20 +146,27 @@
         eng.state.data.left--;
 
         if (res.ok) {
+          var st = (eng.state.data.streaks[turn] || 0) + 1;
+          eng.state.data.streaks[turn] = st;
+          var basePts = tl.golden ? 20 : 10;
+          var streakBonus = st >= 2 ? 5 : 0;
+          var totPts = basePts + streakBonus;
+
           tl.el.style.setProperty('--c', team.color);
           tl.el.classList.add('won');
-          tl.el.textContent = tl.pu ? '🎁' : '✓';
+          tl.el.textContent = tl.pu ? '🎁' : (tl.golden ? '🌟' : '✓');
           J().squash(tl.el, 1.22, 0.8, 280);
-          J().shockwave(tl.el, team.color, 110, 420);
+          J().shockwave(tl.el, tl.golden ? '#ffe066' : team.color, 110, 420);
           J().sparks(tl.el, 16, [team.color, '#ffe066', '#ffffff'], 7);
           U().fx('smoke_puff', tl.el);
-          eng.award(turn, 10, tl.el, '+10');
+          eng.award(turn, totPts, tl.el, (tl.golden ? '🌟 2× ' : '') + '+' + totPts + (streakBonus ? ' 🔥' : ''));
           if (tl.pu) {
             await eng.wait(380);
             if (!eng.state.alive) return;
-            await revealPowerUp(tl, tl.pu);
+            await revealPowerUp(tl, tl.pu, false);
           }
         } else {
+          eng.state.data.streaks[turn] = 0;
           tl.el.textContent = '·';
         }
 
@@ -122,12 +177,13 @@
         renderBanner();
       }
 
-      async function revealPowerUp(tl, id) {
+      async function revealPowerUp(tl, id, isMysteryCard) {
         var pu = GM.powerups.filter(function (p) { return p.id === id; })[0];
         if (!pu) return;
         var T = eng.teams, turn = eng.state.turn, target = -1;
         var over = U().h('div', { class: 'gm-over' });
         var card = U().h('div', { class: 'gm-card gm-glass gm-pucard' }, [
+          isMysteryCard ? U().h('div', { class: 'gm-mys-badge', text: '🃏 MYSTERY CARD!' }) : null,
           U().h('div', { class: 'gm-pu-ic' }, [U().art('pu_' + id, pu.e)]),
           U().h('h2', { text: pu.n + '!' }),
           U().h('div', { class: 'gm-q', text: pu.d })
@@ -158,13 +214,14 @@
         U().wobble(document.getElementById('gm-team-' + turn));
 
         await new Promise(function (resolve) {
-          var ok = U().btn('✔ Okay!', 'big green', function () { over.remove(); resolve(); });
-          card.appendChild(ok);
-          eng.on('end', function () { over.remove(); resolve(); });
+          var b = U().btn('▶  Continue', 'huge green', function () {
+            over.remove();
+            resolve();
+          });
+          card.appendChild(b);
         });
       }
 
-      eng.setTurn(0, true);
       renderBanner();
     }
   };
