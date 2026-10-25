@@ -212,6 +212,15 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed16');
     } catch (e) { /* ignore */ }
   }
+  function rev1aOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed17')) return;
+      var list = customEvents().slice();
+      list = list.filter(function (e) { return !(e.classId === 'class-4a' && e.date === '2026-11-02' && e.time === '10:30'); });
+      list.push({ id: 'seed17-0', date: '2026-11-02', time: '10:30', classId: 'class-4a', type: 'unit4', title: 'Revision 1: reading and writing (no new content)', note: 'Print revision-pack/Grade4A-Revision-1-Reading-and-Writing-Pack.pdf (2 reading texts, writing page, exit tickets, teacher key). Remember first in Game Maker (Smart mix, Monsters = 4A, Answer cards = On), read, write, exit ticket. Plan: lesson-plans/Grade4A-Revision-1-Reading-and-Writing-Lesson-Plan.' });
+      saveEvents(list); store().setCalendarFlag('seed17');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -330,7 +339,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
