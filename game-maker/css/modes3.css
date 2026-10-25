@@ -1,0 +1,407 @@
+/* Game Maker modes3.css:
+   - Step 2 Home & Setup filters (Grade tabs, Skill filter, Game category filter, Team roster pills)
+   - Multi-task Question Card styles (Reading passage box + Tap-to-Order word tiles)
+   - Tile Board Mystery Cards & Final Tile spotlight
+   - Alley Fling (mode-fling.js) & Star Loop Board (mode-board3.js) */
+
+/* ---------- 1. Home & Setup Filter Bars (Step 2 Redesign) ---------- */
+.gm-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.gm-ftab {
+  border: 2.5px solid var(--line, #1f2a44);
+  border-bottom-width: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink, #1f2a44);
+  font: 700 0.98rem Fredoka, system-ui, sans-serif;
+  padding: 7px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s;
+}
+.gm-ftab:hover { transform: translateY(-2px); background: #ffffff; }
+.gm-ftab:active { transform: translateY(3px); border-bottom-width: 2px; }
+.gm-ftab.sel,
+.gm-ftab.on {
+  background: var(--sun, #ffd23f);
+  color: #1f2a44;
+  box-shadow: 0 4px 12px rgba(255, 210, 63, 0.45);
+}
+body.th-halloween .gm-ftab {
+  background: rgba(45, 22, 84, 0.88);
+  color: #fef3c7;
+  border-color: #f97316;
+}
+body.th-halloween .gm-ftab.sel,
+body.th-halloween .gm-ftab.on {
+  background: #f97316;
+  color: #1e1040;
+}
+
+.gm-roster-pill {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink, #1f2a44);
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 10px;
+  padding: 3px 8px;
+  max-width: 155px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1.5px solid rgba(31, 42, 68, 0.18);
+}
+body.th-halloween .gm-roster-pill {
+  background: rgba(30, 16, 64, 0.82);
+  color: #fde68a;
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+/* ---------- 2. Question Card Reading Passage & Word-Order Scrambler ---------- */
+.gm-qstack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.gm-qpass {
+  background: rgba(56, 189, 248, 0.14);
+  border: 2px solid rgba(56, 189, 248, 0.45);
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-size: clamp(0.98rem, 2.2vh, 1.45rem);
+  font-weight: 600;
+  color: var(--ink, #1f2a44);
+  line-height: 1.35;
+  text-align: left;
+}
+body.th-halloween .gm-qpass {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(249, 115, 22, 0.5);
+  color: #fef3c7;
+}
+.gm-qpass-tag {
+  display: inline-block;
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.82em;
+  padding: 2px 9px;
+  border-radius: 99px;
+  margin-right: 6px;
+}
+.gm-order-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.gm-order-slots {
+  min-height: 52px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2.5px dashed rgba(31, 42, 68, 0.35);
+  background: rgba(255, 255, 255, 0.65);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+body.th-halloween .gm-order-slots {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.gm-order-placeholder {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  font-weight: 600;
+}
+.gm-order-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.gm-order-word {
+  border: 2.5px solid var(--line, #1f2a44);
+  border-bottom-width: 5px;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1f2a44;
+  font: 700 clamp(1rem, 2.3vh, 1.5rem) Fredoka, system-ui, sans-serif;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.12s;
+}
+.gm-order-word.on {
+  background: #fde047;
+  color: #1f2a44;
+}
+.gm-order-word:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ---------- 3. Tile Board Mystery & Final Tile Spotlight ---------- */
+.gm-tile.gm-tile-final:not(.used) {
+  background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%) !important;
+  color: #1f2a44 !important;
+  box-shadow: 0 0 0 4px #ffffff, 0 0 28px 8px rgba(250, 204, 21, 0.8), 0 7px 0 #b45309 !important;
+  animation: gmFinalPulse 1.1s ease-in-out infinite alternate;
+}
+@keyframes gmFinalPulse {
+  to { transform: scale(1.05) translateY(-3px); }
+}
+.gm-mys-badge {
+  display: inline-block;
+  align-self: center;
+  background: linear-gradient(90deg, #ec4899, #8b5cf6);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 5px 18px;
+  border-radius: 99px;
+  border: 2px solid #ffffff;
+  margin-bottom: 6px;
+}
+
+/* ---------- 4. Star Loop Board (mode-board3.js) ---------- */
+.gm-b3-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 7px;
+  padding: 10px;
+  border-radius: 28px;
+  border: 4px solid var(--line, #1f2a44);
+  background: linear-gradient(160deg, #bae6fd 0%, #e0f2fe 52%, #dcfce7 100%);
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+.gm-b3-board.gm-b3-arctic {
+  background: linear-gradient(160deg, #0c4a6e 0%, #0284c7 52%, #bae6fd 100%);
+}
+.gm-b3-board.gm-b3-market {
+  background: linear-gradient(160deg, #78350f 0%, #d97706 52%, #fef3c7 100%);
+}
+body.th-halloween .gm-b3-board {
+  background: linear-gradient(160deg, #1e1040 0%, #4c1d95 55%, #3b0764 100%);
+}
+
+.gm-b3-sq {
+  position: relative;
+  background: rgba(255, 255, 255, 0.94);
+  border: 3px solid var(--line, #1f2a44);
+  border-bottom-width: 5px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 4px 2px;
+  overflow: hidden;
+  color: #1f2a44;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+body.th-halloween .gm-b3-sq {
+  background: rgba(46, 16, 101, 0.92);
+  color: #fef3c7;
+  border-color: #f97316;
+}
+.gm-b3-sq.gm-b3-corner {
+  background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
+  color: #1f2a44;
+}
+.gm-b3-sq.gm-b3-chance {
+  background: linear-gradient(180deg, #f3e8ff 0%, #d8b4fe 100%);
+  color: #3b0764;
+}
+.gm-b3-sq.active-sq {
+  box-shadow: 0 0 0 4px #fde047, 0 0 18px rgba(250, 204, 21, 0.85);
+  z-index: 3;
+}
+.gm-b3-band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+}
+.gm-b3-num {
+  position: absolute;
+  top: 7px;
+  left: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  opacity: 0.6;
+}
+.gm-b3-ic {
+  font-size: clamp(1.25rem, 2.5vh, 2rem);
+  line-height: 1;
+  margin-top: 4px;
+}
+.gm-b3-ic img.gm-b3-art {
+  width: clamp(26px, 3.6vh, 42px);
+  height: clamp(26px, 3.6vh, 42px);
+  object-fit: contain;
+}
+.gm-b3-nm {
+  font-size: clamp(0.68rem, 1.35vh, 0.95rem);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.05;
+  max-width: 96%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gm-b3-sq > .gm-b3-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.gm-b3-sq > .gm-b3-star.owned {
+  display: inline-flex;
+}
+.gm-b3-toks {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  align-items: center;
+  min-height: 28px;
+}
+.gm-b3-tok {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid var(--c, #38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+}
+.gm-b3-tok.cur {
+  transform: scale(1.16);
+  box-shadow: 0 0 0 3px #fde047, 0 4px 10px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+.gm-b3-tok.hop {
+  animation: gmB3Hop 0.22s ease-out;
+}
+@keyframes gmB3Hop {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.25); }
+  100% { transform: translateY(0) scale(1.16); }
+}
+
+.gm-b3-center {
+  grid-column: 2 / 8;
+  grid-row: 2 / 6;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border: 3.5px solid var(--line, #1f2a44);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  overflow: hidden;
+}
+body.th-halloween .gm-b3-center {
+  background: rgba(24, 10, 56, 0.9);
+  color: #fef3c7;
+  border-color: #f97316;
+}
+.gm-b3-stagecard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  max-width: 560px;
+}
+.gm-b3-who {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(56, 189, 248, 0.14);
+  border: 2.5px solid var(--c, #38bdf8);
+  border-radius: 22px;
+  padding: 6px 18px 6px 10px;
+}
+.gm-b3-who h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.6vh, 1.85rem);
+}
+.gm-b3-who small {
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.gm-b3-die {
+  font-size: clamp(2.8rem, 6.5vh, 4.6rem);
+  font-weight: 800;
+  background: #ffffff;
+  color: #1f2a44;
+  border: 3.5px solid #1f2a44;
+  border-bottom-width: 7px;
+  border-radius: 22px;
+  padding: 4px 24px;
+  min-width: 110px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+.gm-b3-die.rolling {
+  animation: gmDieShake 0.15s infinite alternate;
+}
+@keyframes gmDieShake {
+  from { transform: rotate(-10deg) scale(1.06); }
+  to { transform: rotate(10deg) scale(1.06); }
+}
+.gm-b3-ev-ic {
+  font-size: clamp(2.8rem, 6vh, 4.2rem);
+  line-height: 1;
+}
+.gm-b3-event h3 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.8vh, 2rem);
+}
+.gm-b3-event p {
+  margin: 0;
+  font-size: clamp(1rem, 2.1vh, 1.35rem);
+  font-weight: 600;
+  opacity: 0.9;
+}
+.gm-b3-ev-pts {
+  background: #fde047;
+  color: #1f2a44;
+  border: 2.5px solid #1f2a44;
+  border-radius: 99px;
+  padding: 4px 18px;
+  font-weight: 800;
+  font-size: 1.2rem;
+}

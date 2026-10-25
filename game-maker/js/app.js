@@ -1,5 +1,5 @@
 /* Game Maker app. Two screens before play (like the big game sites):
-   1. HOME: choose the questions (chips) and a game (big picture cards).
+   1. HOME: choose the questions (chips with grade/skill filters) and a game (big picture cards with category pills).
    2. SET-UP: one card with the game picture on the left and every option on the right (teams, monsters, timer, game options).
    Then the game, then the podium. The look comes from the skin (body.th-classic / body.th-halloween). */
 (function (root) {
@@ -7,12 +7,21 @@
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v2', CKEY = 'eaa_gm_sets_v1';
   var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
-  /* the three games that have the new polished look come first */
-  var ORDER = ['race', 'cannon', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  /* the games that have the new polished look come first */
+  var ORDER = ['race', 'cannon', 'fling', 'boardgame', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  var GAME_CATS = [
+    ['all', '⭐ All Games', null],
+    ['action', '🎯 Aim & Action', ['race', 'cannon', 'fling', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'bowling']],
+    ['board', '🎲 Board & Strategy', ['boardgame', 'board', 'snakes', 'hunt', 'plinko', 'pass']],
+    ['versus', '⚔️ 2 Teams', ['fling', 'jigsaw', 'ttt', 'connect4']],
+    ['word', '🧩 Word & Memory', ['whack', 'balloon', 'memory', 'jigsaw']]
+  ];
   var HOW = {
     race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
     cannon: ['Answer right to get a shot.', 'Pull back from the cannon on the board and let go.', 'Pop balloons: 10, 20, 30 or 50 points. Every shot gets at least 5!'],
-    board: ['A team picks a numbered tile.', 'Answer the question on the card.', 'Some tiles hide power-ups: luck can change everything!'],
+    fling: ['Two teams stand on opposite sides of the changing fence.', 'Answer right to pull back the slingshot (or tap High Lob / Direct Fling!).', 'Hit the other team (+25), catch the floating bonus star (+15), or bounce off the trampoline!'],
+    boardgame: ['Answer right to roll the 3D dice and hop around the 24-square loop.', 'Collect Stars (+25), hit Corner Bonuses (+15), and pass START for +15!', 'Land on Chance squares for friendly bonus cards — zero point loss!'],
+    board: ['A team picks a numbered tile.', 'Answer the question on the card (or uncover an instant Mystery Card!).', 'Golden 2× tiles, streaks, and the Final Tile can change everything!'],
     plinko: ['Answer the question right.', 'Pick a column and drop your disc.', 'It bounces into a points slot. The big slot is in the middle!'],
     hunt: ['Answer right to get a digging number.', 'Your monster digs a line of that many squares.', 'Find treasure: coins, gems, trophies and crowns!'],
     ttt: ['Two teams.', 'Answer right to put your monster on a square.', 'Three in a row wins the round.'],
@@ -28,14 +37,38 @@
     snakes: ['Answer right to roll the big 3D dice (1 to 6).', 'Watch your monster hop along the numbered board squares.', 'Climb up ladders for +10 bonus, slide down snakes, and reach the finish!'],
     memory: ['Take turns flipping two cards on the board.', 'Match each question card with its partner answer card.', 'When you find a match, read the full sentence aloud for +20 and go again!']
   };
-  var S = GM.state = { screen: 'home', setId: GM.halloweenOn ? 'halloween' : 'mona-g3', modeId: 'board', theme: GM.halloweenOn ? 'halloween' : 'classic', classId: '', cfg: { teams: 2, timer: 0, pu: {} }, teams: [] };
+  var S = GM.state = {
+    screen: 'home',
+    setId: GM.halloweenOn ? 'halloween' : 'mona-g3',
+    modeId: 'board',
+    theme: GM.halloweenOn ? 'halloween' : 'classic',
+    classId: '',
+    qGrade: 'all',
+    qSkill: 'all',
+    gameCat: 'all',
+    cfg: { teams: 2, timer: 0, pu: {} },
+    teams: []
+  };
   var customSets = [], stage;
 
   function load() {
-    try { var d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (d) { ['setId', 'modeId', 'theme', 'classId'].forEach(function (k) { if (d[k]) S[k] = d[k]; }); if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg); } } catch (e) { /* private window */ }
+    try {
+      var d = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (d) {
+        ['setId', 'modeId', 'theme', 'classId', 'qGrade', 'qSkill', 'gameCat'].forEach(function (k) { if (d[k]) S[k] = d[k]; });
+        if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg);
+      }
+    } catch (e) { /* private window */ }
     try { customSets = JSON.parse(localStorage.getItem(CKEY) || '[]') || []; } catch (e) { customSets = []; }
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId, cfg: S.cfg })); } catch (e) { /* ignore */ } }
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId,
+        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg
+      }));
+    } catch (e) { /* ignore */ }
+  }
   function saveSets() { try { localStorage.setItem(CKEY, JSON.stringify(customSets)); } catch (e) { /* ignore */ } }
   function allSets() { return GM.sets.filter(function (s) { return GM.halloweenOn || s.id !== 'halloween'; }).concat(customSets); }
   function curSet() { return allSets().filter(function (s) { return s.id === S.setId; })[0] || allSets()[0]; }
@@ -43,6 +76,23 @@
   function modeName(m) { return (!GM.halloweenOn && m.nameClassic) || m.name; }
   function modeDesc(m) { return (!GM.halloweenOn && m.descClassic) || m.desc; }
   function cardArt(id, e) { return U.art(GM.halloweenOn && S.theme === 'halloween' && U.hasArt('m_mode_' + id) ? 'm_mode_' + id : 'card_' + id, e, 'gm-cardimg'); }
+
+  function setMatchesFilter(s) {
+    if (s.id === S.setId) return true;
+    var g = s.grade || (/-g3\b/.test(s.id) ? 3 : /-g4\b/.test(s.id) ? 4 : 0);
+    var isMix = /^smart-|^u14-/.test(s.id) || !!s.custom;
+    if (S.qGrade === '3' && g !== 3) return false;
+    if (S.qGrade === '4' && g !== 4) return false;
+    if (S.qGrade === 'mix' && !isMix) return false;
+
+    var sk = s.skill || (/-voc$/.test(s.id) ? 'words' : /-past$|-modals$/.test(s.id) ? 'sentences' : /-read$/.test(s.id) ? 'reading' : '');
+    if (S.qSkill === 'all') {
+      /* In 'All skills' view, hide the 30 granular per-skill sub-sets so the main Unit 1/2/3/4 sets stay clean */
+      if (s.skill) return false;
+      return true;
+    }
+    return sk === S.qSkill;
+  }
 
   /* ---------- HOME ---------- */
   function parseSet(text) {
@@ -56,19 +106,44 @@
   function home() {
     var wrap = h('div', { class: 'gm-home' });
     /* hero */
-    var hero = h('div', { class: 'gm-hero' }, [h('div', { class: 'gm-hero-txt' }, [h('h1', { class: 'gm-logo', text: 'Game Maker' }), h('p', { text: 'Pick your questions, pick a game, play with your monsters!' })]), U.art('ui_host', '🎤', 'gm-host')]);
+    var activeSet = curSet();
+    var hero = h('div', { class: 'gm-hero' }, [
+      h('div', { class: 'gm-hero-txt' }, [
+        h('h1', { class: 'gm-logo', text: 'Game Maker' }),
+        h('p', { text: 'Pick your questions, pick a game, play with your monsters!' })
+      ]),
+      U.art('ui_host', '🎤', 'gm-host')
+    ]);
     wrap.appendChild(hero);
+
+    /* filter bar for question sets (Grade & Skill) */
+    var fbar = h('div', { class: 'gm-filter-bar' });
+    fbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🎓 Grade' }));
+    [['all', 'All Grades'], ['3', 'Grade 3'], ['4', 'Grade 4'], ['mix', '🧠 Smart Mix & Custom']].forEach(function (g) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qGrade === g[0] ? ' sel' : ''), text: g[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.qGrade = g[0]; save(); render(); });
+      fbar.appendChild(b);
+    });
+    fbar.appendChild(h('span', { class: 'gm-filter-sep' }));
+    fbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
+    [['all', '📚 Full Units'], ['listen', '🎧 Listening'], ['words', '📝 Words'], ['sounds', '🔤 Sounds'], ['sentences', '💬 Sentences'], ['reading', '📖 Reading']].forEach(function (sk) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; save(); render(); });
+      fbar.appendChild(b);
+    });
+    wrap.appendChild(fbar);
+
     /* questions: chips */
     var qrow = h('div', { class: 'gm-qrow' }, [h('span', { class: 'gm-qlab', text: '📚 Questions' })]);
-    allSets().forEach(function (s) {
+    allSets().filter(setMatchesFilter).forEach(function (s) {
       var c = h('button', { type: 'button', class: 'gm-chip' + (s.id === S.setId ? ' sel' : '') }, [h('span', { text: s.e || '📝' }), h('b', { text: s.title }), h('small', { text: s.items.length })]);
       c.addEventListener('click', function () { A.play('tap'); S.setId = s.id; save(); render(); });
       if (s.custom) { var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' }); d.addEventListener('click', function (e) { e.stopPropagation(); if (d.dataset.sure) { customSets = customSets.filter(function (x) { return x.id !== s.id; }); saveSets(); if (S.setId === s.id) S.setId = GM.sets[0].id; render(); } else { d.dataset.sure = 1; d.textContent = 'Delete?'; } }); c.appendChild(d); }
       qrow.appendChild(c);
     });
     if (GM.rev) wrap.appendChild(h('div', { class: 'gm-qrow gm-revtools' }, [h('span', { class: 'gm-qlab', text: '🔁 Revision' }),
-      btn('🧠 Remember 5 (daily)', 'amber sm', function () { GM.rev.daily(); }), btn('📝 Exit ticket', 'amber sm', function () { GM.rev.exitTicket(curSet().items); }),
-      h('small', { class: 'gm-hint', text: 'Pick the 🧠 Smart mix questions to bring back what the class missed.' })]));
+      btn('🧠 Remember 5 (daily)', 'amber sm', function () { GM.rev.daily(); }), btn('📝 Exit ticket', 'amber sm', function () { GM.rev.exitTicket(activeSet.items); }),
+      h('small', { class: 'gm-hint', text: 'Active set: ' + activeSet.title + ' (' + activeSet.items.length + ' questions) · Pick 🧠 Smart mix to replay missed questions.' })]));
     var builder;
     var nw = h('button', { type: 'button', class: 'gm-chip gm-chip-new' }, [h('span', { text: '➕' }), h('b', { text: 'New set' })]);
     nw.addEventListener('click', function () { A.play('tap'); builder.classList.toggle('open'); });
@@ -79,10 +154,23 @@
       var id = 'my-' + Date.now(); customSets.push({ id: id, title: title.value.trim(), e: '📝', custom: true, items: items }); saveSets(); S.setId = id; save(); render();
     })]);
     wrap.appendChild(builder);
+
+    /* game category filter bar */
+    var gbar = h('div', { class: 'gm-filter-bar' });
+    gbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🕹️ Games' }));
+    var activeCat = GAME_CATS.filter(function (c) { return c[0] === S.gameCat; })[0] || GAME_CATS[0];
+    GAME_CATS.forEach(function (cat) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (activeCat[0] === cat[0] ? ' sel' : ''), text: cat[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.gameCat = cat[0]; save(); render(); });
+      gbar.appendChild(b);
+    });
+    wrap.appendChild(gbar);
+
     /* games: big picture cards */
     var grid = h('div', { class: 'gm-games' });
     ORDER.forEach(function (id) {
       var m = GM.modes[id]; if (!m) return;
+      if (activeCat[2] && activeCat[2].indexOf(id) < 0) return;
       var c = h('button', { type: 'button', class: 'gm-game' }, [h('div', { class: 'gm-game-pic' }, [cardArt(id, m.e)]), h('div', { class: 'gm-game-cap' }, [h('b', { text: modeName(m) }), h('small', { text: m.teams ? m.teams + ' teams' : '1-8 teams' })])]);
       c.addEventListener('click', function () { A.play('flip'); S.modeId = id; save(); S.screen = 'setup'; render(); });
       grid.appendChild(c);
@@ -102,7 +190,22 @@
     var n = S.cfg.teams, p = S.classId ? GM.mon.pupils(S.classId) : [], pool = p.length ? U.shuffle(p) : [];
     if (!S.teams.length || S.teams.length !== n) {
       var defs = GM.mon.defaults(n, S.theme); S.teams = [];
-      for (var i = 0; i < n; i++) S.teams.push({ name: GM.teamNames[i], color: GM.teamColors[i], score: 0, mon: pool.length ? pool[i % pool.length] : defs[i], pi: i });
+      for (var i = 0; i < n; i++) {
+        var tRoster = [];
+        if (pool.length) {
+          for (var j = i; j < pool.length; j += n) tRoster.push(pool[j]);
+          if (!tRoster.length) tRoster.push(pool[i % pool.length]);
+        }
+        S.teams.push({
+          name: GM.teamNames[i],
+          color: GM.teamColors[i],
+          score: 0,
+          mon: tRoster.length ? tRoster[0] : defs[i],
+          pi: i,
+          roster: tRoster,
+          rosterIdx: 0
+        });
+      }
     }
   }
   function setup() {
@@ -124,12 +227,29 @@
       var f = h('div', { class: 'gm-tface' }), name = h('input', { class: 'gm-tname-in', value: t.name, maxlength: '14', title: 'Team name' });
       f.style.setProperty('--c', t.color);
       var mon = h('button', { type: 'button', class: 'gm-tmon', title: 'Tap for another monster' }, [U.monFace(t.mon, 96)]);
-      mon.addEventListener('click', function () { A.play('tap'); var p = S.classId ? GM.mon.pupils(S.classId) : null; if (p && p.length) { t.pi = (t.pi + 1) % p.length; t.mon = p[t.pi]; } else { var d = GM.mon.defaults(8, S.theme); t.pi = (t.pi + 1) % 8; t.mon = d[t.pi]; } render(); });
+      mon.addEventListener('click', function () {
+        A.play('tap');
+        if (t.roster && t.roster.length > 1) {
+          t.rosterIdx = ((t.rosterIdx || 0) + 1) % t.roster.length;
+          t.mon = t.roster[t.rosterIdx];
+        } else {
+          var p = S.classId ? GM.mon.pupils(S.classId) : null;
+          if (p && p.length) { t.pi = (t.pi + 1) % p.length; t.mon = p[t.pi]; }
+          else { var d = GM.mon.defaults(8, S.theme); t.pi = (t.pi + 1) % 8; t.mon = d[t.pi]; }
+        }
+        render();
+      });
       name.addEventListener('input', function () { t.name = name.value || GM.teamNames[i]; });
-      f.appendChild(mon); f.appendChild(name); faces.appendChild(f);
+      f.appendChild(mon); f.appendChild(name);
+      if (t.roster && t.roster.length) {
+        var names = t.roster.slice(0, 4).map(function (r) { return String(r.owner || r.name || '').split(' ')[0]; }).join(', ');
+        if (t.roster.length > 4) names += ' +' + (t.roster.length - 4);
+        f.appendChild(h('div', { class: 'gm-roster-pill', title: 'Pupils rotating on this team', text: '👥 ' + names }));
+      }
+      faces.appendChild(f);
     });
     right.appendChild(faces);
-    right.appendChild(h('div', { class: 'gm-hint center', text: 'Tap a monster to change it. Tap a name to rename the team.' }));
+    right.appendChild(h('div', { class: 'gm-hint center', text: S.classId ? 'Class pupils rotate fairly each turn! Tap a monster to cycle its starting pupil.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
     var classes = GM.mon.classes();
     if (classes.length) right.appendChild(seg('Monsters', [['', 'Default']].concat(classes.map(function (c) { return [c.id, c.label]; })), S.classId, function (v) { S.classId = v; S.teams = []; save(); render(); }));
     m.fields.forEach(function (f) { var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur; right.appendChild(seg(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); })); });
@@ -163,7 +283,7 @@
       return GM.rev.remember(curSet().items, { points: 8, check: 3 }, function () { S.remDone = true; startGame(true); });
     }
     cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
-    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; save(); var myGame = ++gameId;
+    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; GM.sessionMissed = []; save(); var myGame = ++gameId;
     S.screen = 'play'; applyTheme('play'); document.body.classList.add('gm-mode-' + S.modeId);
     document.getElementById('gm-teams').style.display = ''; A.play('start'); A.musicStart(S.theme);
     stage.innerHTML = ''; var area = h('div', { class: 'gm-area' }); stage.appendChild(area);
@@ -181,11 +301,20 @@
   }
   function init() {
     stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'board';
-    /* links from the lessons: ?set=<set id>&game=<game id> opens that question set (and that game's set-up) */
+    /* links from the platform & lessons: ?class=<classId>&set=<setId>&game=<gameId> */
     try {
-      var qs = location.search, ms = /[?&]set=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs);
+      var qs = location.search, mc = /[?&]class=([\w-]+)/.exec(qs), ms = /[?&]set=([\w-]+)/.exec(qs), mg = /[?&]game=([\w-]+)/.exec(qs);
+      if (mc && mc[1]) {
+        S.classId = mc[1]; S.teams = [];
+        if (!ms) {
+          var isG4 = /4/.test(mc[1]);
+          S.qGrade = isG4 ? '4' : '3';
+          if (allSets().some(function (x) { return x.id === (isG4 ? 'u14-g4' : 'u14-g3'); })) S.setId = isG4 ? 'u14-g4' : 'u14-g3';
+        }
+      }
       if (ms && allSets().some(function (x) { return x.id === ms[1]; })) S.setId = ms[1];
       if (mg && GM.modes[mg[1]]) { S.modeId = mg[1]; S.screen = 'setup'; S.teams = []; }
+      save();
     } catch (e) { /* ignore */ }
     document.getElementById('gm-teams').style.display = 'none';
     var snd = document.getElementById('gm-snd'); snd.addEventListener('click', function () { A.setMuted(!A.isMuted()); snd.textContent = A.isMuted() ? '🔇' : '🔊'; if (!A.isMuted()) A.play('tap'); });

@@ -324,6 +324,7 @@
         '<button onclick="ClassBoard.pick()" title="Pick a student (no repeats until everyone is picked)">🎲 Pick</button>' +
         '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
         '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span><span class="sep"></span>' +
+        '<button onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\';" title="Open Game Maker with this class" style="background:linear-gradient(180deg,#ec4899,#db2777);border-bottom-color:#9d174d;font-weight:700">🎮 Game Maker</button>' +
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
         '<button onclick="BathroomPass && BathroomPass.open()" title="Bathroom: sign out and back in">🚻 Bathroom</button>' +
         '<button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button>' +

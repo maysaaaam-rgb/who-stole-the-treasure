@@ -9767,6 +9767,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       sidebar.innerHTML = 
         '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
           '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Class View</span></span></button></li>' +
+          '<li><button class="nav-link-btn" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'" title="Open Game Maker with the active class and monsters" style="background:linear-gradient(135deg,rgba(236,72,153,0.16),rgba(168,85,247,0.16));border:1px solid rgba(236,72,153,0.35);"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label" style="font-weight:800;color:#f472b6;">Game Maker</span></span><span class="nav-badge-pill" style="background:#ec4899;color:#fff;">19</span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Calendar: lessons, quizzes, birthdays, meetings"><span class="nav-item-left"><span class="nav-icon">📅</span> <span class="nav-label">Calendar</span></span></button></li>' +
           '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
@@ -9779,12 +9780,13 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
 
         renderNavGroup('teaching', 'Teaching', [
           { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
-          { view: 'library', label: 'Resource Library', icon: '🎮', title: 'Resource Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'library', label: 'Lessons & Library', icon: '📖', title: 'Lessons, Reviews & Curriculum Library', isActive: currentView === 'library', badge: counts.resources },
+          { view: 'shelf', label: 'Games Shelf', icon: '🎮', title: 'Smartboard Games Shelf (Pure Games Only)', isActive: currentView === 'shelf' },
           { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
           { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
           { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
           { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
-        ], ['curriculum', 'library', 'worksheets', 'assignments', 'homework', 'quizzes']) +
+        ], ['curriculum', 'library', 'shelf', 'worksheets', 'assignments', 'homework', 'quizzes']) +
 
         renderNavGroup('assessment', 'Assessment', [
           { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
