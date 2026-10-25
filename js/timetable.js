@@ -62,7 +62,7 @@
     { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, added: '2026-10-04' },
     { id: 'alice', icon: '🫖', title: 'Alice Tea Party practice', route: 'alice-party-home/party.html', g: 4, added: '2026-10-03' },
     { id: 'alice-rehearsal', icon: '🎭', title: 'Alice Tea Party: rehearsal lessons', route: 'alice-party-rehearsal/index.html', g: 4, added: '2026-10-17' },
-    { id: 'alice-hub', icon: '🧺', title: 'Tea Party week: print and plan', route: 'alice-party-print/index.html', g: 4, added: '2026-10-17' },
+    { id: 'alice-hub', icon: '🫖', title: 'Alice Tea Party HQ: party day plan, running order, cast and props, checklist, print', route: 'alice-party/index.html', g: 4, added: '2026-10-25' },
     { id: 'library', icon: '🎮', title: 'Resource Library', view: 'library', g: 0 }
   ];
   function S() { return root.schoolStore || root.store; }

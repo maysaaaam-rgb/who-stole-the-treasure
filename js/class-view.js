@@ -35,6 +35,7 @@
     'chuseok-moon-homework/index.html': ART + 'm_home.webp',
     'alice-party-rehearsal/index.html': 'assets/shelf/wonderland-lesson3.webp',
     'alice-party-print/index.html': 'assets/shelf/alice-party-home-4a.webp',
+    'alice-party/index.html': 'assets/shelf/alice-party-home-4a.webp',
     'unit3-g3-quiz/index.html': 'unit3-g4-lessons/art/c_polar_bear.webp',
     'unit3-money-mission/quiz-4skills.html': 'unit3-g3-lessons/art/w_jar_saving.webp',
     'lingo-g3-u3-review/index.html': 'lingo-g3-u3-review/cast/bubbles_idle.webp'

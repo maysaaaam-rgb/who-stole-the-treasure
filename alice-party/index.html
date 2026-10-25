@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alice Tea Party HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#24124a;--ink2:#5b4a85;--card:rgba(255,255,255,.9);--line:rgba(76,29,149,.14);--violet:#7c3aed;--violet-d:#5b21b6;--teal:#0d9488;--teal-d:#0f766e;--amber:#f59e0b;--amber-d:#b45309;--rose:#e11d48;--rose-d:#9f1239;--green:#10b981;--green-d:#047857;--spring:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box}
+body{margin:0;font:17px/1.45 Fredoka,'Segoe UI',system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at 15% 0%,#ffe4f1 0%,transparent 40%),radial-gradient(circle at 90% 10%,#dff7f2 0%,transparent 40%),linear-gradient(180deg,#f6f0ff,#efe7ff 60%,#e9f6ff)}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:18px 16px 70px}
+/* hero */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:center;background:linear-gradient(135deg,#4c1d95,#7c3aed 55%,#db2777);color:#fff;border-radius:28px;padding:22px 26px;box-shadow:0 18px 40px -18px rgba(76,29,149,.7);position:relative;overflow:hidden}
+.hero h1{margin:0;font-size:clamp(1.9rem,3.6vw,3rem);line-height:1.05}
+.hero p{margin:6px 0 0;opacity:.92}
+.hero .count{margin-top:14px;display:inline-flex;gap:10px;align-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:8px 14px;border-radius:999px;font-weight:700}
+.hero img{width:100%;max-height:230px;object-fit:contain;filter:drop-shadow(0 12px 20px rgba(0,0,0,.35))}
+/* class cards */
+.classes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.cls{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px 18px;box-shadow:0 10px 24px -14px rgba(76,29,149,.45)}
+.cls h2{margin:0;font-size:1.5rem;display:flex;align-items:center;gap:10px}
+.cls .when{color:var(--ink2);font-weight:600;margin:2px 0 10px}
+.cls .stat{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;font-weight:600;font-size:.88rem;background:#f1eaff;color:var(--violet-d)}
+.pill.ok{background:#dcfce7;color:#166534}.pill.warn{background:#fef3c7;color:#92400e}.pill.no{background:#ffe4e6;color:#9f1239}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{--c:var(--violet);--d:var(--violet-d);display:inline-flex;align-items:center;gap:8px;font:700 1rem Fredoka,system-ui,sans-serif;color:#fff;background:var(--c);border:0;border-bottom:5px solid var(--d);border-radius:16px;padding:10px 16px;text-decoration:none;cursor:pointer;touch-action:manipulation;transition:transform .12s var(--spring)}
+.btn:active{transform:translateY(4px);border-bottom-width:1px}
+.btn.big{font-size:1.15rem;padding:13px 20px}
+.btn.teal{--c:var(--teal);--d:var(--teal-d)}.btn.amber{--c:var(--amber);--d:var(--amber-d);color:#2a1700}.btn.green{--c:var(--green);--d:var(--green-d)}.btn.ghost{--c:#fff;--d:#d8ccf5;color:var(--violet-d)}
+.btn.sm{font-size:.9rem;padding:7px 12px;border-bottom-width:4px}
+/* tabs */
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;background:linear-gradient(180deg,#f3ecff 75%,rgba(243,236,255,0))}
+.tab{font:700 1rem Fredoka,system-ui,sans-serif;border:2px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;padding:8px 16px;cursor:pointer;touch-action:manipulation}
+.tab.on{background:var(--violet);color:#fff;border-color:var(--violet)}
+.panel{display:none}.panel.on{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px 18px;margin:12px 0;box-shadow:0 8px 20px -14px rgba(76,29,149,.4)}
+.box h3{margin:0 0 8px;font-size:1.25rem}
+.muted{color:var(--ink2)}
+.seg{display:inline-flex;background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px;gap:3px}
+.seg button{font:700 .95rem Fredoka,system-ui,sans-serif;border:0;background:transparent;color:var(--ink2);border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button.on{background:var(--teal);color:#fff}
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tl li{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start;background:#fbf8ff;border-radius:14px;padding:10px 12px}
+.tl b.t{font-variant-numeric:tabular-nums;color:var(--violet-d)}
+/* running order */
+.ro{display:grid;gap:8px}
+.perf{display:grid;grid-template-columns:54px 70px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px 12px}
+.perf .n{font-weight:700;font-size:1.3rem;color:var(--violet-d);text-align:center}
+.perf .time{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink2)}
+.avs{display:flex}.av{width:46px;height:46px;border-radius:50%;background:#f1eaff;border:3px solid #fff;margin-right:-10px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.15)}.av img{width:100%;height:100%;object-fit:cover}
+.who b{display:block}.who small{color:var(--ink2)}
+.away{opacity:.5;text-decoration:line-through}
+.stars{color:#f59e0b;font-size:1.05rem;letter-spacing:1px;white-space:nowrap}
+/* cast */
+.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.pair{background:#fff;border:1px solid var(--line);border-radius:20px;padding:12px 14px}
+.pair.need{border:2px solid #fbbf24;background:#fffbeb}
+.pupil{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.pupil:last-of-type{border-bottom:0}
+.pupil .av{width:52px;height:52px;margin:0}
+.pupil small{display:block;color:var(--ink2)}
+.tick{font:700 .85rem Fredoka,system-ui,sans-serif;border:2px solid var(--line);background:#fff;border-radius:12px;padding:5px 9px;cursor:pointer;color:var(--ink2);white-space:nowrap}
+.tick.on{background:#dcfce7;border-color:#86efac;color:#166534}
+.tick.off{background:#ffe4e6;border-color:#fda4af;color:#9f1239}
+details.lines{margin-top:6px}details.lines summary{cursor:pointer;color:var(--violet-d);font-weight:600}
+details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--violet-d)}
+/* checklist */
+.ck{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ck label{display:flex;gap:10px;align-items:flex-start;padding:6px 4px;cursor:pointer}
+.ck input{width:22px;height:22px;accent-color:var(--green);flex:none;margin-top:1px}
+.ck label.done span{color:var(--ink2);text-decoration:line-through}
+.bar{height:12px;border-radius:999px;background:#ede5ff;overflow:hidden;margin:6px 0 2px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#10b981,#34d399);border-radius:999px;transition:width .3s}
+/* print grid */
+.prints{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.pcard{display:flex;flex-direction:column;gap:4px;text-decoration:none;background:#fff;border:1px solid var(--line);border-bottom:5px solid #d8ccf5;border-radius:18px;padding:14px;transition:transform .12s var(--spring)}
+.pcard:active{transform:translateY(4px);border-bottom-width:1px}
+.pcard .i{font-size:2rem}.pcard b{font-size:1.05rem}.pcard span{color:var(--ink2);font-size:.9rem}
+.pcard em{font-style:normal;font-weight:700;color:var(--teal-d);font-size:.85rem}
+.old{margin-top:24px}.old summary{cursor:pointer;font-weight:700;color:var(--ink2)}
+.copy{font-family:inherit;font-size:.95rem;white-space:pre-wrap;background:#fbf8ff;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin:6px 0}
+@media(max-width:860px){.hero,.classes{grid-template-columns:1fr}.hero img{max-height:160px}.perf{grid-template-columns:40px 1fr auto}.perf .time{display:none}}
+@media print{.tabs,.btns,.hero img,.no-print{display:none!important}body{background:#fff}.panel{display:block!important}.box,.cls{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1>🫖 Alice’s Tea Party HQ</h1>
+      <p>Everything for the party in one place: the day plan, who performs when, props, what to print and what to bring.</p>
+      <div class="count" id="count">🗓️ Tuesday 27 October</div>
+    </div>
+    <img src="../alice-party-home/lesson-art/hero_party.webp" alt="" onerror="this.remove()">
+  </header>
+
+  <section class="classes" id="classes"></section>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-t="day">🎬 Party day</button>
+    <button class="tab" data-t="cast">🎭 Cast and props</button>
+    <button class="tab" data-t="check">✅ Checklist</button>
+    <button class="tab" data-t="print">🖨️ Print</button>
+    <button class="tab" data-t="links">🔗 Links for pupils and parents</button>
+  </nav>
+
+  <section class="panel on" id="p-day">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+        <h3>The running order</h3>
+        <div class="no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="seg" id="ro-cls"></span>
+          <label class="muted">Minutes per pair <input id="mins" type="number" min="1" max="5" value="2" style="width:56px;font:inherit;border:2px solid var(--line);border-radius:10px;padding:3px 6px"></label>
+          <a class="btn sm ghost" href="../alice-party-print/running-order.html">↕ Change the order</a></div>
+      </div>
+      <p class="muted" id="ro-note"></p>
+      <div class="ro" id="ro"></div>
+    </div>
+    <div class="box">
+      <h3>The party, step by step</h3>
+      <ul class="tl" id="tl"></ul>
+    </div>
+  </section>
+
+  <section class="panel" id="p-cast">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+        <h3>Cast and props</h3><span class="seg no-print" id="cast-cls"></span>
+      </div>
+      <p class="muted">Tap <b>Prop</b> when a pupil shows their prop, and <b>Here</b> to mark a pupil away on the day (their partner then gets a helper). Pairs with a yellow frame had 0–1 stars in the dress rehearsal: practise them once more. Ticks stay on this computer.</p>
+      <div id="cast-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <div class="cast" id="cast"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-check">
+    <div class="box">
+      <h3>Checklist</h3>
+      <div class="bar"><i id="ck-bar" style="width:0"></i></div><p class="muted" id="ck-txt"></p>
+      <div class="ck" id="ck"></div>
+      <p class="muted">The detailed shopping and table list is the <a href="../alice-party-print/bring-list.html">bring list</a> (<span id="bring-n">…</span>).</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-print">
+    <div class="box"><h3>Print for the party</h3><p class="muted">Print these on Monday. Each card opens a print-ready page (press Print there).</p><div class="prints" id="prints"></div></div>
+  </section>
+
+  <section class="panel" id="p-links">
+    <div class="box">
+      <h3>The pupils’ party page</h3>
+      <p class="muted">Each pupil chooses their name and sees their character, lines and prop. Send one link per class.</p>
+      <div class="btns" id="pupil-links"></div>
+    </div>
+    <div class="box">
+      <h3>Message for families (k12)</h3>
+      <div class="copy" id="k12">Merhaba! Salı günü (27 Ekim) İngilizce dersinde Alice Harikalar Diyarında Çay Partisi yapıyoruz. Lütfen çocuğunuz karakter aksesuarını ve kostümünü (basit olması yeterli) okula getirsin. Çocuklar kısa diyaloglarını sınıfta prova etti. Teşekkürler!
+Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the English lesson. Please send your child's prop and simple costume to school. The children have rehearsed their short dialogues in class. Thank you!</div>
+      <div class="btns"><button class="btn sm" data-copy="k12">📋 Copy the message</button><a class="btn sm ghost" href="../alice-party-print/parent-note.html">📄 Printed parent note</a></div>
+    </div>
+  </section>
+
+  <details class="old box no-print">
+    <summary>📦 Earlier Alice work (September and October): kept here, not needed for the party</summary>
+    <div class="prints" id="old" style="margin-top:12px"></div>
+  </details>
+</div>
+
+<script src="../alice-party-home/party-data.js?v=2"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PARTY, AV = '../assets/alice-cut/avatars/a_';
+  var PARTY = { date: '2026-10-27',
+    '4b': { day: 'Tuesday 27 October', start: '09:00', label: '09:00–10:20 · 2 lessons · garden' },
+    '4a': { day: 'Tuesday 27 October', start: '15:20', label: '15:20–16:05 · 1 lesson + the break · garden' } };
+  var ORDER_KEY = 'eaa_party_order_v1', STARS_KEY = 'eaa_party_rehearsal_v1', HQ_KEY = 'eaa_party_hq_v1', BRING_KEY = 'eaa_party_bring_v1';
+  function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  var hq = load(HQ_KEY, {}); hq.props = hq.props || {}; hq.away = hq.away || {}; hq.ck = hq.ck || {};
+  function keep() { save(HQ_KEY, hq); }
+  var keys = ['4b', '4a'].filter(function (k) { return P.classes[k]; });
+  var cur = { ro: keys[0], cast: keys[0] };
+
+  function groups(k) { var seen = [], map = {}; P.classes[k].students.forEach(function (s) { if (!map[s.pair]) { map[s.pair] = []; seen.push(s.pair); } map[s.pair].push(s); }); return { order: seen, map: map }; }
+  function orderOf(k) { var g = groups(k), saved = (load(ORDER_KEY, {}) || {})[k] || [], o = saved.filter(function (p) { return g.map[p]; }); g.order.forEach(function (p) { if (o.indexOf(p) < 0) o.push(p); }); return { order: o, map: g.map }; }
+  function starsOf(k, pair) { var s = load(STARS_KEY, {}) || {}; return s[k + ':' + pair]; }
+  function role(s) { return P.roles[s.role] || { short: s.role, props: [] }; }
+  function av(s) { return '<span class="av"><img src="' + AV + esc(s.role) + '.webp" alt="" onerror="this.replaceWith(document.createTextNode(\'🙂\'))"></span>'; }
+  function addMin(t, m) { var p = t.split(':'), x = (+p[0]) * 60 + (+p[1]) + m; return ('0' + Math.floor(x / 60)).slice(-2) + ':' + ('0' + (x % 60)).slice(-2); }
+  function seg(el, which, fn) { el.innerHTML = keys.map(function (k) { return '<button class="' + (cur[which] === k ? 'on' : '') + '" data-k="' + k + '">' + esc(P.classes[k].label.replace('Class ', '')) + '</button>'; }).join(''); el.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; cur[which] = b.dataset.k; fn(); }; }
+
+  /* ---- countdown ---- */
+  (function () {
+    var d = new Date(PARTY.date + 'T00:00:00'), n = new Date(); n.setHours(0, 0, 0, 0);
+    var days = Math.round((d - n) / 864e5), el = document.getElementById('count');
+    el.textContent = days > 1 ? '🗓️ Tuesday 27 October · ' + days + ' days to go' : days === 1 ? '🗓️ Tomorrow: Tuesday 27 October' : days === 0 ? '🎉 Today is the Tea Party!' : '🫖 The Tea Party was on Tuesday 27 October';
+  })();
+
+  /* ---- class cards ---- */
+  function classCards() {
+    document.getElementById('classes').innerHTML = keys.map(function (k) {
+      var st = P.classes[k].students, g = groups(k), props = st.filter(function (s) { return hq.props[s.id]; }).length, away = st.filter(function (s) { return hq.away[s.id]; }).length;
+      var weak = g.order.filter(function (p) { var n = starsOf(k, p); return n != null && n <= 1; }).length;
+      return '<div class="cls"><h2>' + (k === '4b' ? '🌹' : '🎩') + ' ' + esc(P.classes[k].label) + '</h2><div class="when">' + esc(PARTY[k].day) + ' · ' + esc(PARTY[k].label) + '</div>' +
+        '<div class="stat"><span class="pill">' + st.length + ' pupils · ' + g.order.length + ' performances</span><span class="pill ' + (props === st.length ? 'ok' : 'warn') + '">🎭 ' + props + ' of ' + st.length + ' props ready</span>' +
+        (away ? '<span class="pill no">' + away + ' away</span>' : '') + (weak ? '<span class="pill warn">' + weak + ' pairs to practise</span>' : '') + '</div>' +
+        '<div class="btns"><a class="btn big green" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=4">▶ Start the party show</a><a class="btn teal" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=3">🎭 Dress rehearsal</a><a class="btn ghost" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=1">💬 Party phrases</a></div></div>';
+    }).join('');
+  }
+
+  /* ---- running order ---- */
+  function runningOrder() {
+    seg(document.getElementById('ro-cls'), 'ro', runningOrder);
+    var k = cur.ro, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), t0 = addMin(PARTY[k].start, 8), html = '';
+    o.order.forEach(function (pair, i) {
+      var st = o.map[pair], n = starsOf(k, pair), gone = st.filter(function (s) { return hq.away[s.id]; });
+      html += '<div class="perf"><span class="n">' + (i + 1) + '</span><span class="time">' + addMin(t0, i * mins) + '</span><span class="who"><span class="avs" style="float:left;margin-right:16px">' + st.map(av).join('') + '</span><b>' +
+        st.map(function (s) { return '<span class="' + (hq.away[s.id] ? 'away' : '') + '">' + esc(s.name) + '</span>'; }).join(' + ') + '</b><small>' + st.map(function (s) { return esc(role(s).short); }).join(' · ') +
+        (gone.length ? ' · <b style="color:#be123c;display:inline">' + gone.map(function (s) { return esc(s.name); }).join(', ') + ' away: a helper reads the part</b>' : '') + '</small></span><span class="stars" title="Dress rehearsal stars">' + (n == null ? '' : '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n)) + '</span></div>';
+    });
+    document.getElementById('ro').innerHTML = html;
+    var end = addMin(t0, o.order.length * mins);
+    document.getElementById('ro-note').textContent = 'Starts after 8 minutes of welcome and phrases, so the first pair is at ' + t0 + ' and the last one ends at about ' + end + '. Then the finale, certificates and tea.';
+  }
+  document.getElementById('mins').addEventListener('input', runningOrder);
+
+  /* ---- timeline ---- */
+  document.getElementById('tl').innerHTML = [
+    ['Before', 'Set the tea table and the stage spot in the garden. Put up the garden signs. Put the spare props box and the certificates on your table.'],
+    ['0–3 min', 'Pupils line up at the door with their props. Bell = stop, one voice at a time, sit on your cushion when you are not performing.'],
+    ['3–8 min', 'Warm-up: the 8 tea-party phrases together (Party phrases button). Everybody says “Would you like some tea?”'],
+    ['The show', 'Press Start the party show. For each pair: prop check, perform (about one minute), applause. The page follows the running order.'],
+    ['Finale', 'Everybody together: “This is a nice tea party!” Then tea, biscuits or pretend tea, and photos if the school and families agreed.'],
+    ['End', 'Hand out the certificates, give +10 XP on the Class Board, tidy the garden together.']
+  ].map(function (x) { return '<li><b class="t">' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></li>'; }).join('');
+
+  /* ---- cast and props ---- */
+  function cast() {
+    seg(document.getElementById('cast-cls'), 'cast', cast);
+    var k = cur.cast, o = orderOf(k), st = P.classes[k].students;
+    var props = st.filter(function (s) { return hq.props[s.id]; }).length, away = st.filter(function (s) { return hq.away[s.id]; }).length;
+    document.getElementById('cast-sum').innerHTML = '<span class="pill ' + (props === st.length ? 'ok' : 'warn') + '">🎭 ' + props + ' of ' + st.length + ' props ready</span><span class="pill' + (away ? ' no' : '') + '">' + away + ' away today</span>';
+    document.getElementById('cast').innerHTML = o.order.map(function (pair, i) {
+      var ps = o.map[pair], n = starsOf(k, pair), dl = (P.dialogues || {})[pair] || [];
+      return '<div class="pair' + (n != null && n <= 1 ? ' need' : '') + '"><div style="display:flex;justify-content:space-between;align-items:center"><b>' + (i + 1) + '. ' + ps.map(function (s) { return esc(role(s).short); }).join(' + ') + '</b><span class="stars">' + (n == null ? '' : '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n)) + '</span></div>' +
+        ps.map(function (s) {
+          return '<div class="pupil">' + av(s) + '<span><b>' + esc(s.name) + '</b><small>' + esc(role(s).short) + ' · ' + esc((role(s).props || []).join(', ')) + '</small></span><span style="display:flex;gap:6px"><button class="tick' + (hq.props[s.id] ? ' on' : '') + '" data-prop="' + esc(s.id) + '">' + (hq.props[s.id] ? '✓ Prop' : 'Prop?') + '</button><button class="tick' + (hq.away[s.id] ? ' off' : '') + '" data-away="' + esc(s.id) + '">' + (hq.away[s.id] ? 'Away' : 'Here') + '</button></span></div>';
+        }).join('') +
+        (dl.length ? '<details class="lines"><summary>The lines</summary>' + dl.map(function (l) { var r = P.roles[l[0]] || {}; return '<p><b>' + esc(r.short || l[0]) + ':</b> ' + esc(l[1]) + '</p>'; }).join('') + '</details>' : '') + '</div>';
+    }).join('');
+  }
+  document.getElementById('cast').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.prop) { hq.props[b.dataset.prop] = !hq.props[b.dataset.prop]; }
+    if (b.dataset.away) { hq.away[b.dataset.away] = !hq.away[b.dataset.away]; }
+    keep(); cast(); classCards(); runningOrder();
+  });
+
+  /* ---- checklist ---- */
+  var CK = [
+    ['Monday (the day before)', ['Agree the garden with the school, and a rain plan (the classroom)', 'Check allergies: food only if families agreed (or pretend tea and water)', 'Print certificates, garden signs and table cards (Print tab)', 'Send the message to families: bring the prop and costume (Links tab)', 'Make a box of spare props for pupils who forget', 'Last rehearsal: 4A at 11:15 (Dress rehearsal button)']],
+    ['Party morning', ['Bell, timer and a charged laptop or tablet with this page', 'Tablecloth, cups, plates, napkins, a jug of water, a rubbish bag', 'Put up the signs and set the tea table and the stage spot', 'Show the pupils where they may go in the garden']],
+    ['During the party', ['Party rules: bell = stop, one voice, sit when not performing', 'Follow the running order (Start the party show)', 'Photos only with permission', 'Finale: “This is a nice tea party!”']],
+    ['After the party', ['Certificates for everybody', '+10 XP for every pupil on the Class Board', 'Tidy the garden together', 'Write one good moment for each class for the reports']]
+  ];
+  function checklist() {
+    var total = 0, done = 0;
+    document.getElementById('ck').innerHTML = CK.map(function (g, gi) {
+      return '<div><b>' + esc(g[0]) + '</b>' + g[1].map(function (t, i) { var k = gi + '-' + i, on = !!hq.ck[k]; total++; if (on) done++; return '<label class="' + (on ? 'done' : '') + '"><input type="checkbox" data-ck="' + k + '"' + (on ? ' checked' : '') + '><span>' + esc(t) + '</span></label>'; }).join('') + '</div>';
+    }).join('');
+    document.getElementById('ck-bar').style.width = Math.round(done / total * 100) + '%';
+    document.getElementById('ck-txt').textContent = done + ' of ' + total + ' done';
+    var b = load(BRING_KEY, {}) || {}, bn = Object.keys(b).filter(function (x) { return b[x]; }).length;
+    document.getElementById('bring-n').textContent = bn + ' items ticked';
+  }
+  document.getElementById('ck').addEventListener('change', function (e) { var k = e.target.dataset.ck; if (!k) return; hq.ck[k] = e.target.checked; keep(); checklist(); });
+
+  /* ---- print and old work ---- */
+  var PR = '../alice-party-print/';
+  document.getElementById('prints').innerHTML = [
+    ['🏅', 'Certificates', 'One for every pupil, ready to sign', 'certificates.html', '38 pupils'],
+    ['🪧', 'Garden signs and table cards', 'Signs for the garden and the tea table', 'garden-signs.html', 'Print once'],
+    ['📋', 'Running order', 'The order of pairs with times, for your clipboard', 'running-order.html', '1 per class'],
+    ['🧺', 'Bring list', 'Table, food, decoration, props, show, safety', 'bring-list.html', 'Tick on screen or paper'],
+    ['🎭', 'Prop templates', 'Spare keys, hats, crowns and more', 'prop-templates.html', 'For the spare box'],
+    ['📐', 'Blueprints', 'Real-size cut-out patterns for costumes', 'blueprints.html', 'Only if needed'],
+    ['🃏', 'Party cards (A5)', 'Each pupil’s character card and lines', '../alice-party-home/cards.html', 'Pupils who lost theirs'],
+    ['✅', 'Ready cards', 'Quick check card for each character', '../alice-party-home/ready-cards.html', 'Optional'],
+    ['📄', 'Parent note', 'English and Turkish', 'parent-note.html', 'Only if not sent']
+  ].map(function (x) { return '<a class="pcard" href="' + (x[3].indexOf('../') === 0 ? x[3] : PR + x[3]) + '"><span class="i">' + x[0] + '</span><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span><em>' + esc(x[4]) + '</em></a>'; }).join('');
+  document.getElementById('old').innerHTML = [
+    ['🏠', 'Home practice weeks 1–3', '../alice-party-home/index.html'], ['🧑‍🎤', 'Pupil Alice profile', '../alice-party-home/profile.html'], ['🛠️', 'Costume craft guides', PR + 'craft-guides.html'],
+    ['🗂️', 'Old party-week hub', PR + 'index.html'], ['🃏', 'Trading cards 4A', '../alice-cards-4a/index.html'], ['🃏', 'Trading cards 4B', '../alice-cards-4b/index.html'],
+    ['📖', 'XP Quest deck (September)', '../alice-quest/index.html'], ['✍️', 'XP homework (September)', '../alice-homework/index.html'], ['🏠', 'Home practice A1 (first version)', '../alice-home-a1/index.html']
+  ].map(function (x) { return '<a class="pcard" href="' + x[2] + '"><span class="i">' + x[0] + '</span><b>' + esc(x[1]) + '</b></a>'; }).join('');
+
+  /* ---- links ---- */
+  document.getElementById('pupil-links').innerHTML = keys.map(function (k) { return '<button class="btn teal" data-link="' + k + '">📋 Copy the ' + esc(P.classes[k].label) + ' link</button>'; }).join('');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-link],[data-copy]'); if (!b) return;
+    var text = b.dataset.link ? new URL('../alice-party-home/party.html?class=' + b.dataset.link, location.href).href : document.getElementById(b.dataset.copy).innerText;
+    var old = b.textContent;
+    function ok() { b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = old; }, 1500); }
+    try { navigator.clipboard.writeText(text).then(ok, function () { prompt('Copy this', text); }); } catch (x) { prompt('Copy this', text); }
+  });
+
+  /* ---- tabs ---- */
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('.tab'); if (!b) return;
+    [].forEach.call(document.querySelectorAll('.tab'), function (x) { x.classList.toggle('on', x === b); });
+    [].forEach.call(document.querySelectorAll('.panel'), function (x) { x.classList.toggle('on', x.id === 'p-' + b.dataset.t); });
+    try { sessionStorage.setItem('eaa_party_hq_tab', b.dataset.t); } catch (x) { /* ignore */ }
+  });
+  try { var t = sessionStorage.getItem('eaa_party_hq_tab'); if (t) { var b = document.querySelector('.tab[data-t="' + t + '"]'); if (b) b.click(); } } catch (x) { /* ignore */ }
+
+  classCards(); runningOrder(); cast(); checklist();
+})();
+</script>
+</body>
+</html>
