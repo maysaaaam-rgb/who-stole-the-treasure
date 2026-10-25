@@ -159,6 +159,12 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
       <div class="btns" id="pupil-links"></div>
     </div>
     <div class="box">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>📨 One personal link for each pupil</h3><span class="seg no-print" id="pl-cls"></span></div>
+      <p class="muted">Each link opens that pupil's own page: <b>My part on Tuesday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
+      <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button></div>
+      <div class="ro" id="pl"></div>
+    </div>
+    <div class="box">
       <h3>Message for families (k12)</h3>
       <div class="copy" id="k12">Merhaba! Salı günü (27 Ekim) İngilizce dersinde Alice Harikalar Diyarında Çay Partisi yapıyoruz. Lütfen çocuğunuz karakter aksesuarını ve kostümünü (basit olması yeterli) okula getirsin. Çocuklar kısa diyaloglarını sınıfta prova etti. Teşekkürler!
 Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the English lesson. Please send your child's prop and simple costume to school. The children have rehearsed their short dialogues in class. Thank you!</div>
@@ -172,7 +178,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
   </details>
 </div>
 
-<script src="../alice-party-home/party-data.js?v=2"></script>
+<script src="../alice-party-home/party-data.js?v=3"></script>
 <script src="../alice-party-print/props-map.js?v=1"></script>
 <script>
 (function () {
@@ -224,7 +230,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     o.order.forEach(function (pair, i) {
       var st = o.map[pair], n = starsOf(k, pair), gone = st.filter(function (s) { return hq.away[s.id]; });
       html += '<div class="perf"><span class="n">' + (i + 1) + '</span><span class="time">' + addMin(t0, i * mins) + '</span><span class="who"><span class="avs" style="float:left;margin-right:16px">' + st.map(av).join('') + '</span><b>' +
-        st.map(function (s) { return '<span class="' + (hq.away[s.id] ? 'away' : '') + '">' + esc(s.name) + '</span>'; }).join(' + ') + '</b><small>' + st.map(function (s) { return esc(role(s).short); }).join(' · ') +
+        st.map(function (s) { return '<span class="' + (hq.away[s.id] ? 'away' : '') + '">' + esc(s.name) + '</span>'; }).join(' + ') + '</b><small>' + st.map(function (s) { return esc(role(s).short) + (s.guest ? ' (tea guest)' : ''); }).join(' · ') +
         (gone.length ? ' · <b style="color:#be123c;display:inline">' + gone.map(function (s) { return esc(s.name); }).join(', ') + ' away: a helper reads the part</b>' : '') + '</small></span><span class="stars" title="Dress rehearsal stars">' + (n == null ? '' : '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n)) + '</span></div>';
     });
     document.getElementById('ro').innerHTML = html;
@@ -336,6 +342,28 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     try { navigator.clipboard.writeText(text).then(ok, function () { prompt('Copy this', text); }); } catch (x) { prompt('Copy this', text); }
   });
 
+  /* ---- one personal link per pupil ---- */
+  var plCls = keys[0];
+  function linkOf(s) { return new URL('../alice-party-home/party.html?s=' + s.id, location.href).href; }
+  function personal() {
+    var el = document.getElementById('pl-cls');
+    el.innerHTML = keys.map(function (k) { return '<button class="' + (plCls === k ? 'on' : '') + '" data-k="' + k + '">' + esc(P.classes[k].label.replace('Class ', '')) + '</button>'; }).join('');
+    el.onclick = function (e) { var b = e.target.closest('button'); if (!b) return; plCls = b.dataset.k; personal(); };
+    document.getElementById('pl').innerHTML = P.classes[plCls].students.map(function (s) {
+      var mates = P.classes[plCls].students.filter(function (o) { return o.pair === s.pair && o.id !== s.id; }).map(function (o) { return esc(o.name); }).join(', ');
+      return '<div class="perf" style="grid-template-columns:54px 1fr auto"><span class="avs">' + av(s) + '</span><span class="who"><b>' + esc(s.name) + '</b><small>' + esc(role(s).short) + (s.guest ? ' · tea guest, no lines' : '') + (mates ? ' · with ' + mates : '') + '</small></span><span class="btns"><button class="btn sm teal" data-plink="' + esc(s.id) + '">📋 Copy link</button><a class="btn sm ghost" href="' + linkOf(s) + '" target="_blank">👀 Open</a></span></div>';
+    }).join('');
+  }
+  document.getElementById('pl').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-plink]'); if (!b) return;
+    var s = P.find ? P.find(b.dataset.plink) : null, text = linkOf({ id: b.dataset.plink }), old = b.textContent;
+    try { navigator.clipboard.writeText(text).then(function () { b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = old; }, 1500); }, function () { prompt('Copy this link', text); }); } catch (x) { prompt('Copy this link', text); }
+  });
+  document.getElementById('pl-all').addEventListener('click', function () {
+    var b = this, text = P.classes[plCls].students.map(function (s) { return s.name + ' (' + role(s).short + '): ' + linkOf(s); }).join('\n'), old = b.textContent;
+    try { navigator.clipboard.writeText(text).then(function () { b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = old; }, 1500); }, function () { prompt('Copy these links', text); }); } catch (x) { prompt('Copy these links', text); }
+  });
+
   /* ---- tabs ---- */
   document.getElementById('tabs').addEventListener('click', function (e) {
     var b = e.target.closest('.tab'); if (!b) return;
@@ -345,7 +373,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
   });
   try { var t = sessionStorage.getItem('eaa_party_hq_tab'); if (t) { var b = document.querySelector('.tab[data-t="' + t + '"]'); if (b) b.click(); } } catch (x) { /* ignore */ }
 
-  classCards(); runningOrder(); cast(); checklist();
+  classCards(); runningOrder(); cast(); checklist(); personal();
 })();
 </script>
 </body>

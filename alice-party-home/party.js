@@ -57,13 +57,24 @@
     return n > 1 ? n + ' days to the party!' : n === 1 ? 'The party is tomorrow!' : n === 0 ? 'The party is today!' : '';
   }
 
+  /* "My part on party day": who I perform with, my lines (or my guest job), my props and how to make them */
+  function myPart(st) {
+    var others = (P.partners ? P.partners(st) : []), script = (P.dialogues || {})[st.pair] || [], mineLines = script.filter(function (l) { return l[0] === st.roleKey; });
+    var PM = window.PROPS_MAP || { map: {}, home: {} };
+    var props = (st.role.props || []).map(function (t) { return '<span class="tag">' + (PM.map[t] ? '📐 ' + esc(t) + ' (print the pattern)' : '🏠 ' + esc(t) + ': ' + esc(PM.home[t] || 'from home')) + '</span>'; }).join('');
+    var lines = mineLines.length ? script.map(function (l) { var r = P.roles[l[0]] || {}; return '<div class="ln' + (l[0] === st.roleKey ? ' me' : '') + '">' + (l[0] === st.roleKey ? '⭐ ' : '') + '<b>' + esc(r.short || l[0]) + ':</b> ' + esc(l[1]) + '</div>'; }).join('')
+      : '<p class="goal" style="margin:0">You are the <b>tea guest</b>. You have no lines to learn: hold the plate of cake, smile and give the cake to your friends. Wave at the end!</p>';
+    return '<section class="panel mypart"><h2>🎉 My part on Tuesday</h2><p class="goal" style="margin:6px 0 10px">' + (others.length ? 'You perform with <b>' + others.map(function (o) { return esc(o.name) + ' (' + esc((P.roles[o.role] || {}).short || o.role) + ')'; }).join(', ') + '</b>.' : '') +
+      (mineLines.length ? ' Your lines have a ⭐. Say them loudly and slowly.' : '') + '</p>' + lines +
+      '<h2 style="margin-top:14px">🎭 My props</h2><div>' + props + '</div><div class="links" style="margin-top:10px">' + ((st.role.props || []).some(function (t) { return PM.map[t]; }) ? '<a class="btn sm amber" href="../alice-party-print/blueprints.html?role=' + esc(st.roleKey) + '">📐 Print my prop pattern</a>' : '') + '<a class="btn sm ghost" href="../alice-party-print/craft-guides.html?role=' + esc(st.roleKey) + '">🛠️ How to make my costume</a></div></section>';
+  }
   function mine(st) {
     var role = st.role, n = doneCount(st.id), pct = Math.round(n / WEEKS.length * 100);
     $('#sub').textContent = st.name + ' · ' + role.short;
     $('#pill').textContent = REMOTE ? '✅ ' + n + ' of ' + WEEKS.length : '';
     var h = '<section class="panel"><div class="hero"><img src="assets/' + esc(st.photo) + '" alt="' + esc(role.short) + '"><div><h1>' + esc(st.name) + '</h1><div class="goal" style="margin:0">You are <b>' + esc(role.name) + '</b></div></div></div>' +
       (REMOTE ? '<div class="bar"><i style="width:' + pct + '%"></i></div><div class="note" style="text-align:left;margin:0">' + n + ' of ' + WEEKS.length + ' weeks done' + (daysToGo() ? ' · ' + daysToGo() : '') + '</div>' : FAILED ? '<p class="note" style="text-align:left">I could not check your green ticks now. The practices still work.</p>' : '<p class="note" style="text-align:left">Checking your green ticks…</p>') +
-      '<div style="margin-top:12px"><a class="btn ghost sm" href="party.html?class=' + esc(st.classKey) + '">Not you? Choose another name</a></div></section>';
+      '<div style="margin-top:12px"><a class="btn ghost sm" href="party.html?class=' + esc(st.classKey) + '">Not you? Choose another name</a></div></section>' + myPart(st);
     WEEKS.forEach(function (w) {
       var s = stateOf(st.id, w), cls = s.k === 'ok' ? 'done' : w.now ? 'now' : '';
       var msg = s.k === 'ok' ? '<div class="state ok">✅ You did it! Well done, ' + esc(st.name) + '!</div>' : s.k === 'part' ? '<div class="state part">🟡 Started: ' + s.n + ' of ' + w.total + ' tasks. Finish it!</div>' : s.k === 'no' ? '<div class="state no">⭐ Not done yet. Let’s start!</div>' : s.k === 'err' ? '<div class="state no">…could not check</div>' : '<div class="state no">Checking…</div>';
