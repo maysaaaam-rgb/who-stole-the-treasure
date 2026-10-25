@@ -221,6 +221,18 @@
       saveEvents(list); store().setCalendarFlag('seed17');
     } catch (e) { /* ignore */ }
   }
+  function g3QuizOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed18')) return;
+      var list = customEvents().slice(), q = 'Print quiz-g3-units1-4 (Version A and B, 2 pages each, double-sided). Listening: quiz-g3-units1-4/listening.html (same for A and B). Marks into the class record page. Plan: lesson-plans/Grade3-Units1-4-Diagnostic-Quiz-Lesson-Plan.';
+      var g = 'Calm revision games after the quiz: game-maker/index.html?set=u14-g3 (Monsters = your class, Answer cards = On).';
+      var rows = [['2026-10-27', '10:30', 'class-3a', 'quiz', 'Units 1-4 diagnostic QUIZ (A/B)', q], ['2026-10-27', '11:15', 'class-3a', 'unit4', 'Units 1-4 revision games (play)', g],
+        ['2026-10-28', '10:30', 'class-3b', 'quiz', 'Units 1-4 diagnostic QUIZ (A/B)', q], ['2026-10-28', '11:15', 'class-3b', 'unit4', 'Units 1-4 revision games (play)', g]];
+      list = list.filter(function (e) { return !rows.some(function (r) { return e.date === r[0] && e.time === r[1] && e.classId === r[2]; }); });
+      rows.forEach(function (r, i) { list.push({ id: 'seed18-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      saveEvents(list); store().setCalendarFlag('seed18');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -339,7 +351,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
