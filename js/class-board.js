@@ -325,6 +325,7 @@
         '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
         '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span><span class="sep"></span>' +
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
+        '<button onclick="BathroomPass && BathroomPass.open()" title="Bathroom: sign out and back in">🚻 Bathroom</button>' +
         '<button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button>' +
         '<button onclick="openFastAttendanceModal && openFastAttendanceModal()" title="Roll call">✓ Roll call</button>' +
         '<button class="ic" onclick="try{classSoundboard.playAttentionBell()}catch(e){}" title="Bell">🔔</button><button class="ic" onclick="try{classSoundboard.playApplause()}catch(e){}" title="Applause">👏</button><span class="sep"></span>' +

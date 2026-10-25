@@ -60,7 +60,9 @@
     size = size || 90;
     try {
       if (root.MonsterRenderer && typeof root.MonsterRenderer.renderMonsterSVG === 'function' && m) {
-        var s = root.MonsterRenderer.renderMonsterSVG({ stage: m.stage || 'growing', color: m.color || 'blue', equipped: m.equipped || {}, size: size, animated: false });
+        /* in the games the monster stands alone: the pupil's scene background (a square picture behind the monster) is left out */
+        var eq = {}, src = m.equipped || {}; for (var k in src) if (Object.prototype.hasOwnProperty.call(src, k)) eq[k] = src[k]; eq.background = 'none';
+        var s = root.MonsterRenderer.renderMonsterSVG({ stage: m.stage || 'growing', color: m.color || 'blue', equipped: eq, size: size, animated: false });
         if (s) return withLegs(s, m).replace(/href="assets\//g, 'href="../assets/');
       }
     } catch (e) { /* fall back to an emoji */ }
