@@ -5,6 +5,6 @@ window.PARTY_CONFIG = {
   token: 'eaa-tea-4f7c9d2b81a6',              // must match TOKEN in Code.gs
   homework: 'alice-tea-party-a1plus',
   lookSync:true,                             // set to true after Code.gs (with the Look tab) has been deployed
-  partyDate: '',                              // the day of the party, like '2026-10-25': the pupils' page then shows how many days are left
+  partyDate: '2026-10-27',                              // the day of the party, like '2026-10-25': the pupils' page then shows how many days are left
   statusSync:true                            // set to true after Code.gs (with the status link) has been deployed: pupils then see everyone's progress on any phone
 };

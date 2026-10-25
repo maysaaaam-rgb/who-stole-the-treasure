@@ -1,82 +1,154 @@
-/* Alice Tea Party: ONE link for the pupils. Pick your class and name, then see every week of the Tea Party with a green tick for what you did.
-   The ticks come from the teacher's Google Sheet (the same sheet the practices report to). Nothing here changes any data. */
+/* Alice Tea Party: the pupils' page. One link for the class (pick your name) or one personal link (?s=<pupil id>).
+   The personal page shows "Get ready in 4 steps", the pupil's part (chat bubbles, own lines with a star, or the guest job) and the props.
+   Each step the pupil does is reported to the teacher's Google Sheet as the homework "alice-party-day" (steps 1-3, ready = 5), so the
+   Tea Party HQ can show who opened their link. A teacher preview (&t=1, or this computer opened the HQ) never reports. */
 (function () {
   'use strict';
-  var P = window.PARTY, CFG = window.PARTY_CONFIG || {};
+  var P = window.PARTY, CFG = window.PARTY_CONFIG || {}, PM = window.PROPS_MAP || { map: {}, home: {}, pics: {} };
   var $ = function (s) { return document.querySelector(s); };
   var stage = $('#stage');
+  var AV = '../assets/alice-cut/avatars/a_', PR = '../assets/alice-cut/props/';
+  var HW = 'alice-party-day', DONE_KEY = 'eaa_party_day_v1', PENDING_KEY = 'eaa_party_pending_day_v1';
+  var WHEN = { '4a': 'Tuesday 27 October · 15:20 · garden', '4b': 'Tuesday 27 October · 09:00 · garden' };
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
   var q = new URLSearchParams(location.search);
+  var TEACHER = q.get('t') === '1' || load('eaa_party_teacher', false) === true;
 
-  /* the weeks. hw = the id the practice reports to the Sheet with; total = tasks in that practice */
+  /* earlier weeks (the ticks come from the Sheet) */
   var WEEKS = [
-    { n: 1, dates: '5 to 9 October', icon: '🎭', title: 'Meet your character', goal: 'Learn who you are in the story and say 3 sentences about yourself.', hw: 'alice-tea-party-a1plus', total: 5,
-      links: function (id) { return [['📖 Week 1 practice', 'index.html?s=' + id, 'green'], ['🧸 My Alice monster', 'profile.html?s=' + id, 'ghost']]; } },
-    { n: 2, dates: '12 to 16 October', icon: '🗣️', title: 'Say your dialogue', goal: 'Read your dialogue, say it with someone at home and send a 30-second recording.', hw: 'alice-tea-party-w2', total: 3,
-      links: function (id) { return [['📖 Week 2 practice', 'week2.html?s=' + id, 'green']]; } },
-    { n: 3, dates: '19 to 23 October', icon: '🎩', title: 'Get ready for the party', goal: 'Make your costume and prop, learn the 3 tea-party phrases and your 3 sentences. We rehearse together in class.', hw: 'alice-tea-party-w3', total: 3, now: true,
-      links: function (id, role) { return [['🎭 Week 3 practice', 'props.html?s=' + id, 'green'], ['🛠️ How to make my costume', '../alice-party-print/craft-guides.html?role=' + role, 'amber'], ['📐 My blueprint to print', '../alice-party-print/blueprints.html?role=' + role, 'ghost'], ['🖨️ My prop picture to print', '../alice-party-print/prop-templates.html?role=' + role, 'ghost']]; } }
+    { n: 1, icon: '🎭', title: 'Meet your character', hw: 'alice-tea-party-a1plus', total: 5, link: function (id) { return 'index.html?s=' + id; } },
+    { n: 2, icon: '🗣️', title: 'Say your dialogue', hw: 'alice-tea-party-w2', total: 3, link: function (id) { return 'week2.html?s=' + id; } },
+    { n: 3, icon: '🎩', title: 'Get ready for the party', hw: 'alice-tea-party-w3', total: 3, link: function (id) { return 'props.html?s=' + id; } }
   ];
   var REMOTE = null, FAILED = false;
+  function rec(id, hw) { return REMOTE && REMOTE[id] && REMOTE[id][hw]; }
+  function weekOk(id, w) { var r = rec(id, w.hw); return !!(r && r.finished); }
 
-  function stateOf(id, w) {
-    var r = REMOTE && REMOTE[id] && REMOTE[id][w.hw];
-    if (!REMOTE) return { k: FAILED ? 'err' : 'load' };
-    if (r && r.finished) return { k: 'ok' };
-    if (r && r.steps > 0) return { k: 'part', n: Math.min(r.steps, w.total) };
-    return { k: 'no' };
-  }
-  function doneCount(id) { return WEEKS.filter(function (w) { return stateOf(id, w).k === 'ok'; }).length; }
-
-  function load() {
+  function fetchStatus() {
     if (!CFG.submitUrl || typeof fetch !== 'function') { FAILED = true; draw(); return; }
     fetch(CFG.submitUrl + '?action=status&token=' + encodeURIComponent(CFG.token || ''))
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (j && j.ok && j.status) { REMOTE = j.status; } else FAILED = true; draw(); })
+      .then(function (j) { if (j && j.ok && j.status) REMOTE = j.status; else FAILED = true; draw(); })
       .catch(function () { FAILED = true; draw(); });
   }
 
-  function picker() {
-    var keys = Object.keys(P.classes), cur = keys[0];
-    try { cur = localStorage.getItem('eaa_party_class') || cur; } catch (e) { /* default */ }
-    var want = (q.get('class') || '').toLowerCase(); if (P.classes[want]) cur = want;
-    $('#pill').textContent = ''; $('#sub').textContent = 'My plan, week by week';
-    stage.innerHTML = '<section class="panel"><h1>Who are you?</h1><p class="goal">Choose your class. Then tap your name.</p>' +
-      '<div class="tabs">' + keys.map(function (k) { return '<button class="btn ghost ' + (k === cur ? 'on' : '') + '" data-k="' + k + '">' + esc(P.classes[k].label) + '</button>'; }).join('') + '</div>' +
-      '<div class="grid">' + P.classes[cur].students.map(function (s) {
-        var n = REMOTE ? doneCount(s.id) : 0;
-        return '<a class="btn stu ' + (n >= WEEKS.length ? 'all' : '') + '" href="?s=' + esc(s.id) + '">' + (n ? '<span class="tk">' + '✅'.repeat(n) + '</span>' : '') + esc(s.name) + '<small>' + esc(P.roles[s.role].short) + '</small></a>';
-      }).join('') + '</div>' + (FAILED ? '<p class="note">I could not check the green ticks now. Check the internet and reload.</p>' : REMOTE ? '' : '<p class="note">Checking the green ticks…</p>') + '</section>';
-    [].forEach.call(stage.querySelectorAll('.tabs button'), function (b) { b.onclick = function () { cur = b.dataset.k; try { localStorage.setItem('eaa_party_class', cur); } catch (e) { /* ignore */ } q.delete('class'); picker(); }; });
+  /* ---- tell the teacher which steps are done (kept and retried when offline) ---- */
+  function flush() {
+    if (!CFG.submitUrl || typeof fetch !== 'function') return;
+    var p = load(PENDING_KEY, {}) || {};
+    Object.keys(p).forEach(function (id) {
+      var body = p[id];
+      fetch(CFG.submitUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+        .then(function () { var cur = load(PENDING_KEY, {}) || {}; if (JSON.stringify(cur[id]) === JSON.stringify(body)) { delete cur[id]; save(PENDING_KEY, cur); } }, function () { /* retry later */ });
+    });
+  }
+  window.addEventListener('online', flush);
+  function report(st, steps) {
+    if (TEACHER || !CFG.submitUrl) return;
+    var p = load(PENDING_KEY, {}) || {};
+    p[st.id] = { token: CFG.token, homework: HW, studentId: st.id, name: st.name, classLabel: st.classLabel, character: st.role.short, steps: steps, xp: 0, device: (navigator.userAgent || '').slice(0, 60), at: new Date().toISOString() };
+    save(PENDING_KEY, p); flush();
+  }
+  function doneOf(id) { var all = load(DONE_KEY, {}) || {}; return all[id] || {}; }
+  function mark(st, key) {
+    var all = load(DONE_KEY, {}) || {}, d = all[st.id] = all[st.id] || {};
+    var first = !d[key]; d[key] = true; save(DONE_KEY, all);
+    var n = ['open', 'listen', 'prop'].filter(function (k) { return d[k]; }).length;
+    if (first) report(st, d.ready ? 5 : n);
+    return first;
   }
 
   function daysToGo() {
     if (!CFG.partyDate) return '';
     var d = new Date(CFG.partyDate + 'T00:00:00'), t = new Date(); t.setHours(0, 0, 0, 0);
-    var n = Math.round((d - t) / 86400000);
-    return n > 1 ? n + ' days to the party!' : n === 1 ? 'The party is tomorrow!' : n === 0 ? 'The party is today!' : '';
+    var n = Math.round((d - t) / 864e5);
+    return n > 1 ? n + ' days to go' : n === 1 ? 'The party is tomorrow!' : n === 0 ? 'The party is today!' : '';
+  }
+  function img(src, alt, fb) { return '<img src="' + src + '" alt="' + esc(alt || '') + '" onerror="this.replaceWith(document.createTextNode(\'' + (fb || '🙂') + '\'))">'; }
+  function confetti() { var e = ['🎉', '⭐', '🫖', '🍰', '✨', '🎩']; for (var i = 0; i < 26; i++) { var c = document.createElement('span'); c.className = 'conf'; c.textContent = e[i % e.length]; c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = (1.6 + Math.random() * 1.6) + 's'; document.body.appendChild(c); setTimeout(function (x) { return function () { x.remove(); }; }(c), 3400); } }
+  function say(t) { try { return window.EAAVoice.say(t, { rate: 0.88, dir: 'audio/' }); } catch (e) { return Promise.resolve(); } }
+
+  /* ---------------- the personal page ---------------- */
+  function mine(st) {
+    var role = st.role, others = P.partners ? P.partners(st) : [], script = (P.dialogues || {})[st.pair] || [];
+    var myLines = script.filter(function (l) { return l[0] === st.roleKey; }), guest = !myLines.length;
+    var needPrint = (role.props || []).some(function (t) { return PM.map[t]; });
+    mark(st, 'open');
+    var d = doneOf(st.id), steps = [
+      ['open', '👀', 'Open my page', 'Done! This is your page for the party.'],
+      ['listen', '🔊', guest ? 'Read my job' : 'Listen to my lines', guest ? 'You are the tea guest: no lines to learn.' : 'Press Listen. Then say each ⭐ line with the voice.'],
+      ['prop', '🎭', 'My prop', needPrint ? 'Print your pattern, or show me you have your prop.' : 'Your props come from home. Find them!'],
+      ['ready', '🌟', 'I am ready!', 'Press it when you know your part and your prop is ready.']
+    ];
+    var n = steps.filter(function (s) { return d[s[0]]; }).length;
+    $('#pill').textContent = daysToGo() || '🫖';
+    var h = '<section class="card hero"><div class="av">' + img(AV + esc(st.roleKey) + '.webp', role.short) + '</div><div><h1>Hi, ' + esc(st.name) + '!</h1><div class="you">You are <b>' + esc(role.name) + '</b></div>' +
+      '<span class="chip">🗓️ ' + esc(WHEN[st.classKey] || 'Tuesday 27 October') + '</span>' + (others.length ? '<span class="chip">🤝 with ' + others.map(function (o) { return esc(o.name); }).join(', ') + '</span>' : '') + '</div></section>';
+    h += '<section class="card"><h2>✅ Get ready in 4 steps</h2><div class="ring"><div class="bar"><i style="width:' + Math.round(n / 4 * 100) + '%"></i></div><b>' + n + ' / 4</b></div>' +
+      steps.map(function (s) {
+        var extra = '';
+        if (s[0] === 'listen') extra = '<div class="btns"><button class="btn teal" id="b-listen">🔊 ' + (guest ? 'Read my job' : 'Listen to my lines') + '</button></div>';
+        if (s[0] === 'prop') extra = '<div class="btns">' + (needPrint ? '<a class="btn amber" data-prop="1" href="../alice-party-print/blueprints.html?role=' + esc(st.roleKey) + '">📐 Print my pattern</a>' : '') + '<a class="btn ghost" data-prop="1" href="../alice-party-print/craft-guides.html?role=' + esc(st.roleKey) + '">🛠️ How to make it</a><button class="btn ghost" id="b-have">✋ I have my prop</button></div>';
+        if (s[0] === 'ready') extra = '<div class="btns"><button class="btn green big" id="b-ready">' + (d.ready ? '🌟 I am ready! (done)' : '🌟 I am ready!') + '</button></div>';
+        return '<div class="step' + (d[s[0]] ? ' done' : '') + '"><span class="ic">' + (d[s[0]] ? '✓' : s[1]) + '</span><div><b>' + esc(s[2]) + '</b><small>' + esc(s[3]) + '</small>' + extra + '</div></div>';
+      }).join('') + '</section>';
+    /* my part */
+    h += '<section class="card"><h2>🎬 My part</h2>';
+    if (guest) h += '<div class="guest">🍰 You are the <b>tea guest</b>. Hold the plate of cake, smile and give cake to your friends. Wave at the end! Watch ' + others.map(function (o) { return esc(o.name); }).join(', ') + ' and clap for them.</div>';
+    else h += '<p class="muted" style="margin:0 0 10px">Your lines are yellow with a ⭐. Tap any line to hear it.</p><div class="chat">' + script.map(function (l, i) {
+      var me = l[0] === st.roleKey, r = P.roles[l[0]] || {};
+      return '<div class="msg' + (me ? ' me' : '') + '"><span class="mini">' + img(AV + esc(l[0]) + '.webp', r.short) + '</span><div class="bub" data-i="' + i + '"><small>' + (me ? '⭐ ' : '') + esc(r.short || l[0]) + '</small>' + esc(l[1]) + '</div></div>';
+    }).join('') + '</div>';
+    h += '</section>';
+    /* props */
+    h += '<section class="card"><h2>🎭 My props</h2><div class="props">' + (role.props || []).map(function (t) {
+      var pic = PM.pics && PM.pics[t];
+      return '<div class="prop">' + (pic ? img(PR + pic + '.webp', t, '🎁') : '<div class="e">🎁</div>') + '<b>' + esc(t) + '</b>' + (PM.map[t] ? '<span class="tag bp">📐 print the pattern</span>' : '<span class="tag home">🏠 ' + esc(PM.home[t] || 'from home') + '</span>') + '</div>';
+    }).join('') + '</div></section>';
+    /* earlier weeks */
+    h += '<section class="card"><details class="older"><summary>📚 My earlier practice (weeks 1–3)</summary>' + WEEKS.map(function (w) {
+      var ok = weekOk(st.id, w);
+      return '<div class="wk"><span class="no">' + (ok ? '✅' : w.icon) + '</span><div><b>Week ' + w.n + ': ' + esc(w.title) + '</b><div class="btns"><a class="btn ghost" href="' + w.link(st.id) + '">Open week ' + w.n + '</a></div></div></div>';
+    }).join('') + '</details></section>';
+    h += '<div style="text-align:center"><a class="btn ghost" href="party.html?class=' + esc(st.classKey) + '">Not you? Choose your name</a></div>';
+    stage.innerHTML = h;
+    $('#note').textContent = TEACHER ? 'Teacher preview: nothing is reported.' : '';
+
+    var lb = $('#b-listen'); if (lb) lb.onclick = function () {
+      mark(st, 'listen');
+      if (guest) { say('You are the tea guest. Hold the plate of cake and smile.'); mine(st); return; }
+      var i = 0; (function next() { if (i >= myLines.length) { mine(st); return; } var t = myLines[i++][1]; say(t).then(function () { setTimeout(next, 700); }, function () { setTimeout(next, 700); }); })();
+    };
+    [].forEach.call(stage.querySelectorAll('[data-prop]'), function (a) { a.addEventListener('click', function () { mark(st, 'prop'); }); });
+    var hb = $('#b-have'); if (hb) hb.onclick = function () { mark(st, 'prop'); mine(st); };
+    var rb = $('#b-ready'); if (rb) rb.onclick = function () {
+      var dd = doneOf(st.id), all = load(DONE_KEY, {}) || {}; all[st.id] = dd; dd.ready = true; save(DONE_KEY, all);
+      report(st, 5); confetti(); say('Well done! See you at the tea party!'); mine(st);
+    };
+    [].forEach.call(stage.querySelectorAll('.bub'), function (b) { b.onclick = function () { say(script[+b.dataset.i][1]); }; });
   }
 
-  function mine(st) {
-    var role = st.role, n = doneCount(st.id), pct = Math.round(n / WEEKS.length * 100);
-    $('#sub').textContent = st.name + ' · ' + role.short;
-    $('#pill').textContent = REMOTE ? '✅ ' + n + ' of ' + WEEKS.length : '';
-    var h = '<section class="panel"><div class="hero"><img src="assets/' + esc(st.photo) + '" alt="' + esc(role.short) + '"><div><h1>' + esc(st.name) + '</h1><div class="goal" style="margin:0">You are <b>' + esc(role.name) + '</b></div></div></div>' +
-      (REMOTE ? '<div class="bar"><i style="width:' + pct + '%"></i></div><div class="note" style="text-align:left;margin:0">' + n + ' of ' + WEEKS.length + ' weeks done' + (daysToGo() ? ' · ' + daysToGo() : '') + '</div>' : FAILED ? '<p class="note" style="text-align:left">I could not check your green ticks now. The practices still work.</p>' : '<p class="note" style="text-align:left">Checking your green ticks…</p>') +
-      '<div style="margin-top:12px"><a class="btn ghost sm" href="party.html?class=' + esc(st.classKey) + '">Not you? Choose another name</a></div></section>';
-    WEEKS.forEach(function (w) {
-      var s = stateOf(st.id, w), cls = s.k === 'ok' ? 'done' : w.now ? 'now' : '';
-      var msg = s.k === 'ok' ? '<div class="state ok">✅ You did it! Well done, ' + esc(st.name) + '!</div>' : s.k === 'part' ? '<div class="state part">🟡 Started: ' + s.n + ' of ' + w.total + ' tasks. Finish it!</div>' : s.k === 'no' ? '<div class="state no">⭐ Not done yet. Let’s start!</div>' : s.k === 'err' ? '<div class="state no">…could not check</div>' : '<div class="state no">Checking…</div>';
-      h += '<section class="week ' + cls + '"><div class="wk"><div class="no">' + w.icon + '</div><div><div class="d">WEEK ' + w.n + ' · ' + w.dates + (w.now ? ' · THIS WEEK' : '') + '</div><h2>' + esc(w.title) + '</h2></div></div><p class="goal" style="margin:0 0 4px">' + esc(w.goal) + '</p>' + msg +
-        '<div class="links">' + w.links(st.id, st.roleKey).map(function (l) { return '<a class="btn sm ' + l[2] + '" href="' + l[1] + '">' + l[0] + '</a>'; }).join('') + '</div></section>';
-    });
-    h += '<section class="week soon"><div class="wk"><div class="no">🎉</div><div><div class="d">PARTY DAY</div><h2>Show time!</h2></div></div><p class="goal" style="margin:0">Wear your costume, bring your prop and say your lines. Your teacher will tell you the day.' + (daysToGo() ? ' <b>' + daysToGo() + '</b>' : '') + '</p></section>';
-    stage.innerHTML = h;
+  /* ---------------- the class page: who are you? ---------------- */
+  function picker() {
+    var keys = Object.keys(P.classes), cur = load('eaa_party_class', keys[0]);
+    if (typeof cur !== 'string' || !P.classes[cur]) cur = keys[0];
+    var want = (q.get('class') || '').toLowerCase(); if (P.classes[want]) cur = want;
+    $('#pill').textContent = daysToGo() || '🫖';
+    stage.innerHTML = '<section class="card"><h1>Who are you?</h1><p class="muted" style="margin:6px 0 0">Choose your class, then tap your name.</p>' +
+      '<div class="seg">' + keys.map(function (k) { return '<button class="' + (k === cur ? 'on' : '') + '" data-k="' + k + '">' + esc(P.classes[k].label) + '</button>'; }).join('') + '</div>' +
+      '<div class="names">' + P.classes[cur].students.map(function (s) {
+        var r = rec(s.id, HW), ready = r && r.finished;
+        return '<a class="name" href="?s=' + esc(s.id) + '">' + (ready ? '<span class="ok">ready ✓</span>' : '') + '<span class="mini">' + img(AV + esc(s.role) + '.webp', '') + '</span><b>' + esc(s.name) + '</b><small>' + esc((P.roles[s.role] || {}).short || '') + '</small></a>';
+      }).join('') + '</div></section>';
+    [].forEach.call(stage.querySelectorAll('.seg button'), function (b) { b.onclick = function () { cur = b.dataset.k; save('eaa_party_class', cur); q.delete('class'); picker(); }; });
+    $('#note').textContent = FAILED ? 'I could not check the ticks now. That is OK.' : '';
   }
 
   function draw() {
     var id = q.get('s'), st = id ? P.find(id) : null;
     if (st) mine(st); else picker();
   }
-  draw(); load();
+  draw(); fetchStatus(); flush();
 })();

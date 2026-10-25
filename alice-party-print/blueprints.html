@@ -15,13 +15,14 @@
 </head>
 <body>
 <div class="bar"><h1>📐 Blueprints</h1>
-  <select id="mode"><option value="role">One character</option><option value="class">A whole class (one set per pupil)</option><option value="all">All patterns</option></select>
+  <select id="mode"><option value="role">One character</option><option value="class">A whole class (one set per pupil)</option><option value="all">All patterns</option><option value="pupils">Pupils who still need a prop</option><option value="spare">Spare set (one of each)</option><option value="plan">Prop plan (one page)</option></select>
   <select id="role"></select><select id="cls"></select>
   <button onclick="window.print()">Print</button>
   <span class="legend">Print at <b>100% / Actual size</b> (not “fit to page”). Check: the ruler on every page must measure 10 cm. Black line = CUT · blue dashes = FOLD · grey = GLUE TAB.</span>
 </div>
 <main id="out"></main>
-<script src="../alice-party-home/party-data.js?v=2"></script>
+<script src="../alice-party-home/party-data.js?v=3"></script>
+<script src="props-map.js?v=2"></script>
 <script>
 (function () {
   'use strict';
@@ -160,12 +161,8 @@
       return strokeOf(rect(60, 50, 90, 55, ' rx="6"'), CUT) + strokeOf(circ(75, 65, 4), CUT) + T(105, 130, 'Cut out. Make a hole. Tie it to the bottle with string.', 4.2, 'middle');
     } }
   };
-  /* prop text -> blueprint pages (types without a blueprint use a real item at home) */
-  var MAP = { 'a paper key': ['key'], 'a big key': ['key'], 'a big paper hat': ['hat1', 'hat2'], 'a tall hat': ['hat1', 'hat2'], 'a green hat': ['hat1', 'hat2'], 'a paper watch': ['watch'], 'a letter': ['letter'],
-    'a paper crown': ['crown'], 'a red paper crown': ['crown'], 'a small bottle': ['tag'], 'long paper ears': ['strip', 'ears_rabbit'], 'a carrot': ['carrot'], 'cat ears': ['strip', 'ears_cat'], 'a big smile': ['smile'],
-    'dog ears': ['strip', 'ears_dog'], 'a paper bone': ['bone'], 'a playing card': ['card'], 'paper wings': ['wings'], 'a toy sword': ['sword'], 'paper claws': ['claws'], 'a book': ['book'], 'a flower': ['flower'],
-    'a big button': ['button'], 'a button': ['button'], 'a small bell': ['bell'], 'blue paper antennae': ['strip', 'antennae'], 'a mushroom': ['mushroom'], 'a walking stick': ['stick'], 'mouse ears': ['strip', 'ears_mouse'],
-    'a paper shell': ['shell'], 'a pearl': ['pearl'] };
+  /* prop text -> blueprint pages: shared with the Tea Party HQ (props-map.js) */
+  var MAP = window.PROPS_MAP.map;
 
   function pageHtml(id, label) {
     var p = PAGES[id], inner = p.draw();
@@ -182,12 +179,29 @@
   var keys = Object.keys(P.roles), ckeys = Object.keys(P.classes);
   role.innerHTML = keys.map(function (k) { return '<option value="' + k + '">' + esc(P.roles[k].name) + '</option>'; }).join('');
   cls.innerHTML = ckeys.map(function (k) { return '<option value="' + k + '">' + esc(P.classes[k].label) + '</option>'; }).join('');
-  var wantRole = new URLSearchParams(location.search).get('role'); if (keys.indexOf(wantRole) >= 0) role.value = wantRole;
+  var qs = new URLSearchParams(location.search), wantRole = qs.get('role'), wantCls = qs.get('cls'), wantMode = qs.get('mode');
+  if (keys.indexOf(wantRole) >= 0) role.value = wantRole;
+  if (ckeys.indexOf(wantCls) >= 0) cls.value = wantCls;
+  if (wantMode && mode.querySelector('option[value="' + wantMode + '"]')) mode.value = wantMode;
+  /* the props ticked in the Tea Party HQ (same computer) */
+  function hasProp(id) { try { var h = JSON.parse(localStorage.getItem('eaa_party_hq_v1') || '{}') || {}; return !!(h.props && h.props[id]); } catch (e) { return false; } }
+  function planHtml(k) {
+    var rows = P.classes[k].students.map(function (s) {
+      var r = P.roles[s.role], ids = idsForRole(s.role);
+      var make = (r.props || []).map(function (t) { var pg = window.PROPS_MAP.map[t]; return pg ? esc(t) + ' <i style="color:#6d28d9">(blueprint: ' + pg.map(function (id) { return esc(window.PROPS_MAP.titles[id] || id); }).join(' + ') + ')</i>' : esc(t) + ' <i style="color:#0f766e">(from home: ' + esc(window.PROPS_MAP.home[t] || 'something from home') + ')</i>'; }).join('<br>');
+      return '<tr><td style="font-weight:700">' + esc(s.name) + '</td><td>' + esc(r.short) + '</td><td>' + make + '</td><td style="text-align:center">' + ids.length + '</td><td style="font-size:16pt;text-align:center">' + (hasProp(s.id) ? '✓' : '☐') + '</td></tr>';
+    }).join('');
+    return '<section class="sheet port" style="padding:10mm;font-family:Trebuchet MS,Segoe UI,sans-serif"><h2 style="margin:0 0 2mm">🎭 Prop plan · ' + esc(P.classes[k].label) + '</h2><p style="margin:0 0 3mm;color:#475569">Tuesday 27 October. ✓ = the pupil already showed the prop. Blueprint pages are on the Blueprints page.</p>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:10.5pt" border="1" cellpadding="5"><tr style="background:#ede9fe"><th>Pupil</th><th>Character</th><th>Props and how to make them</th><th>Pages</th><th>Ready</th></tr>' + rows + '</table></section>';
+  }
   function draw() {
-    role.style.display = mode.value === 'role' ? '' : 'none'; cls.style.display = mode.value === 'class' ? '' : 'none';
+    role.style.display = mode.value === 'role' ? '' : 'none'; cls.style.display = /class|pupils|spare|plan/.test(mode.value) ? '' : 'none';
     var h = '';
     if (mode.value === 'all') h = Object.keys(PAGES).map(function (id) { return pageHtml(id, ''); }).join('');
     else if (mode.value === 'role') { var ids = idsForRole(role.value); h = ids.length ? ids.map(function (id) { return pageHtml(id, P.roles[role.value].name); }).join('') : '<p class="empty">This character uses things from home (cups, teapot, plate). No blueprint needed.</p>'; }
+    else if (mode.value === 'plan') h = planHtml(cls.value);
+    else if (mode.value === 'spare') { var seen = []; P.classes[cls.value].students.forEach(function (s) { idsForRole(s.role).forEach(function (id) { if (seen.indexOf(id) < 0) seen.push(id); }); }); h = seen.map(function (id) { return pageHtml(id, 'spare · ' + P.classes[cls.value].label); }).join(''); }
+    else if (mode.value === 'pupils') { var need = P.classes[cls.value].students.filter(function (s) { return !hasProp(s.id); }); h = need.map(function (s) { return idsForRole(s.role).map(function (id) { return pageHtml(id, s.name + ' · ' + P.roles[s.role].short); }).join(''); }).join('') || '<p class="empty">Every pupil in this class has a prop (or uses things from home). Nothing to print.</p>'; }
     else h = P.classes[cls.value].students.map(function (s) { return idsForRole(s.role).map(function (id) { return pageHtml(id, s.name + ' · ' + P.roles[s.role].short); }).join(''); }).join('') || '<p class="empty">No pages.</p>';
     out.innerHTML = h;
   }

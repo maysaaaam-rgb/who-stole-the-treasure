@@ -223,5 +223,7 @@
     $('#again').onclick = function () { show(SH.mode); };
   }
 
+  /* links from the Tea Party HQ: ?class=4a&lesson=4 opens that class and lesson */
+  try { var q = /[?&]class=(\w+)/.exec(location.search), ql = /[?&]lesson=(\d)/.exec(location.search); if (q && P.classes[q[1]]) { cls = q[1]; save('eaa_party_class', cls); } if (ql && +ql[1] >= 1 && +ql[1] <= 4) { go(+ql[1]); return; } } catch (e) { /* normal start */ }
   head(); l1();
 })();

@@ -171,17 +171,23 @@ window.PARTY = {
 
   /* 1-minute conversations (~10 short lines). who = role key. */
   dialogues: {
+    /* Class 4B (25 Oct 2026): Alice's Sister joins Alice and the Hatter, so this is a trio; Alice's Mother is the tea guest with the plate of cake (no lines).
+       Every Hatter and Alice line is kept word for word; the Sister's lines use her own character sentences. */
     'hatter-alice': [
       ['hatter', 'Hello! I am the Mad Hatter. What is your name?'],
       ['alice',  'Hello! My name is Alice. I am ten.'],
+      ['sister', "Hello! I am Alice's sister. I have a big story book."],
       ['hatter', 'Nice to meet you, Alice. Do you like tea?'],
       ['alice',  "Yes, I do, but I don't like cold tea."],
+      ['sister', 'I like tea too, and I like quiet days.'],
       ['hatter', 'Look! I have a big blue hat. Do you like it?'],
       ['alice',  'Yes, I do. It is very funny!'],
       ['hatter', 'Can you sit here? We have tea and cake.'],
       ['alice',  'Yes, I can. I like cake too!'],
+      ['sister', 'Can I have some cake, please?'],
       ['hatter', 'Here is your cup. Have some tea!'],
-      ['alice',  'Thank you, Hatter. This is a nice tea party!']
+      ['alice',  'Thank you, Hatter. This is a nice tea party!'],
+      ['sister', 'Thank you! I like parties too!']
     ],
     'rabbit-whitequeen': [
       ['rabbit',     'Oh no! I am late! Good afternoon, Your Majesty.'],
@@ -387,8 +393,8 @@ window.PARTY = {
         { id: '4b-oyku',     name: 'Öykü',       role: 'redqueen',     pair: 'rq-trio',           photo: 'red-queen.jpg' },
         { id: '4b-ali',      name: 'Ali',        role: 'dragon',       pair: 'rq-trio',           photo: 'jabberwocky.jpg' },
         { id: '4b-lina',     name: 'Lina',       role: 'bandersnatch', pair: 'rq-trio',           photo: 'bandersnatch.jpg' },
-        { id: '4b-elif',     name: 'Elif A.',    role: 'sister',       pair: 'sister-mother',     photo: 'margaret.jpg' },
-        { id: '4b-elisa',    name: 'Elisa',      role: 'mother',       pair: 'sister-mother',     photo: 'helen.jpg' },
+        { id: '4b-elif',     name: 'Elif A.',    role: 'sister',       pair: 'hatter-alice',      photo: 'margaret.jpg' },
+        { id: '4b-elisa',    name: 'Elisa',      role: 'mother',       pair: 'hatter-alice',      photo: 'helen.jpg', guest: true },
         { id: '4b-egehan',   name: 'Egehan',     role: 'dum',          pair: 'tweedles',          photo: 'tweedledum.jpg' },
         { id: '4b-uras',     name: 'Uras',       role: 'dee',          pair: 'tweedles',          photo: 'tweedledee.jpg' },
         { id: '4b-utku',     name: 'Utku',       role: 'hamish',       pair: 'hamish-lowell',     photo: 'hamish.jpg' },
@@ -423,7 +429,7 @@ window.PARTY.partners = function (st) {
   var P = window.PARTY;
   if (!P || P.sceneAdded) return;
   var CAKE = {
-    'hatter-alice': [['hatter', 'Oh no! The big cake is gone!'], ['alice', "Don't worry. We can find it!"]],
+    'hatter-alice': [['hatter', 'Oh no! The big cake is gone!'], ['alice', "Don't worry. We can find it!"], ['sister', 'I can help you look!']],
     'hatter-alice-oyster': [['hatter', 'Oh no! The big cake is gone!'], ['alice', "Don't worry. We can find it!"], ['oyster', "I have a pearl. Let's look!"]],
     'rabbit-whitequeen': [['rabbit', 'I can see a small footprint.'], ['whitequeen', "Let's ask the March Hare."]],
     'hare-cheshire': [['hare', "I don't like cake. I like carrots!"], ['cheshire', 'I see everything. Ask the dog.']],
@@ -434,7 +440,7 @@ window.PARTY.partners = function (st) {
     'sister-mother': [['mother', 'Children, please be quiet. I hear a noise.'], ['sister', 'I can hear a snore!']],
     'twosisters': [['twosister1', 'Look at the big mushroom!'], ['twosister2', 'Something is on top!']],
     'absolem-hamish': [['absolem', "Here is the cake! It's on the mushroom."], ['hamish', "Hooray! Let's have tea together!"]],
-    'tweedles': [['dum', 'A snore? Look at the big cake plate!'], ['dee', 'Something is sleeping there.']],
+    'tweedles': [['dum', 'Shh! I can hear a snore!'], ['dee', 'Look at the big cake plate! Something is sleeping there.']],
     'hamish-lowell': [['hamish', 'Shh! Walk quietly.'], ['lowell', 'Count to three: one, two, three!']],
     'dormice': [['dormouse1', 'Wake up! You are on the cake!'], ['dormouse2', 'Oh, sorry. I was sleepy... and hungry!']]
   };
