@@ -318,13 +318,41 @@
     }
     return '<div class="cal-wk">' + cells + '</div>';
   }
+  /* links found in an event's title or note (lessons, packs, plans, games): shown as buttons, so the calendar opens the lesson directly */
+  function linksOf(e) {
+    var txt = (e.title || '') + ' ' + (e.note || '') + ' ' + (e.url || ''), out = [], seen = {};
+    var re = /(?:^|[\s(:,])((?:lesson-plans\/[A-Za-z0-9_.-]+)|(?:[a-z0-9][a-z0-9-]*\/[A-Za-z0-9_.\/-]*\.(?:html|pdf)(?:\?[A-Za-z0-9_=&.-]*)?)|(?:(?:quiz|review|unit|alice|revision|speaking)-[a-z0-9-]+\/?(?=[\s).,;]|$)))/g, m;
+    while ((m = re.exec(txt))) {
+      var u = m[1].replace(/[.,;]+$/, '');
+      if (u === 'alice-party-print/index.html') u = 'alice-party/index.html';   /* the old party hub: open the Tea Party HQ */
+      if (/^lesson-plans\//.test(u) && !/\.(pdf|docx)$/.test(u)) u += '.pdf';
+      if (!/\.(html|pdf)/.test(u) && !/\/$/.test(u)) u += '/';
+      if (!/\//.test(u) || seen[u]) continue; seen[u] = 1;
+      var lab = /^lesson-plans\//.test(u) ? '📋 Plan' : /\.pdf$/.test(u) ? '🖨️ Print' : /^game-maker\//.test(u) ? '🎮 Game' : /print|poster|paper|note|cards|sheet/.test(u) ? '🖨️ Open' : '▶ Open lesson';
+      out.push([lab, u]);
+    }
+    /* lessons named in words, not paths */
+    var g = /class-(\d)/.exec(e.classId || ''), ck = (/class-(\w+)/.exec(e.classId || '') || [])[1];
+    function add(lab, u) { if (!seen[u]) { seen[u] = 1; out.push([lab, u]); } }
+    var PACK = { 'Grade4-Revision-1-Words-and-Writing-Pack.pdf': 'g4-revision-1.html', 'Grade4A-Revision-1-Reading-and-Writing-Pack.pdf': 'g4a-revision-1.html', 'Grade3-Revision-1-Words-and-Writing-Pack.pdf': 'g3-revision-1.html', 'Grade3-Revision-2-Reading-and-Writing-Pack.pdf': 'g3-revision-2.html' };
+    out.slice().forEach(function (l) { var f = l[1].replace('revision-pack/', ''); if (PACK[f]) add('▶ Open lesson', 'revision-pack/' + PACK[f]); });
+    if (g && /Remember first|Smart mix/i.test(txt)) add('🎮 Game', 'game-maker/index.html?set=smart-g' + g[1] + '&game=cannon');
+    if (ck && /Alice rehearsal/i.test(txt)) add('▶ Open lesson', 'alice-party-rehearsal/index.html?class=' + ck + '&lesson=3');
+    if (/Tea Party/i.test(e.title || '')) add('▶ Open lesson', 'alice-party/index.html');
+    out.sort(function (a, b) { return (a[0] === '▶ Open lesson' ? 0 : a[0] === '🎮 Game' ? 1 : a[0] === '🖨️ Print' || a[0] === '🖨️ Open' ? 2 : 3) - (b[0] === '▶ Open lesson' ? 0 : b[0] === '🎮 Game' ? 1 : b[0] === '🖨️ Print' || b[0] === '🖨️ Open' ? 2 : 3); });
+    return out;
+  }
+  function linkBtns(e) {
+    var L = linksOf(e); if (!L.length) return '';
+    return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">' + L.map(function (l, i) { return '<a class="cal-b' + (i === 0 ? ' ok' : '') + '" style="text-decoration:none;padding:5px 10px;font-size:.85rem" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>'; }).join('') + '</div>';
+  }
   function sideHtml() {
     if (!st.sel) return '<div class="cal-side" style="color:#8b93a7">Tap a day to see everything on it, add an event, or open a lesson.</div>';
     var d = parse(st.sel), evs = eventsOn(d);
     return '<div class="cal-side"><div style="display:flex;align-items:center;gap:10px"><b style="font-size:1.05rem">' + d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</b><span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\',\'' + st.sel + '\')">+ Add event</button></div>' +
       (evs.length ? evs.map(function (e) {
         var T = TYPES[e.type] || TYPES.other, mine = !!e.id;
-        return '<div class="cal-row"><span class="cal-t">' + esc(e.time || '') + '</span><span class="cal-tag" style="background:' + T[2] + '">' + T[0] + ' ' + T[1] + '</span><span><b>' + (e.classId ? esc(shortName(e.classId)) + ' · ' : '') + esc(e.title) + '</b>' + (e.note ? '<div style="color:#8b93a7;font-size:.82rem">' + esc(e.note) + '</div>' : '') + '</span>' +
+        return '<div class="cal-row"><span class="cal-t">' + esc(e.time || '') + '</span><span class="cal-tag" style="background:' + T[2] + '">' + T[0] + ' ' + T[1] + '</span><span><b>' + (e.classId ? esc(shortName(e.classId)) + ' · ' : '') + esc(e.title) + '</b>' + (e.note ? '<div style="color:#8b93a7;font-size:.82rem">' + esc(e.note) + '</div>' : '') + linkBtns(e) + '</span>' +
           (mine ? '<button class="cal-x" title="Edit" onclick="CalendarView.edit(\'' + esc(e.id) + '\')">✏️</button><button class="cal-x" style="margin-left:0" title="Delete" onclick="CalendarView.del(\'' + esc(e.id) + '\')">🗑️</button>' : '') + '</div>';
       }).join('') : '<div style="color:#8b93a7;padding:10px 0">Nothing on this day.</div>') + '</div>';
   }
