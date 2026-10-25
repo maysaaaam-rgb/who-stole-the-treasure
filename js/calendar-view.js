@@ -233,6 +233,19 @@
       saveEvents(list); store().setCalendarFlag('seed18');
     } catch (e) { /* ignore */ }
   }
+  function g3RevOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed19')) return;
+      var list = customEvents().slice();
+      var r1 = 'Print revision-pack/Grade3-Revision-1-Words-and-Writing-Pack.pdf. Remember first (Game Maker, Smart mix Grade 3, Answer cards = On), write it, answer-card game, exit ticket. Plan: lesson-plans/Grade3-Revision-1-Words-and-Writing-Lesson-Plan.';
+      var r2 = 'Print revision-pack/Grade3-Revision-2-Reading-and-Writing-Pack.pdf. Remember first, read the story and the fact cards, write it, exit ticket. Plan: lesson-plans/Grade3-Revision-2-Reading-and-Writing-Lesson-Plan.';
+      var rows = [['2026-10-30', '10:30', 'class-3a', 'Revision 1: words and writing (no new content)', r1], ['2026-10-30', '09:00', 'class-3b', 'Revision 1: words and writing (no new content)', r1],
+        ['2026-11-02', '13:30', 'class-3a', 'Revision 2: reading and writing (no new content)', r2], ['2026-11-02', '16:05', 'class-3b', 'Revision 2: reading and writing (no new content)', r2]];
+      list = list.filter(function (e) { return !rows.some(function (r) { return e.date === r[0] && e.time === r[1] && e.classId === r[2]; }); });
+      rows.forEach(function (r, i) { list.push({ id: 'seed19-' + i, date: r[0], time: r[1], classId: r[2], type: 'unit4', title: r[3], note: r[4] }); });
+      saveEvents(list); store().setCalendarFlag('seed19');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -351,7 +364,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
