@@ -544,25 +544,33 @@
   };
 
   /* ================= Bowling ================= */
-  /* One canvas lane in perspective: the ball rolls away from the class and the pins tumble with simple physics.
-     Lane units: u across (-1..1 is the wood, the gutters go to 1.2), v down the lane (0 = foul line, 1 = pin deck end), z = height. */
+  /* Real ten-pin bowling on one canvas lane in perspective.
+     The physics runs top-down in inches on a real lane (41.5 in wide, head pin 60 ft from the foul line):
+     ball and pins collide, a falling pin sweeps its whole length into its neighbours, pins bounce off the kickbacks.
+     A strike only comes from the pocket; two balls per frame, so spares are possible.
+     Each ball takes three timed taps: where to stand, aim at the arrows, power (+ an optional curve). */
   GM.modes.bowling = {
     id: 'bowling', name: 'Pumpkin Bowling', nameClassic: 'Bowling', e: '🎳',
-    desc: 'Answer right, then aim the ball at the head pin. Knock down as many ghost pins as you can!',
-    descClassic: 'Answer right, then aim the ball at the head pin. Knock down as many pins as you can!',
-    fields: [{ key: 'frames', label: 'Frames for each team', opts: [[2, '2'], [3, '3'], [5, '5'], [8, '8']], def: 3 }],
+    desc: 'Answer right, then stand, aim and roll. Hit the pocket for a strike, and pick up your spare with the second ball!',
+    descClassic: 'Answer right, then stand, aim and roll. Hit the pocket for a strike, and pick up your spare with the second ball!',
+    fields: [
+      { key: 'frames', label: 'Frames for each team', opts: [[2, '2'], [3, '3'], [5, '5'], [8, '8']], def: 3 },
+      { key: 'level', label: 'Difficulty', opts: [['easy', 'Easy'], ['normal', 'Normal'], ['hard', 'Hard']], def: 'normal' }
+    ],
     start: function (ctx) {
       var st = GM.state, hal = st.theme === 'halloween';
+      var LV = { easy: { s: 0.75, green: [0.6, 0.92], noise: 0.55 }, normal: { s: 1.15, green: [0.7, 0.88], noise: 1 }, hard: { s: 1.6, green: [0.76, 0.86], noise: 1.4 } }[ctx.cfg.level] || null;
+      if (!LV) LV = { s: 1.15, green: [0.7, 0.88], noise: 1 };
       var totalFrames = (+ctx.cfg.frames || 3) * st.teams.length;
       var eng = E().createSession(ctx, {
         maxRounds: totalFrames,
-        data: { aim: 0, dirn: 1, aiming: false, dragging: false, dragPointerId: null }
+        data: { stage: 'idle', pos: 0, posDir: 1, ang: 0, angDir: 1, pow: 0, powDir: 1, spin: 0, ball: 1 }
       });
       var rootEl = ctx.root;
       rootEl.innerHTML = '';
 
       var info = U().h('div', { class: 'gm-info' });
-      var lane = U().h('div', { class: 'gm-lane gm-lane3d', title: 'Drag to aim, let go to roll!' });
+      var lane = U().h('div', { class: 'gm-lane gm-lane3d', title: 'Tap the lane (or press Space) to stop each bar' });
       var cv = U().h('canvas', { class: 'gm-lane-cv' });
       var g = cv.getContext('2d');
       var deck = U().h('div', { class: 'gm-bowl-deck' }); // where coins and sparks start
@@ -589,7 +597,7 @@
         eng.on('end', function () { try { ro.disconnect(); } catch (e) { /* ignore */ } });
       }
 
-      /* ---- perspective: s(v) = 1 / (1 + K v); the far end (v = 1) sits at yt ---- */
+      /* ---------- drawing space: u across (-1..1 = the wood), v down the lane, z up; s(v) = 1 / (1 + K v) ---------- */
       var K = 1.5;
       function geo() {
         var y1 = H * 0.98, yt = H * 0.4;
@@ -603,15 +611,23 @@
         var a = P(u0, v0), b = P(u1, v0), c = P(u1, v1), d = P(u0, v1);
         g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.lineTo(c.x, c.y); g.lineTo(d.x, d.y); g.closePath();
       }
+      function rr(x, y, w, h, r) {
+        g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+        g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+      }
 
-      var END = 1.04, PIT = 1.13;
+      /* ---------- physics space, in inches ---------- */
+      var LW = 20.75, KICK = 25.3, HEAD = 720, PITY = 800, PIN_R = 2.4, BALL_R = 4.3, MB = 6.8, MP = 1.6, PIN_LEN = 14;
+      function U_(x) { return x / LW; }
+      function V_(y) { return y < 690 ? y * (0.74 / 690) : 0.74 + (y - 690) * 0.0033; } // the pin deck is drawn a little deeper
+      var END = V_(HEAD + 52), PIT = V_(PITY + 25);
+
       var C = hal
         ? { wall0: '#3b1658', wall1: '#14061f', wood0: '#e7b77b', wood1: '#b9824a', stripe: '#8b3fd1', bulb: '#ff9a3c' }
         : { wall0: '#24407a', wall1: '#0d1733', wood0: '#f7cf93', wood1: '#c98e4f', stripe: '#e23b4a', bulb: '#ffe066' };
 
       function drawLane(now) {
         var G = geo(), far = P(0, PIT);
-        /* back wall and the lit sign over the pins */
         var wg = g.createLinearGradient(0, 0, 0, far.y);
         wg.addColorStop(0, C.wall1); wg.addColorStop(1, C.wall0);
         g.fillStyle = wg; g.fillRect(0, 0, W, far.y + 1);
@@ -622,7 +638,7 @@
           g.fillStyle = on ? C.bulb : 'rgba(255,255,255,.18)';
           g.beginPath(); g.arc(sl + (b + 0.5) * (sr - sl) / 13, sy - sh * 0.2, Math.max(2, sh * 0.2), 0, 7); g.fill();
         }
-        /* alley floor on both sides, with lines running to the back so the room has depth */
+        /* alley floor on both sides, with lines running to the back */
         var fl = g.createLinearGradient(0, far.y, 0, H);
         fl.addColorStop(0, C.wall1); fl.addColorStop(1, C.wall0);
         g.fillStyle = fl; g.fillRect(0, far.y, W, H - far.y);
@@ -631,21 +647,18 @@
           [-u, u].forEach(function (uu) { var p0 = P(uu, PIT), p1 = P(uu, -0.6); g.beginPath(); g.moveTo(p0.x, p0.y); g.lineTo(p1.x, p1.y); g.stroke(); });
         });
         g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, far.y - 2, W, 4);
-        /* low side walls (kickbacks) beside the gutters */
+        /* kickbacks beside the gutters */
         [[-1.42, -1.22], [1.22, 1.42]].forEach(function (s) {
           quad(s[0], s[1], -0.3, PIT); g.fillStyle = 'rgba(255,255,255,.1)'; g.fill();
           g.strokeStyle = 'rgba(255,255,255,.18)'; g.lineWidth = 2; g.stroke();
         });
-        /* pit behind the deck */
         quad(-1.25, 1.25, END, PIT); g.fillStyle = '#05070f'; g.fill();
-        /* gutters */
         [[-1.22, -1], [1, 1.22]].forEach(function (s) {
           quad(s[0], s[1], -0.3, END);
           var gg = g.createLinearGradient(P(s[0], 0).x, 0, P(s[1], 0).x, 0);
           gg.addColorStop(0, '#2b3448'); gg.addColorStop(0.5, '#59647d'); gg.addColorStop(1, '#2b3448');
           g.fillStyle = gg; g.fill();
         });
-        /* wood */
         quad(-1, 1, -0.3, END);
         var wd = g.createLinearGradient(0, G.y1, 0, far.y);
         wd.addColorStop(0, C.wood0); wd.addColorStop(1, C.wood1);
@@ -655,37 +668,36 @@
           g.fillStyle = i % 2 ? 'rgba(255,255,255,.07)' : 'rgba(120,60,0,.06)'; g.fill();
           g.strokeStyle = 'rgba(110,60,15,.14)'; g.lineWidth = 1; g.stroke();
         }
-        /* polish: a soft shine down the middle */
         quad(-0.45, 0.45, -0.3, END);
         var sh2 = g.createLinearGradient(P(-0.45, 0).x, 0, P(0.45, 0).x, 0);
         sh2.addColorStop(0, 'rgba(255,255,255,0)'); sh2.addColorStop(0.5, 'rgba(255,255,255,.22)'); sh2.addColorStop(1, 'rgba(255,255,255,0)');
         g.fillStyle = sh2; g.fill();
-        /* pin deck, a little lighter */
-        quad(-1, 1, 0.8, END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
-        /* aiming arrows and dots */
-        g.fillStyle = 'rgba(110,50,10,.38)';
+        quad(-1, 1, V_(HEAD - 12), END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
+        /* the seven arrows (15 ft) and the dots (7 ft), one every five boards like a real lane */
+        g.fillStyle = 'rgba(110,50,10,.42)';
         for (var a = -3; a <= 3; a++) {
-          var av = 0.3 + Math.abs(a) * 0.035, t = P(a * 0.24, av + 0.035), l = P(a * 0.24 - 0.045, av), r2 = P(a * 0.24 + 0.045, av);
+          var ay = 180 + Math.abs(a) * 12, ax = a * 5.2, t = P(U_(ax), V_(ay + 14)), l = P(U_(ax - 1.1), V_(ay)), r2 = P(U_(ax + 1.1), V_(ay));
           g.beginPath(); g.moveTo(t.x, t.y); g.lineTo(l.x, l.y); g.lineTo(r2.x, r2.y); g.closePath(); g.fill();
-          var d = P(a * 0.24, 0.08);
+          var d = P(U_(a * 5.2), V_(84));
           g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.025 + 1, d.k * 0.012 + 1, 0, 0, 7); g.fill();
         }
-        /* foul line */
         quad(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
       }
-      function rr(x, y, w, h, r) {
-        g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
-        g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
-      }
 
-      /* ---- pins ---- */
-      var PIN_H = 0.95, pins = [];
-      [[0], [-0.29, 0.29], [-0.58, 0, 0.58], [-0.87, -0.29, 0.29, 0.87]].forEach(function (row, r) {
-        row.forEach(function (u) { pins.push({ u0: u, v0: 0.84 + r * 0.05, r: r }); });
-      });
-      function setPin(p, dropFrom) {
-        p.u = p.u0; p.v = p.v0; p.z = dropFrom || 0; p.vu = 0; p.vv = 0; p.vz = 0;
-        p.tilt = 0; p.vt = 0; p.fly = false; p.hitAt = -1; p.t = 0; p.alpha = 1; p.down = false;
+      /* ---------- pins ---------- */
+      var SPOTS = [[0, 720], [-6, 730.4], [6, 730.4], [-12, 740.8], [0, 740.8], [12, 740.8], [-18, 751.2], [-6, 751.2], [6, 751.2], [18, 751.2]];
+      var pins = SPOTS.map(function (s, i) { return { id: i, sx: s[0], sy: s[1] }; });
+      function rackPin(p) {
+        p.x = p.sx + (Math.random() - 0.5) * 0.3; p.y = p.sy + (Math.random() - 0.5) * 0.3;
+        p.vx = 0; p.vy = 0; p.z = 0; p.vz = 0; p.down = false; p.fall = 0; p.dx = 0; p.dy = 1; p.alpha = 1; p.gone = false; p.drop = 1; p.rollDown = false; p.sweep = false;
+      }
+      function topple(p) {
+        if (p.down) return;
+        p.down = true; p.fall = 0; p.rollDown = true;
+        var sp = Math.hypot(p.vx, p.vy);
+        p.vz = Math.min(110, sp * 0.2); // a hard hit throws the pin up
+        if (sp > 1) { p.dx = p.vx / sp; p.dy = p.vy / sp; } else { var a = Math.random() * 6.28; p.dx = Math.cos(a); p.dy = Math.sin(a); }
+        A().play('pin_hit');
       }
       function pinShape(h) {
         g.beginPath(); g.moveTo(-0.09 * h, 0);
@@ -698,13 +710,21 @@
         g.closePath();
       }
       function drawPin(p) {
-        if (p.alpha <= 0) return;
-        var base = P(p.u, p.v, p.z), floor = P(p.u, p.v), h = base.k * PIN_H;
+        if (p.gone || p.alpha <= 0) return;
+        var base = P(U_(p.x), V_(p.y), (p.drop > 0 ? p.drop * 0.8 : 0) + p.z / LW), floor = P(U_(p.x), V_(p.y)), h = base.k * 0.95;
+        /* upright vector, or the pin lying along its fall direction (seen in perspective) */
+        var e = p.down ? Math.min(1, p.fall) : 0;
+        e = e * e * (3 - 2 * e);
+        var tip = P(U_(p.x + p.dx * 15), V_(p.y + p.dy * 15), 0.12);
+        var lx = tip.x - floor.x, ly = tip.y - floor.y;
+        var vx = lx * e, vy = -h * (1 - e) + ly * e, len = Math.max(4, Math.hypot(vx, vy));
         g.save();
         g.globalAlpha = Math.max(0, p.alpha);
         g.fillStyle = 'rgba(40,20,0,.28)';
-        g.beginPath(); g.ellipse(floor.x, floor.y, h * 0.17, h * 0.05, 0, 0, 7); g.fill();
-        g.translate(base.x, base.y); g.rotate(p.tilt);
+        g.beginPath(); g.ellipse(floor.x + vx * 0.4 * e, floor.y + vy * 0.4 * e, h * 0.17 + Math.abs(vx) * 0.4 * e, h * 0.05 + Math.abs(vy) * 0.25 * e, 0, 0, 7); g.fill();
+        g.translate(base.x, base.y);
+        g.rotate(Math.atan2(vx, -vy));
+        g.scale(1, len / h);
         pinShape(h);
         var pg = g.createLinearGradient(-0.2 * h, 0, 0.2 * h, 0);
         pg.addColorStop(0, '#b4bccd'); pg.addColorStop(0.38, '#ffffff'); pg.addColorStop(0.62, '#f1f3f8'); pg.addColorStop(1, '#a3adc2');
@@ -721,11 +741,11 @@
         g.restore();
       }
 
-      /* ---- ball ---- */
-      var BALL_R = 0.2, ball = { u: 0, v: 0.03, rot: 0, alpha: 1 };
-      function drawBall(now) {
+      /* ---------- ball ---------- */
+      var ball = { x: 0, y: 6, vx: 0, vy: 0, on: false, gutter: false, rot: 0, alpha: 1, hook: 0, done: true };
+      function drawBall() {
         if (ball.alpha <= 0) return;
-        var f = P(ball.u, ball.v), r = f.k * BALL_R, col = (eng.activeTeam() || {}).color || '#ff6f3d';
+        var f = P(U_(ball.x), V_(ball.y)), r = f.k * (BALL_R / LW), col = (eng.activeTeam() || {}).color || '#ff6f3d';
         var x = f.x, y = f.y - r;
         g.save(); g.globalAlpha = ball.alpha;
         g.fillStyle = 'rgba(30,15,0,.3)';
@@ -734,7 +754,6 @@
         var dk = g.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.2, x, y, r);
         dk.addColorStop(0, 'rgba(0,0,0,0)'); dk.addColorStop(0.6, 'rgba(0,0,0,.08)'); dk.addColorStop(1, 'rgba(0,0,0,.5)');
         g.fillStyle = dk; g.fill();
-        /* three finger holes roll over the top as the ball moves away */
         [[-0.2, 0], [0.2, 0], [0, 0.45]].forEach(function (hole) {
           var a = ball.rot + hole[1], c = Math.cos(a);
           if (c < 0.05) return;
@@ -748,107 +767,204 @@
         g.restore();
       }
 
-      /* ---- the aim guide, drawn on the lane ---- */
-      function startU(aim) { return aim * 0.3; }
-      function hitU(aim) { return aim * 0.9; }
-      function drawAim(now) {
+      /* ---------- aim guide and power meter ---------- */
+      var DEG = Math.PI / 180, MAX_ANG = 2.6;
+      function drawGuide(now) {
         var D = eng.state.data;
-        if (!(D.aiming && eng.state.phase === 'action')) return;
-        var a = P(startU(D.aim), 0.06), b = P(hitU(D.aim), 0.82);
-        var sweet = Math.abs(D.aim) < 0.12, col = sweet ? '#2ecc71' : (Math.abs(D.aim) < 0.4 ? '#ffe066' : '#ff5d73');
-        g.save();
-        g.lineCap = 'round';
-        g.strokeStyle = 'rgba(31,42,68,.35)'; g.lineWidth = 12;
+        if (D.stage !== 'aim' && D.stage !== 'power') return;
+        var ang = D.ang * DEG, y2 = 420, x2 = ball.x + Math.tan(ang) * y2;
+        var a = P(U_(ball.x), V_(40)), b = P(U_(x2), V_(y2));
+        g.save(); g.lineCap = 'round';
+        g.strokeStyle = 'rgba(31,42,68,.35)'; g.lineWidth = 10;
         g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
-        g.strokeStyle = col; g.lineWidth = 6; g.setLineDash([16, 12]); g.lineDashOffset = -(now * 0.06) % 28;
+        g.strokeStyle = D.stage === 'aim' ? '#ffe066' : '#ffffff'; g.lineWidth = 5; g.setLineDash([14, 10]);
+        g.lineDashOffset = D.stage === 'aim' ? -(now * 0.06) % 24 : 0;
         g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
         g.setLineDash([]);
-        var pulse = 1 + Math.sin(now / 140) * 0.12;
-        g.lineWidth = 4; g.strokeStyle = col;
-        g.beginPath(); g.ellipse(b.x, b.y, b.k * 0.22 * pulse, b.k * 0.08 * pulse, 0, 0, 7); g.stroke();
+        g.fillStyle = g.strokeStyle; g.beginPath(); g.arc(b.x, b.y, 6, 0, 7); g.fill();
+        /* the chosen curve: a small arrow bending at the far end */
+        if (D.spin) {
+          var c1 = P(U_(x2 + Math.tan(ang) * 200 + D.spin * 7), V_(y2 + 200));
+          g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 4; g.setLineDash([6, 8]);
+          g.beginPath(); g.moveTo(b.x, b.y); g.quadraticCurveTo(P(U_(x2 + Math.tan(ang) * 120), V_(y2 + 120)).x, P(0, V_(y2 + 120)).y, c1.x, c1.y); g.stroke();
+          g.setLineDash([]);
+        }
+        g.restore();
+      }
+      function drawMeter() {
+        var D = eng.state.data;
+        if (D.stage !== 'power') return;
+        var x = P(1.55, 0.12).x + 10, bh = H * 0.42, bw = Math.max(20, W * 0.022), y = H * 0.93 - bh;
+        if (x + bw > W - 8) x = W - bw - 8;
+        g.save();
+        g.fillStyle = 'rgba(0,0,0,.45)'; rr(x - 5, y - 5, bw + 10, bh + 10, 10); g.fill();
+        var mg = g.createLinearGradient(0, y + bh, 0, y);
+        mg.addColorStop(0, '#38bdf8'); mg.addColorStop(LV.green[0], '#ffe066'); mg.addColorStop(LV.green[1], '#2ecc71'); mg.addColorStop(1, '#ff5d73');
+        g.fillStyle = mg; rr(x, y, bw, bh, 7); g.fill();
+        g.fillStyle = 'rgba(46,204,113,.95)';
+        g.fillRect(x, y + bh * (1 - LV.green[1]), bw, bh * (LV.green[1] - LV.green[0]));
+        g.strokeStyle = '#fff'; g.lineWidth = 2; g.strokeRect(x, y + bh * (1 - LV.green[1]), bw, bh * (LV.green[1] - LV.green[0]));
+        var my = y + bh * (1 - D.pow);
+        g.fillStyle = '#fff'; g.strokeStyle = '#1f2a44'; g.lineWidth = 3;
+        rr(x - 8, my - 5, bw + 16, 10, 5); g.fill(); g.stroke();
+        g.font = '800 ' + Math.round(Math.max(12, bw * 0.6)) + 'px Fredoka, system-ui, sans-serif';
+        g.textAlign = 'center'; g.fillStyle = '#fff'; g.fillText('POWER', x + bw / 2, y - 12);
         g.restore();
       }
 
-      /* ---- big text pop (STRIKE!) ---- */
+      /* ---------- big text pop (STRIKE! SPARE!) ---------- */
       var pop = null;
       function drawPop(now) {
         if (!pop) return;
         var t = (now - pop.t0) / 1000;
-        if (t > 1.6) { pop = null; return; }
+        if (t > 1.7) { pop = null; return; }
         var sc = t < 0.25 ? 0.4 + t / 0.25 * 0.8 : (t < 0.4 ? 1.2 - (t - 0.25) / 0.15 * 0.2 : 1);
         g.save();
-        g.globalAlpha = t > 1.2 ? Math.max(0, 1 - (t - 1.2) / 0.4) : 1;
+        g.globalAlpha = t > 1.3 ? Math.max(0, 1 - (t - 1.3) / 0.4) : 1;
         g.translate(W / 2, H * 0.62); g.scale(sc, sc); g.rotate(-0.05);
-        g.font = '900 ' + Math.round(Math.min(W * 0.1, H * 0.2)) + 'px Fredoka, "Baloo 2", system-ui, sans-serif';
+        g.font = '900 ' + Math.round(Math.min(W * 0.09, H * 0.18)) + 'px Fredoka, "Baloo 2", system-ui, sans-serif';
         g.textAlign = 'center'; g.textBaseline = 'middle';
         g.lineJoin = 'round'; g.lineWidth = Math.min(W, H) * 0.03; g.strokeStyle = '#1f2a44'; g.strokeText(pop.text, 0, 0);
         g.fillStyle = pop.col; g.fillText(pop.text, 0, 0);
         g.restore();
       }
+      function say(text, col) { pop = { text: text, col: col, t0: performance.now() }; }
 
-      /* ---- simulation ---- */
-      var rollT = -1, rollDur = 1.15, rollMode = '', rollAim = 0, gutterSide = 1, clock = 0;
-      function ballAt(t) { // t 0..1 of the roll
-        var v = 0.03 + (PIT - 0.03) * (1 - Math.pow(1 - t, 1.35));
-        if (rollMode === 'gutter') {
-          return { v: v, u: gutterSide * Math.min(1.11, 0.15 + v * 4) };
-        }
-        return { v: v, u: startU(rollAim) + (hitU(rollAim) - startU(rollAim)) * Math.min(1.25, v / 0.84) };
+      /* ---------- simulation ---------- */
+      function hit(a, ma, b, mb, e) { // circles a and b touching: push apart and swap momentum along the line between them
+        var dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.001, nx = dx / d, ny = dy / d;
+        var rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        var over = (a.rad + b.rad) - d, im = 1 / ma + 1 / mb;
+        if (over > 0) { a.x -= nx * over * (1 / ma) / im; a.y -= ny * over * (1 / ma) / im; b.x += nx * over * (1 / mb) / im; b.y += ny * over * (1 / mb) / im; }
+        if (rel >= 0) return 0;
+        var j = -(1 + e) * rel / im;
+        a.vx -= j / ma * nx; a.vy -= j / ma * ny; b.vx += j / mb * nx; b.vy += j / mb * ny;
+        return j;
       }
-      function step(dt) {
-        clock += dt;
-        if (rollT >= 0) {
-          rollT = Math.min(1, rollT + dt / rollDur);
-          var b = ballAt(rollT);
-          ball.u = b.u; ball.v = b.v; ball.rot += dt * 9;
-          ball.alpha = ball.v > END ? Math.max(0, 1 - (ball.v - END) / (PIT - END)) : 1;
-          pins.forEach(function (p) {
-            if (p.down && !p.fly && p.hitAt < 0 && ball.v >= p.v0 - 0.04) {
-              p.hitAt = clock + (Math.abs(p.u0 - ball.u) > 0.35 ? 0.1 + Math.random() * 0.18 : 0);
-            }
-          });
+      function segDist(px, py, ax, ay, bx, by) {
+        var vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy, t = l2 ? Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2)) : 0;
+        var cx = ax + vx * t, cy = ay + vy * t;
+        return { d: Math.hypot(px - cx, py - cy), cx: cx, cy: cy };
+      }
+      ball.rad = BALL_R;
+      pins.forEach(function (p) { p.rad = PIN_R; });
+
+      var simT = 0, slowEnd = -1; // slow motion while the ball meets the pins
+      function simStep(h) {
+        simT += h;
+        if (ball.on && !ball.gutter && slowEnd < 0 && ball.y > HEAD - 40) slowEnd = simT + 0.5;
+        if (ball.on) {
+          if (!ball.gutter && ball.y > 420 && ball.y < HEAD) ball.vx += ball.hook * h * Math.min(1, (ball.y - 420) / 160);
+          ball.x += ball.vx * h; ball.y += ball.vy * h; ball.rot += h * ball.vy / 30;
+          ball.vy = Math.max(60, ball.vy - 8 * h);
+          if (!ball.gutter && Math.abs(ball.x) > LW - 0.8) {
+            ball.gutter = true; ball.vx = 0; ball.x = (ball.x > 0 ? 1 : -1) * (LW + 2.3); A().play('hunt_empty');
+          }
+          if (ball.y > PITY + 30) { ball.on = false; ball.alpha = 0; }
+          else if (ball.y > PITY) ball.alpha = Math.max(0, 1 - (ball.y - PITY) / 30);
+          if (!ball.gutter) {
+            pins.forEach(function (p) {
+              if (p.gone || Math.hypot(p.x - ball.x, p.y - ball.y) > BALL_R + PIN_R) return;
+              var j = hit(ball, MB, p, MP, 0.7);
+              if (!p.down && j / MP > 18) topple(p);
+              if (j > 300) J().shake(3);
+            });
+          }
         }
         pins.forEach(function (p) {
-          if (p.hitAt >= 0 && !p.fly && clock >= p.hitAt) {
-            p.fly = true;
-            p.vu = (p.u0 - ball.u) * 2.2 + (Math.random() - 0.5) * 1.2;
-            p.vv = 0.35 + Math.random() * 0.5;
-            p.vz = 0.7 + Math.random() * 0.8;
-            p.vt = (p.vu >= 0 ? 1 : -1) * (5 + Math.random() * 7);
-            A().play('pin_hit');
+          if (p.gone) return;
+          if (p.down && p.fall < 1) p.fall = Math.min(1, p.fall + h / 0.24);
+          var sp = Math.hypot(p.vx, p.vy);
+          if (sp > 0) {
+            var dec = (p.down ? 55 : 260) * h, k = sp > dec ? (sp - dec) / sp : 0;
+            p.vx *= k; p.vy *= k;
+            p.x += p.vx * h; p.y += p.vy * h;
           }
-          if (p.fly || p.z > 0 || p.vz !== 0) {
-            p.u += p.vu * dt; p.v += p.vv * dt; p.z += p.vz * dt; p.vz -= 5 * dt;
-            if (p.z <= 0) {
-              p.z = 0; p.vz = Math.abs(p.vz) < 0.4 ? 0 : -p.vz * 0.35;
-              p.vu *= 0.6; p.vv *= 0.6;
-              if (p.fly) p.vt *= 0.7;
-            }
-            if (p.fly) {
-              p.tilt += p.vt * dt; p.t += dt;
-              if (p.t > 0.8 || p.v > END || Math.abs(p.u) > 1.05) p.alpha -= dt * 1.6;
-            }
+          if (p.z > 0 || p.vz > 0) { p.z += p.vz * h; p.vz -= 386 * h; if (p.z <= 0) { p.z = 0; p.vz = p.vz < -25 ? -p.vz * 0.3 : 0; } }
+          if (p.y > HEAD - 30 && Math.abs(p.x) > KICK - PIN_R) { // the kickback walls throw pins back in
+            p.x = (p.x > 0 ? 1 : -1) * (KICK - PIN_R); p.vx = -p.vx * 0.55;
           }
+          if (!p.down && Math.abs(p.x) > LW + 0.5) topple(p);
+          if (p.y > PITY) { if (!p.down) topple(p); p.alpha = Math.max(0, p.alpha - h * 2); if (p.alpha <= 0) p.gone = true; }
         });
+        /* pin against pin: a falling pin sweeps its whole length */
+        for (var i = 0; i < pins.length; i++) {
+          var a = pins[i];
+          if (a.gone) continue;
+          for (var j = 0; j < pins.length; j++) {
+            if (i === j) continue;
+            var b = pins[j];
+            if (b.gone || b.down) continue;
+            if (a.down) {
+              var spA = Math.hypot(a.vx, a.vy);
+              if (spA < 30 && a.fall >= 1) continue;
+              var L = PIN_LEN * a.fall, s = segDist(b.x, b.y, a.x, a.y, a.x + a.dx * L, a.y + a.dy * L);
+              if (s.d < PIN_R * 2) {
+                var nx = (b.x - s.cx) / (s.d || 0.01), ny = (b.y - s.cy) / (s.d || 0.01), push = 12 + spA * 0.3;
+                b.vx = a.vx * 0.7 + nx * push + a.dx * 30 * (1 - a.fall);
+                b.vy = a.vy * 0.7 + ny * push + a.dy * 30 * (1 - a.fall);
+                a.vx *= 0.8; a.vy *= 0.8;
+                topple(b);
+              }
+            } else if (j > i && Math.hypot(a.x - b.x, a.y - b.y) < PIN_R * 2) {
+              var jj = hit(a, MP, b, MP, 0.5);
+              if (jj / MP > 18) { topple(a); topple(b); }
+            }
+          }
+        }
+      }
+      function settled() {
+        if (ball.on && ball.y < PITY) return false;
+        return pins.every(function (p) { return p.gone || (Math.hypot(p.vx, p.vy) < 6 && (!p.down || p.fall >= 1)); });
       }
 
-      function resetLane() {
-        pins.forEach(function (p) { setPin(p, 0.9 + p.r * 0.12); });
-        rollT = -1; rollMode = '';
-        ball.u = 0; ball.v = 0.03; ball.rot = 0; ball.alpha = 1;
+      /* ---------- turns ---------- */
+      function rack() { pins.forEach(rackPin); }
+      function resetBall() {
+        ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0; ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
       }
+      function sweep() { pins.forEach(function (p) { if (p.down) p.sweep = true; p.rollDown = false; }); }
+      function standing() { return pins.filter(function (p) { return !p.gone && !p.down && !p.sweep; }).length; }
 
-      function showTurn() {
+      function header(text, btns) {
         var t = eng.activeTeam();
-        eng.state.data.aiming = false;
-        eng.setPhase('idle');
         info.innerHTML = '';
         info.style.setProperty('--c', t.color);
         info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', {
-          text: t.name + ': answer to bowl! (frame ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')'
-        }));
-        info.appendChild(U().btn('❓ Ask me', 'big amber', ask));
+        info.appendChild(U().h('b', { text: text }));
+        (btns || []).forEach(function (b) { info.appendChild(b); });
+      }
+      function spinRow() {
+        var D = eng.state.data, row = U().h('div', { class: 'gm-bowl-spin' });
+        [[-1, '↶ Curve'], [0, 'Straight'], [1, 'Curve ↷']].forEach(function (o) {
+          var b = U().btn(o[1], 'gm-bowl-spinbtn' + (D.spin === o[0] ? ' on' : ''), function () {
+            D.spin = o[0];
+            [].forEach.call(row.children, function (c) { c.classList.remove('on'); });
+            b.classList.add('on');
+          });
+          row.appendChild(b);
+        });
+        return row;
+      }
+      var STEP_TXT = {
+        pos: '1️⃣ Where do you stand? Tap the lane to stop the ball.',
+        aim: '2️⃣ Aim at the arrows. Tap to lock your line.',
+        power: '3️⃣ Power! Tap when the bar is in the green.'
+      };
+      function setStage(stage) {
+        var D = eng.state.data;
+        D.stage = stage;
+        var pre = D.ball === 2 ? 'Ball 2 (' + standing() + ' left) · ' : '';
+        header(pre + STEP_TXT[stage], [U().btn('✋ STOP!', 'big green', lock), spinRow()]);
+        if (stage === 'pos' && D.ball === 1) res.textContent = '💡 Tip: hit just beside the head pin (the pocket) for a strike. A curve helps!';
+      }
+
+      function showTurn() {
+        var t = eng.activeTeam(), D = eng.state.data;
+        D.stage = 'idle'; D.ball = 1; D.spin = 0;
+        eng.setPhase('idle');
+        rack(); resetBall();
+        header(t.name + ': answer to bowl! (frame ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')', [U().btn('❓ Ask me', 'big amber', ask)]);
         res.textContent = '';
       }
 
@@ -856,138 +972,154 @@
         if (eng.state.phase !== 'idle' || !eng.state.alive) return;
         var r = await eng.ask(null, { label: 'Frame ' + (eng.state.round + 1) });
         if (!eng.state.alive || r.cancelled) return;
+        var D = eng.state.data;
         if (!r.ok) {
-          eng.setPhase('animating');
+          eng.setPhase('animating'); D.stage = 'roll';
+          header('🌀 Oops! The ball slipped into the gutter.');
           res.textContent = '🌀 Gutter ball! Next team’s frame.';
-          gutterSide = Math.random() < 0.5 ? -1 : 1;
-          rollMode = 'gutter'; rollT = 0;
+          resetBall(); ball.on = true; ball.gutter = true; ball.x = (Math.random() < 0.5 ? -1 : 1) * (LW + 2.3); ball.vy = 300;
           A().play('hunt_empty');
-          await eng.wait(1500);
+          await eng.wait(2600);
           if (!eng.state.alive) return;
-          resetLane();
-          if (eng.advanceRound()) {
-            eng.nextTurn();
-            showTurn();
-          }
+          if (eng.advanceRound()) { eng.nextTurn(); showTurn(); }
           return;
         }
-        var t = eng.activeTeam();
-        info.innerHTML = '';
-        info.style.setProperty('--c', t.color);
-        info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', { text: '🎯 Aim at the head pin: drag on the lane, or press ROLL when the line is green!' }));
-        info.appendChild(U().btn('🎳 ROLL!', 'big green', roll));
-        var D = eng.state.data;
-        D.aim = -0.85; D.dirn = 1; D.dragging = false; D.dragPointerId = null; D.aiming = true;
         eng.setPhase('action');
+        D.pos = -12; D.posDir = 1;
+        setStage('pos');
       }
 
-      function aimFromClientX(clientX) {
-        var r = lane.getBoundingClientRect();
-        return Math.max(-1, Math.min(1, (clientX - r.left - r.width / 2) / (geo().half * 0.34)));
+      function lock() {
+        var D = eng.state.data;
+        if (eng.state.phase !== 'action' || !eng.state.alive) return;
+        A().play('tap');
+        if (D.stage === 'pos') { ball.x = D.pos; D.ang = -MAX_ANG; D.angDir = 1; setStage('aim'); }
+        else if (D.stage === 'aim') { D.pow = 0; D.powDir = 1; setStage('power'); }
+        else if (D.stage === 'power') launch();
       }
       eng.listen(lane, 'pointerdown', function (e) {
-        var D = eng.state.data;
-        if (eng.state.phase !== 'action' || !D.aiming) return;
+        if (eng.state.phase !== 'action') return;
         e.preventDefault();
-        D.dragging = true; D.dragMoved = false; D.dragStartX = e.clientX; D.dragPointerId = e.pointerId;
-        try { lane.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        lock();
       });
-      eng.listen(lane, 'pointermove', function (e) {
-        var D = eng.state.data;
-        if (!D.dragging || e.pointerId !== D.dragPointerId || !D.aiming || eng.state.phase !== 'action') return;
+      eng.listen(document, 'keydown', function (e) {
+        if (e.code !== 'Space' || eng.state.phase !== 'action') return;
         e.preventDefault();
-        if (Math.abs(e.clientX - D.dragStartX) > 5) D.dragMoved = true;
-        if (D.dragMoved) D.aim = aimFromClientX(e.clientX);
+        lock();
       });
-      function finishDrag(e) {
-        var D = eng.state.data;
-        if (!D.dragging || (e.pointerId != null && e.pointerId !== D.dragPointerId)) return;
-        e.preventDefault();
-        if (D.dragMoved) D.aim = aimFromClientX(e.clientX);
-        D.dragging = false; D.dragPointerId = null;
-        try { lane.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
-        if (D.aiming && eng.state.phase === 'action') roll();
-      }
-      eng.listen(lane, 'pointerup', finishDrag);
-      eng.listen(lane, 'pointercancel', finishDrag);
 
-      async function roll() {
+      async function launch() {
         var D = eng.state.data;
-        if (!D.aiming || eng.state.phase !== 'action' || !eng.state.alive) return;
-        D.aiming = false; D.dragging = false;
+        D.stage = 'roll';
         eng.setPhase('animating');
-
-        var err = Math.abs(D.aim); // 0 = head pin, 1 = edge of the lane
-        var n = err < 0.12 ? 10 : Math.max(1, Math.min(9, Math.round(10 - err * 9)));
-        var impact = hitU(D.aim);
-        pins.slice().sort(function (a, b) {
-          return (Math.abs(a.u0 - impact) + a.r * 0.12) - (Math.abs(b.u0 - impact) + b.r * 0.12);
-        }).slice(0, n).forEach(function (p) { p.down = true; });
-
-        rollAim = D.aim; rollMode = 'roll'; rollT = 0;
-        var tb = eng.activeTeam();
-        info.innerHTML = '';
-        info.appendChild(U().monFace(tb.mon, 46));
-        info.appendChild(U().h('b', { text: tb.name + ' is rolling... 🎳' }));
+        var g0 = LV.green[0], g1 = LV.green[1], miss = D.pow < g0 ? g0 - D.pow : (D.pow > g1 ? D.pow - g1 : 0);
+        /* a release outside the green wobbles the line; too soft also hooks less */
+        var ang = (D.ang + (Math.random() - 0.5) * (0.12 + miss * 7) * LV.noise) * DEG;
+        var speed = 230 + D.pow * 150;
+        ball.vx = Math.sin(ang) * speed; ball.vy = Math.cos(ang) * speed;
+        ball.hook = D.spin * (22 + 10 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
+        ball.on = true; slowEnd = -1;
+        header(eng.activeTeam().name + ' is rolling... 🎳');
         A().play('bowling_roll');
-        await eng.wait(rollDur * 1000 + 450);
-        if (!eng.state.alive) return;
-
-        var strike = (n === 10), pts = n * 5 + (strike ? 20 : 0);
-        if (strike) {
-          A().play('bowling_strike');
-          if (hal) A().play('ghost');
-          J().shake(9);
-          J().shockwave(deck, '#ffe066', 220, 560);
-          U().confetti(32);
-          pop = { text: 'STRIKE!', col: '#ffe066', t0: performance.now() };
-          res.textContent = '🌟 STRIKE! All 10 pins! +' + pts;
-        } else {
-          A().play(n >= 6 ? 'slot_mid' : 'slot_low');
-          J().shake(4);
-          J().sparks(deck, 10, ['#ffffff', '#ffe066', '#38bdf8'], 6);
-          pop = { text: n + (n === 1 ? ' PIN!' : ' PINS!'), col: n >= 7 ? '#2ecc71' : '#38bdf8', t0: performance.now() };
-          res.textContent = '🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' knocked down! +' + pts;
+        var t0 = simT;
+        while (eng.state.alive) {
+          await eng.wait(100);
+          if (simT - t0 > 1.2 && settled()) break;
+          if (simT - t0 > 7) break;
         }
-        eng.award(eng.state.turn, pts, deck, (strike ? 'STRIKE +' : '+') + pts);
-        U().wobble(document.getElementById('gm-team-' + eng.state.turn));
+        if (!eng.state.alive) return;
+        afterBall();
+      }
 
+      async function afterBall() {
+        var D = eng.state.data, n = pins.filter(function (p) { return p.rollDown; }).length, left = pins.filter(function (p) { return !p.down; }).length;
+        var pts = n * 5, strike = D.ball === 1 && left === 0, spare = D.ball === 2 && left === 0;
+        if (strike) {
+          pts += 20;
+          A().play('bowling_strike'); if (hal) A().play('ghost');
+          J().shake(9); J().shockwave(deck, '#ffe066', 220, 560); U().confetti(36);
+          say('STRIKE!', '#ffe066');
+          res.textContent = '🌟 STRIKE! All 10 pins with one ball! +' + pts;
+        } else if (spare) {
+          pts += 10;
+          A().play('bowling_strike'); J().shake(6); U().confetti(20);
+          say('SPARE!', '#2ecc71');
+          res.textContent = '✨ SPARE! You got the last ' + n + (n === 1 ? ' pin' : ' pins') + '! +' + pts;
+        } else if (n === 0) {
+          A().play('slot_low');
+          say(ball.gutter ? 'GUTTER!' : 'MISS!', '#ff5d73');
+          res.textContent = (ball.gutter ? '🌀 Gutter ball' : '😮 No pins this time') + (D.ball === 1 ? '. Try again with ball 2!' : '.');
+        } else {
+          A().play(n >= 6 ? 'slot_mid' : 'slot_low'); J().shake(4);
+          J().sparks(deck, 10, ['#ffffff', '#ffe066', '#38bdf8'], 6);
+          var split = D.ball === 1 && isSplit();
+          say(split ? 'SPLIT!' : n + (n === 1 ? ' PIN' : ' PINS'), split ? '#ff9a3c' : (n >= 7 ? '#2ecc71' : '#38bdf8'));
+          res.textContent = '🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down! +' + pts + (split ? ' (a split: hard spare!)' : '');
+        }
+        if (pts > 0) {
+          eng.award(eng.state.turn, pts, deck, (strike ? 'STRIKE +' : spare ? 'SPARE +' : '+') + pts);
+          U().wobble(document.getElementById('gm-team-' + eng.state.turn));
+        }
         await eng.wait(1700);
         if (!eng.state.alive) return;
-        resetLane();
-        if (eng.advanceRound()) {
-          eng.nextTurn();
-          showTurn();
+        if (D.ball === 1 && !strike) {
+          sweep();
+          D.ball = 2;
+          resetBall();
+          eng.setPhase('action');
+          D.pos = -12; D.posDir = 1;
+          setStage('pos');
+          return;
         }
+        if (eng.advanceRound()) { eng.nextTurn(); showTurn(); }
+      }
+      function isSplit() { // head pin down and two standing pins with a gap between them
+        var up = pins.filter(function (p) { return !p.down; });
+        if (pins[0].down !== true || up.length < 2) return false;
+        up.sort(function (a, b) { return a.x - b.x; });
+        for (var i = 1; i < up.length; i++) if (up[i].x - up[i - 1].x > 13) return true;
+        return false;
       }
 
+      /* ---------- loop ---------- */
       eng.raf(function (dt, now) {
         var D = eng.state.data;
-        if (D.aiming && eng.state.phase === 'action' && !D.dragging) {
-          D.aim += D.dirn * dt * 1.25;
-          if (D.aim >= 1) { D.aim = 1; D.dirn = -1; }
-          if (D.aim <= -1) { D.aim = -1; D.dirn = 1; }
+        if (eng.state.phase === 'action') {
+          if (D.stage === 'pos') {
+            D.pos += D.posDir * dt * 20 * LV.s;
+            if (D.pos > 14) { D.pos = 14; D.posDir = -1; }
+            if (D.pos < -14) { D.pos = -14; D.posDir = 1; }
+            ball.x = D.pos;
+          } else if (D.stage === 'aim') {
+            D.ang += D.angDir * dt * 3.6 * LV.s;
+            if (D.ang > MAX_ANG) { D.ang = MAX_ANG; D.angDir = -1; }
+            if (D.ang < -MAX_ANG) { D.ang = -MAX_ANG; D.angDir = 1; }
+          } else if (D.stage === 'power') {
+            D.pow += D.powDir * dt * 1.25 * LV.s;
+            if (D.pow > 1) { D.pow = 1; D.powDir = -1; }
+            if (D.pow < 0) { D.pow = 0; D.powDir = 1; }
+          }
         }
-        if (D.aiming && eng.state.phase === 'action') { ball.u = startU(D.aim); }
-        step(dt);
+        var sdt = (slowEnd > 0 && simT < slowEnd) ? dt * 0.33 : dt, n = Math.max(1, Math.ceil(sdt / (1 / 480)));
+        for (var i = 0; i < n; i++) simStep(sdt / n);
+        pins.forEach(function (p) {
+          if (p.drop > 0) p.drop = Math.max(0, p.drop - dt * 3.2);
+          if (p.sweep && !p.gone) { p.alpha -= dt * 2.5; if (p.alpha <= 0) p.gone = true; }
+        });
+
         g.clearRect(0, 0, W, H);
         drawLane(now);
-        drawAim(now);
-        /* far things first, so near pins and the ball cover them */
-        pins.slice().sort(function (a, b) { return b.v - a.v; }).forEach(function (p) {
-          if (p.v >= ball.v) drawPin(p);
-        });
-        drawBall(now);
-        pins.slice().sort(function (a, b) { return b.v - a.v; }).forEach(function (p) {
-          if (p.v < ball.v) drawPin(p);
-        });
+        var things = pins.filter(function (p) { return !p.gone; }).map(function (p) { return { y: p.y, f: function () { drawPin(p); } }; });
+        things.push({ y: ball.y + 0.01, f: drawBall });
+        things.sort(function (a, b) { return b.y - a.y; }).forEach(function (t) { t.f(); });
+        drawGuide(now);
+        drawMeter();
         drawPop(now);
         return true;
       });
 
+      if (/[?&]test=1/.test(root.location.search)) { root.__bd = eng.state.data; root.__bsim = { pins: pins, ball: ball, step: simStep, rack: rack, LV: LV }; } // local tests only
       eng.setTurn(0, true);
-      resetLane();
       showTurn();
     }
   };
