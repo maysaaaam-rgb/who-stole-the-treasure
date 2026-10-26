@@ -544,81 +544,298 @@
   };
 
   /* ================= Bowling ================= */
+  /* One canvas lane in perspective: the ball rolls away from the class and the pins tumble with simple physics.
+     Lane units: u across (-1..1 is the wood, the gutters go to 1.2), v down the lane (0 = foul line, 1 = pin deck end), z = height. */
   GM.modes.bowling = {
     id: 'bowling', name: 'Pumpkin Bowling', nameClassic: 'Bowling', e: '🎳',
-    desc: 'Answer right, then stop the aim bar in the middle. Knock down as many ghost pins as you can!',
-    descClassic: 'Answer right, then stop the aim bar in the middle. Knock down as many pins as you can!',
+    desc: 'Answer right, then aim the ball at the head pin. Knock down as many ghost pins as you can!',
+    descClassic: 'Answer right, then aim the ball at the head pin. Knock down as many pins as you can!',
     fields: [{ key: 'frames', label: 'Frames for each team', opts: [[2, '2'], [3, '3'], [5, '5'], [8, '8']], def: 3 }],
     start: function (ctx) {
       var st = GM.state, hal = st.theme === 'halloween';
       var totalFrames = (+ctx.cfg.frames || 3) * st.teams.length;
       var eng = E().createSession(ctx, {
         maxRounds: totalFrames,
-        data: { pos: 0.5, targetPos: 0.5, dirn: 1, aiming: false, dragging: false, dragPointerId: null }
+        data: { aim: 0, dirn: 1, aiming: false, dragging: false, dragPointerId: null }
       });
       var rootEl = ctx.root;
       rootEl.innerHTML = '';
 
       var info = U().h('div', { class: 'gm-info' });
-      var lane = U().h('div', { class: 'gm-lane', style: 'cursor:pointer;', title: 'Drag to aim or tap to roll!' });
-      var laneCv = U().h('canvas', { class: 'gm-lane-cv', width: 800, height: 480, style: 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;' });
-      var laneCtx = laneCv.getContext('2d');
-      var pinsEl = U().h('div', { class: 'gm-pins', style: 'z-index:2;' });
-      var ball = U().h('div', { class: 'gm-ball', style: 'z-index:3;' });
-      var aim = U().h('div', { class: 'gm-aim', style: 'cursor:ew-resize;' }, [U().h('i')]);
+      var lane = U().h('div', { class: 'gm-lane gm-lane3d', title: 'Drag to aim, let go to roll!' });
+      var cv = U().h('canvas', { class: 'gm-lane-cv' });
+      var g = cv.getContext('2d');
+      var deck = U().h('div', { class: 'gm-bowl-deck' }); // where coins and sparks start
       var res = U().h('div', { class: 'gm-bres' });
-      lane.appendChild(laneCv);
-      lane.appendChild(pinsEl);
-      lane.appendChild(ball);
-      var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, lane, aim, res]);
-      rootEl.appendChild(wrap);
+      lane.appendChild(cv);
+      lane.appendChild(deck);
+      rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [info, lane, res]));
 
-      function syncLaneCanvasSize() {
+      var W = 800, H = 480;
+      function fit() {
         var r = lane.getBoundingClientRect();
-        if (r.width > 40 && r.height > 40) {
-          var w = Math.round(r.width), h = Math.round(r.height);
-          if (laneCv.width !== w || laneCv.height !== h) {
-            laneCv.width = w;
-            laneCv.height = h;
-          }
-        }
+        if (r.width < 40 || r.height < 40) return;
+        var dpr = Math.min(2, root.devicePixelRatio || 1);
+        W = r.width; H = r.height;
+        var cw = Math.round(W * dpr), ch = Math.round(H * dpr);
+        if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+        g.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
       }
-      syncLaneCanvasSize();
-      eng.listen(root, 'resize', syncLaneCanvasSize);
+      fit();
+      eng.listen(root, 'resize', fit);
       if (root.ResizeObserver) {
-        var ro = new root.ResizeObserver(syncLaneCanvasSize);
+        var ro = new root.ResizeObserver(fit);
         ro.observe(lane);
         eng.on('end', function () { try { ro.disconnect(); } catch (e) { /* ignore */ } });
       }
 
-      /* Build 10-pin triangle with normalized lane coordinates for physics collision */
-      var rows = [4, 3, 2, 1], pins = [];
-      rows.forEach(function (n, r) {
-        for (var i = 0; i < n; i++) {
-          var colIndex = (4 - n) + i * 2; // 0..7
-          var normX = 32 + (colIndex / 6) * 36; // 32% .. 68% across lane
-          var normY = 10 + r * 9;               // 10% .. 37% from top
-          var p = U().h('div', { class: 'gm-pin', text: hal ? '👻' : '🎳' });
-          p.style.gridColumn = String(1 + colIndex) + ' / span 2';
-          p.style.gridRow = String(r + 1);
-          pinsEl.appendChild(p);
-          pins.push({ el: p, r: r, i: i, x: normX, y: normY, down: false });
-        }
-      });
+      /* ---- perspective: s(v) = 1 / (1 + K v); the far end (v = 1) sits at yt ---- */
+      var K = 1.5;
+      function geo() {
+        var y1 = H * 0.98, yt = H * 0.4;
+        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.21, H * 0.78), cx: W / 2 };
+      }
+      function P(u, v, z) {
+        var G = geo(), s = 1 / (1 + K * v);
+        return { x: G.cx + u * G.half * s, y: G.yh + (G.y1 - G.yh) * s - (z || 0) * G.half * s, k: G.half * s };
+      }
+      function quad(u0, u1, v0, v1) {
+        var a = P(u0, v0), b = P(u1, v0), c = P(u1, v1), d = P(u0, v1);
+        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.lineTo(c.x, c.y); g.lineTo(d.x, d.y); g.closePath();
+      }
 
-      var mark = aim.firstChild;
+      var END = 1.04, PIT = 1.13;
+      var C = hal
+        ? { wall0: '#3b1658', wall1: '#14061f', wood0: '#e7b77b', wood1: '#b9824a', stripe: '#8b3fd1', bulb: '#ff9a3c' }
+        : { wall0: '#24407a', wall1: '#0d1733', wood0: '#f7cf93', wood1: '#c98e4f', stripe: '#e23b4a', bulb: '#ffe066' };
+
+      function drawLane(now) {
+        var G = geo(), far = P(0, PIT);
+        /* back wall and the lit sign over the pins */
+        var wg = g.createLinearGradient(0, 0, 0, far.y);
+        wg.addColorStop(0, C.wall1); wg.addColorStop(1, C.wall0);
+        g.fillStyle = wg; g.fillRect(0, 0, W, far.y + 1);
+        var sl = P(-1.5, PIT).x, sr = P(1.5, PIT).x, sy = P(0, PIT, 1.3).y, sh = far.k * 0.12 + 6;
+        g.fillStyle = 'rgba(0,0,0,.35)'; rr(sl, sy - sh, sr - sl, sh * 1.6, sh * 0.5); g.fill();
+        for (var b = 0; b < 13; b++) {
+          var on = (Math.floor(now / 260) + b) % 3 !== 0;
+          g.fillStyle = on ? C.bulb : 'rgba(255,255,255,.18)';
+          g.beginPath(); g.arc(sl + (b + 0.5) * (sr - sl) / 13, sy - sh * 0.2, Math.max(2, sh * 0.2), 0, 7); g.fill();
+        }
+        /* alley floor on both sides, with lines running to the back so the room has depth */
+        var fl = g.createLinearGradient(0, far.y, 0, H);
+        fl.addColorStop(0, C.wall1); fl.addColorStop(1, C.wall0);
+        g.fillStyle = fl; g.fillRect(0, far.y, W, H - far.y);
+        g.strokeStyle = 'rgba(255,255,255,.07)'; g.lineWidth = 2;
+        [1.8, 2.6, 3.8, 5.6, 8.5].forEach(function (u) {
+          [-u, u].forEach(function (uu) { var p0 = P(uu, PIT), p1 = P(uu, -0.6); g.beginPath(); g.moveTo(p0.x, p0.y); g.lineTo(p1.x, p1.y); g.stroke(); });
+        });
+        g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, far.y - 2, W, 4);
+        /* low side walls (kickbacks) beside the gutters */
+        [[-1.42, -1.22], [1.22, 1.42]].forEach(function (s) {
+          quad(s[0], s[1], -0.3, PIT); g.fillStyle = 'rgba(255,255,255,.1)'; g.fill();
+          g.strokeStyle = 'rgba(255,255,255,.18)'; g.lineWidth = 2; g.stroke();
+        });
+        /* pit behind the deck */
+        quad(-1.25, 1.25, END, PIT); g.fillStyle = '#05070f'; g.fill();
+        /* gutters */
+        [[-1.22, -1], [1, 1.22]].forEach(function (s) {
+          quad(s[0], s[1], -0.3, END);
+          var gg = g.createLinearGradient(P(s[0], 0).x, 0, P(s[1], 0).x, 0);
+          gg.addColorStop(0, '#2b3448'); gg.addColorStop(0.5, '#59647d'); gg.addColorStop(1, '#2b3448');
+          g.fillStyle = gg; g.fill();
+        });
+        /* wood */
+        quad(-1, 1, -0.3, END);
+        var wd = g.createLinearGradient(0, G.y1, 0, far.y);
+        wd.addColorStop(0, C.wood0); wd.addColorStop(1, C.wood1);
+        g.fillStyle = wd; g.fill();
+        for (var i = 0; i < 20; i++) {
+          quad(-1 + i * 0.1, -0.9 + i * 0.1, -0.3, END);
+          g.fillStyle = i % 2 ? 'rgba(255,255,255,.07)' : 'rgba(120,60,0,.06)'; g.fill();
+          g.strokeStyle = 'rgba(110,60,15,.14)'; g.lineWidth = 1; g.stroke();
+        }
+        /* polish: a soft shine down the middle */
+        quad(-0.45, 0.45, -0.3, END);
+        var sh2 = g.createLinearGradient(P(-0.45, 0).x, 0, P(0.45, 0).x, 0);
+        sh2.addColorStop(0, 'rgba(255,255,255,0)'); sh2.addColorStop(0.5, 'rgba(255,255,255,.22)'); sh2.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = sh2; g.fill();
+        /* pin deck, a little lighter */
+        quad(-1, 1, 0.8, END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
+        /* aiming arrows and dots */
+        g.fillStyle = 'rgba(110,50,10,.38)';
+        for (var a = -3; a <= 3; a++) {
+          var av = 0.3 + Math.abs(a) * 0.035, t = P(a * 0.24, av + 0.035), l = P(a * 0.24 - 0.045, av), r2 = P(a * 0.24 + 0.045, av);
+          g.beginPath(); g.moveTo(t.x, t.y); g.lineTo(l.x, l.y); g.lineTo(r2.x, r2.y); g.closePath(); g.fill();
+          var d = P(a * 0.24, 0.08);
+          g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.025 + 1, d.k * 0.012 + 1, 0, 0, 7); g.fill();
+        }
+        /* foul line */
+        quad(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
+      }
+      function rr(x, y, w, h, r) {
+        g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+        g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+      }
+
+      /* ---- pins ---- */
+      var PIN_H = 0.95, pins = [];
+      [[0], [-0.29, 0.29], [-0.58, 0, 0.58], [-0.87, -0.29, 0.29, 0.87]].forEach(function (row, r) {
+        row.forEach(function (u) { pins.push({ u0: u, v0: 0.84 + r * 0.05, r: r }); });
+      });
+      function setPin(p, dropFrom) {
+        p.u = p.u0; p.v = p.v0; p.z = dropFrom || 0; p.vu = 0; p.vv = 0; p.vz = 0;
+        p.tilt = 0; p.vt = 0; p.fly = false; p.hitAt = -1; p.t = 0; p.alpha = 1; p.down = false;
+      }
+      function pinShape(h) {
+        g.beginPath(); g.moveTo(-0.09 * h, 0);
+        g.bezierCurveTo(-0.21 * h, -0.2 * h, -0.2 * h, -0.4 * h, -0.115 * h, -0.53 * h);
+        g.bezierCurveTo(-0.06 * h, -0.61 * h, -0.05 * h, -0.67 * h, -0.075 * h, -0.75 * h);
+        g.bezierCurveTo(-0.125 * h, -0.87 * h, -0.1 * h, -h, 0, -h);
+        g.bezierCurveTo(0.1 * h, -h, 0.125 * h, -0.87 * h, 0.075 * h, -0.75 * h);
+        g.bezierCurveTo(0.05 * h, -0.67 * h, 0.06 * h, -0.61 * h, 0.115 * h, -0.53 * h);
+        g.bezierCurveTo(0.2 * h, -0.4 * h, 0.21 * h, -0.2 * h, 0.09 * h, 0);
+        g.closePath();
+      }
+      function drawPin(p) {
+        if (p.alpha <= 0) return;
+        var base = P(p.u, p.v, p.z), floor = P(p.u, p.v), h = base.k * PIN_H;
+        g.save();
+        g.globalAlpha = Math.max(0, p.alpha);
+        g.fillStyle = 'rgba(40,20,0,.28)';
+        g.beginPath(); g.ellipse(floor.x, floor.y, h * 0.17, h * 0.05, 0, 0, 7); g.fill();
+        g.translate(base.x, base.y); g.rotate(p.tilt);
+        pinShape(h);
+        var pg = g.createLinearGradient(-0.2 * h, 0, 0.2 * h, 0);
+        pg.addColorStop(0, '#b4bccd'); pg.addColorStop(0.38, '#ffffff'); pg.addColorStop(0.62, '#f1f3f8'); pg.addColorStop(1, '#a3adc2');
+        g.fillStyle = pg; g.fill();
+        g.save(); g.clip();
+        g.fillStyle = C.stripe;
+        g.fillRect(-h, -0.705 * h, 2 * h, 0.045 * h);
+        g.fillRect(-h, -0.635 * h, 2 * h, 0.035 * h);
+        g.fillStyle = 'rgba(255,255,255,.75)';
+        g.beginPath(); g.ellipse(-0.07 * h, -0.33 * h, 0.03 * h, 0.12 * h, 0.15, 0, 7); g.fill();
+        g.restore();
+        g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.2, h * 0.028); g.lineJoin = 'round';
+        pinShape(h); g.stroke();
+        g.restore();
+      }
+
+      /* ---- ball ---- */
+      var BALL_R = 0.2, ball = { u: 0, v: 0.03, rot: 0, alpha: 1 };
+      function drawBall(now) {
+        if (ball.alpha <= 0) return;
+        var f = P(ball.u, ball.v), r = f.k * BALL_R, col = (eng.activeTeam() || {}).color || '#ff6f3d';
+        var x = f.x, y = f.y - r;
+        g.save(); g.globalAlpha = ball.alpha;
+        g.fillStyle = 'rgba(30,15,0,.3)';
+        g.beginPath(); g.ellipse(x, f.y, r * 0.95, r * 0.25, 0, 0, 7); g.fill();
+        g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = col; g.fill();
+        var dk = g.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.2, x, y, r);
+        dk.addColorStop(0, 'rgba(0,0,0,0)'); dk.addColorStop(0.6, 'rgba(0,0,0,.08)'); dk.addColorStop(1, 'rgba(0,0,0,.5)');
+        g.fillStyle = dk; g.fill();
+        /* three finger holes roll over the top as the ball moves away */
+        [[-0.2, 0], [0.2, 0], [0, 0.45]].forEach(function (hole) {
+          var a = ball.rot + hole[1], c = Math.cos(a);
+          if (c < 0.05) return;
+          g.fillStyle = 'rgba(15,10,30,.85)';
+          g.beginPath(); g.ellipse(x + hole[0] * r * c, y - r * 0.62 * Math.sin(a), r * 0.1, r * 0.1 * c, 0, 0, 7); g.fill();
+        });
+        var gl = g.createRadialGradient(x - r * 0.38, y - r * 0.42, 0, x - r * 0.38, y - r * 0.42, r * 0.55);
+        gl.addColorStop(0, 'rgba(255,255,255,.85)'); gl.addColorStop(1, 'rgba(255,255,255,0)');
+        g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = gl; g.fill();
+        g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.5, r * 0.07); g.stroke();
+        g.restore();
+      }
+
+      /* ---- the aim guide, drawn on the lane ---- */
+      function startU(aim) { return aim * 0.3; }
+      function hitU(aim) { return aim * 0.9; }
+      function drawAim(now) {
+        var D = eng.state.data;
+        if (!(D.aiming && eng.state.phase === 'action')) return;
+        var a = P(startU(D.aim), 0.06), b = P(hitU(D.aim), 0.82);
+        var sweet = Math.abs(D.aim) < 0.12, col = sweet ? '#2ecc71' : (Math.abs(D.aim) < 0.4 ? '#ffe066' : '#ff5d73');
+        g.save();
+        g.lineCap = 'round';
+        g.strokeStyle = 'rgba(31,42,68,.35)'; g.lineWidth = 12;
+        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+        g.strokeStyle = col; g.lineWidth = 6; g.setLineDash([16, 12]); g.lineDashOffset = -(now * 0.06) % 28;
+        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+        g.setLineDash([]);
+        var pulse = 1 + Math.sin(now / 140) * 0.12;
+        g.lineWidth = 4; g.strokeStyle = col;
+        g.beginPath(); g.ellipse(b.x, b.y, b.k * 0.22 * pulse, b.k * 0.08 * pulse, 0, 0, 7); g.stroke();
+        g.restore();
+      }
+
+      /* ---- big text pop (STRIKE!) ---- */
+      var pop = null;
+      function drawPop(now) {
+        if (!pop) return;
+        var t = (now - pop.t0) / 1000;
+        if (t > 1.6) { pop = null; return; }
+        var sc = t < 0.25 ? 0.4 + t / 0.25 * 0.8 : (t < 0.4 ? 1.2 - (t - 0.25) / 0.15 * 0.2 : 1);
+        g.save();
+        g.globalAlpha = t > 1.2 ? Math.max(0, 1 - (t - 1.2) / 0.4) : 1;
+        g.translate(W / 2, H * 0.62); g.scale(sc, sc); g.rotate(-0.05);
+        g.font = '900 ' + Math.round(Math.min(W * 0.1, H * 0.2)) + 'px Fredoka, "Baloo 2", system-ui, sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.lineJoin = 'round'; g.lineWidth = Math.min(W, H) * 0.03; g.strokeStyle = '#1f2a44'; g.strokeText(pop.text, 0, 0);
+        g.fillStyle = pop.col; g.fillText(pop.text, 0, 0);
+        g.restore();
+      }
+
+      /* ---- simulation ---- */
+      var rollT = -1, rollDur = 1.15, rollMode = '', rollAim = 0, gutterSide = 1, clock = 0;
+      function ballAt(t) { // t 0..1 of the roll
+        var v = 0.03 + (PIT - 0.03) * (1 - Math.pow(1 - t, 1.35));
+        if (rollMode === 'gutter') {
+          return { v: v, u: gutterSide * Math.min(1.11, 0.15 + v * 4) };
+        }
+        return { v: v, u: startU(rollAim) + (hitU(rollAim) - startU(rollAim)) * Math.min(1.25, v / 0.84) };
+      }
+      function step(dt) {
+        clock += dt;
+        if (rollT >= 0) {
+          rollT = Math.min(1, rollT + dt / rollDur);
+          var b = ballAt(rollT);
+          ball.u = b.u; ball.v = b.v; ball.rot += dt * 9;
+          ball.alpha = ball.v > END ? Math.max(0, 1 - (ball.v - END) / (PIT - END)) : 1;
+          pins.forEach(function (p) {
+            if (p.down && !p.fly && p.hitAt < 0 && ball.v >= p.v0 - 0.04) {
+              p.hitAt = clock + (Math.abs(p.u0 - ball.u) > 0.35 ? 0.1 + Math.random() * 0.18 : 0);
+            }
+          });
+        }
+        pins.forEach(function (p) {
+          if (p.hitAt >= 0 && !p.fly && clock >= p.hitAt) {
+            p.fly = true;
+            p.vu = (p.u0 - ball.u) * 2.2 + (Math.random() - 0.5) * 1.2;
+            p.vv = 0.35 + Math.random() * 0.5;
+            p.vz = 0.7 + Math.random() * 0.8;
+            p.vt = (p.vu >= 0 ? 1 : -1) * (5 + Math.random() * 7);
+            A().play('pin_hit');
+          }
+          if (p.fly || p.z > 0 || p.vz !== 0) {
+            p.u += p.vu * dt; p.v += p.vv * dt; p.z += p.vz * dt; p.vz -= 5 * dt;
+            if (p.z <= 0) {
+              p.z = 0; p.vz = Math.abs(p.vz) < 0.4 ? 0 : -p.vz * 0.35;
+              p.vu *= 0.6; p.vv *= 0.6;
+              if (p.fly) p.vt *= 0.7;
+            }
+            if (p.fly) {
+              p.tilt += p.vt * dt; p.t += dt;
+              if (p.t > 0.8 || p.v > END || Math.abs(p.u) > 1.05) p.alpha -= dt * 1.6;
+            }
+          }
+        });
+      }
 
       function resetLane() {
-        pins.forEach(function (p) {
-          p.down = false;
-          p.el.classList.remove('down');
-          p.el.style.transform = '';
-        });
-        ball.style.transition = 'none';
-        ball.style.left = '50%';
-        ball.style.bottom = '-8%';
-        ball.style.transform = 'translateX(-50%) scale(1)';
-        void ball.offsetWidth;
+        pins.forEach(function (p) { setPin(p, 0.9 + p.r * 0.12); });
+        rollT = -1; rollMode = '';
+        ball.u = 0; ball.v = 0.03; ball.rot = 0; ball.alpha = 1;
       }
 
       function showTurn() {
@@ -632,7 +849,6 @@
           text: t.name + ': answer to bowl! (frame ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')'
         }));
         info.appendChild(U().btn('❓ Ask me', 'big amber', ask));
-        aim.style.visibility = 'hidden';
         res.textContent = '';
       }
 
@@ -642,13 +858,11 @@
         if (!eng.state.alive || r.cancelled) return;
         if (!r.ok) {
           eng.setPhase('animating');
-          res.textContent = '🌀 Gutter roll! Next team\u2019s frame.';
-          ball.style.transition = 'left .65s ease-in, bottom .85s ease-in, transform .85s';
-          ball.style.left = '8%';
-          ball.style.bottom = '88%';
-          ball.style.transform = 'translateX(-50%) scale(0.72) rotate(-360deg)';
+          res.textContent = '🌀 Gutter ball! Next team’s frame.';
+          gutterSide = Math.random() < 0.5 ? -1 : 1;
+          rollMode = 'gutter'; rollT = 0;
           A().play('hunt_empty');
-          await eng.wait(1300);
+          await eng.wait(1500);
           if (!eng.state.alive) return;
           resetLane();
           if (eng.advanceRound()) {
@@ -661,133 +875,85 @@
         info.innerHTML = '';
         info.style.setProperty('--c', t.color);
         info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', { text: '🎯 Drag on the lane to aim & release — or tap ROLL in the green middle!' }));
+        info.appendChild(U().h('b', { text: '🎯 Aim at the head pin: drag on the lane, or press ROLL when the line is green!' }));
         info.appendChild(U().btn('🎳 ROLL!', 'big green', roll));
-        aim.style.visibility = 'visible';
-        eng.state.data.pos = 0.15;
-        eng.state.data.targetPos = 0.15;
-        eng.state.data.dirn = 1;
-        eng.state.data.dragging = false;
-        eng.state.data.dragPointerId = null;
-        eng.state.data.aiming = true;
+        var D = eng.state.data;
+        D.aim = -0.85; D.dirn = 1; D.dragging = false; D.dragPointerId = null; D.aiming = true;
         eng.setPhase('action');
       }
 
-      function posFromClientX(clientX, refEl) {
-        var r = refEl.getBoundingClientRect();
-        if (!r || r.width <= 0) return 0.5;
-        return Math.max(0.02, Math.min(0.98, (clientX - r.left) / r.width));
+      function aimFromClientX(clientX) {
+        var r = lane.getBoundingClientRect();
+        return Math.max(-1, Math.min(1, (clientX - r.left - r.width / 2) / (geo().half * 0.34)));
       }
-
-      function bindAimSurface(surfaceEl) {
-        eng.listen(surfaceEl, 'pointerdown', function (e) {
-          var D = eng.state.data;
-          if (eng.state.phase !== 'action' || !D.aiming) return;
-          e.preventDefault();
-          D.dragging = true;
-          D.dragMoved = false;
-          D.dragStartX = e.clientX;
-          D.dragPointerId = e.pointerId;
-          try { surfaceEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
-          if (surfaceEl === aim) {
-            D.targetPos = posFromClientX(e.clientX, surfaceEl);
-            D.pos = D.targetPos;
-            mark.style.left = (D.pos * 100) + '%';
-          }
-        });
-        eng.listen(surfaceEl, 'pointermove', function (e) {
-          var D = eng.state.data;
-          if (!D.dragging || e.pointerId !== D.dragPointerId || !D.aiming || eng.state.phase !== 'action') return;
-          e.preventDefault();
-          if (Math.abs(e.clientX - D.dragStartX) > 5 || surfaceEl === aim) D.dragMoved = true;
-          if (D.dragMoved) {
-            D.targetPos = posFromClientX(e.clientX, surfaceEl);
-            D.pos = D.targetPos;
-            mark.style.left = (D.pos * 100) + '%';
-          }
-        });
-        function finishDrag(e) {
-          var D = eng.state.data;
-          if (!D.dragging || (e.pointerId != null && e.pointerId !== D.dragPointerId)) return;
-          e.preventDefault();
-          if (D.dragMoved) {
-            D.targetPos = posFromClientX(e.clientX, surfaceEl);
-            D.pos = D.targetPos;
-            mark.style.left = (D.pos * 100) + '%';
-          }
-          D.dragging = false;
-          D.dragPointerId = null;
-          try { surfaceEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
-          if (D.aiming && eng.state.phase === 'action') roll();
-        }
-        eng.listen(surfaceEl, 'pointerup', finishDrag);
-        eng.listen(surfaceEl, 'pointercancel', finishDrag);
+      eng.listen(lane, 'pointerdown', function (e) {
+        var D = eng.state.data;
+        if (eng.state.phase !== 'action' || !D.aiming) return;
+        e.preventDefault();
+        D.dragging = true; D.dragMoved = false; D.dragStartX = e.clientX; D.dragPointerId = e.pointerId;
+        try { lane.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      });
+      eng.listen(lane, 'pointermove', function (e) {
+        var D = eng.state.data;
+        if (!D.dragging || e.pointerId !== D.dragPointerId || !D.aiming || eng.state.phase !== 'action') return;
+        e.preventDefault();
+        if (Math.abs(e.clientX - D.dragStartX) > 5) D.dragMoved = true;
+        if (D.dragMoved) D.aim = aimFromClientX(e.clientX);
+      });
+      function finishDrag(e) {
+        var D = eng.state.data;
+        if (!D.dragging || (e.pointerId != null && e.pointerId !== D.dragPointerId)) return;
+        e.preventDefault();
+        if (D.dragMoved) D.aim = aimFromClientX(e.clientX);
+        D.dragging = false; D.dragPointerId = null;
+        try { lane.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        if (D.aiming && eng.state.phase === 'action') roll();
       }
-      bindAimSurface(lane);
-      bindAimSurface(aim);
+      eng.listen(lane, 'pointerup', finishDrag);
+      eng.listen(lane, 'pointercancel', finishDrag);
 
       async function roll() {
         var D = eng.state.data;
         if (!D.aiming || eng.state.phase !== 'action' || !eng.state.alive) return;
-        D.aiming = false;
-        D.dragging = false;
+        D.aiming = false; D.dragging = false;
         eng.setPhase('animating');
-        J().squash(aim, 1.06, 0.85, 220);
 
-        var err = Math.abs(D.pos - 0.5) * 2; // 0 = dead center, 1 = far edge
-        var targetX = 50 + (D.pos - 0.5) * 40;
-        var maxKnocked = err < 0.16 ? 10 : Math.max(1, Math.min(9, Math.round(10 - err * 8.5)));
+        var err = Math.abs(D.aim); // 0 = head pin, 1 = edge of the lane
+        var n = err < 0.12 ? 10 : Math.max(1, Math.min(9, Math.round(10 - err * 9)));
+        var impact = hitU(D.aim);
+        pins.slice().sort(function (a, b) {
+          return (Math.abs(a.u0 - impact) + a.r * 0.12) - (Math.abs(b.u0 - impact) + b.r * 0.12);
+        }).slice(0, n).forEach(function (p) { p.down = true; });
 
+        rollAim = D.aim; rollMode = 'roll'; rollT = 0;
+        var tb = eng.activeTeam();
+        info.innerHTML = '';
+        info.appendChild(U().monFace(tb.mon, 46));
+        info.appendChild(U().h('b', { text: tb.name + ' is rolling... 🎳' }));
         A().play('bowling_roll');
-        ball.style.transition = 'left .72s cubic-bezier(.2,.6,.35,1), bottom .72s ease-in, transform .72s ease-in';
-        ball.style.left = targetX + '%';
-        ball.style.bottom = '76%';
-        ball.style.transform = 'translateX(-50%) scale(0.76) rotate(540deg)';
-        await eng.wait(680);
+        await eng.wait(rollDur * 1000 + 450);
         if (!eng.state.alive) return;
 
-        /* Sort pins by proximity to ball impact line targetX so realistic pins scatter first! */
-        var sorted = pins.slice().sort(function (a, b) {
-          return (Math.abs(a.x - targetX) - rWeight(a)) - (Math.abs(b.x - targetX) - rWeight(b));
-        });
-        function rWeight(p) { return (3 - p.r) * 2.5; } // front pin hit first
-
-        var knocked = sorted.slice(0, maxKnocked);
-        for (var i = 0; i < knocked.length; i++) {
-          (function (pin, delayIdx) {
-            eng.timeout(function () {
-              pin.down = true;
-              pin.el.classList.add('down');
-              var scatterX = (pin.x - targetX) * 3.2 + (Math.random() - 0.5) * 60;
-              var scatterY = -35 - Math.random() * 45;
-              var rot = (scatterX >= 0 ? 1 : -1) * (65 + Math.random() * 75);
-              pin.el.style.transform = 'translate(' + Math.round(scatterX) + 'px, ' + Math.round(scatterY) + 'px) rotate(' + Math.round(rot) + 'deg) scale(0.68)';
-              A().play('pin_hit');
-              J().sparks(pin.el, 6, ['#ffffff', '#ffe066', '#38bdf8'], 5);
-            }, delayIdx * 48);
-          })(knocked[i], i);
-        }
-
-        await eng.wait(knocked.length * 48 + 140);
-        if (!eng.state.alive) return;
-
-        var n = knocked.length, strike = (n === 10), pts = n * 5 + (strike ? 20 : 0);
+        var strike = (n === 10), pts = n * 5 + (strike ? 20 : 0);
         if (strike) {
           A().play('bowling_strike');
           if (hal) A().play('ghost');
           J().shake(9);
-          J().shockwave(pinsEl, '#ffe066', 220, 560);
+          J().shockwave(deck, '#ffe066', 220, 560);
           U().confetti(32);
+          pop = { text: 'STRIKE!', col: '#ffe066', t0: performance.now() };
           res.textContent = '🌟 STRIKE! All 10 pins! +' + pts;
         } else {
           A().play(n >= 6 ? 'slot_mid' : 'slot_low');
           J().shake(4);
+          J().sparks(deck, 10, ['#ffffff', '#ffe066', '#38bdf8'], 6);
+          pop = { text: n + (n === 1 ? ' PIN!' : ' PINS!'), col: n >= 7 ? '#2ecc71' : '#38bdf8', t0: performance.now() };
           res.textContent = '🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' knocked down! +' + pts;
         }
-        eng.award(eng.state.turn, pts, pinsEl, (strike ? 'STRIKE +' : '+') + pts);
+        eng.award(eng.state.turn, pts, deck, (strike ? 'STRIKE +' : '+') + pts);
         U().wobble(document.getElementById('gm-team-' + eng.state.turn));
 
-        await eng.wait(1650);
+        await eng.wait(1700);
         if (!eng.state.alive) return;
         resetLane();
         if (eng.advanceRound()) {
@@ -796,70 +962,27 @@
         }
       }
 
-      /* 60fps aim bar & lane trajectory guide loop */
       eng.raf(function (dt, now) {
         var D = eng.state.data;
-        var W = laneCv.width, H = laneCv.height;
-        laneCtx.clearRect(0, 0, W, H);
-
-        /* Draw lane arrows */
-        laneCtx.save();
-        laneCtx.fillStyle = 'rgba(120, 60, 0, 0.22)';
-        for (var a = -2; a <= 2; a++) {
-          var ax = W * (0.5 + a * 0.08), ay = H * 0.68 + Math.abs(a) * 18;
-          laneCtx.beginPath();
-          laneCtx.moveTo(ax, ay - 14);
-          laneCtx.lineTo(ax - 8, ay + 8);
-          laneCtx.lineTo(ax + 8, ay + 8);
-          laneCtx.closePath();
-          laneCtx.fill();
+        if (D.aiming && eng.state.phase === 'action' && !D.dragging) {
+          D.aim += D.dirn * dt * 1.25;
+          if (D.aim >= 1) { D.aim = 1; D.dirn = -1; }
+          if (D.aim <= -1) { D.aim = -1; D.dirn = 1; }
         }
-        laneCtx.restore();
-
-        if (D.aiming && eng.state.phase === 'action') {
-          if (!D.dragging) {
-            D.pos += D.dirn * dt * 1.05;
-            if (D.pos >= 1) { D.pos = 1; D.dirn = -1; }
-            if (D.pos <= 0) { D.pos = 0; D.dirn = 1; }
-            D.targetPos = D.pos;
-          } else {
-            D.pos += (D.targetPos - D.pos) * Math.min(1, dt * 36);
-          }
-          mark.style.left = (D.pos * 100) + '%';
-
-          /* Draw live aim guide line & target reticle on lane canvas */
-          var sx = W * 0.5, sy = H * 0.92;
-          var tx = W * (0.5 + (D.pos - 0.5) * 0.4), ty = H * 0.22;
-          var inSweetSpot = Math.abs(D.pos - 0.5) < 0.08;
-          var guideColor = inSweetSpot ? '#2ecc71' : (Math.abs(D.pos - 0.5) < 0.22 ? '#ffe066' : '#ff5d73');
-          laneCtx.save();
-          laneCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-          laneCtx.lineWidth = inSweetSpot ? 12 : 9;
-          laneCtx.lineCap = 'round';
-          laneCtx.beginPath();
-          laneCtx.moveTo(sx, sy);
-          laneCtx.lineTo(tx, ty);
-          laneCtx.stroke();
-
-          laneCtx.strokeStyle = guideColor;
-          laneCtx.lineWidth = inSweetSpot ? 6 : 4.5;
-          laneCtx.setLineDash([14, 10]);
-          laneCtx.lineDashOffset = -(now * 0.045) % 24;
-          laneCtx.beginPath();
-          laneCtx.moveTo(sx, sy);
-          laneCtx.lineTo(tx, ty);
-          laneCtx.stroke();
-
-          laneCtx.setLineDash([]);
-          laneCtx.fillStyle = guideColor;
-          laneCtx.beginPath();
-          laneCtx.arc(tx, ty, inSweetSpot ? 9 : 7, 0, Math.PI * 2);
-          laneCtx.fill();
-          laneCtx.strokeStyle = '#1f2a44';
-          laneCtx.lineWidth = 2.5;
-          laneCtx.stroke();
-          laneCtx.restore();
-        }
+        if (D.aiming && eng.state.phase === 'action') { ball.u = startU(D.aim); }
+        step(dt);
+        g.clearRect(0, 0, W, H);
+        drawLane(now);
+        drawAim(now);
+        /* far things first, so near pins and the ball cover them */
+        pins.slice().sort(function (a, b) { return b.v - a.v; }).forEach(function (p) {
+          if (p.v >= ball.v) drawPin(p);
+        });
+        drawBall(now);
+        pins.slice().sort(function (a, b) { return b.v - a.v; }).forEach(function (p) {
+          if (p.v < ball.v) drawPin(p);
+        });
+        drawPop(now);
         return true;
       });
 

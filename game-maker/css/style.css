@@ -266,3 +266,8 @@ body.gm-on-play .gm-boardwrap{padding-bottom:10px;overflow:hidden}
 .gm-tile.used.won{background:color-mix(in srgb,var(--c,#38bdf8) 28%,#fff)!important;color:var(--c,#16a34a);border-color:color-mix(in srgb,var(--c,#38bdf8) 55%,var(--line))}
 body.th-halloween .gm-tile.used.won{background:color-mix(in srgb,var(--c,#ff8a1f) 32%,#2a1650)!important;color:#ffe066}
 .gm-ccol:disabled{opacity:.35;cursor:not-allowed}
+/* Bowling: one canvas lane in perspective (mode-extra.js) */
+.gm-lane.gm-lane3d{background:linear-gradient(#0d1733,#24407a);cursor:ew-resize}
+body.th-halloween .gm-lane.gm-lane3d{background:linear-gradient(#14061f,#3b1658)}
+.gm-lane3d .gm-lane-cv{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.gm-bowl-deck{position:absolute;left:50%;top:12%;width:18%;height:20%;transform:translateX(-50%);pointer-events:none}
