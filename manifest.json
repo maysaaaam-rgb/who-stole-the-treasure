@@ -1,0 +1,51 @@
+{
+  "name": "English Adventure Academy",
+  "short_name": "Adventure",
+  "description": "English Adventure Academy — Classroom Command Center, Class Board, Lessons & Smartboard Arcade Games.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060911",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "assets/icons/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Command Center",
+      "short_name": "Command",
+      "url": "./index.html#command",
+      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Class Board",
+      "short_name": "Board",
+      "url": "./index.html#board",
+      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Lessons Library",
+      "short_name": "Lessons",
+      "url": "./index.html#library",
+      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Game Maker",
+      "short_name": "Game Maker",
+      "url": "./game-maker/index.html",
+      "icons": [{ "src": "assets/icons/app-icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

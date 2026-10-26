@@ -478,3 +478,441 @@ h1, h2, h3, .card-title-text, .cm-card b, .hero-tile-heading, .empty-state-title
   content-visibility: auto;
   contain-intrinsic-size: auto 340px;
 }
+
+/* --------------------------------------------------------------------------
+   20. PHONE & MOBILE APP EXPERIENCE (<= 768px)
+   Compact bottom tab bar, slide-out drawer with backdrop scrim, clean top
+   header with visible class switcher, and compact Class Board / Modals.
+   -------------------------------------------------------------------------- */
+.eaa-mobile-drawer-scrim,
+.eaa-mobile-tabbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Hide the large smartboard soundboard/toolkit bar & floating body chip on phones */
+  .classroom-unified-dock,
+  #classroom-floating-toolkit,
+  body > #aw-chip {
+    display: none !important;
+  }
+
+  /* Backdrop scrim behind slide-out drawer */
+  .eaa-mobile-drawer-scrim {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--header-height, 60px);
+    background: rgba(2, 6, 23, 0.62);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1040;
+  }
+  .eaa-mobile-drawer-scrim.is-open {
+    display: block;
+  }
+
+  /* Compact 5-item bottom tab bar */
+  .eaa-mobile-tabbar {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1060;
+    padding: 5px 6px calc(5px + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 15, 29, 0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.5);
+  }
+  html.platform-locked .eaa-mobile-tabbar,
+  html.platform-locked .eaa-mobile-drawer-scrim {
+    display: none !important;
+  }
+  .eaa-mob-tab {
+    appearance: none;
+    border: 1px solid transparent;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: #94a3b8;
+    border-radius: 12px;
+    padding: 5px 2px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-family: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s, color 0.15s;
+  }
+  .eaa-mob-tab:active {
+    transform: translateY(2px) scale(0.96);
+  }
+  .eaa-mob-tab-icon {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+  .eaa-mob-tab-label {
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .eaa-mob-tab.is-active {
+    background: rgba(56, 189, 248, 0.16);
+    border-color: rgba(56, 189, 248, 0.42);
+    border-bottom-color: #0284c7;
+    color: #f8fafc;
+  }
+
+  /* Top header on phones: hamburger + logo on left, Mode toggle + Class switcher + Create + Cloud on right */
+  .header-inner {
+    padding: 0 8px !important;
+    gap: 6px !important;
+  }
+  .header-left {
+    gap: 6px !important;
+    flex: 0 0 auto;
+  }
+  .mobile-nav-toggle-btn {
+    display: inline-flex !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+  }
+  .brand-text {
+    display: none !important;
+  }
+  .brand-logo {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1rem !important;
+    border-radius: 9px !important;
+  }
+  .role-pill-group,
+  #role-dropdown-wrap {
+    display: none !important;
+  }
+  .header-right {
+    gap: 5px !important;
+    margin-left: auto !important;
+    flex-wrap: nowrap !important;
+    min-width: 0;
+    align-items: center;
+  }
+  #cm-gm-btn {
+    display: none !important;
+  }
+  #cm-toggle {
+    padding: 6px 9px !important;
+    font-size: 0.76rem !important;
+    border-radius: 10px !important;
+    gap: 4px !important;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  #cm-toggle .cm-mode-word {
+    display: none !important;
+  }
+  #header-class-select {
+    max-width: 86px !important;
+    padding: 5px 20px 5px 7px !important;
+    font-size: 0.76rem !important;
+    border-radius: 9px !important;
+  }
+  #header-create-wrap .btn-header-create {
+    padding: 5px 10px !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+    justify-content: center;
+  }
+  #header-create-wrap .btn-header-create > svg {
+    display: none !important;
+  }
+  #header-create-wrap .btn-header-create > span {
+    font-size: 0 !important;
+  }
+  #header-create-wrap .btn-header-create > span::before {
+    content: "+";
+    font-size: 1.15rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  #global-cloud-sync-btn {
+    margin-left: 0 !important;
+    padding: 5px 7px !important;
+    border-left: none !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+    justify-content: center;
+  }
+  #global-sync-text {
+    display: none !important;
+  }
+  .header-right > .icon-circle-btn,
+  .header-right > .user-chip {
+    display: none !important;
+  }
+
+  /* Layout & slide-out drawer on phones */
+  .app-layout {
+    grid-template-columns: 1fr !important;
+    padding: 8px 8px calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 10px !important;
+  }
+  .app-main {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .app-sidebar {
+    display: none !important;
+  }
+  .app-sidebar.is-mobile-open {
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    top: var(--header-height, 60px) !important;
+    left: 0 !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    width: min(300px, 84vw) !important;
+    max-height: none !important;
+    z-index: 1050 !important;
+    overflow-y: auto !important;
+    padding: 14px 12px 24px !important;
+    border-radius: 0 20px 20px 0 !important;
+    background: rgba(15, 23, 42, 0.98) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border-right: 1px solid rgba(148, 163, 184, 0.25) !important;
+    box-shadow: 18px 0 48px rgba(0, 0, 0, 0.65) !important;
+  }
+
+  /* Class Board compact phone layout */
+  .cb {
+    padding: 4px 2px 136px !important;
+  }
+  .cb-hd {
+    gap: 6px !important;
+    margin-bottom: 6px !important;
+  }
+  .cb-hd h1 {
+    font-size: 1.25rem !important;
+  }
+  .cb-hd p {
+    font-size: 0.76rem !important;
+  }
+  .cb-tm {
+    padding: 5px 8px !important;
+    gap: 5px !important;
+    width: 100% !important;
+    justify-content: space-between;
+    border-radius: 12px !important;
+  }
+  .cb-tm-empty span {
+    font-size: 0.74rem !important;
+  }
+  .cb-tm-btn,
+  .cb-tm-x {
+    padding: 5px 8px !important;
+    font-size: 0.72rem !important;
+    border-radius: 9px !important;
+  }
+  .cb-sw {
+    width: 100% !important;
+    margin: 0 !important;
+    gap: 6px !important;
+    justify-content: flex-start !important;
+  }
+  .cb-sw .cb-c {
+    display: none !important;
+  }
+  .cb-sw .cb-all,
+  .cb-sw .aw-chip,
+  .cb-sw button {
+    flex: 1 1 auto !important;
+    padding: 6px 10px !important;
+    font-size: 0.76rem !important;
+    border-radius: 11px !important;
+    text-align: center;
+    justify-content: center;
+  }
+  .cb-tabs {
+    margin: 4px 0 6px !important;
+    gap: 6px !important;
+  }
+  .cb-tab {
+    flex: 1 1 0 !important;
+    padding: 6px 8px !important;
+    font-size: 0.76rem !important;
+    border-radius: 11px !important;
+    text-align: center;
+  }
+  .cb-today {
+    padding: 8px 10px !important;
+    margin: 4px 0 6px !important;
+    border-radius: 14px !important;
+  }
+  .cb-today-h {
+    font-size: 0.7rem !important;
+    margin-bottom: 5px !important;
+  }
+  .cb-today .lesson-launch-list {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px !important;
+    padding-bottom: 2px;
+  }
+  .cb-today .lesson-launch-list::-webkit-scrollbar {
+    display: none;
+  }
+  .cb-today .lesson-launch {
+    flex: 0 0 225px !important;
+    padding: 6px 10px !important;
+    font-size: 0.76rem !important;
+    border-radius: 11px !important;
+  }
+  .cb-today .tt-btn.small {
+    margin-top: 6px !important;
+    padding: 4px 10px !important;
+    font-size: 0.7rem !important;
+  }
+  .cb-goal {
+    padding: 6px 10px !important;
+    margin: 4px 0 8px !important;
+    gap: 6px !important;
+    border-radius: 12px !important;
+  }
+  .cb-goal-lbl {
+    font-size: 0.75rem !important;
+  }
+  .cb-goal-cfg {
+    padding: 4px 8px !important;
+    font-size: 0.72rem !important;
+    border-radius: 8px !important;
+  }
+  .cb-mg {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .cb-dock {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: calc(100vw - 12px) !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px 8px !important;
+    gap: 5px !important;
+    border-radius: 16px !important;
+    z-index: 1020 !important;
+  }
+  .cb-dock::-webkit-scrollbar {
+    display: none;
+  }
+  .cb-dock button {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    padding: 7px 10px !important;
+    font-size: 0.76rem !important;
+    border-radius: 11px !important;
+  }
+  .cb-tabs {
+    display: none !important;
+  }
+  .cb-hd {
+    padding: 8px 10px !important;
+    border-radius: 16px !important;
+  }
+  .cb-hd small {
+    font-size: 0.72rem !important;
+  }
+  .cb-dsc {
+    padding: 5px 9px !important;
+    font-size: 0.74rem !important;
+    border-radius: 9px !important;
+  }
+  .cb-tm {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+  }
+  .cb-tm > div {
+    padding: 4px 6px !important;
+    border-radius: 10px !important;
+    min-width: 0 !important;
+  }
+  .cb-tm > div b {
+    font-size: 0.96rem !important;
+  }
+  .cb-tm > div small {
+    font-size: 0.64rem !important;
+  }
+  .cb-sw select {
+    padding: 5px 8px !important;
+    font-size: 0.74rem !important;
+    border-radius: 9px !important;
+    max-width: 100%;
+  }
+  .cb-today {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 8px !important;
+    margin: 4px 0 6px !important;
+    border-radius: 12px !important;
+  }
+  .cb-today::-webkit-scrollbar {
+    display: none;
+  }
+  .cb-today > * {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    padding: 4px 9px !important;
+    font-size: 0.74rem !important;
+  }
+  .cb-goal .l,
+  .cb-goal .r {
+    font-size: 0.74rem !important;
+  }
+  .cb-goal .bar {
+    height: 7px !important;
+  }
+  .cb-more-menu.open {
+    position: fixed !important;
+    right: 10px !important;
+    left: auto !important;
+    bottom: calc(116px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 1200 !important;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+}

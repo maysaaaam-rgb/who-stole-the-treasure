@@ -271,6 +271,18 @@ body.th-halloween .gm-tile.used.won{background:color-mix(in srgb,var(--c,#ff8a1f
 body.th-halloween .gm-lane.gm-lane3d{background:linear-gradient(#14061f,#3b1658)}
 .gm-lane3d .gm-lane-cv{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .gm-bowl-deck{position:absolute;left:50%;top:12%;width:18%;height:20%;transform:translateX(-50%);pointer-events:none}
+@media (max-width:768px){
+  .gm-head{padding:8px 10px;gap:6px;flex-wrap:wrap}
+  .gm-tools{gap:5px;flex-wrap:wrap}.gm-tools .gm-btn{padding:6px 10px;font-size:.82rem}.gm-btn.round{width:38px;height:38px;font-size:1rem}
+  .gm-stage{padding:4px 10px 24px}
+  .gm-hero{gap:8px;padding-top:2px}.gm-logo{font-size:2.2rem}.gm-hero-txt p{font-size:.95rem}.gm-host{height:88px}
+  .gm-qrow{padding:8px 10px;gap:6px;border-radius:18px}.gm-qlab{font-size:.92rem;width:100%;text-align:center}.gm-chip{font-size:.8rem;padding:.35em .8em}
+  .gm-games{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.gm-game{border-radius:18px;border-width:3px}.gm-game-cap{padding:6px 8px 8px}.gm-game-cap b{font-size:.95rem;text-align:center}.gm-game-cap small{font-size:.72rem;text-align:center}
+  .gm-setup-l{padding:12px}.gm-setup-l h2{font-size:1.5rem}.gm-setup-r{padding:12px}.gm-tface{width:92px}
+  body.gm-on-play .gm-stage{padding:0 8px 6px;overflow-y:auto}
+  .gm-teams{justify-content:flex-start;padding:14px 8px 6px}
+  .gm-pod-mon{transform:scale(.68);transform-origin:50% 100%;margin-bottom:-36px}
+}
 .gm-bowl-bowler{position:absolute;left:0;top:0;width:160px;height:160px;transform-origin:0 0;pointer-events:none;z-index:2;transition:opacity .4s}
 .gm-bowl-bowler-in{width:160px;height:160px;transform-origin:50% 100%}
 .gm-bowl-bowler-in.throw{animation:gmBowlThrow .7s cubic-bezier(.175,.885,.32,1.275)}

@@ -667,3 +667,21 @@ main {
 
 /* the Final Quarter scoreboard stays visible at the top of the stage */
 .s-body > .casebar.fq{display:flex !important;margin:0 0 6px;padding:5px 12px;border-color:#f59e0b}.casebar.fq .casetxt{font-size:clamp(13px,2.2vh,20px)}
+
+
+/* ---------- Phone & Portrait Mobile Adaptation (<= 768px) ---------- */
+@media (max-width: 768px) {
+  body { font-size: 14px; height: 100dvh; }
+  .hud { flex-wrap: wrap; gap: 6px; padding: 6px 10px; }
+  .hud-brand { width: 100%; justify-content: space-between; }
+  .hud h1 { font-size: 0.95rem; white-space: normal; }
+  .hud .steps { order: 3; width: 100%; overflow-x: auto; justify-content: flex-start; padding-bottom: 2px; }
+  .hud .dot { flex: 0 0 auto; width: 24px; height: 24px; }
+  .hud-case { display: none; }
+  .hud .teams { overflow-x: auto; max-width: 68vw; }
+  main { padding: 6px 8px; }
+  #stage { padding: 10px 12px; border-radius: 16px; overflow-y: auto; }
+  .s-body { overflow-y: auto; justify-content: flex-start !important; }
+  .story-stage, .vocab-stage, .roles, .forest-pick, .forests { grid-template-columns: 1fr !important; }
+  .foot { padding: 6px 10px calc(8px + env(safe-area-inset-bottom, 0px)); gap: 8px; }
+}
