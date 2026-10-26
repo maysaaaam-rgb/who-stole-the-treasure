@@ -278,6 +278,16 @@
       saveEvents(list); store().setCalendarFlag('seed20');
     } catch (e) { /* ignore */ }
   }
+  /* Wed 28 Oct: point the 4B and 4A lessons at their new lesson plans */
+  function wed28PlansOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed21')) return;
+      var P = { 'seed20-1': 'Grade4B-Unit4-Book-Revision-Lesson-Plan', 'seed20-2': 'Grade4-Units1-4-Revision-Games-Lesson-Plan', 'seed20-4': 'Grade4-Units1-4-Revision-Games-Lesson-Plan' };
+      var list = customEvents().slice(), n = 0;
+      list.forEach(function (e) { if (P[e.id] && String(e.note || '').indexOf(P[e.id]) < 0) { e.note = (e.note ? e.note + ' ' : '') + 'Plan: lesson-plans/' + P[e.id] + '.'; n++; } });
+      if (n) saveEvents(list); store().setCalendarFlag('seed21');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -424,7 +434,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
