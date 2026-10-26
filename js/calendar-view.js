@@ -246,6 +246,38 @@
       saveEvents(list); store().setCalendarFlag('seed19');
     } catch (e) { /* ignore */ }
   }
+  /* Tea Party moved to another day (27 Oct): 4B and 4A get revision on Wed 28 Oct, 3A's missed games go to Fri 30 Oct */
+  function wed28Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed20')) return;
+      var list = customEvents().slice();
+      var games4 = 'Calm revision games, no new content: game-maker/index.html?set=u14-g4&game=bowling (also cannon, race). Monsters = your class, Answer cards = On.';
+      var book = 'Revise Unit 4 in the book, no new pages: Team Players and Late for the Show (pp. 56-71). Words first, then read aloud in pairs, then 3 questions in the notebook.';
+      var r1a = 'Print revision-pack/Grade4A-Revision-1-Reading-and-Writing-Pack.pdf (2 reading texts, writing page, exit tickets, teacher key). Remember first in Game Maker (Smart mix, Monsters = 4A, Answer cards = On), read, write, exit ticket. Plan: lesson-plans/Grade4A-Revision-1-Reading-and-Writing-Lesson-Plan.';
+      var g3 = 'The games 3A missed on Tue 27 Oct: game-maker/index.html?set=u14-g3 (Monsters = 3A, Answer cards = On).';
+      var r1 = 'Print revision-pack/Grade3-Revision-1-Words-and-Writing-Pack.pdf. Remember first (Game Maker, Smart mix Grade 3, Answer cards = On), write it, answer-card game, exit ticket. Plan: lesson-plans/Grade3-Revision-1-Words-and-Writing-Lesson-Plan.';
+      /* what really happened on Tue 27 Oct: no Tea Party, 4B had one revision lesson, 3A only the quiz */
+      list = list.filter(function (e) {
+        if (e.date === '2026-10-27' && e.type === 'alice') return false;
+        if (e.date === '2026-10-27' && e.classId === 'class-3a' && e.time === '11:15') return false;
+        if (e.classId === 'class-4a' && e.date === '2026-11-02' && e.time === '10:30') return false; // 4A Revision 1 moves to Wed 28
+        if (e.classId === 'class-3a' && e.date === '2026-10-30') return false;
+        if (e.date === '2026-10-28' && (e.classId === 'class-4a' || e.classId === 'class-4b')) return false;
+        return true;
+      });
+      var rows = [
+        ['2026-10-27', '09:00', 'class-4b', 'unit4', 'Revision lesson (Tea Party moved to another day)', ''],
+        ['2026-10-28', '12:45', 'class-4b', 'lesson', 'Book lesson: revise Unit 4 (no new pages)', book],
+        ['2026-10-28', '13:30', 'class-4b', 'unit4', 'Units 1-4 revision games (play)', games4],
+        ['2026-10-28', '14:15', 'class-4a', 'unit4', 'Revision 1: reading and writing (no new content)', r1a],
+        ['2026-10-28', '15:20', 'class-4a', 'unit4', 'Units 1-4 revision games (play)', games4],
+        ['2026-10-30', '10:30', 'class-3a', 'unit4', 'Units 1-4 revision games (missed on Tuesday)', g3],
+        ['2026-10-30', '11:15', 'class-3a', 'unit4', 'Revision 1: words and writing (no new content)', r1]
+      ];
+      rows.forEach(function (r, i) { list.push({ id: 'seed20-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      saveEvents(list); store().setCalendarFlag('seed20');
+    } catch (e) { /* ignore */ }
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -392,7 +424,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
