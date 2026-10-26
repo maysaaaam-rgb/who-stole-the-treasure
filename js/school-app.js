@@ -1013,6 +1013,9 @@
   window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
     currentView = viewName;
+    if (typeof window.closeMobileSidebar === 'function') window.closeMobileSidebar();
+    if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar(viewName);
+    currentView = viewName;
     if (updateHash) {
       if (viewName === 'class-detail') {
         window.location.hash = '#class-detail/' + selectedClassDetailId + '/' + selectedClassDetailTab;
@@ -12243,7 +12246,68 @@ window.switchClassroomSubTab = function(subTab) {
   // MOBILE NAVIGATION DRAWER TOGGLE
   // =========================================================================
   window.toggleMobileSidebar = function() {
-    const sidebar = document.getElementById('app-sidebar-nav') || document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
+    const sidebar = document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
+    const scrim = document.getElementById('eaa-mobile-drawer-scrim');
+    if (sidebar) {
+      const open = sidebar.classList.toggle('is-mobile-open');
+      if (scrim) scrim.classList.toggle('is-open', open);
+    }
+    if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar();
+  };
+
+  window.closeMobileSidebar = function() {
+    const sidebar = document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
+    const scrim = document.getElementById('eaa-mobile-drawer-scrim');
+    if (sidebar) sidebar.classList.remove('is-mobile-open');
+    if (scrim) scrim.classList.remove('is-open');
+    if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar();
+  };
+
+  window.updateMobileTabbar = function(viewOverride) {
+    const bar = document.getElementById('eaa-mobile-tabbar');
+    if (!bar) return;
+    const v = viewOverride || currentView || 'command';
+    const isCM = document.documentElement.classList.contains('class-mode');
+    const sidebar = document.getElementById('app-sidebar') || document.querySelector('.app-sidebar');
+    const drawerOpen = Boolean(sidebar && sidebar.classList.contains('is-mobile-open'));
+    const homeIcon = document.getElementById('eaa-mob-home-icon');
+    const homeLabel = document.getElementById('eaa-mob-home-label');
+    if (homeIcon) homeIcon.textContent = isCM ? '🏫' : '🧭';
+    if (homeLabel) homeLabel.textContent = isCM ? 'Class' : 'Command';
+    const menuIcon = document.getElementById('eaa-mob-menu-icon');
+    const menuLabel = document.getElementById('eaa-mob-menu-label');
+    if (menuIcon) menuIcon.textContent = drawerOpen ? '✕' : '☰';
+    if (menuLabel) menuLabel.textContent = drawerOpen ? 'Close' : 'Menu';
+    let activeTab = 'menu';
+    if (!drawerOpen) {
+      if (v === 'command' || v === 'classview' || v === 'dashboard') activeTab = 'home';
+      else if (v === 'board') activeTab = 'board';
+      else if (v === 'library' || v === 'curriculum') activeTab = 'library';
+      else if (v === 'shelf') activeTab = 'shelf';
+      else activeTab = 'menu';
+    }
+    bar.querySelectorAll('.eaa-mob-tab').forEach(btn => {
+      btn.classList.toggle('is-active', btn.getAttribute('data-mob-tab') === activeTab);
+    });
+  };
+
+  window.handleMobileTabClick = function(tab) {
+    if (tab === 'menu') {
+      window.toggleMobileSidebar();
+      return;
+    }
+    window.closeMobileSidebar();
+    if (tab === 'home') {
+      const isCM = document.documentElement.classList.contains('class-mode');
+      window.switchView(isCM ? 'classview' : 'command');
+      return;
+    }
+    window.switchView(tab);
+  };
+
+  setTimeout(() => { if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar(); }, 150);
+  if (false) {
+    const sidebar = null;
     if (sidebar) {
       sidebar.classList.toggle('is-mobile-open');
     }

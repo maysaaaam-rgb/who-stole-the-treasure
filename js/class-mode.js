@@ -55,7 +55,7 @@
   /* ---------- the switch in the header ---------- */
   function paintToggle() {
     var b = document.getElementById('cm-toggle'); if (!b) return;
-    b.innerHTML = on() ? '<span>🧑‍🏫</span> Teacher Mode' : '<span>🏫</span> Class Mode';
+    b.innerHTML = on() ? '<span>🧑‍🏫</span> Teacher<em class="cm-mode-word" style="font-style:normal"> Mode</em>' : '<span>🏫</span> Class<em class="cm-mode-word" style="font-style:normal"> Mode</em>';
     b.title = on() ? 'Back to the normal teacher platform' : 'Bright smartboard look with big picture buttons';
   }
   function ensureToggle() {
@@ -411,6 +411,7 @@
       renderShelf(c);
     },
     go: function (id) {
+      if (root.closeMobileSidebar) root.closeMobileSidebar();
       if (id === 'gamemaker') { openGameMaker(); return; }
       if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       var sw = root.switchView; if (!sw) return;
