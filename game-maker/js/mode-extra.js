@@ -574,17 +574,19 @@
       var cv = U().h('canvas', { class: 'gm-lane-cv' });
       var g = cv.getContext('2d');
       var deck = U().h('div', { class: 'gm-bowl-deck' }); // where coins and sparks start
-      var bowler = U().h('div', { class: 'gm-bowl-bowler' }); // the team monster stands at the foul line
       var card = U().h('div', { class: 'gm-bowl-card' });
+      var askCard = U().h('div', { class: 'gm-bowl-ask' }); // the big "answer to bowl" card over the lane
       var res = U().h('div', { class: 'gm-bres' });
       lane.appendChild(cv);
       lane.appendChild(deck);
-      lane.appendChild(bowler);
-      lane.appendChild(card);
-      rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [info, lane, res]));
+      lane.appendChild(askCard);
+      var mid = U().h('div', { class: 'gm-bowl-mid' }, [card, lane]);
+      rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [info, mid, res]));
 
       var W = 800, H = 480;
       function fit() {
+        var mw = mid.clientWidth, mh = mid.clientHeight;
+        if (mw > 40 && mh > 40) { var lw = Math.min(mw, Math.round(mh * 1.15)) + 'px'; if (lane.style.width !== lw) lane.style.width = lw; }
         var r = lane.getBoundingClientRect();
         if (r.width < 40 || r.height < 40) return;
         var dpr = Math.min(2, root.devicePixelRatio || 1);
@@ -598,14 +600,15 @@
       if (root.ResizeObserver) {
         var ro = new root.ResizeObserver(fit);
         ro.observe(lane);
+        ro.observe(mid);
         eng.on('end', function () { try { ro.disconnect(); } catch (e) { /* ignore */ } });
       }
 
       /* ---------- drawing space: u across (-1..1 = the wood), v down the lane, z up; s(v) = 1 / (1 + K v) ---------- */
       var K = 2.3;
       function geo() {
-        var y1 = H * 1.02, yt = H * (H / W > 0.62 ? 0.27 : 0.42); // tall boxes: less empty wall above the pins
-        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.2, H * 0.6), cx: W / 2 };
+        var y1 = H * 1.02, yt = H * 0.3;
+        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.3, H * 0.46), cx: W / 2 };
       }
       function P(u, v, z) {
         var G = geo(), s = 1 / (1 + K * v);
@@ -631,14 +634,6 @@
         : { wall0: '#24407a', wall1: '#0d1733', wood0: '#f7cf93', wood1: '#c98e4f', stripe: '#e23b4a', bulb: '#ffe066' };
 
       var LANE_OFF = 3.2; // the next lane: wood + two gutters + the capping between lanes, in lane half-widths
-      var decor = [];
-      [-3, -2, -1, 1, 2, 3].forEach(function (L) {
-        var row = [];
-        [[0, 720], [-6, 730.4], [6, 730.4], [-12, 740.8], [0, 740.8], [12, 740.8], [-18, 751.2], [-6, 751.2], [6, 751.2], [18, 751.2]].forEach(function (sp) {
-          row.push({ x: sp[0] + L * LANE_OFF * LW, y: sp[1], z: 0, drop: 0, down: false, fall: 0, dx: 0, dy: 1, alpha: 0.6, gone: false });
-        });
-        decor.push({ L: L, pins: row });
-      });
       function laneName() { var t = eng.activeTeam(); return (t && t.name) || 'Lane'; }
       function drawLane(now) {
         var far = P(0, PIT);
@@ -653,8 +648,8 @@
         mg.addColorStop(0, '#0a0e1c'); mg.addColorStop(1, '#222b4a');
         g.fillStyle = mg; g.fillRect(0, my - mh, W, mh);
         g.fillStyle = C.stripe; g.fillRect(0, my - 3, W, 3);
-        for (L = -3; L <= 3; L++) {
-          var c = P(L * LANE_OFF, PIT, 1.3), ph = mh * 0.6, txt = L === 0 ? laneName() : String(4 + L);
+        for (L = 0; L <= 0; L++) {
+          var c = P(0, PIT, 1.3), ph = mh * 0.6, txt = laneName();
           g.font = '800 ' + Math.round(ph * 0.66) + 'px Fredoka, system-ui, sans-serif';
           var pw = Math.max(far.k * 0.9, g.measureText(txt).width + ph);
           if (c.x + pw < 0 || c.x - pw > W) continue;
@@ -713,10 +708,7 @@
           g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.025 + 1, d.k * 0.012 + 1, 0, 0, 7); g.fill();
         }
         q(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
-        if (!main) {
-          decor.forEach(function (dl) { if (dl.L === L) dl.pins.slice().sort(function (x, y) { return y.y - x.y; }).forEach(drawPin); });
-          q(-1.3, LANE_OFF - 1.3, -0.3, PIT); g.fillStyle = 'rgba(6,9,22,.42)'; g.fill();
-        }
+        if (!main) { q(-1.3, LANE_OFF - 1.3, -0.3, PIT); g.fillStyle = 'rgba(6,9,22,.62)'; g.fill(); }
       }
 
       /* ---------- pins ---------- */
@@ -974,20 +966,6 @@
       function resetBall() {
         ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0; ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
       }
-      var bowlerFor = null, bowlerInner = null;
-      function placeBowler() {
-        var t = eng.activeTeam();
-        if (!t) return;
-        if (bowlerFor !== t) {
-          bowlerFor = t; bowler.innerHTML = '';
-          bowlerInner = U().h('div', { class: 'gm-bowl-bowler-in' }, [U().monFull(t.mon, 160)]);
-          bowler.appendChild(bowlerInner);
-        }
-        var side = ball.x > 0 ? -1 : 1, f = P(U_(ball.x + side * 17), V_(-6)), sc = Math.max(0.3, f.k * 0.003);
-        var fy = Math.min(f.y, H - 6); // keep the monster's feet inside the lane box
-        bowler.style.transform = 'translate(' + Math.round(f.x - 80 * sc) + 'px,' + Math.round(fy - 150 * sc) + 'px) scale(' + sc.toFixed(3) + ')';
-        bowler.style.opacity = ball.on && ball.y > 120 ? '0.85' : '1';
-      }
       var cardData = st.teams.map(function () { return []; });
       function renderCard() {
         card.innerHTML = '';
@@ -1034,14 +1012,24 @@
         renderCard();
         eng.setPhase('idle');
         rack(); resetBall();
-        header(t.name + ': answer to bowl! (frame ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')', [U().btn('❓ Ask me', 'big amber', ask)]);
+        var frameNo = cardData[eng.state.turn].length + 1, frames = +ctx.cfg.frames || 3;
+        header(t.name + '\u2019s turn \u00b7 frame ' + frameNo + ' of ' + frames);
+        askCard.innerHTML = '';
+        askCard.style.setProperty('--c', t.color);
+        askCard.appendChild(U().h('div', { class: 'gm-bowl-ask-mon' }, [U().monFull(t.mon, 120)]));
+        askCard.appendChild(U().h('b', { text: t.name }));
+        askCard.appendChild(U().h('small', { text: 'Frame ' + frameNo + ' of ' + frames + ' \u00b7 answer right to bowl!' }));
+        askCard.appendChild(U().btn('\u2753 Ask me!', 'big amber gm-bowl-askbtn', ask));
+        askCard.classList.remove('show'); void askCard.offsetWidth; askCard.classList.add('show');
         res.textContent = '';
       }
 
       async function ask() {
         if (eng.state.phase !== 'idle' || !eng.state.alive) return;
+        askCard.classList.remove('show');
         var r = await eng.ask(null, { label: 'Frame ' + (eng.state.round + 1) });
-        if (!eng.state.alive || r.cancelled) return;
+        if (!eng.state.alive) return;
+        if (r.cancelled) { askCard.classList.add('show'); return; }
         var D = eng.state.data;
         if (!r.ok) {
           eng.setPhase('animating'); D.stage = 'roll';
@@ -1088,7 +1076,6 @@
         var speed = 230 + D.pow * 150;
         ball.vx = Math.sin(ang) * speed; ball.vy = Math.cos(ang) * speed;
         ball.hook = D.eff * 32 * (0.7 + 0.3 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
-        if (bowlerInner) { bowlerInner.classList.remove('throw'); void bowlerInner.offsetWidth; bowlerInner.classList.add('throw'); }
         ball.on = true; slowEnd = -1;
         header(eng.activeTeam().name + ' is rolling... 🎳');
         A().play('bowling_roll');
@@ -1191,7 +1178,6 @@
         drawMeter();
         drawEffect();
         drawPop(now);
-        placeBowler();
         return true;
       });
 
