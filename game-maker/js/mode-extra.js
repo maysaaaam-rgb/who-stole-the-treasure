@@ -564,7 +564,7 @@
       var totalFrames = (+ctx.cfg.frames || 3) * st.teams.length;
       var eng = E().createSession(ctx, {
         maxRounds: totalFrames,
-        data: { stage: 'idle', pos: 0, posDir: 1, ang: 0, angDir: 1, pow: 0, powDir: 1, spin: 0, ball: 1 }
+        data: { stage: 'idle', pos: 0, posDir: 1, pow: 0, powDir: 1, eff: 0, effDir: 1, ball: 1 }
       });
       var rootEl = ctx.root;
       rootEl.innerHTML = '';
@@ -574,9 +574,13 @@
       var cv = U().h('canvas', { class: 'gm-lane-cv' });
       var g = cv.getContext('2d');
       var deck = U().h('div', { class: 'gm-bowl-deck' }); // where coins and sparks start
+      var bowler = U().h('div', { class: 'gm-bowl-bowler' }); // the team monster stands at the foul line
+      var card = U().h('div', { class: 'gm-bowl-card' });
       var res = U().h('div', { class: 'gm-bres' });
       lane.appendChild(cv);
       lane.appendChild(deck);
+      lane.appendChild(bowler);
+      lane.appendChild(card);
       rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [info, lane, res]));
 
       var W = 800, H = 480;
@@ -598,10 +602,10 @@
       }
 
       /* ---------- drawing space: u across (-1..1 = the wood), v down the lane, z up; s(v) = 1 / (1 + K v) ---------- */
-      var K = 1.5;
+      var K = 2.3;
       function geo() {
-        var y1 = H * 0.98, yt = H * 0.4;
-        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.21, H * 0.78), cx: W / 2 };
+        var y1 = H * 1.02, yt = H * (H / W > 0.62 ? 0.27 : 0.42); // tall boxes: less empty wall above the pins
+        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.2, H * 0.6), cx: W / 2 };
       }
       function P(u, v, z) {
         var G = geo(), s = 1 / (1 + K * v);
@@ -626,62 +630,93 @@
         ? { wall0: '#3b1658', wall1: '#14061f', wood0: '#e7b77b', wood1: '#b9824a', stripe: '#8b3fd1', bulb: '#ff9a3c' }
         : { wall0: '#24407a', wall1: '#0d1733', wood0: '#f7cf93', wood1: '#c98e4f', stripe: '#e23b4a', bulb: '#ffe066' };
 
+      var LANE_OFF = 3.2; // the next lane: wood + two gutters + the capping between lanes, in lane half-widths
+      var decor = [];
+      [-3, -2, -1, 1, 2, 3].forEach(function (L) {
+        var row = [];
+        [[0, 720], [-6, 730.4], [6, 730.4], [-12, 740.8], [0, 740.8], [12, 740.8], [-18, 751.2], [-6, 751.2], [6, 751.2], [18, 751.2]].forEach(function (sp) {
+          row.push({ x: sp[0] + L * LANE_OFF * LW, y: sp[1], z: 0, drop: 0, down: false, fall: 0, dx: 0, dy: 1, alpha: 0.6, gone: false });
+        });
+        decor.push({ L: L, pins: row });
+      });
+      function laneName() { var t = eng.activeTeam(); return (t && t.name) || 'Lane'; }
       function drawLane(now) {
-        var G = geo(), far = P(0, PIT);
+        var far = P(0, PIT);
         var wg = g.createLinearGradient(0, 0, 0, far.y);
         wg.addColorStop(0, C.wall1); wg.addColorStop(1, C.wall0);
         g.fillStyle = wg; g.fillRect(0, 0, W, far.y + 1);
-        var sl = P(-1.5, PIT).x, sr = P(1.5, PIT).x, sy = P(0, PIT, 1.3).y, sh = far.k * 0.12 + 6;
-        g.fillStyle = 'rgba(0,0,0,.35)'; rr(sl, sy - sh, sr - sl, sh * 1.6, sh * 0.5); g.fill();
-        for (var b = 0; b < 13; b++) {
-          var on = (Math.floor(now / 260) + b) % 3 !== 0;
-          g.fillStyle = on ? C.bulb : 'rgba(255,255,255,.18)';
-          g.beginPath(); g.arc(sl + (b + 0.5) * (sr - sl) / 13, sy - sh * 0.2, Math.max(2, sh * 0.2), 0, 7); g.fill();
+        g.fillStyle = C.wall1; g.fillRect(0, far.y, W, H - far.y);
+        for (var L = -3; L <= 3; L++) laneAt(L, now);
+        /* masking unit over the pins, with a sign for every lane; ours shows the team */
+        var my = P(0, PIT, 1.3).y, mh = Math.max(16, far.k * 0.42);
+        var mg = g.createLinearGradient(0, my - mh, 0, my);
+        mg.addColorStop(0, '#0a0e1c'); mg.addColorStop(1, '#222b4a');
+        g.fillStyle = mg; g.fillRect(0, my - mh, W, mh);
+        g.fillStyle = C.stripe; g.fillRect(0, my - 3, W, 3);
+        for (L = -3; L <= 3; L++) {
+          var c = P(L * LANE_OFF, PIT, 1.3), ph = mh * 0.6, txt = L === 0 ? laneName() : String(4 + L);
+          g.font = '800 ' + Math.round(ph * 0.66) + 'px Fredoka, system-ui, sans-serif';
+          var pw = Math.max(far.k * 0.9, g.measureText(txt).width + ph);
+          if (c.x + pw < 0 || c.x - pw > W) continue;
+          g.fillStyle = L === 0 ? '#ffffff' : 'rgba(255,255,255,.16)';
+          rr(c.x - pw / 2, my - mh * 0.8, pw, ph, ph * 0.3); g.fill();
+          g.fillStyle = L === 0 ? '#1f2a44' : 'rgba(255,255,255,.6)';
+          g.textAlign = 'center'; g.textBaseline = 'middle';
+          g.fillText(txt, c.x, my - mh * 0.8 + ph / 2 + 1);
+          if (L === 0) {
+            for (var b = 0; b < 6; b++) {
+              var on = (Math.floor(now / 260) + b) % 3 !== 0;
+              g.fillStyle = on ? C.bulb : 'rgba(255,255,255,.2)';
+              [-1, 1].forEach(function (sd) { g.beginPath(); g.arc(c.x + sd * (pw / 2 + 8 + b * 9), my - mh * 0.8 + ph / 2, 2.6, 0, 7); g.fill(); });
+            }
+          }
         }
-        /* alley floor on both sides, with lines running to the back */
-        var fl = g.createLinearGradient(0, far.y, 0, H);
-        fl.addColorStop(0, C.wall1); fl.addColorStop(1, C.wall0);
-        g.fillStyle = fl; g.fillRect(0, far.y, W, H - far.y);
-        g.strokeStyle = 'rgba(255,255,255,.07)'; g.lineWidth = 2;
-        [1.8, 2.6, 3.8, 5.6, 8.5].forEach(function (u) {
-          [-u, u].forEach(function (uu) { var p0 = P(uu, PIT), p1 = P(uu, -0.6); g.beginPath(); g.moveTo(p0.x, p0.y); g.lineTo(p1.x, p1.y); g.stroke(); });
-        });
-        g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, far.y - 2, W, 4);
-        /* kickbacks beside the gutters */
-        [[-1.42, -1.22], [1.22, 1.42]].forEach(function (s) {
-          quad(s[0], s[1], -0.3, PIT); g.fillStyle = 'rgba(255,255,255,.1)'; g.fill();
-          g.strokeStyle = 'rgba(255,255,255,.18)'; g.lineWidth = 2; g.stroke();
-        });
-        quad(-1.25, 1.25, END, PIT); g.fillStyle = '#05070f'; g.fill();
-        [[-1.22, -1], [1, 1.22]].forEach(function (s) {
-          quad(s[0], s[1], -0.3, END);
-          var gg = g.createLinearGradient(P(s[0], 0).x, 0, P(s[1], 0).x, 0);
-          gg.addColorStop(0, '#2b3448'); gg.addColorStop(0.5, '#59647d'); gg.addColorStop(1, '#2b3448');
+      }
+      function laneAt(L, now) {
+        var off = L * LANE_OFF, main = L === 0;
+        function q(u0, u1, v0, v1) { quad(off + u0, off + u1, v0, v1); }
+        if (P(off - 1.4, 0).x > W + 40 && P(off - 1.4, PIT).x > W) return;
+        if (P(off + 1.4, 0).x < -40 && P(off + 1.4, PIT).x < 0) return;
+        /* capping between this lane and the next one, with a stripe */
+        q(1.22, LANE_OFF - 1.22, -0.3, PIT); g.fillStyle = '#20263a'; g.fill();
+        q(LANE_OFF / 2 - 0.1, LANE_OFF / 2 + 0.1, -0.3, PIT); g.fillStyle = C.stripe; g.fill();
+        q(1.22, 1.32, -0.3, PIT); g.fillStyle = 'rgba(255,255,255,.18)'; g.fill();
+        q(LANE_OFF - 1.32, LANE_OFF - 1.22, -0.3, PIT); g.fill();
+        q(-1.25, 1.25, END, PIT); g.fillStyle = '#05070f'; g.fill();
+        [[-1.22, -1], [1, 1.22]].forEach(function (sd) {
+          q(sd[0], sd[1], -0.3, END);
+          var gg = g.createLinearGradient(P(off + sd[0], 0).x, 0, P(off + sd[1], 0).x, 0);
+          gg.addColorStop(0, '#2b3448'); gg.addColorStop(0.5, '#6a7590'); gg.addColorStop(1, '#2b3448');
           g.fillStyle = gg; g.fill();
         });
-        quad(-1, 1, -0.3, END);
-        var wd = g.createLinearGradient(0, G.y1, 0, far.y);
+        q(-1, 1, -0.3, END);
+        var wd = g.createLinearGradient(0, H, 0, P(0, END).y);
         wd.addColorStop(0, C.wood0); wd.addColorStop(1, C.wood1);
         g.fillStyle = wd; g.fill();
-        for (var i = 0; i < 20; i++) {
-          quad(-1 + i * 0.1, -0.9 + i * 0.1, -0.3, END);
+        var nb = main ? 20 : 8;
+        for (var i = 0; i < nb; i++) {
+          q(-1 + i * 2 / nb, -1 + (i + 1) * 2 / nb, -0.3, END);
           g.fillStyle = i % 2 ? 'rgba(255,255,255,.07)' : 'rgba(120,60,0,.06)'; g.fill();
           g.strokeStyle = 'rgba(110,60,15,.14)'; g.lineWidth = 1; g.stroke();
         }
-        quad(-0.45, 0.45, -0.3, END);
-        var sh2 = g.createLinearGradient(P(-0.45, 0).x, 0, P(0.45, 0).x, 0);
-        sh2.addColorStop(0, 'rgba(255,255,255,0)'); sh2.addColorStop(0.5, 'rgba(255,255,255,.22)'); sh2.addColorStop(1, 'rgba(255,255,255,0)');
+        /* glossy lane: a soft reflection of the lights down the middle */
+        q(-0.5, 0.5, -0.3, END);
+        var sh2 = g.createLinearGradient(P(off - 0.5, 0).x, 0, P(off + 0.5, 0).x, 0);
+        sh2.addColorStop(0, 'rgba(255,255,255,0)'); sh2.addColorStop(0.5, 'rgba(255,255,255,.26)'); sh2.addColorStop(1, 'rgba(255,255,255,0)');
         g.fillStyle = sh2; g.fill();
-        quad(-1, 1, V_(HEAD - 12), END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
-        /* the seven arrows (15 ft) and the dots (7 ft), one every five boards like a real lane */
-        g.fillStyle = 'rgba(110,50,10,.42)';
+        q(-1, 1, V_(HEAD - 12), END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
+        g.fillStyle = 'rgba(110,50,10,.45)';
         for (var a = -3; a <= 3; a++) {
-          var ay = 180 + Math.abs(a) * 12, ax = a * 5.2, t = P(U_(ax), V_(ay + 14)), l = P(U_(ax - 1.1), V_(ay)), r2 = P(U_(ax + 1.1), V_(ay));
+          var ay = 180 + Math.abs(a) * 12, ax = a * 5.2 + off * LW, t = P(U_(ax), V_(ay + 14)), l = P(U_(ax - 1.1), V_(ay)), r2 = P(U_(ax + 1.1), V_(ay));
           g.beginPath(); g.moveTo(t.x, t.y); g.lineTo(l.x, l.y); g.lineTo(r2.x, r2.y); g.closePath(); g.fill();
-          var d = P(U_(a * 5.2), V_(84));
+          var d = P(U_(ax), V_(84));
           g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.025 + 1, d.k * 0.012 + 1, 0, 0, 7); g.fill();
         }
-        quad(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
+        q(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
+        if (!main) {
+          decor.forEach(function (dl) { if (dl.L === L) dl.pins.slice().sort(function (x, y) { return y.y - x.y; }).forEach(drawPin); });
+          q(-1.3, LANE_OFF - 1.3, -0.3, PIT); g.fillStyle = 'rgba(6,9,22,.42)'; g.fill();
+        }
       }
 
       /* ---------- pins ---------- */
@@ -722,6 +757,9 @@
         g.globalAlpha = Math.max(0, p.alpha);
         g.fillStyle = 'rgba(40,20,0,.28)';
         g.beginPath(); g.ellipse(floor.x + vx * 0.4 * e, floor.y + vy * 0.4 * e, h * 0.17 + Math.abs(vx) * 0.4 * e, h * 0.05 + Math.abs(vy) * 0.25 * e, 0, 0, 7); g.fill();
+        if (e < 0.05 && p.z < 0.5 && p.id != null) { // reflection on the polished lane (our lane only)
+          g.save(); g.translate(floor.x, floor.y); g.scale(1, -0.45); pinShape(h); g.fillStyle = 'rgba(255,255,255,.1)'; g.fill(); g.restore();
+        }
         g.translate(base.x, base.y);
         g.rotate(Math.atan2(vx, -vy));
         g.scale(1, len / h);
@@ -767,37 +805,28 @@
         g.restore();
       }
 
-      /* ---------- aim guide and power meter ---------- */
-      var DEG = Math.PI / 180, MAX_ANG = 2.6;
+      /* ---------- guide, power meter and effect dial ---------- */
+      var DEG = Math.PI / 180;
       function drawGuide(now) {
         var D = eng.state.data;
-        if (D.stage !== 'aim' && D.stage !== 'power') return;
-        var ang = D.ang * DEG, y2 = 420, x2 = ball.x + Math.tan(ang) * y2;
-        var a = P(U_(ball.x), V_(40)), b = P(U_(x2), V_(y2));
+        if (D.stage !== 'pos') return;
+        var a = P(U_(ball.x), V_(40)), b = P(U_(ball.x), V_(330));
         g.save(); g.lineCap = 'round';
-        g.strokeStyle = 'rgba(31,42,68,.35)'; g.lineWidth = 10;
+        g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 4; g.setLineDash([12, 12]); g.lineDashOffset = -(now * 0.05) % 24;
         g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
-        g.strokeStyle = D.stage === 'aim' ? '#ffe066' : '#ffffff'; g.lineWidth = 5; g.setLineDash([14, 10]);
-        g.lineDashOffset = D.stage === 'aim' ? -(now * 0.06) % 24 : 0;
-        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
-        g.setLineDash([]);
-        g.fillStyle = g.strokeStyle; g.beginPath(); g.arc(b.x, b.y, 6, 0, 7); g.fill();
-        /* the chosen curve: a small arrow bending at the far end */
-        if (D.spin) {
-          var c1 = P(U_(x2 + Math.tan(ang) * 200 + D.spin * 7), V_(y2 + 200));
-          g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 4; g.setLineDash([6, 8]);
-          g.beginPath(); g.moveTo(b.x, b.y); g.quadraticCurveTo(P(U_(x2 + Math.tan(ang) * 120), V_(y2 + 120)).x, P(0, V_(y2 + 120)).y, c1.x, c1.y); g.stroke();
-          g.setLineDash([]);
-        }
         g.restore();
+      }
+      function meterBox() {
+        var bh = H * 0.46, bw = Math.max(18, Math.min(30, W * 0.02));
+        return { x: Math.max(14, P(-1.9, 0.02).x - bw), y: H * 0.94 - bh, w: bw, h: bh };
       }
       function drawMeter() {
         var D = eng.state.data;
-        if (D.stage !== 'power') return;
-        var x = P(1.55, 0.12).x + 10, bh = H * 0.42, bw = Math.max(20, W * 0.022), y = H * 0.93 - bh;
-        if (x + bw > W - 8) x = W - bw - 8;
+        if (D.stage !== 'power' && D.stage !== 'eff') return;
+        var m = meterBox(), x = m.x, y = m.y, bw = m.w, bh = m.h;
         g.save();
-        g.fillStyle = 'rgba(0,0,0,.45)'; rr(x - 5, y - 5, bw + 10, bh + 10, 10); g.fill();
+        g.globalAlpha = D.stage === 'power' ? 1 : 0.6;
+        g.fillStyle = 'rgba(0,0,0,.5)'; rr(x - 5, y - 5, bw + 10, bh + 10, 10); g.fill();
         var mg = g.createLinearGradient(0, y + bh, 0, y);
         mg.addColorStop(0, '#38bdf8'); mg.addColorStop(LV.green[0], '#ffe066'); mg.addColorStop(LV.green[1], '#2ecc71'); mg.addColorStop(1, '#ff5d73');
         g.fillStyle = mg; rr(x, y, bw, bh, 7); g.fill();
@@ -807,8 +836,30 @@
         var my = y + bh * (1 - D.pow);
         g.fillStyle = '#fff'; g.strokeStyle = '#1f2a44'; g.lineWidth = 3;
         rr(x - 8, my - 5, bw + 16, 10, 5); g.fill(); g.stroke();
-        g.font = '800 ' + Math.round(Math.max(12, bw * 0.6)) + 'px Fredoka, system-ui, sans-serif';
+        g.font = '800 ' + Math.round(Math.max(12, bw * 0.55)) + 'px Fredoka, system-ui, sans-serif';
         g.textAlign = 'center'; g.fillStyle = '#fff'; g.fillText('POWER', x + bw / 2, y - 12);
+        g.restore();
+      }
+      function drawEffect() {
+        var D = eng.state.data;
+        if (D.stage !== 'eff') return;
+        var R = Math.max(46, Math.min(W, H) * 0.15), cx = Math.min(W - R - 16, P(1.9, 0.02).x + R), cy = H * 0.9;
+        g.save();
+        g.fillStyle = 'rgba(0,0,0,.5)';
+        g.beginPath(); g.arc(cx, cy, R + 10, Math.PI, 0); g.closePath(); g.fill();
+        /* left curve, straight, right curve */
+        [[-1, -0.33, '#a855f7'], [-0.33, 0.33, '#2ecc71'], [0.33, 1, '#f59e0b']].forEach(function (z) {
+          g.strokeStyle = z[2]; g.lineWidth = R * 0.22;
+          g.beginPath(); g.arc(cx, cy, R * 0.8, -Math.PI / 2 + z[0] * 1.1, -Math.PI / 2 + z[1] * 1.1); g.stroke();
+        });
+        var a = -Math.PI / 2 + D.eff * 1.1;
+        g.strokeStyle = '#fff'; g.lineWidth = 5; g.lineCap = 'round';
+        g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a) * R * 0.95, cy + Math.sin(a) * R * 0.95); g.stroke();
+        g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, 6, 0, 7); g.fill();
+        g.font = '800 ' + Math.round(Math.max(12, R * 0.2)) + 'px Fredoka, system-ui, sans-serif';
+        g.textAlign = 'center'; g.fillText('EFFECT', cx, cy - R - 16);
+        g.textAlign = 'left'; g.fillText('↶', cx - R - 4, cy - 4);
+        g.textAlign = 'right'; g.fillText('↷', cx + R + 4, cy - 4);
         g.restore();
       }
 
@@ -923,6 +974,36 @@
       function resetBall() {
         ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0; ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
       }
+      var bowlerFor = null, bowlerInner = null;
+      function placeBowler() {
+        var t = eng.activeTeam();
+        if (!t) return;
+        if (bowlerFor !== t) {
+          bowlerFor = t; bowler.innerHTML = '';
+          bowlerInner = U().h('div', { class: 'gm-bowl-bowler-in' }, [U().monFull(t.mon, 160)]);
+          bowler.appendChild(bowlerInner);
+        }
+        var side = ball.x > 0 ? -1 : 1, f = P(U_(ball.x + side * 17), V_(-6)), sc = Math.max(0.3, f.k * 0.003);
+        var fy = Math.min(f.y, H - 6); // keep the monster's feet inside the lane box
+        bowler.style.transform = 'translate(' + Math.round(f.x - 80 * sc) + 'px,' + Math.round(fy - 150 * sc) + 'px) scale(' + sc.toFixed(3) + ')';
+        bowler.style.opacity = ball.on && ball.y > 120 ? '0.85' : '1';
+      }
+      var cardData = st.teams.map(function () { return []; });
+      function renderCard() {
+        card.innerHTML = '';
+        st.teams.forEach(function (t, ti) {
+          var row = U().h('div', { class: 'gm-bowl-row' + (ti === eng.state.turn ? ' on' : '') });
+          row.style.setProperty('--c', t.color);
+          row.appendChild(U().h('b', { text: t.name }));
+          for (var fi = 0; fi < (+ctx.cfg.frames || 3); fi++) {
+            var fr = cardData[ti][fi] || [], box = U().h('span', { class: 'gm-bowl-fr' });
+            box.appendChild(U().h('i', { text: fr[0] || '' }));
+            box.appendChild(U().h('i', { text: fr[1] || '' }));
+            row.appendChild(box);
+          }
+          card.appendChild(row);
+        });
+      }
       function sweep() { pins.forEach(function (p) { if (p.down) p.sweep = true; p.rollDown = false; }); }
       function standing() { return pins.filter(function (p) { return !p.gone && !p.down && !p.sweep; }).length; }
 
@@ -934,34 +1015,23 @@
         info.appendChild(U().h('b', { text: text }));
         (btns || []).forEach(function (b) { info.appendChild(b); });
       }
-      function spinRow() {
-        var D = eng.state.data, row = U().h('div', { class: 'gm-bowl-spin' });
-        [[-1, '↶ Curve'], [0, 'Straight'], [1, 'Curve ↷']].forEach(function (o) {
-          var b = U().btn(o[1], 'gm-bowl-spinbtn' + (D.spin === o[0] ? ' on' : ''), function () {
-            D.spin = o[0];
-            [].forEach.call(row.children, function (c) { c.classList.remove('on'); });
-            b.classList.add('on');
-          });
-          row.appendChild(b);
-        });
-        return row;
-      }
       var STEP_TXT = {
-        pos: '1️⃣ Where do you stand? Tap the lane to stop the ball.',
-        aim: '2️⃣ Aim at the arrows. Tap to lock your line.',
-        power: '3️⃣ Power! Tap when the bar is in the green.'
+        pos: '1️⃣ MOVE: tap to stop the ball where you want to stand.',
+        power: '2️⃣ POWER: tap when the bar is in the green.',
+        eff: '3️⃣ EFFECT: tap to set the curve (green = straight).'
       };
       function setStage(stage) {
         var D = eng.state.data;
         D.stage = stage;
         var pre = D.ball === 2 ? 'Ball 2 (' + standing() + ' left) · ' : '';
-        header(pre + STEP_TXT[stage], [U().btn('✋ STOP!', 'big green', lock), spinRow()]);
-        if (stage === 'pos' && D.ball === 1) res.textContent = '💡 Tip: hit just beside the head pin (the pocket) for a strike. A curve helps!';
+        header(pre + STEP_TXT[stage], [U().btn('✋ STOP!', 'big green', lock)]);
+        if (stage === 'pos' && D.ball === 1) res.textContent = '💡 Tip: stand on one side and curve the ball into the pocket, just beside the head pin.';
       }
 
       function showTurn() {
         var t = eng.activeTeam(), D = eng.state.data;
-        D.stage = 'idle'; D.ball = 1; D.spin = 0;
+        D.stage = 'idle'; D.ball = 1;
+        renderCard();
         eng.setPhase('idle');
         rack(); resetBall();
         header(t.name + ': answer to bowl! (frame ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')', [U().btn('❓ Ask me', 'big amber', ask)]);
@@ -993,9 +1063,9 @@
         var D = eng.state.data;
         if (eng.state.phase !== 'action' || !eng.state.alive) return;
         A().play('tap');
-        if (D.stage === 'pos') { ball.x = D.pos; D.ang = -MAX_ANG; D.angDir = 1; setStage('aim'); }
-        else if (D.stage === 'aim') { D.pow = 0; D.powDir = 1; setStage('power'); }
-        else if (D.stage === 'power') launch();
+        if (D.stage === 'pos') { ball.x = D.pos; D.pow = 0; D.powDir = 1; setStage('power'); }
+        else if (D.stage === 'power') { D.eff = -1; D.effDir = 1; setStage('eff'); }
+        else if (D.stage === 'eff') launch();
       }
       eng.listen(lane, 'pointerdown', function (e) {
         if (eng.state.phase !== 'action') return;
@@ -1014,10 +1084,11 @@
         eng.setPhase('animating');
         var g0 = LV.green[0], g1 = LV.green[1], miss = D.pow < g0 ? g0 - D.pow : (D.pow > g1 ? D.pow - g1 : 0);
         /* a release outside the green wobbles the line; too soft also hooks less */
-        var ang = (D.ang + (Math.random() - 0.5) * (0.12 + miss * 7) * LV.noise) * DEG;
+        var ang = ((Math.random() - 0.5) * (0.12 + miss * 7) * LV.noise) * DEG;
         var speed = 230 + D.pow * 150;
         ball.vx = Math.sin(ang) * speed; ball.vy = Math.cos(ang) * speed;
-        ball.hook = D.spin * (22 + 10 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
+        ball.hook = D.eff * 32 * (0.7 + 0.3 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
+        if (bowlerInner) { bowlerInner.classList.remove('throw'); void bowlerInner.offsetWidth; bowlerInner.classList.add('throw'); }
         ball.on = true; slowEnd = -1;
         header(eng.activeTeam().name + ' is rolling... 🎳');
         A().play('bowling_roll');
@@ -1056,6 +1127,10 @@
           say(split ? 'SPLIT!' : n + (n === 1 ? ' PIN' : ' PINS'), split ? '#ff9a3c' : (n >= 7 ? '#2ecc71' : '#38bdf8'));
           res.textContent = '🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down! +' + pts + (split ? ' (a split: hard spare!)' : '');
         }
+        var fr = cardData[eng.state.turn];
+        if (D.ball === 1) { fr.push([strike ? 'X' : (n === 0 ? '-' : String(n))]); }
+        else { fr[fr.length - 1][1] = spare ? '/' : (n === 0 ? '-' : String(n)); }
+        renderCard();
         if (pts > 0) {
           eng.award(eng.state.turn, pts, deck, (strike ? 'STRIKE +' : spare ? 'SPARE +' : '+') + pts);
           U().wobble(document.getElementById('gm-team-' + eng.state.turn));
@@ -1090,10 +1165,10 @@
             if (D.pos > 14) { D.pos = 14; D.posDir = -1; }
             if (D.pos < -14) { D.pos = -14; D.posDir = 1; }
             ball.x = D.pos;
-          } else if (D.stage === 'aim') {
-            D.ang += D.angDir * dt * 3.6 * LV.s;
-            if (D.ang > MAX_ANG) { D.ang = MAX_ANG; D.angDir = -1; }
-            if (D.ang < -MAX_ANG) { D.ang = -MAX_ANG; D.angDir = 1; }
+          } else if (D.stage === 'eff') {
+            D.eff += D.effDir * dt * 1.6 * LV.s;
+            if (D.eff > 1) { D.eff = 1; D.effDir = -1; }
+            if (D.eff < -1) { D.eff = -1; D.effDir = 1; }
           } else if (D.stage === 'power') {
             D.pow += D.powDir * dt * 1.25 * LV.s;
             if (D.pow > 1) { D.pow = 1; D.powDir = -1; }
@@ -1114,7 +1189,9 @@
         things.sort(function (a, b) { return b.y - a.y; }).forEach(function (t) { t.f(); });
         drawGuide(now);
         drawMeter();
+        drawEffect();
         drawPop(now);
+        placeBowler();
         return true;
       });
 
