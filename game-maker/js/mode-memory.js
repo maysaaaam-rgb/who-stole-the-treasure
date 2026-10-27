@@ -44,15 +44,13 @@
       var busy = false;
       var ended = false;
 
-      if (A() && A().play) A().play('music_puzzle');
-
       // Build pairs from ctx.nextItem()
       var deck = [];
       for (var p = 0; p < numPairs; p++) {
         var it = ctx.nextItem();
         var fullSent = makeFullSentence(it.q, it.a);
         deck.push({ pairId: p, kind: 'q', text: String(it.q || ''), full: fullSent, matched: false, faceUp: false, el: null });
-        deck.push({ pairId: p, kind: 'a', text: '⭐ ' + String(it.a || ''), rawAns: String(it.a || ''), full: fullSent, matched: false, faceUp: false, el: null });
+        deck.push({ pairId: p, kind: 'a', text: String(it.a || ''), rawAns: String(it.a || ''), full: fullSent, matched: false, faceUp: false, el: null });
       }
       deck = U().shuffle(deck);
 
@@ -72,7 +70,12 @@
         inner.appendChild(U().h('span', { class: 'gm-mem-num' }, [String(idx + 1)]));
 
         if (card.faceUp || card.matched) {
-          inner.appendChild(U().h('div', { class: 'gm-mem-text' }, [card.text]));
+          var txtEl = U().h('div', { class: 'gm-mem-text' });
+          if (card.kind === 'a') {
+            txtEl.appendChild(U().art('o_star_coin', '⭐', 'gm-mem-star-ic'));
+          }
+          txtEl.appendChild(U().h('span', {}, [card.text]));
+          inner.appendChild(txtEl);
         } else {
           inner.appendChild(U().art('o_card_back', '🃏', 'gm-mem-art'));
         }
@@ -133,7 +136,11 @@
 
         card.faceUp = true;
         renderCard(card, idx);
-        if (A()) A().play('card_turn');
+        if (J() && J().squash && card.el) J().squash(card.el, 1.14, 0.88, 220);
+        if (A()) {
+          A().play('card_turn');
+          A().play('page_slide');
+        }
         flipped.push({ card: card, idx: idx });
 
         if (flipped.length < 2) return;
@@ -149,7 +156,11 @@
           matchedPairs++;
           renderCard(c1, i1);
           renderCard(c2, i2);
-          if (A()) A().play('card_match');
+          if (A()) {
+            A().play('card_match');
+            A().play('sparkle');
+            A().play('coin_collect');
+          }
 
           showReadAloudModal(c1.full, function () {
             if (ended) return;
@@ -161,6 +172,7 @@
 
             if (matchedPairs >= numPairs) {
               ended = true;
+              if (A()) A().play('cheer_kids');
               setTimeout(function () { ctx.end(); }, 550);
               return;
             }
@@ -175,6 +187,7 @@
           c2.faceUp = false;
           renderCard(c1, i1);
           renderCard(c2, i2);
+          if (A()) A().play('wood_knock');
 
           U().floatText('Good try! +5', c2.el, 'good');
           U().addScore(turn, 5);

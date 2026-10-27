@@ -94,8 +94,6 @@
       var ended = false;
       var finishOrder = [];
 
-      if (A() && A().play) A().play('music_puzzle');
-
       var wrap = U().h('div', { class: 'gm-jig-wrap' });
       var info = U().h('div', { class: 'gm-info' });
       var split = U().h('div', { class: 'gm-jig-split' });
@@ -171,7 +169,7 @@
         ghost.setAttribute('x', 0); ghost.setAttribute('y', 0);
         ghost.setAttribute('width', BW); ghost.setAttribute('height', BH);
         ghost.setAttribute('preserveAspectRatio', 'none');
-        ghost.setAttribute('opacity', '0.16');
+        ghost.setAttribute('opacity', '0.38');
         svg.appendChild(ghost);
 
         // Slot outlines
@@ -283,6 +281,7 @@
         dg.addEventListener('pointerdown', function (evt) {
           evt.preventDefault();
           dragging = true;
+          if (A()) A().play('page_slide');
           try { dg.setPointerCapture(evt.pointerId); } catch (e) {}
           startPt = clientToSVG(evt);
         });
@@ -303,7 +302,7 @@
             snapPieceIn(lane);
           } else {
             lane.misses++;
-            if (A()) A().play('wrong');
+            if (A()) A().play('answer_soft');
             renderLane(lane);
           }
         }
@@ -320,7 +319,12 @@
         lane.activePiece = null;
         lane.misses = 0;
 
-        if (A()) A().play('card_match');
+        if (A()) {
+          A().play('wood_knock');
+          A().play('card_match');
+          A().play('coin_collect');
+        }
+        if (J() && J().squash && lane.el) J().squash(lane.el, 1.03, 0.97, 220);
         U().floatText('+10 🧩', lane.el, 'good');
         U().addScore(lane.idx, 10);
         if (J()) J().react(lane.idx, 'score');
@@ -329,7 +333,10 @@
           lane.phase = 'done';
           finishOrder.push(lane.idx);
           var bonus = finishOrder.length === 1 ? 50 : 30;
-          if (A()) A().play('win');
+          if (A()) {
+            A().play('win_fanfare');
+            A().play('cheer_kids');
+          }
           U().floatText('FINISHED! +' + bonus, lane.el, 'good');
           U().addScore(lane.idx, bonus);
           U().confetti(45);
@@ -363,7 +370,10 @@
         if (A()) A().play('card_turn');
 
         if (correct) {
-          if (A()) A().play('correct');
+          if (A()) {
+            A().play('answer_right');
+            A().play('sparkle');
+          }
           var count = lane.isSteal ? 2 : 1;
           lane.isSteal = false;
           lane.toPlace = Math.min(count, TOTAL - lane.placedCount);
@@ -372,7 +382,7 @@
           lane.phase = 'place';
           renderLane(lane);
         } else {
-          if (A()) A().play('wrong');
+          if (A()) A().play('answer_soft');
           U().wobble(lane.el);
           lane.isSteal = false;
           lane.item = ctx.nextItem();

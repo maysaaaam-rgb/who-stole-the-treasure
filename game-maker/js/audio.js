@@ -78,7 +78,7 @@
     witch: function () { arp([N.C5, N.E5, N.G5, N.E5, N.G5, N.C6], 0.08, 0.2, { v: 0.12 }); }
   };
 
-  var PRELOAD = ['ui_tap', 'tile_flip', 'answer_right', 'answer_soft', 'turn_switch', 'fuse_tick', 'bomb_pass', 'bomb_boom', 'bowling_roll', 'pin_hit', 'bowling_strike', 'disc_drop', 'disc_bounce', 'line_win', 'plinko_drop', 'plinko_peg_1', 'plinko_peg_2', 'plinko_peg_3', 'hunt_dig', 'hunt_prize', 'hunt_empty', 'hunt_step', 'win_fanfare'];
+  var PRELOAD = ['ui_tap', 'ui_start', 'start', 'tile_flip', 'answer_right', 'right', 'answer_soft', 'turn_switch', 'fuse_tick', 'bomb_pass', 'bomb_boom', 'bowling_roll', 'pin_hit', 'bowling_strike', 'disc_drop', 'disc_bounce', 'line_win', 'plinko_drop', 'plinko_peg_1', 'plinko_peg_2', 'plinko_peg_3', 'hunt_dig', 'hunt_prize', 'hunt_empty', 'hunt_step', 'win_fanfare'];
   function loadBuf(name) {
     if (!files[name] || !ensure() || bufs[name] !== undefined) return;
     if (root.location && root.location.protocol === 'file:') { files[name] = 0; return; }
@@ -152,7 +152,8 @@
   /* quiet background music: a recorded loop if present, otherwise a soft synthesized pad that follows the theme */
   function musicStart(theme) {
     musicStop(); if (muted || !ensure()) return;
-    var name = theme === 'halloween' ? 'halloween_loop' : 'classic_loop';
+    var mId = (GM.state && GM.state.modeId) || '';
+    var name = theme === 'halloween' ? 'halloween_loop' : ((mId === 'snakes' || mId === 'boardgame') && files.music_jungle ? 'music_jungle' : ((mId === 'whack' || mId === 'hunt' || mId === 'fling') && files.music_garden ? 'music_garden' : 'classic_loop'));
     if (files[name] && bufs[name]) { var s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = bufs[name]; s.loop = true; g.gain.value = 0.25; s.connect(g); g.connect(master); s.start(); music = { stop: function () { try { s.stop(); } catch (e) { /* done */ } } }; return; }
     if (files[name] && bufs[name] === undefined) playFile(name, 0);   // start loading for next time
     var chords = theme === 'halloween' ? [[220, 261.63, 329.63], [196, 246.94, 293.66], [174.61, 220, 261.63], [196, 246.94, 293.66]] : [[261.63, 329.63, 392], [220, 261.63, 329.63], [174.61, 220, 261.63], [196, 246.94, 293.66]];

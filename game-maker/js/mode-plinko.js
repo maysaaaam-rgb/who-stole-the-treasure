@@ -151,7 +151,7 @@
         if (eng.state.phase !== 'action' || !eng.state.alive) return;
         eng.setPhase('animating');
         setCols(false);
-        A().play('plinko_drop');
+        A().play('plinko_drop'); A().play('whoosh_soft');
         J().squash(disc, 0.86, 1.18, 200);
 
         var px = 26 + k * 49.5, py = 70, vx = (Math.random() - 0.5) * 42, vy = 0;
@@ -180,7 +180,7 @@
                   vx += (Math.random() - 0.5) * 62;
                 }
                 if (now - lastSnd > 68) {
-                  A().play('plinko_peg');
+                  A().play('plinko_peg'); A().play('wood_knock');
                   lastSnd = now;
                   var pegEl = pegs[p].el;
                   pegEl.classList.add('hit');
@@ -209,7 +209,8 @@
         disc.style.top = (SLOT_Y + 14) + 'px';
         disc.style.transform = 'none';
         el.classList.add('win');
-        A().play('disc_bounce');
+        A().play('disc_bounce'); A().play('coin_collect'); A().play('sparkle');
+        if (base >= 50) A().play('crowd_cheer_small');
         A().play(base >= 50 ? 'slot_high' : base >= 20 ? 'slot_mid' : 'slot_low');
         if (hal) A().play(base >= 50 ? 'witch' : 'ghost');
         J().squash(disc, 1.26, 0.76, 260);

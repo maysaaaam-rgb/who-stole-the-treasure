@@ -39,8 +39,6 @@
       var targets = [];
       var decoys = [];
 
-      if (A() && A().play) A().play('music_arcade');
-
       // Gather vocabulary pool from GM.state.pack
       var packItems = (GM.state.pack && GM.state.pack.items) ? GM.state.pack.items : [];
       var allWords = [];
@@ -73,6 +71,14 @@
         U().art('o_hammer', '🔨', '')
       ]);
       board.appendChild(hammerEl);
+      if (U().hasArt && U().hasArt('o_bush')) {
+        var bushL = U().art('o_bush', '', 'gm-whk-bush');
+        bushL.style.cssText = 'position:absolute;bottom:6px;left:10px;width:58px;height:58px;pointer-events:none;z-index:1;opacity:0.9;';
+        var bushR = U().art('o_bush', '', 'gm-whk-bush');
+        bushR.style.cssText = 'position:absolute;bottom:6px;right:10px;width:58px;height:58px;pointer-events:none;z-index:1;opacity:0.9;';
+        board.appendChild(bushL);
+        board.appendChild(bushR);
+      }
       board.addEventListener('pointermove', function (e) {
         var r = board.getBoundingClientRect();
         hammerEl.style.left = (e.clientX - r.left) + 'px';
@@ -192,11 +198,17 @@
         h.mole.innerHTML = '';
         var monBuddy = U().monFace(T[(h.idx + turn) % T.length].mon, 42);
         monBuddy.style.cssText = 'position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);pointer-events:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.45));';
+        if (U().hasArt && U().hasArt('o_word_bubble')) {
+          var bubArt = U().art('o_word_bubble', '', 'gm-whk-bub-art');
+          bubArt.style.cssText = 'position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);object-fit:contain;pointer-events:none;z-index:0;opacity:0.28;';
+          h.mole.appendChild(bubArt);
+        }
         var wordSpan = U().h('span', { style: 'position:relative;z-index:2;display:block;padding-bottom:8px;' }, [word]);
         h.mole.appendChild(wordSpan);
         h.mole.appendChild(monBuddy);
         h.mole.className = 'gm-whk-mole up';
-        if (A()) A().play('pop_up');
+        if (J() && J().squash) J().squash(h.mole, 1.16, 0.86, 180);
+        if (A()) { A().play('pop_up'); A().play('bubble_pop'); }
 
         h.hideTid = setTimeout(function () {
           if (!h.active) return;
@@ -221,15 +233,18 @@
         hammerEl.classList.add('swing');
         setTimeout(function () { hammerEl.classList.remove('swing'); }, 150);
 
-        if (A()) A().play('whack_hit');
+        if (A()) { A().play('whack_hit'); A().play('wood_knock'); }
 
         if (h.isTarget) {
+          if (A()) { A().play('sparkle'); A().play('coin_collect'); }
+          if (J() && J().squash) J().squash(h.mole, 1.25, 0.76, 200);
           h.mole.className = 'gm-whk-mole up hit-good';
           turnPoints += 5;
           U().floatText('+5', h.mole, 'good');
           U().addScore(turn, 5);
           U().teamBar(T, turn);
         } else {
+          if (A()) A().play('answer_soft');
           h.mole.className = 'gm-whk-mole up hit-bad';
           U().wobble(h.mole);
           U().floatText('Bonk!', h.mole, 'bad');
@@ -289,6 +304,7 @@
         if (turnsDone >= totalTurns) {
           phase = 'ended';
           clearAllTimers();
+          if (A()) A().play('cheer_kids');
           ctx.end();
           return;
         }

@@ -1141,3 +1141,561 @@ body.th-halloween .gm-bas-field {
   50% { transform: translateY(-22px) scale(1.3); }
   100% { transform: translateY(0) scale(1); }
 }
+
+
+/* ==========================================================================
+   WAVE 3: CLASSIC BACKGROUNDS, 60PX SMARTBOARD BUTTONS & MOTION POLISH
+   ========================================================================== */
+body.th-classic.gm-on-play.gm-mode-cannon .gm-bg::before,
+body.th-classic.gm-on-play.gm-mode-fling .gm-bg::before {
+  background-image: url(../art/bg_classic_cannon.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-whack .gm-bg::before {
+  background-image: url(../art/bg_classic_whack.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-balloon .gm-bg::before {
+  background-image: url(../art/bg_classic_balloon.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-baseball .gm-bg::before {
+  background-image: url(../art/bg_classic_baseball.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-bowling .gm-bg::before {
+  background-image: url(../art/bg_classic_bowling.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-snakes .gm-bg::before {
+  background-image: url(../art/bg_classic_snakes.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-memory .gm-bg::before {
+  background-image: url(../art/bg_classic_memory.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-jigsaw .gm-bg::before,
+body.th-classic.gm-on-play.gm-mode-ttt .gm-bg::before,
+body.th-classic.gm-on-play.gm-mode-connect4 .gm-bg::before {
+  background-image: url(../art/bg_classic_puzzle.webp), url(../art/bg_classic_board.webp);
+}
+body.th-classic.gm-on-play.gm-mode-boardgame .gm-bg::before {
+  background-image: url(../art/bg_classic_board.webp);
+}
+
+/* Stage inner backdrops using new 3D artwork */
+body.th-classic .whack-stage {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.36)),
+    url(../art/bg_classic_whack.webp) center/cover no-repeat;
+}
+body.th-classic .gm-bal-sky {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(15, 23, 42, 0.18)),
+    url(../art/bg_classic_balloon.webp) center/cover no-repeat;
+}
+
+/* Balloon string and soft ground/air drop shadow */
+.gm-bal-art::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 3px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(4deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Smartboard 60px touch-target & 24px readability rules */
+#gm-stage .gm-btn,
+#gm-stage .gm-btn.big,
+#gm-stage .gm-btn-go,
+.gm-info .gm-btn,
+.gm-jig-opt,
+.gm-ccol,
+.pen-zone {
+  min-height: 60px !important;
+  font-size: clamp(22px, 2.1vh, 26px) !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.pen-zone {
+  padding: 10px 18px !important;
+  border-bottom-width: 5px !important;
+}
+.gm-col {
+  width: 46px !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  font-size: 22px !important;
+  top: -4px !important;
+}
+
+/* Weight, shadows & squash-and-stretch landing transitions */
+.gm-snk-tok,
+.gm-bas-runner,
+.gm-mem-card,
+.gm-hmon,
+.gm-disc,
+.gm-mark {
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.38));
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), left 0.32s cubic-bezier(0.22, 1, 0.36, 1), top 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gm-snk-cell-art {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.35));
+}
+.gm-snk-dice-art {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3));
+}
+.gm-mem-star-ic {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  vertical-align: -5px;
+  margin-right: 6px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+}
+
+.gm-whk-mole {
+  min-height: 60px !important;
+}
+
+/* ==========================================================================
+   WAVE 3 VISUAL AUDIT FIXES: ZERO OVERLAP, 3D BACKDROPS & FIT
+   ========================================================================== */
+
+/* 1. Prevent bottom #gm-teams monster pods from overlapping #gm-stage in ANY game */
+body.gm-on-play .gm-teams {
+  margin-top: 0 !important;
+  padding: 14px 14px 6px !important;
+  min-height: 0 !important;
+}
+body.gm-on-play .gm-pod::before {
+  bottom: 32px !important;
+  height: 14px !important;
+}
+body.gm-on-play .gm-pod-mon {
+  height: 42px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  margin-bottom: -6px !important;
+}
+body.gm-on-play .gm-pod-mon .gm-monfull {
+  width: 46px !important;
+  height: 46px !important;
+}
+body.gm-on-play.gm-small-pods .gm-pod-mon,
+body.gm-on-play.gm-small-pods .gm-pod::before {
+  display: none !important;
+}
+body.gm-on-play .gm-pod.on {
+  transform: translateY(-2px) scale(1.03) !important;
+}
+body.gm-on-play .gm-pod.on::after {
+  top: -12px !important;
+  font-size: 0.7rem !important;
+  padding: 1px 8px !important;
+}
+
+/* 2. Monster Race: show 3D stadium backdrop inside .gm-track and rich terracotta running lanes */
+body.th-classic .gm-track {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0.28) 100%),
+    url(../art/bg_classic_race.webp) center/cover no-repeat !important;
+}
+body.th-classic .gm-lane2 {
+  background: rgba(15, 23, 42, 0.26) !important;
+  backdrop-filter: blur(3px);
+  padding: 4px 8px !important;
+}
+body.th-classic .gm-lane2.on {
+  background: rgba(254, 240, 138, 0.34) !important;
+  box-shadow: 0 0 0 3px #fde047;
+}
+body.th-classic .gm-road {
+  background: linear-gradient(180deg, rgba(234, 88, 12, 0.84) 0%, rgba(194, 65, 12, 0.9) 100%) !important;
+  border: 3px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 3. Whack-a-Word: show 3D sunny garden on .gm-whk-board and rich 3D earth burrows */
+body.th-classic .gm-whk-board {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.24) 100%),
+    url(../art/bg_classic_whack.webp) center/cover no-repeat !important;
+}
+.gm-whk-hole {
+  width: min(185px, 84%) !important;
+  height: 48px !important;
+  background: radial-gradient(ellipse at 50% 42%, #070b14 0%, #1e293b 64%, #451a03 100%) !important;
+  border: 4px solid #78350f !important;
+  box-shadow: inset 0 10px 16px rgba(0, 0, 0, 0.92), 0 5px 0 rgba(69, 26, 3, 0.7), 0 8px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* 4. Baseball: show 3D baseball stadium on .gm-bas-field and keep meter below Home plate */
+body.th-classic .gm-bas-field {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.25) 100%),
+    url(../art/bg_classic_baseball.webp) center/cover no-repeat !important;
+}
+.gm-bas-diamond {
+  top: 45% !important;
+  width: 190px !important;
+  height: 190px !important;
+}
+.gm-bas-base.b-home { top: 70% !important; left: 50% !important; }
+.gm-bas-base.b-1    { top: 45% !important; left: 66% !important; }
+.gm-bas-base.b-2    { top: 20% !important; left: 50% !important; }
+.gm-bas-base.b-3    { top: 45% !important; left: 34% !important; }
+.gm-bas-meter-box {
+  bottom: 8px !important;
+  padding: 6px 14px !important;
+}
+
+/* 5. Penalty Kick: show 3D stadium on .gm-pen-pitch and keep target grid subtle until shoot phase */
+body.th-classic .gm-pen-pitch {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.06) 0%, rgba(15, 23, 42, 0.22) 100%),
+    url(../art/bg_classic_penalty.webp) center/cover no-repeat !important;
+}
+.gm-pen-target:not(.ready) {
+  opacity: 0.32 !important;
+  font-size: 18px !important;
+}
+.gm-pen-target.ready {
+  opacity: 1 !important;
+  font-size: 22px !important;
+}
+
+/* 6. Snakes & Ladders: show 3D jungle board and fit all 5 rows (1..30) cleanly */
+.gm-snk-wrap,
+.gm-pen-wrap,
+.gm-whk-wrap,
+.gm-tow-wrap,
+.gm-bal-wrap,
+.gm-bas-wrap,
+.gm-jig-wrap,
+.gm-mem-wrap {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+.gm-snk-main {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+body.th-classic .gm-snk-board-wrap {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.28)),
+    url(../art/bg_classic_snakes.webp) center/cover no-repeat !important;
+  padding: 8px 10px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+.gm-snk-grid {
+  gap: 6px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+}
+.gm-snk-cell {
+  padding: 3px 6px !important;
+  min-height: 0 !important;
+  opacity: 0.88;
+  border: 2.5px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.65) !important;
+}
+.gm-snk-num {
+  font-size: 15px !important;
+  padding: 1px 6px !important;
+}
+.gm-snk-tag {
+  font-size: 14px !important;
+  padding: 1px 6px !important;
+}
+.gm-snk-cell-art {
+  width: 20px !important;
+  height: 20px !important;
+}
+.gm-snk-tokens {
+  min-height: 24px !important;
+}
+.gm-snk-tok {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* 7. Connect 4 & Tic-Tac-Toe: fit column buttons + 6 disc rows and show square numbers */
+.gm-ttt.c4 {
+  aspect-ratio: 7 / 7.1 !important;
+  max-height: 100% !important;
+  padding: 8px 10px !important;
+  gap: 6px !important;
+  grid-template-rows: 50px repeat(6, minmax(0, 1fr)) !important;
+}
+.gm-ccol {
+  min-height: 46px !important;
+  height: 46px !important;
+  font-size: 20px !important;
+  padding: 2px 6px !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.gm-sq-num {
+  font-size: clamp(1.8rem, 4.5vh, 2.8rem);
+  font-weight: 800;
+  color: rgba(31, 42, 68, 0.22);
+  pointer-events: none;
+}
+
+/* 8. Memory Match: showcase tabletop backdrop and larger 3D card emblem */
+body.th-classic .gm-mem-grid {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.14), rgba(15, 23, 42, 0.28)),
+    url(../art/bg_classic_memory.webp) center/cover no-repeat !important;
+  border: 4px solid rgba(255, 255, 255, 0.8) !important;
+}
+.gm-mem-card.face-down .gm-mem-inner {
+  background: radial-gradient(circle at 50% 35%, #60a5fa 0%, #2563eb 58%, #1e3a8a 100%) !important;
+  border: 3.5px solid #fde68a !important;
+  border-bottom: 7px solid #1e3a8a !important;
+}
+.gm-mem-card.face-down .gm-mem-art {
+  width: 96px !important;
+  height: 96px !important;
+  max-height: 82% !important;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.42));
+}
+
+/* 9. Jigsaw Race & Plinko: brighter glassmorphic frames and 3D Plinko pegs */
+.gm-jig-lane {
+  background: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(8px);
+}
+body.th-classic .gm-pl {
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 55%, #bfdbfe 100%) !important;
+}
+.gm-peg {
+  background: url(../art/o_plinko_peg.webp) center/contain no-repeat !important;
+  border: 0 !important;
+  width: 22px !important;
+  height: 22px !important;
+  margin: -3px !important;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+}
+
+
+/* ==========================================================================
+   WAVE 4 (REAL-3): FULL-SCREEN LIVING SCENES FOR CANNON, BOWLING & ALLEY FLING
+   ========================================================================== */
+
+/* Make the game world fill the entire play area edge-to-edge, with header & team pods floating on top */
+body.gm-on-play.gm-mode-cannon .gm-head,
+body.gm-on-play.gm-mode-bowling .gm-head,
+body.gm-on-play.gm-mode-fling .gm-head {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.42) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 6px 16px !important;
+}
+
+body.gm-on-play.gm-mode-cannon .gm-stage,
+body.gm-on-play.gm-mode-bowling .gm-stage,
+body.gm-on-play.gm-mode-fling .gm-stage {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-cannon .gm-boardwrap,
+body.gm-on-play.gm-mode-bowling .gm-boardwrap,
+body.gm-on-play.gm-mode-fling .gm-boardwrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-cannon .gm-teams,
+body.gm-on-play.gm-mode-bowling .gm-teams,
+body.gm-on-play.gm-mode-fling .gm-teams {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(0deg, rgba(15, 23, 42, 0.48) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 4px 14px 8px !important;
+  pointer-events: none;
+}
+body.gm-on-play.gm-mode-cannon .gm-teams .gm-pod,
+body.gm-on-play.gm-mode-bowling .gm-teams .gm-pod,
+body.gm-on-play.gm-mode-fling .gm-teams .gm-pod {
+  pointer-events: auto;
+}
+
+/* Full-bleed viewport canvas container that stretches behind header and team pods */
+.gm-real3-scene {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+  user-select: none;
+  touch-action: none;
+}
+
+.gm-real3-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* Slim sliding turn banner (Step 2E: slides in, never blocks the middle of the game) */
+.gm-real3-banner {
+  --c: #38bdf8;
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translate(-50%, -140%) scale(0.92);
+  opacity: 0;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 22px 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 3px solid #ffffff;
+  border-left: 12px solid var(--c);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+  color: #ffffff;
+  pointer-events: none;
+  transition: transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.28s ease;
+  white-space: nowrap;
+}
+.gm-real3-banner.in {
+  transform: translate(-50%, 0) scale(1);
+  opacity: 1;
+}
+.gm-real3-banner.compact {
+  transform: translate(-50%, -6px) scale(0.94);
+  opacity: 0.94;
+}
+.gm-real3-banner b {
+  font-size: clamp(22px, 2.3vh, 28px);
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65);
+}
+.gm-real3-banner span.gm-real3-sub {
+  font-size: clamp(18px, 1.9vh, 22px);
+  font-weight: 700;
+  color: #fde047;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 3px 12px;
+  border-radius: 999px;
+}
+
+/* Floating action control dock (>= 60px touch targets, tactile 3D push buttons) */
+.gm-real3-dock {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+.gm-real3-dock > * {
+  pointer-events: auto;
+}
+
+.gm-real3-btn {
+  min-height: 64px !important;
+  padding: 12px 28px !important;
+  font: 900 clamp(22px, 2.4vh, 28px) var(--font) !important;
+  border-radius: 22px !important;
+  border: 3px solid #1f2a44 !important;
+  border-bottom: 6px solid #0f172a !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4) !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-bottom-width 0.14s !important;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+  color: #ffffff !important;
+}
+.gm-real3-btn:active {
+  transform: translateY(4px) !important;
+  border-bottom-width: 2px !important;
+}
+.gm-real3-btn.amber {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%) !important;
+  color: #0f172a !important;
+  border-color: #fef3c7 !important;
+  border-bottom-color: #b45309 !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.gm-real3-btn.green {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%) !important;
+  border-color: #d1fae5 !important;
+  border-bottom-color: #047857 !important;
+}
+.gm-real3-btn.cyan {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%) !important;
+  border-color: #e0f2fe !important;
+  border-bottom-color: #0369a1 !important;
+}
+.gm-real3-btn.coral {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%) !important;
+  border-color: #ffe4e6 !important;
+  border-bottom-color: #9f1239 !important;
+}
+.gm-real3-btn.pulse {
+  animation: gmReal3Pulse 1.25s ease-in-out infinite;
+}
+@keyframes gmReal3Pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Flying score orb that travels from world impact point to team score badge */
+.gm-score-orb {
+  position: fixed;
+  z-index: 98;
+  pointer-events: none;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%);
+  border: 3px solid #ffffff;
+  color: #0f172a;
+  font: 900 24px var(--font);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, 0.75);
+  transform: translate(-50%, -50%);
+  transition: left 0.62s cubic-bezier(0.22, 1, 0.36, 1), top 0.62s cubic-bezier(0.22, 1, 0.36, 1), transform 0.62s ease, opacity 0.62s ease;
+}
+
+/* Keep floating dock clear of bottom team pod YOUR TURN badges */
+.gm-real3-dock {
+  bottom: 108px !important;
+}

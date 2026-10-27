@@ -43,6 +43,7 @@
         if (busy || over) return; busy = true; var t = T[turn], l = lanes[turn], res = await U().ask(ctx.nextItem(), t, { timer: +ctx.cfg.timer || 0, label: 'Lane ' + (turn + 1) });
         if (!res.ok) { l.runner.classList.add('gm-trip'); A().play('pu_banana'); info.innerHTML = ''; info.appendChild(U().h('b', { text: 'Oops, ' + t.name + ' tripped! Next team.' })); await U().sleep(1200); l.runner.classList.remove('gm-trip'); next(); busy = false; return; }
         var n = U().rand(1, 3), dice = U().h('div', { class: 'gm-dice spin', text: '?' });
+        A().play('drum_roll_short');
         info.innerHTML = ''; info.appendChild(U().monFace(t.mon, 46)); info.appendChild(dice); info.appendChild(U().h('b', { text: 'Boost!' }));
         for (var k = 0; k < 8; k++) { dice.textContent = String(U().rand(1, 3)); A().play('tick'); await U().sleep(70 + k * 12); }
         dice.textContent = String(n); dice.classList.remove('spin'); A().play('round'); info.lastChild.textContent = 'Boost ' + n + '! Go, ' + t.name + '!';
@@ -51,20 +52,21 @@
       function run(i, n) {
         return new Promise(function (resolve) {
           var l = lanes[i], from = l.pos, to = Math.min(LEN, from + n), t0 = performance.now(), dur = 520 * (to - from);
-          l.runner.classList.add('gm-run'); l.lane.classList.add('gm-boost'); A().play('pu_rocket');
+          l.runner.classList.add('gm-run'); l.lane.classList.add('gm-boost'); A().play('pu_rocket'); A().play('whoosh_soft');
           var puff = setInterval(function () { var p = J().center(l.runner.querySelector('.gm-monfull')); J().burstAt({ x: p.x - 40, y: p.y + 30 }, 2, hal ? ['💨', '✨'] : ['💨', '💨', '✨']); }, 140);
           (function step(now) {
             var k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
             l.pos = from + (to - from) * e; place(l);
             if (k < 1) { requestAnimationFrame(step); return; }
             clearInterval(puff); l.runner.classList.remove('gm-run'); l.lane.classList.remove('gm-boost'); l.pos = to; place(l);
+            A().play('coin_collect'); if (to - from >= 2) A().play('sparkle');
             U().floatText('+' + ((to - from) * 5), l.runner, 'good'); U().addScore(i, (to - from) * 5);
             if (to >= LEN) finish(i).then(resolve); else setTimeout(resolve, 500);
           })(t0);
         });
       }
       async function finish(i) {
-        over = true; places.push(i); var l = lanes[i]; l.lane.classList.add('gm-won'); A().play('fanfare'); U().confetti(40); J().shake(10);
+        over = true; places.push(i); var l = lanes[i]; l.lane.classList.add('gm-won'); A().play('fanfare'); A().play('crowd_cheer_small'); A().play('cheer_kids'); U().confetti(40); J().shake(10);
         info.innerHTML = ''; info.appendChild(U().monFace(T[i].mon, 46)); info.appendChild(U().h('b', { text: '🏁 ' + T[i].name + ' wins the race! +50' }));
         U().floatText('+50', l.runner, 'good'); U().addScore(i, 50);
         await U().sleep(2600); ctx.end();

@@ -33,8 +33,6 @@
       var keeperT = 0;
       var keeperX = 50; // percentage 22..78 within goal
 
-      if (A() && A().play) A().play('music_sports');
-
       var wrap = U().h('div', { class: 'gm-pen-wrap' });
       var info = U().h('div', { class: 'gm-info' });
       var pitch = U().h('div', { class: 'gm-pen-pitch' });
@@ -246,7 +244,8 @@
         setZonesReady(false);
         renderHud();
 
-        if (A()) A().play('kick');
+        if (A()) { A().play('kick'); A().play('whoosh_soft'); }
+        if (J() && J().squash) J().squash(ballEl, 1.24, 0.78, 180);
         // Kicker monster run-up kick lunge!
         kickerEl.style.transition = 'transform 0.22s cubic-bezier(0.2,0.9,0.3,1.2)';
         kickerEl.style.transform = 'translate(18px, -14px) rotate(-14deg) scale(1.08)';
@@ -288,7 +287,8 @@
 
         if (!saved) {
           var pts = z.bonus || 20;
-          if (A()) { A().play('net_swish'); A().play('goal_cheer'); }
+          if (A()) { A().play('net_swish'); A().play('goal_cheer'); A().play('crowd_cheer_small'); A().play('coin_collect'); if (pts >= 30) A().play('sparkle'); }
+          if (J() && J().squash) J().squash(ballEl, 1.28, 0.75, 220);
           U().floatText('GOAL! +' + pts, goal, 'good');
           U().addScore(turn, pts);
           U().confetti(28);
@@ -296,7 +296,8 @@
           bannerEl.textContent = '⚽ GOAL! +' + pts + ' points!';
           bannerEl.style.display = '';
         } else {
-          if (A()) A().play('keeper_save');
+          if (A()) { A().play('keeper_save'); A().play('wood_knock'); A().play('coin_collect'); }
+          if (J() && J().squash) J().squash(keeperEl, 1.22, 0.82, 200);
           // Ball bounces off keeper glove, still awards +5 for trying!
           ballEl.style.left = (z.gx + (z.gx < 50 ? -12 : 12)) + '%';
           ballEl.style.bottom = '42%';
@@ -319,6 +320,7 @@
         shotsTaken++;
         if (shotsTaken >= totalTurns) {
           phase = 'ended';
+          if (A()) A().play('cheer_kids');
           ctx.end();
           return;
         }

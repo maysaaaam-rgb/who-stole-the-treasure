@@ -43,8 +43,6 @@
       var turnsCount = 0;
       var maxTotalTurns = T.length * 14;
 
-      if (A() && A().play) A().play('music_puzzle');
-
       var wrap = U().h('div', { class: 'gm-snk-wrap' });
       var info = U().h('div', { class: 'gm-info' });
       var main = U().h('div', { class: 'gm-snk-main' });
@@ -75,9 +73,15 @@
           topRow.appendChild(U().h('span', { class: 'gm-snk-num' }, [sqNum === totalSq ? '🏁 ' + sqNum : String(sqNum)]));
 
           if (ladders[sqNum]) {
-            topRow.appendChild(U().h('span', { class: 'gm-snk-tag ladder' }, ['🪜 ↗' + ladders[sqNum]]));
+            topRow.appendChild(U().h('span', { class: 'gm-snk-tag ladder' }, [
+              U().art('o_ladder', '🪜', 'gm-snk-cell-art'),
+              U().h('span', {}, ['↗' + ladders[sqNum]])
+            ]));
           } else if (snakes[sqNum]) {
-            topRow.appendChild(U().h('span', { class: 'gm-snk-tag snake' }, ['🐍 ↘' + snakes[sqNum]]));
+            topRow.appendChild(U().h('span', { class: 'gm-snk-tag snake' }, [
+              U().art('o_slide', '🐍', 'gm-snk-cell-art'),
+              U().h('span', {}, ['↘' + snakes[sqNum]])
+            ]));
           }
 
           var tokBox = U().h('div', { class: 'gm-snk-tokens' });
@@ -95,7 +99,7 @@
         onclick: function () {
           if (phase === 'roll') doRoll();
         }
-      }, ['🎲']);
+      }, [U().art('o_dice', '🎲', 'gm-snk-dice-art')]);
       var statusText = U().h('div', { style: 'font-size:22px;font-weight:900;line-height:1.25;' }, ['Answer a question to roll the dice!']);
       var actionSlot = U().h('div', {});
 
@@ -216,7 +220,10 @@
         phase = 'moving';
         renderHud();
 
-        if (A()) A().play('dice_roll');
+        if (A()) {
+          A().play('drum_roll_short');
+          A().play('dice_roll');
+        }
         diceBox.classList.add('rolling');
         for (var i = 0; i < 6; i++) {
           diceBox.textContent = DICE_FACES[U().rand(0, 5)];
@@ -226,13 +233,21 @@
         diceBox.classList.remove('rolling');
         var steps = U().rand(1, 6);
         diceBox.textContent = DICE_FACES[steps - 1] + ' ' + steps;
+        if (J() && J().squash) J().squash(diceBox, 1.22, 0.8, 260);
 
         // Step-by-step movement
         for (var s = 0; s < steps; s++) {
           if (pos[turn] < totalSq) {
             pos[turn]++;
-            if (A()) A().play('step');
+            if (A()) {
+              A().play('hunt_step');
+              A().play('wood_knock');
+            }
             renderTokens();
+            var curSlot = tokenSlots[pos[turn]];
+            if (curSlot && curSlot.lastChild && J() && J().squash) {
+              J().squash(curSlot.lastChild, 1.24, 0.78, 200);
+            }
             await U().sleep(170);
             if (phase === 'ended') return;
           }
@@ -241,6 +256,7 @@
         // Minimum +5 points for every right answer + 2 pts per square moved
         var movePts = Math.max(5, steps * 2);
         var landedCell = cellMap[pos[turn]] || boardWrap;
+        if (A()) A().play('coin_collect');
         U().floatText('+' + movePts, landedCell, 'good');
         U().addScore(turn, movePts);
 
@@ -249,7 +265,10 @@
         if (ladders[curSq]) {
           var destUp = ladders[curSq];
           statusText.textContent = '🪜 Ladder! Climb up to ' + destUp + '! (+10)';
-          if (A()) A().play('ladder_up');
+          if (A()) {
+            A().play('ladder_up');
+            A().play('sparkle');
+          }
           await U().sleep(380);
           if (phase === 'ended') return;
           pos[turn] = destUp;
@@ -259,20 +278,26 @@
           if (J()) J().react(turn, 'big');
         } else if (snakes[curSq]) {
           var destDown = snakes[curSq];
-          statusText.textContent = '🐍 Friendly snake slide to ' + destDown + '! (No points lost!)';
-          if (A()) A().play('snake_slide');
+          statusText.textContent = '🐍 Friendly slide down to ' + destDown + '! (No points lost!)';
+          if (A()) {
+            A().play('snake_slide');
+            A().play('slide_whee');
+          }
           await U().sleep(380);
           if (phase === 'ended') return;
           pos[turn] = destDown;
           renderTokens();
-          U().floatText('Wheee! 🐍', cellMap[destDown] || boardWrap, 'bad');
+          U().floatText('Wheee! 🛝', cellMap[destDown] || boardWrap, 'bad');
         }
 
         U().teamBar(T, turn);
 
         // Check win
         if (pos[turn] >= totalSq) {
-          if (A()) A().play('win');
+          if (A()) {
+            A().play('win_fanfare');
+            A().play('cheer_kids');
+          }
           U().floatText('🏁 WINNER! +50', cellMap[totalSq] || boardWrap, 'good');
           U().addScore(turn, 50);
           U().confetti(45);
