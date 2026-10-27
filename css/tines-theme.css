@@ -1407,3 +1407,6 @@ html.class-mode body .cb-dock .cb-more-menu button { background: rgba(255, 255, 
 html body .cb-dsc { background: rgba(255, 255, 255, 0.12) !important; color: #e5edff !important; }
 html body .cb-dsc.on { background: #fecaca !important; color: #7f1d1d !important; }
 html body .cb-hat { color: #cbd5e1 !important; }
+/* the cloud sync pill in the header (its state shows in the icon: ⏳ syncing, ☁️ saved, ⚠️ error) */
+html body #global-cloud-sync-btn { background: rgba(15, 23, 42, 0.86) !important; color: #e5edff !important; border: 1px solid rgba(148, 163, 184, 0.35) !important; box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.3) !important; }
+html body #global-cloud-sync-btn * { color: inherit !important; }
