@@ -399,10 +399,10 @@
   }
 
   function helpR(c) {
-    var body = c.body, box = h('div', { class: 'msg gmsg', text: 'If we forget a rule, this is what happens. It is calm, private and the same for everybody. Tap a card.' });
+    var body = c.body, box = h('div', { class: 'msg gmsg', text: 'If we forget a rule, we go up one stage: 1 is first, 6 is last. It is calm and the same for everybody. Tap a card.' });
     body.appendChild(box);
     body.appendChild(h('div', { class: 'today' }, D.help.map(function (x, i) {
-      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: String(i + 1) }), fill(h('div', { class: 'tn-em' }), x.e), h('b', { text: x.t }), h('span', { text: x.d })]);
+      var card = h('button', { type: 'button', class: 'today-card', style: 'cursor:pointer;text-align:left' }, [h('div', { class: 'tn-num', text: i < 6 ? String(i + 1) : '+' }), fill(h('div', { class: 'tn-em' }), x.e), h('b', { text: x.t }), h('span', { text: x.d })]);
       card.addEventListener('click', function () { sfx('tap'); A.speak(x.t + '. ' + x.d); }); return card;
     })));
     body.appendChild(h('div', { class: 'msg gmsg', text: '💬 Kind words. Tap and say them together:' }));
@@ -464,7 +464,7 @@
       { t: 'Moving in class', mins: '3 min', mode: 'move', run: movingR, intro: 'We stand only in a game round or on the signal.',
         tip: ['Practise the commands (Stand, Sit, Hands up, Quiet, Eyes on me). Then do one game round: START, move for 20 seconds, STOP: freeze and sit in 5 seconds. Repeat twice.'] },
       { t: 'If we forget a rule', mins: '4 min', mode: 'talk', run: helpR, intro: 'The steps are calm, private and fair.',
-        tip: ['Read the five cards in simple words. Say it plainly and calmly: the rules are for everybody, the steps are the same for everybody, and they are private (nobody is named in front of the class). The aim is that every pupil can learn. Then say the kind words together.'] },
+        tip: ['Read the 6 stages in order (1 is first, 6 is last) and the help card. Say it plainly and calmly: the rules are for everybody, the stages are the same for everybody and go up one at a time, and they are private (nobody is named in front of the class). The aim is that every pupil can learn. Then say the kind words together.'] },
       { t: 'Our Class Voice Box', mins: '3 min', mode: 'talk', run: voiceR, intro: 'A place for thank-yous, ideas, help and worries.',
         tip: ['Show the box and the four kinds of slips (print class-reset/voice-box.html). Explain how it works in simple words: the teacher reads it on Tuesday and Friday, worries are never read aloud, and serious things go to the people who can help. Then play “Finish the sentence” with thank-you, idea and help only: do not ask for real worries in front of the class.'] },
       { t: 'Practice lesson', mins: '5 min', mode: 'act', run: practiceR, intro: 'The light is on. Simon says!',
