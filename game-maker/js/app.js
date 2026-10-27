@@ -283,7 +283,7 @@
       return GM.rev.remember(curSet().items, { points: 8, check: 3 }, function () { S.remDone = true; startGame(true); });
     }
     cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
-    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; GM.sessionMissed = []; save(); var myGame = ++gameId;
+    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; GM.sessionMissed = []; GM.cardNo = 0; GM.sessionTally = []; save(); var myGame = ++gameId;
     S.screen = 'play'; applyTheme('play'); document.body.classList.add('gm-mode-' + S.modeId);
     document.getElementById('gm-teams').style.display = ''; A.play('start'); A.musicStart(S.theme);
     stage.innerHTML = ''; var area = h('div', { class: 'gm-area' }); stage.appendChild(area);

@@ -118,21 +118,50 @@
 
   /* ---------------- 3. Answer cards: the class tally ---------------- */
   var TALLY = [['All', 1, '🙌'], ['Most', 0.75, '👍'], ['About half', 0.5, '🤔'], ['A few', 0.25, '😬'], ['None', 0, '🫥']];
-  function tally(item, res) {
+  function tally(item, res, n) {
     return new Promise(function (resolve) {
       var cfg = st().cfg || {};
       if (!cfg.cards || !st().classId || (res && res.skipped)) { if (st().classId && !(res && res.skipped)) recClass(st().classId, item, res && res.ok ? 1 : 0); return resolve(); }
       var o = layer('center small');
       o.appendChild(h('div', { class: 'gm-rev-ans', html: 'The answer is <mark>' + String(item.a).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</mark>' }));
-      o.appendChild(h('p', { class: 'gm-rev-p', text: 'Cards up! How many pupils had it right?' }));
+      o.appendChild(h('p', { class: 'gm-rev-p', text: (n ? 'Line ' + n + ': cards' : 'Cards') + ' up! How many pupils had it right?' }));
       var row = h('div', { class: 'gm-rev-row wrap' });
-      TALLY.forEach(function (t) { row.appendChild(btn(t[2] + ' ' + t[0], t[1] >= 0.75 ? 'green' : t[1] >= 0.5 ? 'amber' : 'coral', function () { recClass(st().classId, item, t[1]); o.remove(); resolve(); })); });
+      TALLY.forEach(function (t) { row.appendChild(btn(t[2] + ' ' + t[0], t[1] >= 0.75 ? 'green' : t[1] >= 0.5 ? 'amber' : 'coral', function () { recClass(st().classId, item, t[1]); if (n) GM.sessionTally.push({ n: n, item: item, f: t[1] }); o.remove(); resolve(); })); });
       row.appendChild(btn('Skip', 'sm ghost', function () { o.remove(); resolve(); }));
       o.appendChild(row);
     });
   }
+  /* with answer cards on, every game question gets a number (pupils write it on that line of the answer sheet) and the class tally is kept for the review at the end */
+  GM.cardNo = 0; GM.sessionTally = [];
   var rawAsk = U.ask;
-  U.ask = function (item, team, opts) { return rawAsk(item, team, opts).then(function (res) { return tally(item, res).then(function () { return res; }); }); };
+  U.ask = function (item, team, opts) {
+    var cfg = st().cfg || {}, n = 0, warm = opts && /^Warm-up/.test(String(opts.label || ''));
+    var p = rawAsk(item, team, opts);
+    if (cfg.cards && st().classId && !warm) {
+      n = ++GM.cardNo;
+      var heads = document.querySelectorAll('#gm-stage .gm-qhead'), hd = heads[heads.length - 1];
+      if (hd && hd.children[1]) hd.insertBefore(h('div', { class: 'gm-qno', text: '✏️ Line ' + n }), hd.children[1]);
+    }
+    return p.then(function (res) { return tally(item, res, n).then(function () { return res; }); });
+  };
+  /* the questions the class found hard in this game (half or fewer cards right), hardest first */
+  function hardList() { return (GM.sessionTally || []).filter(function (x) { return x.f <= 0.5; }).sort(function (a, b) { return a.f - b.f || a.n - b.n; }); }
+  function hardReview(onBack) {
+    var L = hardList(), o = layer('');
+    bar(o, '📋 What we found hard', 0, 0, null);
+    o.appendChild(h('p', { class: 'gm-rev-p', text: L.length ? 'Check your paper. Tap a question to see the answer, then say it together.' : 'Every question was right for most of the class. Well done!' }));
+    var TXT = { 1: '🙌 All', 0.75: '👍 Most', 0.5: '🤔 About half', 0.25: '😬 A few', 0: '🫥 None' };
+    var list = h('div', { class: 'gm-rev-list' });
+    L.forEach(function (x) {
+      var s = sentence(x.item), b = h('button', { type: 'button', class: 'gm-rev-row1', text: 'Line ' + x.n + ' · ' + s.gap + '   (' + (TXT[x.f] || '') + ')' });
+      b.addEventListener('click', function () { b.classList.add('open'); b.textContent = 'Line ' + x.n + ' · ' + s.full; A.play('tap'); say(s.spoken || s.full); });
+      list.appendChild(b);
+    });
+    o.appendChild(list);
+    var row = h('div', { class: 'gm-rev-row' }, [btn('◀ Back', 'ghost', function () { o.remove(); if (onBack) onBack(); })]);
+    if (L.length) row.appendChild(btn('🧠 Practise these ' + Math.min(6, L.length), 'huge green', function () { o.remove(); remember(L.slice(0, 6).map(function (x) { return x.item; }), { points: Math.min(6, L.length), check: Math.min(3, L.length) }, function () { if (onBack) onBack(); }); }));
+    o.appendChild(row);
+  }
 
   /* ---------------- 4. Exit ticket ---------------- */
   function exitTicket(items) {
@@ -187,5 +216,5 @@
     });
   }
 
-  GM.rev = { load: load, save: save, keyOf: keyOf, pick: pick, pool: pool, remember: remember, exitTicket: exitTicket, daily: daily, needClass: needClass, LV: LV, recClass: recClass };
+  GM.rev = { hardList: hardList, hardReview: hardReview, load: load, save: save, keyOf: keyOf, pick: pick, pool: pool, remember: remember, exitTicket: exitTicket, daily: daily, needClass: needClass, LV: LV, recClass: recClass };
 })(window);

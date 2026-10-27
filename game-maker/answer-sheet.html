@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game answer sheet</title>
+<style>
+  @page { size: A4 landscape; margin: 7mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .sh { border: 2px dashed #94a3b8; border-radius: 4mm; padding: 4mm 5mm; height: 194mm; display: flex; flex-direction: column; }
+  h1 { font-size: 17pt; margin: 0 0 1mm; }
+  .who { display: flex; gap: 4mm; font-size: 11pt; margin-bottom: 2mm; }
+  .who span { flex: 1; border-bottom: 1.5px solid #0f172a; padding-bottom: 1mm; }
+  .tip { font-size: 9.5pt; color: #475569; margin: 0 0 2mm; }
+  .ln { display: grid; grid-template-columns: 9mm 40mm 1fr; align-items: center; gap: 2mm; height: 8.6mm; border-bottom: 1px solid #cbd5e1; }
+  .ln b { font-size: 13pt; background: #fbbf24; border-radius: 2mm; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .ln i { font-style: normal; display: flex; gap: 2mm; font-weight: 700; font-size: 10.5pt; }
+  .ln i u { text-decoration: none; width: 7mm; height: 7mm; border: 1.5px solid #64748b; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+  .end { margin-top: auto; border-top: 2px solid #0f172a; padding-top: 2mm; font-size: 11pt; }
+  .end div { border-bottom: 1px solid #94a3b8; height: 7mm; }
+  @media screen { body { background: #e2e8f0; padding: 6mm; } .two { background: #fff; padding: 6mm; max-width: 297mm; margin: 0 auto; } }
+</style>
+</head>
+<body>
+<div class="two" id="two"></div>
+<script>
+  var one = '<div class="sh"><h1>🎮 My game answers</h1>' +
+    '<div class="who"><span>Name:</span><span style="flex:.5">Class:</span><span style="flex:.6">Date:</span></div>' +
+    '<p class="tip">Look at the yellow number on the board. Circle A, B, C or D, or write the word on that line.</p>';
+  for (var i = 1; i <= 18; i++) one += '<div class="ln"><b>' + i + '</b><i><u>A</u><u>B</u><u>C</u><u>D</u></i><span></span></div>';
+  one += '<div class="end"><b>⭐ Hard for me:</b> lines ______________<div></div><b>✏️ One sentence I remember:</b><div></div></div></div>';
+  document.getElementById('two').innerHTML = one + one;
+</script>
+</body>
+</html>

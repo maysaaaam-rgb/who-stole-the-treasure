@@ -299,6 +299,10 @@
         });
       }));
     }
+    if (GM.rev && GM.rev.hardList && (GM.sessionTally || []).length) {
+      var hard = GM.rev.hardList().length;
+      actions.unshift(btn('📋 What we found hard' + (hard ? ' (' + hard + ')' : ''), 'huge amber', function () { GM.rev.hardReview(function () { podium(teams, onAgain, onHome); }); }));
+    }
     actions.push(btn('☰  Other games', 'big ghost', onHome));
     wrap.appendChild(h('div', { class: 'gm-row' }, actions));
     stage.appendChild(wrap);
