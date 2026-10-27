@@ -11,19 +11,19 @@ html,
 body,
 html.class-mode,
 html:not(.class-mode) {
-  --tines-linen: #FCF9F5;
-  --tines-linen-alt: #F4EFE6;
-  --tines-card: #FFFFFF;
-  --tines-border: #E6E1D6;
-  --tines-border-strong: #D5CFC2;
-  --tines-ink: #25242B;
-  --tines-ink-secondary: #52505E;
-  --tines-ink-muted: #787586;
+  --tines-linen: #060911;
+  --tines-linen-alt: #0d1527;
+  --tines-card: rgba(15, 23, 42, 0.86);
+  --tines-border: #1e293b;
+  --tines-border-strong: #334155;
+  --tines-ink: #e5edff;
+  --tines-ink-secondary: #cbd5e1;
+  --tines-ink-muted: #94a3b8;
   --tines-purple: #6E56CF;
   --tines-purple-dark: #4C389E;
   --tines-purple-light: #8D75E6;
-  --tines-lavender: #EFEBF9;
-  --tines-lavender-border: #D4C8F3;
+  --tines-lavender: rgba(168, 85, 247, 0.18);
+  --tines-lavender-border: #6d28d9;
   --tines-emerald: #10B981;
   --tines-emerald-dark: #059669;
   --tines-amber: #F59E0B;
@@ -32,18 +32,18 @@ html:not(.class-mode) {
   --tines-sky: #0EA5E9;
 
   /* Override platform variables so inline styles resolve to high-contrast dark-on-light */
-  --bg-canvas: #FCF9F5 !important;
-  --bg-surface: #FFFFFF !important;
-  --bg-muted: #F4EFE6 !important;
-  --bg-card-secondary: #F8F5EE !important;
-  --text-main: #25242B !important;
-  --text-secondary: #52505E !important;
-  --text-muted: #787586 !important;
-  --border-light: #E6E1D6 !important;
-  --border-subtle: #EAE5DB !important;
+  --bg-canvas: #060911 !important;
+  --bg-surface: rgba(15, 23, 42, 0.86) !important;
+  --bg-muted: #111a2e !important;
+  --bg-card-secondary: #0d1527 !important;
+  --text-main: #e5edff !important;
+  --text-secondary: #cbd5e1 !important;
+  --text-muted: #94a3b8 !important;
+  --border-light: #1e293b !important;
+  --border-subtle: #18223a !important;
   --color-primary: #6E56CF !important;
   --color-primary-hover: #5B43BC !important;
-  --color-primary-soft: #EFEBF9 !important;
+  --color-primary-soft: rgba(168, 85, 247, 0.18) !important;
 }
 
 /* ==========================================================================
@@ -66,7 +66,7 @@ html.class-mode:not(.platform-locked) body {
 /* Top Header */
 .app-header,
 html.class-mode .app-header {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border-bottom: 2px solid var(--tines-border) !important;
@@ -115,7 +115,7 @@ html.class-mode .app-header {
 }
 
 .cm-classes .cm-cls:hover {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink) !important;
 }
 
@@ -136,7 +136,7 @@ html.class-mode .app-header {
   padding: 7px 13px !important;
   min-height: 38px !important;
   border-radius: 12px !important;
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
@@ -152,7 +152,7 @@ html.class-mode .app-header {
 .cm-hdr-quick:hover {
   border-color: var(--tines-purple) !important;
   background: var(--tines-lavender) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 #cm-toggle:active,
@@ -165,7 +165,7 @@ html.class-mode .app-header {
 /* Left Sidebar — Unified Tines Surface */
 .app-sidebar,
 html.class-mode .app-sidebar {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border-right: 2px solid var(--tines-border) !important;
   box-shadow: 2px 0 12px rgba(37, 36, 43, 0.03) !important;
 }
@@ -223,7 +223,7 @@ html.class-mode .cm-b span {
 
 html.class-mode .cm-b:hover {
   transform: translateY(-2px) !important;
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border-color: var(--tines-purple-light) !important;
 }
 
@@ -240,7 +240,7 @@ html.class-mode .cm-b.is-on {
 }
 
 html.class-mode .cm-b.is-on span {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 /* Teacher Mode Sidebar Navigation */
@@ -275,7 +275,7 @@ html.class-mode .cm-b.is-on span {
 
 .sidebar-nav-list .nav-link-btn.is-active {
   background: var(--tines-lavender) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   border: 1px solid var(--tines-lavender-border) !important;
   border-left: 4px solid var(--tines-purple) !important;
   font-weight: 800 !important;
@@ -283,7 +283,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .sidebar-nav-list .nav-link-btn.is-active .nav-label {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
@@ -309,7 +309,7 @@ html.class-mode .cm-b.is-on span {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  background: #FFFFFF;
+  background: rgba(15, 23, 42, 0.86);
   border: 1.5px solid var(--tines-border);
   border-bottom: 4px solid var(--tines-border-strong);
   border-radius: 18px;
@@ -343,7 +343,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .tines-tab-btn:hover {
-  background: #FFFFFF;
+  background: rgba(15, 23, 42, 0.86);
   color: var(--tines-ink);
   border-color: var(--tines-purple-light);
 }
@@ -371,7 +371,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .tines-tab-btn.is-active .tines-badge {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
   color: #FFFFFF;
 }
 
@@ -388,7 +388,7 @@ html.class-mode .cm-b.is-on span {
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
-  background: #FFFFFF;
+  background: rgba(15, 23, 42, 0.86);
   border: 1.5px solid var(--tines-border);
   border-bottom: 4px solid var(--tines-border-strong);
   border-radius: 18px;
@@ -463,11 +463,11 @@ html.class-mode .cm-b.is-on span {
    3. HUB 5: TEACHER HUB (#command / .cc) — TINES BENTO OVERHAUL
    ========================================================================== */
 .cc {
-  --p: #FFFFFF !important;
+  --p: rgba(15, 23, 42, 0.86) !important;
   --p2: #F7F3EB !important;
-  --l: #E6E1D6 !important;
-  --t: #25242B !important;
-  --m: #52505E !important;
+  --l: #1e293b !important;
+  --t: #e5edff !important;
+  --m: #cbd5e1 !important;
   --a: #6E56CF !important;
   background: transparent !important;
   color: var(--tines-ink) !important;
@@ -485,7 +485,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-cmd {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   color: var(--tines-ink-secondary) !important;
@@ -513,7 +513,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-kp > div {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   border-radius: 16px !important;
@@ -522,15 +522,15 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-kp5 > div:nth-child(1) { border-top: 4px solid #10B981 !important; }
-.cc-kp5 > div:nth-child(1) small { color: #047857 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(1) small { color: #94f9dd !important; font-weight: 800 !important; }
 .cc-kp5 > div:nth-child(2) { border-top: 4px solid #0EA5E9 !important; }
-.cc-kp5 > div:nth-child(2) small { color: #0369A1 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(2) small { color: #94d6f9 !important; font-weight: 800 !important; }
 .cc-kp5 > div:nth-child(3) { border-top: 4px solid #F59E0B !important; }
-.cc-kp5 > div:nth-child(3) small { color: #B45309 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(3) small { color: #f9c094 !important; font-weight: 800 !important; }
 .cc-kp5 > div:nth-child(4) { border-top: 4px solid #6E56CF !important; }
-.cc-kp5 > div:nth-child(4) small { color: #4C389E !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(4) small { color: #a894f9 !important; font-weight: 800 !important; }
 .cc-kp5 > div:nth-child(5) { border-top: 4px solid #E5484D !important; }
-.cc-kp5 > div:nth-child(5) small { color: #BE123C !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(5) small { color: #f994ad !important; font-weight: 800 !important; }
 
 .cc-kp b {
   color: var(--tines-ink) !important;
@@ -545,7 +545,7 @@ html.class-mode .cm-b.is-on span {
 
 /* Panels & Student Table */
 .cc-pn {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   border-radius: 18px !important;
@@ -565,7 +565,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-find {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   color: var(--tines-ink) !important;
   border-radius: 10px !important;
@@ -573,7 +573,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-chips button {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1px solid var(--tines-border) !important;
   color: var(--tines-ink-secondary) !important;
   font-weight: 700 !important;
@@ -583,12 +583,12 @@ html.class-mode .cm-b.is-on span {
 .cc-chips button.on {
   background: var(--tines-lavender) !important;
   border-color: var(--tines-purple) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
 .cc th {
-  background: #F7F3EB !important;
+  background: rgba(148, 163, 184, 0.10) !important;
   color: var(--tines-ink-secondary) !important;
   border-bottom: 1.5px solid var(--tines-border) !important;
   font-weight: 800 !important;
@@ -596,17 +596,17 @@ html.class-mode .cm-b.is-on span {
 
 .cc th.cc-d.today,
 .cc th.cc-d.today small {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
 .cc td {
-  border-bottom: 1px solid #EFECE4 !important;
+  border-bottom: 1px solid #26324a !important;
   color: var(--tines-ink) !important;
 }
 
 .cc tbody tr:hover {
-  background: #FAF6EE !important;
+  background: rgba(148, 163, 184, 0.10) !important;
 }
 
 .cc-nm img {
@@ -632,7 +632,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc td.cc-tt {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
@@ -648,22 +648,22 @@ html.class-mode .cm-b.is-on span {
 }
 
 /* Status & Homework Badges in Table */
-.cc-t.ok { background: #E0F2FE !important; color: #0369A1 !important; font-weight: 800 !important; }
-.cc-t.star { background: #DCFCE7 !important; color: #166534 !important; font-weight: 800 !important; }
-.cc-t.slow { background: #FEF3C7 !important; color: #92400E !important; font-weight: 800 !important; }
-.cc-t.help { background: #FEE2E2 !important; color: #B91C1C !important; font-weight: 800 !important; }
-.cc-t.quiet { background: #F4EFE6 !important; color: #52505E !important; font-weight: 700 !important; }
+.cc-t.ok { background: rgba(48, 159, 232, 0.18) !important; color: #94d6f9 !important; font-weight: 800 !important; }
+.cc-t.star { background: rgba(48, 232, 112, 0.18) !important; color: #94f9bb !important; font-weight: 800 !important; }
+.cc-t.slow { background: rgba(232, 195, 48, 0.18) !important; color: #f9bb94 !important; font-weight: 800 !important; }
+.cc-t.help { background: rgba(232, 48, 48, 0.18) !important; color: #f99494 !important; font-weight: 800 !important; }
+.cc-t.quiet { background: rgba(232, 166, 48, 0.18) !important; color: #cbd5e1 !important; font-weight: 700 !important; }
 
-.cc-hw-ok { background: #DCFCE7 !important; color: #166534 !important; }
-.cc-hw-mid { background: #FEF3C7 !important; color: #92400E !important; }
-.cc-hw-no { background: #F4EFE6 !important; color: #787586 !important; }
-.cc-hw-wait { color: #787586 !important; }
+.cc-hw-ok { background: rgba(48, 232, 112, 0.18) !important; color: #94f9bb !important; }
+.cc-hw-mid { background: rgba(232, 195, 48, 0.18) !important; color: #f9bb94 !important; }
+.cc-hw-no { background: rgba(232, 166, 48, 0.18) !important; color: #94a3b8 !important; }
+.cc-hw-wait { color: #94a3b8 !important; }
 
-.cc-sk-a2 { background: #EFEBF9 !important; color: #4C389E !important; }
-.cc-sk-a1p { background: #DCFCE7 !important; color: #166534 !important; }
-.cc-sk-a1 { background: #FEF3C7 !important; color: #92400E !important; }
-.cc-sk-p { background: #FCE7F3 !important; color: #9D174D !important; }
-.cc-sk-n { background: #F4EFE6 !important; color: #787586 !important; }
+.cc-sk-a2 { background: rgba(101, 48, 232, 0.18) !important; color: #a894f9 !important; }
+.cc-sk-a1p { background: rgba(48, 232, 112, 0.18) !important; color: #94f9bb !important; }
+.cc-sk-a1 { background: rgba(232, 195, 48, 0.18) !important; color: #f9bb94 !important; }
+.cc-sk-p { background: rgba(232, 48, 153, 0.18) !important; color: #f994bd !important; }
+.cc-sk-n { background: rgba(232, 166, 48, 0.18) !important; color: #94a3b8 !important; }
 
 .cc-plus {
   background: var(--tines-linen) !important;
@@ -676,11 +676,11 @@ html.class-mode .cm-b.is-on span {
 .cc-plus:hover {
   background: var(--tines-lavender) !important;
   border-color: var(--tines-purple) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 .cc-nwb {
-  color: #B45309 !important;
+  color: #f9c094 !important;
 }
 
 /* Homework & XP Bars inside Teacher Hub */
@@ -710,7 +710,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .cc-bars small.today {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 .cc-feed div {
@@ -725,7 +725,7 @@ html.class-mode .cm-b.is-on span {
 /* Pupil Drawer & Ctrl+K Palette in Tines Light Style */
 .cc-drp,
 .cc-pal {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   color: var(--tines-ink) !important;
   box-shadow: 0 20px 50px rgba(37, 36, 43, 0.22) !important;
@@ -762,7 +762,7 @@ html.class-mode .cm-b.is-on span {
 .cc-pal li.on,
 .cc-pal li:hover {
   background: var(--tines-lavender) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 /* ==========================================================================
@@ -783,7 +783,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .ls-tab {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink-secondary) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
@@ -808,7 +808,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .ls-kbtn {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 3px solid var(--tines-border-strong) !important;
   color: var(--tines-ink-secondary) !important;
@@ -819,13 +819,13 @@ html.class-mode .cm-b.is-on span {
   background: var(--tines-lavender) !important;
   border-color: var(--tines-purple) !important;
   border-bottom-color: var(--tines-purple-dark) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
 .ls-q,
 .cm-search input {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   color: var(--tines-ink) !important;
   border-radius: 12px !important;
@@ -850,12 +850,12 @@ html.class-mode .cm-b.is-on span {
 .ls-h span {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
   background: var(--tines-lavender) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   border: 1px solid var(--tines-lavender-border) !important;
 }
 
 .ls-card {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   border-radius: 16px !important;
@@ -879,7 +879,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .ls-card i {
-  color: var(--tines-purple) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
@@ -904,7 +904,7 @@ html.class-mode .cm-b.is-on span {
 }
 
 .lp-card {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   border-radius: 16px !important;
@@ -938,7 +938,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cm-chip {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 3px solid var(--tines-border-strong) !important;
   color: var(--tines-ink-secondary) !important;
@@ -953,7 +953,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cm-card {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 5px solid var(--tines-border-strong) !important;
   color: var(--tines-ink) !important;
@@ -984,7 +984,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cr-btn {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
@@ -996,18 +996,18 @@ html:not(.class-mode) .cm-shelf-hd small,
 .cr-btn:hover {
   border-color: var(--tines-purple) !important;
   background: var(--tines-lavender) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 .cr-legend {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 3px solid var(--tines-border-strong) !important;
   color: var(--tines-ink) !important;
 }
 
 .cr-card {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 5px solid var(--tines-border-strong) !important;
   color: var(--tines-ink) !important;
@@ -1043,7 +1043,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cal-b.g {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
@@ -1071,7 +1071,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 .cal-legend {
   color: var(--tines-ink-secondary) !important;
   font-weight: 700 !important;
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1px solid var(--tines-border) !important;
   border-radius: 12px !important;
   padding: 8px 14px !important;
@@ -1083,7 +1083,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cal-cell {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 3px solid var(--tines-border-strong) !important;
   color: var(--tines-ink) !important;
@@ -1098,7 +1098,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 .cal-cell.today {
   border-color: var(--tines-amber) !important;
   border-bottom-color: var(--tines-amber-dark) !important;
-  background: #FFFBEB !important;
+  background: rgba(232, 195, 48, 0.18) !important;
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
 }
 
@@ -1118,7 +1118,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cal-side {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   border-radius: 18px !important;
@@ -1132,12 +1132,12 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .cal-t {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
 #cal-modal .cal {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 2px solid var(--tines-border) !important;
   color: var(--tines-ink) !important;
 }
@@ -1169,7 +1169,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 
 /* Mobile Bottom Tabbar in Tines Warm Linen / Purple */
 .eaa-mobile-tabbar {
-  background: rgba(255, 255, 255, 0.96) !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border-top: 1.5px solid var(--tines-border) !important;
 }
 
@@ -1178,7 +1178,7 @@ html:not(.class-mode) .cm-shelf-hd small,
 }
 
 .eaa-mob-tab.is-active {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 /* ==========================================================================
@@ -1192,27 +1192,27 @@ html.class-mode body #app-view-container:is([data-view="command"], [data-view="c
   color: var(--tines-ink) !important;
   padding-top: 4px !important;
   --bg-card: #FFFFFF !important;
-  --bg-surface: #FFFFFF !important;
-  --bg-card-secondary: #FAF6EE !important;
+  --bg-surface: rgba(15, 23, 42, 0.86) !important;
+  --bg-card-secondary: #0d1527 !important;
   --bg-card-hover: #F4EFE6 !important;
-  --bg-muted: #F4EFE6 !important;
-  --bg-canvas: #FCF9F5 !important;
-  --border-subtle: #E6E1D6 !important;
-  --border-light: #E6E1D6 !important;
+  --bg-muted: #111a2e !important;
+  --bg-canvas: #060911 !important;
+  --border-subtle: #18223a !important;
+  --border-light: #1e293b !important;
   --border-strong: #D5CFC2 !important;
-  --text-main: #25242B !important;
+  --text-main: #e5edff !important;
   --text-primary: #25242B !important;
-  --text-secondary: #52505E !important;
-  --text-muted: #787586 !important;
+  --text-secondary: #cbd5e1 !important;
+  --text-muted: #94a3b8 !important;
   --text-subtle: #787586 !important;
 }
 
 html body #app-view-container *,
 html.class-mode body #app-view-container * {
-  --text-main: #25242B;
+  --text-main: #e5edff;
   --text-primary: #25242B;
-  --text-secondary: #52505E;
-  --text-muted: #787586;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
   --text-subtle: #787586;
 }
 
@@ -1221,7 +1221,7 @@ html body #app-view-container:is([data-view="curriculum"], [data-view="worksheet
   [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
   [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
   .curriculum-book-card, .unit-accordion-card, .week-lesson-group, .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border-color: var(--tines-border) !important;
   color: var(--tines-ink) !important;
   box-shadow: 0 3px 12px rgba(37, 36, 43, 0.05) !important;
@@ -1229,7 +1229,7 @@ html body #app-view-container:is([data-view="curriculum"], [data-view="worksheet
 }
 
 html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
-  background: #FAF6EE !important;
+  background: rgba(148, 163, 184, 0.10) !important;
   border-color: var(--tines-border) !important;
   color: var(--tines-ink) !important;
   box-shadow: none !important;
@@ -1249,7 +1249,7 @@ html body #app-view-container:is([data-view="curriculum"], [data-view="worksheet
 }
 
 html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="library"]) :is(input, select, textarea, .filter-select) {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   color: var(--tines-ink) !important;
   border: 1.5px solid var(--tines-border) !important;
 }
@@ -1294,14 +1294,14 @@ html.class-mode body .cc .cc-lvl {
   text-shadow: none !important;
 }
 
-html.class-mode body .cc-kp5 > div:nth-child(1) small { color: #047857 !important; }
-html.class-mode body .cc-kp5 > div:nth-child(2) small { color: #0369A1 !important; }
-html.class-mode body .cc-kp5 > div:nth-child(3) small { color: #B45309 !important; }
-html.class-mode body .cc-kp5 > div:nth-child(4) small { color: #4C389E !important; }
-html.class-mode body .cc-kp5 > div:nth-child(5) small { color: #BE123C !important; }
+html.class-mode body .cc-kp5 > div:nth-child(1) small { color: #94f9dd !important; }
+html.class-mode body .cc-kp5 > div:nth-child(2) small { color: #94d6f9 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(3) small { color: #f9c094 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(4) small { color: #a894f9 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(5) small { color: #f994ad !important; }
 
 html.class-mode body .cc th {
-  background: #F7F3EB !important;
+  background: rgba(148, 163, 184, 0.10) !important;
   color: var(--tines-ink-secondary) !important;
   border-bottom: 1.5px solid var(--tines-border) !important;
 }
@@ -1313,17 +1313,17 @@ html.class-mode body .cc th.cc-d small {
 
 html.class-mode body .cc th.cc-d.today,
 html.class-mode body .cc th.cc-d.today small {
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
   font-weight: 800 !important;
 }
 
 html.class-mode body .cc td {
   color: var(--tines-ink) !important;
-  border-bottom: 1px solid #EFECE4 !important;
+  border-bottom: 1px solid #26324a !important;
 }
 
 html.class-mode body .cc tbody tr:hover td {
-  background: #FAF6EE !important;
+  background: rgba(148, 163, 184, 0.10) !important;
 }
 
 html.class-mode body .cc-pn > h3 {
@@ -1333,7 +1333,7 @@ html.class-mode body .cc-pn > h3 {
 }
 
 html.class-mode body .cc-chips button {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1px solid var(--tines-border) !important;
   color: var(--tines-ink-secondary) !important;
 }
@@ -1341,7 +1341,7 @@ html.class-mode body .cc-chips button {
 html.class-mode body .cc-chips button.on {
   background: var(--tines-lavender) !important;
   border-color: var(--tines-purple) !important;
-  color: var(--tines-purple-dark) !important;
+  color: #c4b5fd !important;
 }
 
 html.class-mode body .cc-plus {
@@ -1352,9 +1352,9 @@ html.class-mode body .cc-plus {
 }
 
 html.class-mode body .cc-plus.cc-nwb {
-  background: #FEF3C7 !important;
-  border-color: #FCD34D !important;
-  color: #92400E !important;
+  background: rgba(232, 195, 48, 0.18) !important;
+  border-color: rgba(223, 178, 32, 0.55) !important;
+  color: #f9bb94 !important;
 }
 
 /* Override Library & Lesson Plans white text from class-mode-pages.css */
@@ -1370,7 +1370,7 @@ html.class-mode body .lp-head span {
 }
 
 html.class-mode body .lp-card {
-  background: #FFFFFF !important;
+  background: rgba(15, 23, 42, 0.86) !important;
   border: 1.5px solid var(--tines-border) !important;
   border-bottom: 4px solid var(--tines-border-strong) !important;
   color: var(--tines-ink) !important;
@@ -1385,3 +1385,25 @@ html.class-mode body .lp-card small {
   color: var(--tines-ink-muted) !important;
 }
 
+
+/* ==========================================================================
+   ONE DARK PLATFORM (27 Oct 2026): the same obsidian glass as the Class Board, Game Maker and the lessons
+   ========================================================================== */
+html:not(.platform-locked) body,
+html.class-mode:not(.platform-locked) body {
+  background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%) fixed !important;
+  color: #e5edff !important;
+}
+.app-header { backdrop-filter: blur(14px); box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.2) !important; }
+input, select, textarea { color-scheme: dark; }
+html.class-mode body .app-header .brand-logo-btn span, html:not(.class-mode) body .app-header .brand-logo-btn span, html body .brand-logo-btn span { color: #e5edff !important; }
+html body .cal-t { color: #c4b5fd !important; }
+/* Class Board dock and discipline switch: dark glass like the rest */
+html.class-mode body .cb-dock { background: rgba(15, 23, 42, 0.9) !important; border-color: rgba(148, 163, 184, 0.28) !important; }
+html.class-mode body .cb-dock button { background: rgba(255, 255, 255, 0.1) !important; color: #e5edff !important; border-bottom-color: rgba(0, 0, 0, 0.45) !important; }
+html.class-mode body .cb-dock button:hover { background: rgba(255, 255, 255, 0.18) !important; }
+html.class-mode body .cb-dock button.p { background: #10b981 !important; color: #fff !important; border-bottom-color: #047857 !important; }
+html.class-mode body .cb-dock .cb-more-menu button { background: rgba(255, 255, 255, 0.1) !important; color: #e5edff !important; }
+html body .cb-dsc { background: rgba(255, 255, 255, 0.12) !important; color: #e5edff !important; }
+html body .cb-dsc.on { background: #fecaca !important; color: #7f1d1d !important; }
+html body .cb-hat { color: #cbd5e1 !important; }
