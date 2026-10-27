@@ -91,12 +91,12 @@
   }
 
   var KIND_BADGE = {
-    lesson:    { label: 'LESSON',    bg: '#EFEBF9', fg: '#4C389E' },
-    review:    { label: 'REVIEW',    bg: '#FEF3C7', fg: '#92400E' },
-    quiz:      { label: 'QUIZ',      bg: '#FCE7F3', fg: '#9D174D' },
-    printable: { label: 'PRINTABLE', bg: '#DCFCE7', fg: '#166534' },
-    homework:  { label: 'HOMEWORK',  bg: '#E0F2FE', fg: '#0369A1' },
-    song:      { label: 'SONG',      bg: '#EDE9FE', fg: '#5B21B6' }
+    lesson:    { label: 'LESSON',    bg: 'rgba(168, 85, 247, 0.22)', fg: '#e9d5ff' },
+    review:    { label: 'REVIEW',    bg: 'rgba(245, 158, 11, 0.22)', fg: '#fde68a' },
+    quiz:      { label: 'QUIZ',      bg: 'rgba(244, 63, 94, 0.22)', fg: '#fecdd3' },
+    printable: { label: 'PRINTABLE', bg: 'rgba(16, 185, 129, 0.22)', fg: '#a7f3d0' },
+    homework:  { label: 'HOMEWORK',  bg: 'rgba(56, 189, 248, 0.22)', fg: '#bae6fd' },
+    song:      { label: 'SONG',      bg: 'rgba(139, 92, 246, 0.22)', fg: '#ddd6fe' }
   };
 
   function matchingPlan(route) {
