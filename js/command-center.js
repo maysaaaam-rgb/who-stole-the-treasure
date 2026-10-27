@@ -502,7 +502,7 @@
   function quietBanner(cls) {
     if (!classQuiet) return '';
     var last = new Date(dayStart(Date.now()) - classQuiet * DAY).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-    return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFFBEB;border:1.5px solid #FCD34D;color:#78350F;border-radius:14px;padding:12px 16px;margin-bottom:14px"><span>⏸ <b>' + esc(cls.name) + ' has had no XP for ' + classQuiet + ' days</b> (the last award was on ' + last + '). Pupils are shown as "No XP lately" instead of "Needs help". If you gave points since then and cannot see them here, they were not saved to the cloud.</span></div>';
+    return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:rgba(232, 195, 48, 0.18);border:1.5px solid rgba(223, 178, 32, 0.55);color:#f9b994;border-radius:14px;padding:12px 16px;margin-bottom:14px"><span>⏸ <b>' + esc(cls.name) + ' has had no XP for ' + classQuiet + ' days</b> (the last award was on ' + last + '). Pupils are shown as "No XP lately" instead of "Needs help". If you gave points since then and cannot see them here, they were not saved to the cloud.</span></div>';
   }
   function kpiHtml() {
     var cls = S().getActiveClass(), attRecs = S().getAttendanceRecords ? (S().getAttendanceRecords(cls.id) || []) : [];
