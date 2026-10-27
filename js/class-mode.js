@@ -11,18 +11,13 @@
   function setStored(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* storage may be blocked */ } }
   function on() { return document.documentElement.classList.contains('class-mode'); }
 
-  /* ---------- the picture rail (replaces the sidebar text menu) ---------- */
+  /* ---------- the picture rail (5 Connected Hubs — zero vertical overflow) ---------- */
   var RAIL = [
-    { id: 'classview', pic: 'm_home', t: 'Home', c: '#38bdf8', views: ['classview'] },
-    { id: 'lesson', pic: 'm_lesson', t: 'Lesson', c: '#0ea5e9', views: ['library'] },
-    { id: 'board', pic: 'm_scoreboard', t: 'Scores', c: '#f59e0b', views: ['board'] },
-    { id: 'gamemaker', pic: 'm_games', t: '🎮 Game Maker', c: '#ec4899', views: [] },
-    { id: 'shelf', pic: 'm_games', t: 'Games', c: '#a855f7', views: ['shelf'] },
-    { id: 'sleepy', pic: 'assets/packs/characters/sleepy-mio/mio-asleep.webp', t: '😴 Sleepy Mio', c: '#6366f1', views: [] },
-    { id: 'pick', pic: 'm_pick', t: 'Pick', c: '#8b5cf6', views: [] },
-    { id: 'timer', pic: 'm_timer', t: 'Timer', c: '#f43f5e', views: [] },
-    { id: 'rewards', pic: 'm_rewards', t: 'Rewards', c: '#10b981', views: ['rewards', 'store'] },
-    { id: 'teacher', pic: 'm_teacher_key', t: 'Teacher', c: '#64748b', views: [] }
+    { id: 'board', pic: 'm_scoreboard', t: 'Class Board', c: '#6E56CF', views: ['board', 'classview'] },
+    { id: 'library', pic: 'm_lesson', t: 'Lessons & Games', c: '#0ea5e9', views: ['library', 'curriculum', 'shelf'] },
+    { id: 'store', pic: 'm_rewards', t: 'Store & Podium', c: '#10b981', views: ['store', 'rewards', 'closet', 'monster'] },
+    { id: 'calendar', pic: 'h_calendar', t: 'Timetable', c: '#f59e0b', views: ['calendar'] },
+    { id: 'command', pic: 'm_teacher_key', t: 'Teacher Hub', c: '#64748b', views: ['command'] }
   ];
   function openGameMaker(opts) {
     opts = opts || {};
@@ -55,16 +50,26 @@
   /* ---------- the switch in the header ---------- */
   function paintToggle() {
     var b = document.getElementById('cm-toggle'); if (!b) return;
-    b.innerHTML = on() ? '<span>🧑‍🏫</span> Teacher<em class="cm-mode-word" style="font-style:normal"> Mode</em>' : '<span>🏫</span> Class<em class="cm-mode-word" style="font-style:normal"> Mode</em>';
-    b.title = on() ? 'Back to the normal teacher platform' : 'Bright smartboard look with big picture buttons';
+    b.innerHTML = on() ? '<span>🧑‍🏫</span> Teacher<em class="cm-mode-word" style="font-style:normal"> Hub</em>' : '<span>🏫</span> Smartboard<em class="cm-mode-word" style="font-style:normal"> Rail</em>';
+    b.title = on() ? 'Switch sidebar to compact text menu' : 'Switch sidebar to big picture buttons';
   }
   function ensureToggle() {
     var right = document.querySelector('.app-header .header-right'); if (!right) return;
+    if (!document.getElementById('cm-sleepy-btn')) {
+      var sl = document.createElement('button'); sl.type = 'button'; sl.id = 'cm-sleepy-btn'; sl.className = 'cm-hdr-quick';
+      sl.innerHTML = '<span>😴</span> <span class="cm-mode-word">Sleepy Mio</span>';
+      sl.title = 'Open Sleepy Mio quiet classroom game';
+      sl.addEventListener('click', function () {
+        if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open();
+        else if (root.openSleepyMonster) root.openSleepyMonster();
+      });
+      right.insertBefore(sl, right.firstChild);
+    }
     if (!document.getElementById('cm-gm-btn')) {
       var gm = document.createElement('button'); gm.type = 'button'; gm.id = 'cm-gm-btn'; gm.className = 'cm-toggle cm-gm-btn';
       gm.innerHTML = '<span>🎮</span> Game Maker';
       gm.title = 'Open Game Maker with the active class and monsters';
-      gm.style.cssText = 'background:linear-gradient(180deg,#ec4899,#db2777);color:#fff;border:1.5px solid #f472b6;border-bottom:4px solid #9d174d;border-radius:14px;padding:7px 14px;font-weight:800;font-size:.88rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 4px 12px rgba(236,72,153,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
+      gm.style.cssText = 'background:linear-gradient(180deg,#6E56CF,#4C389E);color:#fff;border:1.5px solid #8D75E6;border-bottom:4px solid #37267A;border-radius:12px;padding:7px 14px;font-weight:800;font-size:.86rem;display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 3px 10px rgba(110,86,207,.28);transition:transform .12s cubic-bezier(.175,.885,.32,1.275)';
       gm.addEventListener('click', function () { openGameMaker(); });
       right.insertBefore(gm, right.firstChild);
     }
@@ -74,14 +79,15 @@
     right.insertBefore(b, right.firstChild); paintToggle();
   }
 
-  /* ---------- class chips in the header (replace the small drop-down in Class Mode) ---------- */
+  /* ---------- class chips in the header (1-tap class switcher across both modes) ---------- */
   function shortName(n) { var m = /(\d+\s*[A-Za-z]?)\s*$/.exec(String(n || '')); return m ? m[1].replace(/\s+/g, '') : String(n || '').slice(0, 4); }
   function paintChips() {
     var right = document.querySelector('.app-header .header-right'), box = document.getElementById('cm-classes'); if (!right) return;
-    if (!on()) { if (box) box.remove(); return; }
     var st = S(), list = []; try { list = (st.getClasses ? st.getClasses() : []).filter(function (c) { return !c.archived; }); } catch (e) { list = []; }
     var act = null; try { act = st.getActiveClass && st.getActiveClass(); } catch (e2) { act = null; }
-    if (!box) { box = document.createElement('div'); box.id = 'cm-classes'; box.className = 'cm-classes'; var sel = document.getElementById('header-class-select'); right.insertBefore(box, sel || right.firstChild); }
+    var sel = document.getElementById('header-class-select');
+    if (sel) sel.style.display = 'none';
+    if (!box) { box = document.createElement('div'); box.id = 'cm-classes'; box.className = 'cm-classes'; right.insertBefore(box, sel || right.firstChild); }
     box.innerHTML = list.map(function (c) { return '<button type="button" class="cm-cls' + (act && c.id === act.id ? ' on' : '') + '" onclick="ClassMode.cls(\'' + esc(c.id) + '\')" title="' + esc(c.name) + '">' + esc(shortName(c.name)) + '</button>'; }).join('');
   }
   var origSwitch = null;
@@ -276,7 +282,7 @@
     return SHELF_ART.indexOf(g.id) >= 0 ? 'assets/shelf/' + g.id + '.webp' : (g.thumbnailUrl || g.coverImage || '');
   }
   function isPureGame(g) { return g && g.type === 'game'; }
-  function colorFor(g, i) { return ['#38bdf8', '#f59e0b', '#10b981', '#f43f5e', '#a855f7', '#0ea5e9'][i % 6]; }
+  function colorFor(g, i) { return ['#6E56CF', '#f59e0b', '#10b981', '#f43f5e', '#0ea5e9', '#a855f7'][i % 6]; }
 
   var GAME_KIND_LABEL = {
     team: 'TEAM & BOARD',
@@ -322,7 +328,7 @@
       if (found) picks.push(found);
     });
     if (!picks.length) return '';
-    var colors = ['#5b5bd6', '#0ea5e9', '#10b981'];
+    var colors = ['#6E56CF', '#0ea5e9', '#10b981'];
     return '<div class="cm-spotlight">' +
       '<div class="cm-spot-hd"><span>🎮 Featured Smartboard Games</span><small>Team Game Shows, Board Games &amp; Class Battles</small></div>' +
       '<div class="cm-spot-grid">' + picks.map(function (g, i) {
@@ -338,11 +344,12 @@
       }).join('') + '</div></div>';
   }
 
-  function shelfHtml() {
+  function shelfHtml(embedded) {
     var gr = shelf.grade == null ? (activeGrade() || 0) : shelf.grade, list = shelfList();
     function chip(label, active, fn) { return '<button type="button" class="cm-chip' + (active ? ' on' : '') + '" onclick="' + fn + '">' + label + '</button>'; }
-    return '<div class="cm-shelf"><div class="cm-shelf-hd"><div><h1>🎮 Games Shelf</h1><small>' + list.length + ' smartboard games ready to play (Lessons &amp; Reviews are in the Library)</small></div>' +
-      '<div class="cm-chips">' +
+    return '<div class="cm-shelf">' +
+      (embedded ? '' : '<div class="cm-shelf-hd"><div><h1>🎮 Smartboard Games Shelf</h1><small>' + list.length + ' smartboard games ready to play</small></div></div>') +
+      '<div class="cm-chips" style="margin-bottom:10px">' +
       chip('Grade 3', gr === 3, "ClassMode.shelf('grade',3)") +
       chip('Grade 4', gr === 4, "ClassMode.shelf('grade',4)") +
       chip('All Grades', !gr, "ClassMode.shelf('grade',0)") + '<i></i>' +
@@ -351,8 +358,8 @@
       chip('🕹️ Arcade & Action', shelf.kind === 'arcade', "ClassMode.shelf('kind','arcade')") +
       chip('🗣️ Speaking & TPR', shelf.kind === 'speaking', "ClassMode.shelf('kind','speaking')") +
       chip('🚀 Quests & RPG', shelf.kind === 'quest', "ClassMode.shelf('kind','quest')") + '<i></i>' +
-      chip('📖 Lessons & Library →', false, "if(window.switchView)window.switchView('library')") +
-      chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div></div>' + curateBar() +
+      (embedded ? '' : chip('📖 All Lessons & Plans →', false, "if(window.switchView)window.switchView('library')")) +
+      chip('✂ Clean up', shelf.curate, "ClassMode.curate()") + '</div>' + curateBar() +
       '<div class="cm-search"><input id="cm-q" type="search" placeholder="Search games (Bamboozle, Board, Arcade, Simon Says, Race…)" value="' + esc(shelf.q) + '" oninput="ClassMode.shelf(\'q\',this.value)"></div>' +
       spotlightHtml(gr) +
       '<div class="cm-cards">' + (list.length ? list.map(function (g, i) {
@@ -376,50 +383,50 @@
     return '<div class="cm-curbar"><span>✂ Clean up: tap <b>Try</b> to look, then <b>Keep</b> the good ones and <b>Hide</b> the rest. Saved on this device.</span><div class="cm-chips">' +
       b((shelf.showHidden ? '← Back to the shelf' : '🙈 Hidden (' + LC.hiddenIds().length + ')'), "ClassMode.curate('hidden')", shelf.showHidden ? 'on' : '') + b('📋 Copy list', 'LibraryCurate.copy()') + b('📥 Load list', "LibraryCurate.openImport(function(){ClassMode.shelf('x')})") + b('↺ Restore all', "ClassMode.cur('clear')") + '</div></div>';
   }
-  function renderShelf(container) {
-    if (!document.getElementById('cm-shelf-dark-fix')) {
-      var st = document.createElement('style');
-      st.id = 'cm-shelf-dark-fix';
-      st.textContent = 'html:not(.class-mode) .cm-shelf-hd h1{color:#f8fafc!important}html:not(.class-mode) .cm-shelf-hd small{color:#94a3b8!important}';
-      document.head.appendChild(st);
-    }
-    container.innerHTML = shelfHtml();
+  function renderShelf(container, embedded) {
+    container.innerHTML = shelfHtml(embedded);
+  }
+
+  function currentShelfHost() {
+    return document.getElementById('ls-games-host') || document.getElementById('app-view-container');
   }
 
   var api = {
-    on: on, rail: rail, renderShelf: renderShelf,
-    cls: function (id) { try { S().setActiveClass(id); } catch (e) { return; } var v = (location.hash || '#classview').replace(/^#/, '').split('/')[0] || 'classview'; if (root.switchView) root.switchView(v); paintChips(); },
+    on: on, rail: rail, renderShelf: renderShelf, shelfHtml: shelfHtml, shelfCount: function () { return shelfList().length; },
+    cls: function (id) { try { S().setActiveClass(id); } catch (e) { return; } var v = (location.hash || '#board').replace(/^#/, '').split('/')[0] || 'board'; if (v === 'classview') v = 'board'; if (root.switchView) root.switchView(v); paintChips(); },
     set: function (v) {
       document.documentElement.classList.toggle('class-mode', !!v); setStored(v ? '1' : '0'); paintToggle(); paintChips(); decorate();
-      if (root.switchView) root.switchView(v ? 'classview' : 'command');
+      if (root.switchView) root.switchView(v ? 'board' : 'command');
     },
     curate: function (v) {
       if (v === true) { if (!on()) { document.documentElement.classList.add('class-mode'); setStored('1'); paintToggle(); paintChips(); } shelf.curate = true; if (root.switchView) root.switchView('shelf'); return; }
       if (v === 'hidden') shelf.showHidden = !shelf.showHidden; else { shelf.curate = !shelf.curate; if (!shelf.curate) shelf.showHidden = false; }
-      var c = document.getElementById('app-view-container'); if (c) renderShelf(c);
+      var c = currentShelfHost(); if (c) renderShelf(c, c.id === 'ls-games-host');
     },
     cur: function (what, id) {
       var LC = root.LibraryCurate; if (!LC) return;
       if (what === 'hide') LC.hide(id); else if (what === 'restore') LC.restore(id); else if (what === 'star') LC.toggleStar(id);
       else if (what === 'clear') { if (!root.confirm || root.confirm('Restore every hidden game and remove all stars on this device?')) LC.clearAll(); else return; }
-      var c = document.getElementById('app-view-container'); if (c) { var y = root.scrollY; renderShelf(c); root.scrollTo(0, y); }
+      var c = currentShelfHost(); if (c) { var y = root.scrollY; renderShelf(c, c.id === 'ls-games-host'); root.scrollTo(0, y); }
     },
     shelf: function (k, v) {
       if (k === 'x') { /* just redraw */ } else if (k === 'grade') shelf.grade = Number(v); else if (k === 'kind') shelf.kind = v; else if (k === 'q') shelf.q = String(v || '').toLowerCase();
-      var c = document.getElementById('app-view-container'); if (!c) return;
-      if (k === 'q') { var cards = c.querySelector('.cm-cards'), tmp = document.createElement('div'); tmp.innerHTML = shelfHtml(); if (cards) cards.innerHTML = tmp.querySelector('.cm-cards').innerHTML; return; }
-      renderShelf(c);
+      var c = currentShelfHost(); if (!c) return;
+      var emb = c.id === 'ls-games-host';
+      if (k === 'q') { var cards = c.querySelector('.cm-cards'), tmp = document.createElement('div'); tmp.innerHTML = shelfHtml(emb); if (cards) cards.innerHTML = tmp.querySelector('.cm-cards').innerHTML; return; }
+      renderShelf(c, emb);
     },
     go: function (id) {
       if (root.closeMobileSidebar) root.closeMobileSidebar();
       if (id === 'gamemaker') { openGameMaker(); return; }
       if (id === 'sleepy') { if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open(); else if (root.openSleepyMonster) root.openSleepyMonster(); return; }
       var sw = root.switchView; if (!sw) return;
-      if (id === 'classview' || id === 'board' || id === 'shelf' || id === 'store' || id === 'rewards') { sw(id); return; }
+      if (id === 'classview') { sw('board'); return; }
+      if (id === 'board' || id === 'library' || id === 'store' || id === 'calendar' || id === 'command' || id === 'shelf' || id === 'rewards') { sw(id); return; }
       if (id === 'teacher') { api.set(false); return; }
       if (id === 'timer') { if (root.openClassroomToolkitModal) root.openClassroomToolkitModal('timer'); return; }
       if (id === 'pick') { sw('board'); setTimeout(function () { try { root.ClassBoard && root.ClassBoard.pick(); } catch (e) { /* optional */ } }, 500); return; }
-      if (id === 'lesson') { sw('classview'); setTimeout(function () { try { root.ClassView && root.ClassView.go('lesson'); } catch (e) { /* optional */ } }, 200); }
+      if (id === 'lesson') { sw('library'); }
     }
   };
   root.ClassMode = api; root.renderGameShelf = renderShelf;

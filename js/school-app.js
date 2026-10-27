@@ -120,7 +120,7 @@
   async function initApp() {
     if (window.__pendingDashboardOpen) {
       if (store) store.setRole('teacher');
-      currentView = document.documentElement.classList.contains('class-mode') ? 'classview' : 'command';
+      currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'command';
       window.__pendingDashboardOpen = false;
     }
     const initialClass = store.getActiveClass();
@@ -242,7 +242,7 @@
         const role = btn.getAttribute('data-role');
         store.setRole(role);
 
-        if (role === 'teacher') currentView = document.documentElement.classList.contains('class-mode') ? 'classview' : 'command';
+        if (role === 'teacher') currentView = document.documentElement.classList.contains('class-mode') ? 'board' : 'command';
         else if (role === 'student') currentView = 'adventure';
         else if (role === 'parent') currentView = 'parent-home';
 
@@ -891,6 +891,7 @@
         }
       }
       if (validViews.includes(primaryView)) {
+        if (primaryView === 'classview') primaryView = 'board';
         if (primaryView === 'class-detail' && parts[1]) {
           selectedClassDetailId = parts[1];
           if (parts[2]) selectedClassDetailTab = parts[2];
@@ -1012,6 +1013,7 @@
 
   window.renderCurrentView = renderCurrentView;
   window.switchView = function(viewName, updateHash = true) {
+    if (viewName === 'classview') viewName = 'board';
     currentView = viewName;
     if (typeof window.closeMobileSidebar === 'function') window.closeMobileSidebar();
     if (typeof window.updateMobileTabbar === 'function') window.updateMobileTabbar(viewName);
@@ -1034,7 +1036,7 @@
     const floatingToolkit = document.getElementById('classroom-floating-toolkit');
     if (floatingToolkit) {
       const role = (store && typeof store.getRole === 'function') ? store.getRole() : 'teacher';
-      const teacherViews = ['dashboard', 'command', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
+      const teacherViews = ['dashboard', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'];
       floatingToolkit.style.display = (role === 'teacher' && teacherViews.includes(currentView)) ? 'flex' : 'none';
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4472,6 +4474,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     { title: 'Unit 3: Arctic Board Game (It Keeps Changing, The Bear and I)', grade: 'Grade 3', date: '2026-10-12', file: 'Grade3-Unit3-Board-Game-Lesson-Plan', word: true },
     { title: 'Unit 3: Money Board Game (How Much Is It?)', grade: 'Grade 4', date: '2026-10-12', file: 'Grade4-Unit3-Board-Game-Lesson-Plan', word: true }
   ];
+  window.LESSON_PLANS = LESSON_PLANS;
   function renderLessonPlansSection() {
     const now = Date.now();
     return '' +
@@ -9768,46 +9771,26 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       }
 
       sidebar.innerHTML = 
-        '<ul class="sidebar-nav-list" style="margin-bottom: 6px;">' +
-          '<li><button class="nav-link-btn ' + (currentView === 'classview' ? 'is-active' : '') + '" onclick="switchView(\'classview\')" title="Class view: simple smartboard screen"><span class="nav-item-left"><span class="nav-icon">🏫</span> <span class="nav-label">Class View</span></span></button></li>' +
-          '<li><button class="nav-link-btn" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'" title="Open Game Maker with the active class and monsters" style="background:linear-gradient(135deg,rgba(236,72,153,0.16),rgba(168,85,247,0.16));border:1px solid rgba(236,72,153,0.35);"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label" style="font-weight:800;color:#f472b6;">Game Maker</span></span><span class="nav-badge-pill" style="background:#ec4899;color:#fff;">19</span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Command Center"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Command Center</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Calendar: lessons, quizzes, birthdays, meetings"><span class="nav-item-left"><span class="nav-icon">📅</span> <span class="nav-label">Calendar</span></span></button></li>' +
-          '<li><button class="nav-link-btn ' + (currentView === 'dashboard' ? 'is-active' : '') + '" onclick="switchView(\'dashboard\')" title="Classic dashboard"><span class="nav-item-left"><span class="nav-icon">📊</span> <span class="nav-label">Classic Dashboard</span></span></button></li>' +
+        '<div class="sidebar-section-title" style="padding:4px 10px 6px;">5 Connected Hubs</div>' +
+        '<ul class="sidebar-nav-list" style="margin-bottom: 10px;">' +
+          '<li><button class="nav-link-btn ' + (['board', 'classview'].includes(currentView) ? 'is-active' : '') + '" onclick="switchView(\'board\')" title="Class Board: smartboard home with monsters, timer, picker and today\'s lessons"><span class="nav-item-left"><span class="nav-icon">📺</span> <span class="nav-label">Class Board</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (['library', 'curriculum', 'shelf'].includes(currentView) ? 'is-active' : '') + '" onclick="switchView(\'library\')" title="Lessons, Smartboard Games &amp; Word/PDF Lesson Plans"><span class="nav-item-left"><span class="nav-icon">📖</span> <span class="nav-label">Lessons &amp; Games</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (['store', 'rewards', 'closet', 'monster'].includes(currentView) ? 'is-active' : '') + '" onclick="switchView(\'store\')" title="Coin Shop, Mystery Boxes, Class Podium &amp; Worksheet Coins"><span class="nav-item-left"><span class="nav-icon">🏆</span> <span class="nav-label">Store &amp; Podium</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'calendar' ? 'is-active' : '') + '" onclick="switchView(\'calendar\')" title="Timetable &amp; School Calendar: weekly lessons, quizzes, birthdays"><span class="nav-item-left"><span class="nav-icon">📅</span> <span class="nav-label">Timetable</span></span></button></li>' +
+          '<li><button class="nav-link-btn ' + (currentView === 'command' ? 'is-active' : '') + '" onclick="switchView(\'command\')" title="Teacher Hub: pupils, XP per day, homework, parent reports &amp; classroom logs"><span class="nav-item-left"><span class="nav-icon">🧭</span> <span class="nav-label">Teacher Hub</span></span></button></li>' +
         '</ul>' +
 
-        renderNavGroup('my-school', 'My School', [
-          { view: 'board', label: 'Class Board', icon: '📺', title: 'Class Board: projector view with timer, picker and points', isActive: currentView === 'board' },
-          { view: 'store', label: 'Classroom Store', icon: '🛍️', title: 'Classroom Store: coins, items and rewards', isActive: currentView === 'store' }
-        ], ['board', 'classes', 'classroom-hub', 'class-detail', 'students', 'attendance', 'store']) +
+        '<div class="sidebar-section-title" style="padding:6px 10px 6px;border-top:1px solid var(--border-light);">Quick Launch</div>' +
+        '<ul class="sidebar-nav-list" style="margin-bottom: 10px;">' +
+          '<li><button class="nav-link-btn" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'" title="Open Game Maker with the active class and monsters" style="background:var(--tines-lavender);border:1px solid var(--tines-lavender-border);"><span class="nav-item-left"><span class="nav-icon">🎮</span> <span class="nav-label" style="font-weight:800;color:var(--tines-purple-dark);">Game Maker</span></span><span class="nav-badge-pill" style="background:var(--tines-purple);color:#fff;">19</span></button></li>' +
+          '<li><button class="nav-link-btn" onclick="if(window.LibraryShelf&&LibraryShelf.openTab)LibraryShelf.openTab(\'plans\');else switchView(\'curriculum\')" title="Official PDF &amp; Word Lesson Plans"><span class="nav-item-left"><span class="nav-icon">📋</span> <span class="nav-label">Lesson Plans</span></span></button></li>' +
+          '<li><button class="nav-link-btn" onclick="if(window.ParentReport)ParentReport.openAll()" title="Bilingual Parent Progress Reports"><span class="nav-item-left"><span class="nav-icon">🧾</span> <span class="nav-label">Parent Reports</span></span></button></li>' +
+        '</ul>' +
 
-        renderNavGroup('teaching', 'Teaching', [
-          { view: 'curriculum', label: 'Curriculum', icon: '📚', title: 'Curriculum', isActive: currentView === 'curriculum', badge: counts.curriculum },
-          { view: 'library', label: 'Lessons & Library', icon: '📖', title: 'Lessons, Reviews & Curriculum Library', isActive: currentView === 'library', badge: counts.resources },
-          { view: 'shelf', label: 'Games Shelf', icon: '🎮', title: 'Smartboard Games Shelf (Pure Games Only)', isActive: currentView === 'shelf' },
-          { view: 'worksheets', label: 'Worksheets', icon: '📄', title: 'Printable Worksheets', isActive: currentView === 'worksheets', badge: counts.worksheets },
-          { view: 'assignments', label: 'Assignments', icon: '📝', title: 'Assignments', isActive: currentView === 'assignments', badge: counts.assignments },
-          { view: 'homework', label: 'Homework', icon: '✍️', title: 'Homework', isActive: currentView === 'homework', badge: counts.homework },
-          { view: 'quizzes', label: 'Quizzes & Tests', icon: '🧩', title: 'Quizzes & Tests', isActive: currentView === 'quizzes', badge: counts.quizzes }
-        ], ['curriculum', 'library', 'shelf', 'worksheets', 'assignments', 'homework', 'quizzes']) +
-
-        renderNavGroup('assessment', 'Assessment', [
-          { view: 'assessments', label: 'Assessments & Rubrics', icon: '🎯', title: 'Assessments & Rubrics', isActive: currentView === 'assessments' },
-          { view: 'progress', label: 'Progress & CEFR', icon: '📈', title: 'Progress & CEFR', isActive: currentView === 'progress' },
-          { view: 'progress-check', label: 'English Progress Check', icon: '📊', title: 'English Progress Check', isActive: currentView === 'progress-check' },
-          { view: 'reports', label: 'Student Reports (for parents)', icon: '🧾', title: 'Student Reports: print a report card for a parent', isActive: currentView === 'reports' }
-        ], ['assessments', 'progress', 'reports', 'progress-check']) +
-
-        renderNavGroup('community', 'Community', [
-          { view: 'portfolios', label: 'Portfolios', icon: '🎨', title: 'Portfolios', isActive: currentView === 'portfolios' }
-        ], ['portfolios']) +
-
-        renderNavGroup('admin', 'Admin & Audit', [
-          { view: 'health', label: 'System Health', icon: '📊', title: 'System Health & CRUD', isActive: currentView === 'health' },
-          { view: 'gamification', label: 'Gamification', icon: '🏆', title: 'Gamification & Badges', isActive: currentView === 'gamification' },
+        renderNavGroup('admin', 'Settings & Archive', [
           { view: 'archived', label: 'Archived & Restore', icon: '🗄️', title: 'Archived Items & Restore', isActive: currentView === 'archived' },
           { view: 'settings', label: 'School Settings', icon: '⚙️', title: 'School Settings', isActive: currentView === 'settings' }
-        ], ['health', 'gamification', 'archived', 'settings']) +
+        ], ['archived', 'settings']) +
 
         // Sidebar Collapse Toggle Button
         '<div class="sidebar-collapse-wrap" style="padding:14px 4px 6px; margin-top:14px; border-top:1px solid var(--border-light);">' +
@@ -9815,7 +9798,6 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
             '<span class="collapse-icon">⇤</span> <span class="collapse-text">Collapse Sidebar</span>' +
           '</button>' +
         '</div>';
-      hideUnusedTeacherMenus(sidebar);
     } else if (role === 'student') {
       sidebar.innerHTML = 
         '<div class="sidebar-section-title">My Adventure</div>' +
@@ -9928,7 +9910,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
         case 'closet': if (window.renderMonsterCloset) window.renderMonsterCloset(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Monster Closet is not loaded.</div>'; break;
         case 'rewards': if (window.renderRewardsHall) window.renderRewardsHall(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Rewards is not loaded.</div>'; break;
         case 'shelf': if (window.renderGameShelf) window.renderGameShelf(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Game Shelf is not loaded.</div>'; break;
-        case 'classview': if (window.renderClassView) window.renderClassView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class view is not loaded.</div>'; break;
+        case 'classview': if (window.renderClassBoardView) window.renderClassBoardView(container); else if (window.renderClassView) window.renderClassView(container); break;
         case 'board': if (window.renderClassBoardView) window.renderClassBoardView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">Class Board is not loaded.</div>'; break;
         case 'store': if (window.renderClassroomStoreView) window.renderClassroomStoreView(container); else container.innerHTML = '<div style="padding:40px;text-align:center;">The store is not loaded.</div>'; break;
         case 'parent-home': renderParentHomeView(container); break;
@@ -9963,8 +9945,10 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // The toolkit dock starts hidden in index.html; show it on the first render too (not only after switchView)
     const toolkitDock = document.getElementById('classroom-floating-toolkit');
     if (toolkitDock && store.getRole() === 'teacher' &&
-        ['dashboard', 'command', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'].includes(currentView)) {
+        ['dashboard', 'classes', 'class-detail', 'students', 'lessons', 'assignments', 'progress'].includes(currentView)) {
       toolkitDock.style.display = 'flex';
+    } else if (toolkitDock) {
+      toolkitDock.style.display = 'none';
     }
   }
 

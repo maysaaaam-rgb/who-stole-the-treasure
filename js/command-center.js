@@ -5,7 +5,7 @@
   var store = root.schoolStore || root.store;
   var DAY = 86400000;
 
-  var sortKey = 'xp', sortDir = -1, filterKey = 'all', query = '';
+  var sortKey = 'xp', sortDir = -1, filterKey = 'all', query = '', hubTab = 'pupils';
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function S() { return root.schoolStore || root.store || store; }
@@ -502,7 +502,7 @@
   function quietBanner(cls) {
     if (!classQuiet) return '';
     var last = new Date(dayStart(Date.now()) - classQuiet * DAY).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-    return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#14182b;border:1px solid #2a3057;color:#c7cdf5;border-radius:12px;padding:12px 16px;margin-bottom:14px"><span>⏸ <b>' + esc(cls.name) + ' has had no XP for ' + classQuiet + ' days</b> (the last award was on ' + last + '). Pupils are shown as "No XP lately" instead of "Needs help". If you gave points since then and cannot see them here, they were not saved to the cloud.</span></div>';
+    return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFFBEB;border:1.5px solid #FCD34D;color:#78350F;border-radius:14px;padding:12px 16px;margin-bottom:14px"><span>⏸ <b>' + esc(cls.name) + ' has had no XP for ' + classQuiet + ' days</b> (the last award was on ' + last + '). Pupils are shown as "No XP lately" instead of "Needs help". If you gave points since then and cannot see them here, they were not saved to the cloud.</span></div>';
   }
   function kpiHtml() {
     var cls = S().getActiveClass(), attRecs = S().getAttendanceRecords ? (S().getAttendanceRecords(cls.id) || []) : [];
@@ -537,6 +537,34 @@
       .then(function () { if (!document.getElementById('cc-table')) return; current.forEach(rediagnose); refreshAll(); });
   }
 
+  function reportsTabHtml(cls) {
+    return '<div class="tines-bento-grid">' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🧾</div><div><h4>Parent Progress Reports</h4><p>Bilingual (TR/EN) printable report cards for every pupil in ' + esc(cls.name) + ' with 4-skill bands, homework status, and personalized next steps.</p></div></div><button type="button" class="tines-bento-cta" onclick="ParentReport && ParentReport.openAll()">🧾 Open Parent Reports →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">📄</div><div><h4>One-Page Class Report (A4)</h4><p>Landscape A4 overview of all ' + current.length + ' pupils in ' + esc(cls.name) + ': total XP, weekly gain, paper quiz %, L·R·W·S bands, and attention list.</p></div></div><button type="button" class="tines-bento-cta" onclick="CommandCenter.classReport()">🖨️ Print Class Report →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">📰</div><div><h4>Daily 18:00 School Report</h4><p>End-of-day summary of lessons taught, k12 homework checks, and class progress across Grade 3 and Grade 4.</p></div></div><button type="button" class="tines-bento-cta" onclick="DailyReport && DailyReport.open()">📰 Open Daily Report →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🃏</div><div><h4>Pupil Login &amp; Monster Cards</h4><p>Printable individual login cards with each pupil\'s monster companion and home access code for ' + esc(cls.name) + '.</p></div></div><button type="button" class="tines-bento-cta" onclick="PupilCard && PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Print Class Cards →</button></div>' +
+    '</div>';
+  }
+
+  function homeworkTabHtml(cls) {
+    return '<div class="tines-bento-grid" style="margin-bottom:16px">' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🔁</div><div><h4>Weak-Skill Revision Board</h4><p>Automatically groups pupils in ' + esc(cls.name) + ' by the skills or questions they missed on the paper quiz and launches targeted practice.</p></div></div><button type="button" class="tines-bento-cta" onclick="RevisionBoard && RevisionBoard.open()">🔁 Open Revision Board →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">📝</div><div><h4>Paper Quiz Marks &amp; 4-Skills</h4><p>Enter or review Listening, Reading, Writing, and Speaking marks for ' + esc(cls.name) + ' and sync them with parent reports.</p></div></div><button type="button" class="tines-bento-cta" onclick="if(window.QuizResults)QuizResults.open()">📝 Open Quiz Results →</button></div>' +
+    '</div>' +
+    '<div class="cc-grid3">' + panelsHtml() + '</div>';
+  }
+
+  function toolsTabHtml(cls) {
+    return '<div class="tines-bento-grid" style="margin-bottom:16px">' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">✓</div><div><h4>Roll Call &amp; Attendance</h4><p>Take fast classroom attendance for ' + esc(cls.name) + ' and update the attendance KPI rate.</p></div></div><button type="button" class="tines-bento-cta" onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take Attendance →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🚻</div><div><h4>Bathroom Pass &amp; Log</h4><p>Review sign-out/sign-in timestamps and frequency for ' + esc(cls.name) + ' or open the classroom pass.</p></div></div><button type="button" class="tines-bento-cta" onclick="BathroomPass && BathroomPass.log()">🚻 Open Bathroom Log →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🎂</div><div><h4>Pupil Birthdays</h4><p>Manage pupil birthdays so they appear automatically on the Timetable Calendar and Class Board.</p></div></div><button type="button" class="tines-bento-cta" onclick="Birthday && Birthday.manage()">🎂 Manage Birthdays →</button></div>' +
+      '<div class="tines-bento-card"><div class="tines-bento-card-head"><div class="tines-bento-icon">🧩</div><div><h4>Merge Duplicate Pupils</h4><p>Scan for pupils entered twice in ' + esc(cls.name) + ' and safely merge their XP history with automatic backup.</p></div></div><button type="button" class="tines-bento-cta" onclick="CommandCenter.mergeDuplicates()">🧩 Check Duplicates →</button></div>' +
+    '</div>' +
+    dataChecksHtml() +
+    '<div class="cc-pn" style="margin-top:16px"><h3>Recent activity · ' + esc(cls.name) + '</h3><div class="cc-feed">' + feedFor(cls) + '</div></div>';
+  }
+
   function render(container) {
     ensureCss();
     var st = S(), cls = st.getActiveClass(), now = new Date();
@@ -545,18 +573,34 @@
     var who = (st.getSchoolSettings && st.getSchoolSettings().teacherName) || 'Mr. Maysam';
     function chip(k, label) { return '<button class="' + (filterKey === k ? 'on' : '') + '" onclick="CommandCenter.filter(\'' + k + '\')">' + label + '</button>'; }
     function rng(n) { return '<button class="' + (RANGE === n ? 'on' : '') + '" onclick="CommandCenter.range(' + n + ')">' + n + ' days</button>'; }
-    container.innerHTML = '<div class="cc">' +
-      '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
-        '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to…<kbd>Ctrl K</kbd></button></div>' +
-      (xpBanner(cls)) + quietBanner(cls) +
-      '<div class="cc-links"><button class="cc-btn-hero" onclick="switchView(\'board\')">📺 Open Class Board</button><button class="cc-btn-hero" style="background:linear-gradient(180deg,#ec4899,#be185d);border-color:#f472b6;border-bottom-color:#831843;box-shadow:0 6px 18px -4px rgba(236,72,153,.45)" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'">🎮 Game Maker</button><button style="background:#064e3b;border-color:#10b981;color:#ecfdf5;font-weight:700" onclick="ParentReport && ParentReport.openAll()">🧾 Parent reports</button><button onclick="PupilCard.openClass(schoolStore.getActiveClass().id)">🃏 Class cards</button><button onclick="DailyReport.open()">📰 Daily report</button><button onclick="CommandCenter.classReport()">📄 Class report</button><button onclick="RevisionBoard && RevisionBoard.open()">🔁 Revision</button><button onclick="BathroomPass && BathroomPass.log()">🚻 Bathroom log</button><button onclick="Birthday.manage()">🎂 Birthdays</button><button onclick="CommandCenter.mergeDuplicates()">🧩 Same pupil twice</button><button onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Take attendance</button><button onclick="switchView(\'homework\')">✍️ Homework</button><button onclick="switchView(\'assignments\')">📝 Assignments</button><button onclick="switchView(\'curriculum\')">📘 Lessons</button><button onclick="switchView(\'store\')">🛍️ Store</button></div>' +
-      '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
-      '<div class="cc-pn"><h3>Students · XP earned each day' +
-        '<input class="cc-find" placeholder="Filter…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
+    function htab(id, label) { return '<button type="button" class="tines-tab-btn ' + (hubTab === id ? 'is-active' : '') + '" onclick="CommandCenter.setHubTab(\'' + id + '\')">' + label + '</button>'; }
+    var pupilsSection = '<div class="cc-pn"><h3>Students · XP earned each day' +
+        '<input class="cc-find" placeholder="Filter pupil…" value="' + esc(query) + '" oninput="CommandCenter.find(this.value)">' +
         '<span class="cc-chips cc-rng">' + rng(7) + rng(14) + rng(30) + '</span>' +
         '<span class="cc-chips" style="margin-left:0">' + chip('all', 'All') + chip('help', 'Needs help') + chip('slow', 'Watch') + (classQuiet ? chip('quiet', 'No XP lately') : '') + chip('star', 'Doing great') + '</span></h3>' +
-        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:8px 14px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done (counts as done, some pupils had technical trouble) · 🎤 sent a recording · 👀 opened only (does not count). Click a pupil for the full picture.' + (pausedClass ? '<br>⏸ ' + esc(cls.name) + ': ' + new Date(pausedClass.from + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' to ' + new Date(pausedClass.to + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' is left out (' + esc(pausedClass.note) + '): the hatched days do not count against any pupil.' : '') + '</div></div>' +
-      '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml() + '</div>';
+        '<div id="cc-table">' + tableHtml() + '</div><div class="cc-dim" style="padding:10px 16px">Numbers in the day boxes are the XP the pupil earned that day. Homework columns come from the Google Sheets: ✓ finished · 2/5 steps done (counts as done) · 🎤 sent a recording · 👀 opened only. Click any pupil row for their 30-day profile &amp; parent report.' + (pausedClass ? '<br>⏸ ' + esc(cls.name) + ': ' + new Date(pausedClass.from + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' to ' + new Date(pausedClass.to + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' is left out (' + esc(pausedClass.note) + ').' : '') + '</div></div>' +
+      '<div class="cc-grid3">' + panelsHtml() + '</div>' + dataChecksHtml();
+    var activeSection = hubTab === 'reports' ? reportsTabHtml(cls) : hubTab === 'homework' ? homeworkTabHtml(cls) : hubTab === 'tools' ? toolsTabHtml(cls) : pupilsSection;
+    container.innerHTML = '<div class="cc">' +
+      '<div class="cc-top"><div><h1>' + greet + ', ' + esc(who) + '</h1><p class="cc-sub">' + esc(cls.name) + ' · <span id="cc-count">' + current.length + '</span> learners · ' + now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p></div>' +
+        '<button class="cc-cmd" onclick="CommandCenter.palette()">🔍 Search or jump to pupil / page…<kbd>Ctrl K</kbd></button></div>' +
+      (xpBanner(cls)) + quietBanner(cls) +
+      '<div class="cc-kp cc-kp5" id="cc-kp">' + kpiHtml() + '</div>' +
+      '<div class="tines-hub-bar">' +
+        '<div class="tines-hub-tabs">' +
+          htab('pupils', '👥 Pupils, XP &amp; Marks <span class="tines-badge">' + current.length + '</span>') +
+          htab('homework', '📚 Homework &amp; Revision') +
+          htab('reports', '🖨️ Reports &amp; Login Cards') +
+          htab('tools', '🧰 Classroom Log &amp; Checks') +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+          '<button type="button" class="tines-tab-btn" onclick="openFastAttendanceModal && openFastAttendanceModal()">✓ Attendance</button>' +
+          '<button type="button" class="tines-tab-btn" onclick="RevisionBoard && RevisionBoard.open()">🔁 Revision</button>' +
+          '<button type="button" class="tines-tab-btn is-active" onclick="switchView(\'board\')">📺 Open Class Board →</button>' +
+        '</div>' +
+      '</div>' +
+      activeSection +
+      '</div>';
     loadSheet();
   }
 
@@ -624,6 +668,7 @@
 
   var api = {
     classReport: openClassReport,
+    setHubTab: function (t) { hubTab = t || 'pupils'; if (root.renderCurrentView) root.renderCurrentView(); },
     sort: function (k) { if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } refreshTable(); },
     filter: function (f) { filterKey = f; if (root.renderCurrentView) root.renderCurrentView(); },
     find: function (v) { query = v || ''; refreshTable(); },

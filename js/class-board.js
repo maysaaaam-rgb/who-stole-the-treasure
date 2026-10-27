@@ -270,12 +270,20 @@
   function todayChips(cls) {
     var T = root.Timetable; if (!T) return '';
     var t = T.today(cls.id);
-    if (!t.set) return '<button onclick="Timetable.edit()">Set my weekly timetable</button>';
-    if (!t.list.length) return '<span style="opacity:.8">no lessons ' + (t.label === 'Today' ? 'today' : 'on Monday') + '</span><button onclick="Timetable.edit()">📅 Edit</button>';
+    var gMatch = /([34])/.exec((cls && cls.name) || '');
+    var g = gMatch ? Number(gMatch[1]) : 0;
+    var u4 = (T.catalog || []).filter(function (c) {
+      return c.route && (c.kind === 'lesson' || c.kind === 'review') && c.unit === 4 && (!c.g || !g || c.g === g);
+    }).sort(function (a, b) { return (a.order || 99) - (b.order || 99); });
+    var quickLesson = u4.length ? '<a href="' + esc(u4[0].route) + '" style="background:rgba(110,86,207,.85);border-color:#c4b5fd;border-bottom-color:#37267A">📖 ' + esc(String(u4[0].title).replace(/\s*\(Grade[^)]*\)/i, '')) + ' ▶</a>' : '';
+    var libBtn = '<button onclick="switchView(\'library\')" title="Open Lessons, Games &amp; Plans">📚 All Lessons &amp; Games</button>';
+    if (!t.set) return quickLesson + libBtn + '<button onclick="Timetable.edit()">📅 Set weekly timetable</button>';
+    if (!t.list.length) return '<span style="opacity:.85">no scheduled slot ' + (t.label === 'Today' ? 'today' : 'on Monday') + '</span>' + quickLesson + libBtn + '<button onclick="Timetable.edit()">📅 Edit</button>';
+    var hasRoute = t.list.some(function (e) { return !!e.route; });
     return t.list.map(function (e) {
       var inner = e.icon + ' ' + (e.time ? '<em>' + esc(e.time) + '</em> ' : '') + esc(e.title);
       return e.route ? '<a href="' + esc(e.route) + '">' + inner + ' ▶</a>' : (e.view ? '<a href="#" onclick="switchView(\'' + esc(e.view) + '\');return false;">' + inner + ' ▶</a>' : '<button style="cursor:default">' + inner + '</button>');
-    }).join('') + '<button onclick="Timetable.edit()">📅</button>';
+    }).join('') + (!hasRoute ? quickLesson : '') + libBtn + '<button onclick="Timetable.edit()" title="Edit Timetable">📅</button>';
   }
   function closeMenus() { var p = document.getElementById('cb-pop'); if (p) p.remove(); var m = document.getElementById('cb-dock-more'); if (m) m.classList.remove('open'); }
   if (typeof document !== 'undefined') document.addEventListener('click', function (e) { if (!e.target.closest || (!e.target.closest('#cb-pop') && !e.target.closest('.cb-mn') && !e.target.closest('.cb-more-wrap'))) closeMenus(); });
