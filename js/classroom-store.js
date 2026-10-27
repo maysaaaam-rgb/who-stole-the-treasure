@@ -819,9 +819,9 @@
   function shopBodyHtml(s) {
     var d = data(), cfg = d.config, bal = balance(s.id), w = wallet(s.id);
     var tabs = [['items', '🎨 Monster items'], ['extras', '✨ Extras'], ['boxes', '🎁 Mystery boxes'], ['party', '🎉 Party fund'], ['rewards', '⭐ Class rewards'], ['orders', '🧾 My orders']];
-    var html = '<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:20px;padding:20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
-      '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.8rem;font-weight:800;color:#92400e;">' + esc((s.firstName || s.name || 'YOUR').toUpperCase()) + '\'S COINS</div><div style="font-size:2.4rem;font-weight:900;color:#78350f;line-height:1;">' + bal + '</div>' +
-      '<div style="font-size:.8rem;color:#92400e;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
+    var html = '<div style="background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(15,23,42,.9));border:1.5px solid rgba(245,158,11,.55);border-radius:20px;padding:20px;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
+      '<div style="font-size:3rem;">🪙</div><div style="flex:1;min-width:200px;"><div style="font-size:.8rem;font-weight:800;color:#fcd34d;">' + esc((s.firstName || s.name || 'YOUR').toUpperCase()) + '\'S COINS</div><div style="font-size:2.4rem;font-weight:900;color:#fbbf24;line-height:1;">' + bal + '</div>' +
+      '<div style="font-size:.8rem;color:#fde68a;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
         var on = studentTab === t[0];
         return '<button type="button" onclick="ClassroomStore.ui.tab(\'' + t[0] + '\')" style="padding:9px 14px;border-radius:12px;font-weight:800;font-size:.86rem;white-space:nowrap;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#26324a') + ';border-bottom:4px solid ' + (on ? '#37267A' : '#334155') + ';background:' + (on ? '#6E56CF' : '#1e293b') + ';color:' + (on ? '#FFFFFF' : '#e5edff') + ';">' + t[1] + '</button>';
