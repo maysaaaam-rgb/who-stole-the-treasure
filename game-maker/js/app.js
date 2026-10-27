@@ -47,7 +47,8 @@
     qSkill: 'all',
     gameCat: 'all',
     cfg: { teams: 2, timer: 0, pu: {} },
-    teams: []
+    teams: [],
+    groups: {}
   };
   var customSets = [], stage;
 
@@ -57,6 +58,7 @@
       if (d) {
         ['setId', 'modeId', 'theme', 'classId', 'qGrade', 'qSkill', 'gameCat'].forEach(function (k) { if (d[k]) S[k] = d[k]; });
         if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg);
+        if (d.groups && typeof d.groups === 'object') S.groups = d.groups;
       }
     } catch (e) { /* private window */ }
     try { customSets = JSON.parse(localStorage.getItem(CKEY) || '[]') || []; } catch (e) { customSets = []; }
@@ -65,7 +67,7 @@
     try {
       localStorage.setItem(KEY, JSON.stringify({
         setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId,
-        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg
+        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg, groups: S.groups || {}
       }));
     } catch (e) { /* ignore */ }
   }
@@ -186,19 +188,35 @@
     opts.forEach(function (o) { var b = h('button', { type: 'button', class: 'gm-segb' + (String(o[0]) === String(cur) ? ' sel' : '') }, [h('b', { text: o[1] }), o[2] ? h('small', { text: o[2] }) : null]); b.addEventListener('click', function () { A.play('tap'); onPick(o[0]); }); box.appendChild(b); });
     row.appendChild(box); return row;
   }
+  /* Which pupil is in which team. Kept for each class (S.groups[classId] = { ids: [[id...], ...], names, colors }),
+     so the teams stay the same from game to game until the teacher mixes them again. New pupils join the smallest team. */
+  function classTeams(n) {
+    var p = S.classId ? GM.mon.pupils(S.classId) : []; if (!p.length) return null;
+    var byId = {}, seen = {}, saved = (S.groups || {})[S.classId], ids;
+    p.forEach(function (x) { byId[x.id] = x; });
+    if (saved && Array.isArray(saved.ids) && saved.ids.length === n) {
+      ids = saved.ids.map(function (l) { return (l || []).filter(function (id) { if (!byId[id] || seen[id]) return false; seen[id] = 1; return true; }); });
+    } else {
+      saved = null; ids = []; for (var i = 0; i < n; i++) ids.push([]);
+      U.shuffle(p).forEach(function (x, k) { ids[k % n].push(x.id); seen[x.id] = 1; });
+    }
+    p.forEach(function (x) { if (seen[x.id]) return; var k = 0; ids.forEach(function (l, i) { if (l.length < ids[k].length) k = i; }); ids[k].push(x.id); });
+    S.groups = S.groups || {}; S.groups[S.classId] = { ids: ids, names: saved && saved.names, colors: saved && saved.colors }; save();
+    return ids.map(function (l) { return l.map(function (id) { return byId[id]; }); });
+  }
+  function keepTeamIds() {
+    var g = S.groups && S.groups[S.classId]; if (!g) return;
+    g.ids = S.teams.map(function (t) { return (t.roster || []).map(function (r) { return r.id; }); }); save();
+  }
   function buildTeams() {
-    var n = S.cfg.teams, p = S.classId ? GM.mon.pupils(S.classId) : [], pool = p.length ? U.shuffle(p) : [];
+    var n = S.cfg.teams;
     if (!S.teams.length || S.teams.length !== n) {
-      var defs = GM.mon.defaults(n, S.theme); S.teams = [];
+      var defs = GM.mon.defaults(n, S.theme), ct = classTeams(n), g = ct && S.groups[S.classId]; S.teams = [];
       for (var i = 0; i < n; i++) {
-        var tRoster = [];
-        if (pool.length) {
-          for (var j = i; j < pool.length; j += n) tRoster.push(pool[j]);
-          if (!tRoster.length) tRoster.push(pool[i % pool.length]);
-        }
+        var tRoster = ct ? ct[i] : [];
         S.teams.push({
-          name: GM.teamNames[i],
-          color: GM.teamColors[i],
+          name: (g && g.names && g.names[i]) || GM.teamNames[i],
+          color: (g && g.colors && g.colors[i]) || GM.teamColors[i],
           score: 0,
           mon: tRoster.length ? tRoster[0] : defs[i],
           pi: i,
@@ -208,6 +226,55 @@
       }
     }
   }
+  /* "Who is in which team": every pupil's name under its team. Tap a name to move it to the next team. */
+  function teamLists(m) {
+    var n = S.teams.length, cols = h('div', { class: 'gm-tlists' });
+    S.teams.forEach(function (t, i) {
+      var col = h('div', { class: 'gm-tlist' }), chips = h('div', { class: 'gm-tchips' });
+      col.style.setProperty('--c', t.color);
+      col.appendChild(h('div', { class: 'gm-tlist-h' }, [h('b', { text: t.name }), h('small', { text: (t.roster || []).length + ' pupils' })]));
+      (t.roster || []).forEach(function (r) {
+        var c = h('button', { type: 'button', class: 'gm-tchip', title: 'Move to the next team', text: r.name });
+        c.addEventListener('click', function () {
+          if (n < 2) return; A.play('tap');
+          t.roster = t.roster.filter(function (x) { return x !== r; }); var to = S.teams[(i + 1) % n]; to.roster = (to.roster || []).concat([r]);
+          [t, to].forEach(function (x) { x.rosterIdx = 0; x.rIdx = 0; x.mon = x.roster[0] || GM.mon.defaults(n, S.theme)[S.teams.indexOf(x)]; });
+          keepTeamIds(); render();
+        });
+        chips.appendChild(c);
+      });
+      col.appendChild(chips); cols.appendChild(col);
+    });
+    var acts = h('div', { class: 'gm-tlist-acts' }, [btn('🔀 Mix the teams', 'sm', function () { if (S.groups) delete S.groups[S.classId]; S.teams = []; save(); render(); })]);
+    var gr = GM.mon.groups(S.classId);
+    if (gr.length >= 2 && gr.length <= 8 && (!m.teams || m.teams === gr.length)) {
+      acts.appendChild(btn('👥 Use our class groups (' + gr.length + ')', 'sm amber', function () {
+        S.cfg.teams = gr.length; S.groups = S.groups || {};
+        S.groups[S.classId] = { ids: gr.map(function (g) { return g.ids.slice(); }), names: gr.map(function (g) { return g.name; }), colors: gr.map(function (g, k) { return g.color || GM.teamColors[k]; }) };
+        S.teams = []; save(); render();
+      }));
+    }
+    return h('div', { class: 'gm-tlist-wrap' }, [h('div', { class: 'gm-tlist-title' }, [h('b', { text: '👥 Who is in which team' }), h('small', { text: 'Tap a name to move it to the next team. The teams stay the same next time.' })]), cols, acts]);
+  }
+  /* the same list during the game, from the 👥 button in the header; the pupil whose turn it is next is marked */
+  function showTeams() {
+    var old = document.getElementById('gm-tov'); if (old) { old.remove(); return; }
+    var cols = h('div', { class: 'gm-tlists' });
+    S.teams.forEach(function (t) {
+      var col = h('div', { class: 'gm-tlist' }), chips = h('div', { class: 'gm-tchips' });
+      col.style.setProperty('--c', t.color);
+      col.appendChild(h('div', { class: 'gm-tlist-h' }, [h('b', { text: t.name }), h('small', { text: S.playing ? t.score + ' points' : (t.roster || []).length + ' pupils' })]));
+      (t.roster || []).forEach(function (r) { chips.appendChild(h('span', { class: 'gm-tchip' + (r === t.mon ? ' now' : ''), text: (r === t.mon ? '▶ ' : '') + r.name })); });
+      col.appendChild(chips); cols.appendChild(col);
+    });
+    var ov = h('div', { class: 'gm-tov', id: 'gm-tov' }, [h('div', { class: 'gm-tov-card' }, [h('div', { class: 'gm-tlist-title' }, [h('b', { text: '👥 Who is in which team' }), h('small', { text: '▶ = next to answer' })]), cols, btn('Close', 'green', function () { ov.remove(); })])]);
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
+    document.body.appendChild(ov);
+  }
+  function teamsBtn() {
+    var b = document.getElementById('gm-tbtn'); if (!b) return;
+    b.style.display = S.classId && S.teams.some(function (t) { return t.roster && t.roster.length; }) && S.screen !== 'home' ? '' : 'none';
+  }
   function setup() {
     var m = GM.modes[S.modeId]; if (m.teams && S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; }
     buildTeams();
@@ -216,7 +283,8 @@
     var left = h('div', { class: 'gm-setup-l' }, [h('div', { class: 'gm-setup-pic' }, [cardArt(S.modeId, m.e)]), h('h2', { text: modeName(m) }), h('ol', { class: 'gm-how' }, (HOW[S.modeId] || [modeDesc(m)]).map(function (x) { return h('li', { text: x }); })),
       h('div', { class: 'gm-setup-set' }, [h('span', { text: '📚 ' }), h('b', { text: curSet().title }), h('small', { text: ' · ' + curSet().items.length + ' questions' })])]);
     /* right: the options */
-    var right = h('div', { class: 'gm-setup-r' });
+    var right = h('div', { class: 'gm-setup-r' }), classes = GM.mon.classes();
+    if (classes.length) right.appendChild(seg('Class', [['', 'No class']].concat(classes.map(function (c) { return [c.id, c.label]; })), S.classId, function (v) { S.classId = v; S.teams = []; save(); render(); }));
     if (!m.teams) {
       var stepper = h('div', { class: 'gm-stepper' }, [btn('−', 'round', function () { if (S.cfg.teams > 1) { S.cfg.teams--; S.teams = []; save(); render(); } }), h('b', { class: 'gm-stepn', text: String(S.cfg.teams) }), btn('+', 'round', function () { if (S.cfg.teams < 8) { S.cfg.teams++; S.teams = []; save(); render(); } })]);
       right.appendChild(h('div', { class: 'gm-opt-row' }, [h('div', { class: 'gm-opt-lab', text: 'Teams' }), stepper]));
@@ -239,19 +307,14 @@
         }
         render();
       });
-      name.addEventListener('input', function () { t.name = name.value || GM.teamNames[i]; });
+      name.addEventListener('input', function () { t.name = name.value || GM.teamNames[i]; var g = S.groups && S.groups[S.classId]; if (g) { g.names = S.teams.map(function (x) { return x.name; }); save(); } });
       f.appendChild(mon); f.appendChild(name);
-      if (t.roster && t.roster.length) {
-        var names = t.roster.slice(0, 4).map(function (r) { return String(r.owner || r.name || '').split(' ')[0]; }).join(', ');
-        if (t.roster.length > 4) names += ' +' + (t.roster.length - 4);
-        f.appendChild(h('div', { class: 'gm-roster-pill', title: 'Pupils rotating on this team', text: '👥 ' + names }));
-      }
+      if (t.roster && t.roster.length) f.appendChild(h('div', { class: 'gm-roster-pill', text: '👥 ' + t.roster.length + ' pupils' }));
       faces.appendChild(f);
     });
     right.appendChild(faces);
-    right.appendChild(h('div', { class: 'gm-hint center', text: S.classId ? 'Class pupils rotate fairly each turn! Tap a monster to cycle its starting pupil.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
-    var classes = GM.mon.classes();
-    if (classes.length) right.appendChild(seg('Monsters', [['', 'Default']].concat(classes.map(function (c) { return [c.id, c.label]; })), S.classId, function (v) { S.classId = v; S.teams = []; save(); render(); }));
+    if (S.classId && S.teams.some(function (t) { return t.roster && t.roster.length; })) right.appendChild(teamLists(m));
+    else right.appendChild(h('div', { class: 'gm-hint center', text: classes.length ? 'Choose your class above to put the pupils in teams.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
     m.fields.forEach(function (f) { var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur; right.appendChild(seg(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); })); });
     right.appendChild(seg('Timer', TIMERS, S.cfg.timer, function (v) { S.cfg.timer = v; save(); render(); }));
     if (GM.rev) {
@@ -290,7 +353,7 @@
     var m = GM.modes[S.modeId], cfg = Object.assign({}, S.cfg);
     U.teamBar(S.teams, 0);
     var ctx = { root: area, cfg: cfg, nextItem: nextItem, onEnd: function (f) { cleanups.push(f); }, end: function () { if (myGame !== gameId || !S.playing) return; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'end'; applyTheme('end'); U.podium(S.teams, startGame, goHome); } };
-    m.start(ctx);
+    m.start(ctx); teamsBtn();
   }
   function goHome() { S.playing = false; gameId++; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'home'; render(); }
 
@@ -298,6 +361,7 @@
     S.playing = false; if (S.screen !== 'play') S.remDone = false; applyTheme(); stage.innerHTML = '';
     stage.appendChild(S.screen === 'setup' ? setup() : home());
     var back = document.getElementById('gm-home'); if (back) back.style.visibility = S.screen === 'home' ? 'hidden' : 'visible';
+    var ov = document.getElementById('gm-tov'); if (ov) ov.remove(); teamsBtn();
   }
   function init() {
     stage = document.getElementById('gm-stage'); load(); if (!GM.modes[S.modeId]) S.modeId = 'board';
@@ -320,6 +384,8 @@
     var snd = document.getElementById('gm-snd'); snd.addEventListener('click', function () { A.setMuted(!A.isMuted()); snd.textContent = A.isMuted() ? '🔇' : '🔊'; if (!A.isMuted()) A.play('tap'); });
     var homeB = document.getElementById('gm-home'), armed = false;
     homeB.addEventListener('click', function () { if (S.playing && !armed) { armed = true; homeB.textContent = '⚠ Tap again to leave'; setTimeout(function () { armed = false; homeB.textContent = '☰ Games'; }, 3000); return; } armed = false; homeB.textContent = '☰ Games'; goHome(); });
+    var tb = h('button', { type: 'button', class: 'gm-btn sm ghost', id: 'gm-tbtn', title: 'Who is in which team', text: '👥 Teams' });
+    tb.addEventListener('click', function () { A.play('tap'); showTeams(); }); homeB.parentNode.insertBefore(tb, homeB);
     document.getElementById('gm-fs').addEventListener('click', function () { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { /* ignore */ } });
     render();
     try { if (GM.rev && /[?&]daily=1/.test(location.search)) GM.rev.daily(); else if (GM.rev && /[?&]exit=1/.test(location.search)) GM.rev.exitTicket(curSet().items); } catch (e) { /* ignore */ }
