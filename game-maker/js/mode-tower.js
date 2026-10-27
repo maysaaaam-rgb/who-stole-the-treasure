@@ -42,6 +42,7 @@
       });
 
       var craneT = 0;
+      var topSquash = 0;
       var activeBlock = { x: 350, y: 72, vy: 0, w: 180, color: '#38bdf8' };
       var slicedPieces = [];
 
@@ -134,7 +135,7 @@
         if (phase !== 'drop') return;
         phase = 'falling';
         activeBlock.vy = 14;
-        if (A()) A().play('block_drop');
+        if (A()) { A().play('block_drop'); A().play('whoosh_soft'); }
         renderHud();
       }
 
@@ -165,12 +166,14 @@
             w: Math.max(48, overlapW),
             color: activeBlock.color
           });
-          if (A()) { A().play('block_land'); A().play('tower_wobble'); }
+          topSquash = 1;
+          var isPerfect = Math.abs(leftA - leftB) < 12;
+          if (A()) { A().play('block_land'); A().play('wood_knock'); A().play('coin_collect'); A().play('tower_wobble'); if (isPerfect) A().play('sparkle'); }
           for (var di = 0; di < 22; di++) {
             towDust.push({ x: (overlapLeft + overlapRight) / 2 + 100 + (Math.random() - 0.5) * overlapW, y: activeBlock.y, vx: (Math.random() - 0.5) * 6, vy: -Math.random() * 4 - 1, r: 4 + Math.random() * 4, color: di % 2 ? activeBlock.color : '#fde047', life: 1 });
           }
           turnScore += 10;
-          U().floatText('+10', stage, 'good');
+          U().floatText(isPerfect ? '🌟 PERFECT! +10' : '+10', stage, 'good');
           U().addScore(turn, 10);
         } else {
           // Missed the tower: block tumbles off, no points deducted
@@ -189,6 +192,7 @@
         } else {
           // Guarantee at least +5 points for every right-answer turn
           if (turnScore < 5) {
+            if (A()) A().play('coin_collect');
             U().floatText('Nice try! +5', stage, 'good');
             U().addScore(turn, 5);
           }
@@ -203,6 +207,7 @@
         turnsDone++;
         if (turnsDone >= totalTurns) {
           phase = 'ended';
+          if (A()) A().play('cheer_kids');
           ctx.end();
           return;
         }
@@ -247,11 +252,15 @@
         g.fillStyle = 'rgba(15, 23, 42, 0.55)';
         g.fillRect(0, baseLineY + camOffsetY, W, 40);
 
+        if (topSquash > 0) topSquash = Math.max(0, topSquash - 0.08);
         // Draw stacked blocks for active team
         for (var i = 0; i < stack.length; i++) {
           var b = stack[i];
           var by = baseLineY - i * blockH + camOffsetY;
-          drawRoundedBlock(b.x + 100, by, b.w, blockH, b.color, i);
+          var isTop = (i === stack.length - 1 && topSquash > 0);
+          var bwDraw = isTop ? b.w * (1 + topSquash * 0.12) : b.w;
+          var bhDraw = isTop ? blockH * (1 - topSquash * 0.18) : blockH;
+          drawRoundedBlock(b.x + 100, by, bwDraw, bhDraw, b.color, i);
         }
 
         // Update & draw crane + active block

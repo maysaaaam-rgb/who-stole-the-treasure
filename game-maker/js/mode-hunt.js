@@ -145,7 +145,7 @@
           return;
         }
         var n = U().rand(2, 5);
-        A().play('round');
+        A().play('drum_roll_short'); A().play('round');
         info.innerHTML = '';
         info.style.setProperty('--c', t.color);
         info.appendChild(U().monFace(t.mon, 46));
@@ -191,13 +191,16 @@
             p.el.classList.add('dug');
             U().fx('smoke_puff', p.el);
             p.el.innerHTML = '';
-            var prEl = U().h('span', { class: 'gm-prize', text: p.prize.e });
+            var prEl = U().h('span', { class: 'gm-prize' }, [
+              p.prize.v === 5 ? U().art('o_star_coin', p.prize.e) : p.prize.e
+            ]);
             p.el.appendChild(prEl);
             J().squash(prEl, 1.28, 0.75, 280);
             J().sparks(p.el, p.prize.v >= 25 ? 20 : 10, [t.color, '#ffe066', '#ffffff'], 7);
-            A().play('hunt_prize');
+            A().play('hunt_prize'); A().play('coin_collect'); A().play('sparkle');
             eng.award(turn, p.prize.v, p.el, '+' + p.prize.v);
             if (p.prize.v >= 25) {
+              A().play('crowd_cheer_small');
               J().shockwave(p.el, '#ffe066', 140, 460);
               J().shake(6);
               U().confetti(14);

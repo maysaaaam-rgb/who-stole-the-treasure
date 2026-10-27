@@ -301,3 +301,44 @@ body.th-halloween .gm-lane.gm-lane3d{background:linear-gradient(#14061f,#3b1658)
 @keyframes gmBowlAskIn{from{opacity:0;transform:translate(-50%,-38%) scale(.8)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes gmBowlBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes gmBowlPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+/* Wave 3 smartboard touch-target & visual weight polish (append-only) */
+#gm-stage .gm-btn,
+#gm-stage .gm-btn.big,
+#gm-stage .gm-btn-go,
+.gm-info .gm-btn,
+.gm-jig-opt,
+.gm-ccol,
+.pen-zone {
+  min-height: 60px;
+  font-size: clamp(1.35rem, 2.2vh, 1.65rem);
+}
+.gm-plcols {
+  height: 68px;
+  top: 4px;
+}
+.gm-col {
+  height: 64px;
+  min-height: 64px;
+  font-size: 1.35rem;
+}
+.gm-prize img.gm-art {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,.35));
+}
+.gm-bowl-ask-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+.gm-bowl-ask-icons img.gm-art {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,.35));
+}
+

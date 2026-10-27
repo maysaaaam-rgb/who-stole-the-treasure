@@ -144,11 +144,12 @@
           var stEl = el.querySelector('.gm-b3-star');
           if (stEl) {
             if (owner != null && T[owner]) {
-              stEl.textContent = '⭐';
+              stEl.innerHTML = '';
+              stEl.appendChild(U().art('o_star_coin', '⭐', 'gm-b3-star-art'));
               stEl.style.background = T[owner].color;
               stEl.classList.add('owned');
             } else {
-              stEl.textContent = '';
+              stEl.innerHTML = '';
               stEl.classList.remove('owned');
             }
           }
@@ -184,7 +185,7 @@
             ])
           ]),
           U().h('div', { class: 'gm-b3-dicebox', id: 'gm-b3-dicebox' }, [
-            U().h('div', { class: 'gm-b3-die', id: 'gm-b3-die', text: '🎲' })
+            U().h('div', { class: 'gm-b3-die', id: 'gm-b3-die' }, [U().art('o_dice', '🎲', 'gm-b3-die-art')])
           ]),
           U().btn('🎲 Answer & Roll Dice!', 'huge green', handleTurnStart)
         ]);
@@ -213,7 +214,7 @@
         var dieEl = document.getElementById('gm-b3-die');
         var faces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
         var rollVal = U().rand(1, 6);
-        A().play('flip');
+        A().play('flip'); A().play('drum_roll_short');
         if (dieEl) {
           dieEl.classList.add('rolling');
           for (var k = 0; k < 7; k++) {
@@ -223,7 +224,7 @@
           dieEl.classList.remove('rolling');
           dieEl.textContent = faces[rollVal - 1] + ' ' + rollVal;
         }
-        A().play('pu_good');
+        A().play('pu_good'); A().play('wood_knock');
         info.innerHTML = '';
         info.style.setProperty('--c', T[turn].color);
         info.appendChild(U().monFace(T[turn].mon, 46));
@@ -240,13 +241,13 @@
           renderTokens(turn);
           if (pos[turn] === 0) {
             laps[turn]++;
-            A().play('pu_gold');
+            A().play('pu_gold'); A().play('coin_collect'); A().play('sparkle');
             U().confetti(20);
             U().floatText('🏁 Lap +25!', sqEls[0], 'good');
             U().addScore(turn, 25);
             if (laps[turn] >= targetLaps) {
               await U().sleep(900);
-              if (alive) ctx.end();
+              if (alive) { A().play('cheer_kids'); ctx.end(); }
               return;
             }
           }
@@ -312,6 +313,7 @@
 
       function showLandingCard(emoji, title, desc, badgeText) {
         return new Promise(function (resolve) {
+          A().play('page_slide'); A().play('coin_collect');
           center.innerHTML = '';
           var done = false;
           var tm = setTimeout(function () { if (!done) { done = true; resolve(); } }, 2200);

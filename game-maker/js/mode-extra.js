@@ -105,7 +105,7 @@
         eng.state.data.wins[win.who]++;
         var winner = eng.teams[win.who];
         var winEls = opt.highlight(boardEl, win.line);
-        A().play('line_win');
+        A().play('line_win'); A().play('sparkle'); A().play('crowd_cheer_small'); A().play('coin_collect');
         A().play('fanfare');
         if (winEls && winEls.length >= 2) {
           J().beam(winEls[0], winEls[winEls.length - 1], winner.color, 1600);
@@ -131,6 +131,7 @@
         if (!eng.state.alive) return;
         newBoard();
       } else {
+        A().play('coin_collect');
         eng.award(eng.state.turn, 5, placed.el || boardEl, '+5');
         eng.setTurn(1 - eng.state.turn);
         eng.setPhase('action');
@@ -153,7 +154,7 @@
         build: function (el, cells, pick) {
           for (var i = 0; i < 9; i++) {
             (function (k) {
-              var b = U().h('button', { type: 'button', class: 'gm-sq', 'aria-label': 'Square ' + (k + 1) });
+              var b = U().h('button', { type: 'button', class: 'gm-sq', 'aria-label': 'Square ' + (k + 1) }, [U().h('span', { class: 'gm-sq-num', text: String(k + 1) })]);
               b.addEventListener('pointerdown', function (e) {
                 e.preventDefault();
                 if (cells[k] < 0) pick(k);
@@ -167,10 +168,11 @@
           cells[idx] = who;
           var b = el.children[idx];
           var mk = markEl(team, 86);
+          b.innerHTML = '';
           b.appendChild(mk);
           b.classList.add('mine');
           b.style.setProperty('--c', team.color);
-          A().play('tap');
+          A().play('tap'); A().play('wood_knock');
           J().squash(mk, 1.24, 0.78, 300);
           J().shockwave(b, team.color, 95, 380);
           J().sparks(b, 12, [team.color, '#ffe066', '#ffffff'], 6);
@@ -231,7 +233,7 @@
           hole.appendChild(mk);
           hole.classList.add('mine');
           hole.style.setProperty('--c', team.color);
-          A().play('disc_drop');
+          A().play('disc_drop'); A().play('whoosh_soft');
           var dropPx = (r + 1) * 58;
           var dur = 180 + r * 55;
           await new Promise(function (resolve) {
@@ -242,7 +244,7 @@
               resolve();
             });
           });
-          A().play('disc_bounce');
+          A().play('disc_bounce'); A().play('wood_knock');
           J().squash(mk, 1.2, 0.82, 220);
           J().sparks(hole, 10, [team.color, '#ffe066'], 5);
           if (cells[col] >= 0 && el.children[col]) el.children[col].disabled = true;
@@ -379,6 +381,7 @@
 
         var others = eng.teams.map(function (t, i) { return i; }).filter(function (i) { return i !== holder; });
         if (others.length) {
+          A().play('crowd_cheer_small'); A().play('coin_collect');
           renderBanner('💥 BOOM on ' + eng.teams[holder].name + '! Every other team wins +10 points!');
           others.forEach(function (i) { eng.award(i, 10, seats[i], '+10 Safe!'); });
         } else {
@@ -408,7 +411,7 @@
           var toIdx = (holder + 1) % nt;
           D.holder = toIdx;
           eng.award(fromIdx, 5, seats[fromIdx], '+5 Pass!');
-          A().play('bomb_pass');
+          A().play('bomb_pass'); A().play('whoosh_soft'); A().play('coin_collect');
           if (hal) A().play('witch');
           var p0 = seatPosPct(fromIdx, 21, 20), p1 = seatPosPct(toIdx, 21, 20);
           pump.style.transition = 'none';
@@ -544,11 +547,62 @@
   };
 
   /* ================= Bowling ================= */
-  /* Real ten-pin bowling on one canvas lane in perspective.
-     The physics runs top-down in inches on a real lane (41.5 in wide, head pin 60 ft from the foul line):
-     ball and pins collide, a falling pin sweeps its whole length into its neighbours, pins bounce off the kickbacks.
-     A strike only comes from the pocket; two balls per frame, so spares are possible.
-     Each ball takes three timed taps: where to stand, aim at the arrows, power (+ an optional curve). */
+  /* Real ten-pin bowling on one full-screen canvas lane in perspective (Wave 4 / Real-3 Rebuild).
+     Preserves the exact top-down inch physics (41.5 in wide lane, head pin 60 ft from foul line,
+     pocket strikes, two balls per frame, spares, pin-to-pin sweep collisions, kickbacks).
+     Adds: full-screen bg_bowling_lane + 3D perspective lane, big 26%-height animated bowler monster
+     holding o_bowling_ball / o_pumpkin_ball, waiting team buddy monster & side crowd, camera scrolling
+     down the lane behind the ball, slow-motion pin scatter with light splinters, sweep bar & pinsetter,
+     code-drawn bowling scoreboard, glowing footprint stand marker, lane aim arrow, and 60px Stop / Quick Roll buttons. */
+
+  function bwlLoadImg(src) {
+    var im = new Image();
+    im.src = src;
+    return im;
+  }
+  function bwlImgReady(im) {
+    return !!(im && im.complete && im.naturalWidth > 0);
+  }
+  function bwlMonImage(m) {
+    var img = new Image();
+    var svg = (GM.mon && GM.mon.svg) ? GM.mon.svg(m, 260) : '';
+    if (!svg || svg.indexOf('<svg') < 0) return null;
+    if (svg.indexOf('xmlns=') < 0) svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    return img;
+  }
+  function bwlOutlinedText(g, txt, x, y, size, fill, stroke, align) {
+    g.save();
+    g.font = '900 ' + Math.round(size) + 'px Fredoka, "Baloo 2", system-ui, sans-serif';
+    g.textAlign = align || 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = Math.max(4, Math.round(size * 0.22));
+    g.strokeStyle = stroke || '#0f172a';
+    g.strokeText(txt, x, y);
+    g.fillStyle = fill || '#ffffff';
+    g.fillText(txt, x, y);
+    g.restore();
+  }
+  function bwlFlyScoreToPod(screenPt, teamIdx, pts) {
+    var pod = document.querySelector('#gm-team-' + teamIdx + ' .gm-score') || document.getElementById('gm-team-' + teamIdx);
+    var layer = document.getElementById('gm-fx');
+    if (!pod || !layer || !screenPt) return;
+    var r = pod.getBoundingClientRect();
+    var orb = GM.u.h('div', { class: 'gm-score-orb', text: '+' + pts });
+    orb.style.left = Math.round(screenPt.x) + 'px';
+    orb.style.top = Math.round(screenPt.y) + 'px';
+    layer.appendChild(orb);
+    setTimeout(function () {
+      orb.style.left = Math.round(r.left + r.width / 2) + 'px';
+      orb.style.top = Math.round(r.top + r.height / 2) + 'px';
+      orb.style.transform = 'translate(-50%, -50%) scale(0.75)';
+    }, 24);
+    setTimeout(function () {
+      if (orb.parentNode) orb.parentNode.removeChild(orb);
+    }, 640);
+  }
+
   GM.modes.bowling = {
     id: 'bowling', name: 'Pumpkin Bowling', nameClassic: 'Bowling', e: '🎳',
     desc: 'Answer right, then stand, aim and roll. Hit the pocket for a strike, and pick up your spare with the second ball!',
@@ -559,40 +613,58 @@
     ],
     start: function (ctx) {
       var st = GM.state, hal = st.theme === 'halloween';
-      var LV = { easy: { s: 0.75, green: [0.6, 0.92], noise: 0.55 }, normal: { s: 1.15, green: [0.7, 0.88], noise: 1 }, hard: { s: 1.6, green: [0.76, 0.86], noise: 1.4 } }[ctx.cfg.level] || null;
-      if (!LV) LV = { s: 1.15, green: [0.7, 0.88], noise: 1 };
+      var LV = {
+        easy:   { s: 0.75, green: [0.60, 0.92], noise: 0.55 },
+        normal: { s: 1.15, green: [0.70, 0.88], noise: 1.00 },
+        hard:   { s: 1.60, green: [0.76, 0.86], noise: 1.40 }
+      }[ctx.cfg.level] || { s: 1.15, green: [0.70, 0.88], noise: 1.00 };
+
       var totalFrames = (+ctx.cfg.frames || 3) * st.teams.length;
       var eng = E().createSession(ctx, {
         maxRounds: totalFrames,
-        data: { stage: 'idle', pos: 0, posDir: 1, pow: 0, powDir: 1, eff: 0, effDir: 1, ball: 1 }
+        data: { stage: 'idle', pos: 0, posDir: 1, pow: 0.78, powDir: 1, eff: 0, effDir: 1, ball: 1 }
       });
+
+      try { A().musicStart(hal ? 'halloween' : 'sports'); } catch (e) { /* ignore */ }
+
       var rootEl = ctx.root;
       rootEl.innerHTML = '';
 
-      var info = U().h('div', { class: 'gm-info' });
-      var lane = U().h('div', { class: 'gm-lane gm-lane3d', title: 'Tap the lane (or press Space) to stop each bar' });
-      var cv = U().h('canvas', { class: 'gm-lane-cv' });
+      var lane = U().h('div', { class: 'gm-real3-scene gm-lane gm-lane3d', title: 'Tap the lane (or press Space) to lock each step' });
+      var cv = U().h('canvas', { class: 'gm-real3-cv gm-lane-cv' });
       var g = cv.getContext('2d');
-      var deck = U().h('div', { class: 'gm-bowl-deck' }); // where coins and sparks start
-      var card = U().h('div', { class: 'gm-bowl-card' });
-      var askCard = U().h('div', { class: 'gm-bowl-ask' }); // the big "answer to bowl" card over the lane
-      var res = U().h('div', { class: 'gm-bres' });
+      var deck = U().h('div', { class: 'gm-bowl-deck' });
+      var banner = U().h('div', { class: 'gm-real3-banner' });
+      var dock = U().h('div', { class: 'gm-real3-dock' });
       lane.appendChild(cv);
       lane.appendChild(deck);
-      lane.appendChild(askCard);
-      var mid = U().h('div', { class: 'gm-bowl-mid' }, [card, lane]);
-      rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [info, mid, res]));
+      rootEl.appendChild(U().h('div', { class: 'gm-boardwrap' }, [lane, banner, dock]));
 
-      var W = 800, H = 480;
+      /* Preload art assets */
+      var artLaneBg      = bwlLoadImg('art/bg_bowling_lane.webp');
+      var artLaneFallback = bwlLoadImg('art/bg_classic_bowling.webp');
+      var artBallClassic = bwlLoadImg('art/o_bowling_ball.webp');
+      var artBallHal     = bwlLoadImg('art/o_pumpkin_ball.webp');
+      var artPinClassic  = bwlLoadImg('art/o_bowling_pin.webp');
+      var artPinHal      = bwlLoadImg('art/o_ghost_pin.webp');
+      var artLantern     = bwlLoadImg('art/o_candle_lantern.webp');
+      var monImgs        = st.teams.map(function (t) { return bwlMonImage(t.mon); });
+
+      var W = 1366, H = 768;
+      var dpr = Math.min(1.5, root.devicePixelRatio || 1);
       function fit() {
-        var mw = mid.clientWidth, mh = mid.clientHeight;
-        if (mw > 40 && mh > 40) { var lw = Math.min(mw, Math.round(mh * 1.15)) + 'px'; if (lane.style.width !== lw) lane.style.width = lw; }
         var r = lane.getBoundingClientRect();
-        if (r.width < 40 || r.height < 40) return;
-        var dpr = Math.min(2, root.devicePixelRatio || 1);
-        W = r.width; H = r.height;
+        var rw = r.width || root.innerWidth || 1366;
+        var rh = r.height || root.innerHeight || 768;
+        if (rw < 40 || rh < 40) return;
+        dpr = Math.min(1.5, root.devicePixelRatio || 1);
+        W = rw;
+        H = rh;
         var cw = Math.round(W * dpr), ch = Math.round(H * dpr);
-        if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+        if (cv.width !== cw || cv.height !== ch) {
+          cv.width = cw;
+          cv.height = ch;
+        }
         g.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
       }
       fit();
@@ -600,131 +672,301 @@
       if (root.ResizeObserver) {
         var ro = new root.ResizeObserver(fit);
         ro.observe(lane);
-        ro.observe(mid);
         eng.on('end', function () { try { ro.disconnect(); } catch (e) { /* ignore */ } });
       }
 
-      /* ---------- drawing space: u across (-1..1 = the wood), v down the lane, z up; s(v) = 1 / (1 + K v) ---------- */
-      var K = 2.3;
+      /* Camera state: camV scrolls down the lane behind the rolling ball (0 .. 0.44) */
+      var cam = { v: 0, tv: 0, u: 0, tu: 0, zoom: 1, tzoom: 1, shakeT: 0, shakeMag: 0 };
+      var bowlerAnim = { state: 'idle', t: 0 }; /* 'idle' | 'step' | 'windup' | 'release' | 'watch' | 'celebrate' | 'shrug' | 'finale' */
+      var sweepAnim = { active: false, t: 0, mode: 'sweep' }; /* sweep bar & pinsetter */
+      var lightSplinters = [];
+      var crowdCheerT = 0;
+
+      function addSplinter(sp) {
+        if (lightSplinters.length >= 150) lightSplinters.shift();
+        lightSplinters.push(sp);
+      }
+      function burstPinLight(px, py, count, isStrike) {
+        var cols = isStrike
+          ? ['#fde047', '#38bdf8', '#f43f5e', '#4ade80', '#ffffff', '#a855f7']
+          : ['#fde047', '#38bdf8', '#ffffff', '#fb923c'];
+        for (var i = 0; i < count; i++) {
+          var a = Math.random() * Math.PI * 2;
+          var s = (isStrike ? 140 : 90) + Math.random() * 280;
+          addSplinter({
+            x: px, y: py,
+            vx: Math.cos(a) * s,
+            vy: Math.sin(a) * s - 80,
+            rot: a,
+            vrot: (Math.random() - 0.5) * 10,
+            len: (isStrike ? 16 : 11) + Math.random() * 14,
+            r: 4 + Math.random() * 5,
+            c: cols[i % cols.length],
+            t: 0,
+            life: 0.55 + Math.random() * 0.45
+          });
+        }
+      }
+      function triggerShake(mag, dur) {
+        cam.shakeMag = Math.min(6, mag || 4);
+        cam.shakeT = Math.min(0.28, dur || 0.22);
+      }
+
+      /* ---------- drawing space: u across (-1..1 = the wood), v down the lane, z up ---------- */
+      var K = 2.25;
       function geo() {
-        var y1 = H * 1.02, yt = H * 0.3;
-        return { y1: y1, yh: (yt * (1 + K) - y1) / K, half: Math.min(W * 0.3, H * 0.46), cx: W / 2 };
+        var y1 = H * 0.96, yt = H * 0.28;
+        return {
+          y1: y1,
+          yh: (yt * (1 + K) - y1) / K,
+          half: Math.min(W * 0.34, H * 0.52),
+          cx: W * 0.5 - cam.u * W * 0.12
+        };
       }
       function P(u, v, z) {
-        var G = geo(), s = 1 / (1 + K * v);
-        return { x: G.cx + u * G.half * s, y: G.yh + (G.y1 - G.yh) * s - (z || 0) * G.half * s, k: G.half * s };
+        var G = geo();
+        var vRel = Math.max(-0.28, v - cam.v);
+        var s = (1 / (1 + K * vRel)) * cam.zoom;
+        return {
+          x: G.cx + u * G.half * s,
+          y: G.yh + (G.y1 - G.yh) * s - (z || 0) * G.half * s,
+          k: G.half * s
+        };
       }
       function quad(u0, u1, v0, v1) {
         var a = P(u0, v0), b = P(u1, v0), c = P(u1, v1), d = P(u0, v1);
-        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.lineTo(c.x, c.y); g.lineTo(d.x, d.y); g.closePath();
+        g.beginPath();
+        g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.lineTo(c.x, c.y); g.lineTo(d.x, d.y);
+        g.closePath();
       }
       function rr(x, y, w, h, r) {
-        g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
-        g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+        g.beginPath();
+        g.moveTo(x + r, y);
+        g.arcTo(x + w, y, x + w, y + h, r);
+        g.arcTo(x + w, y + h, x, y + h, r);
+        g.arcTo(x, y + h, x, y, r);
+        g.arcTo(x, y, x + w, y, r);
+        g.closePath();
       }
 
-      /* ---------- physics space, in inches ---------- */
+      /* ---------- physics space, in inches (UNTOUCHED real lane constants) ---------- */
       var LW = 20.75, KICK = 25.3, HEAD = 720, PITY = 800, PIN_R = 2.4, BALL_R = 4.3, MB = 6.8, MP = 1.6, PIN_LEN = 14;
       function U_(x) { return x / LW; }
-      function V_(y) { return y < 690 ? y * (0.74 / 690) : 0.74 + (y - 690) * 0.0033; } // the pin deck is drawn a little deeper
+      function V_(y) { return y < 690 ? y * (0.74 / 690) : 0.74 + (y - 690) * 0.0033; }
       var END = V_(HEAD + 52), PIT = V_(PITY + 25);
 
       var C = hal
-        ? { wall0: '#3b1658', wall1: '#14061f', wood0: '#e7b77b', wood1: '#b9824a', stripe: '#8b3fd1', bulb: '#ff9a3c' }
-        : { wall0: '#24407a', wall1: '#0d1733', wood0: '#f7cf93', wood1: '#c98e4f', stripe: '#e23b4a', bulb: '#ffe066' };
+        ? { wall0: '#3b1658', wall1: '#120524', wood0: '#f59e0b', wood1: '#9a3412', stripe: '#a855f7', bulb: '#fb923c' }
+        : { wall0: '#1e3a8a', wall1: '#091128', wood0: '#fde68a', wood1: '#d97706', stripe: '#ef4444', bulb: '#fde047' };
 
-      var LANE_OFF = 3.2; // the next lane: wood + two gutters + the capping between lanes, in lane half-widths
-      function laneName() { var t = eng.activeTeam(); return (t && t.name) || 'Lane'; }
+      var LANE_OFF = 3.2;
+      function laneName() {
+        var t = eng.activeTeam();
+        return (t && t.name) || 'Lane 1';
+      }
+
+      function updateBanner(title, sub, compact) {
+        var t = eng.activeTeam() || st.teams[0];
+        banner.style.setProperty('--c', (t && t.color) || '#38bdf8');
+        banner.innerHTML = '';
+        if (t && t.mon) banner.appendChild(U().monFace(t.mon, 42));
+        banner.appendChild(U().h('b', { text: title }));
+        if (sub) banner.appendChild(U().h('span', { class: 'gm-real3-sub', text: sub }));
+        banner.className = 'gm-real3-banner in' + (compact ? ' compact' : '');
+      }
+
       function drawLane(now) {
         var far = P(0, PIT);
-        var wg = g.createLinearGradient(0, 0, 0, far.y);
-        wg.addColorStop(0, C.wall1); wg.addColorStop(1, C.wall0);
-        g.fillStyle = wg; g.fillRect(0, 0, W, far.y + 1);
-        g.fillStyle = C.wall1; g.fillRect(0, far.y, W, H - far.y);
-        for (var L = -3; L <= 3; L++) laneAt(L, now);
-        /* masking unit over the pins, with a sign for every lane; ours shows the team */
-        var my = P(0, PIT, 1.3).y, mh = Math.max(16, far.k * 0.42);
-        var mg = g.createLinearGradient(0, my - mh, 0, my);
-        mg.addColorStop(0, '#0a0e1c'); mg.addColorStop(1, '#222b4a');
-        g.fillStyle = mg; g.fillRect(0, my - mh, W, mh);
-        g.fillStyle = C.stripe; g.fillRect(0, my - 3, W, 3);
-        for (L = 0; L <= 0; L++) {
-          var c = P(0, PIT, 1.3), ph = mh * 0.6, txt = laneName();
-          g.font = '800 ' + Math.round(ph * 0.66) + 'px Fredoka, system-ui, sans-serif';
-          var pw = Math.max(far.k * 0.9, g.measureText(txt).width + ph);
-          if (c.x + pw < 0 || c.x - pw > W) continue;
-          g.fillStyle = L === 0 ? '#ffffff' : 'rgba(255,255,255,.16)';
-          rr(c.x - pw / 2, my - mh * 0.8, pw, ph, ph * 0.3); g.fill();
-          g.fillStyle = L === 0 ? '#1f2a44' : 'rgba(255,255,255,.6)';
-          g.textAlign = 'center'; g.textBaseline = 'middle';
-          g.fillText(txt, c.x, my - mh * 0.8 + ph / 2 + 1);
-          if (L === 0) {
-            for (var b = 0; b < 6; b++) {
-              var on = (Math.floor(now / 260) + b) % 3 !== 0;
-              g.fillStyle = on ? C.bulb : 'rgba(255,255,255,.2)';
-              [-1, 1].forEach(function (sd) { g.beginPath(); g.arc(c.x + sd * (pw / 2 + 8 + b * 9), my - mh * 0.8 + ph / 2, 2.6, 0, 7); g.fill(); });
+        /* 0. Background panorama image (bg_bowling_lane.webp) with parallax zoom */
+        var bgIm = bwlImgReady(artLaneBg) ? artLaneBg : artLaneFallback;
+        if (bwlImgReady(bgIm)) {
+          g.save();
+          var bgScale = 1 + cam.v * 0.55;
+          var bw = W * bgScale, bh = H * bgScale;
+          var bx = (W - bw) * 0.5 - cam.u * 45;
+          var by = (H - bh) * 0.35;
+          g.drawImage(bgIm, bx, by, bw, bh);
+          /* Theme atmosphere tint */
+          if (hal) {
+            var halTint = g.createLinearGradient(0, 0, 0, H);
+            halTint.addColorStop(0, 'rgba(36, 10, 70, 0.72)');
+            halTint.addColorStop(0.5, 'rgba(59, 22, 88, 0.55)');
+            halTint.addColorStop(1, 'rgba(20, 6, 38, 0.65)');
+            g.fillStyle = halTint;
+            g.fillRect(0, 0, W, H);
+          } else {
+            g.fillStyle = 'rgba(15, 23, 42, 0.22)';
+            g.fillRect(0, 0, W, H);
+          }
+          g.restore();
+        } else {
+          var wg = g.createLinearGradient(0, 0, 0, far.y);
+          wg.addColorStop(0, C.wall1);
+          wg.addColorStop(1, C.wall0);
+          g.fillStyle = wg;
+          g.fillRect(0, 0, W, far.y + 1);
+          g.fillStyle = C.wall1;
+          g.fillRect(0, far.y, W, H - far.y);
+        }
+
+        /* Draw neighboring lanes & main center lane (L = 0) */
+        for (var L = -2; L <= 2; L++) laneAt(L, now);
+
+        /* Side wall sconces / Halloween glowing lanterns in parallax (0.65x) */
+        [-1, 1].forEach(function (side) {
+          for (var sc = 0; sc < 3; sc++) {
+            var sv = 0.14 + sc * 0.22;
+            var sp = P(side * 1.55, sv, 0.55);
+            if (sp.x < -60 || sp.x > W + 60) continue;
+            var glowR = Math.max(18, sp.k * 0.22);
+            var lg = g.createRadialGradient(sp.x, sp.y, 2, sp.x, sp.y, glowR);
+            lg.addColorStop(0, hal ? 'rgba(251, 146, 60, 0.85)' : 'rgba(254, 240, 138, 0.75)');
+            lg.addColorStop(1, 'rgba(251, 146, 60, 0)');
+            g.fillStyle = lg;
+            g.beginPath(); g.arc(sp.x, sp.y, glowR, 0, Math.PI * 2); g.fill();
+            if (hal && bwlImgReady(artLantern)) {
+              var lw = Math.max(22, sp.k * 0.16);
+              g.drawImage(artLantern, sp.x - lw / 2, sp.y - lw * 0.6, lw, lw * 1.2);
             }
           }
+        });
+
+        /* Masking unit over the pins with neon team sign & chasing bulbs */
+        var my = P(0, PIT, 1.32).y, mh = Math.max(24, far.k * 0.46);
+        var c = P(0, PIT, 1.32), ph = mh * 0.68, txt = laneName();
+        g.font = '900 ' + Math.round(Math.max(20, ph * 0.66)) + 'px Fredoka, system-ui, sans-serif';
+        var pw = Math.max(far.k * 1.15, g.measureText(txt).width + ph * 1.3);
+
+        var mg = g.createLinearGradient(0, my - mh, 0, my);
+        mg.addColorStop(0, '#090d1a');
+        mg.addColorStop(1, hal ? '#2e1065' : '#1e293b');
+        g.fillStyle = mg;
+        rr(c.x - pw * 0.65, my - mh * 0.92, pw * 1.3, mh * 0.95, 14);
+        g.fill();
+        g.strokeStyle = C.stripe;
+        g.lineWidth = 3;
+        g.stroke();
+
+        g.fillStyle = '#ffffff';
+        rr(c.x - pw / 2, my - mh * 0.82, pw, ph, ph * 0.32);
+        g.fill();
+        bwlOutlinedText(g, txt, c.x, my - mh * 0.82 + ph / 2 + 1, Math.max(20, ph * 0.62), '#fde047', '#0f172a');
+
+        for (var b = 0; b < 6; b++) {
+          var on = (Math.floor(now / 240) + b) % 3 !== 0;
+          g.fillStyle = on ? C.bulb : 'rgba(255,255,255,0.22)';
+          [-1, 1].forEach(function (sd) {
+            g.beginPath();
+            g.arc(c.x + sd * (pw / 2 + 10 + b * 9), my - mh * 0.82 + ph / 2, 3.2, 0, Math.PI * 2);
+            g.fill();
+          });
         }
       }
+
       function laneAt(L, now) {
         var off = L * LANE_OFF, main = L === 0;
         function q(u0, u1, v0, v1) { quad(off + u0, off + u1, v0, v1); }
-        if (P(off - 1.4, 0).x > W + 40 && P(off - 1.4, PIT).x > W) return;
-        if (P(off + 1.4, 0).x < -40 && P(off + 1.4, PIT).x < 0) return;
-        /* capping between this lane and the next one, with a stripe */
-        q(1.22, LANE_OFF - 1.22, -0.3, PIT); g.fillStyle = '#20263a'; g.fill();
-        q(LANE_OFF / 2 - 0.1, LANE_OFF / 2 + 0.1, -0.3, PIT); g.fillStyle = C.stripe; g.fill();
-        q(1.22, 1.32, -0.3, PIT); g.fillStyle = 'rgba(255,255,255,.18)'; g.fill();
-        q(LANE_OFF - 1.32, LANE_OFF - 1.22, -0.3, PIT); g.fill();
-        q(-1.25, 1.25, END, PIT); g.fillStyle = '#05070f'; g.fill();
+        if (P(off - 1.4, 0).x > W + 60 && P(off - 1.4, PIT).x > W) return;
+        if (P(off + 1.4, 0).x < -60 && P(off + 1.4, PIT).x < 0) return;
+
+        /* Capping between lanes with glowing neon trim */
+        q(1.22, LANE_OFF - 1.22, -0.3, PIT);
+        g.fillStyle = hal ? '#1e0b3b' : '#1e293b';
+        g.fill();
+        q(LANE_OFF / 2 - 0.09, LANE_OFF / 2 + 0.09, -0.3, PIT);
+        g.fillStyle = C.stripe;
+        g.fill();
+
+        /* Dark pin pit at far end */
+        q(-1.25, 1.25, END, PIT);
+        g.fillStyle = '#05070f';
+        g.fill();
+
+        /* Side gutters */
         [[-1.22, -1], [1, 1.22]].forEach(function (sd) {
           q(sd[0], sd[1], -0.3, END);
           var gg = g.createLinearGradient(P(off + sd[0], 0).x, 0, P(off + sd[1], 0).x, 0);
-          gg.addColorStop(0, '#2b3448'); gg.addColorStop(0.5, '#6a7590'); gg.addColorStop(1, '#2b3448');
-          g.fillStyle = gg; g.fill();
+          gg.addColorStop(0, '#1e293b');
+          gg.addColorStop(0.5, hal ? '#6b21a8' : '#64748b');
+          gg.addColorStop(1, '#1e293b');
+          g.fillStyle = gg;
+          g.fill();
         });
+
+        /* Polished wooden lane surface */
         q(-1, 1, -0.3, END);
         var wd = g.createLinearGradient(0, H, 0, P(0, END).y);
-        wd.addColorStop(0, C.wood0); wd.addColorStop(1, C.wood1);
-        g.fillStyle = wd; g.fill();
+        wd.addColorStop(0, C.wood0);
+        wd.addColorStop(1, C.wood1);
+        g.fillStyle = wd;
+        g.globalAlpha = main ? 0.92 : 0.45;
+        g.fill();
+        g.globalAlpha = 1;
+
         var nb = main ? 20 : 8;
         for (var i = 0; i < nb; i++) {
           q(-1 + i * 2 / nb, -1 + (i + 1) * 2 / nb, -0.3, END);
-          g.fillStyle = i % 2 ? 'rgba(255,255,255,.07)' : 'rgba(120,60,0,.06)'; g.fill();
-          g.strokeStyle = 'rgba(110,60,15,.14)'; g.lineWidth = 1; g.stroke();
+          g.fillStyle = i % 2 ? 'rgba(255,255,255,0.08)' : 'rgba(120,60,0,0.07)';
+          g.fill();
         }
-        /* glossy lane: a soft reflection of the lights down the middle */
-        q(-0.5, 0.5, -0.3, END);
-        var sh2 = g.createLinearGradient(P(off - 0.5, 0).x, 0, P(off + 0.5, 0).x, 0);
-        sh2.addColorStop(0, 'rgba(255,255,255,0)'); sh2.addColorStop(0.5, 'rgba(255,255,255,.26)'); sh2.addColorStop(1, 'rgba(255,255,255,0)');
-        g.fillStyle = sh2; g.fill();
-        q(-1, 1, V_(HEAD - 12), END); g.fillStyle = 'rgba(255,240,210,.18)'; g.fill();
-        g.fillStyle = 'rgba(110,50,10,.45)';
+
+        /* Glossy center reflection */
+        q(-0.55, 0.55, -0.3, END);
+        var sh2 = g.createLinearGradient(P(off - 0.55, 0).x, 0, P(off + 0.55, 0).x, 0);
+        sh2.addColorStop(0, 'rgba(255,255,255,0)');
+        sh2.addColorStop(0.5, hal ? 'rgba(251, 146, 60, 0.28)' : 'rgba(255,255,255,0.32)');
+        sh2.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = sh2;
+        g.fill();
+
+        /* Glowing pin deck */
+        q(-1, 1, V_(HEAD - 16), END);
+        g.fillStyle = hal ? 'rgba(251, 146, 60, 0.26)' : 'rgba(255, 248, 220, 0.25)';
+        g.fill();
+
+        /* Arrows and approach dots on the lane */
+        g.fillStyle = hal ? 'rgba(88, 28, 135, 0.65)' : 'rgba(110, 50, 10, 0.55)';
         for (var a = -3; a <= 3; a++) {
-          var ay = 180 + Math.abs(a) * 12, ax = a * 5.2 + off * LW, t = P(U_(ax), V_(ay + 14)), l = P(U_(ax - 1.1), V_(ay)), r2 = P(U_(ax + 1.1), V_(ay));
+          var ay = 180 + Math.abs(a) * 12, ax = a * 5.2 + off * LW;
+          var t = P(U_(ax), V_(ay + 16)), l = P(U_(ax - 1.2), V_(ay)), r2 = P(U_(ax + 1.2), V_(ay));
           g.beginPath(); g.moveTo(t.x, t.y); g.lineTo(l.x, l.y); g.lineTo(r2.x, r2.y); g.closePath(); g.fill();
           var d = P(U_(ax), V_(84));
-          g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.025 + 1, d.k * 0.012 + 1, 0, 0, 7); g.fill();
+          g.beginPath(); g.ellipse(d.x, d.y, d.k * 0.026 + 1.2, d.k * 0.013 + 1.2, 0, 0, Math.PI * 2); g.fill();
         }
-        q(-1.22, 1.22, -0.004, 0.004); g.fillStyle = '#1f2a44'; g.fill();
-        if (!main) { q(-1.3, LANE_OFF - 1.3, -0.3, PIT); g.fillStyle = 'rgba(6,9,22,.62)'; g.fill(); }
+
+        /* Foul line */
+        q(-1.22, 1.22, -0.005, 0.005);
+        g.fillStyle = hal ? '#a855f7' : '#0f172a';
+        g.fill();
+
+        if (!main) {
+          q(-1.3, LANE_OFF - 1.3, -0.3, PIT);
+          g.fillStyle = 'rgba(6, 9, 22, 0.55)';
+          g.fill();
+        }
       }
 
-      /* ---------- pins ---------- */
+      /* ---------- pins (uses o_bowling_pin / o_ghost_pin with 3D perspective & reflections) ---------- */
       var SPOTS = [[0, 720], [-6, 730.4], [6, 730.4], [-12, 740.8], [0, 740.8], [12, 740.8], [-18, 751.2], [-6, 751.2], [6, 751.2], [18, 751.2]];
       var pins = SPOTS.map(function (s, i) { return { id: i, sx: s[0], sy: s[1] }; });
       function rackPin(p) {
-        p.x = p.sx + (Math.random() - 0.5) * 0.3; p.y = p.sy + (Math.random() - 0.5) * 0.3;
-        p.vx = 0; p.vy = 0; p.z = 0; p.vz = 0; p.down = false; p.fall = 0; p.dx = 0; p.dy = 1; p.alpha = 1; p.gone = false; p.drop = 1; p.rollDown = false; p.sweep = false;
+        p.x = p.sx + (Math.random() - 0.5) * 0.3;
+        p.y = p.sy + (Math.random() - 0.5) * 0.3;
+        p.vx = 0; p.vy = 0; p.z = 0; p.vz = 0;
+        p.down = false; p.fall = 0; p.dx = 0; p.dy = 1;
+        p.alpha = 1; p.gone = false; p.drop = 1; p.rollDown = false; p.sweep = false;
       }
       function topple(p) {
         if (p.down) return;
         p.down = true; p.fall = 0; p.rollDown = true;
         var sp = Math.hypot(p.vx, p.vy);
-        p.vz = Math.min(110, sp * 0.2); // a hard hit throws the pin up
-        if (sp > 1) { p.dx = p.vx / sp; p.dy = p.vy / sp; } else { var a = Math.random() * 6.28; p.dx = Math.cos(a); p.dy = Math.sin(a); }
+        p.vz = Math.min(115, sp * 0.22);
+        if (sp > 1) { p.dx = p.vx / sp; p.dy = p.vy / sp; }
+        else { var a = Math.random() * 6.28; p.dx = Math.cos(a); p.dy = Math.sin(a); }
+        var fp = P(U_(p.x), V_(p.y));
+        burstPinLight(fp.x, fp.y - fp.k * 0.35, 8, false);
         A().play('pin_hit');
+        A().play('wood_knock');
       }
       function pinShape(h) {
         g.beginPath(); g.moveTo(-0.09 * h, 0);
@@ -736,126 +978,422 @@
         g.bezierCurveTo(0.2 * h, -0.4 * h, 0.21 * h, -0.2 * h, 0.09 * h, 0);
         g.closePath();
       }
-      function drawPin(p) {
+      function drawPin(p, now) {
         if (p.gone || p.alpha <= 0) return;
-        var base = P(U_(p.x), V_(p.y), (p.drop > 0 ? p.drop * 0.8 : 0) + p.z / LW), floor = P(U_(p.x), V_(p.y)), h = base.k * 0.95;
-        /* upright vector, or the pin lying along its fall direction (seen in perspective) */
+        var base = P(U_(p.x), V_(p.y), (p.drop > 0 ? p.drop * 0.8 : 0) + p.z / LW);
+        var floor = P(U_(p.x), V_(p.y));
+        var h = base.k * 1.05;
         var e = p.down ? Math.min(1, p.fall) : 0;
         e = e * e * (3 - 2 * e);
         var tip = P(U_(p.x + p.dx * 15), V_(p.y + p.dy * 15), 0.12);
         var lx = tip.x - floor.x, ly = tip.y - floor.y;
         var vx = lx * e, vy = -h * (1 - e) + ly * e, len = Math.max(4, Math.hypot(vx, vy));
+
         g.save();
         g.globalAlpha = Math.max(0, p.alpha);
-        g.fillStyle = 'rgba(40,20,0,.28)';
-        g.beginPath(); g.ellipse(floor.x + vx * 0.4 * e, floor.y + vy * 0.4 * e, h * 0.17 + Math.abs(vx) * 0.4 * e, h * 0.05 + Math.abs(vy) * 0.25 * e, 0, 0, 7); g.fill();
-        if (e < 0.05 && p.z < 0.5 && p.id != null) { // reflection on the polished lane (our lane only)
-          g.save(); g.translate(floor.x, floor.y); g.scale(1, -0.45); pinShape(h); g.fillStyle = 'rgba(255,255,255,.1)'; g.fill(); g.restore();
+        /* Contact shadow on lane */
+        var shRatio = Math.max(0.25, 1 - p.z / 60);
+        g.fillStyle = 'rgba(15, 23, 42, ' + (0.34 * shRatio).toFixed(2) + ')';
+        g.beginPath();
+        g.ellipse(floor.x + vx * 0.4 * e, floor.y + vy * 0.4 * e, (h * 0.2 + Math.abs(vx) * 0.4 * e) * shRatio, (h * 0.06 + Math.abs(vy) * 0.25 * e) * shRatio, 0, 0, Math.PI * 2);
+        g.fill();
+
+        /* Subtle reflection on polished wood */
+        if (e < 0.05 && p.z < 0.5) {
+          g.save();
+          g.translate(floor.x, floor.y);
+          g.scale(1, -0.38);
+          pinShape(h);
+          g.fillStyle = hal ? 'rgba(216, 180, 254, 0.12)' : 'rgba(255, 255, 255, 0.14)';
+          g.fill();
+          g.restore();
         }
+
+        var wobbleRot = (!p.down && Math.hypot(p.vx, p.vy) > 0.2) ? Math.sin(now / 45 + p.id) * 0.12 : 0;
         g.translate(base.x, base.y);
-        g.rotate(Math.atan2(vx, -vy));
+        g.rotate(Math.atan2(vx, -vy) + wobbleRot);
         g.scale(1, len / h);
-        pinShape(h);
-        var pg = g.createLinearGradient(-0.2 * h, 0, 0.2 * h, 0);
-        pg.addColorStop(0, '#b4bccd'); pg.addColorStop(0.38, '#ffffff'); pg.addColorStop(0.62, '#f1f3f8'); pg.addColorStop(1, '#a3adc2');
-        g.fillStyle = pg; g.fill();
-        g.save(); g.clip();
-        g.fillStyle = C.stripe;
-        g.fillRect(-h, -0.705 * h, 2 * h, 0.045 * h);
-        g.fillRect(-h, -0.635 * h, 2 * h, 0.035 * h);
-        g.fillStyle = 'rgba(255,255,255,.75)';
-        g.beginPath(); g.ellipse(-0.07 * h, -0.33 * h, 0.03 * h, 0.12 * h, 0.15, 0, 7); g.fill();
-        g.restore();
-        g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.2, h * 0.028); g.lineJoin = 'round';
-        pinShape(h); g.stroke();
+
+        var pinArt = hal ? (bwlImgReady(artPinHal) ? artPinHal : artPinClassic) : artPinClassic;
+        if (bwlImgReady(pinArt)) {
+          var pw = h * 0.56;
+          g.drawImage(pinArt, -pw / 2, -h * 1.02, pw, h * 1.06);
+        } else {
+          pinShape(h);
+          var pg = g.createLinearGradient(-0.2 * h, 0, 0.2 * h, 0);
+          pg.addColorStop(0, '#b4bccd'); pg.addColorStop(0.38, '#ffffff'); pg.addColorStop(0.62, '#f1f3f8'); pg.addColorStop(1, '#a3adc2');
+          g.fillStyle = pg; g.fill();
+          g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.2, h * 0.028);
+          pinShape(h); g.stroke();
+        }
         g.restore();
       }
 
-      /* ---------- ball ---------- */
+      /* ---------- Sweep Bar & Pinsetter Animation ---------- */
+      function drawSweepBar() {
+        if (!sweepAnim.active) return;
+        var t = sweepAnim.t;
+        /* Lower down (0..0.35), sweep back (0.35..0.85), lift up (0.85..1.0) */
+        var sv = t < 0.35 ? V_(HEAD - 10) : (t < 0.85 ? V_(HEAD - 10 + (t - 0.35) / 0.5 * 85) : V_(PITY));
+        var sz = t < 0.35 ? (1 - t / 0.35) * 0.75 : (t > 0.85 ? (t - 0.85) / 0.15 * 0.8 : 0.06);
+        var leftP = P(-1.08, sv, sz), rightP = P(1.08, sv, sz);
+        var barH = Math.max(8, leftP.k * 0.11);
+        g.save();
+        g.fillStyle = hal ? '#a855f7' : '#38bdf8';
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 3;
+        rr(leftP.x, leftP.y - barH / 2, rightP.x - leftP.x, barH, barH / 2);
+        g.fill();
+        g.stroke();
+        g.restore();
+      }
+
+      /* ---------- Ball (uses o_bowling_ball / o_pumpkin_ball) ---------- */
       var ball = { x: 0, y: 6, vx: 0, vy: 0, on: false, gutter: false, rot: 0, alpha: 1, hook: 0, done: true };
       function drawBall() {
         if (ball.alpha <= 0) return;
-        var f = P(U_(ball.x), V_(ball.y)), r = f.k * (BALL_R / LW), col = (eng.activeTeam() || {}).color || '#ff6f3d';
+        /* While bowler is holding or winding up, the ball is drawn in the bowler's hands */
+        var D = eng.state.data;
+        if (!ball.on && (D.stage === 'idle' || bowlerAnim.state === 'windup' || bowlerAnim.state === 'shrug')) return;
+
+        var f = P(U_(ball.x), V_(ball.y));
+        var r = Math.max(10, f.k * (BALL_R / LW) * 1.15);
+        var col = (eng.activeTeam() || {}).color || '#ff6f3d';
         var x = f.x, y = f.y - r;
-        g.save(); g.globalAlpha = ball.alpha;
-        g.fillStyle = 'rgba(30,15,0,.3)';
-        g.beginPath(); g.ellipse(x, f.y, r * 0.95, r * 0.25, 0, 0, 7); g.fill();
-        g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = col; g.fill();
-        var dk = g.createRadialGradient(x - r * 0.3, y - r * 0.35, r * 0.2, x, y, r);
-        dk.addColorStop(0, 'rgba(0,0,0,0)'); dk.addColorStop(0.6, 'rgba(0,0,0,.08)'); dk.addColorStop(1, 'rgba(0,0,0,.5)');
-        g.fillStyle = dk; g.fill();
-        [[-0.2, 0], [0.2, 0], [0, 0.45]].forEach(function (hole) {
-          var a = ball.rot + hole[1], c = Math.cos(a);
-          if (c < 0.05) return;
-          g.fillStyle = 'rgba(15,10,30,.85)';
-          g.beginPath(); g.ellipse(x + hole[0] * r * c, y - r * 0.62 * Math.sin(a), r * 0.1, r * 0.1 * c, 0, 0, 7); g.fill();
-        });
-        var gl = g.createRadialGradient(x - r * 0.38, y - r * 0.42, 0, x - r * 0.38, y - r * 0.42, r * 0.55);
-        gl.addColorStop(0, 'rgba(255,255,255,.85)'); gl.addColorStop(1, 'rgba(255,255,255,0)');
-        g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = gl; g.fill();
-        g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.5, r * 0.07); g.stroke();
+
+        g.save();
+        g.globalAlpha = ball.alpha;
+        /* Contact shadow on lane */
+        g.fillStyle = 'rgba(15, 23, 42, 0.38)';
+        g.beginPath();
+        g.ellipse(x, f.y + r * 0.08, r * 0.98, r * 0.28, 0, 0, Math.PI * 2);
+        g.fill();
+
+        var bArt = hal ? (bwlImgReady(artBallHal) ? artBallHal : artBallClassic) : artBallClassic;
+        if (bwlImgReady(bArt)) {
+          g.translate(x, y);
+          g.rotate(ball.rot * 0.65);
+          g.drawImage(bArt, -r * 1.12, -r * 1.12, r * 2.24, r * 2.24);
+        } else {
+          g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fillStyle = col; g.fill();
+          g.strokeStyle = '#1f2a44'; g.lineWidth = Math.max(1.5, r * 0.07); g.stroke();
+        }
         g.restore();
       }
 
-      /* ---------- guide, power meter and effect dial ---------- */
-      var DEG = Math.PI / 180;
-      function drawGuide(now) {
+      /* ---------- Big Bowler Monster & Waiting Buddy Monster (22-30% screen height) ---------- */
+      function drawBowlerAndBuddy(now) {
         var D = eng.state.data;
-        if (D.stage !== 'pos') return;
-        var a = P(U_(ball.x), V_(40)), b = P(U_(ball.x), V_(330));
-        g.save(); g.lineCap = 'round';
-        g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 4; g.setLineDash([12, 12]); g.lineDashOffset = -(now * 0.05) % 24;
-        g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+        var turnIdx = eng.state.turn || 0;
+        var activeTeam = st.teams[turnIdx] || st.teams[0];
+        var mImg = monImgs[turnIdx];
+        var bArt = hal ? (bwlImgReady(artBallHal) ? artBallHal : artBallClassic) : artBallClassic;
+
+        /* Waiting team's cheering buddy monster on the left spectator bench */
+        if (st.teams.length > 1) {
+          var waitIdx = (turnIdx + 1) % st.teams.length;
+          var wImg = monImgs[waitIdx];
+          var wPos = P(-1.72, 0.08, 0);
+          var wSize = Math.round(Math.max(125, H * 0.20));
+          if (wPos.x > -100 && wPos.x < W + 100) {
+            g.save();
+            var wBob = crowdCheerT > 0 ? -Math.abs(Math.sin(now / 110)) * 20 : -Math.abs(Math.sin(now / 320)) * 6;
+            g.translate(wPos.x, Math.min(H - 115, wPos.y) + wBob);
+            g.fillStyle = 'rgba(15, 23, 42, 0.35)';
+            g.beginPath(); g.ellipse(0, wSize * 0.42 - wBob, wSize * 0.32, wSize * 0.09, 0, 0, Math.PI * 2); g.fill();
+            g.rotate(crowdCheerT > 0 ? Math.sin(now / 95) * 0.14 : 0.06);
+            if (bwlImgReady(wImg)) {
+              g.drawImage(wImg, -wSize / 2, -wSize / 2, wSize, wSize);
+            }
+            g.restore();
+          }
+        }
+
+        /* Big Bowler Monster at the bottom of the lane (about 25% of screen height) */
+        if (cam.v > 0.26 && D.stage === 'roll') return; /* Camera has scrolled past the bowler toward the pins */
+        var standU = U_(D.pos || 0);
+        var footP = P(standU, -0.02, 0);
+        var bSize = Math.round(Math.max(175, Math.min(250, H * 0.26)));
+        var bx = D.stage === 'idle' ? footP.x - bSize * 0.95 : footP.x - bSize * 0.44;
+        var by = Math.min(H - 165, footP.y - bSize * 0.42);
+
+        var sx = 1, sy = 1, rot = 0, bobY = 0;
+        var stName = bowlerAnim.state;
+        if (stName === 'idle' || D.stage === 'pos' || D.stage === 'eff' || D.stage === 'power') {
+          sx = 1 + Math.sin(now / 240) * 0.045;
+          sy = 1 - Math.sin(now / 240) * 0.045;
+          bobY = -Math.abs(Math.sin(now / 280)) * 8;
+          if (D.stage === 'pos') rot = Math.sin(now / 140) * 0.06;
+          if (D.stage === 'eff' || D.stage === 'power') { sx = 1.05; sy = 0.95; rot = 0.08; }
+        } else if (stName === 'windup') {
+          var wt = Math.min(1, bowlerAnim.t / 0.32);
+          rot = -0.26 * Math.sin(wt * Math.PI);
+          sx = 1.08; sy = 0.92;
+          bobY = -Math.sin(wt * Math.PI) * 18;
+        } else if (stName === 'watch') {
+          rot = 0.10;
+          sx = 0.96; sy = 1.04;
+          bobY = -4;
+        } else if (stName === 'celebrate' || stName === 'finale') {
+          bobY = -Math.abs(Math.sin(now / 115)) * 32;
+          rot = Math.sin(now / 145) * 0.16;
+          sx = 1 + Math.sin(now / 115) * 0.08;
+          sy = 1 - Math.sin(now / 115) * 0.08;
+        } else if (stName === 'shrug') {
+          bobY = -Math.sin(Math.min(1, bowlerAnim.t * 2.2) * Math.PI) * 12;
+          rot = Math.sin(now / 130) * 0.14;
+          sx = 1.06; sy = 0.94;
+        }
+
+        g.save();
+        g.translate(bx, by);
+        /* Contact shadow & team colour ring under bowler's feet */
+        g.fillStyle = 'rgba(15, 23, 42, 0.38)';
+        g.beginPath();
+        g.ellipse(0, bSize * 0.44, bSize * 0.36, bSize * 0.10, 0, 0, Math.PI * 2);
+        g.fill();
+        g.strokeStyle = (activeTeam && activeTeam.color) || '#38bdf8';
+        g.lineWidth = 4;
+        g.beginPath();
+        g.ellipse(0, bSize * 0.44, bSize * 0.32, bSize * 0.085, 0, 0, Math.PI * 2);
+        g.stroke();
+
+        g.translate(0, bobY);
+        g.rotate(rot);
+        g.scale(sx, sy);
+
+        if (bwlImgReady(mImg)) {
+          g.drawImage(mImg, -bSize / 2, -bSize / 2, bSize, bSize);
+        }
+
+        /* Bowler holds the bowling ball before rolling */
+        if (!ball.on && stName !== 'shrug' && stName !== 'celebrate' && stName !== 'finale') {
+          var holdR = bSize * 0.21;
+          var hx = bSize * 0.30, hy = bSize * 0.06;
+          if (stName === 'windup') {
+            hx = -bSize * 0.22;
+            hy = -bSize * 0.12;
+          }
+          if (bwlImgReady(bArt)) {
+            g.drawImage(bArt, hx - holdR, hy - holdR, holdR * 2, holdR * 2);
+          } else {
+            g.fillStyle = (activeTeam && activeTeam.color) || '#ff6f3d';
+            g.beginPath(); g.arc(hx, hy, holdR, 0, Math.PI * 2); g.fill();
+          }
+        }
+
+        if (stName === 'shrug') {
+          bwlOutlinedText(g, '😊', bSize * 0.34, -bSize * 0.34, 34, '#fde047', '#0f172a');
+        }
         g.restore();
       }
-      function meterBox() {
-        var bh = H * 0.46, bw = Math.max(18, Math.min(30, W * 0.02));
-        return { x: Math.max(14, P(-1.9, 0.02).x - bw), y: H * 0.94 - bh, w: bw, h: bh };
+
+      /* ---------- Scene Guides: Glowing Footprint Stand Marker, On-Lane Aim Arrow, Power Meter ---------- */
+      var DEG = Math.PI / 180;
+      function drawStandAndAimGuides(now) {
+        var D = eng.state.data;
+        if (eng.state.phase !== 'action') return;
+
+        /* 1. Glowing Footprint Marker at the foul line ('pos' stage) */
+        var fp = P(U_(ball.x), 0.02, 0);
+        var pulse = 1 + Math.sin(now / 150) * 0.08;
+        g.save();
+        g.translate(fp.x, fp.y);
+        g.scale(pulse, pulse * 0.48);
+        var fpGlow = g.createRadialGradient(0, 0, 4, 0, 0, 44);
+        fpGlow.addColorStop(0, 'rgba(56, 189, 248, 0.9)');
+        fpGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+        g.fillStyle = fpGlow;
+        g.beginPath(); g.arc(0, 0, 44, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = '#fde047';
+        g.lineWidth = 4;
+        g.beginPath(); g.arc(0, 0, 26, 0, Math.PI * 2); g.stroke();
+        g.restore();
+
+        if (D.stage === 'pos') {
+          var a = P(U_(ball.x), V_(40)), b = P(U_(ball.x), V_(420));
+          g.save();
+          g.lineCap = 'round';
+          g.strokeStyle = '#fde047';
+          g.lineWidth = 5;
+          g.setLineDash([14, 12]);
+          g.lineDashOffset = -(now * 0.06) % 26;
+          g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
+          g.restore();
+          bwlOutlinedText(g, '👣 1. Tap STOP to Stand Here', fp.x, fp.y - 52, 26, '#fde047', '#0f172a');
+        }
+
+        /* 2. Glowing Curved Aim Arrow directly on the lane ('eff' and 'power' stages) */
+        if (D.stage === 'eff' || D.stage === 'power') {
+          g.save();
+          g.strokeStyle = Math.abs(D.eff) < 0.34 ? '#4ade80' : '#fde047';
+          g.fillStyle = g.strokeStyle;
+          g.lineWidth = 7;
+          g.lineCap = 'round';
+          g.beginPath();
+          var steps = 14;
+          for (var s = 0; s <= steps; s++) {
+            var frac = s / steps;
+            var py = 35 + frac * 540;
+            var hookOffset = D.eff * 15 * (frac * frac);
+            var pt = P(U_(ball.x + hookOffset), V_(py));
+            if (s === 0) g.moveTo(pt.x, pt.y);
+            else g.lineTo(pt.x, pt.y);
+          }
+          g.stroke();
+          /* Arrowhead on lane */
+          var tipP = P(U_(ball.x + D.eff * 15), V_(585));
+          var prevP = P(U_(ball.x + D.eff * 12), V_(520));
+          var ang = Math.atan2(tipP.y - prevP.y, tipP.x - prevP.x);
+          g.beginPath();
+          g.moveTo(tipP.x, tipP.y);
+          g.lineTo(tipP.x - Math.cos(ang - 0.5) * 24, tipP.y - Math.sin(ang - 0.5) * 24);
+          g.lineTo(tipP.x - Math.cos(ang + 0.5) * 24, tipP.y - Math.sin(ang + 0.5) * 24);
+          g.closePath();
+          g.fill();
+          g.restore();
+        }
       }
+
+      function meterBox() {
+        var bh = Math.min(320, H * 0.44), bw = 34;
+        var laneRight = P(1.38, 0.08).x;
+        return { x: Math.min(W - bw - 28, Math.max(W * 0.68, laneRight + 28)), y: H * 0.78 - bh, w: bw, h: bh };
+      }
+
       function drawMeter() {
         var D = eng.state.data;
-        if (D.stage !== 'power' && D.stage !== 'eff') return;
+        if (D.stage !== 'power') return;
         var m = meterBox(), x = m.x, y = m.y, bw = m.w, bh = m.h;
         g.save();
-        g.globalAlpha = D.stage === 'power' ? 1 : 0.6;
-        g.fillStyle = 'rgba(0,0,0,.5)'; rr(x - 5, y - 5, bw + 10, bh + 10, 10); g.fill();
+        g.fillStyle = 'rgba(15, 23, 42, 0.82)';
+        rr(x - 8, y - 8, bw + 16, bh + 16, 14);
+        g.fill();
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 3;
+        g.stroke();
+
         var mg = g.createLinearGradient(0, y + bh, 0, y);
-        mg.addColorStop(0, '#38bdf8'); mg.addColorStop(LV.green[0], '#ffe066'); mg.addColorStop(LV.green[1], '#2ecc71'); mg.addColorStop(1, '#ff5d73');
-        g.fillStyle = mg; rr(x, y, bw, bh, 7); g.fill();
-        g.fillStyle = 'rgba(46,204,113,.95)';
-        g.fillRect(x, y + bh * (1 - LV.green[1]), bw, bh * (LV.green[1] - LV.green[0]));
-        g.strokeStyle = '#fff'; g.lineWidth = 2; g.strokeRect(x, y + bh * (1 - LV.green[1]), bw, bh * (LV.green[1] - LV.green[0]));
+        mg.addColorStop(0, '#38bdf8');
+        mg.addColorStop(LV.green[0], '#fde047');
+        mg.addColorStop(LV.green[1], '#22c55e');
+        mg.addColorStop(1, '#f43f5e');
+        g.fillStyle = mg;
+        rr(x, y, bw, bh, 9);
+        g.fill();
+
+        /* Highlight sweet-spot green zone */
+        var gy = y + bh * (1 - LV.green[1]);
+        var gh = bh * (LV.green[1] - LV.green[0]);
+        g.fillStyle = 'rgba(34, 197, 94, 0.95)';
+        g.fillRect(x, gy, bw, gh);
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 3;
+        g.strokeRect(x, gy, bw, gh);
+
+        /* Moving marker bar */
         var my = y + bh * (1 - D.pow);
-        g.fillStyle = '#fff'; g.strokeStyle = '#1f2a44'; g.lineWidth = 3;
-        rr(x - 8, my - 5, bw + 16, 10, 5); g.fill(); g.stroke();
-        g.font = '800 ' + Math.round(Math.max(12, bw * 0.55)) + 'px Fredoka, system-ui, sans-serif';
-        g.textAlign = 'center'; g.fillStyle = '#fff'; g.fillText('POWER', x + bw / 2, y - 12);
+        g.fillStyle = '#ffffff';
+        g.strokeStyle = '#0f172a';
+        g.lineWidth = 4;
+        rr(x - 10, my - 7, bw + 20, 14, 7);
+        g.fill();
+        g.stroke();
+
+        bwlOutlinedText(g, '⚡ POWER', x + bw / 2, y - 24, 24, '#fde047', '#0f172a');
         g.restore();
       }
+
       function drawEffect() {
         var D = eng.state.data;
         if (D.stage !== 'eff') return;
-        var R = Math.max(46, Math.min(W, H) * 0.15), cx = Math.min(W - R - 16, P(1.9, 0.02).x + R), cy = H * 0.9;
+        var R = Math.max(58, Math.min(W, H) * 0.11);
+        var cx = Math.min(W - R - 32, Math.max(W * 0.72, P(1.5, 0.05).x + R));
+        var cy = H * 0.72;
         g.save();
-        g.fillStyle = 'rgba(0,0,0,.5)';
-        g.beginPath(); g.arc(cx, cy, R + 10, Math.PI, 0); g.closePath(); g.fill();
-        /* left curve, straight, right curve */
-        [[-1, -0.33, '#a855f7'], [-0.33, 0.33, '#2ecc71'], [0.33, 1, '#f59e0b']].forEach(function (z) {
-          g.strokeStyle = z[2]; g.lineWidth = R * 0.22;
-          g.beginPath(); g.arc(cx, cy, R * 0.8, -Math.PI / 2 + z[0] * 1.1, -Math.PI / 2 + z[1] * 1.1); g.stroke();
+        g.fillStyle = 'rgba(15, 23, 42, 0.82)';
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 3;
+        g.beginPath();
+        g.arc(cx, cy, R + 12, Math.PI, 0);
+        g.closePath();
+        g.fill();
+        g.stroke();
+
+        [[-1, -0.33, '#a855f7'], [-0.33, 0.33, '#22c55e'], [0.33, 1, '#f59e0b']].forEach(function (z) {
+          g.strokeStyle = z[2];
+          g.lineWidth = R * 0.24;
+          g.beginPath();
+          g.arc(cx, cy, R * 0.78, -Math.PI / 2 + z[0] * 1.1, -Math.PI / 2 + z[1] * 1.1);
+          g.stroke();
         });
+
         var a = -Math.PI / 2 + D.eff * 1.1;
-        g.strokeStyle = '#fff'; g.lineWidth = 5; g.lineCap = 'round';
-        g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(a) * R * 0.95, cy + Math.sin(a) * R * 0.95); g.stroke();
-        g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, 6, 0, 7); g.fill();
-        g.font = '800 ' + Math.round(Math.max(12, R * 0.2)) + 'px Fredoka, system-ui, sans-serif';
-        g.textAlign = 'center'; g.fillText('EFFECT', cx, cy - R - 16);
-        g.textAlign = 'left'; g.fillText('↶', cx - R - 4, cy - 4);
-        g.textAlign = 'right'; g.fillText('↷', cx + R + 4, cy - 4);
+        g.strokeStyle = '#ffffff';
+        g.lineWidth = 6;
+        g.lineCap = 'round';
+        g.beginPath();
+        g.moveTo(cx, cy);
+        g.lineTo(cx + Math.cos(a) * R * 0.92, cy + Math.sin(a) * R * 0.92);
+        g.stroke();
+        g.fillStyle = '#fde047';
+        g.beginPath(); g.arc(cx, cy, 8, 0, Math.PI * 2); g.fill();
+
+        bwlOutlinedText(g, '🎯 AIM / CURVE', cx, cy - R - 24, 24, '#fde047', '#0f172a');
         g.restore();
       }
 
-      /* ---------- big text pop (STRIKE! SPARE!) ---------- */
+      /* ---------- Real Bowling Scoreboard Drawn in Code ---------- */
+      var cardData = st.teams.map(function () { return []; });
+      function drawScoreboard() {
+        var nFrames = +ctx.cfg.frames || 3;
+        var rowH = 44, nameW = 128, frW = 54, totW = 64;
+        var boxW = nameW + nFrames * frW + totW + 16;
+        var x0 = 18, y0 = 68;
+
+        g.save();
+        st.teams.forEach(function (t, ti) {
+          var ry = y0 + ti * (rowH + 8);
+          var isTurn = (ti === eng.state.turn);
+          g.fillStyle = isTurn ? 'rgba(15, 23, 42, 0.92)' : 'rgba(15, 23, 42, 0.72)';
+          g.strokeStyle = isTurn ? (t.color || '#fde047') : 'rgba(255, 255, 255, 0.35)';
+          g.lineWidth = isTurn ? 4 : 2;
+          rr(x0, ry, boxW, rowH, 12);
+          g.fill();
+          g.stroke();
+
+          /* Team colour pill & name */
+          g.fillStyle = t.color || '#38bdf8';
+          rr(x0 + 6, ry + 6, 10, rowH - 12, 5);
+          g.fill();
+          bwlOutlinedText(g, (t.name || '').slice(0, 9), x0 + 24, ry + rowH / 2, 22, '#ffffff', '#0f172a', 'left');
+
+          /* Frame cells (X for Strike, / for Spare) */
+          for (var fi = 0; fi < nFrames; fi++) {
+            var fx = x0 + nameW + fi * frW;
+            var fr = cardData[ti][fi] || [];
+            g.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+            g.lineWidth = 1.5;
+            g.strokeRect(fx, ry + 5, frW - 4, rowH - 10);
+            g.beginPath();
+            g.moveTo(fx + (frW - 4) / 2, ry + 5);
+            g.lineTo(fx + (frW - 4) / 2, ry + rowH - 5);
+            g.stroke();
+
+            var b1 = fr[0] || '';
+            var b2 = fr[1] || '';
+            bwlOutlinedText(g, b1, fx + (frW - 4) * 0.26, ry + rowH / 2, 20, b1 === 'X' ? '#fde047' : '#ffffff', '#0f172a');
+            bwlOutlinedText(g, b2, fx + (frW - 4) * 0.74, ry + rowH / 2, 20, b2 === '/' ? '#4ade80' : '#ffffff', '#0f172a');
+          }
+
+          /* Total team score */
+          var tx = x0 + nameW + nFrames * frW + totW / 2;
+          bwlOutlinedText(g, String(t.score || 0), tx, ry + rowH / 2, 24, '#fde047', '#0f172a');
+        });
+        g.restore();
+      }
+
+      /* ---------- Big text pop (STRIKE! SPARE!) ---------- */
       var pop = null;
       function drawPop(now) {
         if (!pop) return;
@@ -864,44 +1402,55 @@
         var sc = t < 0.25 ? 0.4 + t / 0.25 * 0.8 : (t < 0.4 ? 1.2 - (t - 0.25) / 0.15 * 0.2 : 1);
         g.save();
         g.globalAlpha = t > 1.3 ? Math.max(0, 1 - (t - 1.3) / 0.4) : 1;
-        g.translate(W / 2, H * 0.62); g.scale(sc, sc); g.rotate(-0.05);
-        g.font = '900 ' + Math.round(Math.min(W * 0.09, H * 0.18)) + 'px Fredoka, "Baloo 2", system-ui, sans-serif';
-        g.textAlign = 'center'; g.textBaseline = 'middle';
-        g.lineJoin = 'round'; g.lineWidth = Math.min(W, H) * 0.03; g.strokeStyle = '#1f2a44'; g.strokeText(pop.text, 0, 0);
-        g.fillStyle = pop.col; g.fillText(pop.text, 0, 0);
+        g.translate(W / 2, H * 0.48);
+        g.scale(sc, sc);
+        g.rotate(-0.04);
+        bwlOutlinedText(g, pop.text, 0, 0, Math.min(W * 0.085, H * 0.15), pop.col, '#0f172a');
         g.restore();
       }
       function say(text, col) { pop = { text: text, col: col, t0: performance.now() }; }
 
-      /* ---------- simulation ---------- */
-      function hit(a, ma, b, mb, e) { // circles a and b touching: push apart and swap momentum along the line between them
+      /* ---------- Simulation (UNTOUCHED real physics) ---------- */
+      function hit(a, ma, b, mb, e) {
         var dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.001, nx = dx / d, ny = dy / d;
         var rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
         var over = (a.rad + b.rad) - d, im = 1 / ma + 1 / mb;
-        if (over > 0) { a.x -= nx * over * (1 / ma) / im; a.y -= ny * over * (1 / ma) / im; b.x += nx * over * (1 / mb) / im; b.y += ny * over * (1 / mb) / im; }
+        if (over > 0) {
+          a.x -= nx * over * (1 / ma) / im; a.y -= ny * over * (1 / ma) / im;
+          b.x += nx * over * (1 / mb) / im; b.y += ny * over * (1 / mb) / im;
+        }
         if (rel >= 0) return 0;
         var j = -(1 + e) * rel / im;
-        a.vx -= j / ma * nx; a.vy -= j / ma * ny; b.vx += j / mb * nx; b.vy += j / mb * ny;
+        a.vx -= j / ma * nx; a.vy -= j / ma * ny;
+        b.vx += j / mb * nx; b.vy += j / mb * ny;
         return j;
       }
       function segDist(px, py, ax, ay, bx, by) {
-        var vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy, t = l2 ? Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2)) : 0;
+        var vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy;
+        var t = l2 ? Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2)) : 0;
         var cx = ax + vx * t, cy = ay + vy * t;
         return { d: Math.hypot(px - cx, py - cy), cx: cx, cy: cy };
       }
       ball.rad = BALL_R;
       pins.forEach(function (p) { p.rad = PIN_R; });
 
-      var simT = 0, slowEnd = -1; // slow motion while the ball meets the pins
+      var simT = 0, slowEnd = -1, playedScatter = false;
       function simStep(h) {
         simT += h;
-        if (ball.on && !ball.gutter && slowEnd < 0 && ball.y > HEAD - 40) slowEnd = simT + 0.5;
+        if (ball.on && !ball.gutter && slowEnd < 0 && ball.y > HEAD - 40) {
+          slowEnd = simT + 0.55;
+          if (!playedScatter) {
+            playedScatter = true;
+            A().play('pins_scatter_big');
+          }
+        }
         if (ball.on) {
           if (!ball.gutter && ball.y > 420 && ball.y < HEAD) ball.vx += ball.hook * h * Math.min(1, (ball.y - 420) / 160);
           ball.x += ball.vx * h; ball.y += ball.vy * h; ball.rot += h * ball.vy / 30;
-          ball.vy = Math.max(60, ball.vy - 8 * h);
+          ball.vy = Math.max(135, ball.vy - 8 * h);
           if (!ball.gutter && Math.abs(ball.x) > LW - 0.8) {
-            ball.gutter = true; ball.vx = 0; ball.x = (ball.x > 0 ? 1 : -1) * (LW + 2.3); A().play('hunt_empty');
+            ball.gutter = true; ball.vx = 0; ball.x = (ball.x > 0 ? 1 : -1) * (LW + 2.3);
+            A().play('crowd_aww_soft');
           }
           if (ball.y > PITY + 30) { ball.on = false; ball.alpha = 0; }
           else if (ball.y > PITY) ball.alpha = Math.max(0, 1 - (ball.y - PITY) / 30);
@@ -910,7 +1459,7 @@
               if (p.gone || Math.hypot(p.x - ball.x, p.y - ball.y) > BALL_R + PIN_R) return;
               var j = hit(ball, MB, p, MP, 0.7);
               if (!p.down && j / MP > 18) topple(p);
-              if (j > 300) J().shake(3);
+              if (j > 300) triggerShake(5, 0.2);
             });
           }
         }
@@ -923,14 +1472,20 @@
             p.vx *= k; p.vy *= k;
             p.x += p.vx * h; p.y += p.vy * h;
           }
-          if (p.z > 0 || p.vz > 0) { p.z += p.vz * h; p.vz -= 386 * h; if (p.z <= 0) { p.z = 0; p.vz = p.vz < -25 ? -p.vz * 0.3 : 0; } }
-          if (p.y > HEAD - 30 && Math.abs(p.x) > KICK - PIN_R) { // the kickback walls throw pins back in
+          if (p.z > 0 || p.vz > 0) {
+            p.z += p.vz * h; p.vz -= 386 * h;
+            if (p.z <= 0) { p.z = 0; p.vz = p.vz < -25 ? -p.vz * 0.3 : 0; }
+          }
+          if (p.y > HEAD - 30 && Math.abs(p.x) > KICK - PIN_R) {
             p.x = (p.x > 0 ? 1 : -1) * (KICK - PIN_R); p.vx = -p.vx * 0.55;
           }
           if (!p.down && Math.abs(p.x) > LW + 0.5) topple(p);
-          if (p.y > PITY) { if (!p.down) topple(p); p.alpha = Math.max(0, p.alpha - h * 2); if (p.alpha <= 0) p.gone = true; }
+          if (p.y > PITY) {
+            if (!p.down) topple(p);
+            p.alpha = Math.max(0, p.alpha - h * 2);
+            if (p.alpha <= 0) p.gone = true;
+          }
         });
-        /* pin against pin: a falling pin sweeps its whole length */
         for (var i = 0; i < pins.length; i++) {
           var a = pins[i];
           if (a.gone) continue;
@@ -961,89 +1516,110 @@
         return pins.every(function (p) { return p.gone || (Math.hypot(p.vx, p.vy) < 6 && (!p.down || p.fall >= 1)); });
       }
 
-      /* ---------- turns ---------- */
+      /* ---------- Turns & Controls ---------- */
       function rack() { pins.forEach(rackPin); }
       function resetBall() {
-        ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0; ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
+        ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0;
+        ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
+        playedScatter = false;
       }
-      var cardData = st.teams.map(function () { return []; });
-      function renderCard() {
-        card.innerHTML = '';
-        st.teams.forEach(function (t, ti) {
-          var row = U().h('div', { class: 'gm-bowl-row' + (ti === eng.state.turn ? ' on' : '') });
-          row.style.setProperty('--c', t.color);
-          row.appendChild(U().h('b', { text: t.name }));
-          for (var fi = 0; fi < (+ctx.cfg.frames || 3); fi++) {
-            var fr = cardData[ti][fi] || [], box = U().h('span', { class: 'gm-bowl-fr' });
-            box.appendChild(U().h('i', { text: fr[0] || '' }));
-            box.appendChild(U().h('i', { text: fr[1] || '' }));
-            row.appendChild(box);
-          }
-          card.appendChild(row);
-        });
+      function sweep() {
+        sweepAnim = { active: true, t: 0, mode: 'sweep' };
+        pins.forEach(function (p) { if (p.down) p.sweep = true; p.rollDown = false; });
       }
-      function sweep() { pins.forEach(function (p) { if (p.down) p.sweep = true; p.rollDown = false; }); }
-      function standing() { return pins.filter(function (p) { return !p.gone && !p.down && !p.sweep; }).length; }
+      function standing() {
+        return pins.filter(function (p) { return !p.gone && !p.down && !p.sweep; }).length;
+      }
 
-      function header(text, btns) {
-        var t = eng.activeTeam();
-        info.innerHTML = '';
-        info.style.setProperty('--c', t.color);
-        info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', { text: text }));
-        (btns || []).forEach(function (b) { info.appendChild(b); });
-      }
       var STEP_TXT = {
-        pos: '1️⃣ MOVE: tap to stop the ball where you want to stand.',
-        power: '2️⃣ POWER: tap when the bar is in the green.',
-        eff: '3️⃣ EFFECT: tap to set the curve (green = straight).'
+        pos:   '1️⃣ STAND: Tap STOP (or lane) to place your feet!',
+        eff:   '2️⃣ AIM: Tap STOP to aim the arrow on the lane!',
+        power: '3️⃣ POWER: Tap STOP in the green zone to roll!'
       };
+
+      function renderActionDock() {
+        dock.innerHTML = '';
+        var stopBtn = U().h('button', {
+          type: 'button',
+          class: 'gm-real3-btn green pulse',
+          text: '✋ STOP! (Space)'
+        });
+        stopBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          lock();
+        });
+        var quickBtn = U().h('button', {
+          type: 'button',
+          class: 'gm-real3-btn amber',
+          text: '⚡ Quick Roll!'
+        });
+        quickBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          quickRoll();
+        });
+        dock.appendChild(stopBtn);
+        dock.appendChild(quickBtn);
+      }
+
       function setStage(stage) {
         var D = eng.state.data;
         D.stage = stage;
-        var pre = D.ball === 2 ? 'Ball 2 (' + standing() + ' left) · ' : '';
-        header(pre + STEP_TXT[stage], [U().btn('✋ STOP!', 'big green', lock)]);
-        if (stage === 'pos' && D.ball === 1) res.textContent = '💡 Tip: stand on one side and curve the ball into the pocket, just beside the head pin.';
+        bowlerAnim.state = 'step';
+        bowlerAnim.t = 0;
+        var pre = D.ball === 2 ? ('Ball 2 (' + standing() + ' pins left)') : 'Ball 1';
+        updateBanner(STEP_TXT[stage], pre, true);
+        renderActionDock();
       }
 
       function showTurn() {
         var t = eng.activeTeam(), D = eng.state.data;
         D.stage = 'idle'; D.ball = 1;
-        renderCard();
+        bowlerAnim.state = 'idle'; bowlerAnim.t = 0;
         eng.setPhase('idle');
         rack(); resetBall();
-        var frameNo = cardData[eng.state.turn].length + 1, frames = +ctx.cfg.frames || 3;
-        header(t.name + '\u2019s turn \u00b7 frame ' + frameNo + ' of ' + frames);
-        askCard.innerHTML = '';
-        askCard.style.setProperty('--c', t.color);
-        askCard.appendChild(U().h('div', { class: 'gm-bowl-ask-mon' }, [U().monFull(t.mon, 120)]));
-        askCard.appendChild(U().h('b', { text: t.name }));
-        askCard.appendChild(U().h('small', { text: 'Frame ' + frameNo + ' of ' + frames + ' \u00b7 answer right to bowl!' }));
-        askCard.appendChild(U().btn('\u2753 Ask me!', 'big amber gm-bowl-askbtn', ask));
-        askCard.classList.remove('show'); void askCard.offsetWidth; askCard.classList.add('show');
-        res.textContent = '';
+        var frameNo = (cardData[eng.state.turn] ? cardData[eng.state.turn].length : 0) + 1;
+        var frames = +ctx.cfg.frames || 3;
+        updateBanner(t.name + '\u2019s Turn!', 'Frame ' + frameNo + ' of ' + frames, false);
+        dock.innerHTML = '';
+        var askBtn = U().h('button', {
+          type: 'button',
+          class: 'gm-real3-btn amber pulse',
+          text: '❓ Ask & Bowl! (Space)'
+        });
+        askBtn.addEventListener('click', function () {
+          A().play('tap');
+          ask();
+        });
+        dock.appendChild(askBtn);
       }
 
       async function ask() {
         if (eng.state.phase !== 'idle' || !eng.state.alive) return;
-        askCard.classList.remove('show');
+        dock.innerHTML = '';
         var r = await eng.ask(null, { label: 'Frame ' + (eng.state.round + 1) });
         if (!eng.state.alive) return;
-        if (r.cancelled) { askCard.classList.add('show'); return; }
+        if (r.cancelled) { showTurn(); return; }
         var D = eng.state.data;
+        var t = eng.activeTeam();
         if (!r.ok) {
-          eng.setPhase('animating'); D.stage = 'roll';
-          header('🌀 Oops! The ball slipped into the gutter.');
-          res.textContent = '🌀 Gutter ball! Next team’s frame.';
-          resetBall(); ball.on = true; ball.gutter = true; ball.x = (Math.random() < 0.5 ? -1 : 1) * (LW + 2.3); ball.vy = 300;
-          A().play('hunt_empty');
-          await eng.wait(2600);
+          /* Soft-fail: gentle shrug, "Nice try!", zero points lost, no harsh gutter penalty */
+          eng.setPhase('animating');
+          D.stage = 'idle';
+          bowlerAnim.state = 'shrug';
+          bowlerAnim.t = 0;
+          A().play('crowd_aww_soft');
+          var fp = P(0, 0.05, 0.3);
+          var lRect = lane.getBoundingClientRect();
+          var fakeEl = { getBoundingClientRect: function () { return { left: lRect.left + fp.x, top: lRect.top + fp.y, width: 0, height: 0 }; } };
+          U().floatText('Nice try! 😊', fakeEl, 'soft');
+          updateBanner('😊 Nice try, ' + t.name + '!', 'Next team is up!', false);
+          await eng.wait(1500);
           if (!eng.state.alive) return;
           if (eng.advanceRound()) { eng.nextTurn(); showTurn(); }
           return;
         }
         eng.setPhase('action');
-        D.pos = -12; D.posDir = 1;
+        D.pos = -10; D.posDir = 1;
         setStage('pos');
       }
 
@@ -1051,91 +1627,194 @@
         var D = eng.state.data;
         if (eng.state.phase !== 'action' || !eng.state.alive) return;
         A().play('tap');
-        if (D.stage === 'pos') { ball.x = D.pos; D.pow = 0; D.powDir = 1; setStage('power'); }
-        else if (D.stage === 'power') { D.eff = -1; D.effDir = 1; setStage('eff'); }
-        else if (D.stage === 'eff') launch();
+        if (D.stage === 'pos') {
+          ball.x = D.pos;
+          D.eff = -0.8; D.effDir = 1;
+          setStage('eff');
+        } else if (D.stage === 'eff') {
+          D.pow = 0.1; D.powDir = 1;
+          setStage('power');
+        } else if (D.stage === 'power') {
+          launch();
+        }
       }
+
+      function quickRoll() {
+        var D = eng.state.data;
+        if (eng.state.phase !== 'action' || !eng.state.alive) return;
+        A().play('tap');
+        /* Aim a pocket curve shot (or aim directly at remaining standing pin on Ball 2) */
+        if (D.ball === 2) {
+          var rem = pins.filter(function (p) { return !p.down && !p.gone; })[0];
+          D.pos = rem ? Math.max(-14, Math.min(14, rem.x * 0.85)) : 0;
+          ball.x = D.pos;
+          D.eff = 0;
+          D.pow = (LV.green[0] + LV.green[1]) * 0.5;
+        } else {
+          D.pos = -5.5 + (Math.random() - 0.5) * 1.6;
+          ball.x = D.pos;
+          D.eff = 0.24;
+          D.pow = (LV.green[0] + LV.green[1]) * 0.5;
+        }
+        launch();
+      }
+
       eng.listen(lane, 'pointerdown', function (e) {
         if (eng.state.phase !== 'action') return;
+        if (e.target && e.target.closest && e.target.closest('.gm-real3-dock')) return;
         e.preventDefault();
         lock();
       });
       eng.listen(document, 'keydown', function (e) {
-        if (e.code !== 'Space' || eng.state.phase !== 'action') return;
-        e.preventDefault();
-        lock();
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        if (document.querySelector('.gm-over')) return;
+        if (eng.state.phase === 'action') {
+          e.preventDefault();
+          lock();
+        } else if (eng.state.phase === 'idle') {
+          e.preventDefault();
+          ask();
+        }
       });
 
       async function launch() {
         var D = eng.state.data;
-        D.stage = 'roll';
+        dock.innerHTML = '';
         eng.setPhase('animating');
-        var g0 = LV.green[0], g1 = LV.green[1], miss = D.pow < g0 ? g0 - D.pow : (D.pow > g1 ? D.pow - g1 : 0);
-        /* a release outside the green wobbles the line; too soft also hooks less */
+
+        /* 1. Bowler wind-up backswing anticipation (0.32s) */
+        bowlerAnim.state = 'windup';
+        bowlerAnim.t = 0;
+        A().play('crowd_ooh');
+        await eng.wait(320);
+        if (!eng.state.alive) return;
+
+        /* 2. Release ball & roll down lane */
+        D.stage = 'roll';
+        bowlerAnim.state = 'watch';
+        bowlerAnim.t = 0;
+        var g0 = LV.green[0], g1 = LV.green[1];
+        var miss = D.pow < g0 ? g0 - D.pow : (D.pow > g1 ? D.pow - g1 : 0);
         var ang = ((Math.random() - 0.5) * (0.12 + miss * 7) * LV.noise) * DEG;
-        var speed = 230 + D.pow * 150;
-        ball.vx = Math.sin(ang) * speed; ball.vy = Math.cos(ang) * speed;
+        var speed = 235 + D.pow * 150;
+        ball.vx = Math.sin(ang) * speed;
+        ball.vy = Math.cos(ang) * speed;
         ball.hook = D.eff * 32 * (0.7 + 0.3 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
-        ball.on = true; slowEnd = -1;
-        header(eng.activeTeam().name + ' is rolling... 🎳');
+        ball.on = true;
+        slowEnd = -1;
+        updateBanner('🎳 ' + eng.activeTeam().name + ' rolls!', 'Watch the pins!', true);
+        A().play('bowling_rumble_long');
         A().play('bowling_roll');
+
         var t0 = simT;
         while (eng.state.alive) {
-          await eng.wait(100);
-          if (simT - t0 > 1.2 && settled()) break;
-          if (simT - t0 > 7) break;
+          await eng.wait(90);
+          if (simT - t0 > 0.95 && (settled() || (ball.y > PITY && simT - t0 > 1.85))) break;
+          if (simT - t0 > 2.8) break;
         }
         if (!eng.state.alive) return;
         afterBall();
       }
 
       async function afterBall() {
-        var D = eng.state.data, n = pins.filter(function (p) { return p.rollDown; }).length, left = pins.filter(function (p) { return !p.down; }).length;
-        var pts = n * 5, strike = D.ball === 1 && left === 0, spare = D.ball === 2 && left === 0;
+        var D = eng.state.data;
+        var n = pins.filter(function (p) { return p.rollDown; }).length;
+        var left = pins.filter(function (p) { return !p.down; }).length;
+        var pts = n * 5;
+        var strike = D.ball === 1 && left === 0;
+        var spare = D.ball === 2 && left === 0;
+        var deckPos = P(0, V_(HEAD), 0.2);
+
         if (strike) {
           pts += 20;
-          A().play('bowling_strike'); if (hal) A().play('ghost');
-          J().shake(9); J().shockwave(deck, '#ffe066', 220, 560); U().confetti(36);
-          say('STRIKE!', '#ffe066');
-          res.textContent = '🌟 STRIKE! All 10 pins with one ball! +' + pts;
+          bowlerAnim.state = 'celebrate';
+          crowdCheerT = 1.8;
+          A().play('bowling_strike');
+          A().play('crowd_roar_big');
+          A().play('sparkle');
+          if (hal) A().play('ghost_woo');
+          triggerShake(6, 0.28);
+          burstPinLight(deckPos.x, deckPos.y, 42, true);
+          U().confetti(38);
+          say('STRIKE! 🌟', '#fde047');
+          updateBanner('🌟 STRIKE! All 10 pins!', '+' + pts + ' points!', false);
         } else if (spare) {
           pts += 10;
-          A().play('bowling_strike'); J().shake(6); U().confetti(20);
-          say('SPARE!', '#2ecc71');
-          res.textContent = '✨ SPARE! You got the last ' + n + (n === 1 ? ' pin' : ' pins') + '! +' + pts;
+          bowlerAnim.state = 'celebrate';
+          crowdCheerT = 1.4;
+          A().play('bowling_strike');
+          A().play('crowd_cheer_small');
+          A().play('sparkle');
+          triggerShake(5, 0.22);
+          burstPinLight(deckPos.x, deckPos.y, 28, false);
+          U().confetti(24);
+          say('SPARE! ✨', '#4ade80');
+          updateBanner('✨ SPARE! Cleared the deck!', '+' + pts + ' points!', false);
         } else if (n === 0) {
-          A().play('slot_low');
-          say(ball.gutter ? 'GUTTER!' : 'MISS!', '#ff5d73');
-          res.textContent = (ball.gutter ? '🌀 Gutter ball' : '😮 No pins this time') + (D.ball === 1 ? '. Try again with ball 2!' : '.');
+          bowlerAnim.state = 'shrug';
+          A().play('crowd_aww_soft');
+          say(ball.gutter ? 'GUTTER!' : 'CLOSE!', '#fb923c');
+          updateBanner(ball.gutter ? '🌀 Gutter ball!' : '😮 So close!', D.ball === 1 ? 'Ball 2 coming up!' : 'Nice effort!', false);
         } else {
-          A().play(n >= 6 ? 'slot_mid' : 'slot_low'); J().shake(4);
-          J().sparks(deck, 10, ['#ffffff', '#ffe066', '#38bdf8'], 6);
+          bowlerAnim.state = 'celebrate';
+          crowdCheerT = 1.0;
+          A().play(n >= 6 ? 'crowd_cheer_small' : 'crowd_ooh');
+          triggerShake(4, 0.16);
+          burstPinLight(deckPos.x, deckPos.y, 18, false);
           var split = D.ball === 1 && isSplit();
-          say(split ? 'SPLIT!' : n + (n === 1 ? ' PIN' : ' PINS'), split ? '#ff9a3c' : (n >= 7 ? '#2ecc71' : '#38bdf8'));
-          res.textContent = '🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down! +' + pts + (split ? ' (a split: hard spare!)' : '');
+          say(split ? 'SPLIT!' : (n + (n === 1 ? ' PIN!' : ' PINS!')), split ? '#fb923c' : '#38bdf8');
+          updateBanner('🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down!', '+' + pts + ' points!', false);
         }
+
         var fr = cardData[eng.state.turn];
-        if (D.ball === 1) { fr.push([strike ? 'X' : (n === 0 ? '-' : String(n))]); }
-        else { fr[fr.length - 1][1] = spare ? '/' : (n === 0 ? '-' : String(n)); }
-        renderCard();
+        if (D.ball === 1) {
+          fr.push([strike ? 'X' : (n === 0 ? '-' : String(n))]);
+        } else if (fr.length) {
+          fr[fr.length - 1][1] = spare ? '/' : (n === 0 ? '-' : String(n));
+        }
+
+        /* Position virtual deck element at pin deck screen coords for U().floatText */
+        var lRect = lane.getBoundingClientRect();
+        deck.style.left = Math.round(deckPos.x) + 'px';
+        deck.style.top = Math.round(deckPos.y) + 'px';
+
         if (pts > 0) {
+          A().play('coin_collect');
+          bwlFlyScoreToPod({ x: lRect.left + deckPos.x, y: lRect.top + deckPos.y }, eng.state.turn, pts);
           eng.award(eng.state.turn, pts, deck, (strike ? 'STRIKE +' : spare ? 'SPARE +' : '+') + pts);
           U().wobble(document.getElementById('gm-team-' + eng.state.turn));
+        } else if (D.ball === 2 && left === 10) {
+          /* Guarantee minimum +5 points after a right answer */
+          A().play('coin_collect');
+          bwlFlyScoreToPod({ x: lRect.left + deckPos.x, y: lRect.top + deckPos.y }, eng.state.turn, 5);
+          eng.award(eng.state.turn, 5, deck, 'Nice try! +5');
         }
-        await eng.wait(1700);
+
+        await eng.wait(1100);
         if (!eng.state.alive) return;
+
         if (D.ball === 1 && !strike) {
           sweep();
+          await eng.wait(480);
+          if (!eng.state.alive) return;
           D.ball = 2;
           resetBall();
           eng.setPhase('action');
-          D.pos = -12; D.posDir = 1;
+          D.pos = -10; D.posDir = 1;
           setStage('pos');
           return;
         }
-        if (eng.advanceRound()) { eng.nextTurn(); showTurn(); }
+
+        sweep();
+        await eng.wait(420);
+        if (!eng.state.alive) return;
+        if (eng.advanceRound()) {
+          eng.nextTurn();
+          showTurn();
+        }
       }
-      function isSplit() { // head pin down and two standing pins with a gap between them
+
+      function isSplit() {
         var up = pins.filter(function (p) { return !p.down; });
         if (pins[0].down !== true || up.length < 2) return false;
         up.sort(function (a, b) { return a.x - b.x; });
@@ -1143,9 +1822,16 @@
         return false;
       }
 
-      /* ---------- loop ---------- */
+      /* ---------- 60fps Delta-Time Loop ---------- */
       eng.raf(function (dt, now) {
         var D = eng.state.data;
+        bowlerAnim.t += dt;
+        if (crowdCheerT > 0) crowdCheerT = Math.max(0, crowdCheerT - dt);
+        if (sweepAnim.active) {
+          sweepAnim.t += dt * 1.65;
+          if (sweepAnim.t >= 1) sweepAnim.active = false;
+        }
+
         if (eng.state.phase === 'action') {
           if (D.stage === 'pos') {
             D.pos += D.posDir * dt * 20 * LV.s;
@@ -1153,7 +1839,7 @@
             if (D.pos < -14) { D.pos = -14; D.posDir = 1; }
             ball.x = D.pos;
           } else if (D.stage === 'eff') {
-            D.eff += D.effDir * dt * 1.6 * LV.s;
+            D.eff += D.effDir * dt * 1.55 * LV.s;
             if (D.eff > 1) { D.eff = 1; D.effDir = -1; }
             if (D.eff < -1) { D.eff = -1; D.effDir = 1; }
           } else if (D.stage === 'power') {
@@ -1162,26 +1848,98 @@
             if (D.pow < 0) { D.pow = 0; D.powDir = 1; }
           }
         }
-        var sdt = (slowEnd > 0 && simT < slowEnd) ? dt * 0.33 : dt, n = Math.max(1, Math.ceil(sdt / (1 / 480)));
+
+        var sdt = (slowEnd > 0 && simT < slowEnd) ? dt * 0.33 : dt;
+        var n = Math.max(1, Math.ceil(sdt / (1 / 480)));
         for (var i = 0; i < n; i++) simStep(sdt / n);
+
         pins.forEach(function (p) {
           if (p.drop > 0) p.drop = Math.max(0, p.drop - dt * 3.2);
-          if (p.sweep && !p.gone) { p.alpha -= dt * 2.5; if (p.alpha <= 0) p.gone = true; }
+          if (p.sweep && !p.gone) {
+            p.alpha -= dt * 2.5;
+            if (p.alpha <= 0) p.gone = true;
+          }
         });
 
+        /* Smooth camera follow down the lane behind the rolling ball */
+        if (D.stage === 'roll' && (ball.on || !settled())) {
+          var prog = Math.min(1, Math.max(0, ball.y / (HEAD - 40)));
+          cam.tv = prog * 0.38;
+          cam.tzoom = 1 + prog * 0.34;
+          cam.tu = U_(ball.x) * 0.25 * (1 - prog * 0.6);
+        } else {
+          cam.tv = 0;
+          cam.tzoom = 1.0;
+          cam.tu = 0;
+        }
+        var camEase = Math.min(1, dt * 4.5);
+        cam.v += (cam.tv - cam.v) * camEase;
+        cam.u += (cam.tu - cam.u) * camEase;
+        cam.zoom += (cam.tzoom - cam.zoom) * camEase;
+
+        var shakeX = 0, shakeY = 0;
+        if (cam.shakeT > 0) {
+          cam.shakeT = Math.max(0, cam.shakeT - dt);
+          shakeX = (Math.random() * 2 - 1) * cam.shakeMag;
+          shakeY = (Math.random() * 2 - 1) * cam.shakeMag;
+        }
+
+        lightSplinters = lightSplinters.filter(function (sp) {
+          sp.t += dt;
+          sp.vy += 420 * dt;
+          sp.x += sp.vx * dt;
+          sp.y += sp.vy * dt;
+          sp.rot += sp.vrot * dt;
+          return sp.t < sp.life;
+        });
+
+        g.save();
         g.clearRect(0, 0, W, H);
+        g.translate(shakeX, shakeY);
+
         drawLane(now);
-        var things = pins.filter(function (p) { return !p.gone; }).map(function (p) { return { y: p.y, f: function () { drawPin(p); } }; });
+
+        var things = pins.filter(function (p) { return !p.gone; }).map(function (p) {
+          return { y: p.y, f: function () { drawPin(p, now); } };
+        });
         things.push({ y: ball.y + 0.01, f: drawBall });
         things.sort(function (a, b) { return b.y - a.y; }).forEach(function (t) { t.f(); });
-        drawGuide(now);
+
+        drawSweepBar();
+        drawStandAndAimGuides(now);
+        drawBowlerAndBuddy(now);
+
+        /* Light splinters (never wood splinters) */
+        lightSplinters.forEach(function (sp) {
+          g.save();
+          g.globalAlpha = Math.max(0, 1 - sp.t / sp.life);
+          g.translate(sp.x, sp.y);
+          g.rotate(sp.rot);
+          g.strokeStyle = sp.c;
+          g.lineWidth = 4;
+          g.lineCap = 'round';
+          g.beginPath();
+          g.moveTo(-sp.len / 2, 0);
+          g.lineTo(sp.len / 2, 0);
+          g.stroke();
+          g.fillStyle = '#ffffff';
+          g.beginPath(); g.arc(0, 0, sp.r * 0.5, 0, Math.PI * 2); g.fill();
+          g.restore();
+        });
+
         drawMeter();
         drawEffect();
+        drawScoreboard();
         drawPop(now);
+
+        g.restore();
         return true;
       });
 
-      if (/[?&]test=1/.test(root.location.search)) { root.__bd = eng.state.data; root.__bsim = { pins: pins, ball: ball, step: simStep, rack: rack, LV: LV }; } // local tests only
+      if (/[?&]test=1/.test(root.location.search)) {
+        root.__bd = eng.state.data;
+        root.__bsim = { pins: pins, ball: ball, step: simStep, rack: rack, LV: LV };
+      }
       eng.setTurn(0, true);
       showTurn();
     }

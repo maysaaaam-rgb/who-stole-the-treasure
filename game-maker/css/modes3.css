@@ -406,6 +406,81 @@ body.th-halloween .gm-b3-center {
   font-size: 1.2rem;
 }
 
+/* --- Star Loop Board 3D Island & Unclipped Tile Fix --- */
+body.th-classic .gm-b3-board {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(15, 23, 42, 0.18)),
+    url(../art/bg_classic_snakes.webp) center/cover no-repeat !important;
+}
+.gm-b3-sq {
+  justify-content: flex-start !important;
+  padding: 8px 4px 4px !important;
+  gap: 2px !important;
+}
+.gm-b3-ic {
+  font-size: clamp(1.15rem, 2.2vh, 1.65rem) !important;
+  margin-top: 2px !important;
+  line-height: 1 !important;
+}
+.gm-b3-ic img.gm-b3-art {
+  width: clamp(22px, 3vh, 34px) !important;
+  height: clamp(22px, 3vh, 34px) !important;
+}
+.gm-b3-nm {
+  font-size: clamp(0.7rem, 1.35vh, 0.92rem) !important;
+  line-height: 1.15 !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+.gm-b3-toks {
+  position: absolute !important;
+  bottom: 2px !important;
+  left: 2px !important;
+  right: 2px !important;
+  min-height: 0 !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+}
+.gm-b3-tok {
+  width: 30px !important;
+  height: 30px !important;
+}
+.gm-b3-center {
+  background: rgba(15, 23, 42, 0.18) !important;
+  backdrop-filter: none !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+}
+.gm-b3-stagecard {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 3.5px solid #1f2a44 !important;
+  border-radius: 26px !important;
+  padding: 12px 26px !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28) !important;
+}
+body.th-halloween .gm-b3-stagecard {
+  background: rgba(24, 10, 56, 0.94) !important;
+  border-color: #f97316 !important;
+}
+.gm-b3-die {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px 18px !important;
+  min-height: 70px !important;
+}
+.gm-b3-die img.gm-b3-die-art,
+.gm-b3-die .gm-art {
+  width: 58px !important;
+  height: 58px !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  object-fit: contain !important;
+}
+.gm-b3-who .gm-monfull {
+  width: 70px !important;
+  height: 70px !important;
+}
+
 /* ---------- Who is in which team (setup list + in-game 👥 Teams overlay) ---------- */
 .gm-tlist-wrap { display: flex; flex-direction: column; gap: 10px; background: var(--card2, rgba(255,255,255,.6)); border: 3px solid rgba(31, 42, 68, .18); border-radius: 22px; padding: 12px; }
 .gm-tlist-title { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; }

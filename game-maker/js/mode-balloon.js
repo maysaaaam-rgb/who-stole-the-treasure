@@ -38,8 +38,6 @@
       var currentItem = null;
       var balloons = [];
 
-      if (A() && A().play) A().play('music_arcade');
-
       var wrap = U().h('div', { class: 'gm-bal-wrap' });
       var info = U().h('div', { class: 'gm-info' });
       var qbar = U().h('div', { class: 'gm-bal-qbar' });
@@ -99,7 +97,7 @@
             text: String(optText),
             correct: String(optText) === String(currentItem.a),
             xPct: lanePct,
-            yPct: 72 + (idx % 2) * 12,
+            yPct: 46 + (idx % 2) * 12,
             vy: vyBase * (0.9 + (idx % 3) * 0.1),
             swayPhase: idx * 1.4
           });
@@ -114,11 +112,19 @@
         var b = balloons[idx];
         if (!b) return;
 
+        if (J() && J().squash) J().squash(b.el, 1.24, 0.78, 180);
         b.el.classList.add('popped');
-        if (A()) A().play('balloon_pop');
+        if (A()) {
+          A().play('balloon_pop');
+          A().play('bubble_pop');
+        }
 
         if (b.correct) {
-          if (A()) A().play('correct');
+          if (A()) {
+            A().play('answer_right');
+            A().play('sparkle');
+            A().play('coin_collect');
+          }
           if (A() && currentItem) A().speak(currentItem.a);
           U().floatText('+20', b.el, 'good');
           U().addScore(turn, 20);
@@ -126,6 +132,7 @@
           if (J()) J().react(turn, 'big');
         } else {
           // Soft pop with no penalty; highlight the right balloon and give +5 for trying!
+          if (A()) A().play('answer_soft');
           balloons.forEach(function (other) {
             if (other.correct) other.el.classList.add('glow-right');
           });
@@ -142,9 +149,11 @@
         turnsDone++;
         if (turnsDone >= totalTurns) {
           phase = 'ended';
+          if (A()) A().play('cheer_kids');
           ctx.end();
           return;
         }
+        if (A()) A().play('whoosh_soft');
         turn = (turn + 1) % T.length;
         spawnQuestionBalloons();
       }

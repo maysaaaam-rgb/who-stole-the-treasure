@@ -74,6 +74,7 @@
 
       function highlightFinalTile() {
         if (eng.state.data.left === 1) {
+          A().play('drum_roll_short');
           tiles.forEach(function (t) {
             if (!t.used && t.el) {
               t.el.classList.add('gm-tile-final');
@@ -104,7 +105,7 @@
         eng.listen(b, 'pointerdown', function (e) {
           e.preventDefault();
           if (eng.state.phase !== 'action' || tl.used) return;
-          A().play('flip');
+          A().play('flip'); A().play('page_slide');
           J().squash(b, 1.16, 0.84, 240);
           playTile(tl);
         });
@@ -158,6 +159,7 @@
           J().squash(tl.el, 1.22, 0.8, 280);
           J().shockwave(tl.el, tl.golden ? '#ffe066' : team.color, 110, 420);
           J().sparks(tl.el, 16, [team.color, '#ffe066', '#ffffff'], 7);
+          A().play('coin_collect'); if (tl.golden || streakBonus) A().play('sparkle');
           U().fx('smoke_puff', tl.el);
           eng.award(turn, totPts, tl.el, (tl.golden ? '🌟 2× ' : '') + '+' + totPts + (streakBonus ? ' 🔥' : ''));
           if (tl.pu) {

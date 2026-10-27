@@ -14,10 +14,10 @@
   var J = function () { return GM.juice; };
 
   var BASE_COORDS = [
-    { top: '82%', left: '50%' }, // 0: Home
-    { top: '52%', left: '68%' }, // 1: 1st
-    { top: '22%', left: '50%' }, // 2: 2nd
-    { top: '52%', left: '32%' }  // 3: 3rd
+    { top: '70%', left: '50%' }, // 0: Home
+    { top: '45%', left: '66%' }, // 1: 1st
+    { top: '20%', left: '50%' }, // 2: 2nd
+    { top: '45%', left: '34%' }  // 3: 3rd
   ];
 
   GM.modes.baseball = {
@@ -44,8 +44,6 @@
       // Active runners on bases [1st, 2nd, 3rd] (each entry null or runner DOM element)
       var bases = [null, null, null];
 
-      if (A() && A().play) A().play('music_sports');
-
       var wrap = U().h('div', { class: 'gm-bas-wrap' });
       var info = U().h('div', { class: 'gm-info' });
       var field = U().h('div', { class: 'gm-bas-field' });
@@ -69,7 +67,7 @@
 
       var hudEl = U().h('div', { class: 'gm-bas-hud' });
       var runnersLayer = U().h('div', {});
-      var batterEl = U().h('div', { class: 'gm-bas-runner', style: 'top:82%;left:43%;' });
+      var batterEl = U().h('div', { class: 'gm-bas-runner', style: 'top:70%;left:42%;' });
 
       var meterBox = U().h('div', { class: 'gm-bas-meter-box' });
       var meterTrack = U().h('div', { class: 'gm-bas-meter' });
@@ -165,7 +163,8 @@
         phase = 'running';
         renderHud();
 
-        if (A()) A().play('kick');
+        if (A()) { A().play('kick'); A().play('whoosh_soft'); A().play('wood_knock'); }
+        if (J() && J().squash) J().squash(batterEl, 1.22, 0.82, 200);
 
         // Determine hit value from needlePct (center 50 is sweet spot)
         var dist = Math.abs(needlePct - 50);
@@ -233,13 +232,21 @@
             nextBases[0] = newRunner;
           }
           bases = nextBases;
+          if (A()) A().play('hunt_step');
+          if (J() && J().squash) {
+            bases.forEach(function (rEl) { if (rEl) J().squash(rEl, 1.18, 0.84, 180); });
+          }
           await U().sleep(360);
           if (phase === 'ended') return;
         }
 
         // Award at least +5 for the hit, plus +20 for every run that crossed Home plate!
         var totalPts = 5 + runsScored * 20;
-        if (runsScored > 0 && A()) A().play('goal_cheer');
+        if (A()) {
+          A().play('coin_collect');
+          if (basesHit >= 2 || runsScored > 0) A().play('sparkle');
+          if (runsScored > 0) { A().play('goal_cheer'); A().play('crowd_cheer_small'); }
+        }
         U().floatText('+' + totalPts + (runsScored ? ' (' + runsScored + ' RUN!)' : ' Hit!'), bHome, 'good');
         U().addScore(turn, totalPts);
         if (runsScored > 0) U().confetti(25);
@@ -269,6 +276,7 @@
           inning++;
           if (inning > maxInnings) {
             phase = 'ended';
+            if (A()) A().play('cheer_kids');
             ctx.end();
             return;
           }
@@ -288,8 +296,8 @@
         // Render 60fps Pitcher Mound, Pitching 3D Baseball, Swinging 3D Bat & Outfield Home Run Arc
         var W = fxCanvas.width, H = fxCanvas.height;
         fxCtx.clearRect(0, 0, W, H);
-        var moundX = W * 0.5, moundY = H * 0.52;
-        var homeX = W * 0.5, homeY = H * 0.80;
+        var moundX = W * 0.5, moundY = H * 0.45;
+        var homeX = W * 0.5, homeY = H * 0.68;
         // Pitcher's mound circle
         fxCtx.beginPath(); fxCtx.arc(moundX, moundY, 22, 0, Math.PI * 2);
         fxCtx.fillStyle = 'rgba(217, 119, 6, 0.75)'; fxCtx.fill();
