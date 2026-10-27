@@ -659,13 +659,13 @@
     save(); return true;
   }
 
-  function card(inner, extra) { return '<div style="background:var(--bg-surface,#fff);border:1px solid var(--border-light,#e2e8f0);border-radius:16px;padding:18px;margin-bottom:16px;' + (extra || '') + '">' + inner + '</div>'; }
-  function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:var(--text-main,#0f172a);">' + t + '</div>' + (sub ? '<div style="font-size:.8rem;color:var(--text-muted,#64748b);margin-top:2px;">' + sub + '</div>' : '') + '</div>'; }
+  function card(inner, extra) { return '<div style="background:#FFFFFF;border:1.5px solid #E6E1D6;border-bottom:4px solid #D5CFC2;border-radius:16px;padding:18px;margin-bottom:16px;color:#25242B;' + (extra || '') + '">' + inner + '</div>'; }
+  function h2(t, sub) { return '<div style="margin-bottom:12px;"><div style="font-size:1.05rem;font-weight:900;color:#25242B;font-family:\'Fraunces\',Georgia,serif;">' + t + '</div>' + (sub ? '<div style="font-size:.82rem;color:#52505E;margin-top:2px;">' + sub + '</div>' : '') + '</div>'; }
   function btn(label, onclick, kind, disabled) {
-    var bg = kind === 'danger' ? '#dc2626' : kind === 'ghost' ? 'transparent' : '#16a34a';
-    var color = kind === 'ghost' ? 'var(--text-main,#0f172a)' : '#fff';
-    var border = kind === 'ghost' ? '1px solid var(--border-light,#cbd5e1)' : 'none';
-    return '<button type="button" ' + (disabled ? 'disabled ' : 'onclick="' + onclick + '" ') + 'style="padding:7px 12px;border-radius:10px;font-weight:800;font-size:.78rem;cursor:' + (disabled ? 'not-allowed' : 'pointer') + ';background:' + bg + ';color:' + color + ';border:' + border + ';opacity:' + (disabled ? .45 : 1) + ';">' + label + '</button>';
+    var bg = kind === 'danger' ? '#dc2626' : kind === 'ghost' ? '#FCF9F5' : '#6E56CF';
+    var color = kind === 'ghost' ? '#25242B' : '#fff';
+    var border = kind === 'ghost' ? '1.5px solid #E6E1D6;border-bottom:3px solid #D5CFC2' : kind === 'danger' ? '1.5px solid #b91c1c;border-bottom:3px solid #7f1d1d' : '1.5px solid #4C389E;border-bottom:3px solid #37267A';
+    return '<button type="button" ' + (disabled ? 'disabled ' : 'onclick="' + onclick + '" ') + 'style="padding:7px 13px;border-radius:10px;font-weight:800;font-size:.8rem;cursor:' + (disabled ? 'not-allowed' : 'pointer') + ';background:' + bg + ';color:' + color + ';border:' + border + ';opacity:' + (disabled ? .45 : 1) + ';">' + label + '</button>';
   }
   function coinPill(n) { return '<span style="display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.82rem;">🪙 ' + n + '</span>'; }
   function when(ts) { try { return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
@@ -687,15 +687,23 @@
       students[0] || (store.getActiveStudent ? store.getActiveStudent() : null);
     if (curStu) shopStudentId = curStu.id;
 
-    var html = '<div style="max-width:980px;margin:0 auto;padding:6px 4px 40px;">' +
-      '<div style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">' +
-        '<div><div style="font-size:1.6rem;font-weight:900;color:var(--text-main,#0f172a);">🛍️ Classroom Store</div>' +
-        '<div style="font-size:.88rem;color:var(--text-muted,#64748b);margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level.</div>' +
-        '<div id="cs-cloud-status" style="margin-top:6px;font-size:.78rem;font-weight:800;color:var(--text-muted,#64748b);">' + cloudLabel() + '</div></div>' +
-        '<button type="button" id="cs-teacher-drawer-btn" onclick="ClassroomStore.ui.toggleDrawer()" style="padding:10px 18px;min-height:56px;border-radius:14px;font-weight:900;font-size:.95rem;cursor:pointer;border:0;border-bottom:5px solid #1e293b;background:#334155;color:#fff;transition:transform .12s cubic-bezier(.175,.885,.32,1.275);">📄 Worksheet coins (teacher)' + (pending.length ? ' · ' + pending.length : '') + (teacherDrawerOpen ? ' ▲' : ' ▼') + '</button>' +
+    var html = '<div style="max-width:1180px;margin:0 auto;padding:6px 8px 60px;color:#25242B;">' +
+      '<div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;">' +
+        '<div><h1 class="tines-h1" style="font-size:1.75rem;font-weight:700;color:#25242B;margin:0;">🛍️ Store &amp; Class Podium</h1>' +
+        '<div style="font-size:.9rem;color:#52505E;margin-top:4px;">Students earn <b>1 coin for every ' + cfg.coinsPerXp + ' XP</b> automatically. Coins never reduce XP or monster level.</div>' +
+        '<div id="cs-cloud-status" style="margin-top:4px;font-size:.78rem;font-weight:800;color:#787586;">' + cloudLabel() + '</div></div>' +
+      '</div>' +
+      '<div class="tines-hub-bar">' +
+        '<div class="tines-hub-tabs">' +
+          '<button type="button" class="tines-tab-btn ' + (!teacherDrawerOpen ? 'is-active' : '') + '" onclick="if(window.ClassroomStore&&ClassroomStore.ui){if(' + (teacherDrawerOpen ? 'true' : 'false') + ')ClassroomStore.ui.toggleDrawer();}">🛍️ Coin Shop &amp; Mystery Boxes</button>' +
+          '<button type="button" class="tines-tab-btn" onclick="switchView(\'rewards\')">🏆 Class Podium &amp; Badges</button>' +
+          '<button type="button" id="cs-teacher-drawer-btn" class="tines-tab-btn ' + (teacherDrawerOpen ? 'is-active' : '') + '" onclick="ClassroomStore.ui.toggleDrawer()">📄 Worksheet Coins &amp; Requests' + (pending.length ? ' <span class="tines-badge">' + pending.length + '</span>' : '') + (teacherDrawerOpen ? ' ▲' : ' ▼') + '</button>' +
+          (root.EAA_ILLUSTRATED_MONSTERS === true ? '<button type="button" class="tines-tab-btn" onclick="MonsterCloset.open()">👗 Monster Closet</button>' : '') +
+        '</div>' +
+        '<button type="button" class="tines-tab-btn" onclick="switchView(\'board\')">📺 Give Points on Board →</button>' +
       '</div>';
 
-    var drawerHtml = '<div id="cs-teacher-drawer" style="display:' + (teacherDrawerOpen ? 'block' : 'none') + ';margin-bottom:24px;padding:16px;border-radius:20px;background:rgba(15,23,42,.06);border:2px dashed var(--border-light,#cbd5e1);">';
+    var drawerHtml = '<div id="cs-teacher-drawer" style="display:' + (teacherDrawerOpen ? 'block' : 'none') + ';margin-bottom:24px;padding:18px;border-radius:20px;background:#F4EFE6;border:2px solid #D5CFC2;">';
 
     // pending requests
     drawerHtml += card(h2('📬 Reward requests waiting for you (' + pending.length + ')', 'Approve to keep the coins, decline to give them back.') +
@@ -780,11 +788,11 @@
 
     drawerHtml += '</div>';
 
-    var pupilPickerHtml = students.length ? '<div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-      '<span style="font-weight:900;font-size:.88rem;color:var(--text-main,#0f172a);">🧑‍🎓 Shopping as:</span>' +
+    var pupilPickerHtml = students.length ? '<div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#FFFFFF;border:1.5px solid #E6E1D6;border-radius:16px;padding:10px 14px;">' +
+      '<span style="font-weight:800;font-size:.88rem;color:#25242B;">🧑‍🎓 Shopping as:</span>' +
       students.map(function (stu) {
         var on = curStu && stu.id === curStu.id;
-        return '<button type="button" onclick="ClassroomStore.ui.pickStudent(\'' + esc(stu.id) + '\')" style="padding:7px 13px;border-radius:999px;font-weight:800;font-size:.84rem;cursor:pointer;border:0;border-bottom:4px solid ' + (on ? '#0369a1' : '#cbd5e1') + ';background:' + (on ? '#38bdf8' : 'var(--bg-surface,#fff)') + ';color:' + (on ? '#06101f' : 'var(--text-main,#0f172a)') + ';">' + esc(stu.firstName || stu.name) + ' (🪙 ' + balance(stu.id) + ')</button>';
+        return '<button type="button" onclick="ClassroomStore.ui.pickStudent(\'' + esc(stu.id) + '\')" style="padding:6px 13px;border-radius:999px;font-weight:800;font-size:.82rem;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#E6E1D6') + ';border-bottom:3px solid ' + (on ? '#37267A' : '#D5CFC2') + ';background:' + (on ? '#6E56CF' : '#FCF9F5') + ';color:' + (on ? '#FFFFFF' : '#25242B') + ';">' + esc(stu.firstName || stu.name) + ' (🪙 ' + balance(stu.id) + ')</button>';
       }).join('') + '</div>' : '';
 
     html += drawerHtml + pupilPickerHtml + (curStu ? shopBodyHtml(curStu) : '') + '</div>';
@@ -816,7 +824,7 @@
       '<div style="font-size:.8rem;color:#92400e;margin-top:4px;">You earn 1 coin for every ' + cfg.coinsPerXp + ' XP. Spending coins never lowers your XP or your monster level.</div></div></div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;">' + tabs.map(function (t) {
         var on = studentTab === t[0];
-        return '<button type="button" onclick="ClassroomStore.ui.tab(\'' + t[0] + '\')" style="padding:9px 14px;border-radius:12px;font-weight:800;font-size:.85rem;white-space:nowrap;cursor:pointer;border:1px solid ' + (on ? '#16a34a' : 'var(--border-light,#cbd5e1)') + ';background:' + (on ? '#16a34a' : 'var(--bg-surface,#fff)') + ';color:' + (on ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + t[1] + '</button>';
+        return '<button type="button" onclick="ClassroomStore.ui.tab(\'' + t[0] + '\')" style="padding:9px 14px;border-radius:12px;font-weight:800;font-size:.86rem;white-space:nowrap;cursor:pointer;border:1.5px solid ' + (on ? '#4C389E' : '#E6E1D6') + ';border-bottom:4px solid ' + (on ? '#37267A' : '#D5CFC2') + ';background:' + (on ? '#6E56CF' : '#FFFFFF') + ';color:' + (on ? '#FFFFFF' : '#25242B') + ';">' + t[1] + '</button>';
       }).join('') + '</div>';
 
     if (studentTab === 'items') {
@@ -824,8 +832,8 @@
       var cats = ['all', 'sets', 'pet', 'creature', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
       var catLabel = { all: 'All', sets: '🎭 Costume sets', pet: '🐾 Pets', creature: '🐉 Creatures', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
       var present = cats.filter(function (c) { return c === 'all' || (c === 'sets' && root.MonsterCostumes) || list.some(function (x) { return x.item.category === c; }); });
-      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">' + present.map(function (c) {
-        return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:800;cursor:pointer;border:1px solid var(--border-light,#cbd5e1);background:' + (itemFilter === c ? '#0f172a' : 'transparent') + ';color:' + (itemFilter === c ? '#fff' : 'var(--text-main,#0f172a)') + ';">' + catLabel[c] + '</button>';
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">' + present.map(function (c) {
+        return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:800;cursor:pointer;border:1.5px solid ' + (itemFilter === c ? '#6E56CF' : '#E6E1D6') + ';border-bottom:3px solid ' + (itemFilter === c ? '#4C389E' : '#D5CFC2') + ';background:' + (itemFilter === c ? '#EFEBF9' : '#FFFFFF') + ';color:' + (itemFilter === c ? '#4C389E' : '#52505E') + ';">' + catLabel[c] + '</button>';
       }).join('') + '</div>';
       var shown = list.filter(function (x) { return itemFilter === 'all' || x.item.category === itemFilter; });
       if (itemFilter === 'sets' && root.MonsterCostumes) {

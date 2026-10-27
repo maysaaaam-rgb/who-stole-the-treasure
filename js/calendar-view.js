@@ -312,18 +312,18 @@
 
   // ---------------------------------------------------------------- drawing
   var CSS = '' +
-    '.cal{color:#e6e8ee;max-width:1180px;margin:0 auto;padding:6px 4px 90px}.cal h1{margin:0;font-size:1.5rem}.cal .sub{color:#8b93a7;font-size:.9rem}' +
-    '.cal-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 12px}.cal-b{border:0;border-bottom:4px solid #0c4a6e;background:#0369a1;color:#fff;font:700 .9rem inherit;border-radius:12px;padding:8px 14px;cursor:pointer}.cal-b:active{transform:translateY(3px);border-bottom-width:1px}' +
-    '.cal-b.g{background:#334155;border-bottom-color:#1e293b}.cal-b.on{background:#f59e0b;border-bottom-color:#92400e;color:#1c1203}.cal-b.ok{background:#10b981;border-bottom-color:#065f46;color:#06101f}' +
-    '.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal-dow{color:#8b93a7;font-weight:800;font-size:.8rem;text-align:center;padding:4px}' +
-    '.cal-cell{min-height:104px;background:rgba(15,23,42,.8);border:1px solid #232a3b;border-radius:12px;padding:6px;cursor:pointer;overflow:hidden}.cal-cell:hover{border-color:#38bdf8}' +
-    '.cal-cell.off{opacity:.45}.cal-cell.today{border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25)}.cal-cell.sel{border-color:#a78bfa;background:rgba(76,29,149,.25)}.cal-cell b{font-size:.85rem}' +
-    '.cal-ev{display:block;font-size:.72rem;line-height:1.25;border-radius:6px;padding:2px 5px;margin-top:3px;color:#0b0d13;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cal-more{font-size:.7rem;color:#8b93a7;margin-top:3px}' +
-    '.cal-side{background:rgba(15,23,42,.85);border:1px solid #232a3b;border-radius:16px;padding:14px;margin-top:14px}.cal-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #1d2433;font-size:.92rem}' +
-    '.cal-tag{flex:none;border-radius:8px;padding:1px 8px;font-size:.75rem;font-weight:800;color:#0b0d13}.cal-t{flex:none;width:48px;color:#38bdf8;font-weight:800}.cal-x{margin-left:auto;background:none;border:0;color:#8b93a7;cursor:pointer;font-size:1rem}' +
-    '.cal-wk{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.cal-wk .cal-cell{min-height:260px}.cal-wk .cal-ev{white-space:normal;font-size:.76rem}' +
-    '.cal-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.78rem;color:#cbd5e1;margin:6px 0 12px}.cal-legend span i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}' +
-    '.cal-form{display:grid;gap:8px;grid-template-columns:1fr 1fr}.cal-form label{font-size:.8rem;color:#8b93a7;display:block}.cal-form input,.cal-form select,.cal-form textarea{width:100%;background:#0b0d13;color:#e6e8ee;border:1px solid #2a2f3d;border-radius:10px;padding:8px;font:inherit}' +
+    '.cal{color:#25242B;max-width:1200px;margin:0 auto;padding:6px 8px 90px}.cal h1{margin:0;font-size:1.65rem;color:#25242B}.cal .sub{color:#52505E;font-size:.92rem;margin-top:2px}' +
+    '.cal-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 12px}.cal-b{border:1.5px solid #4C389E;border-bottom:4px solid #37267A;background:#6E56CF;color:#fff;font:800 .88rem inherit;border-radius:12px;padding:8px 14px;cursor:pointer}.cal-b:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.cal-b.g{background:#FFFFFF;border-color:#E6E1D6;border-bottom-color:#D5CFC2;color:#25242B}.cal-b.on{background:#6E56CF;border-color:#4C389E;border-bottom-color:#37267A;color:#FFFFFF}.cal-b.ok{background:#10b981;border-color:#059669;border-bottom-color:#047857;color:#FFFFFF}' +
+    '.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.cal-dow{color:#52505E;font-weight:800;font-size:.8rem;text-align:center;padding:4px}' +
+    '.cal-cell{min-height:106px;background:#FFFFFF;border:1.5px solid #E6E1D6;border-bottom:3px solid #D5CFC2;border-radius:14px;padding:8px;cursor:pointer;overflow:hidden;color:#25242B;box-shadow:0 2px 6px rgba(37,36,43,.03)}.cal-cell:hover{border-color:#6E56CF}' +
+    '.cal-cell.off{opacity:.48;background:#F8F5EE}.cal-cell.today{border-color:#f59e0b;border-bottom-color:#b45309;background:#FFFBEB;box-shadow:0 0 0 2px rgba(245,158,11,.22)}.cal-cell.sel{border-color:#6E56CF;border-bottom-color:#4C389E;background:#EFEBF9}.cal-cell b{font-size:.88rem;color:#25242B}' +
+    '.cal-ev{display:block;font-size:.73rem;line-height:1.25;border-radius:6px;padding:2px 6px;margin-top:4px;color:#0b0d13;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cal-more{font-size:.72rem;color:#787586;font-weight:700;margin-top:4px}' +
+    '.cal-side{background:#FFFFFF;border:1.5px solid #E6E1D6;border-bottom:4px solid #D5CFC2;border-radius:18px;padding:16px;margin-top:16px;color:#25242B;box-shadow:0 4px 14px rgba(37,36,43,.04)}.cal-row{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #E6E1D6;font-size:.92rem;color:#25242B}' +
+    '.cal-tag{flex:none;border-radius:8px;padding:2px 8px;font-size:.75rem;font-weight:800;color:#0b0d13}.cal-t{flex:none;width:50px;color:#4C389E;font-weight:800}.cal-x{margin-left:auto;background:none;border:0;color:#787586;cursor:pointer;font-size:1rem}' +
+    '.cal-wk{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.cal-wk .cal-cell{min-height:260px}.cal-wk .cal-ev{white-space:normal;font-size:.76rem}' +
+    '.cal-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:#52505E;font-weight:700;margin:6px 0 12px;background:#FFFFFF;border:1px solid #E6E1D6;border-radius:12px;padding:8px 14px}.cal-legend span i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}' +
+    '.cal-form{display:grid;gap:8px;grid-template-columns:1fr 1fr}.cal-form label{font-size:.8rem;color:#52505E;font-weight:700;display:block}.cal-form input,.cal-form select,.cal-form textarea{width:100%;background:#FCF9F5;color:#25242B;border:1.5px solid #E6E1D6;border-radius:10px;padding:8px;font:inherit}' +
     '@media(max-width:800px){.cal-grid{gap:3px}.cal-cell{min-height:70px;padding:3px}.cal-ev{font-size:.62rem}.cal-wk{grid-template-columns:1fr}}';
   function css() { if (!document.getElementById('cal-css')) { var s = document.createElement('style'); s.id = 'cal-css'; s.textContent = CSS; document.head.appendChild(s); } }
   function evHtml(e) {
@@ -333,8 +333,8 @@
   function head(box) {
     var cl = classes();
     var label = st.mode === 'month' ? MON[st.m] + ' ' + st.y : (function () { var a = parse(st.wk), b = new Date(a); b.setDate(b.getDate() + 4); return a.getDate() + ' ' + MON[a.getMonth()].slice(0, 3) + ' – ' + b.getDate() + ' ' + MON[b.getMonth()].slice(0, 3) + ' ' + b.getFullYear(); })();
-    return '<h1>📅 Calendar</h1><div class="sub">Your lessons, the plan of the week, quizzes, birthdays and meetings in one place.</div>' +
-      '<div class="cal-top"><button class="cal-b g" onclick="CalendarView.step(-1)">◀</button><b style="font-size:1.15rem;min-width:170px;text-align:center">' + label + '</b><button class="cal-b g" onclick="CalendarView.step(1)">▶</button>' +
+    return '<h1>📅 Timetable &amp; School Calendar</h1><div class="sub">Your weekly lessons, quizzes, revision packs, birthdays and meetings in one place — tap any day to launch its lesson or print its pack.</div>' +
+      '<div class="cal-top"><button class="cal-b g" onclick="CalendarView.step(-1)">◀</button><b style="font-size:1.15rem;min-width:170px;text-align:center;color:#25242B;font-family:\'Fraunces\',Georgia,serif">' + label + '</b><button class="cal-b g" onclick="CalendarView.step(1)">▶</button>' +
       '<button class="cal-b g" onclick="CalendarView.today()">Today</button>' +
       '<button class="cal-b ' + (st.mode === 'month' ? 'on' : 'g') + '" onclick="CalendarView.mode(\'month\')">Month</button><button class="cal-b ' + (st.mode === 'week' ? 'on' : 'g') + '" onclick="CalendarView.mode(\'week\')">Week</button>' +
       '<span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\')">+ Add event</button></div>' +
@@ -389,14 +389,14 @@
     return '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">' + L.map(function (l, i) { return '<a class="cal-b' + (i === 0 ? ' ok' : '') + '" style="text-decoration:none;padding:5px 10px;font-size:.85rem" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>'; }).join('') + '</div>';
   }
   function sideHtml() {
-    if (!st.sel) return '<div class="cal-side" style="color:#8b93a7">Tap a day to see everything on it, add an event, or open a lesson.</div>';
+    if (!st.sel) return '<div class="cal-side" style="color:#52505E">Tap a day to see everything on it, add an event, or open a lesson.</div>';
     var d = parse(st.sel), evs = eventsOn(d);
-    return '<div class="cal-side"><div style="display:flex;align-items:center;gap:10px"><b style="font-size:1.05rem">' + d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</b><span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\',\'' + st.sel + '\')">+ Add event</button></div>' +
+    return '<div class="cal-side"><div style="display:flex;align-items:center;gap:10px"><b style="font-size:1.08rem;color:#25242B;font-family:\'Fraunces\',Georgia,serif">' + d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</b><span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\',\'' + st.sel + '\')">+ Add event</button></div>' +
       (evs.length ? evs.map(function (e) {
         var T = TYPES[e.type] || TYPES.other, mine = !!e.id;
-        return '<div class="cal-row"><span class="cal-t">' + esc(e.time || '') + '</span><span class="cal-tag" style="background:' + T[2] + '">' + T[0] + ' ' + T[1] + '</span><span><b>' + (e.classId ? esc(shortName(e.classId)) + ' · ' : '') + esc(e.title) + '</b>' + (e.note ? '<div style="color:#8b93a7;font-size:.82rem">' + esc(e.note) + '</div>' : '') + linkBtns(e) + '</span>' +
+        return '<div class="cal-row"><span class="cal-t">' + esc(e.time || '') + '</span><span class="cal-tag" style="background:' + T[2] + '">' + T[0] + ' ' + T[1] + '</span><span><b style="color:#25242B">' + (e.classId ? esc(shortName(e.classId)) + ' · ' : '') + esc(e.title) + '</b>' + (e.note ? '<div style="color:#52505E;font-size:.82rem;margin-top:2px">' + esc(e.note) + '</div>' : '') + linkBtns(e) + '</span>' +
           (mine ? '<button class="cal-x" title="Edit" onclick="CalendarView.edit(\'' + esc(e.id) + '\')">✏️</button><button class="cal-x" style="margin-left:0" title="Delete" onclick="CalendarView.del(\'' + esc(e.id) + '\')">🗑️</button>' : '') + '</div>';
-      }).join('') : '<div style="color:#8b93a7;padding:10px 0">Nothing on this day.</div>') + '</div>';
+      }).join('') : '<div style="color:#787586;padding:10px 0">Nothing on this day.</div>') + '</div>';
   }
   function draw() {
     var box = document.getElementById('cal-root'); if (!box) return;

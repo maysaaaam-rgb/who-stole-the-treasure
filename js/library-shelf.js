@@ -1,16 +1,17 @@
-/* Library shelf: the Library opens on the lessons, reviews, quizzes, printables, songs, and homework we made,
-   sorted logically by Unit (Unit 4 -> Unit 3 -> Unit 2 -> Unit 1 -> Classroom & Songs) and within each unit
-   in strict teaching sequence (Lesson 1 -> Lesson 2 -> Lesson 3 -> Lesson 4 -> Lesson 5 -> Review -> Quiz/Printable/Homework).
-   Standalone games live exclusively in the Games section (#shelf). */
+/* Library shelf: Unified Hub 2 ("Lessons & Games").
+   Connects interactive lessons, unit reviews, quizzes, printables, Smartboard Games & Game Maker,
+   and downloadable Word/PDF Lesson Plans in one clean Tines Bento hub. */
 (function (root) {
   'use strict';
   var KEY = 'eaa_lib_shelf';
   var TABS = [
     ['week', '📌 Current Unit (Unit 4)'],
+    ['games', '🎮 Smartboard Games'],
+    ['plans', '📋 Lesson Plans (Word & PDF)'],
     ['g3', '🎒 Grade 3 Lessons'],
     ['g4', '🎓 Grade 4 Lessons'],
     ['alice', '🫖 Alice & Drama'],
-    ['else', '📚 Full Curriculum Library']
+    ['else', '📚 Textbook Anthology']
   ];
   var KINDS = [
     ['all', 'All Items'],
@@ -30,6 +31,7 @@
     });
   }
   function catalog() { return (root.Timetable && root.Timetable.catalog) || []; }
+  function plansList() { return root.LESSON_PLANS || []; }
   function isAlice(c) { return /alice|tea party/i.test(c.id + ' ' + c.title); }
   function unitOf(c) {
     if (c && c.unit != null) return Number(c.unit);
@@ -48,7 +50,6 @@
   }
 
   function items(ignoreKind) {
-    // Exclude standalone games ('game') from Library — games belong in the Games section (#shelf)
     var list = catalog().filter(function (c) {
       return c && c.route && c.kind !== 'game' && c.kind !== 'nav';
     });
@@ -65,6 +66,12 @@
   }
 
   function forTab(t, ignoreKind) {
+    if (t === 'games') {
+      return root.ClassMode && root.ClassMode.shelfCount ? { length: root.ClassMode.shelfCount() } : [];
+    }
+    if (t === 'plans') {
+      return plansList();
+    }
     var list = items(ignoreKind);
     if (t === 'week') {
       var weekAgo = new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10);
@@ -84,13 +91,25 @@
   }
 
   var KIND_BADGE = {
-    lesson:    { label: 'LESSON',    bg: '#0284c7', fg: '#fff' },
-    review:    { label: 'REVIEW',    bg: '#f59e0b', fg: '#06101f' },
-    quiz:      { label: 'QUIZ',      bg: '#a855f7', fg: '#fff' },
-    printable: { label: 'PRINTABLE', bg: '#10b981', fg: '#06101f' },
-    homework:  { label: 'HOMEWORK',  bg: '#ec4899', fg: '#fff' },
-    song:      { label: 'SONG',      bg: '#6366f1', fg: '#fff' }
+    lesson:    { label: 'LESSON',    bg: '#EFEBF9', fg: '#4C389E' },
+    review:    { label: 'REVIEW',    bg: '#FEF3C7', fg: '#92400E' },
+    quiz:      { label: 'QUIZ',      bg: '#FCE7F3', fg: '#9D174D' },
+    printable: { label: 'PRINTABLE', bg: '#DCFCE7', fg: '#166534' },
+    homework:  { label: 'HOMEWORK',  bg: '#E0F2FE', fg: '#0369A1' },
+    song:      { label: 'SONG',      bg: '#EDE9FE', fg: '#5B21B6' }
   };
+
+  function matchingPlan(route) {
+    if (!route) return null;
+    var clean = String(route).split('?')[0];
+    var list = plansList();
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].launch && (list[i].launch === route || String(list[i].launch).split('?')[0] === clean)) {
+        return list[i];
+      }
+    }
+    return null;
+  }
 
   function card(c) {
     var fresh = Date.now() - new Date(addedOf(c)).getTime() < 8 * 86400000;
@@ -99,15 +118,45 @@
     var uPill = u ? '<span class="ls-u">Unit ' + u + '</span>' : '';
     var kb = KIND_BADGE[c.kind || 'lesson'] || KIND_BADGE.lesson;
     var kindPill = '<span class="ls-k" style="background:' + kb.bg + ';color:' + kb.fg + '">' + kb.label + '</span>';
+    var plan = matchingPlan(c.route);
+    var planPill = plan ? '<span class="ls-k" style="background:#F4EFE6;color:#25242B;border:1px solid #D5CFC2" onclick="event.preventDefault();event.stopPropagation();window.open(\'lesson-plans/' + esc(plan.file) + '.pdf\',\'_blank\')" title="Open PDF Lesson Plan">📄 Plan PDF</span>' : '';
     return '<a class="ls-card" href="' + esc(c.route) + '">' +
       '<span class="ls-ic">' + esc(c.icon || '📖') + '</span>' +
       '<span class="ls-tx"><b>' + esc(c.title) + '</b>' +
-      '<small class="ls-meta">' + g + uPill + kindPill + '</small></span>' +
+      '<small class="ls-meta">' + g + uPill + kindPill + planPill + '</small></span>' +
       (fresh ? '<em>NEW</em>' : '') +
       '<i>▶</i></a>';
   }
 
+  function renderPlansBody() {
+    var list = plansList();
+    var needle = q.trim().toLowerCase();
+    if (needle) {
+      list = list.filter(function (p) {
+        return (p.title + ' ' + p.grade + ' ' + p.file).toLowerCase().indexOf(needle) >= 0;
+      });
+    }
+    var now = Date.now();
+    if (!list.length) return '<div class="ls-empty">No lesson plans match your search.</div>';
+    return '<div class="lp-section">' +
+      '<div class="lp-head" style="margin-bottom:14px"><h2 style="margin:0 0 4px;font-size:1.25rem">📋 Official Lesson Plans (PDF &amp; Word)</h2><span style="font-size:.88rem">Ready to print or send to the headteacher, linked directly to each interactive smartboard lesson.</span></div>' +
+      '<div class="lp-grid">' + list.map(function (p) {
+        var isNew = now - new Date(p.date).getTime() < 7 * 86400000;
+        return '<div class="lp-card"><div class="lp-top" style="display:flex;gap:6px;align-items:center"><span class="ls-g">' + esc(p.grade) + '</span>' + (p.kind ? '<span class="ls-u">' + esc(p.kind) + '</span>' : '') + (isNew ? '<span class="ls-k" style="background:#DCFCE7;color:#166534;margin-left:auto">NEW</span>' : '') + '</div>' +
+          '<b>' + esc(p.title) + '</b><small>' + new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '</small>' +
+          '<div class="lp-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px"><a class="tines-tab-btn" style="text-decoration:none;padding:6px 12px;font-size:.8rem" href="lesson-plans/' + esc(p.file) + '.pdf" target="_blank" rel="noopener">📄 PDF</a>' +
+          (p.word ? '<a class="tines-tab-btn" style="text-decoration:none;padding:6px 12px;font-size:.8rem" href="lesson-plans/' + esc(p.file) + '.docx" download>📝 Word</a>' : '') +
+          (p.launch ? '<a class="tines-tab-btn is-active" style="text-decoration:none;padding:6px 12px;font-size:.8rem" href="' + esc(p.launch) + '">▶ Open Lesson</a>' : '') + '</div></div>';
+      }).join('') + '</div></div>';
+  }
+
   function body() {
+    if (tab === 'games') {
+      return '<div id="ls-games-host">' + (root.ClassMode && root.ClassMode.shelfHtml ? root.ClassMode.shelfHtml(true) : '<div class="ls-empty">Games Shelf is loading…</div>') + '</div>';
+    }
+    if (tab === 'plans') {
+      return renderPlansBody();
+    }
     var list = forTab(tab, false);
     if (!list.length) return '<div class="ls-empty">No lessons or resources match' + (q ? ' “' + esc(q) + '”' : ' this filter') + '.</div>';
     if (tab === 'alice') {
@@ -144,31 +193,31 @@
     }).join('');
   }
 
-  var CSS = '.ls{max-width:1220px;margin:0 auto;padding:4px 4px 90px;color:#e6e8ee}' +
-    '.ls-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}' +
-    '.ls h1{margin:0 0 2px;font-size:1.55rem}.ls .ls-sub{color:#94a3b8;margin:0;font-size:.92rem}' +
-    '.ls-goto-games{border:0;border-bottom:5px solid #581c87;background:linear-gradient(135deg,#a855f7,#7e22ce);color:#fff;font:800 .92rem inherit;border-radius:14px;padding:10px 18px;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +
-    '.ls-goto-games:active{transform:translateY(4px);border-bottom-width:1px}' +
-    '.ls-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}' +
-    '.ls-tab{border:0;border-bottom:5px solid #1e293b;background:#334155;color:#fff;font:800 .96rem inherit;border-radius:14px;padding:10px 16px;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +
-    '.ls-tab:active{transform:translateY(4px);border-bottom-width:1px}.ls-tab.on{background:#f59e0b;border-bottom-color:#92400e;color:#1c1203}.ls-tab span{opacity:.75;font-weight:700;margin-left:4px}' +
+  var CSS = '.ls{max-width:1240px;margin:0 auto;padding:6px 8px 90px;color:#25242B}' +
+    '.ls-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}' +
+    '.ls h1{margin:0 0 2px;font-size:1.65rem}.ls .ls-sub{color:#52505E;margin:0;font-size:.92rem}' +
+    '.ls-goto-games{border:1.5px solid #4C389E;border-bottom:4px solid #37267A;background:linear-gradient(180deg,#6E56CF,#4C389E);color:#fff;font:800 .9rem inherit;border-radius:13px;padding:10px 18px;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +
+    '.ls-goto-games:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.ls-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}' +
+    '.ls-tab{border:1.5px solid #E6E1D6;border-bottom:4px solid #D5CFC2;background:#FFFFFF;color:#52505E;font:800 .9rem inherit;border-radius:13px;padding:9px 15px;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +
+    '.ls-tab:active{transform:translateY(3px);border-bottom-width:1px}.ls-tab.on{background:#6E56CF;border-color:#4C389E;border-bottom-color:#37267A;color:#FFFFFF}.ls-tab span{opacity:.85;font-weight:700;margin-left:4px}' +
     '.ls-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}' +
     '.ls-kinds{display:flex;gap:6px;flex-wrap:wrap}' +
-    '.ls-kbtn{border:1px solid rgba(255,255,255,.14);border-bottom:4px solid #0f172a;background:rgba(15,23,42,.85);color:#cbd5e1;font:700 .84rem inherit;border-radius:12px;padding:7px 13px;cursor:pointer;transition:transform .12s}' +
-    '.ls-kbtn:active{transform:translateY(3px);border-bottom-width:1px}.ls-kbtn.on{background:#0284c7;border-color:#38bdf8;border-bottom-color:#075985;color:#fff}' +
-    '.ls-q{width:min(360px,100%);background:rgba(15,23,42,.85);border:1px solid #334155;border-radius:12px;color:#e6e8ee;padding:8px 12px;font:inherit;margin-left:auto}' +
-    '.ls-h{margin:22px 0 10px;font-size:1.12rem;color:#38bdf8;display:flex;align-items:center;gap:8px}.ls-h span{background:rgba(56,189,248,.15);color:#7dd3fc;border-radius:99px;padding:1px 9px;font-weight:800;font-size:.78rem}' +
+    '.ls-kbtn{border:1.5px solid #E6E1D6;border-bottom:3px solid #D5CFC2;background:#FFFFFF;color:#52505E;font:700 .84rem inherit;border-radius:11px;padding:7px 13px;cursor:pointer;transition:transform .12s}' +
+    '.ls-kbtn:active{transform:translateY(2px);border-bottom-width:1px}.ls-kbtn.on{background:#EFEBF9;border-color:#6E56CF;border-bottom-color:#4C389E;color:#4C389E;font-weight:800}' +
+    '.ls-q{width:min(360px,100%);background:#FFFFFF;border:1.5px solid #E6E1D6;border-radius:12px;color:#25242B;padding:8px 12px;font:inherit;margin-left:auto}' +
+    '.ls-h{margin:22px 0 10px;font-size:1.15rem;color:#25242B;display:flex;align-items:center;gap:8px}.ls-h span{background:#EFEBF9;color:#4C389E;border-radius:99px;padding:2px 10px;font-weight:800;font-size:.78rem}' +
     '.ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}' +
-    '.ls-card{position:relative;display:flex;align-items:center;gap:12px;background:rgba(15,23,42,.88);border:1px solid rgba(255,255,255,.1);border-bottom:5px solid #090d16;border-radius:16px;padding:14px;text-decoration:none;color:#e6e8ee;box-shadow:0 4px 20px -2px rgba(0,0,0,.4);transition:transform .14s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
-    '.ls-card:hover{border-color:#38bdf8;transform:translateY(-2px)}.ls-card:active{transform:translateY(3px);border-bottom-width:2px}' +
-    '.ls-ic{font-size:2.1rem;flex:none}.ls-tx{flex:1;min-width:0}.ls-tx b{display:block;font-size:.96rem;line-height:1.3;margin-bottom:5px}' +
+    '.ls-card{position:relative;display:flex;align-items:center;gap:12px;background:#FFFFFF;border:1.5px solid #E6E1D6;border-bottom:4px solid #D5CFC2;border-radius:16px;padding:14px;text-decoration:none;color:#25242B;box-shadow:0 3px 12px rgba(37,36,43,.05);transition:transform .14s cubic-bezier(.175,.885,.32,1.275),border-color .14s}' +
+    '.ls-card:hover{border-color:#6E56CF;transform:translateY(-2px)}.ls-card:active{transform:translateY(3px);border-bottom-width:2px}' +
+    '.ls-ic{font-size:2.1rem;flex:none;width:48px;height:48px;border-radius:12px;background:#FCF9F5;border:1px solid #E6E1D6;display:flex;align-items:center;justify-content:center}.ls-tx{flex:1;min-width:0}.ls-tx b{display:block;font-size:.96rem;line-height:1.3;margin-bottom:5px;color:#25242B}' +
     '.ls-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}' +
-    '.ls-g{background:#0369a1;color:#fff;border-radius:6px;padding:1px 7px;font-weight:800;font-size:.68rem}' +
-    '.ls-u{background:rgba(255,255,255,.1);color:#cbd5e1;border-radius:6px;padding:1px 7px;font-weight:800;font-size:.68rem}' +
-    '.ls-k{border-radius:6px;padding:1px 7px;font-weight:900;font-size:.65rem;letter-spacing:.03em}' +
-    '.ls-card em{position:absolute;top:8px;right:10px;background:#10b981;color:#06101f;border-radius:8px;font-style:normal;font-weight:800;font-size:.66rem;padding:1px 7px}.ls-card i{font-style:normal;color:#38bdf8;font-size:1.15rem}' +
-    '.ls-empty{padding:40px;text-align:center;color:#8b93a7}' +
-    '@media(max-width:768px){.ls-top{gap:8px}.ls h1{font-size:1.22rem}.ls .ls-sub{font-size:.8rem}.ls-goto-games{width:100%;text-align:center;padding:8px 14px;font-size:.84rem}.ls-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:6px;margin:6px 0;padding-bottom:3px}.ls-tabs::-webkit-scrollbar{display:none}.ls-tab{flex:0 0 auto;white-space:nowrap;padding:8px 12px;font-size:.82rem}.ls-bar{gap:6px;margin:4px 0 10px}.ls-kinds{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;padding-bottom:2px}.ls-kinds::-webkit-scrollbar{display:none}.ls-kbtn{flex:0 0 auto;white-space:nowrap;padding:6px 10px;font-size:.78rem}.ls-q{width:100%;margin-left:0;padding:7px 10px;font-size:.86rem}.ls-grid{grid-template-columns:1fr;gap:9px}.ls-card{padding:11px 12px}.ls-ic{font-size:1.75rem}}';
+    '.ls-g{background:#EFEBF9;color:#4C389E;border-radius:6px;padding:2px 7px;font-weight:800;font-size:.68rem}' +
+    '.ls-u{background:#F4EFE6;color:#52505E;border-radius:6px;padding:2px 7px;font-weight:800;font-size:.68rem}' +
+    '.ls-k{border-radius:6px;padding:2px 7px;font-weight:800;font-size:.66rem;letter-spacing:.02em}' +
+    '.ls-card em{position:absolute;top:8px;right:10px;background:#10b981;color:#fff;border-radius:8px;font-style:normal;font-weight:800;font-size:.66rem;padding:1px 7px}.ls-card i{font-style:normal;color:#6E56CF;font-size:1.15rem;font-weight:800}' +
+    '.ls-empty{padding:40px;text-align:center;color:#787586;background:#FFFFFF;border:1.5px solid #E6E1D6;border-radius:16px}' +
+    '@media(max-width:768px){.ls-top{gap:8px}.ls h1{font-size:1.22rem}.ls .ls-sub{font-size:.8rem}.ls-goto-games{width:100%;text-align:center;padding:8px 14px;font-size:.84rem}.ls-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:6px;margin:6px 0;padding-bottom:3px}.ls-tabs::-webkit-scrollbar{display:none}.ls-tab{flex:0 0 auto;white-space:nowrap;padding:8px 12px;font-size:.82rem}.ls-bar{gap:6px;margin:4px 0 10px}.ls-kinds{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;padding-bottom:2px}.ls-kinds::-webkit-scrollbar{display:none}.ls-kbtn{flex:0 0 auto;white-space:nowrap;padding:6px 10px;font-size:.78rem}.ls-q{width:100%;margin-left:0;padding:7px 10px;font-size:.86rem}.ls-grid{grid-template-columns:1fr;gap:9px}.ls-card{padding:11px 12px}.ls-ic{font-size:1.65rem;width:42px;height:42px}}';
 
   function ensureCss() {
     if (!document.getElementById('ls-css')) {
@@ -188,11 +237,16 @@
     var kinds = KINDS.map(function (k) {
       return '<button type="button" class="ls-kbtn' + (k[0] === kindFilter ? ' on' : '') + '" data-k="' + k[0] + '">' + k[1] + '</button>';
     }).join('');
+    var showLessonBar = tab !== 'else' && tab !== 'games' && tab !== 'plans';
+    var showPlansSearch = tab === 'plans';
     container.innerHTML = '<div class="ls">' +
-      '<div class="ls-top"><div><h1>📖 Lessons & Curriculum Library</h1><p class="ls-sub">Interactive lessons, unit reviews, quizzes, printables & homework — ordered by Unit & Lesson sequence. Pure games are in the Games Shelf.</p></div>' +
-      '<button type="button" class="ls-goto-games" onclick="if(window.switchView)window.switchView(\'shelf\')">🎮 Go to Games Shelf →</button></div>' +
+      '<div class="ls-top"><div><h1>📖 Lessons, Games &amp; Curriculum Plans</h1><p class="ls-sub">Interactive smartboard lessons, unit reviews, team games, and printable Word/PDF lesson plans — connected in one place.</p></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button type="button" class="ls-goto-games" onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\'">🎮 Launch Game Maker →</button>' +
+      '</div></div>' +
       '<div class="ls-tabs">' + tabs + '</div>' +
-      (tab === 'else' ? '' : '<div class="ls-bar"><div class="ls-kinds">' + kinds + '</div><input class="ls-q" id="ls-q" type="search" placeholder="Search lessons, reviews, quizzes..." value="' + esc(q) + '"></div>') +
+      (showLessonBar ? '<div class="ls-bar"><div class="ls-kinds">' + kinds + '</div><input class="ls-q" id="ls-q" type="search" placeholder="Search lessons, reviews, quizzes..." value="' + esc(q) + '"></div>' : '') +
+      (showPlansSearch ? '<div class="ls-bar"><input class="ls-q" id="ls-q" type="search" style="margin-left:0" placeholder="Search lesson plans by unit, grade or title..." value="' + esc(q) + '"></div>' : '') +
       '<div id="ls-body">' + (tab === 'else' ? '' : body()) + '</div></div>';
     [].forEach.call(container.querySelectorAll('.ls-tab'), function (b) {
       b.addEventListener('click', function () {
@@ -236,5 +290,13 @@
   if (!install()) {
     var n = 0, iv = setInterval(function () { if (install() || ++n > 40) clearInterval(iv); }, 250);
   }
-  root.LibraryShelf = { setTab: function (t) { tab = t; }, install: install };
+  root.LibraryShelf = {
+    setTab: function (t) { tab = t; try { localStorage.setItem(KEY, tab); } catch (e) { /* ignore */ } },
+    openTab: function (t) {
+      tab = t;
+      try { localStorage.setItem(KEY, tab); } catch (e) { /* ignore */ }
+      if (root.switchView) root.switchView('library');
+    },
+    install: install
+  };
 })(window);

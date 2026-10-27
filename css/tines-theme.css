@@ -1,0 +1,1387 @@
+/* ==========================================================================
+   TINES EDITORIAL BENTO THEME & UNIFIED 5-HUB ARCHITECTURE
+   Warm Linen (#FCF9F5) · Crisp White Bento (#FFFFFF) · Warm Stone (#E6E1D6)
+   Charcoal Ink (#25242B) · Tines Purple (#6E56CF) · Tactile 3D Push-Buttons
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root,
+html,
+body,
+html.class-mode,
+html:not(.class-mode) {
+  --tines-linen: #FCF9F5;
+  --tines-linen-alt: #F4EFE6;
+  --tines-card: #FFFFFF;
+  --tines-border: #E6E1D6;
+  --tines-border-strong: #D5CFC2;
+  --tines-ink: #25242B;
+  --tines-ink-secondary: #52505E;
+  --tines-ink-muted: #787586;
+  --tines-purple: #6E56CF;
+  --tines-purple-dark: #4C389E;
+  --tines-purple-light: #8D75E6;
+  --tines-lavender: #EFEBF9;
+  --tines-lavender-border: #D4C8F3;
+  --tines-emerald: #10B981;
+  --tines-emerald-dark: #059669;
+  --tines-amber: #F59E0B;
+  --tines-amber-dark: #B45309;
+  --tines-coral: #E5484D;
+  --tines-sky: #0EA5E9;
+
+  /* Override platform variables so inline styles resolve to high-contrast dark-on-light */
+  --bg-canvas: #FCF9F5 !important;
+  --bg-surface: #FFFFFF !important;
+  --bg-muted: #F4EFE6 !important;
+  --bg-card-secondary: #F8F5EE !important;
+  --text-main: #25242B !important;
+  --text-secondary: #52505E !important;
+  --text-muted: #787586 !important;
+  --border-light: #E6E1D6 !important;
+  --border-subtle: #EAE5DB !important;
+  --color-primary: #6E56CF !important;
+  --color-primary-hover: #5B43BC !important;
+  --color-primary-soft: #EFEBF9 !important;
+}
+
+/* ==========================================================================
+   1. GLOBAL SHELL, HEADER & UNIFIED 5-HUB SIDEBAR / RAIL
+   ========================================================================== */
+html:not(.platform-locked) body,
+html.class-mode:not(.platform-locked) body {
+  background: var(--tines-linen) !important;
+  color: var(--tines-ink) !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.app-layout,
+.app-main,
+#app-view-container {
+  background: transparent !important;
+  color: var(--tines-ink) !important;
+}
+
+/* Top Header */
+.app-header,
+html.class-mode .app-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 2px solid var(--tines-border) !important;
+  box-shadow: 0 2px 12px rgba(37, 36, 43, 0.05) !important;
+  color: var(--tines-ink) !important;
+}
+
+.brand-logo-btn span {
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-weight: 700 !important;
+  color: var(--tines-ink) !important;
+  letter-spacing: -0.02em !important;
+}
+
+.brand-icon-box {
+  background: linear-gradient(135deg, #6E56CF 0%, #4C389E 100%) !important;
+  color: #FFFFFF !important;
+  border-radius: 11px !important;
+  box-shadow: 0 3px 10px rgba(110, 86, 207, 0.3) !important;
+}
+
+/* Header Class Chips (3A / 3B / 4A / 4B) — Shown in both modes */
+.cm-classes {
+  display: inline-flex !important;
+  gap: 6px !important;
+  align-items: center !important;
+  background: var(--tines-linen-alt) !important;
+  padding: 4px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--tines-border) !important;
+}
+
+.cm-classes .cm-cls {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+  padding: 6px 12px !important;
+  min-height: 36px !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  border-bottom: 3px solid transparent !important;
+  background: transparent !important;
+  color: var(--tines-ink-secondary) !important;
+  cursor: pointer !important;
+  transition: all 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.cm-classes .cm-cls:hover {
+  background: #FFFFFF !important;
+  color: var(--tines-ink) !important;
+}
+
+.cm-classes .cm-cls.on {
+  background: var(--tines-purple) !important;
+  color: #FFFFFF !important;
+  border-color: var(--tines-purple-dark) !important;
+  border-bottom: 3px solid #37267A !important;
+  box-shadow: 0 3px 8px rgba(110, 86, 207, 0.28) !important;
+}
+
+/* Header Mode Toggle & Quick Launchers */
+#cm-toggle,
+.cm-hdr-quick {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+  padding: 7px 13px !important;
+  min-height: 38px !important;
+  border-radius: 12px !important;
+  background: #FFFFFF !important;
+  color: var(--tines-ink) !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 6px rgba(37, 36, 43, 0.05) !important;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.14s !important;
+}
+
+#cm-toggle:hover,
+.cm-hdr-quick:hover {
+  border-color: var(--tines-purple) !important;
+  background: var(--tines-lavender) !important;
+  color: var(--tines-purple-dark) !important;
+}
+
+#cm-toggle:active,
+.cm-hdr-quick:active,
+#cm-gm-btn:active {
+  transform: translateY(3px) !important;
+  border-bottom-width: 1px !important;
+}
+
+/* Left Sidebar — Unified Tines Surface */
+.app-sidebar,
+html.class-mode .app-sidebar {
+  background: #FFFFFF !important;
+  border-right: 2px solid var(--tines-border) !important;
+  box-shadow: 2px 0 12px rgba(37, 36, 43, 0.03) !important;
+}
+
+/* Class Mode Picture Rail (5 Connected Hubs — Fits 100% without vertical overflow) */
+html.class-mode .app-sidebar {
+  width: 112px !important;
+  padding: 10px 8px !important;
+}
+
+html.class-mode .cm-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  height: 100% !important;
+  justify-content: flex-start !important;
+}
+
+html.class-mode .cm-b {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  padding: 9px 6px !important;
+  min-height: 82px !important;
+  border-radius: 16px !important;
+  background: var(--tines-linen) !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 0.78rem !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 6px rgba(37, 36, 43, 0.04) !important;
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.14s, border-color 0.14s !important;
+}
+
+html.class-mode .cm-b img {
+  height: 38px !important;
+  width: 38px !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 3px 4px rgba(37, 36, 43, 0.14)) !important;
+}
+
+html.class-mode .cm-b span {
+  color: var(--tines-ink) !important;
+  text-shadow: none !important;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
+}
+
+html.class-mode .cm-b:hover {
+  transform: translateY(-2px) !important;
+  background: #FFFFFF !important;
+  border-color: var(--tines-purple-light) !important;
+}
+
+html.class-mode .cm-b:active {
+  transform: translateY(3px) !important;
+  border-bottom-width: 1px !important;
+}
+
+html.class-mode .cm-b.is-on {
+  background: var(--tines-lavender) !important;
+  border-color: var(--tines-purple) !important;
+  border-bottom: 4px solid var(--tines-purple-dark) !important;
+  box-shadow: 0 4px 12px rgba(110, 86, 207, 0.18) !important;
+}
+
+html.class-mode .cm-b.is-on span {
+  color: var(--tines-purple-dark) !important;
+}
+
+/* Teacher Mode Sidebar Navigation */
+.sidebar-section-header {
+  color: var(--tines-ink-muted) !important;
+}
+
+.sidebar-section-title {
+  color: var(--tines-ink-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.sidebar-nav-list .nav-link-btn {
+  color: var(--tines-ink-secondary) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  padding: 9px 12px !important;
+  font-weight: 700 !important;
+  font-size: 0.88rem !important;
+  transition: all 0.14s ease !important;
+}
+
+.sidebar-nav-list .nav-link-btn:hover {
+  background: var(--tines-linen) !important;
+  color: var(--tines-ink) !important;
+  border-color: var(--tines-border) !important;
+}
+
+.sidebar-nav-list .nav-link-btn.is-active {
+  background: var(--tines-lavender) !important;
+  color: var(--tines-purple-dark) !important;
+  border: 1px solid var(--tines-lavender-border) !important;
+  border-left: 4px solid var(--tines-purple) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(110, 86, 207, 0.1) !important;
+}
+
+.sidebar-nav-list .nav-link-btn.is-active .nav-label {
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+/* ==========================================================================
+   2. EDITORIAL SERIF HEADINGS & SHARED TINES BENTO COMPONENTS
+   ========================================================================== */
+.cc h1,
+.ls h1,
+.cal h1,
+.cr-hd h1,
+.cm-shelf-hd h1,
+.tines-h1 {
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-weight: 700 !important;
+  color: var(--tines-ink) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Shared Tines Sub-Navigation Bar (Used in Store & Podium, Lessons & Games, Teacher Hub) */
+.tines-hub-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #FFFFFF;
+  border: 1.5px solid var(--tines-border);
+  border-bottom: 4px solid var(--tines-border-strong);
+  border-radius: 18px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 14px rgba(37, 36, 43, 0.04);
+}
+
+.tines-hub-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tines-tab-btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--tines-border);
+  border-bottom: 4px solid var(--tines-border-strong);
+  background: var(--tines-linen);
+  color: var(--tines-ink-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.tines-tab-btn:hover {
+  background: #FFFFFF;
+  color: var(--tines-ink);
+  border-color: var(--tines-purple-light);
+}
+
+.tines-tab-btn:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+.tines-tab-btn.is-active {
+  background: var(--tines-purple);
+  color: #FFFFFF;
+  border-color: var(--tines-purple-dark);
+  border-bottom: 4px solid #37267A;
+  box-shadow: 0 4px 12px rgba(110, 86, 207, 0.25);
+}
+
+.tines-tab-btn .tines-badge {
+  background: rgba(37, 36, 43, 0.08);
+  color: inherit;
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.tines-tab-btn.is-active .tines-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+
+/* Bento Action Grid Cards (Reports, Classroom Log, Tools) */
+.tines-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tines-bento-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--tines-border);
+  border-bottom: 4px solid var(--tines-border-strong);
+  border-radius: 18px;
+  padding: 18px;
+  text-align: left;
+  color: var(--tines-ink);
+  box-shadow: 0 4px 14px rgba(37, 36, 43, 0.04);
+  transition: transform 0.14s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.14s, box-shadow 0.14s;
+}
+
+.tines-bento-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--tines-purple-light);
+  box-shadow: 0 8px 22px rgba(110, 86, 207, 0.1);
+}
+
+.tines-bento-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tines-bento-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border-radius: 13px;
+  background: var(--tines-lavender);
+  border: 1px solid var(--tines-lavender-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+}
+
+.tines-bento-card h4 {
+  margin: 0 0 4px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.06rem;
+  font-weight: 700;
+  color: var(--tines-ink);
+}
+
+.tines-bento-card p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--tines-ink-secondary);
+}
+
+.tines-bento-cta {
+  align-self: flex-start;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.84rem;
+  padding: 8px 15px;
+  border-radius: 11px;
+  border: 1.5px solid var(--tines-purple-dark);
+  border-bottom: 4px solid #37267A;
+  background: var(--tines-purple);
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tines-bento-cta:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* ==========================================================================
+   3. HUB 5: TEACHER HUB (#command / .cc) — TINES BENTO OVERHAUL
+   ========================================================================== */
+.cc {
+  --p: #FFFFFF !important;
+  --p2: #F7F3EB !important;
+  --l: #E6E1D6 !important;
+  --t: #25242B !important;
+  --m: #52505E !important;
+  --a: #6E56CF !important;
+  background: transparent !important;
+  color: var(--tines-ink) !important;
+  padding: 8px 10px 72px !important;
+}
+
+.cc h1 {
+  color: var(--tines-ink) !important;
+  font-size: 1.75rem !important;
+}
+
+.cc-sub,
+.cc-dim {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.cc-cmd {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink-secondary) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(37, 36, 43, 0.04) !important;
+}
+
+.cc-cmd:hover {
+  border-color: var(--tines-purple) !important;
+  color: var(--tines-ink) !important;
+}
+
+.cc-cmd kbd {
+  background: var(--tines-linen-alt) !important;
+  color: var(--tines-ink-secondary) !important;
+  border: 1px solid var(--tines-border) !important;
+}
+
+/* 5 KPI Cards Row */
+.cc-kp {
+  background: transparent !important;
+  border: 0 !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+}
+
+.cc-kp > div {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  box-shadow: 0 3px 10px rgba(37, 36, 43, 0.04) !important;
+}
+
+.cc-kp5 > div:nth-child(1) { border-top: 4px solid #10B981 !important; }
+.cc-kp5 > div:nth-child(1) small { color: #047857 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(2) { border-top: 4px solid #0EA5E9 !important; }
+.cc-kp5 > div:nth-child(2) small { color: #0369A1 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(3) { border-top: 4px solid #F59E0B !important; }
+.cc-kp5 > div:nth-child(3) small { color: #B45309 !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(4) { border-top: 4px solid #6E56CF !important; }
+.cc-kp5 > div:nth-child(4) small { color: #4C389E !important; font-weight: 800 !important; }
+.cc-kp5 > div:nth-child(5) { border-top: 4px solid #E5484D !important; }
+.cc-kp5 > div:nth-child(5) small { color: #BE123C !important; font-weight: 800 !important; }
+
+.cc-kp b {
+  color: var(--tines-ink) !important;
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-size: 1.5rem !important;
+}
+
+.cc-kp b em {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: var(--tines-ink-muted) !important;
+}
+
+/* Panels & Student Table */
+.cc-pn {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 16px rgba(37, 36, 43, 0.04) !important;
+  overflow: hidden !important;
+}
+
+.cc-pn h3 {
+  background: var(--tines-linen) !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  font-size: 0.92rem !important;
+  font-weight: 800 !important;
+  text-transform: none !important;
+  letter-spacing: -0.01em !important;
+  padding: 12px 16px !important;
+}
+
+.cc-find {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  border-radius: 10px !important;
+  padding: 6px 12px !important;
+}
+
+.cc-chips button {
+  background: #FFFFFF !important;
+  border: 1px solid var(--tines-border) !important;
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+}
+
+.cc-chips button.on {
+  background: var(--tines-lavender) !important;
+  border-color: var(--tines-purple) !important;
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+.cc th {
+  background: #F7F3EB !important;
+  color: var(--tines-ink-secondary) !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+  font-weight: 800 !important;
+}
+
+.cc th.cc-d.today,
+.cc th.cc-d.today small {
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+.cc td {
+  border-bottom: 1px solid #EFECE4 !important;
+  color: var(--tines-ink) !important;
+}
+
+.cc tbody tr:hover {
+  background: #FAF6EE !important;
+}
+
+.cc-nm img {
+  background: var(--tines-linen) !important;
+  border: 1px solid var(--tines-border) !important;
+}
+
+.cc-nm span {
+  font-weight: 700 !important;
+  color: var(--tines-ink) !important;
+}
+
+.cc-lvl {
+  color: var(--tines-ink-muted) !important;
+}
+
+.cc-lvl .cc-bar {
+  background: var(--tines-border) !important;
+}
+
+.cc-lvl .cc-bar i {
+  background: var(--tines-purple) !important;
+}
+
+.cc td.cc-tt {
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+.cc-dot {
+  color: #C7C1B4 !important;
+}
+
+.cc tfoot td {
+  background: var(--tines-linen) !important;
+  border-top: 2px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  font-weight: 800 !important;
+}
+
+/* Status & Homework Badges in Table */
+.cc-t.ok { background: #E0F2FE !important; color: #0369A1 !important; font-weight: 800 !important; }
+.cc-t.star { background: #DCFCE7 !important; color: #166534 !important; font-weight: 800 !important; }
+.cc-t.slow { background: #FEF3C7 !important; color: #92400E !important; font-weight: 800 !important; }
+.cc-t.help { background: #FEE2E2 !important; color: #B91C1C !important; font-weight: 800 !important; }
+.cc-t.quiet { background: #F4EFE6 !important; color: #52505E !important; font-weight: 700 !important; }
+
+.cc-hw-ok { background: #DCFCE7 !important; color: #166534 !important; }
+.cc-hw-mid { background: #FEF3C7 !important; color: #92400E !important; }
+.cc-hw-no { background: #F4EFE6 !important; color: #787586 !important; }
+.cc-hw-wait { color: #787586 !important; }
+
+.cc-sk-a2 { background: #EFEBF9 !important; color: #4C389E !important; }
+.cc-sk-a1p { background: #DCFCE7 !important; color: #166534 !important; }
+.cc-sk-a1 { background: #FEF3C7 !important; color: #92400E !important; }
+.cc-sk-p { background: #FCE7F3 !important; color: #9D174D !important; }
+.cc-sk-n { background: #F4EFE6 !important; color: #787586 !important; }
+
+.cc-plus {
+  background: var(--tines-linen) !important;
+  border: 1px solid var(--tines-border) !important;
+  border-bottom: 2px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  font-weight: 800 !important;
+}
+
+.cc-plus:hover {
+  background: var(--tines-lavender) !important;
+  border-color: var(--tines-purple) !important;
+  color: var(--tines-purple-dark) !important;
+}
+
+.cc-nwb {
+  color: #B45309 !important;
+}
+
+/* Homework & XP Bars inside Teacher Hub */
+.cc-hwi {
+  color: var(--tines-ink-secondary) !important;
+  border-bottom: 1px dashed var(--tines-border) !important;
+}
+
+.cc-hwi .t b {
+  color: var(--tines-ink) !important;
+}
+
+.cc-hwi .b {
+  background: var(--tines-linen-alt) !important;
+}
+
+.cc-hwi .b i {
+  background: linear-gradient(90deg, #6E56CF, #10B981) !important;
+}
+
+.cc-bars b {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.cc-bars i {
+  background: linear-gradient(180deg, #8D75E6, #6E56CF) !important;
+}
+
+.cc-bars small.today {
+  color: var(--tines-purple-dark) !important;
+}
+
+.cc-feed div {
+  border-bottom: 1px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+}
+
+.cc-feed b.xp {
+  color: var(--tines-emerald-dark) !important;
+}
+
+/* Pupil Drawer & Ctrl+K Palette in Tines Light Style */
+.cc-drp,
+.cc-pal {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 20px 50px rgba(37, 36, 43, 0.22) !important;
+}
+
+.cc-drh img {
+  background: var(--tines-linen) !important;
+  border: 1px solid var(--tines-border) !important;
+}
+
+.cc-drg div {
+  background: var(--tines-linen) !important;
+  border: 1px solid var(--tines-border) !important;
+}
+
+.cc-drp h4 {
+  color: var(--tines-ink-muted) !important;
+}
+
+.cc-tips {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.cc-pal input {
+  background: var(--tines-linen) !important;
+  color: var(--tines-ink) !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+}
+
+.cc-pal li {
+  color: var(--tines-ink) !important;
+}
+
+.cc-pal li.on,
+.cc-pal li:hover {
+  background: var(--tines-lavender) !important;
+  color: var(--tines-purple-dark) !important;
+}
+
+/* ==========================================================================
+   4. HUB 2: LESSONS, GAMES & PLANS (#library / .ls & .cm-shelf)
+   ========================================================================== */
+.ls {
+  color: var(--tines-ink) !important;
+  max-width: 1240px !important;
+  padding: 8px 8px 80px !important;
+}
+
+.ls h1 {
+  color: var(--tines-ink) !important;
+}
+
+.ls .ls-sub {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.ls-tab {
+  background: #FFFFFF !important;
+  color: var(--tines-ink-secondary) !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 13px !important;
+  font-weight: 800 !important;
+  font-size: 0.9rem !important;
+  padding: 9px 15px !important;
+  box-shadow: 0 2px 6px rgba(37, 36, 43, 0.04) !important;
+}
+
+.ls-tab:hover {
+  border-color: var(--tines-purple-light) !important;
+  color: var(--tines-ink) !important;
+}
+
+.ls-tab.on {
+  background: var(--tines-purple) !important;
+  border-color: var(--tines-purple-dark) !important;
+  border-bottom-color: #37267A !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(110, 86, 207, 0.25) !important;
+}
+
+.ls-kbtn {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 3px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 700 !important;
+}
+
+.ls-kbtn.on {
+  background: var(--tines-lavender) !important;
+  border-color: var(--tines-purple) !important;
+  border-bottom-color: var(--tines-purple-dark) !important;
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+.ls-q,
+.cm-search input {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 2px rgba(37, 36, 43, 0.04) !important;
+}
+
+.ls-q:focus,
+.cm-search input:focus {
+  border-color: var(--tines-purple) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(110, 86, 207, 0.15) !important;
+}
+
+.ls-h {
+  font-family: 'Fraunces', Georgia, serif !important;
+  color: var(--tines-ink) !important;
+  font-size: 1.18rem !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+  padding-bottom: 8px !important;
+}
+
+.ls-h span {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  background: var(--tines-lavender) !important;
+  color: var(--tines-purple-dark) !important;
+  border: 1px solid var(--tines-lavender-border) !important;
+}
+
+.ls-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 16px !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 3px 12px rgba(37, 36, 43, 0.05) !important;
+}
+
+.ls-card:hover {
+  border-color: var(--tines-purple) !important;
+  box-shadow: 0 8px 20px rgba(110, 86, 207, 0.12) !important;
+}
+
+.ls-card .ls-tx b {
+  color: var(--tines-ink) !important;
+  font-weight: 800 !important;
+}
+
+.ls-u {
+  background: var(--tines-linen-alt) !important;
+  color: var(--tines-ink-secondary) !important;
+}
+
+.ls-card i {
+  color: var(--tines-purple) !important;
+  font-weight: 800 !important;
+}
+
+/* Lesson Plans Grid inside Library & Curriculum */
+.lp-section {
+  background: transparent !important;
+}
+
+.lp-head h2 {
+  font-family: 'Fraunces', Georgia, serif !important;
+  color: var(--tines-ink) !important;
+}
+
+.lp-head span {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 14px;
+}
+
+.lp-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 3px 12px rgba(37, 36, 43, 0.04) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lp-card b {
+  color: var(--tines-ink) !important;
+  font-size: 0.96rem !important;
+  line-height: 1.35 !important;
+}
+
+.lp-card small {
+  color: var(--tines-ink-muted) !important;
+}
+
+/* Games Shelf inside Library or standalone #shelf */
+html:not(.class-mode) .cm-shelf-hd h1,
+.cm-shelf-hd h1 {
+  color: var(--tines-ink) !important;
+}
+
+html:not(.class-mode) .cm-shelf-hd small,
+.cm-shelf-hd small {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.cm-chip {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 3px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 800 !important;
+}
+
+.cm-chip.on {
+  background: var(--tines-purple) !important;
+  border-color: var(--tines-purple-dark) !important;
+  border-bottom-color: #37267A !important;
+  color: #FFFFFF !important;
+}
+
+.cm-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 5px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 4px 14px rgba(37, 36, 43, 0.06) !important;
+}
+
+.cm-card:hover {
+  border-color: var(--tines-purple) !important;
+}
+
+.cm-card b {
+  color: var(--tines-ink) !important;
+}
+
+/* ==========================================================================
+   5. HUB 3: STORE & PODIUM (#store & #rewards)
+   ========================================================================== */
+.cr {
+  color: var(--tines-ink) !important;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 6px 8px 70px;
+}
+
+.cr-hd small {
+  color: var(--tines-ink-secondary) !important;
+  opacity: 1 !important;
+}
+
+.cr-btn {
+  background: #FFFFFF !important;
+  color: var(--tines-ink) !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 14px !important;
+  font-size: 0.92rem !important;
+  padding: 9px 15px !important;
+}
+
+.cr-btn:hover {
+  border-color: var(--tines-purple) !important;
+  background: var(--tines-lavender) !important;
+  color: var(--tines-purple-dark) !important;
+}
+
+.cr-legend {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 3px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+}
+
+.cr-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 5px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 4px 14px rgba(37, 36, 43, 0.06) !important;
+}
+
+.cr-card:hover {
+  border-color: var(--tines-purple) !important;
+}
+
+/* ==========================================================================
+   6. HUB 4: TIMETABLE & CALENDAR (#calendar / .cal) — HIGH CONTRAST FIX
+   ========================================================================== */
+.cal {
+  color: var(--tines-ink) !important;
+  max-width: 1220px !important;
+  padding: 8px 8px 80px !important;
+}
+
+.cal h1 {
+  color: var(--tines-ink) !important;
+}
+
+.cal .sub {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.cal-b {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 800 !important;
+  border-radius: 12px !important;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.cal-b.g {
+  background: #FFFFFF !important;
+  color: var(--tines-ink) !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+}
+
+.cal-b.g:hover {
+  border-color: var(--tines-purple) !important;
+  background: var(--tines-lavender) !important;
+}
+
+.cal-b.on {
+  background: var(--tines-purple) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid var(--tines-purple-dark) !important;
+  border-bottom: 4px solid #37267A !important;
+}
+
+.cal-b.ok {
+  background: var(--tines-emerald) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid var(--tines-emerald-dark) !important;
+  border-bottom: 4px solid #047857 !important;
+}
+
+.cal-legend {
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 700 !important;
+  background: #FFFFFF !important;
+  border: 1px solid var(--tines-border) !important;
+  border-radius: 12px !important;
+  padding: 8px 14px !important;
+}
+
+.cal-dow {
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 800 !important;
+}
+
+.cal-cell {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 3px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 6px rgba(37, 36, 43, 0.03) !important;
+}
+
+.cal-cell:hover {
+  border-color: var(--tines-purple) !important;
+}
+
+.cal-cell.today {
+  border-color: var(--tines-amber) !important;
+  border-bottom-color: var(--tines-amber-dark) !important;
+  background: #FFFBEB !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+}
+
+.cal-cell.sel {
+  border-color: var(--tines-purple) !important;
+  border-bottom-color: var(--tines-purple-dark) !important;
+  background: var(--tines-lavender) !important;
+}
+
+.cal-cell b {
+  color: var(--tines-ink) !important;
+}
+
+.cal-more {
+  color: var(--tines-ink-muted) !important;
+  font-weight: 700 !important;
+}
+
+.cal-side {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  border-radius: 18px !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 4px 16px rgba(37, 36, 43, 0.05) !important;
+}
+
+.cal-row {
+  border-bottom: 1px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+}
+
+.cal-t {
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+#cal-modal .cal {
+  background: #FFFFFF !important;
+  border: 2px solid var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+}
+
+.cal-form label {
+  color: var(--tines-ink-secondary) !important;
+  font-weight: 700 !important;
+}
+
+.cal-form input,
+.cal-form select,
+.cal-form textarea {
+  background: var(--tines-linen) !important;
+  color: var(--tines-ink) !important;
+  border: 1.5px solid var(--tines-border) !important;
+}
+
+/* ==========================================================================
+   7. HUB 1: CLASS BOARD (#board / .cb) — STAGE FRAME & QUICK LAUNCH BAR
+   ========================================================================== */
+.cb {
+  border: 2px solid var(--tines-border-strong) !important;
+  box-shadow: 0 12px 32px rgba(37, 36, 43, 0.12) !important;
+}
+
+.cb-hd h1 {
+  color: #FFFFFF !important;
+}
+
+/* Mobile Bottom Tabbar in Tines Warm Linen / Purple */
+.eaa-mobile-tabbar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-top: 1.5px solid var(--tines-border) !important;
+}
+
+.eaa-mob-tab {
+  color: var(--tines-ink-secondary) !important;
+}
+
+.eaa-mob-tab.is-active {
+  color: var(--tines-purple-dark) !important;
+}
+
+/* ==========================================================================
+   8. HIGH-SPECIFICITY OVERRIDES FOR LEGACY GLASS & CLASS-MODE-PAGES RULES
+   Ensures all views (Store, Teacher Hub, Library, Worksheets, Reports, etc.)
+   sit cleanly on the Warm Linen canvas with crisp white Bento cards.
+   ========================================================================== */
+html body #app-view-container,
+html.class-mode body #app-view-container:is([data-view="command"], [data-view="curriculum"], [data-view="library"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="rewards"], [data-view="calendar"]) {
+  background: transparent !important;
+  color: var(--tines-ink) !important;
+  padding-top: 4px !important;
+  --bg-card: #FFFFFF !important;
+  --bg-surface: #FFFFFF !important;
+  --bg-card-secondary: #FAF6EE !important;
+  --bg-card-hover: #F4EFE6 !important;
+  --bg-muted: #F4EFE6 !important;
+  --bg-canvas: #FCF9F5 !important;
+  --border-subtle: #E6E1D6 !important;
+  --border-light: #E6E1D6 !important;
+  --border-strong: #D5CFC2 !important;
+  --text-main: #25242B !important;
+  --text-primary: #25242B !important;
+  --text-secondary: #52505E !important;
+  --text-muted: #787586 !important;
+  --text-subtle: #787586 !important;
+}
+
+html body #app-view-container *,
+html.class-mode body #app-view-container * {
+  --text-main: #25242B;
+  --text-primary: #25242B;
+  --text-secondary: #52505E;
+  --text-muted: #787586;
+  --text-subtle: #787586;
+}
+
+/* Override glass-theme dark panels on Store, Worksheets, Homework, Reports, Settings, Curriculum */
+html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
+  [style*="--bg-card"], [style*="--bg-surface"], [style*="background:#fff;"], [style*="background: #fff;"], [style*="background:#ffffff"], [style*="background: #ffffff"],
+  [style*="background:white"], [style*="background: white"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"],
+  .curriculum-book-card, .unit-accordion-card, .week-lesson-group, .curriculum-toolbar, .hw-quest-card, .worksheet-card, .assignment-card) {
+  background: #FFFFFF !important;
+  border-color: var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 3px 12px rgba(37, 36, 43, 0.05) !important;
+  backdrop-filter: none !important;
+}
+
+html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is([style*="--bg-card"], .unit-accordion-card, .curriculum-book-card, .hw-quest-card) :is([style*="--bg-card-secondary"], [style*="background:#f8fafc"], [style*="background: #f8fafc"], [style*="background:#f1f5f9"], [style*="background: #f1f5f9"], [style*="background:#fff;"], [style*="background:#ffffff"], .week-lesson-group) {
+  background: #FAF6EE !important;
+  border-color: var(--tines-border) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: none !important;
+}
+
+/* Override glass-theme forced white headings & bold text on Store & Teacher sub-views */
+html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
+  [style*="color:#0f172a"], [style*="color: #0f172a"], [style*="color:#1e293b"], [style*="color: #1e293b"], [style*="color:#334155"], [style*="color: #334155"],
+  h1, h2, h3, h4, h5, strong, b) {
+  color: var(--tines-ink) !important;
+  text-shadow: none !important;
+}
+
+html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"]) :is(
+  [style*="color:#475569"], [style*="color: #475569"], [style*="color:#64748b"], [style*="color: #64748b"]) {
+  color: var(--tines-ink-secondary) !important;
+}
+
+html body #app-view-container:is([data-view="curriculum"], [data-view="worksheets"], [data-view="assignments"], [data-view="homework"], [data-view="settings"], [data-view="reports"], [data-view="store"], [data-view="monster"], [data-view="library"]) :is(input, select, textarea, .filter-select) {
+  background: #FFFFFF !important;
+  color: var(--tines-ink) !important;
+  border: 1.5px solid var(--tines-border) !important;
+}
+
+/* Override Command Center / Teacher Hub (.cc) white text & text-shadows from class-mode-pages.css & ui-polish.css */
+html body .cc,
+html.class-mode body .cc {
+  color: var(--tines-ink) !important;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+}
+
+html body .cc *,
+html.class-mode body .cc * {
+  text-shadow: none !important;
+}
+
+html body .cc h1,
+html.class-mode body .cc h1 {
+  color: var(--tines-ink) !important;
+  font-family: 'Fraunces', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+
+html body .cc .cc-sub,
+html.class-mode body .cc .cc-sub {
+  color: var(--tines-ink-secondary) !important;
+}
+
+html body .cc small,
+html body .cc em,
+html body .cc .cc-dim,
+html body .cc .cc-lv,
+html body .cc .cc-why,
+html body .cc .cc-lvl,
+html.class-mode body .cc small,
+html.class-mode body .cc em,
+html.class-mode body .cc .cc-dim,
+html.class-mode body .cc .cc-lv,
+html.class-mode body .cc .cc-why,
+html.class-mode body .cc .cc-lvl {
+  color: var(--tines-ink-muted) !important;
+  text-shadow: none !important;
+}
+
+html.class-mode body .cc-kp5 > div:nth-child(1) small { color: #047857 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(2) small { color: #0369A1 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(3) small { color: #B45309 !important; }
+html.class-mode body .cc-kp5 > div:nth-child(4) small { color: #4C389E !important; }
+html.class-mode body .cc-kp5 > div:nth-child(5) small { color: #BE123C !important; }
+
+html.class-mode body .cc th {
+  background: #F7F3EB !important;
+  color: var(--tines-ink-secondary) !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+}
+
+html.class-mode body .cc th.cc-d small {
+  color: var(--tines-ink-muted) !important;
+  font-size: 0.72rem !important;
+}
+
+html.class-mode body .cc th.cc-d.today,
+html.class-mode body .cc th.cc-d.today small {
+  color: var(--tines-purple-dark) !important;
+  font-weight: 800 !important;
+}
+
+html.class-mode body .cc td {
+  color: var(--tines-ink) !important;
+  border-bottom: 1px solid #EFECE4 !important;
+}
+
+html.class-mode body .cc tbody tr:hover td {
+  background: #FAF6EE !important;
+}
+
+html.class-mode body .cc-pn > h3 {
+  background: var(--tines-linen) !important;
+  color: var(--tines-ink) !important;
+  border-bottom: 1.5px solid var(--tines-border) !important;
+}
+
+html.class-mode body .cc-chips button {
+  background: #FFFFFF !important;
+  border: 1px solid var(--tines-border) !important;
+  color: var(--tines-ink-secondary) !important;
+}
+
+html.class-mode body .cc-chips button.on {
+  background: var(--tines-lavender) !important;
+  border-color: var(--tines-purple) !important;
+  color: var(--tines-purple-dark) !important;
+}
+
+html.class-mode body .cc-plus {
+  background: var(--tines-linen) !important;
+  border: 1px solid var(--tines-border) !important;
+  border-bottom: 2px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+}
+
+html.class-mode body .cc-plus.cc-nwb {
+  background: #FEF3C7 !important;
+  border-color: #FCD34D !important;
+  color: #92400E !important;
+}
+
+/* Override Library & Lesson Plans white text from class-mode-pages.css */
+html.class-mode body .ls h1,
+html.class-mode body .lp-head h2 {
+  color: var(--tines-ink) !important;
+  font-family: 'Fraunces', Georgia, serif !important;
+}
+
+html.class-mode body .ls .ls-sub,
+html.class-mode body .lp-head span {
+  color: var(--tines-ink-secondary) !important;
+}
+
+html.class-mode body .lp-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid var(--tines-border) !important;
+  border-bottom: 4px solid var(--tines-border-strong) !important;
+  color: var(--tines-ink) !important;
+  box-shadow: 0 3px 12px rgba(37, 36, 43, 0.04) !important;
+}
+
+html.class-mode body .lp-card b {
+  color: var(--tines-ink) !important;
+}
+
+html.class-mode body .lp-card small {
+  color: var(--tines-ink-muted) !important;
+}
+
