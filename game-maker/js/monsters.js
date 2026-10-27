@@ -29,7 +29,15 @@
       return { id: s.id, name: String(s.firstName || '').trim() || String(s.name || '').trim().split(/\s+/)[0] || 'Pupil', color: p.baseColor || COLORS[i % COLORS.length], equipped: p.equipped || {}, stage: STAGES[lv - 1] || 'baby' };
     });
   }
-  var HAL_HATS = ['cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap'], HAL_CAPES = ['cs-witch-cape', 'none', 'cs-vamp-cape', 'none', 'cs-witch-cape', 'none', 'cs-vamp-cape', 'none'];
+  /* the class groups made on the platform (Groups), with only this class's pupils in them */
+  function groups(classId) {
+    var st = store(); if (!Array.isArray(st.groups)) return [];
+    var ids = {}; pupils(classId).forEach(function (p) { ids[p.id] = 1; });
+    return st.groups.filter(function (g) { return g && g.classId === classId && Array.isArray(g.studentIds); }).map(function (g) {
+      return { name: String(g.name || 'Group').slice(0, 14), color: g.color || '', ids: g.studentIds.filter(function (id) { return ids[id]; }) };
+    }).filter(function (g) { return g.ids.length; });
+  }
+  var HAL_HATS =['cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap', 'cs-vamp-hair', 'cs-witch-hat', 'cs-pumpkin-cap'], HAL_CAPES = ['cs-witch-cape', 'none', 'cs-vamp-cape', 'none', 'cs-witch-cape', 'none', 'cs-vamp-cape', 'none'];
   function themeHat(theme, i) { return theme === 'halloween' ? HAL_HATS[i % 8] : 'none'; }
   /* n default monsters, dressed for the theme */
   function defaults(n, theme) {
@@ -68,5 +76,5 @@
     } catch (e) { /* fall back to an emoji */ }
     return '<span style="font-size:' + Math.round(size * 0.7) + 'px;line-height:1">👾</span>';
   }
-  GM.mon = { classes: classes, pupils: pupils, defaults: defaults, svg: svg, COLORS: COLORS };
+  GM.mon = { classes: classes, pupils: pupils, groups: groups, defaults: defaults, svg: svg, COLORS: COLORS };
 })(window);
