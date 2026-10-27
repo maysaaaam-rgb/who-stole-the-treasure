@@ -142,11 +142,16 @@
   /* Discipline tools (minus points and flags): OFF by default in every new session. When they are ON the flags are visible to everybody who sees the board (also in Class Mode), so switch them off before you project the board if you do not want that. */
   var disc = false; try { disc = sessionStorage.getItem('cb_disc') === '1'; } catch (e) { disc = false; }
   function discOn() { return disc; }
-  function flagOf(id) { var t = 0; try { t = root.CommandCenter && root.CommandCenter.ladderTop ? root.CommandCenter.ladderTop(id) : 0; } catch (e) { t = 0; } return t >= 4 ? 'k' : t >= 2 ? 'r' : t === 1 ? 'y' : ''; }
+  /* today's stage for a pupil (0 = none, 1-6) and the stage list from the Command Center */
+  function flagOf(id) { var t = 0; try { t = root.CommandCenter && root.CommandCenter.ladderTop ? root.CommandCenter.ladderTop(id) : 0; } catch (e) { t = 0; } return t || 0; }
+  function stages() { return (root.CommandCenter && root.CommandCenter.stages) || []; }
+  function stageBadge(id) { var n = flagOf(id), x = stages()[n - 1]; if (!x) return ''; return '<span class="cb-fl" style="background:' + x.c + ';color:' + x.ink + '" title="Stage ' + n + ' of 6 today">' + n + '<small>' + esc(x.short) + '</small></span>'; }
+  function stageStrip() { var L = stages(); if (!L.length) return ''; return '<div class="cb-stages"><b>Our stages</b>' + L.map(function (x) { return '<span style="background:' + x.c + ';color:' + x.ink + '"><i>' + x.s + '</i>' + x.icon + ' ' + esc(x.short) + '</span>'; }).join('<em>➜</em>') + '</div>'; }
   var EXTRA_CSS = '.cb-dsc{font:inherit;font-weight:800;border:0;border-bottom:4px solid rgba(0,0,0,.3);border-radius:12px;padding:6px 12px;cursor:pointer;background:rgba(255,255,255,.7);color:#334155;margin-left:8px}.cb-dsc.on{background:#fecaca;color:#7f1d1d}' +
     '.cb-dis{display:flex;gap:4px;margin-top:4px}.cb-dis button{flex:1;font:inherit;font-weight:800;font-size:.85rem;border:0;border-bottom:3px solid rgba(0,0,0,.3);border-radius:9px;padding:3px 0;cursor:pointer;background:#fecaca;color:#7f1d1d}.cb-dis button.fl{background:#e2e8f0;color:#0f172a}' +
-    '.cb-fl{position:absolute;left:50%;top:2px;transform:translateX(-50%);font-size:30px;line-height:1;text-shadow:0 0 3px #fff,0 1px 4px rgba(0,0,0,.5);pointer-events:none;z-index:3}.cb-fl.y{color:#facc15}.cb-fl.r{color:#ef4444}.cb-fl.k{color:#0f172a;text-shadow:0 0 4px #fff,0 0 2px #fff}' +
-    '.cb-flagm{position:fixed;z-index:9600;background:#0f172a;color:#fff;border-radius:14px;padding:8px;display:grid;gap:5px;min-width:250px;box-shadow:0 8px 28px rgba(0,0,0,.5);font-family:inherit}.cb-flagm b{font-size:.9rem;padding:2px 6px}' +
+    '.cb-fl{position:absolute;left:6px;top:6px;display:flex;align-items:center;gap:5px;font-weight:900;font-size:1.25rem;line-height:1;padding:4px 9px 4px 7px;border-radius:999px;box-shadow:0 0 0 3px #fff,0 3px 8px rgba(0,0,0,.35);pointer-events:none;z-index:3}.cb-fl small{font-size:.72rem;font-weight:800}' +
+    '.cb-stages{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 14px;padding:8px 12px;border-radius:16px;background:rgba(15,23,42,.82);color:#fff;font-weight:800}.cb-stages b{margin-right:6px}.cb-stages span{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 5px;border-radius:999px;font-size:.9rem}.cb-stages span i{font-style:normal;background:rgba(255,255,255,.9);color:#0f172a;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}.cb-stages em{font-style:normal;opacity:.6}' +
+    '.cb-flagm{position:fixed;z-index:9600;background:#0f172a;color:#fff;border-radius:14px;padding:8px;display:grid;gap:5px;min-width:300px;max-width:360px;max-height:calc(100vh - 16px);overflow:auto;box-shadow:0 8px 28px rgba(0,0,0,.5);font-family:inherit}.cb-flagm b{font-size:.9rem;padding:2px 6px}' +
     '.cb-flagm button{font:inherit;font-weight:700;text-align:left;border:0;border-radius:9px;padding:7px 10px;cursor:pointer;background:#1e293b;color:#fff}.cb-flagm button:hover{background:#334155}' +
     '.cb-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2f1519;color:#fecaca;border:1px solid #7f1d1d;border-radius:12px;padding:10px 16px;z-index:9700;display:flex;gap:12px;align-items:center;font-weight:700}.cb-toast button{background:#fecaca;color:#2f1519;border:0;border-radius:8px;padding:4px 10px;font-weight:800;cursor:pointer}';
   function ensureCss() {
@@ -304,12 +309,12 @@
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
-      '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
+      (discOn() ? stageStrip() : '') + '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
         var plateCss = !sceneOn && s.x && s.x.plate && s.x.plate.css ? s.x.plate.css : '';
         var stStyle = ' style="--i:' + Math.min(idx, 12) + (plateCss ? ';' + esc(plateCss) : '') + '"';
         var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
         var avBadge = false && s.av ? '<img class="cb-av" src="' + esc(s.av) + '" alt="" title="Click to switch pose" onclick="event.stopPropagation();if(window.MilestoneCeremony){MilestoneCeremony.setAvatar(\'' + esc(s.id) + '\',event);if(window.renderCurrentView)renderCurrentView();}">' : '';
-        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge + (discOn() && flagOf(s.id) ? '<span class="cb-fl ' + flagOf(s.id) + '" title="Private flag for today">⚑</span>' : '') +
+        return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + (plateCss ? ' plated' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '"' + stStyle + '>' + animal + avBadge + (discOn() ? stageBadge(s.id) : '') +
           '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
           '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
           '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
@@ -317,7 +322,7 @@
           '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
-          (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away (Undo is offered)">−10</button><button class="fl" onclick="ClassBoard.flag(\'' + esc(s.id) + '\', event)" title="Yellow, red or black flag (private steps)">⚑ Flag</button></div>' : '') + '</div>';
+          (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away (Undo is offered)">−10</button><button class="fl" onclick="ClassBoard.flag(\'' + esc(s.id) + '\', event)" title="Move this pupil up one stage (1 to 6)">🪜 Stage' + (flagOf(s.id) ? ' ' + flagOf(s.id) : '') + '</button></div>' : '') + '</div>';
       }).join('') + '</div>' +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
         '<span class="cb-tm-pills"><button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button></span><span class="sep"></span>' +
@@ -451,10 +456,13 @@
       var old = document.querySelector('.cb-flagm'); if (old) old.remove();
       var m = document.createElement('div'); m.className = 'cb-flagm';
       var pupil = S().getStudent && S().getStudent(id);
-      m.innerHTML = '<b>⚑ Private flag: ' + esc(pupil && (pupil.firstName || pupil.name) || '') + '</b>' +
-        '<button data-s="1">🟨 Yellow · warning (1)</button><button data-s="2">🟥 Red · move seat for the lesson (2)</button><button data-s="3">🟥 Red · no game turns + repair task + note home (3)</button><button data-s="4">⬛ Black · out of the lesson (4)</button><button data-u="1">↩ Undo the last flag today</button><button data-x="1">Close</button>';
+      var top = flagOf(id), L = stages(), nx = L[top];
+      m.innerHTML = '<b>🪜 ' + esc(pupil && (pupil.firstName || pupil.name) || '') + ': ' + (top ? 'stage ' + top + ' of 6 today' : 'no stage today') + '</b>' +
+        (nx ? '<button data-s="' + nx.s + '" style="background:' + nx.c + ';color:' + nx.ink + ';font-size:1rem">➜ Next: ' + nx.s + ' · ' + nx.icon + ' ' + esc(nx.short) + '</button>' : '') +
+        L.map(function (x) { return '<button data-s="' + x.s + '"' + (top >= x.s ? ' style="opacity:.5"' : '') + '><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:' + x.c + ';color:' + x.ink + ';text-align:center;line-height:20px;margin-right:6px;font-size:.8rem">' + x.s + '</span>' + x.icon + ' ' + esc(x.t) + (top >= x.s ? ' ✓' : '') + '</button>'; }).join('') +
+        '<button data-u="1">↩ Undo the last stage today</button><button data-x="1">Close</button>';
       var r = ev && ev.target && ev.target.getBoundingClientRect ? ev.target.getBoundingClientRect() : { left: 200, top: 200 };
-      m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 270)) + 'px'; m.style.top = Math.max(8, Math.min(r.top - 230, window.innerHeight - 280)) + 'px';
+      m.style.left = Math.max(8, Math.min(r.left, window.innerWidth - 370)) + 'px'; m.style.top = Math.max(8, Math.min(r.top - 330, window.innerHeight - 500)) + 'px';
       m.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return;
         if (b.dataset.s) CC.ladderPut(id, Number(b.dataset.s)); else if (b.dataset.u) CC.ladderUndo(id);

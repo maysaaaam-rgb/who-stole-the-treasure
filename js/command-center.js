@@ -163,8 +163,19 @@
   /* the private ladder log: { pupilId: [ { s: 1-4, t: time } ] }, kept only in this browser */
   var LADDER_KEY = 'eaa_ladder_v1';
   function ladderAll() { try { var o = JSON.parse(localStorage.getItem(LADDER_KEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
-  function ladderGet(id) { var a = ladderAll()[id]; return Array.isArray(a) ? a : []; }
-  function ladderAdd(id, step) { var all = ladderAll(), a = ladderGet(id); a.push({ s: step, t: Date.now() }); all[id] = a.slice(-40); try { localStorage.setItem(LADDER_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ } }
+  /* the 6 stages in order (s = number, c = colour, short = label on the Class Board badge) */
+  var STAGES = [
+    { s: 1, icon: '🟡', c: '#facc15', ink: '#422006', short: 'Warning', t: 'WARNING (private, at the desk)', tip: 'Calm and firm: "You broke the rule: ___. This is your warning. Next time you move seat." Do not argue. Thank them if it stops.' },
+    { s: 2, icon: '🟠', c: '#f97316', ink: '#fff', short: 'Move seat', t: 'MOVE SEAT for the rest of the lesson', tip: 'Say: "Go to the seat at the front (or back). You stay there until the bell." No speech, no shouting. They may return next lesson.' },
+    { s: 3, icon: '🔴', c: '#ef4444', ink: '#fff', short: 'No games', t: 'NO GAME TURNS + repair task', tip: 'They watch and write instead of playing this lesson. Repair task at the desk: 5 sentences (what I did, what rule, what I will do).' },
+    { s: 4, icon: '✉️', c: '#b91c1c', ink: '#fff', short: 'Parents', t: 'MESSAGE TO PARENTS (k12)', tip: 'Short and factual, the same day: what happened, which rule, what we do next. No labels, no comparison with other children.' },
+    { s: 5, icon: '⚽', c: '#7e22ce', ink: '#fff', short: 'No sport', t: 'NO SPORT LESSON (one lesson)', tip: 'Only as agreed with the PE teacher and the school. Tell the PE teacher the same day. One lesson only; they sit and watch or do a quiet task.' },
+    { s: 6, icon: '⚫', c: '#0f172a', ink: '#fff', short: 'Out', t: 'OUT OF THE LESSON (class teacher or office)', tip: 'Only to the place agreed with the school, with a note. Never alone in the corridor. For safety, or when stage 5 did not work. Tell the class teacher and parents the same day.' }
+  ];
+  function stageOf(n) { return STAGES[Math.max(1, Math.min(6, n)) - 1]; }
+  /* entries saved before the 6 stages (no v) used 4 = out of the lesson: that is stage 6 now */
+  function ladderGet(id) { var a = ladderAll()[id]; return Array.isArray(a) ? a.map(function (x) { return x && x.v ? x : { s: x && x.s === 4 ? 6 : (x && x.s) || 1, t: x && x.t, v: 2 }; }) : []; }
+  function ladderAdd(id, step) { var all = ladderAll(), a = ladderGet(id); a.push({ s: step, t: Date.now(), v: 2 }); all[id] = a.slice(-40); try { localStorage.setItem(LADDER_KEY, JSON.stringify(all)); } catch (e) { /* not remembered */ } }
   var NW_WEAK = 3;   // 3 or more 'Needs work' awards in 14 days = weak discipline
   var QUIZ_GAP = 20, quizAvg = 0, classMedXp = 0;   // a quiz is weak when it is 20 points or more under the class average (so one hard quiz does not flag half the class)
   /* the 4 skills from the paper quiz: { listening: {pct, v}, ... } or null. The same numbers the parent report and the profile show. */
@@ -657,7 +668,9 @@
         };
       } finally { classGrade = keep.g; classQuiet = keep.q; pausedKeys = keep.pk; pausedClass = keep.pc; quizAvg = keep.qa; classMedXp = keep.mx; }
     },
-    /** The highest private step logged today for a pupil (0 = none): 1 yellow, 2-3 red, 4 black. */
+    /** The 6 stages in order (number, colour, label, what to do). */
+    stages: STAGES,
+    /** The highest stage logged today for a pupil (0 = none, 1-6). */
     ladderTop: function (id) { return ladderGet(id).filter(function (x) { return new Date(x.t).toDateString() === new Date().toDateString(); }).reduce(function (a, x) { return Math.max(a, x.s); }, 0); },
     ladderPut: function (id, step) { ladderAdd(id, step); },
     ladderUndo: function (id) {
@@ -669,26 +682,25 @@
     ladder: function (id) {
       var st = S(), pupil = st.getStudent && st.getStudent(id); if (!pupil) return;
       var old = document.getElementById('cc-ld'); if (old) old.remove();
-      var STEPS = [
-        { k: 1, icon: '1️⃣', t: 'WARNING (private, at the desk)', tip: 'Calm and firm: "You broke the rule: ___. This is your warning. Next time you move seat." Do not argue. Thank them if it stops.' },
-        { k: 2, icon: '2️⃣', t: 'MOVE SEAT for the rest of the lesson', tip: 'Say: "Go to the seat at the front (or back). You stay there until the bell." No speech, no shouting. They may return next lesson.' },
-        { k: 3, icon: '3️⃣', t: 'LOSS + REPAIR TASK + note home', tip: 'No game turns for this lesson (they watch and write). A short repair task at the desk: 5 sentences (what I did, what rule, what I will do). Send a short note to parents. Short, not a long punishment: the English must stay a place they can come back to.' },
-        { k: 4, icon: '⚫', t: 'OUT OF THE LESSON (to the class teacher or the office)', tip: 'Only to the place agreed with the school, and with a note. Never alone in the corridor. Use it for safety, or when step 3 did not work. Tell the class teacher and parents the same day.' }
-      ];
       var ovl = document.createElement('div'); ovl.id = 'cc-ld'; ovl.className = 'cc-ovl';
       function when(ts) { var d = new Date(ts), n = new Date(), same = d.toDateString() === n.toDateString(); return (same ? 'today' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
       function draw() {
         var log = ladderGet(id), today = log.filter(function (x) { return new Date(x.t).toDateString() === new Date().toDateString(); }), top = today.reduce(function (a, x) { return Math.max(a, x.s); }, 0);
-        ovl.innerHTML = '<div class="cc-pal" style="padding:16px;max-width:460px"><div style="font-weight:800;font-size:15px;margin-bottom:2px">🪜 Private steps: ' + esc(pupil.firstName || pupil.name) + '</div>' +
-          '<div class="cc-dim" style="margin-bottom:10px">Nothing is shown to the class. Say it calmly and firmly, and never in front of others. The log stays on this computer only. ' + (top ? '<b>Today: step ' + (top === 4 ? 'black' : top) + ' so far.</b>' : 'Nothing logged today.') + ' <b>This week: ' + log.filter(function (x) { return Date.now() - x.t < 7 * 864e5; }).length + ' steps.</b>' + (log.filter(function (x) { return Date.now() - x.t < 7 * 864e5; }).length >= 3 ? ' <b style="color:#f87171">3 or more this week: call or write home.</b>' : '') + '</div>' +
-          '<div class="cc-nwl" style="grid-template-columns:1fr">' + STEPS.map(function (x, i) { return '<button class="cc-nwr" data-s="' + x.k + '" style="text-align:left;' + (x.k === 4 ? 'border-color:#475569' : '') + '">' + x.icon + ' ' + esc(x.t) + (top && x.k === top + 1 ? ' <span style="color:#38bdf8">← next</span>' : (!top && x.k === 1 ? ' <span style="color:#38bdf8">← start here</span>' : '')) + '<div class="cc-dim" style="font-weight:500;margin-top:2px">' + esc(x.tip) + '</div></button>'; }).join('') + '</div>' +
-          (log.length ? '<div class="cc-dim" style="margin-top:10px"><b>Last steps:</b> ' + log.slice(-5).reverse().map(function (x) { return 'step ' + (x.s === 4 ? 'black' : x.s) + ' · ' + when(x.t); }).join(' · ') + '</div>' : '') +
-          '<div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px"><button class="cc-mini" data-old="1">⭐ Take XP away (with a reason)</button><button class="cc-mini" data-close="1">Close ✕</button></div></div>';
+        var week = log.filter(function (x) { return Date.now() - x.t < 7 * 864e5; }).length, nx = top < 6 ? stageOf(top + 1) : null, cur = top ? stageOf(top) : null;
+        function badge(x) { return '<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:' + x.c + ';color:' + x.ink + ';font-weight:900;margin-right:8px;flex:none;box-shadow:0 0 0 2px #fff3">' + x.s + '</span>'; }
+        ovl.innerHTML = '<div class="cc-pal" style="padding:16px;max-width:480px"><div style="font-weight:800;font-size:15px;margin-bottom:2px">🪜 Stages: ' + esc(pupil.firstName || pupil.name) + '</div>' +
+          '<div style="margin:6px 0 10px;padding:10px 12px;border-radius:12px;background:' + (cur ? cur.c : '#1e293b') + ';color:' + (cur ? cur.ink : '#e2e8f0') + ';font-weight:800;font-size:15px">' + (cur ? 'Today: stage ' + cur.s + ' of 6 · ' + esc(cur.short) : 'Today: no stage yet') + '</div>' +
+          (nx ? '<button class="cc-nwr" data-s="' + nx.s + '" style="width:100%;text-align:left;display:flex;align-items:center;border:2px solid ' + nx.c + ';margin-bottom:10px;font-size:14px">' + badge(nx) + '<span>➜ Next: stage ' + nx.s + ' · ' + esc(nx.t) + '<div class="cc-dim" style="font-weight:500;margin-top:2px">' + esc(nx.tip) + '</div></span></button>' : '<div class="cc-dim" style="margin-bottom:10px"><b>All 6 stages used today.</b> Talk to the class teacher and the school.</div>') +
+          '<div class="cc-dim" style="margin-bottom:6px">All stages in order (the stage goes up one at a time; you can jump for safety). Nothing is shown to the class unless Discipline is On on the Class Board. The log stays on this computer. <b>This week: ' + week + ' stages.</b>' + (week >= 3 ? ' <b style="color:#f87171">3 or more this week: message home.</b>' : '') + '</div>' +
+          '<div class="cc-nwl" style="grid-template-columns:1fr">' + STAGES.map(function (x) { var done = top >= x.s; return '<button class="cc-nwr" data-s="' + x.s + '" style="text-align:left;display:flex;align-items:center;padding:7px 10px;' + (done ? 'opacity:.55;' : '') + '">' + badge(x) + '<span>' + x.icon + ' ' + esc(x.t) + (done ? ' ✓' : '') + '</span></button>'; }).join('') + '</div>' +
+          (log.length ? '<div class="cc-dim" style="margin-top:10px"><b>Last stages:</b> ' + log.slice(-5).reverse().map(function (x) { return 'stage ' + x.s + ' (' + esc(stageOf(x.s).short) + ') · ' + when(x.t); }).join(' · ') + '</div>' : '') +
+          '<div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><button class="cc-mini" data-old="1">⭐ Take XP away (with a reason)</button>' + (today.length ? '<button class="cc-mini" data-undo="1">↩ Undo the last stage today</button>' : '') + '<button class="cc-mini" data-close="1">Close ✕</button></div></div>';
       }
       draw(); document.body.appendChild(ovl);
       ovl.addEventListener('mousedown', function (e) { if (e.target === ovl) ovl.remove(); });
       ovl.addEventListener('click', function (e) {
         var b = e.target.closest('[data-s]'); if (b) { ladderAdd(id, Number(b.dataset.s)); draw(); try { current = rowsFor(st.getActiveClass()); refreshAll(); } catch (er) { /* later */ } return; }
+        if (e.target.closest('[data-undo]')) { api.ladderUndo(id); draw(); try { current = rowsFor(st.getActiveClass()); refreshAll(); } catch (er) { /* later */ } return; }
         if (e.target.closest('[data-close]')) { ovl.remove(); return; }
         if (e.target.closest('[data-old]')) { ovl.remove(); api.needsWork(id); }
       });
