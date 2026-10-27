@@ -55,16 +55,8 @@
   }
   function ensureToggle() {
     var right = document.querySelector('.app-header .header-right'); if (!right) return;
-    if (!document.getElementById('cm-sleepy-btn')) {
-      var sl = document.createElement('button'); sl.type = 'button'; sl.id = 'cm-sleepy-btn'; sl.className = 'cm-hdr-quick';
-      sl.innerHTML = '<span>😴</span> <span class="cm-mode-word">Sleepy Mio</span>';
-      sl.title = 'Open Sleepy Mio quiet classroom game';
-      sl.addEventListener('click', function () {
-        if (root.SleepyMonster && root.SleepyMonster.open) root.SleepyMonster.open();
-        else if (root.openSleepyMonster) root.openSleepyMonster();
-      });
-      right.insertBefore(sl, right.firstChild);
-    }
+    /* Sleepy Mio is in the Create menu, the Class Board dock and the rail (no header button) */
+    var oldSl = document.getElementById('cm-sleepy-btn'); if (oldSl) oldSl.remove();
     if (!document.getElementById('cm-gm-btn')) {
       var gm = document.createElement('button'); gm.type = 'button'; gm.id = 'cm-gm-btn'; gm.className = 'cm-toggle cm-gm-btn';
       gm.innerHTML = '<span>🎮</span> Game Maker';

@@ -234,17 +234,17 @@
     sync().then(redraw);
   }
 
-  /* the button in the header, next to Create (teacher only) */
+  /* an item in the header's Create menu (teacher only) */
   function mountButton() {
-    var wrap = document.getElementById('header-create-wrap'); if (!wrap || !wrap.parentNode) return;
-    var b = document.getElementById('wj-open');
-    if (!b) { css(); b = document.createElement('button'); b.id = 'wj-open'; b.type = 'button'; b.textContent = '📍 Where we are'; b.title = 'Each class: last lesson, what is still hard, the next lesson and what to print'; b.onclick = function () { open(); }; wrap.parentNode.insertBefore(b, wrap); }
-    var teacher = true; try { teacher = !S() || !S().getRole || S().getRole() === 'teacher'; } catch (e) { teacher = true; }
-    b.style.display = teacher ? '' : 'none';
+    var old = document.getElementById('wj-open'); if (old) old.remove();
+    var menu = document.getElementById('header-create-menu'); if (!menu || document.getElementById('wj-menu-item')) return;
+    var b = document.createElement('button'); b.id = 'wj-menu-item'; b.type = 'button'; b.className = 'dropdown-item-btn';
+    b.innerHTML = '<span>📍</span> <span>Where we are</span>'; b.title = 'Each class: last lesson, what is still hard, the next lesson and what to print';
+    b.onclick = function () { menu.classList.remove('is-open'); open(); };
+    menu.insertBefore(b, menu.firstChild);
   }
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountButton); else mountButton();
-    setInterval(mountButton, 2000);
   }
 
   root.ClassJourney = { open: open, lessonsOn: lessonsOn, hard: hard, sync: sync, linksOf: linksOf };
