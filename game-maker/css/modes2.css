@@ -1699,3 +1699,362 @@ body.gm-on-play.gm-mode-fling .gm-teams .gm-pod {
 .gm-real3-dock {
   bottom: 108px !important;
 }
+
+
+/* ============================================================================
+ * MEMORY MATCH — "REAL GAME" TABLETOP 3D STAGE (Wave 4 Upgrade)
+ * ============================================================================ */
+body.gm-on-play.gm-mode-memory .gm-head {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.44) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 6px 16px !important;
+}
+
+body.gm-on-play.gm-mode-memory .gm-stage {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-memory .gm-boardwrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-memory .gm-teams {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(0deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 4px 14px 8px !important;
+  pointer-events: none;
+}
+
+body.gm-on-play.gm-mode-memory .gm-teams .gm-pod {
+  pointer-events: auto;
+}
+
+.gm-mem-real3-board {
+  position: fixed;
+  top: 126px;
+  bottom: 182px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(880px, 60vw);
+  z-index: 12;
+  display: grid;
+  gap: 12px;
+  perspective: 1200px;
+  pointer-events: auto;
+}
+
+.gm-mem-card3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 82px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  perspective: 1000px;
+  user-select: none;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+}
+
+.gm-mem-card3d:hover:not(.is-flipped):not(.is-matched) {
+  transform: translateY(-4px) scale(1.03);
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+}
+
+.gm-mem-card3d:active:not(.is-flipped):not(.is-matched) {
+  transform: translateY(2px) scale(0.97);
+}
+
+.gm-mem-card3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.46s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 18px;
+}
+
+.gm-mem-card3d.is-flipped .gm-mem-card3d-inner,
+.gm-mem-card3d.is-matched .gm-mem-card3d-inner {
+  transform: rotateY(180deg);
+}
+
+.gm-mem-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Face-down card back: tactile 3D wooden/collector card with full-bleed art */
+.gm-mem-face-back {
+  background: linear-gradient(165deg, #1e3a8a 0%, #0f172a 100%);
+  border: 3px solid #fde047;
+  border-bottom: 6px solid #b45309;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.46), inset 0 2px 6px rgba(255, 255, 255, 0.32);
+}
+
+body.gm-theme-halloween .gm-mem-face-back {
+  background: linear-gradient(165deg, #3b0764 0%, #1e1b4b 100%);
+  border-color: #fb923c;
+  border-bottom-color: #9a3412;
+}
+
+.gm-mem-back-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.gm-mem-back-sheen {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28) 0%, rgba(15, 23, 42, 0.18) 70%);
+  pointer-events: none;
+}
+
+.gm-mem-num-badge {
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  z-index: 3;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 2.5px solid #fde047;
+  color: #ffffff;
+  font: 900 clamp(17px, 2vh, 22px) var(--font);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 0 #000000;
+}
+
+/* Face-up card front: warm ivory for Question, golden star-glow for Answer */
+.gm-mem-face-front {
+  transform: rotateY(180deg);
+  padding: 28px 10px 8px;
+  background: linear-gradient(180deg, #ffffff 0%, #fef9c3 100%);
+  border: 3px solid #38bdf8;
+  border-bottom: 6px solid #0284c7;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+  color: #0f172a;
+  text-align: center;
+}
+
+.gm-mem-card3d.is-a .gm-mem-face-front {
+  background: linear-gradient(180deg, #fffbeb 0%, #fde68a 100%);
+  border-color: #f59e0b;
+  border-bottom-color: #b45309;
+}
+
+.gm-mem-card3d.is-matched .gm-mem-face-front {
+  background: linear-gradient(180deg, #ecfdf5 0%, #a7f3d0 100%);
+  border-color: #10b981;
+  border-bottom-color: #047857;
+  box-shadow: 0 0 22px rgba(16, 185, 129, 0.65), 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.gm-mem-card3d.is-mismatch {
+  animation: gmMemWobble 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes gmMemWobble {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px) rotate(-2deg); }
+  40% { transform: translateX(7px) rotate(2deg); }
+  60% { transform: translateX(-5px) rotate(-1deg); }
+  80% { transform: translateX(5px) rotate(1deg); }
+}
+
+.gm-mem-kind-pill {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 3;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font: 900 clamp(12px, 1.35vh, 15px) var(--font);
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1.5px solid #38bdf8;
+}
+
+.gm-mem-card3d.is-a .gm-mem-kind-pill {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.gm-mem-card3d.is-matched .gm-mem-kind-pill {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #047857;
+}
+
+.gm-mem-kind-pill img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.gm-mem-front-text {
+  font: 900 clamp(17px, 2.15vh, 25px) var(--font);
+  line-height: 1.18;
+  color: #0f172a;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-height: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Read-Aloud Celebration Drawer on Match */
+.gm-mem-aloud-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgba(6, 9, 17, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: gmMemFadeIn 0.24s ease-out;
+}
+
+@keyframes gmMemFadeIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.gm-mem-aloud-card {
+  width: min(780px, 92vw);
+  padding: 26px 32px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(6, 78, 59, 0.96) 100%);
+  border: 4px solid #34d399;
+  border-bottom: 8px solid #047857;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 40px rgba(16, 185, 129, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.gm-mem-aloud-title {
+  font: 900 clamp(24px, 2.8vh, 32px) var(--font);
+  color: #fde047;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
+}
+
+.gm-mem-aloud-sentence-pill {
+  width: 100%;
+  padding: 18px 24px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 3px solid #fde047;
+  color: #0f172a;
+  font: 900 clamp(24px, 3.2vh, 36px) var(--font);
+  line-height: 1.25;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 1180px) {
+  .gm-mem-real3-board {
+    width: min(760px, 66vw);
+    gap: 10px;
+  }
+}
+
+/* Memory Match Real3 refinement overrides */
+body.gm-on-play.gm-mode-memory .gm-real3-dock {
+  bottom: 120px !important;
+}
+
+.gm-mem-real3-board {
+  top: 120px !important;
+  bottom: 194px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.gm-mem-real3-board .gm-mem-card3d {
+  min-height: 0 !important;
+}
+
+.gm-mem-back-img {
+  object-fit: contain !important;
+  transform: scale(1.14);
+}
+
+
+/* ============================================================================
+ * PASS THE PUMPKIN / PASS THE BOMB — "REAL GAME" FULL-SCREEN STAGE
+ * ============================================================================ */
+body.gm-on-play.gm-mode-pass .gm-head {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.44) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 6px 16px !important;
+}
+
+body.gm-on-play.gm-mode-pass .gm-stage {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-pass .gm-boardwrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: visible !important;
+}
+
+body.gm-on-play.gm-mode-pass .gm-teams {
+  position: relative;
+  z-index: 15;
+  background: linear-gradient(0deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0) 100%);
+  padding: 4px 14px 8px !important;
+  pointer-events: none;
+}
+
+body.gm-on-play.gm-mode-pass .gm-teams .gm-pod {
+  pointer-events: auto;
+}

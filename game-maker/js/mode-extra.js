@@ -261,288 +261,1006 @@
     }
   };
 
-  /* ================= Pass the Bomb / Pumpkin (Hot Potato) ================= */
+  /* ================= Pass the Bomb / Pumpkin (Hot Potato — Wave 4 Real Game Rebuild) ================= */
+  var PASS_ART = {
+    bg_hal: 'art/bg_pumpkin_patch.webp',
+    bg_classic: 'art/bg_classic_balloon.webp',
+    pumpkin: 'art/c_pumpkin.webp',
+    bomb: 'art/pu_boom.webp',
+    cauldron: 'art/o_cauldron.webp',
+    star_coin: 'art/o_star_coin.webp',
+    lantern: 'art/o_candle_lantern.webp',
+    ghost: 'art/c_ghost.webp',
+    bat: 'art/c_bat.webp'
+  };
+  var PASS_IMG_CACHE = {};
+  var PASS_MON_CACHE = {};
+
+  function passGetImg(key) {
+    if (PASS_IMG_CACHE[key]) return PASS_IMG_CACHE[key];
+    var url = PASS_ART[key];
+    if (!url) return null;
+    var im = new Image();
+    im.decoding = 'async';
+    im.src = url;
+    PASS_IMG_CACHE[key] = im;
+    return im;
+  }
+
+  function passImgReady(im) {
+    return !!(im && im.complete && im.naturalWidth > 0);
+  }
+
+  function passMonImg(monObj) {
+    var key = typeof monObj === 'string' ? monObj : (monObj && (monObj.id || monObj.name) ? (monObj.id || monObj.name) : JSON.stringify(monObj || 'm01'));
+    if (PASS_MON_CACHE[key]) return PASS_MON_CACHE[key];
+    if (!GM || !GM.mon || typeof GM.mon.svg !== 'function') return null;
+    var svg = GM.mon.svg(monObj, 220);
+    if (!svg || svg.indexOf('<svg') < 0) return null;
+    if (svg.indexOf('xmlns=') < 0) {
+      svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    var im = new Image();
+    im.decoding = 'async';
+    im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    PASS_MON_CACHE[key] = im;
+    return im;
+  }
+
+  function passRoundRect(g, x, y, w, h, r) {
+    var rr = Math.min(r, w * 0.5, h * 0.5);
+    g.beginPath();
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr);
+    g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr);
+    g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
+  }
+
+  function passOutlinedText(g, text, x, y, size, fill, stroke) {
+    g.save();
+    g.font = '900 ' + size + 'px "Fredoka", "Nunito", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = Math.max(4, Math.round(size * 0.2));
+    g.strokeStyle = stroke || '#0f172a';
+    g.strokeText(text, x, y);
+    g.fillStyle = fill || '#ffffff';
+    g.fillText(text, x, y);
+    g.restore();
+  }
+
   GM.modes.pass = {
-    id: 'pass', name: 'Pass the Pumpkin', nameClassic: 'Pass the Bomb', e: '🥔',
-    desc: 'A pumpkin ticks and passes from team to team. Answer right to pass it on. When it pops, every other team wins bonus points!',
-    descClassic: 'A ticking bomb passes from team to team. Answer right to pass it on. When it pops, every other team wins bonus points!',
-    fields: [{ key: 'rounds', label: 'Rounds', opts: [[3, '3'], [5, '5'], [8, '8']], def: 5 }],
+    id: 'pass',
+    name: 'Pass the Pumpkin',
+    nameClassic: 'Pass the Bomb',
+    e: '🥔',
+    desc: 'A ticking pumpkin passes from monster to monster! Answer right (+5) to toss it on. When it pops, every other team wins +10 Safe bonus points!',
+    descClassic: 'A ticking party bomb passes from monster to monster! Answer right (+5) to toss it on. When it pops, every other team wins +10 Safe bonus points!',
+    fields: [
+      { k: 'rounds', key: 'rounds', l: 'Rounds', label: 'Rounds', type: 'select', opts: [[3, '3 rounds'], [5, '5 rounds'], [8, '8 rounds']], def: 5, default: 5 }
+    ],
+
     start: function (ctx) {
-      var st = GM.state, hal = st.theme === 'halloween', thing = hal ? 'pumpkin' : 'bomb';
-      var rounds = +ctx.cfg.rounds || 5;
-      var eng = E().createSession(ctx, {
-        maxRounds: rounds,
-        data: { holder: 0, fuseMax: 12, fuseLeft: 12, tickAcc: 0, passArc: null, sparks: [] }
-      });
-      var nt = eng.teamCount, rootEl = ctx.root;
-      rootEl.innerHTML = '';
-
-      var info = U().h('div', { class: 'gm-info' });
-      var stage = U().h('div', { class: 'gm-passbox' });
-      var fxCv = U().h('canvas', { class: 'gm-pass-cv', width: 960, height: 540, style: 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;' });
-      var fxCtx = fxCv.getContext('2d');
-      var ring = U().h('div', { class: 'gm-passring', style: 'z-index:2;' });
-      var pump = U().h('div', { class: 'gm-pumpkin', style: 'z-index:3;cursor:pointer;', title: 'Tap to answer and pass!' });
-      var wrap = U().h('div', { class: 'gm-boardwrap' }, [info, stage]);
-      stage.appendChild(fxCv);
-      stage.appendChild(ring);
-      stage.appendChild(pump);
-      rootEl.appendChild(wrap);
-
-      function seatAngle(i) { return (i / nt) * Math.PI * 2 - Math.PI / 2; }
-      function seatPosPct(i, rx, ry) {
-        var a = seatAngle(i);
-        return { x: 50 + (rx || 39) * Math.cos(a), y: 48 + (ry || 36) * Math.sin(a) };
+      var k;
+      for (k in PASS_ART) {
+        if (Object.prototype.hasOwnProperty.call(PASS_ART, k)) passGetImg(k);
       }
 
-      var seats = eng.teams.map(function (t, i) {
-        var pos = seatPosPct(i, 39, 36);
-        var s = U().h('div', { class: 'gm-seat' }, [
-          U().monFace(t.mon, 78),
-          U().h('b', { text: t.name })
-        ]);
-        s.style.left = pos.x + '%';
-        s.style.top = pos.y + '%';
-        s.style.setProperty('--c', t.color);
-        ring.appendChild(s);
-        return s;
-      });
+      var T = (GM.state && GM.state.teams && GM.state.teams.length) ? GM.state.teams : [
+        { name: 'Team 1', color: '#38bdf8', mon: 'm01', score: 0 },
+        { name: 'Team 2', color: '#f59e0b', mon: 'm02', score: 0 }
+      ];
+      var nt = T.length;
+      var ti;
+      for (ti = 0; ti < nt; ti++) {
+        passMonImg(T[ti].mon);
+      }
 
-      eng.listen(pump, 'pointerdown', function (e) {
-        e.preventDefault();
-        if (eng.state.phase === 'action') askToPass();
-      });
+      var maxRounds = +(ctx.cfg && ctx.cfg.rounds) || 5;
+      var round = 0;
+      var holder = 0;
+      var fuseMax = 11;
+      var fuseLeft = 11;
+      var tickAcc = 0;
+      var phase = 'action'; // 'action' | 'question' | 'passing' | 'round_end' | 'finale'
+      var ended = false;
+      var passArc = null; // { fromIdx, toIdx, t, dur }
+      var poses = []; // per-team pose: 'idle' | 'holding' | 'throw' | 'catch' | 'shrug' | 'popped' | 'celebrate'
+      var bubbles = [];
+      var particles = [];
+      var shakeMag = 0;
+      var slowMoT = 0;
+      var shockwave = null;
+      var timers = [];
+      var activeOrbs = [];
+
+      for (ti = 0; ti < nt; ti++) {
+        poses.push(ti === 0 ? 'holding' : 'idle');
+        bubbles.push('');
+      }
+
+      function isHal() {
+        return (GM && GM.state && GM.state.theme === 'halloween') ||
+               (document.body && document.body.classList.contains('gm-theme-halloween'));
+      }
+
+      function thingName() {
+        return isHal() ? 'pumpkin' : 'bomb';
+      }
+
+      function setTimeoutSafe(fn, ms) {
+        var id = setTimeout(function () {
+          if (ended) return;
+          fn();
+        }, ms);
+        timers.push(id);
+        return id;
+      }
+
+      function clearOrbs() {
+        var oi;
+        for (oi = 0; oi < activeOrbs.length; oi++) {
+          if (activeOrbs[oi] && activeOrbs[oi].parentNode) {
+            activeOrbs[oi].parentNode.removeChild(activeOrbs[oi]);
+          }
+        }
+        activeOrbs = [];
+      }
 
       function clearPodUrgency() {
-        for (var i = 0; i < nt; i++) {
+        var i;
+        for (i = 0; i < nt; i++) {
           var pod = document.getElementById('gm-team-' + i);
           if (pod) {
             pod.classList.remove('gm-pod-urgent');
             pod.style.removeProperty('--urg');
             pod.style.removeProperty('--hb-scale');
           }
-          if (seats[i]) {
-            seats[i].classList.remove('gm-seat-urgent');
-            seats[i].style.removeProperty('--urg');
-            seats[i].style.removeProperty('--hb-scale');
+        }
+      }
+
+      // 1. Build Full-Screen Scene + Canvas + Banner + Dock
+      ctx.root.innerHTML = '';
+      var scene = U().h('div', { class: 'gm-real3-scene gm-pass-scene' });
+      var cv = U().h('canvas', { class: 'gm-real3-cv' });
+      scene.appendChild(cv);
+
+      var banner = U().h('div', { class: 'gm-real3-banner in' });
+      scene.appendChild(banner);
+
+      var dock = U().h('div', { class: 'gm-real3-dock' });
+      var askBtn = U().h('button', {
+        class: 'gm-real3-btn amber pulse',
+        type: 'button',
+        onclick: function () { askToPass(); }
+      }, ['❓ Answer & Pass! (Space)']);
+      dock.appendChild(askBtn);
+      scene.appendChild(dock);
+
+      ctx.root.appendChild(scene);
+
+      // 2. Canvas Sizing & Seat Coordinates Around the Stage Circle
+      var W = 1366;
+      var H = 768;
+      var dpr = 1;
+      var g = cv.getContext('2d');
+
+      function resizeCanvas() {
+        var r = scene.getBoundingClientRect();
+        W = Math.max(640, r.width || window.innerWidth || 1366);
+        H = Math.max(420, r.height || window.innerHeight || 768);
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = Math.round(W * dpr);
+        cv.height = Math.round(H * dpr);
+      }
+      resizeCanvas();
+
+      var ro = null;
+      if (window.ResizeObserver) {
+        ro = new ResizeObserver(function () { resizeCanvas(); });
+        ro.observe(scene);
+      }
+      window.addEventListener('resize', resizeCanvas);
+
+      function getSeatPos(idx) {
+        // Carefully positioned around the center cauldron/clock so no monster is ever covered by top banner or bottom dock
+        if (nt === 2) {
+          return idx === 0
+            ? { x: W * 0.21, y: H * 0.62 }
+            : { x: W * 0.79, y: H * 0.62 };
+        }
+        if (nt === 3) {
+          if (idx === 0) return { x: W * 0.18, y: H * 0.65 };
+          if (idx === 1) return { x: W * 0.50, y: H * 0.38 };
+          return { x: W * 0.82, y: H * 0.65 };
+        }
+        // 4+ teams: 3D stadium ring (back pair narrower, front pair wider so zero vertical overlap)
+        if (idx === 0) return { x: W * 0.30, y: H * 0.42 };
+        if (idx === 1) return { x: W * 0.70, y: H * 0.42 };
+        if (idx === 2) return { x: W * 0.86, y: H * 0.68 };
+        return { x: W * 0.14, y: H * 0.68 };
+      }
+
+      function getBombPosForSeat(idx) {
+        var sp = getSeatPos(idx);
+        var cx = W * 0.50;
+        var cy = H * 0.54;
+        // Held slightly toward the center of the circle in the monster's hands
+        return {
+          x: sp.x + (cx - sp.x) * 0.32,
+          y: sp.y - Math.min(190, H * 0.24) * 0.38 + (cy - sp.y) * 0.12
+        };
+      }
+
+      // 3. Flying Score Orb + World Float Text
+      function spawnWorldFloat(x, y, text, kind) {
+        var anchor = U().h('div', {
+          style: 'position:fixed;left:' + Math.round(x) + 'px;top:' + Math.round(y) + 'px;width:4px;height:4px;pointer-events:none;z-index:40;'
+        });
+        document.body.appendChild(anchor);
+        U().floatText(text, anchor, kind || 'good');
+        setTimeout(function () {
+          if (anchor.parentNode) anchor.parentNode.removeChild(anchor);
+        }, 1200);
+      }
+
+      function flyScoreToPod(startPt, teamIdx, label, pts) {
+        U().addScore(teamIdx, pts);
+        if (A()) A().play('coin_collect');
+
+        var sx = startPt ? startPt.x : W * 0.5;
+        var sy = startPt ? startPt.y : H * 0.5;
+        var orb = U().h('div', {
+          class: 'gm-score-orb',
+          text: label,
+          style: 'left:' + Math.round(sx) + 'px;top:' + Math.round(sy) + 'px;'
+        });
+        document.body.appendChild(orb);
+        activeOrbs.push(orb);
+
+        var pods = document.querySelectorAll('.gm-teams .gm-pod');
+        var pod = pods && pods[teamIdx] ? pods[teamIdx] : document.getElementById('gm-team-' + teamIdx);
+        var tx = sx;
+        var ty = H - 50;
+        if (pod && pod.getBoundingClientRect) {
+          var pr = pod.getBoundingClientRect();
+          tx = pr.left + pr.width * 0.5;
+          ty = pr.top + pr.height * 0.5;
+        }
+
+        requestAnimationFrame(function () {
+          orb.style.left = Math.round(tx) + 'px';
+          orb.style.top = Math.round(ty) + 'px';
+          orb.style.transform = 'translate(-50%, -50%) scale(0.75)';
+          orb.style.opacity = '0.2';
+        });
+
+        setTimeout(function () {
+          if (orb.parentNode) orb.parentNode.removeChild(orb);
+        }, 580);
+      }
+
+      function spawnBurst(x, y, count, palette) {
+        var cols = palette || ['#fde047', '#fb923c', '#38bdf8', '#34d399', '#fb7185', '#ffffff'];
+        var n = count || 24;
+        var i;
+        for (i = 0; i < n; i++) {
+          var ang = (Math.PI * 2 * i) / n + (Math.random() - 0.5) * 0.4;
+          var spd = 90 + Math.random() * 260;
+          particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd - 70,
+            r: 5 + Math.random() * 6,
+            color: cols[i % cols.length],
+            life: 0.7 + Math.random() * 0.45,
+            maxLife: 1.1,
+            gravity: 320
+          });
+        }
+      }
+
+      // 4. HUD & Round Setup
+      function renderBanner(customMsg, subText) {
+        var t = T[holder] || T[0];
+        banner.style.setProperty('--c', t.color || '#f59e0b');
+        banner.innerHTML = '';
+        banner.appendChild(U().monFace(t.mon, 42));
+        banner.appendChild(U().h('b', {
+          text: customMsg || (t.name + ' holds the ' + thingName() + '! Answer fast to pass it!')
+        }));
+        banner.appendChild(U().h('span', {
+          class: 'gm-real3-sub',
+          text: subText || ('Round ' + (round + 1) + ' / ' + maxRounds)
+        }));
+        banner.classList.add('in');
+
+        if (askBtn) {
+          if (phase === 'action') {
+            askBtn.style.display = '';
+            askBtn.textContent = (isHal() ? '🎃 ' : '💣 ') + 'Answer & Pass! (Space)';
+            askBtn.className = 'gm-real3-btn amber pulse';
+          } else {
+            askBtn.style.display = 'none';
           }
         }
-      }
-      eng.on('end', clearPodUrgency);
-
-      function placeBombAtHolder(idx) {
-        var pos = seatPosPct(idx, 21, 20);
-        pump.style.left = pos.x + '%';
-        pump.style.top = pos.y + '%';
-        seats.forEach(function (s, i) { s.classList.toggle('hold', i === idx); });
-        clearPodUrgency();
-      }
-
-      function renderBanner(customMsg) {
-        var hIdx = eng.state.data.holder, t = eng.teams[hIdx];
-        info.innerHTML = '';
-        info.style.setProperty('--c', t.color);
-        info.appendChild(U().monFace(t.mon, 46));
-        info.appendChild(U().h('b', {
-          text: customMsg || (t.name + ' holds the ' + thing + '! Answer fast to pass it!  (round ' + (eng.state.round + 1) + ' of ' + eng.state.maxRounds + ')')
-        }));
-        if (!customMsg && eng.state.phase === 'action') {
-          info.appendChild(U().btn('❓ Answer & Pass!', 'big amber', askToPass));
-        }
+        U().teamBar(T, holder);
       }
 
       function startRound() {
-        var D = eng.state.data;
-        D.fuseMax = U().rand(11, 17) + nt * 1.2;
-        D.fuseLeft = D.fuseMax;
-        D.tickAcc = 0;
-        D.passArc = null;
-        pump.innerHTML = '';
-        pump.appendChild(U().art(hal ? 'c_pumpkin' : 'pu_boom', hal ? '🎃' : '💣', 'gm-pumpimg'));
-        eng.setTurn(D.holder, true);
-        placeBombAtHolder(D.holder);
-        eng.setPhase('action');
+        if (ended) return;
+        fuseMax = 10 + nt * 1.5;
+        fuseLeft = fuseMax;
+        tickAcc = 0;
+        passArc = null;
+        shockwave = null;
+        phase = 'action';
+        clearPodUrgency();
+
+        var i;
+        for (i = 0; i < nt; i++) {
+          poses[i] = (i === holder) ? 'holding' : 'idle';
+          bubbles[i] = (i === holder) ? 'Hot! Pass it! 🔥' : 'Not me! 😅';
+        }
         renderBanner();
       }
 
-      async function popBomb() {
-        var D = eng.state.data, holder = D.holder;
-        eng.setPhase('round_end');
+      // 5. Pop / Boom Payoff (When Fuse Reaches 0)
+      function popBomb() {
+        if (ended || phase === 'round_end' || phase === 'finale') return;
+        phase = 'round_end';
         clearPodUrgency();
-        pump.textContent = '💥';
-        J().squash(pump, 1.45, 0.65, 340);
-        A().play('bomb_boom');
-        J().shake(10);
-        J().shockwave(pump, '#ff5d73', 240, 580);
-        J().sparks(pump, 32, ['#ff5d73', '#ffe066', '#ffb21a', '#ffffff'], 11);
-        U().confetti(28);
-        U().wobble(seats[holder]);
-        U().fx('smoke_puff', pump, 2);
 
-        var others = eng.teams.map(function (t, i) { return i; }).filter(function (i) { return i !== holder; });
-        if (others.length) {
-          A().play('crowd_cheer_small'); A().play('coin_collect');
-          renderBanner('💥 BOOM on ' + eng.teams[holder].name + '! Every other team wins +10 points!');
-          others.forEach(function (i) { eng.award(i, 10, seats[i], '+10 Safe!'); });
+        var bPos = getBombPosForSeat(holder);
+        var holderSeat = getSeatPos(holder);
+        slowMoT = 0.42;
+        shakeMag = 6;
+        shockwave = { x: bPos.x, y: bPos.y, r: 16, maxR: 290, alpha: 1.0 };
+
+        spawnBurst(bPos.x, bPos.y, 65, ['#ff5d73', '#fde047', '#fb923c', '#34d399', '#38bdf8', '#ffffff']);
+        U().confetti(32);
+
+        if (A()) {
+          A().play('bomb_boom');
+          A().play('haystack_poof');
+          A().play('crowd_roar_big');
+        }
+
+        var i;
+        var safeTeams = [];
+        for (i = 0; i < nt; i++) {
+          if (i === holder) {
+            poses[i] = 'popped';
+            bubbles[i] = 'KABOOM! 😵‍💫';
+          } else {
+            poses[i] = 'celebrate';
+            bubbles[i] = 'SAFE! +10! 🎉';
+            safeTeams.push(i);
+          }
+        }
+
+        spawnWorldFloat(holderSeat.x, holderSeat.y - 120, '💥 BOOM!', 'bad');
+
+        if (safeTeams.length) {
+          renderBanner('💥 BOOM on ' + T[holder].name + '! Every other team wins +10 Safe bonus!', 'Round ' + (round + 1) + ' / ' + maxRounds);
+          var si;
+          for (si = 0; si < safeTeams.length; si++) {
+            var sIdx = safeTeams[si];
+            var sp = getSeatPos(sIdx);
+            spawnWorldFloat(sp.x, sp.y - 120, '+10 Safe!', 'good');
+            flyScoreToPod(sp, sIdx, '+10', 10);
+          }
         } else {
-          renderBanner('💥 Time is up! Let\u2019s start the next round!');
+          renderBanner('💥 Time is up! Next round!');
         }
 
-        await eng.wait(2500);
-        if (!eng.state.alive) return;
-        if (eng.advanceRound()) {
-          D.holder = eng.state.round % nt;
-          startRound();
-        }
+        setTimeoutSafe(function () {
+          round++;
+          if (round >= maxRounds) {
+            phase = 'finale';
+            ended = true;
+            clearPodUrgency();
+            if (A()) {
+              A().play('victory_fanfare');
+              A().play('cheer_kids');
+            }
+            setTimeout(function () { ctx.end(); }, 750);
+          } else {
+            holder = (holder + 1) % nt;
+            startRound();
+          }
+        }, 2100);
       }
 
-      async function askToPass() {
-        if (eng.state.phase !== 'action' || !eng.state.alive) return;
-        var D = eng.state.data, holder = D.holder, t = eng.teams[holder];
-        var res = await eng.ask(null, {
-          timer: Math.min(+ctx.cfg.timer || 0, 15) || 0,
-          label: 'Pass the ' + thing + '!'
+      // Expose helper for instant round pop in automated verification if needed
+      window.__gmPassForcePop = function () {
+        if (!ended && phase === 'action') {
+          fuseLeft = 0.02;
+        }
+      };
+
+      // 6. Ask Question & Toss the Pumpkin / Bomb Along a 3D Parabolic Arc
+      function askToPass() {
+        if (ended || phase !== 'action') return;
+        phase = 'question';
+        renderBanner(T[holder].name + ' is answering to pass the ' + thingName() + '...');
+
+        var item = ctx.nextItem();
+        U().ask(item, {
+          team: T[holder],
+          timer: Math.min(+(ctx.cfg && ctx.cfg.timer) || 0, 15) || 0,
+          label: 'Pass the ' + thingName() + '!'
+        }).then(function (ok) {
+          if (ended || phase === 'round_end' || phase === 'finale') return;
+
+          if (ok) {
+            var fromIdx = holder;
+            var toIdx = (holder + 1) % nt;
+            var fromSeat = getSeatPos(fromIdx);
+
+            // Award +5 for passing!
+            spawnWorldFloat(fromSeat.x, fromSeat.y - 130, '+5 Pass!', 'good');
+            flyScoreToPod(fromSeat, fromIdx, '+5', 5);
+
+            // Small fuse boost so rallies feel exciting
+            fuseLeft = Math.min(fuseMax, fuseLeft + 2.0);
+
+            poses[fromIdx] = 'throw';
+            bubbles[fromIdx] = 'Catch this! 💨';
+            poses[toIdx] = 'catch';
+            bubbles[toIdx] = 'Whoa! 😮';
+
+            if (A()) {
+              A().play('bomb_pass');
+              A().play('whoosh_soft');
+              A().play('crowd_ooh');
+              if (isHal()) A().play('witch');
+            }
+
+            phase = 'passing';
+            passArc = {
+              fromIdx: fromIdx,
+              toIdx: toIdx,
+              t: 0,
+              dur: 0.52
+            };
+            renderBanner(T[fromIdx].name + ' tosses the ' + thingName() + ' to ' + T[toIdx].name + '! (+5)');
+          } else {
+            // Wrong answer: 0 points lost, gentle shrug, keep at least 3.5s on fuse so they get another fair try
+            fuseLeft = Math.max(fuseLeft, 3.5);
+            poses[holder] = 'shrug';
+            bubbles[holder] = 'Good try! Try again! 😊';
+            if (A()) A().play('crowd_aww_soft');
+            renderBanner('Good try! ' + T[holder].name + ' still holds the ' + thingName() + ' — try again!');
+
+            setTimeoutSafe(function () {
+              if (phase === 'round_end' || phase === 'finale') return;
+              poses[holder] = 'holding';
+              bubbles[holder] = 'Hot! Pass it! 🔥';
+              phase = 'action';
+              renderBanner();
+            }, 720);
+          }
         });
-        if (!eng.state.alive || res.cancelled || eng.state.phase === 'round_end') return;
+      }
 
-        if (res.ok) {
-          eng.setPhase('animating');
-          var fromIdx = holder;
-          var toIdx = (holder + 1) % nt;
-          D.holder = toIdx;
-          eng.award(fromIdx, 5, seats[fromIdx], '+5 Pass!');
-          A().play('bomb_pass'); A().play('whoosh_soft'); A().play('coin_collect');
-          if (hal) A().play('witch');
-          var p0 = seatPosPct(fromIdx, 21, 20), p1 = seatPosPct(toIdx, 21, 20);
-          pump.style.transition = 'none';
-          await new Promise(function (resolve) {
-            eng.tween(380, 'inOutCubic', function (k) {
-              var arcLift = Math.sin(k * Math.PI) * 11;
-              var cx = p0.x + (p1.x - p0.x) * k;
-              var cy = p0.y + (p1.y - p0.y) * k - arcLift;
-              pump.style.left = cx + '%';
-              pump.style.top = cy + '%';
-              pump.style.transform = 'translate(-50%,-50%) rotate(' + Math.round(k * 360) + 'deg) scale(' + (1 + Math.sin(k * Math.PI) * 0.22) + ')';
-              D.sparks.push({ x: cx / 100 * fxCv.width, y: cy / 100 * fxCv.height, vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3, r: 5, life: 1, c: '#ffe066' });
-            }, function () {
-              pump.style.transform = 'translate(-50%,-50%)';
-              pump.style.transition = '';
-              resolve();
-            });
-          });
-          if (!eng.state.alive || eng.state.phase === 'round_end') return;
-          eng.setTurn(toIdx, true);
-          placeBombAtHolder(toIdx);
-          J().squash(seats[toIdx], 1.16, 0.86, 240);
-          eng.setPhase('action');
-          renderBanner();
+      // Tap canvas or press Space to answer & pass
+      cv.addEventListener('pointerdown', function (e) {
+        if (ended || phase !== 'action') return;
+        e.preventDefault();
+        askToPass();
+      });
+
+      function onKeyDown(e) {
+        if (ended) return;
+        if (e.code === 'Space' || e.key === ' ') {
+          var tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+          if (document.querySelector('.gm-over')) return;
+          if (phase === 'action') {
+            e.preventDefault();
+            askToPass();
+          }
+        }
+      }
+      window.addEventListener('keydown', onKeyDown);
+
+      // 7. 60fps Canvas Render Loop
+      var rafId = 0;
+      var lastTs = performance.now();
+      var elapsed = 0;
+
+      function drawBackgroundAndStage(hal, tSec, urgency) {
+        var bgIm = passGetImg(hal ? 'bg_hal' : 'bg_classic');
+        if (passImgReady(bgIm)) {
+          var iw = bgIm.naturalWidth;
+          var ih = bgIm.naturalHeight;
+          var sc = Math.max(W / iw, H / ih);
+          var dw = iw * sc;
+          var dh = ih * sc;
+          g.drawImage(bgIm, (W - dw) * 0.5, (H - dh) * 0.5, dw, dh);
         } else {
-          renderBanner('Good try! ' + t.name + ' still holds the ' + thing + ' \u2014 try again!');
-          await eng.wait(750);
-          if (!eng.state.alive || eng.state.phase === 'round_end') return;
-          eng.setPhase('action');
-          renderBanner();
+          var grad = g.createLinearGradient(0, 0, 0, H);
+          grad.addColorStop(0, hal ? '#1e1b4b' : '#0284c7');
+          grad.addColorStop(1, hal ? '#3b0764' : '#0369a1');
+          g.fillStyle = grad;
+          g.fillRect(0, 0, W, H);
+        }
+
+        // Keep scene >=60% bright while adding a warm stage spotlight in the center
+        var spot = g.createRadialGradient(W * 0.5, H * 0.55, H * 0.08, W * 0.5, H * 0.55, W * 0.72);
+        if (hal) {
+          spot.addColorStop(0, 'rgba(251, 146, 60, 0.22)');
+          spot.addColorStop(0.55, 'rgba(88, 28, 135, 0.18)');
+          spot.addColorStop(1, 'rgba(15, 23, 42, 0.36)');
+        } else {
+          spot.addColorStop(0, 'rgba(254, 240, 138, 0.22)');
+          spot.addColorStop(1, 'rgba(15, 23, 42, 0.24)');
+        }
+        g.fillStyle = spot;
+        g.fillRect(0, 0, W, H);
+
+        // Halloween hanging lanterns + floating ghost/bat
+        if (hal) {
+          var lanIm = passGetImg('lantern');
+          if (passImgReady(lanIm)) {
+            var swL = Math.sin(tSec * 2.0) * 0.08;
+            var swR = Math.cos(tSec * 1.8) * 0.08;
+            g.save();
+            g.translate(W * 0.07, 72);
+            g.rotate(swL);
+            g.drawImage(lanIm, -34, 0, 68, 88);
+            g.restore();
+
+            g.save();
+            g.translate(W * 0.93, 72);
+            g.rotate(swR);
+            g.drawImage(lanIm, -34, 0, 68, 88);
+            g.restore();
+          }
+          var ghIm = passGetImg('ghost');
+          if (passImgReady(ghIm)) {
+            g.save();
+            g.globalAlpha = 0.85;
+            g.drawImage(ghIm, W * 0.12 + Math.sin(tSec * 1.4) * 16 - 34, H * 0.22 + Math.cos(tSec * 1.9) * 10 - 34, 68, 68);
+            g.restore();
+          }
+          var btIm = passGetImg('bat');
+          if (passImgReady(btIm)) {
+            g.save();
+            g.globalAlpha = 0.88;
+            g.drawImage(btIm, W * 0.88 + Math.cos(tSec * 1.7) * 20 - 34, H * 0.21 + Math.sin(tSec * 2.3) * 10 - 26, 68, 52);
+            g.restore();
+          }
+        }
+
+        // 3D Stage Ring Track connecting the monster pedestals
+        var cx = W * 0.50;
+        var cy = H * 0.56;
+        var rx = W * 0.31;
+        var ry = H * 0.16;
+
+        g.save();
+        g.strokeStyle = hal ? 'rgba(251, 146, 60, 0.45)' : 'rgba(253, 224, 71, 0.55)';
+        g.lineWidth = 6;
+        g.setLineDash([16, 12]);
+        g.lineDashOffset = -(tSec * 42) % 28;
+        g.beginPath();
+        g.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+        g.stroke();
+        g.setLineDash([]);
+        g.restore();
+
+        // Center Stage Focal Prop (Bubbling Cauldron in Halloween / Star Trophy Table in Classic) + Giant Fuse Countdown Gauge
+        var fuseRatio = Math.max(0, Math.min(1, fuseLeft / Math.max(1, fuseMax)));
+        var ringCol = urgency > 0.68 ? '#f43f5e' : (urgency > 0.35 ? '#f59e0b' : '#10b981');
+        var pulseR = 68 + Math.sin(tSec * (4 + urgency * 10)) * (4 + urgency * 6);
+
+        g.save();
+        g.fillStyle = 'rgba(15, 23, 42, 0.72)';
+        g.beginPath();
+        g.arc(cx, cy, pulseR + 8, 0, Math.PI * 2);
+        g.fill();
+
+        g.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+        g.lineWidth = 10;
+        g.beginPath();
+        g.arc(cx, cy, pulseR, 0, Math.PI * 2);
+        g.stroke();
+
+        g.strokeStyle = ringCol;
+        g.lineWidth = 10;
+        g.lineCap = 'round';
+        g.beginPath();
+        g.arc(cx, cy, pulseR, -Math.PI * 0.5, -Math.PI * 0.5 + Math.PI * 2 * fuseRatio);
+        g.stroke();
+        g.restore();
+
+        var centerIm = passGetImg(hal ? 'cauldron' : 'star_coin');
+        if (passImgReady(centerIm)) {
+          var cSize = hal ? 108 : 88;
+          var cBob = Math.sin(tSec * 3.2) * 4;
+          g.drawImage(centerIm, cx - cSize * 0.5, cy - cSize * 0.52 + cBob, cSize, cSize);
+        }
+
+        // Countdown seconds readout on the center pedestal
+        var secText = phase === 'round_end' ? '💥 BOOM!' : (Math.ceil(Math.max(0, fuseLeft)) + 's');
+        passOutlinedText(g, secText, cx, cy + pulseR + 24, 26, urgency > 0.65 ? '#fda4af' : '#fde047', '#0f172a');
+      }
+
+      function drawMonsterAtSeat(idx, tSec, urgency) {
+        var team = T[idx];
+        if (!team) return;
+        var sp = getSeatPos(idx);
+        var isHolder = (idx === holder && phase !== 'passing');
+        var pose = poses[idx] || 'idle';
+        var col = team.color || '#38bdf8';
+        var monSize = Math.min(205, Math.max(152, H * 0.25));
+
+        // 3D Pedestal + Urgency Halo under active holder
+        g.save();
+        if (isHolder && phase === 'action') {
+          var haloR = monSize * (0.48 + 0.08 * Math.sin(tSec * (6 + urgency * 12)));
+          var hGrad = g.createRadialGradient(sp.x, sp.y, 8, sp.x, sp.y, haloR);
+          hGrad.addColorStop(0, urgency > 0.65 ? 'rgba(244, 63, 94, 0.78)' : 'rgba(245, 158, 11, 0.72)');
+          hGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+          g.fillStyle = hGrad;
+          g.beginPath();
+          g.ellipse(sp.x, sp.y + 8, haloR, haloR * 0.42, 0, 0, Math.PI * 2);
+          g.fill();
+        }
+
+        var pedGrad = g.createRadialGradient(sp.x, sp.y + 10, 6, sp.x, sp.y + 10, monSize * 0.52);
+        pedGrad.addColorStop(0, col);
+        pedGrad.addColorStop(0.6, 'rgba(15, 23, 42, 0.82)');
+        pedGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+        g.fillStyle = pedGrad;
+        g.beginPath();
+        g.ellipse(sp.x, sp.y + 10, monSize * 0.5, monSize * 0.18, 0, 0, Math.PI * 2);
+        g.fill();
+
+        g.strokeStyle = isHolder ? '#fde047' : col;
+        g.lineWidth = isHolder ? 4.5 : 3;
+        g.beginPath();
+        g.ellipse(sp.x, sp.y + 6, monSize * 0.39, monSize * 0.12, 0, 0, Math.PI * 2);
+        g.stroke();
+        g.restore();
+
+        // Pose animation math
+        var bobSpd = isHolder ? (4.5 + urgency * 7) : 2.8;
+        var bobY = Math.sin(tSec * bobSpd + idx * 1.4) * (isHolder ? 8 : 5);
+        var jumpY = 0;
+        var rot = 0;
+        var sx = 1 + Math.sin(tSec * bobSpd + idx) * 0.03;
+        var sy = 1 - Math.sin(tSec * bobSpd + idx) * 0.03;
+
+        if (pose === 'throw') {
+          jumpY = -24;
+          rot = (sp.x < W * 0.5) ? 0.18 : -0.18;
+          sx = 0.94;
+          sy = 1.1;
+        } else if (pose === 'catch') {
+          jumpY = 6;
+          sx = 1.14;
+          sy = 0.88;
+        } else if (pose === 'celebrate') {
+          jumpY = -Math.abs(Math.sin(tSec * 8.5 + idx)) * 34;
+          rot = Math.sin(tSec * 9 + idx) * 0.14;
+        } else if (pose === 'popped') {
+          rot = Math.sin(tSec * 16) * 0.18;
+          sx = 1.08 + Math.sin(tSec * 14) * 0.08;
+          sy = 0.92 - Math.sin(tSec * 14) * 0.08;
+        } else if (pose === 'shrug') {
+          rot = Math.sin(tSec * 14) * 0.1;
+        }
+
+        var monIm = passMonImg(team.mon);
+        g.save();
+        g.translate(sp.x, sp.y - monSize * 0.43 + bobY + jumpY);
+        g.rotate(rot);
+        g.scale(sx, sy);
+        if (passImgReady(monIm)) {
+          g.drawImage(monIm, -monSize * 0.5, -monSize * 0.5, monSize, monSize);
+        } else {
+          g.fillStyle = col;
+          g.beginPath();
+          g.arc(0, 0, monSize * 0.36, 0, Math.PI * 2);
+          g.fill();
+        }
+        g.restore();
+
+        // Dizzy stars above popped monster
+        if (pose === 'popped') {
+          var stI;
+          for (stI = 0; stI < 3; stI++) {
+            var sa = tSec * 5.5 + (stI * Math.PI * 2) / 3;
+            var stX = sp.x + Math.cos(sa) * 44;
+            var stY = sp.y - monSize * 0.92 + Math.sin(sa) * 12;
+            passOutlinedText(g, '⭐', stX, stY, 20, '#fde047', '#0f172a');
+          }
+        }
+
+        // Team name pill under pedestal
+        var pillW = 156;
+        var pillH = 32;
+        g.save();
+        passRoundRect(g, sp.x - pillW * 0.5, sp.y + 22, pillW, pillH, 16);
+        g.fillStyle = 'rgba(15, 23, 42, 0.9)';
+        g.fill();
+        g.lineWidth = 2.5;
+        g.strokeStyle = isHolder ? '#fde047' : col;
+        g.stroke();
+        g.fillStyle = '#ffffff';
+        g.font = '900 15px "Fredoka", "Nunito", sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText((isHolder ? '🔥 ' : '') + team.name, sp.x, sp.y + 22 + pillH * 0.5);
+        g.restore();
+
+        // Speech bubble above monster (or to the side for upper-row monsters so it never touches the top banner)
+        var btxt = bubbles[idx];
+        if (btxt) {
+          var bw = 172;
+          var bh = 36;
+          var bx = Math.max(12, Math.min(W - bw - 12, sp.x - bw * 0.5));
+          var by = sp.y - monSize - 22 + jumpY * 0.35;
+          if (sp.y < H * 0.45) {
+            bx = (sp.x <= W * 0.5)
+              ? Math.max(14, sp.x - monSize * 0.52 - bw)
+              : Math.min(W - bw - 14, sp.x + monSize * 0.52);
+            by = sp.y - monSize * 0.62 + jumpY * 0.35;
+          }
+          g.save();
+          passRoundRect(g, bx, by, bw, bh, 17);
+          g.fillStyle = isHolder ? '#fef3c7' : 'rgba(255, 255, 255, 0.94)';
+          g.fill();
+          g.lineWidth = 2.5;
+          g.strokeStyle = isHolder ? '#f59e0b' : col;
+          g.stroke();
+          g.fillStyle = '#0f172a';
+          g.font = '900 14px "Fredoka", "Nunito", sans-serif';
+          g.textAlign = 'center';
+          g.textBaseline = 'middle';
+          g.fillText(btxt, bx + bw * 0.5, by + bh * 0.5);
+          g.restore();
         }
       }
 
-      /* 60fps simulation & fuse spark canvas loop */
-      eng.raf(function (dt, now) {
-        var D = eng.state.data;
-        var W = fxCv.width, H = fxCv.height;
-        fxCtx.clearRect(0, 0, W, H);
+      function drawBombOrPumpkin(hal, tSec, urgency) {
+        if (phase === 'round_end' || phase === 'finale') return;
 
-        /* Draw team ring track */
-        fxCtx.save();
-        fxCtx.strokeStyle = hal ? 'rgba(255, 224, 102, 0.24)' : 'rgba(31, 42, 68, 0.16)';
-        fxCtx.lineWidth = 6;
-        fxCtx.setLineDash([12, 10]);
-        fxCtx.lineDashOffset = -(now * 0.025) % 22;
-        fxCtx.beginPath();
-        fxCtx.ellipse(W * 0.5, H * 0.48, W * 0.39, H * 0.36, 0, 0, Math.PI * 2);
-        fxCtx.stroke();
-        fxCtx.restore();
+        var bx, by, rot = 0, scale = 1.0;
+        if (passArc) {
+          var p0 = getBombPosForSeat(passArc.fromIdx);
+          var p1 = getBombPosForSeat(passArc.toIdx);
+          var k = Math.max(0, Math.min(1, passArc.t / passArc.dur));
+          var lift = Math.sin(k * Math.PI) * Math.min(180, H * 0.24);
+          bx = p0.x + (p1.x - p0.x) * k;
+          by = p0.y + (p1.y - p0.y) * k - lift;
+          rot = k * Math.PI * 2 * (p1.x >= p0.x ? 1 : -1);
+          scale = 1 + Math.sin(k * Math.PI) * 0.28;
+        } else {
+          var hp = getBombPosForSeat(holder);
+          bx = hp.x;
+          by = hp.y + Math.sin(tSec * (6 + urgency * 10)) * 7;
+          rot = Math.sin(tSec * (7 + urgency * 12)) * (0.08 + urgency * 0.14);
+          var pulse = Math.pow(Math.max(0, Math.sin(tSec * (3 + urgency * 7) * Math.PI)), 2);
+          scale = 1 + pulse * (0.08 + urgency * 0.16);
+        }
 
-        /* Advance fuse timer when round is active (pauses slightly during question modal so kids have a fair chance) */
-        if (eng.state.phase === 'action' || eng.state.phase === 'question') {
-          var rate = eng.state.phase === 'question' ? 0.35 : 1.0;
-          D.fuseLeft -= dt * rate;
-          var urgency = Math.max(0, Math.min(1, 1 - D.fuseLeft / Math.max(1, D.fuseMax)));
-          var fuseRatio = Math.max(0, Math.min(1, D.fuseLeft / Math.max(1, D.fuseMax)));
-          var tickInterval = 0.85 - urgency * 0.52;
-          D.tickAcc += dt;
-          if (D.tickAcc >= tickInterval) {
-            D.tickAcc = 0;
-            A().play('fuse_tick', urgency);
-            J().squash(pump, 1.14 + urgency * 0.1, 0.88 - urgency * 0.08, 180);
-            var bPos = seatPosPct(D.holder, 21, 20);
-            var bx = bPos.x / 100 * W, by = bPos.y / 100 * H - 28;
-            for (var s = 0; s < 5; s++) {
-              var a = -Math.PI / 2 + (Math.random() - 0.5) * 1.8, sp = 2 + Math.random() * 4.5;
-              D.sparks.push({ x: bx, y: by, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1.5, r: 3.5 + Math.random() * 3, life: 1, c: urgency > 0.65 ? '#ff5d73' : '#ffe066' });
+        var itemIm = passGetImg(hal ? 'pumpkin' : 'bomb');
+        var sz = Math.min(118, Math.max(88, H * 0.14));
+
+        // Warm glow behind the ticking pumpkin/bomb
+        g.save();
+        var glowR = sz * (0.68 + urgency * 0.25);
+        var bGrad = g.createRadialGradient(bx, by, 6, bx, by, glowR);
+        bGrad.addColorStop(0, urgency > 0.65 ? 'rgba(244, 63, 94, 0.85)' : 'rgba(251, 191, 36, 0.75)');
+        bGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        g.fillStyle = bGrad;
+        g.beginPath();
+        g.arc(bx, by, glowR, 0, Math.PI * 2);
+        g.fill();
+
+        g.translate(bx, by);
+        g.rotate(rot);
+        g.scale(scale, 2 - scale * 0.92);
+        if (passImgReady(itemIm)) {
+          g.drawImage(itemIm, -sz * 0.5, -sz * 0.5, sz, sz);
+        } else {
+          g.fillStyle = hal ? '#fb923c' : '#1e293b';
+          g.beginPath();
+          g.arc(0, 0, sz * 0.42, 0, Math.PI * 2);
+          g.fill();
+        }
+        g.restore();
+      }
+
+      function drawParticlesAndShockwave(dt) {
+        if (shockwave) {
+          shockwave.r += (shockwave.maxR - shockwave.r) * Math.min(1, dt * 8);
+          shockwave.alpha -= dt * 1.6;
+          if (shockwave.alpha <= 0) {
+            shockwave = null;
+          } else {
+            g.save();
+            g.strokeStyle = 'rgba(251, 191, 36, ' + shockwave.alpha.toFixed(2) + ')';
+            g.lineWidth = 8;
+            g.beginPath();
+            g.arc(shockwave.x, shockwave.y, shockwave.r, 0, Math.PI * 2);
+            g.stroke();
+            g.restore();
+          }
+        }
+
+        var i;
+        for (i = particles.length - 1; i >= 0; i--) {
+          var p = particles[i];
+          p.life -= dt;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += (p.gravity || 260) * dt;
+          var alpha = Math.max(0, Math.min(1, p.life / (p.maxLife || 1)));
+          g.save();
+          g.globalAlpha = alpha;
+          g.fillStyle = p.color;
+          g.beginPath();
+          g.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
+          g.fill();
+          g.restore();
+        }
+      }
+
+      function frame(now) {
+        if (ended && !scene.isConnected) return;
+        var rawDt = Math.min(0.05, Math.max(0.001, (now - lastTs) * 0.001));
+        lastTs = now;
+
+        var dt = rawDt;
+        if (slowMoT > 0) {
+          slowMoT -= rawDt;
+          dt = rawDt * 0.38;
+        }
+        elapsed += dt;
+
+        if (shakeMag > 0) {
+          shakeMag = Math.max(0, shakeMag - rawDt * 14);
+        }
+
+        // Advance pass arc if tossing between monsters
+        if (phase === 'passing' && passArc) {
+          passArc.t += rawDt;
+          var pk = Math.min(1, passArc.t / passArc.dur);
+          var p0 = getBombPosForSeat(passArc.fromIdx);
+          var p1 = getBombPosForSeat(passArc.toIdx);
+          var curX = p0.x + (p1.x - p0.x) * pk;
+          var curY = p0.y + (p1.y - p0.y) * pk - Math.sin(pk * Math.PI) * Math.min(180, H * 0.24);
+          particles.push({
+            x: curX + (Math.random() - 0.5) * 14,
+            y: curY + (Math.random() - 0.5) * 14,
+            vx: (Math.random() - 0.5) * 40,
+            vy: (Math.random() - 0.5) * 40,
+            r: 5 + Math.random() * 4,
+            color: isHal() ? '#fb923c' : '#fde047',
+            life: 0.45,
+            maxLife: 0.45,
+            gravity: 60
+          });
+
+          if (passArc.t >= passArc.dur) {
+            holder = passArc.toIdx;
+            passArc = null;
+            phase = 'action';
+            var pi;
+            for (pi = 0; pi < nt; pi++) {
+              poses[pi] = (pi === holder) ? 'holding' : 'idle';
+              bubbles[pi] = (pi === holder) ? 'Hot! Pass it! 🔥' : 'Nice pass! 👏';
+            }
+            renderBanner();
+          }
+        }
+
+        // Advance fuse countdown when in action or question phase
+        var urgency = Math.max(0, Math.min(1, 1 - fuseLeft / Math.max(1, fuseMax)));
+        if (phase === 'action' || phase === 'question') {
+          var fuseRate = phase === 'question' ? 0.18 : 1.0;
+          fuseLeft -= rawDt * fuseRate;
+          if (phase === 'question' && fuseLeft < 2.2) {
+            // Never pop behind an open question card while the student is reading!
+            fuseLeft = 2.2;
+          }
+
+          var tickInterval = 0.82 - urgency * 0.5;
+          tickAcc += rawDt;
+          if (tickAcc >= tickInterval) {
+            tickAcc = 0;
+            if (A()) A().play('fuse_tick', urgency);
+            var bp = getBombPosForSeat(holder);
+            var si;
+            for (si = 0; si < 5; si++) {
+              var ang = -Math.PI * 0.5 + (Math.random() - 0.5) * 1.8;
+              var spd = 50 + Math.random() * 110;
+              particles.push({
+                x: bp.x,
+                y: bp.y - 34,
+                vx: Math.cos(ang) * spd,
+                vy: Math.sin(ang) * spd - 40,
+                r: 4 + Math.random() * 3,
+                color: urgency > 0.65 ? '#f43f5e' : '#fde047',
+                life: 0.42,
+                maxLife: 0.42,
+                gravity: 220
+              });
             }
           }
 
-          /* Heartbeat pulse scale on active team pod (#gm-team-<holder>) & holder seat */
-          var hbFreq = 1.8 + urgency * 4.6;
+          // Pulse active team pod
+          var hbFreq = 1.8 + urgency * 4.5;
           var hbWave = Math.pow(Math.max(0, Math.sin(now * 0.001 * hbFreq * Math.PI * 2)), 3);
-          var hbScale = (1 + hbWave * (0.03 + urgency * 0.13)).toFixed(3);
-          var urgStr = urgency.toFixed(3);
-          var activePod = document.getElementById('gm-team-' + D.holder);
+          var activePod = document.getElementById('gm-team-' + holder);
           if (activePod) {
             activePod.classList.toggle('gm-pod-urgent', urgency > 0.25);
-            activePod.style.setProperty('--urg', urgStr);
-            activePod.style.setProperty('--hb-scale', hbScale);
-          }
-          var activeSeat = seats[D.holder];
-          if (activeSeat) {
-            activeSeat.classList.toggle('gm-seat-urgent', urgency > 0.25);
-            activeSeat.style.setProperty('--urg', urgStr);
-            activeSeat.style.setProperty('--hb-scale', hbScale);
+            activePod.style.setProperty('--urg', urgency.toFixed(3));
+            activePod.style.setProperty('--hb-scale', (1 + hbWave * (0.03 + urgency * 0.12)).toFixed(3));
           }
 
-          /* Draw pulsing tension halo + visual radial countdown arc around holder */
-          var hPos = seatPosPct(D.holder, 39, 36);
-          var hx = hPos.x / 100 * W, hy = hPos.y / 100 * H;
-          var pulseR = 50 + hbWave * (6 + urgency * 12);
-          var ringColor = urgency > 0.68 ? '#ff5d73' : (urgency > 0.35 ? '#ffb21a' : '#2ecc71');
-          fxCtx.save();
-          fxCtx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
-          fxCtx.lineWidth = 7;
-          fxCtx.beginPath();
-          fxCtx.arc(hx, hy, pulseR, 0, Math.PI * 2);
-          fxCtx.stroke();
-
-          fxCtx.strokeStyle = ringColor;
-          fxCtx.lineWidth = 7;
-          fxCtx.lineCap = 'round';
-          fxCtx.globalAlpha = 0.72 + urgency * 0.28;
-          fxCtx.beginPath();
-          fxCtx.arc(hx, hy, pulseR, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * fuseRatio);
-          fxCtx.stroke();
-          fxCtx.restore();
-
-          if (D.fuseLeft <= 0 && eng.state.phase !== 'round_end') {
+          if (fuseLeft <= 0 && phase === 'action') {
             popBomb();
           }
         }
 
-        /* Update & draw fuse/pass sparks */
-        for (var i = D.sparks.length - 1; i >= 0; i--) {
-          var p = D.sparks[i];
-          p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.life -= dt * 2.2;
-          if (p.life <= 0) { D.sparks.splice(i, 1); continue; }
-          fxCtx.save();
-          fxCtx.globalAlpha = Math.max(0, p.life);
-          fxCtx.fillStyle = p.c;
-          fxCtx.beginPath();
-          fxCtx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
-          fxCtx.fill();
-          fxCtx.restore();
+        g.save();
+        var sx = shakeMag > 0 ? (Math.random() - 0.5) * shakeMag * 2 : 0;
+        var sy = shakeMag > 0 ? (Math.random() - 0.5) * shakeMag * 2 : 0;
+        g.setTransform(dpr, 0, 0, dpr, sx * dpr, sy * dpr);
+        g.clearRect(-20, -20, W + 40, H + 40);
+
+        var hal = isHal();
+        drawBackgroundAndStage(hal, elapsed, urgency);
+
+        // Draw monsters sorted by Y so back monsters render behind front monsters
+        var order = [];
+        var oi;
+        for (oi = 0; oi < nt; oi++) order.push(oi);
+        order.sort(function (a, b) { return getSeatPos(a).y - getSeatPos(b).y; });
+        for (oi = 0; oi < order.length; oi++) {
+          drawMonsterAtSeat(order[oi], elapsed, urgency);
         }
-        return true;
-      });
+
+        drawBombOrPumpkin(hal, elapsed, urgency);
+        drawParticlesAndShockwave(dt);
+        g.restore();
+
+        if (!ended) {
+          rafId = requestAnimationFrame(frame);
+        }
+      }
 
       startRound();
+      rafId = requestAnimationFrame(frame);
+
+      // 8. Clean Teardown on Game End
+      ctx.onEnd(function () {
+        ended = true;
+        clearPodUrgency();
+        clearOrbs();
+        if (rafId) cancelAnimationFrame(rafId);
+        if (ro) ro.disconnect();
+        window.removeEventListener('resize', resizeCanvas);
+        window.removeEventListener('keydown', onKeyDown);
+        var ti2;
+        for (ti2 = 0; ti2 < timers.length; ti2++) {
+          clearTimeout(timers[ti2]);
+        }
+      });
     }
   };
 
