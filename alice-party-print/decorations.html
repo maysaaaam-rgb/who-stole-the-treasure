@@ -1,0 +1,392 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Tea Party Decorations</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@page { size: A4; margin: 10mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #0d1527; color: #1f2937; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.bar { position: sticky; top: 0; z-index: 9; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 12px 16px; background: rgba(15,23,42,.92); color: #e5edff; backdrop-filter: blur(14px); }
+.bar span { font-size: 15px; margin-right: 6px; }
+.bar button { font: 700 15px "Segoe UI", Arial, sans-serif; padding: 9px 16px; border: 0; border-bottom: 5px solid #1e3a8a; border-radius: 12px; background: #38bdf8; color: #0b1220; cursor: pointer; }
+.bar button.all { background: #f59e0b; border-bottom-color: #b45309; }
+.bar button:active { transform: translateY(4px); border-bottom-width: 1px; }
+section h2 { color: #e5edff; text-align: center; font: 700 22px Georgia, serif; margin: 26px 0 0; }
+section p.how { color: #94a3b8; text-align: center; margin: 6px 16px 0; font-size: 15px; }
+.page { position: relative; width: 190mm; height: 277mm; margin: 8mm auto; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.4); overflow: hidden; break-after: page; page-break-after: always; }
+
+/* banner pennant */
+.tab { position: absolute; left: 0; right: 0; top: 0; height: 34mm; border-bottom: .6mm dashed #6b7280; background: repeating-linear-gradient(45deg, #f3f4f6 0 3mm, #fff 3mm 6mm); display: flex; align-items: center; justify-content: center; }
+.tab span { font: 700 4.6mm "Segoe UI", Arial, sans-serif; color: #4b5563; background: #fff; padding: 1mm 4mm; border-radius: 2mm; }
+.flag { position: absolute; inset: 34mm 0 0 0; background: var(--c); clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%); }
+.flag-in { position: absolute; inset: 4mm 4mm 6mm; background: radial-gradient(circle at 50% 40%, #fffdf6 0%, #fbf3dd 100%); clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%); display: flex; align-items: center; justify-content: center; }
+.flag-in::before { content: ""; position: absolute; inset: 5mm; border: .8mm dashed color-mix(in srgb, var(--c) 45%, #fff); clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%); }
+.letter { font: 700 160mm/1 Georgia, "Times New Roman", serif; color: var(--c); margin-top: -22mm; text-shadow: 1.2mm 1.2mm 0 color-mix(in srgb, var(--c) 22%, #fff); }
+.letter.wide { font-size: 122mm; margin-top: -26mm; }
+.flag-pic { width: 120mm; margin-top: -24mm; }
+.punch { position: absolute; top: 9mm; width: 7mm; height: 7mm; border-radius: 50%; border: .5mm dashed #9ca3af; background: #fff; }
+.punch.l { left: 18mm; } .punch.r { right: 18mm; }
+.fs { position: absolute; top: 12mm; font: 16mm/1 Georgia, serif; color: var(--c); opacity: .85; }
+.fs.tl { left: 20mm; } .fs.tr { right: 20mm; }
+
+/* giant playing card */
+.pc { position: absolute; inset: 2mm; border-radius: 9mm; border: .8mm solid #1f2937; background: #fff; }
+.pc-in { position: absolute; inset: 5mm; border-radius: 6mm; border: .5mm solid #c9a24a; }
+.pc { --s: #111827; } .pc.red { --s: #be123c; }
+.ix { position: absolute; display: flex; flex-direction: column; align-items: center; color: var(--s); line-height: 1; }
+.ix b { font: 700 24mm/1 Georgia, serif; } .ix i { font-style: normal; font: 18mm/1 "Segoe UI Symbol", Georgia, serif; }
+.ix.tl { top: 6mm; left: 6mm; } .ix.br { bottom: 6mm; right: 6mm; transform: rotate(180deg); }
+.pips { position: absolute; left: 28mm; right: 28mm; top: 32mm; bottom: 32mm; }
+.pip { position: absolute; transform: translate(-50%, -50%); font: 44mm/1 "Segoe UI Symbol", Georgia, serif; color: var(--s); }
+.pip.big { font-size: 150mm; }
+
+/* signposts */
+.page.signs { display: flex; flex-direction: column; justify-content: space-around; padding: 8mm 0; }
+.arrow { position: relative; width: 186mm; height: 118mm; margin: 0 auto; background: #7c4a1e; }
+.arrow.r { clip-path: polygon(0 12%, 78% 12%, 78% 0, 100% 50%, 78% 100%, 78% 88%, 0 88%); }
+.arrow.l { clip-path: polygon(100% 12%, 22% 12%, 22% 0, 0 50%, 22% 100%, 22% 88%, 100% 88%); }
+.arrow-in { position: absolute; inset: 2.2mm; clip-path: inherit; display: flex; align-items: center; gap: 4mm;
+  background: repeating-linear-gradient(0deg, rgba(124,74,30,.12) 0 .6mm, transparent .6mm 7mm), linear-gradient(180deg, #f1d3a2, #e2b679); }
+.arrow.r .arrow-in { clip-path: polygon(0 12%, 78% 12%, 78% 0, 100% 50%, 78% 100%, 78% 88%, 0 88%); padding: 0 34mm 0 9mm; }
+.arrow.l .arrow-in { clip-path: polygon(100% 12%, 22% 12%, 22% 0, 0 50%, 22% 100%, 22% 88%, 100% 88%); padding: 0 9mm 0 30mm; flex-direction: row-reverse; gap: 6mm; }
+.arrow img { width: 46mm; height: 46mm; object-fit: contain; flex: none; }
+.arrow b.long { font-size: 11.5mm; }
+.arrow b { flex: 1; min-width: 0; text-align: center; font: 700 17mm/1.02 Georgia, "Times New Roman", serif; color: #4a2a0e; letter-spacing: .3mm; }
+
+/* DRINK ME / EAT ME tags */
+.page.tags { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 4mm; padding: 4mm; }
+.tag { position: relative; display: flex; align-items: center; gap: 3mm; padding: 0 5mm 0 16mm; border: .5mm dashed #9ca3af; border-radius: 4mm 12mm 12mm 4mm; background: linear-gradient(180deg, #fffaf0, #f6ead0); }
+.tag-hole { position: absolute; left: 5mm; top: 50%; width: 6mm; height: 6mm; margin-top: -3mm; border-radius: 50%; border: .5mm solid #c9a24a; background: #fff; }
+.tag img { width: 27mm; height: 27mm; object-fit: contain; }
+.tag b { flex: 1; min-width: 0; text-align: center; font: 700 10.5mm/1 Georgia, serif; color: #7c2d12; }
+
+/* Cheshire grin poster: 4 tiles of one picture */
+.page.grin { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4mm; }
+.grin-note { font-size: 3.4mm; color: #6b7280; text-align: center; padding: 0 8mm; }
+.tile { width: 186mm; height: 141mm; outline: .3mm dashed #9ca3af; background-size: 200% 200%; background-repeat: no-repeat; }
+.tile.tl { background-position: 0 0; } .tile.tr { background-position: 100% 0; } .tile.bl { background-position: 0 100%; } .tile.br { background-position: 100% 100%; }
+.quote { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8mm; text-align: center; }
+.quote img { width: 120mm; }
+.quote b { font: 700 18mm/1.1 Georgia, serif; color: #6d28d9; padding: 0 10mm; }
+.quote span { font: italic 8mm Georgia, serif; color: #4b5563; }
+
+/* photo frame */
+.tile-pg { overflow: hidden; }
+.ph-move { position: absolute; width: 760mm; height: 1108mm; }
+.ph { position: absolute; inset: 0; background:
+    repeating-linear-gradient(45deg, rgba(190,18,60,.06) 0 1mm, transparent 1mm 14mm),
+    repeating-linear-gradient(-45deg, rgba(30,58,138,.06) 0 1mm, transparent 1mm 14mm),
+    radial-gradient(circle at 50% 50%, #fffdf6 0%, #f8ecd0 100%); }
+.ph-band { position: absolute; inset: 8mm; border: 7mm solid #be123c; border-radius: 18mm; box-shadow: inset 0 0 0 3mm #fffaf0, inset 0 0 0 6mm #c9a24a; }
+.ph-hole { position: absolute; left: 190mm; top: 277mm; width: 380mm; height: 554mm; background: #fff; box-shadow: 0 0 0 9mm #c9a24a, 0 0 0 14mm #1e3a8a, 0 0 0 17mm #fffaf0, 0 0 0 20mm #c9a24a; }
+.ph-title { position: absolute; left: 0; right: 0; top: 30mm; text-align: center; }
+.ph-title span { display: block; font: italic 700 62mm/1 Georgia, serif; color: #7c3aed; }
+.ph-title b { display: block; font: 700 88mm/1.05 Georgia, "Times New Roman", serif; color: #be123c; text-shadow: 2.5mm 2.5mm 0 #f3dc95; }
+.ph-foot { position: absolute; left: 150mm; right: 150mm; bottom: 66mm; text-align: center; font: italic 700 56mm/1.05 Georgia, serif; color: #6d28d9; }
+.ph-p { position: absolute; }
+.tile-lab { position: absolute; right: 3mm; bottom: 2mm; font: 700 4mm "Segoe UI", Arial, sans-serif; color: #9ca3af; background: rgba(255,255,255,.8); padding: .5mm 2mm; border-radius: 1.5mm; }
+.map { position: absolute; inset: 12mm; display: flex; flex-direction: column; align-items: center; gap: 5mm; font-size: 4.6mm; color: #1f2937; }
+.map h3 { font: 700 7.5mm Georgia, serif; text-align: center; margin: 0; color: #be123c; }
+.map-grid { display: grid; grid-template-columns: repeat(4, 25mm); grid-template-rows: repeat(4, 34mm); gap: 1.5mm; }
+.map-grid i { display: flex; align-items: center; justify-content: center; font: 700 8mm Georgia, serif; font-style: normal; background: #f8ecd0; border: .5mm solid #c9a24a; }
+.map-grid i.hole { background: #fff; border-style: dashed; color: #9ca3af; font-size: 5mm; }
+.map ol { margin: 0; padding-left: 7mm; line-height: 1.45; } .map p { margin: 0; color: #4b5563; }
+
+body.only-frame section:not(#frame), body.only-banner section:not(#banner), body.only-cards section:not(#cards), body.only-signs section:not(#signs) { display: none; }
+@media print { body { background: #fff; } .bar, section h2, section p.how { display: none; } .page { margin: 0; box-shadow: none; } section:last-of-type .page:last-child { break-after: auto; page-break-after: auto; } }
+</style></head><body>
+<div class="bar"><span>Tea Party decorations · A4, scale 100%</span>
+  <button type="button" onclick="pr('banner')">🖨 Banner (28 pages)</button>
+  <button type="button" onclick="pr('cards')">🖨 Playing cards (12)</button>
+  <button type="button" onclick="pr('signs')">🖨 Signs, tags, cat (11)</button>
+  <button type="button" onclick="pr('frame')">🖨 Photo frame (13)</button>
+  <button type="button" class="all" onclick="pr('')">🖨 Everything (64)</button></div>
+<section id="banner"><h2>1 · Welcome banner</h2><p class="how">One letter a page. Cut along the pennant shape (keep the grey strip on top), fold the strip over the rope and glue it down. The picture pages go between the words.</p><div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#be123c"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter wide">W</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#1e3a8a"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter">E</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#7c3aed"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">L</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#0f766e"><div class="flag-in">
+      <span class="fs tl">♥</span><span class="fs tr">♥</span><div class="letter">C</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#b45309"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter">O</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#be123c"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter wide">M</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#1e3a8a"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">E</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#c9a24a"><div class="flag-in">
+      <img class="flag-pic" src="deco-art/cut/deco_teapot.webp" alt=""></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#7c3aed"><div class="flag-in">
+      <span class="fs tl">♥</span><span class="fs tr">♥</span><div class="letter">T</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#0f766e"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter">O</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#c9a24a"><div class="flag-in">
+      <img class="flag-pic" src="deco-art/cut/deco_cat.webp" alt=""></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#b45309"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter">T</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#be123c"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">H</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#1e3a8a"><div class="flag-in">
+      <span class="fs tl">♥</span><span class="fs tr">♥</span><div class="letter">E</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#c9a24a"><div class="flag-in">
+      <img class="flag-pic" src="deco-art/cut/deco_clock.webp" alt=""></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#7c3aed"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter wide">M</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#0f766e"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter">A</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#b45309"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">D</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#c9a24a"><div class="flag-in">
+      <img class="flag-pic" src="deco-art/cut/deco_hearts.webp" alt=""></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#be123c"><div class="flag-in">
+      <span class="fs tl">♥</span><span class="fs tr">♥</span><div class="letter">T</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#1e3a8a"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter">E</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#7c3aed"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter">A</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#c9a24a"><div class="flag-in">
+      <img class="flag-pic" src="deco-art/cut/deco_tea.webp" alt=""></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#0f766e"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">P</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#b45309"><div class="flag-in">
+      <span class="fs tl">♥</span><span class="fs tr">♥</span><div class="letter">A</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#be123c"><div class="flag-in">
+      <span class="fs tl">♠</span><span class="fs tr">♠</span><div class="letter">R</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#1e3a8a"><div class="flag-in">
+      <span class="fs tl">♦</span><span class="fs tr">♦</span><div class="letter">T</div></div></div></div>
+<div class="page"><div class="tab"><span>↓ fold over the rope here and glue ↓</span></div><div class="flag" style="--c:#7c3aed"><div class="flag-in">
+      <span class="fs tl">♣</span><span class="fs tr">♣</span><div class="letter">Y</div></div></div></div></section>
+<section id="cards"><h2>2 · Giant playing cards</h2><p class="how">The Queen's card soldiers. Stick them on the walls and the door, or tape them in a long row.</p><div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>A</b><i>♥</i></div><div class="ix br"><b>A</b><i>♥</i></div>
+    <div class="pips"><span class="pip big" style="left:50%;top:50%;">♥</span></div></div></div></div>
+<div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>2</b><i>♥</i></div><div class="ix br"><b>2</b><i>♥</i></div>
+    <div class="pips"><span class="pip" style="left:50%;top:16%;">♥</span><span class="pip" style="left:50%;top:84%;transform:translate(-50%,-50%) rotate(180deg)">♥</span></div></div></div></div>
+<div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>5</b><i>♥</i></div><div class="ix br"><b>5</b><i>♥</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:15%;">♥</span><span class="pip" style="left:73%;top:15%;">♥</span><span class="pip" style="left:50%;top:50%;">♥</span><span class="pip" style="left:27%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:73%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♥</span></div></div></div></div>
+<div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>7</b><i>♥</i></div><div class="ix br"><b>7</b><i>♥</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:15%;">♥</span><span class="pip" style="left:73%;top:15%;">♥</span><span class="pip" style="left:50%;top:32%;">♥</span><span class="pip" style="left:27%;top:50%;">♥</span><span class="pip" style="left:73%;top:50%;">♥</span><span class="pip" style="left:27%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:73%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♥</span></div></div></div></div>
+<div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>10</b><i>♥</i></div><div class="ix br"><b>10</b><i>♥</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:12%;">♥</span><span class="pip" style="left:73%;top:12%;">♥</span><span class="pip" style="left:50%;top:27%;">♥</span><span class="pip" style="left:27%;top:38%;">♥</span><span class="pip" style="left:73%;top:38%;">♥</span><span class="pip" style="left:27%;top:62%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:73%;top:62%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:50%;top:73%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:27%;top:88%;transform:translate(-50%,-50%) rotate(180deg)">♥</span><span class="pip" style="left:73%;top:88%;transform:translate(-50%,-50%) rotate(180deg)">♥</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>A</b><i>♠</i></div><div class="ix br"><b>A</b><i>♠</i></div>
+    <div class="pips"><span class="pip big" style="left:50%;top:50%;">♠</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>2</b><i>♠</i></div><div class="ix br"><b>2</b><i>♠</i></div>
+    <div class="pips"><span class="pip" style="left:50%;top:16%;">♠</span><span class="pip" style="left:50%;top:84%;transform:translate(-50%,-50%) rotate(180deg)">♠</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>5</b><i>♠</i></div><div class="ix br"><b>5</b><i>♠</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:15%;">♠</span><span class="pip" style="left:73%;top:15%;">♠</span><span class="pip" style="left:50%;top:50%;">♠</span><span class="pip" style="left:27%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:73%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♠</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>7</b><i>♠</i></div><div class="ix br"><b>7</b><i>♠</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:15%;">♠</span><span class="pip" style="left:73%;top:15%;">♠</span><span class="pip" style="left:50%;top:32%;">♠</span><span class="pip" style="left:27%;top:50%;">♠</span><span class="pip" style="left:73%;top:50%;">♠</span><span class="pip" style="left:27%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:73%;top:85%;transform:translate(-50%,-50%) rotate(180deg)">♠</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>10</b><i>♠</i></div><div class="ix br"><b>10</b><i>♠</i></div>
+    <div class="pips"><span class="pip" style="left:27%;top:12%;">♠</span><span class="pip" style="left:73%;top:12%;">♠</span><span class="pip" style="left:50%;top:27%;">♠</span><span class="pip" style="left:27%;top:38%;">♠</span><span class="pip" style="left:73%;top:38%;">♠</span><span class="pip" style="left:27%;top:62%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:73%;top:62%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:50%;top:73%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:27%;top:88%;transform:translate(-50%,-50%) rotate(180deg)">♠</span><span class="pip" style="left:73%;top:88%;transform:translate(-50%,-50%) rotate(180deg)">♠</span></div></div></div></div>
+<div class="page"><div class="pc red"><div class="pc-in">
+    <div class="ix tl"><b>A</b><i>♦</i></div><div class="ix br"><b>A</b><i>♦</i></div>
+    <div class="pips"><span class="pip big" style="left:50%;top:50%;">♦</span></div></div></div></div>
+<div class="page"><div class="pc"><div class="pc-in">
+    <div class="ix tl"><b>A</b><i>♣</i></div><div class="ix br"><b>A</b><i>♣</i></div>
+    <div class="pips"><span class="pip big" style="left:50%;top:50%;">♣</span></div></div></div></div></section>
+<section id="signs"><h2>3 · Signposts, DRINK ME / EAT ME tags, Cheshire Cat poster</h2><p class="how">Cut out the arrows and stick them on doors and walls. Tie the tags to cups and plates. The cat poster is 4 pages: cut on the grey lines and tape them together.</p><div class="page signs"><div class="arrow r"><div class="arrow-in">
+    <img src="deco-art/cut/deco_teapot.webp" alt=""><b class="">TEA PARTY</b></div></div><div class="arrow l"><div class="arrow-in">
+    <img src="deco-art/cut/deco_door.webp" alt=""><b class="">THIS WAY</b></div></div></div>
+<div class="page signs"><div class="arrow r"><div class="arrow-in">
+    <img src="deco-art/cut/deco_clock.webp" alt=""><b class="">THAT WAY</b></div></div><div class="arrow l"><div class="arrow-in">
+    <img src="deco-art/cut/deco_cat.webp" alt=""><b class="long">WONDERLAND</b></div></div></div>
+<div class="page signs"><div class="arrow r"><div class="arrow-in">
+    <img src="deco-art/cut/deco_roses.webp" alt=""><b class="long">QUEEN'S GARDEN</b></div></div><div class="arrow l"><div class="arrow-in">
+    <img src="deco-art/cut/deco_door.webp" alt=""><b class="long">RABBIT HOLE</b></div></div></div>
+<div class="page signs"><div class="arrow r"><div class="arrow-in">
+    <img src="deco-art/cut/deco_tea.webp" alt=""><b class="long">HATTER'S TABLE</b></div></div><div class="arrow l"><div class="arrow-in">
+    <img src="deco-art/cut/deco_mushroom.webp" alt=""><b class="">GO BACK!</b></div></div></div>
+<div class="page tags"><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_bottle.webp" alt=""><b>DRINK ME</b></div></div>
+<div class="page tags"><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div><div class="tag"><i class="tag-hole"></i><img src="deco-art/cut/deco_cake.webp" alt=""><b>EAT ME</b></div></div>
+<div class="page grin"><div class="grin-note">Cheshire Cat poster · page 1 of 4 · top left · cut on the grey line and tape the 4 pages together</div>
+    <div class="tile tl" style="background-image:url(deco-art/cut/deco_cat_trim.webp)"></div></div>
+<div class="page grin"><div class="grin-note">Cheshire Cat poster · page 2 of 4 · top right · cut on the grey line and tape the 4 pages together</div>
+    <div class="tile tr" style="background-image:url(deco-art/cut/deco_cat_trim.webp)"></div></div>
+<div class="page grin"><div class="grin-note">Cheshire Cat poster · page 3 of 4 · bottom left · cut on the grey line and tape the 4 pages together</div>
+    <div class="tile bl" style="background-image:url(deco-art/cut/deco_cat_trim.webp)"></div></div>
+<div class="page grin"><div class="grin-note">Cheshire Cat poster · page 4 of 4 · bottom right · cut on the grey line and tape the 4 pages together</div>
+    <div class="tile br" style="background-image:url(deco-art/cut/deco_cat_trim.webp)"></div></div>
+<div class="page"><div class="quote"><img src="deco-art/cut/deco_cat.webp" alt=""><b>“We're all mad here!”</b><span>— the Cheshire Cat</span></div></div></section>
+<section id="frame"><h2>4 · Photo frame (put your head in!)</h2><p class="how">12 pages that make one big frame. The first page is the map. Tape the pages together, glue them onto cardboard and cut out the middle.</p><div class="page"><div class="map"><h3>Photo frame · how to put it together</h3>
+  <div class="map-grid"><i>A1</i><i>A2</i><i>A3</i><i>A4</i><i>B1</i><i class="hole">opening</i><i class="hole"></i><i>B4</i><i>C1</i><i class="hole"></i><i class="hole"></i><i>C4</i><i>D1</i><i>D2</i><i>D3</i><i>D4</i></div>
+  <ol><li>Print the 12 frame pages (A4, scale 100%).</li><li>Cut off the white edge on the sides that join another page.</li><li>Lay them out like the map: A1 top left, D4 bottom right. The middle stays empty.</li><li>Tape them together on the back, then glue them onto a big piece of cardboard and cut out the opening.</li></ol>
+  <p>Finished size about 76 × 111 cm. The opening is about 38 × 55 cm: big enough for a head and shoulders.</p></div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-0mm;top:-0mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">A1</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-190mm;top:-0mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">A2</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-380mm;top:-0mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">A3</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-570mm;top:-0mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">A4</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-0mm;top:-277mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">B1</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-570mm;top:-277mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">B4</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-0mm;top:-554mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">C1</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-570mm;top:-554mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">C4</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-0mm;top:-831mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">D1</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-190mm;top:-831mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">D2</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-380mm;top:-831mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">D3</div></div>
+<div class="page tile-pg"><div class="ph-move" style="left:-570mm;top:-831mm"><div class="ph">
+  <div class="ph-band"></div>
+  <div class="ph-hole"></div>
+  <div class="ph-title"><span>Alice's</span><b>Tea Party</b></div>
+  <div class="ph-foot">“We're all mad here!”</div>
+  <img class="ph-p" src="deco-art/cut/deco_cards.webp" style="left:18mm;top:70mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_hearts.webp" style="right:18mm;top:95mm;width:140mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_cat.webp" style="left:12mm;top:320mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_teapot.webp" style="left:15mm;top:570mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_clock.webp" style="right:15mm;top:320mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_roses.webp" style="right:12mm;top:570mm;width:165mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_mushroom.webp" style="left:18mm;bottom:28mm;width:160mm" alt="">
+  <img class="ph-p" src="deco-art/cut/deco_tea.webp" style="right:18mm;bottom:38mm;width:160mm" alt="">
+</div></div><div class="tile-lab">D4</div></div></section>
+<script>
+function pr(which) { document.body.className = which ? 'only-' + which : ''; setTimeout(function () { window.print(); document.body.className = ''; }, 50); }
+</script>
+</body></html>
