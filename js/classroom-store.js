@@ -65,6 +65,12 @@
     if (!hadBronze) c.boxPrices.BRONZE = Math.max(1, Math.round(c.boxPrices.WOODEN / 2));   // the cheapest box costs half a Silver Box
     if (!Array.isArray(c.privileges)) c.privileges = clone(DEFAULTS.privileges);
     if (!c.coinsPerXp) c.coinsPerXp = DEFAULTS.coinsPerXp;
+    if (!c.balanceV1) {   // 30 Oct 2026: boxes were cheaper than the coins inside them; the cheapest class rewards cost less than a hat
+      var BOX = { BRONZE: 8, WOODEN: 15, GILDED: 30, CELESTIAL: 60 }, PRIV = { 'p-song': 15, 'p-seat': 15, 'p-sticker': 15, 'p-helper': 20, 'p-game': 20, 'p-dj': 30, 'p-hwpass': 40 };
+      Object.keys(BOX).forEach(function (k) { c.boxPrices[k] = Math.max(Number(c.boxPrices[k]) || 0, BOX[k]); });
+      c.privileges.forEach(function (pv) { if (PRIV[pv.id]) pv.price = Math.max(Number(pv.price) || 0, PRIV[pv.id]); });
+      c.balanceV1 = 1; c.updatedAt = Date.now();
+    }
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
     if (!d.cosmetics || typeof d.cosmetics !== 'object') d.cosmetics = {};
@@ -119,6 +125,9 @@
   function findItem(id) { return allItems().filter(function (i) { return i.id === id; })[0] || null; }
   function levelOf(studentId) { var m = store.calculateMonsterState ? store.calculateMonsterState(studentId) : null; return (m && m.currentLevel) || 1; }
   function reqLevel(item) { return (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1; }
+  var RARITY_LEVEL = { common: 1, rare: 2, epic: 3, legendary: 4 };
+  function isLevelReward(item) { return !item.unlockType || item.unlockType === 'level'; }   // free when the pupil reaches the level
+  function shopLevel(item) { return isLevelReward(item) ? reqLevel(item) : Math.max(reqLevel(item), RARITY_LEVEL[item.rarity] || 1); }
   function isOwned(studentId, item) {
     var inv = store.getStudentInventory ? store.getStudentInventory(studentId) : [];
     if (inv.some(function (e) { return e.itemId === item.id; })) return true;
@@ -152,7 +161,7 @@
   /** Items the student cannot use yet, which they can buy now. */
   function shopItems(studentId) {
     return allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i); })
-      .map(function (i) { return { item: i, price: itemPrice(i), level: reqLevel(i) }; })
+      .map(function (i) { return { item: i, price: itemPrice(i), level: shopLevel(i) }; })
       .sort(function (a, b) { return a.price - b.price || a.item.name.localeCompare(b.item.name); });
   }
 
@@ -160,7 +169,7 @@
     var item = findItem(itemId);
     if (!item) return { success: false, error: 'Item not found' };
     if (isAvailable(studentId, item)) return { success: false, error: 'You already have this item' };
-    if (levelOf(studentId) < reqLevel(item)) return { success: false, error: 'This opens at level ' + reqLevel(item) + '. Keep earning XP!' };
+    if (levelOf(studentId) < shopLevel(item)) return { success: false, error: (isLevelReward(item) ? 'This is free at level ' : 'This opens at level ') + shopLevel(item) + '. Keep earning XP!' };
     var price = itemPrice(item);
     if (balance(studentId) < price) return { success: false, error: 'Not enough coins (need ' + price + ')' };
     var inv = store.getStudentInventory(studentId);
@@ -405,15 +414,17 @@
     return { type: 'extra', kind: x.kind, item: { id: x.id, name: x.name, category: C.KINDS[x.kind].one, rarity: x.rarity, icon: x.icon, description: x.desc } };
   }
   function rewardVoucher(studentId, tier) {
-    var cap = BOX_VOUCHER_CAP[tier] || 70;
+    var cap = Math.min(BOX_VOUCHER_CAP[tier] || 70, (Number(data().config.boxPrices[tier]) || 10) * 3);   // a free reward is worth at most 3 boxes
     var pool = data().config.privileges.filter(function (p) { return p.active && p.price <= cap; });
     if (!pool.length) return null;
     var p = pickOne(pool), rid = uid('req'), now = new Date().toISOString();
     data().requests.unshift({ id: rid, studentId: studentId, privilegeId: p.id, name: 'FREE: ' + p.name, icon: p.icon, price: 0, status: 'approved', createdAt: now, decidedAt: now, note: 'Won in a Mystery Box', voucher: true });
     return { type: 'voucher', item: { id: 'voucher', name: 'Free: ' + p.name, category: 'free reward', rarity: tier === 'WOODEN' ? 'rare' : 'epic', icon: p.icon, description: 'Show your teacher. This one is free!' } };
   }
+  function boxCoins(tier) { var pr = Number(data().config.boxPrices[tier]) || 10; return [Math.max(2, Math.round(pr * 0.4)), Math.max(3, Math.round(pr * 0.9))]; }
+  function jackpotCoins(tier) { return Math.max(10, (Number(data().config.boxPrices[tier]) || 10) * 3); }
   function rewardCoins(studentId, tier, fixed) {
-    var r = BOX_COINS[tier] || BOX_COINS.WOODEN;
+    var r = boxCoins(tier);
     var n = fixed || (r[0] + Math.floor(Math.random() * (r[1] - r[0] + 1)));
     var w = wallet(studentId);
     w.grants += n; log(w, n, 'box', 'Mystery box coins');
@@ -431,7 +442,7 @@
     else if (kind === 'extra') res = rewardExtra(studentId, rarity) || rewardItem(studentId, rarity);
     else if (kind === 'voucher') res = rewardVoucher(studentId, tier);
     else if (kind === 'coins') res = rewardCoins(studentId, tier);
-    else res = rewardItem(studentId, 'legendary') || rewardExtra(studentId, 'legendary') || rewardCoins(studentId, tier, 300);
+    else res = rewardItem(studentId, 'legendary') || rewardExtra(studentId, 'legendary') || rewardCoins(studentId, tier, jackpotCoins(tier));
     if (!res) res = rewardCoins(studentId, tier);
     box.isOpened = true; box.openedAt = new Date().toISOString();
     save();
@@ -784,7 +795,7 @@
       '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;color:var(--text-main,#0f172a);"><thead><tr style="text-align:left;color:var(--text-muted,#64748b);"><th style="padding:5px 8px;">Box</th><th style="padding:5px 8px;">Monster item</th><th style="padding:5px 8px;">Sound / title / animal / plate</th><th style="padding:5px 8px;">Free reward</th><th style="padding:5px 8px;">Coins</th><th style="padding:5px 8px;">Jackpot</th></tr></thead><tbody>' +
       TIERS.map(function (t) {
         var o = {}; BOX_ODDS[t].forEach(function (r) { o[r[0]] = r[1]; });
-        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);"><td style="padding:6px 8px;font-weight:800;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + (BOX_VOUCHER_CAP[t] > 1000 ? 'any' : BOX_VOUCHER_CAP[t]) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + BOX_COINS[t][0] + ' to ' + BOX_COINS[t][1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (legendary or 300 coins)</td></tr>';
+        return '<tr style="border-top:1px solid var(--border-light,#e2e8f0);"><td style="padding:6px 8px;font-weight:800;">' + BOX_INFO[t].icon + ' ' + BOX_INFO[t].name + '</td><td style="padding:6px 8px;">' + o.item + '%</td><td style="padding:6px 8px;">' + o.extra + '%</td><td style="padding:6px 8px;">' + o.voucher + '% (up to ' + Math.min(BOX_VOUCHER_CAP[t], (Number(data().config.boxPrices[t]) || 10) * 3) + ' coins)</td><td style="padding:6px 8px;">' + o.coins + '% (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')</td><td style="padding:6px 8px;">' + o.jackpot + '% (legendary or ' + jackpotCoins(t) + ' coins)</td></tr>';
       }).join('') + '</tbody></table></div>');
 
     // history
@@ -833,7 +844,7 @@
         '<span class="cs-rar">' + esc(RARITY_NAME[it.rarity] || 'Common') + '</span><span class="cs-pic">' + itemPicHtml(it) + '</span><i class="cs-ped"></i>' +
         (locked ? '' : '<span class="cs-try">👀 Try on</span>') + '</button>' +
       '<div class="cs-info"><div class="cs-nm">' + esc(it.name) + '</div>' +
-        (locked ? '<span class="monster-item-lock-pill">🔒 Level ' + x.level + '</span>'
+        (locked ? '<span class="monster-item-lock-pill">' + (isLevelReward(it) ? '🎁 Free at level ' : '🔒 Level ') + x.level + '</span>'
           : coinPill(x.price) + '<div style="margin-top:8px;">' + btn(can ? 'Buy' : 'Need ' + (x.price - bal) + ' more', "ClassroomStore.ui.buyItem('" + it.id + "')", 'ok', !can) + '</div>') +
       '</div></div>';
   }
@@ -897,12 +908,12 @@
             '<div style="font-size:.74rem;color:var(--text-muted,#64748b);">' + (done ? '✅ Set complete! You earned the title “' + esc(st.title) + '”' : 'Collect all 3 to earn the title “' + esc(st.title) + '”') + '</div></div>' +
             '<span style="font-weight:900;font-size:.85rem;color:' + (done ? '#16a34a' : '#64748b') + ';">' + have + ' / ' + st.pieces.length + '</span></div>' +
             '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">' + st.pieces.map(function (pid) {
-              var it = findItem(pid) || (M.byId(pid)), owned = mine.indexOf(pid) !== -1, price = it ? itemPrice(it) : 0, locked = it ? levelOf(s.id) < reqLevel(it) : false, can = bal >= price && !locked;
+              var it = findItem(pid) || (M.byId(pid)), owned = mine.indexOf(pid) !== -1, price = it ? itemPrice(it) : 0, locked = it ? levelOf(s.id) < shopLevel(it) : false, can = bal >= price && !locked;
               if (!it) return '';
               return '<div style="text-align:center;border:1px solid var(--border-light,#e2e8f0);border-radius:14px;padding:8px;opacity:' + (owned ? .75 : 1) + ';">' + itemPicHtml(it) +
                 '<div style="font-weight:800;font-size:.8rem;margin-top:2px;color:var(--text-main,#0f172a);">' + esc(it.name) + '</div>' +
                 '<div style="font-size:.66rem;font-weight:800;color:' + (RARITY_COLOR[it.rarity] || '#64748b') + ';text-transform:uppercase;">' + esc(it.rarity) + '</div>' +
-                '<div style="margin-top:6px;">' + (owned ? '<span style="font-weight:900;color:#16a34a;">✓ You have it</span>' : (locked ? '<span class="monster-item-lock-pill">🔒 Level ' + reqLevel(it) + '</span>' : coinPill(price) + '<div style="margin-top:6px;">' + btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyItem('" + pid + "')", 'ok', !can) + '</div>')) + '</div></div>';
+                '<div style="margin-top:6px;">' + (owned ? '<span style="font-weight:900;color:#16a34a;">✓ You have it</span>' : (locked ? '<span class="monster-item-lock-pill">🔒 Level ' + shopLevel(it) + '</span>' : coinPill(price) + '<div style="margin-top:6px;">' + btn(can ? 'Buy' : 'Need ' + (price - bal) + ' more', "ClassroomStore.ui.buyItem('" + pid + "')", 'ok', !can) + '</div>')) + '</div></div>';
             }).join('') + '</div></div>';
         }).join('');
         shown = [];
@@ -913,7 +924,7 @@
         return rank(a) - rank(b) || a.price - b.price || (rank(a) === 2 ? a.level - b.level : 0) || a.item.name.localeCompare(b.item.name);
       });
       var nCan = shown.filter(function (x) { return lvl >= x.level && bal >= x.price; }).length, nLock = shown.filter(function (x) { return lvl < x.level; }).length;
-      html += itemFilter === 'sets' ? '' : shown.length ? '<div class="cs-shop-note">' + (nCan ? '✨ <b>' + nCan + '</b> you can buy now' : 'Keep earning XP for more coins') + (nLock ? ' · 🔒 ' + nLock + ' open at a higher level' : '') + ' · Tap a picture to try it on</div>' +
+      html += itemFilter === 'sets' ? '' : shown.length ? '<div class="cs-shop-note">' + (nCan ? '✨ <b>' + nCan + '</b> you can buy now' : 'Keep earning XP for more coins') + (nLock ? ' · 🔒 ' + nLock + ' open at a higher level (🎁 = free when you get there)' : '') + ' · Tap a picture to try it on</div>' +
         '<div class="cs-grid">' + shown.map(function (x) { return itemCardHtml(x, bal, lvl); }).join('') + '</div>' : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
     } else if (studentTab === 'extras') {
       html += renderExtrasTab(s, bal);
@@ -963,7 +974,7 @@
         '<div style="font-weight:900; font-size:1rem; color:' + i.text + '; margin-bottom:4px;">' + i.title + '</div>' +
         '<p style="font-size:0.78rem; color:#cbd5e1; margin:0 0 10px 0; line-height:1.35;">' + i.blurb + '</p>' +
         '<div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:8px; font-size:0.74rem; margin-bottom:10px; color:#e2e8f0; line-height:1.55;">' +
-        '🎨 Monster item <b>' + pct(t, 'item') + '%</b> (' + rar + ')<br>✨ Sound / title / animal / plate <b>' + pct(t, 'extra') + '%</b><br>🎟️ Free class reward <b>' + pct(t, 'voucher') + '%</b><br>🪙 Coins <b>' + pct(t, 'coins') + '%</b> (' + BOX_COINS[t][0] + ' to ' + BOX_COINS[t][1] + ')<br>💎 Jackpot <b>' + pct(t, 'jackpot') + '%</b><br>Price in the shop: <b>' + cfg.boxPrices[t] + ' coins</b></div></div>' +
+        '🎨 Monster item <b>' + pct(t, 'item') + '%</b> (' + rar + ')<br>✨ Sound / title / animal / plate <b>' + pct(t, 'extra') + '%</b><br>🎟️ Free class reward <b>' + pct(t, 'voucher') + '%</b><br>🪙 Coins <b>' + pct(t, 'coins') + '%</b> (' + boxCoins(t)[0] + ' to ' + boxCoins(t)[1] + ')<br>💎 Jackpot <b>' + pct(t, 'jackpot') + '%</b><br>Price in the shop: <b>' + cfg.boxPrices[t] + ' coins</b></div></div>' +
         '<div style="display:flex; gap:6px;"><button type="button" class="btn-3d btn-3d-secondary" onclick="window.handleGrantClassMysteryBox(\'' + t + '\')" style="flex:1; font-size:0.74rem; padding:6px 8px;">+ Class Grant</button>' +
         '<button type="button" class="btn-3d btn-3d-primary" onclick="window.handleTestTierUnboxing(\'' + t + '\')" style="font-size:0.74rem; padding:6px 10px;">🎁 Demo Open</button></div></div>';
     }).join('') + '</div>';
@@ -1071,12 +1082,12 @@
     filter: function (c) { itemFilter = c; rerender(); },
     tryOn: function (itemId) {
       var id = activeStudentId(), item = findItem(itemId); if (!id || !item) return;
-      var price = itemPrice(item), bal = balance(id), lvl = levelOf(id), locked = lvl < reqLevel(item), mon = tryOnHtml(id, item);
+      var price = itemPrice(item), bal = balance(id), lvl = levelOf(id), locked = lvl < shopLevel(item), mon = tryOnHtml(id, item);
       var o = document.createElement('div'); o.className = 'cs-try-ovl';
       o.innerHTML = '<div class="cs-try-card" style="--rc:' + (RARITY_COLOR[item.rarity] || '#64748b') + ';"><div style="font-weight:900;font-size:1.15rem;margin-bottom:6px;">' + esc(item.name) + '</div>' +
         '<div class="cs-try-mon">' + (mon || itemPicHtml(item)) + '</div>' +
         '<div style="font-size:.85rem;color:#cbd5e1;margin:8px 0 12px;">' + (mon ? 'This is how ' + esc(studentName(id).split(' ')[0]) + '’s monster looks with it.' : '') + '</div>' +
-        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' + (locked ? '<span class="monster-item-lock-pill">🔒 Level ' + reqLevel(item) + '</span>' : btn(bal >= price ? 'Buy for 🪙 ' + price : 'Need ' + (price - bal) + ' more', "this.closest('.cs-try-ovl').remove();ClassroomStore.ui.buyItem('" + item.id + "')", 'ok', bal < price)) +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' + (locked ? '<span class="monster-item-lock-pill">' + (isLevelReward(item) ? '🎁 Free at level ' : '🔒 Level ') + shopLevel(item) + '</span>' : btn(bal >= price ? 'Buy for 🪙 ' + price : 'Need ' + (price - bal) + ' more', "this.closest('.cs-try-ovl').remove();ClassroomStore.ui.buyItem('" + item.id + "')", 'ok', bal < price)) +
         btn('Close', "this.closest('.cs-try-ovl').remove()", 'ghost') + '</div></div>';
       o.addEventListener('click', function (e) { if (e.target === o) o.remove(); });
       document.body.appendChild(o);
