@@ -103,27 +103,29 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
   <section class="classes" id="classes"></section>
 
   <nav class="tabs" id="tabs">
-    <button class="tab on" data-t="day">🎬 Party day</button>
-    <button class="tab" data-t="cast">🎭 Cast and props</button>
-    <button class="tab" data-t="check">✅ Checklist</button>
+    <button class="tab on" data-t="day">🎬 The plan</button>
+    <button class="tab" data-t="cast">🎭 Pupils and props</button>
+    <button class="tab" data-t="check">✅ To-do</button>
     <button class="tab" data-t="print">🖨️ Print</button>
-    <button class="tab" data-t="links">🔗 Links for pupils and parents</button>
+    <button class="tab" data-t="links">✉️ Families</button>
   </nav>
 
   <section class="panel on" id="p-day">
     <div class="box">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-        <h3>The running order</h3>
+        <h3 id="tl-title">The plan</h3><span class="seg no-print" id="tl-cls"></span>
+      </div>
+      <ul class="tl" id="tl"></ul>
+    </div>
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+        <h3>The show: who performs when</h3>
         <div class="no-print" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="seg" id="ro-cls"></span>
           <label class="muted">Minutes per pair <input id="mins" type="number" min="1" max="5" value="2" style="width:56px;font:inherit;border:2px solid var(--line);border-radius:10px;padding:3px 6px"></label>
           <a class="btn sm ghost" href="../alice-party-print/running-order.html">↕ Change the order</a></div>
       </div>
       <p class="muted" id="ro-note"></p>
       <div class="ro" id="ro"></div>
-    </div>
-    <div class="box">
-      <h3>The party, step by step</h3>
-      <ul class="tl" id="tl"></ul>
     </div>
   </section>
 
@@ -132,7 +134,7 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
         <h3>Cast and props</h3><span class="seg no-print" id="cast-cls"></span>
       </div>
-      <p class="muted">Tap <b>Prop</b> when a pupil shows their prop, and <b>Here</b> to mark a pupil away on the day (their partner then gets a helper). Pairs with a yellow frame had 0–1 stars in the dress rehearsal: practise them once more. Ticks stay on this computer.</p>
+      <p class="muted">Every pair with their props and lines. Tomorrow, tap <b>Here</b> to mark a pupil away: the running order then says a helper reads the part. <b>Prop?</b> is only a reminder for you. Ticks stay on this computer.</p>
       <div id="workshop"></div>
       <div id="cast-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
       <div class="cast" id="cast"></div>
@@ -154,23 +156,24 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
 
   <section class="panel" id="p-links">
     <div class="box">
-      <h3>The pupils’ party page</h3>
-      <p class="muted">Each pupil chooses their name and sees their character, lines and prop. Send one link per class.</p>
-      <div class="btns" id="pupil-links"></div>
-    </div>
-    <div class="box">
-      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>📨 One personal link for each pupil</h3><span class="seg no-print" id="pl-cls"></span></div>
-      <p class="muted">Each link opens that pupil's own page: <b>My part on Friday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
-      <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button><button class="btn ghost" id="pl-refresh">🔄 Check who opened</button></div>
-      <div id="pl-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
-      <div class="ro" id="pl"></div>
-    </div>
-    <div class="box">
       <h3>Message for families (k12)</h3>
       <div class="copy" id="k12">Merhaba! Cuma günü (30 Ekim) İngilizce dersinde Alice Harikalar Diyarında Çay Partisi yapıyoruz. Lütfen çocuğunuz karakter aksesuarını ve kostümünü (basit olması yeterli) okula getirsin. Çocuklar kısa diyaloglarını sınıfta prova etti. Teşekkürler!
 Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the English lesson. Please send your child's prop and simple costume to school. The children have rehearsed their short dialogues in class. Thank you!</div>
       <div class="btns"><button class="btn sm" data-copy="k12">📋 Copy the message</button><a class="btn sm ghost" href="../alice-party-print/parent-note.html">📄 Printed parent note</a></div>
     </div>
+    <details class="box"><summary><b>🔗 Links for the pupils' own party page</b> (only if you want to send them)</summary>
+    <div style="margin-top:10px">
+      <h3>The pupils’ party page</h3>
+      <p class="muted">Each pupil chooses their name and sees their character, lines and prop. Send one link per class.</p>
+      <div class="btns" id="pupil-links"></div>
+    </div>
+    <div style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>📨 One personal link for each pupil</h3><span class="seg no-print" id="pl-cls"></span></div>
+      <p class="muted">Each link opens that pupil's own page: <b>My part on Friday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
+      <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button><button class="btn ghost" id="pl-refresh">🔄 Check who opened</button></div>
+      <div id="pl-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <div class="ro" id="pl"></div>
+    </div></details>
   </section>
 
   <details class="old box no-print">
@@ -187,8 +190,8 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
   'use strict';
   var P = window.PARTY, AV = '../assets/alice-cut/avatars/a_';
   var PARTY = { date: '2026-10-30',
-    '4b': { day: 'Friday 30 October', start: '14:15', label: '14:15–16:00 · 2 lessons + the break · garden' },
-    '4a': { day: 'Friday 30 October', start: '16:05', label: '16:05–16:45 · 1 lesson (after 4B) · garden' } };
+    '4b': { day: 'Friday 30 October', start: '15:20', label: '14:15 decorate · 15:20 the show · ends 16:00 · garden' },
+    '4a': { day: 'Friday 30 October', start: '16:05', label: '16:05 the show · ends 16:45 · garden (after 4B)' } };
   var ORDER_KEY = 'eaa_party_order_v1', STARS_KEY = 'eaa_party_rehearsal_v1', HQ_KEY = 'eaa_party_hq_v1', BRING_KEY = 'eaa_party_bring_v1';
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
@@ -196,7 +199,7 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
   var hq = load(HQ_KEY, {}); hq.props = hq.props || {}; hq.away = hq.away || {}; hq.ck = hq.ck || {};
   function keep() { save(HQ_KEY, hq); }
   var keys = ['4b', '4a'].filter(function (k) { return P.classes[k]; });
-  var cur = { ro: keys[0], cast: keys[0] };
+  var cur = { ro: keys[0], cast: keys[0], tl: keys[0] };
 
   function groups(k) { var seen = [], map = {}; P.classes[k].students.forEach(function (s) { if (!map[s.pair]) { map[s.pair] = []; seen.push(s.pair); } map[s.pair].push(s); }); return { order: seen, map: map }; }
   function orderOf(k) { var g = groups(k), saved = (load(ORDER_KEY, {}) || {})[k] || [], o = saved.filter(function (p) { return g.map[p]; }); g.order.forEach(function (p) { if (o.indexOf(p) < 0) o.push(p); }); return { order: o, map: g.map }; }
@@ -219,15 +222,15 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
       var st = P.classes[k].students, g = groups(k), props = st.filter(function (s) { return hq.props[s.id]; }).length, away = st.filter(function (s) { return hq.away[s.id]; }).length;
       var weak = g.order.filter(function (p) { var n = starsOf(k, p); return n != null && n <= 1; }).length;
       return '<div class="cls"><h2>' + (k === '4b' ? '🌹' : '🎩') + ' ' + esc(P.classes[k].label) + '</h2><div class="when">' + esc(PARTY[k].day) + ' · ' + esc(PARTY[k].label) + '</div>' +
-        '<div class="stat"><span class="pill">' + st.length + ' pupils · ' + g.order.length + ' performances</span><span class="pill ' + (props === st.length ? 'ok' : 'warn') + '">🎭 ' + props + ' of ' + st.length + ' props ready</span>' +
-        (away ? '<span class="pill no">' + away + ' away</span>' : '') + (weak ? '<span class="pill warn">' + weak + ' pairs to practise</span>' : '') + (STATUS ? '<span class="pill">👀 ' + st.filter(function (x) { return dayOf(x.id) > 0; }).length + ' opened their link · ✅ ' + st.filter(function (x) { return dayOf(x.id) >= 4; }).length + ' ready</span>' : '') + '</div>' +
-        '<div class="btns"><a class="btn big green" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=4">▶ Start the party show</a><a class="btn teal" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=3">🎭 Dress rehearsal</a><a class="btn ghost" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=1">💬 Party phrases</a></div></div>';
+        '<div class="stat"><span class="pill">' + st.length + ' pupils · ' + g.order.length + ' performances</span>' +
+        (away ? '<span class="pill no">' + away + ' away</span>' : '') + '</div>' +
+        '<div class="btns"><a class="btn big green" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=4">▶ Start the party show</a><a class="btn sm ghost" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=1">💬 Warm-up phrases</a><a class="btn sm ghost" href="../alice-party-rehearsal/index.html?class=' + k + '&lesson=3">🎭 Practise</a></div></div>';
     }).join('');
   }
 
   /* ---- running order ---- */
   function runningOrder() {
-    seg(document.getElementById('ro-cls'), 'ro', runningOrder);
+    seg(document.getElementById('ro-cls'), 'ro', function () { cur.tl = cur.ro; runningOrder(); });
     var k = cur.ro, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), t0 = addMin(PARTY[k].start, 8), html = '';
     o.order.forEach(function (pair, i) {
       var st = o.map[pair], n = starsOf(k, pair), gone = st.filter(function (s) { return hq.away[s.id]; });
@@ -237,19 +240,30 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     });
     document.getElementById('ro').innerHTML = html;
     var end = addMin(t0, o.order.length * mins);
-    document.getElementById('ro-note').textContent = 'Starts after 8 minutes of welcome and phrases, so the first pair is at ' + t0 + ' and the last one ends at about ' + end + '. Then the finale, certificates and tea.';
+    document.getElementById('ro-note').textContent = 'The first pair is at ' + t0 + ' (after 8 minutes of welcome) and the last one ends at about ' + end + '. Change the minutes per pair and all the times move.';
+    timeline();
   }
   document.getElementById('mins').addEventListener('input', runningOrder);
 
-  /* ---- timeline ---- */
-  document.getElementById('tl').innerHTML = [
-    ['Before', 'Set the tea table and the stage spot in the garden. Put up the garden signs. Put the spare props box and the certificates on your table.'],
-    ['0–3 min', 'Pupils line up at the door with their props. Bell = stop, one voice at a time, sit on your cushion when you are not performing.'],
-    ['3–8 min', 'Warm-up: the 8 tea-party phrases together (Party phrases button). Everybody says “Would you like some tea?”'],
-    ['The show', 'Press Start the party show. For each pair: prop check, perform (about one minute), applause. The page follows the running order.'],
-    ['Finale', 'Everybody together: “This is a nice tea party!” Then tea, biscuits or pretend tea, and photos if the school and families agreed.'],
-    ['End', 'Hand out the certificates, give +10 XP on the Class Board, tidy the garden together.']
-  ].map(function (x) { return '<li><b class="t">' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></li>'; }).join('');
+  /* ---- the plan of the day, for one class ---- */
+  function timeline() {
+    var k = cur.tl, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), s0 = PARTY[k].start, t0 = addMin(s0, 8), end = addMin(t0, o.order.length * mins);
+    var show = [
+      [s0, 'Welcome', 'Pupils line up in costume with their props. Rules: bell = stop, one voice at a time, sit down when you are not performing. Everybody: “Would you like some tea?”'],
+      [t0, 'The show', 'Press ▶ Start the party show. ' + o.order.length + ' performances, about ' + mins + ' minutes each, applause after each one. Who performs when is below.'],
+      [end, 'Finale', 'Everybody together: “This is a nice tea party!”'],
+      [addMin(end, 2), 'Tea and photos', 'Tea, biscuits or pretend tea. Each pair takes a photo in the photo frame (only with permission).']
+    ];
+    var plan = k === '4b' ? [
+      ['14:15', 'Lesson 1 · Decorate', 'Pupils decorate the garden with you: hang the WELCOME banner on the rope, stick up the giant playing cards, the signposts and the Cheshire Cat, tie the DRINK ME / EAT ME tags, set the tea table and stand up the photo frame.'],
+      ['14:40', 'Warm-up', 'Hand out the name cards. Pupils read the lines on the back with their partner once. Then 💬 Warm-up phrases together.'],
+      ['14:55', 'Break', 'Pupils put on their costumes and get their props.']
+    ].concat(show, [['15:55', 'Certificates', 'Certificates and +10 XP on the Class Board. Leave the decorations up: 4A comes next.']])
+      : show.concat([['16:40', 'Certificates and tidy up', 'Certificates and +10 XP on the Class Board. Everybody tidies the garden together.']]);
+    seg(document.getElementById('tl-cls'), 'tl', function () { cur.ro = cur.tl; runningOrder(); });
+    document.getElementById('tl-title').textContent = 'The plan for ' + P.classes[k].label + ' · ' + PARTY[k].day;
+    document.getElementById('tl').innerHTML = plan.map(function (x) { return '<li><b class="t">' + esc(x[0]) + '</b><span><b>' + esc(x[1]) + '</b> · ' + esc(x[2]) + '</span></li>'; }).join('');
+  }
 
   /* ---- how each prop is made: a blueprint page or something from home ---- */
   var PM = window.PROPS_MAP || { map: {}, titles: {}, home: {}, pagesFor: function () { return []; } };
@@ -265,7 +279,7 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     var st = P.classes[k].students, need = st.filter(function (s) { return !hq.props[s.id] && PM.pagesFor(role(s).props).length; });
     var uniq = []; st.forEach(function (s) { PM.pagesFor(role(s).props).forEach(function (id) { if (uniq.indexOf(id) < 0) uniq.push(id); }); });
     var BP = '../alice-party-print/blueprints.html?cls=' + k + '&mode=';
-    document.getElementById('workshop').innerHTML = '<div class="ws"><h4>🛠️ Monday: props in 3 easy steps (' + esc(P.classes[k].label) + ')</h4><ol>' +
+    document.getElementById('workshop').innerHTML = '<div class="ws"><h4>🛠️ Props for pupils who have none (' + esc(P.classes[k].label) + ')</h4><ol>' +
       '<li><b>Ask who has their prop.</b> Tap <b>Prop?</b> below for every pupil who shows one (' + st.filter(function (s) { return hq.props[s.id]; }).length + ' of ' + st.length + ' so far).</li>' +
       '<li><b>Print only what is missing:</b> ' + need.length + ' pupils still need a paper prop, that is <b>' + sheetsFor(need) + ' sheets</b>, each with the pupil’s name on it. Pupils colour and cut them in the lesson or at home.</li>' +
       '<li><b>Print one spare set</b> (' + uniq.length + ' sheets) for the box on party day, for anybody who forgets.</li></ol>' +
@@ -298,15 +312,15 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
 
   /* ---- checklist ---- */
   var CK = [
-    ['Monday (the day before)', ['Agree the garden with the school, and a rain plan (the classroom)', 'Check allergies: food only if families agreed (or pretend tea and water)', 'Print certificates, garden signs and table cards (Print tab)', 'Send the message to families: bring the prop and costume (Links tab)', 'Make a box of spare props for pupils who forget', 'Last rehearsal: 4A at 11:15 (Dress rehearsal button)']],
-    ['Party morning', ['Bell, timer and a charged laptop or tablet with this page', 'Tablecloth, cups, plates, napkins, a jug of water, a rubbish bag', 'Put up the signs and set the tea table and the stage spot', 'Show the pupils where they may go in the garden']],
-    ['During the party', ['Party rules: bell = stop, one voice, sit when not performing', 'Follow the running order (Start the party show)', 'Photos only with permission', 'Finale: “This is a nice tea party!”']],
-    ['After the party', ['Certificates for everybody', '+10 XP for every pupil on the Class Board', 'Tidy the garden together', 'Write one good moment for each class for the reports']]
+    ['Today', ['Print the name cards (both sides) and cut them out', 'Print the decorations: banner, playing cards, signposts, tags, Cheshire Cat', 'Print the photo frame, tape it together and glue it on cardboard', 'Print and sign the certificates', 'Send the message to families (Families tab)', 'Pack a box: spare props, scissors, tape, glue, a rope or string for the banner']],
+    ['Tomorrow before 14:15', ['The garden is free (rain plan: the classroom)', 'Agree with the other teacher: you have 4A at 16:05', 'Allergies: food only if families agreed (or pretend tea and water)', 'Bell, timer and a charged laptop or tablet with this page', 'Tablecloth, cups, plates, napkins, a jug of water, a rubbish bag']],
+    ['During the party', ['Rules: bell = stop, one voice, sit when not performing', 'Follow the plan (The plan tab) and press ▶ Start the party show', 'Photos in the frame only with permission']],
+    ['After the party', ['Certificates and +10 XP for every pupil', 'Tidy the garden together', 'Write one good moment for each class for the reports']]
   ];
   function checklist() {
     var total = 0, done = 0;
     document.getElementById('ck').innerHTML = CK.map(function (g, gi) {
-      return '<div><b>' + esc(g[0]) + '</b>' + g[1].map(function (t, i) { var k = gi + '-' + i, on = !!hq.ck[k]; total++; if (on) done++; return '<label class="' + (on ? 'done' : '') + '"><input type="checkbox" data-ck="' + k + '"' + (on ? ' checked' : '') + '><span>' + esc(t) + '</span></label>'; }).join('') + '</div>';
+      return '<div><b>' + esc(g[0]) + '</b>' + g[1].map(function (t, i) { var k = 'f' + gi + '-' + i, on = !!hq.ck[k]; total++; if (on) done++; return '<label class="' + (on ? 'done' : '') + '"><input type="checkbox" data-ck="' + k + '"' + (on ? ' checked' : '') + '><span>' + esc(t) + '</span></label>'; }).join('') + '</div>';
     }).join('');
     document.getElementById('ck-bar').style.width = Math.round(done / total * 100) + '%';
     document.getElementById('ck-txt').textContent = done + ' of ' + total + ' done';
@@ -317,7 +331,8 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
 
   /* ---- print and old work ---- */
   var PR = '../alice-party-print/';
-  document.getElementById('prints').innerHTML = [
+  function pcard(x) { return '<a class="pcard" href="' + (x[3].indexOf('../') === 0 ? x[3] : PR + x[3]) + '"><span class="i">' + x[0] + '</span><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span><em>' + esc(x[4]) + '</em></a>'; }
+  var PRINT = [
     ['🃏', 'Name cards', 'Trading card for every pupil: character, own monster, all their lines on the back', 'name-cards.html', '5 sheets · both sides, flip on long edge'],
     ['🎉', 'Welcome banner', 'WELCOME TO THE MAD TEA PARTY: fold each pennant over a rope and glue', 'decorations.html#banner', '28 pages'],
     ['♥️', 'Giant playing cards', 'The Queen’s card soldiers for the walls and the door', 'decorations.html#cards', '12 pages'],
@@ -330,7 +345,12 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     ['🎭', 'Prop templates', 'Spare keys, hats, crowns and more', 'prop-templates.html', 'For the spare box'],
     ['📐', 'Blueprints', 'Real-size cut-out patterns for costumes', 'blueprints.html', 'Only if needed'],
     ['📄', 'Parent note', 'English and Turkish', 'parent-note.html', 'Only if not sent']
-  ].map(function (x) { return '<a class="pcard" href="' + (x[3].indexOf('../') === 0 ? x[3] : PR + x[3]) + '"><span class="i">' + x[0] + '</span><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span><em>' + esc(x[4]) + '</em></a>'; }).join('');
+  ], byName = {}; PRINT.forEach(function (x) { byName[x[1]] = x; });
+  document.getElementById('prints').outerHTML = [
+    ['⭐ Must print', ['Name cards', 'Certificates', 'Running order']],
+    ['🎉 Decorations (pupils put them up in 4B’s first lesson)', ['Welcome banner', 'Giant playing cards', 'Signposts, tags, Cheshire Cat', 'Photo frame', 'Garden signs and table cards']],
+    ['📦 Only if needed', ['Bring list', 'Prop templates', 'Blueprints', 'Parent note']]
+  ].map(function (g) { return '<h4 style="margin:14px 0 8px">' + esc(g[0]) + '</h4><div class="prints">' + g[1].map(function (n) { return pcard(byName[n]); }).join('') + '</div>'; }).join('');
   document.getElementById('old').innerHTML = [
     ['🏠', 'Home practice weeks 1–3', '../alice-party-home/index.html'], ['🧑‍🎤', 'Pupil Alice profile', '../alice-party-home/profile.html'], ['🛠️', 'Costume craft guides', PR + 'craft-guides.html'],
     ['🗂️', 'Old party-week hub', PR + 'index.html'], ['🃏', 'Trading cards 4A', '../alice-cards-4a/index.html'], ['🃏', 'Trading cards 4B', '../alice-cards-4b/index.html'],
