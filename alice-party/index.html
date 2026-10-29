@@ -95,7 +95,7 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
     <div>
       <h1>🫖 Alice’s Tea Party HQ</h1>
       <p>Everything for the party in one place: the day plan, who performs when, props, what to print and what to bring.</p>
-      <div class="count" id="count">🗓️ Tuesday 27 October</div>
+      <div class="count" id="count">🗓️ Friday 30 October</div>
     </div>
     <img src="../alice-party-home/lesson-art/hero_party.webp" alt="" onerror="this.remove()">
   </header>
@@ -160,15 +160,15 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
     </div>
     <div class="box">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>📨 One personal link for each pupil</h3><span class="seg no-print" id="pl-cls"></span></div>
-      <p class="muted">Each link opens that pupil's own page: <b>My part on Tuesday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
+      <p class="muted">Each link opens that pupil's own page: <b>My part on Friday</b> (who they perform with, their lines with a ⭐, or their guest job), their props, a button to print their prop pattern and the costume guide. Copy one link, or all of them as a list for k12.</p>
       <div class="btns" style="margin-bottom:10px"><button class="btn amber" id="pl-all">📋 Copy all links of this class</button><button class="btn ghost" id="pl-refresh">🔄 Check who opened</button></div>
       <div id="pl-sum" class="stat" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
       <div class="ro" id="pl"></div>
     </div>
     <div class="box">
       <h3>Message for families (k12)</h3>
-      <div class="copy" id="k12">Merhaba! Salı günü (27 Ekim) İngilizce dersinde Alice Harikalar Diyarında Çay Partisi yapıyoruz. Lütfen çocuğunuz karakter aksesuarını ve kostümünü (basit olması yeterli) okula getirsin. Çocuklar kısa diyaloglarını sınıfta prova etti. Teşekkürler!
-Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the English lesson. Please send your child's prop and simple costume to school. The children have rehearsed their short dialogues in class. Thank you!</div>
+      <div class="copy" id="k12">Merhaba! Cuma günü (30 Ekim) İngilizce dersinde Alice Harikalar Diyarında Çay Partisi yapıyoruz. Lütfen çocuğunuz karakter aksesuarını ve kostümünü (basit olması yeterli) okula getirsin. Çocuklar kısa diyaloglarını sınıfta prova etti. Teşekkürler!
+Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the English lesson. Please send your child's prop and simple costume to school. The children have rehearsed their short dialogues in class. Thank you!</div>
       <div class="btns"><button class="btn sm" data-copy="k12">📋 Copy the message</button><a class="btn sm ghost" href="../alice-party-print/parent-note.html">📄 Printed parent note</a></div>
     </div>
   </section>
@@ -181,14 +181,14 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
 
 <script src="../alice-party-home/party-data.js?v=3"></script>
 <script src="../alice-party-print/props-map.js?v=2"></script>
-<script src="../alice-party-home/config.js"></script>
+<script src="../alice-party-home/config.js?v=2"></script>
 <script>
 (function () {
   'use strict';
   var P = window.PARTY, AV = '../assets/alice-cut/avatars/a_';
-  var PARTY = { date: '2026-10-27',
-    '4b': { day: 'Tuesday 27 October', start: '09:00', label: '09:00–10:20 · 2 lessons · garden' },
-    '4a': { day: 'Tuesday 27 October', start: '15:20', label: '15:20–16:05 · 1 lesson + the break · garden' } };
+  var PARTY = { date: '2026-10-30',
+    '4b': { day: 'Friday 30 October', start: '14:15', label: '14:15–16:00 · 2 lessons + the break · garden' },
+    '4a': { day: 'Friday 30 October', start: '16:05', label: '16:05–16:45 · 1 lesson (after 4B) · garden' } };
   var ORDER_KEY = 'eaa_party_order_v1', STARS_KEY = 'eaa_party_rehearsal_v1', HQ_KEY = 'eaa_party_hq_v1', BRING_KEY = 'eaa_party_bring_v1';
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
@@ -210,7 +210,7 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
   (function () {
     var d = new Date(PARTY.date + 'T00:00:00'), n = new Date(); n.setHours(0, 0, 0, 0);
     var days = Math.round((d - n) / 864e5), el = document.getElementById('count');
-    el.textContent = days > 1 ? '🗓️ Tuesday 27 October · ' + days + ' days to go' : days === 1 ? '🗓️ Tomorrow: Tuesday 27 October' : days === 0 ? '🎉 Today is the Tea Party!' : '🫖 The Tea Party was on Tuesday 27 October';
+    el.textContent = days > 1 ? '🗓️ Friday 30 October · ' + days + ' days to go' : days === 1 ? '🗓️ Tomorrow: Friday 30 October' : days === 0 ? '🎉 Today is the Tea Party!' : '🫖 The Tea Party was on Friday 30 October';
   })();
 
   /* ---- class cards ---- */

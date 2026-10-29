@@ -9,7 +9,7 @@
   var stage = $('#stage');
   var AV = '../assets/alice-cut/avatars/a_', PR = '../assets/alice-cut/props/';
   var HW = 'alice-party-day', DONE_KEY = 'eaa_party_day_v1', PENDING_KEY = 'eaa_party_pending_day_v1';
-  var WHEN = { '4a': 'Tuesday 27 October · 15:20 · garden', '4b': 'Tuesday 27 October · 09:00 · garden' };
+  var WHEN = { '4a': 'Friday 30 October · 16:05 · garden', '4b': 'Friday 30 October · 14:15 · garden' };
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
@@ -85,7 +85,7 @@
     var n = steps.filter(function (s) { return d[s[0]]; }).length;
     $('#pill').textContent = daysToGo() || '🫖';
     var h = '<section class="card hero"><div class="av">' + img(AV + esc(st.roleKey) + '.webp', role.short) + '</div><div><h1>Hi, ' + esc(st.name) + '!</h1><div class="you">You are <b>' + esc(role.name) + '</b></div>' +
-      '<span class="chip">🗓️ ' + esc(WHEN[st.classKey] || 'Tuesday 27 October') + '</span>' + (others.length ? '<span class="chip">🤝 with ' + others.map(function (o) { return esc(o.name); }).join(', ') + '</span>' : '') + '</div></section>';
+      '<span class="chip">🗓️ ' + esc(WHEN[st.classKey] || 'Friday 30 October') + '</span>' + (others.length ? '<span class="chip">🤝 with ' + others.map(function (o) { return esc(o.name); }).join(', ') + '</span>' : '') + '</div></section>';
     h += '<section class="card"><h2>✅ Get ready in 4 steps</h2><div class="ring"><div class="bar"><i style="width:' + Math.round(n / 4 * 100) + '%"></i></div><b>' + n + ' / 4</b></div>' +
       steps.map(function (s) {
         var extra = '';
