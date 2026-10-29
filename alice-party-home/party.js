@@ -69,6 +69,7 @@
   function img(src, alt, fb) { return '<img src="' + src + '" alt="' + esc(alt || '') + '" onerror="this.replaceWith(document.createTextNode(\'' + (fb || '🙂') + '\'))">'; }
   function confetti() { var e = ['🎉', '⭐', '🫖', '🍰', '✨', '🎩']; for (var i = 0; i < 26; i++) { var c = document.createElement('span'); c.className = 'conf'; c.textContent = e[i % e.length]; c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = (1.6 + Math.random() * 1.6) + 's'; document.body.appendChild(c); setTimeout(function (x) { return function () { x.remove(); }; }(c), 3400); } }
   function say(t) { try { return window.EAAVoice.say(t, { rate: 0.88, dir: 'audio/' }); } catch (e) { return Promise.resolve(); } }
+  try { window.EAAVoice.preload('audio/'); } catch (e) { /* no voice module */ }   /* look for recordings now, so a tap can speak at once */
 
   /* ---------------- the personal page ---------------- */
   function mine(st) {
