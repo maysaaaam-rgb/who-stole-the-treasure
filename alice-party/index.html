@@ -190,8 +190,8 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
   'use strict';
   var P = window.PARTY, AV = '../assets/alice-cut/avatars/a_';
   var PARTY = { date: '2026-10-30',
-    '4b': { day: 'Friday 30 October', start: '15:20', label: '14:15 decorate · 15:20 the show · ends 16:00 · garden' },
-    '4a': { day: 'Friday 30 October', start: '16:05', label: '16:05 the show · ends 16:45 · garden (after 4B)' } };
+    '4b': { day: 'Friday 30 October', start: '15:20', warm: 8, label: '14:15 decorate · 15:20 the show · ends 16:00 · garden' },
+    '4a': { day: 'Friday 30 October', start: '16:05', warm: 10, label: '16:05 the show · ends 16:45 · garden (after 4B)' } };
   var ORDER_KEY = 'eaa_party_order_v1', STARS_KEY = 'eaa_party_rehearsal_v1', HQ_KEY = 'eaa_party_hq_v1', BRING_KEY = 'eaa_party_bring_v1';
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
@@ -231,7 +231,7 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
   /* ---- running order ---- */
   function runningOrder() {
     seg(document.getElementById('ro-cls'), 'ro', function () { cur.tl = cur.ro; runningOrder(); });
-    var k = cur.ro, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), t0 = addMin(PARTY[k].start, 8), html = '';
+    var k = cur.ro, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), t0 = addMin(PARTY[k].start, PARTY[k].warm || 8), html = '';
     o.order.forEach(function (pair, i) {
       var st = o.map[pair], n = starsOf(k, pair), gone = st.filter(function (s) { return hq.away[s.id]; });
       html += '<div class="perf"><span class="n">' + (i + 1) + '</span><span class="time">' + addMin(t0, i * mins) + '</span><span class="who"><span class="avs" style="float:left;margin-right:16px">' + st.map(av).join('') + '</span><b>' +
@@ -240,26 +240,27 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     });
     document.getElementById('ro').innerHTML = html;
     var end = addMin(t0, o.order.length * mins);
-    document.getElementById('ro-note').textContent = 'The first pair is at ' + t0 + ' (after 8 minutes of welcome) and the last one ends at about ' + end + '. Change the minutes per pair and all the times move.';
+    document.getElementById('ro-note').textContent = 'The first pair is at ' + t0 + ' (after ' + (PARTY[k].warm || 8) + ' minutes of welcome) and the last one ends at about ' + end + '. Change the minutes per pair and all the times move.';
     timeline();
   }
   document.getElementById('mins').addEventListener('input', runningOrder);
 
   /* ---- the plan of the day, for one class ---- */
   function timeline() {
-    var k = cur.tl, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), s0 = PARTY[k].start, t0 = addMin(s0, 8), end = addMin(t0, o.order.length * mins);
+    var k = cur.tl, o = orderOf(k), mins = Math.max(1, +document.getElementById('mins').value || 2), s0 = PARTY[k].start, t0 = addMin(s0, PARTY[k].warm || 8), end = addMin(t0, o.order.length * mins);
     var show = [
-      [s0, 'Welcome', 'Pupils line up in costume with their props. Rules: bell = stop, one voice at a time, sit down when you are not performing. Everybody: “Would you like some tea?”'],
+      k === '4a' ? [s0, 'Rules and quick props', 'Talk about the party rules together: bell = stop, one voice at a time, sit down when you are not performing. Pupils without a prop make a quick paper one. Everybody: “Would you like some tea?”']
+        : [s0, 'Welcome', 'Pupils line up with their props (costumes are optional). Rules together: bell = stop, one voice at a time, sit down when you are not performing. Everybody: “Would you like some tea?”'],
       [t0, 'The show', 'Press ▶ Start the party show. ' + o.order.length + ' performances, about ' + mins + ' minutes each, applause after each one. Who performs when is below.'],
       [end, 'Finale', 'Everybody together: “This is a nice tea party!”'],
-      [addMin(end, 2), 'Tea and photos', 'Tea, biscuits or pretend tea. Each pair takes a photo in the photo frame (only with permission).']
+      [addMin(end, 2), 'Cupcakes, juice and photos', 'Cupcakes and juice. Each pair takes a photo in the photo frame as a memory (not the pupils whose families said no).']
     ];
     var plan = k === '4b' ? [
-      ['14:15', 'Lesson 1 · Decorate', 'Pupils decorate the garden with you: hang the WELCOME banner on the rope, stick up the giant playing cards, the signposts and the Cheshire Cat, tie the DRINK ME / EAT ME tags, set the tea table and stand up the photo frame.'],
+      ['14:15', 'Lesson 1 · Decorate and make props', 'Pupils decorate the garden with you: hang the WELCOME banner on the rope, stick up the giant playing cards, the signposts and the Cheshire Cat, tie the DRINK ME / EAT ME tags, set the table and stand up the photo frame. Pupils without a prop make one (paper, scissors, glue).'],
       ['14:40', 'Warm-up', 'Hand out the name cards. Pupils read the lines on the back with their partner once. Then 💬 Warm-up phrases together.'],
-      ['14:55', 'Break', 'Pupils put on their costumes and get their props.']
-    ].concat(show, [['15:55', 'Certificates', 'Certificates and +10 XP on the Class Board. Leave the decorations up: 4A comes next.']])
-      : show.concat([['16:40', 'Certificates and tidy up', 'Certificates and +10 XP on the Class Board. Everybody tidies the garden together.']]);
+      ['14:55', 'Break', 'Pupils who want to put on a simple costume do it now.']
+    ].concat(show, [['15:52', '🏆 Awards and certificates', 'Give the 6 awards (Awards page: Best Voice, Best Actor, Best Team, Best Prop, Bravest Speaker, Best Tea-Party English), each to a different pupil, with one sentence why, and a star medal. Then certificates for everybody. +10 XP for everyone, +20 XP for each award winner. Leave the decorations up: 4A comes next.']])
+      : show.concat([['16:40', '🏆 Awards, certificates, tidy up', 'Give the 6 awards with a star medal and one sentence why, then certificates for everybody. +10 XP for everyone, +20 XP for each award winner. Everybody tidies the garden together.']]);
     seg(document.getElementById('tl-cls'), 'tl', function () { cur.ro = cur.tl; runningOrder(); });
     document.getElementById('tl-title').textContent = 'The plan for ' + P.classes[k].label + ' · ' + PARTY[k].day;
     document.getElementById('tl').innerHTML = plan.map(function (x) { return '<li><b class="t">' + esc(x[0]) + '</b><span><b>' + esc(x[1]) + '</b> · ' + esc(x[2]) + '</span></li>'; }).join('');
@@ -312,9 +313,9 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
 
   /* ---- checklist ---- */
   var CK = [
-    ['Today', ['Print the name cards (both sides) and cut them out', 'Print the decorations: banner, playing cards, signposts, tags, Cheshire Cat', 'Print the photo frame, tape it together and glue it on cardboard', 'Print and sign the certificates', 'Send the message to families (Families tab)', 'Pack a box: spare props, scissors, tape, glue, a rope or string for the banner']],
-    ['Tomorrow before 14:15', ['The garden is free (rain plan: the classroom)', 'Agree with the other teacher: you have 4A at 16:05', 'Allergies: food only if families agreed (or pretend tea and water)', 'Bell, timer and a charged laptop or tablet with this page', 'Tablecloth, cups, plates, napkins, a jug of water, a rubbish bag']],
-    ['During the party', ['Rules: bell = stop, one voice, sit when not performing', 'Follow the plan (The plan tab) and press ▶ Start the party show', 'Photos in the frame only with permission']],
+    ['Today', ['Print the name cards (both sides) and cut them out', 'Print the decorations: banner, playing cards, signposts, tags, Cheshire Cat', 'Print the photo frame, tape it together and glue it on cardboard', 'Print and sign the certificates', 'Send the message to families (Families tab)', 'Pack a box: spare props, scissors, tape, glue, a rope or string for the banner', 'Print the award certificates and star medals (Awards, one set a class)']],
+    ['Tomorrow before 14:15', ['The garden is free (rain plan: the classroom)', 'Agree with the other teacher: you have 4A at 16:05', 'Allergies: food only if families agreed (or pretend tea and water)', 'Bell, timer and a charged laptop or tablet with this page', 'Tablecloth, cups, plates, napkins, a jug of water, a rubbish bag', 'Cupcakes and juice for everybody (check allergies)']],
+    ['During the party', ['Rules: bell = stop, one voice, sit when not performing', 'Follow the plan (The plan tab) and press ▶ Start the party show', 'Photos in the frame only with permission', 'Watch for the 6 award winners during the show']],
     ['After the party', ['Certificates and +10 XP for every pupil', 'Tidy the garden together', 'Write one good moment for each class for the reports']]
   ];
   function checklist() {
@@ -338,6 +339,7 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     ['♥️', 'Giant playing cards', 'The Queen’s card soldiers for the walls and the door', 'decorations.html#cards', '12 pages'],
     ['🪧', 'Signposts, tags, Cheshire Cat', 'Arrow signs, DRINK ME / EAT ME tags, a 4-page cat grin poster', 'decorations.html#signs', '11 pages'],
     ['📸', 'Photo frame', 'Head-through frame (76 × 111 cm) from 12 pages, with a map', 'decorations.html#frame', '13 pages · glue on cardboard'],
+    ['🏆', 'Awards', '6 award certificates and 8 star medals; choose the winners on screen', 'awards.html', '3 pages + 1 medal page a class'],
     ['🏅', 'Certificates', 'One for every pupil, ready to sign', 'certificates.html', '38 pupils'],
     ['🪧', 'Garden signs and table cards', 'Signs for the garden and the tea table', 'garden-signs.html', 'Print once'],
     ['📋', 'Running order', 'The order of pairs with times, for your clipboard', 'running-order.html', '1 per class'],
@@ -347,7 +349,7 @@ Hello! On Friday (30 October) we have our Alice in Wonderland Tea Party in the E
     ['📄', 'Parent note', 'English and Turkish', 'parent-note.html', 'Only if not sent']
   ], byName = {}; PRINT.forEach(function (x) { byName[x[1]] = x; });
   document.getElementById('prints').outerHTML = [
-    ['⭐ Must print', ['Name cards', 'Certificates', 'Running order']],
+    ['⭐ Must print', ['Name cards', 'Awards', 'Certificates', 'Running order']],
     ['🎉 Decorations (pupils put them up in 4B’s first lesson)', ['Welcome banner', 'Giant playing cards', 'Signposts, tags, Cheshire Cat', 'Photo frame', 'Garden signs and table cards']],
     ['📦 Only if needed', ['Bring list', 'Prop templates', 'Blueprints', 'Parent note']]
   ].map(function (g) { return '<h4 style="margin:14px 0 8px">' + esc(g[0]) + '</h4><div class="prints">' + g[1].map(function (n) { return pcard(byName[n]); }).join('') + '</div>'; }).join('');

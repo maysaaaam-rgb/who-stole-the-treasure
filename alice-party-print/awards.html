@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tea Party Awards</title>
+<style>
+  @page { size: A4; margin: 10mm; }
+  * { box-sizing: border-box; }
+  :root { --gold: #c9a24a; --gold2: #f3dc95; --cream: #fffaf0; --ink: #1f2937; }
+  body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: radial-gradient(circle at 50% 20%, #0d1527 0%, #060911 100%); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .bar { position: sticky; top: 0; z-index: 9; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 12px 16px; background: rgba(15, 23, 42, .92); color: #e5edff; backdrop-filter: blur(14px); }
+  .bar h1 { font: 700 19px Georgia, serif; margin: 0 8px 0 0; }
+  .bar select, .bar input { font: 600 15px "Segoe UI", Arial, sans-serif; padding: 7px 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #e5edff; }
+  .bar button { font: 700 15px "Segoe UI", Arial, sans-serif; padding: 9px 16px; border: 0; border-bottom: 5px solid #1e3a8a; border-radius: 12px; background: #38bdf8; color: #0b1220; cursor: pointer; }
+  .bar button.amber { background: #f59e0b; border-bottom-color: #b45309; }
+  .bar button:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .pick { max-width: 980px; margin: 14px auto 0; padding: 14px 16px; border-radius: 18px; background: rgba(15, 23, 42, .8); border: 1px solid #1e293b; color: #e5edff; }
+  .pick h2 { margin: 0 0 4px; font: 700 18px Georgia, serif; } .pick p { margin: 0 0 10px; color: #94a3b8; font-size: 14px; }
+  .pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px 14px; }
+  .pick label { display: flex; align-items: center; gap: 8px; font-size: 15px; }
+  .pick label span { flex: 1; } .pick select { flex: 1.2; font: 600 15px "Segoe UI", Arial, sans-serif; padding: 6px 8px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: #e5edff; }
+  section h3 { color: #e5edff; text-align: center; font: 700 20px Georgia, serif; margin: 24px 0 0; }
+  .page { position: relative; width: 190mm; height: 277mm; margin: 8mm auto; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.4); overflow: hidden; break-after: page; page-break-after: always; }
+
+  /* award certificate: two A5 a page */
+  .page.certs { display: flex; flex-direction: column; justify-content: space-between; padding: 2mm 0; }
+  .cert { --c: #be123c; position: relative; height: 134mm; border-radius: 6mm; background:
+      repeating-linear-gradient(45deg, color-mix(in srgb, var(--c) 6%, transparent) 0 .4mm, transparent .4mm 5mm),
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c) 6%, transparent) 0 .4mm, transparent .4mm 5mm),
+      radial-gradient(circle at 50% 40%, #fff 0%, var(--cream) 60%, color-mix(in srgb, var(--c) 10%, #fff6e0) 100%);
+    border: 1.4mm solid var(--c); box-shadow: inset 0 0 0 1.4mm var(--cream), inset 0 0 0 2mm var(--gold); display: flex; align-items: center; gap: 6mm; padding: 9mm 12mm; }
+  .cert .cut { position: absolute; left: 0; right: 0; bottom: -2.2mm; border-bottom: .3mm dashed #cbd5e1; }
+  .cert .badge { position: relative; flex: none; width: 52mm; text-align: center; }
+  .cert .badge img { width: 50mm; }
+  .cert .badge .em { position: absolute; left: 50%; top: 19mm; transform: translateX(-50%); font-size: 12mm; line-height: 1; filter: drop-shadow(0 .6mm .6mm rgba(0,0,0,.25)); }
+  .cert .txt { flex: 1; min-width: 0; text-align: center; }
+  .cert .kick { font: italic 4.2mm/1 Georgia, serif; color: #7c3aed; letter-spacing: .2mm; }
+  .cert .aw { margin-top: 3mm; font: 700 11mm/1.02 Georgia, "Times New Roman", serif; color: var(--c); text-shadow: .6mm .6mm 0 var(--gold2); }
+  .cert .to { margin-top: 4mm; font: 4mm/1 "Segoe UI", Arial, sans-serif; color: #4b5563; letter-spacing: .3mm; text-transform: uppercase; }
+  .cert .nm { margin: 3mm auto 0; width: 92%; min-height: 13mm; padding-bottom: 1mm; border-bottom: .5mm solid var(--gold); font: 700 10mm/1.2 Georgia, serif; color: var(--ink); }
+  .cert .why { margin-top: 3mm; font: italic 4.6mm/1.3 Georgia, serif; color: #374151; }
+  .cert .sig { margin-top: 6mm; display: flex; justify-content: space-between; gap: 8mm; font: 3.4mm/1.2 "Segoe UI", Arial, sans-serif; color: #6b7280; }
+  .cert .sig span { flex: 1; border-top: .3mm solid #9ca3af; padding-top: 1.2mm; }
+
+  /* medals: 8 a page */
+  .page.medals { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); padding: 3mm; gap: 2mm; }
+  .medal { --c: #be123c; position: relative; justify-self: center; align-self: center; width: 66mm; height: 66mm; border-radius: 50%;
+    background: conic-gradient(from 20deg, var(--gold2), var(--gold), #fff3c4, #b8892f, var(--gold2), var(--gold), #fff3c4, var(--gold2));
+    box-shadow: 0 0 0 .3mm #b8892f; display: flex; align-items: center; justify-content: center; }
+  .medal::after { content: ""; position: absolute; inset: -2.5mm; border-radius: 50%; border: .3mm dashed #cbd5e1; }
+  .medal .in { width: 56mm; height: 56mm; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #fff 0%, var(--cream) 70%, color-mix(in srgb, var(--c) 14%, #fff) 100%);
+    box-shadow: inset 0 0 0 1mm var(--c), inset 0 0 0 1.5mm #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 5mm; }
+  .medal .hole { position: absolute; top: 3.4mm; left: 50%; width: 4mm; height: 4mm; margin-left: -2mm; border-radius: 50%; background: #fff; box-shadow: 0 0 0 .3mm #9ca3af; }
+  .medal img { width: 20mm; margin-top: 2mm; }
+  .medal .em { font-size: 13mm; line-height: 1; margin-top: 2mm; }
+  .medal b { display: block; margin-top: 1.6mm; font: 700 5.8mm/1.05 Georgia, serif; color: var(--c); }
+  .medal small { display: block; margin-top: 1mm; font: 2.8mm/1.15 "Segoe UI", Arial, sans-serif; color: #6b7280; letter-spacing: .15mm; }
+
+  body.only-certs #medals, body.only-medals #certs { display: none; }
+  @media print { body { background: #fff; } .bar, .pick, section h3 { display: none !important; } .page { margin: 0; box-shadow: none; } section:last-of-type .page:last-child { break-after: auto; page-break-after: auto; } }
+</style>
+</head>
+<body>
+<div class="bar"><h1>🏆 Tea Party awards</h1>
+  <select id="cls"></select>
+  <button type="button" onclick="pr('certs')">🖨 Award certificates</button>
+  <button type="button" onclick="pr('medals')">🖨 Star medals</button>
+  <button type="button" class="amber" onclick="pr('')">🖨 Both</button></div>
+
+<div class="pick">
+  <h2>Who wins each award?</h2>
+  <p>Choose a pupil for each award, or leave it blank and write the name by hand. Try to give each award to a different pupil. Your choices stay on this computer.</p>
+  <div class="pick-grid" id="pick"></div>
+</div>
+
+<section id="certs"><h3>Award certificates · 2 on each A4 page · cut on the dashed line</h3><div id="cert-pages"></div></section>
+<section id="medals"><h3>Star medals · 8 on each A4 page · cut round, punch the hole, add a ribbon</h3><div id="medal-pages"></div></section>
+
+<script src="../alice-party-home/party-data.js?v=3"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.PARTY, KEY = 'eaa_party_awards_v1', BADGE = 'deco-art/cut/star_badge.webp';
+  var AWARDS = [
+    ['voice', '🎤', 'Best Voice', 'for speaking loud and clear', '#1e3a8a'],
+    ['actor', '🎭', 'Best Actor', 'for acting your character with your face and body', '#7c3aed'],
+    ['team', '🤝', 'Best Team', 'for great teamwork with your partner', '#0f766e'],
+    ['prop', '🎩', 'Best Prop', 'for the most creative prop at the party', '#b45309'],
+    ['brave', '🦁', 'Bravest Speaker', 'for being brave and speaking English in front of everyone', '#be123c'],
+    ['english', '💬', 'Best Tea-Party English', 'for using the tea-party phrases all the time', '#9d174d']
+  ];
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function save(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* not remembered */ } }
+  var picks = load(), cls = document.getElementById('cls'), keys = Object.keys(P.classes);
+  cls.innerHTML = keys.map(function (k) { return '<option value="' + k + '">' + esc(P.classes[k].label) + '</option>'; }).join('');
+  if (keys.indexOf('4b') >= 0) cls.value = '4b';
+
+  function nameOf(k, id) { var s = P.classes[k].students.filter(function (x) { return x.id === id; })[0]; return s ? s.name : ''; }
+  function chosen(k) { return (picks[k] = picks[k] || {}); }
+
+  function pickers() {
+    var k = cls.value, c = chosen(k), st = P.classes[k].students;
+    document.getElementById('pick').innerHTML = AWARDS.map(function (a) {
+      return '<label><span>' + a[1] + ' ' + esc(a[2]) + '</span><select data-a="' + a[0] + '"><option value="">(blank: write by hand)</option>' +
+        st.map(function (s) { return '<option value="' + esc(s.id) + '"' + (c[a[0]] === s.id ? ' selected' : '') + '>' + esc(s.name) + '</option>'; }).join('') + '</select></label>';
+    }).join('');
+  }
+  document.getElementById('pick').addEventListener('change', function (e) {
+    var a = e.target.dataset.a; if (!a) return; chosen(cls.value)[a] = e.target.value; save(picks); draw();
+  });
+
+  function cert(a, k) {
+    var nm = nameOf(k, chosen(k)[a[0]]);
+    return '<div class="cert" style="--c:' + a[4] + '"><div class="badge"><img src="' + BADGE + '" alt=""><span class="em">' + a[1] + '</span></div>' +
+      '<div class="txt"><div class="kick">Alice’s Tea Party · ' + esc(P.classes[k].label) + ' · 30 October 2026</div><div class="aw">' + esc(a[2]) + '</div>' +
+      '<div class="to">is awarded to</div><div class="nm">' + esc(nm) + '</div><div class="why">' + esc(a[3]) + '!</div>' +
+      '<div class="sig"><span>Mr. Maysam, English teacher</span><span>30 October 2026</span></div></div><i class="cut"></i></div>';
+  }
+  function medal(a) {
+    return '<div class="medal" style="--c:' + a[4] + '"><i class="hole"></i><div class="in">' + (a[0] === 'star' ? '<img src="' + BADGE + '" alt="">' : '<span class="em">' + a[1] + '</span>') +
+      '<b>' + esc(a[2]) + '</b><small>Alice’s Tea Party 2026</small></div></div>';
+  }
+  function draw() {
+    var k = cls.value, html = '';
+    for (var i = 0; i < AWARDS.length; i += 2) html += '<div class="page certs">' + AWARDS.slice(i, i + 2).map(function (a) { return cert(a, k); }).join('') + '</div>';
+    document.getElementById('cert-pages').innerHTML = html;
+    var STAR = ['star', '⭐', 'Tea Party Star', '', '#c9a24a'];
+    document.getElementById('medal-pages').innerHTML = '<div class="page medals">' + AWARDS.concat([STAR, STAR]).map(medal).join('') + '</div>';
+  }
+  cls.onchange = function () { pickers(); draw(); };
+  window.pr = function (which) { document.body.className = which ? 'only-' + which : ''; setTimeout(function () { window.print(); document.body.className = ''; }, 50); };
+  pickers(); draw();
+})();
+</script>
+</body>
+</html>
