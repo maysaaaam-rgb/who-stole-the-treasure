@@ -149,7 +149,7 @@ details.lines p{margin:4px 0;font-size:.95rem}details.lines p b{color:var(--viol
   </section>
 
   <section class="panel" id="p-print">
-    <div class="box"><h3>Print for the party</h3><p class="muted">Print these on Monday. Each card opens a print-ready page (press Print there).</p><div class="prints" id="prints"></div></div>
+    <div class="box"><h3>Print for the party</h3><p class="muted">Print these before the party. Each card opens a print-ready page (press Print there). A4, scale 100%.</p><div class="prints" id="prints"></div></div>
   </section>
 
   <section class="panel" id="p-links">
@@ -318,14 +318,17 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
   /* ---- print and old work ---- */
   var PR = '../alice-party-print/';
   document.getElementById('prints').innerHTML = [
+    ['🃏', 'Name cards', 'Trading card for every pupil: character, own monster, all their lines on the back', 'name-cards.html', '5 sheets · both sides, flip on long edge'],
+    ['🎉', 'Welcome banner', 'WELCOME TO THE MAD TEA PARTY: fold each pennant over a rope and glue', 'decorations.html#banner', '28 pages'],
+    ['♥️', 'Giant playing cards', 'The Queen’s card soldiers for the walls and the door', 'decorations.html#cards', '12 pages'],
+    ['🪧', 'Signposts, tags, Cheshire Cat', 'Arrow signs, DRINK ME / EAT ME tags, a 4-page cat grin poster', 'decorations.html#signs', '11 pages'],
+    ['📸', 'Photo frame', 'Head-through frame (76 × 111 cm) from 12 pages, with a map', 'decorations.html#frame', '13 pages · glue on cardboard'],
     ['🏅', 'Certificates', 'One for every pupil, ready to sign', 'certificates.html', '38 pupils'],
     ['🪧', 'Garden signs and table cards', 'Signs for the garden and the tea table', 'garden-signs.html', 'Print once'],
     ['📋', 'Running order', 'The order of pairs with times, for your clipboard', 'running-order.html', '1 per class'],
     ['🧺', 'Bring list', 'Table, food, decoration, props, show, safety', 'bring-list.html', 'Tick on screen or paper'],
     ['🎭', 'Prop templates', 'Spare keys, hats, crowns and more', 'prop-templates.html', 'For the spare box'],
     ['📐', 'Blueprints', 'Real-size cut-out patterns for costumes', 'blueprints.html', 'Only if needed'],
-    ['🃏', 'Party cards (A5)', 'Each pupil’s character card and lines', '../alice-party-home/cards.html', 'Pupils who lost theirs'],
-    ['✅', 'Ready cards', 'Quick check card for each character', '../alice-party-home/ready-cards.html', 'Optional'],
     ['📄', 'Parent note', 'English and Turkish', 'parent-note.html', 'Only if not sent']
   ].map(function (x) { return '<a class="pcard" href="' + (x[3].indexOf('../') === 0 ? x[3] : PR + x[3]) + '"><span class="i">' + x[0] + '</span><b>' + esc(x[1]) + '</b><span>' + esc(x[2]) + '</span><em>' + esc(x[4]) + '</em></a>'; }).join('');
   document.getElementById('old').innerHTML = [
@@ -390,7 +393,10 @@ Hello! On Tuesday (27 October) we have our Alice in Wonderland Tea Party in the 
     [].forEach.call(document.querySelectorAll('.panel'), function (x) { x.classList.toggle('on', x.id === 'p-' + b.dataset.t); });
     try { sessionStorage.setItem('eaa_party_hq_tab', b.dataset.t); } catch (x) { /* ignore */ }
   });
-  try { var t = sessionStorage.getItem('eaa_party_hq_tab'); if (t) { var b = document.querySelector('.tab[data-t="' + t + '"]'); if (b) b.click(); } } catch (x) { /* ignore */ }
+  function openTab(t) { var b = t && document.querySelector('.tab[data-t="' + t + '"]'); if (b) b.click(); }
+  function hashTab() { return (/^#(day|cast|check|print|links)/.exec(location.hash) || [])[1]; }   /* a link like alice-party/index.html#print opens that tab */
+  try { openTab(hashTab() || sessionStorage.getItem('eaa_party_hq_tab')); } catch (x) { /* ignore */ }
+  window.addEventListener('hashchange', function () { openTab(hashTab()); });
 
   classCards(); runningOrder(); cast(); checklist(); personal(); fetchStatus();
 })();
