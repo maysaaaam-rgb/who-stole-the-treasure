@@ -278,6 +278,28 @@
       saveEvents(list); store().setCalendarFlag('seed20');
     } catch (e) { /* ignore */ }
   }
+  /* Fri 30 Oct: Grade 3 revision in the morning, the Grade 4 Tea Party in the afternoon (4B decorates in lesson 1, 4A after 4B in the other teacher's lesson) */
+  function fri30Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed22')) return;
+      var list = customEvents().slice();
+      var r1 = 'Print revision-pack/Grade3-Revision-1-Words-and-Writing-Pack.pdf. Remember first (Game Maker, Smart mix Grade 3, Answer cards = On), write it, answer-card game, exit ticket. Plan: lesson-plans/Grade3-Revision-1-Words-and-Writing-Lesson-Plan.';
+      var games = function (c) { return 'game-maker/index.html?set=smart-g3&game=balloon (Monsters = ' + c + ', Remember first = On, Answer cards = On), then Penalty Kick. Answer sheet: game-maker/Game-Answer-Sheet.pdf. Plan: lesson-plans/Grade3-Friday-Revision-Games-Lesson-Plan.'; };
+      var tea = function (k) { return 'Tea Party HQ: alice-party/index.html (the plan, the show, print). Plan: lesson-plans/Grade' + k + '-Alice-Tea-Party-Lesson-Plan. Order of the day: lesson-plans/Friday-30-October-Order.'; };
+      var rows = [
+        ['09:00', 'class-3b', 'unit4', 'Revision 1: words and writing (no new content)', r1],
+        ['09:45', 'class-3b', 'unit4', 'Units 1-4 revision games: play, write, review', games('3B')],
+        ['10:30', 'class-3a', 'unit4', 'Units 1-4 revision games (missed on Tuesday)', games('3A')],
+        ['11:15', 'class-3a', 'unit4', 'Revision 1: words and writing (no new content)', r1],
+        ['14:15', 'class-4b', 'alice', 'Alice Tea Party · lesson 1: decorate the garden, make props, warm up', tea('4B')],
+        ['15:20', 'class-4b', 'alice', 'Alice Tea Party · lesson 2: the show, cupcakes, photos, awards', tea('4B')],
+        ['16:05', 'class-4a', 'alice', 'Alice Tea Party (the other teacher’s lesson, after 4B)', tea('4A')]
+      ];
+      list = list.filter(function (e) { return !(e.date === '2026-10-30' && rows.some(function (r) { return e.time === r[0] && e.classId === r[1]; })); });
+      rows.forEach(function (r, i) { list.push({ id: 'seed22-' + i, date: '2026-10-30', time: r[0], classId: r[1], type: r[2], title: r[3], note: r[4] }); });
+      saveEvents(list); store().setCalendarFlag('seed22');
+    } catch (e) { /* ignore */ }
+  }
   /* Wed 28 Oct: point the 4B and 4A lessons at their new lesson plans */
   function wed28PlansOnce() {
     try {
@@ -434,7 +456,7 @@
   }
   function render(container) {
     css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
