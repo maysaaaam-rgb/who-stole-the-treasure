@@ -1,0 +1,947 @@
+/* Practice Island — Stylesheet (island/css/style.css)
+   60-30-10 Cyber-Glassmorphism Frame + Bright Sunny Island Map + Tactile 3D Push-Buttons */
+:root {
+  --bg-void: #060911;
+  --glass-panel: rgba(15, 23, 42, 0.84);
+  --glass-border: rgba(148, 163, 184, 0.26);
+  --cyan: #38bdf8;
+  --cyan-dark: #0284c7;
+  --amber: #f59e0b;
+  --amber-dark: #b45309;
+  --emerald: #10b981;
+  --emerald-dark: #047857;
+  --coral: #f43f5e;
+  --coral-dark: #be123c;
+  --violet: #a855f7;
+  --violet-dark: #7e22ce;
+  --spring-snap: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+  color: #f8fafc;
+  font-family: 'Fredoka', 'Nunito', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Tactile 3D Button Standard */
+.isl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 56px;
+  min-width: 56px;
+  padding: 10px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 5px solid #0f172a;
+  border-radius: 18px;
+  background: #1e293b;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.14s var(--spring-snap), filter 0.14s ease, border-bottom-width 0.1s ease;
+}
+
+.isl-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.isl-btn:active {
+  transform: translateY(4px);
+  border-bottom-width: 1px;
+}
+
+.isl-btn.cyan {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  color: #041322;
+  border-bottom-color: #0369a1;
+}
+
+.isl-btn.amber {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  color: #271202;
+  border-bottom-color: #b45309;
+}
+
+.isl-btn.emerald {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  color: #022c22;
+  border-bottom-color: #047857;
+}
+
+.isl-btn.violet {
+  background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+  color: #fff;
+  border-bottom-color: #6b21a8;
+}
+
+.isl-btn.coral {
+  background: linear-gradient(180deg, #fb7185 0%, #f43f5e 100%);
+  color: #fff;
+  border-bottom-color: #be123c;
+}
+
+.isl-btn[disabled], .isl-btn.disabled {
+  opacity: 0.48;
+  pointer-events: none;
+  filter: grayscale(0.4);
+}
+
+/* Top Glassmorphic Bar */
+.isl-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(15, 23, 42, 0.86);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+}
+
+.isl-pupil-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(30, 41, 59, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+  padding: 5px 16px 5px 6px;
+}
+
+.isl-avatar-mini {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #1e293b, #0f172a);
+  border: 2px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.isl-avatar-mini svg, .isl-avatar-mini img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+.isl-pupil-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.isl-pupil-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.isl-pupil-lvl {
+  font-size: 0.85rem;
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.isl-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.isl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.isl-pill img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.isl-pill.streak {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(120, 53, 15, 0.45);
+  color: #fde68a;
+}
+
+.isl-pill.xp-cap {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(6, 78, 59, 0.45);
+  color: #a7f3d0;
+}
+
+.isl-pill.star-badge {
+  border-color: rgba(251, 191, 36, 0.7);
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.65), rgba(124, 58, 237, 0.55));
+  color: #fef08a;
+}
+
+.isl-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Main Stage & Island Map Viewport */
+.isl-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 16px 32px;
+}
+
+.isl-map-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 520px;
+  max-height: calc(100vh - 115px);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 2px solid rgba(56, 189, 248, 0.32);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.65);
+  background: #0b243b url('../art/bg_island.webp') center center / cover no-repeat;
+}
+
+/* Floating Daily Quest Card on Map */
+.isl-daily-card {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 18px 8px 12px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(14px);
+  border: 2px solid rgba(251, 191, 36, 0.65);
+  border-bottom: 5px solid #b45309;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: transform 0.16s var(--spring-snap);
+}
+
+.isl-daily-card:hover {
+  transform: translateX(-50%) translateY(-2px) scale(1.02);
+}
+
+.isl-daily-card:active {
+  transform: translateX(-50%) translateY(3px);
+  border-bottom-width: 2px;
+}
+
+.isl-daily-card img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  animation: idleBob 2.6s ease-in-out infinite;
+}
+
+.isl-daily-card.done {
+  border-color: rgba(16, 185, 129, 0.7);
+  border-bottom-color: #047857;
+}
+
+/* Zone Cluster on Map */
+.isl-zone {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 270px;
+  height: 210px;
+  pointer-events: none;
+}
+
+.isl-zone-header {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.isl-zone-badge {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45));
+  animation: idleBob 3.2s ease-in-out infinite;
+}
+
+.isl-zone-label {
+  margin-top: -6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.isl-zone-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: #93c5fd;
+  font-weight: 600;
+}
+
+/* Mission Pins around Zone */
+.isl-pin {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-bottom: 5px solid rgba(15, 23, 42, 0.75);
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.16s var(--spring-snap);
+}
+
+.isl-pin:hover {
+  transform: translate(-50%, -54%) scale(1.08);
+}
+
+.isl-pin:active {
+  transform: translate(-50%, -46%) scale(0.96);
+  border-bottom-width: 1px;
+}
+
+.isl-pin-bg {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.45));
+}
+
+.isl-pin-num {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #041322;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.isl-pin-stars {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 0.68rem;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: #fbbf24;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Star Path Stepping Stones */
+.isl-pin.star-pin {
+  width: 56px;
+  height: 56px;
+}
+
+.isl-pin.star-pin .isl-pin-num {
+  color: #451a03;
+  font-size: 0.92rem;
+}
+
+/* Zone Treasure Chest */
+.isl-chest-btn {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-bottom: 5px solid rgba(15, 23, 42, 0.7);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 4px;
+  transition: transform 0.16s var(--spring-snap);
+}
+
+.isl-chest-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+
+.isl-chest-btn.ready {
+  animation: pulseGlow 1.6s ease-in-out infinite;
+  border-color: #fbbf24;
+}
+
+/* Locked Zone Cloud Cover */
+.isl-zone.locked .isl-pin,
+.isl-zone.locked .isl-chest-btn {
+  opacity: 0.35;
+  pointer-events: none;
+  filter: grayscale(0.75);
+}
+
+.isl-cloud-lock {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.isl-cloud-lock img {
+  width: 132px;
+  height: 132px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+}
+
+.isl-cloud-lock span {
+  margin-top: -18px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fde68a;
+  white-space: nowrap;
+}
+
+/* Pupil's Monster Companion on the Map */
+.isl-map-monster {
+  position: absolute;
+  z-index: 20;
+  width: 96px;
+  height: 106px;
+  transform: translate(-50%, -85%);
+  transition: left 0.55s var(--spring-snap), top 0.55s var(--spring-snap);
+  pointer-events: auto;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.isl-map-monster-sprite {
+  width: 86px;
+  height: 86px;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55));
+  animation: idleBob 2.6s ease-in-out infinite;
+}
+
+.isl-map-monster-sprite svg,
+.isl-map-monster-sprite img {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.isl-map-pedestal {
+  width: 66px;
+  height: 18px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.75) 0%, rgba(15, 23, 42, 0.75) 68%, transparent 100%);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.55);
+}
+
+/* Full-screen / Modal Overlay for Missions, Dressing Room & Code Entry */
+.isl-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(6, 9, 17, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.isl-card-modal {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(10, 17, 32, 0.97) 100%);
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  padding: 22px 24px 26px;
+  color: #f8fafc;
+}
+
+.isl-card-modal.mission-bg {
+  background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.82) 0%, rgba(15, 23, 42, 0.93) 100%), url('../art/bg_mission.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+.isl-card-modal.dressing-bg {
+  max-width: 980px;
+  background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.80) 0%, rgba(15, 23, 42, 0.92) 100%), url('../art/bg_dressing.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Mission Header & Progress Bar */
+.isl-mission-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.isl-progress-track {
+  flex: 1;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.isl-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #10b981);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.isl-progress-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #bae6fd;
+  min-width: 58px;
+  text-align: right;
+}
+
+/* Mission Question Area */
+.isl-q-box {
+  text-align: center;
+  padding: 16px 12px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  margin-bottom: 18px;
+}
+
+.isl-q-pic {
+  font-size: 3.6rem;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.isl-q-text {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #fff;
+  margin: 8px 0 12px;
+}
+
+.isl-opts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.isl-opt-btn {
+  min-height: 68px;
+  font-size: 1.25rem;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(30, 41, 59, 0.95);
+  border: 2px solid rgba(148, 163, 184, 0.35);
+  border-bottom: 5px solid #090d16;
+  color: #f8fafc;
+}
+
+.isl-opt-btn.correct {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  color: #022c22;
+  border-color: #6ee7b7;
+  border-bottom-color: #047857;
+}
+
+.isl-opt-btn.wobble {
+  animation: islandWobble 0.42s ease;
+  border-color: #fbbf24;
+}
+
+/* Type 2: Word Match 2-Column Board */
+.isl-match-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.isl-match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.isl-match-tile {
+  min-height: 64px;
+  font-size: 1.1rem;
+  text-align: left;
+  justify-content: flex-start;
+  padding: 12px 16px;
+}
+
+.isl-match-tile.selected {
+  outline: 3px solid var(--cyan);
+  background: rgba(14, 165, 233, 0.28);
+}
+
+.isl-match-tile.matched {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+  color: #022c22;
+  border-bottom-color: #047857;
+  pointer-events: none;
+}
+
+/* Type 4: Build Sentence Tray & Bank */
+.isl-sentence-tray {
+  min-height: 76px;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px dashed rgba(56, 189, 248, 0.55);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.isl-word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.isl-word-chip {
+  min-height: 56px;
+  padding: 10px 18px;
+  font-size: 1.2rem;
+}
+
+/* Dressing Room Layout */
+.isl-dress-grid {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.isl-dress-preview {
+  background: rgba(15, 23, 42, 0.88);
+  border: 2px solid rgba(56, 189, 248, 0.35);
+  border-radius: 24px;
+  padding: 18px;
+  text-align: center;
+}
+
+.isl-dress-stage {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.isl-dress-stage svg, .isl-dress-stage img {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.isl-cat-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.isl-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+  gap: 12px;
+  max-height: 370px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.isl-item-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 118px;
+  padding: 10px 8px;
+  border-radius: 18px;
+  background: rgba(30, 41, 59, 0.92);
+  border: 2px solid rgba(148, 163, 184, 0.25);
+  border-bottom: 5px solid #090d16;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.isl-item-card.equipped {
+  outline: 3px solid var(--amber);
+  background: rgba(120, 53, 15, 0.55);
+}
+
+/* AGENTS.md Section 3.4 Strict Level Lock Enforcement */
+.isl-item-card.locked {
+  pointer-events: none !important;
+  opacity: 0.45 !important;
+  filter: grayscale(0.7) !important;
+  cursor: not-allowed !important;
+}
+
+.monster-item-lock-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #312e81;
+  color: #fde68a;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes islandWobble {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6)); }
+  50% { transform: translate(-50%, -53%) scale(1.07); filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.95)); }
+}
+
+/* Responsive Breakpoints (375x812 Phone, 768x1024 Tablet, 1366x768 Laptop, 1920x1080 Smartboard) */
+@media (max-width: 900px) {
+  .isl-map-wrap {
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 12px 24px;
+  }
+  .isl-daily-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    justify-content: center;
+  }
+  .isl-daily-card:hover, .isl-daily-card:active {
+    transform: none;
+  }
+  .isl-zone {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    transform: none;
+    width: 100%;
+    height: 220px;
+    margin: 0 auto;
+    background: rgba(15, 23, 42, 0.55);
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .isl-zone-header {
+    top: 44px;
+  }
+  .isl-pin, .isl-chest-btn {
+    top: 72% !important;
+  }
+  .isl-map-monster {
+    display: none;
+  }
+  .isl-dress-grid {
+    grid-template-columns: 1fr;
+  }
+  .isl-match-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Star Path Hint and Audio Button */
+.isl-opt-speaker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-right: 10px;
+  font-size: 1.15rem;
+  vertical-align: middle;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.isl-opt-speaker:hover {
+  transform: scale(1.15);
+  background: rgba(56, 189, 248, 0.35);
+}
+
+.isl-opt-btn.hint-correct, .isl-match-tile.hint-correct, .isl-word-chip.hint-correct {
+  border-color: #34d399 !important;
+  background: rgba(16, 185, 129, 0.35) !important;
+  color: #a7f3d0 !important;
+  box-shadow: 0 0 22px rgba(52, 211, 153, 0.85) !important;
+  animation: islandCorrectPulse 1.2s ease-in-out infinite !important;
+}
+
+@keyframes islandCorrectPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(52, 211, 153, 0.6); }
+  50% { transform: scale(1.04); box-shadow: 0 0 28px rgba(52, 211, 153, 0.95); }
+}
+
+/* Phone Screen Sizing (375x812 viewport: text >= 18px, touch targets >= 56px) */
+@media (max-width: 600px) {
+  body {
+    font-size: 18px;
+  }
+  .isl-btn {
+    min-height: 56px;
+    min-width: 56px;
+    font-size: 1.12rem;
+    padding: 12px 18px;
+  }
+  .isl-opt-btn {
+    min-height: 64px;
+    font-size: 1.22rem;
+    padding: 14px 18px;
+  }
+  .isl-q-text {
+    font-size: 1.28rem;
+  }
+  .isl-q-pic {
+    font-size: 3.6rem;
+  }
+  .isl-pin {
+    width: 58px;
+    height: 58px;
+  }
+  .isl-chest-btn {
+    width: 66px;
+    height: 66px;
+  }
+  .isl-topbar {
+    padding: 8px 12px;
+  }
+}
+
+/* Phones and tablets: each zone is a tidy card. Name on top, the lock line under it, then the mission pins and the chest in a row. */
+@media (max-width: 900px) {
+  .isl-zone { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 8px; height: auto; min-height: 0; flex-shrink: 0; padding: 14px 12px 18px; pointer-events: auto; }
+  .isl-zone-header { position: static; transform: none; order: 0; flex-basis: 100%; flex-direction: row; justify-content: flex-start; gap: 12px; margin-bottom: 2px; }
+  .isl-zone-badge { width: 60px; height: 60px; }
+  .isl-zone-label { margin-top: 0; white-space: normal; text-align: left; font-size: 1.05rem; }
+  .isl-zone-sub { font-size: 0.85rem; }
+  .isl-zone .isl-pin, .isl-zone .isl-chest-btn { position: relative; left: auto !important; top: auto !important; transform: none; flex: none; order: 2; }
+  .isl-zone .isl-pin:hover { transform: scale(1.06); }
+  .isl-zone .isl-pin:active { transform: translateY(3px) scale(0.97); }
+  .isl-zone .isl-pin.star-pin { order: 3; }
+  .isl-cloud-lock { position: static; transform: none; order: 1; flex-basis: 100%; flex-direction: row; justify-content: center; gap: 8px; }
+  .isl-cloud-lock img { width: 44px; height: 44px; }
+  .isl-cloud-lock span { margin-top: 0; }
+}
+@media (max-width: 600px) {
+  .isl-zone { gap: 8px 6px; padding: 12px 8px 16px; }
+  .isl-zone .isl-pin { width: 46px; height: 46px; }
+  .isl-zone .isl-pin-num { font-size: 1rem; }
+  .isl-zone .isl-chest-btn { width: 48px; height: 48px; }
+}

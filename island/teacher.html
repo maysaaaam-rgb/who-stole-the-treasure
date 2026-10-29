@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Island Teacher Studio • English Adventure Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=1">
+  <style>
+    html.platform-locked #teacher-app-shell {
+      display: none !important;
+    }
+    html:not(.platform-locked) #platform-lock-screen {
+      display: none !important;
+    }
+    #platform-lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%);
+      padding: 20px;
+    }
+    .tch-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 20px 18px 48px;
+    }
+    .tch-panel {
+      background: rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 24px;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+    .tch-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tch-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .tch-pupil-card {
+      background: rgba(30, 41, 59, 0.88);
+      border: 2px solid rgba(56, 189, 248, 0.25);
+      border-radius: 20px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tch-code-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: #090d16;
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    .tch-stat-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+    }
+    .tch-stat-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      font-weight: 700;
+    }
+    .tch-input-num {
+      width: 78px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 2px solid rgba(56, 189, 248, 0.45);
+      background: #090d16;
+      color: #fff;
+      font: 700 1rem Fredoka, sans-serif;
+      text-align: center;
+    }
+    .tch-week-wrap {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    .tch-week-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 6px;
+      font-size: 0.92rem;
+    }
+    .tch-week-table th {
+      text-align: left;
+      padding: 8px 10px;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .tch-week-table td {
+      padding: 10px;
+      background: rgba(30, 41, 59, 0.72);
+      color: #f8fafc;
+      font-weight: 600;
+    }
+    .tch-week-table tr td:first-child {
+      border-radius: 12px 0 0 12px;
+      font-weight: 800;
+    }
+    .tch-week-table tr td:last-child {
+      border-radius: 0 12px 12px 0;
+    }
+    /* Printable 8-per-A4 Link Cards (2 cols x 4 rows) */
+    #tch-print-area {
+      display: none;
+    }
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      #platform-lock-screen, #teacher-app-shell {
+        display: none !important;
+      }
+      #tch-print-area {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 10mm;
+        padding: 8mm;
+      }
+      .print-card {
+        border: 2px solid #0f172a;
+        border-radius: 12px;
+        padding: 12px 14px;
+        min-height: 55mm;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+        color: #000;
+        background: #fff;
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      const PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
+      function pinMatches(value) {
+        try {
+          const enc = new TextEncoder();
+          return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
+            return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
+          }).then(function (bits) {
+            const hex = Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+            return hex === PIN_HASH;
+          }).catch(function () { return false; });
+        } catch (e) { return Promise.resolve(false); }
+      }
+      try {
+        const isUnlocked = sessionStorage.getItem('eaa_auth_unlocked') === 'true' || window.__eaa_auth_unlocked === true;
+        if (!isUnlocked) document.documentElement.classList.add('platform-locked');
+      } catch (e) {
+        document.documentElement.classList.add('platform-locked');
+      }
+      window.handlePlatformPasswordSubmit = function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        const input = document.getElementById('platform-password-input');
+        const err = document.getElementById('platform-password-error');
+        if (!input) return false;
+        pinMatches((input.value || '').trim()).then(function (ok) {
+          if (ok) {
+            window.__eaa_auth_unlocked = true;
+            try { sessionStorage.setItem('eaa_auth_unlocked', 'true'); } catch (e) {}
+            if (err) err.style.display = 'none';
+            document.documentElement.classList.remove('platform-locked');
+          } else if (err) {
+            err.style.display = 'block';
+          }
+        });
+        return false;
+      };
+    })();
+  </script>
+</head>
+<body>
+  <!-- Teacher Lock Screen -->
+  <div id="platform-lock-screen">
+    <div class="isl-card-modal" style="max-width:420px;text-align:center">
+      <h2 style="margin:0 0 10px">🔐 Teacher Access</h2>
+      <p style="color:#cbd5e1;margin:0 0 16px">Enter your teacher PIN to open Practice Island Studio:</p>
+      <form onsubmit="return handlePlatformPasswordSubmit(event)" style="display:flex;flex-direction:column;gap:12px">
+        <input id="platform-password-input" type="password" placeholder="Teacher PIN" style="padding:12px;border-radius:14px;border:2px solid #38bdf8;background:#090d16;color:#fff;font-size:1.15rem;text-align:center">
+        <div id="platform-password-error" style="display:none;color:#fda4af;font-weight:700">Incorrect PIN.</div>
+        <button type="submit" class="isl-btn cyan">Unlock Studio 🔓</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Teacher App Shell (Empty until unlocked) -->
+  <div id="teacher-app-shell">
+    <header class="isl-topbar">
+      <div class="isl-pupil-chip">
+        <img src="art/z_meadow.webp" alt="" style="width:44px;height:44px;object-fit:contain">
+        <div class="isl-pupil-meta">
+          <span class="isl-pupil-name">🏝️ Practice Island · Teacher Studio</span>
+          <span class="isl-pupil-lvl" id="tch-status-sub">Manage personal codes, Star Path & daily XP limits</span>
+        </div>
+      </div>
+      <div class="isl-actions-row">
+        <a href="index.html?demo=1" class="isl-btn cyan">👀 Preview Pupil Island</a>
+        <a href="../index.html" class="isl-btn">🏠 Back to Platform</a>
+      </div>
+    </header>
+
+    <main class="tch-shell">
+      <section class="tch-panel">
+        <div class="tch-toolbar">
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="tch-class-tabs"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <label style="font-weight:700;font-size:0.95rem">Daily limit (cap, 10–60):
+              <input type="number" id="tch-cap-input" class="tch-input-num" min="10" max="60" value="30" onchange="IslandTeacher.updateCaps()">
+            </label>
+            <label style="font-weight:700;font-size:0.95rem">⭐ Star limit (starCap, 10–60):
+              <input type="number" id="tch-star-cap-input" class="tch-input-num" min="10" max="60" value="45" onchange="IslandTeacher.updateCaps()">
+            </label>
+          </div>
+        </div>
+        <div class="tch-toolbar" style="margin-top:14px">
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="isl-btn amber" id="tch-btn-make-codes" onclick="IslandTeacher.makeCodesForClass()">🔑 Make codes</button>
+            <button type="button" class="isl-btn cyan" id="tch-btn-copy-class" onclick="IslandTeacher.copyClassListForK12()">📋 Copy class list for k12</button>
+            <button type="button" class="isl-btn violet" id="tch-btn-print" onclick="IslandTeacher.printClassCards()">🖨️ Print link cards (8 / A4)</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="isl-btn emerald" id="tch-btn-save" onclick="IslandTeacher.saveSyncDoc()">💾 Save Settings</button>
+          </div>
+        </div>
+        <div id="tch-toast" style="margin-top:10px;font-weight:700;color:#6ee7b7;min-height:22px"></div>
+      </section>
+
+      <section class="tch-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <h2 style="margin:0;font-size:1.35rem" id="tch-class-heading">Class Roster (Sorted by Name)</h2>
+          <span style="color:#94a3b8;font-size:0.92rem">⭐ Star Path is a private tick per pupil (6 extra golden stepping-stone missions per zone).</span>
+        </div>
+        <div class="tch-grid-cards" id="tch-roster-grid"></div>
+      </section>
+
+      <section class="tch-panel" id="tch-week-panel">
+        <h2 style="margin:0;font-size:1.35rem">📅 This week</h2>
+        <p style="margin:4px 0 8px;color:#94a3b8;font-size:0.9rem">Island XP per day, streak and last day played (sorted alphabetically by name).</p>
+        <div class="tch-week-wrap">
+          <table class="tch-week-table" id="tch-week-table">
+            <thead id="tch-week-head"></thead>
+            <tbody id="tch-week-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="tch-print-area"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js?v=2.2"></script>
+  <script src="../js/supabase-client.js?v=3.0"></script>
+  <script src="js/data.js?v=1"></script>
+  <script src="js/sync.js?v=1"></script>
+  <script src="js/teacher.js?v=1"></script>
+</body>
+</html>
