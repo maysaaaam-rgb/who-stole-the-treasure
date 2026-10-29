@@ -52,28 +52,36 @@
     return cachedVoice;
   }
 
+  var speaking = [];                        // keep utterances alive: Chrome forgets onend when one is garbage-collected
   function speakDevice(text, rate) {
     return new Promise(function (resolve) {
       if (!('speechSynthesis' in root)) return resolve();
+      var done = false, guard = 0;
+      function fin() { if (done) return; done = true; clearTimeout(guard); speaking = speaking.filter(function (x) { return x !== u; }); resolve(); }
       try {
         root.speechSynthesis.cancel();
+        if (root.speechSynthesis.paused) root.speechSynthesis.resume();
         var u = new SpeechSynthesisUtterance(text), v = bestVoice();
         u.lang = (v && v.lang) || 'en-GB'; if (v) u.voice = v;
         u.rate = rate || 0.8; u.pitch = 1.0;
-        u.onend = resolve; u.onerror = resolve;
+        u.onend = fin; u.onerror = fin;
+        speaking.push(u);
         root.speechSynthesis.speak(u);
-      } catch (e) { resolve(); }
+        // if the browser never says the line has ended, go on anyway after about the time it takes to say it
+        guard = setTimeout(fin, 2500 + String(text).length * 110 / (u.rate || 1));
+      } catch (e) { fin(); }
     });
   }
 
   /* ---------- recorded files ---------- */
-  var manifests = {};                       // dir -> Promise<Set>
+  var manifests = {}, known = {};           // dir -> Promise<Set>; known[dir] = the Set once it has loaded
   function manifest(dir) {
     if (!manifests[dir]) {
       manifests[dir] = fetch(dir + 'manifest.json', { cache: 'no-cache' })
         .then(function (r) { return r.ok ? r.json() : { files: [] }; })
         .then(function (j) { return new Set((j && j.files) || []); })
-        .catch(function () { return new Set(); });
+        .catch(function () { return new Set(); })
+        .then(function (set) { known[dir] = set; return set; });
     }
     return manifests[dir];
   }
@@ -98,6 +106,8 @@
     var dir = opts.dir;
     stopAll();
     if (!dir) return speakDevice(text, opts.rate);
+    // no recording for this line: speak at once, still inside the tap (tablets and phones block speech that starts later)
+    if (known[dir] && !known[dir].has(hash(text))) return speakDevice(text, opts.rate);
     return manifest(dir).then(function (set) {
       var h = hash(text);
       if (!set.has(h)) return speakDevice(text, opts.rate);
@@ -113,5 +123,5 @@
     }
   }
 
-  root.EAAVoice = { say: say, hash: hash, bestVoice: bestVoice, stop: stopAll };
+  root.EAAVoice = { say: say, hash: hash, bestVoice: bestVoice, stop: stopAll, preload: manifest };
 })(typeof window !== 'undefined' ? window : globalThis);
