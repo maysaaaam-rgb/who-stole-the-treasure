@@ -191,7 +191,7 @@
       var make = (r.props || []).map(function (t) { var pg = window.PROPS_MAP.map[t]; return pg ? esc(t) + ' <i style="color:#6d28d9">(blueprint: ' + pg.map(function (id) { return esc(window.PROPS_MAP.titles[id] || id); }).join(' + ') + ')</i>' : esc(t) + ' <i style="color:#0f766e">(from home: ' + esc(window.PROPS_MAP.home[t] || 'something from home') + ')</i>'; }).join('<br>');
       return '<tr><td style="font-weight:700">' + esc(s.name) + '</td><td>' + esc(r.short) + '</td><td>' + make + '</td><td style="text-align:center">' + ids.length + '</td><td style="font-size:16pt;text-align:center">' + (hasProp(s.id) ? '✓' : '☐') + '</td></tr>';
     }).join('');
-    return '<section class="sheet port" style="padding:10mm;font-family:Trebuchet MS,Segoe UI,sans-serif"><h2 style="margin:0 0 2mm">🎭 Prop plan · ' + esc(P.classes[k].label) + '</h2><p style="margin:0 0 3mm;color:#475569">Tuesday 27 October. ✓ = the pupil already showed the prop. Blueprint pages are on the Blueprints page.</p>' +
+    return '<section class="sheet port" style="padding:10mm;font-family:Trebuchet MS,Segoe UI,sans-serif"><h2 style="margin:0 0 2mm">🎭 Prop plan · ' + esc(P.classes[k].label) + '</h2><p style="margin:0 0 3mm;color:#475569">Friday 30 October. ✓ = the pupil already showed the prop. Blueprint pages are on the Blueprints page.</p>' +
       '<table style="width:100%;border-collapse:collapse;font-size:10.5pt" border="1" cellpadding="5"><tr style="background:#ede9fe"><th>Pupil</th><th>Character</th><th>Props and how to make them</th><th>Pages</th><th>Ready</th></tr>' + rows + '</table></section>';
   }
   function draw() {

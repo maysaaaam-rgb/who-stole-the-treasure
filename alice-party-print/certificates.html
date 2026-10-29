@@ -21,7 +21,7 @@
 <body>
 <div class="bar"><h1>🏅 Certificates</h1>
   <select id="cls"></select><select id="who"></select>
-  <label>Date <input id="date" type="text" placeholder="25 October 2026"></label>
+  <label>Date <input id="date" type="text" placeholder="30 October 2026"></label>
   <label>Wish <input id="wish" type="text" placeholder="You were wonderful!"></label>
   <button onclick="window.print()">Print</button>
   <span class="hint">One certificate per pupil, landscape.</span>
@@ -36,7 +36,7 @@
   var cls = document.getElementById('cls'), who = document.getElementById('who'), date = document.getElementById('date'), wish = document.getElementById('wish');
   var keys = Object.keys(P.classes);
   cls.innerHTML = keys.map(function (k) { return '<option value="' + k + '">' + esc(P.classes[k].label) + '</option>'; }).join('');
-  try { date.value = localStorage.getItem('eaa_party_cert_date') || ''; wish.value = localStorage.getItem('eaa_party_cert_wish') || ''; } catch (e) { /* ignore */ }
+  try { var dv = localStorage.getItem('eaa_party_cert_date') || ''; date.value = !dv || /2[57] Oct/i.test(dv) ? '30 October 2026' : dv; wish.value = localStorage.getItem('eaa_party_cert_wish') || ''; } catch (e) { /* ignore */ }
   function fillWho() { who.innerHTML = '<option value="">All pupils of the class</option>' + P.classes[cls.value].students.map(function (s) { return '<option value="' + s.id + '">' + esc(s.name) + '</option>'; }).join(''); }
   function draw() {
     try { localStorage.setItem('eaa_party_cert_date', date.value); localStorage.setItem('eaa_party_cert_wish', wish.value); } catch (e) { /* ignore */ }

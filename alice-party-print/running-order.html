@@ -47,7 +47,11 @@
       b.onclick = function () { var i = +b.dataset.i, j = i + +b.dataset.d; if (j < 0 || j >= g.order.length) return; var x = g.order[i]; g.order[i] = g.order[j]; g.order[j] = x; store(k, g.order); draw(); };
     });
   }
-  cls.onchange = draw; document.getElementById('start').oninput = draw; document.getElementById('mins').oninput = draw;
+  /* Friday 30 October: 4B's show is in its second lesson (15:20 + 8 minutes of welcome), 4A right after 4B */
+  var FIRST = { '4b': '15:28', '4a': '16:13' };
+  function setStart() { if (FIRST[cls.value]) document.getElementById('start').value = FIRST[cls.value]; }
+  cls.onchange = function () { setStart(); draw(); }; document.getElementById('start').oninput = draw; document.getElementById('mins').oninput = draw;
+  cls.value = keys.indexOf('4b') >= 0 ? '4b' : keys[0]; setStart();
   document.getElementById('reset').onclick = function () { store(cls.value, []); draw(); };
   draw();
 })();
