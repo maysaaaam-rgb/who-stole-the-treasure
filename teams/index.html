@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Team Wishes</title>
+<style>
+  :root { --void: #060911; --glass: rgba(15, 23, 42, 0.86); --line: #26324a; --text: #f8fafc; --muted: #94a3b8; --cyan: #38bdf8; --amber: #f59e0b; --green: #10b981; --violet: #a855f7; --spring: cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: radial-gradient(circle at 50% 20%, #0d1527 0%, var(--void) 100%); color: var(--text); font: 18px "Trebuchet MS", "Segoe UI", system-ui, sans-serif; }
+  html.platform-locked #app { display: none; }
+  html:not(.platform-locked) #lock { display: none; }
+  #lock { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .card { background: var(--glass); border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: 0 4px 20px -2px rgba(0,0,0,.4); backdrop-filter: blur(14px); }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 16px 40px; }
+  h1 { font: 700 1.7rem Georgia, serif; margin: 0 0 4px; } h2 { font: 700 1.35rem Georgia, serif; margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .btn { font: 800 1.05rem "Trebuchet MS", "Segoe UI", sans-serif; color: #06101f; background: var(--cyan); border: 0; border-bottom: 5px solid #0369a1; border-radius: 16px; padding: 14px 22px; min-height: 56px; cursor: pointer; transition: transform .12s var(--spring); touch-action: manipulation; }
+  .btn:active { transform: translateY(4px); border-bottom-width: 1px; }
+  .btn.green { background: var(--green); border-bottom-color: #047857; color: #fff; }
+  .btn.amber { background: var(--amber); border-bottom-color: #b45309; }
+  .btn.ghost { background: #1e293b; color: #e5edff; border-bottom-color: #0f172a; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .seg button { min-width: 90px; }
+  .seg button.on { background: var(--violet); color: #fff; border-bottom-color: #6b21a8; }
+  .names { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-top: 14px; }
+  .name { font: 800 1.3rem "Trebuchet MS", "Segoe UI", sans-serif; color: #fff; background: #1e293b; border: 2px solid #334155; border-bottom: 6px solid #0f172a; border-radius: 20px; min-height: 84px; padding: 10px; cursor: pointer; transition: transform .12s var(--spring), background .15s; touch-action: manipulation; }
+  .name:active { transform: translateY(4px); border-bottom-width: 2px; }
+  .name.picked { background: var(--green); border-color: #6ee7b7; border-bottom-color: #047857; }
+  .name.picked::after { content: " ✓"; }
+  .big { text-align: center; padding: 30px 16px; }
+  .big h1 { font-size: 2.2rem; }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(6,9,17,.92); border-bottom: 1px solid var(--line); }
+  .hold { font: 700 .85rem "Segoe UI", sans-serif; color: #64748b; background: transparent; border: 1px solid #26324a; border-radius: 12px; padding: 10px 14px; min-height: 44px; cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .hold.charging { background: rgba(168,85,247,.25); color: #e9d5ff; }
+  table { width: 100%; border-collapse: collapse; font-size: 1rem; } td, th { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); } th { color: var(--cyan); }
+  .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+  .team { border-radius: 18px; padding: 12px; background: rgba(15,23,42,.9); border: 3px solid var(--c); min-height: 120px; cursor: pointer; }
+  .team h3 { margin: 0 0 8px; color: var(--c); font: 800 1.15rem "Trebuchet MS", sans-serif; }
+  .chip { display: inline-block; margin: 0 6px 6px 0; padding: 8px 12px; border-radius: 12px; background: #1e293b; border: 2px solid #334155; font-weight: 800; cursor: pointer; }
+  .chip.sel { background: var(--amber); color: #1e1b4b; border-color: #fde68a; }
+  .chip.nowish { border-style: dashed; border-color: #f59e0b; }
+  .note { margin-top: 10px; font-size: .95rem; color: #cbd5e1; }
+  .ok { color: #6ee7b7; } .warn { color: #fcd34d; }
+</style>
+<script>
+  /* the same teacher lock as the platform */
+  (function () {
+    var PIN_SALT = 'eaa-lock-v2-43559dfbce7fd75f-', PIN_ROUNDS = 600000, PIN_HASH = 'f2030d4428f3597b2813341d709b14e03e04745069fa3cdc1970d628dca10936';
+    function pinMatches(value) {
+      try {
+        var enc = new TextEncoder();
+        return crypto.subtle.importKey('raw', enc.encode(String(value)), 'PBKDF2', false, ['deriveBits']).then(function (key) {
+          return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(PIN_SALT), iterations: PIN_ROUNDS }, key, 256);
+        }).then(function (bits) {
+          return Array.prototype.map.call(new Uint8Array(bits), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('') === PIN_HASH;
+        }).catch(function () { return false; });
+      } catch (e) { return Promise.resolve(false); }
+    }
+    try { if (sessionStorage.getItem('eaa_auth_unlocked') !== 'true' && window.__eaa_auth_unlocked !== true) document.documentElement.classList.add('platform-locked'); }
+    catch (e) { document.documentElement.classList.add('platform-locked'); }
+    window.handlePlatformPasswordSubmit = function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      var input = document.getElementById('platform-password-input'), err = document.getElementById('platform-password-error');
+      pinMatches((input.value || '').trim()).then(function (ok) {
+        if (ok) { window.__eaa_auth_unlocked = true; try { sessionStorage.setItem('eaa_auth_unlocked', 'true'); } catch (e) { /* ignore */ } document.documentElement.classList.remove('platform-locked'); if (window.TeamWishes) TeamWishes.start(); }
+        else err.style.display = 'block';
+      });
+      return false;
+    };
+  })();
+</script>
+</head>
+<body>
+<div id="lock"><div class="card" style="max-width:420px;width:100%;text-align:center">
+  <h2>🔐 Teacher</h2><p class="muted" style="margin:0 0 14px">Enter your teacher password to open Team Wishes.</p>
+  <form onsubmit="return handlePlatformPasswordSubmit(event)" style="display:flex;flex-direction:column;gap:12px">
+    <input id="platform-password-input" type="password" placeholder="Password" style="padding:14px;border-radius:14px;border:2px solid #38bdf8;background:#090d16;color:#fff;font-size:1.2rem;text-align:center">
+    <div id="platform-password-error" style="display:none;color:#fda4af;font-weight:700">That is not the password.</div>
+    <button type="submit" class="btn">Open 🔓</button>
+  </form>
+</div></div>
+<div id="app"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-config.js?v=2.2"></script>
+<script src="../js/supabase-client.js?v=3.0"></script>
+<script>
+/* Team Wishes: pupils choose 2 classmates they would like to work with, one by one on the teacher's iPad.
+   Only the teacher sees the wishes and the suggested teams. Saved on this device and in one private cloud row
+   (class-teams-sync); nothing here touches XP, coins or pupils. */
+(function (root) {
+  'use strict';
+  var KEY = 'eaa_team_wishes_v1', ROW = 'class-teams-sync', TEAMS = 4;
+  var COLORS = ['#f43f5e', '#38bdf8', '#10b981', '#f59e0b', '#a855f7', '#ec4899'];
+  var CLASSES = [['class-3a', '3A'], ['class-3b', '3B'], ['class-4a', '4A'], ['class-4b', '4B']];
+  var app = document.getElementById('app'), pupils = {}, doc = load(), cls = (doc.lastClass || 'class-4a'), me = null, picks = [], sel = null;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load() { try { var d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (d && d.wishes) return d; } catch (e) { /* ignore */ } return { wishes: {}, teams: {} }; }
+  function keep() { try { localStorage.setItem(KEY, JSON.stringify(doc)); } catch (e) { /* not remembered */ } }
+  function client() { return root.AdventureSupabase && root.AdventureSupabase.client ? root.AdventureSupabase.client : null; }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function list() { return pupils[cls] || []; }
+  function nameOf(id) { var p = list().filter(function (x) { return x.id === id; })[0]; return p ? p.name : '?'; }
+  function wishesOf(c) { return (doc.wishes[c] = doc.wishes[c] || {}); }
+
+  /* ---- cloud: read the class lists, and keep one private row merged (each pupil's newest wish wins) ---- */
+  async function readPupils() {
+    for (var i = 0; i < 40 && !client(); i++) await wait(250);
+    var sb = client(); if (!sb) return false;
+    var r = await sb.from('students').select('id,first_name,last_name,class_id,archived');
+    if (r.error || !Array.isArray(r.data)) return false;
+    var by = {};
+    r.data.forEach(function (s) { if (s.archived === true || !s.class_id) return; (by[s.class_id] = by[s.class_id] || []).push({ id: s.id, first: String(s.first_name || '').trim(), last: String(s.last_name || '').trim() }); });
+    Object.keys(by).forEach(function (c) {
+      var count = {}; by[c].forEach(function (p) { count[p.first] = (count[p.first] || 0) + 1; });
+      by[c].forEach(function (p) { p.name = count[p.first] > 1 && p.last ? p.first + ' ' + p.last.charAt(0) + '.' : p.first; });
+      by[c].sort(function (a, b) { return a.name.localeCompare(b.name, 'tr'); });
+    });
+    pupils = by; return true;
+  }
+  function mergeIn(cloud) {
+    if (!cloud || !cloud.wishes) return;
+    Object.keys(cloud.wishes).forEach(function (c) {
+      var mine = wishesOf(c);
+      Object.keys(cloud.wishes[c]).forEach(function (id) { var w = cloud.wishes[c][id]; if (!mine[id] || String(w.at) > String(mine[id].at)) mine[id] = w; });
+    });
+    Object.keys(cloud.teams || {}).forEach(function (c) { var t = cloud.teams[c]; if (!doc.teams[c] || String(t.at) > String(doc.teams[c].at)) doc.teams[c] = t; });
+  }
+  async function cloudSync() {
+    var sb = client(); if (!sb) return false;
+    for (var a = 0; a < 3; a++) {
+      var cur = await sb.from('classes').select('description,updated_at').eq('id', ROW).maybeSingle();
+      if (cur.error) return false;
+      if (cur.data) { try { mergeIn(JSON.parse(cur.data.description || '{}')); } catch (e) { /* ignore */ } }
+      keep();
+      var now = new Date().toISOString(), row = { description: JSON.stringify({ wishes: doc.wishes, teams: doc.teams, updatedAt: now }), updated_at: now };
+      var res = cur.data
+        ? await sb.from('classes').update(row).eq('id', ROW).eq('updated_at', cur.data.updated_at).select('id')
+        : await sb.from('classes').insert(Object.assign({ id: ROW, name: 'Teams Sync', grade: 'System', teacher: 'System', archived: true }, row)).select('id');
+      if (!res.error && Array.isArray(res.data) && res.data.length) return true;
+    }
+    return false;
+  }
+
+  /* ---- teacher home ---- */
+  function home() {
+    var w = wishesOf(cls), done = list().filter(function (p) { return w[p.id]; }).length;
+    app.innerHTML = '<div class="wrap"><div class="card"><h1>👥 Team Wishes</h1><p class="muted" style="margin:0 0 14px">Each pupil chooses 2 classmates they would like to work with. Nobody sees anyone else\'s choice. You make the teams; everyone gets at least one wish.</p>' +
+      '<div class="row seg">' + CLASSES.map(function (c) { return '<button class="btn ghost' + (c[0] === cls ? ' on' : '') + '" data-cls="' + c[0] + '">' + c[1] + '</button>'; }).join('') + '</div>' +
+      '<p style="margin:16px 0 6px;font-size:1.15rem"><b>' + done + ' of ' + list().length + '</b> pupils have chosen.</p>' +
+      '<div class="row" style="margin-top:10px"><button class="btn green" id="go"' + (list().length ? '' : ' disabled') + '>▶ Start: pass the iPad</button><button class="btn amber" id="res">📋 Wishes and teams</button></div>' +
+      (list().length ? '' : '<p class="warn">Loading the class list… (needs internet the first time)</p>') + '</div></div>';
+    app.querySelectorAll('[data-cls]').forEach(function (b) { b.onclick = function () { cls = b.dataset.cls; doc.lastClass = cls; keep(); home(); }; });
+    var go = document.getElementById('go'); if (go) go.onclick = whoAreYou;
+    document.getElementById('res').onclick = results;
+  }
+
+  /* ---- pupil steps (no results anywhere on these screens) ---- */
+  function pupilBar() { return '<div class="bar"><b>👥 Team Wishes · ' + esc(CLASSES.filter(function (c) { return c[0] === cls; })[0][1]) + '</b><button class="hold" id="hold">Teacher: hold 2 s</button></div>'; }
+  function armHold() {
+    var h = document.getElementById('hold'), t = 0;
+    function down(e) { e.preventDefault(); h.classList.add('charging'); t = setTimeout(function () { home(); }, 2000); }
+    function up() { h.classList.remove('charging'); clearTimeout(t); }
+    h.addEventListener('pointerdown', down); h.addEventListener('pointerup', up); h.addEventListener('pointerleave', up); h.addEventListener('pointercancel', up);
+  }
+  function whoAreYou() {
+    me = null; picks = [];
+    var w = wishesOf(cls), left = list().filter(function (p) { return !w[p.id]; });
+    if (!left.length) { app.innerHTML = pupilBar() + '<div class="wrap big"><h1>🎉 Everybody has chosen!</h1><p class="muted">Please give the iPad back to your teacher.</p></div>'; armHold(); return; }
+    app.innerHTML = pupilBar() + '<div class="wrap"><h1 style="text-align:center;margin-top:10px">👋 Who are you?</h1><p class="muted" style="text-align:center;margin:0">Tap your name.</p>' +
+      '<div class="names">' + left.map(function (p) { return '<button class="name" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>'; }).join('') + '</div></div>';
+    armHold();
+    app.querySelectorAll('[data-id]').forEach(function (b) { b.onclick = function () { me = b.dataset.id; isItYou(); }; });
+  }
+  function isItYou() {
+    app.innerHTML = pupilBar() + '<div class="wrap big"><h1>Are you ' + esc(nameOf(me)) + '?</h1><div class="row" style="justify-content:center;margin-top:20px"><button class="btn green" id="yes">✓ Yes, that\'s me</button><button class="btn ghost" id="no">✕ No</button></div></div>';
+    armHold();
+    document.getElementById('yes').onclick = choose; document.getElementById('no').onclick = whoAreYou;
+  }
+  function choose() {
+    var others = list().filter(function (p) { return p.id !== me; });
+    app.innerHTML = pupilBar() + '<div class="wrap"><h1 style="text-align:center;margin-top:10px">Hi ' + esc(nameOf(me)) + '! 😊</h1>' +
+      '<p style="text-align:center;margin:0;font-size:1.2rem">Who would you like to work with? <b>Choose 2.</b></p><p class="muted" style="text-align:center;margin:4px 0 0">It\'s a secret. Only your teacher will see it.</p>' +
+      '<div class="names">' + others.map(function (p) { return '<button class="name' + (picks.indexOf(p.id) >= 0 ? ' picked' : '') + '" data-id="' + esc(p.id) + '">' + esc(p.name) + '</button>'; }).join('') + '</div>' +
+      '<div class="row" style="justify-content:center;margin-top:20px"><button class="btn green" id="done"' + (picks.length === 2 ? '' : ' disabled') + '>Done ✓ (' + picks.length + ' of 2)</button><button class="btn ghost" id="back">◀ Back</button></div></div>';
+    armHold();
+    app.querySelectorAll('[data-id]').forEach(function (b) {
+      b.onclick = function () {
+        var id = b.dataset.id, i = picks.indexOf(id);
+        if (i >= 0) picks.splice(i, 1); else if (picks.length < 2) picks.push(id); else { picks.shift(); picks.push(id); }
+        var y = window.scrollY; choose(); window.scrollTo(0, y);
+      };
+    });
+    document.getElementById('done').onclick = function () {
+      wishesOf(cls)[me] = { w: picks.slice(), at: new Date().toISOString() }; keep(); cloudSync();
+      thanks();
+    };
+    document.getElementById('back').onclick = whoAreYou;
+  }
+  function thanks() {
+    app.innerHTML = pupilBar() + '<div class="wrap big"><h1>Thank you! 🌟</h1><p style="font-size:1.25rem">Please give the iPad to the next pupil.</p><button class="btn green" id="next" style="margin-top:16px">Next pupil ▶</button></div>';
+    armHold();
+    document.getElementById('next').onclick = whoAreYou;
+  }
+
+  /* ---- teacher results: wishes and 4 suggested teams (everyone gets at least one wish where possible) ---- */
+  function sizes(n) { var out = [], k; for (k = 0; k < TEAMS; k++) out.push(Math.floor(n / TEAMS) + (k < n % TEAMS ? 1 : 0)); return out; }
+  function score(teams, w) {
+    var s = 0;
+    teams.forEach(function (t) {
+      t.forEach(function (id) {
+        var my = (w[id] && w[id].w) || [], hit = my.filter(function (x) { return t.indexOf(x) >= 0; }).length;
+        s += !my.length ? 0 : hit ? 10 + hit : -6;   // at least one wish matters most; a second wish counts a little
+      });
+    });
+    return s;
+  }
+  function suggest() {
+    var ids = list().map(function (p) { return p.id; }), w = wishesOf(cls), best = null, bestS = -1e9, sz = sizes(ids.length);
+    for (var r = 0; r < 400; r++) {
+      var sh = ids.slice().sort(function () { return Math.random() - 0.5; }), teams = [], at = 0;
+      sz.forEach(function (n) { teams.push(sh.slice(at, at + n)); at += n; });
+      for (var pass = 0; pass < 6; pass++) {   // improve by swapping pupils between teams
+        var cur = score(teams, w);
+        for (var a = 0; a < TEAMS; a++) for (var b = a + 1; b < TEAMS; b++) for (var i = 0; i < teams[a].length; i++) for (var j = 0; j < teams[b].length; j++) {
+          var x = teams[a][i]; teams[a][i] = teams[b][j]; teams[b][j] = x;
+          var ns = score(teams, w); if (ns > cur) cur = ns; else { teams[b][j] = teams[a][i]; teams[a][i] = x; }
+        }
+      }
+      var s = score(teams, w); if (s > bestS) { bestS = s; best = teams.map(function (t) { return t.slice(); }); }
+    }
+    doc.teams[cls] = { t: best, at: new Date().toISOString() }; keep(); cloudSync();
+  }
+  function results() {
+    var w = wishesOf(cls), L = list(), chosen = {};
+    Object.keys(w).forEach(function (id) { (w[id].w || []).forEach(function (x) { chosen[x] = (chosen[x] || 0) + 1; }); });
+    var T = doc.teams[cls] && doc.teams[cls].t;
+    var teamsHtml = '';
+    if (T) {
+      var happy = 0, total = 0;
+      teamsHtml = '<div class="teams">' + T.map(function (t, k) {
+        return '<div class="team" data-team="' + k + '" style="--c:' + COLORS[k] + '"><h3>Team ' + (k + 1) + ' · ' + t.length + '</h3>' + t.map(function (id) {
+          var my = (w[id] && w[id].w) || [], hit = my.some(function (x) { return t.indexOf(x) >= 0; });
+          if (my.length) { total++; if (hit) happy++; }
+          return '<span class="chip' + (sel === id ? ' sel' : '') + (my.length && !hit ? ' nowish' : '') + '" data-chip="' + esc(id) + '">' + esc(nameOf(id)) + (my.length ? (hit ? ' ✓' : '') : ' ·') + '</span>';
+        }).join('') + '</div>';
+      }).join('') + '</div><p class="note"><span class="ok">✓ = has at least one wish in the team</span> (' + happy + ' of ' + total + '). Dashed = no wish in the team yet. · = has not chosen. Tap a name, then tap another team to move them.</p>';
+    }
+    var quiet = L.filter(function (p) { return !chosen[p.id]; }).map(function (p) { return p.name; });
+    app.innerHTML = '<div class="wrap"><div class="card"><div class="row" style="justify-content:space-between"><h1>📋 ' + esc(CLASSES.filter(function (c) { return c[0] === cls; })[0][1]) + ' · wishes and teams</h1><button class="btn ghost" id="home">◀ Back</button></div>' +
+      '<div class="row" style="margin:10px 0"><button class="btn amber" id="sug">✨ ' + (T ? 'Suggest new teams' : 'Suggest 4 teams') + '</button>' + (T ? '<button class="btn ghost" id="copy">📋 Copy the teams</button>' : '') + '</div>' +
+      teamsHtml +
+      (quiet.length ? '<p class="note">💛 Place with care (nobody chose them yet): <b>' + quiet.map(esc).join(', ') + '</b></p>' : '') +
+      '<h2 style="margin-top:18px">Wishes</h2><table><tr><th>Pupil</th><th>Wish 1</th><th>Wish 2</th><th></th></tr>' +
+      L.map(function (p) { var my = (w[p.id] && w[p.id].w) || []; return '<tr><td><b>' + esc(p.name) + '</b></td><td>' + esc(my[0] ? nameOf(my[0]) : '—') + '</td><td>' + esc(my[1] ? nameOf(my[1]) : '—') + '</td><td>' + (my.length ? '<button class="hold" data-redo="' + esc(p.id) + '">Choose again</button>' : '') + '</td></tr>'; }).join('') +
+      '</table></div></div>';
+    document.getElementById('home').onclick = home;
+    document.getElementById('sug').onclick = function () { suggest(); sel = null; results(); };
+    var cp = document.getElementById('copy'); if (cp) cp.onclick = function () {
+      var txt = T.map(function (t, k) { return 'Team ' + (k + 1) + ': ' + t.map(nameOf).join(', '); }).join('\n');
+      try { navigator.clipboard.writeText(txt).then(function () { cp.textContent = 'Copied ✓'; }); } catch (e) { prompt('Copy', txt); }
+    };
+    app.querySelectorAll('[data-redo]').forEach(function (b) { b.onclick = function () { delete wishesOf(cls)[b.dataset.redo]; keep(); cloudSync(); results(); }; });
+    app.querySelectorAll('[data-chip]').forEach(function (c) { c.onclick = function (e) { e.stopPropagation(); sel = sel === c.dataset.chip ? null : c.dataset.chip; results(); }; });
+    app.querySelectorAll('[data-team]').forEach(function (d) {
+      d.onclick = function () {
+        if (!sel || !T) return;
+        var to = +d.dataset.team; T.forEach(function (t) { var i = t.indexOf(sel); if (i >= 0) t.splice(i, 1); }); T[to].push(sel);
+        doc.teams[cls].at = new Date().toISOString(); sel = null; keep(); cloudSync(); results();
+      };
+    });
+  }
+
+  var started = false;
+  root.TeamWishes = {
+    start: async function () {
+      if (started || document.documentElement.classList.contains('platform-locked')) return; started = true;
+      home();
+      await readPupils(); await cloudSync().catch(function () { return false; });
+      home();
+    }
+  };
+  root.TeamWishes.start();
+})(window);
+</script>
+</body>
+</html>
