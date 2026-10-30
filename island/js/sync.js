@@ -148,6 +148,22 @@
     } catch (e) {}
   }
 
+  /* Saves through the pupil's code. Falls back to the old direct save only while the cloud function does not exist yet. */
+  async function saveToCloud(sb, sid, firstName, code, doc) {
+    if (code) {
+      var viaCode = await sb.rpc('island_save', { p_code: code, p_doc: doc });
+      if (!viaCode.error || viaCode.error.code !== 'PGRST202') return viaCode;
+    }
+    return sb.from('classes').upsert({
+      id: 'island-' + sid,
+      name: 'Island ' + (firstName || 'Pupil'),
+      grade: 'System',
+      teacher: 'System',
+      archived: true,
+      description: JSON.stringify(doc)
+    }, { onConflict: 'id' });
+  }
+
   /* Retry any pending offline island-<studentId> saves */
   async function flushPendingSaves() {
     if (root.__islandForceOffline === true) return { ok: false, offline: true, flushed: 0 };
@@ -168,15 +184,7 @@
         continue;
       }
       try {
-        var payload = {
-          id: 'island-' + sid,
-          name: 'Island ' + (item.firstName || 'Pupil'),
-          grade: 'System',
-          teacher: 'System',
-          archived: true,
-          description: JSON.stringify(item.doc)
-        };
-        var res = await sb.from('classes').upsert(payload, { onConflict: 'id' });
+        var res = await saveToCloud(sb, sid, item.firstName, item.code, item.doc);
         if (!res || !res.error) {
           delete queue[sid];
           flushed++;
@@ -263,7 +271,15 @@
 
     try {
       var syncDoc = testSync;
+      /* The pupil's code opens only their own data. The direct reads below stay only until the cloud function exists. */
+      var opened = null, canOpen = false;
       if (!syncDoc && sb) {
+        var openRes = await sb.rpc('island_open', { p_code: code });
+        canOpen = !openRes.error || openRes.error.code !== 'PGRST202';
+        if (canOpen) opened = openRes.data;
+        if (opened) syncDoc = opened.sync;
+      }
+      if (!syncDoc && sb && !canOpen) {
         var syncRes = await sb.from('classes').select('id,description').eq('id', 'class-island-sync').maybeSingle();
         syncDoc = parseJsonSafe(syncRes && syncRes.data && syncRes.data.description, null);
       }
@@ -286,7 +302,7 @@
       /* Read pupil row from students table (or local test stub if present) */
       var testStudents = null;
       try { testStudents = parseJsonSafe(localStorage.getItem(TEST_STUDENTS_KEY), null); } catch (e) {}
-      var stuRow = (testStudents && testStudents[studentId]) || null;
+      var stuRow = (testStudents && testStudents[studentId]) || (opened && opened.student) || null;
       if (!stuRow && sb) {
         var stuRes = await sb.from('students').select('*').eq('id', studentId).maybeSingle();
         stuRow = (stuRes && stuRes.data) || null;
@@ -305,8 +321,8 @@
       /* Read pupil's own island-<studentId> row from classes table */
       var testIslandDoc = null;
       try { testIslandDoc = parseJsonSafe(localStorage.getItem(TEST_DOC_PREFIX + studentId), null); } catch (e) {}
-      var cloudDoc = testIslandDoc;
-      if (!cloudDoc && sb) {
+      var cloudDoc = testIslandDoc || (opened && opened.doc) || null;
+      if (!cloudDoc && sb && !opened) {
         var islRes = await sb.from('classes').select('id,description').eq('id', 'island-' + studentId).maybeSingle();
         cloudDoc = parseJsonSafe(islRes && islRes.data && islRes.data.description, null);
       }
@@ -377,6 +393,7 @@
     queue[studentId] = {
       studentId: studentId,
       firstName: firstName,
+      code: session.code,
       doc: doc,
       queuedAt: doc.updatedAt
     };
@@ -390,15 +407,7 @@
     if (!sb) return { ok: false, offline: true, queued: true };
 
     try {
-      var payload = {
-        id: 'island-' + studentId,
-        name: 'Island ' + firstName,
-        grade: 'System',
-        teacher: 'System',
-        archived: true,
-        description: JSON.stringify(doc)
-      };
-      var res = await sb.from('classes').upsert(payload, { onConflict: 'id' });
+      var res = await saveToCloud(sb, studentId, firstName, session.code, doc);
       if (res && res.error) return { ok: false, offline: true, queued: true, error: res.error };
 
       var curQueue = getPendingQueue();

@@ -993,6 +993,8 @@
     async syncAllWithStore(store) {
       if (!this.isConfigured) return { success: false, reason: 'not_configured' };
       if (!store) return { success: false, reason: 'no_store' };
+      // No teacher session: a locked cloud answers with empty lists, which must never look like "the cloud is empty".
+      if (root.TeacherAuth && root.TeacherAuth.required() && !root.TeacherAuth.signedIn()) return { success: false, reason: 'signed_out' };
 
       this._activeStore = store;
       this.isSyncing = true;
@@ -1009,6 +1011,13 @@
           this._ensureClient().from('attendance_records').select('*').then(r => r.data || []),
           this.getResources(false).catch(() => [])
         ]);
+
+        if (students.length === 0 && root.SUPABASE_CONFIG && root.SUPABASE_CONFIG.cloudLocked) {
+          this.isSyncing = false;
+          this.lastSyncStatus = 'idle';
+          this.notify();
+          return { success: false, reason: 'empty_read' };
+        }
 
         // SAFE IDEMPOTENT SEEDING / MIGRATION:
         // If Supabase has zero students, but local store has students, upload local roster to Supabase!
