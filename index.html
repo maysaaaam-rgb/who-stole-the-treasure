@@ -120,6 +120,8 @@
         }
       }
 
+      window.__eaaFinishUnlock = function() { finishPinCheck(true); };
+
       window.togglePlatformPasswordVisibility = function() {
         const input = document.getElementById('platform-password-input');
         const eyeIcon = document.getElementById('platform-eye-icon');
@@ -3075,7 +3077,8 @@
   <!-- Supabase PostgreSQL Client SDK (Authoritative Shared Database) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js?v=2.2"></script>
-  <script src="js/supabase-client.js?v=3.0"></script>
+  <script src="js/supabase-client.js?v=3.1"></script>
+  <script src="js/teacher-auth.js?v=1"></script>
 
   <!-- 2. Cloud Persistence & Cross-Device Sync Service (Single Online Cloud DB) -->
   <script src="js/school-cloud-sync.js?v=3.0"></script>
