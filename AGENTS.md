@@ -87,9 +87,10 @@ node --check "monster day/story/mouse/pokemon/firefighter/NH/js/<filename>.js"
 ```
 
 ### 2.3 Git Commit & Dual-Branch Push Workflow
-All production changes must be pushed to **both** `main` and `gh-pages`:
+All production changes must be pushed to **both** `main` and `gh-pages`.
+**Never use `git add -A` or `git add .`.** Stage only the exact files you changed: many published files are missing from this computer on purpose or by a cleanup not yet decided, and `-A` would delete them from the live site and publish other people's unfinished work.
 ```powershell
-git add -A
+git add "<each file you changed>"
 git commit -m "feat/fix/refactor: concise description conforming to conventional commits"
 git push origin main
 git checkout gh-pages
