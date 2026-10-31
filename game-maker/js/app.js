@@ -8,13 +8,13 @@
   var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
   /* the games that have the new polished look come first */
-  var ORDER = ['race', 'cannon', 'fling', 'boardgame', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
+  var ORDER = ['race', 'cannon', 'fling', 'boardgame', 'storydice', 'bingo', 'guesseroo', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
   var GAME_CATS = [
     ['all', '⭐ All Games', null],
     ['action', '🎯 Aim & Action', ['race', 'cannon', 'fling', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'bowling']],
-    ['board', '🎲 Board & Strategy', ['boardgame', 'board', 'snakes', 'hunt', 'plinko', 'pass']],
+    ['board', '🎲 Board & Strategy', ['boardgame', 'board', 'bingo', 'snakes', 'hunt', 'plinko', 'pass']],
     ['versus', '⚔️ 2 Teams', ['fling', 'jigsaw', 'ttt', 'connect4']],
-    ['word', '🧩 Word & Memory', ['whack', 'balloon', 'memory', 'jigsaw']]
+    ['word', '🧩 Word & Memory', ['whack', 'balloon', 'memory', 'jigsaw', 'bingo', 'storydice', 'guesseroo']]
   ];
   var HOW = {
     race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
@@ -35,6 +35,9 @@
     baseball: ['Answer right to step up to Home plate and swing.', 'Stop the moving power bar in the green centre for a big hit.', 'Run the bases with your monsters! Every runner crossing Home scores +20!'],
     jigsaw: ['Two teams race side-by-side on their own 12-piece puzzle.', 'Answer right to earn a puzzle piece and drag it into place.', 'Wrong answer gives the other team a STEAL question worth 2 pieces!'],
     snakes: ['Answer right to roll the big 3D dice (1 to 6).', 'Watch your monster hop along the numbered board squares.', 'Climb up ladders for +10 bonus, slide down snakes, and reach the finish!'],
+    storydice: ['Press Roll: the dice show pictures from your questions.', 'Make a sentence or a little story with ALL the pictures. Say it out loud!', 'The teacher gives stars: 5, 10 or 15 points. Nobody loses points.'],
+    bingo: ['The game reads a clue (it is spoken aloud).', 'The team whose turn it is taps the answer on the big board.', 'Win a square for +10. A line of your colour is a BINGO: +25!'],
+    guesseroo: ['One secret card is hidden. Teams take turns asking a yes/no question out loud.', 'The teacher taps Yes or No. Tap cards to cross them out.', 'Tap 🎯 when your team knows it: the fewer the questions, the more points!'],
     memory: ['Take turns flipping two cards on the board.', 'Match each question card with its partner answer card.', 'When you find a match, read the full sentence aloud for +20 and go again!']
   };
   var S = GM.state = {
@@ -48,7 +51,8 @@
     gameCat: 'all',
     cfg: { teams: 2, timer: 0, pu: {} },
     teams: [],
-    groups: {}
+    groups: {},
+    picks: {}
   };
   var customSets = [], stage;
 
@@ -59,6 +63,7 @@
         ['setId', 'modeId', 'theme', 'classId', 'qGrade', 'qSkill', 'gameCat'].forEach(function (k) { if (d[k]) S[k] = d[k]; });
         if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg);
         if (d.groups && typeof d.groups === 'object') S.groups = d.groups;
+        if (d.picks && typeof d.picks === 'object') S.picks = d.picks;
       }
     } catch (e) { /* private window */ }
     try { customSets = JSON.parse(localStorage.getItem(CKEY) || '[]') || []; } catch (e) { customSets = []; }
@@ -67,7 +72,7 @@
     try {
       localStorage.setItem(KEY, JSON.stringify({
         setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId,
-        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg, groups: S.groups || {}
+        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg, groups: S.groups || {}, picks: S.picks || {}
       }));
     } catch (e) { /* ignore */ }
   }
@@ -317,11 +322,20 @@
     else right.appendChild(h('div', { class: 'gm-hint center', text: classes.length ? 'Choose your class above to put the pupils in teams.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
     m.fields.forEach(function (f) { var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur; right.appendChild(seg(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); })); });
     right.appendChild(seg('Timer', TIMERS, S.cfg.timer, function (v) { S.cfg.timer = v; save(); render(); }));
+    var cs = curSet(), pk = !cs.smart && (S.picks || {})[cs.id], total = cs.smart ? 0 : (cs.items || []).length;
+    if (total > 1 && GM.tools) {
+      var qb = btn(((pk && pk.length) ? pk.length + ' of ' + total : 'All ' + total) + ' questions · Choose', 'sm', function () {
+        GM.tools.chooseQuestions(cs, pk, function (arr) { S.picks = S.picks || {}; if (arr.length) S.picks[cs.id] = arr; else delete S.picks[cs.id]; save(); render(); });
+      });
+      right.appendChild(h('div', { class: 'gm-opt-row' }, [h('div', { class: 'gm-opt-lab', text: 'Questions' }), qb]));
+    }
+    right.appendChild(seg('Question order', [['mix', 'Mixed'], ['order', 'In order', 'as in the set']], S.cfg.order === 'order' ? 'order' : 'mix', function (v) { S.cfg.order = v; save(); render(); }));
+    right.appendChild(seg('Pictures', [['off', 'Normal'], ['zoom', 'Super Zoom', 'tap a picture to enlarge'], ['blur', 'Blur', 'slide to reveal']], S.cfg.pics || 'off', function (v) { S.cfg.pics = v; save(); render(); }));
     if (GM.rev) {
       right.appendChild(seg('Remember first', [[1, 'On', 'reminder before the game'], [0, 'Off']], S.cfg.rem === 0 ? 0 : 1, function (v) { S.cfg.rem = +v; save(); render(); }));
       right.appendChild(seg('Answer cards', [[0, 'Off'], [1, 'On', 'everybody answers on paper']], S.cfg.cards ? 1 : 0, function (v) { S.cfg.cards = +v; save(); render(); }));
     }
-    var themes = Object.keys(GM.themes).filter(function (k) { return GM.halloweenOn || k !== 'halloween'; });
+    var themes = Object.keys(GM.themes).filter(function (k) { return (GM.halloweenOn || k !== 'halloween') && (!GM.themes[k].art || U.hasArt(GM.themes[k].art)); });
     if (themes.length > 1) right.appendChild(seg('Theme', themes.map(function (k) { return [k, GM.themes[k].e + ' ' + GM.themes[k].name]; }), S.theme, function (v) { S.theme = v; S.teams = []; save(); render(); }));
     if (S.modeId === 'board' && S.cfg.play !== 'quiz') {
       var det = h('details', { class: 'gm-pudet' }, [h('summary', { text: '⚡ Power-ups (' + GM.powerups.filter(function (p) { return (S.cfg.pu || {})[p.id] !== false && (S.cfg.play !== 'jr' || p.jr); }).length + ' on) · tap to change' })]), list = h('div', { class: 'gm-pulist' });
@@ -339,7 +353,13 @@
 
   /* ---------- play ---------- */
   var cleanups = [], queue = [], gameId = 0;
-  function nextItem() { if (!queue.length) queue = U.shuffle(curSet().items); return queue.pop(); }
+  /* the questions the teacher ticked for this set (all of them when nothing is ticked) */
+  function chosenItems() {
+    var s = curSet(), pk = !s.smart && (S.picks || {})[s.id], items = s.items;
+    if (pk && pk.length) { var sel = {}; pk.forEach(function (i) { sel[i] = 1; }); var f = items.filter(function (x, i) { return sel[i]; }); if (f.length) items = f; }
+    return items;
+  }
+  function nextItem() { if (!queue.length) queue = S.cfg.order === 'order' ? chosenItems().slice().reverse() : U.shuffle(chosenItems()); return queue.pop(); }
   function startGame(skipRemember) {
     if (skipRemember !== true && GM.rev && S.cfg.rem !== 0 && !S.playing && !S.remDone) {
       buildTeams(); document.getElementById('gm-teams').style.display = 'none';

@@ -111,7 +111,11 @@
   GM.halloweenOn = HAL_ON;
   GM.themes = {
     classic: { id: 'classic', name: 'Classic', e: '⭐', tile: '#3b82f6', accent: '#f59e0b', music: 'classic_loop' },
-    halloween: { id: 'halloween', name: 'Halloween', e: '🎃', tile: '#7c3aed', accent: '#f97316', music: 'halloween_loop' }
+    halloween: { id: 'halloween', name: 'Halloween', e: '🎃', tile: '#7c3aed', accent: '#f97316', music: 'halloween_loop' },
+    /* new skins: listed in the Theme row only when their background picture is in art/manifest.json */
+    space: { id: 'space', name: 'Space', e: '🚀', tile: '#6d5dfc', accent: '#ffc531', music: 'classic_loop', art: 'bg_space_board', confetti: ['⭐', '✨', '🚀', '🪐', '🌟'] },
+    pirates: { id: 'pirates', name: 'Pirates', e: '⚓', tile: '#1fa6b8', accent: '#ff9f1c', music: 'classic_loop', art: 'bg_pirates_board', confetti: ['⚓', '💰', '⭐', '✨', '🧭'] },
+    egypt: { id: 'egypt', name: 'Ancient Egypt', e: '🏺', tile: '#d9a441', accent: '#f2b705', music: 'classic_loop', art: 'bg_egypt_board', confetti: ['⭐', '✨', '🔺', '🏺', '🪙'] }
   };
 
   /* power-ups: tier 'good' and 'tricky'; jr = also in Classic Jr; needs = asks the teacher to pick another team */
