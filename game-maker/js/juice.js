@@ -19,11 +19,16 @@
   function restart(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
 
   /* ---------- monsters act ---------- */
+  /* the drawn monster also moves its own arms, ears, tail and mouth (the pod wrapper already jumps, so only the parts move) */
+  function rig(wrap, move) {
+    try { var svg = wrap && wrap.querySelector('svg'); if (svg && !reduce && root.MonsterRenderer && root.MonsterRenderer.play) root.MonsterRenderer.play(svg, move, { stay: true }); } catch (e) { /* the monster just stays still */ }
+  }
   function react(i, kind) {
     var pod = podOf(i); if (!pod) return; var mon = pod.querySelector('.gm-pod-mon'); if (!mon) return;
     var cls = { cheer: 'gm-act-cheer', sad: 'gm-act-sad', score: 'gm-act-wave', big: 'gm-act-spin' }[kind] || 'gm-act-cheer';
     ['gm-act-cheer', 'gm-act-sad', 'gm-act-wave', 'gm-act-spin'].forEach(function (c) { mon.classList.remove(c); });
     void mon.offsetWidth; mon.classList.add(cls);
+    rig(mon, { cheer: 'cheer', sad: 'sad', score: 'wave', big: 'cheer' }[kind] || 'cheer');
     if (kind === 'cheer' || kind === 'big') burstAt(center(mon), kind === 'big' ? 18 : 10, ['⭐', '✨', '🌟']);
     if (kind === 'sad') floatAt(center(mon), '?', 'soft');
     setTimeout(function () { mon.classList.remove(cls); }, 1300);
@@ -79,7 +84,7 @@
   var oAsk = U.ask;
   U.ask = function (item, team, opts) {
     var i = teamIndex(team), pod = podOf(i);
-    if (pod) restart(pod.querySelector('.gm-pod-mon'), 'gm-act-wave');
+    if (pod) { restart(pod.querySelector('.gm-pod-mon'), 'gm-act-wave'); rig(pod.querySelector('.gm-pod-mon'), 'wave'); }
     return oAsk(item, team, opts).then(function (res) { if (i >= 0 && !res.skipped) react(i, res.ok ? 'cheer' : 'sad'); return res; });
   };
 

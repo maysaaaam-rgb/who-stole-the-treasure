@@ -43,6 +43,10 @@
     var pic0 = h('div', { class: 'gm-react-pic' }, [monFull(who.mon, size)]); pic0.style.width = pic0.style.height = box + 'px';
     var el = h('div', { class: 'gm-react ' + kind }, [h('div', { class: 'gm-react-box' }, [pic0, h('div', { class: 'gm-react-cap', text: caps[Math.floor(Math.random() * caps.length)] })])]);
     el.style.setProperty('--c', who.color || '#fde047'); layer.appendChild(el);
+    try {   // the sticker monster moves its parts too: cheer on a win, a friendly ear-and-tail wiggle after a miss
+      var rs = pic0.querySelector('svg'), RM = root.MonsterRenderer;
+      if (rs && RM && RM.play) RM.play(rs, kind === 'miss' ? 'wiggle' : 'cheer', { stay: true, speed: kind === 'phew' ? 1.4 : 1 });
+    } catch (e) { /* the sticker just stays still */ }
     reactTm = setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1750);
   }
 
