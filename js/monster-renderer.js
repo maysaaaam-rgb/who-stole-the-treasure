@@ -696,7 +696,7 @@
         ${defs}
         ${bgLayer}
         ${pedestalMarkup}
-        ${contactShadowMarkup}
+        <g class="mon-rig-shadow" style="transform-origin:100px 152px">${contactShadowMarkup}</g>
         ${bobGroup}
         ${petLayer}
       </svg>
@@ -1548,7 +1548,7 @@
       art = tube('M 0 6 C 18 8 32 -2 28 -13 C 26 -19 18 -18 20 -12', 7) +
         `<path d="M 22 -20 C 10 -30 16 -42 24 -36 C 32 -42 38 -30 22 -20 Z" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" transform="translate(6 -4)" />`;
     }
-    return `<g class="monster-tail-layer tail-species" transform="translate(${x} ${y}) scale(${sc})" filter="url(#plush-shadow)">${art}</g>`;
+    return `<g class="monster-tail-layer tail-species" transform="translate(${x} ${y}) scale(${sc})" filter="url(#plush-shadow)"><g class="mon-tail-wag" style="transform-origin:0px 4px">${art}</g></g>`;
   }
 
   function renderTailLayerBase(stage, tailId, palette) {
@@ -1822,13 +1822,14 @@
     const fur = `fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round"`;
     const ear = (sg) => {
       const x = cX + sg * c * 0.66, y = t + 11;
+      const wrap = (inner) => `<g class="mon-ear mon-ear-${sg < 0 ? 'l' : 'r'}" style="transform-origin:${x + sg * 3}px ${y + 6}px">${inner}</g>`;
       if (colorKey === 'orange') {
         const h = 13, w = 9;
-        return `<path d="M ${x - sg * w} ${y + 8} C ${x - sg * w} ${y - h * 0.5 * k} ${x + sg * w * 0.2} ${y - h * k} ${x + sg * (w + 4)} ${y - h * 0.8 * k} C ${x + sg * (w + 9)} ${y - h * 0.15 * k} ${x + sg * (w + 5)} ${y + 6} ${x + sg * 3} ${y + 12} Z" ${fur} />
-                <path d="M ${x + sg * 1} ${y + 4} C ${x} ${y - h * 0.3 * k} ${x + sg * 4} ${y - h * 0.6 * k} ${x + sg * (w + 1)} ${y - h * 0.5 * k} C ${x + sg * (w + 3)} ${y - 2} ${x + sg * 8} ${y + 4} ${x + sg * 4} ${y + 8} Z" fill="${palette.cheek}" opacity="0.6" />`;
+        return wrap(`<path d="M ${x - sg * w} ${y + 8} C ${x - sg * w} ${y - h * 0.5 * k} ${x + sg * w * 0.2} ${y - h * k} ${x + sg * (w + 4)} ${y - h * 0.8 * k} C ${x + sg * (w + 9)} ${y - h * 0.15 * k} ${x + sg * (w + 5)} ${y + 6} ${x + sg * 3} ${y + 12} Z" ${fur} />
+                <path d="M ${x + sg * 1} ${y + 4} C ${x} ${y - h * 0.3 * k} ${x + sg * 4} ${y - h * 0.6 * k} ${x + sg * (w + 1)} ${y - h * 0.5 * k} C ${x + sg * (w + 3)} ${y - 2} ${x + sg * 8} ${y + 4} ${x + sg * 4} ${y + 8} Z" fill="${palette.cheek}" opacity="0.6" />`);
       }
-      return `<circle cx="${x + sg * 3}" cy="${y - 2}" r="${10.5 * k}" ${fur} />
-              <circle cx="${x + sg * 3}" cy="${y - 1}" r="${5.6 * k}" fill="${palette.cheek}" opacity="0.55" />`;
+      return wrap(`<circle cx="${x + sg * 3}" cy="${y - 2}" r="${10.5 * k}" ${fur} />
+              <circle cx="${x + sg * 3}" cy="${y - 1}" r="${5.6 * k}" fill="${palette.cheek}" opacity="0.55" />`);
     };
     return `<g class="mon-ears">${ear(-1)}${ear(1)}</g>`;
   }
@@ -2420,13 +2421,13 @@
       const sx = cX + sg * (cW - 4);       // shoulder on the body edge
       const hx = cX + sg * (cW + 7 * k), hy = g.pawY + 7 * k;   // paw centre, out and a little down
       const toes = [-1, 0, 1].map(d => `<circle cx="${hx + sg * (d * 2.9 + 1)}" cy="${hy + 5.4 * k + Math.abs(d) * -0.9}" r="${2.1 * k + 0.4}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.4" />`).join('');
-      return `
+      return `<g class="mon-arm mon-arm-${sg < 0 ? 'l' : 'r'}" style="transform-origin:${sx}px ${g.pawY - 13 * k}px">
         <path d="M ${sx} ${g.pawY - 13 * k} C ${sx + sg * 11 * k} ${g.pawY - 9 * k} ${hx + sg * 7 * k} ${hy - 4 * k} ${hx + sg * 5 * k} ${hy + 3 * k}
                  C ${hx + sg * 2 * k} ${hy + 8 * k} ${hx - sg * 5 * k} ${hy + 7 * k} ${hx - sg * 5 * k} ${hy + 2 * k}
                  C ${hx - sg * 5 * k} ${hy - 6 * k} ${sx + sg * 1 * k} ${g.pawY - 3 * k} ${sx} ${g.pawY - 13 * k} Z"
               fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
         ${toes}
-        <ellipse cx="${hx - sg * 1.5}" cy="${hy - 1.5 * k}" rx="${2.4 * k}" ry="${3.4 * k}" fill="#ffffff" opacity="0.28" />`;
+        <ellipse cx="${hx - sg * 1.5}" cy="${hy - 1.5 * k}" rx="${2.4 * k}" ry="${3.4 * k}" fill="#ffffff" opacity="0.28" /></g>`;
     };
     return `
       <g filter="url(#plush-shadow)" class="mon-body-breathe">${arm(-1)}${arm(1)}</g>
@@ -2924,6 +2925,8 @@
       mouthMarkup = `
         <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
       `;
+    } else if (mouthId === 'mood-sad') {
+      mouthMarkup = `<path d="M ${cX - 7} ${mouthY + 5} Q ${cX} ${mouthY - 0.6} ${cX + 7} ${mouthY + 5}" fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />`;
     } else if (mouthId === 'viseme-mm') {
       mouthMarkup = `<path d="M ${cX - 6} ${mouthY + 1} Q ${cX} ${mouthY + 3.4} ${cX + 6} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />`;
     } else if (mouthId === 'viseme-ah') {
@@ -4297,6 +4300,88 @@
     return function stop() { stopped = true; clearTimeout(timer); setMouth(root, ''); };
   }
 
+  // --- MOVEMENT RIG ---
+  // play(svgRoot, 'hop' | 'cheer' | 'wave' | 'sad' | 'nod' | 'shake' | 'wiggle' | 'flip', { times, speed }) animates the drawn parts of a monster that is already on screen
+  // (body, arms, ears, tail, shadow, mouth). A new move replaces the one that is running. Returns { stop, done }.
+  // react(svgRoot, 'correct' | 'wrong' | 'hello' | 'levelup' ...) picks a move for a classroom moment. Nothing is drawn again, so shop items stay in place.
+  const RIG_MOVES = ['hop', 'cheer', 'wave', 'sad', 'nod', 'shake', 'wiggle', 'flip'];
+  function rigParts(root) {
+    const q = (sel) => Array.prototype.slice.call(root.querySelectorAll(sel));
+    return { body: root.querySelector('.monster-bob-group'), shadow: root.querySelector('.mon-rig-shadow'), armL: q('.mon-arm-l'), armR: q('.mon-arm-r'),
+      earL: q('.mon-ear-l'), earR: q('.mon-ear-r'), tail: q('.mon-tail-wag') };
+  }
+  function rigStop(root) {
+    (root.__monAnims || []).forEach(a => { try { a.cancel(); } catch (e) {} });
+    root.__monAnims = [];
+    if (root.__monMouthTimer) { clearTimeout(root.__monMouthTimer); root.__monMouthTimer = 0; }
+    setMouth(root, '');
+  }
+  function play(root, move, opts) {
+    opts = opts || {};
+    if (!root || !root.querySelector || typeof Element === 'undefined' || !Element.prototype.animate) return { stop() {}, done: Promise.resolve() };
+    rigStop(root);
+    const P = rigParts(root), anims = [], n = Math.max(1, Number(opts.times) || 1);
+    const speed = Math.max(0.4, Number(opts.speed) || 1);
+    const A = (els, frames, ms, extra) => {
+      (Array.isArray(els) ? els : [els]).forEach(el => {
+        if (!el) return;
+        anims.push(el.animate(frames, Object.assign({ duration: ms / speed, easing: 'ease-in-out', iterations: n }, extra || {})));
+      });
+    };
+    const T = (x, y, sx, sy, r) => `translate(${x}px, ${y}px) rotate(${r || 0}deg) scale(${sx == null ? 1 : sx}, ${sy == null ? 1 : sy})`;
+    const R = (deg) => ({ transform: 'rotate(' + deg + 'deg)' });
+    const swing = (list, pairs, ms) => A(list, pairs.map(p => Object.assign(R(p[0]), p[1] == null ? {} : { offset: p[1] })), ms);
+    if (P.body) P.body.style.transformOrigin = '100px 150px';
+    const jump = (h, ms) => {
+      A(P.body, [{ transform: T(0, 0, 1, 1) }, { transform: T(0, 0, 1.07, 0.9), offset: 0.14 }, { transform: T(0, -h, 0.95, 1.07), offset: 0.5 }, { transform: T(0, 0, 1.06, 0.92), offset: 0.86 }, { transform: T(0, 0, 1, 1) }], ms);
+      A(P.shadow, [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0.72)', opacity: 0.55, offset: 0.5 }, { transform: 'scale(1)', opacity: 1 }], ms);
+    };
+    const mouthFor = (id, ms) => { setMouth(root, id); root.__monMouthTimer = setTimeout(() => setMouth(root, ''), (ms * n) / speed); };
+    if (move === 'hop') {
+      jump(16, 640);
+      swing(P.tail, [[0], [-14], [0]], 640);
+    } else if (move === 'cheer') {
+      jump(24, 800);
+      swing(P.armL, [[0], [150, 0.35], [160, 0.6], [0]], 800);
+      swing(P.armR, [[0], [-150, 0.35], [-160, 0.6], [0]], 800);
+      swing(P.earL, [[0], [-14, 0.5], [0]], 800);
+      swing(P.earR, [[0], [14, 0.5], [0]], 800);
+      swing(P.tail, [[0], [-18, 0.3], [12, 0.65], [0]], 800);
+      mouthFor('mouth-cheer', 800);
+    } else if (move === 'wave') {
+      swing(P.armR, [[0], [-135, 0.2], [-160, 0.34], [-125, 0.48], [-160, 0.62], [-125, 0.76], [-135, 0.88], [0]], 1500);
+      A(P.body, [{ transform: T(0, 0, 1, 1, 0) }, { transform: T(0, 0, 1, 1, -2.5), offset: 0.3 }, { transform: T(0, 0, 1, 1, 2), offset: 0.7 }, { transform: T(0, 0, 1, 1, 0) }], 1500);
+      swing(P.earR, [[0], [12, 0.4], [-6, 0.7], [0]], 1500);
+      swing(P.tail, [[0], [16, 0.25], [-10, 0.5], [12, 0.75], [0]], 1500);
+    } else if (move === 'sad') {
+      A(P.body, [{ transform: T(0, 0, 1, 1) }, { transform: T(0, 2, 1.04, 0.94, 0), offset: 0.3 }, { transform: T(0, 2, 1.04, 0.94, -2), offset: 0.7 }, { transform: T(0, 0, 1, 1) }], 1700);
+      swing(P.earL, [[0], [-26, 0.3], [-26, 0.75], [0]], 1700);
+      swing(P.earR, [[0], [26, 0.3], [26, 0.75], [0]], 1700);
+      swing(P.armL, [[0], [-10, 0.3], [-10, 0.75], [0]], 1700);
+      swing(P.armR, [[0], [10, 0.3], [10, 0.75], [0]], 1700);
+      swing(P.tail, [[0], [26, 0.3], [26, 0.75], [0]], 1700);
+      mouthFor('mood-sad', 1700);
+    } else if (move === 'nod') {
+      A(P.body, [{ transform: T(0, 0, 1, 1) }, { transform: T(0, 2, 1.02, 0.94), offset: 0.25 }, { transform: T(0, 0, 1, 1), offset: 0.5 }, { transform: T(0, 2, 1.02, 0.94), offset: 0.75 }, { transform: T(0, 0, 1, 1) }], 700);
+    } else if (move === 'shake') {
+      A(P.body, [{ transform: T(0, 0, 1, 1, 0) }, { transform: T(0, 0, 1, 1, -5), offset: 0.2 }, { transform: T(0, 0, 1, 1, 5), offset: 0.5 }, { transform: T(0, 0, 1, 1, -4), offset: 0.8 }, { transform: T(0, 0, 1, 1, 0) }], 700);
+    } else if (move === 'wiggle') {
+      swing(P.earL, [[0], [-16, 0.25], [8, 0.6], [0]], 900);
+      swing(P.earR, [[0], [16, 0.25], [-8, 0.6], [0]], 900);
+      swing(P.tail, [[0], [22, 0.2], [-14, 0.5], [16, 0.8], [0]], 900);
+    } else if (move === 'flip') {
+      jump(20, 900);
+      A(P.body, [{ transform: T(0, 0, 1, 1) }, { transform: T(0, -20, 0.02, 1.06), offset: 0.5 }, { transform: T(0, 0, 1, 1) }], 900);
+    }
+    root.__monAnims = anims;
+    const done = Promise.all(anims.map(a => a.finished.catch(() => null))).then(() => { if (root.__monAnims === anims) rigStop(root); });
+    return { stop: () => rigStop(root), done };
+  }
+  function react(root, kind, opts) {
+    const map = { correct: 'cheer', right: 'cheer', win: 'cheer', levelup: 'flip', wrong: 'sad', hello: 'wave', hi: 'wave', yes: 'nod', no: 'shake', idle: 'wiggle' };
+    return play(root, map[kind] || kind, opts);
+  }
+
   root.MonsterRenderer = {
     getMonsterAsset: getMonsterAsset,
     renderBackdropSvg: renderBackdropSvg,
@@ -4306,6 +4391,9 @@
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
     setMouth: setMouth,
+    play: play,
+    react: react,
+    MOVES: RIG_MOVES,
     talk: talk,
     visemeFor: visemeFor,
     VISEMES: VISEMES,
