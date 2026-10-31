@@ -151,7 +151,7 @@
   }
   /* quiet background music: a recorded loop if present, otherwise a soft synthesized pad that follows the theme */
   function musicStart(theme) {
-    musicStop(); if (muted || !ensure()) return;
+    musicStop(); if (muted || !musicOn || !ensure()) return;
     var mId = (GM.state && GM.state.modeId) || '';
     var name = theme === 'halloween' ? 'halloween_loop' : ((mId === 'snakes' || mId === 'boardgame') && files.music_jungle ? 'music_jungle' : ((mId === 'whack' || mId === 'hunt' || mId === 'fling') && files.music_garden ? 'music_garden' : 'classic_loop'));
     if (files[name] && bufs[name]) { var s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = bufs[name]; s.loop = true; g.gain.value = 0.25; s.connect(g); g.connect(master); s.start(); music = { stop: function () { try { s.stop(); } catch (e) { /* done */ } } }; return; }
@@ -161,10 +161,24 @@
     function step() { if (!alive) return; var t = ctx.currentTime + 0.02; chords[i++ % chords.length].forEach(function (f, k) { tone(f, t + k * 0.02, 2.6, { v: 0.05, a: 0.6, type2: 'sine', out: bus }); }); music.timer = setTimeout(step, 2400); }
     music = { timer: null, stop: function () { alive = false; clearTimeout(music && music.timer); } }; step();
   }
+  /* music is off until the teacher turns it on with the 🎵 button (it is remembered on this device) */
+  var musicOn = false; try { musicOn = localStorage.getItem('eaa_gm_music') === '1'; } catch (e) { /* private window */ }
+  function setMusic(on) {
+    musicOn = !!on; try { localStorage.setItem('eaa_gm_music', musicOn ? '1' : '0'); } catch (e) { /* ignore */ }
+    var b = document.getElementById('gm-mus'); if (b) b.style.opacity = musicOn ? '1' : '.45';
+    if (!musicOn) musicStop(); else if (GM.state && GM.state.playing) musicStart(GM.state.theme);
+  }
+  function addMusicButton() {
+    var snd = document.getElementById('gm-snd'); if (!snd || document.getElementById('gm-mus')) return;
+    var b = document.createElement('button'); b.type = 'button'; b.id = 'gm-mus'; b.className = 'gm-btn round ghost'; b.title = 'Music on / off'; b.textContent = '🎵'; b.style.opacity = musicOn ? '1' : '.45';
+    b.addEventListener('click', function () { play('tap'); setMusic(!musicOn); });
+    snd.parentNode.insertBefore(b, snd);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addMusicButton); else addMusicButton();
   function musicStop() { if (music) { try { music.stop(); } catch (e) { /* ignore */ } music = null; } }
   function setMuted(m) { muted = !!m; if (muted) { musicStop(); try { root.speechSynthesis && root.speechSynthesis.cancel(); } catch (e) { /* ignore */ } } }
   function unlock() { ensure(); loadManifest(); root.removeEventListener('pointerdown', unlock); root.removeEventListener('keydown', unlock); }
   root.addEventListener('pointerdown', unlock); root.addEventListener('keydown', unlock);
 
-  GM.audio = { play: play, speak: speak, musicStart: musicStart, musicStop: musicStop, setMuted: setMuted, isMuted: function () { return muted; }, ready: function () { return !!ctx; } };
+  GM.audio = { setMusic: setMusic, isMusic: function () { return musicOn; }, play: play, speak: speak, musicStart: musicStart, musicStop: musicStop, setMuted: setMuted, isMuted: function () { return muted; }, ready: function () { return !!ctx; } };
 })(window);

@@ -422,7 +422,7 @@
           if (lane.isSteal) {
             qbox.appendChild(U().h('span', { class: 'gm-jig-steal-tag' }, ['⚡ STEAL — Worth 2 Pieces!']));
           }
-          qbox.appendChild(U().h('div', { class: 'gm-jig-q' }, [lane.item.q || '']));
+          qbox.appendChild(U().h('div', { class: 'gm-jig-q' }, [U().qText(lane.item)]));
           var optsWrap = U().h('div', { class: 'gm-jig-opts' });
           var opts = U().shuffle([lane.item.a].concat((lane.item.w || []).slice(0, 2)));
           opts.forEach(function (opt) {

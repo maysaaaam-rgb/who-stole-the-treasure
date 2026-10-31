@@ -121,7 +121,7 @@
   function tally(item, res, n) {
     return new Promise(function (resolve) {
       var cfg = st().cfg || {};
-      if (!cfg.cards || !st().classId || (res && res.skipped)) { if (st().classId && !(res && res.skipped)) recClass(st().classId, item, res && res.ok ? 1 : 0); return resolve(); }
+      if (!cfg.cards || !st().classId || (res && res.skipped)) { if (st().classId && !(res && res.skipped)) recClass(st().classId, item, res && res.ok ? (res.second ? 0.5 : 1) : 0); return resolve(); }
       var o = layer('center small');
       o.appendChild(h('div', { class: 'gm-rev-ans', html: 'The answer is <mark>' + String(item.a).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</mark>' }));
       o.appendChild(h('p', { class: 'gm-rev-p', text: (n ? 'Line ' + n + ': cards' : 'Cards') + ' up! How many pupils had it right?' }));
