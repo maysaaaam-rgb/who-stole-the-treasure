@@ -4301,7 +4301,7 @@
   }
 
   // --- MOVEMENT RIG ---
-  // play(svgRoot, 'hop' | 'cheer' | 'wave' | 'sad' | 'nod' | 'shake' | 'wiggle' | 'flip', { times, speed }) animates the drawn parts of a monster that is already on screen
+  // play(svgRoot, 'hop' | 'cheer' | 'wave' | 'sad' | 'nod' | 'shake' | 'wiggle' | 'flip', { times, speed, stay }) animates the drawn parts of a monster that is already on screen
   // (body, arms, ears, tail, shadow, mouth). A new move replaces the one that is running. Returns { stop, done }.
   // react(svgRoot, 'correct' | 'wrong' | 'hello' | 'levelup' ...) picks a move for a classroom moment. Nothing is drawn again, so shop items stay in place.
   const RIG_MOVES = ['hop', 'cheer', 'wave', 'sad', 'nod', 'shake', 'wiggle', 'flip'];
@@ -4322,9 +4322,10 @@
     rigStop(root);
     const P = rigParts(root), anims = [], n = Math.max(1, Number(opts.times) || 1);
     const speed = Math.max(0.4, Number(opts.speed) || 1);
+    const stay = !!opts.stay;   // stay: true = only arms, ears, tail and mouth move (the page already moves or jumps the whole monster)
     const A = (els, frames, ms, extra) => {
       (Array.isArray(els) ? els : [els]).forEach(el => {
-        if (!el) return;
+        if (!el || (stay && (el === P.body || el === P.shadow))) return;
         anims.push(el.animate(frames, Object.assign({ duration: ms / speed, easing: 'ease-in-out', iterations: n }, extra || {})));
       });
     };
