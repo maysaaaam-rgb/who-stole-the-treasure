@@ -35,3 +35,22 @@
 .gm-zoom-big img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 20px; }
 .gm-zoom-big .gm-emoji { font-size: clamp(8rem, 56vh, 26rem); line-height: 1; }
 .gm-zoom-x { position: fixed; top: 14px; right: 18px; font-size: 2rem; color: #fff; }
+
+/* points and looks */
+.gm-tile.gm-vc:not(.used) { background: var(--vc) !important; }
+.gm-vlegend { display: inline-flex; gap: 4px; margin-left: 8px; }
+.gm-vlegend i { font-style: normal; font-weight: 800; font-size: .85rem; color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .35); min-width: 2.1em; text-align: center; border-radius: 999px; padding: 1px 8px; border: 2px solid var(--line, #1f2a44); }
+body.gm-noscore .gm-score, body.gm-noscore .gm-float { display: none !important; }
+
+/* game over: the winning monster dances (everybody dances when the scores are hidden) */
+.gm-pmon { position: relative; }
+.gm-pmon.dance { animation: gmDance 1s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes gmDance { 0%, 100% { transform: translateY(0) rotate(-4deg) scale(1, 1); } 25% { transform: translateY(-22px) rotate(0) scale(.96, 1.06); } 50% { transform: translateY(0) rotate(4deg) scale(1.06, .94); } 75% { transform: translateY(-14px) rotate(0) scale(1, 1); } }
+.gm-crown { position: absolute; left: 50%; top: -30px; transform: translateX(-50%) rotate(-8deg); font-size: 2.6rem; line-height: 1; pointer-events: none; animation: gmCrown 1.3s ease-in-out infinite alternate; filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .25)); }
+@keyframes gmCrown { from { transform: translateX(-50%) rotate(-12deg) translateY(0); } to { transform: translateX(-50%) rotate(8deg) translateY(-8px); } }
+.gm-pcol.win .gm-pmon::after { content: ""; position: absolute; left: 50%; bottom: 4%; width: 90%; height: 16%; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse, rgba(255, 224, 102, .75), transparent 70%); z-index: -1; }
+.gm-celebrate { display: flex; flex-wrap: wrap; gap: clamp(12px, 3vw, 40px); justify-content: center; align-items: flex-end; padding: 10px; }
+.gm-cel { --c: #38bdf8; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.gm-cel:nth-child(2n) .gm-pmon.dance { animation-delay: .25s; }
+.gm-cel:nth-child(3n) .gm-pmon.dance { animation-delay: .5s; }
+@media (prefers-reduced-motion: reduce) { .gm-pmon.dance, .gm-crown { animation: none; } }

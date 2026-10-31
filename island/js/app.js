@@ -233,9 +233,11 @@
         '<div class="isl-pill xp-cap" id="isl-xp-pill"><span>⚡ Today: ' + todayXP + ' / ' + cap + ' XP</span></div>' +
       '</div>' +
       '<div class="isl-actions-row">' +
+        '<button type="button" class="isl-btn amber" id="isl-btn-book" onclick="IslandRewards.openStickerBook()" title="Sticker Book">📒 Book</button>' +
+        '<button type="button" class="isl-btn emerald" id="isl-btn-corner" onclick="IslandRewards.openCorner()" title="My Beach Corner">🏖️ Corner</button>' +
         '<button type="button" class="isl-btn violet" id="isl-btn-dress" onclick="IslandApp.openDressingRoom()">👕 Dress Up</button>' +
         '<button type="button" class="isl-btn" id="isl-btn-mute" onclick="IslandApp.toggleMute()" title="Sound On/Off">' + (muted ? '🔇' : '🔊') + '</button>' +
-        '<button type="button" class="isl-btn" id="isl-btn-home" onclick="IslandApp.goHome()" title="Island Map">🏠</button>' +
+        '<button type="button" class="isl-btn" id="isl-btn-home" onclick="IslandApp.goHome()" title="Platform Home">🏠</button>' +
       '</div>';
   }
 
@@ -279,9 +281,9 @@
           '<button type="button" class="isl-pin" id="pin-' + esc(m.id) + '" ' +
             'style="left:calc(50% + ' + off.dx + 'px);top:calc(50% + ' + off.dy + 'px)" ' +
             (unlocked ? 'onclick="IslandApp.tapPin(\'' + esc(m.id) + '\',' + z.num + ',false,this)"' : 'disabled') +
-            ' title="' + esc(m.title) + '">' +
+            ' title="' + esc((root.IslandStory.plotOf(m.id) || m).title) + '">' +
             '<img class="isl-pin-bg" src="art/o_pin.webp" alt="">' +
-            '<span class="isl-pin-num">' + m.num + '</span>' +
+            '<span class="isl-pin-num gm-pin-icon">' + (root.IslandStory.plotOf(m.id) || { icon: m.num }).icon + '</span>' +
             (starTxt ? '<span class="isl-pin-stars">' + starTxt + '</span>' : '') +
           '</button>'
         );
@@ -328,7 +330,10 @@
       }
 
       return (
-        '<div class="isl-zone' + (unlocked ? '' : ' locked') + '" id="zone-' + z.num + '" style="left:' + z.pos.left + ';top:' + z.pos.top + '">' +
+        '<div class="isl-zone' + (unlocked ? '' : ' locked') + '" id="zone-' + z.num + '" style="left:' + z.pos.left + ';top:' + z.pos.top + ';--sleep:' + zoneSleep(z.num, zMissions.regular) + '">' +
+          '<div class="gm-zone-sleep"></div>' +
+          (chestOpened ? '<span class="gm-zone-life">🦋</span><span class="gm-zone-life">✨</span>' : '') +
+          '<button type="button" class="gm-zone-friend" onclick="IslandApp.tapZoneFriend(' + z.num + ')" aria-label="' + esc(root.IslandStory.CHARS[z.num].name) + '">' + root.IslandStory.charPic(z.num) + '</button>' +
           '<div class="isl-zone-header">' +
             '<img class="isl-zone-badge" src="art/' + z.badge + '.webp" alt="">' +
             '<div class="isl-zone-label">' +
@@ -344,6 +349,17 @@
       );
     }).join('');
 
+    var bottleHtml = '';
+    if (!ses.doc.bottleSeen || !ses.doc.bottleSeen[today]) {
+      bottleHtml =
+        '<div class="isl-shore-bottle" id="isl-shore-bottle" onclick="IslandRewards.openBottleModal()">' +
+          '<img src="art/o_bottle.webp" alt="Message in a Bottle">' +
+          '<span class="isl-bottle-tag">Pip\'s Note!</span>' +
+        '</div>';
+    }
+
+    var pipTipHtml = (root.IslandRewards && root.IslandRewards.renderPipTipBanner) ? root.IslandRewards.renderPipTipBanner(ses.doc) : '';
+
     var monsterHtml =
       '<div class="isl-map-monster" id="isl-map-monster" style="left:' + state.monsterPos.left + ';top:' + state.monsterPos.top + '" onclick="IslandApp.pokeMonster()">' +
         '<div class="isl-map-monster-sprite">' + renderMonsterHtml(86) + '</div>' +
@@ -352,9 +368,13 @@
 
     main.innerHTML =
       '<div class="isl-map-wrap" id="isl-map-wrap">' +
+        pipTipHtml +
         dailyBannerHtml +
         zonesHtml +
         monsterHtml +
+        bottleHtml +
+        '<div class="gm-map-pip"><button type="button" class="gm-map-pip-btn" id="gm-pip" onclick="IslandApp.tapPip()" aria-label="Captain Pip">' + root.IslandStory.charPic('pip') + '</button><div class="gm-bubble gm-bubble-mini" id="gm-pip-line" style="display:none"></div></div>' +
+        shellsHtml() +
       '</div>';
     preloadOpenZoneImages();
   }
@@ -441,17 +461,34 @@
     var res = awardIslandXP(10, 'chest-' + key);
     root.IslandAudio.playChest();
     root.IslandAudio.speak('Treasure chest opened! Plus ten XP!');
+    if (res.leveledUp && root.IslandRewards && root.IslandRewards.launchFireworks) {
+      root.IslandRewards.launchFireworks();
+    }
     renderTopBar();
     renderMap();
-    showRewardModal({
-      title: '🎉 Zone ' + zoneNum + ' Treasure Opened!',
-      stars: 3,
-      xpAdded: res.added,
-      capped: res.capped,
-      leveledUp: res.leveledUp,
-      newLevelInfo: res.newLevelInfo,
-      isChest: true
-    });
+    if (root.IslandRewards && root.IslandRewards.playZoneCutScene) {
+      root.IslandRewards.playZoneCutScene(zoneNum, function () {
+        showRewardModal({
+          title: '🎉 Zone ' + zoneNum + ' Treasure Opened!',
+          stars: 3,
+          xpAdded: res.added,
+          capped: res.capped,
+          leveledUp: res.leveledUp,
+          newLevelInfo: res.newLevelInfo,
+          isChest: true
+        });
+      });
+    } else {
+      showRewardModal({
+        title: '🎉 Zone ' + zoneNum + ' Treasure Opened!',
+        stars: 3,
+        xpAdded: res.added,
+        capped: res.capped,
+        leveledUp: res.leveledUp,
+        newLevelInfo: res.newLevelInfo,
+        isChest: true
+      });
+    }
   }
 
   /* Hop Monster to Pin & Open Mission */
@@ -505,6 +542,13 @@
         state.session.doc.wrongQueue = state.session.doc.wrongQueue.slice(-15);
       }
     }
+    if (root.IslandRewards && root.IslandRewards.recordWrongWord) {
+      var word = q.a || q.word || '';
+      var meaning = q.prompt || q.def || q.meaning || 'the answer';
+      if (word) {
+        root.IslandRewards.recordWrongWord(state.session.doc, word, meaning);
+      }
+    }
   }
 
   /* Start a Mission (Regular, Star Path, or Daily Quest) */
@@ -523,8 +567,23 @@
       sayUnlocked: false,
       sayHeardText: ''
     };
-    prepareCurrentStep();
-    renderMissionModal();
+    var run = state.missionRun;
+    run.zone = root.IslandGames.zoneOf(mission, getUnlockedZonesCount());
+    var steps = noStory() ? [] : root.IslandStory.missionSteps(mission, state.session && state.session.doc);
+    root.IslandStory.showScene({
+      steps: steps,
+      lastLabel: "Let's play! 🎮",
+      onDone: function () {
+        if (state.missionRun !== run) return;
+        root.IslandAudio.startAmbient(run.zone);
+        prepareCurrentStep();
+        renderMissionModal();
+      }
+    });
+  }
+
+  function noStory() {
+    return new URLSearchParams(root.location.search).get('nostory') === '1';
   }
 
   function prepareCurrentStep() {
@@ -533,6 +592,7 @@
     run.hadWrongOnCurrent = false;
     run.sayUnlocked = false;
     run.sayHeardText = '';
+    run.locked = false;
 
     var m = run.mission;
     var q = m.questions[run.qIndex];
@@ -677,9 +737,11 @@
         '</div>';
     }
 
+    bodyHtml = root.IslandGames.render(run, q, qType, renderMonsterHtml(100), bodyHtml, getUnlockedZonesCount());
+
     modalRoot.innerHTML =
       '<div class="isl-modal-backdrop" id="isl-mission-backdrop">' +
-        '<div class="isl-card-modal mission-bg">' +
+        '<div class="isl-card-modal mission-bg gm-card">' +
           '<div class="isl-mission-top">' +
             '<div style="font-size:1.2rem;font-weight:800">' + esc(m.icon || '🌟') + ' ' + esc(m.title) + '</div>' +
             '<div class="isl-progress-track"><div class="isl-progress-fill" style="width:' + pct + '%"></div></div>' +
@@ -689,6 +751,11 @@
           bodyHtml +
         '</div>' +
       '</div>';
+
+    if (root.IslandRewards && root.IslandRewards.maybeSpawnGoldenFish) {
+      var card = modalRoot.querySelector('.isl-card-modal');
+      if (card) root.IslandRewards.maybeSpawnGoldenFish(card);
+    }
   }
 
   function replayMissionAudio() {
@@ -707,14 +774,17 @@
     if (!q) return;
     var opts = q.options || [q.a];
     var picked = opts[optIdx];
+    if (run.locked) return;
 
     if (picked === q.a) {
+      run.locked = true;
       if (btnEl) btnEl.classList.add('correct');
       root.IslandAudio.playCorrect();
       if (!run.hadWrongOnCurrent) run.firstTryCorrect++;
+      root.IslandGames.onRight(run.zone, btnEl, run);
       setTimeout(function () {
-        advanceMissionStep();
-      }, 360);
+        if (state.missionRun === run) advanceMissionStep();
+      }, 980);
     } else {
       run.hadWrongOnCurrent = true;
       recordWrongQuestion(q);
@@ -724,6 +794,7 @@
         btnEl.classList.add('wobble');
       }
       root.IslandAudio.playSoftFail();
+      root.IslandGames.onWrong(run.zone, btnEl, run);
       if (run.mission && run.mission.isStar) {
         var correctBtn = document.querySelector('.isl-opt-btn[data-opt="' + esc(q.a) + '"]');
         if (correctBtn) {
@@ -775,6 +846,7 @@
         btnEl.classList.add('wobble');
       }
       root.IslandAudio.playSoftFail();
+      root.IslandGames.onWrong(run.zone, null, run);
       if (run.mission && run.mission.isStar) {
         var correctRight = document.querySelector('.isl-match-tile[data-match="' + esc(run.matchSelectedLeft) + '"]');
         if (correctRight) {
@@ -816,6 +888,7 @@
         btnEl.classList.add('wobble');
       }
       root.IslandAudio.playSoftFail();
+      root.IslandGames.onWrong(run.zone, null, run);
       if (run.mission && run.mission.isStar) {
         var expectedBtn = document.querySelector('#isl-build-bank [data-word="' + esc(expectedNext) + '"]');
         if (expectedBtn) {
@@ -856,10 +929,15 @@
 
   function completeSayStep() {
     var run = state.missionRun;
-    if (!run || !run.sayUnlocked) return;
+    if (!run || !run.sayUnlocked || run.locked) return;
+    run.locked = true;
     root.IslandAudio.playCorrect();
     run.firstTryCorrect++;
-    advanceMissionStep();
+    var sayQ = run.mission.questions[run.qIndex];
+    root.IslandGames.echo(sayQ && sayQ.text);
+    setTimeout(function () {
+      if (state.missionRun === run) advanceMissionStep();
+    }, 1250);
   }
 
   function advanceMissionStep() {
@@ -908,10 +986,15 @@
     }
 
     var nextTarget = findNextMissionTarget(m.id, !!m.isStar);
+    var stickerReward = (root.IslandRewards && root.IslandRewards.awardMissionSticker) ? root.IslandRewards.awardMissionSticker(doc, m.id, stars) : null;
     var res = awardIslandXP(rawXP, m.id);
     state.missionRun = null;
+    root.IslandAudio.stopAmbient();
     if (res.leveledUp) {
       root.IslandAudio.playLevelUp();
+      if (root.IslandRewards && root.IslandRewards.launchFireworks) {
+        root.IslandRewards.launchFireworks();
+      }
     } else if (res.streakBonus > 0) {
       root.IslandAudio.playStreak();
     } else {
@@ -927,8 +1010,12 @@
       leveledUp: res.leveledUp,
       newLevelInfo: res.newLevelInfo,
       streakBonus: res.streakBonus,
-      nextTarget: nextTarget
+      nextTarget: nextTarget,
+      stickerReward: stickerReward,
+      mission: m
     });
+    var said = root.IslandStory.thanks(m);
+    if (said) root.IslandAudio.speak(said.text);
   }
 
   function findNextMissionTarget(currentMissionId, isStar) {
@@ -974,15 +1061,32 @@
           'onclick="IslandApp.startNextMission(\'' + esc(info.nextTarget.id) + '\',' + info.nextTarget.zoneNum + ',' + (info.nextTarget.isStar ? 'true' : 'false') + ')">▶ Next mission</button>';
     }
 
+    var stickerHtml = '';
+    if (info.stickerReward && info.stickerReward.sticker) {
+      var st = info.stickerReward.sticker;
+      var isShiny = info.stickerReward.isShiny;
+      stickerHtml =
+        '<div id="isl-sticker-reward-banner" style="margin:12px 0;padding:12px;border-radius:18px;background:rgba(56,189,248,0.18);border:2px solid ' + (isShiny ? '#fde047' : '#38bdf8') + ';display:flex;align-items:center;gap:12px;text-align:left">' +
+          '<img src="art/' + esc(st.pic) + '.webp" style="width:58px;height:58px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4))" alt="">' +
+          '<div>' +
+            '<div style="font-size:0.8rem;font-weight:800;color:' + (isShiny ? '#fde047' : '#38bdf8') + '">' + (isShiny ? '✨ NEW SHINY STICKER!' : '📒 NEW STICKER UNLOCKED!') + '</div>' +
+            '<div style="font-size:1.1rem;font-weight:800;color:#f8fafc">' + esc(st.name) + '</div>' +
+            '<div style="font-size:0.82rem;color:#cbd5e1">' + esc(st.desc) + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
     modalRoot.innerHTML =
       '<div class="isl-modal-backdrop" id="isl-reward-backdrop">' +
         '<div class="isl-card-modal" style="max-width:520px;text-align:center">' +
+          (info.mission ? root.IslandStory.thanksHtml(info.mission) : '') +
           '<div style="font-size:3rem;margin-bottom:6px;animation:idleBob 1.4s ease-in-out infinite">' + starIcons + '</div>' +
           '<h2 style="margin:4px 0 8px;font-size:1.85rem">' + esc(info.title) + '</h2>' +
           '<div style="font-size:1.45rem;font-weight:800;color:#34d399;margin-bottom:8px" id="isl-reward-xp">+' + info.xpAdded + ' XP Earned!</div>' +
           (info.streakBonus ? '<div style="color:#fde68a;font-weight:700;margin-bottom:8px">🔥 Streak Bonus +' + info.streakBonus + ' XP!</div>' : '') +
           (info.capped ? '<div style="color:#bae6fd;font-size:0.98rem;font-weight:700;margin-bottom:10px" id="isl-cap-msg">Great work! Your monster is full of XP today. Come back tomorrow!</div>' : '') +
           lvlHtml +
+          stickerHtml +
           '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
             nextBtnHtml +
             '<button type="button" class="isl-btn emerald" id="isl-reward-continue" style="min-width:170px;margin-top:10px" onclick="IslandApp.closeModal()">Continue 🚀</button>' +
@@ -1145,8 +1249,62 @@
 
   function closeModal() {
     state.missionRun = null;
+    root.IslandAudio.stopAmbient();
     var modalRoot = document.getElementById('isl-modal-root');
     if (modalRoot) modalRoot.innerHTML = '';
+    maybePlayEnding();
+  }
+
+  function shellCount() {
+    var chests = (state.session && state.session.doc && state.session.doc.chests) || {};
+    return [1, 2, 3, 4].filter(function (n) { return chests['z' + n]; }).length;
+  }
+
+  function maybePlayEnding() {
+    var doc = state.session && state.session.doc;
+    if (!doc || shellCount() < 4 || (doc.story && doc.story.ending)) return;
+    doc.story = doc.story || {};
+    doc.story.ending = true;
+    doc.story.title = 'Island Hero';
+    root.IslandSync.saveIslandDoc(state.session);
+    root.IslandStory.playEnding(renderMonsterHtml(110), function () {
+      renderMap();
+    });
+  }
+
+  function tapZoneFriend(zoneNum) {
+    var c = root.IslandStory.CHARS[zoneNum];
+    var done = !!(state.session && state.session.doc && state.session.doc.chests && state.session.doc.chests['z' + zoneNum]);
+    root.IslandAudio.playTap();
+    root.IslandAudio.speak(done ? 'Thank you for my magic shell!' : 'Hello! I am ' + c.name + '. Please help me!');
+  }
+
+  function tapPip() {
+    var line = root.IslandStory.pipLine();
+    var el = document.getElementById('gm-pip-line');
+    root.IslandAudio.playTap();
+    root.IslandAudio.speak(line);
+    if (!el) return;
+    el.textContent = line;
+    el.style.display = 'block';
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+  }
+
+  function zoneSleep(zoneNum, missions) {
+    var doc = state.session.doc || {};
+    if (doc.chests && doc.chests['z' + zoneNum]) return 0;
+    if (!isZoneUnlocked(zoneNum)) return 1;
+    var done = missions.filter(function (m) { return doc.stars && doc.stars[m.id]; }).length;
+    return Math.round((1 - done / missions.length * 0.8) * 100) / 100;
+  }
+
+  function shellsHtml() {
+    var n = shellCount(), title = state.session.doc.story && state.session.doc.story.title;
+    var out = '';
+    for (var i = 0; i < 4; i++) out += '<span class="gm-shell' + (i < n ? ' on' : '') + '">' + root.IslandStory.pic('o_shell', '🐚') + '</span>';
+    return '<div class="gm-shells" id="gm-shells" aria-label="' + n + ' of 4 magic shells">' + out + (title ? ' 🏅 ' + esc(title) : ' ' + n + ' / 4') + '</div>';
   }
 
   function toggleMute() {
@@ -1160,6 +1318,21 @@
       return;
     }
     root.location.href = '../index.html';
+  }
+
+  function goToPassport() {
+    var ses = state.session;
+    if (ses && ses.isDemo) {
+      var curId = ses.student && ses.student.id;
+      var passDemo = 'demo-p3';
+      if (curId === 'demo-g4') passDemo = 'demo-p4';
+      if (curId === 'demo-star') passDemo = 'demo-p5';
+      root.location.href = '../passport/index.html?demo=' + passDemo;
+    } else if (ses && ses.code) {
+      root.location.href = '../passport/index.html?p=' + encodeURIComponent(ses.code);
+    } else {
+      root.location.href = '../passport/index.html';
+    }
   }
 
   function switchDemo(demoPupilId) {
@@ -1178,7 +1351,8 @@
     if (params.get('nowelcome') === '1') return;
     var seen = false;
     try { seen = localStorage.getItem('eaa_island_welcomed') === '1'; } catch (e) {}
-    if (seen) return;
+    if (seen) { maybePlayIntro(); return; }
+    if (!state.session.isDemo) { dismissWelcome(); return; }
 
     var modalRoot = document.getElementById('isl-modal-root');
     if (!modalRoot) return;
@@ -1216,6 +1390,16 @@
     try { localStorage.setItem('eaa_island_welcomed', '1'); } catch (e) {}
     root.IslandAudio.playTap();
     closeModal();
+    maybePlayIntro();
+  }
+
+  function maybePlayIntro() {
+    var doc = state.session && state.session.doc;
+    if (!doc || (doc.story && doc.story.intro) || noStory()) return;
+    doc.story = doc.story || {};
+    doc.story.intro = true;
+    if (!state.session.isDemo) root.IslandSync.saveIslandDoc(state.session);
+    root.IslandStory.playIntro(renderMonsterHtml(92), function () { renderMap(); });
   }
 
   function init() {
@@ -1228,7 +1412,7 @@
       ? root.IslandSync.loadDemoSession(demoPupil)
       : root.IslandSync.loadLiveSession(code);
 
-    loader.then(function (ses) {
+    root.IslandStory.ready.then(function () { return loader; }).then(function (ses) {
       state.session = ses;
       renderTopBar();
       renderMap();
@@ -1239,11 +1423,18 @@
   root.IslandApp = {
     init: init,
     state: function () { return state; },
+    getTodayXP: getTodayXP,
+    getEffectiveXP: getEffectiveXP,
+    renderMap: renderMap,
+    renderTopBar: renderTopBar,
     switchDemo: switchDemo,
     submitCode: submitCode,
     tapPin: tapPin,
+    monsterHtml: renderMonsterHtml,
     tapChest: tapChest,
     tapLockedZone: tapLockedZone,
+    tapZoneFriend: tapZoneFriend,
+    tapPip: tapPip,
     startDailyQuest: startDailyQuest,
     awardIslandXP: awardIslandXP,
     pokeMonster: pokeMonster,
@@ -1264,7 +1455,8 @@
     closeModal: closeModal,
     dismissWelcome: dismissWelcome,
     toggleMute: toggleMute,
-    goHome: goHome
+    goHome: goHome,
+    goToPassport: goToPassport
   };
 
   if (document.readyState === 'loading') {

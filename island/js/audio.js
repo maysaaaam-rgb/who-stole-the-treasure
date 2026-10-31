@@ -129,6 +129,59 @@
     });
   }
 
+  /* Bottle cork pop sound */
+  function playPop() {
+    if (muted) return;
+    var c = ensureCtx();
+    if (!c) return;
+    var now = c.currentTime;
+    var osc = c.createOscillator();
+    var gain = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.06);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.start(now);
+    osc.stop(now + 0.11);
+  }
+
+  /* Firework burst sound */
+  function playFirework() {
+    if (muted) return;
+    var c = ensureCtx();
+    if (!c) return;
+    var now = c.currentTime;
+    var osc = c.createOscillator();
+    var gain = c.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(60, now + 0.35);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+    // Sparkle tail
+    setTimeout(function () {
+      playSparkle();
+    }, 180);
+  }
+
+  /* High golden sparkle chime */
+  function playSparkle() {
+    if (muted) return;
+    var notes = [1046.50, 1318.51, 1567.98, 2093.00];
+    notes.forEach(function (f, i) {
+      playNote(f, i * 0.045, 0.28, 0.10, 'sine', 'triangle');
+    });
+  }
+
   /* Calibrated TTS Narration (rate: 0.88, pitch: 1.05, lang: en-US) */
   function speak(text) {
     if (muted || !text) return;
@@ -163,7 +216,71 @@
     return setMuted(!muted);
   }
 
+  /* Funny "boing" for a wrong answer in the games: two notes sliding up */
+  function playBoing() {
+    playNote(196, 0, 0.09, 0.05, 'sine', 'triangle');
+    playNote(330, 0.07, 0.16, 0.05, 'sine', 'triangle');
+  }
+
+  /* Echo Cave: the same little chord, three times, further away each time */
+  function playEcho() {
+    [0, 0.26, 0.52].forEach(function (t, i) {
+      var g = 0.09 / (i + 1);
+      playNote(392 - i * 40, t, 0.24, g, 'sine', 'triangle');
+      playNote(587 - i * 60, t + 0.02, 0.24, g * 0.7, 'sine', 'triangle');
+    });
+  }
+
+  /* Soft sound of each zone while its game is open: birds, waves, leaves, a low rumble */
+  var ambient = null;
+  function startAmbient(zone) {
+    stopAmbient();
+    var c = ensureCtx();
+    if (!c) return;
+    var len = c.sampleRate * 3, buf = c.createBuffer(1, len, c.sampleRate), data = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    var src = c.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+    var filter = c.createBiquadFilter(), gain = c.createGain();
+    var cfg = { 1: ['highpass', 3200, 0.006], 2: ['lowpass', 620, 0.03], 3: ['highpass', 2200, 0.009], 4: ['lowpass', 150, 0.05] }[zone] || ['lowpass', 500, 0.01];
+    filter.type = cfg[0];
+    filter.frequency.value = cfg[1];
+    gain.gain.value = cfg[2];
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(c.destination);
+    var lfo = null;
+    if (zone === 2) {
+      lfo = c.createOscillator();
+      var depth = c.createGain();
+      lfo.frequency.value = 0.16;
+      depth.gain.value = 0.016;
+      lfo.connect(depth);
+      depth.connect(gain.gain);
+      lfo.start();
+    }
+    src.start();
+    var chirps = (zone === 1 || zone === 3) ? setInterval(function () {
+      if (document.visibilityState !== 'visible' || Math.random() < 0.45) return;
+      playNote(1760 + Math.random() * 600, 0, 0.07, 0.012, 'sine', 'sine');
+      playNote(2200 + Math.random() * 500, 0.09, 0.07, 0.01, 'sine', 'sine');
+    }, 2600) : null;
+    ambient = { src: src, lfo: lfo, chirps: chirps, gain: gain };
+  }
+
+  function stopAmbient() {
+    if (!ambient) return;
+    try { ambient.src.stop(); ambient.gain.disconnect(); if (ambient.lfo) ambient.lfo.stop(); } catch (e) {}
+    if (ambient.chirps) clearInterval(ambient.chirps);
+    ambient = null;
+  }
+
   root.IslandAudio = {
+    playBoing: playBoing,
+    playEcho: playEcho,
+    startAmbient: startAmbient,
+    stopAmbient: stopAmbient,
     playCorrect: playCorrect,
     playSoftFail: playSoftFail,
     playTap: playTap,
@@ -172,6 +289,9 @@
     playChest: playChest,
     playLevelUp: playLevelUp,
     playStreak: playStreak,
+    playPop: playPop,
+    playFirework: playFirework,
+    playSparkle: playSparkle,
     speak: speak,
     isMuted: function () { return muted; },
     setMuted: setMuted,

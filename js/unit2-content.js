@@ -63,29 +63,63 @@
   }
 
   // ---- Simon Says: the single old library card is replaced by the Grade 3 and Grade 4 editions ----
-  function applySimonSplit() {
-    // Safe to run several times. Removes the retired single cards (old Simon Says, old Bamboozle games) and keeps
-    // the new Simon Says and Bamboozle cards identical to the library data.
-    var st = root.schoolStore || root.store, changed = false;
-    if (!st || !st.state || !Array.isArray(st.state.resources)) return false;
-    ['simon-says-classroom', 'baamboozle', 'bamboozle'].forEach(function (oldId) {
-      if (st.state.resources.some(function (r) { return r && r.id === oldId; })) {
-        if (st.deleteResource) st.deleteResource(oldId);
-        else st.state.resources = st.state.resources.filter(function (r) { return r && r.id !== oldId; });
-        changed = true;
-      }
-    });
-    var src = root.GAMES_DATA || root.GAMES_REGISTRY || [], fields = ['title', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'url', 'worksheet', 'worksheetRoute', 'worksheetUrl', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus', 'skills', 'category', 'categoryLabel', 'grade', 'categoryGroup'];
-    ['simon-says-grade3', 'simon-says-grade4', 'bamboozle-g3-u1', 'bamboozle-g3-u2', 'bamboozle-g4-u1', 'bamboozle-g4-u2', 'arcade-g3-u2', 'arcade-g4-u2', 'race-g3-u2', 'race-g4-u2', 'print-g3-u2', 'print-g4-u2', 'alley-fling', 'telephone-pictionary', 'forest-rangers-g4', 'swallow-gift-g4', 'chuseok-moon-g3', 'first-harvest-g3', 'chuseok-arcade-g3', 'revision-quest-g4-u12', 'worksheet-store-g4-u12', 'chuseok-cooking-g3', 'karaoke-stage', 'week-song-g4', 'watch-answer-bean-g3', 'money-l1-g3', 'money-l2-g3', 'changing-l1-g4', 'bear-l2-g4', 'money-l3-g3', 'money-l4-g3', 'ice-l3-g4', 'poem-l4-g4', 'week4-g4-captain', 'u4-g4-l1', 'u4-g3-l1', 'moon-song-g3', 'rev-g3-museum', 'rev-g4-teamwork', 'rev-g4-show', 'rev-u4-g3', 'rev-u4-g4', 'quiz-g4-u14', 'speak-g4-u4', 'class-reset', 'u4-g3-l3-mountain', 'u4-g3-l4-phonics', 'rev-g3-mountain', 'gamemaker-g3', 'gamemaker-g4', 'moon-hw-g3', 'u4-g3-l2', 'week4-g3-daphne', 'u3-g3-arctic-words', 'u3-g3-word-city', 'board-u3-g3-bear', 'board-u3-g4-money', 'bamboozle-g3-u3', 'shop-counter-g3-u3', 'arcade-g3-u3', 'race-g3-u3', 'bamboozle-g4-u3', 'arcade-g4-u3', 'race-g4-u3', 'alley-fling-u3', 'cars-l5-g4', 'unit3-money-mission', 'unit3-arctic-homework', 'unit3-g4-money-quiz-4skills', 'lingo-g3-u3-review', 'unit3-g3-quiz', 'unit3-g3-quiz-results', 'unit3-g4-quiz-results'].forEach(function (id) {
-      var def = src.filter(function (g) { return g && g.id === id; })[0], cur = st.state.resources.filter(function (r) { return r && r.id === id; })[0];
-      if (def && !cur) { st.state.resources.push(JSON.parse(JSON.stringify(def))); changed = true; }
-      else if (def && cur && (cur.description !== def.description || cur.route !== def.route || cur.grade !== def.grade)) { fields.forEach(function (f) { if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f])); }); changed = true; }
-    });
-    if (changed) { if (st.saveState) st.saveState(); if (st.notify) st.notify(); }
-    return changed;
+  function applySimonSplit() {
+    // Safe to run several times. Removes retired single cards and syncs all items & classification fields from GAMES_DATA.
+    var st = root.schoolStore || root.store, changed = false;
+    if (!st || !st.state || !Array.isArray(st.state.resources)) return false;
+    var retiredIds = [
+      'simon-says-classroom', 'baamboozle', 'bamboozle',
+      'chuseok-festival', 'harvest-feast', 'forest-safari', 'forest-adaptation', 'story-engine-forest',
+      'alice-homework', 'alice-quest', 'story-engine-alice', 'wonderland-lesson1', 'wonderland-lesson2', 'wonderland-lesson3',
+      'story', 'treasure', 'room-rescue', 'detective-prep', 'clil-lab', 'expedition',
+      'feelings', 'restaurant', 'neighbourhood', 'advice', 'predictions', 'phonics-adventure', 'jungle', 'camp-mystery', 'meme-rules',
+      'nasa-mission', 'solar-system', 'space-cadet', 'wildlife-detective', 'eco-engineers', 'ocean-cleaners', 'sound-detective', 'fantasy-creatures', 'monster-lab', 'monster-studio',
+      'smart-farm', 'robots', 'yesterday-detectives', 'young-inventor', 'brain-hackers', 'unit-1-diagnostic', 'wonderland-quiz-briefing', 'quiz-g3-u1-after-school-inventor'
+    ];
+    retiredIds.forEach(function (oldId) {
+      if (st.state.resources.some(function (r) { return r && r.id === oldId; })) {
+        if (st.deleteResource) st.deleteResource(oldId);
+        else st.state.resources = st.state.resources.filter(function (r) { return r && r.id !== oldId; });
+        changed = true;
+      }
+    });
+    var src = root.GAMES_DATA || root.GAMES_REGISTRY || [];
+    var fields = ['title', 'subtitle', 'type', 'track', 'unit', 'lessonOrder', 'gameKind', 'gameOrder', 'sectionOrder', 'isWorksheet', 'description', 'teacherInstructions', 'studentInstructions', 'tags', 'route', 'PlayableURL', 'url', 'worksheet', 'worksheetRoute', 'worksheetUrl', 'vocabulary', 'grammar', 'learningObjectives', 'topic', 'topics', 'languageFocus', 'skills', 'category', 'categoryLabel', 'grade', 'grades', 'categoryGroup'];
+    src.forEach(function (def) {
+      if (!def || !def.id) return;
+      var cur = st.state.resources.filter(function (r) { return r && r.id === def.id; })[0];
+      if (!cur) {
+        st.state.resources.push(JSON.parse(JSON.stringify(def)));
+        changed = true;
+      } else if (
+        cur.type !== def.type ||
+        cur.unit !== def.unit ||
+        cur.sectionOrder !== def.sectionOrder ||
+        cur.lessonOrder !== def.lessonOrder ||
+        cur.gameOrder !== def.gameOrder ||
+        cur.gameKind !== def.gameKind ||
+        cur.description !== def.description ||
+        cur.route !== def.route ||
+        cur.grade !== def.grade
+      ) {
+        fields.forEach(function (f) {
+          if (def[f] !== undefined) cur[f] = JSON.parse(JSON.stringify(def[f]));
+        });
+        changed = true;
+      }
+    });
+    if (changed) {
+      st.state.resources.sort(function (a, b) {
+        return ((a && a.sectionOrder) || 999) - ((b && b.sectionOrder) || 999);
+      });
+      if (st.saveState) st.saveState();
+      if (st.notify) st.notify();
+    }
+    return changed;
   }
   root.Unit2Content = { data: DATA, apply: apply, applyUnit1Fixes: applyUnit1Fixes, applySimonSplit: applySimonSplit };
-  if (typeof document !== 'undefined') {
+  if (typeof document !== 'undefined') {
+    try { applySimonSplit(); } catch (e) { /* ignore */ }
     var run = function () { try { var a = apply(), b = applyUnit1Fixes(), c = applySimonSplit(); if ((a || b || c) && root.renderCurrentView) root.renderCurrentView(); } catch (e) { console.warn('[Unit2Content]', e); } };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(run, 400); }); else setTimeout(run, 400);
     [6000, 13000].forEach(function (ms) { setTimeout(function () { try { if (applySimonSplit() && root.renderCurrentView) root.renderCurrentView(); } catch (e) { /* ignore */ } }, ms); });

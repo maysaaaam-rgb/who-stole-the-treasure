@@ -83,6 +83,29 @@
     base.chests = Object.assign({}, d1.chests || {}, d2.chests || {});
     base.dailyDone = Object.assign({}, d1.dailyDone || {}, d2.dailyDone || {});
     base.streakBonuses = Object.assign({}, d1.streakBonuses || {}, d2.streakBonuses || {});
+    base.bottleSeen = Object.assign({}, d1.bottleSeen || {}, d2.bottleSeen || {});
+    base.story = Object.assign({}, d1.story || {}, d2.story || {});
+
+    /* Stickers only ever add up: a sticker stays, and a shiny one stays shiny */
+    var st1 = (d1.collection && d1.collection.stickers) || {};
+    var st2 = (d2.collection && d2.collection.stickers) || {};
+    var allStickers = Object.assign({}, st1);
+    Object.keys(st2).forEach(function (id) {
+      var other = allStickers[id];
+      allStickers[id] = Object.assign({}, other || {}, st2[id], { shiny: !!((other && other.shiny) || st2[id].shiny) });
+    });
+    base.collection = { stickers: allStickers };
+
+    var allWrong = Object.assign({}, d1.repeatWrong || {});
+    Object.keys(d2.repeatWrong || {}).forEach(function (w) {
+      allWrong[w] = Math.max(Number(allWrong[w]) || 0, Number(d2.repeatWrong[w]) || 0);
+    });
+    base.repeatWrong = allWrong;
+
+    /* The corner and the review list are whole lists, so the newer copy wins */
+    var older = primary === d2 ? d1 : d2;
+    base.corner = primary.corner || older.corner || { items: [] };
+    base.wrongQueue = primary.wrongQueue || older.wrongQueue || [];
 
     if (String(d2.lookAt || '') >= String(d1.lookAt || '')) {
       base.look = d2.look !== undefined ? d2.look : (d1.look || null);

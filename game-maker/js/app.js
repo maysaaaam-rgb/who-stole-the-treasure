@@ -331,6 +331,7 @@
     }
     right.appendChild(seg('Question order', [['mix', 'Mixed'], ['order', 'In order', 'as in the set']], S.cfg.order === 'order' ? 'order' : 'mix', function (v) { S.cfg.order = v; save(); render(); }));
     right.appendChild(seg('Pictures', [['off', 'Normal'], ['zoom', 'Super Zoom', 'tap a picture to enlarge'], ['blur', 'Blur', 'slide to reveal']], S.cfg.pics || 'off', function (v) { S.cfg.pics = v; save(); render(); }));
+    right.appendChild(seg('Scores', [['show', 'Show'], ['on', 'Hide', 'play without keeping score']].map(function (o) { return [o[0] === 'on' ? 'on' : 'off', o[1], o[2]]; }), S.cfg.hide === 'on' ? 'on' : 'off', function (v) { S.cfg.hide = v; save(); render(); }));
     if (GM.rev) {
       right.appendChild(seg('Remember first', [[1, 'On', 'reminder before the game'], [0, 'Off']], S.cfg.rem === 0 ? 0 : 1, function (v) { S.cfg.rem = +v; save(); render(); }));
       right.appendChild(seg('Answer cards', [[0, 'Off'], [1, 'On', 'everybody answers on paper']], S.cfg.cards ? 1 : 0, function (v) { S.cfg.cards = +v; save(); render(); }));

@@ -3,72 +3,118 @@
 (function (root) {
   'use strict';
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  /* Ordered by Unit (Unit 4 -> Unit 3 -> Unit 2 -> Unit 1 -> Classroom/Extras -> Games),
+     and within each unit & grade in strict teaching sequence (Lesson 1 -> Lesson 2 -> ... -> Review -> Quiz/Printable/Homework). */
   var CATALOG = [
-    { id: 'u3-g3-quiz', icon: '📄', title: 'Unit 3 Paper Quiz: It Keeps Changing (Forms A and B, 100 points)', route: 'unit3-g3-quiz/index.html', g: 3, added: '2026-10-15' },
-    { id: 'u3-money-quiz-4skills', icon: '🪙', title: 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (25 Min • 2 Pages)', route: 'unit3-money-mission/quiz-4skills.html', g: 4, added: '2026-10-14' },
-    { id: 'lingo-g3-u3-review', icon: '🐲', title: 'It Keeps Changing: Monster Cast Journey Review (Unit 3)', route: 'lingo-g3-u3-review/index.html', g: 3, added: '2026-10-14' },
-    { id: 'u3-arctic-hw', icon: '🏔️', title: 'Unit 3 Homework: The Arctic Rescue (no-fail story adventure)', route: 'unit3-arctic-homework/index.html', g: 0, added: '2026-10-13' },
-    { id: 'u3-money-mission', icon: '🚀', title: 'Unit 3 Smartboard Mission: How Much Is It? (Among Us + 2P Tug-of-War)', route: 'unit3-money-mission/index.html', g: 0, added: '2026-10-13' },
-    { id: 'watch-bean-g3', icon: '🎬', title: 'Mr Bean: Super Trolley (watch and answer)', route: 'watch-answer/index.html', g: 3, added: '2026-10-07' },
-    { id: 'weeksong-g4', icon: '🎵', title: 'Week Song: learn, move, sing', route: 'week-song-g4/index.html', g: 4, added: '2026-10-07' },
-    { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 4, added: '2026-10-07' },
-    { id: 'karaoke-g3', icon: '🎤', title: 'Karaoke Stage (read one by one)', route: 'karaoke-stage/index.html', g: 3, added: '2026-10-07' },
-    { id: 'g3-cook1', icon: '🍡', title: 'Chuseok Treats Kitchen (Week 2, L1)', route: 'unit2-g3-cooking/index.html?lesson=1', g: 3, added: '2026-10-07' },
-    { id: 'g3-cook2', icon: '📺', title: 'Junior Chef Show (Week 2, L2)', route: 'unit2-g3-cooking/index.html?lesson=2', g: 3, added: '2026-10-07' },
-    { id: 'g3-show', icon: '🎬', title: 'Cooking Show presentations', route: 'unit2-g3-cooking/show.html', g: 3, added: '2026-10-07' },
-    { id: 'g4-rev', icon: '🧠', title: 'Revision Quest (Units 1 and 2)', route: 'unit12-revision-g4/index.html', g: 4, added: '2026-10-06' },
-    { id: 'g4-ws', icon: '📝', title: 'Worksheet and Class Store', route: 'unit12-worksheet-g4/index.html', g: 4, added: '2026-10-06' },
-    { id: 'g3-arcade', icon: '🎮', title: 'Chuseok Games Arcade Day', route: 'unit2-g3-lessons/index.html?lesson=3', g: 3, added: '2026-10-05' },
-    { id: 'g4-forest', icon: '🌲', title: 'Forest Rangers', route: 'unit2-forest-lessons/index.html?lesson=1', g: 4, added: '2026-10-05' },
-    { id: 'g4-swallow', icon: '🕊️', title: 'The Swallow’s Gift', route: 'unit2-forest-lessons/index.html?lesson=2', g: 4, added: '2026-10-05' },
-    { id: 'g3-moon', icon: '🌕', title: 'Chuseok Moon Feast', route: 'unit2-g3-lessons/index.html?lesson=1', g: 3, added: '2026-10-05' },
-    { id: 'g3-arctic', icon: '🐻‍❄️', title: 'Arctic Words (Unit 3, The Bear and I)', route: 'unit3-g3-arctic-words/index.html', g: 3, added: '2026-10-12' },
-    { id: 'g3-wordcity', icon: '🏙️', title: 'Word City (Unit 3)', route: 'unit3-g3-word-city/index.html', g: 3, added: '2026-10-12' },
-    { id: 'g3-board', icon: '🎲', title: 'Arctic Board Game (Unit 3, The Bear and I)', route: 'unit3-board-game/index.html?grade=3', g: 3, added: '2026-10-12' },
-    { id: 'g4-board', icon: '🎲', title: 'Money Board Game (Unit 3, How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, added: '2026-10-12' },
-    { id: 'rev-g4-teamwork', icon: '🏀', title: 'Grade 4 Review: Teamwork (book pp. 56-61): quiz, word shoot, put it in order', route: 'review-g4-teamwork/index.html', g: 4, added: '2026-10-19' },
-    { id: 'rev-g4-show', icon: '🎭', title: 'Grade 4 Review: Late for the Show (book pp. 62-70): curtain up, get Harry to the stage, spotlight, excuse round', route: 'review-g4-show/index.html', g: 4, added: '2026-10-20' },
-    { id: 'rev-u4-g3', icon: '🖼️', title: 'Unit 4 Review (Grade 3): remember it (words, order, cause and effect, quiz), games, speaking check', route: 'review-unit4/index.html?grade=3', g: 3, added: '2026-10-22' },
-    { id: 'rev-u4-g4', icon: '🏀', title: 'Unit 4 Review (Grade 4): remember it (words, order, cause and effect, quiz), games, speaking check', route: 'review-unit4/index.html?grade=4', g: 4, added: '2026-10-22' },
-    { id: 'quiz-g4-u14', icon: '📝', title: 'Grade 4 Units 1-4 Quiz (A/B): listening, words, reading, writing', route: 'quiz-g4-units1-4/index.html', g: 4, added: '2026-10-23' },
-    { id: 'speak-g4-u4', icon: '🎤', title: 'Grade 4 Speaking Check, Units 1-4: one pupil at a time', route: 'speaking-g4/index.html', g: 4, added: '2026-10-23' },
-    { id: 'rev-u14-g3', icon: '🔁', title: 'Units 1-4 Revision (Grade 3): Remember first, then mixed games in Game Maker (choose Monsters = your class, Answer cards = On)', route: 'game-maker/index.html?set=u14-g3&game=cannon', g: 3, added: '2026-10-24' },
-    { id: 'rev-u14-g4', icon: '🔁', title: 'Units 1-4 Revision (Grade 4): Remember first, then mixed games in Game Maker (Smart mix brings back what the class missed)', route: 'game-maker/index.html?set=smart-g4&game=cannon', g: 4, added: '2026-10-24' },
-    { id: 'rev-g4-1', icon: '✍️', title: 'Revision 1 (Grade 4): words and writing. Printable writing sheet, answer cards and exit tickets', route: 'revision-pack/g4-revision-1.html', g: 4, added: '2026-10-24' },
-    { id: 'rev-g4a-1', icon: '📖', title: 'Revision 1 (Grade 4A): reading and writing. Two reading texts, writing page, exit tickets and teacher key', route: 'revision-pack/g4a-revision-1.html', g: 4, added: '2026-10-25' },
-    { id: 'quiz-g3-u14', icon: '📝', title: 'Grade 3 Units 1-4 Diagnostic Quiz (A/B): listening, words, reading, writing, key and class record', route: 'quiz-g3-units1-4/index.html', g: 3, added: '2026-10-25' },
-    { id: 'rev-g3-1', icon: '✍️', title: 'Revision 1 (Grade 3): words and writing. Writing sheet with star levels, exit tickets and teacher key', route: 'revision-pack/g3-revision-1.html', g: 3, added: '2026-10-25' },
-    { id: 'rev-g3-2', icon: '📖', title: 'Revision 2 (Grade 3): reading and writing. Story, fact cards, writing page, exit tickets and teacher key', route: 'revision-pack/g3-revision-2.html', g: 3, added: '2026-10-25' },
-    { id: 'class-promise-paper', icon: '✍️', title: 'My Class Promise: paper to sign (2 per A4) and the class promise poster', route: 'class-reset/promise-paper.html', added: '2026-10-24' },
-    { id: 'class-reset', icon: '🚦', title: 'Our Class Plan (Monday reset): 3 rules, class traffic light, practice, promise', route: 'class-reset/index.html', added: '2026-10-24' },
-    { id: 'u4-g3-l3-mountain', icon: '🌋', title: 'Unit 4 Lesson 3: The Angry Mountain (pp. 65-69): volcano words, cause & effect gears, story theater, sail to the rescue ship', route: 'unit4-g3-angry-mountain/index.html', g: 3, added: '2026-10-21' },
-    { id: 'u4-g3-l4-phonics', icon: '🔤', title: 'Unit 4 Lesson 4: Phonics -nd & Think Together (pp. 70-71): reading check, 4 feeling corners, -nd letter factory, balloon pop, story train', route: 'unit4-g3-phonics-think/index.html', g: 3, added: '2026-10-21' },
-    { id: 'rev-g3-mountain', icon: '🌋', title: 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71): volcano words, cause & effect, sail to safety, -nd blends & think together', route: 'review-g3-mountain/index.html', g: 3, added: '2026-10-21' },
-    { id: 'gamemaker-g3', icon: '🎮', title: 'Game Maker: play any question list as a game (tile board, Plink-oh, Pumpkin Hunt) with the class monsters', route: 'game-maker/index.html', g: 3, added: '2026-10-20' },
-    { id: 'gamemaker-g4', icon: '🎮', title: 'Game Maker: play any question list as a game (tile board, Plink-oh, Pumpkin Hunt) with the class monsters', route: 'game-maker/index.html', g: 4, added: '2026-10-20' },
-    { id: 'rev-g3-museum', icon: '🔍', title: 'Grade 3 Review: The Mona Lisa Mystery (book pp. 56-59): look say act, sneak, Painting Race jigsaw (2 teams), story order bonus', route: 'review-g3-museum/index.html', g: 3, added: '2026-10-19' },
-    { id: 'moon-song-g3', icon: '🌕', title: 'Chuseok Moon Song: learn the video song, sing it in circles, sing and move (folk song festival)', route: 'chuseok-moon-song/index.html', g: 3, added: '2026-10-18' },
-    { id: 'moon-hw-g3', icon: '🏠', title: 'Moon Song Homework (5 minutes, link for the pupils)', route: 'chuseok-moon-homework/index.html', g: 3, added: '2026-10-18' },
-    { id: 'u4-g3-l1', icon: '🕵️', title: 'Unit 4 Case File 1: A Picture on the Wall (What Happened?, lesson 1)', route: 'unit4-g3-lessons/index.html?lesson=1', g: 3, added: '2026-10-19' },
-    { id: 'u4-g3-l2', icon: '🖼️', title: 'Unit 4 Case File 2: Where Is She? (What Happened?, lesson 2)', route: 'unit4-g3-lessons/index.html?lesson=2', g: 3, added: '2026-10-19' },
-    { id: 'u4-g4-l1', icon: '🏀', title: 'Unit 4 Team Players (We Can Do It, lesson 1)', route: 'unit4-g4-lessons/index.html', g: 4, added: '2026-10-19' },
-    { id: 'g4-captain', icon: '🐧', title: 'Captain Quiet’s Space Mission (Classroom Rules, Week 4)', route: 'week4-g4-captain-quiet/index.html', g: 4, added: '2026-10-09' },
-    { id: 'g3-daphne', icon: '🕵️', title: 'Daphne the School Detective (School Life, Week 4)', route: 'week4-g3-daphne/index.html', g: 3, added: '2026-10-09' },
-    { id: 'g4-ice3', icon: '💥', title: 'The Ice Cracks (Unit 3, Lesson 3)', route: 'unit3-g4-lessons/index.html?lesson=3', g: 3, added: '2026-10-09' },
-    { id: 'g4-poem4', icon: '🎤', title: 'Explore the Poem (Unit 3, Lesson 4)', route: 'unit3-g4-lessons/index.html?lesson=4', g: 3, added: '2026-10-09' },
-    { id: 'g3-money3', icon: '🚂', title: 'Money Changes (Unit 3, Lesson 3)', route: 'unit3-g3-lessons/index.html?lesson=3', g: 4, added: '2026-10-09' },
-    { id: 'g3-money4', icon: '🎰', title: 'Design the Next Money (Unit 3, Lesson 4)', route: 'unit3-g3-lessons/index.html?lesson=4', g: 4, added: '2026-10-09' },
-    { id: 'g4-change1', icon: '🧊', title: 'It Keeps Changing (Unit 3, Lesson 1)', route: 'unit3-g4-lessons/index.html?lesson=1', g: 3, added: '2026-10-08' },
-    { id: 'g4-bear2', icon: '🐻‍❄️', title: 'The Bear and I, part 1 (Unit 3, Lesson 2)', route: 'unit3-g4-lessons/index.html?lesson=2', g: 3, added: '2026-10-08' },
-    { id: 'g3-money1', icon: '💰', title: 'How Much Is It? (Unit 3, Lesson 1)', route: 'unit3-g3-lessons/index.html?lesson=1', g: 4, added: '2026-10-08' },
-    { id: 'g3-money2', icon: '⏳', title: 'Before Money Was Money (Unit 3, Lesson 2)', route: 'unit3-g3-lessons/index.html?lesson=2', g: 4, added: '2026-10-08' },
-    { id: 'g3-harvest', icon: '🌱', title: 'First Harvest', route: 'unit2-g3-lessons/index.html?lesson=2', g: 3, added: '2026-10-05' },
-    { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, added: '2026-10-04' },
-    { id: 'alice', icon: '🫖', title: 'Alice Tea Party practice', route: 'alice-party-home/party.html', g: 4, added: '2026-10-03' },
-    { id: 'alice-rehearsal', icon: '🎭', title: 'Alice Tea Party: rehearsal lessons', route: 'alice-party-rehearsal/index.html', g: 4, added: '2026-10-17' },
-    { id: 'alice-hub', icon: '🫖', title: 'Alice Tea Party HQ: party day plan, running order, cast and props, checklist, print', route: 'alice-party/index.html', g: 4, added: '2026-10-25' },
-    { id: 'library', icon: '🎮', title: 'Resource Library', view: 'library', g: 0 }
+    // =========================================================================
+    // UNIT 4 — GRADE 3 (What Happened? / The Mona Lisa & The Angry Mountain)
+    // =========================================================================
+    { id: 'u4-g3-l1', icon: '🕵️', title: 'Unit 4 Lesson 1 · Case File 1: A Picture on the Wall (What Happened?)', route: 'unit4-g3-lessons/index.html?lesson=1', g: 3, unit: 4, kind: 'lesson', order: 1, added: '2026-10-19' },
+    { id: 'u4-g3-l2', icon: '🖼️', title: 'Unit 4 Lesson 2 · Case File 2: Where Is She? (The Real Art Thief)', route: 'unit4-g3-lessons/index.html?lesson=2', g: 3, unit: 4, kind: 'lesson', order: 2, added: '2026-10-19' },
+    { id: 'rev-g3-museum', icon: '🔍', title: 'Unit 4 Review 1 · The Mona Lisa Mystery (pp. 56–59): Look Say Act, Sneak & Painting Jigsaw', route: 'review-g3-museum/index.html', g: 3, unit: 4, kind: 'review', order: 3, added: '2026-10-19' },
+    { id: 'u4-g3-l3-mountain', icon: '🌋', title: 'Unit 4 Lesson 3 · The Angry Mountain (pp. 65–69): Volcano Words, Cause & Effect, Story Theater', route: 'unit4-g3-angry-mountain/index.html', g: 3, unit: 4, kind: 'lesson', order: 4, added: '2026-10-21' },
+    { id: 'u4-g3-l4-phonics', icon: '🔤', title: 'Unit 4 Lesson 4 · Phonics -nd & Think Together (pp. 70–71): 4 Feeling Corners, Letter Factory & Story Train', route: 'unit4-g3-phonics-think/index.html', g: 3, unit: 4, kind: 'lesson', order: 5, added: '2026-10-21' },
+    { id: 'rev-g3-mountain', icon: '🌋', title: 'Unit 4 Review 2 · Reading 2: The Angry Mountain (pp. 64–71): Volcano Words, Sail to Safety & -nd Blends', route: 'review-g3-mountain/index.html', g: 3, unit: 4, kind: 'review', order: 6, added: '2026-10-21' },
+    { id: 'rev-u4-g3', icon: '🏆', title: 'Unit 4 Full Review (Grade 3): Words, Story Order, Cause & Effect, Quiz & Speaking Check', route: 'review-unit4/index.html?grade=3', g: 3, unit: 4, kind: 'review', order: 7, added: '2026-10-22' },
+    { id: 'quiz-g3-u14', icon: '📝', title: 'Units 1–4 Quiz (Grade 3, Forms A/B): Listening, Words, Reading, Writing, Key & Class Record', route: 'quiz-g3-units1-4/index.html', g: 3, unit: 4, kind: 'quiz', order: 10, added: '2026-10-25' },
+    { id: 'rev-g3-1', icon: '✍️', title: 'Unit 4 Printable Revision 1 (Grade 3): Words, Star-Level Writing Sheet, Exit Tickets & Key', route: 'revision-pack/g3-revision-1.html', g: 3, unit: 4, kind: 'printable', order: 11, added: '2026-10-25' },
+    { id: 'rev-g3-2', icon: '📖', title: 'Unit 4 Printable Revision 2 (Grade 3): Story, Fact Cards, Writing Page, Exit Tickets & Key', route: 'revision-pack/g3-revision-2.html', g: 3, unit: 4, kind: 'printable', order: 12, added: '2026-10-25' },
+
+    // =========================================================================
+    // UNIT 4 — GRADE 4 (Team Players & Late for the Show)
+    // =========================================================================
+    { id: 'u4-g4-l1', icon: '🏀', title: 'Unit 4 Lesson 1 · Team Players (We Can Do It, Match Day 1)', route: 'unit4-g4-lessons/index.html', g: 4, unit: 4, kind: 'lesson', order: 1, added: '2026-10-19' },
+    { id: 'rev-g4-teamwork', icon: '🏀', title: 'Unit 4 Review 1 · Teamwork (pp. 56–61): Quiz, Word Shoot & Story Order', route: 'review-g4-teamwork/index.html', g: 4, unit: 4, kind: 'review', order: 2, added: '2026-10-19' },
+    { id: 'rev-g4-show', icon: '🎭', title: 'Unit 4 Review 2 · Late for the Show (pp. 62–70): Curtain Up, Stage Run, Spotlight & Excuse Round', route: 'review-g4-show/index.html', g: 4, unit: 4, kind: 'review', order: 3, added: '2026-10-20' },
+    { id: 'rev-u4-g4', icon: '🏆', title: 'Unit 4 Full Review (Grade 4): Words, Story Order, Cause & Effect, Quiz & Speaking Check', route: 'review-unit4/index.html?grade=4', g: 4, unit: 4, kind: 'review', order: 4, added: '2026-10-22' },
+    { id: 'speak-g4-u4', icon: '🎤', title: 'Unit 4 Speaking Check (Units 1–4): One Pupil at a Time', route: 'speaking-g4/index.html', g: 4, unit: 4, kind: 'quiz', order: 10, added: '2026-10-23' },
+    { id: 'quiz-g4-u14', icon: '📝', title: 'Units 1–4 Quiz (Forms A/B): Listening, Words, Reading & Writing', route: 'quiz-g4-units1-4/index.html', g: 4, unit: 4, kind: 'quiz', order: 11, added: '2026-10-23' },
+    { id: 'rev-g4-1', icon: '✍️', title: 'Unit 4 Printable Revision 1: Words, Writing Sheet, Answer Cards & Exit Tickets', route: 'revision-pack/g4-revision-1.html', g: 4, unit: 4, kind: 'printable', order: 12, added: '2026-10-24' },
+    { id: 'rev-g4a-1', icon: '📖', title: 'Unit 4 Printable Revision 1 (Grade 4A): Two Reading Texts, Writing Page, Exit Tickets & Key', route: 'revision-pack/g4a-revision-1.html', g: 4, unit: 4, kind: 'printable', order: 13, added: '2026-10-25' },
+
+    // =========================================================================
+    // UNIT 3 — GRADE 3 (It Keeps Changing & The Bear and I)
+    // =========================================================================
+    { id: 'g4-change1', icon: '🧊', title: 'Unit 3 Lesson 1 · It Keeps Changing', route: 'unit3-g4-lessons/index.html?lesson=1', g: 3, unit: 3, kind: 'lesson', order: 1, added: '2026-10-08' },
+    { id: 'g4-bear2', icon: '🐻‍❄️', title: 'Unit 3 Lesson 2 · The Bear and I (Part 1)', route: 'unit3-g4-lessons/index.html?lesson=2', g: 3, unit: 3, kind: 'lesson', order: 2, added: '2026-10-08' },
+    { id: 'g4-ice3', icon: '💥', title: 'Unit 3 Lesson 3 · The Ice Cracks', route: 'unit3-g4-lessons/index.html?lesson=3', g: 3, unit: 3, kind: 'lesson', order: 3, added: '2026-10-09' },
+    { id: 'g4-poem4', icon: '🎤', title: 'Unit 3 Lesson 4 · Explore the Poem', route: 'unit3-g4-lessons/index.html?lesson=4', g: 3, unit: 3, kind: 'lesson', order: 4, added: '2026-10-09' },
+    { id: 'g4-cars5', icon: '🚗', title: 'Unit 3 Lesson 5 · Clean Cars', route: 'unit3-g4-lessons/index.html?lesson=5', g: 3, unit: 3, kind: 'lesson', order: 5, added: '2026-10-09' },
+    { id: 'g3-arctic', icon: '🐻‍❄️', title: 'Unit 3 Vocabulary Lab · Arctic Words (The Bear and I)', route: 'unit3-g3-arctic-words/index.html', g: 3, unit: 3, kind: 'lesson', order: 6, added: '2026-10-12' },
+    { id: 'g3-wordcity', icon: '🏙️', title: 'Unit 3 Word Builder · Word City: Find, Build & Open the Gate', route: 'unit3-g3-word-city/index.html', g: 3, unit: 3, kind: 'lesson', order: 7, added: '2026-10-12' },
+    { id: 'g3-daphne', icon: '🕵️', title: 'Unit 3 Week 4 · Daphne the School Detective (School Life)', route: 'week4-g3-daphne/index.html', g: 3, unit: 3, kind: 'lesson', order: 8, added: '2026-10-09' },
+    { id: 'lingo-g3-u3-review', icon: '🐲', title: 'Unit 3 Review · It Keeps Changing: Monster Cast Journey Review', route: 'lingo-g3-u3-review/index.html', g: 3, unit: 3, kind: 'review', order: 9, added: '2026-10-14' },
+    { id: 'u3-g3-quiz', icon: '📄', title: 'Unit 3 Paper Quiz: It Keeps Changing (Forms A & B, 100 pts)', route: 'unit3-g3-quiz/index.html', g: 3, unit: 3, kind: 'quiz', order: 10, added: '2026-10-15' },
+    { id: 'u3-arctic-hw', icon: '🏔️', title: 'Unit 3 Homework: The Arctic Rescue (No-Fail Story Adventure)', route: 'unit3-arctic-homework/index.html', g: 0, unit: 3, kind: 'homework', order: 11, added: '2026-10-13' },
+
+    // =========================================================================
+    // UNIT 3 — GRADE 4 (How Much Is It? & Money)
+    // =========================================================================
+    { id: 'g3-money1', icon: '💰', title: 'Unit 3 Lesson 1 · How Much Is It?', route: 'unit3-g3-lessons/index.html?lesson=1', g: 4, unit: 3, kind: 'lesson', order: 1, added: '2026-10-08' },
+    { id: 'g3-money2', icon: '⏳', title: 'Unit 3 Lesson 2 · Before Money Was Money', route: 'unit3-g3-lessons/index.html?lesson=2', g: 4, unit: 3, kind: 'lesson', order: 2, added: '2026-10-08' },
+    { id: 'g3-money3', icon: '🚂', title: 'Unit 3 Lesson 3 · Money Changes', route: 'unit3-g3-lessons/index.html?lesson=3', g: 4, unit: 3, kind: 'lesson', order: 3, added: '2026-10-09' },
+    { id: 'g3-money4', icon: '🎰', title: 'Unit 3 Lesson 4 · Design the Next Money', route: 'unit3-g3-lessons/index.html?lesson=4', g: 4, unit: 3, kind: 'lesson', order: 4, added: '2026-10-09' },
+    { id: 'g4-captain', icon: '🐧', title: 'Unit 3 Week 4 · Captain Quiet’s Space Mission (Classroom Rules)', route: 'week4-g4-captain-quiet/index.html', g: 4, unit: 3, kind: 'lesson', order: 5, added: '2026-10-09' },
+    { id: 'u3-money-quiz-4skills', icon: '🪙', title: 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (25 Min • 2 Pages)', route: 'unit3-money-mission/quiz-4skills.html', g: 4, unit: 3, kind: 'quiz', order: 10, added: '2026-10-14' },
+
+    // =========================================================================
+    // UNIT 2 — GRADE 3 (Chuseok Moon Feast & First Harvest)
+    // =========================================================================
+    { id: 'g3-moon', icon: '🌕', title: 'Unit 2 Lesson 1 · Chuseok Moon Feast', route: 'unit2-g3-lessons/index.html?lesson=1', g: 3, unit: 2, kind: 'lesson', order: 1, added: '2026-10-05' },
+    { id: 'g3-harvest', icon: '🌱', title: 'Unit 2 Lesson 2 · First Harvest', route: 'unit2-g3-lessons/index.html?lesson=2', g: 3, unit: 2, kind: 'lesson', order: 2, added: '2026-10-05' },
+    { id: 'g3-arcade', icon: '🎮', title: 'Unit 2 Lesson 3 · Chuseok Games Arcade Day', route: 'unit2-g3-lessons/index.html?lesson=3', g: 3, unit: 2, kind: 'lesson', order: 3, added: '2026-10-05' },
+    { id: 'g3-cook1', icon: '🍡', title: 'Unit 2 Week 2 L1 · Chuseok Treats Kitchen', route: 'unit2-g3-cooking/index.html?lesson=1', g: 3, unit: 2, kind: 'lesson', order: 4, added: '2026-10-07' },
+    { id: 'g3-cook2', icon: '📺', title: 'Unit 2 Week 2 L2 · Junior Chef Show', route: 'unit2-g3-cooking/index.html?lesson=2', g: 3, unit: 2, kind: 'lesson', order: 5, added: '2026-10-07' },
+    { id: 'g3-show', icon: '🎬', title: 'Unit 2 Speaking Show · Cooking Show Presentations', route: 'unit2-g3-cooking/show.html', g: 3, unit: 2, kind: 'lesson', order: 6, added: '2026-10-07' },
+    { id: 'watch-bean-g3', icon: '🎬', title: 'Unit 2 Video Lesson · Mr Bean: Super Trolley (Watch & Answer)', route: 'watch-answer/index.html', g: 3, unit: 2, kind: 'lesson', order: 7, added: '2026-10-07' },
+    { id: 'moon-song-g3', icon: '🌕', title: 'Unit 2 Song · Chuseok Moon Song (Ganggangsullae Circle Dance)', route: 'chuseok-moon-song/index.html', g: 3, unit: 2, kind: 'song', order: 8, added: '2026-10-18' },
+    { id: 'moon-hw-g3', icon: '🏠', title: 'Unit 2 Homework · Moon Song 5-Minute Home Practice', route: 'chuseok-moon-homework/index.html', g: 3, unit: 2, kind: 'homework', order: 9, added: '2026-10-18' },
+
+    // =========================================================================
+    // UNIT 2 — GRADE 4 (Forest Rangers & The Swallow's Gift)
+    // =========================================================================
+    { id: 'g4-forest', icon: '🌲', title: 'Unit 2 Lesson 1 · Forest Rangers', route: 'unit2-forest-lessons/index.html?lesson=1', g: 4, unit: 2, kind: 'lesson', order: 1, added: '2026-10-05' },
+    { id: 'g4-swallow', icon: '🕊️', title: 'Unit 2 Lesson 2 · The Swallow’s Gift', route: 'unit2-forest-lessons/index.html?lesson=2', g: 4, unit: 2, kind: 'lesson', order: 2, added: '2026-10-05' },
+    { id: 'g4-rev', icon: '🧠', title: 'Units 1 & 2 Review · Revision Quest (Grade 4)', route: 'unit12-revision-g4/index.html', g: 4, unit: 2, kind: 'review', order: 3, added: '2026-10-06' },
+    { id: 'weeksong-g4', icon: '🎵', title: 'Unit 2 Song · Week Song: Learn, Move, Sing', route: 'week-song-g4/index.html', g: 4, unit: 2, kind: 'song', order: 4, added: '2026-10-07' },
+    { id: 'g4-ws', icon: '📝', title: 'Units 1 & 2 Printable · Worksheet and Class Store', route: 'unit12-worksheet-g4/index.html', g: 4, unit: 2, kind: 'printable', order: 10, added: '2026-10-06' },
+
+    // =========================================================================
+    // UNIT 1 — GRADE 3 (Young Inventors) & GRADE 4 (Brain Power)
+    // =========================================================================
+    { id: 'u1-g3-inventor2', icon: '💡', title: 'Unit 1 Lesson 1 · The Inventor’s Odyssey: My Good Ideas Lab', route: 'good-ideas-lab/index.html', g: 3, unit: 1, kind: 'lesson', order: 1, added: '2026-09-22' },
+    { id: 'u1-g3-inventor3', icon: '🔬', title: 'Unit 1 Lesson 2 · Inventor Lab: What Does It Take to Be an Inventor?', route: 'inventor-lab/index.html', g: 3, unit: 1, kind: 'lesson', order: 2, added: '2026-09-25' },
+    { id: 'u1-g3-clara4', icon: '🕵️‍♀️', title: 'Unit 1 Lesson 3 · Clara’s Inventor Mystery & Challenge', route: 'clara-inventor/index.html', g: 3, unit: 1, kind: 'lesson', order: 3, added: '2026-09-28' },
+    { id: 'u1-g3-forge', icon: '⚙️', title: 'Unit 1 Lesson 4 · Inventor’s Forge: Build, Test & Improve', route: 'inventor-forge/index.html', g: 3, unit: 1, kind: 'lesson', order: 4, added: '2026-09-30' },
+    { id: 'u1-g4-brain2', icon: '⚡', title: 'Unit 1 Lesson 1 · The Day Your Brain Quit! — Can You Save Your Brain?', route: 'brain/index.html', g: 4, unit: 1, kind: 'lesson', order: 1, added: '2026-09-24' },
+    { id: 'u1-g4-brain3', icon: '📖', title: 'Unit 1 Lesson 2 · Brain Explorers: How Your Brain Reads', route: 'brain-explorers/index.html', g: 4, unit: 1, kind: 'lesson', order: 2, added: '2026-09-27' },
+
+    // =========================================================================
+    // CLASSROOM, DRAMA & SONGS (Unit 0)
+    // =========================================================================
+    { id: 'class-reset', icon: '🚦', title: 'Our Class Plan (Monday Reset): 3 Rules, Traffic Light, Practice & Promise', route: 'class-reset/index.html', g: 0, unit: 0, kind: 'lesson', order: 1, added: '2026-10-24' },
+    { id: 'alice-rehearsal', icon: '🎭', title: 'Alice Tea Party: Stage & Script Rehearsal Lessons', route: 'alice-party-rehearsal/index.html', g: 4, unit: 0, kind: 'lesson', order: 2, added: '2026-10-17' },
+    { id: 'alice', icon: '🫖', title: 'Alice Tea Party: Home & Class Practice', route: 'alice-party-home/party.html', g: 4, unit: 0, kind: 'homework', order: 3, added: '2026-10-03' },
+    { id: 'alice-hub', icon: '🫖', title: 'Alice Tea Party HQ: Party Day Plan, Running Order, Cast, Props & Print', route: 'alice-party/index.html', g: 4, unit: 0, kind: 'printable', order: 4, added: '2026-10-25' },
+    { id: 'class-promise-paper', icon: '✍️', title: 'My Class Promise: Printable Signing Sheet (2 per A4) & Poster', route: 'class-reset/promise-paper.html', g: 0, unit: 0, kind: 'printable', order: 5, added: '2026-10-24' },
+    { id: 'karaoke-g3', icon: '🎤', title: 'Karaoke Stage: Read & Sing One by One (Grade 3)', route: 'karaoke-stage/index.html', g: 3, unit: 0, kind: 'song', order: 6, added: '2026-10-07' },
+    { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage: Read & Sing One by One (Grade 4)', route: 'karaoke-stage/index.html', g: 4, unit: 0, kind: 'song', order: 7, added: '2026-10-07' },
+
+    // =========================================================================
+    // SMARTBOARD GAMES (Kept in CATALOG for Timetable lookup, filtered out of Lessons)
+    // =========================================================================
+    { id: 'gamemaker-g3', icon: '🎮', title: 'Game Maker (Grade 3): Tile Board, Plink-oh, Pumpkin Hunt & Class Monsters', route: 'game-maker/index.html', g: 3, unit: 0, kind: 'game', order: 1, added: '2026-10-20' },
+    { id: 'gamemaker-g4', icon: '🎮', title: 'Game Maker (Grade 4): Tile Board, Plink-oh, Pumpkin Hunt & Class Monsters', route: 'game-maker/index.html', g: 4, unit: 0, kind: 'game', order: 2, added: '2026-10-20' },
+    { id: 'rev-u14-g3', icon: '🔁', title: 'Units 1–4 Revision Game (Grade 3): Mixed Games in Game Maker', route: 'game-maker/index.html?set=u14-g3&game=cannon', g: 3, unit: 4, kind: 'game', order: 3, added: '2026-10-24' },
+    { id: 'rev-u14-g4', icon: '🔁', title: 'Units 1–4 Revision Game (Grade 4): Smart Mix in Game Maker', route: 'game-maker/index.html?set=smart-g4&game=cannon', g: 4, unit: 4, kind: 'game', order: 4, added: '2026-10-24' },
+    { id: 'u3-money-mission', icon: '🚀', title: 'Unit 3 Smartboard Game: How Much Is It? (Among Us + 2P Tug-of-War)', route: 'unit3-money-mission/index.html', g: 0, unit: 3, kind: 'game', order: 5, added: '2026-10-13' },
+    { id: 'g3-board', icon: '🎲', title: 'Unit 3 Arctic Board Game (The Bear and I)', route: 'unit3-board-game/index.html?grade=3', g: 3, unit: 3, kind: 'game', order: 6, added: '2026-10-12' },
+    { id: 'g4-board', icon: '🎲', title: 'Unit 3 Money Board Game (How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, unit: 3, kind: 'game', order: 7, added: '2026-10-12' },
+    { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, unit: 1, kind: 'game', order: 8, added: '2026-10-04' },
+    { id: 'library', icon: '📚', title: 'Lessons & Curriculum Library', view: 'library', g: 0, unit: 0, kind: 'nav', order: 99 }
   ];
+
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function find(id) { return CATALOG.filter(function (c) { return c.id === id; })[0] || null; }
@@ -100,14 +146,35 @@
     return '<div class="lesson-launch-list">' + t.list.map(launchHtml).join('') + '</div><button type="button" class="tt-btn small" onclick="Timetable.edit()">📅 Edit timetable</button>';
   }
 
-  /** Every lesson we have made for this class's grade, newest first (shown on the Classic Dashboard). */
+  /** Ordered lessons & reviews for this class's grade (Unit 4 -> Unit 1, Lesson 1 -> Review).
+      Standalone games, quizzes, printables, and homework are filtered out of the Lessons panel. */
   function lessonsHtml(cls) {
     var g = gradeOf(cls), now = Date.now();
-    var list = CATALOG.filter(function (c) { return c.added && (!c.g || !g || c.g === g); }).sort(function (a, b) { return a.added < b.added ? 1 : (a.added > b.added ? -1 : CATALOG.indexOf(a) - CATALOG.indexOf(b)); });
-    return '<div class="our-lessons">' + list.map(function (c) {
-      var isNew = now - new Date(c.added).getTime() < 7 * 86400000;
-      return '<a class="ol-card" href="' + esc(c.route) + '"><span class="ol-ic">' + c.icon + '</span><b>' + esc(c.title) + '</b>' + (isNew ? '<em>NEW</em>' : '') + '<i>▶</i></a>';
-    }).join('') + '</div>';
+    var list = CATALOG.filter(function (c) {
+      return c.route && (c.kind === 'lesson' || c.kind === 'review') && (!c.g || !g || c.g === g);
+    });
+    var units = [
+      { u: 4, label: '📘 Unit 4 — Current Unit (Lessons & Reviews in Order)' },
+      { u: 3, label: '📘 Unit 3 — Complete Unit Arc' },
+      { u: 2, label: '📘 Unit 2 — Complete Unit Arc' },
+      { u: 1, label: '📘 Unit 1 — Complete Unit Arc' },
+      { u: 0, label: '🌟 Classroom Reset & Drama Lessons' }
+    ];
+    var html = units.map(function (sec) {
+      var items = list.filter(function (c) { return (c.unit || 0) === sec.u; }).sort(function (a, b) {
+        return (a.order || 99) - (b.order || 99);
+      });
+      if (!items.length) return '';
+      var cards = items.map(function (c) {
+        var isNew = c.added && (now - new Date(c.added).getTime() < 7 * 86400000);
+        var badge = c.kind === 'review' ? '<em style="background:#f59e0b;color:#060911">REVIEW</em>' : (isNew ? '<em>NEW</em>' : '');
+        return '<a class="ol-card" href="' + esc(c.route) + '"><span class="ol-ic">' + c.icon + '</span><b>' + esc(c.title) + '</b>' + badge + '<i>▶</i></a>';
+      }).join('');
+      return '<div class="ol-unit-group" style="margin-bottom:14px">' +
+        '<div style="font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#38bdf8;margin:6px 0 8px">' + esc(sec.label) + '</div>' +
+        '<div class="our-lessons">' + cards + '</div></div>';
+    }).join('');
+    return html;
   }
 
   // ------------------------------------------------------------------ editor
@@ -122,7 +189,23 @@
     var m = modal(), cl = classes(), cur = ed.classId, tt = ed.tt[cur] || (ed.tt[cur] = {});
     var cls = cl.filter(function (c) { return c.id === cur; })[0], g = gradeOf(cls);
     var opts = CATALOG.filter(function (c) { return !c.g || !g || c.g === g; });
-    function sel(v) { return '<option value="">Other (type below)</option>' + opts.map(function (c) { return '<option value="' + c.id + '"' + (v === c.id ? ' selected' : '') + '>' + c.icon + ' ' + esc(c.title) + '</option>'; }).join(''); }
+    function sel(v) {
+      var groups = [
+        { label: '📘 Unit 4 Lessons & Reviews', filter: function (c) { return c.unit === 4 && c.kind !== 'game'; } },
+        { label: '📘 Unit 3 Lessons & Reviews', filter: function (c) { return c.unit === 3 && c.kind !== 'game'; } },
+        { label: '📘 Unit 2 Lessons & Reviews', filter: function (c) { return c.unit === 2 && c.kind !== 'game'; } },
+        { label: '📘 Unit 1 Lessons & Reviews', filter: function (c) { return c.unit === 1 && c.kind !== 'game'; } },
+        { label: '🌟 Classroom, Drama & Songs', filter: function (c) { return (c.unit || 0) === 0 && c.kind !== 'game'; } },
+        { label: '🎮 Smartboard Games', filter: function (c) { return c.kind === 'game'; } }
+      ];
+      return '<option value="">Other (type below)</option>' + groups.map(function (grp) {
+        var items = opts.filter(grp.filter);
+        if (!items.length) return '';
+        return '<optgroup label="' + esc(grp.label) + '">' + items.map(function (c) {
+          return '<option value="' + c.id + '"' + (v === c.id ? ' selected' : '') + '>' + c.icon + ' ' + esc(c.title) + '</option>';
+        }).join('') + '</optgroup>';
+      }).join('');
+    }
     var cols = [1, 2, 3, 4, 5].map(function (d) {
       var rows = (tt[d] || []).map(function (e, i) {
         return '<div class="tt-row"><input type="text" class="tt-time" value="' + esc(e.t || '') + '" placeholder="08:30" onchange="Timetable.set(' + d + ',' + i + ',\'t\',this.value)">' +

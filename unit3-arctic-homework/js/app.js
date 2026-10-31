@@ -202,8 +202,12 @@
   /* ==========================================================================
      XP & SUPABASE HOMEWORK SYNC
      ========================================================================== */
+  function cloudLocked() {
+    return !!(window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.cloudLocked);
+  }
+
   function pushStudentToCloud(student) {
-    if (!student) return;
+    if (!student || cloudLocked()) return;
     try {
       if (window.schoolCloudSync && typeof window.schoolCloudSync.saveStudent === 'function') {
         Promise.resolve(window.schoolCloudSync.saveStudent(student)).catch(() => {});
@@ -1500,9 +1504,9 @@
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;max-width:880px;margin:0 auto 24px;text-align:left;">
           <div style="padding:14px 16px;border-radius:16px;background:rgba(15,23,42,0.88);border:1px solid rgba(52,211,153,0.4);">
-            <div style="font-weight:900;color:#6ee7b7;font-size:0.86rem;">⭐ HOMEWORK XP SYNCED</div>
+            <div style="font-weight:900;color:#6ee7b7;font-size:0.86rem;">⭐ ${cloudLocked() ? 'HOMEWORK XP' : 'HOMEWORK XP SYNCED'}</div>
             <div style="font-size:1.35rem;font-weight:900;color:#f8fafc;margin-top:4px;">+${state.sessionXP} XP Earned</div>
-            <div style="font-size:0.78rem;color:#94a3b8;">Synced to ${escapeHtml(sName)} (${escapeHtml(state.classId)}) on Supabase</div>
+            <div style="font-size:0.78rem;color:#94a3b8;">${cloudLocked() ? `Show this screen to your teacher, ${escapeHtml(sName)}!` : `Synced to ${escapeHtml(sName)} (${escapeHtml(state.classId)}) on Supabase`}</div>
           </div>
           <div style="padding:14px 16px;border-radius:16px;background:rgba(15,23,42,0.88);border:1px solid rgba(56,189,248,0.4);">
             <div style="font-weight:900;color:#7dd3fc;font-size:0.86rem;">🎒 SURVIVAL TOOLS COLLECTED</div>

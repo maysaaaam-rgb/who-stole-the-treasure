@@ -123,6 +123,9 @@
       <a href="detectives/worksheet.html" class="link-btn btn-secondary" id="btn-worksheet">
         🖨️ Printable Case Dossier
       </a>
+      <a href="island/index.html?demo=1" class="link-btn btn-secondary" id="btn-island">
+        🏝️ Practice Island
+      </a>
       <a href="story-engine/index.html?story=alice" class="link-btn btn-secondary" id="btn-story">
         📖 Alice Story Engine
       </a>
@@ -144,6 +147,7 @@
       document.getElementById('btn-library').href = basePrefix + 'index.html#library';
       document.getElementById('btn-worksheet').href = basePrefix + 'detectives/worksheet.html';
       document.getElementById('btn-story').href = basePrefix + 'story-engine/index.html?story=alice';
+      if (document.getElementById('btn-island')) document.getElementById('btn-island').href = basePrefix + 'island/index.html?demo=1';
 
       let targetUrl = null;
       let targetName = '';
@@ -315,6 +319,12 @@
       } else if (pathname.includes('unit4-g3-phonics-think') || pathname.includes('phonics-think')) {
         targetUrl = basePrefix + 'unit4-g3-phonics-think/index.html';
         targetName = '🔤 Unit 4 Lesson 4: Phonics (-nd) & Think Together (pp. 70–71)';
+      } else if (pathname.includes('island') || pathname.includes('practice-island')) {
+        targetUrl = basePrefix + 'island/index.html';
+        targetName = '🏝️ Practice Island: Student Home Practice';
+      } else if (pathname.includes('passport') || pathname.includes('my-passport')) {
+        targetUrl = basePrefix + 'passport/index.html';
+        targetName = '🛂 My Passport: Student Booklets & Class Gallery';
       } else if (pathname.includes('library')) {
         targetUrl = basePrefix + 'index.html#library';
         targetName = 'ESL Academy Library';

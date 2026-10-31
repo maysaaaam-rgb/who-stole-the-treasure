@@ -140,7 +140,11 @@
     b.style.display = 'none';
     b.addEventListener('click', function () { A.play('tap'); T.scoreEditor(); });
     homeB.parentNode.insertBefore(b, homeB);
-    function sync() { b.style.display = document.body.classList.contains('gm-on-play') ? '' : 'none'; }
+    function sync() {
+      var cl = document.body.classList; b.style.display = cl.contains('gm-on-play') ? '' : 'none';
+      var want = !!(GM.state && GM.state.cfg && GM.state.cfg.hide === 'on' && cl.contains('gm-on-play'));   // Hide Score: play without scores
+      if (cl.contains('gm-noscore') !== want) cl.toggle('gm-noscore', want);
+    }
     try { new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] }); } catch (e) { /* old browser */ }
     sync();
   }

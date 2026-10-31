@@ -336,15 +336,17 @@
     var lastReact = document.querySelector('.gm-react'); if (lastReact) lastReact.remove();   // the sticker of the last answer does not cover the podium
     var order = teams.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) { return b.t.score - a.t.score; });
     var tie = order.length > 1 && order[0].t.score === order[1].t.score;
-    var wrap = h('div', { class: 'gm-end' }, [h('div', { class: 'gm-end-title' }, [art('ui_trophy', '🏆', 'gm-trophy'), h('h2', { text: tie ? 'It is a tie!' : (order[0] ? order[0].t.name + ' wins!' : 'Game over!') })])]);
-    var pod = h('div', { class: 'gm-podium' });
-    [1, 0, 2].forEach(function (k) {
-      var o = order[k]; var col = h('div', { class: 'gm-pcol r' + k + (o ? '' : ' empty') });
-      if (o) { col.style.setProperty('--c', o.t.color); col.appendChild(h('div', { class: 'gm-pmon' }, [monFull(o.t.mon, k === 0 ? 170 : 130)])); col.appendChild(h('b', { class: 'gm-pname', text: o.t.name })); col.appendChild(h('span', { class: 'gm-pscore', text: o.t.score + ' points' })); }
+    var hide = !!(GM.state && GM.state.cfg && GM.state.cfg.hide === 'on');   // Hide Score: nobody wins, everybody dances
+    var wrap = h('div', { class: 'gm-end' }, [h('div', { class: 'gm-end-title' }, [art('ui_trophy', '🏆', 'gm-trophy'), h('h2', { text: hide ? 'Great game, everyone!' : (tie ? 'It is a tie!' : (order[0] ? order[0].t.name + ' wins!' : 'Game over!')) })])]);
+    var pod = h('div', { class: hide ? 'gm-celebrate' : 'gm-podium' }), top = order.length ? order[0].t.score : 0;
+    if (hide) teams.forEach(function (t) { var c = h('div', { class: 'gm-cel' }); c.style.setProperty('--c', t.color); c.appendChild(h('div', { class: 'gm-pmon dance' }, [monFull(t.mon, 150)])); c.appendChild(h('b', { class: 'gm-pname', text: t.name })); pod.appendChild(c); });
+    else [1, 0, 2].forEach(function (k) {
+      var o = order[k], win = !!o && o.t.score === top && (top > 0 || order.length === 1); var col = h('div', { class: 'gm-pcol r' + k + (o ? '' : ' empty') + (win ? ' win' : '') });
+      if (o) { col.style.setProperty('--c', o.t.color); var pm = h('div', { class: 'gm-pmon' + (win ? ' dance' : '') }, [monFull(o.t.mon, k === 0 ? 170 : 130)]); if (win) pm.appendChild(h('span', { class: 'gm-crown', text: '👑' })); col.appendChild(pm); col.appendChild(h('b', { class: 'gm-pname', text: o.t.name })); col.appendChild(h('span', { class: 'gm-pscore', text: o.t.score + ' points' })); }
       col.appendChild(h('div', { class: 'gm-pstep', text: String(k + 1) })); pod.appendChild(col);
     });
     wrap.appendChild(pod);
-    if (order.length > 3) wrap.appendChild(h('div', { class: 'gm-rest' }, order.slice(3).map(function (o, k) { var r = h('div', { class: 'gm-restrow' }, [h('b', { text: (k + 4) + '.' }), monFace(o.t.mon, 40), h('span', { text: o.t.name }), h('em', { text: o.t.score + ' points' })]); r.style.setProperty('--c', o.t.color); return r; })));
+    if (!hide && order.length > 3) wrap.appendChild(h('div', { class: 'gm-rest' }, order.slice(3).map(function (o, k) { var r = h('div', { class: 'gm-restrow' }, [h('b', { text: (k + 4) + '.' }), monFace(o.t.mon, 40), h('span', { text: o.t.name }), h('em', { text: o.t.score + ' points' })]); r.style.setProperty('--c', o.t.color); return r; })));
 
     /* how the class did first time, skill by skill (kept for when the teacher comes back from a practice round) */
     var sk = GM._skillsFor === GM.sessionMissed ? GM.sessionSkills : GM._endSkills; GM._endSkills = sk || null;

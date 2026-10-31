@@ -2,6 +2,7 @@
   "bg_island",
   "bg_mission",
   "bg_dressing",
+  "bg_my_corner",
   "z_meadow",
   "z_beach",
   "z_forest",
@@ -12,5 +13,16 @@
   "o_cloud_lock",
   "o_flame",
   "o_star_path",
-  "o_gift"
+  "o_gift",
+  "o_book",
+  "o_bottle",
+  "d_flag",
+  "d_sandcastle",
+  "d_palm",
+  "d_boat",
+  "d_lantern",
+  "d_hut",
+  "d_shell_pile",
+  "d_umbrella",
+  "o_golden_fish"
 ]
