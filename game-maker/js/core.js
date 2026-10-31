@@ -20,6 +20,40 @@
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function pic(p) { if (!p) return ''; return /\.(png|webp|jpe?g|gif|svg)/i.test(p) ? '<img alt="" src="' + p + '">' : '<span class="gm-emoji">' + p + '</span>'; }
 
+  /* A listening question keeps its sentence in item.speak. The old data also printed it after the question, so pupils could read the answer
+     instead of listening. Show only the question and say the sentence (the data itself stays as it was, so the revision history keeps working). */
+  function qText(item) {
+    var q = String((item && item.q) || ''), s = item && item.speak;
+    if (s && /^Listen\./i.test(q)) { var tail = '\uD83D\uDD0A \u201C' + s + '\u201D', i = q.lastIndexOf(tail); if (i > 0) return q.slice(0, i).replace(/\s+$/, ''); }
+    return q;
+  }
+  function sayOf(item) { var q = String((item && item.q) || ''); return (item && item.speak && /^Listen\./i.test(q)) ? String(item.speak) : q; }
+
+  /* ---- reaction stickers: the pupil's own monster with a big caption after an answer (never a harsh word) ---- */
+  var REACT = {
+    win: ['BOOM!', 'NICE ONE!', 'SUPER STAR!', 'BRAIN POWER!', 'YES YES YES!'],
+    phew: ['PHEW! YES!', 'GOT IT!', 'SECOND TRY HERO!'],
+    miss: ['GOOD TRY!', 'NEXT TIME!', 'LEARNING TIME!', 'ALMOST!']
+  };
+  var reactTm = null;
+  function reaction(kind, who) {
+    var layer = document.getElementById('gm-fx'), caps = REACT[kind]; if (!layer || !caps || !who || !who.mon) return;
+    var old = layer.querySelector('.gm-react'); if (old) old.remove(); clearTimeout(reactTm);
+    var size = Math.round(Math.max(110, Math.min(250, (root.innerHeight || 800) * 0.25))), box = Math.round(size * 1.3);
+    var pic0 = h('div', { class: 'gm-react-pic' }, [monFull(who.mon, size)]); pic0.style.width = pic0.style.height = box + 'px';
+    var el = h('div', { class: 'gm-react ' + kind }, [h('div', { class: 'gm-react-box' }, [pic0, h('div', { class: 'gm-react-cap', text: caps[Math.floor(Math.random() * caps.length)] })])]);
+    el.style.setProperty('--c', who.color || '#fde047'); layer.appendChild(el);
+    reactTm = setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1750);
+  }
+
+  /* ---- first-try results by skill for this game (shown on the podium) ---- */
+  var SK_E = { Listening: '\uD83C\uDFA7', Words: '\uD83D\uDCDD', Sounds: '\uD83D\uDD24', Sentences: '\uD83D\uDCAC', Reading: '\uD83D\uDCD6' };
+  function recordSkill(item, firstTry) {
+    if (!item || !item.skill) return;
+    var o = GM.sessionSkills[item.skill] = GM.sessionSkills[item.skill] || { n: 0, ok: 0 };
+    o.n++; if (firstTry) o.ok++;
+  }
+
   /* ---- art with a fallback: the file is used when it is in art/manifest.json, otherwise the emoji ---- */
   var ART = {};
   function hasArt(name) { return !!ART[name]; }
@@ -112,9 +146,11 @@
   function ask(item, team, opts) {
     opts = opts || {};
     item = item || { q: 'Ready?', a: 'Yes!', w: ['Not yet'] };
+    /* a new game starts with a new GM.sessionMissed list: that is the sign to start the skill results again (warm-up questions do not count) */
+    if (!/^Warm-up/.test(String(opts.label || '')) && GM._skillsFor !== GM.sessionMissed) { GM._skillsFor = GM.sessionMissed; GM.sessionSkills = {}; GM._endSkills = null; }
     return new Promise(function (resolve) {
       var pupilSub = (team && team.mon && team.mon.name) ? ('👤 ' + team.mon.name + (opts.label ? ' · ' + opts.label : '')) : (opts.label || '');
-      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), qWrap = h('div', { class: 'gm-qstack' }), q = h('div', { class: 'gm-q', text: item.q }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
+      var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-qcard' }), body = h('div', { class: 'gm-qbody' }), picBox = h('div', { class: 'gm-qpic', html: pic(item.pic) }), qWrap = h('div', { class: 'gm-qstack' }), q = h('div', { class: 'gm-q', text: qText(item) }), optBox = h('div', { class: 'gm-opts' }), foot = h('div', { class: 'gm-qfoot' }), msg = h('div', { class: 'gm-qmsg' });
       var timerEl = h('div', { class: 'gm-timer' }), head = h('div', { class: 'gm-qhead' }, [
         h('div', { class: 'gm-qmon' }, [monFull(team.mon, 92)]),
         h('div', { class: 'gm-qwho' }, [h('b', { text: team.name }), h('small', { text: pupilSub })]),
@@ -123,7 +159,7 @@
         btn('🔊', 'round sm', function () { A().speak(done ? spokenSentenceOf(item) : (item.speak || item.pass || item.q)); })
       ]);
       head.style.setProperty('--c', team.color); card.style.setProperty('--c', team.color);
-      var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false;
+      var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false, retried = false, orderReset = null, answerer = team && team.mon;
 
       if (item.pic) body.appendChild(picBox); else card.classList.add('nopic');
       if (item.pass) {
@@ -154,6 +190,7 @@
       function closeModal(resObj) {
         if (closed) return;
         closed = true;
+        if (resObj && !resObj.skipped && !resObj.cancelled) reaction(resObj.ok ? (resObj.second ? 'phew' : 'win') : 'miss', { mon: answerer, color: team && team.color });
         clearInterval(tm);
         clearTimeout(closeTm);
         over.classList.remove('in');
@@ -171,7 +208,7 @@
       }
 
       function finish(ok) {
-        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm);
+        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried);
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
         skipBtn.style.display = 'none';
@@ -183,7 +220,7 @@
         }
         if (ok) {
           A().play('right'); confetti(14); fx('sparkle_burst', card, 1.6);
-          msg.className = 'gm-qmsg ok'; msg.textContent = '✅ Well done, ' + team.name + '! Say the full sentence together!';
+          msg.className = 'gm-qmsg ok'; msg.textContent = (retried ? '✅ Got it on the second try, ' : '✅ Well done, ') + team.name + '! Say the full sentence together!';
         } else {
           A().play('soft'); wobble(card);
           msg.className = 'gm-qmsg soft'; msg.textContent = 'Good try! The answer is \u201c' + item.a + '\u201d.';
@@ -192,7 +229,7 @@
           }
         }
         var reviewDelay = opts.reviewDelay || (ok ? 1850 : 2800);
-        closeTm = setTimeout(function () { closeModal({ ok: ok }); }, reviewDelay);
+        closeTm = setTimeout(function () { closeModal({ ok: ok, second: !!ok && retried }); }, reviewDelay);
       }
 
       var show = btn('👀  Show the answers', 'huge amber', function () {
@@ -239,10 +276,12 @@
           });
           orderTray.appendChild(slotsEl);
           orderTray.appendChild(chipsEl);
+          orderReset = function () { picked.forEach(function (wObj) { wObj.btn.disabled = false; }); picked.length = 0; syncOrder(); };
           syncOrder();
         }
         var opts2 = shuffle([item.a].concat((item.w || []).slice(0, 3)).filter(Boolean));
-        optBox.className = 'gm-opts n' + opts2.length;
+        var picOpts = opts2.every(function (t) { return !/[A-Za-z0-9]/.test(t) && String(t).length <= 8; });
+        optBox.className = 'gm-opts n' + opts2.length + (picOpts ? ' big' : ''); card.classList.toggle('bigopts', picOpts);
         opts2.forEach(function (t, k) {
           var b = h('button', { type: 'button', class: 'gm-opt c' + k }, [h('span', { class: 'gm-optl', text: LETTERS[k] }), h('span', { class: 'gm-optt', text: t })]); b.dataset.ok = t === item.a ? '1' : '0';
           b.addEventListener('click', function () { if (done) return; A().play('tap'); choice = t; [].forEach.call(optBox.children, function (x) { x.classList.remove('sel'); }); b.classList.add('sel'); okBtn.style.display = ''; });
@@ -253,13 +292,27 @@
           tm = setInterval(function () { left--; timerEl.innerHTML = '<b>' + Math.max(0, left) + '</b>'; timerEl.style.setProperty('--p', String(Math.max(0, left) / opts.timer * 100)); if (left <= 3 && left > 0) { A().play('tick'); timerEl.classList.add('low'); } if (left <= 0) { clearInterval(tm); msg.textContent = '⏰ Time is up!'; finish(false); } }, 1000);
         }
       });
-      var okBtn = btn('✔  Okay!', 'huge green', function () { if (choice == null) return; finish(choice === item.a); }); okBtn.style.display = 'none';
+      /* second chance (Tile Board): a wrong answer greys out, the team tries again for half the points */
+      function tryAgain() {
+        retried = true; A().play('soft'); wobble(card);
+        [].forEach.call(optBox.children, function (b) { if (b.classList.contains('sel')) { b.classList.remove('sel'); b.classList.add('bad'); b.disabled = true; } });
+        if (orderReset) orderReset();
+        choice = null; okBtn.style.display = 'none';
+        msg.className = 'gm-qmsg soft'; msg.textContent = 'Not quite! Try again for half the points 💪';
+        if (GM.sessionMissed && item && item.q && !GM.sessionMissed.some(function (x) { return x.q === item.q; })) GM.sessionMissed.push(item);
+      }
+      var okBtn = btn('✔  Okay!', 'huge green', function () {
+        if (choice == null) return;
+        if (choice === item.a) return finish(true);
+        if (opts.retry && !retried && !done) return tryAgain();
+        finish(false);
+      }); okBtn.style.display = 'none';
       var sayTogetherBtn = btn('🗣️ Say it together 🔊', 'big amber', function () {
         clearTimeout(closeTm);
         A().speak(spokenSentenceOf(item));
       });
       sayTogetherBtn.style.display = 'none';
-      var nextBtn = btn('Continue ▶', 'big cyan', function () { closeModal({ ok: lastOutcome }); }); nextBtn.style.display = 'none';
+      var nextBtn = btn('Continue ▶', 'big cyan', function () { closeModal({ ok: lastOutcome, second: lastOutcome && retried }); }); nextBtn.style.display = 'none';
       var skipBtn = btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; closeModal({ ok: false, skipped: true }); });
       foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(sayTogetherBtn); foot.appendChild(nextBtn); foot.appendChild(skipBtn);
     });
@@ -270,13 +323,14 @@
     return new Promise(function (resolve) {
       var over = h('div', { class: 'gm-over' }), card = h('div', { class: 'gm-card gm-glass gm-pick' }, [h('div', { class: 'gm-q', text: title })]), row = h('div', { class: 'gm-pickrow' });
       teams.forEach(function (t, i) { if (i === exceptIdx) return; var b = h('button', { type: 'button', class: 'gm-btn gm-pickteam' }, [monFace(t.mon, 56), h('b', { text: t.name }), h('small', { text: t.score + ' points' })]); b.style.setProperty('--c', t.color); b.addEventListener('click', function () { A().play('tap'); over.remove(); resolve(i); }); row.appendChild(b); });
-      card.appendChild(row); over.appendChild(card); document.getElementById('gm-stage').appendChild(over);
+      card.appendChild(row); over.appendChild(card); document.getElementById('gm-stage').appendChild(over); setTimeout(function () { over.classList.add('in'); }, 16);
     });
   }
 
   /* ---- the end: podium with the monsters standing on it + missed questions replay ---- */
   function podium(teams, onAgain, onHome) {
     var stage = document.getElementById('gm-stage'); stage.innerHTML = '';
+    var lastReact = document.querySelector('.gm-react'); if (lastReact) lastReact.remove();   // the sticker of the last answer does not cover the podium
     var order = teams.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) { return b.t.score - a.t.score; });
     var tie = order.length > 1 && order[0].t.score === order[1].t.score;
     var wrap = h('div', { class: 'gm-end' }, [h('div', { class: 'gm-end-title' }, [art('ui_trophy', '🏆', 'gm-trophy'), h('h2', { text: tie ? 'It is a tie!' : (order[0] ? order[0].t.name + ' wins!' : 'Game over!') })])]);
@@ -288,6 +342,14 @@
     });
     wrap.appendChild(pod);
     if (order.length > 3) wrap.appendChild(h('div', { class: 'gm-rest' }, order.slice(3).map(function (o, k) { var r = h('div', { class: 'gm-restrow' }, [h('b', { text: (k + 4) + '.' }), monFace(o.t.mon, 40), h('span', { text: o.t.name }), h('em', { text: o.t.score + ' points' })]); r.style.setProperty('--c', o.t.color); return r; })));
+
+    /* how the class did first time, skill by skill (kept for when the teacher comes back from a practice round) */
+    var sk = GM._skillsFor === GM.sessionMissed ? GM.sessionSkills : GM._endSkills; GM._endSkills = sk || null;
+    var skRows = sk ? Object.keys(sk).filter(function (k) { return sk[k].n > 0; }).sort(function (a, b) { return sk[a].ok / sk[a].n - sk[b].ok / sk[b].n; }) : [];
+    if (skRows.length) wrap.appendChild(h('div', { class: 'gm-skills' }, [h('b', { class: 'gm-skills-t', text: 'How we did, first try' })].concat(skRows.map(function (k) {
+      var p = Math.round(sk[k].ok / sk[k].n * 100);
+      return h('div', { class: 'gm-sk' }, [h('span', { class: 'gm-sk-l', text: (SK_E[k] || '\uD83D\uDCDA') + ' ' + k }), h('span', { class: 'gm-sk-bar' }, [h('i', { style: 'width:' + p + '%' })]), h('span', { class: 'gm-sk-p', text: p + '% · ' + sk[k].ok + '/' + sk[k].n })]);
+    }))));
 
     var missed = (GM.sessionMissed || []).slice(0, 6);
     var actions = [btn('🔁  Play again', 'huge green', onAgain)];
@@ -476,5 +538,5 @@
   }
 
   GM.engine = { createSession: createSession, ease: EASE };
-  GM.u = { fx: fx, hasArt: hasArt, monFull: monFull, advanceTeamPupil: advanceTeamPupil, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
+  GM.u = { qText: qText, sayOf: sayOf, reaction: reaction, fx: fx, hasArt: hasArt, monFull: monFull, advanceTeamPupil: advanceTeamPupil, h: h, btn: btn, shuffle: shuffle, rand: rand, sleep: sleep, art: art, confetti: confetti, floatText: floatText, wobble: wobble, bump: bump, monFace: monFace, teamBar: teamBar, setScore: setScore, addScore: addScore, ask: ask, chooseTeam: chooseTeam, podium: podium, pic: pic };
 })(window);

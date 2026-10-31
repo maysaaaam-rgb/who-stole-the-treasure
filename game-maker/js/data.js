@@ -131,7 +131,8 @@
     { id: 'seesaw', e: '⚖️', n: 'Seesaw', d: 'Swap points', needs: 1, tier: 'good' },
     { id: 'gold', e: '💰', n: 'Gold', d: 'Win 50 points', tier: 'good', jr: 1 },
     { id: 'boom', e: '💣', n: 'Boom', d: 'Lose 50 points', tier: 'tricky' },
-    { id: 'gift', e: '🎁', n: 'Gift', d: 'Win 5-25 points', tier: 'good', jr: 1 }
+    { id: 'gift', e: '🎁', n: 'Gift', d: 'Win 5-25 points', tier: 'good', jr: 1 },
+    { id: 'again', e: '🔁', n: 'Extra turn', d: 'Pick another tile', tier: 'good', jr: 1 }
   ];
 
   GM.teamColors = ['#f97316', '#38bdf8', '#a855f7', '#10b981', '#f43f5e', '#f59e0b', '#06b6d4', '#84cc16'];

@@ -98,3 +98,36 @@
   .gm-qcard { overflow: auto; }
   .gm-qbody { flex: none; }
 }
+
+/* picture answers (emoji) are big, so everybody can see them from the back of the room */
+.gm-opts.big .gm-opt { justify-content: center; min-height: clamp(84px, 17vh, 170px); }
+.gm-opts.big .gm-optt { flex: none; font-size: clamp(3.4rem, 11vh, 7.5rem); line-height: 1; text-align: center; text-shadow: none; }
+.gm-opts.big .gm-optl { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+
+/* reaction sticker: the pupil's monster and a big caption, after an answer */
+.gm-react { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.gm-react-box { display: flex; flex-direction: column; align-items: center; animation: gmReact 1.75s var(--spring, cubic-bezier(.34, 1.56, .64, 1)) forwards; filter: drop-shadow(0 1.2vh 0 rgba(38, 33, 92, .35)); }
+.gm-react-pic { display: grid; place-items: center; background: #fff; border: .8vh solid var(--navy, #26215c); border-radius: 50%; box-shadow: inset 0 0 0 1.2vh var(--c, #fde047); overflow: hidden; }
+.gm-react-cap { font-family: Impact, "Arial Black", var(--font, sans-serif); font-weight: 900; font-size: clamp(2rem, 8vh, 5rem); letter-spacing: .04em; color: #fff; -webkit-text-stroke: 1vh var(--navy, #26215c); paint-order: stroke fill; margin-top: -1vh; text-align: center; }
+@keyframes gmReact { 0% { transform: scale(.2) rotate(-14deg); opacity: 0; } 14% { transform: scale(1.08) rotate(5deg); opacity: 1; } 24% { transform: scale(1) rotate(-3deg); } 80% { transform: scale(1) rotate(2deg); opacity: 1; } 100% { transform: scale(.9) rotate(0); opacity: 0; } }
+
+/* podium: how the class did first time, skill by skill: a panel beside the podium on wide screens, one compact row under it on narrow ones */
+.gm-end { position: relative; }
+.gm-skills { position: absolute; right: 2vw; top: 24%; width: min(250px, 20vw); background: rgba(255, 255, 255, .94); border: 4px solid var(--navy, #26215c); border-radius: 22px; padding: 8px 14px 10px; display: flex; flex-direction: column; gap: 7px; color: var(--navy, #26215c); }
+.gm-skills-t { font-size: clamp(.95rem, 2.4vh, 1.2rem); }
+.gm-sk { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; font-weight: 700; font-size: clamp(.85rem, 2.1vh, 1.05rem); }
+.gm-sk-l { grid-column: 1; grid-row: 1; white-space: nowrap; }
+.gm-sk-p { grid-column: 2; grid-row: 1; text-align: right; white-space: nowrap; }
+.gm-sk-bar { grid-column: 1 / -1; grid-row: 2; height: clamp(9px, 1.5vh, 16px); background: #e2e8f0; border-radius: 99px; overflow: hidden; border: 2px solid var(--navy, #26215c); }
+.gm-sk-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #22c55e, #86efac); }
+@media (max-width: 1280px) {
+  .gm-skills { position: static; width: auto; max-width: 94vw; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px 18px; padding: 3px 14px 4px; }
+  .gm-sk { display: flex; gap: 8px; }
+  .gm-sk-bar { width: clamp(70px, 9vw, 120px); flex: none; }
+}
+@media (prefers-reduced-motion: reduce) { .gm-react-box { animation-duration: .01s; } }
+
+/* with big picture answers the question picture gets smaller, so nothing overlaps */
+.gm-qcard.bigopts .gm-qpic { width: clamp(70px, 11vh, 130px); }
+.gm-qcard.bigopts .gm-qpic .gm-emoji { font-size: clamp(2.2rem, 6.5vh, 4.8rem); }
+.gm-qcard.bigopts .gm-opts.big .gm-opt { min-height: clamp(76px, 14vh, 150px); }

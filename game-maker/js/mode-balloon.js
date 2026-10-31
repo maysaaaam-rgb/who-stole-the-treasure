@@ -43,7 +43,7 @@
       var qbar = U().h('div', { class: 'gm-bal-qbar' });
       var qtext = U().h('div', { class: 'gm-bal-qtext' }, ['']);
       var speakBtn = U().btn('🔊 Listen', 'gm-btn', function () {
-        if (currentItem && A()) A().speak(currentItem.q);
+        if (currentItem && A()) A().speak(U().sayOf(currentItem));
       });
       qbar.appendChild(qtext);
       qbar.appendChild(speakBtn);
@@ -71,8 +71,8 @@
         if (phase === 'ended') return;
         phase = 'play';
         currentItem = ctx.nextItem();
-        qtext.textContent = '❓ ' + (currentItem.q || '');
-        if (A()) A().speak(currentItem.q);
+        qtext.textContent = '❓ ' + U().qText(currentItem);
+        if (A()) A().speak(U().sayOf(currentItem));
 
         var wrongs = (currentItem.w || []).slice(0, 3);
         var opts = U().shuffle([currentItem.a].concat(wrongs));

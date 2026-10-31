@@ -29,6 +29,7 @@
       case 'seesaw': if (tgt < 0) return 'Seesaw: nobody to swap with.'; S(me, T[tgt].score); S(tgt, mine); return 'Seesaw! You swap points with ' + tn + '.';
       case 'gold': S(me, mine + 50); return 'Gold! You win 50 points!';
       case 'boom': S(me, Math.max(0, mine - 50)); return 'Boom! You lose 50 points.';
+      case 'again': return 'Extra turn! Your team picks another tile.';
       case 'gift': r = amt(); S(me, mine + r); return 'A gift! You win ' + r + ' points!';
     }
     return '';
@@ -39,7 +40,8 @@
     fields: [
       { key: 'play', label: 'Game type', opts: [['quiz', 'Quiz', 'Questions only'], ['classic', 'Classic', 'Questions and power-ups'], ['jr', 'Classic Jr', 'Only friendly power-ups']], def: 'classic' },
       { key: 'grid', label: 'Number of tiles', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 },
-      { key: 'mystery', label: 'Mystery cards', opts: [['on', 'On', 'Instant mystery boxes + 2x golden tiles'], ['off', 'Off']], def: 'on' }
+      { key: 'mystery', label: 'Mystery cards', opts: [['on', 'On', 'Instant mystery boxes + 2x golden tiles'], ['off', 'Off']], def: 'on' },
+      { key: 'retry', label: 'Second chance', opts: [['on', 'On', 'Try again for half the points'], ['off', 'Off']], def: 'on' }
     ],
     start: function (ctx) {
       var cfg = ctx.cfg, root0 = ctx.root, n = +cfg.grid || 16, cols = COLS[n] || 4, mysOn = cfg.mystery !== 'off';
@@ -49,7 +51,9 @@
         data: { left: n, tiles: [], streaks: {} }
       });
       var pool = GM.powerups.filter(function (p) { return (cfg.pu || {})[p.id] !== false && (cfg.play === 'jr' ? p.jr : true); });
-      var tiles = eng.state.data.tiles, i;
+      var tiles = eng.state.data.tiles, i, extraTurn = false;
+      /* an Extra turn power-up keeps the turn with the same team (the next pupil of the team answers) */
+      function passTurn() { if (extraTurn) { extraTurn = false; eng.setTurn(eng.state.turn, true); } else eng.nextTurn(); }
       for (i = 0; i < n; i++) {
         var hasPu = (cfg.play !== 'quiz' && pool.length && Math.random() < 0.34) ? U().shuffle(pool)[0].id : null;
         var isInstantMystery = mysOn && cfg.play !== 'quiz' && hasPu && Math.random() < 0.38;
@@ -131,14 +135,14 @@
           await revealPowerUp(tl, tl.pu, true);
           if (!eng.state.alive) return;
           if (!eng.advanceRound()) return;
-          eng.nextTurn();
+          passTurn();
           eng.setPhase('action');
           renderBanner();
           return;
         }
 
         var label = 'Tile ' + (tl.i + 1) + (tl.golden ? ' · 🌟 2× Golden Tile (20 pts)!' : '');
-        var res = await eng.ask(tl.item, { label: label });
+        var res = await eng.ask(tl.item, { label: label, retry: cfg.retry !== 'off' });
         if (!eng.state.alive || res.cancelled) return;
         eng.setPhase('animating');
         tl.used = true;
@@ -147,9 +151,9 @@
         eng.state.data.left--;
 
         if (res.ok) {
-          var st = (eng.state.data.streaks[turn] || 0) + 1;
+          var st = res.second ? 0 : (eng.state.data.streaks[turn] || 0) + 1;
           eng.state.data.streaks[turn] = st;
-          var basePts = tl.golden ? 20 : 10;
+          var basePts = (tl.golden ? 20 : 10) / (res.second ? 2 : 1);
           var streakBonus = st >= 2 ? 5 : 0;
           var totPts = basePts + streakBonus;
 
@@ -174,7 +178,7 @@
 
         if (!eng.state.alive) return;
         if (!eng.advanceRound()) return;
-        eng.nextTurn();
+        passTurn();
         eng.setPhase('action');
         renderBanner();
       }
@@ -194,6 +198,7 @@
         card.appendChild(msg);
         over.appendChild(card);
         document.getElementById('gm-stage').appendChild(over);
+        setTimeout(function () { over.classList.add('in'); }, 16);   // without this the card stays invisible (the overlay starts at opacity 0)
 
         A().play(SND[id] || 'pu_good');
         J().shockwave(card, '#ffe066', 240, 520);
@@ -211,6 +216,7 @@
           over.style.display = '';
         }
         var text = applyPU(id, turn, target);
+        extraTurn = (id === 'again');
         msg.textContent = text;
         U().teamBar(T, turn);
         U().wobble(document.getElementById('gm-team-' + turn));
