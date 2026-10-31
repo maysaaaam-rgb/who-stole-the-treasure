@@ -75,7 +75,7 @@
 
   /* ---- effects ---- */
   function confetti(n) {
-    var layer = document.getElementById('gm-fx'); if (!layer) return; var em = (GM.state && GM.state.theme === 'halloween') ? ['🎃', '👻', '🦇', '⭐', '✨', '🕸️'] : ['⭐', '🎉', '✨', '🌟', '🎊'];
+    var layer = document.getElementById('gm-fx'); if (!layer) return; var th0 = GM.themes && GM.state && GM.themes[GM.state.theme], em = (th0 && th0.confetti) ? th0.confetti : (GM.state && GM.state.theme === 'halloween') ? ['🎃', '👻', '🦇', '⭐', '✨', '🕸️'] : ['⭐', '🎉', '✨', '🌟', '🎊'];
     for (var i = 0; i < (n || 26); i++) {
       var s = h('span', { class: 'gm-conf', text: em[i % em.length] }); s.style.left = Math.random() * 100 + 'vw'; s.style.fontSize = (16 + Math.random() * 22) + 'px'; s.style.animationDuration = (1.6 + Math.random() * 1.6) + 's'; s.style.animationDelay = Math.random() * 0.5 + 's';
       layer.appendChild(s); (function (x) { setTimeout(function () { if (x.parentNode) x.parentNode.removeChild(x); }, 3800); })(s);
@@ -159,9 +159,10 @@
         btn('🔊', 'round sm', function () { A().speak(done ? spokenSentenceOf(item) : (item.speak || item.pass || item.q)); })
       ]);
       head.style.setProperty('--c', team.color); card.style.setProperty('--c', team.color);
-      var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false, retried = false, orderReset = null, answerer = team && team.mon;
+      var choice = null, tm = null, closeTm = null, left = 0, done = false, closed = false, lastOutcome = false, retried = false, orderReset = null, answerer = team && team.mon, passBtn = null;
 
       if (item.pic) body.appendChild(picBox); else card.classList.add('nopic');
+      if (item.pic && GM.tools) GM.tools.pic(picBox, item, GM.state && GM.state.cfg);   // Super Zoom / Blur
       if (item.pass) {
         var passBox = h('div', { class: 'gm-qpass' }, [
           h('span', { class: 'gm-qpass-tag', text: '📖 Read' }),
@@ -208,7 +209,7 @@
       }
 
       function finish(ok) {
-        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried);
+        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried); if (picBox._reveal) picBox._reveal(); if (passBtn) passBtn.style.display = 'none';
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
         skipBtn.style.display = 'none';
@@ -314,7 +315,9 @@
       sayTogetherBtn.style.display = 'none';
       var nextBtn = btn('Continue ▶', 'big cyan', function () { closeModal({ ok: lastOutcome, second: lastOutcome && retried }); }); nextBtn.style.display = 'none';
       var skipBtn = btn('Skip ⏭', 'sm ghost', function () { if (done) return; done = true; closeModal({ ok: false, skipped: true }); });
-      foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(sayTogetherBtn); foot.appendChild(nextBtn); foot.appendChild(skipBtn);
+      /* Pass (Tile Board setting): the team hands the question to another team */
+      if (opts.pass) passBtn = btn('↪ Pass', 'sm ghost', function () { if (done) return; done = true; closeModal({ ok: false, skipped: true, passed: true }); });
+      foot.appendChild(show); foot.appendChild(okBtn); foot.appendChild(sayTogetherBtn); foot.appendChild(nextBtn); if (passBtn) foot.appendChild(passBtn); foot.appendChild(skipBtn);
     });
   }
 

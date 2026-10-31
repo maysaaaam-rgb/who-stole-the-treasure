@@ -1,0 +1,16 @@
+/* New skins (Space, Pirates, Ancient Egypt). Same variables as the Classic and Halloween skins; the pictures are optional
+   (when a file is missing the sky colour below shows). Cards stay light so the text is always easy to read. */
+body.th-space { --ink: #1d1b4f; --ink2: #5b5a93; --card: #ffffff; --card2: #f1efff; --line: #1d1b4f; --accent: #ffc531; --accentLip: #cf9300; --tile1: #6d5dfc; --tile2: #3aa8ff; --tile3: #b25dff; --tile4: #ff6fae;
+  --bgsky: linear-gradient(180deg, #0e1240 0%, #2a1d6e 60%, #4a2a8f 100%); --panel: rgba(255, 255, 255, .92); --shadow: 0 10px 0 rgba(8, 6, 40, .35), 0 18px 40px rgba(8, 6, 40, .45); }
+body.th-pirates { --ink: #3a2a18; --ink2: #7a5f3a; --card: #fffaf0; --card2: #fdf1da; --line: #3a2a18; --accent: #ff9f1c; --accentLip: #c26a00; --tile1: #1fa6b8; --tile2: #2ec4b6; --tile3: #e07a3f; --tile4: #c9922e;
+  --bgsky: linear-gradient(180deg, #7fe3f0 0%, #bff3f7 55%, #f6e2b3 100%); --panel: rgba(255, 250, 240, .92); --shadow: 0 10px 0 rgba(58, 42, 24, .18), 0 18px 40px rgba(58, 42, 24, .25); }
+body.th-egypt { --ink: #4a2f12; --ink2: #8a6a3d; --card: #fffaf0; --card2: #fbefd0; --line: #4a2f12; --accent: #f2b705; --accentLip: #b88600; --tile1: #c9922e; --tile2: #26a7a0; --tile3: #c9722f; --tile4: #3f8fd6;
+  --bgsky: linear-gradient(180deg, #ffe9a8 0%, #ffd27a 55%, #e8b04f 100%); --panel: rgba(255, 250, 240, .92); --shadow: 0 10px 0 rgba(74, 47, 18, .18), 0 18px 40px rgba(74, 47, 18, .25); }
+body.th-space .gm-bg::after { background: radial-gradient(circle at 12% 18%, rgba(255, 255, 255, .8) 0 .25%, transparent .4%), radial-gradient(circle at 34% 9%, rgba(255, 255, 255, .7) 0 .2%, transparent .35%), radial-gradient(circle at 58% 22%, rgba(255, 255, 255, .8) 0 .25%, transparent .4%), radial-gradient(circle at 78% 12%, rgba(255, 255, 255, .7) 0 .2%, transparent .35%), radial-gradient(circle at 90% 30%, rgba(255, 255, 255, .8) 0 .25%, transparent .4%); }
+body.th-pirates .gm-bg::after, body.th-egypt .gm-bg::after { opacity: .55; }
+body.th-space.gm-on-home .gm-bg::before, body.th-space.gm-on-setup .gm-bg::before, body.th-space.gm-on-end .gm-bg::before { background-image: url(../art/bg_space_menu.webp); }
+body.th-space.gm-on-play .gm-bg::before { background-image: url(../art/bg_space_board.webp); }
+body.th-pirates.gm-on-home .gm-bg::before, body.th-pirates.gm-on-setup .gm-bg::before, body.th-pirates.gm-on-end .gm-bg::before { background-image: url(../art/bg_pirates_menu.webp); }
+body.th-pirates.gm-on-play .gm-bg::before { background-image: url(../art/bg_pirates_board.webp); }
+body.th-egypt.gm-on-home .gm-bg::before, body.th-egypt.gm-on-setup .gm-bg::before, body.th-egypt.gm-on-end .gm-bg::before { background-image: url(../art/bg_egypt_menu.webp); }
+body.th-egypt.gm-on-play .gm-bg::before { background-image: url(../art/bg_egypt_board.webp); }

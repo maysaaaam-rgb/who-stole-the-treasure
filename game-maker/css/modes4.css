@@ -1,0 +1,62 @@
+/* Story Dice, Bingo and Guess-eroo */
+/* ---------- Story Dice ---------- */
+.gm-sd .gm-sd-table { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; gap: clamp(10px, 2vw, 28px); align-items: center; justify-content: center; padding: 6px; }
+.gm-sd-die { --d: clamp(120px, 26vh, 240px); width: var(--d); height: var(--d); background: linear-gradient(180deg, #fff, #eef3ff); border: 5px solid var(--line); border-bottom-width: 12px; border-radius: calc(var(--d) * .2); box-shadow: inset 0 6px 0 rgba(255, 255, 255, .9), 0 10px 18px rgba(0, 0, 0, .25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; overflow: hidden; }
+.gm-sd-table.mid .gm-sd-die { --d: clamp(100px, 21vh, 200px); }
+.gm-sd-table.small .gm-sd-die { --d: clamp(80px, 17vh, 160px); }
+.gm-sd-pic { display: grid; place-items: center; line-height: 1; }
+.gm-sd-pic .gm-emoji { font-size: calc(var(--d) * .5); }
+.gm-sd-pic img { width: calc(var(--d) * .62); height: calc(var(--d) * .62); object-fit: contain; }
+.gm-sd-word { font: 800 calc(var(--d) * .13) var(--font); color: var(--ink); text-align: center; line-height: 1.05; padding: 0 6px; }
+.gm-sd-q { font: 800 calc(var(--d) * .5) var(--font); color: #c5cbe0; }
+.gm-sd-die.roll { animation: gmSdRoll .14s linear infinite; }
+@keyframes gmSdRoll { 0%, 100% { transform: rotate(-8deg) translateY(-6px); } 50% { transform: rotate(8deg) translateY(4px); } }
+.gm-sd-die.land { animation: gmSdLand .5s var(--spring, cubic-bezier(.34, 1.56, .64, 1)); }
+@keyframes gmSdLand { 0% { transform: scale(.7) rotate(-10deg); } 60% { transform: scale(1.08) rotate(3deg); } 100% { transform: none; } }
+.gm-sd-tray { flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 2px 0 8px; }
+.gm-sd-row, .gm-sd-frames { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.gm-sd-frame, .gm-ge-frame { font: 700 clamp(.95rem, 2.4vh, 1.3rem) var(--font); background: rgba(255, 255, 255, .94); color: var(--ink); border: 3px solid var(--line); border-radius: 999px; padding: 6px 16px; cursor: pointer; }
+.gm-sd-ask { font-weight: 800; color: #fff; text-shadow: 0 2px 0 rgba(0, 0, 0, .35); font-size: clamp(1rem, 2.6vh, 1.5rem); }
+
+/* ---------- Bingo ---------- */
+.gm-bn-info { flex-wrap: wrap; }
+.gm-bn-clue { flex: 1; min-width: 12em; font: 800 clamp(1.2rem, 3.6vh, 2.4rem) var(--font); color: var(--ink); }
+.gm-bn-count, .gm-ge-count { margin-left: auto; color: var(--ink2); font-weight: 700; }
+.gm-bn-timer { font-weight: 800; font-size: 1.5rem; background: #fff4d6; border: 3px solid var(--line); border-radius: 50%; width: 2.2em; height: 2.2em; display: grid; place-items: center; }
+.gm-bn-grid { flex: 1; min-height: 0; display: grid; gap: clamp(6px, 1vw, 14px); padding: 4px clamp(0px, 2vw, 40px); }
+.gm-bn-sq { --c: #fff; font: 800 clamp(1.1rem, 3.6vh, 2.6rem) var(--font); color: var(--ink); background: linear-gradient(180deg, #fff, #eef3ff); border: 4px solid var(--line); border-bottom-width: 9px; border-radius: 20px; cursor: pointer; display: grid; place-items: center; padding: 4px 8px; text-align: center; line-height: 1.05; transition: transform .15s var(--spring, cubic-bezier(.34, 1.56, .64, 1)), background .2s; overflow: hidden; }
+.gm-bn-sq.emoji { font-size: clamp(2.4rem, 10vh, 6.4rem); }
+.gm-bn-sq.long { font-size: clamp(.9rem, 2.4vh, 1.6rem); }
+.gm-bn-grid.n5 .gm-bn-sq { font-size: clamp(1rem, 3vh, 2rem); }
+.gm-bn-grid.n5 .gm-bn-sq.emoji { font-size: clamp(1.8rem, 7vh, 4rem); }
+.gm-bn-sq:hover { transform: translateY(-3px); }
+.gm-bn-sq:active { transform: translateY(4px); border-bottom-width: 5px; }
+.gm-bn-sq.own { background: var(--c); color: #fff; text-shadow: 0 2px 0 rgba(0, 0, 0, .3); cursor: default; transform: none; }
+.gm-bn-sq.lost { background: #cbd5e1; color: #64748b; cursor: default; transform: none; }
+.gm-bn-sq.flash { animation: gmBnFlash .5s ease 3; }
+.gm-bn-sq.line { box-shadow: 0 0 0 5px #ffe066, 0 0 22px 6px rgba(255, 224, 102, .9); }
+@keyframes gmBnFlash { 50% { transform: scale(1.08); background: #ffe066; color: var(--ink); } }
+
+/* ---------- Guess-eroo ---------- */
+.gm-ge-frames { flex: none; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.gm-ge-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); gap: clamp(8px, 1.2vw, 16px); padding: 4px clamp(0px, 2vw, 40px); }
+.gm-ge-card { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: linear-gradient(180deg, #fff, #eef3ff); border: 4px solid var(--line); border-bottom-width: 10px; border-radius: 22px; cursor: pointer; font: 800 clamp(1rem, 3vh, 1.8rem) var(--font); color: var(--ink); overflow: hidden; transition: transform .15s var(--spring, cubic-bezier(.34, 1.56, .64, 1)), opacity .2s; }
+.gm-ge-card:active { transform: translateY(4px); border-bottom-width: 6px; }
+.gm-ge-e { font-size: clamp(2.2rem, 9vh, 5.5rem); line-height: 1; }
+.gm-ge-x { position: absolute; inset: 0; display: none; place-items: center; font-size: clamp(3rem, 12vh, 7rem); color: #ef4444; font-style: normal; background: rgba(255, 255, 255, .55); }
+.gm-ge-card.out { opacity: .55; filter: grayscale(.8); }
+.gm-ge-card.out .gm-ge-x { display: grid; }
+.gm-ge-grid.guessing .gm-ge-card:not(.out) { border-color: #ffb21a; animation: gmGeWig .55s ease-in-out infinite alternate; }
+@keyframes gmGeWig { from { transform: rotate(-1.5deg); } to { transform: rotate(1.5deg) translateY(-3px); } }
+.gm-ge-card.secret { background: #d9fbe3; box-shadow: 0 0 0 6px #22c55e, 0 0 24px 8px rgba(34, 197, 94, .6); opacity: 1; filter: none; animation: gmGeWin .6s var(--spring, cubic-bezier(.34, 1.56, .64, 1)); }
+.gm-ge-card.secret .gm-ge-x { display: none; }
+@keyframes gmGeWin { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.gm-ge-bar { flex: none; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding-bottom: 6px; }
+.gm-ge-peekbox { display: none; position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 60; background: #fff; border: 6px solid var(--line); border-radius: 28px; padding: 18px 34px; font: 800 clamp(2rem, 7vh, 4.4rem) var(--font); color: var(--ink); box-shadow: 0 18px 40px rgba(0, 0, 0, .45); pointer-events: none; }
+.gm-ge-peekbox.on { display: block; }
+.gm-ge-ans.y { color: #15803d; }
+.gm-ge-ans.n { color: #c2410c; }
+.gm-ge-ans { font-size: clamp(1.6rem, 5vh, 3rem); }
+@media (max-width: 760px) { .gm-ge-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .gm-sd-die.roll, .gm-ge-grid.guessing .gm-ge-card { animation: none; } }
+.gm-sd-word.only { font-size: calc(var(--d) * .2); }

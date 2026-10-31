@@ -41,7 +41,11 @@
       { key: 'play', label: 'Game type', opts: [['quiz', 'Quiz', 'Questions only'], ['classic', 'Classic', 'Questions and power-ups'], ['jr', 'Classic Jr', 'Only friendly power-ups']], def: 'classic' },
       { key: 'grid', label: 'Number of tiles', opts: [[8, '8'], [16, '16'], [24, '24'], [36, '36'], [48, '48']], def: 16 },
       { key: 'mystery', label: 'Mystery cards', opts: [['on', 'On', 'Instant mystery boxes + 2x golden tiles'], ['off', 'Off']], def: 'on' },
-      { key: 'retry', label: 'Second chance', opts: [['on', 'On', 'Try again for half the points'], ['off', 'Off']], def: 'on' }
+      { key: 'retry', label: 'Second chance', opts: [['on', 'On', 'Try again for half the points'], ['off', 'Off']], def: 'on' },
+      { key: 'anyone', label: 'Anyone can answer', opts: [['off', 'Off'], ['on', 'On', 'the teacher gives the points to any team']], def: 'off' },
+      { key: 'partial', label: 'Partial credit', opts: [['off', 'Off'], ['on', 'On', 'the teacher picks how many points']], def: 'off' },
+      { key: 'pass', label: 'Pass button', opts: [['off', 'Off'], ['on', 'On', 'a team can pass a question on']], def: 'off' },
+      { key: 'rnd', label: 'Random tile button', opts: [['off', 'Off'], ['on', 'On', 'a 🎲 button picks a tile']], def: 'off' }
     ],
     start: function (ctx) {
       var cfg = ctx.cfg, root0 = ctx.root, n = +cfg.grid || 16, cols = COLS[n] || 4, mysOn = cfg.mystery !== 'off';
@@ -51,9 +55,9 @@
         data: { left: n, tiles: [], streaks: {} }
       });
       var pool = GM.powerups.filter(function (p) { return (cfg.pu || {})[p.id] !== false && (cfg.play === 'jr' ? p.jr : true); });
-      var tiles = eng.state.data.tiles, i, extraTurn = false;
+      var tiles = eng.state.data.tiles, i, extraTurn = null;
       /* an Extra turn power-up keeps the turn with the same team (the next pupil of the team answers) */
-      function passTurn() { if (extraTurn) { extraTurn = false; eng.setTurn(eng.state.turn, true); } else eng.nextTurn(); }
+      function passTurn() { if (extraTurn != null) { var w = extraTurn; extraTurn = null; eng.setTurn(w, true); } else eng.nextTurn(); }
       for (i = 0; i < n; i++) {
         var hasPu = (cfg.play !== 'quiz' && pool.length && Math.random() < 0.34) ? U().shuffle(pool)[0].id : null;
         var isInstantMystery = mysOn && cfg.play !== 'quiz' && hasPu && Math.random() < 0.38;
@@ -97,6 +101,12 @@
           text: t.name + (t.mon && t.mon.name ? ' (' + t.mon.name + ')' : '') + ', pick a tile!  (' +
             (isFinal ? '🌟 FINAL TILE — 2× POINTS!' : eng.state.data.left + ' left') +
             (st >= 2 ? ' · 🔥 ' + st + ' streak' : '') + ')'
+        }));
+        if (cfg.rnd === 'on') info.appendChild(U().btn('🎲 Surprise me', 'sm amber', function () {
+          var open = tiles.filter(function (x) { return !x.used; });
+          if (!open.length || eng.state.phase !== 'action') return;
+          var pick = open[Math.floor(Math.random() * open.length)];
+          A().play('flip'); J().squash(pick.el, 1.16, 0.84, 240); playTile(pick);
         }));
         info.style.setProperty('--c', t.color);
         highlightFinalTile();
@@ -142,34 +152,49 @@
         }
 
         var label = 'Tile ' + (tl.i + 1) + (tl.golden ? ' · 🌟 2× Golden Tile (20 pts)!' : '');
-        var res = await eng.ask(tl.item, { label: label, retry: cfg.retry !== 'off' });
+        var askOpts = { label: label, retry: cfg.retry !== 'off', pass: cfg.pass === 'on' && eng.teams.length > 1 };
+        var res = await eng.ask(tl.item, askOpts);
         if (!eng.state.alive || res.cancelled) return;
+        var scorer = turn;
+        if (res.passed) {   /* the team passed: another team answers the same question */
+          var who = await U().chooseTeam('Pass the question to which team?', eng.teams, turn);
+          if (!eng.state.alive) return;
+          scorer = who;
+          res = await U().ask(tl.item, eng.teams[who], { timer: (+cfg.timer) || 0, label: label + ' · passed', retry: askOpts.retry });
+          if (!eng.state.alive || res.cancelled) return;
+        }
+        var basePts = (tl.golden ? 20 : 10) / (res.second ? 2 : 1), ok = !!res.ok, frac = 1;
+        if (cfg.anyone === 'on' || cfg.partial === 'on') {   /* the teacher decides who gets the points and how many */
+          var j = await GM.tools.judge({ teams: eng.teams, turn: scorer, anyone: cfg.anyone === 'on', partial: cfg.partial === 'on', ok: ok, base: basePts });
+          if (!eng.state.alive) return;
+          ok = j.team >= 0; if (ok) { scorer = j.team; frac = j.frac; }
+        }
         eng.setPhase('animating');
         tl.used = true;
         tl.el.classList.add('used');
         tl.el.disabled = true;
         eng.state.data.left--;
+        var sTeam = eng.teams[scorer];
 
-        if (res.ok) {
-          var st = res.second ? 0 : (eng.state.data.streaks[turn] || 0) + 1;
-          eng.state.data.streaks[turn] = st;
-          var basePts = (tl.golden ? 20 : 10) / (res.second ? 2 : 1);
-          var streakBonus = st >= 2 ? 5 : 0;
-          var totPts = basePts + streakBonus;
+        if (ok) {
+          var st = res.second ? 0 : (eng.state.data.streaks[scorer] || 0) + 1;
+          eng.state.data.streaks[scorer] = st;
+          var streakBonus = (st >= 2 && frac === 1) ? 5 : 0;
+          var totPts = Math.round(basePts * frac) + streakBonus;
 
-          tl.el.style.setProperty('--c', team.color);
+          tl.el.style.setProperty('--c', sTeam.color);
           tl.el.classList.add('won');
           tl.el.textContent = tl.pu ? '🎁' : (tl.golden ? '🌟' : '✓');
           J().squash(tl.el, 1.22, 0.8, 280);
-          J().shockwave(tl.el, tl.golden ? '#ffe066' : team.color, 110, 420);
-          J().sparks(tl.el, 16, [team.color, '#ffe066', '#ffffff'], 7);
+          J().shockwave(tl.el, tl.golden ? '#ffe066' : sTeam.color, 110, 420);
+          J().sparks(tl.el, 16, [sTeam.color, '#ffe066', '#ffffff'], 7);
           A().play('coin_collect'); if (tl.golden || streakBonus) A().play('sparkle');
           U().fx('smoke_puff', tl.el);
-          eng.award(turn, totPts, tl.el, (tl.golden ? '🌟 2× ' : '') + '+' + totPts + (streakBonus ? ' 🔥' : ''));
+          eng.award(scorer, totPts, tl.el, (tl.golden ? '🌟 2× ' : '') + '+' + totPts + (streakBonus ? ' 🔥' : ''));
           if (tl.pu) {
             await eng.wait(380);
             if (!eng.state.alive) return;
-            await revealPowerUp(tl, tl.pu, false);
+            await revealPowerUp(tl, tl.pu, false, scorer);
           }
         } else {
           eng.state.data.streaks[turn] = 0;
@@ -183,10 +208,10 @@
         renderBanner();
       }
 
-      async function revealPowerUp(tl, id, isMysteryCard) {
+      async function revealPowerUp(tl, id, isMysteryCard, who) {
         var pu = GM.powerups.filter(function (p) { return p.id === id; })[0];
         if (!pu) return;
-        var T = eng.teams, turn = eng.state.turn, target = -1;
+        var T = eng.teams, turn = who != null ? who : eng.state.turn, target = -1;
         var over = U().h('div', { class: 'gm-over' });
         var card = U().h('div', { class: 'gm-card gm-glass gm-pucard' }, [
           isMysteryCard ? U().h('div', { class: 'gm-mys-badge', text: '🃏 MYSTERY CARD!' }) : null,
@@ -216,7 +241,7 @@
           over.style.display = '';
         }
         var text = applyPU(id, turn, target);
-        extraTurn = (id === 'again');
+        extraTurn = (id === 'again') ? turn : null;
         msg.textContent = text;
         U().teamBar(T, turn);
         U().wobble(document.getElementById('gm-team-' + turn));
