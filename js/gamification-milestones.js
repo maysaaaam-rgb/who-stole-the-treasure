@@ -321,11 +321,20 @@
     // Render monster SVG or image on the illuminated stage
     let spriteMarkup = '👾';
     if (root.renderMonsterSVG) {
+      // The pupil's own monster, wearing what they chose (not the plain default), so the ceremony is about THEIR monster
+      let dressed = {};
+      try {
+        const prof0 = root.store && root.store.getMonsterProfile ? root.store.getMonsterProfile(std.id) : null;
+        if (prof0 && prof0.equipped) { dressed = Object.assign({}, prof0.equipped); delete dressed.background; delete dressed.aura; }
+        if (prof0 && prof0.baseColor) std.__ceremonyColor = prof0.baseColor;
+      } catch (e0) { dressed = {}; }
       spriteMarkup = root.renderMonsterSVG({
         stage: stageKey,
-        color: std.color || 'blue',
+        color: std.__ceremonyColor || std.color || 'blue',
+        equipped: dressed,
         size: 130,
-        animated: true
+        animated: true,
+        isAvatar: true
       });
     } else {
       spriteMarkup = '<div style="font-size: 5rem;">🐾✨</div>';
@@ -366,6 +375,17 @@
 
     // Trigger full-viewport confetti shower
     renderCeremonyConfetti();
+
+    // The monster celebrates: a flip when it appears, then cheers, then keeps wiggling and hopping until the overlay closes
+    try {
+      const RM = root.MonsterRenderer, live = overlay.querySelector('.ceremony-sprite-box svg');
+      if (RM && RM.play && live) {
+        const loop = ['hop', 'wiggle', 'cheer', 'wave'];
+        let n = 0;
+        const next = () => { if (!overlay.isConnected) return; RM.play(live, loop[n++ % loop.length]).done.then(() => setTimeout(next, 1400)); };
+        RM.play(live, 'flip').done.then(() => { RM.play(live, 'cheer', { times: 2 }).done.then(() => setTimeout(next, 900)); });
+      }
+    } catch (eRig) { /* the monster just stands there */ }
 
     // Wire button action
     const claimBtn = document.getElementById('btn-ceremony-claim');

@@ -12661,6 +12661,13 @@ window.switchClassroomSubTab = function(subTab) {
 
     renderCurrentView();
 
+    // The pupil's drawn monster cheers (or hops for a small award) on the card, then goes back to its picture
+    try {
+      const awardedCard = document.querySelector('.student-card[data-student-id="' + (s.id || studentId) + '"]');
+      const awardedImg = awardedCard && awardedCard.querySelector('img[src^="blob:"], img[src^="data:image/svg"]');
+      if (awardedImg && window.MonsterRenderer && window.MonsterRenderer.playOnImage) window.MonsterRenderer.playOnImage(awardedImg, parsedAmount >= 10 ? 'cheer' : 'hop');
+    } catch (eAct) { /* the card just stays still */ }
+
     if (document.getElementById('modal-student-profile')?.classList.contains('is-open') && currentProfileStudentId === studentId) {
       if (typeof window.openStudentDetail === 'function') {
         window.openStudentDetail(studentId, studentProfileActiveTab);

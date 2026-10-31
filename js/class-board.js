@@ -2,6 +2,11 @@
    a big timer, a class goal bar, a random picker and an absent toggle. Adds the view "board". */
 (function (root) {
   'use strict';
+  /* the drawn monsters can move: playOnImage swaps the picture for the live drawing for a moment (nothing happens for other kinds of pictures) */
+  var TAP_MOVES = ['wave', 'hop', 'wiggle', 'nod', 'cheer'], tapCount = 0;
+  function monMove(img, move) {
+    try { var R = root.MonsterRenderer; return !!(img && R && R.playOnImage && R.playOnImage(img, move)); } catch (e) { return false; }
+  }
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -489,14 +494,19 @@
         document.getElementById('cb-pt-' + id).textContent = me.xp.toLocaleString('en-US');
         var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
         var img = card.querySelector('img.cb-mon') || card.querySelector('img'); if (img && me.img && img.getAttribute('src') !== me.img) img.src = me.img;   // monster may have evolved
+        monMove(img, 'cheer');   // the drawn monster cheers for the award
       }
       paintGoal();
     },
     tapMonster: function (id, imgEl) {
       if (imgEl) {
-        imgEl.classList.remove('cb-bounce');
-        void imgEl.offsetWidth;
-        imgEl.classList.add('cb-bounce');
+        // a drawn monster answers the tap with its own move (wave, hop, wiggle, nod); other pictures still bounce
+        var moved = monMove(imgEl, TAP_MOVES[tapCount++ % TAP_MOVES.length]);
+        if (!moved) {
+          imgEl.classList.remove('cb-bounce');
+          void imgEl.offsetWidth;
+          imgEl.classList.add('cb-bounce');
+        }
       }
       if (!pupilSound(id)) {
         try {

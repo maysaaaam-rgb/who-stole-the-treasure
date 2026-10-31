@@ -4374,6 +4374,7 @@
       jump(20, 900);
       A(P.body, [{ transform: T(0, 0, 1, 1) }, { transform: T(0, -20, 0.02, 1.06), offset: 0.5 }, { transform: T(0, 0, 1, 1) }], 900);
     }
+    if (!anims.length && !stay && move === 'wiggle') return play(root, 'hop', opts);   // a monster with no ears or tail to wiggle hops instead
     root.__monAnims = anims;
     const done = Promise.all(anims.map(a => a.finished.catch(() => null))).then(() => { if (root.__monAnims === anims) rigStop(root); });
     return { stop: () => rigStop(root), done };
@@ -4381,6 +4382,33 @@
   function react(root, kind, opts) {
     const map = { correct: 'cheer', right: 'cheer', win: 'cheer', levelup: 'flip', wrong: 'sad', hello: 'wave', hi: 'wave', yes: 'nod', no: 'shake', idle: 'wiggle' };
     return play(root, map[kind] || kind, opts);
+  }
+
+  // The class pages show monsters as pictures (<img> with an SVG address), which cannot be animated from outside.
+  // playOnImage(img, move) puts the live drawing in the picture's place, plays the move, then puts the picture back.
+  // It does nothing for monsters that are not drawn ones (illustrated art, photos), so it is always safe to call.
+  function playOnImage(img, move, opts) {
+    try {
+      if (!img || !img.parentNode || typeof document === 'undefined' || !root.EAA_MONSTER_SVG || img.__monLive) return null;
+      const markup = root.EAA_MONSTER_SVG.get(img.getAttribute('src') || img.src);
+      if (!markup) return null;
+      const w = img.clientWidth || img.offsetWidth, h = img.clientHeight || img.offsetHeight;
+      if (!w || !h) return null;
+      const holder = document.createElement('span');
+      holder.className = (img.className || '') + ' eaa-monster-live';
+      holder.style.cssText = (img.getAttribute('style') || '') + ';display:inline-block;width:' + w + 'px;height:' + h + 'px;';
+      holder.innerHTML = markup;
+      const svg = holder.querySelector('svg');
+      if (!svg) return null;
+      svg.removeAttribute('width'); svg.removeAttribute('height');
+      svg.style.cssText = 'width:100%;height:100%;display:block;';
+      const was = img.style.display;
+      img.parentNode.insertBefore(holder, img); img.style.display = 'none'; img.__monLive = true;
+      const run = play(svg, move, opts);
+      const restore = () => { img.__monLive = false; img.style.display = was; if (holder.parentNode) holder.parentNode.removeChild(holder); };
+      run.done.then(restore, restore);
+      return run;
+    } catch (e) { return null; }
   }
 
   root.MonsterRenderer = {
@@ -4393,6 +4421,7 @@
     renderMonsterSVG: renderMonsterSVG,
     setMouth: setMouth,
     play: play,
+    playOnImage: playOnImage,
     react: react,
     MOVES: RIG_MOVES,
     talk: talk,
