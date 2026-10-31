@@ -1323,8 +1323,8 @@
 
   GM.modes.bowling = {
     id: 'bowling', name: 'Pumpkin Bowling', nameClassic: 'Bowling', e: '🎳',
-    desc: 'Answer right, then stand, aim and roll. Hit the pocket for a strike, and pick up your spare with the second ball!',
-    descClassic: 'Answer right, then stand, aim and roll. Hit the pocket for a strike, and pick up your spare with the second ball!',
+    desc: 'Answer right, then time 3 skill steps: Stand Position, Launch Angle (at the lane arrows), and Fast Power + Hook! Hit the 1-3 or 1-2 pocket for a strike — hitting dead-center leaves a split!',
+    descClassic: 'Answer right, then time 3 skill steps: Stand Position, Launch Angle (at the lane arrows), and Fast Power + Hook! Hit the 1-3 or 1-2 pocket for a strike — hitting dead-center leaves a split!',
     fields: [
       { key: 'frames', label: 'Frames for each team', opts: [[2, '2'], [3, '3'], [5, '5'], [8, '8']], def: 3 },
       { key: 'level', label: 'Difficulty', opts: [['easy', 'Easy'], ['normal', 'Normal'], ['hard', 'Hard']], def: 'normal' }
@@ -1332,10 +1332,10 @@
     start: function (ctx) {
       var st = GM.state, hal = st.theme === 'halloween';
       var LV = {
-        easy:   { s: 0.75, green: [0.60, 0.92], noise: 0.55 },
-        normal: { s: 1.15, green: [0.70, 0.88], noise: 1.00 },
-        hard:   { s: 1.60, green: [0.76, 0.86], noise: 1.40 }
-      }[ctx.cfg.level] || { s: 1.15, green: [0.70, 0.88], noise: 1.00 };
+        easy:   { s: 0.92, green: [0.66, 0.88], noise: 0.55 },
+        normal: { s: 1.28, green: [0.73, 0.85], noise: 1.00 },
+        hard:   { s: 1.65, green: [0.77, 0.84], noise: 1.35 }
+      }[ctx.cfg.level] || { s: 1.28, green: [0.73, 0.85], noise: 1.00 };
 
       var totalFrames = (+ctx.cfg.frames || 3) * st.teams.length;
       var eng = E().createSession(ctx, {
@@ -1527,8 +1527,8 @@
           g.fillRect(0, far.y, W, H - far.y);
         }
 
-        /* Draw neighboring lanes & main center lane (L = 0) */
-        for (var L = -2; L <= 2; L++) laneAt(L, now);
+        /* Draw main 3D perspective lane (L = 0) cleanly over bg_bowling_lane.webp */
+        laneAt(0, now);
 
         /* Side wall sconces / Halloween glowing lanterns in parallax (0.65x) */
         [-1, 1].forEach(function (side) {
@@ -1587,13 +1587,12 @@
         if (P(off - 1.4, 0).x > W + 60 && P(off - 1.4, PIT).x > W) return;
         if (P(off + 1.4, 0).x < -60 && P(off + 1.4, PIT).x < 0) return;
 
-        /* Capping between lanes with glowing neon trim */
-        q(1.22, LANE_OFF - 1.22, -0.3, PIT);
-        g.fillStyle = hal ? '#1e0b3b' : '#1e293b';
-        g.fill();
-        q(LANE_OFF / 2 - 0.09, LANE_OFF / 2 + 0.09, -0.3, PIT);
-        g.fillStyle = C.stripe;
-        g.fill();
+        /* Outer lane trim */
+        [[-1.28, -1.22], [1.22, 1.28]].forEach(function (tr) {
+          q(tr[0], tr[1], -0.3, END);
+          g.fillStyle = C.stripe;
+          g.fill();
+        });
 
         /* Dark pin pit at far end */
         q(-1.25, 1.25, END, PIT);
@@ -1769,13 +1768,10 @@
       /* ---------- Ball (uses o_bowling_ball / o_pumpkin_ball) ---------- */
       var ball = { x: 0, y: 6, vx: 0, vy: 0, on: false, gutter: false, rot: 0, alpha: 1, hook: 0, done: true };
       function drawBall() {
-        if (ball.alpha <= 0) return;
-        /* While bowler is holding or winding up, the ball is drawn in the bowler's hands */
-        var D = eng.state.data;
-        if (!ball.on && (D.stage === 'idle' || bowlerAnim.state === 'windup' || bowlerAnim.state === 'shrug')) return;
+        if (!ball.on || ball.alpha <= 0) return;
 
         var f = P(U_(ball.x), V_(ball.y));
-        var r = Math.max(10, f.k * (BALL_R / LW) * 1.15);
+        var r = Math.max(10, f.k * (BALL_R / LW) * 0.96);
         var col = (eng.activeTeam() || {}).color || '#ff6f3d';
         var x = f.x, y = f.y - r;
 
@@ -1906,13 +1902,13 @@
         g.restore();
       }
 
-      /* ---------- Scene Guides: Glowing Footprint Stand Marker, On-Lane Aim Arrow, Power Meter ---------- */
+      /* ---------- Scene Guides: Glowing Footprint Stand Marker, Short Arrow-Zone Aim Guide, Power Meter ---------- */
       var DEG = Math.PI / 180;
       function drawStandAndAimGuides(now) {
         var D = eng.state.data;
         if (eng.state.phase !== 'action') return;
 
-        /* 1. Glowing Footprint Marker at the foul line ('pos' stage) */
+        /* 1. Glowing Footprint Marker at the foul line */
         var fp = P(U_(ball.x), 0.02, 0);
         var pulse = 1 + Math.sin(now / 150) * 0.08;
         g.save();
@@ -1929,44 +1925,53 @@
         g.restore();
 
         if (D.stage === 'pos') {
-          var a = P(U_(ball.x), V_(40)), b = P(U_(ball.x), V_(420));
+          /* Short stance alignment guide up to approach dots (y = 140 in), NOT all the way to the pins */
+          var a = P(U_(ball.x), V_(28)), b = P(U_(ball.x), V_(140));
           g.save();
           g.lineCap = 'round';
-          g.strokeStyle = '#fde047';
+          g.strokeStyle = Math.abs(ball.x) > 15.5 ? '#fb923c' : '#fde047';
           g.lineWidth = 5;
-          g.setLineDash([14, 12]);
-          g.lineDashOffset = -(now * 0.06) % 26;
+          g.setLineDash([12, 10]);
+          g.lineDashOffset = -(now * 0.06) % 22;
           g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
           g.restore();
           bwlOutlinedText(g, '👣 1. Tap STOP to Stand Here', fp.x, fp.y - 52, 26, '#fde047', '#0f172a');
         }
 
-        /* 2. Glowing Curved Aim Arrow directly on the lane ('eff' and 'power' stages) */
+        /* 2. Short Launch-Angle Arrow up to the Lane Target Arrows (y = 215 in) */
         if (D.stage === 'eff' || D.stage === 'power') {
+          var launchDeg = D.eff * 12.5;
+          var launchTan = Math.tan(launchDeg * DEG);
+          var y0 = 24, y1 = 215;
+          var x1 = ball.x + launchTan * (y1 - y0);
+          var projectedMidX = ball.x + launchTan * 430;
+          var riskGutter = Math.abs(projectedMidX) > LW - 1.2 || Math.abs(x1) > LW - 0.8;
+
           g.save();
-          g.strokeStyle = Math.abs(D.eff) < 0.34 ? '#4ade80' : '#fde047';
+          g.strokeStyle = riskGutter ? '#fb923c' : '#38bdf8';
           g.fillStyle = g.strokeStyle;
           g.lineWidth = 7;
           g.lineCap = 'round';
           g.beginPath();
-          var steps = 14;
+          var steps = 8;
           for (var s = 0; s <= steps; s++) {
             var frac = s / steps;
-            var py = 35 + frac * 540;
-            var hookOffset = D.eff * 15 * (frac * frac);
-            var pt = P(U_(ball.x + hookOffset), V_(py));
+            var py = y0 + frac * (y1 - y0);
+            var px = ball.x + launchTan * (py - y0);
+            var pt = P(U_(px), V_(py));
             if (s === 0) g.moveTo(pt.x, pt.y);
             else g.lineTo(pt.x, pt.y);
           }
           g.stroke();
-          /* Arrowhead on lane */
-          var tipP = P(U_(ball.x + D.eff * 15), V_(585));
-          var prevP = P(U_(ball.x + D.eff * 12), V_(520));
+
+          /* Arrowhead at the lane target arrows (y = 215 in) */
+          var tipP = P(U_(x1), V_(y1));
+          var prevP = P(U_(ball.x + launchTan * (y1 - 35 - y0)), V_(y1 - 35));
           var ang = Math.atan2(tipP.y - prevP.y, tipP.x - prevP.x);
           g.beginPath();
           g.moveTo(tipP.x, tipP.y);
-          g.lineTo(tipP.x - Math.cos(ang - 0.5) * 24, tipP.y - Math.sin(ang - 0.5) * 24);
-          g.lineTo(tipP.x - Math.cos(ang + 0.5) * 24, tipP.y - Math.sin(ang + 0.5) * 24);
+          g.lineTo(tipP.x - Math.cos(ang - 0.52) * 22, tipP.y - Math.sin(ang - 0.52) * 22);
+          g.lineTo(tipP.x - Math.cos(ang + 0.52) * 22, tipP.y - Math.sin(ang + 0.52) * 22);
           g.closePath();
           g.fill();
           g.restore();
@@ -1976,7 +1981,7 @@
       function meterBox() {
         var bh = Math.min(320, H * 0.44), bw = 34;
         var laneRight = P(1.38, 0.08).x;
-        return { x: Math.min(W - bw - 28, Math.max(W * 0.68, laneRight + 28)), y: H * 0.78 - bh, w: bw, h: bh };
+        return { x: Math.min(W - bw - 72, Math.max(W * 0.68, laneRight + 24)), y: H * 0.78 - bh, w: bw, h: bh };
       }
 
       function drawMeter() {
@@ -1984,7 +1989,7 @@
         if (D.stage !== 'power') return;
         var m = meterBox(), x = m.x, y = m.y, bw = m.w, bh = m.h;
         g.save();
-        g.fillStyle = 'rgba(15, 23, 42, 0.82)';
+        g.fillStyle = 'rgba(15, 23, 42, 0.86)';
         rr(x - 8, y - 8, bw + 16, bh + 16, 14);
         g.fill();
         g.strokeStyle = '#ffffff';
@@ -2018,18 +2023,18 @@
         g.fill();
         g.stroke();
 
-        bwlOutlinedText(g, '⚡ POWER', x + bw / 2, y - 24, 24, '#fde047', '#0f172a');
+        bwlOutlinedText(g, '⚡ 3. POWER', x + bw / 2, y - 24, 22, '#fde047', '#0f172a');
         g.restore();
       }
 
       function drawEffect() {
         var D = eng.state.data;
         if (D.stage !== 'eff') return;
-        var R = Math.max(58, Math.min(W, H) * 0.11);
+        var R = Math.max(62, Math.min(W, H) * 0.115);
         var cx = Math.min(W - R - 32, Math.max(W * 0.72, P(1.5, 0.05).x + R));
         var cy = H * 0.72;
         g.save();
-        g.fillStyle = 'rgba(15, 23, 42, 0.82)';
+        g.fillStyle = 'rgba(15, 23, 42, 0.86)';
         g.strokeStyle = '#ffffff';
         g.lineWidth = 3;
         g.beginPath();
@@ -2038,15 +2043,15 @@
         g.fill();
         g.stroke();
 
-        [[-1, -0.33, '#a855f7'], [-0.33, 0.33, '#22c55e'], [0.33, 1, '#f59e0b']].forEach(function (z) {
+        [[-1, -0.45, '#f43f5e'], [-0.45, 0.45, '#38bdf8'], [0.45, 1, '#f43f5e']].forEach(function (z) {
           g.strokeStyle = z[2];
           g.lineWidth = R * 0.24;
           g.beginPath();
-          g.arc(cx, cy, R * 0.78, -Math.PI / 2 + z[0] * 1.1, -Math.PI / 2 + z[1] * 1.1);
+          g.arc(cx, cy, R * 0.78, -Math.PI / 2 + z[0] * 1.15, -Math.PI / 2 + z[1] * 1.15);
           g.stroke();
         });
 
-        var a = -Math.PI / 2 + D.eff * 1.1;
+        var a = -Math.PI / 2 + D.eff * 1.15;
         g.strokeStyle = '#ffffff';
         g.lineWidth = 6;
         g.lineCap = 'round';
@@ -2057,7 +2062,8 @@
         g.fillStyle = '#fde047';
         g.beginPath(); g.arc(cx, cy, 8, 0, Math.PI * 2); g.fill();
 
-        bwlOutlinedText(g, '🎯 AIM / CURVE', cx, cy - R - 24, 24, '#fde047', '#0f172a');
+        var degTxt = (D.eff >= 0 ? '+' : '') + Math.round(D.eff * 12.5) + '°';
+        bwlOutlinedText(g, '🎯 2. AIM ANGLE (' + degTxt + ')', cx, cy - R - 24, 22, '#fde047', '#0f172a');
         g.restore();
       }
 
@@ -2128,7 +2134,7 @@
       }
       function say(text, col) { pop = { text: text, col: col, t0: performance.now() }; }
 
-      /* ---------- Simulation (UNTOUCHED real physics) ---------- */
+      /* ---------- Simulation (Real Oil Skid + Dry Hook + Pocket vs Nose-Hit Split Physics) ---------- */
       function hit(a, ma, b, mb, e) {
         var dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.001, nx = dx / d, ny = dy / d;
         var rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
@@ -2163,19 +2169,42 @@
           }
         }
         if (ball.on) {
-          if (!ball.gutter && ball.y > 420 && ball.y < HEAD) ball.vx += ball.hook * h * Math.min(1, (ball.y - 420) / 160);
+          /* First 440 in is oiled skid zone; dry backend (440..720 in) applies hook */
+          if (!ball.gutter && ball.y > 440 && ball.y < HEAD) {
+            ball.vx += ball.hook * h * Math.min(1, (ball.y - 440) / 150);
+          }
           ball.x += ball.vx * h; ball.y += ball.vy * h; ball.rot += h * ball.vy / 30;
-          ball.vy = Math.max(135, ball.vy - 8 * h);
-          if (!ball.gutter && Math.abs(ball.x) > LW - 0.8) {
+          ball.vy = Math.max(125, ball.vy - 9.5 * h);
+          if (!ball.gutter && Math.abs(ball.x) > LW - 0.75) {
             ball.gutter = true; ball.vx = 0; ball.x = (ball.x > 0 ? 1 : -1) * (LW + 2.3);
             A().play('crowd_aww_soft');
           }
           if (ball.y > PITY + 30) { ball.on = false; ball.alpha = 0; }
           else if (ball.y > PITY) ball.alpha = Math.max(0, 1 - (ball.y - PITY) / 30);
           if (!ball.gutter) {
+            var effMB = ball.effMass || MB;
             pins.forEach(function (p) {
               if (p.gone || Math.hypot(p.x - ball.x, p.y - ball.y) > BALL_R + PIN_R) return;
-              var j = hit(ball, MB, p, MP, 0.7);
+              /* Headpin Pocket vs Nose-Hit Split check on Ball 1 */
+              if (p.id === 0 && !ball.hitHead && eng.state.data.ball === 1) {
+                ball.hitHead = true;
+                var offX = ball.x - p.x;
+                if (Math.abs(offX) < 1.45) {
+                  /* Dead-center nose hit: drives Pin 1 straight back, deflects ball & leaves corner split! */
+                  ball.noseSplit = true;
+                  effMB = MB * 0.52;
+                } else if (Math.abs(offX) >= 1.45 && Math.abs(offX) <= 4.4 && ball.goodPower) {
+                  /* True 1-3 or 1-2 Pocket hit with sweet-spot power! */
+                  effMB = MB * 1.18;
+                }
+              }
+              var j = hit(ball, effMB, p, MP, 0.68);
+              if (p.id === 0 && ball.noseSplit) {
+                /* Channel headpin straight into pin 5 so outer wing/corner pins stay standing as a split */
+                p.vx *= 0.18;
+                ball.vx *= 0.25;
+                ball.vy *= 0.76;
+              }
               if (!p.down && j / MP > 18) topple(p);
               if (j > 300) triggerShake(5, 0.2);
             });
@@ -2211,6 +2240,8 @@
             if (i === j) continue;
             var b = pins[j];
             if (b.gone || b.down) continue;
+            /* If Ball 1 was a dead-center nose hit, prevent outer corner pins (7 & 10, id 6 & 9) from getting swept by flukes */
+            if (ball.noseSplit && (b.id === 6 || b.id === 9)) continue;
             if (a.down) {
               var spA = Math.hypot(a.vx, a.vy);
               if (spA < 30 && a.fall >= 1) continue;
@@ -2239,6 +2270,7 @@
       function resetBall() {
         ball.x = eng.state.data.pos; ball.y = 6; ball.vx = 0; ball.vy = 0;
         ball.on = false; ball.gutter = false; ball.alpha = 1; ball.rot = 0; ball.hook = 0;
+        ball.hitHead = false; ball.noseSplit = false; ball.goodPower = false; ball.effMass = MB;
         playedScatter = false;
       }
       function sweep() {
@@ -2250,9 +2282,9 @@
       }
 
       var STEP_TXT = {
-        pos:   '1️⃣ STAND: Tap STOP (or lane) to place your feet!',
-        eff:   '2️⃣ AIM: Tap STOP to aim the arrow on the lane!',
-        power: '3️⃣ POWER: Tap STOP in the green zone to roll!'
+        pos:   '1️⃣ STAND: Tap STOP to place your feet (off-center for pocket strikes)!',
+        eff:   '2️⃣ AIM ANGLE: Tap STOP to aim through the lane arrows!',
+        power: '3️⃣ POWER & HOOK: Tap STOP in the green sweet-spot to roll!'
       };
 
       function renderActionDock() {
@@ -2266,17 +2298,7 @@
           e.stopPropagation();
           lock();
         });
-        var quickBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn amber',
-          text: '⚡ Quick Roll!'
-        });
-        quickBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          quickRoll();
-        });
         dock.appendChild(stopBtn);
-        dock.appendChild(quickBtn);
       }
 
       function setStage(stage) {
@@ -2337,7 +2359,7 @@
           return;
         }
         eng.setPhase('action');
-        D.pos = -10; D.posDir = 1;
+        D.pos = -14; D.posDir = 1;
         setStage('pos');
       }
 
@@ -2347,34 +2369,14 @@
         A().play('tap');
         if (D.stage === 'pos') {
           ball.x = D.pos;
-          D.eff = -0.8; D.effDir = 1;
+          D.eff = -0.85; D.effDir = 1;
           setStage('eff');
         } else if (D.stage === 'eff') {
-          D.pow = 0.1; D.powDir = 1;
+          D.pow = 0.08; D.powDir = 1;
           setStage('power');
         } else if (D.stage === 'power') {
           launch();
         }
-      }
-
-      function quickRoll() {
-        var D = eng.state.data;
-        if (eng.state.phase !== 'action' || !eng.state.alive) return;
-        A().play('tap');
-        /* Aim a pocket curve shot (or aim directly at remaining standing pin on Ball 2) */
-        if (D.ball === 2) {
-          var rem = pins.filter(function (p) { return !p.down && !p.gone; })[0];
-          D.pos = rem ? Math.max(-14, Math.min(14, rem.x * 0.85)) : 0;
-          ball.x = D.pos;
-          D.eff = 0;
-          D.pow = (LV.green[0] + LV.green[1]) * 0.5;
-        } else {
-          D.pos = -5.5 + (Math.random() - 0.5) * 1.6;
-          ball.x = D.pos;
-          D.eff = 0.24;
-          D.pow = (LV.green[0] + LV.green[1]) * 0.5;
-        }
-        launch();
       }
 
       eng.listen(lane, 'pointerdown', function (e) {
@@ -2407,20 +2409,44 @@
         await eng.wait(320);
         if (!eng.state.alive) return;
 
-        /* 2. Release ball & roll down lane */
+        /* 2. Release ball & roll down lane with real launch angle + oil skid + backend hook */
         D.stage = 'roll';
         bowlerAnim.state = 'watch';
         bowlerAnim.t = 0;
         var g0 = LV.green[0], g1 = LV.green[1];
-        var miss = D.pow < g0 ? g0 - D.pow : (D.pow > g1 ? D.pow - g1 : 0);
-        var ang = ((Math.random() - 0.5) * (0.12 + miss * 7) * LV.noise) * DEG;
-        var speed = 235 + D.pow * 150;
+        var inGreen = (D.pow >= g0 && D.pow <= g1);
+        var miss = D.pow < g0 ? (g0 - D.pow) : (D.pow > g1 ? (D.pow - g1) : 0);
+
+        /* Real launch angle from Step 2 (D.eff * 12.5 deg) + timing release wobble if outside green zone */
+        var wobbleDeg = inGreen
+          ? ((Math.random() - 0.5) * 0.25 * LV.noise)
+          : ((D.pow > g1 ? 1 : -1) * (1.2 + miss * 8.5) * LV.noise);
+        var launchDeg = D.eff * 12.5 + wobbleDeg;
+        var ang = launchDeg * DEG;
+
+        var speed = 205 + D.pow * 185;
         ball.vx = Math.sin(ang) * speed;
         ball.vy = Math.cos(ang) * speed;
-        ball.hook = D.eff * 32 * (0.7 + 0.3 * Math.min(1, D.pow)) * (1 + (Math.random() - 0.5) * 0.25 * LV.noise);
+
+        /* Dry-backend hook (y = 440..720 in):
+           - Green sweet-spot gives crisp backend hook back toward center / pocket
+           - Red over-power (D.pow > g1 + 0.04) skids through oil without hooking
+           - Weak power (D.pow < g0) loses carry mass and deflects off pins */
+        ball.goodPower = (D.pow >= g0 - 0.04 && D.pow <= g1 + 0.03);
+        ball.effMass = D.pow < g0 ? MB * (0.48 + 0.52 * (D.pow / g0)) : (D.pow > g1 + 0.05 ? MB * 0.82 : MB);
+        if (D.pow > g1 + 0.04) {
+          /* Over-powered shot skids flat! */
+          ball.hook = -D.eff * 4;
+        } else {
+          /* Natural backend hook curves back opposite to stand offset / spin */
+          var hookSign = Math.abs(D.pos) > 2.2 ? -Math.sign(D.pos) : -Math.sign(D.eff || 1);
+          var hookMag = (inGreen ? 26 : 16) * (0.35 + 0.65 * Math.min(1, Math.abs(D.pos) / 12 + Math.abs(D.eff) * 0.6));
+          ball.hook = hookSign * hookMag;
+        }
+
         ball.on = true;
         slowEnd = -1;
-        updateBanner('🎳 ' + eng.activeTeam().name + ' rolls!', 'Watch the pins!', true);
+        updateBanner('🎳 ' + eng.activeTeam().name + ' rolls!', inGreen ? '🔥 Sweet-Spot Hook!' : (D.pow > g1 ? '💨 Over-Powered Skid!' : '🎳 Watch the pins!'), true);
         A().play('bowling_rumble_long');
         A().play('bowling_roll');
 
@@ -2455,7 +2481,7 @@
           burstPinLight(deckPos.x, deckPos.y, 42, true);
           U().confetti(38);
           say('STRIKE! 🌟', '#fde047');
-          updateBanner('🌟 STRIKE! All 10 pins!', '+' + pts + ' points!', false);
+          updateBanner('🌟 POCKET STRIKE! All 10 pins!', '+' + pts + ' points!', false);
         } else if (spare) {
           pts += 10;
           bowlerAnim.state = 'celebrate';
@@ -2471,17 +2497,17 @@
         } else if (n === 0) {
           bowlerAnim.state = 'shrug';
           A().play('crowd_aww_soft');
-          say(ball.gutter ? 'GUTTER!' : 'CLOSE!', '#fb923c');
-          updateBanner(ball.gutter ? '🌀 Gutter ball!' : '😮 So close!', D.ball === 1 ? 'Ball 2 coming up!' : 'Nice effort!', false);
+          say(ball.gutter ? 'GUTTER!' : 'MISS!', '#fb923c');
+          updateBanner(ball.gutter ? '🌀 Gutter ball! Watch your angle!' : '😮 Missed the pins!', D.ball === 1 ? 'Ball 2 coming up!' : 'Nice effort!', false);
         } else {
           bowlerAnim.state = 'celebrate';
           crowdCheerT = 1.0;
           A().play(n >= 6 ? 'crowd_cheer_small' : 'crowd_ooh');
           triggerShake(4, 0.16);
           burstPinLight(deckPos.x, deckPos.y, 18, false);
-          var split = D.ball === 1 && isSplit();
-          say(split ? 'SPLIT!' : (n + (n === 1 ? ' PIN!' : ' PINS!')), split ? '#fb923c' : '#38bdf8');
-          updateBanner('🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down!', '+' + pts + ' points!', false);
+          var split = D.ball === 1 && (ball.noseSplit || isSplit());
+          say(split ? 'SPLIT! ⚡' : (n + (n === 1 ? ' PIN!' : ' PINS!')), split ? '#fb923c' : '#38bdf8');
+          updateBanner(split ? ('⚡ Headpin Split! ' + n + ' pins down!') : ('🎳 ' + n + (n === 1 ? ' pin' : ' pins') + ' down!'), '+' + pts + ' points!', false);
         }
 
         var fr = cardData[eng.state.turn];
@@ -2518,7 +2544,7 @@
           D.ball = 2;
           resetBall();
           eng.setPhase('action');
-          D.pos = -10; D.posDir = 1;
+          D.pos = -14; D.posDir = 1;
           setStage('pos');
           return;
         }
@@ -2552,16 +2578,16 @@
 
         if (eng.state.phase === 'action') {
           if (D.stage === 'pos') {
-            D.pos += D.posDir * dt * 20 * LV.s;
-            if (D.pos > 14) { D.pos = 14; D.posDir = -1; }
-            if (D.pos < -14) { D.pos = -14; D.posDir = 1; }
+            D.pos += D.posDir * dt * 28 * LV.s;
+            if (D.pos > 18.5) { D.pos = 18.5; D.posDir = -1; }
+            if (D.pos < -18.5) { D.pos = -18.5; D.posDir = 1; }
             ball.x = D.pos;
           } else if (D.stage === 'eff') {
-            D.eff += D.effDir * dt * 1.55 * LV.s;
+            D.eff += D.effDir * dt * 1.85 * LV.s;
             if (D.eff > 1) { D.eff = 1; D.effDir = -1; }
             if (D.eff < -1) { D.eff = -1; D.effDir = 1; }
           } else if (D.stage === 'power') {
-            D.pow += D.powDir * dt * 1.25 * LV.s;
+            D.pow += D.powDir * dt * 1.55 * LV.s;
             if (D.pow > 1) { D.pow = 1; D.powDir = -1; }
             if (D.pow < 0) { D.pow = 0; D.powDir = 1; }
           }

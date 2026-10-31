@@ -117,7 +117,7 @@
     id: 'cannon',
     name: 'Monster Cannon',
     e: '🎯',
-    desc: 'Answer right: your monster hops into the big cannon! Aim or tap Quick Shot, launch across the wide meadow, pop balloons and land in the haystack!',
+    desc: 'Answer right: your monster hops into the big cannon! Drag back to aim angle & power, launch across the meadow, pop balloons and land in the haystack!',
     fields: [
       { key: 'level', label: 'Difficulty', opts: [['easy', 'Easy', 'Big balloons'], ['normal', 'Normal', 'Wind, moving balloons'], ['hard', 'Hard', 'Small, fast, strong wind']], def: 'normal' },
       { key: 'shots', label: 'Shots for each team', opts: [[2, '2'], [3, '3'], [4, '4'], [5, '5']], def: 3 }
@@ -437,10 +437,7 @@
         if (!alive) return;
         if (e.code === 'Space' || e.key === ' ') {
           if (document.querySelector('.gm-over')) return;
-          if (mode === 'aim') {
-            e.preventDefault();
-            quickShot();
-          } else if (mode === 'wait' && !asking) {
+          if (mode === 'wait' && !asking) {
             e.preventDefault();
             askQuestion();
           }
@@ -653,18 +650,8 @@
         phaseT = 0;
         peek = 0;
         A().play('round_start');
-        updateBanner('🎯 Drag back from the cannon — or tap Quick Shot!', wind ? ('Wind ' + (wind > 0 ? '→ ' : '← ') + Math.abs(wind)) : 'Calm sky', true);
+        updateBanner('🎯 Drag back from the cannon & release to launch!', wind ? ('Wind ' + (wind > 0 ? '→ ' : '← ') + Math.abs(wind)) : 'Calm sky', true);
         dock.innerHTML = '';
-        var qBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn green pulse',
-          text: '⚡ Quick Shot! (Space)'
-        });
-        qBtn.addEventListener('click', function () {
-          A().play('tap');
-          quickShot();
-        });
-        dock.appendChild(qBtn);
       }
 
       /* ---- Drawing Helpers ---- */
