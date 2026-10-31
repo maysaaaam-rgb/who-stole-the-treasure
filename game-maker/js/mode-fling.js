@@ -419,9 +419,6 @@
         if (mode === 'wait' && !asking) {
           e.preventDefault();
           ask();
-        } else if (mode === 'aim') {
-          e.preventDefault();
-          presetShot('quick');
         }
       }
       cv.addEventListener('pointerdown', onPointerDown);
@@ -907,7 +904,7 @@
           g.arc(sp.x, sp.y - 20, 62, 0, Math.PI * 2);
           g.stroke();
           g.restore();
-          drawOutlinedText(g, '👆 Drag to throw at ' + defName + ' or tap Quick Throw!', sp.x + (turn === 0 ? 70 : -70), sp.y - 145, 25, '#fde047', '#0f172a');
+          drawOutlinedText(g, '👆 Drag back & release to throw at ' + defName + '!', sp.x + (turn === 0 ? 70 : -70), sp.y - 145, 25, '#fde047', '#0f172a');
           return;
         }
         var v = launchVec(aim);
@@ -1309,34 +1306,12 @@
         focusCameraForTurn(turn, true);
         A().play('round');
         updateBanner(
-          (turn === 0 ? '🧶 Throw yarn at the Dog!' : '🦴 Throw the bone at the Cat!'),
-          'Direct Bonk = +30 • Star = +15!',
+          (turn === 0 ? '🧶 Drag back to throw yarn at the Dog!' : '🦴 Drag back to throw the bone at the Cat!'),
+          'Direct Head Bonk = +30 • Body = +20 • Star = +15!',
           true
         );
 
         dock.innerHTML = '';
-        var quickBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn green pulse',
-          text: '⚡ Quick Throw! (Space)'
-        });
-        quickBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          A().play('tap');
-          presetShot('quick');
-        });
-        var lobBtn = U().h('button', {
-          type: 'button',
-          class: 'gm-real3-btn cyan',
-          text: '🌈 High Lob!'
-        });
-        lobBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          A().play('tap');
-          presetShot('lob');
-        });
-        dock.appendChild(quickBtn);
-        dock.appendChild(lobBtn);
       }
 
       showTurn();
