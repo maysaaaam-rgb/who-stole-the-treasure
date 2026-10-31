@@ -1517,10 +1517,45 @@
     if (CUR_CREATURE === 'dragon' && stage !== 'egg' && stage !== 'cracking_egg' && isOwnPart(tailId, 'tail')) return renderDragonTail(stage, palette);
     return renderTailLayerBase(stage, tailId, palette);
   }
+  // Every species has its own default tail (a tail item from the shop still replaces it).
+  const TAIL_STAGE_SCALE = { baby: 0.74, growing: 0.8, adventurer: 0.84, advanced: 0.86, ultimate: 0.88 };
+  function renderSpeciesTail(stage, palette) {
+    const key = CUR_COLOR || paletteKey(palette), g = getStageGeometry(stage), sc = TAIL_STAGE_SCALE[stage] || 1;
+    const x = 100 + g.bW * 0.7, y = g.botY - 12;
+    const tube = (d, w) => `<path d="${d}" fill="none" stroke="${palette.primaryDark}" stroke-width="${w + 4.4}" stroke-linecap="round" />` +
+      `<path d="${d}" fill="none" stroke="url(#plush-fur-${key})" stroke-width="${w}" stroke-linecap="round" />` +
+      `<path d="${d}" fill="none" stroke="#ffffff" stroke-width="${Math.max(1.4, w * 0.18)}" stroke-linecap="round" opacity="0.28" transform="translate(-1.2 -1.6)" />`;
+    let art = '';
+    if (key === 'blue') {          // Aqua: curled tail with little fins and a bubble
+      art = tube('M 0 6 C 22 8 38 -4 32 -20 C 29 -29 18 -27 18 -19', 11) +
+        [[16, 4], [28, -2], [34, -14]].map(f => `<path d="M ${f[0]} ${f[1]} l 2 -11 l 8 6 Z" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="1.6" stroke-linejoin="round" />`).join('') +
+        `<circle cx="38" cy="-30" r="3.4" fill="none" stroke="#ffffff" stroke-width="1.4" opacity="0.8" /><circle cx="44" cy="-24" r="2" fill="#ffffff" opacity="0.7" />`;
+    } else if (key === 'orange') { // Ember: sturdy tail with a flame on the tip
+      art = tube('M 0 8 C 22 10 34 -2 33 -16', 14) +
+        `<path d="M 26 -14 C 24 -26 30 -30 33 -44 C 38 -32 44 -26 40 -14 Z" fill="url(#mon-flame)" stroke="#c2410c" stroke-width="1.6" stroke-linejoin="round" />` +
+        `<path d="M 30 -16 C 29 -24 33 -27 34 -34 C 37 -27 39 -24 37 -16 Z" fill="#fde047" opacity="0.9" />`;
+    } else if (key === 'green') {  // Verdant: stem with a big leaf
+      art = tube('M 0 6 C 22 8 36 -2 38 -18', 9) +
+        `<path d="M 38 -18 C 28 -28 34 -46 52 -44 C 54 -28 48 -18 38 -18 Z" fill="${palette.primaryLight}" stroke="${palette.accent}" stroke-width="2" stroke-linejoin="round" />` +
+        `<path d="M 40 -20 Q 44 -32 50 -41" fill="none" stroke="${palette.accent}" stroke-width="1.4" opacity="0.7" stroke-linecap="round" />`;
+    } else if (key === 'purple') { // Astral: swoosh with a star
+      art = tube('M 0 6 C 20 12 42 2 36 -16 C 34 -22 28 -22 26 -17', 9) +
+        `<path d="M 26 -22 l 3.2 -9 l 3.2 9 l 9 3.2 l -9 3.2 l -3.2 9 l -3.2 -9 l -9 -3.2 Z" fill="#fde047" stroke="#d97706" stroke-width="1.4" stroke-linejoin="round" transform="translate(4 -6)" />`;
+    } else if (key === 'gold') {   // Spark: soft curl with a small bolt on the tip
+      art = tube('M 0 6 C 22 10 40 0 36 -14 C 34 -20 26 -19 27 -13', 10) +
+        `<path d="M 34 -20 L 41 -33 L 36 -33 L 43 -46 L 31 -34 L 36 -34 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round" transform="translate(3 -2)" />`;
+    } else {                       // Heart (pink): thin curly tail with a heart on the tip
+      art = tube('M 0 6 C 18 8 32 -2 28 -13 C 26 -19 18 -18 20 -12', 7) +
+        `<path d="M 22 -20 C 10 -30 16 -42 24 -36 C 32 -42 38 -30 22 -20 Z" fill="${palette.primaryLight}" stroke="${palette.primaryDark}" stroke-width="1.8" stroke-linejoin="round" transform="translate(6 -4)" />`;
+    }
+    return `<g class="monster-tail-layer tail-species" transform="translate(${x} ${y}) scale(${sc})" filter="url(#plush-shadow)">${art}</g>`;
+  }
+
   function renderTailLayerBase(stage, tailId, palette) {
     if (stage === 'egg' || stage === 'cracking_egg') return '';
 
     let effectiveTail = tailId;
+    if ((!effectiveTail || effectiveTail === 'default') && CUR_CREATURE !== 'dragon' && SPECIES_SHAPE[CUR_COLOR]) return renderSpeciesTail(stage, palette);
     if (!effectiveTail || effectiveTail === 'default') {
       if (stage === 'baby') effectiveTail = 'tail-puff';
       else if (stage === 'growing') effectiveTail = 'tail-perky';
@@ -1780,17 +1815,40 @@
     return { back, front: front + sparkles };
   }
 
+  // Species ears behind the head (hats, horns and ear items cover or replace them)
+  function renderSpeciesEars(colorKey, palette, cX, g) {
+    if (colorKey === 'green') return '';          // Verdant has its leaf sprout instead
+    const k = g.earScale, t = g.topY, c = g.cW;
+    const fur = `fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round"`;
+    const ear = (sg) => {
+      const x = cX + sg * c * 0.66, y = t + 11;
+      if (colorKey === 'orange') {
+        const h = 13, w = 9;
+        return `<path d="M ${x - sg * w} ${y + 8} C ${x - sg * w} ${y - h * 0.5 * k} ${x + sg * w * 0.2} ${y - h * k} ${x + sg * (w + 4)} ${y - h * 0.8 * k} C ${x + sg * (w + 9)} ${y - h * 0.15 * k} ${x + sg * (w + 5)} ${y + 6} ${x + sg * 3} ${y + 12} Z" ${fur} />
+                <path d="M ${x + sg * 1} ${y + 4} C ${x} ${y - h * 0.3 * k} ${x + sg * 4} ${y - h * 0.6 * k} ${x + sg * (w + 1)} ${y - h * 0.5 * k} C ${x + sg * (w + 3)} ${y - 2} ${x + sg * 8} ${y + 4} ${x + sg * 4} ${y + 8} Z" fill="${palette.cheek}" opacity="0.6" />`;
+      }
+      return `<circle cx="${x + sg * 3}" cy="${y - 2}" r="${10.5 * k}" ${fur} />
+              <circle cx="${x + sg * 3}" cy="${y - 1}" r="${5.6 * k}" fill="${palette.cheek}" opacity="0.55" />`;
+    };
+    return `<g class="mon-ears">${ear(-1)}${ear(1)}</g>`;
+  }
+
   // Crest only when no horns or ears are equipped (those take the same spot on the head)
   function speciesCrestFor(colorKey, stage, palette, cX, g, equipped) {
     const hornEq = equipped && equipped.horns, earEq = equipped && (equipped.ears || equipped.ear);
     const noHorns = !hornEq || hornEq === 'none' || hornEq === 'horns-none' || hornEq === 'no_horns' || hornEq === 'null';
     const noEars = !earEq || earEq === 'none' || earEq === 'no_ears';
     if (!noHorns || !noEars) return { back: '', front: '' };
-    try { return renderSpeciesCrest(colorKey, stage, palette, cX, g); } catch (e) { return { back: '', front: '' }; }
+    try { const c = renderSpeciesCrest(colorKey, stage, palette, cX, g); c.back = renderSpeciesEars(colorKey, palette, cX, g) + c.back; return c; } catch (e) { return { back: '', front: '' }; }
   }
 
   function getStageGeometry(stage) {
     if (CUR_CREATURE === 'dragon') return dragonGeometry(stage);
+    const base = getStageGeometryBase(stage), sh = SPECIES_SHAPE[CUR_COLOR];
+    if (!sh) return base;
+    return Object.assign({}, base, { cW: base.cW * sh.cw, bW: base.bW * sh.bw, cheekY: base.cheekY + sh.cheek, crown: sh.crown, footSpacing: base.footSpacing * sh.feet });
+  }
+  function getStageGeometryBase(stage) {
     if (stage === 'baby') {
       return { topY: 68, botY: 150, cW: 38, bW: 42, cheekY: 104, eyeY: 114, eyeSpacing: 16, earScale: 0.92, pawY: 136, footSpacing: 20 };
     } else if (stage === 'growing') {
@@ -1812,13 +1870,25 @@
   // Its head, neck, shoulders and paws sit at their own anchor points (DRAGON_GEO), and every shop item reads its place from these
   // anchors (topY, eyeY, neckY, shoulderY, pawY, clothTop), so the old items fit the new body. Shop wings / tail / horns replace its own.
   let CUR_CREATURE = '';
+  let CUR_COLOR = '';
+  // Each species has its own body: cw = head width, bw = belly width, crown = how pointed the top of the head is (lower = more pointed),
+  // cheek = where the cheeks swell (rows down), feet = foot spacing. Kept within about 10% so every shop item still fits.
+  const SPECIES_SHAPE = {
+    blue:   { cw: 1.07, bw: 1.05, crown: 0.64, cheek: 0,  feet: 1.0  },   // Aqua: wide, round, bear-like
+    orange: { cw: 0.95, bw: 1.09, crown: 0.50, cheek: 2,  feet: 1.06 },   // Ember: smaller head, sturdy belly
+    green:  { cw: 0.99, bw: 1.15, crown: 0.58, cheek: 4,  feet: 1.1  },   // Verdant: plump potato bottom
+    purple: { cw: 0.92, bw: 0.97, crown: 0.44, cheek: -2, feet: 0.94 },   // Astral: tall teardrop
+    gold:   { cw: 0.90, bw: 1.02, crown: 0.48, cheek: 0,  feet: 0.96 },   // Spark: slim and perky
+    pink:   { cw: 1.10, bw: 1.03, crown: 0.68, cheek: -2, feet: 1.0  }    // Heart: very round and soft
+  };
   function creatureOf(equipped) {
     const c = String((equipped && equipped.creature) || '').toLowerCase().replace(/^creature-/, '');
     return c === 'dragon' ? 'dragon' : '';
   }
   function withCreature(options, fn) {
-    const prev = CUR_CREATURE;
+    const prev = CUR_CREATURE, CUR_COLOR_PREV_HOLD = CUR_COLOR;
     CUR_CREATURE = creatureOf(options && options.equipped);
+    CUR_COLOR = SPECIES_SHAPE[String((options && (options.color || options.colorKey)) || '')] ? String(options.color || options.colorKey) : '';
     if (CUR_CREATURE === 'dragon') {
       // Every pupil starts with free bunny ears and a puff tail: on the dragon these starter parts become its own horns and spiked tail.
       const eq = Object.assign({}, options.equipped);
@@ -1826,7 +1896,8 @@
       if (['tail-puff', 'default'].indexOf(eq.tail) !== -1) eq.tail = 'none';
       options = Object.assign({}, options, { equipped: eq });
     }
-    try { return fn(options); } finally { CUR_CREATURE = prev; }
+    const prevColor = CUR_COLOR_PREV_HOLD;
+    try { return fn(options); } finally { CUR_CREATURE = prev; CUR_COLOR = prevColor; }
   }
   function paletteKey(palette) {
     for (const k in MONSTER_PALETTES) if (MONSTER_PALETTES[k] === palette) return k;
@@ -2322,60 +2393,43 @@
   // --- ANATOMICALLY GROUNDED FEET (Flattened Floor Plane Contact) ---
   function renderGroundedFeet(palette, colorKey, cX, g) {
     const botY = g.botY;
-    const footSpacing = g.footSpacing;
-
+    const fs = g.footSpacing;
+    // Chunky round feet that peek out under the belly, each with three little toe bumps
+    const foot = (sg) => {
+      const x = cX + sg * fs;
+      const toes = [-7, 0, 7].map(d => `<ellipse cx="${x + d + sg * 1.5}" cy="${botY + 8}" rx="4.6" ry="3.6" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.8" />`).join('');
+      return `
+        <path d="M ${x - 15} ${botY - 6} C ${x - 18} ${botY + 4} ${x - 13} ${botY + 11} ${x} ${botY + 11}
+                 C ${x + 13} ${botY + 11} ${x + 18} ${botY + 4} ${x + 15} ${botY - 6} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
+        ${toes}
+        <ellipse cx="${x}" cy="${botY + 4}" rx="9" ry="3.2" fill="${palette.primaryLight}" opacity="0.45" />`;
+    };
     return `
       <!-- Volumetric 3D Grounded Paws (Resting on Dais Surface) -->
-      <g class="plush-feet" filter="url(#plush-shadow)">
-        <!-- Left Foot -->
-        <path d="M ${cX - footSpacing - 12} ${botY - 4}
-                 C ${cX - footSpacing - 14} ${botY + 4} ${cX - footSpacing - 8} ${botY + 6} ${cX - footSpacing} ${botY + 6}
-                 C ${cX - footSpacing + 10} ${botY + 6} ${cX - footSpacing + 13} ${botY + 2} ${cX - footSpacing + 11} ${botY - 5}
-                 C ${cX - footSpacing + 6} ${botY - 8} ${cX - footSpacing - 8} ${botY - 7} ${cX - footSpacing - 12} ${botY - 4} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-        <ellipse cx="${cX - footSpacing - 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
-        <ellipse cx="${cX - footSpacing + 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
-        <line x1="${cX - footSpacing}" y1="${botY - 2}" x2="${cX - footSpacing}" y2="${botY + 4}" stroke="${palette.primaryDark}" stroke-width="1.6" stroke-linecap="round" />
-
-        <!-- Right Foot -->
-        <path d="M ${cX + footSpacing - 11} ${botY - 5}
-                 C ${cX + footSpacing - 13} ${botY + 2} ${cX + footSpacing - 10} ${botY + 6} ${cX + footSpacing} ${botY + 6}
-                 C ${cX + footSpacing + 8} ${botY + 6} ${cX + footSpacing + 14} ${botY + 4} ${cX + footSpacing + 12} ${botY - 4}
-                 C ${cX + footSpacing + 8} ${botY - 7} ${cX + footSpacing - 6} ${botY - 8} ${cX + footSpacing - 11} ${botY - 5} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-        <ellipse cx="${cX + footSpacing - 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
-        <ellipse cx="${cX + footSpacing + 4}" cy="${botY + 1}" rx="3.2" ry="2.2" fill="${palette.primaryLight}" opacity="0.65" />
-        <line x1="${cX + footSpacing}" y1="${botY - 2}" x2="${cX + footSpacing}" y2="${botY + 4}" stroke="${palette.primaryDark}" stroke-width="1.6" stroke-linecap="round" />
-      </g>
+      <g class="plush-feet" filter="url(#plush-shadow)">${foot(-1)}${foot(1)}</g>
     `;
   }
 
   // --- FRONT ARMS / PAWS (rendered over clothing so outfits never swallow the monster's hands) ---
   function renderChibiArms(stage, palette, colorKey, cX, g) {
     const cW = g.cW;
-    if (stage === 'baby') {
+    const baby = stage === 'baby';
+    const k = baby ? 0.85 : 1;            // baby arms are shorter and stubbier
+    const arm = (sg) => {
+      const sx = cX + sg * (cW - 4);       // shoulder on the body edge
+      const hx = cX + sg * (cW + 7 * k), hy = g.pawY + 7 * k;   // paw centre, out and a little down
+      const toes = [-1, 0, 1].map(d => `<circle cx="${hx + sg * (d * 2.9 + 1)}" cy="${hy + 5.4 * k + Math.abs(d) * -0.9}" r="${2.1 * k + 0.4}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="1.4" />`).join('');
       return `
-        <g filter="url(#plush-shadow)" class="mon-body-breathe">
-          <path d="M ${cX - cW + 4} ${g.pawY - 10} C ${cX - cW - 6} ${g.pawY - 5} ${cX - cW - 8} ${g.pawY + 6} ${cX - cW + 3} ${g.pawY + 9} C ${cX - cW + 8} ${g.pawY + 6} ${cX - cW + 7} ${g.pawY - 3} ${cX - cW + 4} ${g.pawY - 10} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <circle cx="${cX - cW - 1}" cy="${g.pawY + 4}" r="2.6" fill="${palette.cheek}" opacity="0.85" />
-
-          <path d="M ${cX + cW - 4} ${g.pawY - 10} C ${cX + cW + 6} ${g.pawY - 5} ${cX + cW + 8} ${g.pawY + 6} ${cX + cW - 3} ${g.pawY + 9} C ${cX + cW - 8} ${g.pawY + 6} ${cX + cW - 7} ${g.pawY - 3} ${cX + cW - 4} ${g.pawY - 10} Z"
-                fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.4" stroke-linejoin="round" />
-          <circle cx="${cX + cW + 1}" cy="${g.pawY + 4}" r="2.6" fill="${palette.cheek}" opacity="0.85" />
-        </g>
-      `;
-    }
+        <path d="M ${sx} ${g.pawY - 13 * k} C ${sx + sg * 11 * k} ${g.pawY - 9 * k} ${hx + sg * 7 * k} ${hy - 4 * k} ${hx + sg * 5 * k} ${hy + 3 * k}
+                 C ${hx + sg * 2 * k} ${hy + 8 * k} ${hx - sg * 5 * k} ${hy + 7 * k} ${hx - sg * 5 * k} ${hy + 2 * k}
+                 C ${hx - sg * 5 * k} ${hy - 6 * k} ${sx + sg * 1 * k} ${g.pawY - 3 * k} ${sx} ${g.pawY - 13 * k} Z"
+              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.5" stroke-linejoin="round" />
+        ${toes}
+        <ellipse cx="${hx - sg * 1.5}" cy="${hy - 1.5 * k}" rx="${2.4 * k}" ry="${3.4 * k}" fill="#ffffff" opacity="0.28" />`;
+    };
     return `
-      <g filter="url(#plush-shadow)" class="mon-body-breathe">
-        <path d="M ${cX - cW + 5} ${g.pawY - 14} C ${cX - cW - 8} ${g.pawY - 8} ${cX - cW - 10} ${g.pawY + 8} ${cX - cW + 4} ${g.pawY + 12} C ${cX - cW + 10} ${g.pawY + 8} ${cX - cW + 8} ${g.pawY - 4} ${cX - cW + 5} ${g.pawY - 14} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-        <circle cx="${cX - cW - 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-
-        <path d="M ${cX + cW - 5} ${g.pawY - 14} C ${cX + cW + 8} ${g.pawY - 8} ${cX + cW + 10} ${g.pawY + 8} ${cX + cW - 4} ${g.pawY + 12} C ${cX + cW - 10} ${g.pawY + 8} ${cX + cW - 8} ${g.pawY - 4} ${cX + cW - 5} ${g.pawY - 14} Z"
-              fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linejoin="round" />
-        <circle cx="${cX + cW + 1}" cy="${g.pawY + 6}" r="3.2" fill="${palette.cheek}" opacity="0.85" />
-      </g>
+      <g filter="url(#plush-shadow)" class="mon-body-breathe">${arm(-1)}${arm(1)}</g>
     `;
   }
 
@@ -2390,12 +2444,12 @@
     // Organic Pear / Jelly-Bean Cubic Bezier Silhouette with Lateral Cheek Swells
     const bodyPath = `
       M ${cX} ${topY}
-      C ${cX + cW * 0.56} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
+      C ${cX + cW * (g.crown || 0.56)} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
       C ${cX + cW * 1.1} ${cheekY + 16} ${cX + bW * 1.04} ${botY - 20} ${cX + bW * 0.9} ${botY - 8}
       C ${cX + bW * 0.74} ${botY + 3} ${cX + 20} ${botY + 2} ${cX} ${botY + 2}
       C ${cX - 20} ${botY + 2} ${cX - bW * 0.74} ${botY + 3} ${cX - bW * 0.9} ${botY - 8}
       C ${cX - bW * 1.04} ${botY - 20} ${cX - cW * 1.1} ${cheekY + 16} ${cX - cW * 1.06} ${cheekY}
-      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY}
+      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * (g.crown || 0.56)} ${topY} ${cX} ${topY}
       Z
     `;
 
@@ -2410,6 +2464,15 @@
       C ${cX - bellyW} ${bellyTop + 14} ${cX - bellyW * 0.65} ${bellyTop} ${cX} ${bellyTop}
       Z
     `;
+
+    // Species belly mark (flame, leaf, star, bolt, heart, bubbles) low on the tummy, below the mouth
+    const bellyMark = (() => {
+      const my = botY - 13, ms = 1.75;
+      return `<g class="mon-belly-mark">
+        ${speciesMotif(colorKey, cX, my, ms, palette.primaryDark, 0.2)}
+        ${speciesMotif(colorKey, cX - 0.6, my - 0.8, ms * 0.92, '#ffffff', 0.78)}
+      </g>`;
+    })();
 
     // Ambient Occlusion Crescent along lower-right inner rim (softly clipped inside body)
     const aoCrescent = `
@@ -2445,6 +2508,7 @@
       <g filter="url(#plush-shadow)" class="mon-body-breathe">
         <path d="${bodyPath}" fill="url(#plush-fur-${colorKey})" stroke="${palette.primaryDark}" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" />
         <path d="${bellyPath}" fill="url(#plush-belly-${colorKey})" />
+        ${bellyMark}
         ${detailMarkup}
         ${specularArc}
       </g>
@@ -2490,12 +2554,12 @@
     if (g.creature === 'dragon') return dragonBodyPath(g, cX);
     const topY = g.topY, botY = g.botY, cW = g.cW, bW = g.bW, cheekY = g.cheekY;
     return `M ${cX} ${topY}
-      C ${cX + cW * 0.56} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
+      C ${cX + cW * (g.crown || 0.56)} ${topY} ${cX + cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX + cW * 1.06} ${cheekY}
       C ${cX + cW * 1.1} ${cheekY + 16} ${cX + bW * 1.04} ${botY - 20} ${cX + bW * 0.9} ${botY - 8}
       C ${cX + bW * 0.74} ${botY + 3} ${cX + 20} ${botY + 2} ${cX} ${botY + 2}
       C ${cX - 20} ${botY + 2} ${cX - bW * 0.74} ${botY + 3} ${cX - bW * 0.9} ${botY - 8}
       C ${cX - bW * 1.04} ${botY - 20} ${cX - cW * 1.1} ${cheekY + 16} ${cX - cW * 1.06} ${cheekY}
-      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * 0.56} ${topY} ${cX} ${topY} Z`;
+      C ${cX - cW * 1.0} ${topY + (cheekY - topY) * 0.40} ${cX - cW * (g.crown || 0.56)} ${topY} ${cX} ${topY} Z`;
   }
 
   // Both legacy outfits (clothing-*) and costume sets (cs-*) were drawn on y=108..150, which starts at eye level on chibi bodies.
@@ -2799,22 +2863,29 @@
   // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
   /* The shared glossy eye: a bright coloured iris with a glow at the bottom, a smaller pupil, a soft shade under the upper lid,
      a big and a small sparkle, and a little lash flick at the outer corner. Same size and place as the old eye. */
+  // Eye looks: 'girl' = tall oval with a lash flick, 'boy' = rounder, bolder, with a strong brow and no lashes.
+  // The default follows the species (Aqua, Ember and Spark = boy look; Heart, Astral and Verdant = girl look); an eye item overrides it.
+  const BOY_EYE_SPECIES = { blue: 1, orange: 1, gold: 1 };
   function glossEye(cx, ey, rot, palette, colorKey, o) {
     o = o || {};
-    const rx = o.rx || 9.8, ry = o.ry || 13.0, side = o.side || 1;
+    const boy = o.style ? o.style === 'boy' : !!BOY_EYE_SPECIES[colorKey];
+    const rx = o.rx || (boy ? 10.6 : 9.8), ry = o.ry || (boy ? 11.6 : 13.0), side = o.side || 1;
+    const accent = boy
+      ? `<path d="M ${cx + side * (rx + 1.2)} ${ey - ry - 3.6} Q ${cx} ${ey - ry - 7.4} ${cx - side * (rx + 0.6)} ${ey - ry - 1.2}" fill="none" stroke="${palette.primaryDark}" stroke-width="3" stroke-linecap="round" />`
+      : `<path d="M ${cx + side * (rx - 0.6)} ${ey - ry * 0.5} q ${side * 3.4} -0.4 ${side * 4.6} -3.4" fill="none" stroke="#0b1226" stroke-width="1.7" stroke-linecap="round" />`;
     return `
         <g${o.blink === false ? '' : ' class="mon-eye"'} transform="rotate(${rot}, ${cx}, ${ey})">
           <ellipse cx="${cx}" cy="${ey}" rx="${rx}" ry="${ry}" fill="#0b1226" stroke="${palette.primaryDark}" stroke-width="1.3" />
           <ellipse cx="${cx}" cy="${ey + 1.2}" rx="${rx - 0.9}" ry="${ry - 1.0}" fill="url(#plush-eye-iris-${colorKey})" />
           <ellipse cx="${cx}" cy="${ey + ry * 0.5}" rx="${rx * 0.6}" ry="${ry * 0.26}" fill="${palette.primaryLight}" opacity="0.6" filter="url(#plush-contact-blur)" />
-          <ellipse cx="${cx}" cy="${ey + 0.5}" rx="${rx * 0.38}" ry="${ry * 0.31}" fill="#090d16" />
+          <ellipse cx="${cx}" cy="${ey + 0.5}" rx="${rx * (boy ? 0.44 : 0.38)}" ry="${ry * (boy ? 0.38 : 0.31)}" fill="#090d16" />
           <ellipse cx="${cx}" cy="${ey + 1.2}" rx="${rx * 0.78}" ry="${ry * 0.78}" fill="none" stroke="${palette.primaryLight}" stroke-width="0.7" opacity="0.35" />
           <path d="M ${cx - rx + 0.8} ${ey - 1.2} A ${rx - 0.8} ${ry - 0.8} 0 0 1 ${cx + rx - 0.8} ${ey - 1.2} Q ${cx} ${ey - ry * 0.6} ${cx - rx + 0.8} ${ey - 1.2} Z" fill="#020617" opacity="0.22" />
-          <circle cx="${cx - 3.0}" cy="${ey - 4.4}" r="4.4" fill="#ffffff" />
+          <circle cx="${cx - 3.0}" cy="${ey - 4.4}" r="${boy ? 3.6 : 4.4}" fill="#ffffff" />
           <circle cx="${cx - 3.0}" cy="${ey - 4.4}" r="2.4" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
-          <circle cx="${cx + 3.4}" cy="${ey + 4.0}" r="2.1" fill="#ffffff" opacity="0.95" />
-          <circle cx="${cx - 4.1}" cy="${ey + 2.6}" r="1.0" fill="#ffffff" opacity="0.85" />
-          <path d="M ${cx + side * (rx - 0.6)} ${ey - ry * 0.5} q ${side * 3.4} -0.4 ${side * 4.6} -3.4" fill="none" stroke="#0b1226" stroke-width="1.7" stroke-linecap="round" />
+          <circle cx="${cx + 3.4}" cy="${ey + 4.0}" r="${boy ? 1.7 : 2.1}" fill="#ffffff" opacity="0.95" />
+          ${boy ? '' : `<circle cx="${cx - 4.1}" cy="${ey + 2.6}" r="1.0" fill="#ffffff" opacity="0.85" />`}
+          ${accent}
         </g>`;
   }
 
