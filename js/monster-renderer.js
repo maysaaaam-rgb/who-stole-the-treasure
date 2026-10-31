@@ -187,11 +187,11 @@
         </radialGradient>
 
         <!-- Living Glass Eye Iris Radial Gradient -->
-        <radialGradient id="plush-eye-iris-${colorKey}" cx="48%" cy="62%" r="52%">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
-          <stop offset="25%" stop-color="${palette.primary}" />
-          <stop offset="65%" stop-color="${palette.primaryDark}" />
-          <stop offset="100%" stop-color="#020617" />
+        <radialGradient id="plush-eye-iris-${colorKey}" cx="50%" cy="68%" r="64%">
+          <stop offset="0%" stop-color="${palette.primaryLight}" />
+          <stop offset="38%" stop-color="${palette.primary}" />
+          <stop offset="80%" stop-color="${palette.primaryDark}" />
+          <stop offset="100%" stop-color="#0f172a" />
         </radialGradient>
 
         <!-- Tiered Wooden Pedestal Top Surface Gradient -->
@@ -2797,6 +2797,27 @@
   }
 
   // --- FACE ELEMENTS (Low Horizon Placement, Chibi Outward Angled Perspective, Big Glints) ---
+  /* The shared glossy eye: a bright coloured iris with a glow at the bottom, a smaller pupil, a soft shade under the upper lid,
+     a big and a small sparkle, and a little lash flick at the outer corner. Same size and place as the old eye. */
+  function glossEye(cx, ey, rot, palette, colorKey, o) {
+    o = o || {};
+    const rx = o.rx || 9.8, ry = o.ry || 13.0, side = o.side || 1;
+    return `
+        <g${o.blink === false ? '' : ' class="mon-eye"'} transform="rotate(${rot}, ${cx}, ${ey})">
+          <ellipse cx="${cx}" cy="${ey}" rx="${rx}" ry="${ry}" fill="#0b1226" stroke="${palette.primaryDark}" stroke-width="1.3" />
+          <ellipse cx="${cx}" cy="${ey + 1.2}" rx="${rx - 0.9}" ry="${ry - 1.0}" fill="url(#plush-eye-iris-${colorKey})" />
+          <ellipse cx="${cx}" cy="${ey + ry * 0.5}" rx="${rx * 0.6}" ry="${ry * 0.26}" fill="${palette.primaryLight}" opacity="0.6" filter="url(#plush-contact-blur)" />
+          <ellipse cx="${cx}" cy="${ey + 0.5}" rx="${rx * 0.38}" ry="${ry * 0.31}" fill="#090d16" />
+          <ellipse cx="${cx}" cy="${ey + 1.2}" rx="${rx * 0.78}" ry="${ry * 0.78}" fill="none" stroke="${palette.primaryLight}" stroke-width="0.7" opacity="0.35" />
+          <path d="M ${cx - rx + 0.8} ${ey - 1.2} A ${rx - 0.8} ${ry - 0.8} 0 0 1 ${cx + rx - 0.8} ${ey - 1.2} Q ${cx} ${ey - ry * 0.6} ${cx - rx + 0.8} ${ey - 1.2} Z" fill="#020617" opacity="0.22" />
+          <circle cx="${cx - 3.0}" cy="${ey - 4.4}" r="4.4" fill="#ffffff" />
+          <circle cx="${cx - 3.0}" cy="${ey - 4.4}" r="2.4" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
+          <circle cx="${cx + 3.4}" cy="${ey + 4.0}" r="2.1" fill="#ffffff" opacity="0.95" />
+          <circle cx="${cx - 4.1}" cy="${ey + 2.6}" r="1.0" fill="#ffffff" opacity="0.85" />
+          <path d="M ${cx + side * (rx - 0.6)} ${ey - ry * 0.5} q ${side * 3.4} -0.4 ${side * 4.6} -3.4" fill="none" stroke="#0b1226" stroke-width="1.7" stroke-linecap="round" />
+        </g>`;
+  }
+
   function renderFaceElements(stage, palette, colorKey, equipped, cX, g) {
     let eyesId = equipped.eyes || 'eyes-sparkle';
     if (eyesId === 'default') eyesId = 'eyes-sparkle';
@@ -2809,9 +2830,11 @@
 
     // Warm signature pink blush cheeks nestled directly into the cheek swell
     const cheeks = `
-      <!-- Soft Velvet Cheek Blush -->
-      <ellipse cx="${cX - eyeSpacing - 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
-      <ellipse cx="${cX + eyeSpacing + 10}" cy="${eyeY + 11}" rx="8.5" ry="5.5" fill="${palette.cheek}" opacity="0.78" />
+      <!-- Soft Velvet Cheek Blush: blurred, with a tiny gloss -->
+      <ellipse cx="${cX - eyeSpacing - 11}" cy="${eyeY + 11.5}" rx="9.6" ry="6" fill="${palette.cheek}" opacity="0.8" filter="url(#plush-contact-blur)" />
+      <ellipse cx="${cX + eyeSpacing + 11}" cy="${eyeY + 11.5}" rx="9.6" ry="6" fill="${palette.cheek}" opacity="0.8" filter="url(#plush-contact-blur)" />
+      <ellipse cx="${cX - eyeSpacing - 12}" cy="${eyeY + 9.6}" rx="3" ry="1.1" fill="#ffffff" opacity="0.4" />
+      <ellipse cx="${cX + eyeSpacing + 12}" cy="${eyeY + 9.6}" rx="3" ry="1.1" fill="#ffffff" opacity="0.4" />
     `;
 
     // 3D Snout & Muzzle Dome with Curved Button Nose
@@ -2831,13 +2854,7 @@
         <g transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
           <path d="M ${cX - eyeSpacing - 8} ${eyeY} Q ${cX - eyeSpacing} ${eyeY - 7} ${cX - eyeSpacing + 8} ${eyeY}" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
         </g>
-        <g transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
-          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
-        </g>
+        ${glossEye(cX + eyeSpacing, eyeY, 4, palette, colorKey, { side: 1, blink: false })}
       `;
     } else if (eyesId === 'eyes-happy') {
       eyesMarkup = `
@@ -2856,20 +2873,8 @@
         <!-- Brave Hero Eyes with angled brows -->
         <line x1="${cX - eyeSpacing - 9}" y1="${eyeY - 14}" x2="${cX - eyeSpacing + 8}" y2="${eyeY - 10}" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" />
         <line x1="${cX + eyeSpacing + 9}" y1="${eyeY - 14}" x2="${cX + eyeSpacing - 8}" y2="${eyeY - 10}" stroke="#0f172a" stroke-width="3.0" stroke-linecap="round" />
-        <g transform="rotate(-3, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="12.4" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.6" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="9.8" fill="url(#plush-eye-iris-${colorKey})" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="5.0" ry="6.8" fill="#090d16" />
-          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.4}" r="4.0" fill="#ffffff" />
-          <circle cx="${cX - eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
-        </g>
-        <g transform="rotate(3, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="12.4" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.6" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="9.8" fill="url(#plush-eye-iris-${colorKey})" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.0" ry="6.8" fill="#090d16" />
-          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.4}" r="4.0" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing + 3.0}" cy="${eyeY + 3.4}" r="2.0" fill="#ffffff" />
-        </g>
+        ${glossEye(cX - eyeSpacing, eyeY, -3, palette, colorKey, { ry: 12.4, side: -1, blink: false })}
+        ${glossEye(cX + eyeSpacing, eyeY, 3, palette, colorKey, { ry: 12.4, side: 1, blink: false })}
       `;
     } else if (eyesId === 'eyes-sleepy') {
       eyesMarkup = `
@@ -2930,37 +2935,12 @@
         </g>
       `;
     } else {
-      // Default: Living Glossy Eyes (11 O'Clock Keylit Glass Spheres)
+      // Default: Living Glossy Eyes
       eyesMarkup = `
         <!-- Living Glossy Left Eye -->
-        <g class="mon-eye" transform="rotate(-4, ${cX - eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY + 2}" rx="7.6" ry="9.3" fill="none" stroke="${palette.primaryLight}" stroke-width="0.8" opacity="0.22" />
-          <ellipse cx="${cX - eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
-          <!-- Dominant 11 O'Clock Primary Reflection Dot (Real Glass Sphere) -->
-          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
-          <circle cx="${cX - eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.2" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
-          <!-- Secondary Bounce Light at 5 O'Clock -->
-          <circle cx="${cX - eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
-          <!-- Tertiary Micro Reflection Spec -->
-          <circle cx="${cX - eyeSpacing - 3.6}" cy="${eyeY + 2.8}" r="1.1" fill="#ffffff" opacity="0.85" />
-        </g>
-
+        ${glossEye(cX - eyeSpacing, eyeY, -4, palette, colorKey, { side: -1 })}
         <!-- Living Glossy Right Eye -->
-        <g class="mon-eye" transform="rotate(4, ${cX + eyeSpacing}, ${eyeY})">
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="9.8" ry="13.0" fill="#020617" stroke="${palette.primaryDark}" stroke-width="1.8" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="8.6" ry="10.2" fill="url(#plush-eye-iris-${colorKey})" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY + 2}" rx="7.6" ry="9.3" fill="none" stroke="${palette.primaryLight}" stroke-width="0.8" opacity="0.22" />
-          <ellipse cx="${cX + eyeSpacing}" cy="${eyeY}" rx="5.2" ry="7.0" fill="#090d16" />
-          <!-- Dominant 11 O'Clock Primary Reflection Dot -->
-          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="4.3" fill="#ffffff" />
-          <circle cx="${cX + eyeSpacing - 3.0}" cy="${eyeY - 3.8}" r="2.2" fill="#ffffff" filter="url(#plush-contact-blur)" opacity="0.8" />
-          <!-- Secondary Bounce Light at 5 O'Clock -->
-          <circle cx="${cX + eyeSpacing + 3.2}" cy="${eyeY + 3.8}" r="2.2" fill="#ffffff" opacity="0.95" />
-          <!-- Tertiary Micro Reflection Spec -->
-          <circle cx="${cX + eyeSpacing - 3.6}" cy="${eyeY + 2.8}" r="1.1" fill="#ffffff" opacity="0.85" />
-        </g>
+        ${glossEye(cX + eyeSpacing, eyeY, 4, palette, colorKey, { side: 1 })}
       `;
     }
 
@@ -2998,10 +2978,11 @@
         <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
       `;
     } else {
-      // Default: Organic W-Smile Lip Crease (Cuddly Plush Mouth)
+      // Default: Organic W-Smile Lip Crease with little dimples (Cuddly Plush Mouth)
       mouthMarkup = `
-        <path d="M ${cX - 7.5} ${mouthY} Q ${cX - 3.5} ${mouthY + 5.0} ${cX} ${mouthY + 2.5} Q ${cX + 3.5} ${mouthY + 5.0} ${cX + 7.5} ${mouthY}"
-              fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M ${cX - 8} ${mouthY - 0.5} Q ${cX - 4} ${mouthY + 5.6} ${cX} ${mouthY + 2.6} Q ${cX + 4} ${mouthY + 5.6} ${cX + 8} ${mouthY - 0.5}"
+              fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M ${cX - 9.8} ${mouthY - 2.2} q 1.3 1.5 2 3.2 M ${cX + 9.8} ${mouthY - 2.2} q -1.3 1.5 -2 3.2" fill="none" stroke="#0f172a" stroke-width="1.3" stroke-linecap="round" opacity="0.55" />
       `;
     }
 
