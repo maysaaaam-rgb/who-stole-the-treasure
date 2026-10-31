@@ -2889,6 +2889,72 @@
         </g>`;
   }
 
+  // Mouth drawings, one per mouth item and per talking shape (viseme-*). Pulled out so a live monster can swap its mouth without a redraw.
+  function mouthShape(mouthId, cX, mouthY) {
+    let mouthMarkup = '';
+    if (mouthId === 'mouth-cheer' || mouthId === 'mouth-open') {
+      mouthMarkup = `
+        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 14} ${cX + 9} ${mouthY} Z" fill="#e11d48" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round" />
+        <path d="M ${cX - 5} ${mouthY + 8} Q ${cX} ${mouthY + 6} ${cX + 5} ${mouthY + 8}" fill="#fda4af" />
+      `;
+    } else if (mouthId === 'mouth-toothy') {
+      mouthMarkup = `
+        <path d="M ${cX - 10} ${mouthY} Q ${cX} ${mouthY + 11} ${cX + 10} ${mouthY}" fill="#0f172a" stroke="#0f172a" stroke-width="2.4" stroke-linejoin="round" />
+        <polygon points="${cX - 5},${mouthY} ${cX - 3},${mouthY + 4} ${cX - 1},${mouthY}" fill="#ffffff" />
+        <polygon points="${cX + 1},${mouthY} ${cX + 3},${mouthY + 4} ${cX + 5},${mouthY}" fill="#ffffff" />
+      `;
+    } else if (mouthId === 'mouth-tiny') {
+      mouthMarkup = `
+        <path d="M ${cX - 5} ${mouthY + 1} Q ${cX} ${mouthY + 5} ${cX + 5} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+      `;
+    } else if (mouthId === 'mouth-excited') {
+      mouthMarkup = `
+        <path d="M ${cX - 10} ${mouthY - 1} Q ${cX} ${mouthY + 15} ${cX + 10} ${mouthY - 1} Z" fill="#f43f5e" stroke="#be123c" stroke-width="2.5" stroke-linejoin="round" />
+        <ellipse cx="${cX}" cy="${mouthY + 9}" rx="5.5" ry="3.5" fill="#fbcfe8" />
+      `;
+    } else if (mouthId === 'mouth-brave') {
+      mouthMarkup = `
+        <path d="M ${cX - 8} ${mouthY + 2} Q ${cX} ${mouthY} ${cX + 9} ${mouthY - 3}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+      `;
+    } else if (mouthId === 'mouth-laughing') {
+      mouthMarkup = `
+        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 12} ${cX + 9} ${mouthY}" fill="#e11d48" stroke="#0f172a" stroke-width="2.6" stroke-linejoin="round" />
+      `;
+    } else if (mouthId === 'mouth-surprise') {
+      mouthMarkup = `
+        <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
+      `;
+    } else if (mouthId === 'viseme-mm') {
+      mouthMarkup = `<path d="M ${cX - 6} ${mouthY + 1} Q ${cX} ${mouthY + 3.4} ${cX + 6} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" />`;
+    } else if (mouthId === 'viseme-ah') {
+      mouthMarkup = `
+        <ellipse cx="${cX}" cy="${mouthY + 4.5}" rx="7" ry="8" fill="#9f1239" stroke="#0f172a" stroke-width="2.2" />
+        <ellipse cx="${cX}" cy="${mouthY + 9}" rx="4.6" ry="3" fill="#fb7185" />
+        <path d="M ${cX - 5} ${mouthY - 0.2} Q ${cX} ${mouthY + 1.6} ${cX + 5} ${mouthY - 0.2}" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.9" />`;
+    } else if (mouthId === 'viseme-oh') {
+      mouthMarkup = `<ellipse cx="${cX}" cy="${mouthY + 3.6}" rx="4.8" ry="5.8" fill="#9f1239" stroke="#0f172a" stroke-width="2.2" /><ellipse cx="${cX}" cy="${mouthY + 6.4}" rx="2.6" ry="2" fill="#fb7185" />`;
+    } else if (mouthId === 'viseme-oo') {
+      mouthMarkup = `<ellipse cx="${cX}" cy="${mouthY + 3}" rx="3.1" ry="3.6" fill="#9f1239" stroke="#0f172a" stroke-width="2.2" /><circle cx="${cX - 0.9}" cy="${mouthY + 2}" r="0.8" fill="#ffffff" opacity="0.8" />`;
+    } else if (mouthId === 'viseme-ee') {
+      mouthMarkup = `
+        <path d="M ${cX - 10} ${mouthY} Q ${cX} ${mouthY + 10} ${cX + 10} ${mouthY} Q ${cX} ${mouthY + 3.4} ${cX - 10} ${mouthY} Z" fill="#ffffff" stroke="#0f172a" stroke-width="2.4" stroke-linejoin="round" />
+        <path d="M ${cX - 7} ${mouthY + 2.6} Q ${cX} ${mouthY + 6.4} ${cX + 7} ${mouthY + 2.6}" fill="none" stroke="#0f172a" stroke-width="1" opacity="0.4" />`;
+    } else if (mouthId === 'viseme-fv') {
+      mouthMarkup = `
+        <path d="M ${cX - 7} ${mouthY + 1.5} Q ${cX} ${mouthY + 6} ${cX + 7} ${mouthY + 1.5}" fill="none" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M ${cX - 4.2} ${mouthY + 0.6} L ${cX + 4.2} ${mouthY + 0.6} L ${cX + 3.6} ${mouthY + 3.6} Q ${cX} ${mouthY + 4.6} ${cX - 3.6} ${mouthY + 3.6} Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.2" stroke-linejoin="round" />`;
+    } else {
+      // Default: Organic W-Smile Lip Crease with little dimples (Cuddly Plush Mouth)
+      mouthMarkup = `
+        <path d="M ${cX - 8} ${mouthY - 0.5} Q ${cX - 4} ${mouthY + 5.6} ${cX} ${mouthY + 2.6} Q ${cX + 4} ${mouthY + 5.6} ${cX + 8} ${mouthY - 0.5}"
+              fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M ${cX - 9.8} ${mouthY - 2.2} q 1.3 1.5 2 3.2 M ${cX + 9.8} ${mouthY - 2.2} q -1.3 1.5 -2 3.2" fill="none" stroke="#0f172a" stroke-width="1.3" stroke-linecap="round" opacity="0.55" />
+      `;
+    }
+
+    return mouthMarkup;
+  }
+
   function renderFaceElements(stage, palette, colorKey, equipped, cX, g) {
     let eyesId = equipped.eyes || 'eyes-sparkle';
     if (eyesId === 'default') eyesId = 'eyes-sparkle';
@@ -3015,48 +3081,7 @@
       `;
     }
 
-    let mouthMarkup = '';
-    if (mouthId === 'mouth-cheer' || mouthId === 'mouth-open') {
-      mouthMarkup = `
-        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 14} ${cX + 9} ${mouthY} Z" fill="#e11d48" stroke="#9f1239" stroke-width="2.5" stroke-linejoin="round" />
-        <path d="M ${cX - 5} ${mouthY + 8} Q ${cX} ${mouthY + 6} ${cX + 5} ${mouthY + 8}" fill="#fda4af" />
-      `;
-    } else if (mouthId === 'mouth-toothy') {
-      mouthMarkup = `
-        <path d="M ${cX - 10} ${mouthY} Q ${cX} ${mouthY + 11} ${cX + 10} ${mouthY}" fill="#0f172a" stroke="#0f172a" stroke-width="2.4" stroke-linejoin="round" />
-        <polygon points="${cX - 5},${mouthY} ${cX - 3},${mouthY + 4} ${cX - 1},${mouthY}" fill="#ffffff" />
-        <polygon points="${cX + 1},${mouthY} ${cX + 3},${mouthY + 4} ${cX + 5},${mouthY}" fill="#ffffff" />
-      `;
-    } else if (mouthId === 'mouth-tiny') {
-      mouthMarkup = `
-        <path d="M ${cX - 5} ${mouthY + 1} Q ${cX} ${mouthY + 5} ${cX + 5} ${mouthY + 1}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
-      `;
-    } else if (mouthId === 'mouth-excited') {
-      mouthMarkup = `
-        <path d="M ${cX - 10} ${mouthY - 1} Q ${cX} ${mouthY + 15} ${cX + 10} ${mouthY - 1} Z" fill="#f43f5e" stroke="#be123c" stroke-width="2.5" stroke-linejoin="round" />
-        <ellipse cx="${cX}" cy="${mouthY + 9}" rx="5.5" ry="3.5" fill="#fbcfe8" />
-      `;
-    } else if (mouthId === 'mouth-brave') {
-      mouthMarkup = `
-        <path d="M ${cX - 8} ${mouthY + 2} Q ${cX} ${mouthY} ${cX + 9} ${mouthY - 3}" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
-      `;
-    } else if (mouthId === 'mouth-laughing') {
-      mouthMarkup = `
-        <path d="M ${cX - 9} ${mouthY} Q ${cX} ${mouthY + 12} ${cX + 9} ${mouthY}" fill="#e11d48" stroke="#0f172a" stroke-width="2.6" stroke-linejoin="round" />
-      `;
-    } else if (mouthId === 'mouth-surprise') {
-      mouthMarkup = `
-        <ellipse cx="${cX}" cy="${mouthY + 3}" rx="5" ry="6.8" fill="#be123c" stroke="#881337" stroke-width="2.2" />
-      `;
-    } else {
-      // Default: Organic W-Smile Lip Crease with little dimples (Cuddly Plush Mouth)
-      mouthMarkup = `
-        <path d="M ${cX - 8} ${mouthY - 0.5} Q ${cX - 4} ${mouthY + 5.6} ${cX} ${mouthY + 2.6} Q ${cX + 4} ${mouthY + 5.6} ${cX + 8} ${mouthY - 0.5}"
-              fill="none" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M ${cX - 9.8} ${mouthY - 2.2} q 1.3 1.5 2 3.2 M ${cX + 9.8} ${mouthY - 2.2} q -1.3 1.5 -2 3.2" fill="none" stroke="#0f172a" stroke-width="1.3" stroke-linecap="round" opacity="0.55" />
-      `;
-    }
-
+    const mouthMarkup = `<g class="mon-mouth" data-cx="${cX}" data-my="${mouthY}">${mouthShape(mouthId, cX, mouthY)}</g>`;
     return `
       <!-- Living Glossy Chibi Face Elements -->
       <g class="plush-face">
@@ -4234,6 +4259,44 @@
     return markup ? '<svg viewBox="0 0 200 200" width="100%" height="100%">' + defs + markup + '</svg>' : '';
   }
 
+  // --- TALKING ---
+  // setMouth(root, 'viseme-ah') swaps the mouth of an already drawn monster; talk(root, 'Hello there') plays the mouth shapes for a sentence
+  // and returns a stop() function. Shapes follow the letters (a/e/i/o/u, m b p, f v), which is enough to look like speech for pupils.
+  const VISEMES = ['viseme-mm', 'viseme-ah', 'viseme-oh', 'viseme-oo', 'viseme-ee', 'viseme-fv'];
+  function visemeFor(ch) {
+    ch = String(ch || '').toLowerCase();
+    if ('a'.indexOf(ch) === 0 && ch) return 'viseme-ah';
+    if ('ei'.indexOf(ch) !== -1 && ch) return 'viseme-ee';
+    if (ch === 'o') return 'viseme-oh';
+    if ('uw'.indexOf(ch) !== -1 && ch) return 'viseme-oo';
+    if ('mbp'.indexOf(ch) !== -1 && ch) return 'viseme-mm';
+    if ('fv'.indexOf(ch) !== -1 && ch) return 'viseme-fv';
+    return '';
+  }
+  function setMouth(root, id) {
+    const els = root && root.querySelectorAll ? root.querySelectorAll('.mon-mouth') : [];
+    for (let i = 0; i < els.length; i++) {
+      const el = els[i], cx = Number(el.getAttribute('data-cx')), my = Number(el.getAttribute('data-my'));
+      if (!isFinite(cx) || !isFinite(my)) continue;
+      if (!el.getAttribute('data-rest')) el.setAttribute('data-rest', el.innerHTML);
+      el.innerHTML = id ? mouthShape(id, cx, my) : el.getAttribute('data-rest');
+    }
+  }
+  function talk(root, text, msPerLetter) {
+    const step = Math.max(40, Number(msPerLetter) || 85), letters = String(text || '');
+    let i = 0, last = '', stopped = false, timer = 0;
+    function tick() {
+      if (stopped) return;
+      if (i >= letters.length) { setMouth(root, ''); return; }
+      const v = visemeFor(letters.charAt(i++));
+      if (v && v !== last) { last = v; setMouth(root, v); }
+      else if (!v && /[\s,.!?]/.test(letters.charAt(i - 1))) { last = 'viseme-mm'; setMouth(root, 'viseme-mm'); }
+      timer = setTimeout(tick, step);
+    }
+    tick();
+    return function stop() { stopped = true; clearTimeout(timer); setMouth(root, ''); };
+  }
+
   root.MonsterRenderer = {
     getMonsterAsset: getMonsterAsset,
     renderBackdropSvg: renderBackdropSvg,
@@ -4242,6 +4305,10 @@
     renderMonsterArtwork: renderMonsterArtwork,
     renderMonsterEvolutionStagesBanner: renderMonsterEvolutionStagesBanner,
     renderMonsterSVG: renderMonsterSVG,
+    setMouth: setMouth,
+    talk: talk,
+    visemeFor: visemeFor,
+    VISEMES: VISEMES,
     renderMonsterLiveStage: renderMonsterLiveStage,
     renderHornsLayer: renderHornsLayer,
     renderMonsterWithPedestal: renderMonsterWithPedestal,
