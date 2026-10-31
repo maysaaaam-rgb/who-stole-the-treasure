@@ -106,14 +106,14 @@
   }
 
   var monsterSvgCache = {};
-  function renderMonsterHtml(size, extraEquipped) {
+  function renderMonsterHtml(size, extraEquipped, plain) {
     if (!state.session || !state.session.student) return '🐣';
     var prof = state.session.student.monsterProfile || {};
     var eq = Object.assign({}, prof.equipped || {}, (state.session.doc && state.session.doc.look) || {}, extraEquipped || {});
     var mInfo = calcMonsterLevel(getEffectiveXP());
     var color = prof.baseColor || 'blue';
     var s = size || 96;
-    var cacheKey = mInfo.stageKey + '_' + color + '_' + s + '_' + JSON.stringify(eq);
+    var cacheKey = mInfo.stageKey + '_' + color + '_' + s + '_' + (plain ? 'p_' : '') + JSON.stringify(eq);
     if (monsterSvgCache[cacheKey]) return monsterSvgCache[cacheKey];
 
     if (root.MonsterRenderer && typeof root.MonsterRenderer.renderMonsterSVG === 'function') {
@@ -122,7 +122,8 @@
         color: color,
         equipped: eq,
         size: s,
-        animated: true
+        animated: true,
+        isAvatar: !!plain
       });
       monsterSvgCache[cacheKey] = svg;
       return svg;
@@ -586,6 +587,8 @@
     return new URLSearchParams(root.location.search).get('nostory') === '1';
   }
 
+  function advOn(run) { return !!(root.IslandAdventure && root.IslandAdventure.handles(run)); }
+
   function prepareCurrentStep() {
     var run = state.missionRun;
     if (!run) return;
@@ -611,7 +614,7 @@
       }
     }
 
-    if (qType === 'listen' || q.autoSpeak) {
+    if ((qType === 'listen' || q.autoSpeak) && !advOn(run)) {
       setTimeout(function () {
         if (state.missionRun === run) {
           root.IslandAudio.speak(q.speak || q.word || q.q || q.text);
@@ -644,6 +647,7 @@
     var m = run.mission;
     var q = m.questions[run.qIndex];
     var qType = (q && q.type) || m.type;
+    if (advOn(run)) { root.IslandAdventure.render(run, q, qType, renderMonsterHtml(220, null, true)); return; }
     var pct = Math.round(((run.qIndex + 1) / run.total) * 100);
 
     var bodyHtml = '';
@@ -763,6 +767,7 @@
     if (!run) return;
     var q = run.mission.questions[run.qIndex];
     if (!q) return;
+    if (advOn(run)) { root.IslandAudio.speak(root.IslandAdventure.hearText(q, q.type || run.mission.type)); return; }
     root.IslandAudio.speak(q.speak || q.word || q.q || q.text);
   }
 
@@ -781,6 +786,10 @@
       if (btnEl) btnEl.classList.add('correct');
       root.IslandAudio.playCorrect();
       if (!run.hadWrongOnCurrent) run.firstTryCorrect++;
+      if (advOn(run)) {
+        root.IslandAdventure.onRight(btnEl, run, q, function () { if (state.missionRun === run) advanceMissionStep(); });
+        return;
+      }
       root.IslandGames.onRight(run.zone, btnEl, run);
       setTimeout(function () {
         if (state.missionRun === run) advanceMissionStep();
@@ -788,6 +797,15 @@
     } else {
       run.hadWrongOnCurrent = true;
       recordWrongQuestion(q);
+      if (advOn(run)) {
+        root.IslandAudio.playSoftFail();
+        root.IslandAdventure.onWrong(btnEl);
+        if (run.mission && run.mission.isStar) {
+          var starBtn = document.querySelector('.isl-opt-btn[data-opt="' + esc(q.a) + '"]');
+          if (starBtn) starBtn.classList.add('adv-hint');
+        }
+        return;
+      }
       if (btnEl) {
         btnEl.classList.remove('wobble');
         void btnEl.offsetWidth;
@@ -822,6 +840,7 @@
     var run = state.missionRun;
     if (!run || !run.matchSelectedLeft) {
       root.IslandAudio.playSoftFail();
+      if (advOn(run)) { root.IslandAdventure.firstWord(); return; }
       root.IslandAudio.speak('Tap a word on the left first!');
       return;
     }
@@ -830,7 +849,18 @@
       run.matchSelectedLeft = null;
       root.IslandAudio.playCorrect();
       if (!run.hadWrongOnCurrent) run.firstTryCorrect++;
-      if (run.qIndex + 1 >= run.total || Object.keys(run.matchDonePairs).length >= run.total) {
+      var matchFinished = run.qIndex + 1 >= run.total || Object.keys(run.matchDonePairs).length >= run.total;
+      if (advOn(run)) {
+        root.IslandAdventure.onMatchRight(run, targetWord, matchFinished, function () {
+          if (state.missionRun !== run) return;
+          if (matchFinished) { run.qIndex = run.total - 1; finishMission(); return; }
+          run.qIndex++;
+          run.hadWrongOnCurrent = false;
+          renderMissionModal();
+        });
+        return;
+      }
+      if (matchFinished) {
         run.qIndex = run.total - 1;
         setTimeout(finishMission, 320);
       } else {
@@ -840,6 +870,15 @@
       }
     } else {
       run.hadWrongOnCurrent = true;
+      if (advOn(run)) {
+        root.IslandAudio.playSoftFail();
+        root.IslandAdventure.onWrong(btnEl);
+        if (run.mission && run.mission.isStar) {
+          var starRight = document.querySelector('.adv-card[data-match="' + esc(run.matchSelectedLeft) + '"]');
+          if (starRight) starRight.classList.add('adv-hint');
+        }
+        return;
+      }
       if (btnEl) {
         btnEl.classList.remove('wobble');
         void btnEl.offsetWidth;
@@ -871,17 +910,31 @@
       run.buildPlaced.push(chosen);
       run.buildBank.splice(bankIdx, 1);
       root.IslandAudio.playTap();
+      if (advOn(run)) root.IslandAdventure.placed();
       root.IslandAudio.speak(chosen);
       renderMissionModal();
 
       if (run.buildPlaced.length === q.order.length) {
         root.IslandAudio.playCorrect();
         if (!run.hadWrongOnCurrent) run.firstTryCorrect++;
-        setTimeout(advanceMissionStep, 420);
+        if (advOn(run)) {
+          root.IslandAdventure.onBuildDone(run, q, function () { if (state.missionRun === run) advanceMissionStep(); });
+        } else {
+          setTimeout(advanceMissionStep, 420);
+        }
       }
     } else {
       run.hadWrongOnCurrent = true;
       recordWrongQuestion(q);
+      if (advOn(run)) {
+        root.IslandAudio.playSoftFail();
+        root.IslandAdventure.onWrong(btnEl);
+        if (run.mission && run.mission.isStar) {
+          var starNext = document.querySelector('#isl-build-bank [data-word="' + esc(expectedNext) + '"]');
+          if (starNext) starNext.classList.add('adv-hint');
+        }
+        return;
+      }
       if (btnEl) {
         btnEl.classList.remove('wobble');
         void btnEl.offsetWidth;
@@ -927,12 +980,24 @@
     }, 650);
   }
 
-  function completeSayStep() {
+  /* The Adventure screen says the speaking step is done (the words were heard, or the pupil had a good try). */
+  function sayPassed(line) {
+    var run = state.missionRun;
+    if (!run || run.locked) return;
+    run.sayUnlocked = true;
+    completeSayStep(line);
+  }
+
+  function completeSayStep(line) {
     var run = state.missionRun;
     if (!run || !run.sayUnlocked || run.locked) return;
     run.locked = true;
     root.IslandAudio.playCorrect();
     run.firstTryCorrect++;
+    if (advOn(run)) {
+      root.IslandAdventure.onSayDone(run, function () { if (state.missionRun === run) advanceMissionStep(); }, typeof line === 'string' ? line : '');
+      return;
+    }
     var sayQ = run.mission.questions[run.qIndex];
     root.IslandGames.echo(sayQ && sayQ.text);
     setTimeout(function () {
@@ -985,6 +1050,7 @@
       }
     }
 
+    if (root.IslandAdventure) root.IslandAdventure.close();
     var nextTarget = findNextMissionTarget(m.id, !!m.isStar);
     var stickerReward = (root.IslandRewards && root.IslandRewards.awardMissionSticker) ? root.IslandRewards.awardMissionSticker(doc, m.id, stars) : null;
     var res = awardIslandXP(rawXP, m.id);
@@ -1248,6 +1314,7 @@
   }
 
   function closeModal() {
+    if (root.IslandAdventure) root.IslandAdventure.close();
     state.missionRun = null;
     root.IslandAudio.stopAmbient();
     var modalRoot = document.getElementById('isl-modal-root');
@@ -1440,6 +1507,7 @@
     pokeMonster: pokeMonster,
     replayMissionAudio: replayMissionAudio,
     speakText: function (text) { root.IslandAudio.speak(text); },
+    sayPassed: sayPassed,
     pickOption: pickOption,
     tapMatchLeft: tapMatchLeft,
     tapMatchRight: tapMatchRight,

@@ -528,7 +528,7 @@
       return Object.assign({}, q, { options: q.options.slice(0, 3), autoSpeak: true });
     });
     var starBuild4 = buildQs.slice(0, 4).map(function (q) {
-      var shortOrder = q.order.length > 4 ? q.order.slice(0, 4) : q.order.slice();
+      var shortOrder = q.order.slice();   // the whole sentence: a cut sentence would teach broken English
       return {
         type: 'build',
         order: shortOrder,
