@@ -4,8 +4,8 @@
   'use strict';
 
   var CHARS = {
-    pip: { name: 'Captain Pip', pic: 'c_pip', emoji: '🦜' },
-    1: { name: 'Grandpa Bolt', pic: 'c_bolt', emoji: '🐹' },
+    pip: { name: 'Captain Pip', pic: 'c_pip', emoji: '🦜', poses: { happy: 'c_pip_happy' } },
+    1: { name: 'Grandpa Bolt', pic: 'c_bolt', emoji: '🐹', poses: { happy: 'c_bolt_happy', worried: 'c_bolt_worried', idea: 'c_bolt_idea' } },
     2: { name: 'Lulu', pic: 'c_lulu', emoji: '🦀' },
     3: { name: 'Mr. Nutty', pic: 'c_nutty', emoji: '🐿️' },
     4: { name: 'Ember', pic: 'c_ember', emoji: '🐲' }
@@ -52,10 +52,25 @@
     'Who has the best monster? You do!'
   ];
 
+  /* Story pictures and faces for the talking scenes before each Zone 1 mission (mission number: one entry per line) */
+  var STORY_ART = {
+    1: {
+      1: [{ art: 's_z1_storm', pose: 'worried' }, { art: 's_z1_broken', pose: 'idea' }],
+      2: [{ pose: 'worried' }, { pose: 'idea' }],
+      3: [{ pose: 'worried' }, { pose: 'idea' }],
+      4: [{ pose: 'idea' }, { pose: 'idea' }],
+      5: [{ art: 's_z1_broken', pose: 'worried' }, { pose: 'idea' }]
+    }
+  };
+
   var ART = {};
-  var ready = fetch('art/manifest.json').then(function (r) { return r.json(); }).then(function (list) {
-    list.forEach(function (n) { ART[n] = true; });
-  }).catch(function () {});
+  var ART_DIR = {};
+  function loadArt(dir) {
+    return fetch('art/' + dir + 'manifest.json').then(function (r) { return r.json(); }).then(function (list) {
+      list.forEach(function (n) { ART[n] = true; ART_DIR[n] = dir; });
+    }).catch(function () {});
+  }
+  var ready = Promise.all([loadArt(''), loadArt('z1/')]);
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -63,13 +78,14 @@
 
   function pic(name, emoji, cls, other) {
     if (!ART[name] && other && ART[other]) name = other;
-    if (ART[name]) return '<img class="' + (cls || '') + '" src="art/' + name + '.webp" alt="">';
+    if (ART[name]) return '<img class="' + (cls || '') + '" src="art/' + (ART_DIR[name] || '') + name + '.webp" alt="">';
     return '<span class="gm-emoji ' + (cls || '') + '">' + emoji + '</span>';
   }
 
-  function charPic(key, cls) {
+  function charPic(key, cls, pose) {
     var c = CHARS[key] || CHARS.pip;
-    return pic(c.pic, c.emoji, cls);
+    var posed = pose && c.poses && c.poses[pose];
+    return pic(posed || c.pic, c.emoji, cls, c.pic);
   }
 
   function parseId(id) {
@@ -91,7 +107,8 @@
     if (doc && doc.stars && doc.stars[mission.id]) return [];
     if (p.isStar) return [{ who: p.zone, text: 'A star mission! This one is extra shiny.' }];
     var plot = plotOf(mission.id);
-    return plot ? plot.intro.map(function (t) { return { who: p.zone, text: t }; }) : [];
+    var art = (STORY_ART[p.zone] || {})[p.num] || [];
+    return plot ? plot.intro.map(function (t, i) { var a = art[i] || {}; return { who: p.zone, text: t, art: a.art, pose: a.pose }; }) : [];
   }
 
   function thanks(mission) {
@@ -106,7 +123,9 @@
   function thanksHtml(mission) {
     var t = thanks(mission);
     if (!t) return '';
-    return '<div class="gm-thanks">' + charPic(t.who, 'gm-thanks-pic') + '<div class="gm-bubble gm-bubble-left"><b>' + esc(CHARS[t.who].name) + ':</b> ' + esc(t.text) + '</div></div>';
+    var p = parseId(mission.id);
+    var bigPic = p && !p.isStar && p.zone === 1 && p.num === 5 ? pic('s_z1_fixed', '', 'gm-comic') : '';
+    return bigPic + '<div class="gm-thanks">' + charPic(t.who, 'gm-thanks-pic', 'happy') + '<div class="gm-bubble gm-bubble-left"><b>' + esc(CHARS[t.who].name) + ':</b> ' + esc(t.text) + '</div></div>';
   }
 
   /* A short talking scene: one line at a time, read aloud, with a skip for pupils who have seen it. */
@@ -129,7 +148,8 @@
         '<div class="isl-modal-backdrop" id="gm-scene-backdrop">' +
           '<div class="isl-card-modal gm-scene-card' + (opts.className ? ' ' + opts.className : '') + '">' +
             (opts.topHtml || '') +
-            '<div class="gm-scene-cast">' + (opts.castHtml || charPic(s.who, 'gm-scene-pic')) + '</div>' +
+            (s.art ? pic(s.art, '', 'gm-comic') : '') +
+            '<div class="gm-scene-cast">' + (opts.castHtml || charPic(s.who, 'gm-scene-pic', s.pose)) + '</div>' +
             '<div class="gm-bubble" id="gm-scene-line"><b>' + esc((CHARS[s.who] || CHARS.pip).name) + ':</b> ' + esc(s.text) + '</div>' +
             '<div class="gm-scene-btns">' +
               '<button type="button" class="isl-btn" id="gm-scene-hear" aria-label="Hear it again">🔊</button>' +

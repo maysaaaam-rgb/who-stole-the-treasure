@@ -182,11 +182,43 @@
     });
   }
 
-  /* Calibrated TTS Narration (rate: 0.88, pitch: 1.05, lang: en-US) */
-  function speak(text) {
-    if (muted || !text) return;
+  /* Recorded voices: island/audio/manifest.json maps a line to its file. A line with no recording falls back to the browser's voice. */
+  var clips = {};
+  var clipEl = null;
+  var speakTimer = 0;
+  fetch('audio/manifest.json').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
+  function clipKey(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function stopSpeech() {
+    clearTimeout(speakTimer);
+    if (clipEl) { try { clipEl.onended = clipEl.onerror = null; clipEl.pause(); } catch (e) {} clipEl = null; }
+    try { if ('speechSynthesis' in root) root.speechSynthesis.cancel(); } catch (e) {}
+  }
+
+  /* Calibrated TTS Narration (rate: 0.88, pitch: 1.05, lang: en-US). onEnd runs when the voice has finished (also when muted). */
+  function speak(text, onEnd) {
+    var done = typeof onEnd === 'function' ? onEnd : null;
+    if (muted || !text) { if (done) done(); return; }
     var clean = String(text).replace(/[_*#]/g, ' ').trim();
-    if (!clean) return;
+    if (!clean) { if (done) done(); return; }
+    stopSpeech();
+    var file = clips[clipKey(clean)];
+    if (file) {
+      var fired = false;
+      var finish = function () { if (fired) return; fired = true; clearTimeout(speakTimer); if (done) done(); };
+      try {
+        clipEl = new root.Audio('audio/' + file);
+        clipEl.onended = finish;
+        clipEl.onerror = function () { clipEl = null; speakBrowser(clean); speakTimer = setTimeout(finish, 900 + clean.length * 70); };
+        var p = clipEl.play();
+        if (p && p.catch) p.catch(function () { speakTimer = setTimeout(finish, 300); });
+        speakTimer = setTimeout(finish, 15000);
+        return;
+      } catch (e) { /* use the browser voice */ }
+    }
+    speakBrowser(clean);
+    if (done) speakTimer = setTimeout(done, 900 + clean.length * 70);
+  }
+  function speakBrowser(clean) {
     try {
       if (root.EAAVoice && typeof root.EAAVoice.say === 'function') {
         root.EAAVoice.say(clean, { rate: 0.88 });
@@ -293,6 +325,7 @@
     playFirework: playFirework,
     playSparkle: playSparkle,
     speak: speak,
+    stopSpeech: stopSpeech,
     isMuted: function () { return muted; },
     setMuted: setMuted,
     toggleMute: toggleMute

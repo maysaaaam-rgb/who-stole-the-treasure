@@ -2872,7 +2872,7 @@
     const boy = o.style ? o.style === 'boy' : !!BOY_EYE_SPECIES[colorKey];
     const rx = o.rx || (boy ? 10.6 : 9.8), ry = o.ry || (boy ? 11.6 : 13.0), side = o.side || 1;
     const accent = boy
-      ? `<path d="M ${cx + side * (rx + 1.2)} ${ey - ry - 3.6} Q ${cx} ${ey - ry - 7.4} ${cx - side * (rx + 0.6)} ${ey - ry - 1.2}" fill="none" stroke="${palette.primaryDark}" stroke-width="3" stroke-linecap="round" />`
+      ? `<path d="M ${cx + side * (rx + 0.6)} ${ey - ry - 1.6} Q ${cx} ${ey - ry - 7} ${cx - side * (rx - 0.4)} ${ey - ry - 4.4}" fill="none" stroke="${palette.primaryDark}" stroke-width="2.6" stroke-linecap="round" />`
       : `<path d="M ${cx + side * (rx - 0.6)} ${ey - ry * 0.5} q ${side * 3.4} -0.4 ${side * 4.6} -3.4" fill="none" stroke="#0b1226" stroke-width="1.7" stroke-linecap="round" />`;
     return `
         <g${o.blink === false ? '' : ' class="mon-eye"'} transform="rotate(${rot}, ${cx}, ${ey})">
