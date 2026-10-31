@@ -5,6 +5,7 @@
   var GM = root.GM = root.GM || {}; GM.modes = GM.modes || {};
   var U = function () { return GM.u; }, A = function () { return GM.audio; }, J = function () { return GM.juice; }, E = function () { return GM.engine; };
   var COLS = { 8: 4, 16: 4, 24: 6, 36: 6, 48: 8 };
+  var EMO = ['⭐', '🌈', '🎈', '🐶', '🐱', '🐸', '🦋', '🌞', '🌙', '🚀', '🎁', '👑', '🔑', '🌍', '🦁', '🐼', '🦊', '🐢', '🐬', '🦄', '🌸', '🌳', '🏠', '🚗', '🚲', '✈️', '⚽', '🎸', '🎨', '📚', '🔔', '💎', '🧩', '🎯', '🛸', '🪁', '🐙', '🦉', '🐝', '🍀', '🌵', '⛵', '🏰', '🧸', '🎺', '🥁', '🪐', '🎠'];
 
   function amt() { return U().rand(1, 5) * 5; }   // 5 to 25
   var SND = { fairy: 'pu_good', thief: 'pu_banana', rocket: 'pu_rocket', banana: 'pu_banana', star: 'pu_star', heart: 'pu_good', eraser: 'pu_reset', virus: 'pu_reset', shark: 'pu_shark', magnet: 'pu_good', lifesaver: 'pu_good', trap: 'pu_trap', seesaw: 'pu_seesaw', gold: 'pu_gold', boom: 'pu_boom', gift: 'pu_good' };
@@ -45,7 +46,10 @@
       { key: 'anyone', label: 'Anyone can answer', opts: [['off', 'Off'], ['on', 'On', 'the teacher gives the points to any team']], def: 'off' },
       { key: 'partial', label: 'Partial credit', opts: [['off', 'Off'], ['on', 'On', 'the teacher picks how many points']], def: 'off' },
       { key: 'pass', label: 'Pass button', opts: [['off', 'Off'], ['on', 'On', 'a team can pass a question on']], def: 'off' },
-      { key: 'rnd', label: 'Random tile button', opts: [['off', 'Off'], ['on', 'On', 'a 🎲 button picks a tile']], def: 'off' }
+      { key: 'rnd', label: 'Random tile button', opts: [['off', 'Off'], ['on', 'On', 'a 🎲 button picks a tile']], def: 'off' },
+      { key: 'points', label: 'Points for each tile', opts: [['same', 'All the same', '10 points'], ['mixed', 'Different', '10 to 25, chosen by luck']], def: 'same' },
+      { key: 'vcolor', label: 'Colourful grid', opts: [['off', 'Off'], ['on', 'On', 'tile colours show the points']], def: 'off' },
+      { key: 'emoji', label: 'Emoji grid', opts: [['off', 'Off'], ['on', 'On', 'pictures instead of numbers']], def: 'off' }
     ],
     start: function (ctx) {
       var cfg = ctx.cfg, root0 = ctx.root, n = +cfg.grid || 16, cols = COLS[n] || 4, mysOn = cfg.mystery !== 'off';
@@ -56,6 +60,7 @@
       });
       var pool = GM.powerups.filter(function (p) { return (cfg.pu || {})[p.id] !== false && (cfg.play === 'jr' ? p.jr : true); });
       var tiles = eng.state.data.tiles, i, extraTurn = null;
+      var mixed = cfg.points === 'mixed', VALS = [10, 10, 15, 15, 20, 25], VCOL = { 10: '#3d8bff', 15: '#2ecc71', 20: '#ffb21a', 25: '#ff5d73' }, symbols = cfg.emoji === 'on' ? U().shuffle(EMO).slice(0, n) : null;
       /* an Extra turn power-up keeps the turn with the same team (the next pupil of the team answers) */
       function passTurn() { if (extraTurn != null) { var w = extraTurn; extraTurn = null; eng.setTurn(w, true); } else eng.nextTurn(); }
       for (i = 0; i < n; i++) {
@@ -68,6 +73,8 @@
           pu: hasPu,
           instant: isInstantMystery,
           golden: isGolden,
+          value: mixed ? VALS[Math.floor(Math.random() * VALS.length)] : 10,
+          sym: symbols ? symbols[i] : null,
           used: false,
           el: null
         });
@@ -108,13 +115,15 @@
           var pick = open[Math.floor(Math.random() * open.length)];
           A().play('flip'); J().squash(pick.el, 1.16, 0.84, 240); playTile(pick);
         }));
+        if (cfg.vcolor === 'on' && mixed) info.appendChild(U().h('span', { class: 'gm-vlegend' }, [10, 15, 20, 25].map(function (v) { var s = U().h('i', { text: String(v) }); s.style.background = VCOL[v]; return s; })));
         info.style.setProperty('--c', t.color);
         highlightFinalTile();
       }
 
       tiles.forEach(function (tl) {
-        var b = U().h('button', { type: 'button', class: 'gm-tile', text: String(tl.i + 1) });
+        var b = U().h('button', { type: 'button', class: 'gm-tile', text: tl.sym || String(tl.i + 1) });
         tl.el = b;
+        if (cfg.vcolor === 'on') { b.classList.add('gm-vc'); b.style.setProperty('--vc', VCOL[tl.value]); }
         grid.appendChild(b);
         eng.listen(b, 'pointerdown', function (e) {
           e.preventDefault();
@@ -151,7 +160,8 @@
           return;
         }
 
-        var label = 'Tile ' + (tl.i + 1) + (tl.golden ? ' · 🌟 2× Golden Tile (20 pts)!' : '');
+        var tp = tl.value * (tl.golden ? 2 : 1);
+        var label = 'Tile ' + (tl.sym || (tl.i + 1)) + ((mixed || tl.golden) ? ' · ' + tp + ' points' : '') + (tl.golden ? ' · 🌟 2× Golden Tile!' : '');
         var askOpts = { label: label, retry: cfg.retry !== 'off', pass: cfg.pass === 'on' && eng.teams.length > 1 };
         var res = await eng.ask(tl.item, askOpts);
         if (!eng.state.alive || res.cancelled) return;
@@ -163,7 +173,7 @@
           res = await U().ask(tl.item, eng.teams[who], { timer: (+cfg.timer) || 0, label: label + ' · passed', retry: askOpts.retry });
           if (!eng.state.alive || res.cancelled) return;
         }
-        var basePts = (tl.golden ? 20 : 10) / (res.second ? 2 : 1), ok = !!res.ok, frac = 1;
+        var basePts = (tl.value || 10) * (tl.golden ? 2 : 1) / (res.second ? 2 : 1), ok = !!res.ok, frac = 1;
         if (cfg.anyone === 'on' || cfg.partial === 'on') {   /* the teacher decides who gets the points and how many */
           var j = await GM.tools.judge({ teams: eng.teams, turn: scorer, anyone: cfg.anyone === 'on', partial: cfg.partial === 'on', ok: ok, base: basePts });
           if (!eng.state.alive) return;

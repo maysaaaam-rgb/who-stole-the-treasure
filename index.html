@@ -424,8 +424,9 @@
             <span>+ Create</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
           </button>
-          <div class="create-dropdown-menu" id="header-create-menu" style="width:210px;">
+          <div class="create-dropdown-menu" id="header-create-menu" style="width:220px;">
             <button class="dropdown-item-btn" onclick="if(window.openGameMaker)openGameMaker();else location.href='game-maker/index.html';document.getElementById('header-create-menu').classList.remove('is-open');"><span>🎮</span> <span>Open Game Maker</span></button>
+            <button class="dropdown-item-btn" onclick="location.href='island/index.html?demo=1';document.getElementById('header-create-menu').classList.remove('is-open');"><span>🏝️</span> <span>Practice Island</span></button>
             <button class="dropdown-item-btn" onclick="if(window.Timetable&&Timetable.edit)Timetable.edit();document.getElementById('header-create-menu').classList.remove('is-open');"><span>📅</span> <span>Edit Timetable</span></button>
             <button class="dropdown-item-btn" onclick="if(window.openGiveFeedbackModal)openGiveFeedbackModal('class');document.getElementById('header-create-menu').classList.remove('is-open');"><span>⭐</span> <span>Give Class XP</span></button>
             <button class="dropdown-item-btn" onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();document.getElementById('header-create-menu').classList.remove('is-open');"><span>😴</span> <span>Sleepy Mio</span></button>
@@ -3072,7 +3073,7 @@
        4. SCRIPTS & ARCHITECTURE (GAMES REGISTRY -> STORE -> APP)
        ======================================================================== -->
   <!-- 1. Central 15-game Registry -->
-  <script src="js/games-data.js?v=202610231a"></script>
+  <script src="js/games-data.js?v=202610311a"></script>
 
   <!-- Supabase PostgreSQL Client SDK (Authoritative Shared Database) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3096,8 +3097,8 @@
   <script src="js/monster-pets.js?v=3"></script>
   <script src="js/classroom-cosmetics.js?v=1"></script>
   <script src="js/classroom-store.js?v=25"></script>
-  <script src="js/timetable.js?v=20261025b"></script>
-  <script src="js/unit2-content.js?v=20261024a"></script>
+  <script src="js/timetable.js?v=20261031a"></script>
+  <script src="js/unit2-content.js?v=20261031a"></script>
   <script src="js/calendar-view.js?v=20261030a"></script>
   <script src="js/revision-board.js?v=1"></script>
   <script src="js/class-journey.js?v=2"></script>
@@ -3124,7 +3125,7 @@
   <script src="js/gamification-milestones.js?v=3.3"></script>
   <script src="js/mystery-box-modal.js?v=1.3"></script>
   <!-- 4-Track Curriculum Library Architecture & 3-Element Card System -->
-  <script src="js/library.js?v=3.1.2"></script>
+  <script src="js/library.js?v=3.1.3"></script>
   <script src="js/library-shelf.js?v=5"></script>
   <!-- Thematic Character Companions, Badges & Dual Classroom Themes (Term 2) -->
   <script src="js/theme-badges.js?v=2.0"></script>
@@ -3140,7 +3141,7 @@
   <script src="js/daily-report.js?v=1"></script>
   <script src="js/pupil-profile.js?v=8"></script>
   <script src="js/pupil-card.js?v=6"></script>
-  <script src="js/school-app.js?v=20261027a"></script>
+  <script src="js/school-app.js?v=20261031a"></script>
   <script src="js/milestone-ceremony.js?v=11"></script>
   <script src="js/simon-says-game.js?v=4.1"></script>
   <script src="js/classroom-sounds.js?v=2"></script>

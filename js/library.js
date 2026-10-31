@@ -1,10 +1,28 @@
 /**
  * ENGLISH ADVENTURE ACADEMY — LESSON LIBRARY ARCHITECTURE (V3.0)
- * 4-Track Curriculum Navigation, Strict 3-Element Card System, All 50+ Lessons Catalog & Metadata Drawer.
+ * 4-Track Curriculum Navigation, Strict 3-Element Card System, All Lessons & Resources Catalog & Metadata Drawer.
+ * Pure games ('game') live exclusively in the Games section (#shelf).
  */
 
 (function(window) {
   'use strict';
+
+  function inferTrackId(item) {
+    if (item.trackId) return item.trackId;
+    const t = String(item.type || 'lesson').toLowerCase();
+    const tr = String(item.track || '').toLowerCase();
+    if (t === 'story' || t === 'quiz' || t === 'worksheet' || t === 'homework' || t === 'textbook' || tr === 'reader' || tr === 'worksheets') {
+      return 'track-4';
+    }
+    if (tr === 'science') {
+      if (item.unit === 1 || /inventor|robot|farm|forge|brain/i.test(item.id + ' ' + item.title)) return 'track-2';
+      return 'track-1';
+    }
+    if (item.unit === 1 || /inventor|brain|money/i.test(item.id + ' ' + item.title)) {
+      return 'track-2';
+    }
+    return 'track-3';
+  }
 
   function getFilteredLibraryLessons() {
     const currentClass = (window.AdventureAcademy && window.AdventureAcademy.currentClass) ||
@@ -15,7 +33,10 @@
 
     return allLessons.filter(lesson => {
       if (!lesson || lesson.status === 'archived') return false;
+      // Exclude standalone games from the Lesson/Curriculum Library (they belong in the Games section #shelf)
+      if (lesson.type === 'game') return false;
       if (window.LibraryCurate && window.LibraryCurate.isHidden(lesson.id)) return false;
+      lesson.trackId = inferTrackId(lesson);
       // If the module is tagged for a specific class, check exact match or multi-class inclusion
       if (lesson.targetClass) {
         if (!currentClass || currentClass === 'All' || currentClass === 'all' || currentClass === 'All Classes') return true;
@@ -32,7 +53,7 @@
         return false;
       }
       return true; // General lessons show for everyone
-    });
+    }).sort((a, b) => (a.sectionOrder || 999) - (b.sectionOrder || 999));
   }
 
   if (typeof window !== 'undefined') {
@@ -41,7 +62,7 @@
 
   class CurriculumLibraryController {
     constructor() {
-      this.activeTrackId = 'track-1';
+      this.activeTrackId = 'all';
       this.searchQuery = '';
       this.activeDrawerItemId = null;
       this.initialized = false;
@@ -73,44 +94,44 @@
 
       return [
         {
+          id: 'all',
+          key: 'all',
+          label: `🌟 All Lessons & Resources (${total})`,
+          title: 'Complete Learning Library (Ordered Unit 4 → Unit 1)',
+          subtitle: `All ${total} interactive ESL/CLIL lessons, unit reviews, leveled stories, quizzes, and printables ordered by unit and lesson sequence.`,
+          count: total
+        },
+        {
+          id: 'track-3',
+          key: 'language',
+          label: '🗣️ Core ESL Lessons',
+          title: 'Core ESL Units & Smartboard Lessons (Units 1–4)',
+          subtitle: 'Unit 4, Unit 3, Unit 2, and Unit 1 interactive lessons, reviews, phonics labs, and classroom songs in sequence.',
+          count: t3
+        },
+        {
           id: 'track-1',
           key: 'space',
-          label: '🚀 Science & Space',
-          title: 'Track 1: 🚀 Science & Space Exploration',
+          label: '🚀 Science & Nature',
+          title: 'CLIL Science, Space & Nature Exploration',
           subtitle: 'Planetary astronomy, earth systems, environmental science, and animal adaptations.',
           count: t1
         },
         {
           id: 'track-2',
           key: 'stem',
-          label: '🛠️ STEM & Inventions',
-          title: 'Track 2: 🛠️ Applied STEM & Creative Engineering',
-          subtitle: 'Famous inventors, clean energy Eco-Rover build labs, robotics, and team showdowns.',
+          label: '🛠️ Inventors, Brain & Money',
+          title: 'Applied STEM, Young Inventors, Brain Power & Financial Literacy',
+          subtitle: 'Unit 1 Young Inventors, Brain Hackers, and Unit 3 Money & Economy lessons.',
           count: t2
-        },
-        {
-          id: 'track-3',
-          key: 'language',
-          label: '🗣️ Language & Quests',
-          title: 'Track 3: 🗣️ Language Mechanics & Communication Quests',
-          subtitle: 'Preposition physics catapults, acoustic phonics labs, imperative meme rules, and roleplay.',
-          count: t3
         },
         {
           id: 'track-4',
           key: 'literature',
-          label: '📖 Literature & Tests',
-          title: 'Track 4: 📖 Literature, Story Quests & Diagnostic Tests',
-          subtitle: 'Classic storyboards (Alice in Wonderland, Wizard of Oz), timed reading quests, and diagnostic vaults.',
+          label: '📖 Stories, Quizzes & Printables',
+          title: 'Interactive Stories, Drama, Unit Quizzes & Printable Worksheets',
+          subtitle: 'Alice in Wonderland, Wizard of Oz, fables, unit assessments, speaking cards, and homework sheets.',
           count: t4
-        },
-        {
-          id: 'all',
-          key: 'all',
-          label: `🌟 All Lessons (${total >= 50 ? '50+' : total})`,
-          title: 'Complete Learning Library (All Lessons)',
-          subtitle: `All ${total} interactive ESL/CLIL games, engineering workshops, story adventures, and diagnostic labs.`,
-          count: total
         }
       ];
     }
@@ -123,8 +144,8 @@
         const q = this.searchQuery.trim().toLowerCase();
         return modules.filter(m => {
           const title = (m.title || '').toLowerCase();
-          const formula = ((m.grammar && (m.grammar.formula || m.grammar.focusPattern)) || m.formula || '').toLowerCase();
-          const topic = ((m.topics && m.topics.join(' ')) || m.topic || m.category || m.categoryLabel || '').toLowerCase();
+          const formula = ((m.grammar && (m.grammar.formula || m.grammar.focusPattern)) || m.formula || m.grammarTarget || '').toLowerCase();
+          const topic = ((m.topics && m.topics.join(' ')) || m.topic || m.category || m.categoryLabel || m.clilTopic || '').toLowerCase();
           const vocab = ((m.vocabulary && m.vocabulary.core && m.vocabulary.core.join(' ')) || '').toLowerCase();
           const desc = (m.description || '').toLowerCase();
           const id = (m.id || '').toLowerCase();
@@ -292,23 +313,35 @@
       }
     }
 
+    actionLabelFor(item) {
+      const t = String((item && item.type) || 'lesson').toLowerCase();
+      if (t === 'story') return '▶ Open Story';
+      if (t === 'quiz') return '▶ Open Quiz';
+      if (t === 'worksheet') return '▶ Open Printable';
+      if (t === 'homework') return '▶ Open Homework';
+      if (t === 'song') return '▶ Open Song';
+      if (t === 'textbook') return '▶ Open Book';
+      return '▶ Open Lesson';
+    }
+
     renderDrawerContent(item) {
-      const formula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || 'Target communicative pattern';
+      const formula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || item.grammarTarget || 'Target communicative pattern';
       const objectives = (Array.isArray(item.learningObjectives) && item.learningObjectives.length) 
         ? item.learningObjectives 
         : [item.description || 'Interactive ESL/CLIL communicative practice.'];
       const vocabList = (item.vocabulary && item.vocabulary.core) 
         ? item.vocabulary.core 
         : (item.skills || []);
-      const launchRoute = item.route || item.url || (item.id + '/index.html');
+      const launchRoute = item.route || item.PlayableURL || item.url || (item.id + '/index.html');
       const wsRoute = item.worksheetUrl || item.worksheetRoute || (item.id + '/worksheet.html');
+      const actionLabel = this.actionLabelFor(item);
 
       return `
         <div class="drawer-header">
           <div class="drawer-title-group">
-            <span class="drawer-icon">${item.thumbnailIcon || '🚀'}</span>
+            <span class="drawer-icon">${item.thumbnailIcon || '📖'}</span>
             <div>
-              <div class="drawer-tag">${item.trackTitle || item.category || 'Sequential Track'}</div>
+              <div class="drawer-tag">${item.unit ? 'Unit ' + item.unit + ' · ' : ''}${String(item.type || 'Lesson').toUpperCase()}</div>
               <h2 class="drawer-title">${item.title}</h2>
             </div>
           </div>
@@ -320,11 +353,11 @@
           <div class="drawer-meta-grid">
             <div class="meta-box">
               <span class="meta-label">CEFR Level</span>
-              <span class="meta-val highlight">${item.cefrLevel || item.level || 'A1'}</span>
+              <span class="meta-val highlight">${item.cefrLevel || item.cefr || item.level || 'A1'}</span>
             </div>
             <div class="meta-box">
               <span class="meta-label">Duration</span>
-              <span class="meta-val">${item.durationText || (item.duration ? item.duration + ' min' : '35 min')}</span>
+              <span class="meta-val">${item.durationText || (item.duration ? item.duration : '35 min')}</span>
             </div>
             <div class="meta-box">
               <span class="meta-label">XP Award</span>
@@ -365,7 +398,7 @@
           <!-- Description / Pedagogical Context -->
           ${item.description ? `
             <div class="drawer-section">
-              <h4 class="drawer-section-title">📖 Mission Overview</h4>
+              <h4 class="drawer-section-title">📖 Lesson Overview</h4>
               <p class="drawer-description">${item.description}</p>
             </div>
           ` : ''}
@@ -373,7 +406,7 @@
 
         <div class="drawer-footer">
           <button type="button" class="btn-launch-3d drawer-action-btn" onclick="window.LibraryController.launchGame('${item.id}', '${launchRoute}')">
-            <span>▶ Launch Game</span>
+            <span>${actionLabel}</span>
           </button>
           <a href="${wsRoute}" target="_blank" class="btn-worksheet-3d drawer-action-btn" title="Open A4 Printable Worksheet">
             <span>📄 Print Worksheet</span>
@@ -386,17 +419,20 @@
      * Strict 3-Element Rule Card Renderer:
      * 1. Header Area: High-contrast topic icon, clean module title, CEFR level badge + XP pill.
      * 2. Formula Pill: Single clean grammar formula chip.
-     * 3. Action Footers: Exactly two primary touch targets ([▶ Launch Game] 3D button + [📄 Worksheet]) + subtle [ℹ️ Details] trigger.
+     * 3. Action Footers: Primary launch button + Worksheet + Details trigger.
      */
     renderResourceCard(item) {
       if (!item) return '';
 
-      const rawFormula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || item.languageFocus || 'Subject + Verb + Object communicative pattern';
+      const rawFormula = (item.grammar && (item.grammar.formula || item.grammar.focusPattern)) || item.formula || item.grammarTarget || item.languageFocus || 'Subject + Verb + Object communicative pattern';
       const formula = rawFormula.length > 95 ? rawFormula.substring(0, 92) + '...' : rawFormula;
-      const launchRoute = item.route || item.url || (item.id + '/index.html');
+      const launchRoute = item.route || item.PlayableURL || item.url || (item.id + '/index.html');
       const wsRoute = item.worksheetUrl || item.worksheetRoute || (item.id + '/worksheet.html');
-      const icon = item.thumbnailIcon || (item.isWorksheet ? '📄' : '🎮');
-      const cefr = item.cefrLevel || item.level || 'A1';
+      const icon = item.thumbnailIcon || (item.isWorksheet ? '📄' : '📖');
+      const cefr = item.cefrLevel || item.cefr || item.level || 'A1';
+      const actionLabel = this.actionLabelFor(item);
+      const unitLabel = item.unit ? `Unit ${item.unit} · ` : '';
+      const typeLabel = String(item.type || 'lesson').toUpperCase();
 
       // Clean title so leading icon isn't duplicated
       const cleanTitle = (item.title || 'Curriculum Module').trim();
@@ -409,7 +445,7 @@
               <span class="card-topic-icon" aria-hidden="true">${icon}</span>
               <div class="card-title-wrap">
                 <h3 class="card-title-text" onclick="window.LibraryController.openDrawer('${item.id}')" title="${cleanTitle}">${cleanTitle}</h3>
-                <span class="card-track-tag">${item.trackTitle || item.category || 'Sequential Track'}</span>
+                <span class="card-track-tag">${unitLabel}${typeLabel} · ${item.grade || 'Grade 3–4'}</span>
               </div>
             </div>
             <div class="card-badge-wrap">
@@ -431,7 +467,7 @@
           <div class="card-actions-zone">
             <div class="card-primary-actions">
               <button type="button" class="btn-launch-3d" onclick="window.LibraryController.launchGame('${item.id}', '${launchRoute}')">
-                <span>▶ Launch Game</span>
+                <span>${actionLabel}</span>
               </button>
               <a href="${wsRoute}" target="_blank" class="btn-worksheet-3d" title="Open Authentic A4 Printable Worksheet">
                 <span>📄 Worksheet</span>
@@ -477,7 +513,7 @@
           <div class="banner-content">
             <div class="banner-title-row">
               <h2 class="banner-track-title">${currentTrack.title}</h2>
-              <span class="banner-badge">${currentTrack.count} Accessible Lessons</span>
+              <span class="banner-badge">${currentTrack.count} Lessons &amp; Resources</span>
             </div>
             <p class="banner-track-subtitle">${currentTrack.subtitle}</p>
           </div>
@@ -548,9 +584,9 @@
             <div class="header-left">
               <div class="header-title-row">
                 <h1 class="curriculum-headline">Curriculum Learning Library</h1>
-                <span class="curriculum-status-pill">✓ Standardized 4-Track System (${this.getAllActiveModules().length}+ Lessons)</span>
+                <span class="curriculum-status-pill">✓ Lessons, Stories, Quizzes &amp; Printables (${this.getAllActiveModules().length} Items)</span>
               </div>
-              <p class="curriculum-subheadline">Comprehensive CLIL, STEM, Language &amp; Literature modules aligned with Grade 3–4 CEFR standards.</p>
+              <p class="curriculum-subheadline">Comprehensive ESL, CLIL, STEM, Story &amp; Assessment modules ordered by Unit &amp; Lesson sequence.</p>
             </div>
             <div class="header-right">
               <button type="button" class="curriculum-cleanup-btn" onclick="window.LibraryCurate &amp;&amp; window.LibraryCurate.open()" title="Hide the lessons you do not want and keep the good ones">✂ Clean up</button>
@@ -559,7 +595,7 @@
                 <input type="text" 
                   id="curriculum-search-input" 
                   class="curriculum-search-input" 
-                  placeholder="Filter 50+ lessons, formulas, vocabulary..." 
+                  placeholder="Filter lessons, formulas, vocabulary..." 
                   value="${this.searchQuery}" 
                   oninput="window.LibraryController.handleSearch(this.value)" />
                 <button type="button" 
