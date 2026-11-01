@@ -16,7 +16,7 @@
     anonKey: 'sb_publishable_8A_Nu2aZRvySm4fzlcOA_A_L_sFckGO',
     projectId: 'raraoopavipwypvgpuhe',
     environment: 'production',
-    cloudLocked: false   // true once the cloud only answers the signed-in teacher (js/teacher-auth.js)
+    cloudLocked: true   // true once the cloud only answers the signed-in teacher (js/teacher-auth.js)
   };
 
   // Provide console confirmation for transparency
