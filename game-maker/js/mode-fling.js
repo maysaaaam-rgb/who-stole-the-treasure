@@ -1,1169 +1,1409 @@
-/* Game Maker: ALLEY FLING — Cat vs Dog Backyard Throw (mode-fling.js).
-   Classic "Cat vs Dog" backyard battle! Team 1 (Cat side, left yard) flings balls of yarn
-   and Team 2 (Dog side, right yard) flings bones in a high arc over the middle wooden fence
-   to HIT the opposing character!
-   - Direct Head Bonk on opposing Cat/Dog = +30 pts (slow-mo impact, dizzy stars, HP bar drop!)
-   - Body Hit on opposing Cat/Dog = +20 pts (elastic knockback + dizzy wobble!)
-   - Near Splash next to opponent = +10 pts
-   - Floating Star Coin above the fence = +15 bonus pts! */
-(function (root) {
+/* ============================================================================
+   Game Maker: ALLEY FLING ("Cat vs Dog" Backyard Battle — True Skill Edition)
+   ----------------------------------------------------------------------------
+   2-Team Turn-Based Backyard Artillery & Skill Game (Grade 3 & Grade 4)
+   - ZERO Auto-Throw / Auto-Aim Crutches:
+     * No 1-tap auto-aim preset buttons.
+     * No full-screen trajectory cheat arc. Only a short 110px muzzle pointer is
+       shown at the hand — players must read the Wind Gauge, Rival Distance,
+       Fence Height, and Patrolling Wasp to judge Angle (°) & Power (%)!
+   - Dual Skill Input (Both 100% Player-Controlled):
+     1️⃣ 2-STEP ARCADE TIMING:
+        - Step 1 (ANGLE): Sweeping angle needle (20° ↔ 78°) — tap/Space to lock!
+        - Step 2 (POWER): Fast surging power gauge (10% ↔ 100%) — tap/Space to
+          fire! Over-charging (>94%) causes a wild spin slip!
+     2️⃣ MANUAL SLINGSHOT DRAG:
+        - Or grab & pull back directly on the canvas to set angle & power with
+          high-tension hand tremor, then release to fire!
+   - Dynamic Challenge Mechanics:
+     * Shifting Yard Positions: Cat & Dog move forward/back in their yards each
+       turn so the same throw power never works twice in a row.
+     * Active Rival Ducking: In Normal/Gusty modes, rivals duck slightly when a
+       projectile approaches, requiring crisp aim.
+     * Patrolling Aerial Hazard: A buzzing Backyard Wasp patrols above the
+       center fence and deflects careless shots!
+     * Real Wind & Mid-Air Gusts: Bidirectional wind bar (-260 .. +260 px/s²)
+       actively pushes shots in flight.
+     * Real Miss Consequences: Hitting the fence, getting deflected, or missing
+       wide awards 0 points. Headshots (+35), Body Hits (+25), Tin Cans (+10),
+       Star Coin (+15), and Yard Knockouts (+30 bonus) reward real skill!
+   ============================================================================ */
+(function (w) {
   'use strict';
-  var GM = root.GM = root.GM || {};
+  var GM = w.GM = w.GM || {};
   GM.modes = GM.modes || {};
+
   var U = function () { return GM.u; };
   var A = function () { return GM.audio; };
-  var J = function () { return GM.juice; };
 
-  var WORLD_W = 1920;
+  /* Virtual 16:9 Smartboard Panorama Dimensions */
+  var W = 1600;
   var H = 900;
-  var GROUND = 770;
-  var G = 920;
+  var GROUND_Y = 790;
+  var FENCE_X = 800;
+  var FENCE_TOP_Y = 468; /* Taller wooden dividing fence requiring real arc control */
+  var FENCE_HALF_W = 30;
+  var BASE_CAT_X = 300;
+  var BASE_DOG_X = 1260;
+  var GRAVITY = 980;
 
-  var LEVELS = {
-    easy:   { dots: 15, wind: 0,   fenceH: 185 },
-    normal: { dots: 10, wind: 95,  fenceH: 205 },
-    hard:   { dots: 5,  wind: 165, fenceH: 230 }
+  var ASSET_PATHS = {
+    bgYards: 'art/bg_fling_yards.webp',
+    catReady: 'art/c_cat_ready.webp',
+    catCheer: 'art/c_cat_cheer.webp',
+    dogReady: 'art/c_dog_ready.webp',
+    dogCheer: 'art/c_dog_cheer.webp',
+    doghouse: 'art/o_doghouse.webp',
+    yarn: 'art/o_yarn.webp',
+    bone: 'art/o_bone.webp',
+    starCoin: 'art/o_star_coin.webp'
   };
 
-  function loadImg(src) {
-    var img = new Image();
-    img.src = src;
-    return img;
+  /* Clean baked-in bottom grey shadow blobs from character cutouts */
+  function cleanBottomShadow(img) {
+    try {
+      var cw = img.naturalWidth || img.width;
+      var ch = img.naturalHeight || img.height;
+      if (!cw || !ch) return img;
+      var c = document.createElement('canvas');
+      c.width = cw;
+      c.height = ch;
+      var cx = c.getContext('2d');
+      cx.drawImage(img, 0, 0);
+      var id = cx.getImageData(0, 0, cw, ch);
+      var d = id.data;
+      var startY = Math.floor(ch * 0.84);
+      for (var y = startY; y < ch; y++) {
+        for (var x = 0; x < cw; x++) {
+          var i = (y * cw + x) * 4;
+          var a = d[i + 3];
+          if (a === 0) continue;
+          var r = d[i], g = d[i + 1], b = d[i + 2];
+          var max = Math.max(r, g, b), min = Math.min(r, g, b);
+          if ((max - min) < 22 && max < 212) {
+            d[i + 3] = 0;
+          }
+        }
+      }
+      cx.putImageData(id, 0, 0);
+      return c;
+    } catch (e) {
+      return img;
+    }
   }
 
-  function imgReady(img) {
-    return !!(img && img.complete && img.naturalWidth > 0);
+  function loadArtAssets() {
+    var cache = {};
+    Object.keys(ASSET_PATHS).forEach(function (k) {
+      var img = new Image();
+      img.onload = function () {
+        if (k === 'catReady' || k === 'catCheer' || k === 'dogReady' || k === 'dogCheer') {
+          cache[k + 'Clean'] = cleanBottomShadow(img);
+        }
+      };
+      img.src = ASSET_PATHS[k];
+      cache[k] = img;
+    });
+    return cache;
   }
 
-  function monImage(m) {
-    var img = new Image();
-    var svg = GM.mon.svg(m, 220);
-    if (!svg || svg.indexOf('<svg') < 0) return null;
-    if (svg.indexOf('xmlns=') < 0) svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    return img;
+  function imgReady(im) {
+    if (!im) return false;
+    if (im.tagName === 'CANVAS') return im.width > 0;
+    return !!(im.complete && im.naturalWidth > 0);
+  }
+
+  function clamp(v, lo, hi) {
+    return Math.max(lo, Math.min(hi, v));
+  }
+
+  function roundRect(g, x, y, w, h, r) {
+    var rr = Math.min(r, w / 2, h / 2);
+    g.beginPath();
+    g.moveTo(x + rr, y);
+    g.arcTo(x + w, y, x + w, y + h, rr);
+    g.arcTo(x + w, y + h, x, y + h, rr);
+    g.arcTo(x, y + h, x, y, rr);
+    g.arcTo(x, y, x + w, y, rr);
+    g.closePath();
   }
 
   function drawOutlinedText(g, text, x, y, size, fill, stroke, align) {
     g.save();
-    g.font = '700 ' + size + 'px Fredoka, sans-serif';
+    g.font = '900 ' + size + 'px "Fredoka", "Nunito", sans-serif';
     g.textAlign = align || 'center';
     g.textBaseline = 'middle';
     g.lineJoin = 'round';
-    g.lineWidth = Math.max(5, Math.round(size * 0.22));
-    g.strokeStyle = stroke || '#0f172a';
+    g.lineWidth = Math.max(4, size * 0.18);
+    g.strokeStyle = stroke || '#090d16';
     g.strokeText(text, x, y);
     g.fillStyle = fill || '#ffffff';
     g.fillText(text, x, y);
     g.restore();
   }
 
-  function flyScoreToPod(startPt, teamIdx, pts, color) {
-    var fx = document.getElementById('gm-fx') || document.body;
-    var pod = document.getElementById('gm-team-' + teamIdx);
-    if (!fx || !pod || !startPt) return;
-    var pr = pod.getBoundingClientRect();
-    var tx = pr.left + pr.width / 2;
-    var ty = pr.top + pr.height / 2;
-    var orb = U().h('div', {
-      class: 'gm-score-orb',
-      text: '+' + pts
-    });
-    orb.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;left:' + Math.round(startPt.x - 28) + 'px;top:' + Math.round(startPt.y - 22) + 'px;padding:6px 14px;border-radius:999px;font:900 22px Fredoka,sans-serif;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,0.45);transition:transform 0.62s cubic-bezier(0.22,1,0.36,1),opacity 0.62s ease;background:' + (color || '#f59e0b') + ';';
-    fx.appendChild(orb);
-    requestAnimationFrame(function () {
-      orb.style.transform = 'translate(' + Math.round(tx - startPt.x) + 'px, ' + Math.round(ty - startPt.y) + 'px) scale(0.65)';
-      orb.style.opacity = '0.2';
-    });
-    setTimeout(function () {
-      if (orb.parentNode) orb.remove();
-    }, 680);
-  }
-
   GM.modes.fling = {
     id: 'fling',
     name: 'Alley Fling',
-    e: '🪃',
+    sub: 'Cat vs Dog Backyard Battle',
+    e: '🐱',
     teams: 2,
-    desc: 'Cat vs Dog backyard throw! Answer a question, then fling yarn or a bone over the fence to bonk the other character!',
+    desc: 'True Cat vs Dog skill battle! Read the wind gauge, lock your throw angle, time the fast power bar (or pull the slingshot), dodge the patrolling wasp, and bonk your rival!',
     fields: [
-      { key: 'rounds', k: 'rounds', label: 'Throws per team', l: 'Throws per team', opts: [[3, '3'], [5, '5'], [7, '7']], def: 5 },
-      { key: 'level',  k: 'level',  label: 'Difficulty',      l: 'Difficulty',      opts: [['easy', '🌱 Easy (long guide, no wind)'], ['normal', '⚡ Normal (short guide, light wind)'], ['hard', '🔥 Hard (tiny guide, strong wind)']], def: 'normal' }
+      {
+        key: 'rounds',
+        label: 'Throws',
+        opts: [
+          [6, '6 throws', '3 each'],
+          [10, '10 throws', '5 each'],
+          [14, '14 throws', '7 each']
+        ],
+        def: 10
+      },
+      {
+        key: 'windMode',
+        label: 'Difficulty & Wind',
+        opts: [
+          ['easy', 'Standard Yard', 'moderate wind · steady meter'],
+          ['normal', 'Pro Backyard', 'strong wind · moving stances · wasp hazard'],
+          ['gusty', 'Hurricane Alley', 'extreme gusts · fast meter · active dodging!']
+        ],
+        def: 'normal'
+      }
     ],
 
     start: function (ctx) {
       var T = GM.state.teams;
-      if (T.length > 2) T = GM.state.teams = T.slice(0, 2);
-
-      var rounds = +ctx.cfg.rounds || 5;
-      var lvlKey = ctx.cfg.level || 'normal';
-      var L = LEVELS[lvlKey] || LEVELS.normal;
-      var hal = GM.state.theme === 'halloween';
+      var totalTurns = +ctx.cfg.rounds || 10;
+      var windMode = ctx.cfg.windMode || 'normal';
       var turn = 0;
       var turnCount = 0;
-      var totalTurns = rounds * 2;
-
-      document.body.classList.add('gm-small-pods', 'gm-real3-active');
-      ctx.root.innerHTML = '';
-
-      /* Full-screen scene wrapper + canvas + floating HUD */
-      var scene = U().h('div', { class: 'gm-real3-scene' });
-      var cv = U().h('canvas', { class: 'gm-real3-cv', width: 1600, height: H });
-      var banner = U().h('div', { class: 'gm-real3-banner in' });
-      var dock = U().h('div', { class: 'gm-real3-dock' });
-      scene.appendChild(cv);
-      scene.appendChild(banner);
-      scene.appendChild(dock);
-      ctx.root.appendChild(scene);
-
-      var g = cv.getContext('2d');
-      var viewW = 1600;
-
-      function syncCanvasSize() {
-        var r = scene.getBoundingClientRect();
-        if (r.width > 200 && r.height > 200) {
-          viewW = Math.round(H * (r.width / r.height));
-          viewW = Math.max(1200, Math.min(1920, viewW));
-          if (cv.width !== viewW || cv.height !== H) {
-            cv.width = viewW;
-            cv.height = H;
-          }
-        }
-      }
-      syncCanvasSize();
-      var ro = null;
-      if (window.ResizeObserver) {
-        ro = new ResizeObserver(syncCanvasSize);
-        ro.observe(scene);
-      }
-
-      /* Preload all raster art */
-      var monImgs = T.map(function (t) { return monImage(t.mon); });
-      var art = {
-        bgYards:    loadImg('art/bg_fling_yards.webp'),
-        bgFallback: loadImg(hal ? 'art/bg_pumpkin_patch.webp' : 'art/bg_classic_cannon.webp'),
-        catReady:   loadImg('art/c_cat_ready.webp'),
-        catCheer:   loadImg('art/c_cat_cheer.webp'),
-        dogReady:   loadImg('art/c_dog_ready.webp'),
-        dogCheer:   loadImg('art/c_dog_cheer.webp'),
-        doghouse:   loadImg('art/o_doghouse.webp'),
-        yarn:       loadImg('art/o_yarn.webp'),
-        bone:       loadImg('art/o_bone.webp'),
-        starCoin:   loadImg('art/o_star_coin.webp'),
-        target:     loadImg('art/o_target.webp'),
-        lantern:    loadImg('art/o_candle_lantern.webp')
-      };
-
       var alive = true;
-      var raf = 0;
       var timers = [];
+
+      var DIFF = {
+        easy:   { maxWind: 155, angleSpd: 1.45, powerSpd: 1.55, waspAmp: 55, waspSpd: 1.6, hitScale: 1.0,  shiftRange: 55, dodgeAmp: 0 },
+        normal: { maxWind: 225, angleSpd: 1.95, powerSpd: 2.10, waspAmp: 95, waspSpd: 2.3, hitScale: 0.88, shiftRange: 95, dodgeAmp: 16 },
+        gusty:  { maxWind: 285, angleSpd: 2.45, powerSpd: 2.65, waspAmp: 125, waspSpd: 3.1, hitScale: 0.78, shiftRange: 120, dodgeAmp: 28 }
+      }[windMode] || { maxWind: 225, angleSpd: 1.95, powerSpd: 2.10, waspAmp: 95, waspSpd: 2.3, hitScale: 0.88, shiftRange: 95, dodgeAmp: 16 };
+
       function later(fn, ms) {
-        var id = setTimeout(fn, ms);
+        var id = setTimeout(function () {
+          if (alive) fn();
+        }, ms);
         timers.push(id);
         return id;
       }
 
-      /* World positions across 1920px panorama (Cat at 380, Fence at 960, Dog at 1540) */
-      function midX()   { return WORLD_W * 0.5; }   /* 960 (Middle wooden fence) */
-      function leftX()  { return 380; }             /* Cat position (580px left of fence) */
-      function rightX() { return WORLD_W - 380; }   /* 1540 (Dog position, 580px right of fence) */
+      if (T.length > 2) T = GM.state.teams = T.slice(0, 2);
+      document.body.classList.add('gm-small-pods', 'gm-real3-active');
+      ctx.root.innerHTML = '';
 
-      function charPos(idx) {
-        return { x: idx === 0 ? leftX() : rightX(), y: GROUND - 115 };
-      }
+      /* Build Stage DOM */
+      var wrap = U().h('div', { class: 'gm-real3-scene' });
+      var cv = U().h('canvas', { width: String(W), height: String(H), class: 'gm-real3-cv' });
+      var turnBanner = U().h('div', { class: 'gm-real3-banner in' });
+      var dock = U().h('div', { class: 'gm-real3-dock' });
+      wrap.appendChild(cv);
+      wrap.appendChild(turnBanner);
+      wrap.appendChild(dock);
+      ctx.root.appendChild(wrap);
 
-      function shooterPos() {
-        return charPos(turn);
-      }
+      var g = cv.getContext('2d');
+      var art = loadArtAssets();
 
-      function defenderPos() {
-        return charPos(1 - turn);
-      }
+      /* Render Team Monster Coach Sprites */
+      var monImgs = T.map(function (t) {
+        var im = new Image();
+        try {
+          var svg = GM.mon.svg(t.mon, 220);
+          if (svg && svg.indexOf('<svg') >= 0) {
+            if (svg.indexOf('xmlns=') < 0) svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+            im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+          }
+        } catch (e) { /* ignore */ }
+        return im;
+      });
 
-      /* Camera state */
-      var cam = { x: 0, y: 0, zoom: 1, targetX: 0, targetY: 0, targetZoom: 1, shakeT: 0, shakeMag: 0 };
-      function focusCameraForTurn(tIdx, aiming) {
-        var center = tIdx === 0 ? WORLD_W * (aiming ? 0.47 : 0.49) : WORLD_W * (aiming ? 0.53 : 0.51);
-        cam.targetX = Math.max(0, Math.min(WORLD_W - viewW, center - viewW * 0.5));
-        cam.targetY = 0;
-        cam.targetZoom = 1;
-      }
-      function triggerShake(mag, dur) {
-        cam.shakeMag = Math.min(6, mag || 5);
-        cam.shakeT = Math.min(0.28, dur || 0.22);
-      }
+      /* Game State */
+      var mode = 'wait';       /* 'wait' | 'aim' | 'fly' | 'payoff' */
+      var aimSubPhase = 'angle'; /* 'angle' | 'power' | 'drag' */
+      var wind = 0;            /* horizontal acceleration px/s^2 (-285 .. +285) */
+      var windGustPhase = 0;
+      var activePower = null;  /* null | 'giant' | 'double' | 'bouncy' */
 
-      /* Character & buddy animation states + HP / Bonk meters */
-      var charAnim = [
-        { state: 'idle', t: 0, bonkT: 0, hp: 100, maxHp: 100, bubble: '' }, /* 0 = Cat (Left yard) */
-        { state: 'idle', t: 0, bonkT: 0, hp: 100, maxHp: 100, bubble: '' }  /* 1 = Dog (Right yard) */
+      /* Per-team power-up inventory (1 use of each per match — modifies physics ONLY, never auto-aims!) */
+      var teamPowers = [
+        { giant: 1, double: 1, bouncy: 1 },
+        { giant: 1, double: 1, bouncy: 1 }
       ];
-      var fenceWobble = 0;
-      var slowMoT = 0;
-      var crowdCheerT = 0;
-      var popText = null;
-      var bonkBurst = null;
 
-      /* Ambient clouds, birds/bats, and foreground tufts */
-      var clouds = [];
-      for (var ci = 0; ci < 7; ci++) {
-        clouds.push({
-          x: ci * 310 + Math.random() * 90,
-          y: 65 + (ci % 3) * 52,
-          s: 0.72 + (ci % 3) * 0.22,
-          v: 14 + (ci % 4) * 5
-        });
-      }
-      var skyFlyers = [];
-      for (var bi = 0; bi < 6; bi++) {
-        skyFlyers.push({
-          x: 180 + bi * 290,
-          y: 120 + (bi % 3) * 45,
-          ph: bi * 1.3,
-          v: 28 + (bi % 3) * 10
-        });
-      }
-      var fgTufts = [];
-      for (var fi = 0; fi < 26; fi++) {
-        fgTufts.push({
-          x: fi * 85 + (fi % 2) * 25,
-          h: 22 + (fi % 4) * 7,
-          col: fi % 3 === 0 ? '#f43f5e' : (fi % 3 === 1 ? '#fde047' : '#38bdf8')
-        });
-      }
+      /* Dynamic Character Positions & Stamina State */
+      var charState = [
+        { x: BASE_CAT_X, state: 'idle', t0: 0, dizzyUntil: 0, bubble: 'Read the wind! 🧶', hp: 100, hitsTaken: 0, duckOffset: 0 },
+        { x: BASE_DOG_X, state: 'idle', t0: 0, dizzyUntil: 0, bubble: 'Try to hit me! 🦴', hp: 100, hitsTaken: 0, duckOffset: 0 }
+      ];
 
-      var mode = 'wait';
-      var aim = null;
-      var proj = null;
-      var trail = [];
+      /* Skill Aim State */
+      var aimState = {
+        dragging: false,
+        angleDeg: 45,
+        angleOscT: 0,
+        power: 0.25,
+        powerOscT: 0,
+        holdTime: 0,
+        startX: 0,
+        startY: 0,
+        curX: 0,
+        curY: 0
+      };
+
+      /* Active Projectiles, Particles, Popups, Cans & Patrolling Wasp Hazard */
+      var projs = [];
       var parts = [];
-      var wind = 0;
-      var fenceH = L.fenceH || 205;
-      var star = { y: 260, hit: false, ph: 0, ry: 260 };
-      var starPts = 0;
+      var popups = [];
+      var fenceCans = [];
+      var bonusStar = { x: FENCE_X, y: 270, r: 34, hit: false, bobPhase: 0 };
+      var waspHazard = { x: FENCE_X, baseY: 345, y: 345, r: 34, phase: 0, stingCooldown: 0 };
+      var shakeT = 0;
+      var shakeMag = 0;
+      var freezeDt = 0;
 
-      function newRoundProps() {
-        wind = L.wind ? Math.round((Math.random() * 2 - 1) * L.wind) : 0;
-        fenceH = L.fenceH || 205;
-        star = { y: GROUND - fenceH - 135 - Math.random() * 35, hit: false, ph: Math.random() * 6, ry: GROUND - fenceH - 135 };
-      }
-      newRoundProps();
-      focusCameraForTurn(0, false);
-      cam.x = cam.targetX;
-
-      function updateBanner(title, sub, compact) {
-        var t = T[turn] || T[0];
-        banner.style.setProperty('--c', t.color || '#38bdf8');
-        banner.classList.add('in');
-        banner.classList.toggle('compact', !!compact);
-        banner.innerHTML = '';
-        if (t.mon) banner.appendChild(U().monFace(t.mon, 38));
-        banner.appendChild(U().h('b', { text: title }));
-        if (sub) banner.appendChild(U().h('span', { class: 'gm-real3-sub', text: sub }));
+      /* Ambient wind streamers */
+      var windStreamers = [];
+      for (var ws = 0; ws < 16; ws++) {
+        windStreamers.push({
+          x: Math.random() * W,
+          y: 140 + Math.random() * 490,
+          len: 42 + Math.random() * 48,
+          spd: 0.75 + Math.random() * 0.55,
+          alpha: 0.20 + Math.random() * 0.24
+        });
       }
 
-      /* Screen <-> World coordinate conversion accounting for camera pan & zoom */
-      function toWorld(e) {
-        var r = cv.getBoundingClientRect();
-        var sx = (e.clientX - r.left) / Math.max(1, r.width) * viewW;
-        var sy = (e.clientY - r.top) / Math.max(1, r.height) * H;
-        var wx = (sx - viewW * 0.5) / cam.zoom + viewW * 0.5 + cam.x;
-        var wy = (sy - H * 0.55) / cam.zoom + H * 0.55 + cam.y;
-        return { x: wx, y: wy };
+      function addPopup(x, y, text, col, size) {
+        popups.push({
+          x: x,
+          y: y,
+          text: text,
+          col: col || '#fde047',
+          size: size || 40,
+          t: 0,
+          life: 1.35
+        });
       }
 
-      function toScreen(wx, wy) {
-        var r = cv.getBoundingClientRect();
-        var sx = (wx - cam.x - viewW * 0.5) * cam.zoom + viewW * 0.5;
-        var sy = (wy - cam.y - H * 0.55) * cam.zoom + H * 0.55;
-        return {
-          x: r.left + sx / viewW * r.width,
-          y: r.top + sy / H * r.height
-        };
-      }
-
-      function puff(x, y, n, cols) {
-        for (var k = 0; k < n; k++) {
-          if (parts.length >= 150) parts.shift();
+      function burstParticles(x, y, col, count, kind) {
+        var n = count || 22;
+        for (var i = 0; i < n; i++) {
           var a = Math.random() * Math.PI * 2;
-          var s = 110 + Math.random() * 360;
+          var sp = 120 + Math.random() * 420;
           parts.push({
             x: x,
             y: y,
-            vx: Math.cos(a) * s,
-            vy: Math.sin(a) * s - 95,
-            life: 0.6 + Math.random() * 0.45,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp - 180,
+            r: 4 + Math.random() * 7,
+            c: i % 3 === 0 ? '#ffffff' : (i % 3 === 1 ? '#fde047' : col),
+            kind: kind || 'circle',
+            rot: Math.random() * 6.28,
+            vrot: (Math.random() - 0.5) * 12,
             t: 0,
-            c: cols[k % cols.length],
-            r: 5 + Math.random() * 7
+            life: 0.55 + Math.random() * 0.45
           });
         }
       }
 
-      /* Compute high-arc ballistic throw over the middle fence directly at the opposing Dog/Cat! */
-      function launchVec(p) {
-        var sp = shooterPos();
-        var dx = sp.x - p.x;
-        var dy = sp.y - p.y;
-        var d = Math.min(260, Math.max(40, Math.hypot(dx, dy)));
-        var pullFrac = Math.min(1, Math.max(0.05, (d - 35) / 185));
-        var dir = turn === 0 ? 1 : -1;
+      function triggerShake(mag, dur) {
+        shakeMag = Math.max(shakeMag, mag || 10);
+        shakeT = Math.max(shakeT, dur || 0.25);
+      }
 
-        /* Map pull distance across the fence so ~75% pull lands dead-center on the opposing character (580px past fence)! */
-        var startX = sp.x + dir * 48;
-        var startY = sp.y - 36;
-        var targetX = midX() + dir * (160 + pullFrac * 540);
-        var targetY = GROUND - 135;
-        var flightT = 1.16 + pullFrac * 0.24;
+      /* Randomize Wind, Target Stance Distance & Fence Props Every Turn */
+      function resetTurnEnvironment() {
+        /* 1. Strong non-trivial wind every turn */
+        var dirSign = Math.random() < 0.5 ? -1 : 1;
+        var minW = Math.round(DIFF.maxWind * 0.28);
+        wind = dirSign * Math.round(minW + Math.random() * (DIFF.maxWind - minW));
+        windGustPhase = Math.random() * 6.28;
 
-        var vx = ((targetX - startX) - 0.5 * wind * flightT * flightT) / flightT;
-        var vy = ((targetY - startY) - 0.5 * G * flightT * flightT) / flightT;
-        var deg = Math.round(Math.atan2(-vy, Math.abs(vx)) * 180 / Math.PI);
+        /* 2. Shift both characters forward/back in their yards so players must judge distance */
+        var catShift = Math.round((Math.random() * 2 - 1) * DIFF.shiftRange);
+        var dogShift = Math.round((Math.random() * 2 - 1) * DIFF.shiftRange);
+        charState[0].x = clamp(BASE_CAT_X + catShift, 195, 425);
+        charState[1].x = clamp(BASE_DOG_X + dogShift, 1140, 1380);
+        charState[0].duckOffset = 0;
+        charState[1].duckOffset = 0;
+
+        /* 3. High-altitude Bonus Star Coin (requires risky high lob over the wasp!) */
+        bonusStar = {
+          x: FENCE_X + (Math.random() * 70 - 35),
+          y: 215 + Math.random() * 40,
+          r: 32,
+          hit: false,
+          bobPhase: Math.random() * 6.28
+        };
+
+        /* 4. Patrolling Backyard Wasp above the fence */
+        waspHazard.baseY = 335 + (Math.random() * 40 - 20);
+        waspHazard.stingCooldown = 0;
+
+        /* 5. 3 colorful tin cans perched on the fence top */
+        var canColors = ['#ef4444', '#38bdf8', '#f59e0b'];
+        fenceCans = [
+          { x: FENCE_X - 18, y: FENCE_TOP_Y - 22, vx: 0, vy: 0, rot: 0, vrot: 0, hit: false, col: canColors[0] },
+          { x: FENCE_X + 18, y: FENCE_TOP_Y - 22, vx: 0, vy: 0, rot: 0, vrot: 0, hit: false, col: canColors[1] },
+          { x: FENCE_X,      y: FENCE_TOP_Y - 58, vx: 0, vy: 0, rot: 0, vrot: 0, hit: false, col: canColors[2] }
+        ];
+      }
+      resetTurnEnvironment();
+
+      /* Coordinate Helpers using dynamic character X */
+      function throwOrigin(teamIdx) {
+        var isCat = teamIdx === 0;
         return {
-          vx: vx,
-          vy: vy,
-          pull: Math.round(pullFrac * 100),
-          deg: deg
+          x: charState[teamIdx].x + (isCat ? 52 : -52),
+          y: GROUND_Y - 125
         };
       }
 
-      function fireWithVec(v) {
-        if (mode !== 'aim' || !alive) return;
-        mode = 'windup';
-        aim = null;
+      function targetCenter(teamIdx) {
+        return {
+          x: charState[teamIdx].x,
+          y: GROUND_Y - 102 + (charState[teamIdx].duckOffset || 0)
+        };
+      }
+
+      function toCanvasPt(e) {
+        var r = cv.getBoundingClientRect();
+        var t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+        return {
+          x: (t.clientX - r.left) / r.width * W,
+          y: (t.clientY - r.top) / r.height * H
+        };
+      }
+
+      function toScreenPt(wx, wy) {
+        var r = cv.getBoundingClientRect();
+        return {
+          x: r.left + (wx / W) * r.width,
+          y: r.top + (wy / H) * r.height
+        };
+      }
+
+      function flyScoreToPod(startPt, teamIdx, pts, color) {
+        if (pts <= 0) return;
+        var fx = document.getElementById('gm-fx') || document.body;
+        var pod = document.getElementById('gm-team-' + teamIdx);
+        if (!fx || !pod || !startPt) return;
+        var pr = pod.getBoundingClientRect();
+        var tx = pr.left + pr.width / 2;
+        var ty = pr.top + pr.height / 2;
+        var orb = U().h('div', {
+          class: 'gm-score-orb',
+          text: '+' + pts
+        });
+        orb.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;left:' + Math.round(startPt.x - 28) + 'px;top:' + Math.round(startPt.y - 22) + 'px;padding:6px 14px;border-radius:999px;font:900 22px Fredoka,sans-serif;color:#fff;border:3px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,0.45);transition:transform 0.62s cubic-bezier(0.22,1,0.36,1),opacity 0.62s ease;background:' + (color || '#f59e0b') + ';';
+        fx.appendChild(orb);
+        requestAnimationFrame(function () {
+          orb.style.transform = 'translate(' + Math.round(tx - startPt.x) + 'px, ' + Math.round(ty - startPt.y) + 'px) scale(0.65)';
+          orb.style.opacity = '0.2';
+        });
+        setTimeout(function () {
+          if (orb.parentNode) orb.remove();
+        }, 680);
+      }
+
+      function updateBanner(titleText, subText, isHot) {
+        var t = T[turn] || T[0];
+        turnBanner.style.setProperty('--c', t.color || '#f59e0b');
+        turnBanner.classList.add('in');
+        turnBanner.classList.toggle('compact', !!isHot);
+        turnBanner.innerHTML = '';
+        if (t && t.mon) {
+          turnBanner.appendChild(U().monFace(t.mon, 38));
+        }
+        turnBanner.appendChild(U().h('b', { text: titleText }));
+        if (subText) {
+          turnBanner.appendChild(U().h('span', { class: 'gm-real3-sub', text: subText }));
+        }
+      }
+
+      /* Compute Launch Velocity Vector from (angleDeg, powerFrac) */
+      function computeLaunchVelocity(angleDeg, powerFrac, teamIdx, isOvercharged) {
+        var dir = teamIdx === 0 ? 1 : -1;
+        var adjAngle = clamp(angleDeg, 18, 80);
+        var p = clamp(powerFrac, 0.12, 1.0);
+        /* If player overcharged into the red danger zone (>94%), add wild angle/power slip! */
+        if (isOvercharged) {
+          adjAngle = clamp(adjAngle + (Math.random() < 0.5 ? -9 : 9), 16, 82);
+          p = clamp(p * (0.82 + Math.random() * 0.26), 0.2, 1.08);
+        }
+        var rad = adjAngle * Math.PI / 180;
+        var speed = 560 + p * 780; /* 654 .. 1340 px/s */
+        return {
+          vx: Math.cos(rad) * speed * dir,
+          vy: -Math.sin(rad) * speed,
+          speed: speed,
+          angleDeg: Math.round(adjAngle),
+          powerPct: Math.round(p * 100)
+        };
+      }
+
+      /* Convert pointer drag into manual (angleDeg, power) */
+      function updateAimFromPointer(pt) {
+        var orig = throwOrigin(turn);
+        var dir = turn === 0 ? 1 : -1;
+        aimState.curX = pt.x;
+        aimState.curY = pt.y;
+
+        var dx = pt.x - orig.x;
+        var dy = pt.y - orig.y;
+        var dist = Math.hypot(dx, dy);
+        if (dist < 12) return;
+
+        var pullX, pullY;
+        if (dx * dir < -10) {
+          /* Slingshot Pull-Back behind character */
+          pullX = -dx * dir;
+          pullY = -dy;
+        } else if (dx * dir > 20 && dy < 45) {
+          /* Forward drag toward fence */
+          pullX = dx * dir;
+          pullY = -dy;
+        } else {
+          var rdx = aimState.startX - pt.x;
+          var rdy = aimState.startY - pt.y;
+          pullX = Math.max(15, Math.abs(rdx));
+          pullY = Math.max(15, Math.abs(rdy));
+        }
+
+        var rawAngle = Math.atan2(Math.max(12, pullY), Math.max(12, pullX)) * 180 / Math.PI;
+        /* High-power hand tremor when holding >80% power */
+        var tremor = aimState.power > 0.80 ? Math.sin(performance.now() / 38) * 2.8 : 0;
+        aimState.angleDeg = clamp(rawAngle + tremor, 18, 78);
+        var pullMag = Math.hypot(pullX, pullY);
+        aimState.power = clamp((pullMag - 18) / 235, 0.14, 1.0);
+      }
+
+      /* Advance 2-Step Arcade Skill Lock (Step 1: Lock Angle -> Step 2: Lock Power & Fire!) */
+      function advanceSkillStep() {
+        if (mode !== 'aim') return;
+        if (aimSubPhase === 'angle') {
+          aimSubPhase = 'power';
+          aimState.powerOscT = -Math.PI / 2; /* Start power sweep from bottom 12% */
+          aimState.power = 0.12;
+          A().play('tap');
+          charState[turn].bubble = 'Angle ' + Math.round(aimState.angleDeg) + '° locked! Now time POWER! ⚡';
+          updateBanner(
+            '⚡ STEP 2: Lock Throw Power! (Angle: ' + Math.round(aimState.angleDeg) + '°)',
+            'Watch the Wind (' + formatWindShort() + ') & Rival Distance — tap FIRE when power is right!',
+            true
+          );
+          renderAimDock();
+        } else if (aimSubPhase === 'power') {
+          fireThrow(aimState.angleDeg, aimState.power);
+        }
+      }
+
+      /* Fire the Active Throw! */
+      function fireThrow(angleDeg, powerFrac) {
+        if (mode !== 'aim') return;
+        mode = 'fly';
+        aimState.dragging = false;
         dock.innerHTML = '';
-        charAnim[turn].state = 'windup';
-        charAnim[turn].t = 0;
-        charAnim[turn].bubble = turn === 0 ? 'Take this! 🧶' : 'Fetch this! 🦴';
-        charAnim[1 - turn].bubble = 'Uh oh! 👀';
-        A().play('crowd_ooh');
 
-        later(function () {
-          if (!alive) return;
-          var sp = shooterPos();
-          mode = 'fly';
-          trail = [];
-          starPts = 0;
-          charAnim[turn].state = 'throw';
-          charAnim[turn].t = 0;
+        var orig = throwOrigin(turn);
+        var pwr = activePower;
+        if (pwr && teamPowers[turn][pwr] > 0) {
+          teamPowers[turn][pwr]--;
+        }
 
-          /* Play character voice + launch sound */
-          A().play(turn === 0 ? 'cat_meow_happy' : 'dog_woof_happy');
-          A().play('pu_rocket');
-          A().play('whoosh_soft');
+        var isOvercharged = powerFrac > 0.94;
+        charState[turn].state = 'throw';
+        charState[turn].t0 = performance.now();
+        charState[turn].bubble = isOvercharged
+          ? 'WHOA! OVERCHARGED! 😵'
+          : (pwr === 'giant' ? 'HEAVY GIANT! 💪' : (pwr === 'double' ? 'DOUBLE SHOT! ✌️' : (pwr === 'bouncy' ? 'BOUNCY LOB! 💣' : 'FLING! 🎯')));
 
-          proj = {
-            x: sp.x + (turn === 0 ? 48 : -48),
-            y: sp.y - 36,
-            vx: v.vx,
-            vy: v.vy,
+        if (isOvercharged) {
+          addPopup(orig.x, orig.y - 55, '⚠️ OVERCHARGE SLIP!', '#ef4444', 34);
+        }
+
+        A().play('whoosh');
+        A().play('cannon');
+        burstParticles(orig.x, orig.y, T[turn].color, 16);
+
+        var baseVec = computeLaunchVelocity(angleDeg, powerFrac, turn, isOvercharged);
+        projs = [];
+
+        if (pwr === 'double') {
+          var v1 = computeLaunchVelocity(clamp(angleDeg - 4.5, 18, 78), clamp(powerFrac - 0.04, 0.15, 1), turn, isOvercharged);
+          var v2 = computeLaunchVelocity(clamp(angleDeg + 4.5, 18, 78), clamp(powerFrac + 0.04, 0.15, 1), turn, isOvercharged);
+          [v1, v2].forEach(function (v, idx) {
+            projs.push({
+              x: orig.x,
+              y: orig.y - idx * 14,
+              vx: v.vx,
+              vy: v.vy,
+              rot: 0,
+              r: 28,
+              scale: 0.92,
+              gravMul: 1.0,
+              power: 'double',
+              bouncesLeft: 0,
+              trail: [],
+              done: false
+            });
+          });
+        } else {
+          var isGiant = pwr === 'giant';
+          var isBouncy = pwr === 'bouncy';
+          projs.push({
+            x: orig.x,
+            y: orig.y,
+            vx: baseVec.vx,
+            vy: baseVec.vy,
             rot: 0,
-            t: 0,
-            bounces: 0,
-            hitFence: false,
-            bonkedOpponent: false
-          };
-          puff(proj.x, proj.y, 18, ['#ffffff', '#fde047', T[turn].color || '#38bdf8']);
-          updateBanner((turn === 0 ? '🐱 ' : '🐶 ') + T[turn].name + ' flings!', 'Watch out, ' + (turn === 0 ? 'Dog!' : 'Cat!'), true);
+            r: isGiant ? 48 : 30,
+            scale: isGiant ? 1.55 : 1.0,
+            /* Giant throw is heavier (1.18x gravity), so you must throw it harder! */
+            gravMul: isGiant ? 1.18 : 1.0,
+            power: pwr,
+            bouncesLeft: isBouncy ? 2 : 0,
+            trail: [],
+            done: false
+          });
+        }
 
-          later(function () {
-            if (alive && mode === 'fly') {
-              charAnim[turn].state = 'watch';
-              charAnim[turn].t = 0;
-            }
-          }, 220);
-        }, 200);
+        updateBanner(
+          (turn === 0 ? '🧶 Flying Yarn!' : '🦴 Flying Bone!'),
+          baseVec.angleDeg + '° Angle · ' + baseVec.powerPct + '% Power · ' + formatWindShort(),
+          true
+        );
       }
 
-      function presetShot(kind) {
-        if (mode !== 'aim' || !alive) return;
-        var sp = shooterPos();
-        var def = defenderPos();
-        var startX = sp.x + (turn === 0 ? 48 : -48);
-        var startY = sp.y - 36;
-        /* Aim directly at the opposing Dog/Cat's head/body! High Lob uses a taller arc that collects the +15 star coin on the way! */
-        var goalX = def.x;
-        var goalY = GROUND - (kind === 'lob' ? 120 : 145);
-        var flightT = kind === 'lob' ? 1.54 : 1.22;
-        var vx = ((goalX - startX) - 0.5 * wind * flightT * flightT) / flightT;
-        var vy = ((goalY - startY) - 0.5 * G * flightT * flightT) / flightT;
-        fireWithVec({ vx: vx, vy: vy, pull: 80, deg: kind === 'lob' ? 62 : 48 });
-      }
-
-      /* Pointer & Keyboard Listeners */
+      /* Pointer Events on Canvas */
       function onPointerDown(e) {
         if (mode !== 'aim') return;
-        if (e.target && e.target.closest && e.target.closest('.gm-real3-dock')) return;
         e.preventDefault();
-        try { cv.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
-        aim = toWorld(e);
-        charAnim[turn].state = 'windup';
-        A().play('tap');
+        var pt = toCanvasPt(e);
+        aimState.dragging = true;
+        aimState.holdTime = 0;
+        aimState.startX = pt.x;
+        aimState.startY = pt.y;
+        aimState.curX = pt.x;
+        aimState.curY = pt.y;
+        A().play('pull');
       }
+
       function onPointerMove(e) {
-        if (mode === 'aim' && aim) aim = toWorld(e);
-      }
-      function onPointerUp() {
-        if (mode !== 'aim' || !aim) return;
-        var sp = shooterPos();
-        if (Math.hypot(sp.x - aim.x, sp.y - aim.y) < 20) {
-          aim = null;
-          charAnim[turn].state = 'idle';
-          return;
-        }
-        fireWithVec(launchVec(aim));
-      }
-      function onKeyDown(e) {
-        if (e.code !== 'Space' && e.key !== ' ') return;
-        if (document.querySelector('.gm-over')) return;
-        if (mode === 'wait' && !asking) {
-          e.preventDefault();
-          ask();
+        if (mode !== 'aim' || !aimState.dragging) return;
+        e.preventDefault();
+        var pt = toCanvasPt(e);
+        var dragDist = Math.hypot(pt.x - aimState.startX, pt.y - aimState.startY);
+        if (dragDist >= 18) {
+          aimSubPhase = 'drag';
+          updateAimFromPointer(pt);
         }
       }
-      cv.addEventListener('pointerdown', onPointerDown);
-      cv.addEventListener('pointermove', onPointerMove);
-      cv.addEventListener('pointerup', onPointerUp);
-      cv.addEventListener('pointercancel', function () { aim = null; });
-      document.addEventListener('keydown', onKeyDown);
 
-      ctx.onEnd(function () {
-        alive = false;
-        cancelAnimationFrame(raf);
-        timers.forEach(clearTimeout);
-        if (ro) ro.disconnect();
-        document.removeEventListener('keydown', onKeyDown);
-        document.body.classList.remove('gm-small-pods', 'gm-real3-active');
-      });
-
-      function finishShot(msgText, baseScore, hitX, hitY, isDirectHit) {
-        if (mode === 'payoff' || mode === 'wait') return;
-        mode = 'payoff';
-        var endX = hitX != null ? hitX : (proj ? proj.x : midX());
-        var endY = hitY != null ? hitY : (proj ? Math.min(proj.y, GROUND - 24) : GROUND - 60);
-        proj = null;
-
-        var pts = Math.max(5, baseScore + starPts);
-        var otherIdx = (turn + 1) % 2;
-
-        /* Keep full panorama framed so both cheering thrower and bonked defender stay visible */
-        cam.targetX = Math.max(0, Math.min(WORLD_W - viewW, endX - viewW * 0.5));
-        cam.targetZoom = 1;
-
-        if (isDirectHit) {
-          slowMoT = 0.65;
-          crowdCheerT = 1.8;
-          charAnim[turn].state = 'celebrate';
-          charAnim[turn].bubble = 'BULLSEYE! 🎉';
-          charAnim[otherIdx].state = 'bonked';
-          charAnim[otherIdx].bonkT = 1.65;
-          charAnim[otherIdx].bubble = baseScore >= 30 ? 'BONK! 😵‍💫' : 'OUCH! 🐾';
-          charAnim[otherIdx].hp = Math.max(10, charAnim[otherIdx].hp - baseScore);
-          bonkBurst = { x: endX, y: endY, t0: performance.now() };
-          triggerShake(6, 0.28);
-          U().confetti(36);
-          A().play(otherIdx === 0 ? 'cat_meow_happy' : 'dog_woof_happy');
-          A().play('haystack_poof');
-          A().play('crowd_roar_big');
-          A().play('slot_high');
-          A().play('sparkle');
-        } else if (baseScore >= 10) {
-          crowdCheerT = 1.2;
-          charAnim[turn].state = 'celebrate';
-          charAnim[turn].bubble = 'Close hit! 👍';
-          charAnim[otherIdx].state = 'bonked';
-          charAnim[otherIdx].bonkT = 1.0;
-          charAnim[otherIdx].bubble = 'Whoa! 😮';
-          charAnim[otherIdx].hp = Math.max(10, charAnim[otherIdx].hp - 10);
-          triggerShake(4, 0.18);
-          U().confetti(18);
-          A().play('crowd_cheer_small');
-          A().play('slot_mid');
-          A().play('sparkle');
+      function onPointerUp(e) {
+        if (mode !== 'aim' || !aimState.dragging) return;
+        e.preventDefault();
+        var dragDist = Math.hypot(aimState.curX - aimState.startX, aimState.curY - aimState.startY);
+        aimState.dragging = false;
+        if (aimSubPhase === 'drag' && dragDist >= 24) {
+          fireThrow(aimState.angleDeg, aimState.power);
         } else {
-          /* Fence knock or lawn miss -> opponent laughs, thrower still gets +5 for trying! */
-          charAnim[turn].state = 'shrug';
-          charAnim[turn].bubble = 'Missed! 😅';
-          charAnim[otherIdx].state = 'celebrate';
-          charAnim[otherIdx].bubble = otherIdx === 0 ? 'Missed me! 😸' : 'Missed me! 🐶';
-          A().play('crowd_ooh');
+          /* Short tap on canvas advances the 2-step skill lock! */
+          advanceSkillStep();
+        }
+      }
+
+      cv.addEventListener('mousedown', onPointerDown);
+      cv.addEventListener('mousemove', onPointerMove);
+      w.addEventListener('mouseup', onPointerUp);
+      cv.addEventListener('touchstart', onPointerDown, { passive: false });
+      cv.addEventListener('touchmove', onPointerMove, { passive: false });
+      w.addEventListener('touchend', onPointerUp);
+
+      /* Track round outcomes across projectiles */
+      var roundPoints = 0;
+      var roundHeadlines = [];
+      var hitOpponentThisTurn = false;
+      var missReason = '';
+
+      function awardTurnHit(pts, headline, wx, wy, col) {
+        roundPoints += pts;
+        if (headline && roundHeadlines.indexOf(headline) === -1) {
+          roundHeadlines.push(headline);
+        }
+        addPopup(wx, wy - 45, headline + ' +' + pts, col || '#fde047', 42);
+        var sp = toScreenPt(wx, wy);
+        flyScoreToPod(sp, turn, pts, T[turn].color);
+      }
+
+      function finishTurnFlight() {
+        if (mode !== 'fly') return;
+        mode = 'payoff';
+
+        if (roundPoints > 0) {
+          A().play('coin_collect');
+          U().addScore(turn, roundPoints);
+          U().wobble(document.getElementById('gm-team-' + turn));
+          var summaryTitle = roundHeadlines.join(' + ') || 'Nice Shot!';
+          updateBanner(summaryTitle, '+' + roundPoints + ' points for ' + T[turn].name + '!', hitOpponentThisTurn);
+        } else {
+          /* Real miss consequence: 0 points! */
+          A().play('bounce');
+          var failMsg = missReason || '💨 Missed Wide! Zero Points!';
+          charState[turn].bubble = 'Aw, missed! Next turn! 🎯';
+          charState[1 - turn].state = 'cheer';
+          charState[1 - turn].bubble = 'Haha! Missed me! 😜';
+          updateBanner(failMsg, '0 points — read the wind & distance carefully next turn!', false);
         }
 
-        popText = {
-          text: msgText + ' +' + pts,
-          col: baseScore >= 30 ? '#fde047' : (baseScore >= 20 ? '#4ade80' : '#38bdf8'),
-          x: endX,
-          y: endY - 54,
-          t0: performance.now()
-        };
-
-        var screenPt = toScreen(endX, endY);
-        A().play('coin_collect');
-        flyScoreToPod(screenPt, turn, pts, T[turn].color);
-        U().addScore(turn, pts);
-        U().wobble(document.getElementById('gm-team-' + turn));
-        updateBanner(msgText, '+' + pts + ' points for ' + T[turn].name + '!', false);
-
+        activePower = null;
         turnCount++;
+
         later(function () {
           if (!alive) return;
-          cam.targetZoom = 1;
           if (turnCount >= totalTurns) {
-            charAnim[0].state = 'celebrate';
-            charAnim[1].state = 'celebrate';
-            charAnim[0].bubble = 'Great game! 🎉';
-            charAnim[1].bubble = 'Good match! 🏆';
-            crowdCheerT = 2.0;
-            cam.targetX = Math.max(0, Math.min(WORLD_W - viewW, midX() - viewW * 0.5));
-            updateBanner('🎉 Great Backyard Battle!', 'Final scores are in!', false);
+            charState[0].state = 'cheer';
+            charState[1].state = 'cheer';
+            charState[0].bubble = 'Great battle! 🎉';
+            charState[1].bubble = 'Awesome match! 🏆';
+            updateBanner('🎉 Backyard Battle Complete!', 'Final scores are in!', true);
             U().confetti(45);
             A().play('cheer_kids');
             A().play('crowd_roar_big');
             later(function () {
               if (alive) ctx.end();
-            }, 1350);
+            }, 1450);
             return;
           }
           turn = (turn + 1) % 2;
-          newRoundProps();
-          showTurn();
+          resetTurnEnvironment();
+          showWaitTurn();
         }, 1450);
       }
 
-      /* ---------- Layered Scene Rendering ---------- */
-      function drawSkyAndParallax(now) {
-        var skyGr = g.createLinearGradient(0, 0, 0, GROUND);
-        if (hal) {
-          skyGr.addColorStop(0, '#1e1b4b');
-          skyGr.addColorStop(0.55, '#3b0764');
-          skyGr.addColorStop(1, '#581c87');
-        } else {
-          skyGr.addColorStop(0, '#38bdf8');
-          skyGr.addColorStop(0.6, '#bae6fd');
-          skyGr.addColorStop(1, '#fef9c3');
-        }
-        g.fillStyle = skyGr;
-        g.fillRect(0, 0, viewW, H);
-
-        /* Drifting clouds & ambient birds/bats */
-        clouds.forEach(function (c) {
-          var cx = ((c.x - cam.x * 0.35) % (WORLD_W + 300));
-          if (cx < -180) cx += WORLD_W + 300;
-          var cy = c.y + (crowdCheerT > 0 ? Math.sin(now / 120 + c.x) * 6 : 0);
-          var s = c.s;
-          g.fillStyle = hal ? 'rgba(192, 132, 252, 0.22)' : 'rgba(255, 255, 255, 0.88)';
-          g.beginPath();
-          g.ellipse(cx, cy, 78 * s, 28 * s, 0, 0, Math.PI * 2);
-          g.ellipse(cx + 48 * s, cy - 12 * s, 52 * s, 24 * s, 0, 0, Math.PI * 2);
-          g.ellipse(cx - 46 * s, cy - 6 * s, 44 * s, 20 * s, 0, 0, Math.PI * 2);
-          g.fill();
-        });
-
-        skyFlyers.forEach(function (b) {
-          var bx = ((b.x - cam.x * 0.45) % (WORLD_W + 200));
-          if (bx < -100) bx += WORLD_W + 200;
-          var flap = Math.sin(now / (crowdCheerT > 0 ? 90 : 160) + b.ph) * 9;
-          var by = b.y + Math.sin(now / 360 + b.ph) * 10 - (crowdCheerT > 0 ? Math.abs(Math.sin(now / 110 + b.ph)) * 16 : 0);
-          g.save();
-          g.translate(bx, by);
-          g.strokeStyle = hal ? '#fde047' : '#0f172a';
-          g.lineWidth = 3.5;
-          g.lineCap = 'round';
-          g.beginPath();
-          g.moveTo(-14, flap);
-          g.quadraticCurveTo(-7, -8, 0, 0);
-          g.quadraticCurveTo(7, -8, 14, flap);
-          g.stroke();
-          g.restore();
-        });
-      }
-
-      function drawBackyardWorld(now) {
-        /* Layer 3 & 4 (1.0x world space): Backyard panorama + houses + 3D wooden divider fence */
-        var bg = imgReady(art.bgYards) ? art.bgYards : (imgReady(art.bgFallback) ? art.bgFallback : null);
-        if (bg) {
-          g.drawImage(bg, -40, -40, WORLD_W + 80, H + 80);
-          if (hal) {
-            g.fillStyle = 'rgba(46, 16, 101, 0.34)';
-            g.fillRect(-40, -40, WORLD_W + 80, H + 80);
-          }
-        } else {
-          g.fillStyle = hal ? '#3b1a74' : '#65a30d';
-          g.fillRect(0, GROUND, WORLD_W, H - GROUND);
-        }
-
-        /* Lush lawn playable band */
-        var lawnGr = g.createLinearGradient(0, GROUND - 28, 0, H);
-        if (hal) {
-          lawnGr.addColorStop(0, 'rgba(59, 7, 100, 0.55)');
-          lawnGr.addColorStop(0.3, '#2e1065');
-          lawnGr.addColorStop(1, '#1e1b4b');
-        } else {
-          lawnGr.addColorStop(0, 'rgba(132, 204, 22, 0.65)');
-          lawnGr.addColorStop(0.3, '#65a30d');
-          lawnGr.addColorStop(1, '#4d7c0f');
-        }
-        g.fillStyle = lawnGr;
-        g.fillRect(0, GROUND - 18, WORLD_W, H - GROUND + 18);
-
-        /* Subtle mowed lawn stripes */
-        for (var stIdx = 0; stIdx < 16; stIdx++) {
-          if (stIdx % 2 === 0) {
-            g.fillStyle = hal ? 'rgba(168, 85, 247, 0.08)' : 'rgba(255, 255, 255, 0.08)';
-            g.fillRect(stIdx * 125, GROUND - 12, 62, H - GROUND + 12);
+      /* Physics Step for Projectiles */
+      function stepProjectiles(dt, now) {
+        var opp = 1 - turn;
+        /* Active rival ducking in Normal/Gusty modes when projectile approaches */
+        if (DIFF.dodgeAmp > 0 && projs.length > 0) {
+          var leadP = projs[0];
+          var distToOpp = Math.abs(leadP.x - charState[opp].x);
+          if (distToOpp < 380 && !leadP.done) {
+            charState[opp].duckOffset = Math.max(0, Math.sin(now / 140) * DIFF.dodgeAmp);
+          } else {
+            charState[opp].duckOffset = 0;
           }
         }
 
-        /* Left Yard 3D Prop (Cat Side): 3D Yarn Basket / Pile behind the Cat */
-        var catPropX = leftX() - 165;
-        var catPropY = GROUND - 6;
-        g.save();
-        g.translate(catPropX, catPropY);
-        g.fillStyle = 'rgba(15, 23, 42, 0.32)';
-        g.beginPath(); g.ellipse(0, 6, 62, 14, 0, 0, Math.PI * 2); g.fill();
-        if (imgReady(art.yarn)) {
-          g.drawImage(art.yarn, -52, -62, 68, 68);
-          g.drawImage(art.yarn, -6, -54, 62, 62);
-        }
-        g.restore();
+        var oppCenter = targetCenter(opp);
+        var oppHead = { x: oppCenter.x, y: oppCenter.y - 54 };
+        var oppPropX = opp === 0 ? charState[0].x - 105 : charState[1].x + 215;
+        var oppPropY = GROUND_Y - 76;
 
-        /* Right Yard 3D Prop (Dog Side): Red Wooden Doghouse o_doghouse.webp behind the Dog */
-        var dogPropX = rightX() + 185;
-        var dogPropY = GROUND + 4;
-        g.save();
-        g.translate(dogPropX, dogPropY);
-        g.fillStyle = 'rgba(15, 23, 42, 0.34)';
-        g.beginPath(); g.ellipse(0, 4, 96, 22, 0, 0, Math.PI * 2); g.fill();
-        if (imgReady(art.doghouse)) {
-          g.drawImage(art.doghouse, -110, -205, 220, 215);
-        }
-        g.restore();
+        /* Live gust oscillation in Gusty/Normal modes */
+        var gustOsc = Math.sin(now / 380 + windGustPhase) * (windMode === 'gusty' ? 55 : (windMode === 'normal' ? 25 : 0));
+        var effWind = (activePower === 'giant' ? wind * 0.55 : wind) + gustOsc;
 
-        /* Halloween Lanterns */
-        if (hal) {
-          [leftX() - 210, midX() - 125, midX() + 125, rightX() + 210].forEach(function (lx, i) {
-            var ly = GROUND - 155 + Math.sin(now / 320 + i) * 5;
-            var lg = g.createRadialGradient(lx, ly, 6, lx, ly, 75);
-            lg.addColorStop(0, 'rgba(251, 191, 36, 0.55)');
-            lg.addColorStop(1, 'rgba(251, 191, 36, 0)');
-            g.fillStyle = lg;
-            g.beginPath(); g.arc(lx, ly, 75, 0, Math.PI * 2); g.fill();
-            if (imgReady(art.lantern)) {
-              g.drawImage(art.lantern, lx - 32, ly - 32, 64, 64);
+        var anyActive = false;
+
+        projs.forEach(function (pr) {
+          if (pr.done) return;
+          anyActive = true;
+
+          pr.vx += effWind * dt;
+          pr.vy += (GRAVITY * (pr.gravMul || 1.0)) * dt;
+          pr.x += pr.vx * dt;
+          pr.y += pr.vy * dt;
+          pr.rot += (pr.vx >= 0 ? 1 : -1) * 11 * dt;
+
+          pr.trail.push({ x: pr.x, y: pr.y });
+          if (pr.trail.length > 22) pr.trail.shift();
+
+          /* 1. Check Patrolling Backyard Wasp Hazard above the fence! */
+          if (waspHazard.stingCooldown <= 0 && Math.hypot(pr.x - waspHazard.x, pr.y - waspHazard.y) < waspHazard.r + pr.r * 0.65) {
+            waspHazard.stingCooldown = 1.2;
+            triggerShake(10, 0.25);
+            A().play('peg');
+            burstParticles(waspHazard.x, waspHazard.y, '#facc15', 22);
+            addPopup(waspHazard.x, waspHazard.y - 34, '🐝 WASP DEFLECT!', '#ef4444', 36);
+            missReason = '🐝 Deflected by the Backyard Wasp!';
+            pr.vx = -pr.vx * 0.45;
+            pr.vy = Math.abs(pr.vy) * 0.35 + 180;
+            pr.bouncesLeft = 0;
+          }
+
+          /* 2. Check High-Altitude Floating Bonus Star (+15 pts, non-stopping!) */
+          if (!bonusStar.hit && Math.hypot(pr.x - bonusStar.x, pr.y - bonusStar.y) < bonusStar.r + pr.r * 0.7) {
+            bonusStar.hit = true;
+            A().play('star');
+            burstParticles(bonusStar.x, bonusStar.y, '#fde047', 26);
+            awardTurnHit(15, '⭐ High Star!', bonusStar.x, bonusStar.y, '#fde047');
+          }
+
+          /* 3. Check Fence-Top Tin Cans (+10 pts) */
+          fenceCans.forEach(function (can) {
+            if (!can.hit && Math.hypot(pr.x - can.x, pr.y - can.y) < pr.r + 20) {
+              can.hit = true;
+              can.vx = pr.vx * 0.45 + (Math.random() - 0.5) * 180;
+              can.vy = -260 - Math.random() * 140;
+              can.vrot = (Math.random() - 0.5) * 18;
+              A().play('peg');
+              burstParticles(can.x, can.y, can.col, 14);
+              awardTurnHit(10, '🥫 Can Smash!', can.x, can.y, '#38bdf8');
             }
           });
+
+          /* 4. Check Precision Headshot OR Body Hit on Opposing Cat / Dog */
+          var headRadius = 38 * DIFF.hitScale + (pr.scale > 1.2 ? 12 : 0);
+          var bodyRadius = 60 * DIFF.hitScale + (pr.scale > 1.2 ? 16 : 0);
+          var isHeadshot = Math.hypot(pr.x - oppHead.x, pr.y - oppHead.y) < headRadius;
+          var isBodyHit = !isHeadshot && Math.hypot(pr.x - oppCenter.x, pr.y - oppCenter.y) < bodyRadius;
+
+          if (isHeadshot || isBodyHit) {
+            pr.done = true;
+            hitOpponentThisTurn = true;
+            var hitPts = isHeadshot ? 35 : (pr.power === 'giant' ? 30 : 25);
+            var hpDmg = isHeadshot ? 45 : (pr.power === 'giant' ? 40 : 30);
+            var hitLabel = isHeadshot ? '🎯 HEADSHOT!' : (pr.power === 'giant' ? '💥 GIANT BONK!' : '🎯 DIRECT HIT!');
+
+            freezeDt = isHeadshot ? 0.085 : 0.055;
+            triggerShake(isHeadshot ? 18 : 12, 0.35);
+            A().play('whack_pop');
+            A().play('cheer_kids');
+            U().confetti(isHeadshot ? 36 : 24);
+            burstParticles(pr.x, pr.y, T[turn].color, 34);
+
+            charState[turn].state = 'cheer';
+            charState[turn].bubble = isHeadshot ? 'HEADSHOT!! 🔥' : 'BULLSEYE! 🎉';
+            charState[opp].state = 'hit';
+            charState[opp].dizzyUntil = performance.now() + 2400;
+            charState[opp].hitsTaken++;
+            charState[opp].hp = Math.max(0, charState[opp].hp - hpDmg);
+            charState[opp].bubble = opp === 0 ? 'MEOWCH! 🙀💫' : 'RUFF! 🐶💫';
+
+            awardTurnHit(hitPts, hitLabel, pr.x, pr.y - 30, '#fde047');
+
+            /* Yard Knockout Bonus if opponent HP reaches 0! */
+            if (charState[opp].hp <= 0) {
+              charState[opp].hp = 100;
+              awardTurnHit(30, '🥊 YARD KNOCKOUT!', oppCenter.x, oppCenter.y - 95, '#f43f5e');
+            }
+            return;
+          }
+
+          /* 5. Check Rival Yard Prop Hit (Doghouse / Yarn Basket, +10 pts) */
+          if (Math.hypot(pr.x - oppPropX, pr.y - oppPropY) < 62 + pr.r * 0.3) {
+            pr.done = true;
+            triggerShake(8, 0.2);
+            A().play('hit');
+            burstParticles(pr.x, pr.y, '#fb923c', 20);
+            charState[turn].state = 'cheer';
+            charState[opp].bubble = 'Watch my ' + (opp === 0 ? 'basket!' : 'doghouse!') + ' 🐾';
+            awardTurnHit(10, opp === 0 ? '🧶 Basket Hit!' : '🏠 Doghouse Hit!', pr.x, pr.y - 25, '#fb923c');
+            return;
+          }
+
+          /* 6. Check Center Wooden Fence Collision (0 pts unless Bouncy!) */
+          if (Math.abs(pr.x - FENCE_X) < FENCE_HALF_W + pr.r * 0.5 && pr.y > FENCE_TOP_Y) {
+            triggerShake(9, 0.22);
+            A().play('peg');
+            burstParticles(pr.x, pr.y, '#d97706', 18);
+            if (pr.bouncesLeft > 0) {
+              pr.bouncesLeft--;
+              pr.vx = -pr.vx * 0.55;
+              pr.vy = -Math.abs(pr.vy) * 0.55 - 170;
+              pr.x = pr.x < FENCE_X ? FENCE_X - FENCE_HALF_W - pr.r : FENCE_X + FENCE_HALF_W + pr.r;
+              addPopup(pr.x, pr.y - 30, 'BOING! 💣', '#f59e0b', 34);
+            } else {
+              pr.done = true;
+              missReason = '🪵 Blocked by the Center Fence!';
+              charState[opp].bubble = 'Blocked by the fence! 🪵';
+              addPopup(pr.x, pr.y - 25, '🪵 FENCE BLOCK! (0)', '#ef4444', 34);
+            }
+            return;
+          }
+
+          /* 7. Check Ground / Out of Bounds */
+          if (pr.y >= GROUND_Y - 12 || pr.x < -80 || pr.x > W + 80) {
+            var clampX = clamp(pr.x, 80, W - 80);
+            var clampY = Math.min(pr.y, GROUND_Y - 12);
+            if (pr.bouncesLeft > 0 && pr.x > 60 && pr.x < W - 60) {
+              pr.bouncesLeft--;
+              pr.y = GROUND_Y - 14;
+              pr.vy = -Math.abs(pr.vy) * 0.60 - 135;
+              pr.vx *= 0.80;
+              A().play('peg');
+              burstParticles(clampX, clampY, '#4ade80', 12);
+              addPopup(clampX, clampY - 30, 'BOUNCE! 💣', '#4ade80', 32);
+              return;
+            }
+            pr.done = true;
+            A().play('hit');
+            burstParticles(clampX, clampY, '#4ade80', 16);
+            var footDist = Math.abs(clampX - oppCenter.x);
+            if (footDist < 52 * DIFF.hitScale) {
+              charState[opp].hp = Math.max(10, charState[opp].hp - 12);
+              awardTurnHit(10, '🌿 Grazing Splash!', clampX, clampY - 25, '#4ade80');
+            } else if (roundPoints === 0) {
+              var shortOfFence = (turn === 0 && clampX < FENCE_X) || (turn === 1 && clampX > FENCE_X);
+              missReason = shortOfFence
+                ? '💨 Fell Short in Your Own Yard!'
+                : (clampX < oppCenter.x ? '💨 Landed Left of Target!' : '💨 Overshot Past Target!');
+              addPopup(clampX, clampY - 28, 'MISS! (0)', '#94a3b8', 32);
+            }
+          }
+        });
+
+        /* Step knocked tin cans */
+        fenceCans.forEach(function (can) {
+          if (can.hit && can.y < GROUND_Y + 40) {
+            can.vy += GRAVITY * dt;
+            can.x += can.vx * dt;
+            can.y += can.vy * dt;
+            can.rot += can.vrot * dt;
+          }
+        });
+
+        if (!anyActive && projs.length > 0) {
+          finishTurnFlight();
         }
       }
 
-      function drawFenceAndBonusStar(now) {
-        var mx = midX();
-
-        /* Note: bg_fling_yards.webp ALREADY has the 3D wooden divider fence in the center!
-           We only draw a subtle shock ring if the fence is knocked, plus the floating +15 Star Coin above it. */
-        if (fenceWobble > 0) {
-          g.save();
-          g.strokeStyle = 'rgba(253, 224, 71, ' + (fenceWobble * 0.75).toFixed(2) + ')';
-          g.lineWidth = 6;
-          g.beginPath();
-          g.arc(mx, GROUND - fenceH * 0.6, 48 + (1 - fenceWobble) * 50, 0, Math.PI * 2);
-          g.stroke();
-          g.restore();
-        }
-
-        /* Floating +15 Bonus Star Coin bobbing above the 3D wooden fence */
-        if (!star.hit) {
-          var sy = star.y + Math.sin(now / 360 + star.ph) * 14;
-          star.ry = sy;
-          g.save();
-          g.translate(mx, sy);
-          var sg = g.createRadialGradient(0, 0, 8, 0, 0, 64);
-          sg.addColorStop(0, 'rgba(253, 224, 71, 0.65)');
-          sg.addColorStop(1, 'rgba(253, 224, 71, 0)');
-          g.fillStyle = sg;
-          g.beginPath(); g.arc(0, 0, 64, 0, Math.PI * 2); g.fill();
-          if (imgReady(art.starCoin)) {
-            g.drawImage(art.starCoin, -44, -44, 88, 88);
-          } else {
-            g.fillStyle = '#fde047'; g.strokeStyle = '#1f2a44'; g.lineWidth = 4;
-            g.beginPath(); g.arc(0, 0, 36, 0, Math.PI * 2); g.fill(); g.stroke();
-          }
-          drawOutlinedText(g, '+15', 0, 42, 26, '#fde047', '#0f172a');
-          g.restore();
-        }
+      function formatWindShort() {
+        var lvl = Math.max(1, Math.min(10, Math.round(Math.abs(wind) / 26)));
+        return wind < 0 ? ('◄◄ WIND ' + lvl) : ('WIND ' + lvl + ' ►►');
       }
 
-      function drawCharactersAndBuddies(now) {
-        /* Draw Team 1 (Left: Cat + Monster Buddy) and Team 2 (Right: Dog + Monster Buddy) */
-        [0, 1].forEach(function (idx) {
-          var isCat = (idx === 0);
-          var baseX = isCat ? leftX() : rightX();
-          var baseY = GROUND - 8;
-          var anim = charAnim[idx];
-          var teamCol = (T[idx] && T[idx].color) || (isCat ? '#f97316' : '#38bdf8');
-          var isDefendingTarget = (idx !== turn) && (mode === 'aim' || mode === 'fly' || mode === 'windup');
+      /* ======================================================================
+         SCENE RENDERING PIPELINE (Full 1600x900 Backyard Panorama)
+         ====================================================================== */
+      function drawBackyardScene(now) {
+        if (imgReady(art.bgYards)) {
+          g.drawImage(art.bgYards, 0, 0, W, H);
+        } else {
+          var skyGr = g.createLinearGradient(0, 0, 0, H);
+          skyGr.addColorStop(0, '#38bdf8');
+          skyGr.addColorStop(0.55, '#bae6fd');
+          skyGr.addColorStop(0.56, '#4ade80');
+          skyGr.addColorStop(1, '#15803d');
+          g.fillStyle = skyGr;
+          g.fillRect(0, 0, W, H);
+        }
 
-          /* 1. Team's Cheering Monster Buddy sitting beside its animal */
-          var buddyX = baseX + (isCat ? -115 : 115);
-          var buddyY = GROUND - 58;
-          var buddySize = 126;
-          var buddyBob = Math.sin(now / 260 + idx) * 6;
-          var buddyRot = 0;
-          if (anim.state === 'celebrate' || crowdCheerT > 0) {
-            buddyBob = -Math.abs(Math.sin(now / 115 + idx)) * 26;
-            buddyRot = Math.sin(now / 130) * 0.14;
-          } else if (anim.state === 'bonked' || anim.state === 'shrug') {
-            buddyRot = Math.sin(now / 95) * 0.14;
-          }
+        /* Subtle top & bottom vignette */
+        var topVig = g.createLinearGradient(0, 0, 0, 145);
+        topVig.addColorStop(0, 'rgba(6, 9, 17, 0.38)');
+        topVig.addColorStop(1, 'rgba(6, 9, 17, 0)');
+        g.fillStyle = topVig;
+        g.fillRect(0, 0, W, 145);
+
+        var botVig = g.createLinearGradient(0, H - 130, 0, H);
+        botVig.addColorStop(0, 'rgba(6, 9, 17, 0)');
+        botVig.addColorStop(1, 'rgba(6, 9, 17, 0.44)');
+        g.fillStyle = botVig;
+        g.fillRect(0, H - 130, W, 130);
+
+        /* Animated Wind Streamer Lines across the sky */
+        if (Math.abs(wind) >= 15) {
           g.save();
-          g.translate(buddyX, buddyY);
-          var bShadowScale = Math.max(0.55, 1 + buddyBob / 90);
-          g.fillStyle = 'rgba(15, 23, 42, 0.34)';
-          g.beginPath(); g.ellipse(0, 54, 42 * bShadowScale, 11 * bShadowScale, 0, 0, Math.PI * 2); g.fill();
-          g.translate(0, buddyBob);
-          g.rotate(buddyRot);
-          if (!isCat) g.scale(-1, 1);
-          if (imgReady(monImgs[idx])) {
-            g.drawImage(monImgs[idx], -buddySize / 2, -buddySize / 2, buddySize, buddySize);
-          }
-          g.restore();
-
-          /* 2. Pulsing Target Reticle around the Defending Animal when Aiming! */
-          var charH = 230;
-          var charW = 230;
-          var drawX = baseX;
-          var drawY = baseY - charH * 0.46;
-
-          if (isDefendingTarget && mode === 'aim') {
-            var retPulse = 1 + Math.sin(now / 180) * 0.06;
-            g.save();
-            g.translate(drawX, drawY - 12);
-            g.scale(retPulse, retPulse);
-            g.strokeStyle = 'rgba(244, 63, 94, 0.85)';
-            g.lineWidth = 4.5;
-            g.setLineDash([12, 8]);
+          g.lineCap = 'round';
+          g.lineWidth = 3;
+          windStreamers.forEach(function (ws) {
+            ws.x += (wind * 1.45 * ws.spd) * 0.016;
+            if (ws.x > W + 100) ws.x = -100;
+            if (ws.x < -100) ws.x = W + 100;
+            g.strokeStyle = 'rgba(255, 255, 255, ' + ws.alpha + ')';
             g.beginPath();
-            g.arc(0, 0, 92, 0, Math.PI * 2);
+            g.moveTo(ws.x, ws.y);
+            g.lineTo(ws.x + (wind > 0 ? ws.len : -ws.len), ws.y + Math.sin(now / 260 + ws.y) * 4);
             g.stroke();
-            g.setLineDash([]);
-            drawOutlinedText(g, '🎯 HIT ME! +30', 0, -112, 24, '#fde047', '#0f172a');
+          });
+          g.restore();
+        }
+
+        /* Yard Props: Cat's Yarn Basket (Left) & Dog's Doghouse (Right) */
+        var yarnX = charState[0].x - 105;
+        var yarnY = GROUND_Y - 12;
+        g.fillStyle = 'rgba(15, 23, 42, 0.28)';
+        g.beginPath();
+        g.ellipse(yarnX, yarnY + 4, 58, 14, 0, 0, Math.PI * 2);
+        g.fill();
+        if (imgReady(art.yarn)) {
+          g.drawImage(art.yarn, yarnX - 54, yarnY - 68, 72, 72);
+          g.drawImage(art.yarn, yarnX - 8, yarnY - 62, 66, 66);
+          g.drawImage(art.yarn, yarnX - 30, yarnY - 96, 64, 64);
+        }
+
+        var dhX = charState[1].x + 215;
+        var dhY = GROUND_Y - 36;
+        g.fillStyle = 'rgba(15, 23, 42, 0.30)';
+        g.beginPath();
+        g.ellipse(dhX, dhY + 6, 82, 18, 0, 0, Math.PI * 2);
+        g.fill();
+        if (imgReady(art.doghouse)) {
+          g.drawImage(art.doghouse, dhX - 92, dhY - 172, 184, 180);
+        }
+      }
+
+      /* Draw Fence Extension, Tin Cans, Patrolling Wasp & Floating Bonus Star */
+      function drawFenceAndHazards(now, dt) {
+        /* Wooden Fence Top Extension so the taller fence barrier is clearly visible */
+        g.save();
+        roundRect(g, FENCE_X - 22, FENCE_TOP_Y, 44, GROUND_Y - FENCE_TOP_Y - 10, 8);
+        var woodGr = g.createLinearGradient(FENCE_X - 22, 0, FENCE_X + 22, 0);
+        woodGr.addColorStop(0, '#92400e');
+        woodGr.addColorStop(0.5, '#d97706');
+        woodGr.addColorStop(1, '#78350f');
+        g.fillStyle = woodGr;
+        g.fill();
+        g.lineWidth = 3;
+        g.strokeStyle = '#451a03';
+        g.stroke();
+        g.restore();
+
+        /* Tin Cans on top of the wooden dividing fence */
+        fenceCans.forEach(function (can) {
+          g.save();
+          g.translate(can.x, can.y);
+          g.rotate(can.rot);
+          roundRect(g, -15, -20, 30, 40, 6);
+          g.fillStyle = can.col;
+          g.fill();
+          g.lineWidth = 2.5;
+          g.strokeStyle = '#0f172a';
+          g.stroke();
+          g.fillStyle = 'rgba(255,255,255,0.85)';
+          g.fillRect(-13, -6, 26, 12);
+          g.fillStyle = '#e2e8f0';
+          g.fillRect(-16, -20, 32, 5);
+          g.fillRect(-16, 15, 32, 5);
+          g.restore();
+        });
+
+        /* Patrolling Backyard Wasp Hazard above the Fence */
+        waspHazard.phase += dt * DIFF.waspSpd;
+        if (waspHazard.stingCooldown > 0) waspHazard.stingCooldown = Math.max(0, waspHazard.stingCooldown - dt);
+        waspHazard.x = FENCE_X + Math.sin(waspHazard.phase * 0.7) * 32;
+        waspHazard.y = waspHazard.baseY + Math.sin(waspHazard.phase) * DIFF.waspAmp;
+
+        g.save();
+        g.translate(waspHazard.x, waspHazard.y);
+        /* Danger zone ring */
+        g.beginPath();
+        g.arc(0, 0, waspHazard.r, 0, Math.PI * 2);
+        g.fillStyle = 'rgba(239, 68, 68, 0.16)';
+        g.fill();
+        g.lineWidth = 2;
+        g.setLineDash([5, 5]);
+        g.strokeStyle = 'rgba(239, 68, 68, 0.65)';
+        g.stroke();
+        g.setLineDash([]);
+        /* Fluttering wings */
+        var wingFlap = Math.sin(now / 28) * 10;
+        g.fillStyle = 'rgba(224, 242, 254, 0.85)';
+        g.beginPath();
+        g.ellipse(-10, -14 - wingFlap * 0.3, 16, 9, -0.4, 0, Math.PI * 2);
+        g.ellipse(10, -14 + wingFlap * 0.3, 16, 9, 0.4, 0, Math.PI * 2);
+        g.fill();
+        /* Striped Wasp Body */
+        g.beginPath();
+        g.ellipse(0, 0, 22, 15, 0, 0, Math.PI * 2);
+        g.fillStyle = '#facc15';
+        g.fill();
+        g.lineWidth = 3;
+        g.strokeStyle = '#0f172a';
+        g.stroke();
+        g.fillStyle = '#0f172a';
+        g.fillRect(-8, -13, 6, 26);
+        g.fillRect(4, -12, 6, 24);
+        drawOutlinedText(g, '🐝 HAZARD', 0, 32, 15, '#fca5a5', '#090d16');
+        g.restore();
+
+        /* High-Altitude Bonus Star Coin above the Wasp */
+        if (!bonusStar.hit) {
+          var bobY = bonusStar.y + Math.sin(now / 260 + bonusStar.bobPhase) * 9;
+          g.save();
+          g.translate(bonusStar.x, bobY);
+          var halo = g.createRadialGradient(0, 0, 6, 0, 0, 48);
+          halo.addColorStop(0, 'rgba(250, 204, 21, 0.65)');
+          halo.addColorStop(1, 'rgba(250, 204, 21, 0)');
+          g.fillStyle = halo;
+          g.beginPath();
+          g.arc(0, 0, 48, 0, Math.PI * 2);
+          g.fill();
+
+          if (imgReady(art.starCoin)) {
+            g.drawImage(art.starCoin, -34, -34, 68, 68);
+          } else {
+            g.fillStyle = '#facc15';
+            g.beginPath();
+            g.arc(0, 0, 28, 0, Math.PI * 2);
+            g.fill();
+          }
+          drawOutlinedText(g, '+15', 0, 42, 20, '#fde047', '#0f172a');
+          g.restore();
+        }
+      }
+
+      /* Draw Cat, Dog, Team Monster Coaches & Stamina HUD Cards */
+      function drawCharacters(now) {
+        [0, 1].forEach(function (idx) {
+          var isCat = idx === 0;
+          var st = charState[idx];
+          var baseX = st.x;
+          var baseY = GROUND_Y;
+          var isTurn = turn === idx && (mode === 'wait' || mode === 'aim');
+          var isDizzy = now < st.dizzyUntil;
+
+          /* Active Turn Spotlight Ring on the Grass */
+          g.save();
+          g.beginPath();
+          g.ellipse(baseX, baseY - 4, 86, 22, 0, 0, Math.PI * 2);
+          g.fillStyle = isTurn ? (isCat ? 'rgba(251, 146, 60, 0.35)' : 'rgba(56, 189, 248, 0.35)') : 'rgba(6, 9, 17, 0.36)';
+          g.fill();
+          if (isTurn) {
+            g.lineWidth = 4;
+            g.strokeStyle = isCat ? '#fb923c' : '#38bdf8';
+            g.stroke();
+          }
+          g.restore();
+
+          /* Draw Team Monster Coach beside the animal */
+          var coachX = isCat ? baseX - 165 : baseX + 125;
+          var coachY = baseY - 8;
+          var coachBob = Math.sin(now / 240 + idx * 2) * 5 + (st.state === 'cheer' ? Math.abs(Math.sin(now / 110)) * -18 : 0);
+          g.fillStyle = 'rgba(6, 9, 17, 0.32)';
+          g.beginPath();
+          g.ellipse(coachX, coachY, 44, 12, 0, 0, Math.PI * 2);
+          g.fill();
+
+          if (imgReady(monImgs[idx])) {
+            g.save();
+            g.translate(coachX, coachY + coachBob);
+            g.drawImage(monImgs[idx], -58, -112, 116, 116);
             g.restore();
           }
 
-          /* 3. Big Main Animal Character (Cat or Dog, 230px tall) */
-          var sx = 1, sy = 1, rot = 0, liftY = 0, knockX = 0;
-          var useCheerPose = (anim.state === 'celebrate');
-
-          if (anim.state === 'bonked' || anim.bonkT > 0) {
-            /* Hit by yarn/bone! Squashed, knocked back, wobbling dizzily with spinning stars! */
-            var bk = Math.max(0.2, anim.bonkT / 1.65);
-            knockX = (isCat ? -1 : 1) * Math.sin(now / 45) * 16 * bk;
-            sx = 1.16 + Math.sin(now / 55) * 0.08;
-            sy = 0.84 - Math.sin(now / 55) * 0.08;
-            rot = (isCat ? -0.22 : 0.22) * bk + Math.sin(now / 60) * 0.14;
-            liftY = 14;
-          } else if (anim.state === 'idle') {
-            sx = 1 + Math.sin(now / 260 + idx) * 0.04;
-            sy = 1 - Math.sin(now / 260 + idx) * 0.04;
-            liftY = -Math.abs(Math.sin(now / 320 + idx)) * 7;
-          } else if (anim.state === 'windup') {
-            sx = 1.08; sy = 0.92;
-            rot = isCat ? -0.18 : 0.18;
-            liftY = 6;
-          } else if (anim.state === 'throw') {
-            sx = 0.92; sy = 1.10;
-            rot = isCat ? 0.20 : -0.20;
-            liftY = -18;
-          } else if (anim.state === 'watch') {
-            rot = isCat ? 0.08 : -0.08;
-            liftY = -4;
-          } else if (anim.state === 'celebrate') {
-            liftY = -Math.abs(Math.sin(now / 115 + idx)) * 34;
-            rot = Math.sin(now / 140 + idx) * 0.12;
-            sx = 1 + Math.sin(now / 115) * 0.07;
-            sy = 1 - Math.sin(now / 115) * 0.07;
-          } else if (anim.state === 'shrug') {
-            sx = 1.06; sy = 0.94;
-            rot = Math.sin(now / 120) * 0.12;
-            liftY = -Math.sin(Math.min(1, anim.t * 2.5) * Math.PI) * 10;
+          /* Compute Animal Bounce / Squash-Stretch / Ducking / Dizzy Wobble */
+          var sx = 1, sy = 1, dy = st.duckOffset || 0, rot = 0;
+          var breath = Math.sin(now / 260 + idx * 1.7);
+          if (st.state === 'cheer') {
+            dy = -Math.abs(Math.sin(now / 130)) * 24;
+            sx = 1 + Math.sin(now / 130) * 0.06;
+            sy = 1 - Math.sin(now / 130) * 0.06;
+          } else if (st.state === 'throw') {
+            var dtThrow = (now - st.t0) / 1000;
+            if (dtThrow < 0.38) {
+              sx = 1.12 - dtThrow * 0.25;
+              sy = 0.90 + dtThrow * 0.25;
+              rot = (isCat ? 0.14 : -0.14) * (1 - dtThrow / 0.38);
+            }
+          } else if (isDizzy) {
+            rot = Math.sin(now / 75) * 0.12;
+            sx = 1.05;
+            sy = 0.94;
+          } else if (mode === 'aim' && turn === idx && (aimSubPhase === 'power' || aimState.dragging)) {
+            rot = (isCat ? -1 : 1) * aimState.power * 0.15;
+            sx = 1 + aimState.power * 0.05;
+            sy = 1 - aimState.power * 0.05;
+          } else {
+            sx = 1 + breath * 0.022;
+            sy = 1 - breath * 0.022 - (st.duckOffset ? 0.08 : 0);
+            dy += -Math.abs(breath) * 4;
           }
 
-          /* Contact shadow under animal */
-          var shScale = Math.max(0.5, 1 + liftY / 110);
-          g.save();
-          g.translate(drawX + knockX, baseY);
-          g.fillStyle = 'rgba(15, 23, 42, 0.38)';
-          g.beginPath(); g.ellipse(0, 0, 68 * shScale, 17 * shScale, 0, 0, Math.PI * 2); g.fill();
-          g.strokeStyle = teamCol;
-          g.lineWidth = 4;
-          g.beginPath(); g.ellipse(0, 0, 60 * shScale, 14 * shScale, 0, 0, Math.PI * 2); g.stroke();
-          g.restore();
+          var useCheer = st.state === 'cheer';
+          var rawSpr = isCat
+            ? (useCheer ? (art.catCheerClean || art.catCheer) : (art.catReadyClean || art.catReady))
+            : (useCheer ? (art.dogCheerClean || art.dogCheer) : (art.dogReadyClean || art.dogReady));
 
-          /* Animal sprite (100% clean 3D raster artwork — no vector collar rectangle!) */
           g.save();
-          g.translate(drawX + knockX, drawY + liftY);
+          g.translate(baseX, baseY + dy);
           g.rotate(rot);
           g.scale(sx, sy);
-
-          var sprite = isCat
-            ? (useCheerPose ? art.catCheer : art.catReady)
-            : (useCheerPose ? art.dogCheer : art.dogReady);
-
-          if (imgReady(sprite)) {
-            g.drawImage(sprite, -charW / 2, -charH / 2, charW, charH);
-          } else {
-            g.fillStyle = teamCol;
-            g.beginPath(); g.arc(0, 0, 75, 0, Math.PI * 2); g.fill();
+          var charW = 210, charH = 210;
+          if (imgReady(rawSpr)) {
+            g.drawImage(rawSpr, -charW / 2, -charH + 10, charW, charH);
           }
           g.restore();
 
-          /* Orbiting dizzy stars when bonked! */
-          if (anim.state === 'bonked' || anim.bonkT > 0) {
-            for (var si = 0; si < 3; si++) {
-              var sa = now / 150 + (si * Math.PI * 2) / 3;
-              var sxStar = drawX + knockX + Math.cos(sa) * 58;
-              var syStar = drawY - charH * 0.44 + Math.sin(sa) * 16;
-              drawOutlinedText(g, si % 2 === 0 ? '⭐' : '💥', sxStar, syStar, 26, '#fde047', '#0f172a');
+          /* Dizzy Spinning Stars when bonked! */
+          if (isDizzy) {
+            g.save();
+            g.translate(baseX, baseY - 210);
+            for (var s = 0; s < 3; s++) {
+              var sa = (now / 180) + (s * Math.PI * 2 / 3);
+              var sxStar = Math.cos(sa) * 48;
+              var syStar = Math.sin(sa) * 14;
+              drawOutlinedText(g, '⭐', sxStar, syStar, 24, '#fde047', '#0f172a');
             }
+            g.restore();
           }
 
-          /* Comic reaction speech bubble above animal */
-          if (anim.bubble && mode !== 'aim') {
-            var bw = 176;
-            var bh = 38;
-            var bx = drawX - bw * 0.5;
-            var by = drawY - charH * 0.52 - 36 + liftY * 0.4;
+          /* Comic Speech Bubble */
+          if (st.bubble) {
+            var bx = baseX + (isCat ? -10 : 10);
+            var by = baseY - 242;
             g.save();
-            g.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            g.strokeStyle = teamCol;
-            g.lineWidth = 3;
-            g.beginPath();
-            g.roundRect(bx, by, bw, bh, 18);
+            g.font = '800 18px "Fredoka", "Nunito", sans-serif';
+            var bw = Math.max(136, g.measureText(st.bubble).width + 34);
+            roundRect(g, bx - bw / 2, by - 22, bw, 42, 20);
+            g.fillStyle = 'rgba(255, 255, 255, 0.96)';
             g.fill();
+            g.lineWidth = 3.5;
+            g.strokeStyle = T[idx] ? T[idx].color : (isCat ? '#fb923c' : '#38bdf8');
             g.stroke();
             g.fillStyle = '#0f172a';
-            g.font = '900 16px Fredoka, sans-serif';
             g.textAlign = 'center';
             g.textBaseline = 'middle';
-            g.fillText(anim.bubble, bx + bw * 0.5, by + bh * 0.5);
+            g.fillText(st.bubble, bx, by - 1);
             g.restore();
           }
 
-          /* Team name badge + HP bar under yard */
+          /* Clean Team Plate + HP Bar + Distance Marker under Character */
+          var plateW = 220, plateH = 54;
+          var px = baseX - plateW / 2;
+          var py = baseY + 14;
           g.save();
-          g.translate(baseX, GROUND + 36);
-          g.fillStyle = 'rgba(15, 23, 42, 0.88)';
-          g.strokeStyle = teamCol;
-          g.lineWidth = 4;
-          g.beginPath(); g.roundRect(-105, -22, 210, 44, 14); g.fill(); g.stroke();
-          drawOutlinedText(g, (isCat ? '🐱 ' : '🐶 ') + (T[idx].name || ('Team ' + (idx + 1))), 0, 1, 24, '#ffffff', '#0f172a');
+          roundRect(g, px, py, plateW, plateH, 16);
+          g.fillStyle = 'rgba(15, 23, 42, 0.92)';
+          g.fill();
+          g.lineWidth = 3.5;
+          g.strokeStyle = T[idx] ? T[idx].color : (isCat ? '#fb923c' : '#38bdf8');
+          g.stroke();
 
-          /* Mini HP / Stamina bar right above the team badge */
-          var hpRatio = Math.max(0, Math.min(1, anim.hp / anim.maxHp));
-          var barW = 150;
-          var barH = 10;
-          g.fillStyle = 'rgba(15, 23, 42, 0.85)';
-          g.strokeStyle = '#ffffff';
-          g.lineWidth = 2;
-          g.beginPath(); g.roundRect(-barW * 0.5, -36, barW, barH, 5); g.fill(); g.stroke();
-          g.fillStyle = hpRatio > 0.5 ? '#4ade80' : (hpRatio > 0.25 ? '#fbbf24' : '#f43f5e');
-          if (hpRatio > 0) {
-            g.beginPath(); g.roundRect(-barW * 0.5 + 2, -34, (barW - 4) * hpRatio, barH - 4, 4); g.fill();
-          }
+          var distFromFence = Math.round(Math.abs(baseX - FENCE_X) / 10);
+          var teamLabel = (isCat ? '🐱 ' : '🐶 ') + (T[idx] ? T[idx].name : ('Team ' + (idx + 1))) + ' (' + distFromFence + 'm)';
+          drawOutlinedText(g, teamLabel, baseX, py + 19, 18, '#ffffff', '#090d16');
+
+          var barW = plateW - 36, barH = 9;
+          var bxBar = baseX - barW / 2, byBar = py + 37;
+          roundRect(g, bxBar, byBar, barW, barH, 5);
+          g.fillStyle = 'rgba(255,255,255,0.18)';
+          g.fill();
+          var hpFrac = clamp(st.hp / 100, 0.05, 1);
+          roundRect(g, bxBar, byBar, barW * hpFrac, barH, 5);
+          g.fillStyle = hpFrac > 0.5 ? '#22c55e' : (hpFrac > 0.25 ? '#f59e0b' : '#ef4444');
+          g.fill();
           g.restore();
         });
-
-        /* Cartoon POW / BONK burst ring at impact point */
-        if (bonkBurst) {
-          var bAge = (now - bonkBurst.t0) / 1000;
-          if (bAge > 0.55) {
-            bonkBurst = null;
-          } else {
-            var bRad = 28 + bAge * 150;
-            var bAlpha = Math.max(0, 1 - bAge / 0.55);
-            g.save();
-            g.strokeStyle = 'rgba(253, 224, 71, ' + bAlpha.toFixed(2) + ')';
-            g.lineWidth = 8;
-            g.beginPath();
-            g.arc(bonkBurst.x, bonkBurst.y, bRad, 0, Math.PI * 2);
-            g.stroke();
-            g.restore();
-          }
-        }
       }
 
-      function drawAimGuide() {
-        if (mode !== 'aim') return;
-        var sp = shooterPos();
-        var defName = turn === 0 ? 'the Dog 🐶' : 'the Cat 🐱';
-        if (!aim) {
-          g.save();
-          g.strokeStyle = '#fde047';
-          g.lineWidth = 4;
-          g.setLineDash([10, 8]);
-          g.beginPath();
-          g.arc(sp.x, sp.y - 20, 62, 0, Math.PI * 2);
-          g.stroke();
-          g.restore();
-          drawOutlinedText(g, '👆 Drag back & release to throw at ' + defName + '!', sp.x + (turn === 0 ? 70 : -70), sp.y - 145, 25, '#fde047', '#0f172a');
-          return;
-        }
-        var v = launchVec(aim);
-        var x = sp.x + (turn === 0 ? 48 : -48);
-        var y = sp.y - 36;
-        var vx = v.vx;
-        var vy = v.vy;
+      /* Draw Classic "Cat vs Dog" Top-Center Wind Meter Bar */
+      function drawClassicWindMeter(now) {
+        var cx = FENCE_X;
+        var cy = 176;
+        var boxW = 365, boxH = 58;
 
-        /* Elastic pull band */
         g.save();
-        g.strokeStyle = '#fde047';
-        g.lineWidth = 5;
-        g.setLineDash([10, 8]);
-        g.beginPath();
-        g.moveTo(sp.x, sp.y - 20);
-        g.lineTo(aim.x, aim.y);
-        g.stroke();
-        g.restore();
-
-        /* Dotted arc trajectory preview */
-        for (var k = 0; k < L.dots; k++) {
-          for (var s = 0; s < 4; s++) {
-            vy += G * 0.02;
-            vx += wind * 0.02;
-            x += vx * 0.02;
-            y += vy * 0.02;
-          }
-          g.fillStyle = 'rgba(255, 255, 255, ' + Math.max(0.25, 0.95 - k * 0.055) + ')';
-          g.strokeStyle = '#0f172a';
-          g.lineWidth = 3;
-          g.beginPath();
-          g.arc(x, y, Math.max(5, 11 - k * 0.45), 0, Math.PI * 2);
-          g.fill();
-          g.stroke();
-        }
-        drawOutlinedText(g, 'Power ' + v.pull + '% • ' + v.deg + '°', sp.x + (turn === 0 ? 30 : -30), sp.y - 140, 28, '#fde047', '#0f172a');
-      }
-
-      function drawProjectile() {
-        if (!proj) return;
-        var hRatio = Math.max(0, Math.min(1, (GROUND - proj.y) / 520));
-        var shR = 32 * (1 - hRatio * 0.62);
-        g.save();
-        g.fillStyle = 'rgba(15, 23, 42, ' + (0.38 * (1 - hRatio * 0.5)) + ')';
-        g.beginPath();
-        g.ellipse(proj.x, GROUND - 4, shR, shR * 0.32, 0, 0, Math.PI * 2);
+        roundRect(g, cx - boxW / 2, cy - boxH / 2, boxW, boxH, 29);
+        g.fillStyle = 'rgba(15, 23, 42, 0.92)';
         g.fill();
-        g.restore();
+        g.lineWidth = 3;
+        g.strokeStyle = Math.abs(wind) > 180 ? '#f43f5e' : 'rgba(148, 163, 184, 0.65)';
+        g.stroke();
 
-        /* Glowing ribbon trail */
-        trail.forEach(function (p, k) {
-          var frac = (k + 1) / trail.length;
-          g.fillStyle = turn === 0
-            ? 'rgba(244, 114, 182, ' + (frac * 0.65) + ')'
-            : 'rgba(253, 224, 71, ' + (frac * 0.65) + ')';
-          g.beginPath();
-          g.arc(p.x, p.y, 4 + frac * 11, 0, Math.PI * 2);
-          g.fill();
-        });
+        var windLvl = Math.max(1, Math.min(10, Math.round(Math.abs(wind) / 26)));
+        var windDesc = wind < 0
+          ? ('◄◄ STRONG WIND ' + windLvl + ' (LEFT)')
+          : ('STRONG WIND ' + windLvl + ' (RIGHT) ►►');
+        var labelCol = wind < 0 ? '#38bdf8' : '#fbbf24';
+        drawOutlinedText(g, '💨 ' + windDesc, cx, cy - 10, 17, labelCol, '#090d16');
 
-        /* Spinning yarn ball (Team 1) or bone (Team 2) */
-        g.save();
-        g.translate(proj.x, proj.y);
-        g.rotate(proj.rot);
-        var prImg = turn === 0 ? art.yarn : art.bone;
-        if (imgReady(prImg)) {
-          g.drawImage(prImg, -38, -38, 76, 76);
-        } else {
-          g.fillStyle = T[turn].color || '#f59e0b';
-          g.strokeStyle = '#0f172a';
-          g.lineWidth = 4;
-          g.beginPath(); g.arc(0, 0, 28, 0, Math.PI * 2); g.fill(); g.stroke();
-        }
+        /* Bidirectional Center-Zero Gauge Track */
+        var trackW = 280, trackH = 12;
+        var tx = cx - trackW / 2, ty = cy + 10;
+        roundRect(g, tx, ty, trackW, trackH, 6);
+        g.fillStyle = 'rgba(255, 255, 255, 0.16)';
+        g.fill();
+
+        var frac = clamp(wind / 260, -1, 1);
+        var fillW = Math.abs(frac) * (trackW / 2);
+        var fillX = frac > 0 ? cx : cx - fillW;
+        roundRect(g, fillX, ty, fillW, trackH, 5);
+        g.fillStyle = frac > 0 ? '#f59e0b' : '#38bdf8';
+        g.fill();
+
+        g.fillStyle = '#ffffff';
+        g.fillRect(cx - 1.5, ty - 2, 3, trackH + 4);
         g.restore();
       }
 
-      function drawForegroundParallax(now) {
+      /* Draw Skill Aim Overlay: Short Muzzle Pointer ONLY + Live Angle/Power Meters (NO Cheat Arc!) */
+      function drawAimOverlay() {
+        if (mode !== 'aim') return;
+        var orig = throwOrigin(turn);
+        var dir = turn === 0 ? 1 : -1;
+        var rad = clamp(aimState.angleDeg, 18, 80) * Math.PI / 180;
+        var teamCol = T[turn] ? T[turn].color : '#f59e0b';
+
         g.save();
-        fgTufts.forEach(function (f, i) {
-          var fx = ((f.x - cam.x * 1.22) % (WORLD_W + 200));
-          if (fx < -100) fx += WORLD_W + 200;
-          var sway = Math.sin(now / 380 + i) * 6 + (wind * 0.03);
-          var fy = H + 4;
-          g.strokeStyle = hal ? '#3b0764' : '#365314';
-          g.lineWidth = 6;
-          g.lineCap = 'round';
+
+        /* 1. Protractor Angle Dial around Throw Hand */
+        var ringR = 72;
+        g.beginPath();
+        var aStart = turn === 0 ? -80 * Math.PI / 180 : (Math.PI + 18 * Math.PI / 180);
+        var aEnd = turn === 0 ? -18 * Math.PI / 180 : (Math.PI + 80 * Math.PI / 180);
+        g.arc(orig.x, orig.y, ringR, aStart, aEnd, false);
+        g.lineWidth = 6;
+        g.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        g.stroke();
+
+        /* Active angle ray & 4 short muzzle dots (MAX 112px — never crosses the fence!) */
+        for (var i = 1; i <= 4; i++) {
+          var dist = i * 28;
+          var px = orig.x + Math.cos(rad) * dist * dir;
+          var py = orig.y - Math.sin(rad) * dist;
+          var rDot = 10 - i * 1.4;
           g.beginPath();
-          g.moveTo(fx, fy);
-          g.quadraticCurveTo(fx + sway * 0.5, fy - f.h * 0.6, fx + sway, fy - f.h);
+          g.arc(px, py, rDot, 0, Math.PI * 2);
+          g.fillStyle = i === 4 ? '#fde047' : teamCol;
+          g.fill();
+          g.lineWidth = 2.5;
+          g.strokeStyle = '#ffffff';
           g.stroke();
-          if (i % 4 === 0) {
-            g.fillStyle = hal ? '#fb923c' : f.col;
+        }
+
+        /* If dragging manually, draw slingshot band to finger */
+        if (aimState.dragging && aimSubPhase === 'drag') {
+          g.beginPath();
+          g.moveTo(orig.x, orig.y);
+          g.lineTo(aimState.curX, aimState.curY);
+          g.lineWidth = 5;
+          g.strokeStyle = 'rgba(253, 224, 71, 0.85)';
+          g.setLineDash([8, 6]);
+          g.stroke();
+          g.setLineDash([]);
+        }
+
+        /* 2. Classic Vertical "Cat vs Dog" Power Charge Bar in front of the Character */
+        var barW = 26, barH = 148;
+        var barX = orig.x + (turn === 0 ? 112 : -138);
+        var barY = orig.y - 82;
+        roundRect(g, barX, barY, barW, barH, 13);
+        g.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        g.fill();
+        g.lineWidth = 3;
+        g.strokeStyle = '#ffffff';
+        g.stroke();
+
+        /* Power fill from bottom of bar */
+        var pFrac = clamp(aimState.power, 0.08, 1.0);
+        var fillH = Math.round((barH - 8) * pFrac);
+        var fillY = barY + barH - 4 - fillH;
+        var pGr = g.createLinearGradient(0, barY + barH, 0, barY);
+        pGr.addColorStop(0, '#22c55e');
+        pGr.addColorStop(0.65, '#f59e0b');
+        pGr.addColorStop(0.92, '#ef4444');
+        pGr.addColorStop(1, '#dc2626');
+        roundRect(g, barX + 4, fillY, barW - 8, fillH, 9);
+        g.fillStyle = pGr;
+        g.fill();
+
+        /* Overcharge danger line at 94% */
+        var dangerY = barY + Math.round(barH * 0.08);
+        g.strokeStyle = '#ef4444';
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(barX - 4, dangerY);
+        g.lineTo(barX + barW + 4, dangerY);
+        g.stroke();
+
+        drawOutlinedText(g, 'PWR', barX + barW / 2, barY + barH + 16, 15, '#fde047', '#090d16');
+
+        /* 3. Live Angle & Power Readout Pill above the Power Bar */
+        var badgeX = orig.x + (turn === 0 ? 125 : -125);
+        var badgeY = barY - 28;
+        roundRect(g, badgeX - 102, badgeY - 20, 204, 40, 20);
+        g.fillStyle = 'rgba(15, 23, 42, 0.94)';
+        g.fill();
+        g.lineWidth = 3;
+        g.strokeStyle = aimSubPhase === 'angle' ? '#38bdf8' : '#f59e0b';
+        g.stroke();
+        var readout = Math.round(aimState.angleDeg) + '° ANGLE · ' + Math.round(aimState.power * 100) + '% PWR';
+        drawOutlinedText(g, readout, badgeX, badgeY, 17, '#ffffff', '#090d16');
+
+        g.restore();
+      }
+
+      /* Draw Flying Projectiles & Comet Trails */
+      function drawProjectiles() {
+        var spr = turn === 0 ? art.yarn : art.bone;
+
+        projs.forEach(function (pr) {
+          for (var i = 0; i < pr.trail.length; i++) {
+            var pt = pr.trail[i];
+            var frac = (i + 1) / pr.trail.length;
             g.beginPath();
-            g.arc(fx + sway, fy - f.h, 6, 0, Math.PI * 2);
+            g.arc(pt.x, pt.y, frac * 13 * pr.scale, 0, Math.PI * 2);
+            g.fillStyle = turn === 0
+              ? 'rgba(251, 146, 60, ' + (frac * 0.45) + ')'
+              : 'rgba(56, 189, 248, ' + (frac * 0.45) + ')';
             g.fill();
           }
+
+          if (pr.done) return;
+
+          var hRatio = clamp(1 - (GROUND_Y - pr.y) / 650, 0.2, 1);
+          g.fillStyle = 'rgba(6, 9, 17, ' + (0.32 * hRatio) + ')';
+          g.beginPath();
+          g.ellipse(pr.x, GROUND_Y - 4, 26 * hRatio * pr.scale, 8 * hRatio * pr.scale, 0, 0, Math.PI * 2);
+          g.fill();
+
+          g.save();
+          g.translate(pr.x, pr.y);
+          g.rotate(pr.rot);
+          g.scale(pr.scale, pr.scale);
+          if (imgReady(spr)) {
+            g.drawImage(spr, -38, -38, 76, 76);
+          } else {
+            g.fillStyle = turn === 0 ? '#ef4444' : '#f8fafc';
+            g.beginPath();
+            g.arc(0, 0, 28, 0, Math.PI * 2);
+            g.fill();
+          }
+          g.restore();
         });
-        g.restore();
       }
 
-      function drawWindBadge() {
-        var wx = viewW - 155;
-        var wy = 86;
-        g.save();
-        g.fillStyle = 'rgba(15, 23, 42, 0.82)';
-        g.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-        g.lineWidth = 3;
-        g.beginPath();
-        g.roundRect(wx - 115, wy - 24, 230, 48, 24);
-        g.fill();
-        g.stroke();
-        if (wind === 0) {
-          drawOutlinedText(g, '🍃 Calm Air', wx, wy + 1, 22, '#4ade80', '#0f172a');
-        } else {
-          var arrow = wind > 0 ? '💨 Wind ➔' : '⬅ Wind 💨';
-          drawOutlinedText(g, arrow, wx, wy + 1, 22, '#fde047', '#0f172a');
-        }
-        g.restore();
-      }
+      /* Main 60fps Render & Physics Loop */
+      var lastT = performance.now();
+      var raf = 0;
 
-      /* ---------- Single 60fps Delta-Time Loop ---------- */
-      var last = performance.now();
       function frame(now) {
         if (!alive) return;
-        var rawDt = Math.min(0.033, (now - last) / 1000);
-        last = now;
+        var rawDt = Math.min(0.05, (now - lastT) / 1000);
+        lastT = now;
 
-        var dt = rawDt;
-        if (slowMoT > 0) {
-          slowMoT = Math.max(0, slowMoT - rawDt);
-          dt = rawDt * 0.38;
+        if (freezeDt > 0) {
+          freezeDt -= rawDt;
+          raf = requestAnimationFrame(frame);
+          return;
         }
 
-        if (crowdCheerT > 0) crowdCheerT = Math.max(0, crowdCheerT - rawDt);
-        if (fenceWobble > 0) fenceWobble = Math.max(0, fenceWobble - rawDt * 2.4);
-        charAnim[0].t += rawDt;
-        charAnim[1].t += rawDt;
-        if (charAnim[0].bonkT > 0) charAnim[0].bonkT = Math.max(0, charAnim[0].bonkT - rawDt);
-        if (charAnim[1].bonkT > 0) charAnim[1].bonkT = Math.max(0, charAnim[1].bonkT - rawDt);
-
-        clouds.forEach(function (c) {
-          c.x += (c.v + wind * 0.08) * dt;
-        });
-        skyFlyers.forEach(function (b) {
-          b.x += b.v * dt;
-        });
-
-        /* Projectile flight & collision checks against the opposing Dog/Cat! */
-        if (proj) {
-          var steps = 3;
-          var sd = dt / steps;
-          var mx = midX();
-          var oppIdx = 1 - turn;
-          var oppX = oppIdx === 0 ? leftX() : rightX();
-          var oppHeadY = GROUND - 155;
-          var oppBodyY = GROUND - 78;
-          var oppName = oppIdx === 0 ? 'Cat' : 'Dog';
-
-          for (var s = 0; s < steps && proj; s++) {
-            proj.vy += G * sd;
-            proj.vx += wind * sd;
-            proj.x += proj.vx * sd;
-            proj.y += proj.vy * sd;
-            proj.rot += sd * 11 * (turn === 0 ? 1 : -1);
-            proj.t += sd;
-
-            /* Smoothly pan camera with the flying yarn/bone */
-            cam.targetX = Math.max(0, Math.min(WORLD_W - viewW, proj.x - viewW * 0.5));
-
-            /* 1. Floating +15 Star Coin above fence */
-            if (!star.hit && Math.hypot(proj.x - mx, proj.y - (star.ry || star.y)) < 64) {
-              star.hit = true;
-              starPts = 15;
-              A().play('pu_star');
-              A().play('sparkle');
-              A().play('coin_collect');
-              puff(mx, star.ry || star.y, 24, ['#fde047', '#ffffff', '#38bdf8']);
-              var stPt = toScreen(mx, star.ry || star.y);
-              J().floatAt(stPt, '⭐ Star +15!', 'good');
-            }
-
-            /* 2. Middle Wooden Fence collision */
-            if (!proj.hitFence && Math.abs(proj.x - mx) < 34 && proj.y > GROUND - fenceH) {
-              proj.hitFence = true;
-              fenceWobble = 1.0;
-              A().play('wood_fence_knock');
-              A().play('wood_knock');
-              triggerShake(5, 0.2);
-              puff(proj.x, proj.y, 14, ['#f59e0b', '#fde047', '#ffffff']);
-              if (proj.y < GROUND - fenceH + 26 && proj.vy > 0) {
-                proj.y = GROUND - fenceH - 12;
-                proj.vy = -Math.abs(proj.vy) * 0.62;
-              } else {
-                proj.vx = -proj.vx * 0.42;
-                proj.vy = Math.max(80, proj.vy * 0.5);
-                proj.x = mx + (proj.x < mx ? -38 : 38);
-              }
-            }
-
-            /* 3. Direct Hit on the Opposing Character (Head Bonk +30 or Body Hit +20)! */
-            var dHead = Math.hypot(proj.x - oppX, proj.y - oppHeadY);
-            var dBody = Math.hypot(proj.x - oppX, proj.y - oppBodyY);
-            if (dHead < 82) {
-              puff(proj.x, proj.y, 38, ['#fde047', '#f43f5e', '#38bdf8', '#ffffff']);
-              finishShot('💥 ' + oppName.toUpperCase() + ' BONK!', 30, oppX, oppHeadY, true);
-              break;
-            }
-            if (dBody < 92) {
-              puff(proj.x, proj.y, 32, ['#4ade80', '#fde047', '#ffffff']);
-              finishShot('🎯 HIT ' + oppName.toUpperCase() + '!', 20, oppX, oppBodyY, true);
-              break;
-            }
-
-            /* 4. Ground landing (check if it splashed right next to the opponent for +10!) */
-            if (proj && proj.y > GROUND - 24) {
-              proj.y = GROUND - 24;
-              proj.bounces++;
-              puff(proj.x, GROUND - 10, 12, ['#84cc16', '#fde047']);
-
-              if (Math.abs(proj.x - oppX) < 175 && !proj.hitFence) {
-                puff(oppX, oppBodyY, 24, ['#38bdf8', '#fde047', '#ffffff']);
-                finishShot('💦 SPLASH HIT!', 10, proj.x, GROUND - 24, false);
-                break;
-              }
-
-              if (proj.bounces <= 1 && Math.abs(proj.vy) > 230 && !proj.hitFence) {
-                proj.vy = -Math.abs(proj.vy) * 0.46;
-                proj.vx *= 0.72;
-                A().play('hunt_dig');
-              } else {
-                var landMsg = proj.hitFence ? '🪵 Fence Knock!' : '👍 Nice Try!';
-                finishShot(landMsg, 5, proj.x, GROUND - 24, false);
-                break;
-              }
-            }
-
-            if (proj && (proj.x < 40 || proj.x > WORLD_W - 40 || proj.t > 5.0)) {
-              finishShot('👍 Good Try!', 5, Math.max(120, Math.min(WORLD_W - 120, proj.x)), GROUND - 40, false);
-              break;
-            }
-          }
-
-          if (proj) {
-            trail.push({ x: proj.x, y: proj.y });
-            if (trail.length > 22) trail.shift();
+        /* Step 2-Phase Oscillating Skill Gauges during Aim */
+        if (mode === 'aim' && !aimState.dragging) {
+          if (aimSubPhase === 'angle') {
+            aimState.angleOscT += rawDt * DIFF.angleSpd;
+            /* Sweep smoothly between 20 deg and 76 deg */
+            aimState.angleDeg = 48 + Math.sin(aimState.angleOscT) * 28;
+          } else if (aimSubPhase === 'power') {
+            aimState.powerOscT += rawDt * DIFF.powerSpd;
+            /* Surge between 12% and 100% */
+            aimState.power = 0.56 + Math.sin(aimState.powerOscT) * 0.44;
           }
         }
 
-        /* Smooth camera easing */
-        var lerp = proj ? 0.16 : 0.09;
-        cam.x += (cam.targetX - cam.x) * lerp;
-        cam.y += (cam.targetY - cam.y) * lerp;
-        cam.zoom += (cam.targetZoom - cam.zoom) * 0.12;
-
-        var shakeX = 0, shakeY = 0;
-        if (cam.shakeT > 0) {
-          cam.shakeT = Math.max(0, cam.shakeT - rawDt);
-          shakeX = (Math.random() - 0.5) * 2 * cam.shakeMag;
-          shakeY = (Math.random() - 0.5) * 2 * cam.shakeMag;
+        if (mode === 'fly') {
+          stepProjectiles(rawDt, now);
         }
 
         parts = parts.filter(function (p) {
@@ -1171,73 +1411,177 @@
           p.vy += 880 * rawDt;
           p.x += p.vx * rawDt;
           p.y += p.vy * rawDt;
+          p.rot += p.vrot * rawDt;
           return p.t < p.life;
         });
 
-        /* Draw sky & clouds in screen/parallax space */
-        g.clearRect(0, 0, viewW, H);
-        drawSkyAndParallax(now);
+        popups = popups.filter(function (pop) {
+          pop.t += rawDt;
+          return pop.t < pop.life;
+        });
 
-        /* Draw main world in camera-transformed space */
+        var sx = 0, sy = 0;
+        if (shakeT > 0) {
+          shakeT = Math.max(0, shakeT - rawDt);
+          sx = (Math.random() - 0.5) * 2 * shakeMag;
+          sy = (Math.random() - 0.5) * 2 * shakeMag;
+          if (shakeT === 0) shakeMag = 0;
+        }
+
+        g.clearRect(0, 0, W, H);
         g.save();
-        g.translate(viewW * 0.5 + shakeX, H * 0.55 + shakeY);
-        g.scale(cam.zoom, cam.zoom);
-        g.translate(-viewW * 0.5 - cam.x, -H * 0.55 - cam.y);
+        g.translate(sx, sy);
 
-        drawBackyardWorld(now);
-        drawFenceAndBonusStar(now);
-        drawCharactersAndBuddies(now);
-        drawProjectile();
+        drawBackyardScene(now);
+        drawFenceAndHazards(now, rawDt);
+        drawCharacters(now);
+        drawAimOverlay();
+        drawProjectiles();
 
         parts.forEach(function (p) {
+          g.save();
           g.globalAlpha = Math.max(0, 1 - p.t / p.life);
           g.fillStyle = p.c;
           g.beginPath();
           g.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           g.fill();
+          g.restore();
         });
-        g.globalAlpha = 1;
 
-        drawAimGuide();
+        popups.forEach(function (pop) {
+          var sc = pop.t < 0.18 ? (0.55 + (pop.t / 0.18) * 0.55) : 1.05;
+          var alpha = pop.t > pop.life - 0.3 ? Math.max(0, (pop.life - pop.t) / 0.3) : 1;
+          g.save();
+          g.globalAlpha = alpha;
+          g.translate(pop.x, pop.y - pop.t * 42);
+          g.scale(sc, sc);
+          drawOutlinedText(g, pop.text, 0, 0, pop.size, pop.col, '#090d16');
+          g.restore();
+        });
 
-        if (popText) {
-          var ptAge = (now - popText.t0) / 1000;
-          if (ptAge > 1.35) {
-            popText = null;
-          } else {
-            var pScale = ptAge < 0.2 ? (0.5 + ptAge / 0.2 * 0.7) : 1.05;
-            g.save();
-            g.translate(popText.x, popText.y - ptAge * 36);
-            g.scale(pScale, pScale);
-            drawOutlinedText(g, popText.text, 0, 0, 44, popText.col, '#0f172a');
-            g.restore();
-          }
-        }
         g.restore();
 
-        drawForegroundParallax(now);
-        drawWindBadge();
+        drawClassicWindMeter(now);
 
         raf = requestAnimationFrame(frame);
       }
       raf = requestAnimationFrame(frame);
 
-      /* ---------- Turn Flow & Action Dock ---------- */
-      function showTurn() {
+      /* ======================================================================
+         TURN FLOW & SKILL DOCK CONTROLS (ZERO AUTO-THROW BUTTONS!)
+         ====================================================================== */
+      function renderAimDock() {
+        dock.innerHTML = '';
+        var pBag = teamPowers[turn];
+
+        /* 1. Tactical Power-Up Modifiers (1 use each per match — NO auto-aim!) */
+        var powerDefs = [
+          { id: 'giant',  label: '💪 Heavy Giant' },
+          { id: 'double', label: '✌️ Double Shot' },
+          { id: 'bouncy', label: '💣 Bouncy Bomb' }
+        ];
+
+        powerDefs.forEach(function (pw) {
+          var leftCount = pBag[pw.id] || 0;
+          var isSel = activePower === pw.id;
+          var btn = U().h('button', {
+            type: 'button',
+            class: 'gm-real3-btn sm ' + (isSel ? 'amber pulse' : (leftCount > 0 ? 'cyan' : 'coral')),
+            text: pw.label + (leftCount > 0 ? ' (x' + leftCount + ')' : ' (0)')
+          });
+          if (leftCount <= 0) {
+            btn.disabled = true;
+            btn.style.opacity = '0.42';
+          } else {
+            btn.addEventListener('click', function () {
+              A().play('tap');
+              activePower = (activePower === pw.id) ? null : pw.id;
+              charState[turn].bubble = activePower ? (pw.label + ' armed!') : 'Lock angle & power!';
+              renderAimDock();
+            });
+          }
+          dock.appendChild(btn);
+        });
+
+        /* 2. Single Skill-Lock Action Button (Step 1: Lock Angle -> Step 2: Fire Power) */
+        if (aimSubPhase === 'angle') {
+          var lockAngleBtn = U().h('button', {
+            type: 'button',
+            class: 'gm-real3-btn green pulse',
+            text: '1️⃣ LOCK ANGLE! (Space / Tap)'
+          });
+          lockAngleBtn.addEventListener('click', function () {
+            advanceSkillStep();
+          });
+          dock.appendChild(lockAngleBtn);
+        } else {
+          var resetAngleBtn = U().h('button', {
+            type: 'button',
+            class: 'gm-real3-btn sm cyan',
+            text: '↩ Re-Aim Angle'
+          });
+          resetAngleBtn.addEventListener('click', function () {
+            aimSubPhase = 'angle';
+            A().play('tap');
+            renderAimDock();
+          });
+          dock.appendChild(resetAngleBtn);
+
+          var fireBtn = U().h('button', {
+            type: 'button',
+            class: 'gm-real3-btn amber pulse',
+            text: '2️⃣ FIRE THROW! (Space / Tap)'
+          });
+          fireBtn.addEventListener('click', function () {
+            advanceSkillStep();
+          });
+          dock.appendChild(fireBtn);
+        }
+      }
+
+      function enterAimPhase() {
+        mode = 'aim';
+        aimSubPhase = 'angle';
+        activePower = null;
+        roundPoints = 0;
+        roundHeadlines = [];
+        hitOpponentThisTurn = false;
+        missReason = '';
+
+        /* Start with oscillating angle & low power — NEVER pre-calculated to hit the target! */
+        aimState.angleDeg = 45;
+        aimState.angleOscT = (Math.random() * 2 - 1);
+        aimState.power = 0.22;
+        aimState.powerOscT = -Math.PI / 2;
+        aimState.dragging = false;
+
+        charState[turn].state = 'idle';
+        charState[turn].bubble = 'Step 1: Lock Angle! (Or drag slingshot!) 🎯';
+        charState[1 - turn].bubble = 'Bet you miss me in this wind! 💨';
+
+        updateBanner(
+          '🎯 STEP 1: Lock Throw Angle! (' + T[turn].name + ')',
+          'Tap LOCK ANGLE (or pull the slingshot) — check the Wind & Wasp first!',
+          true
+        );
+        renderAimDock();
+      }
+
+      function showWaitTurn() {
         var t = T[turn];
         mode = 'wait';
-        aim = null;
-        charAnim[0].state = 'idle';
-        charAnim[1].state = 'idle';
-        charAnim[turn].bubble = turn === 0 ? 'My turn! 🧶' : 'My turn! 🦴';
-        charAnim[1 - turn].bubble = '';
-        focusCameraForTurn(turn, false);
+        projs = [];
+        activePower = null;
+        charState[0].state = 'idle';
+        charState[1].state = 'idle';
+        charState[turn].bubble = turn === 0 ? 'My turn! 🧶' : 'My turn! 🦴';
+        charState[1 - turn].bubble = '';
         U().teamBar(T, turn);
 
-        var animalTag = turn === 0 ? '🐱 Cat Side' : '🐶 Dog Side';
+        var sideTag = turn === 0 ? '🐱 Cat Yard' : '🐶 Dog Yard';
         updateBanner(
-          t.name + '\u2019s Turn! (' + animalTag + ')',
-          'Throw ' + (turnCount + 1) + ' of ' + totalTurns,
+          t.name + '\u2019s Turn! (' + sideTag + ')',
+          'Throw ' + (turnCount + 1) + ' of ' + totalTurns + ' · ' + formatWindShort(),
           false
         );
 
@@ -1248,73 +1592,65 @@
           text: '❓ Ask & Throw! (Space)'
         });
         askBtn.addEventListener('click', function () {
-          A().play('tap');
-          ask();
+          if (mode !== 'wait') return;
+          dock.innerHTML = '';
+          U().ask(ctx.nextItem(), {
+            team: t,
+            timer: ctx.cfg.timer,
+            pics: ctx.cfg.pics,
+            sub: 'Throw ' + (turnCount + 1) + ' of ' + totalTurns
+          }).then(function (res) {
+            if (!alive) return;
+            if (res.cancelled) {
+              showWaitTurn();
+              return;
+            }
+            if (!res.ok) {
+              charState[turn].state = 'hit';
+              charState[turn].dizzyUntil = performance.now() + 900;
+              charState[turn].bubble = 'Next time! 💪';
+              turnCount++;
+              if (turnCount >= totalTurns) {
+                later(function () { if (alive) ctx.end(); }, 700);
+                return;
+              }
+              turn = (turn + 1) % 2;
+              resetTurnEnvironment();
+              showWaitTurn();
+              return;
+            }
+            enterAimPhase();
+          });
         });
         dock.appendChild(askBtn);
       }
 
-      var asking = false;
-      async function ask() {
-        if (asking || mode !== 'wait' || !alive) return;
-        asking = true;
-        dock.innerHTML = '';
-        var t = T[turn];
-        var res = await U().ask(ctx.nextItem(), t, {
-          timer: +ctx.cfg.timer || 0,
-          label: 'Throw ' + (turnCount + 1) + ' of ' + totalTurns
-        });
-        asking = false;
-        if (!alive) return;
-        if (res && res.cancelled) {
-          showTurn();
-          return;
-        }
-        if (!res || !res.ok) {
-          mode = 'payoff';
-          charAnim[turn].state = 'shrug';
-          charAnim[turn].t = 0;
-          charAnim[turn].bubble = 'Nice try! 😊';
-          A().play('crowd_aww_soft');
-          var sp = shooterPos();
-          var scPt = toScreen(sp.x, sp.y - 60);
-          var fakeEl = {
-            getBoundingClientRect: function () {
-              return { left: scPt.x, top: scPt.y, width: 0, height: 0 };
-            }
-          };
-          U().floatText('Nice try! 😊', fakeEl, 'soft');
-          updateBanner('😊 Nice try, ' + t.name + '!', 'Next team is up!', false);
-          turnCount++;
-          await U().sleep(1350);
-          if (!alive) return;
-          if (turnCount >= totalTurns) {
-            ctx.end();
-            return;
+      /* Keyboard Shortcut: Space / Enter advances Wait -> Lock Angle -> Fire Power! */
+      function onKey(e) {
+        if (document.querySelector('.gm-qov')) return;
+        if (e.code === 'Space' || e.code === 'Enter') {
+          if (mode === 'wait') {
+            var b = dock.querySelector('button');
+            if (b) { e.preventDefault(); b.click(); }
+          } else if (mode === 'aim') {
+            e.preventDefault();
+            advanceSkillStep();
           }
-          turn = (turn + 1) % 2;
-          newRoundProps();
-          showTurn();
-          return;
         }
-
-        /* Right answer -> Ready to throw at the other character! */
-        mode = 'aim';
-        charAnim[turn].state = 'idle';
-        charAnim[turn].bubble = 'Aim & throw!';
-        charAnim[1 - turn].bubble = 'Don\u2019t hit me! 😳';
-        focusCameraForTurn(turn, true);
-        A().play('round');
-        updateBanner(
-          (turn === 0 ? '🧶 Drag back to throw yarn at the Dog!' : '🦴 Drag back to throw the bone at the Cat!'),
-          'Direct Head Bonk = +30 • Body = +20 • Star = +15!',
-          true
-        );
-
-        dock.innerHTML = '';
       }
+      w.addEventListener('keydown', onKey);
 
-      showTurn();
+      ctx.onEnd(function () {
+        alive = false;
+        cancelAnimationFrame(raf);
+        timers.forEach(clearTimeout);
+        document.body.classList.remove('gm-small-pods', 'gm-real3-active');
+        w.removeEventListener('mouseup', onPointerUp);
+        w.removeEventListener('touchend', onPointerUp);
+        w.removeEventListener('keydown', onKey);
+      });
+
+      showWaitTurn();
     }
   };
 })(window);

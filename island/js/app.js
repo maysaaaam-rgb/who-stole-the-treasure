@@ -210,35 +210,36 @@
       var curId = ses.student.id;
       demoSwitcher =
         '<div class="isl-stats-row" data-testid="demo-switcher">' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:42px;padding:6px 12px;font-size:0.88rem" onclick="IslandApp.switchDemo(\'demo-g3\')">G3 Pupil</button>' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:42px;padding:6px 12px;font-size:0.88rem" onclick="IslandApp.switchDemo(\'demo-g4\')">G4 Pupil</button>' +
-          '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:42px;padding:6px 12px;font-size:0.88rem" onclick="IslandApp.switchDemo(\'demo-star\')">⭐ Star Path</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.84rem" onclick="IslandApp.switchDemo(\'demo-g3\')">G3</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.84rem" onclick="IslandApp.switchDemo(\'demo-g4\')">G4</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:38px;padding:4px 10px;font-size:0.84rem" onclick="IslandApp.switchDemo(\'demo-star\')">⭐ Star</button>' +
         '</div>';
     }
 
     bar.innerHTML =
       '<div class="isl-pupil-chip">' +
-        '<div class="isl-avatar-mini">' + renderMonsterHtml(46) + '</div>' +
+        '<div class="isl-avatar-mini">' + renderMonsterHtml(40) + '</div>' +
         '<div class="isl-pupil-meta">' +
           '<span class="isl-pupil-name">' + esc(ses.student.firstName || ses.student.name) + '</span>' +
-          '<span class="isl-pupil-lvl">Level ' + mInfo.level + ' · ' + esc(mInfo.stageName) + ' (' + xp + (mInfo.nextXP ? ' / ' + mInfo.nextXP : '') + ' XP)</span>' +
-          '<div class="isl-lvl-bar" style="width:140px;height:6px;background:rgba(15,23,42,0.9);border-radius:99px;overflow:hidden;margin-top:3px">' +
+          '<span class="isl-pupil-lvl">Lv.' + mInfo.level + ' · ' + esc(mInfo.stageName) + ' (' + xp + (mInfo.nextXP ? '/' + mInfo.nextXP : '') + ' XP)</span>' +
+          '<div class="isl-lvl-bar" style="width:115px;height:5px;background:rgba(15,23,42,0.9);border-radius:99px;overflow:hidden;margin-top:2px">' +
             '<div class="isl-lvl-bar-fill" style="height:100%;width:' + mInfo.pctToNext + '%;background:linear-gradient(90deg,#38bdf8,#10b981)"></div>' +
           '</div>' +
         '</div>' +
       '</div>' +
       demoSwitcher +
       '<div class="isl-stats-row">' +
-        (ses.star ? '<div class="isl-pill star-badge" id="isl-star-pill"><img src="art/o_star_path.webp" alt=""><span>✨ Secret Treasure Path</span></div>' : '') +
+        (ses.star ? '<div class="isl-pill star-badge" id="isl-star-pill"><img src="art/o_star_path.webp" alt=""><span>✨ Star Path</span></div>' : '') +
         (!navigator.onLine ? '<div class="isl-pill" id="isl-offline-pill" style="background:rgba(234,88,12,0.25);border-color:#fb923c;color:#fdba74"><span>📶 Offline</span></div>' : '') +
-        '<div class="isl-pill streak" id="isl-streak-pill"><img src="art/o_flame.webp" alt=""><span>' + streak + ' day' + (streak === 1 ? '' : 's') + '</span></div>' +
-        '<div class="isl-pill xp-cap" id="isl-xp-pill"><span>⚡ Today: ' + todayXP + ' / ' + cap + ' XP</span></div>' +
+        '<div class="isl-pill streak" id="isl-streak-pill"><img src="art/o_flame.webp" alt=""><span>' + streak + 'd</span></div>' +
+        '<div class="isl-pill xp-cap" id="isl-xp-pill"><span>⚡ ' + todayXP + '/' + cap + ' XP</span></div>' +
       '</div>' +
       '<div class="isl-actions-row">' +
-        (ses.wallOff || !root.IslandWall ? '' : '<button type="button" class="isl-btn wall-btn" id="isl-btn-wall" onclick="IslandWall.open()" title="Our class wall">🌟 Wall</button>') +
+        '<button type="button" class="isl-btn cyan" id="isl-btn-world" onclick="location.href=\'world.html\' + (location.search || \'?demo=1\')" title="Explore 2D Island World">🌍 World</button>' +
+        (ses.wallOff || !root.IslandWall ? '' : '<button type="button" class="isl-btn wall-btn" id="isl-btn-wall" onclick="IslandWall.open()" title="Class Plaza">🌟 Plaza</button>') +
         '<button type="button" class="isl-btn amber" id="isl-btn-book" onclick="IslandRewards.openStickerBook()" title="Sticker Book">📒 Book</button>' +
-        '<button type="button" class="isl-btn emerald" id="isl-btn-corner" onclick="IslandRewards.openCorner()" title="My Beach Corner">🏖️ Corner</button>' +
-        '<button type="button" class="isl-btn violet" id="isl-btn-dress" onclick="IslandApp.openDressingRoom()">👕 Dress Up</button>' +
+        '<button type="button" class="isl-btn emerald" id="isl-btn-corner" onclick="IslandRewards.openCorner()" title="My Beach Camp">🏖️ Camp</button>' +
+        '<button type="button" class="isl-btn violet" id="isl-btn-dress" onclick="IslandApp.openDressingRoom()">👕 Dress</button>' +
         '<button type="button" class="isl-btn" id="isl-btn-mute" onclick="IslandApp.toggleMute()" title="Sound On/Off">' + (muted ? '🔇' : '🔊') + '</button>' +
         '<button type="button" class="isl-btn" id="isl-btn-home" onclick="IslandApp.goHome()" title="Platform Home">🏠</button>' +
       '</div>';
@@ -246,8 +247,9 @@
 
   /* Render Main Island Map */
   /* ---------- the map: 1. the island with four big places + Social World Hub ---------- */
-  var MAP_PLACES = { 1: { x: 22, y: 31 }, 2: { x: 78, y: 31 }, 3: { x: 22, y: 71 }, 4: { x: 78, y: 71 } };
-  var FRIEND_SPOTS = [{ x: 41, y: 36 }, { x: 59, y: 36 }, { x: 50, y: 24 }];
+  var MAP_PLACES = { 1: { x: 22, y: 33 }, 2: { x: 78, y: 31 }, 3: { x: 22, y: 72 }, 4: { x: 78, y: 72 } };
+  var ZONE_MAP_PROP = { 1: 'z1/o_robot', 2: 'z2/o_lighthouse_on', 3: 'z3/o_market_open', 4: 'z4/o_rocket' };
+  var FRIEND_SPOTS = [{ x: 40, y: 36 }, { x: 60, y: 36 }, { x: 50, y: 25 }];
 
   function regularMissions(zoneNum) {
     return root.IslandData.getZoneMissions(state.session.grade || 3, zoneNum, false).regular;
@@ -270,43 +272,70 @@
     return 1;
   }
 
-  /* Little paw prints from one stop to the next: gold where the pupil has been, soft white for the way ahead.
-     They are laid out from where the stops really are on this screen, so they follow the way on any size and never sit on a title or a label. */
+  /* Glowing stepping-stone trail dots inside a Zone (never floating paw emojis across the main island sky/ocean). */
   function layPaws() {
     var wrap = document.getElementById('isl-map-wrap');
     if (!wrap) return;
     [].forEach.call(wrap.querySelectorAll('.mp-paw'), function (p) { p.remove(); });
     var zone = wrap.classList.contains('mp-zone');
-    var stops = [].slice.call(wrap.querySelectorAll(zone ? '.mp-stop' : '.mp-place'));
+    if (!zone) return;
+    var stops = [].slice.call(wrap.querySelectorAll('.mp-stop'));
     var box = wrap.getBoundingClientRect();
     var rel = function (r) { return { l: r.left - box.left, t: r.top - box.top, r: r.right - box.left, b: r.bottom - box.top }; };
-    var blocks = [].map.call(wrap.querySelectorAll(zone ? '.mp-stop-disc,.mp-stop-title,.mp-stop-stars,.mp-friend,.mp-starpath,.mp-back,.mp-zone-name' : '.mp-place-pic,.mp-place-label,.mp-hub,.mp-classmate,.mp-monster,.isl-daily-card,.gm-shells,.mp-pip,.mp-bottle'), function (e) { return rel(e.getBoundingClientRect()); });
-    var size = Math.max(11, Math.min(17, box.width * 0.0105));
-    var step = size * 1.9, html = '';
+    var blocks = [].map.call(wrap.querySelectorAll('.mp-stop-disc,.mp-stop-title,.mp-stop-stars,.mp-friend,.mp-starpath,.mp-back,.mp-zone-name'), function (e) { return rel(e.getBoundingClientRect()); });
+    var size = Math.max(10, Math.min(14, box.width * 0.009));
+    var step = size * 2.2, html = '';
     var blocked = function (x, y) {
-      var m = size * 0.3;
+      var m = size * 0.4;
       return blocks.some(function (r) { return x > r.l - m && x < r.r + m && y > r.t - m && y < r.b + m; });
     };
     for (var i = 0; i < stops.length - 1; i++) {
-      var A = stops[i].querySelector(zone ? '.mp-stop-disc' : '.mp-place-pic').getBoundingClientRect();
-      var B = stops[i + 1].querySelector(zone ? '.mp-stop-disc' : '.mp-place-pic').getBoundingClientRect();
+      var A = stops[i].querySelector('.mp-stop-disc').getBoundingClientRect();
+      var B = stops[i + 1].querySelector('.mp-stop-disc').getBoundingClientRect();
       var ax = A.left + A.width / 2 - box.left, ay = A.top + A.height / 2 - box.top, bx = B.left + B.width / 2 - box.left, by = B.top + B.height / 2 - box.top;
       var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy);
       if (!len) continue;
-      var count = Math.floor(len / step), angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
-      var walked = zone ? stops[i].classList.contains('done') : !stops[i + 1].classList.contains('locked');
-      var nx = -dy / len, ny = dx / len;
+      var count = Math.floor(len / step);
+      var walked = stops[i].classList.contains('done');
       for (var k = 1; k < count; k++) {
-        var t = k / count, side = k % 2 ? 1 : -1;
-        var x = ax + dx * t + nx * side * size * 0.28, y = ay + dy * t + ny * side * size * 0.28;
+        var t = k / count;
+        var arc = Math.sin(t * Math.PI) * 10 * (i % 2 ? 1 : -1);
+        var x = ax + dx * t, y = ay + dy * t + arc;
         if (blocked(x, y)) continue;
-        html += '<span class="mp-paw' + (walked ? ' walked' : '') + '" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;font-size:' + size.toFixed(0) + 'px;transform:translate(-50%,-50%) rotate(' + angle.toFixed(0) + 'deg)">🐾</span>';
+        html += '<span class="mp-paw' + (walked ? ' walked' : '') + '" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;width:' + size.toFixed(0) + 'px;height:' + size.toFixed(0) + 'px"></span>';
       }
     }
     wrap.insertAdjacentHTML('afterbegin', html);
   }
   var pawTimer = 0;
   root.addEventListener('resize', function () { clearTimeout(pawTimer); pawTimer = setTimeout(layPaws, 150); });
+
+  function walkMap(ev) {
+    if (!ev || ev.target.closest('button') || ev.target.closest('.isl-shore-bottle')) return;
+    var wrap = document.getElementById('isl-map-wrap');
+    var mon = document.getElementById('isl-map-monster');
+    if (!wrap || !mon || wrap.classList.contains('mp-zone')) return;
+    var r = wrap.getBoundingClientRect();
+    var x = Math.round(((ev.clientX - r.left) / r.width) * 100);
+    var y = Math.round(((ev.clientY - r.top) / r.height) * 100);
+    x = Math.max(14, Math.min(86, x));
+    y = Math.max(22, Math.min(86, y));
+    state.walkPos = { x: x, y: y };
+    mon.style.setProperty('--x', x);
+    mon.style.setProperty('--y', y);
+    mon.classList.remove('mon-hop');
+    void mon.offsetWidth;
+    mon.classList.add('mon-hop');
+    root.IslandAudio.playHop();
+    var b = document.getElementById('isl-map-mon-bubble');
+    if (b) {
+      var cheers = ['✨ Wheee!', "🌴 Let's explore!", '👋 Hi friends!', '⭐ Adventure!'];
+      b.textContent = cheers[Math.floor(Math.random() * cheers.length)];
+      b.style.display = 'block';
+      clearTimeout(state._walkBubbleTimer);
+      state._walkBubbleTimer = setTimeout(function () { if (b) b.style.display = 'none'; }, 1400);
+    }
+  }
 
   function islandScreenHtml(dailyBannerHtml, pipTipHtml, today) {
     var ses = state.session, g = ses.grade || 3, cur = currentZone();
@@ -316,10 +345,11 @@
       var done = doneCount(regularMissions(z.num)), finished = !!chests['z' + z.num];
       var status = !open ? '🔒 Finish 4 in ' + esc((root.IslandData.ZONES[z.num - 2].titles[g] || {}).name || 'Zone ' + (z.num - 1))
         : finished ? '🐚 Done!' : '⭐ ' + done + ' / 5';
+      var propImg = ZONE_MAP_PROP[z.num] || z.badge;
       return '<button type="button" class="mp-place' + (open ? '' : ' locked') + (open && z.num === cur ? ' next' : '') + (finished ? ' finished' : '') + '" id="zone-' + z.num + '" ' +
-        'style="--x:' + p.x + ';--y:' + p.y + '" onclick="IslandApp.' + (open ? 'openZone' : 'tapLockedZone') + '(' + z.num + ')">' +
-          '<span class="mp-place-pic"><img src="art/' + z.badge + '.webp" alt="">' +
-            (open ? '<span class="mp-place-friend">' + root.IslandStory.charPic(z.num) + '</span>' : '') + '</span>' +
+        'style="--x:' + p.x + ';--y:' + p.y + '" onclick="event.stopPropagation(); IslandApp.' + (open ? 'openZone' : 'tapLockedZone') + '(' + z.num + ')">' +
+          '<span class="mp-place-pic"><img src="art/' + propImg + '.webp" alt="">' +
+            '<span class="mp-place-friend">' + root.IslandStory.charPic(z.num) + '</span></span>' +
           '<span class="mp-place-label"><b>' + esc(t.name) + '</b><small>' + esc(t.sub) + '</small><em>' + status + '</em></span>' +
         '</button>';
     }).join('');
@@ -330,48 +360,49 @@
       var friends = (root.IslandWall.peekFriends && root.IslandWall.peekFriends()) || [];
       var hasGifts = !!(root.IslandWall.hasGifts && root.IslandWall.hasGifts());
       var friendsHtml = friends.map(function (f, idx) {
-        var sp = FRIEND_SPOTS[idx] || { x: 50, y: 24 };
+        var sp = FRIEND_SPOTS[idx] || { x: 50, y: 25 };
         return '<button type="button" class="mp-classmate" id="map-friend-' + esc(f.id) + '" style="--x:' + sp.x + ';--y:' + sp.y + '" ' +
-          'onclick="IslandWall.openFriend(\'' + esc(f.id) + '\')" title="Visit ' + esc(f.first_name) + '\'s Beach Corner">' +
+          'onclick="event.stopPropagation(); IslandWall.openFriend(\'' + esc(f.id) + '\')" title="Visit ' + esc(f.first_name) + '\'s Beach Camp">' +
             '<span class="mp-classmate-mon">' + f.picHtml + '</span>' +
             '<span class="mp-classmate-tag">👋 ' + esc(f.first_name) + '</span>' +
           '</button>';
       }).join('');
       socialHtml +=
         friendsHtml +
-        '<button type="button" class="mp-hub mp-hub-plaza" id="isl-hub-plaza" style="--x:50;--y:48" onclick="IslandWall.open()">' +
-          '<span class="mp-hub-pic"><img src="art/o_star_path.webp" alt="">' +
+        '<button type="button" class="mp-hub mp-hub-plaza" id="isl-hub-plaza" style="--x:50;--y:48" onclick="event.stopPropagation(); IslandWall.open()">' +
+          '<span class="mp-hub-pic"><img src="art/d_flag.webp" alt="">' +
             (hasGifts ? '<span class="mp-hub-badge">🎁 Gift!</span>' : '') +
           '</span>' +
-          '<span class="mp-hub-label"><b>🌟 Class Plaza</b><small>Wall · Friends · Teams</small></span>' +
+          '<span class="mp-hub-label"><b>🌟 Class Plaza</b><small>Hangout · Board · Teams</small></span>' +
         '</button>';
     }
 
-    var cornerCount = ((ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 3;
+    var cornerCount = ((ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 4;
     var campHtml =
-      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:80" onclick="IslandRewards.openCorner()">' +
+      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:80" onclick="event.stopPropagation(); IslandRewards.openCorner()">' +
         '<span class="mp-hub-pic"><img src="art/d_hut.webp" alt=""></span>' +
-        '<span class="mp-hub-label"><b>🏖️ My Beach Camp</b><small>Corner · Dress · Stickers (' + cornerCount + ' 🌴)</small></span>' +
+        '<span class="mp-hub-label"><b>🏖️ My Beach Camp</b><small>Decorate · Care · Trophies (' + cornerCount + ' 🌴)</small></span>' +
       '</button>';
 
-    var cp = MAP_PLACES[cur];
+    var cp = state.walkPos || { x: (MAP_PLACES[cur].x < 50 ? MAP_PLACES[cur].x + 11 : MAP_PLACES[cur].x - 11), y: MAP_PLACES[cur].y + 4 };
     state.monsterPos = { left: cp.x + '%', top: cp.y + '%' };
     var monsterHtml =
-      '<div class="isl-map-monster mp-monster" id="isl-map-monster" style="--x:' + cp.x + ';--y:' + cp.y + '" onclick="IslandApp.pokeMonster()">' +
+      '<div class="isl-map-monster mp-monster" id="isl-map-monster" style="--x:' + cp.x + ';--y:' + cp.y + '" onclick="event.stopPropagation(); IslandApp.pokeMonster()">' +
+        '<div class="isl-map-mon-bubble" id="isl-map-mon-bubble" style="display:none"></div>' +
         '<div class="isl-map-monster-sprite">' + renderMonsterHtml(86, null, true) + '</div>' +
       '</div>';
     var bottleHtml = (!ses.doc.bottleSeen || !ses.doc.bottleSeen[today])
-      ? '<div class="isl-shore-bottle mp-bottle" id="isl-shore-bottle" onclick="IslandRewards.openBottleModal()"><img src="art/o_bottle.webp" alt="Message in a Bottle"><span class="isl-bottle-tag">Pip\'s Note!</span></div>'
+      ? '<div class="isl-shore-bottle mp-bottle" id="isl-shore-bottle" onclick="event.stopPropagation(); IslandRewards.openBottleModal()"><img src="art/o_bottle.webp" alt="Message in a Bottle"><span class="isl-bottle-tag">Pip\'s Note!</span></div>'
       : '';
-    return '<div class="isl-map-wrap mp-wrap" id="isl-map-wrap">' +
+    return '<div class="isl-map-wrap mp-wrap" id="isl-map-wrap" onclick="IslandApp.walkMap(event)">' +
       pipTipHtml + dailyBannerHtml + placesHtml + socialHtml + campHtml + monsterHtml + bottleHtml +
-      '<div class="gm-map-pip mp-pip"><button type="button" class="gm-map-pip-btn" id="gm-pip" onclick="IslandApp.tapPip()" aria-label="Captain Pip">' + root.IslandStory.charPic('pip') + '</button><div class="gm-bubble gm-bubble-mini" id="gm-pip-line" style="display:none"></div></div>' +
+      '<div class="gm-map-pip mp-pip"><button type="button" class="gm-map-pip-btn" id="gm-pip" onclick="event.stopPropagation(); IslandApp.tapPip()" aria-label="Captain Pip">' + root.IslandStory.charPic('pip') + '</button><div class="gm-bubble gm-bubble-mini" id="gm-pip-line" style="display:none"></div></div>' +
       shellsHtml() +
     '</div>';
   }
 
-  /* ---------- the map: 2. one place, with a clear trail: the next stop glows and the monster stands by it ---------- */
-  var TRAIL = [{ x: 9, y: 66, px: 22, py: 81 }, { x: 25, y: 28, px: 78, py: 70 }, { x: 41, y: 66, px: 22, py: 59 }, { x: 57, y: 28, px: 78, py: 48 }, { x: 73, y: 66, px: 22, py: 37 }, { x: 90, y: 28, px: 78, py: 25 }];
+  /* ---------- the map: 2. one place, with a clear grounded trail ---------- */
+  var TRAIL = [{ x: 11, y: 72, px: 22, py: 82 }, { x: 26, y: 52, px: 76, py: 71 }, { x: 42, y: 70, px: 24, py: 60 }, { x: 58, y: 52, px: 76, py: 49 }, { x: 74, y: 68, px: 24, py: 38 }, { x: 89, y: 50, px: 76, py: 26 }];
   var ZONE_BG = { 1: 'art/z1/bg_factory.webp', 2: 'art/z2/bg_beach.webp', 3: 'art/z3/bg_river.webp', 4: 'art/z4/bg_volcano.webp' };
   var ZONE_FOCUS = { 2: '82% 28%', 3: '20% 72%', 4: '76% 66%' };
 
@@ -383,9 +414,10 @@
     zm.regular.some(function (m, i) { if (!(Number(stars[m.id]) || 0)) { nextIdx = i; return true; } return false; });
     var stopsHtml = zm.regular.map(function (m, i) {
       var n = Number(stars[m.id]) || 0, plot = root.IslandStory.plotOf(m.id) || m, p = TRAIL[i];
+      var iconHtml = plot.pic ? '<img src="art/' + esc(plot.pic) + '.webp" alt="">' : esc(plot.icon);
       return '<button type="button" class="mp-stop' + (n ? ' done' : '') + (i === nextIdx ? ' next' : '') + '" id="pin-' + esc(m.id) + '" ' +
         'style="--x:' + p.x + ';--y:' + p.y + ';--px:' + p.px + ';--py:' + p.py + '" onclick="IslandApp.tapPin(\'' + esc(m.id) + '\',' + zoneNum + ',false,this)">' +
-          '<span class="mp-stop-disc"><span class="mp-stop-icon">' + plot.icon + '</span><i>' + (i + 1) + '</i></span>' +
+          '<span class="mp-stop-disc"><span class="mp-stop-icon">' + iconHtml + '</span><i>' + (i + 1) + '</i></span>' +
           '<span class="mp-stop-title">' + esc(plot.title) + '</span>' +
           '<span class="mp-stop-stars">' + (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '') + '</span>' +
         '</button>';
@@ -1581,6 +1613,7 @@
     startDailyQuest: startDailyQuest,
     awardIslandXP: awardIslandXP,
     pokeMonster: pokeMonster,
+    walkMap: walkMap,
     replayMissionAudio: replayMissionAudio,
     speakText: function (text) { root.IslandAudio.speak(text); },
     sayPassed: sayPassed,

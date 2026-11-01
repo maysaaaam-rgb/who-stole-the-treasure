@@ -112,9 +112,9 @@ html, body {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 10px 18px;
-  background: rgba(15, 23, 42, 0.86);
+  gap: 8px;
+  padding: 7px 14px;
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--glass-border);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
@@ -214,7 +214,16 @@ html, body {
 .isl-actions-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.isl-actions-row .isl-btn {
+  min-height: 42px;
+  min-width: 42px;
+  padding: 6px 13px;
+  font-size: 0.94rem;
+  border-radius: 14px;
 }
 
 /* Main Stage & Island Map Viewport */
@@ -1128,8 +1137,8 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 18px;
-  background: rgba(15, 23, 42, 0.88);
+  padding: 10px 16px;
+  background: rgba(15, 23, 42, 0.90);
   backdrop-filter: blur(14px);
   border-bottom: 2px solid rgba(56, 189, 248, 0.25);
   z-index: 10;
@@ -1141,27 +1150,88 @@ html, body {
   background: url('../art/bg_my_corner.webp') center bottom / cover no-repeat;
   overflow: hidden;
   touch-action: none;
+  cursor: pointer;
+}
+.isl-corner-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.45s ease;
+}
+.isl-corner-screen.mood-sunset .isl-corner-canvas::before {
+  background: linear-gradient(180deg, rgba(249, 115, 22, 0.34) 0%, rgba(236, 72, 153, 0.22) 55%, rgba(15, 23, 42, 0.18) 100%);
+}
+.isl-corner-screen.mood-night .isl-corner-canvas::before {
+  background: radial-gradient(circle at 80% 18%, rgba(254, 240, 138, 0.25) 0%, rgba(30, 27, 75, 0.58) 55%, rgba(6, 9, 17, 0.65) 100%);
+}
+.isl-corner-care-bar {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.86);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.isl-care-btn {
+  min-height: 40px !important;
+  padding: 6px 14px !important;
+  font-size: 0.92rem !important;
+  border-radius: 14px !important;
 }
 .isl-corner-monster {
   position: absolute;
-  left: 20%;
-  bottom: 22%;
-  transform: translate(-50%, 0);
-  pointer-events: none;
+  left: 24%;
+  top: 66%;
+  transform: translate(-50%, -65%);
+  pointer-events: auto;
+  cursor: grab;
   display: flex;
   flex-direction: column;
   align-items: center;
   filter: drop-shadow(0 12px 18px rgba(0,0,0,0.45));
-  animation: cornerMonsterRelax 4s ease-in-out infinite;
+  z-index: 6;
+  transition: left 0.38s var(--spring-snap), top 0.38s var(--spring-snap);
 }
-@keyframes cornerMonsterRelax {
-  0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
-  50% { transform: translate(-50%, -8px) rotate(1.5deg); }
+.isl-corner-monster:active {
+  cursor: grabbing;
+}
+.isl-corner-mon-bubble {
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 14px;
+  border: 2px solid #38bdf8;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+}
+.isl-corner-fx {
+  position: absolute;
+  top: -18px;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: cornerFxFloat 1.2s ease-out forwards;
+}
+@keyframes cornerFxFloat {
+  0% { transform: translateY(10px) scale(0.6); opacity: 1; }
+  100% { transform: translateY(-48px) scale(1.25); opacity: 0; }
 }
 .isl-corner-item {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: 98px;
+  height: 98px;
   transform: translate(-50%, -50%);
   cursor: grab;
   user-select: none;
@@ -1173,16 +1243,49 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 8px 12px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.45));
   pointer-events: none;
 }
+.isl-corner-item-del {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+.isl-corner-item:hover .isl-corner-item-del,
+.isl-corner-item:focus-within .isl-corner-item-del {
+  opacity: 1;
+  transform: scale(1);
+}
 .isl-corner-item:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  filter: brightness(1.15);
+  transform: translate(-50%, -50%) scale(1.08);
+  filter: brightness(1.1);
 }
 .isl-corner-item:active {
   cursor: grabbing;
-  transform: translate(-50%, -50%) scale(1.18);
+  transform: translate(-50%, -50%) scale(1.14);
+}
+.corner-pop {
+  animation: cornerPopBounce 0.48s var(--spring-snap);
+}
+@keyframes cornerPopBounce {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  45% { transform: translate(-50%, -62%) scale(1.16); }
 }
 .isl-corner-tray {
   position: relative;

@@ -40,3 +40,15 @@ body.w-talking #w-joy { opacity: .35; }
 #w-load small { font-size: 16px; color: #94a3b8; font-weight: 500; }
 #w-fade { position: fixed; inset: 0; z-index: 44; background: #060911; opacity: 0; pointer-events: none; transition: opacity .25s; }
 #w-fade.on { opacity: 1; }
+
+/* the bag: what you have gathered */
+#w-bag { position: fixed; right: 8px; top: 72px; z-index: 46; display: none; flex-direction: column; gap: 6px; }
+body.w-on #w-bag.on { display: flex; }
+@media (max-width: 640px) { #w-bag { top: 126px; } }
+.w-bag-item { display: flex; align-items: center; gap: 6px; background: rgba(15,23,42,.85); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: 14px; padding: 4px 10px 4px 6px; color: #fff; font: 700 18px Fredoka, sans-serif; box-shadow: 0 4px 20px -2px rgba(0,0,0,.4); transition: transform .2s var(--w-spring); }
+.w-bag-item img { width: 34px; height: 34px; object-fit: contain; }
+.w-bag-item.pop { transform: scale(1.3); }
+.w-fly { position: fixed; z-index: 47; width: 64px; height: 64px; object-fit: contain; pointer-events: none; transition: left .6s cubic-bezier(.5,-.3,.7,1), top .6s cubic-bezier(.5,-.3,.7,1), transform .6s; }
+/* soft dark corners, so the picture feels like a scene */
+#w-vignette { position: fixed; inset: 0; z-index: 30; pointer-events: none; display: none; background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 58%, rgba(10,20,10,.32) 100%); }
+body.w-on #w-vignette { display: block; }

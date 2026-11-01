@@ -1,7 +1,7 @@
-/* Practice Island — the Island Wall: a safe little class space.
-   Pupils post a drawing, a photo or a few words; nobody else sees it until the teacher approves it. Classmates react with ready-made reactions.
-   They can visit classmates (monster, beach corner, level, stickers: good news only, no XP, never Star Path), send a High-Five, give a copy of a sticker, and play solo or for their team.
-   In demo mode everything stays in this browser. Live, every step goes through the wall_* functions with the pupil's code. */
+/* Practice Island — the Island Wall & Living Class Plaza: a safe, lively class hangout space.
+   Pupils hang out in the 3D Sunny Class Plaza with their classmates' monsters, wave/cheer/dance together,
+   post a drawing, a photo or a few words (teacher-moderated), react with ready-made reactions,
+   visit classmates' decorated Sunny Beach Corners, send a High-Five, give a copy of a sticker, and play solo or for their team. */
 (function (root) {
   'use strict';
 
@@ -10,7 +10,27 @@
   var COLORS = ['#0f172a', '#ef4444', '#f59e0b', '#fde047', '#10b981', '#38bdf8', '#a855f7', '#ec4899', '#ffffff'];
   var PHOTO_MAX = 800, PHOTO_Q = 0.7;
 
-  var W = { tab: 'wall', feed: [], people: null, teams: [], me: '', compose: null, visiting: null, _peekAsked: false };
+  var PLAZA_SPOTS = [
+    { x: 16, y: 72 },
+    { x: 34, y: 66 },
+    { x: 66, y: 66 },
+    { x: 84, y: 72 },
+    { x: 25, y: 78 },
+    { x: 75, y: 78 }
+  ];
+
+  var W = {
+    tab: 'wall',
+    feed: [],
+    people: null,
+    teams: [],
+    me: '',
+    compose: null,
+    visiting: null,
+    _peekAsked: false,
+    myPos: { x: 50, y: 74 },
+    myBubble: '👋 Hi class!'
+  };
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function ses() { var st = root.IslandApp && root.IslandApp.state(); return st && st.session; }
@@ -20,12 +40,12 @@
   function say(t) { if (root.IslandAudio) root.IslandAudio.speak(t); }
 
   /* ---------- demo data: lives only in this browser ---------- */
-  var DEMO_KEY = 'eaa_island_demo_wall';
+  var DEMO_KEY = 'eaa_island_demo_wall_v2';
   var DEMO_CORNERS = {
-    'demo-a': [{ id: 'd_palm', x: 18, y: 58 }, { id: 'd_shell_pile', x: 34, y: 74 }, { id: 't_robot', x: 68, y: 66 }, { id: 't_light', x: 82, y: 56 }],
-    'demo-b': [{ id: 'd_hut', x: 22, y: 60 }, { id: 'd_boat', x: 72, y: 72 }, { id: 't_robot', x: 84, y: 60 }],
-    'demo-c': [{ id: 'd_palm', x: 16, y: 56 }, { id: 'd_lantern', x: 32, y: 68 }, { id: 't_robot', x: 66, y: 66 }, { id: 't_light', x: 78, y: 56 }, { id: 't_basket', x: 86, y: 72 }],
-    'demo-d': [{ id: 'd_umbrella', x: 24, y: 62 }, { id: 'd_shell_pile', x: 74, y: 72 }]
+    'demo-a': [{ id: 'd_palm', x: 16, y: 56 }, { id: 'd_sandcastle', x: 34, y: 74 }, { id: 't_robot', x: 68, y: 66 }, { id: 't_light', x: 84, y: 56 }],
+    'demo-b': [{ id: 'd_hut', x: 20, y: 58 }, { id: 'd_boat', x: 72, y: 72 }, { id: 't_robot', x: 84, y: 60 }],
+    'demo-c': [{ id: 'd_palm', x: 15, y: 54 }, { id: 'd_campfire', x: 34, y: 72 }, { id: 't_robot', x: 66, y: 66 }, { id: 't_light', x: 78, y: 56 }, { id: 't_basket', x: 86, y: 72 }],
+    'demo-d': [{ id: 'd_umbrella', x: 22, y: 60 }, { id: 'd_ball', x: 68, y: 74 }, { id: 'd_shell_pile', x: 82, y: 70 }]
   };
   var DEMO_EQUIPPED = {
     'demo-a': { hat: 'hat-crown', glasses: 'glasses-star' },
@@ -51,9 +71,9 @@
     var now = Date.now();
     return {
       posts: [
-        { id: 'd1', student_id: 'demo-a', first_name: 'Sky', kind: 'post', body: 'Look! This is my monster with a big hat!', status: 'approved', created_at: new Date(now - 3600000).toISOString(), reactions: { '⭐': 3, '😂': 2 }, my_reaction: null, has_photo: false },
+        { id: 'd1', student_id: 'demo-a', first_name: 'Sky', kind: 'post', body: 'Look! This is my monster with a big crown!', status: 'approved', created_at: new Date(now - 3600000).toISOString(), reactions: { '⭐': 3, '😂': 2 }, my_reaction: null, has_photo: false },
         { id: 'd2', student_id: 'demo-b', first_name: 'River', kind: 'news', body: 'got 3 stars on a mission!', status: 'approved', created_at: new Date(now - 7200000).toISOString(), reactions: { '👏': 4 }, my_reaction: null, has_photo: false },
-        { id: 'd3', student_id: 'demo-c', first_name: 'Sunny', kind: 'post', body: 'I can make a machine. It makes socks!', status: 'approved', created_at: new Date(now - 90000000).toISOString(), reactions: { '🤩': 1 }, my_reaction: null, has_photo: false }
+        { id: 'd3', student_id: 'demo-c', first_name: 'Sunny', kind: 'post', body: 'I can make a machine. It makes socks!', status: 'approved', created_at: new Date(now - 90000000).toISOString(), reactions: { '🤩': 2 }, my_reaction: null, has_photo: false }
       ],
       photos: {},
       gifts: [{ from: 'Sky', sticker: 'st_z1_3' }],
@@ -158,11 +178,21 @@
   }
   function byId(id) { return ((W.people && W.people.people) || []).filter(function (p) { return p.id === id; })[0]; }
 
+  function latestBubbleFor(person) {
+    var posts = (W.feed || []).filter(function (f) { return f.student_id === person.id && f.status !== 'pending'; });
+    if (posts.length && posts[0].body) {
+      var b = posts[0].kind === 'news' ? ('🎉 ' + posts[0].body) : posts[0].body;
+      return b.length > 36 ? b.slice(0, 34) + '…' : b;
+    }
+    if ((person.stars || 0) >= 10) return '⭐ ' + person.stars + ' stars!';
+    return '👋 Hi friends!';
+  }
+
   /* ---------- screens ---------- */
   function shell(inner) {
-    var tabs = [['wall', '🌟 Wall'], ['friends', '👋 Classmates'], ['team', '🚀 My Team']];
+    var tabs = [['wall', '🌟 Class Plaza'], ['friends', '🏖️ Visit Friends'], ['team', '🚀 Team Race']];
     return '<div class="wl" id="wl">' +
-      '<header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.close()" aria-label="Back to the island">✕</button>' +
+      '<header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.close()" aria-label="Back to the island">◀ 🏝️ Island</button>' +
         '<div class="wl-tabs">' + tabs.map(function (t) { return '<button type="button" class="wl-btn wl-tab' + (W.tab === t[0] ? ' on' : '') + '" onclick="IslandWall.tab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('') + '</div>' +
       '</header><main class="wl-main" id="wl-main">' + inner + '</main></div>';
   }
@@ -176,24 +206,73 @@
     var person = byId(p.student_id);
     var pending = p.status === 'pending';
     var news = p.kind === 'news';
+    var visitBtn = (!p.mine && p.student_id)
+      ? '<button type="button" class="wl-btn wl-visit-mini" onclick="IslandWall.visit(\'' + esc(p.student_id) + '\')">🏖️ Visit Beach</button>'
+      : '';
     var react = pending ? '<div class="wl-wait">⏳ ' + esc('Your teacher will look at this soon. Only you can see it now.') + '</div>'
       : '<div class="wl-reacts">' + REACTIONS.map(function (e) {
         var n = (p.reactions && p.reactions[e]) || 0;
         return '<button type="button" class="wl-react' + (p.my_reaction === e ? ' on' : '') + '" onclick="IslandWall.react(\'' + esc(p.id) + '\',\'' + e + '\')">' + e + (n ? ' <b>' + n + '</b>' : '') + '</button>';
-      }).join('') + '</div>';
+      }).join('') + visitBtn + '</div>';
     return '<article class="wl-post' + (news ? ' wl-news' : '') + (pending ? ' wl-pending' : '') + '">' +
       '<div class="wl-head">' + (person ? monsterPic(person, 54) : '<span class="wl-dot">🐾</span>') +
-        '<div><b>' + esc(p.first_name) + (p.mine ? ' (you)' : '') + '</b><small>' + timeAgo(p.created_at) + '</small></div></div>' +
+        '<div style="flex:1"><b>' + esc(p.first_name) + (p.mine ? ' (you)' : '') + '</b><small>' + timeAgo(p.created_at) + '</small></div></div>' +
       (p.has_photo ? '<div class="wl-photo" data-photo="' + esc(p.id) + '"><span class="wl-photo-load">🖼️</span></div>' : '') +
       (p.body ? '<p class="wl-body' + (news ? ' wl-body-news' : '') + '">' + (news ? '🎉 ' + esc(p.first_name) + ' ' : '') + esc(p.body) + '</p>' : '') +
       react +
     '</article>';
   }
+
+  function plazaStageHtml() {
+    var ppl = ((W.people && W.people.people) || []).filter(function (p) { return p.id !== W.me; }).slice(0, 6);
+    var meObj = byId(W.me) || { id: 'me', first_name: (ses() && ses().student && ses().student.firstName) || 'Me', color: 'blue', level: 3, equipped: {} };
+
+    var friendsInPlaza = ppl.map(function (p, i) {
+      var sp = PLAZA_SPOTS[i] || { x: 20 + i * 15, y: 60 };
+      var bubble = latestBubbleFor(p);
+      return '<button type="button" class="wl-plaza-actor wl-plaza-friend" id="plaza-friend-' + esc(p.id) + '" ' +
+        'style="left:' + sp.x + '%;top:' + sp.y + '%" onclick="event.stopPropagation(); IslandWall.visit(\'' + esc(p.id) + '\')" title="Visit ' + esc(p.first_name) + '\'s Beach Camp">' +
+          '<span class="wl-plaza-bubble">' + esc(bubble) + '</span>' +
+          '<span class="wl-plaza-sprite">' + monsterPic(p, 84) + '</span>' +
+          '<span class="wl-plaza-pedestal"></span>' +
+          '<span class="wl-plaza-name">👋 ' + esc(p.first_name) + ' <small>Lv.' + (p.level || 1) + '</small></span>' +
+        '</button>';
+    }).join('');
+
+    var myActor =
+      '<div class="wl-plaza-actor wl-plaza-me" id="wl-plaza-me" style="left:' + W.myPos.x + '%;top:' + W.myPos.y + '%">' +
+        '<span class="wl-plaza-bubble wl-my-bubble" id="wl-my-bubble">' + esc(W.myBubble || '👋 Hi class!') + '</span>' +
+        '<span class="wl-plaza-sprite">' + monsterPic(meObj, 94) + '</span>' +
+        '<span class="wl-plaza-pedestal my-pedestal"></span>' +
+        '<span class="wl-plaza-name my-name">⭐ ' + esc(meObj.first_name) + ' (You)</span>' +
+      '</div>';
+
+    return '<section class="wl-plaza-wrap">' +
+      '<div class="wl-plaza-stage" id="wl-plaza-stage" onclick="IslandWall.walkPlaza(event)">' +
+        '<div class="wl-plaza-hint">✨ Tap the plaza to walk around · Tap any classmate to visit their Beach Camp!</div>' +
+        '<div class="wl-plaza-campfire"><img src="art/d_campfire.webp" alt=""></div>' +
+        friendsInPlaza +
+        myActor +
+        '<div class="wl-plaza-fx" id="wl-plaza-fx"></div>' +
+      '</div>' +
+      '<div class="wl-plaza-bar">' +
+        '<div class="wl-emote-group">' +
+          '<button type="button" class="wl-btn wl-emote-btn" onclick="IslandWall.emote(\'👋\',\'Hello friends!\')">👋 Wave</button>' +
+          '<button type="button" class="wl-btn wl-emote-btn" onclick="IslandWall.emote(\'🎉\',\'You are doing an awesome job!\')">🎉 Cheer</button>' +
+          '<button type="button" class="wl-btn wl-emote-btn" onclick="IslandWall.emote(\'❤️\',\'High five! Awesome beach corner!\')">❤️ High-Five</button>' +
+          '<button type="button" class="wl-btn wl-emote-btn" onclick="IslandWall.emote(\'💃\',\'Let us practice English together!\')">💃 Dance</button>' +
+        '</div>' +
+        '<button type="button" class="wl-btn wl-new-inline" onclick="IslandWall.compose()">✏️ Draw or Post on the Board</button>' +
+      '</div>' +
+    '</section>';
+  }
+
   function wallView() {
     var list = W.feed || [];
-    return '<button type="button" class="wl-btn wl-new" onclick="IslandWall.compose()">✏️ Share something!</button>' +
+    return plazaStageHtml() +
+      '<div class="wl-board-header"><h3>📌 Class Plaza Board</h3><span>Approve-safe class drawings, photos & good news</span></div>' +
       (list.length ? '<div class="wl-feed">' + list.map(postCard).join('') + '</div>'
-        : '<div class="wl-empty"><div style="font-size:3rem">🌴</div><b>The Wall is empty.</b><p>Be the first to share something!</p></div>');
+        : '<div class="wl-empty"><div style="font-size:3rem">🌴</div><b>The Plaza Board is empty.</b><p>Tap "Draw or Post on the Board" to share the first message!</p></div>');
   }
   function friendsView() {
     var ppl = (W.people && W.people.people) || [];
@@ -210,9 +289,9 @@
     if (p && Array.isArray(p.corner) && p.corner.length) return p.corner;
     if (p && DEMO_CORNERS[p.id]) return DEMO_CORNERS[p.id];
     var items = [
-      { id: 'd_palm', x: 18, y: 58 },
-      { id: 'd_shell_pile', x: 34, y: 74 },
-      { id: 'd_umbrella', x: 78, y: 62 }
+      { id: 'd_palm', x: 16, y: 56 },
+      { id: 'd_sandcastle', x: 34, y: 74 },
+      { id: 'd_umbrella', x: 78, y: 60 }
     ];
     var z = Number(p && p.zones) || 0;
     if (z >= 1) items.push({ id: 't_robot', x: 66, y: 68 });
@@ -231,7 +310,10 @@
       var name = def ? def.name : it.id;
       return '<div class="wl-visit-deco" style="left:' + it.x + '%;top:' + it.y + '%"><img src="art/' + esc(pic) + '.webp" alt="' + esc(name) + '" title="' + esc(name) + '"></div>';
     }).join('');
-    return '<button type="button" class="wl-btn wl-back" onclick="IslandWall.visit(null)">◀ Classmates</button>' +
+    return '<div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">' +
+        '<button type="button" class="wl-btn wl-back" onclick="IslandWall.tab(\'wall\')">◀ 🌟 Class Plaza</button>' +
+        '<button type="button" class="wl-btn wl-back" onclick="IslandWall.visit(null)">👋 All Classmates</button>' +
+      '</div>' +
       '<div class="wl-profile">' +
         '<div class="wl-visit-corner" id="wl-visit-corner">' +
           decosHtml +
@@ -241,7 +323,7 @@
           '</div>' +
           '<div class="wl-visit-fx" id="wl-visit-fx"></div>' +
         '</div>' +
-        '<h2>🏖️ ' + esc(p.first_name) + '\'s Beach Corner</h2>' +
+        '<h2>🏖️ ' + esc(p.first_name) + '\'s Sunny Beach Camp</h2>' +
         '<div class="wl-chips"><span>🌟 Level ' + (p.level || 1) + '</span><span>⭐ ' + (p.stars || 0) + ' stars</span><span>🏝️ ' + (p.zones || 0) + ' zones</span><span>📒 ' + (p.stickers || 0) + ' stickers</span></div>' +
         '<div class="wl-visit-actions">' +
           '<button type="button" class="wl-btn wl-hi5" id="wl-btn-hi5" onclick="IslandWall.highFive(\'' + esc(p.id) + '\')">👋 High-Five!</button>' +
@@ -257,10 +339,10 @@
     var choice = '<div class="wl-choice"><button type="button" class="wl-btn' + (solo ? '' : ' on') + '" onclick="IslandWall.setSolo(false)">🚀 Play for my team</button><button type="button" class="wl-btn' + (solo ? ' on' : '') + '" onclick="IslandWall.setSolo(true)">🦸 Play solo</button></div>';
     if (!teams.length) return choice + '<div class="wl-empty"><div style="font-size:3rem">🚀</div><b>Your teacher will make teams soon!</b></div>';
     var mineCard = mine ? '<section class="wl-team" style="--c:' + esc(mine.color || '#38bdf8') + '"><h2>' + esc(mine.name) + '</h2><div class="wl-grid wl-grid-small">' + (mine.members || []).map(function (id) {
-      var p = byId(id); return p ? '<div class="wl-friend wl-mate' + (p.solo ? ' solo' : '') + '">' + monsterPic(p, 80) + '<b>' + esc(p.first_name) + '</b>' + (p.solo ? '<small>🦸 solo</small>' : '') + '</div>' : '';
+      var p = byId(id); return p ? '<div class="wl-friend wl-mate' + (p.solo ? ' solo' : '') + '" onclick="IslandWall.visit(\'' + esc(p.id) + '\')" style="cursor:pointer">' + monsterPic(p, 80) + '<b>' + esc(p.first_name) + '</b>' + (p.solo ? '<small>🦸 solo</small>' : '<small>🏖️ Visit</small>') + '</div>' : '';
     }).join('') + '</div></section>' : '';
-    var race = '<section class="wl-race"><h3>⭐ Team stars</h3>' + teams.slice().sort(function (a, b) { return starsOf(b) - starsOf(a); }).map(function (x) {
-      var n = starsOf(x); return '<div class="wl-bar-row"><b>' + esc(x.name) + '</b><div class="wl-bar"><i style="width:' + Math.round(n / top * 100) + '%;background:' + esc(x.color || '#38bdf8') + '"></i></div><span>' + n + '</span></div>';
+    var race = '<section class="wl-race"><h3>⭐ Class Team Star Race</h3>' + teams.slice().sort(function (a, b) { return starsOf(b) - starsOf(a); }).map(function (x) {
+      var n = starsOf(x); return '<div class="wl-bar-row"><b>' + esc(x.name) + '</b><div class="wl-bar"><i style="width:' + Math.round(n / top * 100) + '%;background:' + esc(x.color || '#38bdf8') + '"></i></div><span>⭐ ' + n + '</span></div>';
     }).join('') + '</section>';
     return choice + mineCard + race;
   }
@@ -289,19 +371,18 @@
     var c = W.compose;
     var preview = c.photo ? '<div class="wl-preview"><img src="' + esc(c.photo) + '" alt=""><button type="button" class="wl-btn wl-x" onclick="IslandWall.clearPic()">✕</button></div>' : '';
     $('isl-modal-root').innerHTML =
-      '<div class="wl wl-compose" id="wl"><header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.cancelCompose()" aria-label="Back">✕</button><h2>✏️ Share something</h2></header>' +
+      '<div class="wl wl-compose" id="wl"><header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.cancelCompose()" aria-label="Back">✕</button><h2>✏️ Share on the Class Plaza Board</h2></header>' +
       '<main class="wl-main">' + preview +
-        (c.photo ? '' : '<div class="wl-pick"><button type="button" class="wl-btn wl-big" onclick="IslandWall.openDraw()">🎨 Draw</button><label class="wl-btn wl-big wl-photo-btn">📷 Photo<input type="file" accept="image/*" id="wl-file" onchange="IslandWall.pickPhoto(this)"></label></div>' +
+        (c.photo ? '' : '<div class="wl-pick"><button type="button" class="wl-btn wl-big" onclick="IslandWall.openDraw()">🎨 Draw a Picture</button><label class="wl-btn wl-big wl-photo-btn">📷 Add a Photo<input type="file" accept="image/*" id="wl-file" onchange="IslandWall.pickPhoto(this)"></label></div>' +
           '<p class="wl-safe">📷 Photos: ask a grown-up first. No faces of other people, please!</p>') +
         '<div class="wl-starters">' + STARTERS.map(function (s) { return '<button type="button" class="wl-btn wl-starter" onclick="IslandWall.starter(\'' + esc(s) + '\')">' + esc(s.trim()) + '…</button>'; }).join('') + '</div>' +
-        '<textarea id="wl-text" maxlength="200" rows="3" placeholder="Write here...">' + esc(c.text || '') + '</textarea>' +
+        '<textarea id="wl-text" maxlength="200" rows="3" placeholder="Write your English sentence here...">' + esc(c.text || '') + '</textarea>' +
         '<button type="button" class="wl-btn wl-send" onclick="IslandWall.send()">📨 Send to my teacher</button>' +
-        '<p class="wl-note" id="wl-note">Your teacher looks at it first. Then your class can see it!</p>' +
+        '<p class="wl-note" id="wl-note">Your teacher looks at it first. Then your class can see it in the Plaza!</p>' +
       '</main></div>';
   }
   function keepText() { var t = $('wl-text'); if (t && W.compose) W.compose.text = t.value; }
 
-  /* Photos are shrunk on the device, and redrawing them removes hidden data such as the place where they were taken */
   function shrink(file) {
     return new Promise(function (ok, no) {
       var url = URL.createObjectURL(file), img = new Image();
@@ -322,7 +403,7 @@
   function openDraw() {
     keepText();
     $('isl-modal-root').innerHTML =
-      '<div class="wl wl-draw" id="wl"><header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.compose(true)" aria-label="Back">✕</button><h2>🎨 Draw</h2></header>' +
+      '<div class="wl wl-draw" id="wl"><header class="wl-top"><button type="button" class="wl-btn wl-x" onclick="IslandWall.compose(true)" aria-label="Back">✕</button><h2>🎨 Draw for the Plaza</h2></header>' +
       '<main class="wl-main"><canvas id="wl-canvas" width="800" height="600"></canvas>' +
         '<div class="wl-colors">' + COLORS.map(function (c, i) { return '<button type="button" class="wl-color' + (i === 0 ? ' on' : '') + '" style="background:' + c + '" data-c="' + c + '" aria-label="colour"></button>'; }).join('') +
           '<button type="button" class="wl-btn wl-size" data-s="6">●</button><button type="button" class="wl-btn wl-size" data-s="16">⬤</button><button type="button" class="wl-btn" id="wl-undo">↩️</button></div>' +
@@ -389,8 +470,8 @@
       document.documentElement.classList.add('adv-on');
       $('isl-modal-root').innerHTML = shell('<div class="wl-empty"><div style="font-size:3rem">🌴</div></div>');
       await refresh();
-      if (W.offline) { $('wl-main').innerHTML = '<div class="wl-empty"><div style="font-size:3rem">📶</div><b>The Wall needs the internet.</b><p>Please try again later.</p></div>'; return; }
-      draw();
+      if (W.offline) { $('wl-main').innerHTML = '<div class="wl-empty"><div style="font-size:3rem">📶</div><b>The Plaza needs the internet.</b><p>Please try again later.</p></div>'; return; }
+      redrawShell();
       checkGifts();
     },
     openFriend: async function (id) {
@@ -400,9 +481,50 @@
       document.documentElement.classList.add('adv-on');
       $('isl-modal-root').innerHTML = shell('<div class="wl-empty"><div style="font-size:3rem">🌴</div></div>');
       await refresh();
-      if (W.offline) { $('wl-main').innerHTML = '<div class="wl-empty"><div style="font-size:3rem">📶</div><b>The Wall needs the internet.</b><p>Please try again later.</p></div>'; return; }
+      if (W.offline) { $('wl-main').innerHTML = '<div class="wl-empty"><div style="font-size:3rem">📶</div><b>The Plaza needs the internet.</b><p>Please try again later.</p></div>'; return; }
       redrawShell();
       checkGifts();
+    },
+    walkPlaza: function (ev) {
+      var st = $('wl-plaza-stage'), me = $('wl-plaza-me');
+      if (!st || !me) return;
+      var r = st.getBoundingClientRect();
+      var x = Math.round(((ev.clientX - r.left) / r.width) * 100);
+      var y = Math.round(((ev.clientY - r.top) / r.height) * 100);
+      x = Math.max(12, Math.min(88, x));
+      y = Math.max(46, Math.min(84, y));
+      W.myPos = { x: x, y: y };
+      me.style.left = x + '%';
+      me.style.top = y + '%';
+      me.classList.remove('wl-hi5-hop');
+      void me.offsetWidth;
+      me.classList.add('wl-hi5-hop');
+      if (root.IslandAudio && root.IslandAudio.playHop) root.IslandAudio.playHop();
+    },
+    emote: function (emoji, spokenLine) {
+      if (root.IslandAudio && root.IslandAudio.playSparkle) root.IslandAudio.playSparkle();
+      if (spokenLine) say(spokenLine);
+      W.myBubble = emoji + ' ' + (spokenLine || '');
+      var b = $('wl-my-bubble');
+      if (b) b.textContent = W.myBubble;
+      var me = $('wl-plaza-me');
+      if (me) {
+        me.classList.remove('wl-hi5-hop');
+        void me.offsetWidth;
+        me.classList.add('wl-hi5-hop');
+      }
+      [].forEach.call(document.querySelectorAll('.wl-plaza-friend'), function (el, idx) {
+        setTimeout(function () {
+          el.classList.remove('wl-hi5-hop');
+          void el.offsetWidth;
+          el.classList.add('wl-hi5-hop');
+        }, 120 + idx * 90);
+      });
+      var fx = $('wl-plaza-fx');
+      if (fx) {
+        fx.innerHTML = '<span class="wl-hi5-pop">' + emoji + ' ✨ 🌟 ' + emoji + '</span>';
+        setTimeout(function () { if (fx) fx.innerHTML = ''; }, 1300);
+      }
     },
     peekFriends: function () {
       var s = ses();
@@ -438,7 +560,7 @@
     },
     close: function () { document.documentElement.classList.remove('adv-on'); $('isl-modal-root').innerHTML = ''; W.compose = null; if (root.IslandApp && root.IslandApp.renderMap) root.IslandApp.renderMap(); },
     tab: function (t) { tap(); W.tab = t; W.visiting = null; redrawShell(); },
-    visit: function (id) { tap(); W.visiting = id; draw(); },
+    visit: function (id) { tap(); W.tab = id ? 'friends' : W.tab; W.visiting = id; redrawShell(); },
     highFive: function (id) {
       var p = byId(id);
       if (root.IslandAudio && root.IslandAudio.playCorrect) root.IslandAudio.playCorrect();
@@ -493,6 +615,7 @@
         return;
       }
       if (root.IslandAudio.playCorrect) root.IslandAudio.playCorrect();
+      W.myBubble = text || '🎨 Look at my picture!';
       W.compose = null; W.tab = 'wall';
       await refresh();
       redrawShell();
@@ -518,7 +641,6 @@
       var me = byId(W.me); if (me) me.solo = !!v;
       draw();
     },
-    /* good news from the game */
     news: function (kind, n) { var s = ses(); if (s && !(s.doc && s.doc.quiet)) api.news(kind, n); },
     _state: W
   };

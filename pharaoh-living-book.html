@@ -1,0 +1,2331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Pharaoh's Kingdom • Living Pop-Up Book</title>
+  <style>
+    /* ==========================================================================
+       LIVING POP-UP BOOK: THE PHARAOH'S KINGDOM (Ancient Egypt A1 Living Book)
+       Zero dependencies • Pure Semantic HTML5, CSS 3D Transforms & Web Audio API
+       ========================================================================== */
+    :root {
+      --oak-bg: #c99e6b;
+      --oak-dark: #8c5d33;
+      --book-leather: #5a2a18;
+      --book-leather-edge: #381508;
+      --page-parchment: #fcf8ee;
+      --page-shade: #f3ecd7;
+      --page-line: #ded3b8;
+      --ink-primary: #1f1b18;
+      --ink-secondary: #574c43;
+      --gold-royal: #d97706;
+      --gold-bright: #fbbf24;
+      --egypt-blue: #0284c7;
+      --egypt-cyan: #38bdf8;
+      --egypt-emerald: #059669;
+      --egypt-crimson: #dc2626;
+      --sticky-yellow: #fef08a;
+      --sticky-border: #facc15;
+      --shadow-paper: rgba(44, 28, 14, 0.18);
+      --font-display: 'Fredoka', 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      --font-serif: 'Georgia', 'Palatino Linotype', serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--oak-bg);
+      background-image: 
+        radial-gradient(circle at 50% 35%, rgba(255, 250, 240, 0.42) 0%, rgba(140, 93, 51, 0.55) 85%, rgba(60, 36, 18, 0.85) 100%),
+        repeating-linear-gradient(90deg, rgba(70, 40, 15, 0.05) 0px, rgba(70, 40, 15, 0.05) 1px, transparent 1px, transparent 140px);
+      font-family: var(--font-display);
+      color: var(--ink-primary);
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      perspective: 1800px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Desk SVG Grain Layer */
+    .desk-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.28;
+      z-index: 0;
+      mix-blend-mode: multiply;
+    }
+
+    /* Top Navigation & Teacher Mode Bar */
+    .top-bar {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      width: min(96%, 1160px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 18px;
+      background: rgba(26, 18, 11, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      color: #fff;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-cluster .emblem {
+      font-size: 26px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: #cbd5e1;
+      display: block;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tactile 3D Buttons */
+    .btn-tactile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: var(--gold-royal);
+      border-bottom: 4px solid #92400e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-bottom-width 0.12s;
+    }
+
+    .btn-tactile:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-tactile:active {
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+    }
+
+    .btn-tactile.btn-cyan {
+      background: #0284c7;
+      border-bottom-color: #0369a1;
+    }
+
+    .btn-tactile.btn-emerald {
+      background: #059669;
+      border-bottom-color: #047857;
+    }
+
+    .btn-tactile.btn-crimson {
+      background: #dc2626;
+      border-bottom-color: #991b1b;
+    }
+
+    .btn-tactile.btn-ghost {
+      background: rgba(255, 255, 255, 0.14);
+      border-bottom-color: rgba(255, 255, 255, 0.25);
+      color: #f1f5f9;
+    }
+
+    /* Master Book Stage */
+    .book-stage-container {
+      position: relative;
+      z-index: 10;
+      margin: 18px 0 16px 0;
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Real 3D Book Shell */
+    .book-3d {
+      position: relative;
+      width: 1060px;
+      height: 790px;
+      transform-style: preserve-3d;
+      transform: rotateX(8deg);
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Leather Book Cover Base */
+    .book-cover {
+      position: absolute;
+      inset: -14px -18px -18px -18px;
+      background: linear-gradient(135deg, #7c3a21 0%, #431a0e 60%, #260c05 100%);
+      border-radius: 20px;
+      box-shadow: 
+        0 24px 50px -10px rgba(0, 0, 0, 0.65),
+        0 12px 24px rgba(40, 16, 7, 0.45),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.5);
+      border: 3px solid #9a4c2e;
+    }
+
+    /* Gold corner protectors on leather cover */
+    .book-cover::before, .book-cover::after {
+      content: '';
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--gold-bright);
+      pointer-events: none;
+    }
+    .book-cover::before { top: 10px; left: 10px; border-right: none; border-bottom: none; border-radius: 10px 0 0 0; }
+    .book-cover::after { top: 10px; right: 10px; border-left: none; border-bottom: none; border-radius: 0 10px 0 0; }
+
+    /* Stacked Paper Block Edges */
+    .paper-edges {
+      position: absolute;
+      inset: -2px -2px -2px -2px;
+      border-radius: 12px;
+      background: repeating-linear-gradient(0deg, #e4d8ba 0px, #e4d8ba 2px, #c8b993 3px, #c8b993 4px);
+      box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.35);
+      transform: translateZ(-8px);
+    }
+
+    /* Two Open Facing Pages Spread */
+    .book-spread {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--page-parchment);
+      border-radius: 12px;
+      overflow: visible;
+      box-shadow: inset 0 0 30px rgba(78, 54, 27, 0.12);
+      transform-style: preserve-3d;
+    }
+
+    /* Center Spine Fold Shading */
+    .spine-crease {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 56px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, 
+        rgba(0,0,0,0.18) 0%, 
+        rgba(0,0,0,0.04) 38%, 
+        rgba(255,255,255,0.25) 50%, 
+        rgba(0,0,0,0.04) 62%, 
+        rgba(0,0,0,0.18) 100%);
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    /* High-Contrast Tactile Buttons inside Parchment & White Trays */
+    .page-right .btn-tactile.btn-ghost,
+    .lab-controls-tray .btn-tactile.btn-ghost {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-bottom: 4px solid #94a3b8;
+      color: #1e293b;
+    }
+    .page-right .btn-tactile.btn-ghost:hover,
+    .lab-controls-tray .btn-tactile.btn-ghost:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* RTL Bilingual Support (Arabic / English) */
+    [dir="rtl"] {
+      direction: rtl;
+    }
+    [dir="rtl"] .book-spread {
+      direction: rtl;
+    }
+    [dir="rtl"] .page-left {
+      text-align: right;
+      border-radius: 0 12px 12px 0;
+      border-right: none;
+      border-left: 1px solid rgba(138, 109, 68, 0.25);
+    }
+    [dir="rtl"] .page-right {
+      border-radius: 12px 0 0 12px;
+    }
+    [dir="rtl"] .sticky-note {
+      border-left: none;
+      border-right: 4px solid #f59e0b;
+    }
+    [dir="rtl"] .target-formula-box {
+      border-left: none;
+      border-right: 4px solid var(--gold-royal);
+    }
+    [dir="rtl"] .brand-cluster {
+      text-align: right;
+    }
+    [dir="rtl"] .top-bar {
+      direction: rtl;
+    }
+    [dir="rtl"] .bottom-dock {
+      direction: rtl;
+    }
+    /* Keep 3D graphics, coordinate space, sliders & equations in standard LTR */
+    [dir="rtl"] .popup-viewport,
+    [dir="rtl"] .lab-controls-tray,
+    [dir="rtl"] .lab-slider-row,
+    [dir="rtl"] .measurement-readout-pill {
+      direction: ltr;
+      text-align: left;
+    }
+
+    /* Left Page (Story, Curriculum Words, Phonics, Sticky Note, Flap) */
+    .page-left {
+      position: relative;
+      padding: 36px 42px 30px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      background: linear-gradient(90deg, #f7f1df 0%, #fcf8ee 12%, #fcf8ee 92%, #f1e9cf 100%);
+      border-radius: 12px 0 0 12px;
+      border-right: 1px solid rgba(138, 109, 68, 0.25);
+    }
+
+    /* Right Page (3D Pop-Up Laboratory Stage) */
+    .page-right {
+      position: relative;
+      padding: 32px 42px 30px 42px;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(90deg, #eedfb8 0%, #fcf8ee 8%, #fcf8ee 90%, #f4edd9 100%);
+      border-radius: 0 12px 12px 0;
+      transform-style: preserve-3d; /* CRITICAL for 3D Pop-Ups */
+    }
+
+    /* Header & Story Typography */
+    .chapter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(217, 119, 6, 0.12);
+      border: 1.5px solid var(--gold-royal);
+      color: #92400e;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.15;
+      color: #291a0f;
+    }
+
+    .curiosity-hook {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--egypt-blue);
+      line-height: 1.35;
+      font-style: italic;
+    }
+
+    .lesson-narrative {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--ink-secondary);
+      font-family: var(--font-serif);
+    }
+
+    .lesson-narrative b {
+      color: #1c1917;
+      font-family: var(--font-display);
+    }
+
+    /* Target Sentence Golden Banner */
+    .target-formula-box {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px dashed #f59e0b;
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+      position: relative;
+    }
+
+    .target-formula-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #b45309;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .target-formula-text {
+      font-size: 17px;
+      font-weight: 900;
+      color: #78350f;
+      line-height: 1.3;
+    }
+
+    /* Sticky Yellow Note */
+    .sticky-note {
+      background: var(--sticky-yellow);
+      border: 1px solid var(--sticky-border);
+      border-radius: 4px;
+      padding: 12px 14px;
+      box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.08);
+      font-size: 13.5px;
+      line-height: 1.4;
+      color: #713f12;
+      transform: rotate(-1deg);
+      position: relative;
+    }
+    .sticky-note::before {
+      content: '📌';
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      font-size: 14px;
+    }
+
+    /* Predict & Reveal Flap (Interactive Paper Lift) */
+    .flap-container {
+      background: #fdfaf0;
+      border: 2px solid #e2d7ba;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+      margin-top: auto;
+    }
+
+    .flap-header {
+      font-size: 13px;
+      font-weight: 800;
+      color: #854d0e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .flap-question {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .flap-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #fef08a;
+      border: 1.5px solid #eab308;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #854d0e;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .flap-tab:hover {
+      background: #fde047;
+      transform: translateY(-1px);
+    }
+
+    .flap-hidden-content {
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #ffffff;
+      border-radius: 8px;
+      border-left: 4px solid var(--egypt-emerald);
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: #065f46;
+      animation: flapReveal 0.25s ease-out;
+    }
+
+    .flap-hidden-content.open {
+      display: block;
+    }
+
+    @keyframes flapReveal {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       RIGHT PAGE: 3D POP-UP LAB ENGINE (Pop-Up Cards, Springs, Shadows)
+       ========================================================================== */
+    .lab-stage-box {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      min-height: 480px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 50% 60%, #fffbf0 0%, #f6eccd 80%, #ebdcb3 100%);
+      border: 2px solid #e2d4af;
+      box-shadow: inset 0 4px 14px rgba(78, 54, 27, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      transform-style: preserve-3d;
+      padding: 16px;
+    }
+
+    .lab-header-pill {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid var(--gold-royal);
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #78350f;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Pop-Up Scene Viewport with Spring Physics */
+    .popup-viewport {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      transform-style: preserve-3d;
+      perspective: 1200px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 24px;
+    }
+
+    /* Spring-Loaded Pop-Up Origami Plate */
+    .popup-origami-stand {
+      position: relative;
+      width: 380px;
+      height: 290px;
+      transform-origin: 50% 100%;
+      transform-style: preserve-3d;
+      transform: rotateX(-18deg) translateZ(10px);
+      transition: transform 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Paper Shadow on the Parchment Floor */
+    .popup-paper-shadow {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 360px;
+      height: 38px;
+      background: radial-gradient(ellipse, rgba(68, 44, 20, 0.32) 0%, rgba(68, 44, 20, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Lab Bottom Controls Dock */
+    .lab-controls-tray {
+      position: relative;
+      z-index: 25;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid #e5d8b8;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 14px rgba(44, 28, 14, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Dynamic Measurement Readout Banner */
+    .measurement-readout-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    /* Sliders Styling */
+    .lab-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .lab-slider {
+      flex: 1;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #e2e8f0;
+      border-radius: 999px;
+      outline: none;
+    }
+
+    .lab-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--gold-royal);
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .lab-slider::-webkit-slider-thumb:active {
+      transform: scale(1.18);
+    }
+
+    /* Bottom Book Navigation Bar */
+    .bottom-dock {
+      margin: 10px 0 24px 0;
+      width: min(96%, 840px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(26, 18, 11, 0.90);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      padding: 10px 22px;
+      border-radius: 999px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .chapter-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chapter-dot-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .chapter-dot-btn.active {
+      background: var(--gold-bright);
+      color: #78350f;
+      border-color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.6);
+    }
+
+    .chapter-dot-btn.completed::after {
+      content: '✓';
+      font-size: 11px;
+      margin-left: 1px;
+    }
+
+    /* Teacher Mode Smartboard Fullscreen Overlay */
+    body.teacher-mode-active .page-left {
+      display: none !important;
+    }
+    body.teacher-mode-active .spine-crease {
+      display: none !important;
+    }
+    body.teacher-mode-active .book-spread {
+      grid-template-columns: 1fr;
+    }
+    body.teacher-mode-active .book-3d {
+      width: min(96vw, 1360px);
+      height: 86vh;
+      transform: rotateX(0deg);
+    }
+    body.teacher-mode-active .lab-stage-box {
+      min-height: 72vh;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Speech Bubble Overlay */
+    .dialogue-bubble {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 2.5px solid var(--egypt-blue);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 50;
+      animation: bubblePop 0.25s ease-out;
+    }
+    .dialogue-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px 8px 0;
+      border-style: solid;
+      border-color: var(--egypt-blue) transparent;
+      display: block;
+      width: 0;
+    }
+
+    @keyframes bubblePop {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.6); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+
+    /* Responsive Single Page Fallback for Small Devices */
+    @media (max-width: 880px) {
+      .book-3d {
+        width: 95vw;
+        height: auto;
+        transform: none;
+      }
+      .book-spread {
+        grid-template-columns: 1fr;
+      }
+      .page-left, .page-right {
+        border-radius: 12px;
+      }
+      .spine-crease {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Natural Light Oak Grain Background SVG Filter -->
+  <svg class="desk-grain" width="100%" height="100%">
+    <filter id="wood-filter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04 0.003" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="0.8 0 0 0 0.1  0 0.6 0 0 0.08  0 0 0.4 0 0.04  0 0 0 0.35 0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#wood-filter)" />
+  </svg>
+
+  <!-- Top Smartboard Bar -->
+  <header class="top-bar">
+    <div class="brand-cluster">
+      <span class="emblem">📜</span>
+      <div>
+        <div class="brand-title">The Pharaoh's Kingdom</div>
+        <span class="brand-sub">Living Pop-Up Book • Grade 3 & 4 ESL Adventure</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn-tactile btn-amber" id="btn-lang-toggle" title="Toggle English / Arabic (ثنائي اللغة)">
+        <span>🌐</span> <bdi id="btn-lang-label">عربي</bdi>
+      </button>
+      <button type="button" class="btn-tactile btn-cyan" id="btn-read-aloud" title="Read page aloud">
+        <span>🔊</span> <span id="lbl-read-aloud">Listen</span>
+      </button>
+      <button type="button" class="btn-tactile btn-emerald" id="btn-teacher-mode" title="Toggle Teacher Smartboard Fullscreen">
+        <span>📺</span> <span id="lbl-teacher-mode">Teacher Mode</span>
+      </button>
+      <button type="button" class="btn-tactile btn-ghost" id="btn-sound-toggle" title="Mute or Unmute Web Audio">
+        <span>🔔</span> <span id="lbl-sound-toggle">Sound</span>
+      </button>
+      <a href="index.html" class="btn-tactile btn-crimson" title="Return to Platform Home">
+        <span>🏠</span> <span id="lbl-home-btn">Home</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main 3D Book Stage -->
+  <main class="book-stage-container">
+    <div class="book-3d" id="book-3d">
+      <div class="book-cover"></div>
+      <div class="paper-edges"></div>
+      
+      <div class="book-spread" id="book-spread">
+        <div class="spine-crease"></div>
+
+        <!-- Left Page: Narrative, Target Formulas, Sticky Notes, Predict & Reveal -->
+        <section class="page-left" id="page-left">
+          <!-- Dynamic Content Injected Here by JS based on Active Chapter -->
+        </section>
+
+        <!-- Right Page: 3D Pop-Up Laboratory -->
+        <section class="page-right" id="page-right">
+          <!-- Dynamic 3D Pop-Up Lab Injected Here by JS -->
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation Dock -->
+  <nav class="bottom-dock">
+    <button type="button" class="btn-tactile btn-ghost" id="btn-prev-page">
+      <span>◀</span> Previous
+    </button>
+    
+    <div class="chapter-dots" id="chapter-dots">
+      <!-- 5 Chapter Pill Buttons Injected Here -->
+    </div>
+
+    <button type="button" class="btn-tactile btn-tactile" id="btn-next-page">
+      Next <span>▶</span>
+    </button>
+  </nav>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    /* ==========================================================================
+       POLYPHONIC WEB AUDIO SYNTHESIZER & SOUNDBOARD ENGINE
+       Strict Zero-External-Dependency Zero-Oscillator-Beep Standard
+       ========================================================================== */
+    var AudioEngine = (function () {
+      var ctx = null;
+      var muted = false;
+
+      function getCtx() {
+        if (!ctx) {
+          var AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) ctx = new AudioCtx();
+        }
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume();
+        }
+        return ctx;
+      }
+
+      function isMuted() {
+        return muted;
+      }
+
+      function toggleMute() {
+        muted = !muted;
+        return muted;
+      }
+
+      /* 1. Page Turn Sound: Filtered soft noise burst + dual frequency gentle sine whoosh */
+      function playPageTurn() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+
+        var bufferSize = c.sampleRate * 0.18;
+        var noiseBuffer = c.createBuffer(1, bufferSize, c.sampleRate);
+        var output = noiseBuffer.getChannelData(0);
+        for (var i = 0; i < bufferSize; i++) {
+          output[i] = Math.random() * 2 - 1;
+        }
+
+        var whiteNoise = c.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+
+        var filter = c.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(380, now);
+        filter.frequency.exponentialRampToValueAtTime(140, now + 0.18);
+
+        var gain = c.createGain();
+        gain.gain.setValueAtTime(0.24, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        whiteNoise.connect(filter);
+        filter.connect(gain);
+        gain.connect(c.destination);
+        whiteNoise.start(now);
+      }
+
+      /* 2. Correct / Star Award: Ascending C-Major pentatonic chord (C5 -> E5 -> G5 -> C6) */
+      function playCorrectChord() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+        var freqs = [523.25, 659.25, 783.99, 1046.50];
+
+        freqs.forEach(function (f, idx) {
+          var osc = c.createOscillator();
+          var gain = c.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.06);
+
+          gain.gain.setValueAtTime(0, now + idx * 0.06);
+          gain.gain.linearRampToValueAtTime(0.22, now + idx * 0.06 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.38);
+
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.40);
+        });
+      }
+
+      /* 3. Soft Chime: Warm descending sine chime on helpful hint */
+      function playSoftHint() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+        var freqs = [246.94, 220.00];
+
+        freqs.forEach(function (f, idx) {
+          var osc = c.createOscillator();
+          var gain = c.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + idx * 0.12);
+
+          gain.gain.setValueAtTime(0.18, now + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.45);
+
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.48);
+        });
+      }
+
+      /* 4. Chisel / Stamp Thud: Low wooden resonance + crisp click */
+      function playChiselStamp() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.15);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      /* 5. Water Splash / Rowing Oar sound */
+      function playWaterSplash() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.linearRampToValueAtTime(180, now + 0.22);
+
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start(now);
+        osc.stop(now + 0.26);
+      }
+
+      /* 6. Royal Fanfare: 4-note ascending triumphant fanfare */
+      function playRoyalFanfare() {
+        if (muted) return;
+        var c = getCtx();
+        if (!c) return;
+        var now = c.currentTime;
+        var notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+
+        notes.forEach(function (f, idx) {
+          var osc = c.createOscillator();
+          var gain = c.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.11);
+
+          gain.gain.setValueAtTime(0.26, now + idx * 0.11);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.55);
+
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 0.58);
+        });
+      }
+
+      /* Speech Synthesis Helper */
+      function speakText(text) {
+        if (muted || !window.speechSynthesis) return;
+        try {
+          window.speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(text);
+          u.rate = 0.88;
+          u.pitch = 1.05;
+          u.lang = (typeof currentLang !== 'undefined' && currentLang === 'ar') ? 'ar-SA' : 'en-US';
+          window.speechSynthesis.speak(u);
+        } catch (e) {
+          /* Fallback gracefully */
+        }
+      }
+
+      return {
+        getCtx: getCtx,
+        isMuted: isMuted,
+        toggleMute: toggleMute,
+        playPageTurn: playPageTurn,
+        playCorrectChord: playCorrectChord,
+        playSoftHint: playSoftHint,
+        playChiselStamp: playChiselStamp,
+        playWaterSplash: playWaterSplash,
+        playRoyalFanfare: playRoyalFanfare,
+        speakText: speakText
+      };
+    })();
+
+    /* ==========================================================================
+       CONFETTI CANNON ENGINE
+       ========================================================================== */
+    var ConfettiEngine = (function () {
+      var cv = document.getElementById('confetti-canvas');
+      var g = cv ? cv.getContext('2d') : null;
+      var particles = [];
+      var raf = 0;
+
+      function resize() {
+        if (!cv) return;
+        cv.width = window.innerWidth;
+        cv.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function burst(count) {
+        if (!cv || !g) return;
+        var n = count || 40;
+        var colors = ['#f59e0b', '#38bdf8', '#10b981', '#ec4899', '#facc15', '#ffffff'];
+        for (var i = 0; i < n; i++) {
+          particles.push({
+            x: cv.width * 0.5,
+            y: cv.height * 0.45,
+            vx: (Math.random() - 0.5) * 16,
+            vy: -Math.random() * 14 - 6,
+            w: 8 + Math.random() * 8,
+            h: 6 + Math.random() * 6,
+            rot: Math.random() * 6.28,
+            vrot: (Math.random() - 0.5) * 12,
+            c: colors[i % colors.length],
+            life: 1.0
+          });
+        }
+        if (!raf) loop();
+      }
+
+      function loop() {
+        if (!g) return;
+        g.clearRect(0, 0, cv.width, cv.height);
+        particles = particles.filter(function (p) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.55;
+          p.rot += p.vrot * 0.05;
+          p.life -= 0.016;
+
+          g.save();
+          g.translate(p.x, p.y);
+          g.rotate(p.rot);
+          g.globalAlpha = Math.max(0, p.life);
+          g.fillStyle = p.c;
+          g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          g.restore();
+
+          return p.life > 0 && p.y < cv.height + 40;
+        });
+
+        if (particles.length > 0) {
+          raf = requestAnimationFrame(loop);
+        } else {
+          raf = 0;
+        }
+      }
+
+      return { burst: burst };
+    })();
+
+    /* ==========================================================================
+       CURRICULUM CONTENT: 5 CHAPTERS COMPRISING ALL 8 LESSONS (BILINGUAL)
+       ========================================================================== */
+    var CHAPTERS = [
+      /* Chapter 1: The Pharaoh's Call & Crossing the Nile (Lessons 1 & 2) */
+      {
+        id: 1,
+        title: "The Pharaoh's Message & Crossing the Nile",
+        title_ar: "رسالة الفرعون وعبور النيل",
+        subtitle: "Chapter 1 • Lessons 1 & 2",
+        subtitle_ar: "الفصل الأول • الدرسان 1 و2",
+        tag: "👑 Chapter 1 • Journey Begins",
+        tag_ar: "👑 الفصل الأول • انطلاق الرحلة",
+        narrative: {
+          hook: "“Look what I have! An ancient letter from the Pharaoh has arrived!”",
+          intro: "The Pharaoh calls our classroom for help: <b>“Can you help me build my kingdom?”</b> We say: <b>“Yes! We are ready!”</b>",
+          vocabList: [
+            { w: "Pharaoh", m: "Cross your arms like a royal king! 👑" },
+            { w: "Kingdom", m: "Draw a big circle in the air with your hands! 🌍" },
+            { w: "Help", m: "Stretch your hands forward to help someone! 🤝" }
+          ],
+          targetFormula: "We cross the river to build our kingdom.",
+          sticky: "Explorer Tip: The Nile River was ancient Egypt's superhighway! Without boats, no heavy building stones could reach the kingdom!",
+          predictFlap: {
+            title: "Predict & Reveal",
+            q: "Did ancient builders cross the wide Nile in cars or modern buses?",
+            reveal: "No! There were no cars! They crossed the river in sturdy wooden boats, rowing together to deliver building stones to the kingdom."
+          }
+        },
+        narrative_ar: {
+          hook: "«انظروا ماذا وصلني! رسالة قديمة ومختومة من الفرعون!»",
+          intro: "يطلب الفرعون عون صفّنا لبناء المملكة: <b>«هل تستطيعون مساعدتي في بناء مملكتي؟»</b> نجيب بصوت واحد: <b>«نعم! نحن جاهزون!»</b>",
+          vocabList: [
+            { w: "فرعون (Pharaoh)", m: "ضع يديك على صدرك كالملك الملكي! 👑" },
+            { w: "مملكة (Kingdom)", m: "ارسم دائرة كبيرة في الهواء بيديك! 🌍" },
+            { w: "مساعدة (Help)", m: "مد يديك للأمام لمساعدة رفاقك! 🤝" }
+          ],
+          targetFormula: "We cross the river to build our kingdom. (نعبر النهر لنبني مملكتنا)",
+          sticky: "معلومة المستكشف: نهر النيل كان الشريان الأساسي لمصر القديمة! بدونه لا يمكن نقل أحجار البناء الضخمة إلى موقع المملكة.",
+          predictFlap: {
+            title: "توقّع ثم اكشف",
+            q: "هل كان البنّاؤون القدماء يعبرون النيل بالسيارات أو الحافلات؟",
+            reveal: "كلا! لم تكن هناك سيارات! كانوا يعبرون النيل بقوارب خشبية متينة ويجدّفون معاً لنقل الحجارة."
+          }
+        },
+        readAloudText: "Hello explorers! The Pharaoh needs your help. We cross the river to build our kingdom. Row your boat across the Nile and stamp your Explorer Passport!",
+        readAloudText_ar: "مرحباً بكم يا أبطال الاستكشاف! الفرعون يطلب مساعدتكم. نعبر النيل لنبني المملكة. حرّك القارب واختم جواز سفر المستكشف!"
+      },
+
+      /* Chapter 2: The Pyramids — Tomb, Bigger & Taller (Lesson 3) */
+      {
+        id: 2,
+        title: "The Pyramids: Tomb, Bigger & Taller",
+        title_ar: "الأهرامات: المقبرة، الأكبر والأطول",
+        subtitle: "Chapter 2 • Lesson 3",
+        subtitle_ar: "الفصل الثاني • الدرس 3",
+        tag: "🔺 Chapter 2 • The Measuring Station",
+        tag_ar: "🔺 الفصل الثاني • محطة القياس",
+        narrative: {
+          hook: "“Look carefully! It's dark. It's old. What is inside? It's an ancient tomb!”",
+          intro: "The pyramids were built as special tombs for the Pharaohs. Now we are pyramid explorers — let's measure height and size!",
+          vocabList: [
+            { w: "Tomb", m: "A special place where a Pharaoh was buried long ago." },
+            { w: "Bigger", m: "Larger in total size and base area." },
+            { w: "Taller", m: "Greater in vertical height from ground to tip." }
+          ],
+          targetFormula: "Pyramid B (15 cm) is taller than Pyramid A (10 cm).",
+          sticky: "Measurement Key: <bdi dir='ltr'>Height A = 10 cm · Height B = 15 cm · Height C = 20 cm</bdi>. Height is measured straight up from the ground!",
+          predictFlap: {
+            title: "Common Student Mistake",
+            q: "If a pyramid is very wide at the base, does that automatically make it taller?",
+            reveal: "No! Wide means BIGGER. 'Taller' only measures how high the tip reaches up from the ground!"
+          }
+        },
+        narrative_ar: {
+          hook: "«انظروا بتركيز! المكان قديم ومظلم. ماذا يوجد بالداخل؟ إنها مقبرة فرعونية ملكية!»",
+          intro: "بُنيت الأهرامات كمقابر ملكية مهيبة للفراعنة. والآن نحن مستكشفو الأهرامات — هيّا نقيس الارتفاع والحجم بدقة!",
+          vocabList: [
+            { w: "مقبرة (Tomb)", m: "مكان مخصص لحفظ رفات وتراث الفرعون ⚱️" },
+            { w: "أكبر حجماً (Bigger)", m: "أكبر في الحجم الكلي ومساحة القاعدة 📐" },
+            { w: "أطول ارتفاعاً (Taller)", m: "أعلى ارتفاعاً من الأرض نحو القمة 📏" }
+          ],
+          targetFormula: "Pyramid B (15 cm) is taller than Pyramid A (10 cm).",
+          sticky: "مفتاح القياس: <bdi dir='ltr'>ارتفاع A = 10 cm · ارتفاع B = 15 cm · ارتفاع C = 20 cm</bdi>. يُقاس الارتفاع عمودياً من سطح الأرض!",
+          predictFlap: {
+            title: "الخطأ الشائع عند الطلاب",
+            q: "إذا كانت قاعدة الهرم عريضة جداً، فهل يعني ذلك بالضرورة أنه Taller (أطول)؟",
+            reveal: "كلا! القاعدة العريضة تعني أنه Bigger (أكبر مساحة)، بينما Taller تُقاس حصراً بالارتفاع العمودي من الأرض إلى القمة!"
+          }
+        },
+        readAloudText: "The pyramids were tombs for the Pharaohs. Bigger means larger in size. Taller means greater in height. Pyramid C is 20 centimeters tall, taller than Pyramid B!",
+        readAloudText_ar: "الأهرامات مقابر للفراعنة. بيجر يعني أكبر حجماً وقاعدة، وتولر يعني أطول ارتفاعاً. الهرم سي ارتفاعه 20 سنتيمتراً وهو أطول من بي!"
+      },
+
+      /* Chapter 3: Writing Like a Scribe — Papyrus & Hieroglyphs (Lesson 4) */
+      {
+        id: 3,
+        title: "Writing Like a Scribe: Papyrus & Hieroglyphs",
+        title_ar: "الكتابة كالكاتب الملكي: البردي والهيروغليفية",
+        subtitle: "Chapter 3 • Lesson 4",
+        subtitle_ar: "الفصل الثالث • الدرس 4",
+        tag: "📜 Chapter 3 • The Royal Scribe",
+        tag_ar: "📜 الفصل الثالث • الكاتب الملكي",
+        narrative: {
+          hook: "“The Pharaoh sent a secret message! Look at these strange picture signs!”",
+          intro: "Ancient Egyptians did not write on modern notebook paper. They made <b>papyrus</b> from river reeds and wrote in sacred <b>hieroglyphs</b>!",
+          vocabList: [
+            { w: "Papyrus", m: "Rough, textured paper made from river plants." },
+            { w: "Hieroglyphs", m: "Ancient picture signs that represent sounds and ideas." },
+            { w: "Scribe", m: "A trained ancient writer who held the royal reed pen." }
+          ],
+          targetFormula: "These are hieroglyphs. We write our name on papyrus.",
+          sticky: "Scribe Rule: Ancient hieroglyphic signs were not an English alphabet. Some signs stand for single sounds, while others stand for whole words!",
+          predictFlap: {
+            title: "Scribe Secret",
+            q: "Can you write your own name using ancient Egyptian sound signs?",
+            reveal: "Yes! Ancient scribes drew royal names inside an oval protective ring called a CARTOUCHE (خرطوش ملكي)!"
+          }
+        },
+        narrative_ar: {
+          hook: "«أرسل الفرعون رسالة سرية! انظروا لهذه الرموز والرسوم الغريبة والمدهشة!»",
+          intro: "لم يكن المصريون القدماء يكتبون على الدفاتر الورقية المعاصرة، بل صنعوا <b>ورق البردي (Papyrus)</b> من قصب النهر وكتبوا <b>بالهيروغليفية</b>!",
+          vocabList: [
+            { w: "ورق بردي (Papyrus)", m: "ورق طبيعي مصنوع من سيقان نبات البردي النيلي 🌿" },
+            { w: "هيروغليفية (Hieroglyphs)", m: "رموز ورسوم صوتية عريقة تعبر عن الكلمات والأصوات 🦅" },
+            { w: "كاتب (Scribe)", m: "شخص متعلم ومدرب يكتب بقلم القصب والحبر الملكي 📜" }
+          ],
+          targetFormula: "These are hieroglyphs. We write our name on papyrus.",
+          sticky: "قاعدة الكاتب: الرموز الهيروغليفية تمثل أصواتاً حقيقية. ويكتب الكاتب الأسماء الملكية داخل إطار بيضاوي يسمى الكارتوش لحمايتها!",
+          predictFlap: {
+            title: "سر الكاتب الملكي",
+            q: "هل يمكنك كتابة اسمك باستخدام الأصوات الهيروغليفية القديمة؟",
+            reveal: "نعم بكل تأكيد! كان الكاتب يرسم الأسماء داخل إطار بيضاوي محمي يُسمى «الكارتوش» (Cartouche)!"
+          }
+        },
+        readAloudText: "Ancient Egyptians used papyrus for writing. Hieroglyphs are ancient signs. Now you are little scribes! Type letters to carve your name inside the royal cartouche.",
+        readAloudText_ar: "استخدم المصريون القدماء ورق البردي للكتابة، والهيروغليفية كرموز مقدسة. أنتم الآن كتّاب ملكيون! اكتبوا حروف اسمكم داخل الكارتوش."
+      },
+
+      /* Chapter 4: Palace People, Kingdom Map & Senet (Lessons 5, 6, 7) */
+      {
+        id: 4,
+        title: "Palace People, Kingdom Map & Senet",
+        title_ar: "أهل القصر، خريطة المملكة ولعبة السنت",
+        subtitle: "Chapter 4 • Lessons 5, 6 & 7",
+        subtitle_ar: "الفصل الرابع • الدروس 5 و6 و7",
+        tag: "🏰 Chapter 4 • Inside the Palace",
+        tag_ar: "🏰 الفصل الرابع • في البهو الملكي",
+        narrative: {
+          hook: "“Knock, knock! Who is at the palace gate? Something royal is happening!”",
+          intro: "Inside the palace, everyone has a special role. Let's learn who wears the crown, who carries the shield, and where each building stands on the map!",
+          vocabList: [
+            { w: "Pharaoh", m: "“I am the Pharaoh. I wear a crown.” 👑" },
+            { w: "Guard", m: "“I am a guard. I carry a shield.” 🛡️" },
+            { w: "Positions", m: "Next to (side by side) · Behind (at the back)" }
+          ],
+          targetFormula: "The palace is next to the pyramid. The guard is behind the pyramid.",
+          sticky: "Senet Etiquette: In ancient Egypt, people played the board game Senet. Remember to say: <bdi dir='ltr'>“My turn!”</bdi> and <bdi dir='ltr'>“Your turn!”</bdi>",
+          predictFlap: {
+            title: "Language Check",
+            q: "Do we say 'The guard wears a shield'?",
+            reveal: "No! We WEAR a crown on our head, but we CARRY a shield in our hands to protect the palace!"
+          }
+        },
+        narrative_ar: {
+          hook: "«طرقات على باب القصر الملكي! من عند البوابة؟ هناك حدث ملكي ينتظرنا!»",
+          intro: "داخل القصر، لكل شخص دوره المتميز: الفرعون يرتدي التاج، والحارس يحمل الدرع. كما نتعلّم مواقع الأماكن على الخريطة ولعبة السنت!",
+          vocabList: [
+            { w: "الفرعون (Pharaoh)", m: "«أنا الفرعون، أرتدي التاج الملكي» 👑" },
+            { w: "الحارس (Guard)", m: "«أنا الحارس، أحمل الدرع الواقي» 🛡️" },
+            { w: "المواقع (Positions)", m: "Next to (بجانب) · Behind (خلف) 🗺️" }
+          ],
+          targetFormula: "The palace is next to the pyramid. The guard is behind the pyramid.",
+          sticky: "آداب لعبة السنت: كان المصريون يتسلون بلعبة السنت اللوحية. تدرّب على تبادل الأدوار بالإنجليزية: <bdi dir='ltr'>“It's my turn!”</bdi> ثم <bdi dir='ltr'>“It's your turn!”</bdi>",
+          predictFlap: {
+            title: "تدقيق لغوي دقيق",
+            q: "هل نقول بالإنجليزية: The guard WEARS a shield؟",
+            reveal: "كلا! نقول: WEAR للتاج والملابس (يرتدي)، بينما CARRY للدرع والأشياء المحمولة باليد (يحمل)!"
+          }
+        },
+        readAloudText: "Welcome to the palace! The Pharaoh wears a crown. The guard carries a shield. The palace is next to the pyramid. Play Senet and take turns: It's my turn, it's your turn!",
+        readAloudText_ar: "أهلاً بكم في القصر! الفرعون يرتدي التاج، والحارس يحمل الدرع. القصر بجانب الهرم. العبوا السنت وتبادلوا الأدوار: إنه دوري، إنه دورك!"
+      },
+
+      /* Chapter 5: The Grand Kingdom Tour & Star Challenge (Lesson 8 + Master Challenge) */
+      {
+        id: 5,
+        title: "The Grand Kingdom Tour & Star Challenge",
+        title_ar: "جولة المملكة الكبرى وتحدي النجوم السبعة",
+        subtitle: "Chapter 5 • Lesson 8 & Star Challenge",
+        subtitle_ar: "الفصل الخامس • الدرس 8 والتحدي الملكي",
+        tag: "⭐ Chapter 5 • Final Star Challenge",
+        tag_ar: "⭐ الفصل الخامس • تحدي النجوم النهائي",
+        narrative: {
+          hook: "“Step into the Time Machine! Countdown: 5, 4, 3, 2, 1... GO!”",
+          intro: "Welcome to our completed kingdom tour! You have learned the Pharaoh's language, crossed the Nile, measured pyramids, and written in hieroglyphs. Now prove your knowledge in the 7-Round Royal Star Challenge!",
+          vocabList: [
+            { w: "Kingdom Tour", m: "Describe the boat, tomb, pyramids, palace, and guard in English!" },
+            { w: "Turn Taking", m: "“It's my turn!” · “It's your turn!”" }
+          ],
+          targetFormula: "Welcome to our kingdom! We are ancient Egyptian explorers!",
+          sticky: "Royal Reward: Answer the 7 challenge questions correctly to earn 3 Golden Stars and your official Royal Explorer Certificate!",
+          predictFlap: {
+            title: "Tour Guide Challenge",
+            q: "What do you say to visitors who arrive to see your ancient kingdom?",
+            reveal: "“Welcome to our kingdom! Look, this is a pyramid. The palace is next to the pyramid!”"
+          }
+        },
+        narrative_ar: {
+          hook: "«استعدوا لركوب آلة الزمن! العد التنازلي: 5، 4، 3، 2، 1... انطلاق!»",
+          intro: "أهلاً بكم في الجولة الشاملة للمملكة! عبرتم النيل، وقستم الأهرامات، وكتبتم بالهيروغليفية، وتعرفتم على القصر. والآن أثبتوا براعتكم في تحدي الـ 7 جولات الملكية!",
+          vocabList: [
+            { w: "جولة المملكة (Kingdom Tour)", m: "صف القارب والمقبرة والأهرامات والقصر والحارس بالإنجليزية!" },
+            { w: "تبادل الأدوار (Turn Taking)", m: "«إنه دوري!» · «إنه دورك!»" }
+          ],
+          targetFormula: "Welcome to our kingdom! We are ancient Egyptian explorers!",
+          sticky: "المكافأة الملكية: أجب عن أسئلة التحدي السبعة لتحصد 3 نجوم ذهبية وتنال شهادة المستكشف الملكي المعتمدة!",
+          predictFlap: {
+            title: "تحدي المرشد السياحي",
+            q: "ماذا تقول للضيوف الوافدين لزيارة مملكتك القديمة؟",
+            reveal: "تقول: «Welcome to our kingdom! Look, this is a pyramid. The palace is next to the pyramid!»"
+          }
+        },
+        readAloudText: "Time machine activated! Explore the whole kingdom and complete the 7-round challenge to win your three golden stars!",
+        readAloudText_ar: "تم تفعيل آلة الزمن! استكشفوا أرجاء المملكة وأكملوا تحدي الجولات السبع لتحصدوا نجومكم الثلاثة الذهبية!"
+      }
+    ];
+
+    /* ==========================================================================
+       POP-UP LAB RENDERING CONTROLLER (CHAPTERS 1 TO 5)
+       ========================================================================== */
+    var currentLang = 'en';
+
+    var PopUpController = {
+      activeChapter: 1,
+
+      /* Chapter 1 State: Boat X (0..100%), Passport Stamped */
+      ch1: {
+        boatX: 15,
+        stamped: false,
+        deliveredStones: 0
+      },
+
+      /* Chapter 2 State: Pyramids A, B, C Height & Size */
+      ch2: {
+        selPyramid: 'B',
+        userScale: 1.0,
+        heightA: 10,
+        heightB: 15,
+        heightC: 20
+      },
+
+      /* Chapter 3 State: Hieroglyphs Scribe */
+      ch3: {
+        typedLetters: ['A', 'L', 'I']
+      },
+
+      /* Chapter 4 State: Palace Map & Roles */
+      ch4: {
+        currentRole: 'pharaoh', /* 'pharaoh' | 'guard' */
+        palacePos: 'next',      /* 'next' | 'behind' */
+        senetTurn: 'player',    /* 'player' | 'partner' */
+        senetPawnPos: 2
+      },
+
+      /* Chapter 5 State: 7-Round Challenge */
+      ch5: {
+        roundIndex: 0,
+        score: 0,
+        selectedOption: null,
+        answered: false,
+        completed: false
+      }
+    };
+
+    /* Render Pop-Up Lab Content into Right Page */
+    function renderPopUpLab(chId) {
+      var container = document.getElementById('page-right');
+      if (!container) return;
+      container.innerHTML = '';
+
+      var labBox = document.createElement('div');
+      labBox.className = 'lab-stage-box';
+
+      var headerPill = document.createElement('div');
+      headerPill.className = 'lab-header-pill';
+
+      var viewport = document.createElement('div');
+      viewport.className = 'popup-viewport';
+
+      var stand = document.createElement('div');
+      stand.className = 'popup-origami-stand';
+      stand.id = 'origami-stand';
+
+      var shadow = document.createElement('div');
+      shadow.className = 'popup-paper-shadow';
+      viewport.appendChild(shadow);
+      viewport.appendChild(stand);
+
+      var tray = document.createElement('div');
+      tray.className = 'lab-controls-tray';
+      tray.id = 'lab-controls-tray';
+
+      labBox.appendChild(headerPill);
+      labBox.appendChild(viewport);
+      labBox.appendChild(tray);
+      container.appendChild(labBox);
+
+      if (chId === 1) {
+        /* -------------------------------------------------------------
+           CHAPTER 1 LAB: POP-UP NILE RIVER, ROWING BOAT & PASSPORT STAMP
+           ------------------------------------------------------------- */
+        headerPill.innerHTML = '<span>🚣</span> Nile Crossing & Passport Station';
+
+        stand.innerHTML = `
+          <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+            <!-- Distant Sandy Bank (Destination: Kingdom) -->
+            <path d="M 0 130 Q 190 115 380 130 L 380 180 L 0 180 Z" fill="#ebd6a0" stroke="#bfa369" stroke-width="2" />
+            <text x="310" y="155" font-size="12" font-weight="900" fill="#78350f">Destination 🏰</text>
+            
+            <!-- Flowing Blue Nile River Water -->
+            <path d="M 0 170 Q 190 160 380 170 L 380 260 Q 190 270 0 260 Z" fill="#38bdf8" opacity="0.85" />
+            <path d="M 10 195 Q 120 185 240 195 T 370 195" fill="none" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" />
+            <path d="M 30 230 Q 140 220 260 230 T 360 230" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6 8" />
+
+            <!-- Starting Bank (Goods & Building Stones) -->
+            <path d="M 0 250 Q 190 240 380 250 L 380 290 L 0 290 Z" fill="#d4b476" stroke="#927339" stroke-width="2" />
+            <text x="25" y="278" font-size="12" font-weight="900" fill="#451a03">Start Bank 📦</text>
+
+            <!-- Pop-Up Rowing Boat & Building Stone -->
+            <g id="nile-boat-group" style="transform: translate(${PopUpController.ch1.boatX * 2.8}px, 0px); transition: transform 0.2s ease-out;">
+              <!-- Boat Shadow -->
+              <ellipse cx="60" cy="222" rx="42" ry="9" fill="rgba(15, 23, 42, 0.25)" />
+              <!-- Wooden Papyrus Boat Hull -->
+              <path d="M 20 215 Q 60 235 105 215 Q 85 200 60 200 Q 35 200 20 215 Z" fill="#b45309" stroke="#78350f" stroke-width="2.5" />
+              <!-- Building Stone Block on Boat -->
+              <rect x="46" y="188" width="28" height="18" rx="3" fill="#fde68a" stroke="#d97706" stroke-width="2" />
+              <text x="60" y="201" font-size="9" font-weight="900" fill="#78350f" text-anchor="middle">STONE</text>
+              <!-- Rowing Oar -->
+              <line x1="58" y1="195" x2="35" y2="232" stroke="#451a03" stroke-width="3" stroke-linecap="round" />
+              <ellipse cx="32" cy="235" rx="5" ry="3" fill="#78350f" />
+              <!-- Animated Water Ripple -->
+              <circle cx="105" cy="216" r="6" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.7" />
+            </g>
+          </svg>
+        `;
+
+        tray.innerHTML = `
+          <div class="measurement-readout-pill">
+            <span>📍 Nile Status: <b>${PopUpController.ch1.boatX < 75 ? 'Crossing the River... 🚣' : 'Delivered to Kingdom! 🎉'}</b></span>
+            <span>Stones Delivered: <b style="color:var(--egypt-emerald)">+${PopUpController.ch1.deliveredStones}</b></span>
+          </div>
+          
+          <div class="lab-slider-row">
+            <span>Start Bank</span>
+            <input type="range" class="lab-slider" id="boat-river-slider" min="10" max="90" value="${PopUpController.ch1.boatX}">
+            <span>Kingdom Bank</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <button type="button" class="btn-tactile btn-cyan" id="btn-row-boat">
+              <span>🚣</span> Row Boat (+Step)
+            </button>
+            <button type="button" class="btn-tactile btn-emerald" id="btn-passport-stamp">
+              <span>📜</span> ${PopUpController.ch1.stamped ? 'Passport Stamped! ✓' : 'Stamp My Passport!'}
+            </button>
+          </div>
+        `;
+
+        /* Event Handlers */
+        var slider = document.getElementById('boat-river-slider');
+        var boatGroup = document.getElementById('nile-boat-group');
+
+        function updateBoat(val) {
+          PopUpController.ch1.boatX = +val;
+          if (boatGroup) {
+            boatGroup.setAttribute('style', 'transform: translate(' + (PopUpController.ch1.boatX * 2.8) + 'px, 0px); transition: transform 0.1s ease-out;');
+          }
+          AudioEngine.playWaterSplash();
+          if (PopUpController.ch1.boatX >= 80) {
+            PopUpController.ch1.deliveredStones++;
+            AudioEngine.playCorrectChord();
+            ConfettiEngine.burst(18);
+          }
+        }
+
+        if (slider) {
+          slider.addEventListener('input', function (e) {
+            updateBoat(e.target.value);
+          });
+        }
+
+        var btnRow = document.getElementById('btn-row-boat');
+        if (btnRow) {
+          btnRow.addEventListener('click', function () {
+            var nextX = PopUpController.ch1.boatX + 22;
+            if (nextX > 88) nextX = 15;
+            if (slider) slider.value = nextX;
+            updateBoat(nextX);
+          });
+        }
+
+        var btnStamp = document.getElementById('btn-passport-stamp');
+        if (btnStamp) {
+          btnStamp.addEventListener('click', function () {
+            PopUpController.ch1.stamped = true;
+            AudioEngine.playChiselStamp();
+            AudioEngine.playRoyalFanfare();
+            ConfettiEngine.burst(30);
+            btnStamp.textContent = 'Passport Stamped! 👑';
+            btnStamp.classList.add('btn-tactile');
+          });
+        }
+
+      } else if (chId === 2) {
+        /* -------------------------------------------------------------
+           CHAPTER 2 LAB: 3D PYRAMID MEASURING STATION (10, 15, 20 cm)
+           ------------------------------------------------------------- */
+        headerPill.innerHTML = '<span>🔺</span> Pyramid Explorer Measuring Station';
+
+        stand.innerHTML = `
+          <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+            <!-- Common Ground Level Line -->
+            <line x1="20" y1="240" x2="360" y2="240" stroke="#78350f" stroke-width="3" stroke-linecap="round" />
+            <text x="190" y="260" font-size="12" font-weight="900" fill="#78350f" text-anchor="middle">Common Ground Baseline</text>
+
+            <!-- Pyramid A: 10 cm (Height: 80px, Base: 70px) -->
+            <g id="pyr-a-group" style="cursor:pointer;">
+              <polygon points="75,240 110,160 145,240" fill="#fcd34d" stroke="#b45309" stroke-width="2.5" />
+              <!-- Pencil Shading & Stones -->
+              <polygon points="75,240 110,160 110,240" fill="rgba(0,0,0,0.06)" />
+              <line x1="85" y1="220" x2="135" y2="220" stroke="#b45309" stroke-width="1.2" stroke-dasharray="3 3" />
+              <line x1="95" y1="195" x2="125" y2="195" stroke="#b45309" stroke-width="1.2" stroke-dasharray="3 3" />
+              <text x="110" y="234" font-size="12" font-weight="900" fill="#78350f" text-anchor="middle">A</text>
+              <text x="110" y="152" font-size="11" font-weight="800" fill="#92400e" text-anchor="middle">10 cm</text>
+            </g>
+
+            <!-- Pyramid B: 15 cm (Height: 120px, Base: 95px) -->
+            <g id="pyr-b-group" style="cursor:pointer;">
+              <polygon points="170,240 215,120 260,240" fill="#fbbf24" stroke="#b45309" stroke-width="3" />
+              <!-- Shading -->
+              <polygon points="170,240 215,120 215,240" fill="rgba(0,0,0,0.08)" />
+              <line x1="180" y1="210" x2="250" y2="210" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4" />
+              <line x1="192" y1="175" x2="238" y2="175" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4" />
+              <line x1="204" y1="145" x2="226" y2="145" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4" />
+              <text x="215" y="234" font-size="13" font-weight="900" fill="#78350f" text-anchor="middle">B</text>
+              <text x="215" y="112" font-size="12" font-weight="900" fill="#b45309" text-anchor="middle">15 cm</text>
+            </g>
+
+            <!-- Pyramid C: 20 cm (Height: 160px, Base: 110px) -->
+            <g id="pyr-c-group" style="cursor:pointer;">
+              <polygon points="280,240 330,80 380,240" fill="#f59e0b" stroke="#92400e" stroke-width="3" />
+              <!-- Shading -->
+              <polygon points="280,240 330,80 330,240" fill="rgba(0,0,0,0.10)" />
+              <line x1="290" y1="205" x2="370" y2="205" stroke="#78350f" stroke-width="1.5" stroke-dasharray="4 4" />
+              <line x1="302" y1="165" x2="358" y2="165" stroke="#78350f" stroke-width="1.5" stroke-dasharray="4 4" />
+              <line x1="316" y1="125" x2="344" y2="125" stroke="#78350f" stroke-width="1.5" stroke-dasharray="4 4" />
+              <text x="330" y="234" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle">C</text>
+              <text x="330" y="72" font-size="13" font-weight="900" fill="#78350f" text-anchor="middle">20 cm</text>
+            </g>
+
+            <!-- Vertical Moveable Measuring Scale / Ruler -->
+            <g id="measuring-ruler" transform="translate(35, 60)">
+              <rect x="0" y="0" width="22" height="180" rx="3" fill="#ffffff" stroke="#0284c7" stroke-width="2" />
+              <line x1="0" y1="20" x2="12" y2="20" stroke="#0284c7" stroke-width="1.5" />
+              <text x="14" y="24" font-size="9" font-weight="800" fill="#0284c7">20</text>
+              <line x1="0" y1="60" x2="12" y2="60" stroke="#0284c7" stroke-width="1.5" />
+              <text x="14" y="64" font-size="9" font-weight="800" fill="#0284c7">15</text>
+              <line x1="0" y1="100" x2="12" y2="100" stroke="#0284c7" stroke-width="1.5" />
+              <text x="14" y="104" font-size="9" font-weight="800" fill="#0284c7">10</text>
+              <line x1="0" y1="140" x2="8" y2="140" stroke="#0284c7" stroke-width="1.5" />
+              <text x="11" y="174" font-size="9" font-weight="800" fill="#0284c7">0</text>
+            </g>
+          </svg>
+        `;
+
+        tray.innerHTML = `
+          <div class="measurement-readout-pill">
+            <span>Selected: <b style="color:var(--gold-royal)">Pyramid ${PopUpController.ch2.selPyramid}</b></span>
+            <span>Formula: <bdi dir="ltr"><b>Pyramid C (20 cm) > B (15 cm) > A (10 cm)</b></bdi></span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <button type="button" class="btn-tactile ${PopUpController.ch2.selPyramid === 'A' ? 'btn-emerald' : 'btn-ghost'}" id="btn-select-pyr-a">
+              <span>🔺</span> Pyramid A (10 cm)
+            </button>
+            <button type="button" class="btn-tactile ${PopUpController.ch2.selPyramid === 'B' ? 'btn-emerald' : 'btn-ghost'}" id="btn-select-pyr-b">
+              <span>🔺</span> Pyramid B (15 cm)
+            </button>
+            <button type="button" class="btn-tactile ${PopUpController.ch2.selPyramid === 'C' ? 'btn-emerald' : 'btn-ghost'}" id="btn-select-pyr-c">
+              <span>🔺</span> Pyramid C (20 cm)
+            </button>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn-tactile btn-cyan" style="flex:1;" id="btn-compare-pyramids">
+              <span>⚖️</span> Compare: "Pyramid B is taller than A"
+            </button>
+          </div>
+        `;
+
+        function selectPyr(p) {
+          PopUpController.ch2.selPyramid = p;
+          AudioEngine.playChiselStamp();
+          AudioEngine.speakText('Pyramid ' + p + ' is selected!');
+          renderPopUpLab(2);
+        }
+
+        var bA = document.getElementById('btn-select-pyr-a');
+        var bB = document.getElementById('btn-select-pyr-b');
+        var bC = document.getElementById('btn-select-pyr-c');
+        if (bA) bA.onclick = function () { selectPyr('A'); };
+        if (bB) bB.onclick = function () { selectPyr('B'); };
+        if (bC) bC.onclick = function () { selectPyr('C'); };
+
+        var btnCmp = document.getElementById('btn-compare-pyramids');
+        if (btnCmp) {
+          btnCmp.onclick = function () {
+            AudioEngine.playCorrectChord();
+            AudioEngine.speakText('Pyramid B is taller than Pyramid A! Pyramid C is taller than Pyramid B!');
+            ConfettiEngine.burst(22);
+          };
+        }
+
+      } else if (chId === 3) {
+        /* -------------------------------------------------------------
+           CHAPTER 3 LAB: HIEROGLYPHIC SCRIBE DESK & CARTOUCHE
+           ------------------------------------------------------------- */
+        headerPill.innerHTML = '<span>📜</span> Royal Scribe Papyrus Cartouche';
+
+        var hieroGlyphsMap = {
+          'A': { glyph: '𓄿', desc: 'Egyptian Vulture / Reed' },
+          'B': { glyph: '𓃀', desc: 'Foot' },
+          'C': { glyph: '𓎡', desc: 'Basket with handle' },
+          'D': { glyph: '𓂧', desc: 'Hand' },
+          'E': { glyph: '𓇋', desc: 'Flowering reed' },
+          'F': { glyph: '𓆑', desc: 'Horned viper' },
+          'G': { glyph: '𓎛', desc: 'Twisted flax' },
+          'H': { glyph: '𓉔', desc: 'Courtyard shelter' },
+          'I': { glyph: '𓇋', desc: 'Reed leaf' },
+          'K': { glyph: '𓎡', desc: 'Cup / Basket' },
+          'L': { glyph: '𓃭', desc: 'Lion recumbent' },
+          'M': { glyph: '𓅓', desc: 'Owl' },
+          'N': { glyph: '𓈖', desc: 'Water waves' },
+          'O': { glyph: '𓍯', desc: 'Lasso / Cord' },
+          'P': { glyph: '𓊪', desc: 'Square stool' },
+          'R': { glyph: '𓂋', desc: 'Open mouth' },
+          'S': { glyph: '𓋴', desc: 'Folded cloth' },
+          'T': { glyph: '𓏏', desc: 'Bread loaf' },
+          'U': { glyph: '𓅱', desc: 'Quail chick' },
+          'W': { glyph: '𓅱', desc: 'Quail chick' },
+          'Y': { glyph: '𓇋𓇋', desc: 'Two reeds' }
+        };
+
+        var glyphString = PopUpController.ch3.typedLetters.map(function (lt) {
+          return (hieroGlyphsMap[lt] && hieroGlyphsMap[lt].glyph) || '𓏤';
+        }).join('  ');
+
+        stand.innerHTML = `
+          <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+            <!-- Scribe Desk Wooden Plinth -->
+            <polygon points="40,240 340,240 310,270 70,270" fill="#78350f" stroke="#451a03" stroke-width="2.5" />
+            <!-- Papyrus Roll Texture -->
+            <rect x="70" y="55" width="240" height="175" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2.5" />
+            <!-- Rough Papyrus Reed Fiber Hatching -->
+            <line x1="75" y1="85" x2="305" y2="85" stroke="#fde68a" stroke-width="1.5" />
+            <line x1="75" y1="125" x2="305" y2="125" stroke="#fde68a" stroke-width="1.5" />
+            <line x1="75" y1="165" x2="305" y2="165" stroke="#fde68a" stroke-width="1.5" />
+
+            <!-- Royal Cartouche Oval Frame -->
+            <rect x="105" y="80" width="170" height="120" rx="40" fill="#fffbeb" stroke="#d97706" stroke-width="3.5" />
+            <line x1="100" y1="140" x2="105" y2="140" stroke="#d97706" stroke-width="4" />
+            
+            <!-- Chiseled Hieroglyphs -->
+            <text x="190" y="150" font-size="34" font-weight="900" fill="#78350f" text-anchor="middle" font-family="'Segoe UI Historic', 'Noto Sans Egyptian Hieroglyphs', sans-serif">
+              ${glyphString || '𓄿 𓃭 𓇋'}
+            </text>
+            <!-- English Letters Subtitle -->
+            <text x="190" y="185" font-size="16" font-weight="900" fill="#b45309" text-anchor="middle">
+              ${PopUpController.ch3.typedLetters.join(' - ') || 'A - L - I'}
+            </text>
+
+            <!-- Scribe Reed Pen & Palette -->
+            <line x1="285" y1="65" x2="320" y2="185" stroke="#451a03" stroke-width="4" stroke-linecap="round" />
+            <circle cx="300" cy="205" r="8" fill="#dc2626" stroke="#451a03" stroke-width="1.5" />
+            <circle cx="318" cy="215" r="8" fill="#0f172a" stroke="#451a03" stroke-width="1.5" />
+          </svg>
+        `;
+
+        tray.innerHTML = `
+          <div class="measurement-readout-pill">
+            <span>Scribe Cartouche: <b>${PopUpController.ch3.typedLetters.join('') || 'Empty'}</b></span>
+            <span>Ancient Signs: <b>${PopUpController.ch3.typedLetters.length}</b></span>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center;">
+            ${['A', 'B', 'D', 'K', 'L', 'M', 'N', 'R', 'S', 'T'].map(function (ch) {
+              return `<button type="button" class="btn-tactile btn-ghost key-stamp-btn" data-char="${ch}" style="padding:4px 10px; font-size:13px;">${ch}</button>`;
+            }).join('')}
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-tactile btn-emerald" id="btn-clear-cartouche" style="flex:1;">
+              <span>🔄</span> Clear
+            </button>
+            <button type="button" class="btn-tactile btn-cyan" id="btn-speak-name" style="flex:1;">
+              <span>🔊</span> Read Scribe Signs
+            </button>
+          </div>
+        `;
+
+        var keyBtns = tray.querySelectorAll('.key-stamp-btn');
+        keyBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var c = this.getAttribute('data-char');
+            if (PopUpController.ch3.typedLetters.length < 5) {
+              PopUpController.ch3.typedLetters.push(c);
+              AudioEngine.playChiselStamp();
+              renderPopUpLab(3);
+            }
+          });
+        });
+
+        var btnClr = document.getElementById('btn-clear-cartouche');
+        if (btnClr) {
+          btnClr.onclick = function () {
+            PopUpController.ch3.typedLetters = [];
+            AudioEngine.playPageTurn();
+            renderPopUpLab(3);
+          };
+        }
+
+        var btnSpk = document.getElementById('btn-speak-name');
+        if (btnSpk) {
+          btnSpk.onclick = function () {
+            var str = PopUpController.ch3.typedLetters.join(' ') || 'Ali';
+            AudioEngine.playCorrectChord();
+            AudioEngine.speakText('Ancient Egyptian hieroglyphs for ' + str);
+            ConfettiEngine.burst(16);
+          };
+        }
+
+      } else if (chId === 4) {
+        /* -------------------------------------------------------------
+           CHAPTER 4 LAB: PALACE PEOPLE, MAP POSITIONS & SENET
+           ------------------------------------------------------------- */
+        headerPill.innerHTML = '<span>🏰</span> Palace Roles & Kingdom Map';
+
+        var isNext = PopUpController.ch4.palacePos === 'next';
+
+        stand.innerHTML = `
+          <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+            <!-- Ground Sand Level -->
+            <rect x="0" y="210" width="380" height="80" fill="#fde68a" stroke="#d97706" stroke-width="2" />
+
+            <!-- The Anchor: Central Golden Pyramid -->
+            <polygon points="120,210 170,120 220,210" fill="#f59e0b" stroke="#92400e" stroke-width="2.5" />
+            <text x="170" y="202" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle">PYRAMID</text>
+
+            <!-- Dynamic Palace Position: Next to OR Behind the Pyramid -->
+            <g id="palace-svg-group" style="transform: translate(${isNext ? '240px, 130px' : '150px, 90px'}); transition: transform 0.4s ease;">
+              <!-- Palace Building with Columns -->
+              <rect x="0" y="0" width="70" height="80" rx="4" fill="#f8fafc" stroke="#334155" stroke-width="2.5" />
+              <rect x="10" y="20" width="8" height="60" fill="#cbd5e1" />
+              <rect x="30" y="20" width="8" height="60" fill="#cbd5e1" />
+              <rect x="52" y="20" width="8" height="60" fill="#cbd5e1" />
+              <polygon points="-5,0 35,-22 75,0" fill="#0284c7" stroke="#0369a1" stroke-width="2" />
+              <text x="35" y="45" font-size="10" font-weight="900" fill="#0284c7" text-anchor="middle">PALACE</text>
+            </g>
+
+            <!-- Dynamic Guard Position: Standing guard -->
+            <g id="guard-svg-group" style="transform: translate(${isNext ? '50px, 155px' : '260px, 155px'}); transition: transform 0.4s ease;">
+              <!-- Guard Shield in Hand -->
+              <ellipse cx="25" cy="30" rx="14" ry="22" fill="#d97706" stroke="#78350f" stroke-width="2" />
+              <line x1="25" y1="12" x2="25" y2="48" stroke="#fef08a" stroke-width="2" />
+              <!-- Guard Head -->
+              <circle cx="12" cy="18" r="8" fill="#fbcfe8" stroke="#451a03" stroke-width="1.5" />
+              <!-- Guard Spear -->
+              <line x1="5" y1="2" x2="5" y2="52" stroke="#475569" stroke-width="2.5" />
+              <text x="25" y="65" font-size="9" font-weight="900" fill="#78350f" text-anchor="middle">GUARD</text>
+            </g>
+
+            <!-- Interactive Mini Senet Board (Bottom Front) -->
+            <g id="senet-mini-board" transform="translate(100, 240)">
+              <rect x="0" y="0" width="180" height="34" rx="4" fill="#78350f" stroke="#451a03" stroke-width="2" />
+              <!-- 6 Squares -->
+              ${[0,1,2,3,4,5].map(function(sq) {
+                return `<rect x="${sq * 30}" y="0" width="30" height="34" fill="${sq%2===0?'#fde68a':'#fed7aa'}" stroke="#78350f" stroke-width="1"/>`;
+              }).join('')}
+              <!-- Active Pawn -->
+              <circle cx="${PopUpController.ch4.senetPawnPos * 30 + 15}" cy="17" r="9" fill="#0284c7" stroke="#ffffff" stroke-width="2" />
+            </g>
+          </svg>
+        `;
+
+        tray.innerHTML = `
+          <div class="measurement-readout-pill">
+            <span>Map Position: <b style="color:var(--egypt-blue)">${isNext ? 'Next to the Pyramid' : 'Behind the Pyramid'}</b></span>
+            <span>Senet Turn: <b style="color:var(--gold-royal)">${PopUpController.ch4.senetTurn === 'player' ? '“It’s my turn!”' : '“It’s your turn!”'}</b></span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; gap:8px;">
+            <button type="button" class="btn-tactile ${isNext ? 'btn-emerald' : 'btn-ghost'}" id="btn-pos-next" style="flex:1;">
+              <span>👉</span> The palace is next to the pyramid
+            </button>
+            <button type="button" class="btn-tactile ${!isNext ? 'btn-emerald' : 'btn-ghost'}" id="btn-pos-behind" style="flex:1;">
+              <span>👀</span> The palace is behind the pyramid
+            </button>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-tactile btn-cyan" id="btn-senet-step" style="flex:1;">
+              <span>🎲</span> Play Senet: "${PopUpController.ch4.senetTurn === 'player' ? 'My Turn!' : 'Your Turn!'}"
+            </button>
+            <button type="button" class="btn-tactile btn-tactile" id="btn-role-speech" style="flex:1;">
+              <span>👑</span> Speak Palace Role
+            </button>
+          </div>
+        `;
+
+        var bNext = document.getElementById('btn-pos-next');
+        var bBehind = document.getElementById('btn-pos-behind');
+        if (bNext) {
+          bNext.onclick = function () {
+            PopUpController.ch4.palacePos = 'next';
+            AudioEngine.playChiselStamp();
+            AudioEngine.speakText('The palace is next to the pyramid.');
+            renderPopUpLab(4);
+          };
+        }
+        if (bBehind) {
+          bBehind.onclick = function () {
+            PopUpController.ch4.palacePos = 'behind';
+            AudioEngine.playChiselStamp();
+            AudioEngine.speakText('The guard is behind the pyramid.');
+            renderPopUpLab(4);
+          };
+        }
+
+        var btnSenet = document.getElementById('btn-senet-step');
+        if (btnSenet) {
+          btnSenet.onclick = function () {
+            PopUpController.ch4.senetTurn = PopUpController.ch4.senetTurn === 'player' ? 'partner' : 'player';
+            PopUpController.ch4.senetPawnPos = (PopUpController.ch4.senetPawnPos + 1) % 6;
+            AudioEngine.playChiselStamp();
+            AudioEngine.speakText(PopUpController.ch4.senetTurn === 'player' ? 'It is my turn!' : 'It is your turn!');
+            renderPopUpLab(4);
+          };
+        }
+
+        var btnRole = document.getElementById('btn-role-speech');
+        if (btnRole) {
+          btnRole.onclick = function () {
+            AudioEngine.playRoyalFanfare();
+            AudioEngine.speakText('I am the Pharaoh. I wear a crown! I am a guard. I carry a shield!');
+            ConfettiEngine.burst(20);
+          };
+        }
+
+      } else if (chId === 5) {
+        /* -------------------------------------------------------------
+           CHAPTER 5 LAB: 7-ROUND MASTER ROYAL STAR CHALLENGE
+           ------------------------------------------------------------- */
+        var isAr = (currentLang === 'ar');
+        headerPill.innerHTML = isAr ? '<span>⭐</span> تحدي النجوم الملكي (7 جولات)' : '<span>⭐</span> The 7-Round Royal Star Challenge';
+
+        var questions = [
+          {
+            q: "1. What was the ancient pyramid built for?",
+            q_ar: "1. لماذا بنى قدماء المصريين الأهرامات؟",
+            opts: ["As a tomb for the Pharaoh", "As a school for guards", "As a market"],
+            opts_ar: ["كمقبرة ملكية لدفن الفرعون", "كمدرسة لتدريب الحراس", "كسوق تجاري للمواطنين"],
+            ans: 0,
+            feedback: "Correct! The pyramids were special tombs where Pharaohs were buried!",
+            feedback_ar: "إجابة صحيحة! بُنيت الأهرامات كمقابر خاصة يدفن فيها الفراعنة!"
+          },
+          {
+            q: "2. Look at the measurement: Pyramid A is 10 cm and Pyramid B is 15 cm. Which is taller?",
+            q_ar: "2. انظر للقياس: الهرم A ارتفاعه 10 سم والهرم B ارتفاعه 15 سم. أيهما Taller (أطول)؟",
+            opts: ["Pyramid A is taller", "Pyramid B is taller", "They are equal"],
+            opts_ar: ["الهرم A هو الأطول", "الهرم B هو الأطول", "كلاهما متساويان في الارتفاع"],
+            ans: 1,
+            feedback: "Brilliant! Pyramid B (15 cm) is taller than Pyramid A (10 cm)!",
+            feedback_ar: "رائع جداً! الهرم B (15 سم) أطول رأسياً من الهرم A (10 سم)!"
+          },
+          {
+            q: "3. What does 'Bigger' mean compared to 'Taller'?",
+            q_ar: "3. ما هو الفرق الدقيق بين Bigger وTaller في درس الأهرامات؟",
+            opts: ["Bigger = Larger in size/base · Taller = Higher from ground", "They mean the exact same thing", "Bigger means smaller"],
+            opts_ar: ["Bigger = أكبر حجماً وقاعدة · Taller = أطول عمودياً من الأرض", "الكلمتان تعنيان نفس الشيء تماماً", "Bigger تعني أصغر حجماً"],
+            ans: 0,
+            feedback: "Perfect distinction! 'Bigger' is size and base; 'Taller' is height from the ground!",
+            feedback_ar: "تمييز ممتاز! بيجر للحجم ومساحة القاعدة، وتولر للارتفاع الرأسي من الأرض!"
+          },
+          {
+            q: "4. What did ancient Egyptians write on?",
+            q_ar: "4. على ماذا كان يكتب قدماء المصريين؟",
+            opts: ["Plastic sheets", "Papyrus made from river reeds", "Computer screens"],
+            opts_ar: ["صفائح بلاستيكية", "ورق البردي المصنوع من قصب النهر", "شاشات حاسوب حديثة"],
+            ans: 1,
+            feedback: "Yes! Ancient Egyptians made papyrus paper from green river plants!",
+            feedback_ar: "أحسنت! صنع المصريون القدماء ورق البردي من نباتات النهر الخضراء!"
+          },
+          {
+            q: "5. Complete the sentence: 'I am a guard. I ______ a shield.'",
+            q_ar: "5. أكمل الجملة الصحيحة: 'I am a guard. I ______ a shield.'",
+            opts: ["carry", "wear on my head", "eat"],
+            opts_ar: ["carry (يحمل باليد)", "wear on my head (يرتدي على الرأس)", "eat (يأكل)"],
+            ans: 0,
+            feedback: "Awesome! The guard CARRIES a shield, while the Pharaoh WEARS a crown!",
+            feedback_ar: "ممتاز! الحارس CARRIES (يحمل) الدرع، بينما الفرعون WEARS (يرتدي) التاج!"
+          },
+          {
+            q: "6. When the palace stands side by side with the pyramid, where is it?",
+            q_ar: "6. عندما يقف القصر جنباً إلى جنب مع الهرم، ما هو الوصف الصحيح لموقعه؟",
+            opts: ["Under the river", "Behind the mountain", "Next to the pyramid"],
+            opts_ar: ["Under the river (تحت النهر)", "Behind the mountain (خلف الجبل)", "Next to the pyramid (بجانب الهرم)"],
+            ans: 2,
+            feedback: "Well done! The palace is next to the pyramid!",
+            feedback_ar: "أصبت! القصر بجانب الهرم (Next to the pyramid)!"
+          },
+          {
+            q: "7. When passing the turn in the ancient game of Senet, what do you say?",
+            q_ar: "7. عندما يفرغ دورك في لعبة السنت وتريد من زميلك أن يلعب، ماذا تقول؟",
+            opts: ["“It's your turn!”", "“Goodbye!”", "“Stop playing!”"],
+            opts_ar: ["“It's your turn!” (دورك الآن!)", "“Goodbye!” (وداعاً!)", "“Stop playing!” (توقف عن اللعب!)"],
+            ans: 0,
+            feedback: "Great turn-taking! You say: 'It's your turn!' and your friend says: 'It's my turn!'",
+            feedback_ar: "تبادل أدوار رائع! تقول: 'It's your turn!' ويقول زميلك: 'It's my turn!'"
+          }
+        ];
+
+        var curQ = questions[PopUpController.ch5.roundIndex];
+        var isLast = PopUpController.ch5.roundIndex >= questions.length - 1;
+
+        if (PopUpController.ch5.completed) {
+          /* Royal Explorer Trophy Finale */
+          stand.innerHTML = `
+            <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+              <rect x="40" y="30" width="300" height="230" rx="14" fill="#fffbeb" stroke="#d97706" stroke-width="4" />
+              <text x="190" y="80" font-size="24" font-weight="900" fill="#78350f" text-anchor="middle">${isAr ? '👑 مستكشف المملكة الملكي 👑' : '👑 ROYAL EXPLORER 👑'}</text>
+              <text x="190" y="112" font-size="15" font-weight="800" fill="#b45309" text-anchor="middle">${isAr ? 'شهادة استكشاف مصر القديمة' : 'Ancient Egypt Kingdom Certificate'}</text>
+              
+              <!-- 3 Golden Stars -->
+              <text x="130" y="170" font-size="44" fill="#f59e0b">⭐</text>
+              <text x="190" y="160" font-size="52" fill="#f59e0b">⭐</text>
+              <text x="250" y="170" font-size="44" fill="#f59e0b">⭐</text>
+
+              <text x="190" y="215" font-size="16" font-weight="900" fill="#047857" text-anchor="middle">
+                ${isAr ? `النتيجة: ${PopUpController.ch5.score} / 7 إجابات صحيحة!` : `Score: ${PopUpController.ch5.score} / 7 Correct!`}
+              </text>
+              <text x="190" y="240" font-size="13" font-weight="700" fill="#64748b" text-anchor="middle">
+                ${isAr ? '«لقد ساعدت الفرعون وشاركت في بناء المملكة بنجاح!»' : '“You saved the Pharaoh’s Kingdom!”'}
+              </text>
+            </svg>
+          `;
+
+          tray.innerHTML = `
+            <div class="measurement-readout-pill" style="justify-content:center; background:#ecfdf5; border-color:#10b981;">
+              <span style="color:#047857; font-size:15px;">${isAr ? '🎉 مبارك! أنت الآن كاتب ومستكشف رسمي في المملكة الفرعونية!' : '🎉 Congratulations! You are an Official Kingdom Scribe & Explorer!'}</span>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="btn-tactile btn-emerald" id="btn-replay-quiz" style="flex:1;">
+                <span>🔄</span> ${isAr ? 'إعادة التحدي من جديد' : 'Play Challenge Again'}
+              </button>
+            </div>
+          `;
+
+          var btnReplay = document.getElementById('btn-replay-quiz');
+          if (btnReplay) {
+            btnReplay.onclick = function () {
+              PopUpController.ch5.roundIndex = 0;
+              PopUpController.ch5.score = 0;
+              PopUpController.ch5.answered = false;
+              PopUpController.ch5.completed = false;
+              renderPopUpLab(5);
+            };
+          }
+
+        } else {
+          /* Active Question Display */
+          var activeQText = (isAr && curQ.q_ar) ? curQ.q_ar : curQ.q;
+          var activeOpts = (isAr && curQ.opts_ar) ? curQ.opts_ar : curQ.opts;
+          var activeFeedback = (isAr && curQ.feedback_ar) ? curQ.feedback_ar : curQ.feedback;
+
+          stand.innerHTML = `
+            <svg viewBox="0 0 380 290" width="100%" height="100%" style="overflow:visible;">
+              <rect x="30" y="30" width="320" height="230" rx="14" fill="#ffffff" stroke="#e2d8ba" stroke-width="2.5" />
+              <!-- Round Badge -->
+              <rect x="50" y="18" width="130" height="26" rx="13" fill="#f59e0b" />
+              <text x="115" y="35" font-size="12" font-weight="900" fill="#ffffff" text-anchor="middle">${isAr ? `الجولة ${PopUpController.ch5.roundIndex + 1} من 7` : `ROUND ${PopUpController.ch5.roundIndex + 1} OF 7`}</text>
+
+              <!-- Star Score Meter -->
+              <text x="290" y="36" font-size="14" font-weight="900" fill="#d97706">⭐ ${PopUpController.ch5.score} ${isAr ? 'نجوم' : 'Stars'}</text>
+
+              <!-- Question Text -->
+              <foreignObject x="45" y="55" width="290" height="90">
+                <div xmlns="http://www.w3.org/1999/xhtml" style="font-size:14.5px; font-weight:800; color:#1e293b; line-height:1.35; font-family:var(--font-display); direction:${isAr ? 'rtl' : 'ltr'}; text-align:${isAr ? 'right' : 'left'};">
+                  ${activeQText}
+                </div>
+              </foreignObject>
+
+              <!-- Illustrated Pharaoh/Pyramid Mascot -->
+              <circle cx="190" cy="195" r="38" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+              <text x="190" y="206" font-size="34" text-anchor="middle">👑</text>
+            </svg>
+          `;
+
+          tray.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${activeOpts.map(function(optText, optIdx) {
+                return `
+                  <button type="button" class="btn-tactile btn-ghost quiz-opt-btn" data-idx="${optIdx}" style="text-align:${isAr ? 'right' : 'left'}; justify-content:flex-start; padding:10px 14px; font-size:13.5px; direction:${isAr ? 'rtl' : 'ltr'};">
+                    <span>${isAr ? '👈' : '👉'}</span> ${optText}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            <div id="quiz-feedback-box" style="display:none; font-size:13px; font-weight:800; color:#047857; text-align:center;"></div>
+          `;
+
+          var optBtns = tray.querySelectorAll('.quiz-opt-btn');
+          optBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              if (PopUpController.ch5.answered) return;
+              PopUpController.ch5.answered = true;
+              var choice = +this.getAttribute('data-idx');
+              var fbBox = document.getElementById('quiz-feedback-box');
+
+              if (choice === curQ.ans) {
+                this.classList.remove('btn-ghost');
+                this.classList.add('btn-emerald');
+                PopUpController.ch5.score++;
+                AudioEngine.playCorrectChord();
+                ConfettiEngine.burst(24);
+                if (fbBox) {
+                  fbBox.style.display = 'block';
+                  fbBox.textContent = activeFeedback;
+                }
+              } else {
+                this.classList.remove('btn-ghost');
+                this.classList.add('btn-crimson');
+                AudioEngine.playSoftHint();
+                if (fbBox) {
+                  fbBox.style.display = 'block';
+                  fbBox.style.color = '#b45309';
+                  fbBox.textContent = (isAr ? "محاولة جيدة! " : "Good try! ") + activeFeedback;
+                }
+              }
+
+              setTimeout(function() {
+                if (isLast) {
+                  PopUpController.ch5.completed = true;
+                  AudioEngine.playRoyalFanfare();
+                  ConfettiEngine.burst(50);
+                } else {
+                  PopUpController.ch5.roundIndex++;
+                  PopUpController.ch5.answered = false;
+                }
+                renderPopUpLab(5);
+              }, 1450);
+            });
+          });
+        }
+      }
+    }
+
+    /* ==========================================================================
+       BOOK SPREAD RENDERER (LEFT PAGE + NAVIGATION SYNCHRONIZATION)
+       ========================================================================== */
+    function renderBook(chapterIdx) {
+      if (chapterIdx < 1) chapterIdx = 1;
+      if (chapterIdx > CHAPTERS.length) chapterIdx = CHAPTERS.length;
+      PopUpController.activeChapter = chapterIdx;
+
+      var ch = CHAPTERS[chapterIdx - 1];
+      var isAr = (currentLang === 'ar');
+      var narr = (isAr && ch.narrative_ar) ? ch.narrative_ar : ch.narrative;
+      var title = (isAr && ch.title_ar) ? ch.title_ar : ch.title;
+      var tag = (isAr && ch.tag_ar) ? ch.tag_ar : ch.tag;
+      var formulaLabel = isAr ? 'صيغة الدرس المستهدفة' : 'Target Language Formula';
+      var tabLabel = isAr ? '👆 ارفع اللسان الورقي لكشف الإجابة' : '👆 Lift Paper Tab to Reveal Answer';
+
+      /* Render Left Page Narrative */
+      var pageLeft = document.getElementById('page-left');
+      if (pageLeft) {
+        var vocabHtml = narr.vocabList.map(function (v) {
+          return `<div style="margin-bottom:6px;"><b>${v.w}:</b> ${v.m}</div>`;
+        }).join('');
+
+        pageLeft.innerHTML = `
+          <div class="chapter-tag">${tag}</div>
+          <h1 class="page-title">${title}</h1>
+          <div class="curiosity-hook">${narr.hook}</div>
+          
+          <div class="lesson-narrative">
+            <p style="margin-bottom:8px;">${narr.intro}</p>
+            <div style="background:rgba(255,255,255,0.7); border-radius:10px; padding:10px 14px; border:1px solid #ebdcb3; margin:8px 0;">
+              ${vocabHtml}
+            </div>
+          </div>
+
+          <div class="target-formula-box">
+            <div class="target-formula-label">
+              <span>🎯</span> ${formulaLabel}
+            </div>
+            <div class="target-formula-text">
+              <bdi dir="ltr">“${narr.targetFormula}”</bdi>
+            </div>
+          </div>
+
+          <div class="sticky-note">
+            ${narr.sticky}
+          </div>
+
+          <div class="flap-container">
+            <div class="flap-header">
+              <span>💡</span> ${narr.predictFlap.title}
+            </div>
+            <div class="flap-question">${narr.predictFlap.q}</div>
+            <div class="flap-tab" id="flap-tab-trigger">
+              <span>${tabLabel}</span>
+              <span>▼</span>
+            </div>
+            <div class="flap-hidden-content" id="flap-hidden-box">
+              ${narr.predictFlap.reveal}
+            </div>
+          </div>
+        `;
+
+        /* Attach Predict & Reveal Flap Click */
+        var flapTrigger = document.getElementById('flap-tab-trigger');
+        var flapBox = document.getElementById('flap-hidden-box');
+        if (flapTrigger && flapBox) {
+          flapTrigger.addEventListener('click', function () {
+            flapBox.classList.toggle('open');
+            AudioEngine.playPageTurn();
+          });
+        }
+      }
+
+      /* Render Right Page Pop-Up Lab */
+      renderPopUpLab(chapterIdx);
+
+      /* Update Chapter Dots in Navigation Dock */
+      var dotsContainer = document.getElementById('chapter-dots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (var i = 1; i <= CHAPTERS.length; i++) {
+          var dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'chapter-dot-btn' + (i === chapterIdx ? ' active' : '');
+          dot.textContent = i;
+          dot.setAttribute('data-ch', i);
+          dot.onclick = (function (cNum) {
+            return function () {
+              AudioEngine.playPageTurn();
+              renderBook(cNum);
+            };
+          })(i);
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      /* Play subtle spring pop-up effect on the 3D stand */
+      setTimeout(function () {
+        var stand = document.getElementById('origami-stand');
+        if (stand) {
+          stand.style.transform = 'rotateX(0deg) translateZ(18px)';
+        }
+      }, 50);
+    }
+
+    /* ==========================================================================
+       GLOBAL INITIALIZATION & EVENT WIRING
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', function () {
+      /* Render Startup Chapter 1 */
+      renderBook(1);
+
+      /* Language Toggle Button */
+      var btnLangToggle = document.getElementById('btn-lang-toggle');
+      if (btnLangToggle) {
+        btnLangToggle.addEventListener('click', function () {
+          currentLang = (currentLang === 'en' ? 'ar' : 'en');
+          var isAr = (currentLang === 'ar');
+          document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+          document.documentElement.setAttribute('lang', isAr ? 'ar' : 'en');
+
+          var lbl = document.getElementById('btn-lang-label');
+          if (lbl) lbl.textContent = isAr ? 'English' : 'عربي';
+
+          var readLbl = document.getElementById('lbl-read-aloud');
+          if (readLbl) readLbl.textContent = isAr ? 'استمع' : 'Listen';
+
+          var teachLbl = document.getElementById('lbl-teacher-mode');
+          if (teachLbl) {
+            var isTM = document.body.classList.contains('teacher-mode-active');
+            teachLbl.textContent = isTM ? (isAr ? 'خروج من وضع المعلم' : 'Exit Teacher Mode') : (isAr ? 'وضع المعلم' : 'Teacher Mode');
+          }
+
+          var sndLbl = document.getElementById('lbl-sound-toggle');
+          if (sndLbl) {
+            var isM = AudioEngine.isMuted();
+            sndLbl.textContent = isM ? (isAr ? 'مكتوم' : 'Muted') : (isAr ? 'الصوت' : 'Sound');
+          }
+
+          var hmLbl = document.getElementById('lbl-home-btn');
+          if (hmLbl) hmLbl.textContent = isAr ? 'الرئيسية' : 'Home';
+
+          var bPrev = document.getElementById('btn-prev-page');
+          var bNext = document.getElementById('btn-next-page');
+          if (bPrev) bPrev.innerHTML = isAr ? '<span>→</span> السابق' : '<span>←</span> Previous';
+          if (bNext) bNext.innerHTML = isAr ? 'التالي <span>←</span>' : 'Next <span>→</span>';
+
+          AudioEngine.playPageTurn();
+          renderBook(PopUpController.activeChapter);
+        });
+      }
+
+      /* Prev & Next Buttons */
+      var btnPrev = document.getElementById('btn-prev-page');
+      var btnNext = document.getElementById('btn-next-page');
+
+      if (btnPrev) {
+        btnPrev.addEventListener('click', function () {
+          if (PopUpController.activeChapter > 1) {
+            AudioEngine.playPageTurn();
+            renderBook(PopUpController.activeChapter - 1);
+          }
+        });
+      }
+
+      if (btnNext) {
+        btnNext.addEventListener('click', function () {
+          if (PopUpController.activeChapter < CHAPTERS.length) {
+            AudioEngine.playPageTurn();
+            renderBook(PopUpController.activeChapter + 1);
+          }
+        });
+      }
+
+      /* Keyboard Arrow Navigation */
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') {
+          if (PopUpController.activeChapter < CHAPTERS.length) {
+            AudioEngine.playPageTurn();
+            renderBook(PopUpController.activeChapter + 1);
+          }
+        } else if (e.key === 'ArrowLeft') {
+          if (PopUpController.activeChapter > 1) {
+            AudioEngine.playPageTurn();
+            renderBook(PopUpController.activeChapter - 1);
+          }
+        } else if (e.key === 'Escape') {
+          document.body.classList.remove('teacher-mode-active');
+        }
+      });
+
+      /* Read Aloud Button */
+      var btnReadAloud = document.getElementById('btn-read-aloud');
+      if (btnReadAloud) {
+        btnReadAloud.addEventListener('click', function () {
+          var ch = CHAPTERS[PopUpController.activeChapter - 1];
+          if (ch) {
+            AudioEngine.playCorrectChord();
+            var textToSpeak = (currentLang === 'ar' && ch.readAloudText_ar) ? ch.readAloudText_ar : ch.readAloudText;
+            AudioEngine.speakText(textToSpeak);
+          }
+        });
+      }
+
+      /* Teacher Mode Toggle Button */
+      var btnTeacherMode = document.getElementById('btn-teacher-mode');
+      if (btnTeacherMode) {
+        btnTeacherMode.addEventListener('click', function () {
+          document.body.classList.toggle('teacher-mode-active');
+          AudioEngine.playPageTurn();
+          var isActive = document.body.classList.contains('teacher-mode-active');
+          var isAr = (currentLang === 'ar');
+          btnTeacherMode.innerHTML = isActive ? (isAr ? '<span>✕</span> خروج من وضع المعلم' : '<span>✕</span> Exit Teacher Mode') : (isAr ? '<span>📺</span> وضع المعلم' : '<span>📺</span> Teacher Mode');
+        });
+      }
+
+      /* Sound Mute Toggle */
+      var btnSoundToggle = document.getElementById('btn-sound-toggle');
+      if (btnSoundToggle) {
+        btnSoundToggle.addEventListener('click', function () {
+          var isMuted = AudioEngine.toggleMute();
+          var isAr = (currentLang === 'ar');
+          btnSoundToggle.innerHTML = isMuted ? (isAr ? '<span>🔇</span> مكتوم' : '<span>🔇</span> Muted') : (isAr ? '<span>🔔</span> الصوت' : '<span>🔔</span> Sound');
+          if (!isMuted) AudioEngine.playCorrectChord();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

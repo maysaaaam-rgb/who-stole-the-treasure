@@ -1,5 +1,5 @@
 /* Practice Island — the map: four big places, and one clear trail inside each place. Works on phone, tablet, computer and smartboard. */
-.isl-map-wrap.mp-wrap { display: block; position: relative; padding: 0; gap: 0; aspect-ratio: auto; min-height: 480px; max-height: none; height: calc(100vh - 150px); height: calc(100dvh - 150px); overflow: hidden; }
+.isl-map-wrap.mp-wrap { display: block; position: relative; padding: 0; gap: 0; aspect-ratio: auto; min-height: 500px; max-height: none; height: calc(100vh - 96px); height: calc(100dvh - 96px); overflow: hidden; cursor: pointer; }
 .mp-wrap { --spring: cubic-bezier(.175,.885,.32,1.275); }
 .mp-trail, .mp-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
 .mp-trail polyline, .mp-line polyline { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 2 13; vector-effect: non-scaling-stroke; opacity: .9; filter: drop-shadow(0 2px 2px rgba(0,0,0,.4)); }
@@ -7,17 +7,18 @@
 
 /* the island: four places */
 .mp-place { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); z-index: 5; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: #fff; transition: transform .15s var(--spring); }
-.mp-place:active { transform: translate(-50%, -50%) scale(.95); }
-.mp-place-pic { position: relative; display: block; width: clamp(92px, 12vw, 190px); height: clamp(92px, 12vw, 190px); }
-.mp-place-pic > img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 10px rgba(0,0,0,.4)); }
-.mp-place-friend { position: absolute; right: -18%; bottom: -2%; width: 50%; height: 50%; display: flex; align-items: flex-end; justify-content: center; }
-.mp-place-friend img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0,0,0,.4)); }
+.mp-place:hover { transform: translate(-50%, -53%) scale(1.04); }
+.mp-place:active { transform: translate(-50%, -48%) scale(.95); }
+.mp-place-pic { position: relative; display: block; width: clamp(78px, 9.5vw, 144px); height: clamp(78px, 9.5vw, 144px); }
+.mp-place-pic > img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 10px 12px rgba(0,0,0,.5)); }
+.mp-place-friend { position: absolute; right: -24%; bottom: -4%; width: 58%; height: 58%; display: flex; align-items: flex-end; justify-content: center; }
+.mp-place-friend img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 8px rgba(0,0,0,.5)); }
 .mp-place-friend .gm-emoji { font-size: clamp(30px, 4vw, 60px); line-height: 1; }
-.mp-place-label { display: flex; flex-direction: column; align-items: center; margin-top: -6px; padding: 6px 14px; border-radius: 16px; background: rgba(15,23,42,.88); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 4px solid #020617; box-shadow: 0 6px 16px rgba(0,0,0,.4); }
-.mp-place-label b { font-size: clamp(15px, 1.6vw, 26px); line-height: 1.1; white-space: nowrap; }
-.mp-place-label small { font-size: clamp(11px, 1vw, 16px); color: #7dd3fc; font-weight: 600; white-space: nowrap; }
-.mp-place-label em { font-style: normal; font-weight: 800; font-size: clamp(14px, 1.3vw, 22px); color: #fde68a; white-space: nowrap; }
-.mp-place.next .mp-place-pic { animation: mpBob 1.5s ease-in-out infinite; }
+.mp-place-label { display: flex; flex-direction: column; align-items: center; margin-top: -4px; padding: 5px 13px; border-radius: 16px; background: rgba(15,23,42,.90); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1.5px solid rgba(255,255,255,.22); border-bottom: 4px solid #020617; box-shadow: 0 6px 16px rgba(0,0,0,.45); }
+.mp-place-label b { font-size: clamp(14px, 1.45vw, 23px); line-height: 1.1; white-space: nowrap; }
+.mp-place-label small { font-size: clamp(10px, .95vw, 15px); color: #7dd3fc; font-weight: 600; white-space: nowrap; }
+.mp-place-label em { font-style: normal; font-weight: 800; font-size: clamp(13px, 1.2vw, 20px); color: #fde68a; white-space: nowrap; }
+.mp-place.next .mp-place-pic { animation: mpBob 1.6s ease-in-out infinite; }
 .mp-place.next .mp-place-label { box-shadow: 0 0 0 3px #fde047, 0 0 22px 4px rgba(253,224,71,.6); }
 .mp-place.finished .mp-place-label em { color: #6ee7b7; }
 .mp-place.locked .mp-place-pic > img { filter: grayscale(.85) brightness(.9) drop-shadow(0 8px 8px rgba(0,0,0,.35)); opacity: .9; }
@@ -25,55 +26,102 @@
 .mp-place.locked .mp-place-label em { color: #cbd5e1; font-size: clamp(12px, 1.1vw, 18px); }
 .mp-place.locked .mp-place-label small { display: none; }
 @keyframes mpBob { 50% { transform: translateY(-9px); } }
-.isl-map-monster.mp-monster { position: absolute; left: calc(var(--x) * 1% - clamp(50px, 6vw, 96px)); top: calc(var(--y) * 1% - clamp(6px, 1vw, 16px)); transform: translate(-50%, -50%); z-index: 6; width: clamp(64px, 7vw, 110px); height: auto; transition: none; }
+
+/* Walkable pupil monster on the main island map */
+.isl-map-monster.mp-monster { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -65%); z-index: 8; width: clamp(68px, 7.2vw, 112px); height: auto; transition: left .48s var(--spring), top .48s var(--spring); cursor: pointer; }
 .mp-monster .isl-map-monster-sprite, .mp-monster svg { width: 100%; height: auto; display: block; }
-.mp-wrap .isl-daily-card { top: 10px; padding: 5px 14px 5px 8px; max-width: min(46%, 460px); z-index: 7; }
+.isl-map-mon-bubble { position: absolute; bottom: 96%; left: 50%; transform: translateX(-50%); background: #ffffff; color: #0f172a; font-size: clamp(11px, .95vw, 14px); font-weight: 800; padding: 3px 10px; border-radius: 12px; border: 2px solid #38bdf8; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.35); pointer-events: none; z-index: 9; }
+.isl-map-mon-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #ffffff; }
+.isl-map-monster.mon-hop .isl-map-monster-sprite { animation: mpMonHop .48s var(--spring); }
+@keyframes mpMonHop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-20px) scale(1.1); }
+}
+
+.mp-wrap .isl-daily-card { top: 10px; padding: 5px 14px 5px 8px; max-width: min(44%, 440px); z-index: 7; }
 .mp-wrap .isl-daily-card img { width: 34px; height: 34px; }
 .mp-wrap .gm-shells { z-index: 7; }
 .isl-shore-bottle.mp-bottle { right: 2%; bottom: 3%; left: auto; z-index: 7; }
 .mp-pip { left: 1.5%; bottom: 2%; z-index: 7; }
 
-/* one place: the trail */
-.mp-zone { background-color: #0b243b; background-size: cover; background-position: center; }
-.mp-zone::before { content: ''; position: absolute; inset: 0; background: rgba(6,9,17,.28); }
-.mp-zone-top { position: absolute; left: 0; right: 0; top: 0; z-index: 8; display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
-.mp-back { font: 800 clamp(16px, 1.6vw, 24px) Fredoka, sans-serif; color: #fff; background: #38bdf8; border: 0; border-bottom: 5px solid #0369a1; border-radius: 16px; min-height: 50px; padding: 6px 16px; cursor: pointer; transition: transform .12s var(--spring); }
+/* one place: the trail (grounded on the path, not floating in the sky) */
+.mp-zone { background-color: #0b243b; background-size: cover; background-position: center; cursor: default; }
+.mp-zone::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6,9,17,.12) 0%, rgba(6,9,17,.32) 100%); pointer-events: none; }
+.mp-zone-top { position: absolute; left: 0; right: 0; top: 0; z-index: 8; display: flex; align-items: center; gap: 10px; padding: 10px 12px; pointer-events: none; }
+.mp-zone-top .mp-back { pointer-events: auto; }
+.mp-back { font: 800 clamp(15px, 1.5vw, 22px) Fredoka, sans-serif; color: #fff; background: #38bdf8; border: 0; border-bottom: 5px solid #0369a1; border-radius: 16px; min-height: 48px; padding: 6px 16px; cursor: pointer; transition: transform .12s var(--spring); }
 .mp-back:active { transform: translateY(4px); border-bottom-width: 1px; }
-.mp-zone-name { display: flex; flex-direction: column; padding: 5px 16px; border-radius: 16px; background: rgba(15,23,42,.88); }
-.mp-zone-name b { font-size: clamp(18px, 2vw, 32px); line-height: 1.1; }
-.mp-zone-name small { color: #7dd3fc; font-weight: 600; font-size: clamp(12px, 1.1vw, 18px); }
-.mp-stop { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -38%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 2px; width: clamp(96px, 14vw, 210px); background: none; border: 0; padding: 0; cursor: pointer; color: #fff; font-family: inherit; }
-.mp-stop-disc { position: relative; display: flex; align-items: center; justify-content: center; width: clamp(66px, 7.6vw, 124px); height: clamp(66px, 7.6vw, 124px); border-radius: 50%; background: radial-gradient(circle at 40% 30%, #475569, #1e293b); border: 4px solid #fff; border-bottom-width: 9px; box-shadow: 0 8px 16px rgba(0,0,0,.45); transition: transform .12s var(--spring), border-bottom-width .12s; }
-.mp-stop:active .mp-stop-disc { transform: translateY(4px); border-bottom-width: 5px; }
-.mp-stop-icon { font-size: clamp(30px, 3.6vw, 60px); line-height: 1; }
-.mp-stop-disc i { position: absolute; left: -6px; top: -6px; width: clamp(24px, 2.2vw, 36px); height: clamp(24px, 2.2vw, 36px); border-radius: 50%; background: #f59e0b; color: #1f1300; font: 800 clamp(14px, 1.3vw, 21px) Fredoka, sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+.mp-zone-name { display: flex; flex-direction: column; padding: 5px 16px; border-radius: 16px; background: rgba(15,23,42,.88); border: 1px solid rgba(255,255,255,.18); }
+.mp-zone-name b { font-size: clamp(17px, 1.8vw, 28px); line-height: 1.1; }
+.mp-zone-name small { color: #7dd3fc; font-weight: 600; font-size: clamp(11px, 1vw, 16px); }
+
+.mp-stop { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -42%); z-index: 4; display: flex; flex-direction: column; align-items: center; gap: 3px; width: clamp(96px, 13vw, 195px); background: none; border: 0; padding: 0; cursor: pointer; color: #fff; font-family: inherit; }
+.mp-stop-disc { position: relative; display: flex; align-items: center; justify-content: center; width: clamp(68px, 7.6vw, 118px); height: clamp(68px, 7.6vw, 118px); border-radius: 50%; background: radial-gradient(circle at 40% 30%, #334155, #0f172a); border: 4px solid #fff; border-bottom-width: 8px; box-shadow: 0 10px 18px rgba(0,0,0,.5); transition: transform .12s var(--spring), border-bottom-width .12s; }
+.mp-stop:hover .mp-stop-disc { transform: translateY(-3px) scale(1.04); }
+.mp-stop:active .mp-stop-disc { transform: translateY(4px); border-bottom-width: 4px; }
+.mp-stop-icon { display: flex; align-items: center; justify-content: center; width: 76%; height: 76%; font-size: clamp(28px, 3.4vw, 54px); line-height: 1; }
+.mp-stop-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,.45)); }
+.mp-stop-disc i { position: absolute; left: -6px; top: -6px; width: clamp(24px, 2.2vw, 34px); height: clamp(24px, 2.2vw, 34px); border-radius: 50%; background: #f59e0b; color: #1f1300; font: 800 clamp(13px, 1.25vw, 19px) Fredoka, sans-serif; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
 .mp-stop.done .mp-stop-disc { background: radial-gradient(circle at 40% 30%, #34d399, #047857); }
 .mp-stop.next .mp-stop-disc { background: radial-gradient(circle at 40% 30%, #fde047, #f59e0b); animation: mpGlow 1.2s ease-in-out infinite; }
-@keyframes mpGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(253,224,71,.9), 0 8px 16px rgba(0,0,0,.45); transform: scale(1); } 50% { box-shadow: 0 0 0 16px rgba(253,224,71,0), 0 8px 16px rgba(0,0,0,.45); transform: scale(1.08); } }
-.mp-stop-title { max-width: 100%; padding: 3px 9px; border-radius: 10px; background: rgba(15,23,42,.88); font-weight: 700; font-size: clamp(12px, 1.2vw, 20px); line-height: 1.1; text-align: center; }
-.mp-stop-stars { min-height: 1.1em; color: #fde047; font-size: clamp(15px, 1.5vw, 24px); line-height: 1; text-shadow: 0 2px 3px rgba(0,0,0,.7); }
+@keyframes mpGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(253,224,71,.9), 0 8px 16px rgba(0,0,0,.45); transform: scale(1); } 50% { box-shadow: 0 0 0 14px rgba(253,224,71,0), 0 8px 16px rgba(0,0,0,.45); transform: scale(1.07); } }
+.mp-stop-title { max-width: 100%; padding: 3px 10px; border-radius: 10px; background: rgba(15,23,42,.90); border: 1px solid rgba(255,255,255,.18); font-weight: 700; font-size: clamp(12px, 1.15vw, 18px); line-height: 1.15; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+.mp-stop-stars { min-height: 1.1em; color: #fde047; font-size: clamp(14px, 1.4vw, 22px); line-height: 1; text-shadow: 0 2px 3px rgba(0,0,0,.7); }
 .mp-chest .mp-stop-disc img { width: 82%; height: 82%; object-fit: contain; }
-.mp-chest .mp-stop-disc { background: radial-gradient(circle at 40% 30%, #92400e, #451a03); }
-.mp-walker { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -100%); z-index: 6; width: clamp(62px, 7.4vw, 120px); pointer-events: auto; cursor: pointer; }
+.mp-chest .mp-stop-disc { background: radial-gradient(circle at 40% 30%, #b45309, #451a03); }
+
+.mp-walker { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-6%, -104%); z-index: 6; width: clamp(62px, 7.2vw, 114px); pointer-events: auto; cursor: pointer; }
 .mp-walker svg { width: 100%; height: auto; display: block; animation: mpBob 1.5s ease-in-out infinite; }
-.mp-friend { position: absolute; right: 1%; bottom: 2%; z-index: 7; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; }
+.mp-friend { position: absolute; right: 1.2%; bottom: 2%; z-index: 7; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; }
 .mp-friend button { pointer-events: auto; }
 .mp-friend .gm-bubble-mini { margin-bottom: 44px; max-width: 170px; }
-.mp-friend img, .mp-friend .gm-emoji { width: clamp(76px, 9vw, 150px); height: clamp(76px, 9vw, 150px); object-fit: contain; font-size: clamp(50px, 6vw, 100px); display: block; }
-.mp-starpath { position: absolute; left: 1%; bottom: 2%; z-index: 7; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 16px; background: rgba(15,23,42,.85); }
-.mp-stone { display: flex; flex-direction: column; align-items: center; justify-content: center; width: clamp(42px, 3.8vw, 62px); height: clamp(42px, 3.8vw, 62px); border-radius: 50%; border: 0; border-bottom: 4px solid #92400e; background: radial-gradient(circle at 40% 30%, #fde68a, #f59e0b); color: #451a03; font: 800 clamp(15px, 1.4vw, 22px) Fredoka, sans-serif; line-height: 1; cursor: pointer; }
+.mp-friend img, .mp-friend .gm-emoji { width: clamp(76px, 8.8vw, 144px); height: clamp(76px, 8.8vw, 144px); object-fit: contain; font-size: clamp(50px, 6vw, 100px); display: block; }
+.mp-starpath { position: absolute; left: 1.2%; bottom: 2%; z-index: 7; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 16px; background: rgba(15,23,42,.88); border: 1px solid rgba(255,255,255,.16); }
+.mp-stone { display: flex; flex-direction: column; align-items: center; justify-content: center; width: clamp(42px, 3.8vw, 60px); height: clamp(42px, 3.8vw, 60px); border-radius: 50%; border: 0; border-bottom: 4px solid #92400e; background: radial-gradient(circle at 40% 30%, #fde68a, #f59e0b); color: #451a03; font: 800 clamp(14px, 1.35vw, 20px) Fredoka, sans-serif; line-height: 1; cursor: pointer; }
 .mp-stone small { font-size: 9px; min-height: 9px; }
 .mp-stone.done { background: radial-gradient(circle at 40% 30%, #6ee7b7, #10b981); border-bottom-color: #047857; }
 
+/* 3D Glowing Stepping Stones between Zone Trail Stops (replaces floating paw emojis) */
+.mp-paw { position: absolute; z-index: 2; pointer-events: none; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffffff, #cbd5e1); border: 2px solid rgba(15,23,42,.5); box-shadow: 0 3px 6px rgba(0,0,0,.45); opacity: .88; }
+.mp-paw.walked { background: radial-gradient(circle at 35% 35%, #fef08a, #f59e0b); border-color: #ffffff; box-shadow: 0 0 12px rgba(253,224,71,.85), 0 3px 6px rgba(0,0,0,.45); opacity: 1; }
+
+/* Social World Hub: Class Plaza, Live Classmates on the Map, & My Beach Camp */
+.mp-hub { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); z-index: 6; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: #fff; transition: transform .15s var(--spring); }
+.mp-hub:hover { transform: translate(-50%, -53%) scale(1.06); }
+.mp-hub:active { transform: translate(-50%, -47%) scale(.95); }
+.mp-hub-pic { position: relative; display: block; width: clamp(68px, 8vw, 118px); height: clamp(68px, 8vw, 118px); animation: mpBob 2.2s ease-in-out infinite; }
+.mp-hub-pic > img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,.5)); }
+.mp-hub-subpic { position: absolute; left: -18%; bottom: -4%; width: 52% !important; height: 52% !important; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,.55)); }
+.mp-hub-badge { position: absolute; top: -6px; right: -14px; background: linear-gradient(135deg, #ec4899, #f59e0b); color: #fff; font-size: clamp(11px, .95vw, 14px); font-weight: 800; padding: 3px 9px; border-radius: 999px; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(236,72,153,.6); animation: mpGlow 1.3s ease-in-out infinite; white-space: nowrap; }
+.mp-hub-label { display: flex; flex-direction: column; align-items: center; margin-top: -4px; padding: 5px 12px; border-radius: 16px; background: rgba(15,23,42,.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 2px solid rgba(56,189,248,.45); border-bottom: 5px solid #020617; box-shadow: 0 6px 16px rgba(0,0,0,.45); }
+.mp-hub-plaza .mp-hub-label { border-color: rgba(236,72,153,.7); }
+.mp-hub-camp .mp-hub-label { border-color: rgba(16,185,129,.7); }
+.mp-hub-label b { font-size: clamp(13px, 1.25vw, 19px); line-height: 1.1; white-space: nowrap; color: #fef08a; }
+.mp-hub-label small { font-size: clamp(10px, .88vw, 13px); color: #bae6fd; font-weight: 700; white-space: nowrap; }
+
+.mp-classmate { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); z-index: 5; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: #fff; transition: transform .15s var(--spring); }
+.mp-classmate:hover { transform: translate(-50%, -54%) scale(1.08); }
+.mp-classmate:active { transform: translate(-50%, -46%) scale(.95); }
+.mp-classmate-mon { display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); animation: mpBob 2.6s ease-in-out infinite; }
+.mp-classmate:nth-child(2) .mp-classmate-mon { animation-delay: .5s; }
+.mp-classmate:nth-child(3) .mp-classmate-mon { animation-delay: 1s; }
+.mp-classmate-tag { margin-top: -6px; padding: 2px 9px; border-radius: 999px; background: rgba(15,23,42,.90); border: 1.5px solid rgba(253,224,71,.7); border-bottom: 3px solid #020617; font-size: clamp(11px, .92vw, 13px); font-weight: 800; color: #fde047; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+
 /* phones held upright */
 @media (max-aspect-ratio: 4/5) {
-  .isl-map-wrap.mp-wrap { height: calc(100dvh - 210px); min-height: 620px; border-radius: 18px; }
-  .mp-wrap .isl-daily-card { position: absolute; left: 50%; transform: translateX(-50%); width: 92%; max-width: none; top: 8px; justify-content: flex-start; }
-  .mp-wrap .gm-shells { top: 76px; right: 8px; }
-  .mp-place-pic { width: 104px; height: 104px; }
-  .mp-place-label { padding: 4px 8px; }
+  .isl-map-wrap.mp-wrap { height: max(600px, calc(100dvh - 150px)); min-height: 600px; border-radius: 18px; }
+  .mp-wrap .isl-daily-card { position: absolute; left: 50%; transform: translateX(-50%); width: 92%; max-width: none; top: 8px; justify-content: flex-start; padding: 4px 10px; }
+  .mp-wrap .isl-daily-card > div > div:last-child { display: none; }
+  .mp-wrap .gm-shells { top: auto; bottom: 8px; right: auto; left: 50%; transform: translateX(-50%); padding: 3px 8px; font-size: 13px; }
+  .mp-wrap .gm-shell img, .mp-wrap .gm-shell .gm-emoji { width: 18px; height: 18px; font-size: 15px; }
+  .mp-wrap .gm-map-pip.mp-pip img, .mp-wrap .gm-map-pip.mp-pip .gm-emoji { width: 56px; height: 56px; font-size: 40px; }
+  .mp-place { width: 46%; }
+  .mp-place-pic { width: 88px; height: 88px; }
+  .mp-place-label { width: 100%; box-sizing: border-box; padding: 4px 8px; }
+  .mp-place-label b, .mp-place-label small, .mp-place-label em { white-space: normal; text-align: center; }
   .mp-place-label b { font-size: 14px; }
   .mp-place-label small { font-size: 10px; }
+  .mp-place.locked .mp-place-label em { font-size: 11px; }
   .mp-line-h { display: none; }
   .mp-line-v { display: block; }
   .mp-stop { left: calc(var(--px) * 1%); top: calc(var(--py) * 1%); width: 150px; transform: translate(-50%, -50%); }
@@ -84,11 +132,18 @@
   .mp-friend img, .mp-friend .gm-emoji { width: 72px; height: 72px; font-size: 48px; }
   .mp-starpath { left: 50%; transform: translateX(-50%); bottom: 4px; padding: 3px 6px; }
   .mp-stone { width: 40px; height: 40px; }
+  .isl-shore-bottle.mp-bottle { width: 48px; height: 48px; }
+  .mp-classmate { display: none; }
+  .mp-hub-pic { width: 56px; height: 56px; }
+  .mp-hub-label { padding: 3px 8px; }
+  .mp-hub-label b { font-size: 12px; }
+  .mp-hub-label small { display: none; }
 }
+
 /* phones held sideways */
 @media (max-height: 520px) and (min-aspect-ratio: 1/1) {
-  .isl-map-wrap.mp-wrap { min-height: 340px; height: 92vh; }
-  .mp-place-pic { width: 70px; height: 70px; }
+  .isl-map-wrap.mp-wrap { height: max(330px, 90vh); min-height: 330px; }
+  .mp-place-pic { width: 68px; height: 68px; }
   .mp-place-label { padding: 2px 8px; margin-top: -4px; }
   .mp-place-label b { font-size: 13px; }
   .mp-place-label small { display: none; }
@@ -97,120 +152,50 @@
   .mp-stop-disc { width: 56px; height: 56px; }
   .mp-stop-icon { font-size: 26px; }
   .mp-friend { display: none; }
+  .mp-classmate { display: none; }
+  .mp-hub-pic { width: 48px; height: 48px; }
+  .mp-hub-label { padding: 2px 7px; }
+  .mp-hub-label b { font-size: 11px; }
+  .mp-hub-label small { display: none; }
 }
+
 @media (prefers-reduced-motion: reduce) { .mp-wrap * { animation: none !important; } }
 
 /* phones: a small top bar, so the map gets the screen */
 @media (max-width: 600px), (max-height: 520px) {
-  .isl-topbar { padding: 6px 8px; gap: 5px; }
-  .isl-topbar .isl-pupil-chip { padding: 3px 10px 3px 4px; }
-  .isl-topbar .isl-avatar-mini { width: 36px; height: 36px; }
-  .isl-topbar .isl-pupil-name { font-size: 14px; }
-  .isl-topbar .isl-pupil-lvl { font-size: 11px; }
+  .isl-topbar { padding: 5px 8px; gap: 4px; }
+  .isl-topbar .isl-pupil-chip { padding: 3px 8px 3px 4px; }
+  .isl-topbar .isl-avatar-mini { width: 34px; height: 34px; }
+  .isl-topbar .isl-pupil-name { font-size: 13px; }
+  .isl-topbar .isl-pupil-lvl { font-size: 10px; }
   .isl-topbar .isl-lvl-bar { display: none; }
   .isl-topbar .isl-stats-row { gap: 4px; flex-wrap: wrap; margin: 0; }
-  .isl-topbar .isl-pill { font-size: 12px; padding: 2px 8px; min-height: 0; }
-  .isl-topbar .isl-pill img { width: 16px; height: 16px; }
-  .isl-topbar .isl-stats-row .isl-btn { min-height: 34px !important; padding: 2px 8px !important; font-size: 12px !important; }
+  .isl-topbar .isl-pill { font-size: 11px; padding: 2px 7px; min-height: 0; }
+  .isl-topbar .isl-pill img { width: 15px; height: 15px; }
+  .isl-topbar .isl-stats-row .isl-btn { min-height: 32px !important; padding: 2px 7px !important; font-size: 11px !important; }
   .isl-topbar .isl-actions-row { display: flex; flex-wrap: nowrap; gap: 4px; width: 100%; margin: 0; }
-  .isl-topbar .isl-actions-row .isl-btn { flex: 1 1 0; min-width: 0; min-height: 46px; padding: 3px 2px; font-size: 12px; line-height: 1.1; white-space: normal; }
+  .isl-topbar .isl-actions-row .isl-btn { flex: 1 1 0; min-width: 0; min-height: 40px; padding: 3px 2px; font-size: 11px; line-height: 1.1; white-space: normal; }
   .isl-main { padding: 4px; }
 }
+
 /* these two were moved around by an older phone rule */
 .mp-wrap .gm-shells { position: absolute; top: 12px; right: 14px; bottom: auto; left: auto; transform: none; }
 .mp-wrap .gm-map-pip.mp-pip { position: absolute; left: 1.5%; bottom: 2%; align-self: auto; transform: none; }
+.mp-wrap .isl-map-monster.mp-monster { display: block; position: absolute; inset: auto; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); margin: 0; }
 
-@media (max-aspect-ratio: 4/5) {
-  .isl-map-wrap.mp-wrap { height: max(600px, calc(100dvh - 170px)); min-height: 600px; }
-  .mp-wrap .isl-daily-card > div > div:last-child { display: none; }
-  .mp-wrap .isl-daily-card { padding: 4px 10px; }
-  .mp-wrap .gm-shells { top: auto; bottom: 8px; right: auto; left: 50%; transform: translateX(-50%); padding: 3px 8px; font-size: 13px; }
-  .mp-wrap .gm-shell img, .mp-wrap .gm-shell .gm-emoji { width: 18px; height: 18px; font-size: 15px; }
-  .mp-wrap .gm-map-pip.mp-pip img, .mp-wrap .gm-map-pip.mp-pip .gm-emoji { width: 56px; height: 56px; font-size: 40px; }
-  .mp-place { width: 46%; }
-  .mp-place-pic { width: 92px; height: 92px; }
-  .mp-place-label { width: 100%; box-sizing: border-box; }
-  .mp-place-label b, .mp-place-label small, .mp-place-label em { white-space: normal; text-align: center; }
-  .mp-place.locked .mp-place-label em { font-size: 11px; }
-  .isl-shore-bottle.mp-bottle { width: 48px; height: 48px; }
-}
-@media (max-height: 520px) and (min-aspect-ratio: 1/1) {
-  .isl-map-wrap.mp-wrap { height: max(330px, 90vh); min-height: 330px; }
-  .isl-topbar .isl-actions-row { width: auto; flex: 1 1 100%; }
-  .mp-wrap .isl-daily-card { max-width: 40%; top: 4px; }
-  .mp-wrap .isl-daily-card > div > div:last-child { display: none; }
-  .mp-wrap .isl-daily-card > div > div:first-child { font-size: 12px !important; }
-  .mp-wrap .gm-shells { top: 4px; right: 6px; padding: 2px 6px; font-size: 12px; }
-  .mp-wrap .gm-shell img, .mp-wrap .gm-shell .gm-emoji { width: 16px; height: 16px; font-size: 14px; }
-  .mp-wrap .gm-map-pip.mp-pip img, .mp-wrap .gm-map-pip.mp-pip .gm-emoji { width: 44px; height: 44px; font-size: 32px; }
-  .isl-shore-bottle.mp-bottle { width: 40px; height: 40px; }
-  .isl-shore-bottle.mp-bottle .isl-bottle-tag { display: none; }
-  .mp-stone { width: 34px; height: 34px; font-size: 13px; }
-  .mp-starpath { padding: 2px 5px; gap: 3px; }
-}
-
-/* the monster stays on the island on every screen */
-.mp-wrap .isl-map-monster.mp-monster { display: block; position: absolute; inset: auto; left: calc(var(--x) * 1% - clamp(44px, 6vw, 96px)); top: calc(var(--y) * 1% - clamp(6px, 1vw, 16px)); margin: 0; }
 /* upright tablets: bigger than a phone */
 @media (max-aspect-ratio: 4/5) and (min-width: 601px) {
-  .mp-place-pic { width: clamp(92px, 21vw, 220px); height: clamp(92px, 21vw, 220px); }
-  .mp-place-label b { font-size: clamp(14px, 2.8vw, 30px); }
-  .mp-place-label small { font-size: clamp(10px, 1.8vw, 20px); }
-  .mp-place-label em, .mp-place.locked .mp-place-label em { font-size: clamp(11px, 2vw, 22px); }
-  .mp-stop { width: clamp(150px, 30vw, 300px); }
-  .mp-stop-disc { width: clamp(66px, 13vw, 150px); height: clamp(66px, 13vw, 150px); }
-  .mp-stop-icon { font-size: clamp(30px, 6.4vw, 76px); }
-  .mp-stop-title { font-size: clamp(12px, 2.4vw, 26px); }
-  .mp-stop-disc i { width: clamp(24px, 4vw, 44px); height: clamp(24px, 4vw, 44px); font-size: clamp(14px, 2.4vw, 26px); }
-  .mp-walker { width: clamp(62px, 12vw, 130px); left: calc(var(--px) * 1% + clamp(56px, 11vw, 130px)); }
-  .mp-zone-name b { font-size: clamp(18px, 3.4vw, 36px); }
-  .mp-friend img, .mp-friend .gm-emoji { width: clamp(72px, 13vw, 140px); height: clamp(72px, 13vw, 140px); }
-  .mp-stone { width: clamp(40px, 6vw, 66px); height: clamp(40px, 6vw, 66px); }
-}
-
-/* paw prints from stop to stop */
-.mp-paw { position: absolute; z-index: 2; pointer-events: none; filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0,0,0,.6)); opacity: .8; }
-.mp-paw.walked { filter: brightness(0) invert(1) sepia(1) saturate(9) hue-rotate(-12deg) drop-shadow(0 1px 2px rgba(0,0,0,.65)); opacity: 1; }
-/* the paw prints are placed by layPaws() in app.js; the monster stands beside the glowing stop so its number stays visible */
-.mp-wrap .mp-paw { line-height: 1; }
-.mp-walker { transform: translate(-6%, -104%); }
-@media (max-aspect-ratio: 4/5) { .mp-walker { transform: translate(-50%, -70%); } }
-.mp-zone-top { pointer-events: none; }
-.mp-zone-top .mp-back { pointer-events: auto; }
-
-
-/* Social World Hub: Class Plaza, Live Classmates on the Map, & My Beach Camp */
-.mp-hub { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); z-index: 5; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: #fff; transition: transform .15s var(--spring); }
-.mp-hub:hover { transform: translate(-50%, -53%) scale(1.05); }
-.mp-hub:active { transform: translate(-50%, -47%) scale(.95); }
-.mp-hub-pic { position: relative; display: block; width: clamp(68px, 8.2vw, 124px); height: clamp(68px, 8.2vw, 124px); animation: mpBob 2.2s ease-in-out infinite; }
-.mp-hub-pic > img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(0,0,0,.5)); }
-.mp-hub-badge { position: absolute; top: -6px; right: -14px; background: linear-gradient(135deg, #ec4899, #f59e0b); color: #fff; font-size: clamp(11px, 1vw, 15px); font-weight: 800; padding: 3px 9px; border-radius: 999px; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(236,72,153,.6); animation: mpGlow 1.3s ease-in-out infinite; white-space: nowrap; }
-.mp-hub-label { display: flex; flex-direction: column; align-items: center; margin-top: -6px; padding: 5px 12px; border-radius: 16px; background: rgba(15,23,42,.90); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 2px solid rgba(56,189,248,.45); border-bottom: 5px solid #020617; box-shadow: 0 6px 16px rgba(0,0,0,.45); }
-.mp-hub-plaza .mp-hub-label { border-color: rgba(236,72,153,.65); }
-.mp-hub-camp .mp-hub-label { border-color: rgba(16,185,129,.65); }
-.mp-hub-label b { font-size: clamp(13px, 1.3vw, 20px); line-height: 1.1; white-space: nowrap; color: #fef08a; }
-.mp-hub-label small { font-size: clamp(10px, .9vw, 14px); color: #bae6fd; font-weight: 700; white-space: nowrap; }
-
-.mp-classmate { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-50%, -50%); z-index: 5; display: flex; flex-direction: column; align-items: center; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: #fff; transition: transform .15s var(--spring); }
-.mp-classmate:hover { transform: translate(-50%, -54%) scale(1.08); }
-.mp-classmate:active { transform: translate(-50%, -46%) scale(.95); }
-.mp-classmate-mon { display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); animation: mpBob 2.6s ease-in-out infinite; }
-.mp-classmate:nth-child(2) .mp-classmate-mon { animation-delay: .5s; }
-.mp-classmate:nth-child(3) .mp-classmate-mon { animation-delay: 1s; }
-.mp-classmate-tag { margin-top: -6px; padding: 2px 9px; border-radius: 999px; background: rgba(15,23,42,.88); border: 1.5px solid rgba(253,224,71,.7); border-bottom: 3px solid #020617; font-size: clamp(11px, .95vw, 14px); font-weight: 800; color: #fde047; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
-
-@media (max-aspect-ratio: 4/5) {
-  .mp-classmate { display: none; }
-  .mp-hub-pic { width: 58px; height: 58px; }
-  .mp-hub-label { padding: 3px 8px; }
-  .mp-hub-label b { font-size: 12px; }
-  .mp-hub-label small { display: none; }
-}
-@media (max-height: 520px) and (min-aspect-ratio: 1/1) {
-  .mp-classmate { display: none; }
-  .mp-hub-pic { width: 50px; height: 50px; }
-  .mp-hub-label { padding: 2px 7px; }
-  .mp-hub-label b { font-size: 11px; }
-  .mp-hub-label small { display: none; }
+  .mp-place-pic { width: clamp(92px, 19vw, 200px); height: clamp(92px, 19vw, 200px); }
+  .mp-place-label b { font-size: clamp(14px, 2.6vw, 28px); }
+  .mp-place-label small { font-size: clamp(10px, 1.7vw, 18px); }
+  .mp-place-label em, .mp-place.locked .mp-place-label em { font-size: clamp(11px, 1.9vw, 20px); }
+  .mp-stop { width: clamp(150px, 28vw, 280px); }
+  .mp-stop-disc { width: clamp(66px, 12vw, 140px); height: clamp(66px, 12vw, 140px); }
+  .mp-stop-icon { font-size: clamp(30px, 6vw, 70px); }
+  .mp-stop-title { font-size: clamp(12px, 2.2vw, 24px); }
+  .mp-stop-disc i { width: clamp(24px, 3.8vw, 42px); height: clamp(24px, 3.8vw, 42px); font-size: clamp(14px, 2.2vw, 24px); }
+  .mp-walker { width: clamp(62px, 11vw, 124px); left: calc(var(--px) * 1% + clamp(56px, 10vw, 120px)); }
+  .mp-zone-name b { font-size: clamp(18px, 3.2vw, 34px); }
+  .mp-friend img, .mp-friend .gm-emoji { width: clamp(72px, 12vw, 136px); height: clamp(72px, 12vw, 136px); }
+  .mp-stone { width: clamp(40px, 5.8vw, 64px); height: clamp(40px, 5.8vw, 64px); }
 }
