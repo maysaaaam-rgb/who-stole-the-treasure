@@ -175,22 +175,55 @@
         qWrap.appendChild(passBox);
       }
       qWrap.appendChild(q);
-      var speakJudge = null;
+      var speakJudge = null, curSpeak = item.speak || item.frame || item.a;
       if (item.frame) {
-        var frameBox = h('div', { class: 'gm-qframe' }, [
-          h('div', { class: 'gm-qframe-txt', text: item.frame }),
-          btn('🔊 Hear Model', 'sm amber', function () { A().speak(item.speak || item.frame); })
+        var frameTxtEl = h('div', { class: 'gm-qframe-txt', text: item.frame });
+        var frameTop = h('div', { class: 'gm-qframe-top' }, [
+          frameTxtEl,
+          btn('🔊 Listen', 'sm amber', function () { A().speak(curSpeak); })
         ]);
+        var frameChildren = [];
+        if (item.act) {
+          frameChildren.push(h('div', { class: 'gm-qact', text: item.act }));
+        }
+        frameChildren.push(frameTop);
+        if (Array.isArray(item.words) && item.words.length) {
+          var wordsRow = h('div', { class: 'gm-qwords' }, [
+            h('span', { class: 'gm-qwords-lbl', text: '👆 Tap & Say:' })
+          ]);
+          item.words.forEach(function (wStr, wIdx) {
+            var pill = h('button', { type: 'button', class: 'gm-qword-pill' + (wIdx === 0 ? ' on' : ''), text: wStr });
+            pill.addEventListener('click', function () {
+              if (done) return;
+              A().play('tap');
+              [].forEach.call(wordsRow.querySelectorAll('.gm-qword-pill'), function (el) { el.classList.remove('on'); });
+              pill.classList.add('on');
+              var cleanW = String(wStr).replace(/^[^\wA-Za-z0-9']+\s*/, '').trim();
+              var built = item.tpl ? item.tpl.replace('{w}', cleanW) : cleanW;
+              curSpeak = built;
+              frameTxtEl.textContent = '🗣️ "' + built + '"';
+              try { A().speak(built); } catch (e) { /* ignore */ }
+            });
+            wordsRow.appendChild(pill);
+          });
+          frameChildren.push(wordsRow);
+        }
+        var frameBox = h('div', { class: 'gm-qframe' }, frameChildren);
         qWrap.appendChild(frameBox);
-        speakJudge = h('div', { class: 'gm-speak-judge', style: 'display:none' }, [
-          btn('🌟 Super Speaking & Acting! (Go!)', 'big green', function () {
+        speakJudge = h('div', { class: 'gm-speak-judge' }, [
+          btn('👏 1 Word / Action! (Go!)', 'big amber', function () {
             if (done) return;
             choice = item.a;
             finish(true);
           }),
-          btn('🗣️ Say Together & Go! 🔊', 'big cyan', function () {
+          btn('🌟 Short Sentence! (Go!)', 'big green', function () {
             if (done) return;
-            try { A().speak(item.speak || item.a); } catch (e) { /* ignore */ }
+            choice = item.a;
+            finish(true);
+          }),
+          btn('🔊 Repeat Together & Go!', 'big cyan', function () {
+            if (done) return;
+            try { A().speak(curSpeak); } catch (e) { /* ignore */ }
             choice = item.a;
             finish(true);
           })
@@ -235,7 +268,7 @@
       }
 
       function finish(ok) {
-        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried); if (picBox._reveal) picBox._reveal(); if (passBtn) passBtn.style.display = 'none'; if (speakJudge) speakJudge.style.display = 'none';
+        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried); if (picBox._reveal) picBox._reveal(); if (passBtn) passBtn.style.display = 'none'; if (speakJudge) speakJudge.style.display = 'none'; if (show) show.style.display = 'none';
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
         skipBtn.style.display = 'none';
@@ -259,9 +292,8 @@
         closeTm = setTimeout(function () { closeModal({ ok: ok, second: !!ok && retried }); }, reviewDelay);
       }
 
-      var show = btn(item.frame ? '🎤  Judge Speaking / Show Options' : '👀  Show the answers', 'huge amber', function () {
+      var show = btn(item.frame ? '👀  Or Pick A / B / C' : '👀  Show the answers', item.frame ? 'big ghost' : 'huge amber', function () {
         show.style.display = 'none'; A().play('flip');
-        if (speakJudge) speakJudge.style.display = '';
         if (item.speak && /^Listen\./i.test(item.q || '')) {
           try { A().speak(item.speak); } catch (e) { /* ignore */ }
         }
