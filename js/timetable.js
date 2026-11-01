@@ -114,7 +114,8 @@
     { id: 'g3-board', icon: '🎲', title: 'Unit 3 Arctic Board Game (The Bear and I)', route: 'unit3-board-game/index.html?grade=3', g: 3, unit: 3, kind: 'game', order: 6, added: '2026-10-12' },
     { id: 'g4-board', icon: '🎲', title: 'Unit 3 Money Board Game (How Much Is It?)', route: 'unit3-board-game/index.html?grade=4', g: 4, unit: 3, kind: 'game', order: 7, added: '2026-10-12' },
     { id: 'u1-rev', icon: '🎯', title: 'Unit 1 Revision Game', route: 'unit1-revision/index.html', g: 0, unit: 1, kind: 'game', order: 8, added: '2026-10-04' },
-    { id: 'library', icon: '📚', title: 'Lessons & Curriculum Library', view: 'library', g: 0, unit: 0, kind: 'nav', order: 99 }
+    { id: 'library', icon: '📚', title: 'Lessons & Curriculum Library', view: 'library', g: 0, unit: 0, kind: 'nav', order: 99 },
+    { id: 'all-about-me', icon: '🌟', title: 'All About Me: get to know your pupils (printable paper)', route: 'all-about-me/index.html', unit: 0, kind: 'printable', order: 1, added: '2026-11-01' },
   ];
 
   function S() { return root.schoolStore || root.store; }
