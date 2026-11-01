@@ -310,6 +310,96 @@
       if (n) saveEvents(list); store().setCalendarFlag('seed21');
     } catch (e) { /* ignore */ }
   }
+  /* Default weekly program mapping K12 times to current Units 1-4 Speaking & Acting / Review lessons */
+  var WEEK_TT = {
+    'class-3a': {
+      1: [{ t: '13:30', l: 'rev-g3-2' }, { t: '14:15', l: 'gm-speak-g3' }],
+      2: [{ t: '10:30', l: 'gm-speak-g3' }, { t: '11:15', l: 'rev-u4-g3' }],
+      4: [{ t: '09:45', l: 'rev-u14-g3' }],
+      5: [{ t: '10:30', l: 'gm-speak-g3' }, { t: '11:15', l: 'karaoke-g3' }]
+    },
+    'class-3b': {
+      1: [{ t: '16:05', l: 'gm-speak-g3' }],
+      3: [{ t: '10:30', l: 'rev-g3-2' }, { t: '11:15', l: 'gm-speak-g3' }],
+      4: [{ t: '10:30', l: 'rev-u4-g3' }, { t: '11:15', l: 'rev-u14-g3' }],
+      5: [{ t: '09:00', l: 'gm-speak-g3' }, { t: '09:45', l: 'karaoke-g3' }]
+    },
+    'class-4a': {
+      1: [{ t: '10:30', l: 'gm-speak-g4' }, { t: '11:15', l: 'gm-speak-g4' }],
+      2: [{ t: '15:20', l: 'speak-g4-u4' }],
+      3: [{ t: '14:15', l: 'rev-u4-g4' }, { t: '15:20', l: 'rev-u14-g4' }],
+      4: [{ t: '16:05', l: 'gm-speak-g4' }, { t: '16:55', l: 'karaoke-g4' }]
+    },
+    'class-4b': {
+      1: [{ t: '09:45', l: 'gm-speak-g4' }],
+      2: [{ t: '09:00', l: 'gm-speak-g4' }, { t: '09:45', l: 'speak-g4-u4' }],
+      3: [{ t: '12:45', l: 'rev-u4-g4' }, { t: '13:30', l: 'rev-u14-g4' }],
+      5: [{ t: '14:15', l: 'gm-speak-g4' }, { t: '15:20', l: 'karaoke-g4' }]
+    }
+  };
+  /* Week of Mon 2 Nov - Fri 6 Nov 2026: Units 1-4 Speaking & Acting Tournament, Story & Drama, Smart Mix & Revision 2 */
+  function weekNov2Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed23')) return;
+      var list = customEvents().slice();
+      var rows = [
+        // Monday 2 Nov 2026
+        ['2026-11-02', '09:45', 'class-4b', 'unit4', 'Units 1–4 Speaking & Acting Tournament: Penalty, Baseball & Tower', '64 new Speaking & Acting prompts with live teleprompter frame and 1-tap Teacher Speaking Judge. Open game-maker/index.html?set=speak-g4&game=baseball (also penalty, tower, balloon, snakes).'],
+        ['2026-11-02', '10:30', 'class-4a', 'unit4', 'Units 1–4 Speaking & Acting Tournament · Round 1: Balloon, Whack & Penalty', 'Warm-up team chorus and pair speaking shootout with the new Speaking & Acting bank. Open game-maker/index.html?set=speak-g4&game=penalty (Monsters = 4A).'],
+        ['2026-11-02', '11:15', 'class-4a', 'unit4', 'Units 1–4 Speaking & Acting Tournament · Round 2: Baseball, Tower & Snakes', 'Story and cause/effect 2-sentence speaking challenge in Home Run Baseball and Sky Tower. Open game-maker/index.html?set=speak-g4&game=baseball (also tower, snakes).'],
+        ['2026-11-02', '13:30', 'class-3a', 'unit4', 'Revision 2: Reading & Writing + Speaking Warm-Up', 'Print revision-pack/Grade3-Revision-2-Reading-and-Writing-Pack.pdf (or open revision-pack/g3-revision-2.html) + warm-up round in game-maker/index.html?set=speak-g3&game=balloon. Plan: lesson-plans/Grade3-Revision-2-Reading-and-Writing-Lesson-Plan.'],
+        ['2026-11-02', '14:15', 'class-3a', 'unit4', 'Units 1–4 Speaking & Acting Tournament: Penalty, Baseball & Tower', 'Grade 3 Speaking & Acting Showdown across Units 1–4 (Inventions, Chuseok, Mona Lisa, Mount Tambora). Open game-maker/index.html?set=speak-g3&game=penalty (also baseball, tower, snakes).'],
+        ['2026-11-02', '16:05', 'class-3b', 'unit4', 'Units 1–4 Speaking & Acting Tournament: Penalty, Baseball & Tower', 'Speaking & Acting Showdown across Units 1–4 (Inventions, Chuseok, Mona Lisa, Mount Tambora). Open game-maker/index.html?set=speak-g3&game=penalty (also baseball, tower, balloon, snakes).'],
+        // Tuesday 3 Nov 2026
+        ['2026-11-03', '09:00', 'class-4b', 'unit4', 'Units 1–4 Speaking & Acting · Round 2: Tower, Jigsaw & Fling', 'Team acting & 2-sentence speaking prompts in Sky Tower, Jigsaw and Pirate Fling. Open game-maker/index.html?set=speak-g4&game=tower (New Space / Pirates / Egypt themes).'],
+        ['2026-11-03', '09:45', 'class-4b', 'unit4', 'Speaking Check & Story Dice Showdown (Units 1–4)', 'Pair & individual speaking check (speaking-g4/index.html) + Story Dice creative speaking in game-maker/index.html?set=speak-g4&game=storydice.'],
+        ['2026-11-03', '10:30', 'class-3a', 'unit4', 'Units 1–4 Speaking & Acting · Story Dice & Guess-eroo', 'Act out and build 2-sentence answers in Story Dice, Guess-eroo and Memory. Open game-maker/index.html?set=speak-g3&game=storydice.'],
+        ['2026-11-03', '11:15', 'class-3a', 'unit4', 'Unit 4 Full Review & Speaking Show', 'Story order, cause & effect, and speaking check. Open review-unit4/index.html?grade=3 and game-maker/index.html?set=speak-g3&game=baseball.'],
+        ['2026-11-03', '15:20', 'class-4a', 'unit4', 'Speaking Check & Story Dice Showdown (Units 1–4)', 'Pair & individual speaking check (speaking-g4/index.html) + Story Dice creative speaking in game-maker/index.html?set=speak-g4&game=storydice.'],
+        // Wednesday 4 Nov 2026
+        ['2026-11-04', '10:30', 'class-3b', 'unit4', 'Revision 2: Reading & Writing (Story & Fact Cards)', 'Print revision-pack/Grade3-Revision-2-Reading-and-Writing-Pack.pdf (open revision-pack/g3-revision-2.html). Plan: lesson-plans/Grade3-Revision-2-Reading-and-Writing-Lesson-Plan.'],
+        ['2026-11-04', '11:15', 'class-3b', 'unit4', 'Units 1–4 Speaking & Acting · Baseball, Tower & Story Dice', 'Team speaking & acting tournament Round 2. Open game-maker/index.html?set=speak-g3&game=baseball (also tower, storydice).'],
+        ['2026-11-04', '12:45', 'class-4b', 'unit4', 'Unit 4 Full Review: Teamwork & Late for the Show', 'Story order, cause & effect, and excuse round. Open review-unit4/index.html?grade=4 and review-g4-show/index.html.'],
+        ['2026-11-04', '13:30', 'class-4b', 'unit4', 'Units 1–4 Smart Mix · 3D Board Game & Pirate Fling', 'Full Units 1–4 Smart Mix on the new Space / Pirates / Ancient Egypt boards. Open game-maker/index.html?set=smart-g4&game=boardgame.'],
+        ['2026-11-04', '14:15', 'class-4a', 'unit4', 'Unit 4 Full Review: Teamwork & Late for the Show', 'Story order, cause & effect, and excuse round. Open review-unit4/index.html?grade=4 and review-g4-show/index.html.'],
+        ['2026-11-04', '15:20', 'class-4a', 'unit4', 'Units 1–4 Smart Mix · 3D Board Game & Pirate Fling', 'Full Units 1–4 Smart Mix on the new Space / Pirates / Ancient Egypt boards. Open game-maker/index.html?set=smart-g4&game=boardgame.'],
+        // Thursday 5 Nov 2026
+        ['2026-11-05', '09:45', 'class-3a', 'unit4', 'Units 1–4 Smart Mix · 3D Board Game & Snakes', 'Full Units 1–4 Smart Mix on the new Space / Pirates / Ancient Egypt boards. Open game-maker/index.html?set=smart-g3&game=boardgame.'],
+        ['2026-11-05', '10:30', 'class-3b', 'unit4', 'Unit 4 Full Review & Speaking Show', 'Story order, cause & effect, and speaking check. Open review-unit4/index.html?grade=3.'],
+        ['2026-11-05', '11:15', 'class-3b', 'unit4', 'Units 1–4 Smart Mix · 3D Board Game & Snakes', 'Full Units 1–4 Smart Mix on the new Space / Pirates / Ancient Egypt boards. Open game-maker/index.html?set=smart-g3&game=boardgame.'],
+        ['2026-11-05', '16:05', 'class-4a', 'unit4', 'Units 1–4 Grand Tournament Finale: Bingo & Guess-eroo', 'Whole-class speaking & acting Bingo and Guess-eroo showdown. Open game-maker/index.html?set=speak-g4&game=bingo.'],
+        ['2026-11-05', '16:55', 'class-4a', 'lesson', 'Karaoke Stage & Friday Eve Celebration', 'Read, sing and celebrate the week. Open karaoke-stage/index.html.'],
+        // Friday 6 Nov 2026
+        ['2026-11-06', '09:00', 'class-3b', 'unit4', 'Units 1–4 Grand Tournament Finale: Bingo & Guess-eroo', 'Whole-class speaking & acting Bingo and Guess-eroo showdown. Open game-maker/index.html?set=speak-g3&game=bingo.'],
+        ['2026-11-06', '09:45', 'class-3b', 'lesson', 'Karaoke Stage & Friday Celebration', 'Read, sing and celebrate the week. Open karaoke-stage/index.html.'],
+        ['2026-11-06', '10:30', 'class-3a', 'unit4', 'Units 1–4 Grand Tournament Finale: Bingo & Guess-eroo', 'Whole-class speaking & acting Bingo and Guess-eroo showdown. Open game-maker/index.html?set=speak-g3&game=bingo.'],
+        ['2026-11-06', '11:15', 'class-3a', 'lesson', 'Karaoke Stage & Friday Celebration', 'Read, sing and celebrate the week. Open karaoke-stage/index.html.'],
+        ['2026-11-06', '14:15', 'class-4b', 'unit4', 'Units 1–4 Grand Tournament Finale: Bingo & Guess-eroo', 'Whole-class speaking & acting Bingo and Guess-eroo showdown. Open game-maker/index.html?set=speak-g4&game=bingo.'],
+        ['2026-11-06', '15:20', 'class-4b', 'lesson', 'Karaoke Stage & Friday Celebration', 'Read, sing and celebrate the week. Open karaoke-stage/index.html.']
+      ];
+      list = list.filter(function (e) { return !rows.some(function (r) { return e.date === r[0] && e.time === r[1] && e.classId === r[2]; }); });
+      rows.forEach(function (r, i) { list.push({ id: 'seed23-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      saveEvents(list);
+      // Also seed/upgrade the weekly timetable so Today's lessons on Dashboard & Class Board have live launch links
+      if (store().getTimetable && store().setTimetable) {
+        var curTT = store().getTimetable() || {}, nextTT = JSON.parse(JSON.stringify(curTT));
+        Object.keys(WEEK_TT).forEach(function (cid) {
+          if (!nextTT[cid]) nextTT[cid] = {};
+          Object.keys(WEEK_TT[cid]).forEach(function (d) {
+            var existing = nextTT[cid][d] || [];
+            if (!existing.length || existing.every(function (x) { return !x.l; })) {
+              nextTT[cid][d] = JSON.parse(JSON.stringify(WEEK_TT[cid][d]));
+            }
+          });
+        });
+        store().setTimetable(nextTT);
+      }
+      store().setCalendarFlag('seed23');
+    } catch (e) { /* ignore */ }
+  }
+  function ensureSeeded() {
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once();
+  }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
     var out = [], tt = (store() && store().getTimetable && store().getTimetable()) || {}, hasTT = Object.keys(tt).some(function (k) { return Object.keys(tt[k] || {}).some(function (d) { return (tt[k][d] || []).length; }); });
@@ -450,22 +540,33 @@
   function del(id) { if (!confirm('Delete this event?')) return; saveEvents(customEvents().filter(function (x) { return x.id !== id; })); draw(); }
   function saveTimetable() {
     try {
-      var tt = {}; classes().forEach(function (c) { if (!K12[c.id]) return; tt[c.id] = {}; Object.keys(K12[c.id]).forEach(function (d) { tt[c.id][d] = K12[c.id][d].map(function (t) { return { t: t, x: 'English' }; }); }); });
+      var tt = {}; classes().forEach(function (c) {
+        if (WEEK_TT[c.id]) { tt[c.id] = JSON.parse(JSON.stringify(WEEK_TT[c.id])); return; }
+        if (!K12[c.id]) return; tt[c.id] = {}; Object.keys(K12[c.id]).forEach(function (d) { tt[c.id][d] = K12[c.id][d].map(function (t) { return { t: t, x: 'English' }; }); });
+      });
       store().setTimetable(tt); draw();
     } catch (e) { alert('Could not save the timetable.'); }
   }
+  function defaultSchoolDay(now) {
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate()), wd = d.getDay();
+    if (wd === 6) d.setDate(d.getDate() + 2);
+    else if (wd === 0) d.setDate(d.getDate() + 1);
+    return d;
+  }
   function render(container) {
-    css(); var now = new Date(); if (!st.y) { st.y = now.getFullYear(); st.m = now.getMonth(); st.wk = ymd(monday(now)); st.sel = ymd(now); }
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once();
+    css(); var now = new Date(), ref = defaultSchoolDay(now);
+    if (!st.y) { st.y = ref.getFullYear(); st.m = ref.getMonth(); st.wk = ymd(monday(ref)); st.sel = ymd(ref); }
+    ensureSeeded();
     container.innerHTML = '<div class="cal" id="cal-root"></div>'; draw();
   }
   root.renderCalendarView = render;
   root.CalendarView = {
     step: function (n) { if (st.mode === 'month') { var d = new Date(st.y, st.m + n, 1); st.y = d.getFullYear(); st.m = d.getMonth(); } else { var w = parse(st.wk); w.setDate(w.getDate() + 7 * n); st.wk = ymd(w); } draw(); },
-    today: function () { var n = new Date(); st.y = n.getFullYear(); st.m = n.getMonth(); st.wk = ymd(monday(n)); st.sel = ymd(n); draw(); },
+    today: function () { var ref = defaultSchoolDay(new Date()); st.y = ref.getFullYear(); st.m = ref.getMonth(); st.wk = ymd(monday(ref)); st.sel = ymd(ref); draw(); },
     mode: function (m) { st.mode = m; if (m === 'week' && st.sel) st.wk = ymd(monday(parse(st.sel))); draw(); },
     cls: function (c) { st.cls = c; draw(); },
     pick: function (k) { st.sel = k; draw(); },
-    edit: edit, del: del, saveTimetable: saveTimetable
+    edit: edit, del: del, saveTimetable: saveTimetable, ensureSeeded: ensureSeeded, linksOf: linksOf, K12: K12, WEEK_TT: WEEK_TT
   };
+  if (typeof setTimeout === 'function') setTimeout(ensureSeeded, 60);
 })(typeof window !== 'undefined' ? window : this);

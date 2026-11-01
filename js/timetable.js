@@ -17,6 +17,7 @@
     { id: 'u4-g3-l4-phonics', icon: '🔤', title: 'Unit 4 Lesson 4 · Phonics -nd & Think Together (pp. 70–71): 4 Feeling Corners, Letter Factory & Story Train', route: 'unit4-g3-phonics-think/index.html', g: 3, unit: 4, kind: 'lesson', order: 5, added: '2026-10-21' },
     { id: 'rev-g3-mountain', icon: '🌋', title: 'Unit 4 Review 2 · Reading 2: The Angry Mountain (pp. 64–71): Volcano Words, Sail to Safety & -nd Blends', route: 'review-g3-mountain/index.html', g: 3, unit: 4, kind: 'review', order: 6, added: '2026-10-21' },
     { id: 'rev-u4-g3', icon: '🏆', title: 'Unit 4 Full Review (Grade 3): Words, Story Order, Cause & Effect, Quiz & Speaking Check', route: 'review-unit4/index.html?grade=3', g: 3, unit: 4, kind: 'review', order: 7, added: '2026-10-22' },
+    { id: 'gm-speak-g3', icon: '🎤', title: 'Units 1–4 Speaking & Acting Tournament (Grade 3): Penalty, Baseball, Tower & Arcade Show', route: 'game-maker/index.html?set=speak-g3&game=penalty', g: 3, unit: 4, kind: 'review', order: 8, added: '2026-11-01' },
     { id: 'quiz-g3-u14', icon: '📝', title: 'Units 1–4 Quiz (Grade 3, Forms A/B): Listening, Words, Reading, Writing, Key & Class Record', route: 'quiz-g3-units1-4/index.html', g: 3, unit: 4, kind: 'quiz', order: 10, added: '2026-10-25' },
     { id: 'rev-g3-1', icon: '✍️', title: 'Unit 4 Printable Revision 1 (Grade 3): Words, Star-Level Writing Sheet, Exit Tickets & Key', route: 'revision-pack/g3-revision-1.html', g: 3, unit: 4, kind: 'printable', order: 11, added: '2026-10-25' },
     { id: 'rev-g3-2', icon: '📖', title: 'Unit 4 Printable Revision 2 (Grade 3): Story, Fact Cards, Writing Page, Exit Tickets & Key', route: 'revision-pack/g3-revision-2.html', g: 3, unit: 4, kind: 'printable', order: 12, added: '2026-10-25' },
@@ -28,6 +29,7 @@
     { id: 'rev-g4-teamwork', icon: '🏀', title: 'Unit 4 Review 1 · Teamwork (pp. 56–61): Quiz, Word Shoot & Story Order', route: 'review-g4-teamwork/index.html', g: 4, unit: 4, kind: 'review', order: 2, added: '2026-10-19' },
     { id: 'rev-g4-show', icon: '🎭', title: 'Unit 4 Review 2 · Late for the Show (pp. 62–70): Curtain Up, Stage Run, Spotlight & Excuse Round', route: 'review-g4-show/index.html', g: 4, unit: 4, kind: 'review', order: 3, added: '2026-10-20' },
     { id: 'rev-u4-g4', icon: '🏆', title: 'Unit 4 Full Review (Grade 4): Words, Story Order, Cause & Effect, Quiz & Speaking Check', route: 'review-unit4/index.html?grade=4', g: 4, unit: 4, kind: 'review', order: 4, added: '2026-10-22' },
+    { id: 'gm-speak-g4', icon: '🎤', title: 'Units 1–4 Speaking & Acting Tournament (Grade 4): Penalty, Baseball, Tower & Arcade Show', route: 'game-maker/index.html?set=speak-g4&game=baseball', g: 4, unit: 4, kind: 'review', order: 5, added: '2026-11-01' },
     { id: 'speak-g4-u4', icon: '🎤', title: 'Unit 4 Speaking Check (Units 1–4): One Pupil at a Time', route: 'speaking-g4/index.html', g: 4, unit: 4, kind: 'quiz', order: 10, added: '2026-10-23' },
     { id: 'quiz-g4-u14', icon: '📝', title: 'Units 1–4 Quiz (Forms A/B): Listening, Words, Reading & Writing', route: 'quiz-g4-units1-4/index.html', g: 4, unit: 4, kind: 'quiz', order: 11, added: '2026-10-23' },
     { id: 'rev-g4-1', icon: '✍️', title: 'Unit 4 Printable Revision 1: Words, Writing Sheet, Answer Cards & Exit Tickets', route: 'revision-pack/g4-revision-1.html', g: 4, unit: 4, kind: 'printable', order: 12, added: '2026-10-24' },
@@ -124,13 +126,55 @@
 
   /** Lessons for a class today (or the next school day when it is a weekend). */
   function today(clsId) {
-    var d = new Date(), wd = d.getDay(), label = 'Today';
-    if (wd === 0 || wd === 6) { wd = 1; label = 'Monday'; }
-    var tt = all()[clsId] || {}, list = sortEntries(tt[wd] || []).map(function (e) {
+    try { if (root.CalendarView && root.CalendarView.ensureSeeded) root.CalendarView.ensureSeeded(); } catch (e) { /* ignore */ }
+    var d = new Date(), wd = d.getDay(), label = 'Today', ref = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    if (wd === 6) { wd = 1; label = 'Monday'; ref.setDate(ref.getDate() + 2); }
+    else if (wd === 0) { wd = 1; label = 'Monday'; ref.setDate(ref.getDate() + 1); }
+    var ymdKey = ref.getFullYear() + '-' + ('0' + (ref.getMonth() + 1)).slice(-2) + '-' + ('0' + ref.getDate()).slice(-2);
+    var calEvs = [];
+    try {
+      var allCal = (root.ClassroomStore && root.ClassroomStore.getCalendar && root.ClassroomStore.getCalendar()) || [];
+      calEvs = allCal.filter(function (ev) { return ev && ev.date === ymdKey && ev.classId === clsId; });
+    } catch (e) { calEvs = []; }
+    var calByTime = {};
+    calEvs.forEach(function (ev) { if (ev.time) calByTime[ev.time] = ev; });
+
+    var fallbackTT = (root.CalendarView && root.CalendarView.WEEK_TT && root.CalendarView.WEEK_TT[clsId]) || {};
+    var tt = all()[clsId] || fallbackTT;
+    var rawSlots = (tt[wd] && tt[wd].length) ? tt[wd] : (fallbackTT[wd] || []);
+    var usedTimes = {};
+    var list = sortEntries(rawSlots).map(function (e) {
       var c = e.l ? find(e.l) : null;
-      return { time: e.t || '', icon: c ? c.icon : '📖', title: c ? c.title : (e.x || 'Lesson'), route: c ? c.route : null, view: c ? c.view : null };
+      var ev = e.t ? calByTime[e.t] : null;
+      if (e.t) usedTimes[e.t] = 1;
+      var evRoute = null, evIcon = null;
+      if (ev && root.CalendarView && root.CalendarView.linksOf) {
+        var links = root.CalendarView.linksOf(ev);
+        if (links && links.length) evRoute = links[0][1];
+        evIcon = ev.type === 'quiz' ? '📝' : ev.type === 'alice' ? '🫖' : (c ? c.icon : '🎤');
+      }
+      return {
+        time: e.t || '',
+        icon: evIcon || (c ? c.icon : '📖'),
+        title: (ev && ev.title) ? ev.title : (c ? c.title : (e.x || 'Lesson')),
+        route: evRoute || (c ? c.route : null),
+        view: c ? c.view : null
+      };
     });
-    return { label: label, day: DAYS[wd], list: list, set: Object.keys(tt).some(function (k) { return (tt[k] || []).length; }) };
+    calEvs.forEach(function (ev) {
+      if (ev.time && usedTimes[ev.time]) return;
+      var links = (root.CalendarView && root.CalendarView.linksOf) ? root.CalendarView.linksOf(ev) : [];
+      list.push({
+        time: ev.time || '',
+        icon: ev.type === 'quiz' ? '📝' : ev.type === 'alice' ? '🫖' : '🎤',
+        title: ev.title || 'Lesson',
+        route: (links && links.length) ? links[0][1] : null,
+        view: null
+      });
+    });
+    list.sort(function (a, b) { return String(a.time || '').localeCompare(String(b.time || '')); });
+    var hasAny = Object.keys(tt).some(function (k) { return (tt[k] || []).length; }) || list.length > 0;
+    return { label: label, day: DAYS[wd], list: list, set: hasAny };
   }
   function launchHtml(e) {
     var inner = '<span>' + e.icon + '</span><b>' + (e.time ? '<em>' + esc(e.time) + '</em> ' : '') + esc(e.title) + '</b><i>' + (e.route || e.view ? '▶' : '') + '</i>';

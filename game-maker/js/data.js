@@ -107,7 +107,7 @@
     { id: 'halloween', title: 'Halloween words and verbs', grade: 0, e: '🎃', items: rows(HAL) }
   ];
 
-  var HAL_ON = (function () { try { if (/[?&]halloween=1/.test(root.location.search) || localStorage.getItem('eaa_preview_halloween')) return true; } catch (e) { /* ignore */ } var d = new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate() >= 20261026; })();
+  var HAL_ON = (function () { try { if (/[?&]halloween=1/.test(root.location.search) || localStorage.getItem('eaa_preview_halloween')) return true; } catch (e) { /* ignore */ } var d = new Date(), ymd = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); return ymd >= 20261026 && ymd <= 20261101; })();
   GM.halloweenOn = HAL_ON;
   GM.themes = {
     classic: { id: 'classic', name: 'Classic', e: '⭐', tile: '#3b82f6', accent: '#f59e0b', music: 'classic_loop' },

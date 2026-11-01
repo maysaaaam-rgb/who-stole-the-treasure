@@ -4186,6 +4186,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
     // Lessons the teacher can launch for this grade
     const grade = /4/.test(cls.name || '') ? 4 : (/3/.test(cls.name || '') ? 3 : 0);
     const lessons = grade === 4 ? [
+      ['🎤', 'Units 1–4 Speaking & Acting Tournament (Grade 4): Penalty, Baseball, Tower & Arcade Show', 'game-maker/index.html?set=speak-g4&game=baseball'],
       ['🪙', 'Unit 3 4-Skills Paper Game Quiz: How Much Is It? (2 Pages)', 'unit3-money-mission/quiz-4skills.html'],
       ['🚀', 'Unit 3 Smartboard Mission: How Much Is It?', 'unit3-money-mission/index.html'],
       ['🏀', 'Grade 4 Review: Teamwork (book pp. 56-61), 3 simple games', 'review-g4-teamwork/index.html'],
@@ -4210,6 +4211,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       ['🌲', 'Forest Rangers', 'unit2-forest-lessons/index.html?lesson=1'],
       ['🕊️', 'The Swallow\u2019s Gift', 'unit2-forest-lessons/index.html?lesson=2']
     ] : grade === 3 ? [
+      ['🎤', 'Units 1–4 Speaking & Acting Tournament (Grade 3): Penalty, Baseball, Tower & Arcade Show', 'game-maker/index.html?set=speak-g3&game=penalty'],
       ['🌋', 'Unit 4 Lesson 3: The Angry Mountain (book pp. 65-69), Island Map + Cause/Effect Gears + Story + Boat Race', 'unit4-g3-angry-mountain/index.html'],
       ['🎈', 'Unit 4 Lesson 4: Phonics -nd & Think Together (book pp. 70-71), 4 Corners + Letter Factory + Balloon Pop', 'unit4-g3-phonics-think/index.html'],
       ['🌋', 'Grade 3 Reading 2: The Angry Mountain (book pp. 64-71), cause & effect + volcano rescue + -nd blends', 'review-g3-mountain/index.html'],
