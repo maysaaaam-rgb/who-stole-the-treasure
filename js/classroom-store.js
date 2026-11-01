@@ -16,7 +16,7 @@
 
   var DEFAULTS = {
     coinsPerXp: 10,
-    itemPrices: { common: 25, rare: 60, epic: 120, legendary: 250 },
+    itemPrices: { common: 15, rare: 40, epic: 90, legendary: 200, mythic: 500 },
     boxPrices: { BRONZE: 15, WOODEN: 30, GILDED: 80, CELESTIAL: 180 },
     privileges: [
       { id: 'p-song', icon: '🎵', name: 'Choose the warm-up song', price: 40, weeklyLimit: 2, active: true },
@@ -28,7 +28,7 @@
       { id: 'p-hwpass', icon: '🎟️', name: 'Homework pass (one small task)', price: 150, weeklyLimit: 1, active: true }
     ]
   };
-  var SELL_CATEGORIES = ['hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body', 'creature', 'pet'];
+  var SELL_CATEGORIES = ['hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body', 'creature', 'pet', 'trail'];
   // Four kinds of mystery box. The saved ids stay WOODEN / GILDED / CELESTIAL (old boxes keep working); they are shown as Silver / Gold / Diamond.
   var TIERS = ['BRONZE', 'WOODEN', 'GILDED', 'CELESTIAL'];
   var BOX_INFO = {
@@ -42,7 +42,7 @@
     var t = String(tier || '').toUpperCase(), alias = { SILVER: 'WOODEN', GOLD: 'GILDED', DIAMOND: 'CELESTIAL' };
     return BOX_INFO[alias[t] || t] || BOX_INFO.WOODEN;
   };
-  var RARITY_COLOR = { common: '#64748b', rare: '#2563eb', epic: '#7c3aed', legendary: '#d97706' };
+  var RARITY_COLOR = { common: '#64748b', rare: '#16a34a', epic: '#7c3aed', legendary: '#d97706', mythic: '#e11d48' };
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -71,6 +71,10 @@
       c.privileges.forEach(function (pv) { if (PRIV[pv.id]) pv.price = Math.max(Number(pv.price) || 0, PRIV[pv.id]); });
       c.balanceV1 = 1; c.updatedAt = Date.now();
     }
+    if (!c.balanceV2) {   // 1 Nov 2026: the ladder. Small wins come soon, big dreams stay far. One price for each tier, in both stores.
+      c.itemPrices = Object.assign({}, DEFAULTS.itemPrices); c.balanceV2 = 1; c.updatedAt = Date.now();
+    }
+    if (!c.itemPrices.mythic) c.itemPrices.mythic = DEFAULTS.itemPrices.mythic;
     if (!c.boardGoals || typeof c.boardGoals !== 'object') c.boardGoals = {};
     if (!c.partyFunds || typeof c.partyFunds !== 'object') c.partyFunds = {};
     if (!d.cosmetics || typeof d.cosmetics !== 'object') d.cosmetics = {};
@@ -125,7 +129,7 @@
   function findItem(id) { return allItems().filter(function (i) { return i.id === id; })[0] || null; }
   function levelOf(studentId) { var m = store.calculateMonsterState ? store.calculateMonsterState(studentId) : null; return (m && m.currentLevel) || 1; }
   function reqLevel(item) { return (item.unlockRequirement && item.unlockRequirement.level) || item.unlockLevel || 1; }
-  var RARITY_LEVEL = { common: 1, rare: 2, epic: 3, legendary: 4 };
+  var RARITY_LEVEL = { common: 1, rare: 3, epic: 4, legendary: 5, mythic: 6 };
   function isLevelReward(item) { return !item.unlockType || item.unlockType === 'level'; }   // free when the pupil reaches the level
   function shopLevel(item) { return isLevelReward(item) ? reqLevel(item) : Math.max(reqLevel(item), RARITY_LEVEL[item.rarity] || 1); }
   function isOwned(studentId, item) {
@@ -141,7 +145,6 @@
     return false;
   }
   function itemPrice(item) {
-    if (item && typeof item.price === 'number' && item.price > 0) return item.price;
     return data().config.itemPrices[item.rarity] || data().config.itemPrices.common;
   }
   /* Halloween things are sold (and found in boxes) only from 1 October to 7 November; pupils keep the ones they have all year */
@@ -395,7 +398,7 @@
     }
   }
   function rewardItem(studentId, rarity) {
-    var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i) && i.category !== 'creature'; });   // creatures are bought with coins, never found in a box
+    var all = allItems().filter(function (i) { return canSell(i) && !isAvailable(studentId, i) && i.category !== 'creature' && i.rarity !== 'mythic'; });   // creatures and Mythic items are bought with coins, never found in a box
     var pool = all.filter(function (i) { return i.rarity === rarity; });
     if (!pool.length) pool = all;
     if (!pool.length) return null;
@@ -769,7 +772,7 @@
     // settings
     drawerHtml += card(h2('⚙️ Prices and rewards', 'Change a price and it applies right away.') +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;">' +
-      ['common', 'rare', 'epic', 'legendary'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + k + ' item<input type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') +
+      ['common', 'rare', 'epic', 'legendary', 'mythic'].map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + RARITY_NAME[k] + ' item<input type="number" min="1" value="' + cfg.itemPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'item\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') +
       TIERS.map(function (k) { return '<label style="font-size:.75rem;font-weight:800;color:var(--text-muted,#64748b);">' + BOX_INFO[k].name + '<input type="number" min="1" value="' + cfg.boxPrices[k] + '" onchange="ClassroomStore.ui.setPrice(\'box\',\'' + k + '\',this.value)" style="display:block;width:100%;margin-top:3px;padding:6px;border-radius:8px;border:1px solid var(--border-light,#cbd5e1);color:#0f172a;background:#fff;font-weight:700;"></label>'; }).join('') + '</div>' +
       cfg.privileges.map(function (p) {
         return '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--border-light,#e2e8f0);color:var(--text-main,#0f172a);">' +
@@ -836,7 +839,16 @@
     }
     return '<div style="font-size:2.4rem;line-height:72px;height:72px;">' + esc(item.icon || '🎁') + '</div>';
   }
-  var RARITY_NAME = { common: 'Common', rare: 'Rare', epic: 'Epic', legendary: 'Legendary' };
+  var RARITY_NAME = { common: 'Everyday', rare: 'Cool', epic: 'Epic', legendary: 'Legendary', mythic: 'Mythic' };
+  var SHELVES = [['mythic', '🔴', 'The far dreams. Only the greatest explorers get here.'], ['legendary', '🟡', 'Very few monsters have these.'], ['epic', '🟣', 'Worth saving for.'], ['rare', '🟢', 'Cool things, not far away.'], ['common', '⚪', 'Small wins, soon.']];
+  function shelvesHtml(shown, bal, lvl) {
+    return SHELVES.map(function (sh) {
+      var row = shown.filter(function (x) { return (x.item.rarity || 'common') === sh[0]; });
+      if (!row.length) return '';
+      return '<div class="cs-shelf" style="--rc:' + RARITY_COLOR[sh[0]] + ';"><div class="cs-shelf-top"><b>' + sh[1] + ' ' + RARITY_NAME[sh[0]] + '</b><span>' + sh[2] + '</span></div><div class="cs-grid">' +
+        row.map(function (x) { return itemCardHtml(x, bal, lvl); }).join('') + '</div></div>';
+    }).join('');
+  }
   function itemCardHtml(x, bal, lvl) {
     var it = x.item, locked = lvl < x.level, can = !locked && bal >= x.price;
     return '<div class="cs-item' + (locked ? ' is-locked' : '') + '" style="--rc:' + (RARITY_COLOR[it.rarity] || '#64748b') + ';">' +
@@ -861,6 +873,7 @@
     if (!root.document || document.getElementById('cs-shop-style')) return;
     var st = document.createElement('style'); st.id = 'cs-shop-style';
     st.textContent = '.cs-shop-note{font-size:.85rem;color:#cbd5e1;margin:0 0 12px}.cs-shop-note b{color:#fbbf24}' +
+      '.cs-shelf{margin-bottom:20px;padding:12px;border:1.5px solid color-mix(in srgb,var(--rc) 55%,transparent);border-radius:20px;background:color-mix(in srgb,var(--rc) 9%,rgba(15,23,42,.5))}.cs-shelf-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;color:#e5edff}.cs-shelf-top b{font-size:1.05rem;font-weight:900}.cs-shelf-top span{font-size:.8rem;color:#cbd5e1}' +
       '.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px}' +
       '.cs-item{display:flex;flex-direction:column;background:rgba(15,23,42,.86);border:1.5px solid #26324a;border-bottom:4px solid #26324a;border-radius:18px;overflow:hidden;color:#e5edff;transition:transform .18s cubic-bezier(.175,.885,.32,1.275),border-color .18s}' +
       '.cs-item:hover{transform:translateY(-3px);border-color:var(--rc)}' +
@@ -892,8 +905,8 @@
 
     if (studentTab === 'items') {
       var list = shopItems(s.id);
-      var cats = ['all', 'sets', 'pet', 'creature', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'body'];
-      var catLabel = { all: 'All', sets: '🎭 Costume sets', pet: '🐾 Pets', creature: '🐉 Creatures', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', body: 'Colours' };
+      var cats = ['all', 'sets', 'pet', 'creature', 'hat', 'glasses', 'accessory', 'backpack', 'clothing', 'background', 'aura', 'trail', 'body'];
+      var catLabel = { all: 'All', sets: '🎭 Costume sets', pet: '🐾 Pets', creature: '🐉 Creatures', hat: 'Hats', glasses: 'Glasses', accessory: 'Accessories', backpack: 'Backpacks', clothing: 'Outfits', background: 'Worlds', aura: 'Auras', trail: '✨ Trails (Island)', body: 'Colours' };
       var present = cats.filter(function (c) { return c === 'all' || (c === 'sets' && root.MonsterCostumes) || list.some(function (x) { return x.item.category === c; }); });
       html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">' + present.map(function (c) {
         return '<button type="button" onclick="ClassroomStore.ui.filter(\'' + c + '\')" style="padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:800;cursor:pointer;border:1.5px solid ' + (itemFilter === c ? '#6E56CF' : '#26324a') + ';border-bottom:3px solid ' + (itemFilter === c ? '#4C389E' : '#334155') + ';background:' + (itemFilter === c ? 'rgba(168,85,247,.28)' : '#1e293b') + ';color:' + (itemFilter === c ? '#e9d5ff' : '#cbd5e1') + ';">' + catLabel[c] + '</button>';
@@ -925,7 +938,7 @@
       });
       var nCan = shown.filter(function (x) { return lvl >= x.level && bal >= x.price; }).length, nLock = shown.filter(function (x) { return lvl < x.level; }).length;
       html += itemFilter === 'sets' ? '' : shown.length ? '<div class="cs-shop-note">' + (nCan ? '✨ <b>' + nCan + '</b> you can buy now' : 'Keep earning XP for more coins') + (nLock ? ' · 🔒 ' + nLock + ' open at a higher level (🎁 = free when you get there)' : '') + ' · Tap a picture to try it on</div>' +
-        '<div class="cs-grid">' + shown.map(function (x) { return itemCardHtml(x, bal, lvl); }).join('') + '</div>' : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
+        shelvesHtml(shown, bal, lvl) : '<div style="padding:30px;text-align:center;color:var(--text-muted,#64748b);">You already have everything in this group. 🎉</div>';
     } else if (studentTab === 'extras') {
       html += renderExtrasTab(s, bal);
     } else if (studentTab === 'party') {
@@ -1015,7 +1028,7 @@
     }).join(' ');
     var list = C.ofKind(extraKind).slice();
     if (extraKind === 'title') list = setTitleItems(s.id).concat(list);
-    list.sort(function (a, b) { var o = { common: 0, rare: 1, epic: 2, legendary: 3 }; return (o[a.rarity] - o[b.rarity]) || a.name.localeCompare(b.name); });
+    list.sort(function (a, b) { var o = { common: 0, rare: 1, epic: 2, legendary: 3, mythic: 4 }; return (o[a.rarity] - o[b.rarity]) || a.name.localeCompare(b.name); });
     var note = extraKind === 'sound' ? 'A victory sound plays on the board when your name is picked or you get a star.'
       : extraKind === 'title' ? 'Your title shows next to your name. Finish a costume set to earn a special title for free.'
       : extraKind === 'pack' ? 'Your animal is the sticker that reacts when you play.'

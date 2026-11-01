@@ -105,6 +105,7 @@
 
     /* The corner and the review list are whole lists, so the newer copy wins */
     var older = primary === d2 ? d1 : d2;
+    if (primary.dream || older.dream) base.dream = primary.dream || older.dream;
     base.corner = primary.corner || older.corner || { items: [] };
     base.wrongQueue = primary.wrongQueue || older.wrongQueue || [];
 
