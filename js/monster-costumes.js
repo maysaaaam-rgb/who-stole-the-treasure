@@ -250,6 +250,7 @@
     else if (cat === 'clothing') body = clothingSvg(id);
     else if (cat === 'backpack') body = backpackSvg(id);
     else if (cat === 'aura') body = auraSvg(id);
+    else if (cat === 'trail') body = '<text x="100" y="132" font-size="96" text-anchor="middle">' + (item.icon || '✨') + '</text>';
     if (!body) return null;
     var vb = EXT.views[id] || VIEW_BY_ID[id] || VIEW[cat] || '0 0 200 200', p = vb.split(' ').map(Number);
     var back = '<rect x="' + p[0] + '" y="' + p[1] + '" width="' + p[2] + '" height="' + p[3] + '" rx="' + Math.round(Math.min(p[2], p[3]) * 0.18) + '" fill="' + (cat === 'aura' ? '#3b3a7a' : '#dbeafe') + '"/>';

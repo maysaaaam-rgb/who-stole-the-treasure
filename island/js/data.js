@@ -621,7 +621,8 @@
     { id: 'clothing',  label: 'Outfits',   slot: 'clothing',  icon: '👕' },
     { id: 'backpack',  label: 'Back',      slot: 'backpack',  icon: '🎒' },
     { id: 'aura',      label: 'Auras',     slot: 'aura',      icon: '✨' },
-    { id: 'pet',       label: 'Pets',      slot: 'pet',       icon: '🐾' }
+    { id: 'pet',       label: 'Pets',      slot: 'pet',       icon: '🐾' },
+    { id: 'trail',     label: 'Trails',    slot: 'trail',     icon: '💫' }
   ];
 
   IslandData.BASE_MONSTER_ITEMS = [
@@ -697,13 +698,14 @@
     var list = IslandData.BASE_MONSTER_ITEMS.slice();
     var seen = {};
     list.forEach(function (it) { seen[it.id] = true; });
-    if (root.MonsterCostumes && Array.isArray(root.MonsterCostumes.ITEMS)) {
-      root.MonsterCostumes.ITEMS.forEach(function (it) {
+    if (root.MonsterCostumes && Array.isArray(root.MonsterCostumes.items)) {
+      root.MonsterCostumes.items.forEach(function (it) {
         if (!seen[it.id]) {
           list.push({
             id: it.id,
             name: it.name,
             category: it.category,
+            rarity: it.rarity || 'common',
             icon: it.icon || '🎭',
             unlockType: 'store',
             unlockLevel: 1
@@ -712,13 +714,14 @@
         }
       });
     }
-    if (root.MonsterPets && Array.isArray(root.MonsterPets.ITEMS)) {
-      root.MonsterPets.ITEMS.forEach(function (it) {
+    if (root.MonsterPets && Array.isArray(root.MonsterPets.items)) {
+      root.MonsterPets.items.forEach(function (it) {
         if (!seen[it.id]) {
           list.push({
             id: it.id,
             name: it.name,
             category: 'pet',
+            rarity: it.rarity || 'common',
             icon: it.icon || '🐾',
             unlockType: 'store',
             unlockLevel: 1,
