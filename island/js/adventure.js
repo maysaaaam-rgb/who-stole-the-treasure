@@ -5,22 +5,141 @@
 (function (root) {
   'use strict';
 
-  var ART = 'art/z1/';
   var have = {};
-  var ready = fetch(ART + 'manifest.json').then(function (r) { return r.json(); }).then(function (l) { l.forEach(function (n) { have[n] = true; }); }).catch(function () {});
+  var artDir = {};
+  function loadZoneArt(dir) {
+    return fetch(dir + 'manifest.json?v=3').then(function (r) { return r.json(); }).then(function (l) {
+      l.forEach(function (n) { have[n] = true; artDir[n] = dir; });
+    }).catch(function () {});
+  }
+  var ready = Promise.all([loadZoneArt('art/z1/'), loadZoneArt('art/z2/'), loadZoneArt('art/z3/'), loadZoneArt('art/z4/')]);
 
-  var ZONES_ON = { 1: true };
+  var ZONES_ON = { 1: true, 2: true, 3: true, 4: true };
+  var ZONE_CFG = {
+    1: {
+      bg: 'bg_factory', cast: 'c_bolt', name: 'Grandpa Bolt',
+      gear: 'o_gear', gearEmoji: '⚙️',
+      off: 'o_machine_off', on: 'o_machine_on',
+      buildObj: 'o_robot', vehicle: 'o_engine',
+      sparks: ['⚙️', '💨', '✨'],
+      right: ['It fits!', 'Good job! It works!', 'Clank! Great!', 'Yes! That is it!'],
+      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The machine loves it!'],
+      matchDone: 'Look! The robot is ready!',
+      train: ['Choo choo!', 'All aboard!', 'Great sentence!'],
+      wake: 'It is awake! Hooray!'
+    },
+    2: {
+      bg: 'bg_beach', cast: 'c_lulu', name: 'Lulu',
+      gear: 'o_fish', gearEmoji: '🐟',
+      off: 'o_lighthouse_off', on: 'o_lighthouse_on',
+      buildObj: 'o_lighthouse_on', vehicle: 'o_boat',
+      sparks: ['🐟', '💦', '✨'],
+      right: ['Yes! You caught it!', 'Good job! It works!', 'Snip snip! Great!', 'Yes! That is it!'],
+      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The light loves it!'],
+      matchDone: 'Look! The lamp is fixed!',
+      train: ['Splish splash!', 'Sail away!', 'Great sentence!'],
+      wake: 'The light shines! Hooray!'
+    },
+    3: {
+      bg: 'bg_river', cast: 'c_nutty', name: 'Mr. Nutty',
+      gear: 'o_stone', gearEmoji: '🪨',
+      off: 'o_market_closed', on: 'o_market_open',
+      buildObj: 'o_basket', vehicle: 'o_stone',
+      sparks: ['🌰', '🍃', '✨'],
+      right: ['Yes! You found it!', 'Good job! It works!', 'Crunch! Great!', 'Yes! That is it!'],
+      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The market loves it!'],
+      matchDone: 'Look! The market basket is ready!',
+      train: ['Hop hop!', 'Across the river!', 'Great sentence!'],
+      wake: 'The market is open! Hooray!'
+    },
+    4: {
+      bg: 'bg_volcano', cast: 'c_ember', name: 'Ember',
+      gear: 'o_bubble', gearEmoji: '🫧',
+      off: 'o_volcano_angry', on: 'o_volcano_calm',
+      buildObj: 'o_launcher', vehicle: 'o_rocket',
+      sparks: ['🫧', '💧', '✨'],
+      right: ['Yes! You hit it!', 'Good job! It works!', 'Splash! Great!', 'Yes! That is it!'],
+      sayGood: ['Wow! I can hear you!', 'Great voice!', 'The mountain loves it!'],
+      matchDone: 'Look! The water rockets are ready!',
+      train: ['Whoosh!', 'Up we go!', 'Great sentence!'],
+      wake: 'The mountain is happy! Hooray!'
+    }
+  };
+
   var WORD_PIC = {
+    // Zone 1 (G3 & G4)
     machine: 'w_machine', invent: 'w_invent', tidy: 'w_tidy', mess: 'w_mess', mirror: 'w_mirror', mirrors: 'w_mirror', plan: 'w_plan', 'try': 'w_try', sleep: 'w_sleep', hide: 'w_hide',
     wheels: 'w_wheels', brooms: 'w_broom', hexagon: 'w_hexagon', 'make something new': 'w_invent', 'eat your lunch': 'w_lunch', 'run very fast': 'w_run',
-    journey: 'w_journey', visualize: 'w_visualize', freeze: 'w_freeze', sleepy: 'w_sleepy', chase: 'w_chase', chased: 'w_chase', curious: 'w_curious', workout: 'w_workout', shelf: 'w_shelf', creative: 'w_creative'
+    journey: 'w_journey', visualize: 'w_visualize', freeze: 'w_freeze', sleepy: 'w_sleepy', chase: 'w_chase', chased: 'w_chase', curious: 'w_curious', workout: 'w_workout', shelf: 'w_shelf', creative: 'w_creative',
+    // Zone 2 (G3 & G4)
+    harvest: 'w_harvest', thankful: 'w_thankful', moon: 'w_moon', potatoes: 'w_potatoes', delicious: 'w_delicious', pineapple: 'w_pineapple',
+    vet: 'w_vet', 'a doctor for animals': 'w_vet', 'a deep ocean boat': 'w_ocean_boat', 'a baking tool': 'w_baking_tool',
+    needle: 'w_needles', needles: 'w_needles', fur: 'w_fur', cone: 'w_cone', cones: 'w_cone', built: 'w_built', grew: 'w_grew',
+    // Zone 3 (G3 & G4)
+    barter: 'w_barter', bartered: 'w_barter', expensive: 'w_expensive', 'costs a lot of money': 'w_expensive', 'costs no money': 'w_free', 'very small': 'w_small',
+    cashier: 'w_cashier', plastic: 'w_plastic', coins: 'w_coins', save: 'w_save', saved: 'w_save', grain: 'w_grain', shells: 'w_shells', painted: 'w_painted',
+    farmer: 'w_farmer', goat: 'w_goat', walked: 'w_walked', walk: 'w_walked',
+    energy: 'w_energy', noisy: 'w_noisy', thin: 'w_thin', 'not thick; easy to break': 'w_thin', trap: 'w_trap', electric: 'w_electric', polar: 'w_polar',
+    quiet: 'w_quiet', slow: 'w_slow', trash: 'w_trash', 'very big': 'w_big', 'very hot': 'w_hot',
+    // Zone 4 (G3 & G4)
+    thunder: 'w_thunder', sunrise: 'w_sunrise', ship: 'w_ship', museum: 'w_museum', barked: 'w_barked', island: 'w_island',
+    music: 'w_music', rain: 'w_rain', 'by boat': 'w_boat', boat: 'w_boat', 'by train': 'w_train', 'a train': 'w_train', 'by bus': 'w_bus', 'a bus': 'w_bus',
+    lunch: 'w_lunch', bedtime: 'w_bedtime', danced: 'w_danced', sang: 'w_sang', plane: 'w_plane', bike: 'w_bike',
+    teamwork: 'w_teamwork', championship: 'w_championship', 'the championship': 'w_championship', court: 'w_court', platform: 'w_platform',
+    perform: 'w_perform', league: 'w_league', cancel: 'w_cancel', forget: 'w_forget'
   };
-  var WORD_EMOJI = { who: '🧑', where: '📍', when: '⏰', why: '❓', what: '💬' };
+  var WORD_EMOJI = {
+    // Question & grammar words
+    who: '🧑', where: '📍', when: '⏰', why: '❓', what: '💬',
+    'for': '💝', to: '➡️', at: '📍', 'in': '📦', 'with': '🤝', of: '🔗',
+    is: '1️⃣', are: '2️⃣', am: '🙋', was: '⏳', were: '⏳',
+    go: '🏃', goes: '🏃', going: '🏃',
+    because: '💡', so: '👉', instead: '🔄', but: '⚖️', or: '🔀',
+    than: '⚖️', then: '⏭️', that: '👉',
+    builded: '❌', building: '🏗️', growed: '❌', growing: '🌱', gived: '❌', giving: '🎁', gave: '🎁',
+    walking: '🚶', home: '🏠', under: '⬇️', quick: '⚡',
+    five: '5️⃣', ten: '🔟', two: '2️⃣',
+    'three points': '3️⃣', 'two points': '2️⃣', 'one point': '1️⃣',
+    work: '💪',
+    // Zone 2 words
+    harvest: '🌾', thankful: '🙏', moon: '🌕', potatoes: '🥔', delicious: '🍲', pineapple: '🍍',
+    vet: '🩺', 'a doctor for animals': '🩺', 'a deep ocean boat': '🚢', 'a baking tool': '🥣',
+    needle: '🌲', needles: '🌲', fur: '🦊', cone: ' pinecones'[0] === ' ' ? '🌰' : '🌰', cones: '🌰', built: '🦫', grew: '🌱',
+    // Zone 3 words
+    barter: '🤝', bartered: '🤝', expensive: '💎', 'costs a lot of money': '💎', 'costs no money': '🆓', 'very small': '🐜',
+    cashier: '🧑‍💼', plastic: '💳', coins: '🪙', save: '🐷', saved: '🐷', grain: '🌾', shells: '🐚', painted: '🎨',
+    farmer: '👨‍🌾', goat: '🐐', walked: '🚶', walk: '🚶',
+    energy: '⚡', noisy: '🔊', thin: '🧊', 'not thick; easy to break': '🧊', trap: '🪤', electric: '🔋', polar: '🐻‍❄️',
+    quiet: '🤫', slow: '🐌', trash: '🗑️', 'very big': '🐘', 'very hot': '☀️',
+    // Zone 4 words
+    thunder: '⛈️', sunrise: '🌅', ship: '🚢', museum: '🏛️', barked: '🐕', island: '🏝️',
+    music: '🎵', rain: '🌧️', 'by boat': '⛵', boat: '⛵', 'by train': '🚆', 'a train': '🚆', 'by bus': '🚌', 'a bus': '🚌',
+    lunch: '🥪', bedtime: '🛌', danced: '💃', sang: '🎤', plane: '✈️', bike: '🚲',
+    teamwork: '🤝', championship: '🏆', 'the championship': '🏆', court: '🏀', platform: '🚉',
+    perform: '🎭', league: '🥇', cancel: '🚫', forget: '🤔'
+  };
   var SCENES = [
+    // Zone 1
     [/clara builds/, 's_clara_machine'], [/tidy your room/, 's_tidy_room'], [/room is a/, 's_mess_room'], [/does not work|do not stop|do not give up/, 's_try_again'],
     [/plan/, 's_new_plan'], [/what does this machine/, 's_what_machine'], [/cleans the floor/, 's_cleans_floor'], [/invent/, 's_invent_new'], [/bicycle/, 's_bicycle'],
     [/rabbit sees|can freeze/, 's_rabbit_freeze'], [/butterflies/, 's_butterflies'], [/visualize/, 's_visualize_read'], [/tired|sleepy|why was alice/, 's_alice_sleepy'],
-    [/alice (ran|chase)|alice chased|did alice chase/, 's_alice_chase'], [/alice fall|where did the rabbit go/, 's_alice_fall'], [/love reading/, 's_love_reading'], [/curious and brave|curious about/, 's_curious_brave']
+    [/alice (ran|chase)|alice chased|did alice chase/, 's_alice_chase'], [/alice fall|where did the rabbit go/, 's_alice_fall'], [/love reading/, 's_love_reading'], [/curious and brave|curious about/, 's_curious_brave'],
+    // Zone 2
+    [/thankful .* teacher/, 's_thankful_teacher'], [/thankful .* food|delicious food/, 's_thankful_food'], [/full moon/, 's_full_moon'],
+    [/potatoes/, 's_potatoes_soil'], [/go outside/, 's_go_outside'], [/harvest/, 's_harvest_festival'], [/thankful for my family/, 's_thankful_family'],
+    [/vet|doctor for animals/, 's_vet_animals'], [/cones|needles/, 's_pine_cones'], [/winter fur|thick fur/, 's_winter_fur'],
+    [/beaver|verb build/i, 's_beaver_home'], [/plant grew|trees grew|verb grow/i, 's_plant_grew'], [/live in the forest/, 's_forest_animals'], [/verb give/i, 's_gave_gift'],
+    // Zone 3
+    [/barter/, 's_barter_goat'], [/credit card/, 's_credit_card'], [/cashier/, 's_cashier_shop'], [/paige/, 's_paige_walk'],
+    [/paper money|save my gold coins/, 's_paper_coins'], [/save my money|piggy/, 's_save_bank'], [/expensive/, 's_expensive_toy'], [/how much is this book/, 's_how_much'],
+    [/uses energy/, 's_car_energy'], [/gasoline|noisy/, 's_noisy_car'], [/thin/, 's_thin_ice'], [/electric cars/, 's_electric_car'],
+    [/ride a bike|ride my bike|air dirty/, 's_ride_bike'], [/polar bears/, 's_polar_bears'], [/changing planet/, 's_help_planet'],
+    // Zone 4
+    [/sounded like|mountain made a loud/, 's_mountain_noise'], [/leave the island|left .* by boat/, 's_family_boat'], [/dogs .* barked|dogs barked/, 's_dogs_bark'],
+    [/ship saw them|ship helped/, 's_ship_saved'], [/sunrise/, 's_sunrise_island'], [/mona lisa|louvre|museum/, 's_museum_painting'],
+    [/teamwork/, 's_teamwork'], [/players .* court/, 's_players_court'], [/sparks win|won the .* championship/, 's_won_trophy'],
+    [/basket from far away/, 's_basket_far'], [/harry was late/, 's_harry_late'], [/train platform/, 's_platform_wait'],
+    [/perform the show/, 's_perform_show'], [/work together/, 's_work_together']
   ];
   var LINES = {
     right: ['It fits!', 'Good job! It works!', 'Clank! Great!', 'Yes! That is it!'],
@@ -45,19 +164,29 @@
     sayByHand: 'Say it loud. Then tap the green button.',
     machineOn: 'It is awake! Hooray!'
   };
-  var CAST_POSE = { talk: 'c_bolt', happy: 'c_bolt_happy', worried: 'c_bolt_worried', idea: 'c_bolt_idea' };
 
   var S = null;   // the screen of the running mission: { run, el, q, ... }
+
+  function zcfg(run) {
+    var z = (run && run.zone) || (S && S.run && S.run.zone) || 1;
+    return ZONE_CFG[z] || ZONE_CFG[1];
+  }
+  function castPoseName(pose) {
+    var base = zcfg().cast;
+    if (!pose || pose === 'talk') return base;
+    return base + '_' + pose;
+  }
+  function srcOf(name) { return (artDir[name] || 'art/z1/') + name + '.webp'; }
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
   function reduce() { try { return root.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
-  function img(name, cls) { return have[name] ? '<img class="' + (cls || '') + '" src="' + ART + name + '.webp" alt="" draggable="false">' : ''; }
+  function img(name, cls) { return have[name] ? '<img class="' + (cls || '') + '" src="' + srcOf(name) + '" alt="" draggable="false">' : ''; }
   function $(id) { return document.getElementById(id); }
 
   function picFor(word, fallbackEmoji) {
     var k = String(word || '').toLowerCase().trim();
-    if (WORD_PIC[k] && have[WORD_PIC[k]]) return '<img class="adv-card-pic" src="' + ART + WORD_PIC[k] + '.webp" alt="" draggable="false">';
+    if (WORD_PIC[k] && have[WORD_PIC[k]]) return '<img class="adv-card-pic" src="' + srcOf(WORD_PIC[k]) + '" alt="" draggable="false">';
     return '<span class="adv-card-emoji">' + esc(WORD_EMOJI[k] || fallbackEmoji || '✨') + '</span>';
   }
 
@@ -67,7 +196,10 @@
     return '';
   }
 
-  function handles(run) { return !!(run && ZONES_ON[run.zone] && have.bg_factory && new URLSearchParams(root.location.search).get('oldgames') !== '1'); }
+  function handles(run) {
+    var cfg = zcfg(run);
+    return !!(run && ZONES_ON[run.zone] && have[cfg.bg] && new URLSearchParams(root.location.search).get('oldgames') !== '1');
+  }
   function active() { return !!(S && S.run && root.IslandApp && root.IslandApp.state() && root.IslandApp.state().missionRun === S.run); }
 
   /* ---------- talking ---------- */
@@ -76,11 +208,12 @@
     b.textContent = text; b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   }
   function bolt(pose, text, spoken, onEnd) {
-    var el = $('adv-bolt');
-    if (el && have[CAST_POSE[pose]]) el.src = ART + CAST_POSE[pose] + '.webp';
+    var el = $('adv-bolt'), pName = castPoseName(pose);
+    if (el && have[pName]) el.src = srcOf(pName);
+    else if (el && have[zcfg().cast]) el.src = srcOf(zcfg().cast);
     if (el) { el.classList.remove('adv-bolt-hop'); void el.offsetWidth; if (pose === 'happy') el.classList.add('adv-bolt-hop'); }
     if (text) setBubble(text);
-    if (spoken) root.IslandAudio.speak(spoken === true ? text : spoken, onEnd);
+    if (spoken) root.IslandAudio.speak(spoken === true ? text : spoken, onEnd, S && S.run && S.run.zone);
     else if (onEnd) onEnd();
   }
   function monster(move) {
@@ -130,15 +263,16 @@
   /* ---------- the stage ---------- */
   function lightGears(run) {
     var box = $('adv-gears'); if (!box) return;
+    var cfg = zcfg(run);
     var n = run.total, on = run.qIndex, out = '';
-    for (var i = 0; i < n; i++) out += '<span class="adv-gear' + (i < on ? ' on' : (i === on ? ' now' : '')) + '">' + (have.o_gear ? '<img src="' + ART + 'o_gear.webp" alt="">' : '⚙️') + '</span>';
+    for (var i = 0; i < n; i++) out += '<span class="adv-gear' + (i < on ? ' on' : (i === on ? ' now' : '')) + '">' + (have[cfg.gear] ? '<img src="' + srcOf(cfg.gear) + '" alt="">' : cfg.gearEmoji) + '</span>';
     box.innerHTML = out;
   }
   function buildStage(run, monsterHtml) {
-    var m = run.mission, root0 = $('isl-modal-root');
+    var m = run.mission, root0 = $('isl-modal-root'), cfg = zcfg(run);
     root0.innerHTML =
-      '<div class="adv" id="adv-stage">' +
-        '<div class="adv-bg" style="background-image:url(' + ART + 'bg_factory.webp)"></div>' +
+      '<div class="adv adv-z' + (run.zone || 1) + '" id="adv-stage">' +
+        '<div class="adv-bg" style="background-image:url(' + srcOf(cfg.bg) + ')"></div>' +
         '<header class="adv-top">' +
           '<button type="button" class="adv-btn adv-x" aria-label="Back to the map" onclick="IslandApp.closeModal()">✕</button>' +
           '<div class="adv-gears" id="adv-gears"></div>' +
@@ -148,7 +282,7 @@
           '<div class="adv-goal" id="adv-goal"></div>' +
           '<div class="adv-actor adv-friend" id="adv-friend">' +
             '<div class="adv-bubble" id="adv-bubble"></div>' +
-            '<img class="adv-bolt" id="adv-bolt" src="' + ART + 'c_bolt.webp" alt="Grandpa Bolt" onclick="IslandAdventure.tapBolt()">' +
+            '<img class="adv-bolt" id="adv-bolt" src="' + srcOf(cfg.cast) + '" alt="' + esc(cfg.name) + '" onclick="IslandAdventure.tapBolt()">' +
           '</div>' +
         '</div>' +
         '<div class="adv-play" id="adv-play"></div>' +
@@ -187,13 +321,15 @@
   }
   function machineGoal(run) {
     if (!once('machine')) return;
+    var cfg = zcfg(run);
     var on = run.qIndex >= run.total;
-    setGoal('<div class="adv-machine" id="adv-machine">' + img(on ? 'o_machine_on' : 'o_machine_off', 'adv-machine-pic') + '</div>', 'adv-goal-machine');
+    setGoal('<div class="adv-machine" id="adv-machine">' + img(on ? cfg.on : cfg.off, 'adv-machine-pic') + '</div>', 'adv-goal-machine');
   }
   function robotGoal(run) {
     if (!once('robot')) return;
+    var cfg = zcfg(run);
     var hidden = Math.max(0, 100 - Math.round((run.qIndex / run.total) * 100));
-    setGoal('<div class="adv-robot" id="adv-robot">' + img('o_robot', 'adv-robot-ghost') + img('o_robot', 'adv-robot-built') + '</div>', 'adv-goal-robot');
+    setGoal('<div class="adv-robot" id="adv-robot">' + img(cfg.buildObj, 'adv-robot-ghost') + img(cfg.buildObj, 'adv-robot-built') + '</div>', 'adv-goal-robot');
     var b = document.querySelector('.adv-robot-built');
     if (b) b.style.clipPath = 'inset(' + hidden + '% 0 0 0)';
   }
@@ -253,8 +389,9 @@
     S.justPlaced = false;
     var quiet = S.shownBuild === q ? ' adv-quiet' : '';
     S.shownBuild = q;
+    var cfg = zcfg(run);
     $('adv-play').innerHTML =
-      '<div class="adv-train-row">' + hearBtn('') + '<div class="adv-train" id="adv-train"><div class="adv-rail"></div><div class="adv-wagons">' + slots + img('o_engine', 'adv-engine') + '</div></div></div>' +
+      '<div class="adv-train-row">' + hearBtn('') + '<div class="adv-train" id="adv-train"><div class="adv-rail"></div><div class="adv-wagons">' + slots + img(cfg.vehicle, 'adv-engine') + '</div></div></div>' +
       '<div class="adv-bank' + quiet + '" id="isl-build-bank">' + run.buildBank.map(function (w, idx) {
         return '<button type="button" class="adv-word" style="--i:' + idx + '" data-word="' + esc(w) + '" onclick="IslandApp.placeBuildWord(' + idx + ',this)">' + esc(w) + '</button>';
       }).join('') + '</div>';
@@ -285,7 +422,7 @@
     S.type = type; S.q = q; S.tries = 0; S.wrongs = 0; S.done = false;
     bolt('talk', LINES.start[type] || '', null);
     var play = function () { if (active() && S.q === q) root.IslandAudio.speak(hearText(q, type), type === 'say' ? function () { if (active() && S.q === q) micNudge(); } : null); };
-    if (first) root.IslandAudio.speak(LINES.start[type], function () { if (active() && S.q === q) setTimeout(play, 150); });
+    if (first) root.IslandAudio.speak(LINES.start[type], function () { if (active() && S.q === q) setTimeout(play, 150); }, run.zone);
     else setTimeout(play, 350);
     if (root.IslandRewards && root.IslandRewards.maybeSpawnGoldenFish) { try { root.IslandRewards.maybeSpawnGoldenFish(S.el); } catch (e) { /* no fish today */ } }
   }
@@ -315,17 +452,18 @@
     if (btn) { btn.classList.add('adv-right'); }
     var art = btn && btn.querySelector('.adv-card-art');
     var machine = $('adv-machine');
+    var cfg = zcfg(run);
     if (type === 'read') {
       var blank = $('adv-blank');
       if (blank) { blank.textContent = q.a; blank.classList.add('filled'); }
       var sc = $('adv-scene'); restart(sc, 'adv-pop');
-      bolt('happy', pick(LINES.right), null);
+      bolt('happy', pick(cfg.right || LINES.right), null);
       root.IslandAudio.speak(q.speak, w.voiceEnded);
     } else {
-      var line = pick(LINES.right);
+      var line = pick(cfg.right || LINES.right);
       flyTo(art, machine, art ? art.innerHTML : '', 520, function () {
         restart(machine, 'adv-shake');
-        burstAt(machine, ['⚙️', '💨', '✨'], 9);
+        burstAt(machine, cfg.sparks, 9);
         root.IslandAudio.playPop && root.IslandAudio.playPop();
       });
       bolt('happy', line, true, w.voiceEnded);
@@ -368,20 +506,20 @@
       burstAt(robot, ['🔩', '✨'], 6);
     });
     if (finished) {
-      var w = when(1500, 4500);
+      var w = when(1500, 4500), cfg = zcfg(run);
       setTimeout(function () { restart(robot, 'adv-dance'); }, 500);
-      bolt('happy', LINES.robot, true, w.voiceEnded);
+      bolt('happy', cfg.matchDone || LINES.robot, true, w.voiceEnded);
       w.then(done);
     } else {
-      bolt('happy', pick(LINES.right), true);
+      bolt('happy', pick(zcfg(run).right || LINES.right), true);
       setTimeout(done, 620);
     }
   }
   function placed() { if (S) S.justPlaced = true; monster('hop'); }
   function onBuildDone(run, q, done) {
-    var train = $('adv-train'), w = when(1800, 6500);
+    var train = $('adv-train'), w = when(1800, 6500), cfg = zcfg(run);
     monster('cheer');
-    bolt('happy', pick(LINES.train), null);
+    bolt('happy', pick(cfg.train || LINES.train), null);
     setTimeout(function () {
       if (train) train.classList.add('adv-train-go');
       if (root.IslandAudio.playHop) root.IslandAudio.playHop();
@@ -390,13 +528,13 @@
     w.then(done);
   }
   function onSayDone(run, done, grateful) {
-    var w = when(1400, 5000);
+    var w = when(1400, 5000), cfg = zcfg(run);
     monster('cheer');
     var last = run.qIndex + 1 >= run.total;
-    if (last) setGoal('<div class="adv-machine" id="adv-machine">' + img('o_machine_on', 'adv-machine-pic adv-dance') + '</div>', 'adv-goal-machine');
+    if (last) setGoal('<div class="adv-machine" id="adv-machine">' + img(cfg.on, 'adv-machine-pic adv-dance') + '</div>', 'adv-goal-machine');
     restart($('adv-scene'), 'adv-pop');
     burstAt($('adv-goal'), ['✨', '⭐', '💨'], 10);
-    var line = last ? LINES.machineOn : (grateful || pick(LINES.sayGood));
+    var line = last ? (cfg.wake || LINES.machineOn) : (grateful || pick(cfg.sayGood || LINES.sayGood));
     bolt('happy', line, true, w.voiceEnded);
     w.then(done);
   }

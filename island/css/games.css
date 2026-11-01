@@ -42,7 +42,7 @@ span.gm-party-pic { width: auto; height: auto; font-size: 3.8rem; }
 .gm-party-pic:nth-child(even) { animation-delay: 0.3s; }
 .gm-party-monster svg { width: 110px; height: 110px; display: block; }
 @keyframes gmDance { from { transform: translateY(0) rotate(-5deg); } to { transform: translateY(-12px) rotate(5deg); } }
-.gm-ending { background: linear-gradient(180deg, rgba(76, 29, 149, 0.92), rgba(15, 23, 42, 0.97)); }
+.gm-ending { background: linear-gradient(180deg, rgba(15, 23, 42, 0.74), rgba(15, 23, 42, 0.92)), url('../art/bg_party.webp') center/cover no-repeat; }
 
 /* Thank-you line on the reward card */
 .gm-thanks { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; text-align: left; }

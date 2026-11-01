@@ -343,6 +343,7 @@
         '<button onclick="ClassBoard.pick2()" title="Pick 2 students head-to-head">⚔️ Pick 2</button>' +
         '<span class="cb-hat" id="cb-hat-info">0 of ' + present + ' picked</span><span class="sep"></span>' +
         '<button onclick="if(window.openGameMaker)openGameMaker();else location.href=\'game-maker/index.html\';" title="Open Game Maker with this class" style="background:linear-gradient(180deg,#ec4899,#db2777);border-bottom-color:#9d174d;font-weight:700">🎮 Game Maker</button>' +
+        '<button onclick="ClassBoard.wall()" title="Show what pupils shared on the Island Wall (only posts you approved)" style="background:linear-gradient(180deg,#f59e0b,#d97706);border-bottom-color:#92400e;font-weight:700">🌟 Wall</button>' +
         '<button onclick="if(window.SleepyMonster&&SleepyMonster.open)SleepyMonster.open();else if(window.openSleepyMonster)openSleepyMonster();" title="Sleepy Mio classroom quiet game">😴 Sleepy Mio</button>' +
         '<button onclick="BathroomPass && BathroomPass.open()" title="Bathroom: sign out and back in">🚻 Bathroom</button>' +
         '<button onclick="ClassBoard.karaoke()" title="Karaoke Stage: pupils read one by one">🎤 Karaoke</button>' +
@@ -497,6 +498,38 @@
         monMove(img, 'cheer');   // the drawn monster cheers for the award
       }
       paintGoal();
+    },
+    /* The Island Wall on the big screen: only what the teacher approved, one post at a time, big */
+    wall: async function () {
+      var old = document.getElementById('cb-wall'); if (old) old.remove();
+      var w = document.createElement('div'); w.id = 'cb-wall';
+      w.style.cssText = 'position:fixed;inset:0;z-index:9000;background:radial-gradient(circle at 50% 30%,#12305a 0%,#060911 100%);color:#fff;font-family:Fredoka,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center';
+      w.innerHTML = '<div style="font-size:2rem">🌴 Loading the Wall...</div>';
+      document.body.appendChild(w);
+      var client = root.AdventureSupabase && root.AdventureSupabase.client, posts = [];
+      var clsId = viewCls && viewCls.id;
+      if (client && clsId) {
+        var r = await client.from('island_wall').select('first_name,body,photo,created_at').eq('class_id', clsId).eq('kind', 'post').eq('status', 'approved').order('created_at', { ascending: false }).limit(30);
+        if (r && r.data) posts = r.data;
+      }
+      var i = 0;
+      var btn = 'font:700 1.3rem Fredoka,sans-serif;color:#fff;background:#334155;border:0;border-bottom:5px solid #1e293b;border-radius:16px;padding:10px 22px;cursor:pointer;';
+      function show() {
+        if (!posts.length) {
+          w.innerHTML = '<div style="font-size:4rem">🌴</div><div style="font-size:2.2rem;font-weight:800">Nothing on the Wall yet</div><p style="font-size:1.2rem;color:#bae6fd">Posts appear here after you approve them on the Island teacher page.</p><button id="cb-wall-x" style="' + btn + '">Close</button>';
+        } else {
+          var p = posts[i];
+          w.innerHTML = '<div style="font-size:1.1rem;color:#7dd3fc;font-weight:700">🌟 Island Wall · ' + (i + 1) + ' / ' + posts.length + '</div>' +
+            '<div style="font-size:clamp(2rem,5vw,4rem);font-weight:800;margin:6px 0">' + esc(p.first_name) + '</div>' +
+            (p.photo ? '<img src="' + esc(p.photo) + '" alt="" style="max-width:90vw;max-height:58vh;object-fit:contain;border-radius:18px;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.5)">' : '') +
+            (p.body ? '<div style="font-size:clamp(1.6rem,4vw,3.2rem);font-weight:700;margin:12px 0;max-width:90vw;overflow-wrap:anywhere">' + esc(p.body) + '</div>' : '') +
+            '<div style="display:flex;gap:12px;margin-top:12px"><button id="cb-wall-p" style="' + btn + '">◀</button><button id="cb-wall-x" style="' + btn + '">Close</button><button id="cb-wall-n" style="' + btn + 'background:#10b981;border-bottom-color:#047857">Next ▶</button></div>';
+          w.querySelector('#cb-wall-p').onclick = function () { i = (i - 1 + posts.length) % posts.length; show(); };
+          w.querySelector('#cb-wall-n').onclick = function () { i = (i + 1) % posts.length; show(); };
+        }
+        w.querySelector('#cb-wall-x').onclick = function () { w.remove(); };
+      }
+      show();
     },
     tapMonster: function (id, imgEl) {
       if (imgEl) {

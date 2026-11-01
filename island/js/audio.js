@@ -186,7 +186,8 @@
   var clips = {};
   var clipEl = null;
   var speakTimer = 0;
-  fetch('audio/manifest.json').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
+  var WHO_MAP = { 1: 'bolt', 2: 'lulu', 3: 'nutty', 4: 'ember', bolt: 'bolt', lulu: 'lulu', nutty: 'nutty', ember: 'ember', pip: 'pip', say: 'say' };
+  fetch('audio/manifest.json?v=6').then(function (r) { return r.json(); }).then(function (m) { clips = m || {}; }).catch(function () {});
   function clipKey(t) { return String(t).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function stopSpeech() {
     clearTimeout(speakTimer);
@@ -195,13 +196,15 @@
   }
 
   /* Calibrated TTS Narration (rate: 0.88, pitch: 1.05, lang: en-US). onEnd runs when the voice has finished (also when muted). */
-  function speak(text, onEnd) {
+  function speak(text, onEnd, who) {
     var done = typeof onEnd === 'function' ? onEnd : null;
     if (muted || !text) { if (done) done(); return; }
     var clean = String(text).replace(/[_*#]/g, ' ').trim();
     if (!clean) { if (done) done(); return; }
     stopSpeech();
-    var file = clips[clipKey(clean)];
+    var w = who != null ? WHO_MAP[who] : '';
+    var k = clipKey(clean);
+    var file = (w && clips[w + ':' + k]) || clips[k];
     if (file) {
       var fired = false;
       var finish = function () { if (fired) return; fired = true; clearTimeout(speakTimer); if (done) done(); };

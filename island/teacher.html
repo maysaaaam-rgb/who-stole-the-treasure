@@ -74,6 +74,12 @@
       color: #38bdf8;
       border: 1px solid rgba(56, 189, 248, 0.4);
     }
+    .tch-wall-card {
+      background: rgba(30, 41, 59, 0.88);
+      border: 2px solid rgba(56, 189, 248, 0.25);
+      border-radius: 20px;
+      padding: 12px 14px;
+    }
     .tch-stat-strip {
       display: flex;
       gap: 8px;
@@ -260,6 +266,20 @@
         <div class="tch-grid-cards" id="tch-roster-grid"></div>
       </section>
 
+      <section class="tch-panel" id="tch-wall-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <h2 style="margin:0;font-size:1.35rem">🌟 Island Wall: approve what pupils share</h2>
+          <button type="button" class="isl-btn" onclick="IslandTeacherWall.refresh()">🔄 Check again</button>
+        </div>
+        <p style="margin:4px 0 8px;color:#94a3b8;font-size:0.9rem">Pupils see their own post as "waiting". Their class sees it only after you approve it. Approved posts show on the Class Board under 🌟 Wall.</p>
+        <div id="tch-wall-list"></div>
+      </section>
+
+      <section class="tch-panel" id="tch-teams-panel">
+        <h2 style="margin:0 0 8px;font-size:1.35rem">🚀 Island Teams</h2>
+        <div id="tch-teams"></div>
+      </section>
+
       <section class="tch-panel" id="tch-week-panel">
         <h2 style="margin:0;font-size:1.35rem">📅 This week</h2>
         <p style="margin:4px 0 8px;color:#94a3b8;font-size:0.9rem">Island XP per day, streak and last day played (sorted alphabetically by name).</p>
@@ -281,6 +301,7 @@
   <script src="../js/teacher-auth.js?v=1" data-guard="1"></script>
   <script src="js/data.js?v=1"></script>
   <script src="js/sync.js?v=2"></script>
-  <script src="js/teacher.js?v=1"></script>
+  <script src="js/teacher-wall.js?v=1"></script>
+  <script src="js/teacher.js?v=2"></script>
 </body>
 </html>

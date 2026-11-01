@@ -8,7 +8,7 @@
   var CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   var DEMO_SYNC_KEY = 'eaa_island_demo_sync';
   var TEST_SYNC_KEY = 'eaa_island_test_sync';
-  var LIVE_BASE_URL = 'https://maysaaid-hash.github.io/who-stole-the-treasure/island/';
+  var LIVE_BASE_URL = 'https://maysaaaam-rgb.github.io/who-stole-the-treasure/island/';
 
   var state = {
     isDemo: false,
@@ -70,6 +70,7 @@
     });
 
     var out = {
+      teams: pri.teams || sec.teams || {},
       codes: mergedCodes,
       star: mergedStar,
       cap: Math.max(10, Math.min(60, Number(pri.cap != null ? pri.cap : sec.cap) || 30)),
@@ -273,6 +274,8 @@
           'id="tch-tab-' + c + '" onclick="IslandTeacher.selectClass(\'' + c + '\')">' + c + ' (' + count + ')</button>';
       }).join('');
     }
+
+    if (root.IslandTeacherWall) root.IslandTeacherWall.render(state);
 
     var capInp = document.getElementById('tch-cap-input');
     var starCapInp = document.getElementById('tch-star-cap-input');
@@ -483,6 +486,7 @@
           star: Object.assign({}, state.syncDoc.star || {}),
           cap: state.syncDoc.cap, starCap: state.syncDoc.starCap,
           applied: cloudDoc.applied || {}, lookApplied: cloudDoc.lookApplied || {},
+          teams: state.syncDoc.teams || cloudDoc.teams || {},
           updatedAt: nowIso
         };
         var row = { description: JSON.stringify(doc), updated_at: nowIso };

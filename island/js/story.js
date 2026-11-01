@@ -6,9 +6,9 @@
   var CHARS = {
     pip: { name: 'Captain Pip', pic: 'c_pip', emoji: '🦜', poses: { happy: 'c_pip_happy' } },
     1: { name: 'Grandpa Bolt', pic: 'c_bolt', emoji: '🐹', poses: { happy: 'c_bolt_happy', worried: 'c_bolt_worried', idea: 'c_bolt_idea' } },
-    2: { name: 'Lulu', pic: 'c_lulu', emoji: '🦀' },
-    3: { name: 'Mr. Nutty', pic: 'c_nutty', emoji: '🐿️' },
-    4: { name: 'Ember', pic: 'c_ember', emoji: '🐲' }
+    2: { name: 'Lulu', pic: 'c_lulu', emoji: '🦀', poses: { happy: 'c_lulu_happy', worried: 'c_lulu_worried', idea: 'c_lulu_idea' } },
+    3: { name: 'Mr. Nutty', pic: 'c_nutty', emoji: '🐿️', poses: { happy: 'c_nutty_happy', worried: 'c_nutty_worried', idea: 'c_nutty_idea' } },
+    4: { name: 'Ember', pic: 'c_ember', emoji: '🐲', poses: { happy: 'c_ember_happy', worried: 'c_ember_worried', idea: 'c_ember_idea' } }
   };
 
   /* One plot per regular mission, in order: listen, match, read, build, say */
@@ -52,7 +52,7 @@
     'Who has the best monster? You do!'
   ];
 
-  /* Story pictures and faces for the talking scenes before each Zone 1 mission (mission number: one entry per line) */
+  /* Story pictures and faces for the talking scenes before each mission (mission number: one entry per line) */
   var STORY_ART = {
     1: {
       1: [{ art: 's_z1_storm', pose: 'worried' }, { art: 's_z1_broken', pose: 'idea' }],
@@ -60,17 +60,38 @@
       3: [{ pose: 'worried' }, { pose: 'idea' }],
       4: [{ pose: 'idea' }, { pose: 'idea' }],
       5: [{ art: 's_z1_broken', pose: 'worried' }, { pose: 'idea' }]
+    },
+    2: {
+      1: [{ art: 's_z2_dark', pose: 'worried' }, { art: 's_z2_fish', pose: 'idea' }],
+      2: [{ pose: 'worried' }, { pose: 'idea' }],
+      3: [{ pose: 'worried' }, { pose: 'idea' }],
+      4: [{ pose: 'idea' }, { pose: 'idea' }],
+      5: [{ art: 's_z2_dark', pose: 'worried' }, { pose: 'idea' }]
+    },
+    3: {
+      1: [{ art: 's_z3_prices', pose: 'worried' }, { pose: 'idea' }],
+      2: [{ art: 's_z3_mixed', pose: 'worried' }, { pose: 'idea' }],
+      3: [{ pose: 'worried' }, { pose: 'idea' }],
+      4: [{ pose: 'idea' }, { pose: 'idea' }],
+      5: [{ art: 's_z3_mixed', pose: 'worried' }, { pose: 'idea' }]
+    },
+    4: {
+      1: [{ art: 's_z4_hiccup', pose: 'worried' }, { pose: 'idea' }],
+      2: [{ art: 's_z4_rockets', pose: 'worried' }, { pose: 'idea' }],
+      3: [{ pose: 'worried' }, { pose: 'idea' }],
+      4: [{ pose: 'idea' }, { pose: 'idea' }],
+      5: [{ art: 's_z4_hiccup', pose: 'worried' }, { pose: 'idea' }]
     }
   };
 
   var ART = {};
   var ART_DIR = {};
   function loadArt(dir) {
-    return fetch('art/' + dir + 'manifest.json').then(function (r) { return r.json(); }).then(function (list) {
+    return fetch('art/' + dir + 'manifest.json?v=3').then(function (r) { return r.json(); }).then(function (list) {
       list.forEach(function (n) { ART[n] = true; ART_DIR[n] = dir; });
     }).catch(function () {});
   }
-  var ready = Promise.all([loadArt(''), loadArt('z1/')]);
+  var ready = Promise.all([loadArt(''), loadArt('z1/'), loadArt('z2/'), loadArt('z3/'), loadArt('z4/')]);
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -124,7 +145,8 @@
     var t = thanks(mission);
     if (!t) return '';
     var p = parseId(mission.id);
-    var bigPic = p && !p.isStar && p.zone === 1 && p.num === 5 ? pic('s_z1_fixed', '', 'gm-comic') : '';
+    var fixedPic = p && !p.isStar && p.num === 5 ? 's_z' + p.zone + '_fixed' : '';
+    var bigPic = fixedPic && ART[fixedPic] ? pic(fixedPic, '', 'gm-comic') : '';
     return bigPic + '<div class="gm-thanks">' + charPic(t.who, 'gm-thanks-pic', 'happy') + '<div class="gm-bubble gm-bubble-left"><b>' + esc(CHARS[t.who].name) + ':</b> ' + esc(t.text) + '</div></div>';
   }
 
@@ -158,8 +180,8 @@
             '</div>' +
           '</div>' +
         '</div>';
-      root.IslandAudio.speak(s.text);
-      document.getElementById('gm-scene-hear').onclick = function () { root.IslandAudio.speak(s.text); };
+      root.IslandAudio.speak(s.text, null, s.who);
+      document.getElementById('gm-scene-hear').onclick = function () { root.IslandAudio.speak(s.text, null, s.who); };
       document.getElementById('gm-scene-next').onclick = function () {
         root.IslandAudio.playTap();
         i++;

@@ -46,7 +46,7 @@
     { id: 'st_island_hero', zone: 'special', name: 'Island Hero Star', pic: 'o_star_path', icon: '⭐', desc: 'Awarded to pupils who explored every corner of the island.' }
   ];
 
-  /* 2. DECORATIONS CATALOG (Beach Corner plot items) */
+  /* 2. DECORATIONS CATALOG (Beach Corner plot items + Unlockable Zone Trophies) */
   var DECORATIONS = [
     { id: 'd_flag', name: 'Beach Flag', icon: '🚩', pic: 'd_flag', desc: 'A bright colorful pennant flag flapping in the sea breeze.' },
     { id: 'd_palm', name: 'Mini Palm Tree', icon: '🌴', pic: 'd_palm', desc: 'A tropical miniature palm with sweet little coconuts.' },
@@ -54,7 +54,12 @@
     { id: 'd_lantern', name: 'Warm Lantern', icon: '🏮', pic: 'd_lantern', desc: 'Gives off a warm golden glow when dusk falls.' },
     { id: 'd_hut', name: 'Beach Hut', icon: '🛖', pic: 'd_hut', desc: 'A cosy palm-leaf beach cabana for afternoon naps.' },
     { id: 'd_shell_pile', name: 'Shell Treasure', icon: '🐚', pic: 'd_shell_pile', desc: 'Sparkling colorful shells gathered along the shoreline.' },
-    { id: 'd_umbrella', name: 'Sun Umbrella', icon: '⛱️', pic: 'd_umbrella', desc: 'A sunny striped beach umbrella for cool shade.' }
+    { id: 'd_umbrella', name: 'Sun Umbrella', icon: '⛱️', pic: 'd_umbrella', desc: 'A sunny striped beach umbrella for cool shade.' },
+    // Zone Trophies (unlocked by opening each zone's treasure chest!)
+    { id: 't_robot', name: 'Bolt\'s Robot', icon: '🤖', pic: 'z1/o_robot', zone: 1, desc: 'Grandpa Bolt\'s helper robot trophy from Sunny Meadow!' },
+    { id: 't_light', name: 'Mini Lighthouse', icon: '🏮', pic: 'z2/o_lighthouse_on', zone: 2, desc: 'Lulu\'s shining beacon trophy from Lighthouse Beach!' },
+    { id: 't_basket', name: 'Acorn Basket', icon: '🧺', pic: 'z3/o_basket', zone: 3, desc: 'Mr. Nutty\'s market basket trophy from Treehouse Forest!' },
+    { id: 't_rocket', name: 'Water Rocket', icon: '🚀', pic: 'z4/o_rocket', zone: 4, desc: 'Ember\'s water rocket trophy from Volcano Peak!' }
   ];
 
   /* 3. CAPTAIN PIP\'S JOKES & FUN FACTS BANK */
@@ -246,6 +251,14 @@
     renderCornerContent(modalRoot, doc);
   }
 
+  function isDecoUnlocked(d, doc) {
+    if (!d || !d.zone) return true;
+    var ses = root.IslandApp ? root.IslandApp.state().session : null;
+    if (ses && ses.isDemo) return true;
+    var chests = (doc && doc.chests) || {};
+    return !!chests['z' + d.zone];
+  }
+
   function renderCornerContent(container, doc) {
     var placed = doc.corner.items || [];
     var placedMap = {};
@@ -265,11 +278,16 @@
 
     var bagHtml = DECORATIONS.map(function (d) {
       var isPlaced = !!placedMap[d.id];
+      var unlocked = isDecoUnlocked(d, doc);
+      var trophyBadge = d.zone
+        ? (unlocked ? '<small style="color:#fde047;font-size:0.7rem;font-weight:800">🏆 Zone ' + d.zone + ' Trophy</small>' : '<small class="monster-item-lock-pill">🔒 Zone ' + d.zone + ' Chest</small>')
+        : '';
       return (
-        '<button type="button" class="isl-btn isl-corner-bag-btn' + (isPlaced ? ' placed' : '') + '" ' +
-          'onclick="IslandRewards.placeDecorationFromBag(\'' + d.id + '\')">' +
+        '<button type="button" class="isl-btn isl-corner-bag-btn' + (isPlaced ? ' placed' : '') + (unlocked ? '' : ' locked') + '" ' +
+          (unlocked ? 'onclick="IslandRewards.placeDecorationFromBag(\'' + d.id + '\')"' : 'disabled aria-disabled="true"') + '>' +
           '<img src="art/' + esc(d.pic) + '.webp" alt="">' +
           '<span>' + esc(d.name) + (isPlaced ? ' (Placed)' : '') + '</span>' +
+          trophyBadge +
         '</button>'
       );
     }).join('');
@@ -281,12 +299,15 @@
         '<div class="isl-corner-screen">' +
           '<div class="isl-corner-topbar">' +
             '<div style="font-size:1.35rem;font-weight:800;display:flex;align-items:center;gap:10px">' +
-              '<img src="art/d_palm.webp" alt="" style="width:38px;height:38px;object-fit:contain">' +
-              '<span>My Sunny Beach Corner</span>' +
+              '<img src="art/d_hut.webp" alt="" style="width:38px;height:38px;object-fit:contain">' +
+              '<span>🏖️ My Sunny Beach Camp</span>' +
             '</div>' +
-            '<div style="display:flex;gap:10px">' +
-              '<button type="button" class="isl-btn emerald" onclick="IslandRewards.saveCornerChanges()">Save & Exit 🌴</button>' +
-              '<button type="button" class="isl-btn" style="min-height:44px;min-width:44px;padding:6px 12px" onclick="IslandApp.closeModal()">✕</button>' +
+            '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">' +
+              '<button type="button" class="isl-btn violet" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="IslandApp.openDressingRoom()">👕 Dress Up</button>' +
+              '<button type="button" class="isl-btn amber" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="IslandRewards.openStickerBook()">📒 Stickers</button>' +
+              (root.IslandWall ? '<button type="button" class="isl-btn wall-btn" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="IslandWall.open()">🌟 Classmates</button>' : '') +
+              '<button type="button" class="isl-btn emerald" style="min-height:42px;padding:6px 14px;font-size:0.92rem" onclick="IslandRewards.saveCornerChanges()">Save & Exit 🌴</button>' +
+              '<button type="button" class="isl-btn" style="min-height:42px;min-width:42px;padding:6px 12px" onclick="IslandApp.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
           '<div class="isl-corner-canvas" id="isl-corner-canvas" onclick="IslandRewards.tapCornerSand(event)">' +
@@ -297,7 +318,7 @@
             itemsHtml +
           '</div>' +
           '<div class="isl-corner-tray">' +
-            '<div style="font-size:1.02rem;font-weight:800;color:#fde047;margin-bottom:6px">🎒 Island Decorations Bag (Tap to place on sand):</div>' +
+            '<div style="font-size:1.02rem;font-weight:800;color:#fde047;margin-bottom:6px">🎒 Island Decorations & Zone Trophies (Tap sand, then tap an item to place):</div>' +
             '<div class="isl-corner-bag-scroll">' + bagHtml + '</div>' +
           '</div>' +
         '</div>' +
@@ -317,6 +338,11 @@
   function placeDecorationFromBag(itemId) {
     var ses = root.IslandApp ? root.IslandApp.state().session : null;
     if (!ses || !ses.doc) return;
+    var def = DECORATIONS.find(function (d) { return d.id === itemId; });
+    if (!def || !isDecoUnlocked(def, ses.doc)) {
+      root.IslandAudio.playSoftFail();
+      return;
+    }
     ses.doc.corner = ses.doc.corner || { items: [] };
 
     // If already placed, remove it
@@ -375,7 +401,7 @@
 
     var joke = getDailyJoke(today);
     setTimeout(function () {
-      root.IslandAudio.speak('Captain Pip says: ' + joke.q + ' ' + joke.a);
+      root.IslandAudio.speak('Captain Pip says: ' + joke.q + ' ' + joke.a, null, 'pip');
     }, 250);
 
     modalRoot.innerHTML =
@@ -442,7 +468,7 @@
     var badges = { 1: 'z_meadow', 2: 'z_beach', 3: 'z_forest', 4: 'z_mountain' };
 
     root.IslandAudio.playChest();
-    root.IslandAudio.speak('The magic shell is shining over ' + zoneNames[zoneNum] + '! Thank you!');
+    root.IslandAudio.speak('The magic shell is shining over ' + zoneNames[zoneNum] + '! Thank you!', null, zoneNum);
 
     modalRoot.innerHTML =
       '<div class="isl-modal-backdrop" id="isl-cutscene-backdrop">' +
@@ -533,7 +559,7 @@
   function speakPipTip() {
     var ses = root.IslandApp ? root.IslandApp.state().session : null;
     if (ses && ses.doc && ses.doc.pipTip) {
-      root.IslandAudio.speak('Captain Pip says: Remember, ' + ses.doc.pipTip.word + ' means ' + ses.doc.pipTip.meaning + '!');
+      root.IslandAudio.speak('Captain Pip says: Remember, ' + ses.doc.pipTip.word + ' means ' + ses.doc.pipTip.meaning + '!', null, 'pip');
     }
   }
 
