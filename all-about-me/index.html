@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All About Me</title>
+<style>
+  :root { --ink:#26215c; --soft:#6d5fd1; --line:#94a3b8; --spring:cubic-bezier(.175,.885,.32,1.275); }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE","Trebuchet MS",system-ui,sans-serif; color:var(--ink); background:#e2e8f0; padding:14px; }
+  /* the screen bar: only the teacher sees this, never the paper */
+  .bar { max-width:210mm; margin:0 auto 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; background:#0f172a; color:#fff; border-radius:18px; padding:10px 14px; }
+  .bar b { flex:1; min-width:200px; font-size:15px; }
+  .btn { font:inherit; font-weight:700; font-size:16px; color:#fff; background:#10b981; border:0; border-bottom:5px solid #047857; border-radius:14px; padding:8px 18px; cursor:pointer; transition:transform .12s var(--spring), border-bottom-width .12s; min-height:44px; }
+  .btn:active { transform:translateY(4px); border-bottom-width:1px; }
+  .btn.alt { background:#38bdf8; border-bottom-color:#0369a1; }
+  /* the paper: two A4 pages */
+  .page { width:210mm; min-height:297mm; margin:0 auto 14px; background:#fff; padding:9mm 10mm; border-radius:6px; box-shadow:0 6px 24px rgba(15,23,42,.25); position:relative; page-break-after:always; }
+  .page:last-of-type { page-break-after:auto; }
+  h1 { font-size:27px; line-height:1.05; }
+  .top { display:flex; gap:10px; align-items:flex-end; justify-content:space-between; border-bottom:4px solid var(--ink); padding-bottom:5px; margin-bottom:6px; }
+  .top small { font-size:11.5px; font-weight:600; color:var(--soft); display:block; margin-top:2px; }
+  .id { display:flex; gap:8px; font-size:13px; font-weight:700; flex-wrap:wrap; justify-content:flex-end; }
+  .id span { display:inline-block; border-bottom:2px solid var(--ink); min-width:30mm; height:20px; }
+  .id span.s { min-width:14mm; }
+  .note { font-size:11.5px; font-weight:600; background:#fef9c3; border:2px dashed #ca8a04; border-radius:10px; padding:4px 9px; margin-bottom:7px; }
+  .q { margin-bottom:7px; }
+  .q > h2 { font-size:15px; display:flex; align-items:center; gap:7px; margin-bottom:3px; }
+  .q > h2 i { font-style:normal; display:inline-flex; width:23px; height:23px; align-items:center; justify-content:center; background:var(--ink); color:#fff; border-radius:50%; font-size:13px; flex:none; }
+  .q > h2 small { font-size:11px; font-weight:600; color:var(--soft); margin-left:2px; }
+  table.rate { width:100%; border-collapse:collapse; font-size:13px; }
+  table.rate td { border-bottom:1.5px dotted var(--line); padding:2.5px 4px; }
+  table.rate td.f { text-align:center; width:15mm; font-size:19px; line-height:1; }
+  table.rate .head td { font-size:11px; font-weight:700; color:var(--soft); border-bottom:2px solid var(--ink); text-align:center; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:0 9mm; }
+  .fav { display:grid; grid-template-columns:1fr 1fr; gap:4px 9mm; }
+  .fav label, .tick label, .line { font-size:13px; font-weight:600; }
+  .fav label { display:flex; align-items:flex-end; gap:5px; white-space:nowrap; }
+  .fav label u { flex:1; border-bottom:2px solid var(--ink); text-decoration:none; height:19px; min-width:20mm; }
+  .tick { display:grid; grid-template-columns:repeat(3,1fr); gap:3px 6px; }
+  .tick.c2 { grid-template-columns:repeat(2,1fr); }
+  .tick.c4 { grid-template-columns:repeat(4,1fr); }
+  .tick label { display:flex; align-items:center; gap:5px; }
+  .box { flex:none; display:inline-block; width:14px; height:14px; border:2.2px solid var(--ink); border-radius:4px; }
+  .box.r { border-radius:50%; }
+  .line { display:flex; align-items:flex-end; gap:6px; margin-top:3px; }
+  .line u { flex:1; border-bottom:2px solid var(--ink); text-decoration:none; height:20px; }
+  .lines u { display:block; border-bottom:2px solid var(--ink); height:21px; margin-top:2px; }
+  .draw { border:3px dashed var(--ink); border-radius:16px; height:36mm; display:flex; align-items:flex-start; padding:5px 10px; font-size:13px; font-weight:700; color:var(--soft); }
+  .secret { background:#ede9fe; border:2.5px solid var(--soft); border-radius:12px; padding:6px 10px; }
+  .foot { position:absolute; left:10mm; right:10mm; bottom:6mm; text-align:center; font-size:11px; font-weight:600; color:var(--soft); }
+  .scale { display:flex; gap:12px; font-size:13px; font-weight:600; align-items:center; margin-top:2px; }
+  .scale span { display:flex; align-items:center; gap:5px; }
+  @page { size:A4; margin:0; }
+  @media print {
+    body { background:#fff; padding:0; }
+    .bar, #teacher { display:none !important; }
+    .page { margin:0; border-radius:0; box-shadow:none; width:210mm; height:297mm; min-height:0; overflow:hidden; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+  .p2 .q { margin-bottom:11px; }
+  .p2 .tick label, .p2 .line, .p2 .scale { font-size:14px; }
+  .p2 .lines u { height:27px; }
+  .p2 .line u { height:22px; }
+  @media (max-width:760px) {
+    .page { width:100%; padding:14px; min-height:0; overflow:hidden; } .foot { position:static; margin-top:10px; }
+    .top { flex-wrap:wrap; } .id span { min-width:22mm; }
+    .two, .fav { grid-template-columns:1fr; } .tick, .tick.c4 { grid-template-columns:repeat(2,1fr); }
+    .fav label { white-space:normal; } .scale { flex-wrap:wrap; gap:6px 12px; }
+    .bar { flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <b>All About Me: a paper for every pupil. Print it two-sided on A4 (page 1 on the front, page 2 on the back).</b>
+  <button type="button" class="btn" onclick="window.print()">Print</button>
+  <button type="button" class="btn alt" onclick="document.getElementById('teacher').scrollIntoView({behavior:'smooth'})">How to use it</button>
+</div>
+
+<!-- ============ PAGE 1 ============ -->
+<section class="page">
+  <div class="top">
+    <div><h1>🌟 All About Me!</h1><small>Hello! I want to know you. Please tell me about you.</small></div>
+    <div class="id"><div>Name: <span></span></div><div>Class: <span class="s"></span></div><div>Age: <span class="s"></span></div></div>
+  </div>
+  <div class="note">✏️ You can write, draw or tick ☑. You do <b>not</b> need to answer every question. Only your teacher will read this paper.</div>
+
+  <div class="q">
+    <h2><i>1</i> How do you feel? <small>Circle one face for each line.</small></h2>
+    <table class="rate">
+      <tr class="head"><td style="text-align:left">I …</td><td>😍 love it</td><td>🙂 OK</td><td>🙁 don't like it</td></tr>
+      <tr><td>English class 📘</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Maths ➕</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>PE and sport ⚽</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Art and music 🎨</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Reading books 📖</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Homework 📝</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Computer games 🎮</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Animals 🐶</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Vegetables 🥦</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+      <tr><td>Rainy days 🌧️</td><td class="f">😍</td><td class="f">🙂</td><td class="f">🙁</td></tr>
+    </table>
+  </div>
+
+  <div class="q">
+    <h2><i>2</i> I like … and I don't like … <small>Write words or draw.</small></h2>
+    <div class="two">
+      <div><div class="line">😍 I like <u></u></div><div class="line"><u></u></div><div class="line"><u></u></div></div>
+      <div><div class="line">🙁 I don't like <u></u></div><div class="line"><u></u></div><div class="line"><u></u></div></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <h2><i>3</i> My favourite … is … </h2>
+    <div class="fav">
+      <label>🦸 character <u></u></label><label>🎬 movie or cartoon <u></u></label>
+      <label>🎮 game <u></u></label><label>🎵 song <u></u></label>
+      <label>🐾 animal <u></u></label><label>🍕 food <u></u></label>
+      <label>🎨 colour <u></u></label><label>🏅 sport <u></u></label>
+      <label>📺 YouTube or TV show <u></u></label><label>📚 book <u></u></label>
+    </div>
+  </div>
+
+  <div class="q">
+    <h2><i>4</i> My hobbies <small>Tick ☑ all you like.</small></h2>
+    <div class="tick">
+      <label><span class="box"></span>⚽ football</label><label><span class="box"></span>🏊 swimming</label><label><span class="box"></span>🚴 bike</label>
+      <label><span class="box"></span>🎨 drawing</label><label><span class="box"></span>💃 dancing</label><label><span class="box"></span>🎤 singing</label>
+      <label><span class="box"></span>📖 reading</label><label><span class="box"></span>🎮 video games</label><label><span class="box"></span>🧱 building</label>
+      <label><span class="box"></span>🍳 cooking</label><label><span class="box"></span>🎹 an instrument</label><label><span class="box"></span>🐕 pets</label>
+      <label><span class="box"></span>🧩 puzzles</label><label><span class="box"></span>📸 photos</label><label><span class="box"></span>🌳 playing outside</label>
+    </div>
+    <div class="line">Another hobby: <u></u></div>
+  </div>
+
+  <div class="q">
+    <h2><i>5</i> Draw you and your monster! 🐲</h2>
+    <div class="draw">My name is …</div>
+  </div>
+  <div class="foot">Turn the page ➜ more questions</div>
+</section>
+
+<!-- ============ PAGE 2 ============ -->
+<section class="page p2">
+  <div class="top">
+    <div><h1>📘 Me and My English Class</h1><small>Your ideas help me to be a better teacher. Thank you!</small></div>
+    <div class="id"><div>Name: <span></span></div></div>
+  </div>
+
+  <div class="q">
+    <h2><i>6</i> At home I … <small>Tick ☑ what you do.</small></h2>
+    <div class="tick">
+      <label><span class="box"></span>📺 watch TV</label><label><span class="box"></span>🎮 play games</label><label><span class="box"></span>📱 use a tablet or phone</label>
+      <label><span class="box"></span>📖 read</label><label><span class="box"></span>📝 do homework</label><label><span class="box"></span>🧹 help at home</label>
+      <label><span class="box"></span>🍽️ cook or help cook</label><label><span class="box"></span>🐕 play with a pet</label><label><span class="box"></span>👫 play with friends</label>
+      <label><span class="box"></span>🎨 draw</label><label><span class="box"></span>🎵 listen to music</label><label><span class="box"></span>😴 sleep and rest</label>
+    </div>
+    <div class="line">On Saturday, I like to <u></u></div>
+  </div>
+
+  <div class="q">
+    <h2><i>7</i> English is … for me. </h2>
+    <div class="scale"><span><span class="box r"></span>😀 easy</span><span><span class="box r"></span>🙂 OK</span><span><span class="box r"></span>😓 hard</span>
+      <span style="margin-left:8mm">I understand my teacher:</span><span><span class="box r"></span>always</span><span><span class="box r"></span>sometimes</span><span><span class="box r"></span>not often</span></div>
+  </div>
+
+  <div class="q">
+    <h2><i>8</i> What is hard for me in English? <small>Tick ☑.</small></h2>
+    <div class="tick c4">
+      <label><span class="box"></span>🗣️ speaking</label><label><span class="box"></span>👂 listening</label><label><span class="box"></span>📖 reading</label><label><span class="box"></span>✍️ writing</label>
+      <label><span class="box"></span>🔤 new words</label><label><span class="box"></span>🧩 grammar</label><label><span class="box"></span>😳 speaking in front of class</label><label><span class="box"></span>⏱️ finishing in time</label>
+    </div>
+  </div>
+
+  <div class="q">
+    <h2><i>9</i> To learn English better, I want … <small>Tick ☑ your 3 best ideas.</small></h2>
+    <div class="tick">
+      <label><span class="box"></span>🎮 games</label><label><span class="box"></span>🎵 songs</label><label><span class="box"></span>📚 stories</label>
+      <label><span class="box"></span>🎬 videos</label><label><span class="box"></span>🗣️ speaking with friends</label><label><span class="box"></span>🎨 drawing and art</label>
+      <label><span class="box"></span>🧩 puzzles and quizzes</label><label><span class="box"></span>🏆 team competitions</label><label><span class="box"></span>🎭 acting and role play</label>
+      <label><span class="box"></span>🏝️ Practice Island</label><label><span class="box"></span>🛠️ projects</label><label><span class="box"></span>👩‍🏫 more help from the teacher</label>
+    </div>
+    <div class="line">My own idea for English class: <u></u></div><div class="line"><u></u></div>
+  </div>
+
+  <div class="q">
+    <h2><i>10</i> I like to work … <small>Tick ☑ one.</small></h2>
+    <div class="scale"><span><span class="box r"></span>🧍 alone</span><span><span class="box r"></span>👫 with a partner</span><span><span class="box r"></span>👥 in a small group</span><span><span class="box r"></span>👨‍👩‍👧‍👦 with the whole class</span></div>
+  </div>
+
+  <div class="q secret">
+    <h2><i>11</i> 🤫 My secret: friends I like to work with <small>Only your teacher sees this. I will try, but I cannot promise.</small></h2>
+    <div class="line">1 <u></u></div><div class="line">2 <u></u></div><div class="line">3 <u></u></div>
+    <div class="line" style="margin-top:5px">I work well when my partner is <u></u> <span style="font-size:11px">(example: kind, funny, quiet, helpful)</span></div>
+  </div>
+
+  <div class="q">
+    <h2><i>12</i> I am good at … and I want to learn …</h2>
+    <div class="two"><div class="line">⭐ I am good at <u></u></div><div class="line">🚀 I want to learn <u></u></div></div>
+    <div class="line">When I grow up, I want to be <u></u></div>
+  </div>
+
+  <div class="q">
+    <h2><i>13</i> 💌 I want to tell my teacher … </h2>
+    <div class="lines"><u></u><u></u><u></u></div>
+  </div>
+  <div class="foot">Thank you! 🌟 Give this paper to your teacher.</div>
+</section>
+
+<!-- ============ TEACHER PAGE (never printed) ============ -->
+<section class="page" id="teacher" style="min-height:0;page-break-after:auto" data-noprint>
+  <h1 style="font-size:22px">For the teacher: how to use this paper</h1>
+  <div style="font-size:14px;line-height:1.55;margin-top:8px;font-weight:600">
+    <p><b>Before:</b> print two-sided on A4, one for each pupil. Tell them: "You can write, draw or tick. You do not have to answer everything. Only I will read it."</p>
+    <p style="margin-top:6px"><b>As a lesson (20 minutes):</b> read the questions out loud with the class, show the sentence patterns on the board (<i>I like … / I don't like … / My favourite … is … / At home I … / I want …</i>), then pupils fill it in. It also gives writing practice at A1.</p>
+    <p style="margin-top:6px"><b>Questions 5 and 11 are private.</b> Do not read question 11 out loud, do not show it to other pupils or parents, and do not promise exact seats. Use it with your own eyes to build partners: put each pupil near at least one friend they chose, and mix pairs so nobody is left alone.</p>
+    <p style="margin-top:6px"><b>Question 13</b> may hold worries. Read these first and follow your school's rules if a pupil needs help.</p>
+    <p style="margin-top:6px"><b>What to look for:</b> Q1 and Q9 tell you which activities to plan; Q4 and Q3 give you topics for stories, games and warm-up chats; Q7, Q8 show who needs extra support; Q10 helps to make groups.</p>
+    <p style="margin-top:6px"><b>Keep the papers on paper.</b> The platform does not store them, so no pupil's answers are saved online.</p>
+  </div>
+</section>
+
+<script>
+  // the teacher page is for the screen only
+  window.addEventListener('beforeprint', function () { var t = document.getElementById('teacher'); if (t) t.style.display = 'none'; });
+  window.addEventListener('afterprint', function () { var t = document.getElementById('teacher'); if (t) t.style.display = ''; });
+</script>
+</body>
+</html>
