@@ -87,7 +87,7 @@
   function setMatchesFilter(s) {
     if (s.id === S.setId) return true;
     var g = s.grade || (/-g3\b/.test(s.id) ? 3 : /-g4\b/.test(s.id) ? 4 : 0);
-    var isMix = /^smart-|^u14-/.test(s.id) || !!s.custom;
+    var isMix = /^smart-|^u14-|^speak-/.test(s.id) || !!s.custom;
     if (S.qGrade === '3' && g !== 3) return false;
     if (S.qGrade === '4' && g !== 4) return false;
     if (S.qGrade === 'mix' && !isMix) return false;
@@ -95,7 +95,7 @@
     var sk = s.skill || (/-voc$/.test(s.id) ? 'words' : /-past$|-modals$/.test(s.id) ? 'sentences' : /-read$/.test(s.id) ? 'reading' : '');
     if (S.qSkill === 'all') {
       /* In 'All skills' view, hide the 30 granular per-skill sub-sets so the main Unit 1/2/3/4 sets stay clean */
-      if (s.skill) return false;
+      if (s.skill && !s.showInAll) return false;
       return true;
     }
     return sk === S.qSkill;
@@ -133,7 +133,7 @@
     });
     fbar.appendChild(h('span', { class: 'gm-filter-sep' }));
     fbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
-    [['all', '📚 Full Units'], ['listen', '🎧 Listening'], ['words', '📝 Words'], ['sounds', '🔤 Sounds'], ['sentences', '💬 Sentences'], ['reading', '📖 Reading']].forEach(function (sk) {
+    [['all', '📚 Full Units'], ['speaking', '🎤 Speaking & Acting'], ['listen', '🎧 Listening'], ['words', '📝 Words'], ['sounds', '🔤 Sounds'], ['sentences', '💬 Sentences'], ['reading', '📖 Reading']].forEach(function (sk) {
       var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
       b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; save(); render(); });
       fbar.appendChild(b);

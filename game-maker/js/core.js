@@ -51,7 +51,7 @@
   }
 
   /* ---- first-try results by skill for this game (shown on the podium) ---- */
-  var SK_E = { Listening: '\uD83C\uDFA7', Words: '\uD83D\uDCDD', Sounds: '\uD83D\uDD24', Sentences: '\uD83D\uDCAC', Reading: '\uD83D\uDCD6' };
+  var SK_E = { Listening: '\uD83C\uDFA7', Words: '\uD83D\uDCDD', Sounds: '\uD83D\uDD24', Sentences: '\uD83D\uDCAC', Reading: '\uD83D\uDCD6', Speaking: '\uD83C\uDFA4' };
   function recordSkill(item, firstTry) {
     if (!item || !item.skill) return;
     var o = GM.sessionSkills[item.skill] = GM.sessionSkills[item.skill] || { n: 0, ok: 0 };
@@ -175,6 +175,28 @@
         qWrap.appendChild(passBox);
       }
       qWrap.appendChild(q);
+      var speakJudge = null;
+      if (item.frame) {
+        var frameBox = h('div', { class: 'gm-qframe' }, [
+          h('div', { class: 'gm-qframe-txt', text: item.frame }),
+          btn('🔊 Hear Model', 'sm amber', function () { A().speak(item.speak || item.frame); })
+        ]);
+        qWrap.appendChild(frameBox);
+        speakJudge = h('div', { class: 'gm-speak-judge', style: 'display:none' }, [
+          btn('🌟 Super Speaking & Acting! (Go!)', 'big green', function () {
+            if (done) return;
+            choice = item.a;
+            finish(true);
+          }),
+          btn('🗣️ Say Together & Go! 🔊', 'big cyan', function () {
+            if (done) return;
+            try { A().speak(item.speak || item.a); } catch (e) { /* ignore */ }
+            choice = item.a;
+            finish(true);
+          })
+        ]);
+        qWrap.appendChild(speakJudge);
+      }
       body.appendChild(qWrap);
 
       /* Optional tap-to-order word-tile tray when item.order is present */
@@ -213,7 +235,7 @@
       }
 
       function finish(ok) {
-        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried); if (picBox._reveal) picBox._reveal(); if (passBtn) passBtn.style.display = 'none';
+        if (done) return; done = true; lastOutcome = !!ok; clearInterval(tm); recordSkill(item, !!ok && !retried); if (picBox._reveal) picBox._reveal(); if (passBtn) passBtn.style.display = 'none'; if (speakJudge) speakJudge.style.display = 'none';
         [].forEach.call(optBox.children, function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('good'); else if (b.classList.contains('sel')) b.classList.add('bad'); });
         okBtn.style.display = 'none';
         skipBtn.style.display = 'none';
@@ -237,8 +259,9 @@
         closeTm = setTimeout(function () { closeModal({ ok: ok, second: !!ok && retried }); }, reviewDelay);
       }
 
-      var show = btn('👀  Show the answers', 'huge amber', function () {
+      var show = btn(item.frame ? '🎤  Judge Speaking / Show Options' : '👀  Show the answers', 'huge amber', function () {
         show.style.display = 'none'; A().play('flip');
+        if (speakJudge) speakJudge.style.display = '';
         if (item.speak && /^Listen\./i.test(item.q || '')) {
           try { A().speak(item.speak); } catch (e) { /* ignore */ }
         }

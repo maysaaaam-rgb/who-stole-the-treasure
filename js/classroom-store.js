@@ -513,7 +513,7 @@
       if (!b || !b.wallet) return;
       if ((b.updatedAt || 0) > stampOf(id) || !d.wallets[id]) { adoptBundle(id, b); changed = true; }
     });
-    if (doc.cfg && (doc.cfgAt || 0) > (d.config.updatedAt || 0)) { d.config = doc.cfg; d.config.updatedAt = doc.cfgAt; data(); changed = true; }
+    if (doc.cfg) { if ((doc.cfgAt || 0) > (d.config.updatedAt || 0)) { d.config = doc.cfg; d.config.updatedAt = doc.cfgAt; data(); changed = true; } else if (Array.isArray(doc.cfg.calendar)) { d.config.calendar = d.config.calendar || []; var have = {}; d.config.calendar.forEach(function (ev) { if (ev && ev.id) have[ev.id] = 1; }); doc.cfg.calendar.forEach(function (ev) { if (ev && ev.id && /^ev-/.test(ev.id) && !have[ev.id]) { d.config.calendar.push(ev); changed = true; } }); } } try { if (root.CalendarView && root.CalendarView.ensureSeeded) root.CalendarView.ensureSeeded(); } catch (e) { /* ignore */ }
     return changed;
   }
   function parseRow(row) { try { return row && row.description ? JSON.parse(row.description) : null; } catch (e) { return null; } }
