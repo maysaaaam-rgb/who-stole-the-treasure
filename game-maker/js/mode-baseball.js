@@ -26,7 +26,7 @@
     e: '⚾',
     desc: 'Answer to step up to the plate, then stop the power bar to hit and run the bases!',
     fields: [
-      { k: 'innings', l: 'Innings', opts: [[2, '2 innings'], [3, '3 innings']], def: 2 }
+      { key: 'innings', k: 'innings', label: 'Innings', l: 'Innings', opts: [[2, '2 innings'], [3, '3 innings']], def: 2 }
     ],
 
     start: function (ctx) {

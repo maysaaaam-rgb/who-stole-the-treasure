@@ -153,16 +153,25 @@
         activeOrbs = [];
       }
 
-      // Build pairs from ctx.nextItem()
+      // Build pairs from ctx.nextItem() (prefer distinct answers so matching is never ambiguous)
       var deck = [];
+      var seenAns = {};
       var p;
       for (p = 0; p < numPairs; p++) {
         var it = ctx.nextItem() || { q: 'Question ' + (p + 1), a: 'Answer ' + (p + 1) };
+        var tries = 0;
+        while (tries++ < 25 && it && seenAns[String(it.a || '').toLowerCase()]) {
+          it = ctx.nextItem() || it;
+        }
+        var qTxt = (it.act ? ('🎭 ' + it.act + ' ') : '') + String(it.q || '');
+        var aTxt = String(it.a || '');
+        seenAns[aTxt.toLowerCase()] = 1;
         var fullSent = makeFullSentence(it.q, it.a);
         deck.push({
           pairId: p,
           kind: 'q',
-          text: String(it.q || ''),
+          text: qTxt,
+          rawAns: aTxt,
           full: fullSent,
           matched: false,
           faceUp: false,
@@ -172,8 +181,8 @@
         deck.push({
           pairId: p,
           kind: 'a',
-          text: String(it.a || ''),
-          rawAns: String(it.a || ''),
+          text: aTxt,
+          rawAns: aTxt,
           full: fullSent,
           matched: false,
           faceUp: false,
@@ -493,7 +502,7 @@
         var c2 = flipped[1].card, i2 = flipped[1].idx;
         flipped = [];
 
-        if (c1.pairId === c2.pairId) {
+        if (c1.pairId === c2.pairId || (c1.kind !== c2.kind && c1.rawAns && c2.rawAns && c1.rawAns.toLowerCase() === c2.rawAns.toLowerCase())) {
           // MATCH!
           c1.matched = true;
           c2.matched = true;

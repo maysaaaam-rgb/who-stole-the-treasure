@@ -100,11 +100,11 @@
   ];
 
   GM.sets = [
-    { id: 'mona-g3', title: 'Grade 3 · Mona Lisa review', grade: 3, e: '🖼️', items: rows(MONA) },
-    { id: 'angry-g3', title: 'Grade 3 · The Angry Mountain', grade: 3, e: '🌋', items: rows(ANGRY) },
-    { id: 'show-g4', title: 'Grade 4 · Late for the Show', grade: 4, e: '🎭', items: rows(SHOW) },
-    { id: 'moon-g3', title: 'Grade 3 · Chuseok Moon Song', grade: 3, e: '🌕', items: rows(MOON) },
-    { id: 'halloween', title: 'Halloween words and verbs', grade: 0, e: '🎃', items: rows(HAL) }
+    { id: 'mona-g3', title: 'G3 · Unit 4 · Where Is She? (Mona Lisa)', sub: 'Past Simple & Museum Story', grade: 3, unit: 4, skill: '', e: '🖼️', items: rows(MONA).map(function (it, i) { it.unit = 4; it.skill = i < 20 ? 'Sentences' : (i < 34 ? 'Words' : 'Reading'); return it; }) },
+    { id: 'angry-g3', title: 'G3 · Unit 4 · The Angry Mountain', sub: 'Volcano Story, Cause & Effect, -nd Blend', grade: 3, unit: 4, skill: '', e: '🌋', items: rows(ANGRY).map(function (it, i) { it.unit = 4; it.skill = i < 5 ? 'Words' : (i >= 17 && i <= 22 ? 'Sounds' : 'Reading'); return it; }) },
+    { id: 'show-g4', title: 'G4 · Unit 4 · Late for the Show', sub: 'Twelfth Night, Sequence & Teamwork', grade: 4, unit: 4, skill: '', e: '🎭', items: rows(SHOW).map(function (it, i) { it.unit = 4; it.skill = i < 5 ? 'Words' : (i >= 10 && i <= 14 ? 'Sentences' : 'Reading'); return it; }) },
+    { id: 'moon-g3', title: 'G3 · Unit 2 · Chuseok Moon Song', sub: 'Opposites & Action Circle Song', grade: 3, unit: 2, skill: '', e: '🌕', items: rows(MOON).map(function (it) { it.unit = 2; it.skill = 'Words'; return it; }) },
+    { id: 'halloween', title: 'Special · Halloween Words & Verbs', sub: 'Spooky Fun for All Grades', grade: 0, unit: 0, skill: '', e: '🎃', items: rows(HAL).map(function (it) { it.unit = 0; it.skill = 'Words'; return it; }) }
   ];
 
   var HAL_ON = (function () { try { if (/[?&]halloween=1/.test(root.location.search) || localStorage.getItem('eaa_preview_halloween')) return true; } catch (e) { /* ignore */ } var d = new Date(), ymd = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); return ymd >= 20261026 && ymd <= 20261101; })();

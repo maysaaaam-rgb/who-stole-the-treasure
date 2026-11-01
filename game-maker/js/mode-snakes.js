@@ -21,7 +21,7 @@
     e: '🎲',
     desc: 'Answer a question to roll the big dice, climb ladders, and race to the finish square!',
     fields: [
-      { k: 'len', l: 'Board length', opts: [[20, '20 squares'], [30, '30 squares']], def: 30 }
+      { key: 'len', k: 'len', label: 'Board length', l: 'Board length', opts: [[20, '20 squares'], [30, '30 squares']], def: 30 }
     ],
 
     start: function (ctx) {

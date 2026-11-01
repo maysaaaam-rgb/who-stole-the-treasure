@@ -87,8 +87,8 @@
     teams: 2,
     desc: 'Cat vs Dog backyard throw! Answer a question, then fling yarn or a bone over the fence to bonk the other character!',
     fields: [
-      { k: 'rounds', l: 'Throws per team', opts: [[3, '3'], [5, '5'], [7, '7']], def: 5 },
-      { k: 'level',  l: 'Difficulty', opts: [['easy', '🌱 Easy (long guide, no wind)'], ['normal', '⚡ Normal (short guide, light wind)'], ['hard', '🔥 Hard (tiny guide, strong wind)']], def: 'normal' }
+      { key: 'rounds', k: 'rounds', label: 'Throws per team', l: 'Throws per team', opts: [[3, '3'], [5, '5'], [7, '7']], def: 5 },
+      { key: 'level',  k: 'level',  label: 'Difficulty',      l: 'Difficulty',      opts: [['easy', '🌱 Easy (long guide, no wind)'], ['normal', '⚡ Normal (short guide, light wind)'], ['hard', '🔥 Hard (tiny guide, strong wind)']], def: 'normal' }
     ],
 
     start: function (ctx) {

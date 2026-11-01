@@ -44,12 +44,16 @@
   }
   function pool(grade) {
     var out = [];
-    (GM.sets || []).forEach(function (s) { if (s.grade === grade && !s.smart && s.id !== 'halloween' && s.items) out = out.concat(s.items); });
+    (GM.sets || []).forEach(function (s) {
+      if (s.grade === grade && !s.smart && !s.skillOnly && s.skill !== 'speaking' && s.id !== 'halloween' && s.items) {
+        out = out.concat(s.items.filter(function (it) { return it && it.skill !== 'Listening' && !it.speak; }));
+      }
+    });
     return out;
   }
   /* the smart sets: the questions are chosen when the game starts, from every question set of that grade */
   [3, 4].forEach(function (g) {
-    var s = { id: 'smart-g' + g, title: 'Smart mix · Grade ' + g, grade: g, e: '🧠', smart: true };
+    var s = { id: 'smart-g' + g, title: 'Smart Mix · Grade ' + g + ' (Spaced Repetition)', sub: '20 Adaptive Questions Missed by the Class', grade: g, unit: 0, skill: '', e: '🧠', smart: true };
     Object.defineProperty(s, 'items', { get: function () { return pick(pool(g), 20, st().classId); }, enumerable: true });
     (GM.sets = GM.sets || []).push(s);
   });
