@@ -1,9 +1,17 @@
 /* ============================================================================
- * Game Maker — Mode: Baseball (mode-baseball.js)
+ * Game Maker — Mode: Baseball (mode-baseball.js — Pro Skill Pitching Edition)
  * Baseball diamond with 4 bases (Home, 1st, 2nd, 3rd) and team monsters as runners.
- * Right answer = tap Swing to stop the power bar (Single/Double/Triple/Home Run).
- * Every hit gives at least +5, plus +20 for every runner crossing Home!
- * Wrong answer = soft "Strike!" (no points lost).
+ * Right answer = step up to the plate against 3 live pitch types:
+ *   🔥 Fastball (high-speed needle)
+ *   🌀 Curveball (accelerating curve needle)
+ *   🍃 Changeup (deceptive hesitation needle)
+ * Real Timing Zones (NO automatic Single!):
+ *   - Center Sweet Spot (<=5): 🎆 HOME RUN (4 Bases)
+ *   - Deep Gap (<=10):         🔥 TRIPLE (3 Bases)
+ *   - Line Drive (<=16):       ⭐ DOUBLE (2 Bases)
+ *   - Base Hit (<=24):         ⚾ SINGLE (1 Base)
+ *   - Edge (<=33):             ⚠️ FOUL BALL! (Strike + re-pitch)
+ *   - Wide (>33):              ❌ SWING & A MISS (Strike / Out — 0 pts!)
  * ============================================================================ */
 (function () {
   'use strict';
@@ -20,28 +28,38 @@
     { top: '45%', left: '34%' }  // 3: 3rd
   ];
 
+  var PITCH_TYPES = [
+    { id: 'fast',   name: '🔥 Fastball',  col: '#ef4444', spd: 0.095 },
+    { id: 'curve',  name: '🌀 Curveball', col: '#38bdf8', spd: 0.082 },
+    { id: 'change', name: '🍃 Changeup',  col: '#4ade80', spd: 0.076 }
+  ];
+
   GM.modes.baseball = {
     id: 'baseball',
     name: 'Baseball',
     e: '⚾',
-    desc: 'Answer to step up to the plate, then stop the power bar to hit and run the bases!',
+    desc: 'Answer to step up to the plate, read the pitch type (Fastball, Curveball, Changeup), and time the fast swing bar — late or early swings Foul off or Strike Out!',
     fields: [
-      { key: 'innings', k: 'innings', label: 'Innings', l: 'Innings', opts: [[2, '2 innings'], [3, '3 innings']], def: 2 }
+      { key: 'innings', k: 'innings', label: 'Innings', l: 'Innings', opts: [[2, '2 innings'], [3, '3 innings']], def: 2 },
+      { key: 'speed',   k: 'speed',   label: 'Pitch Speed', l: 'Pitch Speed', opts: [['normal', 'Pro Pitch'], ['fast', 'Major League']], def: 'normal' }
     ],
 
     start: function (ctx) {
       var T = GM.state.teams;
       var maxInnings = +ctx.cfg.innings || 2;
+      var speedMul = ctx.cfg.speed === 'fast' ? 1.32 : 1.0;
       var inning = 1;
       var turn = 0;
       var strikes = 0;
-      var battersThisHalf = 0; // cap at 3 batters per half-inning so every team gets fair turns
+      var outs = 0;
+      var battersThisHalf = 0;
       var phase = 'ask'; // 'ask' | 'swing' | 'running' | 'ended'
       var rafId = 0;
       var needleT = 0;
       var needlePct = 50;
+      var curPitch = PITCH_TYPES[0];
 
-      // Active runners on bases [1st, 2nd, 3rd] (each entry null or runner DOM element)
+      // Active runners on bases [1st, 2nd, 3rd]
       var bases = [null, null, null];
 
       var wrap = U().h('div', { class: 'gm-bas-wrap' });
@@ -93,6 +111,11 @@
         }
       });
 
+      function pickNewPitch() {
+        curPitch = PITCH_TYPES[Math.floor(Math.random() * PITCH_TYPES.length)];
+        needleT = (Math.random() * 2 - 1) * 1.4;
+      }
+
       function clearBaseRunners() {
         bases = [null, null, null];
         runnersLayer.innerHTML = '';
@@ -109,25 +132,50 @@
         info.innerHTML = '';
         info.appendChild(U().h('div', { class: 'gm-turn-pill', style: '--tc:' + t.color }, [
           U().monFace(t.mon, 40),
-          U().h('span', {}, [t.name + (phase === 'swing' ? ' — Tap SWING when the needle hits green!' : ' — Up to Bat!')])
+          U().h('span', {}, [t.name + (phase === 'swing' ? (' — Incoming ' + curPitch.name + '! Tap SWING in the center!') : ' — Up to Bat!')])
         ]));
         info.appendChild(U().h('div', { class: 'gm-Meta' }, ['Inning ' + inning + ' / ' + maxInnings]));
 
         hudEl.innerHTML = '';
         hudEl.appendChild(U().h('div', { class: 'gm-bas-pill' }, ['⚾ Inning ' + inning + '/' + maxInnings]));
-        hudEl.appendChild(U().h('div', { class: 'gm-bas-pill' }, ['❌ Strikes: ' + strikes + ' / 2']));
-        hudEl.appendChild(U().h('div', { class: 'gm-bas-pill' }, ['🧢 Batter: ' + (battersThisHalf + 1) + ' / 3']));
+        hudEl.appendChild(U().h('div', { class: 'gm-bas-pill' }, ['❌ Strikes: ' + strikes + '/2 · Outs: ' + outs + '/2']));
+        hudEl.appendChild(U().h('div', { class: 'gm-bas-pill', style: 'border-color:' + curPitch.col }, [curPitch.name]));
 
         actionSlot.innerHTML = '';
         if (phase === 'ask') {
           actionSlot.appendChild(U().btn('❓ Pitch Question', 'gm-btn gm-btn-go', doAsk));
         } else if (phase === 'swing') {
-          actionSlot.appendChild(U().btn('🏏 SWING BAT!', 'gm-btn gm-btn-go', doSwing));
+          actionSlot.appendChild(U().btn('🏏 SWING BAT! (' + curPitch.name + ')', 'gm-btn gm-btn-go', doSwing));
         } else {
-          actionSlot.appendChild(U().h('span', { style: 'color:#fde047;font-weight:900;font-size:22px;' }, ['Running bases...']));
+          actionSlot.appendChild(U().h('span', { style: 'color:#fde047;font-weight:900;font-size:22px;' }, ['Play in motion...']));
         }
 
         U().teamBar(T, turn);
+      }
+
+      async function recordStrike(reasonLabel) {
+        strikes++;
+        if (A()) A().play('answer_soft');
+        U().floatText(reasonLabel + ' (Strike ' + strikes + '!)', bHome, 'bad');
+        if (J()) J().react(turn, 'sad');
+        renderHud();
+        await U().sleep(650);
+        if (phase === 'ended') return;
+
+        if (strikes >= 2) {
+          outs++;
+          strikes = 0;
+          battersThisHalf++;
+          U().floatText('⚾ BATTER OUT! (' + outs + '/2 Outs)', bHome, 'bad');
+          await U().sleep(550);
+          if (phase === 'ended') return;
+          if (outs >= 2 || battersThisHalf >= 3) {
+            nextHalfInning();
+            return;
+          }
+        }
+        phase = 'ask';
+        renderHud();
       }
 
       async function doAsk() {
@@ -135,26 +183,16 @@
         var item = ctx.nextItem();
         var res = await U().ask(item, T[turn], {
           timer: +ctx.cfg.timer || 0,
-          label: T[turn].name + ' — answer to swing the bat!'
+          label: T[turn].name + ' — answer to step into the batter\u2019s box!'
         });
         if (phase === 'ended') return;
         if (res.skipped) { doAsk(); return; }
         if (res.ok) {
+          pickNewPitch();
           phase = 'swing';
           renderHud();
         } else {
-          strikes++;
-          U().floatText('Strike ' + strikes + '!', bHome, 'bad');
-          if (J()) J().react(turn, 'sad');
-          renderHud();
-          await U().sleep(500);
-          if (phase === 'ended') return;
-          if (strikes >= 2 || battersThisHalf + 1 >= 3) {
-            nextHalfInning();
-          } else {
-            battersThisHalf++;
-            renderHud();
-          }
+          await recordStrike('❌ Wrong Answer');
         }
       }
 
@@ -163,24 +201,44 @@
         phase = 'running';
         renderHud();
 
-        if (A()) { A().play('kick'); A().play('whoosh_soft'); A().play('wood_knock'); }
+        if (A()) { A().play('kick'); A().play('whoosh_soft'); }
         if (J() && J().squash) J().squash(batterEl, 1.22, 0.82, 200);
 
-        // Determine hit value from needlePct (center 50 is sweet spot)
+        // Determine hit value from needlePct (center 50 is sweet spot — edge/outside misses!)
         var dist = Math.abs(needlePct - 50);
-        var basesHit = 1;
-        var hitLabel = 'SINGLE! (1 Base)';
-        if (dist <= 6) {
+        var basesHit = 0;
+        var hitLabel = '';
+
+        if (dist <= 5) {
           basesHit = 4;
-          hitLabel = 'HOME RUN! 🎆 (4 Bases)';
-        } else if (dist <= 13) {
+          hitLabel = '🎆 HOME RUN!! (4 Bases)';
+        } else if (dist <= 10) {
           basesHit = 3;
-          hitLabel = 'TRIPLE! 🔥 (3 Bases)';
-        } else if (dist <= 26) {
+          hitLabel = '🔥 TRIPLE! (3 Bases)';
+        } else if (dist <= 16) {
           basesHit = 2;
-          hitLabel = 'DOUBLE! ⭐ (2 Bases)';
+          hitLabel = '⭐ DOUBLE! (2 Bases)';
+        } else if (dist <= 24) {
+          basesHit = 1;
+          hitLabel = '⚾ SINGLE! (1 Base)';
+        } else if (dist <= 33) {
+          /* Foul Ball! If < 1 strike, adds a strike; on 1 strike, foul keeps batter alive for another pitch! */
+          if (A()) A().play('wood_knock');
+          if (strikes < 1) strikes++;
+          U().floatText('⚠️ FOUL BALL! Swing again!', bHome, 'bad');
+          await U().sleep(680);
+          if (phase === 'ended') return;
+          pickNewPitch();
+          phase = 'swing';
+          renderHud();
+          return;
+        } else {
+          /* Total Swing & Miss — Strike! (0 points!) */
+          await recordStrike('💨 SWING & A MISS');
+          return;
         }
 
+        if (A()) A().play('wood_knock');
         U().floatText(hitLabel, bHome, 'good');
         hitAnim.active = true;
         hitAnim.t0 = performance.now();
@@ -203,7 +261,6 @@
         // Advance all runners step-by-step by basesHit bases
         for (var step = 0; step < basesHit; step++) {
           var nextBases = [null, null, null];
-          // 3rd base -> Home
           if (bases[2]) {
             var r3 = bases[2];
             r3.style.top = BASE_COORDS[0].top;
@@ -213,19 +270,16 @@
               setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 380);
             })(r3);
           }
-          // 2nd -> 3rd
           if (bases[1]) {
             bases[1].style.top = BASE_COORDS[3].top;
             bases[1].style.left = BASE_COORDS[3].left;
             nextBases[2] = bases[1];
           }
-          // 1st -> 2nd
           if (bases[0]) {
             bases[0].style.top = BASE_COORDS[2].top;
             bases[0].style.left = BASE_COORDS[2].left;
             nextBases[1] = bases[0];
           }
-          // New batter advances on step 0 onto 1st base
           if (step === 0) {
             newRunner.style.top = BASE_COORDS[1].top;
             newRunner.style.left = BASE_COORDS[1].left;
@@ -240,8 +294,8 @@
           if (phase === 'ended') return;
         }
 
-        // Award at least +5 for the hit, plus +20 for every run that crossed Home plate!
-        var totalPts = 5 + runsScored * 20;
+        var hitBonus = basesHit * 5;
+        var totalPts = hitBonus + runsScored * 20;
         if (A()) {
           A().play('coin_collect');
           if (basesHit >= 2 || runsScored > 0) A().play('sparkle');
@@ -257,6 +311,7 @@
         await U().sleep(550);
         if (phase === 'ended') return;
 
+        strikes = 0;
         battersThisHalf++;
         if (battersThisHalf >= 3) {
           nextHalfInning();
@@ -269,6 +324,7 @@
       function nextHalfInning() {
         clearBaseRunners();
         strikes = 0;
+        outs = 0;
         battersThisHalf = 0;
         turn++;
         if (turn >= T.length) {
@@ -289,16 +345,23 @@
       function tickNeedle() {
         if (phase === 'ended') return;
         if (phase === 'swing' || phase === 'ask') {
-          needleT += phase === 'swing' ? 0.055 : 0.025;
-          needlePct = 50 + Math.sin(needleT) * 46;
+          var baseSpd = phase === 'swing' ? (curPitch.spd * speedMul) : 0.032;
+          if (phase === 'swing' && curPitch.id === 'curve') {
+            /* Curveball accelerates sharply through the center! */
+            baseSpd *= (1.15 + Math.cos(needleT * 2) * 0.45);
+          } else if (phase === 'swing' && curPitch.id === 'change') {
+            /* Changeup hesitates then darts! */
+            baseSpd *= (0.75 + Math.abs(Math.sin(needleT * 1.5)) * 0.7);
+          }
+          needleT += baseSpd;
+          needlePct = 50 + Math.sin(needleT) * 48;
           needleEl.style.left = needlePct + '%';
         }
-        // Render 60fps Pitcher Mound, Pitching 3D Baseball, Swinging 3D Bat & Outfield Home Run Arc
+
         var W = fxCanvas.width, H = fxCanvas.height;
         fxCtx.clearRect(0, 0, W, H);
         var moundX = W * 0.5, moundY = H * 0.45;
         var homeX = W * 0.5, homeY = H * 0.68;
-        // Pitcher's mound circle
         fxCtx.beginPath(); fxCtx.arc(moundX, moundY, 22, 0, Math.PI * 2);
         fxCtx.fillStyle = 'rgba(217, 119, 6, 0.75)'; fxCtx.fill();
         fxCtx.strokeStyle = '#fde68a'; fxCtx.lineWidth = 2.5; fxCtx.stroke();
@@ -306,11 +369,12 @@
         var bx = moundX, by = moundY, bScale = 0.85, batRot = -0.45;
         var now = performance.now();
         if (phase === 'swing') {
-          var pPitch = ((now % 950) / 950);
-          bx = moundX + (homeX - moundX) * pPitch;
+          var pPitch = ((now % 760) / 760);
+          var curveOffset = curPitch.id === 'curve' ? Math.sin(pPitch * Math.PI) * 34 : 0;
+          bx = moundX + (homeX - moundX) * pPitch + curveOffset;
           by = moundY + (homeY - moundY) * pPitch;
           bScale = 0.7 + pPitch * 0.4;
-          batRot = -0.45 + Math.sin(now * 0.01) * 0.14;
+          batRot = -0.45 + Math.sin(now * 0.012) * 0.14;
         } else if (hitAnim.active) {
           var pHit = Math.min(1, (now - hitAnim.t0) / 850);
           batRot = -0.45 + Math.min(1, pHit * 4.5) * 2.3;
@@ -320,7 +384,6 @@
           bScale = 1.15 - pHit * 0.45;
           if (pHit >= 1) hitAnim.active = false;
         }
-        // 3D Glossy Wooden Baseball Bat
         fxCtx.save();
         fxCtx.translate(homeX - 24, homeY - 4);
         fxCtx.rotate(batRot);
@@ -333,11 +396,10 @@
         fxCtx.beginPath(); fxCtx.roundRect(-5, -14, 10, 18, 3); fxCtx.fill();
         fxCtx.restore();
 
-        // 3D Spinning Baseball with Red Seams
         if (phase === 'swing' || hitAnim.active) {
           fxCtx.save();
           fxCtx.translate(bx, by);
-          fxCtx.rotate(now * 0.02);
+          fxCtx.rotate(now * 0.025);
           var br = 13 * bScale;
           fxCtx.fillStyle = '#ffffff';
           fxCtx.strokeStyle = '#cbd5e1'; fxCtx.lineWidth = 2;

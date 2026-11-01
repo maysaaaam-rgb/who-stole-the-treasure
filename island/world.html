@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="css/games.css?v=w1">
   <link rel="stylesheet" href="css/adventure.css?v=w1">
   <link rel="stylesheet" href="css/wall.css?v=w1">
-  <link rel="stylesheet" href="css/world.css?v=3">
+  <link rel="stylesheet" href="css/shop.css?v=4">
+  <link rel="stylesheet" href="css/world.css?v=5">
 </head>
 <body class="w-page">
   <!-- The Island's walking world. Missions, stars, XP and saving all go through the normal Island code (js/app.js); this page only adds the world around them. -->
@@ -25,6 +26,7 @@
       <button type="button" class="w-btn w-tool" id="w-wall" aria-label="Wall">🌟</button>
       <button type="button" class="w-btn w-tool" id="w-book" aria-label="Sticker book">📒</button>
       <button type="button" class="w-btn w-tool" id="w-dress" aria-label="Dress up">👕</button>
+      <button type="button" class="w-btn w-tool" id="w-shop" aria-label="Store">🛒</button>
     </div>
     <div id="w-fps"></div>
   </div>
@@ -34,6 +36,8 @@
     <div id="w-line"></div>
     <button type="button" class="w-btn" id="w-next">OK ▶</button>
   </div>
+  <div id="w-bag"></div>
+  <div id="w-vignette"></div>
   <div id="w-fade"></div>
   <div id="w-load">🏝️ Going to the island...<small id="w-load-small"></small></div>
   <div id="isl-modal-root"></div>
@@ -43,9 +47,10 @@
   <script src="../js/supabase-client.js?v=3.1"></script>
   <script src="../js/voice.js?v=1"></script>
   <script src="../js/evolution-levels.js?v=1"></script>
-  <script src="../js/monster-costumes.js?v=4"></script>
+  <script src="../js/monster-costumes.js?v=5"></script>
   <script src="../js/monster-costumes2.js?v=3"></script>
   <script src="../js/monster-costumes3.js?v=2"></script>
+  <script src="../js/monster-costumes4.js?v=1"></script>
   <script src="../js/monster-pets.js?v=3"></script>
   <script src="../js/monster-renderer.js?v=4.12"></script>
   <script>window.GM = window.GM || {};</script>
@@ -56,16 +61,17 @@
   <script src="../game-maker/js/sets-unit4.js?v=1"></script>
   <script src="../game-maker/js/sets-units14.js?v=1"></script>
   <script src="../game-maker/js/bank.js?v=1"></script>
-  <script src="js/data.js?v=w1"></script>
+  <script src="js/data.js?v=w3"></script>
   <script src="js/audio.js?v=w1"></script>
   <script src="js/story.js?v=w1"></script>
   <script src="js/games.js?v=w1"></script>
   <script src="js/adventure.js?v=w1"></script>
   <script src="js/wall.js?v=w1"></script>
   <script src="js/rewards.js?v=w1"></script>
-  <script src="js/sync.js?v=w1"></script>
+  <script src="js/sync.js?v=w2"></script>
   <script src="js/app.js?v=w1"></script>
+  <script src="js/shop.js?v=4"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world.js?v=5"></script>
+  <script src="js/world.js?v=16"></script>
 </body>
 </html>

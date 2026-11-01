@@ -2,7 +2,7 @@
    - Step 2 Home & Setup filters (Grade tabs, Skill filter, Game category filter, Team roster pills)
    - Multi-task Question Card styles (Reading passage box + Tap-to-Order word tiles)
    - Tile Board Mystery Cards & Final Tile spotlight
-   - Alley Fling (mode-fling.js) & Star Loop Board (mode-board3.js) */
+   - Star Loop Board — Speaking Monopoly & Trade Edition (mode-board3.js) */
 
 /* ---------- 1. Home & Setup Filter Bars (Step 2 Redesign) ---------- */
 .gm-filter-bar {
@@ -175,8 +175,115 @@ body.th-halloween .gm-order-slots {
   margin-bottom: 6px;
 }
 
-/* ---------- 4. Star Loop Board (mode-board3.js) ---------- */
-.gm-b3-board {
+/* ---------- 4. Star Loop Board — Speaking Monopoly & Trade Edition ---------- */
+.gm-b3-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  min-height: 0;
+}
+
+.gm-b3-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 14px !important;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.92) !important;
+  border: 3px solid var(--c, #38bdf8) !important;
+  color: #ffffff !important;
+  flex-wrap: wrap;
+}
+
+.gm-b3-hud-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gm-b3-hud-txt {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.gm-b3-hud-txt b {
+  font-size: clamp(1rem, 2vh, 1.3rem);
+  color: #ffffff;
+}
+
+.gm-b3-hud-txt small {
+  font-size: 0.85rem;
+  color: #fde047;
+  font-weight: 700;
+}
+
+.gm-b3-deeds-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gm-b3-deed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  font-size: 0.85rem;
+  color: #f8fafc;
+}
+
+.gm-b3-deed-pill.on {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: var(--c, #fde047);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.35);
+}
+
+.gm-b3-deed-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.gm-b3-deed-pip {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.gm-b3-deed-empty {
+  font-size: 0.76rem;
+  opacity: 0.75;
+  font-weight: 600;
+}
+
+.gm-b3-mode-pill {
+  border: 2px solid #fde047;
+  border-bottom-width: 4px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.18);
+  color: #fde047;
+  font: 800 0.86rem Fredoka, sans-serif;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+/* 3D Island / Arctic / Market Tabletop Board */
+.gm-b3-board,
+body.th-halloween .gm-b3-board,
+body.th-classic .gm-b3-board {
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
@@ -184,301 +291,592 @@ body.th-halloween .gm-order-slots {
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(6, 1fr);
   gap: 7px;
-  padding: 10px;
-  border-radius: 28px;
-  border: 4px solid var(--line, #1f2a44);
-  background: linear-gradient(160deg, #bae6fd 0%, #e0f2fe 52%, #dcfce7 100%);
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  padding: 9px;
+  border-radius: 26px;
+  border: 4px solid #1e293b;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0.28)),
+    url(../art/bg_classic_snakes.webp) center/cover no-repeat !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38), inset 0 2px 0 rgba(255, 255, 255, 0.65);
   position: relative;
-}
-.gm-b3-board.gm-b3-arctic {
-  background: linear-gradient(160deg, #0c4a6e 0%, #0284c7 52%, #bae6fd 100%);
-}
-.gm-b3-board.gm-b3-market {
-  background: linear-gradient(160deg, #78350f 0%, #d97706 52%, #fef3c7 100%);
-}
-body.th-halloween .gm-b3-board {
-  background: linear-gradient(160deg, #1e1040 0%, #4c1d95 55%, #3b0764 100%);
+  overflow: hidden;
 }
 
-.gm-b3-sq {
+.gm-b3-board.gm-b3-arctic,
+body.th-halloween .gm-b3-board.gm-b3-arctic,
+body.th-classic .gm-b3-board.gm-b3-arctic {
+  background:
+    linear-gradient(180deg, rgba(12, 74, 110, 0.20), rgba(15, 23, 42, 0.32)),
+    url(../art/bg_arctic.webp) center/cover no-repeat !important;
+}
+
+.gm-b3-board.gm-b3-market,
+body.th-halloween .gm-b3-board.gm-b3-market,
+body.th-classic .gm-b3-board.gm-b3-market {
+  background:
+    linear-gradient(180deg, rgba(120, 53, 15, 0.18), rgba(15, 23, 42, 0.30)),
+    url(../art/bg_market.webp) center/cover no-repeat !important;
+}
+
+/* 24 Tactile 3D Monopoly Property Cards */
+.gm-b3-sq,
+body.th-halloween .gm-b3-sq {
   position: relative;
-  background: rgba(255, 255, 255, 0.94);
-  border: 3px solid var(--line, #1f2a44);
-  border-bottom-width: 5px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 3px solid #1e293b !important;
+  border-bottom-width: 6px !important;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 4px 4px 2px;
+  justify-content: space-between;
+  padding: 16px 4px 4px !important;
   overflow: hidden;
-  color: #1f2a44;
-  transition: transform 0.18s, box-shadow 0.18s;
+  color: #0f172a !important;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.18s;
 }
-body.th-halloween .gm-b3-sq {
-  background: rgba(46, 16, 101, 0.92);
-  color: #fef3c7;
-  border-color: #f97316;
+
+.gm-b3-sq:hover {
+  transform: translateY(-2px);
 }
-.gm-b3-sq.gm-b3-corner {
-  background: linear-gradient(180deg, #fef08a 0%, #facc15 100%);
-  color: #1f2a44;
+
+.gm-b3-sq.gm-b3-corner,
+body.th-halloween .gm-b3-sq.gm-b3-corner {
+  background: linear-gradient(180deg, #fef9c3 0%, #fde047 100%) !important;
+  border-color: #b45309 !important;
+  color: #1e293b !important;
 }
-.gm-b3-sq.gm-b3-chance {
-  background: linear-gradient(180deg, #f3e8ff 0%, #d8b4fe 100%);
-  color: #3b0764;
+
+.gm-b3-sq.gm-b3-auction,
+body.th-halloween .gm-b3-sq.gm-b3-auction {
+  background: linear-gradient(180deg, #ffedd5 0%, #fdba74 100%) !important;
+  border-color: #c2410c !important;
+  color: #431407 !important;
 }
+
+.gm-b3-sq.gm-b3-chance,
+body.th-halloween .gm-b3-sq.gm-b3-chance {
+  background: linear-gradient(180deg, #f3e8ff 0%, #d8b4fe 100%) !important;
+  border-color: #6d28d9 !important;
+  color: #2e1065 !important;
+}
+
+.gm-b3-sq.is-owned {
+  border-color: var(--owner-c, #38bdf8) !important;
+  box-shadow: 0 0 0 3px var(--owner-c, #38bdf8), 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.gm-b3-sq.is-monopoly {
+  box-shadow: 0 0 0 3px #fde047, 0 0 18px rgba(250, 204, 21, 0.85) !important;
+}
+
 .gm-b3-sq.active-sq {
-  box-shadow: 0 0 0 4px #fde047, 0 0 18px rgba(250, 204, 21, 0.85);
-  z-index: 3;
+  box-shadow: 0 0 0 4px #fde047, 0 0 24px rgba(250, 204, 21, 0.95) !important;
+  z-index: 4;
 }
+
+.gm-b3-sq.train-target {
+  animation: gmB3TrainPulse 0.85s ease-in-out infinite alternate;
+  box-shadow: 0 0 0 4px #22c55e, 0 0 20px rgba(34, 197, 94, 0.9) !important;
+  z-index: 5;
+}
+
+@keyframes gmB3TrainPulse {
+  from { transform: scale(0.98); }
+  to { transform: scale(1.04); }
+}
+
+/* Glossy Monopoly Color Header Band on each square */
 .gm-b3-band {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 7px;
+  height: 15px;
+  border-bottom: 2px solid rgba(15, 23, 42, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 5px;
 }
+
+.gm-b3-band-special {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
+  height: 8px;
+  border-bottom: none;
+}
+
+.gm-b3-buildings {
+  font-size: 0.72rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
 .gm-b3-num {
   position: absolute;
-  top: 7px;
-  left: 6px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  opacity: 0.6;
+  top: 1px;
+  left: 5px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  z-index: 2;
 }
+
+.gm-b3-corner .gm-b3-num,
+.gm-b3-auction .gm-b3-num,
+.gm-b3-chance .gm-b3-num {
+  top: 3px;
+  color: #1e293b;
+  text-shadow: none;
+}
+
 .gm-b3-ic {
-  font-size: clamp(1.25rem, 2.5vh, 2rem);
-  line-height: 1;
-  margin-top: 4px;
+  font-size: clamp(1.3rem, 2.5vh, 1.95rem) !important;
+  line-height: 1 !important;
+  margin-top: 1px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.gm-b3-ic img,
 .gm-b3-ic img.gm-b3-art {
-  width: clamp(26px, 3.6vh, 42px);
-  height: clamp(26px, 3.6vh, 42px);
-  object-fit: contain;
+  width: clamp(26px, 3.4vh, 38px) !important;
+  height: clamp(26px, 3.4vh, 38px) !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
 }
+
 .gm-b3-nm {
-  font-size: clamp(0.68rem, 1.35vh, 0.95rem);
-  font-weight: 700;
+  font-size: clamp(0.72rem, 1.35vh, 0.94rem) !important;
+  font-weight: 800 !important;
   text-align: center;
-  line-height: 1.05;
+  line-height: 1.1 !important;
   max-width: 96%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #0f172a !important;
+}
+
+.gm-b3-footbadge {
+  font-size: clamp(0.64rem, 1.15vh, 0.8rem);
+  font-weight: 800;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: #334155;
+  max-width: 94%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.gm-b3-sq > .gm-b3-star {
+
+/* Floating Animated Full-Body Monster Tokens Layer */
+.gm-b3-token-layer {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-.gm-b3-sq > .gm-b3-star.owned {
-  display: inline-flex;
-}
-.gm-b3-toks {
-  display: flex;
-  gap: 2px;
-  justify-content: center;
-  align-items: center;
-  min-height: 28px;
-}
-.gm-b3-tok {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 2.5px solid var(--c, #38bdf8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
-}
-.gm-b3-tok.cur {
-  transform: scale(1.16);
-  box-shadow: 0 0 0 3px #fde047, 0 4px 10px rgba(0, 0, 0, 0.45);
-  z-index: 2;
-}
-.gm-b3-tok.hop {
-  animation: gmB3Hop 0.22s ease-out;
-}
-@keyframes gmB3Hop {
-  0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-16px) scale(1.25); }
-  100% { transform: translateY(0) scale(1.16); }
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
 }
 
-.gm-b3-center {
+.gm-b3-float-tok {
+  position: absolute;
+  left: 60px;
+  top: 60px;
+  transform: translate(-50%, -68%) scale(0.74);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition:
+    left 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.2s ease;
+  z-index: 16;
+}
+
+.gm-b3-float-tok.cur {
+  transform: translate(-50%, -72%) scale(0.86);
+  z-index: 18;
+}
+
+.gm-b3-ftok-shadow {
+  position: absolute;
+  bottom: 12px;
+  width: 44px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(6, 9, 17, 0.42);
+  border: 2px solid var(--c, #fde047);
+}
+
+.gm-b3-ftok-body {
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.48));
+}
+
+.gm-b3-float-tok.hop-arc .gm-b3-ftok-body {
+  animation: gmB3MonsterJump 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes gmB3MonsterJump {
+  0%   { transform: translateY(0) scale(1.08, 0.92); }
+  45%  { transform: translateY(-28px) scale(0.94, 1.12); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+.gm-b3-ftok-tag {
+  margin-top: -8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--c, #38bdf8);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+
+/* Center Command Arena (Columns 2..7, Rows 2..5) */
+.gm-b3-center,
+body.th-halloween .gm-b3-center {
   grid-column: 2 / 8;
   grid-row: 2 / 6;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  border: 3.5px solid var(--line, #1f2a44);
+  background: rgba(15, 23, 42, 0.22) !important;
+  border: 2.5px solid rgba(255, 255, 255, 0.45) !important;
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 20px;
+  padding: 10px 14px !important;
   overflow: hidden;
+  z-index: 6;
 }
-body.th-halloween .gm-b3-center {
-  background: rgba(24, 10, 56, 0.9);
-  color: #fef3c7;
-  border-color: #f97316;
-}
-.gm-b3-stagecard {
+
+.gm-b3-stagecard,
+body.th-halloween .gm-b3-stagecard {
+  width: min(820px, 98%);
+  max-height: 100%;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #0f172a !important;
+  border: 4px solid #1e293b !important;
+  border-bottom-width: 7px !important;
+  border-radius: 26px !important;
+  padding: 12px 20px !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   text-align: center;
-  max-width: 560px;
 }
+
 .gm-b3-who {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: rgba(56, 189, 248, 0.14);
-  border: 2.5px solid var(--c, #38bdf8);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(250, 204, 21, 0.14));
+  border: 3px solid var(--c, #38bdf8);
   border-radius: 22px;
-  padding: 6px 18px 6px 10px;
-}
-.gm-b3-who h3 {
-  margin: 0;
-  font-size: clamp(1.25rem, 2.6vh, 1.85rem);
-}
-.gm-b3-who small {
-  font-size: 0.95rem;
-  font-weight: 600;
-  opacity: 0.8;
-}
-.gm-b3-die {
-  font-size: clamp(2.8rem, 6.5vh, 4.6rem);
-  font-weight: 800;
-  background: #ffffff;
-  color: #1f2a44;
-  border: 3.5px solid #1f2a44;
-  border-bottom-width: 7px;
-  border-radius: 22px;
-  padding: 4px 24px;
-  min-width: 110px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-}
-.gm-b3-die.rolling {
-  animation: gmDieShake 0.15s infinite alternate;
-}
-@keyframes gmDieShake {
-  from { transform: rotate(-10deg) scale(1.06); }
-  to { transform: rotate(10deg) scale(1.06); }
-}
-.gm-b3-ev-ic {
-  font-size: clamp(2.8rem, 6vh, 4.2rem);
-  line-height: 1;
-}
-.gm-b3-event h3 {
-  margin: 0;
-  font-size: clamp(1.35rem, 2.8vh, 2rem);
-}
-.gm-b3-event p {
-  margin: 0;
-  font-size: clamp(1rem, 2.1vh, 1.35rem);
-  font-weight: 600;
-  opacity: 0.9;
-}
-.gm-b3-ev-pts {
-  background: #fde047;
-  color: #1f2a44;
-  border: 2.5px solid #1f2a44;
-  border-radius: 99px;
-  padding: 4px 18px;
-  font-weight: 800;
-  font-size: 1.2rem;
+  padding: 6px 20px 6px 12px;
+  text-align: left;
 }
 
-/* --- Star Loop Board 3D Island & Unclipped Tile Fix --- */
-body.th-classic .gm-b3-board {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(15, 23, 42, 0.18)),
-    url(../art/bg_classic_snakes.webp) center/cover no-repeat !important;
+.gm-b3-who-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
-.gm-b3-sq {
-  justify-content: flex-start !important;
-  padding: 8px 4px 4px !important;
-  gap: 2px !important;
+
+.gm-b3-turn-tag {
+  display: inline-block;
+  align-self: flex-start;
+  background: var(--c, #38bdf8);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 2px 10px;
+  border-radius: 999px;
 }
-.gm-b3-ic {
-  font-size: clamp(1.15rem, 2.2vh, 1.65rem) !important;
-  margin-top: 2px !important;
-  line-height: 1 !important;
+
+.gm-b3-who h3 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.3vh, 1.6rem);
+  color: #0f172a;
 }
-.gm-b3-ic img.gm-b3-art {
-  width: clamp(22px, 3vh, 34px) !important;
-  height: clamp(22px, 3vh, 34px) !important;
+
+.gm-b3-who small {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
 }
-.gm-b3-nm {
-  font-size: clamp(0.7rem, 1.35vh, 0.92rem) !important;
-  line-height: 1.15 !important;
-  overflow: visible !important;
-  white-space: nowrap !important;
+
+.gm-b3-dice-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.gm-b3-toks {
-  position: absolute !important;
-  bottom: 2px !important;
-  left: 2px !important;
-  right: 2px !important;
-  min-height: 0 !important;
-  pointer-events: none !important;
-  z-index: 4 !important;
-}
-.gm-b3-tok {
-  width: 30px !important;
-  height: 30px !important;
-}
-.gm-b3-center {
-  background: rgba(15, 23, 42, 0.18) !important;
-  backdrop-filter: none !important;
-  border-color: rgba(255, 255, 255, 0.55) !important;
-}
-.gm-b3-stagecard {
-  background: rgba(255, 255, 255, 0.94) !important;
-  border: 3.5px solid #1f2a44 !important;
-  border-radius: 26px !important;
-  padding: 12px 26px !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28) !important;
-}
-body.th-halloween .gm-b3-stagecard {
-  background: rgba(24, 10, 56, 0.94) !important;
-  border-color: #f97316 !important;
-}
+
 .gm-b3-die {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 6px 18px !important;
-  min-height: 70px !important;
+  font-size: clamp(2.1rem, 4.5vh, 3.2rem);
+  font-weight: 900;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  color: #0f172a;
+  border: 3.5px solid #1e293b;
+  border-bottom-width: 7px;
+  border-radius: 20px;
+  padding: 4px 20px !important;
+  min-width: 100px;
+  min-height: 64px !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
+
 .gm-b3-die img.gm-b3-die-art,
 .gm-b3-die .gm-art {
-  width: 58px !important;
-  height: 58px !important;
-  max-width: 58px !important;
-  max-height: 58px !important;
+  width: 52px !important;
+  height: 52px !important;
   object-fit: contain !important;
 }
-.gm-b3-who .gm-monfull {
-  width: 70px !important;
-  height: 70px !important;
+
+.gm-b3-die.rolling {
+  animation: gmDieShake 0.14s infinite alternate;
+}
+
+@keyframes gmDieShake {
+  from { transform: rotate(-10deg) scale(1.06); }
+  to { transform: rotate(10deg) scale(1.06); }
+}
+
+.gm-b3-btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gm-b3-sub-row {
+  margin-top: 2px;
+}
+
+.gm-b3-tip-line {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+/* Property Speaking Card & Teleprompter inside Center Arena */
+.gm-b3-prop-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 14px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.06);
+  border-left: 8px solid var(--band, #38bdf8);
+  text-align: left;
+}
+
+.gm-b3-prop-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.gm-b3-prop-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.gm-b3-prop-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.gm-b3-prop-dist {
+  font-size: 0.74rem;
+  font-weight: 900;
+  color: var(--band, #0284c7);
+  letter-spacing: 0.04em;
+}
+
+.gm-b3-prop-titles h3 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.3vh, 1.65rem);
+  color: #0f172a;
+}
+
+.gm-b3-prop-titles small {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.gm-b3-telebox {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fef9c3 0%, #fde68a 100%);
+  border: 3px solid #d97706;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gm-b3-tele-label {
+  font-size: 0.76rem;
+  font-weight: 900;
+  color: #92400e;
+  letter-spacing: 0.04em;
+}
+
+.gm-b3-tele-main {
+  font-size: clamp(1.15rem, 2.4vh, 1.65rem);
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.gm-b3-tele-sub {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #b45309;
+}
+
+/* Deal Maker (Monopoly Trade Modal) */
+.gm-b3-trade-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gm-b3-trade-head h3 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.2vh, 1.5rem);
+  color: #0f172a;
+}
+
+.gm-b3-trade-cols {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+}
+
+.gm-b3-trade-col {
+  flex: 1;
+  min-width: 0;
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+}
+
+.gm-b3-trade-col small {
+  font-weight: 800;
+  color: #334155;
+  font-size: 0.82rem;
+}
+
+.gm-b3-trade-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 76px;
+  overflow-y: auto;
+}
+
+.gm-b3-trade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 2px solid #94a3b8;
+  border-bottom-width: 4px;
+  background: #ffffff;
+  color: #0f172a;
+  font: 800 0.82rem Fredoka, sans-serif;
+  cursor: pointer;
+}
+
+.gm-b3-trade-chip.sel {
+  background: #fef08a;
+  border-color: #ca8a04;
+}
+
+.gm-b3-trade-chip.hot-set {
+  border-color: #16a34a;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.35);
+}
+
+.gm-b3-trade-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gm-b3-trade-swap-ic {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #f59e0b;
+}
+
+.gm-b3-wheel-cv {
+  width: 150px;
+  height: 150px;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+}
+
+.gm-b3-ev-ic {
+  font-size: clamp(2.2rem, 4.5vh, 3.2rem);
+  line-height: 1;
+}
+
+.gm-b3-event h3 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.4vh, 1.7rem);
+  color: #0f172a;
+}
+
+.gm-b3-event p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.9vh, 1.2rem);
+  font-weight: 700;
+  color: #334155;
+}
+
+.gm-b3-ev-pts {
+  background: #fde047;
+  color: #0f172a;
+  border: 2.5px solid #1e293b;
+  border-radius: 99px;
+  padding: 4px 18px;
+  font-weight: 900;
+  font-size: 1.15rem;
 }
 
 /* ---------- Who is in which team (setup list + in-game 👥 Teams overlay) ---------- */

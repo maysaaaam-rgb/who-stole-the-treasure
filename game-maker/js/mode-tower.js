@@ -1,7 +1,11 @@
 /* ============================================================================
- * Game Maker — Mode: Tower Stack (mode-tower.js)
- * Crane swings blocks horizontally above the tower. Right answer = N blocks to drop!
- * Overhanging edge is trimmed. Every landed block = +10 (min +5 per right answer).
+ * Game Maker — Mode: Tower Stack (mode-tower.js — Pro Skill Precision Edition)
+ * Crane swings blocks horizontally above the tower with progressive speed & wind.
+ * - True Progressive Slicing: Overhanging edges are permanently sliced off! Your
+ *   next block is strictly as wide as what remains of the top block.
+ * - 🌟 Perfect Drop (<8px alignment): Snaps flush, awards +15 pts, and restores
+ *   +10px of block width!
+ * - Missing the tower drops the block into the abyss for 0 points!
  * ============================================================================ */
 (function () {
   'use strict';
@@ -17,33 +21,35 @@
     id: 'tower',
     name: 'Tower Stack',
     e: '🏗️',
-    desc: 'Answer a question, then tap to drop swinging blocks onto your team tower!',
+    desc: 'Answer a question, then time the fast-swinging crane to stack blocks! Overhangs get sliced off permanently — hit a Perfect Drop to widen your tower!',
     fields: [
       { key: 'blocks', k: 'blocks', label: 'Blocks per answer', l: 'Blocks per answer', opts: [[2, '2 blocks'], [3, '3 blocks'], [4, '4 blocks']], def: 3 },
-      { key: 'rounds', k: 'rounds', label: 'Rounds per team',   l: 'Rounds per team',   opts: [[2, '2 rounds'], [3, '3 rounds']], def: 2 }
+      { key: 'rounds', k: 'rounds', label: 'Rounds per team',   l: 'Rounds per team',   opts: [[2, '2 rounds'], [3, '3 rounds']], def: 2 },
+      { key: 'speed',  k: 'speed',  label: 'Crane Speed',       l: 'Crane Speed',       opts: [['normal', 'Pro Crane'], ['fast', 'Turbo Wind']], def: 'normal' }
     ],
 
     start: function (ctx) {
       var T = GM.state.teams;
       var blocksPerTurn = +ctx.cfg.blocks || 3;
       var roundsPerTeam = +ctx.cfg.rounds || 2;
+      var speedMul = ctx.cfg.speed === 'fast' ? 1.35 : 1.0;
       var totalTurns = T.length * roundsPerTeam;
 
       var turn = 0;
       var turnsDone = 0;
       var phase = 'ask'; // 'ask' | 'drop' | 'falling' | 'ended'
       var blocksLeft = 0;
-      var turnScore = 0;
+      var perfectStreak = 0;
       var rafId = 0;
 
       // Each team has its own persistent tower of stacked blocks
       var towers = T.map(function (t) {
-        return [{ x: 350, w: 220, color: t.color }]; // foundation block centered at x=350 (in 700w virtual coords)
+        return [{ x: 350, w: 195, color: t.color }];
       });
 
       var craneT = 0;
       var topSquash = 0;
-      var activeBlock = { x: 350, y: 72, vy: 0, w: 180, color: '#38bdf8' };
+      var activeBlock = { x: 350, y: 72, vy: 0, w: 195, color: '#38bdf8' };
       var slicedPieces = [];
 
       var wrap = U().h('div', { class: 'gm-tow-wrap' });
@@ -75,10 +81,11 @@
       function prepareNextBlock() {
         var stack = towers[turn];
         var topBlock = stack[stack.length - 1];
-        // If previous block got very narrow, give a fresh wider block so pupils can keep stacking
-        var nextW = Math.max(75, topBlock.w);
+        /* Strict progressive width: next block is ONLY as wide as the current top block! */
+        var nextW = Math.max(24, topBlock.w);
+        craneT = (Math.random() * 2 - 1) * 1.5;
         activeBlock = {
-          x: 450,
+          x: 350 + Math.sin(craneT) * 215,
           y: 74,
           vy: 0,
           w: nextW,
@@ -88,13 +95,15 @@
 
       function renderHud() {
         var t = T[turn];
+        var stack = towers[turn];
+        var topW = Math.round(stack[stack.length - 1].w);
         var roundNum = Math.floor(turnsDone / T.length) + 1;
-        badge.textContent = '🏗️ ' + t.name + ' Tower: ' + towers[turn].length + ' blocks';
+        badge.textContent = '🏗️ ' + t.name + ': ' + stack.length + ' floors · Width: ' + topW + 'px';
 
         info.innerHTML = '';
         info.appendChild(U().h('div', { class: 'gm-turn-pill', style: '--tc:' + t.color }, [
           U().monFace(t.mon, 40),
-          U().h('span', {}, [t.name + (phase === 'drop' ? ' — Tap to drop (' + blocksLeft + ' left)!' : ' — Tower Stack')])
+          U().h('span', {}, [t.name + (phase === 'drop' ? ' — Time the Crane! (' + blocksLeft + ' left)' : ' — Tower Stack')])
         ]));
         info.appendChild(U().h('div', { class: 'gm-Meta' }, ['Round ' + Math.min(roundNum, roundsPerTeam) + ' / ' + roundsPerTeam]));
 
@@ -119,7 +128,7 @@
         if (res.skipped) { doAsk(); return; }
         if (res.ok) {
           blocksLeft = blocksPerTurn;
-          turnScore = 0;
+          perfectStreak = 0;
           phase = 'drop';
           if (A()) A().play('crane_move');
           prepareNextBlock();
@@ -134,7 +143,7 @@
       function dropBlock() {
         if (phase !== 'drop') return;
         phase = 'falling';
-        activeBlock.vy = 14;
+        activeBlock.vy = 16;
         if (A()) { A().play('block_drop'); A().play('whoosh_soft'); }
         renderHud();
       }
@@ -144,6 +153,9 @@
         phase = 'resolving';
         var stack = towers[turn];
         var top = stack[stack.length - 1];
+        var alignErr = Math.abs(activeBlock.x - top.x);
+        var isPerfect = alignErr <= 8;
+
         var leftA = activeBlock.x - activeBlock.w / 2;
         var rightA = activeBlock.x + activeBlock.w / 2;
         var leftB = top.x - top.w / 2;
@@ -153,8 +165,26 @@
         var overlapRight = Math.min(rightA, rightB);
         var overlapW = overlapRight - overlapLeft;
 
-        if (overlapW > 14) {
-          // Trim overhanging slice if any
+        if (isPerfect) {
+          /* Perfect Drop! Snaps flush to top block and restores +10px width! */
+          perfectStreak++;
+          var grownW = Math.min(200, top.w + 10);
+          stack.push({
+            x: top.x,
+            w: grownW,
+            color: activeBlock.color
+          });
+          topSquash = 1.25;
+          var perfPts = 15 + (perfectStreak > 1 ? 5 : 0);
+          if (A()) { A().play('block_land'); A().play('sparkle'); A().play('coin_collect'); }
+          for (var pi = 0; pi < 28; pi++) {
+            towDust.push({ x: top.x + 100 + (Math.random() - 0.5) * grownW, y: activeBlock.y, vx: (Math.random() - 0.5) * 7, vy: -Math.random() * 5 - 1, r: 4 + Math.random() * 5, color: '#fde047', life: 1 });
+          }
+          U().floatText('🌟 PERFECT! +' + perfPts + ' (+Width!)', stage, 'good');
+          U().addScore(turn, perfPts);
+        } else if (overlapW >= 18) {
+          /* Partial overlap: slice off the overhanging piece permanently! */
+          perfectStreak = 0;
           if (leftA < overlapLeft) {
             slicedPieces.push({ x: (leftA + overlapLeft) / 2, y: activeBlock.y, w: overlapLeft - leftA, vy: 3, color: activeBlock.color });
           }
@@ -163,23 +193,29 @@
           }
           stack.push({
             x: (overlapLeft + overlapRight) / 2,
-            w: Math.max(48, overlapW),
+            w: overlapW,
             color: activeBlock.color
           });
           topSquash = 1;
-          var isPerfect = Math.abs(leftA - leftB) < 12;
-          if (A()) { A().play('block_land'); A().play('wood_knock'); A().play('coin_collect'); A().play('tower_wobble'); if (isPerfect) A().play('sparkle'); }
-          for (var di = 0; di < 22; di++) {
+          var pctKept = overlapW / activeBlock.w;
+          var pts = pctKept >= 0.75 ? 10 : 5;
+          if (A()) { A().play('block_land'); A().play('wood_knock'); A().play('coin_collect'); A().play('tower_wobble'); }
+          for (var di = 0; di < 18; di++) {
             towDust.push({ x: (overlapLeft + overlapRight) / 2 + 100 + (Math.random() - 0.5) * overlapW, y: activeBlock.y, vx: (Math.random() - 0.5) * 6, vy: -Math.random() * 4 - 1, r: 4 + Math.random() * 4, color: di % 2 ? activeBlock.color : '#fde047', life: 1 });
           }
-          turnScore += 10;
-          U().floatText(isPerfect ? '🌟 PERFECT! +10' : '+10', stage, 'good');
-          U().addScore(turn, 10);
+          U().floatText('✂️ SLICED! +' + pts + ' (' + Math.round(overlapW) + 'px left)', stage, 'good');
+          U().addScore(turn, pts);
         } else {
-          // Missed the tower: block tumbles off, no points deducted
+          /* Missed the tower or too thin (<18px) — block tumbles off for 0 points! */
+          perfectStreak = 0;
           slicedPieces.push({ x: activeBlock.x, y: activeBlock.y, w: activeBlock.w, vy: 5, color: activeBlock.color });
           if (A()) A().play('tower_fall');
-          U().floatText('Whoops!', stage, 'bad');
+          U().floatText('💥 MISSED TOWER! (0 pts)', stage, 'bad');
+          /* If top block was shaved too thin, reset top block slightly so next turn isn't impossible */
+          if (top.w < 36 && stack.length > 1) {
+            stack.pop();
+            U().floatText('⚠️ Top floor crumbled!', stage, 'bad');
+          }
         }
 
         blocksLeft--;
@@ -190,14 +226,7 @@
           prepareNextBlock();
           renderHud();
         } else {
-          // Guarantee at least +5 points for every right-answer turn
-          if (turnScore < 5) {
-            if (A()) A().play('coin_collect');
-            U().floatText('Nice try! +5', stage, 'good');
-            U().addScore(turn, 5);
-          }
-          if (J()) J().react(turn, 'cheer');
-          await U().sleep(500);
+          await U().sleep(520);
           if (phase === 'ended') return;
           nextTurn();
         }
@@ -248,12 +277,10 @@
         var baseLineY = H - 24;
         var camOffsetY = Math.max(0, (stack.length - 6) * blockH);
 
-        // Draw ground
         g.fillStyle = 'rgba(15, 23, 42, 0.55)';
         g.fillRect(0, baseLineY + camOffsetY, W, 40);
 
         if (topSquash > 0) topSquash = Math.max(0, topSquash - 0.08);
-        // Draw stacked blocks for active team
         for (var i = 0; i < stack.length; i++) {
           var b = stack[i];
           var by = baseLineY - i * blockH + camOffsetY;
@@ -263,27 +290,28 @@
           drawRoundedBlock(b.x + 100, by, bwDraw, bhDraw, b.color, i);
         }
 
-        // Update & draw crane + active block
+        /* Progressive crane swing speed increases with tower height! */
         var targetLandY = baseLineY - stack.length * blockH + camOffsetY;
         if (phase === 'drop' || phase === 'ask') {
-          craneT += 0.032;
-          activeBlock.x = 350 + Math.sin(craneT) * 190;
+          var heightSpd = (0.045 + Math.min(10, stack.length) * 0.0055) * speedMul;
+          craneT += heightSpd;
+          var swingRange = 215 + Math.min(45, stack.length * 4);
+          activeBlock.x = 350 + Math.sin(craneT) * swingRange + Math.sin(craneT * 2.3) * 18;
           activeBlock.y = 82;
         } else if (phase === 'falling') {
           activeBlock.y += activeBlock.vy;
-          activeBlock.vy += 0.85;
+          activeBlock.vy += 0.95;
           if (activeBlock.y >= targetLandY) {
             activeBlock.y = targetLandY;
             onBlockLanded();
           }
         }
 
-        // Draw height ruler marks on left
         g.save();
         g.fillStyle = 'rgba(255,255,255,0.75)';
         g.strokeStyle = 'rgba(255,255,255,0.3)';
         g.font = '800 12px sans-serif';
-        for (var m = 1; m <= 12; m++) {
+        for (var m = 1; m <= 14; m++) {
           var ry = baseLineY - m * blockH + camOffsetY;
           if (ry > 16 && ry < H - 10) {
             g.beginPath(); g.moveTo(14, ry); g.lineTo(42, ry); g.stroke();
@@ -292,7 +320,6 @@
         }
         g.restore();
 
-        // Draw crane cable & 3D crane hook sprite
         var craneScreenX = activeBlock.x + 100;
         g.strokeStyle = '#fde047';
         g.lineWidth = 5;
@@ -321,7 +348,6 @@
           drawRoundedBlock(activeBlock.x + 100, activeBlock.y, activeBlock.w, blockH, activeBlock.color, stack.length);
         }
 
-        // Draw trimmed falling pieces
         for (var k = slicedPieces.length - 1; k >= 0; k--) {
           var sp = slicedPieces[k];
           sp.y += sp.vy;

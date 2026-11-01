@@ -14,32 +14,32 @@
   /* One plot per regular mission, in order: listen, match, read, build, say */
   var PLOTS = {
     1: [
-      { icon: '🔧', title: 'The Broken Machine', intro: ['Oh no! The storm broke my machines!', 'Listen and find the right gear for me.'], thanks: 'It works! It makes toast... and socks!' },
-      { icon: '🧰', title: 'Mixed-up Parts', intro: ['All my parts are mixed up!', 'Can you match them?'], thanks: 'Thank you! My robot has only one head again!' },
-      { icon: '📜', title: 'The Lost Plan', intro: ['The wind took my plan!', 'Read it and choose the right word.'], thanks: 'I can read my plan now. It says: lunch!' },
-      { icon: '🤖', title: 'The Funny Robot', intro: ['My robot talks in a funny way.', 'Put the words in order.'], thanks: 'Now it talks! It says hello to my hat.' },
-      { icon: '📣', title: 'Wake Up, Machine!', intro: ['My big machine is asleep.', 'Say the words in a loud voice!'], thanks: 'It is awake! Look, the treasure chest is ready!' }
+      { icon: '🔧', pic: 'z1/o_gear', title: 'The Broken Machine', intro: ['Oh no! The storm broke my machines!', 'Listen and find the right gear for me.'], thanks: 'It works! It makes toast... and socks!' },
+      { icon: '🧰', pic: 'z1/o_machine_off', title: 'Mixed-up Parts', intro: ['All my parts are mixed up!', 'Can you match them?'], thanks: 'Thank you! My robot has only one head again!' },
+      { icon: '📜', pic: 'z1/w_plan', title: 'The Lost Plan', intro: ['The wind took my plan!', 'Read it and choose the right word.'], thanks: 'I can read my plan now. It says: lunch!' },
+      { icon: '🤖', pic: 'z1/o_robot', title: 'The Funny Robot', intro: ['My robot talks in a funny way.', 'Put the words in order.'], thanks: 'Now it talks! It says hello to my hat.' },
+      { icon: '📣', pic: 'z1/o_machine_on', title: 'Wake Up, Machine!', intro: ['My big machine is asleep.', 'Say the words in a loud voice!'], thanks: 'It is awake! Look, the treasure chest is ready!' }
     ],
     2: [
-      { icon: '🔥', title: 'Find the Matches', intro: ['Help! The light went out!', 'The ships cannot see. Listen and catch the right fish. It has my matches!'], thanks: 'My matches! The fish was keeping them dry.' },
-      { icon: '💡', title: 'Fix the Lamp', intro: ['The lamp has lost its parts.', 'Can you match them?'], thanks: 'Good! I fixed it with my big claws. Snip snip!' },
-      { icon: '📯', title: 'Call the Ships', intro: ['I must write to the ships.', 'Read and choose the right word.'], thanks: 'They can read it! One ship says: thank you, Crab!' },
-      { icon: '⛵', title: 'Guide the Boat', intro: ['A little boat is lost.', 'Put the words in order, and it can find the way.'], thanks: 'The boat is here! The captain is a very small duck.' },
-      { icon: '🌟', title: 'The Light Shines', intro: ['One more thing, and the light is back!', 'Say the words nice and loud!'], thanks: 'The light shines! Look, the treasure chest is ready!' }
+      { icon: '🔥', pic: 'z2/o_fish', title: 'Find the Matches', intro: ['Help! The light went out!', 'The ships cannot see. Listen and catch the right fish. It has my matches!'], thanks: 'My matches! The fish was keeping them dry.' },
+      { icon: '💡', pic: 'z2/o_lighthouse_off', title: 'Fix the Lamp', intro: ['The lamp has lost its parts.', 'Can you match them?'], thanks: 'Good! I fixed it with my big claws. Snip snip!' },
+      { icon: '📯', pic: 'z2/w_ocean_boat', title: 'Call the Ships', intro: ['I must write to the ships.', 'Read and choose the right word.'], thanks: 'They can read it! One ship says: thank you, Crab!' },
+      { icon: '⛵', pic: 'z2/o_boat', title: 'Guide the Boat', intro: ['A little boat is lost.', 'Put the words in order, and it can find the way.'], thanks: 'The boat is here! The captain is a very small duck.' },
+      { icon: '🌟', pic: 'z2/o_lighthouse_on', title: 'The Light Shines', intro: ['One more thing, and the light is back!', 'Say the words nice and loud!'], thanks: 'The light shines! Look, the treasure chest is ready!' }
     ],
     3: [
-      { icon: '🏷️', title: 'Prices in the River', intro: ['Oh dear! My prices fell in the river!', 'Listen and hop to the right stone.'], thanks: 'You found them! They are wet, but they are mine.' },
-      { icon: '🌰', title: 'Mixed-up Market', intro: ['The wind mixed up my market.', 'Can you match everything?'], thanks: 'Thank you! I only ate three nuts while you worked.' },
-      { icon: '📖', title: 'The Shopping List', intro: ['A customer wrote a list. Some words are gone!', 'Read and choose the right word.'], thanks: 'Now I can read it. She wants ten hats for her cat!' },
-      { icon: '🌉', title: 'Cross the River', intro: ['We must cross the river.', 'Hop on the words in the right order.'], thanks: 'You are across! And your feet are almost dry.' },
-      { icon: '🛒', title: 'Open the Market', intro: ['The market can open today!', 'Say the words loud, so everyone can hear!'], thanks: 'They are all here! Look, the treasure chest is ready!' }
+      { icon: '🏷️', pic: 'z3/o_stone', title: 'Prices in the River', intro: ['Oh dear! My prices fell in the river!', 'Listen and hop to the right stone.'], thanks: 'You found them! They are wet, but they are mine.' },
+      { icon: '🌰', pic: 'z3/o_basket', title: 'Mixed-up Market', intro: ['The wind mixed up my market.', 'Can you match everything?'], thanks: 'Thank you! I only ate three nuts while you worked.' },
+      { icon: '📖', pic: 'z3/w_coins', title: 'The Shopping List', intro: ['A customer wrote a list. Some words are gone!', 'Read and choose the right word.'], thanks: 'Now I can read it. She wants ten hats for her cat!' },
+      { icon: '🌉', pic: 'z3/w_barter', title: 'Cross the River', intro: ['We must cross the river.', 'Hop on the words in the right order.'], thanks: 'You are across! And your feet are almost dry.' },
+      { icon: '🛒', pic: 'z3/o_market_open', title: 'Open the Market', intro: ['The market can open today!', 'Say the words loud, so everyone can hear!'], thanks: 'They are all here! Look, the treasure chest is ready!' }
     ],
     4: [
-      { icon: '🌋', title: 'The Big Hiccup', intro: ['Boom! I am scared of the mountain.', 'Pip says it only has hiccups. Listen and hit the right bubble!'], thanks: 'A little water helps! The mountain says: hic... sorry.' },
-      { icon: '💧', title: 'Water Rockets', intro: ['We need more water rockets.', 'Can you match these for me?'], thanks: 'Yes! Now I have rockets. I am not so scared.' },
-      { icon: '🍵', title: 'A Drink for the Mountain', intro: ['Who gives a mountain a drink?', 'We do! Read and choose the right word.'], thanks: 'Gulp! That was a very big drink.' },
-      { icon: '🐉', title: 'Brave Little Dragon', intro: ['I want to be brave like you.', 'Put the words in order for me.'], thanks: 'I said it! I am brave! Well... a little brave.' },
-      { icon: '😊', title: 'A Happy Mountain', intro: ['The mountain is almost calm.', 'Say the words in a kind voice.'], thanks: 'No more hiccups! Look, the treasure chest is ready!' }
+      { icon: '🌋', pic: 'z4/o_bubble', title: 'The Big Hiccup', intro: ['Boom! I am scared of the mountain.', 'Pip says it only has hiccups. Listen and hit the right bubble!'], thanks: 'A little water helps! The mountain says: hic... sorry.' },
+      { icon: '💧', pic: 'z4/o_launcher', title: 'Water Rockets', intro: ['We need more water rockets.', 'Can you match these for me?'], thanks: 'Yes! Now I have rockets. I am not so scared.' },
+      { icon: '🍵', pic: 'z4/w_sunrise', title: 'A Drink for the Mountain', intro: ['Who gives a mountain a drink?', 'We do! Read and choose the right word.'], thanks: 'Gulp! That was a very big drink.' },
+      { icon: '🐉', pic: 'z4/o_rocket', title: 'Brave Little Dragon', intro: ['I want to be brave like you.', 'Put the words in order for me.'], thanks: 'I said it! I am brave! Well... a little brave.' },
+      { icon: '😊', pic: 'z4/o_volcano_calm', title: 'A Happy Mountain', intro: ['The mountain is almost calm.', 'Say the words in a kind voice.'], thanks: 'No more hiccups! Look, the treasure chest is ready!' }
     ]
   };
 
@@ -76,8 +76,8 @@
       5: [{ art: 's_z3_mixed', pose: 'worried' }, { pose: 'idea' }]
     },
     4: {
-      1: [{ art: 's_z4_hiccup', pose: 'worried' }, { pose: 'idea' }],
-      2: [{ art: 's_z4_rockets', pose: 'worried' }, { pose: 'idea' }],
+      1: [{ art: 's_z4_hiccup', pose: 'worried' }, { art: 's_z4_rockets', pose: 'idea' }],
+      2: [{ pose: 'worried' }, { pose: 'idea' }],
       3: [{ pose: 'worried' }, { pose: 'idea' }],
       4: [{ pose: 'idea' }, { pose: 'idea' }],
       5: [{ art: 's_z4_hiccup', pose: 'worried' }, { pose: 'idea' }]
@@ -87,7 +87,7 @@
   var ART = {};
   var ART_DIR = {};
   function loadArt(dir) {
-    return fetch('art/' + dir + 'manifest.json?v=3').then(function (r) { return r.json(); }).then(function (list) {
+    return fetch('art/' + dir + 'manifest.json?v=4').then(function (r) { return r.json(); }).then(function (list) {
       list.forEach(function (n) { ART[n] = true; ART_DIR[n] = dir; });
     }).catch(function () {});
   }

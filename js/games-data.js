@@ -7,6 +7,66 @@
  */
 const GAMES_REGISTRY = [
   {
+    "id": "pharaoh-living-book",
+    "aliases": [
+      "pharaoh",
+      "living-book",
+      "ancient-egypt-book",
+      "pharaoh-kingdom"
+    ],
+    "title": "👑 The Pharaoh's Kingdom • 3D Living Pop-Up Book (Lessons 1–8)",
+    "description": "Interactive 3D Pop-Up Living Book covering all 8 Ancient Egypt lessons for Grade 3 & 4 (A1): Nile crossing with rowing boat, pyramid measuring station (10, 15, 20 cm Bigger vs Taller), royal scribe cartouche with authentic hieroglyphs, palace roles & kingdom map (next to / behind + Senet), and the 7-Round Royal Star Challenge.",
+    "type": "lesson",
+    "category": "Interactive Living Books",
+    "categoryLabel": "📖 3D Living Pop-Up Book",
+    "level": "A1",
+    "cefrLevel": "A1",
+    "age": "Ages 8–10",
+    "ageGroup": "8-10",
+    "grade": "Grade 3",
+    "grades": [
+      "Grade 3",
+      "Grade 4"
+    ],
+    "duration": 40,
+    "durationText": "40 min",
+    "estimatedMinutes": 40,
+    "xp": 180,
+    "skills": [
+      "Reading",
+      "Speaking",
+      "Measurement & Comparative Adjectives",
+      "Vocabulary"
+    ],
+    "topic": "Ancient Egypt & The Pharaoh's Kingdom",
+    "topics": [
+      "Ancient Egypt",
+      "Pyramids",
+      "Scribes & Hieroglyphs",
+      "Comparative Adjectives"
+    ],
+    "languageFocus": "We cross the river to build our kingdom. Bigger vs Taller. I wear a crown. I carry a shield. The palace is next to the pyramid. It's my turn / your turn.",
+    "activityMode": "3D Pop-Up Book with Responsive Desktop/Tablet Spreads, Audio Synthesis & Smartboard Teacher Mode",
+    "interactionType": "Interactive 3D Fold-Out Stages, Measurement Rulers, Scribe Typewriter & Star Quiz",
+    "difficulty": "Grade 3 (A1)",
+    "tags": [
+      "pharaoh",
+      "egypt",
+      "living-book",
+      "pop-up",
+      "grade3",
+      "grade4",
+      "pyramids"
+    ],
+    "route": "pharaoh-living-book.html",
+    "url": "pharaoh-living-book.html",
+    "featured": true,
+    "categoryGroup": "Living Books",
+    "status": "active",
+    "thumbnailIcon": "👑",
+    "gradient": "linear-gradient(135deg, #7c3a21 0%, #b45309 60%, #f59e0b 100%)"
+  },
+  {
     "id": "unit4-g3-case1",
     "aliases": [
       "unit4-g3-lessons",
@@ -10230,7 +10290,47 @@ const GAMES_REGISTRY = [
     "lessonOrder": 99,
     "sectionOrder": 115
   },
-  {
+      {
+      "id": "practice-island-world",
+      "aliases": [
+        "island-world",
+        "island/world",
+        "world.html"
+      ],
+      "title": "🏝️ Practice Island: 2D Walking World",
+      "description": "Walk with your monster across the 4 island zones in real time: explore the beach, forest, meadow, and volcano, push crates, gather materials, and discover secrets.",
+      "type": "game",
+      "category": "Practice Island & Home Learning",
+      "categoryLabel": "🏝️ Practice Island",
+      "level": "A1",
+      "cefrLevel": "A1",
+      "age": "Ages 8–10",
+      "ageGroup": "8-10",
+      "grade": "Grades 3 & 4",
+      "grades": [
+        "Grade 3",
+        "Grade 4"
+      ],
+      "difficulty": "Grades 3–4 (A1)",
+      "tags": [
+        "island",
+        "world",
+        "rpg",
+        "practice",
+        "exploration"
+      ],
+      "status": "active",
+      "trackId": "track-island",
+      "trackTitle": "🏝️ Practice Island",
+      "thumbnailIcon": "🌍",
+      "url": "island/world.html?demo=1",
+      "worksheetUrl": null,
+      "unit": 0,
+      "track": "Practice Island",
+      "lessonOrder": 2,
+      "sectionOrder": 117
+    },
+{
     "id": "practice-island",
     "aliases": [
       "island",
