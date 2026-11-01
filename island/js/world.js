@@ -8,42 +8,49 @@
   var W = 2400, H = 1500, CELL = 40, SPEED = 250, FRAME = 256, SHALLOW = 110;
   var STAGES = ['baby', 'baby', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'];   // eggs cannot walk, so a level 1 or 2 pupil walks as a baby here
 
-  function shore(x) { return 380 + 70 * Math.sin(x / 420) + 30 * Math.sin(x / 150 + 1); }
+  var BEACH = 'world/beach/';
+  // where the sand starts in Gemini's beach picture, every 120 across (traced by _tmp/world-trace-shore.py)
+  var SHORE = [635, 697, 721, 702, 701, 667, 644, 655, 690, 700, 658, 586, 560, 501, 497, 493, 511, 553, 576, 547, 494];
+  function shore(x) { var t = Math.max(0, Math.min(SHORE.length - 1.001, x / 120)), i = Math.floor(t), k = (1 - Math.cos((t - i) * Math.PI)) / 2; return SHORE[i] + (SHORE[i + 1] - SHORE[i]) * k; }
   function riverX(y) { return 1180 + 120 * Math.sin(y / 300); }
   var BRIDGE = { y0: 660, y1: 830 };
 
   /* Each stop: where it stands (x, y = feet), its picture and how tall. "done" swaps the picture when that mission is finished. */
   var ZONES = {
     1: {
-      ground: 'meadow', npc: { art: 'z1/c_bolt', x: 620, y: 620 }, blocked: function (x, y) { return Math.pow((x - 1560) / 300, 2) + Math.pow((y - 300) / 170, 2) < 1; },
+      ground: 'meadow', npc: { art: 'z1/c_bolt', worried: 'z1/c_bolt_worried', happy: 'z1/c_bolt_happy', x: 620, y: 620 }, blocked: function (x, y) { return Math.pow((x - 1560) / 300, 2) + Math.pow((y - 300) / 170, 2) < 1; },
       stops: [{ x: 300, y: 1050, art: 'z1/o_machine_off', done: 'z1/o_machine_on', h: 210 }, { x: 700, y: 1250, art: 'z1/o_gear', h: 110 }, { x: 1120, y: 1040, art: 'o_book', h: 110 }, { x: 1520, y: 1240, art: 'z1/o_robot', h: 190 }, { x: 1880, y: 980, art: 'z1/o_engine', h: 170 }],
       chest: { x: 2130, y: 700 },
       decor: [{ art: 'd_hut', x: 900, y: 560, h: 340, sw: 210 }, { art: 'd_flag', x: 1250, y: 700, h: 170, sw: 24 }, { art: 'd_campfire', x: 400, y: 760, h: 110, sw: 70 }, { art: 'z_meadow', x: 2100, y: 330, h: 300, sw: 200 }],
       crate: { x: 1250, y: 880 }, ball: { x: 760, y: 950 }, shells: [{ x: 1250, y: 895, under: true }, { x: 1560, y: 500 }, { x: 200, y: 1380 }]
     },
     2: {
-      ground: 'beach', npc: { art: 'z2/c_lulu', x: 1810, y: 700 }, blocked: function (x, y) { return y < shore(x) - SHALLOW; }, shallows: function (x, y) { return y < shore(x) - 6 && y >= shore(x) - SHALLOW; },
-      stops: [{ x: 300, y: 620, art: 'z2/o_fish', h: 130 }, { x: 720, y: 980, art: 'd_lantern', h: 130 }, { x: 1120, y: 1240, art: 'z2/o_fishing_rod', h: 150 }, { x: 1540, y: 1000, art: 'z2/o_boat', h: 170 }, { x: 2040, y: 590, art: 'z2/o_lighthouse_off', done: 'z2/o_lighthouse_on', h: 500, sw: 130 }],
+      ground: 'beach', npc: { art: BEACH + 'c_lulu_idle', worried: BEACH + 'c_lulu_worried', happy: BEACH + 'c_lulu_happy', x: 1810, y: 700, h: 140 }, blocked: function (x, y) { return y < shore(x) - SHALLOW; }, shallows: function (x, y) { return y < shore(x) - 6 && y >= shore(x) - SHALLOW; },
+      stops: [{ x: 400, y: 665, art: 'z2/o_fish', h: 130 }, { x: 720, y: 980, art: 'd_lantern', h: 130 }, { x: 1120, y: 1240, art: 'z2/o_fishing_rod', h: 150 }, { x: 1540, y: 1000, art: 'z2/o_boat', h: 170 }, { x: 2040, y: 590, art: 'z2/o_lighthouse_off', done: 'z2/o_lighthouse_on', h: 500, sw: 130 }],
       chest: { x: 2190, y: 1050 },
-      decor: [{ art: 'd_palm', x: 330, y: 860, h: 400, sw: 46, shake: true }, { art: 'd_palm', x: 640, y: 1330, h: 400, sw: 46, shake: true }, { art: 'd_palm', x: 1190, y: 720, h: 400, sw: 46, shake: true, shell: true }, { art: 'd_palm', x: 1800, y: 1320, h: 400, sw: 46, shake: true }, { art: 'd_hut', x: 760, y: 680, h: 340, sw: 210 }, { art: 'd_umbrella', x: 1320, y: 1060, h: 260, sw: 26 }],
-      crate: { x: 1500, y: 800 }, ball: { x: 960, y: 1100 }, shells: [{ x: 1500, y: 815, under: true }, { x: 420, y: shore(420) - 62, wet: true }]
+      decor: [{ art: BEACH + 'o_palm_a', x: 170, y: 1000, h: 370, sw: 46, shake: true }, { art: BEACH + 'o_palm_b', x: 640, y: 1330, h: 340, sw: 46, shake: true }, { art: BEACH + 'o_palm_a', x: 1190, y: 740, h: 370, sw: 46, shake: true, shell: true }, { art: BEACH + 'o_palm_b', x: 1920, y: 1390, h: 340, sw: 46, shake: true }, { art: BEACH + 'o_palm_a', x: 2290, y: 1300, h: 370, sw: 46, shake: true }, { art: BEACH + 'o_palm_b', x: 90, y: 1430, h: 340, sw: 46, shake: true },
+        { art: 'd_hut', x: 760, y: 770, h: 340, sw: 210 }, { art: 'd_umbrella', x: 1320, y: 1060, h: 260, sw: 26 },
+        { art: BEACH + 'o_rock_a', x: 1000, y: 840, h: 100, sw: 90 }, { art: BEACH + 'o_rock_a', x: 2050, y: 860, h: 84, sw: 76 }, { art: BEACH + 'o_rock_b', x: 480, y: 830, h: 70, sw: 80 }, { art: BEACH + 'o_rock_b', x: 1700, y: 1230, h: 70, sw: 80 },
+        { art: BEACH + 'o_bush', x: 430, y: 1440, h: 130, sw: 110 }, { art: BEACH + 'o_bush', x: 1640, y: 1440, h: 130, sw: 110 }, { art: BEACH + 'o_bush', x: 2100, y: 1420, h: 150, sw: 120 },
+        { art: BEACH + 'o_sandcastle', x: 1040, y: 980, h: 120, sw: 90 }, { art: BEACH + 'o_driftwood', x: 1420, y: 730, h: 50, flat: true }, { art: BEACH + 'o_starfish', x: 880, y: 1140, h: 50, flat: true }, { art: BEACH + 'o_starfish', x: 1480, y: 1270, h: 44, flat: true }],
+      crate: { x: 1740, y: 990 }, ball: { x: 960, y: 1100 }, shells: [{ x: 1740, y: 1005, under: true }, { x: 610, y: shore(610) - 62, wet: true }]
     },
     3: {
-      ground: 'forest', npc: { art: 'z3/c_nutty', x: 860, y: 480 }, blocked: function (x, y) { return Math.abs(x - riverX(y)) < 95 && !(y > BRIDGE.y0 && y < BRIDGE.y1); },
+      ground: 'forest', npc: { art: 'z3/c_nutty', worried: 'z3/c_nutty_worried', happy: 'z3/c_nutty_happy', x: 860, y: 480 }, blocked: function (x, y) { return Math.abs(x - riverX(y)) < 95 && !(y > BRIDGE.y0 && y < BRIDGE.y1); },
       stops: [{ x: 300, y: 620, art: 'z3/o_stone', h: 110 }, { x: 640, y: 1080, art: 'z3/o_basket', h: 130 }, { x: 900, y: 860, art: 'o_book', h: 110 }, { x: 1560, y: 1040, art: 'z3/o_stone', h: 110 }, { x: 1900, y: 620, art: 'z3/o_market_closed', done: 'z3/o_market_open', h: 300, sw: 220 }],
       chest: { x: 2190, y: 1120 },
       decor: [{ art: 'z_forest', x: 450, y: 370, h: 330, sw: 220 }, { art: 'd_campfire', x: 1500, y: 1330, h: 110, sw: 70 }, { art: 'd_flag', x: 1480, y: 500, h: 170, sw: 24 }],
       crate: { x: 1700, y: 1250 }, ball: { x: 500, y: 1300 }, shells: [{ x: 1700, y: 1265, under: true }, { x: 2200, y: 300 }, { x: 150, y: 1400 }]
     },
     4: {
-      ground: 'volcano', npc: { art: 'z4/c_ember', x: 760, y: 560 }, blocked: function (x, y) { return Math.pow((x - 1200) / 620, 2) + Math.pow((y - 90) / 250, 2) < 1; },
+      ground: 'volcano', npc: { art: 'z4/c_ember', worried: 'z4/c_ember_worried', happy: 'z4/c_ember_happy', x: 760, y: 560 }, blocked: function (x, y) { return Math.pow((x - 1200) / 620, 2) + Math.pow((y - 90) / 250, 2) < 1; },
       stops: [{ x: 260, y: 700, art: 'z4/o_bubble', h: 130 }, { x: 640, y: 1100, art: 'z4/o_rocket', h: 170 }, { x: 1120, y: 780, art: 'z4/o_launcher', h: 140 }, { x: 1560, y: 1120, art: 'd_flag', h: 170 }, { x: 1950, y: 620, art: 'z4/o_volcano_angry', done: 'z4/o_volcano_calm', h: 300, sw: 240 }],
       chest: { x: 2180, y: 1120 },
       decor: [{ art: 'd_campfire', x: 1000, y: 1320, h: 110, sw: 70 }, { art: 'z_mountain', x: 330, y: 340, h: 260, sw: 190 }],
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 900, y: 1420 }]
     }
   };
-  var ART = ['z1/c_bolt', 'z2/c_lulu', 'z3/c_nutty', 'z4/c_ember', 'z1/o_machine_off', 'z1/o_machine_on', 'z1/o_gear', 'z1/o_robot', 'z1/o_engine', 'z2/o_fish', 'z2/o_fishing_rod', 'z2/o_boat', 'z2/o_lighthouse_off', 'z2/o_lighthouse_on', 'z3/o_stone', 'z3/o_basket', 'z3/o_market_closed', 'z3/o_market_open', 'z4/o_bubble', 'z4/o_rocket', 'z4/o_launcher', 'z4/o_volcano_angry', 'z4/o_volcano_calm', 'o_book', 'o_chest', 'o_chest_open', 'o_shell', 'o_gift', 'o_star_path', 'o_cloud_lock', 'd_palm', 'd_hut', 'd_umbrella', 'd_ball', 'd_lantern', 'd_flag', 'd_campfire', 'z_meadow', 'z_forest', 'z_mountain'];
+  var ART = ['z1/c_bolt', 'z1/c_bolt_worried', 'z1/c_bolt_happy', 'z3/c_nutty', 'z3/c_nutty_worried', 'z3/c_nutty_happy', 'z4/c_ember', 'z4/c_ember_worried', 'z4/c_ember_happy', 'z1/o_machine_off', 'z1/o_machine_on', 'z1/o_gear', 'z1/o_robot', 'z1/o_engine', 'z2/o_fish', 'z2/o_fishing_rod', 'z2/o_boat', 'z2/o_lighthouse_off', 'z2/o_lighthouse_on', 'z3/o_stone', 'z3/o_basket', 'z3/o_market_closed', 'z3/o_market_open', 'z4/o_bubble', 'z4/o_rocket', 'z4/o_launcher', 'z4/o_volcano_angry', 'z4/o_volcano_calm', 'o_book', 'o_chest', 'o_chest_open', 'o_gift', 'o_star_path', 'o_cloud_lock', 'd_hut', 'd_umbrella', 'd_ball', 'd_lantern', 'd_flag', 'd_campfire', 'z_meadow', 'z_forest', 'z_mountain'].concat(['g_beach', 'o_palm_a', 'o_palm_b', 'o_rock_a', 'o_rock_b', 'o_crate', 'o_coconut', 'o_bush', 'o_driftwood', 'o_starfish', 'o_sandcastle', 'o_shell', 'c_lulu_idle', 'c_lulu_happy', 'c_lulu_worried'].map(function (n) { return BEACH + n; }));
 
   var $ = function (id) { return document.getElementById(id); };
   var App = function () { return root.IslandApp; };
@@ -75,17 +82,10 @@
   function tufts(c, w, h, n, color) { c.strokeStyle = color; c.lineWidth = 1.6; c.lineCap = 'round'; for (var i = 0; i < n; i++) { var x = Math.random() * w, y = Math.random() * h; c.beginPath(); c.moveTo(x, y); c.lineTo(x - 3, y - 7); c.moveTo(x, y); c.lineTo(x + 3, y - 7); c.moveTo(x, y); c.lineTo(x, y - 9); c.stroke(); } }
   function paintGround(sc, z) {
     var key = 'ground' + z, scale = 2, w = W / scale, h = H / scale, kind = ZONES[z].ground;
-    if (!sc.textures.exists(key)) {
+    if (kind === 'beach') sc.add.image(0, 0, BEACH + 'g_beach').setOrigin(0).setDisplaySize(W, H).setDepth(-20);
+    else if (!sc.textures.exists(key)) {
       var tex = sc.textures.createCanvas(key, w, h), c = tex.context, x, g;
-      if (kind === 'beach') {
-        g = c.createLinearGradient(0, 120, 0, h); g.addColorStop(0, '#f7dfa3'); g.addColorStop(1, '#eec983'); c.fillStyle = g; c.fillRect(0, 0, w, h);
-        speckle(c, w, h, 2600, ['rgba(180,130,70,.13)', 'rgba(180,130,70,.13)', 'rgba(255,255,255,.22)']); patches(c, w, h, 16, 250, 'rgba(255,240,195,.55)');
-        var line = function (off) { c.beginPath(); c.moveTo(0, 0); for (x = 0; x <= w; x += 4) c.lineTo(x, (shore(x * scale) + off) / scale); c.lineTo(w, 0); c.closePath(); };
-        line(26); c.fillStyle = 'rgba(160,115,70,.33)'; c.fill();
-        line(0); c.fillStyle = '#58d6e2'; c.fill();
-        line(-SHALLOW * .55); c.fillStyle = '#2fb9d6'; c.fill();
-        line(-SHALLOW); g = c.createLinearGradient(0, 0, 0, 200); g.addColorStop(0, '#0f6fb0'); g.addColorStop(1, '#1b98c9'); c.fillStyle = g; c.fill();
-      } else if (kind === 'meadow') {
+      if (kind === 'meadow') {
         g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#9be36f'); g.addColorStop(1, '#6cc452'); c.fillStyle = g; c.fillRect(0, 0, w, h);
         patches(c, w, h, 22, 0, 'rgba(190,240,130,.5)'); tufts(c, w, h, 900, 'rgba(50,120,40,.5)');
         for (var f = 0; f < 150; f++) { c.fillStyle = ['#fff', '#fde047', '#f9a8d4'][f % 3]; c.beginPath(); c.arc(Math.random() * w, Math.random() * h, 2.2, 0, 7); c.fill(); }
@@ -102,26 +102,21 @@
       }
       tex.refresh();
     }
-    sc.add.image(0, 0, key).setOrigin(0).setScale(scale).setDepth(-20);
+    if (kind !== 'beach') sc.add.image(0, 0, key).setOrigin(0).setScale(scale).setDepth(-20);
     if (kind === 'beach') {
       if (!sc.textures.exists('foam')) {
         var fT = sc.textures.createCanvas('foam', w, 240), f2 = fT.context, xx;
-        f2.strokeStyle = 'rgba(255,255,255,.92)'; f2.lineWidth = 7; f2.lineCap = 'round'; f2.beginPath();
-        for (xx = 0; xx <= w; xx += 4) { var fy = (shore(xx * scale) - 2) / scale; if (!xx) f2.moveTo(xx, fy); else f2.lineTo(xx, fy); } f2.stroke(); fT.refresh();
+        f2.strokeStyle = 'rgba(255,255,255,.9)'; f2.lineWidth = 6; f2.lineCap = 'round'; f2.beginPath();
+        for (xx = 0; xx <= w; xx += 4) { var fy = (shore(xx * scale) - 8) / scale; if (!xx) f2.moveTo(xx, fy); else f2.lineTo(xx, fy); } f2.stroke(); fT.refresh();
       }
       var foam = sc.add.image(0, 0, 'foam').setOrigin(0).setScale(scale).setDepth(-19);
-      sc.tweens.add({ targets: foam, y: 14, alpha: .65, duration: 1900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      foam.setAlpha(.1); sc.tweens.add({ targets: foam, y: -22, alpha: .75, duration: 2100, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     }
   }
   function makeSmallTextures(sc) {
     if (sc.textures.exists('dot')) return;
     var t = sc.textures.createCanvas('dot', 24, 24), c = t.context, g = c.createRadialGradient(12, 12, 1, 12, 12, 12);
     g.addColorStop(0, '#fff'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 24, 24); t.refresh();
-    var k = sc.textures.createCanvas('crate', 120, 120); c = k.context;
-    c.fillStyle = '#b9793d'; c.fillRect(6, 6, 108, 108); c.strokeStyle = '#6f4316'; c.lineWidth = 7; c.strokeRect(6, 6, 108, 108);
-    c.lineWidth = 6; c.beginPath(); c.moveTo(10, 10); c.lineTo(110, 110); c.moveTo(110, 10); c.lineTo(10, 110); c.stroke(); c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(12, 12, 96, 16); k.refresh();
-    var n = sc.textures.createCanvas('coconut', 48, 48); c = n.context;
-    g = c.createRadialGradient(18, 15, 2, 24, 24, 22); g.addColorStop(0, '#a56a35'); g.addColorStop(1, '#4e2c12'); c.fillStyle = g; c.beginPath(); c.arc(24, 24, 20, 0, 7); c.fill(); n.refresh();
     var s = sc.textures.createCanvas('shadow', 100, 40); c = s.context;
     g = c.createRadialGradient(50, 20, 2, 50, 20, 48); g.addColorStop(0, 'rgba(40,25,10,.5)'); g.addColorStop(1, 'rgba(40,25,10,0)');
     c.save(); c.scale(1, .4); c.fillStyle = g; c.beginPath(); c.arc(50, 50, 48, 0, 7); c.fill(); c.restore(); s.refresh();
@@ -294,8 +289,15 @@
     S.target = t;
     if (t) { var top = t.def ? t.def.y - t.def.h - 110 : t.y - 210; sc.arrow.setVisible(true).setPosition(t.x, top); sc.ring.setVisible(true).setPosition(t.x, t.y); }
     else { sc.arrow.setVisible(false); sc.ring.setVisible(false); }
+    setHelperMood(sc, next);
     if (sc.gateR) sc.gateR.setLock();
     setGoal();
+  }
+  function helperArt() { return (scene && scene.npcSpot && scene.npcSpot.art) || ZONES[S.zone].npc.art; }
+  function setHelperMood(sc, next) {
+    var n = ZONES[S.zone].npc; if (!n.worried) return;
+    var art = !next ? n.happy : (next === sc.stops[0] ? n.worried : n.art);
+    if (sc.npcSpot.art !== art) { sc.npcSpot.art = art; sc.npcSpot.img.setTexture(art); }
   }
   function partyAt(x, y) { var sc = scene; sc.party.explode(60, x, y); sc.cameras.main.shake(220, .004); sound('playFanfare'); if (sc.player) cheer(sc.player, 1400); }
   function cheer(m, ms) {
@@ -309,7 +311,7 @@
     var z = S.zone;
     if (t.kind === 'mission') {
       var n = starsOf(t.mission.id);
-      panel(ZONES[z].npc.art, t.plot.title, n ? '★'.repeat(n) + ' Play again?' : 'Can you help me?', 'Play ▶', function () { App().tapPin(t.mission.id, z, false, null); });
+      panel(helperArt(), t.plot.title, n ? '★'.repeat(n) + ' Play again?' : 'Can you help me?', 'Play ▶', function () { App().tapPin(t.mission.id, z, false, null); });
       say(t.plot.title);
     } else if (t.kind === 'star') {
       panel('o_star_path', t.mission.title, 'A star mission!', 'Play ▶', function () { App().tapPin(t.mission.id, z, true, null); });
@@ -321,7 +323,7 @@
     } else if (t.kind === 'npc') {
       var name = root.IslandStory.CHARS[z].name, next = S.target;
       var line = next && next.plot && next.plot.intro ? next.plot.intro[0] : (next ? 'Open the treasure!' : 'Thank you, friend!');
-      panel(ZONES[z].npc.art, name, line, 'OK', function () {});
+      panel(helperArt(), name, line, 'OK', function () {});
       say(line);
     }
   }
@@ -391,19 +393,19 @@
       sc.palms = []; sc.shells = []; sc.palmShellKey = null;
 
       zone.decor.forEach(function (d) {
-        var img = sc.add.image(d.x, d.y, d.art).setOrigin(.5, .96); img.setScale(d.h / img.height); img.setDepth(d.y);
-        sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(1, (d.sw || 60) / 45)).setDepth(-6);
+        var img = sc.add.image(d.x, d.y, d.art).setOrigin(.5, .96); img.setScale(d.h / img.height); img.setDepth(d.flat ? -5 : d.y);
+        if (!d.flat) sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(1, (d.sw || 60) / 45)).setDepth(-6);
         if (d.sw) solid(sc, d.x, d.y - 4, d.sw, 30);
         if (d.shake) { img.hasShell = !!d.shell; sc.palms.push(img); }
       });
-      var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale(190 / npc.height).setDepth(n.y);
+      var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale((n.h || 190) / npc.height).setDepth(n.y);
       sc.add.image(n.x, n.y, 'shadow').setScale(1.8).setDepth(-6); solid(sc, n.x, n.y - 4, 90, 34);
       sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       sc.npcSpot = { kind: 'npc', img: npc, x: n.x, y: n.y };
       buildStops(sc, zone);
 
-      sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, 'crate').setScale(.92).setDepth(zone.crate.y);
-      sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
+      sc.crate = sc.physics.add.image(zone.crate.x, zone.crate.y, BEACH + 'o_crate').setDepth(zone.crate.y); sc.crate.setScale(112 / sc.crate.height);
+      sc.crate.body.setSize(sc.crate.width * .85, sc.crate.height * .8); sc.crate.setDrag(1400).setCollideWorldBounds(true).setMass(3).setBounce(.1);
       sc.ball = sc.physics.add.image(zone.ball.x, zone.ball.y, 'd_ball').setScale(.17).setDepth(zone.ball.y);
       sc.ball.body.setCircle(250, 6, 6); sc.ball.setDrag(170).setBounce(.8).setCollideWorldBounds(true).setMass(.4);
       sc.ballShadow = sc.add.image(zone.ball.x, zone.ball.y, 'shadow').setDepth(-6);
@@ -413,7 +415,7 @@
       var found = foundShells();
       zone.shells.forEach(function (sd, i) {
         var k = 'z' + S.zone + '_' + i; if (found[k]) return;
-        var s = sc.add.image(sd.x, sd.y, 'o_shell').setScale(.17).setDepth(sd.wet ? -12 : (sd.under ? sd.y - 100 : sd.y)); s.under = !!sd.under; s.key2 = k; sc.shells.push(s);
+        var s = sc.add.image(sd.x, sd.y, BEACH + 'o_shell').setScale(.24).setDepth(sd.wet ? -12 : (sd.under ? sd.y - 100 : sd.y)); s.under = !!sd.under; s.key2 = k; sc.shells.push(s);
       });
       sc.palmShellKey = 'z' + S.zone + '_palm';
       if (found[sc.palmShellKey]) sc.palms.forEach(function (p) { p.hasShell = false; });
@@ -571,9 +573,9 @@
     };
     if (p.hasShell) {
       p.hasShell = false;
-      drop('o_shell', .17, p.x + 150, p.y + 42, function (d) { d.under = false; d.key2 = sc.palmShellKey; sc.shells.push(d); });
+      drop(BEACH + 'o_shell', .24, p.x + 150, p.y + 42, function (d) { d.under = false; d.key2 = sc.palmShellKey; sc.shells.push(d); });
     } else {
-      drop('coconut', .8, p.x - 70 + Math.random() * 140, p.y + 40, function (d) { sc.tweens.add({ targets: d, alpha: 0, delay: 1500, duration: 400, onComplete: function () { d.destroy(); } }); });
+      drop(BEACH + 'o_coconut', .14, p.x - 70 + Math.random() * 140, p.y + 40, function (d) { sc.tweens.add({ targets: d, alpha: 0, delay: 1500, duration: 400, onComplete: function () { d.destroy(); } }); });
     }
   }
 
