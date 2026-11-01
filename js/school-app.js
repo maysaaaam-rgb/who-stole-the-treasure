@@ -4460,6 +4460,7 @@ const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: "The Pharaoh’s Kingdom: Living Pop-Up Book (Ancient Egypt A1 Master Lesson)", grade: 'Grade 3 & 4', date: '2026-11-02', file: 'Grade3-Grade4-Pharaoh-Living-Book-Lesson-Plan', word: true, launch: 'pharaoh-living-book.html' },
     { title: 'Unit 4 Lesson 4: Phonics -nd & Think Together (What Happened? pp. 70-71)', grade: 'Grade 3', date: '2026-10-23', file: 'Grade3-Unit4-Lesson4-Phonics-and-Think-Together-Plan', word: true, launch: 'unit4-g3-phonics-think/index.html' },
     { title: 'Unit 4 Lesson 3: The Angry Mountain — Cause & Effect + Island Rescue (What Happened? pp. 65-69)', grade: 'Grade 3', date: '2026-10-22', file: 'Grade3-Unit4-Lesson3-Angry-Mountain-Plan', word: true, launch: 'unit4-g3-angry-mountain/index.html' },
     { title: 'Grade 3 Reading 2 Review: The Angry Mountain (What Happened? pp. 64-71)', grade: 'Grade 3', date: '2026-10-21', file: 'Grade3-Unit4-Angry-Mountain-Lesson-Plan', word: true, launch: 'review-g3-mountain/index.html' },
