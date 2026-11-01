@@ -85,6 +85,7 @@
     base.streakBonuses = Object.assign({}, d1.streakBonuses || {}, d2.streakBonuses || {});
     base.bottleSeen = Object.assign({}, d1.bottleSeen || {}, d2.bottleSeen || {});
     base.story = Object.assign({}, d1.story || {}, d2.story || {});
+    if (primary.solo !== undefined) base.solo = !!primary.solo;
 
     /* Stickers only ever add up: a sticker stays, and a shiny one stays shiny */
     var st1 = (d1.collection && d1.collection.stickers) || {};

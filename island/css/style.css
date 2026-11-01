@@ -1221,6 +1221,12 @@ html, body {
   opacity: 0.55;
   filter: grayscale(0.5);
 }
+.isl-corner-bag-btn.locked {
+  pointer-events: none !important;
+  opacity: 0.45 !important;
+  filter: grayscale(0.7) !important;
+  cursor: not-allowed !important;
+}
 
 /* Floating Message in a Bottle (Beach Shore) */
 .isl-shore-bottle {

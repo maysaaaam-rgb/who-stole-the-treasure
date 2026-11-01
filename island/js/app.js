@@ -76,6 +76,7 @@
   function isZoneUnlocked(zoneNum) {
     if (zoneNum <= 1) return true;
     if (!state.session || !state.session.doc) return false;
+    if (state.session.isDemo) return true;
     var g = state.session.grade || 3;
     var prevPrefix = 'g' + g + '-z' + (zoneNum - 1) + '-m';
     var stars = state.session.doc.stars || {};
@@ -234,6 +235,7 @@
         '<div class="isl-pill xp-cap" id="isl-xp-pill"><span>⚡ Today: ' + todayXP + ' / ' + cap + ' XP</span></div>' +
       '</div>' +
       '<div class="isl-actions-row">' +
+        (ses.wallOff || !root.IslandWall ? '' : '<button type="button" class="isl-btn wall-btn" id="isl-btn-wall" onclick="IslandWall.open()" title="Our class wall">🌟 Wall</button>') +
         '<button type="button" class="isl-btn amber" id="isl-btn-book" onclick="IslandRewards.openStickerBook()" title="Sticker Book">📒 Book</button>' +
         '<button type="button" class="isl-btn emerald" id="isl-btn-corner" onclick="IslandRewards.openCorner()" title="My Beach Corner">🏖️ Corner</button>' +
         '<button type="button" class="isl-btn violet" id="isl-btn-dress" onclick="IslandApp.openDressingRoom()">👕 Dress Up</button>' +
@@ -243,6 +245,175 @@
   }
 
   /* Render Main Island Map */
+  /* ---------- the map: 1. the island with four big places + Social World Hub ---------- */
+  var MAP_PLACES = { 1: { x: 22, y: 31 }, 2: { x: 78, y: 31 }, 3: { x: 22, y: 71 }, 4: { x: 78, y: 71 } };
+  var FRIEND_SPOTS = [{ x: 41, y: 36 }, { x: 59, y: 36 }, { x: 50, y: 24 }];
+
+  function regularMissions(zoneNum) {
+    return root.IslandData.getZoneMissions(state.session.grade || 3, zoneNum, false).regular;
+  }
+  function doneCount(missions) {
+    var stars = (state.session.doc && state.session.doc.stars) || {};
+    return missions.filter(function (m) { return (Number(stars[m.id]) || 0) > 0; }).length;
+  }
+  /* the place to play next: the first open zone with a mission or chest still to do */
+  function currentZone() {
+    var chests = (state.session.doc && state.session.doc.chests) || {};
+    for (var z = 4; z >= 1; z--) {
+      if (isZoneUnlocked(z)) {
+        for (var k = 1; k <= z; k++) {
+          if (doneCount(regularMissions(k)) < 5 || !chests['z' + k]) return k;
+        }
+        return z;
+      }
+    }
+    return 1;
+  }
+
+  /* Little paw prints from one stop to the next: gold where the pupil has been, soft white for the way ahead.
+     They are laid out from where the stops really are on this screen, so they follow the way on any size and never sit on a title or a label. */
+  function layPaws() {
+    var wrap = document.getElementById('isl-map-wrap');
+    if (!wrap) return;
+    [].forEach.call(wrap.querySelectorAll('.mp-paw'), function (p) { p.remove(); });
+    var zone = wrap.classList.contains('mp-zone');
+    var stops = [].slice.call(wrap.querySelectorAll(zone ? '.mp-stop' : '.mp-place'));
+    var box = wrap.getBoundingClientRect();
+    var rel = function (r) { return { l: r.left - box.left, t: r.top - box.top, r: r.right - box.left, b: r.bottom - box.top }; };
+    var blocks = [].map.call(wrap.querySelectorAll(zone ? '.mp-stop-disc,.mp-stop-title,.mp-stop-stars,.mp-friend,.mp-starpath,.mp-back,.mp-zone-name' : '.mp-place-pic,.mp-place-label,.mp-hub,.mp-classmate,.mp-monster,.isl-daily-card,.gm-shells,.mp-pip,.mp-bottle'), function (e) { return rel(e.getBoundingClientRect()); });
+    var size = Math.max(11, Math.min(17, box.width * 0.0105));
+    var step = size * 1.9, html = '';
+    var blocked = function (x, y) {
+      var m = size * 0.3;
+      return blocks.some(function (r) { return x > r.l - m && x < r.r + m && y > r.t - m && y < r.b + m; });
+    };
+    for (var i = 0; i < stops.length - 1; i++) {
+      var A = stops[i].querySelector(zone ? '.mp-stop-disc' : '.mp-place-pic').getBoundingClientRect();
+      var B = stops[i + 1].querySelector(zone ? '.mp-stop-disc' : '.mp-place-pic').getBoundingClientRect();
+      var ax = A.left + A.width / 2 - box.left, ay = A.top + A.height / 2 - box.top, bx = B.left + B.width / 2 - box.left, by = B.top + B.height / 2 - box.top;
+      var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy);
+      if (!len) continue;
+      var count = Math.floor(len / step), angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+      var walked = zone ? stops[i].classList.contains('done') : !stops[i + 1].classList.contains('locked');
+      var nx = -dy / len, ny = dx / len;
+      for (var k = 1; k < count; k++) {
+        var t = k / count, side = k % 2 ? 1 : -1;
+        var x = ax + dx * t + nx * side * size * 0.28, y = ay + dy * t + ny * side * size * 0.28;
+        if (blocked(x, y)) continue;
+        html += '<span class="mp-paw' + (walked ? ' walked' : '') + '" style="left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;font-size:' + size.toFixed(0) + 'px;transform:translate(-50%,-50%) rotate(' + angle.toFixed(0) + 'deg)">🐾</span>';
+      }
+    }
+    wrap.insertAdjacentHTML('afterbegin', html);
+  }
+  var pawTimer = 0;
+  root.addEventListener('resize', function () { clearTimeout(pawTimer); pawTimer = setTimeout(layPaws, 150); });
+
+  function islandScreenHtml(dailyBannerHtml, pipTipHtml, today) {
+    var ses = state.session, g = ses.grade || 3, cur = currentZone();
+    var chests = (ses.doc && ses.doc.chests) || {};
+    var placesHtml = root.IslandData.ZONES.map(function (z) {
+      var open = isZoneUnlocked(z.num), t = z.titles[g] || z.titles[3], p = MAP_PLACES[z.num];
+      var done = doneCount(regularMissions(z.num)), finished = !!chests['z' + z.num];
+      var status = !open ? '🔒 Finish 4 in ' + esc((root.IslandData.ZONES[z.num - 2].titles[g] || {}).name || 'Zone ' + (z.num - 1))
+        : finished ? '🐚 Done!' : '⭐ ' + done + ' / 5';
+      return '<button type="button" class="mp-place' + (open ? '' : ' locked') + (open && z.num === cur ? ' next' : '') + (finished ? ' finished' : '') + '" id="zone-' + z.num + '" ' +
+        'style="--x:' + p.x + ';--y:' + p.y + '" onclick="IslandApp.' + (open ? 'openZone' : 'tapLockedZone') + '(' + z.num + ')">' +
+          '<span class="mp-place-pic"><img src="art/' + z.badge + '.webp" alt="">' +
+            (open ? '<span class="mp-place-friend">' + root.IslandStory.charPic(z.num) + '</span>' : '') + '</span>' +
+          '<span class="mp-place-label"><b>' + esc(t.name) + '</b><small>' + esc(t.sub) + '</small><em>' + status + '</em></span>' +
+        '</button>';
+    }).join('');
+
+    /* Social World Hub: Class Plaza + Live Classmates on the Map + My Beach Camp */
+    var socialHtml = '';
+    if (!ses.wallOff && root.IslandWall) {
+      var friends = (root.IslandWall.peekFriends && root.IslandWall.peekFriends()) || [];
+      var hasGifts = !!(root.IslandWall.hasGifts && root.IslandWall.hasGifts());
+      var friendsHtml = friends.map(function (f, idx) {
+        var sp = FRIEND_SPOTS[idx] || { x: 50, y: 24 };
+        return '<button type="button" class="mp-classmate" id="map-friend-' + esc(f.id) + '" style="--x:' + sp.x + ';--y:' + sp.y + '" ' +
+          'onclick="IslandWall.openFriend(\'' + esc(f.id) + '\')" title="Visit ' + esc(f.first_name) + '\'s Beach Corner">' +
+            '<span class="mp-classmate-mon">' + f.picHtml + '</span>' +
+            '<span class="mp-classmate-tag">👋 ' + esc(f.first_name) + '</span>' +
+          '</button>';
+      }).join('');
+      socialHtml +=
+        friendsHtml +
+        '<button type="button" class="mp-hub mp-hub-plaza" id="isl-hub-plaza" style="--x:50;--y:48" onclick="IslandWall.open()">' +
+          '<span class="mp-hub-pic"><img src="art/o_star_path.webp" alt="">' +
+            (hasGifts ? '<span class="mp-hub-badge">🎁 Gift!</span>' : '') +
+          '</span>' +
+          '<span class="mp-hub-label"><b>🌟 Class Plaza</b><small>Wall · Friends · Teams</small></span>' +
+        '</button>';
+    }
+
+    var cornerCount = ((ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 3;
+    var campHtml =
+      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:80" onclick="IslandRewards.openCorner()">' +
+        '<span class="mp-hub-pic"><img src="art/d_hut.webp" alt=""></span>' +
+        '<span class="mp-hub-label"><b>🏖️ My Beach Camp</b><small>Corner · Dress · Stickers (' + cornerCount + ' 🌴)</small></span>' +
+      '</button>';
+
+    var cp = MAP_PLACES[cur];
+    state.monsterPos = { left: cp.x + '%', top: cp.y + '%' };
+    var monsterHtml =
+      '<div class="isl-map-monster mp-monster" id="isl-map-monster" style="--x:' + cp.x + ';--y:' + cp.y + '" onclick="IslandApp.pokeMonster()">' +
+        '<div class="isl-map-monster-sprite">' + renderMonsterHtml(86, null, true) + '</div>' +
+      '</div>';
+    var bottleHtml = (!ses.doc.bottleSeen || !ses.doc.bottleSeen[today])
+      ? '<div class="isl-shore-bottle mp-bottle" id="isl-shore-bottle" onclick="IslandRewards.openBottleModal()"><img src="art/o_bottle.webp" alt="Message in a Bottle"><span class="isl-bottle-tag">Pip\'s Note!</span></div>'
+      : '';
+    return '<div class="isl-map-wrap mp-wrap" id="isl-map-wrap">' +
+      pipTipHtml + dailyBannerHtml + placesHtml + socialHtml + campHtml + monsterHtml + bottleHtml +
+      '<div class="gm-map-pip mp-pip"><button type="button" class="gm-map-pip-btn" id="gm-pip" onclick="IslandApp.tapPip()" aria-label="Captain Pip">' + root.IslandStory.charPic('pip') + '</button><div class="gm-bubble gm-bubble-mini" id="gm-pip-line" style="display:none"></div></div>' +
+      shellsHtml() +
+    '</div>';
+  }
+
+  /* ---------- the map: 2. one place, with a clear trail: the next stop glows and the monster stands by it ---------- */
+  var TRAIL = [{ x: 9, y: 66, px: 22, py: 81 }, { x: 25, y: 28, px: 78, py: 70 }, { x: 41, y: 66, px: 22, py: 59 }, { x: 57, y: 28, px: 78, py: 48 }, { x: 73, y: 66, px: 22, py: 37 }, { x: 90, y: 28, px: 78, py: 25 }];
+  var ZONE_BG = { 1: 'art/z1/bg_factory.webp', 2: 'art/z2/bg_beach.webp', 3: 'art/z3/bg_river.webp', 4: 'art/z4/bg_volcano.webp' };
+  var ZONE_FOCUS = { 2: '82% 28%', 3: '20% 72%', 4: '76% 66%' };
+
+  function zoneScreenHtml(zoneNum) {
+    var ses = state.session, g = ses.grade || 3, z = root.IslandData.ZONES[zoneNum - 1], t = z.titles[g] || z.titles[3];
+    var zm = root.IslandData.getZoneMissions(g, zoneNum, ses.star);
+    var stars = (ses.doc && ses.doc.stars) || {}, chests = (ses.doc && ses.doc.chests) || {};
+    var nextIdx = -1;
+    zm.regular.some(function (m, i) { if (!(Number(stars[m.id]) || 0)) { nextIdx = i; return true; } return false; });
+    var stopsHtml = zm.regular.map(function (m, i) {
+      var n = Number(stars[m.id]) || 0, plot = root.IslandStory.plotOf(m.id) || m, p = TRAIL[i];
+      return '<button type="button" class="mp-stop' + (n ? ' done' : '') + (i === nextIdx ? ' next' : '') + '" id="pin-' + esc(m.id) + '" ' +
+        'style="--x:' + p.x + ';--y:' + p.y + ';--px:' + p.px + ';--py:' + p.py + '" onclick="IslandApp.tapPin(\'' + esc(m.id) + '\',' + zoneNum + ',false,this)">' +
+          '<span class="mp-stop-disc"><span class="mp-stop-icon">' + plot.icon + '</span><i>' + (i + 1) + '</i></span>' +
+          '<span class="mp-stop-title">' + esc(plot.title) + '</span>' +
+          '<span class="mp-stop-stars">' + (n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '') + '</span>' +
+        '</button>';
+    }).join('');
+    var opened = !!chests['z' + zoneNum], ready = !opened && isZoneChestReady(zoneNum), cp = TRAIL[5];
+    var chestHtml = '<button type="button" class="mp-stop mp-chest' + (ready ? ' next' : '') + (opened ? ' done' : '') + '" id="chest-z' + zoneNum + '" style="--x:' + cp.x + ';--y:' + cp.y + ';--px:' + cp.px + ';--py:' + cp.py + '" onclick="IslandApp.tapChest(' + zoneNum + ')">' +
+      '<span class="mp-stop-disc"><img src="art/' + (opened ? 'o_chest_open' : 'o_chest') + '.webp" alt=""></span><span class="mp-stop-title">Treasure</span></button>';
+    var at = TRAIL[nextIdx >= 0 ? nextIdx : 5];
+    var monsterHtml = '<div class="mp-walker" style="--x:' + at.x + ';--y:' + at.y + ';--px:' + at.px + ';--py:' + at.py + '" onclick="IslandApp.pokeMonster()">' + renderMonsterHtml(86, null, true) + '</div>';
+    var starHtml = '';
+    if (ses.star) {
+      starHtml = '<div class="mp-starpath"><b>✨</b>' + zm.star.map(function (sm) {
+        var n = Number(stars[sm.id]) || 0;
+        return '<button type="button" class="mp-stone' + (n ? ' done' : '') + '" id="pin-' + esc(sm.id) + '" onclick="IslandApp.tapPin(\'' + esc(sm.id) + '\',' + zoneNum + ',true,this)" title="' + esc(sm.title) + '">' + sm.num + '<small>' + (n ? '★'.repeat(n) : '') + '</small></button>';
+      }).join('') + '</div>';
+    }
+    var bgStyle = ZONE_BG[zoneNum] ? 'background-image:url(' + ZONE_BG[zoneNum] + ')' : 'background-image:url(art/bg_island.webp);background-size:260%;background-position:' + (ZONE_FOCUS[zoneNum] || 'center');
+    var tip = nextIdx >= 0 ? 'Tap the glowing stop!' : (ready ? 'Open the treasure!' : (opened ? 'Thank you, friend!' : 'Well done!'));
+    return '<div class="isl-map-wrap mp-wrap mp-zone" id="isl-map-wrap" style="' + bgStyle + '">' +
+      '<header class="mp-zone-top"><button type="button" class="mp-back" onclick="IslandApp.closeZone()">◀ 🏝️</button><div class="mp-zone-name"><b>' + esc(t.name) + '</b><small>' + esc(t.sub) + '</small></div></header>' +
+      stopsHtml + chestHtml + monsterHtml +
+      '<div class="mp-friend"><div class="gm-bubble gm-bubble-mini">' + esc(tip) + '</div><button type="button" class="gm-map-pip-btn" onclick="IslandApp.tapZoneFriend(' + zoneNum + ')" aria-label="' + esc(root.IslandStory.CHARS[zoneNum].name) + '">' + root.IslandStory.charPic(zoneNum, '', nextIdx >= 0 ? 'idea' : 'happy') + '</button></div>' +
+      starHtml +
+    '</div>';
+  }
+  function openZone(zoneNum) { root.IslandAudio.playHop(); state.openZone = zoneNum; renderMap(); }
+  function closeZone() { root.IslandAudio.playTap(); state.openZone = 0; renderMap(); }
+
   function renderMap() {
     var main = document.getElementById('isl-main');
     if (!main) return;
@@ -269,114 +440,12 @@
         '</div>' +
       '</button>';
 
-    var zonesHtml = root.IslandData.ZONES.map(function (z) {
-      var unlocked = isZoneUnlocked(z.num);
-      var zTitle = (z.titles[g] || z.titles[3]);
-      var zMissions = root.IslandData.getZoneMissions(g, z.num, ses.star);
-
-      var pinsHtml = zMissions.regular.map(function (m, idx) {
-        var off = z.pinOffsets[idx] || { dx: 0, dy: 60 };
-        var stCount = Number(starsMap[m.id]) || 0;
-        var starTxt = stCount > 0 ? ('★'.repeat(stCount) + '☆'.repeat(3 - stCount)) : '';
-        return (
-          '<button type="button" class="isl-pin" id="pin-' + esc(m.id) + '" ' +
-            'style="left:calc(50% + ' + off.dx + 'px);top:calc(50% + ' + off.dy + 'px)" ' +
-            (unlocked ? 'onclick="IslandApp.tapPin(\'' + esc(m.id) + '\',' + z.num + ',false,this)"' : 'disabled') +
-            ' title="' + esc((root.IslandStory.plotOf(m.id) || m).title) + '">' +
-            '<img class="isl-pin-bg" src="art/o_pin.webp" alt="">' +
-            '<span class="isl-pin-num gm-pin-icon">' + (root.IslandStory.plotOf(m.id) || { icon: m.num }).icon + '</span>' +
-            (starTxt ? '<span class="isl-pin-stars">' + starTxt + '</span>' : '') +
-          '</button>'
-        );
-      }).join('');
-
-      /* Star Path stepping stones: ONLY rendered if ses.star === true and zone is unlocked */
-      var starPinsHtml = '';
-      if (ses.star && unlocked) {
-        starPinsHtml = zMissions.star.map(function (sm, idx) {
-          var off = z.starOffsets[idx] || { dx: 0, dy: 96 };
-          var stCount = Number(starsMap[sm.id]) || 0;
-          var starTxt = stCount > 0 ? ('★'.repeat(stCount)) : '⭐';
-          return (
-            '<button type="button" class="isl-pin star-pin" id="pin-' + esc(sm.id) + '" ' +
-              'style="left:calc(50% + ' + off.dx + 'px);top:calc(50% + ' + off.dy + 'px)" ' +
-              'onclick="IslandApp.tapPin(\'' + esc(sm.id) + '\',' + z.num + ',true,this)" ' +
-              'title="' + esc(sm.title) + '">' +
-              '<img class="isl-pin-bg" src="art/o_star_path.webp" alt="">' +
-              '<span class="isl-pin-num">S' + sm.num + '</span>' +
-              '<span class="isl-pin-stars">' + starTxt + '</span>' +
-            '</button>'
-          );
-        }).join('');
-      }
-
-      var chestOpened = !!chestsMap['z' + z.num];
-      var chestReady = unlocked && !chestOpened && isZoneChestReady(z.num);
-      var cOff = z.chestOffset || { dx: 118, dy: 26 };
-      var chestHtml =
-        '<button type="button" class="isl-chest-btn' + (chestReady ? ' ready' : '') + '" id="chest-z' + z.num + '" ' +
-          'style="left:calc(50% + ' + cOff.dx + 'px);top:calc(50% + ' + cOff.dy + 'px)" ' +
-          (unlocked ? 'onclick="IslandApp.tapChest(' + z.num + ')"' : 'disabled') +
-          ' title="Zone ' + z.num + ' Treasure Chest">' +
-          '<img src="art/' + (chestOpened ? 'o_chest_open' : 'o_chest') + '.webp" alt="">' +
-        '</button>';
-
-      var lockOverlay = '';
-      if (!unlocked) {
-        lockOverlay =
-          '<div class="isl-cloud-lock" onclick="IslandApp.tapLockedZone(' + z.num + ')">' +
-            '<img src="art/o_cloud_lock.webp" alt="">' +
-            '<span>🔒 Finish 4 in Zone ' + (z.num - 1) + '</span>' +
-          '</div>';
-      }
-
-      return (
-        '<div class="isl-zone' + (unlocked ? '' : ' locked') + '" id="zone-' + z.num + '" style="left:' + z.pos.left + ';top:' + z.pos.top + ';--sleep:' + zoneSleep(z.num, zMissions.regular) + '">' +
-          '<div class="gm-zone-sleep"></div>' +
-          (chestOpened ? '<span class="gm-zone-life">🦋</span><span class="gm-zone-life">✨</span>' : '') +
-          '<button type="button" class="gm-zone-friend" onclick="IslandApp.tapZoneFriend(' + z.num + ')" aria-label="' + esc(root.IslandStory.CHARS[z.num].name) + '">' + root.IslandStory.charPic(z.num) + '</button>' +
-          '<div class="isl-zone-header">' +
-            '<img class="isl-zone-badge" src="art/' + z.badge + '.webp" alt="">' +
-            '<div class="isl-zone-label">' +
-              esc(zTitle.name) +
-              '<span class="isl-zone-sub">' + esc(zTitle.sub) + '</span>' +
-            '</div>' +
-          '</div>' +
-          pinsHtml +
-          starPinsHtml +
-          chestHtml +
-          lockOverlay +
-        '</div>'
-      );
-    }).join('');
-
-    var bottleHtml = '';
-    if (!ses.doc.bottleSeen || !ses.doc.bottleSeen[today]) {
-      bottleHtml =
-        '<div class="isl-shore-bottle" id="isl-shore-bottle" onclick="IslandRewards.openBottleModal()">' +
-          '<img src="art/o_bottle.webp" alt="Message in a Bottle">' +
-          '<span class="isl-bottle-tag">Pip\'s Note!</span>' +
-        '</div>';
-    }
-
     var pipTipHtml = (root.IslandRewards && root.IslandRewards.renderPipTipBanner) ? root.IslandRewards.renderPipTipBanner(ses.doc) : '';
-
-    var monsterHtml =
-      '<div class="isl-map-monster" id="isl-map-monster" style="left:' + state.monsterPos.left + ';top:' + state.monsterPos.top + '" onclick="IslandApp.pokeMonster()">' +
-        '<div class="isl-map-monster-sprite">' + renderMonsterHtml(86) + '</div>' +
-        '<div class="isl-map-pedestal"></div>' +
-      '</div>';
-
-    main.innerHTML =
-      '<div class="isl-map-wrap" id="isl-map-wrap">' +
-        pipTipHtml +
-        dailyBannerHtml +
-        zonesHtml +
-        monsterHtml +
-        bottleHtml +
-        '<div class="gm-map-pip"><button type="button" class="gm-map-pip-btn" id="gm-pip" onclick="IslandApp.tapPip()" aria-label="Captain Pip">' + root.IslandStory.charPic('pip') + '</button><div class="gm-bubble gm-bubble-mini" id="gm-pip-line" style="display:none"></div></div>' +
-        shellsHtml() +
-      '</div>';
+    main.innerHTML = state.openZone && isZoneUnlocked(state.openZone)
+      ? zoneScreenHtml(state.openZone)
+      : islandScreenHtml(dailyBannerHtml, pipTipHtml, today);
+    layPaws();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layPaws);
     preloadOpenZoneImages();
   }
 
@@ -460,6 +529,7 @@
     state.session.doc.chests = state.session.doc.chests || {};
     state.session.doc.chests[key] = true;
     var res = awardIslandXP(10, 'chest-' + key);
+    if (root.IslandWall) root.IslandWall.news('zone', zoneNum);
     root.IslandAudio.playChest();
     root.IslandAudio.speak('Treasure chest opened! Plus ten XP!');
     if (res.leveledUp && root.IslandRewards && root.IslandRewards.launchFireworks) {
@@ -1031,6 +1101,7 @@
       stars = 2;
     }
 
+    var starsBefore = (doc.stars && doc.stars[m.id]) || 0;
     var rawXP = 0;
     if (m.isDaily) {
       var today = root.IslandSync.todayStr();
@@ -1051,9 +1122,14 @@
     }
 
     if (root.IslandAdventure) root.IslandAdventure.close();
+    var wasThreeStars = Number(starsBefore) >= 3;
     var nextTarget = findNextMissionTarget(m.id, !!m.isStar);
     var stickerReward = (root.IslandRewards && root.IslandRewards.awardMissionSticker) ? root.IslandRewards.awardMissionSticker(doc, m.id, stars) : null;
     var res = awardIslandXP(rawXP, m.id);
+    if (root.IslandWall) {
+      if (stars === 3 && !m.isStar && !m.isDaily && !wasThreeStars) root.IslandWall.news('stars');
+      if (res.leveledUp && res.newLevelInfo) root.IslandWall.news('level', res.newLevelInfo.level);
+    }
     state.missionRun = null;
     root.IslandAudio.stopAmbient();
     if (res.leveledUp) {
@@ -1081,7 +1157,7 @@
       mission: m
     });
     var said = root.IslandStory.thanks(m);
-    if (said) root.IslandAudio.speak(said.text);
+    if (said) root.IslandAudio.speak(said.text, null, said.who);
   }
 
   function findNextMissionTarget(currentMissionId, isStar) {
@@ -1343,14 +1419,14 @@
     var c = root.IslandStory.CHARS[zoneNum];
     var done = !!(state.session && state.session.doc && state.session.doc.chests && state.session.doc.chests['z' + zoneNum]);
     root.IslandAudio.playTap();
-    root.IslandAudio.speak(done ? 'Thank you for my magic shell!' : 'Hello! I am ' + c.name + '. Please help me!');
+    root.IslandAudio.speak(done ? 'Thank you for my magic shell!' : 'Hello! I am ' + c.name + '. Please help me!', null, zoneNum);
   }
 
   function tapPip() {
     var line = root.IslandStory.pipLine();
     var el = document.getElementById('gm-pip-line');
     root.IslandAudio.playTap();
-    root.IslandAudio.speak(line);
+    root.IslandAudio.speak(line, null, 'pip');
     if (!el) return;
     el.textContent = line;
     el.style.display = 'block';
@@ -1508,6 +1584,8 @@
     replayMissionAudio: replayMissionAudio,
     speakText: function (text) { root.IslandAudio.speak(text); },
     sayPassed: sayPassed,
+    openZone: openZone,
+    closeZone: closeZone,
     pickOption: pickOption,
     tapMatchLeft: tapMatchLeft,
     tapMatchRight: tapMatchRight,
