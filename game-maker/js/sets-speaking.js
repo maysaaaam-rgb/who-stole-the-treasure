@@ -1,460 +1,761 @@
-/* Game Maker: Units 1–4 Speaking & Acting Tournament Sets (Grade 3 and Grade 4).
-   Designed for the 8 Wave 2 Arcade Modes (Penalty Kick, Baseball, Tower Stack, Whack-a-Word,
-   Snakes & Ladders, Jigsaw, Balloon Pop, Memory) as well as Cannon, Race, Fling, and Tile Board.
-   Each item provides:
-   - q: The Speaking / Acting challenge prompt
-   - frame: Scaffolded 1–3 sentence speaking teleprompter frame shown on the card
-   - speak: Full model sentences spoken by TTS when tapping 🔊
-   - a & w: Target key phrase and 2 distractors so every mode (including Whack, Balloon, Memory, Jigsaw) works seamlessly! */
+/* Game Maker — Easy A1 Speaking & Acting Showdown (Units 1–4)
+   Designed for 8–10 year old A1 learners (Grade 3 & Grade 4):
+   - Short 4–7 word prompts (`q`)
+   - Fun 3–4 word physical gesture (`act`)
+   - 1 short 3–6 word sentence (`frame`) + template (`tpl`)
+   - 3 tap-to-say word pills (`words`) that kids can tap on the smartboard to hear & repeat
+   - Short 1–3 word A/B/C backup choices (`a`, `w`) */
 (function (root) {
   'use strict';
   var GM = root.GM = root.GM || {};
 
-  function buildItems(list, grade) {
-    return list.map(function (r) {
-      return {
-        q: r.q,
-        frame: r.frame,
-        speak: r.speak || r.frame.replace(/^🗣️\s*Say:\s*/i, '').replace(/"/g, ''),
-        a: r.a,
-        w: r.w,
-        pic: r.pic || '🎤',
-        skill: 'Speaking',
-        grade: grade,
-        unit: r.unit || 0
-      };
-    });
+  var SPEAK_G3 = [
+    // ================= UNIT 1: INVENTIONS & YOUNG INVENTORS (8) =================
+    {
+      q: '💡 What can you invent?',
+      act: '🎬 Draw in the air!',
+      tpl: 'I can make {w}!',
+      words: ['🤖 a robot', '🚗 a flying car', '👟 magic shoes'],
+      frame: '🗣️ "I can make a robot!"',
+      speak: 'I can make a robot!',
+      a: '🤖 A robot',
+      w: ['🍌 A banana', '🪨 A rock'],
+      e: '💡', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '✏️ What do you do FIRST?',
+      act: '🎬 Pretend to draw!',
+      tpl: 'First, I {w}!',
+      words: ['✏️ draw a plan', '🔨 build a box', '🎨 paint it blue'],
+      frame: '🗣️ "First, I draw a plan!"',
+      speak: 'First, I draw a plan!',
+      a: '✏️ Draw a plan',
+      w: ['😴 Go to sleep', '🍕 Eat pizza'],
+      e: '✏️', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🔨 What tool do you use?',
+      act: '🎬 Tap, tap, tap!',
+      tpl: 'I use {w}!',
+      words: ['🔨 a hammer', '✂️ scissors', '📏 a ruler'],
+      frame: '🗣️ "I use a hammer!"',
+      speak: 'I use a hammer!',
+      a: '🔨 A hammer',
+      w: ['🍦 Ice cream', '🎈 A balloon'],
+      e: '🔨', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🤖 What can your robot do?',
+      act: '🎬 Walk like a robot!',
+      tpl: 'My robot can {w}!',
+      words: ['🧹 clean my room', '💃 dance fast', '✈️ fly high'],
+      frame: '🗣️ "My robot can clean my room!"',
+      speak: 'My robot can clean my room!',
+      a: '🧹 Clean my room',
+      w: ['😭 Cry all day', '🪨 Be a rock'],
+      e: '🤖', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🕷️ How is spider silk?',
+      act: '🎬 Pull a strong rope!',
+      tpl: 'Spider silk is {w}!',
+      words: ['💪 very strong', '🪶 very light', '✨ super stretchy'],
+      frame: '🗣️ "Spider silk is very strong!"',
+      speak: 'Spider silk is very strong!',
+      a: '💪 Very strong',
+      w: ['🍞 Soft bread', '🧊 Cold ice'],
+      e: '🕷️', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🎒 My bag is too heavy! Help!',
+      act: '🎬 Lift a heavy bag!',
+      tpl: 'Let’s add {w}!',
+      words: ['🛞four wheels', '🪽 two wings', '🚀 a rocket'],
+      frame: '🗣️ "Let’s add four wheels!"',
+      speak: 'Let us add four wheels!',
+      a: '🛞 Four wheels',
+      w: ['🪨 Big rocks', '📚 More books'],
+      e: '🎒', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🔧 Oh no! It broke! What now?',
+      act: '🎬 Give a thumbs up!',
+      tpl: 'I can {w}!',
+      words: ['🔁 try again', '🔧 fix it now', '🤝 ask a friend'],
+      frame: '🗣️ "I can try again!"',
+      speak: 'I can try again!',
+      a: '🔁 Try again',
+      w: ['😭 Give up', '🗑️ Throw it'],
+      e: '🔧', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🌟 Show your new invention!',
+      act: '🎬 Take a big bow!',
+      tpl: 'Look at my {w}!',
+      words: ['🚲 flying bike', '🎩 smart hat', '🛴 rocket scooter'],
+      frame: '🗣️ "Look at my flying bike!"',
+      speak: 'Look at my flying bike!',
+      a: '🚲 Flying bike',
+      w: ['🕳️ Empty hole', '💨 Nothing'],
+      e: '🌟', skill: 'Speaking', unit: 1
+    },
+
+    // ================= UNIT 2: CHUSEOK, COOKING & COMMUNITY (8) =================
+    {
+      q: '🌕 What do you see at Chuseok?',
+      act: '🎬 Make a big circle!',
+      tpl: 'I see the {w}!',
+      words: ['🌕 full moon', '⭐ bright stars', '👨‍👩‍👧 happy family'],
+      frame: '🗣️ "I see the full moon!"',
+      speak: 'I see the full moon!',
+      a: '🌕 Full moon',
+      w: ['⛄ Snowman', '🦖 Dinosaur'],
+      e: '🌕', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🍡 Let’s make Chuseok rice cakes!',
+      act: '🎬 Roll a ball in your hands!',
+      tpl: 'I roll the {w}!',
+      words: ['🍡 rice cake', '🍯 sweet honey', '🫘 red beans'],
+      frame: '🗣️ "I roll the rice cake!"',
+      speak: 'I roll the rice cake!',
+      a: '🍡 Rice cake',
+      w: ['👟 Old shoe', '🪨 Hard rock'],
+      e: '🍡', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '💃 Dance the Chuseok circle dance!',
+      act: '🎬 Hold hands & step!',
+      tpl: 'We go {w}!',
+      words: ['⭕ round and round', '⬆️ tall and low', '⚡ fast and slow'],
+      frame: '🗣️ "We go round and round!"',
+      speak: 'We go round and round!',
+      a: '⭕ Round and round',
+      w: ['😴 Fast asleep', '🪑 Sit still'],
+      e: '💃', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🍲 What do you put in the soup?',
+      act: '🎬 Stir a big pot!',
+      tpl: 'I put {w} in!',
+      words: ['🥕 carrots', '🥔 potatoes', '🧅 onions'],
+      frame: '🗣️ "I put carrots in!"',
+      speak: 'I put carrots in!',
+      a: '🥕 Carrots',
+      w: ['✏️ Pencils', '🧸 Toys'],
+      e: '🍲', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🚒 Who helps our town?',
+      act: '🎬 Spray a water hose!',
+      tpl: 'The {w} helps us!',
+      words: ['👩‍🚒 firefighter', '👩‍⚕️ doctor', '👩‍🏫 teacher'],
+      frame: '🗣️ "The firefighter helps us!"',
+      speak: 'The firefighter helps us!',
+      a: '👩‍🚒 Firefighter',
+      w: ['👻 Ghost', '🏴‍☠️ Pirate'],
+      e: '🚒', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🪑 What is it made of?',
+      act: '🎬 Knock on wood!',
+      tpl: 'It is made of {w}!',
+      words: ['🪵 wood', '🪙 metal', '🪟 glass'],
+      frame: '🗣️ "It is made of wood!"',
+      speak: 'It is made of wood!',
+      a: '🪵 Wood',
+      w: ['☁️ Clouds', '💧 Water'],
+      e: '🪑', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🌱 How do we grow food?',
+      act: '🎬 Water a little plant!',
+      tpl: 'I give it {w}!',
+      words: ['💧 water', '☀️ warm sun', '🌱 good soil'],
+      frame: '🗣️ "I give it water!"',
+      speak: 'I give it water!',
+      a: '💧 Water',
+      w: ['🍬 Candy', '🧃 Soda'],
+      e: '🌱', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🙏 What are you thankful for?',
+      act: '🎬 Hands on your heart!',
+      tpl: 'Thank you for my {w}!',
+      words: ['👨‍👩‍👧 family', '👫 friends', '🍎 good food'],
+      frame: '🗣️ "Thank you for my family!"',
+      speak: 'Thank you for my family!',
+      a: '👨‍👩‍👧 My family',
+      w: ['🌧️ Cold rain', '🗑️ Trash'],
+      e: '🙏', skill: 'Speaking', unit: 2
+    },
+
+    // ================= UNIT 3: IT KEEPS CHANGING & THE ARCTIC (8) =================
+    {
+      q: '🧊 What happens to warm ice?',
+      act: '🎬 Melt down to the floor!',
+      tpl: 'The ice {w}!',
+      words: ['💧 melts fast', '🌊 turns to water', '💥 cracks loud'],
+      frame: '🗣️ "The ice melts fast!"',
+      speak: 'The ice melts fast!',
+      a: '💧 Melts fast',
+      w: ['🔥 Burns hot', '🎈 Flies up'],
+      e: '🧊', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🐻‍❄️ What can the polar bear do?',
+      act: '🎬 Swim like a bear!',
+      tpl: 'The bear can {w}!',
+      words: ['🏊 swim in ice', '🐾 walk on snow', '🐟 catch a fish'],
+      frame: '🗣️ "The bear can swim in ice!"',
+      speak: 'The bear can swim in ice!',
+      a: '🏊 Swim in ice',
+      w: ['🚲 Ride a bike', '✈️ Fly a plane'],
+      e: '🐻‍❄️', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🥶 How is the Arctic weather?',
+      act: '🎬 Shiver: Brrrr!',
+      tpl: 'It is very {w}!',
+      words: ['🥶 cold and icy', '❄️ snowy today', '🌬️ windy outside'],
+      frame: '🗣️ "It is very cold and icy!"',
+      speak: 'It is very cold and icy!',
+      a: '🥶 Cold and icy',
+      w: ['🏖️ Hot and sunny', '🌴 Tropical'],
+      e: '🥶', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '💥 Crack! Why did the bear jump?',
+      act: '🎬 Jump to a safe spot!',
+      tpl: 'Because the {w}!',
+      words: ['🧊 ice cracked', '🌊 water moved', '❄️ snow fell'],
+      frame: '🗣️ "Because the ice cracked!"',
+      speak: 'Because the ice cracked!',
+      a: '🧊 Ice cracked',
+      w: ['🔔 Bell rang', '🎂 Cake came'],
+      e: '💥', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🚗 How can we help the Earth?',
+      act: '🎬 Ride a bicycle!',
+      tpl: 'We can {w}!',
+      words: ['🚲 ride a bike', '🌳 plant a tree', '⚡ use clean cars'],
+      frame: '🗣️ "We can ride a bike!"',
+      speak: 'We can ride a bike!',
+      a: '🚲 Ride a bike',
+      w: ['🗑️ Drop trash', '💨 Make smoke'],
+      e: '🚗', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🦋 Look! The caterpillar changed!',
+      act: '🎬 Flap butterfly wings!',
+      tpl: 'Now it is a {w}!',
+      words: ['🦋 butterfly', '🐸 green frog', '🌻 big flower'],
+      frame: '🗣️ "Now it is a butterfly!"',
+      speak: 'Now it is a butterfly!',
+      a: '🦋 Butterfly',
+      w: ['🪨 Gray rock', '🪑 Wooden chair'],
+      e: '🦋', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🍂 How do trees change in autumn?',
+      act: '🎬 Flutter like falling leaves!',
+      tpl: 'The leaves turn {w}!',
+      words: ['🍂 red and gold', '🟠 bright orange', '🟡 sunny yellow'],
+      frame: '🗣️ "The leaves turn red and gold!"',
+      speak: 'The leaves turn red and gold!',
+      a: '🍂 Red and gold',
+      w: ['🔵 Neon blue', '🟣 Polka dot'],
+      e: '🍂', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🕵️ Daphne Detective: Where is the book?',
+      act: '🎬 Look through a spyglass!',
+      tpl: 'It is {w}!',
+      words: ['🎒 in the bag', '🪑 under the desk', '📚 on the shelf'],
+      frame: '🗣️ "It is in the bag!"',
+      speak: 'It is in the bag!',
+      a: '🎒 In the bag',
+      w: ['🌙 On the moon', '🌊 In the sea'],
+      e: '🕵️', skill: 'Speaking', unit: 3
+    },
+
+    // ================= UNIT 4: MONA LISA & THE ANGRY MOUNTAIN (8) =================
+    {
+      q: '🖼️ Oh no! What happened at the museum?',
+      act: '🎬 Hands on your cheeks!',
+      tpl: 'The painting is {w}!',
+      words: ['😱 gone', '🕵️ missing', '🏃 stolen'],
+      frame: '🗣️ "The painting is gone!"',
+      speak: 'The painting is gone!',
+      a: '😱 It is gone',
+      w: ['🍕 Eating lunch', '🎶 Singing loud'],
+      e: '🖼️', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🕵️ What did the thief do?',
+      act: '🎬 Tiptoe very quietly!',
+      tpl: 'He {w}!',
+      words: ['🧥 hid it', '🚪 walked out', '🖼️ took the art'],
+      frame: '🗣️ "He hid it!"',
+      speak: 'He hid it!',
+      a: '🧥 Hid it',
+      w: ['🎨 Painted it', '🧹 Cleaned it'],
+      e: '🕵️', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🎉 Hooray! The Mona Lisa is back!',
+      act: '🎬 Cheer and clap!',
+      tpl: 'Everyone feels {w}!',
+      words: ['😊 happy', '🤩 excited', '😮 surprised'],
+      frame: '🗣️ "Everyone feels happy!"',
+      speak: 'Everyone feels happy!',
+      a: '😊 Happy',
+      w: ['😴 Sleepy', '🥱 Bored'],
+      e: '🎉', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🌋 Boom! What comes from the volcano?',
+      act: '🎬 Make a big explosion!',
+      tpl: 'I see {w}!',
+      words: ['🌫️ dark ash', '🔥 hot fire', '💨 big smoke'],
+      frame: '🗣️ "I see dark ash!"',
+      speak: 'I see dark ash!',
+      a: '🌫️ Dark ash',
+      w: ['🍦 Ice cream', '🎀 Pink ribbons'],
+      e: '🌋', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🐕 Why did the dog bark?',
+      act: '🎬 Cup your ear & listen!',
+      tpl: 'Because it heard {w}!',
+      words: ['⛈️ loud thunder', '🌋 the mountain', '💥 a big boom'],
+      frame: '🗣️ "Because it heard loud thunder!"',
+      speak: 'Because it heard loud thunder!',
+      a: '⛈️ Loud thunder',
+      w: ['🤫 A whisper', '🦋 A butterfly'],
+      e: '🐕', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🌑 Why was the sky dark?',
+      act: '🎬 Cover your eyes!',
+      tpl: 'Ash hid the {w}!',
+      words: ['☀️ bright sun', '🌅 sunrise', '🔵 blue sky'],
+      frame: '🗣️ "Ash hid the bright sun!"',
+      speak: 'Ash hid the bright sun!',
+      a: '☀️ Bright sun',
+      w: ['🐟 Little fish', '👟 My shoes'],
+      e: '🌑', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '⛵ How did the family stay safe?',
+      act: '🎬 Row a boat fast!',
+      tpl: 'We went on a {w}!',
+      words: ['⛵ big boat', '🚢 rescue ship', '🏝️ safe beach'],
+      frame: '🗣️ "We went on a big boat!"',
+      speak: 'We went on a big boat!',
+      a: '⛵ Big boat',
+      w: ['🌋 Inside lava', '🛌 Under a rug'],
+      e: '⛵', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🔤 Say a word ending with -ND!',
+      act: '🎬 Wave your hand!',
+      tpl: 'I can say {w}!',
+      words: ['✋ hand', '🌬️ wind', '🏖️ sand'],
+      frame: '🗣️ "I can say hand!"',
+      speak: 'I can say hand!',
+      a: '✋ Hand / wind',
+      w: ['🐱 Cat / dog', '🍎 Red / blue'],
+      e: '🔤', skill: 'Speaking', unit: 4
+    }
+  ];
+
+  var SPEAK_G4 = [
+    // ================= UNIT 1: BRAIN POWER & HOW WE LEARN (8) =================
+    {
+      q: '🧠 What helps your brain grow?',
+      act: '🎬 Point to your brain!',
+      tpl: 'My brain likes {w}!',
+      words: ['💤 good sleep', '💧 fresh water', '📚 reading books'],
+      frame: '🗣️ "My brain likes good sleep!"',
+      speak: 'My brain likes good sleep!',
+      a: '💤 Good sleep',
+      w: ['🍬 Only candy', '😴 Zero sleep'],
+      e: '🧠', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '💪 This puzzle is hard! What do you say?',
+      act: '🎬 Flex your muscles!',
+      tpl: 'I can {w}!',
+      words: ['🔁 try again', '🧩 practice more', '🤝 ask for help'],
+      frame: '🗣️ "I can try again!"',
+      speak: 'I can try again!',
+      a: '🔁 Try again',
+      w: ['😭 Quit now', '🙈 Hide away'],
+      e: '💪', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '📖 How do you learn new words?',
+      act: '🎬 Open a book in your hands!',
+      tpl: 'I {w} every day!',
+      words: ['📖 read stories', '🗣️ speak English', '🎧 listen well'],
+      frame: '🗣️ "I read stories every day!"',
+      speak: 'I read stories every day!',
+      a: '📖 Read stories',
+      w: ['😴 Sleep in class', '🙊 Never speak'],
+      e: '📖', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '⚡ Which animal is faster?',
+      act: '🎬 Run in place fast!',
+      tpl: 'A {w} is faster!',
+      words: ['🐆 cheetah', '🦅 falcon', '🐎 fast horse'],
+      frame: '🗣️ "A cheetah is faster!"',
+      speak: 'A cheetah is faster!',
+      a: '🐆 A cheetah',
+      w: ['🐌 A snail', '🐢 A turtle'],
+      e: '⚡', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🐪 How does a camel live in the desert?',
+      act: '🎬 Wipe your hot forehead!',
+      tpl: 'It saves {w}!',
+      words: ['💧 water', '⚡ energy', '🥗 food'],
+      frame: '🗣️ "It saves water!"',
+      speak: 'It saves water!',
+      a: '💧 Saves water',
+      w: ['⛄ Builds snowmen', '🏊 Swims in ice'],
+      e: '🐪', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🌿 Food Chain: Who eats the green grass?',
+      act: '🎬 Hop like a rabbit!',
+      tpl: 'The {w} eats grass!',
+      words: ['🐰 rabbit', '🦌 deer', '🦓 zebra'],
+      frame: '🗣️ "The rabbit eats grass!"',
+      speak: 'The rabbit eats grass!',
+      a: '🐰 The rabbit',
+      w: ['🪨 A rock', '🚗 A car'],
+      e: '🌿', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🦉 What can an owl do at night?',
+      act: '🎬 Make big owl eyes!',
+      tpl: 'An owl can {w}!',
+      words: ['👀 see in the dark', '🪽 fly quietly', '🐭 catch a mouse'],
+      frame: '🗣️ "An owl can see in the dark!"',
+      speak: 'An owl can see in the dark!',
+      a: '👀 See in the dark',
+      w: ['☀️ Make sunshine', '📱 Read a phone'],
+      e: '🦉', skill: 'Speaking', unit: 1
+    },
+    {
+      q: '🌳 Why do animals need the forest?',
+      act: '🎬 Make a roof over your head!',
+      tpl: 'It gives them {w}!',
+      words: ['🏡 a safe home', '🍎 fresh food', '💧 clean water'],
+      frame: '🗣️ "It gives them a safe home!"',
+      speak: 'It gives them a safe home!',
+      a: '🏡 A safe home',
+      w: ['🎮 Video games', '🍕 Plastic toys'],
+      e: '🌳', skill: 'Speaking', unit: 1
+    },
+
+    // ================= UNIT 2: FOREST RANGERS & THE SWALLOW'S GIFT (8) =================
+    {
+      q: '🕊️ Why did Heungbu help the bird?',
+      act: '🎬 Hold a tiny bird gently!',
+      tpl: 'Because he was {w}!',
+      words: ['💛 kind', '🤝 helpful', '😊 gentle'],
+      frame: '🗣️ "Because he was kind!"',
+      speak: 'Because he was kind!',
+      a: '💛 He was kind',
+      w: ['😠 He was mean', '💰 He was greedy'],
+      e: '🕊️', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🌱 What did the swallow bring Heungbu?',
+      act: '🎬 Plant a magic seed!',
+      tpl: 'It brought a {w}!',
+      words: ['🌱 magic seed', '🎃 big gourd', '🪙 gold treasure'],
+      frame: '🗣️ "It brought a magic seed!"',
+      speak: 'It brought a magic seed!',
+      a: '🌱 Magic seed',
+      w: ['🪨 Heavy rock', '👟 Old boot'],
+      e: '🌱', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '😠 How was greedy Nolbu?',
+      act: '🎬 Cross your arms & frown!',
+      tpl: 'Nolbu was {w}!',
+      words: ['💰 greedy', '😠 selfish', '👎 unkind'],
+      frame: '🗣️ "Nolbu was greedy!"',
+      speak: 'Nolbu was greedy!',
+      a: '💰 Greedy',
+      w: ['💛 Very kind', '🤝 Generous'],
+      e: '😠', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🦁 How did the little mouse help the lion?',
+      act: '🎬 Chew the net: nibble, nibble!',
+      tpl: 'It chewed the {w}!',
+      words: ['🕸️ big net', '🪢 thick rope', '🪤 lion’s trap'],
+      frame: '🗣️ "It chewed the big net!"',
+      speak: 'It chewed the big net!',
+      a: '🕸️ Big net',
+      w: ['🧀 Yellow cheese', '🌳 Tall tree'],
+      e: '🦁', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🌲 Forest Ranger: How do we protect the woods?',
+      act: '🎬 Put on your ranger hat!',
+      tpl: 'We must {w}!',
+      words: ['🚯 keep it clean', '🚫 stop fires', '🦌 help animals'],
+      frame: '🗣️ "We must keep it clean!"',
+      speak: 'We must keep it clean!',
+      a: '🚯 Keep it clean',
+      w: ['🪓 Cut all trees', '🗑️ Leave trash'],
+      e: '🌲', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🐿️ What was the squirrel doing?',
+      act: '🎬 Gather nuts in your paws!',
+      tpl: 'It was {w}!',
+      words: ['🌰 finding nuts', '🌳 climbing high', '🏃 jumping fast'],
+      frame: '🗣️ "It was finding nuts!"',
+      speak: 'It was finding nuts!',
+      a: '🌰 Finding nuts',
+      w: ['📺 Watching TV', '🚗 Driving a bus'],
+      e: '🐿️', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '📖 What is the lesson of the story?',
+      act: '🎬 Shake hands with a friend!',
+      tpl: 'Always be {w}!',
+      words: ['💛 kind to others', '🤝 a good friend', '🌟 helpful'],
+      frame: '🗣️ "Always be kind to others!"',
+      speak: 'Always be kind to others!',
+      a: '💛 Be kind',
+      w: ['💰 Be greedy', '😠 Be mean'],
+      e: '📖', skill: 'Speaking', unit: 2
+    },
+    {
+      q: '🏰 How did Heungbu’s story end?',
+      act: '🎬 Big happy smile & wave!',
+      tpl: 'They lived {w}!',
+      words: ['😊 happily', '🏡 together', '💛 in peace'],
+      frame: '🗣️ "They lived happily!"',
+      speak: 'They lived happily!',
+      a: '😊 Happily',
+      w: ['😭 Very sadly', '😡 Fighting'],
+      e: '🏰', skill: 'Speaking', unit: 2
+    },
+
+    // ================= UNIT 3: HOW MUCH IS IT? & MONEY (8) =================
+    {
+      q: '💰 Shopkeeper: How much is this hat?',
+      act: '🎬 Hold up 5 fingers!',
+      tpl: 'It is {w}!',
+      words: ['🪙 five coins', '💵 ten dollars', '🏷️ on sale'],
+      frame: '🗣️ "It is five coins!"',
+      speak: 'It is five coins!',
+      a: '🪙 Five coins',
+      w: ['🐘 One elephant', '☁️ Two clouds'],
+      e: '💰', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🛒 Customer: What would you like to buy?',
+      act: '🎬 Point to the shelf!',
+      tpl: 'I would like {w}, please!',
+      words: ['🍎 an apple', '📘 a storybook', '🧸 a toy bear'],
+      frame: '🗣️ "I would like an apple, please!"',
+      speak: 'I would like an apple, please!',
+      a: '🍎 An apple, please',
+      w: ['🪨 A broken rock', '🗑️ Old trash'],
+      e: '🛒', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🐚 Before coins, what did people trade?',
+      act: '🎬 Swap with a partner!',
+      tpl: 'They traded {w}!',
+      words: ['🐚 seashells', '🧂 white salt', '🐄 farm cows'],
+      frame: '🗣️ "They traded seashells!"',
+      speak: 'They traded seashells!',
+      a: '🐚 Seashells',
+      w: ['📱 Smartphones', '💻 Laptops'],
+      e: '🐚', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🐷 Why do you save coins in a piggy bank?',
+      act: '🎬 Drop a coin: clink!',
+      tpl: 'I save for {w}!',
+      words: ['🚲 a new bike', '🎁 a gift', '📚 a good book'],
+      frame: '🗣️ "I save for a new bike!"',
+      speak: 'I save for a new bike!',
+      a: '🚲 A new bike',
+      w: ['💨 Nothing at all', '🗑️ Trash'],
+      e: '🐷', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🍎 Need or Want: Which one do we NEED?',
+      act: '🎬 Drink a glass of water!',
+      tpl: 'We need {w}!',
+      words: ['💧 clean water', '🍎 healthy food', '🧥 a warm coat'],
+      frame: '🗣️ "We need clean water!"',
+      speak: 'We need clean water!',
+      a: '💧 Clean water',
+      w: ['👑 A gold crown', '🏎️ Ten race cars'],
+      e: '🍎', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '💳 How can people pay today?',
+      act: '🎬 Tap a card: beep!',
+      tpl: 'We can pay with {w}!',
+      words: ['🪙 coins', '💵 paper money', '💳 a card'],
+      frame: '🗣️ "We can pay with coins!"',
+      speak: 'We can pay with coins!',
+      a: '🪙 Coins or card',
+      w: ['🍂 Tree leaves', '❄️ Snowballs'],
+      e: '💳', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🐧 Captain Quiet: What is our class rule?',
+      act: '🎬 Finger on lips & raise hand!',
+      tpl: 'We {w} in class!',
+      words: ['✋ raise our hand', '🎧 listen well', '🤝 take turns'],
+      frame: '🗣️ "We raise our hand in class!"',
+      speak: 'We raise our hand in class!',
+      a: '✋ Raise our hand',
+      w: ['📢 Shout loud', '🏃 Run on desks'],
+      e: '🐧', skill: 'Speaking', unit: 3
+    },
+    {
+      q: '🎨 Design new money! What is on your coin?',
+      act: '🎬 Hold up your shiny coin!',
+      tpl: 'My coin has a {w}!',
+      words: ['🐉 dragon', '⭐ gold star', '🚀 space rocket'],
+      frame: '🗣️ "My coin has a dragon!"',
+      speak: 'My coin has a dragon!',
+      a: '🐉 A dragon',
+      w: ['🕳️ Nothing', '🌫️ Gray dust'],
+      e: '🎨', skill: 'Speaking', unit: 3
+    },
+
+    // ================= UNIT 4: TEAM PLAYERS, LATE FOR THE SHOW & ALICE (8) =================
+    {
+      q: '🏀 How does a good team win?',
+      act: '🎬 Pass the ball to a friend!',
+      tpl: 'We {w} together!',
+      words: ['🏀 pass the ball', '🤝 work together', '📣 cheer loud'],
+      frame: '🗣️ "We pass the ball together!"',
+      speak: 'We pass the ball together!',
+      a: '🏀 Pass the ball',
+      w: ['😠 Fight our team', '🙈 Hide the ball'],
+      e: '🏀', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '👏 Your friend missed a shot! What do you say?',
+      act: '🎬 High-five your friend!',
+      tpl: 'Good try! {w}!',
+      words: ['💪 You can do it', '🔁 Try again', '🌟 Don’t give up'],
+      frame: '🗣️ "Good try! You can do it!"',
+      speak: 'Good try! You can do it!',
+      a: '💪 You can do it!',
+      w: ['👎 Go away!', '😡 You lost!'],
+      e: '👏', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🎭 Harry is on stage! How does he feel?',
+      act: '🎬 Take a deep breath!',
+      tpl: 'At first he feels {w}!',
+      words: ['💓 nervous', '😮 shy', '🤩 excited'],
+      frame: '🗣️ "At first he feels nervous!"',
+      speak: 'At first he feels nervous!',
+      a: '💓 Nervous',
+      w: ['😴 Fast asleep', '🍔 Hungry'],
+      e: '🎭', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🚆 Why was Harry late for the show?',
+      act: '🎬 Check your watch & run!',
+      tpl: 'Because the {w}!',
+      words: ['🚆 train stopped', '🚌 bus was late', '🌧️ rain was heavy'],
+      frame: '🗣️ "Because the train stopped!"',
+      speak: 'Because the train stopped!',
+      a: '🚆 Train stopped',
+      w: ['🛸 UFO landed', '🦖 Dino came'],
+      e: '🚆', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🧘 How do you feel calm before a show?',
+      act: '🎬 Breathe in… breathe out!',
+      tpl: 'I {w}!',
+      words: ['🧘 breathe slowly', '😊 smile big', '🎶 practice my line'],
+      frame: '🗣️ "I breathe slowly!"',
+      speak: 'I breathe slowly!',
+      a: '🧘 Breathe slowly',
+      w: ['😱 Scream loud', '🏃 Run away'],
+      e: '🧘', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🎩 What do you wear in the school play?',
+      act: '🎬 Put on a big hat & bow!',
+      tpl: 'I wear a {w}!',
+      words: ['🎩 tall hat', '👑 gold crown', '🦸 cool costume'],
+      frame: '🗣️ "I wear a tall hat!"',
+      speak: 'I wear a tall hat!',
+      a: '🎩 A tall hat',
+      w: ['🛌 A heavy bed', '🚪 A classroom door'],
+      e: '🎩', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🫖 Alice Tea Party: Welcome a guest!',
+      act: '🎬 Pour a cup of tea!',
+      tpl: 'Would you like {w}?',
+      words: ['🫖 some tea', '🧁 a cupcake', '🍪 a cookie'],
+      frame: '🗣️ "Would you like some tea?"',
+      speak: 'Would you like some tea?',
+      a: '🫖 Some tea',
+      w: ['🪨 Hot lava', '🕸️ Spider soup'],
+      e: '🫖', skill: 'Speaking', unit: 4
+    },
+    {
+      q: '🐇 White Rabbit: What time is it?',
+      act: '🎬 Tap your pocket watch!',
+      tpl: 'Oh dear! I am {w}!',
+      words: ['⏰ late today', '🏃 in a hurry', '🫖 going to tea'],
+      frame: '🗣️ "Oh dear! I am late today!"',
+      speak: 'Oh dear! I am late today!',
+      a: '⏰ Late today',
+      w: ['😴 Going to bed', '⛄ Freezing'],
+      e: '🐇', skill: 'Speaking', unit: 4
+    }
+  ];
+
+  function addSet(s) {
+    GM.sets = GM.sets || [];
+    var idx = -1;
+    for (var i = 0; i < GM.sets.length; i++) {
+      if (GM.sets[i].id === s.id) { idx = i; break; }
+    }
+    if (idx >= 0) GM.sets[idx] = s;
+    else GM.sets.unshift(s);
   }
 
-  /* =========================================================================
-     GRADE 3 · UNITS 1–4 SPEAKING & ACTING TOURNAMENT (32 ITEMS)
-     ========================================================================= */
-  var G3_SPEAK = [
-    // --- UNIT 1: Young Inventors (Clara's Machine, Tidy vs Messy, Try Again) ---
-    {
-      unit: 1, pic: '🧹',
-      q: '🎤 Speak & Act (Unit 1): Pretend your bedroom is a big mess! Show how you tidy it up and say 2 sentences.',
-      frame: '🗣️ Say: "My room is a mess! Look, I tidy my room and put my toys in the box."',
-      a: 'tidy my room', w: ['sleep all day', 'break the box']
-    },
-    {
-      unit: 1, pic: '🤖',
-      q: '🎤 Speak & Act (Unit 1): Pretend you are Clara the Inventor! Show your new machine and tell the class what it does.',
-      frame: '🗣️ Say: "I am an inventor! Look at my new machine. It cleans the floor!"',
-      a: 'cleans the floor', w: ['eats my homework', 'flies to the moon']
-    },
-    {
-      unit: 1, pic: '💡',
-      q: '🎤 Speak & Act (Unit 1): Oh no! Your machine stopped working. Act out what a good inventor does next!',
-      frame: '🗣️ Say: "Oh no, my machine does not work! I will make a new plan and try again!"',
-      a: 'make a new plan and try again', w: ['cry and give up', 'throw it away']
-    },
-    {
-      unit: 1, pic: '🛞',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 1): Pupil A asks about the machine. Pupil B answers and acts it out!',
-      frame: '🗣️ A: "What does your machine do?" — B: "It has wheels and a broom. It cleans my bedroom!"',
-      a: 'It has wheels and a broom.', w: ['It is a sandwich.', 'It is sleeping.']
-    },
-    {
-      unit: 1, pic: '📝',
-      q: '🎤 Speak & Act (Unit 1): Pretend you are drawing a plan on big blue paper. Tell the class what you want to invent!',
-      frame: '🗣️ Say: "First, I draw a plan on paper. I want to invent a flying bicycle!"',
-      a: 'draw a plan on paper', w: ['hide behind the door', 'eat my lunch']
-    },
-    {
-      unit: 1, pic: '🪞',
-      q: '🎤 Speak & Act (Unit 1): Look into an imaginary mirror, smile big, and tell the class why you are a creative inventor!',
-      frame: '🗣️ Say: "I look in the mirror. I have creative ideas, and I never give up!"',
-      a: 'I have creative ideas', w: ['I am very sleepy', 'I lost my shoes']
-    },
-    {
-      unit: 1, pic: '🚲',
-      q: '🎤 Speak & Act (Unit 1): Act out riding a bicycle with two big round wheels and say how it moves!',
-      frame: '🗣️ Say: "My bicycle has two round wheels. I push the pedals and ride fast!"',
-      a: 'two round wheels', w: ['six square wings', 'no wheels at all']
-    },
-    {
-      unit: 1, pic: '📦',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 1): Pupil A is Mom/Dad. Pupil B is the child tidying up the room!',
-      frame: '🗣️ A: "Please tidy your room!" — B: "Okay! I put my books on the shelf and my toys in the box."',
-      a: 'put my books on the shelf', w: ['throw toys on the floor', 'hide under the bed']
-    },
+  addSet({
+    id: 'speak-g3',
+    title: '🎤 Units 1–4 · Easy Speaking & Acting (Grade 3)',
+    grade: 3,
+    e: '🎤',
+    items: SPEAK_G3
+  });
 
-    // --- UNIT 2: Chuseok Moon Feast & Thankfulness (There is/are, Thankful for, Can we...?) ---
-    {
-      unit: 2, pic: '🌕',
-      q: '🎤 Speak & Act (Unit 2): Point up at the night sky on Chuseok and describe the moon in 2 sentences!',
-      frame: '🗣️ Say: "Look at the autumn sky! There is a big, bright, round full moon tonight."',
-      a: 'There is a bright full moon', w: ['There are snowstorms', 'There is a tiny square sun']
-    },
-    {
-      unit: 2, pic: '🍡',
-      q: '🎤 Speak & Act (Unit 2): Point to the harvest table and tell the class what food there is and there are!',
-      frame: '🗣️ Say: "Look at our harvest table! There is a sweet moon cake, and there are three yellow pears."',
-      a: 'There is a cake and there are pears', w: ['There are nothing on the table', 'There is three pencils']
-    },
-    {
-      unit: 2, pic: '💛',
-      q: '🎤 Speak & Act (Unit 2): Put your hand on your heart and tell the class two things you are thankful for!',
-      frame: '🗣️ Say: "I am thankful for my family, and I am thankful for my kind teacher!"',
-      a: 'thankful for my family', w: ['angry at my lunch', 'scared of my book']
-    },
-    {
-      unit: 2, pic: '💃',
-      q: '🎤 Speak & Act (Unit 2): Lead your team in the Chuseok Moon Dance (Ganggangsullae)! Act and say the moves!',
-      frame: '🗣️ Say: "Walk tall in a circle! Walk low! Go to the right, and go to the left!"',
-      a: 'Walk tall and walk low', w: ['Sit still and sleep', 'Run out of the room']
-    },
-    {
-      unit: 2, pic: '🌱',
-      q: '🎤 Speak & Act (Unit 2): Act like a farmer pulling food from the soil and say what grows in the harvest!',
-      frame: '🗣️ Say: "It is harvest time in autumn! There are potatoes under the soil and apples on the trees."',
-      a: 'harvest time in autumn', w: ['snowy time in winter', 'bedtime at midnight']
-    },
-    {
-      unit: 2, pic: '🙋',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 2): Ask a polite question with "Can we...?" and answer!',
-      frame: '🗣️ A: "Can we go outside and see the full moon?" — B: "Yes, we can! Let’s go together!"',
-      a: 'Can we go outside?', w: ['We goes outside?', 'Can we going?']
-    },
-    {
-      unit: 2, pic: '🍍',
-      q: '🎤 Speak & Act (Unit 2): Describe a funny harvest basket using "There is" and "There are"!',
-      frame: '🗣️ Say: "In my basket, there is one big pineapple and there are five red apples!"',
-      a: 'there is one and there are five', w: ['there are one and there is five', 'there am two apples']
-    },
-    {
-      unit: 2, pic: '🏡',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 2): Pupil A asks "Why are you happy today?" Pupil B answers with "Because..."!',
-      frame: '🗣️ A: "Why are you happy today?" — B: "Because my family is together and we have delicious food!"',
-      a: 'Because my family is together', w: ['Instead my family', 'But my shoes are wet']
-    },
-
-    // --- UNIT 3: How Much Is It? & Money (Barter, Coins vs Cards, Shop Roleplay, Past Simple) ---
-    {
-      unit: 3, pic: '🛒',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 3): Pupil A is the customer, Pupil B is the cashier in a toy shop!',
-      frame: '🗣️ A: "Hello! How much is this toy robot?" — B: "It is twenty coins. Do you pay with cash or card?"',
-      a: 'How much is this toy robot?', w: ['Who is this robot?', 'Where is the mountain?']
-    },
-    {
-      unit: 3, pic: '🐐',
-      q: '🎤 Speak & Act (Unit 3): Act out how people traded long ago before money was invented!',
-      frame: '🗣️ Say: "Long ago, people had no coins or paper money. They bartered a goat for a bag of grain!"',
-      a: 'bartered a goat for grain', w: ['paid with a smartphone', 'used a plastic card']
-    },
-    {
-      unit: 3, pic: '💳',
-      q: '🎤 Speak & Act (Unit 3): Show how we pay in a shop today and compare paper money to metal coins!',
-      frame: '🗣️ Say: "Today we use coins, paper money, or a plastic card. Paper money is lighter than metal coins!"',
-      a: 'lighter than metal coins', w: ['heavier than ten rocks', 'made of seashells']
-    },
-    {
-      unit: 3, pic: '💎',
-      q: '🎤 Speak & Act (Unit 3): Look at a price tag of 900 coins! Act shocked and use the words "expensive" and "did not buy"!',
-      frame: '🗣️ Say: "Wow, this golden watch is too expensive! I did not buy it. I bought a small book instead."',
-      a: 'too expensive! I did not buy it', w: ['very cheap! I ate it', 'free! I threw it away']
-    },
-    {
-      unit: 3, pic: '🏦',
-      q: '🎤 Speak & Act (Unit 3): Pretend you are putting coins into your piggy bank and tell the class what you are saving for!',
-      frame: '🗣️ Say: "I save my coins in my bank every week. I want to buy a new skateboard!"',
-      a: 'save my coins in my bank', w: ['drop my coins in the river', 'lose my money']
-    },
-    {
-      unit: 3, pic: '🚶',
-      q: '🎤 Speak & Act (Unit 3): Tell a 2-sentence story about going to a shop yesterday using Past Simple verbs!',
-      frame: '🗣️ Say: "Yesterday I walked to the market. I saw a red hat and paid the cashier ten coins!"',
-      a: 'walked to the market and paid', w: ['walk to the market tomorrow', 'walking and paying now']
-    },
-    {
-      unit: 3, pic: '🐚',
-      q: '🎤 Speak & Act (Unit 3): Tell the class what people used as money thousands of years ago!',
-      frame: '🗣️ Say: "Thousands of years ago, people used shiny seashells and salt as money!"',
-      a: 'used shiny seashells as money', w: ['used computers as money', 'used ice cubes as money']
-    },
-    {
-      unit: 3, pic: '🏷️',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 3): Bargain at the market! Pupil A asks the price, Pupil B gives a discount!',
-      frame: '🗣️ A: "Fifty coins is too expensive!" — B: "Okay, for you it is thirty coins today!" — A: "Thank you, I’ll take it!"',
-      a: 'Fifty coins is too expensive!', w: ['Give me a volcano!', 'I am sleeping on the train!']
-    },
-
-    // --- UNIT 4: What Happened? (Mona Lisa Mystery & The Angry Mountain, Past Simple, Cause & Effect, -nd blends) ---
-    {
-      unit: 4, pic: '🖼️',
-      q: '🎤 Speak & Act (Unit 4): Act like Peruggia in 1911! Sneak up to the wall, hide the painting, and tell what happened!',
-      frame: '🗣️ Say: "In 1911, Peruggia wore a white coat. He lifted the Mona Lisa off the wall and hid it under his coat!"',
-      a: 'lifted the Mona Lisa and hid it', w: ['painted a new picture today', 'sailed in a small boat']
-    },
-    {
-      unit: 4, pic: '👮',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 4): Pupil A is the Police Detective. Pupil B is the Museum Guard!',
-      frame: '🗣️ Detective: "What happened in the museum?" — Guard: "A thief stole the Mona Lisa! The wall was empty!"',
-      a: 'A thief stole the Mona Lisa!', w: ['A dog ate the homework!', 'The volcano erupted in Paris!']
-    },
-    {
-      unit: 4, pic: '🏛️',
-      q: '🎤 Speak & Act (Unit 4): Tell the happy ending of the Mona Lisa story using Past Simple ("found", "arrested", "went")!',
-      frame: '🗣️ Say: "The police found the painting and arrested the thief. The Mona Lisa went home to the museum!"',
-      a: 'found the painting and arrested the thief', w: ['lost the painting in the sea', 'gave the thief a prize']
-    },
-    {
-      unit: 4, pic: '🌋',
-      q: '🎤 Speak & Act (Unit 4): Act out Mount Tambora waking up! Make the thunder sound and tell the Cause and Effect!',
-      frame: '🗣️ Say: "The angry mountain made a loud BOOM like thunder! Hot ash fell from the sky, so the sky turned dark."',
-      a: 'Ash fell, so the sky turned dark.', w: ['Snow fell, so we built a snowman.', 'It rained, so we went swimming.']
-    },
-    {
-      unit: 4, pic: '⛵',
-      q: '🎤 Speak & Act (Unit 4): Pretend you are rowing the small wooden boat away from the island! Tell what the family did!',
-      frame: '🗣️ Say: "Because the volcano erupted, we ran to the beach and climbed into a small wooden boat!"',
-      a: 'ran to the beach and climbed into a boat', w: ['stayed in the treehouse all week', 'walked to the museum']
-    },
-    {
-      unit: 4, pic: '🚢',
-      q: '🎤 Speak & Act (Unit 4): Wave both hands high at sunrise! Tell how the family felt when the rescue ship arrived!',
-      frame: '🗣️ Say: "At sunrise we saw a big ship! We waved our hands, and we felt happy, thankful, and safe!"',
-      a: 'felt happy, thankful, and safe', w: ['felt bored and sleepy', 'felt angry at the ship']
-    },
-    {
-      unit: 4, pic: '🔤',
-      q: '🎤 Speak & Act (Unit 4 · Phonics -nd): Clap on every "-nd" word and say this sentence out loud clearly!',
-      frame: '🗣️ Say: "I stand on the yellow sand and feel the wind on my hand!"',
-      a: 'stand on the sand in the wind', w: ['sit on a cat in a hat', 'hop on a mop in a shop']
-    },
-    {
-      unit: 4, pic: '🔗',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 4): Pupil A says the CAUSE. Pupil B acts out and says the EFFECT!',
-      frame: '🗣️ Cause (A): "A stranger walked to the door!" — Effect (B): "So the dog started to bark loudly: Woof! Woof!"',
-      a: 'the dog started to bark loudly', w: ['the dog read a newspaper', 'the mountain went to sleep']
-    }
-  ];
-
-  /* =========================================================================
-     GRADE 4 · UNITS 1–4 SPEAKING & ACTING TOURNAMENT (32 ITEMS)
-     ========================================================================= */
-  var G4_SPEAK = [
-    // --- UNIT 1: I Love Reading & Brain Power (Visualize, Freeze, Monarch Journey, Alice, Wh- Past) ---
-    {
-      unit: 1, pic: '🧠',
-      q: '🎤 Speak & Act (Unit 1): Open an imaginary book, point to your head, and explain what "visualize" means!',
-      frame: '🗣️ Say: "When I read a story, I visualize it! I make colourful pictures of castles and dragons in my head."',
-      a: 'make pictures in my head', w: ['close my eyes and snore', 'forget all the words']
-    },
-    {
-      unit: 1, pic: '🐇',
-      q: '🎤 Speak & Act (Unit 1): Act like a white rabbit in the meadow when a fox walks by! Freeze and explain why!',
-      frame: '🗣️ Say: "I am a rabbit! When I see a predator, I freeze and stay completely still so the fox cannot see me."',
-      a: 'freeze and stay completely still', w: ['bark loudly at the fox', 'fly over the mountain']
-    },
-    {
-      unit: 1, pic: '🦋',
-      q: '🎤 Speak & Act (Unit 1): Spread your arms like monarch butterfly wings and tell the class about your long journey!',
-      frame: '🗣️ Say: "Every autumn, monarch butterflies fly on a long journey across mountains and the sea to stay warm!"',
-      a: 'fly on a long journey', w: ['swim under the cold ice', 'sleep in a rabbit hole']
-    },
-    {
-      unit: 1, pic: '🕳️',
-      q: '🎤 Speak & Act (Unit 1): Act out Alice by the river! Yawn, spot the White Rabbit, and tell what happened in Past Simple!',
-      frame: '🗣️ Say: "Alice was sleepy by the river. Suddenly she saw a White Rabbit with a watch and chased it down a hole!"',
-      a: 'saw a White Rabbit and chased it', w: ['cooked dinner in the kitchen', 'missed the train on the platform']
-    },
-    {
-      unit: 1, pic: '❓',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 1): Interview about Alice in Wonderland using "Why" and "Where"!',
-      frame: '🗣️ A: "Why was Alice sleepy, and where did she fall?" — B: "She was sleepy because the book had no pictures, and she fell down a deep rabbit hole!"',
-      a: 'fell down a deep rabbit hole', w: ['climbed up a tall palm tree', 'rode a bus to the stadium']
-    },
-    {
-      unit: 1, pic: '💪',
-      q: '🎤 Speak & Act (Unit 1): Do three star jumps and tell the class how reading is a workout for your brain!',
-      frame: '🗣️ Say: "Exercise makes my body strong, and reading is a workout for my brain! It makes me curious and creative."',
-      a: 'a workout for my brain', w: ['too heavy to carry', 'a game with ten pins']
-    },
-    {
-      unit: 1, pic: '🗝️',
-      q: '🎤 Speak & Act (Unit 1): Pretend to find a tiny golden key and peek through a tiny door like curious Alice!',
-      frame: '🗣️ Say: "I am curious and brave! I found a tiny key, opened the little door, and looked at the beautiful garden."',
-      a: 'curious and brave', w: ['bored and angry', 'late for the bus']
-    },
-    {
-      unit: 1, pic: '📚',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 1): Share your favourite kind of book with your partner!',
-      frame: '🗣️ A: "What kind of books do you love reading?" — B: "I love reading adventure stories because I can imagine exciting places!"',
-      a: 'love reading adventure stories', w: ['never open any books', 'only read train tickets']
-    },
-
-    // --- UNIT 2: What Lives Here? (Forest Rangers, Needles/Cones, Vet, so / instead of, Irregular Past) ---
-    {
-      unit: 2, pic: '🌲',
-      q: '🎤 Speak & Act (Unit 2): Stand tall like a pine tree in the forest and explain how it is different from other trees!',
-      frame: '🗣️ Say: "Pine trees grow sharp green needles instead of flat leaves, and they produce cones instead of flowers!"',
-      a: 'needles instead of leaves', w: ['flowers instead of cones', 'feathers instead of bark']
-    },
-    {
-      unit: 2, pic: '🦊',
-      q: '🎤 Speak & Act (Unit 2): Wrap your arms around yourself like a winter fox and explain how forest animals stay warm!',
-      frame: '🗣️ Say: "In winter the forest is freezing cold, so animals grow thick fur so they can stay warm in the snow!"',
-      a: 'so they can stay warm', w: ['because they are hot', 'instead of eating food']
-    },
-    {
-      unit: 2, pic: '🩺',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 2): Pupil A is a Forest Vet. Pupil B brings an injured swallow!',
-      frame: '🗣️ A: "I am a vet! What happened to this bird?" — B: "It hurt its wing in the storm! Please help it get well."',
-      a: 'a vet treats sick or injured animals', w: ['a vet drives a racing car', 'a vet sells train tickets']
-    },
-    {
-      unit: 2, pic: '🕊️',
-      q: '🎤 Speak & Act (Unit 2): Retell "The Swallow’s Gift" using irregular past verbs ("helped", "gave", "grew")!',
-      frame: '🗣️ Say: "Kind Heungbu helped the little swallow’s broken leg. In spring, the swallow gave him a magic seed, and a giant gourd grew!"',
-      a: 'gave him a seed and a gourd grew', w: ['took his house and ran away', 'sank in the deep ocean']
-    },
-    {
-      unit: 2, pic: '🪺',
-      q: '🎤 Speak & Act (Unit 2 · Irregular Past): Use "built", "grew", and "paid" in a 2-sentence spring story!',
-      frame: '🗣️ Say: "Last spring, the birds built a cosy nest in the tree, and bright green leaves grew on every branch!"',
-      a: 'built a nest and leaves grew', w: ['builded a nest and growed', 'building and growing yesterday']
-    },
-    {
-      unit: 2, pic: '🐿️',
-      q: '🎤 Speak & Act (Unit 2): Act like a busy squirrel hiding acorns before winter using "because" and "so"!',
-      frame: '🗣️ Say: "Squirrels collect nuts in autumn because winter is coming, so they have plenty of food to eat!"',
-      a: 'collect nuts because winter is coming', w: ['swim south across the ocean', 'sleep on the train platform']
-    },
-    {
-      unit: 2, pic: '🦉',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 2): Ask and answer about day and night forest animals using "instead of"!',
-      frame: '🗣️ A: "When do owls hunt in the forest?" — B: "Owls fly and hunt at night instead of sleeping!"',
-      a: 'at night instead of sleeping', w: ['at noon instead of flying', 'underwater instead of trees']
-    },
-    {
-      unit: 2, pic: '🎁',
-      q: '🎤 Speak & Act (Unit 2): Compare kind Heungbu and greedy Nolbu from the story in 2 clear sentences!',
-      frame: '🗣️ Say: "Heungbu was kind and helped the bird, so he got treasure. Nolbu was greedy and hurt the bird!"',
-      a: 'Heungbu was kind and helped the bird', w: ['Nolbu was a basketball player', 'Heungbu stole the Mona Lisa']
-    },
-
-    // --- UNIT 3: It Keeps Changing (Clean Cars vs Gasoline Cars, The Bear and I / Thin Ice, but / because / so) ---
-    {
-      unit: 3, pic: '🚗',
-      q: '🎤 Speak & Act (Unit 3): Compare gasoline cars and electric/solar cars using "but" and "because"!',
-      frame: '🗣️ Say: "Gasoline cars are fast, but they are noisy and make the air dirty. Solar and electric cars are quiet and clean!"',
-      a: 'fast, but noisy and dirty', w: ['quiet and clean for the air', 'pulled by polar bears']
-    },
-    {
-      unit: 3, pic: '☀️',
-      q: '🎤 Speak & Act (Unit 3): Pitch a brand-new Clean Car to the class! Tell what energy it uses to move!',
-      frame: '🗣️ Say: "Look at our clean car! It uses energy from the sun instead of gasoline, so it keeps our city air clean."',
-      a: 'uses energy from the sun', w: ['burns black coal and smoke', 'only drives on thin ice']
-    },
-    {
-      unit: 3, pic: '🐻‍❄️',
-      q: '🎤 Speak & Act (Unit 3): Act out the polar bear stepping carefully on the Arctic ice! Tell why the ice cracked!',
-      frame: '🗣️ Say: "After many warm winters, the sea ice was very thin. Suddenly the ice cracked, and the bear was in a trap!"',
-      a: 'the ice was thin and cracked', w: ['the ice was thick and strong', 'the bear was on a train']
-    },
-    {
-      unit: 3, pic: '🧊',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 3): Pupil A asks why the Arctic is changing. Pupil B explains Cause and Effect!',
-      frame: '🗣️ A: "Why is the Arctic sea ice melting?" — B: "Because the winters are getting warmer, so the thick ice turns thin!"',
-      a: 'winters are getting warmer', w: ['bears are jumping too high', 'ships are painting the ice']
-    },
-    {
-      unit: 3, pic: '🚲',
-      q: '🎤 Speak & Act (Unit 3): Tell the class two things YOU can do to help the Earth and keep the air clean!',
-      frame: '🗣️ Say: "I can ride my bike or walk to school because bikes do not make the air dirty, and I can turn off the lights!"',
-      a: 'ride my bike because it keeps air clean', w: ['leave all the lights on all day', 'drive ten noisy gasoline trucks']
-    },
-    {
-      unit: 3, pic: '⚡',
-      q: '🎤 Speak & Act (Unit 3): Combine two ideas with "but" about clean electric cars!',
-      frame: '🗣️ Say: "Electric cars are clean and quiet, but they are still expensive to buy today."',
-      a: 'clean and quiet, but expensive', w: ['noisy and dirty, so cheap', 'made of paper and wood']
-    },
-    {
-      unit: 3, pic: '🌊',
-      q: '🎤 Speak & Act (Unit 3): Tell how the polar bear cub and mother bear escaped the cracking ice in "The Bear and I"!',
-      frame: '🗣️ Say: "The water was cold and deep, but the mother bear swam bravely and led her cub to safe, thick ice!"',
-      a: 'swam bravely to safe, thick ice', w: ['took an elevator to the top', 'called a taxi on the road']
-    },
-    {
-      unit: 3, pic: '🌍',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 3): Pupil A asks "How does it keep changing?" Pupil B answers about weather or cars!',
-      frame: '🗣️ A: "How do cars keep changing over time?" — B: "In the past cars used only gasoline, but now we build clean electric cars!"',
-      a: 'now we build clean electric cars', w: ['now we ride dinosaurs to school', 'now cars have square stone wheels']
-    },
-
-    // --- UNIT 4: We Can Do It! (Team Players Basketball & Late for the Show, First/Then/Finally, because) ---
-    {
-      unit: 4, pic: '🏀',
-      q: '🎤 Speak & Act (Unit 4): Act like a live TV basketball announcer for the final seconds of the Sparks game!',
-      frame: '🗣️ Say: "The Sparks were losing by five points, but they worked together! Chelsea Gray shot a three-pointer and won the championship!"',
-      a: 'shot a three-pointer and won', w: ['walked off the court and quit', 'kicked the ball into a net']
-    },
-    {
-      unit: 4, pic: '🤝',
-      q: '🎤 Speak & Act (Unit 4): High-five your teammates and explain why teamwork is the secret to winning!',
-      frame: '🗣️ Say: "Five players are on the court for each team. When we pass the ball and help each other, teamwork makes the dream work!"',
-      a: 'teamwork makes the dream work', w: ['one player does everything alone', 'nobody passes the basketball']
-    },
-    {
-      unit: 4, pic: '🚗',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 4): Harry is late! Pupil A is Mr. Williams, Pupil B is Harry explaining why!',
-      frame: '🗣️ Mr. Williams: "Harry, why are you late?" — Harry: "I am sorry! First, our car was stuck in traffic, and then the train stopped!"',
-      a: 'stuck in traffic, and then the train stopped', w: ['slept until noon at home', 'went to the beach to swim']
-    },
-    {
-      unit: 4, pic: '🚉',
-      q: '🎤 Speak & Act (Unit 4): Act out Lynn’s brilliant idea when all the friends are stuck waiting on the train platform!',
-      frame: '🗣️ Say: "Stay calm, everyone! We cannot get to the school stage on time, so why don’t we perform our show right here on the platform?"',
-      a: 'perform our show on the platform', w: ['go home and cancel the play', 'cry on the train tracks']
-    },
-    {
-      unit: 4, pic: '🌳',
-      q: '🎤 Speak & Act (Unit 4): Stand like Harry in his tree costume and act out the opening of "Twelfth Night" on the platform!',
-      frame: '🗣️ Say: "I am Harry, and I play the tree! In our play Twelfth Night, the ship sank in a storm, but Viola and Sebastian are alive!"',
-      a: 'the ship sank, but they are alive', w: ['the train flew into space', 'the museum guard was asleep']
-    },
-    {
-      unit: 4, pic: '🔢',
-      q: '🎤 Speak & Act (Unit 4): Retell the story of "Late for the Show" using "First", "Then", and "Finally"!',
-      frame: '🗣️ Say: "First, Harry’s car was in traffic. Then, the train stopped so they performed on the platform. Finally, everybody clapped!"',
-      a: 'First traffic, Then platform, Finally clapped', w: ['Finally first, Then before', 'Never traffic, Always sleeping']
-    },
-    {
-      unit: 4, pic: '😌',
-      q: '🎭 Partner Roleplay (2 Pupils · Unit 4): Pupil A feels nervous before the show. Pupil B encourages them kindly!',
-      frame: '🗣️ A: "Oh no, I am so nervous! It is my first time on stage!" — B: "Stay calm and don’t worry! We practiced together and we can do it!"',
-      a: 'Stay calm! We can do it!', w: ['Run away and hide!', 'You will forget your lines!']
-    },
-    {
-      unit: 4, pic: '👏',
-      q: '🎤 Speak & Act (Unit 4): Take a big theatre bow with your team and tell the Problem and Solution of the story!',
-      frame: '🗣️ Say: "The problem was that we were stuck on the platform. Our solution was teamwork: we performed the show there and made everyone smile!"',
-      a: 'problem on the platform, solution was teamwork', w: ['no problem at all', 'cancelled the school play']
-    }
-  ];
-
-  GM.sets = GM.sets || [];
-  GM.sets.unshift(
-    {
-      id: 'speak-g4',
-      title: 'Units 1–4 Speaking & Acting Tournament · Grade 4',
-      grade: 4,
-      skill: 'speaking',
-      showInAll: true,
-      e: '🎤',
-      items: buildItems(G4_SPEAK, 4)
-    },
-    {
-      id: 'speak-g3',
-      title: 'Units 1–4 Speaking & Acting Tournament · Grade 3',
-      grade: 3,
-      skill: 'speaking',
-      showInAll: true,
-      e: '🎤',
-      items: buildItems(G3_SPEAK, 3)
-    }
-  );
+  addSet({
+    id: 'speak-g4',
+    title: '🎤 Units 1–4 · Easy Speaking & Acting (Grade 4)',
+    grade: 4,
+    e: '🎤',
+    items: SPEAK_G4
+  });
 })(typeof window !== 'undefined' ? window : this);
