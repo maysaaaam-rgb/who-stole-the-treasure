@@ -1,0 +1,42 @@
+/* Practice Island — the walking world. Everything on top of the canvas: top bar, joystick and talk panel. */
+:root { --w-spring: cubic-bezier(.175,.885,.32,1.275); }
+html, body.w-page { height: 100%; overflow: hidden; background: #060911; user-select: none; -webkit-user-select: none; touch-action: none; }
+/* hidden but still there: the monster's colours are defined inside these, and display:none would blank every other monster on the page */
+body.w-on #isl-topbar, body.w-on #isl-main { position: fixed; left: -9999px; top: 0; width: 400px; height: 400px; overflow: hidden; visibility: hidden; pointer-events: none; }
+#world { position: fixed; inset: 0; display: none; }
+body.w-on #world { display: block; }
+#world canvas { display: block; }
+#w-top, #w-joy, #w-talk, #w-load { display: none; }
+body.w-on #w-top { display: flex; }
+#w-load.on { display: flex; }
+
+.w-btn { font: 700 18px Fredoka, sans-serif; color: #fff; background: #38bdf8; border: 0; border-bottom: 5px solid #0369a1; border-radius: 16px; min-width: 50px; min-height: 50px; padding: 8px 14px; cursor: pointer; transition: transform .12s var(--w-spring), border-bottom-width .12s; }
+.w-btn:active { transform: translateY(4px); border-bottom-width: 1px; }
+#w-top { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 8px; right: 8px; z-index: 50; align-items: center; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+#w-top > * { pointer-events: auto; }
+#w-back { background: rgba(15,23,42,.9); border-bottom-color: #020617; }
+#w-goal { flex: 0 1 auto; color: #fff; background: rgba(15,23,42,.85); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: 16px; padding: 6px 14px; font-weight: 700; font-size: clamp(14px, 2vw, 21px); line-height: 1.15; box-shadow: 0 4px 20px -2px rgba(0,0,0,.4); }
+#w-goal small { display: block; font-size: .72em; font-weight: 600; color: #fde68a; }
+#w-tools { display: flex; gap: 6px; margin-left: auto; }
+.w-tool { background: rgba(15,23,42,.9); border-bottom-color: #020617; font-size: 22px; padding: 4px 8px; }
+#w-fps { background: rgba(15,23,42,.85); color: #fff; border-radius: 10px; padding: 4px 9px; font: 600 14px Fredoka, sans-serif; display: none; }
+
+#w-joy { position: fixed; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); width: 124px; height: 124px; border-radius: 50%; background: rgba(15,23,42,.35); border: 3px solid rgba(255,255,255,.55); z-index: 40; touch-action: none; }
+#w-knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: radial-gradient(circle at 38% 30%, #fff, #bae6fd); border-bottom: 4px solid #0369a1; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+body.w-on.w-touch #w-joy { display: block; }
+body.w-talking #w-joy { opacity: .35; }
+
+#w-talk { position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(94vw, 640px); z-index: 45; align-items: center; gap: 10px; color: #fff; background: rgba(15,23,42,.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 2px solid rgba(255,255,255,.18); border-radius: 20px; padding: 8px 12px; box-shadow: 0 8px 30px rgba(0,0,0,.5); box-sizing: border-box; }
+#w-talk.on { display: flex; animation: wPop .3s var(--w-spring); }
+#w-face { width: clamp(52px, 10vw, 84px); height: clamp(52px, 10vw, 84px); object-fit: contain; flex: none; }
+#w-line { flex: 1 1 auto; min-width: 0; font-weight: 600; font-size: clamp(17px, 2.6vw, 25px); line-height: 1.15; font-family: Fredoka, sans-serif; }
+#w-line b { display: block; color: #fde68a; font-size: .68em; font-weight: 700; }
+#w-next { background: #10b981; border-bottom-color: #047857; flex: none; white-space: nowrap; }
+/* with a joystick the panel sits to its right on small screens */
+@media (max-width: 640px) { body.w-touch #w-talk { bottom: 150px; } }
+@keyframes wPop { from { transform: translateX(-50%) scale(.85); opacity: 0; } to { transform: translateX(-50%); opacity: 1; } }
+
+#w-load { position: fixed; inset: 0; z-index: 60; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff; background: radial-gradient(circle at 50% 30%, #0d1527 0%, #060911 100%); font: 700 26px Fredoka, sans-serif; text-align: center; padding: 20px; }
+#w-load small { font-size: 16px; color: #94a3b8; font-weight: 500; }
+#w-fade { position: fixed; inset: 0; z-index: 44; background: #060911; opacity: 0; pointer-events: none; transition: opacity .25s; }
+#w-fade.on { opacity: 1; }
