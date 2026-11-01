@@ -12,9 +12,20 @@
   var SMALL = 'a an the is are was were be been am do does did has have had can could will would shall should may might must to of in on at by for from with and but or so if as because not no yes very too he she it they we you i me my your his her its our their this that these those there here what who when where why how which some any'.split(' ');
   function isIcon(p) { return !p || p === '🔊' || p === '🧩'; }
   function faceOf(it) {
-    var a = String((it && it.a) || '').trim(); if (!a) return null;
+    if (!it) return null;
+    if (Array.isArray(it.words) && it.words[0]) {
+      return { pic: isIcon(it.pic) ? '' : it.pic, word: String(it.words[0]).trim() };
+    }
+    var a = String(it.a || '').trim(); if (!a) return null;
     if (!/[A-Za-z0-9]/.test(a)) return { pic: a, word: '' };                  // picture answers (listening questions)
-    if (a.split(/\s+/).length > 1 || a.length < 3 || a.length > 14 || SMALL.indexOf(a.toLowerCase()) >= 0 || /[^A-Za-z'-]/.test(a) || /^-|-$/.test(a)) return null;   // one real word only
+    if (a.split(/\s+/).length > 1) {
+      var cand = a.replace(/[^A-Za-z\s'-]/g, '').split(/\s+/).filter(function (w) {
+        return w.length >= 3 && w.length <= 12 && SMALL.indexOf(w.toLowerCase()) < 0;
+      });
+      if (cand.length) return { pic: isIcon(it.pic) ? '' : it.pic, word: cand[0] };
+      return null;
+    }
+    if (a.length < 3 || a.length > 14 || SMALL.indexOf(a.toLowerCase()) >= 0 || /[^A-Za-z'-]/.test(a) || /^-|-$/.test(a)) return null;   // one real word only
     return { pic: isIcon(it.pic) ? '' : it.pic, word: a };
   }
 

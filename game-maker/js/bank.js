@@ -174,6 +174,7 @@
         allBuiltSets.push({
           id: 'u' + u + '-g' + g,
           title: meta.title,
+          sub: 'Complete Unit ' + u + ' Pack · All Skills',
           e: meta.e,
           grade: Number(g),
           unit: Number(u),
@@ -187,6 +188,7 @@
             allBuiltSets.push({
               id: 'u' + u + '-g' + g + '-' + skSlug,
               title: 'G' + g + ' U' + u + ' · ' + sk,
+              sub: 'Unit ' + u + ' ' + sk + ' Practice',
               e: SKILL_EMOJI[sk] || '📚',
               grade: Number(g),
               unit: Number(u),
@@ -221,14 +223,17 @@
         GM.sets.push(s);
         existing[s.id] = s;
       }
-      /* Enrich u14-g3 / u14-g4 with converted full-unit questions */
+      /* Add up to 2 curated non-listening items per unit into u14-g3 / u14-g4 so Units 1-4 Mix stays balanced (~40 Qs) */
       if (!s.skillOnly && (s.grade === 3 || s.grade === 4)) {
         var mixSet = existing['u14-g' + s.grade];
         if (mixSet && Array.isArray(mixSet.items)) {
           var seenQ = {};
           mixSet.items.forEach(function (it) { seenQ[it.q] = true; });
+          var addedCount = 0;
           s.items.forEach(function (it) {
-            if (!seenQ[it.q]) { mixSet.items.push(it); seenQ[it.q] = true; }
+            if (addedCount >= 2) return;
+            if (it.skill === 'Listening' || it.order) return;
+            if (!seenQ[it.q]) { mixSet.items.push(it); seenQ[it.q] = true; addedCount++; }
           });
         }
       }

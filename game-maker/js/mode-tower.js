@@ -19,8 +19,8 @@
     e: '🏗️',
     desc: 'Answer a question, then tap to drop swinging blocks onto your team tower!',
     fields: [
-      { k: 'blocks', l: 'Blocks per answer', opts: [[2, '2 blocks'], [3, '3 blocks'], [4, '4 blocks']], def: 3 },
-      { k: 'rounds', l: 'Rounds per team',   opts: [[2, '2 rounds'], [3, '3 rounds']], def: 2 }
+      { key: 'blocks', k: 'blocks', label: 'Blocks per answer', l: 'Blocks per answer', opts: [[2, '2 blocks'], [3, '3 blocks'], [4, '4 blocks']], def: 3 },
+      { key: 'rounds', k: 'rounds', label: 'Rounds per team',   l: 'Rounds per team',   opts: [[2, '2 rounds'], [3, '3 rounds']], def: 2 }
     ],
 
     start: function (ctx) {

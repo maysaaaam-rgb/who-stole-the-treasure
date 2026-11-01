@@ -20,8 +20,8 @@
     e: '🎈',
     desc: 'Read the question in the banner and pop the floating balloon with the right answer!',
     fields: [
-      { k: 'rounds', l: 'Rounds per team', opts: [[3, '3 rounds'], [5, '5 rounds']], def: 3 },
-      { k: 'speed',  l: 'Balloon speed',   opts: [['slow', 'Slow'], ['normal', 'Normal'], ['fast', 'Fast']], def: 'normal' }
+      { key: 'rounds', k: 'rounds', label: 'Rounds per team', l: 'Rounds per team', opts: [[3, '3 rounds'], [5, '5 rounds']], def: 3 },
+      { key: 'speed',  k: 'speed',  label: 'Balloon speed',   l: 'Balloon speed',   opts: [['slow', 'Slow'], ['normal', 'Normal'], ['fast', 'Fast']], def: 'normal' }
     ],
 
     start: function (ctx) {
@@ -71,11 +71,28 @@
         if (phase === 'ended') return;
         phase = 'play';
         currentItem = ctx.nextItem();
-        qtext.textContent = '❓ ' + U().qText(currentItem);
+        var rightAns = String(currentItem.a || '');
+        if (currentItem.speak === 1 && currentItem.act) {
+          qtext.textContent = '🎭 ' + currentItem.act + '  🎤 ' + U().qText(currentItem);
+        } else {
+          qtext.textContent = '❓ ' + U().qText(currentItem);
+        }
         if (A()) A().speak(U().sayOf(currentItem));
 
-        var wrongs = (currentItem.w || []).slice(0, 3);
-        var opts = U().shuffle([currentItem.a].concat(wrongs));
+        var wrongs = (currentItem.w || []).map(function (x) { return String(x || ''); }).filter(function (x) { return x && x !== rightAns; }).slice(0, 3);
+        if (wrongs.length < 3) {
+          var poolItems = (GM.state && GM.state.items) || [];
+          U().shuffle(poolItems.slice()).forEach(function (it) {
+            if (wrongs.length >= 3 || !it || it === currentItem) return;
+            var cand = String(it.a || '');
+            if (cand && cand !== rightAns && wrongs.indexOf(cand) < 0) wrongs.push(cand);
+          });
+          var fb = ['Not this one!', 'Try another balloon!', 'Guess again!'];
+          fb.forEach(function (f) {
+            if (wrongs.length < 3 && f !== rightAns && wrongs.indexOf(f) < 0) wrongs.push(f);
+          });
+        }
+        var opts = U().shuffle([rightAns].concat(wrongs.slice(0, 3)));
         sky.innerHTML = '';
         balloons = [];
 
@@ -95,7 +112,7 @@
             idx: idx,
             el: el,
             text: String(optText),
-            correct: String(optText) === String(currentItem.a),
+            correct: String(optText) === rightAns,
             xPct: lanePct,
             yPct: 46 + (idx % 2) * 12,
             vy: vyBase * (0.9 + (idx % 3) * 0.1),

@@ -76,7 +76,9 @@
     teams: 2,
     fields: [
       {
+        key: 'pic',
         k: 'pic',
+        label: 'Puzzle picture',
         l: 'Puzzle picture',
         opts: [
           ['card_jigsaw', 'Puzzle Frame'],

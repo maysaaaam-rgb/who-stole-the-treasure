@@ -265,7 +265,9 @@
         var prompt = '';
         if (item) {
           prompt = item.q ? U().qText(item) : (item.prompt || item.word || item.clue || 'Target Word');
-          if (item.opts && typeof item.a === 'number' && item.opts[item.a]) {
+          if (item.speak === 1 && Array.isArray(item.words) && item.words[0]) {
+            ans = String(item.words[0]);
+          } else if (item.opts && typeof item.a === 'number' && item.opts[item.a]) {
             ans = String(item.opts[item.a]);
           } else if (item.a !== undefined && item.a !== null) {
             ans = String(item.a);
@@ -274,37 +276,43 @@
           } else if (item.ans) {
             ans = String(item.ans);
           }
+          if (ans.length > 18 && Array.isArray(item.words) && item.words[0]) {
+            ans = String(item.words[0]);
+          }
         }
         if (!ans) ans = 'STAR';
 
-        /* Gather decoy words from item.w, item.opts, and the active question set in GM.sets */
+        /* Gather decoy words from item.w, item.words, item.opts, and the active question set in GM.sets */
         var decoys = [];
+        function addDecoy(w) {
+          var s = String(w || '').trim();
+          if (!s || s === ans || s.length > 20 || decoys.indexOf(s) >= 0) return;
+          decoys.push(s);
+        }
         if (item && Array.isArray(item.w)) {
-          item.w.forEach(function (w) {
-            if (w && String(w) !== ans && decoys.indexOf(String(w)) < 0) decoys.push(String(w));
-          });
+          item.w.forEach(addDecoy);
+        }
+        if (item && Array.isArray(item.words)) {
+          item.words.slice(1).forEach(addDecoy);
         }
         if (item && Array.isArray(item.opts)) {
           item.opts.forEach(function (o, idx) {
-            if (idx !== item.a && o && String(o) !== ans && decoys.indexOf(String(o)) < 0) decoys.push(String(o));
+            if (idx !== item.a) addDecoy(o);
           });
         }
         var activeSet = (GM.sets || []).filter(function (s) { return s.id === (st && st.setId); })[0] || (GM.sets && GM.sets[0]);
         var allItems = (activeSet && activeSet.items) || (st && st.items) || [];
         allItems.forEach(function (it) {
+          if (Array.isArray(it.words) && it.words[0]) addDecoy(it.words[0]);
           var w = (it.opts && typeof it.a === 'number') ? it.opts[it.a] : (it.a || it.word || it.ans);
-          if (w && String(w) !== ans && decoys.indexOf(String(w)) < 0) {
-            decoys.push(String(w));
-          }
+          addDecoy(w);
           if (Array.isArray(it.w)) {
-            it.w.forEach(function (op) {
-              if (op && String(op) !== ans && decoys.indexOf(String(op)) < 0) decoys.push(String(op));
-            });
+            it.w.forEach(addDecoy);
           }
         });
         var fallbacks = ['apple', 'banana', 'tiger', 'rocket', 'castle', 'pencil', 'monkey', 'rainbow', 'cloudy', 'pirate'];
         fallbacks.forEach(function (fb) {
-          if (fb.toLowerCase() !== ans.toLowerCase() && decoys.indexOf(fb) < 0) decoys.push(fb);
+          if (fb.toLowerCase() !== ans.toLowerCase()) addDecoy(fb);
         });
         return { target: ans, prompt: prompt, decoys: decoys };
       }

@@ -1,20 +1,21 @@
-/* Game Maker app. Two screens before play (like the big game sites):
-   1. HOME: choose the questions (chips with grade/skill filters) and a game (big picture cards with category pills).
-   2. SET-UP: one card with the game picture on the left and every option on the right (teams, monsters, timer, game options).
-   Then the game, then the podium. The look comes from the skin (body.th-classic / body.th-halloween). */
+/* Game Maker app. Two screens before play:
+   1. HOME: Organized 2-Step Curriculum Library (Class + Grade + Unit + Skill filters, scannable Question Pack cards,
+      1-tap Preview/Filter Questions) and Smartboard Game Shelf (Category tabs + 1-tap Quick Play or Setup).
+   2. SET-UP: Game card preview on the left and all team, monster, timer, and mode options on the right.
+   Then the game, then the podium. */
 (function (root) {
   'use strict';
   var GM = root.GM = root.GM || {}, U = GM.u, h = U.h, btn = U.btn, A = GM.audio, KEY = 'eaa_gm_v2', CKEY = 'eaa_gm_sets_v1';
   var SOON = [];
   var TIMERS = [[0, 'Off'], [10, '10 s'], [20, '20 s'], [30, '30 s'], [45, '45 s']];
-  /* the games that have the new polished look come first */
+  /* Featured smartboard games ordered for quick classroom access */
   var ORDER = ['race', 'cannon', 'fling', 'boardgame', 'storydice', 'bingo', 'guesseroo', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'jigsaw', 'snakes', 'memory', 'board', 'plinko', 'hunt', 'ttt', 'connect4', 'bowling', 'pass'];
   var GAME_CATS = [
     ['all', '⭐ All Games', null],
     ['action', '🎯 Aim & Action', ['race', 'cannon', 'fling', 'penalty', 'whack', 'tower', 'balloon', 'baseball', 'bowling']],
     ['board', '🎲 Board & Strategy', ['boardgame', 'board', 'bingo', 'snakes', 'hunt', 'plinko', 'pass']],
     ['versus', '⚔️ 2 Teams', ['fling', 'jigsaw', 'ttt', 'connect4']],
-    ['word', '🧩 Word & Memory', ['whack', 'balloon', 'memory', 'jigsaw', 'bingo', 'storydice', 'guesseroo']]
+    ['word', '🗣️ Speaking & Memory', ['storydice', 'guesseroo', 'memory', 'bingo', 'whack', 'balloon', 'jigsaw']]
   ];
   var HOW = {
     race: ['Every team has a lane and a monster.', 'Answer right: roll a boost and your monster sprints!', 'First over the finish line wins 50 bonus points.'],
@@ -42,17 +43,19 @@
   };
   var S = GM.state = {
     screen: 'home',
-    setId: GM.halloweenOn ? 'halloween' : 'mona-g3',
+    setId: 'u14-g3',
     modeId: 'board',
     theme: GM.halloweenOn ? 'halloween' : 'classic',
     classId: '',
-    qGrade: 'all',
+    qGrade: '3',
+    qUnit: 'all',
     qSkill: 'all',
     gameCat: 'all',
-    cfg: { teams: 2, timer: 0, pu: {} },
+    cfg: { teams: 2, timer: 0, rem: 0, pu: {} },
     teams: [],
     groups: {},
-    picks: {}
+    picks: {},
+    items: []
   };
   var customSets = [], stage;
 
@@ -60,7 +63,8 @@
     try {
       var d = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (d) {
-        ['setId', 'modeId', 'theme', 'classId', 'qGrade', 'qSkill', 'gameCat'].forEach(function (k) { if (d[k]) S[k] = d[k]; });
+        ['setId', 'modeId', 'theme', 'classId', 'qGrade', 'qUnit', 'qSkill', 'gameCat'].forEach(function (k) { if (d[k]) S[k] = d[k]; });
+        if (S.qGrade === 'mix') { S.qGrade = 'all'; S.qUnit = 'mix'; }
         if (d.cfg) S.cfg = Object.assign(S.cfg, d.cfg);
         if (d.groups && typeof d.groups === 'object') S.groups = d.groups;
         if (d.picks && typeof d.picks === 'object') S.picks = d.picks;
@@ -72,7 +76,8 @@
     try {
       localStorage.setItem(KEY, JSON.stringify({
         setId: S.setId, modeId: S.modeId, theme: S.theme, classId: S.classId,
-        qGrade: S.qGrade, qSkill: S.qSkill, gameCat: S.gameCat, cfg: S.cfg, groups: S.groups || {}, picks: S.picks || {}
+        qGrade: S.qGrade, qUnit: S.qUnit, qSkill: S.qSkill, gameCat: S.gameCat,
+        cfg: S.cfg, groups: S.groups || {}, picks: S.picks || {}
       }));
     } catch (e) { /* ignore */ }
   }
@@ -84,21 +89,74 @@
   function modeDesc(m) { return (!GM.halloweenOn && m.descClassic) || m.desc; }
   function cardArt(id, e) { return U.art(GM.halloweenOn && S.theme === 'halloween' && U.hasArt('m_mode_' + id) ? 'm_mode_' + id : 'card_' + id, e, 'gm-cardimg'); }
 
-  function setMatchesFilter(s) {
-    if (s.id === S.setId) return true;
-    var g = s.grade || (/-g3\b/.test(s.id) ? 3 : /-g4\b/.test(s.id) ? 4 : 0);
-    var isMix = /^smart-|^u14-|^speak-/.test(s.id) || !!s.custom;
-    if (S.qGrade === '3' && g !== 3) return false;
-    if (S.qGrade === '4' && g !== 4) return false;
-    if (S.qGrade === 'mix' && !isMix) return false;
+  function getSetGrade(s) {
+    return s.grade || (/-g3\b/.test(s.id) ? 3 : /-g4\b/.test(s.id) ? 4 : 0);
+  }
+  function getSetUnit(s) {
+    if (typeof s.unit === 'number') return s.unit;
+    var m = /^u([1-4])-|-u([1-4])$/.exec(s.id);
+    if (m) return +(m[1] || m[2]);
+    if (/^mona-|^angry-|^show-/.test(s.id)) return 4;
+    if (/^moon-/.test(s.id)) return 2;
+    return 0;
+  }
+  function getSetSkill(s) {
+    return s.skill || (/-voc$/.test(s.id) ? 'words' : /-past$|-modals$/.test(s.id) ? 'sentences' : /-read$/.test(s.id) ? 'reading' : '');
+  }
 
-    var sk = s.skill || (/-voc$/.test(s.id) ? 'words' : /-past$|-modals$/.test(s.id) ? 'sentences' : /-read$/.test(s.id) ? 'reading' : '');
+  function setMatchesFilter(s) {
+    var g = getSetGrade(s);
+    var u = getSetUnit(s);
+    var sk = getSetSkill(s);
+
+    /* 1. Grade check */
+    if (S.qGrade === '3' && g !== 3 && !s.custom) return false;
+    if (S.qGrade === '4' && g !== 4 && !s.custom) return false;
+
+    /* 2. Unit check */
+    if (S.qUnit === 'mix') {
+      if (u !== 0 && !s.smart && !s.custom) return false;
+    } else if (S.qUnit !== 'all') {
+      if (u !== +S.qUnit) return false;
+    }
+
+    /* 3. Skill check */
     if (S.qSkill === 'all') {
-      /* In 'All skills' view, hide the 30 granular per-skill sub-sets so the main Unit 1/2/3/4 sets stay clean */
-      if (s.skill && !s.showInAll) return false;
+      /* In 'All / Full Units' view, show full unit packs, mixed packs, and the 2 main Easy Speaking packs (hide granular per-unit skill subsets) */
+      if (s.skillOnly) return false;
+      if (sk && sk !== 'speaking' && !s.showInAll) return false;
       return true;
     }
     return sk === S.qSkill;
+  }
+
+  function sortFilteredSets(list) {
+    function rank(s) {
+      if (s.id === 'u14-g3' || s.id === 'u14-g4') return 10;
+      if (s.id === 'speak-g3' || s.id === 'speak-g4') return 15;
+      var u = getSetUnit(s);
+      if (u === 4 && !s.skillOnly) return 20;
+      if (u === 4) return 25;
+      if (u === 3) return 30;
+      if (u === 2) return 40;
+      if (u === 1) return 50;
+      if (s.smart) return 60;
+      return 70;
+    }
+    return list.slice().sort(function (a, b) {
+      var ra = rank(a), rb = rank(b);
+      if (ra !== rb) return ra - rb;
+      return (a.grade || 0) - (b.grade || 0);
+    });
+  }
+
+  function ensureValidSet() {
+    var matching = sortFilteredSets(allSets().filter(setMatchesFilter));
+    if (matching.length && !matching.some(function (s) { return s.id === S.setId; })) {
+      S.setId = matching[0].id;
+      save();
+    }
+    return matching;
   }
 
   /* ---------- HOME ---------- */
@@ -110,80 +168,327 @@
     });
     return items;
   }
+
   function home() {
-    var wrap = h('div', { class: 'gm-home' });
-    /* hero */
+    var matchingSets = ensureValidSet();
     var activeSet = curSet();
+    var wrap = h('div', { class: 'gm-home' });
+
+    /* Compact Hero Banner */
     var hero = h('div', { class: 'gm-hero' }, [
       h('div', { class: 'gm-hero-txt' }, [
-        h('h1', { class: 'gm-logo', text: 'Game Maker' }),
-        h('p', { text: 'Pick your questions, pick a game, play with your monsters!' })
+        h('h1', { class: 'gm-logo', text: 'Game Maker Studio' }),
+        h('p', { text: '1️⃣ Pick your class & question pack  ·  2️⃣ Launch any smartboard game!' })
       ]),
       U.art('ui_host', '🎤', 'gm-host')
     ]);
     wrap.appendChild(hero);
 
-    /* filter bar for question sets (Grade & Skill) */
-    var fbar = h('div', { class: 'gm-filter-bar' });
-    fbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🎓 Grade' }));
-    [['all', 'All Grades'], ['3', 'Grade 3'], ['4', 'Grade 4'], ['mix', '🧠 Smart Mix & Custom']].forEach(function (g) {
-      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qGrade === g[0] ? ' sel' : ''), text: g[1] });
-      b.addEventListener('click', function () { A.play('tap'); S.qGrade = g[0]; save(); render(); });
-      fbar.appendChild(b);
-    });
-    fbar.appendChild(h('span', { class: 'gm-filter-sep' }));
-    fbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
-    [['all', '📚 Full Units'], ['speaking', '🎤 Speaking & Acting'], ['listen', '🎧 Listening'], ['words', '📝 Words'], ['sounds', '🔤 Sounds'], ['sentences', '💬 Sentences'], ['reading', '📖 Reading']].forEach(function (sk) {
-      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
-      b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; save(); render(); });
-      fbar.appendChild(b);
-    });
-    wrap.appendChild(fbar);
+    /* =========================================================================
+       STEP 1: ORGANIZED CURRICULUM & QUESTION LIBRARY PANEL
+       ========================================================================= */
+    var libPanel = h('div', { class: 'gm-lib-panel' });
 
-    /* questions: chips */
-    var qrow = h('div', { class: 'gm-qrow' }, [h('span', { class: 'gm-qlab', text: '📚 Questions' })]);
-    allSets().filter(setMatchesFilter).forEach(function (s) {
-      var c = h('button', { type: 'button', class: 'gm-chip' + (s.id === S.setId ? ' sel' : '') }, [h('span', { text: s.e || '📝' }), h('b', { text: s.title }), h('small', { text: s.items.length })]);
-      c.addEventListener('click', function () { A.play('tap'); S.setId = s.id; save(); render(); });
-      if (s.custom) { var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' }); d.addEventListener('click', function (e) { e.stopPropagation(); if (d.dataset.sure) { customSets = customSets.filter(function (x) { return x.id !== s.id; }); saveSets(); if (S.setId === s.id) S.setId = GM.sets[0].id; render(); } else { d.dataset.sure = 1; d.textContent = 'Delete?'; } }); c.appendChild(d); }
-      qrow.appendChild(c);
-    });
-    if (GM.rev) wrap.appendChild(h('div', { class: 'gm-qrow gm-revtools' }, [h('span', { class: 'gm-qlab', text: '🔁 Revision' }),
-      btn('🧠 Remember 5 (daily)', 'amber sm', function () { GM.rev.daily(); }), btn('📝 Exit ticket', 'amber sm', function () { GM.rev.exitTicket(activeSet.items); }),
-      h('small', { class: 'gm-hint', text: 'Active set: ' + activeSet.title + ' (' + activeSet.items.length + ' questions) · Pick 🧠 Smart mix to replay missed questions.' })]));
+    /* Top Header of Library Panel: Step Title + Class Quick-Switch + Teacher Tools */
+    var classes = (GM.mon && GM.mon.classes) ? GM.mon.classes() : [];
+    var classRow = h('div', { class: 'gm-lib-classes' });
+    if (classes.length) {
+      classRow.appendChild(h('span', { class: 'gm-lib-mini-lab', text: '🏫 Class:' }));
+      [['', 'All']].concat(classes.map(function (c) { return [c.id, c.label]; })).forEach(function (c) {
+        var b = h('button', { type: 'button', class: 'gm-class-pill' + (S.classId === c[0] ? ' sel' : ''), text: c[1] });
+        b.addEventListener('click', function () {
+          A.play('tap');
+          S.classId = c[0];
+          S.teams = [];
+          if (c[0]) {
+            var isG4 = /4/.test(c[0]) || /4/.test(c[1]);
+            S.qGrade = isG4 ? '4' : '3';
+          } else {
+            S.qGrade = 'all';
+          }
+          ensureValidSet();
+          save();
+          render();
+        });
+        classRow.appendChild(b);
+      });
+    }
+
+    var toolsRow = h('div', { class: 'gm-lib-tools' });
+    var pk = !activeSet.smart && (S.picks || {})[activeSet.id];
+    var totalQ = activeSet.items ? activeSet.items.length : 20;
+    if (!activeSet.smart && GM.tools && totalQ > 1) {
+      var filterBtn = h('button', {
+        type: 'button',
+        class: 'gm-tool-pill cyan',
+        text: '🔍 ' + ((pk && pk.length) ? (pk.length + '/' + totalQ + ' Qs Chosen') : ('Preview / Filter (' + totalQ + ' Qs)'))
+      });
+      filterBtn.addEventListener('click', function () {
+        A.play('tap');
+        GM.tools.chooseQuestions(activeSet, pk, function (arr) {
+          S.picks = S.picks || {};
+          if (arr.length) S.picks[activeSet.id] = arr;
+          else delete S.picks[activeSet.id];
+          save();
+          render();
+        });
+      });
+      toolsRow.appendChild(filterBtn);
+    }
+    if (GM.rev) {
+      var warmBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🔁 Warm-up Set' });
+      warmBtn.addEventListener('click', function () {
+        A.play('tap');
+        GM.rev.remember(activeSet.items, { points: 6, check: 3 }, function () {});
+      });
+      toolsRow.appendChild(warmBtn);
+
+      var dailyBtn = h('button', { type: 'button', class: 'gm-tool-pill amber', text: '🧠 Daily 5' });
+      dailyBtn.addEventListener('click', function () { A.play('tap'); GM.rev.daily(); });
+      toolsRow.appendChild(dailyBtn);
+
+      var exitBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '📝 Exit Ticket' });
+      exitBtn.addEventListener('click', function () { A.play('tap'); GM.rev.exitTicket(activeSet.items); });
+      toolsRow.appendChild(exitBtn);
+    }
+
     var builder;
-    var nw = h('button', { type: 'button', class: 'gm-chip gm-chip-new' }, [h('span', { text: '➕' }), h('b', { text: 'New set' })]);
-    nw.addEventListener('click', function () { A.play('tap'); builder.classList.toggle('open'); });
-    qrow.appendChild(nw); wrap.appendChild(qrow);
-    var title = h('input', { class: 'gm-input', placeholder: 'Name of the set (for example: Unit 5 words)', maxlength: '60' }), ta = h('textarea', { class: 'gm-input', rows: '6', placeholder: 'One question on each line:\nShe ____ a new hobby. | began | will | could\nWhat is a baby cat? | kitten | puppy | duck' }), msg = h('div', { class: 'gm-hint', text: 'Write:  question | right answer | wrong answer | wrong answer   (use ____ for the gap).' });
-    builder = h('div', { class: 'gm-builder' }, [title, ta, msg, btn('💾 Save this set', 'green', function () {
-      var items = parseSet(ta.value); if (!title.value.trim() || items.length < 3) { msg.textContent = 'Please write a name and at least 3 lines like:  question | right | wrong | wrong'; U.wobble(msg); return; }
-      var id = 'my-' + Date.now(); customSets.push({ id: id, title: title.value.trim(), e: '📝', custom: true, items: items }); saveSets(); S.setId = id; save(); render();
-    })]);
-    wrap.appendChild(builder);
+    var newSetBtn = h('button', { type: 'button', class: 'gm-tool-pill ghost', text: '➕ Custom Set' });
+    newSetBtn.addEventListener('click', function () { A.play('tap'); if (builder) builder.classList.toggle('open'); });
+    toolsRow.appendChild(newSetBtn);
 
-    /* game category filter bar */
-    var gbar = h('div', { class: 'gm-filter-bar' });
-    gbar.appendChild(h('span', { class: 'gm-filter-lab', text: '🕹️ Games' }));
+    var libHead = h('div', { class: 'gm-lib-head' }, [
+      h('div', { class: 'gm-lib-title' }, [
+        h('span', { class: 'gm-step-badge', text: 'STEP 1' }),
+        h('b', { text: '📚 Pick Your Question Pack' })
+      ]),
+      classRow,
+      toolsRow
+    ]);
+    libPanel.appendChild(libHead);
+
+    /* Filter Row 1: Grade + Unit */
+    var fRow1 = h('div', { class: 'gm-filter-bar' });
+    fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '🎓 Grade' }));
+    [['all', 'All Grades'], ['3', 'Grade 3'], ['4', 'Grade 4']].forEach(function (g) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qGrade === g[0] ? ' sel' : ''), text: g[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.qGrade = g[0]; ensureValidSet(); save(); render(); });
+      fRow1.appendChild(b);
+    });
+    fRow1.appendChild(h('span', { class: 'gm-filter-sep' }));
+    fRow1.appendChild(h('span', { class: 'gm-filter-lab', text: '📘 Unit' }));
+    [
+      ['all', 'All Units'],
+      ['4', '⭐ Unit 4 (Current)'],
+      ['3', 'Unit 3'],
+      ['2', 'Unit 2'],
+      ['1', 'Unit 1'],
+      ['mix', '🔁 Units 1–4 Mix & Smart']
+    ].forEach(function (u) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qUnit === u[0] ? ' sel' : ''), text: u[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.qUnit = u[0]; ensureValidSet(); save(); render(); });
+      fRow1.appendChild(b);
+    });
+    libPanel.appendChild(fRow1);
+
+    /* Filter Row 2: Skill */
+    var fRow2 = h('div', { class: 'gm-filter-bar' });
+    fRow2.appendChild(h('span', { class: 'gm-filter-lab', text: '🎯 Skill' }));
+    [
+      ['all', '📚 Full Units & Reviews'],
+      ['speaking', '🎤 Easy Speaking & Acting'],
+      ['words', '📝 Words'],
+      ['sentences', '💬 Sentences'],
+      ['reading', '📖 Reading'],
+      ['sounds', '🔤 Sounds'],
+      ['listen', '🎧 Listening']
+    ].forEach(function (sk) {
+      var b = h('button', { type: 'button', class: 'gm-ftab' + (S.qSkill === sk[0] ? ' sel' : ''), text: sk[1] });
+      b.addEventListener('click', function () { A.play('tap'); S.qSkill = sk[0]; ensureValidSet(); save(); render(); });
+      fRow2.appendChild(b);
+    });
+    libPanel.appendChild(fRow2);
+
+    /* Organized Question Pack Cards Grid */
+    var packGrid = h('div', { class: 'gm-pack-grid' });
+    if (!matchingSets.length) {
+      /* Fallback if a combination has no sets: reset unit filter to 'all' */
+      matchingSets = sortFilteredSets(allSets());
+    }
+    matchingSets.forEach(function (s) {
+      var isSel = s.id === S.setId;
+      var g = getSetGrade(s);
+      var u = getSetUnit(s);
+      var sk = getSetSkill(s);
+      var sPicks = !s.smart && (S.picks || {})[s.id];
+      var qCount = s.smart ? 20 : (s.items ? s.items.length : 0);
+      var countLabel = (sPicks && sPicks.length) ? (sPicks.length + '/' + qCount + ' Qs') : (qCount + ' Qs');
+
+      var badges = h('div', { class: 'gm-pack-badges' });
+      if (g === 3 || g === 4) {
+        badges.appendChild(h('span', { class: 'gm-pbadge g' + g, text: 'Grade ' + g }));
+      }
+      if (u >= 1 && u <= 4) {
+        badges.appendChild(h('span', { class: 'gm-pbadge u', text: 'Unit ' + u }));
+      } else if (s.smart) {
+        badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Adaptive' }));
+      } else {
+        badges.appendChild(h('span', { class: 'gm-pbadge mix', text: 'Units 1–4' }));
+      }
+      if (sk === 'speaking') {
+        badges.appendChild(h('span', { class: 'gm-pbadge spk', text: '🎤 Speaking' }));
+      }
+      badges.appendChild(h('span', { class: 'gm-pbadge cnt', text: countLabel }));
+
+      var card = h('button', {
+        type: 'button',
+        class: 'gm-pack-card' + (isSel ? ' sel' : '')
+      }, [
+        h('div', { class: 'gm-pack-ic', text: s.e || '📚' }),
+        h('div', { class: 'gm-pack-body' }, [
+          badges,
+          h('b', { class: 'gm-pack-title', text: s.title }),
+          s.sub ? h('small', { class: 'gm-pack-sub', text: s.sub }) : null
+        ]),
+        isSel ? h('span', { class: 'gm-pack-check', text: '✓ Active' }) : null
+      ]);
+
+      card.addEventListener('click', function () {
+        A.play('tap');
+        S.setId = s.id;
+        save();
+        render();
+      });
+
+      if (s.custom) {
+        var d = h('span', { class: 'gm-del', title: 'Delete this set', text: '✕' });
+        d.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (d.dataset.sure) {
+            customSets = customSets.filter(function (x) { return x.id !== s.id; });
+            saveSets();
+            if (S.setId === s.id) S.setId = GM.sets[0].id;
+            render();
+          } else {
+            d.dataset.sure = 1;
+            d.textContent = 'Delete?';
+          }
+        });
+        card.appendChild(d);
+      }
+      packGrid.appendChild(card);
+    });
+    libPanel.appendChild(packGrid);
+
+    /* Custom Set Builder Drawer */
+    var title = h('input', { class: 'gm-input', placeholder: 'Name of the set (for example: Unit 4 Extra Words)', maxlength: '60' });
+    var ta = h('textarea', { class: 'gm-input', rows: '5', placeholder: 'One question on each line:\nShe ____ a new hobby. | began | will | could\nWhat is a baby cat? | kitten | puppy | duck' });
+    var msg = h('div', { class: 'gm-hint', text: 'Write:  question | right answer | wrong answer | wrong answer   (use ____ for the gap).' });
+    builder = h('div', { class: 'gm-builder' }, [title, ta, msg, btn('💾 Save this set', 'green', function () {
+      var items = parseSet(ta.value);
+      if (!title.value.trim() || items.length < 3) {
+        msg.textContent = 'Please write a name and at least 3 lines like:  question | right | wrong | wrong';
+        U.wobble(msg);
+        return;
+      }
+      var id = 'my-' + Date.now();
+      customSets.push({ id: id, title: title.value.trim(), sub: 'Custom Teacher Set', e: '📝', custom: true, unit: 0, items: items });
+      saveSets();
+      S.setId = id;
+      save();
+      render();
+    })]);
+    libPanel.appendChild(builder);
+    wrap.appendChild(libPanel);
+
+    /* =========================================================================
+       STEP 2: SMARTBOARD ARCADE GAME SHELF
+       ========================================================================= */
+    var gPanel = h('div', { class: 'gm-games-panel' });
     var activeCat = GAME_CATS.filter(function (c) { return c[0] === S.gameCat; })[0] || GAME_CATS[0];
+
+    var catTabs = h('div', { class: 'gm-filter-bar gm-cat-tabs' });
     GAME_CATS.forEach(function (cat) {
       var b = h('button', { type: 'button', class: 'gm-ftab' + (activeCat[0] === cat[0] ? ' sel' : ''), text: cat[1] });
       b.addEventListener('click', function () { A.play('tap'); S.gameCat = cat[0]; save(); render(); });
-      gbar.appendChild(b);
+      catTabs.appendChild(b);
     });
-    wrap.appendChild(gbar);
 
-    /* games: big picture cards */
+    var gHead = h('div', { class: 'gm-lib-head gm-games-head' }, [
+      h('div', { class: 'gm-lib-title' }, [
+        h('span', { class: 'gm-step-badge amber', text: 'STEP 2' }),
+        h('b', { text: '🕹️ Pick a Smartboard Game' }),
+        h('span', { class: 'gm-active-pack-pill', text: (activeSet.e || '📚') + ' ' + activeSet.title })
+      ]),
+      catTabs
+    ]);
+    gPanel.appendChild(gHead);
+
     var grid = h('div', { class: 'gm-games' });
     ORDER.forEach(function (id) {
-      var m = GM.modes[id]; if (!m) return;
+      var m = GM.modes[id];
+      if (!m) return;
       if (activeCat[2] && activeCat[2].indexOf(id) < 0) return;
-      var c = h('button', { type: 'button', class: 'gm-game' }, [h('div', { class: 'gm-game-pic' }, [cardArt(id, m.e)]), h('div', { class: 'gm-game-cap' }, [h('b', { text: modeName(m) }), h('small', { text: m.teams ? m.teams + ' teams' : '1-8 teams' })])]);
-      c.addEventListener('click', function () { A.play('flip'); S.modeId = id; save(); S.screen = 'setup'; render(); });
+
+      var teamTag = m.teams ? ('⚔️ ' + m.teams + ' Teams') : '👥 1–8 Teams';
+      var playBtn = h('button', {
+        type: 'button',
+        class: 'gm-gcard-btn play',
+        title: 'Start playing immediately with this question pack!',
+        text: '⚡ Quick Play'
+      });
+      playBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        A.play('start');
+        S.modeId = id;
+        if (m.teams && S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; }
+        save();
+        startGame(true);
+      });
+
+      var setupBtn = h('button', {
+        type: 'button',
+        class: 'gm-gcard-btn setup',
+        title: 'Customize teams, monsters, timer & rules',
+        text: '⚙️ Setup'
+      });
+      setupBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        A.play('flip');
+        S.modeId = id;
+        save();
+        S.screen = 'setup';
+        render();
+      });
+
+      var c = h('div', { class: 'gm-game', tabindex: '0', role: 'button' }, [
+        h('div', { class: 'gm-game-pic' }, [
+          cardArt(id, m.e),
+          h('span', { class: 'gm-game-tbadge' + (m.teams === 2 ? ' vs' : ''), text: teamTag })
+        ]),
+        h('div', { class: 'gm-game-cap' }, [
+          h('b', { text: modeName(m) }),
+          h('small', { class: 'gm-game-desc', text: modeDesc(m) }),
+          h('div', { class: 'gm-game-actions' }, [playBtn, setupBtn])
+        ])
+      ]);
+      c.addEventListener('click', function () {
+        A.play('flip');
+        S.modeId = id;
+        save();
+        S.screen = 'setup';
+        render();
+      });
       grid.appendChild(c);
     });
-    SOON.forEach(function (s) { grid.appendChild(h('div', { class: 'gm-game locked' }, [h('div', { class: 'gm-game-pic' }, [U.art(s[2], s[0], 'gm-cardimg')]), h('div', { class: 'gm-game-cap' }, [h('b', { text: s[1] }), h('small', { text: '🔒 Coming soon' })])])); });
-    wrap.appendChild(grid);
+    SOON.forEach(function (s) {
+      grid.appendChild(h('div', { class: 'gm-game locked' }, [
+        h('div', { class: 'gm-game-pic' }, [U.art(s[2], s[0], 'gm-cardimg')]),
+        h('div', { class: 'gm-game-cap' }, [h('b', { text: s[1] }), h('small', { text: '🔒 Coming soon' })])
+      ]));
+    });
+    gPanel.appendChild(grid);
+    wrap.appendChild(gPanel);
     return wrap;
   }
 
@@ -284,9 +589,18 @@
     var m = GM.modes[S.modeId]; if (m.teams && S.cfg.teams !== m.teams) { S.cfg.teams = m.teams; S.teams = []; }
     buildTeams();
     var card = h('div', { class: 'gm-setup' });
+    var cs = curSet();
     /* left: the game */
-    var left = h('div', { class: 'gm-setup-l' }, [h('div', { class: 'gm-setup-pic' }, [cardArt(S.modeId, m.e)]), h('h2', { text: modeName(m) }), h('ol', { class: 'gm-how' }, (HOW[S.modeId] || [modeDesc(m)]).map(function (x) { return h('li', { text: x }); })),
-      h('div', { class: 'gm-setup-set' }, [h('span', { text: '📚 ' }), h('b', { text: curSet().title }), h('small', { text: ' · ' + curSet().items.length + ' questions' })])]);
+    var left = h('div', { class: 'gm-setup-l' }, [
+      h('div', { class: 'gm-setup-pic' }, [cardArt(S.modeId, m.e)]),
+      h('h2', { text: modeName(m) }),
+      h('ol', { class: 'gm-how' }, (HOW[S.modeId] || [modeDesc(m)]).map(function (x) { return h('li', { text: x }); })),
+      h('div', { class: 'gm-setup-set' }, [
+        h('span', { text: (cs.e || '📚') + ' ' }),
+        h('b', { text: cs.title }),
+        h('small', { text: ' · ' + (cs.items ? cs.items.length : 20) + ' questions' })
+      ])
+    ]);
     /* right: the options */
     var right = h('div', { class: 'gm-setup-r' }), classes = GM.mon.classes();
     if (classes.length) right.appendChild(seg('Class', [['', 'No class']].concat(classes.map(function (c) { return [c.id, c.label]; })), S.classId, function (v) { S.classId = v; S.teams = []; save(); render(); }));
@@ -320,9 +634,14 @@
     right.appendChild(faces);
     if (S.classId && S.teams.some(function (t) { return t.roster && t.roster.length; })) right.appendChild(teamLists(m));
     else right.appendChild(h('div', { class: 'gm-hint center', text: classes.length ? 'Choose your class above to put the pupils in teams.' : 'Tap a monster to change it. Tap a name to rename the team.' }));
-    m.fields.forEach(function (f) { var cur = S.cfg[f.key] != null ? S.cfg[f.key] : f.def; S.cfg[f.key] = cur; right.appendChild(seg(f.label, f.opts, cur, function (v) { S.cfg[f.key] = v; save(); render(); })); });
+    (m.fields || []).forEach(function (f) {
+      var fk = f.key || f.k, fl = f.label || f.l;
+      var cur = S.cfg[fk] != null ? S.cfg[fk] : f.def;
+      S.cfg[fk] = cur;
+      right.appendChild(seg(fl, f.opts, cur, function (v) { S.cfg[fk] = v; save(); render(); }));
+    });
     right.appendChild(seg('Timer', TIMERS, S.cfg.timer, function (v) { S.cfg.timer = v; save(); render(); }));
-    var cs = curSet(), pk = !cs.smart && (S.picks || {})[cs.id], total = cs.smart ? 0 : (cs.items || []).length;
+    var pk = !cs.smart && (S.picks || {})[cs.id], total = cs.smart ? 0 : (cs.items || []).length;
     if (total > 1 && GM.tools) {
       var qb = btn(((pk && pk.length) ? pk.length + ' of ' + total : 'All ' + total) + ' questions · Choose', 'sm', function () {
         GM.tools.chooseQuestions(cs, pk, function (arr) { S.picks = S.picks || {}; if (arr.length) S.picks[cs.id] = arr; else delete S.picks[cs.id]; save(); render(); });
@@ -333,7 +652,7 @@
     right.appendChild(seg('Pictures', [['off', 'Normal'], ['zoom', 'Super Zoom', 'tap a picture to enlarge'], ['blur', 'Blur', 'slide to reveal']], S.cfg.pics || 'off', function (v) { S.cfg.pics = v; save(); render(); }));
     right.appendChild(seg('Scores', [['show', 'Show'], ['on', 'Hide', 'play without keeping score']].map(function (o) { return [o[0] === 'on' ? 'on' : 'off', o[1], o[2]]; }), S.cfg.hide === 'on' ? 'on' : 'off', function (v) { S.cfg.hide = v; save(); render(); }));
     if (GM.rev) {
-      right.appendChild(seg('Remember first', [[1, 'On', 'reminder before the game'], [0, 'Off']], S.cfg.rem === 0 ? 0 : 1, function (v) { S.cfg.rem = +v; save(); render(); }));
+      right.appendChild(seg('Remember first', [[0, 'Off (Play right away)'], [1, 'On', 'reminder before the game']], S.cfg.rem === 1 ? 1 : 0, function (v) { S.cfg.rem = +v; save(); render(); }));
       right.appendChild(seg('Answer cards', [[0, 'Off'], [1, 'On', 'everybody answers on paper']], S.cfg.cards ? 1 : 0, function (v) { S.cfg.cards = +v; save(); render(); }));
     }
     var themes = Object.keys(GM.themes).filter(function (k) { return (GM.halloweenOn || k !== 'halloween') && (!GM.themes[k].art || U.hasArt(GM.themes[k].art)); });
@@ -362,16 +681,23 @@
   }
   function nextItem() { if (!queue.length) queue = S.cfg.order === 'order' ? chosenItems().slice().reverse() : U.shuffle(chosenItems()); return queue.pop(); }
   function startGame(skipRemember) {
-    if (skipRemember !== true && GM.rev && S.cfg.rem !== 0 && !S.playing && !S.remDone) {
+    var activeSet = curSet();
+    if (skipRemember !== true && GM.rev && S.cfg.rem === 1 && activeSet.skill !== 'speaking' && !S.playing && !S.remDone) {
       buildTeams(); document.getElementById('gm-teams').style.display = 'none';
-      return GM.rev.remember(curSet().items, { points: 8, check: 3 }, function () { S.remDone = true; startGame(true); });
+      return GM.rev.remember(activeSet.items, { points: 8, check: 3 }, function () { S.remDone = true; startGame(true); });
     }
     cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } });
-    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; GM.sessionMissed = []; GM.cardNo = 0; GM.sessionTally = []; save(); var myGame = ++gameId;
+    buildTeams(); S.teams.forEach(function (t) { t.score = 0; }); S.playing = true; queue = []; cleanups = []; GM.sessionMissed = []; GM.cardNo = 0; GM.sessionTally = [];
+    S.items = chosenItems();
+    save(); var myGame = ++gameId;
     S.screen = 'play'; applyTheme('play'); document.body.classList.add('gm-mode-' + S.modeId);
     document.getElementById('gm-teams').style.display = ''; A.play('start'); A.musicStart(S.theme);
     stage.innerHTML = ''; var area = h('div', { class: 'gm-area' }); stage.appendChild(area);
     var m = GM.modes[S.modeId], cfg = Object.assign({}, S.cfg);
+    (m.fields || []).forEach(function (f) {
+      var fk = f.key || f.k;
+      if (fk && cfg[fk] == null) cfg[fk] = f.def;
+    });
     U.teamBar(S.teams, 0);
     var ctx = { root: area, cfg: cfg, nextItem: nextItem, onEnd: function (f) { cleanups.push(f); }, end: function () { if (myGame !== gameId || !S.playing) return; cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; A.musicStop(); document.getElementById('gm-teams').style.display = 'none'; S.screen = 'end'; applyTheme('end'); U.podium(S.teams, startGame, goHome); } };
     m.start(ctx); teamsBtn();
@@ -397,7 +723,16 @@
           if (allSets().some(function (x) { return x.id === (isG4 ? 'u14-g4' : 'u14-g3'); })) S.setId = isG4 ? 'u14-g4' : 'u14-g3';
         }
       }
-      if (ms && allSets().some(function (x) { return x.id === ms[1]; })) S.setId = ms[1];
+      if (ms && allSets().some(function (x) { return x.id === ms[1]; })) {
+        S.setId = ms[1];
+        var targetSet = allSets().filter(function (x) { return x.id === ms[1]; })[0];
+        if (targetSet) {
+          var tg = getSetGrade(targetSet), tu = getSetUnit(targetSet), tsk = getSetSkill(targetSet);
+          S.qGrade = tg === 3 ? '3' : (tg === 4 ? '4' : 'all');
+          S.qUnit = tu ? String(tu) : 'all';
+          S.qSkill = tsk || 'all';
+        }
+      }
       if (mg && GM.modes[mg[1]]) { S.modeId = mg[1]; S.screen = 'setup'; S.teams = []; }
       save();
     } catch (e) { /* ignore */ }

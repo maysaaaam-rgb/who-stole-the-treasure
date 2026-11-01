@@ -18,11 +18,38 @@
     id: 'guesseroo', name: 'Guess-eroo', e: '🕵️',
     desc: 'A secret card is hidden. Ask yes/no questions out loud and cross out cards until your team knows what it is!',
     fields: [
-      { key: 'deck', label: 'Cards', opts: [['animals', 'Animals'], ['school', 'School things'], ['clothes', 'Clothes']], def: 'animals' },
+      { key: 'deck', label: 'Cards', opts: [['set', '📚 Question Pack Words'], ['animals', '🐶 Animals'], ['school', '✏️ School things'], ['clothes', '👕 Clothes']], def: 'set' },
       { key: 'rounds', label: 'Secret cards to find', opts: [[1, '1'], [2, '2'], [3, '3']], def: 2 }
     ],
     start: function (ctx) {
-      var st = GM.state, T = st.teams, nt = T.length, deck = DECKS[ctx.cfg.deck] || DECKS.animals, rounds = +ctx.cfg.rounds || 2;
+      var st = GM.state, T = st.teams, nt = T.length, rounds = +ctx.cfg.rounds || 2;
+      var deck = DECKS[ctx.cfg.deck];
+      if (!deck) {
+        /* Build a 12-card deck from the active Question Pack, falling back to Animals if needed */
+        var customCards = [], seenW = {};
+        var pool = (st && st.items) || [];
+        var fallEmojis = ['⭐', '🌟', '💡', '🎯', '🚀', '🎈', '🌈', '🔑', '🏆', '🎁', '💎', '🧭'];
+        pool.forEach(function (it, idx) {
+          if (customCards.length >= 12 || !it) return;
+          var w = (Array.isArray(it.words) && it.words[0]) ? String(it.words[0]).trim() : String(it.a || '').replace(/[^\w\s'-]/g, '').trim();
+          if (w.split(/\s+/).length > 2) w = w.split(/\s+/).slice(0, 2).join(' ');
+          if (!w || w.length < 2 || w.length > 16 || seenW[w.toLowerCase()]) return;
+          seenW[w.toLowerCase()] = 1;
+          var em = (it.pic && it.pic !== '🔊' && it.pic !== '🧩' && !/\.(webp|png|jpg|svg)/i.test(it.pic)) ? it.pic : fallEmojis[idx % fallEmojis.length];
+          customCards.push([em, w]);
+        });
+        DECKS.animals.cards.forEach(function (c) {
+          if (customCards.length < 12 && !seenW[c[1].toLowerCase()]) {
+            seenW[c[1].toLowerCase()] = 1;
+            customCards.push(c);
+          }
+        });
+        deck = {
+          name: 'Question Pack Words',
+          cards: customCards.slice(0, 12),
+          frames: ['Is it a person or animal?', 'Is it big?', 'Is it in our story?', 'Can you hold it?']
+        };
+      }
       var eng = E().createSession(ctx, { maxRounds: 9999 });
       var round = 0, secret = 0, asked = 0, frozen = {}, guessing = false, locked = false, order = [];
       ctx.root.innerHTML = '';
