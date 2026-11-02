@@ -509,13 +509,13 @@
     "lastName": "Alhasan",
     "fullName": "Ahmet Alhasan",
     "classId": "class-3b",
-    "teamId": "group-3b-4",
-    "teamName": "Solar Phoenix",
-    "teamColor": "#ef4444",
+    "teamId": "group-3b-1",
+    "teamName": "Star Navigators",
+    "teamColor": "#8b5cf6",
     "teammates": [
-      "student-3b-205",
-      "student-3b-212",
-      "student-3b-230"
+      "student-3b-217",
+      "student-3b-221",
+      "student-3b-218"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 27–28",
@@ -538,13 +538,13 @@
     "lastName": "Kahraman",
     "fullName": "Ayaz Kahraman",
     "classId": "class-3b",
-    "teamId": "group-3b-3",
-    "teamName": "Thunder Wolves",
-    "teamColor": "#f59e0b",
+    "teamId": "group-3b-4",
+    "teamName": "Solar Phoenix",
+    "teamColor": "#ef4444",
     "teammates": [
-      "student-3b-220",
-      "student-3b-213",
-      "student-3b-352"
+      "student-3b-205",
+      "student-3b-225",
+      "student-3b-230"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 3–4",
@@ -602,7 +602,7 @@
     "teammates": [
       "student-3b-217",
       "student-3b-218",
-      "student-3b-225"
+      "student-3b-353"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 5–6",
@@ -630,8 +630,8 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-205",
-      "student-3b-353",
-      "student-3b-212"
+      "student-3b-200",
+      "student-3b-225"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -659,8 +659,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-220",
-      "student-3b-200",
-      "student-3b-352"
+      "student-3b-352",
+      "student-3b-212"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz\", pp. 21–22",
@@ -688,8 +688,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-213",
-      "student-3b-200",
-      "student-3b-352"
+      "student-3b-352",
+      "student-3b-212"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz K.\", pp. 9–10",
@@ -718,7 +718,7 @@
     "teammates": [
       "student-3b-221",
       "student-3b-218",
-      "student-3b-225"
+      "student-3b-353"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 1–2",
@@ -744,7 +744,11 @@
     "teamId": "group-3b-3",
     "teamName": "Thunder Wolves",
     "teamColor": "#f59e0b",
-    "teammates": ["student-3b-220", "student-3b-213", "student-3b-200"],
+    "teammates": [
+      "student-3b-220",
+      "student-3b-213",
+      "student-3b-212"
+    ],
     "hasScan": true,
     "meta": "`3B`, \"Ece Y\", pp. 7–8",
     "q1": "😍 Maths, PE, Art/music, Reading, Animals, Vegetables, Rainy days · 🙂 English · 🙁 Homework, Computer games.",
@@ -828,8 +832,8 @@
     "teamName": "Solar Phoenix",
     "teamColor": "#ef4444",
     "teammates": [
-      "student-3b-353",
-      "student-3b-212",
+      "student-3b-200",
+      "student-3b-225",
       "student-3b-230"
     ],
     "hasScan": true,
@@ -882,13 +886,13 @@
     "lastName": "Kutlu",
     "fullName": "Rüzgar Sarp Kutlu",
     "classId": "class-3b",
-    "teamId": "group-3b-4",
-    "teamName": "Solar Phoenix",
-    "teamColor": "#ef4444",
+    "teamId": "group-3b-3",
+    "teamName": "Thunder Wolves",
+    "teamColor": "#f59e0b",
     "teammates": [
-      "student-3b-205",
-      "student-3b-353",
-      "student-3b-230"
+      "student-3b-220",
+      "student-3b-213",
+      "student-3b-352"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 11–12",
@@ -917,7 +921,7 @@
     "teammates": [
       "student-3b-217",
       "student-3b-221",
-      "student-3b-225"
+      "student-3b-353"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 15–16 — Page 2 Completed",
@@ -940,13 +944,13 @@
     "lastName": "Sancaklı",
     "fullName": "Ülkü Sancaklı",
     "classId": "class-3b",
-    "teamId": "group-3b-1",
-    "teamName": "Star Navigators",
-    "teamColor": "#8b5cf6",
+    "teamId": "group-3b-4",
+    "teamName": "Solar Phoenix",
+    "teamColor": "#ef4444",
     "teammates": [
-      "student-3b-217",
-      "student-3b-221",
-      "student-3b-218"
+      "student-3b-205",
+      "student-3b-200",
+      "student-3b-230"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1475,14 +1479,14 @@
     "lastName": "Topçu",
     "fullName": "Ozan Topçu",
     "classId": "class-4b",
-    "teamId": "group-4b-4",
-    "teamName": "Apex Guardians",
-    "teamColor": "#3b82f6",
+    "teamId": "group-4b-3",
+    "teamName": "Galactic Navigators",
+    "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-318",
-      "student-4b-301",
-      "student-4b-339",
-      "student-4b-346"
+      "student-4b-303",
+      "student-4b-305",
+      "student-4b-316",
+      "student-4b-309"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 69–70",
@@ -1541,7 +1545,6 @@
     "teammates": [
       "student-4b-318",
       "student-4b-301",
-      "student-4a-319",
       "student-4b-339"
     ],
     "hasScan": true,
@@ -1601,7 +1604,8 @@
     "teammates": [
       "student-4b-303",
       "student-4b-305",
-      "student-4b-309"
+      "student-4b-309",
+      "student-4a-319"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 65–66",
@@ -1719,7 +1723,6 @@
     "teamColor": "#3b82f6",
     "teammates": [
       "student-4b-301",
-      "student-4a-319",
       "student-4b-339",
       "student-4b-346"
     ],
@@ -1750,7 +1753,8 @@
     "teammates": [
       "student-4b-305",
       "student-4b-316",
-      "student-4b-309"
+      "student-4b-309",
+      "student-4a-319"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1779,7 +1783,8 @@
     "teammates": [
       "student-4b-303",
       "student-4b-316",
-      "student-4b-309"
+      "student-4b-309",
+      "student-4a-319"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 59–60",
@@ -1927,7 +1932,6 @@
     "teamColor": "#3b82f6",
     "teammates": [
       "student-4b-318",
-      "student-4a-319",
       "student-4b-339",
       "student-4b-346"
     ],
@@ -2018,7 +2022,6 @@
     "teammates": [
       "student-4b-318",
       "student-4b-301",
-      "student-4a-319",
       "student-4b-346"
     ],
     "hasScan": true,
@@ -2048,7 +2051,8 @@
     "teammates": [
       "student-4b-303",
       "student-4b-305",
-      "student-4b-316"
+      "student-4b-316",
+      "student-4a-319"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 49–50",
@@ -2096,6 +2100,7 @@
     "q13_private": ""
   }
 };
+
   var TEAMS = [
   {
     "id": "group-3a-1",
@@ -2157,10 +2162,9 @@
     "color": "#8b5cf6",
     "studentIds": [
       "student-3b-217",
-      "student-3b-352",
       "student-3b-221",
       "student-3b-218",
-      "student-3b-225"
+      "student-3b-353"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2185,7 +2189,8 @@
     "studentIds": [
       "student-3b-220",
       "student-3b-213",
-      "student-3b-200"
+      "student-3b-352",
+      "student-3b-212"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2196,8 +2201,8 @@
     "color": "#ef4444",
     "studentIds": [
       "student-3b-205",
-      "student-3b-353",
-      "student-3b-212",
+      "student-3b-200",
+      "student-3b-225",
       "student-3b-230"
     ],
     "createdDate": "2026-11-02"
@@ -2294,7 +2299,8 @@
       "student-4b-303",
       "student-4b-305",
       "student-4b-316",
-      "student-4b-309"
+      "student-4b-309",
+      "student-4a-319"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2306,7 +2312,6 @@
     "studentIds": [
       "student-4b-318",
       "student-4b-301",
-      "student-4a-319",
       "student-4b-339",
       "student-4b-346"
     ],

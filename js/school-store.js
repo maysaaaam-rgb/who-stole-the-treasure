@@ -9651,7 +9651,7 @@
           classId: 'class-3b',
           name: 'Star Navigators',
           color: '#8b5cf6',
-          studentIds: ['student-3b-217', 'student-3b-221', 'student-3b-218', 'student-3b-225'],
+          studentIds: ['student-3b-217', 'student-3b-221', 'student-3b-218', 'student-3b-353'],
           createdDate: '2026-11-02'
         },
         {
@@ -9667,7 +9667,7 @@
           classId: 'class-3b',
           name: 'Thunder Wolves',
           color: '#f59e0b',
-          studentIds: ['student-3b-220', 'student-3b-213', 'student-3b-200', 'student-3b-352'],
+          studentIds: ['student-3b-220', 'student-3b-213', 'student-3b-352', 'student-3b-212'],
           createdDate: '2026-11-02'
         },
         {
@@ -9675,7 +9675,7 @@
           classId: 'class-3b',
           name: 'Solar Phoenix',
           color: '#ef4444',
-          studentIds: ['student-3b-205', 'student-3b-353', 'student-3b-212', 'student-3b-230'],
+          studentIds: ['student-3b-205', 'student-3b-200', 'student-3b-225', 'student-3b-230'],
           createdDate: '2026-11-02'
         },
 
@@ -9735,7 +9735,7 @@
           classId: 'class-4b',
           name: 'Galactic Navigators',
           color: '#06b6d4',
-          studentIds: ['student-4b-303', 'student-4b-305', 'student-4b-316', 'student-4b-309'],
+          studentIds: ['student-4b-303', 'student-4b-305', 'student-4b-316', 'student-4b-309', 'student-4a-319'],
           createdDate: '2026-11-02'
         },
         {
@@ -9743,7 +9743,7 @@
           classId: 'class-4b',
           name: 'Apex Guardians',
           color: '#3b82f6',
-          studentIds: ['student-4b-318', 'student-4b-301', 'student-4a-319', 'student-4b-339', 'student-4b-346'],
+          studentIds: ['student-4b-318', 'student-4b-301', 'student-4b-339', 'student-4b-346'],
           createdDate: '2026-11-02'
         }
       ],
@@ -10383,7 +10383,7 @@
             const parsed = JSON.parse(raw);
             const initial = getInitialState();
             const merged = Object.assign({}, initial, parsed);
-            if (!merged.groups || merged.groups.length < 16 || (merged.groups.find(function(g){return g.id==='group-3b-3';}) && merged.groups.find(function(g){return g.id==='group-3b-3';}).studentIds.length === 3)) {
+            if (!merged.groups || merged.groups.length < 16 || (merged.groups.find(function(g){return g.id==='group-4b-4';}) && merged.groups.find(function(g){return g.id==='group-4b-4';}).studentIds.length === 5)) {
               merged.groups = JSON.parse(JSON.stringify(initial.groups || []));
             }
             if (Array.isArray(merged.students)) {
