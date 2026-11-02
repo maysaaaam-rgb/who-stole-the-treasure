@@ -4127,58 +4127,58 @@
     emberwing: {
       egg: 'assets/monsters/art/emberwing_egg.webp',
       cracking_egg: 'assets/monsters/art/emberwing_cracking.webp',
-      baby: 'assets/packs/characters/emberwing_stage_baby.png',
-      growing: 'assets/packs/characters/emberwing_stage_growing.png',
+      baby: 'assets/monsters/art/emberwing_baby.webp',
+      growing: 'assets/monsters/art/emberwing_growing.webp',
       adventurer: 'assets/monsters/art/emberwing_adventurer.webp',
       advanced: 'assets/monsters/art/emberwing_advanced.webp',
-      ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
+      ultimate: 'assets/monsters/art/emberwing_ultimate.webp'
     },
     aquafind: {
       egg: 'assets/monsters/art/aquafind_egg.webp',
       cracking_egg: 'assets/monsters/art/aquafind_cracking.webp',
-      baby: 'assets/packs/characters/aquafind_stage_baby.png',
-      growing: 'assets/packs/characters/aquafind_stage_growing.png',
+      baby: 'assets/monsters/art/aquafind_baby.webp',
+      growing: 'assets/monsters/art/aquafind_growing.webp',
       adventurer: 'assets/monsters/art/aquafind_adventurer.webp',
       advanced: 'assets/monsters/art/aquafind_advanced.webp',
-      ultimate: 'assets/packs/characters/aquafind_stage_ultimate.png'
+      ultimate: 'assets/monsters/art/aquafind_ultimate.webp'
     },
     astralight: {
       egg: 'assets/monsters/art/astralight_egg.webp',
       cracking_egg: 'assets/monsters/art/astralight_cracking.webp',
-      baby: 'assets/packs/characters/astralight_stage_baby.png',
-      growing: 'assets/packs/characters/astralight_stage_growing.png',
+      baby: 'assets/monsters/art/astralight_baby.webp',
+      growing: 'assets/monsters/art/astralight_growing.webp',
       adventurer: 'assets/monsters/art/astralight_adventurer.webp',
       advanced: 'assets/monsters/art/astralight_advanced.webp',
-      ultimate: 'assets/packs/characters/astralight_stage_ultimate.png'
+      ultimate: 'assets/monsters/art/astralight_ultimate.webp'
     },
     sparktail: {
       egg: 'assets/monsters/art/sparktail_egg.webp',
       cracking_egg: 'assets/monsters/art/sparktail_cracking.webp',
-      baby: 'assets/packs/characters/sparktail_stage_baby.png',
-      growing: 'assets/packs/characters/sparktail_stage_growing.png',
+      baby: 'assets/monsters/art/sparktail_baby.webp',
+      growing: 'assets/monsters/art/sparktail_growing.webp',
       adventurer: 'assets/monsters/art/sparktail_adventurer.webp',
       advanced: 'assets/monsters/art/sparktail_advanced.webp',
-      ultimate: 'assets/packs/characters/sparktail_stage_ultimate.png'
+      ultimate: 'assets/monsters/art/sparktail_ultimate.webp'
     },
     florasprout: {
       egg: 'assets/monsters/art/florasprout_egg.webp',
       cracking_egg: 'assets/monsters/art/florasprout_cracking.webp',
-      baby: 'assets/packs/characters/florasprout_stage_baby.png',
-      growing: 'assets/packs/characters/florasprout_stage_growing.png',
+      baby: 'assets/monsters/art/florasprout_baby.webp',
+      growing: 'assets/monsters/art/florasprout_growing.webp',
       adventurer: 'assets/monsters/art/florasprout_adventurer.webp',
       advanced: 'assets/monsters/art/florasprout_advanced.webp',
-      ultimate: 'assets/packs/characters/florasprout_stage_ultimate.png'
+      ultimate: 'assets/monsters/art/florasprout_ultimate.webp'
     }
   };
 
   const STAGE_IMAGES = {
     egg: 'assets/monsters/art/emberwing_egg.webp',
     cracking_egg: 'assets/monsters/art/emberwing_cracking.webp',
-    baby: 'assets/packs/characters/emberwing_stage_baby.png',
-    growing: 'assets/packs/characters/emberwing_stage_growing.png',
+    baby: 'assets/monsters/art/emberwing_baby.webp',
+    growing: 'assets/monsters/art/emberwing_growing.webp',
     adventurer: 'assets/monsters/art/emberwing_adventurer.webp',
     advanced: 'assets/monsters/art/emberwing_advanced.webp',
-    ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
+    ultimate: 'assets/monsters/art/emberwing_ultimate.webp'
   };
 
   function getMonsterStageImage(stageKeyOrLevel, species = 'emberwing') {
@@ -4203,7 +4203,7 @@
     else if (rawSp.includes('flora') || rawSp.includes('leaf') || rawSp.includes('verdant')) sp = 'florasprout';
 
     const set = SPECIES_STAGE_ART[sp] || SPECIES_STAGE_ART.emberwing;
-    return set[key] || set.baby || 'assets/packs/characters/emberwing_stage_baby.png';
+    return set[key] || set.baby || 'assets/monsters/art/emberwing_baby.webp';
   }
 
   function renderMonsterArtwork(options = {}) {

@@ -164,7 +164,7 @@
   
   var TEAM_THEMES = {
     'golden eagles': {
-      mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+      mascot: 'assets/monsters/art/emberwing_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
       motto: 'High Flyers & Bold Achievers',
       accent: '#fbbf24',
@@ -173,7 +173,7 @@
       cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'emerald forest': {
-      mascot: 'assets/packs/characters/florasprout_stage_ultimate.png',
+      mascot: 'assets/monsters/art/florasprout_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
       motto: 'Deep Roots, Growing Strong',
       accent: '#34d399',
@@ -182,7 +182,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'ocean explorers': {
-      mascot: 'assets/packs/characters/aquafind_stage_ultimate.png',
+      mascot: 'assets/monsters/art/aquafind_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/storybook_pond.jpg',
       motto: 'Navigating Wonder & Depths',
       accent: '#38bdf8',
@@ -191,7 +191,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,28,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'cosmic phoenix': {
-      mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+      mascot: 'assets/monsters/art/astralight_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
       motto: 'Rising Together into the Stars',
       accent: '#f472b6',
@@ -200,7 +200,7 @@
       cardBg: 'linear-gradient(180deg, rgba(38,12,28,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'star navigators': {
-      mascot: 'assets/packs/characters/astralight_stage_growing.png',
+      mascot: 'assets/monsters/art/astralight_growing.webp',
       bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
       motto: 'Guiding the Way Forward',
       accent: '#a78bfa',
@@ -209,7 +209,7 @@
       cardBg: 'linear-gradient(180deg, rgba(26,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'crystal panthers': {
-      mascot: 'assets/packs/characters/aquafind_stage_growing.png',
+      mascot: 'assets/monsters/art/frostfluff_ultimate.webp',
       bgImg: 'assets/unit3-arctic/bg_station.jpg',
       motto: 'Swift, Sharp & Fearless',
       accent: '#22d3ee',
@@ -218,7 +218,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'thunder wolves': {
-      mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+      mascot: 'assets/monsters/art/sparktail_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/toadstools.jpg',
       motto: 'Loyal Pack, Unstoppable Energy',
       accent: '#fbbf24',
@@ -227,7 +227,7 @@
       cardBg: 'linear-gradient(180deg, rgba(38,24,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'solar phoenix': {
-      mascot: 'assets/packs/characters/emberwing_stage_growing.png',
+      mascot: 'assets/monsters/art/emberwing_growing.webp',
       bgImg: 'assets/packs/backgrounds/sleepy-awake-room.webp',
       motto: 'Blazing Bright with Courage',
       accent: '#f87171',
@@ -236,7 +236,7 @@
       cardBg: 'linear-gradient(180deg, rgba(42,12,12,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'mystic dragons': {
-      mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+      mascot: 'assets/monsters/art/emberwing_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/rabbit_hole_oak.jpg',
       motto: 'Ancient Wisdom & Dragon Flame',
       accent: '#c084fc',
@@ -245,7 +245,7 @@
       cardBg: 'linear-gradient(180deg, rgba(28,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'solar voyagers': {
-      mascot: 'assets/packs/characters/sparktail_stage_growing.png',
+      mascot: 'assets/monsters/art/sparktail_growing.webp',
       bgImg: 'assets/unit3-arctic/bg_city.jpg',
       motto: 'Journeying into the Cosmos',
       accent: '#fde047',
@@ -254,7 +254,7 @@
       cardBg: 'linear-gradient(180deg, rgba(36,22,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'diamond titans': {
-      mascot: 'assets/packs/characters/ankylosaurus.png',
+      mascot: 'assets/monsters/art/terrashell_ultimate.webp',
       bgImg: 'assets/unit3-arctic/bg_arctic.jpg',
       motto: 'Unbreakable Strength & Clarity',
       accent: '#67e8f9',
@@ -263,7 +263,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'cyber knights': {
-      mascot: 'assets/packs/characters/triceratops.png',
+      mascot: 'assets/monsters/art/breezefin_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/evidence_board_bg.jpg',
       motto: 'Honor, Code & Team Unity',
       accent: '#60a5fa',
@@ -272,7 +272,7 @@
       cardBg: 'linear-gradient(180deg, rgba(12,22,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'golden starlights': {
-      mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+      mascot: 'assets/monsters/art/astralight_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/wooden_signpost.jpg',
       motto: 'Shining Together As One',
       accent: '#fef08a',
@@ -281,7 +281,7 @@
       cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'book wizards': {
-      mascot: 'assets/packs/characters/florasprout_stage_growing.png',
+      mascot: 'assets/monsters/art/florasprout_growing.webp',
       bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
       motto: 'Words, Wonder & Endless Magic',
       accent: '#6ee7b7',
@@ -290,7 +290,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'galactic navigators': {
-      mascot: 'assets/packs/characters/astralight_stage_growing.png',
+      mascot: 'assets/monsters/art/astralight_growing.webp',
       bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
       motto: 'Charting Uncharted Worlds',
       accent: '#38bdf8',
@@ -299,7 +299,7 @@
       cardBg: 'linear-gradient(180deg, rgba(8,26,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
     },
     'apex guardians': {
-      mascot: 'assets/packs/characters/trex.png',
+      mascot: 'assets/monsters/art/terrashell_advanced.webp',
       bgImg: 'assets/packs/backgrounds/mossy_boulder.jpg',
       motto: 'Shields Up, Defending Excellence',
       accent: '#93c5fd',
@@ -313,7 +313,7 @@
     if (TEAM_THEMES[key]) return TEAM_THEMES[key];
     var col = fallbackColor || '#38bdf8';
     return {
-      mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+      mascot: 'assets/monsters/art/sparktail_ultimate.webp',
       bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
       motto: 'United Classroom Team',
       accent: col,

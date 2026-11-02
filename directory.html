@@ -144,7 +144,7 @@
       let stage = lvl >= 7 ? 'ultimate' : (lvl >= 4 ? 'growing' : 'baby');
       if (lvl === 5) return 'assets/monsters/art/' + species + '_adventurer.webp';
       if (lvl === 6) return 'assets/monsters/art/' + species + '_advanced.webp';
-      return 'assets/packs/characters/' + species + '_stage_' + stage + '.png';
+      return 'assets/monsters/art/' + species + '_' + stage + '.webp';
     }
 
     function getMonsterStageAsset(xp, level, archetype) {
