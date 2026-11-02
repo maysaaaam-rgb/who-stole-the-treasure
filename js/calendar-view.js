@@ -471,8 +471,25 @@
       store().setCalendarFlag('seed25');
     } catch (e) { /* the calendar still works */ }
   }
+  /* The week's lesson plans (PDF + Word) are written: every slot of 3-6 Nov links its plan. */
+  function weekPlansOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed26')) return;
+      var P = { pet: 'Grade3-Grade4-Halloween-Monster-Pet-Shop-Lesson-Plan', show: 'Grade3-Grade4-Halloween-Team-Show-Lesson-Plan', book: 'Grade3-Grade4-Book-Lesson-Routine-Plan' };
+      var list = customEvents().slice(), n = 0;
+      list.forEach(function (e) {
+        if (!e || !/^seed24-/.test(String(e.id || '')) || /^Done:/.test(e.title || '')) return;
+        var k = /Pet Shop/.test(e.title) ? 'pet' : /Team Show/.test(e.title) ? 'show' : /Book lesson/.test(e.title) ? 'book' : '';
+        if (!k || String(e.note || '').indexOf(P[k]) >= 0) return;
+        e.note = (e.note ? e.note + ' ' : '') + 'Plan: lesson-plans/' + P[k] + '.';
+        n++;
+      });
+      if (n) saveEvents(list);
+      store().setCalendarFlag('seed26');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];

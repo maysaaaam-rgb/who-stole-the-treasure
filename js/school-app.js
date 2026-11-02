@@ -4641,13 +4641,16 @@
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
+    { title: 'Week of 2–6 November: my lessons in order (book lessons + Halloween team lessons)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Week-2-6-November-Order', kind: 'Week', word: false },
+    { title: 'Halloween Monster Pet Shop: team lesson built on the All About Me survey (It’s a… / It has got… / It can…)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Halloween-Monster-Pet-Shop-Lesson-Plan', word: true, launch: 'halloween-pet-shop/index.html' },
+    { title: 'Halloween Team Show: every team presents its pet, chant and awards (end of the week)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Halloween-Team-Show-Lesson-Plan', word: true, launch: 'halloween-pet-shop/index.html' },
+    { title: 'Government Book Lesson: the 35-minute routine (4 per class each week, pages to fill in)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Book-Lesson-Routine-Plan', word: true },
     { title: "The Pharaoh’s Kingdom: Living Pop-Up Book (Ancient Egypt A1 Master Lesson)", grade: 'Grade 3 & 4', date: '2026-11-02', file: 'Grade3-Grade4-Pharaoh-Living-Book-Lesson-Plan', word: true, launch: 'pharaoh-living-book.html' },
     { title: 'Unit 4 Lesson 4: Phonics -nd & Think Together (What Happened? pp. 70-71)', grade: 'Grade 3', date: '2026-10-23', file: 'Grade3-Unit4-Lesson4-Phonics-and-Think-Together-Plan', word: true, launch: 'unit4-g3-phonics-think/index.html' },
     { title: 'Unit 4 Lesson 3: The Angry Mountain — Cause & Effect + Island Rescue (What Happened? pp. 65-69)', grade: 'Grade 3', date: '2026-10-22', file: 'Grade3-Unit4-Lesson3-Angry-Mountain-Plan', word: true, launch: 'unit4-g3-angry-mountain/index.html' },
     { title: 'Grade 3 Reading 2 Review: The Angry Mountain (What Happened? pp. 64-71)', grade: 'Grade 3', date: '2026-10-21', file: 'Grade3-Unit4-Angry-Mountain-Lesson-Plan', word: true, launch: 'review-g3-mountain/index.html' },
     { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? · Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
     { title: 'Unit 4: Team Players · Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
-    { title: 'Chuseok Moon Song: Ganggangsullae Circle Dance & 5-Minute Homework', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Chuseok-Moon-Song-Lesson-Plan', word: true, launch: 'chuseok-moon-song/index.html' },
     { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
     { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
     { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
