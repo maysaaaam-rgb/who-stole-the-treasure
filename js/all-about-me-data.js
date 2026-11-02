@@ -509,13 +509,12 @@
     "lastName": "Alhasan",
     "fullName": "Ahmet Alhasan",
     "classId": "class-3b",
-    "teamId": "group-3b-1",
-    "teamName": "Star Navigators",
-    "teamColor": "#8b5cf6",
+    "teamId": "group-3b-4",
+    "teamName": "Solar Phoenix",
+    "teamColor": "#ef4444",
     "teammates": [
-      "student-3b-217",
-      "student-3b-221",
-      "student-3b-218"
+      "student-3b-205",
+      "student-3b-200"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 27–28",
@@ -543,8 +542,7 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-205",
-      "student-3b-225",
-      "student-3b-230"
+      "student-3b-353"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 3–4",
@@ -601,8 +599,9 @@
     "teamColor": "#8b5cf6",
     "teammates": [
       "student-3b-217",
+      "student-3b-352",
       "student-3b-218",
-      "student-3b-353"
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 5–6",
@@ -625,13 +624,13 @@
     "lastName": "Susatar",
     "fullName": "Demir Susatar",
     "classId": "class-3b",
-    "teamId": "group-3b-4",
-    "teamName": "Solar Phoenix",
-    "teamColor": "#ef4444",
+    "teamId": "group-3b-3",
+    "teamName": "Thunder Wolves",
+    "teamColor": "#f59e0b",
     "teammates": [
-      "student-3b-205",
-      "student-3b-200",
-      "student-3b-225"
+      "student-3b-220",
+      "student-3b-213",
+      "student-3b-212"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -659,8 +658,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-220",
-      "student-3b-352",
-      "student-3b-212"
+      "student-3b-212",
+      "student-3b-230"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz\", pp. 21–22",
@@ -688,8 +687,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-213",
-      "student-3b-352",
-      "student-3b-212"
+      "student-3b-212",
+      "student-3b-230"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz K.\", pp. 9–10",
@@ -716,9 +715,10 @@
     "teamName": "Star Navigators",
     "teamColor": "#8b5cf6",
     "teammates": [
+      "student-3b-352",
       "student-3b-221",
       "student-3b-218",
-      "student-3b-353"
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 1–2",
@@ -741,13 +741,14 @@
     "lastName": "Yaşar",
     "fullName": "Ece Yaşar",
     "classId": "class-3b",
-    "teamId": "group-3b-3",
-    "teamName": "Thunder Wolves",
-    "teamColor": "#f59e0b",
+    "teamId": "group-3b-1",
+    "teamName": "Star Navigators",
+    "teamColor": "#8b5cf6",
     "teammates": [
-      "student-3b-220",
-      "student-3b-213",
-      "student-3b-212"
+      "student-3b-217",
+      "student-3b-221",
+      "student-3b-218",
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Ece Y\", pp. 7–8",
@@ -833,8 +834,7 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-200",
-      "student-3b-225",
-      "student-3b-230"
+      "student-3b-353"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 17–18",
@@ -892,7 +892,7 @@
     "teammates": [
       "student-3b-220",
       "student-3b-213",
-      "student-3b-352"
+      "student-3b-230"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 11–12",
@@ -920,8 +920,9 @@
     "teamColor": "#8b5cf6",
     "teammates": [
       "student-3b-217",
+      "student-3b-352",
       "student-3b-221",
-      "student-3b-353"
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 15–16 — Page 2 Completed",
@@ -944,13 +945,14 @@
     "lastName": "Sancaklı",
     "fullName": "Ülkü Sancaklı",
     "classId": "class-3b",
-    "teamId": "group-3b-4",
-    "teamName": "Solar Phoenix",
-    "teamColor": "#ef4444",
+    "teamId": "group-3b-1",
+    "teamName": "Star Navigators",
+    "teamColor": "#8b5cf6",
     "teammates": [
-      "student-3b-205",
-      "student-3b-200",
-      "student-3b-230"
+      "student-3b-217",
+      "student-3b-352",
+      "student-3b-221",
+      "student-3b-218"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -980,7 +982,7 @@
       "student-4a-311",
       "student-4a-310",
       "student-4a-320",
-      "student-4b-208"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 29–30",
@@ -1010,7 +1012,7 @@
       "student-4a-315",
       "student-4a-302",
       "student-4a-342",
-      "student-4a-321"
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 27–28",
@@ -1040,7 +1042,7 @@
       "student-4a-310",
       "student-4a-313",
       "student-4a-320",
-      "student-4b-208"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, \"Shinobu Kocho\", Age 10, pp. 17–19",
@@ -1070,7 +1072,7 @@
       "student-4a-311",
       "student-4a-313",
       "student-4a-320",
-      "student-4b-208"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 9–10",
@@ -1153,13 +1155,14 @@
     "lastName": "Yaldız",
     "fullName": "Efe Yaldız",
     "classId": "class-4a",
-    "teamId": "group-4a-3",
-    "teamName": "Diamond Titans",
-    "teamColor": "#06b6d4",
+    "teamId": "group-4a-4",
+    "teamName": "Cyber Knights",
+    "teamColor": "#3b82f6",
     "teammates": [
-      "student-4a-314",
-      "student-4a-341",
-      "student-4a-300"
+      "student-4a-315",
+      "student-4a-302",
+      "student-4a-342",
+      "student-4a-441"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1182,14 +1185,14 @@
     "lastName": "Yarar",
     "fullName": "Elif Su Yarar",
     "classId": "class-4a",
-    "teamId": "group-4a-4",
-    "teamName": "Cyber Knights",
-    "teamColor": "#3b82f6",
+    "teamId": "group-4a-2",
+    "teamName": "Solar Voyagers",
+    "teamColor": "#f59e0b",
     "teammates": [
-      "student-4a-315",
-      "student-4a-302",
-      "student-4a-342",
-      "student-4a-441"
+      "student-4a-311",
+      "student-4a-310",
+      "student-4a-313",
+      "student-4a-320"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 5–6",
@@ -1218,8 +1221,8 @@
     "teammates": [
       "student-4a-302",
       "student-4a-342",
-      "student-4a-321",
-      "student-4a-441"
+      "student-4a-441",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, \"Emir G\", pp. 7–8",
@@ -1248,8 +1251,8 @@
     "teammates": [
       "student-4a-315",
       "student-4a-342",
-      "student-4a-321",
-      "student-4a-441"
+      "student-4a-441",
+      "student-4a-345"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1306,9 +1309,9 @@
     "teamName": "Diamond Titans",
     "teamColor": "#06b6d4",
     "teammates": [
+      "student-4b-208",
       "student-4a-341",
-      "student-4a-300",
-      "student-4a-345"
+      "student-4a-300"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 31–32",
@@ -1366,8 +1369,8 @@
     "teamColor": "#06b6d4",
     "teammates": [
       "student-4a-314",
-      "student-4a-300",
-      "student-4a-345"
+      "student-4b-208",
+      "student-4a-300"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 33–34",
@@ -1396,8 +1399,8 @@
     "teammates": [
       "student-4a-315",
       "student-4a-302",
-      "student-4a-321",
-      "student-4a-441"
+      "student-4a-441",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, signed \"Emir B\", pp. 20–22",
@@ -1425,8 +1428,8 @@
     "teamColor": "#06b6d4",
     "teammates": [
       "student-4a-314",
-      "student-4a-341",
-      "student-4a-345"
+      "student-4b-208",
+      "student-4a-341"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 3–4 — Back Page Completed",
@@ -1456,7 +1459,7 @@
       "student-4a-311",
       "student-4a-310",
       "student-4a-313",
-      "student-4b-208"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 15–16",
@@ -1483,10 +1486,9 @@
     "teamName": "Galactic Navigators",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-303",
       "student-4b-305",
       "student-4b-316",
-      "student-4b-309"
+      "student-4b-318"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 69–70",
@@ -1543,8 +1545,8 @@
     "teamName": "Apex Guardians",
     "teamColor": "#3b82f6",
     "teammates": [
-      "student-4b-318",
       "student-4b-301",
+      "student-4b-309",
       "student-4b-339"
     ],
     "hasScan": true,
@@ -1574,6 +1576,7 @@
     "teammates": [
       "student-4b-304",
       "student-4b-308",
+      "student-4b-303",
       "student-4b-439",
       "student-4b-440"
     ],
@@ -1602,9 +1605,8 @@
     "teamName": "Galactic Navigators",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-303",
       "student-4b-305",
-      "student-4b-309",
+      "student-4b-318",
       "student-4a-319"
     ],
     "hasScan": true,
@@ -1718,13 +1720,13 @@
     "lastName": "Turan",
     "fullName": "Ertuğrul Turan",
     "classId": "class-4b",
-    "teamId": "group-4b-4",
-    "teamName": "Apex Guardians",
-    "teamColor": "#3b82f6",
+    "teamId": "group-4b-3",
+    "teamName": "Galactic Navigators",
+    "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-301",
-      "student-4b-339",
-      "student-4b-346"
+      "student-4b-305",
+      "student-4b-316",
+      "student-4a-319"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 51–52",
@@ -1747,14 +1749,15 @@
     "lastName": "Eşkin",
     "fullName": "İlay Eşkin",
     "classId": "class-4b",
-    "teamId": "group-4b-3",
-    "teamName": "Galactic Navigators",
-    "teamColor": "#06b6d4",
+    "teamId": "group-4b-2",
+    "teamName": "Book Wizards",
+    "teamColor": "#10b981",
     "teammates": [
-      "student-4b-305",
-      "student-4b-316",
-      "student-4b-309",
-      "student-4a-319"
+      "student-4b-338",
+      "student-4b-304",
+      "student-4b-308",
+      "student-4b-439",
+      "student-4b-440"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1781,9 +1784,8 @@
     "teamName": "Galactic Navigators",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-303",
       "student-4b-316",
-      "student-4b-309",
+      "student-4b-318",
       "student-4a-319"
     ],
     "hasScan": true,
@@ -1844,6 +1846,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-308",
+      "student-4b-303",
       "student-4b-440"
     ],
     "hasScan": true,
@@ -1873,6 +1876,7 @@
     "teammates": [
       "student-4b-338",
       "student-4b-308",
+      "student-4b-303",
       "student-4b-439",
       "student-4b-440"
     ],
@@ -1904,6 +1908,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-308",
+      "student-4b-303",
       "student-4b-439"
     ],
     "hasScan": true,
@@ -1931,7 +1936,7 @@
     "teamName": "Apex Guardians",
     "teamColor": "#3b82f6",
     "teammates": [
-      "student-4b-318",
+      "student-4b-309",
       "student-4b-339",
       "student-4b-346"
     ],
@@ -1956,14 +1961,13 @@
     "lastName": "Koyun",
     "fullName": "Şimal Koyun",
     "classId": "class-4a",
-    "teamId": "group-4a-2",
-    "teamName": "Solar Voyagers",
-    "teamColor": "#f59e0b",
+    "teamId": "group-4a-3",
+    "teamName": "Diamond Titans",
+    "teamColor": "#06b6d4",
     "teammates": [
-      "student-4a-311",
-      "student-4a-310",
-      "student-4a-313",
-      "student-4a-320"
+      "student-4a-314",
+      "student-4a-341",
+      "student-4a-300"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 25–26",
@@ -2020,8 +2024,8 @@
     "teamName": "Apex Guardians",
     "teamColor": "#3b82f6",
     "teammates": [
-      "student-4b-318",
       "student-4b-301",
+      "student-4b-309",
       "student-4b-346"
     ],
     "hasScan": true,
@@ -2045,14 +2049,13 @@
     "lastName": "Kulaç",
     "fullName": "Utku Efe Kulaç",
     "classId": "class-4b",
-    "teamId": "group-4b-3",
-    "teamName": "Galactic Navigators",
-    "teamColor": "#06b6d4",
+    "teamId": "group-4b-4",
+    "teamName": "Apex Guardians",
+    "teamColor": "#3b82f6",
     "teammates": [
-      "student-4b-303",
-      "student-4b-305",
-      "student-4b-316",
-      "student-4a-319"
+      "student-4b-301",
+      "student-4b-339",
+      "student-4b-346"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 49–50",
@@ -2081,6 +2084,7 @@
     "teammates": [
       "student-4b-338",
       "student-4b-304",
+      "student-4b-303",
       "student-4b-439",
       "student-4b-440"
     ],
@@ -2162,9 +2166,10 @@
     "color": "#8b5cf6",
     "studentIds": [
       "student-3b-217",
+      "student-3b-352",
       "student-3b-221",
       "student-3b-218",
-      "student-3b-353"
+      "student-3b-225"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2189,8 +2194,8 @@
     "studentIds": [
       "student-3b-220",
       "student-3b-213",
-      "student-3b-352",
-      "student-3b-212"
+      "student-3b-212",
+      "student-3b-230"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2202,8 +2207,7 @@
     "studentIds": [
       "student-3b-205",
       "student-3b-200",
-      "student-3b-225",
-      "student-3b-230"
+      "student-3b-353"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2231,7 +2235,7 @@
       "student-4a-310",
       "student-4a-313",
       "student-4a-320",
-      "student-4b-208"
+      "student-4a-321"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2242,9 +2246,9 @@
     "color": "#06b6d4",
     "studentIds": [
       "student-4a-314",
+      "student-4b-208",
       "student-4a-341",
-      "student-4a-300",
-      "student-4a-345"
+      "student-4a-300"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2257,8 +2261,8 @@
       "student-4a-315",
       "student-4a-302",
       "student-4a-342",
-      "student-4a-321",
-      "student-4a-441"
+      "student-4a-441",
+      "student-4a-345"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2285,6 +2289,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-308",
+      "student-4b-303",
       "student-4b-439",
       "student-4b-440"
     ],
@@ -2296,10 +2301,9 @@
     "name": "Galactic Navigators",
     "color": "#06b6d4",
     "studentIds": [
-      "student-4b-303",
       "student-4b-305",
       "student-4b-316",
-      "student-4b-309",
+      "student-4b-318",
       "student-4a-319"
     ],
     "createdDate": "2026-11-02"
@@ -2310,8 +2314,8 @@
     "name": "Apex Guardians",
     "color": "#3b82f6",
     "studentIds": [
-      "student-4b-318",
       "student-4b-301",
+      "student-4b-309",
       "student-4b-339",
       "student-4b-346"
     ],
