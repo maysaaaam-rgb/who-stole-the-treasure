@@ -54,6 +54,7 @@
         (d ? '<div class="pp-st"><span class="pp-chip ' + stCls + '">' + esc(d.status) + '</span><span class="pp-why">' + esc(d.why.join(' · ')) + '</span></div>' : '') +
         '<div class="pp-act">' +
           '<button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',5)">+5 XP</button><button class="pp-b g" onclick="PupilProfile.award(\'' + esc(id) + '\',10)">+10 XP</button>' +
+          '<button class="pp-b o" style="color:#38bdf8;border-color:rgba(56,189,248,0.4)" onclick="PupilProfile.openAAM(\'' + esc(id) + '\')">🌟 All About Me</button>' +
           '<button class="pp-b o" style="color:#fbbf24" onclick="CommandCenter.ladder(\'' + esc(id) + '\')">🪜 Private steps</button>' +
           '<button class="pp-b" onclick="openGiveXPSkillsModal(\'student\',\'' + esc(id) + '\')">⭐ Custom XP</button>' +
           '<button class="pp-b o" onclick="openStudentModal(\'' + esc(id) + '\')">✏️ Edit pupil</button>' +
@@ -133,7 +134,7 @@
 
   var SECTIONS = [
     ['monster', '👾 Monster & evolution'], ['progress', '📈 Progress & CEFR'], ['assignments', '📝 Assignments'], ['assessments', '🧪 Assessments'],
-    ['badges', '🏅 Badges'], ['attendance', '📋 Attendance'], ['portfolio', '🗂️ Portfolio'], ['xp', '⭐ XP ledger'], ['rewards', '🎁 Rewards'], ['notes', '🗒️ Notes'], ['alice', '🫖 Alice']
+    ['badges', '🏅 Badges'], ['attendance', '📋 Attendance'], ['portfolio', '🗂️ Portfolio'], ['xp', '⭐ XP ledger'], ['rewards', '🎁 Rewards'], ['notes', '🗒️ Notes'], ['allaboutme', '🌟 All About Me (Survey & Secret Friends)'], ['alice', '🫖 Alice']
   ];
   function more(counts, openTab) {
     return '<div class="pp-more"><div class="pp-dim" style="margin:14px 0 8px;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700">More about this pupil</div>' +
@@ -144,6 +145,14 @@
   }
 
   root.PupilProfile = {
+    openAAM: function(id) {
+      var d = document.querySelector('details[data-tab="allaboutme"]');
+      if (d) {
+        d.open = true;
+        root.PupilProfile.toggle(d);
+        setTimeout(function() { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+      }
+    },
     top: top, more: more,
     award: function (id, n) {
       var st = root.schoolStore; if (!st || !st.giveXP) return;
