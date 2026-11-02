@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Halloween Monster Pet Shop</title>
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+  <div class="ps-bg" id="ps-bg"></div>
+
+  <!-- Start: choose the class (teams come from the All About Me survey) -->
+  <section class="ps-start" id="ps-start">
+    <div class="ps-start-card">
+      <div class="ps-start-art">
+        <img src="art/host.webp" alt="" class="bob">
+        <div class="ps-pedestal"></div>
+      </div>
+      <h1>🎃 Halloween Monster Pet Shop</h1>
+      <p class="ps-start-sub">Teams design a Halloween pet and sell it in English.<br><b>It's a… · It has got… · It can…</b></p>
+      <div class="ps-start-label">Which class is it?</div>
+      <div class="ps-class-row" id="ps-class-row"></div>
+      <p class="ps-start-note">Teams come from the All About Me survey. Before the lesson print: <a href="worksheet.html" target="_blank" id="lnk-sheet">🖨️ Pet Design Cards</a> (1 per team) · <a href="plan.html" target="_blank" id="lnk-plan">📋 Lesson plan + Speaking Check</a></p>
+    </div>
+  </section>
+
+  <div class="ps-app" id="ps-app" hidden>
+    <header class="ps-top">
+      <div class="ps-brand"><b>🎃 Monster Pet Shop</b><small id="ps-class-lbl">Grade 3</small></div>
+      <div class="ps-steps" id="ps-steps"></div>
+      <div class="ps-teams" id="ps-teams"></div>
+      <div class="ps-tools">
+        <button class="ps-icon" id="btn-sound" type="button" title="Sound on / off">🔊</button>
+        <button class="ps-icon" id="btn-tip" type="button" title="Teacher notes">💡</button>
+        <button class="ps-icon" id="btn-fs" type="button" title="Full screen">⛶</button>
+        <a class="ps-icon" href="../index.html" title="Platform">🏠</a>
+      </div>
+    </header>
+
+    <main class="ps-main">
+      <aside class="ps-host" id="ps-host">
+        <div class="ps-bubble">
+          <div class="ps-bubble-who"><span>LUNA · Shop Cat</span><button type="button" id="host-replay">🔊 Again</button></div>
+          <div id="host-text">Welcome to the Monster Pet Shop!</div>
+        </div>
+        <div class="ps-host-stage" id="host-stage">
+          <img src="art/host.webp" alt="" id="host-img">
+          <div class="ps-pedestal"></div>
+        </div>
+      </aside>
+      <section class="ps-stage">
+        <div class="ps-stage-head">
+          <h2 id="st-title">Station</h2>
+          <span class="ps-pill" id="st-mins">⏱</span>
+          <span class="ps-pill amber" id="st-sub"></span>
+        </div>
+        <div class="ps-stage-body" id="stage-body"></div>
+      </section>
+    </main>
+
+    <footer class="ps-bottom">
+      <div class="ps-say" id="ps-say"></div>
+      <div class="ps-nav">
+        <button class="ps-btn ghost" id="btn-prev" type="button">◀ Back</button>
+        <button class="ps-btn violet" id="btn-next" type="button">Next ▶</button>
+      </div>
+    </footer>
+  </div>
+
+  <div class="ps-modal" id="tip-modal" hidden>
+    <div class="ps-modal-card">
+      <h3>💡 Teacher notes</h3>
+      <div id="tip-body"></div>
+      <button class="ps-btn violet" type="button" id="tip-close">Close</button>
+    </div>
+  </div>
+
+  <script src="../js/all-about-me-data.js"></script>
+  <script src="js/data.js?v=1"></script>
+  <script src="js/audio.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>
