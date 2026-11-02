@@ -543,7 +543,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-220",
-      "student-3b-213"
+      "student-3b-213",
+      "student-3b-352"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 3–4",
@@ -600,7 +601,6 @@
     "teamColor": "#8b5cf6",
     "teammates": [
       "student-3b-217",
-      "student-3b-352",
       "student-3b-218",
       "student-3b-225"
     ],
@@ -659,7 +659,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-220",
-      "student-3b-200"
+      "student-3b-200",
+      "student-3b-352"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz\", pp. 21–22",
@@ -687,7 +688,8 @@
     "teamColor": "#f59e0b",
     "teammates": [
       "student-3b-213",
-      "student-3b-200"
+      "student-3b-200",
+      "student-3b-352"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Deniz K.\", pp. 9–10",
@@ -714,7 +716,6 @@
     "teamName": "Star Navigators",
     "teamColor": "#8b5cf6",
     "teammates": [
-      "student-3b-352",
       "student-3b-221",
       "student-3b-218",
       "student-3b-225"
@@ -740,15 +741,10 @@
     "lastName": "Yaşar",
     "fullName": "Ece Yaşar",
     "classId": "class-3b",
-    "teamId": "group-3b-1",
-    "teamName": "Star Navigators",
-    "teamColor": "#8b5cf6",
-    "teammates": [
-      "student-3b-217",
-      "student-3b-221",
-      "student-3b-218",
-      "student-3b-225"
-    ],
+    "teamId": "group-3b-3",
+    "teamName": "Thunder Wolves",
+    "teamColor": "#f59e0b",
+    "teammates": ["student-3b-220", "student-3b-213", "student-3b-200"],
     "hasScan": true,
     "meta": "`3B`, \"Ece Y\", pp. 7–8",
     "q1": "😍 Maths, PE, Art/music, Reading, Animals, Vegetables, Rainy days · 🙂 English · 🙁 Homework, Computer games.",
@@ -920,7 +916,6 @@
     "teamColor": "#8b5cf6",
     "teammates": [
       "student-3b-217",
-      "student-3b-352",
       "student-3b-221",
       "student-3b-225"
     ],
@@ -950,7 +945,6 @@
     "teamColor": "#8b5cf6",
     "teammates": [
       "student-3b-217",
-      "student-3b-352",
       "student-3b-221",
       "student-3b-218"
     ],
