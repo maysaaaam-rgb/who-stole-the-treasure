@@ -8,16 +8,16 @@
   var state = { cls: '', grade: 3, step: 0, teams: [], turn: 0, lastSpeech: '', met: {}, done: {} };
 
   var STATIONS = [
-    { title: '1 · Who Is in the Cauldron?', mins: '5 min', sub: 'Listen to 3 clues · Guess the pet', run: stCauldron,
+    { title: '1 · Who Is in the Cauldron?', mins: '4 min', sub: 'Listen to 3 clues · Guess the pet', run: stCauldron,
       say: ["It's black.", 'It has got a hat.', 'It can climb.'],
       tips: ['Warm-up: listening only. Nobody has to speak alone.', 'Read clue 1, teams whisper, then tap "Next clue". The team on turn points to a picture; you tap it. Guess after 1 clue = 3 points, after 2 clues = 2, after 3 = 1.', 'A wrong guess is never minus: Luna gives a hint and the same team tries again.'] },
-    { title: '2 · Meet the Pets', mins: '7 min', sub: 'Tap a pet · Listen · Say it together · Act it', run: stMeet,
+    { title: '2 · Meet the Pets', mins: '6 min', sub: 'Tap a pet · Listen · Say it together · Act it', run: stMeet,
       say: ["It's a ___ ___.", 'It has got ___.', 'It can ___.'],
       tips: ['Tap a pet. Tap each sentence: the class repeats it together (choral, not alone).', 'Colours = amber, "has got" = cyan, "can" = green. Point at the colour code when pupils make the sentence.', 'Press "Act it!" and everyone does the action. Meet 4-5 pets, not all 7, if time is short.'] },
-    { title: '3 · Team Pet Lab', mins: '12 min', sub: 'Jobs · Draw · Write 3 sentences · Practise', run: stLab,
+    { title: '3 · Team Pet Lab', mins: '10 min', sub: 'Jobs · Draw · Write 3 sentences · Practise', run: stLab,
       say: ['This is ___.', "It's a ___ ___.", 'It has got ___.', 'It can ___.'],
       tips: ['Give each team 1 Pet Design Card (worksheet.html). Teams choose jobs in 30 seconds: Artist, Writer, Speaker, Timer Boss (5 pupils: 2 Artists).', 'Start the timer. Walk round: help the Writer with the frames, and let the Speaker practise inside the team first.', 'Teams that want help come to the board and build their sentences with the Sentence Builder, then press "Hear our pet".'] },
-    { title: '4 · The Pet Shop Is Open!', mins: '13 min', sub: 'Sellers present · Buyers ask · Buy a pet', run: stShop,
+    { title: '4 · The Pet Shop Is Open!', mins: '12 min', sub: 'Sellers present · Buyers ask · Buy a pet', run: stShop,
       say: ['Hello! Welcome to our pet shop!', 'Can it fly?', 'How much is it?'],
       tips: ['One team at a time: the Speaker shows the card, the whole team says the last line together. Shy pupils can hold the card or point.', 'Other teams are buyers: they ask 1 question from the question cards. Give +1 for a good question.', 'When all teams are done, press "Buy a pet!": each team gets 3 coins to spend on OTHER teams\' pets. Most coins = Best Pet Shop (+3).'] },
     { title: '5 · Awards & Door Pass', mins: '3 min', sub: 'Every team gets an award · 1 sentence at the door', run: stAwards,
