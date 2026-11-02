@@ -76,7 +76,7 @@
     '.cb-goal .bar{flex:1;height:22px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.cb-goal .bar i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#fb7185);border-radius:99px;box-shadow:0 0 18px #fbbf24;transition:width .5s}' +
     '.cb-goal b{font-size:1.1rem;font-weight:600;white-space:nowrap}' +
     
-    '.cb-teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:22px;position:relative;margin-bottom:28px}' +'@media(max-width:960px){.cb-teams-grid{grid-template-columns:1fr}}' +'.cb-team-pod{background:var(--tp-card-bg,rgba(10,16,30,.92));border:2px solid var(--tp-border,rgba(255,255,255,.2));border-radius:28px;backdrop-filter:blur(16px);box-shadow:0 16px 40px -6px rgba(0,0,0,.65),0 0 24px -4px var(--tp-glow,rgba(0,0,0,.5));display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s ease}' +'.cb-team-pod:hover{transform:translateY(-4px);box-shadow:0 22px 50px -6px rgba(0,0,0,.75),0 0 32px -2px var(--tp-glow,rgba(0,0,0,.7))}' +'.cb-team-banner{height:120px;position:relative;overflow:hidden;background:#060911}' +'.cb-team-banner-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.65) saturate(1.25);transition:transform .4s ease}' +'.cb-team-pod:hover .cb-team-banner-img{transform:scale(1.05)}' +'.cb-team-banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,17,.15) 0%,rgba(10,16,30,.95) 100%)}' +'.cb-team-trophy{position:absolute;top:10px;right:14px;display:inline-flex;align-items:center;gap:7px;background:rgba(15,23,42,.88);border:1.5px solid var(--tp-accent,#fbbf24);padding:6px 14px;border-radius:99px;box-shadow:0 6px 16px rgba(0,0,0,.45);font-variant-numeric:tabular-nums;backdrop-filter:blur(8px)}' +'.cb-trophy-icon{font-size:1.15rem}' +'.cb-team-xp-val{font-size:1.3rem;font-weight:900;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.6);line-height:1}' +'.cb-trophy-lbl{font-size:.74rem;font-weight:800;color:#fde68a;letter-spacing:.06em}' +'.cb-team-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:0 18px 12px;margin-top:-38px;position:relative;z-index:2;flex-wrap:wrap}' +'.cb-team-identity{display:flex;align-items:center;gap:12px}' +'.cb-team-shield{width:74px;height:74px;border-radius:22px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22) 0%,rgba(15,23,42,.96) 100%);border:3px solid var(--tp-accent,#fbbf24);box-shadow:0 8px 24px -2px rgba(0,0,0,.6),0 0 18px var(--tp-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}' +'.cb-team-shield-img{width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));animation:cbMascotBob 3s ease-in-out infinite}' +'@keyframes cbMascotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}' +'.cb-team-meta h3{margin:0 0 3px;font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.7);line-height:1.1}' +'.cb-team-meta-sub{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-motto{font-size:.8rem;font-weight:700;color:var(--tp-accent,#fbbf24);font-style:italic}' +'.cb-team-count-pill{font-size:.72rem;font-weight:800;background:rgba(255,255,255,.12);color:#e2e8f0;padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.18)}' +'.cb-team-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-award-btn{border:0;border-radius:14px;font:800 .9rem Fredoka,system-ui,sans-serif;padding:10px 16px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s;touch-action:manipulation}' +'.cb-team-award-btn:active{transform:translateY(4px);border-bottom-width:1px!important}' +'.cb-team-award-btn.btn-5{background:#10b981;color:#fff;border-bottom:5px solid #047857}' +'.cb-team-award-btn.btn-10{background:#f59e0b;color:#1e1b4b;border-bottom:5px solid #b45309}' +'.cb-team-award-btn:hover{filter:brightness(1.15)}' +'.cb-team-monsters-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:6px 18px 18px}' +'.cb-st .cb-st-av-bubble{position:absolute;right:6px;top:36px;width:36px;height:36px;border-radius:50%;object-fit:contain;background:#fff7d6;border:2px solid #fbbf24;box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:3;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +'.cb-st .cb-st-av-bubble:hover{transform:scale(1.15)}' +
+    '.cb-teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:22px;position:relative;margin-bottom:28px}' +'@media(max-width:960px){.cb-teams-grid{grid-template-columns:1fr}}' +'.cb-team-pod{background:var(--tp-card-bg,rgba(10,16,30,.92));border:2px solid var(--tp-border,rgba(255,255,255,.2));border-radius:28px;backdrop-filter:blur(16px);box-shadow:0 16px 40px -6px rgba(0,0,0,.65),0 0 24px -4px var(--tp-glow,rgba(0,0,0,.5));display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s ease}' +'.cb-team-pod:hover{transform:translateY(-4px);box-shadow:0 22px 50px -6px rgba(0,0,0,.75),0 0 32px -2px var(--tp-glow,rgba(0,0,0,.7))}' +'.cb-team-banner{height:120px;position:relative;overflow:hidden;background:#060911}' +'.cb-team-banner-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.65) saturate(1.25);transition:transform .4s ease}' +'.cb-team-pod:hover .cb-team-banner-img{transform:scale(1.05)}' +'.cb-team-banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,17,.15) 0%,rgba(10,16,30,.95) 100%)}' +'.cb-team-trophies{position:absolute;top:10px;right:14px;display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;z-index:2}' +'.cb-team-month-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(6,78,59,.92);border:2px solid #34d399;padding:6px 14px;border-radius:99px;box-shadow:0 6px 16px rgba(0,0,0,.45),0 0 14px rgba(52,211,153,.35);font-variant-numeric:tabular-nums;backdrop-filter:blur(8px);cursor:pointer;transition:transform .15s ease}' +'.cb-team-month-pill:hover{transform:scale(1.04)}' +'.cb-team-month-val{font-size:1.35rem;font-weight:900;color:#6ee7b7;text-shadow:0 0 10px rgba(52,211,153,.6);line-height:1}' +'.cb-month-lbl{font-size:.72rem;font-weight:800;color:#d1fae5;letter-spacing:.06em}' +'.cb-team-trophy{display:inline-flex;align-items:center;gap:7px;background:rgba(15,23,42,.88);border:1.5px solid var(--tp-accent,#fbbf24);padding:6px 14px;border-radius:99px;box-shadow:0 6px 16px rgba(0,0,0,.45);font-variant-numeric:tabular-nums;backdrop-filter:blur(8px)}' +'.cb-trophy-icon{font-size:1.15rem}' +'.cb-team-xp-val{font-size:1.3rem;font-weight:900;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.6);line-height:1}' +'.cb-trophy-lbl{font-size:.74rem;font-weight:800;color:#fde68a;letter-spacing:.06em}' +'.cb-team-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:0 18px 12px;margin-top:-38px;position:relative;z-index:2;flex-wrap:wrap}' +'.cb-team-identity{display:flex;align-items:center;gap:12px}' +'.cb-team-shield{width:74px;height:74px;border-radius:22px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22) 0%,rgba(15,23,42,.96) 100%);border:3px solid var(--tp-accent,#fbbf24);box-shadow:0 8px 24px -2px rgba(0,0,0,.6),0 0 18px var(--tp-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}' +'.cb-team-shield-img{width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));animation:cbMascotBob 3s ease-in-out infinite}' +'@keyframes cbMascotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}' +'.cb-team-meta h3{margin:0 0 3px;font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.7);line-height:1.1}' +'.cb-team-meta-sub{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-motto{font-size:.8rem;font-weight:700;color:var(--tp-accent,#fbbf24);font-style:italic}' +'.cb-team-count-pill{font-size:.72rem;font-weight:800;background:rgba(255,255,255,.12);color:#e2e8f0;padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.18)}' +'.cb-team-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-award-btn{border:0;border-radius:14px;font:800 .9rem Fredoka,system-ui,sans-serif;padding:10px 16px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s;touch-action:manipulation}' +'.cb-team-award-btn:active{transform:translateY(4px);border-bottom-width:1px!important}' +'.cb-team-award-btn.btn-5{background:#10b981;color:#fff;border-bottom:5px solid #047857}' +'.cb-team-award-btn.btn-10{background:#f59e0b;color:#1e1b4b;border-bottom:5px solid #b45309}' +'.cb-team-award-btn:hover{filter:brightness(1.15)}' +'.cb-team-monsters-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:6px 18px 18px}' +'.cb-st .cb-st-av-bubble{position:absolute;right:6px;top:36px;width:36px;height:36px;border-radius:50%;object-fit:contain;background:#fff7d6;border:2px solid #fbbf24;box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:3;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +'.cb-st .cb-st-av-bubble:hover{transform:scale(1.15)}' +
     '.cb-mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;position:relative}' +
     '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s;animation:cbCardIn .28s cubic-bezier(.175,.885,.32,1.275) backwards;animation-delay:calc(var(--i,0) * 22ms)}' +
     '@keyframes cbCardIn{from{opacity:0;transform:translateY(10px) scale(.96)}}' +
@@ -493,15 +493,23 @@ function ensureCss() {
         return { id: raw.id, name: raw.firstName || raw.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : raw.xp) || 0, img: img, av: av, x: x };
       }).filter(Boolean);
       var groupTotalXP = members.reduce(function (acc, m) { return acc + (m.xp || 0); }, 0);
+      var groupMonthlyXP = S().getGroupMonthlyXP ? S().getGroupMonthlyXP(grp.id) : 0;
 
       return '<div class="cb-team-pod" id="cb-team-' + esc(grp.id) + '" style="--tp-accent:' + theme.accent + '; --tp-card-bg:' + theme.cardBg + '; --tp-border:' + theme.border + '; --tp-glow:' + theme.glow + ';">' +
         '<div class="cb-team-banner">' +
           '<img class="cb-team-banner-img" src="' + esc(theme.bgImg) + '" alt="" loading="lazy">' +
           '<div class="cb-team-banner-overlay"></div>' +
-          '<div class="cb-team-trophy">' +
-            '<span class="cb-trophy-icon">🏆</span>' +
-            '<b class="cb-team-xp-val" id="cb-team-pt-' + esc(grp.id) + '">' + groupTotalXP.toLocaleString('en-US') + '</b>' +
-            '<span class="cb-trophy-lbl">TEAM XP</span>' +
+          '<div class="cb-team-trophies">' +
+            '<div class="cb-team-month-pill" onclick="ClassBoard.resetMonthRace()" title="Monthly team race points (starts at 0). Click to reset all teams to 0 for a new month.">' +
+              '<span class="cb-trophy-icon">🔥</span>' +
+              '<b class="cb-team-month-val" id="cb-team-month-pt-' + esc(grp.id) + '">' + groupMonthlyXP.toLocaleString('en-US') + '</b>' +
+              '<span class="cb-month-lbl">THIS MONTH</span>' +
+            '</div>' +
+            '<div class="cb-team-trophy" title="All-time combined Team XP">' +
+              '<span class="cb-trophy-icon">🏆</span>' +
+              '<b class="cb-team-xp-val" id="cb-team-pt-' + esc(grp.id) + '">' + groupTotalXP.toLocaleString('en-US') + '</b>' +
+              '<span class="cb-trophy-lbl">TOTAL XP</span>' +
+            '</div>' +
           '</div>' +
         '</div>' +
         '<div class="cb-team-hd" id="cb-team-header-' + esc(grp.id) + '">' +
@@ -601,9 +609,26 @@ function render(container) {
     try { if (root.ClassroomStore && root.ClassroomStore.cloud) root.ClassroomStore.cloud.pull().then(function () { paintGoal(); }); } catch (e) { /* offline */ }
   }
 
+  function paintTeamScores() {
+    var st = S();
+    if (!st || !viewCls || !st.getGroups) return;
+    var groups = st.getGroups(viewCls.id) || [];
+    groups.forEach(function (g) {
+      var totEl = document.getElementById('cb-team-pt-' + g.id);
+      if (totEl && st.getGroupTotalXP) {
+        totEl.textContent = st.getGroupTotalXP(g.id).toLocaleString('en-US');
+      }
+      var monEl = document.getElementById('cb-team-month-pt-' + g.id);
+      if (monEl && st.getGroupMonthlyXP) {
+        monEl.textContent = st.getGroupMonthlyXP(g.id).toLocaleString('en-US');
+      }
+    });
+  }
+
   function totals() {
     var list = students(viewCls), t = list.reduce(function (n, s) { return n + s.xp; }, 0);
     var el = document.getElementById('cb-total'); if (el) el.textContent = t.toLocaleString('en-US');
+    paintTeamScores();
     return list;
   }
   /** Play the victory sound this pupil bought (if any). Returns true when one played. */
@@ -723,6 +748,15 @@ function render(container) {
       setTimeout(function () { document.addEventListener('mousedown', function h(e) { if (!m.contains(e.target)) { m.remove(); document.removeEventListener('mousedown', h); } }); }, 50);
     },
     
+    resetMonthRace: function () {
+      var st = S();
+      if (!st || !st.resetMonthlyTeamRace) return;
+      if (root.confirm && !root.confirm('Start a new monthly team race? Every team\'s THIS MONTH counter will reset to 0 (Total XP stays safe).')) return;
+      st.resetMonthlyTeamRace();
+      paintTeamScores();
+      if (root.renderCurrentView) root.renderCurrentView();
+      try { if (root.classSoundboard && root.classSoundboard.playQuietChime) root.classSoundboard.playQuietChime(); } catch (e) {}
+    },
     awardTeam: function (groupId, n) {
       var st = S(); if (!st || !st.giveXP) return;
       var grp = st.getGroup ? st.getGroup(groupId) : null;
@@ -742,14 +776,11 @@ function render(container) {
         if (root.classSoundboard && root.classSoundboard.playFanfare) root.classSoundboard.playFanfare();
         else if (root.classSoundboard && root.classSoundboard.playCoinReward) root.classSoundboard.playCoinReward();
       } catch (e) {}
-      var teamPtEl = document.getElementById('cb-team-pt-' + groupId);
-      if (teamPtEl && st.getGroupTotalXP) {
-        teamPtEl.textContent = st.getGroupTotalXP(groupId).toLocaleString('en-US');
-        var teamHd = document.getElementById('cb-team-header-' + groupId);
-        if (teamHd) {
-          var tb = document.createElement('div'); tb.className = 'cb-burst'; tb.style.fontSize = '1.8rem'; tb.textContent = '+' + (n * grp.studentIds.length) + ' TEAM ⭐';
-          teamHd.appendChild(tb); setTimeout(function () { tb.remove(); }, 1200);
-        }
+      totals();
+      var teamHd = document.getElementById('cb-team-header-' + groupId);
+      if (teamHd) {
+        var tb = document.createElement('div'); tb.className = 'cb-burst'; tb.style.fontSize = '1.8rem'; tb.textContent = '+' + (n * grp.studentIds.length) + ' TEAM ⭐';
+        teamHd.appendChild(tb); setTimeout(function () { tb.remove(); }, 1200);
       }
       paintGoal();
       paintClock();

@@ -10740,18 +10740,18 @@
                         amount: amt,
                         type: tx.type || resolveLedgerType(tx.type, tx.category, tx.source, tx.reason),
                         reason: tx.reason || 'Classroom XP Award',
-                        timestamp: tx.timestamp || new Date().toISOString(),
+                        timestamp: tx.timestamp || '2026-09-01T09:00:00.000Z',
                         balanceAfter: tx.balanceAfter !== undefined ? tx.balanceAfter : Math.max(0, running),
                         status: tx.status || 'active'
                       };
                     });
                   } else if ((Number(st.xp) || 0) > 0) {
                     st.xpHistory = [{
-                      id: 'tx_' + Date.now() + '_' + (st.id || 'init'),
+                      id: 'tx_init_' + (st.id || 'init'),
                       amount: Number(st.xp) || 0,
                       type: 'participation',
                       reason: 'Initial Adventure XP Baseline',
-                      timestamp: new Date().toISOString(),
+                      timestamp: '2026-09-01T09:00:00.000Z',
                       balanceAfter: Number(st.xp) || 0
                     }];
                   } else {
@@ -15746,12 +15746,104 @@
     }
 
     // =========================================================================
-    // GROUP TOTAL XP (Dynamic Sum of Active Student Transactions)
+    // GROUP TOTAL XP & MONTHLY TEAM RACE XP
     // =========================================================================
     getGroupTotalXP(groupId) {
       const group = this.getGroup(groupId);
       if (!group || !Array.isArray(group.studentIds)) return 0;
       return group.studentIds.reduce((total, sId) => total + this.getStudentTotalXP(sId), 0);
+    }
+
+    getMonthlyRaceStartMs() {
+      const baseStart = 1793652420000; // Nov 2, 2026 23:47+03:00 start of monthly team race
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0).getTime();
+      let customReset = 0;
+      try {
+        if (typeof localStorage !== 'undefined') {
+          customReset = Number(localStorage.getItem('eaa_monthly_race_start')) || 0;
+        }
+        if (typeof window !== 'undefined' && window.ClassroomStore && window.ClassroomStore.data) {
+          const csCfg = window.ClassroomStore.data().config;
+          if (csCfg && csCfg.teamMonthResetAt) {
+            customReset = Math.max(customReset, Number(csCfg.teamMonthResetAt) || 0);
+          }
+        }
+      } catch (e) {}
+      return Math.max(baseStart, monthStart, customReset);
+    }
+
+    resetMonthlyTeamRace() {
+      const nowMs = Date.now();
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('eaa_monthly_race_start', String(nowMs));
+        }
+        if (typeof window !== 'undefined' && window.ClassroomStore && window.ClassroomStore.data) {
+          const d = window.ClassroomStore.data();
+          if (d && d.config) {
+            d.config.teamMonthResetAt = nowMs;
+            d.config.updatedAt = nowMs;
+            this.saveState();
+            if (window.ClassroomStore.cloud && window.ClassroomStore.cloud.push) {
+              window.ClassroomStore.cloud.push();
+            }
+          }
+        }
+      } catch (e) {}
+      this.notify('xp', this.state.xpTransactions);
+      return nowMs;
+    }
+
+    getStudentMonthlyXP(studentId) {
+      const sinceMs = this.getMonthlyRaceStartMs();
+      const s = this.getStudent(studentId);
+      const seenIds = new Set();
+      let sum = 0;
+      const checkTx = (tx) => {
+        if (!tx) return;
+        const txId = String(tx.id || '');
+        if (txId && seenIds.has(txId)) return;
+        if (tx.status === 'voided' || tx.status === 'reverted' || tx.isVoided) {
+          if (txId) seenIds.add(txId);
+          return;
+        }
+        if (
+          tx.reason === 'Initial Adventure XP Baseline' ||
+          txId.indexOf('xp-init-') === 0 ||
+          txId.indexOf('xp-cloud-') === 0 ||
+          txId.indexOf('tx_init_') === 0 ||
+          (tx.sourceId && String(tx.sourceId).indexOf('pc-assessment-progress-check-gr3-u1') === 0)
+        ) {
+          if (txId) seenIds.add(txId);
+          return;
+        }
+        let ts = Date.parse(tx.timestamp || '') || 0;
+        const m = txId.match(/^tx_(\d{13})_/);
+        if (m) ts = Math.max(ts, Number(m[1]) || 0);
+        if (ts >= sinceMs) {
+          const amt = Number(tx.amount != null ? tx.amount : tx.points) || 0;
+          sum += amt;
+        }
+        if (txId) seenIds.add(txId);
+      };
+      if (Array.isArray(this.state.xpTransactions)) {
+        this.state.xpTransactions.forEach(tx => {
+          if (tx && (tx.studentId === studentId || (s && tx.studentId === s.studentIdNumber))) {
+            checkTx(tx);
+          }
+        });
+      }
+      if (s && Array.isArray(s.xpHistory)) {
+        s.xpHistory.forEach(checkTx);
+      }
+      return Math.max(0, sum);
+    }
+
+    getGroupMonthlyXP(groupId) {
+      const group = this.getGroup(groupId);
+      if (!group || !Array.isArray(group.studentIds)) return 0;
+      return group.studentIds.reduce((total, sId) => total + this.getStudentMonthlyXP(sId), 0);
     }
 
     // =========================================================================

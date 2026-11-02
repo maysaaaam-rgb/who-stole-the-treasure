@@ -4267,6 +4267,7 @@
     const groupsHtml = groups.map(g => {
       const memberStudents = (g.studentIds || []).map(id => store.getStudent(id)).filter(Boolean);
       const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
+      const teamMonthlyXP = store.getGroupMonthlyXP ? store.getGroupMonthlyXP(g.id) : 0;
       const key = (g.name || '').toLowerCase().trim();
       const th = THEMES_LOOKUP[key] || {
         mascot: 'assets/monsters/art/sparktail_ultimate.webp',
@@ -4284,10 +4285,17 @@
           '<div style="height:115px; position:relative; overflow:hidden; background:#060911;">' +
             '<img src="' + th.bgImg + '" alt="" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.65) saturate(1.25);">' +
             '<div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(6,9,17,0.1) 0%, rgba(10,16,30,0.92) 100%);"></div>' +
-            '<div style="position:absolute; top:10px; right:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(15,23,42,0.85); border:1.5px solid ' + th.accent + '; padding:5px 14px; border-radius:99px; box-shadow:0 4px 14px rgba(0,0,0,0.4); backdrop-filter:blur(8px);">' +
-              '<span style="font-size:1.15rem;">🏆</span>' +
-              '<b style="font-size:1.25rem; font-weight:900; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,0.5);">' + teamTotalXP.toLocaleString('en-US') + '</b>' +
-              '<small style="font-size:0.72rem; font-weight:800; color:#fde68a; letter-spacing:0.06em;">TEAM XP</small>' +
+            '<div style="position:absolute; top:10px; right:14px; display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; z-index:2;">' +
+              '<div onclick="if(window.ClassBoard&&ClassBoard.resetMonthRace)ClassBoard.resetMonthRace();" title="Monthly team race points (starts at 0). Click to reset all teams to 0 for a new month." style="display:inline-flex; align-items:center; gap:6px; background:rgba(6,78,59,0.92); border:2px solid #34d399; padding:5px 14px; border-radius:99px; box-shadow:0 4px 14px rgba(0,0,0,0.4), 0 0 14px rgba(52,211,153,0.35); backdrop-filter:blur(8px); cursor:pointer;">' +
+                '<span style="font-size:1.1rem;">🔥</span>' +
+                '<b style="font-size:1.25rem; font-weight:900; color:#6ee7b7; text-shadow:0 0 10px rgba(52,211,153,0.5);">' + teamMonthlyXP.toLocaleString('en-US') + '</b>' +
+                '<small style="font-size:0.72rem; font-weight:800; color:#d1fae5; letter-spacing:0.06em;">THIS MONTH</small>' +
+              '</div>' +
+              '<div title="All-time combined Team XP" style="display:inline-flex; align-items:center; gap:8px; background:rgba(15,23,42,0.85); border:1.5px solid ' + th.accent + '; padding:5px 14px; border-radius:99px; box-shadow:0 4px 14px rgba(0,0,0,0.4); backdrop-filter:blur(8px);">' +
+                '<span style="font-size:1.15rem;">🏆</span>' +
+                '<b style="font-size:1.25rem; font-weight:900; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,0.5);">' + teamTotalXP.toLocaleString('en-US') + '</b>' +
+                '<small style="font-size:0.72rem; font-weight:800; color:#fde68a; letter-spacing:0.06em;">TOTAL XP</small>' +
+              '</div>' +
             '</div>' +
           '</div>' +
 
