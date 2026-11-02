@@ -1234,9 +1234,6 @@
    */
   function getMonsterAsset(speciesOrArchetype, level) {
     const lvl = parseInt(level, 10) || 1;
-    if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
-    if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
-
     const raw = String(speciesOrArchetype || 'ignis').toLowerCase().trim();
     let species = 'emberwing';
     if (raw.includes('flora') || raw.includes('leaf') || raw.includes('golem') || raw.includes('verdant') || raw.includes('earth')) {
@@ -1251,19 +1248,20 @@
       species = 'emberwing';
     }
 
-    if (lvl >= 7) {
-      return `assets/monsters/${species}_stage_ultimate.png`;
-    } else if (lvl === 6) {
-      return 'assets/monsters/stage-6-advanced-monster.png';
-    } else if (lvl === 5) {
-      return 'assets/monsters/stage-5-adventurer-monster.png';
-    } else if (lvl >= 4) {
-      return `assets/monsters/${species}_stage_growing.png`;
-    } else {
-      return `assets/monsters/${species}_stage_baby.png`;
+    if (window.MonsterRenderer && window.MonsterRenderer.getMonsterStageImage) {
+      return window.MonsterRenderer.getMonsterStageImage(lvl, species);
     }
+
+    if (lvl === 1) return 'assets/monsters/art/' + species + '_egg.webp';
+    if (lvl === 2) return 'assets/monsters/art/' + species + '_cracking.webp';
+    if (lvl === 5) return 'assets/monsters/art/' + species + '_adventurer.webp';
+    if (lvl === 6) return 'assets/monsters/art/' + species + '_advanced.webp';
+    if (lvl >= 7) return 'assets/packs/characters/' + species + '_stage_ultimate.png';
+    if (lvl >= 4) return 'assets/packs/characters/' + species + '_stage_growing.png';
+    return 'assets/packs/characters/' + species + '_stage_baby.png';
   }
-  /**
+  
+/**
    * Authoritative Student Monster Avatar Resolution
    * Checks student.custom_avatar_url, profile.custom_avatar_url, or synthesizes
    * the exact customized SVG companion if custom colors/cosmetics are equipped.

@@ -131,8 +131,8 @@
         return window.MonsterRenderer.getMonsterAsset(speciesOrArchetype, level);
       }
       const lvl = parseInt(level, 10) || 1;
-      if (lvl === 1) return 'assets/monsters/stage-1-mystery-egg.png';
-      if (lvl === 2) return 'assets/monsters/stage-2-cracking-egg.png';
+      if (lvl === 1) return 'assets/monsters/art/' + species + '_egg.webp';
+      if (lvl === 2) return 'assets/monsters/art/' + species + '_cracking.webp';
 
       const raw = String(speciesOrArchetype || 'ignis').toLowerCase();
       let species = 'emberwing';
@@ -142,9 +142,9 @@
       else if (raw.includes('aqua') || raw.includes('water')) species = 'aquafind';
 
       let stage = lvl >= 7 ? 'ultimate' : (lvl >= 4 ? 'growing' : 'baby');
-      if (lvl === 5) return 'assets/monsters/stage-5-adventurer-monster.png';
-      if (lvl === 6) return 'assets/monsters/stage-6-advanced-monster.png';
-      return `assets/monsters/${species}_stage_${stage}.png`;
+      if (lvl === 5) return 'assets/monsters/art/' + species + '_adventurer.webp';
+      if (lvl === 6) return 'assets/monsters/art/' + species + '_advanced.webp';
+      return 'assets/packs/characters/' + species + '_stage_' + stage + '.png';
     }
 
     function getMonsterStageAsset(xp, level, archetype) {

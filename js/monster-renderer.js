@@ -4123,24 +4123,93 @@
   }
 
   
-  const STAGE_IMAGES = {
-    egg: 'assets/monsters/stage-1-mystery-egg.png',
-    cracking_egg: 'assets/monsters/stage-2-cracking-egg.png',
-    baby: 'assets/monsters/stage-3-baby-monster.png',
-    growing: 'assets/monsters/stage-4-growing-monster.png',
-    adventurer: 'assets/monsters/stage-5-adventurer-monster.png',
-    advanced: 'assets/monsters/stage-6-advanced-monster.png',
-    ultimate: 'assets/monsters/stage-7-ultimate-monster.png'
+  const SPECIES_STAGE_ART = {
+    emberwing: {
+      egg: 'assets/monsters/art/emberwing_egg.webp',
+      cracking_egg: 'assets/monsters/art/emberwing_cracking.webp',
+      baby: 'assets/packs/characters/emberwing_stage_baby.png',
+      growing: 'assets/packs/characters/emberwing_stage_growing.png',
+      adventurer: 'assets/monsters/art/emberwing_adventurer.webp',
+      advanced: 'assets/monsters/art/emberwing_advanced.webp',
+      ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
+    },
+    aquafind: {
+      egg: 'assets/monsters/art/aquafind_egg.webp',
+      cracking_egg: 'assets/monsters/art/aquafind_cracking.webp',
+      baby: 'assets/packs/characters/aquafind_stage_baby.png',
+      growing: 'assets/packs/characters/aquafind_stage_growing.png',
+      adventurer: 'assets/monsters/art/aquafind_adventurer.webp',
+      advanced: 'assets/monsters/art/aquafind_advanced.webp',
+      ultimate: 'assets/packs/characters/aquafind_stage_ultimate.png'
+    },
+    astralight: {
+      egg: 'assets/monsters/art/astralight_egg.webp',
+      cracking_egg: 'assets/monsters/art/astralight_cracking.webp',
+      baby: 'assets/packs/characters/astralight_stage_baby.png',
+      growing: 'assets/packs/characters/astralight_stage_growing.png',
+      adventurer: 'assets/monsters/art/astralight_adventurer.webp',
+      advanced: 'assets/monsters/art/astralight_advanced.webp',
+      ultimate: 'assets/packs/characters/astralight_stage_ultimate.png'
+    },
+    sparktail: {
+      egg: 'assets/monsters/art/sparktail_egg.webp',
+      cracking_egg: 'assets/monsters/art/sparktail_cracking.webp',
+      baby: 'assets/packs/characters/sparktail_stage_baby.png',
+      growing: 'assets/packs/characters/sparktail_stage_growing.png',
+      adventurer: 'assets/monsters/art/sparktail_adventurer.webp',
+      advanced: 'assets/monsters/art/sparktail_advanced.webp',
+      ultimate: 'assets/packs/characters/sparktail_stage_ultimate.png'
+    },
+    florasprout: {
+      egg: 'assets/monsters/art/florasprout_egg.webp',
+      cracking_egg: 'assets/monsters/art/florasprout_cracking.webp',
+      baby: 'assets/packs/characters/florasprout_stage_baby.png',
+      growing: 'assets/packs/characters/florasprout_stage_growing.png',
+      adventurer: 'assets/monsters/art/florasprout_adventurer.webp',
+      advanced: 'assets/monsters/art/florasprout_advanced.webp',
+      ultimate: 'assets/packs/characters/florasprout_stage_ultimate.png'
+    }
   };
 
-  function getMonsterStageImage(stageKey) {
-    const key = normalizeStageKey(stageKey);
-    return STAGE_IMAGES[key] || STAGE_IMAGES.baby;
+  const STAGE_IMAGES = {
+    egg: 'assets/monsters/art/emberwing_egg.webp',
+    cracking_egg: 'assets/monsters/art/emberwing_cracking.webp',
+    baby: 'assets/packs/characters/emberwing_stage_baby.png',
+    growing: 'assets/packs/characters/emberwing_stage_growing.png',
+    adventurer: 'assets/monsters/art/emberwing_adventurer.webp',
+    advanced: 'assets/monsters/art/emberwing_advanced.webp',
+    ultimate: 'assets/packs/characters/emberwing_stage_ultimate.png'
+  };
+
+  function getMonsterStageImage(stageKeyOrLevel, species = 'emberwing') {
+    let key = 'baby';
+    if (typeof stageKeyOrLevel === 'number') {
+      const lvl = stageKeyOrLevel;
+      if (lvl <= 1) key = 'egg';
+      else if (lvl === 2) key = 'cracking_egg';
+      else if (lvl === 3) key = 'baby';
+      else if (lvl === 4) key = 'growing';
+      else if (lvl === 5) key = 'adventurer';
+      else if (lvl === 6) key = 'advanced';
+      else key = 'ultimate';
+    } else {
+      key = normalizeStageKey(stageKeyOrLevel);
+    }
+    const rawSp = String(species || 'emberwing').toLowerCase();
+    let sp = 'emberwing';
+    if (rawSp.includes('aqua') || rawSp.includes('water') || rawSp.includes('sea')) sp = 'aquafind';
+    else if (rawSp.includes('astral') || rawSp.includes('star') || rawSp.includes('cosmic')) sp = 'astralight';
+    else if (rawSp.includes('spark') || rawSp.includes('volt') || rawSp.includes('thunder')) sp = 'sparktail';
+    else if (rawSp.includes('flora') || rawSp.includes('leaf') || rawSp.includes('verdant')) sp = 'florasprout';
+
+    const set = SPECIES_STAGE_ART[sp] || SPECIES_STAGE_ART.emberwing;
+    return set[key] || set.baby || 'assets/packs/characters/emberwing_stage_baby.png';
   }
 
   function renderMonsterArtwork(options = {}) {
     const stage = normalizeStageKey(options.stage);
-    const imgSrc = getMonsterStageImage(stage);
+    const species = options.species || 'emberwing';
+    const imgSrc = getMonsterStageImage(stage, species);
     const size = options.size || 160;
     const isRound = options.round !== false;
     const animated = options.animated !== false;
@@ -4148,15 +4217,44 @@
 
     return `
       <div class="eaa-monster-artwork-wrap ${animClass}" style="width:${size}px; height:${size}px; display:inline-flex; align-items:center; justify-content:center; position:relative; border-radius:${isRound ? '18px' : '10px'}; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.3); background:#0f172a;">
-        <img src="${imgSrc}" alt="${stage}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+        <img src="${imgSrc}" alt="${stage}" style="width:100%; height:100%; object-fit:contain; display:block;" />
       </div>
     `.trim();
   }
 
+  if (typeof window !== 'undefined') {
+    window.currentEvolutionBannerSpecies = window.currentEvolutionBannerSpecies || 'emberwing';
+
+    window.switchEvolutionBannerSpecies = function(species) {
+      window.currentEvolutionBannerSpecies = species;
+      const bannerEl = document.querySelector('.monster-evolution-upgrade-banner');
+      if (bannerEl && bannerEl.parentElement) {
+        const container = bannerEl.parentElement;
+        const newBannerHtml = renderMonsterEvolutionStagesBanner();
+        const temp = document.createElement('div');
+        temp.innerHTML = newBannerHtml;
+        if (temp.firstElementChild) {
+          container.replaceChild(temp.firstElementChild, bannerEl);
+        }
+      }
+    };
+  }
+
   function renderMonsterEvolutionStagesBanner() {
-    // the XP numbers come from js/evolution-levels.js so the showcase always matches the real levels
     const XPL = (typeof window !== 'undefined' && Array.isArray(window.EAA_EVOLUTION_XP) && window.EAA_EVOLUTION_XP.length === 7) ? window.EAA_EVOLUTION_XP : [0, 30, 200, 500, 1000, 2000, 3500];
     const xpLabel = (i) => Number(XPL[i]).toLocaleString('en-US') + ' XP';
+    const activeSpecies = (typeof window !== 'undefined' && window.currentEvolutionBannerSpecies) ? window.currentEvolutionBannerSpecies : 'emberwing';
+
+    const speciesThemes = {
+      emberwing: { name: 'Emberwing', label: '🔥 Emberwing (Fire)', accent: '#f97316', border: 'rgba(249,115,22,0.6)', glow: 'rgba(239,68,68,0.28)', ped: 'rgba(249,115,22,0.45)' },
+      aquafind: { name: 'Aquafind', label: '💧 Aquafind (Water)', accent: '#38bdf8', border: 'rgba(56,189,248,0.6)', glow: 'rgba(56,189,248,0.28)', ped: 'rgba(56,189,248,0.45)' },
+      astralight: { name: 'Astralight', label: '🌟 Astralight (Cosmic)', accent: '#c084fc', border: 'rgba(192,132,252,0.6)', glow: 'rgba(168,85,247,0.28)', ped: 'rgba(192,132,252,0.45)' },
+      sparktail: { name: 'Sparktail', label: '⚡ Sparktail (Thunder)', accent: '#facc15', border: 'rgba(250,204,21,0.6)', glow: 'rgba(234,179,8,0.28)', ped: 'rgba(250,204,21,0.45)' },
+      florasprout: { name: 'Florasprout', label: '🌿 Florasprout (Verdant)', accent: '#34d399', border: 'rgba(52,211,153,0.6)', glow: 'rgba(16,185,129,0.28)', ped: 'rgba(52,211,153,0.45)' }
+    };
+
+    const curTheme = speciesThemes[activeSpecies] || speciesThemes.emberwing;
+
     const stages = [
       { level: 1, name: 'Mystery Egg', xp: xpLabel(0), sub: 'A new adventure begins...', stageKey: 'egg' },
       { level: 2, name: 'Cracking Egg', xp: xpLabel(1), sub: 'Life is waking up!', stageKey: 'cracking_egg' },
@@ -4164,42 +4262,75 @@
       { level: 4, name: 'Growing Monster', xp: xpLabel(3), sub: 'Stronger every day!', stageKey: 'growing' },
       { level: 5, name: 'Adventurer Monster', xp: xpLabel(4), sub: 'Ready for bigger quests!', stageKey: 'adventurer' },
       { level: 6, name: 'Advanced Monster', xp: xpLabel(5), sub: 'New powers, new places!', stageKey: 'advanced' },
-      { level: 7, name: 'Ultimate Monster', xp: xpLabel(6), sub: 'A true hero!', stageKey: 'ultimate' }
+      { level: 7, name: 'Ultimate Monster', xp: xpLabel(6), sub: 'The legendary sovereign form!', stageKey: 'ultimate' }
     ];
 
     return `
-      <div class="monster-evolution-upgrade-banner" style="background:linear-gradient(180deg, #071328 0%, #0c1e3d 100%); border-radius:20px; padding:24px; color:#fff; box-shadow:0 12px 36px rgba(0,0,0,0.4); margin-bottom:24px; border:1px solid rgba(56,189,248,0.25);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:14px;">
+      <div class="monster-evolution-upgrade-banner" style="background: radial-gradient(circle at 50% 15%, #0f1c38 0%, #060911 100%); border-radius: 24px; padding: 24px; color: #fff; box-shadow: 0 16px 40px -8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1); margin-bottom: 24px; border: 2px solid ${curTheme.border}; position: relative; overflow: hidden;">
+        <!-- Header Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 16px;">
           <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.4rem;">👾</span>
-              <h2 style="font-size:1.35rem; font-weight:900; margin:0; letter-spacing:0.02em; color:#fff;">Monster Evolution Upgrade (Visual Progression)</h2>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.6rem; filter: drop-shadow(0 2px 8px ${curTheme.glow});">👾</span>
+              <h2 style="font-size: 1.4rem; font-weight: 900; margin: 0; letter-spacing: 0.02em; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                Monster Evolution Progression (7 Living Stages)
+              </h2>
             </div>
-            <p style="font-size:0.84rem; color:#94a3b8; margin:4px 0 0 0;">A real visual evolution, not just accessories. Monsters grow and change as students earn XP!</p>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin: 5px 0 0 0;">
+              Real transparent 3D character models grow with students as they master vocabulary and earn classroom XP.
+            </p>
           </div>
-          <div style="font-size:0.75rem; color:#38bdf8; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">
-            Same Spirit • Greater Growth • More Adventures • A Brighter You!
+
+          <!-- Interactive Species Switcher Tabs -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; background: rgba(15, 23, 42, 0.7); padding: 5px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            ${Object.keys(speciesThemes).map(spKey => {
+              const sp = speciesThemes[spKey];
+              const isActive = spKey === activeSpecies;
+              return `
+                <button type="button" onclick="switchEvolutionBannerSpecies('${spKey}')" style="background: ${isActive ? sp.accent : 'transparent'}; color: ${isActive ? '#060911' : '#cbd5e1'}; font-weight: 800; font-size: 0.76rem; border: none; padding: 6px 12px; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; box-shadow: ${isActive ? '0 4px 12px ' + sp.glow : 'none'};">
+                  ${sp.label}
+                </button>
+              `;
+            }).join('')}
           </div>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; align-items:stretch;">
-          ${stages.map((st, idx) => `
-            <div class="evolution-stage-card-premium" style="background:rgba(15,23,42,0.85); border:1.5px solid ${idx === 6 ? '#f59e0b' : 'rgba(56,189,248,0.3)'}; border-radius:14px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:transform 0.2s ease, box-shadow 0.2s ease; position:relative;">
-              <div style="font-size:0.68rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:2px;">Level ${st.level}</div>
-              <div style="font-size:0.82rem; font-weight:900; color:#f8fafc; margin-bottom:8px; line-height:1.2;">${st.name}</div>
-              
-              <div style="width:100%; aspect-ratio:1; border-radius:10px; overflow:hidden; margin-bottom:8px; background:#020617; border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 2px 8px rgba(0,0,0,0.6);">
-                <img src="${window.EAA_ILLUSTRATED_MONSTERS === true ? 'assets/monsters/art/aquafind_' + (st.stageKey === 'cracking_egg' ? 'egg' : st.stageKey) + '.webp' : getMonsterStageImage(st.stageKey)}" onerror="this.onerror=null;this.src='${getMonsterStageImage(st.stageKey)}'" alt="${st.name}" style="width:100%; height:100%; object-fit:contain; display:block; padding:6px; box-sizing:border-box;" />
-              </div>
+        <!-- 7 Evolution Stage Cards Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 14px; align-items: stretch;">
+          ${stages.map((st, idx) => {
+            const imgSrc = getMonsterStageImage(st.stageKey, activeSpecies);
+            const isUltimate = st.level === 7;
+            const cardBorder = isUltimate ? 'rgba(245, 158, 11, 0.8)' : curTheme.border;
+            const cardGlow = isUltimate ? 'rgba(245, 158, 11, 0.35)' : curTheme.glow;
+            return `
+              <div class="evolution-stage-card-premium" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(14px); border: 1.5px solid ${cardBorder}; border-radius: 18px; padding: 14px 10px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 10px 24px -4px rgba(0,0,0,0.5), 0 0 15px ${cardGlow}; transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease; position: relative; overflow: hidden;">
+                <!-- Level Pill -->
+                <div style="font-size: 0.68rem; font-weight: 900; color: ${isUltimate ? '#fbbf24' : curTheme.accent}; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                  Level ${st.level} ${isUltimate ? '👑' : ''}
+                </div>
+                <div style="font-size: 0.84rem; font-weight: 900; color: #f8fafc; margin-bottom: 10px; line-height: 1.2; height: 32px; display: flex; align-items: center; justify-content: center;">
+                  ${st.name}
+                </div>
+                
+                <!-- 65% 3D Viewport with Reflection Pedestal and Floating Sprite -->
+                <div style="width: 100%; aspect-ratio: 1; border-radius: 14px; position: relative; margin-bottom: 10px; background: radial-gradient(circle at 50% 55%, ${curTheme.glow} 0%, rgba(6, 9, 17, 0.9) 75%); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);">
+                  <!-- 3D Pedestal Disc -->
+                  <div style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 72%; height: 16px; background: radial-gradient(ellipse at center, ${curTheme.ped} 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none;"></div>
+                  <!-- Floating Character Sprite -->
+                  <img src="${imgSrc}" alt="${st.name}" style="width: 84%; height: 84%; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.6)); animation: idleBob 3s ease-in-out infinite; animation-delay: ${idx * 0.18}s;" />
+                </div>
 
-              <div style="font-size:0.78rem; font-weight:900; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); padding:3px 10px; border-radius:12px; margin-bottom:6px; width:90%;">
-                ${st.xp}
+                <!-- XP Milestone Pill -->
+                <div style="font-size: 0.78rem; font-weight: 900; color: #fbbf24; background: rgba(245, 158, 11, 0.15); border: 1.5px solid rgba(245, 158, 11, 0.4); padding: 4px 10px; border-radius: 12px; margin-bottom: 6px; width: 88%;">
+                  ⭐ ${st.xp}
+                </div>
+                <!-- Milestone Subtitle -->
+                <div style="font-size: 0.68rem; color: #cbd5e1; line-height: 1.35; font-style: italic;">
+                  "${st.sub}"
+                </div>
               </div>
-              <div style="font-size:0.68rem; color:#cbd5e1; line-height:1.3; font-style:italic;">
-                "${st.sub}"
-              </div>
-            </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `.trim();
@@ -4239,11 +4370,9 @@
   }
 
   function getMonsterAsset(species, level) {
-    let stage = 'baby';
-    if (level >= 7) stage = 'ultimate';
-    else if (level >= 4) stage = 'growing';
-
-    return `/assets/monsters/${species}_stage_${stage}.webp`;
+    const lvl = parseInt(level, 10) || 1;
+    const sp = String(species || "emberwing").toLowerCase();
+    return getMonsterStageImage(lvl, sp);
   }
 
   // Scene and glow layers on their own (used behind the illustrated monsters).
