@@ -70,8 +70,6 @@
     { id: 'g3-cook2', icon: '📺', title: 'Unit 2 Week 2 L2 · Junior Chef Show', route: 'unit2-g3-cooking/index.html?lesson=2', g: 3, unit: 2, kind: 'lesson', order: 5, added: '2026-10-07' },
     { id: 'g3-show', icon: '🎬', title: 'Unit 2 Speaking Show · Cooking Show Presentations', route: 'unit2-g3-cooking/show.html', g: 3, unit: 2, kind: 'lesson', order: 6, added: '2026-10-07' },
     { id: 'watch-bean-g3', icon: '🎬', title: 'Unit 2 Video Lesson · Mr Bean: Super Trolley (Watch & Answer)', route: 'watch-answer/index.html', g: 3, unit: 2, kind: 'lesson', order: 7, added: '2026-10-07' },
-    { id: 'moon-song-g3', icon: '🌕', title: 'Unit 2 Song · Chuseok Moon Song (Ganggangsullae Circle Dance)', route: 'chuseok-moon-song/index.html', g: 3, unit: 2, kind: 'song', order: 8, added: '2026-10-18' },
-    { id: 'moon-hw-g3', icon: '🏠', title: 'Unit 2 Homework · Moon Song 5-Minute Home Practice', route: 'chuseok-moon-homework/index.html', g: 3, unit: 2, kind: 'homework', order: 9, added: '2026-10-18' },
 
     // =========================================================================
     // UNIT 2 — GRADE 4 (Forest Rangers & The Swallow's Gift)
@@ -96,9 +94,6 @@
     // CLASSROOM, DRAMA & SONGS (Unit 0)
     // =========================================================================
     { id: 'class-reset', icon: '🚦', title: 'Our Class Plan (Monday Reset): 3 Rules, Traffic Light, Practice & Promise', route: 'class-reset/index.html', g: 0, unit: 0, kind: 'lesson', order: 1, added: '2026-10-24' },
-    { id: 'alice-rehearsal', icon: '🎭', title: 'Alice Tea Party: Stage & Script Rehearsal Lessons', route: 'alice-party-rehearsal/index.html', g: 4, unit: 0, kind: 'lesson', order: 2, added: '2026-10-17' },
-    { id: 'alice', icon: '🫖', title: 'Alice Tea Party: Home & Class Practice', route: 'alice-party-home/party.html', g: 4, unit: 0, kind: 'homework', order: 3, added: '2026-10-03' },
-    { id: 'alice-hub', icon: '🫖', title: 'Alice Tea Party HQ: Party Day Plan, Running Order, Cast, Props & Print', route: 'alice-party/index.html', g: 4, unit: 0, kind: 'printable', order: 4, added: '2026-10-25' },
     { id: 'class-promise-paper', icon: '✍️', title: 'My Class Promise: Printable Signing Sheet (2 per A4) & Poster', route: 'class-reset/promise-paper.html', g: 0, unit: 0, kind: 'printable', order: 5, added: '2026-10-24' },
     { id: 'karaoke-g3', icon: '🎤', title: 'Karaoke Stage: Read & Sing One by One (Grade 3)', route: 'karaoke-stage/index.html', g: 3, unit: 0, kind: 'song', order: 6, added: '2026-10-07' },
     { id: 'karaoke-g4', icon: '🎤', title: 'Karaoke Stage: Read & Sing One by One (Grade 4)', route: 'karaoke-stage/index.html', g: 4, unit: 0, kind: 'song', order: 7, added: '2026-10-07' },

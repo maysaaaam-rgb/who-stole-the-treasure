@@ -67,11 +67,7 @@
 
   /* ---- homework of the last two weeks. Tea Party and Chuseok cooking come straight from the Google Sheets (read only, checked every time the page opens);
      (The Arctic Rescue game was taken out of this list on 15 Oct 2026: the teacher does not want it in the Command Center.) */
-  var HW = [
-    { id: 'tea1', label: 'Tea Party 1', title: 'Alice Tea Party: Home Practice, Week 1', grade: 4, steps: 5, due: 'Oct 10', kind: 'sheet' },
-    { id: 'tea2', label: 'Tea Party 2', title: 'Alice Tea Party: Home Practice, Week 2 (with a recording)', grade: 4, steps: 3, due: 'Oct 15', kind: 'sheet' },
-    { id: 'cook', label: 'Cooking', title: 'Chuseok cooking project', grade: 3, steps: 1, due: 'Oct 15', kind: 'sheet' }
-  ];
+  var HW = [];   // the Tea Party and Chuseok cooking rows are gone (themes retired 2 Nov 2026)
   var sheetLoading = false, sheet = { data: null, error: '' }, classGrade = 0, classQuiet = 0;   // classQuiet: days since ANY pupil of the class got XP (only when that is 7 or more)
   function gradeOfClass(cls) { var m = /([34])/.exec((cls && cls.name) || ''); return m ? Number(m[1]) : 0; }
   function hwList() { return HW.filter(function (h) { return !h.grade || h.grade === classGrade; }); }
@@ -424,7 +420,8 @@
   /** Homework of the last two weeks for this class: how many finished, halfway, not started. */
   function homeworkHtml() {
     var n = current.length, hws = hwList();
-    var note = !sheet.data && !sheet.error ? '<div class="cc-dim" style="padding:10px 14px">Reading the Google Sheets…</div>'
+    var needSheet = hws.some(function (h) { return h.kind === 'sheet'; });
+    var note = !needSheet ? '' : !sheet.data && !sheet.error ? '<div class="cc-dim" style="padding:10px 14px">Reading the Google Sheets…</div>'
       : sheet.error ? '<div class="cc-warn" style="margin:10px 14px">Could not read the Google Sheet (' + esc(sheet.error) + '). Check the internet and open the page again.</div>' : '';
     return note + hws.map(function (h) {
       var groups = { done: [], part: [], open: [], none: [], wait: [] }, rec = 0;

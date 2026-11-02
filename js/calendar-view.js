@@ -337,6 +337,14 @@
       5: [{ t: '14:15', l: 'gm-speak-g4' }, { t: '15:20', l: 'karaoke-g4' }]
     }
   };
+  /* Retired themes: the Alice and Chuseok events of October leave the calendar (once per device). */
+  function retireThemesOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('themes-retired1')) return;
+      var list = customEvents().filter(function (e) { return e && e.type !== 'alice' && e.type !== 'chuseok'; });
+      saveEvents(list); store().setCalendarFlag('themes-retired1');
+    } catch (e) { /* the calendar still works */ }
+  }
   /* Week of Mon 2 Nov - Fri 6 Nov 2026: Units 1-4 Speaking & Acting Tournament, Story & Drama, Smart Mix & Revision 2 */
   function weekNov2Once() {
     try {
@@ -398,7 +406,7 @@
     } catch (e) { /* ignore */ }
   }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];

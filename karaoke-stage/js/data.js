@@ -2,7 +2,7 @@
    A card = one turn for one reader: 1 to 3 short lines, plus a picture. */
 window.KaraokeData = (function () {
   var R = window.RevData || {}, C = window.CookData || {}, P = window.PARTY || {}, G3 = window.G3LessonsData || {}, G4 = window.ForestLessonsData || {};
-  var REV_ART = '../unit12-revision-g4/art/', COOK_ART = '../unit2-g3-cooking/art/', ALICE_ART = '../alice-party-home/assets/';
+  var REV_ART = '../unit12-revision-g4/art/', COOK_ART = '../unit2-g3-cooking/art/';
   var G3_ART = '../unit2-g3-lessons/art/', G4_ART = '../unit2-forest-lessons/art/';
   var packs = [];
 
@@ -40,26 +40,6 @@ window.KaraokeData = (function () {
       if (cards.length) packs.unshift({ id: 'weeksong', grade: 4, e: '🎵', title: 'Week Song: ' + String(ws.title || 'our song').slice(0, 40), note: 'The lines we teach this week. Two lines each.', cards: cards });
     }
   } catch (e) { /* no week song on this computer */ }
-
-  /* Grade 4: Alice Tea Party role lines (each pupil reads their own role when the name matches) */
-  if (P.roles) {
-    packs.push({
-      id: 'alice', grade: 4, e: '🫖', title: 'Alice Tea Party: my role', note: 'Each pupil reads the 3 lines of their own role.',
-      cards: Object.keys(P.roles).map(function (k) {
-        var r = P.roles[k], photo = null;
-        Object.keys(P.classes || {}).some(function (c) { return (P.classes[c].students || []).some(function (s) { if (s.role === k && s.photo) { photo = s.photo; return true; } return false; }); });
-        return { key: k, title: r.name, lines: r.sentences.slice(0, 3), img: photo ? ALICE_ART + photo : null, e: r.words && r.words[0] ? r.words[0][1] : '🫖' };
-      }),
-      // the pupil's own role and costume photo, found by first name
-      roleOf: function (name) {
-        var n = norm(name), f = n.split(' ')[0], all = [];
-        Object.keys(P.classes || {}).forEach(function (c) { all = all.concat(P.classes[c].students || []); });
-        var same = all.filter(function (s) { return norm(s.name) === n; }), byFirst = all.filter(function (s) { return norm(s.name).split(' ')[0] === f; });
-        var s = same[0] || (byFirst.length === 1 ? byFirst[0] : null);   // two pupils called Emir: only an exact name decides
-        return s ? { role: s.role, img: s.photo ? ALICE_ART + s.photo : null } : null;
-      }
-    });
-  }
 
   /* Grade 4: Revision Quest sentences */
   if (R.sent1) packs.push({ id: 'g4u1', grade: 4, e: '🐇', title: 'Unit 1 sentences', note: 'Alice, butterflies, the brain.',

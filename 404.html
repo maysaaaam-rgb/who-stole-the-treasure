@@ -126,9 +126,6 @@
       <a href="island/index.html?demo=1" class="link-btn btn-secondary" id="btn-island">
         🏝️ Practice Island
       </a>
-      <a href="story-engine/index.html?story=alice" class="link-btn btn-secondary" id="btn-story">
-        📖 Alice Story Engine
-      </a>
     </div>
   </div>
 
@@ -146,7 +143,6 @@
       document.getElementById('btn-detectives').href = basePrefix + 'detectives/index.html';
       document.getElementById('btn-library').href = basePrefix + 'index.html#library';
       document.getElementById('btn-worksheet').href = basePrefix + 'detectives/worksheet.html';
-      document.getElementById('btn-story').href = basePrefix + 'story-engine/index.html?story=alice';
       if (document.getElementById('btn-island')) document.getElementById('btn-island').href = basePrefix + 'island/index.html?demo=1';
 
       let targetUrl = null;
@@ -182,11 +178,8 @@
       } else if (pathname.includes('harvest-feast') || pathname.includes('story-settings') || pathname.includes('harvest-feasts')) {
         targetUrl = basePrefix + 'harvest-feast/index.html';
         targetName = '🌾 Story Settings & The Chuseok Harvest Feast';
-      } else if (pathname.includes('chuseok-games') || pathname.includes('chuseok-game') || pathname.includes('korean-games') || pathname.includes('folk-games') || pathname.includes('ddakji') || pathname.includes('jegichagi') || pathname.includes('gonggi') || pathname.includes('tuho') || pathname.includes('paengi') || pathname.includes('yutnori')) {
-        targetUrl = basePrefix + 'chuseok-games/index.html';
         targetName = '🌕 Chuseok Game Master Portal: Traditional Korean Folk Games';
       } else if (pathname.includes('chuseok') || pathname.includes('harvest-festival') || pathname.includes('korea-harvest')) {
-        targetUrl = basePrefix + 'chuseok-festival/index.html';
       } else if (pathname.includes('forest-adaptation') || pathname.includes('nature-armor') || pathname.includes('author-purpose') || pathname.includes('authors-purpose')) {
         targetUrl = basePrefix + 'forest-adaptation/index.html';
         targetName = "🌲 Nature's Armor & The Detective's Lens";
@@ -226,20 +219,13 @@
       } else if (pathname.includes('clara') || pathname.includes('inventor')) {
         targetUrl = basePrefix + 'inventor-lab/index.html';
         targetName = 'Inventor Lab';
-      } else if (pathname.includes('alice-party-home') || pathname.includes('tea-party-home') || pathname.includes('party-home')) {
-        targetUrl = basePrefix + 'alice-party-home/party.html' + (pathname.includes('4b') ? '?class=4b' : pathname.includes('4a') ? '?class=4a' : '');
         targetName = 'Alice Tea Party: my plan';
-      } else if (pathname.includes('alice-cards-4a')) {
-        targetUrl = basePrefix + 'alice-cards-4a/index.html';
         targetName = 'Alice Mad Tea Party Cards (4A)';
-      } else if (pathname.includes('alice-cards-4b')) {
-        targetUrl = basePrefix + 'alice-cards-4b/index.html';
         targetName = 'Alice Mad Tea Party Cards (4B)';
       } else if (pathname.includes('tea-party-cards') || pathname.includes('tea-party') || pathname.includes('trading-cards') || pathname.includes('character-cards')) {
         targetUrl = basePrefix + 'tea-party-cards/index.html';
         targetName = '☕ Alice in Wonderland: Mad Tea Party Trading Cards';
       } else if (pathname.includes('alice')) {
-        targetUrl = basePrefix + 'alice-quest/index.html';
         targetName = 'Alice in Wonderland: XP Challenges';
       } else if (pathname.includes('nasa') || pathname.includes('planet')) {
         targetUrl = basePrefix + 'nasa-mission/index.html';

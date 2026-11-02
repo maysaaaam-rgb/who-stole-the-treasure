@@ -9866,3 +9866,6 @@ h1, h2, .hero-panel-title, .stats-hud-number {
     -webkit-backdrop-filter: none !important;
   }
 }
+
+/* Retired themes: the Alice and Korean companion tags are gone */
+.companion-tag, .thematic-companion-card { display: none !important; }

@@ -1,5 +1,5 @@
 /* Class Board scenes: the roster becomes a place where the monsters live. The scene changes with the class and the date
-   (Alice for Grade 4, Chuseok for Grade 3, Halloween around the 31st, Meadow otherwise) or by the teacher's choice.
+   (Halloween around the 31st, Meadow otherwise) or by the teacher's choice.
    Pictures (optional, from Gemini): assets/scenes/bg_<id>.webp, ped_<id>.webp, rest_<id>.webp. Without them the CSS gradients below are used.
    To add a theme: add one entry to THEMES and, if it should start by itself, one line to RULES. */
 (function (root) {
@@ -7,20 +7,14 @@
   var THEMES = {
     meadow: { id: 'meadow', name: 'Meadow', e: '🏝️', sign: 'linear-gradient(180deg,#a16207,#78350f)', ink: '#fff7ed', plinth: ['#d6d3d1', '#78716c'], rest: '⛺',
       bg: 'linear-gradient(180deg,#7dd3fc 0%,#bae6fd 24%,#a7f3d0 24.2%,#4ade80 52%,#16a34a 100%)', deco: 'radial-gradient(ellipse at 18% 26%,rgba(255,255,255,.55) 0 8%,transparent 9%),radial-gradient(ellipse at 70% 18%,rgba(255,255,255,.5) 0 7%,transparent 8%)' },
-    alice: { id: 'alice', name: 'Alice Tea Party', e: '🫖', sign: 'linear-gradient(180deg,#f9a8d4,#db2777)', ink: '#fff', plinth: ['#fbcfe8', '#a21caf'], rest: '🫖',
-      bg: 'linear-gradient(180deg,#fbcfe8 0%,#fbcfe8 32%,rgba(251,207,232,0) 33%),repeating-conic-gradient(#99f6e4 0% 25%,#f0abfc 0% 50%) 0 0/84px 84px', deco: 'radial-gradient(ellipse at 15% 14%,rgba(255,255,255,.6) 0 7%,transparent 8%),radial-gradient(ellipse at 84% 12%,rgba(255,255,255,.55) 0 6%,transparent 7%)' },
-    chuseok: { id: 'chuseok', name: 'Chuseok Night', e: '🌕', sign: 'linear-gradient(180deg,#b45309,#7c2d12)', ink: '#fff7ed', plinth: ['#fde68a', '#b45309'], rest: '🏮',
-      bg: 'radial-gradient(circle at 80% 17%,#fffbe0 0 4.5%,rgba(255,236,150,.45) 5.5%,transparent 17%),linear-gradient(180deg,#0b1d4a 0%,#1e3a8a 50%,#3b2a14 100%)', deco: 'radial-gradient(circle at 12% 20%,rgba(255,255,255,.7) 0 .25%,transparent .4%),radial-gradient(circle at 34% 10%,rgba(255,255,255,.7) 0 .25%,transparent .4%),radial-gradient(circle at 55% 24%,rgba(255,255,255,.6) 0 .25%,transparent .4%)' },
     halloween: { id: 'halloween', name: 'Halloween', e: '🎃', sign: 'linear-gradient(180deg,#6d28d9,#3b0764)', ink: '#ffedd5', plinth: ['#fdba74', '#c2410c'], rest: '⛺',
       bg: 'radial-gradient(circle at 82% 15%,#fde68a 0 4.5%,rgba(253,230,138,.35) 5.5%,transparent 17%),linear-gradient(180deg,#1b0b33 0%,#3b1470 52%,#7c2d12 100%)', deco: 'radial-gradient(circle at 10% 16%,rgba(255,255,255,.65) 0 .25%,transparent .4%),radial-gradient(circle at 40% 8%,rgba(255,255,255,.6) 0 .25%,transparent .4%)' }
   };
   /* the colour of the ground under the picture, so a long class continues the scene smoothly */
-  var GROUND = { meadow: '#58b84a', alice: '#cfe9e2', chuseok: '#8a6a43', halloween: '#4b2a85' };
+  var GROUND = { meadow: '#58b84a', halloween: '#4b2a85' };
   /* first matching rule wins; the teacher can always override with the scene picker */
   var RULES = [
-    { theme: 'halloween', from: '2026-10-26', to: '2026-11-01' },
-    { theme: 'chuseok', grade: 3, from: '2026-09-21', to: '2026-10-25' },
-    { theme: 'alice', grade: 4, from: '2026-10-01', to: '2026-10-26' }
+    { theme: 'halloween', from: '2026-10-26', to: '2026-11-01' }
   ];
   function dayKey(d) { d = d || new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   function gradeOf(cls) { var t = String((cls && (cls.grade || '')) + ' ' + (cls && cls.name || '')); return /4/.test(t) ? 4 : (/3/.test(t) ? 3 : 0); }
