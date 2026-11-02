@@ -10463,8 +10463,14 @@
             const parsed = JSON.parse(raw);
             const initial = getInitialState();
             const merged = Object.assign({}, initial, parsed);
-            if (!merged.groups || merged.groups.length < 16 || (merged.groups.find(function(g){return g.id==='group-4b-2';}) && merged.groups.find(function(g){return g.id==='group-4b-2';}).studentIds.length !== 6) || (merged.groups.find(function(g){return g.id==='group-3b-1';}) && merged.groups.find(function(g){return g.id==='group-3b-1';}).studentIds.length !== 5)) {
+            if (!merged.groups || !Array.isArray(merged.groups) || merged.groups.length < 16) {
               merged.groups = JSON.parse(JSON.stringify(initial.groups || []));
+            } else {
+              const initGroupMap = new Map((initial.groups || []).map(g => [g.id, g]));
+              merged.groups = merged.groups.map(g => initGroupMap.has(g.id) ? JSON.parse(JSON.stringify(initGroupMap.get(g.id))) : g);
+              (initial.groups || []).forEach(ig => {
+                if (!merged.groups.some(g => g.id === ig.id)) merged.groups.push(JSON.parse(JSON.stringify(ig)));
+              });
             }
             if (Array.isArray(merged.students)) {
               merged.students.forEach(function(st) {
@@ -16730,6 +16736,7 @@
             const mergedAvatarPoses = remoteStudent.avatarPoses || local.avatarPoses || (remoteStudent.extraData && remoteStudent.extraData.avatarPoses) || (local.extraData && local.extraData.avatarPoses) || null;
 
             const mergedStudent = Object.assign({}, local, remoteStudent, {
+              classId: remoteStudent.id === 'student-4b-208' ? 'class-4a' : (remoteStudent.id === 'student-4a-319' ? 'class-4b' : (remoteStudent.classId || local.classId)),
               avatarUrl: mergedAvatarUrl,
               avatarPoses: mergedAvatarPoses,
               xp: mergedXP,
@@ -16753,6 +16760,7 @@
           } else {
             // Student added on another device: ingest into local state with archive folded in
             const sCopy = Object.assign({}, remoteStudent, {
+              classId: remoteStudent.id === 'student-4b-208' ? 'class-4a' : (remoteStudent.id === 'student-4a-319' ? 'class-4b' : remoteStudent.classId),
               xp: remoteFolded,
               totalXP: remoteFolded,
               archivedXP: 0,
