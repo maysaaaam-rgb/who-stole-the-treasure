@@ -511,7 +511,7 @@
       '<span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\')">+ Add event</button></div>' +
       '<div class="cal-top" style="margin-top:0"><button class="cal-b ' + (st.cls === 'all' ? 'on' : 'g') + '" onclick="CalendarView.cls(\'all\')">All classes</button>' +
       cl.map(function (c) { return '<button class="cal-b ' + (st.cls === c.id ? 'on' : 'g') + '" onclick="CalendarView.cls(\'' + esc(c.id) + '\')">' + esc(shortName(c.id)) + '</button>'; }).join('') + '</div>' +
-      '<div class="cal-legend">' + Object.keys(TYPES).map(function (k) { return '<span><i style="background:' + TYPES[k][2] + '"></i>' + TYPES[k][1] + '</span>'; }).join('') + '</div>';
+      '<div class="cal-legend">' + Object.keys(TYPES).filter(function (k) { return k !== 'alice' && k !== 'chuseok'; }).map(function (k) { return '<span><i style="background:' + TYPES[k][2] + '"></i>' + TYPES[k][1] + '</span>'; }).join('') + '</div>';
   }
   function monthHtml() {
     var first = new Date(st.y, st.m, 1), start = monday(first), todayKey = ymd(new Date()), cells = '';
@@ -585,7 +585,7 @@
       '<div style="grid-column:1/3"><label>What</label><input id="cal-f-title" value="' + esc(e.title) + '" placeholder="Quiz for 4/A, parent meeting, bring props…"></div>' +
       '<div><label>Day</label><input id="cal-f-date" type="date" value="' + esc(e.date) + '"></div><div><label>Time (optional)</label><input id="cal-f-time" type="time" value="' + esc(e.time) + '"></div>' +
       '<div><label>Class</label><select id="cal-f-cls"><option value="">All / none</option>' + classes().map(function (c) { return '<option value="' + esc(c.id) + '"' + (e.classId === c.id ? ' selected' : '') + '>' + esc(shortName(c.id)) + '</option>'; }).join('') + '</select></div>' +
-      '<div><label>Type</label><select id="cal-f-type">' + Object.keys(TYPES).filter(function (k) { return k !== 'birthday'; }).map(function (k) { return '<option value="' + k + '"' + (e.type === k ? ' selected' : '') + '>' + TYPES[k][0] + ' ' + TYPES[k][1] + '</option>'; }).join('') + '</select></div>' +
+      '<div><label>Type</label><select id="cal-f-type">' + Object.keys(TYPES).filter(function (k) { return k !== 'birthday' && k !== 'alice' && k !== 'chuseok'; }).map(function (k) { return '<option value="' + k + '"' + (e.type === k ? ' selected' : '') + '>' + TYPES[k][0] + ' ' + TYPES[k][1] + '</option>'; }).join('') + '</select></div>' +
       '<div style="grid-column:1/3"><label>Note (optional)</label><textarea id="cal-f-note" rows="3">' + esc(e.note) + '</textarea></div></div>' +
       '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="cal-b g" id="cal-f-no">Cancel</button><button class="cal-b ok" id="cal-f-ok">Save</button></div></div>';
     document.body.appendChild(m);
