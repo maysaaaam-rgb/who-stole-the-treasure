@@ -75,6 +75,22 @@
     '.cb-goal{margin:16px 0 18px;background:rgba(0,0,0,.26);border-radius:20px;padding:12px 18px;display:flex;align-items:center;gap:16px;position:relative;cursor:pointer}' +
     '.cb-goal .bar{flex:1;height:22px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.cb-goal .bar i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#fb7185);border-radius:99px;box-shadow:0 0 18px #fbbf24;transition:width .5s}' +
     '.cb-goal b{font-size:1.1rem;font-weight:600;white-space:nowrap}' +
+    
+    '.cb-teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px;position:relative;margin-bottom:24px}' +
+    '@media(max-width:900px){.cb-teams-grid{grid-template-columns:1fr}}' +
+    '.cb-team-pod{background:var(--tp-bg,rgba(15,23,42,.85));border:2px solid var(--tp-border,rgba(255,255,255,.2));border-radius:28px;padding:16px 18px 20px;backdrop-filter:blur(14px);box-shadow:0 10px 30px -4px rgba(0,0,0,.5);display:flex;flex-direction:column;position:relative;transition:transform .2s ease,box-shadow .2s ease}' +
+    '.cb-team-pod:hover{transform:translateY(-3px);box-shadow:0 16px 40px -4px var(--tp-glow,rgba(0,0,0,.6))}' +
+    '.cb-team-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}' +
+    '.cb-team-info{display:flex;align-items:center;gap:10px}' +
+    '.cb-team-crest{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.12);border:2px solid var(--tp-accent,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(0,0,0,.35);flex-shrink:0}' +
+    '.cb-team-name-wrap h3{margin:0;font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-.01em}' +
+    '.cb-team-motto{font-size:.78rem;color:var(--tp-accent,#94a3b8);font-weight:600;margin-top:1px}' +
+    '.cb-team-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +
+    '.cb-team-score-badge{background:rgba(251,191,36,.22);border:1.5px solid var(--tp-accent,#fbbf24);color:#fff;padding:5px 14px;border-radius:99px;font-weight:700;font-size:1rem;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}' +
+    '.cb-team-btn{border:0;border-radius:12px;background:var(--tp-accent,#22c55e);color:#06101f;font:700 .88rem Fredoka,sans-serif;padding:8px 14px;cursor:pointer;border-bottom:4px solid rgba(0,0,0,.35);box-shadow:0 4px 10px rgba(0,0,0,.25);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s}' +
+    '.cb-team-btn:hover{filter:brightness(1.15)}' +
+    '.cb-team-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
+    '.cb-team-monsters-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:12px;align-items:stretch}' +
     '.cb-mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;position:relative}' +
     '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s;animation:cbCardIn .28s cubic-bezier(.175,.885,.32,1.275) backwards;animation-delay:calc(var(--i,0) * 22ms)}' +
     '@keyframes cbCardIn{from{opacity:0;transform:translateY(10px) scale(.96)}}' +
@@ -159,6 +175,32 @@
     '.cb-flagm{position:fixed;z-index:9600;background:#0f172a;color:#fff;border-radius:14px;padding:8px;display:grid;gap:5px;min-width:300px;max-width:360px;max-height:calc(100vh - 16px);overflow:auto;box-shadow:0 8px 28px rgba(0,0,0,.5);font-family:inherit}.cb-flagm b{font-size:.9rem;padding:2px 6px}' +
     '.cb-flagm button{font:inherit;font-weight:700;text-align:left;border:0;border-radius:9px;padding:7px 10px;cursor:pointer;background:#1e293b;color:#fff}.cb-flagm button:hover{background:#334155}' +
     '.cb-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2f1519;color:#fecaca;border:1px solid #7f1d1d;border-radius:12px;padding:10px 16px;z-index:9700;display:flex;gap:12px;align-items:center;font-weight:700}.cb-toast button{background:#fecaca;color:#2f1519;border:0;border-radius:8px;padding:4px 10px;font-weight:800;cursor:pointer}';
+  
+  var TEAM_THEMES = {
+    'golden eagles': { icon: '🦅', motto: 'High Flyers & Bold Achievers', color: '#eab308', accent: '#fbbf24', border: 'rgba(234,179,8,0.55)', glow: 'rgba(234,179,8,0.3)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.92), rgba(15,23,42,0.95))' },
+    'emerald forest': { icon: '🌲', motto: 'Deep Roots, Growing Strong', color: '#10b981', accent: '#34d399', border: 'rgba(16,185,129,0.55)', glow: 'rgba(16,185,129,0.3)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.92), rgba(15,23,42,0.95))' },
+    'ocean explorers': { icon: '🌊', motto: 'Navigating Wonder & Depths', color: '#38bdf8', accent: '#38bdf8', border: 'rgba(56,189,248,0.55)', glow: 'rgba(56,189,248,0.3)', bg: 'linear-gradient(135deg, rgba(8,28,45,0.92), rgba(15,23,42,0.95))' },
+    'cosmic phoenix': { icon: '🔥', motto: 'Rising Together into the Stars', color: '#ec4899', accent: '#f472b6', border: 'rgba(236,72,153,0.55)', glow: 'rgba(236,72,153,0.3)', bg: 'linear-gradient(135deg, rgba(38,12,28,0.92), rgba(15,23,42,0.95))' },
+    'star navigators': { icon: '🧭', motto: 'Guiding the Way Forward', color: '#8b5cf6', accent: '#a78bfa', border: 'rgba(139,92,246,0.55)', glow: 'rgba(139,92,246,0.3)', bg: 'linear-gradient(135deg, rgba(26,14,48,0.92), rgba(15,23,42,0.95))' },
+    'crystal panthers': { icon: '🐆', motto: 'Swift, Sharp & Fearless', color: '#06b6d4', accent: '#22d3ee', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.92), rgba(15,23,42,0.95))' },
+    'thunder wolves': { icon: '🐺', motto: 'Loyal Pack, Unstoppable Energy', color: '#f59e0b', accent: '#fbbf24', border: 'rgba(245,158,11,0.55)', glow: 'rgba(245,158,11,0.3)', bg: 'linear-gradient(135deg, rgba(38,24,8,0.92), rgba(15,23,42,0.95))' },
+    'solar phoenix': { icon: '☀️', motto: 'Blazing Bright with Courage', color: '#ef4444', accent: '#f87171', border: 'rgba(239,68,68,0.55)', glow: 'rgba(239,68,68,0.3)', bg: 'linear-gradient(135deg, rgba(42,12,12,0.92), rgba(15,23,42,0.95))' },
+    'mystic dragons': { icon: '🐉', motto: 'Ancient Wisdom & Dragon Flame', color: '#8b5cf6', accent: '#c084fc', border: 'rgba(139,92,246,0.55)', glow: 'rgba(139,92,246,0.3)', bg: 'linear-gradient(135deg, rgba(28,14,48,0.92), rgba(15,23,42,0.95))' },
+    'solar voyagers': { icon: '🚀', motto: 'Journeying into the Cosmos', color: '#f59e0b', accent: '#fde047', border: 'rgba(245,158,11,0.55)', glow: 'rgba(245,158,11,0.3)', bg: 'linear-gradient(135deg, rgba(36,22,8,0.92), rgba(15,23,42,0.95))' },
+    'diamond titans': { icon: '💎', motto: 'Unbreakable Strength & Clarity', color: '#06b6d4', accent: '#67e8f9', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.92), rgba(15,23,42,0.95))' },
+    'cyber knights': { icon: '⚔️', motto: 'Honor, Code & Team Unity', color: '#3b82f6', accent: '#60a5fa', border: 'rgba(59,130,246,0.55)', glow: 'rgba(59,130,246,0.3)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.92), rgba(15,23,42,0.95))' },
+    'golden starlights': { icon: '✨', motto: 'Shining Together As One', color: '#eab308', accent: '#fef08a', border: 'rgba(234,179,8,0.55)', glow: 'rgba(234,179,8,0.3)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.92), rgba(15,23,42,0.95))' },
+    'book wizards': { icon: '🧙', motto: 'Words, Wonder & Endless Magic', color: '#10b981', accent: '#6ee7b7', border: 'rgba(16,185,129,0.55)', glow: 'rgba(16,185,129,0.3)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.92), rgba(15,23,42,0.95))' },
+    'galactic navigators': { icon: '🌌', motto: 'Charting Uncharted Worlds', color: '#06b6d4', accent: '#38bdf8', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,26,45,0.92), rgba(15,23,42,0.95))' },
+    'apex guardians': { icon: '🛡️', motto: 'Shields Up, Defending Excellence', color: '#3b82f6', accent: '#93c5fd', border: 'rgba(59,130,246,0.55)', glow: 'rgba(59,130,246,0.3)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.92), rgba(15,23,42,0.95))' }
+  };
+  function getTeamThemeMeta(name, fallbackColor) {
+    var key = (name || '').toLowerCase().trim();
+    if (TEAM_THEMES[key]) return TEAM_THEMES[key];
+    var col = fallbackColor || '#38bdf8';
+    return { icon: '⭐', motto: 'United Classroom Team', color: col, accent: col, border: col + '88', glow: col + '44', bg: 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.92))' };
+  }
+
   function ensureCss() {
     if (document.getElementById('cb-css')) return;
     var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + EXTRA_CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
@@ -306,23 +348,72 @@
     el.textContent = pickedCount + ' of ' + present.length + ' picked';
   }
 
+  
+  function renderTeamsView(cls, studentList) {
+    var groups = S().getGroups ? S().getGroups(cls.id) : [];
+    if (!groups || groups.length === 0) {
+      return '<div style="text-align:center; padding:40px; color:#fff; font-size:1.1rem;">No teams found for this class. <button class="cb-team-btn" onclick="ClassBoard.groups()">Create Teams</button></div>';
+    }
+    return '<div class="cb-teams-grid">' + groups.map(function (grp) {
+      var theme = getTeamThemeMeta(grp.name, grp.color);
+      var memberIds = grp.studentIds || [];
+      var members = memberIds.map(function (id) {
+        return studentList.find(function (s) { return s.id === id; });
+      }).filter(Boolean);
+      var groupTotalXP = members.reduce(function (acc, m) { return acc + (m.xp || 0); }, 0);
+
+      return '<div class="cb-team-pod" id="cb-team-' + esc(grp.id) + '" style="--tp-accent:' + theme.accent + '; --tp-bg:' + theme.bg + '; --tp-border:' + theme.border + '; --tp-glow:' + theme.glow + ';">' +
+        '<div class="cb-team-hd" id="cb-team-header-' + esc(grp.id) + '">' +
+          '<div class="cb-team-info">' +
+            '<div class="cb-team-crest">' + theme.icon + '</div>' +
+            '<div class="cb-team-name-wrap">' +
+              '<h3>' + esc(grp.name) + '</h3>' +
+              '<div class="cb-team-motto">' + esc(theme.motto) + ' · ' + members.length + ' Members</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="cb-team-actions">' +
+            '<span class="cb-team-score-badge">🏆 <b id="cb-team-pt-' + esc(grp.id) + '">' + groupTotalXP.toLocaleString('en-US') + '</b> Team XP</span>' +
+            '<button class="cb-team-btn" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 5)" title="Award +5 XP to all team members">+5 Team</button>' +
+            '<button class="cb-team-btn" style="background:#f59e0b; color:#fff;" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 10)" title="Award +10 XP to all team members">+10 Team</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cb-team-monsters-row">' +
+          members.map(function (s, idx) {
+            return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '" style="--i:' + idx + '">' +
+              '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
+              '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
+              '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
+              '<div class="cb-pw"><i class="cb-ped"></i>' +
+                '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
+              '</div>' +
+              '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
+              (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
+              '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
+              (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away">−10</button></div>' : '') +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
   function render(container) {
     ensureCss();
     var cls = S().getActiveClass(); viewCls = cls; loadAbsent(cls);
     var list = students(cls), present = list.filter(function (s) { return !absent[s.id]; }).length;
     var total = list.reduce(function (n, s) { return n + s.xp; }, 0);
-    var BS = root.BoardScenes, sceneOn = !!BS && BS.viewMode() === 'scene', theme = BS ? BS.resolve(cls) : 'meadow';
+    var BS = root.BoardScenes, viewMode = BS ? BS.viewMode() : 'scene', sceneOn = (viewMode === 'scene'), teamsOn = (viewMode === 'teams'), gridOn = (!sceneOn && !teamsOn), theme = BS ? BS.resolve(cls) : 'meadow';
     // Scene view: no ranking. Every pupil keeps a fixed place (A to Z), so nobody moves up or down when points are given.
     if (sceneOn) list = list.slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'tr'); });
     try { document.body.setAttribute('data-cb-scene', sceneOn ? theme : ''); } catch (e) { /* ignore */ }
-    var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (sceneOn ? '' : 'on') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
+    var switcher = BS ? '<span class="cb-sw"><button class="' + (sceneOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'scene\')">🏝️ Scene</button><button class="' + (teamsOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'teams\')">👥 Teams</button><button class="' + (gridOn ? 'on' : '') + '" onclick="ClassBoard.setView(\'grid\')">📋 Grid</button>' + (sceneOn ? '<select title="Scene" onchange="ClassBoard.setScene(this.value)"><option value="auto"' + (BS.getPref() === 'auto' ? ' selected' : '') + '>🔄 Auto: ' + esc(BS.THEMES[BS.auto(cls)].name) + '</option>' + Object.keys(BS.THEMES).map(function (k) { return '<option value="' + k + '"' + (BS.getPref() === k ? ' selected' : '') + '>' + BS.THEMES[k].e + ' ' + esc(BS.THEMES[k].name) + '</option>'; }).join('') + '</select>' : '') + '</span>' : '';
     container.innerHTML = '<div class="cb' + (sceneOn ? ' scene-on scene-' + theme : '') + '" id="cb-root">' +
       '<div class="cb-hd"><div><h1>🌟 ' + esc(cls.name) + '</h1><small>' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</small></div>' +
         '' + switcher + '<button class="cb-dsc' + (discOn() ? ' on' : '') + '" onclick="ClassBoard.disc()" title="Minus points and flags. Flags are visible on the board while this is ON. Off at the start of every session.">🚩 Discipline: ' + (discOn() ? 'On' : 'Off') + '</button><div class="cb-tm"><div class="cb-clock" id="cb-clock"><b>' + fmt(timer.left) + '</b><small>Timer</small></div><div><b id="cb-here">' + present + '</b><small>Here today</small></div><div><b id="cb-total">' + total.toLocaleString('en-US') + '</b><small>Class XP</small></div></div></div>' +
       '<div class="cb-tabs">' + (S().getClasses ? S().getClasses() : []).filter(function (c) { return !c.archived; }).map(function (c) { return '<button class="' + (c.id === cls.id ? 'on' : '') + '" onclick="ClassBoard.switchClass(\'' + esc(c.id) + '\')">' + esc(c.name) + '</button>'; }).join('') + '</div>' +
       '<div class="cb-today"><span class="lab">📅 Today:</span>' + todayChips(cls) + '</div>' +
       '<div class="cb-goal" id="cb-goal" onclick="ClassBoard.setGoal()" title="Click to change the class goal"><b class="l"></b><div class="bar"><i style="width:0"></i></div><b class="r"></b></div>' +
-      (discOn() ? stageStrip() : '') + '<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
+      (discOn() ? stageStrip() : '') + (teamsOn ? renderTeamsView(cls, list) : ('<div class="cb-mg' + (sceneOn ? ' scene' : '') + '">' + list.map(function (s, idx) {
         var plateCss = !sceneOn && s.x && s.x.plate && s.x.plate.css ? s.x.plate.css : '';
         var stStyle = ' style="--i:' + Math.min(idx, 12) + (plateCss ? ';' + esc(plateCss) : '') + '"';
         var animal = !sceneOn && s.x && s.x.pack && s.x.pack.animal ? '<i class="cb-an" title="' + esc(s.x.pack.name) + '" style="background-image:url(bamboozle/memes/' + esc(s.x.pack.animal) + '_celebrate.webp)"></i>' : '';
@@ -336,7 +427,7 @@
           (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
           '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
           (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away (Undo is offered)">−10</button><button class="fl" onclick="ClassBoard.flag(\'' + esc(s.id) + '\', event)" title="Move this pupil up one stage (1 to 6)">🪜 Stage' + (flagOf(s.id) ? ' ' + flagOf(s.id) : '') + '</button></div>' : '') + '</div>';
-      }).join('') + '</div>' +
+      }).join('') + '</div>')) +
       '<div class="cb-dock"><button class="p" id="cb-play" onclick="ClassBoard.play()" title="Start or pause the timer">▶ Start</button>' +
         '<span class="cb-tm-pills"><button class="sm" onclick="ClassBoard.preset(60)" title="1 minute">1m</button><button class="sm" onclick="ClassBoard.preset(180)" title="3 minutes">3m</button><button class="sm" onclick="ClassBoard.preset(300)" title="5 minutes">5m</button><button class="sm" onclick="ClassBoard.preset(600)" title="10 minutes">10m</button><button class="sm" onclick="ClassBoard.reset()" title="Reset the timer">↺</button></span><span class="sep"></span>' +
         '<button onclick="ClassBoard.pick()" title="Pick a student (no repeats until everyone is picked)">🎲 Pick</button>' +
@@ -484,6 +575,38 @@
       });
       document.body.appendChild(m);
       setTimeout(function () { document.addEventListener('mousedown', function h(e) { if (!m.contains(e.target)) { m.remove(); document.removeEventListener('mousedown', h); } }); }, 50);
+    },
+    
+    awardTeam: function (groupId, n) {
+      var st = S(); if (!st || !st.giveXP) return;
+      var grp = st.getGroup ? st.getGroup(groupId) : null;
+      if (!grp || !grp.studentIds) return;
+      grp.studentIds.forEach(function (id) {
+        st.giveXP(id, n, 'Team Points: ' + grp.name, 'Teacher', { category: 'team', icon: '🏆' });
+        var me = st.getStudent(id);
+        var card = document.getElementById('cb-' + id);
+        if (card) {
+          var ptEl = document.getElementById('cb-pt-' + id);
+          if (ptEl && me) ptEl.textContent = (Number(me.xp) || 0).toLocaleString('en-US');
+          var b = document.createElement('div'); b.className = 'cb-burst'; b.textContent = '+' + n + ' ⭐'; card.appendChild(b); setTimeout(function () { b.remove(); }, 1000);
+          var img = card.querySelector('.cb-mon'); if (img) { img.classList.remove('cb-bounce'); void img.offsetWidth; img.classList.add('cb-bounce'); }
+        }
+      });
+      try {
+        if (root.classSoundboard && root.classSoundboard.playFanfare) root.classSoundboard.playFanfare();
+        else if (root.classSoundboard && root.classSoundboard.playCoinReward) root.classSoundboard.playCoinReward();
+      } catch (e) {}
+      var teamPtEl = document.getElementById('cb-team-pt-' + groupId);
+      if (teamPtEl && st.getGroupTotalXP) {
+        teamPtEl.textContent = st.getGroupTotalXP(groupId).toLocaleString('en-US');
+        var teamHd = document.getElementById('cb-team-header-' + groupId);
+        if (teamHd) {
+          var tb = document.createElement('div'); tb.className = 'cb-burst'; tb.style.fontSize = '1.8rem'; tb.textContent = '+' + (n * grp.studentIds.length) + ' TEAM ⭐';
+          teamHd.appendChild(tb); setTimeout(function () { tb.remove(); }, 1200);
+        }
+      }
+      paintGoal();
+      paintClock();
     },
     award: function (id, n) {
       var st = S(); if (!st.giveXP) return;
