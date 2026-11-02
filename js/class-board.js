@@ -479,7 +479,18 @@ function ensureCss() {
       var theme = getTeamThemeMeta(grp.name, grp.color);
       var memberIds = grp.studentIds || [];
       var members = memberIds.map(function (id) {
-        return studentList.find(function (s) { return s.id === id; });
+        var found = studentList.find(function (s) { return s.id === id; });
+        if (found) return found;
+        var st = S();
+        var raw = st && st.getStudent ? st.getStudent(id) : null;
+        if (!raw) return null;
+        var m = st.calculateMonsterState ? st.calculateMonsterState(raw.id) : {};
+        var prof = st.getMonsterProfile ? st.getMonsterProfile(raw.id) : null, img = '', av = '';
+        try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(raw, prof, m) : ''; } catch (e) { img = ''; }
+        try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(raw) : (raw.avatarUrl || raw.av || raw.avatar || ''); } catch (e) { av = raw.avatarUrl || raw.av || raw.avatar || ''; }
+        var x = {};
+        try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(raw.id) : {}; } catch (e) { x = {}; }
+        return { id: raw.id, name: raw.firstName || raw.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : raw.xp) || 0, img: img, av: av, x: x };
       }).filter(Boolean);
       var groupTotalXP = members.reduce(function (acc, m) { return acc + (m.xp || 0); }, 0);
 
