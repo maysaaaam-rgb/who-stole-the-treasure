@@ -456,8 +456,23 @@
       store().setCalendarFlag('seed24');
     } catch (e) { /* the calendar still works */ }
   }
+  /* The Monster Pet Shop lesson is built: its calendar slots open it for the right class. */
+  function petShopLinkOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed25')) return;
+      var list = customEvents().slice(), n = 0;
+      list.forEach(function (e) {
+        if (!e || !/^seed24-/.test(String(e.id || '')) || !/Monster Pet Shop/.test(e.title || '')) return;
+        var cls = String(e.classId || '').replace('class-', '');
+        e.note = 'Teams of 4-5 with jobs (Artist, Writer, Speaker, Timer Boss): each team draws a Halloween pet and sells it in English. Open halloween-pet-shop/index.html?class=' + cls + ' and print halloween-pet-shop/worksheet.html?class=' + cls + ' (1 card per team).';
+        n++;
+      });
+      if (n) saveEvents(list);
+      store().setCalendarFlag('seed25');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monster Pet Shop · Lesson Plan</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ece9f5; color: #1e1b2e; font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; font-size: 10.5pt; }
+    .bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 16px; background: #1e1b2e; color: #fff; }
+    .bar b { margin-right: auto; }
+    .bar button, .bar a { border: 0; border-bottom: 5px solid #5b21b6; background: #7c3aed; color: #fff; font: inherit; font-weight: 900; padding: 8px 14px; border-radius: 12px; cursor: pointer; text-decoration: none; }
+    .bar button.on { background: #f97316; border-bottom-color: #c2410c; }
+    .bar button:active, .bar a:active { transform: translateY(4px); border-bottom-width: 1px; }
+    .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 11mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
+    h1 { margin: 0 0 2px; font-size: 19pt; }
+    h2 { margin: 10px 0 4px; font-size: 12pt; color: #6d28d9; }
+    .meta { color: #4c4766; margin: 0 0 6px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+    .box { border: 1.5px solid #ddd6fe; border-radius: 10px; padding: 6px 10px; }
+    .box b { color: #6d28d9; }
+    ul { margin: 2px 0; padding-left: 18px; } li { margin: 1px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    th, td { border: 1.5px solid #ddd6fe; padding: 5px 7px; text-align: left; vertical-align: top; }
+    th { background: #f5f3ff; }
+    td.min { white-space: nowrap; font-weight: 900; color: #6d28d9; }
+    .check th, .check td { text-align: center; font-size: 10pt; }
+    .check td:first-child, .check th:first-child { text-align: left; width: 28%; }
+    .check td { height: 15mm; }
+    .key { margin-top: 6px; color: #4c4766; }
+    .g4 { display: none; } body.grade4 .g4 { display: inline; } body.grade4 .g3 { display: none; }
+    @media print {
+      body { background: #fff; } .bar { display: none; }
+      .page { margin: 0; box-shadow: none; width: auto; min-height: auto; padding: 8mm 10mm; page-break-after: always; }
+      .page:last-child { page-break-after: auto; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <b>🎃 Monster Pet Shop · teacher plan</b>
+    <button type="button" id="g3">Grade 3</button>
+    <button type="button" id="g4">Grade 4</button>
+    <a href="index.html" id="open-lesson">▶ Open the lesson</a>
+    <button type="button" onclick="window.print()">🖨️ Print</button>
+  </div>
+
+  <section class="page">
+    <h1>🎃 Halloween Monster Pet Shop</h1>
+    <p class="meta"><b id="cls-lbl">Grade 3</b> · 40 minutes · teams of 4–5 (All About Me survey teams) · A1 · smartboard + 1 Pet Design Card per team</p>
+    <div class="grid">
+      <div class="box"><b>Pupils will…</b>
+        <ul>
+          <li>describe a pet: <i class="g3">It's a black cat. It has got a hat. It can climb.</i><i class="g4">It's a small, black cat. It can climb, but it can't swim. It likes fish!</i></li>
+          <li>ask and answer: <i class="g3">Can it fly? Has it got a tail? How much is it?</i><i class="g4">What can it do? Is it friendly? What does it like?</i></li>
+          <li>do a team job and present together</li>
+        </ul>
+      </div>
+      <div class="box"><b>Why this lesson (survey)</b>
+        <ul>
+          <li>Top answers: cats (23), pets (40), drawing (40), pizza and burgers</li>
+          <li>Hardest: speaking in front of the class (20), finishing in time (21)</li>
+          <li>So: team speaking, a job for everyone, timers, pictures for every word</li>
+        </ul>
+      </div>
+      <div class="box"><b>Prepare</b>
+        <ul>
+          <li>Print (worksheet.html): 1 Pet Design Card per team, 1 set of question cards per team, door-pass slips, homework (optional)</li>
+          <li>Coloured pencils for every team</li>
+          <li>Open the lesson and tap the class before the pupils come in</li>
+        </ul>
+      </div>
+      <div class="box"><b>Key words</b>
+        <ul>
+          <li>colours: black, white, orange, purple, green, red</li>
+          <li>has got: big eyes, a long tail, wings, eight legs, a hat</li>
+          <li>can: fly, climb, jump, run, dance, swim, roll<span class="g4"> · can't · likes</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>Lesson steps</h2>
+    <table>
+      <tr><th>Time</th><th>Station</th><th>Teacher does</th><th>Pupils do</th></tr>
+      <tr><td class="min">5 min</td><td><b>1 · Who Is in the Cauldron?</b></td><td>Read clue 1, then "Next clue". Tap the picture the team points at.</td><td>Listen, whisper in the team, point. Guess early = more points.</td></tr>
+      <tr><td class="min">7 min</td><td><b>2 · Meet the Pets</b></td><td>Open 4–5 pets. "Say it with me", then "Act it!". Point at the colours (yellow = colour, blue = has got, green = can).</td><td>Repeat together (choral), act the verb.</td></tr>
+      <tr><td class="min">12 min</td><td><b>3 · Team Pet Lab</b></td><td>"⏱ 30 seconds" for jobs, hand out cards, start the 8-minute timer. Walk round: help Writers with frames, let Speakers practise in the team.</td><td>Artist draws, Writer writes, Speaker practises, Timer Boss calls "2 minutes left!". Teams can use the Sentence Builder.</td></tr>
+      <tr><td class="min">13 min</td><td><b>4 · The Pet Shop Is Open!</b></td><td>One team at a time (90 s). Give ⭐⭐ for clear sentences, 🤝 for teamwork, +1 for good buyer questions. Tick the Speaking Check (page 2). Then "Buy a pet!": 3 coins per team.</td><td>Speaker presents, the team says the last line together, buyers ask 1 question each.</td></tr>
+      <tr><td class="min">3 min</td><td><b>5 · Awards &amp; Door Pass</b></td><td>Read the award titles. Stand at the door.</td><td>Say 1 sentence at the door (or point at a pet and say its name).</td></tr>
+    </table>
+
+    <h2>Support and challenge</h2>
+    <div class="grid">
+      <div class="box"><b>Pupils who need more help</b>
+        <ul>
+          <li>Give them the Artist or Timer Boss job first; they say only the team's last line</li>
+          <li>Door pass: point at a picture + say the pet's name</li>
+          <li>Sentence Builder words all have pictures</li>
+        </ul>
+      </div>
+      <div class="box"><b>Fast finishers</b>
+        <ul>
+          <li>Add a 4th sentence: <i>It has got … and …</i><span class="g4"> / <i>It likes …</i></span></li>
+          <li>Be the buyer who asks 2 questions</li>
+          <li>Draw a second pet on the back of the card</li>
+        </ul>
+      </div>
+    </div>
+    <p class="key"><b>Soft-fail:</b> no minus points for wrong answers; Luna gives a hint and the team tries again. Team points stay on the lesson page; give team XP on the Class Board after the lesson if you want.<br><b>Homework (optional):</b> "My Pet at Home" (worksheet page 4): draw, 3 sentences, say them to the family.</p>
+  </section>
+
+  <section class="page">
+    <h1>✅ Team Speaking Check</h1>
+    <p class="meta">Tick while each team presents (✓ yes · ~ almost · – not yet). Team level only: no pupil names on this sheet. Use it to plan who needs more speaking practice next week.</p>
+    <table class="check">
+      <thead><tr><th>Team</th><th>3 sentences together</th><th>Speaker spoke clearly</th><th>used "has got"</th><th>used "can"<span class="g4"> / "can't"</span></th><th>asked a buyer question</th><th>finished in time</th><th>Notes</th></tr></thead>
+      <tbody id="check-rows"></tbody>
+    </table>
+    <p class="key">Date: ____________ &nbsp;&nbsp; Class: <b id="cls-lbl2">________</b></p>
+  </section>
+
+  <script src="../js/all-about-me-data.js"></script>
+  <script>
+    (function () {
+      var q = (/[?&]class=(3a|3b|4a|4b)/i.exec(location.search) || [])[1];
+      var cls = q ? q.toLowerCase() : '';
+      var teams = [];
+      try { if (cls && window.AllAboutMeData) teams = window.AllAboutMeData.getTeamsForClass('class-' + cls).map(function (t) { return t.name; }); } catch (e) { teams = []; }
+      if (!teams.length) teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4', 'Team 5'];
+      var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+      document.getElementById('check-rows').innerHTML = teams.map(function (n) { return '<tr><td><b>' + esc(n) + '</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'; }).join('');
+      if (cls) {
+        document.getElementById('cls-lbl2').textContent = cls.toUpperCase();
+        document.getElementById('open-lesson').href = 'index.html?class=' + cls;
+      }
+      function set(g) {
+        document.body.classList.toggle('grade4', g === 4);
+        document.getElementById('g3').classList.toggle('on', g === 3);
+        document.getElementById('g4').classList.toggle('on', g === 4);
+        document.getElementById('cls-lbl').textContent = (cls ? 'Class ' + cls.toUpperCase() + ' · ' : '') + 'Grade ' + g;
+      }
+      document.getElementById('g3').onclick = function () { set(3); };
+      document.getElementById('g4').onclick = function () { set(4); };
+      set(/^4/.test(cls) || /grade=4/.test(location.search) ? 4 : 3);
+    })();
+  </script>
+</body>
+</html>
