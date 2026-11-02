@@ -4120,69 +4120,219 @@
     }
 
     const THEMES_LOOKUP = {
-      'golden eagles': { icon: '🦅', motto: 'High Flyers & Bold Achievers', accent: '#fbbf24', border: 'rgba(234,179,8,0.5)', glow: 'rgba(234,179,8,0.25)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.85), rgba(15,23,42,0.88))' },
-      'emerald forest': { icon: '🌲', motto: 'Deep Roots, Growing Strong', accent: '#34d399', border: 'rgba(16,185,129,0.5)', glow: 'rgba(16,185,129,0.25)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.85), rgba(15,23,42,0.88))' },
-      'ocean explorers': { icon: '🌊', motto: 'Navigating Wonder & Depths', accent: '#38bdf8', border: 'rgba(56,189,248,0.5)', glow: 'rgba(56,189,248,0.25)', bg: 'linear-gradient(135deg, rgba(8,28,45,0.85), rgba(15,23,42,0.88))' },
-      'cosmic phoenix': { icon: '🔥', motto: 'Rising Together into the Stars', accent: '#f472b6', border: 'rgba(236,72,153,0.5)', glow: 'rgba(236,72,153,0.25)', bg: 'linear-gradient(135deg, rgba(38,12,28,0.85), rgba(15,23,42,0.88))' },
-      'star navigators': { icon: '🧭', motto: 'Guiding the Way Forward', accent: '#a78bfa', border: 'rgba(139,92,246,0.5)', glow: 'rgba(139,92,246,0.25)', bg: 'linear-gradient(135deg, rgba(26,14,48,0.85), rgba(15,23,42,0.88))' },
-      'crystal panthers': { icon: '🐆', motto: 'Swift, Sharp & Fearless', accent: '#22d3ee', border: 'rgba(6,182,212,0.5)', glow: 'rgba(6,182,212,0.25)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.85), rgba(15,23,42,0.88))' },
-      'thunder wolves': { icon: '🐺', motto: 'Loyal Pack, Unstoppable Energy', accent: '#fbbf24', border: 'rgba(245,158,11,0.5)', glow: 'rgba(245,158,11,0.25)', bg: 'linear-gradient(135deg, rgba(38,24,8,0.85), rgba(15,23,42,0.88))' },
-      'solar phoenix': { icon: '☀️', motto: 'Blazing Bright with Courage', accent: '#f87171', border: 'rgba(239,68,68,0.5)', glow: 'rgba(239,68,68,0.25)', bg: 'linear-gradient(135deg, rgba(42,12,12,0.85), rgba(15,23,42,0.88))' },
-      'mystic dragons': { icon: '🐉', motto: 'Ancient Wisdom & Dragon Flame', accent: '#c084fc', border: 'rgba(139,92,246,0.5)', glow: 'rgba(139,92,246,0.25)', bg: 'linear-gradient(135deg, rgba(28,14,48,0.85), rgba(15,23,42,0.88))' },
-      'solar voyagers': { icon: '🚀', motto: 'Journeying into the Cosmos', accent: '#fde047', border: 'rgba(245,158,11,0.5)', glow: 'rgba(245,158,11,0.25)', bg: 'linear-gradient(135deg, rgba(36,22,8,0.85), rgba(15,23,42,0.88))' },
-      'diamond titans': { icon: '💎', motto: 'Unbreakable Strength & Clarity', accent: '#67e8f9', border: 'rgba(6,182,212,0.5)', glow: 'rgba(6,182,212,0.25)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.85), rgba(15,23,42,0.88))' },
-      'cyber knights': { icon: '⚔️', motto: 'Honor, Code & Team Unity', accent: '#60a5fa', border: 'rgba(59,130,246,0.5)', glow: 'rgba(59,130,246,0.25)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.85), rgba(15,23,42,0.88))' },
-      'golden starlights': { icon: '✨', motto: 'Shining Together As One', accent: '#fef08a', border: 'rgba(234,179,8,0.5)', glow: 'rgba(234,179,8,0.25)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.85), rgba(15,23,42,0.88))' },
-      'book wizards': { icon: '🧙', motto: 'Words, Wonder & Endless Magic', accent: '#6ee7b7', border: 'rgba(16,185,129,0.5)', glow: 'rgba(16,185,129,0.25)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.85), rgba(15,23,42,0.88))' },
-      'galactic navigators': { icon: '🌌', motto: 'Charting Uncharted Worlds', accent: '#38bdf8', border: 'rgba(6,182,212,0.5)', glow: 'rgba(6,182,212,0.25)', bg: 'linear-gradient(135deg, rgba(8,26,45,0.85), rgba(15,23,42,0.88))' },
-      'apex guardians': { icon: '🛡️', motto: 'Shields Up, Defending Excellence', accent: '#93c5fd', border: 'rgba(59,130,246,0.5)', glow: 'rgba(59,130,246,0.25)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.85), rgba(15,23,42,0.88))' }
+      'golden eagles': {
+        mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
+        motto: 'High Flyers & Bold Achievers',
+        accent: '#fbbf24',
+        border: 'rgba(251,191,36,0.6)',
+        glow: 'rgba(251,191,36,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'emerald forest': {
+        mascot: 'assets/packs/characters/florasprout_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
+        motto: 'Deep Roots, Growing Strong',
+        accent: '#34d399',
+        border: 'rgba(52,211,153,0.6)',
+        glow: 'rgba(52,211,153,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'ocean explorers': {
+        mascot: 'assets/packs/characters/aquafind_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/storybook_pond.jpg',
+        motto: 'Navigating Wonder & Depths',
+        accent: '#38bdf8',
+        border: 'rgba(56,189,248,0.6)',
+        glow: 'rgba(56,189,248,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,28,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'cosmic phoenix': {
+        mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+        motto: 'Rising Together into the Stars',
+        accent: '#f472b6',
+        border: 'rgba(244,114,182,0.6)',
+        glow: 'rgba(244,114,182,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(38,12,28,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'star navigators': {
+        mascot: 'assets/packs/characters/astralight_stage_growing.png',
+        bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+        motto: 'Guiding the Way Forward',
+        accent: '#a78bfa',
+        border: 'rgba(167,139,250,0.6)',
+        glow: 'rgba(167,139,250,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(26,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'crystal panthers': {
+        mascot: 'assets/packs/characters/aquafind_stage_growing.png',
+        bgImg: 'assets/unit3-arctic/bg_station.jpg',
+        motto: 'Swift, Sharp & Fearless',
+        accent: '#22d3ee',
+        border: 'rgba(34,211,238,0.6)',
+        glow: 'rgba(34,211,238,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'thunder wolves': {
+        mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/toadstools.jpg',
+        motto: 'Loyal Pack, Unstoppable Energy',
+        accent: '#fbbf24',
+        border: 'rgba(251,191,36,0.6)',
+        glow: 'rgba(251,191,36,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(38,24,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'solar phoenix': {
+        mascot: 'assets/packs/characters/emberwing_stage_growing.png',
+        bgImg: 'assets/packs/backgrounds/sleepy-awake-room.webp',
+        motto: 'Blazing Bright with Courage',
+        accent: '#f87171',
+        border: 'rgba(248,113,113,0.6)',
+        glow: 'rgba(248,113,113,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(42,12,12,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'mystic dragons': {
+        mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/rabbit_hole_oak.jpg',
+        motto: 'Ancient Wisdom & Dragon Flame',
+        accent: '#c084fc',
+        border: 'rgba(192,132,252,0.6)',
+        glow: 'rgba(192,132,252,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(28,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'solar voyagers': {
+        mascot: 'assets/packs/characters/sparktail_stage_growing.png',
+        bgImg: 'assets/unit3-arctic/bg_city.jpg',
+        motto: 'Journeying into the Cosmos',
+        accent: '#fde047',
+        border: 'rgba(253,224,71,0.6)',
+        glow: 'rgba(253,224,71,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(36,22,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'diamond titans': {
+        mascot: 'assets/packs/characters/ankylosaurus.png',
+        bgImg: 'assets/unit3-arctic/bg_arctic.jpg',
+        motto: 'Unbreakable Strength & Clarity',
+        accent: '#67e8f9',
+        border: 'rgba(103,232,249,0.6)',
+        glow: 'rgba(103,232,249,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'cyber knights': {
+        mascot: 'assets/packs/characters/triceratops.png',
+        bgImg: 'assets/packs/backgrounds/evidence_board_bg.jpg',
+        motto: 'Honor, Code & Team Unity',
+        accent: '#60a5fa',
+        border: 'rgba(96,165,250,0.6)',
+        glow: 'rgba(96,165,250,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(12,22,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'golden starlights': {
+        mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/wooden_signpost.jpg',
+        motto: 'Shining Together As One',
+        accent: '#fef08a',
+        border: 'rgba(254,240,138,0.6)',
+        glow: 'rgba(254,240,138,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'book wizards': {
+        mascot: 'assets/packs/characters/florasprout_stage_growing.png',
+        bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
+        motto: 'Words, Wonder & Endless Magic',
+        accent: '#6ee7b7',
+        border: 'rgba(110,231,183,0.6)',
+        glow: 'rgba(110,231,183,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'galactic navigators': {
+        mascot: 'assets/packs/characters/astralight_stage_growing.png',
+        bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+        motto: 'Charting Uncharted Worlds',
+        accent: '#38bdf8',
+        border: 'rgba(56,189,248,0.6)',
+        glow: 'rgba(56,189,248,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(8,26,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      },
+      'apex guardians': {
+        mascot: 'assets/packs/characters/trex.png',
+        bgImg: 'assets/packs/backgrounds/mossy_boulder.jpg',
+        motto: 'Shields Up, Defending Excellence',
+        accent: '#93c5fd',
+        border: 'rgba(147,197,253,0.6)',
+        glow: 'rgba(147,197,253,0.3)',
+        cardBg: 'linear-gradient(180deg, rgba(12,22,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+      }
     };
 
     const groupsHtml = groups.map(g => {
       const memberStudents = (g.studentIds || []).map(id => store.getStudent(id)).filter(Boolean);
       const teamTotalXP = store.getGroupTotalXP ? store.getGroupTotalXP(g.id) : 0;
       const key = (g.name || '').toLowerCase().trim();
-      const th = THEMES_LOOKUP[key] || { icon: '⭐', motto: 'Classroom Team', accent: g.color || '#38bdf8', border: (g.color || '#38bdf8') + '66', glow: 'rgba(0,0,0,0.3)', bg: 'linear-gradient(135deg, rgba(15,23,42,0.85), rgba(30,41,59,0.88))' };
+      const th = THEMES_LOOKUP[key] || {
+        mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+        bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
+        motto: 'Classroom Team',
+        accent: g.color || '#38bdf8',
+        border: (g.color || '#38bdf8') + '88',
+        glow: 'rgba(0,0,0,0.4)',
+        cardBg: 'linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.96) 100%)'
+      };
 
       return '' +
-        '<div class="group-team-card" style="background:' + th.bg + '; border:2px solid ' + th.border + '; border-radius:24px; padding:18px; box-shadow:0 8px 30px ' + th.glow + '; margin-bottom:20px; display:flex; flex-direction:column; gap:14px;">' +
-          // Team Header
-          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">' +
-            '<div style="display:flex; align-items:center; gap:12px;">' +
-              '<div style="width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,0.08); border:2px solid ' + th.accent + '; display:flex; align-items:center; justify-content:center; font-size:1.6rem;">' +
-                th.icon +
+        '<div class="group-team-card" style="background:' + th.cardBg + '; border:2px solid ' + th.border + '; border-radius:26px; overflow:hidden; box-shadow:0 14px 36px ' + th.glow + '; margin-bottom:24px; display:flex; flex-direction:column; position:relative;">' +
+          // Cinematic Banner
+          '<div style="height:115px; position:relative; overflow:hidden; background:#060911;">' +
+            '<img src="' + th.bgImg + '" alt="" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.65) saturate(1.25);">' +
+            '<div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(6,9,17,0.1) 0%, rgba(10,16,30,0.92) 100%);"></div>' +
+            '<div style="position:absolute; top:10px; right:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(15,23,42,0.85); border:1.5px solid ' + th.accent + '; padding:5px 14px; border-radius:99px; box-shadow:0 4px 14px rgba(0,0,0,0.4); backdrop-filter:blur(8px);">' +
+              '<span style="font-size:1.15rem;">🏆</span>' +
+              '<b style="font-size:1.25rem; font-weight:900; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,0.5);">' + teamTotalXP.toLocaleString('en-US') + '</b>' +
+              '<small style="font-size:0.72rem; font-weight:800; color:#fde68a; letter-spacing:0.06em;">TEAM XP</small>' +
+            '</div>' +
+          '</div>' +
+
+          // Team Header Info Overlap
+          '<div style="padding:0 18px 14px; margin-top:-36px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px; position:relative; z-index:2;">' +
+            '<div style="display:flex; align-items:center; gap:14px;">' +
+              '<div style="width:72px; height:72px; border-radius:20px; background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.2) 0%, rgba(15,23,42,0.96) 100%); border:3px solid ' + th.accent + '; box-shadow:0 8px 20px rgba(0,0,0,0.5), 0 0 16px ' + th.glow + '; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' +
+                '<img src="' + th.mascot + '" alt="" style="width:58px; height:58px; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));">' +
               '</div>' +
               '<div>' +
-                '<h3 style="margin:0; font-size:1.3rem; font-weight:800; color:#fff; letter-spacing:-0.01em;">' + g.name + '</h3>' +
-                '<span style="font-size:0.8rem; color:' + th.accent + '; font-weight:700;">' + th.motto + ' · ' + memberStudents.length + ' Members</span>' +
+                '<h3 style="margin:0 0 3px; font-size:1.35rem; font-weight:900; color:#fff; letter-spacing:-0.01em; text-shadow:0 2px 8px rgba(0,0,0,0.6);">' + g.name + '</h3>' +
+                '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                  '<span style="font-size:0.8rem; color:' + th.accent + '; font-weight:700; font-style:italic;">' + th.motto + '</span>' +
+                  '<span style="font-size:0.72rem; font-weight:800; background:rgba(255,255,255,0.12); color:#cbd5e1; padding:2px 8px; border-radius:99px;">👥 ' + memberStudents.length + ' Explorers</span>' +
+                '</div>' +
               '</div>' +
             '</div>' +
 
             '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-              '<span style="background:rgba(251,191,36,0.18); border:1.5px solid ' + th.accent + '; color:#fff; padding:6px 14px; border-radius:99px; font-weight:800; font-size:1rem;">' +
-                '🏆 ' + teamTotalXP.toLocaleString('en-US') + ' Team XP' +
-              '</span>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openGiveXPSkillsModal(\'group\', \'' + g.id + '\')" style="font-weight:800; color:#b45309; background:rgba(245,158,11,0.18); border-color:#f59e0b; padding:6px 12px;">' +
+              '<button type="button" class="btn-primary-action" onclick="openGiveXPSkillsModal(\'group\', \'' + g.id + '\')" style="font-weight:800; background:#10b981; border-color:#059669; padding:8px 16px; border-radius:12px; min-height:42px; display:inline-flex; align-items:center; gap:6px;">' +
                 '⭐ Award Team' +
               '</button>' +
-              '<button class="btn-sm-secondary" onclick="openCreateGroupModal(\'' + g.id + '\')" style="padding:6px 10px; font-size:0.78rem;">✏️ Edit</button>' +
-              '<button class="btn-sm-secondary" onclick="handleDeleteGroup(\'' + g.id + '\')" style="padding:6px 10px; font-size:0.78rem; color:var(--color-danger);">🗑️</button>' +
+              '<button class="btn-sm-secondary" onclick="openCreateGroupModal(\'' + g.id + '\')" style="padding:8px 12px; font-size:0.82rem; border-radius:12px; min-height:42px;">✏️ Edit</button>' +
+              '<button class="btn-sm-secondary" onclick="handleDeleteGroup(\'' + g.id + '\')" style="padding:8px 12px; font-size:0.82rem; color:var(--color-danger); border-radius:12px; min-height:42px;">🗑️</button>' +
             '</div>' +
           '</div>' +
 
           // Member Monsters Grid
-          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px;">' +
+          '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; padding:4px 18px 18px;">' +
             memberStudents.map(m => {
               const mTotalXP = store.getStudentTotalXP(m.id);
+              const mAv = (window.MilestoneCeremony && window.MilestoneCeremony.pictureOf) ? window.MilestoneCeremony.pictureOf(m) : '';
+              const avBubble = mAv ? '<img src="' + mAv + '" alt="" style="position:absolute; right:6px; top:6px; width:34px; height:34px; border-radius:50%; object-fit:contain; background:#fff7d6; border:2px solid #fbbf24; box-shadow:0 3px 8px rgba(0,0,0,0.4); z-index:3;">' : '';
               return '' +
-                '<div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:10px 8px; text-align:center; cursor:pointer; transition:transform 0.18s ease;" onclick="openStudentDetail(\'' + m.id + '\')" title="Open ' + m.firstName + '\'s profile">' +
-                  '<div style="height:76px; display:flex; align-items:center; justify-content:center;">' +
+                '<div style="background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.14); border-radius:18px; padding:10px 8px; text-align:center; cursor:pointer; position:relative; transition:transform 0.18s ease, background 0.18s;" onmouseover="this.style.transform=\'translateY(-3px)\'; this.style.background=\'rgba(255,255,255,0.12)\';" onmouseout="this.style.transform=\'none\'; this.style.background=\'rgba(255,255,255,0.06)\';" onclick="openStudentDetail(\'' + m.id + '\')" title="Open ' + m.firstName + '\'s profile">' +
+                  avBubble +
+                  '<div style="height:76px; display:flex; align-items:center; justify-content:center; margin-top:2px;">' +
                     window.renderStudentMonsterAvatar(m.id, { size: 68, animated: true }) +
                   '</div>' +
-                  '<b style="display:block; font-size:0.92rem; font-weight:700; color:#fff; margin:6px 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + m.firstName + '</b>' +
-                  '<span style="font-size:0.75rem; color:' + th.accent + '; font-weight:700;">⭐ ' + mTotalXP.toLocaleString('en-US') + ' XP</span>' +
+                  '<b style="display:block; font-size:0.95rem; font-weight:800; color:#fff; margin:6px 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + m.firstName + '</b>' +
+                  '<span style="font-size:0.75rem; color:' + th.accent + '; font-weight:800;">⭐ ' + mTotalXP.toLocaleString('en-US') + ' XP</span>' +
                   '<div style="margin-top:6px;">' +
-                    '<button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + m.id + '\')" style="font-size:0.7rem; padding:2px 8px; font-weight:700;">+ Award</button>' +
+                    '<button type="button" class="btn-sm-secondary" onclick="event.stopPropagation(); openGiveXPSkillsModal(\'student\', \'' + m.id + '\')" style="font-size:0.72rem; padding:3px 10px; font-weight:800; border-radius:10px;">+ Award</button>' +
                   '</div>' +
                 '</div>';
             }).join('') +
@@ -4191,10 +4341,10 @@
     }).join('');
 
     const addGroupCard = '' +
-      '<div class="card-add-student" onclick="openCreateGroupModal()" title="Create a new classroom team" style="min-height:160px; margin-top:8px;">' +
+      '<div class="card-add-student" onclick="openCreateGroupModal()" title="Create a new classroom team" style="min-height:140px; margin-top:4px; border-radius:22px;">' +
         '<div class="card-add-student-icon">+</div>' +
-        '<div style="font-weight:800; font-size:1rem;">Create Group</div>' +
-        '<div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Organize students into teams</div>' +
+        '<div style="font-weight:800; font-size:1.05rem;">Create Group</div>' +
+        '<div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Organize students into teams</div>' +
       '</div>';
 
     return '<div class="classroom-groups-grid" style="display:flex; flex-direction:column; gap:16px;">' + groupsHtml + addGroupCard + '</div>';
@@ -4491,6 +4641,7 @@
     { title: 'Grade 3 Reading 2 Review: The Angry Mountain (What Happened? pp. 64-71)', grade: 'Grade 3', date: '2026-10-21', file: 'Grade3-Unit4-Angry-Mountain-Lesson-Plan', word: true, launch: 'review-g3-mountain/index.html' },
     { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? · Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
     { title: 'Unit 4: Team Players · Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
+    { title: 'Chuseok Moon Song: Ganggangsullae Circle Dance & 5-Minute Homework', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Chuseok-Moon-Song-Lesson-Plan', word: true, launch: 'chuseok-moon-song/index.html' },
     { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
     { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
     { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
@@ -6810,6 +6961,41 @@
               '<option value="completed" ' + (hwFilterStatus === 'completed' ? 'selected' : '') + '>Completed</option>' +
               '<option value="overdue" ' + (hwFilterStatus === 'overdue' ? 'selected' : '') + '>Overdue</option>' +
             '</select>' +
+          '</div>' +
+        '</div>' +
+
+        // Featured Alice in Wonderland Reference Poster Showcase Banner
+        '<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #064e3b 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
+          '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #fbbf24; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.4);" onclick="openModal(\'modal-alice-poster\')">' +
+            '<img src="assets/homework/alice-xp-challenges-poster.jpg" alt="Alice XP Challenges" style="width:100%; height:100%; object-fit: cover;" />' +
+            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
+          '</div>' +
+          '<div style="flex: 1; min-width: 260px;">' +
+            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
+              '<span style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">FEATURED XP POSTER</span>' +
+              '<span style="background: rgba(56,189,248,0.25); color: #38bdf8; font-size: 0.72rem; font-weight: 800; padding: 2px 9px; border-radius: 999px;">13 DISCRETE HOMEWORK TASKS</span>' +
+            '</div>' +
+            '<h2 style="font-size: 1.35rem; font-weight: 900; margin: 0 0 4px 0; color: #fff; line-height: 1.2;">Alice in Wonderland: XP Challenges</h2>' +
+            '<p style="font-size: 0.86rem; color: #cbd5e1; margin: 0 0 12px 0; line-height: 1.35;">' +
+              '&ldquo;Same Story. Different Challenges. Brighter Learners!&rdquo; Pick Level 1 (+10&ndash;20 XP), Level 2 (+40&ndash;50 XP), Level 3 (+80&ndash;200 XP), or Base Check-In (+10 XP).' +
+            '</p>' +
+            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+              '<button type="button" onclick="window.open(\'alice-homework/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(16,185,129,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
+                '🍄 Launch Alice XP Quest Slides & Grading' +
+              '</button>' +
+              '<button type="button" class="btn-primary-action" onclick="openAliceQuestGraderModal()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(168,85,247,0.4);">' +
+                '🎯 Single-Student Grader' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
+                '🖼️ View High-Res Poster' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-alice-vocab10\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '👥 Whole-Class Roster View' +
+              '</button>' +
+              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
+                '⭐ Award XP to Student' +
+              '</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
 
