@@ -514,7 +514,8 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-205",
-      "student-3b-200"
+      "student-3b-200",
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 27–28",
@@ -542,7 +543,8 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-205",
-      "student-3b-353"
+      "student-3b-353",
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 3–4",
@@ -600,8 +602,7 @@
     "teammates": [
       "student-3b-217",
       "student-3b-352",
-      "student-3b-218",
-      "student-3b-225"
+      "student-3b-218"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 5–6",
@@ -717,8 +718,7 @@
     "teammates": [
       "student-3b-352",
       "student-3b-221",
-      "student-3b-218",
-      "student-3b-225"
+      "student-3b-218"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 1–2",
@@ -747,8 +747,7 @@
     "teammates": [
       "student-3b-217",
       "student-3b-221",
-      "student-3b-218",
-      "student-3b-225"
+      "student-3b-218"
     ],
     "hasScan": true,
     "meta": "`3B`, \"Ece Y\", pp. 7–8",
@@ -834,7 +833,8 @@
     "teamColor": "#ef4444",
     "teammates": [
       "student-3b-200",
-      "student-3b-353"
+      "student-3b-353",
+      "student-3b-225"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 17–18",
@@ -921,8 +921,7 @@
     "teammates": [
       "student-3b-217",
       "student-3b-352",
-      "student-3b-221",
-      "student-3b-225"
+      "student-3b-221"
     ],
     "hasScan": true,
     "meta": "`3B`, pp. 15–16 — Page 2 Completed",
@@ -945,14 +944,13 @@
     "lastName": "Sancaklı",
     "fullName": "Ülkü Sancaklı",
     "classId": "class-3b",
-    "teamId": "group-3b-1",
-    "teamName": "Star Navigators",
-    "teamColor": "#8b5cf6",
+    "teamId": "group-3b-4",
+    "teamName": "Solar Phoenix",
+    "teamColor": "#ef4444",
     "teammates": [
-      "student-3b-217",
-      "student-3b-352",
-      "student-3b-221",
-      "student-3b-218"
+      "student-3b-205",
+      "student-3b-200",
+      "student-3b-353"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -982,7 +980,7 @@
       "student-4a-311",
       "student-4a-310",
       "student-4a-320",
-      "student-4a-321"
+      "student-4a-441"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 29–30",
@@ -1005,14 +1003,14 @@
     "lastName": "İnal",
     "fullName": "Ahmet Mete İnal",
     "classId": "class-4a",
-    "teamId": "group-4a-4",
-    "teamName": "Cyber Knights",
-    "teamColor": "#3b82f6",
+    "teamId": "group-4a-2",
+    "teamName": "Solar Voyagers",
+    "teamColor": "#f59e0b",
     "teammates": [
-      "student-4a-315",
-      "student-4a-302",
-      "student-4a-342",
-      "student-4a-345"
+      "student-4a-311",
+      "student-4a-310",
+      "student-4a-313",
+      "student-4a-320"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 27–28",
@@ -1042,7 +1040,7 @@
       "student-4a-310",
       "student-4a-313",
       "student-4a-320",
-      "student-4a-321"
+      "student-4a-441"
     ],
     "hasScan": true,
     "meta": "`4A`, \"Shinobu Kocho\", Age 10, pp. 17–19",
@@ -1072,7 +1070,7 @@
       "student-4a-311",
       "student-4a-313",
       "student-4a-320",
-      "student-4a-321"
+      "student-4a-441"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 9–10",
@@ -1155,14 +1153,14 @@
     "lastName": "Yaldız",
     "fullName": "Efe Yaldız",
     "classId": "class-4a",
-    "teamId": "group-4a-4",
-    "teamName": "Cyber Knights",
-    "teamColor": "#3b82f6",
+    "teamId": "group-4a-3",
+    "teamName": "Diamond Titans",
+    "teamColor": "#06b6d4",
     "teammates": [
-      "student-4a-315",
-      "student-4a-302",
-      "student-4a-342",
-      "student-4a-441"
+      "student-4a-314",
+      "student-4b-208",
+      "student-4a-341",
+      "student-4a-300"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1185,14 +1183,13 @@
     "lastName": "Yarar",
     "fullName": "Elif Su Yarar",
     "classId": "class-4a",
-    "teamId": "group-4a-2",
-    "teamName": "Solar Voyagers",
-    "teamColor": "#f59e0b",
+    "teamId": "group-4a-4",
+    "teamName": "Cyber Knights",
+    "teamColor": "#3b82f6",
     "teammates": [
-      "student-4a-311",
-      "student-4a-310",
-      "student-4a-313",
-      "student-4a-320"
+      "student-4a-315",
+      "student-4a-302",
+      "student-4a-342"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 5–6",
@@ -1221,8 +1218,7 @@
     "teammates": [
       "student-4a-302",
       "student-4a-342",
-      "student-4a-441",
-      "student-4a-345"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, \"Emir G\", pp. 7–8",
@@ -1251,8 +1247,7 @@
     "teammates": [
       "student-4a-315",
       "student-4a-342",
-      "student-4a-441",
-      "student-4a-345"
+      "student-4a-321"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1311,7 +1306,8 @@
     "teammates": [
       "student-4b-208",
       "student-4a-341",
-      "student-4a-300"
+      "student-4a-300",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 31–32",
@@ -1370,7 +1366,8 @@
     "teammates": [
       "student-4a-314",
       "student-4b-208",
-      "student-4a-300"
+      "student-4a-300",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 33–34",
@@ -1399,8 +1396,7 @@
     "teammates": [
       "student-4a-315",
       "student-4a-302",
-      "student-4a-441",
-      "student-4a-345"
+      "student-4a-321"
     ],
     "hasScan": true,
     "meta": "`4A`, signed \"Emir B\", pp. 20–22",
@@ -1429,7 +1425,8 @@
     "teammates": [
       "student-4a-314",
       "student-4b-208",
-      "student-4a-341"
+      "student-4a-341",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 3–4 — Back Page Completed",
@@ -1459,7 +1456,7 @@
       "student-4a-311",
       "student-4a-310",
       "student-4a-313",
-      "student-4a-321"
+      "student-4a-441"
     ],
     "hasScan": true,
     "meta": "`4A`, pp. 15–16",
@@ -1488,7 +1485,8 @@
     "teammates": [
       "student-4b-305",
       "student-4b-316",
-      "student-4b-318"
+      "student-4b-318",
+      "student-4b-440"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 69–70",
@@ -1577,8 +1575,7 @@
       "student-4b-304",
       "student-4b-308",
       "student-4b-303",
-      "student-4b-439",
-      "student-4b-440"
+      "student-4b-439"
     ],
     "hasScan": true,
     "meta": "`4B`, Age 9, pp. 55–56",
@@ -1607,7 +1604,8 @@
     "teammates": [
       "student-4b-305",
       "student-4b-318",
-      "student-4a-319"
+      "student-4a-319",
+      "student-4b-440"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 65–66",
@@ -1726,7 +1724,8 @@
     "teammates": [
       "student-4b-305",
       "student-4b-316",
-      "student-4a-319"
+      "student-4a-319",
+      "student-4b-440"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 51–52",
@@ -1756,8 +1755,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-308",
-      "student-4b-439",
-      "student-4b-440"
+      "student-4b-439"
     ],
     "hasScan": false,
     "meta": "Absent / Not scanned on survey day",
@@ -1786,7 +1784,8 @@
     "teammates": [
       "student-4b-316",
       "student-4b-318",
-      "student-4a-319"
+      "student-4a-319",
+      "student-4b-440"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 59–60",
@@ -1846,8 +1845,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-308",
-      "student-4b-303",
-      "student-4b-440"
+      "student-4b-303"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 71–72",
@@ -1877,8 +1875,7 @@
       "student-4b-338",
       "student-4b-308",
       "student-4b-303",
-      "student-4b-439",
-      "student-4b-440"
+      "student-4b-439"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 63–64",
@@ -1901,15 +1898,14 @@
     "lastName": "Kömürcüoğlu",
     "fullName": "Nisa Kömürcüoğlu",
     "classId": "class-4b",
-    "teamId": "group-4b-2",
-    "teamName": "Book Wizards",
-    "teamColor": "#10b981",
+    "teamId": "group-4b-3",
+    "teamName": "Galactic Navigators",
+    "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-338",
-      "student-4b-304",
-      "student-4b-308",
-      "student-4b-303",
-      "student-4b-439"
+      "student-4b-305",
+      "student-4b-316",
+      "student-4b-318",
+      "student-4a-319"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 67–68",
@@ -1967,7 +1963,8 @@
     "teammates": [
       "student-4a-314",
       "student-4a-341",
-      "student-4a-300"
+      "student-4a-300",
+      "student-4a-345"
     ],
     "hasScan": true,
     "meta": "`4A`, Age 10, pp. 25–26",
@@ -2085,8 +2082,7 @@
       "student-4b-338",
       "student-4b-304",
       "student-4b-303",
-      "student-4b-439",
-      "student-4b-440"
+      "student-4b-439"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 53–54",
@@ -2168,8 +2164,7 @@
       "student-3b-217",
       "student-3b-352",
       "student-3b-221",
-      "student-3b-218",
-      "student-3b-225"
+      "student-3b-218"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2207,7 +2202,8 @@
     "studentIds": [
       "student-3b-205",
       "student-3b-200",
-      "student-3b-353"
+      "student-3b-353",
+      "student-3b-225"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2235,7 +2231,7 @@
       "student-4a-310",
       "student-4a-313",
       "student-4a-320",
-      "student-4a-321"
+      "student-4a-441"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2248,7 +2244,8 @@
       "student-4a-314",
       "student-4b-208",
       "student-4a-341",
-      "student-4a-300"
+      "student-4a-300",
+      "student-4a-345"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2261,8 +2258,7 @@
       "student-4a-315",
       "student-4a-302",
       "student-4a-342",
-      "student-4a-441",
-      "student-4a-345"
+      "student-4a-321"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2290,8 +2286,7 @@
       "student-4b-304",
       "student-4b-308",
       "student-4b-303",
-      "student-4b-439",
-      "student-4b-440"
+      "student-4b-439"
     ],
     "createdDate": "2026-11-02"
   },
@@ -2304,7 +2299,8 @@
       "student-4b-305",
       "student-4b-316",
       "student-4b-318",
-      "student-4a-319"
+      "student-4a-319",
+      "student-4b-440"
     ],
     "createdDate": "2026-11-02"
   },
