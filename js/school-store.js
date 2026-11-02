@@ -9651,7 +9651,7 @@
           classId: 'class-3b',
           name: 'Star Navigators',
           color: '#8b5cf6',
-          studentIds: ['student-3b-217', 'student-3b-352', 'student-3b-221', 'student-3b-218', 'student-3b-225'],
+          studentIds: ['student-3b-217', 'student-3b-221', 'student-3b-218', 'student-3b-225'],
           createdDate: '2026-11-02'
         },
         {
@@ -9667,7 +9667,7 @@
           classId: 'class-3b',
           name: 'Thunder Wolves',
           color: '#f59e0b',
-          studentIds: ['student-3b-220', 'student-3b-213', 'student-3b-200'],
+          studentIds: ['student-3b-220', 'student-3b-213', 'student-3b-200', 'student-3b-352'],
           createdDate: '2026-11-02'
         },
         {
@@ -10383,7 +10383,7 @@
             const parsed = JSON.parse(raw);
             const initial = getInitialState();
             const merged = Object.assign({}, initial, parsed);
-            if (!merged.groups || merged.groups.length < 16) {
+            if (!merged.groups || merged.groups.length < 16 || (merged.groups.find(function(g){return g.id==='group-3b-3';}) && merged.groups.find(function(g){return g.id==='group-3b-3';}).studentIds.length === 3)) {
               merged.groups = JSON.parse(JSON.stringify(initial.groups || []));
             }
             if (Array.isArray(merged.students)) {
