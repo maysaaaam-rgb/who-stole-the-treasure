@@ -4,6 +4,9 @@
    (a finished pupil is never turned back into "started") and it changes nothing in the Google Sheet. The teacher presses the button. */
 (function (root) {
   'use strict';
+  // Retired 2 Nov 2026: it fed the Alice Tea Party and Chuseok cooking homework cards, which are gone. Same names, nothing inside.
+  root.SheetSync = { mount: function () {}, snapshot: function () { return Promise.resolve({}); } };
+  return;
   function S() { return root.schoolStore || root.store; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var CFG = (root.PARTY_CONFIG && root.PARTY_CONFIG.submitUrl) ? root.PARTY_CONFIG : {

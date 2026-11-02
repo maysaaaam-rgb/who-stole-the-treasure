@@ -10,7 +10,6 @@
     ['plans', '📋 Lesson Plans (Word & PDF)'],
     ['g3', '🎒 Grade 3 Lessons'],
     ['g4', '🎓 Grade 4 Lessons'],
-    ['alice', '🫖 Alice & Drama'],
     ['else', '📚 Textbook Anthology']
   ];
   var KINDS = [

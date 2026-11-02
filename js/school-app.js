@@ -4641,7 +4641,6 @@
     { title: 'Grade 3 Reading 2 Review: The Angry Mountain (What Happened? pp. 64-71)', grade: 'Grade 3', date: '2026-10-21', file: 'Grade3-Unit4-Angry-Mountain-Lesson-Plan', word: true, launch: 'review-g3-mountain/index.html' },
     { title: 'Unit 4: Case File 1 (A Picture on the Wall) & Case File 2 (Where Is She? · Mona Lisa Mystery)', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Unit4-Case-File-1-and-2-Lesson-Plan', word: true, launch: 'unit4-g3-lessons/index.html?lesson=1' },
     { title: 'Unit 4: Team Players · Dream Team League Match Day 1 (We Can Do It, Lesson 1)', grade: 'Grade 4', date: '2026-10-19', file: 'Grade4-Unit4-Team-Players-Lesson-Plan', word: true, launch: 'unit4-g4-lessons/index.html' },
-    { title: 'Chuseok Moon Song: Ganggangsullae Circle Dance & 5-Minute Homework', grade: 'Grade 3', date: '2026-10-19', file: 'Grade3-Chuseok-Moon-Song-Lesson-Plan', word: true, launch: 'chuseok-moon-song/index.html' },
     { title: 'Unit 3 Review: Monster Journey and Paper Quiz (It Keeps Changing)', grade: 'Grade 3', date: '2026-10-15', file: 'Grade3-Unit3-Monster-Journey-and-Quiz-Plan', word: true },
     { title: 'Unit 3 Money Quiz: Time-Travel Money Quest (4 skills, 25 minutes)', grade: 'Grade 4', date: '2026-10-15', file: 'Grade4-Unit3-Money-Quiz-Lesson-Plan', word: true },
     { title: 'Unit 3: Smartboard Mission, How Much Is It? (Among Us tasks + Monster Tug-of-War)', grade: 'Grade 4', date: '2026-10-13', file: 'Grade4-Unit3-Smartboard-Mission-Lesson-Plan', word: true },
@@ -6961,41 +6960,6 @@
               '<option value="completed" ' + (hwFilterStatus === 'completed' ? 'selected' : '') + '>Completed</option>' +
               '<option value="overdue" ' + (hwFilterStatus === 'overdue' ? 'selected' : '') + '>Overdue</option>' +
             '</select>' +
-          '</div>' +
-        '</div>' +
-
-        // Featured Alice in Wonderland Reference Poster Showcase Banner
-        '<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #064e3b 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">' +
-          '<div style="position: relative; width: 130px; height: 130px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 2.5px solid #fbbf24; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.4);" onclick="openModal(\'modal-alice-poster\')">' +
-            '<img src="assets/homework/alice-xp-challenges-poster.jpg" alt="Alice XP Challenges" style="width:100%; height:100%; object-fit: cover;" />' +
-            '<div style="position: absolute; inset:0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff;">🔍</div>' +
-          '</div>' +
-          '<div style="flex: 1; min-width: 260px;">' +
-            '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">' +
-              '<span style="background: #fbbf24; color: #78350f; font-size: 0.72rem; font-weight: 900; padding: 2px 9px; border-radius: 999px;">FEATURED XP POSTER</span>' +
-              '<span style="background: rgba(56,189,248,0.25); color: #38bdf8; font-size: 0.72rem; font-weight: 800; padding: 2px 9px; border-radius: 999px;">13 DISCRETE HOMEWORK TASKS</span>' +
-            '</div>' +
-            '<h2 style="font-size: 1.35rem; font-weight: 900; margin: 0 0 4px 0; color: #fff; line-height: 1.2;">Alice in Wonderland: XP Challenges</h2>' +
-            '<p style="font-size: 0.86rem; color: #cbd5e1; margin: 0 0 12px 0; line-height: 1.35;">' +
-              '&ldquo;Same Story. Different Challenges. Brighter Learners!&rdquo; Pick Level 1 (+10&ndash;20 XP), Level 2 (+40&ndash;50 XP), Level 3 (+80&ndash;200 XP), or Base Check-In (+10 XP).' +
-            '</p>' +
-            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
-              '<button type="button" onclick="window.open(\'alice-homework/index.html\', \'_blank\')" class="btn-primary-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 15px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(16,185,129,0.4); display:inline-flex; align-items:center; gap:6px; cursor:pointer;">' +
-                '🍄 Launch Alice XP Quest Slides & Grading' +
-              '</button>' +
-              '<button type="button" class="btn-primary-action" onclick="openAliceQuestGraderModal()" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border:none; box-shadow:0 3px 10px rgba(168,85,247,0.4);">' +
-                '🎯 Single-Student Grader' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-alice-poster\')" style="background: #38bdf8; color: #0f172a; font-weight: 900; font-size: 0.82rem; padding: 7px 14px; border-radius: 8px; border-color:#38bdf8;">' +
-                '🖼️ View High-Res Poster' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openHomeworkGradingModal(\'hw-alice-vocab10\')" style="background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.25); font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '👥 Whole-Class Roster View' +
-              '</button>' +
-              '<button type="button" class="btn-sm-secondary" onclick="openModal(\'modal-give-xp\')" style="background: rgba(245,158,11,0.2); color: #fbbf24; border-color: #f59e0b; font-weight: 800; font-size: 0.82rem; padding: 7px 14px;">' +
-                '⭐ Award XP to Student' +
-              '</button>' +
-            '</div>' +
           '</div>' +
         '</div>' +
 

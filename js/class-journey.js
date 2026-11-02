@@ -75,13 +75,11 @@
     var re = /(?:^|[\s(:,])((?:lesson-plans\/[A-Za-z0-9_.-]+)|(?:[a-z0-9][a-z0-9-]*\/[A-Za-z0-9_.\/-]*\.(?:html|pdf)(?:\?[A-Za-z0-9_=&.-]*)?))/g;
     while ((m = re.exec(txt))) {
       var u = m[1].replace(/[.,;]+$/, '');
-      if (u === 'alice-party-print/index.html') u = 'alice-party/index.html';
       if (/^lesson-plans\//.test(u) && !/\.(pdf|docx)$/.test(u)) u += '.pdf';
       if (seen[u]) continue; seen[u] = 1;
       out.push([/^lesson-plans\//.test(u) ? '📋 Plan' : /\.pdf$/.test(u) ? '🖨️ Print' : /^game-maker\//.test(u) ? '🎮 Game' : '▶ Open', u]);
     }
     var ck = (/class-(\w+)/.exec(l.classId || '') || [])[1];
-    if (ck && /Alice rehearsal/i.test(txt) && !seen.al) out.push(['▶ Open', 'alice-party-rehearsal/index.html?class=' + ck + '&lesson=3']);
     var rank = { '▶ Open': 0, '🎮 Game': 1, '🖨️ Print': 2, '📋 Plan': 3 };
     return out.sort(function (a, b) { return rank[a[0]] - rank[b[0]]; });
   }
