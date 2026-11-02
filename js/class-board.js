@@ -44,7 +44,7 @@
       var m = st.calculateMonsterState ? st.calculateMonsterState(s.id) : {};
       var prof = st.getMonsterProfile ? st.getMonsterProfile(s.id) : null, img = '', av = '';
       try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(s, prof, m) : ''; } catch (e) { img = ''; }
-      try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(s) : (s.avatarUrl || ''); } catch (e) { av = s.avatarUrl || ''; }
+      try { av = (root.MilestoneCeremony && root.MilestoneCeremony.pictureOf) ? root.MilestoneCeremony.pictureOf(s) : (s.avatarUrl || s.av || s.avatar || ''); } catch (e) { av = s.avatarUrl || s.av || s.avatar || ''; }
       var x = {};
       try { x = (root.ClassroomStore && root.ClassroomStore.cosmetics) ? root.ClassroomStore.cosmetics.equipped(s.id) : {}; } catch (e) { x = {}; }
       return { id: s.id, name: s.firstName || s.name || 'Student', xp: Number(m.totalXP != null ? m.totalXP : s.xp) || 0, img: img, av: av, x: x };
@@ -76,21 +76,7 @@
     '.cb-goal .bar{flex:1;height:22px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.cb-goal .bar i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#fb7185);border-radius:99px;box-shadow:0 0 18px #fbbf24;transition:width .5s}' +
     '.cb-goal b{font-size:1.1rem;font-weight:600;white-space:nowrap}' +
     
-    '.cb-teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:20px;position:relative;margin-bottom:24px}' +
-    '@media(max-width:900px){.cb-teams-grid{grid-template-columns:1fr}}' +
-    '.cb-team-pod{background:var(--tp-bg,rgba(15,23,42,.85));border:2px solid var(--tp-border,rgba(255,255,255,.2));border-radius:28px;padding:16px 18px 20px;backdrop-filter:blur(14px);box-shadow:0 10px 30px -4px rgba(0,0,0,.5);display:flex;flex-direction:column;position:relative;transition:transform .2s ease,box-shadow .2s ease}' +
-    '.cb-team-pod:hover{transform:translateY(-3px);box-shadow:0 16px 40px -4px var(--tp-glow,rgba(0,0,0,.6))}' +
-    '.cb-team-hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.12);position:relative}' +
-    '.cb-team-info{display:flex;align-items:center;gap:10px}' +
-    '.cb-team-crest{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.12);border:2px solid var(--tp-accent,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 12px rgba(0,0,0,.35);flex-shrink:0}' +
-    '.cb-team-name-wrap h3{margin:0;font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-.01em}' +
-    '.cb-team-motto{font-size:.78rem;color:var(--tp-accent,#94a3b8);font-weight:600;margin-top:1px}' +
-    '.cb-team-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +
-    '.cb-team-score-badge{background:rgba(251,191,36,.22);border:1.5px solid var(--tp-accent,#fbbf24);color:#fff;padding:5px 14px;border-radius:99px;font-weight:700;font-size:1rem;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}' +
-    '.cb-team-btn{border:0;border-radius:12px;background:var(--tp-accent,#22c55e);color:#06101f;font:700 .88rem Fredoka,sans-serif;padding:8px 14px;cursor:pointer;border-bottom:4px solid rgba(0,0,0,.35);box-shadow:0 4px 10px rgba(0,0,0,.25);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s}' +
-    '.cb-team-btn:hover{filter:brightness(1.15)}' +
-    '.cb-team-btn:active{transform:translateY(3px);border-bottom-width:1px}' +
-    '.cb-team-monsters-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:12px;align-items:stretch}' +
+    '.cb-teams-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:22px;position:relative;margin-bottom:28px}' +'@media(max-width:960px){.cb-teams-grid{grid-template-columns:1fr}}' +'.cb-team-pod{background:var(--tp-card-bg,rgba(10,16,30,.92));border:2px solid var(--tp-border,rgba(255,255,255,.2));border-radius:28px;backdrop-filter:blur(16px);box-shadow:0 16px 40px -6px rgba(0,0,0,.65),0 0 24px -4px var(--tp-glow,rgba(0,0,0,.5));display:flex;flex-direction:column;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.175,.885,.32,1.275),box-shadow .2s ease}' +'.cb-team-pod:hover{transform:translateY(-4px);box-shadow:0 22px 50px -6px rgba(0,0,0,.75),0 0 32px -2px var(--tp-glow,rgba(0,0,0,.7))}' +'.cb-team-banner{height:120px;position:relative;overflow:hidden;background:#060911}' +'.cb-team-banner-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.65) saturate(1.25);transition:transform .4s ease}' +'.cb-team-pod:hover .cb-team-banner-img{transform:scale(1.05)}' +'.cb-team-banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,17,.15) 0%,rgba(10,16,30,.95) 100%)}' +'.cb-team-trophy{position:absolute;top:10px;right:14px;display:inline-flex;align-items:center;gap:7px;background:rgba(15,23,42,.88);border:1.5px solid var(--tp-accent,#fbbf24);padding:6px 14px;border-radius:99px;box-shadow:0 6px 16px rgba(0,0,0,.45);font-variant-numeric:tabular-nums;backdrop-filter:blur(8px)}' +'.cb-trophy-icon{font-size:1.15rem}' +'.cb-team-xp-val{font-size:1.3rem;font-weight:900;color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.6);line-height:1}' +'.cb-trophy-lbl{font-size:.74rem;font-weight:800;color:#fde68a;letter-spacing:.06em}' +'.cb-team-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:0 18px 12px;margin-top:-38px;position:relative;z-index:2;flex-wrap:wrap}' +'.cb-team-identity{display:flex;align-items:center;gap:12px}' +'.cb-team-shield{width:74px;height:74px;border-radius:22px;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.22) 0%,rgba(15,23,42,.96) 100%);border:3px solid var(--tp-accent,#fbbf24);box-shadow:0 8px 24px -2px rgba(0,0,0,.6),0 0 18px var(--tp-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}' +'.cb-team-shield-img{width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));animation:cbMascotBob 3s ease-in-out infinite}' +'@keyframes cbMascotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}' +'.cb-team-meta h3{margin:0 0 3px;font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.7);line-height:1.1}' +'.cb-team-meta-sub{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-motto{font-size:.8rem;font-weight:700;color:var(--tp-accent,#fbbf24);font-style:italic}' +'.cb-team-count-pill{font-size:.72rem;font-weight:800;background:rgba(255,255,255,.12);color:#e2e8f0;padding:2px 8px;border-radius:99px;border:1px solid rgba(255,255,255,.18)}' +'.cb-team-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}' +'.cb-team-award-btn{border:0;border-radius:14px;font:800 .9rem Fredoka,system-ui,sans-serif;padding:10px 16px;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .12s cubic-bezier(.175,.885,.32,1.275),border-bottom-width .12s;touch-action:manipulation}' +'.cb-team-award-btn:active{transform:translateY(4px);border-bottom-width:1px!important}' +'.cb-team-award-btn.btn-5{background:#10b981;color:#fff;border-bottom:5px solid #047857}' +'.cb-team-award-btn.btn-10{background:#f59e0b;color:#1e1b4b;border-bottom:5px solid #b45309}' +'.cb-team-award-btn:hover{filter:brightness(1.15)}' +'.cb-team-monsters-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:6px 18px 18px}' +'.cb-st .cb-st-av-bubble{position:absolute;right:6px;top:36px;width:36px;height:36px;border-radius:50%;object-fit:contain;background:#fff7d6;border:2px solid #fbbf24;box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:3;cursor:pointer;transition:transform .15s cubic-bezier(.175,.885,.32,1.275)}' +'.cb-st .cb-st-av-bubble:hover{transform:scale(1.15)}' +
     '.cb-mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;position:relative}' +
     '.cb-st{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);backdrop-filter:blur(8px);border-radius:24px;padding:10px 8px 12px;text-align:center;position:relative;transition:transform .18s,background .18s;animation:cbCardIn .28s cubic-bezier(.175,.885,.32,1.275) backwards;animation-delay:calc(var(--i,0) * 22ms)}' +
     '@keyframes cbCardIn{from{opacity:0;transform:translateY(10px) scale(.96)}}' +
@@ -177,31 +163,166 @@
     '.cb-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#2f1519;color:#fecaca;border:1px solid #7f1d1d;border-radius:12px;padding:10px 16px;z-index:9700;display:flex;gap:12px;align-items:center;font-weight:700}.cb-toast button{background:#fecaca;color:#2f1519;border:0;border-radius:8px;padding:4px 10px;font-weight:800;cursor:pointer}';
   
   var TEAM_THEMES = {
-    'golden eagles': { icon: '🦅', motto: 'High Flyers & Bold Achievers', color: '#eab308', accent: '#fbbf24', border: 'rgba(234,179,8,0.55)', glow: 'rgba(234,179,8,0.3)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.92), rgba(15,23,42,0.95))' },
-    'emerald forest': { icon: '🌲', motto: 'Deep Roots, Growing Strong', color: '#10b981', accent: '#34d399', border: 'rgba(16,185,129,0.55)', glow: 'rgba(16,185,129,0.3)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.92), rgba(15,23,42,0.95))' },
-    'ocean explorers': { icon: '🌊', motto: 'Navigating Wonder & Depths', color: '#38bdf8', accent: '#38bdf8', border: 'rgba(56,189,248,0.55)', glow: 'rgba(56,189,248,0.3)', bg: 'linear-gradient(135deg, rgba(8,28,45,0.92), rgba(15,23,42,0.95))' },
-    'cosmic phoenix': { icon: '🔥', motto: 'Rising Together into the Stars', color: '#ec4899', accent: '#f472b6', border: 'rgba(236,72,153,0.55)', glow: 'rgba(236,72,153,0.3)', bg: 'linear-gradient(135deg, rgba(38,12,28,0.92), rgba(15,23,42,0.95))' },
-    'star navigators': { icon: '🧭', motto: 'Guiding the Way Forward', color: '#8b5cf6', accent: '#a78bfa', border: 'rgba(139,92,246,0.55)', glow: 'rgba(139,92,246,0.3)', bg: 'linear-gradient(135deg, rgba(26,14,48,0.92), rgba(15,23,42,0.95))' },
-    'crystal panthers': { icon: '🐆', motto: 'Swift, Sharp & Fearless', color: '#06b6d4', accent: '#22d3ee', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.92), rgba(15,23,42,0.95))' },
-    'thunder wolves': { icon: '🐺', motto: 'Loyal Pack, Unstoppable Energy', color: '#f59e0b', accent: '#fbbf24', border: 'rgba(245,158,11,0.55)', glow: 'rgba(245,158,11,0.3)', bg: 'linear-gradient(135deg, rgba(38,24,8,0.92), rgba(15,23,42,0.95))' },
-    'solar phoenix': { icon: '☀️', motto: 'Blazing Bright with Courage', color: '#ef4444', accent: '#f87171', border: 'rgba(239,68,68,0.55)', glow: 'rgba(239,68,68,0.3)', bg: 'linear-gradient(135deg, rgba(42,12,12,0.92), rgba(15,23,42,0.95))' },
-    'mystic dragons': { icon: '🐉', motto: 'Ancient Wisdom & Dragon Flame', color: '#8b5cf6', accent: '#c084fc', border: 'rgba(139,92,246,0.55)', glow: 'rgba(139,92,246,0.3)', bg: 'linear-gradient(135deg, rgba(28,14,48,0.92), rgba(15,23,42,0.95))' },
-    'solar voyagers': { icon: '🚀', motto: 'Journeying into the Cosmos', color: '#f59e0b', accent: '#fde047', border: 'rgba(245,158,11,0.55)', glow: 'rgba(245,158,11,0.3)', bg: 'linear-gradient(135deg, rgba(36,22,8,0.92), rgba(15,23,42,0.95))' },
-    'diamond titans': { icon: '💎', motto: 'Unbreakable Strength & Clarity', color: '#06b6d4', accent: '#67e8f9', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,30,42,0.92), rgba(15,23,42,0.95))' },
-    'cyber knights': { icon: '⚔️', motto: 'Honor, Code & Team Unity', color: '#3b82f6', accent: '#60a5fa', border: 'rgba(59,130,246,0.55)', glow: 'rgba(59,130,246,0.3)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.92), rgba(15,23,42,0.95))' },
-    'golden starlights': { icon: '✨', motto: 'Shining Together As One', color: '#eab308', accent: '#fef08a', border: 'rgba(234,179,8,0.55)', glow: 'rgba(234,179,8,0.3)', bg: 'linear-gradient(135deg, rgba(35,26,10,0.92), rgba(15,23,42,0.95))' },
-    'book wizards': { icon: '🧙', motto: 'Words, Wonder & Endless Magic', color: '#10b981', accent: '#6ee7b7', border: 'rgba(16,185,129,0.55)', glow: 'rgba(16,185,129,0.3)', bg: 'linear-gradient(135deg, rgba(8,35,24,0.92), rgba(15,23,42,0.95))' },
-    'galactic navigators': { icon: '🌌', motto: 'Charting Uncharted Worlds', color: '#06b6d4', accent: '#38bdf8', border: 'rgba(6,182,212,0.55)', glow: 'rgba(6,182,212,0.3)', bg: 'linear-gradient(135deg, rgba(8,26,45,0.92), rgba(15,23,42,0.95))' },
-    'apex guardians': { icon: '🛡️', motto: 'Shields Up, Defending Excellence', color: '#3b82f6', accent: '#93c5fd', border: 'rgba(59,130,246,0.55)', glow: 'rgba(59,130,246,0.3)', bg: 'linear-gradient(135deg, rgba(12,22,48,0.92), rgba(15,23,42,0.95))' }
+    'golden eagles': {
+      mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
+      motto: 'High Flyers & Bold Achievers',
+      accent: '#fbbf24',
+      border: 'rgba(251,191,36,0.6)',
+      glow: 'rgba(251,191,36,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'emerald forest': {
+      mascot: 'assets/packs/characters/florasprout_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
+      motto: 'Deep Roots, Growing Strong',
+      accent: '#34d399',
+      border: 'rgba(52,211,153,0.6)',
+      glow: 'rgba(52,211,153,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'ocean explorers': {
+      mascot: 'assets/packs/characters/aquafind_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/storybook_pond.jpg',
+      motto: 'Navigating Wonder & Depths',
+      accent: '#38bdf8',
+      border: 'rgba(56,189,248,0.6)',
+      glow: 'rgba(56,189,248,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,28,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'cosmic phoenix': {
+      mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+      motto: 'Rising Together into the Stars',
+      accent: '#f472b6',
+      border: 'rgba(244,114,182,0.6)',
+      glow: 'rgba(244,114,182,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(38,12,28,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'star navigators': {
+      mascot: 'assets/packs/characters/astralight_stage_growing.png',
+      bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+      motto: 'Guiding the Way Forward',
+      accent: '#a78bfa',
+      border: 'rgba(167,139,250,0.6)',
+      glow: 'rgba(167,139,250,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(26,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'crystal panthers': {
+      mascot: 'assets/packs/characters/aquafind_stage_growing.png',
+      bgImg: 'assets/unit3-arctic/bg_station.jpg',
+      motto: 'Swift, Sharp & Fearless',
+      accent: '#22d3ee',
+      border: 'rgba(34,211,238,0.6)',
+      glow: 'rgba(34,211,238,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'thunder wolves': {
+      mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/toadstools.jpg',
+      motto: 'Loyal Pack, Unstoppable Energy',
+      accent: '#fbbf24',
+      border: 'rgba(251,191,36,0.6)',
+      glow: 'rgba(251,191,36,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(38,24,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'solar phoenix': {
+      mascot: 'assets/packs/characters/emberwing_stage_growing.png',
+      bgImg: 'assets/packs/backgrounds/sleepy-awake-room.webp',
+      motto: 'Blazing Bright with Courage',
+      accent: '#f87171',
+      border: 'rgba(248,113,113,0.6)',
+      glow: 'rgba(248,113,113,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(42,12,12,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'mystic dragons': {
+      mascot: 'assets/packs/characters/emberwing_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/rabbit_hole_oak.jpg',
+      motto: 'Ancient Wisdom & Dragon Flame',
+      accent: '#c084fc',
+      border: 'rgba(192,132,252,0.6)',
+      glow: 'rgba(192,132,252,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(28,14,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'solar voyagers': {
+      mascot: 'assets/packs/characters/sparktail_stage_growing.png',
+      bgImg: 'assets/unit3-arctic/bg_city.jpg',
+      motto: 'Journeying into the Cosmos',
+      accent: '#fde047',
+      border: 'rgba(253,224,71,0.6)',
+      glow: 'rgba(253,224,71,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(36,22,8,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'diamond titans': {
+      mascot: 'assets/packs/characters/ankylosaurus.png',
+      bgImg: 'assets/unit3-arctic/bg_arctic.jpg',
+      motto: 'Unbreakable Strength & Clarity',
+      accent: '#67e8f9',
+      border: 'rgba(103,232,249,0.6)',
+      glow: 'rgba(103,232,249,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,30,42,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'cyber knights': {
+      mascot: 'assets/packs/characters/triceratops.png',
+      bgImg: 'assets/packs/backgrounds/evidence_board_bg.jpg',
+      motto: 'Honor, Code & Team Unity',
+      accent: '#60a5fa',
+      border: 'rgba(96,165,250,0.6)',
+      glow: 'rgba(96,165,250,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(12,22,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'golden starlights': {
+      mascot: 'assets/packs/characters/astralight_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/wooden_signpost.jpg',
+      motto: 'Shining Together As One',
+      accent: '#fef08a',
+      border: 'rgba(254,240,138,0.6)',
+      glow: 'rgba(254,240,138,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(35,26,10,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'book wizards': {
+      mascot: 'assets/packs/characters/florasprout_stage_growing.png',
+      bgImg: 'assets/packs/backgrounds/fairytale_oak.jpg',
+      motto: 'Words, Wonder & Endless Magic',
+      accent: '#6ee7b7',
+      border: 'rgba(110,231,183,0.6)',
+      glow: 'rgba(110,231,183,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,35,24,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'galactic navigators': {
+      mascot: 'assets/packs/characters/astralight_stage_growing.png',
+      bgImg: 'assets/packs/backgrounds/sleepy-night-room.webp',
+      motto: 'Charting Uncharted Worlds',
+      accent: '#38bdf8',
+      border: 'rgba(56,189,248,0.6)',
+      glow: 'rgba(56,189,248,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(8,26,45,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    },
+    'apex guardians': {
+      mascot: 'assets/packs/characters/trex.png',
+      bgImg: 'assets/packs/backgrounds/mossy_boulder.jpg',
+      motto: 'Shields Up, Defending Excellence',
+      accent: '#93c5fd',
+      border: 'rgba(147,197,253,0.6)',
+      glow: 'rgba(147,197,253,0.35)',
+      cardBg: 'linear-gradient(180deg, rgba(12,22,48,0.88) 0%, rgba(10,16,30,0.96) 100%)'
+    }
   };
   function getTeamThemeMeta(name, fallbackColor) {
     var key = (name || '').toLowerCase().trim();
     if (TEAM_THEMES[key]) return TEAM_THEMES[key];
     var col = fallbackColor || '#38bdf8';
-    return { icon: '⭐', motto: 'United Classroom Team', color: col, accent: col, border: col + '88', glow: col + '44', bg: 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.92))' };
+    return {
+      mascot: 'assets/packs/characters/sparktail_stage_ultimate.png',
+      bgImg: 'assets/packs/backgrounds/bg_forest_canopy.jpg',
+      motto: 'United Classroom Team',
+      accent: col,
+      border: col + '88',
+      glow: col + '44',
+      cardBg: 'linear-gradient(180deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.96) 100%)'
+    };
   }
-
-  function ensureCss() {
+function ensureCss() {
     if (document.getElementById('cb-css')) return;
     var el = document.createElement('style'); el.id = 'cb-css'; el.textContent = CSS + EXTRA_CSS + (root.BoardScenes ? root.BoardScenes.css() : ''); document.head.appendChild(el);
   }
@@ -352,7 +473,7 @@
   function renderTeamsView(cls, studentList) {
     var groups = S().getGroups ? S().getGroups(cls.id) : [];
     if (!groups || groups.length === 0) {
-      return '<div style="text-align:center; padding:40px; color:#fff; font-size:1.1rem;">No teams found for this class. <button class="cb-team-btn" onclick="ClassBoard.groups()">Create Teams</button></div>';
+      return '<div style="text-align:center; padding:50px 20px; color:#fff; font-size:1.2rem;">No teams configured for this class. <button class="cb-team-award-btn btn-5" onclick="ClassBoard.groups()" style="margin-left:14px">Create Teams</button></div>';
     }
     return '<div class="cb-teams-grid">' + groups.map(function (grp) {
       var theme = getTeamThemeMeta(grp.name, grp.color);
@@ -362,42 +483,56 @@
       }).filter(Boolean);
       var groupTotalXP = members.reduce(function (acc, m) { return acc + (m.xp || 0); }, 0);
 
-      return '<div class="cb-team-pod" id="cb-team-' + esc(grp.id) + '" style="--tp-accent:' + theme.accent + '; --tp-bg:' + theme.bg + '; --tp-border:' + theme.border + '; --tp-glow:' + theme.glow + ';">' +
+      return '<div class="cb-team-pod" id="cb-team-' + esc(grp.id) + '" style="--tp-accent:' + theme.accent + '; --tp-card-bg:' + theme.cardBg + '; --tp-border:' + theme.border + '; --tp-glow:' + theme.glow + ';">' +
+        '<div class="cb-team-banner">' +
+          '<img class="cb-team-banner-img" src="' + esc(theme.bgImg) + '" alt="" loading="lazy">' +
+          '<div class="cb-team-banner-overlay"></div>' +
+          '<div class="cb-team-trophy">' +
+            '<span class="cb-trophy-icon">🏆</span>' +
+            '<b class="cb-team-xp-val" id="cb-team-pt-' + esc(grp.id) + '">' + groupTotalXP.toLocaleString('en-US') + '</b>' +
+            '<span class="cb-trophy-lbl">TEAM XP</span>' +
+          '</div>' +
+        '</div>' +
         '<div class="cb-team-hd" id="cb-team-header-' + esc(grp.id) + '">' +
-          '<div class="cb-team-info">' +
-            '<div class="cb-team-crest">' + theme.icon + '</div>' +
-            '<div class="cb-team-name-wrap">' +
+          '<div class="cb-team-identity">' +
+            '<div class="cb-team-shield" title="' + esc(grp.name) + ' Mascot">' +
+              '<img class="cb-team-shield-img" src="' + esc(theme.mascot) + '" alt="' + esc(grp.name) + '">' +
+            '</div>' +
+            '<div class="cb-team-meta">' +
               '<h3>' + esc(grp.name) + '</h3>' +
-              '<div class="cb-team-motto">' + esc(theme.motto) + ' · ' + members.length + ' Members</div>' +
+              '<div class="cb-team-meta-sub">' +
+                '<span class="cb-team-motto">' + esc(theme.motto) + '</span>' +
+                '<span class="cb-team-count-pill">👥 ' + members.length + ' Explorers</span>' +
+              '</div>' +
             '</div>' +
           '</div>' +
           '<div class="cb-team-actions">' +
-            '<span class="cb-team-score-badge">🏆 <b id="cb-team-pt-' + esc(grp.id) + '">' + groupTotalXP.toLocaleString('en-US') + '</b> Team XP</span>' +
-            '<button class="cb-team-btn" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 5)" title="Award +5 XP to all team members">+5 Team</button>' +
-            '<button class="cb-team-btn" style="background:#f59e0b; color:#fff;" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 10)" title="Award +10 XP to all team members">+10 Team</button>' +
+            '<button type="button" class="cb-team-award-btn btn-5" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 5)" title="Award +5 XP to all team members">⭐ +5 Team</button>' +
+            '<button type="button" class="cb-team-award-btn btn-10" onclick="ClassBoard.awardTeam(\'' + esc(grp.id) + '\', 10)" title="Award +10 XP to all team members">🔥 +10 Team</button>' +
           '</div>' +
         '</div>' +
         '<div class="cb-team-monsters-row">' +
           members.map(function (s, idx) {
-            return '<div class="cb-st ' + (absent[s.id] ? 'off' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '" style="--i:' + idx + '">' +
+            var avBubble = s.av ? '<img class="cb-st-av-bubble" src="' + esc(s.av) + '" alt="" title="' + esc(s.name) + '">' : '';
+            return '<div class="cb-st cb-team-st ' + (absent[s.id] ? 'off' : '') + '" id="cb-' + esc(s.id) + '" data-id="' + esc(s.id) + '" style="--i:' + idx + '">' +
               '<button type="button" class="cb-att" title="Tap to mark here or away" onclick="ClassBoard.toggleAbsent(\'' + esc(s.id) + '\')">' + (absent[s.id] ? 'Away' : '✓') + '</button>' +
               '<button class="cb-mn" title="More for this pupil" onclick="ClassBoard.menu(\'' + esc(s.id) + '\', event)">⋯</button>' +
+              avBubble +
               '<span class="cb-pt" id="cb-pt-' + esc(s.id) + '">' + s.xp.toLocaleString('en-US') + '</span>' +
               '<div class="cb-pw"><i class="cb-ped"></i>' +
                 '<img class="cb-mon" src="' + esc(s.img) + '" alt="' + esc(s.name) + '" title="Tap monster" onclick="ClassBoard.tapMonster(\'' + esc(s.id) + '\', this)">' +
               '</div>' +
               '<b class="n">' + esc(s.name) + (absent[s.id] ? ' · away' : '') + '</b>' +
               (s.x && s.x.title ? '<span class="cb-ti">' + esc(s.x.title.icon + ' ' + s.x.title.name) + '</span>' : '') +
-              '<div class="cb-add"><button onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
-              (discOn() ? '<div class="cb-dis"><button onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away">−10</button></div>' : '') +
+              '<div class="cb-add"><button type="button" onclick="ClassBoard.award(\'' + esc(s.id) + '\',10)">+10</button></div>' +
+              (discOn() ? '<div class="cb-dis"><button type="button" onclick="ClassBoard.minus(\'' + esc(s.id) + '\',10)" title="Take 10 XP away">−10</button></div>' : '') +
             '</div>';
           }).join('') +
         '</div>' +
       '</div>';
     }).join('') + '</div>';
   }
-
-  function render(container) {
+function render(container) {
     ensureCss();
     var cls = S().getActiveClass(); viewCls = cls; loadAbsent(cls);
     var list = students(cls), present = list.filter(function (s) { return !absent[s.id]; }).length;
