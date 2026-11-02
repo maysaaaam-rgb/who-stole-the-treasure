@@ -7,7 +7,7 @@
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var TYPES = {
     lesson: ['📖', 'Lesson', '#94a3b8'], unit4: ['📘', 'Unit 4', '#38bdf8'], alice: ['🫖', 'Alice', '#f472b6'], quiz: ['📝', 'Quiz', '#f59e0b'],
-    birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
+    book: ['📗', 'Gov book', '#10b981'], halloween: ['🎃', 'Halloween', '#f97316'], birthday: ['🎂', 'Birthday', '#34d399'], meeting: ['👥', 'Meeting', '#a78bfa'], task: ['✅', 'To do', '#fb923c'], chuseok: ['🌕', 'Chuseok', '#fbbf24'], other: ['📌', 'Other', '#cbd5e1']
   };
   // k12 timetable (19-23 Oct 2026; the same every week): classId -> weekday (1=Mon) -> start times
   var K12 = {
@@ -405,8 +405,59 @@
       store().setCalendarFlag('seed23');
     } catch (e) { /* ignore */ }
   }
+  /* Week of 2-6 Nov 2026, the teacher's plan (replaces the tournament week above): 4 government-book lessons per class
+     and 2 Halloween team lessons built on the All About Me survey. Every class has 7 English lessons a week. */
+  function bookWeekNov2Once() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed24')) return;
+      var B = 'Government book lesson. Last 10 minutes: a short team game with the day\'s book words (pages to be added).';
+      var PET = 'Teams of 4-5 with jobs (Artist, Speaker, Writer, Timer boss). Each team draws a Halloween pet and sells it in English: It\'s a... It has got... It can... (lesson being built).';
+      var SHOW = 'Week finale: each team shows its Halloween monster or costume and says 3 sentences together, then a short chant and team awards (lesson being built).';
+      var rows = [
+        ['2026-11-02', '13:30', 'class-3a', 'book', 'Done: Book lesson 1 + All About Me survey', 'One government-book lesson and the survey (the order of the two lessons may be the other way round).'],
+        ['2026-11-02', '14:15', 'class-3a', 'book', 'Done: Book lesson 1 + All About Me survey', 'One government-book lesson and the survey.'],
+        ['2026-11-02', '10:30', 'class-4a', 'book', 'Done: Book lesson 1 + All About Me survey', 'One government-book lesson and the survey (the order of the two lessons may be the other way round).'],
+        ['2026-11-02', '11:15', 'class-4a', 'book', 'Done: Book lesson 1 + All About Me survey', 'One government-book lesson and the survey.'],
+        ['2026-11-02', '16:05', 'class-3b', 'lesson', 'Done: All About Me survey', 'No book lesson today (the class has no books yet).'],
+        ['2026-11-02', '09:45', 'class-4b', 'lesson', 'Done: All About Me survey', 'No book lesson today (the class has no books yet).'],
+        // 3A: 3 book lessons left
+        ['2026-11-03', '10:30', 'class-3a', 'book', 'Book lesson 2', B],
+        ['2026-11-03', '11:15', 'class-3a', 'halloween', 'Halloween: Monster Pet Shop (teams)', PET],
+        ['2026-11-05', '09:45', 'class-3a', 'book', 'Book lesson 3', B],
+        ['2026-11-06', '10:30', 'class-3a', 'book', 'Book lesson 4', B],
+        ['2026-11-06', '11:15', 'class-3a', 'halloween', 'Halloween Team Show + awards', SHOW],
+        // 3B: 4 book lessons left
+        ['2026-11-04', '10:30', 'class-3b', 'book', 'Book lesson 1 (hand out the books)', B],
+        ['2026-11-04', '11:15', 'class-3b', 'halloween', 'Halloween: Monster Pet Shop (teams)', PET],
+        ['2026-11-05', '10:30', 'class-3b', 'book', 'Book lesson 2', B],
+        ['2026-11-05', '11:15', 'class-3b', 'book', 'Book lesson 3', B],
+        ['2026-11-06', '09:00', 'class-3b', 'book', 'Book lesson 4', B],
+        ['2026-11-06', '09:45', 'class-3b', 'halloween', 'Halloween Team Show + awards', SHOW],
+        // 4A: 3 book lessons left (no Friday lesson)
+        ['2026-11-03', '15:20', 'class-4a', 'book', 'Book lesson 2', B],
+        ['2026-11-04', '14:15', 'class-4a', 'book', 'Book lesson 3', B],
+        ['2026-11-04', '15:20', 'class-4a', 'halloween', 'Halloween: Monster Pet Shop (teams)', PET],
+        ['2026-11-05', '16:05', 'class-4a', 'book', 'Book lesson 4', B],
+        ['2026-11-05', '16:55', 'class-4a', 'halloween', 'Halloween Team Show + awards', SHOW],
+        // 4B: 4 book lessons left
+        ['2026-11-03', '09:00', 'class-4b', 'book', 'Book lesson 1 (hand out the books)', B],
+        ['2026-11-03', '09:45', 'class-4b', 'halloween', 'Halloween: Monster Pet Shop (teams)', PET],
+        ['2026-11-04', '12:45', 'class-4b', 'book', 'Book lesson 2', B],
+        ['2026-11-04', '13:30', 'class-4b', 'book', 'Book lesson 3', B],
+        ['2026-11-06', '14:15', 'class-4b', 'book', 'Book lesson 4', B],
+        ['2026-11-06', '15:20', 'class-4b', 'halloween', 'Halloween Team Show + awards', SHOW]
+      ];
+      var list = customEvents().filter(function (e) {
+        if (e && /^seed23-/.test(String(e.id || ''))) return false; // the old tournament week
+        return !rows.some(function (r) { return e && e.date === r[0] && e.time === r[1] && e.classId === r[2]; });
+      });
+      rows.forEach(function (r, i) { list.push({ id: 'seed24-' + i, date: r[0], time: r[1], classId: r[2], type: r[3], title: r[4], note: r[5] }); });
+      saveEvents(list);
+      store().setCalendarFlag('seed24');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
@@ -460,7 +511,7 @@
       '<span style="flex:1"></span><button class="cal-b ok" onclick="CalendarView.edit(\'\')">+ Add event</button></div>' +
       '<div class="cal-top" style="margin-top:0"><button class="cal-b ' + (st.cls === 'all' ? 'on' : 'g') + '" onclick="CalendarView.cls(\'all\')">All classes</button>' +
       cl.map(function (c) { return '<button class="cal-b ' + (st.cls === c.id ? 'on' : 'g') + '" onclick="CalendarView.cls(\'' + esc(c.id) + '\')">' + esc(shortName(c.id)) + '</button>'; }).join('') + '</div>' +
-      '<div class="cal-legend">' + Object.keys(TYPES).map(function (k) { return '<span><i style="background:' + TYPES[k][2] + '"></i>' + TYPES[k][1] + '</span>'; }).join('') + '</div>';
+      '<div class="cal-legend">' + Object.keys(TYPES).filter(function (k) { return k !== 'alice' && k !== 'chuseok'; }).map(function (k) { return '<span><i style="background:' + TYPES[k][2] + '"></i>' + TYPES[k][1] + '</span>'; }).join('') + '</div>';
   }
   function monthHtml() {
     var first = new Date(st.y, st.m, 1), start = monday(first), todayKey = ymd(new Date()), cells = '';
@@ -534,7 +585,7 @@
       '<div style="grid-column:1/3"><label>What</label><input id="cal-f-title" value="' + esc(e.title) + '" placeholder="Quiz for 4/A, parent meeting, bring props…"></div>' +
       '<div><label>Day</label><input id="cal-f-date" type="date" value="' + esc(e.date) + '"></div><div><label>Time (optional)</label><input id="cal-f-time" type="time" value="' + esc(e.time) + '"></div>' +
       '<div><label>Class</label><select id="cal-f-cls"><option value="">All / none</option>' + classes().map(function (c) { return '<option value="' + esc(c.id) + '"' + (e.classId === c.id ? ' selected' : '') + '>' + esc(shortName(c.id)) + '</option>'; }).join('') + '</select></div>' +
-      '<div><label>Type</label><select id="cal-f-type">' + Object.keys(TYPES).filter(function (k) { return k !== 'birthday'; }).map(function (k) { return '<option value="' + k + '"' + (e.type === k ? ' selected' : '') + '>' + TYPES[k][0] + ' ' + TYPES[k][1] + '</option>'; }).join('') + '</select></div>' +
+      '<div><label>Type</label><select id="cal-f-type">' + Object.keys(TYPES).filter(function (k) { return k !== 'birthday' && k !== 'alice' && k !== 'chuseok'; }).map(function (k) { return '<option value="' + k + '"' + (e.type === k ? ' selected' : '') + '>' + TYPES[k][0] + ' ' + TYPES[k][1] + '</option>'; }).join('') + '</select></div>' +
       '<div style="grid-column:1/3"><label>Note (optional)</label><textarea id="cal-f-note" rows="3">' + esc(e.note) + '</textarea></div></div>' +
       '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="cal-b g" id="cal-f-no">Cancel</button><button class="cal-b ok" id="cal-f-ok">Save</button></div></div>';
     document.body.appendChild(m);

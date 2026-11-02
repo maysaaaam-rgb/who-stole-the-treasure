@@ -2700,7 +2700,7 @@
       xpRequired: XPL[0],
       description: 'A smooth, mysterious speckled egg waiting for your English journey to begin.',
       subtitle: 'A new adventure begins...',
-      image: 'assets/monsters/stage-1-mystery-egg.png',
+      image: 'assets/monsters/art/emberwing_egg.webp',
       unlockedItems: ['body-blue', 'body-pink', 'body-green', 'body-orange', 'body-purple', 'bg-meadow'],
       rewardXP: 0,
       status: 'active'
@@ -2713,7 +2713,7 @@
       xpRequired: XPL[1],
       description: 'Glowing fissures appear across the shell as early English practice warms the egg.',
       subtitle: 'Life is waking up!',
-      image: 'assets/monsters/stage-2-cracking-egg.png',
+      image: 'assets/monsters/art/emberwing_cracking.webp',
       unlockedItems: ['eyes-happy', 'mouth-cheer'],
       rewardXP: 50,
       status: 'active'
@@ -2739,7 +2739,7 @@
       xpRequired: XPL[3],
       description: 'Stronger and taller! Expressive arms, perky tail, and sprout horns appear.',
       subtitle: 'Stronger every day!',
-      image: 'assets/monsters/stage-4-growing-monster.png',
+      image: 'assets/packs/characters/emberwing_stage_growing.png',
       unlockedItems: ['mouth-toothy', 'horns-nub', 'tail-perky', 'wings-starter', 'hat-scholar'],
       rewardXP: 150,
       status: 'active'
@@ -2752,7 +2752,7 @@
       xpRequired: XPL[4],
       description: 'Equipped with an explorer fedora and satchel, ready for challenging reading quests.',
       subtitle: 'Ready for bigger quests!',
-      image: 'assets/monsters/stage-5-adventurer-monster.png',
+      image: 'assets/monsters/art/emberwing_adventurer.webp',
       unlockedItems: ['body-gold', 'hat-explorer', 'bp-explorer', 'horns-curved', 'aura-flame', 'bg-crystal'],
       rewardXP: 250,
       status: 'active'
@@ -2765,7 +2765,7 @@
       xpRequired: XPL[5],
       description: 'Majestic sweeping dragon wings, glowing crystal horns, and confident presence.',
       subtitle: 'New powers, new places!',
-      image: 'assets/monsters/stage-6-advanced-monster.png',
+      image: 'assets/monsters/art/emberwing_advanced.webp',
       unlockedItems: ['horns-crystal', 'wings-dragon', 'tail-dragon', 'eyes-dragon', 'hat-wizard', 'bg-cosmos'],
       rewardXP: 500,
       status: 'active'
@@ -2778,7 +2778,7 @@
       xpRequired: XPL[6],
       description: 'The legendary sovereign form crowned in celestial gold with cosmic wings.',
       subtitle: 'A true hero!',
-      image: 'assets/monsters/stage-7-ultimate-monster.png',
+      image: 'assets/packs/characters/emberwing_stage_ultimate.png',
       unlockedItems: ['hat-crown', 'wings-celestial', 'tail-flame', 'aura-cosmic', 'bg-castle'],
       rewardXP: 1000,
       status: 'active'
@@ -10559,8 +10559,9 @@
               // Ensure standardized progression thresholds are applied
               merged.progressionLevels.forEach(lvl => {
                 const def = DEFAULT_PROGRESSION_LEVELS.find(d => d.id === lvl.id || d.level === lvl.level);
-                if (def && /^lvl-[1-7]$/.test(String(def.id || ''))) {   // all 7 standard levels follow js/evolution-levels.js (Level 7 moved to 3,500 on 2026-10-13)
+                if (def && /^lvl-[1-7]$/.test(String(def.id || ''))) {
                   lvl.xpRequired = def.xpRequired;
+                  if (!lvl.image || lvl.image.includes('stage-')) { lvl.image = def.image; }
                 }
               });
             }
