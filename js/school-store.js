@@ -8358,7 +8358,7 @@
           studentIdNumber: '319',
           firstName: 'Ozan',
           lastName: 'Topçu',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8398,7 +8398,7 @@
           studentIdNumber: '346',
           firstName: 'Ali İhsan',
           lastName: 'Bıçakçı',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8418,7 +8418,7 @@
           studentIdNumber: '338',
           firstName: 'Derin',
           lastName: 'Küçük',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8441,7 +8441,7 @@
           studentIdNumber: '316',
           firstName: 'Egehan',
           lastName: 'Tekin',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8461,7 +8461,7 @@
           studentIdNumber: '307',
           firstName: 'Elif Asya',
           lastName: 'Durmaz',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8481,7 +8481,7 @@
           studentIdNumber: '306',
           firstName: 'Elif Beren',
           lastName: 'Alper',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8502,7 +8502,7 @@
           studentIdNumber: '348',
           firstName: 'Elisa Berre',
           lastName: 'Eşkin',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8522,7 +8522,7 @@
           studentIdNumber: '318',
           firstName: 'Ertuğrul',
           lastName: 'Turan',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8566,7 +8566,7 @@
           studentIdNumber: '305',
           firstName: 'Kerem',
           lastName: 'Özçakmak',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8586,7 +8586,7 @@
           studentIdNumber: '349',
           firstName: 'Lina',
           lastName: 'Koca',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8606,7 +8606,7 @@
           studentIdNumber: '439',
           firstName: 'Mina',
           lastName: 'Çakar',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8626,7 +8626,7 @@
           studentIdNumber: '304',
           firstName: 'Nilda',
           lastName: 'Eşkin',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8646,7 +8646,7 @@
           studentIdNumber: '440',
           firstName: 'Nisa',
           lastName: 'Kömürcüoğlu',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8666,7 +8666,7 @@
           studentIdNumber: '301',
           firstName: 'Ozan',
           lastName: 'Metin',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8686,7 +8686,7 @@
           studentIdNumber: '208',
           firstName: 'Şimal',
           lastName: 'Koyun',
-          classId: 'class-4b',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8706,7 +8706,7 @@
           studentIdNumber: '322',
           firstName: 'Öykü Çiğdem',
           lastName: 'Akar',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8727,7 +8727,7 @@
           studentIdNumber: '339',
           firstName: 'Uras',
           lastName: 'Tekay',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8747,7 +8747,7 @@
           studentIdNumber: '309',
           firstName: 'Utku Efe',
           lastName: 'Kulaç',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -8767,7 +8767,7 @@
           studentIdNumber: '308',
           firstName: 'Yağmur Ada',
           lastName: 'Ovalı',
-          classId: 'class-4a',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
@@ -9609,47 +9609,142 @@
 
       // 14. Family Message Threads
       
-      // 13. Groups (Classroom Teams)
+      // 13. Groups (Classroom Teams) - 16 Canonical Smartboard Teams
       groups: [
+        // Grade 3A
         {
           id: 'group-3a-1',
           classId: 'class-3a',
-          name: 'Blue Dolphins',
-          color: '#2563eb',
-          studentIds: ['student-3a-224', 'student-3a-229', 'student-3a-354', 'student-3a-203'],
-          createdDate: '2026-09-01'
+          name: 'Golden Eagles',
+          color: '#eab308',
+          studentIds: ['student-3a-229', 'student-3a-210', 'student-3a-209', 'student-3a-222'],
+          createdDate: '2026-11-02'
         },
         {
           id: 'group-3a-2',
           classId: 'class-3a',
-          name: 'Green Explorers',
+          name: 'Emerald Forest',
           color: '#10b981',
-          studentIds: ['student-3a-227', 'student-3a-207', 'student-3a-202', 'student-3a-214'],
-          createdDate: '2026-09-01'
+          studentIds: ['student-3a-224', 'student-3a-219', 'student-3a-214', 'student-3a-207'],
+          createdDate: '2026-11-02'
         },
+        {
+          id: 'group-3a-3',
+          classId: 'class-3a',
+          name: 'Ocean Explorers',
+          color: '#38bdf8',
+          studentIds: ['student-3a-223', 'student-3a-354', 'student-3a-351', 'student-3a-203', 'student-3a-204'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-3a-4',
+          classId: 'class-3a',
+          name: 'Cosmic Phoenix',
+          color: '#ec4899',
+          studentIds: ['student-3a-211', 'student-3a-206', 'student-3a-202', 'student-3a-227'],
+          createdDate: '2026-11-02'
+        },
+
+        // Grade 3B
         {
           id: 'group-3b-1',
           classId: 'class-3b',
-          name: 'Red Dragons',
-          color: '#ef4444',
-          studentIds: ['student-3b-353', 'student-3b-200', 'student-3b-201', 'student-3b-221'],
-          createdDate: '2026-09-01'
+          name: 'Star Navigators',
+          color: '#8b5cf6',
+          studentIds: ['student-3b-217', 'student-3b-352', 'student-3b-221', 'student-3b-218', 'student-3b-225'],
+          createdDate: '2026-11-02'
         },
+        {
+          id: 'group-3b-2',
+          classId: 'class-3b',
+          name: 'Crystal Panthers',
+          color: '#06b6d4',
+          studentIds: ['student-3b-216', 'student-3b-215', 'student-3b-201', 'student-3b-228'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-3b-3',
+          classId: 'class-3b',
+          name: 'Thunder Wolves',
+          color: '#f59e0b',
+          studentIds: ['student-3b-220', 'student-3b-213', 'student-3b-200'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-3b-4',
+          classId: 'class-3b',
+          name: 'Solar Phoenix',
+          color: '#ef4444',
+          studentIds: ['student-3b-205', 'student-3b-353', 'student-3b-212', 'student-3b-230'],
+          createdDate: '2026-11-02'
+        },
+
+        // Grade 4A
         {
           id: 'group-4a-1',
           classId: 'class-4a',
-          name: 'Golden Eagles',
-          color: '#eab308',
-          studentIds: ['student-4a-313', 'student-4a-441', 'student-4a-311', 'student-4a-310'],
-          createdDate: '2026-09-01'
+          name: 'Mystic Dragons',
+          color: '#8b5cf6',
+          studentIds: ['student-4a-344', 'student-4a-343', 'student-4a-312', 'student-4a-317', 'student-4a-109'],
+          createdDate: '2026-11-02'
         },
+        {
+          id: 'group-4a-2',
+          classId: 'class-4a',
+          name: 'Solar Voyagers',
+          color: '#f59e0b',
+          studentIds: ['student-4a-311', 'student-4a-310', 'student-4a-313', 'student-4a-320', 'student-4b-208'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-4a-3',
+          classId: 'class-4a',
+          name: 'Diamond Titans',
+          color: '#06b6d4',
+          studentIds: ['student-4a-314', 'student-4a-341', 'student-4a-300', 'student-4a-345'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-4a-4',
+          classId: 'class-4a',
+          name: 'Cyber Knights',
+          color: '#3b82f6',
+          studentIds: ['student-4a-315', 'student-4a-302', 'student-4a-342', 'student-4a-321', 'student-4a-441'],
+          createdDate: '2026-11-02'
+        },
+
+        // Grade 4B
         {
           id: 'group-4b-1',
           classId: 'class-4b',
-          name: 'Purple Navigators',
-          color: '#8b5cf6',
-          studentIds: ['student-4b-346', 'student-4b-338', 'student-4b-316', 'student-4b-307'],
-          createdDate: '2026-09-01'
+          name: 'Golden Starlights',
+          color: '#eab308',
+          studentIds: ['student-4b-306', 'student-4b-349', 'student-4b-307', 'student-4b-348', 'student-4b-322'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-4b-2',
+          classId: 'class-4b',
+          name: 'Book Wizards',
+          color: '#10b981',
+          studentIds: ['student-4b-338', 'student-4b-304', 'student-4b-308', 'student-4b-439', 'student-4b-440'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-4b-3',
+          classId: 'class-4b',
+          name: 'Galactic Navigators',
+          color: '#06b6d4',
+          studentIds: ['student-4b-303', 'student-4b-305', 'student-4b-316', 'student-4b-309'],
+          createdDate: '2026-11-02'
+        },
+        {
+          id: 'group-4b-4',
+          classId: 'class-4b',
+          name: 'Apex Guardians',
+          color: '#3b82f6',
+          studentIds: ['student-4b-318', 'student-4b-301', 'student-4a-319', 'student-4b-339', 'student-4b-346'],
+          createdDate: '2026-11-02'
         }
       ],
 
@@ -10288,7 +10383,16 @@
             const parsed = JSON.parse(raw);
             const initial = getInitialState();
             const merged = Object.assign({}, initial, parsed);
-            if (!merged.groups) merged.groups = initial.groups || [];
+            if (!merged.groups || merged.groups.length < 16) {
+              merged.groups = JSON.parse(JSON.stringify(initial.groups || []));
+            }
+            if (Array.isArray(merged.students)) {
+              merged.students.forEach(function(st) {
+                if (st.id === 'student-4b-208') st.classId = 'class-4a';
+                else if (st.id === 'student-4a-319') st.classId = 'class-4b';
+                else if (st.id && st.id.indexOf('student-4b-') === 0) st.classId = 'class-4b';
+              });
+            }
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
               merged.progressChecks = JSON.parse(JSON.stringify(DEFAULT_PROGRESS_CHECKS));
             }

@@ -2699,6 +2699,7 @@
     const profileTabs = [
       { id: 'overview', label: 'Overview' },
       { id: 'monster', label: '👾 Monster & Evolution' },
+      { id: 'allaboutme', label: '🌟 All About Me' },
       { id: 'alice', label: '🫖 Alice' },
       { id: 'progress', label: 'Progress & CEFR' },
       { id: 'assignments', label: 'Assignments (' + assignments.length + ')' },
@@ -2828,6 +2829,8 @@
 
   function renderStudentProfileTabContent(student, totalXP, attRate, skills, assignments, assessments, notes, xpTxs, attRecords) {
     switch (studentProfileActiveTab) {
+      case 'allaboutme':
+        return (window.AllAboutMeProfile ? window.AllAboutMeProfile.html(student) : '<p style="padding:20px; color:var(--text-muted);">All About Me profile is not loaded.</p>');
       case 'alice':
         return (window.AliceProfile ? window.AliceProfile.html(student) : '<p style="padding:20px; color:var(--text-muted);">Alice profile is not loaded.</p>');
       case 'overview':
