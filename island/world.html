@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="css/games.css?v=w1">
   <link rel="stylesheet" href="css/adventure.css?v=w1">
   <link rel="stylesheet" href="css/wall.css?v=w1">
-  <link rel="stylesheet" href="css/shop.css?v=4">
-  <link rel="stylesheet" href="css/world.css?v=6">
+  <link rel="stylesheet" href="css/shop.css?v=5">
+  <link rel="stylesheet" href="css/world.css?v=8">
 </head>
 <body class="w-page">
   <!-- The Island's walking world. Missions, stars, XP and saving all go through the normal Island code (js/app.js); this page only adds the world around them. -->
@@ -20,13 +20,16 @@
   <main class="isl-main" id="isl-main"></main>
   <div id="world"></div>
   <div id="w-top">
-    <button type="button" class="w-btn" id="w-back" aria-label="Back to the island map">🗺️</button>
+    <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="World Map"><img src="art/flat/u_map.webp" alt=""><span>Map</span></button>
     <div id="w-goal"></div>
+    <button type="button" class="w-btn w-energy-chip" id="w-energy" aria-label="Monster Energy"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">35</b></button>
     <div id="w-tools">
-      <button type="button" class="w-btn w-tool" id="w-wall" aria-label="Wall">🌟</button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-home" aria-label="Home & Workshop"><img src="art/flat/u_build.webp" alt=""><span>Home</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-jobs" aria-label="Villager Jobs"><img src="art/flat/u_jobs.webp" alt=""><span>Jobs</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-wall" aria-label="Class Plaza"><img src="art/flat/u_friends.webp" alt=""><span>Plaza</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Dress up"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-shop" aria-label="Store"><img src="art/flat/u_store.webp" alt=""><span>Store</span></button>
       <button type="button" class="w-btn w-tool" id="w-book" aria-label="Sticker book">📒</button>
-      <button type="button" class="w-btn w-tool" id="w-dress" aria-label="Dress up">👕</button>
-      <button type="button" class="w-btn w-tool" id="w-shop" aria-label="Store">🛒</button>
     </div>
     <div id="w-fps"></div>
   </div>
@@ -61,7 +64,7 @@
   <script src="../game-maker/js/sets-unit4.js?v=1"></script>
   <script src="../game-maker/js/sets-units14.js?v=1"></script>
   <script src="../game-maker/js/bank.js?v=1"></script>
-  <script src="js/data.js?v=w3"></script>
+  <script src="js/data.js?v=w4"></script>
   <script src="js/audio.js?v=w1"></script>
   <script src="js/story.js?v=w1"></script>
   <script src="js/games.js?v=w1"></script>
@@ -69,9 +72,10 @@
   <script src="js/wall.js?v=w1"></script>
   <script src="js/rewards.js?v=w1"></script>
   <script src="js/sync.js?v=w2"></script>
-  <script src="js/app.js?v=w2"></script>
-  <script src="js/shop.js?v=5"></script>
+  <script src="js/app.js?v=w3"></script>
+  <script src="js/shop.js?v=6"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world.js?v=17"></script>
+  <script src="js/world-game.js?v=1"></script>
+  <script src="js/world.js?v=18"></script>
 </body>
 </html>

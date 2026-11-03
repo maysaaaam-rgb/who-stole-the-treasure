@@ -733,7 +733,8 @@ html, body {
   justify-content: center;
 }
 
-.isl-dress-stage svg, .isl-dress-stage img {
+.isl-dress-stage.has-ride .monster-pedestal-stage, .isl-shop-try .monster-pedestal-stage { display: none !important; }
+.isl-dress-stage svg, .isl-dress-stage img:not(.isl-dress-ride) {
   width: 100% !important;
   height: 100% !important;
 }

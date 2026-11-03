@@ -21,6 +21,35 @@
 
   /* Each stop: where it stands (x, y = feet), its picture and how tall. "done" swaps the picture when that mission is finished. */
   var ZONES = {
+    0: {
+      ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'], extra: ['t_floor'] },
+      npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt', happy: FLAT + 'c_bolt_happy', x: 560, y: 610 },
+      blocked: function (x, y) { return y < 215 || edgeOf(x, y); },
+      stops: [],
+      chest: null,
+      decor: [
+        { art: FLAT + 'o_tree_round', x: 260, y: 450, h: 360, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_pine', x: 2140, y: 450, h: 350, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_round', x: 2190, y: 1280, h: 360, sw: 60, sway: true },
+        { art: FLAT + 'o_tree_pine', x: 240, y: 1320, h: 340, sw: 60, sway: true },
+        { art: FLAT + 'o_bush', x: 420, y: 480, h: 105, sw: 80 },
+        { art: FLAT + 'o_bush', x: 2040, y: 1290, h: 110, sw: 80 },
+        { art: FLAT + 'o_flowers_pink', x: 700, y: 980, h: 54, flat: true },
+        { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true }
+      ],
+      ground2: { flowers: [FLAT + 'o_flowers'], count: 26 },
+      paths: [[[560, 680], [820, 700], [1120, 700], [1420, 700], [2330, 760]]],
+      edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
+      gather: [
+        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 920 },
+        { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1240, y: 1260 },
+        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 680, y: 1160 },
+        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 1780, y: 1180 },
+        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 980, y: 1120 },
+        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 1520, y: 1020 }
+      ],
+      crate: { x: 460, y: 1180 }, ball: { x: 1150, y: 1140 }, shells: [{ x: 460, y: 1195, under: true }, { x: 2100, y: 420 }]
+    },
     1: {
       ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'] }, npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt_worried', happy: FLAT + 'c_bolt_happy', x: 640, y: 620 }, blocked: function (x, y) { return y < 215 || y > 1480 || x < 60 || x > W - 60 || Math.pow((x - 1762) / 381, 2) + Math.pow((y - 476) / 227, 2) < 1; },
       stops: [{ x: 300, y: 1050, art: FLAT + 'o_machine_off', done: FLAT + 'o_machine_on', h: 210 }, { x: 700, y: 1250, art: FLAT + 'o_gear', h: 110 }, { x: 1120, y: 1040, art: FLAT + 'o_book', h: 110 }, { x: 1520, y: 1240, art: FLAT + 'o_robot', h: 190 }, { x: 1880, y: 980, art: FLAT + 'o_engine', h: 150 }],
@@ -56,7 +85,7 @@
       blocked: function (x, y) { return y < 215 || edgeOf(x, y) || (inRiver(x, y) && !(y > BRIDGE.y0 && y < BRIDGE.y1)); },
       stops: [{ x: 300, y: 620, art: FLAT + 'o_stepping_stone', h: 90 }, { x: 640, y: 1080, art: FLAT + 'o_basket', h: 130 }, { x: 690, y: 830, art: FLAT + 'o_book', h: 100 }, { x: 1560, y: 1040, art: FLAT + 'o_stepping_stone', h: 90 }, { x: 1900, y: 620, art: FLAT + 'o_market_closed', done: FLAT + 'o_market_open', h: 280, sw: 220 }],
       chest: { x: 2130, y: 1040, art: FLAT + 'o_chest' },
-      decor: [{ art: FLAT + 'o_treehouse', x: 450, y: 480, h: 380, sw: 110 }, { art: FLAT + 'o_sign', x: 1520, y: 560, h: 110, sw: 30 },
+      decor: [{ art: FLAT + 'o_treehouse', x: 450, y: 480, h: 380, sw: 110 }, { art: FLAT + 'v_shop', x: 1360, y: 560, h: 220, sw: 140 }, { art: FLAT + 'o_sign', x: 1520, y: 560, h: 110, sw: 30 },
         { art: FLAT + 'o_forest_tree', x: 1720, y: 420, h: 340, sw: 70, sway: true }, { art: FLAT + 'o_forest_tree', x: 2310, y: 1410, h: 320, sw: 70, sway: true }, { art: FLAT + 'o_forest_tree', x: 140, y: 500, h: 320, sw: 70, sway: true }, { art: FLAT + 'o_forest_pine', x: 2230, y: 560, h: 300, sw: 60, sway: true }, { art: FLAT + 'o_forest_pine', x: 400, y: 900, h: 300, sw: 60, sway: true }, { art: FLAT + 'o_forest_pine', x: 1950, y: 1400, h: 300, sw: 60, sway: true }, { art: FLAT + 'o_forest_pine', x: 1850, y: 960, h: 300, sw: 60, sway: true },
         { art: FLAT + 'o_campfire', x: 1560, y: 1340, h: 110, sw: 70 }, { art: FLAT + 'o_stump', x: 800, y: 1250, h: 80, sw: 80 }, { art: FLAT + 'o_stump', x: 2110, y: 1260, h: 80, sw: 80 }, { art: FLAT + 'o_mushrooms', x: 250, y: 980, h: 90, sw: 60 }, { art: FLAT + 'o_mushrooms', x: 1630, y: 720, h: 100, sw: 60 }, { art: FLAT + 'o_mushrooms', x: 840, y: 1420, h: 80, sw: 60 }, { art: FLAT + 'o_log', x: 2090, y: 620, h: 60, sw: 90 }, { art: FLAT + 'o_rock', x: 1640, y: 950, h: 70, sw: 60 }, { art: FLAT + 'o_rock', x: 540, y: 1150, h: 60, sw: 60 }, { art: FLAT + 'o_bush', x: 2000, y: 760, h: 100, sw: 80 }, { art: FLAT + 'o_bush', x: 820, y: 1060, h: 100, sw: 80 },
         { art: FLAT + 'o_fern', x: 700, y: 300, h: 70, flat: true }, { art: FLAT + 'o_fern', x: 1650, y: 1440, h: 70, flat: true }, { art: FLAT + 'o_fern', x: 210, y: 660, h: 60, flat: true }],
@@ -82,7 +111,7 @@
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 700, y: 1460 }]
     }
   };
-  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog'];
+  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog', FLAT + 'v_mark'];
   // only the zone you are in is loaded, so phones wait less
   function artUrl(n) { return (n.indexOf(FLAT) === 0 ? 'art/' : 'art/clean/') + n + '.webp'; }
   function zoneArt(z) {
@@ -93,6 +122,19 @@
     (Z.gather || []).forEach(function (d) { list.push(d.art); });
     if (Z.ground2) list = list.concat(Z.ground2.flowers);
     if (Z.edge) list = list.concat(Z.edge.top, Z.edge.bottom);
+    if (z === 0 && root.WorldGame) {
+      list.push(FLAT + 'o_workbench');
+      root.WorldGame.HOUSE_TIERS.forEach(function (h) { list.push(FLAT + h.id); });
+      root.WorldGame.RECIPES.forEach(function (r) { list.push(FLAT + r.id); });
+    }
+    if (root.WorldGame) {
+      root.WorldGame.VILLAGERS.forEach(function (v) { if (v.zone === z) { list.push(FLAT + v.art, FLAT + v.happy); } });
+      root.WorldGame.BATTLES.forEach(function (b) { if (b.zone === z) { list.push(FLAT + b.art, FLAT + b.dizzy); } });
+    }
+    try {
+      var eq = monsterLook().equipped || {};
+      if (eq.ride && String(eq.ride).indexOf('r_') === 0) list.push(FLAT + eq.ride);
+    } catch (e) { /* ignore */ }
     return list.filter(function (a) { if (seen[a]) return false; seen[a] = 1; return true; });
   }
 
@@ -103,11 +145,15 @@
   function sound(n) { if (A()[n]) { try { A()[n](); } catch (e) { /* no sound */ } } }
   function say(t) { if (A().speak) A().speak(t); }
 
-  var S = { joy: { x: 0, y: 0 }, path: [], onArrive: null, near: null, modal: false, ready: false, zone: 1 };
+  var S = { joy: { x: 0, y: 0 }, path: [], onArrive: null, near: null, modal: false, ready: false, zone: 1, moveMode: false, movingIdx: -1 };
   var scene = null;
 
   /* ---------- progress, always read from the pupil's real saved game ---------- */
-  function missions(z) { var s = ses(); return root.IslandData.getZoneMissions(s.grade || 3, z, !!s.star); }
+  function missions(z) {
+    if (z === 0) return { regular: [], star: [] };
+    var s = ses();
+    return root.IslandData.getZoneMissions(s.grade || 3, z, !!s.star);
+  }
   function starsOf(id) { var d = ses().doc || {}; return Number((d.stars || {})[id]) || 0; }
   function isOpen(z) {
     if (z <= 1) return true;
@@ -115,7 +161,11 @@
     return prev >= 4;
   }
   function chestOpened(z) { var d = ses().doc || {}; return !!(d.chests && d.chests['z' + z]); }
-  function zoneName(z) { var s = ses(), zz = root.IslandData.ZONES[z - 1]; return (zz.titles[s.grade || 3] || zz.titles[3]).name; }
+  function zoneName(z) {
+    if (z === 0) return 'My Home Island';
+    var s = ses(), zz = root.IslandData.ZONES[z - 1];
+    return (zz.titles[s.grade || 3] || zz.titles[3]).name;
+  }
   var SHELL_KEY = function () { return 'eaa_world_shells_' + ((ses().student && ses().student.id) || 'x'); };
   function foundShells() { try { return JSON.parse(localStorage.getItem(SHELL_KEY())) || {}; } catch (e) { return {}; } }
   function saveShell(k) { var f = foundShells(); f[k] = 1; try { localStorage.setItem(SHELL_KEY(), JSON.stringify(f)); } catch (e) { /* just for now */ } }
@@ -131,6 +181,21 @@
       c.globalAlpha = look.alpha; c.fillStyle = tile(look.tile); c.fillRect(0, 0, W, H); c.globalAlpha = 1;
       for (i = 0; i < 14; i++) { c.fillStyle = look.patch; c.beginPath(); c.ellipse(seeded(i + 200) * W, seeded(i + 230) * H, 150 + seeded(i + 260) * 220, 80 + seeded(i + 290) * 110, 0, 0, 7); c.fill(); }
       var oval = function (cx, cy, rx, ry, fill, line, lw) { c.beginPath(); c.ellipse(cx, cy, rx, ry, 0, 0, 7); c.fillStyle = fill; c.fill(); if (line) { c.lineWidth = lw; c.strokeStyle = line; c.stroke(); } };
+      if (z === 0) {
+        /* Warm wooden patio deck for furniture (f_*) next to the house */
+        var px = 1380, py = 460, pw = 560, ph = 390, pr = 28;
+        c.save();
+        c.beginPath();
+        c.moveTo(px + pr, py); c.lineTo(px + pw - pr, py); c.quadraticCurveTo(px + pw, py, px + pw, py + pr);
+        c.lineTo(px + pw, py + ph - pr); c.quadraticCurveTo(px + pw, py + ph, px + pw - pr, py + ph);
+        c.lineTo(px + pr, py + ph); c.quadraticCurveTo(px, py + ph, px, py + ph - pr);
+        c.lineTo(px, py + pr); c.quadraticCurveTo(px, py, px + pr, py); c.closePath();
+        c.fillStyle = '#c8924b'; c.fill();
+        c.clip();
+        c.globalAlpha = .82; c.fillStyle = tile('t_floor'); c.fillRect(px, py, pw, ph);
+        c.restore();
+        c.lineWidth = 8; c.strokeStyle = '#6f4316'; c.stroke();
+      }
       if (z === 1) {
         oval(1762, 476, 425, 262, '#f3dd9c', '#b98f4a', 5);
         oval(1762, 476, 385, 228, '#3fb5e2', '#1f7fae', 6);
@@ -262,6 +327,12 @@
     drawBag();
   }
   function takeGather(sc, g) {
+    if (root.WorldGame && root.WorldGame.getEnergy() < 5) {
+      panel(FLAT + 'i_energy', 'Low Energy!', 'Answer 3 quick English questions for +30 ⚡ Energy!', 'Charge ⚡', function () { root.WorldGame.openEnergyCharge('Charge +30 ⚡ Energy to keep gathering!'); });
+      say('Charge your energy first!');
+      return false;
+    }
+    if (root.WorldGame) root.WorldGame.useEnergy(5);
     var b = readBag(); b.items[g.word] = (Number(b.items[g.word]) || 0) + 1; b.taken[g.id] = 1; writeBag(b);
     sound('playCorrect'); say(g.word); cheer(sc.player, 420); sc.fx.explode(12, g.x, g.y - 20); g.glow.destroy(); g.shade.destroy();
     sc.tweens.add({ targets: g.img, angle: { from: -12, to: 12 }, duration: 70, yoyo: true, repeat: 2, onComplete: function () { g.img.destroy(); } });
@@ -271,6 +342,7 @@
     document.body.appendChild(fly);
     requestAnimationFrame(function () { requestAnimationFrame(function () { if (slot) { var r = slot.getBoundingClientRect(); fly.style.left = r.left + 'px'; fly.style.top = r.top + 'px'; fly.style.transform = 'scale(.5)'; } }); });
     setTimeout(function () { fly.remove(); drawBag(); var s2 = document.querySelector('.w-bag-item[data-word="' + g.word + '"]'); if (s2) { s2.classList.add('pop'); setTimeout(function () { s2.classList.remove('pop'); }, 300); } }, 620);
+    return true;
   }
   function makeSmallTextures(sc) {
     if (sc.textures.exists('dot')) return;
@@ -347,6 +419,22 @@
     sc.anims.create({ key: key + '-walk', frames: [1, 2, 3, 4].map(function (f) { return { key: key, frame: f }; }), frameRate: 9, repeat: -1 });
     if (key === 'me') S.lookStamp = JSON.stringify(opts);
   }
+  function syncRide(sc, m) {
+    if (!m || m.monKey !== 'me') return;
+    var eq = monsterLook().equipped || {}, rid = eq.ride && String(eq.ride).indexOf('r_') === 0 ? FLAT + eq.ride : null;
+    if (!rid) {
+      if (m.ride) m.ride.setVisible(false);
+      return;
+    }
+    var apply = function () {
+      if (!m.active) return;
+      if (!m.ride) m.ride = sc.add.image(m.x, m.y, rid).setOrigin(.5, .82);
+      else m.ride.setTexture(rid).setVisible(true);
+      m.ride.setScale(125 / m.ride.height);
+    };
+    if (sc.textures.exists(rid)) apply();
+    else { sc.load.image(rid, artUrl(rid)); sc.load.once('complete', apply); sc.load.start(); }
+  }
   function makeWalker(sc, key, x, y, scale) {
     var shadow = sc.add.image(x, y, 'shadow').setScale(scale * 1.15).setDepth(-5);
     var m = sc.physics.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale).setVisible(false);
@@ -354,6 +442,7 @@
     m.setCollideWorldBounds(true); m.monKey = key; m.shadow = shadow; m.baseScale = scale;
     // what you see is this copy: the body underneath does the physics, so hopping never changes where the monster really is
     m.skin = sc.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale); m.walkPhase = Math.random() * 6; m.turn = 1; m.pace = 0;
+    if (key === 'me') syncRide(sc, m);
     return m;
   }
   // a trail follows the monster while it walks (cosmetic only; it gives no XP or advantage)
@@ -379,12 +468,18 @@
     m.turn += ((m.flipX ? -1 : 1) - m.turn) * Math.min(1, delta * .016);
     var hop = Math.abs(Math.sin(m.walkPhase)) * 15 * m.pace, sq = Math.cos(m.walkPhase * 2) * .055 * m.pace, breathe = Math.sin(time * .0026 + m.walkPhase) * .016 * (1 - m.pace);
     if (sk.texture !== m.texture) sk.setTexture(m.texture.key, m.frame.name); else if (sk.frame.name !== m.frame.name) sk.setFrame(m.frame.name);
-    sk.setPosition(m.x, m.y - hop);
+    var onRide = !!(m.ride && m.ride.visible);
+    sk.setPosition(m.x, m.y - hop - (onRide ? 24 : 0));
     sk.setScale(m.baseScale * (1 - sq * .6 - breathe) * (Math.abs(m.turn) < .18 ? .18 : Math.abs(m.turn)), m.baseScale * (1 + sq + breathe));
     sk.setFlipX(m.turn < 0);
     sk.rotation = (Math.sin(m.walkPhase) * .085 * m.pace) + (vx / 250) * .07;
-    sk.setDepth(m.y);
-    m.shadow.setPosition(m.x, m.y + 2); m.shadow.setScale(m.baseScale * 1.15 * (1 - hop * .014), m.baseScale * 1.15 * (1 - hop * .014));
+    sk.setDepth(m.y + 1);
+    if (onRide) {
+      m.ride.setPosition(m.x, m.y - hop * .55 + 8);
+      m.ride.setFlipX(m.turn < 0);
+      m.ride.setDepth(m.y);
+    }
+    m.shadow.setPosition(m.x, m.y + 2); m.shadow.setScale(m.baseScale * (onRide ? 1.45 : 1.15) * (1 - hop * .014), m.baseScale * 1.15 * (1 - hop * .014));
   }
 
   /* ---------- finding the way ---------- */
@@ -442,9 +537,130 @@
   }
   function hidePanel() { $('w-talk').classList.remove('on'); document.body.classList.remove('w-talking'); }
   function setGoal() {
-    var z = S.zone, ms = missions(z).regular, done = ms.filter(function (m) { return starsOf(m.id) > 0; }).length, total = ms.reduce(function (a, m) { return a + starsOf(m.id); }, 0);
+    var z = S.zone;
+    if (S.moveMode && z === 0) {
+      $('w-goal').innerHTML = '✋ Move Items Mode<small>Tap a furniture item, then tap where to place it!</small>';
+      return;
+    }
+    if (z === 0) {
+      var st = root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] };
+      var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
+      $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap the Workbench to craft & decorate!</small>';
+      return;
+    }
+    var ms = missions(z).regular, done = ms.filter(function (m) { return starsOf(m.id) > 0; }).length, total = ms.reduce(function (a, m) { return a + starsOf(m.id); }, 0);
     var tip = done < 5 ? 'Walk to the glowing stop!' : (chestOpened(z) ? 'Next place: follow the arrow!' : 'Open the treasure!');
     $('w-goal').innerHTML = zoneName(z) + ' · ⭐ ' + total + '<small>' + tip + '</small>';
+  }
+
+  /* ---------- Home Island (Zone 0): House, Workbench & Placeable Furniture ---------- */
+  function buildHome(sc) {
+    sc.homeObjs = [];
+    sc.placedSprites = [];
+    if (S.zone !== 0 || !root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
+    var hImg = sc.add.image(1120, 580, FLAT + tier.id).setOrigin(.5, .96).setDepth(580);
+    hImg.setScale(370 / hImg.height);
+    var hShadow = sc.add.image(1120, 580, 'shadow').setScale(2.8, 1.8).setDepth(-6);
+    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, x: 1120, y: 580, def: { h: 370, sw: 240 } };
+
+    var wbImg = sc.add.image(800, 640, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(640);
+    wbImg.setScale(155 / wbImg.height);
+    sc.add.image(800, 640, 'shadow').setScale(1.6).setDepth(-6);
+    sc.workbenchSpot = { kind: 'workbench', img: wbImg, x: 800, y: 640, def: { h: 155, sw: 120 } };
+    sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot);
+    renderPlacedFurniture(sc);
+  }
+  function renderPlacedFurniture(sc) {
+    if (!sc || S.zone !== 0 || !root.WorldGame) return;
+    (sc.placedSprites || []).forEach(function (o) { if (o.img) o.img.destroy(); if (o.shadow) o.shadow.destroy(); });
+    sc.placedSprites = [];
+    var st = root.WorldGame.readState();
+    (st.placed || []).forEach(function (p, idx) {
+      var rec = root.WorldGame.RECIPES.filter(function (r) { return r.id === p.id; })[0];
+      if (!rec) return;
+      var artKey = FLAT + rec.id;
+      var buildOne = function () {
+        var im = sc.add.image(p.x, p.y, artKey).setOrigin(.5, .95).setDepth(rec.flat ? -4 : p.y);
+        im.setScale((rec.h || 110) / im.height);
+        var sh = !rec.flat ? sc.add.image(p.x, p.y, 'shadow').setScale(1.1).setDepth(-6) : null;
+        sc.placedSprites.push({ idx: idx, id: p.id, name: rec.name, img: im, shadow: sh, x: p.x, y: p.y, h: rec.h || 110 });
+      };
+      if (sc.textures.exists(artKey)) buildOne();
+      else { sc.load.image(artKey, artUrl(artKey)); sc.load.once('complete', buildOne); sc.load.start(); }
+    });
+  }
+  function refreshHome(celebrate) {
+    var sc = scene;
+    if (!sc || S.zone !== 0 || !root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
+    if (sc.houseSpot && sc.houseSpot.img) {
+      sc.houseSpot.img.setTexture(FLAT + tier.id);
+      sc.houseSpot.img.setScale(370 / sc.houseSpot.img.height);
+      if (celebrate) partyAt(sc.houseSpot.x, sc.houseSpot.y - 160);
+    }
+    renderPlacedFurniture(sc);
+    setGoal();
+  }
+  function setMoveMode(on) {
+    S.moveMode = !!on;
+    S.movingIdx = -1;
+    setGoal();
+    if (S.moveMode) say('Tap an item to move it!');
+  }
+
+  /* ---------- Villagers & Friendly Battles (Zones 1–4) ---------- */
+  function buildVillagers(sc) {
+    sc.villagers = [];
+    if (!root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    root.WorldGame.VILLAGERS.forEach(function (v) {
+      if (v.zone !== S.zone) return;
+      var done = !!(st.jobsDone && st.jobsDone[v.id]);
+      var img = sc.add.image(v.x, v.y, FLAT + (done ? v.happy : v.art)).setOrigin(.5, .95).setDepth(v.y);
+      img.setScale(165 / img.height);
+      sc.add.image(v.x, v.y, 'shadow').setScale(1.4).setDepth(-6);
+      var mark = sc.add.image(v.x, v.y - 185, FLAT + 'v_mark').setOrigin(.5).setDepth(4505);
+      mark.setScale(52 / mark.height).setVisible(!done);
+      sc.tweens.add({ targets: mark, y: v.y - 198, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      sc.villagers.push({ kind: 'villager', v: v, img: img, mark: mark, x: v.x, y: v.y, def: { h: 165, sw: 90 } });
+    });
+  }
+  function refreshVillagers(vid) {
+    var sc = scene; if (!sc || !sc.villagers || !root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    sc.villagers.forEach(function (vo) {
+      var done = !!(st.jobsDone && st.jobsDone[vo.v.id]);
+      vo.img.setTexture(FLAT + (done ? vo.v.happy : vo.v.art));
+      vo.mark.setVisible(!done);
+      if (vid === vo.v.id && done) partyAt(vo.x, vo.y - 80);
+    });
+  }
+  function buildBattles(sc) {
+    sc.battles = [];
+    if (!root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    root.WorldGame.BATTLES.forEach(function (b) {
+      if (b.zone !== S.zone) return;
+      var won = !!(st.battlesWon && st.battlesWon[b.id]);
+      var ring = sc.add.circle(b.x, b.y - 6, 48, won ? 0x10b981 : 0xf43f5e, .28).setDepth(-6);
+      var img = sc.add.image(b.x, b.y, FLAT + b.art).setOrigin(.5, .94).setDepth(b.y);
+      img.setScale((b.h || 140) / img.height);
+      sc.add.image(b.x, b.y, 'shadow').setScale(1.5).setDepth(-6);
+      sc.tweens.add({ targets: img, y: b.y - 10, duration: 850, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      sc.battles.push({ kind: 'battle', b: b, img: img, ring: ring, x: b.x, y: b.y, def: { h: b.h || 140, sw: 100 } });
+    });
+  }
+  function refreshBattles(bid) {
+    var sc = scene; if (!sc || !sc.battles || !root.WorldGame) return;
+    var st = root.WorldGame.readState();
+    sc.battles.forEach(function (bo) {
+      var won = !!(st.battlesWon && st.battlesWon[bo.b.id]);
+      bo.ring.setFillStyle(won ? 0x10b981 : 0xf43f5e, .28);
+      if (bid === bo.b.id && won) partyAt(bo.x, bo.y - 70);
+    });
   }
 
   /* ---------- stops ---------- */
@@ -463,10 +679,14 @@
       var st = sc.add.text(d.x, badgeY + 40, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '22px', color: '#fde047', stroke: '#1e293b', strokeThickness: 4 }).setOrigin(.5).setDepth(4501);
       return { kind: 'mission', mission: m, plot: plot, def: d, img: img, disc: disc, num: num, starsText: st, x: d.x, y: d.y };
     });
-    var cd = zone.chest;
-    var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_chest_open' : (cd.art || FLAT + 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
-    chest.setScale(150 / chest.height); sc.add.image(cd.x, cd.y, 'shadow').setScale(1.6).setDepth(-6);
-    sc.chest = { kind: 'chest', img: chest, x: cd.x, y: cd.y };
+    if (zone.chest) {
+      var cd = zone.chest;
+      var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_chest_open' : (cd.art || FLAT + 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
+      chest.setScale(150 / chest.height); sc.add.image(cd.x, cd.y, 'shadow').setScale(1.6).setDepth(-6);
+      sc.chest = { kind: 'chest', img: chest, x: cd.x, y: cd.y };
+    } else {
+      sc.chest = null;
+    }
     // the daily gift, near where a pupil comes in
     var gift = sc.add.image(170, 1120, FLAT + 'o_gift').setOrigin(.5, .96).setDepth(1120); gift.setScale(100 / gift.height);
     sc.gift = { kind: 'gift', img: gift, x: 170, y: 1120 };
@@ -486,6 +706,13 @@
   }
   function refreshStops(celebrate) {
     var sc = scene; if (!sc || !sc.stops) return;
+    if (S.zone === 0) {
+      sc.arrow.setVisible(true).setPosition(800, 430);
+      sc.ring.setVisible(true).setPosition(800, 640);
+      if (sc.gateR) sc.gateR.setLock();
+      setGoal();
+      return;
+    }
     var next = null;
     sc.stops.forEach(function (s) {
       var n = starsOf(s.mission.id);
@@ -495,8 +722,8 @@
       s.starsText.setText(n ? '★'.repeat(n) + '☆'.repeat(3 - n) : '');
       if (n && s.def.done && s.img.texture.key !== s.def.done) { s.img.setTexture(s.def.done); if (celebrate) partyAt(s.x, s.y - s.def.h / 2); }
     });
-    var chestReady = !next && !chestOpened(S.zone);
-    sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_chest_open' : (ZONES[S.zone].chest.art || FLAT + 'o_chest'));
+    var chestReady = !next && sc.chest && !chestOpened(S.zone);
+    if (sc.chest) sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_chest_open' : (ZONES[S.zone].chest.art || FLAT + 'o_chest'));
     (sc.stones || []).forEach(function (st) { var sn = starsOf(st.mission.id); if (st.starsText) st.starsText.setText(sn ? '★'.repeat(sn) : ''); });
     var t = next || (chestReady ? sc.chest : null);
     S.target = t;
@@ -519,7 +746,11 @@
   }
 
   /* What the pupil can do where they are standing */
-  function interactables(sc) { return sc.stops.concat([sc.chest, sc.gift, sc.npcSpot], sc.stones); }
+  function interactables(sc) {
+    var list = (sc.stops || []).concat([sc.gift, sc.npcSpot], sc.stones || [], sc.homeObjs || [], sc.villagers || [], sc.battles || []);
+    if (sc.chest) list.push(sc.chest);
+    return list.filter(Boolean);
+  }
   function openThing(t) {
     var z = S.zone;
     if (t.kind === 'mission') {
@@ -534,15 +765,43 @@
       else panel(FLAT + 'o_chest', 'Treasure', 'Finish all 5 stops first!', 'OK', function () {});
     } else if (t.kind === 'gift') {
       panel(FLAT + 'o_gift', "Today's quest", 'Five quick questions!', 'Play ▶', function () { App().startDailyQuest(); });
+    } else if (t.kind === 'house') {
+      panel(FLAT + 'o_workbench', 'My Home', 'Upgrade your house or craft furniture for your garden!', 'Build 🏰', function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); });
+      say('Let us build your home!');
+    } else if (t.kind === 'workbench') {
+      panel(FLAT + 'o_workbench', 'Crafting Workbench', 'Use wood, stones, flowers and shells to craft 16 items!', 'Craft 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
+      say('What would you like to craft?');
+    } else if (t.kind === 'villager') {
+      var v = t.v, st = root.WorldGame ? root.WorldGame.readState() : {};
+      var done = !!(st.jobsDone && st.jobsDone[v.id]);
+      if (done) {
+        panel(FLAT + v.happy, v.name, 'Thank you for helping me, friend!', 'Jobs 📋', function () { root.WorldGame.openJobsBoard(); });
+        say('Thank you for helping me!');
+      } else if (root.WorldGame && root.WorldGame.hasMaterials(v.need)) {
+        panel(FLAT + v.happy, v.name, 'You have what I need! Thank you!', 'Give 🎁', function () { root.WorldGame.completeJob(v.id, false); });
+        say('You have what I need! Thank you!');
+      } else {
+        panel(FLAT + v.art, v.name, v.line, 'Jobs 📋', function () { if (root.WorldGame) root.WorldGame.openJobsBoard(); });
+        say(v.line);
+      }
+    } else if (t.kind === 'battle') {
+      var b = t.b;
+      panel(FLAT + b.art, b.name, 'A friendly monster wants to play! Cast 3 English spells!', 'Battle ⚡', function () { if (root.WorldGame) root.WorldGame.openBattle(b.id); });
+      say('A friendly battle with ' + b.name + '!');
     } else if (t.kind === 'npc') {
-      var name = root.IslandStory.CHARS[z].name, next = S.target, b = readBag(), zoneWords = {};
+      if (z === 0) {
+        panel(FLAT + 'c_bolt_happy', 'Grandpa Bolt', 'Welcome to your Home Island! Gather wood and stones or tap the Workbench to build!', 'Build 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
+        say('Welcome to your Home Island!');
+        return;
+      }
+      var name = root.IslandStory.CHARS[z].name, next = S.target, bag = readBag(), zoneWords = {};
       (ZONES[z].gather || []).forEach(function (g) { zoneWords[g.word] = 1; });
-      var countHere = Object.keys(zoneWords).reduce(function (sum, w) { return sum + (Number(b.items[w]) || 0); }, 0);
-      b.gifted = b.gifted || {};
-      if (countHere >= 3 && !b.gifted['z' + z]) {
+      var countHere = Object.keys(zoneWords).reduce(function (sum, w) { return sum + (Number(bag.items[w]) || 0); }, 0);
+      bag.gifted = bag.gifted || {};
+      if (countHere >= 3 && !bag.gifted['z' + z]) {
         var giftLine = 'Ooh! You found ' + countHere + ' things for me! Thank you!';
         panel(ZONES[z].npc.happy || helperArt(), name, giftLine, 'Give 🎁', function () {
-          b.gifted['z' + z] = 1; writeBag(b);
+          bag.gifted['z' + z] = 1; writeBag(bag);
           partyAt(t.x, t.y - 60); say('Thank you so much!');
         });
         say(giftLine);
@@ -555,7 +814,34 @@
   }
   function onTap(ptr) {
     var sc = scene; if (!sc || !sc.player || S.modal) return;
-    var x = ptr.worldX, y = ptr.worldY, list = interactables(sc), hit = null, best = 1e9;
+    var x = ptr.worldX, y = ptr.worldY;
+    if (S.moveMode && S.zone === 0 && root.WorldGame) {
+      if (S.movingIdx >= 0) {
+        var st = root.WorldGame.readState();
+        if (st.placed && st.placed[S.movingIdx]) {
+          st.placed[S.movingIdx].x = Math.round(Math.max(180, Math.min(W - 180, x)));
+          st.placed[S.movingIdx].y = Math.round(Math.max(340, Math.min(H - 120, y)));
+          root.WorldGame.writeState(st);
+          sound('playCorrect');
+          renderPlacedFurniture(sc);
+        }
+        S.movingIdx = -1;
+        S.moveMode = false;
+        setGoal();
+        return;
+      }
+      var picked = -1;
+      (sc.placedSprites || []).forEach(function (ps) {
+        if (Math.abs(x - ps.x) < 75 && y <= ps.y + 20 && y >= ps.y - ps.h - 30) picked = ps.idx;
+      });
+      if (picked >= 0) {
+        S.movingIdx = picked;
+        sound('playTap');
+        $('w-goal').innerHTML = '✋ Now tap anywhere on the ground to place it!<small>Moving item #' + (picked + 1) + '</small>';
+        return;
+      }
+    }
+    var list = interactables(sc), hit = null, best = 1e9;
     list.forEach(function (t) {
       var h = t.def ? t.def.h : 120, w = t.def ? Math.max(80, t.def.h * .55) : 70;
       if (Math.abs(x - t.x) < w && y < t.y + 30 && y > t.y - h - 60) { var d = Math.abs(x - t.x) + Math.abs(y - t.y); if (d < best) { best = d; hit = t; } }
@@ -582,7 +868,7 @@
   /* ---------- gates to the next place ---------- */
   function makeGate(sc, dir) {
     var to = S.zone + dir;
-    if (to < 1 || to > 4) return null;
+    if (to < 0 || to > 4) return null;
     var x = dir > 0 ? W - 70 : 70, y = 760;
     var sign = sc.add.text(x + (dir > 0 ? -40 : 40), y - 80, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '26px', fontStyle: '700', color: '#fff', backgroundColor: '#0f172aee', padding: { x: 12, y: 6 }, align: 'center' }).setOrigin(dir > 0 ? 1 : 0, .5).setDepth(4400);
     var pic = sc.add.image(x, y, FLAT + 'o_gate_arrow').setOrigin(.5, .8).setDepth(4400); pic.setScale(130 / pic.height); pic.setFlipX(dir < 0);
@@ -597,7 +883,7 @@
   }
   function goZone(to, fromDir) {
     var sc = scene; if (S.leaving) return;
-    S.leaving = true; sound('playHop'); hidePanel(); stopWalking();
+    S.leaving = true; S.moveMode = false; S.movingIdx = -1; sound('playHop'); hidePanel(); stopWalking();
     $('w-fade').classList.add('on');
     setTimeout(function () { S.leaving = false; S.near = null; S.ready = false; sc.scene.restart({ zone: to, fromDir: fromDir }); }, 280);
   }
@@ -606,7 +892,7 @@
   var WorldScene = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: function WorldScene() { Phaser.Scene.call(this, { key: 'world' }); },
-    init: function (data) { S.zone = (data && data.zone) || S.zone; S.fromDir = (data && data.fromDir) || 0; },
+    init: function (data) { if (data && data.zone !== undefined) S.zone = data.zone; S.fromDir = (data && data.fromDir) || 0; },
     preload: function () { var sc = this; ART.concat(zoneArt(S.zone)).forEach(function (n) { if (!sc.textures.exists(n)) sc.load.image(n, artUrl(n)); }); },
     create: function () {
       var sc = this; scene = sc;
@@ -630,6 +916,9 @@
       sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       sc.npcSpot = { kind: 'npc', img: npc, x: n.x, y: n.y };
       buildStops(sc, zone);
+      buildHome(sc);
+      buildVillagers(sc);
+      buildBattles(sc);
       addLife(sc, zone);
       buildGather(sc, zone);
 
@@ -666,7 +955,7 @@
         if (!sc.textures.exists('me') || S.lookStamp !== JSON.stringify(look)) await bakeMonster(sc, 'me', look);
         var isDemo = !!ses().isDemo, crowd = isDemo ? Math.max(0, Math.min(30, Number(Q.get('crowd') || 2))) : 0, colors = ['pink', 'gold', 'green', 'purple', 'orange'];
         for (var i = 0; i < Math.min(crowd, colors.length); i++) if (!sc.textures.exists('c' + i)) await bakeMonster(sc, 'c' + i, { stage: ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'][i % 5], color: colors[i] });
-        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : 300), sy = S.fromDir ? 880 : 1200;
+        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 780 : 1200);
         var free = nearestFree(sc.grid, Math.floor(sx / CELL), Math.floor(sy / CELL)) || [5, 20];
         sc.player = makeWalker(sc, 'me', free[0] * CELL + 20, free[1] * CELL + 20, .54);
         sc.cameras.main.setBounds(0, 0, W, H);
@@ -690,6 +979,7 @@
           sc.walkers.push(w);
         }
         refreshStops(false);
+        if (root.WorldGame) root.WorldGame.updateEnergyChip();
         $('w-load').classList.remove('on');
         $('w-fade').classList.remove('on');
         S.cooldown = 500;
@@ -709,7 +999,8 @@
         else {
           refreshStops(true);
           var look = monsterLook();
-          if (S.lookStamp !== JSON.stringify(look)) { var fr = m; bakeMonster(sc, 'me', look).then(function () { if (fr.active) fr.setTexture('me', 0); }); }
+          if (S.lookStamp !== JSON.stringify(look)) { var fr = m; bakeMonster(sc, 'me', look).then(function () { if (fr.active) { fr.setTexture('me', 0); syncRide(sc, fr); } }); }
+          else syncRide(sc, m);
           S.near = null; S.cooldown = 600;
         }
       }
@@ -731,7 +1022,7 @@
           }
         }
       }
-      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, speed = SPEED * (wet ? .68 : 1);
+      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.22 : 1);
       var ease = Math.min(1, delta * ((vx || vy) ? .011 : .018));   // speeds up and slows down instead of starting and stopping dead
       m.setVelocity(m.body.velocity.x + (vx * speed - m.body.velocity.x) * ease, m.body.velocity.y + (vy * speed - m.body.velocity.y) * ease);
       pushOut(m, zone);
@@ -763,7 +1054,13 @@
       if (S.cooldown > 0) { S.cooldown -= delta; return; }
 
       // things to gather
-      for (var gi = sc.gather.length - 1; gi >= 0; gi--) { var ga = sc.gather[gi]; if (Phaser.Math.Distance.Between(m.x, m.y, ga.x, ga.y) < 62) { sc.gather.splice(gi, 1); takeGather(sc, ga); } }
+      for (var gi = sc.gather.length - 1; gi >= 0; gi--) {
+        var ga = sc.gather[gi];
+        if (Phaser.Math.Distance.Between(m.x, m.y, ga.x, ga.y) < 62) {
+          if (takeGather(sc, ga)) sc.gather.splice(gi, 1);
+          else S.cooldown = 1100;
+        }
+      }
       // shells
       for (var i = sc.shells.length - 1; i >= 0; i--) {
         var sh = sc.shells[i];
@@ -793,7 +1090,7 @@
     }
   });
   function pushOut(o, zone) {
-    if (!zone.blocked(o.x, o.y)) { o.lastX = o.x; o.lastY = o.y; return; }
+    if (!zone.blocked(o.x, o.y)) { o.lastX = o.x; o.lastY = o.lastY; return; }
     if (o.lastX !== undefined) { o.x = o.lastX; o.y = o.lastY; }
     if (o.body) { o.body.velocity.x *= -.4; o.body.velocity.y *= -.4; }
   }
@@ -815,17 +1112,23 @@
 
   /* ---------- start, once the pupil is known ---------- */
   function startWorld() {
-    var want = Number(Q.get('zone')) || 1, z = 1;
+    var rawZ = Q.get('zone');
+    var want = (rawZ !== null && rawZ !== '') ? Number(rawZ) : 1;
+    var z = want === 0 ? 0 : 1;
     for (var i = 1; i <= 4; i++) if (i <= want && isOpen(i)) z = i;
     S.zone = z;
     document.body.classList.add('w-on');
     $('w-load').classList.add('on');
     setupJoystick();
-    $('w-back').onclick = function () { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); };
+    $('w-back').onclick = function () { if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
+    if ($('w-energy')) $('w-energy').onclick = function () { if (root.WorldGame) root.WorldGame.openEnergyCharge(); };
+    if ($('w-home')) $('w-home').onclick = function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); };
+    if ($('w-jobs')) $('w-jobs').onclick = function () { if (root.WorldGame) root.WorldGame.openJobsBoard(); };
     $('w-wall').onclick = function () { if (root.IslandWall) root.IslandWall.open(); };
     $('w-book').onclick = function () { if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
     $('w-dress').onclick = function () { App().openDressingRoom(); };
     $('w-shop').onclick = function () { root.IslandShop.open(); };
+    if (root.WorldGame) root.WorldGame.updateEnergyChip();
     if (Q.get('fps')) $('w-fps').style.display = 'block';
     root.WORLD.game = new Phaser.Game({
       type: Phaser.AUTO, parent: 'world', backgroundColor: '#0f6fb0',
@@ -855,7 +1158,22 @@
       walkTo(sc.chest.x, sc.chest.y + 54, function () { openThing(sc.chest); });
     }
   }
-  root.WORLD = { S: S, scene: function () { return scene; }, walkTo: walkTo, goZone: goZone, refresh: refreshStops, open: openThing, tapBag: tapBag, nextMission: nextMission };
+  root.WORLD = {
+    S: S,
+    scene: function () { return scene; },
+    walkTo: walkTo,
+    goZone: goZone,
+    isOpen: isOpen,
+    drawBag: drawBag,
+    refresh: refreshStops,
+    refreshHome: refreshHome,
+    refreshVillagers: refreshVillagers,
+    refreshBattles: refreshBattles,
+    setMoveMode: setMoveMode,
+    open: openThing,
+    tapBag: tapBag,
+    nextMission: nextMission
+  };
   var tries = 0;
   (function waitForPupil() {
     var s = ses();

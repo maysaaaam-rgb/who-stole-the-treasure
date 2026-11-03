@@ -622,6 +622,7 @@
     { id: 'backpack',  label: 'Back',      slot: 'backpack',  icon: '🎒' },
     { id: 'aura',      label: 'Auras',     slot: 'aura',      icon: '✨' },
     { id: 'pet',       label: 'Pets',      slot: 'pet',       icon: '🐾' },
+    { id: 'ride',      label: 'Rides',     slot: 'ride',      icon: '🛴' },
     { id: 'trail',     label: 'Trails',    slot: 'trail',     icon: '💫' }
   ];
 
@@ -691,7 +692,23 @@
     { id: 'aura-star', name: 'Star Aura', category: 'aura', icon: '⭐', unlockType: 'level', unlockLevel: 4 },
     { id: 'aura-lightning', name: 'Lightning Aura', category: 'aura', icon: '⚡', unlockType: 'level', unlockLevel: 5 },
     { id: 'aura-rainbow', name: 'Rainbow Aura', category: 'aura', icon: '🌈', unlockType: 'level', unlockLevel: 6 },
-    { id: 'aura-cosmic', name: 'Galaxy Aura', category: 'aura', icon: '🌌', unlockType: 'level', unlockLevel: 7 }
+    { id: 'aura-cosmic', name: 'Galaxy Aura', category: 'aura', icon: '🌌', unlockType: 'level', unlockLevel: 7 },
+
+    { id: 'r_skateboard', name: 'Skateboard', category: 'ride', icon: '🛹', imageSrc: 'art/flat/r_skateboard.webp', unlockType: 'default', unlockLevel: 1 },
+    { id: 'r_leaf', name: 'Magic Leaf', category: 'ride', icon: '🍃', imageSrc: 'art/flat/r_leaf.webp', unlockType: 'level', unlockLevel: 2 },
+    { id: 'r_scooter', name: 'Red Scooter', category: 'ride', icon: '🛴', imageSrc: 'art/flat/r_scooter.webp', unlockType: 'level', unlockLevel: 2 },
+    { id: 'r_cloud', name: 'Fluffy Cloud', category: 'ride', icon: '☁️', imageSrc: 'art/flat/r_cloud.webp', unlockType: 'level', unlockLevel: 3 },
+    { id: 'r_boat', name: 'Rowing Boat', category: 'ride', icon: '🚣', imageSrc: 'art/flat/r_boat.webp', unlockType: 'level', unlockLevel: 3 },
+    { id: 'r_turtle', name: 'Sea Turtle', category: 'ride', icon: '🐢', imageSrc: 'art/flat/r_turtle.webp', unlockType: 'level', unlockLevel: 4 },
+    { id: 'r_broom', name: 'Flying Broom', category: 'ride', icon: '🧹', imageSrc: 'art/flat/r_broom.webp', unlockType: 'level', unlockLevel: 4 },
+    { id: 'r_carpet', name: 'Magic Carpet', category: 'ride', icon: '🧞', imageSrc: 'art/flat/r_carpet.webp', rarity: 'rare', unlockType: 'store', unlockLevel: 3 },
+    { id: 'r_balloon', name: 'Hot-Air Balloon', category: 'ride', icon: '🎈', imageSrc: 'art/flat/r_balloon.webp', rarity: 'rare', unlockType: 'store', unlockLevel: 3 },
+    { id: 'r_rocket', name: 'Mini Rocket', category: 'ride', icon: '🚀', imageSrc: 'art/flat/r_rocket.webp', rarity: 'epic', unlockType: 'store', unlockLevel: 4 },
+    { id: 'r_star', name: 'Shooting Star', category: 'ride', icon: '🌠', imageSrc: 'art/flat/r_star.webp', rarity: 'epic', unlockType: 'store', unlockLevel: 4 },
+    { id: 'r_rainbow', name: 'Rainbow Cloud', category: 'ride', icon: '🌈', imageSrc: 'art/flat/r_rainbow.webp', rarity: 'legendary', unlockType: 'store', unlockLevel: 5 },
+    { id: 'r_unicorn', name: 'Rainbow Unicorn', category: 'ride', icon: '🦄', imageSrc: 'art/flat/r_unicorn.webp', rarity: 'legendary', unlockType: 'store', unlockLevel: 5 },
+    { id: 'r_griffin', name: 'Golden Griffin', category: 'ride', icon: '🦅', imageSrc: 'art/flat/r_griffin.webp', rarity: 'mythic', unlockType: 'store', unlockLevel: 6 },
+    { id: 'r_dragon', name: 'Sky Dragon Ride', category: 'ride', icon: '🐉', imageSrc: 'art/flat/r_dragon.webp', rarity: 'mythic', unlockType: 'store', unlockLevel: 6 }
   ];
 
   IslandData.getAllMonsterItems = function () {

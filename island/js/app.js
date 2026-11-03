@@ -1158,6 +1158,7 @@
     var nextTarget = findNextMissionTarget(m.id, !!m.isStar);
     var stickerReward = (root.IslandRewards && root.IslandRewards.awardMissionSticker) ? root.IslandRewards.awardMissionSticker(doc, m.id, stars) : null;
     var res = awardIslandXP(rawXP, m.id);
+    if (root.WorldGame && root.WorldGame.addEnergy) root.WorldGame.addEnergy(30);
     if (root.IslandWall) {
       if (stars === 3 && !m.isStar && !m.isDaily && !wasThreeStars) root.IslandWall.news('stars');
       if (res.leveledUp && res.newLevelInfo) root.IslandWall.news('level', res.newLevelInfo.level);
@@ -1329,7 +1330,9 @@
       var unlocked = isItemUnlockedForPupil(it, mInfo.level);
       var isEquipped = state.dressDraft[activeCat.slot] === it.id;
       var thumbHtml = '<div style="font-size:2.1rem">' + esc(it.icon || '✨') + '</div>';
-      if (root.MonsterRenderer && typeof root.MonsterRenderer.renderMonsterItemThumbnail === 'function') {
+      if (it.imageSrc && /^art\/flat\/r_/.test(it.imageSrc)) {
+        thumbHtml = '<img src="' + esc(it.imageSrc) + '" style="width:58px;height:58px;object-fit:contain" alt="">';
+      } else if (root.MonsterRenderer && typeof root.MonsterRenderer.renderMonsterItemThumbnail === 'function') {
         var svgThumb = root.MonsterRenderer.renderMonsterItemThumbnail(it, { size: 54, colorKey: colorKey });
         if (svgThumb && /<(path|circle|rect|ellipse|polygon|image)/i.test(svgThumb)) {
           thumbHtml = svgThumb;
@@ -1360,7 +1363,7 @@
           '</div>' +
           '<div class="isl-dress-grid">' +
             '<div class="isl-dress-preview">' +
-              '<div class="isl-dress-stage" id="isl-dress-stage">' + renderMonsterHtml(210, state.dressDraft) + '</div>' +
+              '<div class="isl-dress-stage' + (state.dressDraft && state.dressDraft.ride && state.dressDraft.ride !== 'none' ? ' has-ride' : '') + '" id="isl-dress-stage" style="position:relative">' + (state.dressDraft && state.dressDraft.ride && state.dressDraft.ride !== 'none' ? '<img class="isl-dress-ride" src="art/flat/' + esc(state.dressDraft.ride) + '.webp" style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:150px;height:105px;object-fit:contain;pointer-events:none;z-index:1" alt="">' : '') + '<div style="position:relative;z-index:2;width:100%;height:100%;transform:' + (state.dressDraft && state.dressDraft.ride && state.dressDraft.ride !== 'none' ? 'translateY(-22px) scale(0.76)' : 'none') + '">' + renderMonsterHtml(210, state.dressDraft) + '</div></div>' +
               '<div style="font-size:1.25rem;font-weight:800;margin-top:8px">' + esc(state.session.student.firstName) + '\'s Monster</div>' +
               '<div style="color:#38bdf8;font-weight:700;font-size:0.95rem;margin-bottom:10px">Level ' + mInfo.level + ' · ' + esc(mInfo.stageName) + '</div>' +
               (state.dressSavedNotice ? '<div id="isl-dress-notice" style="color:#fde68a;font-size:0.88rem;font-weight:700;margin-bottom:10px">' + esc(state.dressSavedNotice) + '</div>' : '') +
