@@ -31,9 +31,9 @@
       ground2: { flowers: [FLAT + 'o_flowers'], count: 30 },
       paths: [[[70, 760], [300, 1110], [700, 1310], [1120, 1100], [1520, 1300], [1880, 1040], [2150, 1060], [2330, 760]], [[1120, 1100], [1190, 800], [1000, 610]]],
       edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
-      gather: [{ art: FLAT + 'o_log', word: 'wood', h: 62, x: 840, y: 1010 }, { art: FLAT + 'o_log', word: 'wood', h: 62, x: 1990, y: 1100 }, { art: FLAT + 'o_log', word: 'wood', h: 62, x: 420, y: 1370 }, { art: FLAT + 'o_log', word: 'wood', h: 62, x: 1420, y: 620 },
-        { art: FLAT + 'o_rock', word: 'stone', h: 52, x: 930, y: 1190 }, { art: FLAT + 'o_rock', word: 'stone', h: 52, x: 1600, y: 1120 }, { art: FLAT + 'o_rock', word: 'stone', h: 52, x: 620, y: 780 },
-        { art: FLAT + 'o_flowers', word: 'flower', h: 56, x: 1330, y: 1010 }, { art: FLAT + 'o_flowers', word: 'flower', h: 56, x: 240, y: 800 }, { art: FLAT + 'o_flowers', word: 'flower', h: 56, x: 2070, y: 800 }, { art: FLAT + 'o_flowers', word: 'flower', h: 56, x: 880, y: 1400 }],
+      gather: [{ art: FLAT + 'i_wood', word: 'wood', h: 58, x: 840, y: 1010 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1990, y: 1100 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 1370 }, { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 1420, y: 620 },
+        { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 930, y: 1190 }, { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 1600, y: 1120 }, { art: FLAT + 'i_stone', word: 'stone', h: 50, x: 620, y: 780 },
+        { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 1330, y: 1010 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 240, y: 800 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 2070, y: 800 }, { art: FLAT + 'i_flower', word: 'flower', h: 56, x: 880, y: 1400 }],
       crate: { x: 1360, y: 1180 }, ball: { x: 760, y: 950 }, shells: [{ x: 1360, y: 1195, under: true }, { x: 1352, y: 480 }, { x: 240, y: 1400 }]
     },
     2: {
@@ -82,7 +82,7 @@
       crate: { x: 1300, y: 1000 }, ball: { x: 400, y: 1280 }, shells: [{ x: 1300, y: 1015, under: true }, { x: 2260, y: 280 }, { x: 700, y: 1460 }]
     }
   };
-  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut'];
+  var ART = [FLAT + 'o_gift', FLAT + 'o_star_path', FLAT + 'o_chest', FLAT + 'o_chest_open', FLAT + 'o_ball', FLAT + 'o_crate', FLAT + 'o_shell', FLAT + 'o_coconut', FLAT + 'o_butterfly', FLAT + 'o_bird', FLAT + 'o_duck', FLAT + 'o_frog'];
   // only the zone you are in is loaded, so phones wait less
   function artUrl(n) { return (n.indexOf(FLAT) === 0 ? 'art/' : 'art/clean/') + n + '.webp'; }
   function zoneArt(z) {
@@ -219,6 +219,24 @@
       sc.tweens.add({ targets: cl, x: cl.x + 900, duration: 42000 + i * 9000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     }
     sc.add.particles(0, 0, 'dot', { x: { min: 0, max: W }, y: { min: 100, max: H }, lifespan: 5200, frequency: 240, speedX: { min: -14, max: 22 }, speedY: { min: -22, max: -4 }, scale: { start: .05, end: .34 }, alpha: { start: .85, end: 0 }, tint: [0xfffbe0, 0xffffff, 0xfde68a] }).setDepth(4200);
+    // ambient flat wildlife so each place feels alive
+    var flyerKey = (S.zone === 2 || S.zone === 4) ? FLAT + 'o_bird' : FLAT + 'o_butterfly';
+    for (i = 0; i < 4; i++) {
+      var bx = 260 + seeded(i + 301) * (W - 520), by = 320 + seeded(i + 311) * 860, fl = sc.add.image(bx, by, flyerKey).setDepth(4150);
+      fl.setScale((flyerKey === FLAT + 'o_bird' ? 48 : 40) / fl.height);
+      sc.tweens.add({ targets: fl, x: bx + (i % 2 ? 180 : -180), y: by + (i % 2 ? -65 : 65), duration: 3600 + i * 700, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: function (tw, t) { t.setFlipX(!t.flipX); }, onRepeat: function (tw, t) { t.setFlipX(!t.flipX); } });
+    }
+    if (S.zone === 1) {
+      var dk1 = sc.add.image(1680, 480, FLAT + 'o_duck').setDepth(480); dk1.setScale(52 / dk1.height);
+      sc.tweens.add({ targets: dk1, x: 1830, duration: 4800, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: function () { dk1.setFlipX(true); }, onRepeat: function () { dk1.setFlipX(false); } });
+      var fg1 = sc.add.image(1410, 560, FLAT + 'o_frog').setOrigin(.5, .95).setDepth(560); fg1.setScale(44 / fg1.height);
+      sc.tweens.add({ targets: fg1, y: 544, duration: 420, yoyo: true, hold: 1800, repeat: -1, ease: 'Quad.out' });
+    } else if (S.zone === 3) {
+      var dk3 = sc.add.image(1180, 520, FLAT + 'o_duck').setDepth(520); dk3.setScale(52 / dk3.height);
+      sc.tweens.add({ targets: dk3, y: 600, duration: 4400, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      var fg3 = sc.add.image(960, 960, FLAT + 'o_frog').setOrigin(.5, .95).setDepth(960); fg3.setScale(44 / fg3.height);
+      sc.tweens.add({ targets: fg3, y: 944, duration: 420, yoyo: true, hold: 1900, repeat: -1, ease: 'Quad.out' });
+    }
   }
   /* ---------- gathering: things to pick up on the way, each one says its word ---------- */
   var BAG_KEY = function () { return 'eaa_world_bag_' + ((ses().student && ses().student.id) || 'x'); };
@@ -226,7 +244,7 @@
   function writeBag(b) { try { localStorage.setItem(BAG_KEY(), JSON.stringify(b)); } catch (e) { /* just for now */ } }
   function drawBag() {
     var b = readBag(), box = $('w-bag'), zone = ZONES[S.zone], seen = {}, html = '';
-    (zone.gather || []).forEach(function (g) { if (seen[g.word]) return; seen[g.word] = 1; html += '<span class="w-bag-item" data-word="' + g.word + '"><img src="' + artUrl(g.art) + '" alt=""><b>' + (Number(b.items[g.word]) || 0) + '</b></span>'; });
+    (zone.gather || []).forEach(function (g) { if (seen[g.word]) return; seen[g.word] = 1; html += '<button type="button" class="w-bag-item" data-word="' + g.word + '" onclick="WORLD.tapBag(\'' + g.word + '\',this)"><img src="' + artUrl(g.art) + '" alt=""><b>' + (Number(b.items[g.word]) || 0) + '</b></button>'; });
     box.innerHTML = html; box.classList.toggle('on', !!html);
   }
   function buildGather(sc, zone) {
@@ -260,6 +278,7 @@
     g.addColorStop(0, '#fff'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 24, 24); t.refresh();
     var s = sc.textures.createCanvas('shadow', 100, 40); c = s.context;
     c.fillStyle = 'rgba(35,70,20,.3)'; c.beginPath(); c.ellipse(50, 20, 46, 17, 0, 0, 7); c.fill(); s.refresh();
+    var ar = sc.textures.createCanvas('arrow', 64, 64), ax = ar.context; ax.lineJoin = 'round'; ax.lineCap = 'round'; ax.beginPath(); ax.moveTo(22, 8); ax.lineTo(42, 8); ax.lineTo(42, 30); ax.lineTo(54, 30); ax.lineTo(32, 56); ax.lineTo(10, 30); ax.lineTo(22, 30); ax.closePath(); ax.fillStyle = '#fde047'; ax.fill(); ax.lineWidth = 5; ax.strokeStyle = '#2b2140'; ax.stroke(); ax.beginPath(); ax.moveTo(26, 13); ax.lineTo(38, 13); ax.lineTo(38, 32); ax.lineTo(45, 32); ax.lineTo(32, 48); ax.lineTo(19, 32); ax.lineTo(26, 32); ax.closePath(); ax.fillStyle = '#f59e0b'; ax.fill(); ar.refresh();
     [['disc', '#334155'], ['disc_done', '#10b981'], ['disc_next', '#f59e0b']].forEach(function (d) {
       var b = sc.textures.createCanvas(d[0], 76, 76), x = b.context;
       x.fillStyle = '#fff'; x.beginPath(); x.arc(38, 38, 36, 0, 7); x.fill(); x.fillStyle = d[1]; x.beginPath(); x.arc(38, 38, 30, 0, 7); x.fill(); b.refresh();
@@ -279,7 +298,7 @@
     var fc = document.createElement('canvas'); fc.width = fc.height = FRAME;
     var fx = fc.getContext('2d'); fx.drawImage(img, 0, 0, FRAME, FRAME);
     try {
-      var d = fx.getImageData(0, 0, FRAME, FRAME), px = d.data, L = 4;
+      var d = fx.getImageData(0, 0, FRAME, FRAME), px = d.data, L = 8;
       for (var i = 0; i < px.length; i += 4) {
         if (!px[i + 3]) continue;
         var v = Math.max(px[i], px[i + 1], px[i + 2]); if (!v) continue;
@@ -437,7 +456,7 @@
       var img = sc.add.image(d.x, d.y, d.art).setOrigin(.5, .96);
       img.setScale(d.h / img.height).setDepth(d.y);
       sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(1, d.h / 110)).setDepth(-6);
-      if (d.sw) solid(sc, d.x, d.y - 6, d.sw, 40);
+      if (d.sw) solid(sc, d.x, d.y - 26, d.sw, 30);
       var badgeY = d.y - d.h - 38;
       var disc = sc.add.image(d.x, badgeY, 'disc').setDepth(4500).setScale(.8);
       var num = sc.add.text(d.x, badgeY, String(i + 1), { fontFamily: 'Fredoka, sans-serif', fontSize: '30px', fontStyle: '700', color: '#fff' }).setOrigin(.5).setDepth(4501);
@@ -445,7 +464,7 @@
       return { kind: 'mission', mission: m, plot: plot, def: d, img: img, disc: disc, num: num, starsText: st, x: d.x, y: d.y };
     });
     var cd = zone.chest;
-    var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_chest_open' : (cd.art || 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
+    var chest = sc.add.image(cd.x, cd.y, chestOpened(S.zone) ? FLAT + 'o_chest_open' : (cd.art || FLAT + 'o_chest')).setOrigin(.5, .96).setDepth(cd.y);
     chest.setScale(150 / chest.height); sc.add.image(cd.x, cd.y, 'shadow').setScale(1.6).setDepth(-6);
     sc.chest = { kind: 'chest', img: chest, x: cd.x, y: cd.y };
     // the daily gift, near where a pupil comes in
@@ -455,11 +474,12 @@
     // Star Path stones: only ever built for a pupil on the Star Path
     sc.stones = [];
     (ms.star || []).forEach(function (sm, i) {
-      var x = (zone.stoneX || 860) + i * 110, y = 1420, st = sc.add.image(x, y, FLAT + 'o_star_path').setOrigin(.5, .9).setDepth(y); st.setScale(74 / st.height);
-      sc.add.text(x, y - 28, String(sm.num), { fontFamily: 'Fredoka, sans-serif', fontSize: '22px', fontStyle: '700', color: '#451a03' }).setOrigin(.5).setDepth(y + 1);
-      sc.stones.push({ kind: 'star', mission: sm, img: st, x: x, y: y });
+      var x = (zone.stoneX || 780) + i * 105, y = zone.stoneY || 1340, st = sc.add.image(x, y, FLAT + 'o_star_path').setOrigin(.5, .9).setDepth(2100); st.setScale(74 / st.height);
+      sc.add.text(x, y - 28, String(sm.num), { fontFamily: 'Fredoka, sans-serif', fontSize: '22px', fontStyle: '700', color: '#451a03' }).setOrigin(.5).setDepth(2101);
+      var sst = sc.add.text(x, y + 6, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '16px', color: '#fde047', stroke: '#1e293b', strokeThickness: 3 }).setOrigin(.5).setDepth(2101);
+      sc.stones.push({ kind: 'star', mission: sm, img: st, starsText: sst, x: x, y: y });
     });
-    sc.arrow = sc.add.text(0, 0, '⬇️', { fontSize: '48px' }).setOrigin(.5).setDepth(4600);
+    sc.arrow = sc.add.image(0, 0, 'arrow').setOrigin(.5).setDepth(4600);
     sc.ring = sc.add.circle(0, 0, 44, 0xfde047, .32).setDepth(-7);
     sc.tweens.add({ targets: sc.arrow, scale: 1.2, duration: 450, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     sc.tweens.add({ targets: sc.ring, scale: 1.7, alpha: .1, duration: 800, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
@@ -476,7 +496,8 @@
       if (n && s.def.done && s.img.texture.key !== s.def.done) { s.img.setTexture(s.def.done); if (celebrate) partyAt(s.x, s.y - s.def.h / 2); }
     });
     var chestReady = !next && !chestOpened(S.zone);
-    sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_chest_open' : (ZONES[S.zone].chest.art || 'o_chest'));
+    sc.chest.img.setTexture(chestOpened(S.zone) ? FLAT + 'o_chest_open' : (ZONES[S.zone].chest.art || FLAT + 'o_chest'));
+    (sc.stones || []).forEach(function (st) { var sn = starsOf(st.mission.id); if (st.starsText) st.starsText.setText(sn ? '★'.repeat(sn) : ''); });
     var t = next || (chestReady ? sc.chest : null);
     S.target = t;
     if (t) { var top = t.def ? t.def.y - t.def.h - 110 : t.y - 210; sc.arrow.setVisible(true).setPosition(t.x, top); sc.ring.setVisible(true).setPosition(t.x, t.y); }
@@ -509,11 +530,24 @@
       panel(FLAT + 'o_star_path', t.mission.title, 'A star mission!', 'Play ▶', function () { App().tapPin(t.mission.id, z, true, null); });
     } else if (t.kind === 'chest') {
       if (chestOpened(z)) panel(FLAT + 'o_chest_open', 'Treasure', 'You opened this one!', 'OK', function () {});
-      else panel('o_chest', 'Treasure', S.target === scene.chest ? 'Open the treasure!' : 'Finish all 5 stops first!', 'Open 🎁', function () { App().tapChest(z); refreshStops(true); });
+      else if (S.target === scene.chest) panel(FLAT + 'o_chest', 'Treasure', 'Open the treasure!', 'Open 🎁', function () { App().tapChest(z); refreshStops(true); });
+      else panel(FLAT + 'o_chest', 'Treasure', 'Finish all 5 stops first!', 'OK', function () {});
     } else if (t.kind === 'gift') {
       panel(FLAT + 'o_gift', "Today's quest", 'Five quick questions!', 'Play ▶', function () { App().startDailyQuest(); });
     } else if (t.kind === 'npc') {
-      var name = root.IslandStory.CHARS[z].name, next = S.target;
+      var name = root.IslandStory.CHARS[z].name, next = S.target, b = readBag(), zoneWords = {};
+      (ZONES[z].gather || []).forEach(function (g) { zoneWords[g.word] = 1; });
+      var countHere = Object.keys(zoneWords).reduce(function (sum, w) { return sum + (Number(b.items[w]) || 0); }, 0);
+      b.gifted = b.gifted || {};
+      if (countHere >= 3 && !b.gifted['z' + z]) {
+        var giftLine = 'Ooh! You found ' + countHere + ' things for me! Thank you!';
+        panel(ZONES[z].npc.happy || helperArt(), name, giftLine, 'Give 🎁', function () {
+          b.gifted['z' + z] = 1; writeBag(b);
+          partyAt(t.x, t.y - 60); say('Thank you so much!');
+        });
+        say(giftLine);
+        return;
+      }
       var line = next && next.plot && next.plot.intro ? next.plot.intro[0] : (next ? 'Open the treasure!' : 'Thank you, friend!');
       panel(helperArt(), name, line, 'OK', function () {});
       say(line);
@@ -753,7 +787,7 @@
       });
       // what is here? the panel opens when you walk up to something, and closes when you walk away
       var here = null, best = 110;
-      interactables(sc).forEach(function (t) { var dd2 = Phaser.Math.Distance.Between(m.x, m.y, t.x, t.y); if (dd2 < best) { best = dd2; here = t; } });
+      interactables(sc).forEach(function (t) { var ty = t.y + (t.def && t.def.sw ? 24 : 0), lim = t.def && t.def.sw ? Math.max(115, t.def.sw * .58) : 110, dd2 = Phaser.Math.Distance.Between(m.x, m.y, t.x, ty); if (dd2 < lim && dd2 < best) { best = dd2; here = t; } });
       if (here && here !== S.near && !S.path.length) { S.near = here; openThing(here); }
       else if (!here && S.near && !S.path.length) { S.near = null; hidePanel(); }
     }
@@ -800,7 +834,28 @@
       render: { antialias: true }, scene: [WorldScene]
     });
   }
-  root.WORLD = { S: S, scene: function () { return scene; }, walkTo: walkTo, goZone: goZone, refresh: refreshStops, open: openThing };
+  function tapBag(word, el) {
+    sound('playTap'); say(word);
+    if (el) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); setTimeout(function () { el.classList.remove('pop'); }, 300); }
+  }
+  function nextMission(missionId, zoneNum, isStar) {
+    var sc = scene;
+    if (!sc || !S.ready) { App().tapPin(missionId, zoneNum, isStar); return; }
+    if (zoneNum && zoneNum !== S.zone && isOpen(zoneNum)) {
+      goZone(zoneNum, zoneNum > S.zone ? 1 : -1);
+      return;
+    }
+    var list = (isStar ? sc.stones : sc.stops) || [];
+    var hit = list.filter(function (s) { return s.mission && s.mission.id === missionId; })[0];
+    if (hit) {
+      hidePanel(); S.near = hit;
+      walkTo(hit.x, hit.y + 54, function () { openThing(hit); });
+    } else if (S.target === sc.chest) {
+      hidePanel(); S.near = sc.chest;
+      walkTo(sc.chest.x, sc.chest.y + 54, function () { openThing(sc.chest); });
+    }
+  }
+  root.WORLD = { S: S, scene: function () { return scene; }, walkTo: walkTo, goZone: goZone, refresh: refreshStops, open: openThing, tapBag: tapBag, nextMission: nextMission };
   var tries = 0;
   (function waitForPupil() {
     var s = ses();
