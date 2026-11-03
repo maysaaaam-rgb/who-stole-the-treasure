@@ -106,6 +106,24 @@
     /* The corner and the review list are whole lists, so the newer copy wins */
     var older = primary === d2 ? d1 : d2;
     if (primary.dream || older.dream) base.dream = primary.dream || older.dream;
+    if (primary.world || older.world) {
+      var w1 = older.world || {}, w2 = primary.world || {};
+      var wOwned = Object.assign({}, w1.ownedFurniture || {});
+      Object.keys(w2.ownedFurniture || {}).forEach(function (k) {
+        wOwned[k] = Math.max(Number(wOwned[k]) || 0, Number(w2.ownedFurniture[k]) || 0);
+      });
+      var wBag = Object.assign({}, w1.bag || {});
+      Object.keys(w2.bag || {}).forEach(function (k) {
+        wBag[k] = Math.max(Number(wBag[k]) || 0, Number(w2.bag[k]) || 0);
+      });
+      base.world = Object.assign({}, w1, w2, {
+        houseTier: Math.max(Number(w1.houseTier) || 1, Number(w2.houseTier) || 1),
+        ownedFurniture: wOwned,
+        jobsDone: Object.assign({}, w1.jobsDone || {}, w2.jobsDone || {}),
+        battlesWon: Object.assign({}, w1.battlesWon || {}, w2.battlesWon || {}),
+        bag: wBag
+      });
+    }
     base.corner = primary.corner || older.corner || { items: [] };
     base.wrongQueue = primary.wrongQueue || older.wrongQueue || [];
 
