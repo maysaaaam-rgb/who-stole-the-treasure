@@ -1362,8 +1362,8 @@
 
     const strId = String(row.id);
     let resolvedClassId = row.class_id || (row.grade && row.grade.toLowerCase().includes('3') ? 'class-3a' : 'class-4a');
-    if (strId === 'student-4b-208') resolvedClassId = 'class-4a';
-    else if (strId === 'student-4a-319') resolvedClassId = 'class-4b';
+    if (strId === 'student-4b-208') resolvedClassId = 'class-4b';
+    else if (strId === 'student-4a-319') resolvedClassId = 'class-4a';
 
     return {
       id: strId,

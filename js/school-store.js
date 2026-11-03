@@ -5531,8 +5531,8 @@
   },
   "student-4a-319": {
     "studentId": "student-4a-319",
-    "petName": "Ozan",
-    "monsterName": "Ozan's Monster",
+    "petName": "Şimal",
+    "monsterName": "Şimal's Monster",
     "baseColor": "green",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -6113,8 +6113,8 @@
   },
   "student-4b-208": {
     "studentId": "student-4b-208",
-    "petName": "Şimal",
-    "monsterName": "Şimal's Monster",
+    "petName": "Ozan",
+    "monsterName": "Ozan's Monster",
     "baseColor": "blue",
     "highestUnlockedLevel": 1,
     "lastCelebratedLevel": 1,
@@ -8356,14 +8356,14 @@
         {
           id: 'student-4a-319',
           studentIdNumber: '319',
-          firstName: 'Ozan',
-          lastName: 'Topçu',
-          classId: 'class-4b',
+          firstName: 'Şimal',
+          lastName: 'Koyun',
+          classId: 'class-4a',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Ozan Topçu',
+          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Şimal Koyun',
           parentContact: '+90 (555) 319-0001',
           parentEmail: 'parent319@example.com',
           xp: 90,
@@ -8684,14 +8684,14 @@
         {
           id: 'student-4b-208',
           studentIdNumber: '208',
-          firstName: 'Şimal',
-          lastName: 'Koyun',
-          classId: 'class-4a',
+          firstName: 'Ozan',
+          lastName: 'Topçu',
+          classId: 'class-4b',
           age: 10,
           grade: 'Grade 4',
           overallCefr: 'A2',
-          avatar: { hair: 'girl', outfit: 'explorer', accessory: 'none' },
-          parentName: 'Parent of Şimal Koyun',
+          avatar: { hair: 'boy', outfit: 'explorer', accessory: 'none' },
+          parentName: 'Parent of Ozan Topçu',
           parentContact: '+90 (555) 208-0001',
           parentEmail: 'parent208@example.com',
           xp: 0,
@@ -9751,7 +9751,7 @@
                       "color": "#06b6d4",
                       "studentIds": [
                               "student-4a-314",
-                              "student-4b-208",
+                              "student-4a-319",
                               "student-4a-341",
                               "student-4a-300",
                               "student-4a-345"
@@ -9808,7 +9808,7 @@
                               "student-4b-305",
                               "student-4b-316",
                               "student-4b-318",
-                              "student-4a-319",
+                              "student-4b-208",
                               "student-4b-440"
                       ],
                       "createdDate": "2026-11-02"
@@ -10474,9 +10474,17 @@
             }
             if (Array.isArray(merged.students)) {
               merged.students.forEach(function(st) {
-                if (st.id === 'student-4b-208') st.classId = 'class-4a';
-                else if (st.id === 'student-4a-319') st.classId = 'class-4b';
-                else if (st.id && st.id.indexOf('student-4b-') === 0) st.classId = 'class-4b';
+                if (st.id === 'student-4b-208') {
+                  st.classId = 'class-4b';
+                  if (st.firstName === 'Şimal' || st.firstName === 'Simal') { st.firstName = 'Ozan'; st.lastName = 'Topçu'; st.name = 'Ozan Topçu'; }
+                } else if (st.id === 'student-4a-319') {
+                  st.classId = 'class-4a';
+                  if (st.firstName === 'Ozan') { st.firstName = 'Şimal'; st.lastName = 'Koyun'; st.name = 'Şimal Koyun'; }
+                } else if (st.id && st.id.indexOf('student-4b-') === 0) {
+                  st.classId = 'class-4b';
+                } else if (st.id && st.id.indexOf('student-4a-') === 0) {
+                  st.classId = 'class-4a';
+                }
               });
             }
             if (!merged.progressChecks || !Array.isArray(merged.progressChecks) || merged.progressChecks.length === 0) {
@@ -16828,7 +16836,7 @@
             const mergedAvatarPoses = remoteStudent.avatarPoses || local.avatarPoses || (remoteStudent.extraData && remoteStudent.extraData.avatarPoses) || (local.extraData && local.extraData.avatarPoses) || null;
 
             const mergedStudent = Object.assign({}, local, remoteStudent, {
-              classId: remoteStudent.id === 'student-4b-208' ? 'class-4a' : (remoteStudent.id === 'student-4a-319' ? 'class-4b' : (remoteStudent.classId || local.classId)),
+              classId: remoteStudent.id === 'student-4b-208' ? 'class-4b' : (remoteStudent.id === 'student-4a-319' ? 'class-4a' : (remoteStudent.classId || local.classId)),
               avatarUrl: mergedAvatarUrl,
               avatarPoses: mergedAvatarPoses,
               xp: mergedXP,
@@ -16852,7 +16860,7 @@
           } else {
             // Student added on another device: ingest into local state with archive folded in
             const sCopy = Object.assign({}, remoteStudent, {
-              classId: remoteStudent.id === 'student-4b-208' ? 'class-4a' : (remoteStudent.id === 'student-4a-319' ? 'class-4b' : remoteStudent.classId),
+              classId: remoteStudent.id === 'student-4b-208' ? 'class-4b' : (remoteStudent.id === 'student-4a-319' ? 'class-4a' : remoteStudent.classId),
               xp: remoteFolded,
               totalXP: remoteFolded,
               archivedXP: 0,
