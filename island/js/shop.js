@@ -14,13 +14,14 @@
   function wearable() { var m = {}; root.IslandData.getAllMonsterItems().forEach(function (i) { m[i.id] = i; }); return m; }
 
   /* In demo mode nothing leaves the device */
+  var RETIRED = { 'cs-gat': 1, 'cs-hanbok': 1, 'cs-lantern': 1 };
   var LADDER = { mythic: [500, 6], legendary: [200, 5], epic: [90, 4], rare: [40, 3], common: [15, 1] };
   var SHELVES = [['mythic', 'Mythic', '🔴', 'The far dreams'], ['legendary', 'Legendary', '🟡', 'Very few monsters have these'], ['epic', 'Epic', '🟣', 'Worth saving for'], ['rare', 'Cool', '🟢', 'Not far away'], ['common', 'Everyday', '⚪', 'Small wins, soon']];
   var XP_AT = [0, 30, 200, 500, 1000, 2000, 3500];
   function demoShop() {
     var xp = 0; try { xp = App().getEffectiveXP(); } catch (e) { xp = 0; }
     var lvl = 1; XP_AT.forEach(function (t, i) { if (xp >= t) lvl = i + 1; });
-    var items = root.IslandData.getAllMonsterItems().filter(function (i) { return i.unlockType === 'store'; })
+    var items = root.IslandData.getAllMonsterItems().filter(function (i) { return i.unlockType === 'store' && !RETIRED[i.id]; })
       .map(function (i) { var l = LADDER[i.rarity] || LADDER.common; return { id: i.id, name: i.name, icon: i.icon, category: i.category, rarity: i.rarity || 'common', price: l[0], level: l[1] }; });
     var tr = items.filter(function (i) { return i.rarity === 'epic' && i.level <= lvl; })[0];
     if (tr) { tr.was = tr.price; tr.price = Math.ceil(tr.price * .7); }
@@ -79,7 +80,7 @@
     var d = S.data, known = wearable(), cats = root.IslandData.MONSTER_CATEGORIES, owned = {}, colorKey = ((ses().student.monsterProfile || {}).baseColor) || 'blue';
     (d.owned || []).forEach(function (id) { owned[id] = 1; });
     /* Only what a pupil can really wear here. What they own is in the Dressing Room, not on sale. */
-    var sale = (d.items || []).filter(function (i) { return known[i.id] && !owned[i.id]; });
+    var sale = (d.items || []).filter(function (i) { return known[i.id] && !owned[i.id] && !RETIRED[i.id]; });
     if (!sale.length) { frame('<div class="isl-shop-msg"><div class="isl-shop-msg-icon">🎉</div>You have everything in the store!</div>'); return; }
     var card = function (i) {
       var locked = Number(i.level) > Number(d.level), thumb = thumbOf(i, known, colorKey, 72), cant = !locked && Number(d.coins) < Number(i.price);

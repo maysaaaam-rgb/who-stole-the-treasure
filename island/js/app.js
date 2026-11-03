@@ -369,7 +369,7 @@
       }).join('');
       socialHtml +=
         friendsHtml +
-        '<button type="button" class="mp-hub mp-hub-plaza" id="isl-hub-plaza" style="--x:50;--y:48" onclick="event.stopPropagation(); IslandWall.open()">' +
+        '<button type="button" class="mp-hub mp-hub-plaza" id="isl-hub-plaza" style="--x:50;--y:45" onclick="event.stopPropagation(); IslandWall.open()">' +
           '<span class="mp-hub-pic"><img src="art/d_flag.webp" alt="">' +
             (hasGifts ? '<span class="mp-hub-badge">🎁 Gift!</span>' : '') +
           '</span>' +
@@ -379,7 +379,7 @@
 
     var cornerCount = ((ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 4;
     var campHtml =
-      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:80" onclick="event.stopPropagation(); IslandRewards.openCorner()">' +
+      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:70" onclick="event.stopPropagation(); IslandRewards.openCorner()">' +
         '<span class="mp-hub-pic"><img src="art/d_hut.webp" alt=""></span>' +
         '<span class="mp-hub-label"><b>🏖️ My Beach Camp</b><small>Decorate · Care · Trophies (' + cornerCount + ' 🌴)</small></span>' +
       '</button>';
@@ -1211,6 +1211,7 @@
 
   function startNextMission(missionId, zoneNum, isStar) {
     closeModal();
+    if (root.WORLD && root.WORLD.nextMission) { root.WORLD.nextMission(missionId, zoneNum, isStar); return; }
     tapPin(missionId, zoneNum, isStar);
   }
 

@@ -72,11 +72,11 @@
 
 .mp-walker { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); transform: translate(-6%, -104%); z-index: 6; width: clamp(62px, 7.2vw, 114px); pointer-events: auto; cursor: pointer; }
 .mp-walker svg { width: 100%; height: auto; display: block; animation: mpBob 1.5s ease-in-out infinite; }
-.mp-friend { position: absolute; right: 1.2%; bottom: 2%; z-index: 7; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; }
+.mp-friend { position: absolute; right: 1.5%; bottom: 16px; z-index: 7; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; }
 .mp-friend button { pointer-events: auto; }
 .mp-friend .gm-bubble-mini { margin-bottom: 44px; max-width: 170px; }
 .mp-friend img, .mp-friend .gm-emoji { width: clamp(76px, 8.8vw, 144px); height: clamp(76px, 8.8vw, 144px); object-fit: contain; font-size: clamp(50px, 6vw, 100px); display: block; }
-.mp-starpath { position: absolute; left: 1.2%; bottom: 2%; z-index: 7; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 16px; background: rgba(15,23,42,.88); border: 1px solid rgba(255,255,255,.16); }
+.mp-starpath { position: absolute; left: 1.5%; bottom: 16px; z-index: 7; display: flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 16px; background: rgba(15,23,42,.92); border: 1.5px solid rgba(253,224,71,.35); box-shadow: 0 6px 16px rgba(0,0,0,.45); }
 .mp-stone { display: flex; flex-direction: column; align-items: center; justify-content: center; width: clamp(42px, 3.8vw, 60px); height: clamp(42px, 3.8vw, 60px); border-radius: 50%; border: 0; border-bottom: 4px solid #92400e; background: radial-gradient(circle at 40% 30%, #fde68a, #f59e0b); color: #451a03; font: 800 clamp(14px, 1.35vw, 20px) Fredoka, sans-serif; line-height: 1; cursor: pointer; }
 .mp-stone small { font-size: 9px; min-height: 9px; }
 .mp-stone.done { background: radial-gradient(circle at 40% 30%, #6ee7b7, #10b981); border-bottom-color: #047857; }
@@ -130,7 +130,7 @@
   .mp-friend { right: auto; left: 1%; top: 74px; bottom: auto; }
   .mp-friend .gm-bubble-mini { display: none; }
   .mp-friend img, .mp-friend .gm-emoji { width: 72px; height: 72px; font-size: 48px; }
-  .mp-starpath { left: 50%; transform: translateX(-50%); bottom: 4px; padding: 3px 6px; }
+  .mp-starpath { left: 50%; transform: translateX(-50%); bottom: 68px; padding: 4px 8px; }
   .mp-stone { width: 40px; height: 40px; }
   .isl-shore-bottle.mp-bottle { width: 48px; height: 48px; }
   .mp-classmate { display: none; }

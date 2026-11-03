@@ -2642,10 +2642,10 @@
       return `
         <!-- Explorer Travel Coat -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 3} ${cY} Q ${cX} ${cY + 6} ${cX + rx - 3} ${cY} L ${cX + rx - 2} ${cY + ry - 1} L ${cX - rx + 2} ${cY + ry - 1} Z" fill="#0369a1" stroke="#075985" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 4}" x2="${cX}" y2="${cY + ry - 1}" stroke="#f8fafc" stroke-width="2" />
-          <circle cx="${cX - 5}" cy="${cY + 12}" r="1.8" fill="#facc15" />
-          <circle cx="${cX - 5}" cy="${cY + 20}" r="1.8" fill="#facc15" />
+          <path d="M ${cX - rx + 3} 108 Q ${cX} 114 ${cX + rx - 3} 108 L ${cX + rx - 2} 138 L ${cX - rx + 2} 138 Z" fill="#0369a1" stroke="#075985" stroke-width="2" />
+          <line x1="${cX}" y1="112" x2="${cX}" y2="138" stroke="#f8fafc" stroke-width="2" />
+          <circle cx="${cX - 6}" cy="120" r="2" fill="#facc15" />
+          <circle cx="${cX - 6}" cy="129" r="2" fill="#facc15" />
         </g>
       `;
     }
@@ -2654,10 +2654,10 @@
       return `
         <!-- Casual Student Hoodie -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 10} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#059669" stroke="#047857" stroke-width="2" />
-          <ellipse cx="${cX}" cy="${cY + 4}" rx="${rx * 0.6}" ry="5" fill="#10b981" />
+          <path d="M ${cX - rx + 3} 108 Q ${cX} 115 ${cX + rx - 3} 108 L ${cX + rx - 2} 137 Q ${cX} 140 ${cX - rx + 2} 137 Z" fill="#059669" stroke="#064e3b" stroke-width="2.2" />
+          <path d="M ${cX - rx * 0.58} 108 Q ${cX} 116 ${cX + rx * 0.58} 108 Q ${cX} 112 ${cX - rx * 0.58} 108 Z" fill="#34d399" stroke="#047857" stroke-width="1.5" /><path d="M ${cX - 6} 113 Q ${cX - 7} 119 ${cX - 5} 123" fill="none" stroke="#fef08a" stroke-width="2" stroke-linecap="round" /><path d="M ${cX + 6} 113 Q ${cX + 7} 119 ${cX + 5} 123" fill="none" stroke="#fef08a" stroke-width="2" stroke-linecap="round" />
           <!-- Pouch pocket -->
-          <path d="M ${cX - 14} ${cY + ry - 12} L ${cX + 14} ${cY + ry - 12} L ${cX + 10} ${cY + ry - 4} L ${cX - 10} ${cY + ry - 4} Z" fill="#047857" opacity="0.8" />
+          <path d="M ${cX - 15} 124 L ${cX + 15} 124 L ${cX + 19} 134 Q ${cX} 136 ${cX - 19} 134 Z" fill="#047857" stroke="#064e3b" stroke-width="1.6" /><line x1="${cX - 13}" y1="124" x2="${cX + 13}" y2="124" stroke="#6ee7b7" stroke-width="1.5" opacity="0.85" />
         </g>
       `;
     }
@@ -2666,9 +2666,9 @@
       return `
         <!-- Cozy Knitted Sweater -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 8} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 4} L ${cX - rx + 3} ${cY + ry - 4} Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
-          <line x1="${cX - rx + 4}" y1="${cY + 10}" x2="${cX + rx - 4}" y2="${cY + 10}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
-          <line x1="${cX - rx + 4}" y1="${cY + 18}" x2="${cX + rx - 4}" y2="${cY + 18}" stroke="#fca5a5" stroke-width="1.8" stroke-dasharray="3 3" />
+          <path d="M ${cX - rx + 3} 108 Q ${cX} 114 ${cX + rx - 3} 108 L ${cX + rx - 2} 137 L ${cX - rx + 2} 137 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+          <line x1="${cX - rx + 4}" y1="118" x2="${cX + rx - 4}" y2="118" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
+          <line x1="${cX - rx + 4}" y1="127" x2="${cX + rx - 4}" y2="127" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4 3" />
         </g>
       `;
     }
@@ -2692,10 +2692,10 @@
       return `
         <!-- Ace Pilot Jumpsuit -->
         <g filter="url(#mf-shadow)">
-          <path d="M ${cX - rx + 4} ${cY + 2} Q ${cX} ${cY + 6} ${cX + rx - 4} ${cY + 2} L ${cX + rx - 3} ${cY + ry - 3} L ${cX - rx + 3} ${cY + ry - 3} Z" fill="#ea580c" stroke="#c2410c" stroke-width="2" />
-          <line x1="${cX}" y1="${cY + 3}" x2="${cX}" y2="${cY + ry - 3}" stroke="#facc15" stroke-width="2" />
+          <path d="M ${cX - rx + 3} 108 Q ${cX} 114 ${cX + rx - 3} 108 L ${cX + rx - 2} 137 L ${cX - rx + 2} 137 Z" fill="#ea580c" stroke="#c2410c" stroke-width="2" />
+          <line x1="${cX}" y1="111" x2="${cX}" y2="137" stroke="#facc15" stroke-width="2" />
           <!-- Star patch on chest -->
-          <polygon points="${cX-10},${cY+12} ${cX-8},${cY+14} ${cX-5},${cY+14} ${cX-7},${cY+16} ${cX-6},${cY+19} ${cX-10},${cY+17} ${cX-14},${cY+19} ${cX-13},${cY+16} ${cX-15},${cY+14} ${cX-12},${cY+14}" fill="#facc15" />
+          <polygon points="${cX-10},118 ${cX-8},120 ${cX-5},120 ${cX-7},122 ${cX-6},125 ${cX-10},123 ${cX-14},125 ${cX-13},122 ${cX-15},120 ${cX-12},120" fill="#facc15" />
         </g>
       `;
     }
