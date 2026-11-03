@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Worksheet • Circle & Say • English Adventure Academy</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #0f172a;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #060911;
+      border-bottom: 2px solid #1e293b;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: #f8fafc;
+    }
+    .toolbar h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      margin-right: 12px;
+    }
+    .tbtn {
+      border: 0;
+      border-bottom: 4px solid #0369a1;
+      background: #0284c7;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .tbtn.ghost {
+      background: #1e293b;
+      border-bottom-color: #0f172a;
+      color: #cbd5e1;
+    }
+    .tbtn.active {
+      background: #10b981;
+      border-bottom-color: #047857;
+      color: #fff;
+    }
+    .tbtn.amber {
+      background: #f59e0b;
+      border-bottom-color: #b45309;
+      color: #0f172a;
+    }
+    .grow { flex: 1; }
+
+    .sheet-wrap {
+      max-width: 210mm;
+      margin: 20px auto;
+      padding: 0 12px 40px;
+    }
+    .sheet {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 12mm 14mm;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+      display: none;
+    }
+    .sheet.active { display: block; }
+
+    .ws-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #0f172a;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .ws-title h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .ws-title p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+    }
+    .ws-meta {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.8;
+    }
+    .ws-meta span {
+      display: inline-block;
+      border-bottom: 2px dotted #64748b;
+      min-width: 140px;
+    }
+
+    .sec-title {
+      background: #f1f5f9;
+      border-left: 6px solid #0284c7;
+      padding: 6px 10px;
+      font-size: 15px;
+      font-weight: 900;
+      margin: 12px 0 8px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .q-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+    }
+    .q-box {
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+    .q-box .qt {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .opts-row {
+      display: flex;
+      gap: 6px;
+      justify-content: space-between;
+    }
+    .opt-pill {
+      flex: 1;
+      border: 2px dashed #64748b;
+      border-radius: 99px;
+      padding: 4px 6px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      background: #f8fafc;
+    }
+    .opt-pill b {
+      font-size: 16px;
+      display: block;
+    }
+
+    .order-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 12px;
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .num-box {
+      width: 26px;
+      height: 26px;
+      border: 2px solid #0f172a;
+      border-radius: 6px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+    .order-item .em { font-size: 20px; }
+
+    .speak-row {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .say-card {
+      border: 2px solid #0f172a;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #f8fafc;
+    }
+    .say-line {
+      font-size: 13.5px;
+      font-weight: 800;
+      margin: 7px 0;
+      line-height: 1.5;
+    }
+    .circle-choice {
+      display: inline-block;
+      border: 2px dashed #0284c7;
+      border-radius: 99px;
+      padding: 1px 8px;
+      margin: 0 2px;
+      background: #fff;
+    }
+    .draw-box {
+      border: 2px dashed #64748b;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 115px;
+    }
+    .draw-box b { font-size: 12px; color: #334155; }
+    .stars { font-size: 16px; color: #f59e0b; }
+
+    @media print {
+      body { background: #fff; }
+      .toolbar { display: none !important; }
+      .sheet-wrap { margin: 0; padding: 0; max-width: none; }
+      .sheet { box-shadow: none; padding: 6mm 8mm; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <h1>🖨️ Movie "Circle & Say" Worksheets</h1>
+    <button type="button" class="tbtn active" data-ws="bad-guys-holiday">🦊 The Bad Guys Holiday</button>
+    <button type="button" class="tbtn ghost" data-ws="spider-verse">🕷️ Spider-Man: Spider-Verse</button>
+    <button type="button" class="tbtn ghost" data-ws="bean-trolley">🛒 Mr Bean: Super Trolley</button>
+    <div class="grow"></div>
+    <button type="button" class="tbtn amber" onclick="window.print()">🖨️ Print A4 Worksheet</button>
+    <a class="tbtn ghost" href="index.html">🎬 Back to Movie Player</a>
+  </header>
+
+  <main class="sheet-wrap">
+    <!-- SHEET 1: THE BAD GUYS -->
+    <section class="sheet active" id="ws-bad-guys-holiday">
+      <div class="ws-head">
+        <div class="ws-title">
+          <h2>🦊 The Bad Guys: A Very Bad Holiday</h2>
+          <p>Watch &amp; Answer • Individual "Circle &amp; Say" Movie Sheet</p>
+        </div>
+        <div class="ws-meta">
+          Name: <span></span><br>
+          Class: <span></span>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 1: Watch and CIRCLE the right picture! ⭕</div>
+      <div class="q-grid">
+        <div class="q-box">
+          <div class="qt">1. What food does Piranha love?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🧀</b>cheese</div>
+            <div class="opt-pill"><b>🍕</b>pizza</div>
+            <div class="opt-pill"><b>🍎</b>apples</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">2. Where do the Bad Guys want to go?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🏦</b>bank</div>
+            <div class="opt-pill"><b>🏫</b>school</div>
+            <div class="opt-pill"><b>🏥</b>hospital</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">3. What is on top of their car?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🎈</b>Santa balloon</div>
+            <div class="opt-pill"><b>🐉</b>dragon</div>
+            <div class="opt-pill"><b>🚁</b>helicopter</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">4. The balloon popped! How do people feel?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>😢</b>sad</div>
+            <div class="opt-pill"><b>😄</b>happy</div>
+            <div class="opt-pill"><b>😴</b>sleepy</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">5. What do they give to every house?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🎁</b>presents</div>
+            <div class="opt-pill"><b>📚</b>books</div>
+            <div class="opt-pill"><b>👟</b>shoes</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">6. What do they make with the ice machine?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>❄️</b>white snow</div>
+            <div class="opt-pill"><b>🍦</b>ice cream</div>
+            <div class="opt-pill"><b>🌧️</b>rain</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 2: Number the Holiday Story (1 to 6) 🔢</div>
+      <div class="order-grid">
+        <div class="order-item"><div class="num-box"></div><span class="em">🎁</span><span>They put presents at every house.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🎈</span><span>The Bad Guys pop the Santa balloon.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🧀</span><span>Real Santa gives them presents and cheese!</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">😢</span><span>The city is sad and goes home.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🤖</span><span>The Santa balloon saves them in the storm.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">❄️</span><span>They make white snow for the city.</span></div>
+      </div>
+
+      <div class="sec-title">Part 3: Circle &amp; Say Aloud! 🗣️ (3 Easy Lines)</div>
+      <div class="speak-row">
+        <div class="say-card">
+          <div class="say-line">1. Look! It is <span class="circle-choice">🐺 Mr. Wolf</span> / <span class="circle-choice">🐟 Piranha</span> / <span class="circle-choice">🦈 Shark</span>.</div>
+          <div class="say-line">2. At first, the city is <span class="circle-choice">😢 sad</span> / <span class="circle-choice">😄 happy</span>.</div>
+          <div class="say-line">3. The Bad Guys make <span class="circle-choice">🎁 presents</span> and <span class="circle-choice">❄️ white snow</span>!</div>
+        </div>
+        <div class="draw-box">
+          <b>🎨 Draw your favourite Bad Guy or Santa Balloon:</b>
+          <div class="stars">⭐ ⭐ ⭐ Great Movie Speaker!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHEET 2: SPIDER-MAN -->
+    <section class="sheet" id="ws-spider-verse">
+      <div class="ws-head">
+        <div class="ws-title">
+          <h2>🕷️ Spider-Man: Into the Spider-Verse</h2>
+          <p>Watch &amp; Answer • Individual "Circle &amp; Say" Movie Sheet</p>
+        </div>
+        <div class="ws-meta">
+          Name: <span></span><br>
+          Class: <span></span>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 1: Watch and CIRCLE the right picture! ⭕</div>
+      <div class="q-grid">
+        <div class="q-box">
+          <div class="qt">1. What is Miles wearing on his ears?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🎧</b>headphones</div>
+            <div class="opt-pill"><b>👑</b>a crown</div>
+            <div class="opt-pill"><b>🕶️</b>sunglasses</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">2. What is Miles's dad's job?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>👮</b>police officer</div>
+            <div class="opt-pill"><b>👨‍⚕️</b>doctor</div>
+            <div class="opt-pill"><b>👨‍🍳</b>chef</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">3. Where does Miles go with his suitcase?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🏫</b>new school</div>
+            <div class="opt-pill"><b>🏖️</b>the beach</div>
+            <div class="opt-pill"><b>🦁</b>the zoo</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">4. Where do Miles and Uncle Aaron paint?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🚇</b>dark tunnel</div>
+            <div class="opt-pill"><b>🌳</b>sunny park</div>
+            <div class="opt-pill"><b>🛒</b>supermarket</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">5. What crawls on Miles's red shoe?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🕷️</b>a spider</div>
+            <div class="opt-pill"><b>🐸</b>a frog</div>
+            <div class="opt-pill"><b>🦋</b>a butterfly</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">6. What super power can Miles do now?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🧗</b>climb walls</div>
+            <div class="opt-pill"><b>🏊</b>swim fast</div>
+            <div class="opt-pill"><b>🚗</b>drive a bus</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 2: Number Miles's Story (1 to 6) 🔢</div>
+      <div class="order-grid">
+        <div class="order-item"><div class="num-box"></div><span class="em">🕷️</span><span>A glowing spider bites Miles's hand.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🎧</span><span>Miles listens to music and draws stickers.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🧗</span><span>Miles can climb up walls like Spider-Man!</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">👮</span><span>His police dad drives him to school.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">👱‍♀️</span><span>His hand sticks to Gwen's hair at school.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🚇</span><span>Miles and Uncle Aaron paint in a tunnel.</span></div>
+      </div>
+
+      <div class="sec-title">Part 3: Circle &amp; Say Aloud! 🗣️ (3 Easy Lines)</div>
+      <div class="speak-row">
+        <div class="say-card">
+          <div class="say-line">1. This is <span class="circle-choice">🕷️ Miles</span>. His dad is a <span class="circle-choice">👮 police officer</span> / <span class="circle-choice">👨‍⚕️ doctor</span>.</div>
+          <div class="say-line">2. A glowing <span class="circle-choice">🕷️ spider</span> / <span class="circle-choice">🐸 frog</span> bites his hand!</div>
+          <div class="say-line">3. Now he can <span class="circle-choice">🧗 climb walls</span> and <span class="circle-choice">🕸️ jump high</span>!</div>
+        </div>
+        <div class="draw-box">
+          <b>🎨 Draw Miles Morales or the Glowing Spider:</b>
+          <div class="stars">⭐ ⭐ ⭐ Great Movie Speaker!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHEET 3: MR BEAN -->
+    <section class="sheet" id="ws-bean-trolley">
+      <div class="ws-head">
+        <div class="ws-title">
+          <h2>🛒 Mr Bean: Super Trolley</h2>
+          <p>Watch &amp; Answer • Individual "Circle &amp; Say" Movie Sheet</p>
+        </div>
+        <div class="ws-meta">
+          Name: <span></span><br>
+          Class: <span></span>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 1: Watch and CIRCLE the right picture! ⭕</div>
+      <div class="q-grid">
+        <div class="q-box">
+          <div class="qt">1. What is Mr Bean eating at the start?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🥣</b>cereal</div>
+            <div class="opt-pill"><b>🍕</b>pizza</div>
+            <div class="opt-pill"><b>🍲</b>soup</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">2. Where does Mr Bean go?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🛒</b>the shop</div>
+            <div class="opt-pill"><b>🏫</b>school</div>
+            <div class="opt-pill"><b>🌳</b>the park</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">3. Who is with Mr Bean in the trolley?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🧸</b>Teddy</div>
+            <div class="opt-pill"><b>🐶</b>a dog</div>
+            <div class="opt-pill"><b>👶</b>a baby</div>
+          </div>
+        </div>
+        <div class="q-box">
+          <div class="qt">4. What is on the high shelf?</div>
+          <div class="opts-row">
+            <div class="opt-pill"><b>🥛</b>milk</div>
+            <div class="opt-pill"><b>🧃</b>juice</div>
+            <div class="opt-pill"><b>🥚</b>eggs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">Part 2: Number the Story (1 to 6) 🔢</div>
+      <div class="order-grid">
+        <div class="order-item"><div class="num-box"></div><span class="em">🛒</span><span>He goes to the shop.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🥣</span><span>Mr Bean eats cereal.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🚜</span><span>He drives a yellow forklift.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">👵</span><span>He sees an old lady and a cat.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🏠</span><span>He goes home with the shopping.</span></div>
+        <div class="order-item"><div class="num-box"></div><span class="em">🧸</span><span>He pushes a trolley with Teddy.</span></div>
+      </div>
+
+      <div class="sec-title">Part 3: Circle &amp; Say Aloud! 🗣️</div>
+      <div class="speak-row">
+        <div class="say-card">
+          <div class="say-line">1. First, Mr Bean goes to the <span class="circle-choice">🛒 shop</span> / <span class="circle-choice">🏫 school</span>.</div>
+          <div class="say-line">2. Then, he pushes a <span class="circle-choice">🛒 trolley</span> with <span class="circle-choice">🧸 Teddy</span>.</div>
+          <div class="say-line">3. Finally, he buys <span class="circle-choice">🥛 milk</span> and goes <span class="circle-choice">🏠 home</span>!</div>
+        </div>
+        <div class="draw-box">
+          <b>🎨 Draw Mr Bean's Super Trolley:</b>
+          <div class="stars">⭐ ⭐ ⭐ Great Movie Speaker!</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var btns = document.querySelectorAll('[data-ws]');
+      var sheets = document.querySelectorAll('.sheet');
+      function show(id) {
+        btns.forEach(function (b) {
+          b.className = 'tbtn ' + (b.dataset.ws === id ? 'active' : 'ghost');
+        });
+        sheets.forEach(function (s) {
+          s.className = 'sheet ' + (s.id === 'ws-' + id ? 'active' : '');
+        });
+      }
+      btns.forEach(function (b) {
+        b.onclick = function () { show(b.dataset.ws); };
+      });
+      var p = new URLSearchParams(window.location.search).get('lesson');
+      if (p && document.getElementById('ws-' + p)) show(p);
+    })();
+  </script>
+</body>
+</html>

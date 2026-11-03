@@ -6,12 +6,18 @@
   <title>Watch and Answer • English Adventure Academy</title>
   <link rel="stylesheet" href="../karaoke-stage/css/style.css?v=3">
   <link rel="stylesheet" href="../week-song-g4/css/song.css?v=4">
-  <link rel="stylesheet" href="css/wa.css?v=1">
+  <link rel="stylesheet" href="css/wa.css?v=3">
 </head>
 <body>
   <header class="hud">
-    <h1>🎬 Watch and Answer<small id="h-sub">Grade 3 • the cartoon stops, you answer</small></h1>
+    <h1>🎬 Watch and Answer<small id="h-sub">The movie stops • you answer!</small></h1>
+    <div class="movie-tabs" id="movie-tabs"></div>
     <div class="grow"></div>
+    <label class="btn small amber" title="Load a downloaded MP4/MKV movie file from your computer" style="cursor:pointer; margin:0;">
+      📂 Video File
+      <input type="file" id="vfile" accept="video/*,.mp4,.mkv,.webm" hidden>
+    </label>
+    <a class="btn small cyan" id="ws-link" href="worksheet.html" target="_blank" style="text-decoration:none" title="Print the Movie Worksheet">🖨️ Worksheet</a>
     <button type="button" class="btn small ghost" id="setup" title="Change the questions">⚙️</button>
     <button type="button" class="btn small ghost" id="snd" title="Sound on / off">🔊</button>
     <button type="button" class="btn small cyan" id="fs" title="Full screen">📺</button>
@@ -31,7 +37,7 @@
   <div id="fx" aria-hidden="true"></div>
 
   <script src="../karaoke-stage/js/audio.js?v=2"></script>
-  <script src="js/data.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/data.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 </body>
 </html>

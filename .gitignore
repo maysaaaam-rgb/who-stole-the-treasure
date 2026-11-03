@@ -35,3 +35,6 @@ scratch/
 /lingo-work/
 /build/
 /monster day/
+
+# local classroom movie files (never deployed to GitHub)
+/watch-answer/videos/

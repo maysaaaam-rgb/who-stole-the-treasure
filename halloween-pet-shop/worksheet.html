@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monster Pet Vet Clinic · Pro Printables (CLIL &amp; PPP)</title>
+  <title>Monster Pet Vet Clinic · Easy Individual "Circle &amp; Say" Worksheet</title>
   <style>
     :root { --ink: #1e1b2e; --line: #c4b5fd; --orange: #f97316; --violet: #6d28d9; --amber: #b45309; --cyan: #0e7490; --green: #047857; --coral: #be123c; }
     * { box-sizing: border-box; }
@@ -14,84 +14,80 @@
     .bar button.on { background: #f97316; border-bottom-color: #c2410c; }
     .bar button:active { transform: translateY(4px); border-bottom-width: 1px; }
     .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 10mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
-    .hdr { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--violet); padding-bottom: 6px; margin-bottom: 7px; }
-    h1 { margin: 0; font-size: 21pt; display: flex; align-items: center; gap: 8px; }
-    h1 img { width: 44px; height: 44px; }
+    .hdr { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--violet); padding-bottom: 6px; margin-bottom: 8px; }
+    h1 { margin: 0; font-size: 20pt; display: flex; align-items: center; gap: 8px; }
+    h1 img { width: 42px; height: 42px; object-fit: contain; }
     .lvl-badge { background: #f5f3ff; border: 2px solid var(--violet); color: var(--violet); border-radius: 10px; padding: 3px 10px; font-weight: 900; font-size: 10pt; }
-    .sub { margin: 0 0 7px; font-size: 10.5pt; color: #4c4766; font-weight: 700; }
-    .team { display: grid; grid-template-columns: 1.3fr 1.3fr 0.8fr; gap: 10px; font-size: 11.5pt; font-weight: 800; margin-bottom: 7px; }
-    .team span { border: 1.5px solid #ddd6fe; background: #faf8ff; border-radius: 9px; padding: 4px 8px; }
-    .jobs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 7px; }
-    .job { border: 2px solid var(--line); border-radius: 10px; padding: 4px 7px; font-size: 9.5pt; }
-    .job b { display: block; font-size: 10.2pt; color: var(--violet); }
-    .job i { display: block; border-bottom: 1.5px dashed #a78bfa; height: 15px; font-style: normal; margin-top: 2px; }
+    .sub { margin: 0 0 8px; font-size: 10.5pt; color: #4c4766; font-weight: 800; }
+    .student-bar { display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 10px; font-size: 11.5pt; font-weight: 900; margin-bottom: 9px; }
+    .student-bar span { border: 2px solid #ddd6fe; background: #faf8ff; border-radius: 10px; padding: 5px 10px; }
 
-    /* Step 1 Tick strip + X-Ray Draw box */
-    .mid-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 8px; margin-bottom: 8px; }
-    .draw { position: relative; border: 3px dashed var(--cyan); border-radius: 14px; height: 68mm; display: flex; align-items: flex-end; justify-content: space-between; padding: 6px 10px; background: #f8fdff; }
-    .draw .lbl { position: absolute; top: 6px; left: 10px; font-weight: 900; color: var(--cyan); font-size: 9.5pt; max-width: 58%; }
-    .tag { position: absolute; top: 6px; right: 10px; border: 2px solid var(--green); background: #ecfdf5; border-radius: 9px; padding: 2px 8px; font-weight: 900; color: var(--green); font-size: 9.5pt; }
-    .tick-panel { border: 2px solid #ddd6fe; border-radius: 14px; padding: 6px 9px; display: flex; flex-direction: column; justify-content: space-between; font-size: 9pt; }
-    .tick-panel h4 { margin: 0 0 3px; font-size: 9.8pt; color: var(--violet); }
-    .tick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 6px; font-weight: 800; }
-    .tick-item { display: inline-flex; align-items: center; gap: 4px; }
-    .tick-item img { width: 28px; height: 28px; object-fit: contain; }
-    .bank-pics { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 3px; }
-    .bank-pics span { display: inline-flex; align-items: center; gap: 3px; background: #faf8ff; border: 1px solid #ddd6fe; border-radius: 6px; padding: 1px 5px; font-weight: 800; font-size: 8.5pt; }
-    .bank-pics img { width: 18px; height: 18px; object-fit: contain; }
+    /* Part 1: Quick Picture Match */
+    .sec-box { border: 2.5px solid var(--cyan); border-radius: 14px; padding: 8px 11px; margin-bottom: 9px; background: #f8fdff; }
+    .sec-title { font-weight: 900; font-size: 11.5pt; color: var(--cyan); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 10.2pt; font-weight: 800; }
+    .match-row { border: 1.5px solid #bae6fd; background: #fff; border-radius: 10px; padding: 5px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .m-left, .m-opt { display: inline-flex; align-items: center; gap: 4px; }
+    .match-row img { width: 28px; height: 28px; object-fit: contain; }
 
-    /* Labelled Fill-in Sentence Frames (Easy for A1/A1+ to understand!) */
-    .frames-box { border: 2.5px solid var(--violet); border-radius: 14px; padding: 7px 10px; background: #fdfcff; margin-bottom: 7px; }
-    .frames-title { font-weight: 900; font-size: 10.5pt; color: var(--violet); margin-bottom: 5px; display: flex; justify-content: space-between; }
-    .lines { display: grid; gap: 6px; }
-    .ln { font-size: 12.2pt; font-weight: 800; display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; flex-wrap: wrap; }
-    .ln .n { width: 22px; height: 22px; border-radius: 50%; background: var(--violet); color: #fff; display: inline-grid; place-items: center; font-size: 10pt; flex: none; margin-top: 2px; }
-    .slot { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; margin: 0 2px; }
-    .slot .write { display: inline-block; min-width: 34mm; border-bottom: 2px solid #4c1d95; height: 1.15em; }
-    .slot.wide .write { min-width: 52mm; }
-    .slot small { font-size: 7.8pt; font-weight: 700; color: #6d28d9; line-height: 1.1; margin-top: 1px; }
+    /* Part 2: Super-Easy "Circle & Say" 3-Line Builder */
+    .circle-box { border: 3px solid var(--violet); border-radius: 16px; padding: 9px 12px; background: #fdfcff; margin-bottom: 9px; }
+    .circle-box .sec-title { color: var(--violet); font-size: 12pt; }
+    .c-lines { display: grid; gap: 9px; }
+    .c-ln { border: 1.5px solid #e9d5ff; background: #fff; border-radius: 12px; padding: 7px 10px; font-size: 12pt; font-weight: 900; line-height: 1.45; }
+    .c-ln-head { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+    .num { width: 24px; height: 24px; border-radius: 50%; background: var(--violet); color: #fff; display: inline-grid; place-items: center; font-size: 10.5pt; flex: none; }
+    .write-name { display: inline-block; width: 42mm; border-bottom: 2.5px solid var(--violet); text-align: center; color: var(--violet); font-size: 10pt; }
+    .pill-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 3px; }
+    .c-pill { display: inline-flex; align-items: center; gap: 5px; border: 2px dashed #a78bfa; background: #faf5ff; border-radius: 999px; padding: 3px 10px 3px 6px; font-size: 10.5pt; font-weight: 900; }
+    .c-pill img { width: 26px; height: 26px; object-fit: contain; }
+    .c-pill.cure { border-color: #34d399; background: #ecfdf5; color: var(--green); }
+    .c-pill.warn { border-color: #fda4af; background: #fff1f2; color: var(--coral); }
+    .c-pill.verb { border-style: solid; border-color: var(--cyan); background: #ecfeff; color: var(--cyan); padding: 2px 10px; }
+
+    /* Part 3: Draw Box + Picture Dictionary */
+    .bot-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 9px; }
+    .draw-box { position: relative; border: 3px dashed var(--cyan); border-radius: 14px; height: 64mm; background: #f8fdff; padding: 8px 10px; display: flex; flex-direction: column; justify-content: space-between; }
+    .draw-lbl { font-weight: 900; color: var(--cyan); font-size: 10.5pt; }
+    .draw-foot { display: flex; justify-content: space-between; align-items: center; font-size: 9.5pt; font-weight: 900; color: var(--green); }
+    .pic-dict { border: 2px solid #ddd6fe; border-radius: 14px; padding: 7px 9px; display: flex; flex-direction: column; justify-content: space-between; background: #faf8ff; }
+    .pic-dict h4 { margin: 0 0 4px; font-size: 10pt; color: var(--violet); }
+    .pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 6px; font-size: 9pt; font-weight: 800; }
+    .pd-item { display: inline-flex; align-items: center; gap: 4px; background: #fff; border: 1px solid #e9d5ff; border-radius: 7px; padding: 2px 5px; }
+    .pd-item img { width: 22px; height: 22px; object-fit: contain; }
 
     .k-col { color: var(--amber); font-weight: 900; }
     .k-has { color: var(--cyan); font-weight: 900; }
     .k-can { color: var(--green); font-weight: 900; }
     .k-warn { color: var(--coral); font-weight: 900; }
 
-    .bank { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .bank div { border: 1.5px solid var(--line); border-radius: 10px; padding: 5px 8px; font-size: 9.2pt; line-height: 1.35; }
-    .bank b { display: block; font-size: 9.8pt; margin-bottom: 2px; }
-    .check { margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; font-size: 9.8pt; font-weight: 800; }
-    .check span::before { content: '☐ '; font-size: 11.5pt; }
+    /* Page 2: 2-Up Half-Page Individual Slips (Economy Print: 2 Students per Page!) */
+    .half-slip { border: 2.5px dashed var(--violet); border-radius: 16px; padding: 8mm 9mm; margin-bottom: 7mm; background: #fff; }
+    .half-slip:last-child { margin-bottom: 0; }
+    .hs-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--violet); padding-bottom: 4px; margin-bottom: 6px; }
+    .hs-top b { font-size: 13pt; display: flex; align-items: center; gap: 6px; }
+    .hs-top img { width: 28px; height: 28px; }
+    .hs-body { display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 8px; align-items: stretch; }
+    .hs-lines { display: grid; gap: 6px; font-size: 10.2pt; font-weight: 800; }
+    .hs-ln { border: 1.5px solid #ddd6fe; border-radius: 10px; padding: 5px 8px; background: #fdfcff; }
+    .hs-pills { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+    .hs-pill { display: inline-flex; align-items: center; gap: 3px; border: 1.5px dashed #a78bfa; border-radius: 999px; padding: 1px 7px 1px 4px; font-size: 8.8pt; font-weight: 900; background: #fff; }
+    .hs-pill img { width: 18px; height: 18px; object-fit: contain; }
+    .hs-draw { border: 2.5px dashed var(--cyan); border-radius: 12px; background: #f8fdff; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; font-size: 9pt; font-weight: 900; color: var(--cyan); }
 
-    /* Page 2: PPP Controlled Practice + Inspector Cards */
-    .ppp-box { border: 2px solid var(--cyan); border-radius: 14px; padding: 8px 11px; margin-bottom: 8px; background: #f8fdff; }
-    .ppp-box h2 { margin: 0 0 5px; font-size: 13pt; color: var(--cyan); }
-    .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 9.8pt; font-weight: 800; }
-    .match-item { border: 1.5px solid #bae6fd; background: #fff; border-radius: 9px; padding: 4px 7px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-    .mi-left, .mi-opt { display: inline-flex; align-items: center; gap: 4px; }
-    .match-item img { width: 24px; height: 24px; object-fit: contain; }
-    .circle-list { display: grid; gap: 5px; margin-top: 6px; font-size: 11pt; font-weight: 800; }
-    .circle-opt { border: 1.5px solid var(--violet); border-radius: 8px; padding: 1px 7px; background: #f5f3ff; color: var(--violet); }
-    .qcards { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 3mm; }
-    .qcard { border: 2.5px dashed #0e7490; border-radius: 12px; padding: 7px 10px; font-size: 11.5pt; font-weight: 900; background: #fff; display: grid; grid-template-columns: 36px 1fr; gap: 8px; align-items: center; }
-    .qcard img { width: 36px; height: 36px; object-fit: contain; }
-    .qcard small { display: block; font-size: 9.5pt; font-weight: 700; color: #4c4766; margin-top: 2px; }
-
-    /* Page 3 & 4: Door Pass & Homework */
+    /* Page 3: Circle-Only Door Pass (6 per page, zero writing needed!) */
     .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-top: 4mm; }
-    .slip { border: 2.5px dashed #a78bfa; border-radius: 14px; padding: 8px 10px; min-height: 52mm; display: flex; flex-direction: column; gap: 6px; }
-    .slip h3 { margin: 0; font-size: 11.5pt; display: flex; gap: 6px; align-items: center; }
-    .slip h3 img { width: 26px; height: 26px; }
-    .slip p { margin: 0; font-size: 11.5pt; font-weight: 800; line-height: 1.8; }
-    .slip p u { display: inline-block; min-width: 28mm; border-bottom: 2px solid #c7c2dc; text-decoration: none; }
-    .pets { display: flex; gap: 4px; flex-wrap: wrap; }
-    .pets img { width: 26px; height: 26px; }
-    .slips.hw .slip { min-height: 120mm; }
-    .hw-draw { flex: 1; min-height: 48mm; border: 2.5px dashed #fdba74; border-radius: 12px; color: #f97316; font-weight: 900; padding: 6px 10px; }
-    .hw-sign { font-size: 9.8pt; font-weight: 800; color: #4c4766; }
+    .slip { border: 2.5px dashed #a78bfa; border-radius: 14px; padding: 7px 9px; min-height: 76mm; display: flex; flex-direction: column; justify-content: space-between; }
+    .slip h3 { margin: 0; font-size: 10.5pt; display: flex; gap: 6px; align-items: center; border-bottom: 1.5px solid #ede9fe; padding-bottom: 3px; }
+    .slip h3 img { width: 22px; height: 22px; }
+    .dp-row { font-size: 9.2pt; font-weight: 900; }
+    .dp-pics { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+    .dp-item { display: inline-flex; align-items: center; gap: 3px; border: 1.5px dashed #c4b5fd; border-radius: 8px; padding: 2px 5px; font-size: 8.4pt; background: #faf8ff; }
+    .dp-item img { width: 20px; height: 20px; object-fit: contain; }
 
     .g4 { display: none; } body.grade4 .g4 { display: inline; } body.grade4 .g3 { display: none; }
-    body.grade4 .lines.g4, body.grade4 .qcards.g4, body.grade4 .circle-list.g4 { display: grid; }
-    body.grade4 p.g4, body.grade4 div.g4 { display: block; }
+    body.grade4 .c-lines.g4, body.grade4 .hs-lines.g4 { display: grid; }
+    body.grade4 div.g4, body.grade4 p.g4 { display: block; }
     @media print {
       body { background: #fff; } .bar { display: none; }
       .page { margin: 0; box-shadow: none; width: auto; min-height: auto; padding: 8mm 10mm; page-break-after: always; }
@@ -102,237 +98,289 @@
 </head>
 <body>
   <div class="bar">
-    <b>🏥 Monster Pet Vet Clinic · Pro Printables (CLIL &amp; PPP)</b>
+    <b>🏥 Monster Pet Vet Clinic · Super-Easy Individual "Circle &amp; Say" Sheets (No Group Work)</b>
     <button type="button" id="g3">Grade 3 (A1)</button>
     <button type="button" id="g4">Grade 4 (A1+)</button>
     <button type="button" onclick="window.print()">🖨️ Print</button>
   </div>
 
-  <!-- PAGE 1: Official Team Vet Clinic Report Card (1 per team) -->
+  <!-- PAGE 1: Full-Page Individual "Circle & Say" Vet Check-Up Sheet (1 per Student) -->
   <section class="page">
     <div class="hdr">
-      <h1><img src="art/host.webp" alt="">Monster Vet Clinic Report Card</h1>
-      <span class="lvl-badge"><span class="g3">Grade 3 · CEFR A1</span><span class="g4">Grade 4 · CEFR A1+</span></span>
+      <h1><img src="art/host.webp" alt="">My Monster Vet Check-Up Sheet</h1>
+      <span class="lvl-badge"><span class="g3">Grade 3 · Easy A1</span><span class="g4">Grade 4 · Easy A1+</span></span>
     </div>
-    <p class="sub g3"><b>PPP Team Task (A1):</b> 1. Tick the symptom &amp; cure &rarr; 2. Draw your patient &rarr; 3. Fill in the 4 boxes &amp; present!</p>
-    <p class="sub g4"><b>PPP Team Task (A1+):</b> 1. Tick the symptom, cause &amp; cure &rarr; 2. Draw the X-Ray &rarr; 3. Write the diagnosis (<b>because / should / shouldn't</b>)!</p>
+    <p class="sub"><b>Individual Task (5 Minutes):</b> 1. Tick the right cure &rarr; 2. <b>Circle 1 picture</b> in each line &amp; write 1 pet name &rarr; 3. Draw &amp; read your 3 short lines!</p>
 
-    <div class="team">
-      <span>🩺 Vet Team:</span>
-      <span>🐾 Patient Name:</span>
-      <span>🌡️ Temp: _____ °C</span>
-    </div>
-
-    <div class="jobs">
-      <div class="job"><b>🩺 1. Head Vet (Speaker)</b>Says the diagnosis<i></i></div>
-      <div class="job"><b>🎨 2. X-Ray Artist</b>Draws patient &amp; bandage<i></i></div>
-      <div class="job"><b>✏️ 3. Medical Writer</b>Writes in the boxes<i></i></div>
-      <div class="job"><b>⏱️ 4. Clinic Manager</b>Watches time &amp; Line 5<i></i></div>
+    <div class="student-bar">
+      <span>🩺 My Name: ________________________</span>
+      <span>🏫 Class: _______</span>
+      <span>⭐ Vet Stars: ☆☆☆</span>
     </div>
 
-    <div class="mid-grid">
-      <div class="draw">
-        <span class="lbl">🔬 Step 2 · Draw your patient, symptom &amp; bandage</span>
-        <span class="tag">💚 ☐ Sick &rarr; ☐ Healed!</span>
+    <!-- Part 1: 1-Minute Picture Match -->
+    <div class="sec-box">
+      <div class="sec-title">
+        <span>🧩 Step 1 · Tick (☑️) the Right Cure Picture! (1 Minute)</span>
+        <span>Look at the pictures &rarr; Tick 1 box</span>
       </div>
-      <div class="tick-panel">
-        <div>
-          <h4>☑️ Step 1A · Tick 1 Symptom:</h4>
-          <div class="tick-grid">
-            <span class="tick-item">☐ <img src="art/sym_tummy.webp" alt=""> tummy ache</span>
-            <span class="tick-item">☐ <img src="art/sym_cold.webp" alt=""> cold</span>
-            <span class="tick-item">☐ <img src="art/sym_throat.webp" alt=""> sore throat</span>
-            <span class="tick-item">☐ <img src="art/sym_paw.webp" alt=""> hurt paw</span>
-            <span class="tick-item">☐ <img src="art/sym_dizzy.webp" alt=""> dizzy</span>
-            <span class="tick-item">☐ <img src="art/sym_bones.webp" alt=""> tired legs</span>
-          </div>
-        </div>
-        <div>
-          <h4>☑️ Step 1B · Tick 1 Treatment:</h4>
-          <div class="tick-grid">
-            <span class="tick-item">☐ <img src="art/cure_water.webp" alt=""> warm water</span>
-            <span class="tick-item">☐ <img src="art/cure_tea.webp" alt=""> honey tea</span>
-            <span class="tick-item">☐ <img src="art/cure_blanket.webp" alt=""> blanket</span>
-            <span class="tick-item">☐ <img src="art/cure_bandage.webp" alt=""> bandage</span>
-            <span class="tick-item">☐ <img src="art/cure_milk.webp" alt=""> milk &amp; fruit</span>
-            <span class="tick-item">☐ <img src="art/cure_pillow.webp" alt=""> soft bed</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="frames-box">
-      <div class="frames-title">
-        <span>✏️ Step 3 · Complete Your Vet Report (Every blank has a helper hint underneath!)</span>
-        <span>🗣️ Say it together!</span>
-      </div>
-
-      <!-- Grade 3 (A1) Guided Slots -->
-      <div class="lines g3">
-        <div class="ln">
-          <span class="n">1</span>Look at
-          <span class="slot"><span class="write"></span><small>(pet's name)</small></span>! It is a
-          <span class="slot"><span class="write"></span><small>(black cat / bat / ghost)</small></span>.
-        </div>
-        <div class="ln">
-          <span class="n">2</span><span class="k-col">What's the matter?</span> It is
-          <span class="slot"><span class="write"></span><small>(tired / cold / hungry)</small></span> and it <span class="k-has">has got</span>
-          <span class="slot wide"><span class="write"></span><small>(a tummy ache / a sore throat / a hurt paw)</small></span>.
-        </div>
-        <div class="ln">
-          <span class="n">3</span><span class="k-can">Treatment:</span> <span class="k-can">Give it</span>
-          <span class="slot"><span class="write"></span><small>(warm water / honey tea)</small></span> and
-          <span class="slot"><span class="write"></span><small>(a blanket / a bandage / a bed)</small></span>!
-        </div>
-        <div class="ln">
-          <span class="n">4</span><b>All Together:</b> "Now our pet is <span class="k-can">happy and healthy</span>!"
-        </div>
-      </div>
-
-      <!-- Grade 4 (A1+) Guided Slots -->
-      <div class="lines g4">
-        <div class="ln">
-          <span class="n">1</span><b>Patient:</b> Our patient is
-          <span class="slot"><span class="write"></span><small>(pet's name)</small></span>, the
-          <span class="slot"><span class="write"></span><small>(black cat / purple bat / ghost)</small></span>.
-        </div>
-        <div class="ln">
-          <span class="n">2</span><span class="k-col">Diagnosis:</span> It <span class="k-has">has got</span>
-          <span class="slot"><span class="write"></span><small>(a stomach ache / a sore wing)</small></span> <span class="k-has">because</span> it
-          <span class="slot wide"><span class="write"></span><small>(ate ten sweets / flew in the rain / shouted)</small></span>.
-        </div>
-        <div class="ln">
-          <span class="n">3</span><span class="k-can">Advice (Do):</span> It <span class="k-can">should</span>
-          <span class="slot wide"><span class="write"></span><small>(drink warm honey tea / wear a bandage)</small></span> and
-          <span class="slot"><span class="write"></span><small>(rest in bed / stay warm)</small></span>.
-        </div>
-        <div class="ln">
-          <span class="n">4</span><span class="k-warn">Warning (Don't):</span> It <span class="k-warn">shouldn't</span>
-          <span class="slot wide"><span class="write"></span><small>(eat sweets / fly in the wind / shout)</small></span>! Now it feels better!
-        </div>
-      </div>
-    </div>
-
-    <div class="bank">
-      <div>
-        <b class="k-col">1 · 🌡️ Symptoms &amp; Feelings</b>
-        😴 tired · 🍽️ hungry · 💧 thirsty · 🥶 cold · 💫 dizzy<br>
-        🤢 a tummy / stomach ache · 😷 a sore throat · 🐾 a sore paw · 🪽 a hurt wing · 🦴 tired legs
-      </div>
-      <div>
-        <b class="k-has">2 · 🦠 Patients &amp; Causes</b>
-        🐈‍⬛ black cat · 🦇 purple bat · 👻 ghost · 🎃 pumpkin · 💀 skeleton · 🕷️ spider<span class="g4"><br><b>because it:</b> 🍬 ate ten sweets · 🌧️ flew in the rain · 📣 shouted all night · 💃 danced 5 hours · 🧱 jumped off a wall</span>
-      </div>
-      <div>
-        <b class="k-can">3 · 💊 Cures &amp; Vet Advice</b>
-        <span class="g3"><b>Give it:</b> 💧 warm water · 🍵 honey tea · 🥛 healthy milk · 🍎 fresh fruit · 🧣 a warm blanket · 🩹 a bandage · 🛌 a quiet bed</span>
-        <span class="g4"><b>should:</b> 🍵 drink warm tea · 🛌 rest in bed · 🧣 wear a blanket · 🩹 wear a bandage · 🥛 drink milk<br><b class="k-warn">shouldn't:</b> 🚫🍬 eat sweets · 🚫🌧️ fly in the rain · 🚫📣 shout</span>
-      </div>
-    </div>
-    <div class="check"><span>1. Jobs chosen</span><span>2. Symptom &amp; cure ticked</span><span>3. Patient drawn</span><span>4. Boxes filled &amp; practised 2x</span></div>
-  </section>
-
-  <!-- PAGE 2: PPP Controlled Practice + Cut-Out Health Inspector Question Cards -->
-  <section class="page">
-    <div class="hdr">
-      <h1><img src="art/cauldron.webp" alt="">PPP Practice &amp; Health Inspector Cards</h1>
-      <span class="lvl-badge"><span class="g3">Grade 3 · A1</span><span class="g4">Grade 4 · A1+</span></span>
-    </div>
-
-    <div class="ppp-box">
-      <h2>🧩 Part 1 · Quick PPP Grammar &amp; CLIL Practice (2 Minutes)</h2>
       <div class="match-grid">
-        <div class="match-item">
-          <span class="mi-left">1. <img src="art/sym_tummy.webp" alt=""> Shadow has got a tummy ache.</span>
-          <span class="mi-opt">&rarr; ☐ <img src="art/cure_blanket.webp" alt=""> Blanket &nbsp; ☐ <img src="art/cure_water.webp" alt=""> Warm water</span>
+        <div class="match-row">
+          <span class="m-left">1. <img src="art/sym_tummy.webp" alt=""> <b>tummy ache</b></span>
+          <span class="m-opt">&rarr; ☐ <img src="art/cure_water.webp" alt=""> warm water &nbsp; ☐ <img src="art/cure_bandage.webp" alt=""> bandage</span>
         </div>
-        <div class="match-item">
-          <span class="mi-left">2. <img src="art/sym_cold.webp" alt=""> Flappy is freezing cold.</span>
-          <span class="mi-opt">&rarr; ☐ <img src="art/cure_blanket.webp" alt=""> Blanket &nbsp; ☐ <img src="art/sym_tummy.webp" alt=""> Sweets</span>
+        <div class="match-row">
+          <span class="m-left">2. <img src="art/sym_cold.webp" alt=""> <b>a cold</b></span>
+          <span class="m-opt">&rarr; ☐ <img src="art/cure_blanket.webp" alt=""> a blanket &nbsp; ☐ <img src="art/cure_milk.webp" alt=""> milk</span>
         </div>
-        <div class="match-item">
-          <span class="mi-left">3. <img src="art/sym_throat.webp" alt=""> Boo has got a sore throat.</span>
-          <span class="mi-opt">&rarr; ☐ <img src="art/cure_tea.webp" alt=""> Honey tea &nbsp; ☐ <img src="art/sym_throat.webp" alt=""> Shout</span>
+        <div class="match-row">
+          <span class="m-left">3. <img src="art/sym_throat.webp" alt=""> <b>sore throat</b></span>
+          <span class="m-opt">&rarr; ☐ <img src="art/cure_tea.webp" alt=""> warm tea &nbsp; ☐ <img src="art/cure_bandage.webp" alt=""> bandage</span>
         </div>
-        <div class="match-item">
-          <span class="mi-left">4. <img src="art/sym_paw.webp" alt=""> Ginger's paw hurts.</span>
-          <span class="mi-opt">&rarr; ☐ <img src="art/cure_bandage.webp" alt=""> Bandage &nbsp; ☐ <img src="art/sym_paw.webp" alt=""> Jump</span>
+        <div class="match-row">
+          <span class="m-left">4. <img src="art/sym_paw.webp" alt=""> <b>hurt paw</b></span>
+          <span class="m-opt">&rarr; ☐ <img src="art/cure_bandage.webp" alt=""> a bandage &nbsp; ☐ <img src="art/cure_tea.webp" alt=""> warm tea</span>
         </div>
-      </div>
-
-      <div class="circle-list g3">
-        <div>5. Circle the right word: &nbsp; Shadow <span class="circle-opt">is / has got</span> a tummy ache.</div>
-        <div>6. Circle the right word: &nbsp; Flappy <span class="circle-opt">is / has got</span> cold and tired.</div>
-        <div>7. Circle the right word: &nbsp; <span class="circle-opt">Give / Has</span> it warm honey tea and a soft bed!</div>
-      </div>
-
-      <div class="circle-list g4">
-        <div>5. Circle the right word: &nbsp; Shadow has got a stomach ache <span class="circle-opt">because / should</span> it ate ten sweets.</div>
-        <div>6. Circle the right word: &nbsp; Flappy <span class="circle-opt">should / shouldn't</span> wear a warm blanket and rest.</div>
-        <div>7. Circle the right word: &nbsp; Boo <span class="circle-opt">should / shouldn't</span> shout or drink cold fizzy juice!</div>
       </div>
     </div>
 
-    <p class="sub">✂️ <b>Part 2 · Cut-Out Health Inspector Question Cards</b> (Give 1 set per team. Ask the Vet Team 1 question after they present!)</p>
-    <div class="qcards g3">
-      <div class="qcard"><img src="art/sym_tummy.webp" alt=""><div>🩺 1. What's the matter with it?<small>&rarr; Answer: "It is ____ and it has got ____."</small></div></div>
-      <div class="qcard"><img src="art/sym_cold.webp" alt=""><div>🩺 2. Is it hungry, thirsty, or cold?<small>&rarr; Answer: "It is ____."</small></div></div>
-      <div class="qcard"><img src="art/cure_tea.webp" alt=""><div>🩺 3. What treatment does it need?<small>&rarr; Answer: "Give it ____ and ____!"</small></div></div>
-      <div class="qcard"><img src="art/cure_bandage.webp" alt=""><div>🩺 4. Is it happy and healthy now?<small>&rarr; Answer: "Yes, it is!"</small></div></div>
-      <div class="qcard"><img src="art/sym_paw.webp" alt=""><div>🩺 1. What's the matter with it?<small>&rarr; Answer: "It is ____ and it has got ____."</small></div></div>
-      <div class="qcard"><img src="art/cure_water.webp" alt=""><div>🩺 3. What treatment does it need?<small>&rarr; Answer: "Give it ____ and ____!"</small></div></div>
+    <!-- Part 2: Super-Easy "Circle & Say" (Only 3 Short Lines!) -->
+    <div class="circle-box">
+      <div class="sec-title">
+        <span>⭕ Step 2 · Circle &amp; Say! (Write 1 Name + Circle 1 Picture in Each Box!)</span>
+        <span>🗣️ Then read your 3 lines aloud!</span>
+      </div>
+
+      <!-- GRADE 3 (A1): 3 Super-Short Circle Lines -->
+      <div class="c-lines g3">
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">1</span>
+            <span>Look at <span class="write-name">(write pet name)</span> ! &nbsp; It is a: &nbsp; <small style="color:#6d28d9">(⭕ Circle 1 pet)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill"><img src="art/cat.webp" alt=""> black cat</span>
+            <span class="c-pill"><img src="art/bat.webp" alt=""> purple bat</span>
+            <span class="c-pill"><img src="art/ghost.webp" alt=""> white ghost</span>
+            <span class="c-pill"><img src="art/orangecat.webp" alt=""> orange cat</span>
+            <span class="c-pill"><img src="art/pumpkin.webp" alt=""> pumpkin</span>
+          </div>
+        </div>
+
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">2</span>
+            <span><span class="k-col">What's the matter?</span> &nbsp; It <span class="k-has">has got</span>: &nbsp; <small style="color:#b45309">(⭕ Circle 1 problem)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill"><img src="art/sym_tummy.webp" alt=""> a tummy ache</span>
+            <span class="c-pill"><img src="art/sym_cold.webp" alt=""> a cold</span>
+            <span class="c-pill"><img src="art/sym_throat.webp" alt=""> a sore throat</span>
+            <span class="c-pill"><img src="art/sym_paw.webp" alt=""> a hurt paw</span>
+          </div>
+        </div>
+
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">3</span>
+            <span><span class="k-can">Give it</span>: &nbsp; <small style="color:#047857">(⭕ Circle 1 cure)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill cure"><img src="art/cure_water.webp" alt=""> warm water!</span>
+            <span class="c-pill cure"><img src="art/cure_blanket.webp" alt=""> a blanket!</span>
+            <span class="c-pill cure"><img src="art/cure_tea.webp" alt=""> warm tea!</span>
+            <span class="c-pill cure"><img src="art/cure_bandage.webp" alt=""> a bandage!</span>
+            <span class="c-pill cure"><img src="art/cure_pillow.webp" alt=""> a soft bed!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRADE 4 (A1+): 3 Super-Short Circle Lines (has got + should / shouldn't) -->
+      <div class="c-lines g4">
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">1</span>
+            <span><span class="write-name">(write pet name)</span> <span class="k-has">has got</span>: &nbsp; <small style="color:#b45309">(⭕ Circle 1 problem)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill"><img src="art/sym_tummy.webp" alt=""> a tummy ache.</span>
+            <span class="c-pill"><img src="art/sym_cold.webp" alt=""> a bad cold.</span>
+            <span class="c-pill"><img src="art/sym_throat.webp" alt=""> a sore throat.</span>
+            <span class="c-pill"><img src="art/sym_paw.webp" alt=""> a hurt paw.</span>
+          </div>
+        </div>
+
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">2</span>
+            <span>✅ <b>Good Advice:</b> &nbsp; It <span class="c-pill verb">should / shouldn't</span> : &nbsp; <small style="color:#047857">(⭕ Circle "should" + 1 cure)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill cure"><img src="art/cure_water.webp" alt=""> drink warm water.</span>
+            <span class="c-pill cure"><img src="art/cure_blanket.webp" alt=""> wear a blanket.</span>
+            <span class="c-pill cure"><img src="art/cure_tea.webp" alt=""> drink warm tea.</span>
+            <span class="c-pill cure"><img src="art/cure_bandage.webp" alt=""> wear a bandage.</span>
+          </div>
+        </div>
+
+        <div class="c-ln">
+          <div class="c-ln-head">
+            <span class="num">3</span>
+            <span>🚫 <b>Warning:</b> &nbsp; It <span class="c-pill verb">should / shouldn't</span> : &nbsp; <small style="color:#be123c">(⭕ Circle "shouldn't" + 1 warning)</small></span>
+          </div>
+          <div class="pill-row">
+            <span class="c-pill warn"><img src="art/sym_tummy.webp" alt=""> eat sweets!</span>
+            <span class="c-pill warn"><img src="art/sym_cold.webp" alt=""> fly in the rain!</span>
+            <span class="c-pill warn"><img src="art/sym_throat.webp" alt=""> shout loudly!</span>
+            <span class="c-pill warn"><img src="art/sym_paw.webp" alt=""> jump or run!</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="qcards g4">
-      <div class="qcard"><img src="art/sym_tummy.webp" alt=""><div>🩺 1. What's the matter with the patient?<small>&rarr; Answer: "It has got ____."</small></div></div>
-      <div class="qcard"><img src="art/sym_cold.webp" alt=""><div>🩺 2. Why is it sick or hurt?<small>&rarr; Answer: "Because it ____."</small></div></div>
-      <div class="qcard"><img src="art/cure_tea.webp" alt=""><div>🩺 3. What should it do to get better?<small>&rarr; Answer: "It should ____ and ____."</small></div></div>
-      <div class="qcard"><img src="art/cure_bandage.webp" alt=""><div>🩺 4. What shouldn't it do today?<small>&rarr; Answer: "It shouldn't ____!"</small></div></div>
-      <div class="qcard"><img src="art/sym_paw.webp" alt=""><div>🩺 2. Why is it sick or hurt?<small>&rarr; Answer: "Because it ____."</small></div></div>
-      <div class="qcard"><img src="art/cure_water.webp" alt=""><div>🩺 3. What should it do to get better?<small>&rarr; Answer: "It should ____ and ____."</small></div></div>
+
+    <!-- Part 3: Draw Box + Visual Picture Dictionary -->
+    <div class="bot-grid">
+      <div class="draw-box">
+        <div class="draw-lbl">🎨 Step 3 · Draw Your Pet &amp; Its Cure (Bandage / Blanket / Tea)</div>
+        <div class="draw-foot">
+          <span>☐ I circled my 3 lines!</span>
+          <span>☐ I read my 3 lines aloud! 💚</span>
+        </div>
+      </div>
+      <div class="pic-dict">
+        <div>
+          <h4>🐾 Pet Names Idea Box:</h4>
+          <div class="pd-grid">
+            <span class="pd-item"><img src="art/cat.webp" alt=""> Shadow</span>
+            <span class="pd-item"><img src="art/bat.webp" alt=""> Flappy</span>
+            <span class="pd-item"><img src="art/ghost.webp" alt=""> Boo</span>
+            <span class="pd-item"><img src="art/orangecat.webp" alt=""> Ginger</span>
+            <span class="pd-item"><img src="art/pumpkin.webp" alt=""> Pumpy</span>
+            <span class="pd-item"><img src="art/skeleton.webp" alt=""> Bones</span>
+          </div>
+        </div>
+        <div>
+          <h4>💊 Cures Picture Box:</h4>
+          <div class="pd-grid">
+            <span class="pd-item"><img src="art/cure_water.webp" alt=""> warm water</span>
+            <span class="pd-item"><img src="art/cure_blanket.webp" alt=""> a blanket</span>
+            <span class="pd-item"><img src="art/cure_tea.webp" alt=""> warm tea</span>
+            <span class="pd-item"><img src="art/cure_bandage.webp" alt=""> a bandage</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- PAGE 3: Vet Clinic Door Pass slips (1 per pupil, 6 per page) -->
+  <!-- PAGE 2: Economy Print Option — 2 Individual "Circle & Say" Half-Sheets per Page! -->
+  <section class="page">
+    <div id="two-up"></div>
+  </section>
+
+  <!-- PAGE 3: Super-Easy Circle-Only Door Pass (6 Slips per Page) -->
   <section class="page">
     <div class="hdr">
-      <h1><img src="art/pumpkin.webp" alt="">Vet Clinic Door Pass (Exit Ticket)</h1>
-      <span class="lvl-badge">1 Slip per Pupil</span>
+      <h1><img src="art/pumpkin.webp" alt="">30-Second Circle &amp; Speak Door Pass</h1>
+      <span class="lvl-badge">6 Slips per Page · Zero Writing Needed!</span>
     </div>
-    <p class="sub">Circle 1 patient, fill in the diagnosis &amp; cure, and read your sentence to Dr. Luna at the door!</p>
+    <p class="sub">✂️ Cut into 6 slips. Each student <b>circles 1 Pet, 1 Problem, and 1 Cure</b>, then says the sentence at the door!</p>
     <div class="slips" id="slips"></div>
-  </section>
-
-  <!-- PAGE 4: Homework (Home Vet Check-Up) -->
-  <section class="page">
-    <div class="hdr">
-      <h1><img src="art/orangecat.webp" alt="">Homework: Home Vet Check-Up</h1>
-      <span class="lvl-badge">2 Slips per Page</span>
-    </div>
-    <p class="sub">Draw a pet or monster patient at home. Write its diagnosis &amp; care plan, and read it to your family!</p>
-    <div class="slips hw">
-      <div class="slip"><h3><img src="art/host.webp" alt="">Vet Name: ________________</h3>
-        <div class="hw-draw">🩺 Draw your patient &amp; its bandage / medicine here</div>
-        <p class="g3">1. Look at <u></u>! It is <span class="k-col"><u></u></span>.<br>2. It <span class="k-has">has got</span> <u></u>.<br>3. <span class="k-can">Give it</span> <u></u>!</p>
-        <p class="g4">1. It has got <u></u> <span class="k-has">because</span> it <u></u>.<br>2. It <span class="k-can">should</span> <u></u>.<br>3. It <span class="k-warn">shouldn't</span> <u></u>!</p>
-        <div class="hw-sign">☐ I read my Vet Report at home. &nbsp; Family signature: ____________</div>
-      </div>
-      <div class="slip"><h3><img src="art/host.webp" alt="">Vet Name: ________________</h3>
-        <div class="hw-draw">🩺 Draw your patient &amp; its bandage / medicine here</div>
-        <p class="g3">1. Look at <u></u>! It is <span class="k-col"><u></u></span>.<br>2. It <span class="k-has">has got</span> <u></u>.<br>3. <span class="k-can">Give it</span> <u></u>!</p>
-        <p class="g4">1. It has got <u></u> <span class="k-has">because</span> it <u></u>.<br>2. It <span class="k-can">should</span> <u></u>.<br>3. It <span class="k-warn">shouldn't</span> <u></u>!</p>
-        <div class="hw-sign">☐ I read my Vet Report at home. &nbsp; Family signature: ____________</div>
-      </div>
-    </div>
   </section>
 
   <script>
     (function () {
-      var pets = ['cat', 'bat', 'ghost', 'pumpkin', 'skeleton', 'spider', 'orangecat'];
-      var slip = '<div class="slip"><h3><img src="art/host.webp" alt="">Name: ________________</h3>' +
-        '<div class="pets">' + pets.map(function (p) { return '<img src="art/' + p + '.webp" alt="">'; }).join('') + '</div>' +
-        '<p class="g3">The <u></u> has got <span class="k-col"><u></u></span>.<br><span class="k-can">Give it</span> <u></u>!</p>' +
-        '<p class="g4">The <u></u> has got <u></u><br><span class="k-has">because</span> it <u></u>.<br>It <span class="k-can">should</span> <u></u>!</p></div>';
-      document.getElementById('slips').innerHTML = new Array(7).join(slip);
+      var halfHtml =
+        '<div class="half-slip">' +
+          '<div class="hs-top">' +
+            '<b><img src="art/host.webp" alt=""> 🏥 My Monster Vet Check-Up (Circle &amp; Say!)</b>' +
+            '<span>🩺 Name: ____________________</span>' +
+          '</div>' +
+          '<div class="hs-body">' +
+            '<div class="hs-lines g3">' +
+              '<div class="hs-ln"><b>1. Look at</b> _____________! <b>It is a:</b> (⭕ Circle 1)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/cat.webp" alt=""> cat</span>' +
+                  '<span class="hs-pill"><img src="art/bat.webp" alt=""> bat</span>' +
+                  '<span class="hs-pill"><img src="art/ghost.webp" alt=""> ghost</span>' +
+                  '<span class="hs-pill"><img src="art/pumpkin.webp" alt=""> pumpkin</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="hs-ln"><b>2. It has got:</b> (⭕ Circle 1 problem)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/sym_tummy.webp" alt=""> a tummy ache</span>' +
+                  '<span class="hs-pill"><img src="art/sym_cold.webp" alt=""> a cold</span>' +
+                  '<span class="hs-pill"><img src="art/sym_throat.webp" alt=""> a sore throat</span>' +
+                  '<span class="hs-pill"><img src="art/sym_paw.webp" alt=""> a hurt paw</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="hs-ln"><b>3. Give it:</b> (⭕ Circle 1 cure)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/cure_water.webp" alt=""> warm water!</span>' +
+                  '<span class="hs-pill"><img src="art/cure_blanket.webp" alt=""> a blanket!</span>' +
+                  '<span class="hs-pill"><img src="art/cure_tea.webp" alt=""> warm tea!</span>' +
+                  '<span class="hs-pill"><img src="art/cure_bandage.webp" alt=""> a bandage!</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="hs-lines g4">' +
+              '<div class="hs-ln"><b>1. Patient:</b> _____________ <b>has got:</b> (⭕ Circle 1)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/sym_tummy.webp" alt=""> a tummy ache</span>' +
+                  '<span class="hs-pill"><img src="art/sym_cold.webp" alt=""> a bad cold</span>' +
+                  '<span class="hs-pill"><img src="art/sym_throat.webp" alt=""> a sore throat</span>' +
+                  '<span class="hs-pill"><img src="art/sym_paw.webp" alt=""> a hurt paw</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="hs-ln"><b>2. It [ should / shouldn\'t ]:</b> (⭕ Circle 1 cure)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/cure_water.webp" alt=""> drink warm water</span>' +
+                  '<span class="hs-pill"><img src="art/cure_blanket.webp" alt=""> wear a blanket</span>' +
+                  '<span class="hs-pill"><img src="art/cure_tea.webp" alt=""> drink warm tea</span>' +
+                  '<span class="hs-pill"><img src="art/cure_bandage.webp" alt=""> wear a bandage</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="hs-ln"><b>3. It [ should / shouldn\'t ]:</b> (⭕ Circle 1 warning)' +
+                '<div class="hs-pills">' +
+                  '<span class="hs-pill"><img src="art/sym_tummy.webp" alt=""> eat sweets!</span>' +
+                  '<span class="hs-pill"><img src="art/sym_cold.webp" alt=""> fly in the rain!</span>' +
+                  '<span class="hs-pill"><img src="art/sym_throat.webp" alt=""> shout loudly!</span>' +
+                  '<span class="hs-pill"><img src="art/sym_paw.webp" alt=""> jump or run!</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="hs-draw">🎨 Draw your pet &amp; cure here!<span>💚 ☐ Spoken!</span></div>' +
+          '</div>' +
+        '</div>';
+      document.getElementById('two-up').innerHTML = halfHtml + halfHtml;
+
+      var doorSlip =
+        '<div class="slip">' +
+          '<h3><img src="art/host.webp" alt=""> 🚪 Vet Door Pass · Name: ______________</h3>' +
+          '<div class="dp-row">1. ⭕ Circle 1 Pet:' +
+            '<div class="dp-pics">' +
+              '<span class="dp-item"><img src="art/cat.webp" alt=""> cat</span>' +
+              '<span class="dp-item"><img src="art/bat.webp" alt=""> bat</span>' +
+              '<span class="dp-item"><img src="art/ghost.webp" alt=""> ghost</span>' +
+              '<span class="dp-item"><img src="art/pumpkin.webp" alt=""> pumpkin</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dp-row">2. ⭕ It has got:' +
+            '<div class="dp-pics">' +
+              '<span class="dp-item"><img src="art/sym_tummy.webp" alt=""> tummy ache</span>' +
+              '<span class="dp-item"><img src="art/sym_cold.webp" alt=""> a cold</span>' +
+              '<span class="dp-item"><img src="art/sym_paw.webp" alt=""> hurt paw</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dp-row"><span class="g3">3. ⭕ Give it:</span><span class="g4">3. ⭕ It should:</span>' +
+            '<div class="dp-pics">' +
+              '<span class="dp-item"><img src="art/cure_water.webp" alt=""> warm water</span>' +
+              '<span class="dp-item"><img src="art/cure_blanket.webp" alt=""> blanket</span>' +
+              '<span class="dp-item"><img src="art/cure_bandage.webp" alt=""> bandage</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      document.getElementById('slips').innerHTML = new Array(7).join(doorSlip);
+
       function set(g) {
         document.body.classList.toggle('grade4', g === 4);
         document.getElementById('g3').classList.toggle('on', g === 3);
