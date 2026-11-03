@@ -1,71 +1,83 @@
-/* Halloween Monster Pet Vet Clinic: CLIL + PPP smartboard controller (5 PPP stations, team points on this page only: no cloud writes). */
+/* Monster Pet Vet Clinic: Pro CLIL + PPP Smartboard Engine (6 PPP Stages, 35 min total, zero cloud writes). */
 (function (window) {
   'use strict';
   var D = window.PetShopData, A = window.PetAudio;
   var $ = function (id) { return document.getElementById(id); };
   var PET = {}; D.PETS.forEach(function (p) { PET[p.id] = p; });
 
-  var state = { cls: '', grade: 3, step: 0, teams: [], turn: 0, lastSpeech: '', met: {}, checked: {}, done: {} };
+  var state = { cls: '', grade: 3, step: 0, teams: [], turn: 0, lastSpeech: '', met: {}, checked: {}, done: {}, vocabFlipped: {}, vocabSeen: {} };
 
   var STATIONS = [
     {
-      title: "1 · Presentation A: Vet X-Ray Scanner",
+      title: '1 · Presentation A: Symptoms, Cures & Grammar Rule',
       mins: '5 min',
-      sub: "PPP Presentation · Listen to 3 symptoms · Admit the patient",
-      run: stCauldron,
+      sub: 'PPP Presentation 1 · Learn the 6 CLIL cards & the 3-Step Grammar Rule',
+      run: stVocab,
       say: ["What's the matter?", 'It has got a tummy ache.', 'Give it warm water!'],
       tips: [
-        'PPP Presentation (Receptive Input): Pupils listen to 3 clinical clues from Dr. Luna and deduce which Halloween pet is inside the X-Ray Scanner.',
-        'Read clue 1, teams whisper together, then tap "Next clue" or tap the patient the team points to. Early diagnosis = 3 pts, 2nd clue = 2 pts, 3rd clue = 1 pt.',
-        'Soft-fail only: wrong guesses never lose points — Dr. Luna gives the next symptom clue.'
+        'PPP Presentation 1 (Meaning & Form): Start with the 3-Block Grammar Formula bar at the top. Tap each block so the class hears and sees the colour code.',
+        'Tap each of the 6 Symptom Flashcards: first pupils hear and act out the SYMPTOM (amber), then tap "🔄 Flip to Cure" on the card to reveal the TREATMENT (green)!',
+        'Every word has a giant icon and a TPR action so even emerging A1 learners grasp the meaning immediately.'
       ]
     },
     {
-      title: '2 · Presentation B: CLIL Vet Check-Up',
+      title: '2 · Presentation B: Meet the 7 Patients (Vet Charts)',
       mins: '6 min',
-      sub: 'PPP Meaning, Form & Pronunciation · Symptoms, Causes & Cures',
+      sub: 'PPP Presentation 2 · Inspect the 3-Box Medical Chart · Choral Echo & Check',
       run: stMeet,
       say: ["What's the matter?", 'It has got ___ because it ___.', 'It should ___.'],
       tips: [
-        'CLIL Science Focus: Connect every SYMPTOM (amber) to its CAUSE / BODY PART (cyan) and TREATMENT (emerald).',
-        'Tap a patient on the waiting bench. Use "🔁 Repeat with Dr. Luna" for choral drilling and "🎭 Act the Symptom & Cure!" for TPR.',
-        'Each patient card also has a 1-question "🩺 Quick Vet Check" at the bottom so teams can earn +1 point right away!'
+        'PPP Presentation 2 (Contextualized Input & Pronunciation): Tap 4–5 patients on the Waiting Bench to open their 3-Box Medical Chart (1. Problem -> 2. Cause/Feeling -> 3. Prescription).',
+        'Press "🔁 Repeat with Dr. Luna" for choral practice and "🎭 Act It Out!" for whole-class movement.',
+        'Use the 1-tap "🩺 CLIL Quick Check" at the bottom of the chart to award +1 point to the team on turn!'
       ]
     },
     {
-      title: '3 · Practice: Medicine Cabinet Match!',
+      title: '3 · Practice A: Medical X-Ray Scanner (Listening Game)',
+      mins: '5 min',
+      sub: 'PPP Controlled Practice 1 · Listen to 3 clinical clues · Diagnose the patient',
+      run: stCauldron,
+      say: ["What's the matter?", 'It has got a sore paw.', 'Put a bandage on it!'],
+      tips: [
+        'PPP Controlled Practice 1 (Receptive Deduction): Now that pupils know the words, scan the mystery patient inside the X-Ray Monitor!',
+        'Read Clue 1 (Symptom). Teams whisper together. Tap "Next Clue" or tap the patient the team points to: 1 clue = 3 pts, 2 clues = 2 pts, 3 clues = 1 pt.',
+        'Soft-fail only: wrong guesses never deduct points — Dr. Luna reveals the next symptom clue.'
+      ]
+    },
+    {
+      title: '4 · Practice B: Medicine Cabinet & Grammar Fixer',
       mins: '6 min',
-      sub: 'PPP Controlled Practice · Match the symptom to the right cure',
+      sub: 'PPP Controlled Practice 2 · Step 1: Pick the Cure (+1) · Step 2: Fix the Grammar (+1)',
       run: stPractice,
       say: ['Give it warm honey tea!', 'It should rest in bed.', "It shouldn't eat sweets!"],
       tips: [
-        'PPP Controlled Practice: Teams take turns reading the patient\'s chart and choosing the correct treatment from the 4 Medicine Cabinet cards.',
-        'Grade 3 practices imperative care commands ("Give it… / Put on… / Wash it…"). Grade 4 practices medical advice ("It should… and it shouldn\'t…") linked to causes ("because…").',
-        'Every correct prescription earns +2 team points and heals the patient on screen!'
+        'PPP Controlled Practice 2 (2-Step Accuracy Game): Each patient case has 2 steps so teams practice both CLIL science AND target grammar.',
+        'Step 1 (+1 pt): Choose the right treatment card from the Medicine Cabinet.',
+        'Step 2 (+1 pt): Tap the missing grammar keyword (has got / is / Give for Grade 3; because / should / shouldn\'t for Grade 4) to heal the patient!'
       ]
     },
     {
-      title: '4 · Production Prep: Team Vet Lab',
-      mins: '8 min',
-      sub: 'PPP Scaffolded Prep · 4 Vet Jobs · Draw & Write the Vet Report',
+      title: '5 · Production Prep: Team Vet Card Studio',
+      mins: '6 min',
+      sub: 'PPP Scaffolded Prep · 4 Vet Jobs · Fill in your Team Vet Report Card',
       run: stLab,
-      say: ['This is our patient, ___.', 'It has got ___.', 'Give it ___!', 'It should ___.'],
+      say: ['Look at ___.', 'It has got ___.', 'Give it ___!', 'It should ___.'],
       tips: [
-        'Hand each team 1 Monster Vet Report Card (worksheet.html). Press "⏱ 30 seconds" so teams assign their 4 jobs: Head Vet (Speaker), X-Ray Artist, Medical Writer, Clinic Manager.',
-        'Start the 7-minute timer. Walk around to support Writers with the colour-coded sentence frames and let Head Vets rehearse with their team.',
-        'Teams can tap words on the Live Prescription Builder on the smartboard and press "🔊 Hear our Vet Report" to test their sentences.'
+        'Give each team 1 printed Monster Vet Report Card (worksheet.html, page 1). Press "⏱ 30s Jobs Timer" to assign Head Vet, X-Ray Artist, Medical Writer, and Clinic Manager.',
+        'Start the 6-minute timer. On the right, use the 4 clean tabs (1. Patient, 2. Symptom, 3. Cause/Feeling, 4. Cure) to model how the Live Vet Card fills in!',
+        'Writers fill in the labelled boxes on paper while Artists draw the patient and bandage.'
       ]
     },
     {
-      title: '5 · Production: Open the Vet Clinic!',
-      mins: '10 min',
-      sub: 'PPP Free Production · Team Vet Reports · Inspector Q&A · Awards',
+      title: '6 · Production: Live Vet Clinic Show & Awards!',
+      mins: '7 min',
+      sub: 'PPP Free Production · Present your Patient · Spin Inspector Q · Healing Hearts',
       run: stShop,
       say: ['Welcome to our Monster Vet Clinic!', "What's the matter with it?", 'Why is it sick?', 'What should it do?'],
       tips: [
-        'PPP Communicative Production: Each team presents their patient at the front (90s timer). The Head Vet leads, and the whole team says the final healthy cheer together.',
-        'Other teams are Health Inspectors: press "🎲 Spin Inspector Question!" or let them use their cut-out Question Cards (+1 pt for asking, +1 pt for answering).',
-        'After all teams present, tap "💚 Give Healing Hearts!" (3 hearts per team) followed by "🏆 Clinic Awards & Door Pass"!'
+        'PPP Communicative Production: Each Vet Team comes to the front (90s timer). The Head Vet leads Lines 1–4, and the whole team says Line 5 together.',
+        'Other teams are Health Inspectors: press "🎲 Spin Inspector Question!" on the board (+1 pt for asking, +1 pt for answering).',
+        'Finish with "💚 Give Healing Hearts!" (3 hearts per team) and "🏆 Clinic Awards & Door Pass"!'
       ]
     }
   ];
@@ -93,11 +105,11 @@
 
   // CLIL colour-coding:
   // Amber (.k-col) = Symptoms & Feelings
-  // Cyan (.k-has) = Causes ("because...") & Body parts
+  // Cyan (.k-has) = Causes ("because...") & Body parts / has got
   // Emerald (.k-can) = Treatments ("Give it...", "should / shouldn't", "Put...", "Wash...")
-  var SYMPTOMS = /\b(tummy ache|stomach ache|sore throat|sore wing|sore paw|tired|hungry|thirsty|cold|scared|dizzy|dirty|muddy|shivering|shaking|fever|hurts|hurt)\b/gi;
+  var SYMPTOMS = /\b(tummy ache|stomach ache|sore throat|sore wing|sore paw|hurt paw|hurt wing|tired legs|weak bones|bad cold|tired|hungry|thirsty|cold|scared|dizzy|dirty|muddy|shivering|shaking|exhausted|fever|hurts|hurt)\b/gi;
   var CAUSES = /\b(because|ate|flew|shouted|danced|rolled|jumped|has got|wing|paw|legs|throat|eyes)\b/gi;
-  var CURES = /\b(shouldn&#39;t|should|Give it|Put a|Put on|Wash it|warm water|honey tea|warm blanket|bandage|healthy milk|fresh fruit|pillow|quiet bed|rest)\b/gi;
+  var CURES = /\b(shouldn&#39;t|should|Give it|Give|Put a|Put on|Wash it|warm water|honey tea|warm blanket|bandage|healthy milk|fresh fruit|pillow|quiet bed|soft bed|rest)\b/gi;
 
   function colourise(s) {
     return esc(s)
@@ -182,11 +194,11 @@
   function renderSay(s) {
     var box = $('ps-say'); box.innerHTML = '';
     var linesForBar = s.say;
-    if (state.step === 0) {
+    if (state.step === 0 || state.step === 1 || state.step === 2) {
       linesForBar = state.grade === 4
-        ? ["What's the matter?", 'It has got ___ because it ___.', 'It should ___.']
-        : ["What's the matter?", 'It is tired and hungry.', 'Give it warm water!'];
-    } else if (state.step === 2) {
+        ? ["What's the matter?", 'It has got ___ because it ___.', 'It should ___.', "It shouldn't ___!"]
+        : ["What's the matter?", 'It is tired and hungry.', 'It has got a tummy ache.', 'Give it warm water!'];
+    } else if (state.step === 3) {
       linesForBar = state.grade === 4
         ? ['It should drink warm tea.', "It shouldn't eat sweets!", 'Because it ate too much!']
         : ['Give it warm honey tea!', 'Put a bandage on its paw!', 'Now it is happy!'];
@@ -206,7 +218,7 @@
     $('btn-prev').disabled = state.step === 0;
     $('btn-next').textContent = state.step === STATIONS.length - 1 ? '🏁 Finish' : 'Next ▶';
     $('tip-body').innerHTML = '<ol>' + s.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>';
-    $('ps-bg').style.backgroundImage = 'url(' + art(state.step >= 3 ? 'bg_patch' : 'bg') + ')';
+    $('ps-bg').style.backgroundImage = 'url(' + art(state.step >= 4 ? 'bg_patch' : 'bg') + ')';
     renderSteps(); renderSay(s);
     var body = $('stage-body'); body.innerHTML = ''; body.scrollTop = 0;
     s.run(body);
@@ -242,25 +254,235 @@
     return { node: wrap, start: start, stop: stop, reset: function (s) { stop(); left = seconds = s; warned = false; paint(); } };
   }
 
-  // ------------------------------------------------------------ 1. Presentation A: Vet X-Ray Scanner
+  // ------------------------------------------------------------ 1. Presentation A: Symptoms, Cures & Grammar Rule
+  function stVocab(body) {
+    var g4 = state.grade === 4;
+    var formulas = D.FORMULAS[state.grade] || D.FORMULAS[3];
+
+    var formulaBar = el('div', { class: 'ppp-formula-bar' }, formulas.map(function (f) {
+      return el('button', {
+        class: 'ppp-formula-card ' + f.cls,
+        type: 'button',
+        onclick: function () { A.tap(); say(f.ex.replace(/^[^\w]+/, '')); }
+      }, [
+        f.img ? el('img', { class: 'ppp-f-img', src: f.img, alt: '' }) : null,
+        el('div', { class: 'ppp-f-txt' }, [
+          el('span', { class: 'ppp-f-tag', text: f.tag }),
+          el('b', { class: 'ppp-f-pat', html: colourise(f.pattern) }),
+          el('small', { class: 'ppp-f-ex', text: '🔊 ' + f.ex })
+        ])
+      ]);
+    }));
+
+    var grid = el('div', { class: 'vocab-grid' }, D.VOCAB.map(function (v) {
+      var flipped = !!state.vocabFlipped[v.id];
+      var seen = !!state.vocabSeen[v.id];
+      var word = g4 ? v.word4 : v.word3;
+      var cure = g4 ? v.cure4 : v.cure3;
+      var imgSrc = flipped ? v.cureImg : v.symImg;
+
+      var card = el('div', { class: 'vocab-card' + (flipped ? ' cure-mode' : '') + (seen ? ' seen' : '') }, [
+        el('div', { class: 'vc-top', onclick: function () {
+          A.tap(); state.vocabSeen[v.id] = true;
+          var speech = flipped ? cure : (word + '. ' + (g4 ? v.cause4.replace(/[^\w\s!'.,]/g, '') : v.meaning));
+          say(speech);
+          card.classList.add('seen');
+        } }, [
+          el('span', { class: 'vc-badge', text: flipped ? '💊 CURE / ADVICE' : '🌡️ SYMPTOM' }),
+          el('div', { class: 'vc-art-wrap' }, [
+            el('img', { class: 'vc-img bob', src: imgSrc, alt: flipped ? cure : word })
+          ]),
+          el('b', { class: 'vc-word', html: colourise(flipped ? cure : word) }),
+          el('small', { class: 'vc-sub', html: flipped ? '🔊 Tap picture to hear cure' : colourise(g4 ? v.cause4 : v.meaning) })
+        ]),
+        el('div', { class: 'vc-actions' }, [
+          el('button', { class: 'ps-btn sm ' + (flipped ? 'amber' : 'emerald'), type: 'button', text: flipped ? '🌡️ See Symptom' : '💊 Flip to Cure!', onclick: function () {
+            A.flip(); state.vocabFlipped[v.id] = !flipped; state.vocabSeen[v.id] = true;
+            var nextSpeech = !flipped ? cure : word;
+            say(nextSpeech);
+            body.innerHTML = ''; stVocab(body);
+          } }),
+          el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🎭 Act!', title: v.tpr, onclick: function () {
+            A.correct(); state.vocabSeen[v.id] = true;
+            say(v.tpr);
+          } })
+        ])
+      ]);
+      return card;
+    }));
+
+    body.appendChild(el('div', { class: 'vocab-stage' }, [
+      formulaBar,
+      grid
+    ]));
+  }
+
+  // ------------------------------------------------------------ 2. Presentation B: Meet the 7 Patients (3-Box Vet Chart)
+  function stMeet(body) {
+    var count = Object.keys(state.met).length;
+    var shelf = el('div', { class: 'shelf' });
+    D.PETS.forEach(function (p) {
+      shelf.appendChild(el('button', { class: 'pet-card' + (state.met[p.id] ? ' met' : ''), type: 'button', onclick: function () { A.flip(); openPet(body, p); } }, [
+        el('div', { class: 'pet-art' }, [
+          el('img', { class: 'bob', src: art(p.id), alt: p.kind }),
+          p.symImg ? el('img', { class: 'pet-sym-thumb', src: p.symImg, alt: p.badge, title: p.badge }) : null,
+          el('div', { class: 'ps-pedestal sm' })
+        ]),
+        el('div', { class: 'pet-tray' }, [
+          el('b', { text: p.name + ' (' + p.kind + ')' }),
+          el('span', { text: p.badge }),
+          el('i', { class: 'price', text: '🌡️ ' + p.temp })
+        ]),
+        state.met[p.id] ? el('div', { class: 'met-tick', text: '✓' }) : null
+      ]));
+    });
+    body.appendChild(el('div', { class: 'meet-head' }, [
+      el('span', { class: 'ps-pill', text: '🩺 Checked ' + count + ' / ' + D.PETS.length + ' patients' }),
+      el('span', { class: 'legend', html: '<span class="k-col">🌡️ Symptom</span> <span class="k-has">🦠 Cause / Body</span> <span class="k-can">💊 Cure / Should</span>' })
+    ]));
+    body.appendChild(shelf);
+    if (!count) say('Here is our Clinic Waiting Bench! Tap a patient to open its 3-Box Medical Chart.', false);
+  }
+
+  function openPet(body, p) {
+    state.met[p.id] = true;
+    var g4 = state.grade === 4;
+    var ls = lines(p);
+
+    // Build a super clear 3-Box Visual Medical Chart with real 3D illustrations
+    var boxes = g4 ? [
+      { tag: '1 · 🌡️ SYMPTOM & CAUSE (because)', img: p.symImg, icon: p.symptomIcon, cls: 'box-sym', line: p.chart4.symptom + ' ' + p.chart4.cause, sub: p.chart4.state },
+      { tag: '2 · ✅ VET ADVICE (It should…)', img: p.cureImg, icon: p.cureIcon, cls: 'box-cure', line: p.chart4.should, sub: 'Helps the patient recover fast!' },
+      { tag: "3 · 🚫 WARNING (It shouldn't…)", img: art(p.id), icon: '🚫', cls: 'box-warn', line: p.chart4.shouldnt, sub: 'Keep the patient safe!' }
+    ] : [
+      { tag: "1 · 🌡️ PROBLEM (What's the matter?)", img: p.symImg, icon: p.symptomIcon, cls: 'box-sym', line: p.chart3.symptom, sub: p.chart3.detail },
+      { tag: '2 · 💊 TREATMENT (Give it…)', img: p.cureImg, icon: p.cureIcon, cls: 'box-cure', line: p.chart3.cure, sub: 'Helps the pet feel better!' },
+      { tag: '3 · 💚 HEALTHY RESULT', img: art(p.id), icon: '💚', cls: 'box-res', line: p.chart3.result, sub: 'Say it together with a big smile!' }
+    ];
+
+    var chartCards = boxes.map(function (b) {
+      return el('button', { class: 'chart-box ' + b.cls, type: 'button', onclick: function (ev) {
+        A.tap();
+        [].forEach.call(ev.currentTarget.parentNode.children, function (x) { x.classList.remove('on'); });
+        ev.currentTarget.classList.add('on');
+        say(b.line);
+      } }, [
+        b.img ? el('img', { class: 'cb-img', src: b.img, alt: '' }) : el('div', { class: 'cb-icon', text: b.icon }),
+        el('div', { class: 'cb-body' }, [
+          el('span', { class: 'cb-tag', text: b.tag }),
+          el('b', { class: 'cb-line', html: '🔊 ' + colourise(b.line) }),
+          el('small', { class: 'cb-sub', text: b.sub })
+        ])
+      ]);
+    });
+
+    var echoing = false;
+    function echo() {
+      if (echoing) return; echoing = true;
+      var i = 0;
+      (function nxt() {
+        if (i >= chartCards.length || !document.body.contains(chartCards[0])) {
+          echoing = false;
+          chartCards.forEach(function (c) { c.classList.remove('on'); });
+          return;
+        }
+        chartCards.forEach(function (c) { c.classList.remove('on'); });
+        chartCards[i].classList.add('on');
+        say((i === 0 ? 'Repeat after me. ' : '') + boxes[i].line).then(function () { i++; setTimeout(nxt, 2300); });
+      })();
+    }
+
+    // CLIL Quick Comprehension Check inside the pet panel
+    var chk = g4 ? p.check4 : p.check3;
+    var choices = shuffle([chk.right].concat(chk.wrong));
+    var checkSolved = !!state.checked[p.id];
+    var checkBox = el('div', { class: 'clil-check' }, [
+      el('div', { class: 'clil-check-head' }, [
+        el('b', { text: '🩺 Quick Check (' + team(state.turn).name + '): ' + chk.q }),
+        checkSolved ? el('span', { class: 'ps-pill emerald', text: '✓ +1 Pt Awarded' }) : null
+      ]),
+      el('div', { class: 'clil-check-opts' }, choices.map(function (ans) {
+        var btn = el('button', { class: 'ps-btn ghost sm' + (checkSolved && ans === chk.right ? ' emerald' : ''), type: 'button', html: colourise(ans) });
+        btn.addEventListener('click', function () {
+          if (state.checked[p.id]) { say(ans.replace(/^[^\w]+/, '')); return; }
+          if (ans === chk.right) {
+            state.checked[p.id] = true;
+            btn.className = 'ps-btn emerald sm';
+            var mainImg = panel.querySelector('.pet-panel-art img.bob');
+            if (mainImg) mainImg.src = art(p.id);
+            addPts(state.turn, 1, btn);
+            nextTurn();
+            hostReact('cheer');
+            say('Correct! ' + ans.replace(/^[^\w]+/, ''));
+          } else {
+            A.softFail(); wobble(btn); hostReact('oops');
+            say('Look at Box 1 on the chart! ' + chk.q);
+          }
+        });
+        return btn;
+      }))
+    ]);
+
+    var act = el('div', { class: 'act-big', hidden: 'hidden', text: p.act });
+    var panel = el('div', { class: 'pet-panel' }, [
+      el('div', { class: 'pet-panel-art' }, [
+        el('div', { class: 'patient-vitals', text: '🌡️ Temp: ' + p.temp + ' · ' + p.badge }),
+        el('img', { class: 'bob', src: checkSolved ? art(p.id) : (p.symImg || art(p.id)), alt: p.kind }),
+        el('div', { class: 'ps-pedestal' }),
+        act
+      ]),
+      el('div', { class: 'pet-panel-text' }, [
+        el('div', { class: 'chart-title-row' }, [
+          el('h3', { text: '🏥 Medical Chart: ' + p.name + ' (' + p.kind + ')' }),
+          el('button', { class: 'ps-btn ghost sm', type: 'button', text: '◀ Waiting Bench', onclick: function () { A.tap(); window.speechSynthesis && window.speechSynthesis.cancel(); body.innerHTML = ''; stMeet(body); } })
+        ]),
+        el('div', { class: 'chart-boxes' }, chartCards),
+        checkBox,
+        el('div', { class: 'row-btns' }, [
+          el('button', { class: 'ps-btn violet sm', type: 'button', text: '🔁 Repeat with Dr. Luna', onclick: function () { A.tap(); echo(); } }),
+          el('button', { class: 'ps-btn amber sm', type: 'button', text: '🎭 Act Symptom & Cure!', onclick: function () { A.correct(); act.hidden = false; say(p.act.replace(/^\S+\s/, '') + ' Everybody act it out!'); setTimeout(function () { act.hidden = true; }, 2800); } })
+        ])
+      ])
+    ]);
+    body.innerHTML = ''; body.appendChild(panel);
+    say(ls.join(' '));
+  }
+
+  // ------------------------------------------------------------ 3. Practice A: Medical X-Ray Scanner
   var cauldron = null;
   function stCauldron(body) {
     if (!cauldron) cauldron = { order: shuffle(D.PETS.map(function (p) { return p.id; })).slice(0, 6), round: 0, clue: 1, solved: false };
     var c = cauldron, p = PET[c.order[c.round]], clues = state.grade === 4 ? p.clues4 : p.clues3;
     var opts = shuffle([p.id].concat(shuffle(D.PETS.filter(function (x) { return x.id !== p.id; }).map(function (x) { return x.id; })).slice(0, 3)));
 
-    var pot = el('div', { class: 'cauldron xray-scanner' + (c.solved ? ' solved' : '') }, [
-      el('div', { class: 'xray-badge', text: c.solved ? ('✅ ' + p.name + ' · ' + p.badge) : '🔬 X-RAY SCANNER' }),
-      el('img', { class: 'cauldron-pet', src: art(p.id), alt: '' }),
-      el('img', { class: 'cauldron-pot', src: art('cauldron'), alt: '' }),
-      el('div', { class: 'bubbles' }, [el('i'), el('i'), el('i'), el('i')])
+    // Digital Medical X-Ray Scanner Monitor (replaces cauldron graphic!)
+    var pot = el('div', { class: 'xray-monitor' + (c.solved ? ' solved' : '') }, [
+      el('div', { class: 'xray-hud-top' }, [
+        el('span', { text: '🔬 X-RAY SCAN #' + (c.round + 1) }),
+        el('span', { text: '🌡️ ' + p.temp })
+      ]),
+      el('div', { class: 'xray-screen' }, [
+        el('div', { class: 'xray-scan-beam' }),
+        c.solved
+          ? el('img', { class: 'xray-pet-reveal bob', src: art(p.id), alt: p.name })
+          : el('div', { class: 'xray-mystery' }, [
+              el('div', { class: 'xray-mystery-imgs' }, [
+                el('img', { src: p.symImg, alt: 'Symptom' }),
+                el('span', { class: 'xray-q', text: '❓' }),
+                el('img', { src: p.cureImg, alt: 'Cure' })
+              ]),
+              el('span', { text: 'MYSTERY PATIENT' }),
+              el('small', { text: p.badge })
+            ])
+      ]),
+      el('div', { class: 'xray-hud-bot', text: c.solved ? ('✅ ADMITTED: ' + p.name.toUpperCase() + ' (' + p.kind + ')') : '📡 Scanning symptoms… Listen & choose below!' })
     ]);
+
     var clueBox = el('div', { class: 'clues' });
-    var clueLabels = ['🌡️ Symptom Clue', '🦠 Body / Cause Clue', '💊 Treatment Clue'];
     clues.forEach(function (cl, i) {
       var shown = i < c.clue || c.solved;
-      clueBox.appendChild(el('button', { class: 'clue' + (shown ? '' : ' hidden'), type: 'button', html: '<em>' + clueLabels[i] + '</em>' + (shown ? colourise(cl) : '❓ Tap "Next clue" to scan'),
-        onclick: function () { if (shown) { A.tap(); say(cl); } } }));
+      clueBox.appendChild(el('button', { class: 'clue' + (shown ? '' : ' hidden'), type: 'button', html: '<em>Clue ' + (i + 1) + '</em>' + (shown ? colourise(cl) : '🔒 Tap "Next X-Ray Clue" to scan'),
+        onclick: function () { if (shown) { A.tap(); say(cl.replace(/^[^\w]+/, '')); } } }));
     });
     var grid = el('div', { class: 'guess-grid' });
     opts.forEach(function (id) {
@@ -277,7 +499,7 @@
           stCauldronRefresh(body);
         } else {
           A.softFail(); wobble(b); hostReact('oops');
-          say(c.clue < 3 ? 'Not that patient! Let\'s scan the next symptom clue.' : 'Look closely at Clue 3: ' + clues[2]);
+          say(c.clue < 3 ? "Not that patient! Let's scan the next symptom clue." : 'Listen closely to Clue 3: ' + clues[2].replace(/^[^\w]+/, ''));
           if (c.clue < 3) { c.clue++; setTimeout(function () { stCauldronRefresh(body, true); }, 1400); }
         }
       });
@@ -289,121 +511,28 @@
         A.bubble();
         if (c.clue < 3) { c.clue++; stCauldronRefresh(body, true); } else say(clues.join(' '));
       } }),
-      c.solved ? null : el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read clue again', onclick: function () { A.tap(); say(clues[c.clue - 1]); } }),
-      c.solved && c.round < c.order.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '🩺 Next Patient ▶', onclick: function () {
+      c.solved ? null : el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read clue again', onclick: function () { A.tap(); say(clues[c.clue - 1].replace(/^[^\w]+/, '')); } }),
+      c.solved && c.round < c.order.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '🩺 Scan Next Patient ▶', onclick: function () {
         A.bubble(); c.round++; c.clue = 1; c.solved = false; nextTurn(); stCauldronRefresh(body, true);
       } }) : null,
-      c.solved && c.round === c.order.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All patients scanned! Go to Check-Up Table ▶', onclick: function () { go(1); } }) : null
+      c.solved && c.round === c.order.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All Scanned! Go to Medicine Cabinet ▶', onclick: function () { go(3); } }) : null
     ]);
 
     body.appendChild(el('div', { class: 'cauldron-layout' }, [
-      el('div', { class: 'cauldron-left' }, [pot, el('div', { class: 'round-lbl', text: 'Patient ' + (c.round + 1) + ' of ' + c.order.length })]),
-      el('div', { class: 'cauldron-right' }, [turnBanner(c.solved ? 'Great diagnosis!' : "Listen to the symptoms, whisper in your team, then tap the patient!"), clueBox, grid, actions])
+      el('div', { class: 'cauldron-left' }, [pot]),
+      el('div', { class: 'cauldron-right' }, [turnBanner(c.solved ? 'Patient admitted! Great listening!' : 'Listen to the X-Ray clues, whisper in your team, then tap the patient!'), clueBox, grid, actions])
     ]));
   }
   function stCauldronRefresh(body, speakClue) {
     body.innerHTML = ''; stCauldron(body);
     if (speakClue && cauldron && !cauldron.solved) {
       var p = PET[cauldron.order[cauldron.round]], clues = state.grade === 4 ? p.clues4 : p.clues3;
-      say('Clue ' + cauldron.clue + ': ' + clues[cauldron.clue - 1]);
+      say(clues[cauldron.clue - 1].replace(/^[^\w]+/, ''));
     }
   }
 
-  // ------------------------------------------------------------ 2. Presentation B: CLIL Vet Check-Up Table
-  function stMeet(body) {
-    var count = Object.keys(state.met).length;
-    var shelf = el('div', { class: 'shelf' });
-    D.PETS.forEach(function (p) {
-      shelf.appendChild(el('button', { class: 'pet-card' + (state.met[p.id] ? ' met' : ''), type: 'button', onclick: function () { A.flip(); openPet(body, p); } }, [
-        el('div', { class: 'pet-art' }, [el('img', { class: 'bob', src: art(p.id), alt: p.kind }), el('div', { class: 'ps-pedestal sm' })]),
-        el('div', { class: 'pet-tray' }, [
-          el('b', { text: p.name }),
-          el('span', { text: p.badge }),
-          el('i', { class: 'price', text: '🌡️ ' + p.temp })
-        ]),
-        state.met[p.id] ? el('div', { class: 'met-tick', text: '✓' }) : null
-      ]));
-    });
-    body.appendChild(el('div', { class: 'meet-head' }, [
-      el('span', { class: 'ps-pill', text: '🩺 Checked ' + count + ' / ' + D.PETS.length + ' patients' }),
-      el('span', { class: 'legend', html: '<span class="k-col">🌡️ Symptom</span> <span class="k-has">🦠 Cause / Body</span> <span class="k-can">💊 Treatment / Advice</span>' })
-    ]));
-    body.appendChild(shelf);
-    if (!count) say('Welcome to the Check-Up Table! Tap a patient to examine its symptoms, cause, and treatment.', false);
-  }
-
-  function openPet(body, p) {
-    state.met[p.id] = true;
-    var ls = lines(p);
-    var lineBtns = ls.map(function (l) {
-      return el('button', { class: 'pet-line', type: 'button', html: '🔊 ' + colourise(l), onclick: function (ev) { A.tap(); markLine(ev.currentTarget); say(l); } });
-    });
-    function markLine(n) { lineBtns.forEach(function (b) { b.classList.remove('on'); }); if (n) n.classList.add('on'); }
-    var echoing = false;
-    function echo() {
-      if (echoing) return; echoing = true;
-      var i = 0;
-      (function nxt() {
-        if (i >= lineBtns.length || !document.body.contains(lineBtns[0])) { echoing = false; markLine(null); return; }
-        markLine(lineBtns[i]);
-        say(i === 0 ? 'Listen and repeat with me. ' + ls[0] : ls[i]).then(function () { i++; setTimeout(nxt, 2500); });
-      })();
-    }
-
-    // CLIL Quick Comprehension Check inside the pet panel
-    var chk = state.grade === 4 ? p.check4 : p.check3;
-    var choices = shuffle([chk.right].concat(chk.wrong));
-    var checkSolved = !!state.checked[p.id];
-    var checkBox = el('div', { class: 'clil-check' }, [
-      el('div', { class: 'clil-check-head' }, [
-        el('b', { text: '🩺 CLIL Quick Check (' + team(state.turn).name + '): ' + chk.q }),
-        checkSolved ? el('span', { class: 'ps-pill emerald', text: '✓ +1 Pt Awarded' }) : null
-      ]),
-      el('div', { class: 'clil-check-opts' }, choices.map(function (ans) {
-        var btn = el('button', { class: 'ps-btn ghost sm' + (checkSolved && ans === chk.right ? ' emerald' : ''), type: 'button', html: colourise(ans) });
-        btn.addEventListener('click', function () {
-          if (state.checked[p.id]) { say(ans); return; }
-          if (ans === chk.right) {
-            state.checked[p.id] = true;
-            btn.className = 'ps-btn emerald sm';
-            addPts(state.turn, 1, btn);
-            nextTurn();
-            hostReact('cheer');
-            say('Spot on! ' + ans);
-          } else {
-            A.softFail(); wobble(btn); hostReact('oops');
-            say('Look at the chart again! ' + chk.q);
-          }
-        });
-        return btn;
-      }))
-    ]);
-
-    var act = el('div', { class: 'act-big', hidden: 'hidden', text: p.act });
-    var panel = el('div', { class: 'pet-panel' }, [
-      el('div', { class: 'pet-panel-art' }, [
-        el('div', { class: 'patient-vitals', text: '🌡️ Temp: ' + p.temp + ' · ' + p.badge }),
-        el('img', { class: 'bob', src: art(p.id), alt: p.kind }),
-        el('div', { class: 'ps-pedestal' }),
-        act
-      ]),
-      el('div', { class: 'pet-panel-text' }, [
-        el('h3', { text: 'Patient: ' + p.name + ' (' + p.kind + ')' }),
-        el('div', { class: 'pet-lines' }, lineBtns),
-        checkBox,
-        el('div', { class: 'row-btns' }, [
-          el('button', { class: 'ps-btn violet', type: 'button', text: '🔁 Repeat with Dr. Luna', onclick: function () { A.tap(); echo(); } }),
-          el('button', { class: 'ps-btn amber', type: 'button', text: '🎭 Act the Symptom & Cure!', onclick: function () { A.correct(); act.hidden = false; say(p.act.replace(/^\S+\s/, '') + ' Everybody act it out!'); setTimeout(function () { act.hidden = true; }, 2800); } }),
-          el('button', { class: 'ps-btn ghost', type: 'button', text: '◀ Back to Waiting Bench', onclick: function () { A.tap(); window.speechSynthesis && window.speechSynthesis.cancel(); body.innerHTML = ''; stMeet(body); } })
-        ])
-      ])
-    ]);
-    body.innerHTML = ''; body.appendChild(panel);
-    say(ls.join(' '));
-  }
-
-  // ------------------------------------------------------------ 3. Practice: Medicine Cabinet Match!
-  var prac = { round: 0, solved: {}, optsCache: {} };
+  // ------------------------------------------------------------ 4. Practice B: 2-Step Medicine Cabinet + Grammar Fixer
+  var prac = { round: 0, step1Solved: {}, step2Solved: {}, optsCache: {} };
   function stPractice(body) {
     var rounds = D.PRACTICE[state.grade] || D.PRACTICE[3];
     if (prac.round >= rounds.length) prac.round = 0;
@@ -411,61 +540,114 @@
     var key = state.grade + '-' + prac.round;
     if (!prac.optsCache[key]) prac.optsCache[key] = shuffle([r.right].concat(r.wrong));
     var opts = prac.optsCache[key];
-    var isSolved = !!prac.solved[key];
+    var s1 = !!prac.step1Solved[key];
+    var s2 = !!prac.step2Solved[key];
+
+    function optImg(txt) {
+      var s = txt.toLowerCase();
+      if (s.indexOf('water') >= 0) return 'art/cure_water.webp';
+      if (s.indexOf('blanket') >= 0) return 'art/cure_blanket.webp';
+      if (s.indexOf('tea') >= 0 || s.indexOf('honey') >= 0) return 'art/cure_tea.webp';
+      if (s.indexOf('bandage') >= 0) return 'art/cure_bandage.webp';
+      if (s.indexOf('wash') >= 0 || s.indexOf('pillow') >= 0 || s.indexOf('bed') >= 0) return 'art/cure_pillow.webp';
+      if (s.indexOf('milk') >= 0 || s.indexOf('fruit') >= 0) return 'art/cure_milk.webp';
+      if (s.indexOf('cold') >= 0 || s.indexOf('ice') >= 0 || s.indexOf('rain') >= 0) return 'art/sym_cold.webp';
+      if (s.indexOf('shout') >= 0 || s.indexOf('sing') >= 0) return 'art/sym_throat.webp';
+      if (s.indexOf('jump') >= 0 || s.indexOf('run') >= 0 || s.indexOf('fly') >= 0) return 'art/sym_paw.webp';
+      if (s.indexOf('mud') >= 0 || s.indexOf('spin') >= 0) return 'art/sym_dizzy.webp';
+      if (s.indexOf('dance') >= 0) return 'art/sym_bones.webp';
+      return 'art/sym_tummy.webp';
+    }
 
     var leftCol = el('div', { class: 'med-patient-card' }, [
-      el('div', { class: 'patient-vitals', text: '🏥 Exam Table · Case ' + (prac.round + 1) + ' of ' + rounds.length }),
-      el('img', { class: 'bob med-pet-img', src: art(p.id), alt: p.kind }),
+      el('div', { class: 'patient-vitals', text: '🏥 Case ' + (prac.round + 1) + ' of ' + rounds.length + ' · ' + p.temp }),
+      el('div', { class: 'med-art-stage' }, [
+        el('img', { class: 'bob med-pet-img', src: s1 ? art(p.id) : (p.symImg || art(p.id)), alt: p.kind }),
+        s1 && r.rightImg ? el('img', { class: 'med-cure-badge-img', src: r.rightImg, alt: 'Cure' }) : null
+      ]),
       el('div', { class: 'ps-pedestal sm' }),
-      el('div', { class: 'med-status' + (isSolved ? ' healed' : ''), text: isSolved ? ('💚 ' + p.name + ' is healed!') : ('🤒 ' + p.badge) })
+      el('div', { class: 'med-status' + (s2 ? ' healed' : ''), text: s2 ? ('💚 ' + p.name + ' is 100% Healed!') : (s1 ? ('💊 Medicine picked! Now fix the grammar!') : ('🤒 ' + p.badge)) })
     ]);
 
     var optBtns = opts.map(function (optText) {
       var b = el('button', {
-        class: 'med-opt' + (isSolved && optText === r.right ? ' right' : ''),
-        type: 'button',
-        html: colourise(optText)
-      });
+        class: 'med-opt' + (s1 && optText === r.right ? ' right' : ''),
+        type: 'button'
+      }, [
+        el('img', { class: 'med-opt-img', src: optImg(optText), alt: '' }),
+        el('span', { class: 'med-opt-txt', html: colourise(optText) })
+      ]);
       b.addEventListener('click', function () {
-        if (prac.solved[key]) { say(optText.replace(/^[^\w]+/, '')); return; }
+        if (prac.step1Solved[key]) { say(optText.replace(/^[^\w]+/, '')); return; }
         if (optText === r.right) {
-          prac.solved[key] = true;
-          addPts(state.turn, 2, b);
+          prac.step1Solved[key] = true;
+          addPts(state.turn, 1, b);
           hostReact('cheer');
-          say('Great treatment! ' + optText.replace(/^[^\w]+/, '') + ' Plus 2 points!');
+          say('Correct medicine! Plus 1 point! Now complete Step 2: the Grammar Check!');
           body.innerHTML = ''; stPractice(body);
         } else {
           A.softFail(); wobble(b); hostReact('oops');
-          say('Oops, that won\'t help ' + p.name + '! Read the symptom carefully and try another medicine.');
+          say("Oops! That won't help " + p.name + '. Look at the symptom and try another cure!');
         }
       });
       return b;
     });
 
+    // Step 2: PPP Grammar Slot Builder (appears once Step 1 is solved, or always visible as Step 2)
+    var grammarBox = el('div', { class: 'grammar-fixer' + (s1 ? ' active' : ' locked') }, [
+      el('div', { class: 'gf-head' }, [
+        el('b', { html: '🧩 ' + colourise(r.grammarQ) }),
+        s2 ? el('span', { class: 'ps-pill emerald', text: '✓ +1 Grammar Pt' }) : el('span', { class: 'ps-pill', text: s1 ? 'Tap the right word (+1 pt)' : 'Solve Step 1 first' })
+      ]),
+      el('div', { class: 'gf-opts' }, r.grammarOpts.map(function (gw) {
+        var gBtn = el('button', {
+          class: 'ps-btn sm ' + (s2 && gw === r.grammarRight ? 'emerald' : 'ghost'),
+          type: 'button',
+          disabled: s1 ? null : 'disabled',
+          text: gw
+        });
+        gBtn.addEventListener('click', function () {
+          if (!prac.step1Solved[key] || prac.step2Solved[key]) { say(r.grammarFull); return; }
+          if (gw === r.grammarRight) {
+            prac.step2Solved[key] = true;
+            addPts(state.turn, 1, gBtn);
+            hostReact('cheer');
+            say('Perfect grammar! ' + r.grammarFull);
+            body.innerHTML = ''; stPractice(body);
+          } else {
+            A.softFail(); wobble(gBtn); hostReact('oops');
+            say('Try another grammar word! Listen: ' + r.grammarQ.replace('___', '...'));
+          }
+        });
+        return gBtn;
+      }))
+    ]);
+
     var navRow = el('div', { class: 'row-btns' }, [
-      el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read Case Chart', onclick: function () { A.tap(); say(r.problem + ' ' + r.q); } }),
-      isSolved && prac.round < rounds.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '💊 Next Patient Case ▶', onclick: function () {
+      el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🔊 Read Case Chart', onclick: function () { A.tap(); say(r.problem + ' ' + r.q); } }),
+      s1 && prac.round < rounds.length - 1 ? el('button', { class: 'ps-btn amber sm', type: 'button', text: '💊 Next Patient Case ▶', onclick: function () {
         A.bubble(); prac.round++; nextTurn(); body.innerHTML = ''; stPractice(body);
-        var nr = rounds[prac.round]; say(nr.problem + ' ' + nr.q);
+        var nr = rounds[prac.round]; say(nr.problem);
       } }) : null,
-      isSolved && prac.round === rounds.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All Patients Treated! Go to Team Vet Lab ▶', onclick: function () { go(3); } }) : null
+      s1 && prac.round === rounds.length - 1 ? el('button', { class: 'ps-btn emerald sm', type: 'button', text: '✅ All Patients Treated! Go to Team Vet Studio ▶', onclick: function () { go(4); } }) : null
     ]);
 
     var rightCol = el('div', { class: 'med-right' }, [
-      turnBanner(isSolved ? 'Patient healed! Say the prescription aloud together!' : 'Read the symptom chart & tap the right cure from the Medicine Cabinet!'),
+      turnBanner(s2 ? 'Case complete! Say the whole sentence together!' : (s1 ? 'Now tap the missing grammar word in Step 2!' : 'Step 1: Read the symptom & pick the right cure from the Medicine Cabinet!')),
       el('div', { class: 'med-chart' }, [
         el('div', { class: 'med-problem', html: '📋 ' + colourise(r.problem) }),
         el('div', { class: 'med-q', text: '🩺 ' + r.q })
       ]),
       el('div', { class: 'med-grid' }, optBtns),
+      grammarBox,
       navRow
     ]);
 
     body.appendChild(el('div', { class: 'med-layout' }, [leftCol, rightCol]));
   }
 
-  // ------------------------------------------------------------ 4. Production Prep: Team Vet Lab
-  var lab = { timer: null, pick: {}, checks: {} };
+  // ------------------------------------------------------------ 5. Production Prep: Team Vet Card Studio (Clean 4-Tab Picker)
+  var lab = { timer: null, tab: 0, pick: {}, checks: {} };
   function stLab(body) {
     var B = D.BUILDER, g4 = state.grade === 4;
     if (!lab.pick.name) {
@@ -481,9 +663,9 @@
         shouldnt4: 'eat sweets or chocolate'
       };
     }
-    var t = makeTimer(7 * 60, {
+    var t = makeTimer(6 * 60, {
       warnAt: 120,
-      warnText: 'Two minutes left! Practise reading your Vet Report together.',
+      warnText: 'Two minutes left! Practise reading your Vet Report Card together.',
       onEnd: function () { say('Time is up! Pencils down. Get ready to open your Monster Vet Clinic!'); }
     });
     lab.timer = t;
@@ -496,7 +678,7 @@
       A.tap(); clearInterval(jobsIv); jobsLeft = 30; jobsBtn.textContent = '⏱ 30'; say('Choose your four Vet Clinic jobs! You have 30 seconds.');
       jobsIv = setInterval(function () {
         jobsLeft--; jobsBtn.textContent = '⏱ ' + jobsLeft;
-        if (jobsLeft <= 0) { clearInterval(jobsIv); jobsBtn.textContent = '✓ Jobs chosen'; A.timeUp(); say('Time! X-Ray Artists, start drawing the patient. Medical Writers, get your pencils ready!'); lab.checks[0] = true; }
+        if (jobsLeft <= 0) { clearInterval(jobsIv); jobsBtn.textContent = '✓ Jobs chosen'; A.timeUp(); say('Time! X-Ray Artists, draw the patient. Medical Writers, fill in the boxes on your card!'); lab.checks[0] = true; }
       }, 1000);
     } });
     cleanup.push(function () { clearInterval(jobsIv); });
@@ -505,63 +687,93 @@
       return el('button', { class: 'check' + (lab.checks[i] ? ' on' : ''), type: 'button', onclick: function (ev) { A.tap(); lab.checks[i] = !lab.checks[i]; ev.currentTarget.classList.toggle('on'); } }, [el('i', { text: lab.checks[i] ? '✓' : String(i + 1) }), el('span', { text: s })]);
     }));
 
-    var preview = el('div', { class: 'preview' });
+    var preview = el('div', { class: 'preview vet-card-preview' });
     function sentences() {
       var P = lab.pick, an = /^[aeiou]/i.test(P.animal) ? 'an' : 'a';
       return g4 ? [
-        'Patient: ' + P.name + ' (' + an + ' ' + P.animal + ').',
-        'Diagnosis: It has got ' + P.symptom + ' because it ' + P.cause + '.',
-        'It feels ' + P.feeling + ' today.',
-        'Prescription: It should ' + P.should4 + '.',
-        "Warning: It shouldn't " + P.shouldnt4 + '!'
+        '1 · Patient: ' + P.name + ' (' + an + ' ' + P.animal + ').',
+        '2 · Diagnosis: It has got ' + P.symptom + ' because it ' + P.cause + '.',
+        '3 · State: It feels ' + P.feeling + ' today.',
+        '4 · Advice (Do): It should ' + P.should4 + '.',
+        "5 · Warning (Don't): It shouldn't " + P.shouldnt4 + '!'
       ] : [
-        "Look at " + P.name + "! It's " + an + ' ' + P.animal + '.',
-        'It is ' + P.feeling + ' and it has got ' + P.symptom + '.',
-        'Give it ' + P.cure3 + ' and ' + P.cure3b + '!',
-        'Now ' + P.name + ' is happy and healthy!'
+        '1 · Patient: Look at ' + P.name + "! It's " + an + ' ' + P.animal + '.',
+        '2 · Problem: It is ' + P.feeling + ' and it has got ' + P.symptom + '.',
+        '3 · Treatment: Give it ' + P.cure3 + ' and ' + P.cure3b + '!',
+        '4 · Result: Now ' + P.name + ' is happy and healthy!'
       ];
     }
-    function paintPreview() { preview.innerHTML = sentences().map(function (s) { return '<p>' + colourise(s) + '</p>'; }).join(''); }
+    function paintPreview() {
+      var P = lab.pick;
+      var imgAnim = D.IMG_MAP && D.IMG_MAP[P.animal] ? '<img class="vcp-img" src="' + D.IMG_MAP[P.animal] + '" alt="">' : (D.ICONS[P.animal] || '🐾');
+      var imgSym = D.IMG_MAP && D.IMG_MAP[P.symptom] ? '<img class="vcp-img" src="' + D.IMG_MAP[P.symptom] + '" alt="">' : (D.ICONS[P.symptom] || '🤒');
+      var cureKey = g4 ? P.should4 : P.cure3;
+      var imgCure = D.IMG_MAP && D.IMG_MAP[cureKey] ? '<img class="vcp-img" src="' + D.IMG_MAP[cureKey] + '" alt="">' : (D.ICONS[cureKey] || '💊');
+      preview.innerHTML =
+        '<div class="vcp-badges"><span>' + imgAnim + ' <b>' + esc(P.name) + '</b></span><span>' + imgSym + ' <b>' + esc(P.symptom) + '</b></span><span>' + imgCure + ' <b>' + esc(cureKey) + '</b></span></div>' +
+        sentences().map(function (s) { return '<p>' + colourise(s) + '</p>'; }).join('');
+    }
+
     function row(label, key, list) {
       return el('div', { class: 'b-row' }, [el('span', { class: 'b-lbl', text: label }), el('div', { class: 'b-chips' }, list.map(function (w) {
         var ic = D.ICONS[w];
-        return el('button', { class: 'chip' + (String(lab.pick[key]) === String(w) ? ' on' : ''), type: 'button', text: (ic ? ic + ' ' : '') + String(w), onclick: function (ev) {
-          A.tap(); lab.pick[key] = w; [].forEach.call(ev.currentTarget.parentNode.children, function (x) { x.classList.remove('on'); }); ev.currentTarget.classList.add('on'); paintPreview();
-        } });
+        var imgUrl = D.IMG_MAP && D.IMG_MAP[w];
+        return el('button', {
+          class: 'chip' + (String(lab.pick[key]) === String(w) ? ' on' : '') + (imgUrl ? ' has-img' : ''),
+          type: 'button',
+          onclick: function (ev) {
+            A.tap(); lab.pick[key] = w; [].forEach.call(ev.currentTarget.parentNode.children, function (x) { x.classList.remove('on'); }); ev.currentTarget.classList.add('on'); paintPreview();
+          }
+        }, [
+          imgUrl ? el('img', { class: 'chip-img', src: imgUrl, alt: '' }) : null,
+          el('span', { text: (!imgUrl && ic ? ic + ' ' : '') + String(w) })
+        ]);
       }))]);
     }
-    var rows = g4 ? [
-      row('Patient', 'name', B.names),
-      row('Pet Type', 'animal', B.animal),
-      row('Symptom', 'symptom', B.symptom),
-      row('Because…', 'cause', B.cause),
-      row('Feels', 'feeling', B.feeling),
-      row('Should', 'should4', B.should4),
-      row("Shouldn't", 'shouldnt4', B.shouldnt4)
+
+    var tabDefs = g4 ? [
+      { lbl: '1 · 🐾 Patient', rows: [row('Name', 'name', B.names), row('Pet Type', 'animal', B.animal)] },
+      { lbl: '2 · 🤒 Symptom', rows: [row('Has got', 'symptom', B.symptom), row('Feels', 'feeling', B.feeling)] },
+      { lbl: '3 · 🦠 Because…', rows: [row('Because it', 'cause', B.cause)] },
+      { lbl: '4 · 💊 Should / Not', rows: [row('It should', 'should4', B.should4), row("Shouldn't", 'shouldnt4', B.shouldnt4)] }
     ] : [
-      row('Patient', 'name', B.names),
-      row('Pet Type', 'animal', B.animal),
-      row('Feeling', 'feeling', B.feeling),
-      row('Has got', 'symptom', B.symptom),
-      row('Give it 1', 'cure3', B.cure3),
-      row('Give it 2', 'cure3b', B.cure3)
+      { lbl: '1 · 🐾 Patient', rows: [row('Name', 'name', B.names), row('Pet Type', 'animal', B.animal)] },
+      { lbl: '2 · 🤒 Problem', rows: [row('It is…', 'feeling', B.feeling), row('Has got', 'symptom', B.symptom)] },
+      { lbl: '3 · 💊 Give it (1)', rows: [row('Give it', 'cure3', B.cure3)] },
+      { lbl: '4 · 🛌 Give it (2)', rows: [row('And…', 'cure3b', B.cure3)] }
     ];
+
+    if (lab.tab >= tabDefs.length) lab.tab = 0;
+    var tabBar = el('div', { class: 'studio-tabs' }, tabDefs.map(function (tb, idx) {
+      return el('button', {
+        class: 'studio-tab' + (idx === lab.tab ? ' on' : ''),
+        type: 'button',
+        text: tb.lbl,
+        onclick: function () { A.tap(); lab.tab = idx; body.innerHTML = ''; stLab(body); }
+      });
+    }));
 
     paintPreview();
     var builder = el('div', { class: 'builder' }, [
-      el('h4', { text: '🩺 Live Vet Prescription Builder · tap words to build your chart' }), preview
-    ].concat([el('div', { class: 'row-btns tight' }, [
-      el('button', { class: 'ps-btn violet sm', type: 'button', text: '🔊 Hear our Vet Report', onclick: function () { A.tap(); say(sentences().join(' ')); } }),
-      el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🎲 Random Case', onclick: function () {
-        A.bubble(); var r = function (a) { return a[Math.floor(Math.random() * a.length)]; };
-        lab.pick = {
-          name: r(B.names), animal: r(B.animal), symptom: r(B.symptom), feeling: r(B.feeling),
-          cause: r(B.cause), cure3: r(B.cure3), cure3b: r(B.cure3), should4: r(B.should4), shouldnt4: r(B.shouldnt4)
-        };
-        if (lab.pick.cure3b === lab.pick.cure3) lab.pick.cure3b = B.cure3[(B.cure3.indexOf(lab.pick.cure3) + 1) % B.cure3.length];
-        body.innerHTML = ''; stLab(body);
-      } })
-    ])]).concat(rows));
+      el('div', { class: 'jobs-head' }, [
+        el('h4', { text: '🩺 Live Team Vet Report Card (Matches Printable Page 1)' }),
+        el('div', { class: 'row-btns tight' }, [
+          el('button', { class: 'ps-btn violet sm', type: 'button', text: '🔊 Hear Report', onclick: function () { A.tap(); say(sentences().map(function (s) { return s.replace(/^\d\s·\s[^:]+:\s/, ''); }).join(' ')); } }),
+          el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🎲 Random Case', onclick: function () {
+            A.bubble(); var r = function (a) { return a[Math.floor(Math.random() * a.length)]; };
+            lab.pick = {
+              name: r(B.names), animal: r(B.animal), symptom: r(B.symptom), feeling: r(B.feeling),
+              cause: r(B.cause), cure3: r(B.cure3), cure3b: r(B.cure3), should4: r(B.should4), shouldnt4: r(B.shouldnt4)
+            };
+            if (lab.pick.cure3b === lab.pick.cure3) lab.pick.cure3b = B.cure3[(B.cure3.indexOf(lab.pick.cure3) + 1) % B.cure3.length];
+            body.innerHTML = ''; stLab(body);
+          } })
+        ])
+      ]),
+      preview,
+      tabBar,
+      el('div', { class: 'studio-tab-body' }, tabDefs[lab.tab].rows)
+    ]);
 
     body.appendChild(el('div', { class: 'lab' }, [
       el('div', { class: 'lab-left' }, [el('div', { class: 'jobs-head' }, [el('h4', { text: '👥 4 Vet Clinic Roles' }), jobsBtn]), el('p', { class: 'jobs-note', text: 'Team of 5? Have two X-Ray Artists!' }), jobs, t.node, checks]),
@@ -569,7 +781,7 @@
     ]));
   }
 
-  // ------------------------------------------------------------ 5. Production: Open the Vet Clinic!
+  // ------------------------------------------------------------ 6. Production: Open the Vet Clinic!
   var shop = { cur: 0, done: {}, phase: 'sell', line: -1, spunQ: -1 };
   function stShop(body) {
     if (shop.phase === 'buy') return stBuy(body);
@@ -585,18 +797,18 @@
     var frameBtns = frames.map(function (f, i) {
       return el('button', { class: 'frame' + (i === shop.line ? ' on' : ''), type: 'button', html: colourise(f), onclick: function (ev) {
         A.tap(); shop.line = i; [].forEach.call(ev.currentTarget.parentNode.children, function (x) { x.classList.remove('on'); }); ev.currentTarget.classList.add('on');
-        say(f);
+        say(f.replace(/^\d\s·\s[^:]+:\s/, ''));
       } });
     });
     var seller = el('div', { class: 'seller', style: '--tc:' + tm.color }, [
       el('div', { class: 'seller-head' }, [
-        el('b', { text: tm.icon + ' ' + tm.name + ' · Vet Clinic Report' }),
-        el('span', { text: 'Head Vet leads the diagnosis · Whole team says Line 5 together!' })
+        el('b', { text: tm.icon + ' ' + tm.name + ' · Live Vet Presentation' }),
+        el('span', { text: 'Tap any line to hear a model · Whole team says Line 5 together!' })
       ]),
       el('div', { class: 'frames' }, frameBtns)
     ]);
 
-    var spinBtn = el('button', { class: 'ps-btn amber sm', type: 'button', text: '🎲 Spin Inspector Question!', onclick: function () {
+    var spinBtn = el('button', { class: 'ps-btn amber sm', type: 'button', text: '🎲 Spin Question!', onclick: function () {
       A.bubble();
       shop.spunQ = Math.floor(Math.random() * qs.length);
       body.innerHTML = ''; stShop(body);
@@ -604,7 +816,7 @@
     } });
 
     var buyers = el('div', { class: 'buyers' }, [
-      el('div', { class: 'jobs-head' }, [el('h4', { text: '🔍 Health Inspector Questions' }), spinBtn])
+      el('div', { class: 'jobs-head' }, [el('h4', { text: '🔍 Inspector Q&A' }), spinBtn])
     ].concat(qs.map(function (q, idx) {
       return el('button', { class: 'q-card' + (idx === shop.spunQ ? ' spun' : ''), type: 'button', onclick: function () { A.tap(); shop.spunQ = idx; say(q.q); } }, [
         el('b', { html: '❓ ' + colourise(q.q) }),
@@ -621,7 +833,6 @@
       return el('button', { class: 'ps-btn tiny', style: '--tc:' + team(i).color, type: 'button', text: team(i).icon + ' ' + team(i).name, onclick: function (ev) { addPts(i, 1, ev.currentTarget); } });
     })));
 
-    var allDone = Object.keys(shop.done).length >= n;
     var nextBtns = el('div', { class: 'row-btns' }, [
       el('button', { class: 'ps-btn violet', type: 'button', text: shop.done[shop.cur] ? '✓ Presented' : '✅ Patient Treated! Next Team ▶', onclick: function () {
         A.correct(); shop.done[shop.cur] = true; shop.line = -1; shop.spunQ = -1;
@@ -721,8 +932,7 @@
     $('ps-start').hidden = true; $('ps-app').hidden = false;
     renderTeams(); go(0);
     A.spooky();
-    var p = PET[cauldron.order[0]];
-    say('Welcome to the Monster Pet Vet Clinic, ' + cls.toUpperCase() + '! Our first patient is in the X-Ray Scanner. Clue 1: ' + (state.grade === 4 ? p.clues4 : p.clues3)[0]);
+    say('Welcome to the Monster Pet Vet Clinic, ' + cls.toUpperCase() + '! Let\'s learn our Vet Clinic symptoms, treatments, and 3-step grammar rule first!');
     try { history.replaceState(null, '', '?class=' + cls); } catch (e) { /* file:// */ }
   }
   function init() {
@@ -731,7 +941,7 @@
       row.appendChild(el('button', { class: 'ps-btn class-btn', type: 'button', text: c.toUpperCase(), onclick: function () { A.unlock(); A.tap(); start(c); } }));
     });
     $('btn-prev').onclick = function () { A.tap(); go(state.step - 1); };
-    $('btn-next').onclick = function () { A.tap(); if (state.step === STATIONS.length - 1) { state.done[state.step] = true; renderSteps(); shop.phase = 'awards'; go(4); } else go(state.step + 1); };
+    $('btn-next').onclick = function () { A.tap(); if (state.step === STATIONS.length - 1) { state.done[state.step] = true; renderSteps(); shop.phase = 'awards'; go(5); } else go(state.step + 1); };
     $('host-replay').onclick = function () { A.tap(); if (state.lastSpeech) say(state.lastSpeech); };
     $('btn-sound').onclick = function () { A.setOn(!A.isOn()); this.textContent = A.isOn() ? '🔊' : '🔇'; };
     $('btn-tip').onclick = function () { A.tap(); $('tip-modal').hidden = false; };

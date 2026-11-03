@@ -341,3 +341,111 @@ button { font: inherit; color: inherit; }
 .cauldron-right { gap: 8px; }
 .clue { padding: 8px 12px; font-size: 1.18rem; }
 .guess img { max-width: 96px; }
+
+/* ---------- Pro PPP + CLIL 6-Step Smartboard Styles */
+.ps-stage { padding: 10px 16px; gap: 6px; }
+.ps-stage-head h1 { font-size: 1.28rem; }
+.vocab-stage { display: flex; flex-direction: column; gap: 6px; height: 100%; }
+.ppp-formula-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ppp-formula-card { text-align: left; border: 1.5px solid var(--line); border-bottom: 4px solid #0b1220; background: rgba(6, 9, 17, 0.78); border-radius: 14px; padding: 4px 9px; cursor: pointer; display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; transition: transform .18s var(--spring-snap); }
+.ppp-formula-card:hover { transform: translateY(-2px); }
+.ppp-formula-card:active { transform: translateY(3px); }
+.ppp-formula-card.amber { border-color: rgba(245, 158, 11, 0.65); border-bottom-color: #b45309; }
+.ppp-formula-card.cyan { border-color: rgba(56, 189, 248, 0.65); border-bottom-color: #0284c7; }
+.ppp-formula-card.emerald { border-color: rgba(16, 185, 129, 0.65); border-bottom-color: #047857; }
+.ppp-formula-card.coral { border-color: rgba(244, 63, 94, 0.65); border-bottom-color: #be123c; }
+.ppp-f-img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,.45)); }
+.ppp-f-txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ppp-f-tag { font-size: .66rem; font-weight: 900; letter-spacing: .04em; color: #fde68a; }
+.ppp-f-pat { font-size: .85rem; font-weight: 900; line-height: 1.15; }
+.ppp-f-ex { font-size: .74rem; color: var(--muted); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.vocab-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; flex: 1; min-height: 0; }
+.vocab-card { background: var(--glass-2); border: 2px solid var(--line); border-bottom: 5px solid #0b1220; border-radius: 16px; padding: 5px 9px; display: flex; flex-direction: column; justify-content: space-between; gap: 3px; transition: transform .2s var(--spring-snap), border-color .2s; }
+.vocab-card.seen { border-color: rgba(245, 158, 11, 0.65); }
+.vocab-card.cure-mode { background: color-mix(in srgb, var(--emerald) 18%, #0f172a); border-color: var(--emerald); }
+.vc-top { cursor: pointer; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1px; }
+.vc-badge { font-size: .64rem; font-weight: 900; background: rgba(6, 9, 17, 0.78); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; color: #fde68a; }
+.vocab-card.cure-mode .vc-badge { color: #6ee7b7; border-color: var(--emerald); }
+.vc-art-wrap { height: 64px; display: grid; place-items: center; }
+.vc-img { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,.5)); }
+.vc-word { font-size: .94rem; font-weight: 900; line-height: 1.15; }
+.vc-sub { font-size: .73rem; color: var(--muted); font-weight: 700; line-height: 1.12; }
+.vc-actions { display: flex; gap: 6px; justify-content: center; }
+.vc-actions .ps-btn.sm { padding: 3px 8px; font-size: .74rem; }
+
+/* Step 2: 3-Box Medical Chart & Waiting Bench Symptom Thumbs */
+.pet-art { position: relative; }
+.pet-sym-thumb { position: absolute; bottom: 8px; right: 6px; width: 42px; height: 42px; object-fit: contain; background: rgba(6, 9, 17, 0.85); border: 1.5px solid var(--amber); border-radius: 50%; padding: 2px; box-shadow: 0 3px 8px rgba(0,0,0,.5); z-index: 3; }
+.chart-title-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+.chart-title-row h3 { margin: 0; font-size: 1.25rem; }
+.chart-boxes { display: grid; gap: 5px; }
+.chart-box { text-align: left; display: grid; grid-template-columns: 52px 1fr; gap: 9px; align-items: center; background: var(--glass-2); border: 2px solid var(--line); border-bottom: 4px solid #0b1220; border-radius: 14px; padding: 5px 10px; cursor: pointer; transition: transform .18s var(--spring-snap); }
+.chart-box.box-sym { border-left: 6px solid var(--amber); }
+.chart-box.box-cure { border-left: 6px solid var(--emerald); }
+.chart-box.box-warn { border-left: 6px solid var(--coral); }
+.chart-box.box-res { border-left: 6px solid var(--cyan); }
+.chart-box.on { transform: scale(1.015); border-color: var(--violet); background: color-mix(in srgb, var(--violet) 26%, #0f172a); }
+.cb-img { width: 48px; height: 48px; object-fit: contain; background: rgba(6, 9, 17, 0.55); border-radius: 10px; padding: 2px; border: 1px solid var(--line); }
+.cb-icon { font-size: 1.7rem; text-align: center; }
+.cb-body { display: flex; flex-direction: column; gap: 1px; }
+.cb-tag { font-size: .68rem; font-weight: 900; color: #fde68a; letter-spacing: .03em; }
+.cb-line { font-size: 1.02rem; font-weight: 900; line-height: 1.18; }
+.cb-sub { font-size: .75rem; color: var(--muted); font-weight: 700; }
+
+/* Step 3: Digital Medical X-Ray Monitor */
+.xray-monitor { background: #07111e; border: 3px solid #38bdf8; border-bottom: 7px solid #0284c7; border-radius: 22px; padding: 8px 10px; box-shadow: 0 0 28px rgba(56, 189, 248, 0.25); display: flex; flex-direction: column; gap: 6px; max-width: 300px; margin: 0 auto; }
+.xray-monitor.solved { border-color: var(--emerald); border-bottom-color: #047857; box-shadow: 0 0 28px rgba(16, 185, 129, 0.3); }
+.xray-hud-top { display: flex; justify-content: space-between; font-size: .75rem; font-weight: 900; color: #67e8f9; background: rgba(15, 23, 42, 0.9); padding: 3px 9px; border-radius: 10px; }
+.xray-screen { position: relative; height: 190px; border-radius: 14px; background: radial-gradient(circle at 50% 50%, rgba(14, 116, 144, 0.35), #030712 80%); border: 1.5px dashed rgba(56, 189, 248, 0.45); display: grid; place-items: center; overflow: hidden; }
+.xray-scan-beam { position: absolute; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, transparent, #38bdf8, transparent); box-shadow: 0 0 14px #38bdf8; animation: xrayScan 2.4s ease-in-out infinite; pointer-events: none; z-index: 3; }
+@keyframes xrayScan { 0%, 100% { top: 8%; } 50% { top: 88%; } }
+.xray-pet-reveal { width: 165px; height: 165px; object-fit: contain; z-index: 2; }
+.xray-mystery { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; }
+.xray-mystery-imgs { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.xray-mystery-imgs img { width: 74px; height: 74px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45)); }
+.xray-q { font-size: 1.6rem; font-weight: 900; color: #fde68a; }
+.xray-mystery span { font-weight: 900; color: #67e8f9; letter-spacing: .06em; font-size: .88rem; }
+.xray-mystery small { background: rgba(245, 158, 11, 0.2); border: 1px solid var(--amber); color: #fde68a; border-radius: 999px; padding: 2px 9px; font-weight: 800; }
+.xray-hud-bot { text-align: center; font-size: .78rem; font-weight: 800; color: #cbd5e1; }
+.xray-monitor.solved .xray-hud-bot { color: #6ee7b7; }
+.cauldron-right .clue { padding: 6px 10px; font-size: 1.06rem; }
+.guess { padding: 6px; }
+.guess img { max-width: 82px; }
+
+/* Step 4: 2-Step Medicine Cabinet + Grammar Fixer */
+.med-right { gap: 7px; }
+.med-chart { padding: 7px 12px; }
+.med-problem { font-size: 1.12rem; margin-bottom: 2px; }
+.med-q { font-size: .92rem; }
+.med-grid { gap: 8px; }
+.med-art-stage { position: relative; display: inline-block; }
+.med-cure-badge-img { position: absolute; bottom: 4px; right: -6px; width: 64px; height: 64px; object-fit: contain; background: rgba(6, 9, 17, 0.9); border: 2px solid var(--emerald); border-radius: 50%; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,.5); }
+.med-opt { display: grid; grid-template-columns: 44px 1fr; gap: 9px; align-items: center; padding: 6px 10px; font-size: .9rem; }
+.med-opt-img { width: 42px; height: 42px; object-fit: contain; background: rgba(6, 9, 17, 0.55); border-radius: 10px; padding: 2px; }
+.med-opt-txt { line-height: 1.18; }
+.grammar-fixer { background: rgba(6, 9, 17, 0.72); border: 2px dashed rgba(168, 85, 247, 0.55); border-radius: 14px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.grammar-fixer.locked { opacity: .6; }
+.grammar-fixer.active { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, #090d16); }
+.gf-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: .9rem; }
+.gf-opts { display: flex; gap: 6px; }
+
+/* Step 5: Clean 4-Tab Studio with 3D Picture Chips */
+.lab { gap: 12px; }
+.lab-left { gap: 6px; }
+.job { padding: 6px; }
+.job-ic { font-size: 1.25rem; }
+.tm { padding: 6px 10px; gap: 5px; }
+.tm-face { font-size: 1.65rem; }
+.check { padding: 5px 8px; font-size: .82rem; }
+.vet-card-preview { background: rgba(6, 9, 17, 0.82); border: 2px solid var(--cyan); border-radius: 14px; padding: 6px 10px; margin-bottom: 6px; }
+.vcp-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.vcp-badges span { display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 999px; padding: 2px 9px 2px 4px; font-size: .78rem; font-weight: 900; color: #e0f2fe; }
+.vcp-img { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; background: rgba(6, 9, 17, 0.65); }
+.studio-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
+.studio-tab { border: 1.5px solid var(--line); border-bottom: 4px solid #0b1220; background: var(--glass-2); border-radius: 11px; padding: 5px 6px; font-weight: 900; font-size: .8rem; cursor: pointer; }
+.studio-tab.on { background: var(--violet); border-color: #c084fc; border-bottom-color: #6b21a8; }
+.studio-tab-body { background: rgba(6, 9, 17, 0.5); border: 1px solid var(--line); border-radius: 12px; padding: 7px 10px; }
+.studio-tab-body .b-row { margin-bottom: 5px; }
+.studio-tab-body .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; font-size: .82rem; }
+.chip-img { width: 22px; height: 22px; object-fit: contain; border-radius: 6px; background: rgba(6, 9, 17, 0.55); }
