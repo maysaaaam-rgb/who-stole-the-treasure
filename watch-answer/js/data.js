@@ -1,5 +1,5 @@
 /* Watch & Answer: video lessons where the cartoon/movie stops by itself and the class answers a question.
-   All questions are original and written for A1 / A1+ learners. Supports local classroom MP4 files, teacher-picked video files, and YouTube fallback. Times are in seconds. */
+   All questions are original and written for A1 / A1+ learners. Supports cloud release streaming, local classroom MP4 files, teacher-picked video files, and YouTube fallback. Times are in seconds. */
 window.WatchData = (function () {
   var D = {};
   D.teams = [
@@ -13,6 +13,7 @@ window.WatchData = (function () {
       badge: '🦊 Bad Guys Holiday',
       title: 'The Bad Guys: A Very Bad Holiday',
       localVideo: 'videos/bad-guys.mp4',
+      cloudVideo: 'https://github.com/maysaaaam-rgb/who-stole-the-treasure/releases/download/classroom-movies-v1/bad-guys.mp4',
       subtitles: 'subs/bad-guys.vtt',
       vid: 'fL4f2G1T9zE',
       minutes: 35,
@@ -57,6 +58,7 @@ window.WatchData = (function () {
       badge: '🕷️ Spider-Man',
       title: 'Spider-Man: Into the Spider-Verse',
       localVideo: 'videos/spider-verse.mp4',
+      cloudVideo: 'https://github.com/maysaaaam-rgb/who-stole-the-treasure/releases/download/classroom-movies-v1/spider-verse.mp4',
       subtitles: '',
       vid: 'g4Hbz2jLxvQ',
       minutes: 35,
@@ -101,6 +103,7 @@ window.WatchData = (function () {
       badge: '🛒 Mr Bean',
       title: 'Mr Bean: Super Trolley',
       localVideo: '',
+      cloudVideo: '',
       subtitles: '',
       vid: 'uyYIojxxljE',
       minutes: 35,

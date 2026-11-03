@@ -1,6 +1,6 @@
 /* Watch & Answer: the class watches a movie/cartoon; at each checkpoint the video stops by itself and the class answers a question.
    Steps: Predict, Watch and answer, Retell the story, Tell your partner, Finish.
-   Supports local classroom MP4 files, teacher-picked video files (📂 Video File), and YouTube fallback. */
+   Supports cloud release streaming, local classroom MP4 files, teacher-picked video files (📂 Video File), and YouTube fallback. */
 (function () {
   'use strict';
   var D = window.WatchData, A = window.KaraokeAudio;
@@ -71,7 +71,7 @@
     };
   }
 
-  /* ---------- the video (HTML5 local video + YouTube fallback) ---------- */
+  /* ---------- the video (HTML5 cloud/local video + YouTube fallback) ---------- */
   var player = null, poll = 0, timers = [], ytWait = [], ytAsked = false;
   function loadYT(cb) {
     if (window.YT && window.YT.Player) { cb(true); return; }
@@ -101,13 +101,23 @@
   function mountVideo(hostId, onReady) {
     var host = $(hostId); if (!host) return;
     var l = L();
-    var src = customBlobUrls[l.id] || l.localVideo || '';
-    if (src) {
+    var isGithubHost = /github\.io$/i.test(window.location.hostname || '');
+    var candidates = [];
+    if (customBlobUrls[l.id]) candidates.push(customBlobUrls[l.id]);
+    if (isGithubHost) {
+      if (l.cloudVideo) candidates.push(l.cloudVideo);
+      if (l.localVideo) candidates.push(l.localVideo);
+    } else {
+      if (l.localVideo) candidates.push(l.localVideo);
+      if (l.cloudVideo) candidates.push(l.cloudVideo);
+    }
+    if (candidates.length) {
       var v = document.createElement('video');
       v.controls = true;
       v.playsInline = true;
       v.preload = 'metadata';
-      v.src = src;
+      var cIdx = 0;
+      v.src = candidates[cIdx];
       if (l.subtitles) {
         var tr = document.createElement('track');
         tr.kind = 'subtitles';
@@ -124,6 +134,12 @@
       });
       var fellBack = false;
       v.addEventListener('error', function () {
+        cIdx++;
+        if (cIdx < candidates.length) {
+          v.src = candidates[cIdx];
+          v.load();
+          return;
+        }
         if (fellBack) return;
         fellBack = true;
         mountYouTube(hostId, onReady);
