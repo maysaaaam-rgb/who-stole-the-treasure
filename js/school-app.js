@@ -4641,8 +4641,10 @@
   // =========================================================================
   // Lesson plans for the headteacher: PDF and Word files in /lesson-plans, newest first.
   const LESSON_PLANS = [
-    { title: 'Week of 2–6 November: my lessons in order (book lessons + Halloween team lessons)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Week-2-6-November-Order', kind: 'Week', word: false },
-    { title: 'Halloween Monster Pet Shop: team lesson built on the All About Me survey (It’s a… / It has got… / It can…)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Halloween-Monster-Pet-Shop-Lesson-Plan', word: true, launch: 'halloween-pet-shop/index.html' },
+    { title: 'Week of 2–6 November: my lessons in order (Book lessons + Pet Vet Clinic + Movie Cinema)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Week-2-6-November-Order', kind: 'Week', word: false },
+    { title: 'Movie Lesson: Spider-Man — Into the Spider-Verse (10 Auto-Pauses, Story Retell & Circle & Say Sheet)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Spider-Man-Spider-Verse-Movie-Lesson-Plan', word: true, launch: 'watch-answer/index.html?lesson=spider-verse' },
+    { title: 'Movie Lesson: The Bad Guys — A Very Bad Holiday (10 Auto-Pauses, Subtitles, Story Retell & Circle & Say Sheet)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Bad-Guys-Holiday-Movie-Lesson-Plan', word: true, launch: 'watch-answer/index.html?lesson=bad-guys-holiday' },
+    { title: 'Monster Pet Vet Clinic: Easy 35-Min Whole-Class & Individual PPP Lesson (It is a… / It has a… / Give it…)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Halloween-Monster-Pet-Shop-Lesson-Plan', word: true, launch: 'halloween-pet-shop/index.html' },
     { title: 'Halloween Team Show: every team presents its pet, chant and awards (end of the week)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Halloween-Team-Show-Lesson-Plan', word: true, launch: 'halloween-pet-shop/index.html' },
     { title: 'Government Book Lesson: the 35-minute routine (4 per class each week, pages to fill in)', grade: 'Grade 3 & 4', date: '2026-11-03', file: 'Grade3-Grade4-Book-Lesson-Routine-Plan', word: true },
     { title: "The Pharaoh’s Kingdom: Living Pop-Up Book (Ancient Egypt A1 Master Lesson)", grade: 'Grade 3 & 4', date: '2026-11-02', file: 'Grade3-Grade4-Pharaoh-Living-Book-Lesson-Plan', word: true, launch: 'pharaoh-living-book.html' },
