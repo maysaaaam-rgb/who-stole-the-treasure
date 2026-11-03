@@ -488,8 +488,36 @@
       store().setCalendarFlag('seed26');
     } catch (e) { /* the calendar still works */ }
   }
+  /* Update 3-6 Nov 2026 slots with the simplified 35-min Monster Pet Vet Clinic (no group work) and the two online Movie Cinema lessons (Bad Guys & Spider-Verse). */
+  function movieAndEzPetWeekOnce() {
+    try {
+      if (!store() || !store().getCalendarFlag || store().getCalendarFlag('seed27')) return;
+      var list = customEvents().slice(), n = 0;
+      list.forEach(function (e) {
+        if (!e || !/^seed24-/.test(String(e.id || '')) || /^Done:/.test(e.title || '')) return;
+        var cls = String(e.classId || '').replace('class-', '');
+        var isG4 = /^4/.test(cls);
+        if (/Pet Shop/i.test(e.title || '')) {
+          e.title = '🎃 Monster Pet Vet Clinic (35-Min Individual PPP)';
+          e.note = 'Easy 35-min whole-class + individual Circle & Say lesson (zero group work). Open halloween-pet-shop/index.html?class=' + cls + ' and print halloween-pet-shop/worksheet.html?class=' + cls + ' (1 page per pupil). Plan: lesson-plans/Grade3-Grade4-Halloween-Monster-Pet-Shop-Lesson-Plan.';
+          n++;
+        } else if (/Team Show/i.test(e.title || '')) {
+          if (isG4) {
+            e.title = '🕷️ Movie Cinema: Spider-Man & The Bad Guys';
+            e.note = 'Watch & Answer online movie lesson (streams directly in the site with 10 auto-pause questions). Open watch-answer/index.html?lesson=spider-verse or watch-answer/index.html?lesson=bad-guys-holiday and print watch-answer/worksheet.html?lesson=spider-verse. Plan: lesson-plans/Grade3-Grade4-Spider-Man-Spider-Verse-Movie-Lesson-Plan.';
+          } else {
+            e.title = '🦊 Movie Cinema: The Bad Guys & Spider-Man';
+            e.note = 'Watch & Answer online movie lesson (streams directly in the site with subtitles & 10 auto-pause questions). Open watch-answer/index.html?lesson=bad-guys-holiday or watch-answer/index.html?lesson=spider-verse and print watch-answer/worksheet.html?lesson=bad-guys-holiday. Plan: lesson-plans/Grade3-Grade4-Bad-Guys-Holiday-Movie-Lesson-Plan.';
+          }
+          n++;
+        }
+      });
+      if (n) saveEvents(list);
+      store().setCalendarFlag('seed27');
+    } catch (e) { /* the calendar still works */ }
+  }
   function ensureSeeded() {
-    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce();
+    seedOnce(); retitleOnce(); shortenOnce(); g3Titles(); moonOnce(); moonNoteOnce(); monaOnce(); showOnce(); mountainOnce(); mountainSplitOnce(); u4ReviewOnce(); quizSpeakOnce(); weekPlanOnce(); mondayG3Once(); rev1NoteOnce(); rev1aOnce(); g3QuizOnce(); g3RevOnce(); wed28Once(); wed28PlansOnce(); fri30Once(); weekNov2Once(); retireThemesOnce(); bookWeekNov2Once(); petShopLinkOnce(); weekPlansOnce(); movieAndEzPetWeekOnce();
   }
   function lessonsOn(date, classId) {
     var wd = date.getDay(); if (wd < 1 || wd > 5) return [];
