@@ -114,6 +114,7 @@
     return '<div class="isl-shop-hero"><div class="isl-shop-hero-pic">' + svg + '</div><div class="isl-shop-hero-text"><b>This could be you!</b><span>Level 6: ' + Math.max(0, 2000 - (Number(S.data.xp) || 0)) + ' XP to go</span></div></div>';
   }
   function thumbOf(i, known, colorKey, size) {
+    var k = known[i.id] || i; if (k && k.imageSrc && /^art\/flat\/r_/.test(k.imageSrc)) return '<img src="' + esc(k.imageSrc) + '" style="width:' + size + 'px;height:' + size + 'px;object-fit:contain" alt="">';
     var thumb = '<div class="isl-shop-emoji">' + esc(i.icon || '✨') + '</div>';
     if (root.MonsterRenderer && root.MonsterRenderer.renderMonsterItemThumbnail) {
       var svg = root.MonsterRenderer.renderMonsterItemThumbnail(known[i.id], { size: size, colorKey: colorKey });
@@ -130,6 +131,14 @@
     var R = root.MonsterRenderer, s = ses(), prof = s.student.monsterProfile || {};
     if (!R || !R.renderMonsterSVG || !a.category) return '';
     if (a.category === 'trail') return '';
+    if (a.category === 'ride') {
+      var stagesR = ['baby', 'baby', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'];
+      var eqR = Object.assign({}, prof.equipped || {}, (s.doc && s.doc.look) || {}); delete eqR.background;
+      var kR = wearable()[a.id] || a;
+      try {
+        return '<div class="isl-shop-try" style="position:relative;height:180px;align-items:center"><img src="' + esc(kR.imageSrc || ('art/flat/' + a.id + '.webp')) + '" style="position:absolute;bottom:6px;width:136px;height:96px;object-fit:contain" alt=""><div style="position:relative;z-index:2;transform:translateY(-18px)">' + R.renderMonsterSVG({ stage: stagesR[Math.max(0, Math.min(6, Number(S.data.level) - 1))], color: prof.baseColor || 'blue', equipped: eqR, size: 130, animated: true, isAvatar: true }) + '</div></div>';
+      } catch (e) { return ''; }
+    }
     var stages = ['baby', 'baby', 'baby', 'growing', 'adventurer', 'advanced', 'ultimate'];
     var slot = ((root.IslandData.MONSTER_CATEGORIES.filter(function (c) { return c.id === a.category; })[0]) || {}).slot || a.category;
     var eq = Object.assign({}, prof.equipped || {}, (s.doc && s.doc.look) || {}); delete eq.background; eq[slot] = a.id;
