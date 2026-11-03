@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monster Pet Shop · Lesson Plan</title>
+  <title>Monster Pet Vet Clinic · CLIL &amp; PPP Lesson Plan</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: #ece9f5; color: #1e1b2e; font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; font-size: 10.5pt; }
+    body { margin: 0; background: #ece9f5; color: #1e1b2e; font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; font-size: 10.2pt; }
     .bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 16px; background: #1e1b2e; color: #fff; }
     .bar b { margin-right: auto; }
     .bar button, .bar a { border: 0; border-bottom: 5px solid #5b21b6; background: #7c3aed; color: #fff; font: inherit; font-weight: 900; padding: 8px 14px; border-radius: 12px; cursor: pointer; text-decoration: none; }
     .bar button.on { background: #f97316; border-bottom-color: #c2410c; }
     .bar button:active, .bar a:active { transform: translateY(4px); border-bottom-width: 1px; }
-    .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 11mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
-    h1 { margin: 0 0 2px; font-size: 19pt; }
-    h2 { margin: 10px 0 4px; font-size: 12pt; color: #6d28d9; }
-    .meta { color: #4c4766; margin: 0 0 6px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+    .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 10mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
+    h1 { margin: 0 0 2px; font-size: 18pt; }
+    h2 { margin: 9px 0 4px; font-size: 11.5pt; color: #6d28d9; }
+    .meta { color: #4c4766; margin: 0 0 6px; font-weight: 700; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 12px; }
     .box { border: 1.5px solid #ddd6fe; border-radius: 10px; padding: 6px 10px; }
     .box b { color: #6d28d9; }
     ul { margin: 2px 0; padding-left: 18px; } li { margin: 1px 0; }
@@ -24,8 +24,8 @@
     th, td { border: 1.5px solid #ddd6fe; padding: 5px 7px; text-align: left; vertical-align: top; }
     th { background: #f5f3ff; }
     td.min { white-space: nowrap; font-weight: 900; color: #6d28d9; }
-    .check th, .check td { text-align: center; font-size: 10pt; }
-    .check td:first-child, .check th:first-child { text-align: left; width: 28%; }
+    .check th, .check td { text-align: center; font-size: 9.5pt; }
+    .check td:first-child, .check th:first-child { text-align: left; width: 26%; }
     .check td { height: 15mm; }
     .key { margin-top: 6px; color: #4c4766; }
     .g4 { display: none; } body.grade4 .g4 { display: inline; } body.grade4 .g3 { display: none; }
@@ -39,82 +39,94 @@
 </head>
 <body>
   <div class="bar">
-    <b>🎃 Monster Pet Shop · teacher plan</b>
-    <button type="button" id="g3">Grade 3</button>
-    <button type="button" id="g4">Grade 4</button>
-    <a href="index.html" id="open-lesson">▶ Open the lesson</a>
+    <b>🏥 Monster Pet Vet Clinic · Teacher Plan (CLIL + PPP)</b>
+    <button type="button" id="g3">Grade 3 (A1)</button>
+    <button type="button" id="g4">Grade 4 (A1+)</button>
+    <a href="index.html" id="open-lesson">▶ Open the Lesson</a>
     <button type="button" onclick="window.print()">🖨️ Print</button>
   </div>
 
   <section class="page">
-    <h1>🎃 Halloween Monster Pet Shop</h1>
-    <p class="meta"><b id="cls-lbl">Grade 3</b> · 35 minutes · teams of 4–5 (All About Me survey teams) · A1 · smartboard + 1 Pet Design Card per team</p>
+    <h1>🏥 Monster Pet Vet Clinic (CLIL Health &amp; PPP Method)</h1>
+    <p class="meta"><b id="cls-lbl">Grade 3 (A1)</b> · 35 minutes · CLIL Veterinary Science &amp; Health Care · PPP (Presentation &rarr; Practice &rarr; Production) · 4–5 teams</p>
     <div class="grid">
-      <div class="box"><b>Pupils will…</b>
+      <div class="box"><b>🎯 Targeted Outcomes (Students will be able to…)</b>
         <ul>
-          <li>describe a pet: <i class="g3">It's a black cat. It has got a hat. It can climb.</i><i class="g4">It's a small, black cat. It can climb, but it can't swim. It likes fish!</i></li>
-          <li>ask and answer: <i class="g3">Can it fly? Has it got a tail? How much is it?</i><i class="g4">What can it do? Is it friendly? What does it like?</i></li>
-          <li>do a team job and present together</li>
+          <li class="g3"><b>A1 Symptom &amp; State Identification:</b> Ask <i>"What's the matter?"</i> and express feelings &amp; aches (<i>It is tired/hungry/cold. It has got a tummy ache / sore throat / hurt wing</i>).</li>
+          <li class="g3"><b>A1 Care Commands:</b> Prescribe simple care using imperatives (<i>Give it warm water and a blanket! Put a bandage on its paw!</i>).</li>
+          <li class="g4"><b>A1+ Symptom &amp; Cause Diagnosis:</b> Explain illnesses and their causes using <b>because + Past Simple</b> (<i>It has got a stomach ache because it ate ten sweets</i>).</li>
+          <li class="g4"><b>A1+ Medical Advice:</b> Give positive and negative care advice using <b>should / shouldn't</b> (<i>It should drink warm honey tea. It shouldn't eat chocolate!</i>).</li>
+          <li><b>CLIL Science Link:</b> Connect symptoms &rarr; causes &rarr; healthy treatments in a collaborative Vet Team roleplay.</li>
         </ul>
       </div>
-      <div class="box"><b>Why this lesson (survey)</b>
+      <div class="box"><b>🧬 Methodology: CLIL + PPP</b>
         <ul>
-          <li>Top answers: cats (23), pets (40), drawing (40), pizza and burgers</li>
-          <li>Hardest: speaking in front of the class (20), finishing in time (21)</li>
-          <li>So: team speaking, a job for everyone, timers, pictures for every word</li>
+          <li><b>CLIL (Health &amp; Animal Welfare):</b> Pupils act as Monster Vets checking temperature, diagnosing causes (diet, weather, rest, injury), and prescribing real care.</li>
+          <li><b>P1 · Presentation (11 min):</b> Station 1 X-Ray Scanner (receptive listening deduction) + Station 2 Vet Check-Up Table (meaning, colour-coded form, choral pronunciation &amp; TPR).</li>
+          <li><b>P2 · Practice (6 min):</b> Station 3 Medicine Cabinet Match (controlled team game matching symptoms/causes to prescriptions).</li>
+          <li><b>P3 · Production (18 min):</b> Station 4 Team Vet Report Card prep (8 min) + Station 5 Live Vet Clinic Roleplay, Health Inspector Q&amp;A &amp; Healing Hearts (10 min).</li>
         </ul>
       </div>
-      <div class="box"><b>Prepare</b>
+      <div class="box"><b>🖨️ Materials &amp; Preparation</b>
         <ul>
-          <li>Print (worksheet.html): 1 Pet Design Card per team, 1 set of question cards per team, door-pass slips, homework (optional)</li>
-          <li>Coloured pencils for every team</li>
-          <li>Open the lesson and tap the class before the pupils come in</li>
+          <li>Print <a href="worksheet.html">worksheet.html</a>: 1 <b>Vet Report Card</b> per team (p. 1), 1 set of <b>Health Inspector Question Cards</b> per team (p. 2), <b>Door Pass</b> slips (p. 3).</li>
+          <li>Coloured pencils on every team table.</li>
+          <li>Open <code>halloween-pet-shop/index.html</code> and select the class.</li>
         </ul>
       </div>
-      <div class="box"><b>Key words</b>
+      <div class="box"><b>🗣️ Target Language &amp; Colour Code</b>
         <ul>
-          <li>colours: black, white, orange, purple, green, red</li>
-          <li>has got: big eyes, a long tail, wings, eight legs, a hat</li>
-          <li>can: fly, climb, jump, run, dance, swim, roll<span class="g4"> · can't · likes</span></li>
+          <li><span style="color:#b45309;font-weight:800">Amber (Symptoms):</span> tired, hungry, thirsty, cold, dizzy, tummy/stomach ache, sore throat, hurt wing/paw</li>
+          <li><span style="color:#0e7490;font-weight:800">Cyan (Cause/Body):</span> has got, wing, paw, legs<span class="g4"> · <b>because</b> it ate sweets / flew in the rain / shouted / danced</span></li>
+          <li><span style="color:#047857;font-weight:800">Green (Treatment):</span> <span class="g3"><b>Give it</b> warm water / honey tea / milk / a blanket / a bandage</span><span class="g4"><b>It should</b> drink tea / rest · <b>It shouldn't</b> eat sweets / fly</span></li>
         </ul>
       </div>
     </div>
 
-    <h2>Lesson steps</h2>
+    <h2>PPP Lesson Stages (35 Minutes)</h2>
     <table>
-      <tr><th>Time</th><th>Station</th><th>Teacher does</th><th>Pupils do</th></tr>
-      <tr><td class="min">4 min</td><td><b>1 · Who Is in the Cauldron?</b></td><td>Read clue 1, then "Next clue". Tap the picture the team points at.</td><td>Listen, whisper in the team, point. Guess early = more points.</td></tr>
-      <tr><td class="min">6 min</td><td><b>2 · Meet the Pets</b></td><td>Open 4–5 pets. "Say it with me", then "Act it!". Point at the colours (yellow = colour, blue = has got, green = can).</td><td>Repeat together (choral), act the verb.</td></tr>
-      <tr><td class="min">10 min</td><td><b>3 · Team Pet Lab</b></td><td>"⏱ 30 seconds" for jobs, hand out cards, start the 8-minute timer. Walk round: help Writers with frames, let Speakers practise in the team.</td><td>Artist draws, Writer writes, Speaker practises, Timer Boss calls "2 minutes left!". Teams can use the Sentence Builder.</td></tr>
-      <tr><td class="min">12 min</td><td><b>4 · The Pet Shop Is Open!</b></td><td>One team at a time (90 s). Give ⭐⭐ for clear sentences, 🤝 for teamwork, +1 for good buyer questions. Tick the Speaking Check (page 2). Then "Buy a pet!": 3 coins per team.</td><td>Speaker presents, the team says the last line together, buyers ask 1 question each.</td></tr>
-      <tr><td class="min">3 min</td><td><b>5 · Awards &amp; Door Pass</b></td><td>Read the award titles. Stand at the door.</td><td>Say 1 sentence at the door (or point at a pet and say its name).</td></tr>
+      <tr><th>Time</th><th>PPP Stage &amp; Station</th><th>Teacher Action</th><th>Pupil &amp; Team Action</th></tr>
+      <tr><td class="min">5 min</td><td><b>P1 · Presentation A</b><br>1 · Vet X-Ray Scanner</td><td>Play Clue 1 (symptom). Let teams whisper. Reveal Clue 2 (cause) &amp; Clue 3 (cure). Tap the patient the team chooses.</td><td>Listen to the 3 clinical clues, deduce which patient is in the X-Ray Scanner (+3/+2/+1 pts).</td></tr>
+      <tr><td class="min">6 min</td><td><b>P1 · Presentation B</b><br>2 · CLIL Vet Check-Up</td><td>Open 4–5 patients. Highlight the colour code (Symptom &rarr; Cause &rarr; Cure). Press "🔁 Repeat", "🎭 Act it!", and run the 1-tap CLIL Quick Check.</td><td>Choral repeat, act out the symptom &amp; treatment (TPR), and answer the CLIL Quick Check (+1 pt).</td></tr>
+      <tr><td class="min">6 min</td><td><b>P2 · Practice</b><br>3 · Medicine Cabinet Match</td><td>Read the patient's chart on the Exam Table. Call the team on turn to choose the matching prescription from the 4 cabinet cards.</td><td>Read the symptom<span class="g4"> &amp; cause</span>, select the correct <span class="g3"><i>Give it…</i></span><span class="g4"><i>should / shouldn't</i></span> treatment (+2 pts), and read it aloud.</td></tr>
+      <tr><td class="min">8 min</td><td><b>P3 · Production Prep</b><br>4 · Team Vet Lab</td><td>Run the 30s Jobs Timer (Head Vet, X-Ray Artist, Medical Writer, Clinic Manager). Start the 7-min lab timer and circulate.</td><td>Draw the patient &amp; symptom on the Vet Report Card, write the diagnosis &amp; prescription, and rehearse twice.</td></tr>
+      <tr><td class="min">10 min</td><td><b>P3 · Production</b><br>5 · Open the Vet Clinic!</td><td>Call each Vet Team (90s). Spin a Health Inspector Question for other teams to ask. Then run the <b>3 Healing Hearts (💚)</b> vote &amp; Door Pass.</td><td>Present the patient report, answer 1 Inspector question, award 3 Healing Hearts, and say 1 sentence at the door.</td></tr>
     </table>
 
-    <h2>Support and challenge</h2>
+    <h2>Differentiation &amp; Inclusion</h2>
     <div class="grid">
-      <div class="box"><b>Pupils who need more help</b>
+      <div class="box"><b>Support (Emerging A1 Learners)</b>
         <ul>
-          <li>Give them the Artist or Timer Boss job first; they say only the team's last line</li>
-          <li>Door pass: point at a picture + say the pet's name</li>
-          <li>Sentence Builder words all have pictures</li>
+          <li>Assign X-Ray Artist or Clinic Manager roles first; they join the choral final line (<i>"Now our pet is happy and healthy!"</i>).</li>
+          <li>Every chip on the board and worksheet has a clear emoji icon.</li>
         </ul>
       </div>
-      <div class="box"><b>Fast finishers</b>
+      <div class="box"><b>Challenge (Fast Finishers &amp; Strong A1+)</b>
         <ul>
-          <li>Add a 4th sentence: <i>It has got … and …</i><span class="g4"> / <i>It likes …</i></span></li>
-          <li>Be the buyer who asks 2 questions</li>
-          <li>Draw a second pet on the back of the card</li>
+          <li>Add a temperature reading and a 2nd <i>shouldn't</i> warning or a 3-day care schedule.</li>
+          <li>Act as Lead Health Inspector and ask 2 follow-up questions without looking at the card.</li>
         </ul>
       </div>
     </div>
-    <p class="key"><b>Soft-fail:</b> no minus points for wrong answers; Luna gives a hint and the team tries again. Team points stay on the lesson page; give team XP on the Class Board after the lesson if you want.<br><b>Homework (optional):</b> "My Pet at Home" (worksheet page 4): draw, 3 sentences, say them to the family.</p>
   </section>
 
   <section class="page">
-    <h1>✅ Team Speaking Check</h1>
-    <p class="meta">Tick while each team presents (✓ yes · ~ almost · – not yet). Team level only: no pupil names on this sheet. Use it to plan who needs more speaking practice next week.</p>
+    <h1>✅ Team Speaking &amp; CLIL Assessment Rubric</h1>
+    <p class="meta">Tick while each Vet Team presents (✓ Mastered · ~ Developing · – Needs Support). Team-level formative tracking only (no pupil names stored).</p>
     <table class="check">
-      <thead><tr><th>Team</th><th>3 sentences together</th><th>Speaker spoke clearly</th><th>used "has got"</th><th>used "can"<span class="g4"> / "can't"</span></th><th>asked a buyer question</th><th>finished in time</th><th>Notes</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Vet Team</th>
+          <th>Stated Symptom Clearly<br><small>(tummy ache, cold, sore paw…)</small></th>
+          <th class="g3">Used "has got" &amp; Feelings<br><small>(It is… / It has got…)</small></th>
+          <th class="g4">Explained Cause with "because"<br><small>(because it ate / flew…)</small></th>
+          <th class="g3">Used Care Imperative<br><small>(Give it… / Put on…)</small></th>
+          <th class="g4">Used "should" &amp; "shouldn't"<br><small>(It should… / shouldn't…)</small></th>
+          <th>Asked / Answered Inspector Q</th>
+          <th>Teamwork &amp; Time</th>
+          <th>Teacher Notes</th>
+        </tr>
+      </thead>
       <tbody id="check-rows"></tbody>
     </table>
     <p class="key">Date: ____________ &nbsp;&nbsp; Class: <b id="cls-lbl2">________</b></p>
@@ -129,7 +141,9 @@
       try { if (cls && window.AllAboutMeData) teams = window.AllAboutMeData.getTeamsForClass('class-' + cls).map(function (t) { return t.name; }); } catch (e) { teams = []; }
       if (!teams.length) teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4', 'Team 5'];
       var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-      document.getElementById('check-rows').innerHTML = teams.map(function (n) { return '<tr><td><b>' + esc(n) + '</b></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>'; }).join('');
+      document.getElementById('check-rows').innerHTML = teams.map(function (n) {
+        return '<tr><td><b>' + esc(n) + '</b></td><td></td><td class="g3"></td><td class="g4"></td><td class="g3"></td><td class="g4"></td><td></td><td></td><td></td></tr>';
+      }).join('');
       if (cls) {
         document.getElementById('cls-lbl2').textContent = cls.toUpperCase();
         document.getElementById('open-lesson').href = 'index.html?class=' + cls;
@@ -138,7 +152,7 @@
         document.body.classList.toggle('grade4', g === 4);
         document.getElementById('g3').classList.toggle('on', g === 3);
         document.getElementById('g4').classList.toggle('on', g === 4);
-        document.getElementById('cls-lbl').textContent = (cls ? 'Class ' + cls.toUpperCase() + ' · ' : '') + 'Grade ' + g;
+        document.getElementById('cls-lbl').textContent = (cls ? 'Class ' + cls.toUpperCase() + ' · ' : '') + 'Grade ' + g + (g === 4 ? ' (A1+)' : ' (A1)');
       }
       document.getElementById('g3').onclick = function () { set(3); };
       document.getElementById('g4').onclick = function () { set(4); };
