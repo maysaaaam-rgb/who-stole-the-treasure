@@ -7,38 +7,60 @@
   <title>Island World • Practice Island</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=w1">
-  <link rel="stylesheet" href="css/games.css?v=w1">
-  <link rel="stylesheet" href="css/adventure.css?v=w1">
-  <link rel="stylesheet" href="css/wall.css?v=w1">
-  <link rel="stylesheet" href="css/shop.css?v=5">
-  <link rel="stylesheet" href="css/world.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=w2">
+  <link rel="stylesheet" href="css/games.css?v=w2">
+  <link rel="stylesheet" href="css/adventure.css?v=w2">
+  <link rel="stylesheet" href="css/wall.css?v=w2">
+  <link rel="stylesheet" href="css/shop.css?v=6">
+  <link rel="stylesheet" href="css/world.css?v=20">
 </head>
 <body class="w-page">
-  <!-- The Island's walking world. Missions, stars, XP and saving all go through the normal Island code (js/app.js); this page only adds the world around them. -->
+  <!-- The Island's walking world. Missions, stars, XP and saving all go through the normal Island code (js/app.js); this page adds the 2D adventure world around them. -->
   <header class="isl-topbar" id="isl-topbar"></header>
   <main class="isl-main" id="isl-main"></main>
   <div id="world"></div>
+
+  <!-- Clean 3-Point Game HUD -->
   <div id="w-top">
-    <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="World Map"><img src="art/flat/u_map.webp" alt=""><span>Map</span></button>
+    <div class="w-hud-left">
+      <button type="button" class="w-btn w-icon-btn" id="w-back" aria-label="World Map"><img src="art/flat/u_map.webp" alt=""><span>Map</span></button>
+      <button type="button" class="w-btn w-energy-chip" id="w-energy" aria-label="Monster Energy" title="Tap to charge +30 Energy!"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">35</b></button>
+    </div>
     <div id="w-goal"></div>
-    <button type="button" class="w-btn w-energy-chip" id="w-energy" aria-label="Monster Energy"><img src="art/flat/i_energy.webp" alt=""><b id="w-energy-val">35</b></button>
     <div id="w-tools">
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-home" aria-label="Home & Workshop"><img src="art/flat/u_build.webp" alt=""><span>Home</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-jobs" aria-label="Villager Jobs"><img src="art/flat/u_jobs.webp" alt=""><span>Jobs</span></button>
-      <button type="button" class="w-btn w-tool w-icon-btn" id="w-wall" aria-label="Class Plaza"><img src="art/flat/u_friends.webp" alt=""><span>Plaza</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-decor" aria-label="Decorate Yard" style="display:none"><img src="art/flat/o_workbench.webp" alt=""><span>Decorate</span></button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-jobs" aria-label="Villager Quests"><img src="art/flat/u_jobs.webp" alt=""><span>Quests</span><em class="w-badge" id="w-jobs-badge" hidden>0</em></button>
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-dress" aria-label="Dress up"><img src="art/flat/u_dress.webp" alt=""><span>Look</span></button>
       <button type="button" class="w-btn w-tool w-icon-btn" id="w-shop" aria-label="Store"><img src="art/flat/u_store.webp" alt=""><span>Store</span></button>
-      <button type="button" class="w-btn w-tool" id="w-book" aria-label="Sticker book">📒</button>
+      <button type="button" class="w-btn w-tool w-icon-btn" id="w-wall" aria-label="Class Plaza"><img src="art/flat/u_friends.webp" alt=""><span>Plaza</span></button>
     </div>
     <div id="w-fps"></div>
   </div>
+
   <div id="w-joy"><div id="w-knob"></div></div>
+
+  <!-- Live In-World Talk Panel -->
   <div id="w-talk">
     <img id="w-face" src="" alt="">
     <div id="w-line"></div>
     <button type="button" class="w-btn" id="w-next">OK ▶</button>
   </div>
+
+  <!-- Live In-World Decorator Dock (My Home Island) -->
+  <div id="w-decor-dock" aria-label="Live Home Decorator">
+    <div class="w-dd-head">
+      <div class="w-dd-title">🪑 Live Yard &amp; Veranda Decorator <small id="w-dd-hint">Tap an item below or on the ground, then tap where to place it!</small></div>
+      <div class="w-dd-actions">
+        <button type="button" class="w-btn w-dd-btn cyan" id="w-dd-flip" onclick="WORLD.flipDecor()">↔ Flip</button>
+        <button type="button" class="w-btn w-dd-btn amber" id="w-dd-craft" onclick="WorldGame.openWorkshop('craft')">🔨 Craft More</button>
+        <button type="button" class="w-btn w-dd-btn coral" id="w-dd-store" onclick="WORLD.putAwayDecor()">📥 Put in Bag</button>
+        <button type="button" class="w-btn w-dd-btn emerald" id="w-dd-done" onclick="WORLD.closeDecorDock()">✓ Done</button>
+      </div>
+    </div>
+    <div class="w-dd-tray" id="w-dd-tray"></div>
+  </div>
+
   <div id="w-bag"></div>
   <div id="w-vignette"></div>
   <div id="w-fade"></div>
@@ -64,18 +86,18 @@
   <script src="../game-maker/js/sets-unit4.js?v=1"></script>
   <script src="../game-maker/js/sets-units14.js?v=1"></script>
   <script src="../game-maker/js/bank.js?v=1"></script>
-  <script src="js/data.js?v=w4"></script>
+  <script src="js/data.js?v=w5"></script>
   <script src="js/audio.js?v=w1"></script>
   <script src="js/story.js?v=w1"></script>
   <script src="js/games.js?v=w1"></script>
   <script src="js/adventure.js?v=w1"></script>
   <script src="js/wall.js?v=w1"></script>
   <script src="js/rewards.js?v=w1"></script>
-  <script src="js/sync.js?v=w2"></script>
+  <script src="js/sync.js?v=w3"></script>
   <script src="js/app.js?v=w3"></script>
   <script src="js/shop.js?v=6"></script>
   <script src="lib/phaser.min.js"></script>
-  <script src="js/world-game.js?v=1"></script>
-  <script src="js/world.js?v=18"></script>
+  <script src="js/world-game.js?v=20"></script>
+  <script src="js/world.js?v=20"></script>
 </body>
 </html>
