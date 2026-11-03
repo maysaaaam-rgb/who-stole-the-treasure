@@ -1,6 +1,7 @@
-/* All About Me (AAM) Student Survey Data & Smartboard Teams
-   Contains verified survey responses (Q1–Q13) for Grade 3A, 3B, 4A & 4B (71 pupils).
-   Note: Q11 (partner preferences) and Q13 (personal teacher notes) are strictly Private & Teacher-Confidential. */
+/**
+ * ALL ABOUT ME — COMPLETE SURVEY DATASET & CANONICAL CLASSROOM TEAMS
+ * Source: All About Me Student Survey Scans (Grades 3A, 3B, 4A, 4B — 71 Pupils)
+ */
 (function(root) {
   'use strict';
 
@@ -1158,7 +1159,7 @@
     "teamColor": "#06b6d4",
     "teammates": [
       "student-4a-314",
-      "student-4b-208",
+      "student-4a-319",
       "student-4a-341",
       "student-4a-300"
     ],
@@ -1304,7 +1305,7 @@
     "teamName": "Diamond Titans",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-208",
+      "student-4a-319",
       "student-4a-341",
       "student-4a-300",
       "student-4a-345"
@@ -1365,7 +1366,7 @@
     "teamColor": "#06b6d4",
     "teammates": [
       "student-4a-314",
-      "student-4b-208",
+      "student-4a-319",
       "student-4a-300",
       "student-4a-345"
     ],
@@ -1424,7 +1425,7 @@
     "teamColor": "#06b6d4",
     "teammates": [
       "student-4a-314",
-      "student-4b-208",
+      "student-4a-319",
       "student-4a-341",
       "student-4a-345"
     ],
@@ -1475,32 +1476,32 @@
   },
   "student-4a-319": {
     "studentId": "student-4a-319",
-    "firstName": "Ozan",
-    "lastName": "Topçu",
-    "fullName": "Ozan Topçu",
-    "classId": "class-4b",
-    "teamId": "group-4b-3",
-    "teamName": "Galactic Navigators",
+    "firstName": "Şimal",
+    "lastName": "Koyun",
+    "fullName": "Şimal Koyun",
+    "classId": "class-4a",
+    "teamId": "group-4a-3",
+    "teamName": "Diamond Titans",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4b-305",
-      "student-4b-316",
-      "student-4b-318",
-      "student-4b-440"
+      "student-4a-314",
+      "student-4a-341",
+      "student-4a-300",
+      "student-4a-345"
     ],
     "hasScan": true,
-    "meta": "`4B`, pp. 69–70",
-    "q1": "😍 English, Maths, PE, Computer games, Animals · 🙂 Art/music, Reading, Vegetables, Rainy days · 🙁 Homework.",
-    "q2": "😍 *\"computer games and football\"* | 🙁 *\"home work and math\"*",
-    "q3": "Character: *Patrick Jane and computer game character* · Game: *Brawl Stars and Minecraft and Roblox* · Animal: *Bird* · Food: *Burger* · Colour: *Blue* · Sport: *Football* · YouTube/TV: *YouTube* · Book: *Avengers: Age of Ultron*",
-    "q4": "Football, bike, building, playing outside.",
-    "q6": "Watch TV, tablet/phone, cook, play with friends, play games, play with a pet.",
-    "q7": "🙂 OK · Understands teacher: **Sometimes**.",
-    "q8": "Listening, writing, grammar, finishing in time.",
+    "meta": "`4A`, Age 10, pp. 25–26",
+    "q1": "😍 English, Maths, PE, Art/music, Reading, Homework, Computer games, Animals, Vegetables · 🙁 Rainy days.",
+    "q2": "😍 *\"animals because so cute\"* | 🙁 *\"rainy days because don't like\"*",
+    "q3": "Character: *Çilek, Zeynep, Aslıhan* · Movie: *Sihirli Annem and Kardeş Takımı* · Game: *Brawl Stars and PK XD* · Song: *Manifest everything* · Animal: *Cat and rabbit* · Food: *Kıymalı Börek, Kıymalı Pide, İçli Köfte* · Colour: *Yellow and Purple* · Sport: *Voleybol and Jimnastik* · YouTube/TV: *Sihirli Annem and Süha's TV* · Book: *Lila ve Kirpik*",
+    "q4": "Bike, dancing, swimming, drawing, singing, video games, pets, photos. Another hobby: *\"Voleybol\"*.",
+    "q6": "Watch TV, tablet/phone, homework, cook, play with friends, music, play games, read, draw, sleep/rest.",
+    "q7": "😀 Easy · Understands teacher: **Sometimes**.",
+    "q8": "Speaking, listening, grammar.",
     "q9": "",
     "q10": "",
     "q11_private": "",
-    "q12": "Good at: *\"games and football\"* · Grow up: *\"Pet\"*",
+    "q12": "Good at: *\"Home\"* · Wants to learn: *\"?\"* · Grow up: *\"Draw\"*",
     "q13_private": ""
   },
   "student-4a-109": {
@@ -1604,7 +1605,7 @@
     "teammates": [
       "student-4b-305",
       "student-4b-318",
-      "student-4a-319",
+      "student-4b-208",
       "student-4b-440"
     ],
     "hasScan": true,
@@ -1724,7 +1725,7 @@
     "teammates": [
       "student-4b-305",
       "student-4b-316",
-      "student-4a-319",
+      "student-4b-208",
       "student-4b-440"
     ],
     "hasScan": true,
@@ -1784,7 +1785,7 @@
     "teammates": [
       "student-4b-316",
       "student-4b-318",
-      "student-4a-319",
+      "student-4b-208",
       "student-4b-440"
     ],
     "hasScan": true,
@@ -1905,7 +1906,7 @@
       "student-4b-305",
       "student-4b-316",
       "student-4b-318",
-      "student-4a-319"
+      "student-4b-208"
     ],
     "hasScan": true,
     "meta": "`4B`, pp. 67–68",
@@ -1953,32 +1954,32 @@
   },
   "student-4b-208": {
     "studentId": "student-4b-208",
-    "firstName": "Şimal",
-    "lastName": "Koyun",
-    "fullName": "Şimal Koyun",
-    "classId": "class-4a",
-    "teamId": "group-4a-3",
-    "teamName": "Diamond Titans",
+    "firstName": "Ozan",
+    "lastName": "Topçu",
+    "fullName": "Ozan Topçu",
+    "classId": "class-4b",
+    "teamId": "group-4b-3",
+    "teamName": "Galactic Navigators",
     "teamColor": "#06b6d4",
     "teammates": [
-      "student-4a-314",
-      "student-4a-341",
-      "student-4a-300",
-      "student-4a-345"
+      "student-4b-305",
+      "student-4b-316",
+      "student-4b-318",
+      "student-4b-440"
     ],
     "hasScan": true,
-    "meta": "`4A`, Age 10, pp. 25–26",
-    "q1": "😍 English, Maths, PE, Art/music, Reading, Homework, Computer games, Animals, Vegetables · 🙁 Rainy days.",
-    "q2": "😍 *\"animals because so cute\"* | 🙁 *\"rainy days because don't like\"*",
-    "q3": "Character: *Çilek, Zeynep, Aslıhan* · Movie: *Sihirli Annem and Kardeş Takımı* · Game: *Brawl Stars and PK XD* · Song: *Manifest everything* · Animal: *Cat and rabbit* · Food: *Kıymalı Börek, Kıymalı Pide, İçli Köfte* · Colour: *Yellow and Purple* · Sport: *Voleybol and Jimnastik* · YouTube/TV: *Sihirli Annem and Süha's TV* · Book: *Lila ve Kirpik*",
-    "q4": "Bike, dancing, swimming, drawing, singing, video games, pets, photos. Another hobby: *\"Voleybol\"*.",
-    "q6": "Watch TV, tablet/phone, homework, cook, play with friends, music, play games, read, draw, sleep/rest.",
-    "q7": "😀 Easy · Understands teacher: **Sometimes**.",
-    "q8": "Speaking, listening, grammar.",
+    "meta": "`4B`, pp. 69–70",
+    "q1": "😍 English, Maths, PE, Computer games, Animals · 🙂 Art/music, Reading, Vegetables, Rainy days · 🙁 Homework.",
+    "q2": "😍 *\"computer games and football\"* | 🙁 *\"home work and math\"*",
+    "q3": "Character: *Patrick Jane and computer game character* · Game: *Brawl Stars and Minecraft and Roblox* · Animal: *Bird* · Food: *Burger* · Colour: *Blue* · Sport: *Football* · YouTube/TV: *YouTube* · Book: *Avengers: Age of Ultron*",
+    "q4": "Football, bike, building, playing outside.",
+    "q6": "Watch TV, tablet/phone, cook, play with friends, play games, play with a pet.",
+    "q7": "🙂 OK · Understands teacher: **Sometimes**.",
+    "q8": "Listening, writing, grammar, finishing in time.",
     "q9": "",
     "q10": "",
     "q11_private": "",
-    "q12": "Good at: *\"Home\"* · Wants to learn: *\"?\"* · Grow up: *\"Draw\"*",
+    "q12": "Good at: *\"games and football\"* · Grow up: *\"Pet\"*",
     "q13_private": ""
   },
   "student-4b-322": {
@@ -2242,7 +2243,7 @@
     "color": "#06b6d4",
     "studentIds": [
       "student-4a-314",
-      "student-4b-208",
+      "student-4a-319",
       "student-4a-341",
       "student-4a-300",
       "student-4a-345"
@@ -2299,7 +2300,7 @@
       "student-4b-305",
       "student-4b-316",
       "student-4b-318",
-      "student-4a-319",
+      "student-4b-208",
       "student-4b-440"
     ],
     "createdDate": "2026-11-02"

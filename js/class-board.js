@@ -483,7 +483,7 @@ function ensureCss() {
         if (found) return found;
         var st = S();
         var raw = st && st.getStudent ? st.getStudent(id) : null;
-        if (!raw) return null;
+        if (!raw || (cls && cls.id && raw.classId && raw.classId !== cls.id)) return null;
         var m = st.calculateMonsterState ? st.calculateMonsterState(raw.id) : {};
         var prof = st.getMonsterProfile ? st.getMonsterProfile(raw.id) : null, img = '', av = '';
         try { img = root.getStudentMonsterAvatarUrl ? root.getStudentMonsterAvatarUrl(raw, prof, m) : ''; } catch (e) { img = ''; }
