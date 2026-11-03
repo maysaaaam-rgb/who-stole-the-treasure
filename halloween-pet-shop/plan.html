@@ -3,32 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monster Pet Vet Clinic · Pro CLIL &amp; PPP Lesson Plan</title>
+  <title>Monster Pet Vet Clinic · 35-Minute Teacher Lesson Plan (Whole-Class + Individual PPP)</title>
   <style>
+    :root { --ink: #1e1b2e; --line: #c4b5fd; --violet: #6d28d9; --amber: #b45309; --cyan: #0e7490; --green: #047857; --coral: #be123c; }
     * { box-sizing: border-box; }
-    body { margin: 0; background: #ece9f5; color: #1e1b2e; font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; font-size: 10pt; }
-    .bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 16px; background: #1e1b2e; color: #fff; }
+    body { margin: 0; background: #ece9f5; color: var(--ink); font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; }
+    .bar { position: sticky; top: 0; z-index: 2; display: flex; gap: 10px; align-items: center; padding: 10px 16px; background: #1e1b2e; color: #fff; }
     .bar b { margin-right: auto; }
-    .bar button, .bar a { border: 0; border-bottom: 5px solid #5b21b6; background: #7c3aed; color: #fff; font: inherit; font-weight: 900; padding: 8px 14px; border-radius: 12px; cursor: pointer; text-decoration: none; }
-    .bar button.on { background: #f97316; border-bottom-color: #c2410c; }
-    .bar button:active, .bar a:active { transform: translateY(4px); border-bottom-width: 1px; }
-    .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 10mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
-    h1 { margin: 0 0 2px; font-size: 18pt; }
-    h2 { margin: 8px 0 4px; font-size: 11.2pt; color: #6d28d9; }
-    .meta { color: #4c4766; margin: 0 0 6px; font-weight: 700; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
-    .box { border: 1.5px solid #ddd6fe; border-radius: 10px; padding: 6px 9px; }
-    .box b { color: #6d28d9; }
-    ul { margin: 2px 0; padding-left: 17px; } li { margin: 1px 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-    th, td { border: 1.5px solid #ddd6fe; padding: 4.5px 6px; text-align: left; vertical-align: top; }
-    th { background: #f5f3ff; }
-    td.min { white-space: nowrap; font-weight: 900; color: #6d28d9; }
-    .check th, .check td { text-align: center; font-size: 9.5pt; }
-    .check td:first-child, .check th:first-child { text-align: left; width: 26%; }
-    .check td { height: 15mm; }
-    .key { margin-top: 6px; color: #4c4766; }
-    .g4 { display: none; } body.grade4 .g4 { display: inline; } body.grade4 .g3 { display: none; }
+    .bar a, .bar button { border: 0; border-bottom: 5px solid #5b21b6; background: #7c3aed; color: #fff; font: inherit; font-weight: 900; padding: 8px 14px; border-radius: 12px; cursor: pointer; text-decoration: none; }
+    .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 10mm 12mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); font-size: 9.8pt; line-height: 1.38; }
+    h1 { margin: 0 0 4px; font-size: 18pt; display: flex; align-items: center; gap: 8px; border-bottom: 3px solid var(--violet); padding-bottom: 5px; }
+    h1 img { width: 38px; height: 38px; }
+    h2 { margin: 8px 0 4px; font-size: 11.5pt; color: var(--violet); }
+    .meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
+    .meta div { border: 1.5px solid var(--line); border-radius: 9px; padding: 4px 8px; background: #faf8ff; }
+    .meta b { display: block; font-size: 8.5pt; color: var(--violet); }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+    th, td { border: 1.5px solid var(--line); padding: 4px 7px; text-align: left; vertical-align: top; }
+    th { background: #f3efff; font-weight: 900; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .box { border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 8px; }
+    .box b { color: var(--violet); }
+    ul { margin: 3px 0; padding-left: 18px; }
+    .k-col { color: var(--amber); font-weight: 900; }
+    .k-has { color: var(--cyan); font-weight: 900; }
+    .k-can { color: var(--green); font-weight: 900; }
+    .k-warn { color: var(--coral); font-weight: 900; }
     @media print {
       body { background: #fff; } .bar { display: none; }
       .page { margin: 0; box-shadow: none; width: auto; min-height: auto; padding: 8mm 10mm; page-break-after: always; }
@@ -39,111 +39,76 @@
 </head>
 <body>
   <div class="bar">
-    <b>🏥 Monster Pet Vet Clinic · Teacher Plan (6-Step CLIL + PPP)</b>
-    <button type="button" id="g3">Grade 3 (A1)</button>
-    <button type="button" id="g4">Grade 4 (A1+)</button>
-    <a href="index.html" id="open-lesson">▶ Open the Lesson</a>
-    <button type="button" onclick="window.print()">🖨️ Print</button>
+    <b>📋 Monster Pet Vet Clinic · 35-Minute Whole-Class + Individual PPP Lesson Plan</b>
+    <a href="index.html">▶ Open Smartboard</a>
+    <a href="worksheet.html">🖨️ "Circle &amp; Say" Sheets</a>
+    <button type="button" onclick="window.print()">🖨️ Print Plan</button>
   </div>
 
   <section class="page">
-    <h1>🏥 Monster Pet Vet Clinic (CLIL Health &amp; 6-Step PPP Method)</h1>
-    <p class="meta"><b id="cls-lbl">Grade 3 (A1)</b> · 35 minutes · CLIL Veterinary Science &amp; Health Care · True PPP Flow (Presentation &rarr; Practice &rarr; Production)</p>
-    <div class="grid">
-      <div class="box"><b>🎯 Targeted Outcomes (Students will be able to…)</b>
+    <h1><img src="art/host.webp" alt="">35-Minute Lesson Plan · Monster Pet Vet Clinic (Zero Group Work)</h1>
+    <div class="meta">
+      <div><b>Classes &amp; Levels</b>3A, 3B (CEFR A1)<br>4A, 4B (CEFR A1+)</div>
+      <div><b>Duration &amp; Format</b>35 minutes · 6 PPP Steps<br>Whole-Class + Individual Turns</div>
+      <div><b>CLIL Topic</b>Animal Care &amp; Health<br>(6 Problems &rarr; 6 Cures)</div>
+      <div><b>Print Ahead</b><code>worksheet.html</code> Page 1 or Page 2<br>(1 "Circle &amp; Say" sheet per pupil)</div>
+    </div>
+
+    <div class="two">
+      <div class="box">
+        <b>🎯 Grade 3 (CEFR A1) — 3 Short Lines:</b>
         <ul>
-          <li class="g3"><b>A1 Symptom &amp; State Identification:</b> Ask <i>"What's the matter?"</i> and express feelings &amp; aches (<i>It is tired/cold. It has got a tummy ache / sore throat / hurt paw</i>).</li>
-          <li class="g3"><b>A1 Care Imperatives:</b> Prescribe simple care commands (<i>Give it warm water and a blanket! Put a bandage on its paw!</i>).</li>
-          <li class="g4"><b>A1+ Symptom &amp; Cause Diagnosis:</b> Diagnose illnesses and causes using <b>because + Past Simple</b> (<i>It has got a stomach ache because it ate ten sweets</i>).</li>
-          <li class="g4"><b>A1+ Medical Advice:</b> Give positive and negative advice using <b>should / shouldn't</b> (<i>It should drink warm honey tea. It shouldn't eat sweets!</i>).</li>
-          <li><b>CLIL Science Link:</b> Connect symptoms &rarr; causes &rarr; healthy treatments in a collaborative Vet Team roleplay.</li>
+          <li><b>Line 1:</b> <i>"Look at Shadow! It is a black cat."</i></li>
+          <li><b>Line 2:</b> <i>"It <span class="k-has">has got</span> <span class="k-col">a tummy ache</span>."</i></li>
+          <li><b>Line 3:</b> <i>"<span class="k-can">Give it warm water</span>!"</i></li>
         </ul>
       </div>
-      <div class="box"><b>🧬 True 6-Step PPP + CLIL Architecture</b>
+      <div class="box">
+        <b>🎯 Grade 4 (CEFR A1+) — 3 Short Lines:</b>
         <ul>
-          <li><b>P1 · Presentation 1 (5 min):</b> Teach the 3-Block Grammar Formula + 6 Flippable Symptom &harr; Cure Flashcards with TPR actions <i>before</i> any testing!</li>
-          <li><b>P1 · Presentation 2 (6 min):</b> Inspect the 3-Box Medical Charts of the 7 patients + choral echo + 1-tap CLIL Check.</li>
-          <li><b>P2 · Practice 1 (5 min):</b> Receptive deduction game inside the Digital Medical X-Ray Monitor.</li>
-          <li><b>P2 · Practice 2 (6 min):</b> 2-Step Medicine Cabinet Match (+1 pt CLIL cure, +1 pt Grammar Fixer).</li>
-          <li><b>P3 · Production (13 min):</b> Team Vet Card Studio (6 min) + Live Vet Clinic Presentations, Inspector Q&amp;A &amp; Healing Hearts (7 min).</li>
-        </ul>
-      </div>
-      <div class="box"><b>🖨️ Printables (<a href="worksheet.html">worksheet.html</a>)</b>
-        <ul>
-          <li><b>Page 1 (1 per team):</b> Official Vet Report Card with Step 1 Tick-Boxes, Step 2 X-Ray Drawing Box, and Step 3 Labelled Fill-in Slots (with hints under every blank).</li>
-          <li><b>Page 2:</b> Quick 2-min PPP Grammar Practice + Cut-Out Health Inspector Question Cards.</li>
-          <li><b>Pages 3–4:</b> Door Pass Exit Tickets &amp; Home Vet Check-Up Homework.</li>
-        </ul>
-      </div>
-      <div class="box"><b>🗣️ Target Language &amp; Colour Code</b>
-        <ul>
-          <li><span style="color:#b45309;font-weight:800">Amber (1 · Symptom):</span> tired, hungry, cold, dizzy, tummy/stomach ache, sore throat, hurt paw/wing</li>
-          <li><span style="color:#0e7490;font-weight:800">Cyan (2 · Cause/Body):</span> has got, paw, wing<span class="g4"> · <b>because</b> it ate sweets / flew in the rain / shouted / danced</span></li>
-          <li><span style="color:#047857;font-weight:800">Green (3 · Cure/Advice):</span> <span class="g3"><b>Give it</b> warm water / honey tea / a blanket / a bandage</span><span class="g4"><b>It should</b> drink tea / rest · <b>It shouldn't</b> eat sweets</span></li>
+          <li><b>Line 1:</b> <i>"Shadow <span class="k-has">has got</span> <span class="k-col">a tummy ache</span>."</i></li>
+          <li><b>Line 2:</b> <i>"It <span class="k-can">should drink warm water</span>."</i></li>
+          <li><b>Line 3:</b> <i>"It <span class="k-warn">shouldn't eat sweets</span>!"</i></li>
         </ul>
       </div>
     </div>
 
-    <h2>6-Step PPP Lesson Stages (35 Minutes)</h2>
+    <h2>⏱️ 35-Minute Whole-Class + Individual PPP Flow (No Group Chaos!)</h2>
     <table>
-      <tr><th>Time</th><th>PPP Stage &amp; Station</th><th>Teacher Action</th><th>Pupil &amp; Team Action</th></tr>
-      <tr><td class="min">5 min</td><td><b>P1 · Presentation 1</b><br>1 · Symptoms, Cures &amp; Rule</td><td>Tap the 3 Grammar Formula blocks at the top. Then tap each of the 6 Flashcards, press "🎭 Act!", and flip to the green Cure side.</td><td>Listen, repeat chorally, do the TPR gesture for each symptom, and read the cure aloud.</td></tr>
-      <tr><td class="min">6 min</td><td><b>P1 · Presentation 2</b><br>2 · Meet the 7 Patients</td><td>Open 4–5 patients on the Waiting Bench. Walk through the 3-Box Medical Chart, press "🔁 Repeat", and run the Quick Check.</td><td>Echo the 3 chart boxes together and answer the CLIL Quick Check (+1 pt).</td></tr>
-      <tr><td class="min">5 min</td><td><b>P2 · Practice 1</b><br>3 · Medical X-Ray Scanner</td><td>Reveal Clue 1 (Symptom), Clue 2 (Body/Cause), Clue 3 (Cure) on the X-Ray Monitor. Tap the patient the team selects.</td><td>Listen to the clues, whisper in teams, and diagnose the mystery patient (+3/+2/+1 pts).</td></tr>
-      <tr><td class="min">6 min</td><td><b>P2 · Practice 2</b><br>4 · Medicine &amp; Grammar Fixer</td><td>Run the 2-Step cases: let the team pick the cure in Step 1 (+1 pt), then tap the missing grammar keyword in Step 2 (+1 pt).</td><td>Match the symptom to the cure, then complete <span class="g3"><i>has got / is / Give</i></span><span class="g4"><i>because / should / shouldn't</i></span>.</td></tr>
-      <tr><td class="min">6 min</td><td><b>P3 · Production Prep</b><br>5 · Team Vet Card Studio</td><td>Run the 30s Jobs Timer, hand out Page 1, and start the 6-min timer. Use the 4 clean Studio tabs to model filling the card.</td><td>Tick the symptom &amp; cure, draw the patient, fill in the labelled boxes, and rehearse twice.</td></tr>
-      <tr><td class="min">7 min</td><td><b>P3 · Production</b><br>6 · Live Vet Clinic &amp; Awards</td><td>Call each Vet Team (90s). Spin a Health Inspector Question for other teams to ask. Run the <b>3 Healing Hearts (💚)</b> vote &amp; Door Pass.</td><td>Present the Vet Report, answer 1 Inspector question, vote with 3 Healing Hearts, and say 1 sentence at the door.</td></tr>
+      <tr><th style="width:18%">PPP Stage &amp; Time</th><th style="width:24%">Smartboard Screen</th><th>Teacher &amp; Student Action (Whole-Class + 1-by-1 Turns)</th></tr>
+      <tr>
+        <td><b>1 · Presentation A</b><br>5 min</td>
+        <td><b>6 Problems, 6 Cures &amp; Grammar Rule</b></td>
+        <td>Tap the <b>3-Block Grammar Rule</b> at the top. Then tap each of the <b>6 Picture Flashcards</b>: class repeats the 2-word problem (<i>a tummy ache, a cold, a sore throat, a hurt paw, tired, hungry</i>), does the 2-second mime (<b>🎭 Act!</b>), and taps <b>💊 Flip to Cure!</b> to see the 2-word picture cure (<i>warm water, a blanket, warm tea, a bandage, a soft bed, milk</i>).</td>
+      </tr>
+      <tr>
+        <td><b>2 · Presentation B</b><br>6 min</td>
+        <td><b>Meet the 6 Patients</b><br>(3 Short Lines)</td>
+        <td>Tap 4–5 patients on the Waiting Bench. Each patient has <b>only 3 short lines</b> (5–6 words each!) with 3D pictures. Press <b>🔁 Echo 3 Lines</b> for choral repetition, then call <b>1 student</b> to tap the <b>2-word Picture Check</b> at the bottom (+1 Star).</td>
+      </tr>
+      <tr>
+        <td><b>3 · Practice A</b><br>6 min</td>
+        <td><b>Medical X-Ray Scanner</b><br>(1 Student at a Time)</td>
+        <td>Call <b>1 student at a time</b> to the smartboard. The X-Ray shows the 3D Problem &rarr; Cure pictures and reads a short 5-word clue (<i>"It has got a tummy ache!"</i>). The student taps the matching pet card (+3, +2, or +1 Star).</td>
+      </tr>
+      <tr>
+        <td><b>4 · Practice B</b><br>6 min</td>
+        <td><b>Medicine Cabinet</b><br>(2-Word Picture Buttons)</td>
+        <td>Call <b>1 student at a time</b> to the board.<br>
+        <b>Step 1 (+1 Star):</b> Tap the right <b>Picture + 2-Word Button</b> (<i>💧 Warm water / 🧣 A blanket / 🩹 A bandage / 🍵 Warm tea</i>).<br>
+        <b>Step 2 (+1 Star):</b> Tap 1 grammar word (<i>has got / Give</i> for Gr 3; <i>should / shouldn't</i> for Gr 4) and the whole class repeats the sentence!</td>
+      </tr>
+      <tr>
+        <td><b>5 · Individual Prep</b><br>7 min</td>
+        <td><b>"Circle &amp; Say" Vet Sheet</b><br>(At Own Desks)</td>
+        <td><b>No group work!</b> Hand out 1 <b>"Circle &amp; Say" Sheet</b> per student (<code>worksheet.html</code> Page 1 or Page 2). Start the 5-minute timer. Each student works calmly at their own desk: writes <b>1 pet name</b>, <b>circles 1 pet picture</b>, <b>circles 1 problem picture</b>, <b>circles 1 cure picture</b>, and draws a quick bandage/blanket.</td>
+      </tr>
+      <tr>
+        <td><b>6 · Production</b><br>5 min</td>
+        <td><b>Brave Vet Stand-Up &amp; Class Finale</b></td>
+        <td>Invite 4–5 <b>Brave Vet volunteers</b> to stand at their desk and read the <b>3 short lines</b> they circled! Tap <b>🌟 Brave Vet Spoke! (+2 Stars)</b> and <b>🎲 Spin 1 Easy Question!</b>. Finish with the <b>🏆 Whole-Class Finale</b> where everyone reads their 3 lines together!</td>
+      </tr>
     </table>
   </section>
-
-  <section class="page">
-    <h1>✅ Team Speaking &amp; CLIL Assessment Rubric</h1>
-    <p class="meta">Tick while each Vet Team presents (✓ Mastered · ~ Developing · – Needs Support). Team-level formative tracking only (no pupil names stored).</p>
-    <table class="check">
-      <thead>
-        <tr>
-          <th>Vet Team</th>
-          <th>Stated Symptom Clearly<br><small>(tummy ache, cold, sore paw…)</small></th>
-          <th class="g3">Used "has got" &amp; Feelings<br><small>(It is… / It has got…)</small></th>
-          <th class="g4">Explained Cause with "because"<br><small>(because it ate / flew…)</small></th>
-          <th class="g3">Used Care Imperative<br><small>(Give it… / Put on…)</small></th>
-          <th class="g4">Used "should" &amp; "shouldn't"<br><small>(It should… / shouldn't…)</small></th>
-          <th>Asked / Answered Inspector Q</th>
-          <th>Teamwork &amp; Time</th>
-          <th>Teacher Notes</th>
-        </tr>
-      </thead>
-      <tbody id="check-rows"></tbody>
-    </table>
-    <p class="key">Date: ____________ &nbsp;&nbsp; Class: <b id="cls-lbl2">________</b></p>
-  </section>
-
-  <script src="../js/all-about-me-data.js"></script>
-  <script>
-    (function () {
-      var q = (/[?&]class=(3a|3b|4a|4b)/i.exec(location.search) || [])[1];
-      var cls = q ? q.toLowerCase() : '';
-      var teams = [];
-      try { if (cls && window.AllAboutMeData) teams = window.AllAboutMeData.getTeamsForClass('class-' + cls).map(function (t) { return t.name; }); } catch (e) { teams = []; }
-      if (!teams.length) teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4', 'Team 5'];
-      var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-      document.getElementById('check-rows').innerHTML = teams.map(function (n) {
-        return '<tr><td><b>' + esc(n) + '</b></td><td></td><td class="g3"></td><td class="g4"></td><td class="g3"></td><td class="g4"></td><td></td><td></td><td></td></tr>';
-      }).join('');
-      if (cls) {
-        document.getElementById('cls-lbl2').textContent = cls.toUpperCase();
-        document.getElementById('open-lesson').href = 'index.html?class=' + cls;
-      }
-      function set(g) {
-        document.body.classList.toggle('grade4', g === 4);
-        document.getElementById('g3').classList.toggle('on', g === 3);
-        document.getElementById('g4').classList.toggle('on', g === 4);
-        document.getElementById('cls-lbl').textContent = (cls ? 'Class ' + cls.toUpperCase() + ' · ' : '') + 'Grade ' + g + (g === 4 ? ' (A1+)' : ' (A1)');
-      }
-      document.getElementById('g3').onclick = function () { set(3); };
-      document.getElementById('g4').onclick = function () { set(4); };
-      set(/^4/.test(cls) || /grade=4/.test(location.search) ? 4 : 3);
-    })();
-  </script>
 </body>
 </html>

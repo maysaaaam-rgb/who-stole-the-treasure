@@ -443,9 +443,17 @@ button { font: inherit; color: inherit; }
 .vcp-badges span { display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 999px; padding: 2px 9px 2px 4px; font-size: .78rem; font-weight: 900; color: #e0f2fe; }
 .vcp-img { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; background: rgba(6, 9, 17, 0.65); }
 .studio-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
+.studio-tabs.three { grid-template-columns: repeat(3, 1fr); }
 .studio-tab { border: 1.5px solid var(--line); border-bottom: 4px solid #0b1220; background: var(--glass-2); border-radius: 11px; padding: 5px 6px; font-weight: 900; font-size: .8rem; cursor: pointer; }
 .studio-tab.on { background: var(--violet); border-color: #c084fc; border-bottom-color: #6b21a8; }
 .studio-tab-body { background: rgba(6, 9, 17, 0.5); border: 1px solid var(--line); border-radius: 12px; padding: 7px 10px; }
 .studio-tab-body .b-row { margin-bottom: 5px; }
 .studio-tab-body .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; font-size: .82rem; }
 .chip-img { width: 22px; height: 22px; object-fit: contain; border-radius: 6px; background: rgba(6, 9, 17, 0.55); }
+
+.shop-left { gap: 6px; align-content: start; }
+.shop-left .award { padding: 7px 10px; gap: 2px; }
+.shop-left .award-ic { font-size: 1.45rem; }
+.shop-left .tm.compact { padding: 6px 8px; gap: 4px; }
+.shop-left .row-btns { gap: 6px; }
+.shop-left .row-btns .ps-btn { font-size: .84rem; padding: 7px 8px; }
