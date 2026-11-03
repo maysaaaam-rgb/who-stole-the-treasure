@@ -1,28 +1,73 @@
-/* Halloween Monster Pet Shop: smartboard controller (5 stations, team points only on this page: no cloud writes). */
+/* Halloween Monster Pet Vet Clinic: CLIL + PPP smartboard controller (5 PPP stations, team points on this page only: no cloud writes). */
 (function (window) {
   'use strict';
   var D = window.PetShopData, A = window.PetAudio;
   var $ = function (id) { return document.getElementById(id); };
   var PET = {}; D.PETS.forEach(function (p) { PET[p.id] = p; });
 
-  var state = { cls: '', grade: 3, step: 0, teams: [], turn: 0, lastSpeech: '', met: {}, done: {} };
+  var state = { cls: '', grade: 3, step: 0, teams: [], turn: 0, lastSpeech: '', met: {}, checked: {}, done: {} };
 
   var STATIONS = [
-    { title: '1 · Who Is in the Cauldron?', mins: '4 min', sub: 'Listen to 3 clues · Guess the pet', run: stCauldron,
-      say: ["It's black.", 'It has got a hat.', 'It can climb.'],
-      tips: ['Warm-up: listening only. Nobody has to speak alone.', 'Read clue 1, teams whisper, then tap "Next clue". The team on turn points to a picture; you tap it. Guess after 1 clue = 3 points, after 2 clues = 2, after 3 = 1.', 'A wrong guess is never minus: Luna gives a hint and the same team tries again.'] },
-    { title: '2 · Meet the Pets', mins: '6 min', sub: 'Tap a pet · Listen · Say it together · Act it', run: stMeet,
-      say: ["It's a ___ ___.", 'It has got ___.', 'It can ___.'],
-      tips: ['Tap a pet. Tap each sentence: the class repeats it together (choral, not alone).', 'Colours = amber, "has got" = cyan, "can" = green. Point at the colour code when pupils make the sentence.', 'Press "Act it!" and everyone does the action. Meet 4-5 pets, not all 7, if time is short.'] },
-    { title: '3 · Team Pet Lab', mins: '10 min', sub: 'Jobs · Draw · Write 3 sentences · Practise', run: stLab,
-      say: ['This is ___.', "It's a ___ ___.", 'It has got ___.', 'It can ___.'],
-      tips: ['Give each team 1 Pet Design Card (worksheet.html). Teams choose jobs in 30 seconds: Artist, Writer, Speaker, Timer Boss (5 pupils: 2 Artists).', 'Start the timer. Walk round: help the Writer with the frames, and let the Speaker practise inside the team first.', 'Teams that want help come to the board and build their sentences with the Sentence Builder, then press "Hear our pet".'] },
-    { title: '4 · The Pet Shop Is Open!', mins: '12 min', sub: 'Sellers present · Buyers ask · Buy a pet', run: stShop,
-      say: ['Hello! Welcome to our pet shop!', 'Can it fly?', 'How much is it?'],
-      tips: ['One team at a time: the Speaker shows the card, the whole team says the last line together. Shy pupils can hold the card or point.', 'Other teams are buyers: they ask 1 question from the question cards. Give +1 for a good question.', 'When all teams are done, press "Buy a pet!": each team gets 3 coins to spend on OTHER teams\' pets. Most coins = Best Pet Shop (+3).'] },
-    { title: '5 · Awards & Door Pass', mins: '3 min', sub: 'Every team gets an award · 1 sentence at the door', run: stAwards,
-      say: ['My favourite pet is the ___.', 'It can ___.'],
-      tips: ['Print the Team Speaking Check (plan.html, page 2) and tick it while teams present: it shows you who needs more speaking practice next week.', 'Every team gets an award title. Give the team XP on the Class Board afterwards if you want (this page saves nothing to the cloud).', 'Door pass: each pupil says 1 sentence at the door. Pupils who find it hard can point at a picture and say the pet name.'] }
+    {
+      title: "1 · Presentation A: Vet X-Ray Scanner",
+      mins: '5 min',
+      sub: "PPP Presentation · Listen to 3 symptoms · Admit the patient",
+      run: stCauldron,
+      say: ["What's the matter?", 'It has got a tummy ache.', 'Give it warm water!'],
+      tips: [
+        'PPP Presentation (Receptive Input): Pupils listen to 3 clinical clues from Dr. Luna and deduce which Halloween pet is inside the X-Ray Scanner.',
+        'Read clue 1, teams whisper together, then tap "Next clue" or tap the patient the team points to. Early diagnosis = 3 pts, 2nd clue = 2 pts, 3rd clue = 1 pt.',
+        'Soft-fail only: wrong guesses never lose points — Dr. Luna gives the next symptom clue.'
+      ]
+    },
+    {
+      title: '2 · Presentation B: CLIL Vet Check-Up',
+      mins: '6 min',
+      sub: 'PPP Meaning, Form & Pronunciation · Symptoms, Causes & Cures',
+      run: stMeet,
+      say: ["What's the matter?", 'It has got ___ because it ___.', 'It should ___.'],
+      tips: [
+        'CLIL Science Focus: Connect every SYMPTOM (amber) to its CAUSE / BODY PART (cyan) and TREATMENT (emerald).',
+        'Tap a patient on the waiting bench. Use "🔁 Repeat with Dr. Luna" for choral drilling and "🎭 Act the Symptom & Cure!" for TPR.',
+        'Each patient card also has a 1-question "🩺 Quick Vet Check" at the bottom so teams can earn +1 point right away!'
+      ]
+    },
+    {
+      title: '3 · Practice: Medicine Cabinet Match!',
+      mins: '6 min',
+      sub: 'PPP Controlled Practice · Match the symptom to the right cure',
+      run: stPractice,
+      say: ['Give it warm honey tea!', 'It should rest in bed.', "It shouldn't eat sweets!"],
+      tips: [
+        'PPP Controlled Practice: Teams take turns reading the patient\'s chart and choosing the correct treatment from the 4 Medicine Cabinet cards.',
+        'Grade 3 practices imperative care commands ("Give it… / Put on… / Wash it…"). Grade 4 practices medical advice ("It should… and it shouldn\'t…") linked to causes ("because…").',
+        'Every correct prescription earns +2 team points and heals the patient on screen!'
+      ]
+    },
+    {
+      title: '4 · Production Prep: Team Vet Lab',
+      mins: '8 min',
+      sub: 'PPP Scaffolded Prep · 4 Vet Jobs · Draw & Write the Vet Report',
+      run: stLab,
+      say: ['This is our patient, ___.', 'It has got ___.', 'Give it ___!', 'It should ___.'],
+      tips: [
+        'Hand each team 1 Monster Vet Report Card (worksheet.html). Press "⏱ 30 seconds" so teams assign their 4 jobs: Head Vet (Speaker), X-Ray Artist, Medical Writer, Clinic Manager.',
+        'Start the 7-minute timer. Walk around to support Writers with the colour-coded sentence frames and let Head Vets rehearse with their team.',
+        'Teams can tap words on the Live Prescription Builder on the smartboard and press "🔊 Hear our Vet Report" to test their sentences.'
+      ]
+    },
+    {
+      title: '5 · Production: Open the Vet Clinic!',
+      mins: '10 min',
+      sub: 'PPP Free Production · Team Vet Reports · Inspector Q&A · Awards',
+      run: stShop,
+      say: ['Welcome to our Monster Vet Clinic!', "What's the matter with it?", 'Why is it sick?', 'What should it do?'],
+      tips: [
+        'PPP Communicative Production: Each team presents their patient at the front (90s timer). The Head Vet leads, and the whole team says the final healthy cheer together.',
+        'Other teams are Health Inspectors: press "🎲 Spin Inspector Question!" or let them use their cut-out Question Cards (+1 pt for asking, +1 pt for answering).',
+        'After all teams present, tap "💚 Give Healing Hearts!" (3 hearts per team) followed by "🏆 Clinic Awards & Door Pass"!'
+      ]
+    }
   ];
 
   // ------------------------------------------------------------ helpers
@@ -46,13 +91,19 @@
   function lines(p) { return state.grade === 4 ? p.g4 : p.g3; }
   function art(id) { return 'art/' + id + '.webp'; }
 
-  // colour-code a sentence: colours amber, has got cyan, can green
-  var COLOURS = /\b(black|white|orange|purple|green|red|blue|pink|yellow)\b/g;
+  // CLIL colour-coding:
+  // Amber (.k-col) = Symptoms & Feelings
+  // Cyan (.k-has) = Causes ("because...") & Body parts
+  // Emerald (.k-can) = Treatments ("Give it...", "should / shouldn't", "Put...", "Wash...")
+  var SYMPTOMS = /\b(tummy ache|stomach ache|sore throat|sore wing|sore paw|tired|hungry|thirsty|cold|scared|dizzy|dirty|muddy|shivering|shaking|fever|hurts|hurt)\b/gi;
+  var CAUSES = /\b(because|ate|flew|shouted|danced|rolled|jumped|has got|wing|paw|legs|throat|eyes)\b/gi;
+  var CURES = /\b(shouldn&#39;t|should|Give it|Put a|Put on|Wash it|warm water|honey tea|warm blanket|bandage|healthy milk|fresh fruit|pillow|quiet bed|rest)\b/gi;
+
   function colourise(s) {
     return esc(s)
-      .replace(/\b(has got|hasn&#39;t got)\b/g, '<span class="k-has">$1</span>')
-      .replace(/\b(can&#39;t|can)\b/g, '<span class="k-can">$1</span>')
-      .replace(COLOURS, '<span class="k-col">$1</span>');
+      .replace(CURES, '<span class="k-can">$&</span>')
+      .replace(CAUSES, '<span class="k-has">$&</span>')
+      .replace(SYMPTOMS, '<span class="k-col">$&</span>');
   }
 
   function wobble(node) { if (!node) return; node.classList.remove('wobble'); void node.offsetWidth; node.classList.add('wobble'); }
@@ -60,7 +111,7 @@
     if (!node || !node.getBoundingClientRect) return;
     var r = node.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     for (var i = 0; i < 8; i++) {
-      var b = el('div', { class: 'burst', text: icon || (i % 2 ? '⭐' : '🎃') }), ang = (i / 8) * Math.PI * 2;
+      var b = el('div', { class: 'burst', text: icon || (i % 2 ? '💚' : '⭐') }), ang = (i / 8) * Math.PI * 2;
       b.style.left = cx + 'px'; b.style.top = cy + 'px';
       b.style.setProperty('--dx', Math.cos(ang) * 110 + 'px'); b.style.setProperty('--dy', Math.sin(ang) * 110 + 'px');
       document.body.appendChild(b);
@@ -91,7 +142,7 @@
     });
     restore();
   }
-  function saveKey() { return 'petshop-' + state.cls + '-' + new Date().toISOString().slice(0, 10); }
+  function saveKey() { return 'petvet-' + state.cls + '-' + new Date().toISOString().slice(0, 10); }
   function persist() { try { localStorage.setItem(saveKey(), JSON.stringify(state.teams.map(function (t) { return [t.pts, t.coins]; }))); } catch (e) { /* private mode */ } }
   function restore() {
     try {
@@ -130,8 +181,18 @@
   }
   function renderSay(s) {
     var box = $('ps-say'); box.innerHTML = '';
+    var linesForBar = s.say;
+    if (state.step === 0) {
+      linesForBar = state.grade === 4
+        ? ["What's the matter?", 'It has got ___ because it ___.', 'It should ___.']
+        : ["What's the matter?", 'It is tired and hungry.', 'Give it warm water!'];
+    } else if (state.step === 2) {
+      linesForBar = state.grade === 4
+        ? ['It should drink warm tea.', "It shouldn't eat sweets!", 'Because it ate too much!']
+        : ['Give it warm honey tea!', 'Put a bandage on its paw!', 'Now it is happy!'];
+    }
     box.appendChild(el('span', { class: 'ps-say-tag', text: '🗣️ SAY' }));
-    s.say.forEach(function (line) {
+    linesForBar.forEach(function (line) {
       box.appendChild(el('button', { class: 'ps-say-pill', type: 'button', html: '🔊 ' + colourise(line), onclick: function () { A.tap(); say(line); } }));
     });
   }
@@ -181,37 +242,42 @@
     return { node: wrap, start: start, stop: stop, reset: function (s) { stop(); left = seconds = s; warned = false; paint(); } };
   }
 
-  // ------------------------------------------------------------ 1. cauldron
+  // ------------------------------------------------------------ 1. Presentation A: Vet X-Ray Scanner
   var cauldron = null;
   function stCauldron(body) {
     if (!cauldron) cauldron = { order: shuffle(D.PETS.map(function (p) { return p.id; })).slice(0, 6), round: 0, clue: 1, solved: false };
     var c = cauldron, p = PET[c.order[c.round]], clues = state.grade === 4 ? p.clues4 : p.clues3;
     var opts = shuffle([p.id].concat(shuffle(D.PETS.filter(function (x) { return x.id !== p.id; }).map(function (x) { return x.id; })).slice(0, 3)));
 
-    var pot = el('div', { class: 'cauldron' + (c.solved ? ' solved' : '') }, [
+    var pot = el('div', { class: 'cauldron xray-scanner' + (c.solved ? ' solved' : '') }, [
+      el('div', { class: 'xray-badge', text: c.solved ? ('✅ ' + p.name + ' · ' + p.badge) : '🔬 X-RAY SCANNER' }),
       el('img', { class: 'cauldron-pet', src: art(p.id), alt: '' }),
       el('img', { class: 'cauldron-pot', src: art('cauldron'), alt: '' }),
       el('div', { class: 'bubbles' }, [el('i'), el('i'), el('i'), el('i')])
     ]);
     var clueBox = el('div', { class: 'clues' });
+    var clueLabels = ['🌡️ Symptom Clue', '🦠 Body / Cause Clue', '💊 Treatment Clue'];
     clues.forEach(function (cl, i) {
       var shown = i < c.clue || c.solved;
-      clueBox.appendChild(el('button', { class: 'clue' + (shown ? '' : ' hidden'), type: 'button', html: '<em>Clue ' + (i + 1) + '</em>' + (shown ? colourise(cl) : '❓ ❓ ❓'),
+      clueBox.appendChild(el('button', { class: 'clue' + (shown ? '' : ' hidden'), type: 'button', html: '<em>' + clueLabels[i] + '</em>' + (shown ? colourise(cl) : '❓ Tap "Next clue" to scan'),
         onclick: function () { if (shown) { A.tap(); say(cl); } } }));
     });
     var grid = el('div', { class: 'guess-grid' });
     opts.forEach(function (id) {
-      var b = el('button', { class: 'guess' + (c.solved && id === p.id ? ' right' : ''), type: 'button' }, [el('img', { src: art(id), alt: PET[id].kind }), el('span', { text: PET[id].kind })]);
+      var b = el('button', { class: 'guess' + (c.solved && id === p.id ? ' right' : ''), type: 'button' }, [
+        el('img', { src: art(id), alt: PET[id].kind }),
+        el('span', { text: PET[id].name + ' (' + PET[id].kind + ')' })
+      ]);
       b.addEventListener('click', function () {
         if (c.solved) return;
         if (id === p.id) {
           var pts = Math.max(1, 4 - c.clue); c.solved = true;
           addPts(state.turn, pts, b); hostReact('cheer');
-          say('Yes! It\'s ' + p.name + ', the ' + p.kind + '! ' + pts + (pts === 1 ? ' point!' : ' points!'));
+          say('Diagnosis correct! Our patient is ' + p.name + ' the ' + p.kind + '! Plus ' + pts + (pts === 1 ? ' point!' : ' points!'));
           stCauldronRefresh(body);
         } else {
           A.softFail(); wobble(b); hostReact('oops');
-          say(c.clue < 3 ? 'Not this one. Listen to the next clue!' : 'Not this one. Listen again: ' + clues[2]);
+          say(c.clue < 3 ? 'Not that patient! Let\'s scan the next symptom clue.' : 'Look closely at Clue 3: ' + clues[2]);
           if (c.clue < 3) { c.clue++; setTimeout(function () { stCauldronRefresh(body, true); }, 1400); }
         }
       });
@@ -219,20 +285,20 @@
     });
 
     var actions = el('div', { class: 'row-btns' }, [
-      c.solved ? null : el('button', { class: 'ps-btn violet', type: 'button', text: c.clue < 3 ? '🔮 Next clue (' + (c.clue + 1) + '/3)' : '🔊 Read all clues', onclick: function () {
+      c.solved ? null : el('button', { class: 'ps-btn violet', type: 'button', text: c.clue < 3 ? '🔬 Next X-Ray Clue (' + (c.clue + 1) + '/3)' : '🔊 Read all 3 clues', onclick: function () {
         A.bubble();
         if (c.clue < 3) { c.clue++; stCauldronRefresh(body, true); } else say(clues.join(' '));
       } }),
-      c.solved ? null : el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read clue', onclick: function () { A.tap(); say(clues[c.clue - 1]); } }),
-      c.solved && c.round < c.order.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '🎃 Next pet ▶', onclick: function () {
+      c.solved ? null : el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read clue again', onclick: function () { A.tap(); say(clues[c.clue - 1]); } }),
+      c.solved && c.round < c.order.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '🩺 Next Patient ▶', onclick: function () {
         A.bubble(); c.round++; c.clue = 1; c.solved = false; nextTurn(); stCauldronRefresh(body, true);
       } }) : null,
-      c.solved && c.round === c.order.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All pets found! Go to Meet the Pets ▶', onclick: function () { go(1); } }) : null
+      c.solved && c.round === c.order.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All patients scanned! Go to Check-Up Table ▶', onclick: function () { go(1); } }) : null
     ]);
 
     body.appendChild(el('div', { class: 'cauldron-layout' }, [
-      el('div', { class: 'cauldron-left' }, [pot, el('div', { class: 'round-lbl', text: 'Pet ' + (c.round + 1) + ' of ' + c.order.length })]),
-      el('div', { class: 'cauldron-right' }, [turnBanner(c.solved ? 'Well done!' : 'Listen, whisper in your team, then point!'), clueBox, grid, actions])
+      el('div', { class: 'cauldron-left' }, [pot, el('div', { class: 'round-lbl', text: 'Patient ' + (c.round + 1) + ' of ' + c.order.length })]),
+      el('div', { class: 'cauldron-right' }, [turnBanner(c.solved ? 'Great diagnosis!' : "Listen to the symptoms, whisper in your team, then tap the patient!"), clueBox, grid, actions])
     ]));
   }
   function stCauldronRefresh(body, speakClue) {
@@ -243,28 +309,33 @@
     }
   }
 
-  // ------------------------------------------------------------ 2. meet the pets
+  // ------------------------------------------------------------ 2. Presentation B: CLIL Vet Check-Up Table
   function stMeet(body) {
     var count = Object.keys(state.met).length;
     var shelf = el('div', { class: 'shelf' });
     D.PETS.forEach(function (p) {
       shelf.appendChild(el('button', { class: 'pet-card' + (state.met[p.id] ? ' met' : ''), type: 'button', onclick: function () { A.flip(); openPet(body, p); } }, [
         el('div', { class: 'pet-art' }, [el('img', { class: 'bob', src: art(p.id), alt: p.kind }), el('div', { class: 'ps-pedestal sm' })]),
-        el('div', { class: 'pet-tray' }, [el('b', { text: p.name }), el('span', { text: p.kind }), el('i', { class: 'price', text: '🪙 ' + p.price })]),
+        el('div', { class: 'pet-tray' }, [
+          el('b', { text: p.name }),
+          el('span', { text: p.badge }),
+          el('i', { class: 'price', text: '🌡️ ' + p.temp })
+        ]),
         state.met[p.id] ? el('div', { class: 'met-tick', text: '✓' }) : null
       ]));
     });
     body.appendChild(el('div', { class: 'meet-head' }, [
-      el('span', { class: 'ps-pill', text: '🐾 Met ' + count + ' / ' + D.PETS.length + ' pets' }),
-      el('span', { class: 'legend', html: '<span class="k-col">colour</span> <span class="k-has">has got</span> <span class="k-can">can</span>' })
+      el('span', { class: 'ps-pill', text: '🩺 Checked ' + count + ' / ' + D.PETS.length + ' patients' }),
+      el('span', { class: 'legend', html: '<span class="k-col">🌡️ Symptom</span> <span class="k-has">🦠 Cause / Body</span> <span class="k-can">💊 Treatment / Advice</span>' })
     ]));
     body.appendChild(shelf);
-    if (!count) say('Welcome to my shop! Tap a pet to meet it.', false);
+    if (!count) say('Welcome to the Check-Up Table! Tap a patient to examine its symptoms, cause, and treatment.', false);
   }
+
   function openPet(body, p) {
     state.met[p.id] = true;
     var ls = lines(p);
-    var lineBtns = ls.concat(["It's " + p.price + ' coins.']).map(function (l) {
+    var lineBtns = ls.map(function (l) {
       return el('button', { class: 'pet-line', type: 'button', html: '🔊 ' + colourise(l), onclick: function (ev) { A.tap(); markLine(ev.currentTarget); say(l); } });
     });
     function markLine(n) { lineBtns.forEach(function (b) { b.classList.remove('on'); }); if (n) n.classList.add('on'); }
@@ -275,55 +346,180 @@
       (function nxt() {
         if (i >= lineBtns.length || !document.body.contains(lineBtns[0])) { echoing = false; markLine(null); return; }
         markLine(lineBtns[i]);
-        say(i === 0 ? 'Listen and say it with me. ' + ls[0] : (ls[i] || "It's " + p.price + ' coins.')).then(function () { i++; setTimeout(nxt, 2600); });
+        say(i === 0 ? 'Listen and repeat with me. ' + ls[0] : ls[i]).then(function () { i++; setTimeout(nxt, 2500); });
       })();
     }
+
+    // CLIL Quick Comprehension Check inside the pet panel
+    var chk = state.grade === 4 ? p.check4 : p.check3;
+    var choices = shuffle([chk.right].concat(chk.wrong));
+    var checkSolved = !!state.checked[p.id];
+    var checkBox = el('div', { class: 'clil-check' }, [
+      el('div', { class: 'clil-check-head' }, [
+        el('b', { text: '🩺 CLIL Quick Check (' + team(state.turn).name + '): ' + chk.q }),
+        checkSolved ? el('span', { class: 'ps-pill emerald', text: '✓ +1 Pt Awarded' }) : null
+      ]),
+      el('div', { class: 'clil-check-opts' }, choices.map(function (ans) {
+        var btn = el('button', { class: 'ps-btn ghost sm' + (checkSolved && ans === chk.right ? ' emerald' : ''), type: 'button', html: colourise(ans) });
+        btn.addEventListener('click', function () {
+          if (state.checked[p.id]) { say(ans); return; }
+          if (ans === chk.right) {
+            state.checked[p.id] = true;
+            btn.className = 'ps-btn emerald sm';
+            addPts(state.turn, 1, btn);
+            nextTurn();
+            hostReact('cheer');
+            say('Spot on! ' + ans);
+          } else {
+            A.softFail(); wobble(btn); hostReact('oops');
+            say('Look at the chart again! ' + chk.q);
+          }
+        });
+        return btn;
+      }))
+    ]);
+
     var act = el('div', { class: 'act-big', hidden: 'hidden', text: p.act });
     var panel = el('div', { class: 'pet-panel' }, [
-      el('div', { class: 'pet-panel-art' }, [el('img', { class: 'bob', src: art(p.id), alt: p.kind }), el('div', { class: 'ps-pedestal' }), act]),
+      el('div', { class: 'pet-panel-art' }, [
+        el('div', { class: 'patient-vitals', text: '🌡️ Temp: ' + p.temp + ' · ' + p.badge }),
+        el('img', { class: 'bob', src: art(p.id), alt: p.kind }),
+        el('div', { class: 'ps-pedestal' }),
+        act
+      ]),
       el('div', { class: 'pet-panel-text' }, [
-        el('h3', { text: 'This is ' + p.name + '!' }),
+        el('h3', { text: 'Patient: ' + p.name + ' (' + p.kind + ')' }),
         el('div', { class: 'pet-lines' }, lineBtns),
+        checkBox,
         el('div', { class: 'row-btns' }, [
-          el('button', { class: 'ps-btn violet', type: 'button', text: '🔁 Say it with me', onclick: function () { A.tap(); echo(); } }),
-          el('button', { class: 'ps-btn amber', type: 'button', text: '🎭 Act it!', onclick: function () { A.correct(); act.hidden = false; say(p.act.replace(/^\S+\s/, '') + ' Everybody!'); setTimeout(function () { act.hidden = true; }, 2600); } }),
-          el('button', { class: 'ps-btn ghost', type: 'button', text: '◀ Back to the shop', onclick: function () { A.tap(); window.speechSynthesis && window.speechSynthesis.cancel(); body.innerHTML = ''; stMeet(body); } })
+          el('button', { class: 'ps-btn violet', type: 'button', text: '🔁 Repeat with Dr. Luna', onclick: function () { A.tap(); echo(); } }),
+          el('button', { class: 'ps-btn amber', type: 'button', text: '🎭 Act the Symptom & Cure!', onclick: function () { A.correct(); act.hidden = false; say(p.act.replace(/^\S+\s/, '') + ' Everybody act it out!'); setTimeout(function () { act.hidden = true; }, 2800); } }),
+          el('button', { class: 'ps-btn ghost', type: 'button', text: '◀ Back to Waiting Bench', onclick: function () { A.tap(); window.speechSynthesis && window.speechSynthesis.cancel(); body.innerHTML = ''; stMeet(body); } })
         ])
       ])
     ]);
     body.innerHTML = ''; body.appendChild(panel);
-    say('This is ' + p.name + '. ' + ls.join(' '));
+    say(ls.join(' '));
   }
 
-  // ------------------------------------------------------------ 3. team pet lab
+  // ------------------------------------------------------------ 3. Practice: Medicine Cabinet Match!
+  var prac = { round: 0, solved: {}, optsCache: {} };
+  function stPractice(body) {
+    var rounds = D.PRACTICE[state.grade] || D.PRACTICE[3];
+    if (prac.round >= rounds.length) prac.round = 0;
+    var r = rounds[prac.round], p = PET[r.pet];
+    var key = state.grade + '-' + prac.round;
+    if (!prac.optsCache[key]) prac.optsCache[key] = shuffle([r.right].concat(r.wrong));
+    var opts = prac.optsCache[key];
+    var isSolved = !!prac.solved[key];
+
+    var leftCol = el('div', { class: 'med-patient-card' }, [
+      el('div', { class: 'patient-vitals', text: '🏥 Exam Table · Case ' + (prac.round + 1) + ' of ' + rounds.length }),
+      el('img', { class: 'bob med-pet-img', src: art(p.id), alt: p.kind }),
+      el('div', { class: 'ps-pedestal sm' }),
+      el('div', { class: 'med-status' + (isSolved ? ' healed' : ''), text: isSolved ? ('💚 ' + p.name + ' is healed!') : ('🤒 ' + p.badge) })
+    ]);
+
+    var optBtns = opts.map(function (optText) {
+      var b = el('button', {
+        class: 'med-opt' + (isSolved && optText === r.right ? ' right' : ''),
+        type: 'button',
+        html: colourise(optText)
+      });
+      b.addEventListener('click', function () {
+        if (prac.solved[key]) { say(optText.replace(/^[^\w]+/, '')); return; }
+        if (optText === r.right) {
+          prac.solved[key] = true;
+          addPts(state.turn, 2, b);
+          hostReact('cheer');
+          say('Great treatment! ' + optText.replace(/^[^\w]+/, '') + ' Plus 2 points!');
+          body.innerHTML = ''; stPractice(body);
+        } else {
+          A.softFail(); wobble(b); hostReact('oops');
+          say('Oops, that won\'t help ' + p.name + '! Read the symptom carefully and try another medicine.');
+        }
+      });
+      return b;
+    });
+
+    var navRow = el('div', { class: 'row-btns' }, [
+      el('button', { class: 'ps-btn ghost', type: 'button', text: '🔊 Read Case Chart', onclick: function () { A.tap(); say(r.problem + ' ' + r.q); } }),
+      isSolved && prac.round < rounds.length - 1 ? el('button', { class: 'ps-btn amber', type: 'button', text: '💊 Next Patient Case ▶', onclick: function () {
+        A.bubble(); prac.round++; nextTurn(); body.innerHTML = ''; stPractice(body);
+        var nr = rounds[prac.round]; say(nr.problem + ' ' + nr.q);
+      } }) : null,
+      isSolved && prac.round === rounds.length - 1 ? el('button', { class: 'ps-btn emerald', type: 'button', text: '✅ All Patients Treated! Go to Team Vet Lab ▶', onclick: function () { go(3); } }) : null
+    ]);
+
+    var rightCol = el('div', { class: 'med-right' }, [
+      turnBanner(isSolved ? 'Patient healed! Say the prescription aloud together!' : 'Read the symptom chart & tap the right cure from the Medicine Cabinet!'),
+      el('div', { class: 'med-chart' }, [
+        el('div', { class: 'med-problem', html: '📋 ' + colourise(r.problem) }),
+        el('div', { class: 'med-q', text: '🩺 ' + r.q })
+      ]),
+      el('div', { class: 'med-grid' }, optBtns),
+      navRow
+    ]);
+
+    body.appendChild(el('div', { class: 'med-layout' }, [leftCol, rightCol]));
+  }
+
+  // ------------------------------------------------------------ 4. Production Prep: Team Vet Lab
   var lab = { timer: null, pick: {}, checks: {} };
   function stLab(body) {
     var B = D.BUILDER, g4 = state.grade === 4;
-    if (!lab.pick.name) lab.pick = { name: 'Shadow', colour: 'black', animal: 'cat', adj: 'small', hasGot: 'big eyes', hasGot2: 'a long tail', can: 'jump', cant: 'swim', likes: 'pizza', price: 10 };
-    var t = makeTimer(8 * 60, { warnAt: 120, warnText: 'Two minutes left! Practise your sentences together.', onEnd: function () { say('Time is up! Pencils down. Get ready to open your pet shop!'); } });
+    if (!lab.pick.name) {
+      lab.pick = {
+        name: 'Shadow',
+        animal: 'black cat',
+        symptom: 'a tummy ache',
+        feeling: 'tired',
+        cause: 'ate too many sweets',
+        cure3: 'warm water',
+        cure3b: 'a quiet bed',
+        should4: 'drink warm honey tea',
+        shouldnt4: 'eat sweets or chocolate'
+      };
+    }
+    var t = makeTimer(7 * 60, {
+      warnAt: 120,
+      warnText: 'Two minutes left! Practise reading your Vet Report together.',
+      onEnd: function () { say('Time is up! Pencils down. Get ready to open your Monster Vet Clinic!'); }
+    });
     lab.timer = t;
 
     var jobs = el('div', { class: 'jobs' }, D.JOBS.map(function (j) {
       return el('div', { class: 'job' }, [el('span', { class: 'job-ic', text: j.icon }), el('b', { text: j.name }), el('small', { text: j.job })]);
     }));
     var jobsLeft = 0, jobsIv = 0;
-    var jobsBtn = el('button', { class: 'ps-btn amber sm', type: 'button', text: '⏱ 30 seconds', onclick: function () {
-      A.tap(); clearInterval(jobsIv); jobsLeft = 30; jobsBtn.textContent = '⏱ 30'; say('Choose your jobs. You have 30 seconds!');
+    var jobsBtn = el('button', { class: 'ps-btn amber sm', type: 'button', text: '⏱ 30s Jobs Timer', onclick: function () {
+      A.tap(); clearInterval(jobsIv); jobsLeft = 30; jobsBtn.textContent = '⏱ 30'; say('Choose your four Vet Clinic jobs! You have 30 seconds.');
       jobsIv = setInterval(function () {
         jobsLeft--; jobsBtn.textContent = '⏱ ' + jobsLeft;
-        if (jobsLeft <= 0) { clearInterval(jobsIv); jobsBtn.textContent = '✓ Jobs chosen'; A.timeUp(); say('Time! Artists, take a pencil. Start drawing!'); lab.checks[0] = true; }
+        if (jobsLeft <= 0) { clearInterval(jobsIv); jobsBtn.textContent = '✓ Jobs chosen'; A.timeUp(); say('Time! X-Ray Artists, start drawing the patient. Medical Writers, get your pencils ready!'); lab.checks[0] = true; }
       }, 1000);
     } });
     cleanup.push(function () { clearInterval(jobsIv); });
+
     var checks = el('div', { class: 'checks' }, D.LAB_STEPS.map(function (s, i) {
       return el('button', { class: 'check' + (lab.checks[i] ? ' on' : ''), type: 'button', onclick: function (ev) { A.tap(); lab.checks[i] = !lab.checks[i]; ev.currentTarget.classList.toggle('on'); } }, [el('i', { text: lab.checks[i] ? '✓' : String(i + 1) }), el('span', { text: s })]);
     }));
 
     var preview = el('div', { class: 'preview' });
     function sentences() {
-      var P = lab.pick, an = /^[aeiou]/.test(g4 ? P.adj : P.colour) ? 'an' : 'a';
-      return g4 ? ['This is ' + P.name + '.', "It's " + an + ' ' + P.adj + ', ' + P.colour + ' ' + P.animal + '.', 'It has got ' + P.hasGot + ' and ' + P.hasGot2 + '.', 'It can ' + P.can + ", but it can't " + P.cant + '.', 'It likes ' + P.likes + '!', "It's " + P.price + ' coins!']
-        : ['This is ' + P.name + '.', "It's " + an + ' ' + P.colour + ' ' + P.animal + '.', 'It has got ' + P.hasGot + '.', 'It can ' + P.can + '.', "It's " + P.price + ' coins!'];
+      var P = lab.pick, an = /^[aeiou]/i.test(P.animal) ? 'an' : 'a';
+      return g4 ? [
+        'Patient: ' + P.name + ' (' + an + ' ' + P.animal + ').',
+        'Diagnosis: It has got ' + P.symptom + ' because it ' + P.cause + '.',
+        'It feels ' + P.feeling + ' today.',
+        'Prescription: It should ' + P.should4 + '.',
+        "Warning: It shouldn't " + P.shouldnt4 + '!'
+      ] : [
+        "Look at " + P.name + "! It's " + an + ' ' + P.animal + '.',
+        'It is ' + P.feeling + ' and it has got ' + P.symptom + '.',
+        'Give it ' + P.cure3 + ' and ' + P.cure3b + '!',
+        'Now ' + P.name + ' is happy and healthy!'
+      ];
     }
     function paintPreview() { preview.innerHTML = sentences().map(function (s) { return '<p>' + colourise(s) + '</p>'; }).join(''); }
     function row(label, key, list) {
@@ -334,34 +530,52 @@
         } });
       }))]);
     }
-    var rows = [row('Name', 'name', B.names), g4 ? row("It's", 'adj', B.adj) : null, row('Colour', 'colour', B.colour), row('Animal', 'animal', B.animal), row('Has got', 'hasGot', B.hasGot),
-      g4 ? row('…and', 'hasGot2', B.hasGot) : null, row('Can', 'can', B.can), g4 ? row("Can't", 'cant', B.cant) : null, g4 ? row('Likes', 'likes', B.likes) : null, row('Coins', 'price', B.price)];
+    var rows = g4 ? [
+      row('Patient', 'name', B.names),
+      row('Pet Type', 'animal', B.animal),
+      row('Symptom', 'symptom', B.symptom),
+      row('Because…', 'cause', B.cause),
+      row('Feels', 'feeling', B.feeling),
+      row('Should', 'should4', B.should4),
+      row("Shouldn't", 'shouldnt4', B.shouldnt4)
+    ] : [
+      row('Patient', 'name', B.names),
+      row('Pet Type', 'animal', B.animal),
+      row('Feeling', 'feeling', B.feeling),
+      row('Has got', 'symptom', B.symptom),
+      row('Give it 1', 'cure3', B.cure3),
+      row('Give it 2', 'cure3b', B.cure3)
+    ];
+
     paintPreview();
     var builder = el('div', { class: 'builder' }, [
-      el('h4', { text: '🧪 Sentence Builder · tap the words' }), preview
+      el('h4', { text: '🩺 Live Vet Prescription Builder · tap words to build your chart' }), preview
     ].concat([el('div', { class: 'row-btns tight' }, [
-      el('button', { class: 'ps-btn violet sm', type: 'button', text: '🔊 Hear our pet', onclick: function () { A.tap(); say(sentences().join(' ')); } }),
-      el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🎲 Surprise me', onclick: function () {
+      el('button', { class: 'ps-btn violet sm', type: 'button', text: '🔊 Hear our Vet Report', onclick: function () { A.tap(); say(sentences().join(' ')); } }),
+      el('button', { class: 'ps-btn ghost sm', type: 'button', text: '🎲 Random Case', onclick: function () {
         A.bubble(); var r = function (a) { return a[Math.floor(Math.random() * a.length)]; };
-        lab.pick = { name: r(B.names), colour: r(B.colour), animal: r(B.animal), adj: r(B.adj), hasGot: r(B.hasGot), hasGot2: r(B.hasGot), can: r(B.can), cant: r(B.cant), likes: r(B.likes), price: r(B.price) };
-        if (lab.pick.hasGot2 === lab.pick.hasGot) lab.pick.hasGot2 = B.hasGot[(B.hasGot.indexOf(lab.pick.hasGot) + 1) % B.hasGot.length];
-        if (lab.pick.cant === lab.pick.can) lab.pick.cant = lab.pick.can === 'fly' ? 'swim' : 'fly';
+        lab.pick = {
+          name: r(B.names), animal: r(B.animal), symptom: r(B.symptom), feeling: r(B.feeling),
+          cause: r(B.cause), cure3: r(B.cure3), cure3b: r(B.cure3), should4: r(B.should4), shouldnt4: r(B.shouldnt4)
+        };
+        if (lab.pick.cure3b === lab.pick.cure3) lab.pick.cure3b = B.cure3[(B.cure3.indexOf(lab.pick.cure3) + 1) % B.cure3.length];
         body.innerHTML = ''; stLab(body);
       } })
     ])]).concat(rows));
 
     body.appendChild(el('div', { class: 'lab' }, [
-      el('div', { class: 'lab-left' }, [el('div', { class: 'jobs-head' }, [el('h4', { text: '👥 Choose your jobs' }), jobsBtn]), el('p', { class: 'jobs-note', text: 'Team of 5? Two Artists!' }), jobs, t.node, checks]),
+      el('div', { class: 'lab-left' }, [el('div', { class: 'jobs-head' }, [el('h4', { text: '👥 4 Vet Clinic Roles' }), jobsBtn]), el('p', { class: 'jobs-note', text: 'Team of 5? Have two X-Ray Artists!' }), jobs, t.node, checks]),
       builder
     ]));
   }
 
-  // ------------------------------------------------------------ 4. pet shop open
-  var shop = { cur: 0, done: {}, phase: 'sell', line: -1 };
+  // ------------------------------------------------------------ 5. Production: Open the Vet Clinic!
+  var shop = { cur: 0, done: {}, phase: 'sell', line: -1, spunQ: -1 };
   function stShop(body) {
     if (shop.phase === 'buy') return stBuy(body);
+    if (shop.phase === 'awards') return stAwards(body);
     var n = state.teams.length, tm = team(shop.cur), frames = D.SELLER[state.grade], qs = D.QUESTIONS[state.grade];
-    var timer = makeTimer(90, { compact: true, onEnd: function () { say('Great job! Buyers, ask your question!'); } });
+    var timer = makeTimer(90, { compact: true, onEnd: function () { say('Great Vet Report! Health Inspectors, ask your check-up question!'); } });
 
     var order = el('div', { class: 'shop-order' }, state.teams.map(function (t, i) {
       return el('button', { class: 'so-team' + (i === shop.cur ? ' on' : '') + (shop.done[i] ? ' done' : ''), style: '--tc:' + t.color, type: 'button', onclick: function () { A.tap(); shop.cur = i; shop.line = -1; body.innerHTML = ''; stShop(body); } }, [
@@ -371,62 +585,90 @@
     var frameBtns = frames.map(function (f, i) {
       return el('button', { class: 'frame' + (i === shop.line ? ' on' : ''), type: 'button', html: colourise(f), onclick: function (ev) {
         A.tap(); shop.line = i; [].forEach.call(ev.currentTarget.parentNode.children, function (x) { x.classList.remove('on'); }); ev.currentTarget.classList.add('on');
+        say(f);
       } });
     });
     var seller = el('div', { class: 'seller', style: '--tc:' + tm.color }, [
-      el('div', { class: 'seller-head' }, [el('b', { text: tm.icon + ' ' + tm.name + ' · Pet Shop' }), el('span', { text: 'Speaker shows the card · Team says the last line together' })]),
+      el('div', { class: 'seller-head' }, [
+        el('b', { text: tm.icon + ' ' + tm.name + ' · Vet Clinic Report' }),
+        el('span', { text: 'Head Vet leads the diagnosis · Whole team says Line 5 together!' })
+      ]),
       el('div', { class: 'frames' }, frameBtns)
     ]);
-    var buyers = el('div', { class: 'buyers' }, [el('h4', { text: '🛒 Buyers ask 1 question' })].concat(qs.map(function (q) {
-      return el('button', { class: 'q-card', type: 'button', onclick: function () { A.tap(); say(q.q); } }, [el('b', { html: '❓ ' + colourise(q.q) }), el('small', { html: '→ ' + colourise(q.a) })]);
+
+    var spinBtn = el('button', { class: 'ps-btn amber sm', type: 'button', text: '🎲 Spin Inspector Question!', onclick: function () {
+      A.bubble();
+      shop.spunQ = Math.floor(Math.random() * qs.length);
+      body.innerHTML = ''; stShop(body);
+      say('Health Inspector question: ' + qs[shop.spunQ].q);
+    } });
+
+    var buyers = el('div', { class: 'buyers' }, [
+      el('div', { class: 'jobs-head' }, [el('h4', { text: '🔍 Health Inspector Questions' }), spinBtn])
+    ].concat(qs.map(function (q, idx) {
+      return el('button', { class: 'q-card' + (idx === shop.spunQ ? ' spun' : ''), type: 'button', onclick: function () { A.tap(); shop.spunQ = idx; say(q.q); } }, [
+        el('b', { html: '❓ ' + colourise(q.q) }),
+        el('small', { html: '→ ' + colourise(q.a) })
+      ]);
     })));
+
     var others = state.teams.map(function (t, i) { return i; }).filter(function (i) { return i !== shop.cur; });
     var awards = el('div', { class: 'awards-row' }, [
-      el('button', { class: 'ps-btn amber', type: 'button', text: '⭐⭐ Clear sentences +2', onclick: function (ev) { addPts(shop.cur, 2, ev.currentTarget); say('Super clear sentences, ' + tm.name + '!'); } }),
-      el('button', { class: 'ps-btn emerald', type: 'button', text: '🤝 Team helped +1', onclick: function (ev) { addPts(shop.cur, 1, ev.currentTarget); } }),
-      el('span', { class: 'aw-lbl', text: 'Good question +1:' })
+      el('button', { class: 'ps-btn amber', type: 'button', text: '⭐⭐ Clear Diagnosis +2', onclick: function (ev) { addPts(shop.cur, 2, ev.currentTarget); say('Super clear Vet Report, ' + tm.name + '!'); } }),
+      el('button', { class: 'ps-btn emerald', type: 'button', text: '🤝 Team Chorus +1', onclick: function (ev) { addPts(shop.cur, 1, ev.currentTarget); } }),
+      el('span', { class: 'aw-lbl', text: 'Inspector Q +1:' })
     ].concat(others.map(function (i) {
       return el('button', { class: 'ps-btn tiny', style: '--tc:' + team(i).color, type: 'button', text: team(i).icon + ' ' + team(i).name, onclick: function (ev) { addPts(i, 1, ev.currentTarget); } });
     })));
+
     var allDone = Object.keys(shop.done).length >= n;
     var nextBtns = el('div', { class: 'row-btns' }, [
-      el('button', { class: 'ps-btn violet', type: 'button', text: shop.done[shop.cur] ? '✓ Done' : '✅ Done! Next team ▶', onclick: function () {
-        A.correct(); shop.done[shop.cur] = true; shop.line = -1;
+      el('button', { class: 'ps-btn violet', type: 'button', text: shop.done[shop.cur] ? '✓ Presented' : '✅ Patient Treated! Next Team ▶', onclick: function () {
+        A.correct(); shop.done[shop.cur] = true; shop.line = -1; shop.spunQ = -1;
         var nx = -1; for (var k = 1; k <= n; k++) { if (!shop.done[(shop.cur + k) % n]) { nx = (shop.cur + k) % n; break; } }
-        if (nx >= 0) { shop.cur = nx; say(team(nx).name + ', open your pet shop!'); } else say('Every pet shop is open! Now buy a pet with your coins!');
+        if (nx >= 0) { shop.cur = nx; say(team(nx).name + ', welcome to the Vet Clinic stage!'); } else say('Every team has treated their patient! Now let\'s award Healing Hearts!');
         body.innerHTML = ''; stShop(body);
       } }),
-      el('button', { class: 'ps-btn amber', type: 'button', text: '🪙 Buy a pet!', disabled: allDone ? null : 'disabled', title: allDone ? '' : 'When every team has presented', onclick: function () { A.coin(); shop.phase = 'buy'; body.innerHTML = ''; stShop(body); } })
+      el('button', { class: 'ps-btn emerald', type: 'button', text: '💚 Give Healing Hearts!', onclick: function () { A.coin(); shop.phase = 'buy'; body.innerHTML = ''; stShop(body); } }),
+      el('button', { class: 'ps-btn amber', type: 'button', text: '🏆 Awards & Door Pass', onclick: function () { A.fanfare(); shop.phase = 'awards'; body.innerHTML = ''; stShop(body); } })
     ]);
     body.appendChild(el('div', { class: 'shop' }, [el('div', { class: 'shop-left' }, [order, timer.node, nextBtns]), el('div', { class: 'shop-mid' }, [seller, awards]), buyers]));
   }
+
   function stBuy(body) {
     var n = state.teams.length, total = 0;
-    state.teams.forEach(function (t) { total += t.coins || 0; });    var cards = state.teams.map(function (t, i) {
+    state.teams.forEach(function (t) { total += t.coins || 0; });
+    var cards = state.teams.map(function (t) {
       return el('button', { class: 'buy-card', style: '--tc:' + t.color, type: 'button', onclick: function (ev) {
-        t.coins = (t.coins || 0) + 1; A.coin(); burst(ev.currentTarget, '🪙'); persist(); body.innerHTML = ''; stBuy(body);
-      } }, [el('span', { class: 'buy-ic', text: t.icon }), el('b', { text: t.name + (/s$/i.test(t.name) ? "' pet" : "'s pet") }), el('div', { class: 'coins', text: (t.coins || 0) ? new Array((t.coins || 0) + 1).join('🪙') : '—' }), el('i', { text: (t.coins || 0) + ' coins' })]);
+        t.coins = (t.coins || 0) + 1; A.coin(); burst(ev.currentTarget, '💚'); persist(); body.innerHTML = ''; stBuy(body);
+      } }, [
+        el('span', { class: 'buy-ic', text: t.icon }),
+        el('b', { text: t.name }),
+        el('div', { class: 'coins', text: (t.coins || 0) ? new Array((t.coins || 0) + 1).join('💚') : '—' }),
+        el('i', { text: (t.coins || 0) + ' Healing Hearts' })
+      ]);
     });
     body.appendChild(el('div', { class: 'buy' }, [
-      el('p', { class: 'buy-help', html: 'Each team has <b>3 coins</b>. Spend them on <b>other</b> teams\' pets: tap a pet once for each coin. Say: <span class="k-can">"I want this pet, please!"</span>' }),
+      el('p', { class: 'buy-help', html: 'Each team has <b>3 Healing Hearts (💚)</b> to give to <b>other</b> teams\' Vet Clinics! Say: <span class="k-can">"Your treatment healed the pet!"</span>' }),
       el('div', { class: 'buy-grid' }, cards),
       el('div', { class: 'row-btns' }, [
-        el('span', { class: 'ps-pill', text: '🪙 ' + total + ' / ' + n * 3 + ' coins spent' }),
-        el('button', { class: 'ps-btn emerald', type: 'button', text: '🏆 Finish shopping', disabled: total ? null : 'disabled', onclick: function () {
+        el('span', { class: 'ps-pill', text: '💚 ' + total + ' / ' + n * 3 + ' Healing Hearts given' }),
+        el('button', { class: 'ps-btn emerald', type: 'button', text: '🏆 Reveal Clinic Awards & Door Pass', disabled: total ? null : 'disabled', onclick: function () {
           var top = Math.max.apply(null, state.teams.map(function (t) { return t.coins || 0; }));
           state.teams.forEach(function (t, i) { if ((t.coins || 0) === top && top > 0) addPts(i, 3); });
           A.fanfare(); state.bestShop = state.teams.filter(function (t) { return (t.coins || 0) === top; }).map(function (t) { return t.name; });
-          say('The Best Pet Shop is ' + state.bestShop.join(' and ') + '! Plus 3 points!'); go(4);
+          say('The Top Monster Vet Clinic is ' + state.bestShop.join(' and ') + '! Plus 3 bonus points!');
+          shop.phase = 'awards'; body.innerHTML = ''; stShop(body);
         } }),
-        el('button', { class: 'ps-btn ghost', type: 'button', text: '↺ Coins to 0', onclick: function () { A.tap(); state.teams.forEach(function (t) { t.coins = 0; }); persist(); body.innerHTML = ''; stBuy(body); } }),
-        el('button', { class: 'ps-btn ghost', type: 'button', text: '◀ Back to the sellers', onclick: function () { A.tap(); shop.phase = 'sell'; body.innerHTML = ''; stShop(body); } })
+        el('button', { class: 'ps-btn ghost', type: 'button', text: '↺ Reset Hearts', onclick: function () { A.tap(); state.teams.forEach(function (t) { t.coins = 0; }); persist(); body.innerHTML = ''; stBuy(body); } }),
+        el('button', { class: 'ps-btn ghost', type: 'button', text: '◀ Back to Vet Presentations', onclick: function () { A.tap(); shop.phase = 'sell'; body.innerHTML = ''; stShop(body); } })
       ])
     ]));
-    if (!total) say('Each team has 3 coins. Which pet do you want? Say: I want this pet, please!');
+    if (!total) say('Each team has 3 Healing Hearts. Which clinic gave the best care? Say: Your treatment healed the pet!');
   }
 
-  // ------------------------------------------------------------ 5. awards
-  var TITLES = ['🏆 Best Pet Shop', '🗣️ Brave Speakers', '🎨 Super Artists', '🤝 Best Helpers', '⏱️ Time Champions', '✨ Spooky Stars'];
+  // ------------------------------------------------------------ Awards & Door Pass
+  var TITLES = ['🏆 Chief Monster Vets', '🩺 Master Diagnosticians', '🎨 Super X-Ray Artists', '💚 Kindest Healers', '⏱️ Fast Emergency Team', '✨ Healthy Pet Champions'];
   function stAwards(body) {
     var ranked = state.teams.map(function (t, i) { return { t: t, i: i }; }).sort(function (a, b) { return (b.t.pts || 0) - (a.t.pts || 0); });
     var best = state.bestShop || [];
@@ -434,21 +676,36 @@
     var cards = ranked.map(function (r, k) {
       var title = best.indexOf(r.t.name) >= 0 ? TITLES[0] : TITLES[1 + (k2++ % (TITLES.length - 1))];
       return el('div', { class: 'award', style: '--tc:' + r.t.color + ';animation-delay:' + (k * 0.15) + 's' }, [
-        el('div', { class: 'award-ic', text: r.t.icon }), el('b', { text: r.t.name }), el('span', { class: 'award-title', text: title }), r.t.pts ? el('i', { text: '⭐ ' + r.t.pts + (r.t.pts === 1 ? ' point' : ' points') }) : null
+        el('div', { class: 'award-ic', text: r.t.icon }),
+        el('b', { text: r.t.name }),
+        el('span', { class: 'award-title', text: title }),
+        r.t.pts ? el('i', { text: '⭐ ' + r.t.pts + (r.t.pts === 1 ? ' point' : ' points') }) : null
       ]);
     });
     var door = D.DOOR[state.grade];
-    body.appendChild(el('div', { class: 'awards' }, [el('div', { class: 'award-grid' }, cards),
-      el('div', { class: 'door' }, [el('h4', { text: '🚪 Door Pass: say 1 sentence' }),
+    body.appendChild(el('div', { class: 'awards' }, [
+      el('div', { class: 'award-grid' }, cards),
+      el('div', { class: 'door' }, [
+        el('div', { class: 'jobs-head' }, [
+          el('h4', { text: '🚪 Vet Clinic Door Pass: say 1 diagnosis & cure sentence at the door!' }),
+          el('button', { class: 'ps-btn ghost sm', type: 'button', text: '◀ Back to Clinic Stage', onclick: function () { A.tap(); shop.phase = 'sell'; body.innerHTML = ''; stShop(body); } })
+        ]),
         el('div', { class: 'door-lines' }, door.map(function (l) { return el('button', { class: 'frame', type: 'button', html: '🔊 ' + colourise(l), onclick: function () { A.tap(); say(l); } }); })),
-        el('div', { class: 'door-pets' }, D.PETS.map(function (p) { return el('button', { class: 'door-pet', type: 'button', onclick: function () { A.tap(); say(state.grade === 4 ? 'My favourite pet is the ' + p.kind + ' because it can ' + lines(p)[2].replace(/^It can (\w+).*/, '$1') + '.' : 'My favourite pet is the ' + p.kind + '.'); } }, [el('img', { src: art(p.id), alt: p.kind }), el('span', { text: p.kind })]); }))
+        el('div', { class: 'door-pets' }, D.PETS.map(function (p) {
+          return el('button', { class: 'door-pet', type: 'button', onclick: function () {
+            A.tap();
+            var msg = state.grade === 4 ? (p.g4[1] + ' ' + p.g4[3]) : (p.g3[1] + ' ' + p.g3[2]);
+            say(msg);
+          } }, [el('img', { src: art(p.id), alt: p.kind }), el('span', { text: p.name })]);
+        }))
       ])
     ]));
     A.fanfare(); confetti();
-    say('Well done, everybody! Every team is a winner today. Happy Halloween!');
+    say('Congratulations, Monster Vets! Every patient is healthy and happy!');
   }
+
   function confetti() {
-    var icons = ['🎃', '🦇', '👻', '⭐', '🍬'];
+    var icons = ['🩺', '💚', '🩹', '⭐', '🎃'];
     for (var i = 0; i < 26; i++) {
       var c = el('div', { class: 'confetti', text: icons[i % icons.length] });
       c.style.left = Math.random() * 100 + 'vw'; c.style.animationDelay = Math.random() * 0.8 + 's'; c.style.fontSize = (20 + Math.random() * 18) + 'px';
@@ -460,12 +717,12 @@
   function start(cls) {
     state.cls = cls; state.grade = /^4/.test(cls) ? 4 : 3;
     loadTeams(cls);
-    $('ps-class-lbl').textContent = 'Class ' + cls.toUpperCase() + ' · Grade ' + state.grade + ' · ' + state.teams.length + ' teams';
+    $('ps-class-lbl').textContent = 'Class ' + cls.toUpperCase() + ' · Grade ' + state.grade + (state.grade === 4 ? ' (A1+)' : ' (A1)') + ' · ' + state.teams.length + ' Vet Teams';
     $('ps-start').hidden = true; $('ps-app').hidden = false;
     renderTeams(); go(0);
     A.spooky();
     var p = PET[cauldron.order[0]];
-    say('Welcome to the Monster Pet Shop, ' + cls.toUpperCase() + '! There is a pet in my cauldron. Listen. Clue 1: ' + (state.grade === 4 ? p.clues4 : p.clues3)[0]);
+    say('Welcome to the Monster Pet Vet Clinic, ' + cls.toUpperCase() + '! Our first patient is in the X-Ray Scanner. Clue 1: ' + (state.grade === 4 ? p.clues4 : p.clues3)[0]);
     try { history.replaceState(null, '', '?class=' + cls); } catch (e) { /* file:// */ }
   }
   function init() {
@@ -474,7 +731,7 @@
       row.appendChild(el('button', { class: 'ps-btn class-btn', type: 'button', text: c.toUpperCase(), onclick: function () { A.unlock(); A.tap(); start(c); } }));
     });
     $('btn-prev').onclick = function () { A.tap(); go(state.step - 1); };
-    $('btn-next').onclick = function () { A.tap(); if (state.step === STATIONS.length - 1) { state.done[state.step] = true; renderSteps(); confetti(); A.fanfare(); } else go(state.step + 1); };
+    $('btn-next').onclick = function () { A.tap(); if (state.step === STATIONS.length - 1) { state.done[state.step] = true; renderSteps(); shop.phase = 'awards'; go(4); } else go(state.step + 1); };
     $('host-replay').onclick = function () { A.tap(); if (state.lastSpeech) say(state.lastSpeech); };
     $('btn-sound').onclick = function () { A.setOn(!A.isOn()); this.textContent = A.isOn() ? '🔊' : '🔇'; };
     $('btn-tip').onclick = function () { A.tap(); $('tip-modal').hidden = false; };

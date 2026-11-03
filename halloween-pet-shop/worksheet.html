@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monster Pet Shop · Pet Design Card</title>
+  <title>Monster Pet Vet Clinic · Team Vet Report Card &amp; Printables</title>
   <style>
     :root { --ink: #1e1b2e; --line: #c4b5fd; --orange: #f97316; --violet: #7c3aed; --amber: #b45309; --cyan: #0e7490; --green: #047857; }
     * { box-sizing: border-box; }
@@ -14,43 +14,42 @@
     .bar button.on { background: #f97316; border-bottom-color: #c2410c; }
     .bar button:active { transform: translateY(4px); border-bottom-width: 1px; }
     .page { width: 210mm; min-height: 297mm; margin: 14px auto; background: #fff; padding: 12mm 13mm; box-shadow: 0 4px 20px rgba(0, 0, 0, .15); }
-    h1 { margin: 0; font-size: 26pt; display: flex; align-items: center; gap: 10px; }
-    h1 img { width: 54px; height: 54px; }
-    .sub { margin: 2px 0 10px; font-size: 12pt; color: #4c4766; }
-    .team { display: flex; gap: 14px; font-size: 13pt; font-weight: 800; margin-bottom: 8px; }
+    h1 { margin: 0; font-size: 24pt; display: flex; align-items: center; gap: 10px; }
+    h1 img { width: 52px; height: 52px; }
+    .sub { margin: 2px 0 9px; font-size: 11.5pt; color: #4c4766; font-weight: 700; }
+    .team { display: flex; gap: 14px; font-size: 12.5pt; font-weight: 800; margin-bottom: 8px; }
     .team span { flex: 1; border-bottom: 2px dashed var(--line); padding-bottom: 4px; }
-    .jobs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-    .job { border: 2px solid var(--line); border-radius: 12px; padding: 5px 8px; font-size: 10.5pt; }
-    .job b { display: block; font-size: 11.5pt; }
-    .job i { display: block; border-bottom: 1.5px solid #ddd6fe; height: 18px; font-style: normal; }
-    .draw { position: relative; border: 3px dashed var(--orange); border-radius: 18px; height: 92mm; display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 12px; }
-    .draw .lbl { position: absolute; top: 8px; left: 14px; font-weight: 900; color: var(--orange); font-size: 12pt; }
-    .tag { position: absolute; top: 10px; right: 12px; border: 2.5px solid var(--amber); border-radius: 12px; padding: 4px 12px; font-weight: 900; color: var(--amber); font-size: 13pt; }
-    .lines { margin-top: 10px; display: grid; gap: 7px; }
-    .ln { font-size: 15pt; font-weight: 800; display: flex; align-items: baseline; gap: 6px; }
-    .ln .n { width: 26px; height: 26px; border-radius: 50%; background: var(--violet); color: #fff; display: inline-grid; place-items: center; font-size: 11pt; flex: none; }
-    .ln u { flex: 1; text-decoration: none; border-bottom: 2px solid #c7c2dc; min-width: 30mm; height: 1.2em; }
+    .jobs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 9px; }
+    .job { border: 2px solid var(--line); border-radius: 12px; padding: 5px 8px; font-size: 10pt; }
+    .job b { display: block; font-size: 11pt; }
+    .job i { display: block; border-bottom: 1.5px solid #ddd6fe; height: 17px; font-style: normal; }
+    .draw { position: relative; border: 3px dashed var(--cyan); border-radius: 18px; height: 84mm; display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 12px; }
+    .draw .lbl { position: absolute; top: 8px; left: 14px; font-weight: 900; color: var(--cyan); font-size: 11.5pt; }
+    .tag { position: absolute; top: 10px; right: 12px; border: 2.5px solid var(--amber); border-radius: 12px; padding: 4px 12px; font-weight: 900; color: var(--amber); font-size: 12pt; }
+    .lines { margin-top: 9px; display: grid; gap: 6px; }
+    .ln { font-size: 13.5pt; font-weight: 800; display: flex; align-items: baseline; gap: 6px; }
+    .ln .n { width: 24px; height: 24px; border-radius: 50%; background: var(--violet); color: #fff; display: inline-grid; place-items: center; font-size: 10.5pt; flex: none; }
+    .ln u { flex: 1; text-decoration: none; border-bottom: 2px solid #c7c2dc; min-width: 24mm; height: 1.2em; }
     .k-col { color: var(--amber); } .k-has { color: var(--cyan); } .k-can { color: var(--green); }
-    .bank { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .bank div { border: 2px solid var(--line); border-radius: 12px; padding: 6px 9px; font-size: 10.5pt; line-height: 1.5; }
-    .bank b { display: block; font-size: 11pt; }
-    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin: 0 3px 0 6px; border: 1px solid #0003; }
-    .check { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; font-size: 11pt; font-weight: 800; }
-    .check span::before { content: '☐ '; font-size: 13pt; }
+    .bank { margin-top: 9px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .bank div { border: 2px solid var(--line); border-radius: 12px; padding: 6px 9px; font-size: 10pt; line-height: 1.45; }
+    .bank b { display: block; font-size: 10.5pt; margin-bottom: 2px; }
+    .check { margin-top: 9px; display: flex; gap: 10px; flex-wrap: wrap; font-size: 10.5pt; font-weight: 800; }
+    .check span::before { content: '☐ '; font-size: 12.5pt; }
     .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-top: 6mm; }
     .slip { border: 2.5px dashed #a78bfa; border-radius: 14px; padding: 8px 10px; min-height: 52mm; display: flex; flex-direction: column; gap: 8px; }
-    .slip h3 { margin: 0; font-size: 12.5pt; display: flex; gap: 6px; align-items: center; }
-    .slip h3 img { width: 30px; height: 30px; }
-    .slip p { margin: 0; font-size: 13pt; font-weight: 800; line-height: 1.9; }
-    .slip p u { display: inline-block; min-width: 34mm; border-bottom: 2px solid #c7c2dc; text-decoration: none; }
+    .slip h3 { margin: 0; font-size: 12pt; display: flex; gap: 6px; align-items: center; }
+    .slip h3 img { width: 28px; height: 28px; }
+    .slip p { margin: 0; font-size: 12pt; font-weight: 800; line-height: 1.85; }
+    .slip p u { display: inline-block; min-width: 28mm; border-bottom: 2px solid #c7c2dc; text-decoration: none; }
     .pets { display: flex; gap: 4px; flex-wrap: wrap; }
-    .pets img { width: 30px; height: 30px; }
+    .pets img { width: 28px; height: 28px; }
     .slips.hw .slip { min-height: 120mm; }
-    .hw-draw { flex: 1; min-height: 52mm; border: 2.5px dashed #fdba74; border-radius: 12px; color: #f97316; font-weight: 900; padding: 6px 10px; }
-    .hw-sign { font-size: 10.5pt; font-weight: 800; color: #4c4766; }
+    .hw-draw { flex: 1; min-height: 50mm; border: 2.5px dashed #fdba74; border-radius: 12px; color: #f97316; font-weight: 900; padding: 6px 10px; }
+    .hw-sign { font-size: 10pt; font-weight: 800; color: #4c4766; }
     .qcards { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 5mm; }
-    .qcard { border: 2.5px solid #fdba74; border-radius: 14px; padding: 8px 12px; font-size: 14pt; font-weight: 900; }
-    .qcard small { display: block; font-size: 11pt; font-weight: 700; color: #4c4766; }
+    .qcard { border: 2.5px solid #67e8f9; border-radius: 14px; padding: 8px 12px; font-size: 13.5pt; font-weight: 900; }
+    .qcard small { display: block; font-size: 10.5pt; font-weight: 700; color: #4c4766; margin-top: 2px; }
     .g4 { display: none; } body.grade4 .g4 { display: inline; } body.grade4 .g3 { display: none; }
     body.grade4 .lines.g4, body.grade4 .qcards.g4 { display: grid; } body.grade4 p.g4 { display: block; }
     @media print {
@@ -63,93 +62,112 @@
 </head>
 <body>
   <div class="bar">
-    <b>🎃 Monster Pet Shop · printables</b>
-    <button type="button" id="g3">Grade 3</button>
-    <button type="button" id="g4">Grade 4</button>
+    <b>🏥 Monster Pet Vet Clinic · Printables (CLIL &amp; PPP)</b>
+    <button type="button" id="g3">Grade 3 (A1)</button>
+    <button type="button" id="g4">Grade 4 (A1+)</button>
     <button type="button" onclick="window.print()">🖨️ Print</button>
   </div>
 
-  <!-- Page 1: one card per team -->
+  <!-- Page 1: one Vet Report Card per team -->
   <section class="page">
-    <h1><img src="art/host.webp" alt="">Our Monster Pet Shop</h1>
-    <p class="sub">Draw your Halloween pet. Write 3 sentences. Sell it in English!</p>
-    <div class="team"><span>Team:</span><span>Pet's name:</span></div>
+    <h1><img src="art/host.webp" alt="">Monster Vet Clinic Report Card</h1>
+    <p class="sub g3">CLIL Animal Care (A1) · Draw your sick Halloween pet, write the diagnosis &amp; treatment, and present as a Vet Team!</p>
+    <p class="sub g4">CLIL Veterinary Science (A1+) · Diagnose the symptom &amp; cause (<b>because</b>), write medical advice (<b>should / shouldn't</b>), and present!</p>
+    <div class="team"><span>Vet Team:</span><span>Patient's Name:</span><span>Temp: _____ °C</span></div>
     <div class="jobs">
-      <div class="job"><b>🎨 Artist</b>draws the pet<i></i></div>
-      <div class="job"><b>✏️ Writer</b>writes the sentences<i></i></div>
-      <div class="job"><b>🗣️ Speaker</b>says the sentences<i></i></div>
-      <div class="job"><b>⏱️ Timer Boss</b>watches the clock<i></i></div>
+      <div class="job"><b>🩺 Head Vet</b>leads the report<i></i></div>
+      <div class="job"><b>🎨 X-Ray Artist</b>draws patient &amp; care<i></i></div>
+      <div class="job"><b>✏️ Medical Writer</b>writes the chart<i></i></div>
+      <div class="job"><b>⏱️ Clinic Manager</b>watches the clock<i></i></div>
     </div>
-    <div class="draw"><span class="lbl">🎨 Draw your pet here</span><span class="tag">🪙 ______ coins</span></div>
+    <div class="draw">
+      <span class="lbl">🔬 Draw your patient, its symptom (🤢/🥶/🩹) &amp; treatment here</span>
+      <span class="tag">💚 Status: ☐ Sick &rarr; ☐ Healed!</span>
+    </div>
+
     <div class="lines g3">
-      <div class="ln"><span class="n">1</span>This is <u></u>.</div>
-      <div class="ln"><span class="n">2</span>It's a <u></u> <u></u>.</div>
-      <div class="ln"><span class="n">3</span>It <span class="k-has">has got</span> <u></u>.</div>
-      <div class="ln"><span class="n">4</span>It <span class="k-can">can</span> <u></u>.</div>
+      <div class="ln"><span class="n">1</span>Look at <u></u>! It's a <u></u>.</div>
+      <div class="ln"><span class="n">2</span><span class="k-col">What's the matter?</span> It is <span class="k-col"><u></u></span> and it <span class="k-has">has got</span> <u></u>.</div>
+      <div class="ln"><span class="n">3</span><span class="k-can">Treatment:</span> <span class="k-can">Give it</span> <u></u> and <u></u>!</div>
+      <div class="ln"><span class="n">4</span>Now our pet is <span class="k-can">happy and healthy</span>!</div>
     </div>
+
     <div class="lines g4">
-      <div class="ln"><span class="n">1</span>This is <u></u>. It's a <u></u>, <u></u> <u></u>.</div>
-      <div class="ln"><span class="n">2</span>It <span class="k-has">has got</span> <u></u> and <u></u>.</div>
-      <div class="ln"><span class="n">3</span>It <span class="k-can">can</span> <u></u>, but it <span class="k-can">can't</span> <u></u>.</div>
-      <div class="ln"><span class="n">4</span>It likes <u></u>! It's <u></u> coins.</div>
+      <div class="ln"><span class="n">1</span>Patient: <u></u> (a <u></u>).</div>
+      <div class="ln"><span class="n">2</span><span class="k-col">Diagnosis:</span> It has got <u></u> <span class="k-has">because</span> it <u></u>.</div>
+      <div class="ln"><span class="n">3</span>It feels <span class="k-col"><u></u></span>, so it can't <u></u> today.</div>
+      <div class="ln"><span class="n">4</span><span class="k-can">Vet's Advice:</span> It <span class="k-can">should</span> <u></u> and <u></u>.</div>
+      <div class="ln"><span class="n">5</span><span class="k-can">Warning:</span> It <span class="k-can">shouldn't</span> <u></u> for three days!</div>
     </div>
+
     <div class="bank">
-      <div><b class="k-col">Colours</b><span class="dot" style="background:#111"></span>black<span class="dot" style="background:#fff"></span>white<span class="dot" style="background:#f97316"></span>orange<br><span class="dot" style="background:#a855f7"></span>purple<span class="dot" style="background:#22c55e"></span>green<span class="dot" style="background:#ef4444"></span>red<span class="dot" style="background:#3b82f6"></span>blue<span class="dot" style="background:#f472b6"></span>pink</div>
-      <div><b class="k-has">has got</b>👀 big eyes · ➰ a long tail · 🪽 wings · 🕸️ eight legs · 🎩 a hat · 🧣 a scarf · 🦷 sharp teeth · 🎀 a bow tie</div>
-      <div><b class="k-can">can / can't</b>🪽 fly · 🧗 climb · 🦘 jump · 🏃 run · 💃 dance · 🏊 swim · 🎤 sing · 🔄 roll<span class="g4"><br><b>It's…</b>🤏 small · 🐘 big · 😂 funny · 🤗 friendly · ⚡ fast<br><b>It likes…</b>🍕 pizza · 🍔 burgers · 🍝 pasta · 🍬 sweets · 🐟 fish</span></div>
+      <div>
+        <b class="k-col">🌡️ Symptoms &amp; Feelings</b>
+        😴 tired · 🍽️ hungry · 💧 thirsty · 🥶 cold · 😨 scared · 💫 dizzy<br>
+        🤢 a tummy ache · 😷 a sore throat · 🪽 a hurt wing · 🐾 a sore paw · 🦴 tired legs
+      </div>
+      <div>
+        <b class="k-has">🦠 Patients &amp; Causes</b>
+        🐈‍⬛ black cat · 🦇 purple bat · 👻 ghost · 🎃 pumpkin · 💀 skeleton · 🕷️ spider<span class="g4"><br><b>because it…</b> 🍬 ate too many sweets · 🌧️ flew in the rain · 📣 shouted all night · 💃 danced 5 hours · 🧱 jumped off a wall</span>
+      </div>
+      <div>
+        <b class="k-can">💊 Cures &amp; Vet Advice</b>
+        <span class="g3"><b>Give it…</b> 💧 warm water · 🍵 honey tea · 🥛 healthy milk · 🍎 fresh fruit · 🧣 a warm blanket · 🩹 a bandage · 🛌 a quiet bed</span>
+        <span class="g4"><b>should:</b> 🍵 drink warm tea · 🛌 rest in bed · 🧣 wear a blanket · 🩹 wear a bandage · 🥛 drink milk<br><b>shouldn't:</b> 🚫🍬 eat sweets · 🚫🌧️ fly in the rain · 🚫📣 shout · 🚫🏃 run today</span>
+      </div>
     </div>
-    <div class="check"><span>We chose our jobs</span><span>We drew the pet</span><span>We wrote the sentences</span><span>We practised 2 times</span></div>
+    <div class="check"><span>1. Jobs chosen (30s)</span><span>2. Patient &amp; symptom drawn</span><span>3. Diagnosis &amp; cure written</span><span>4. Practised together 2 times</span></div>
   </section>
 
-  <!-- Page 2: buyer question cards (cut out, 1 set per team) -->
+  <!-- Page 2: Health Inspector question cards (cut out, 1 set per team) -->
   <section class="page">
-    <h1><img src="art/cauldron.webp" alt="">Buyer Question Cards</h1>
-    <p class="sub">Cut out. Each team gets 1 set. Ask the seller 1 question!</p>
+    <h1><img src="art/cauldron.webp" alt="">Health Inspector Question Cards</h1>
+    <p class="sub">Cut out. Each team gets 1 set. Ask the Vet Team 1 check-up question after their report!</p>
     <div class="qcards g3">
-      <div class="qcard">❓ What colour is it?<small>→ It's ____.</small></div>
-      <div class="qcard">❓ Can it <span class="k-can">fly</span>?<small>→ Yes, it can. / No, it can't.</small></div>
-      <div class="qcard">❓ Has it got a tail?<small>→ Yes, it has. / No, it hasn't.</small></div>
-      <div class="qcard">❓ How much is it?<small>→ It's ____ coins.</small></div>
-      <div class="qcard">❓ What colour is it?<small>→ It's ____.</small></div>
-      <div class="qcard">❓ Can it <span class="k-can">fly</span>?<small>→ Yes, it can. / No, it can't.</small></div>
-      <div class="qcard">❓ Has it got a tail?<small>→ Yes, it has. / No, it hasn't.</small></div>
-      <div class="qcard">❓ How much is it?<small>→ It's ____ coins.</small></div>
+      <div class="qcard">🩺 What's the matter with it?<small>&rarr; It is ____. / It has got ____.</small></div>
+      <div class="qcard">🩺 Is it hungry or thirsty?<small>&rarr; It is ____.</small></div>
+      <div class="qcard">🩺 What does it need?<small>&rarr; Give it ____!</small></div>
+      <div class="qcard">🩺 Is it happy and healthy now?<small>&rarr; Yes, it is!</small></div>
+      <div class="qcard">🩺 What's the matter with it?<small>&rarr; It is ____. / It has got ____.</small></div>
+      <div class="qcard">🩺 Is it hungry or thirsty?<small>&rarr; It is ____.</small></div>
+      <div class="qcard">🩺 What does it need?<small>&rarr; Give it ____!</small></div>
+      <div class="qcard">🩺 Is it happy and healthy now?<small>&rarr; Yes, it is!</small></div>
     </div>
     <div class="qcards g4">
-      <div class="qcard">❓ What can it do?<small>→ It can ____.</small></div>
-      <div class="qcard">❓ Can it swim?<small>→ Yes, it can. / No, it can't.</small></div>
-      <div class="qcard">❓ Has it got wings?<small>→ Yes, it has. / No, it hasn't.</small></div>
-      <div class="qcard">❓ Is it friendly?<small>→ Yes, it is. / No, it isn't.</small></div>
-      <div class="qcard">❓ How much is it?<small>→ It's ____ coins.</small></div>
-      <div class="qcard">❓ What can it do?<small>→ It can ____.</small></div>
-      <div class="qcard">❓ Can it swim?<small>→ Yes, it can. / No, it can't.</small></div>
-      <div class="qcard">❓ How much is it?<small>→ It's ____ coins.</small></div>
+      <div class="qcard">🩺 What's the matter with the patient?<small>&rarr; It has got ____.</small></div>
+      <div class="qcard">🩺 Why is it sick or hurt?<small>&rarr; Because it ____.</small></div>
+      <div class="qcard">🩺 What should it do to get better?<small>&rarr; It should ____.</small></div>
+      <div class="qcard">🩺 What shouldn't it do today?<small>&rarr; It shouldn't ____.</small></div>
+      <div class="qcard">🩺 What's the matter with the patient?<small>&rarr; It has got ____.</small></div>
+      <div class="qcard">🩺 Why is it sick or hurt?<small>&rarr; Because it ____.</small></div>
+      <div class="qcard">🩺 What should it do to get better?<small>&rarr; It should ____.</small></div>
+      <div class="qcard">🩺 What shouldn't it do today?<small>&rarr; It shouldn't ____.</small></div>
     </div>
   </section>
 
-  <!-- Page 3: door pass slips (1 per pupil, 6 per page) -->
+  <!-- Page 3: Vet Clinic Door Pass slips (1 per pupil, 6 per page) -->
   <section class="page">
-    <h1><img src="art/pumpkin.webp" alt="">Door Pass</h1>
-    <p class="sub">1 slip per pupil. Write it, then say it at the door.</p>
+    <h1><img src="art/pumpkin.webp" alt="">Vet Clinic Door Pass</h1>
+    <p class="sub">1 slip per pupil. Complete the diagnosis &amp; cure, then say it to Dr. Luna at the door!</p>
     <div class="slips" id="slips"></div>
   </section>
 
-  <!-- Page 4: homework (light: draw + 3 sentences + say it at home) -->
+  <!-- Page 4: Homework (Family Vet Check-Up) -->
   <section class="page">
-    <h1><img src="art/orangecat.webp" alt="">Homework: My Pet at Home</h1>
-    <p class="sub">Draw a pet for your family. Write 3 sentences. Say them to someone at home!</p>
+    <h1><img src="art/orangecat.webp" alt="">Homework: Home Vet Check-Up</h1>
+    <p class="sub">Draw a pet or monster patient at home. Write its diagnosis &amp; care plan, and read it to your family!</p>
     <div class="slips hw">
-      <div class="slip"><h3><img src="art/host.webp" alt="">Name: ________________</h3>
-        <div class="hw-draw">🎨 Draw your pet</div>
-        <p class="g3">It's a <u></u> <u></u>.<br>It <span class="k-has">has got</span> <u></u>.<br>It <span class="k-can">can</span> <u></u>.</p>
-        <p class="g4">It's a <u></u>, <u></u> <u></u>.<br>It <span class="k-can">can</span> <u></u>, but it <span class="k-can">can't</span> <u></u>.<br>It likes <u></u>!</p>
-        <div class="hw-sign">☐ I said it to my family. &nbsp; Family signature: ____________</div>
+      <div class="slip"><h3><img src="art/host.webp" alt="">Vet Name: ________________</h3>
+        <div class="hw-draw">🩺 Draw your patient &amp; treatment</div>
+        <p class="g3">This is <u></u>.<br>It is <span class="k-col"><u></u></span> and it has got <u></u>.<br><span class="k-can">Give it</span> <u></u>!</p>
+        <p class="g4">It has got <u></u> <span class="k-has">because</span> it <u></u>.<br>It <span class="k-can">should</span> <u></u>.<br>It <span class="k-can">shouldn't</span> <u></u>!</p>
+        <div class="hw-sign">☐ I read my Vet Report at home. &nbsp; Family signature: ____________</div>
       </div>
-      <div class="slip"><h3><img src="art/host.webp" alt="">Name: ________________</h3>
-        <div class="hw-draw">🎨 Draw your pet</div>
-        <p class="g3">It's a <u></u> <u></u>.<br>It <span class="k-has">has got</span> <u></u>.<br>It <span class="k-can">can</span> <u></u>.</p>
-        <p class="g4">It's a <u></u>, <u></u> <u></u>.<br>It <span class="k-can">can</span> <u></u>, but it <span class="k-can">can't</span> <u></u>.<br>It likes <u></u>!</p>
-        <div class="hw-sign">☐ I said it to my family. &nbsp; Family signature: ____________</div>
+      <div class="slip"><h3><img src="art/host.webp" alt="">Vet Name: ________________</h3>
+        <div class="hw-draw">🩺 Draw your patient &amp; treatment</div>
+        <p class="g3">This is <u></u>.<br>It is <span class="k-col"><u></u></span> and it has got <u></u>.<br><span class="k-can">Give it</span> <u></u>!</p>
+        <p class="g4">It has got <u></u> <span class="k-has">because</span> it <u></u>.<br>It <span class="k-can">should</span> <u></u>.<br>It <span class="k-can">shouldn't</span> <u></u>!</p>
+        <div class="hw-sign">☐ I read my Vet Report at home. &nbsp; Family signature: ____________</div>
       </div>
     </div>
   </section>
@@ -159,8 +177,8 @@
       var pets = ['cat', 'bat', 'ghost', 'pumpkin', 'skeleton', 'spider', 'orangecat'];
       var slip = '<div class="slip"><h3><img src="art/host.webp" alt="">Name: ________________</h3>' +
         '<div class="pets">' + pets.map(function (p) { return '<img src="art/' + p + '.webp" alt="">'; }).join('') + '</div>' +
-        '<p class="g3">My favourite pet is the <u></u>.<br>It <span class="k-can">can</span> <u></u>.</p>' +
-        '<p class="g4">My favourite pet is the <u></u><br>because it <span class="k-can">can</span> <u></u>.<br>It <span class="k-can">can\'t</span> <u></u>.</p></div>';
+        '<p class="g3">The <u></u> has got <span class="k-col"><u></u></span>.<br><span class="k-can">Give it</span> <u></u>!</p>' +
+        '<p class="g4">The <u></u> has got <u></u><br><span class="k-has">because</span> it <u></u>.<br>It <span class="k-can">should</span> <u></u>!</p></div>';
       document.getElementById('slips').innerHTML = new Array(7).join(slip);
       function set(g) {
         document.body.classList.toggle('grade4', g === 4);

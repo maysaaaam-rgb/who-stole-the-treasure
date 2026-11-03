@@ -293,3 +293,51 @@ button { font: inherit; color: inherit; }
 .jobs-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .jobs-head h4 { margin: 0; }
 .jobs-note { margin: 4px 0 8px; color: #fdba74; font-weight: 800; font-size: .86rem; }
+
+
+/* ---------- Vet Clinic CLIL + PPP additions */
+.xray-scanner { border-radius: 26px; background: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.25) 0%, rgba(16, 185, 129, 0.12) 52%, transparent 75%); box-shadow: inset 0 0 28px rgba(56, 189, 248, 0.25); }
+.xray-badge { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); z-index: 4; background: rgba(6, 9, 17, 0.88); border: 1.5px solid var(--cyan); color: #67e8f9; font-weight: 900; font-size: .78rem; padding: 3px 10px; border-radius: 999px; white-space: nowrap; letter-spacing: .03em; }
+.xray-scanner.solved .xray-badge { border-color: var(--emerald); color: #6ee7b7; }
+.patient-vitals { display: inline-block; background: rgba(6, 9, 17, 0.82); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-weight: 900; font-size: .85rem; color: #fde68a; margin-bottom: 6px; }
+.clil-check { margin-top: 10px; background: rgba(6, 9, 17, 0.62); border: 1.5px dashed rgba(56, 189, 248, 0.5); border-radius: 16px; padding: 8px 12px; }
+.clil-check-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; font-size: .95rem; color: #67e8f9; }
+.clil-check-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.med-layout { display: grid; grid-template-columns: minmax(210px, 32%) 1fr; gap: 18px; align-items: center; height: 100%; }
+.med-patient-card { background: rgba(6, 9, 17, 0.55); border: 1.5px solid var(--line); border-radius: 22px; padding: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.med-pet-img { width: 100%; max-width: 195px; aspect-ratio: 1; object-fit: contain; }
+.med-status { margin-top: 8px; font-weight: 900; font-size: 1rem; padding: 5px 14px; border-radius: 12px; background: color-mix(in srgb, var(--amber) 24%, #0f172a); border: 1.5px solid var(--amber); color: #fde68a; }
+.med-status.healed { background: color-mix(in srgb, var(--emerald) 28%, #0f172a); border-color: var(--emerald); color: #6ee7b7; }
+.med-right { display: flex; flex-direction: column; gap: 10px; }
+.med-chart { background: rgba(6, 9, 17, 0.65); border: 1.5px solid var(--line); border-radius: 16px; padding: 10px 14px; }
+.med-problem { font-size: 1.25rem; font-weight: 900; margin-bottom: 4px; }
+.med-q { color: #67e8f9; font-weight: 800; font-size: 1rem; }
+.med-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.med-opt { text-align: left; border: 2px solid var(--line); border-bottom: 6px solid #0b1220; background: var(--glass-2); border-radius: 16px; padding: 12px 14px; font-size: 1.08rem; font-weight: 800; cursor: pointer; transition: transform .18s var(--spring-snap), border-color .2s; }
+.med-opt:hover { transform: translateY(-2px); border-color: var(--cyan); }
+.med-opt:active { transform: translateY(3px); }
+.med-opt.right { border-color: var(--emerald); background: color-mix(in srgb, var(--emerald) 28%, #0f172a); }
+.q-card.spun { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 24%, #0f172a); box-shadow: 0 0 16px rgba(245, 158, 11, 0.45); transform: scale(1.02); }
+
+/* ---------- 1366x768 Smartboard Zero-Scroll Fit */
+.pet-panel-text h3 { margin: 0 0 6px; font-size: 1.5rem; }
+.pet-lines { gap: 5px; }
+.pet-line { padding: 6px 12px; font-size: 1.18rem; }
+.pet-panel .row-btns { margin-top: 8px; }
+.clil-check { margin-top: 6px; padding: 6px 10px; }
+.clil-check-head { margin-bottom: 4px; font-size: .88rem; }
+.builder { padding: 8px 12px; }
+.builder h4 { margin: 0 0 4px; font-size: .96rem; }
+.builder .preview { font-size: 1.02rem; padding: 5px 10px; }
+.builder .preview p { margin: 1px 0; }
+.b-row { grid-template-columns: 68px 1fr; gap: 6px; margin-bottom: 4px; }
+.b-lbl { font-size: .8rem; }
+.b-chips { gap: 4px; }
+.chip { padding: 3px 8px; font-size: .8rem; }
+.buyers { gap: 6px; }
+.q-card { padding: 6px 10px; }
+.q-card b { font-size: .98rem; }
+.q-card small { font-size: .8rem; }
+.cauldron-right { gap: 8px; }
+.clue { padding: 8px 12px; font-size: 1.18rem; }
+.guess img { max-width: 96px; }
