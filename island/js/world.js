@@ -285,7 +285,24 @@
       var cl = sc.add.image(seeded(i + 11) * W, 200 + seeded(i + 12) * 1100, 'dot').setDepth(4300).setTint(0x1e293b).setAlpha(.1); cl.setScale(26 + seeded(i + 13) * 14, 13 + seeded(i + 14) * 8);
       sc.tweens.add({ targets: cl, x: cl.x + 900, duration: 42000 + i * 9000, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     }
-    sc.add.particles(0, 0, 'dot', { x: { min: 0, max: W }, y: { min: 100, max: H }, lifespan: 5200, frequency: 240, speedX: { min: -14, max: 22 }, speedY: { min: -22, max: -4 }, scale: { start: .05, end: .34 }, alpha: { start: .85, end: 0 }, tint: [0xfffbe0, 0xffffff, 0xfde68a] }).setDepth(4200);
+    var zoneTints = {
+      0: [0xfffbe0, 0xfef08a, 0xffffff],
+      1: [0xfffbe0, 0x86efac, 0xfde68a],
+      2: [0xbae6fd, 0xe0f2fe, 0xffffff],
+      3: [0x86efac, 0x4ade80, 0xa7f3d0],
+      4: [0xf87171, 0xfb923c, 0xfde047]
+    };
+    var isVolcano = S.zone === 4;
+    sc.add.particles(0, 0, 'dot', {
+      x: { min: 0, max: W }, y: { min: 100, max: H },
+      lifespan: isVolcano ? 3800 : 5400,
+      frequency: isVolcano ? 160 : 240,
+      speedX: { min: -16, max: 24 },
+      speedY: isVolcano ? { min: -48, max: -18 } : { min: -22, max: -4 },
+      scale: { start: isVolcano ? .08 : .05, end: .36 },
+      alpha: { start: .85, end: 0 },
+      tint: zoneTints[S.zone] || [0xfffbe0, 0xffffff]
+    }).setDepth(4200);
     // ambient flat wildlife so each place feels alive
     var flyerKey = (S.zone === 2 || S.zone === 4) ? FLAT + 'o_bird' : FLAT + 'o_butterfly';
     for (i = 0; i < 4; i++) {
@@ -336,7 +353,9 @@
     }
     if (root.WorldGame) root.WorldGame.useEnergy(5);
     var b = readBag(); b.items[g.word] = (Number(b.items[g.word]) || 0) + 1; b.taken[g.id] = 1; writeBag(b);
-    sound('playCorrect'); say(g.word); cheer(sc.player, 420); sc.fx.explode(12, g.x, g.y - 20); g.glow.destroy(); g.shade.destroy();
+    sound('playCorrect'); say(g.word); cheer(sc.player, 420);
+    var matEmojis = { wood: '🪵', stone: '🪨', flower: '🌸', shell: '🐚', berry: '🫐', crystal: '💎' };
+    showWorldFloat(sc, g.x, g.y - 30, '+1 ' + (g.word.charAt(0).toUpperCase() + g.word.slice(1)) + ' ' + (matEmojis[g.word] || '✨'), '#fde047'); sc.fx.explode(12, g.x, g.y - 20); g.glow.destroy(); g.shade.destroy();
     sc.tweens.add({ targets: g.img, angle: { from: -12, to: 12 }, duration: 70, yoyo: true, repeat: 2, onComplete: function () { g.img.destroy(); } });
     var cam = sc.cameras.main, slot = document.querySelector('.w-bag-item[data-word="' + g.word + '"]'), fly = document.createElement('img');
     fly.src = artUrl(g.art); fly.className = 'w-fly';
@@ -346,6 +365,19 @@
     setTimeout(function () { fly.remove(); drawBag(); var s2 = document.querySelector('.w-bag-item[data-word="' + g.word + '"]'); if (s2) { s2.classList.add('pop'); setTimeout(function () { s2.classList.remove('pop'); }, 300); } }, 620);
     return true;
   }
+  function showWorldFloat(sc, x, y, text, color) {
+    var cam = sc && sc.cameras ? sc.cameras.main : null;
+    if (!cam) return;
+    var pop = document.createElement('div');
+    pop.className = 'w-world-float';
+    if (color) pop.style.color = color;
+    pop.textContent = text;
+    pop.style.left = Math.round((x - cam.worldView.x) * cam.zoom) + 'px';
+    pop.style.top = Math.round((y - cam.worldView.y) * cam.zoom) + 'px';
+    document.body.appendChild(pop);
+    setTimeout(function () { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 900);
+  }
+
   function makeSmallTextures(sc) {
     if (sc.textures.exists('dot')) return;
     var t = sc.textures.createCanvas('dot', 24, 24), c = t.context, g = c.createRadialGradient(12, 12, 1, 12, 12, 12);
@@ -1119,7 +1151,9 @@
           }
         }
       }
-      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.22 : 1);
+      var isSprinting = !!(sc.shiftKey && sc.shiftKey.isDown) || (S.joy && Math.sqrt(S.joy.x * S.joy.x + S.joy.y * S.joy.y) > 0.85);
+      var sprintBoost = isSprinting ? 1.42 : 1.0;
+      var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.22 : 1) * sprintBoost;
       var ease = Math.min(1, delta * ((vx || vy) ? .011 : .018));   // speeds up and slows down instead of starting and stopping dead
       m.setVelocity(m.body.velocity.x + (vx * speed - m.body.velocity.x) * ease, m.body.velocity.y + (vy * speed - m.body.velocity.y) * ease);
       pushOut(m, zone);
