@@ -399,16 +399,45 @@
     return { stage: STAGES[Math.max(0, Math.min(6, lvl - 1))], color: prof.baseColor || 'blue', equipped: Object.assign({}, prof.equipped || {}, (s.doc && s.doc.look) || {}) };
   }
   function loadImg(url) { return new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = url; }); }
+  var IDLE_FRAME = { down: 0, diag: 5, side: 10, up: 15 };
+  var CHEER_FRAME = 20;
+  function dirFromVec(vx, vy) {
+    var ax = Math.abs(vx), ay = Math.abs(vy);
+    if (vy < 0 && ay > ax * 0.68) return 'up';
+    if (vy > 0 && ay > ax * 1.45) return 'down';
+    if (vy > 0 && ay > ax * 0.34) return 'diag';
+    return 'side';
+  }
+  function stepWalkerAnim(w, vx, vy) {
+    var moving = !!(vx || vy);
+    if (moving && !w.cheering) {
+      var d = dirFromVec(vx, vy);
+      w.facingDir = d;
+      var animKey = w.monKey + '-walk-' + d;
+      if (!w.anims.isPlaying || !w.anims.currentAnim || w.anims.currentAnim.key !== animKey) {
+        w.play(animKey, true);
+      }
+      if (d === 'down') {
+        w.setFlipX(false);
+      } else if (Math.abs(vx) > 0.06) {
+        w.setFlipX(vx < 0);
+      }
+    } else if (!w.cheering && w.anims.isPlaying) {
+      w.anims.stop();
+      w.setFrame(IDLE_FRAME[w.facingDir || 'down'] || 0);
+    }
+  }
   // the monster keeps its glossy 3D shading with a crisp dark cel outline so it pops against the ground
-  function drawCartoon(c, img, x0) {
+  function drawCartoon(c, img, x0, y0) {
+    y0 = y0 || 0;
     var fc = document.createElement('canvas'); fc.width = fc.height = FRAME;
     var fx = fc.getContext('2d'); fx.drawImage(img, 0, 0, FRAME, FRAME);
     var sil = document.createElement('canvas'); sil.width = sil.height = FRAME;
     var sx = sil.getContext('2d'); sx.drawImage(fc, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = '#1e1b4b'; sx.fillRect(0, 0, FRAME, FRAME);
     c.save();
-    c.beginPath(); c.rect(x0 + 3, 2, FRAME - 6, FRAME - 4); c.clip();
-    for (var a = 0; a < 12; a++) c.drawImage(sil, x0 + Math.cos(a / 12 * 6.283) * 3.2, Math.sin(a / 12 * 6.283) * 3.2);
-    c.drawImage(fc, x0, 0);
+    c.beginPath(); c.rect(x0 + 3, y0 + 2, FRAME - 6, FRAME - 4); c.clip();
+    for (var a = 0; a < 12; a++) c.drawImage(sil, x0 + Math.cos(a / 12 * 6.283) * 3.2, y0 + Math.sin(a / 12 * 6.283) * 3.2);
+    c.drawImage(fc, x0, y0);
     c.restore();
   }
   async function bakeMonster(sc, key, opts) {
@@ -427,21 +456,45 @@
     var feet = base.querySelector('.plush-feet');
     if (feet && !feet.querySelector('.foot-l')) splitPair(feet, 'foot-l', 'foot-r');
 
-    // 8-frame articulated sprite sheet: 0=idle (front), 1..6=true side-profile stride cycle, 7=cheer jump pose
+    // 21-frame all-sides sprite sheet:
+    // 0..4: DOWN (Front View: 0=idle, 1..4=walk)
+    // 5..9: DIAG (3/4 Front-Side View: 5=idle, 6..9=walk)
+    // 10..14: SIDE (True 90° Side Profile: 10=idle, 11..14=walk)
+    // 15..19: UP (True Back View: 15=idle, 16..19=walk)
+    // 20: CHEER (Jump Cheer Pose)
     var poses = [
-      { bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0, side: false },
-      { bob: -2.5, tilt: 3.2, lx: 22, ly: -5, lr: -18, rx: -22, ry: -1, rr: 16, armL: -28, armR: 22, ear: -8, tail: -12, side: true },
-      { bob: -6.0, tilt: 4.5, lx: 28, ly: -11, lr: -24, rx: -26, ry: -3, rr: 22, armL: -40, armR: 30, ear: -13, tail: -20, side: true },
-      { bob: 1.5, tilt: 1.5, lx: 10, ly: 1, lr: 4, rx: -8, ry: -5, rr: -8, armL: -12, armR: 10, ear: 4, tail: -6, side: true },
-      { bob: -2.5, tilt: 3.2, lx: -10, ly: -1, lr: 16, rx: 10, ry: -5, rr: -18, armL: 26, armR: -22, ear: 8, tail: 12, side: true },
-      { bob: -6.0, tilt: 4.5, lx: -14, ly: -3, rr: -24, rx: 14, ry: -11, lr: 22, armL: 36, armR: -30, ear: 13, tail: 20, side: true },
-      { bob: 1.5, tilt: 1.5, lx: -2, ly: -5, lr: -8, rx: 2, ry: 1, rr: 4, armL: 12, armR: -10, ear: -4, tail: 6, side: true },
-      { bob: -7, tilt: 0, lx: -5, ly: -8, lr: 16, rx: 5, ry: -8, rr: -16, armL: 145, armR: -145, ear: 14, tail: 18, cheer: true, side: false }
+      // DOWN (Front View)
+      { view: 'down', bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
+      { view: 'down', bob: -4.5, tilt: -2.8, lx: -2, ly: -11, lr: 10, rx: 2, ry: 3, rr: -4, armL: 28, armR: -28, ear: 9, tail: -14, walk: true },
+      { view: 'down', bob: 1.5, tilt: -1.0, lx: -1, ly: -3, lr: 4, rx: 1, ry: -2, rr: -2, armL: 10, armR: -10, ear: 4, tail: -6, walk: true },
+      { view: 'down', bob: -4.5, tilt: 2.8, lx: -2, ly: 3, lr: -4, rx: 2, ry: -11, rr: -10, armL: -28, armR: 28, ear: -9, tail: 14, walk: true },
+      { view: 'down', bob: 1.5, tilt: 1.0, lx: -1, ly: -2, lr: -2, rx: 1, ry: -3, rr: 4, armL: -10, armR: 10, ear: -4, tail: 6, walk: true },
+      // DIAG (3/4 Front-Side View)
+      { view: 'diag', bob: 0, tilt: 0, lx: 4, ly: 0, lr: 0, rx: -4, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
+      { view: 'diag', bob: -5.0, tilt: 3.5, lx: 20, ly: -9, lr: -18, rx: -18, ry: 1, rr: 16, armL: -32, armR: 26, ear: -10, tail: -16, walk: true },
+      { view: 'diag', bob: 1.5, tilt: 1.5, lx: 8, ly: 1, lr: 4, rx: -6, ry: -4, rr: -6, armL: -10, armR: 8, ear: 4, tail: -6, walk: true },
+      { view: 'diag', bob: -5.0, tilt: 3.5, lx: -12, ly: 1, lr: 16, rx: 14, ry: -9, rr: -18, armL: 28, armR: -24, ear: 10, tail: 16, walk: true },
+      { view: 'diag', bob: 1.5, tilt: 1.5, lx: -2, ly: -4, lr: -6, rx: 4, ry: 1, rr: 4, armL: 10, armR: -8, ear: -4, tail: 6, walk: true },
+      // SIDE (True 90° Side Profile)
+      { view: 'side', bob: 0, tilt: 0, lx: 6, ly: 0, lr: 0, rx: -6, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
+      { view: 'side', bob: -5.5, tilt: 4.2, lx: 26, ly: -10, lr: -22, rx: -24, ry: -2, rr: 20, armL: -36, armR: 28, ear: -12, tail: -18, walk: true },
+      { view: 'side', bob: 1.5, tilt: 1.5, lx: 10, ly: 1, lr: 4, rx: -8, ry: -5, rr: -8, armL: -12, armR: 10, ear: 4, tail: -6, walk: true },
+      { view: 'side', bob: -5.5, tilt: 4.2, lx: -14, ly: -2, lr: 20, rx: 14, ry: -10, rr: -22, armL: 34, armR: -28, ear: 12, tail: 18, walk: true },
+      { view: 'side', bob: 1.5, tilt: 1.5, lx: -2, ly: -5, lr: -8, rx: 2, ry: 1, rr: 4, armL: 12, armR: -10, ear: -4, tail: 6, walk: true },
+      // UP (True Back View)
+      { view: 'up', bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
+      { view: 'up', bob: -4.5, tilt: 2.8, lx: -2, ly: -12, lr: 10, rx: 2, ry: 2, rr: -4, armL: -26, armR: 26, ear: -9, tail: -18, walk: true },
+      { view: 'up', bob: 1.5, tilt: 1.0, lx: -1, ly: -3, lr: 4, rx: 1, ry: -2, rr: -2, armL: -10, armR: 10, ear: -4, tail: -6, walk: true },
+      { view: 'up', bob: -4.5, tilt: -2.8, lx: -2, ly: 2, lr: -4, rx: 2, ry: -12, rr: -10, armL: 26, armR: -26, ear: 9, tail: 18, walk: true },
+      { view: 'up', bob: 1.5, tilt: -1.0, lx: -1, ly: -2, lr: -2, rx: 1, ry: -3, rr: 4, armL: 10, armR: -10, ear: 4, tail: 6, walk: true },
+      // CHEER
+      { view: 'down', bob: -7, tilt: 0, lx: -5, ly: -8, lr: 16, rx: 5, ry: -8, rr: -16, armL: 145, armR: -145, ear: 14, tail: 18, cheer: true }
     ];
-    var canvas = document.createElement('canvas'); canvas.width = FRAME * poses.length; canvas.height = FRAME;
+    var COLS = 7, ROWS = Math.ceil(poses.length / COLS);
+    var canvas = document.createElement('canvas'); canvas.width = FRAME * COLS; canvas.height = FRAME * ROWS;
     var c = canvas.getContext('2d'), ser = new XMLSerializer();
-    for (var i = 0; i < poses.length; i++) {
-      var p = poses[i], svg = base.cloneNode(true);
+    var imgs = await Promise.all(poses.map(async function (p) {
+      var svg = base.cloneNode(true);
       var setSvg = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.setAttribute('transform', tr); }); };
       var prependSvg = function (q, tr) {
         [].forEach.call(svg.querySelectorAll(q), function (el) {
@@ -450,22 +503,19 @@
         });
       };
       var setCss = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.style.transform = tr; }); };
+      var clipEl = svg.querySelector('clipPath[id^="mon-clip-"]');
+      var clipUrl = clipEl ? 'url(#' + clipEl.id + ')' : '';
       setSvg('.monster-bob-group', 'translate(0 ' + p.bob + ') rotate(' + (p.tilt || 0) + ' 100 146)');
-      if (p.side) {
-        // TRUE 2D SIDE PROFILE (facing right; mirrored when walking left):
-        // 1. Sleeker side-profile torso width and belly patch wrapped to the front-right edge of the tummy
-        var clipEl = svg.querySelector('clipPath[id^="mon-clip-"]');
-        var clipUrl = clipEl ? 'url(#' + clipEl.id + ')' : '';
+
+      if (p.view === 'side') {
+        // TRUE 90° SIDE PROFILE (facing right; mirrored when walking left)
         [].forEach.call(svg.querySelectorAll('.mon-body-breathe'), function (el) {
-          if (!el.querySelector('.mon-arm')) {
-            el.setAttribute('transform', 'translate(104 0) scale(0.85 1) translate(-104 0)');
-          }
+          if (!el.querySelector('.mon-arm')) el.setAttribute('transform', 'translate(104 0) scale(0.85 1) translate(-104 0)');
         });
         [].forEach.call(svg.querySelectorAll('[fill^="url(#plush-belly-"], .mon-belly-mark'), function (el) {
           el.setAttribute('transform', 'translate(26 0) translate(100 136) scale(0.72 1) translate(-100 -136)');
           if (clipUrl) el.setAttribute('clip-path', clipUrl);
         });
-        // Narrow clothing/scarf to fit the side torso and flip the hanging scarf tail to trail behind on the left
         [].forEach.call(svg.querySelectorAll('.monster-bob-group > g[transform^="translate(0 "]'), function (el) {
           var prevC = el.getAttribute('transform') || '';
           el.setAttribute('transform', 'translate(104 0) scale(0.85 1) translate(-100 0) ' + prevC);
@@ -473,18 +523,13 @@
             tailPart.setAttribute('transform', 'translate(200 0) scale(-1 1)');
           });
         });
-        // 2. Remove front-right fins/ears so nothing sticks out of the forehead; sweep rear fins backward from the back of the head
         [].forEach.call(svg.querySelectorAll('path[fill^="url(#mon-fin-"]'), function (el) {
           var d = el.getAttribute('d') || '';
-          if (/^M\s*1[1-9]\d/.test(d)) {
-            el.setAttribute('display', 'none');
-          } else {
-            el.setAttribute('transform', 'translate(9 1) rotate(-5 65 90)');
-          }
+          if (/^M\s*1[1-9]\d/.test(d)) el.setAttribute('display', 'none');
+          else el.setAttribute('transform', 'translate(9 1) rotate(-5 65 90)');
         });
         [].forEach.call(svg.querySelectorAll('.monster-ear-front, .mon-ear-r'), function (el) { el.setAttribute('display', 'none'); });
         [].forEach.call(svg.querySelectorAll('.monster-ear-rear'), function (el) { el.setAttribute('transform', 'translate(12 2)'); });
-        // 3. True side-profile face: ONE eye on the side of the head looking right, protruding side snout/nose, side smile, and one side cheek
         var eyes = svg.querySelectorAll('.plush-face .mon-eye');
         if (eyes.length >= 2) {
           eyes[1].setAttribute('display', 'none');
@@ -493,32 +538,20 @@
           [].forEach.call(eyes[0].querySelectorAll('ellipse, circle'), function (el) {
             var fill = el.getAttribute('fill') || '';
             var r = Number(el.getAttribute('r') || 0);
-            if (fill === '#090d16') {
-              el.setAttribute('transform', 'translate(5.4 0)');
-            } else if (fill === '#ffffff') {
-              el.setAttribute('transform', r >= 2.2 ? 'translate(8.2 0.4)' : 'translate(4.5 0)');
-            } else if (fill.indexOf('url(#plush-eye-iris-') === 0) {
-              el.setAttribute('transform', 'translate(2.4 0)');
-            }
+            if (fill === '#090d16') el.setAttribute('transform', 'translate(5.4 0)');
+            else if (fill === '#ffffff') el.setAttribute('transform', r >= 2.2 ? 'translate(8.2 0.4)' : 'translate(4.5 0)');
+            else if (fill.indexOf('url(#plush-eye-iris-') === 0) el.setAttribute('transform', 'translate(2.4 0)');
           });
         }
-        // Move snout dome and button nose to the front-right contour of the head, and hide the far cheek
         [].forEach.call(svg.querySelectorAll('.plush-face > ellipse, .plush-face > circle'), function (el) {
           var fill = el.getAttribute('fill') || '';
           var cx = Number(el.getAttribute('cx') || 0);
-          if (fill.indexOf('url(#plush-snout-') === 0) {
-            el.setAttribute('transform', 'translate(27 -1) translate(100 121) scale(0.68 0.9) translate(-100 -121)');
-          } else if (fill === '#0f172a') {
-            el.setAttribute('transform', 'translate(33 -1)');
-          } else if (cx >= 98 && cx <= 101 && fill === '#ffffff') {
-            el.setAttribute('transform', 'translate(33 -1)');
-          } else if (cx > 110) {
-            el.setAttribute('display', 'none');
-          } else if (cx < 90) {
-            el.setAttribute('transform', 'translate(25 1)');
-          }
+          if (fill.indexOf('url(#plush-snout-') === 0) el.setAttribute('transform', 'translate(27 -1) translate(100 121) scale(0.68 0.9) translate(-100 -121)');
+          else if (fill === '#0f172a') el.setAttribute('transform', 'translate(33 -1)');
+          else if (cx >= 98 && cx <= 101 && fill === '#ffffff') el.setAttribute('transform', 'translate(33 -1)');
+          else if (cx > 110) el.setAttribute('display', 'none');
+          else if (cx < 90) el.setAttribute('transform', 'translate(25 1)');
         });
-        // Replace front W-mouth with a side-profile smile tucked back from the snout
         var mouthG = svg.querySelector('.plush-face .mon-mouth');
         if (mouthG) {
           var my = Number(mouthG.getAttribute('data-my') || 127);
@@ -526,17 +559,97 @@
             '<path d="M 116 ' + (my + 1.5) + ' Q 124 ' + (my + 5.5) + ' 131 ' + (my - 0.5) + '" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />' +
             '<path d="M 114.5 ' + (my - 0.5) + ' q 1.2 1.6 2 3" fill="none" stroke="#0f172a" stroke-width="1.4" stroke-linecap="round" opacity="0.6" />';
         }
-        // 4. Side eyewear, hat/bow on the crown, tail trailing on the left, and near arm centered on the side torso
         prependSvg('.monster-eyewear', 'translate(20 -1) translate(100 112) scale(0.75 1) translate(-100 -112)');
         prependSvg('.monster-hat', 'translate(-22 1) rotate(-14 100 65)');
         prependSvg('.monster-tail-layer', 'translate(190 0) scale(-1 1)');
         setCss('.mon-ear-l', 'translate(10px, -2px) rotate(' + (p.ear || 0) + 'deg)');
-        setSvg('.mon-arm-l', 'display:none');
         [].forEach.call(svg.querySelectorAll('.mon-arm-l'), function (el) { el.setAttribute('display', 'none'); });
         setCss('.mon-arm-r', 'translate(-35px, 2px) rotate(' + (p.armL || 0) + 'deg)');
+      } else if (p.view === 'diag') {
+        // 3/4 DIAGONAL VIEW (turned 45° toward the walking direction; both eyes visible with perspective foreshortening)
+        [].forEach.call(svg.querySelectorAll('.mon-body-breathe'), function (el) {
+          if (!el.querySelector('.mon-arm')) el.setAttribute('transform', 'translate(102 0) scale(0.93 1) translate(-102 0)');
+        });
+        [].forEach.call(svg.querySelectorAll('[fill^="url(#plush-belly-"], .mon-belly-mark'), function (el) {
+          el.setAttribute('transform', 'translate(14 0) translate(100 136) scale(0.84 1) translate(-100 -136)');
+          if (clipUrl) el.setAttribute('clip-path', clipUrl);
+        });
+        prependSvg('.plush-face', 'translate(15 0)');
+        var dEyes = svg.querySelectorAll('.plush-face .mon-eye');
+        if (dEyes.length >= 2) {
+          var pe0 = dEyes[0].getAttribute('transform') || '';
+          dEyes[0].setAttribute('transform', 'translate(3 0) ' + pe0);
+          var pe1 = dEyes[1].getAttribute('transform') || '';
+          dEyes[1].setAttribute('transform', 'translate(-5 0) translate(116 114) scale(0.70 0.96) translate(-116 -114) ' + pe1);
+        }
+        [].forEach.call(svg.querySelectorAll('.plush-face .mon-eye > ellipse, .plush-face .mon-eye > circle'), function (el) {
+          var fill = el.getAttribute('fill') || '';
+          if (fill === '#090d16' || fill === '#ffffff' || fill.indexOf('url(#plush-eye-iris-') === 0) {
+            var dpx = fill === '#090d16' || fill === '#ffffff' ? 3.2 : 1.6;
+            el.setAttribute('transform', 'translate(' + dpx + ' 0.6)');
+          }
+        });
+        [].forEach.call(svg.querySelectorAll('.plush-face > ellipse'), function (el) {
+          var cx = Number(el.getAttribute('cx') || 0);
+          if (cx > 115) el.setAttribute('opacity', '0.18');
+          else if (cx < 85 && cx > 60) el.setAttribute('transform', 'translate(5 0)');
+        });
+        [].forEach.call(svg.querySelectorAll('path[fill^="url(#mon-fin-"]'), function (el) {
+          var d = el.getAttribute('d') || '';
+          if (/^M\s*1[1-9]\d/.test(d)) el.setAttribute('transform', 'translate(-12 0) translate(136 90) scale(0.42 0.9) translate(-136 -90)');
+          else el.setAttribute('transform', 'translate(2 0) rotate(-4 65 90)');
+        });
+        prependSvg('.monster-eyewear', 'translate(14 0)');
+        prependSvg('.monster-hat', 'translate(-6 0) rotate(-4 100 65)');
+        prependSvg('.monster-tail-layer', 'translate(194 0) scale(-1 1)');
+        setCss('.mon-ear-l', 'translate(7px, 0px) rotate(' + (p.ear || 0) + 'deg)');
+        setCss('.mon-ear-r', 'translate(-4px, -1px) scale(0.86, 0.95) rotate(' + (-(p.ear || 0)) + 'deg)');
+        setCss('.mon-arm-l', 'translate(16px, -1px) rotate(' + (p.armL || 0) + 'deg)');
+        setCss('.mon-arm-r', 'translate(-8px, 1px) scale(0.84, 0.92) rotate(' + (p.armR || 0) + 'deg)');
+      } else if (p.view === 'up') {
+        // TRUE BACK VIEW (walking away from camera / North): hide face, eyewear, and front belly; show back seam, collar back, and centered wagging tail on lower back
+        [].forEach.call(svg.querySelectorAll('.plush-face, .monster-eyewear, [fill^="url(#plush-belly-"], .mon-belly-mark'), function (el) {
+          el.setAttribute('display', 'none');
+        });
+        // Hide front-only scarf hanging triangle/tassels so only the wrap-around back collar shows
+        [].forEach.call(svg.querySelectorAll('.monster-bob-group > g[transform^="translate(0 "] path[fill="#dc2626"], .monster-bob-group > g[transform^="translate(0 "] line[stroke="#fef08a"]'), function (el) {
+          el.setAttribute('display', 'none');
+        });
+        // Add subtle plush back-seam & lower-back shading inside the torso group
+        var torsoG = svg.querySelector('.mon-body-breathe');
+        if (torsoG) {
+          var seam = svg.ownerDocument.createElementNS(NS, 'path');
+          seam.setAttribute('d', 'M 100 76 Q 99 108 100 138');
+          seam.setAttribute('fill', 'none');
+          seam.setAttribute('stroke', '#ffffff');
+          seam.setAttribute('stroke-width', '1.8');
+          seam.setAttribute('stroke-dasharray', '4 4');
+          seam.setAttribute('stroke-linecap', 'round');
+          seam.setAttribute('opacity', '0.28');
+          torsoG.appendChild(seam);
+        }
+        // Move tail to the foreground of `.monster-bob-group` and center it on the lower back so it wags in front of the camera
+        var bobG = svg.querySelector('.monster-bob-group');
+        var tailLayer = svg.querySelector('.monster-tail-layer');
+        if (bobG && tailLayer) {
+          bobG.appendChild(tailLayer);
+        }
+        prependSvg('.monster-tail-layer', 'translate(-28 2)');
+        setCss('.mon-ear-l', 'rotate(' + (p.ear || 0) + 'deg)');
+        setCss('.mon-ear-r', 'rotate(' + (-(p.ear || 0)) + 'deg)');
+        setCss('.mon-arm-l', 'translate(0px, ' + (p.armL ? (p.armL > 0 ? -4 : 3) : 0) + 'px) rotate(' + (p.armL || 0) + 'deg)');
+        setCss('.mon-arm-r', 'translate(0px, ' + (p.armR ? (p.armR < 0 ? -4 : 3) : 0) + 'px) rotate(' + (p.armR || 0) + 'deg)');
       } else {
-        if (p.armL) setCss('.mon-arm-l', 'rotate(' + p.armL + 'deg)');
-        if (p.armR) setCss('.mon-arm-r', 'rotate(' + p.armR + 'deg)');
+        // DOWN (Front View: idle, walking toward camera, or cheer)
+        if (p.walk) {
+          prependSvg('.plush-face', 'translate(0 1.5)');
+          [].forEach.call(svg.querySelectorAll('.plush-face .mon-eye > ellipse, .plush-face .mon-eye > circle'), function (el) {
+            var fill = el.getAttribute('fill') || '';
+            if (fill === '#090d16' || fill === '#ffffff') el.setAttribute('transform', 'translate(0 1.8)');
+          });
+        }
+        if (p.armL) setCss('.mon-arm-l', 'translate(0px, ' + (p.armL > 0 && !p.cheer ? -3 : 2) + 'px) rotate(' + p.armL + 'deg)');
+        if (p.armR) setCss('.mon-arm-r', 'translate(0px, ' + (p.armR < 0 && !p.cheer ? -3 : 2) + 'px) rotate(' + p.armR + 'deg)');
         if (p.ear) {
           setCss('.mon-ear-l', 'rotate(' + p.ear + 'deg)');
           setCss('.mon-ear-r', 'rotate(' + (-p.ear) + 'deg)');
@@ -551,13 +664,39 @@
       svg.setAttribute('width', FRAME); svg.setAttribute('height', FRAME);
       var url = URL.createObjectURL(new Blob([ser.serializeToString(svg)], { type: 'image/svg+xml' }));
       var img = await loadImg(url);
-      drawCartoon(c, img, FRAME * i);
       URL.revokeObjectURL(url);
+      return img;
+    }));
+    imgs.forEach(function (img, i) {
+      var col = i % COLS, row = Math.floor(i / COLS);
+      drawCartoon(c, img, FRAME * col, FRAME * row);
+    });
+    var animDirs = { down: [1, 2, 3, 4], diag: [6, 7, 8, 9], side: [11, 12, 13, 14], up: [16, 17, 18, 19] };
+    if (sc.textures.exists(key)) {
+      ['-walk', '-walk-down', '-walk-diag', '-walk-side', '-walk-up'].forEach(function (suf) {
+        if (sc.anims.exists(key + suf)) sc.anims.remove(key + suf);
+      });
+      sc.textures.remove(key);
     }
-    if (sc.textures.exists(key)) { sc.anims.remove(key + '-walk'); sc.textures.remove(key); }
     var tex = sc.textures.addCanvas(key, canvas);
-    poses.forEach(function (_, n) { tex.add(n, 0, FRAME * n, 0, FRAME, FRAME); });
-    sc.anims.create({ key: key + '-walk', frames: [1, 2, 3, 4, 5, 6].map(function (f) { return { key: key, frame: f }; }), frameRate: 12, repeat: -1 });
+    poses.forEach(function (_, n) {
+      var col = n % COLS, row = Math.floor(n / COLS);
+      tex.add(n, 0, FRAME * col, FRAME * row, FRAME, FRAME);
+    });
+    Object.keys(animDirs).forEach(function (d) {
+      sc.anims.create({
+        key: key + '-walk-' + d,
+        frames: animDirs[d].map(function (f) { return { key: key, frame: f }; }),
+        frameRate: 10,
+        repeat: -1
+      });
+    });
+    sc.anims.create({
+      key: key + '-walk',
+      frames: animDirs.side.map(function (f) { return { key: key, frame: f }; }),
+      frameRate: 10,
+      repeat: -1
+    });
     if (key === 'me') S.lookStamp = JSON.stringify(opts);
   }
   function syncRide(sc, m) {
@@ -1209,7 +1348,7 @@
   }
   function partyAt(x, y) { var sc = scene; sc.party.explode(60, x, y); sc.cameras.main.shake(220, .004); sound('playFanfare'); if (sc.player) cheer(sc.player, 1400); }
   function cheer(m, ms) {
-    m.anims.stop(); m.setFrame(7); m.cheering = true;
+    m.anims.stop(); m.setFlipX(false); m.setFrame(CHEER_FRAME); m.cheering = true;
     m.cheerHop = 0;
     if (scene && scene.tweens) {
       scene.tweens.add({
@@ -1222,7 +1361,7 @@
         onComplete: function () { m.cheerHop = 0; m.landSquash = 0.9; }
       });
     }
-    scene.time.delayedCall(ms || 900, function () { if (m.active) { m.cheering = false; m.cheerHop = 0; m.setFrame(0); } });
+    scene.time.delayedCall(ms || 900, function () { if (m.active) { m.cheering = false; m.cheerHop = 0; m.setFrame(IDLE_FRAME[m.facingDir || 'down'] || 0); } });
   }
 
   /* What the pupil can do where they are standing */
@@ -1562,21 +1701,17 @@
       var ease = Math.min(1, delta * ((vx || vy) ? .019 : .026));   // responsive acceleration & crisp landing stop
       m.setVelocity(m.body.velocity.x + (vx * speed - m.body.velocity.x) * ease, m.body.velocity.y + (vy * speed - m.body.velocity.y) * ease);
       pushOut(m, zone);
-      var moving = !!(vx || vy);
-      if (moving && !m.cheering) {
-        if (!m.anims.isPlaying) m.play('me-walk');
-        if (Math.abs(vx) > 0.08) m.setFlipX(vx < 0);
-      } else if (!m.cheering && m.anims.isPlaying) { m.anims.stop(); m.setFrame(0); }
+      stepWalkerAnim(m, vx, vy);
       moveSkin(m, delta, time);
       dropTrail(sc, m, delta);
 
       sc.walkers.forEach(function (w) {
         var a = w.wander;
-        if (a.wait > 0) { a.wait -= delta; w.setVelocity(0); if (w.anims.isPlaying) { w.anims.stop(); w.setFrame(0); } }
+        if (a.wait > 0) { a.wait -= delta; w.setVelocity(0); stepWalkerAnim(w, 0, 0); }
         else {
           var ddx = a.x - w.x, ddy = a.y - w.y, dd = Math.sqrt(ddx * ddx + ddy * ddy); a.life = (a.life || 0) + delta;
           if (dd < 20 || a.life > 6000) { a.wait = 800 + Math.random() * 2600; a.life = 0; a.x = 150 + Math.random() * 2100; a.y = 780 + Math.random() * 620; }
-          else { w.setVelocity(ddx / dd * 120, ddy / dd * 120); w.setFlipX(ddx < 0); if (!w.anims.isPlaying) w.play(w.monKey + '-walk'); }
+          else { var wvx = ddx / dd, wvy = ddy / dd; w.setVelocity(wvx * 120, wvy * 120); stepWalkerAnim(w, wvx, wvy); }
         }
         pushOut(w, zone); moveSkin(w, delta, time);
       });
