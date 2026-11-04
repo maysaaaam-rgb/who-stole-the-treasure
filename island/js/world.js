@@ -674,7 +674,7 @@
       if (owned === 0 && placed === 0) return '';
       var isAct = (activeId === r.id) || (S.movingIdx >= 0 && st.placed[S.movingIdx] && st.placed[S.movingIdx].id === r.id);
       return '<button type="button" class="w-dd-card' + (isAct ? ' active' : '') + '" data-id="' + r.id + '" onclick="WORLD.selectDecorCard(\'' + r.id + '\')">' +
-        '<img src="' + FLAT + r.id + '.webp" alt="">' +
+        '<img src="' + artUrl(FLAT + r.id) + '" alt="">' +
         '<span>' + esc(r.name) + '</span>' +
         '<em>' + (avail > 0 ? '+' + avail + ' in bag' : '✓ placed (' + placed + ')') + '</em>' +
       '</button>';

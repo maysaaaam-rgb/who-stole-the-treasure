@@ -1525,6 +1525,7 @@
 
   /* 3-Step First-Visit Welcome Card */
   function maybeShowWelcome() {
+    if (document.body && document.body.classList.contains('w-page')) return;
     if (!state.session || state.session.status !== 'ok') return;
     var params = new URLSearchParams(root.location.search);
     if (params.get('nowelcome') === '1') return;
