@@ -311,7 +311,7 @@
   root.addEventListener('resize', function () { clearTimeout(pawTimer); pawTimer = setTimeout(layPaws, 150); });
 
   function walkMap(ev) {
-    if (!ev || ev.target.closest('button') || ev.target.closest('.isl-shore-bottle')) return;
+    if (!ev || ev.target.closest('button') || ev.target.closest('.isl-shore-bottle') || ev.target.closest('a')) return;
     var wrap = document.getElementById('isl-map-wrap');
     var mon = document.getElementById('isl-map-monster');
     if (!wrap || !mon || wrap.classList.contains('mp-zone')) return;
@@ -320,12 +320,26 @@
     var y = Math.round(((ev.clientY - r.top) / r.height) * 100);
     x = Math.max(14, Math.min(86, x));
     y = Math.max(22, Math.min(86, y));
+    var prev = state.walkPos || { x: 50, y: 64 };
+    var dir = (x < prev.x - 1) ? -1 : ((x > prev.x + 1) ? 1 : (state.walkDir || 1));
+    state.walkDir = dir;
     state.walkPos = { x: x, y: y };
     mon.style.setProperty('--x', x);
     mon.style.setProperty('--y', y);
+    mon.style.setProperty('--dir', dir);
     mon.classList.remove('mon-hop');
     void mon.offsetWidth;
     mon.classList.add('mon-hop');
+    var svgEl = mon.querySelector('svg');
+    if (svgEl && root.MonsterRenderer && root.MonsterRenderer.play) {
+      root.MonsterRenderer.play(svgEl, 'cheer', { stay: true, speed: 1.35 });
+    }
+    var ring = document.createElement('span');
+    ring.className = 'mp-tap-ring';
+    ring.style.left = x + '%';
+    ring.style.top = y + '%';
+    wrap.appendChild(ring);
+    setTimeout(function () { if (ring && ring.parentNode) ring.parentNode.removeChild(ring); }, 520);
     root.IslandAudio.playHop();
     var b = document.getElementById('isl-map-mon-bubble');
     if (b) {

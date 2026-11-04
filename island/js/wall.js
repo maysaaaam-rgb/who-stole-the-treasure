@@ -494,12 +494,26 @@
       var y = Math.round(((ev.clientY - r.top) / r.height) * 100);
       x = Math.max(12, Math.min(88, x));
       y = Math.max(46, Math.min(84, y));
+      var prev = W.myPos || { x: 50, y: 66 };
+      var dir = (x < prev.x - 1) ? -1 : ((x > prev.x + 1) ? 1 : (W.myDir || 1));
+      W.myDir = dir;
       W.myPos = { x: x, y: y };
       me.style.left = x + '%';
       me.style.top = y + '%';
+      me.style.setProperty('--dir', dir);
       me.classList.remove('wl-hi5-hop');
       void me.offsetWidth;
       me.classList.add('wl-hi5-hop');
+      var svgEl = me.querySelector('svg');
+      if (svgEl && root.MonsterRenderer && root.MonsterRenderer.play) {
+        root.MonsterRenderer.play(svgEl, 'cheer', { stay: true, speed: 1.35 });
+      }
+      var ring = document.createElement('span');
+      ring.className = 'wl-tap-ring';
+      ring.style.left = x + '%';
+      ring.style.top = y + '%';
+      st.appendChild(ring);
+      setTimeout(function () { if (ring && ring.parentNode) ring.parentNode.removeChild(ring); }, 520);
       if (root.IslandAudio && root.IslandAudio.playHop) root.IslandAudio.playHop();
     },
     emote: function (emoji, spokenLine) {
