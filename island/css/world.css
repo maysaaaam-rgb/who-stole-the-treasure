@@ -187,3 +187,12 @@ body.w-on #w-vignette { display: block; }
 .wg-choice-btn { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.06rem; min-height: 50px; background: rgba(30,41,59,.95); border: 1.5px solid rgba(56,189,248,.4); border-bottom: 5px solid #020617; }
 .wg-choice-btn.wobble { animation: wgWobble .36s ease; }
 @keyframes wgWobble { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* Interactive Goal HUD & Victory Badges */
+#w-goal { transition: transform .14s var(--w-spring), filter .14s ease; }
+#w-goal:hover { filter: brightness(1.1); transform: scale(1.02); }
+#w-goal:active { transform: scale(0.98); }
+
+.wg-mat-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.wg-mat-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(15,23,42,.88); border: 1.5px solid #38bdf8; border-bottom: 3px solid #0284c7; padding: 4px 12px; border-radius: 14px; font: 700 13px Fredoka, sans-serif; color: #fde047; box-shadow: 0 4px 12px rgba(0,0,0,.35); animation: wPop .28s var(--w-spring); }
+.wg-mat-badge img { width: 24px; height: 24px; object-fit: contain; }
