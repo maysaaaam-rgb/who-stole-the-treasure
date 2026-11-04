@@ -659,6 +659,7 @@
       spellId: 'star',
       shielded: false,
       firstTry: true,
+      combo: 0,
       busy: false,
       won: false
     };
@@ -792,10 +793,19 @@
     if (String(chosenVal).trim().toLowerCase() === String(correctVal).trim().toLowerCase()) {
       battleRun.busy = true;
       sound('playCorrect');
+      if (battleRun.firstTry) battleRun.combo = (battleRun.combo || 0) + 1;
+      else battleRun.combo = 0;
       var crit = battleRun.firstTry ? 10 : 0;
-      var dmg = sp.dmg + crit;
+      var comboBonus = (battleRun.combo > 1) ? (battleRun.combo * 5) : 0;
+      var dmg = sp.dmg + crit + comboBonus;
       battleRun.foeHp = Math.max(0, battleRun.foeHp - dmg);
       useEnergy(sp.energy || 5);
+
+      var stg = $('wg-battle-stage');
+      if (stg) {
+        stg.classList.add('wg-shake');
+        setTimeout(function () { stg.classList.remove('wg-shake'); }, 300);
+      }
       if (sp.heal) battleRun.myHp = Math.min(battleRun.myMaxHp, battleRun.myHp + sp.heal);
       if (sp.shield) battleRun.shielded = true;
 
@@ -805,7 +815,8 @@
       }
       if (foeBox) {
         foeBox.classList.add('hit');
-        showDmgPopup(foeBox, '-' + dmg + ' HP' + (crit ? ' ✨CRIT!' : ''), '#fde047');
+        var comboTag = (battleRun.combo > 1) ? ' 🔥x' + battleRun.combo : '';
+        showDmgPopup(foeBox, '-' + dmg + ' HP' + (crit ? ' ✨CRIT!' : '') + comboTag, '#fde047');
       }
       if (sp.heal && meBox) showDmgPopup(meBox, '+' + sp.heal + ' HP 💖', '#6ee7b7');
       if (sp.shield && meBox) showDmgPopup(meBox, '🛡️ SHIELD UP!', '#38bdf8');
