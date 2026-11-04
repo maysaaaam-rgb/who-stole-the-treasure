@@ -405,32 +405,58 @@
     var fx = fc.getContext('2d'); fx.drawImage(img, 0, 0, FRAME, FRAME);
     var sil = document.createElement('canvas'); sil.width = sil.height = FRAME;
     var sx = sil.getContext('2d'); sx.drawImage(fc, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = '#1e1b4b'; sx.fillRect(0, 0, FRAME, FRAME);
+    c.save();
+    c.beginPath(); c.rect(x0 + 3, 2, FRAME - 6, FRAME - 4); c.clip();
     for (var a = 0; a < 12; a++) c.drawImage(sil, x0 + Math.cos(a / 12 * 6.283) * 3.2, Math.sin(a / 12 * 6.283) * 3.2);
     c.drawImage(fc, x0, 0);
+    c.restore();
   }
   async function bakeMonster(sc, key, opts) {
     var eq = Object.assign({}, opts.equipped || {}); delete eq.background; delete eq.aura;
     var markup = root.MonsterRenderer.renderMonsterSVG({ stage: opts.stage, color: opts.color, equipped: eq, size: FRAME, animated: false, isAvatar: true });
     var base = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement;
     ['.monster-pedestal-stage', '.mon-rig-shadow'].forEach(function (q) { var el = base.querySelector(q); if (el) el.remove(); });
-    var feet = base.querySelector('.plush-feet');
-    if (feet && feet.children.length >= 10) {
-      var kids = [].slice.call(feet.children), half = kids.length / 2, NS = 'http://www.w3.org/2000/svg', l = document.createElementNS(NS, 'g'), r = document.createElementNS(NS, 'g');
-      l.setAttribute('class', 'foot-l'); r.setAttribute('class', 'foot-r');
+    var NS = 'http://www.w3.org/2000/svg';
+    var splitPair = function (parent, clsL, clsR) {
+      if (!parent || parent.children.length < 2 || parent.children.length % 2 !== 0) return;
+      var kids = [].slice.call(parent.children), half = kids.length / 2, l = document.createElementNS(NS, 'g'), r = document.createElementNS(NS, 'g');
+      l.setAttribute('class', clsL); r.setAttribute('class', clsR);
       kids.forEach(function (k, i) { (i < half ? l : r).appendChild(k); });
-      feet.appendChild(l); feet.appendChild(r);
-    }
-    var poses = [{ bob: 0 }, { bob: -3, l: -7, armL: 14, armR: 14 }, { bob: 0 }, { bob: -3, r: -7, armL: -14, armR: -14 }, { bob: 0 }, { bob: -2, armL: 150, armR: -150 }];
+      parent.appendChild(l); parent.appendChild(r);
+    };
+    var feet = base.querySelector('.plush-feet');
+    if (feet && !feet.querySelector('.foot-l')) splitPair(feet, 'foot-l', 'foot-r');
+
+    // 8-frame articulated sprite sheet: 0=idle, 1..6=3D stride cycle, 7=cheer jump pose
+    var poses = [
+      { bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
+      { bob: -2.5, tilt: 2.2, lx: 6, ly: -6, lr: -14, rx: -5, ry: 1.5, rr: 10, armL: 22, armR: 22, ear: -7, tail: -12 },
+      { bob: -5.5, tilt: 3.4, lx: 4, ly: -11, lr: -20, rx: -3, ry: 2, rr: 7, armL: 32, armR: 32, ear: -11, tail: -18 },
+      { bob: 1.5, tilt: 0.8, lx: -2, ly: 1, lr: 5, rx: 3, ry: -3, rr: -8, armL: 10, armR: 10, ear: 4, tail: -5 },
+      { bob: -2.5, tilt: -2.2, lx: -5, ly: 1.5, lr: 10, rx: 6, ry: -6, rr: -14, armL: -22, armR: -22, ear: 7, tail: 12 },
+      { bob: -5.5, tilt: -3.4, lx: -3, ly: 2, lr: 7, rx: 4, ry: -11, rr: -20, armL: -32, armR: -32, ear: 11, tail: 18 },
+      { bob: 1.5, tilt: -0.8, lx: 3, ly: -3, lr: -8, rx: -2, ry: 1, rr: 5, armL: -10, armR: -10, ear: -4, tail: 5 },
+      { bob: -7, tilt: 0, lx: -5, ly: -8, lr: 16, rx: 5, ry: -8, rr: -16, armL: 145, armR: -145, ear: 14, tail: 18, cheer: true }
+    ];
     var canvas = document.createElement('canvas'); canvas.width = FRAME * poses.length; canvas.height = FRAME;
     var c = canvas.getContext('2d'), ser = new XMLSerializer();
     for (var i = 0; i < poses.length; i++) {
       var p = poses[i], svg = base.cloneNode(true);
-      var set = function (q, tr, css) { [].forEach.call(svg.querySelectorAll(q), function (el) { if (css) el.style.transform = tr; else el.setAttribute('transform', tr); }); };
-      set('.monster-bob-group', 'translate(0 ' + p.bob + ')');
-      if (p.l) set('.foot-l', 'translate(0 ' + p.l + ')');
-      if (p.r) set('.foot-r', 'translate(0 ' + p.r + ')');
-      if (p.armL) set('.mon-arm-l', 'rotate(' + p.armL + 'deg)', true);
-      if (p.armR) set('.mon-arm-r', 'rotate(' + p.armR + 'deg)', true);
+      var setSvg = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.setAttribute('transform', tr); }); };
+      var setCss = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.style.transform = tr; }); };
+      setSvg('.monster-bob-group', 'translate(0 ' + p.bob + ') rotate(' + (p.tilt || 0) + ' 100 146)');
+      if (p.lx || p.ly || p.lr) setSvg('.foot-l', 'translate(' + (p.lx || 0) + ' ' + (p.ly || 0) + ') rotate(' + (p.lr || 0) + ' 82 162)');
+      if (p.rx || p.ry || p.rr) setSvg('.foot-r', 'translate(' + (p.rx || 0) + ' ' + (p.ry || 0) + ') rotate(' + (p.rr || 0) + ' 118 162)');
+      if (p.armL) setCss('.mon-arm-l', 'rotate(' + p.armL + 'deg)');
+      if (p.armR) setCss('.mon-arm-r', 'rotate(' + p.armR + 'deg)');
+      if (p.ear) {
+        setCss('.mon-ear-l', 'rotate(' + p.ear + 'deg)');
+        setCss('.mon-ear-r', 'rotate(' + (-p.ear) + 'deg)');
+      }
+      if (p.tail) setCss('.mon-tail-wag', 'rotate(' + p.tail + 'deg)');
+      if (p.cheer && root.MonsterRenderer && root.MonsterRenderer.setMouth) {
+        root.MonsterRenderer.setMouth(svg, 'mouth-cheer');
+      }
       svg.setAttribute('width', FRAME); svg.setAttribute('height', FRAME);
       var url = URL.createObjectURL(new Blob([ser.serializeToString(svg)], { type: 'image/svg+xml' }));
       var img = await loadImg(url);
@@ -440,7 +466,7 @@
     if (sc.textures.exists(key)) { sc.anims.remove(key + '-walk'); sc.textures.remove(key); }
     var tex = sc.textures.addCanvas(key, canvas);
     poses.forEach(function (_, n) { tex.add(n, 0, FRAME * n, 0, FRAME, FRAME); });
-    sc.anims.create({ key: key + '-walk', frames: [1, 2, 3, 4].map(function (f) { return { key: key, frame: f }; }), frameRate: 9, repeat: -1 });
+    sc.anims.create({ key: key + '-walk', frames: [1, 2, 3, 4, 5, 6].map(function (f) { return { key: key, frame: f }; }), frameRate: 12, repeat: -1 });
     if (key === 'me') S.lookStamp = JSON.stringify(opts);
   }
   function syncRide(sc, m) {
@@ -460,12 +486,14 @@
     else { sc.load.image(rid, artUrl(rid)); sc.load.once('complete', apply); sc.load.start(); }
   }
   function makeWalker(sc, key, x, y, scale) {
-    var shadow = sc.add.image(x, y, 'shadow').setScale(scale * 1.15).setDepth(-5);
+    var shadow = sc.add.image(x, y, 'shadow').setScale(scale * 1.18).setAlpha(0.42).setDepth(-5);
     var m = sc.physics.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale).setVisible(false);
     m.body.setCircle(44, FRAME / 2 - 44, FRAME * .84 - 44);
     m.setCollideWorldBounds(true); m.monKey = key; m.shadow = shadow; m.baseScale = scale;
     // what you see is this copy: the body underneath does the physics, so hopping never changes where the monster really is
-    m.skin = sc.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale); m.walkPhase = Math.random() * 6; m.turn = 1; m.pace = 0;
+    m.skin = sc.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale);
+    m.walkPhase = Math.random() * 6; m.turn = 1; m.turnVel = 0; m.pace = 0;
+    m.launchPop = 0; m.landSquash = 0; m.stepImpact = 0; m.cheerHop = 0; m.prevSin = 0; m.wasMoving = false;
     if (key === 'me') syncRide(sc, m);
     return m;
   }
@@ -486,27 +514,75 @@
     sc.tweens.add({ targets: p, y: p.y - 34, alpha: 0, scale: tr[2] * .45, angle: (Math.random() - .5) * 60, duration: 900, onComplete: function () { p.destroy(); } });
   }
   function moveSkin(m, delta, time) {
-    var sk = m.skin, vx = m.body.velocity.x, vy = m.body.velocity.y, v = Math.sqrt(vx * vx + vy * vy), target = Math.min(1, v / 200);
-    m.pace += (target - m.pace) * Math.min(1, delta * .012);
-    m.walkPhase += delta * .0035 * (.4 + v / 90);
-    m.turn += ((m.flipX ? -1 : 1) - m.turn) * Math.min(1, delta * .016);
-    var hop = Math.abs(Math.sin(m.walkPhase)) * 15 * m.pace, sq = Math.cos(m.walkPhase * 2) * .055 * m.pace, breathe = Math.sin(time * .0026 + m.walkPhase) * .016 * (1 - m.pace);
+    var sk = m.skin, vx = m.body.velocity.x, vy = m.body.velocity.y, v = Math.sqrt(vx * vx + vy * vy), target = Math.min(1.25, v / 195);
+    var isMovingNow = v > 28;
+    if (isMovingNow && !m.wasMoving) {
+      m.launchPop = Math.max(m.launchPop || 0, 0.9);
+      m.walkPhase = 0.35;
+    } else if (!isMovingNow && m.wasMoving) {
+      m.landSquash = 1.0;
+    }
+    m.wasMoving = isMovingNow;
+
+    m.pace += (target - m.pace) * Math.min(1, delta * (isMovingNow ? .022 : .028));
+    m.walkPhase += delta * .0048 * (.38 + v / 76);
+    if (m.anims && m.anims.isPlaying) {
+      m.anims.timeScale = 0.85 + Math.min(1.45, v / 185) * 0.55;
+    }
+
+    // Spring-damped 3D horizontal turn flip
+    var targetTurn = m.flipX ? -1 : 1;
+    var dtNorm = Math.min(2.5, delta / 16.67);
+    m.turnVel = ((m.turnVel || 0) + (targetTurn - m.turn) * 0.28 * dtNorm) * Math.pow(0.76, dtNorm);
+    m.turn += m.turnVel * dtNorm;
+    if (Math.abs(targetTurn - m.turn) < 0.01 && Math.abs(m.turnVel) < 0.01) { m.turn = targetTurn; m.turnVel = 0; }
+
+    // Decay transient impulses (launch pop, footstrike impact, landing squash)
+    m.launchPop = Math.max(0, (m.launchPop || 0) - delta * 0.0055);
+    m.stepImpact = Math.max(0, (m.stepImpact || 0) - delta * 0.0075);
+    m.landSquash = Math.max(0, (m.landSquash || 0) - delta * 0.0038);
+
+    var sSin = Math.sin(m.walkPhase), absS = Math.abs(sSin);
+    if (m.pace > 0.32 && ((m.prevSin || 0) * sSin <= 0) && Math.abs(sSin - (m.prevSin || 0)) > 0.04) {
+      m.stepImpact = 1.0;
+      if (m.monKey === 'me' && scene && scene.dust) {
+        var zone = ZONES[S.zone], wet = zone && zone.shallows ? zone.shallows(m.x, m.y) : false;
+        var footX = m.x + (sSin >= 0 ? -12 : 12) * (m.flipX ? -1 : 1);
+        (wet ? scene.waterFx : scene.dust).explode(wet ? 5 : 3, footX, m.y + 4);
+      }
+    }
+    m.prevSin = sSin;
+
+    var strideArc = Math.pow(absS, 0.72);
+    var hop = strideArc * 21 * Math.min(1.15, m.pace) + (m.launchPop || 0) * 8 + (m.cheerHop || 0);
+    var apexStretch = Math.max(0, strideArc - 0.45) * 0.14 * m.pace + (m.launchPop || 0) * 0.08;
+    var impactSquash = (m.stepImpact || 0) * 0.085 * Math.min(1, m.pace) + Math.sin((m.landSquash || 0) * Math.PI) * 0.135;
+    var breathe = Math.sin(time * .0032 + m.walkPhase) * .022 * Math.max(0, 1 - m.pace);
+
     if (sk.texture !== m.texture) sk.setTexture(m.texture.key, m.frame.name); else if (sk.frame.name !== m.frame.name) sk.setFrame(m.frame.name);
     var onRide = !!(m.ride && m.ride.visible);
     if (v > 25) m.sitting = false;
     var sitLift = m.sitting ? 24 : 0;
     var riderScale = onRide ? m.baseScale * 0.74 : m.baseScale;
+    var sxFactor = 1 - apexStretch * 0.58 + impactSquash * 0.78 - breathe * 0.6;
+    var syFactor = 1 + apexStretch - impactSquash * 0.85 + breathe;
+    var turnMag = Math.max(0.18, Math.min(1.08, Math.abs(m.turn)));
+
     sk.setPosition(m.x, m.y - hop - (onRide ? 38 : sitLift));
-    sk.setScale(riderScale * (1 - sq * .6 - breathe) * (Math.abs(m.turn) < .18 ? .18 : Math.abs(m.turn)), riderScale * (1 + sq + breathe));
+    sk.setScale(riderScale * sxFactor * turnMag, riderScale * syFactor);
     sk.setFlipX(m.turn < 0);
-    sk.rotation = (Math.sin(m.walkPhase) * .085 * m.pace) + (vx / 250) * .07;
+    sk.rotation = (sSin * .115 * Math.min(1.1, m.pace)) + (vx / 230) * .095;
     sk.setDepth(m.y + 2);
     if (onRide) {
-      m.ride.setPosition(m.x, m.y - hop * .55 + 6);
+      m.ride.setPosition(m.x, m.y - hop * .58 + 6);
       m.ride.setFlipX(m.turn < 0);
+      m.ride.rotation = (vx / 260) * 0.06;
       m.ride.setDepth(m.y + 1);
     }
-    m.shadow.setPosition(m.x, m.y + 2); m.shadow.setScale(m.baseScale * (onRide ? 1.45 : 1.15) * (1 - hop * .014), m.baseScale * 1.15 * (1 - hop * .014));
+    var shScale = m.baseScale * (onRide ? 1.45 : 1.18) * (1 - hop * .014 + impactSquash * .42);
+    m.shadow.setPosition(m.x, m.y + 3);
+    m.shadow.setScale(shScale, shScale * 0.9);
+    m.shadow.setAlpha(Math.max(0.16, Math.min(0.52, 0.42 - hop * 0.0065 + impactSquash * 0.22)));
   }
 
   /* ---------- finding the way ---------- */
@@ -524,8 +600,20 @@
     for (var d = 1; d < 16; d++) for (var dy = -d; dy <= d; dy++) for (var dx = -d; dx <= d; dx++) { if (G.g[r + dy] && G.g[r + dy][c + dx] === 0) return [c + dx, r + dy]; }
     return null;
   }
+  function hasLineOfSight(G, x0, y0, x1, y1) {
+    var dx = x1 - x0, dy = y1 - y0, dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 8) return true;
+    var steps = Math.ceil(dist / 16);
+    for (var i = 1; i <= steps; i++) {
+      var t = i / steps, px = x0 + dx * t, py = y0 + dy * t;
+      var c = Math.floor(px / CELL), r = Math.floor(py / CELL);
+      if (!G.g[r] || G.g[r][c] !== 0) return false;
+    }
+    return true;
+  }
   function findPath(G, sx, sy, tx, ty) {
     var cc = function (v) { return Math.max(0, Math.min(G.cols - 1, Math.floor(v / CELL))); }, cr = function (v) { return Math.max(0, Math.min(G.rows - 1, Math.floor(v / CELL))); };
+    if (hasLineOfSight(G, sx, sy, tx, ty)) return [{ x: tx, y: ty }];
     var a = nearestFree(G, cc(sx), cr(sy)), b = nearestFree(G, cc(tx), cr(ty));
     if (!a || !b) return [];
     var id = function (c, r) { return r * G.cols + c; }, came = {}, cost = {}, open = [[0, a[0], a[1]]], start = id(a[0], a[1]), goal = id(b[0], b[1]);
@@ -540,18 +628,45 @@
         if (!G.g[nr] || G.g[nr][nc] !== 0) continue;
         if (dx && dy && (G.g[cur[2]][nc] !== 0 || G.g[nr][cur[1]] !== 0)) continue;
         var nid = id(nc, nr), n = cost[cid] + (dx && dy ? 1.414 : 1);
-        if (cost[nid] === undefined || n < cost[nid]) { cost[nid] = n; came[nid] = cid; open.push([n + Math.abs(nc - b[0]) + Math.abs(nr - b[1]), nc, nr]); }
+        if (cost[nid] === undefined || n < cost[nid]) { cost[nid] = n; came[nid] = cid; open.push([n + Math.hypot(nc - b[0], nr - b[1]), nc, nr]); }
       }
     }
     if (cost[goal] === undefined) return [];
     var out = [], step = goal;
     while (step !== start) { out.unshift({ x: (step % G.cols) * CELL + CELL / 2, y: Math.floor(step / G.cols) * CELL + CELL / 2 }); step = came[step]; }
-    return out.filter(function (_, i) { return i % 2 === 1 || i === out.length - 1; });
+    if (out.length && G.g[cr(ty)] && G.g[cr(ty)][cc(tx)] === 0) {
+      out[out.length - 1] = { x: tx, y: ty };
+    }
+    // String-pulling path smoothing so movement never zig-zags along grid cells
+    var smooth = [], curPt = { x: sx, y: sy }, idx = 0;
+    while (idx < out.length) {
+      var furthest = idx;
+      for (var j = out.length - 1; j > idx; j--) {
+        if (hasLineOfSight(G, curPt.x, curPt.y, out[j].x, out[j].y)) { furthest = j; break; }
+      }
+      smooth.push(out[furthest]);
+      curPt = out[furthest];
+      idx = furthest + 1;
+    }
+    return smooth;
+  }
+  function spawnTapRipple(sc, x, y, isTarget) {
+    if (!sc || !sc.add) return;
+    var col = isTarget ? 0xfde047 : 0x38bdf8;
+    var ring1 = sc.add.ellipse(x, y, 18, 10).setStrokeStyle(3.5, col, 0.95).setDepth(y - 1);
+    var ring2 = sc.add.ellipse(x, y, 10, 6).setFillStyle(col, 0.45).setDepth(y - 1);
+    sc.tweens.add({ targets: ring1, scaleX: 3.4, scaleY: 3.1, alpha: 0, duration: 480, ease: 'Cubic.Out', onComplete: function () { ring1.destroy(); } });
+    sc.tweens.add({ targets: ring2, scaleX: 2.1, scaleY: 1.9, alpha: 0, duration: 340, ease: 'Quad.Out', onComplete: function () { ring2.destroy(); } });
   }
   function stopWalking() { S.path = []; S.onArrive = null; if (scene && scene.player && scene.player.body) scene.player.setVelocity(0); }
   function walkTo(x, y, onArrive) {
     var sc = scene, m = sc.player;
     S.path = findPath(sc.grid, m.x, m.y, x, y); S.onArrive = onArrive || null; S.stuck = 0;
+    if (S.path.length && m) {
+      var first = S.path[0];
+      if (Math.abs(first.x - m.x) > 4) m.setFlipX(first.x < m.x);
+      m.launchPop = 0.85;
+    }
     if (!S.path.length && onArrive) { S.onArrive = null; onArrive(); }
   }
 
@@ -1003,8 +1118,20 @@
   }
   function partyAt(x, y) { var sc = scene; sc.party.explode(60, x, y); sc.cameras.main.shake(220, .004); sound('playFanfare'); if (sc.player) cheer(sc.player, 1400); }
   function cheer(m, ms) {
-    m.anims.stop(); m.setFrame(5); m.cheering = true;
-    scene.time.delayedCall(ms || 900, function () { if (m.active) { m.cheering = false; m.setFrame(0); } });
+    m.anims.stop(); m.setFrame(7); m.cheering = true;
+    m.cheerHop = 0;
+    if (scene && scene.tweens) {
+      scene.tweens.add({
+        targets: m,
+        cheerHop: 28,
+        duration: 210,
+        yoyo: true,
+        repeat: 1,
+        ease: 'Quad.Out',
+        onComplete: function () { m.cheerHop = 0; m.landSquash = 0.9; }
+      });
+    }
+    scene.time.delayedCall(ms || 900, function () { if (m.active) { m.cheering = false; m.cheerHop = 0; m.setFrame(0); } });
   }
 
   /* What the pupil can do where they are standing */
@@ -1139,6 +1266,7 @@
       });
       if (fHit) {
         hidePanel();
+        spawnTapRipple(sc, fHit.x, fHit.y + 10, true);
         walkTo(fHit.x, fHit.y + 20, function () { interactFurniture(sc, fHit); });
         return;
       }
@@ -1148,8 +1276,15 @@
       var h = t.def ? t.def.h : 120, w = t.def ? Math.max(80, t.def.h * .55) : 70;
       if (Math.abs(x - t.x) < w && y < t.y + 30 && y > t.y - h - 60) { var d = Math.abs(x - t.x) + Math.abs(y - t.y); if (d < best) { best = d; hit = t; } }
     });
-    if (hit) { hidePanel(); S.near = hit; walkTo(hit.x, hit.y + 54, function () { openThing(hit); }); return; }
-    hidePanel(); S.near = null; walkTo(x, y);
+    if (hit) {
+      hidePanel(); S.near = hit;
+      spawnTapRipple(sc, hit.x, hit.y + 28, true);
+      walkTo(hit.x, hit.y + 54, function () { openThing(hit); });
+      return;
+    }
+    hidePanel(); S.near = null;
+    spawnTapRipple(sc, x, y, false);
+    walkTo(x, y);
   }
 
   function setupJoystick() {
@@ -1248,6 +1383,7 @@
       sc.gateL = makeGate(sc, -1); sc.gateR = makeGate(sc, 1);
       sc.grid = buildGrid(sc, zone);
       sc.keys = sc.input.keyboard ? sc.input.keyboard.createCursorKeys() : null;
+      sc.shiftKey = sc.keys ? sc.keys.shift : null;
       sc.wasd = sc.input.keyboard ? sc.input.keyboard.addKeys('W,A,S,D') : null;
       sc.input.on('pointerdown', onTap);
       sc.walkers = [];
@@ -1316,8 +1452,13 @@
         }
         if (!vx && !vy && S.path.length) {
           var nx = S.path[0], dx = nx.x - m.x, dy = nx.y - m.y, d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 24) { S.path.shift(); S.stuck = 0; if (!S.path.length && S.onArrive) { var cb = S.onArrive; S.onArrive = null; cb(); } }
-          else {
+          if (d < 22) {
+            S.path.shift(); S.stuck = 0;
+            if (!S.path.length) {
+              m.landSquash = 1.0;
+              if (S.onArrive) { var cb = S.onArrive; S.onArrive = null; cb(); }
+            }
+          } else {
             vx = dx / d; vy = dy / d;
             if (Math.abs(m.body.velocity.x) + Math.abs(m.body.velocity.y) < 30) S.stuck = (S.stuck || 0) + delta; else S.stuck = 0;
             if (S.stuck > 900) { S.path = []; S.onArrive = null; S.stuck = 0; vx = vy = 0; }
@@ -1327,15 +1468,13 @@
       var isSprinting = !!(sc.shiftKey && sc.shiftKey.isDown) || (S.joy && Math.sqrt(S.joy.x * S.joy.x + S.joy.y * S.joy.y) > 0.85);
       var sprintBoost = isSprinting ? 1.42 : 1.0;
       var wet = zone.shallows ? zone.shallows(m.x, m.y) : false, hasRide = !!(m.ride && m.ride.visible), speed = SPEED * (wet ? .68 : 1) * (hasRide ? 1.22 : 1) * sprintBoost;
-      var ease = Math.min(1, delta * ((vx || vy) ? .011 : .018));   // speeds up and slows down instead of starting and stopping dead
+      var ease = Math.min(1, delta * ((vx || vy) ? .019 : .026));   // responsive acceleration & crisp landing stop
       m.setVelocity(m.body.velocity.x + (vx * speed - m.body.velocity.x) * ease, m.body.velocity.y + (vy * speed - m.body.velocity.y) * ease);
       pushOut(m, zone);
       var moving = !!(vx || vy);
       if (moving && !m.cheering) {
         if (!m.anims.isPlaying) m.play('me-walk');
-        if (vx) m.setFlipX(vx < 0);
-        S.dustAt = (S.dustAt || 0) + delta;
-        if (S.dustAt > (wet ? 150 : 190)) { S.dustAt = 0; (wet ? sc.waterFx : sc.dust).explode(wet ? 5 : 2, m.x, m.y + 4); }
+        if (Math.abs(vx) > 0.08) m.setFlipX(vx < 0);
       } else if (!m.cheering && m.anims.isPlaying) { m.anims.stop(); m.setFrame(0); }
       moveSkin(m, delta, time);
       dropTrail(sc, m, delta);
