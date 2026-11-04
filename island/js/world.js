@@ -23,7 +23,7 @@
   var ZONES = {
     0: {
       ground: 'meadow', look: { base: '#8fd14f', tile: 't_grass', alpha: .3, patch: 'rgba(190,232,110,.3)', edge: '#c7a463', fill: '#f4e4ae', speck: ['#e2cd8f', '#d6bd7c'], extra: ['t_floor'] },
-      npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt', happy: FLAT + 'c_bolt_happy', x: 560, y: 610 },
+      npc: { art: FLAT + 'c_bolt', worried: FLAT + 'c_bolt', happy: FLAT + 'c_bolt_happy', x: 540, y: 700 },
       blocked: function (x, y) { return y < 215 || edgeOf(x, y); },
       stops: [],
       chest: null,
@@ -38,7 +38,7 @@
         { art: FLAT + 'o_flowers_pink', x: 1260, y: 1120, h: 54, flat: true }
       ],
       ground2: { flowers: [FLAT + 'o_flowers'], count: 26 },
-      paths: [[[560, 680], [820, 700], [1120, 700], [1370, 700]]],
+      paths: [[[540, 775], [780, 775], [1120, 775], [1375, 775]], [[1120, 775], [1120, 695]]],
       edge: { top: [FLAT + 'o_tree_round', FLAT + 'o_tree_pine'], topH: [340, 430], bottom: [FLAT + 'o_bush'], bottomH: [130, 170] },
       gather: [
         { art: FLAT + 'i_wood', word: 'wood', h: 58, x: 420, y: 920 },
@@ -399,23 +399,13 @@
     return { stage: STAGES[Math.max(0, Math.min(6, lvl - 1))], color: prof.baseColor || 'blue', equipped: Object.assign({}, prof.equipped || {}, (s.doc && s.doc.look) || {}) };
   }
   function loadImg(url) { return new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = url; }); }
-  // the monster keeps its own look, but gets the flat cartoon treatment: fewer shades and a dark outline
+  // the monster keeps its glossy 3D shading with a crisp dark cel outline so it pops against the ground
   function drawCartoon(c, img, x0) {
     var fc = document.createElement('canvas'); fc.width = fc.height = FRAME;
     var fx = fc.getContext('2d'); fx.drawImage(img, 0, 0, FRAME, FRAME);
-    try {
-      var d = fx.getImageData(0, 0, FRAME, FRAME), px = d.data, L = 8;
-      for (var i = 0; i < px.length; i += 4) {
-        if (!px[i + 3]) continue;
-        var v = Math.max(px[i], px[i + 1], px[i + 2]); if (!v) continue;
-        var k = Math.min(255, Math.round(v / 255 * L + .15) / L * 255) / v;
-        px[i] = Math.min(255, px[i] * k); px[i + 1] = Math.min(255, px[i + 1] * k); px[i + 2] = Math.min(255, px[i + 2] * k);
-      }
-      fx.putImageData(d, 0, 0);
-    } catch (e) { /* this browser will not let us read the picture: keep the shading as it is */ }
     var sil = document.createElement('canvas'); sil.width = sil.height = FRAME;
-    var sx = sil.getContext('2d'); sx.drawImage(fc, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = '#2b2140'; sx.fillRect(0, 0, FRAME, FRAME);
-    for (var a = 0; a < 12; a++) c.drawImage(sil, x0 + Math.cos(a / 12 * 6.283) * 3.4, Math.sin(a / 12 * 6.283) * 3.4);
+    var sx = sil.getContext('2d'); sx.drawImage(fc, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = '#1e1b4b'; sx.fillRect(0, 0, FRAME, FRAME);
+    for (var a = 0; a < 12; a++) c.drawImage(sil, x0 + Math.cos(a / 12 * 6.283) * 3.2, Math.sin(a / 12 * 6.283) * 3.2);
     c.drawImage(fc, x0, 0);
   }
   async function bakeMonster(sc, key, opts) {
@@ -462,9 +452,9 @@
     }
     var apply = function () {
       if (!m.active) return;
-      if (!m.ride) m.ride = sc.add.image(m.x, m.y, rid).setOrigin(.5, .82);
+      if (!m.ride) m.ride = sc.add.image(m.x, m.y, rid).setOrigin(.5, .78);
       else m.ride.setTexture(rid).setVisible(true);
-      m.ride.setScale(125 / m.ride.height);
+      m.ride.setScale(148 / m.ride.height);
     };
     if (sc.textures.exists(rid)) apply();
     else { sc.load.image(rid, artUrl(rid)); sc.load.once('complete', apply); sc.load.start(); }
@@ -503,15 +493,18 @@
     var hop = Math.abs(Math.sin(m.walkPhase)) * 15 * m.pace, sq = Math.cos(m.walkPhase * 2) * .055 * m.pace, breathe = Math.sin(time * .0026 + m.walkPhase) * .016 * (1 - m.pace);
     if (sk.texture !== m.texture) sk.setTexture(m.texture.key, m.frame.name); else if (sk.frame.name !== m.frame.name) sk.setFrame(m.frame.name);
     var onRide = !!(m.ride && m.ride.visible);
-    sk.setPosition(m.x, m.y - hop - (onRide ? 24 : 0));
-    sk.setScale(m.baseScale * (1 - sq * .6 - breathe) * (Math.abs(m.turn) < .18 ? .18 : Math.abs(m.turn)), m.baseScale * (1 + sq + breathe));
+    if (v > 25) m.sitting = false;
+    var sitLift = m.sitting ? 24 : 0;
+    var riderScale = onRide ? m.baseScale * 0.74 : m.baseScale;
+    sk.setPosition(m.x, m.y - hop - (onRide ? 38 : sitLift));
+    sk.setScale(riderScale * (1 - sq * .6 - breathe) * (Math.abs(m.turn) < .18 ? .18 : Math.abs(m.turn)), riderScale * (1 + sq + breathe));
     sk.setFlipX(m.turn < 0);
     sk.rotation = (Math.sin(m.walkPhase) * .085 * m.pace) + (vx / 250) * .07;
-    sk.setDepth(m.y + 1);
+    sk.setDepth(m.y + 2);
     if (onRide) {
-      m.ride.setPosition(m.x, m.y - hop * .55 + 8);
+      m.ride.setPosition(m.x, m.y - hop * .55 + 6);
       m.ride.setFlipX(m.turn < 0);
-      m.ride.setDepth(m.y);
+      m.ride.setDepth(m.y + 1);
     }
     m.shadow.setPosition(m.x, m.y + 2); m.shadow.setScale(m.baseScale * (onRide ? 1.45 : 1.15) * (1 - hop * .014), m.baseScale * 1.15 * (1 - hop * .014));
   }
@@ -573,14 +566,20 @@
   function setGoal() {
     var z = S.zone;
     if (S.moveMode && z === 0) {
-      $('w-goal').innerHTML = '✋ Move Items Mode<small>Tap a furniture item, then tap where to place it!</small>';
+      $('w-goal').innerHTML = '✋ Decorate Mode<small>Tap an item in the tray or yard, then tap where to place it!</small>';
       return;
     }
-    if ($('w-decor')) $('w-decor').style.display = (z === 0) ? 'inline-flex' : 'none';
+    var visiting = (z === 0 && S.visitingFriend) ? S.visitingFriend : null;
+    if ($('w-decor')) $('w-decor').style.display = (z === 0 && !visiting) ? 'inline-flex' : 'none';
+    if ($('w-home')) $('w-home').innerHTML = visiting ? '🏠 <span>My Home</span>' : '🏰 <span>Build</span>';
     if (z === 0) {
-      var st = root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] };
+      var st = visiting && visiting.world ? visiting.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] });
       var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
-      $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap Decorate or the Workbench to build!</small>';
+      if (visiting) {
+        $('w-goal').innerHTML = '🏡 ' + esc(visiting.first_name) + '\'s Home Island · ' + tier.name + '<small>Walk around, tap furniture to try it, or tap 🏠 My Home to return!</small>';
+      } else {
+        $('w-goal').innerHTML = '🏡 My Home Island · ' + tier.name + '<small>Tap furniture to sit/light up, or tap Decorate & Build!</small>';
+      }
       return;
     }
     var ms = missions(z).regular, done = ms.filter(function (m) { return starsOf(m.id) > 0; }).length, total = ms.reduce(function (a, m) { return a + starsOf(m.id); }, 0);
@@ -588,30 +587,60 @@
     $('w-goal').innerHTML = zoneName(z) + ' · ⭐ ' + total + '<small>' + tip + '</small>';
   }
 
-  /* ---------- Home Island (Zone 0): House, Workbench & Placeable Furniture ---------- */
+  /* ---------- Home Island (Zone 0): House, Workbench & Interactive Furniture ---------- */
   function buildHome(sc) {
     sc.homeObjs = [];
     sc.placedSprites = [];
     if (S.zone !== 0 || !root.WorldGame) return;
-    var st = root.WorldGame.readState();
+    var visiting = S.visitingFriend;
+    var st = (visiting && visiting.world) ? visiting.world : root.WorldGame.readState();
     var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
-    var hImg = sc.add.image(1120, 580, FLAT + tier.id).setOrigin(.5, .96).setDepth(580);
-    hImg.setScale(370 / hImg.height);
-    var hShadow = sc.add.image(1120, 580, 'shadow').setScale(2.8, 1.8).setDepth(-6);
-    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, x: 1120, y: 580, def: { h: 370, sw: 240 } };
+    var hImg = sc.add.image(1120, 700, FLAT + tier.id).setOrigin(.5, .96).setDepth(700);
+    hImg.setScale(320 / hImg.height);
+    var hShadow = sc.add.image(1120, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
+    solid(sc, 1120, 670, 230, 66);
+    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, x: 1120, y: 700, def: { h: 320, sw: 230 } };
 
-    var wbImg = sc.add.image(800, 640, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(640);
-    wbImg.setScale(155 / wbImg.height);
-    sc.add.image(800, 640, 'shadow').setScale(1.6).setDepth(-6);
-    sc.workbenchSpot = { kind: 'workbench', img: wbImg, x: 800, y: 640, def: { h: 155, sw: 120 } };
+    var wbImg = sc.add.image(780, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
+    wbImg.setScale(150 / wbImg.height);
+    sc.add.image(780, 720, 'shadow').setScale(1.6).setDepth(-6);
+    solid(sc, 780, 700, 110, 40);
+    sc.workbenchSpot = { kind: 'workbench', img: wbImg, x: 780, y: 720, def: { h: 150, sw: 120 } };
     sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot);
+
+    if (visiting) {
+      var fKey = 'friend_host_' + (visiting.id || 'pal');
+      var spawnFriendHost = function () {
+        if (!sc.scene || !sc.scene.isActive()) return;
+        var fWalker = makeWalker(sc, fKey, 1580, 760, .52);
+        var fTag = sc.add.text(1580, 650, '👋 ' + (visiting.first_name || 'Friend'), {
+          fontFamily: 'Fredoka, sans-serif', fontSize: '24px', fontStyle: '700', color: '#fde047',
+          backgroundColor: '#0f172add', padding: { x: 10, y: 4 }
+        }).setOrigin(.5).setDepth(4505);
+        sc.tweens.add({ targets: fTag, y: 642, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        sc.homeObjs.push({ kind: 'friend_host', friend: visiting, walker: fWalker, tag: fTag, x: 1580, y: 760, def: { h: 140, sw: 90 } });
+      };
+      var fStage = STAGES[Math.max(0, Math.min(6, (visiting.level || 3) - 1))];
+      bakeMonster(sc, fKey, { stage: fStage, color: visiting.color || 'pink', equipped: visiting.equipped || {} }).then(spawnFriendHost);
+    }
+
     renderPlacedFurniture(sc);
   }
   function renderPlacedFurniture(sc) {
     if (!sc || S.zone !== 0 || !root.WorldGame) return;
-    (sc.placedSprites || []).forEach(function (o) { if (o.img) o.img.destroy(); if (o.shadow) o.shadow.destroy(); });
+    (sc.placedSprites || []).forEach(function (o) {
+      if (o.img) o.img.destroy();
+      if (o.shadow) o.shadow.destroy();
+      if (o.glow) o.glow.destroy();
+    });
+    (sc.placedSolids || []).forEach(function (z) {
+      if (sc.solidGroup) sc.solidGroup.remove(z, true, true);
+      var idx = sc.solids ? sc.solids.indexOf(z) : -1;
+      if (idx >= 0) sc.solids.splice(idx, 1);
+    });
     sc.placedSprites = [];
-    var st = root.WorldGame.readState();
+    sc.placedSolids = [];
+    var st = (S.visitingFriend && S.visitingFriend.world) ? S.visitingFriend.world : root.WorldGame.readState();
     (st.placed || []).forEach(function (p, idx) {
       var rec = root.WorldGame.RECIPES.filter(function (r) { return r.id === p.id; })[0];
       if (!rec) return;
@@ -619,12 +648,94 @@
       var buildOne = function () {
         var im = sc.add.image(p.x, p.y, artKey).setOrigin(.5, .95).setDepth(rec.flat ? -4 : p.y);
         im.setScale((rec.h || 110) / im.height);
-        var sh = !rec.flat ? sc.add.image(p.x, p.y, 'shadow').setScale(1.1).setDepth(-6) : null;
-        sc.placedSprites.push({ idx: idx, id: p.id, name: rec.name, img: im, shadow: sh, x: p.x, y: p.y, h: rec.h || 110 });
+        im.setFlipX(!!p.flip);
+        var sh = !rec.flat ? sc.add.image(p.x, p.y, 'shadow').setScale(Math.max(0.9, Math.min(1.6, (rec.h || 110) / 95))).setDepth(-6) : null;
+        var isSeatOrRug = /chair|bed|bench|swing|rug/.test(rec.id);
+        if (!rec.flat && !isSeatOrRug && !S.moveMode && sc.solidGroup) {
+          var sz = solid(sc, p.x, p.y - 16, Math.min(110, (rec.h || 100) * 0.65), 26);
+          sc.placedSolids.push(sz);
+        }
+        var isLight = /lamp|fireplace/.test(rec.id);
+        var lit = isLight ? (p.lit !== false) : false;
+        var glow = null;
+        if (lit) {
+          glow = sc.add.circle(p.x, p.y - (rec.h || 110) * 0.52, 68, 0xfde047, 0.26).setDepth(p.y - 1);
+          sc.tweens.add({ targets: glow, scale: 1.15, alpha: 0.14, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        }
+        sc.placedSprites.push({
+          kind: 'furniture', idx: idx, id: p.id, name: rec.name, img: im, shadow: sh, glow: glow, lit: lit,
+          x: p.x, y: p.y, h: rec.h || 110, flat: !!rec.flat, flip: !!p.flip,
+          def: { h: rec.h || 110, sw: isSeatOrRug ? 60 : 80 }
+        });
       };
       if (sc.textures.exists(artKey)) buildOne();
       else { sc.load.image(artKey, artUrl(artKey)); sc.load.once('complete', buildOne); sc.load.start(); }
     });
+  }
+  function interactFurniture(sc, ps) {
+    if (!sc || !ps || !sc.player) return;
+    var id = ps.id;
+    if (/chair|bed|bench|swing/.test(id)) {
+      sc.player.x = ps.x;
+      sc.player.y = ps.y + 4;
+      sc.player.sitting = true;
+      cheer(sc.player, 1100);
+      sound('playCorrect');
+      sc.fx.explode(14, ps.x, ps.y - 34);
+      var now = Date.now();
+      if (!S.lastRestAt || now - S.lastRestAt > 12000) {
+        S.lastRestAt = now;
+        if (root.WorldGame && root.WorldGame.addEnergy) root.WorldGame.addEnergy(5);
+        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ Comfy Rest! +5 ⚡', '#34d399');
+      } else {
+        showWorldFloat(sc, ps.x, ps.y - 60, '🛋️ So cosy on the ' + ps.name + '!', '#fde047');
+      }
+      say('Sitting on the ' + ps.name.toLowerCase() + '!');
+      return;
+    }
+    if (/lamp|fireplace/.test(id)) {
+      ps.lit = !ps.lit;
+      if (!S.visitingFriend && root.WorldGame) {
+        var st = root.WorldGame.readState();
+        if (st.placed && st.placed[ps.idx]) { st.placed[ps.idx].lit = ps.lit; root.WorldGame.writeState(st); }
+      }
+      if (ps.lit) {
+        if (!ps.glow) {
+          ps.glow = sc.add.circle(ps.x, ps.y - (ps.h || 110) * 0.52, 68, 0xfde047, 0.26).setDepth(ps.y - 1);
+          sc.tweens.add({ targets: ps.glow, scale: 1.15, alpha: 0.14, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+        } else ps.glow.setVisible(true);
+        showWorldFloat(sc, ps.x, ps.y - 65, '💡 Cozy Light On! ✨', '#fde047');
+        say('Cozy light on!');
+      } else {
+        if (ps.glow) ps.glow.setVisible(false);
+        showWorldFloat(sc, ps.x, ps.y - 65, '🌙 Light Off!', '#93c5fd');
+        say('Light off!');
+      }
+      sound('playPop');
+      sc.fx.explode(16, ps.x, ps.y - 45);
+      return;
+    }
+    var lines = {
+      f_table: ['🪵 A sturdy wooden table!', 'Ready for tea time at the table!'],
+      f_rug: ['🧶 Soft woven rug!', 'The striped rug feels so soft!'],
+      f_plant: ['🪴 Fresh green leaves!', 'The potted plant is growing tall!'],
+      g_mailbox: ['📬 Checking the mailbox!', 'Any letters from our friends today?'],
+      g_flowerbed: ['🌷 Sweet smelling flowers!', 'These garden flowers are so pretty!'],
+      g_fence: ['🏡 Neat white garden fence!', 'A lovely white fence around the garden!'],
+      g_pethouse: ['🐶 Cozy Pet House!', 'Woof! A little house for a pet!'],
+      g_tree: ['🍎 Juicy red apples!', 'The apple tree is full of fruit!'],
+      g_pond: ['🐸 Ribbit! Cool lily pond!', 'Look at the water lilies on the pond!'],
+      g_fountain: ['⛲ Splash! Sparkling fountain!', 'The stone fountain is sparkling!']
+    };
+    var pair = lines[id] || ['✨ ' + ps.name + '!', 'Look at the ' + ps.name.toLowerCase() + '!'];
+    sound('playCorrect');
+    sc.fx.explode(14, ps.x, ps.y - 40);
+    if (ps.img) {
+      var sy = ps.img.scaleY;
+      sc.tweens.add({ targets: ps.img, scaleY: sy * 1.16, duration: 130, yoyo: true, repeat: 1 });
+    }
+    showWorldFloat(sc, ps.x, ps.y - 60, pair[0], '#fde047');
+    say(pair[1]);
   }
   function refreshHome(celebrate) {
     var sc = scene;
@@ -633,7 +744,7 @@
     var tier = root.WorldGame.HOUSE_TIERS[Math.max(0, Math.min(root.WorldGame.HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
     if (sc.houseSpot && sc.houseSpot.img) {
       sc.houseSpot.img.setTexture(FLAT + tier.id);
-      sc.houseSpot.img.setScale(370 / sc.houseSpot.img.height);
+      sc.houseSpot.img.setScale(320 / sc.houseSpot.img.height);
       if (celebrate) partyAt(sc.houseSpot.x, sc.houseSpot.y - 160);
     }
     renderPlacedFurniture(sc);
@@ -754,14 +865,26 @@
       sc.villagers.push({ kind: 'villager', v: v, img: img, mark: mark, x: v.x, y: v.y, def: { h: 165, sw: 90 } });
     });
   }
-  function refreshVillagers(vid) {
+  function refreshVillagers(vid, rec) {
     var sc = scene; if (!sc || !sc.villagers || !root.WorldGame) return;
     var st = root.WorldGame.readState();
     sc.villagers.forEach(function (vo) {
       var done = !!(st.jobsDone && st.jobsDone[vo.v.id]);
       vo.img.setTexture(FLAT + (done ? vo.v.happy : vo.v.art));
       vo.mark.setVisible(!done);
-      if (vid === vo.v.id && done) partyAt(vo.x, vo.y - 80);
+      if (vid === vo.v.id && done) {
+        partyAt(vo.x, vo.y - 80);
+        var gBox = sc.add.image(vo.x, vo.y - 140, FLAT + 'o_gift').setDepth(4800);
+        gBox.setScale(85 / gBox.height);
+        sc.tweens.add({
+          targets: gBox, y: vo.y + 24, duration: 620, ease: 'Bounce.out',
+          onComplete: function () {
+            sc.party.explode(30, gBox.x, gBox.y - 20);
+            showWorldFloat(sc, gBox.x, gBox.y - 50, '🎁 +' + (rec ? rec.name : 'Gift') + '!', '#fde047');
+            sc.tweens.add({ targets: gBox, scale: 0, alpha: 0, delay: 450, duration: 280, onComplete: function () { gBox.destroy(); } });
+          }
+        });
+      }
     });
   }
   function buildBattles(sc) {
@@ -771,12 +894,20 @@
     root.WorldGame.BATTLES.forEach(function (b) {
       if (b.zone !== S.zone) return;
       var won = !!(st.battlesWon && st.battlesWon[b.id]);
-      var ring = sc.add.circle(b.x, b.y - 6, 48, won ? 0x10b981 : 0xf43f5e, .28).setDepth(-6);
+      var ring = sc.add.circle(b.x, b.y - 6, 52, won ? 0x10b981 : 0xf43f5e, .28).setDepth(-6);
       var img = sc.add.image(b.x, b.y, FLAT + b.art).setOrigin(.5, .94).setDepth(b.y);
       img.setScale((b.h || 140) / img.height);
-      sc.add.image(b.x, b.y, 'shadow').setScale(1.5).setDepth(-6);
-      sc.tweens.add({ targets: img, y: b.y - 10, duration: 850, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      sc.battles.push({ kind: 'battle', b: b, img: img, ring: ring, x: b.x, y: b.y, def: { h: b.h || 140, sw: 100 } });
+      var sh = sc.add.image(b.x, b.y, 'shadow').setScale(1.5).setDepth(-6);
+      var bo = { kind: 'battle', b: b, img: img, ring: ring, shadow: sh, x: b.x, y: b.y, def: { h: b.h || 140, sw: 100 } };
+      sc.tweens.add({ targets: img, y: b.y - 10, duration: 750, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+      var range = 55;
+      sc.tweens.add({
+        targets: img, x: { from: b.x - range, to: b.x + range }, duration: 2600 + (b.x % 700), yoyo: true, repeat: -1, ease: 'Sine.inOut',
+        onYoyo: function () { img.setFlipX(true); },
+        onRepeat: function () { img.setFlipX(false); },
+        onUpdate: function () { bo.x = img.x; ring.x = img.x; sh.x = img.x; }
+      });
+      sc.battles.push(bo);
     });
   }
   function refreshBattles(bid) {
@@ -833,8 +964,13 @@
   function refreshStops(celebrate) {
     var sc = scene; if (!sc || !sc.stops) return;
     if (S.zone === 0) {
-      sc.arrow.setVisible(true).setPosition(800, 430);
-      sc.ring.setVisible(true).setPosition(800, 640);
+      if (S.visitingFriend) {
+        sc.arrow.setVisible(true).setPosition(1580, 580);
+        sc.ring.setVisible(true).setPosition(1580, 760);
+      } else {
+        sc.arrow.setVisible(true).setPosition(780, 520);
+        sc.ring.setVisible(true).setPosition(780, 720);
+      }
       if (sc.gateR) sc.gateR.setLock();
       setGoal();
       return;
@@ -891,12 +1027,35 @@
       else panel(FLAT + 'o_chest', 'Treasure', 'Finish all 5 stops first!', 'OK', function () {});
     } else if (t.kind === 'gift') {
       panel(FLAT + 'o_gift', "Today's quest", 'Five quick questions!', 'Play ▶', function () { App().startDailyQuest(); });
+    } else if (t.kind === 'friend_host') {
+      var fr = t.friend || { first_name: 'Friend' };
+      panel(FLAT + 'c_bolt_happy', fr.first_name + '\'s Home Island', 'Welcome to my Home Island! Do you like my house and garden?', '👋 High-Five! (+5 ⚡)', function () {
+        partyAt(t.x, t.y - 60);
+        if (!S.hi5FriendSent && root.WorldGame && root.WorldGame.addEnergy) {
+          S.hi5FriendSent = true;
+          root.WorldGame.addEnergy(5);
+          showWorldFloat(scene, t.x, t.y - 90, '👋 High-Five! +5 ⚡', '#34d399');
+        } else {
+          showWorldFloat(scene, t.x, t.y - 90, '👋 Awesome High-Five! ✨', '#fde047');
+        }
+        say('High five! Thank you for visiting my island!');
+      });
+      say('Welcome to ' + fr.first_name + 's Home Island!');
     } else if (t.kind === 'house') {
-      panel(FLAT + 'o_workbench', 'My Home', 'Upgrade your house or craft furniture for your garden!', 'Build 🏰', function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); });
-      say('Let us build your home!');
+      if (S.visitingFriend) {
+        panel(FLAT + 'o_house', S.visitingFriend.first_name + '\'s House', 'What a cool house! Want to go back to your own Home Island?', '🏠 My Home', function () { leaveFriendHome(); });
+        say('What a cool house!');
+      } else {
+        panel(FLAT + 'o_workbench', 'My Home', 'Upgrade your house or craft furniture for your garden!', 'Build 🏰', function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); });
+        say('Let us build your home!');
+      }
     } else if (t.kind === 'workbench') {
-      panel(FLAT + 'o_workbench', 'Crafting Workbench', 'Use wood, stones, flowers and shells to craft 16 items!', 'Craft 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
-      say('What would you like to craft?');
+      if (S.visitingFriend) {
+        panel(FLAT + 'o_workbench', S.visitingFriend.first_name + '\'s Workbench', 'This is where ' + S.visitingFriend.first_name + ' crafts furniture!', '🏠 My Home', function () { leaveFriendHome(); });
+      } else {
+        panel(FLAT + 'o_workbench', 'Crafting Workbench', 'Use wood, stones, flowers and shells to craft 16 items!', 'Craft 🔨', function () { if (root.WorldGame) root.WorldGame.openWorkshop('craft'); });
+        say('What would you like to craft?');
+      }
     } else if (t.kind === 'villager') {
       var v = t.v, st = root.WorldGame ? root.WorldGame.readState() : {};
       var done = !!(st.jobsDone && st.jobsDone[v.id]);
@@ -967,6 +1126,20 @@
           renderDecorTray(st.placed[S.movingIdx].id);
         }
         $('w-goal').innerHTML = '✓ Item placed!<small>Tap another item to move, or tap Done</small>';
+        return;
+      }
+    }
+    if (!S.moveMode && S.zone === 0 && sc.placedSprites && sc.placedSprites.length) {
+      var fHit = null, fBest = 1e9;
+      sc.placedSprites.forEach(function (ps) {
+        if (Math.abs(x - ps.x) < 75 && y <= ps.y + 24 && y >= ps.y - ps.h - 24) {
+          var fd = Math.abs(x - ps.x) + Math.abs(y - ps.y);
+          if (fd < fBest) { fBest = fd; fHit = ps; }
+        }
+      });
+      if (fHit) {
+        hidePanel();
+        walkTo(fHit.x, fHit.y + 20, function () { interactFurniture(sc, fHit); });
         return;
       }
     }
@@ -1084,7 +1257,7 @@
         if (!sc.textures.exists('me') || S.lookStamp !== JSON.stringify(look)) await bakeMonster(sc, 'me', look);
         var isDemo = !!ses().isDemo, crowd = isDemo ? Math.max(0, Math.min(30, Number(Q.get('crowd') || 2))) : 0, colors = ['pink', 'gold', 'green', 'purple', 'orange'];
         for (var i = 0; i < Math.min(crowd, colors.length); i++) if (!sc.textures.exists('c' + i)) await bakeMonster(sc, 'c' + i, { stage: ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'][i % 5], color: colors[i] });
-        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 780 : 1200);
+        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 850 : 1200);
         var free = nearestFree(sc.grid, Math.floor(sx / CELL), Math.floor(sy / CELL)) || [5, 20];
         sc.player = makeWalker(sc, 'me', free[0] * CELL + 20, free[1] * CELL + 20, .54);
         sc.cameras.main.setBounds(0, 0, W, H);
@@ -1243,8 +1416,12 @@
 
   /* ---------- start, once the pupil is known ---------- */
   function startWorld() {
+    var visitId = Q.get('visit');
+    if (visitId) {
+      S.visitingFriend = buildFriendWorldData(visitId);
+    }
     var rawZ = Q.get('zone');
-    var want = (rawZ !== null && rawZ !== '') ? Number(rawZ) : 1;
+    var want = visitId ? 0 : ((rawZ !== null && rawZ !== '') ? Number(rawZ) : 1);
     var z = want === 0 ? 0 : 1;
     for (var i = 1; i <= 4; i++) if (i <= want && isOpen(i)) z = i;
     S.zone = z;
@@ -1253,7 +1430,7 @@
     setupJoystick();
     if ($('w-back')) $('w-back').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
     if ($('w-energy')) $('w-energy').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openEnergyCharge(); };
-    if ($('w-home')) $('w-home').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorkshop('home'); };
+    if ($('w-home')) $('w-home').onclick = function () { sound('playTap'); if (S.visitingFriend) { leaveFriendHome(); } else if (root.WorldGame) { root.WorldGame.openWorkshop('home'); } };
     if ($('w-decor')) $('w-decor').onclick = function () { sound('playTap'); if (S.moveMode) closeDecorDock(); else openDecorDock(); };
     if ($('w-jobs')) $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); };
     if ($('w-wall')) $('w-wall').onclick = function () { sound('playTap'); if (root.IslandWall) root.IslandWall.open(); };
@@ -1305,6 +1482,135 @@
     });
   }
 
+  var FRIEND_PRESETS = {
+    'demo-a': {
+      id: 'demo-a', first_name: 'Sky', color: 'pink', level: 3, equipped: { hat: 'hat-crown', glasses: 'glasses-star' },
+      world: {
+        houseTier: 3,
+        placed: [
+          { id: 'f_bed', x: 1510, y: 590, flip: false },
+          { id: 'f_chair', x: 1620, y: 700, flip: false },
+          { id: 'f_table', x: 1750, y: 700, flip: false },
+          { id: 'f_lamp', x: 1860, y: 580, lit: true },
+          { id: 'f_rug', x: 1680, y: 765, flip: false },
+          { id: 'g_fountain', x: 1020, y: 980, flip: false },
+          { id: 'g_flowerbed', x: 740, y: 940, flip: false },
+          { id: 'g_swing', x: 560, y: 1080, flip: false },
+          { id: 'g_lamp', x: 1260, y: 720, lit: true }
+        ]
+      }
+    },
+    'demo-b': {
+      id: 'demo-b', first_name: 'River', color: 'blue', level: 2, equipped: { hat: 'hat-cap' },
+      world: {
+        houseTier: 2,
+        placed: [
+          { id: 'f_chair', x: 1540, y: 700, flip: false },
+          { id: 'f_plant', x: 1840, y: 760, flip: false },
+          { id: 'g_bench', x: 940, y: 980, flip: false },
+          { id: 'g_pond', x: 1280, y: 1040, flip: false },
+          { id: 'g_mailbox', x: 960, y: 700, flip: false }
+        ]
+      }
+    },
+    'demo-c': {
+      id: 'demo-c', first_name: 'Sunny', color: 'gold', level: 4, equipped: { hat: 'hat-wizard', glasses: 'glasses-round' },
+      world: {
+        houseTier: 4,
+        placed: [
+          { id: 'f_bed', x: 1510, y: 590, flip: false },
+          { id: 'f_table', x: 1730, y: 690, flip: false },
+          { id: 'f_chair', x: 1610, y: 700, flip: false },
+          { id: 'f_lamp', x: 1860, y: 580, lit: true },
+          { id: 'g_fountain', x: 960, y: 980, flip: false },
+          { id: 'g_tree', x: 1380, y: 980, flip: false },
+          { id: 'g_pethouse', x: 680, y: 980, flip: false }
+        ]
+      }
+    },
+    'demo-d': {
+      id: 'demo-d', first_name: 'Robin', color: 'green', level: 1, equipped: {},
+      world: {
+        houseTier: 2,
+        placed: [
+          { id: 'f_chair', x: 1560, y: 700, flip: false },
+          { id: 'g_flowerbed', x: 980, y: 940, flip: false },
+          { id: 'f_lamp', x: 1460, y: 620, lit: true }
+        ]
+      }
+    }
+  };
+
+  function buildFriendWorldData(friendOrId) {
+    if (!friendOrId) return null;
+    var id = typeof friendOrId === 'string' ? friendOrId : (friendOrId.id || 'demo-a');
+    var preset = FRIEND_PRESETS[id];
+    var base = typeof friendOrId === 'object' ? friendOrId : (preset || { id: id, first_name: 'Sky', color: 'pink', level: 3, equipped: {} });
+    return {
+      id: base.id || id,
+      first_name: base.first_name || (preset && preset.first_name) || 'Friend',
+      color: base.color || (preset && preset.color) || 'pink',
+      level: base.level || (preset && preset.level) || 3,
+      equipped: base.equipped || (preset && preset.equipped) || {},
+      world: base.world || (preset && preset.world) || FRIEND_PRESETS['demo-a'].world
+    };
+  }
+
+  function visitFriendHome(friendOrId) {
+    var fData = buildFriendWorldData(friendOrId);
+    if (!fData) return;
+    if ($('isl-modal-root')) $('isl-modal-root').innerHTML = '';
+    document.documentElement.classList.remove('adv-on');
+    S.visitingFriend = fData;
+    S.hi5FriendSent = false;
+    S.moveMode = false;
+    if (scene && S.ready) {
+      S.leaving = false;
+      goZone(0, 0);
+    }
+  }
+
+  function leaveFriendHome() {
+    if (!S.visitingFriend) return;
+    S.visitingFriend = null;
+    S.hi5FriendSent = false;
+    if (scene && S.ready) {
+      S.leaving = false;
+      goZone(0, 0);
+    }
+  }
+
+  function onMissionComplete(missionId, starsEarned) {
+    var sc = scene;
+    if (!sc || !S.ready) return;
+    refreshStops(true);
+    var all = (sc.stops || []).concat(sc.stones || []);
+    var hit = all.filter(function (s) { return s.mission && s.mission.id === missionId; })[0];
+    if (!hit) return;
+    var isBossStop = sc.stops && sc.stops[4] === hit;
+    if (sc.cameras && sc.cameras.main) {
+      sc.cameras.main.pan(hit.x, hit.y - 40, 550, 'Power2');
+    }
+    var aura = sc.add.circle(hit.x, hit.y - 12, isBossStop ? 95 : 64, 0xfde047, 0.42).setDepth((hit.y || 800) - 2);
+    sc.tweens.add({
+      targets: aura, scale: isBossStop ? 2.1 : 1.6, alpha: 0, duration: isBossStop ? 1500 : 1000,
+      onComplete: function () { aura.destroy(); }
+    });
+    if (hit.img) {
+      var sx = hit.img.scaleX, sy = hit.img.scaleY;
+      sc.tweens.add({ targets: hit.img, scaleX: sx * 1.22, scaleY: sy * 1.22, duration: 180, yoyo: true, repeat: isBossStop ? 3 : 2 });
+    }
+    sc.party.explode(isBossStop ? 75 : 45, hit.x, hit.y - 70);
+    sc.fx.explode(isBossStop ? 36 : 20, hit.x, hit.y - 50);
+    if (isBossStop) {
+      var bossNames = { 1: '⚙️ Machine Awakened!', 2: '🗼 Lighthouse Shining!', 3: '🎪 Market Open!', 4: '🌋 Volcano Calm!' };
+      showWorldFloat(sc, hit.x, hit.y - 120, bossNames[S.zone] || '⚡ Zone Boss Complete!', '#fde047');
+      setTimeout(function () { if (sc && sc.party) sc.party.explode(60, hit.x, hit.y - 100); }, 380);
+    } else {
+      showWorldFloat(sc, hit.x, hit.y - 90, '🌟 Stop Complete! +' + (starsEarned || 3) + ' ⭐', '#34d399');
+    }
+  }
+
   root.WORLD = {
     S: S,
     scene: function () { return scene; },
@@ -1325,7 +1631,11 @@
     focusVillager: focusVillager,
     open: openThing,
     tapBag: tapBag,
-    nextMission: nextMission
+    nextMission: nextMission,
+    visitFriendHome: visitFriendHome,
+    leaveFriendHome: leaveFriendHome,
+    onMissionComplete: onMissionComplete,
+    interactFurniture: interactFurniture
   };
   var tries = 0;
   (function waitForPupil() {
