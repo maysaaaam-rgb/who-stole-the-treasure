@@ -377,11 +377,11 @@
         '</button>';
     }
 
-    var cornerCount = ((ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 4;
+    var cornerCount = ((ses.doc && ses.doc.world && ses.doc.world.placed) || (ses.doc && ses.doc.corner && ses.doc.corner.items) || []).length || 4, campSearch = root.location.search ? (root.location.search + '&zone=0') : '?demo=1&zone=0';
     var campHtml =
-      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:70" onclick="event.stopPropagation(); IslandRewards.openCorner()">' +
+      '<button type="button" class="mp-hub mp-hub-camp" id="isl-hub-camp" style="--x:50;--y:70" onclick="event.stopPropagation(); location.href=\'world.html\' + ' + JSON.stringify(campSearch).replace(/"/g, "'") + '">' +
         '<span class="mp-hub-pic"><img src="art/d_hut.webp" alt=""></span>' +
-        '<span class="mp-hub-label"><b>🏖️ My Beach Camp</b><small>Decorate · Care · Trophies (' + cornerCount + ' 🌴)</small></span>' +
+        '<span class="mp-hub-label"><b>🏡 My Home Island</b><small>2D House · Craft · Decorate (' + cornerCount + ' 🌴)</small></span>' +
       '</button>';
 
     var cp = state.walkPos || { x: (MAP_PLACES[cur].x < 50 ? MAP_PLACES[cur].x + 11 : MAP_PLACES[cur].x - 11), y: MAP_PLACES[cur].y + 4 };
@@ -1163,6 +1163,7 @@
       if (stars === 3 && !m.isStar && !m.isDaily && !wasThreeStars) root.IslandWall.news('stars');
       if (res.leveledUp && res.newLevelInfo) root.IslandWall.news('level', res.newLevelInfo.level);
     }
+    state.lastCompletedMission = { id: m.id, stars: stars };
     state.missionRun = null;
     root.IslandAudio.stopAmbient();
     if (res.leveledUp) {
@@ -1431,6 +1432,13 @@
     root.IslandAudio.stopAmbient();
     var modalRoot = document.getElementById('isl-modal-root');
     if (modalRoot) modalRoot.innerHTML = '';
+    if (state.lastCompletedMission) {
+      var done = state.lastCompletedMission;
+      state.lastCompletedMission = null;
+      if (root.WORLD && root.WORLD.onMissionComplete) {
+        setTimeout(function () { root.WORLD.onMissionComplete(done.id, done.stars); }, 120);
+      }
+    }
     maybePlayEnding();
   }
 

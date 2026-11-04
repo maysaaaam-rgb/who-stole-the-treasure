@@ -326,6 +326,7 @@
         '<h2>🏖️ ' + esc(p.first_name) + '\'s Sunny Beach Camp</h2>' +
         '<div class="wl-chips"><span>🌟 Level ' + (p.level || 1) + '</span><span>⭐ ' + (p.stars || 0) + ' stars</span><span>🏝️ ' + (p.zones || 0) + ' zones</span><span>📒 ' + (p.stickers || 0) + ' stickers</span></div>' +
         '<div class="wl-visit-actions">' +
+          '<button type="button" class="wl-btn wl-hi5" id="wl-btn-visit2d" style="background:linear-gradient(180deg,#10b981,#059669);border-bottom-color:#064e3b;color:#fff" onclick="IslandWall.visit2DHome(\'' + esc(p.id) + '\')">🏡 Walk in 2D Home</button>' +
           '<button type="button" class="wl-btn wl-hi5" id="wl-btn-hi5" onclick="IslandWall.highFive(\'' + esc(p.id) + '\')">👋 High-Five!</button>' +
           '<button type="button" class="wl-btn wl-gift" id="wl-btn-gift" onclick="IslandWall.giftPicker(\'' + esc(p.id) + '\')">🎁 Give a sticker</button>' +
         '</div>' +
@@ -561,6 +562,19 @@
     close: function () { document.documentElement.classList.remove('adv-on'); $('isl-modal-root').innerHTML = ''; W.compose = null; if (root.IslandApp && root.IslandApp.renderMap) root.IslandApp.renderMap(); },
     tab: function (t) { tap(); W.tab = t; W.visiting = null; redrawShell(); },
     visit: function (id) { tap(); W.tab = id ? 'friends' : W.tab; W.visiting = id; redrawShell(); },
+    visit2DHome: function (id) {
+      tap();
+      var p = byId(id) || { id: id, first_name: 'Friend', color: 'pink', level: 3 };
+      if (root.WORLD && root.WORLD.visitFriendHome) {
+        pub.close();
+        root.WORLD.visitFriendHome(p);
+        return;
+      }
+      var q = new URLSearchParams(root.location.search || '?demo=1');
+      q.set('zone', '0');
+      q.set('visit', id);
+      root.location.href = 'world.html?' + q.toString();
+    },
     highFive: function (id) {
       var p = byId(id);
       if (root.IslandAudio && root.IslandAudio.playCorrect) root.IslandAudio.playCorrect();

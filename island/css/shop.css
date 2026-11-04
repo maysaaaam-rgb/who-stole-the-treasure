@@ -33,7 +33,8 @@
 @keyframes islTreasure { 50% { box-shadow: 0 0 22px rgba(245,158,11,.75); } }
 .isl-shop-dream-tag { display: inline-block; padding: 1px 8px; border-radius: 9px; background: #fde68a; color: #713f12; font-size: .78rem; font-weight: 800; }
 /* The dream bar */
-#isl-dream { position: fixed; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 42; display: flex; align-items: center; gap: 10px; width: min(92vw, 460px); padding: 7px 14px; color: #fff; font: 700 1rem Fredoka, sans-serif; background: rgba(15,23,42,.92); border: 2px solid rgba(255,255,255,.2); border-bottom: 5px solid #020617; border-radius: 18px; cursor: pointer; transition: transform .12s cubic-bezier(.175,.885,.32,1.275); }
+#isl-dream { position: fixed; left: 16px; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 42; display: flex; align-items: center; gap: 10px; width: min(88vw, 340px); padding: 7px 14px; color: #fff; font: 700 .95rem Fredoka, sans-serif; background: rgba(15,23,42,.92); border: 2px solid rgba(255,255,255,.2); border-bottom: 5px solid #020617; border-radius: 18px; cursor: pointer; transition: transform .12s cubic-bezier(.175,.885,.32,1.275); }
+body.w-page #isl-dream { left: 50%; transform: translateX(-50%); width: min(92vw, 440px); bottom: 68px; }
 #isl-dream:active { transform: translateX(-50%) translateY(3px); }
 #isl-dream b { flex: none; color: #fde68a; }
 body.isl-modal-open #isl-dream, body.w-talking #isl-dream { display: none; }
