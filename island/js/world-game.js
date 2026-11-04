@@ -688,7 +688,10 @@
 
     document.body.classList.add('isl-modal-open');
     if (battleRun.won) {
-      var dropKeys = Object.keys(b.drop || {}).map(function (k) { return '+' + b.drop[k] + ' ' + k; }).join(' · ');
+      var dropBadges = Object.keys(b.drop || {}).map(function (k) {
+        var icon = MAT_ICONS[k] || 'i_wood';
+        return '<span class="wg-mat-badge"><img src="' + FLAT + icon + '.webp" alt=""> +' + b.drop[k] + ' ' + esc(k) + '</span>';
+      }).join('');
       modalRoot().innerHTML =
         '<div class="isl-modal-backdrop" id="wg-battle-backdrop">' +
           '<div class="isl-card-modal wg-battle-modal" style="background-image:url(' + FLAT + b.bg + '.webp)">' +
@@ -698,7 +701,8 @@
             '</div>' +
             '<div class="wg-battle-card" style="text-align:center">' +
               '<h2 style="margin:4px 0;font-size:1.75rem;color:#fde047">🎉 Victory! ' + esc(b.name) + ' is your friend!</h2>' +
-              '<div style="color:#6ee7b7;font-size:1.15rem;font-weight:800;margin:6px 0">⚡ +' + b.energy + ' Energy · 🎒 ' + esc(dropKeys) + '</div>' +
+              '<div style="color:#6ee7b7;font-size:1.15rem;font-weight:800;margin:6px 0">⚡ +' + b.energy + ' Energy earned!</div>' +
+              '<div class="wg-mat-badges" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0">' + dropBadges + '</div>' +
               '<button type="button" class="isl-btn emerald" id="wg-battle-done" style="min-width:190px;font-size:1.15rem;margin-top:8px" onclick="WorldGame.closeModal()">Awesome! 🚀</button>' +
             '</div>' +
           '</div>' +
@@ -791,6 +795,7 @@
       var crit = battleRun.firstTry ? 10 : 0;
       var dmg = sp.dmg + crit;
       battleRun.foeHp = Math.max(0, battleRun.foeHp - dmg);
+      useEnergy(sp.energy || 5);
       if (sp.heal) battleRun.myHp = Math.min(battleRun.myMaxHp, battleRun.myHp + sp.heal);
       if (sp.shield) battleRun.shielded = true;
 

@@ -158,6 +158,7 @@
   function starsOf(id) { var d = ses().doc || {}; return Number((d.stars || {})[id]) || 0; }
   function isOpen(z) {
     if (z <= 1) return true;
+    if (Q.get('all') || (Q.get('demo') && Q.get('zone'))) return true;
     var prev = missions(z - 1).regular.filter(function (m) { return starsOf(m.id) > 0; }).length;
     return prev >= 4;
   }
@@ -1216,15 +1217,16 @@
     document.body.classList.add('w-on');
     $('w-load').classList.add('on');
     setupJoystick();
-    if ($('w-back')) $('w-back').onclick = function () { if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
-    if ($('w-energy')) $('w-energy').onclick = function () { if (root.WorldGame) root.WorldGame.openEnergyCharge(); };
-    if ($('w-home')) $('w-home').onclick = function () { if (root.WorldGame) root.WorldGame.openWorkshop('home'); };
-    if ($('w-decor')) $('w-decor').onclick = function () { if (S.moveMode) closeDecorDock(); else openDecorDock(); };
-    if ($('w-jobs')) $('w-jobs').onclick = function () { if (root.WorldGame) root.WorldGame.openJobsBoard(); };
-    if ($('w-wall')) $('w-wall').onclick = function () { if (root.IslandWall) root.IslandWall.open(); };
-    if ($('w-book')) $('w-book').onclick = function () { if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
-    if ($('w-dress')) $('w-dress').onclick = function () { App().openDressingRoom(); };
-    if ($('w-shop')) $('w-shop').onclick = function () { root.IslandShop.open(); };
+    if ($('w-back')) $('w-back').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorldMap(); else { var u = new URLSearchParams(root.location.search); u.delete('zone'); root.location.href = 'index.html?' + u.toString(); } };
+    if ($('w-energy')) $('w-energy').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openEnergyCharge(); };
+    if ($('w-home')) $('w-home').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openWorkshop('home'); };
+    if ($('w-decor')) $('w-decor').onclick = function () { sound('playTap'); if (S.moveMode) closeDecorDock(); else openDecorDock(); };
+    if ($('w-jobs')) $('w-jobs').onclick = function () { sound('playTap'); if (root.WorldGame) root.WorldGame.openJobsBoard(); };
+    if ($('w-wall')) $('w-wall').onclick = function () { sound('playTap'); if (root.IslandWall) root.IslandWall.open(); };
+    if ($('w-book')) $('w-book').onclick = function () { sound('playTap'); if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
+    if ($('w-dress')) $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); };
+    if ($('w-shop')) $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); };
+    if ($('w-goal')) $('w-goal').onclick = function () { sound('playTap'); if (S.zone === 0) { if (root.WorldGame) root.WorldGame.openWorkshop('home'); } else { if (root.WorldGame) root.WorldGame.openJobsBoard(); } };
     if (root.WorldGame) root.WorldGame.updateEnergyChip();
     if (Q.get('fps') && $('w-fps')) $('w-fps').style.display = 'block';
     root.WORLD.game = new Phaser.Game({
