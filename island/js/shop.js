@@ -31,10 +31,22 @@
   async function load() {
     var s = ses();
     if (s.isDemo) {
-      S.demo = S.demo || demoShop();
+      var pid = (s.student && s.student.id) || 'demo';
+      if (!S.demo || S.demoPid !== pid) {
+        S.demoPid = pid;
+        S.demo = demoShop();
+        S.demoPaid = {};
+      } else {
+        var xp = 0; try { xp = App().getEffectiveXP(); } catch (e) { xp = 0; }
+        var lvl = 1; XP_AT.forEach(function (t, i) { if (xp >= t) lvl = i + 1; });
+        S.demo.xp = xp; S.demo.level = lvl;
+      }
       var d = s.doc || {}, paid = S.demoPaid = S.demoPaid || {};
-      Object.keys(d.chests || {}).forEach(function (k) { if (d.chests[k] && !paid[k]) { paid[k] = 1; S.demo.coins += 10; } });
-      Object.keys(d.dailyDone || {}).forEach(function (k) { if (d.dailyDone[k] && !paid[k]) { paid[k] = 1; S.demo.coins += 2; } });
+      Object.keys(d.chests || {}).forEach(function (k) { if (d.chests[k] && !paid['ch_' + k]) { paid['ch_' + k] = 1; S.demo.coins += 10; } });
+      Object.keys(d.dailyDone || {}).forEach(function (k) { if (d.dailyDone[k] && !paid['dd_' + k]) { paid['dd_' + k] = 1; S.demo.coins += 2; } });
+      var bonus = Number(d.world && d.world.bonusCoins) || 0;
+      var prevBonus = Number(paid._bonus) || 0;
+      if (bonus > prevBonus) { S.demo.coins += (bonus - prevBonus); paid._bonus = bonus; }
       return S.demo;
     }
     var client = sb();
@@ -213,6 +225,7 @@
       S.ask = { done: true, id: a.id, name: a.name, category: a.category, rarity: a.rarity };
       sound('playFanfare'); say('Well done!');
       if (a.rarity === 'legendary' || a.rarity === 'mythic') setTimeout(function () { sound('playFanfare'); }, 650);
+      if (root.WorldGame && root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud();
     } else if (r.error === 'owned') {
       d.owned = (d.owned || []).concat([a.id]); rememberOwned(a.id);
       S.ask = { done: true, id: a.id, name: a.name, category: a.category, rarity: a.rarity };
@@ -267,6 +280,7 @@
       var g = document.createElement('span'); g.className = 'isl-dream-gain'; g.textContent = '+' + gain + ' 🪙'; el.appendChild(g);
       sound('playCorrect'); setTimeout(function () { g.remove(); }, 1500);
     }
+    if (root.WorldGame && root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud(gain > 0);
   }
   async function refreshBar() {
     if (S.refreshing || !ses() || !ses().student) return;
@@ -307,6 +321,7 @@
   root.IslandShop = {
     open: open, pick: pick, yes: yes, wear: wear, setDream: setDream, refresh: refreshBar,
     dreamOf: dreamOf,
+    getCoins: function () { return S.data ? (Number(S.data.coins) || 0) : (S.demo ? (Number(S.demo.coins) || 130) : 130); },
     jump: function (k) { sound('playTap'); var el = document.getElementById('isl-shelf-' + k); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); },
     noAsk: function () { var box = document.getElementById('isl-shop-items'); S.keepTop = box ? box.scrollTop : 0; S.ask = null; sound('playTap'); draw(); },
     toDress: function () { App().openDressingRoom(); }
