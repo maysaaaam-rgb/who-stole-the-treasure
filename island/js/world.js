@@ -427,32 +427,81 @@
     var feet = base.querySelector('.plush-feet');
     if (feet && !feet.querySelector('.foot-l')) splitPair(feet, 'foot-l', 'foot-r');
 
-    // 8-frame articulated sprite sheet: 0=idle, 1..6=3D stride cycle, 7=cheer jump pose
+    // 8-frame articulated sprite sheet: 0=idle (front), 1..6=3/4 side-turned stride cycle, 7=cheer jump pose
     var poses = [
-      { bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0 },
-      { bob: -2.5, tilt: 2.2, lx: 6, ly: -6, lr: -14, rx: -5, ry: 1.5, rr: 10, armL: 22, armR: 22, ear: -7, tail: -12 },
-      { bob: -5.5, tilt: 3.4, lx: 4, ly: -11, lr: -20, rx: -3, ry: 2, rr: 7, armL: 32, armR: 32, ear: -11, tail: -18 },
-      { bob: 1.5, tilt: 0.8, lx: -2, ly: 1, lr: 5, rx: 3, ry: -3, rr: -8, armL: 10, armR: 10, ear: 4, tail: -5 },
-      { bob: -2.5, tilt: -2.2, lx: -5, ly: 1.5, lr: 10, rx: 6, ry: -6, rr: -14, armL: -22, armR: -22, ear: 7, tail: 12 },
-      { bob: -5.5, tilt: -3.4, lx: -3, ly: 2, lr: 7, rx: 4, ry: -11, rr: -20, armL: -32, armR: -32, ear: 11, tail: 18 },
-      { bob: 1.5, tilt: -0.8, lx: 3, ly: -3, lr: -8, rx: -2, ry: 1, rr: 5, armL: -10, armR: -10, ear: -4, tail: 5 },
-      { bob: -7, tilt: 0, lx: -5, ly: -8, lr: 16, rx: 5, ry: -8, rr: -16, armL: 145, armR: -145, ear: 14, tail: 18, cheer: true }
+      { bob: 0, tilt: 0, lx: 0, ly: 0, lr: 0, rx: 0, ry: 0, rr: 0, armL: 0, armR: 0, ear: 0, tail: 0, side: false },
+      { bob: -2.5, tilt: 3.2, lx: 22, ly: -5, lr: -18, rx: -22, ry: -1, rr: 16, armL: -26, armR: 18, ear: -8, tail: -12, side: true },
+      { bob: -6.0, tilt: 4.5, lx: 28, ly: -11, lr: -24, rx: -26, ry: -3, rr: 22, armL: -36, armR: 24, ear: -13, tail: -20, side: true },
+      { bob: 1.5, tilt: 1.5, lx: 10, ly: 1, lr: 4, rx: -8, ry: -5, rr: -8, armL: -10, armR: 8, ear: 4, tail: -6, side: true },
+      { bob: -2.5, tilt: 3.2, lx: -10, ly: -1, lr: 16, rx: 10, ry: -5, rr: -18, armL: 24, armR: -16, ear: 8, tail: 12, side: true },
+      { bob: -6.0, tilt: 4.5, lx: -14, ly: -3, rr: -24, rx: 14, ry: -11, lr: 22, armL: 34, armR: -22, ear: 13, tail: 20, side: true },
+      { bob: 1.5, tilt: 1.5, lx: -2, ly: -5, lr: -8, rx: 2, ry: 1, rr: 4, armL: 10, armR: -8, ear: -4, tail: 6, side: true },
+      { bob: -7, tilt: 0, lx: -5, ly: -8, lr: 16, rx: 5, ry: -8, rr: -16, armL: 145, armR: -145, ear: 14, tail: 18, cheer: true, side: false }
     ];
     var canvas = document.createElement('canvas'); canvas.width = FRAME * poses.length; canvas.height = FRAME;
     var c = canvas.getContext('2d'), ser = new XMLSerializer();
     for (var i = 0; i < poses.length; i++) {
       var p = poses[i], svg = base.cloneNode(true);
       var setSvg = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.setAttribute('transform', tr); }); };
+      var prependSvg = function (q, tr) {
+        [].forEach.call(svg.querySelectorAll(q), function (el) {
+          var prev = el.getAttribute('transform') || '';
+          el.setAttribute('transform', tr + (prev ? ' ' + prev : ''));
+        });
+      };
       var setCss = function (q, tr) { [].forEach.call(svg.querySelectorAll(q), function (el) { el.style.transform = tr; }); };
       setSvg('.monster-bob-group', 'translate(0 ' + p.bob + ') rotate(' + (p.tilt || 0) + ' 100 146)');
-      if (p.lx || p.ly || p.lr) setSvg('.foot-l', 'translate(' + (p.lx || 0) + ' ' + (p.ly || 0) + ') rotate(' + (p.lr || 0) + ' 82 162)');
-      if (p.rx || p.ry || p.rr) setSvg('.foot-r', 'translate(' + (p.rx || 0) + ' ' + (p.ry || 0) + ') rotate(' + (p.rr || 0) + ' 118 162)');
-      if (p.armL) setCss('.mon-arm-l', 'rotate(' + p.armL + 'deg)');
-      if (p.armR) setCss('.mon-arm-r', 'rotate(' + p.armR + 'deg)');
-      if (p.ear) {
-        setCss('.mon-ear-l', 'rotate(' + p.ear + 'deg)');
-        setCss('.mon-ear-r', 'rotate(' + (-p.ear) + 'deg)');
+      if (p.side) {
+        // Turn face, gaze/pupils, belly, fins, eyewear, hat, scarf, and tail into a true 3/4 side-walking profile (facing right)
+        prependSvg('[fill^="url(#plush-belly-"], .mon-belly-mark', 'translate(14 0) translate(100 136) scale(0.82 1) translate(-100 -136)');
+        prependSvg('.plush-face', 'translate(18 -1)');
+        var eyes = svg.querySelectorAll('.plush-face .mon-eye');
+        if (eyes.length >= 2) {
+          var prevE0 = eyes[0].getAttribute('transform') || '';
+          eyes[0].setAttribute('transform', 'translate(3 0) ' + prevE0);
+          var prevE1 = eyes[1].getAttribute('transform') || '';
+          eyes[1].setAttribute('transform', 'translate(-5 0) translate(116 114) scale(0.68 0.95) translate(-116 -114) ' + prevE1);
+        }
+        // Shift pupils, irises, and specular highlights toward the walking direction so eyes look forward along the path
+        [].forEach.call(svg.querySelectorAll('.plush-face .mon-eye > ellipse, .plush-face .mon-eye > circle'), function (el, idx) {
+          var fill = el.getAttribute('fill') || '';
+          if (fill === '#090d16' || fill === '#ffffff' || fill.indexOf('url(#plush-eye-iris-') === 0) {
+            var dpx = fill === '#090d16' || fill === '#ffffff' ? 3.2 : 1.6;
+            el.setAttribute('transform', 'translate(' + dpx + ' 0)');
+          }
+        });
+        // Tuck the far cheek around the turned head and pull the near cheek forward
+        [].forEach.call(svg.querySelectorAll('.plush-face > ellipse'), function (el) {
+          var cx = Number(el.getAttribute('cx') || 0);
+          if (cx > 115) el.setAttribute('opacity', '0');
+          else if (cx < 85 && cx > 60) el.setAttribute('transform', 'translate(5 0)');
+        });
+        // Foreshorten the far (right) side fins and sweep the near (left) fins back
+        [].forEach.call(svg.querySelectorAll('path[fill^="url(#mon-fin-"]'), function (el) {
+          var d = el.getAttribute('d') || '';
+          if (/^M\s*1[1-9]\d/.test(d)) {
+            el.setAttribute('transform', 'translate(-12 0) translate(136 90) scale(0.38 0.9) translate(-136 -90)');
+          } else {
+            el.setAttribute('transform', 'translate(-2 0) rotate(-5 65 90)');
+          }
+        });
+        prependSvg('.monster-eyewear', 'translate(16 -1)');
+        prependSvg('.monster-hat', 'translate(7 -1) rotate(4 100 65)');
+        prependSvg('.monster-tail-layer', 'translate(196 0) scale(-1 1)');
+        setCss('.mon-ear-l', 'translate(8px, 0px) rotate(' + (p.ear || 0) + 'deg)');
+        setCss('.mon-ear-r', 'translate(2px, -1px) rotate(' + (-(p.ear || 0)) + 'deg)');
+        setCss('.mon-arm-l', 'translate(18px, -1px) rotate(' + (p.armL || 0) + 'deg)');
+        setCss('.mon-arm-r', 'translate(-8px, 1px) scale(0.84, 0.92) rotate(' + (p.armR || 0) + 'deg)');
+      } else {
+        if (p.armL) setCss('.mon-arm-l', 'rotate(' + p.armL + 'deg)');
+        if (p.armR) setCss('.mon-arm-r', 'rotate(' + p.armR + 'deg)');
+        if (p.ear) {
+          setCss('.mon-ear-l', 'rotate(' + p.ear + 'deg)');
+          setCss('.mon-ear-r', 'rotate(' + (-p.ear) + 'deg)');
+        }
       }
+      if (p.lx || p.ly || p.lr) setSvg('.foot-l', 'translate(' + (p.lx || 0) + ' ' + (p.ly || 0) + ') rotate(' + (p.lr || 0) + ' 80 156)');
+      if (p.rx || p.ry || p.rr) setSvg('.foot-r', 'translate(' + (p.rx || 0) + ' ' + (p.ry || 0) + ') rotate(' + (p.rr || 0) + ' 120 156)');
       if (p.tail) setCss('.mon-tail-wag', 'rotate(' + p.tail + 'deg)');
       if (p.cheer && root.MonsterRenderer && root.MonsterRenderer.setMouth) {
         root.MonsterRenderer.setMouth(svg, 'mouth-cheer');

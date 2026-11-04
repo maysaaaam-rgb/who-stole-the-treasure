@@ -262,7 +262,7 @@
           '<div class="isl-mission-top wg-map-top">' +
             '<div style="font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:36px;height:36px;object-fit:contain" alt=""> Practice Island World Map</div>' +
             '<div style="margin-left:auto;display:flex;gap:8px">' +
-              '<button type="button" class="isl-btn cyan" style="min-height:42px;padding:6px 12px;font-size:0.9rem" onclick="WorldGame.goClassicMap()">📋 Classic Map</button>' +
+              '<a class="isl-btn cyan" style="min-height:42px;padding:6px 12px;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
               '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
@@ -282,9 +282,7 @@
   }
 
   function goClassicMap() {
-    var u = new URLSearchParams(root.location.search);
-    u.delete('zone');
-    root.location.href = 'index.html?' + u.toString();
+    root.location.href = '../index.html';
   }
 
   /* ---------- 3. 3-Question Energy Charge Burst (⚡ Energy for Finishing!) ---------- */
