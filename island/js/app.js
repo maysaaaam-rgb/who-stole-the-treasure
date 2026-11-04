@@ -467,6 +467,10 @@
       renderCodeEntry(main);
       return;
     }
+    if (document.body && document.body.classList.contains('w-page')) {
+      main.innerHTML = '';
+      return;
+    }
 
     var ses = state.session;
     var g = ses.grade || 3;
