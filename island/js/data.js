@@ -764,7 +764,7 @@
       cap: 30,
       monsterProfile: {
         baseColor: 'blue',
-        equipped: { hat: 'hat-bow', clothing: 'clothing-scarf', aura: 'aura-sparkle' },
+        equipped: { hat: 'hat-bow', clothing: 'clothing-scarf', aura: 'aura-sparkle', pet: 'pet-crew-orange' },
         unlockedItems: ['cs-chef-hat', 'pet-crew-orange']
       }
     },
@@ -779,7 +779,7 @@
       cap: 30,
       monsterProfile: {
         baseColor: 'orange',
-        equipped: { hat: 'hat-explorer', glasses: 'glasses-sun', clothing: 'clothing-vest', aura: 'aura-flame' },
+        equipped: { hat: 'hat-explorer', glasses: 'glasses-sun', clothing: 'clothing-vest', aura: 'aura-flame', pet: 'pet-crew-cyan' },
         unlockedItems: ['cs-space-helmet', 'cs-space-suit', 'pet-crew-cyan']
       }
     },

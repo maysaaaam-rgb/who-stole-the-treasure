@@ -88,6 +88,7 @@
       energy: 35,
       maxEnergy: 100,
       houseTier: 1,
+      bonusCoins: 0,
       ownedFurniture: { f_rug: 1, g_flowerbed: 1 },
       placed: [
         { id: 'f_rug', x: 1680, y: 765, flip: false },
@@ -104,6 +105,7 @@
       var merged = Object.assign({}, def, docWorld || {}, raw || {});
       if (docWorld && raw) {
         merged.houseTier = Math.max(Number(docWorld.houseTier) || 1, Number(raw.houseTier) || 1);
+        merged.bonusCoins = Math.max(Number(docWorld.bonusCoins) || 0, Number(raw.bonusCoins) || 0);
         merged.ownedFurniture = Object.assign({}, def.ownedFurniture, docWorld.ownedFurniture || {}, raw.ownedFurniture || {});
         merged.jobsDone = Object.assign({}, docWorld.jobsDone || {}, raw.jobsDone || {});
         merged.battlesWon = Object.assign({}, docWorld.battlesWon || {}, raw.battlesWon || {});
@@ -130,6 +132,7 @@
     } catch (e) { /* local only */ }
     updateEnergyChip();
     updateJobsBadge();
+    updateStatusHud();
   }
 
   function getEnergy() { return readState().energy; }
@@ -149,9 +152,68 @@
     return true;
   }
 
+  function addBonusCoins(n) {
+    var st = readState();
+    st.bonusCoins = (Number(st.bonusCoins) || 0) + (Number(n) || 0);
+    writeState(st);
+    if (root.IslandShop && root.IslandShop.refresh) root.IslandShop.refresh();
+    updateStatusHud(true);
+  }
+
   function updateEnergyChip() {
     var el = $('w-energy-val');
     if (el) el.textContent = String(readState().energy);
+  }
+
+  function updateStatusHud(pop) {
+    var thr = root.EAA_EVOLUTION_XP || [0, 30, 200, 500, 1000, 2000, 3500];
+    var xp = 0;
+    try { xp = App() && App().getEffectiveXP ? App().getEffectiveXP() : 0; } catch (e) { xp = 0; }
+    var lvl = 1;
+    for (var i = 0; i < thr.length; i++) {
+      if (xp >= thr[i]) lvl = i + 1;
+    }
+    var curFloor = thr[lvl - 1] || 0;
+    var nextCeil = thr[lvl] || null;
+    var pct = 100;
+    if (nextCeil && nextCeil > curFloor) {
+      pct = Math.max(0, Math.min(100, Math.round(((xp - curFloor) / (nextCeil - curFloor)) * 100)));
+    }
+    var coins = (root.IslandShop && root.IslandShop.getCoins) ? root.IslandShop.getCoins() : 130;
+    var lvlEl = $('w-lvl-txt'), xpEl = $('w-xp-fill'), coinEl = $('w-coin-txt'), statusEl = $('w-status'), muteEl = $('w-mute');
+    if (lvlEl) lvlEl.textContent = 'Lv.' + lvl;
+    if (xpEl) xpEl.style.width = pct + '%';
+    if (coinEl) coinEl.textContent = '🪙 ' + coins;
+    if (statusEl) {
+      statusEl.title = 'Level ' + lvl + ' (' + xp + (nextCeil ? '/' + nextCeil : '') + ' XP) · ' + coins + ' Coins — Tap to open Store!';
+      if (pop) {
+        statusEl.classList.remove('pop'); void statusEl.offsetWidth; statusEl.classList.add('pop');
+        setTimeout(function () { statusEl.classList.remove('pop'); }, 320);
+      }
+    }
+    if (muteEl && root.IslandAudio && root.IslandAudio.isMuted) {
+      muteEl.textContent = root.IslandAudio.isMuted() ? '🔇' : '🔊';
+    }
+  }
+
+  function toggleWorldMute() {
+    if (root.IslandAudio && root.IslandAudio.toggleMute) root.IslandAudio.toggleMute();
+    if (App() && App().renderTopBar) App().renderTopBar();
+    updateStatusHud();
+  }
+
+  function switchDemoPupil(pid) {
+    if (!App() || !App().switchDemo) return;
+    var mapWasOpen = !!$('wg-map-backdrop');
+    App().switchDemo(pid);
+    setTimeout(function () {
+      if (root.IslandShop && root.IslandShop.refresh) root.IslandShop.refresh();
+      updateEnergyChip();
+      updateJobsBadge();
+      updateStatusHud();
+      if (W() && W().onSessionChanged) W().onSessionChanged();
+      if (mapWasOpen) openWorldMap();
+    }, 80);
   }
 
   /* Read/write materials bag shared with world.js + synced to ses().doc.world.bag */
@@ -229,43 +291,107 @@
   }
 
   /* ---------- 2. Floating-Island World Map Modal (m_island_* on t_map_sea) ---------- */
+  var ZONE_GRAMMAR_TIPS = {
+    3: {
+      1: { word: 'It cleans the floor.', meaning: 'what a machine or helper does (Unit 1)' },
+      2: { word: 'I am thankful for my family.', meaning: 'how we say thank you (Unit 2)' },
+      3: { word: 'How much is it? It is ten riyals.', meaning: 'asking and telling the price (Unit 3)' },
+      4: { word: 'First, we mixed the water.', meaning: 'telling what happened in order (Unit 4)' }
+    },
+    4: {
+      1: { word: 'I like adventure books because they are exciting.', meaning: 'talking about books we love (Unit 1)' },
+      2: { word: 'Camels live in the desert.', meaning: 'animal habitats and where they live (Unit 2)' },
+      3: { word: 'Can I have a sandwich, please?', meaning: 'ordering food politely (Unit 3)' },
+      4: { word: 'Yesterday, I visited the museum.', meaning: 'talking about past events (Unit 4)' }
+    }
+  };
+
+  function zoneProgressBadge(z) {
+    var s = ses();
+    if (!s || !s.doc) return '';
+    if (z === 0) {
+      var st = readState();
+      var tier = HOUSE_TIERS[Math.max(0, Math.min(HOUSE_TIERS.length - 1, (st.houseTier || 1) - 1))];
+      return '🏡 ' + tier.name + ' · ' + ((st.placed && st.placed.length) || 0) + ' items';
+    }
+    var g = s.grade || 3;
+    var zm = root.IslandData.getZoneMissions(g, z, false);
+    var stars = (s.doc && s.doc.stars) || {};
+    var done = 0, totalStars = 0;
+    (zm.regular || []).forEach(function (m) {
+      var n = Number(stars[m.id]) || 0;
+      if (n > 0) done++;
+      totalStars += n;
+    });
+    var chestDone = !!(s.doc.chests && s.doc.chests['z' + z]);
+    if (chestDone) return '🐚 Done! · ★ ' + totalStars + '/15';
+    return '⭐ ' + done + '/5 Stops' + (totalStars ? ' · ★ ' + totalStars : '');
+  }
+
   function openWorldMap() {
     sound('playTap');
+    var s = ses() || {};
+    var g = s.grade || 3;
     var curZone = (W() && W().S && W().S.zone !== undefined) ? W().S.zone : 1;
     var isOpen = function (z) { return z <= 1 || (W() && W().isOpen && W().isOpen(z)); };
     var islands = [
-      { z: 0, name: 'My Home Island',   sub: 'Build · Craft · Garden', img: 'm_island_home',    x: 18, y: 56, open: true },
-      { z: 1, name: 'Sunny Meadow',     sub: 'Unit 1 · Grandpa Bolt',  img: 'm_island_meadow',  x: 44, y: 32, open: true },
-      { z: 2, name: 'Lighthouse Beach', sub: 'Unit 2 · Lulu',          img: 'm_island_beach',   x: 78, y: 30, open: isOpen(2) },
-      { z: 3, name: 'Treehouse Forest', sub: 'Unit 3 · Mr. Nutty',     img: 'm_island_forest',  x: 46, y: 74, open: isOpen(3) },
-      { z: 4, name: 'Volcano Peak',     sub: 'Unit 4 · Ember',         img: 'm_island_volcano', x: 80, y: 73, open: isOpen(4) }
+      { z: 0, name: 'My Home Island',   sub: 'Build · Craft · Garden', img: 'm_island_home',    x: 20, y: 74, open: true },
+      { z: 1, name: 'Sunny Meadow',     sub: 'Unit 1 · Grandpa Bolt',  img: 'm_island_meadow',  x: 50, y: 27, open: true },
+      { z: 2, name: 'Lighthouse Beach', sub: 'Unit 2 · Lulu',          img: 'm_island_beach',   x: 80, y: 27, open: isOpen(2) },
+      { z: 3, name: 'Treehouse Forest', sub: 'Unit 3 · Mr. Nutty',     img: 'm_island_forest',  x: 50, y: 74, open: isOpen(3) },
+      { z: 4, name: 'Volcano Peak',     sub: 'Unit 4 · Ember',         img: 'm_island_volcano', x: 80, y: 74, open: isOpen(4) }
     ];
     var nodesHtml = islands.map(function (isl) {
       var here = curZone === isl.z;
+      var prog = isl.open ? zoneProgressBadge(isl.z) : '';
       return '<button type="button" class="wg-map-node' + (isl.open ? '' : ' locked') + (here ? ' here' : '') + '" style="left:' + isl.x + '%;top:' + isl.y + '%" onclick="WorldGame.jumpZone(' + isl.z + ')">' +
         '<img src="' + FLAT + isl.img + '.webp" class="wg-map-isl-pic" alt="">' +
         (!isl.open ? '<img src="' + FLAT + 'o_cloud_lock.webp" class="wg-map-lock" alt="">' : '') +
         (here ? '<span class="wg-map-here">📍 You are here</span>' : '') +
-        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : '🔒 Finish 4 stops in previous zone') + '</small></span>' +
+        '<span class="wg-map-label"><b>' + esc(isl.name) + '</b><small>' + esc(isl.open ? isl.sub : '🔒 Finish 4 stops in Zone ' + (isl.z - 1)) + '</small>' + (prog ? '<em>' + esc(prog) + '</em>' : '') + '</span>' +
       '</button>';
     }).join('');
 
-    var plazaBtn = '<button type="button" class="wg-map-node" style="left:18%;top:23%" onclick="WorldGame.closeModal(); if(window.IslandWall) IslandWall.open()">' +
+    var plazaBtn = '<button type="button" class="wg-map-node" style="left:20%;top:27%" onclick="WorldGame.closeModal(); if(window.IslandWall) IslandWall.open()">' +
       '<img src="' + FLAT + 'm_island_plaza.webp" class="wg-map-isl-pic" alt="">' +
-      '<span class="wg-map-label"><b>🌟 Class Plaza</b><small>Friends · Hangout</small></span>' +
+      '<span class="wg-map-label"><b>🌟 Class Plaza</b><small>Friends · Hangout</small><em>👋 Visit Classmates</em></span>' +
     '</button>';
+
+    var pipTipObj = (s.doc && s.doc.pipTip) || ((ZONE_GRAMMAR_TIPS[g] || ZONE_GRAMMAR_TIPS[3])[Math.max(1, curZone)] || ZONE_GRAMMAR_TIPS[3][1]);
+    var tipSpeak = 'Captain Pip says: Remember, ' + pipTipObj.word + ' — ' + pipTipObj.meaning + '!';
+    var pipBannerHtml =
+      '<div class="wg-map-tip">' +
+        '<span style="font-size:1.45rem">🦜</span>' +
+        '<div style="flex:1;min-width:0"><b>💡 Captain Pip\'s Helpful Tip:</b> Remember: <b>"' + esc(pipTipObj.word) + '"</b> — ' + esc(pipTipObj.meaning) + '!</div>' +
+        '<button type="button" class="isl-btn cyan" style="min-height:34px;padding:4px 10px;font-size:0.82rem;flex:none" onclick="IslandAudio.speak(\'' + esc(tipSpeak) + '\', null, \'pip\')">🔊 Hear Tip</button>' +
+      '</div>';
+
+    var demoBtns = '';
+    if (s.isDemo && s.student) {
+      var curId = s.student.id;
+      demoBtns =
+        '<div style="display:flex;gap:4px;align-items:center;background:rgba(2,6,23,.65);padding:3px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.14)">' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g3' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g3\')">G3</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-g4' ? 'cyan' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-g4\')">G4</button>' +
+          '<button type="button" class="isl-btn ' + (curId === 'demo-star' ? 'amber' : '') + '" style="min-height:34px;padding:3px 9px;font-size:0.8rem" onclick="WorldGame.switchDemoPupil(\'demo-star\')">⭐ Star</button>' +
+        '</div>';
+    }
 
     document.body.classList.add('isl-modal-open');
     modalRoot().innerHTML =
       '<div class="isl-modal-backdrop" id="wg-map-backdrop">' +
         '<div class="isl-card-modal wg-map-modal" style="background-image:url(' + FLAT + 't_map_sea.webp)">' +
           '<div class="isl-mission-top wg-map-top">' +
-            '<div style="font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:36px;height:36px;object-fit:contain" alt=""> Practice Island World Map</div>' +
-            '<div style="margin-left:auto;display:flex;gap:8px">' +
-              '<a class="isl-btn cyan" style="min-height:42px;padding:6px 12px;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
-              '<button type="button" class="isl-btn" style="min-height:42px;min-width:44px;padding:6px 12px" onclick="WorldGame.closeModal()">✕</button>' +
+            '<div style="font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:8px"><img src="' + FLAT + 'u_map.webp" style="width:34px;height:34px;object-fit:contain" alt=""> Practice Island World Map</div>' +
+            demoBtns +
+            '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center">' +
+              '<button type="button" class="isl-btn amber" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openStickerBook()">📒 Sticker Book</button>' +
+              '<button type="button" class="isl-btn emerald" style="min-height:38px;padding:5px 11px;font-size:0.86rem" onclick="WorldGame.closeModal(); if(window.IslandRewards) IslandRewards.openCorner()">🏖️ Trophy Camp</button>' +
+              '<a class="isl-btn cyan" style="min-height:38px;padding:5px 11px;font-size:0.86rem;text-decoration:none;display:inline-flex;align-items:center" href="../index.html">🏫 School Hub</a>' +
+              '<button type="button" class="isl-btn" style="min-height:38px;min-width:40px;padding:5px 10px" onclick="WorldGame.closeModal()">✕</button>' +
             '</div>' +
           '</div>' +
+          pipBannerHtml +
           '<div class="wg-map-canvas">' + plazaBtn + nodesHtml + '</div>' +
         '</div>' +
       '</div>';
@@ -611,6 +737,8 @@
     }
     writeState(st);
     addEnergy(v.energy || 15);
+    addBonusCoins(10);
+    if (App() && App().awardIslandXP) App().awardIslandXP(5, 'job_' + vid);
     sound('playFanfare');
     say('Thank you so much! Here is a ' + (rec ? rec.name : 'gift') + ' for your home!');
     if (W() && W().refreshVillagers) W().refreshVillagers(vid, rec);
@@ -700,7 +828,7 @@
             '</div>' +
             '<div class="wg-battle-card" style="text-align:center">' +
               '<h2 style="margin:4px 0;font-size:1.75rem;color:#fde047">🎉 Victory! ' + esc(b.name) + ' is your friend!</h2>' +
-              '<div style="color:#6ee7b7;font-size:1.15rem;font-weight:800;margin:6px 0">⚡ +' + b.energy + ' Energy earned!</div>' +
+              '<div style="color:#6ee7b7;font-size:1.15rem;font-weight:800;margin:6px 0">⚡ +' + b.energy + ' Energy &amp; 🪙 +10 Coins earned!</div>' +
               '<div class="wg-mat-badges" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0">' + dropBadges + '</div>' +
               '<button type="button" class="isl-btn emerald" id="wg-battle-done" style="min-width:190px;font-size:1.15rem;margin-top:8px" onclick="WorldGame.closeModal()">Awesome! 🚀</button>' +
             '</div>' +
@@ -834,6 +962,8 @@
           writeState(st);
           giveMaterials(b.drop);
           addEnergy(b.energy || 20);
+          addBonusCoins(10);
+          if (App() && App().awardIslandXP) App().awardIslandXP(5, 'battle_' + b.id);
           sound('playFanfare');
           say('Hooray! ' + b.name + ' is now your friend!');
           if (W() && W().refreshBattles) W().refreshBattles(b.id);
@@ -889,7 +1019,11 @@
     getEnergy: getEnergy,
     addEnergy: addEnergy,
     useEnergy: useEnergy,
+    addBonusCoins: addBonusCoins,
     updateEnergyChip: updateEnergyChip,
+    updateStatusHud: updateStatusHud,
+    toggleWorldMute: toggleWorldMute,
+    switchDemoPupil: switchDemoPupil,
     updateJobsBadge: updateJobsBadge,
     hasMaterials: hasMaterials,
     giveMaterials: giveMaterials,

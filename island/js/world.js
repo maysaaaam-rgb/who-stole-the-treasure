@@ -441,7 +441,7 @@
     c.restore();
   }
   async function bakeMonster(sc, key, opts) {
-    var eq = Object.assign({}, opts.equipped || {}); delete eq.background; delete eq.aura;
+    var eq = Object.assign({}, opts.equipped || {}); delete eq.background; delete eq.aura; delete eq.pet;
     var markup = root.MonsterRenderer.renderMonsterSVG({ stage: opts.stage, color: opts.color, equipped: eq, size: FRAME, animated: false, isAvatar: true });
     var base = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement;
     ['.monster-pedestal-stage', '.mon-rig-shadow'].forEach(function (q) { var el = base.querySelector(q); if (el) el.remove(); });
@@ -715,6 +715,38 @@
     if (sc.textures.exists(rid)) apply();
     else { sc.load.image(rid, artUrl(rid)); sc.load.once('complete', apply); sc.load.start(); }
   }
+  function syncPet(sc, m) {
+    if (!m || m.monKey !== 'me') return;
+    var eq = monsterLook().equipped || {}, pid = eq.pet || null;
+    if (!pid || !root.MonsterPets || typeof root.MonsterPets.getDataUri !== 'function') {
+      if (m.pet) m.pet.setVisible(false);
+      if (m.petShadow) m.petShadow.setVisible(false);
+      return;
+    }
+    var uri = root.MonsterPets.getDataUri(pid);
+    if (!uri) {
+      if (m.pet) m.pet.setVisible(false);
+      if (m.petShadow) m.petShadow.setVisible(false);
+      return;
+    }
+    var texKey = 'pet_' + pid;
+    var apply = function () {
+      if (!m.active || !sc.textures.exists(texKey)) return;
+      if (!m.petShadow) m.petShadow = sc.add.image(m.x - 56, m.y + 8, 'shadow').setScale(0.52).setAlpha(0.35).setDepth(-5);
+      else m.petShadow.setVisible(true);
+      if (!m.pet) {
+        m.pet = sc.add.image(m.x - 56, m.y + 6, texKey).setOrigin(0.5, 0.9);
+        m.petX = m.x - 56;
+        m.petY = m.y + 8;
+        m.petPhase = 0;
+      } else {
+        m.pet.setTexture(texKey).setVisible(true);
+      }
+      m.pet.setScale(62 / Math.max(1, m.pet.height));
+    };
+    if (sc.textures.exists(texKey)) apply();
+    else loadImg(uri).then(function (img) { if (!sc.textures.exists(texKey)) sc.textures.addImage(texKey, img); apply(); }).catch(function () {});
+  }
   function makeWalker(sc, key, x, y, scale) {
     var shadow = sc.add.image(x, y, 'shadow').setScale(scale * 1.18).setAlpha(0.42).setDepth(-5);
     var m = sc.physics.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale).setVisible(false);
@@ -724,7 +756,7 @@
     m.skin = sc.add.sprite(x, y, key, 0).setOrigin(.5, .84).setScale(scale);
     m.walkPhase = Math.random() * 6; m.turn = 1; m.turnVel = 0; m.pace = 0;
     m.launchPop = 0; m.landSquash = 0; m.stepImpact = 0; m.cheerHop = 0; m.prevSin = 0; m.wasMoving = false;
-    if (key === 'me') syncRide(sc, m);
+    if (key === 'me') { syncRide(sc, m); syncPet(sc, m); }
     return m;
   }
   // a trail follows the monster while it walks (cosmetic only; it gives no XP or advantage)
@@ -813,6 +845,29 @@
     m.shadow.setPosition(m.x, m.y + 3);
     m.shadow.setScale(shScale, shScale * 0.9);
     m.shadow.setAlpha(Math.max(0.16, Math.min(0.52, 0.42 - hop * 0.0065 + impactSquash * 0.22)));
+    if (m.pet && m.pet.visible) {
+      var trailSide = (m.turn < 0) ? 56 : -56;
+      var targetPX = m.x + trailSide;
+      var targetPY = m.y + 8;
+      var followLerp = Math.min(1, delta * 0.009);
+      var dxP = targetPX - (m.petX !== undefined ? m.petX : targetPX);
+      var dyP = targetPY - (m.petY !== undefined ? m.petY : targetPY);
+      m.petX = (m.petX !== undefined ? m.petX : targetPX) + dxP * followLerp;
+      m.petY = (m.petY !== undefined ? m.petY : targetPY) + dyP * followLerp;
+      var petDist = Math.hypot(dxP, dyP);
+      m.petPhase = (m.petPhase || 0) + delta * (petDist > 6 || isMovingNow ? 0.015 : 0.004);
+      var petHop = (petDist > 6 || isMovingNow) ? Math.abs(Math.sin(m.petPhase)) * 11 : (Math.sin(m.petPhase) + 1) * 2;
+      m.pet.setPosition(m.petX, m.petY - petHop);
+      if (Math.abs(dxP) > 3.5) m.pet.setFlipX(dxP < 0);
+      else m.pet.setFlipX(m.turn < 0);
+      m.pet.rotation = (petDist > 6 || isMovingNow) ? Math.sin(m.petPhase) * 0.09 : 0;
+      m.pet.setDepth(m.petY + 1);
+      if (m.petShadow && m.petShadow.visible) {
+        m.petShadow.setPosition(m.petX, m.petY + 2);
+        m.petShadow.setScale(0.52 * (1 - Math.max(0, petHop) * 0.015));
+        m.petShadow.setDepth(-5);
+      }
+    }
   }
 
   /* ---------- finding the way ---------- */
@@ -916,7 +971,7 @@
     }
     var visiting = (z === 0 && S.visitingFriend) ? S.visitingFriend : null;
     if ($('w-decor')) $('w-decor').style.display = (z === 0 && !visiting) ? 'inline-flex' : 'none';
-    if ($('w-home')) $('w-home').innerHTML = visiting ? '🏠 <span>My Home</span>' : '🏰 <span>Build</span>';
+    if ($('w-home')) $('w-home').innerHTML = '<img src="art/flat/u_build.webp" alt=""><span>' + (visiting ? 'My Home' : 'Build') + '</span>';
     if (z === 0) {
       var st = visiting && visiting.world ? visiting.world : (root.WorldGame ? root.WorldGame.readState() : { houseTier: 1, placed: [] });
       var tier = (root.WorldGame && root.WorldGame.HOUSE_TIERS[(st.houseTier || 1) - 1]) || { name: 'Cosy Tent' };
@@ -932,6 +987,17 @@
     $('w-goal').innerHTML = zoneName(z) + ' · ⭐ ' + total + '<small>' + tip + '</small>';
   }
 
+  function makeWorldLabel(sc, x, y, text, color) {
+    return sc.add.text(x, y, text, {
+      fontFamily: 'Fredoka, sans-serif',
+      fontSize: '19px',
+      fontStyle: '700',
+      color: color || '#ffffff',
+      backgroundColor: '#0f172add',
+      padding: { x: 9, y: 3 }
+    }).setOrigin(0.5).setDepth(4502);
+  }
+
   /* ---------- Home Island (Zone 0): House, Workbench & Interactive Furniture ---------- */
   function buildHome(sc) {
     sc.homeObjs = [];
@@ -944,13 +1010,15 @@
     hImg.setScale(320 / hImg.height);
     var hShadow = sc.add.image(1120, 700, 'shadow').setScale(2.6, 1.7).setDepth(-6);
     solid(sc, 1120, 670, 230, 66);
-    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, x: 1120, y: 700, def: { h: 320, sw: 230 } };
+    var hLabel = makeWorldLabel(sc, 1120, 724, visiting ? ('🏡 ' + (visiting.first_name || 'Friend') + "'s House") : '🏰 My House', '#fde047');
+    sc.houseSpot = { kind: 'house', img: hImg, shadow: hShadow, label: hLabel, x: 1120, y: 700, def: { h: 320, sw: 230 } };
 
     var wbImg = sc.add.image(780, 720, FLAT + 'o_workbench').setOrigin(.5, .96).setDepth(720);
     wbImg.setScale(150 / wbImg.height);
     sc.add.image(780, 720, 'shadow').setScale(1.6).setDepth(-6);
     solid(sc, 780, 700, 110, 40);
-    sc.workbenchSpot = { kind: 'workbench', img: wbImg, x: 780, y: 720, def: { h: 150, sw: 120 } };
+    var wbLabel = makeWorldLabel(sc, 780, 744, '🔨 Craft & Build', '#38bdf8');
+    sc.workbenchSpot = { kind: 'workbench', img: wbImg, label: wbLabel, x: 780, y: 720, def: { h: 150, sw: 120 } };
     sc.homeObjs.push(sc.houseSpot, sc.workbenchSpot);
 
     if (visiting) {
@@ -1207,7 +1275,8 @@
       var mark = sc.add.image(v.x, v.y - 185, FLAT + 'v_mark').setOrigin(.5).setDepth(4505);
       mark.setScale(52 / mark.height).setVisible(!done);
       sc.tweens.add({ targets: mark, y: v.y - 198, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      sc.villagers.push({ kind: 'villager', v: v, img: img, mark: mark, x: v.x, y: v.y, def: { h: 165, sw: 90 } });
+      var vTag = makeWorldLabel(sc, v.x, v.y - 156, (done ? '✓ ' : '🎁 ') + v.name, done ? '#6ee7b7' : '#fde047');
+      sc.villagers.push({ kind: 'villager', v: v, img: img, mark: mark, tag: vTag, x: v.x, y: v.y, def: { h: 165, sw: 90 } });
     });
   }
   function refreshVillagers(vid, rec) {
@@ -1217,6 +1286,7 @@
       var done = !!(st.jobsDone && st.jobsDone[vo.v.id]);
       vo.img.setTexture(FLAT + (done ? vo.v.happy : vo.v.art));
       vo.mark.setVisible(!done);
+      if (vo.tag) { vo.tag.setText((done ? '✓ ' : '🎁 ') + vo.v.name); vo.tag.setColor(done ? '#6ee7b7' : '#fde047'); }
       if (vid === vo.v.id && done) {
         partyAt(vo.x, vo.y - 80);
         var gBox = sc.add.image(vo.x, vo.y - 140, FLAT + 'o_gift').setDepth(4800);
@@ -1243,14 +1313,15 @@
       var img = sc.add.image(b.x, b.y, FLAT + b.art).setOrigin(.5, .94).setDepth(b.y);
       img.setScale((b.h || 140) / img.height);
       var sh = sc.add.image(b.x, b.y, 'shadow').setScale(1.5).setDepth(-6);
-      var bo = { kind: 'battle', b: b, img: img, ring: ring, shadow: sh, x: b.x, y: b.y, def: { h: b.h || 140, sw: 100 } };
+      var bTag = makeWorldLabel(sc, b.x, b.y - (b.h || 140) - 18, (won ? '💚 ' : '⚔️ ') + b.name, won ? '#6ee7b7' : '#fda4af');
+      var bo = { kind: 'battle', b: b, img: img, ring: ring, shadow: sh, tag: bTag, x: b.x, y: b.y, def: { h: b.h || 140, sw: 100 } };
       sc.tweens.add({ targets: img, y: b.y - 10, duration: 750, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
       var range = 55;
       sc.tweens.add({
         targets: img, x: { from: b.x - range, to: b.x + range }, duration: 2600 + (b.x % 700), yoyo: true, repeat: -1, ease: 'Sine.inOut',
         onYoyo: function () { img.setFlipX(true); },
         onRepeat: function () { img.setFlipX(false); },
-        onUpdate: function () { bo.x = img.x; ring.x = img.x; sh.x = img.x; }
+        onUpdate: function () { bo.x = img.x; ring.x = img.x; sh.x = img.x; if (bTag) bTag.x = img.x; }
       });
       sc.battles.push(bo);
     });
@@ -1261,6 +1332,7 @@
     sc.battles.forEach(function (bo) {
       var won = !!(st.battlesWon && st.battlesWon[bo.b.id]);
       bo.ring.setFillStyle(won ? 0x10b981 : 0xf43f5e, .28);
+      if (bo.tag) { bo.tag.setText((won ? '💚 ' : '⚔️ ') + bo.b.name); bo.tag.setColor(won ? '#6ee7b7' : '#fda4af'); }
       if (bid === bo.b.id && won) partyAt(bo.x, bo.y - 70);
     });
   }
@@ -1275,7 +1347,7 @@
       img.setScale(d.h / img.height).setDepth(d.y);
       sc.add.image(d.x, d.y, 'shadow').setScale(Math.max(1, d.h / 110)).setDepth(-6);
       if (d.sw) solid(sc, d.x, d.y - 26, d.sw, 30);
-      var badgeY = d.y - d.h - 38;
+      var badgeY = Math.max(145, d.y - d.h - 38);
       var disc = sc.add.image(d.x, badgeY, 'disc').setDepth(4500).setScale(.8);
       var num = sc.add.text(d.x, badgeY, String(i + 1), { fontFamily: 'Fredoka, sans-serif', fontSize: '30px', fontStyle: '700', color: '#fff' }).setOrigin(.5).setDepth(4501);
       var st = sc.add.text(d.x, badgeY + 40, '', { fontFamily: 'Fredoka, sans-serif', fontSize: '22px', color: '#fde047', stroke: '#1e293b', strokeThickness: 4 }).setOrigin(.5).setDepth(4501);
@@ -1291,6 +1363,7 @@
     }
     // the daily gift, near where a pupil comes in
     var gift = sc.add.image(170, 1120, FLAT + 'o_gift').setOrigin(.5, .96).setDepth(1120); gift.setScale(100 / gift.height);
+    makeWorldLabel(sc, 170, 1005, '🎁 Daily Quest', '#fde047');
     sc.gift = { kind: 'gift', img: gift, x: 170, y: 1120 };
     sc.tweens.add({ targets: gift, y: 1110, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
     // Star Path stones: only ever built for a pupil on the Star Path
@@ -1334,7 +1407,7 @@
     (sc.stones || []).forEach(function (st) { var sn = starsOf(st.mission.id); if (st.starsText) st.starsText.setText(sn ? '★'.repeat(sn) : ''); });
     var t = next || (chestReady ? sc.chest : null);
     S.target = t;
-    if (t) { var top = t.def ? t.def.y - t.def.h - 110 : t.y - 210; sc.arrow.setVisible(true).setPosition(t.x, top); sc.ring.setVisible(true).setPosition(t.x, t.y); }
+    if (t) { var top = Math.max(115, t.def ? t.def.y - t.def.h - 102 : t.y - 200); sc.arrow.setVisible(true).setPosition(t.x, top); sc.ring.setVisible(true).setPosition(t.x, t.y); }
     else { sc.arrow.setVisible(false); sc.ring.setVisible(false); }
     setHelperMood(sc, next);
     if (sc.gateR) sc.gateR.setLock();
@@ -1444,7 +1517,14 @@
         var giftLine = 'Ooh! You found ' + countHere + ' things for me! Thank you!';
         panel(ZONES[z].npc.happy || helperArt(), name, giftLine, 'Give 🎁', function () {
           bag.gifted['z' + z] = 1; writeBag(bag);
-          partyAt(t.x, t.y - 60); say('Thank you so much!');
+          if (root.WorldGame) {
+            if (root.WorldGame.addEnergy) root.WorldGame.addEnergy(15);
+            if (root.WorldGame.addBonusCoins) root.WorldGame.addBonusCoins(10);
+          }
+          if (App() && App().awardIslandXP) App().awardIslandXP(5, 'npc_gift_z' + z);
+          partyAt(t.x, t.y - 60);
+          showWorldFloat(scene, t.x, t.y - 95, '🎁 +15 ⚡ Energy & +10 🪙!', '#fde047');
+          say('Thank you so much! Here is energy and coins for you!');
         });
         say(giftLine);
         return;
@@ -1581,7 +1661,9 @@
       var n = zone.npc, npc = sc.add.image(n.x, n.y, n.art).setOrigin(.5, .92); npc.setScale((n.h || 190) / npc.height).setDepth(n.y);
       sc.add.image(n.x, n.y, 'shadow').setScale(1.8).setDepth(-6); solid(sc, n.x, n.y - 4, 90, 34);
       sc.tweens.add({ targets: npc, scaleY: npc.scaleY * 1.05, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      sc.npcSpot = { kind: 'npc', img: npc, x: n.x, y: n.y };
+      var npcName = S.zone === 0 ? 'Grandpa Bolt' : ((root.IslandStory && root.IslandStory.CHARS && root.IslandStory.CHARS[S.zone] && root.IslandStory.CHARS[S.zone].name) || 'Friend');
+      var npcLabel = makeWorldLabel(sc, n.x, S.zone === 0 ? (n.y + 24) : (n.y - (n.h || 190) - 14), '💬 ' + npcName, '#fde047');
+      sc.npcSpot = { kind: 'npc', img: npc, label: npcLabel, x: n.x, y: n.y };
       buildStops(sc, zone);
       buildHome(sc);
       buildVillagers(sc);
@@ -1623,7 +1705,7 @@
         if (!sc.textures.exists('me') || S.lookStamp !== JSON.stringify(look)) await bakeMonster(sc, 'me', look);
         var isDemo = !!ses().isDemo, crowd = isDemo ? Math.max(0, Math.min(30, Number(Q.get('crowd') || 2))) : 0, colors = ['pink', 'gold', 'green', 'purple', 'orange'];
         for (var i = 0; i < Math.min(crowd, colors.length); i++) if (!sc.textures.exists('c' + i)) await bakeMonster(sc, 'c' + i, { stage: ['baby', 'growing', 'adventurer', 'advanced', 'ultimate'][i % 5], color: colors[i] });
-        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 850 : 1200);
+        var sx = S.fromDir < 0 ? W - 220 : (S.fromDir > 0 ? 220 : (S.zone === 0 ? 960 : 300)), sy = S.fromDir ? 880 : (S.zone === 0 ? 850 : 1070);
         var free = nearestFree(sc.grid, Math.floor(sx / CELL), Math.floor(sy / CELL)) || [5, 20];
         sc.player = makeWalker(sc, 'me', free[0] * CELL + 20, free[1] * CELL + 20, .54);
         sc.cameras.main.setBounds(0, 0, W, H);
@@ -1666,9 +1748,10 @@
         if (modalNow) { hidePanel(); stopWalking(); }
         else {
           refreshStops(true);
+          if (root.WorldGame && root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud();
           var look = monsterLook();
-          if (S.lookStamp !== JSON.stringify(look)) { var fr = m; bakeMonster(sc, 'me', look).then(function () { if (fr.active) { fr.setTexture('me', 0); syncRide(sc, fr); } }); }
-          else syncRide(sc, m);
+          if (S.lookStamp !== JSON.stringify(look)) { var fr = m; bakeMonster(sc, 'me', look).then(function () { if (fr.active) { fr.setTexture('me', 0); syncRide(sc, fr); syncPet(sc, fr); } }); }
+          else { syncRide(sc, m); syncPet(sc, m); }
           S.near = null; S.cooldown = 600;
         }
       }
@@ -1719,6 +1802,7 @@
       sc.crate.setDepth(sc.crate.y + 54); sc.crateShadow.setPosition(sc.crate.x, sc.crate.y + 54);
       sc.ball.setDepth(sc.ball.y + 40); sc.ball.rotation += sc.ball.body.velocity.x * delta * .00002; sc.ballShadow.setPosition(sc.ball.x, sc.ball.y + 42);
 
+      updateCompass(sc);
       if (S.modal || S.leaving) return;
       if (S.cooldown > 0) { S.cooldown -= delta; return; }
 
@@ -1735,7 +1819,13 @@
         var sh = sc.shells[i];
         if (sh.under && Phaser.Math.Distance.Between(sc.crate.x, sc.crate.y, sh.x, sh.y) < 92) continue;
         if (Phaser.Math.Distance.Between(m.x, m.y, sh.x, sh.y) < 66) {
-          sc.shells.splice(i, 1); saveShell(sh.key2); sound('playCorrect'); say('A shell!'); cheer(m); sc.fx.explode(14, sh.x, sh.y);
+          sc.shells.splice(i, 1); saveShell(sh.key2); sound('playCorrect'); say('Secret shell!'); cheer(m); sc.fx.explode(16, sh.x, sh.y);
+          if (root.WorldGame) {
+            if (root.WorldGame.giveMaterials) root.WorldGame.giveMaterials({ shell: 1 });
+            if (root.WorldGame.addEnergy) root.WorldGame.addEnergy(10);
+            if (root.WorldGame.addBonusCoins) root.WorldGame.addBonusCoins(5);
+          }
+          showWorldFloat(sc, sh.x, sh.y - 36, '🐚 Secret Shell! +1 Shell & +10 ⚡', '#fde047');
           sc.tweens.add({ targets: sh, y: sh.y - 90, alpha: 0, duration: 650, onComplete: function (tw, t) { t[0].destroy(); } });
         }
       }
@@ -1802,8 +1892,14 @@
     if ($('w-book')) $('w-book').onclick = function () { sound('playTap'); if (root.IslandRewards) root.IslandRewards.openStickerBook(); };
     if ($('w-dress')) $('w-dress').onclick = function () { sound('playTap'); App().openDressingRoom(); };
     if ($('w-shop')) $('w-shop').onclick = function () { sound('playTap'); root.IslandShop.open(); };
-    if ($('w-goal')) $('w-goal').onclick = function () { sound('playTap'); if (S.zone === 0) { if (root.WorldGame) root.WorldGame.openWorkshop('home'); } else { if (root.WorldGame) root.WorldGame.openJobsBoard(); } };
-    if (root.WorldGame) root.WorldGame.updateEnergyChip();
+    if ($('w-status')) $('w-status').onclick = function () { sound('playTap'); if (root.IslandShop) root.IslandShop.open(); };
+    if ($('w-mute')) $('w-mute').onclick = function () { sound('playTap'); if (root.WorldGame && root.WorldGame.toggleWorldMute) root.WorldGame.toggleWorldMute(); };
+    if ($('w-goal')) $('w-goal').onclick = function () { sound('playTap'); walkToActiveGoal(); };
+    if ($('w-compass')) $('w-compass').onclick = function () { sound('playTap'); walkToActiveGoal(); };
+    if (root.WorldGame) {
+      root.WorldGame.updateEnergyChip();
+      if (root.WorldGame.updateStatusHud) root.WorldGame.updateStatusHud();
+    }
     if (Q.get('fps') && $('w-fps')) $('w-fps').style.display = 'block';
     root.WORLD.game = new Phaser.Game({
       type: Phaser.AUTO, parent: 'world', backgroundColor: '#0f6fb0',
@@ -1811,6 +1907,70 @@
       physics: { default: 'arcade', arcade: { debug: !!Q.get('debug') } },
       render: { antialias: true }, scene: [WorldScene]
     });
+  }
+  function walkToActiveGoal() {
+    var sc = scene;
+    if (S.zone === 0) {
+      if (S.visitingFriend) leaveFriendHome();
+      else if (root.WorldGame) root.WorldGame.openWorkshop('home');
+      return;
+    }
+    if (!sc || !sc.player) return;
+    if (S.target) {
+      var t = S.target;
+      hidePanel(); S.near = t;
+      spawnTapRipple(sc, t.x, t.y + 28, true);
+      walkTo(t.x, t.y + 54, function () { openThing(t); });
+      return;
+    }
+    if (sc.gateR && isOpen(sc.gateR.to)) {
+      walkTo(sc.gateR.x, sc.gateR.y);
+      return;
+    }
+    if (root.WorldGame) root.WorldGame.openWorldMap();
+  }
+  function updateCompass(sc) {
+    var el = $('w-compass');
+    if (!el) return;
+    if (S.modal || S.leaving || S.zone === 0 || !S.target || !sc || !sc.cameras || !sc.cameras.main) {
+      el.hidden = true;
+      return;
+    }
+    var cam = sc.cameras.main, t = S.target;
+    var sx = (t.x - cam.worldView.x) * cam.zoom;
+    var sy = (t.y - 60 - cam.worldView.y) * cam.zoom;
+    var vw = root.innerWidth, vh = root.innerHeight;
+    var offScreen = (sx < 36 || sx > vw - 36 || sy < 86 || sy > vh - 36);
+    if (!offScreen) {
+      el.hidden = true;
+      return;
+    }
+    var cx = Math.max(92, Math.min(vw - 92, sx));
+    var cy = Math.max(108, Math.min(vh - 54, sy));
+    var stopIdx = sc.stops ? sc.stops.indexOf(t) : -1;
+    var lbl = stopIdx >= 0 ? ('📍 Stop ' + (stopIdx + 1)) : '🎁 Treasure';
+    var arrow = sx > vw - 36 ? ' ➔' : (sx < 36 ? '⬅ ' : (sy < 86 ? '⬆ ' : '⬇ '));
+    el.textContent = sx < 36 ? (arrow + lbl) : (lbl + arrow);
+    el.style.left = Math.round(cx) + 'px';
+    el.style.top = Math.round(cy) + 'px';
+    el.hidden = false;
+  }
+  function onSessionChanged() {
+    var sc = scene;
+    if (!sc || !sc.player) return;
+    var look = monsterLook();
+    bakeMonster(sc, 'me', look).then(function () {
+      if (sc.player && sc.player.active) {
+        sc.player.setTexture('me', 0);
+        syncRide(sc, sc.player);
+        syncPet(sc, sc.player);
+      }
+    });
+    refreshStops(false);
+    drawBag();
+    if (S.zone === 0) refreshHome(false);
+    refreshVillagers();
+    refreshBattles();
   }
   function tapBag(word, el) {
     sound('playTap'); say(word);
@@ -2000,7 +2160,9 @@
     visitFriendHome: visitFriendHome,
     leaveFriendHome: leaveFriendHome,
     onMissionComplete: onMissionComplete,
-    interactFurniture: interactFurniture
+    interactFurniture: interactFurniture,
+    walkToActiveGoal: walkToActiveGoal,
+    onSessionChanged: onSessionChanged
   };
   var tries = 0;
   (function waitForPupil() {
